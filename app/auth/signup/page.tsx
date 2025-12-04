@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Footer from '@/components/shared/Footer';
@@ -16,9 +16,55 @@ export default function SignupPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
-  const supabase = createClient();
+  
+  // Lazy initialization of Supabase client to avoid SSR issues
+  const [supabase, setSupabase] = useState<any>(null);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Check if Supabase is configured before trying to create client
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+      const configured = url &&
+        key &&
+        url !== 'https://your-project.supabase.co' &&
+        key !== 'your-anon-key-here' &&
+        !url.includes('your-project');
+
+      if (configured) {
+        try {
+          setSupabase(createClient());
+        } catch (error: any) {
+          console.error('Error initializing Supabase client:', error);
+          // Don't set error state - let the warning banner handle it
+        }
+      }
+    }
+  }, []);
+
+  // Verificar si Supabase está configurado
+  const isSupabaseConfigured = () => {
+    if (typeof window === 'undefined') return false;
+    
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    return url &&
+           key &&
+           url !== 'https://your-project.supabase.co' &&
+           key !== 'your-anon-key-here' &&
+           !url.includes('your-project');
+  };
 
   const translateError = (errorMessage: string): string => {
+    // Error especial cuando Supabase no está configurado
+    if (errorMessage.includes('Failed to fetch') ||
+        errorMessage.includes('fetch') ||
+        errorMessage.includes('NetworkError')) {
+      return 'Supabase no está configurado. Usa el botón "Ver Demo" para explorar la plataforma.';
+    }
+
     const errorMap: { [key: string]: string } = {
       'User already registered': 'Este email ya está registrado',
       'Email not confirmed': 'Por favor confirma tu email antes de iniciar sesión',
@@ -39,6 +85,12 @@ export default function SignupPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    
+    if (!supabase) {
+      setError('Supabase no está inicializado. Por favor recarga la página.');
+      return;
+    }
+    
     setLoading(true);
     setError(null);
     setSuccess(null);
@@ -50,20 +102,20 @@ export default function SignupPage() {
     }
 
     try {
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
           data: {
             name,
           },
           emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+        },
+      });
 
-    if (signUpError) {
+      if (signUpError) {
         setError(translateError(signUpError.message));
-    } else {
+      } else {
         setSuccess('¡Cuenta creada! Revisa tu email para confirmar tu cuenta.');
         // Limpiar el formulario
         setEmail('');
@@ -78,6 +130,11 @@ export default function SignupPage() {
   };
 
   const handleGoogleLogin = async () => {
+    if (!supabase) {
+      setError('Supabase no está inicializado. Por favor recarga la página.');
+      return;
+    }
+    
     setLoading(true);
     setError(null);
 
@@ -103,7 +160,7 @@ export default function SignupPage() {
     } catch (err: any) {
       console.error('Google OAuth error:', err);
       setError(translateError(err.message || 'Error al iniciar sesión con Google'));
-    setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -139,6 +196,31 @@ export default function SignupPage() {
                 Comienza tu viaje en IA y automatización
               </p>
             </div>
+
+            {/* Advertencia si Supabase no está configurado */}
+            {!isSupabaseConfigured() && (
+              <div className="mb-6 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <svg className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <div className="flex-1">
+                    <p className="text-yellow-800 text-sm font-semibold mb-2">
+                      ⚠️ Base de datos no configurada
+                    </p>
+                    <p className="text-yellow-700 text-sm mb-3">
+                      Supabase aún no está configurado. Puedes explorar la plataforma en modo demo.
+                    </p>
+                    <Link
+                      href="/demo"
+                      className="inline-block bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                    >
+                      🎯 Ver Demo del Dashboard
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Error Message */}
             {error && (
