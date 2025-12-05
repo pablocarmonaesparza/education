@@ -143,19 +143,19 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col relative overflow-hidden bg-gradient-to-br from-purple-100 via-blue-100 to-indigo-100">
+    <main className="min-h-screen flex flex-col relative overflow-hidden bg-gradient-to-br from-[#1472FF]/10 via-[#5BA0FF]/10 to-[#1472FF]/10">
       <AuthNavbar />
       {/* Background decoration - Enhanced for glassmorphism */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Base gradient overlay - more vibrant */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-200/60 via-blue-200/60 to-indigo-200/60" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1472FF]/20 via-[#5BA0FF]/20 to-[#1472FF]/20" />
         
         {/* Animated orbs - more visible */}
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" />
+        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#1472FF] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" />
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" style={{ animationDelay: '1s' }} />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-pulse" style={{ animationDelay: '2s' }} />
         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-2xl opacity-50" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-2xl opacity-50" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#1472FF] rounded-full mix-blend-multiply filter blur-2xl opacity-50" />
         
         {/* Additional layers for depth */}
         <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-pink-300 rounded-full mix-blend-multiply filter blur-2xl opacity-40" />
@@ -212,7 +212,7 @@ export default function LoginPage() {
               <input
                 type="email"
                 id="email"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900"
                 placeholder="Correo electrónico"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -222,7 +222,7 @@ export default function LoginPage() {
               <input
                 type="password"
                 id="password"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900"
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900"
                 placeholder="Contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -232,7 +232,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                className="w-full bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white py-3 rounded-lg font-semibold hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
               >
                 {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
               </button>
@@ -276,7 +276,7 @@ export default function LoginPage() {
             {/* Signup Link */}
             <p className="mt-6 text-center text-sm text-gray-600">
             ¿No tienes cuenta?{' '}
-              <Link href="/auth/signup" className="text-purple-600 hover:text-purple-700 font-semibold">
+              <Link href="/auth/signup" className="text-[#1472FF] hover:text-[#0E5FCC] font-semibold">
                 Regístrate gratis
               </Link>
           </p>

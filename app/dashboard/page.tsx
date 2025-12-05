@@ -189,7 +189,7 @@ export default async function DashboardPage() {
           <p className="text-gray-600 mb-4">Por favor intenta recargar la página</p>
           <a 
             href="/dashboard" 
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-4 py-2 bg-[#1472FF] text-white rounded-lg hover:bg-[#0E5FCC]"
           >
             Recargar
           </a>

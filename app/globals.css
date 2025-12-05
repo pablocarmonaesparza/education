@@ -29,16 +29,16 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Apply Poppins to all headings and subtitle paragraphs */
+/* Apply Darker Grotesque to all headings and subtitle paragraphs */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-darker-grotesque), sans-serif;
 }
 
-/* Apply Poppins to subtitle paragraphs (those that act as subtitles) */
+/* Apply Darker Grotesque to subtitle paragraphs (those that act as subtitles) */
 p.text-lg,
 p.text-xl,
 p.text-2xl {
-  font-family: var(--font-poppins), sans-serif;
+  font-family: var(--font-darker-grotesque), sans-serif;
 }
 
 @keyframes float-orb-1 {
@@ -140,4 +140,245 @@ p.text-2xl {
   .animate-float-orb-5 {
     animation: float-orb-5 25s ease-in-out infinite;
   }
+}
+
+/* Smooth Blue Unicorn Gradient - Multi-layer animated gradient */
+@keyframes blue-gradient-1 {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes blue-gradient-2 {
+  0% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes blue-gradient-3 {
+  0% {
+    background-position: 50% 0%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 50% 0%;
+  }
+}
+
+@keyframes cloud-float-1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.4;
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+    opacity: 0.6;
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+    opacity: 0.5;
+  }
+}
+
+@keyframes cloud-float-2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  33% {
+    transform: translate(-25px, 25px) scale(1.15);
+    opacity: 0.5;
+  }
+  66% {
+    transform: translate(35px, -15px) scale(0.85);
+    opacity: 0.4;
+  }
+}
+
+@keyframes cloud-float-3 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.35;
+  }
+  33% {
+    transform: translate(40px, 20px) scale(1.2);
+    opacity: 0.55;
+  }
+  66% {
+    transform: translate(-30px, -25px) scale(0.8);
+    opacity: 0.45;
+  }
+}
+
+@keyframes cloud-float-4 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  33% {
+    transform: translate(-35px, -20px) scale(1.1);
+    opacity: 0.5;
+  }
+  66% {
+    transform: translate(25px, 30px) scale(0.9);
+    opacity: 0.4;
+  }
+}
+
+.blue-unicorn-gradient-base {
+  background: linear-gradient(
+    45deg,
+    #1472FF,
+    #0E5FCC,
+    #2B8AFF,
+    #5BA0FF,
+    #1472FF,
+    #3B82F6,
+    #60A5FA,
+    #1472FF,
+    #0E5FCC,
+    #2B8AFF,
+    #5BA0FF,
+    #1472FF
+  );
+  background-size: 400% 400%;
+  animation: blue-gradient-1 60s ease-in-out infinite;
+  will-change: background-position;
+}
+
+.blue-unicorn-gradient-layer-1 {
+  background: linear-gradient(
+    -45deg,
+    #5BA0FF,
+    #1472FF,
+    #3B82F6,
+    #0E5FCC,
+    #2B8AFF,
+    #60A5FA,
+    #1472FF,
+    #5BA0FF,
+    #0E5FCC
+  );
+  background-size: 500% 500%;
+  animation: blue-gradient-2 70s ease-in-out infinite;
+  mix-blend-mode: screen;
+  opacity: 0.4;
+  will-change: background-position;
+}
+
+.blue-unicorn-gradient-layer-2 {
+  background: linear-gradient(
+    90deg,
+    #1472FF,
+    #60A5FA,
+    #0E5FCC,
+    #2B8AFF,
+    #5BA0FF,
+    #3B82F6,
+    #1472FF,
+    #60A5FA
+  );
+  background-size: 600% 600%;
+  animation: blue-gradient-3 80s ease-in-out infinite;
+  mix-blend-mode: overlay;
+  opacity: 0.3;
+  will-change: background-position;
+}
+
+.blue-cloud-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+.blue-cloud-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(20, 114, 255, 0.6) 0%, rgba(20, 114, 255, 0.2) 50%, transparent 100%);
+  top: 10%;
+  left: 10%;
+  animation: cloud-float-1 50s ease-in-out infinite;
+}
+
+.blue-cloud-orb-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(91, 160, 255, 0.5) 0%, rgba(91, 160, 255, 0.15) 50%, transparent 100%);
+  top: 60%;
+  right: 15%;
+  animation: cloud-float-2 55s ease-in-out infinite;
+}
+
+.blue-cloud-orb-3 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(14, 95, 204, 0.55) 0%, rgba(14, 95, 204, 0.2) 50%, transparent 100%);
+  bottom: 20%;
+  left: 20%;
+  animation: cloud-float-3 52s ease-in-out infinite;
+}
+
+.blue-cloud-orb-4 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(43, 138, 255, 0.45) 0%, rgba(43, 138, 255, 0.15) 50%, transparent 100%);
+  top: 30%;
+  right: 30%;
+  animation: cloud-float-4 58s ease-in-out infinite;
+}
+
+.blue-cloud-orb-5 {
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.5) 0%, rgba(59, 130, 246, 0.18) 50%, transparent 100%);
+  bottom: 10%;
+  right: 10%;
+  animation: cloud-float-1 54s ease-in-out infinite;
+}
+
+.blue-cloud-orb-6 {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.4) 0%, rgba(96, 165, 250, 0.12) 50%, transparent 100%);
+  top: 50%;
+  left: 5%;
+  animation: cloud-float-2 56s ease-in-out infinite;
+}
+
+/* Navbar button gradient when scrolled */
+.navbar-button-gradient {
+  background: linear-gradient(
+    45deg,
+    #1472FF,
+    #0E5FCC,
+    #2B8AFF,
+    #5BA0FF,
+    #1472FF,
+    #3B82F6,
+    #60A5FA,
+    #1472FF,
+    #0E5FCC,
+    #2B8AFF,
+    #5BA0FF,
+    #1472FF
+  );
+  background-size: 400% 400%;
+  animation: blue-gradient-1 60s ease-in-out infinite;
+  will-change: background-position;
 }

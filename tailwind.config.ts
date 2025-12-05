@@ -11,13 +11,13 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-inter)", ...fontFamily.sans],
-        display: ["var(--font-poppins)", ...fontFamily.sans],
+        display: ["var(--font-darker-grotesque)", ...fontFamily.sans],
       },
       colors: {
         brand: {
-          DEFAULT: "#00A3FF",
-          light: "#66C7FF",
-          dark: "#0082CC",
+          DEFAULT: "#1472FF",
+          light: "#5BA0FF",
+          dark: "#0E5FCC",
         },
       },
       borderRadius: {

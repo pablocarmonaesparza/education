@@ -186,7 +186,7 @@ export default function IntakePage() {
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-white overflow-hidden">
       {/* Background decoration - Similar to How It Works section */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-purple-50 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
+        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#1472FF]/10 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-blue-50 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
       </div>
 
@@ -266,7 +266,7 @@ export default function IntakePage() {
               <button
                 onClick={handleCreateCourse}
                 disabled={!projectIdea.trim() || projectIdea.trim().length < 200}
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-base md:text-lg text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-base md:text-lg text-white bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 Crear mi curso personalizado
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -282,7 +282,7 @@ export default function IntakePage() {
               <div className="text-center">
                 {/* Animated Icon */}
                 <div className="relative w-24 h-24 mx-auto mb-6">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-700 rounded-full animate-pulse"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] rounded-full animate-pulse"></div>
                   <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center">
                     <span className="text-4xl animate-bounce">🤖</span>
                   </div>
@@ -300,13 +300,13 @@ export default function IntakePage() {
               <div className="mb-8">
                 <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-purple-600 to-blue-700 h-4 rounded-full transition-all duration-500 ease-out relative overflow-hidden"
+                    className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] h-4 rounded-full transition-all duration-500 ease-out relative overflow-hidden"
                     style={{ width: `${progress}%` }}
                   >
                     <div className="absolute inset-0 bg-white opacity-30 animate-pulse"></div>
                   </div>
                 </div>
-                <p className="text-sm font-semibold text-purple-600 mt-2">{progress}%</p>
+                <p className="text-sm font-semibold text-[#1472FF] mt-2">{progress}%</p>
               </div>
 
               {/* Loading Steps */}
@@ -404,7 +404,7 @@ export default function IntakePage() {
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-white overflow-hidden">
       {/* Background decoration - Similar to How It Works section */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-purple-50 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
+        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#1472FF]/10 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-blue-50 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
       </div>
 
@@ -484,7 +484,7 @@ export default function IntakePage() {
               <button
                 onClick={handleCreateCourse}
                 disabled={!projectIdea.trim() || projectIdea.trim().length < 200}
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-base md:text-lg text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-base md:text-lg text-white bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               >
                 Crear mi curso personalizado
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -500,7 +500,7 @@ export default function IntakePage() {
               <div className="text-center">
                 {/* Animated Icon */}
                 <div className="relative w-24 h-24 mx-auto mb-6">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-700 rounded-full animate-pulse"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] rounded-full animate-pulse"></div>
                   <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center">
                     <span className="text-4xl animate-bounce">🤖</span>
                   </div>
@@ -518,13 +518,13 @@ export default function IntakePage() {
               <div className="mb-8">
                 <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
                   <div
-                    className="bg-gradient-to-r from-purple-600 to-blue-700 h-4 rounded-full transition-all duration-500 ease-out relative overflow-hidden"
+                    className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] h-4 rounded-full transition-all duration-500 ease-out relative overflow-hidden"
                     style={{ width: `${progress}%` }}
                   >
                     <div className="absolute inset-0 bg-white opacity-30 animate-pulse"></div>
                   </div>
                 </div>
-                <p className="text-sm font-semibold text-purple-600 mt-2">{progress}%</p>
+                <p className="text-sm font-semibold text-[#1472FF] mt-2">{progress}%</p>
               </div>
 
               {/* Loading Steps */}

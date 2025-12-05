@@ -133,7 +133,7 @@ export default function CoursesPage() {
             placeholder="Buscar por nombre, descripción o tema..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-6 py-4 pl-14 rounded-xl border-2 border-gray-300 focus:border-purple-600 focus:ring-2 focus:ring-purple-200 outline-none transition-all text-gray-900 bg-white placeholder-gray-400"
+            className="w-full px-6 py-4 pl-14 rounded-xl border-2 border-gray-300 focus:border-[#1472FF] focus:ring-2 focus:ring-[#1472FF]/20 outline-none transition-all text-gray-900 bg-white placeholder-gray-400"
           />
           <svg
             className="absolute left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -160,7 +160,7 @@ export default function CoursesPage() {
               onClick={() => setSelectedCategory(category.id)}
               className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold whitespace-nowrap transition-all ${
                 selectedCategory === category.id
-                  ? 'bg-gradient-to-r from-purple-600 to-blue-700 text-white shadow-lg'
+                  ? 'bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white shadow-lg'
                   : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-purple-300'
               }`}
             >
@@ -209,7 +209,7 @@ export default function CoursesPage() {
                 </div>
 
                 {/* Title & Description */}
-                <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+                <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#1472FF] transition-colors">
                   {module.title}
                 </h3>
                 <p className="text-sm text-gray-600 mb-4">
@@ -221,7 +221,7 @@ export default function CoursesPage() {
                   {module.topics.map((topic, index) => (
                     <span
                       key={index}
-                      className="text-xs bg-purple-50 text-purple-700 px-2 py-1 rounded"
+                      className="text-xs bg-[#1472FF]/10 text-[#1472FF] px-2 py-1 rounded"
                     >
                       {topic}
                     </span>
@@ -245,7 +245,7 @@ export default function CoursesPage() {
                 </div>
 
                 {/* CTA */}
-                <button className="w-full bg-gradient-to-r from-purple-600 to-blue-700 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-800 transition-all">
+                <button className="w-full bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white py-3 rounded-lg font-semibold hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all">
                   Ver Módulo →
                 </button>
               </div>
@@ -266,7 +266,7 @@ export default function CoursesPage() {
               setSearchQuery('');
               setSelectedCategory('all');
             }}
-            className="bg-gradient-to-r from-purple-600 to-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-800"
+            className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white px-6 py-3 rounded-lg font-semibold hover:from-[#0E5FCC] hover:to-[#1472FF]"
           >
             Limpiar Filtros
           </button>

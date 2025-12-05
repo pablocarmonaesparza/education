@@ -41,7 +41,7 @@ export default function DemoPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Demo Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-700 text-white py-3 px-4 text-center">
+      <div className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white py-3 px-4 text-center">
         <p className="text-sm">
           📺 <strong>VISTA DEMO</strong> - Esta es una vista previa del dashboard. {' '}
           <Link href="/auth/signup" className="underline font-semibold">
@@ -99,7 +99,7 @@ export default function DemoPage() {
         {/* Continue Learning */}
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Continúa Aprendiendo</h2>
-          <div className="bg-gradient-to-r from-purple-600 to-blue-700 rounded-lg p-6 text-white">
+          <div className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] rounded-lg p-6 text-white">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div>
                 <h3 className="text-xl font-bold mb-2">Comienza tu primera lección</h3>
@@ -109,7 +109,7 @@ export default function DemoPage() {
               </div>
               <Link
                 href="/demo/video"
-                className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors whitespace-nowrap"
+                className="bg-white text-[#1472FF] px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors whitespace-nowrap"
               >
                 Ver Demo de Video
               </Link>
@@ -130,25 +130,25 @@ export default function DemoPage() {
         {/* Quick Stats */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <div className="text-3xl font-bold text-purple-600 mb-2">366</div>
+            <div className="text-3xl font-bold text-[#1472FF] mb-2">366</div>
             <div className="text-sm text-gray-600">Videos Totales</div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <div className="text-3xl font-bold text-purple-600 mb-2">12</div>
+            <div className="text-3xl font-bold text-[#1472FF] mb-2">12</div>
             <div className="text-sm text-gray-600">Módulos</div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <div className="text-3xl font-bold text-purple-600 mb-2">10-20h</div>
+            <div className="text-3xl font-bold text-[#1472FF] mb-2">10-20h</div>
             <div className="text-sm text-gray-600">Duración Total</div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-            <div className="text-3xl font-bold text-purple-600 mb-2">100%</div>
+            <div className="text-3xl font-bold text-[#1472FF] mb-2">100%</div>
             <div className="text-sm text-gray-600">Personalizado</div>
           </div>
         </div>
 
         {/* CTA to signup */}
-        <div className="mt-12 text-center bg-white rounded-lg shadow-md p-8 border border-purple-200">
+        <div className="mt-12 text-center bg-white rounded-lg shadow-md p-8 border border-[#1472FF]/20">
           <h3 className="text-2xl font-bold text-gray-900 mb-4">
             ¿Listo para comenzar tu aprendizaje?
           </h3>
@@ -158,7 +158,7 @@ export default function DemoPage() {
           <div className="flex gap-4 justify-center">
             <Link
               href="/auth/signup"
-              className="bg-gradient-to-r from-purple-600 to-blue-700 text-white px-8 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-800 transition-all"
+              className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white px-8 py-3 rounded-lg font-semibold hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all"
             >
               Crear Cuenta Gratis
             </Link>

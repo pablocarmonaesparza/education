@@ -8,12 +8,31 @@ import { motion, AnimatePresence } from "framer-motion";
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const scrollY = window.scrollY;
+      setScrolled(scrollY > 20);
+      
+      // Detect when past hero section - check actual hero section height
+      const heroSection = document.querySelector('section:first-of-type');
+      if (heroSection) {
+        const heroRect = heroSection.getBoundingClientRect();
+        const heroBottom = heroRect.bottom + scrollY;
+        // Only change when completely past the hero section
+        setPastHero(scrollY >= heroBottom - 100);
+      } else {
+        // Fallback: use viewport height
+        const heroHeight = window.innerHeight;
+        setPastHero(scrollY >= heroHeight - 50);
+      }
     };
+    
+    // Initial check
+    handleScroll();
+    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -52,8 +71,8 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-white/95 backdrop-blur-lg"
+        pastHero
+          ? "backdrop-blur-md"
           : ""
       }`}
     >
@@ -66,10 +85,11 @@ export default function Navbar() {
               whileTap={{ scale: 0.95 }}
               className="text-2xl font-bold"
             >
-              <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Beta
+              <span className={`transition-colors duration-300 ${
+                pastHero ? "text-[#1472FF]" : "text-[#111827]"
+              }`}>
+                Leap
               </span>
-              <span className={`font-bold ${scrolled ? "text-gray-900" : "text-white"}`}> AI</span>
             </motion.div>
           </Link>
 
@@ -86,13 +106,15 @@ export default function Navbar() {
                   href={link.href}
                   onClick={(e) => handleNavClick(e, link.href)}
                   className={`relative transition-colors font-medium cursor-pointer ${
-                    scrolled
+                    pastHero
+                      ? "text-gray-600 hover:text-gray-900"
+                      : scrolled
                       ? "text-gray-600 hover:text-gray-900"
                       : "text-white hover:text-white/80"
                   }`}
                 >
                   {link.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-600 to-blue-600 hover:w-full transition-all duration-300" />
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] hover:w-full transition-all duration-300" />
                 </a>
               </motion.div>
             ))}
@@ -107,14 +129,18 @@ export default function Navbar() {
           >
             <Link
               href="/auth/signup"
-              className="relative px-6 py-2.5 rounded-full font-semibold text-white overflow-hidden group inline-flex items-center gap-2 hover:scale-105 active:scale-95 transition-transform"
+              className={`px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 inline-flex items-center gap-2 ${
+                pastHero
+                  ? "navbar-button-gradient text-white hover:opacity-90"
+                  : "bg-white text-[#1472FF] hover:bg-gray-100 shadow-lg hover:shadow-xl"
+              }`}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 transition-all duration-300 group-hover:scale-110" />
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <span className="relative flex items-center gap-2">
+              <span className="flex items-center gap-2">
                 Regístrate
                 <svg
-                  className="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                  className={`w-4 h-4 transition-transform ${
+                    pastHero ? "text-white" : "text-[#1472FF]"
+                  }`}
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -135,7 +161,7 @@ export default function Navbar() {
             whileTap={{ scale: 0.9 }}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={`md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg transition-colors ${
-              scrolled ? "hover:bg-gray-100" : "hover:bg-white/10"
+              pastHero || scrolled ? "hover:bg-gray-100" : "hover:bg-white/10"
             }`}
             aria-label="Toggle menu"
           >
@@ -143,7 +169,7 @@ export default function Navbar() {
               <motion.span
                 animate={mobileMenuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
                 className={`w-full h-0.5 rounded-full origin-center transition-all ${
-                  scrolled ? "bg-gray-900" : "bg-white"
+                  pastHero || scrolled ? "bg-gray-900" : "bg-white"
                 }`}
               />
               <motion.span
@@ -155,7 +181,7 @@ export default function Navbar() {
               <motion.span
                 animate={mobileMenuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
                 className={`w-full h-0.5 rounded-full origin-center transition-all ${
-                  scrolled ? "bg-gray-900" : "bg-white"
+                  pastHero || scrolled ? "bg-gray-900" : "bg-white"
                 }`}
               />
             </div>
@@ -201,7 +227,11 @@ export default function Navbar() {
                   <Link
                     href="/auth/signup"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block py-3 px-4 text-center font-semibold text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-lg transition-all shadow-lg"
+                    className={`block py-3 px-4 text-center font-semibold rounded-lg transition-all ${
+                      pastHero
+                        ? "navbar-button-gradient text-white hover:opacity-90"
+                        : "bg-white text-[#1472FF] hover:bg-gray-100 shadow-lg"
+                    }`}
                   >
                     Regístrate
                   </Link>

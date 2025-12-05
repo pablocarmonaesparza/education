@@ -67,8 +67,8 @@ export default function DashboardHeader() {
     <header className="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-30 flex items-center justify-between px-6">
       {/* Logo */}
       <Link href="/dashboard" className="flex items-center gap-2">
-        <div className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-          Beta AI
+        <div className="text-xl font-bold bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] bg-clip-text text-transparent">
+          Leap
         </div>
       </Link>
 
@@ -130,7 +130,7 @@ export default function DashboardHeader() {
                 className="w-8 h-8 rounded-full object-cover"
               />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white text-sm font-semibold">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1472FF] to-[#5BA0FF] flex items-center justify-center text-white text-sm font-semibold">
                 {userInitials}
               </div>
             )}

@@ -152,8 +152,8 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
 
   const rarityColors = {
     common: 'from-gray-400 to-gray-500',
-    rare: 'from-blue-400 to-blue-600',
-    epic: 'from-purple-500 to-pink-500',
+    rare: 'from-[#5BA0FF] to-[#1472FF]',
+    epic: 'from-[#1472FF] to-[#5BA0FF]',
     legendary: 'from-yellow-400 to-orange-500',
   };
 
@@ -225,8 +225,8 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
                 <span className={`
                   text-xs px-2 py-0.5 rounded-full font-medium
                   ${selectedBadge.rarity === 'common' ? 'bg-gray-200 text-gray-600' : ''}
-                  ${selectedBadge.rarity === 'rare' ? 'bg-blue-100 text-blue-600' : ''}
-                  ${selectedBadge.rarity === 'epic' ? 'bg-purple-100 text-purple-600' : ''}
+                  ${selectedBadge.rarity === 'rare' ? 'bg-[#1472FF]/10 text-[#1472FF]' : ''}
+                  ${selectedBadge.rarity === 'epic' ? 'bg-[#1472FF]/10 text-[#1472FF]' : ''}
                   ${selectedBadge.rarity === 'legendary' ? 'bg-yellow-100 text-yellow-600' : ''}
                 `}>
                   {selectedBadge.rarity === 'common' && 'Común'}
@@ -254,7 +254,7 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
       )}
 
       {/* View All Link */}
-      <button className="mt-3 w-full text-center text-sm text-purple-600 hover:text-purple-700 font-medium">
+      <button className="mt-3 w-full text-center text-sm text-[#1472FF] hover:text-[#0E5FCC] font-medium">
         Ver todos los logros →
       </button>
     </div>

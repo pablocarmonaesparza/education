@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-center md:text-left mb-4 md:mb-0">
             <p className="text-gray-600">
-              &copy; {currentYear} Beta AI. Todos los derechos reservados.
+              &copy; {currentYear} Leap. Todos los derechos reservados.
             </p>
           </div>
           <div className="flex gap-6">

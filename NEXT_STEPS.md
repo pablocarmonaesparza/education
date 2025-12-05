@@ -134,7 +134,7 @@ https://supabase.com/docs/guides/auth/auth-helpers/nextjs
 ## 📝 Contenido a Completar
 
 ### Páginas Estáticas
-1. `/about` - Sobre Pablo y Beta AI
+1. `/about` - Sobre Pablo y Leap
 2. `/syllabus` - Syllabus completo detallado
 3. `/terms` - Términos y condiciones
 4. `/privacy` - Política de privacidad

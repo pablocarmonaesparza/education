@@ -7,11 +7,30 @@ const openai = new OpenAI({
 
 export async function POST(req: NextRequest) {
   try {
-    const { idea } = await req.json();
+    // Verificar que la API key esté configurada
+    if (!process.env.OPENAI_API_KEY) {
+      console.error('OPENAI_API_KEY is not configured');
+      return NextResponse.json(
+        { valid: false, reason: 'Error de configuración del servidor. Por favor contacta al soporte.' },
+        { status: 500 }
+      );
+    }
+
+    let body;
+    try {
+      body = await req.json();
+    } catch (parseError) {
+      return NextResponse.json(
+        { valid: false, reason: 'Error al procesar la solicitud' },
+        { status: 400 }
+      );
+    }
+
+    const { idea } = body;
 
     if (!idea || typeof idea !== 'string') {
       return NextResponse.json(
-        { valid: false, error: 'Idea is required' },
+        { valid: false, reason: 'La idea es requerida' },
         { status: 400 }
       );
     }
@@ -51,17 +70,27 @@ Responde con el JSON sin texto adicional.`,
     const content = response.choices[0]?.message?.content;
     if (!content) {
       return NextResponse.json(
-        { valid: false, error: 'No response from AI' },
+        { valid: false, reason: 'No se recibió respuesta de la IA' },
         { status: 500 }
       );
     }
 
-    const validation = JSON.parse(content);
+    let validation;
+    try {
+      validation = JSON.parse(content);
+    } catch (parseError) {
+      console.error('Error parsing AI response:', parseError, 'Content:', content);
+      return NextResponse.json(
+        { valid: false, reason: 'Error al procesar la respuesta de la IA' },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(validation);
   } catch (error: any) {
     console.error('Error validating idea:', error);
     return NextResponse.json(
-      { valid: false, error: error.message || 'Error validating idea' },
+      { valid: false, reason: error.message || 'Error al validar tu idea. Por favor intenta de nuevo.' },
       { status: 500 }
     );
   }

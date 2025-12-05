@@ -39,7 +39,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
         <nav className="mb-6">
           <ol className="flex items-center gap-2 text-sm text-gray-600">
             <li>
-              <Link href="/dashboard" className="hover:text-purple-600">
+              <Link href="/dashboard" className="hover:text-[#1472FF]">
                 Dashboard
               </Link>
             </li>
@@ -70,7 +70,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
 
               {/* Action Buttons */}
               <div className="flex gap-4">
-                <button className="bg-gradient-to-r from-purple-600 to-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-800 transition-all">
+                <button className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white px-6 py-3 rounded-lg font-semibold hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all">
                   Marcar como Completado
                 </button>
                 <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-all">
@@ -86,7 +86,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
                 <li>
                   <a
                     href="#"
-                    className="flex items-center gap-2 text-purple-600 hover:text-purple-700"
+                    className="flex items-center gap-2 text-[#1472FF] hover:text-[#0E5FCC]"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -97,7 +97,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
                 <li>
                   <a
                     href="#"
-                    className="flex items-center gap-2 text-purple-600 hover:text-purple-700"
+                    className="flex items-center gap-2 text-[#1472FF] hover:text-[#0E5FCC]"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -108,7 +108,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
                 <li>
                   <a
                     href="#"
-                    className="flex items-center gap-2 text-purple-600 hover:text-purple-700"
+                    className="flex items-center gap-2 text-[#1472FF] hover:text-[#0E5FCC]"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -123,9 +123,9 @@ export default function CoursePage({ params }: { params: { id: string } }) {
           {/* Playlist Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-md overflow-hidden sticky top-8">
-              <div className="bg-gradient-to-r from-purple-600 to-blue-700 p-4">
+              <div className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] p-4">
                 <h2 className="text-white font-bold text-lg">Contenido del Módulo</h2>
-                <p className="text-purple-100 text-sm">{videos.length} videos</p>
+                <p className="text-[#1472FF]/80 text-sm">{videos.length} videos</p>
               </div>
 
               <div className="max-h-[600px] overflow-y-auto">
@@ -133,7 +133,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
                   <div
                     key={video.id}
                     className={`p-4 border-b border-gray-200 hover:bg-gray-50 cursor-pointer transition-colors ${
-                      video.id === currentVideo.id ? 'bg-purple-50 border-l-4 border-l-purple-600' : ''
+                      video.id === currentVideo.id ? 'bg-[#1472FF]/10 border-l-4 border-l-[#1472FF]' : ''
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -152,7 +152,7 @@ export default function CoursePage({ params }: { params: { id: string } }) {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className={`font-medium text-sm mb-1 ${
-                          video.id === currentVideo.id ? 'text-purple-600' : 'text-gray-900'
+                          video.id === currentVideo.id ? 'text-[#1472FF]' : 'text-gray-900'
                         }`}>
                           {video.title}
                         </h3>

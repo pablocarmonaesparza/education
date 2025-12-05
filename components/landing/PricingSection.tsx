@@ -114,7 +114,7 @@ export default function PricingSection() {
     <section id="pricing" className="relative bg-gradient-to-b from-gray-50 to-white min-h-screen flex items-center justify-center py-20 pt-24 md:pt-28 overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -right-32 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
+        <div className="absolute top-1/4 -right-32 w-96 h-96 bg-[#1472FF]/20 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
         <div className="absolute bottom-1/4 -left-32 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
       </div>
 
@@ -131,7 +131,7 @@ export default function PricingSection() {
           <p className="text-xl md:text-2xl text-center text-gray-600 mb-16 max-w-3xl mx-auto font-light">
             Construye tu proyecto en semanas, no meses.
             <br />
-            <span className="text-purple-600 font-semibold">Garantía de devolución de 30 días si no estás satisfecho.</span>
+            <span className="text-[#1472FF] font-semibold">Garantía de devolución de 30 días si no estás satisfecho.</span>
           </p>
         </motion.div>
 
@@ -149,7 +149,7 @@ export default function PricingSection() {
                 onClick={() => setSelectedCurrency(currency)}
                 className={`px-6 py-2 rounded-full font-semibold transition-all ${
                   selectedCurrency === currency
-                    ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md"
+                    ? "bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white shadow-md"
                     : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
@@ -169,14 +169,14 @@ export default function PricingSection() {
               transition={{ duration: 0.6, delay: 0.1 * (index + 3) }}
               className={`relative rounded-2xl p-5 md:p-6 transition-all duration-300 flex flex-col ${
                 tier.popular
-                  ? "bg-gradient-to-br from-purple-50 to-blue-50 border-2 border-purple-500 shadow-xl"
+                  ? "bg-gradient-to-br from-[#1472FF]/10 to-[#5BA0FF]/10 border-2 border-[#1472FF] shadow-xl"
                   : "bg-white shadow-md hover:shadow-lg border border-gray-200"
               }`}
             >
               {/* Popular Badge */}
               {tier.popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold shadow-md">
+                  <div className="bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white px-4 py-1 rounded-full text-xs font-bold shadow-md">
                     🔥 MÁS POPULAR
                   </div>
                 </div>
@@ -200,7 +200,7 @@ export default function PricingSection() {
                   </span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                  <span className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] bg-clip-text text-transparent">
                     {formatPrice(tier.price)}
                   </span>
                   <span className="text-gray-500 text-xs md:text-sm">{selectedCurrency}</span>
@@ -235,8 +235,8 @@ export default function PricingSection() {
                 onClick={() => handleStripeCheckout(tier.stripePriceId)}
                 className={`w-full py-3 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 mt-auto ${
                   tier.popular
-                    ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md hover:shadow-lg"
-                    : "bg-white text-purple-600 border-2 border-purple-600 hover:bg-purple-50"
+                    ? "bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white shadow-md hover:shadow-lg"
+                    : "bg-white text-[#1472FF] border-2 border-[#1472FF] hover:bg-[#1472FF]/10"
                 }`}
               >
                 {tier.cta} →

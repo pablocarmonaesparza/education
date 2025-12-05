@@ -27,13 +27,13 @@ export default function CourseCard({
       className="block bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 hover:border-purple-300 group"
     >
       {/* Header */}
-      <div className="relative bg-gradient-to-br from-purple-600 to-blue-700 p-6">
+      <div className="relative bg-gradient-to-br from-[#1472FF] to-[#0E5FCC] p-6">
         <div className="text-5xl mb-2">{icon}</div>
         <h3 className="text-xl font-bold text-white group-hover:underline">
           {title}
         </h3>
         {progress > 0 && (
-          <div className="absolute top-4 right-4 bg-white text-purple-600 px-3 py-1 rounded-full text-sm font-bold">
+          <div className="absolute top-4 right-4 bg-white text-[#1472FF] px-3 py-1 rounded-full text-sm font-bold">
             {progress}%
           </div>
         )}
@@ -63,7 +63,7 @@ export default function CourseCard({
           <div className="mt-4">
             <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-purple-600 to-blue-700 rounded-full transition-all duration-500"
+                className="h-full bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>

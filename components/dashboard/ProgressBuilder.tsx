@@ -170,7 +170,7 @@ export default function ProgressBuilder({
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
       {/* Header with Car Visual */}
-      <div className="bg-gradient-to-r from-blue-600 to-cyan-500 p-6">
+      <div className="bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] p-6">
         <div className="text-center mb-2">
           <h3 className="text-white font-bold text-xl">Construye tu Proyecto</h3>
           <p className="text-white/80 text-sm">Cada video te acerca más a tu meta</p>
@@ -285,12 +285,12 @@ export default function ProgressBuilder({
               <span className="font-bold text-green-600">{unlockedParts.length}</span>/{parts.length} piezas
             </span>
             <span className="text-gray-600">
-              <span className="font-bold text-blue-600">{phasesCompleted}</span>/{totalPhases} fases
+              <span className="font-bold text-[#1472FF]">{phasesCompleted}</span>/{totalPhases} fases
             </span>
           </div>
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="text-purple-600 hover:text-purple-700 font-medium"
+            className="text-[#1472FF] hover:text-[#0E5FCC] font-medium"
           >
             {showDetails ? 'Ocultar' : 'Ver piezas'}
           </button>

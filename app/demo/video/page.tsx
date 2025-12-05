@@ -43,7 +43,7 @@ export default function DemoVideoPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Demo Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-700 text-white py-3 px-4 text-center">
+      <div className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white py-3 px-4 text-center">
         <p className="text-sm">
           📺 <strong>DEMO DE VIDEO</strong> - Esta es una vista previa del reproductor. {' '}
           <Link href="/auth/signup" className="underline font-semibold">
@@ -57,7 +57,7 @@ export default function DemoVideoPage() {
         {/* Back button */}
         <Link
           href="/demo"
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-purple-600 mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-gray-600 hover:text-[#1472FF] mb-6 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -102,7 +102,7 @@ export default function DemoVideoPage() {
                   <span>0%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-gradient-to-r from-purple-600 to-blue-700 h-2 rounded-full" style={{ width: '0%' }}></div>
+                  <div className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] h-2 rounded-full" style={{ width: '0%' }}></div>
                 </div>
               </div>
 
@@ -131,7 +131,7 @@ export default function DemoVideoPage() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <div>
@@ -139,13 +139,13 @@ export default function DemoVideoPage() {
                       <p className="text-sm text-gray-500">1.2 MB</p>
                     </div>
                   </div>
-                  <button className="text-purple-600 hover:text-purple-700 font-semibold text-sm">
+                  <button className="text-[#1472FF] hover:text-[#0E5FCC] font-semibold text-sm">
                     Descargar
                   </button>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
                     </svg>
                     <div>
@@ -153,7 +153,7 @@ export default function DemoVideoPage() {
                       <p className="text-sm text-gray-500">GitHub Repository</p>
                     </div>
                   </div>
-                  <button className="text-purple-600 hover:text-purple-700 font-semibold text-sm">
+                  <button className="text-[#1472FF] hover:text-[#0E5FCC] font-semibold text-sm">
                     Ver
                   </button>
                 </div>
@@ -164,7 +164,7 @@ export default function DemoVideoPage() {
           {/* Sidebar - Playlist */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-md overflow-hidden sticky top-4">
-              <div className="bg-gradient-to-r from-purple-600 to-blue-700 text-white p-4">
+              <div className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white p-4">
                 <h2 className="font-bold text-lg">Lista de Videos</h2>
                 <p className="text-sm opacity-90">Módulo 1: Fundamentos de IA</p>
               </div>
@@ -175,7 +175,7 @@ export default function DemoVideoPage() {
                     key={video.id}
                     className={`p-4 cursor-pointer transition-colors ${
                       index === 0
-                        ? 'bg-purple-50 border-l-4 border-purple-600'
+                        ? 'bg-[#1472FF]/10 border-l-4 border-[#1472FF]'
                         : 'hover:bg-gray-50'
                     }`}
                   >
@@ -183,7 +183,7 @@ export default function DemoVideoPage() {
                       <div className="flex-shrink-0">
                         <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
                           index === 0
-                            ? 'bg-purple-600 text-white'
+                            ? 'bg-[#1472FF] text-white'
                             : 'bg-gray-200 text-gray-600'
                         }`}>
                           {index === 0 ? (
@@ -197,7 +197,7 @@ export default function DemoVideoPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className={`font-semibold text-sm mb-1 ${
-                          index === 0 ? 'text-purple-600' : 'text-gray-900'
+                          index === 0 ? 'text-[#1472FF]' : 'text-gray-900'
                         }`}>
                           {video.title}
                         </h3>
@@ -212,7 +212,7 @@ export default function DemoVideoPage() {
                             {video.duration}
                           </span>
                           {index === 0 && (
-                            <span className="text-xs text-purple-600 font-semibold">
+                            <span className="text-xs text-[#1472FF] font-semibold">
                               Reproduciendo
                             </span>
                           )}
@@ -229,7 +229,7 @@ export default function DemoVideoPage() {
                   </p>
                   <Link
                     href="/auth/signup"
-                    className="text-sm text-purple-600 font-semibold hover:text-purple-700"
+                    className="text-sm text-[#1472FF] font-semibold hover:text-[#0E5FCC]"
                   >
                     Crear cuenta para ver todos
                   </Link>
@@ -245,7 +245,7 @@ export default function DemoVideoPage() {
               >
                 ← Video Anterior
               </button>
-              <button className="w-full bg-gradient-to-r from-purple-600 to-blue-700 text-white px-4 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-800 transition-all">
+              <button className="w-full bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white px-4 py-3 rounded-lg font-semibold hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all">
                 Siguiente Video →
               </button>
             </div>
@@ -253,7 +253,7 @@ export default function DemoVideoPage() {
         </div>
 
         {/* CTA Section */}
-        <div className="mt-12 bg-white rounded-lg shadow-md p-8 border border-purple-200 text-center">
+        <div className="mt-12 bg-white rounded-lg shadow-md p-8 border border-[#1472FF]/20 text-center">
           <h3 className="text-2xl font-bold text-gray-900 mb-4">
             ¿Te gusta lo que ves?
           </h3>
@@ -263,7 +263,7 @@ export default function DemoVideoPage() {
           <div className="flex gap-4 justify-center">
             <Link
               href="/auth/signup"
-              className="bg-gradient-to-r from-purple-600 to-blue-700 text-white px-8 py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-800 transition-all"
+              className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white px-8 py-3 rounded-lg font-semibold hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all"
             >
               Crear Cuenta Gratis
             </Link>

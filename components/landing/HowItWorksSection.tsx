@@ -1,14 +1,14 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import dynamic from "next/dynamic";
 
 const AuthForm = dynamic(() => import("@/components/auth/AuthForm"), {
   ssr: false,
   loading: () => (
     <div className="p-8 flex items-center justify-center min-h-[400px]">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1472FF]"></div>
     </div>
   ),
 });
@@ -23,13 +23,29 @@ export default function HowItWorksSection() {
   const [authMode, setAuthMode] = useState<"login" | "signup">("signup");
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isValidating, setIsValidating] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const validateIdea = async (text: string) => {
-    if (!text.trim() || text.trim().length < MIN_CHARACTERS) {
-      setValidationError(null);
-      return;
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
     }
+  }, [idea]);
 
+  const handleIdeaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    if (value.length <= MAX_CHARACTERS) {
+      setIdea(value);
+      // Limpiar cualquier error cuando el usuario escribe
+      if (validationError) {
+        setValidationError(null);
+      }
+    }
+  };
+
+  const handleGenerateCourse = async () => {
+    if (!idea.trim() || idea.trim().length < MIN_CHARACTERS || idea.trim().length > MAX_CHARACTERS) return;
+    
     setIsValidating(true);
     setValidationError(null);
 
@@ -39,52 +55,44 @@ export default function HowItWorksSection() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ idea: text.trim() }),
+        body: JSON.stringify({ idea: idea.trim() }),
       });
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type");
+      let data;
+
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        // Si no es JSON, probablemente sea un error del servidor que devuelve HTML
+        const text = await response.text();
+        console.error("Respuesta del servidor no es JSON:", text);
+        throw new Error("Error al conectar con el servicio de validación.");
+      }
+
+      if (!response.ok) {
+        throw new Error(data.reason || data.error || "Error en el servidor");
+      }
 
       if (!data.valid) {
         setValidationError(data.reason || "La idea no tiene sentido. Por favor, describe mejor tu proyecto.");
       } else {
-        setValidationError(null);
+        setAuthMode("signup");
+        setShowAuthModal(true);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error validating idea:", error);
-      // No mostrar error si falla la validación, solo si la idea es inválida
+      setValidationError(error.message || "Hubo un error al validar tu idea. Por favor intenta de nuevo.");
     } finally {
       setIsValidating(false);
     }
-  };
-
-  const handleIdeaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    if (value.length <= MAX_CHARACTERS) {
-      setIdea(value);
-      // Limpiar error de exceso de caracteres si se corrige
-      if (validationError?.includes("excede")) {
-        setValidationError(null);
-      }
-    }
-  };
-
-  const handleIdeaBlur = () => {
-    if (idea.trim().length >= MIN_CHARACTERS && idea.trim().length <= MAX_CHARACTERS) {
-      validateIdea(idea);
-    }
-  };
-
-  const handleGenerateCourse = () => {
-    if (!idea.trim() || validationError || idea.trim().length < MIN_CHARACTERS || idea.trim().length > MAX_CHARACTERS) return;
-    setAuthMode("signup");
-    setShowAuthModal(true);
   };
 
   return (
     <section id="how-it-works" className="relative min-h-screen flex flex-col items-center justify-center bg-white overflow-hidden">
       {/* Background decoration - Subtle */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-purple-50 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
+        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#1472FF]/10 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-blue-50 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
       </div>
 
@@ -100,9 +108,6 @@ export default function HowItWorksSection() {
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 md:mb-8 leading-tight">
             ¿Cómo Funciona?
           </h2>
-          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto font-light mb-6 md:mb-8">
-            Describe tu idea y haremos demo para ti.
-          </p>
         </motion.div>
 
         {/* Interactive Text Field */}
@@ -113,109 +118,69 @@ export default function HowItWorksSection() {
           viewport={{ once: true }}
           className="max-w-xl mx-auto"
         >
-          <div className="relative">
-            {/* Text Field Container */}
-            <div
-              className={`relative bg-white rounded-xl p-3 md:p-4 shadow-lg border-2 transition-all duration-300 ${
-                isFocused
-                  ? "border-purple-500 shadow-xl scale-[1.01]"
-                  : "border-gray-200 hover:border-gray-300"
-              }`}
-            >
-              {/* Label */}
-              <label
-                htmlFor="project-idea"
-                className="block text-sm font-semibold text-gray-700 mb-2"
-              >
-                Cuéntanos sobre tu proyecto
-              </label>
-
-              {/* Textarea */}
+          <div className="max-w-xl mx-auto">
+            {/* Textarea wrapper with counter */}
+            <div className={`relative w-full bg-white rounded-3xl border-2 transition-all duration-300 ${
+                  validationError || idea.length > MAX_CHARACTERS ? "border-red-300" : "border-gray-200"
+                }`}>
               <textarea
+                ref={textareaRef}
                 id="project-idea"
                 value={idea}
                 onChange={handleIdeaChange}
                 onFocus={() => setIsFocused(true)}
-                onBlur={() => {
-                  setIsFocused(false);
-                  handleIdeaBlur();
-                }}
-                placeholder="Ejemplo: Quiero crear un chatbot para atención al cliente que integre con WhatsApp y use IA para dar respuestas inteligentes a las preguntas más comunes..."
-                className={`w-full min-h-[80px] bg-white text-sm text-gray-900 placeholder-gray-400 resize-none focus:outline-none font-light leading-relaxed ${
-                  validationError || idea.length > MAX_CHARACTERS ? "border-red-300" : ""
-                }`}
-                rows={4}
+                onBlur={() => setIsFocused(false)}
+                placeholder="Describe tu idea y haremos demo para ti."
+                className="w-full bg-transparent text-sm text-gray-900 placeholder-gray-400 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed p-4 pb-2 overflow-hidden"
+                rows={1}
+                style={{ minHeight: '56px', height: '56px' }}
               />
-
-              {/* Validation Error */}
-              {(validationError || idea.length > MAX_CHARACTERS) && (
-                <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
-                  <div className="flex items-start gap-2">
-                    <svg className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p className="text-xs text-red-700 font-medium">
-                      {idea.length > MAX_CHARACTERS 
-                        ? `Has excedido el límite de ${MAX_CHARACTERS} caracteres. Por favor, reduce tu texto.`
-                        : validationError}
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Character count */}
-              <div className="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
-                <p className={`text-sm ${
-                  idea.length > MAX_CHARACTERS 
-                    ? "text-red-500 font-semibold" 
-                    : idea.length < MIN_CHARACTERS && idea.length > 0
-                    ? "text-orange-500 font-medium"
-                    : "text-gray-500"
-                }`}>
-                  {idea.length > 0 
-                    ? idea.length < MIN_CHARACTERS
-                      ? `${idea.length} / ${MIN_CHARACTERS} caracteres (mínimo)`
-                      : `${idea.length} / ${MAX_CHARACTERS} caracteres`
-                    : `Mínimo ${MIN_CHARACTERS} caracteres`}
+              
+              {/* Character count - Inside wrapper, below text */}
+              <div className="px-4 pb-3 text-right">
+                <p className="text-xs text-gray-400 font-light">
+                  Mínimo {idea.length}/{MIN_CHARACTERS} caracteres
                 </p>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  {isValidating ? (
-                    <div className="flex items-center gap-2">
-                      <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-purple-600"></div>
-                      <span>Validando...</span>
-                    </div>
-                  ) : (
-                    <>
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                      <span>IA analizará tu proyecto</span>
-                    </>
-                  )}
-                </div>
               </div>
             </div>
 
-            {/* CTA Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              viewport={{ once: true }}
-              className="mt-12 md:mt-14 text-center"
-            >
-              <button
-                onClick={handleGenerateCourse}
-                disabled={!idea.trim() || !!validationError || isValidating || idea.trim().length < MIN_CHARACTERS || idea.trim().length > MAX_CHARACTERS}
-                className="inline-flex items-center gap-3 px-8 py-4 rounded-full font-semibold text-base md:text-lg text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-              >
-                Generar demo de mi curso
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </button>
-            </motion.div>
+            {/* Validation Error - Centered */}
+            {(validationError || idea.length > MAX_CHARACTERS) && (
+              <div className="flex justify-center mt-4">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 border border-red-200 rounded-full">
+                  <svg className="w-4 h-4 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-xs text-red-700 font-medium">
+                    {idea.length > MAX_CHARACTERS 
+                      ? `Has excedido el límite de ${MAX_CHARACTERS} caracteres.`
+                      : validationError}
+                  </p>
+                </div>
+              </div>
+            )}
+
           </div>
+
+          {/* CTA Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="mt-8 text-center"
+          >
+            <button
+              onClick={handleGenerateCourse}
+              disabled={!idea.trim() || !!validationError || isValidating || idea.trim().length < MIN_CHARACTERS || idea.trim().length > MAX_CHARACTERS}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-white navbar-button-gradient hover:opacity-90 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+            >
+              Generar demo de mi curso
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+          </motion.div>
         </motion.div>
       </div>
 
@@ -227,19 +192,19 @@ export default function HowItWorksSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gradient-to-br from-purple-100 via-blue-100 to-indigo-100"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gradient-to-br from-[#1472FF]/10 via-[#5BA0FF]/10 to-[#1472FF]/10"
           >
             {/* Background decoration - Enhanced for glassmorphism */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
               {/* Base gradient overlay - more vibrant */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-200/60 via-blue-200/60 to-indigo-200/60" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#1472FF]/20 via-[#5BA0FF]/20 to-[#1472FF]/20" />
               
               {/* Animated orbs - more visible */}
-              <div className="absolute top-1/4 -left-32 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" />
+              <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#1472FF] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" />
               <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" style={{ animationDelay: '1s' }} />
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-pulse" style={{ animationDelay: '2s' }} />
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-2xl opacity-50" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-2xl opacity-50" />
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#1472FF]/100 rounded-full mix-blend-multiply filter blur-2xl opacity-50" />
               
               {/* Additional layers for depth */}
               <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-pink-300 rounded-full mix-blend-multiply filter blur-2xl opacity-40" />
@@ -282,12 +247,12 @@ export default function HowItWorksSection() {
                 <div className="px-8 pb-6 text-center">
                   <button
                     onClick={() => setAuthMode(authMode === "login" ? "signup" : "login")}
-                    className="text-sm text-gray-600 hover:text-purple-600 transition-colors"
+                    className="text-sm text-gray-600 hover:text-[#1472FF] transition-colors"
                   >
                     {authMode === "login" ? (
-                      <>¿No tienes cuenta? <span className="font-semibold text-purple-600">Regístrate gratis</span></>
+                      <>¿No tienes cuenta? <span className="font-semibold text-[#1472FF]">Regístrate gratis</span></>
                     ) : (
-                      <>¿Ya tienes cuenta? <span className="font-semibold text-purple-600">Inicia sesión</span></>
+                      <>¿Ya tienes cuenta? <span className="font-semibold text-[#1472FF]">Inicia sesión</span></>
                     )}
                   </button>
                 </div>

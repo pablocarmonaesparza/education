@@ -168,7 +168,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       <form onSubmit={handleSubmit} className="bg-white shadow-xl rounded-lg p-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-700 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-gradient-to-br from-[#1472FF] to-[#0E5FCC] rounded-lg flex items-center justify-center">
               <span className="text-2xl">🤖</span>
             </div>
           </div>
@@ -231,7 +231,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
                 placeholder="Tu nombre"
               />
             </div>
@@ -247,7 +247,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
               placeholder="tu@email.com"
             />
           </div>
@@ -263,7 +263,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
               placeholder="Mínimo 6 caracteres"
             />
           </div>
@@ -271,7 +271,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           <button
             type="submit"
             disabled={loading || oauthLoading}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-700 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-blue-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white py-3 rounded-lg font-semibold hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading
               ? 'Procesando...'
@@ -329,14 +329,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
           {mode === 'login' ? (
             <p>
               ¿No tienes cuenta?{' '}
-              <Link href="/auth/signup" className="text-purple-600 hover:text-purple-700 font-semibold">
+              <Link href="/auth/signup" className="text-[#1472FF] hover:text-[#0E5FCC] font-semibold">
                 Regístrate gratis
               </Link>
             </p>
           ) : (
             <p>
               ¿Ya tienes cuenta?{' '}
-              <Link href="/auth/login" className="text-purple-600 hover:text-purple-700 font-semibold">
+              <Link href="/auth/login" className="text-[#1472FF] hover:text-[#0E5FCC] font-semibold">
                 Inicia sesión
               </Link>
             </p>

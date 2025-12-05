@@ -88,17 +88,17 @@ export default function GamificationStats({
         </div>
 
         {/* Weekly Challenge */}
-        <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-100">
+        <div className="bg-gradient-to-br from-[#1472FF]/10 to-[#1472FF]/10 rounded-lg p-4 border border-[#1472FF]/20">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-2xl">🎯</span>
             <span className="text-sm font-medium text-gray-600">Meta Semanal</span>
           </div>
-          <div className="text-3xl font-bold text-blue-600">
+          <div className="text-3xl font-bold text-[#1472FF]">
             {weeklyProgress}/{weeklyGoal}
           </div>
           <div className="mt-2 w-full bg-blue-200 rounded-full h-1.5">
             <div
-              className="bg-blue-600 rounded-full h-1.5 transition-all duration-500"
+              className="bg-[#1472FF] rounded-full h-1.5 transition-all duration-500"
               style={{ width: `${Math.min((weeklyProgress / weeklyGoal) * 100, 100)}%` }}
             />
           </div>

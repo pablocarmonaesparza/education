@@ -26,7 +26,7 @@ export default function AvailableCoursesSection() {
     <section id="available-courses" className="relative min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-50 overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#1472FF]/10 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
         <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20" />
       </div>
 
@@ -56,7 +56,7 @@ export default function AvailableCoursesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.05 }}
               viewport={{ once: true }}
-              className="bg-white rounded-xl p-4 md:p-5 shadow-md border-2 border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all duration-300 group"
+              className="bg-white rounded-xl p-4 md:p-5 shadow-md border-2 border-gray-100 hover:border-[#1472FF]/20 hover:shadow-lg transition-all duration-300 group"
             >
               {/* Icon */}
               <div className="text-3xl md:text-4xl mb-3 group-hover:scale-110 transition-transform duration-300">
@@ -73,7 +73,7 @@ export default function AvailableCoursesSection() {
                 {course.topics.map((topic, i) => (
                   <span
                     key={i}
-                    className="px-2 py-0.5 bg-purple-50 text-purple-700 text-xs font-medium rounded-full"
+                    className="px-2 py-0.5 bg-[#1472FF]/10 text-[#1472FF] text-xs font-medium rounded-full"
                   >
                     {topic}
                   </span>

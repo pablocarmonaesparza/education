@@ -82,7 +82,7 @@ export default function Sidebar() {
                     isExpanded ? 'gap-3 px-4 py-3' : 'justify-center px-3 py-3'
                   } ${
                     isActive
-                      ? 'bg-gradient-to-r from-purple-600 to-blue-700 text-white'
+                      ? 'bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white'
                       : 'text-gray-700 hover:bg-gray-100'
                   }`}
                   title={!isExpanded ? item.name : undefined}

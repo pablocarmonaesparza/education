@@ -128,7 +128,7 @@ export default function MyPathPage() {
         <p className="text-red-600 mb-4">{error}</p>
         <button
           onClick={() => window.location.reload()}
-          className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700"
+          className="px-6 py-3 bg-[#1472FF] text-white font-semibold rounded-lg hover:bg-[#0E5FCC]"
         >
           Reintentar
         </button>
@@ -147,7 +147,7 @@ export default function MyPathPage() {
           </p>
           <button
             onClick={handleGenerateNewPath}
-            className="px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl"
+            className="px-8 py-4 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white font-semibold rounded-lg hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all shadow-lg hover:shadow-xl"
           >
             Crear Mi Ruta Personalizada →
           </button>
@@ -182,12 +182,12 @@ export default function MyPathPage() {
 
       {/* Learning Path Summary */}
       {learningPath.learning_path_summary && learningPath.learning_path_summary.length > 0 && (
-        <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-6 mb-8 border border-purple-200">
+        <div className="bg-gradient-to-r from-[#1472FF]/10 to-[#1472FF]/10 rounded-xl p-6 mb-8 border border-[#1472FF]/20">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Resumen de tu Ruta</h2>
           <ul className="space-y-2">
             {learningPath.learning_path_summary.map((summary, index) => (
               <li key={index} className="flex items-start gap-3 text-gray-700">
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm font-bold">
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#1472FF] text-white flex items-center justify-center text-sm font-bold">
                   {index + 1}
                 </span>
                 <span>{summary}</span>
@@ -214,7 +214,7 @@ export default function MyPathPage() {
                 e.stopPropagation();
                 togglePhase(phase.phase_number);
               }}
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 p-6 text-left hover:from-purple-700 hover:to-blue-700 transition-all cursor-pointer"
+              className="w-full bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] p-6 text-left hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all cursor-pointer"
             >
               <div className="flex items-start justify-between flex-wrap gap-4">
                 <div className="flex-1">
@@ -264,7 +264,7 @@ export default function MyPathPage() {
                       <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 mb-2">
-                            <span className="flex-shrink-0 w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-sm font-bold">
+                            <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1472FF]/10 text-[#1472FF] flex items-center justify-center text-sm font-bold">
                               {video.order}
                             </span>
                             <h3 className="text-base sm:text-lg font-semibold text-gray-900 break-words">
@@ -306,7 +306,7 @@ export default function MyPathPage() {
                         {/* Video Action Button */}
                         <Link
                           href={`/dashboard/my-path/video/${phase.phase_number}/${video.order}`}
-                          className="flex-shrink-0 w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 transition-all shadow-md hover:shadow-lg text-center sm:text-left"
+                          className="flex-shrink-0 w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white rounded-lg font-medium hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all shadow-md hover:shadow-lg text-center sm:text-left"
                         >
                           Ver Video →
                         </Link>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Inter, Darker_Grotesque } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/shared/Navbar";
 import HashScrollHandler from "@/components/shared/HashScrollHandler";
@@ -9,10 +9,11 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const poppins = Poppins({
+const darkerGrotesque = Darker_Grotesque({
   weight: ["400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
-  variable: "--font-poppins",
+  variable: "--font-darker-grotesque",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -106,7 +107,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} ${poppins.variable}`}>
+    <html lang="es" className={`${inter.variable} ${darkerGrotesque.variable}`}>
       <body className={`antialiased bg-white text-gray-900`}>
         <HashScrollHandler />
         {children}

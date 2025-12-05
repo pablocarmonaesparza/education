@@ -55,7 +55,7 @@ export default function TutorContent({ chats: initialChats }: TutorContentProps)
             <h2 className="text-xl font-bold text-gray-900">Tutor IA</h2>
             <button
               onClick={createNewChat}
-              className="p-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+              className="p-2 rounded-lg bg-[#1472FF] text-white hover:bg-[#0E5FCC] transition-colors"
               title="Nueva conversación"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -77,7 +77,7 @@ export default function TutorContent({ chats: initialChats }: TutorContentProps)
                   key={chat.id}
                   onClick={() => setSelectedChatId(chat.id)}
                   className={`w-full text-left p-4 hover:bg-gray-50 transition-colors ${
-                    selectedChatId === chat.id ? 'bg-purple-50 border-l-4 border-purple-600' : ''
+                    selectedChatId === chat.id ? 'bg-[#1472FF]/10 border-l-4 border-[#1472FF]' : ''
                   }`}
                 >
                   <div className="flex items-start justify-between mb-1">
@@ -85,7 +85,7 @@ export default function TutorContent({ chats: initialChats }: TutorContentProps)
                       {chat.title}
                     </h3>
                     {chat.unreadCount && chat.unreadCount > 0 && (
-                      <span className="ml-2 px-2 py-0.5 bg-purple-600 text-white text-xs rounded-full">
+                      <span className="ml-2 px-2 py-0.5 bg-[#1472FF] text-white text-xs rounded-full">
                         {chat.unreadCount}
                       </span>
                     )}
@@ -111,7 +111,7 @@ export default function TutorContent({ chats: initialChats }: TutorContentProps)
               <p className="text-gray-600 mb-2">No hay conversaciones aún</p>
               <button
                 onClick={createNewChat}
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-sm"
+                className="px-4 py-2 bg-[#1472FF] text-white rounded-lg hover:bg-[#0E5FCC] transition-colors text-sm"
               >
                 Iniciar conversación
               </button>
@@ -135,7 +135,7 @@ export default function TutorContent({ chats: initialChats }: TutorContentProps)
               <div className="max-w-3xl mx-auto space-y-4">
                 {/* Mensaje de bienvenida */}
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center flex-shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1472FF] to-[#5BA0FF] flex items-center justify-center flex-shrink-0">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
@@ -156,10 +156,10 @@ export default function TutorContent({ chats: initialChats }: TutorContentProps)
                 <div className="flex items-end gap-2">
                   <textarea
                     placeholder="Escribe tu mensaje..."
-                    className="flex-1 resize-none border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="flex-1 resize-none border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
                     rows={2}
                   />
-                  <button className="p-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                  <button className="p-2 bg-[#1472FF] text-white rounded-lg hover:bg-[#0E5FCC] transition-colors">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
@@ -178,7 +178,7 @@ export default function TutorContent({ chats: initialChats }: TutorContentProps)
               <p className="text-gray-600 mb-4">O crea una nueva para comenzar</p>
               <button
                 onClick={createNewChat}
-                className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                className="px-6 py-3 bg-[#1472FF] text-white rounded-lg hover:bg-[#0E5FCC] transition-colors"
               >
                 Nueva Conversación
               </button>

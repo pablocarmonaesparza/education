@@ -83,7 +83,7 @@ export default function VideoPlayerClient({
           className={`px-6 py-3 rounded-lg font-semibold transition-all ${
             isCompleted
               ? 'bg-green-500 text-white cursor-not-allowed'
-              : 'bg-gradient-to-r from-purple-600 to-blue-700 text-white hover:from-purple-700 hover:to-blue-800 cursor-pointer'
+              : 'bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white hover:from-[#0E5FCC] hover:to-[#1472FF] cursor-pointer'
           }`}
         >
           {isCompleted ? '✓ Completado' : 'Marcar como Completado'}
@@ -92,7 +92,7 @@ export default function VideoPlayerClient({
         {nextVideoUrl && (
           <button
             onClick={handleNextVideo}
-            className="border-2 border-purple-600 text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-purple-50 transition-all cursor-pointer"
+            className="border-2 border-[#1472FF] text-[#1472FF] px-6 py-3 rounded-lg font-semibold hover:bg-[#1472FF]/10 transition-all cursor-pointer"
           >
             Siguiente Video →
           </button>

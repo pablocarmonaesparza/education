@@ -20,7 +20,7 @@ export default function ProgressCard({ title, progress, total, icon }: ProgressC
           </p>
         </div>
         {icon && (
-          <div className="text-purple-600">
+          <div className="text-[#1472FF]">
             {icon}
           </div>
         )}
@@ -30,11 +30,11 @@ export default function ProgressCard({ title, progress, total, icon }: ProgressC
       <div className="relative">
         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-purple-600 to-blue-700 rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] rounded-full transition-all duration-500"
             style={{ width: `${percentage}%` }}
           />
         </div>
-        <span className="absolute right-0 -top-6 text-sm font-semibold text-purple-600">
+        <span className="absolute right-0 -top-6 text-sm font-semibold text-[#1472FF]">
           {percentage}%
         </span>
       </div>

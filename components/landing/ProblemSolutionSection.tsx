@@ -95,7 +95,7 @@ export default function ProblemSolutionSection() {
             {solutions.map((solution, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg shadow-md border-l-4 border-purple-500"
+                className="bg-gradient-to-br from-[#1472FF]/10 to-[#1472FF]/10 p-6 rounded-lg shadow-md border-l-4 border-[#1472FF]"
               >
                 <div className="text-4xl mb-4">{solution.icon}</div>
                 <h4 className="text-lg font-bold text-gray-900 mb-2">
@@ -109,7 +109,7 @@ export default function ProblemSolutionSection() {
 
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
-          <div className="bg-gradient-to-r from-purple-700 to-blue-800 text-white py-8 px-6 rounded-2xl shadow-xl max-w-3xl mx-auto">
+          <div className="bg-gradient-to-r from-[#0E5FCC] to-[#1472FF] text-white py-8 px-6 rounded-2xl shadow-xl max-w-3xl mx-auto">
             <h3 className="text-2xl font-bold mb-4">
               Deja de Perder Tiempo en Contenido Irrelevante
             </h3>
@@ -118,7 +118,7 @@ export default function ProblemSolutionSection() {
             </p>
             <a
               href="/auth/signup"
-              className="inline-block bg-white text-purple-700 px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg"
+              className="inline-block bg-white text-[#0E5FCC] px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-lg"
             >
               Crear Cuenta Gratis
             </a>

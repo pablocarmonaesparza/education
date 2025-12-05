@@ -15,10 +15,9 @@ export default function AuthNavbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <div className="text-2xl font-bold">
-              <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Beta
+              <span className="text-[#111827]">
+                Leap
               </span>
-              <span className="font-bold text-gray-900"> AI</span>
             </div>
           </Link>
 
@@ -26,14 +25,14 @@ export default function AuthNavbar() {
           {isSignupPage ? (
             <button
               onClick={() => router.push('/auth/login')}
-              className="px-6 py-2 rounded-full font-semibold text-sm bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md hover:from-purple-700 hover:to-blue-700 transition-all"
+              className="px-6 py-2 rounded-full font-semibold text-sm bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white shadow-md hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all"
             >
               Iniciar Sesión
             </button>
           ) : (
             <button
               onClick={() => router.push('/auth/signup')}
-              className="px-6 py-2 rounded-full font-semibold text-sm bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md hover:from-purple-700 hover:to-blue-700 transition-all"
+              className="px-6 py-2 rounded-full font-semibold text-sm bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white shadow-md hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all"
             >
               Regístrate
             </button>
