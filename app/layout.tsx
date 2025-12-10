@@ -107,7 +107,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} ${darkerGrotesque.variable}`}>
+    <html lang="es" className={`${inter.variable} ${darkerGrotesque.variable}`} suppressHydrationWarning>
       <body className={`antialiased bg-white text-gray-900`}>
         <HashScrollHandler />
         {children}
