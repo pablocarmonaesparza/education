@@ -15,7 +15,7 @@ export default function AuthNavbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             <div className="text-2xl font-bold">
-              <span className="text-[#111827]">
+              <span className="text-[#111827] dark:text-white">
                 Leap
               </span>
             </div>

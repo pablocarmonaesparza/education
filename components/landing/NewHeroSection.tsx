@@ -65,11 +65,19 @@ export default function NewHeroSection() {
       } else {
         const text = await response.text();
         console.error("Respuesta del servidor no es JSON:", text);
-        throw new Error("Error al conectar con el servicio de validación.");
+        
+        // Si la respuesta es HTML (página de error), es un error del servidor
+        if (text.includes("<!DOCTYPE html>") || text.includes("<html>")) {
+          throw new Error("Error de configuración del servidor. Por favor contacta al soporte.");
+        }
+        
+        throw new Error("Error al conectar con el servicio de validación. Por favor intenta más tarde.");
       }
 
       if (!response.ok) {
-        throw new Error(data.reason || data.error || "Error en el servidor");
+        // Extraer el mensaje de error del JSON si existe
+        const errorMessage = data?.reason || data?.error || `Error en el servidor (${response.status})`;
+        throw new Error(errorMessage);
       }
 
       if (!data.valid) {
@@ -225,32 +233,15 @@ export default function NewHeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gradient-to-br from-[#1472FF]/10 via-[#5BA0FF]/10 to-[#1472FF]/10"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm"
           >
-            {/* Background decoration - Enhanced for glassmorphism */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              {/* Base gradient overlay - more vibrant */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#1472FF]/20 via-[#5BA0FF]/20 to-[#1472FF]/20" />
-
-              {/* Animated orbs - more visible */}
-              <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#1472FF] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" />
-              <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" style={{ animationDelay: '1s' }} />
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-pulse" style={{ animationDelay: '2s' }} />
-              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-2xl opacity-50" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#1472FF]/100 rounded-full mix-blend-multiply filter blur-2xl opacity-50" />
-
-              {/* Additional layers for depth */}
-              <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-pink-300 rounded-full mix-blend-multiply filter blur-2xl opacity-40" />
-              <div className="absolute bottom-1/3 left-1/4 w-48 h-48 bg-cyan-300 rounded-full mix-blend-multiply filter blur-2xl opacity-40" />
-            </div>
-
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowAuthModal(false)}
-              className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+              className="absolute inset-0"
             />
 
             {/* Modal */}
@@ -264,7 +255,7 @@ export default function NewHeroSection() {
               {/* Close Button */}
               <button
                 onClick={() => setShowAuthModal(false)}
-                className="absolute -top-12 right-0 text-white hover:text-gray-200 transition-colors z-20"
+                className="absolute -top-12 right-0 text-white hover:text-gray-300 dark:hover:text-gray-400 transition-colors z-20"
                 aria-label="Cerrar"
               >
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -273,11 +264,11 @@ export default function NewHeroSection() {
               </button>
 
               {/* Auth Form */}
-              <div className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
                 <AuthForm mode={authMode} />
 
                 {/* Toggle between login/signup */}
-                <div className="px-8 pb-6 text-center">
+                <div className="px-8 pb-6 text-center border-t border-gray-200 dark:border-gray-700 pt-6">
                   <button
                     onClick={() => setAuthMode(authMode === "login" ? "signup" : "login")}
                     className="text-sm text-gray-600 dark:text-gray-400 hover:text-[#1472FF] transition-colors"

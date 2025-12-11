@@ -1,20 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export async function POST(req: NextRequest) {
   try {
     // Verificar que la API key esté configurada
     if (!process.env.OPENAI_API_KEY) {
       console.error('OPENAI_API_KEY is not configured');
       return NextResponse.json(
-        { valid: false, reason: 'Error de configuración del servidor. Por favor contacta al soporte.' },
-        { status: 500 }
+        { 
+          valid: false, 
+          reason: 'El servicio de validación no está configurado. Por favor contacta al soporte o intenta más tarde.' 
+        },
+        { status: 503 } // Service Unavailable
       );
     }
+
+    // Crear el cliente de OpenAI solo después de verificar que la API key existe
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     let body;
     try {
@@ -41,13 +45,15 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: 'system',
-          content: `Eres un validador de ideas de proyectos. Tu tarea es evaluar si una idea de proyecto tiene sentido y es coherente. 
+          content: `Eres un validador amable y constructivo de ideas de proyectos. Tu tarea es evaluar si una idea de proyecto tiene sentido y es coherente, siempre siendo respetuoso y alentador.
           
 Responde SOLO con un JSON válido en este formato:
 {
   "valid": true/false,
-  "reason": "breve explicación en español"
+  "reason": "breve explicación en español, SIEMPRE amable y constructiva"
 }
+
+IMPORTANTE: Sé amable, respetuoso y constructivo en todas tus respuestas. Si una idea no es válida, ofrece sugerencias útiles en lugar de ser crítico o negativo.
 
 Considera que una idea es válida si:
 - Describe un proyecto o idea de manera coherente
@@ -55,15 +61,20 @@ Considera que una idea es válida si:
 - No es solo caracteres aleatorios o spam
 - Tiene al menos una idea básica o propósito
 
+Si la idea no es válida, en lugar de ser negativo, ofrece sugerencias constructivas como:
+- "Parece que el texto podría estar incompleto. ¿Podrías describir más detalles sobre tu proyecto?"
+- "Para ayudarte mejor, intenta describir qué problema quieres resolver o qué quieres automatizar."
+- "Tu idea necesita más detalles. Cuéntame más sobre lo que quieres construir."
+
 Responde con el JSON sin texto adicional.`,
         },
         {
           role: 'user',
-          content: `Evalúa esta idea de proyecto: "${idea}"`,
+          content: `Evalúa esta idea de proyecto de manera amable y constructiva: "${idea}"`,
         },
       ],
       temperature: 0.3,
-      max_tokens: 150,
+      max_tokens: 200,
       response_format: { type: 'json_object' },
     });
 
@@ -89,8 +100,20 @@ Responde con el JSON sin texto adicional.`,
     return NextResponse.json(validation);
   } catch (error: any) {
     console.error('Error validating idea:', error);
+    
+    // Mensajes de error más específicos
+    let errorMessage = 'Error al validar tu idea. Por favor intenta de nuevo.';
+    
+    if (error.message?.includes('API key') || error.message?.includes('credentials')) {
+      errorMessage = 'Error de configuración del servidor. Por favor contacta al soporte.';
+    } else if (error.message?.includes('network') || error.message?.includes('fetch')) {
+      errorMessage = 'Error de conexión. Por favor verifica tu internet e intenta de nuevo.';
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
     return NextResponse.json(
-      { valid: false, reason: error.message || 'Error al validar tu idea. Por favor intenta de nuevo.' },
+      { valid: false, reason: errorMessage },
       { status: 500 }
     );
   }

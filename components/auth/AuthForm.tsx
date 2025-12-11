@@ -165,17 +165,17 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
   return (
     <div className="w-full max-w-md">
-      <form onSubmit={handleSubmit} className="bg-white shadow-xl rounded-lg p-8">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-900 rounded-lg p-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-[#1472FF] to-[#0E5FCC] rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-[#1472FF] rounded-lg flex items-center justify-center">
               <span className="text-2xl">🤖</span>
             </div>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
             {mode === 'login' ? 'Inicia Sesión' : 'Crea tu Cuenta'}
           </h2>
-          <p className="text-gray-600 mt-2">
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
             {mode === 'login'
               ? 'Continúa tu aprendizaje'
               : 'Comienza tu viaje en IA y automatización'}
@@ -184,21 +184,21 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
         {/* Advertencia si Supabase no está configurado */}
         {!isSupabaseConfigured() && (
-          <div className="mb-6 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
+          <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/30 border-2 border-yellow-300 dark:border-yellow-700 rounded-lg">
             <div className="flex items-start gap-3">
-              <svg className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" suppressHydrationWarning>
+              <svg className="w-6 h-6 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" suppressHydrationWarning>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
               <div className="flex-1">
-                <p className="text-yellow-800 text-sm font-semibold mb-2">
+                <p className="text-yellow-800 dark:text-yellow-300 text-sm font-semibold mb-2">
                   ⚠️ Base de datos no configurada
                 </p>
-                <p className="text-yellow-700 text-sm mb-3">
+                <p className="text-yellow-700 dark:text-yellow-400 text-sm mb-3">
                   Supabase aún no está configurado. Puedes explorar la plataforma en modo demo.
                 </p>
                 <Link
                   href="/demo"
-                  className="inline-block bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                  className="inline-block bg-yellow-600 hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
                 >
                   🎯 Ver Demo del Dashboard
                 </Link>
@@ -208,21 +208,21 @@ export default function AuthForm({ mode }: AuthFormProps) {
         )}
 
         {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600 text-sm">{error}</p>
+          <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
+            <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
           </div>
         )}
 
         {message && (
-          <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-green-600 text-sm">{message}</p>
+          <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg">
+            <p className="text-green-600 dark:text-green-400 text-sm">{message}</p>
           </div>
         )}
 
         <div className="space-y-4">
           {mode === 'signup' && (
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Nombre completo
               </label>
               <input
@@ -231,14 +231,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
+                className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder-gray-500"
                 placeholder="Tu nombre"
               />
             </div>
           )}
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Email
             </label>
             <input
@@ -247,13 +247,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
+              className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder-gray-500"
               placeholder="tu@email.com"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Contraseña
             </label>
             <input
@@ -263,7 +263,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
+              className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder-gray-500"
               placeholder="Mínimo 6 caracteres"
             />
           </div>
@@ -271,7 +271,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           <button
             type="submit"
             disabled={loading || oauthLoading}
-            className="w-full bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white py-3 rounded-lg font-semibold hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-6 py-3 rounded-full font-semibold text-sm bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white shadow-md hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading
               ? 'Procesando...'
@@ -283,9 +283,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
         {/* Divider */}
         <div className="my-6 flex items-center">
-          <div className="flex-1 border-t border-gray-300"></div>
-          <span className="px-4 text-sm text-gray-500">O continúa con</span>
-          <div className="flex-1 border-t border-gray-300"></div>
+          <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+          <span className="px-4 text-sm text-gray-500 dark:text-gray-400">O continúa con</span>
+          <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
         </div>
 
         {/* OAuth Buttons */}
@@ -294,10 +294,10 @@ export default function AuthForm({ mode }: AuthFormProps) {
             type="button"
             onClick={handleGoogleLogin}
             disabled={loading || oauthLoading}
-            className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-3 rounded-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {oauthLoading ? (
-              <svg className="animate-spin h-5 w-5 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" suppressHydrationWarning>
+              <svg className="animate-spin h-5 w-5 text-gray-700 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" suppressHydrationWarning>
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
@@ -325,7 +325,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           </button>
         </div>
 
-        <div className="mt-6 text-center text-sm text-gray-600">
+        <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
           {mode === 'login' ? (
             <p>
               ¿No tienes cuenta?{' '}

@@ -23,14 +23,16 @@ export default function SignupPage() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       // Check if Supabase is configured before trying to create client
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL || (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_SUPABASE_URL;
+      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
       const configured = url &&
         key &&
         url !== 'https://your-project.supabase.co' &&
         key !== 'your-anon-key-here' &&
-        !url.includes('your-project');
+        !url.includes('your-project') &&
+        url.startsWith('https://') &&
+        key.length > 20; // Anon keys are typically very long
 
       if (configured) {
         try {
@@ -39,6 +41,8 @@ export default function SignupPage() {
           console.error('Error initializing Supabase client:', error);
           // Don't set error state - let the warning banner handle it
         }
+      } else {
+        console.warn('Supabase not configured:', { url: url?.substring(0, 30), keyPresent: !!key });
       }
     }
   }, []);
@@ -47,14 +51,16 @@ export default function SignupPage() {
   const isSupabaseConfigured = () => {
     if (typeof window === 'undefined') return false;
     
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     return url &&
            key &&
            url !== 'https://your-project.supabase.co' &&
            key !== 'your-anon-key-here' &&
-           !url.includes('your-project');
+           !url.includes('your-project') &&
+           url.startsWith('https://') &&
+           key.length > 20;
   };
 
   const translateError = (errorMessage: string): string => {
@@ -165,55 +171,39 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col relative overflow-hidden bg-gradient-to-br from-[#1472FF]/10 via-[#5BA0FF]/10 to-[#1472FF]/10">
+    <main className="min-h-screen flex flex-col relative overflow-hidden bg-white dark:bg-gray-950">
       <AuthNavbar />
-      {/* Background decoration - Enhanced for glassmorphism */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Base gradient overlay - more vibrant */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#1472FF]/20 via-[#5BA0FF]/20 to-[#1472FF]/20" />
-        
-        {/* Animated orbs - more visible */}
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#1472FF] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" />
-        <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-60 animate-pulse" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-2xl opacity-50" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#1472FF] rounded-full mix-blend-multiply filter blur-2xl opacity-50" />
-        
-        {/* Additional layers for depth */}
-        <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-pink-300 rounded-full mix-blend-multiply filter blur-2xl opacity-40" />
-        <div className="absolute bottom-1/3 left-1/4 w-48 h-48 bg-cyan-300 rounded-full mix-blend-multiply filter blur-2xl opacity-40" />
-      </div>
 
       <section className="min-h-screen flex items-center justify-center py-12 md:py-20 px-4 relative z-10">
         <div className="w-full max-w-md">
-          <div className="bg-white rounded-2xl p-8 md:p-10 shadow-xl">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 md:p-10 border border-gray-200 dark:border-gray-700">
             {/* Header */}
             <div className="text-center mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
                 Crea Tu Cuenta
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-400">
                 Comienza tu viaje en IA y automatización
               </p>
             </div>
 
             {/* Advertencia si Supabase no está configurado */}
             {!isSupabaseConfigured() && (
-              <div className="mb-6 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-lg">
+              <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/30 border-2 border-yellow-300 dark:border-yellow-700 rounded-lg">
                 <div className="flex items-start gap-3">
-                  <svg className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                   <div className="flex-1">
-                    <p className="text-yellow-800 text-sm font-semibold mb-2">
+                    <p className="text-yellow-800 dark:text-yellow-300 text-sm font-semibold mb-2">
                       ⚠️ Base de datos no configurada
                     </p>
-                    <p className="text-yellow-700 text-sm mb-3">
+                    <p className="text-yellow-700 dark:text-yellow-400 text-sm mb-3">
                       Supabase aún no está configurado. Puedes explorar la plataforma en modo demo.
                     </p>
                     <Link
                       href="/demo"
-                      className="inline-block bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                      className="inline-block bg-yellow-600 hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
                     >
                       🎯 Ver Demo del Dashboard
                     </Link>
@@ -224,15 +214,15 @@ export default function SignupPage() {
 
             {/* Error Message */}
             {error && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-600 text-sm text-center">{error}</p>
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
+                <p className="text-red-600 dark:text-red-400 text-sm text-center">{error}</p>
               </div>
             )}
 
             {/* Success Message */}
             {success && (
-              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-green-600 text-sm text-center">{success}</p>
+              <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 rounded-lg">
+                <p className="text-green-600 dark:text-green-400 text-sm text-center">{success}</p>
               </div>
             )}
 
@@ -241,7 +231,7 @@ export default function SignupPage() {
               <input
                 type="text"
                 id="name"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900"
+                className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
                 placeholder="Nombre completo"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -251,7 +241,7 @@ export default function SignupPage() {
               <input
                 type="email"
                 id="email"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900"
+                className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
                 placeholder="Correo electrónico"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -262,7 +252,7 @@ export default function SignupPage() {
               <input
                   type={showPassword ? "text" : "password"}
                 id="password"
-                  className="w-full px-4 py-3 pr-12 bg-white border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 text-gray-900"
+                  className="w-full px-4 py-3 pr-12 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
                   placeholder="Contraseña (mínimo 6 caracteres)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -272,7 +262,7 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition-colors"
                 >
                   {showPassword ? (
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -290,7 +280,7 @@ export default function SignupPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white py-3 rounded-lg font-semibold hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+                className="w-full px-6 py-3 rounded-full font-semibold text-sm bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white shadow-md hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
               </button>
@@ -298,9 +288,9 @@ export default function SignupPage() {
 
             {/* Divider */}
             <div className="mt-6 mb-4 flex items-center">
-              <div className="flex-1 border-t border-gray-300"></div>
-              <span className="px-4 text-sm text-gray-500">O continúa con</span>
-              <div className="flex-1 border-t border-gray-300"></div>
+              <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
+              <span className="px-4 text-sm text-gray-500 dark:text-gray-400">O continúa con</span>
+              <div className="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
             </div>
 
             {/* Google OAuth */}
@@ -308,7 +298,7 @@ export default function SignupPage() {
               type="button"
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-white text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+              className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 py-3 rounded-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -332,7 +322,7 @@ export default function SignupPage() {
             </button>
 
             {/* Login Link */}
-            <p className="mt-6 text-center text-sm text-gray-600">
+            <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
             ¿Ya tienes cuenta?{' '}
               <Link href="/auth/login" className="text-[#1472FF] hover:text-[#0E5FCC] font-semibold">
                 Inicia sesión
