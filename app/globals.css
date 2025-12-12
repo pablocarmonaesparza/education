@@ -119,6 +119,15 @@ p.text-2xl {
     text-wrap: balance;
   }
   
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
   .animate-float-orb-1 {
     animation: float-orb-1 15s ease-in-out infinite;
   }
