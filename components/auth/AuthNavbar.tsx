@@ -60,14 +60,14 @@ export default function AuthNavbar() {
           {isSignupPage ? (
             <button
               onClick={() => router.push('/auth/login')}
-              className="px-6 py-2 rounded-full font-semibold text-sm bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white shadow-md hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all"
+              className="px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 navbar-button-gradient text-white hover:opacity-90"
             >
               Iniciar Sesión
             </button>
           ) : (
             <button
               onClick={() => router.push('/auth/signup')}
-              className="px-6 py-2 rounded-full font-semibold text-sm bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white shadow-md hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all"
+              className="px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 navbar-button-gradient text-white hover:opacity-90"
             >
               Regístrate
             </button>
