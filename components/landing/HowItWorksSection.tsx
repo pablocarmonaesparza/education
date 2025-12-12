@@ -2,22 +2,26 @@
 
 import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 
 const steps = [
   {
     title: "Describe tu idea",
     description: "Escribe tu idea de proyecto en tus propias palabras. Puede ser cualquier cosa relacionada con automatización, IA o desarrollo de software.",
-    color: "bg-blue-500",
+    imageLight: "/images/how-it-works-1-light.png",
+    imageDark: "/images/how-it-works-1-dark.png",
   },
   {
     title: "Generamos tu curso",
     description: "Nuestra IA analiza tu idea y crea un plan de estudios personalizado con videos seleccionados específicamente para tu proyecto.",
-    color: "bg-green-500",
+    imageLight: "/images/how-it-works-2-light.png",
+    imageDark: "/images/how-it-works-2-dark.png",
   },
   {
     title: "Aprende y construye",
     description: "Accede a videos cortos y prácticos que te guiarán paso a paso. Aprende mientras construyes tu proyecto real.",
-    color: "bg-red-500",
+    imageLight: "/images/how-it-works-3-light.png",
+    imageDark: "/images/how-it-works-3-dark.png",
   },
 ];
 
@@ -98,20 +102,39 @@ export default function HowItWorksSection() {
               </div>
             </div>
 
-            {/* Color Column - Right 2/3 */}
-            <div className="lg:col-span-2 relative h-[500px] md:h-[600px] rounded-2xl overflow-hidden">
-              <div className="relative w-full h-full">
-                {steps.map((s, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: activeIndex === i ? 1 : 0 }}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
-                    className={`absolute inset-0 ${s.color} rounded-2xl`}
+          {/* Image Column - Right 2/3 */}
+          <div className="lg:col-span-2 relative h-[500px] md:h-[600px] rounded-2xl overflow-hidden flex items-center justify-center">
+            <div className="relative w-full h-full flex items-center justify-center">
+              {steps.map((s, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: activeIndex === i ? 1 : 0 }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  className="absolute inset-0 flex items-center justify-center p-4"
+                >
+                  {/* Light mode image */}
+                  <Image
+                    src={s.imageLight}
+                    alt={s.title}
+                    width={800}
+                    height={600}
+                    className="object-contain max-h-full dark:hidden"
+                    priority={i === 0}
                   />
-                ))}
-              </div>
+                  {/* Dark mode image */}
+                  <Image
+                    src={s.imageDark}
+                    alt={s.title}
+                    width={800}
+                    height={600}
+                    className="object-contain max-h-full hidden dark:block"
+                    priority={i === 0}
+                  />
+                </motion.div>
+              ))}
             </div>
+          </div>
           </div>
         </div>
 
