@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
 const greetings = [
@@ -27,12 +28,14 @@ interface Video {
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [userName, setUserName] = useState<string>('');
   const [greeting, setGreeting] = useState<string>('');
   const [project, setProject] = useState<string>('');
   const [videos, setVideos] = useState<Video[]>([]);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const carouselRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
 
@@ -154,6 +157,7 @@ export default function DashboardPage() {
           console.log('No generated_path found in intake data');
         }
       }
+      setIsLoading(false);
     }
     
     fetchUserData();
@@ -191,8 +195,17 @@ export default function DashboardPage() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="h-[calc(100vh-11rem)] bg-transparent flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
-    <div className="h-full bg-white overflow-x-hidden overflow-y-auto flex flex-col">
+    <div className="h-[calc(100vh-11rem)] bg-transparent flex flex-col overflow-hidden">
       <div className="flex-1 flex flex-col items-center justify-center">
         {/* Greeting */}
         {userName && (
@@ -223,7 +236,7 @@ export default function DashboardPage() {
           <div 
             ref={carouselRef}
             onScroll={handleScroll}
-            className="w-full flex gap-4 overflow-x-auto py-6 scrollbar-hide snap-x snap-mandatory scroll-smooth"
+            className="w-full flex gap-4 overflow-x-auto py-6 scrollbar-hide snap-x snap-mandatory"
           >
             {/* Left spacer for first card centering */}
             <div className="flex-shrink-0 w-[calc(50vw-156px)]" />
@@ -232,12 +245,9 @@ export default function DashboardPage() {
               <div
                 key={video.id}
                 onClick={() => {
-                  const cardWidth = 280 + 16;
-                  const scrollPosition = (video.order * cardWidth);
-                  carouselRef.current?.scrollTo({ left: scrollPosition, behavior: 'smooth' });
-                  setSelectedVideoIndex(video.order);
+                  router.push(`/dashboard/salon?video=${video.order}`);
                 }}
-                className={`flex-shrink-0 w-[280px] snap-center snap-always rounded-2xl border transition-all duration-300 cursor-pointer ${
+                className={`flex-shrink-0 w-[280px] snap-center rounded-2xl border transition-all duration-300 cursor-pointer ${
                   video.isCurrent
                     ? 'border-[#1472FF] bg-gradient-to-br from-blue-50 to-white scale-105'
                     : video.isCompleted
@@ -325,6 +335,9 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               {/* Left - Video Title */}
               <div>
+                <p className="text-sm text-gray-400 mb-1">
+                  {selectedVideoIndex + 1} de {videos.length}
+                </p>
                 <h2 className="text-xl md:text-2xl font-bold text-gray-900">
                   {videos[selectedVideoIndex].title}
                 </h2>

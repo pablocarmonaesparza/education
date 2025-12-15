@@ -95,7 +95,7 @@ export default function TutorChatButton() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: '100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 backdrop-blur-md bg-white/80"
+            className="fixed bottom-0 left-0 right-0 z-50 backdrop-blur-md bg-white/60"
           >
             <div className="container mx-auto px-4 py-4">
               <div className="relative bg-white rounded-2xl border border-gray-200 flex flex-col overflow-hidden" style={{ height: '22vh', minHeight: '220px' }}>
@@ -207,7 +207,7 @@ export default function TutorChatButton() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: '100%', opacity: 0 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 backdrop-blur-md bg-white/80"
+            className="fixed bottom-0 left-0 right-0 z-50 backdrop-blur-md bg-white/60"
           >
             <div className="container mx-auto px-4">
               <div className="flex justify-center items-center h-20 relative">
@@ -226,4 +226,6 @@ export default function TutorChatButton() {
     </>
   );
 }
+
+
 

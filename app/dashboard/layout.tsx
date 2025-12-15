@@ -7,10 +7,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="h-screen">
       <DashboardNavbar />
-      <main className="pt-20 pb-20 h-full overflow-x-hidden overflow-y-auto">
-        {children}
+      <main className="h-screen overflow-x-hidden overflow-y-auto">
+        <div className="pt-20 pb-24 min-h-full">
+          {children}
+        </div>
       </main>
       <TutorChatButton />
     </div>

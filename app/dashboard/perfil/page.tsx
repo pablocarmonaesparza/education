@@ -1,0 +1,292 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
+
+interface UserProfile {
+  id: string;
+  name: string;
+  email: string;
+  tier: string;
+  createdAt: string;
+  projectIdea?: string;
+}
+
+export default function PerfilPage() {
+  const router = useRouter();
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchProfile() {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const { data: userData } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        const { data: intakeData } = await supabase
+          .from('intake_responses')
+          .select('responses')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
+
+        const projectIdea = intakeData?.responses?.project_idea || 
+                           intakeData?.responses?.project || '';
+
+        setProfile({
+          id: user.id,
+          name: userData?.name || user.user_metadata?.name || '',
+          email: userData?.email || user.email || '',
+          tier: userData?.tier || 'basic',
+          createdAt: userData?.created_at || user.created_at,
+          projectIdea,
+        });
+        setEditName(userData?.name || user.user_metadata?.name || '');
+      }
+      setIsLoading(false);
+    }
+    
+    fetchProfile();
+  }, [supabase]);
+
+  const handleSaveName = async () => {
+    if (!profile || !editName.trim()) return;
+    
+    setIsSaving(true);
+    setMessage(null);
+
+    const { error } = await supabase
+      .from('users')
+      .update({ name: editName.trim() })
+      .eq('id', profile.id);
+
+    if (error) {
+      setMessage({ type: 'error', text: 'Error al guardar los cambios' });
+    } else {
+      setProfile({ ...profile, name: editName.trim() });
+      setIsEditing(false);
+      setMessage({ type: 'success', text: 'Nombre actualizado correctamente' });
+      setTimeout(() => setMessage(null), 3000);
+    }
+    setIsSaving(false);
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/');
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('es-MX', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const getTierName = (tier: string) => {
+    switch (tier) {
+      case 'premium': return 'Premium';
+      case 'personalized': return 'Personalizado';
+      default: return 'Básico';
+    }
+  };
+
+  const userInitials = profile?.name
+    ? profile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : 'U';
+
+  if (isLoading) {
+    return (
+      <div className="h-[calc(100vh-11rem)] bg-transparent flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="min-h-full bg-transparent flex items-center justify-center">
+        <p className="text-gray-500">No se pudo cargar el perfil</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-full bg-transparent">
+      <div className="container mx-auto px-4 py-8 max-w-2xl">
+        
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Mi Perfil</h1>
+          <p className="mt-2 text-gray-500">Gestiona tu información personal</p>
+        </div>
+
+        {/* Message */}
+        {message && (
+          <div className={`mb-6 p-4 rounded-xl ${
+            message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+          }`}>
+            {message.text}
+          </div>
+        )}
+
+        {/* Profile Card */}
+        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-6">
+          {/* Avatar Section */}
+          <div className="p-6 flex items-center gap-4 border-b border-gray-100">
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#1472FF] to-[#5BA0FF] flex items-center justify-center text-white text-2xl font-bold">
+              {userInitials}
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">{profile.name || 'Sin nombre'}</h2>
+              <p className="text-gray-500">{profile.email}</p>
+              <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${
+                profile.tier === 'premium' 
+                  ? 'bg-purple-100 text-purple-700'
+                  : profile.tier === 'personalized'
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'bg-gray-100 text-gray-600'
+              }`}>
+                Plan {getTierName(profile.tier)}
+              </span>
+            </div>
+          </div>
+
+          {/* Info Sections */}
+          <div className="divide-y divide-gray-100">
+            {/* Name */}
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium text-gray-500">Nombre</label>
+                {!isEditing && (
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="text-sm text-[#1472FF] hover:underline"
+                  >
+                    Editar
+                  </button>
+                )}
+              </div>
+              {isEditing ? (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 focus:border-[#1472FF] focus:outline-none"
+                    placeholder="Tu nombre"
+                  />
+                  <button
+                    onClick={handleSaveName}
+                    disabled={isSaving}
+                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white font-medium hover:opacity-90 disabled:opacity-50"
+                  >
+                    {isSaving ? 'Guardando...' : 'Guardar'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsEditing(false);
+                      setEditName(profile.name);
+                    }}
+                    className="px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              ) : (
+                <p className="text-gray-900">{profile.name || 'Sin nombre'}</p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div className="p-6">
+              <label className="text-sm font-medium text-gray-500 block mb-2">Correo electrónico</label>
+              <p className="text-gray-900">{profile.email}</p>
+            </div>
+
+            {/* Member Since */}
+            <div className="p-6">
+              <label className="text-sm font-medium text-gray-500 block mb-2">Miembro desde</label>
+              <p className="text-gray-900">{formatDate(profile.createdAt)}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Project Card */}
+        {profile.projectIdea && (
+          <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-6">
+            <div className="p-6">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Tu Proyecto</h3>
+              <p className="text-gray-600 leading-relaxed">{profile.projectIdea}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Configuration Section */}
+        <div id="configuracion" className="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-6">
+          <div className="p-6 border-b border-gray-100">
+            <h3 className="text-lg font-bold text-gray-900">Configuración</h3>
+          </div>
+          <div className="divide-y divide-gray-100">
+            {/* Plan */}
+            <div className="p-6 flex items-center justify-between">
+              <div>
+                <p className="font-medium text-gray-900">Plan actual</p>
+                <p className="text-sm text-gray-500">Plan {getTierName(profile.tier)}</p>
+              </div>
+              <button className="px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm">
+                Cambiar plan
+              </button>
+            </div>
+
+            {/* Notifications */}
+            <div className="p-6 flex items-center justify-between">
+              <div>
+                <p className="font-medium text-gray-900">Notificaciones</p>
+                <p className="text-sm text-gray-500">Recibe actualizaciones por correo</p>
+              </div>
+              <button className="w-12 h-6 rounded-full bg-[#1472FF] relative transition-colors">
+                <span className="absolute right-1 top-1 w-4 h-4 rounded-full bg-white transition-transform" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Danger Zone */}
+        <div className="bg-white rounded-2xl border border-red-200 overflow-hidden">
+          <div className="p-6 border-b border-red-100">
+            <h3 className="text-lg font-bold text-red-600">Zona de peligro</h3>
+          </div>
+          <div className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-gray-900">Cerrar sesión</p>
+                <p className="text-sm text-gray-500">Salir de tu cuenta en este dispositivo</p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 text-sm font-medium transition-colors"
+              >
+                Cerrar sesión
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
