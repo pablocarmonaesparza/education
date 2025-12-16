@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
@@ -17,7 +17,7 @@ interface Video {
   isCurrent: boolean;
 }
 
-export default function SalonPage() {
+function SalonContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const videoParam = searchParams.get('video');
@@ -314,6 +314,18 @@ export default function SalonPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SalonPage() {
+  return (
+    <Suspense fallback={
+      <div className="h-[calc(100vh-10rem)] md:h-[calc(100vh-11rem)] bg-transparent flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      <SalonContent />
+    </Suspense>
   );
 }
 
