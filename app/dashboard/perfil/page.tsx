@@ -266,19 +266,19 @@ export default function PerfilPage() {
         </div>
 
         {/* Danger Zone */}
-        <div className="bg-white rounded-2xl border border-red-200 overflow-hidden">
-          <div className="p-6 border-b border-red-100">
-            <h3 className="text-lg font-bold text-red-600">Zona de peligro</h3>
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-red-200 dark:border-red-900 overflow-hidden">
+          <div className="p-6 border-b border-red-100 dark:border-red-900/50">
+            <h3 className="text-lg font-bold text-red-600 dark:text-red-500">Zona de peligro</h3>
           </div>
           <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900">Cerrar sesión</p>
-                <p className="text-sm text-gray-500">Salir de tu cuenta en este dispositivo</p>
+                <p className="font-medium text-gray-900 dark:text-white">Cerrar sesión</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Salir de tu cuenta en este dispositivo</p>
               </div>
               <button
                 onClick={handleLogout}
-                className="px-4 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 text-sm font-medium transition-colors"
+                className="px-4 py-2 rounded-xl bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 text-sm font-medium transition-colors"
               >
                 Cerrar sesión
               </button>
