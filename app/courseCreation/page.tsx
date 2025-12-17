@@ -39,6 +39,10 @@ export default function CourseCreationPage() {
           return;
         }
 
+        // Get questionnaire answers from sessionStorage
+        const projectContextRaw = sessionStorage.getItem('projectContext');
+        const questionnaireAnswers = projectContextRaw ? JSON.parse(projectContextRaw) : {};
+
         // Start course generation
         const response = await fetch('/api/generate-course', {
           method: 'POST',
@@ -50,6 +54,7 @@ export default function CourseCreationPage() {
             user_email: user.email,
             user_name: user.user_metadata?.name || 'Usuario',
             project_idea: projectIdea,
+            questionnaire: questionnaireAnswers,
             timestamp: new Date().toISOString(),
           }),
         });
