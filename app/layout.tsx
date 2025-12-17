@@ -17,10 +17,10 @@ const darkerGrotesque = Darker_Grotesque({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://tudominio.com'), // Actualizar con tu dominio real
+  metadataBase: new URL('https://itera.la'),
   title: {
-    default: "Curso de IA Personalizado con Claude | Aprende Automatización con IA",
-    template: "%s | Curso IA Personalizado",
+    default: "Itera | Aprende IA Construyendo Tu Proyecto",
+    template: "%s | Itera",
   },
   description:
     "Aprende a construir proyectos con IA en 3 semanas. Ruta 100% personalizada por Claude AI. 400+ micro-videos, gamificación, y de la idea al MVP. Garantía de 30 días.",
@@ -40,40 +40,46 @@ export const metadata: Metadata = {
     "proyectos IA",
     "MVP con IA",
     "curso online IA",
+    "itera",
   ],
-  authors: [{ name: "Tu Nombre" }], // Actualizar
-  creator: "Tu Nombre", // Actualizar
-  publisher: "Tu Empresa", // Actualizar
+  authors: [{ name: "Itera" }],
+  creator: "Itera",
+  publisher: "Itera",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
   openGraph: {
     type: "website",
     locale: "es_ES",
     alternateLocale: ["es_MX", "es_AR", "es_CO"],
-    url: "https://tudominio.com",
-    siteName: "Curso IA Personalizado",
-    title: "Construye Proyectos con IA en 3 Semanas | Ruta Personalizada con Claude",
+    url: "https://itera.la",
+    siteName: "Itera",
+    title: "Itera | Aprende IA Construyendo Tu Proyecto",
     description:
-      "Aprende IA con una ruta 100% personalizada. 400+ videos de 1-3 min, gamificación, y construye tu MVP. 2,500+ estudiantes. 4.9/5 rating. Garantía de 30 días.",
+      "Aprende IA con una ruta 100% personalizada. 400+ videos de 1-3 min, gamificación, y construye tu MVP. Garantía de 30 días.",
     images: [
       {
-        url: "/og-image.jpg", // Crear esta imagen
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Curso de IA Personalizado con Claude AI",
+        alt: "Itera - Aprende IA Construyendo",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Curso de IA Personalizado | Construye Tu Proyecto en 3 Semanas",
+    title: "Itera | Aprende IA Construyendo Tu Proyecto",
     description:
-      "Ruta 100% personalizada por Claude AI. 400+ micro-videos. De la idea al MVP. Únete a 2,500+ estudiantes.",
-    images: ["/twitter-image.jpg"], // Crear esta imagen
-    creator: "@tutwitter", // Actualizar
+      "Ruta 100% personalizada por Claude AI. 400+ micro-videos. De la idea al MVP.",
+    images: ["/og-image.jpg"],
+    creator: "@iterala",
   },
   robots: {
     index: true,
@@ -86,17 +92,8 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  verification: {
-    google: "tu-codigo-de-verificacion", // Actualizar con Google Search Console
-  },
   alternates: {
-    canonical: "https://tudominio.com",
-    languages: {
-      "es-ES": "https://tudominio.com",
-      "es-MX": "https://tudominio.com/mx",
-      "es-AR": "https://tudominio.com/ar",
-      "es-CO": "https://tudominio.com/co",
-    },
+    canonical: "https://itera.la",
   },
   category: "education",
 };
