@@ -3,11 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 export default function AuthNavbar() {
   const pathname = usePathname();
-  const router = useRouter();
   const isSignupPage = pathname === '/auth/signup';
   const [isDark, setIsDark] = useState(false);
 
@@ -58,19 +57,19 @@ export default function AuthNavbar() {
 
           {/* Auth Button - Show opposite page */}
           {isSignupPage ? (
-            <button
-              onClick={() => router.push('/auth/login')}
+            <Link
+              href="/auth/login"
               className="px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 navbar-button-gradient text-white hover:opacity-90"
             >
               Iniciar Sesión
-            </button>
+            </Link>
           ) : (
-            <button
-              onClick={() => router.push('/auth/signup')}
+            <Link
+              href="/auth/signup"
               className="px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 navbar-button-gradient text-white hover:opacity-90"
             >
               Regístrate
-            </button>
+            </Link>
           )}
         </div>
       </div>
