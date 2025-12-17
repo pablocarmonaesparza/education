@@ -114,7 +114,7 @@ export default function SignupPage() {
           data: {
             name,
           },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: 'https://itera.la/auth/callback',
         },
       });
 
@@ -147,7 +147,7 @@ export default function SignupPage() {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: 'https://itera.la/auth/callback',
           queryParams: {
             prompt: 'select_account',
           },
