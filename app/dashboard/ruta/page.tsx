@@ -153,7 +153,7 @@ export default function RutaPage() {
   };
 
   const handleVideoClick = (video: Video, phaseId: string) => {
-    router.push(`/dashboard/video/${phaseId}/${video.id}`);
+    router.push(`/dashboard/my-path/video/${phaseId}/${video.id}`);
   };
 
   if (loading) {
