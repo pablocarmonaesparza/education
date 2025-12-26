@@ -26,16 +26,7 @@ section {
   scroll-snap-align: start;
 }
 
-/* Mobile only: disable snap scroll */
-@media (max-width: 767px) {
-  html {
-    scroll-snap-type: none;
-  }
-  
-  section {
-    scroll-snap-align: none;
-  }
-}
+/* Mobile: snap scroll enabled (same as desktop) */
 
 html.dark {
   background-color: #030712;
