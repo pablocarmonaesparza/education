@@ -78,14 +78,9 @@ export default function PricingSection() {
           transition={{ duration: 0.6, delay: 0.1 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-gray-900 dark:text-white mb-4 leading-tight">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-gray-900 dark:text-white mb-8 leading-tight">
             Nuestros Planes
           </h2>
-          <p className="text-lg md:text-xl text-center text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto font-light">
-            Elige el plan que mejor se adapte a tus necesidades.
-            <br />
-            <span className="text-[#1472FF] font-semibold">Comienza gratis y escala cuando estés listo.</span>
-          </p>
         </motion.div>
 
         {/* Pricing Cards */}
