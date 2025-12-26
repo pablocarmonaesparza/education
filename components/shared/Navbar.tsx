@@ -150,7 +150,7 @@ export default function Navbar() {
           {/* Desktop Navigation - Centered on page */}
           <div
             ref={navRef}
-            className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2"
+            className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2"
           >
             {navLinks.map((link, index) => (
               <motion.div
@@ -197,7 +197,7 @@ export default function Navbar() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4, duration: 0.4 }}
-            className="hidden md:flex items-center"
+            className="hidden lg:flex items-center"
           >
             <Link
               href="/auth/signup"
@@ -226,7 +226,7 @@ export default function Navbar() {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden relative w-10 h-10 flex items-center justify-center rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="lg:hidden relative w-10 h-10 flex items-center justify-center rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
             aria-label="Toggle menu"
           >
             <div className="w-6 h-5 flex flex-col justify-between">
@@ -255,7 +255,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden overflow-hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-t border-gray-200/50 dark:border-gray-700/50"
+            className="lg:hidden overflow-hidden bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border-t border-gray-200/50 dark:border-gray-700/50"
           >
             <div className="container mx-auto px-4 py-6">
               <div className="flex flex-col gap-4">
