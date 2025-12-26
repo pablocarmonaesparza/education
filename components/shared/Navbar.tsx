@@ -8,6 +8,18 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Block scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
@@ -247,33 +259,64 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu - Fullscreen (phones only) */}
+      {/* Mobile Menu - Fullscreen (phones only, < 768px) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden fixed inset-0 top-20 bg-white dark:bg-gray-950 z-50 flex flex-col"
+            transition={{ duration: 0.2 }}
+            className="md:hidden fixed inset-0 top-0 z-[100] bg-white dark:bg-gray-950 flex flex-col"
           >
-            {/* Navigation Links - Top */}
+            {/* Header with logo and close button */}
+            <div className="flex justify-between items-center h-20 px-4 border-b border-gray-100 dark:border-gray-800">
+              <Link href="/" onClick={() => setMobileMenuOpen(false)}>
+                {isDark ? (
+                  <Image
+                    src="/images/logo-light.png"
+                    alt="Itera"
+                    width={120}
+                    height={40}
+                    className="h-8 w-auto"
+                  />
+                ) : (
+                  <Image
+                    src="/images/logo-dark.png"
+                    alt="Itera"
+                    width={120}
+                    height={40}
+                    className="h-8 w-auto"
+                  />
+                )}
+              </Link>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <svg className="w-6 h-6 text-gray-900 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Navigation Links */}
             <div className="px-6 pt-6">
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-1">
                 {navLinks.map((link, index) => (
                   <motion.div
                     key={link.href}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 * index, duration: 0.3 }}
+                    transition={{ delay: 0.05 * index, duration: 0.2 }}
                   >
                     <a
                       href={link.href}
                       onClick={(e) => handleNavClick(e, link.href)}
-                      className={`block py-3 px-4 rounded-xl transition-all font-medium text-lg cursor-pointer ${
+                      className={`block py-4 px-4 rounded-xl transition-all font-medium text-lg cursor-pointer ${
                         activeSection === link.id
                           ? "text-[#1472FF] bg-blue-50 dark:bg-blue-900/30"
-                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
+                          : "text-gray-900 dark:text-white"
                       }`}
                     >
                       {link.label}
@@ -286,27 +329,24 @@ export default function Navbar() {
             {/* Spacer */}
             <div className="flex-1" />
 
-            {/* CTA Button - Bottom with safe area padding */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.3 }}
-              className="px-6"
+            {/* CTA Button - Bottom with safe area */}
+            <div 
+              className="px-6 pb-6"
               style={{ paddingBottom: 'max(24px, env(safe-area-inset-bottom))' }}
             >
               <Link
                 href="/auth/signup"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block py-4 text-center font-semibold text-lg rounded-2xl transition-all navbar-button-gradient text-white hover:opacity-90"
+                className="block py-4 text-center font-semibold text-lg rounded-2xl navbar-button-gradient text-white"
               >
                 Regístrate Gratis
               </Link>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Tablet Menu - Popup (md to lg) */}
+      {/* Tablet Menu - Popup (768px to 1024px) */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
