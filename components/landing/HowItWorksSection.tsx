@@ -125,7 +125,7 @@ export default function HowItWorksSection() {
       {/* ============ MOBILE VERSION (< 768px) ============ */}
       <section
         id="how-it-works"
-        className="md:hidden min-h-screen bg-white dark:bg-gray-950 flex flex-col"
+        className="md:hidden min-h-screen bg-white dark:bg-gray-950 flex flex-col relative"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
       >
