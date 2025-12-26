@@ -175,7 +175,7 @@ export default function PricingSection() {
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.6 }}
         viewport={{ once: true }}
-        className="absolute bottom-12 left-1/2 transform -translate-x-1/2 hidden md:block"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden md:block"
       >
         <button
           onClick={() => {
