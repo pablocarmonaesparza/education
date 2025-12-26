@@ -14,39 +14,26 @@
   }
 }
 
+/* Base: snap scroll enabled (como estaba originalmente) */
 html {
+  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   overscroll-behavior: none;
   background-color: #ffffff;
 }
 
-/* Mobile: no snap scroll */
-@media (max-width: 767px) {
-  html {
-    scroll-snap-type: none !important;
-  }
-  
-  section {
-    scroll-snap-align: none !important;
-  }
-  
-  .snap-start {
-    scroll-snap-align: none !important;
-  }
+section {
+  scroll-snap-align: start;
 }
 
-/* Desktop: snap scroll enabled */
-@media (min-width: 768px) {
+/* Mobile only: disable snap scroll */
+@media (max-width: 767px) {
   html {
-    scroll-snap-type: y mandatory;
+    scroll-snap-type: none;
   }
   
   section {
-    scroll-snap-align: start;
-  }
-  
-  .snap-start {
-    scroll-snap-align: start;
+    scroll-snap-align: none;
   }
 }
 
