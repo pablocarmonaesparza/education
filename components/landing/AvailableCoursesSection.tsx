@@ -191,8 +191,8 @@ export default function AvailableCoursesSection() {
   const baseDuration = 60;
 
   return (
-    <section id="available-courses" className="relative min-h-screen flex flex-col justify-center bg-white dark:bg-gray-950 overflow-hidden">
-      <div className="relative z-10 py-20 pt-32 md:pt-40">
+    <section id="available-courses" className="relative min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-950 overflow-hidden">
+      <div className="relative z-10 w-full">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

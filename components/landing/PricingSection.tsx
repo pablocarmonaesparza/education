@@ -89,7 +89,7 @@ export default function PricingSection() {
   ];
 
   return (
-    <section id="pricing" className="relative bg-white dark:bg-gray-950 min-h-screen flex items-center justify-center py-20 pt-24 md:pt-28 overflow-hidden">
+    <section id="pricing" className="relative bg-white dark:bg-gray-950 min-h-screen flex items-center justify-center overflow-hidden">
       <div className="container mx-auto px-4 relative z-10">
         {/* Section Header */}
         <motion.div
