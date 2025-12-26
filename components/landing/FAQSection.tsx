@@ -34,20 +34,20 @@ export default function FAQSection() {
   return (
     <section id="faq" className="relative min-h-screen flex flex-col bg-white dark:bg-gray-950 overflow-hidden">
       {/* FAQ Content */}
-      <div className="flex-1 flex items-center justify-center">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-20">
+        <div className="w-full max-w-4xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-16 md:mb-20">
+          <div className="text-center mb-8 md:mb-12">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
               Preguntas Frecuentes
             </h2>
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto font-light">
+            <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto font-light">
               Encuentra respuestas a tus dudas más comunes.
             </p>
           </div>
 
           {/* FAQ Items */}
-          <div className="max-w-4xl mx-auto">
+          <div className="w-full">
             {faqs.map((faq, index) => (
               <div key={index} className="border-b border-gray-200 dark:border-gray-700 last:border-b-0 py-6 md:py-8">
                 <button
