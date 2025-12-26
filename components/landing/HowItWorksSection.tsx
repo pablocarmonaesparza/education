@@ -56,7 +56,7 @@ export default function HowItWorksSection() {
     return () => observers.forEach((o) => o.disconnect());
   }, []);
 
-  // Mobile: Detectar scroll horizontal
+  // Mobile: Detectar scroll horizontal y convertir scroll vertical a horizontal
   useEffect(() => {
     const container = mobileScrollRef.current;
     if (!container) return;
@@ -68,8 +68,35 @@ export default function HowItWorksSection() {
       setMobileActiveIndex(Math.min(newIndex, steps.length - 1));
     };
 
+    // Convertir scroll vertical a horizontal
+    const handleWheel = (e: WheelEvent) => {
+      // Solo en móvil (< 768px)
+      if (window.innerWidth >= 768) return;
+      
+      const scrollLeft = container.scrollLeft;
+      const maxScroll = container.scrollWidth - container.offsetWidth;
+      
+      // Si estamos al inicio y scrolleamos hacia arriba, dejar pasar
+      if (scrollLeft <= 0 && e.deltaY < 0) return;
+      
+      // Si estamos al final y scrolleamos hacia abajo, dejar pasar
+      if (scrollLeft >= maxScroll - 1 && e.deltaY > 0) return;
+      
+      // Prevenir scroll vertical y convertir a horizontal
+      e.preventDefault();
+      container.scrollBy({
+        left: e.deltaY,
+        behavior: 'auto'
+      });
+    };
+
     container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      container.removeEventListener('wheel', handleWheel);
+    };
   }, []);
 
   return (
@@ -98,8 +125,18 @@ export default function HowItWorksSection() {
               className="flex-shrink-0 w-full snap-center px-6 flex flex-col"
               style={{ scrollSnapAlign: 'center' }}
             >
-              {/* Image */}
-              <div className="flex-1 flex items-center justify-center mb-6">
+              {/* Text - Top */}
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                  {step.title}
+                </h3>
+                <p className="text-base text-gray-600 dark:text-gray-400 leading-relaxed">
+                  {step.description}
+                </p>
+              </div>
+
+              {/* Image - Bottom */}
+              <div className="flex-1 flex items-center justify-center">
                 <div className="relative w-full h-64">
                   <Image
                     src={step.imageLight}
@@ -116,16 +153,6 @@ export default function HowItWorksSection() {
                     priority={i === 0}
                   />
                 </div>
-              </div>
-
-              {/* Text */}
-              <div className="mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                  {step.title}
-                </h3>
-                <p className="text-base text-gray-600 dark:text-gray-400 leading-relaxed">
-                  {step.description}
-                </p>
               </div>
             </div>
           ))}
