@@ -248,7 +248,7 @@ export default function DashboardPage() {
                   router.push(`/dashboard/salon?video=${video.order}`);
                 }}
                 className={`flex-shrink-0 w-[280px] snap-center rounded-2xl border transition-all duration-300 cursor-pointer ${
-                  index === selectedVideoIndex ? 'scale-110 z-10' : 'scale-95 opacity-70'
+                  index === selectedVideoIndex ? 'scale-105 z-10' : 'scale-95 opacity-70'
                 } ${
                   video.isCurrent
                     ? 'border-[#1472FF] bg-gradient-to-br from-blue-50 to-white dark:from-blue-950 dark:to-gray-900'
