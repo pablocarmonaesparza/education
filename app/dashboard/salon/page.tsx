@@ -142,18 +142,6 @@ function SalonContent() {
     setCurrentVideo(video);
   };
 
-  const handlePrevious = () => {
-    if (currentVideo && currentVideo.order > 0) {
-      setCurrentVideo(videos[currentVideo.order - 1]);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentVideo && currentVideo.order < videos.length - 1) {
-      setCurrentVideo(videos[currentVideo.order + 1]);
-    }
-  };
-
   // Toggle video completion status
   const toggleVideoCompletion = async (videoId: string, currentlyCompleted: boolean) => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -280,54 +268,31 @@ function SalonContent() {
                 )}
               </div>
               
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2 flex-shrink-0">
-                {/* Complete/Uncomplete Button */}
-                <button
-                  onClick={() => toggleVideoCompletion(currentVideo.id, currentVideo.isCompleted)}
-                  className={`px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ${
-                    currentVideo.isCompleted
-                      ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  {currentVideo.isCompleted ? (
-                    <>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Completado
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Marcar completado
-                    </>
-                  )}
-                </button>
-
-                {/* Navigation Buttons */}
-                <button
-                  onClick={handlePrevious}
-                  disabled={currentVideo.order === 0}
-                  className="p-2 rounded-full border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                <button
-                  onClick={handleNext}
-                  disabled={currentVideo.order === videos.length - 1}
-                  className="p-2 rounded-full border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
+              {/* Complete/Uncomplete Button */}
+              <button
+                onClick={() => toggleVideoCompletion(currentVideo.id, currentVideo.isCompleted)}
+                className={`px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 flex-shrink-0 ${
+                  currentVideo.isCompleted
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                }`}
+              >
+                {currentVideo.isCompleted ? (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Completado
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Marcar completado
+                  </>
+                )}
+              </button>
             </div>
           </div>
         </div>
