@@ -195,54 +195,6 @@ export default function DashboardPage() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Toggle video completion status
-  const toggleVideoCompletion = async (e: React.MouseEvent, videoId: string, currentlyCompleted: boolean) => {
-    e.stopPropagation(); // Prevent card click
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    if (currentlyCompleted) {
-      // Mark as pending (delete from video_progress)
-      await supabase
-        .from('video_progress')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('video_id', videoId);
-    } else {
-      // Mark as completed (upsert to video_progress)
-      await supabase
-        .from('video_progress')
-        .upsert({
-          user_id: user.id,
-          video_id: videoId,
-          completed: true,
-          progress_percent: 100,
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'user_id,video_id' });
-    }
-
-    // Update local state
-    setVideos(prevVideos => {
-      const updated = prevVideos.map(v => {
-        if (v.id === videoId) {
-          return { ...v, isCompleted: !currentlyCompleted, isCurrent: false };
-        }
-        return v;
-      });
-      
-      // Recalculate isCurrent - first non-completed video
-      let foundCurrent = false;
-      return updated.map(v => {
-        if (!v.isCompleted && !foundCurrent) {
-          foundCurrent = true;
-          return { ...v, isCurrent: true };
-        }
-        return { ...v, isCurrent: false };
-      });
-    });
-  };
-
   // Loading state
   if (isLoading) {
     return (
@@ -354,37 +306,14 @@ export default function DashboardPage() {
                     {video.title}
                   </h3>
                   
-                  {/* Progress indicator and toggle button */}
-                  <div className="mt-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${
-                        video.isCompleted ? 'bg-green-500' : video.isCurrent ? 'bg-[#1472FF]' : 'bg-gray-300 dark:bg-gray-600'
-                      }`} />
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        {video.isCompleted ? 'Completado' : video.isCurrent ? 'En progreso' : 'Pendiente'}
-                      </span>
-                    </div>
-                    
-                    {/* Toggle completion button */}
-                    <button
-                      onClick={(e) => toggleVideoCompletion(e, video.id, video.isCompleted)}
-                      className={`p-1.5 rounded-lg transition-all ${
-                        video.isCompleted
-                          ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50'
-                          : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
-                      }`}
-                      title={video.isCompleted ? 'Marcar como pendiente' : 'Marcar como completado'}
-                    >
-                      {video.isCompleted ? (
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      ) : (
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </button>
+                  {/* Progress indicator */}
+                  <div className="mt-3 flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${
+                      video.isCompleted ? 'bg-green-500' : video.isCurrent ? 'bg-[#1472FF]' : 'bg-gray-300 dark:bg-gray-600'
+                    }`} />
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {video.isCompleted ? 'Completado' : video.isCurrent ? 'En progreso' : 'Pendiente'}
+                    </span>
                   </div>
                 </div>
               </div>
