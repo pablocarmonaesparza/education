@@ -311,34 +311,37 @@ function SalonContent() {
                 )}
               </div>
               
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2 flex-shrink-0">
+              {/* Action Buttons - expand left on hover */}
+              <div className="flex items-center flex-shrink-0">
                 {/* Completed Toggle Button */}
                 <button
                   onClick={() => toggleVideoCompletion(currentVideo.id, currentVideo.isCompleted)}
-                  className={`group h-10 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden ${
+                  className={`group h-10 rounded-full flex items-center transition-all duration-300 ease-out overflow-hidden px-2.5 hover:pl-4 hover:pr-3 ${
                     currentVideo.isCompleted
-                      ? 'bg-green-500 text-white hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-green-500 w-10 hover:w-[130px] hover:pl-3 hover:pr-4'
-                      : 'border-2 border-gray-300 dark:border-gray-600 text-gray-300 dark:text-gray-600 hover:border-green-500 hover:text-green-500 w-10 hover:w-[130px] hover:pl-3 hover:pr-4'
+                      ? 'bg-green-500 text-white hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-green-500'
+                      : 'border-2 border-gray-300 dark:border-gray-600 text-gray-300 dark:text-gray-600 hover:border-green-500 hover:text-green-500'
                   }`}
                 >
+                  <span className="text-sm font-medium whitespace-nowrap max-w-0 group-hover:max-w-[100px] overflow-hidden transition-all duration-300 ease-out opacity-0 group-hover:opacity-100 group-hover:mr-2">
+                    Completado
+                  </span>
                   <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  <span className="text-sm font-medium ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                    Completado
-                  </span>
                 </button>
 
                 {/* Favorite Toggle Button */}
                 <button
                   onClick={() => toggleFavorite(currentVideo.id)}
-                  className={`group h-10 rounded-full flex items-center justify-center transition-all duration-300 overflow-hidden ${
+                  className={`group h-10 rounded-full flex items-center transition-all duration-300 ease-out overflow-hidden px-2.5 hover:pl-4 hover:pr-3 ml-1 ${
                     favorites.has(currentVideo.id)
-                      ? 'bg-[#1472FF] text-white hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-[#1472FF] w-10 hover:w-[110px] hover:pl-3 hover:pr-4'
-                      : 'border-2 border-gray-300 dark:border-gray-600 text-gray-300 dark:text-gray-600 hover:border-[#1472FF] hover:text-[#1472FF] w-10 hover:w-[110px] hover:pl-3 hover:pr-4'
+                      ? 'bg-[#1472FF] text-white hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-[#1472FF]'
+                      : 'border-2 border-gray-300 dark:border-gray-600 text-gray-300 dark:text-gray-600 hover:border-[#1472FF] hover:text-[#1472FF]'
                   }`}
                 >
+                  <span className="text-sm font-medium whitespace-nowrap max-w-0 group-hover:max-w-[80px] overflow-hidden transition-all duration-300 ease-out opacity-0 group-hover:opacity-100 group-hover:mr-2">
+                    Favorito
+                  </span>
                   <svg 
                     className="w-5 h-5 flex-shrink-0" 
                     fill={favorites.has(currentVideo.id) ? 'currentColor' : 'none'} 
@@ -348,9 +351,6 @@ function SalonContent() {
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
                   </svg>
-                  <span className="text-sm font-medium ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                    Favorito
-                  </span>
                 </button>
               </div>
             </div>
