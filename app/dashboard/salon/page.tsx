@@ -156,6 +156,10 @@ function SalonContent() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // Find the video to get its section_id (phaseId)
+    const video = videos.find(v => v.id === videoId);
+    const sectionId = video?.phaseId || 'unknown';
+
     if (currentlyCompleted) {
       // Mark as pending
       await supabase
@@ -165,15 +169,20 @@ function SalonContent() {
         .eq('video_id', videoId);
     } else {
       // Mark as completed
-      await supabase
+      const { error } = await supabase
         .from('video_progress')
         .upsert({
           user_id: user.id,
           video_id: videoId,
+          section_id: sectionId,
           completed: true,
-          progress_percent: 100,
+          completed_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         }, { onConflict: 'user_id,video_id' });
+      
+      if (error) {
+        console.error('Error saving video progress:', error);
+      }
     }
 
     // Update local state
