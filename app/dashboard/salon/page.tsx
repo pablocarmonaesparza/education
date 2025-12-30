@@ -268,28 +268,42 @@ function SalonContent() {
                 )}
               </div>
               
-              {/* Complete/Uncomplete Button */}
+              {/* Complete/Pending Toggle Button */}
               <button
                 onClick={() => toggleVideoCompletion(currentVideo.id, currentVideo.isCompleted)}
-                className={`px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 flex-shrink-0 ${
+                className={`group px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 flex-shrink-0 ${
                   currentVideo.isCompleted
-                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/50'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-orange-100 dark:hover:bg-orange-900/30 hover:text-orange-700 dark:hover:text-orange-400'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-green-100 dark:hover:bg-green-900/30 hover:text-green-700 dark:hover:text-green-400'
                 }`}
               >
                 {currentVideo.isCompleted ? (
                   <>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {/* Default state: Completo */}
+                    <svg className="w-4 h-4 group-hover:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    Completado
+                    <span className="group-hover:hidden">Completo</span>
+                    
+                    {/* Hover state: Marcar pendiente */}
+                    <svg className="w-4 h-4 hidden group-hover:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="hidden group-hover:inline">Marcar pendiente</span>
                   </>
                 ) : (
                   <>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    {/* Default state: Pendiente */}
+                    <svg className="w-4 h-4 group-hover:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    Marcar completado
+                    <span className="group-hover:hidden">Pendiente</span>
+                    
+                    {/* Hover state: Marcar completo */}
+                    <svg className="w-4 h-4 hidden group-hover:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span className="hidden group-hover:inline">Marcar completo</span>
                   </>
                 )}
               </button>
