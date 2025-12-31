@@ -325,13 +325,17 @@ function SalonContent() {
                 {/* Completed Toggle Button */}
                 <button
                   onClick={() => toggleVideoCompletion(currentVideo.id, currentVideo.isCompleted)}
-                  className={`group w-10 h-10 hover:w-auto rounded-full flex items-center justify-center transition-all duration-200 ease-linear overflow-hidden hover:pl-4 hover:pr-3 ${
+                  className={`group w-10 h-10 hover:w-auto rounded-full flex items-center justify-center overflow-hidden hover:pl-4 hover:pr-3 ${
                     currentVideo.isCompleted
                       ? 'bg-green-500 text-white hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-green-500'
                       : 'border-2 border-gray-300 dark:border-gray-600 text-gray-300 dark:text-gray-600 hover:border-green-500 hover:text-green-500'
                   }`}
+                  style={{ transition: 'width 150ms linear, padding 150ms linear' }}
                 >
-                  <span className="text-sm font-medium whitespace-nowrap max-w-0 group-hover:max-w-[100px] overflow-hidden transition-all duration-200 ease-linear opacity-0 group-hover:opacity-100 group-hover:mr-2">
+                  <span 
+                    className="text-sm font-medium whitespace-nowrap max-w-0 group-hover:max-w-[100px] overflow-hidden opacity-0 group-hover:opacity-100 group-hover:mr-2"
+                    style={{ transition: 'max-width 150ms linear, opacity 150ms linear, margin 150ms linear' }}
+                  >
                     Completado
                   </span>
                   <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
@@ -342,13 +346,17 @@ function SalonContent() {
                 {/* Favorite Toggle Button */}
                 <button
                   onClick={() => toggleFavorite(currentVideo.id)}
-                  className={`group w-10 h-10 hover:w-auto rounded-full flex items-center justify-center transition-all duration-200 ease-linear overflow-hidden hover:pl-4 hover:pr-3 ${
+                  className={`group w-10 h-10 hover:w-auto rounded-full flex items-center justify-center overflow-hidden hover:pl-4 hover:pr-3 ${
                     favorites.has(currentVideo.id)
                       ? 'bg-[#1472FF] text-white hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-[#1472FF]'
                       : 'border-2 border-gray-300 dark:border-gray-600 text-gray-300 dark:text-gray-600 hover:border-[#1472FF] hover:text-[#1472FF]'
                   }`}
+                  style={{ transition: 'width 150ms linear, padding 150ms linear' }}
                 >
-                  <span className="text-sm font-medium whitespace-nowrap max-w-0 group-hover:max-w-[80px] overflow-hidden transition-all duration-200 ease-linear opacity-0 group-hover:opacity-100 group-hover:mr-2">
+                  <span 
+                    className="text-sm font-medium whitespace-nowrap max-w-0 group-hover:max-w-[80px] overflow-hidden opacity-0 group-hover:opacity-100 group-hover:mr-2"
+                    style={{ transition: 'max-width 150ms linear, opacity 150ms linear, margin 150ms linear' }}
+                  >
                     Favorito
                   </span>
                   <svg 
