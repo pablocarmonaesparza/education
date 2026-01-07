@@ -37,7 +37,7 @@ export default function PricingSection() {
     {
       id: "plus",
       name: "Plus",
-      price: 50,
+      price: 19,
       isMonthly: true,
       popular: true,
       description: "La experiencia completa con IA personalizada",
@@ -53,7 +53,7 @@ export default function PricingSection() {
     {
       id: "pro",
       name: "Pro",
-      price: 249,
+      price: 199,
       isMonthly: true,
       popular: false,
       description: "Experiencia premium con tutoría personalizada",
