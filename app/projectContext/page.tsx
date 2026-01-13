@@ -9,7 +9,7 @@ import OnboardingNavbar from '@/components/onboarding/OnboardingNavbar';
 const sections = [
   {
     id: 'ai',
-    name: 'AI & LLMs',
+    name: 'Inteligencia Artificial',
     questions: [
       {
         id: 'ai_familiarity',
@@ -77,7 +77,7 @@ const sections = [
   },
   {
     id: 'apis',
-    name: 'APIs',
+    name: 'Conexión de Servicios',
     questions: [
       {
         id: 'apis',
@@ -98,7 +98,7 @@ const sections = [
   },
   {
     id: 'data',
-    name: 'Datos',
+    name: 'Manejo de Datos',
     questions: [
       {
         id: 'data_comfort',
@@ -119,7 +119,7 @@ const sections = [
   },
   {
     id: 'advanced',
-    name: 'MCP & Agentes',
+    name: 'Herramientas Avanzadas',
     questions: [
       {
         id: 'mcp',
@@ -270,6 +270,20 @@ export default function ProjectContextPage() {
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-12">
         <div className="w-full max-w-2xl mx-auto">
+          {/* Section Name - Always visible at top */}
+          {currentIndex > 0 && (
+            <motion.div
+              key={currentSection.id}
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center mb-8"
+            >
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                {currentSection.name}
+              </h2>
+            </motion.div>
+          )}
+
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -287,19 +301,14 @@ export default function ProjectContextPage() {
                 </p>
               </>
             ) : (
-              <div className="flex flex-col items-center gap-2">
-                <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-                  {currentSection.name}
-                </h2>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-400 dark:text-gray-500">
-                    {currentIndex + 1} de {allQuestions.length}
-                  </span>
-                  <span className="text-sm text-gray-300 dark:text-gray-600">•</span>
-                  <span className="text-sm text-gray-400 dark:text-gray-500">
-                    ~{Math.ceil((allQuestions.length - currentIndex) * 0.2)} min
-                  </span>
-                </div>
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-sm text-gray-400 dark:text-gray-500">
+                  {currentIndex + 1} de {allQuestions.length}
+                </span>
+                <span className="text-sm text-gray-300 dark:text-gray-600">•</span>
+                <span className="text-sm text-gray-400 dark:text-gray-500">
+                  ~{Math.ceil((allQuestions.length - currentIndex) * 0.2)} min
+                </span>
               </div>
             )}
           </motion.div>
