@@ -15,6 +15,8 @@ interface Exercise {
   time_minutes: number;
   difficulty: number;
   isCompleted: boolean;
+  isUnlocked: boolean;
+  missingVideos: number[];
 }
 
 interface UserExercises {
@@ -28,6 +30,7 @@ interface UserExercises {
 export default function RetosPage() {
   const [exercisesData, setExercisesData] = useState<UserExercises | null>(null);
   const [completedExercises, setCompletedExercises] = useState<Set<number>>(new Set());
+  const [completedVideos, setCompletedVideos] = useState<Set<number>>(new Set());
   const [currentExercise, setCurrentExercise] = useState<Exercise | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasExercises, setHasExercises] = useState(false);
@@ -49,24 +52,43 @@ export default function RetosPage() {
           .single();
 
         if (exercisesResult) {
-          // Fetch progress
+          // Fetch exercise progress
           const { data: progressData } = await supabase
             .from('exercise_progress')
             .select('exercise_number, completed')
             .eq('user_id', user.id);
 
-          const completedSet = new Set(
+          const completedExercisesSet = new Set(
             (progressData || [])
               .filter((p: any) => p.completed)
               .map((p: any) => p.exercise_number)
           );
-          setCompletedExercises(completedSet);
+          setCompletedExercises(completedExercisesSet);
 
-          // Parse exercises
-          const exercises = (exercisesResult.exercises || []).map((ex: any) => ({
-            ...ex,
-            isCompleted: completedSet.has(ex.number)
-          }));
+          // Fetch video progress to check which videos are completed
+          const { data: videoProgressData } = await supabase
+            .from('video_progress')
+            .select('video_id')
+            .eq('user_id', user.id);
+
+          const completedVideosSet = new Set(
+            (videoProgressData || []).map((v: any) => v.video_id)
+          );
+          setCompletedVideos(completedVideosSet);
+
+          // Parse exercises with unlock status
+          const exercises = (exercisesResult.exercises || []).map((ex: any) => {
+            const requiredVideos = ex.videos_required || [];
+            const missingVideos = requiredVideos.filter((vid: number) => !completedVideosSet.has(vid));
+            const isUnlocked = missingVideos.length === 0;
+            
+            return {
+              ...ex,
+              isCompleted: completedExercisesSet.has(ex.number),
+              isUnlocked,
+              missingVideos
+            };
+          });
 
           const data: UserExercises = {
             user_project: exercisesResult.user_project,
@@ -79,9 +101,10 @@ export default function RetosPage() {
           setExercisesData(data);
           setHasExercises(true);
 
-          // Set current exercise (first incomplete or first)
+          // Set current exercise (first incomplete unlocked, or first incomplete, or first)
+          const firstIncompleteUnlocked = exercises.find((ex: Exercise) => !ex.isCompleted && ex.isUnlocked);
           const firstIncomplete = exercises.find((ex: Exercise) => !ex.isCompleted);
-          setCurrentExercise(firstIncomplete || exercises[0] || null);
+          setCurrentExercise(firstIncompleteUnlocked || firstIncomplete || exercises[0] || null);
         }
       }
       setIsLoading(false);
@@ -89,9 +112,12 @@ export default function RetosPage() {
     fetchData();
   }, [supabase]);
 
-  const toggleExerciseCompletion = async (exerciseNumber: number, currentlyCompleted: boolean) => {
+  const toggleExerciseCompletion = async (exerciseNumber: number, currentlyCompleted: boolean, isUnlocked: boolean) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
+
+    // Don't allow completion if not unlocked
+    if (!isUnlocked && !currentlyCompleted) return;
 
     if (currentlyCompleted) {
       // Mark as pending
@@ -233,6 +259,7 @@ export default function RetosPage() {
             {exercisesData?.exercises.map((exercise) => {
               const isActive = currentExercise?.number === exercise.number;
               const isCompleted = exercise.isCompleted;
+              const isLocked = !exercise.isUnlocked && !isCompleted;
 
               return (
                 <button
@@ -242,19 +269,25 @@ export default function RetosPage() {
                     isActive 
                       ? 'bg-blue-50 dark:bg-blue-950/50 border-l-2 border-[#1472FF]' 
                       : 'hover:bg-gray-100 dark:hover:bg-gray-800 border-l-2 border-transparent'
-                  }`}
+                  } ${isLocked ? 'opacity-50' : ''}`}
                 >
-                  {/* Number/Check */}
+                  {/* Number/Check/Lock */}
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                     isCompleted 
                       ? 'bg-green-500 text-white'
-                      : isActive
-                        ? 'bg-[#1472FF] text-white'
-                        : 'border-2 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400'
+                      : isLocked
+                        ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
+                        : isActive
+                          ? 'bg-[#1472FF] text-white'
+                          : 'border-2 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400'
                   }`}>
                     {isCompleted ? (
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : isLocked ? (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                       </svg>
                     ) : (
                       <span className="text-sm font-medium">{exercise.number}</span>
@@ -264,16 +297,18 @@ export default function RetosPage() {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <p className={`text-sm font-medium truncate ${
-                      isActive 
-                        ? 'text-[#1472FF]' 
-                        : isCompleted
-                          ? 'text-gray-500 dark:text-gray-400'
-                          : 'text-gray-900 dark:text-white'
+                      isLocked
+                        ? 'text-gray-400 dark:text-gray-500'
+                        : isActive 
+                          ? 'text-[#1472FF]' 
+                          : isCompleted
+                            ? 'text-gray-500 dark:text-gray-400'
+                            : 'text-gray-900 dark:text-white'
                     }`}>
                       {exercise.title}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className={`text-xs px-1.5 py-0.5 rounded ${getTypeColor(exercise.type)}`}>
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${isLocked ? 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500' : getTypeColor(exercise.type)}`}>
                         {exercise.type}
                       </span>
                       <span className="text-xs text-gray-400">
@@ -313,14 +348,24 @@ export default function RetosPage() {
 
                   {/* Complete Button */}
                   <button
-                    onClick={() => toggleExerciseCompletion(currentExercise.number, currentExercise.isCompleted)}
+                    onClick={() => toggleExerciseCompletion(currentExercise.number, currentExercise.isCompleted, currentExercise.isUnlocked)}
+                    disabled={!currentExercise.isUnlocked && !currentExercise.isCompleted}
                     className={`flex-shrink-0 px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ${
-                      currentExercise.isCompleted
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-orange-100 dark:hover:bg-orange-900/30 hover:text-orange-700 dark:hover:text-orange-400'
-                        : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-green-100 dark:hover:bg-green-900/30 hover:text-green-700 dark:hover:text-green-400'
+                      !currentExercise.isUnlocked && !currentExercise.isCompleted
+                        ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                        : currentExercise.isCompleted
+                          ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 hover:bg-orange-100 dark:hover:bg-orange-900/30 hover:text-orange-700 dark:hover:text-orange-400'
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-green-100 dark:hover:bg-green-900/30 hover:text-green-700 dark:hover:text-green-400'
                     }`}
                   >
-                    {currentExercise.isCompleted ? (
+                    {!currentExercise.isUnlocked && !currentExercise.isCompleted ? (
+                      <>
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <span>Bloqueado</span>
+                      </>
+                    ) : currentExercise.isCompleted ? (
                       <>
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -370,27 +415,49 @@ export default function RetosPage() {
 
                   {/* Videos Required */}
                   {currentExercise.videos_required && currentExercise.videos_required.length > 0 && (
-                    <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                        <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className={`rounded-2xl p-6 border ${
+                      currentExercise.missingVideos.length > 0
+                        ? 'bg-gradient-to-br from-orange-50 to-white dark:from-orange-950/20 dark:to-gray-900 border-orange-200 dark:border-orange-900'
+                        : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800'
+                    }`}>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
+                        <svg className={`w-5 h-5 ${currentExercise.missingVideos.length > 0 ? 'text-orange-500' : 'text-[#1472FF]'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         Videos requeridos
                       </h3>
+                      {currentExercise.missingVideos.length > 0 && (
+                        <p className="text-sm text-orange-600 dark:text-orange-400 mb-3">
+                          Completa los videos pendientes para desbloquear este reto
+                        </p>
+                      )}
                       <div className="flex flex-wrap gap-2">
-                        {currentExercise.videos_required.map((videoNum) => (
-                          <button
-                            key={videoNum}
-                            onClick={() => router.push(`/dashboard/salon?video=${videoNum}`)}
-                            className="px-3 py-1.5 bg-blue-50 dark:bg-blue-950/50 text-[#1472FF] rounded-lg text-sm font-medium hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors flex items-center gap-1"
-                          >
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z" />
-                            </svg>
-                            Video #{videoNum}
-                          </button>
-                        ))}
+                        {currentExercise.videos_required.map((videoNum) => {
+                          const isWatched = completedVideos.has(videoNum);
+                          return (
+                            <button
+                              key={videoNum}
+                              onClick={() => router.push(`/dashboard/salon?video=${videoNum}`)}
+                              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                                isWatched
+                                  ? 'bg-green-50 dark:bg-green-950/50 text-green-600 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50'
+                                  : 'bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-900/50'
+                              }`}
+                            >
+                              {isWatched ? (
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                              ) : (
+                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M8 5v14l11-7z" />
+                                </svg>
+                              )}
+                              Video #{videoNum}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
