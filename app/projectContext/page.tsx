@@ -13,18 +13,18 @@ const sections = [
     questions: [
       {
         id: 'ai_daily_use',
-        question: '¿Qué tan cómodo te sientes usando ChatGPT o Claude para tareas del día a día?',
-        labels: ['Nunca lo he usado', 'Lo he probado pocas veces', 'Lo uso ocasionalmente', 'Lo uso seguido', 'Lo uso diario con prompts avanzados'],
+        question: '¿Qué tan cómodo estás usando ChatGPT o Claude?',
+        labels: ['Nunca lo he usado', 'Lo he probado', 'Uso ocasional', 'Uso frecuente', 'Uso diario avanzado'],
       },
       {
         id: 'ai_concepts',
-        question: '¿Qué tanto entiendes conceptos como tokens, context window o temperature?',
-        labels: ['No sé qué son', 'He escuchado los términos', 'Entiendo lo básico', 'Los entiendo bien', 'Los manejo y optimizo conscientemente'],
+        question: '¿Entiendes conceptos como tokens, context window o temperature?',
+        labels: ['No sé qué son', 'He escuchado', 'Entiendo lo básico', 'Los entiendo bien', 'Los optimizo'],
       },
       {
         id: 'ai_custom_gpts',
-        question: '¿Has creado Custom GPTs o usado Claude Projects con knowledge bases?',
-        labels: ['No sabía que existían', 'Sé que existen', 'He probado alguno', 'Tengo algunos', 'Tengo varios funcionando'],
+        question: '¿Has creado Custom GPTs o Claude Projects?',
+        labels: ['No sabía que existían', 'Sé que existen', 'He probado', 'Tengo algunos', 'Tengo varios activos'],
       },
     ],
   },
@@ -34,18 +34,18 @@ const sections = [
     questions: [
       {
         id: 'automation_tools',
-        question: '¿Has usado herramientas como Zapier, Make o n8n para automatizar procesos?',
-        labels: ['Nunca', 'Las he explorado', 'He creado flujos simples', 'Tengo varios flujos', 'Tengo automatizaciones en producción'],
+        question: '¿Has usado Zapier, Make o n8n?',
+        labels: ['Nunca', 'Las he explorado', 'Flujos simples', 'Varios flujos', 'En producción'],
       },
       {
         id: 'automation_webhooks',
-        question: '¿Qué tan claro tienes cuándo usar webhooks vs triggers programados?',
-        labels: ['No sé la diferencia', 'Tengo una idea vaga', 'Entiendo la diferencia', 'Los uso según el caso', 'Elijo según el caso de uso'],
+        question: '¿Sabes cuándo usar webhooks vs triggers programados?',
+        labels: ['No sé la diferencia', 'Idea vaga', 'Entiendo', 'Los uso bien', 'Domino ambos'],
       },
       {
         id: 'automation_errors',
-        question: '¿Sabes manejar errores en un flujo de automatización (retries, logs, fallbacks)?',
-        labels: ['No', 'He visto que existen', 'Manejo errores básicos', 'Implemento error handling', 'Tengo error handling robusto implementado'],
+        question: '¿Sabes manejar errores en automatizaciones?',
+        labels: ['No', 'He visto que existen', 'Errores básicos', 'Implemento handling', 'Handling robusto'],
       },
     ],
   },
@@ -55,18 +55,18 @@ const sections = [
     questions: [
       {
         id: 'vibe_coding_tools',
-        question: '¿Has usado Cursor, Claude Code o Lovable para generar código con IA?',
-        labels: ['No los conozco', 'He escuchado de ellos', 'Los he probado', 'Los uso frecuentemente', 'Son mis herramientas principales'],
+        question: '¿Has usado Cursor, Claude Code o Lovable?',
+        labels: ['No los conozco', 'He escuchado', 'Los he probado', 'Uso frecuente', 'Son mi día a día'],
       },
       {
         id: 'vibe_coding_comfort',
-        question: '¿Qué tan cómodo te sientes leyendo y modificando código generado por IA?',
-        labels: ['No entiendo código', 'Me cuesta mucho', 'Puedo hacer cambios simples', 'Modifico con confianza', 'Reviso, refactoreo y testeo sin problema'],
+        question: '¿Puedes leer y modificar código generado por IA?',
+        labels: ['No entiendo código', 'Me cuesta', 'Cambios simples', 'Con confianza', 'Sin problema'],
       },
       {
         id: 'vibe_coding_git',
-        question: '¿Sabes usar Git para versionar tus proyectos?',
-        labels: ['No sé qué es Git', 'Sé que existe', 'Hago commits básicos', 'Uso branches', 'Hago commits, branches y PRs regularmente'],
+        question: '¿Sabes usar Git?',
+        labels: ['No sé qué es', 'Sé que existe', 'Commits básicos', 'Uso branches', 'PRs y todo'],
       },
     ],
   },
@@ -76,13 +76,13 @@ const sections = [
     questions: [
       {
         id: 'content_generation',
-        question: '¿Has generado contenido (texto, imágenes, video) con herramientas de IA?',
-        labels: ['Nunca', 'He experimentado', 'Genero ocasionalmente', 'Lo uso frecuentemente', 'Produzco contenido con IA regularmente'],
+        question: '¿Has generado contenido con IA?',
+        labels: ['Nunca', 'He experimentado', 'Ocasionalmente', 'Frecuentemente', 'Regularmente'],
       },
       {
         id: 'content_consistency',
-        question: '¿Sabes mantener consistencia de marca y voz cuando usas IA para contenido?',
-        labels: ['No lo he pensado', 'Estoy aprendiendo', 'Lo intento', 'Tengo criterios claros', 'Tengo prompts y guidelines definidos'],
+        question: '¿Mantienes consistencia de marca al usar IA?',
+        labels: ['No lo he pensado', 'Aprendiendo', 'Lo intento', 'Criterios claros', 'Guidelines definidos'],
       },
     ],
   },
@@ -92,34 +92,34 @@ const sections = [
     questions: [
       {
         id: 'api_understanding',
-        question: '¿Entiendes qué es una API y para qué sirve?',
-        labels: ['No tengo idea', 'Tengo una idea vaga', 'Entiendo el concepto', 'Las uso ocasionalmente', 'Consumo y diseño APIs'],
+        question: '¿Entiendes qué es una API?',
+        labels: ['No tengo idea', 'Idea vaga', 'Entiendo', 'Las uso', 'Las diseño'],
       },
       {
         id: 'api_calls',
-        question: '¿Has hecho llamadas a APIs usando Postman, cURL o código?',
-        labels: ['Nunca', 'He visto cómo se hace', 'Lo he intentado', 'Lo hago ocasionalmente', 'Lo hago frecuentemente'],
+        question: '¿Has hecho llamadas a APIs?',
+        labels: ['Nunca', 'He visto cómo', 'Lo he intentado', 'Ocasionalmente', 'Frecuentemente'],
       },
       {
         id: 'api_auth',
-        question: '¿Sabes manejar autenticación (API Keys, OAuth, Bearer tokens)?',
-        labels: ['No sé qué son', 'He escuchado los términos', 'Uso API Keys básicas', 'Manejo varios métodos', 'Implemento flujos de auth completos'],
+        question: '¿Manejas autenticación de APIs?',
+        labels: ['No sé qué es', 'He escuchado', 'API Keys básicas', 'Varios métodos', 'Auth completo'],
       },
     ],
   },
   {
     id: 'mcp',
-    name: 'MCP - Model Context Protocol',
+    name: 'MCP',
     questions: [
       {
         id: 'mcp_knowledge',
-        question: '¿Conoces qué es MCP y para qué sirve en el ecosistema de IA?',
-        labels: ['Primera vez que lo escucho', 'He oído mencionarlo', 'Entiendo el concepto', 'Lo he explorado', 'Ya uso MCP servers'],
+        question: '¿Conoces qué es MCP (Model Context Protocol)?',
+        labels: ['Primera vez', 'He oído', 'Entiendo', 'Lo he explorado', 'Ya lo uso'],
       },
       {
         id: 'mcp_integrations',
-        question: '¿Has configurado integraciones entre Claude Desktop y herramientas externas?',
-        labels: ['No', 'Lo he intentado', 'Tengo una integración', 'Tengo varias', 'Tengo varios MCP servers conectados'],
+        question: '¿Has conectado Claude Desktop con herramientas externas?',
+        labels: ['No', 'Lo he intentado', 'Una integración', 'Varias', 'Varios servers'],
       },
     ],
   },
@@ -129,29 +129,29 @@ const sections = [
     questions: [
       {
         id: 'token_costs',
-        question: '¿Entiendes cómo funcionan los costos por token en APIs de IA?',
-        labels: ['No tengo idea', 'Sé que hay costos', 'Entiendo lo básico', 'Calculo costos', 'Calculo y optimizo costos por proyecto'],
+        question: '¿Entiendes los costos por token en APIs de IA?',
+        labels: ['No tengo idea', 'Sé que hay costos', 'Lo básico', 'Calculo costos', 'Optimizo costos'],
       },
       {
         id: 'pricing_structure',
-        question: '¿Sabes estructurar pricing para un producto o servicio digital?',
-        labels: ['Nunca lo he hecho', 'Tengo ideas básicas', 'He definido precios simples', 'Tengo experiencia', 'Tengo experiencia con modelos de monetización'],
+        question: '¿Sabes estructurar pricing para productos digitales?',
+        labels: ['Nunca', 'Ideas básicas', 'Precios simples', 'Experiencia', 'Modelos completos'],
       },
     ],
   },
   {
     id: 'products',
-    name: 'Productos y Entregables',
+    name: 'Productos',
     questions: [
       {
         id: 'mvp_launch',
-        question: '¿Has lanzado un MVP o producto digital al mercado?',
-        labels: ['Nunca', 'Tengo ideas sin lanzar', 'Lancé algo pequeño', 'He lanzado un producto', 'He lanzado varios productos'],
+        question: '¿Has lanzado un MVP o producto digital?',
+        labels: ['Nunca', 'Ideas sin lanzar', 'Algo pequeño', 'Un producto', 'Varios productos'],
       },
       {
         id: 'deploy_knowledge',
-        question: '¿Sabes hacer deploy de una app o sitio web (Vercel, Railway, etc.)?',
-        labels: ['No sé qué es deploy', 'Sé que existe', 'Lo he intentado', 'He hecho algunos deploys', 'Hago deploys regularmente'],
+        question: '¿Sabes hacer deploy de apps o sitios web?',
+        labels: ['No sé qué es', 'Sé que existe', 'Lo he intentado', 'Algunos deploys', 'Regularmente'],
       },
     ],
   },
@@ -320,10 +320,10 @@ export default function ProjectContextPage() {
               <div className="max-w-md mx-auto px-4">
                 {/* Labels - extremes only */}
                 <div className="flex justify-between mb-4">
-                  <span className="text-xs text-gray-400 dark:text-gray-500 max-w-[100px] text-left">
+                  <span className="text-xs text-gray-400 dark:text-gray-500 max-w-[120px] text-left leading-tight">
                     {currentQuestion.labels[0]}
                   </span>
-                  <span className="text-xs text-gray-400 dark:text-gray-500 max-w-[100px] text-right">
+                  <span className="text-xs text-gray-400 dark:text-gray-500 max-w-[120px] text-right leading-tight">
                     {currentQuestion.labels[4]}
                   </span>
                 </div>
