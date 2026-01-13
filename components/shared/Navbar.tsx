@@ -102,7 +102,14 @@ export default function Navbar() {
     setMobileMenuOpen(false);
     
     const hash = href.replace('#', '');
-    const element = document.getElementById(hash);
+    // Try to find the element, or try mobile version if main one is hidden
+    let element = document.getElementById(hash);
+    
+    // If element is hidden (display: none or visibility), try mobile version
+    if (element && window.getComputedStyle(element).display === 'none') {
+      element = document.getElementById(`${hash}-mobile`);
+    }
+    
     if (element) {
       const navHeight = 80; // Height of navbar
       const elementPosition = element.getBoundingClientRect().top + window.scrollY;

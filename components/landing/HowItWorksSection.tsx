@@ -124,7 +124,7 @@ export default function HowItWorksSection() {
     <>
       {/* ============ MOBILE VERSION (< 768px) ============ */}
       <section
-        id="how-it-works"
+        id="how-it-works-mobile"
         className="md:hidden min-h-screen bg-white dark:bg-gray-950 flex flex-col relative"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -190,7 +190,7 @@ export default function HowItWorksSection() {
 
       {/* ============ DESKTOP VERSION (>= 768px) ============ */}
       <div 
-        id="how-it-works-desktop" 
+        id="how-it-works" 
         className="hidden md:block relative bg-white dark:bg-gray-950"
         style={{ height: `${steps.length * 100}vh` }}
       >
