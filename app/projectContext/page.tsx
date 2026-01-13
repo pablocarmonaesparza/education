@@ -5,63 +5,121 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import OnboardingNavbar from '@/components/onboarding/OnboardingNavbar';
 
-// Simplified questions with slider responses
+// 20 questions with custom intermediate labels
 const questions = [
+  // AI & LLMs
   {
     id: 'ai_familiarity',
     question: '¿Qué tan familiarizado estás con herramientas de AI como ChatGPT o Claude?',
-    lowLabel: 'Nunca las he usado',
-    highLabel: 'Las uso diariamente',
+    labels: ['Nunca las he usado', 'Uso ocasional', 'Uso semanal', 'Uso frecuente', 'Uso diario'],
   },
   {
     id: 'prompting',
     question: '¿Qué tan avanzadas son tus técnicas de prompting?',
-    lowLabel: 'Prompts básicos',
-    highLabel: 'System prompts y chains',
+    labels: ['Solo prompts simples', 'Doy contexto básico', 'Uso ejemplos y formatos', 'System prompts', 'Chains y meta-prompts'],
   },
+  {
+    id: 'ai_features',
+    question: '¿Qué features de AI has utilizado?',
+    labels: ['Solo chat básico', 'Análisis de docs', 'Custom GPTs/Projects', 'APIs de AI', 'Integraciones avanzadas'],
+  },
+  {
+    id: 'rag_knowledge',
+    question: '¿Has trabajado con RAG (Retrieval Augmented Generation)?',
+    labels: ['No sé qué es', 'Conozco el concepto', 'He subido docs a GPTs', 'He usado embeddings', 'Implemento RAG completo'],
+  },
+  // Automation
   {
     id: 'automation',
     question: '¿Has creado automatizaciones con Zapier, Make o n8n?',
-    lowLabel: 'Nunca',
-    highLabel: 'Múltiples en producción',
+    labels: ['Nunca', 'He probado algo', 'Tengo 1-2 activas', 'Varias en producción', 'Es mi día a día'],
   },
+  {
+    id: 'automation_complexity',
+    question: '¿Qué tan complejas son tus automatizaciones?',
+    labels: ['Nunca he hecho', 'Conexiones simples', 'Flujos multi-paso', 'Condicionales y errores', 'APIs y código custom'],
+  },
+  {
+    id: 'automation_ai',
+    question: '¿Has integrado AI dentro de tus automatizaciones?',
+    labels: ['Nunca', 'Lo he intentado', 'Tengo 1-2 flujos', 'Varios flujos con AI', 'AI es central'],
+  },
+  // Coding
   {
     id: 'coding',
     question: '¿Cuál es tu nivel de programación?',
-    lowLabel: 'No sé programar',
-    highLabel: 'Programo regularmente',
+    labels: ['No sé programar', 'Modifico código existente', 'Scripts básicos', 'Programo regularmente', 'Desarrollo profesional'],
   },
+  {
+    id: 'ai_coding_tools',
+    question: '¿Has usado herramientas de AI para programar?',
+    labels: ['Nunca', 'Las he probado', 'Uso ChatGPT para código', 'Uso Copilot', 'Uso Cursor/Claude Code'],
+  },
+  {
+    id: 'vibe_coding',
+    question: '¿Has usado herramientas que generan apps desde prompts (v0, Bolt, Lovable)?',
+    labels: ['No sé qué son', 'Las conozco', 'He generado prototipos', 'Proyectos funcionales', 'Apps en producción'],
+  },
+  // APIs
   {
     id: 'apis',
     question: '¿Has trabajado con APIs?',
-    lowLabel: 'No sé qué es',
-    highLabel: 'Las uso regularmente',
+    labels: ['No sé qué es', 'Entiendo el concepto', 'He usado Postman', 'Conecto APIs regularmente', 'Desarrollo con APIs'],
   },
   {
-    id: 'data',
-    question: '¿Qué tan cómodo te sientes manejando datos y bases de datos?',
-    lowLabel: 'Solo Excel básico',
-    highLabel: 'SQL y DBs avanzadas',
+    id: 'api_types',
+    question: '¿Con qué tipos de APIs has trabajado?',
+    labels: ['Ninguna', 'Productividad (Sheets)', 'Comunicación (Slack)', 'AI (OpenAI)', 'Pagos/CRMs'],
   },
+  {
+    id: 'webhooks',
+    question: '¿Has trabajado con webhooks?',
+    labels: ['No sé qué son', 'Entiendo el concepto', 'He configurado algunos', 'Los uso regularmente', 'Diseño sistemas con webhooks'],
+  },
+  // Data
+  {
+    id: 'data_comfort',
+    question: '¿Qué tan cómodo te sientes trabajando con datos?',
+    labels: ['Me intimida', 'Hojas de cálculo básicas', 'Fórmulas y filtros', 'Análisis y reportes', 'Muy cómodo'],
+  },
+  {
+    id: 'databases',
+    question: '¿Has trabajado con bases de datos?',
+    labels: ['Nunca', 'Airtable/Notion', 'SQL básico', 'Queries complejos', 'Diseño de schemas'],
+  },
+  {
+    id: 'sql_level',
+    question: '¿Cuál es tu nivel de SQL?',
+    labels: ['No sé SQL', 'SELECT básico', 'WHERE y ORDER BY', 'JOINs y GROUP BY', 'CTEs y window functions'],
+  },
+  // MCP & Agents
+  {
+    id: 'mcp',
+    question: '¿Has trabajado con MCP (Model Context Protocol)?',
+    labels: ['No sé qué es', 'He escuchado', 'He configurado servers', 'Uso varios servers', 'Creo MCP servers'],
+  },
+  {
+    id: 'agents',
+    question: '¿Has creado o usado agentes de AI?',
+    labels: ['No sé qué son', 'Conozco el concepto', 'He probado algunos', 'Los uso regularmente', 'Diseño agentes'],
+  },
+  // Context
   {
     id: 'project_stage',
     question: '¿En qué etapa está tu proyecto?',
-    lowLabel: 'Solo una idea',
-    highLabel: 'Ya genera ingresos',
+    labels: ['Solo una idea', 'Prototipo básico', 'MVP funcional', 'Usuarios activos', 'Genera ingresos'],
   },
   {
     id: 'time_available',
     question: '¿Cuántas horas semanales puedes dedicar a aprender?',
-    lowLabel: 'Menos de 3 hrs',
-    highLabel: 'Más de 15 hrs',
+    labels: ['1-3 horas', '3-5 horas', '5-10 horas', '10-15 horas', '+15 horas'],
   },
 ];
 
 interface QuestionResponse {
   question: string;
   value: number;
-  lowLabel: string;
-  highLabel: string;
+  label: string;
 }
 
 export default function ProjectContextPage() {
@@ -111,11 +169,11 @@ export default function ProjectContextPage() {
     const responses: Record<string, QuestionResponse> = {};
     
     questions.forEach(q => {
+      const value = answers[q.id] ?? 3;
       responses[q.id] = {
         question: q.question,
-        value: answers[q.id] ?? 3,
-        lowLabel: q.lowLabel,
-        highLabel: q.highLabel,
+        value: value,
+        label: q.labels[value - 1],
       };
     });
 
@@ -128,6 +186,7 @@ export default function ProjectContextPage() {
   };
 
   const progress = ((currentIndex + 1) / questions.length) * 100;
+  const currentLabel = currentQuestion.labels[currentValue - 1];
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 flex flex-col">
@@ -158,7 +217,7 @@ export default function ProjectContextPage() {
                 </span>
                 <span className="text-sm text-gray-300 dark:text-gray-600">•</span>
                 <span className="text-sm text-gray-400 dark:text-gray-500">
-                  ~{Math.ceil((questions.length - currentIndex) * 0.25)} min restantes
+                  ~{Math.ceil((questions.length - currentIndex) * 0.2)} min restantes
                 </span>
               </div>
             )}
@@ -192,13 +251,13 @@ export default function ProjectContextPage() {
               
               {/* Slider Container */}
               <div className="max-w-md mx-auto px-4">
-                {/* Labels */}
+                {/* Labels - extremes only */}
                 <div className="flex justify-between mb-4">
-                  <span className="text-sm text-gray-500 dark:text-gray-400 max-w-[120px] text-left">
-                    {currentQuestion.lowLabel}
+                  <span className="text-xs text-gray-400 dark:text-gray-500 max-w-[100px] text-left">
+                    {currentQuestion.labels[0]}
                   </span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400 max-w-[120px] text-right">
-                    {currentQuestion.highLabel}
+                  <span className="text-xs text-gray-400 dark:text-gray-500 max-w-[100px] text-right">
+                    {currentQuestion.labels[4]}
                   </span>
                 </div>
 
@@ -248,18 +307,14 @@ export default function ProjectContextPage() {
                   />
                 </div>
 
-                {/* Current Value Label */}
+                {/* Current Value Label - now shows the actual label for the value */}
                 <div className="text-center mt-6">
                   <span className={`inline-block px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                     isDragging 
                       ? 'bg-[#1472FF] text-white scale-110' 
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                   }`}>
-                    {currentValue === 1 && currentQuestion.lowLabel}
-                    {currentValue === 2 && 'Básico'}
-                    {currentValue === 3 && 'Intermedio'}
-                    {currentValue === 4 && 'Avanzado'}
-                    {currentValue === 5 && currentQuestion.highLabel}
+                    {currentLabel}
                   </span>
                 </div>
               </div>
@@ -294,17 +349,17 @@ export default function ProjectContextPage() {
           </div>
 
           {/* Question dots indicator */}
-          <div className="flex justify-center gap-2 mt-8">
+          <div className="flex justify-center gap-1.5 mt-8 flex-wrap max-w-xs mx-auto">
             {questions.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
-                className={`h-2 rounded-full transition-all duration-300 ${
+                className={`h-1.5 rounded-full transition-all duration-300 ${
                   index === currentIndex
-                    ? 'w-8 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF]'
+                    ? 'w-6 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF]'
                     : answers[questions[index].id] !== undefined
-                      ? 'w-2 bg-[#1472FF]'
-                      : 'w-2 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600'
+                      ? 'w-1.5 bg-[#1472FF]'
+                      : 'w-1.5 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600'
                 }`}
               />
             ))}
