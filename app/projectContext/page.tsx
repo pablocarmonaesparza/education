@@ -8,150 +8,120 @@ import OnboardingNavbar from '@/components/onboarding/OnboardingNavbar';
 // Sections with their questions
 const sections = [
   {
-    id: 'ai',
-    name: 'Inteligencia Artificial',
+    id: 'technical',
+    name: 'Experiencia Técnica',
     questions: [
       {
-        id: 'ai_daily_use',
-        question: '¿Qué tan cómodo estás usando ChatGPT o Claude?',
-        labels: ['Nunca lo he usado', 'Lo he probado', 'Uso ocasional', 'Uso frecuente', 'Uso diario avanzado'],
+        id: 'ai_familiarity',
+        question: '¿Qué tan familiarizado estás con ChatGPT, Claude o herramientas similares?',
+        labels: ['Nunca las he usado', 'Las he probado', 'Uso ocasional', 'Uso frecuente', 'Uso avanzado diario'],
       },
       {
-        id: 'ai_concepts',
-        question: '¿Entiendes conceptos como tokens, context window o temperature?',
-        labels: ['No sé qué son', 'Los he escuchado', 'Entiendo lo básico', 'Los entiendo bien', 'Los manejo y optimizo'],
+        id: 'prompting',
+        question: '¿Qué tan efectivo eres escribiendo prompts para obtener buenos resultados?',
+        labels: ['No sé qué es un prompt', 'Prompts básicos', 'Buenos resultados', 'Técnicas avanzadas', 'Experto en prompting'],
       },
       {
-        id: 'ai_custom_gpts',
-        question: '¿Has creado Custom GPTs o Claude Projects?',
-        labels: ['No sabía que existían', 'Sé que existen', 'He probado alguno', 'Tengo algunos', 'Tengo varios activos'],
+        id: 'automation',
+        question: '¿Has creado flujos de automatización que conecten diferentes apps?',
+        labels: ['Nunca', 'He explorado', 'Flujos simples', 'Varios flujos', 'Flujos en producción'],
+      },
+      {
+        id: 'coding',
+        question: '¿Cuál es tu nivel de experiencia escribiendo código?',
+        labels: ['Ninguno', 'He modificado código', 'Scripts básicos', 'Programo seguido', 'Desarrollo profesional'],
+      },
+      {
+        id: 'apis',
+        question: '¿Sabes qué es una API y has hecho llamadas a servicios externos?',
+        labels: ['No sé qué es', 'Entiendo el concepto', 'He hecho llamadas', 'Las uso seguido', 'Las diseño e implemento'],
+      },
+      {
+        id: 'databases',
+        question: '¿Has trabajado con bases de datos (SQL, Airtable, Supabase)?',
+        labels: ['Nunca', 'He explorado', 'Consultas básicas', 'Las uso seguido', 'Diseño schemas'],
+      },
+      {
+        id: 'content',
+        question: '¿Generas contenido para redes, blogs, emails o video regularmente?',
+        labels: ['No genero contenido', 'Ocasionalmente', 'Regularmente', 'Es parte de mi trabajo', 'Es mi trabajo principal'],
+      },
+      {
+        id: 'vibe_coding',
+        question: '¿Has usado herramientas que generan código desde prompts (Cursor, Lovable)?',
+        labels: ['No las conozco', 'He escuchado', 'Las he probado', 'Las uso seguido', 'Son mis herramientas principales'],
       },
     ],
   },
   {
-    id: 'automation',
-    name: 'Automatización',
+    id: 'business',
+    name: 'Contexto de Negocio',
     questions: [
       {
-        id: 'automation_tools',
-        question: '¿Has usado Zapier, Make o n8n para automatizar?',
-        labels: ['Nunca', 'Las he explorado', 'Flujos simples', 'Varios flujos activos', 'Flujos en producción'],
+        id: 'project_clarity',
+        question: '¿Qué tan definido tienes el proyecto que quieres construir?',
+        labels: ['Solo una idea vaga', 'Idea general', 'Concepto claro', 'Plan definido', 'Roadmap detallado'],
       },
       {
-        id: 'automation_webhooks',
-        question: '¿Sabes cuándo usar webhooks vs triggers programados?',
-        labels: ['No sé la diferencia', 'Tengo idea vaga', 'Entiendo la diferencia', 'Los uso según el caso', 'Domino ambos'],
+        id: 'sales_experience',
+        question: '¿Has vendido algo (producto, servicio, consultoría) de forma directa?',
+        labels: ['Nunca he vendido', 'Pocas veces', 'Algunas ventas', 'Vendo regularmente', 'Ventas son mi fuerte'],
       },
       {
-        id: 'automation_errors',
-        question: '¿Sabes manejar errores en automatizaciones?',
-        labels: ['No', 'Sé que existen', 'Manejo básico', 'Implemento handling', 'Error handling robusto'],
+        id: 'pricing',
+        question: '¿Sabes cómo estructurar precios y modelos de monetización?',
+        labels: ['No tengo idea', 'Nociones básicas', 'He definido precios', 'Tengo experiencia', 'Experto en pricing'],
+      },
+      {
+        id: 'launches',
+        question: '¿Cuántos proyectos has llevado de idea a lanzamiento?',
+        labels: ['Ninguno', 'Uno incompleto', 'Uno completo', '2-3 proyectos', 'Más de 3'],
+      },
+      {
+        id: 'goal',
+        question: '¿Qué describe mejor lo que quieres lograr con este curso?',
+        labels: ['Explorar IA', 'Aprender habilidades', 'Crear un proyecto', 'Lanzar un producto', 'Escalar mi negocio'],
+      },
+      {
+        id: 'timeline',
+        question: '¿En cuánto tiempo necesitas tener resultados concretos?',
+        labels: ['Sin prisa', '6+ meses', '3-6 meses', '1-3 meses', 'Lo antes posible'],
       },
     ],
   },
   {
-    id: 'vibe_coding',
-    name: 'Vibe-Coding',
+    id: 'learning',
+    name: 'Estilo de Aprendizaje',
     questions: [
       {
-        id: 'vibe_coding_tools',
-        question: '¿Has usado Cursor, Claude Code o Lovable?',
-        labels: ['No los conozco', 'He escuchado de ellos', 'Los he probado', 'Los uso seguido', 'Son mis herramientas principales'],
+        id: 'confidence',
+        question: '¿Qué tan seguro te sientes aprendiendo tecnología nueva?',
+        labels: ['Me intimida', 'Algo inseguro', 'Normal', 'Bastante seguro', 'Muy seguro'],
       },
       {
-        id: 'vibe_coding_comfort',
-        question: '¿Puedes leer y modificar código generado por IA?',
-        labels: ['No entiendo código', 'Me cuesta mucho', 'Cambios simples', 'Modifico con confianza', 'Lo hago sin problema'],
+        id: 'problem_solving',
+        question: 'Cuando te trabas en un problema técnico, ¿qué haces?',
+        labels: ['Me frustro y paro', 'Pido ayuda pronto', 'Busco un poco', 'Investigo a fondo', 'Disfruto el reto'],
       },
       {
-        id: 'vibe_coding_git',
-        question: '¿Sabes usar Git para versionar proyectos?',
-        labels: ['No sé qué es Git', 'Sé que existe', 'Commits básicos', 'Uso branches', 'Commits, branches y PRs'],
-      },
-    ],
-  },
-  {
-    id: 'content',
-    name: 'Generación de Contenido',
-    questions: [
-      {
-        id: 'content_generation',
-        question: '¿Has generado contenido (texto, imágenes, video) con IA?',
-        labels: ['Nunca', 'He experimentado', 'Ocasionalmente', 'Frecuentemente', 'Es parte de mi flujo'],
+        id: 'courses_completed',
+        question: '¿Cuántos cursos online has completado (no solo empezado)?',
+        labels: ['Ninguno', '1-2 cursos', '3-5 cursos', '6-10 cursos', 'Más de 10'],
       },
       {
-        id: 'content_consistency',
-        question: '¿Mantienes consistencia de marca y voz al usar IA?',
-        labels: ['No lo he pensado', 'Estoy aprendiendo', 'Lo intento', 'Tengo criterios claros', 'Tengo guidelines definidos'],
-      },
-    ],
-  },
-  {
-    id: 'apis',
-    name: 'APIs',
-    questions: [
-      {
-        id: 'api_understanding',
-        question: '¿Entiendes qué es una API y para qué sirve?',
-        labels: ['No tengo idea', 'Tengo idea vaga', 'Entiendo el concepto', 'Las uso ocasionalmente', 'Las consumo y diseño'],
+        id: 'learning_style',
+        question: '¿Cómo prefieres aprender algo nuevo?',
+        labels: ['Leyendo teoría', 'Videos paso a paso', 'Ejemplos prácticos', 'Haciendo proyectos', 'Experimentando solo'],
       },
       {
-        id: 'api_calls',
-        question: '¿Has hecho llamadas a APIs con Postman o código?',
-        labels: ['Nunca', 'He visto cómo se hace', 'Lo he intentado', 'Lo hago ocasionalmente', 'Lo hago frecuentemente'],
+        id: 'time_available',
+        question: '¿Cuántas horas a la semana puedes dedicar a este curso?',
+        labels: ['1-2 horas', '3-5 horas', '5-10 horas', '10-15 horas', '+15 horas'],
       },
       {
-        id: 'api_auth',
-        question: '¿Manejas autenticación (API Keys, OAuth, tokens)?',
-        labels: ['No sé qué son', 'He escuchado', 'Uso API Keys', 'Manejo varios métodos', 'Implemento auth completo'],
-      },
-    ],
-  },
-  {
-    id: 'mcp',
-    name: 'MCP',
-    questions: [
-      {
-        id: 'mcp_knowledge',
-        question: '¿Conoces qué es MCP (Model Context Protocol)?',
-        labels: ['Primera vez que lo escucho', 'He oído de él', 'Entiendo el concepto', 'Lo he explorado', 'Ya uso MCP servers'],
-      },
-      {
-        id: 'mcp_integrations',
-        question: '¿Has conectado Claude Desktop con herramientas externas?',
-        labels: ['No', 'Lo he intentado', 'Tengo una integración', 'Tengo varias', 'Varios MCP servers'],
-      },
-    ],
-  },
-  {
-    id: 'finance',
-    name: 'Finanzas & Tokens',
-    questions: [
-      {
-        id: 'token_costs',
-        question: '¿Entiendes cómo funcionan los costos por token en APIs de IA?',
-        labels: ['No tengo idea', 'Sé que hay costos', 'Entiendo lo básico', 'Calculo costos', 'Calculo y optimizo'],
-      },
-      {
-        id: 'pricing_structure',
-        question: '¿Sabes estructurar pricing para productos digitales?',
-        labels: ['Nunca lo he hecho', 'Tengo ideas básicas', 'He definido precios', 'Tengo experiencia', 'Modelos de monetización'],
-      },
-    ],
-  },
-  {
-    id: 'products',
-    name: 'Productos',
-    questions: [
-      {
-        id: 'mvp_launch',
-        question: '¿Has lanzado un MVP o producto digital al mercado?',
-        labels: ['Nunca', 'Ideas sin lanzar', 'Lancé algo pequeño', 'He lanzado uno', 'He lanzado varios'],
-      },
-      {
-        id: 'deploy_knowledge',
-        question: '¿Sabes hacer deploy de apps (Vercel, Railway, etc.)?',
-        labels: ['No sé qué es deploy', 'Sé que existe', 'Lo he intentado', 'He hecho deploys', 'Lo hago regularmente'],
+        id: 'english',
+        question: '¿Qué tan cómodo te sientes con documentación en inglés?',
+        labels: ['No entiendo inglés', 'Muy básico', 'Leo con traductor', 'Leo bien', 'Totalmente cómodo'],
       },
     ],
   },
