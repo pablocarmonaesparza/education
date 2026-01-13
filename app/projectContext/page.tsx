@@ -19,12 +19,12 @@ const sections = [
       {
         id: 'ai_concepts',
         question: '¿Entiendes conceptos como tokens, context window o temperature?',
-        labels: ['No sé qué son', 'He escuchado', 'Entiendo lo básico', 'Los entiendo bien', 'Los optimizo'],
+        labels: ['No sé qué son', 'Los he escuchado', 'Entiendo lo básico', 'Los entiendo bien', 'Los manejo y optimizo'],
       },
       {
         id: 'ai_custom_gpts',
         question: '¿Has creado Custom GPTs o Claude Projects?',
-        labels: ['No sabía que existían', 'Sé que existen', 'He probado', 'Tengo algunos', 'Tengo varios activos'],
+        labels: ['No sabía que existían', 'Sé que existen', 'He probado alguno', 'Tengo algunos', 'Tengo varios activos'],
       },
     ],
   },
@@ -34,18 +34,18 @@ const sections = [
     questions: [
       {
         id: 'automation_tools',
-        question: '¿Has usado Zapier, Make o n8n?',
-        labels: ['Nunca', 'Las he explorado', 'Flujos simples', 'Varios flujos', 'En producción'],
+        question: '¿Has usado Zapier, Make o n8n para automatizar?',
+        labels: ['Nunca', 'Las he explorado', 'Flujos simples', 'Varios flujos activos', 'Flujos en producción'],
       },
       {
         id: 'automation_webhooks',
         question: '¿Sabes cuándo usar webhooks vs triggers programados?',
-        labels: ['No sé la diferencia', 'Idea vaga', 'Entiendo', 'Los uso bien', 'Domino ambos'],
+        labels: ['No sé la diferencia', 'Tengo idea vaga', 'Entiendo la diferencia', 'Los uso según el caso', 'Domino ambos'],
       },
       {
         id: 'automation_errors',
         question: '¿Sabes manejar errores en automatizaciones?',
-        labels: ['No', 'He visto que existen', 'Errores básicos', 'Implemento handling', 'Handling robusto'],
+        labels: ['No', 'Sé que existen', 'Manejo básico', 'Implemento handling', 'Error handling robusto'],
       },
     ],
   },
@@ -56,17 +56,17 @@ const sections = [
       {
         id: 'vibe_coding_tools',
         question: '¿Has usado Cursor, Claude Code o Lovable?',
-        labels: ['No los conozco', 'He escuchado', 'Los he probado', 'Uso frecuente', 'Son mi día a día'],
+        labels: ['No los conozco', 'He escuchado de ellos', 'Los he probado', 'Los uso seguido', 'Son mis herramientas principales'],
       },
       {
         id: 'vibe_coding_comfort',
         question: '¿Puedes leer y modificar código generado por IA?',
-        labels: ['No entiendo código', 'Me cuesta', 'Cambios simples', 'Con confianza', 'Sin problema'],
+        labels: ['No entiendo código', 'Me cuesta mucho', 'Cambios simples', 'Modifico con confianza', 'Lo hago sin problema'],
       },
       {
         id: 'vibe_coding_git',
-        question: '¿Sabes usar Git?',
-        labels: ['No sé qué es', 'Sé que existe', 'Commits básicos', 'Uso branches', 'PRs y todo'],
+        question: '¿Sabes usar Git para versionar proyectos?',
+        labels: ['No sé qué es Git', 'Sé que existe', 'Commits básicos', 'Uso branches', 'Commits, branches y PRs'],
       },
     ],
   },
@@ -76,13 +76,13 @@ const sections = [
     questions: [
       {
         id: 'content_generation',
-        question: '¿Has generado contenido con IA?',
-        labels: ['Nunca', 'He experimentado', 'Ocasionalmente', 'Frecuentemente', 'Regularmente'],
+        question: '¿Has generado contenido (texto, imágenes, video) con IA?',
+        labels: ['Nunca', 'He experimentado', 'Ocasionalmente', 'Frecuentemente', 'Es parte de mi flujo'],
       },
       {
         id: 'content_consistency',
-        question: '¿Mantienes consistencia de marca al usar IA?',
-        labels: ['No lo he pensado', 'Aprendiendo', 'Lo intento', 'Criterios claros', 'Guidelines definidos'],
+        question: '¿Mantienes consistencia de marca y voz al usar IA?',
+        labels: ['No lo he pensado', 'Estoy aprendiendo', 'Lo intento', 'Tengo criterios claros', 'Tengo guidelines definidos'],
       },
     ],
   },
@@ -92,18 +92,18 @@ const sections = [
     questions: [
       {
         id: 'api_understanding',
-        question: '¿Entiendes qué es una API?',
-        labels: ['No tengo idea', 'Idea vaga', 'Entiendo', 'Las uso', 'Las diseño'],
+        question: '¿Entiendes qué es una API y para qué sirve?',
+        labels: ['No tengo idea', 'Tengo idea vaga', 'Entiendo el concepto', 'Las uso ocasionalmente', 'Las consumo y diseño'],
       },
       {
         id: 'api_calls',
-        question: '¿Has hecho llamadas a APIs?',
-        labels: ['Nunca', 'He visto cómo', 'Lo he intentado', 'Ocasionalmente', 'Frecuentemente'],
+        question: '¿Has hecho llamadas a APIs con Postman o código?',
+        labels: ['Nunca', 'He visto cómo se hace', 'Lo he intentado', 'Lo hago ocasionalmente', 'Lo hago frecuentemente'],
       },
       {
         id: 'api_auth',
-        question: '¿Manejas autenticación de APIs?',
-        labels: ['No sé qué es', 'He escuchado', 'API Keys básicas', 'Varios métodos', 'Auth completo'],
+        question: '¿Manejas autenticación (API Keys, OAuth, tokens)?',
+        labels: ['No sé qué son', 'He escuchado', 'Uso API Keys', 'Manejo varios métodos', 'Implemento auth completo'],
       },
     ],
   },
@@ -114,12 +114,12 @@ const sections = [
       {
         id: 'mcp_knowledge',
         question: '¿Conoces qué es MCP (Model Context Protocol)?',
-        labels: ['Primera vez', 'He oído', 'Entiendo', 'Lo he explorado', 'Ya lo uso'],
+        labels: ['Primera vez que lo escucho', 'He oído de él', 'Entiendo el concepto', 'Lo he explorado', 'Ya uso MCP servers'],
       },
       {
         id: 'mcp_integrations',
         question: '¿Has conectado Claude Desktop con herramientas externas?',
-        labels: ['No', 'Lo he intentado', 'Una integración', 'Varias', 'Varios servers'],
+        labels: ['No', 'Lo he intentado', 'Tengo una integración', 'Tengo varias', 'Varios MCP servers'],
       },
     ],
   },
@@ -129,13 +129,13 @@ const sections = [
     questions: [
       {
         id: 'token_costs',
-        question: '¿Entiendes los costos por token en APIs de IA?',
-        labels: ['No tengo idea', 'Sé que hay costos', 'Lo básico', 'Calculo costos', 'Optimizo costos'],
+        question: '¿Entiendes cómo funcionan los costos por token en APIs de IA?',
+        labels: ['No tengo idea', 'Sé que hay costos', 'Entiendo lo básico', 'Calculo costos', 'Calculo y optimizo'],
       },
       {
         id: 'pricing_structure',
         question: '¿Sabes estructurar pricing para productos digitales?',
-        labels: ['Nunca', 'Ideas básicas', 'Precios simples', 'Experiencia', 'Modelos completos'],
+        labels: ['Nunca lo he hecho', 'Tengo ideas básicas', 'He definido precios', 'Tengo experiencia', 'Modelos de monetización'],
       },
     ],
   },
@@ -145,13 +145,13 @@ const sections = [
     questions: [
       {
         id: 'mvp_launch',
-        question: '¿Has lanzado un MVP o producto digital?',
-        labels: ['Nunca', 'Ideas sin lanzar', 'Algo pequeño', 'Un producto', 'Varios productos'],
+        question: '¿Has lanzado un MVP o producto digital al mercado?',
+        labels: ['Nunca', 'Ideas sin lanzar', 'Lancé algo pequeño', 'He lanzado uno', 'He lanzado varios'],
       },
       {
         id: 'deploy_knowledge',
-        question: '¿Sabes hacer deploy de apps o sitios web?',
-        labels: ['No sé qué es', 'Sé que existe', 'Lo he intentado', 'Algunos deploys', 'Regularmente'],
+        question: '¿Sabes hacer deploy de apps (Vercel, Railway, etc.)?',
+        labels: ['No sé qué es deploy', 'Sé que existe', 'Lo he intentado', 'He hecho deploys', 'Lo hago regularmente'],
       },
     ],
   },
