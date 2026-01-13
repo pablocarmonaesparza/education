@@ -288,7 +288,7 @@ export default function ProjectContextPage() {
           {/* Progress counter */}
           <div className="flex items-center justify-center gap-2 mb-8">
             <span className="text-sm text-gray-400 dark:text-gray-500">
-              {currentIndex + 1} de {allQuestions.length}
+              {currentIndex + 1} de {allQuestions.length} para personalizar tu curso
             </span>
             <span className="text-sm text-gray-300 dark:text-gray-600">•</span>
             <span className="text-sm text-gray-400 dark:text-gray-500">
