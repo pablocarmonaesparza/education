@@ -1,12 +1,14 @@
 import type { Config } from "tailwindcss";
 const { fontFamily } = require("tailwindcss/defaultTheme");
+const { heroui } = require("@heroui/react");
 
 const config: Config = {
-  darkMode: "media",
+  darkMode: "class",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -47,6 +49,28 @@ const config: Config = {
     },
   },
   plugins: [
+    heroui({
+      themes: {
+        light: {
+          colors: {
+            primary: {
+              DEFAULT: "#1472FF",
+              foreground: "#FFFFFF",
+            },
+            focus: "#1472FF",
+          },
+        },
+        dark: {
+          colors: {
+            primary: {
+              DEFAULT: "#1472FF",
+              foreground: "#FFFFFF",
+            },
+            focus: "#1472FF",
+          },
+        },
+      },
+    }),
     function ({ addUtilities }: any) {
       const newUtilities = {
         '.glass': {
