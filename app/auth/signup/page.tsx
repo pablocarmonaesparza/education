@@ -6,7 +6,7 @@ import Link from 'next/link';
 import AuthNavbar from '@/components/auth/AuthNavbar';
 import { createClient } from '@/lib/supabase/client';
 import { Input, Button } from '@heroui/react';
-import { LiquidGlassContainer } from 'liquid-glass-react';
+import LiquidGlass from 'liquid-glass-react';
 
 export default function SignupPage() {
   const [email, setEmail] = useState<string>('');
@@ -177,10 +177,11 @@ export default function SignupPage() {
 
       <section className="min-h-screen flex items-center justify-center py-12 md:py-20 px-4 relative z-10">
         <div className="w-full max-w-md">
-          <LiquidGlassContainer
+          <LiquidGlass
             className="rounded-3xl p-8 md:p-10"
-            blur={20}
-            opacity={0.15}
+            blurAmount={20}
+            cornerRadius={24}
+            padding="2rem"
           >
             {/* Header */}
             <div className="text-center mb-8">
@@ -358,7 +359,7 @@ export default function SignupPage() {
                 Inicia sesión
               </Link>
             </p>
-          </LiquidGlassContainer>
+          </LiquidGlass>
         </div>
       </section>
     </main>
