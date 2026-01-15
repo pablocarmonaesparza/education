@@ -214,9 +214,14 @@ export default function DashboardPage() {
           </h1>
         )}
         
-        {/* Project - Natural one liner based on progress */}
-        <p className="mt-4 text-lg text-gray-500 dark:text-gray-400 text-center px-4">
-          {videos.length === 0 || videos.filter(v => v.isCompleted).length === 0
+        {/* Project - Show user's project idea */}
+        <p className="mt-4 text-lg text-gray-500 dark:text-gray-400 text-center px-4 max-w-2xl">
+          {project ? (
+            <>
+              <span className="text-gray-400 dark:text-gray-500">Tu proyecto: </span>
+              <span className="text-gray-700 dark:text-gray-300 font-medium">{project}</span>
+            </>
+          ) : videos.length === 0 || videos.filter(v => v.isCompleted).length === 0
             ? '¡Comencemos tu aprendizaje!'
             : videos.filter(v => v.isCompleted).length === videos.length
             ? '¡Felicidades, completaste tu curso!'
