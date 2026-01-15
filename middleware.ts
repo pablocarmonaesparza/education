@@ -53,15 +53,9 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl)
     }
 
-    // Allow access to auth pages - don't redirect authenticated users from login/signup
-    if (user && request.nextUrl.pathname.startsWith('/auth/')) {
-      if (
-        request.nextUrl.pathname === '/auth/login' || 
-        request.nextUrl.pathname === '/auth/signup' ||
-        request.nextUrl.pathname.startsWith('/auth/callback')
-      ) {
-        return supabaseResponse
-      }
+    // If authenticated user tries to access login/signup, redirect to dashboard
+    if (user && (request.nextUrl.pathname === '/auth/login' || request.nextUrl.pathname === '/auth/signup')) {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
     }
 
     return supabaseResponse

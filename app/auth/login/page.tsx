@@ -96,6 +96,8 @@ export default function LoginPage() {
       if (signInError) {
         setError(translateError(signInError.message));
       } else {
+        // Wait for session to be fully established before redirect
+        await new Promise(resolve => setTimeout(resolve, 100));
         // Use window.location for more reliable redirect on mobile
         window.location.href = '/dashboard';
       }
