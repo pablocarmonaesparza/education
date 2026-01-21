@@ -172,7 +172,7 @@ export default function NewHeroSection() {
             <button
               onClick={handleGenerateCourse}
               disabled={!idea.trim() || !!validationError || isValidating || idea.trim().length < MIN_CHARACTERS || idea.trim().length > MAX_CHARACTERS}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-white navbar-button-gradient hover:opacity-90 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1472FF]/95 active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0"
             >
               Generar demo de mi curso
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

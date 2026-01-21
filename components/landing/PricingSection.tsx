@@ -154,13 +154,13 @@ export default function PricingSection() {
               {/* CTA Button */}
               <button
                 onClick={handleSelectPlan}
-                className={`w-full py-3 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 mt-auto ${
+                className={`w-full py-3.5 rounded-xl font-bold text-sm md:text-base transition-all duration-150 mt-auto ${
                   tier.popular
-                    ? "bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white hover:opacity-90"
-                    : "bg-white dark:bg-gray-800 text-[#1472FF] border-2 border-[#1472FF] hover:bg-[#1472FF]/10 dark:hover:bg-[#1472FF]/20"
+                    ? "bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1472FF]/95 active:border-b-0 active:mt-1"
+                    : "bg-white dark:bg-gray-800 text-[#1472FF] border-2 border-b-4 border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10 active:border-b-2 active:mt-[2px]"
                 }`}
               >
-                {tier.cta} →
+                {tier.cta}
               </button>
 
             </motion.div>
