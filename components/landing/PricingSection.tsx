@@ -6,13 +6,6 @@ import { motion } from "framer-motion";
 export default function PricingSection() {
   const router = useRouter();
 
-  const formatPrice = (usdPrice: number, isMonthly: boolean = false) => {
-    if (usdPrice === 0) {
-      return "Gratis";
-    }
-    return `$${usdPrice}${isMonthly ? "/mes" : ""}`;
-  };
-
   const handleSelectPlan = () => {
     router.push("/auth/signup");
   };
@@ -20,192 +13,198 @@ export default function PricingSection() {
   const tiers = [
     {
       id: "basic",
-      name: "Básico",
-      price: 0,
-      isMonthly: false,
+      name: "básico",
+      price: "Gratis",
       popular: false,
-      description: "Acceso completo para aprender a tu ritmo",
+      description: "Perfecto para explorar",
+      emoji: "🎓",
+      color: "bg-gray-100 dark:bg-gray-800",
+      borderColor: "border-gray-200 dark:border-gray-700",
+      buttonColor: "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600",
       features: [
-        "Acceso completo a los 400+ micro-videos (1-3 min c/u)",
-        "Contenido organizado en 12 secciones",
-        "Acceso a la comunidad general en Slack",
-        "Casos de uso enfocados en LATAM",
-        "Actualizaciones de contenido incluidas",
+        "400+ micro-videos (1-3 min)",
+        "12 secciones organizadas",
+        "Comunidad en Slack",
+        "Casos enfocados en LATAM",
+        "Actualizaciones incluidas",
       ],
-      cta: "Comenzar Gratis",
+      cta: "Comenzar gratis",
     },
     {
       id: "plus",
-      name: "Plus",
-      price: 19,
-      isMonthly: true,
+      name: "plus",
+      price: "$19/mes",
       popular: true,
-      description: "La experiencia completa con IA personalizada",
+      description: "El más popular",
+      emoji: "⚡",
+      color: "bg-[#1472FF]",
+      borderColor: "border-[#0E5FCC]",
+      buttonColor: "bg-white text-[#1472FF] border-gray-200 hover:bg-gray-50",
       features: [
-        "Todo lo del plan Básico",
-        "Curso personalizado generado por AI según tu proyecto",
-        "De 400+ videos, la AI selecciona los 10-200 que necesitas",
-        "Acceso a la comunidad prioritaria en Discord",
-        "Asistente virtual de seguimiento (Limitado)",
+        "Todo lo del Básico",
+        "Curso personalizado por IA",
+        "IA selecciona tus videos",
+        "Comunidad en Discord",
+        "Asistente virtual (limitado)",
       ],
-      cta: "Comenzar con Plus",
+      cta: "Elegir Plus",
     },
     {
       id: "pro",
-      name: "Pro",
-      price: 199,
-      isMonthly: true,
+      name: "pro",
+      price: "$199/mes",
       popular: false,
-      description: "Experiencia premium con tutoría personalizada",
+      description: "Para los serios",
+      emoji: "🚀",
+      color: "bg-gray-900 dark:bg-white",
+      borderColor: "border-gray-700 dark:border-gray-300",
+      buttonColor: "bg-[#1472FF] text-white border-[#0E5FCC]",
       features: [
-        "Todo lo del plan Plus",
-        "Tutoría quincenal con Pablo de forma individual",
-        "Hasta 5 cursos personalizados por mes",
-        "Contexto acumulativo entre sesiones",
-        "Asistente virtual de seguimiento (Ilimitado)",
+        "Todo lo del Plus",
+        "Tutoría quincenal con Pablo",
+        "5 cursos personalizados/mes",
+        "Contexto entre sesiones",
+        "Asistente virtual ilimitado",
       ],
-      cta: "Comenzar con Pro",
+      cta: "Elegir Pro",
     },
   ];
 
   return (
-    <section id="pricing" className="relative bg-white dark:bg-gray-950 min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20 pb-24">
-      <div className="container mx-auto px-4 relative z-10 w-full">
-        {/* Section Header */}
+    <section id="pricing" className="py-20 md:py-32 bg-white dark:bg-gray-950">
+      <div className="container mx-auto px-4 max-w-6xl">
+        {/* Header - Duolingo style */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-gray-900 dark:text-white mb-8 leading-tight">
-            Nuestros Planes
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-[#1472FF] mb-4">
+            elige tu plan.
           </h2>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Comienza gratis y escala cuando estés listo.
+          </p>
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
           {tiers.map((tier, index) => (
             <motion.div
               key={tier.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 * (index + 3) }}
               viewport={{ once: true }}
-              className={`relative rounded-2xl p-5 md:p-6 transition-all duration-300 flex flex-col ${
-                tier.popular
-                  ? "bg-gradient-to-br from-[#1472FF]/10 to-[#5BA0FF]/10 dark:from-[#1472FF]/20 dark:to-[#5BA0FF]/20 border-2 border-[#1472FF]"
-                  : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ scale: 1.02, y: -4 }}
+              className={`relative rounded-3xl overflow-hidden ${
+                tier.popular ? "md:-mt-4 md:mb-4" : ""
               }`}
             >
-              {/* Popular Badge */}
+              {/* Popular badge */}
               {tier.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white px-4 py-1 rounded-full text-xs font-bold">
-                    🔥 MÁS POPULAR
-                  </div>
+                <div className="absolute top-0 left-0 right-0 bg-[#FFB020] text-center py-2">
+                  <span className="text-sm font-bold text-white uppercase tracking-wider">
+                    Más popular
+                  </span>
                 </div>
               )}
 
-              {/* Title */}
-              <div className="mb-2">
-                <h3 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">{tier.name}</h3>
-              </div>
+              {/* Card */}
+              <div className={`${tier.color} ${tier.popular ? "pt-12" : "pt-8"} pb-8 px-6 h-full flex flex-col border-2 border-b-6 ${tier.borderColor} rounded-3xl`}>
+                {/* Emoji */}
+                <div className="text-4xl mb-4">{tier.emoji}</div>
 
-              <p className="text-gray-600 dark:text-gray-400 text-xs mb-4">{tier.description}</p>
+                {/* Plan name */}
+                <h3 className={`text-2xl font-black lowercase mb-2 ${
+                  tier.popular 
+                    ? "text-white" 
+                    : tier.id === "pro" 
+                      ? "text-white dark:text-gray-900" 
+                      : "text-gray-900 dark:text-white"
+                }`}>
+                  {tier.name}
+                </h3>
 
-              {/* Pricing */}
-              <div className="mb-4">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] bg-clip-text text-transparent">
-                    {formatPrice(tier.price, tier.isMonthly)}
-                  </span>
-                  {tier.price > 0 && (
-                    <span className="text-gray-500 dark:text-gray-400 text-xs md:text-sm">USD</span>
-                  )}
-                </div>
-                <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  {tier.price === 0 ? "Sin tarjeta de crédito" : "Cancela cuando quieras"}
+                {/* Description */}
+                <p className={`text-sm mb-4 ${
+                  tier.popular 
+                    ? "text-white/80" 
+                    : tier.id === "pro" 
+                      ? "text-white/80 dark:text-gray-600" 
+                      : "text-gray-600 dark:text-gray-400"
+                }`}>
+                  {tier.description}
                 </p>
+
+                {/* Price */}
+                <div className="mb-6">
+                  <span className={`text-4xl font-black ${
+                    tier.popular 
+                      ? "text-white" 
+                      : tier.id === "pro" 
+                        ? "text-white dark:text-gray-900" 
+                        : "text-gray-900 dark:text-white"
+                  }`}>
+                    {tier.price}
+                  </span>
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-3 mb-8 flex-1">
+                  {tier.features.map((feature, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <svg 
+                        className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
+                          tier.popular 
+                            ? "text-white" 
+                            : tier.id === "pro" 
+                              ? "text-white dark:text-gray-900" 
+                              : "text-[#1472FF]"
+                        }`} 
+                        fill="currentColor" 
+                        viewBox="0 0 20 20"
+                      >
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                      <span className={`text-sm ${
+                        tier.popular 
+                          ? "text-white/90" 
+                          : tier.id === "pro" 
+                            ? "text-white/90 dark:text-gray-700" 
+                            : "text-gray-700 dark:text-gray-300"
+                      }`}>
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA Button */}
+                <button
+                  onClick={handleSelectPlan}
+                  className={`w-full py-4 rounded-2xl font-bold text-base border-2 border-b-4 transition-all active:border-b-2 active:mt-[2px] ${tier.buttonColor}`}
+                >
+                  {tier.cta}
+                </button>
               </div>
-
-              {/* Features */}
-              <ul className="space-y-2 mb-4 flex-1">
-                {tier.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <svg
-                      className="w-4 h-4 flex-shrink-0 text-green-500 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    <span className="text-xs md:text-sm text-gray-700 dark:text-gray-300 leading-snug">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* CTA Button */}
-              <button
-                onClick={handleSelectPlan}
-                className={`w-full py-3 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 mt-auto ${
-                  tier.popular
-                    ? "bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white hover:opacity-90"
-                    : "bg-white dark:bg-gray-800 text-[#1472FF] border-2 border-[#1472FF] hover:bg-[#1472FF]/10 dark:hover:bg-[#1472FF]/20"
-                }`}
-              >
-                {tier.cta} →
-              </button>
-
             </motion.div>
           ))}
         </div>
 
-      </div>
-
-      {/* Next section indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-        viewport={{ once: true }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden md:block"
-      >
-        <button
-          onClick={() => {
-            const element = document.getElementById("faq");
-            if (element) {
-              element.scrollIntoView({ behavior: "smooth" });
-            }
-          }}
-          className="flex flex-col items-center gap-1 cursor-pointer group"
+        {/* Trust badge */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5 }}
+          className="text-center text-gray-500 dark:text-gray-400 mt-12 text-sm"
         >
-          <span className="text-sm font-semibold tracking-wide text-black/40 dark:text-white/40 group-hover:text-black/60 dark:group-hover:text-white/60 transition-colors">
-            FAQ
-          </span>
-          <motion.svg
-            className="w-5 h-5 text-black/40 dark:text-white/40 group-hover:text-black/60 dark:group-hover:text-white/60 transition-colors"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            animate={{ y: [0, 4, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </motion.svg>
-        </button>
-      </motion.div>
+          Cancela cuando quieras • Sin compromisos • Garantía de 7 días
+        </motion.p>
+      </div>
     </section>
   );
 }

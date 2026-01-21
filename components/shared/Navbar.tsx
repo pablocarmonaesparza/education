@@ -220,24 +220,9 @@ export default function Navbar() {
           >
             <Link
               href="/auth/signup"
-              className="px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 inline-flex items-center gap-2 navbar-button-gradient text-white hover:opacity-90"
+              className="px-6 py-2.5 rounded-xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1472FF]/90 active:border-b-2 active:mt-[2px] transition-all"
             >
-              <span className="flex items-center gap-2">
-                Regístrate Gratis
-                <svg
-                  className="w-4 h-4 transition-transform text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
-                </svg>
-              </span>
+              Comenzar
             </Link>
           </motion.div>
 
