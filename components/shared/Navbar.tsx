@@ -132,7 +132,7 @@ export default function Navbar() {
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "backdrop-blur-xl bg-white/90 dark:bg-gray-950/90 border-b border-gray-200/50 dark:border-gray-800/50"
+          ? "backdrop-blur-md bg-white/50 dark:bg-gray-950/50"
           : ""
       }`}
     >
@@ -144,8 +144,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {/* Show light logo when not scrolled (on blue hero) or in dark mode */}
-              {(!scrolled || isDark) ? (
+              {isDark ? (
                 <Image
                   src="/images/logo-light.png"
                   alt="Itera"
@@ -183,12 +182,10 @@ export default function Navbar() {
                   href={link.href}
                   data-section={link.id}
                   onClick={(e) => handleNavClick(e, link.href)}
-                  className={`relative transition-colors duration-300 font-semibold cursor-pointer pb-1 ${
+                  className={`relative transition-colors duration-300 font-medium cursor-pointer pb-1 ${
                     activeSection === link.id
-                      ? scrolled ? "text-[#1472FF]" : "text-white"
-                      : scrolled 
-                        ? "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                        : "text-white/80 hover:text-white"
+                      ? "text-[#1472FF]"
+                      : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                   }`}
                 >
                   {link.label}
@@ -223,15 +220,11 @@ export default function Navbar() {
           >
             <Link
               href="/auth/signup"
-              className={`px-6 py-2.5 rounded-xl font-bold transition-all duration-200 inline-flex items-center gap-2 border-b-[3px] active:border-b-0 active:mt-[3px] ${
-                scrolled
-                  ? "bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#1472FF]/95"
-                  : "bg-white text-[#1472FF] border-gray-200 hover:bg-gray-50"
-              }`}
+              className="px-6 py-2.5 rounded-xl font-bold transition-all duration-150 inline-flex items-center gap-2 bg-[#1472FF] text-white border-b-[3px] border-[#0E5FCC] hover:bg-[#1472FF]/95 active:border-b-0 active:mt-[3px]"
             >
-              Comenzar
+              Regístrate Gratis
               <svg
-                className="w-4 h-4"
+                className="w-4 h-4 text-white"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
