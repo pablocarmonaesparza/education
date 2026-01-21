@@ -1,145 +1,326 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 
 const steps = [
   {
-    number: "1",
-    title: "describe tu proyecto",
-    description: "Cuéntanos qué quieres construir. ¿Un chatbot? ¿Automatizar tu negocio? ¿Crear agentes de IA?",
-    emoji: "💡",
-    color: "bg-[#1472FF]",
-    borderColor: "border-[#0E5FCC]",
+    title: "El problema",
+    description: "Los cursos genéricos te hacen recorrer caminos interminables. Pasas horas viendo contenido que no aplica a lo que realmente quieres construir.",
+    imageLight: "/images/how-it-works-1-dark.png",
+    imageDark: "/images/how-it-works-1-light.png",
   },
   {
-    number: "2",
-    title: "recibe tu ruta",
-    description: "Nuestra IA analiza tu idea y crea un curso personalizado con solo los videos que necesitas.",
-    emoji: "🎯",
-    color: "bg-[#FFB020]",
-    borderColor: "border-[#E09800]",
+    title: "Cuéntanos tu idea",
+    description: "Describe el proyecto que quieres crear. Nuestra IA analiza miles de videos y selecciona únicamente los que necesitas para tu objetivo específico.",
+    imageLight: "/images/how-it-works-2-light.png",
+    imageDark: "/images/how-it-works-2-dark.png",
   },
   {
-    number: "3",
-    title: "aprende construyendo",
-    description: "Sigue tu ruta paso a paso. Cada video te acerca más a completar tu proyecto real.",
-    emoji: "🚀",
-    color: "bg-[#22C55E]",
-    borderColor: "border-[#16A34A]",
+    title: "Tu camino directo",
+    description: "Recibe un curso personalizado con videos ordenados paso a paso. Sin rodeos, sin relleno. Solo lo esencial para construir tu proyecto.",
+    imageLight: "/images/how-it-works-3-light.png",
+    imageDark: "/images/how-it-works-3-dark.png",
   },
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5 },
-  },
-};
-
 export default function HowItWorksSection() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [mobileActiveIndex, setMobileActiveIndex] = useState(0);
+  const snapRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const touchStartY = useRef(0);
+  const touchStartX = useRef(0);
+
+  // Desktop: Detectar qué punto de snap está visible
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    snapRefs.current.forEach((ref, index) => {
+      if (!ref) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+              setActiveIndex(index);
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+
+      observer.observe(ref);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  // Mobile: Detectar scroll horizontal
+  useEffect(() => {
+    const container = mobileScrollRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft;
+      const cardWidth = container.offsetWidth;
+      const newIndex = Math.round(scrollLeft / cardWidth);
+      setMobileActiveIndex(Math.min(newIndex, steps.length - 1));
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // Mobile: Manejar touch para convertir swipe vertical a horizontal
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    const container = mobileScrollRef.current;
+    if (!container) return;
+
+    const touchCurrentY = e.touches[0].clientY;
+    const touchCurrentX = e.touches[0].clientX;
+    const deltaY = touchStartY.current - touchCurrentY;
+    const deltaX = touchStartX.current - touchCurrentX;
+
+    // Si el movimiento es más vertical que horizontal
+    if (Math.abs(deltaY) > Math.abs(deltaX)) {
+      const scrollLeft = container.scrollLeft;
+      const maxScroll = container.scrollWidth - container.offsetWidth;
+      
+      // Si no estamos en los límites, convertir a horizontal
+      const atStart = scrollLeft <= 0 && deltaY < 0;
+      const atEnd = scrollLeft >= maxScroll - 1 && deltaY > 0;
+      
+      if (!atStart && !atEnd) {
+        e.preventDefault();
+        container.scrollLeft += deltaY * 0.5;
+        touchStartY.current = touchCurrentY;
+      }
+    }
+  };
+
+  // Navegar al siguiente/anterior slide
+  const goToSlide = (index: number) => {
+    const container = mobileScrollRef.current;
+    if (container) {
+      container.scrollTo({
+        left: index * container.offsetWidth,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
-    <section
-      id="how-it-works"
-      className="py-20 md:py-32 bg-[#F7F7F7] dark:bg-gray-900"
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
-        {/* Header - Duolingo style */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+    <>
+      {/* ============ MOBILE VERSION (< 768px) ============ */}
+      <section
+        id="how-it-works-mobile"
+        className="md:hidden min-h-screen bg-white dark:bg-gray-950 flex flex-col relative"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+      >
+        {/* Horizontal Scroll Container */}
+        <div
+          ref={mobileScrollRef}
+          className="flex-1 flex overflow-x-auto snap-x snap-mandatory scrollbar-hide touch-pan-x"
+          style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-[#1472FF] mb-4">
-            así de fácil.
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            En 3 pasos tienes tu curso personalizado listo para comenzar.
-          </p>
-        </motion.div>
-
-        {/* Steps Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"
-        >
-          {steps.map((step, index) => (
-            <motion.div
-              key={index}
-              variants={itemVariants}
-              whileHover={{ scale: 1.02, y: -4 }}
-              className="relative"
+          {steps.map((step, i) => (
+            <div
+              key={i}
+              className="flex-shrink-0 w-full snap-center px-6 flex flex-col items-center justify-center min-h-screen"
+              style={{ scrollSnapAlign: 'center' }}
             >
-              {/* Card - Duolingo 3D style */}
-              <div className={`bg-white dark:bg-gray-800 rounded-3xl p-8 border-2 border-b-6 border-gray-200 dark:border-gray-700 transition-all duration-200 h-full`}>
-                {/* Emoji badge */}
-                <div className={`w-16 h-16 ${step.color} rounded-2xl border-b-4 ${step.borderColor} flex items-center justify-center mb-6`}>
-                  <span className="text-3xl">{step.emoji}</span>
+              {/* Title */}
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 text-center">
+                {step.title}
+              </h3>
+              
+              {/* Description */}
+              <p className="text-base text-gray-600 dark:text-gray-400 leading-relaxed text-center max-w-sm mb-8">
+                {step.description}
+              </p>
+
+              {/* Image */}
+              <div className="relative w-full h-64">
+                <Image
+                  src={step.imageLight}
+                  alt={step.title}
+                  fill
+                  className="object-contain dark:hidden"
+                  priority={i === 0}
+                />
+                <Image
+                  src={step.imageDark}
+                  alt={step.title}
+                  fill
+                  className="object-contain hidden dark:block"
+                  priority={i === 0}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Pagination Dots */}
+        <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-3">
+          {steps.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goToSlide(i)}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                mobileActiveIndex === i
+                  ? "bg-[#1472FF] w-8"
+                  : "bg-gray-300 dark:bg-gray-600 w-2"
+              }`}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* ============ DESKTOP VERSION (>= 768px) ============ */}
+      <div 
+        id="how-it-works" 
+        className="hidden md:block relative bg-white dark:bg-gray-950"
+        style={{ height: `${steps.length * 100}vh` }}
+      >
+        {/* Contenido visual sticky */}
+        <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            {/* Section Header */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              viewport={{ once: true }}
+              className="text-center mb-8 md:mb-10"
+            >
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
+                Cómo Funciona
+              </h2>
+            </motion.div>
+
+            {/* Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 items-center">
+              {/* Text Column - Left 1/3 */}
+              <div className="lg:col-span-1">
+                <div className="space-y-8">
+                  {steps.map((s, i) => (
+                    <div key={i} className="space-y-3">
+                      <h3 className={`text-2xl md:text-3xl font-bold transition-colors duration-500 ${
+                        activeIndex === i 
+                          ? "text-gray-900 dark:text-white" 
+                          : "text-gray-400 dark:text-gray-600"
+                      }`}>
+                        {s.title}
+                      </h3>
+                      <p className={`text-base md:text-lg leading-relaxed transition-colors duration-500 ${
+                        activeIndex === i 
+                          ? "text-gray-600 dark:text-gray-400" 
+                          : "text-gray-400 dark:text-gray-600"
+                      }`}>
+                        {s.description}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-
-                {/* Step number */}
-                <div className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
-                  Paso {step.number}
-                </div>
-
-                {/* Title */}
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-4 lowercase">
-                  {step.title}
-                </h3>
-
-                {/* Description */}
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                  {step.description}
-                </p>
               </div>
 
-              {/* Arrow connector (only on desktop, not on last item) */}
-              {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
-                  <svg className="w-8 h-8 text-gray-300 dark:text-gray-600" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-                  </svg>
+              {/* Image Column - Right 2/3 */}
+              <div className="lg:col-span-2 relative h-[500px] md:h-[600px] rounded-2xl overflow-hidden flex items-center justify-center">
+                <div className="relative w-full h-full flex items-center justify-center">
+                  {steps.map((s, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: activeIndex === i ? 1 : 0 }}
+                      transition={{ duration: 0.6, ease: "easeInOut" }}
+                      className="absolute inset-0 flex items-center justify-center p-4"
+                    >
+                      {/* Light mode image */}
+                      <Image
+                        src={s.imageLight}
+                        alt={s.title}
+                        width={800}
+                        height={600}
+                        className="object-contain max-h-full dark:hidden"
+                        priority={i === 0}
+                      />
+                      {/* Dark mode image */}
+                      <Image
+                        src={s.imageDark}
+                        alt={s.title}
+                        width={800}
+                        height={600}
+                        className="object-contain max-h-full hidden dark:block"
+                        priority={i === 0}
+                      />
+                    </motion.div>
+                  ))}
                 </div>
-              )}
-            </motion.div>
-          ))}
-        </motion.div>
+              </div>
+            </div>
+          </div>
 
-        {/* CTA Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center mt-12"
-        >
-          <button
-            onClick={() => document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" })}
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#1472FF] text-white font-bold text-lg rounded-2xl border-b-4 border-[#0E5FCC] hover:bg-[#1472FF]/90 active:border-b-2 active:mt-[2px] transition-all uppercase tracking-wide"
+          {/* Next section indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: activeIndex === steps.length - 1 ? 1 : 0.3 }}
+            transition={{ duration: 0.5 }}
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
           >
-            Comenzar ahora
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </button>
-        </motion.div>
+            <button
+              onClick={() => {
+                const element = document.getElementById("available-courses");
+                if (element) {
+                  element.scrollIntoView({ behavior: "smooth" });
+                }
+              }}
+              className="flex flex-col items-center gap-1 cursor-pointer group"
+            >
+              <span className="text-sm font-semibold tracking-wide text-black/40 dark:text-white/40 group-hover:text-black/60 dark:group-hover:text-white/60 transition-colors">
+                Cursos
+              </span>
+              <motion.svg
+                className="w-5 h-5 text-black/40 dark:text-white/40 group-hover:text-black/60 dark:group-hover:text-white/60 transition-colors"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                animate={{ y: [0, 4, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </motion.svg>
+            </button>
+          </motion.div>
+        </div>
+
+        {/* Puntos de snap invisibles */}
+        <div className="absolute inset-0 pointer-events-none">
+          {steps.map((_, i) => (
+            <div
+              key={i}
+              ref={(el) => { snapRefs.current[i] = el; }}
+              className="h-screen snap-start"
+            />
+          ))}
+        </div>
       </div>
-    </section>
+    </>
   );
 }

@@ -4,7 +4,6 @@ import AvailableCoursesSection from "@/components/landing/AvailableCoursesSectio
 import PricingSection from "@/components/landing/PricingSection";
 import FAQSection from "@/components/landing/FAQSection";
 import Navbar from "@/components/shared/Navbar";
-import Footer from "@/components/shared/Footer";
 import StructuredData from "@/components/shared/StructuredData";
 
 export default function Home() {
@@ -17,7 +16,6 @@ export default function Home() {
       <AvailableCoursesSection />
       <PricingSection />
       <FAQSection />
-      <Footer />
     </main>
   );
 }
