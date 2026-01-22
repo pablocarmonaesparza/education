@@ -37,32 +37,48 @@ export default function FAQSection() {
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-20">
         <div className="w-full max-w-4xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 leading-tight">
-              Preguntas Frecuentes
+          <div className="text-center mb-10 md:mb-16">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1472FF] mb-6 leading-tight tracking-tight lowercase">
+              preguntas frecuentes
             </h2>
-            <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto font-light">
+            <p className="text-lg md:text-xl text-[#777777] dark:text-gray-400 max-w-xl mx-auto">
               Encuentra respuestas a tus dudas más comunes.
             </p>
           </div>
 
           {/* FAQ Items */}
-          <div className="w-full">
+          <div className="w-full space-y-2">
             {faqs.map((faq, index) => (
-              <div key={index} className="border-b border-gray-200 dark:border-gray-700 last:border-b-0 py-6 md:py-8">
+              <div 
+                key={index} 
+                className={`rounded-2xl transition-all duration-300 ${
+                  openIndex === index 
+                    ? "bg-[#1472FF]/5 dark:bg-[#1472FF]/10" 
+                    : "bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                }`}
+              >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full flex justify-between items-center text-left group"
+                  className="w-full flex justify-between items-center text-left p-6 md:p-8"
                 >
-                  <span className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors pr-8">
+                  <span className={`text-lg md:text-xl font-bold transition-colors pr-8 tracking-tight ${
+                    openIndex === index 
+                      ? "text-[#1472FF]" 
+                      : "text-[#4b4b4b] dark:text-white"
+                  }`}>
                     {faq.question}
                   </span>
                   <motion.div
                     animate={{ rotate: openIndex === index ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
+                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                      openIndex === index 
+                        ? "bg-[#1472FF] text-white" 
+                        : "bg-gray-100 dark:bg-gray-800 text-[#777777]"
+                    }`}
                   >
                     <svg
-                      className="w-6 h-6 text-gray-500 dark:text-gray-400"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -70,7 +86,7 @@ export default function FAQSection() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={2.5}
                         d="M19 9l-7 7-7-7"
                       />
                     </svg>
@@ -83,7 +99,7 @@ export default function FAQSection() {
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
                       transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="mt-4 text-base md:text-lg text-gray-600 dark:text-gray-400 leading-relaxed"
+                      className="px-6 md:px-8 pb-6 md:pb-8 text-base md:text-lg text-[#777777] dark:text-gray-400 leading-relaxed"
                     >
                       {faq.answer}
                     </motion.div>

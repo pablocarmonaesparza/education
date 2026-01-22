@@ -142,12 +142,12 @@ export default function HowItWorksSection() {
               style={{ scrollSnapAlign: 'center' }}
             >
               {/* Title */}
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4 text-center">
-                {step.title}
+              <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 text-center lowercase tracking-tight">
+                {step.title.toLowerCase()}
               </h3>
               
               {/* Description */}
-              <p className="text-base text-gray-600 dark:text-gray-400 leading-relaxed text-center max-w-sm mb-8">
+              <p className="text-base text-[#777777] dark:text-gray-400 leading-relaxed text-center max-w-sm mb-8">
                 {step.description}
               </p>
 
@@ -203,10 +203,10 @@ export default function HowItWorksSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
               viewport={{ once: true }}
-              className="text-center mb-8 md:mb-10"
+              className="text-center mb-10 md:mb-14"
             >
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
-                Cómo Funciona
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1472FF] leading-tight tracking-tight lowercase">
+                cómo funciona
               </h2>
             </motion.div>
 
@@ -216,18 +216,18 @@ export default function HowItWorksSection() {
               <div className="lg:col-span-1">
                 <div className="space-y-8">
                   {steps.map((s, i) => (
-                    <div key={i} className="space-y-3">
-                      <h3 className={`text-2xl md:text-3xl font-bold transition-colors duration-500 ${
+                    <div key={i} className="space-y-4">
+                      <h3 className={`text-2xl md:text-3xl font-extrabold transition-colors duration-500 tracking-tight ${
                         activeIndex === i 
-                          ? "text-gray-900 dark:text-white" 
-                          : "text-gray-400 dark:text-gray-600"
+                          ? "text-[#4b4b4b] dark:text-white" 
+                          : "text-gray-300 dark:text-gray-700"
                       }`}>
                         {s.title}
                       </h3>
                       <p className={`text-base md:text-lg leading-relaxed transition-colors duration-500 ${
                         activeIndex === i 
-                          ? "text-gray-600 dark:text-gray-400" 
-                          : "text-gray-400 dark:text-gray-600"
+                          ? "text-[#777777] dark:text-gray-400" 
+                          : "text-gray-300 dark:text-gray-700"
                       }`}>
                         {s.description}
                       </p>

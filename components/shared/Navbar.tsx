@@ -220,9 +220,9 @@ export default function Navbar() {
           >
             <Link
               href="/auth/signup"
-              className="px-6 py-2.5 rounded-xl font-bold transition-all duration-150 inline-flex items-center gap-2 bg-[#1472FF] text-white border-b-[3px] border-[#0E5FCC] hover:bg-[#1472FF]/95 active:border-b-0 active:mt-[3px]"
+              className="px-7 py-3 rounded-2xl font-bold uppercase tracking-wide transition-all duration-150 inline-flex items-center gap-2 bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1"
             >
-              Regístrate Gratis
+              Comenzar
               <svg
                 className="w-4 h-4 text-white"
                 fill="none"
@@ -232,7 +232,7 @@ export default function Navbar() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   d="M13 7l5 5m0 0l-5 5m5-5H6"
                 />
               </svg>
@@ -341,9 +341,9 @@ export default function Navbar() {
                 <Link
                   href="/auth/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block py-4 text-center font-semibold text-lg rounded-2xl navbar-button-gradient text-white"
+                  className="block py-4 text-center font-bold text-lg uppercase tracking-wide rounded-2xl bg-[#1472FF] border-b-4 border-[#0E5FCC] text-white"
                 >
-                  Regístrate Gratis
+                  Comenzar
                 </Link>
               </div>
             </div>
@@ -393,9 +393,9 @@ export default function Navbar() {
                   <Link
                     href="/auth/signup"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block py-3 px-4 text-center font-semibold rounded-lg transition-all navbar-button-gradient text-white hover:opacity-90"
+                    className="block py-3 px-4 text-center font-bold uppercase tracking-wide rounded-2xl transition-all bg-[#1472FF] border-b-4 border-[#0E5FCC] text-white hover:bg-[#1265e0]"
                   >
-                    Regístrate Gratis
+                    Comenzar
                   </Link>
                 </motion.div>
               </div>

@@ -77,9 +77,10 @@ export default function PricingSection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           viewport={{ once: true }}
+          className="mb-12"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center text-gray-900 dark:text-white mb-8 leading-tight">
-            Nuestros Planes
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center text-[#1472FF] leading-tight tracking-tight lowercase">
+            nuestros planes
           </h2>
         </motion.div>
 
@@ -108,11 +109,11 @@ export default function PricingSection() {
               )}
 
               {/* Title */}
-              <div className="mb-2">
-                <h3 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white">{tier.name}</h3>
+              <div className="mb-3">
+                <h3 className="text-xl md:text-2xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">{tier.name}</h3>
               </div>
 
-              <p className="text-gray-600 dark:text-gray-400 text-xs mb-4">{tier.description}</p>
+              <p className="text-[#777777] dark:text-gray-400 text-sm mb-5">{tier.description}</p>
 
               {/* Pricing */}
               <div className="mb-4">
@@ -154,9 +155,9 @@ export default function PricingSection() {
               {/* CTA Button */}
               <button
                 onClick={handleSelectPlan}
-                className={`w-full py-3.5 rounded-xl font-bold text-sm md:text-base transition-all duration-150 mt-auto ${
+                className={`w-full py-4 rounded-2xl font-bold text-sm md:text-base uppercase tracking-wide transition-all duration-150 mt-auto ${
                   tier.popular
-                    ? "bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1472FF]/95 active:border-b-0 active:mt-1"
+                    ? "bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1"
                     : "bg-white dark:bg-gray-800 text-[#1472FF] border-2 border-b-4 border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10 active:border-b-2 active:mt-[2px]"
                 }`}
               >
