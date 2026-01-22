@@ -41,8 +41,8 @@ export default function FAQSection() {
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1472FF] mb-6 leading-tight tracking-tight lowercase">
               preguntas frecuentes
             </h2>
-            <p className="text-lg md:text-xl text-[#777777] dark:text-gray-400 max-w-xl mx-auto">
-              Encuentra respuestas a tus dudas más comunes.
+            <p className="text-lg md:text-xl text-[#777777] dark:text-gray-400 max-w-xl mx-auto lowercase">
+              encuentra respuestas a tus dudas más comunes
             </p>
           </div>
 

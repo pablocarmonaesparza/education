@@ -6,20 +6,20 @@ import Image from "next/image";
 
 const steps = [
   {
-    title: "El problema",
-    description: "Los cursos genéricos te hacen recorrer caminos interminables. Pasas horas viendo contenido que no aplica a lo que realmente quieres construir.",
+    title: "el problema",
+    description: "los cursos genéricos te hacen recorrer caminos interminables, pasas horas viendo contenido que no aplica a lo que realmente quieres construir",
     imageLight: "/images/how-it-works-1-dark.png",
     imageDark: "/images/how-it-works-1-light.png",
   },
   {
-    title: "Cuéntanos tu idea",
-    description: "Describe el proyecto que quieres crear. Nuestra IA analiza miles de videos y selecciona únicamente los que necesitas para tu objetivo específico.",
+    title: "cuéntanos tu idea",
+    description: "describe el proyecto que quieres crear, nuestra IA analiza miles de videos y selecciona únicamente los que necesitas para tu objetivo específico",
     imageLight: "/images/how-it-works-2-light.png",
     imageDark: "/images/how-it-works-2-dark.png",
   },
   {
-    title: "Tu camino directo",
-    description: "Recibe un curso personalizado con videos ordenados paso a paso. Sin rodeos, sin relleno. Solo lo esencial para construir tu proyecto.",
+    title: "tu camino directo",
+    description: "recibe un curso personalizado con videos ordenados paso a paso, sin rodeos, sin relleno, solo lo esencial para construir tu proyecto",
     imageLight: "/images/how-it-works-3-light.png",
     imageDark: "/images/how-it-works-3-dark.png",
   },
@@ -142,8 +142,8 @@ export default function HowItWorksSection() {
               style={{ scrollSnapAlign: 'center' }}
             >
               {/* Title */}
-              <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 text-center lowercase tracking-tight">
-                {step.title.toLowerCase()}
+              <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 text-center tracking-tight">
+                {step.title}
               </h3>
               
               {/* Description */}
