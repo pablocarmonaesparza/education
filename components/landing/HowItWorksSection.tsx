@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 
@@ -35,14 +35,10 @@ export default function HowItWorksSection() {
   const touchStartY = useRef(0);
   const touchStartX = useRef(0);
 
-  // Scroll-based background transition for desktop
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"]
-  });
-
-  // Transform scroll progress to background opacity (0 to 0.15 for subtle blue tint)
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.8, 1], [0, 0.08, 0.15]);
+  // Background opacity based on active step (10% per step = 30% max)
+  const getBgOpacity = (index: number) => {
+    return (index + 1) * 0.1; // Step 0 = 10%, Step 1 = 20%, Step 2 = 30%
+  };
 
   // Desktop: Detectar qué punto de snap está visible
   useEffect(() => {
@@ -137,13 +133,9 @@ export default function HowItWorksSection() {
       <section
         ref={mobileSectionRef}
         id="how-it-works-mobile"
-        className="md:hidden min-h-screen flex flex-col relative transition-colors duration-700"
+        className="md:hidden min-h-screen flex flex-col relative transition-all duration-700"
         style={{
-          backgroundColor: mobileActiveIndex === 2 
-            ? 'rgba(20, 114, 255, 0.1)' 
-            : mobileActiveIndex === 1 
-              ? 'rgba(20, 114, 255, 0.05)' 
-              : undefined
+          backgroundColor: `rgba(20, 114, 255, ${getBgOpacity(mobileActiveIndex)})`
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -214,14 +206,14 @@ export default function HowItWorksSection() {
         className="hidden md:block relative"
         style={{ height: `${steps.length * 100}vh` }}
       >
-        {/* Animated background layer */}
-        <motion.div 
-          className="fixed inset-0 pointer-events-none bg-[#1472FF] -z-10"
-          style={{ opacity: bgOpacity }}
+        {/* Animated background layer - 10% per step */}
+        <div 
+          className="fixed inset-0 pointer-events-none bg-[#1472FF] transition-opacity duration-700 ease-out -z-10"
+          style={{ opacity: getBgOpacity(activeIndex) }}
         />
         
         {/* Contenido visual sticky */}
-        <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm transition-colors duration-700">
+        <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden transition-colors duration-700">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
             {/* Section Header */}
             <motion.div
