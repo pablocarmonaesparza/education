@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 // Interpolate between two hex colors
 function interpolateColor(color1: string, color2: string, factor: number): string {
@@ -19,98 +19,87 @@ function interpolateColor(color1: string, color2: string, factor: number): strin
   return `rgb(${r}, ${g}, ${b})`;
 }
 
-// Color stops for the scroll journey
-// Progress: 0 = start, 1 = full blue, then back to normal
-const COLOR_STOPS = {
-  hero: 0,           // 0% - base color
-  howItWorks1: 0.1,  // 10%
-  howItWorks2: 0.2,  // 20%
-  howItWorks3: 0.3,  // 30%
-  courses: 1,        // 100% - full blue
-  pricing: 0,        // 0% - back to base
-  faq: 0,            // 0% - base
-};
-
 export default function AnimatedBackground() {
   const [progress, setProgress] = useState(0);
-  const rafRef = useRef<number>();
 
-  useEffect(() => {
-    const updateProgress = () => {
-      // Get all section positions
-      const heroSection = document.getElementById("hero");
-      const howItWorksSection = document.getElementById("how-it-works") || document.getElementById("how-it-works-mobile");
-      const coursesSection = document.getElementById("available-courses");
-      const pricingSection = document.getElementById("pricing");
+  const updateProgress = useCallback(() => {
+    const howItWorksSection = document.getElementById("how-it-works") || document.getElementById("how-it-works-mobile");
+    const coursesSection = document.getElementById("available-courses");
+    const pricingSection = document.getElementById("pricing");
 
-      if (!howItWorksSection || !coursesSection || !pricingSection) {
-        rafRef.current = requestAnimationFrame(updateProgress);
-        return;
-      }
+    if (!howItWorksSection || !coursesSection || !pricingSection) {
+      return;
+    }
 
-      const scrollY = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const viewportCenter = scrollY + windowHeight / 2;
+    const windowHeight = window.innerHeight;
+    
+    // Use getBoundingClientRect for accurate positions
+    const howItWorksRect = howItWorksSection.getBoundingClientRect();
+    const coursesRect = coursesSection.getBoundingClientRect();
+    const pricingRect = pricingSection.getBoundingClientRect();
 
-      // Get section boundaries
-      const heroTop = heroSection?.offsetTop || 0;
-      const heroBottom = heroTop + (heroSection?.offsetHeight || windowHeight);
-      
-      const howItWorksTop = howItWorksSection.offsetTop;
-      const howItWorksHeight = howItWorksSection.offsetHeight;
-      const howItWorksBottom = howItWorksTop + howItWorksHeight;
-      
-      const coursesTop = coursesSection.offsetTop;
-      const coursesBottom = coursesTop + coursesSection.offsetHeight;
-      
-      const pricingTop = pricingSection.offsetTop;
+    let newProgress = 0;
 
-      let newProgress = 0;
+    // Calculate based on where sections are relative to viewport
+    const viewportMiddle = windowHeight / 2;
 
-      // Hero section - base color
-      if (viewportCenter < howItWorksTop) {
-        newProgress = 0;
-      }
-      // How it works section - gradually increase from 0% to 30%
-      else if (viewportCenter >= howItWorksTop && viewportCenter < howItWorksBottom) {
-        const sectionProgress = (viewportCenter - howItWorksTop) / howItWorksHeight;
-        // Map 0-1 section progress to 0-0.3 color progress
-        newProgress = sectionProgress * 0.3;
-      }
-      // Transition from how-it-works to courses - 30% to 100%
-      else if (viewportCenter >= howItWorksBottom && viewportCenter < coursesTop + windowHeight * 0.3) {
-        const transitionZone = coursesTop + windowHeight * 0.3 - howItWorksBottom;
-        const transitionProgress = (viewportCenter - howItWorksBottom) / transitionZone;
-        newProgress = 0.3 + transitionProgress * 0.7; // 30% to 100%
-      }
-      // Courses section - full blue (100%)
-      else if (viewportCenter >= coursesTop && viewportCenter < coursesBottom - windowHeight * 0.3) {
+    // Hero section (before how-it-works enters) - base color
+    if (howItWorksRect.top > viewportMiddle) {
+      newProgress = 0;
+    }
+    // How it works section - gradually increase from 0% to 30%
+    else if (howItWorksRect.top <= viewportMiddle && howItWorksRect.bottom > viewportMiddle) {
+      // How far through the section are we? (0 to 1)
+      const sectionProgress = (viewportMiddle - howItWorksRect.top) / howItWorksRect.height;
+      // Map to 0-0.3
+      newProgress = Math.min(sectionProgress * 0.35, 0.3);
+    }
+    // Between how-it-works and courses - transition 30% to 100%
+    else if (howItWorksRect.bottom <= viewportMiddle && coursesRect.top > viewportMiddle) {
+      // We're in the gap, interpolate
+      const gapSize = coursesRect.top - howItWorksRect.bottom;
+      const gapProgress = (viewportMiddle - howItWorksRect.bottom) / gapSize;
+      newProgress = 0.3 + gapProgress * 0.7;
+    }
+    // Courses section - full blue (100%)
+    else if (coursesRect.top <= viewportMiddle && coursesRect.bottom > viewportMiddle) {
+      // Check if we're in the last 30% of courses (transition out)
+      const sectionProgress = (viewportMiddle - coursesRect.top) / coursesRect.height;
+      if (sectionProgress > 0.7) {
+        // Start transitioning out
+        const exitProgress = (sectionProgress - 0.7) / 0.3;
+        newProgress = 1 - exitProgress * 0.5; // Go from 100% to 50%
+      } else {
         newProgress = 1;
       }
-      // Transition from courses to pricing - 100% to 0%
-      else if (viewportCenter >= coursesBottom - windowHeight * 0.3 && viewportCenter < pricingTop + windowHeight * 0.3) {
-        const transitionStart = coursesBottom - windowHeight * 0.3;
-        const transitionEnd = pricingTop + windowHeight * 0.3;
-        const transitionProgress = (viewportCenter - transitionStart) / (transitionEnd - transitionStart);
-        newProgress = 1 - transitionProgress; // 100% to 0%
-      }
-      // Pricing and beyond - base color
-      else {
-        newProgress = 0;
-      }
+    }
+    // Between courses and pricing - transition to 0%
+    else if (coursesRect.bottom <= viewportMiddle && pricingRect.top > viewportMiddle) {
+      const gapSize = pricingRect.top - coursesRect.bottom;
+      const gapProgress = (viewportMiddle - coursesRect.bottom) / gapSize;
+      newProgress = 0.5 - gapProgress * 0.5; // 50% to 0%
+    }
+    // Pricing and beyond - base color
+    else if (pricingRect.top <= viewportMiddle) {
+      newProgress = 0;
+    }
 
-      setProgress(Math.max(0, Math.min(1, newProgress)));
-      rafRef.current = requestAnimationFrame(updateProgress);
-    };
+    setProgress(Math.max(0, Math.min(1, newProgress)));
+  }, []);
 
-    rafRef.current = requestAnimationFrame(updateProgress);
+  useEffect(() => {
+    // Initial update
+    updateProgress();
+
+    // Listen to scroll events with passive for better performance
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", updateProgress, { passive: true });
 
     return () => {
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
+      window.removeEventListener("scroll", updateProgress);
+      window.removeEventListener("resize", updateProgress);
     };
-  }, []);
+  }, [updateProgress]);
 
   // Colors
   const lightModeBase = "#FFFFFF";
@@ -122,10 +111,11 @@ export default function AnimatedBackground() {
 
   return (
     <div
-      className="fixed inset-0 -z-10 transition-colors duration-150 ease-out bg-[var(--bg-light)] dark:bg-[var(--bg-dark)]"
+      className="fixed inset-0 -z-10 bg-[var(--bg-light)] dark:bg-[var(--bg-dark)]"
       style={{
         '--bg-light': lightColor,
         '--bg-dark': darkColor,
+        transition: 'background-color 100ms ease-out',
       } as React.CSSProperties}
     />
   );
