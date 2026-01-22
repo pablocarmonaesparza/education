@@ -79,8 +79,8 @@ export default function PricingSection() {
           viewport={{ once: true }}
           className="mb-12"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center text-[#1472FF] leading-tight tracking-tight lowercase">
-            nuestros planes
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center text-[#1472FF] leading-tight tracking-tight">
+            Nuestros Planes
           </h2>
         </motion.div>
 

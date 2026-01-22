@@ -142,7 +142,7 @@ export default function HowItWorksSection() {
               style={{ scrollSnapAlign: 'center' }}
             >
               {/* Title */}
-              <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 text-center lowercase tracking-tight">
+              <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 text-center tracking-tight">
                 {step.title.toLowerCase()}
               </h3>
               
@@ -205,8 +205,8 @@ export default function HowItWorksSection() {
               viewport={{ once: true }}
               className="text-center mb-10 md:mb-14"
             >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1472FF] leading-tight tracking-tight lowercase">
-                cómo funciona
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1472FF] leading-tight tracking-tight">
+                Cómo Funciona
               </h2>
             </motion.div>
 
