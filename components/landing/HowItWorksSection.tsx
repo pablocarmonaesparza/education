@@ -4,6 +4,23 @@ import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 
+// Interpolate between two hex colors
+function interpolateColor(color1: string, color2: string, factor: number): string {
+  const hex = (c: string) => parseInt(c, 16);
+  const r1 = hex(color1.slice(1, 3));
+  const g1 = hex(color1.slice(3, 5));
+  const b1 = hex(color1.slice(5, 7));
+  const r2 = hex(color2.slice(1, 3));
+  const g2 = hex(color2.slice(3, 5));
+  const b2 = hex(color2.slice(5, 7));
+  
+  const r = Math.round(r1 + (r2 - r1) * factor);
+  const g = Math.round(g1 + (g2 - g1) * factor);
+  const b = Math.round(b1 + (b2 - b1) * factor);
+  
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
 const steps = [
   {
     title: "el problema",
@@ -28,6 +45,7 @@ const steps = [
 export default function HowItWorksSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [mobileActiveIndex, setMobileActiveIndex] = useState(0);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const snapRefs = useRef<(HTMLDivElement | null)[]>([]);
   const mobileScrollRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -35,9 +53,31 @@ export default function HowItWorksSection() {
   const touchStartY = useRef(0);
   const touchStartX = useRef(0);
 
-  // Background opacity based on active step (10% per step = 30% max)
-  const getBgOpacity = (index: number) => {
-    return (index + 1) * 0.1; // Step 0 = 10%, Step 1 = 20%, Step 2 = 30%
+  // Detect dark mode
+  useEffect(() => {
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    };
+    
+    checkDarkMode();
+    
+    // Observe class changes on html element
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    
+    return () => observer.disconnect();
+  }, []);
+
+  // Colors for interpolation
+  const lightModeBase = "#FFFFFF"; // white
+  const darkModeBase = "#030712";  // gray-950
+  const accentColor = "#1472FF";   // blue
+
+  // Get background color based on step (10% per step toward blue)
+  const getBackgroundColor = (index: number) => {
+    const baseColor = isDarkMode ? darkModeBase : lightModeBase;
+    const progress = (index + 1) * 0.1; // 10%, 20%, 30%
+    return interpolateColor(baseColor, accentColor, progress);
   };
 
   // Desktop: Detectar qué punto de snap está visible
@@ -135,7 +175,7 @@ export default function HowItWorksSection() {
         id="how-it-works-mobile"
         className="md:hidden min-h-screen flex flex-col relative transition-all duration-700"
         style={{
-          backgroundColor: `rgba(20, 114, 255, ${getBgOpacity(mobileActiveIndex)})`
+          backgroundColor: getBackgroundColor(mobileActiveIndex)
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -206,14 +246,11 @@ export default function HowItWorksSection() {
         className="hidden md:block relative"
         style={{ height: `${steps.length * 100}vh` }}
       >
-        {/* Animated background layer - 10% per step */}
+        {/* Contenido visual sticky with interpolated background */}
         <div 
-          className="fixed inset-0 pointer-events-none bg-[#1472FF] transition-opacity duration-700 ease-out -z-10"
-          style={{ opacity: getBgOpacity(activeIndex) }}
-        />
-        
-        {/* Contenido visual sticky */}
-        <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden transition-colors duration-700">
+          className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden transition-all duration-700 ease-out"
+          style={{ backgroundColor: getBackgroundColor(activeIndex) }}
+        >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
             {/* Section Header */}
             <motion.div
