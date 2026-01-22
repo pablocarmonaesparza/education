@@ -36,7 +36,7 @@ export default function AuthNavbar() {
           <Link href="/" className="flex items-center gap-2">
             {isDark ? (
               <Image
-                src="/images/logo-light.png"
+                src="/images/itera-logo-light.png"
                 alt="Itera"
                 width={120}
                 height={40}
@@ -45,7 +45,7 @@ export default function AuthNavbar() {
               />
             ) : (
               <Image
-                src="/images/logo-dark.png"
+                src="/images/itera-logo-dark.png"
                 alt="Itera"
                 width={120}
                 height={40}

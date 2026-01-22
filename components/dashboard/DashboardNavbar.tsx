@@ -99,7 +99,7 @@ export default function DashboardNavbar() {
             {/* Logo - Left */}
             <Link href="/dashboard" className="flex items-center">
               <Image
-                src="/images/logo-dark.png"
+                src="/images/itera-logo-dark.png"
                 alt="Itera"
                 width={120}
                 height={40}

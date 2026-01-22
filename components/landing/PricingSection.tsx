@@ -20,51 +20,51 @@ export default function PricingSection() {
   const tiers = [
     {
       id: "basic",
-      name: "Básico",
+      name: "básico",
       price: 0,
       isMonthly: false,
       popular: false,
-      description: "Acceso completo para aprender a tu ritmo",
+      description: "acceso completo para aprender a tu ritmo",
       features: [
-        "Acceso completo a los 400+ micro-videos (1-3 min c/u)",
-        "Contenido organizado en 12 secciones",
-        "Acceso a la comunidad general en Slack",
-        "Casos de uso enfocados en LATAM",
-        "Actualizaciones de contenido incluidas",
+        "acceso completo a los 400+ micro-videos (1-3 min c/u)",
+        "contenido organizado en 12 secciones",
+        "acceso a la comunidad general en Slack",
+        "casos de uso enfocados en LATAM",
+        "actualizaciones de contenido incluidas",
       ],
-      cta: "Comenzar Gratis",
+      cta: "COMENZAR GRATIS",
     },
     {
       id: "plus",
-      name: "Plus",
+      name: "plus",
       price: 19,
       isMonthly: true,
       popular: true,
-      description: "La experiencia completa con IA personalizada",
+      description: "la experiencia completa con IA personalizada",
       features: [
-        "Todo lo del plan Básico",
-        "Curso personalizado generado por AI según tu proyecto",
-        "De 400+ videos, la AI selecciona los 10-200 que necesitas",
-        "Acceso a la comunidad prioritaria en Discord",
-        "Asistente virtual de seguimiento (Limitado)",
+        "todo lo del plan básico",
+        "curso personalizado generado por AI según tu proyecto",
+        "de 400+ videos, la AI selecciona los 10-200 que necesitas",
+        "acceso a la comunidad prioritaria en Discord",
+        "asistente virtual de seguimiento (limitado)",
       ],
-      cta: "Comenzar con Plus",
+      cta: "COMENZAR CON PLUS",
     },
     {
       id: "pro",
-      name: "Pro",
+      name: "pro",
       price: 199,
       isMonthly: true,
       popular: false,
-      description: "Experiencia premium con tutoría personalizada",
+      description: "experiencia premium con tutoría personalizada",
       features: [
-        "Todo lo del plan Plus",
-        "Tutoría quincenal con Pablo de forma individual",
-        "Hasta 5 cursos personalizados por mes",
-        "Contexto acumulativo entre sesiones",
-        "Asistente virtual de seguimiento (Ilimitado)",
+        "todo lo del plan plus",
+        "tutoría quincenal con Pablo de forma individual",
+        "hasta 5 cursos personalizados por mes",
+        "contexto acumulativo entre sesiones",
+        "asistente virtual de seguimiento (ilimitado)",
       ],
-      cta: "Comenzar con Pro",
+      cta: "COMENZAR CON PRO",
     },
   ];
 
@@ -80,7 +80,7 @@ export default function PricingSection() {
           className="mb-12"
         >
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center text-[#1472FF] leading-tight tracking-tight">
-            Nuestros Planes
+            nuestros planes
           </h2>
         </motion.div>
 

@@ -146,7 +146,7 @@ export default function Navbar() {
             >
               {isDark ? (
                 <Image
-                  src="/images/logo-light.png"
+                  src="/images/itera-logo-light.png"
                   alt="Itera"
                   width={120}
                   height={40}
@@ -155,7 +155,7 @@ export default function Navbar() {
                 />
               ) : (
                 <Image
-                  src="/images/logo-dark.png"
+                  src="/images/itera-logo-dark.png"
                   alt="Itera"
                   width={120}
                   height={40}
@@ -281,7 +281,7 @@ export default function Navbar() {
                 <Link href="/" onClick={() => setMobileMenuOpen(false)}>
                   {isDark ? (
                     <Image
-                      src="/images/logo-light.png"
+                      src="/images/itera-logo-light.png"
                       alt="Itera"
                       width={120}
                       height={40}
@@ -289,7 +289,7 @@ export default function Navbar() {
                     />
                   ) : (
                     <Image
-                      src="/images/logo-dark.png"
+                      src="/images/itera-logo-dark.png"
                       alt="Itera"
                       width={120}
                       height={40}
