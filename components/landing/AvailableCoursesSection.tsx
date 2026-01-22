@@ -157,7 +157,7 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
       {courses.map((course, index) => (
         <div
           key={`${course.id}-${index}`}
-          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-white dark:bg-gray-800 rounded-xl p-4 md:p-5 border-2 border-gray-100 dark:border-gray-700"
+          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-white rounded-2xl p-4 md:p-5 shadow-lg shadow-black/10"
         >
           {/* Icon */}
           <div className="text-3xl md:text-4xl mb-3">
@@ -165,7 +165,7 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
           </div>
 
           {/* Title */}
-          <h3 className="text-base md:text-lg font-extrabold text-[#4b4b4b] dark:text-white mb-3 leading-tight tracking-tight">
+          <h3 className="text-base md:text-lg font-extrabold text-[#4b4b4b] mb-3 leading-tight tracking-tight">
             {course.title}
           </h3>
 
@@ -174,7 +174,7 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
             {course.topics.map((topic, i) => (
               <span
                 key={i}
-                className="px-2 py-0.5 bg-[#1472FF]/10 dark:bg-[#1472FF]/20 text-[#1472FF] dark:text-[#5BA0FF] text-xs font-medium rounded-full"
+                className="px-2 py-0.5 bg-[#1472FF]/10 text-[#1472FF] text-xs font-medium rounded-full"
               >
                 {topic}
               </span>
@@ -191,7 +191,7 @@ export default function AvailableCoursesSection() {
   const baseDuration = 60;
 
   return (
-    <section id="available-courses" className="relative min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-950 overflow-hidden pt-20 pb-20">
+    <section id="available-courses" className="relative min-h-screen flex flex-col items-center justify-center bg-[#1472FF] overflow-hidden pt-20 pb-20 transition-colors duration-700">
       <div className="relative z-10 w-full">
         {/* Header */}
         <motion.div
@@ -202,10 +202,10 @@ export default function AvailableCoursesSection() {
           className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12 md:mb-16"
         >
           <div className="text-center">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1472FF] mb-6 md:mb-8 leading-tight tracking-tight">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 md:mb-8 leading-tight tracking-tight">
               posibilidades infinitas
             </h2>
-            <p className="text-lg md:text-xl text-[#777777] dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto leading-relaxed">
               con nuestros más de 1,000 videos, generamos cursos personalizados para cualquier proyecto de IA y automatización
             </p>
           </div>
@@ -256,11 +256,11 @@ export default function AvailableCoursesSection() {
           }}
           className="flex flex-col items-center gap-1 cursor-pointer group"
         >
-          <span className="text-sm font-semibold tracking-wide text-black/40 dark:text-white/40 group-hover:text-black/60 dark:group-hover:text-white/60 transition-colors">
+          <span className="text-sm font-semibold tracking-wide text-white/60 group-hover:text-white/80 transition-colors">
             Precios
           </span>
           <motion.svg
-            className="w-5 h-5 text-black/40 dark:text-white/40 group-hover:text-black/60 dark:group-hover:text-white/60 transition-colors"
+            className="w-5 h-5 text-white/60 group-hover:text-white/80 transition-colors"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"

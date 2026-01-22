@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 
@@ -30,8 +30,19 @@ export default function HowItWorksSection() {
   const [mobileActiveIndex, setMobileActiveIndex] = useState(0);
   const snapRefs = useRef<(HTMLDivElement | null)[]>([]);
   const mobileScrollRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const mobileSectionRef = useRef<HTMLElement>(null);
   const touchStartY = useRef(0);
   const touchStartX = useRef(0);
+
+  // Scroll-based background transition for desktop
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  });
+
+  // Transform scroll progress to background opacity (0 to 0.15 for subtle blue tint)
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.8, 1], [0, 0.08, 0.15]);
 
   // Desktop: Detectar qué punto de snap está visible
   useEffect(() => {
@@ -124,8 +135,16 @@ export default function HowItWorksSection() {
     <>
       {/* ============ MOBILE VERSION (< 768px) ============ */}
       <section
+        ref={mobileSectionRef}
         id="how-it-works-mobile"
-        className="md:hidden min-h-screen bg-white dark:bg-gray-950 flex flex-col relative"
+        className="md:hidden min-h-screen flex flex-col relative transition-colors duration-700"
+        style={{
+          backgroundColor: mobileActiveIndex === 2 
+            ? 'rgba(20, 114, 255, 0.1)' 
+            : mobileActiveIndex === 1 
+              ? 'rgba(20, 114, 255, 0.05)' 
+              : undefined
+        }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
       >
@@ -190,12 +209,19 @@ export default function HowItWorksSection() {
 
       {/* ============ DESKTOP VERSION (>= 768px) ============ */}
       <div 
+        ref={sectionRef}
         id="how-it-works" 
-        className="hidden md:block relative bg-white dark:bg-gray-950"
+        className="hidden md:block relative"
         style={{ height: `${steps.length * 100}vh` }}
       >
+        {/* Animated background layer */}
+        <motion.div 
+          className="fixed inset-0 pointer-events-none bg-[#1472FF] -z-10"
+          style={{ opacity: bgOpacity }}
+        />
+        
         {/* Contenido visual sticky */}
-        <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
+        <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm transition-colors duration-700">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
             {/* Section Header */}
             <motion.div
