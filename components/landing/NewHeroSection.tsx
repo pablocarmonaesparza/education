@@ -106,7 +106,7 @@ export default function NewHeroSection() {
           className="text-center mb-12 md:mb-16 max-w-2xl mx-auto"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white leading-tight tracking-tight">
-            un curso a partir de tu idea
+            un curso a partir de tu idea.
           </h1>
         </motion.div>
 
@@ -129,7 +129,7 @@ export default function NewHeroSection() {
                 onChange={handleIdeaChange}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
-                placeholder="describe tu idea y haremos un curso personalizado para ti"
+                placeholder="Describe tu idea y haremos un curso personalizado para ti."
                 className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 py-3"
                 rows={2}
               />
