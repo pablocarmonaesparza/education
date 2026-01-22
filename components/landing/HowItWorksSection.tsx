@@ -45,7 +45,6 @@ const steps = [
 export default function HowItWorksSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [mobileActiveIndex, setMobileActiveIndex] = useState(0);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const snapRefs = useRef<(HTMLDivElement | null)[]>([]);
   const mobileScrollRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -53,31 +52,24 @@ export default function HowItWorksSection() {
   const touchStartY = useRef(0);
   const touchStartX = useRef(0);
 
-  // Detect dark mode
-  useEffect(() => {
-    const checkDarkMode = () => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
-    };
-    
-    checkDarkMode();
-    
-    // Observe class changes on html element
-    const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-    
-    return () => observer.disconnect();
-  }, []);
-
   // Colors for interpolation
   const lightModeBase = "#FFFFFF"; // white
   const darkModeBase = "#030712";  // gray-950
   const accentColor = "#1472FF";   // blue
 
   // Get background color based on step (10% per step toward blue)
-  const getBackgroundColor = (index: number) => {
-    const baseColor = isDarkMode ? darkModeBase : lightModeBase;
+  // Uses CSS custom property approach for instant dark mode detection
+  const getBackgroundStyle = (index: number) => {
     const progress = (index + 1) * 0.1; // 10%, 20%, 30%
-    return interpolateColor(baseColor, accentColor, progress);
+    
+    // Calculate interpolated colors for both modes
+    const lightColor = interpolateColor(lightModeBase, accentColor, progress);
+    const darkColor = interpolateColor(darkModeBase, accentColor, progress);
+    
+    return {
+      '--bg-light': lightColor,
+      '--bg-dark': darkColor,
+    } as React.CSSProperties;
   };
 
   // Desktop: Detectar qué punto de snap está visible
@@ -173,10 +165,8 @@ export default function HowItWorksSection() {
       <section
         ref={mobileSectionRef}
         id="how-it-works-mobile"
-        className="md:hidden min-h-screen flex flex-col relative transition-all duration-700"
-        style={{
-          backgroundColor: getBackgroundColor(mobileActiveIndex)
-        }}
+        className="md:hidden min-h-screen flex flex-col relative transition-all duration-700 bg-[var(--bg-light)] dark:bg-[var(--bg-dark)]"
+        style={getBackgroundStyle(mobileActiveIndex)}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
       >
@@ -248,8 +238,8 @@ export default function HowItWorksSection() {
       >
         {/* Contenido visual sticky with interpolated background */}
         <div 
-          className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden transition-all duration-700 ease-out"
-          style={{ backgroundColor: getBackgroundColor(activeIndex) }}
+          className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden transition-all duration-700 ease-out bg-[var(--bg-light)] dark:bg-[var(--bg-dark)]"
+          style={getBackgroundStyle(activeIndex)}
         >
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
             {/* Section Header */}
