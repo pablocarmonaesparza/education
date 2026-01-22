@@ -152,8 +152,8 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
 
   const rarityColors = {
     common: 'from-gray-400 to-gray-500',
-    rare: 'from-[#5BA0FF] to-[#1472FF]',
-    epic: 'from-[#1472FF] to-[#5BA0FF]',
+    rare: 'bg-[#5BA0FF]',
+    epic: 'bg-[#1472FF]',
     legendary: 'from-yellow-400 to-orange-500',
   };
 
@@ -189,7 +189,7 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
               relative aspect-square rounded-lg border-2 flex items-center justify-center
               transition-all duration-200 hover:scale-105
               ${badge.earned
-                ? `${rarityBorders[badge.rarity]} bg-gradient-to-br ${rarityColors[badge.rarity]} bg-opacity-10`
+                ? `${rarityBorders[badge.rarity]} ${rarityColors[badge.rarity]} bg-opacity-10`
                 : 'border-gray-200 bg-gray-100'
               }
             `}
@@ -211,7 +211,7 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
             <div className={`
               w-12 h-12 rounded-lg flex items-center justify-center
               ${selectedBadge.earned
-                ? `bg-gradient-to-br ${rarityColors[selectedBadge.rarity]}`
+                ? `${rarityColors[selectedBadge.rarity]}`
                 : 'bg-gray-200'
               }
             `}>

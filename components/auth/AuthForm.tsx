@@ -278,7 +278,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           <button
             type="submit"
             disabled={loading || oauthLoading}
-            className="w-full px-6 py-3 rounded-full font-semibold text-sm bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white shadow-md hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full px-6 py-3 rounded-full font-semibold text-sm bg-[#1472FF] text-white shadow-md hover:bg-[#0E5FCC] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading
               ? 'Procesando...'

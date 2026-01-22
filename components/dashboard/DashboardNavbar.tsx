@@ -133,7 +133,7 @@ export default function DashboardNavbar() {
               
               {/* Sliding indicator */}
               <div
-                className="absolute bottom-0 h-0.5 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] rounded-full transition-all duration-300"
+                className="absolute bottom-0 h-0.5 bg-[#1472FF] rounded-full transition-all duration-300"
                 style={{
                   left: indicatorStyle.left,
                   width: indicatorStyle.width,
@@ -150,13 +150,13 @@ export default function DashboardNavbar() {
                 <span 
                   className="absolute inset-0 rounded-full z-0"
                   style={{
-                    background: 'linear-gradient(90deg, #1472FF 0%, #5BA0FF 50%, #1472FF 100%)',
+                    background: '#1472FF',
                   }}
                 />
                 <span 
                   className="absolute inset-[2px] rounded-full bg-white dark:bg-gray-900 z-[1]"
                 />
-                <span className="relative z-[2] bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] bg-clip-text text-transparent">
+                <span className="relative z-[2] bg-[#1472FF] bg-clip-text text-transparent">
                   Mejorar Plan
                 </span>
               </button>
@@ -174,7 +174,7 @@ export default function DashboardNavbar() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-[#1472FF] to-[#5BA0FF] flex items-center justify-center text-white text-xs font-semibold">
+                  <div className="w-full h-full bg-[#1472FF] flex items-center justify-center text-white text-xs font-semibold">
                     {userInitials}
                   </div>
                 )}
@@ -234,7 +234,7 @@ export default function DashboardNavbar() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-[#1472FF] to-[#5BA0FF] flex items-center justify-center text-white text-xs font-semibold">
+                  <div className="w-full h-full bg-[#1472FF] flex items-center justify-center text-white text-xs font-semibold">
                     {userInitials}
                   </div>
                 )}
@@ -316,7 +316,7 @@ export default function DashboardNavbar() {
                   onClick={() => setShowMobileMenu(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#1472FF]/10 to-[#5BA0FF]/10 text-[#1472FF]'
+                      ? 'bg-[#1472FF]/10 text-[#1472FF]'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900'
                   }`}
                 >
@@ -335,7 +335,7 @@ export default function DashboardNavbar() {
 
           {/* Upgrade Plan Button (Mobile) */}
           <button 
-            className="w-full px-4 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] hover:opacity-90 transition-all flex items-center justify-center gap-2"
+            className="w-full px-4 py-3 rounded-xl text-sm font-semibold text-white bg-[#1472FF] hover:opacity-90 transition-all flex items-center justify-center gap-2"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />

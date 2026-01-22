@@ -95,14 +95,14 @@ export default function PricingSection() {
               viewport={{ once: true }}
               className={`relative rounded-2xl p-5 md:p-6 transition-all duration-300 flex flex-col ${
                 tier.popular
-                  ? "bg-gradient-to-br from-[#1472FF]/10 to-[#5BA0FF]/10 dark:from-[#1472FF]/20 dark:to-[#5BA0FF]/20 border-2 border-[#1472FF]"
+                  ? "bg-[#1472FF]/10 dark:bg-[#1472FF]/20 border-2 border-[#1472FF]"
                   : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
               }`}
             >
               {/* Popular Badge */}
               {tier.popular && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white px-4 py-1 rounded-full text-xs font-bold">
+                  <div className="bg-[#1472FF] text-white px-4 py-1 rounded-full text-xs font-bold">
                     🔥 MÁS POPULAR
                   </div>
                 </div>
@@ -118,7 +118,7 @@ export default function PricingSection() {
               {/* Pricing */}
               <div className="mb-4">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] bg-clip-text text-transparent">
+                  <span className="text-3xl md:text-4xl font-bold text-[#1472FF]">
                     {formatPrice(tier.price, tier.isMonthly)}
                   </span>
                   {tier.price > 0 && (

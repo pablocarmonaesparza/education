@@ -27,7 +27,7 @@ export default function CourseCard({
       className="block bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 hover:border-purple-300 group"
     >
       {/* Header */}
-      <div className="relative bg-gradient-to-br from-[#1472FF] to-[#0E5FCC] p-6">
+      <div className="relative bg-[#1472FF] p-6">
         <div className="text-5xl mb-2">{icon}</div>
         <h3 className="text-xl font-bold text-white group-hover:underline">
           {title}
@@ -63,7 +63,7 @@ export default function CourseCard({
           <div className="mt-4">
             <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] rounded-full transition-all duration-500"
+                className="h-full bg-[#1472FF] rounded-full transition-all duration-500"
                 style={{ width: `${progress}%` }}
               />
             </div>

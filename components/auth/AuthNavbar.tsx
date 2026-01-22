@@ -59,14 +59,14 @@ export default function AuthNavbar() {
           {isSignupPage ? (
             <Link
               href="/auth/login"
-              className="px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 navbar-button-gradient text-white hover:opacity-90"
+              className="px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 bg-[#1472FF] text-white hover:bg-[#0E5FCC]"
             >
               Iniciar Sesión
             </Link>
           ) : (
             <Link
               href="/auth/signup"
-              className="px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 navbar-button-gradient text-white hover:opacity-90"
+              className="px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 bg-[#1472FF] text-white hover:bg-[#0E5FCC]"
             >
               Regístrate
             </Link>

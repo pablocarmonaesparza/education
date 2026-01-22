@@ -196,7 +196,7 @@ export default function Navbar() {
             {/* Sliding indicator */}
             {activeSection && (
               <motion.div
-                className="absolute bottom-0 h-0.5 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] rounded-full"
+                className="absolute bottom-0 h-0.5 bg-[#1472FF] rounded-full"
                 initial={false}
                 animate={{
                   left: indicatorStyle.left,

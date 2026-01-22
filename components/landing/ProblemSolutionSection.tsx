@@ -95,7 +95,7 @@ export default function ProblemSolutionSection() {
             {solutions.map((solution, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-br from-[#1472FF]/10 to-[#1472FF]/10 p-6 rounded-lg border-l-4 border-[#1472FF]"
+                className="bg-[#1472FF]/10 p-6 rounded-lg border-l-4 border-[#1472FF]"
               >
                 <div className="text-4xl mb-4">{solution.icon}</div>
                 <h4 className="text-lg font-bold text-gray-900 mb-2">
@@ -109,7 +109,7 @@ export default function ProblemSolutionSection() {
 
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
-          <div className="bg-gradient-to-r from-[#0E5FCC] to-[#1472FF] text-white py-8 px-6 rounded-2xl max-w-3xl mx-auto">
+          <div className="bg-[#1472FF] text-white py-8 px-6 rounded-2xl max-w-3xl mx-auto">
             <h3 className="text-2xl font-bold mb-4">
               Deja de Perder Tiempo en Contenido Irrelevante
             </h3>

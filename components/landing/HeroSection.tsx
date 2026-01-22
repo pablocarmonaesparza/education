@@ -18,10 +18,10 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Animated gradient background - maintaining exact color palette */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900" />
+      {/* Solid background */}
+      <div className="absolute inset-0 bg-slate-900" />
 
-      {/* Animated gradient orbs with continuous movement - using CSS animations */}
+      {/* Animated orbs with continuous movement - using CSS animations */}
       <div className="absolute inset-0 overflow-hidden">
         {/* First orb - purple, moving in circular pattern */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float-orb-1" />
@@ -53,11 +53,11 @@ export default function HeroSection() {
           <br />
           la{" "}
           <span className="relative inline-block">
-            <span className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 animate-gradient">
+            <span className="relative z-10 text-[#1472FF]">
               IA
             </span>
             <motion.span
-              className="absolute -inset-1 bg-gradient-to-r from-purple-600/50 via-pink-600/50 to-blue-600/50 blur-lg"
+              className="absolute -inset-1 bg-[#1472FF]/50 blur-lg"
               animate={{
                 opacity: [0.5, 0.8, 0.5],
               }}

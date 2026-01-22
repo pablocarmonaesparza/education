@@ -95,7 +95,7 @@ export default function DashboardContent(props: DashboardContentProps) {
           </div>
           <div className="text-right hidden md:block">
             <p className="text-sm text-gray-500 font-medium uppercase tracking-wider mb-1">Tu Proyecto</p>
-            <p className="text-gray-900 font-semibold text-lg bg-clip-text text-transparent bg-gradient-to-r from-[#1472FF] to-[#5BA0FF]">
+            <p className="text-gray-900 font-semibold text-lg text-[#1472FF]">
               {projectTitle}
             </p>
           </div>
@@ -125,7 +125,7 @@ export default function DashboardContent(props: DashboardContentProps) {
 
                 <div className="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6 border border-gray-100 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
                    {/* Video Thumbnail Placeholder */}
-                  <div className="w-full sm:w-48 h-28 bg-gradient-to-br from-[#1472FF]/10 to-[#1472FF]/10 rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
+                  <div className="w-full sm:w-48 h-28 bg-[#1472FF]/10 rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
                     <div className="absolute inset-0 bg-black/5 group-hover:bg-black/10 transition-colors" />
                     <svg className="w-12 h-12 text-[#1472FF] opacity-80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M8 5v14l11-7z" />
@@ -153,7 +153,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                 <div className="flex flex-wrap gap-4">
                   <Link
                     href={`/dashboard/my-path/video/${props.currentPhase || 1}/${props.currentVideo || 1}`}
-                    className="flex-1 sm:flex-none inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] hover:from-[#0E5FCC] hover:to-[#1472FF] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1472FF] transition-all"
+                    className="flex-1 sm:flex-none inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-[#1472FF] hover:bg-[#0E5FCC] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1472FF] transition-all"
                   >
                     <svg className="mr-2 -ml-1 w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
                     Reproducir Video
@@ -162,10 +162,10 @@ export default function DashboardContent(props: DashboardContentProps) {
                     href="/dashboard/my-path"
                     className="flex-1 sm:flex-none inline-flex justify-center items-center px-6 py-3 rounded-lg text-base font-medium relative group bg-white"
                   >
-                    <span className="absolute inset-0 rounded-lg p-[1px] bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] opacity-100">
+                    <span className="absolute inset-0 rounded-lg p-[1px] bg-[#1472FF] opacity-100">
                       <div className="h-full w-full bg-white rounded-lg" />
                     </span>
-                    <span className="relative bg-clip-text text-transparent bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] group-hover:opacity-80 transition-opacity">
+                    <span className="relative text-[#1472FF] group-hover:opacity-80 transition-opacity">
                       Ver Ruta Completa
                     </span>
                   </Link>
@@ -223,7 +223,7 @@ export default function DashboardContent(props: DashboardContentProps) {
             <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
               <h3 className="font-bold text-gray-900 mb-6 flex items-center justify-between">
                 Tu Progreso
-                <span className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#1472FF] to-[#5BA0FF]">
+                <span className="text-2xl font-bold text-transparent bg-clip-text bg-[#1472FF]">
                   {props.overallProgress}%
                 </span>
               </h3>
@@ -232,7 +232,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                 <div className="overflow-hidden h-3 mb-2 text-xs flex rounded-full bg-gray-100">
                   <div 
                     style={{ width: `${props.overallProgress}%` }} 
-                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] transition-all duration-1000"
+                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[#1472FF] transition-all duration-1000"
                   />
                 </div>
                 <div className="flex justify-between text-xs text-gray-500 font-medium">

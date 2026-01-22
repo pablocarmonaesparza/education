@@ -80,7 +80,7 @@ export default function SocialProofSection() {
               viewport={{ once: true }}
               className="text-center"
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1472FF] to-[#5BA0FF] text-white mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#1472FF] text-white mb-4">
                 {stat.icon}
               </div>
               <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">

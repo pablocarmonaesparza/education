@@ -30,7 +30,7 @@ export default function ProgressCard({ title, progress, total, icon }: ProgressC
       <div className="relative">
         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] rounded-full transition-all duration-500"
+            className="h-full bg-[#1472FF] rounded-full transition-all duration-500"
             style={{ width: `${percentage}%` }}
           />
         </div>

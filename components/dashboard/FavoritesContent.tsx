@@ -135,8 +135,8 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
                           className="block relative overflow-hidden aspect-video"
                         >
                           {/* Thumbnail Placeholder */}
-                          <div className="absolute inset-0 bg-gradient-to-br from-[#1472FF]/10 to-[#5BA0FF]/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                            <div className="absolute inset-0 bg-gradient-to-br from-[#1472FF]/10 to-[#5BA0FF]/10 group-hover:from-[#1472FF]/20 group-hover:to-[#5BA0FF]/20 transition-all" />
+                          <div className="absolute inset-0 bg-[#1472FF]/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                            <div className="absolute inset-0 bg-[#1472FF]/10 group-hover:bg-[#1472FF]/20 transition-all" />
                             <div className="w-12 h-12 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/50 transition-all">
                               <svg className="w-6 h-6 text-[#1472FF] ml-1" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z" />

@@ -170,7 +170,7 @@ export default function ProgressBuilder({
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
       {/* Header with Car Visual */}
-      <div className="bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] p-6">
+      <div className="bg-[#1472FF] p-6">
         <div className="text-center mb-2">
           <h3 className="text-white font-bold text-xl">Construye tu Proyecto</h3>
           <p className="text-white/80 text-sm">Cada video te acerca más a tu meta</p>
@@ -192,7 +192,7 @@ export default function ProgressBuilder({
               className="bg-white rounded-full h-4 transition-all duration-1000 ease-out relative"
               style={{ width: `${totalProgress}%` }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer" />
+              <div className="absolute inset-0 bg-white/50 animate-shimmer" />
             </div>
           </div>
         </div>
@@ -211,9 +211,9 @@ export default function ProgressBuilder({
                 className={`
                   relative p-3 rounded-lg text-center transition-all duration-300
                   ${isUnlocked
-                    ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300'
+                    ? 'bg-green-50 border-2 border-green-300'
                     : isNext
-                    ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-300 animate-pulse'
+                    ? 'bg-yellow-50 border-2 border-yellow-300 animate-pulse'
                     : 'bg-gray-100 border-2 border-gray-200'
                   }
                 `}
@@ -243,7 +243,7 @@ export default function ProgressBuilder({
 
         {/* Next Part Progress */}
         {nextPart && (
-          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-4 border border-yellow-200">
+          <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
             <div className="flex items-center gap-3">
               <div className="text-3xl">{nextPart.emoji}</div>
               <div className="flex-1">
@@ -269,7 +269,7 @@ export default function ProgressBuilder({
 
         {/* Completion Message */}
         {totalProgress >= 95 && (
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 border border-green-200 text-center">
+          <div className="bg-green-50 rounded-lg p-4 border border-green-200 text-center">
             <div className="text-4xl mb-2">🏆</div>
             <h4 className="font-bold text-green-700">¡Proyecto Completado!</h4>
             <p className="text-sm text-green-600">Tu coche está listo para conquistar el mundo</p>

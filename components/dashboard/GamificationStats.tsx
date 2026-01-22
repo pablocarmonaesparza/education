@@ -39,7 +39,7 @@ export default function GamificationStats({
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
       {/* Header with Level */}
-      <div className="bg-gradient-to-r from-yellow-500 to-orange-500 p-4">
+      <div className="bg-[#1472FF] p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
@@ -73,7 +73,7 @@ export default function GamificationStats({
       {/* Stats Grid */}
       <div className="p-4 grid grid-cols-2 gap-4">
         {/* Streak */}
-        <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 border border-red-100">
+        <div className="bg-red-50 rounded-lg p-4 border border-red-100">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-2xl">🔥</span>
             <span className="text-sm font-medium text-gray-600">Racha</span>
@@ -88,7 +88,7 @@ export default function GamificationStats({
         </div>
 
         {/* Weekly Challenge */}
-        <div className="bg-gradient-to-br from-[#1472FF]/10 to-[#1472FF]/10 rounded-lg p-4 border border-[#1472FF]/20">
+        <div className="bg-[#1472FF]/10 rounded-lg p-4 border border-[#1472FF]/20">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-2xl">🎯</span>
             <span className="text-sm font-medium text-gray-600">Meta Semanal</span>

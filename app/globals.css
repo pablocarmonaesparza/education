@@ -264,63 +264,15 @@ p.text-2xl {
 }
 
 .blue-unicorn-gradient-base {
-  background: linear-gradient(
-    45deg,
-    #1472FF,
-    #0E5FCC,
-    #2B8AFF,
-    #5BA0FF,
-    #1472FF,
-    #3B82F6,
-    #60A5FA,
-    #1472FF,
-    #0E5FCC,
-    #2B8AFF,
-    #5BA0FF,
-    #1472FF
-  );
-  background-size: 400% 400%;
-  animation: blue-gradient-1 60s ease-in-out infinite;
-  will-change: background-position;
+  background: #1472FF;
 }
 
 .blue-unicorn-gradient-layer-1 {
-  background: linear-gradient(
-    -45deg,
-    #5BA0FF,
-    #1472FF,
-    #3B82F6,
-    #0E5FCC,
-    #2B8AFF,
-    #60A5FA,
-    #1472FF,
-    #5BA0FF,
-    #0E5FCC
-  );
-  background-size: 500% 500%;
-  animation: blue-gradient-2 70s ease-in-out infinite;
-  mix-blend-mode: screen;
-  opacity: 0.4;
-  will-change: background-position;
+  display: none;
 }
 
 .blue-unicorn-gradient-layer-2 {
-  background: linear-gradient(
-    90deg,
-    #1472FF,
-    #60A5FA,
-    #0E5FCC,
-    #2B8AFF,
-    #5BA0FF,
-    #3B82F6,
-    #1472FF,
-    #60A5FA
-  );
-  background-size: 600% 600%;
-  animation: blue-gradient-3 80s ease-in-out infinite;
-  mix-blend-mode: overlay;
-  opacity: 0.3;
-  will-change: background-position;
+  display: none;
 }
 
 .blue-cloud-orb {
@@ -385,24 +337,7 @@ p.text-2xl {
   animation: cloud-float-2 56s ease-in-out infinite;
 }
 
-/* Navbar button gradient when scrolled */
+/* Navbar button solid color */
 .navbar-button-gradient {
-  background: linear-gradient(
-    45deg,
-    #1472FF,
-    #0E5FCC,
-    #2B8AFF,
-    #5BA0FF,
-    #1472FF,
-    #3B82F6,
-    #60A5FA,
-    #1472FF,
-    #0E5FCC,
-    #2B8AFF,
-    #5BA0FF,
-    #1472FF
-  );
-  background-size: 400% 400%;
-  animation: blue-gradient-1 60s ease-in-out infinite;
-  will-change: background-position;
+  background: #1472FF;
 }

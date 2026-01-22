@@ -114,7 +114,7 @@ export default function TutorChatButton() {
                 {chatMessages.map((msg, i) => (
                   <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                     {msg.role === 'assistant' ? (
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#1472FF] to-[#5BA0FF] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
+                      <div className="w-7 h-7 rounded-full bg-[#1472FF] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
                         IA
                       </div>
                     ) : (
@@ -133,7 +133,7 @@ export default function TutorChatButton() {
                 ))}
                 {isLoading && (
                   <div className="flex gap-3">
-                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#1472FF] to-[#5BA0FF] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
+                    <div className="w-7 h-7 rounded-full bg-[#1472FF] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
                       IA
                     </div>
                     <div className="rounded-2xl px-3 py-2 border border-gray-200 dark:border-gray-700">
@@ -185,7 +185,7 @@ export default function TutorChatButton() {
                   <button 
                     type="submit"
                     disabled={isLoading || !chatInput.trim()}
-                    className="w-8 h-8 rounded-full bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] flex items-center justify-center text-white hover:opacity-90 transition-opacity flex-shrink-0 disabled:opacity-50"
+                    className="w-8 h-8 rounded-full bg-[#1472FF] flex items-center justify-center text-white hover:opacity-90 transition-opacity flex-shrink-0 disabled:opacity-50"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -214,7 +214,7 @@ export default function TutorChatButton() {
                 {/* Chat Button when closed */}
                 <button
                   onClick={() => setShowTutorChat(true)}
-                  className="px-4 py-2 rounded-full text-sm font-bold text-white hover:opacity-90 transition-all bg-gradient-to-r from-[#1472FF] to-[#5BA0FF]"
+                  className="px-4 py-2 rounded-full text-sm font-bold text-white hover:opacity-90 transition-all bg-[#1472FF]"
                 >
                   Platica con tu tutor
                 </button>

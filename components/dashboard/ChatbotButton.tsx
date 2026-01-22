@@ -43,7 +43,7 @@ export default function ChatbotButton() {
           </p>
           <button
             onClick={() => router.push('/dashboard/tutor')}
-            className="w-full py-2 px-4 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all"
+            className="w-full py-2 px-4 bg-[#1472FF] text-white rounded-lg text-sm font-medium hover:shadow-lg transition-all"
           >
             Abrir Chat Completo
           </button>
@@ -55,7 +55,7 @@ export default function ChatbotButton() {
         onClick={handleClick}
         className={`
           flex items-center justify-center rounded-full shadow-lg hover:shadow-xl transition-all duration-300
-          bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white
+          bg-[#1472FF] text-white
           ${isExpanded ? 'w-12 h-12' : 'w-14 h-14 hover:scale-105'}
         `}
         aria-label="Abrir Tutor IA"
