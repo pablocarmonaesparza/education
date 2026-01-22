@@ -4,23 +4,6 @@ import { motion } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 
-// Interpolate between two hex colors
-function interpolateColor(color1: string, color2: string, factor: number): string {
-  const hex = (c: string) => parseInt(c, 16);
-  const r1 = hex(color1.slice(1, 3));
-  const g1 = hex(color1.slice(3, 5));
-  const b1 = hex(color1.slice(5, 7));
-  const r2 = hex(color2.slice(1, 3));
-  const g2 = hex(color2.slice(3, 5));
-  const b2 = hex(color2.slice(5, 7));
-  
-  const r = Math.round(r1 + (r2 - r1) * factor);
-  const g = Math.round(g1 + (g2 - g1) * factor);
-  const b = Math.round(b1 + (b2 - b1) * factor);
-  
-  return `rgb(${r}, ${g}, ${b})`;
-}
-
 const steps = [
   {
     title: "el problema",
@@ -51,26 +34,6 @@ export default function HowItWorksSection() {
   const mobileSectionRef = useRef<HTMLElement>(null);
   const touchStartY = useRef(0);
   const touchStartX = useRef(0);
-
-  // Colors for interpolation
-  const lightModeBase = "#FFFFFF"; // white
-  const darkModeBase = "#030712";  // gray-950
-  const accentColor = "#1472FF";   // blue
-
-  // Get background color based on step (10% per step toward blue)
-  // Uses CSS custom property approach for instant dark mode detection
-  const getBackgroundStyle = (index: number) => {
-    const progress = (index + 1) * 0.1; // 10%, 20%, 30%
-    
-    // Calculate interpolated colors for both modes
-    const lightColor = interpolateColor(lightModeBase, accentColor, progress);
-    const darkColor = interpolateColor(darkModeBase, accentColor, progress);
-    
-    return {
-      '--bg-light': lightColor,
-      '--bg-dark': darkColor,
-    } as React.CSSProperties;
-  };
 
   // Desktop: Detectar qué punto de snap está visible
   useEffect(() => {
@@ -165,8 +128,7 @@ export default function HowItWorksSection() {
       <section
         ref={mobileSectionRef}
         id="how-it-works-mobile"
-        className="md:hidden min-h-screen flex flex-col relative transition-all duration-700 bg-[var(--bg-light)] dark:bg-[var(--bg-dark)]"
-        style={getBackgroundStyle(mobileActiveIndex)}
+        className="md:hidden min-h-screen flex flex-col relative"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
       >
@@ -236,11 +198,8 @@ export default function HowItWorksSection() {
         className="hidden md:block relative"
         style={{ height: `${steps.length * 100}vh` }}
       >
-        {/* Contenido visual sticky with interpolated background */}
-        <div 
-          className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden transition-all duration-700 ease-out bg-[var(--bg-light)] dark:bg-[var(--bg-dark)]"
-          style={getBackgroundStyle(activeIndex)}
-        >
+        {/* Contenido visual sticky - transparent to show animated background */}
+        <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
             {/* Section Header */}
             <motion.div

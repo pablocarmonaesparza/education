@@ -5,10 +5,12 @@ import PricingSection from "@/components/landing/PricingSection";
 import FAQSection from "@/components/landing/FAQSection";
 import Navbar from "@/components/shared/Navbar";
 import StructuredData from "@/components/shared/StructuredData";
+import AnimatedBackground from "@/components/landing/AnimatedBackground";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white dark:bg-gray-950">
+    <main className="min-h-screen">
+      <AnimatedBackground />
       <Navbar />
       <StructuredData />
       <NewHeroSection />

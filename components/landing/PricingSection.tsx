@@ -69,7 +69,7 @@ export default function PricingSection() {
   ];
 
   return (
-    <section id="pricing" className="relative bg-white dark:bg-gray-950 min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20 pb-24">
+    <section id="pricing" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20 pb-24">
       <div className="container mx-auto px-4 relative z-10 w-full">
         {/* Section Header */}
         <motion.div
