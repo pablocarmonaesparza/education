@@ -1,112 +1,74 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
 export default function AnimatedBackground() {
-  const [mounted, setMounted] = useState(false);
-  
-  // Get scroll progress of the entire page
-  const { scrollYProgress } = useScroll();
-  
-  // We need to know section positions to map scroll progress correctly
-  // This will be calculated after mount
-  const [sectionRatios, setSectionRatios] = useState({
-    heroEnd: 0.1,
-    howItWorksEnd: 0.4,
-    coursesStart: 0.4,
-    coursesEnd: 0.6,
-    pricingStart: 0.6,
-  });
+  const [bgColor, setBgColor] = useState({ light: "#FFFFFF", dark: "#030712" });
 
   useEffect(() => {
-    setMounted(true);
-    
-    const calculateRatios = () => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      
-      const heroSection = document.getElementById("hero");
-      const howItWorksSection = document.getElementById("how-it-works") || document.getElementById("how-it-works-mobile");
-      const coursesSection = document.getElementById("available-courses");
-      const pricingSection = document.getElementById("pricing");
-      
-      if (heroSection && howItWorksSection && coursesSection && pricingSection && docHeight > 0) {
-        const heroEnd = (heroSection.offsetTop + heroSection.offsetHeight) / docHeight;
-        const howItWorksEnd = (howItWorksSection.offsetTop + howItWorksSection.offsetHeight) / docHeight;
-        const coursesStart = coursesSection.offsetTop / docHeight;
-        const coursesEnd = (coursesSection.offsetTop + coursesSection.offsetHeight) / docHeight;
-        const pricingStart = pricingSection.offsetTop / docHeight;
-        
-        setSectionRatios({
-          heroEnd: Math.min(heroEnd, 0.15),
-          howItWorksEnd: Math.min(howItWorksEnd, 0.5),
-          coursesStart: Math.max(coursesStart, 0.35),
-          coursesEnd: Math.min(coursesEnd, 0.7),
-          pricingStart: Math.max(pricingStart, 0.6),
-        });
+      const scrollProgress = docHeight > 0 ? scrollY / docHeight : 0;
+
+      // Simple color interpolation based on scroll
+      // 0-20%: base, 20-50%: transition to blue, 50-70%: blue, 70-100%: back to base
+      let colorProgress = 0;
+
+      if (scrollProgress < 0.15) {
+        colorProgress = 0;
+      } else if (scrollProgress < 0.35) {
+        // Transition from 0 to 0.3
+        colorProgress = ((scrollProgress - 0.15) / 0.2) * 0.3;
+      } else if (scrollProgress < 0.45) {
+        // Transition from 0.3 to 1
+        colorProgress = 0.3 + ((scrollProgress - 0.35) / 0.1) * 0.7;
+      } else if (scrollProgress < 0.55) {
+        // Full blue
+        colorProgress = 1;
+      } else if (scrollProgress < 0.7) {
+        // Transition back to 0
+        colorProgress = 1 - ((scrollProgress - 0.55) / 0.15);
+      } else {
+        colorProgress = 0;
       }
+
+      // Clamp
+      colorProgress = Math.max(0, Math.min(1, colorProgress));
+
+      // Interpolate colors
+      const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+      
+      // Light mode: white (#FFFFFF) to blue (#1472FF)
+      const lightR = Math.round(lerp(255, 20, colorProgress));
+      const lightG = Math.round(lerp(255, 114, colorProgress));
+      const lightB = Math.round(lerp(255, 255, colorProgress));
+      
+      // Dark mode: gray-950 (#030712) to blue (#1472FF)
+      const darkR = Math.round(lerp(3, 20, colorProgress));
+      const darkG = Math.round(lerp(7, 114, colorProgress));
+      const darkB = Math.round(lerp(18, 255, colorProgress));
+
+      setBgColor({
+        light: `rgb(${lightR}, ${lightG}, ${lightB})`,
+        dark: `rgb(${darkR}, ${darkG}, ${darkB})`,
+      });
     };
-    
-    // Calculate after a short delay to ensure DOM is ready
-    setTimeout(calculateRatios, 100);
-    window.addEventListener("resize", calculateRatios);
-    
-    return () => window.removeEventListener("resize", calculateRatios);
+
+    handleScroll(); // Initial call
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Transform scroll progress to color progress (0 to 1 and back to 0)
-  // Hero: 0, HowItWorks: 0->0.3, Courses: 1, Pricing: 0
-  const colorProgress = useTransform(
-    scrollYProgress,
-    [
-      0,                           // Start
-      sectionRatios.heroEnd,       // End of hero
-      sectionRatios.howItWorksEnd, // End of how-it-works (30%)
-      sectionRatios.coursesStart,  // Start of courses (ramp to 100%)
-      sectionRatios.coursesEnd - 0.05, // Most of courses (100%)
-      sectionRatios.pricingStart,  // Start of pricing (back to 0)
-      1                            // End
-    ],
-    [0, 0, 0.3, 1, 1, 0, 0]
-  );
-
-  // Light mode: white to blue
-  const lightBg = useTransform(
-    colorProgress,
-    [0, 0.3, 1],
-    ["#FFFFFF", "#a8c9ff", "#1472FF"]
-  );
-
-  // Dark mode: gray-950 to blue  
-  const darkBg = useTransform(
-    colorProgress,
-    [0, 0.3, 1],
-    ["#030712", "#0a2d5c", "#1472FF"]
-  );
-
-  // Debug: log progress changes
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    // Uncomment to debug:
-    // console.log("Scroll progress:", latest, "Color progress:", colorProgress.get());
-  });
-
-  if (!mounted) {
-    return (
-      <div className="fixed inset-0 -z-10 bg-white dark:bg-gray-950" />
-    );
-  }
 
   return (
     <>
-      {/* Light mode background */}
-      <motion.div
-        className="fixed inset-0 -z-10 dark:hidden"
-        style={{ backgroundColor: lightBg }}
+      <div
+        className="fixed inset-0 -z-10 dark:hidden transition-colors duration-200"
+        style={{ backgroundColor: bgColor.light }}
       />
-      {/* Dark mode background */}
-      <motion.div
-        className="fixed inset-0 -z-10 hidden dark:block"
-        style={{ backgroundColor: darkBg }}
+      <div
+        className="fixed inset-0 -z-10 hidden dark:block transition-colors duration-200"
+        style={{ backgroundColor: bgColor.dark }}
       />
     </>
   );
