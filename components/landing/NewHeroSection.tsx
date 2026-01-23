@@ -23,7 +23,18 @@ export default function NewHeroSection() {
   const [authMode, setAuthMode] = useState<"login" | "signup">("signup");
   const [validationError, setValidationError] = useState<string | null>(null);
   const [isValidating, setIsValidating] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Detect dark mode
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDark(mediaQuery.matches);
+
+    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
 
   // Fixed height textarea - no auto-expand
 
@@ -124,11 +135,11 @@ export default function NewHeroSection() {
               style={{
                 boxShadow: validationError || idea.length > MAX_CHARACTERS
                   ? '0 4px 0 0 #fca5a5'
-                  : '0 4px 0 0 #d1d5db'
+                  : isDark ? '0 4px 0 0 #1e3a5f' : '0 4px 0 0 #d1d5db'
               }}
             >
-              <div className={`relative w-full bg-white dark:bg-gray-900 rounded-2xl border-2 transition-all duration-300 ${
-                    validationError || idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-gray-700 focus-within:border-[#1472FF]"
+              <div className={`relative w-full bg-white dark:bg-[#0a1628] rounded-2xl border-2 transition-all duration-300 ${
+                    validationError || idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-[#1e3a5f] focus-within:border-[#1472FF]"
                   }`}>
                 <textarea
                 ref={textareaRef}
