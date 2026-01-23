@@ -578,16 +578,19 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Video Player Overlay - Animated */}
+      {/* Video Player Overlay - Animated, only covers content area between sidebars */}
       {(selectedVideo || isVideoPlayerClosing) && (
         <div
-          className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-400 ease-out ${
+          className={`fixed top-0 bottom-0 flex items-center justify-center transition-all ease-out ${
             isVideoPlayerOpen && !isVideoPlayerClosing
               ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm'
               : 'bg-white/0 dark:bg-gray-950/0'
           }`}
           style={{
             transitionDuration: '400ms',
+            left: '256px',
+            right: `${chatWidth}px`,
+            zIndex: 35,
           }}
         >
           <div
