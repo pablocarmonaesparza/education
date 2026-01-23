@@ -237,29 +237,36 @@ export default function DashboardPage() {
     const container = scrollContainerRef.current;
     if (!container) return;
 
+    let lastScrollY = 0;
+    let ticking = false;
+
     const handleScroll = () => {
-      const currentScrollY = container.scrollTop;
-      const delta = currentScrollY - lastScrollYRef.current;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = container.scrollTop;
+          const delta = currentScrollY - lastScrollY;
 
-      // Greeting: only visible when at the very top
-      if (currentScrollY <= 10) {
-        setShowGreeting(true);
-      } else {
-        setShowGreeting(false);
+          // Greeting: only visible when at the very top
+          if (currentScrollY <= 10) {
+            setShowGreeting(true);
+          } else {
+            setShowGreeting(false);
+          }
+
+          // Progress bar: hide on scroll down, show on scroll up (Twitter-style)
+          if (delta > 2) {
+            // Scrolling down
+            setShowProgressBar(false);
+          } else if (delta < -2) {
+            // Scrolling up
+            setShowProgressBar(true);
+          }
+
+          lastScrollY = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
       }
-
-      // Progress bar: hide on scroll down, show on scroll up (Twitter-style)
-      if (Math.abs(delta) > 5) {
-        if (delta > 0) {
-          // Scrolling down
-          setShowProgressBar(false);
-        } else {
-          // Scrolling up
-          setShowProgressBar(true);
-        }
-      }
-
-      lastScrollYRef.current = currentScrollY;
     };
 
     container.addEventListener('scroll', handleScroll, { passive: true });
