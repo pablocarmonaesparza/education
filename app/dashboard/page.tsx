@@ -534,16 +534,16 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Progress Bar - Fixed at bottom, centered with max width */}
+      {/* Progress Bar - Fixed at bottom, 85% width of content area between sidebars */}
       {videos.length > 0 && (
         <div
-          className={`fixed bottom-0 left-0 right-0 z-30 transition-all duration-300 ease-in-out ${
+          className={`fixed bottom-0 left-64 right-64 z-30 transition-all duration-300 ease-in-out ${
             showProgressBar ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
           }`}
         >
           {/* Gradient fade at top of progress bar area */}
           <div className="h-8 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none" />
-          <div className="bg-white dark:bg-gray-950 pb-4 flex justify-center px-[7.5%]">
+          <div className="bg-white dark:bg-gray-950 pb-4 flex justify-center">
             <div className="w-[85%] relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-xl overflow-hidden flex items-center justify-center border-b-4 border-gray-300 dark:border-gray-600">
               <div
                 className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"

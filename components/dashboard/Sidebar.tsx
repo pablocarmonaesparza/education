@@ -122,7 +122,7 @@ export default function Sidebar() {
                   }`}
                 >
                   <span className="flex-shrink-0">{item.icon}</span>
-                  <span className="font-bold">{item.name}</span>
+                  <span className="font-bold uppercase">{item.name}</span>
                 </Link>
               </li>
             );
