@@ -203,7 +203,7 @@ export default function DashboardPage() {
   return (
     <div className="h-[calc(100vh-4rem)] flex flex-col">
       {/* Top Section - Fixed padding from top */}
-      <div className="pt-12 flex-shrink-0">
+      <div className="pt-6 flex-shrink-0">
         {/* Greeting */}
         {userName && (
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white text-center px-4 tracking-tight">
@@ -367,7 +367,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Bottom Section - Fixed padding from bottom (similar to top) */}
-      <div className="pb-12 flex-shrink-0">
+      <div className="pb-6 flex-shrink-0">
         {/* Empty space to match top padding */}
       </div>
     </div>
