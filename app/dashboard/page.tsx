@@ -237,7 +237,7 @@ export default function DashboardPage() {
       {/* Middle Section - Vertical scrollable carousel */}
       <div className="flex-1 overflow-y-auto min-h-0 px-4">
         {videos.length > 0 && (
-          <div className="max-w-4xl mx-auto py-6 space-y-6">
+          <div className="max-w-2xl mx-auto py-6 space-y-6">
             {Object.entries(videosByPhase).map(([phaseId, phaseData], phaseIndex) => (
               <div key={phaseId}>
                 {/* Phase Divider and Title */}
@@ -331,7 +331,7 @@ export default function DashboardPage() {
                             ? 'text-white/80'
                             : 'text-gray-500 dark:text-gray-400'
                         }`}>{video.phaseName}</p>
-                        <h3 className={`font-bold line-clamp-2 ${
+                        <h3 className={`font-bold line-clamp-2 leading-snug ${
                           video.isCurrent || video.isCompleted
                             ? 'text-white'
                             : 'text-[#4b4b4b] dark:text-white'

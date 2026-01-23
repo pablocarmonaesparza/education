@@ -66,9 +66,9 @@ export default function TutorChatButton() {
   };
 
   return (
-    <aside className="fixed right-0 top-0 h-screen bg-white dark:bg-gray-900 border-l border-gray-100 dark:border-gray-800 flex flex-col z-40 w-64">
+    <aside className="fixed right-0 top-0 h-screen bg-white dark:bg-gray-900 flex flex-col z-40 w-64">
       {/* Header - Minimalist */}
-      <div className="px-6 py-5 flex items-center justify-between flex-shrink-0 border-b border-gray-100 dark:border-gray-800">
+      <div className="px-6 py-5 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
           <h3 className="text-base font-semibold text-[#4b4b4b] dark:text-gray-200">Tutor IA</h3>
         </div>
@@ -124,7 +124,7 @@ export default function TutorChatButton() {
       </div>
 
       {/* Input - Elegant with subtle shadow */}
-      <div className="px-6 py-4 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 flex-shrink-0">
+      <div className="px-6 py-4 bg-white dark:bg-gray-900 flex-shrink-0">
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="relative">
             <input
