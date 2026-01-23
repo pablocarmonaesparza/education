@@ -300,7 +300,7 @@ export default function DashboardPage() {
                       </div>
                       
                       {/* Video Info - Colored based on status */}
-                      <div className={`flex-1 p-4 flex flex-col relative ${
+                      <div className={`w-[200px] h-full p-4 flex flex-col relative flex-shrink-0 ${
                         video.isCurrent
                           ? 'bg-[#1472FF]'
                           : video.isCompleted
