@@ -285,7 +285,7 @@ export default function DashboardPage() {
                   )}
                   
                   {/* Status badge - glass style */}
-                  <span className={`absolute top-2 right-2 px-2 py-1 rounded-lg text-xs font-medium backdrop-blur-md ${
+                  <span className={`absolute top-2 right-2 px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wide backdrop-blur-md ${
                     video.isCompleted
                       ? 'bg-white/20 text-white'
                       : video.isCurrent
@@ -306,7 +306,7 @@ export default function DashboardPage() {
                   
                   {/* Current indicator */}
                   {video.isCurrent && (
-                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-white text-[#1472FF] text-xs font-bold">
+                    <span className="absolute top-2 left-2 px-3 py-1 rounded-xl bg-white text-[#1472FF] text-xs font-bold uppercase tracking-wide border-b-2 border-gray-200">
                       Continuar
                     </span>
                   )}

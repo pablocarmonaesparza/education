@@ -214,7 +214,7 @@ export default function TutorChatButton() {
                 {/* Chat Button when closed */}
                 <button
                   onClick={() => setShowTutorChat(true)}
-                  className="px-4 py-2 rounded-full text-sm font-bold text-white hover:opacity-90 transition-all bg-[#1472FF]"
+                  className="px-6 py-3 rounded-2xl font-bold uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150"
                 >
                   Platica con tu tutor
                 </button>

@@ -55,12 +55,9 @@ export default function TutorChat() {
       {/* Toggle bar */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full text-white px-4 py-3 flex items-center justify-center gap-2 hover:opacity-95 transition-opacity"
-        style={{
-          background: '#1472FF',
-        }}
+        className="w-full text-white px-4 py-3 flex items-center justify-center gap-2 bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 transition-all duration-150"
       >
-        <span className="text-sm font-bold">Platica con tu tutor</span>
+        <span className="text-sm font-bold uppercase tracking-wide">Platica con tu tutor</span>
         <svg
           className={`w-5 h-5 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
