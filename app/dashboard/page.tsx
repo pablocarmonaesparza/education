@@ -266,7 +266,7 @@ export default function DashboardPage() {
                       onClick={() => {
                         router.push(`/dashboard/salon?video=${video.order}`);
                       }}
-                      className={`h-[140px] rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer flex border-2 ${
+                      className={`w-[400px] h-[140px] rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer flex border-2 ${
                         video.isCurrent
                           ? 'border-[#1472FF]'
                           : video.isCompleted
@@ -302,7 +302,7 @@ export default function DashboardPage() {
                       </div>
                       
                       {/* Video Info - Colored based on status */}
-                      <div className={`flex-1 h-full p-4 flex flex-col relative ${
+                      <div className={`w-[200px] h-full p-4 flex flex-col relative flex-shrink-0 ${
                         video.isCurrent
                           ? 'bg-[#1472FF]'
                           : video.isCompleted

@@ -139,11 +139,8 @@ export default function TutorChatButton() {
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="w-full px-4 py-3 bg-[#1472FF] text-white rounded-xl hover:bg-[#1265e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold uppercase tracking-wide flex items-center justify-center gap-2"
+            className="w-full px-4 py-3 bg-[#1472FF] text-white rounded-xl hover:bg-[#1265e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold uppercase tracking-wide flex items-center justify-center"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-            </svg>
             Enviar Mensaje
           </button>
         </form>
