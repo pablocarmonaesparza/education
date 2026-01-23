@@ -201,8 +201,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-3rem)] flex flex-col overflow-hidden">
-      <div className="flex-1 flex flex-col items-center justify-center">
+    <div className="h-[calc(100vh-4rem)] flex flex-col">
+      {/* Top Section - Fixed padding from top */}
+      <div className="pt-12 flex-shrink-0">
         {/* Greeting */}
         {userName && (
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white text-center px-4 tracking-tight">
@@ -211,7 +212,7 @@ export default function DashboardPage() {
         )}
         
         {/* Project - Show user's project idea */}
-        <p className="mt-4 text-lg text-[#777777] dark:text-gray-400 text-center px-4 max-w-2xl">
+        <p className="mt-4 text-lg text-[#777777] dark:text-gray-400 text-center px-4 max-w-2xl mx-auto">
           {project ? (
             <>
               <span className="text-gray-400 dark:text-gray-500">Tu proyecto: </span>
@@ -224,10 +225,13 @@ export default function DashboardPage() {
             : 'Continuemos donde lo dejamos'
           }
         </p>
+      </div>
 
+      {/* Middle Section - Flexible, scrollable if needed */}
+      <div className="flex-1 overflow-y-auto min-h-0">
         {/* Divider */}
         {videos.length > 0 && (
-          <div className="w-full max-w-4xl mt-10 mb-8 px-4">
+          <div className="w-full max-w-4xl mt-10 mb-8 px-4 mx-auto">
             <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
           </div>
         )}
@@ -322,7 +326,7 @@ export default function DashboardPage() {
 
         {/* Divider below carousel */}
         {videos.length > 0 && (
-          <div className="w-full max-w-4xl mt-8 px-4">
+          <div className="w-full max-w-4xl mt-8 px-4 mx-auto">
             <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
           </div>
         )}
@@ -360,6 +364,11 @@ export default function DashboardPage() {
             )}
           </div>
         )}
+      </div>
+
+      {/* Bottom Section - Fixed padding from bottom (similar to top) */}
+      <div className="pb-12 flex-shrink-0">
+        {/* Empty space to match top padding */}
       </div>
     </div>
   );
