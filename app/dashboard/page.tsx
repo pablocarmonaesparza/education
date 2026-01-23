@@ -36,6 +36,7 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activePhaseId, setActivePhaseId] = useState<string>('');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -212,7 +213,7 @@ export default function DashboardPage() {
 
       if (mostVisible) {
         const phaseId = mostVisible.target.getAttribute('data-phase-id');
-        if (phaseId) {
+        if (phaseId && phaseId !== activePhaseId) {
           setActivePhaseId(phaseId);
         }
       }
@@ -225,7 +226,29 @@ export default function DashboardPage() {
     return () => {
       phaseElements.forEach((el) => observer.unobserve(el));
     };
-  }, [videos]);
+  }, [videos, activePhaseId]);
+
+  // Center active button in horizontal scroll
+  useEffect(() => {
+    if (!activePhaseId || !horizontalScrollRef.current) return;
+
+    const activeButton = horizontalScrollRef.current.querySelector(
+      `button[data-phase-id="${activePhaseId}"]`
+    ) as HTMLElement;
+
+    if (activeButton) {
+      const container = horizontalScrollRef.current;
+      const containerWidth = container.offsetWidth;
+      const buttonLeft = activeButton.offsetLeft;
+      const buttonWidth = activeButton.offsetWidth;
+      const scrollLeft = buttonLeft - (containerWidth / 2) + (buttonWidth / 2);
+
+      container.scrollTo({
+        left: scrollLeft,
+        behavior: 'smooth'
+      });
+    }
+  }, [activePhaseId]);
 
   // Scroll to section when clicking on navigation
   const scrollToPhase = (phaseId: string) => {
@@ -264,46 +287,51 @@ export default function DashboardPage() {
             </h1>
           )}
           
-          {/* Section Navigation - Horizontal Scroll */}
-          {videos.length > 0 && Object.keys(videosByPhase).length > 0 && (
-            <div className="mt-6">
-              <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
-                {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
-                  <button
-                    key={phaseId}
-                    onClick={() => scrollToPhase(phaseId)}
-                    className={`flex-shrink-0 px-4 py-2 rounded-2xl text-sm font-bold uppercase tracking-wide transition-all duration-150 ${
-                      activePhaseId === phaseId
-                        ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1'
-                        : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
-                    }`}
-                  >
-                    {phaseData.phaseName}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+        </div>
 
-          {/* Progress Line */}
-          {videos.length > 0 && (
-            <div className="mt-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-bold text-[#4b4b4b] dark:text-white">
-                  {progressPercentage}% completado
-                </span>
-                <span className="text-sm text-[#777777] dark:text-gray-400">
-                  {completedCount} de {totalCount}
-                </span>
-              </div>
-              <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-[#1472FF] rounded-full transition-all duration-300"
-                  style={{ width: `${progressPercentage}%` }}
-                />
-              </div>
+        {/* Section Navigation - Horizontal Scroll (Full Width) */}
+        {videos.length > 0 && Object.keys(videosByPhase).length > 0 && (
+          <div className="mt-6 relative">
+            {/* Gradient overlays */}
+            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
+            
+            <div 
+              ref={horizontalScrollRef}
+              className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 px-6"
+            >
+              {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
+                <button
+                  key={phaseId}
+                  data-phase-id={phaseId}
+                  onClick={() => scrollToPhase(phaseId)}
+                  className={`flex-shrink-0 px-4 py-2 rounded-2xl text-sm font-bold uppercase tracking-wide transition-all duration-150 ${
+                    activePhaseId === phaseId
+                      ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1'
+                      : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  {phaseData.phaseName}
+                </button>
+              ))}
             </div>
-          )}
+          </div>
+        )}
+
+        {/* Progress Line */}
+        {videos.length > 0 && (
+          <div className="max-w-2xl mx-auto px-4 mt-4">
+            <div className="relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-2xl overflow-hidden flex items-center justify-center">
+              <div 
+                className="absolute left-0 top-0 h-full bg-green-500 rounded-2xl transition-all duration-300"
+                style={{ width: `${progressPercentage}%` }}
+              />
+              <span className="relative z-10 text-sm font-bold text-[#4b4b4b] dark:text-white">
+                {progressPercentage}% ({completedCount} de {totalCount})
+              </span>
+            </div>
+          </div>
+        )}
         </div>
       </div>
 
