@@ -41,11 +41,35 @@ export default function DashboardPage() {
   const [showGreeting, setShowGreeting] = useState(true);
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [chatWidth, setChatWidth] = useState(256);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const phaseSectionsRef = useRef<Map<string, HTMLDivElement>>(new Map());
   const isScrollingToPhaseRef = useRef(false);
   const supabase = createClient();
+
+  // Listen for chat width changes
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const width = getComputedStyle(document.documentElement).getPropertyValue('--chat-width');
+      if (width) {
+        setChatWidth(parseInt(width, 10) || 256);
+      }
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['style']
+    });
+
+    // Initial value
+    const initialWidth = getComputedStyle(document.documentElement).getPropertyValue('--chat-width');
+    if (initialWidth) {
+      setChatWidth(parseInt(initialWidth, 10) || 256);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     async function fetchUserData() {
@@ -583,9 +607,10 @@ export default function DashboardPage() {
       {/* Progress Bar - Fixed at bottom, 85% width of content area between sidebars */}
       {videos.length > 0 && (
         <div
-          className={`fixed bottom-0 left-64 right-64 z-30 transition-all duration-300 ease-in-out ${
+          className={`fixed bottom-0 left-64 z-30 transition-all duration-150 ease-in-out ${
             showProgressBar ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
           }`}
+          style={{ right: `${chatWidth}px` }}
         >
           {/* Gradient fade at top of progress bar area */}
           <div className="h-8 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none" />
