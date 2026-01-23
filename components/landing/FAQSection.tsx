@@ -51,10 +51,10 @@ export default function FAQSection() {
             {faqs.map((faq, index) => (
               <div 
                 key={index} 
-                className={`rounded-2xl transition-all duration-300 ${
-                  openIndex === index 
-                    ? "bg-[#1472FF]/5 dark:bg-[#1472FF]/10" 
-                    : "bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50"
+className={`rounded-2xl transition-all duration-300 ${
+                  openIndex === index
+                    ? "bg-[#1472FF]/10"
+                    : "bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800/50"
                 }`}
               >
                 <button

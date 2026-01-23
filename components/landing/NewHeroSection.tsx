@@ -138,14 +138,14 @@ export default function NewHeroSection() {
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 placeholder="Describe tu idea y haremos un curso personalizado para ti."
-                className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 py-3"
+                className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 py-3"
                 rows={2}
               />
 
                 {/* Character count */}
                 <div className="px-4 pb-2 flex justify-end">
                   <p className={`text-xs font-medium ${
-                    idea.length >= MIN_CHARACTERS ? "text-green-500" : "text-gray-400 dark:text-gray-500"
+                    idea.length >= MIN_CHARACTERS ? "text-green-500" : "text-gray-500 dark:text-gray-400"
                   }`}>
                     {idea.length}/{MIN_CHARACTERS}
                   </p>
