@@ -119,8 +119,17 @@ export default function DashboardNavbar() {
             {/* Navigation - Center (Desktop only) */}
             <div 
               ref={navRef}
-              className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2"
+              className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2 bg-gray-100 dark:bg-gray-800 rounded-2xl p-1"
             >
+              {/* Sliding background indicator */}
+              <div
+                className="absolute h-[calc(100%-8px)] bg-white dark:bg-gray-700 rounded-xl shadow-sm transition-all duration-300 ease-out"
+                style={{
+                  left: indicatorStyle.left + 4,
+                  width: indicatorStyle.width,
+                }}
+              />
+              
               {navLinks.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -128,25 +137,16 @@ export default function DashboardNavbar() {
                     key={link.href}
                     href={link.href}
                     data-active={isActive}
-                    className={`relative pb-1 text-sm font-medium transition-colors duration-300 ${
+                    className={`relative z-10 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide transition-colors duration-300 ${
                       isActive
-                        ? 'text-[#1472FF]'
-                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                        ? 'text-[#4b4b4b] dark:text-white'
+                        : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                     }`}
                   >
                     {link.label}
                   </Link>
                 );
               })}
-              
-              {/* Sliding indicator */}
-              <div
-                className="absolute bottom-0 h-0.5 bg-[#1472FF] rounded-full transition-all duration-300"
-                style={{
-                  left: indicatorStyle.left,
-                  width: indicatorStyle.width,
-                }}
-              />
             </div>
 
             {/* Right side - Upgrade + Profile (Desktop) */}

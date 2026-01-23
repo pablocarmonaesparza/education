@@ -252,30 +252,24 @@ export default function DashboardPage() {
                 onClick={() => {
                   router.push(`/dashboard/salon?video=${video.order}`);
                 }}
-                className={`flex-shrink-0 w-[280px] snap-center rounded-2xl border-2 transition-all duration-150 cursor-pointer ${
+                className={`flex-shrink-0 w-[280px] snap-center rounded-2xl border-2 overflow-hidden transition-all duration-150 cursor-pointer ${
                   index === selectedVideoIndex ? 'scale-105 z-10' : 'scale-95 opacity-70'
                 } ${
                   video.isCurrent
-                    ? 'border-[#1472FF] border-b-4 border-b-[#0E5FCC] bg-white dark:bg-gray-900 hover:bg-blue-50 dark:hover:bg-blue-950/50 active:border-b-2 active:mt-[2px]'
+                    ? 'border-[#1472FF] border-b-4 border-b-[#0E5FCC] active:border-b-2 active:mt-[2px]'
                     : video.isCompleted
-                    ? 'border-green-400 border-b-4 border-b-green-500 bg-white dark:bg-gray-900 hover:bg-green-50 dark:hover:bg-green-950/50 active:border-b-2 active:mt-[2px]'
-                    : 'border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-600 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-600 active:border-b-2 active:mt-[2px]'
+                    ? 'border-green-400 border-b-4 border-b-green-500 active:border-b-2 active:mt-[2px]'
+                    : 'border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-600 active:border-b-2 active:mt-[2px]'
                 }`}
               >
-                {/* Video Thumbnail Placeholder */}
-                <div className={`h-36 rounded-t-2xl flex items-center justify-center relative ${
-                  video.isCurrent
-                    ? 'bg-gradient-to-br from-[#1472FF] to-[#5BA0FF]'
-                    : video.isCompleted
-                    ? 'bg-gradient-to-br from-green-400 to-green-500'
-                    : 'bg-gray-100 dark:bg-gray-800'
-                }`}>
+                {/* Video Thumbnail Placeholder - Now white/light */}
+                <div className="h-36 bg-gray-100 dark:bg-gray-800 flex items-center justify-center relative">
                   {video.isCompleted ? (
-                    <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                   ) : video.isCurrent ? (
-                    <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-12 h-12 text-[#1472FF]" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M8 5v14l11-7z" />
                     </svg>
                   ) : (
@@ -284,39 +278,40 @@ export default function DashboardPage() {
                     </svg>
                   )}
                   
-                  {/* Status badge - glass style */}
-                  <span className={`absolute top-2 right-2 px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wide backdrop-blur-md ${
-                    video.isCompleted
-                      ? 'bg-white/20 text-white'
-                      : video.isCurrent
-                      ? 'bg-white/20 text-white'
-                      : 'bg-black/20 text-white dark:bg-white/20'
-                  }`}>
-                    {video.isCompleted ? 'Completado' : video.isCurrent ? 'En progreso' : 'Pendiente'}
-                  </span>
-                  
                   {/* Duration badge */}
-                  <span className={`absolute bottom-2 right-2 px-2 py-0.5 rounded text-xs font-medium ${
-                    video.isCurrent || video.isCompleted
-                      ? 'bg-white/20 text-white'
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
-                  }`}>
+                  <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-lg text-xs font-bold bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
                     {formatDuration(video.duration)}
                   </span>
-                  
-                  {/* Current indicator */}
-                  {video.isCurrent && (
-                    <span className="absolute top-2 left-2 px-3 py-1 rounded-xl bg-white text-[#1472FF] text-xs font-bold uppercase tracking-wide border-b-2 border-gray-200">
-                      Continuar
-                    </span>
-                  )}
                 </div>
                 
-                {/* Video Info */}
-                <div className="p-4">
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{video.phaseName}</p>
-                  <h3 className={`font-medium line-clamp-2 ${
-                    video.isCurrent ? 'text-gray-900 dark:text-white' : video.isCompleted ? 'text-gray-600 dark:text-gray-400' : 'text-gray-800 dark:text-gray-200'
+                {/* Video Info - Now colored based on status */}
+                <div className={`p-4 ${
+                  video.isCurrent
+                    ? 'bg-[#1472FF]'
+                    : video.isCompleted
+                    ? 'bg-green-500'
+                    : 'bg-white dark:bg-gray-900'
+                }`}>
+                  {/* Status badge */}
+                  <span className={`inline-block px-2 py-0.5 rounded-lg text-xs font-bold uppercase tracking-wide mb-2 ${
+                    video.isCurrent
+                      ? 'bg-white/20 text-white'
+                      : video.isCompleted
+                      ? 'bg-white/20 text-white'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
+                  }`}>
+                    {video.isCompleted ? 'Completado' : video.isCurrent ? 'Continuar' : 'Pendiente'}
+                  </span>
+                  
+                  <p className={`text-xs mb-1 ${
+                    video.isCurrent || video.isCompleted
+                      ? 'text-white/80'
+                      : 'text-gray-500 dark:text-gray-400'
+                  }`}>{video.phaseName}</p>
+                  <h3 className={`font-bold line-clamp-2 ${
+                    video.isCurrent || video.isCompleted
+                      ? 'text-white'
+                      : 'text-[#4b4b4b] dark:text-white'
                   }`}>
                     {video.title}
                   </h3>
