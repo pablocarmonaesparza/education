@@ -37,10 +37,10 @@ export default function DashboardPage() {
   const [activePhaseId, setActivePhaseId] = useState<string>('');
   const [showProgressBar, setShowProgressBar] = useState(true);
   const [showGreeting, setShowGreeting] = useState(true);
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const phaseSectionsRef = useRef<Map<string, HTMLDivElement>>(new Map());
-  const lastScrollYRef = useRef(0);
   const isScrollingToPhaseRef = useRef(false);
   const supabase = createClient();
 
@@ -232,46 +232,45 @@ export default function DashboardPage() {
     }
   }, [videos.length, activePhaseId, centerHorizontalButton]);
 
-  // Main scroll handler for progress bar and greeting visibility
+  // Main scroll handler for greeting visibility and scroll direction detection
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    let lastScrollY = 0;
-    let ticking = false;
+    let lastScrollY = container.scrollTop;
+    const threshold = 10;
 
-    const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          const currentScrollY = container.scrollTop;
-          const delta = currentScrollY - lastScrollY;
+    const updateScrollDirection = () => {
+      const scrollY = container.scrollTop;
 
-          // Greeting: only visible when at the very top
-          if (currentScrollY <= 10) {
-            setShowGreeting(true);
-          } else {
-            setShowGreeting(false);
-          }
+      // Greeting: only visible when at the very top
+      if (scrollY <= 10) {
+        setShowGreeting(true);
+      } else {
+        setShowGreeting(false);
+      }
 
-          // Progress bar: hide on scroll down, show on scroll up (Twitter-style)
-          if (delta > 2) {
-            // Scrolling down
-            setShowProgressBar(false);
-          } else if (delta < -2) {
-            // Scrolling up
-            setShowProgressBar(true);
-          }
-
-          lastScrollY = currentScrollY;
-          ticking = false;
-        });
-        ticking = true;
+      // Detect scroll direction with threshold
+      const difference = scrollY - lastScrollY;
+      if (Math.abs(difference) > threshold) {
+        const newDirection = difference > 0 ? 'down' : 'up';
+        setScrollDirection(newDirection);
+        lastScrollY = scrollY > 0 ? scrollY : 0;
       }
     };
 
-    container.addEventListener('scroll', handleScroll, { passive: true });
-    return () => container.removeEventListener('scroll', handleScroll);
+    container.addEventListener('scroll', updateScrollDirection, { passive: true });
+    return () => container.removeEventListener('scroll', updateScrollDirection);
   }, []);
+
+  // Update progress bar visibility based on scroll direction
+  useEffect(() => {
+    if (scrollDirection === 'down') {
+      setShowProgressBar(false);
+    } else if (scrollDirection === 'up') {
+      setShowProgressBar(true);
+    }
+  }, [scrollDirection]);
 
   // Intersection Observer for detecting active section during scroll
   useEffect(() => {
