@@ -109,21 +109,24 @@ export default function LessonItem({
           }}
         >
           {/* Left Panel - White with video info */}
-          <div className="flex-shrink-0 w-40 sm:w-48 p-4 flex flex-col items-center justify-center gap-3 bg-white dark:bg-gray-900">
-            {/* Lesson counter */}
-            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-              <span className="font-bold text-gray-700 dark:text-gray-200">{lessonNumber}</span>
-              <span>de</span>
-              <span>{totalLessons}</span>
+          <div className="flex-shrink-0 w-40 sm:w-48 p-4 flex flex-col bg-white dark:bg-gray-900">
+            {/* Top row - Counter left, Duration right */}
+            <div className="flex items-center justify-between mb-4">
+              {/* Lesson counter */}
+              <div className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-300">
+                <span className="font-bold text-gray-700 dark:text-gray-200">{lessonNumber}</span>
+                <span> de </span>
+                <span>{totalLessons}</span>
+              </div>
+
+              {/* Duration badge */}
+              <div className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300">
+                {duration}
+              </div>
             </div>
 
-            {/* Duration badge */}
-            <div className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300">
-              {duration}
-            </div>
-
-            {/* Status icon */}
-            <div className="mt-1">
+            {/* Status icon - centered */}
+            <div className="flex-1 flex items-center justify-center">
               {getCheckIcon()}
             </div>
           </div>
