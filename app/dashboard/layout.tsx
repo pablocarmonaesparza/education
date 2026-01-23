@@ -6,9 +6,9 @@ import { SidebarProvider } from '@/contexts/SidebarContext';
 
 function DashboardContent({ children }: { children: React.ReactNode }) {
   return (
-    <main className="transition-all duration-300 min-h-screen relative ml-64 mr-96">
+    <main className="transition-all duration-300 min-h-screen relative ml-64 mr-64">
       {/* Content */}
-      <div className="px-0">
+      <div className="px-6">
         {children}
       </div>
     </main>

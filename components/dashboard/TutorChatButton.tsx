@@ -66,7 +66,7 @@ export default function TutorChatButton() {
   };
 
   return (
-    <aside className="fixed right-0 top-0 h-screen bg-white dark:bg-gray-900 border-l-2 border-gray-200 dark:border-gray-700 flex flex-col z-40 w-96">
+    <aside className="fixed right-0 top-0 h-screen bg-white dark:bg-gray-900 border-l-2 border-gray-200 dark:border-gray-700 flex flex-col z-40 w-64">
       {/* Header */}
       <div className="p-4 bg-[#1472FF] flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
