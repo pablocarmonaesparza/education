@@ -137,9 +137,9 @@ export default function NewHeroSection() {
                 : isDark ? '0 4px 0 0 #1e4976' : '0 4px 0 0 #d1d5db'
             }}
           >
-            <div className={`relative w-full textarea-dark-bg rounded-2xl border-2 transition-all duration-300 ${
-                  validationError || idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "textarea-dark-border focus-within:border-[#1472FF]"
-                }`}>
+              <div className={`relative w-full textarea-dark-bg rounded-2xl border-2 transition-all duration-300 ${
+                    validationError || idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "textarea-dark-border"
+                  }`}>
               <textarea
               ref={textareaRef}
               id="project-idea"
