@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
@@ -33,10 +33,7 @@ export default function DashboardPage() {
   const [greeting, setGreeting] = useState<string>('');
   const [project, setProject] = useState<string>('');
   const [videos, setVideos] = useState<Video[]>([]);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const carouselRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -114,7 +111,6 @@ export default function DashboardPage() {
               
               if (isCurrent) {
                 foundCurrent = true;
-                setCurrentVideoIndex(videoOrder);
               }
               
               // n8n format: description is the video title, why_relevant is the description
@@ -159,31 +155,6 @@ export default function DashboardPage() {
     fetchUserData();
   }, [supabase]);
 
-  // Scroll carousel to current video on load
-  useEffect(() => {
-    if (carouselRef.current && videos.length > 0) {
-      // Small delay to ensure DOM is ready
-      setTimeout(() => {
-        const cardWidth = 280 + 16; // card width + gap
-        const scrollPosition = currentVideoIndex * cardWidth;
-        carouselRef.current?.scrollTo({ left: scrollPosition, behavior: 'smooth' });
-        setSelectedVideoIndex(currentVideoIndex);
-      }, 100);
-    }
-  }, [currentVideoIndex, videos]);
-
-  // Handle scroll to update selected video
-  const handleScroll = () => {
-    if (carouselRef.current && videos.length > 0) {
-      const cardWidth = 280 + 16;
-      const scrollLeft = carouselRef.current.scrollLeft;
-      const newIndex = Math.round(scrollLeft / cardWidth);
-      if (newIndex >= 0 && newIndex < videos.length && newIndex !== selectedVideoIndex) {
-        setSelectedVideoIndex(newIndex);
-      }
-    }
-  };
-
   const formatDuration = (seconds: number | undefined | null) => {
     if (!seconds || isNaN(seconds)) return '0:00';
     const mins = Math.floor(seconds / 60);
@@ -191,10 +162,26 @@ export default function DashboardPage() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Group videos by phase
+  const videosByPhase = videos.reduce((acc, video) => {
+    if (!acc[video.phaseId]) {
+      acc[video.phaseId] = {
+        phaseName: video.phaseName,
+        videos: []
+      };
+    }
+    acc[video.phaseId].videos.push(video);
+    return acc;
+  }, {} as Record<string, { phaseName: string; videos: Video[] }>);
+
+  const completedCount = videos.filter(v => v.isCompleted).length;
+  const totalCount = videos.length;
+  const progressPercentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
   // Loading state
   if (isLoading) {
     return (
-      <div className="h-[calc(100vh-3rem)] flex items-center justify-center">
+      <div className="h-screen flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -225,150 +212,140 @@ export default function DashboardPage() {
             : 'Continuemos donde lo dejamos'
           }
         </p>
-      </div>
 
-      {/* Middle Section - Flexible, scrollable if needed */}
-      <div className="flex-1 overflow-y-auto min-h-0">
-        {/* Divider */}
+        {/* Progress Line */}
         {videos.length > 0 && (
-          <div className="w-full max-w-4xl mt-10 mb-8 px-4 mx-auto">
-            <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
+          <div className="w-full max-w-4xl mx-auto mt-8 px-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-bold text-[#4b4b4b] dark:text-white">
+                {progressPercentage}% completado
+              </span>
+              <span className="text-sm text-[#777777] dark:text-gray-400">
+                {completedCount} de {totalCount}
+              </span>
+            </div>
+            <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-[#1472FF] rounded-full transition-all duration-300"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
           </div>
         )}
+      </div>
 
-        {/* Video Carousel - Full width with snap to center */}
+      {/* Middle Section - Vertical scrollable carousel */}
+      <div className="flex-1 overflow-y-auto min-h-0 px-4">
         {videos.length > 0 && (
-          <div 
-            ref={carouselRef}
-            onScroll={handleScroll}
-            className="w-full flex gap-4 overflow-x-auto py-6 scrollbar-hide snap-x snap-mandatory"
-          >
-            {/* Left spacer for first card centering */}
-            <div className="flex-shrink-0 w-[calc(50%-148px)]" />
-            
-            {videos.map((video, index) => (
-              <div
-                key={video.id}
-                onClick={() => {
-                  router.push(`/dashboard/salon?video=${video.order}`);
-                }}
-                className={`flex-shrink-0 w-[280px] h-[280px] snap-center rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer flex flex-col border-2 ${
-                  index === selectedVideoIndex ? 'scale-105 z-10' : 'scale-95 opacity-70'
-                } ${
-                  video.isCurrent
-                    ? 'border-[#1472FF]'
-                    : video.isCompleted
-                    ? 'border-green-400'
-                    : 'border-gray-200 dark:border-gray-700'
-                }`}
-              >
-                {/* Video Thumbnail Placeholder */}
-                <div className="h-[140px] bg-gray-100 dark:bg-gray-800 flex items-center justify-center relative flex-shrink-0">
-                  {video.isCompleted ? (
-                    <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                    </svg>
-                  ) : video.isCurrent ? (
-                    <svg className="w-12 h-12 text-[#1472FF]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-10 h-10 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  )}
-                  
-                  {/* Duration badge */}
-                  <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-lg text-xs font-bold bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-                    {formatDuration(video.duration)}
-                  </span>
-                </div>
+          <div className="max-w-4xl mx-auto py-6 space-y-6">
+            {Object.entries(videosByPhase).map(([phaseId, phaseData], phaseIndex) => (
+              <div key={phaseId}>
+                {/* Phase Divider and Title */}
+                {phaseIndex > 0 ? (
+                  <div className="mb-6">
+                    <div className="h-px bg-gray-200 dark:bg-gray-700 mb-4" />
+                    <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
+                      {phaseData.phaseName}
+                    </h2>
+                  </div>
+                ) : (
+                  <div className="mb-6">
+                    <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
+                      {phaseData.phaseName}
+                    </h2>
+                  </div>
+                )}
                 
-                {/* Video Info - Colored based on status */}
-                <div className={`flex-1 p-4 flex flex-col ${
-                  video.isCurrent
-                    ? 'bg-[#1472FF]'
-                    : video.isCompleted
-                    ? 'bg-green-500'
-                    : 'bg-white dark:bg-gray-900'
-                }`}>
-                  {/* Status badge */}
-                  <span className={`inline-block self-start px-2 py-0.5 rounded-lg text-xs font-bold uppercase tracking-wide mb-2 ${
-                    video.isCurrent
-                      ? 'bg-white/20 text-white'
-                      : video.isCompleted
-                      ? 'bg-white/20 text-white'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
-                  }`}>
-                    {video.isCompleted ? 'Completado' : video.isCurrent ? 'Continuar' : 'Pendiente'}
-                  </span>
-                  
-                  <p className={`text-xs mb-1 ${
-                    video.isCurrent || video.isCompleted
-                      ? 'text-white/80'
-                      : 'text-gray-500 dark:text-gray-400'
-                  }`}>{video.phaseName}</p>
-                  <h3 className={`font-bold line-clamp-2 ${
-                    video.isCurrent || video.isCompleted
-                      ? 'text-white'
-                      : 'text-[#4b4b4b] dark:text-white'
-                  }`}>
-                    {video.title}
-                  </h3>
+                {/* Videos in this phase */}
+                <div className="space-y-4">
+                  {phaseData.videos.map((video, index) => (
+                    <div
+                      key={video.id}
+                      onClick={() => {
+                        router.push(`/dashboard/salon?video=${video.order}`);
+                      }}
+                      className={`w-full h-[140px] rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer flex border-2 ${
+                        video.isCurrent
+                          ? 'border-[#1472FF]'
+                          : video.isCompleted
+                          ? 'border-green-400'
+                          : 'border-gray-200 dark:border-gray-700'
+                      }`}
+                    >
+                      {/* Video Thumbnail Placeholder */}
+                      <div className="w-[200px] h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center relative flex-shrink-0">
+                        {video.isCompleted ? (
+                          <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : video.isCurrent ? (
+                          <svg className="w-12 h-12 text-[#1472FF]" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        ) : (
+                          <svg className="w-10 h-10 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        )}
+                        
+                        {/* Duration badge - Top right */}
+                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-lg text-xs font-bold bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                          {formatDuration(video.duration)}
+                        </span>
+
+                        {/* Progress badge - Top left */}
+                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-lg text-xs font-bold bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                          {video.order + 1} de {totalCount}
+                        </span>
+                      </div>
+                      
+                      {/* Video Info - Colored based on status */}
+                      <div className={`flex-1 p-4 flex flex-col relative ${
+                        video.isCurrent
+                          ? 'bg-[#1472FF]'
+                          : video.isCompleted
+                          ? 'bg-green-500'
+                          : 'bg-white dark:bg-gray-900'
+                      }`}>
+                        {/* 3D bottom shadow for active cards */}
+                        {video.isCurrent && (
+                          <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#0E5FCC]" />
+                        )}
+                        {video.isCompleted && (
+                          <div className="absolute bottom-0 left-0 right-0 h-1 bg-green-600" />
+                        )}
+                        
+                        {/* Status badge */}
+                        <span className={`inline-block self-start px-2 py-0.5 rounded-lg text-xs font-bold uppercase tracking-wide mb-2 ${
+                          video.isCurrent
+                            ? 'bg-white/20 text-white'
+                            : video.isCompleted
+                            ? 'bg-white/20 text-white'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
+                        }`}>
+                          {video.isCompleted ? 'Completado' : video.isCurrent ? 'Continuar' : 'Pendiente'}
+                        </span>
+                        
+                        <p className={`text-xs mb-1 ${
+                          video.isCurrent || video.isCompleted
+                            ? 'text-white/80'
+                            : 'text-gray-500 dark:text-gray-400'
+                        }`}>{video.phaseName}</p>
+                        <h3 className={`font-bold line-clamp-2 ${
+                          video.isCurrent || video.isCompleted
+                            ? 'text-white'
+                            : 'text-[#4b4b4b] dark:text-white'
+                        }`}>
+                          {video.title}
+                        </h3>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
-            
-            {/* Right spacer for last card centering */}
-            <div className="flex-shrink-0 w-[calc(50%-148px)]" />
           </div>
         )}
-
-        {/* Divider below carousel */}
-        {videos.length > 0 && (
-          <div className="w-full max-w-4xl mt-8 px-4 mx-auto">
-            <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
-          </div>
-        )}
-
-        {/* Selected Video Info */}
-        {videos.length > 0 && videos[selectedVideoIndex] && (
-          <div className="w-full max-w-3xl mx-auto mt-8 px-4">
-            <div className="flex items-center justify-between">
-              {/* Left - Video Title */}
-              <div>
-                <p className="text-sm text-gray-400 dark:text-gray-500 mb-1">
-                  {selectedVideoIndex + 1} de {videos.length}
-                </p>
-                <h2 className="text-xl md:text-2xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
-                  {videos[selectedVideoIndex].title}
-                </h2>
-              </div>
-              
-              {/* Right - Section and Progress */}
-              <div className="text-right">
-                <p className="text-sm text-[#777777] dark:text-gray-400">
-                  {videos[selectedVideoIndex].phaseName}
-                </p>
-                <p className="text-sm font-bold text-[#1472FF]">
-                  {Math.round((videos.filter(v => v.isCompleted).length / videos.length) * 100)}% completado
-                </p>
-              </div>
-            </div>
-            
-            {/* Video Description */}
-            {videos[selectedVideoIndex].description && (
-              <p className="mt-4 text-[#777777] dark:text-gray-400">
-                {videos[selectedVideoIndex].description}
-              </p>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Bottom Section - Fixed padding from bottom (similar to top) */}
-      <div className="pb-6 flex-shrink-0">
-        {/* Empty space to match top padding */}
       </div>
     </div>
   );
