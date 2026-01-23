@@ -16,7 +16,7 @@ export default function TutorChatButton() {
     {
       id: '1',
       role: 'assistant',
-      content: '¡Hola! 👋 Soy tu tutor de IA personal. Estoy aquí para ayudarte con cualquier duda sobre tu curso. ¿En qué puedo ayudarte hoy?',
+      content: 'Hola, soy tu tutor de IA personal. Estoy aquí para ayudarte con cualquier duda sobre tu curso. ¿En qué puedo ayudarte hoy?',
       timestamp: new Date()
     }
   ]);
@@ -72,9 +72,9 @@ export default function TutorChatButton() {
   };
 
   const quickActions = [
-    { label: 'Explicar tema actual', icon: '📚' },
-    { label: 'Dame un ejemplo', icon: '💡' },
-    { label: 'Tengo una duda', icon: '❓' },
+    { label: 'Explicar tema actual' },
+    { label: 'Dame un ejemplo' },
+    { label: 'Tengo una duda' },
   ];
 
   return (
@@ -93,7 +93,9 @@ export default function TutorChatButton() {
             <div className="p-4 bg-[#1472FF] flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center">
-                  <span className="text-2xl">🤖</span>
+                  <svg className="w-7 h-7 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
                 </div>
                 <div>
                   <h3 className="font-bold text-white text-lg">Tutor IA</h3>
@@ -123,7 +125,11 @@ export default function TutorChatButton() {
                   <div className={`max-w-[85%] ${message.role === 'user' ? 'order-2' : 'order-1'}`}>
                     {message.role === 'assistant' && (
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-lg">🤖</span>
+                        <div className="w-5 h-5 bg-[#1472FF] rounded-lg flex items-center justify-center">
+                          <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                          </svg>
+                        </div>
                         <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Tutor IA</span>
                       </div>
                     )}
@@ -147,7 +153,11 @@ export default function TutorChatButton() {
                 <div className="flex justify-start">
                   <div className="max-w-[85%]">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-lg">🤖</span>
+                      <div className="w-5 h-5 bg-[#1472FF] rounded-lg flex items-center justify-center">
+                        <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                      </div>
                       <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Tutor IA</span>
                     </div>
                     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3 rounded-2xl rounded-bl-md">
@@ -172,10 +182,9 @@ export default function TutorChatButton() {
                     <button
                       key={index}
                       onClick={() => setInput(action.label)}
-                      className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl text-sm text-[#4b4b4b] dark:text-gray-300 transition-colors flex items-center gap-1.5"
+                      className="px-3 py-1.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl text-sm text-[#4b4b4b] dark:text-gray-300 transition-colors"
                     >
-                      <span>{action.icon}</span>
-                      <span>{action.label}</span>
+                      {action.label}
                     </button>
                   ))}
                 </div>
@@ -231,7 +240,9 @@ export default function TutorChatButton() {
           </>
         ) : (
           <>
-            <span className="text-lg">🤖</span>
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
             <span className="font-bold uppercase tracking-wide text-sm">Tutor IA</span>
           </>
         )}

@@ -240,7 +240,7 @@ export default function DashboardPage() {
             className="w-full flex gap-4 overflow-x-auto py-6 scrollbar-hide snap-x snap-mandatory"
           >
             {/* Left spacer for first card centering */}
-            <div className="flex-shrink-0 w-[calc(50%-156px)]" />
+            <div className="flex-shrink-0 w-[calc(50%-148px)]" />
             
             {videos.map((video, index) => (
               <div
@@ -316,7 +316,7 @@ export default function DashboardPage() {
             ))}
             
             {/* Right spacer for last card centering */}
-            <div className="flex-shrink-0 w-[calc(50%-156px)]" />
+            <div className="flex-shrink-0 w-[calc(50%-148px)]" />
           </div>
         )}
 
