@@ -252,14 +252,14 @@ export default function DashboardPage() {
                 onClick={() => {
                   router.push(`/dashboard/salon?video=${video.order}`);
                 }}
-                className={`flex-shrink-0 w-[280px] snap-center rounded-2xl border-2 overflow-hidden transition-all duration-150 cursor-pointer ${
+                className={`flex-shrink-0 w-[280px] snap-center rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer ${
                   index === selectedVideoIndex ? 'scale-105 z-10' : 'scale-95 opacity-70'
                 } ${
                   video.isCurrent
-                    ? 'border-[#1472FF] border-b-4 border-b-[#0E5FCC] active:border-b-2 active:mt-[2px]'
+                    ? 'ring-2 ring-[#1472FF]'
                     : video.isCompleted
-                    ? 'border-green-400 border-b-4 border-b-green-500 active:border-b-2 active:mt-[2px]'
-                    : 'border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-600 active:border-b-2 active:mt-[2px]'
+                    ? 'ring-2 ring-green-400'
+                    : 'ring-2 ring-gray-200 dark:ring-gray-700'
                 }`}
               >
                 {/* Video Thumbnail Placeholder - Now white/light */}
@@ -284,14 +284,22 @@ export default function DashboardPage() {
                   </span>
                 </div>
                 
-                {/* Video Info - Now colored based on status */}
-                <div className={`p-4 ${
+                {/* Video Info - Now colored based on status with 3D effect */}
+                <div className={`p-4 pb-5 relative ${
                   video.isCurrent
                     ? 'bg-[#1472FF]'
                     : video.isCompleted
                     ? 'bg-green-500'
                     : 'bg-white dark:bg-gray-900'
                 }`}>
+                  {/* 3D bottom shadow */}
+                  <div className={`absolute bottom-0 left-0 right-0 h-1 ${
+                    video.isCurrent
+                      ? 'bg-[#0E5FCC]'
+                      : video.isCompleted
+                      ? 'bg-green-600'
+                      : 'bg-gray-200 dark:bg-gray-700'
+                  }`} />
                   {/* Status badge */}
                   <span className={`inline-block px-2 py-0.5 rounded-lg text-xs font-bold uppercase tracking-wide mb-2 ${
                     video.isCurrent
