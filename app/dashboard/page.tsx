@@ -35,6 +35,8 @@ export default function DashboardPage() {
   const [videos, setVideos] = useState<Video[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activePhaseId, setActivePhaseId] = useState<string>('');
+  const [showProgressBar, setShowProgressBar] = useState(true);
+  const [lastScrollTop, setLastScrollTop] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
@@ -181,13 +183,62 @@ export default function DashboardPage() {
   const totalCount = videos.length;
   const progressPercentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-  // Set initial active phase
+  // Set initial active phase and center it
   useEffect(() => {
     if (videos.length > 0 && Object.keys(videosByPhase).length > 0 && !activePhaseId) {
-      const firstPhaseId = Object.keys(videosByPhase)[0];
-      setActivePhaseId(firstPhaseId);
+      // Find the current video's phase (the one the user is on)
+      const currentVideo = videos.find(v => v.isCurrent);
+      const initialPhaseId = currentVideo ? currentVideo.phaseId : Object.keys(videosByPhase)[0];
+      setActivePhaseId(initialPhaseId);
     }
   }, [videos, videosByPhase, activePhaseId]);
+
+  // Center initial phase button on load
+  useEffect(() => {
+    if (activePhaseId && horizontalScrollRef.current) {
+      const button = horizontalScrollRef.current.querySelector(
+        `button[data-phase-id="${activePhaseId}"]`
+      ) as HTMLElement;
+      
+      if (button) {
+        const container = horizontalScrollRef.current;
+        const containerWidth = container.offsetWidth;
+        const buttonLeft = button.offsetLeft;
+        const buttonWidth = button.offsetWidth;
+        const scrollLeft = buttonLeft - (containerWidth / 2) + (buttonWidth / 2);
+        
+        container.scrollTo({
+          left: scrollLeft,
+          behavior: 'auto'
+        });
+      }
+    }
+  }, [activePhaseId]);
+
+  // Handle scroll direction to show/hide progress bar
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const currentScrollTop = container.scrollTop;
+      const scrollDelta = currentScrollTop - lastScrollTop;
+      
+      // If scrolling down (any amount), hide progress bar
+      if (scrollDelta > 0 && currentScrollTop > 10) {
+        setShowProgressBar(false);
+      } 
+      // If scrolling up (any amount), show progress bar
+      else if (scrollDelta < 0) {
+        setShowProgressBar(true);
+      }
+      
+      setLastScrollTop(currentScrollTop);
+    };
+
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [lastScrollTop]);
 
   // Intersection Observer to detect active section
   useEffect(() => {
@@ -318,25 +369,12 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Progress Line */}
-        {videos.length > 0 && (
-          <div className="max-w-2xl mx-auto px-4 mt-4">
-            <div className="relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-2xl overflow-hidden flex items-center justify-center">
-              <div 
-                className="absolute left-0 top-0 h-full bg-green-500 rounded-2xl transition-all duration-300"
-                style={{ width: `${progressPercentage}%` }}
-              />
-              <span className="relative z-10 text-sm font-bold text-[#4b4b4b] dark:text-white">
-                {progressPercentage}% ({completedCount} de {totalCount})
-              </span>
-            </div>
-          </div>
-        )}
         </div>
       </div>
 
       {/* Middle Section - Vertical scrollable carousel */}
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0 px-4">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0 px-4 relative">
+        
         {videos.length > 0 && (
           <div className="w-[400px] mx-auto py-6 space-y-6">
             {Object.entries(videosByPhase).map(([phaseId, phaseData], phaseIndex) => (
@@ -448,6 +486,27 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
+      {/* Progress Bar - Fixed at bottom, overlays scroll view */}
+      {videos.length > 0 && (
+        <div 
+          className={`fixed bottom-0 left-64 right-64 z-30 transition-transform duration-300 ${
+            showProgressBar ? 'translate-y-0' : 'translate-y-full'
+          }`}
+        >
+          <div className="max-w-2xl mx-auto px-4 pb-4">
+            <div className="relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-2xl overflow-hidden flex items-center justify-center shadow-lg">
+              <div 
+                className="absolute left-0 top-0 h-full bg-green-500 rounded-2xl transition-all duration-300"
+                style={{ width: `${progressPercentage}%` }}
+              />
+              <span className="relative z-10 text-sm font-bold text-[#4b4b4b] dark:text-white">
+                {progressPercentage}% ({completedCount} de {totalCount})
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
