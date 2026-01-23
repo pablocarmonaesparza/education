@@ -81,7 +81,7 @@ export default function DashboardNavbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-950 border-b-2 border-gray-200 dark:border-gray-700">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#0a1e3d] border-b-2 border-gray-200 dark:border-gray-700">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-20 relative">
             
@@ -287,7 +287,7 @@ export default function DashboardNavbar() {
       )}
 
       {/* Mobile Menu Drawer */}
-      <div className={`fixed top-20 left-0 right-0 bg-white dark:bg-gray-950 border-b-2 border-gray-200 dark:border-gray-700 z-40 md:hidden transform transition-transform duration-300 ease-out ${
+      <div className={`fixed top-20 left-0 right-0 bg-white dark:bg-[#0a1e3d] border-b-2 border-gray-200 dark:border-gray-700 z-40 md:hidden transform transition-transform duration-300 ease-out ${
         showMobileMenu ? 'translate-y-0' : '-translate-y-full'
       }`}>
         <div className="container mx-auto px-4 py-4">

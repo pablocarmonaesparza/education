@@ -386,7 +386,7 @@ ${completedVideosText}
   }
 
   return (
-    <div className="h-full flex bg-white dark:bg-gray-950">
+    <div className="h-full flex bg-white dark:bg-[#0a1e3d]">
       {/* Sidebar */}
       <div className="w-72 border-r-2 border-gray-200 dark:border-gray-800 flex flex-col">
         <div className="p-4 border-b-2 border-gray-200 dark:border-gray-800">
@@ -542,7 +542,7 @@ ${completedVideosText}
           </div>
         </div>
 
-        <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950">
+        <div className="p-4 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0a1e3d]">
           <div className="max-w-3xl mx-auto flex items-end gap-2">
             <textarea
               ref={textareaRef}

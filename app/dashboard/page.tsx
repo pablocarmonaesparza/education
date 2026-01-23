@@ -443,7 +443,7 @@ export default function DashboardPage() {
 
         {/* Project + Section Navigation - Sticky at top */}
         {videos.length > 0 && Object.keys(videosByPhase).length > 0 && (
-          <div className={`sticky top-0 z-20 bg-white dark:bg-gray-950 transition-all duration-300 ${showGreeting ? 'mt-6' : 'pt-2'}`}>
+          <div className={`sticky top-0 z-20 bg-white dark:bg-[#0a1e3d] transition-all duration-300 ${showGreeting ? 'mt-6' : 'pt-2'}`}>
             {/* Project name - shows when greeting is hidden */}
             <div
               className={`overflow-hidden transition-all duration-300 ease-in-out ${
@@ -561,7 +561,7 @@ export default function DashboardPage() {
         >
           {/* Gradient fade at top of progress bar area */}
           <div className="h-8 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none" />
-          <div className="bg-white dark:bg-gray-950 pb-4 flex justify-center">
+          <div className="bg-white dark:bg-[#0a1e3d] pb-4 flex justify-center">
             <div className="w-[80%] relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-xl overflow-hidden flex items-center justify-center border-b-4 border-gray-300 dark:border-gray-600">
               <div
                 className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"
@@ -583,8 +583,8 @@ export default function DashboardPage() {
         <div
           className={`fixed top-0 bottom-0 flex items-center justify-center transition-all ease-out ${
             isVideoPlayerOpen && !isVideoPlayerClosing
-              ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm'
-              : 'bg-white/0 dark:bg-gray-950/0'
+              ? 'bg-white/95 dark:bg-[#0a1e3d]/95 backdrop-blur-sm'
+              : 'bg-white/0 dark:bg-[#0a1e3d]/0'
           }`}
           style={{
             transitionDuration: '400ms',
