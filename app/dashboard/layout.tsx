@@ -102,12 +102,10 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   const { isExpanded } = useSidebar();
   
   return (
-    <main className={`transition-all duration-300 min-h-screen ${isExpanded ? 'ml-64' : 'ml-20'}`}>
-      {/* Top Header with Profile */}
-      <div className="sticky top-0 z-40 bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm">
-        <div className="flex justify-end items-center h-16 px-6">
-          <ProfileButton />
-        </div>
+    <main className={`transition-all duration-300 min-h-screen relative ${isExpanded ? 'ml-64' : 'ml-20'}`}>
+      {/* Profile Button - Fixed top right */}
+      <div className="fixed top-6 right-6 z-40">
+        <ProfileButton />
       </div>
       
       {/* Content */}

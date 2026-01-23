@@ -201,7 +201,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex flex-col">
+    <div className="h-screen flex flex-col">
       {/* Top Section - Fixed padding from top */}
       <div className="pt-6 flex-shrink-0">
         {/* Greeting */}
