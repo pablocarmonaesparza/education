@@ -136,7 +136,7 @@ export default function Sidebar() {
       </nav>
 
       {/* Bottom Section */}
-      <div className="p-3 border-t-2 border-gray-200 dark:border-gray-700">
+      <div className="p-3">
         {/* Upgrade Button */}
         <button
           className={`w-full rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center justify-center gap-2 ${

@@ -36,6 +36,7 @@ export default function DashboardPage() {
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const carouselRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -158,12 +159,30 @@ export default function DashboardPage() {
     fetchUserData();
   }, [supabase]);
 
-  // Set selected video to current video on load
+  // Scroll carousel to current video on load
   useEffect(() => {
-    if (videos.length > 0) {
-      setSelectedVideoIndex(currentVideoIndex);
+    if (carouselRef.current && videos.length > 0) {
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        const cardWidth = 280 + 16; // card width + gap
+        const scrollPosition = currentVideoIndex * cardWidth;
+        carouselRef.current?.scrollTo({ left: scrollPosition, behavior: 'smooth' });
+        setSelectedVideoIndex(currentVideoIndex);
+      }, 100);
     }
   }, [currentVideoIndex, videos]);
+
+  // Handle scroll to update selected video
+  const handleScroll = () => {
+    if (carouselRef.current && videos.length > 0) {
+      const cardWidth = 280 + 16;
+      const scrollLeft = carouselRef.current.scrollLeft;
+      const newIndex = Math.round(scrollLeft / cardWidth);
+      if (newIndex >= 0 && newIndex < videos.length && newIndex !== selectedVideoIndex) {
+        setSelectedVideoIndex(newIndex);
+      }
+    }
+  };
 
   const formatDuration = (seconds: number | undefined | null) => {
     if (!seconds || isNaN(seconds)) return '0:00';
@@ -213,18 +232,25 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Video Grid - Responsive grid layout */}
+        {/* Video Carousel - Full width with snap to center */}
         {videos.length > 0 && (
-          <div className="w-full px-6 py-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 max-w-7xl mx-auto">
+          <div 
+            ref={carouselRef}
+            onScroll={handleScroll}
+            className="w-full flex gap-4 overflow-x-auto py-6 scrollbar-hide snap-x snap-mandatory"
+          >
+            {/* Left spacer for first card centering */}
+            <div className="flex-shrink-0 w-[calc(50%-148px)]" />
+            
             {videos.map((video, index) => (
               <div
                 key={video.id}
                 onClick={() => {
-                  setSelectedVideoIndex(index);
                   router.push(`/dashboard/salon?video=${video.order}`);
                 }}
-                className={`w-full h-[280px] rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer flex flex-col border-2 hover:scale-105 ${
+                className={`flex-shrink-0 w-[280px] h-[280px] snap-center rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer flex flex-col border-2 ${
+                  index === selectedVideoIndex ? 'scale-105 z-10' : 'scale-95 opacity-70'
+                } ${
                   video.isCurrent
                     ? 'border-[#1472FF]'
                     : video.isCompleted
@@ -288,7 +314,9 @@ export default function DashboardPage() {
                 </div>
               </div>
             ))}
-            </div>
+            
+            {/* Right spacer for last card centering */}
+            <div className="flex-shrink-0 w-[calc(50%-148px)]" />
           </div>
         )}
 
