@@ -14,10 +14,10 @@ export default function ProjectDescriptionPage() {
       setError('Por favor describe tu idea con al menos 100 caracteres');
       return;
     }
-    
+
     // Save to sessionStorage for next steps
     sessionStorage.setItem('projectIdea', projectIdea);
-    
+
     // Navigate to optional context page
     router.push('/projectContext');
   };
@@ -30,37 +30,46 @@ export default function ProjectDescriptionPage() {
         <div className="w-full max-w-2xl mx-auto">
           {/* Header */}
           <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Cuéntanos sobre tu proyecto
+            <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight lowercase">
+              cuéntanos sobre tu proyecto
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-lg mx-auto">
+            <p className="text-base text-[#777777] dark:text-gray-400 max-w-lg mx-auto leading-relaxed">
               Describe qué quieres construir y crearemos un curso personalizado para ti.
             </p>
           </div>
 
-          {/* Text Area */}
+          {/* Text Area with depth effect */}
           <div className="mb-8">
-            <div className={`relative w-full bg-white dark:bg-gray-900 rounded-2xl border-2 transition-all duration-300 ${
-              error ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-gray-700 focus-within:border-[#1472FF]"
-            }`}>
-              <textarea
-                value={projectIdea}
-                onChange={(e) => {
-                  setProjectIdea(e.target.value);
-                  setError(null);
-                }}
-                placeholder="Describe tu idea y haremos un curso personalizado para ti."
-                rows={2}
-                className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 py-3"
-              />
+            <div
+              className="rounded-2xl"
+              style={{
+                boxShadow: error
+                  ? '0 4px 0 0 #fca5a5'
+                  : '0 4px 0 0 #d1d5db'
+              }}
+            >
+              <div className={`relative w-full bg-white dark:bg-gray-900 rounded-2xl border-2 transition-all duration-300 ${
+                error ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-gray-700 focus-within:border-[#1472FF]"
+              }`}>
+                <textarea
+                  value={projectIdea}
+                  onChange={(e) => {
+                    setProjectIdea(e.target.value);
+                    setError(null);
+                  }}
+                  placeholder="Describe tu idea y haremos un curso personalizado para ti."
+                  rows={2}
+                  className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 py-3"
+                />
 
-              {/* Character count */}
-              <div className="px-4 pb-2 flex justify-end">
-                <p className={`text-xs font-medium ${
-                  projectIdea.length >= 100 ? "text-green-500" : "text-gray-400 dark:text-gray-500"
-                }`}>
-                  {projectIdea.length}/100
-                </p>
+                {/* Character count */}
+                <div className="px-4 pb-2 flex justify-end">
+                  <p className={`text-xs font-medium ${
+                    projectIdea.length >= 100 ? "text-green-500" : "text-gray-400 dark:text-gray-500"
+                  }`}>
+                    {projectIdea.length}/100
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -79,7 +88,7 @@ export default function ProjectDescriptionPage() {
 
           {/* Suggestions */}
           <div className="mb-10">
-            <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 text-center">¿Necesitas inspiración? Aquí algunas ideas:</p>
+            <p className="text-sm text-[#777777] dark:text-gray-400 mb-3 text-center">¿Necesitas inspiración? Aquí algunas ideas:</p>
             <div className="flex flex-wrap gap-2 justify-center">
               {[
                 { label: 'Chatbot de atención al cliente', description: 'Quiero crear un chatbot que responda preguntas frecuentes de mis clientes sobre horarios, precios y disponibilidad de productos automáticamente.' },
@@ -92,7 +101,7 @@ export default function ProjectDescriptionPage() {
                 <button
                   key={suggestion.label}
                   onClick={() => setProjectIdea(suggestion.description)}
-                  className="px-4 py-2 text-sm rounded-full border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:border-[#1472FF] hover:text-[#1472FF] transition-all"
+                  className="px-4 py-2 text-sm rounded-xl border-2 border-gray-200 dark:border-gray-700 text-[#777777] dark:text-gray-400 hover:border-[#1472FF] hover:text-[#1472FF] transition-all shadow-[0_2px_0_0_#e5e7eb] dark:shadow-[0_2px_0_0_#374151] hover:shadow-[0_2px_0_0_#1472FF]"
                 >
                   {suggestion.label}
                 </button>
@@ -104,7 +113,7 @@ export default function ProjectDescriptionPage() {
           <div className="flex justify-center gap-4">
             <button
               onClick={() => router.back()}
-              className="px-6 py-3 rounded-full font-semibold text-sm border-2 border-[#1472FF] text-[#1472FF] bg-transparent hover:bg-blue-50 dark:hover:bg-blue-950 transition-all duration-300 flex items-center gap-2"
+              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-white border-b-4 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
@@ -115,7 +124,7 @@ export default function ProjectDescriptionPage() {
             <button
               onClick={handleContinue}
               disabled={projectIdea.length < 100}
-              className="px-6 py-3 rounded-full font-semibold text-sm text-white bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all duration-300 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0"
             >
               Siguiente
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -128,4 +137,3 @@ export default function ProjectDescriptionPage() {
     </div>
   );
 }
-

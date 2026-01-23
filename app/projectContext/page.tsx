@@ -255,19 +255,19 @@ export default function ProjectContextPage() {
               exit={{ opacity: 0, y: 10 }}
               className="text-center mb-4"
             >
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                {currentSection.name}
+              <h2 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
+                {currentSection.name.toLowerCase()}
               </h2>
             </motion.div>
           </AnimatePresence>
 
           {/* Progress counter */}
           <div className="flex items-center justify-center gap-2 mb-8">
-            <span className="text-sm text-gray-400 dark:text-gray-500">
+            <span className="text-sm text-[#777777] dark:text-gray-500">
               {currentIndex + 1} de {allQuestions.length} para personalizar tu curso
             </span>
             <span className="text-sm text-gray-300 dark:text-gray-600">•</span>
-            <span className="text-sm text-gray-400 dark:text-gray-500">
+            <span className="text-sm text-[#777777] dark:text-gray-500">
               ~{Math.ceil((allQuestions.length - currentIndex) * 0.2)} min
             </span>
           </div>
@@ -282,7 +282,7 @@ export default function ProjectContextPage() {
               transition={{ duration: 0.3, ease: 'easeOut' }}
               className="mb-12"
             >
-              <h2 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white text-center mb-10 leading-relaxed">
+              <h2 className="text-xl md:text-2xl font-bold text-[#4b4b4b] dark:text-white text-center mb-10 leading-relaxed">
                 {currentQuestion.question}
               </h2>
               
@@ -290,37 +290,43 @@ export default function ProjectContextPage() {
               <div className="max-w-md mx-auto px-4">
                 {/* Labels - extremes only */}
                 <div className="flex justify-between mb-4">
-                  <span className="text-xs text-gray-400 dark:text-gray-500 max-w-[120px] text-left leading-tight">
+                  <span className="text-xs text-[#777777] dark:text-gray-500 max-w-[120px] text-left leading-tight">
                     {currentQuestion.labels[0]}
                   </span>
-                  <span className="text-xs text-gray-400 dark:text-gray-500 max-w-[120px] text-right leading-tight">
+                  <span className="text-xs text-[#777777] dark:text-gray-500 max-w-[120px] text-right leading-tight">
                     {currentQuestion.labels[4]}
                   </span>
                 </div>
 
-                {/* Slider Track */}
+                {/* Slider Track with depth effect */}
                 <div className="relative h-12 flex items-center">
-                  {/* Background Track */}
-                  <div className="absolute w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full" />
-                  
-                  {/* Filled Track */}
-                  <div 
-                    className="absolute h-2 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] rounded-full transition-all duration-150"
-                    style={{ width: `${((currentValue - 1) / 4) * 100}%` }}
+                  {/* Background Track with depth */}
+                  <div
+                    className="absolute w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full"
+                    style={{ boxShadow: '0 2px 0 0 #d1d5db' }}
                   />
 
-                  {/* Step Markers */}
+                  {/* Filled Track */}
+                  <div
+                    className="absolute h-3 bg-[#1472FF] rounded-full transition-all duration-150"
+                    style={{
+                      width: `${((currentValue - 1) / 4) * 100}%`,
+                      boxShadow: '0 2px 0 0 #0E5FCC'
+                    }}
+                  />
+
+                  {/* Step Markers with depth effect */}
                   <div className="absolute w-full flex justify-between px-0">
                     {[1, 2, 3, 4, 5].map((step) => (
                       <button
                         key={step}
                         onClick={() => handleSliderChange(step)}
-                        className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-200 ${
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-200 ${
                           currentValue === step
-                            ? 'bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white scale-125 shadow-lg'
+                            ? 'bg-[#1472FF] text-white scale-110 shadow-[0_3px_0_0_#0E5FCC]'
                             : currentValue > step
-                              ? 'bg-[#1472FF] text-white'
-                              : 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-400 dark:hover:bg-gray-500'
+                              ? 'bg-[#1472FF] text-white shadow-[0_3px_0_0_#0E5FCC]'
+                              : 'bg-gray-200 dark:bg-gray-700 text-[#777777] dark:text-gray-400 shadow-[0_3px_0_0_#d1d5db] dark:shadow-[0_3px_0_0_#374151] hover:bg-gray-300 dark:hover:bg-gray-600'
                         }`}
                       >
                         {step}
@@ -345,11 +351,11 @@ export default function ProjectContextPage() {
                 </div>
 
                 {/* Current Value Label - now shows the actual label for the value */}
-                <div className="text-center mt-6">
-                  <span className={`inline-block px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                    isDragging 
-                      ? 'bg-[#1472FF] text-white scale-110' 
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+                <div className="text-center mt-8">
+                  <span className={`inline-block px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${
+                    isDragging
+                      ? 'bg-[#1472FF] text-white shadow-[0_3px_0_0_#0E5FCC]'
+                      : 'bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 shadow-[0_3px_0_0_#d1d5db] dark:shadow-[0_3px_0_0_#374151]'
                   }`}>
                     {currentLabel}
                   </span>
@@ -362,9 +368,8 @@ export default function ProjectContextPage() {
           <div className="flex justify-center gap-4">
             <motion.button
               onClick={handlePrevious}
-              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="px-6 py-3 rounded-full font-semibold text-sm border-2 border-[#1472FF] text-[#1472FF] bg-transparent hover:bg-blue-50 dark:hover:bg-blue-950 transition-all duration-300 flex items-center gap-2"
+              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-white border-b-4 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
@@ -374,9 +379,8 @@ export default function ProjectContextPage() {
 
             <motion.button
               onClick={handleNext}
-              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="px-6 py-3 rounded-full font-semibold text-sm text-white bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all duration-300 flex items-center gap-2"
+              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
             >
               {currentIndex === allQuestions.length - 1 ? 'Crear mi curso' : 'Siguiente'}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -385,14 +389,14 @@ export default function ProjectContextPage() {
             </motion.button>
           </div>
 
-          {/* Section-based dots indicator */}
+          {/* Section-based dots indicator with depth effect */}
           <div className="flex justify-center items-center gap-3 mt-8">
             {sections.map((section, sectionIdx) => {
               const isCurrentSection = sectionIdx === currentSectionIndex;
               const sectionStartIdx = getSectionStartIndex(sectionIdx);
               const sectionAnswered = section.questions.every(q => answers[q.id] !== undefined);
               const sectionPartial = section.questions.some(q => answers[q.id] !== undefined);
-              
+
               return (
                 <div key={section.id} className="flex items-center gap-1">
                   {isCurrentSection ? (
@@ -401,17 +405,17 @@ export default function ProjectContextPage() {
                       const globalIdx = sectionStartIdx + qIdx;
                       const isCurrentQuestion = globalIdx === currentIndex;
                       const isAnswered = answers[q.id] !== undefined;
-                      
+
                       return (
                         <button
                           key={q.id}
                           onClick={() => setCurrentIndex(globalIdx)}
-                          className={`h-2 rounded-full transition-all duration-300 ${
+                          className={`h-3 rounded-full transition-all duration-300 ${
                             isCurrentQuestion
-                              ? 'w-6 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF]'
+                              ? 'w-8 bg-[#1472FF] shadow-[0_2px_0_0_#0E5FCC]'
                               : isAnswered
-                                ? 'w-2 bg-[#1472FF]'
-                                : 'w-2 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400'
+                                ? 'w-3 bg-[#1472FF] shadow-[0_2px_0_0_#0E5FCC]'
+                                : 'w-3 bg-gray-200 dark:bg-gray-700 shadow-[0_2px_0_0_#d1d5db] dark:shadow-[0_2px_0_0_#374151] hover:bg-gray-300'
                           }`}
                         />
                       );
@@ -420,12 +424,12 @@ export default function ProjectContextPage() {
                     // Collapsed view for other sections
                     <button
                       onClick={() => setCurrentIndex(sectionStartIdx)}
-                      className={`h-2 rounded-full transition-all duration-300 ${
+                      className={`h-3 rounded-full transition-all duration-300 ${
                         sectionAnswered
-                          ? 'w-3 bg-[#1472FF]'
+                          ? 'w-4 bg-green-500 shadow-[0_2px_0_0_#16a34a]'
                           : sectionPartial
-                            ? 'w-3 bg-[#1472FF]/50'
-                            : 'w-3 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400'
+                            ? 'w-4 bg-[#1472FF]/50 shadow-[0_2px_0_0_#0E5FCC]/50'
+                            : 'w-4 bg-gray-200 dark:bg-gray-700 shadow-[0_2px_0_0_#d1d5db] dark:shadow-[0_2px_0_0_#374151] hover:bg-gray-300'
                       }`}
                       title={section.name}
                     />

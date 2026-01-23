@@ -123,51 +123,66 @@ export default function CourseCreationPage() {
       <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-12">
         <div className="w-full max-w-lg mx-auto text-center">
           {error ? (
-            <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-2xl p-8">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/50 flex items-center justify-center">
-                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
+            <div
+              className="rounded-2xl"
+              style={{ boxShadow: '0 4px 0 0 #fca5a5' }}
+            >
+              <div className="bg-red-50 dark:bg-red-900/30 border-2 border-red-300 dark:border-red-700 rounded-2xl p-8">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-red-100 dark:bg-red-900/50 flex items-center justify-center shadow-[0_3px_0_0_#fca5a5]">
+                  <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 lowercase">algo salió mal</h2>
+                <p className="text-[#777777] dark:text-gray-400 mb-6">{error}</p>
+                <button
+                  onClick={() => router.push('/projectDescription')}
+                  className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150"
+                >
+                  Intentar de nuevo
+                </button>
               </div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Algo salió mal</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">{error}</p>
-              <button
-                onClick={() => router.push('/projectDescription')}
-                className="px-6 py-3 rounded-full font-semibold text-sm text-white bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all"
-              >
-                Intentar de nuevo
-              </button>
             </div>
           ) : (
             <>
-              {/* Animated Icon */}
+              {/* Animated Icon with depth */}
               <div className="relative w-24 h-24 mx-auto mb-8">
-                <div className="absolute inset-0 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] rounded-full animate-pulse"></div>
-                <div className="absolute inset-2 bg-white dark:bg-gray-900 rounded-full flex items-center justify-center">
+                <div
+                  className="absolute inset-0 bg-[#1472FF] rounded-2xl animate-pulse"
+                  style={{ boxShadow: '0 4px 0 0 #0E5FCC' }}
+                />
+                <div className="absolute inset-2 bg-white dark:bg-gray-900 rounded-xl flex items-center justify-center">
                   <span className="text-4xl animate-bounce">🤖</span>
                 </div>
               </div>
 
               {/* Title */}
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">
-                Creando tu curso personalizado
+              <h1 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-3 tracking-tight lowercase">
+                creando tu curso personalizado
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mb-10">
+              <p className="text-[#777777] dark:text-gray-400 mb-10">
                 Nuestra IA está diseñando tu ruta de aprendizaje
               </p>
 
-              {/* Progress Bar */}
+              {/* Progress Bar with depth effect */}
               <div className="mb-10">
-                <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-3 overflow-hidden">
+                <div
+                  className="w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-xl overflow-hidden"
+                  style={{ boxShadow: '0 3px 0 0 #d1d5db' }}
+                >
                   <div
-                    className="bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] h-3 rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${progress}%` }}
+                    className="bg-[#1472FF] h-4 rounded-xl transition-all duration-500 ease-out"
+                    style={{
+                      width: `${progress}%`,
+                      boxShadow: progress > 0 ? '0 3px 0 0 #0E5FCC' : 'none',
+                      borderRadius: progress >= 100 ? '0.75rem' : '0.75rem 0 0 0.75rem'
+                    }}
                   />
                 </div>
-                <p className="text-sm font-medium text-[#1472FF] mt-3">{progress}%</p>
+                <p className="text-sm font-bold text-[#1472FF] mt-3">{progress}%</p>
               </div>
 
-              {/* Loading Steps */}
+              {/* Loading Steps with depth effect */}
               <div className="space-y-4 text-left max-w-sm mx-auto">
                 {[
                   { threshold: 20, label: 'Analizando tu proyecto' },
@@ -182,17 +197,19 @@ export default function CourseCreationPage() {
                       progress >= step.threshold ? 'opacity-100' : 'opacity-30'
                     }`}
                   >
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white text-xs ${
-                      progress >= step.threshold ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-700'
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold transition-all ${
+                      progress >= step.threshold
+                        ? 'bg-green-500 shadow-[0_2px_0_0_#16a34a]'
+                        : 'bg-gray-200 dark:bg-gray-700 shadow-[0_2px_0_0_#d1d5db] dark:shadow-[0_2px_0_0_#374151]'
                     }`}>
                       {progress >= step.threshold ? '✓' : ''}
                     </div>
-                    <span className="text-sm text-gray-700 dark:text-gray-300">{step.label}</span>
+                    <span className="text-sm text-[#4b4b4b] dark:text-gray-300 font-medium">{step.label}</span>
                   </div>
                 ))}
               </div>
 
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-10">
+              <p className="text-xs text-[#777777] dark:text-gray-500 mt-10">
                 Esto puede tomar 2-3 minutos. No cierres esta página.
               </p>
             </>

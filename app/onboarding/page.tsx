@@ -91,10 +91,10 @@ export default function OnboardingPage() {
               transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
               className="text-center mb-12"
             >
-              <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">
-                {steps[currentStep].title.toLowerCase()}
+              <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight lowercase">
+                {steps[currentStep].title}
               </h1>
-              <p className="text-lg text-[#777777] dark:text-gray-400 max-w-lg mx-auto leading-relaxed">
+              <p className="text-base text-[#777777] dark:text-gray-400 max-w-lg mx-auto leading-relaxed">
                 {steps[currentStep].description}
               </p>
             </motion.div>
@@ -107,12 +107,12 @@ export default function OnboardingPage() {
               <motion.button
                 onClick={() => setCurrentStep(currentStep - 1)}
                 whileTap={{ scale: 0.98 }}
-                className="px-6 py-4 rounded-2xl font-bold text-sm uppercase tracking-wide border-2 border-b-4 border-[#1472FF] text-[#1472FF] bg-white dark:bg-gray-800 hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10 active:border-b-2 active:mt-[2px] transition-all duration-150 flex items-center gap-2"
+                className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-white border-b-4 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                 </svg>
-                ANTERIOR
+                Anterior
               </motion.button>
             )}
 
@@ -120,25 +120,27 @@ export default function OnboardingPage() {
             <motion.button
               onClick={handleNext}
               whileTap={{ scale: 0.98 }}
-              className="px-6 py-4 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
+              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
             >
-              {isLastStep ? 'COMENZAR' : 'SIGUIENTE'}
+              {isLastStep ? 'Comenzar' : 'Siguiente'}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </motion.button>
           </div>
 
-          {/* Step dots indicator */}
-          <div className="flex justify-center gap-2 mt-8">
+          {/* Step dots indicator with depth effect */}
+          <div className="flex justify-center gap-3 mt-8">
             {steps.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentStep(index)}
                 className={`h-3 rounded-full transition-all duration-300 ${
                   index === currentStep
-                    ? 'w-10 bg-[#1472FF]'
-                    : 'w-3 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600'
+                    ? 'w-8 bg-[#1472FF] shadow-[0_2px_0_0_#0E5FCC]'
+                    : index < currentStep
+                      ? 'w-3 bg-green-500 shadow-[0_2px_0_0_#16a34a]'
+                      : 'w-3 bg-gray-200 dark:bg-gray-700 shadow-[0_2px_0_0_#d1d5db] dark:shadow-[0_2px_0_0_#374151] hover:bg-gray-300 dark:hover:bg-gray-600'
                 }`}
               />
             ))}
