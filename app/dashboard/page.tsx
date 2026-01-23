@@ -238,7 +238,6 @@ export default function DashboardPage() {
     if (isLoading || videos.length === 0) return;
 
     const container = scrollContainerRef.current;
-    console.log('Setting up scroll listener, container:', container);
     if (!container) return;
 
     let lastScrollY = container.scrollTop;
@@ -258,7 +257,6 @@ export default function DashboardPage() {
       // Detect scroll direction with threshold
       if (Math.abs(difference) > threshold) {
         const newDirection = difference > 0 ? 'down' : 'up';
-        console.log('Direction change detected:', newDirection);
         setScrollDirection(newDirection);
         lastScrollY = scrollY > 0 ? scrollY : 0;
       }
@@ -270,7 +268,6 @@ export default function DashboardPage() {
 
   // Update progress bar visibility based on scroll direction
   useEffect(() => {
-    console.log('scrollDirection changed:', scrollDirection, 'showProgressBar:', showProgressBar);
     if (scrollDirection === 'down') {
       setShowProgressBar(false);
     } else if (scrollDirection === 'up') {
