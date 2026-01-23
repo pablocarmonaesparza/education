@@ -56,7 +56,7 @@ export default function LessonItem({
     if (isCurrent) {
       return (
         <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white uppercase tracking-wide">
-          En Progreso
+          Continuar
         </span>
       );
     }
@@ -83,7 +83,9 @@ export default function LessonItem({
       );
     }
     return (
-      <div className="w-12 h-12 rounded-full border-2 border-gray-300 dark:border-gray-600" />
+      <svg className="w-12 h-12 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M8 5v14l11-7z" />
+      </svg>
     );
   };
 
