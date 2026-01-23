@@ -424,9 +424,9 @@ export default function DashboardPage() {
         )}
 
         {/* Video cards content */}
-        <div className="px-4 pb-24">
+        <div className="pb-24">
           {videos.length > 0 && (
-            <div className="w-[400px] mx-auto py-6 space-y-6">
+            <div className="py-6 space-y-6">
             {Object.entries(videosByPhase).map(([phaseId, phaseData], phaseIndex) => (
               <div
                 key={phaseId}
@@ -438,21 +438,28 @@ export default function DashboardPage() {
                 {/* Phase Divider and Title */}
                 {phaseIndex > 0 ? (
                   <div className="mb-6">
-                    <div className="h-2 bg-gray-200 dark:bg-gray-700 mb-4 rounded-full" />
-                    <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
-                      {phaseData.phaseName}
-                    </h2>
+                    {/* Divider - same width as progress bar (80% centered) */}
+                    <div className="flex justify-center mb-4">
+                      <div className="w-[80%] h-2 bg-gray-200 dark:bg-gray-700 rounded-full" />
+                    </div>
+                    <div className="w-[400px] mx-auto">
+                      <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
+                        {phaseData.phaseName}
+                      </h2>
+                    </div>
                   </div>
                 ) : (
                   <div className="mb-6">
-                    <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
-                      {phaseData.phaseName}
-                    </h2>
+                    <div className="w-[400px] mx-auto">
+                      <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
+                        {phaseData.phaseName}
+                      </h2>
+                    </div>
                   </div>
                 )}
                 
                 {/* Videos in this phase */}
-                <div className="space-y-4">
+                <div className="w-[400px] mx-auto space-y-4">
                   {phaseData.videos.map((video) => (
                     <LessonItem
                       key={video.id}
