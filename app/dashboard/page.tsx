@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
@@ -34,6 +34,8 @@ export default function DashboardPage() {
   const [project, setProject] = useState<string>('');
   const [videos, setVideos] = useState<Video[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activePhaseId, setActivePhaseId] = useState<string>('');
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -178,6 +180,60 @@ export default function DashboardPage() {
   const totalCount = videos.length;
   const progressPercentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
+  // Set initial active phase
+  useEffect(() => {
+    if (videos.length > 0 && Object.keys(videosByPhase).length > 0 && !activePhaseId) {
+      const firstPhaseId = Object.keys(videosByPhase)[0];
+      setActivePhaseId(firstPhaseId);
+    }
+  }, [videos, videosByPhase, activePhaseId]);
+
+  // Intersection Observer to detect active section
+  useEffect(() => {
+    if (videos.length === 0 || !scrollContainerRef.current) return;
+
+    const observerOptions = {
+      root: scrollContainerRef.current,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const phaseId = entry.target.getAttribute('data-phase-id');
+          if (phaseId) {
+            setActivePhaseId(phaseId);
+          }
+        }
+      });
+    }, observerOptions);
+
+    // Observe all phase sections
+    const phaseElements = document.querySelectorAll('[data-phase-id]');
+    phaseElements.forEach((el) => observer.observe(el));
+
+    return () => {
+      phaseElements.forEach((el) => observer.unobserve(el));
+    };
+  }, [videos]);
+
+  // Scroll to section when clicking on navigation
+  const scrollToPhase = (phaseId: string) => {
+    const element = document.querySelector(`[data-phase-id="${phaseId}"]`);
+    if (element && scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const elementTop = (element as HTMLElement).offsetTop;
+      const containerTop = container.scrollTop;
+      const offset = 20; // Small offset from top
+      
+      container.scrollTo({
+        top: containerTop + elementTop - offset,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   // Loading state
   if (isLoading) {
     return (
@@ -214,9 +270,30 @@ export default function DashboardPage() {
             }
           </p>
 
+          {/* Section Navigation - Horizontal Scroll */}
+          {videos.length > 0 && Object.keys(videosByPhase).length > 0 && (
+            <div className="mt-6 mb-4">
+              <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
+                {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
+                  <button
+                    key={phaseId}
+                    onClick={() => scrollToPhase(phaseId)}
+                    className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-150 ${
+                      activePhaseId === phaseId
+                        ? 'bg-[#1472FF] text-white'
+                        : 'bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    {phaseData.phaseName}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Progress Line */}
           {videos.length > 0 && (
-            <div className="mt-8">
+            <div className="mt-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-bold text-[#4b4b4b] dark:text-white">
                   {progressPercentage}% completado
@@ -237,11 +314,11 @@ export default function DashboardPage() {
       </div>
 
       {/* Middle Section - Vertical scrollable carousel */}
-      <div className="flex-1 overflow-y-auto min-h-0 px-4">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0 px-4">
         {videos.length > 0 && (
           <div className="max-w-2xl mx-auto py-6 space-y-6">
             {Object.entries(videosByPhase).map(([phaseId, phaseData], phaseIndex) => (
-              <div key={phaseId}>
+              <div key={phaseId} data-phase-id={phaseId}>
                 {/* Phase Divider and Title */}
                 {phaseIndex > 0 ? (
                   <div className="mb-6">
