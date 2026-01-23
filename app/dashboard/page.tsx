@@ -234,6 +234,9 @@ export default function DashboardPage() {
 
   // Main scroll handler for greeting visibility and scroll direction detection
   useEffect(() => {
+    // Wait for videos to load and container to be available
+    if (isLoading || videos.length === 0) return;
+
     const container = scrollContainerRef.current;
     console.log('Setting up scroll listener, container:', container);
     if (!container) return;
@@ -244,7 +247,6 @@ export default function DashboardPage() {
     const updateScrollDirection = () => {
       const scrollY = container.scrollTop;
       const difference = scrollY - lastScrollY;
-      console.log('Scroll event - scrollY:', scrollY, 'lastScrollY:', lastScrollY, 'difference:', difference);
 
       // Greeting: only visible when at the very top
       if (scrollY <= 10) {
@@ -264,7 +266,7 @@ export default function DashboardPage() {
 
     container.addEventListener('scroll', updateScrollDirection, { passive: true });
     return () => container.removeEventListener('scroll', updateScrollDirection);
-  }, []);
+  }, [isLoading, videos.length]);
 
   // Update progress bar visibility based on scroll direction
   useEffect(() => {
