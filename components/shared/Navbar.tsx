@@ -89,7 +89,8 @@ export default function Navbar() {
       if (activeLink) {
         const navRect = navRef.current.getBoundingClientRect();
         const linkRect = activeLink.getBoundingClientRect();
-        // Include padding in the calculation
+        // Calculate position to perfectly center the indicator with the link
+        // The link has px-4 (16px padding on each side), so we need to account for that
         setIndicatorStyle({
           left: linkRect.left - navRect.left,
           width: linkRect.width,
@@ -175,7 +176,7 @@ export default function Navbar() {
             {/* Sliding indicator - gray button that slides behind text */}
             {activeSection && (
               <motion.div
-                className="absolute bottom-0 h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-300 dark:border-gray-600 z-0"
+                className="absolute top-1/2 -translate-y-1/2 h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-300 dark:border-gray-600 z-0"
                 initial={false}
                 animate={{
                   left: indicatorStyle.left,
