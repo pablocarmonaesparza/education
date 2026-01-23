@@ -397,13 +397,15 @@ export default function DashboardPage() {
             {/* Project name - shows when greeting is hidden */}
             <div
               className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                !showGreeting ? 'max-h-12 opacity-100' : 'max-h-0 opacity-0'
+                !showGreeting ? 'max-h-24 opacity-100' : 'max-h-0 opacity-0'
               }`}
             >
               {project && (
-                <p className="text-center text-sm font-medium text-[#1472FF] px-4 py-2 line-clamp-1">
-                  {project}
-                </p>
+                <div className="flex justify-center px-4 pb-2">
+                  <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3 max-w-md">
+                    {project}
+                  </p>
+                </div>
               )}
             </div>
 
