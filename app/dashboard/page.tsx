@@ -41,6 +41,8 @@ export default function DashboardPage() {
   const [showGreeting, setShowGreeting] = useState(true);
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
+  const [isVideoPlayerOpen, setIsVideoPlayerOpen] = useState(false);
+  const [isVideoPlayerClosing, setIsVideoPlayerClosing] = useState(false);
   const [chatWidth, setChatWidth] = useState(256);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
@@ -385,14 +387,24 @@ export default function DashboardPage() {
     }
   }, [centerHorizontalButton]);
 
-  // Handle video selection
+  // Handle video selection with animation
   const handleVideoSelect = (video: Video) => {
     setSelectedVideo(video);
+    // Small delay to allow state to set before animation starts
+    requestAnimationFrame(() => {
+      setIsVideoPlayerOpen(true);
+    });
   };
 
-  // Handle closing video player
+  // Handle closing video player with animation
   const handleCloseVideo = () => {
-    setSelectedVideo(null);
+    setIsVideoPlayerClosing(true);
+    setIsVideoPlayerOpen(false);
+    // Wait for animation to complete before removing video
+    setTimeout(() => {
+      setSelectedVideo(null);
+      setIsVideoPlayerClosing(false);
+    }, 400);
   };
 
   // Loading state
@@ -404,71 +416,6 @@ export default function DashboardPage() {
     );
   }
 
-  // Video Player View
-  if (selectedVideo) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-950 p-8">
-        {/* Close Button */}
-        <div className="w-full max-w-4xl mb-6 flex justify-end">
-          <button
-            onClick={handleCloseVideo}
-            className="px-5 py-2.5 rounded-2xl font-bold uppercase tracking-wide text-sm bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-white border-b-4 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            Cerrar
-          </button>
-        </div>
-
-        {/* Video Info */}
-        <div className="w-full max-w-4xl mb-4">
-          <p className="text-sm text-[#1472FF] font-bold uppercase tracking-wide mb-1">
-            {selectedVideo.phaseName}
-          </p>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white">
-            {selectedVideo.title}
-          </h1>
-          {selectedVideo.duration && (
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
-              Duración: {formatDuration(selectedVideo.duration)}
-            </p>
-          )}
-        </div>
-
-        {/* Video Player */}
-        <div className="w-full max-w-4xl aspect-video bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center">
-          {selectedVideo.videoUrl ? (
-            <video
-              src={selectedVideo.videoUrl}
-              controls
-              autoPlay
-              className="w-full h-full"
-            >
-              Tu navegador no soporta el tag de video.
-            </video>
-          ) : (
-            <div className="text-center text-gray-400 p-8">
-              <svg className="w-20 h-20 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <p className="text-lg font-medium">Video próximamente disponible</p>
-              <p className="text-sm mt-1 opacity-70">El contenido se está preparando</p>
-            </div>
-          )}
-        </div>
-
-        {/* Description */}
-        {selectedVideo.description && (
-          <div className="w-full max-w-4xl mt-6 p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800">
-            <h3 className="font-bold text-[#4b4b4b] dark:text-white mb-2">Descripción</h3>
-            <p className="text-gray-600 dark:text-gray-400">{selectedVideo.description}</p>
-          </div>
-        )}
-      </div>
-    );
-  }
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
@@ -627,6 +574,91 @@ export default function DashboardPage() {
                 {progressPercentage}% ({completedCount} de {totalCount})
               </span>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Video Player Overlay - Animated */}
+      {(selectedVideo || isVideoPlayerClosing) && (
+        <div
+          className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-400 ease-out ${
+            isVideoPlayerOpen && !isVideoPlayerClosing
+              ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm'
+              : 'bg-white/0 dark:bg-gray-950/0'
+          }`}
+          style={{
+            transitionDuration: '400ms',
+          }}
+        >
+          <div
+            className={`w-full max-w-4xl mx-auto px-8 transition-all ease-out ${
+              isVideoPlayerOpen && !isVideoPlayerClosing
+                ? 'opacity-100 scale-100 translate-y-0'
+                : 'opacity-0 scale-95 translate-y-8'
+            }`}
+            style={{
+              transitionDuration: '400ms',
+              transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+            }}
+          >
+            {/* Close Button */}
+            <div className="flex justify-end mb-6">
+              <button
+                onClick={handleCloseVideo}
+                className="px-5 py-2.5 rounded-2xl font-bold uppercase tracking-wide text-sm bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-white border-b-4 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Cerrar
+              </button>
+            </div>
+
+            {/* Video Info */}
+            <div className="mb-4">
+              <p className="text-sm text-[#1472FF] font-bold uppercase tracking-wide mb-1">
+                {selectedVideo?.phaseName}
+              </p>
+              <h1 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white">
+                {selectedVideo?.title}
+              </h1>
+              {selectedVideo?.duration && (
+                <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+                  Duración: {formatDuration(selectedVideo.duration)}
+                </p>
+              )}
+            </div>
+
+            {/* Video Player */}
+            <div className="aspect-video bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center shadow-2xl">
+              {selectedVideo?.videoUrl ? (
+                <video
+                  src={selectedVideo.videoUrl}
+                  controls
+                  autoPlay
+                  className="w-full h-full"
+                >
+                  Tu navegador no soporta el tag de video.
+                </video>
+              ) : (
+                <div className="text-center text-gray-400 p-8">
+                  <svg className="w-20 h-20 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-lg font-medium">Video próximamente disponible</p>
+                  <p className="text-sm mt-1 opacity-70">El contenido se está preparando</p>
+                </div>
+              )}
+            </div>
+
+            {/* Description */}
+            {selectedVideo?.description && (
+              <div className="mt-6 p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800">
+                <h3 className="font-bold text-[#4b4b4b] dark:text-white mb-2">Descripción</h3>
+                <p className="text-gray-600 dark:text-gray-400">{selectedVideo.description}</p>
+              </div>
+            )}
           </div>
         </div>
       )}
