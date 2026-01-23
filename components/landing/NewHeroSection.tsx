@@ -135,11 +135,11 @@ export default function NewHeroSection() {
               style={{
                 boxShadow: validationError || idea.length > MAX_CHARACTERS
                   ? '0 4px 0 0 #fca5a5'
-                  : isDark ? '0 4px 0 0 #1e3a5f' : '0 4px 0 0 #d1d5db'
+                  : isDark ? '0 4px 0 0 #1e4976' : '0 4px 0 0 #d1d5db'
               }}
             >
-              <div className={`relative w-full bg-white dark:bg-[#0a1628] rounded-2xl border-2 transition-all duration-300 ${
-                    validationError || idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-[#1e3a5f] focus-within:border-[#1472FF]"
+              <div className={`relative w-full bg-white dark:bg-[#0c2341] rounded-2xl border-2 transition-all duration-300 ${
+                    validationError || idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-[#1e4976] focus-within:border-[#1472FF]"
                   }`}>
                 <textarea
                 ref={textareaRef}
