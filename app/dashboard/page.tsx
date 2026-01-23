@@ -37,11 +37,11 @@ export default function DashboardPage() {
   const [activePhaseId, setActivePhaseId] = useState<string>('');
   const [showProgressBar, setShowProgressBar] = useState(true);
   const [showGreeting, setShowGreeting] = useState(true);
-  const [isAtTop, setIsAtTop] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
-  const phaseRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-  const lastScrollTopRef = useRef(0);
+  const phaseSectionsRef = useRef<Map<string, HTMLDivElement>>(new Map());
+  const lastScrollYRef = useRef(0);
+  const isScrollingToPhaseRef = useRef(false);
   const supabase = createClient();
 
   useEffect(() => {
@@ -197,7 +197,7 @@ export default function DashboardPage() {
   }, [videos, videosByPhase, activePhaseId]);
 
   // Center button in horizontal scroll
-  const centerButton = useCallback((phaseId: string, smooth: boolean = true) => {
+  const centerHorizontalButton = useCallback((phaseId: string, smooth: boolean = true) => {
     if (!horizontalScrollRef.current) return;
 
     const button = horizontalScrollRef.current.querySelector(
@@ -206,13 +206,16 @@ export default function DashboardPage() {
 
     if (button) {
       const container = horizontalScrollRef.current;
-      const containerWidth = container.offsetWidth;
-      const buttonLeft = button.offsetLeft;
-      const buttonWidth = button.offsetWidth;
-      const scrollLeft = buttonLeft - (containerWidth / 2) + (buttonWidth / 2);
+      const containerRect = container.getBoundingClientRect();
+      const buttonRect = button.getBoundingClientRect();
+
+      // Calculate center position
+      const containerCenter = containerRect.width / 2;
+      const buttonCenter = buttonRect.left - containerRect.left + buttonRect.width / 2;
+      const scrollAdjustment = buttonCenter - containerCenter;
 
       container.scrollTo({
-        left: scrollLeft,
+        left: container.scrollLeft + scrollAdjustment,
         behavior: smooth ? 'smooth' : 'auto'
       });
     }
@@ -220,117 +223,130 @@ export default function DashboardPage() {
 
   // Center initial phase button on load
   useEffect(() => {
-    if (activePhaseId && horizontalScrollRef.current) {
-      // Small delay to ensure DOM is ready
+    if (activePhaseId && horizontalScrollRef.current && videos.length > 0) {
+      // Delay to ensure DOM is fully rendered
       const timer = setTimeout(() => {
-        centerButton(activePhaseId, false);
-      }, 100);
+        centerHorizontalButton(activePhaseId, false);
+      }, 150);
       return () => clearTimeout(timer);
     }
-  }, [videos.length, activePhaseId, centerButton]);
+  }, [videos.length, activePhaseId, centerHorizontalButton]);
 
-  // Handle scroll direction to show/hide progress bar and greeting
+  // Main scroll handler for progress bar and greeting visibility
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
     const handleScroll = () => {
-      const currentScrollTop = container.scrollTop;
-      const scrollDelta = currentScrollTop - lastScrollTopRef.current;
+      const currentScrollY = container.scrollTop;
+      const delta = currentScrollY - lastScrollYRef.current;
 
-      // Progress bar: hide on scroll down, show on scroll up (like X/Twitter nav)
-      if (scrollDelta > 2) {
-        // Scrolling down - hide progress bar
-        setShowProgressBar(false);
-      } else if (scrollDelta < -2) {
-        // Scrolling up - show progress bar
-        setShowProgressBar(true);
-      }
-
-      // Check if at very top (within 5px tolerance)
-      const atTop = currentScrollTop <= 5;
-      setIsAtTop(atTop);
-
-      // Greeting: only show when at the very top
-      if (atTop) {
+      // Greeting: only visible when at the very top
+      if (currentScrollY <= 10) {
         setShowGreeting(true);
       } else {
         setShowGreeting(false);
       }
 
-      lastScrollTopRef.current = currentScrollTop;
+      // Progress bar: hide on scroll down, show on scroll up (Twitter-style)
+      if (Math.abs(delta) > 5) {
+        if (delta > 0) {
+          // Scrolling down
+          setShowProgressBar(false);
+        } else {
+          // Scrolling up
+          setShowProgressBar(true);
+        }
+      }
+
+      lastScrollYRef.current = currentScrollY;
     };
 
     container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Intersection Observer to detect active section
+  // Intersection Observer for detecting active section during scroll
   useEffect(() => {
-    if (videos.length === 0 || !scrollContainerRef.current) return;
+    if (videos.length === 0) return;
 
-    const observerOptions = {
-      root: scrollContainerRef.current,
-      rootMargin: '-20% 0px -60% 0px',
-      threshold: [0, 0.25, 0.5, 0.75, 1]
-    };
+    // Wait for refs to be populated
+    const timer = setTimeout(() => {
+      const container = scrollContainerRef.current;
+      if (!container) return;
 
-    const observer = new IntersectionObserver((entries) => {
-      // Find the entry that is most visible in the viewport
-      let bestEntry: IntersectionObserverEntry | null = null;
-      let bestScore = -1;
+      const observerCallback = (entries: IntersectionObserverEntry[]) => {
+        // Skip if we're programmatically scrolling
+        if (isScrollingToPhaseRef.current) return;
 
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          // Score based on intersection ratio and position
-          const rect = entry.boundingClientRect;
-          const containerRect = scrollContainerRef.current?.getBoundingClientRect();
-          if (containerRect) {
-            // Prefer elements closer to the top of the visible area
-            const distanceFromTop = Math.abs(rect.top - containerRect.top - 100);
-            const score = entry.intersectionRatio * 1000 - distanceFromTop;
-            if (score > bestScore) {
-              bestScore = score;
-              bestEntry = entry;
+        // Find the most visible section
+        let topEntry: IntersectionObserverEntry | null = null;
+        let topPosition = Infinity;
+
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const rect = entry.boundingClientRect;
+            // Find the entry closest to the top of the viewport
+            if (rect.top < topPosition && rect.top >= -rect.height / 2) {
+              topPosition = rect.top;
+              topEntry = entry;
             }
           }
+        });
+
+        if (topEntry) {
+          const phaseId = topEntry.target.getAttribute('data-phase-id');
+          if (phaseId && phaseId !== activePhaseId) {
+            setActivePhaseId(phaseId);
+            centerHorizontalButton(phaseId, true);
+          }
         }
+      };
+
+      const observer = new IntersectionObserver(observerCallback, {
+        root: container,
+        rootMargin: '-10% 0px -70% 0px',
+        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5]
       });
 
-      if (bestEntry) {
-        const phaseId = (bestEntry as IntersectionObserverEntry).target.getAttribute('data-phase-id');
-        if (phaseId && phaseId !== activePhaseId) {
-          setActivePhaseId(phaseId);
-          // Center the button smoothly
-          centerButton(phaseId, true);
-        }
-      }
-    }, observerOptions);
+      // Observe all phase sections
+      phaseSectionsRef.current.forEach((el) => {
+        observer.observe(el);
+      });
 
-    // Observe all phase sections using refs
-    phaseRefs.current.forEach((el) => {
-      if (el) observer.observe(el);
-    });
+      return () => observer.disconnect();
+    }, 200);
 
-    return () => observer.disconnect();
-  }, [videos, activePhaseId, centerButton]);
+    return () => clearTimeout(timer);
+  }, [videos, activePhaseId, centerHorizontalButton]);
 
+  // Scroll to section when clicking on navigation button
+  const scrollToPhase = useCallback((phaseId: string) => {
+    const section = phaseSectionsRef.current.get(phaseId);
+    const container = scrollContainerRef.current;
 
-  // Scroll to section when clicking on navigation
-  const scrollToPhase = (phaseId: string) => {
-    const element = document.querySelector(`[data-phase-id="${phaseId}"]`);
-    if (element && scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      const elementTop = (element as HTMLElement).offsetTop;
-      const containerTop = container.scrollTop;
-      const offset = 20; // Small offset from top
-      
+    if (section && container) {
+      // Mark that we're programmatically scrolling
+      isScrollingToPhaseRef.current = true;
+
+      // Update active phase immediately for responsive feel
+      setActivePhaseId(phaseId);
+      centerHorizontalButton(phaseId, true);
+
+      // Calculate scroll position
+      const sectionTop = section.offsetTop;
+
       container.scrollTo({
-        top: containerTop + elementTop - offset,
+        top: sectionTop - 20,
         behavior: 'smooth'
       });
+
+      // Reset flag after scroll completes
+      setTimeout(() => {
+        isScrollingToPhaseRef.current = false;
+      }, 500);
     }
-  };
+  }, [centerHorizontalButton]);
 
   // Loading state
   if (isLoading) {
@@ -410,7 +426,7 @@ export default function DashboardPage() {
                 key={phaseId}
                 data-phase-id={phaseId}
                 ref={(el) => {
-                  if (el) phaseRefs.current.set(phaseId, el);
+                  if (el) phaseSectionsRef.current.set(phaseId, el);
                 }}
               >
                 {/* Phase Divider and Title */}
