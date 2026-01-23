@@ -114,9 +114,14 @@ export default function Sidebar() {
               />
             </>
           ) : (
-            <div className="w-10 h-10 bg-[#1472FF] rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-lg">i</span>
-            </div>
+            <Image
+              src="/favicon.png"
+              alt="Itera"
+              width={40}
+              height={40}
+              className="w-10 h-10 rounded-xl"
+              priority
+            />
           )}
         </Link>
         
@@ -170,11 +175,17 @@ export default function Sidebar() {
       <div className="p-3 border-t-2 border-gray-200 dark:border-gray-700 space-y-2">
         {/* Upgrade Button */}
         <button
-          className={`w-full rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 ${
+          className={`w-full rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center justify-center gap-2 ${
             isExpanded ? 'px-4 py-3' : 'px-3 py-3'
           }`}
         >
-          {isExpanded ? 'Mejorar Plan' : '⭐'}
+          {isExpanded ? (
+            'Mejorar Plan'
+          ) : (
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+          )}
         </button>
 
         {/* Profile */}

@@ -248,21 +248,21 @@ export default function DashboardPage() {
                 onClick={() => {
                   router.push(`/dashboard/salon?video=${video.order}`);
                 }}
-                className={`flex-shrink-0 w-[280px] snap-center rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer ${
+                className={`flex-shrink-0 w-[280px] h-[280px] snap-center rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer flex flex-col border-2 ${
                   index === selectedVideoIndex ? 'scale-105 z-10' : 'scale-95 opacity-70'
                 } ${
                   video.isCurrent
-                    ? 'ring-2 ring-[#1472FF]'
+                    ? 'border-[#1472FF] shadow-lg shadow-[#1472FF]/20'
                     : video.isCompleted
-                    ? 'ring-2 ring-green-400'
-                    : 'ring-2 ring-gray-200 dark:ring-gray-700'
+                    ? 'border-green-400 shadow-lg shadow-green-400/20'
+                    : 'border-gray-200 dark:border-gray-700'
                 }`}
               >
-                {/* Video Thumbnail Placeholder - Now white/light */}
-                <div className="h-36 bg-gray-100 dark:bg-gray-800 flex items-center justify-center relative">
+                {/* Video Thumbnail Placeholder */}
+                <div className="h-[140px] bg-gray-100 dark:bg-gray-800 flex items-center justify-center relative flex-shrink-0">
                   {video.isCompleted ? (
                     <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                     </svg>
                   ) : video.isCurrent ? (
                     <svg className="w-12 h-12 text-[#1472FF]" fill="currentColor" viewBox="0 0 24 24">
@@ -280,24 +280,16 @@ export default function DashboardPage() {
                   </span>
                 </div>
                 
-                {/* Video Info - Now colored based on status with 3D effect */}
-                <div className={`p-4 pb-5 relative ${
+                {/* Video Info - Colored based on status */}
+                <div className={`flex-1 p-4 flex flex-col ${
                   video.isCurrent
                     ? 'bg-[#1472FF]'
                     : video.isCompleted
                     ? 'bg-green-500'
                     : 'bg-white dark:bg-gray-900'
                 }`}>
-                  {/* 3D bottom shadow */}
-                  <div className={`absolute bottom-0 left-0 right-0 h-1 ${
-                    video.isCurrent
-                      ? 'bg-[#0E5FCC]'
-                      : video.isCompleted
-                      ? 'bg-green-600'
-                      : 'bg-gray-200 dark:bg-gray-700'
-                  }`} />
                   {/* Status badge */}
-                  <span className={`inline-block px-2 py-0.5 rounded-lg text-xs font-bold uppercase tracking-wide mb-2 ${
+                  <span className={`inline-block self-start px-2 py-0.5 rounded-lg text-xs font-bold uppercase tracking-wide mb-2 ${
                     video.isCurrent
                       ? 'bg-white/20 text-white'
                       : video.isCompleted
