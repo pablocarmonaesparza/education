@@ -128,66 +128,63 @@ export default function NewHeroSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="max-w-xl mx-auto"
         >
-          <div className="max-w-xl mx-auto">
-            {/* Textarea wrapper with counter and depth effect */}
-            <div
-              className="rounded-2xl"
-              style={{
-                boxShadow: validationError || idea.length > MAX_CHARACTERS
-                  ? '0 4px 0 0 #fca5a5'
-                  : isDark ? '0 4px 0 0 #1e4976' : '0 4px 0 0 #d1d5db'
-              }}
-            >
-              <div className={`relative w-full textarea-dark-bg rounded-2xl border-2 transition-all duration-300 ${
-                    validationError || idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "textarea-dark-border focus-within:border-[#1472FF]"
-                  }`}>
-                <textarea
-                ref={textareaRef}
-                id="project-idea"
-                value={idea}
-                onChange={handleIdeaChange}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-                placeholder="Describe tu idea y haremos un curso personalizado para ti."
-                className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 py-3"
-                rows={2}
-              />
+          {/* Textarea wrapper with counter and depth effect */}
+          <div
+            className="rounded-2xl"
+            style={{
+              boxShadow: validationError || idea.length > MAX_CHARACTERS
+                ? '0 4px 0 0 #fca5a5'
+                : isDark ? '0 4px 0 0 #1e4976' : '0 4px 0 0 #d1d5db'
+            }}
+          >
+            <div className={`relative w-full textarea-dark-bg rounded-2xl border-2 transition-all duration-300 ${
+                  validationError || idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "textarea-dark-border focus-within:border-[#1472FF]"
+                }`}>
+              <textarea
+              ref={textareaRef}
+              id="project-idea"
+              value={idea}
+              onChange={handleIdeaChange}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              placeholder="Describe tu idea y haremos un curso personalizado para ti."
+              className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 py-3"
+              rows={2}
+            />
 
-                {/* Character count */}
-                <div className="px-4 pb-2 flex justify-end">
-                  <p className={`text-xs font-medium ${
-                    idea.length >= MIN_CHARACTERS ? "text-green-500" : "text-gray-500 dark:text-gray-400"
-                  }`}>
-                    {idea.length}/{MIN_CHARACTERS}
-                  </p>
-                </div>
+              {/* Character count */}
+              <div className="px-4 pb-2 flex justify-end">
+                <p className={`text-xs font-medium ${
+                  idea.length >= MIN_CHARACTERS ? "text-green-500" : "text-gray-500 dark:text-gray-400"
+                }`}>
+                  {idea.length}/{MIN_CHARACTERS}
+                </p>
               </div>
             </div>
-
-            {/* Validation Error - Centered */}
-            {(validationError || idea.length > MAX_CHARACTERS) && (
-              <div className="flex justify-center mt-4">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-full">
-                  <svg className="w-4 h-4 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <p className="text-xs text-red-700 dark:text-red-400 font-medium">
-                    {idea.length > MAX_CHARACTERS
-                      ? `Has excedido el límite de ${MAX_CHARACTERS} caracteres.`
-                      : validationError}
-                  </p>
-                </div>
-              </div>
-            )}
-
           </div>
+
+          {/* Validation Error - Centered */}
+          {(validationError || idea.length > MAX_CHARACTERS) && (
+            <div className="flex justify-center mt-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-full">
+                <svg className="w-4 h-4 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-xs text-red-700 dark:text-red-400 font-medium">
+                  {idea.length > MAX_CHARACTERS
+                    ? `Has excedido el límite de ${MAX_CHARACTERS} caracteres.`
+                    : validationError}
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* CTA Button */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-8 text-center"
+            className="mt-8 flex justify-center"
           >
             <button
               onClick={handleGenerateCourse}
