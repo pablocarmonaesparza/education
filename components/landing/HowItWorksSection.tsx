@@ -145,12 +145,12 @@ export default function HowItWorksSection() {
               style={{ scrollSnapAlign: 'center' }}
             >
               {/* Title */}
-              <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 text-center tracking-tight dark:drop-shadow-sm">
+              <h3 className="text-3xl md:text-4xl font-extrabold text-[#1472FF] mb-4 text-center tracking-tight">
                 {step.title.toLowerCase()}
               </h3>
 
               {/* Description */}
-              <p className="text-base text-[#777777] dark:text-white/80 leading-relaxed text-center max-w-sm mb-8">
+              <p className="text-base text-[#4b4b4b] dark:text-gray-300 leading-relaxed text-center max-w-sm mb-8">
                 {step.description}
               </p>
 
@@ -209,7 +209,7 @@ export default function HowItWorksSection() {
               viewport={{ once: true }}
               className="text-center mb-10 md:mb-14"
             >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white leading-tight tracking-tight dark:drop-shadow-sm">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1472FF] leading-tight tracking-tight">
                 cómo funciona
               </h2>
             </motion.div>
@@ -223,15 +223,15 @@ export default function HowItWorksSection() {
                     <div key={i} className="space-y-4">
                       <h3 className={`text-2xl md:text-3xl font-extrabold transition-colors duration-500 tracking-tight ${
                         activeIndex === i
-                          ? "text-[#4b4b4b] dark:text-white dark:drop-shadow-sm"
-                          : "text-[#4b4b4b]/40 dark:text-white/40"
+                          ? "text-[#1472FF]"
+                          : "text-[#1472FF]/30 dark:text-[#1472FF]/40"
                       }`}>
                         {s.title}
                       </h3>
                       <p className={`text-base md:text-lg leading-relaxed transition-colors duration-500 ${
                         activeIndex === i
-                          ? "text-[#777777] dark:text-white/80"
-                          : "text-[#777777]/30 dark:text-white/30"
+                          ? "text-[#4b4b4b] dark:text-gray-300"
+                          : "text-[#4b4b4b]/30 dark:text-gray-500/50"
                       }`}>
                         {s.description}
                       </p>
