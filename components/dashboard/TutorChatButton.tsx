@@ -136,21 +136,16 @@ export default function TutorChatButton() {
               className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all shadow-sm"
             />
           </div>
-          <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              disabled={!input.trim() || isLoading}
-              className="px-4 py-2 bg-[#1472FF] text-white rounded-lg hover:bg-[#1265e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium flex items-center gap-2"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-              </svg>
-              Enviar
-            </button>
-            <p className="text-xs text-gray-400 dark:text-gray-500">
-              Presiona Enter para enviar
-            </p>
-          </div>
+          <button
+            type="submit"
+            disabled={!input.trim() || isLoading}
+            className="w-full px-4 py-3 bg-[#1472FF] text-white rounded-xl hover:bg-[#1265e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium flex items-center justify-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+            Enviar
+          </button>
         </form>
       </div>
     </aside>
