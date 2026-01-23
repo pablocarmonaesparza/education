@@ -438,7 +438,7 @@ export default function DashboardPage() {
                 {/* Phase Divider and Title */}
                 {phaseIndex > 0 ? (
                   <div className="mb-6">
-                    <div className="h-px bg-gray-200 dark:bg-gray-700 mb-4" />
+                    <div className="h-2 bg-gray-200 dark:bg-gray-700 mb-4 rounded-full" />
                     <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
                       {phaseData.phaseName}
                     </h2>
