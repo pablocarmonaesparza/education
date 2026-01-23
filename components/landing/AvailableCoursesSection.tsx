@@ -205,7 +205,7 @@ export default function AvailableCoursesSection() {
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 md:mb-8 leading-tight tracking-tight">
               posibilidades infinitas
             </h2>
-            <p className="text-lg md:text-xl text-white max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
               con nuestros más de 1,000 videos, generamos cursos personalizados para cualquier proyecto de IA y automatización
             </p>
           </div>

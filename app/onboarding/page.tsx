@@ -91,10 +91,10 @@ export default function OnboardingPage() {
               transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
               className="text-center mb-12"
             >
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                {steps[currentStep].title}
+              <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">
+                {steps[currentStep].title.toLowerCase()}
               </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-400 max-w-lg mx-auto leading-relaxed">
+              <p className="text-lg text-[#777777] dark:text-gray-400 max-w-lg mx-auto leading-relaxed">
                 {steps[currentStep].description}
               </p>
             </motion.div>
@@ -106,27 +106,25 @@ export default function OnboardingPage() {
             {currentStep > 0 && (
               <motion.button
                 onClick={() => setCurrentStep(currentStep - 1)}
-                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-6 py-3 rounded-full font-semibold text-sm border-2 border-[#1472FF] text-[#1472FF] bg-transparent hover:bg-blue-50 dark:hover:bg-blue-950 transition-all duration-300 flex items-center gap-2"
+                className="px-6 py-4 rounded-2xl font-bold text-sm uppercase tracking-wide border-2 border-b-4 border-[#1472FF] text-[#1472FF] bg-white dark:bg-gray-800 hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10 active:border-b-2 active:mt-[2px] transition-all duration-150 flex items-center gap-2"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
                 </svg>
-                Anterior
+                ANTERIOR
               </motion.button>
             )}
 
             {/* Next/Start Button */}
             <motion.button
               onClick={handleNext}
-              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="px-6 py-3 rounded-full font-semibold text-sm text-white bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all duration-300 flex items-center gap-2"
+              className="px-6 py-4 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
             >
-              {isLastStep ? 'Comenzar' : 'Siguiente'}
+              {isLastStep ? 'COMENZAR' : 'SIGUIENTE'}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </motion.button>
           </div>
@@ -137,10 +135,10 @@ export default function OnboardingPage() {
               <button
                 key={index}
                 onClick={() => setCurrentStep(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                className={`h-3 rounded-full transition-all duration-300 ${
                   index === currentStep
-                    ? 'w-8 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF]'
-                    : 'bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600'
+                    ? 'w-10 bg-[#1472FF]'
+                    : 'w-3 bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600'
                 }`}
               />
             ))}

@@ -49,23 +49,23 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`fixed left-0 top-16 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 flex flex-col z-40 transition-all duration-300 ${
+      className={`fixed left-0 top-20 h-[calc(100vh-5rem)] bg-white dark:bg-gray-900 border-r-2 border-gray-200 dark:border-gray-700 flex flex-col z-40 transition-all duration-300 ${
         isExpanded ? 'w-64' : 'w-20'
       }`}
     >
       {/* Toggle Button */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="absolute -right-3 top-4 w-6 h-6 bg-white border border-gray-200 rounded-full flex items-center justify-center shadow-sm hover:shadow-md transition-shadow z-50"
+        className="absolute -right-3 top-4 w-7 h-7 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-full flex items-center justify-center shadow-md hover:shadow-lg transition-all duration-150 z-50"
         aria-label={isExpanded ? 'Contraer sidebar' : 'Expandir sidebar'}
       >
         <svg
-          className={`w-4 h-4 text-gray-600 transition-transform ${isExpanded ? '' : 'rotate-180'}`}
+          className={`w-4 h-4 text-[#4b4b4b] dark:text-gray-300 transition-transform ${isExpanded ? '' : 'rotate-180'}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
@@ -78,19 +78,19 @@ export default function Sidebar() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`flex items-center rounded-lg transition-colors ${
+                  className={`flex items-center rounded-2xl transition-all duration-150 ${
                     isExpanded ? 'gap-3 px-4 py-3' : 'justify-center px-3 py-3'
                   } ${
                     isActive
-                      ? 'bg-[#1472FF] text-white'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC]'
+                      : 'text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                   }`}
                   title={!isExpanded ? item.name : undefined}
                 >
                   <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
                     {item.icon}
                   </span>
-                  {isExpanded && <span className="font-medium whitespace-nowrap">{item.name}</span>}
+                  {isExpanded && <span className="font-bold whitespace-nowrap">{item.name}</span>}
                 </Link>
               </li>
             );
@@ -99,12 +99,12 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer - Danos tu opinión */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t-2 border-gray-200 dark:border-gray-700">
         <Link
           href="#"
-          className={`flex items-center rounded-lg transition-colors ${
+          className={`flex items-center rounded-2xl transition-all duration-150 ${
             isExpanded ? 'gap-3 px-4 py-3' : 'justify-center px-3 py-3'
-          } text-gray-700 hover:bg-gray-100`}
+          } text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800`}
           title={!isExpanded ? 'Danos tu opinión' : undefined}
         >
           <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
@@ -112,7 +112,7 @@ export default function Sidebar() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
             </svg>
           </span>
-          {isExpanded && <span className="font-medium whitespace-nowrap">Danos tu opinión</span>}
+          {isExpanded && <span className="font-bold whitespace-nowrap">Danos tu opinión</span>}
         </Link>
       </div>
     </aside>

@@ -21,7 +21,7 @@ export default function MercadoPagoSuccessPage() {
             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <h1 className="text-4xl font-bold mb-4">¡Pago con Mercado Pago Exitoso!</h1>
+        <h1 className="text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">pago exitoso</h1>
         <p className="text-lg text-gray-700 mb-8">
           Tu compra se ha completado con éxito a través de Mercado Pago. ¡Gracias!
         </p>

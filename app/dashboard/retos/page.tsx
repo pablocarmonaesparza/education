@@ -198,7 +198,7 @@ export default function RetosPage() {
       <div className="min-h-full bg-transparent">
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Retos</h1>
+            <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">retos</h1>
             <p className="mt-2 text-gray-500 dark:text-gray-400">Practica lo que aprendes</p>
           </div>
 

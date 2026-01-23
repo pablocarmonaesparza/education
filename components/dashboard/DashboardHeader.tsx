@@ -84,12 +84,12 @@ export default function DashboardHeader() {
   const userDisplayName = userProfile?.name || userProfile?.email?.split('@')[0] || 'Usuario';
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 z-30 flex items-center justify-between px-6">
+    <header className="fixed top-0 left-0 right-0 h-20 bg-white dark:bg-gray-900 border-b-2 border-gray-200 dark:border-gray-700 z-30 flex items-center justify-between px-4">
       {/* Logo */}
       <Link href="/dashboard" className="flex items-center gap-2">
         {isDark ? (
           <Image
-            src="/images/itera-logo-light.png"
+            src="/images/itera-logo-dark.png"
             alt="Itera"
             width={120}
             height={40}
@@ -98,7 +98,7 @@ export default function DashboardHeader() {
           />
         ) : (
           <Image
-            src="/images/itera-logo-dark.png"
+            src="/images/itera-logo-light.png"
             alt="Itera"
             width={120}
             height={40}
@@ -128,7 +128,7 @@ export default function DashboardHeader() {
                 className="fixed inset-0 z-10" 
                 onClick={() => setShowSettingsMenu(false)}
               />
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20">
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-gray-200 dark:border-gray-700 py-2 z-20">
                 <button
                   onClick={() => {
                     setShowSettingsMenu(false);
@@ -179,10 +179,10 @@ export default function DashboardHeader() {
                 className="fixed inset-0 z-10" 
                 onClick={() => setShowProfileMenu(false)}
               />
-              <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20">
-                <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{userDisplayName}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{userProfile?.email}</p>
+              <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 rounded-2xl shadow-lg border-2 border-gray-200 dark:border-gray-700 py-2 z-20">
+                <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-700">
+                  <p className="text-sm font-bold text-[#4b4b4b] dark:text-gray-100">{userDisplayName}</p>
+                  <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{userProfile?.email}</p>
                 </div>
                 <button
                   onClick={() => {

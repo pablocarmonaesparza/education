@@ -92,18 +92,26 @@ export default function DashboardNavbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/60 dark:bg-gray-950/60">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-950 border-b-2 border-gray-200 dark:border-gray-700">
         <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center h-16 md:h-20 relative">
+          <div className="flex justify-between items-center h-20 relative">
             
             {/* Logo - Left */}
             <Link href="/dashboard" className="flex items-center">
+              <Image
+                src="/images/itera-logo-light.png"
+                alt="Itera"
+                width={120}
+                height={40}
+                className="h-8 w-auto dark:hidden"
+                priority
+              />
               <Image
                 src="/images/itera-logo-dark.png"
                 alt="Itera"
                 width={120}
                 height={40}
-                className="h-7 md:h-8 w-auto"
+                className="h-8 w-auto hidden dark:block"
                 priority
               />
             </Link>
@@ -145,20 +153,9 @@ export default function DashboardNavbar() {
             <div className="hidden md:flex items-center gap-3">
               {/* Upgrade Plan */}
               <button 
-                className="px-4 py-2 rounded-full text-sm font-bold hover:opacity-90 transition-all relative bg-transparent"
+                className="px-5 py-2.5 rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150"
               >
-                <span 
-                  className="absolute inset-0 rounded-full z-0"
-                  style={{
-                    background: '#1472FF',
-                  }}
-                />
-                <span 
-                  className="absolute inset-[2px] rounded-full bg-white dark:bg-gray-900 z-[1]"
-                />
-                <span className="relative z-[2] bg-[#1472FF] bg-clip-text text-transparent">
-                  Mejorar Plan
-                </span>
+                Mejorar Plan
               </button>
               
               {/* Profile button */}
@@ -187,27 +184,27 @@ export default function DashboardNavbar() {
                     className="fixed inset-0 z-10" 
                     onClick={() => setShowProfileMenu(false)} 
                   />
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 py-1 z-20">
-                    <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{userName || 'Usuario'}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.profile?.email}</p>
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700 py-2 z-20 shadow-lg">
+                    <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-700">
+                      <p className="text-sm font-bold text-[#4b4b4b] dark:text-white truncate">{userName || 'Usuario'}</p>
+                      <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{user?.profile?.email}</p>
                     </div>
                     <Link
                       href="/dashboard/perfil"
                       onClick={() => setShowProfileMenu(false)}
-                      className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
+                      className="w-full text-left px-4 py-2.5 text-sm font-medium text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                       Mi Perfil
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
+                      className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                       </svg>
                       Cerrar sesión
                     </button>
@@ -264,27 +261,27 @@ export default function DashboardNavbar() {
 
         {/* Mobile Profile Dropdown */}
         {showProfileMenu && (
-          <div className="md:hidden absolute right-4 top-16 w-48 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 py-1 z-50 shadow-lg">
-            <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-              <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{userName || 'Usuario'}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.profile?.email}</p>
+          <div className="md:hidden absolute right-4 top-20 w-48 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700 py-2 z-50 shadow-lg">
+            <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-700">
+              <p className="text-sm font-bold text-[#4b4b4b] dark:text-white truncate">{userName || 'Usuario'}</p>
+              <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{user?.profile?.email}</p>
             </div>
             <Link
               href="/dashboard/perfil"
               onClick={() => setShowProfileMenu(false)}
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
+              className="w-full text-left px-4 py-2.5 text-sm font-medium text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               Mi Perfil
             </Link>
             <button
               onClick={handleLogout}
-              className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
+              className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
               </svg>
               Cerrar sesión
             </button>
@@ -295,13 +292,13 @@ export default function DashboardNavbar() {
       {/* Mobile Menu Overlay */}
       {showMobileMenu && (
         <div 
-          className="fixed inset-0 bg-black/20 dark:bg-black/40 z-40 md:hidden"
+          className="fixed inset-0 top-20 bg-black/20 dark:bg-black/40 z-30 md:hidden"
           onClick={() => setShowMobileMenu(false)}
         />
       )}
 
       {/* Mobile Menu Drawer */}
-      <div className={`fixed top-16 left-0 right-0 bg-white dark:bg-gray-950 z-40 md:hidden transform transition-transform duration-300 ease-out ${
+      <div className={`fixed top-20 left-0 right-0 bg-white dark:bg-gray-950 border-b-2 border-gray-200 dark:border-gray-700 z-40 md:hidden transform transition-transform duration-300 ease-out ${
         showMobileMenu ? 'translate-y-0' : '-translate-y-full'
       }`}>
         <div className="container mx-auto px-4 py-4">
@@ -314,32 +311,26 @@ export default function DashboardNavbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setShowMobileMenu(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-150 ${
                     isActive
-                      ? 'bg-[#1472FF]/10 text-[#1472FF]'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900'
+                      ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC]'
+                      : 'text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900'
                   }`}
                 >
                   {link.icon}
-                  <span className="font-medium">{link.label}</span>
-                  {isActive && (
-                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
-                  )}
+                  <span className="font-bold">{link.label}</span>
                 </Link>
               );
             })}
           </div>
 
           {/* Divider */}
-          <div className="my-4 h-px bg-gray-200 dark:bg-gray-800" />
+          <div className="my-4 h-0.5 bg-gray-200 dark:bg-gray-800" />
 
           {/* Upgrade Plan Button (Mobile) */}
           <button 
-            className="w-full px-4 py-3 rounded-xl text-sm font-semibold text-white bg-[#1472FF] hover:opacity-90 transition-all flex items-center justify-center gap-2"
+            className="w-full px-4 py-3 rounded-2xl font-bold uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center justify-center gap-2"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-            </svg>
             Mejorar Plan
           </button>
         </div>

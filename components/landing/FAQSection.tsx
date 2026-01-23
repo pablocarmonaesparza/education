@@ -38,10 +38,10 @@ export default function FAQSection() {
         <div className="w-full max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-10 md:mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 leading-tight tracking-tight">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white mb-6 leading-tight tracking-tight">
               preguntas frecuentes
             </h2>
-            <p className="text-lg md:text-xl text-white max-w-xl mx-auto">
+            <p className="text-lg md:text-xl text-[#777777] dark:text-gray-400 max-w-xl mx-auto">
               encuentra respuestas a tus dudas más comunes
             </p>
           </div>

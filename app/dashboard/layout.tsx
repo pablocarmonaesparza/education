@@ -10,7 +10,7 @@ export default function DashboardLayout({
     <div className="h-screen bg-white dark:bg-gray-950">
       <DashboardNavbar />
       <main className="h-screen overflow-x-hidden overflow-y-auto overscroll-none bg-white dark:bg-gray-950">
-        <div className="pt-16 md:pt-20 pb-24 min-h-full">
+        <div className="pt-20 pb-24 min-h-full">
           {children}
         </div>
       </main>

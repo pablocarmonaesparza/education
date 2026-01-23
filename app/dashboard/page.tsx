@@ -209,13 +209,13 @@ export default function DashboardPage() {
       <div className="flex-1 flex flex-col items-center justify-center">
         {/* Greeting */}
         {userName && (
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white text-center px-4">
-            {greeting}, {userName}
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white text-center px-4 tracking-tight">
+            {greeting.toLowerCase()}, {userName.toLowerCase()}
           </h1>
         )}
         
         {/* Project - Show user's project idea */}
-        <p className="mt-4 text-lg text-gray-500 dark:text-gray-400 text-center px-4 max-w-2xl">
+        <p className="mt-4 text-lg text-[#777777] dark:text-gray-400 text-center px-4 max-w-2xl">
           {project ? (
             <>
               <span className="text-gray-400 dark:text-gray-500">Tu proyecto: </span>

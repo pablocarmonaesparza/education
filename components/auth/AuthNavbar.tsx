@@ -30,13 +30,13 @@ export default function AuthNavbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             {isDark ? (
               <Image
-                src="/images/itera-logo-light.png"
+                src="/images/itera-logo-dark.png"
                 alt="Itera"
                 width={120}
                 height={40}
@@ -45,7 +45,7 @@ export default function AuthNavbar() {
               />
             ) : (
               <Image
-                src="/images/itera-logo-dark.png"
+                src="/images/itera-logo-light.png"
                 alt="Itera"
                 width={120}
                 height={40}
@@ -59,16 +59,22 @@ export default function AuthNavbar() {
           {isSignupPage ? (
             <Link
               href="/auth/login"
-              className="px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 bg-[#1472FF] text-white hover:bg-[#0E5FCC]"
+              className="px-7 py-3 rounded-2xl font-bold uppercase tracking-wide bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 inline-flex items-center gap-2"
             >
               Iniciar Sesión
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
             </Link>
           ) : (
             <Link
               href="/auth/signup"
-              className="px-6 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 active:scale-95 bg-[#1472FF] text-white hover:bg-[#0E5FCC]"
+              className="px-7 py-3 rounded-2xl font-bold uppercase tracking-wide bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 inline-flex items-center gap-2"
             >
-              Regístrate
+              Comenzar
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
             </Link>
           )}
         </div>

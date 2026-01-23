@@ -78,24 +78,24 @@ export default function DashboardContent(props: DashboardContentProps) {
   const projectTitle = getProjectTitle(props.userProject);
 
   return (
-    <div className="min-h-screen bg-gray-50/30 p-4 sm:p-6 lg:p-8 font-sans text-gray-900">
+    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-950 p-4 sm:p-6 lg:p-8 font-sans text-gray-900 dark:text-white">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Section - Welcome & Context */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              ¡Hola, {props.userName.split(' ')[0]}! 👋
+            <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
+              hola, {props.userName.split(' ')[0].toLowerCase()}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-[#777777] dark:text-gray-400">
               {props.streak && props.streak > 0 
                 ? `¡Estás en una racha de ${props.streak} días! Sigue así.` 
                 : 'Listo para continuar tu aprendizaje hoy?'}
             </p>
           </div>
           <div className="text-right hidden md:block">
-            <p className="text-sm text-gray-500 font-medium uppercase tracking-wider mb-1">Tu Proyecto</p>
-            <p className="text-gray-900 font-semibold text-lg text-[#1472FF]">
+            <p className="text-sm text-[#777777] dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Tu Proyecto</p>
+            <p className="font-extrabold text-lg text-[#1472FF]">
               {projectTitle}
             </p>
           </div>
@@ -107,25 +107,25 @@ export default function DashboardContent(props: DashboardContentProps) {
           <div className="lg:col-span-2 space-y-8">
             
             {/* Hero Card - Continue Learning */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border-2 border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow">
               <div className="p-6 sm:p-8">
                 <div className="flex items-start justify-between mb-6">
                   <div>
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#1472FF]/10 text-[#1472FF] mb-3">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#1472FF]/10 text-[#1472FF] mb-3">
                       Continuar donde lo dejaste
                     </span>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    <h2 className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
                       {currentVideoData?.description || 'Siguiente lección'}
                     </h2>
-                    <p className="text-gray-600">
+                    <p className="text-[#777777] dark:text-gray-400">
                       {currentPhaseData?.phase_name ? `Fase ${props.currentPhase}: ${currentPhaseData.phase_name}` : 'Cargando ruta...'}
                     </p>
                   </div>
                 </div>
 
-                <div className="bg-gray-50 rounded-xl p-4 sm:p-6 mb-6 border border-gray-100 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-4 sm:p-6 mb-6 border-2 border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
                    {/* Video Thumbnail Placeholder */}
-                  <div className="w-full sm:w-48 h-28 bg-[#1472FF]/10 rounded-lg flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
+                  <div className="w-full sm:w-48 h-28 bg-[#1472FF]/10 rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
                     <div className="absolute inset-0 bg-black/5 group-hover:bg-black/10 transition-colors" />
                     <svg className="w-12 h-12 text-[#1472FF] opacity-80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M8 5v14l11-7z" />
@@ -133,13 +133,13 @@ export default function DashboardContent(props: DashboardContentProps) {
                   </div>
                   
                   <div className="flex-1">
-                    <h3 className="font-medium text-gray-900 mb-2 line-clamp-1">
+                    <h3 className="font-bold text-[#4b4b4b] dark:text-white mb-2 line-clamp-1">
                       {currentVideoData?.section || 'Lección actual'}
                     </h3>
-                    <p className="text-sm text-gray-500 mb-4 line-clamp-2">
+                    <p className="text-sm text-[#777777] dark:text-gray-400 mb-4 line-clamp-2">
                       {currentVideoData?.why_relevant || 'Aprende los conceptos clave para avanzar en tu proyecto.'}
                     </p>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <div className="flex items-center gap-4 text-sm text-[#777777] dark:text-gray-400 font-medium">
                        <span className="flex items-center gap-1">
                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                          {currentVideoData?.duration || '5 min'}
@@ -153,21 +153,16 @@ export default function DashboardContent(props: DashboardContentProps) {
                 <div className="flex flex-wrap gap-4">
                   <Link
                     href={`/dashboard/my-path/video/${props.currentPhase || 1}/${props.currentVideo || 1}`}
-                    className="flex-1 sm:flex-none inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-[#1472FF] hover:bg-[#0E5FCC] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1472FF] transition-all"
+                    className="flex-1 sm:flex-none inline-flex justify-center items-center px-6 py-4 rounded-2xl text-base font-bold uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150"
                   >
                     <svg className="mr-2 -ml-1 w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-                    Reproducir Video
+                    REPRODUCIR VIDEO
                   </Link>
                   <Link
                     href="/dashboard/my-path"
-                    className="flex-1 sm:flex-none inline-flex justify-center items-center px-6 py-3 rounded-lg text-base font-medium relative group bg-white"
+                    className="flex-1 sm:flex-none inline-flex justify-center items-center px-6 py-4 rounded-2xl text-base font-bold uppercase tracking-wide text-[#1472FF] bg-white dark:bg-gray-800 border-2 border-b-4 border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10 active:border-b-2 active:mt-[2px] transition-all duration-150"
                   >
-                    <span className="absolute inset-0 rounded-lg p-[1px] bg-[#1472FF] opacity-100">
-                      <div className="h-full w-full bg-white rounded-lg" />
-                    </span>
-                    <span className="relative text-[#1472FF] group-hover:opacity-80 transition-opacity">
-                      Ver Ruta Completa
-                    </span>
+                    VER RUTA COMPLETA
                   </Link>
                 </div>
               </div>
@@ -176,10 +171,10 @@ export default function DashboardContent(props: DashboardContentProps) {
             {/* Skills & Tools Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Skills Card */}
-              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border-2 border-gray-200 dark:border-gray-700 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
                   <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                  <h3 className="font-semibold text-gray-900">Habilidades en Desarrollo</h3>
+                  <h3 className="font-bold text-[#4b4b4b] dark:text-white">Habilidades en Desarrollo</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {props.skills && props.skills.length > 0 ? (
@@ -195,10 +190,10 @@ export default function DashboardContent(props: DashboardContentProps) {
               </div>
 
               {/* Tools Card */}
-              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border-2 border-gray-200 dark:border-gray-700 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
                   <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                  <h3 className="font-semibold text-gray-900">Stack Tecnológico</h3>
+                  <h3 className="font-bold text-[#4b4b4b] dark:text-white">Stack Tecnológico</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {props.tools && props.tools.length > 0 ? (
@@ -220,62 +215,62 @@ export default function DashboardContent(props: DashboardContentProps) {
           <div className="space-y-8">
             
             {/* Overall Progress Card */}
-            <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-6 flex items-center justify-between">
-                Tu Progreso
-                <span className="text-2xl font-bold text-transparent bg-clip-text bg-[#1472FF]">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border-2 border-gray-200 dark:border-gray-700 shadow-sm">
+              <h3 className="font-extrabold text-[#4b4b4b] dark:text-white mb-6 flex items-center justify-between tracking-tight">
+                tu progreso
+                <span className="text-2xl font-extrabold text-[#1472FF]">
                   {props.overallProgress}%
                 </span>
               </h3>
               
               <div className="relative pt-1 mb-6">
-                <div className="overflow-hidden h-3 mb-2 text-xs flex rounded-full bg-gray-100">
+                <div className="overflow-hidden h-3 mb-2 text-xs flex rounded-full bg-gray-100 dark:bg-gray-800">
                   <div 
                     style={{ width: `${props.overallProgress}%` }} 
-                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[#1472FF] transition-all duration-1000"
+                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[#1472FF] transition-all duration-1000 rounded-full"
                   />
                 </div>
-                <div className="flex justify-between text-xs text-gray-500 font-medium">
+                <div className="flex justify-between text-xs text-[#777777] dark:text-gray-400 font-medium">
                   <span>Inicio</span>
                   <span>Meta: 100%</span>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="text-sm text-gray-600">Videos completados</span>
-                  <span className="font-semibold text-gray-900">{props.completedVideos} <span className="text-gray-400 font-normal">/ {props.totalVideos}</span></span>
+                <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                  <span className="text-sm text-[#777777] dark:text-gray-400">Videos completados</span>
+                  <span className="font-bold text-[#4b4b4b] dark:text-white">{props.completedVideos} <span className="text-[#777777] dark:text-gray-400 font-normal">/ {props.totalVideos}</span></span>
                 </div>
-                <div className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span className="text-sm text-gray-600">Fases</span>
-                  <span className="font-semibold text-gray-900">{props.phasesCompleted} <span className="text-gray-400 font-normal">/ {props.totalPhases}</span></span>
+                <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                  <span className="text-sm text-[#777777] dark:text-gray-400">Fases</span>
+                  <span className="font-bold text-[#4b4b4b] dark:text-white">{props.phasesCompleted} <span className="text-[#777777] dark:text-gray-400 font-normal">/ {props.totalPhases}</span></span>
                 </div>
               </div>
             </div>
 
             {/* Activity Stats */}
-            <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-              <h3 className="font-bold text-gray-900 mb-4">Tu Actividad</h3>
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border-2 border-gray-200 dark:border-gray-700 shadow-sm">
+              <h3 className="font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">tu actividad</h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl bg-orange-50 border border-orange-100 text-center">
+                <div className="p-4 rounded-2xl bg-orange-50 dark:bg-orange-900/20 border-2 border-orange-200 dark:border-orange-800 text-center">
                   <div className="text-2xl mb-1">🔥</div>
-                  <div className="text-2xl font-bold text-gray-900">{props.streak || 0}</div>
-                  <div className="text-xs text-gray-500 uppercase font-semibold tracking-wide">Racha Días</div>
+                  <div className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white">{props.streak || 0}</div>
+                  <div className="text-xs text-[#777777] dark:text-gray-400 uppercase font-bold tracking-wide">Racha Días</div>
                 </div>
-                <div className="p-4 rounded-xl bg-green-50 border border-green-100 text-center">
+                <div className="p-4 rounded-2xl bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 text-center">
                   <div className="text-2xl mb-1">🎯</div>
-                  <div className="text-2xl font-bold text-gray-900">{props.weeklyProgress || 0}</div>
-                  <div className="text-xs text-gray-500 uppercase font-semibold tracking-wide">Videos Sem.</div>
+                  <div className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white">{props.weeklyProgress || 0}</div>
+                  <div className="text-xs text-[#777777] dark:text-gray-400 uppercase font-bold tracking-wide">Videos Sem.</div>
                 </div>
-                <div className="p-4 rounded-xl bg-[#1472FF]/10 border border-[#1472FF]/20 text-center">
+                <div className="p-4 rounded-2xl bg-[#1472FF]/10 border-2 border-[#1472FF]/30 text-center">
                   <div className="text-2xl mb-1">⭐</div>
-                  <div className="text-2xl font-bold text-gray-900">{props.level || 1}</div>
-                  <div className="text-xs text-gray-500 uppercase font-semibold tracking-wide">Nivel</div>
+                  <div className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white">{props.level || 1}</div>
+                  <div className="text-xs text-[#777777] dark:text-gray-400 uppercase font-bold tracking-wide">Nivel</div>
                 </div>
-                <div className="p-4 rounded-xl bg-[#1472FF]/10 border border-[#1472FF]/20 text-center">
+                <div className="p-4 rounded-2xl bg-[#1472FF]/10 border-2 border-[#1472FF]/30 text-center">
                   <div className="text-2xl mb-1">⚡</div>
-                  <div className="text-2xl font-bold text-gray-900">{props.currentXP || 0}</div>
-                  <div className="text-xs text-gray-500 uppercase font-semibold tracking-wide">XP Total</div>
+                  <div className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white">{props.currentXP || 0}</div>
+                  <div className="text-xs text-[#777777] dark:text-gray-400 uppercase font-bold tracking-wide">XP Total</div>
                 </div>
               </div>
             </div>

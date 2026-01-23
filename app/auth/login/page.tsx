@@ -149,36 +149,36 @@ export default function LoginPage() {
 
       <section className="min-h-screen flex items-center justify-center py-12 md:py-20 px-4 relative z-10">
         <div className="w-full max-w-md">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 md:p-10 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 md:p-10 border-2 border-gray-200 dark:border-gray-700">
             {/* Header */}
             <div className="text-center mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                Inicia Sesión
+              <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
+                inicia sesión
               </h1>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-[#777777] dark:text-gray-400">
                 Continúa tu aprendizaje en IA y automatización
               </p>
             </div>
 
             {/* Advertencia si Supabase no está configurado */}
             {!isSupabaseConfigured() && (
-              <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/30 border-2 border-yellow-300 dark:border-yellow-700 rounded-lg">
+              <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/30 border-2 border-yellow-300 dark:border-yellow-700 rounded-2xl">
                 <div className="flex items-start gap-3">
                   <svg className="w-6 h-6 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                   <div className="flex-1">
-                    <p className="text-yellow-800 dark:text-yellow-300 text-sm font-semibold mb-2">
-                      ⚠️ Base de datos no configurada
+                    <p className="text-yellow-800 dark:text-yellow-300 text-sm font-bold mb-2">
+                      Base de datos no configurada
                     </p>
                     <p className="text-yellow-700 dark:text-yellow-400 text-sm mb-3">
                       Supabase aún no está configurado. Puedes explorar la plataforma en modo demo.
                     </p>
                     <Link
                       href="/demo"
-                      className="inline-block bg-yellow-600 hover:bg-yellow-700 dark:bg-yellow-700 dark:hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+                      className="inline-block bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-2xl text-sm font-bold uppercase tracking-wide border-b-4 border-yellow-600 hover:border-yellow-700 active:border-b-0 active:mt-1 transition-all duration-150"
                     >
-                      🎯 Ver Demo del Dashboard
+                      Ver Demo
                     </Link>
                   </div>
                 </div>
@@ -187,8 +187,8 @@ export default function LoginPage() {
 
             {/* Error Message */}
             {error && (
-              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
-                <p className="text-red-600 dark:text-red-400 text-sm text-center">{error}</p>
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-800 rounded-2xl">
+                <p className="text-red-600 dark:text-red-400 text-sm text-center font-medium">{error}</p>
               </div>
             )}
 
@@ -197,7 +197,7 @@ export default function LoginPage() {
               <input
                 type="email"
                 id="email"
-                className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
+                className="w-full px-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
                 placeholder="Correo electrónico"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -207,7 +207,7 @@ export default function LoginPage() {
               <input
                 type="password"
                 id="password"
-                className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
+                className="w-full px-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
                 placeholder="Contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -217,9 +217,9 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full px-6 py-3 rounded-full font-semibold text-sm bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white shadow-md hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-4 rounded-2xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0"
               >
-                {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+                {loading ? 'Iniciando sesión...' : 'INICIAR SESIÓN'}
               </button>
             </form>
 
@@ -235,7 +235,7 @@ export default function LoginPage() {
               type="button"
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 py-3 rounded-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-2 border-b-4 border-gray-200 dark:border-gray-600 py-4 rounded-2xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path

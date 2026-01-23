@@ -388,17 +388,17 @@ ${completedVideosText}
   return (
     <div className="h-full flex bg-white dark:bg-gray-950">
       {/* Sidebar */}
-      <div className="w-72 border-r border-gray-200 dark:border-gray-800 flex flex-col">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-800">
+      <div className="w-72 border-r-2 border-gray-200 dark:border-gray-800 flex flex-col">
+        <div className="p-4 border-b-2 border-gray-200 dark:border-gray-800">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Tutor IA</h2>
+            <h2 className="text-lg font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">tutor ia</h2>
             <button
               onClick={createNewConversation}
-              className="p-2 rounded-lg bg-[#1472FF] text-white hover:bg-[#0E5FCC] transition-colors"
+              className="p-2 rounded-2xl bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150"
               title="Nueva conversación"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
               </svg>
             </button>
           </div>
@@ -550,14 +550,14 @@ ${completedVideosText}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Escribe tu pregunta..."
-              className="flex-1 resize-none border border-gray-300 dark:border-gray-700 rounded-xl px-4 py-3 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
+              className="flex-1 resize-none border-2 border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-4 bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
               rows={1}
               disabled={isSending}
             />
             <button
               onClick={sendMessage}
               disabled={!inputMessage.trim() || isSending}
-              className="p-3 bg-[#1472FF] text-white rounded-xl hover:bg-[#0E5FCC] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-4 bg-[#1472FF] text-white rounded-2xl border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

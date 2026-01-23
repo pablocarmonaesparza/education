@@ -172,7 +172,7 @@ export default function RutaPage() {
         
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Tu Ruta de Aprendizaje</h1>
+          <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">tu ruta de aprendizaje</h1>
           <p className="mt-2 text-gray-500 dark:text-gray-400">
             {completedVideos} de {totalVideos} videos completados
           </p>

@@ -27,13 +27,13 @@ export default function OnboardingNavbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
             {isDark ? (
               <Image
-                src="/images/itera-logo-light.png"
+                src="/images/itera-logo-dark.png"
                 alt="Itera"
                 width={120}
                 height={40}
@@ -42,7 +42,7 @@ export default function OnboardingNavbar() {
               />
             ) : (
               <Image
-                src="/images/itera-logo-dark.png"
+                src="/images/itera-logo-light.png"
                 alt="Itera"
                 width={120}
                 height={40}

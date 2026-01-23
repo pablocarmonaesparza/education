@@ -130,7 +130,7 @@ export default function PerfilPage() {
         
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Mi Perfil</h1>
+          <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">mi perfil</h1>
           <p className="mt-2 text-gray-500 dark:text-gray-400">Gestiona tu información personal</p>
         </div>
 

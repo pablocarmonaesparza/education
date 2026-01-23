@@ -21,7 +21,7 @@ export default function CancelPage() {
             d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <h1 className="text-4xl font-bold mb-4">¡Pago Cancelado!</h1>
+        <h1 className="text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">pago cancelado</h1>
         <p className="text-lg text-gray-700 mb-8">
           Tu proceso de pago ha sido cancelado. Puedes intentarlo de nuevo.
         </p>

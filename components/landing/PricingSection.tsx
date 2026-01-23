@@ -79,7 +79,7 @@ export default function PricingSection() {
           viewport={{ once: true }}
           className="mb-12"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center text-white leading-tight tracking-tight">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center text-[#4b4b4b] dark:text-white leading-tight tracking-tight">
             nuestros planes
           </h2>
         </motion.div>
@@ -110,7 +110,7 @@ export default function PricingSection() {
 
               {/* Title */}
               <div className="mb-3">
-                <h3 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight">{tier.name}</h3>
+                <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">{tier.name}</h3>
               </div>
 
               <p className="text-[#777777] dark:text-gray-400 text-sm mb-5">{tier.description}</p>

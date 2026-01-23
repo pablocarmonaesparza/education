@@ -175,14 +175,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
       <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-900 rounded-lg p-8">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-12 h-12 bg-[#1472FF] rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-[#1472FF] rounded-2xl flex items-center justify-center">
               <span className="text-2xl">🤖</span>
             </div>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {mode === 'login' ? 'Inicia Sesión' : 'Crea tu Cuenta'}
+          <h2 className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">
+            {mode === 'login' ? 'inicia sesión' : 'crea tu cuenta'}
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <p className="text-[#777777] dark:text-gray-400 mt-2">
             {mode === 'login'
               ? 'Continúa tu aprendizaje'
               : 'Comienza tu viaje en IA y automatización'}
@@ -238,7 +238,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder-gray-500"
+                className="w-full px-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-[#1472FF] focus:border-transparent text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder-gray-500"
                 placeholder="Tu nombre"
               />
             </div>
@@ -254,7 +254,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder-gray-500"
+              className="w-full px-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-[#1472FF] focus:border-transparent text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder-gray-500"
               placeholder="tu@email.com"
             />
           </div>
@@ -270,7 +270,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
-              className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-[#1472FF] focus:border-transparent text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder-gray-500"
+              className="w-full px-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-[#1472FF] focus:border-transparent text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder-gray-500"
               placeholder="Mínimo 6 caracteres"
             />
           </div>
@@ -278,13 +278,13 @@ export default function AuthForm({ mode }: AuthFormProps) {
           <button
             type="submit"
             disabled={loading || oauthLoading}
-            className="w-full px-6 py-3 rounded-full font-semibold text-sm bg-[#1472FF] text-white shadow-md hover:bg-[#0E5FCC] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-4 rounded-2xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0"
           >
             {loading
               ? 'Procesando...'
               : mode === 'login'
-              ? 'Iniciar Sesión'
-              : 'Crear Cuenta'}
+              ? 'INICIAR SESIÓN'
+              : 'CREAR CUENTA'}
           </button>
         </div>
 
@@ -301,7 +301,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
             type="button"
             onClick={handleGoogleLogin}
             disabled={loading || oauthLoading}
-            className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-3 rounded-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-800 border-2 border-b-4 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-4 rounded-2xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {oauthLoading ? (
               <svg className="animate-spin h-5 w-5 text-gray-700 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" suppressHydrationWarning>

@@ -21,7 +21,7 @@ export default function MercadoPagoPendingPage() {
             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <h1 className="text-4xl font-bold mb-4">¡Pago con Mercado Pago Pendiente!</h1>
+        <h1 className="text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">pago pendiente</h1>
         <p className="text-lg text-gray-700 mb-8">
           Tu pago está en proceso. Te notificaremos cuando se complete.
         </p>
