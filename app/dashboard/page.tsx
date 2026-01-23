@@ -490,7 +490,7 @@ export default function DashboardPage() {
                       title={video.title}
                       isCompleted={video.isCompleted}
                       isCurrent={video.isCurrent}
-                      onClick={() => router.push(`/dashboard/salon?video=${video.order}`)}
+                      onClick={() => router.push(`/dashboard/my-path/video/${video.phaseId}/${video.id}`)}
                     />
                   ))}
                 </div>
