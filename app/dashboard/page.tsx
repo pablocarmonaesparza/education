@@ -333,11 +333,11 @@ export default function DashboardPage() {
       setActivePhaseId(phaseId);
       centerHorizontalButton(phaseId, true);
 
-      // Calculate scroll position - offset accounts for sticky nav (~52px) + gradient shadow (~32px)
+      // Calculate scroll position - offset hides divider but shows title
       const sectionTop = section.offsetTop;
 
       container.scrollTo({
-        top: sectionTop - 90,
+        top: sectionTop - 60,
         behavior: 'smooth'
       });
 
