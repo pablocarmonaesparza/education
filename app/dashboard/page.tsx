@@ -191,47 +191,49 @@ export default function DashboardPage() {
     <div className="h-screen flex flex-col">
       {/* Top Section - Fixed padding from top */}
       <div className="pt-6 flex-shrink-0">
-        {/* Greeting */}
-        {userName && (
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white text-center px-4 tracking-tight">
-            {greeting.toLowerCase()}, {userName}
-          </h1>
-        )}
-        
-        {/* Project - Show user's project idea */}
-        <p className="mt-4 text-lg text-[#777777] dark:text-gray-400 text-center px-4 max-w-2xl mx-auto">
-          {project ? (
-            <>
-              <span className="text-gray-400 dark:text-gray-500">Tu proyecto: </span>
-              <span className="text-gray-700 dark:text-gray-300 font-medium">{project}</span>
-            </>
-          ) : videos.length === 0 || videos.filter(v => v.isCompleted).length === 0
-            ? '¡Comencemos tu aprendizaje!'
-            : videos.filter(v => v.isCompleted).length === videos.length
-            ? '¡Felicidades, completaste tu curso!'
-            : 'Continuemos donde lo dejamos'
-          }
-        </p>
+        <div className="max-w-2xl mx-auto px-4">
+          {/* Greeting */}
+          {userName && (
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white text-center tracking-tight">
+              {greeting.toLowerCase()}, {userName}
+            </h1>
+          )}
+          
+          {/* Project - Show user's project idea */}
+          <p className="mt-4 text-lg text-[#777777] dark:text-gray-400 text-center">
+            {project ? (
+              <>
+                <span className="text-gray-400 dark:text-gray-500">Tu proyecto: </span>
+                <span className="text-gray-700 dark:text-gray-300 font-medium">{project}</span>
+              </>
+            ) : videos.length === 0 || videos.filter(v => v.isCompleted).length === 0
+              ? '¡Comencemos tu aprendizaje!'
+              : videos.filter(v => v.isCompleted).length === videos.length
+              ? '¡Felicidades, completaste tu curso!'
+              : 'Continuemos donde lo dejamos'
+            }
+          </p>
 
-        {/* Progress Line */}
-        {videos.length > 0 && (
-          <div className="w-full max-w-4xl mx-auto mt-8 px-4">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-bold text-[#4b4b4b] dark:text-white">
-                {progressPercentage}% completado
-              </span>
-              <span className="text-sm text-[#777777] dark:text-gray-400">
-                {completedCount} de {totalCount}
-              </span>
+          {/* Progress Line */}
+          {videos.length > 0 && (
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-bold text-[#4b4b4b] dark:text-white">
+                  {progressPercentage}% completado
+                </span>
+                <span className="text-sm text-[#777777] dark:text-gray-400">
+                  {completedCount} de {totalCount}
+                </span>
+              </div>
+              <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-[#1472FF] rounded-full transition-all duration-300"
+                  style={{ width: `${progressPercentage}%` }}
+                />
+              </div>
             </div>
-            <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-[#1472FF] rounded-full transition-all duration-300"
-                style={{ width: `${progressPercentage}%` }}
-              />
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Middle Section - Vertical scrollable carousel */}
@@ -264,7 +266,7 @@ export default function DashboardPage() {
                       onClick={() => {
                         router.push(`/dashboard/salon?video=${video.order}`);
                       }}
-                      className={`w-full h-[140px] rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer flex border-2 ${
+                      className={`h-[140px] rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer flex border-2 ${
                         video.isCurrent
                           ? 'border-[#1472FF]'
                           : video.isCompleted
@@ -300,7 +302,7 @@ export default function DashboardPage() {
                       </div>
                       
                       {/* Video Info - Colored based on status */}
-                      <div className={`w-[200px] h-full p-4 flex flex-col relative flex-shrink-0 ${
+                      <div className={`flex-1 h-full p-4 flex flex-col relative ${
                         video.isCurrent
                           ? 'bg-[#1472FF]'
                           : video.isCompleted
