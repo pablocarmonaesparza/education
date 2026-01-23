@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import LessonItem from '@/components/dashboard/LessonItem';
 
 interface Video {
   id: string;
@@ -194,8 +195,8 @@ export default function RutaPage() {
 
         {/* Timeline */}
         <div className="relative">
-          {/* Vertical Line */}
-          <div className="absolute left-[15px] top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700" />
+          {/* Vertical Line - same width as progress bar (h-2 = 8px) */}
+          <div className="absolute left-[12px] top-0 bottom-0 w-2 bg-gray-100 dark:bg-gray-800 rounded-full" />
 
           {/* Phases */}
           {phases.map((phase, index) => {
@@ -273,73 +274,23 @@ export default function RutaPage() {
 
                 {/* Expanded Videos */}
                 {isExpanded && (
-                  <div className="ml-12 mt-4 space-y-2">
+                  <div className="ml-12 mt-4 space-y-3">
                     {phase.description && (
                       <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{phase.description}</p>
                     )}
-                    
+
                     {phase.videos.map((video) => (
-                      <button
+                      <LessonItem
                         key={video.id}
+                        lessonNumber={video.order + 1}
+                        totalLessons={totalVideos}
+                        duration={formatDuration(video.duration)}
+                        category={phase.name}
+                        title={video.title}
+                        isCompleted={video.isCompleted}
+                        isCurrent={video.isCurrent}
                         onClick={() => handleVideoClick(video, phase.id)}
-                        className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
-                          video.isCurrent
-                            ? 'border-[#1472FF] bg-blue-50 dark:bg-blue-950/50'
-                            : video.isCompleted
-                            ? 'border-green-200 dark:border-green-800 bg-green-50/50 dark:bg-green-950/30'
-                            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 bg-white dark:bg-gray-900'
-                        }`}
-                      >
-                        {/* Status Icon */}
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          video.isCompleted
-                            ? 'bg-green-500'
-                            : video.isCurrent
-                            ? 'bg-gradient-to-br from-[#1472FF] to-[#5BA0FF]'
-                            : 'bg-gray-100 dark:bg-gray-800'
-                        }`}>
-                          {video.isCompleted ? (
-                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          ) : video.isCurrent ? (
-                            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z" />
-                            </svg>
-                          ) : (
-                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                          )}
-                        </div>
-                        
-                        {/* Video Info */}
-                        <div className="flex-1 min-w-0">
-                          <h3 className={`font-medium text-sm line-clamp-1 ${
-                            video.isCompleted ? 'text-gray-600 dark:text-gray-400' : 'text-gray-900 dark:text-white'
-                          }`}>
-                            {video.title}
-                          </h3>
-                          {video.description && (
-                            <p className="text-xs text-gray-400 dark:text-gray-500 line-clamp-1 mt-0.5">
-                              {video.description}
-                            </p>
-                          )}
-                        </div>
-                        
-                        {/* Duration & Status */}
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          <span className="text-xs text-gray-400 dark:text-gray-500">
-                            {formatDuration(video.duration)}
-                          </span>
-                          {video.isCurrent && (
-                            <span className="px-2 py-0.5 rounded-full bg-[#1472FF] text-white text-xs font-medium">
-                              Siguiente
-                            </span>
-                          )}
-                        </div>
-                      </button>
+                      />
                     ))}
                   </div>
                 )}
