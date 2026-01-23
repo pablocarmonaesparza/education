@@ -358,10 +358,10 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="h-screen flex flex-col">
-      {/* Top Section - Fixed padding from top */}
-      <div className="flex-shrink-0">
-        {/* Greeting - Animated visibility */}
+    <div className="h-screen flex flex-col overflow-hidden">
+      {/* Main scrollable container - everything scrolls together */}
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
+        {/* Greeting - Animated visibility based on scroll position */}
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
             showGreeting ? 'max-h-24 opacity-100 pt-6' : 'max-h-0 opacity-0 pt-0'
@@ -376,45 +376,48 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Section Navigation - Horizontal Scroll (Full Width from sidebar to sidebar) */}
+        {/* Section Navigation - Sticky at top */}
         {videos.length > 0 && Object.keys(videosByPhase).length > 0 && (
-          <div className={`relative transition-all duration-300 ${showGreeting ? 'mt-6' : 'pt-4'}`}>
-            {/* Gradient overlays - left and right edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
+          <div className={`sticky top-0 z-20 bg-white dark:bg-gray-950 transition-all duration-300 ${showGreeting ? 'mt-6' : 'pt-2'}`}>
+            {/* Top gradient fade - content passes underneath */}
+            <div className="h-4 bg-gradient-to-b from-white dark:from-gray-950 to-transparent pointer-events-none" />
 
-            <div
-              ref={horizontalScrollRef}
-              className="flex gap-3 overflow-x-auto scrollbar-hide pb-4 px-16"
-              style={{ scrollBehavior: 'smooth' }}
-            >
-              {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
-                <button
-                  key={phaseId}
-                  data-phase-id={phaseId}
-                  onClick={() => scrollToPhase(phaseId)}
-                  className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide transition-all duration-150 ${
-                    activePhaseId === phaseId
-                      ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1'
-                      : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
-                  }`}
-                >
-                  {phaseData.phaseName}
-                </button>
-              ))}
+            <div className="relative">
+              {/* Gradient overlays - left and right edges */}
+              <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
+              <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
+
+              <div
+                ref={horizontalScrollRef}
+                className="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-16"
+                style={{ scrollBehavior: 'smooth' }}
+              >
+                {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
+                  <button
+                    key={phaseId}
+                    data-phase-id={phaseId}
+                    onClick={() => scrollToPhase(phaseId)}
+                    className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide transition-all duration-150 ${
+                      activePhaseId === phaseId
+                        ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1'
+                        : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    {phaseData.phaseName}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* Bottom gradient fade - makes scroll view appear to pass underneath */}
-            <div className="h-6 bg-gradient-to-b from-white dark:from-gray-950 to-transparent pointer-events-none -mt-2" />
+            {/* Bottom gradient fade - content passes underneath */}
+            <div className="h-6 bg-gradient-to-b from-white dark:from-gray-950 to-transparent pointer-events-none" />
           </div>
         )}
-      </div>
 
-      {/* Middle Section - Vertical scrollable carousel */}
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0 px-4 relative pb-16">
-
-        {videos.length > 0 && (
-          <div className="w-[400px] mx-auto py-6 space-y-6">
+        {/* Video cards content */}
+        <div className="px-4 pb-24">
+          {videos.length > 0 && (
+            <div className="w-[400px] mx-auto py-6 space-y-6">
             {Object.entries(videosByPhase).map(([phaseId, phaseData], phaseIndex) => (
               <div
                 key={phaseId}
@@ -527,11 +530,12 @@ export default function DashboardPage() {
                 </div>
               </div>
             ))}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Progress Bar - Fixed at bottom, full width minus gradient areas */}
+      {/* Progress Bar - Fixed at bottom, aligned with horizontal nav buttons */}
       {videos.length > 0 && (
         <div
           className={`fixed bottom-0 left-0 right-0 z-30 transition-all duration-300 ease-in-out ${
