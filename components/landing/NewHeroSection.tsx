@@ -118,11 +118,19 @@ export default function NewHeroSection() {
           className="max-w-xl mx-auto"
         >
           <div className="max-w-xl mx-auto">
-            {/* Textarea wrapper with counter */}
-            <div className={`relative w-full bg-white dark:bg-gray-900 rounded-2xl border-2 transition-all duration-300 ${
-                  validationError || idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-gray-700 focus-within:border-[#1472FF]"
-                }`}>
-              <textarea
+            {/* Textarea wrapper with counter and depth effect */}
+            <div
+              className="rounded-2xl"
+              style={{
+                boxShadow: validationError || idea.length > MAX_CHARACTERS
+                  ? '0 4px 0 0 #fca5a5'
+                  : '0 4px 0 0 #d1d5db'
+              }}
+            >
+              <div className={`relative w-full bg-white dark:bg-gray-900 rounded-2xl border-2 transition-all duration-300 ${
+                    validationError || idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-gray-700 focus-within:border-[#1472FF]"
+                  }`}>
+                <textarea
                 ref={textareaRef}
                 id="project-idea"
                 value={idea}
@@ -134,13 +142,14 @@ export default function NewHeroSection() {
                 rows={2}
               />
 
-              {/* Character count */}
-              <div className="px-4 pb-2 flex justify-end">
-                <p className={`text-xs font-medium ${
-                  idea.length >= MIN_CHARACTERS ? "text-green-500" : "text-gray-400 dark:text-gray-500"
-                }`}>
-                  {idea.length}/{MIN_CHARACTERS}
-                </p>
+                {/* Character count */}
+                <div className="px-4 pb-2 flex justify-end">
+                  <p className={`text-xs font-medium ${
+                    idea.length >= MIN_CHARACTERS ? "text-green-500" : "text-gray-400 dark:text-gray-500"
+                  }`}>
+                    {idea.length}/{MIN_CHARACTERS}
+                  </p>
+                </div>
               </div>
             </div>
 
