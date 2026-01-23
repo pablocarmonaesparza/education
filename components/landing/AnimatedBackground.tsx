@@ -34,6 +34,11 @@ export default function AnimatedBackground() {
     const accent = { r: 20, g: 114, b: 255 };     // #1472FF
 
     const baseColor = isDarkMode ? darkBase : lightBase;
+    
+    // Set initial background color
+    const initialBgColor = isDarkMode ? "#0a1e3d" : "#FFFFFF";
+    document.body.style.backgroundColor = initialBgColor;
+    document.documentElement.style.backgroundColor = initialBgColor;
 
     const handleScroll = () => {
       const windowHeight = window.innerHeight;
@@ -134,6 +139,7 @@ export default function AnimatedBackground() {
       const newColor = `rgb(${r}, ${g}, ${b})`;
       setBgColor(newColor);
       document.body.style.backgroundColor = newColor;
+      document.documentElement.style.backgroundColor = newColor;
     };
 
     handleScroll();
@@ -142,6 +148,7 @@ export default function AnimatedBackground() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
       document.body.style.backgroundColor = "";
+      document.documentElement.style.backgroundColor = "";
     };
   }, [isDarkMode]);
 

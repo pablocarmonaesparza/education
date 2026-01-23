@@ -22,6 +22,10 @@ html {
   background-color: #ffffff;
 }
 
+html.dark {
+  background-color: #0a1e3d;
+}
+
 section {
   scroll-snap-align: start;
 }
