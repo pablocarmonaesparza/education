@@ -363,13 +363,13 @@ export default function DashboardPage() {
         {/* Section Navigation - Horizontal Scroll (Full Width from sidebar to sidebar) */}
         {videos.length > 0 && Object.keys(videosByPhase).length > 0 && (
           <div className={`relative transition-all duration-300 ${showGreeting ? 'mt-6' : 'pt-4'}`}>
-            {/* Gradient overlays - extend to edges */}
+            {/* Gradient overlays - left and right edges */}
             <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
             <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
 
             <div
               ref={horizontalScrollRef}
-              className="flex gap-3 overflow-x-auto scrollbar-hide pb-2"
+              className="flex gap-3 overflow-x-auto scrollbar-hide pb-4"
               style={{ scrollBehavior: 'smooth' }}
             >
               {/* Left spacer for centering first item */}
@@ -393,6 +393,9 @@ export default function DashboardPage() {
               {/* Right spacer for centering last item */}
               <div className="flex-shrink-0 w-[calc(50vw-256px-100px)]" />
             </div>
+
+            {/* Bottom gradient fade - makes scroll view appear to pass underneath */}
+            <div className="h-6 bg-gradient-to-b from-white dark:from-gray-950 to-transparent pointer-events-none -mt-2" />
           </div>
         )}
       </div>
