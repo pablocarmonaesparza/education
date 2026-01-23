@@ -264,24 +264,9 @@ export default function DashboardPage() {
             </h1>
           )}
           
-          {/* Project - Show user's project idea */}
-          <p className="mt-4 text-lg text-[#777777] dark:text-gray-400 text-center">
-            {project ? (
-              <>
-                <span className="text-gray-400 dark:text-gray-500">Tu proyecto: </span>
-                <span className="text-gray-700 dark:text-gray-300 font-medium">{project}</span>
-              </>
-            ) : videos.length === 0 || videos.filter(v => v.isCompleted).length === 0
-              ? '¡Comencemos tu aprendizaje!'
-              : videos.filter(v => v.isCompleted).length === videos.length
-              ? '¡Felicidades, completaste tu curso!'
-              : 'Continuemos donde lo dejamos'
-            }
-          </p>
-
           {/* Section Navigation - Horizontal Scroll */}
           {videos.length > 0 && Object.keys(videosByPhase).length > 0 && (
-            <div className="mt-6 mb-4">
+            <div className="mt-6">
               <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
                 {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
                   <button
