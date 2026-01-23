@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 interface Message {
   id: string;
@@ -8,6 +8,10 @@ interface Message {
   content: string;
   timestamp: Date;
 }
+
+const DEFAULT_WIDTH = 256; // 16rem = 256px (w-64)
+const MIN_WIDTH = 256;
+const MAX_WIDTH = 480;
 
 export default function TutorChatButton() {
   const [messages, setMessages] = useState<Message[]>([
@@ -20,8 +24,11 @@ export default function TutorChatButton() {
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [width, setWidth] = useState(DEFAULT_WIDTH);
+  const [isResizing, setIsResizing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const asideRef = useRef<HTMLAsideElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -36,6 +43,48 @@ export default function TutorChatButton() {
       inputRef.current.focus();
     }
   }, []);
+
+  // Update CSS variable for layout
+  useEffect(() => {
+    document.documentElement.style.setProperty('--chat-width', `${width}px`);
+    return () => {
+      document.documentElement.style.setProperty('--chat-width', `${DEFAULT_WIDTH}px`);
+    };
+  }, [width]);
+
+  // Handle resize
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+  }, []);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+
+      const newWidth = window.innerWidth - e.clientX;
+      const clampedWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, newWidth));
+      setWidth(clampedWidth);
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+  }, [isResizing]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +115,19 @@ export default function TutorChatButton() {
   };
 
   return (
-    <aside className="fixed right-0 top-0 h-screen bg-white dark:bg-gray-900 flex flex-col z-40 w-64">
+    <aside
+      ref={asideRef}
+      className="fixed right-0 top-0 h-screen bg-white dark:bg-gray-900 flex flex-col z-40"
+      style={{ width: `${width}px` }}
+    >
+      {/* Resize Handle */}
+      <div
+        onMouseDown={handleMouseDown}
+        className={`absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-[#1472FF]/50 transition-colors ${
+          isResizing ? 'bg-[#1472FF]' : 'bg-transparent hover:bg-gray-300 dark:hover:bg-gray-600'
+        }`}
+      />
+
       {/* Header - Minimalist */}
       <div className="px-6 py-5 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-3">
@@ -106,7 +167,7 @@ export default function TutorChatButton() {
             </div>
           </div>
         ))}
-        
+
         {isLoading && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">

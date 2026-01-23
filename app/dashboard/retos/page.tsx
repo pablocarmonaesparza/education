@@ -441,7 +441,7 @@ export default function RetosPage() {
                           return (
                             <button
                               key={videoNum}
-                              onClick={() => router.push(`/dashboard/salon?video=${videoNum}`)}
+                              onClick={() => router.push(`/dashboard`)}
                               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
                                 isWatched
                                   ? 'bg-blue-50 dark:bg-blue-950/50 text-[#1472FF] dark:text-[#5BA0FF] hover:bg-blue-100 dark:hover:bg-blue-900/50'
