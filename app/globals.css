@@ -341,3 +341,24 @@ p.text-2xl {
 .navbar-button-gradient {
   background: #1472FF;
 }
+
+/* Dark mode textarea background */
+.textarea-dark-bg {
+  background-color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .textarea-dark-bg {
+    background-color: #0c2341;
+  }
+}
+
+.textarea-dark-border {
+  border-color: #e5e7eb;
+}
+
+@media (prefers-color-scheme: dark) {
+  .textarea-dark-border {
+    border-color: #1e4976;
+  }
+}
