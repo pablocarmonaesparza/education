@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
@@ -36,9 +36,11 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activePhaseId, setActivePhaseId] = useState<string>('');
   const [showProgressBar, setShowProgressBar] = useState(true);
+  const [showGreeting, setShowGreeting] = useState(true);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
+  const phaseRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const supabase = createClient();
 
   useEffect(() => {
@@ -193,52 +195,72 @@ export default function DashboardPage() {
     }
   }, [videos, videosByPhase, activePhaseId]);
 
+  // Center button in horizontal scroll
+  const centerButton = useCallback((phaseId: string, smooth: boolean = true) => {
+    if (!horizontalScrollRef.current) return;
+
+    const button = horizontalScrollRef.current.querySelector(
+      `button[data-phase-id="${phaseId}"]`
+    ) as HTMLElement;
+
+    if (button) {
+      const container = horizontalScrollRef.current;
+      const containerWidth = container.offsetWidth;
+      const buttonLeft = button.offsetLeft;
+      const buttonWidth = button.offsetWidth;
+      const scrollLeft = buttonLeft - (containerWidth / 2) + (buttonWidth / 2);
+
+      container.scrollTo({
+        left: scrollLeft,
+        behavior: smooth ? 'smooth' : 'auto'
+      });
+    }
+  }, []);
+
   // Center initial phase button on load
   useEffect(() => {
     if (activePhaseId && horizontalScrollRef.current) {
-      const button = horizontalScrollRef.current.querySelector(
-        `button[data-phase-id="${activePhaseId}"]`
-      ) as HTMLElement;
-      
-      if (button) {
-        const container = horizontalScrollRef.current;
-        const containerWidth = container.offsetWidth;
-        const buttonLeft = button.offsetLeft;
-        const buttonWidth = button.offsetWidth;
-        const scrollLeft = buttonLeft - (containerWidth / 2) + (buttonWidth / 2);
-        
-        container.scrollTo({
-          left: scrollLeft,
-          behavior: 'auto'
-        });
-      }
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        centerButton(activePhaseId, false);
+      }, 100);
+      return () => clearTimeout(timer);
     }
-  }, [activePhaseId]);
+  }, [videos.length, activePhaseId, centerButton]);
 
-  // Handle scroll direction to show/hide progress bar
+  // Handle scroll direction to show/hide progress bar and greeting
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
+    let lastScrollTopLocal = 0;
+
     const handleScroll = () => {
       const currentScrollTop = container.scrollTop;
-      const scrollDelta = currentScrollTop - lastScrollTop;
-      
+      const scrollDelta = currentScrollTop - lastScrollTopLocal;
+
       // If scrolling down (any amount), hide progress bar
       if (scrollDelta > 0 && currentScrollTop > 10) {
         setShowProgressBar(false);
-      } 
+      }
       // If scrolling up (any amount), show progress bar
       else if (scrollDelta < 0) {
         setShowProgressBar(true);
       }
-      
-      setLastScrollTop(currentScrollTop);
+
+      // Hide greeting when scrolled past top, show when at top
+      if (currentScrollTop > 20) {
+        setShowGreeting(false);
+      } else {
+        setShowGreeting(true);
+      }
+
+      lastScrollTopLocal = currentScrollTop;
     };
 
     container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
-  }, [lastScrollTop]);
+  }, []);
 
   // Intersection Observer to detect active section
   useEffect(() => {
@@ -246,60 +268,50 @@ export default function DashboardPage() {
 
     const observerOptions = {
       root: scrollContainerRef.current,
-      rootMargin: '-10% 0px -70% 0px',
-      threshold: [0, 0.1, 0.5, 1]
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: [0, 0.25, 0.5, 0.75, 1]
     };
 
     const observer = new IntersectionObserver((entries) => {
-      // Find the most visible entry
-      let mostVisible: IntersectionObserverEntry | null = null;
-      let maxRatio = 0;
+      // Find the entry that is most visible in the viewport
+      let bestEntry: IntersectionObserverEntry | null = null;
+      let bestScore = -1;
 
       entries.forEach((entry) => {
-        if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
-          maxRatio = entry.intersectionRatio;
-          mostVisible = entry;
+        if (entry.isIntersecting) {
+          // Score based on intersection ratio and position
+          const rect = entry.boundingClientRect;
+          const containerRect = scrollContainerRef.current?.getBoundingClientRect();
+          if (containerRect) {
+            // Prefer elements closer to the top of the visible area
+            const distanceFromTop = Math.abs(rect.top - containerRect.top - 100);
+            const score = entry.intersectionRatio * 1000 - distanceFromTop;
+            if (score > bestScore) {
+              bestScore = score;
+              bestEntry = entry;
+            }
+          }
         }
       });
 
-      if (mostVisible) {
-        const phaseId = mostVisible.target.getAttribute('data-phase-id');
+      if (bestEntry) {
+        const phaseId = (bestEntry as IntersectionObserverEntry).target.getAttribute('data-phase-id');
         if (phaseId && phaseId !== activePhaseId) {
           setActivePhaseId(phaseId);
+          // Center the button smoothly
+          centerButton(phaseId, true);
         }
       }
     }, observerOptions);
 
-    // Observe all phase sections
-    const phaseElements = document.querySelectorAll('[data-phase-id]');
-    phaseElements.forEach((el) => observer.observe(el));
+    // Observe all phase sections using refs
+    phaseRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
 
-    return () => {
-      phaseElements.forEach((el) => observer.unobserve(el));
-    };
-  }, [videos, activePhaseId]);
+    return () => observer.disconnect();
+  }, [videos, activePhaseId, centerButton]);
 
-  // Center active button in horizontal scroll
-  useEffect(() => {
-    if (!activePhaseId || !horizontalScrollRef.current) return;
-
-    const activeButton = horizontalScrollRef.current.querySelector(
-      `button[data-phase-id="${activePhaseId}"]`
-    ) as HTMLElement;
-
-    if (activeButton) {
-      const container = horizontalScrollRef.current;
-      const containerWidth = container.offsetWidth;
-      const buttonLeft = activeButton.offsetLeft;
-      const buttonWidth = activeButton.offsetWidth;
-      const scrollLeft = buttonLeft - (containerWidth / 2) + (buttonWidth / 2);
-
-      container.scrollTo({
-        left: scrollLeft,
-        behavior: 'smooth'
-      });
-    }
-  }, [activePhaseId]);
 
   // Scroll to section when clicking on navigation
   const scrollToPhase = (phaseId: string) => {
@@ -329,27 +341,33 @@ export default function DashboardPage() {
   return (
     <div className="h-screen flex flex-col">
       {/* Top Section - Fixed padding from top */}
-      <div className="pt-6 flex-shrink-0">
-        <div className="max-w-2xl mx-auto px-4">
-          {/* Greeting */}
-          {userName && (
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white text-center tracking-tight">
-              {greeting.toLowerCase()}, {userName}
-            </h1>
-          )}
-          
+      <div className="flex-shrink-0">
+        {/* Greeting - Animated visibility */}
+        <div
+          className={`overflow-hidden transition-all duration-300 ease-in-out ${
+            showGreeting ? 'max-h-24 opacity-100 pt-6' : 'max-h-0 opacity-0 pt-0'
+          }`}
+        >
+          <div className="max-w-2xl mx-auto px-4">
+            {userName && (
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white text-center tracking-tight">
+                {greeting.toLowerCase()}, {userName}
+              </h1>
+            )}
+          </div>
         </div>
 
-        {/* Section Navigation - Horizontal Scroll (Full Width) */}
+        {/* Section Navigation - Horizontal Scroll (Full Width from sidebar to sidebar) */}
         {videos.length > 0 && Object.keys(videosByPhase).length > 0 && (
-          <div className="mt-6 relative">
-            {/* Gradient overlays */}
-            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
-            
-            <div 
+          <div className={`relative transition-all duration-300 ${showGreeting ? 'mt-6' : 'mt-4'}`}>
+            {/* Gradient overlays - extend to edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
+
+            <div
               ref={horizontalScrollRef}
-              className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 px-6"
+              className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 px-8"
+              style={{ scrollBehavior: 'smooth' }}
             >
               {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
                 <button
@@ -368,17 +386,21 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
-
-        </div>
       </div>
 
       {/* Middle Section - Vertical scrollable carousel */}
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0 px-4 relative">
-        
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0 px-4 relative pb-16">
+
         {videos.length > 0 && (
           <div className="w-[400px] mx-auto py-6 space-y-6">
             {Object.entries(videosByPhase).map(([phaseId, phaseData], phaseIndex) => (
-              <div key={phaseId} data-phase-id={phaseId}>
+              <div
+                key={phaseId}
+                data-phase-id={phaseId}
+                ref={(el) => {
+                  if (el) phaseRefs.current.set(phaseId, el);
+                }}
+              >
                 {/* Phase Divider and Title */}
                 {phaseIndex > 0 ? (
                   <div className="mb-6">
@@ -489,20 +511,27 @@ export default function DashboardPage() {
 
       {/* Progress Bar - Fixed at bottom, overlays scroll view */}
       {videos.length > 0 && (
-        <div 
-          className={`fixed bottom-0 left-64 right-64 z-30 transition-transform duration-300 ${
-            showProgressBar ? 'translate-y-0' : 'translate-y-full'
+        <div
+          className={`fixed bottom-0 left-64 right-64 z-30 transition-all duration-300 ease-in-out ${
+            showProgressBar ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
           }`}
         >
-          <div className="max-w-2xl mx-auto px-4 pb-4">
-            <div className="relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-2xl overflow-hidden flex items-center justify-center shadow-lg">
-              <div 
-                className="absolute left-0 top-0 h-full bg-green-500 rounded-2xl transition-all duration-300"
-                style={{ width: `${progressPercentage}%` }}
-              />
-              <span className="relative z-10 text-sm font-bold text-[#4b4b4b] dark:text-white">
-                {progressPercentage}% ({completedCount} de {totalCount})
-              </span>
+          {/* Gradient fade at top of progress bar area */}
+          <div className="h-8 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none" />
+          <div className="bg-white dark:bg-gray-950 px-4 pb-4">
+            <div className="max-w-2xl mx-auto">
+              <div className="relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-2xl overflow-hidden flex items-center justify-center shadow-lg border-b-4 border-gray-300 dark:border-gray-600">
+                <div
+                  className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"
+                  style={{
+                    width: `${progressPercentage}%`,
+                    borderRadius: progressPercentage >= 100 ? '1rem' : '1rem 0 0 1rem'
+                  }}
+                />
+                <span className="relative z-10 text-sm font-bold text-[#4b4b4b] dark:text-white drop-shadow-sm">
+                  {progressPercentage}% ({completedCount} de {totalCount})
+                </span>
+              </div>
             </div>
           </div>
         </div>
