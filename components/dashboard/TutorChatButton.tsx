@@ -2,230 +2,189 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { createClient } from '@/lib/supabase/client';
+
+interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+}
 
 export default function TutorChatButton() {
-  const [showTutorChat, setShowTutorChat] = useState(false);
-  const [chatMessages, setChatMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([]);
-  const [chatInput, setChatInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const chatEndRef = useRef<HTMLDivElement>(null);
-  const supabase = createClient();
-
-  useEffect(() => {
-    async function fetchUser() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('name, email')
-          .eq('id', user.id)
-          .single();
-        
-        const userData = {
-          ...user,
-          profile: profile || { name: user.user_metadata?.name, email: user.email }
-        };
-        
-        setUser(userData);
-        
-        // Set welcome message with user name
-        const displayName = userData.profile?.name || userData.profile?.email?.split('@')[0] || 'Usuario';
-        setChatMessages([
-          { role: 'assistant', content: `¡Hola ${displayName}! ¿Cómo puedo ayudarte hoy?` }
-        ]);
-      }
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      role: 'assistant',
+      content: '¡Hola! Soy tu tutor de IA. ¿En qué puedo ayudarte hoy?'
     }
-    fetchUser();
-  }, [supabase]);
+  ]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Get user initials
-  const userName = user?.profile?.name || user?.profile?.email?.split('@')[0] || '';
-  const userInitials = userName
-    ? userName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
-    : 'U';
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
-  // Scroll to bottom when new messages arrive
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chatMessages]);
+    scrollToBottom();
+  }, [messages]);
 
-  const handleSendMessage = async () => {
-    if (!chatInput.trim() || isLoading) return;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
 
-    const userMessage = chatInput.trim();
-    setChatInput('');
-    setChatMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: input.trim()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
     setIsLoading(true);
 
-    try {
-      const response = await fetch('/api/tutor-chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...chatMessages, { role: 'user', content: userMessage }].map(m => ({
-            role: m.role,
-            content: m.content
-          }))
-        }),
-      });
-
-      const data = await response.json();
-      
-      if (data.error) {
-        setChatMessages(prev => [...prev, { role: 'assistant', content: 'Lo siento, hubo un error. Intenta de nuevo.' }]);
-      } else {
-        setChatMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
-      }
-    } catch (error) {
-      setChatMessages(prev => [...prev, { role: 'assistant', content: 'Lo siento, hubo un error de conexión.' }]);
-    } finally {
+    // Simulate AI response (replace with actual API call)
+    setTimeout(() => {
+      const aiMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'Gracias por tu pregunta. Estoy aquí para ayudarte con tu aprendizaje. ¿Podrías darme más detalles sobre lo que necesitas?'
+      };
+      setMessages(prev => [...prev, aiMessage]);
       setIsLoading(false);
-    }
+    }, 1000);
   };
 
   return (
     <>
-      {/* Chat bubble - Fixed to bottom with same padding as navbar */}
+      {/* Chat Popup */}
       <AnimatePresence>
-        {showTutorChat && (
+        {isOpen && (
           <motion.div
-            initial={{ y: '100%', opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: '100%', opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 backdrop-blur-md bg-white/60 dark:bg-gray-950/80"
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="fixed bottom-24 right-6 w-[380px] h-[500px] bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-2xl z-50 flex flex-col overflow-hidden"
           >
-            <div className="container mx-auto px-4 py-4">
-              <div className="relative bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden" style={{ height: '22vh', minHeight: '220px' }}>
-              {/* Close button - Top right */}
+            {/* Header */}
+            <div className="p-4 bg-[#1472FF] flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-bold text-white">Tutor IA</h3>
+                  <p className="text-xs text-white/80">Siempre disponible</p>
+                </div>
+              </div>
               <button
-                onClick={() => setShowTutorChat(false)}
-                className="absolute top-4 right-4 p-1 rounded-full text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 backdrop-blur-md bg-white/80 dark:bg-gray-800/80 transition-colors z-10"
+                onClick={() => setIsOpen(false)}
+                className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center hover:bg-white/30 transition-colors"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-
-              {/* Chat messages */}
-              <div className="flex-1 overflow-y-auto p-4 pb-2 space-y-4">
-                {chatMessages.map((msg, i) => (
-                  <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                    {msg.role === 'assistant' ? (
-                      <div className="w-7 h-7 rounded-full bg-[#1472FF] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
-                        IA
-                      </div>
-                    ) : (
-                      <div className="w-7 h-7 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 text-[10px] font-bold flex-shrink-0">
-                        {userInitials}
-                      </div>
-                    )}
-                    <div className={`px-3 py-2 max-w-[85%] rounded-2xl ${
-                      msg.role === 'assistant' 
-                        ? 'text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700' 
-                        : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
-                    }`}>
-                      <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                    </div>
-                  </div>
-                ))}
-                {isLoading && (
-                  <div className="flex gap-3">
-                    <div className="w-7 h-7 rounded-full bg-[#1472FF] flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
-                      IA
-                    </div>
-                    <div className="rounded-2xl px-3 py-2 border border-gray-200 dark:border-gray-700">
-                      <div className="flex gap-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                      </div>
-                    </div>
-                  </div>
-                )}
-                <div ref={chatEndRef} />
-              </div>
-
-              {/* Input field - Inside chat bubble with glass effect */}
-              <div className="px-4 pt-2 pb-3 backdrop-blur-md bg-white/80 dark:bg-gray-900/80">
-                <form 
-                  onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}
-                  className="flex items-center gap-2"
-                >
-                  <div className="flex-1 flex items-center px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-700 focus-within:border-[#1472FF] transition-colors">
-                    <input
-                      type="text"
-                      value={chatInput}
-                      onChange={(e) => setChatInput(e.target.value)}
-                      placeholder="Escribe tu pregunta..."
-                      className="flex-1 bg-transparent focus:outline-none text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
-                      disabled={isLoading}
-                    />
-                    {/* Plus icon */}
-                    <button 
-                      type="button"
-                      className="p-1 text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                    </button>
-                    {/* Microphone icon */}
-                    <button 
-                      type="button"
-                      className="p-1 text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                      </svg>
-                    </button>
-                  </div>
-                  <button 
-                    type="submit"
-                    disabled={isLoading || !chatInput.trim()}
-                    className="w-8 h-8 rounded-full bg-[#1472FF] flex items-center justify-center text-white hover:opacity-90 transition-opacity flex-shrink-0 disabled:opacity-50"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                  </button>
-                </form>
-              </div>
             </div>
-          </div>
-        </motion.div>
-        )}
-      </AnimatePresence>
 
-      {/* Bottom bar - like navbar (only when chat is closed) */}
-      <AnimatePresence>
-        {!showTutorChat && (
-          <motion.div
-            initial={{ y: '100%', opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: '100%', opacity: 0 }}
-            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 backdrop-blur-md bg-white/60 dark:bg-gray-950/80"
-          >
-            <div className="container mx-auto px-4">
-              <div className="flex justify-center items-center h-20 relative">
-                {/* Chat Button when closed */}
-                <button
-                  onClick={() => setShowTutorChat(true)}
-                  className="px-6 py-3 rounded-2xl font-bold uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150"
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  Platica con tu tutor
+                  <div
+                    className={`max-w-[80%] px-4 py-3 rounded-2xl ${
+                      message.role === 'user'
+                        ? 'bg-[#1472FF] text-white'
+                        : 'bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200'
+                    }`}
+                  >
+                    <p className="text-sm">{message.content}</p>
+                  </div>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-2xl">
+                    <div className="flex gap-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input */}
+            <form onSubmit={handleSubmit} className="p-4 border-t-2 border-gray-200 dark:border-gray-700">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Escribe tu pregunta..."
+                  className="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-800 rounded-2xl text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]"
+                />
+                <button
+                  type="submit"
+                  disabled={!input.trim() || isLoading}
+                  className="px-4 py-3 bg-[#1472FF] text-white rounded-2xl border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                  </svg>
                 </button>
               </div>
-            </div>
+            </form>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Floating Button */}
+      <motion.button
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed bottom-6 right-6 w-14 h-14 bg-[#1472FF] text-white rounded-full shadow-lg border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 z-50 flex items-center justify-center"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <AnimatePresence mode="wait">
+          {isOpen ? (
+            <motion.svg
+              key="close"
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: 90, opacity: 0 }}
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </motion.svg>
+          ) : (
+            <motion.svg
+              key="chat"
+              initial={{ rotate: 90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: -90, opacity: 0 }}
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </motion.svg>
+          )}
+        </AnimatePresence>
+      </motion.button>
     </>
   );
 }
-
-
-

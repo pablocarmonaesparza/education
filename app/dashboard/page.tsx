@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
@@ -33,10 +33,7 @@ export default function DashboardPage() {
   const [greeting, setGreeting] = useState<string>('');
   const [project, setProject] = useState<string>('');
   const [videos, setVideos] = useState<Video[]>([]);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  const [selectedVideoIndex, setSelectedVideoIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const carouselRef = useRef<HTMLDivElement>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -81,8 +78,6 @@ export default function DashboardPage() {
 
         // Get videos from generated_path
         if (intakeData?.generated_path) {
-          console.log('Generated path structure:', JSON.stringify(intakeData.generated_path, null, 2));
-          
           // Fetch video progress
           const { data: progressData } = await supabase
             .from('video_progress')
@@ -98,95 +93,51 @@ export default function DashboardPage() {
           // Parse generated_path to get videos
           const path = intakeData.generated_path;
           const allVideos: Video[] = [];
-          let videoOrder = 0;
-          let foundCurrent = false;
 
-          // Handle different possible structures (n8n format: course.phases)
-          const phases = path.phases || path.course?.phases || path.modules || path.sections || [];
+          // Handle different path structures
+          const phases = path.phases || path.learning_path?.phases || [];
           
           phases.forEach((phase: any, phaseIndex: number) => {
-            const phaseVideos = phase.videos || phase.content || phase.lessons || [];
-            const phaseName = phase.phase_name || phase.title || phase.name || `Fase ${phaseIndex + 1}`;
-            const phaseId = phase.phase_number || phase.id || `phase-${phaseIndex}`;
-            
-            phaseVideos.forEach((video: any) => {
-              const videoId = video.order?.toString() || video.id || `video-${videoOrder}`;
-              const isCompleted = completedVideos.has(videoId);
-              const isCurrent = !isCompleted && !foundCurrent;
-              
-              if (isCurrent) {
-                foundCurrent = true;
-                setCurrentVideoIndex(videoOrder);
-              }
-              
-              // n8n format: description is the video title, why_relevant is the description
-              const videoTitle = video.description || video.title || video.name || `Video ${videoOrder + 1}`;
-              const videoDescription = video.why_relevant || video.summary || '';
-              
-              // Parse duration from "2:30" format to seconds
-              let durationSeconds: number | null = null;
-              if (video.duration) {
-                if (typeof video.duration === 'string' && video.duration.includes(':')) {
-                  const [mins, secs] = video.duration.split(':').map(Number);
-                  durationSeconds = (mins * 60) + (secs || 0);
-                } else if (typeof video.duration === 'number') {
-                  durationSeconds = video.duration;
-                } else {
-                  durationSeconds = parseInt(video.duration) || null;
-                }
-              }
-              
+            const phaseVideos = phase.videos || phase.lessons || [];
+            phaseVideos.forEach((video: any, videoIndex: number) => {
+              const videoId = video.video_id || video.id || `${phaseIndex}-${videoIndex}`;
               allVideos.push({
                 id: videoId,
-                title: videoTitle,
-                description: videoDescription,
-                duration: durationSeconds,
-                order: videoOrder,
-                phaseId: phaseId.toString(),
-                phaseName,
-                isCompleted,
-                isCurrent,
+                title: video.title || video.name || `Video ${videoIndex + 1}`,
+                description: video.description || '',
+                duration: video.duration || video.estimated_duration || 120,
+                order: allVideos.length + 1,
+                phaseId: phase.phase_id || phase.id || `phase-${phaseIndex}`,
+                phaseName: phase.phase_name || phase.name || phase.title || `Fase ${phaseIndex + 1}`,
+                isCompleted: completedVideos.has(videoId),
+                isCurrent: false,
               });
-              
-              videoOrder++;
             });
           });
 
+          // Find current video (first uncompleted)
+          let foundCurrent = false;
+          allVideos.forEach((video) => {
+            if (!foundCurrent && !video.isCompleted) {
+              video.isCurrent = true;
+              foundCurrent = true;
+            }
+          });
+
+          // If all completed, mark last as current
+          if (!foundCurrent && allVideos.length > 0) {
+            allVideos[allVideos.length - 1].isCurrent = true;
+          }
+
           setVideos(allVideos);
-        } else {
-          console.log('No generated_path found in intake data');
         }
       }
+      
       setIsLoading(false);
     }
-    
+
     fetchUserData();
   }, [supabase]);
-
-  // Scroll carousel to current video on load
-  useEffect(() => {
-    if (carouselRef.current && videos.length > 0) {
-      // Small delay to ensure DOM is ready
-      setTimeout(() => {
-        const cardWidth = 280 + 16; // card width + gap
-        const scrollPosition = currentVideoIndex * cardWidth;
-        carouselRef.current?.scrollTo({ left: scrollPosition, behavior: 'smooth' });
-        setSelectedVideoIndex(currentVideoIndex);
-      }, 100);
-    }
-  }, [currentVideoIndex, videos]);
-
-  // Handle scroll to update selected video
-  const handleScroll = () => {
-    if (carouselRef.current && videos.length > 0) {
-      const cardWidth = 280 + 16;
-      const scrollLeft = carouselRef.current.scrollLeft;
-      const newIndex = Math.round(scrollLeft / cardWidth);
-      if (newIndex >= 0 && newIndex < videos.length && newIndex !== selectedVideoIndex) {
-        setSelectedVideoIndex(newIndex);
-      }
-    }
-  };
 
   const formatDuration = (seconds: number | undefined | null) => {
     if (!seconds || isNaN(seconds)) return '0:00';
@@ -195,184 +146,137 @@ export default function DashboardPage() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const completedCount = videos.filter(v => v.isCompleted).length;
+  const progressPercent = videos.length > 0 ? Math.round((completedCount / videos.length) * 100) : 0;
+
   // Loading state
   if (isLoading) {
     return (
-      <div className="h-[calc(100vh-10rem)] md:h-[calc(100vh-11rem)] bg-transparent flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="h-[calc(100vh-10rem)] md:h-[calc(100vh-11rem)] bg-transparent flex flex-col overflow-hidden">
-      <div className="flex-1 flex flex-col items-center justify-center">
-        {/* Greeting */}
-        {userName && (
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white text-center px-4 tracking-tight">
-            {greeting.toLowerCase()}, {userName.toLowerCase()}
-          </h1>
-        )}
-        
-        {/* Project - Show user's project idea */}
-        <p className="mt-4 text-lg text-[#777777] dark:text-gray-400 text-center px-4 max-w-2xl">
-          {project ? (
-            <>
-              <span className="text-gray-400 dark:text-gray-500">Tu proyecto: </span>
-              <span className="text-gray-700 dark:text-gray-300 font-medium">{project}</span>
-            </>
-          ) : videos.length === 0 || videos.filter(v => v.isCompleted).length === 0
-            ? '¡Comencemos tu aprendizaje!'
-            : videos.filter(v => v.isCompleted).length === videos.length
-            ? '¡Felicidades, completaste tu curso!'
-            : 'Continuemos donde lo dejamos'
-          }
-        </p>
-
-        {/* Divider */}
-        {videos.length > 0 && (
-          <div className="w-full max-w-4xl mt-10 mb-8 px-4">
-            <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
-          </div>
-        )}
-
-        {/* Video Carousel - Full width with snap to center */}
-        {videos.length > 0 && (
-          <div 
-            ref={carouselRef}
-            onScroll={handleScroll}
-            className="w-full flex gap-4 overflow-x-auto py-6 scrollbar-hide snap-x snap-mandatory"
-          >
-            {/* Left spacer for first card centering */}
-            <div className="flex-shrink-0 w-[calc(50vw-156px)]" />
-            
-            {videos.map((video, index) => (
-              <div
-                key={video.id}
-                onClick={() => {
-                  router.push(`/dashboard/salon?video=${video.order}`);
-                }}
-                className={`flex-shrink-0 w-[280px] snap-center rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer ${
-                  index === selectedVideoIndex ? 'scale-105 z-10' : 'scale-95 opacity-70'
-                } ${
-                  video.isCurrent
-                    ? 'ring-2 ring-[#1472FF]'
-                    : video.isCompleted
-                    ? 'ring-2 ring-green-400'
-                    : 'ring-2 ring-gray-200 dark:ring-gray-700'
-                }`}
-              >
-                {/* Video Thumbnail Placeholder - Now white/light */}
-                <div className="h-36 bg-gray-100 dark:bg-gray-800 flex items-center justify-center relative">
-                  {video.isCompleted ? (
-                    <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  ) : video.isCurrent ? (
-                    <svg className="w-12 h-12 text-[#1472FF]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-10 h-10 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  )}
-                  
-                  {/* Duration badge */}
-                  <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-lg text-xs font-bold bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-                    {formatDuration(video.duration)}
-                  </span>
-                </div>
-                
-                {/* Video Info - Now colored based on status with 3D effect */}
-                <div className={`p-4 pb-5 relative ${
-                  video.isCurrent
-                    ? 'bg-[#1472FF]'
-                    : video.isCompleted
-                    ? 'bg-green-500'
-                    : 'bg-white dark:bg-gray-900'
-                }`}>
-                  {/* 3D bottom shadow */}
-                  <div className={`absolute bottom-0 left-0 right-0 h-1 ${
-                    video.isCurrent
-                      ? 'bg-[#0E5FCC]'
-                      : video.isCompleted
-                      ? 'bg-green-600'
-                      : 'bg-gray-200 dark:bg-gray-700'
-                  }`} />
-                  {/* Status badge */}
-                  <span className={`inline-block px-2 py-0.5 rounded-lg text-xs font-bold uppercase tracking-wide mb-2 ${
-                    video.isCurrent
-                      ? 'bg-white/20 text-white'
-                      : video.isCompleted
-                      ? 'bg-white/20 text-white'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
-                  }`}>
-                    {video.isCompleted ? 'Completado' : video.isCurrent ? 'Continuar' : 'Pendiente'}
-                  </span>
-                  
-                  <p className={`text-xs mb-1 ${
-                    video.isCurrent || video.isCompleted
-                      ? 'text-white/80'
-                      : 'text-gray-500 dark:text-gray-400'
-                  }`}>{video.phaseName}</p>
-                  <h3 className={`font-bold line-clamp-2 ${
-                    video.isCurrent || video.isCompleted
-                      ? 'text-white'
-                      : 'text-[#4b4b4b] dark:text-white'
-                  }`}>
-                    {video.title}
-                  </h3>
-                </div>
-              </div>
-            ))}
-            
-            {/* Right spacer for last card centering */}
-            <div className="flex-shrink-0 w-[calc(50vw-156px)]" />
-          </div>
-        )}
-
-        {/* Divider below carousel */}
-        {videos.length > 0 && (
-          <div className="w-full max-w-4xl mt-8 px-4">
-            <div className="h-px bg-gradient-to-r from-transparent via-gray-200 dark:via-gray-700 to-transparent" />
-          </div>
-        )}
-
-        {/* Selected Video Info */}
-        {videos.length > 0 && videos[selectedVideoIndex] && (
-          <div className="w-full max-w-3xl mx-auto mt-8 px-4">
-            <div className="flex items-center justify-between">
-              {/* Left - Video Title */}
-              <div>
-                <p className="text-sm text-gray-400 dark:text-gray-500 mb-1">
-                  {selectedVideoIndex + 1} de {videos.length}
-                </p>
-                <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
-                  {videos[selectedVideoIndex].title}
-                </h2>
-              </div>
-              
-              {/* Right - Section and Progress */}
-              <div className="text-right">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {videos[selectedVideoIndex].phaseName}
-                </p>
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  {Math.round((videos.filter(v => v.isCompleted).length / videos.length) * 100)}% completado
-                </p>
-              </div>
-            </div>
-            
-            {/* Video Description */}
-            {videos[selectedVideoIndex].description && (
-              <p className="mt-4 text-gray-600 dark:text-gray-400">
-                {videos[selectedVideoIndex].description}
-              </p>
-            )}
-          </div>
+    <div className="max-w-4xl">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">
+          {greeting.toLowerCase()}, {userName.toLowerCase()}
+        </h1>
+        {project && (
+          <p className="mt-2 text-[#777777] dark:text-gray-400">
+            Tu proyecto: <span className="text-[#4b4b4b] dark:text-gray-300 font-medium">{project}</span>
+          </p>
         )}
       </div>
+
+      {/* Progress Summary */}
+      {videos.length > 0 && (
+        <div className="mb-8 p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between mb-3">
+            <span className="font-bold text-[#4b4b4b] dark:text-white">Tu progreso</span>
+            <span className="text-sm font-bold text-[#1472FF]">{progressPercent}%</span>
+          </div>
+          <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-[#1472FF] rounded-full transition-all duration-500"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+          <p className="mt-2 text-sm text-[#777777] dark:text-gray-400">
+            {completedCount} de {videos.length} videos completados
+          </p>
+        </div>
+      )}
+
+      {/* Vertical Video List */}
+      {videos.length > 0 ? (
+        <div className="space-y-3">
+          {videos.map((video, index) => (
+            <div
+              key={video.id}
+              onClick={() => router.push(`/dashboard/salon?video=${video.order}`)}
+              className={`flex items-center gap-4 p-4 rounded-2xl border-2 cursor-pointer transition-all duration-150 ${
+                video.isCurrent
+                  ? 'border-[#1472FF] bg-[#1472FF]/5 hover:bg-[#1472FF]/10'
+                  : video.isCompleted
+                  ? 'border-green-400 bg-green-50 dark:bg-green-950/20 hover:bg-green-100 dark:hover:bg-green-950/30'
+                  : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-300 dark:hover:border-gray-600'
+              }`}
+            >
+              {/* Number/Status Icon */}
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                video.isCurrent
+                  ? 'bg-[#1472FF]'
+                  : video.isCompleted
+                  ? 'bg-green-500'
+                  : 'bg-gray-100 dark:bg-gray-800'
+              }`}>
+                {video.isCompleted ? (
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : video.isCurrent ? (
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                ) : (
+                  <span className="text-lg font-bold text-gray-400 dark:text-gray-500">{index + 1}</span>
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className={`text-xs font-bold uppercase tracking-wide ${
+                    video.isCurrent
+                      ? 'text-[#1472FF]'
+                      : video.isCompleted
+                      ? 'text-green-600 dark:text-green-400'
+                      : 'text-gray-400 dark:text-gray-500'
+                  }`}>
+                    {video.phaseName}
+                  </span>
+                  <span className="text-xs text-gray-400">•</span>
+                  <span className="text-xs text-gray-400">{formatDuration(video.duration)}</span>
+                </div>
+                <h3 className={`font-bold truncate ${
+                  video.isCurrent
+                    ? 'text-[#4b4b4b] dark:text-white'
+                    : video.isCompleted
+                    ? 'text-gray-600 dark:text-gray-400'
+                    : 'text-[#4b4b4b] dark:text-white'
+                }`}>
+                  {video.title}
+                </h3>
+              </div>
+
+              {/* Status Badge */}
+              <div className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wide flex-shrink-0 ${
+                video.isCurrent
+                  ? 'bg-[#1472FF] text-white border-b-2 border-[#0E5FCC]'
+                  : video.isCompleted
+                  ? 'bg-green-500 text-white border-b-2 border-green-600'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border-b-2 border-gray-200 dark:border-gray-700'
+              }`}>
+                {video.isCompleted ? 'Completado' : video.isCurrent ? 'Continuar' : 'Pendiente'}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-bold text-[#4b4b4b] dark:text-white mb-2">No hay videos disponibles</h3>
+          <p className="text-[#777777] dark:text-gray-400">Completa el proceso de onboarding para generar tu ruta de aprendizaje.</p>
+        </div>
+      )}
     </div>
   );
 }
