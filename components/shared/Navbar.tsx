@@ -193,10 +193,10 @@ export default function Navbar() {
               </motion.div>
             ))}
 
-            {/* Sliding indicator */}
+            {/* Sliding indicator - gray button that slides */}
             {activeSection && (
               <motion.div
-                className="absolute bottom-0 h-0.5 bg-[#1472FF] rounded-full"
+                className="absolute bottom-0 h-8 bg-gray-200 dark:bg-gray-700 rounded-2xl"
                 initial={false}
                 animate={{
                   left: indicatorStyle.left,

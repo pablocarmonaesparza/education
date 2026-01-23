@@ -157,7 +157,7 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
       {courses.map((course, index) => (
         <div
           key={`${course.id}-${index}`}
-          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-white rounded-2xl p-4 md:p-5 shadow-lg shadow-black/10"
+          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-5"
         >
           {/* Icon */}
           <div className="text-3xl md:text-4xl mb-3">
@@ -217,7 +217,7 @@ export default function AvailableCoursesSection() {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           viewport={{ once: true }}
-          className="flex flex-col gap-4 md:gap-6"
+          className="flex flex-col gap-4 md:gap-6 px-4 sm:px-6 lg:px-8"
         >
           {/* Row 1 - Left direction */}
           <div className="overflow-x-hidden w-full">
@@ -256,11 +256,11 @@ export default function AvailableCoursesSection() {
           }}
           className="flex flex-col items-center gap-1 cursor-pointer group"
         >
-          <span className="text-sm font-semibold tracking-wide text-white/60 group-hover:text-white/80 transition-colors">
+          <span className="text-sm font-semibold tracking-wide text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-400 transition-colors">
             Precios
           </span>
           <motion.svg
-            className="w-5 h-5 text-white/60 group-hover:text-white/80 transition-colors"
+            className="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-400 transition-colors"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
