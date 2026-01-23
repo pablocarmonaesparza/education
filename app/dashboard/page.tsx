@@ -37,10 +37,11 @@ export default function DashboardPage() {
   const [activePhaseId, setActivePhaseId] = useState<string>('');
   const [showProgressBar, setShowProgressBar] = useState(true);
   const [showGreeting, setShowGreeting] = useState(true);
-  const [lastScrollTop, setLastScrollTop] = useState(0);
+  const [isAtTop, setIsAtTop] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const phaseRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const lastScrollTopRef = useRef(0);
   const supabase = createClient();
 
   useEffect(() => {
@@ -233,29 +234,31 @@ export default function DashboardPage() {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    let lastScrollTopLocal = 0;
-
     const handleScroll = () => {
       const currentScrollTop = container.scrollTop;
-      const scrollDelta = currentScrollTop - lastScrollTopLocal;
+      const scrollDelta = currentScrollTop - lastScrollTopRef.current;
 
-      // If scrolling down (any amount), hide progress bar
-      if (scrollDelta > 0 && currentScrollTop > 10) {
+      // Progress bar: hide on scroll down, show on scroll up (like X/Twitter nav)
+      if (scrollDelta > 2) {
+        // Scrolling down - hide progress bar
         setShowProgressBar(false);
-      }
-      // If scrolling up (any amount), show progress bar
-      else if (scrollDelta < 0) {
+      } else if (scrollDelta < -2) {
+        // Scrolling up - show progress bar
         setShowProgressBar(true);
       }
 
-      // Hide greeting when scrolled past top, show when at top
-      if (currentScrollTop > 20) {
-        setShowGreeting(false);
-      } else {
+      // Check if at very top (within 5px tolerance)
+      const atTop = currentScrollTop <= 5;
+      setIsAtTop(atTop);
+
+      // Greeting: only show when at the very top
+      if (atTop) {
         setShowGreeting(true);
+      } else {
+        setShowGreeting(false);
       }
 
-      lastScrollTopLocal = currentScrollTop;
+      lastScrollTopRef.current = currentScrollTop;
     };
 
     container.addEventListener('scroll', handleScroll, { passive: true });
@@ -359,22 +362,25 @@ export default function DashboardPage() {
 
         {/* Section Navigation - Horizontal Scroll (Full Width from sidebar to sidebar) */}
         {videos.length > 0 && Object.keys(videosByPhase).length > 0 && (
-          <div className={`relative transition-all duration-300 ${showGreeting ? 'mt-6' : 'mt-4'}`}>
+          <div className={`relative transition-all duration-300 ${showGreeting ? 'mt-6' : 'pt-4'}`}>
             {/* Gradient overlays - extend to edges */}
-            <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
+            <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
 
             <div
               ref={horizontalScrollRef}
-              className="flex gap-3 overflow-x-auto scrollbar-hide pb-2 px-8"
+              className="flex gap-3 overflow-x-auto scrollbar-hide pb-2"
               style={{ scrollBehavior: 'smooth' }}
             >
+              {/* Left spacer for centering first item */}
+              <div className="flex-shrink-0 w-[calc(50vw-256px-100px)]" />
+
               {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
                 <button
                   key={phaseId}
                   data-phase-id={phaseId}
                   onClick={() => scrollToPhase(phaseId)}
-                  className={`flex-shrink-0 px-4 py-2 rounded-2xl text-sm font-bold uppercase tracking-wide transition-all duration-150 ${
+                  className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide transition-all duration-150 ${
                     activePhaseId === phaseId
                       ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1'
                       : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
@@ -383,6 +389,9 @@ export default function DashboardPage() {
                   {phaseData.phaseName}
                 </button>
               ))}
+
+              {/* Right spacer for centering last item */}
+              <div className="flex-shrink-0 w-[calc(50vw-256px-100px)]" />
             </div>
           </div>
         )}
@@ -517,18 +526,18 @@ export default function DashboardPage() {
           }`}
         >
           {/* Gradient fade at top of progress bar area */}
-          <div className="h-8 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none" />
+          <div className="h-6 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none" />
           <div className="bg-white dark:bg-gray-950 px-4 pb-4">
-            <div className="max-w-2xl mx-auto">
-              <div className="relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-2xl overflow-hidden flex items-center justify-center shadow-lg border-b-4 border-gray-300 dark:border-gray-600">
+            <div className="max-w-[400px] mx-auto">
+              <div className="relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-xl overflow-hidden flex items-center justify-center border-b-4 border-gray-300 dark:border-gray-600">
                 <div
                   className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"
                   style={{
                     width: `${progressPercentage}%`,
-                    borderRadius: progressPercentage >= 100 ? '1rem' : '1rem 0 0 1rem'
+                    borderRadius: progressPercentage >= 100 ? '0.75rem' : '0.75rem 0 0 0.75rem'
                   }}
                 />
-                <span className="relative z-10 text-sm font-bold text-[#4b4b4b] dark:text-white drop-shadow-sm">
+                <span className="relative z-10 text-sm font-bold uppercase tracking-wide text-[#4b4b4b] dark:text-white">
                   {progressPercentage}% ({completedCount} de {totalCount})
                 </span>
               </div>
