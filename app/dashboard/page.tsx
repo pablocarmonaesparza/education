@@ -235,6 +235,7 @@ export default function DashboardPage() {
   // Main scroll handler for greeting visibility and scroll direction detection
   useEffect(() => {
     const container = scrollContainerRef.current;
+    console.log('Setting up scroll listener, container:', container);
     if (!container) return;
 
     let lastScrollY = container.scrollTop;
@@ -242,6 +243,8 @@ export default function DashboardPage() {
 
     const updateScrollDirection = () => {
       const scrollY = container.scrollTop;
+      const difference = scrollY - lastScrollY;
+      console.log('Scroll event - scrollY:', scrollY, 'lastScrollY:', lastScrollY, 'difference:', difference);
 
       // Greeting: only visible when at the very top
       if (scrollY <= 10) {
@@ -251,9 +254,9 @@ export default function DashboardPage() {
       }
 
       // Detect scroll direction with threshold
-      const difference = scrollY - lastScrollY;
       if (Math.abs(difference) > threshold) {
         const newDirection = difference > 0 ? 'down' : 'up';
+        console.log('Direction change detected:', newDirection);
         setScrollDirection(newDirection);
         lastScrollY = scrollY > 0 ? scrollY : 0;
       }
