@@ -176,7 +176,7 @@ export default function Navbar() {
             {/* Sliding indicator - gray button that slides behind text */}
             {activeSection && (
               <motion.div
-                className="absolute top-1/2 -translate-y-1/2 h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-300 dark:border-gray-600 z-0"
+                className="absolute top-0 bottom-0 my-auto h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-300 dark:border-gray-600 z-0"
                 initial={{ 
                   opacity: 0,
                   scale: 0.8,
