@@ -544,7 +544,7 @@ export default function DashboardPage() {
           {/* Gradient fade at top of progress bar area */}
           <div className="h-8 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none" />
           <div className="bg-white dark:bg-gray-950 pb-4 flex justify-center">
-            <div className="w-[85%] relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-xl overflow-hidden flex items-center justify-center border-b-4 border-gray-300 dark:border-gray-600">
+            <div className="w-[80%] relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-xl overflow-hidden flex items-center justify-center border-b-4 border-gray-300 dark:border-gray-600">
               <div
                 className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"
                 style={{
