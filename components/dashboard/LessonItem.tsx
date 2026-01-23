@@ -112,8 +112,8 @@ export default function LessonItem({
           <div className="flex-shrink-0 w-40 sm:w-48 p-4 flex flex-col bg-white dark:bg-gray-900">
             {/* Top row - Counter left, Duration right */}
             <div className="flex items-center justify-between mb-4">
-              {/* Lesson counter */}
-              <div className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-sm text-gray-600 dark:text-gray-300">
+              {/* Lesson counter - plain text */}
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 <span className="font-bold text-gray-700 dark:text-gray-200">{lessonNumber}</span>
                 <span> de </span>
                 <span>{totalLessons}</span>
