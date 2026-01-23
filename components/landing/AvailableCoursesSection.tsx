@@ -157,7 +157,7 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
       {courses.map((course, index) => (
         <div
           key={`${course.id}-${index}`}
-          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-5"
+          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-5 border-2 border-gray-200 dark:border-gray-700"
         >
           {/* Icon */}
           <div className="text-3xl md:text-4xl mb-3">
@@ -202,10 +202,10 @@ export default function AvailableCoursesSection() {
           className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12 md:mb-16"
         >
           <div className="text-center">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 md:mb-8 leading-tight tracking-tight">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white mb-6 md:mb-8 leading-tight tracking-tight">
               posibilidades infinitas
             </h2>
-            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-[#777777] dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
               con nuestros más de 1,000 videos, generamos cursos personalizados para cualquier proyecto de IA y automatización
             </p>
           </div>
