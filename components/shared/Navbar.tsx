@@ -170,7 +170,7 @@ export default function Navbar() {
           {/* Desktop Navigation - Centered on page */}
           <div
             ref={navRef}
-            className="hidden lg:flex items-center gap-3 absolute left-1/2 -translate-x-1/2 relative"
+            className="hidden lg:flex items-center gap-3 absolute left-1/2 -translate-x-1/2"
           >
             {/* Sliding indicator - gray button that slides behind text */}
             {activeSection && (
