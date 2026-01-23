@@ -265,6 +265,7 @@ export default function DashboardPage() {
 
   // Update progress bar visibility based on scroll direction
   useEffect(() => {
+    console.log('scrollDirection changed:', scrollDirection, 'showProgressBar:', showProgressBar);
     if (scrollDirection === 'down') {
       setShowProgressBar(false);
     } else if (scrollDirection === 'up') {
