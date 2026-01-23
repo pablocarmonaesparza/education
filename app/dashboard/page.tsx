@@ -374,21 +374,39 @@ export default function DashboardPage() {
         {/* Greeting - Animated visibility based on scroll position */}
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            showGreeting ? 'max-h-24 opacity-100 pt-6' : 'max-h-0 opacity-0 pt-0'
+            showGreeting ? 'max-h-32 opacity-100 pt-6' : 'max-h-0 opacity-0 pt-0'
           }`}
         >
-          <div className="max-w-2xl mx-auto px-4">
+          <div className="max-w-2xl mx-auto px-4 text-center">
             {userName && (
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white text-center tracking-tight">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">
                 {greeting.toLowerCase()}, {userName}
               </h1>
+            )}
+            {project && (
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
+                {project}
+              </p>
             )}
           </div>
         </div>
 
-        {/* Section Navigation - Sticky at top */}
+        {/* Project + Section Navigation - Sticky at top */}
         {videos.length > 0 && Object.keys(videosByPhase).length > 0 && (
           <div className={`sticky top-0 z-20 bg-white dark:bg-gray-950 transition-all duration-300 ${showGreeting ? 'mt-6' : 'pt-2'}`}>
+            {/* Project name - shows when greeting is hidden */}
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                !showGreeting ? 'max-h-12 opacity-100' : 'max-h-0 opacity-0'
+              }`}
+            >
+              {project && (
+                <p className="text-center text-sm font-medium text-[#1472FF] px-4 py-2 line-clamp-1">
+                  {project}
+                </p>
+              )}
+            </div>
+
             <div className="relative">
               {/* Gradient overlays - left and right edges */}
               <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
@@ -420,7 +438,7 @@ export default function DashboardPage() {
 
         {/* Bottom shadow overlay - positioned absolutely below sticky nav */}
         {videos.length > 0 && Object.keys(videosByPhase).length > 0 && (
-          <div className="sticky top-[52px] z-10 h-8 -mb-8 bg-gradient-to-b from-white dark:from-gray-950 via-white/80 dark:via-gray-950/80 to-transparent pointer-events-none" />
+          <div className="sticky top-[88px] z-10 h-8 -mb-8 bg-gradient-to-b from-white dark:from-gray-950 via-white/80 dark:via-gray-950/80 to-transparent pointer-events-none" />
         )}
 
         {/* Video cards content */}
