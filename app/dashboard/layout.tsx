@@ -46,7 +46,7 @@ function ProfileButton() {
     <div className="relative">
       <button
         onClick={() => setShowProfileMenu(!showProfileMenu)}
-        className="flex items-center gap-3 px-3 py-2 rounded-2xl transition-all duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
+        className="flex items-center gap-2 px-2 py-2 rounded-2xl transition-all duration-150 hover:bg-gray-100 dark:hover:bg-gray-800"
       >
         {avatarUrl ? (
           <img
@@ -59,10 +59,7 @@ function ProfileButton() {
             {userInitials}
           </div>
         )}
-        <div className="text-left hidden sm:block">
-          <p className="text-sm font-bold text-[#4b4b4b] dark:text-white">{userName || 'Usuario'}</p>
-        </div>
-        <svg className="w-4 h-4 text-gray-400 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
