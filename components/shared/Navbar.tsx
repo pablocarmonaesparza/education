@@ -89,6 +89,7 @@ export default function Navbar() {
       if (activeLink) {
         const navRect = navRef.current.getBoundingClientRect();
         const linkRect = activeLink.getBoundingClientRect();
+        // Include padding in the calculation
         setIndicatorStyle({
           left: linkRect.left - navRect.left,
           width: linkRect.width,
@@ -169,34 +170,12 @@ export default function Navbar() {
           {/* Desktop Navigation - Centered on page */}
           <div
             ref={navRef}
-            className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2"
+            className="hidden lg:flex items-center gap-3 absolute left-1/2 -translate-x-1/2 relative"
           >
-            {navLinks.map((link, index) => (
-              <motion.div
-                key={link.href}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * (index + 1), duration: 0.4 }}
-              >
-                <a
-                  href={link.href}
-                  data-section={link.id}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className={`relative transition-colors duration-300 font-medium cursor-pointer pb-1 ${
-                    activeSection === link.id
-                      ? "text-[#1472FF]"
-                      : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                  }`}
-                >
-                  {link.label}
-                </a>
-              </motion.div>
-            ))}
-
-            {/* Sliding indicator - gray button that slides */}
+            {/* Sliding indicator - gray button that slides behind text */}
             {activeSection && (
               <motion.div
-                className="absolute bottom-0 h-8 bg-gray-200 dark:bg-gray-700 rounded-2xl"
+                className="absolute bottom-0 h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-300 dark:border-gray-600 z-0"
                 initial={false}
                 animate={{
                   left: indicatorStyle.left,
@@ -209,6 +188,29 @@ export default function Navbar() {
                 }}
               />
             )}
+
+            {navLinks.map((link, index) => (
+              <motion.div
+                key={link.href}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * (index + 1), duration: 0.4 }}
+                className="relative z-10"
+              >
+                <a
+                  href={link.href}
+                  data-section={link.id}
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className={`relative px-4 py-2 transition-colors duration-300 font-bold uppercase tracking-wide text-sm cursor-pointer ${
+                    activeSection === link.id
+                      ? "text-[#4b4b4b] dark:text-white"
+                      : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                </a>
+              </motion.div>
+            ))}
           </div>
 
           {/* Desktop CTA */}
