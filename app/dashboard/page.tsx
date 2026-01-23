@@ -247,7 +247,7 @@ export default function DashboardPage() {
     <div className="h-screen flex flex-col">
       {/* Top Section - Fixed padding from top */}
       <div className="pt-6 flex-shrink-0">
-        <div className="max-w-2xl mx-auto px-4">
+        <div className="w-[400px] mx-auto px-4">
           {/* Greeting */}
           {userName && (
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white text-center tracking-tight">
@@ -316,7 +316,7 @@ export default function DashboardPage() {
       {/* Middle Section - Vertical scrollable carousel */}
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto min-h-0 px-4">
         {videos.length > 0 && (
-          <div className="max-w-2xl mx-auto py-6 space-y-6">
+          <div className="w-[400px] mx-auto py-6 space-y-6">
             {Object.entries(videosByPhase).map(([phaseId, phaseData], phaseIndex) => (
               <div key={phaseId} data-phase-id={phaseId}>
                 {/* Phase Divider and Title */}
