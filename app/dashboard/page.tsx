@@ -194,19 +194,28 @@ export default function DashboardPage() {
 
     const observerOptions = {
       root: scrollContainerRef.current,
-      rootMargin: '-20% 0px -60% 0px',
-      threshold: 0
+      rootMargin: '-10% 0px -70% 0px',
+      threshold: [0, 0.1, 0.5, 1]
     };
 
     const observer = new IntersectionObserver((entries) => {
+      // Find the most visible entry
+      let mostVisible: IntersectionObserverEntry | null = null;
+      let maxRatio = 0;
+
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const phaseId = entry.target.getAttribute('data-phase-id');
-          if (phaseId) {
-            setActivePhaseId(phaseId);
-          }
+        if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
+          maxRatio = entry.intersectionRatio;
+          mostVisible = entry;
         }
       });
+
+      if (mostVisible) {
+        const phaseId = mostVisible.target.getAttribute('data-phase-id');
+        if (phaseId) {
+          setActivePhaseId(phaseId);
+        }
+      }
     }, observerOptions);
 
     // Observe all phase sections
@@ -247,7 +256,7 @@ export default function DashboardPage() {
     <div className="h-screen flex flex-col">
       {/* Top Section - Fixed padding from top */}
       <div className="pt-6 flex-shrink-0">
-        <div className="w-[400px] mx-auto px-4">
+        <div className="max-w-2xl mx-auto px-4">
           {/* Greeting */}
           {userName && (
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white text-center tracking-tight">
@@ -278,10 +287,10 @@ export default function DashboardPage() {
                   <button
                     key={phaseId}
                     onClick={() => scrollToPhase(phaseId)}
-                    className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold transition-all duration-150 ${
+                    className={`flex-shrink-0 px-4 py-2 rounded-2xl text-sm font-bold uppercase tracking-wide transition-all duration-150 ${
                       activePhaseId === phaseId
-                        ? 'bg-[#1472FF] text-white'
-                        : 'bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1'
+                        : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
                     }`}
                   >
                     {phaseData.phaseName}
