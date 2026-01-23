@@ -385,12 +385,9 @@ export default function DashboardPage() {
 
             <div
               ref={horizontalScrollRef}
-              className="flex gap-3 overflow-x-auto scrollbar-hide pb-4"
+              className="flex gap-3 overflow-x-auto scrollbar-hide pb-4 px-16"
               style={{ scrollBehavior: 'smooth' }}
             >
-              {/* Left spacer for centering first item */}
-              <div className="flex-shrink-0 w-[calc(50vw-256px-100px)]" />
-
               {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
                 <button
                   key={phaseId}
@@ -405,9 +402,6 @@ export default function DashboardPage() {
                   {phaseData.phaseName}
                 </button>
               ))}
-
-              {/* Right spacer for centering last item */}
-              <div className="flex-shrink-0 w-[calc(50vw-256px-100px)]" />
             </div>
 
             {/* Bottom gradient fade - makes scroll view appear to pass underneath */}
@@ -537,29 +531,27 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {/* Progress Bar - Fixed at bottom, overlays scroll view */}
+      {/* Progress Bar - Fixed at bottom, full width minus gradient areas */}
       {videos.length > 0 && (
         <div
-          className={`fixed bottom-0 left-64 right-64 z-30 transition-all duration-300 ease-in-out ${
+          className={`fixed bottom-0 left-0 right-0 z-30 transition-all duration-300 ease-in-out ${
             showProgressBar ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
           }`}
         >
           {/* Gradient fade at top of progress bar area */}
           <div className="h-6 bg-gradient-to-t from-white dark:from-gray-950 to-transparent pointer-events-none" />
-          <div className="bg-white dark:bg-gray-950 px-4 pb-4">
-            <div className="max-w-[400px] mx-auto">
-              <div className="relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-xl overflow-hidden flex items-center justify-center border-b-4 border-gray-300 dark:border-gray-600">
-                <div
-                  className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"
-                  style={{
-                    width: `${progressPercentage}%`,
-                    borderRadius: progressPercentage >= 100 ? '0.75rem' : '0.75rem 0 0 0.75rem'
-                  }}
-                />
-                <span className="relative z-10 text-sm font-bold uppercase tracking-wide text-[#4b4b4b] dark:text-white">
-                  {progressPercentage}% ({completedCount} de {totalCount})
-                </span>
-              </div>
+          <div className="bg-white dark:bg-gray-950 px-16 pb-4">
+            <div className="relative h-[37px] bg-gray-200 dark:bg-gray-700 rounded-xl overflow-hidden flex items-center justify-center border-b-4 border-gray-300 dark:border-gray-600">
+              <div
+                className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"
+                style={{
+                  width: `${progressPercentage}%`,
+                  borderRadius: progressPercentage >= 100 ? '0.75rem' : '0.75rem 0 0 0.75rem'
+                }}
+              />
+              <span className="relative z-10 text-sm font-bold uppercase tracking-wide text-[#4b4b4b] dark:text-white">
+                {progressPercentage}% ({completedCount} de {totalCount})
+              </span>
             </div>
           </div>
         </div>
