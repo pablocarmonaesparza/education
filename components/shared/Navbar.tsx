@@ -177,15 +177,31 @@ export default function Navbar() {
             {activeSection && (
               <motion.div
                 className="absolute top-1/2 -translate-y-1/2 h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-300 dark:border-gray-600 z-0"
-                initial={false}
+                initial={{ 
+                  opacity: 0,
+                  scale: 0.8,
+                  left: indicatorStyle.left,
+                  width: indicatorStyle.width,
+                }}
                 animate={{
+                  opacity: 1,
+                  scale: 1,
                   left: indicatorStyle.left,
                   width: indicatorStyle.width,
                 }}
                 transition={{
-                  type: "spring",
-                  stiffness: 350,
-                  damping: 30,
+                  opacity: { duration: 0.3, ease: "easeOut" },
+                  scale: { duration: 0.3, ease: "easeOut" },
+                  left: {
+                    type: "spring",
+                    stiffness: 350,
+                    damping: 30,
+                  },
+                  width: {
+                    type: "spring",
+                    stiffness: 350,
+                    damping: 30,
+                  },
                 }}
               />
             )}
