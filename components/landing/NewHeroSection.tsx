@@ -116,7 +116,7 @@ export default function NewHeroSection() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center mb-12 md:mb-16 max-w-2xl mx-auto"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white leading-tight tracking-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#1472FF] leading-tight tracking-tight">
             un curso a partir de tu idea
           </h1>
         </motion.div>
