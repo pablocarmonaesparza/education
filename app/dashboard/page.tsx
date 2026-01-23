@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import LessonItem from '@/components/dashboard/LessonItem';
 
 const greetings = [
   "Hola",
@@ -452,88 +453,18 @@ export default function DashboardPage() {
                 
                 {/* Videos in this phase */}
                 <div className="space-y-4">
-                  {phaseData.videos.map((video, index) => (
-                    <div
+                  {phaseData.videos.map((video) => (
+                    <LessonItem
                       key={video.id}
-                      onClick={() => {
-                        router.push(`/dashboard/salon?video=${video.order}`);
-                      }}
-                      className={`w-[400px] h-[140px] rounded-2xl overflow-hidden transition-all duration-150 cursor-pointer flex border-2 ${
-                        video.isCurrent
-                          ? 'border-[#1472FF]'
-                          : video.isCompleted
-                          ? 'border-green-400'
-                          : 'border-gray-200 dark:border-gray-700'
-                      }`}
-                    >
-                      {/* Video Thumbnail Placeholder */}
-                      <div className="w-[200px] h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center relative flex-shrink-0">
-                        {video.isCompleted ? (
-                          <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                          </svg>
-                        ) : video.isCurrent ? (
-                          <svg className="w-12 h-12 text-[#1472FF]" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                        ) : (
-                          <svg className="w-10 h-10 text-gray-400 dark:text-gray-500" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                        )}
-                        
-                        {/* Duration badge - Top right */}
-                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-lg text-xs font-bold bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-                          {formatDuration(video.duration)}
-                        </span>
-
-                        {/* Progress badge - Top left */}
-                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-lg text-xs font-bold bg-white dark:bg-gray-900 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
-                          {video.order + 1} de {totalCount}
-                        </span>
-                      </div>
-                      
-                      {/* Video Info - Colored based on status */}
-                      <div className={`w-[200px] h-full p-4 flex flex-col relative flex-shrink-0 ${
-                        video.isCurrent
-                          ? 'bg-[#1472FF]'
-                          : video.isCompleted
-                          ? 'bg-green-500'
-                          : 'bg-white dark:bg-gray-900'
-                      }`}>
-                        {/* 3D bottom shadow for active cards */}
-                        {video.isCurrent && (
-                          <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#0E5FCC]" />
-                        )}
-                        {video.isCompleted && (
-                          <div className="absolute bottom-0 left-0 right-0 h-1 bg-green-600" />
-                        )}
-                        
-                        {/* Status badge */}
-                        <span className={`inline-block self-start px-2 py-0.5 rounded-lg text-xs font-bold uppercase tracking-wide mb-2 ${
-                          video.isCurrent
-                            ? 'bg-white/20 text-white'
-                            : video.isCompleted
-                            ? 'bg-white/20 text-white'
-                            : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
-                        }`}>
-                          {video.isCompleted ? 'Completado' : video.isCurrent ? 'Continuar' : 'Pendiente'}
-                        </span>
-                        
-                        <p className={`text-xs mb-1 ${
-                          video.isCurrent || video.isCompleted
-                            ? 'text-white/80'
-                            : 'text-gray-500 dark:text-gray-400'
-                        }`}>{video.phaseName}</p>
-                        <h3 className={`font-bold line-clamp-2 leading-snug ${
-                          video.isCurrent || video.isCompleted
-                            ? 'text-white'
-                            : 'text-[#4b4b4b] dark:text-white'
-                        }`}>
-                          {video.title}
-                        </h3>
-                      </div>
-                    </div>
+                      lessonNumber={video.order + 1}
+                      totalLessons={totalCount}
+                      duration={formatDuration(video.duration)}
+                      category={video.phaseName}
+                      title={video.title}
+                      isCompleted={video.isCompleted}
+                      isCurrent={video.isCurrent}
+                      onClick={() => router.push(`/dashboard/salon?video=${video.order}`)}
+                    />
                   ))}
                 </div>
               </div>
