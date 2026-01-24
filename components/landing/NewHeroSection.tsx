@@ -46,8 +46,6 @@ export default function NewHeroSection() {
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<"login" | "signup">("signup");
-  const [validationError, setValidationError] = useState<string | null>(null);
-  const [isValidating, setIsValidating] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -72,68 +70,22 @@ export default function NewHeroSection() {
       if (!matchingOption) {
         setSelectedOption(null);
       }
-      if (validationError) {
-        setValidationError(null);
-      }
     }
   };
 
-  const handleGenerateCourse = async () => {
+  const handleGenerateCourse = () => {
     if (!idea.trim() || idea.trim().length < MIN_CHARACTERS || idea.trim().length > MAX_CHARACTERS) return;
 
-    setIsValidating(true);
-    setValidationError(null);
-
-    try {
-      const response = await fetch("/api/validate-idea", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ idea: idea.trim() }),
-      });
-
-      const contentType = response.headers.get("content-type");
-      let data;
-
-      if (contentType && contentType.includes("application/json")) {
-        data = await response.json();
-      } else {
-        const text = await response.text();
-        console.error("Respuesta del servidor no es JSON:", text);
-        
-        // Si la respuesta es HTML (página de error), es un error del servidor
-        if (text.includes("<!DOCTYPE html>") || text.includes("<html>")) {
-          throw new Error("Error de configuración del servidor. Por favor contacta al soporte.");
-        }
-        
-        throw new Error("Error al conectar con el servicio de validación. Por favor intenta más tarde.");
-      }
-
-      if (!response.ok) {
-        // Extraer el mensaje de error del JSON si existe
-        const errorMessage = data?.reason || data?.error || `Error en el servidor (${response.status})`;
-        throw new Error(errorMessage);
-      }
-
-      if (!data.valid) {
-        setValidationError(data.reason || "La idea no tiene sentido. Por favor, describe mejor tu proyecto.");
-      } else {
-        // Guardar la idea en sessionStorage para recuperarla después del login/signup
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem('pendingProjectIdea', idea.trim());
-          // También guardar en cookie para OAuth (el servidor no puede acceder a sessionStorage)
-          document.cookie = `pendingProjectIdea=${encodeURIComponent(idea.trim())}; path=/; max-age=3600; SameSite=Lax`;
-        }
-        setAuthMode("signup");
-        setShowAuthModal(true);
-      }
-    } catch (error: any) {
-      console.error("Error validating idea:", error);
-      setValidationError(error.message || "Hubo un error al validar tu idea. Por favor intenta de nuevo.");
-    } finally {
-      setIsValidating(false);
+    // Guardar la idea inmediatamente sin validación (la validación se hará después del registro)
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('pendingProjectIdea', idea.trim());
+      // También guardar en cookie para OAuth (el servidor no puede acceder a sessionStorage)
+      document.cookie = `pendingProjectIdea=${encodeURIComponent(idea.trim())}; path=/; max-age=3600; SameSite=Lax`;
     }
+    
+    // Mostrar el modal de autenticación inmediatamente
+    setAuthMode("signup");
+    setShowAuthModal(true);
   };
 
   return (
@@ -162,13 +114,13 @@ export default function NewHeroSection() {
           <div
             className="rounded-2xl"
             style={{
-              boxShadow: validationError || idea.length > MAX_CHARACTERS
+              boxShadow: idea.length > MAX_CHARACTERS
                 ? '0 4px 0 0 #fca5a5'
                 : isDark ? '0 4px 0 0 #1e4976' : '0 4px 0 0 #d1d5db'
             }}
           >
               <div className={`relative w-full textarea-dark-bg rounded-2xl border-2 transition-all duration-300 ${
-                    validationError || idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "textarea-dark-border"
+                    idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "textarea-dark-border"
                   }`}>
               <textarea
               ref={textareaRef}
@@ -193,17 +145,15 @@ export default function NewHeroSection() {
             </div>
           </div>
 
-          {/* Validation Error - Centered */}
-          {(validationError || idea.length > MAX_CHARACTERS) && (
+          {/* Character Limit Error - Centered */}
+          {idea.length > MAX_CHARACTERS && (
             <div className="flex justify-center mt-4">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-full">
                 <svg className="w-4 h-4 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <p className="text-xs text-red-700 dark:text-red-400 font-medium">
-                  {idea.length > MAX_CHARACTERS
-                    ? `Has excedido el límite de ${MAX_CHARACTERS} caracteres.`
-                    : validationError}
+                  Has excedido el límite de {MAX_CHARACTERS} caracteres.
                 </p>
               </div>
             </div>
@@ -262,7 +212,7 @@ export default function NewHeroSection() {
                 e.preventDefault(); // Prevent textarea blur
               }}
               onClick={handleGenerateCourse}
-              disabled={!idea.trim() || !!validationError || isValidating || idea.trim().length < MIN_CHARACTERS || idea.trim().length > MAX_CHARACTERS}
+              disabled={!idea.trim() || idea.trim().length < MIN_CHARACTERS || idea.trim().length > MAX_CHARACTERS}
               className="inline-flex items-center gap-3 px-10 py-4 rounded-2xl font-bold text-white text-base uppercase tracking-wide bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0"
             >
               Generar mi curso
