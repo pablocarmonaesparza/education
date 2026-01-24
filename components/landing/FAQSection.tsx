@@ -54,7 +54,7 @@ export default function FAQSection() {
                 className={`rounded-2xl transition-all duration-150 ${
                   openIndex === index
                     ? "bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700"
-                    : "bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 hover:border-b-4 hover:border-gray-300 dark:hover:border-gray-600 hover:border-b-0 hover:mt-1 active:border-b-0 active:mt-1"
+                    : "bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 hover:scale-[1.02] active:scale-[0.98]"
                 }`}
               >
                 <button
