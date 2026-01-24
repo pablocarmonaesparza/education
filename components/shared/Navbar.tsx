@@ -52,6 +52,9 @@ export default function Navbar() {
     { href: "#faq", label: "FAQ", id: "faq" },
   ];
 
+  // Track if navbar should be hidden (approaching available-courses)
+  const [shouldHideNav, setShouldHideNav] = useState(false);
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -73,6 +76,14 @@ export default function Navbar() {
       }
 
       setActiveSection(currentSection);
+
+      // Check if we should hide navbar (when approaching available-courses)
+      const availableCoursesSection = document.getElementById("available-courses");
+      if (availableCoursesSection) {
+        const rect = availableCoursesSection.getBoundingClientRect();
+        // Hide navbar when the section is 200px away from the viewport top
+        setShouldHideNav(rect.top <= 200);
+      }
     };
 
     // Initial check
@@ -127,8 +138,8 @@ export default function Navbar() {
     return null;
   }
 
-  // Hide navbar when in "available-courses" section
-  const isHidden = activeSection === "available-courses";
+  // Hide navbar when approaching "available-courses" section
+  const isHidden = shouldHideNav;
 
   return (
     <motion.nav

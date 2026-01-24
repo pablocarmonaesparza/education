@@ -245,7 +245,7 @@ export default function AvailableCoursesSection() {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           viewport={{ once: true }}
-          className="mt-10 flex justify-center"
+          className="mt-10 mb-16 flex justify-center"
         >
           <Link
             href="/auth/signup"
