@@ -258,11 +258,14 @@ export default function NewHeroSection() {
             className="mt-8 flex justify-center"
           >
             <button
+              onMouseDown={(e) => {
+                e.preventDefault(); // Prevent textarea blur
+              }}
               onClick={handleGenerateCourse}
               disabled={!idea.trim() || !!validationError || isValidating || idea.trim().length < MIN_CHARACTERS || idea.trim().length > MAX_CHARACTERS}
               className="inline-flex items-center gap-3 px-10 py-4 rounded-2xl font-bold text-white text-base uppercase tracking-wide bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0"
             >
-              Generar demo de mi curso
+              Generar mi curso
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
