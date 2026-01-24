@@ -89,9 +89,9 @@ export default function Navbar() {
         // Hide navbar when:
         // 1. We've scrolled past most of how-it-works (its bottom is in upper half of viewport)
         //    This means we're at the very end of "Tu Camino Directo" or past it
-        // 2. AND pricing section hasn't reached the viewport top yet
+        // 2. AND pricing section hasn't reached the upper portion of viewport yet
         const isExitingHowItWorks = howItWorksRect.bottom < window.innerHeight * 0.5;
-        const hasReachedPricing = pricingRect.top <= 100;
+        const hasReachedPricing = pricingRect.top <= window.innerHeight * 0.3;
         
         setShouldHideNav(isExitingHowItWorks && !hasReachedPricing);
       }
