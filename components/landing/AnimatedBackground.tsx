@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export default function AnimatedBackground() {
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
+  const [bgColor, setBgColor] = useState<string>("");
 
   useEffect(() => {
     // Detect dark mode immediately on mount
@@ -26,14 +27,61 @@ export default function AnimatedBackground() {
     // Wait until we know the actual dark mode state
     if (isDarkMode === null) return;
 
-    // Simple background: white for light mode, navy blue for dark mode
-    const bgColor = isDarkMode ? "#0a1e3d" : "#FFFFFF";
+    // Base colors
+    const lightBase = { r: 255, g: 255, b: 255 }; // #FFFFFF
+    const darkBase = { r: 10, g: 30, b: 61 };     // #0a1e3d (azul marino)
+    const accent = { r: 20, g: 114, b: 255 };     // #1472FF
+
+    const baseColor = isDarkMode ? darkBase : lightBase;
+    const initialBgColor = isDarkMode ? "#0a1e3d" : "#FFFFFF";
     
-    // Set background color on body and html
-    document.body.style.backgroundColor = bgColor;
-    document.documentElement.style.backgroundColor = bgColor;
+    // Set initial background color
+    setBgColor(initialBgColor);
+    document.body.style.backgroundColor = initialBgColor;
+    document.documentElement.style.backgroundColor = initialBgColor;
+
+    const handleScroll = () => {
+      const section = document.getElementById("available-courses");
+      if (!section) return;
+
+      const rect = section.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      
+      let progress = 0;
+      
+      // Calculate progress based on section position
+      // Start transition when section enters viewport
+      if (rect.top < windowHeight * 0.7 && rect.bottom > windowHeight * 0.3) {
+        // Section is in view - calculate how centered it is
+        const sectionCenter = rect.top + rect.height / 2;
+        const viewportCenter = windowHeight / 2;
+        const distanceFromCenter = Math.abs(sectionCenter - viewportCenter);
+        const maxDistance = windowHeight * 0.8;
+        
+        // More centered = higher progress
+        progress = Math.max(0, 1 - (distanceFromCenter / maxDistance));
+        progress = Math.min(1, progress * 1.5); // Boost the effect
+      }
+
+      // Interpolate between base color and accent
+      const lerp = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
+      const r = lerp(baseColor.r, accent.r, progress);
+      const g = lerp(baseColor.g, accent.g, progress);
+      const b = lerp(baseColor.b, accent.b, progress);
+      
+      const newColor = `rgb(${r}, ${g}, ${b})`;
+      setBgColor(newColor);
+      document.body.style.backgroundColor = newColor;
+      document.documentElement.style.backgroundColor = newColor;
+    };
+
+    // Initial check
+    handleScroll();
+    
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
+      window.removeEventListener("scroll", handleScroll);
       document.body.style.backgroundColor = "";
       document.documentElement.style.backgroundColor = "";
     };
@@ -44,8 +92,8 @@ export default function AnimatedBackground() {
     return null;
   }
 
-  // Background color based on mode
-  const bgColor = isDarkMode ? "#0a1e3d" : "#FFFFFF";
+  // Initial color based on mode
+  const initialColor = isDarkMode ? "#0a1e3d" : "#FFFFFF";
 
   return (
     <div
@@ -53,7 +101,8 @@ export default function AnimatedBackground() {
         position: "fixed",
         inset: 0,
         zIndex: -1,
-        backgroundColor: bgColor,
+        backgroundColor: bgColor || initialColor,
+        transition: "background-color 150ms ease-out",
         pointerEvents: "none",
       }}
     />

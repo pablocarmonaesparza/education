@@ -202,10 +202,10 @@ export default function AvailableCoursesSection() {
           className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12 md:mb-16"
         >
           <div className="text-center">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white mb-6 md:mb-8 leading-tight tracking-tight">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 md:mb-8 leading-tight tracking-tight">
               posibilidades infinitas
             </h2>
-            <p className="text-lg md:text-xl text-[#777777] dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
               con nuestros más de 1,000 videos, generamos cursos personalizados para cualquier proyecto de IA y automatización
             </p>
           </div>
@@ -256,11 +256,11 @@ export default function AvailableCoursesSection() {
           }}
           className="flex flex-col items-center gap-1 cursor-pointer group"
         >
-          <span className="text-sm font-semibold tracking-wide text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-400 transition-colors">
+          <span className="text-sm font-semibold tracking-wide text-white/60 group-hover:text-white/80 transition-colors">
             Precios
           </span>
           <motion.svg
-            className="w-5 h-5 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-400 transition-colors"
+            className="w-5 h-5 text-white/60 group-hover:text-white/80 transition-colors"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
