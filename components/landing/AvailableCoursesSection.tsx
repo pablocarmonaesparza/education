@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 const courseTypes = [
   { id: 1, title: "Chatbots Inteligentes", topics: ["LLMs", "APIs", "Automatización"], icon: "💬" },
@@ -236,6 +237,35 @@ export default function AvailableCoursesSection() {
               duration={baseDuration}
             />
           </div>
+        </motion.div>
+
+        {/* CTA Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="mt-10 flex justify-center"
+        >
+          <Link
+            href="/auth/signup"
+            className="px-10 py-4 rounded-2xl font-bold uppercase tracking-wide transition-all duration-150 inline-flex items-center gap-2 bg-white text-[#1472FF] border-b-4 border-gray-300 hover:bg-gray-100 active:border-b-0 active:mt-1"
+          >
+            Comenzar
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+          </Link>
         </motion.div>
       </div>
 
