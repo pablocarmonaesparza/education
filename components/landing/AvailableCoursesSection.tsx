@@ -1,26 +1,138 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 const courseTypes = [
-  { id: 1, title: "Chatbots Inteligentes", topics: ["LLMs", "APIs", "Automatización"], icon: "💬" },
-  { id: 2, title: "Automatización de Procesos", topics: ["n8n", "Workflows", "APIs"], icon: "⚙️" },
-  { id: 3, title: "Análisis de Datos con IA", topics: ["Data & Analytics", "Visualización", "Métricas"], icon: "📊" },
-  { id: 4, title: "Productos con IA", topics: ["Vibe-Coding", "Deployment", "Productos"], icon: "🚀" },
-  { id: 5, title: "Agentes Autónomos", topics: ["Agentes", "LLMs", "MCP"], icon: "🤖" },
-  { id: 6, title: "Sistemas RAG", topics: ["RAG", "Vector Stores", "Embeddings"], icon: "🧠" },
-  { id: 7, title: "Integraciones Empresariales", topics: ["APIs", "Webhooks", "Integraciones"], icon: "🔗" },
-  { id: 8, title: "Monetización con IA", topics: ["Finanzas", "Métricas", "Productos"], icon: "💰" },
-  { id: 9, title: "E-commerce Inteligente", topics: ["APIs", "Automatización", "Productos"], icon: "🛒" },
-  { id: 10, title: "CRM Automatizado", topics: ["APIs", "n8n", "Data & Analytics"], icon: "📈" },
-  { id: 11, title: "Asistentes Virtuales", topics: ["LLMs", "APIs", "Automatización"], icon: "👤" },
-  { id: 12, title: "Reportes Automáticos", topics: ["Data & Analytics", "APIs", "Automatización"], icon: "📄" },
-  { id: 13, title: "Marketing con IA", topics: ["Generación de Contenido", "Automatización", "Personalización"], icon: "📢" },
-  { id: 14, title: "Seguridad Inteligente", topics: ["Monitoreo", "Automatización", "APIs"], icon: "🔐" },
-  { id: 15, title: "Optimización de Costos", topics: ["Data & Analytics", "Automatización", "Eficiencia"], icon: "⚡" },
-  { id: 16, title: "Innovación Continua", topics: ["Productos", "APIs", "Transformación"], icon: "💡" },
+  { 
+    id: 1, 
+    title: "Chatbots Inteligentes", 
+    topics: ["LLMs", "APIs", "Automatización"], 
+    icon: "💬",
+    description: "Aprende a crear chatbots inteligentes que entienden contexto, responden preguntas complejas y se integran con WhatsApp, Telegram y más.",
+    modules: ["Fundamentos de LLMs", "Diseño de conversaciones", "Integración con plataformas", "Manejo de contexto"]
+  },
+  { 
+    id: 2, 
+    title: "Automatización de Procesos", 
+    topics: ["n8n", "Workflows", "APIs"], 
+    icon: "⚙️",
+    description: "Domina n8n y otras herramientas para automatizar tareas repetitivas, conectar aplicaciones y crear workflows inteligentes.",
+    modules: ["Introducción a n8n", "Conectores y APIs", "Lógica condicional", "Automatización avanzada"]
+  },
+  { 
+    id: 3, 
+    title: "Análisis de Datos con IA", 
+    topics: ["Data & Analytics", "Visualización", "Métricas"], 
+    icon: "📊",
+    description: "Transforma datos en insights accionables usando IA para análisis predictivo, visualización y reportes automáticos.",
+    modules: ["Preparación de datos", "Modelos predictivos", "Visualización", "Dashboards inteligentes"]
+  },
+  { 
+    id: 4, 
+    title: "Productos con IA", 
+    topics: ["Vibe-Coding", "Deployment", "Productos"], 
+    icon: "🚀",
+    description: "Construye productos completos con IA: desde la idea hasta el deployment, usando las mejores prácticas de desarrollo.",
+    modules: ["Ideación con IA", "Prototipado rápido", "MVP development", "Escalamiento"]
+  },
+  { 
+    id: 5, 
+    title: "Agentes Autónomos", 
+    topics: ["Agentes", "LLMs", "MCP"], 
+    icon: "🤖",
+    description: "Crea agentes que toman decisiones, ejecutan tareas y aprenden de sus interacciones de forma autónoma.",
+    modules: ["Arquitectura de agentes", "Toma de decisiones", "Memory systems", "Multi-agent systems"]
+  },
+  { 
+    id: 6, 
+    title: "Sistemas RAG", 
+    topics: ["RAG", "Vector Stores", "Embeddings"], 
+    icon: "🧠",
+    description: "Implementa sistemas de Retrieval Augmented Generation para que tus IAs accedan a conocimiento específico de tu empresa.",
+    modules: ["Embeddings 101", "Vector databases", "Chunking strategies", "RAG optimization"]
+  },
+  { 
+    id: 7, 
+    title: "Integraciones Empresariales", 
+    topics: ["APIs", "Webhooks", "Integraciones"], 
+    icon: "🔗",
+    description: "Conecta sistemas empresariales, CRMs, ERPs y herramientas de productividad con flujos de IA automatizados.",
+    modules: ["APIs REST y GraphQL", "Webhooks", "Autenticación", "Sincronización de datos"]
+  },
+  { 
+    id: 8, 
+    title: "Monetización con IA", 
+    topics: ["Finanzas", "Métricas", "Productos"], 
+    icon: "💰",
+    description: "Aprende a crear productos de IA rentables, establecer precios y escalar tu negocio de forma sostenible.",
+    modules: ["Modelos de negocio", "Pricing strategies", "Unit economics", "Growth hacking"]
+  },
+  { 
+    id: 9, 
+    title: "E-commerce Inteligente", 
+    topics: ["APIs", "Automatización", "Productos"], 
+    icon: "🛒",
+    description: "Automatiza tu tienda online con IA: recomendaciones personalizadas, atención al cliente y gestión de inventario.",
+    modules: ["Recomendaciones", "Chatbots de ventas", "Gestión automática", "Análisis de comportamiento"]
+  },
+  { 
+    id: 10, 
+    title: "CRM Automatizado", 
+    topics: ["APIs", "n8n", "Data & Analytics"], 
+    icon: "📈",
+    description: "Transforma tu CRM con automatizaciones inteligentes que califican leads, nutren prospectos y cierran ventas.",
+    modules: ["Lead scoring", "Nurturing automático", "Integración con ventas", "Reportes predictivos"]
+  },
+  { 
+    id: 11, 
+    title: "Asistentes Virtuales", 
+    topics: ["LLMs", "APIs", "Automatización"], 
+    icon: "👤",
+    description: "Diseña asistentes virtuales personalizados que ayudan a usuarios con tareas específicas de tu industria.",
+    modules: ["Diseño de personalidad", "Knowledge base", "Multi-canal", "Escalamiento humano"]
+  },
+  { 
+    id: 12, 
+    title: "Reportes Automáticos", 
+    topics: ["Data & Analytics", "APIs", "Automatización"], 
+    icon: "📄",
+    description: "Genera reportes automáticos con narrativas en lenguaje natural, gráficos dinámicos y distribución programada.",
+    modules: ["Extracción de datos", "Generación de narrativas", "Visualización", "Distribución automática"]
+  },
+  { 
+    id: 13, 
+    title: "Marketing con IA", 
+    topics: ["Generación de Contenido", "Automatización", "Personalización"], 
+    icon: "📢",
+    description: "Potencia tu marketing con IA: genera contenido, personaliza campañas y optimiza conversiones automáticamente.",
+    modules: ["Generación de contenido", "Segmentación IA", "A/B testing automático", "Personalización"]
+  },
+  { 
+    id: 14, 
+    title: "Seguridad Inteligente", 
+    topics: ["Monitoreo", "Automatización", "APIs"], 
+    icon: "🔐",
+    description: "Implementa sistemas de seguridad con IA que detectan anomalías, previenen fraudes y protegen datos.",
+    modules: ["Detección de anomalías", "Prevención de fraude", "Monitoreo en tiempo real", "Respuesta automática"]
+  },
+  { 
+    id: 15, 
+    title: "Optimización de Costos", 
+    topics: ["Data & Analytics", "Automatización", "Eficiencia"], 
+    icon: "⚡",
+    description: "Reduce costos operativos identificando ineficiencias y automatizando procesos con ROI medible.",
+    modules: ["Análisis de procesos", "Identificación de oportunidades", "Automatización ROI", "Monitoreo de ahorros"]
+  },
+  { 
+    id: 16, 
+    title: "Innovación Continua", 
+    topics: ["Productos", "APIs", "Transformación"], 
+    icon: "💡",
+    description: "Establece una cultura de innovación con IA: experimenta rápido, mide resultados e itera constantemente.",
+    modules: ["Framework de innovación", "Experimentación rápida", "Métricas de impacto", "Escalamiento de éxitos"]
+  },
 ];
 
 // Split courses into 2 rows
@@ -35,9 +147,11 @@ interface CarouselRowProps {
   courses: typeof courseTypes;
   direction: "left" | "right";
   duration: number;
+  isPaused: boolean;
+  onSelectCourse: (course: typeof courseTypes[0]) => void;
 }
 
-function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
+function CarouselRow({ courses, direction, duration, isPaused, onSelectCourse }: CarouselRowProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
   const animationRef = useRef<number>();
@@ -103,7 +217,7 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
   }, [singleSetWidth, direction, isInitialized]);
 
   useEffect(() => {
-    if (singleSetWidth === 0 || !isInitialized) return; // Wait for width calculation and initialization
+    if (singleSetWidth === 0 || !isInitialized || isPaused) return; // Stop animation when paused
 
     const speed = singleSetWidth / duration; // pixels per second
 
@@ -140,7 +254,14 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [duration, singleSetWidth, direction, isInitialized]);
+  }, [duration, singleSetWidth, direction, isInitialized, isPaused]);
+
+  // Reset lastTimeRef when resuming to avoid jumps
+  useEffect(() => {
+    if (!isPaused) {
+      lastTimeRef.current = 0;
+    }
+  }, [isPaused]);
 
   // Both directions use negative translateX, but right starts further back and moves toward 0
   const normalizedOffset = singleSetWidth > 0 ? offsetRef.current : 0;
@@ -156,9 +277,10 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
       }}
     >
       {courses.map((course, index) => (
-        <div
+        <button
           key={`${course.id}-${index}`}
-          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-[#0a1e3d] rounded-2xl p-4 md:p-5 border-2 border-[#1472FF]/30 border-b-4 border-[#0E5FCC]"
+          onClick={() => onSelectCourse(course)}
+          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-[#0a1e3d] rounded-2xl p-4 md:p-5 border-2 border-[#1472FF]/30 border-b-4 border-[#0E5FCC] text-left cursor-pointer hover:scale-105 hover:border-[#1472FF] transition-all duration-200"
         >
           {/* Icon */}
           <div className="text-3xl md:text-4xl mb-3">
@@ -181,7 +303,7 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
               </span>
             ))}
           </div>
-        </div>
+        </button>
       ))}
     </div>
   );
@@ -190,6 +312,15 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
 export default function AvailableCoursesSection() {
   // Same duration for all rows (75% speed)
   const baseDuration = 60;
+  const [selectedCourse, setSelectedCourse] = useState<typeof courseTypes[0] | null>(null);
+
+  const handleSelectCourse = (course: typeof courseTypes[0]) => {
+    setSelectedCourse(course);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedCourse(null);
+  };
 
   return (
     <section id="available-courses" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden py-12">
@@ -226,6 +357,8 @@ export default function AvailableCoursesSection() {
               courses={duplicatedRow1}
               direction="left"
               duration={baseDuration}
+              isPaused={selectedCourse !== null}
+              onSelectCourse={handleSelectCourse}
             />
           </div>
 
@@ -235,6 +368,8 @@ export default function AvailableCoursesSection() {
               courses={duplicatedRow2}
               direction="right"
               duration={baseDuration}
+              isPaused={selectedCourse !== null}
+              onSelectCourse={handleSelectCourse}
             />
           </div>
         </motion.div>
@@ -268,6 +403,94 @@ export default function AvailableCoursesSection() {
           </Link>
         </motion.div>
       </div>
+
+      {/* Expanded Course Modal */}
+      <AnimatePresence>
+        {selectedCourse && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={handleCloseModal}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="relative w-full max-w-lg bg-[#0a1e3d] rounded-2xl p-6 md:p-8 border-2 border-[#1472FF]/30 border-b-4 border-[#0E5FCC]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={handleCloseModal}
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/20 hover:text-white transition-all"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              {/* Icon and Title */}
+              <div className="flex items-center gap-4 mb-4">
+                <div className="text-4xl md:text-5xl">
+                  {selectedCourse.icon}
+                </div>
+                <h3 className="text-2xl md:text-3xl font-extrabold text-white leading-tight tracking-tight">
+                  {selectedCourse.title}
+                </h3>
+              </div>
+
+              {/* Description */}
+              <p className="text-white/80 text-base md:text-lg mb-6 leading-relaxed">
+                {selectedCourse.description}
+              </p>
+
+              {/* Topics */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                {selectedCourse.topics.map((topic, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 bg-[#1472FF]/30 text-white text-sm font-medium rounded-full border border-[#1472FF]/50"
+                  >
+                    {topic}
+                  </span>
+                ))}
+              </div>
+
+              {/* Modules */}
+              <div className="mb-6">
+                <h4 className="text-sm font-bold text-white/60 uppercase tracking-wide mb-3">
+                  Módulos incluidos
+                </h4>
+                <div className="space-y-2">
+                  {selectedCourse.modules?.map((module, i) => (
+                    <div key={i} className="flex items-center gap-3 text-white/90">
+                      <div className="w-6 h-6 rounded-full bg-[#1472FF]/30 flex items-center justify-center text-xs font-bold text-white">
+                        {i + 1}
+                      </div>
+                      <span className="text-sm md:text-base">{module}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* CTA */}
+              <Link
+                href="/auth/signup"
+                className="w-full px-6 py-3 rounded-2xl font-bold uppercase tracking-wide transition-all duration-150 inline-flex items-center justify-center gap-2 bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1"
+              >
+                Crear mi curso personalizado
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </Link>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Next section indicator */}
       <motion.div
