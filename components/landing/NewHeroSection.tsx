@@ -2,16 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
-import dynamic from "next/dynamic";
-
-const AuthForm = dynamic(() => import("@/components/auth/AuthForm"), {
-  ssr: false,
-  loading: () => (
-    <div className="p-8 flex items-center justify-center min-h-[400px]">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1472FF]"></div>
-    </div>
-  ),
-});
+import AuthForm from "@/components/auth/AuthForm";
 
 const MIN_CHARACTERS = 100;
 const MAX_CHARACTERS = 1000;
