@@ -157,7 +157,7 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
       {courses.map((course, index) => (
         <div
           key={`${course.id}-${index}`}
-          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-5 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-gray-300 dark:border-gray-600"
+          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-[#0a1e3d] rounded-2xl p-4 md:p-5 border-2 border-[#1472FF]/30 border-b-4 border-[#0E5FCC]"
         >
           {/* Icon */}
           <div className="text-3xl md:text-4xl mb-3">
@@ -165,7 +165,7 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
           </div>
 
           {/* Title */}
-          <h3 className="text-base md:text-lg font-extrabold text-[#4b4b4b] mb-3 leading-tight tracking-tight">
+          <h3 className="text-base md:text-lg font-extrabold text-white mb-3 leading-tight tracking-tight">
             {course.title}
           </h3>
 
@@ -174,7 +174,7 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
             {course.topics.map((topic, i) => (
               <span
                 key={i}
-                className="px-2 py-0.5 bg-[#1472FF]/10 text-[#1472FF] text-xs font-medium rounded-full"
+                className="px-2 py-0.5 bg-white/20 text-white text-xs font-medium rounded-full"
               >
                 {topic}
               </span>
