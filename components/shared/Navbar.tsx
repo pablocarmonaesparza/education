@@ -77,21 +77,21 @@ export default function Navbar() {
 
       setActiveSection(currentSection);
 
-      // Check if we should hide navbar (between approaching available-courses and reaching pricing)
-      const availableCoursesSection = document.getElementById("available-courses");
+      // Check if we should hide navbar (when leaving how-it-works until reaching pricing)
+      const howItWorksSection = document.getElementById("how-it-works");
       const pricingSection = document.getElementById("pricing");
       
-      if (availableCoursesSection && pricingSection) {
-        const coursesRect = availableCoursesSection.getBoundingClientRect();
+      if (howItWorksSection && pricingSection) {
+        const howItWorksRect = howItWorksSection.getBoundingClientRect();
         const pricingRect = pricingSection.getBoundingClientRect();
         
         // Hide navbar when:
-        // 1. available-courses section is approaching (200px from viewport top)
+        // 1. how-it-works section bottom is near the viewport (exiting the section)
         // 2. AND pricing section hasn't reached the viewport top yet
-        const isApproachingCourses = coursesRect.top <= 200;
+        const isLeavingHowItWorks = howItWorksRect.bottom <= window.innerHeight * 0.7;
         const hasReachedPricing = pricingRect.top <= 100;
         
-        setShouldHideNav(isApproachingCourses && !hasReachedPricing);
+        setShouldHideNav(isLeavingHowItWorks && !hasReachedPricing);
       }
     };
 
