@@ -157,7 +157,7 @@ function CarouselRow({ courses, direction, duration }: CarouselRowProps) {
       {courses.map((course, index) => (
         <div
           key={`${course.id}-${index}`}
-          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-5 border-2 border-gray-200 dark:border-gray-700"
+          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-5 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-gray-300 dark:border-gray-600"
         >
           {/* Icon */}
           <div className="text-3xl md:text-4xl mb-3">
@@ -217,7 +217,7 @@ export default function AvailableCoursesSection() {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           viewport={{ once: true }}
-          className="flex flex-col gap-4 md:gap-6 px-4 sm:px-6 lg:px-8"
+          className="flex flex-col gap-4 md:gap-6"
         >
           {/* Row 1 - Left direction */}
           <div className="overflow-x-hidden w-full">
