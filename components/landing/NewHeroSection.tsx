@@ -159,7 +159,7 @@ export default function NewHeroSection() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center mb-12 md:mb-16 max-w-2xl mx-auto"
+          className="text-center mb-8 max-w-2xl mx-auto"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white leading-tight tracking-tight">
             un curso a partir de tu idea
@@ -191,6 +191,7 @@ export default function NewHeroSection() {
               value={idea}
               onChange={handleIdeaChange}
               onFocus={() => setShowOptions(true)}
+              onBlur={() => setShowOptions(false)}
               placeholder="Describe tu idea y haremos un curso personalizado para ti."
               className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 pt-4 pb-2"
               rows={3}
@@ -243,7 +244,8 @@ export default function NewHeroSection() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.2, delay: index * 0.05 }}
-                      onClick={() => {
+                      onMouseDown={(e) => {
+                        e.preventDefault(); // Prevent textarea blur
                         setSelectedOption(option.id);
                         setIdea(option.description);
                         textareaRef.current?.focus();
