@@ -53,27 +53,21 @@ export default function FAQSection() {
                 key={index} 
                 className={`rounded-2xl transition-all duration-150 ${
                   openIndex === index
-                    ? "bg-gray-200 dark:bg-gray-700 border-b-4 border-gray-300 dark:border-gray-600"
-                    : "bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 border-b-4 border-gray-300 dark:border-gray-600 hover:border-b-0 hover:mt-1 active:border-b-0 active:mt-1"
+                    ? "bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700"
+                    : "bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 hover:border-b-4 hover:border-gray-300 dark:hover:border-gray-600 hover:border-b-0 hover:mt-1 active:border-b-0 active:mt-1"
                 }`}
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className={`w-full flex justify-between items-center text-left p-6 md:p-8 transition-all duration-150 ${
-                    openIndex === index ? "mt-0" : ""
-                  }`}
+                  className="w-full flex justify-between items-center text-left p-6 md:p-8"
                 >
-                  <span className={`text-lg md:text-xl font-bold uppercase tracking-wide pr-8 ${
-                    openIndex === index 
-                      ? "text-[#4b4b4b] dark:text-white" 
-                      : "text-[#4b4b4b] dark:text-white"
-                  }`}>
+                  <span className="text-lg md:text-xl font-bold uppercase tracking-wide pr-8 text-[#4b4b4b] dark:text-white">
                     {faq.question}
                   </span>
                   <motion.div
                     animate={{ rotate: openIndex === index ? 180 : 0 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-gray-300 dark:bg-gray-600 text-[#4b4b4b] dark:text-white"
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-[#4b4b4b] dark:text-white"
                   >
                     <svg
                       className="w-5 h-5"
@@ -96,10 +90,12 @@ export default function FAQSection() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
-                      className="px-6 md:px-8 pb-6 md:pb-8 text-base md:text-lg text-[#777777] dark:text-gray-400 leading-relaxed"
+                      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                      className="overflow-hidden"
                     >
-                      {faq.answer}
+                      <div className="px-6 md:px-8 pb-6 md:pb-8 text-base md:text-lg text-[#777777] dark:text-gray-400 leading-relaxed">
+                        {faq.answer}
+                      </div>
                     </motion.div>
                   )}
                 </AnimatePresence>
