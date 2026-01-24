@@ -47,12 +47,6 @@ const suggestionOptions = [
     icon: "🤖",
     description: "Necesito un asistente virtual para mi equipo de trabajo que pueda agendar reuniones, resumir documentos largos, responder preguntas sobre políticas internas de la empresa y ayudar a redactar correos profesionales."
   },
-  { 
-    id: 6, 
-    label: "Generación de contenido", 
-    icon: "✍️",
-    description: "Quiero automatizar la creación de contenido para mis redes sociales. Necesito generar posts, captions, y hashtags relevantes para Instagram y LinkedIn basados en mi industria, además de programar su publicación automática."
-  },
 ];
 
 export default function NewHeroSection() {
