@@ -14,12 +14,16 @@ export default function SignupPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [showSupabaseWarning, setShowSupabaseWarning] = useState<boolean>(false);
   const router = useRouter();
   
   // Lazy initialization of Supabase client to avoid SSR issues
   const [supabase, setSupabase] = useState<any>(null);
   
   useEffect(() => {
+    setIsMounted(true);
+    
     if (typeof window !== 'undefined') {
       // Check if Supabase is configured before trying to create client
       const url = process.env.NEXT_PUBLIC_SUPABASE_URL || (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_SUPABASE_URL;
@@ -36,31 +40,18 @@ export default function SignupPage() {
       if (configured) {
         try {
           setSupabase(createClient());
+          setShowSupabaseWarning(false);
         } catch (error: any) {
           console.error('Error initializing Supabase client:', error);
-          // Don't set error state - let the warning banner handle it
+          setShowSupabaseWarning(true);
         }
       } else {
         console.warn('Supabase not configured:', { url: url?.substring(0, 30), keyPresent: !!key });
+        setShowSupabaseWarning(true);
       }
     }
   }, []);
 
-  // Verificar si Supabase está configurado
-  const isSupabaseConfigured = () => {
-    if (typeof window === 'undefined') return false;
-    
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL || (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    return url &&
-           key &&
-           url !== 'https://your-project.supabase.co' &&
-           key !== 'your-anon-key-here' &&
-           !url.includes('your-project') &&
-           url.startsWith('https://') &&
-           key.length > 20;
-  };
 
   const translateError = (errorMessage: string): string => {
     // Error especial cuando Supabase no está configurado
@@ -187,7 +178,7 @@ export default function SignupPage() {
             </div>
 
             {/* Advertencia si Supabase no está configurado */}
-            {!isSupabaseConfigured() && (
+            {isMounted && showSupabaseWarning && (
               <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/30 border-2 border-yellow-300 dark:border-yellow-700 rounded-2xl">
                 <div className="flex items-start gap-3">
                   <svg className="w-6 h-6 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
