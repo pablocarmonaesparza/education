@@ -16,6 +16,15 @@ const AuthForm = dynamic(() => import("@/components/auth/AuthForm"), {
 const MIN_CHARACTERS = 100;
 const MAX_CHARACTERS = 1000;
 
+const suggestionOptions = [
+  { id: 1, label: "Chatbot de atención al cliente", icon: "💬" },
+  { id: 2, label: "Automatización de procesos", icon: "⚙️" },
+  { id: 3, label: "Análisis de datos con IA", icon: "📊" },
+  { id: 4, label: "E-commerce inteligente", icon: "🛒" },
+  { id: 5, label: "Asistente virtual", icon: "🤖" },
+  { id: 6, label: "Generación de contenido", icon: "✍️" },
+];
+
 export default function NewHeroSection() {
   const [idea, setIdea] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -178,6 +187,42 @@ export default function NewHeroSection() {
               </div>
             </div>
           )}
+
+          {/* Suggestion Options - Appear when focused */}
+          <AnimatePresence>
+            {isFocused && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                animate={{ opacity: 1, height: "auto", marginTop: 16 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="overflow-hidden"
+              >
+                <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-3 font-medium">
+                  O elige una idea para inspirarte
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {suggestionOptions.map((option, index) => (
+                    <motion.button
+                      key={option.id}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.2, delay: index * 0.05 }}
+                      onClick={() => {
+                        setIdea(`Quiero crear un proyecto de ${option.label.toLowerCase()}. `);
+                        textareaRef.current?.focus();
+                      }}
+                      className="px-3 py-2 rounded-xl text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-0.5 transition-all duration-150 flex items-center gap-1.5"
+                    >
+                      <span>{option.icon}</span>
+                      <span>{option.label}</span>
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* CTA Button */}
           <motion.div

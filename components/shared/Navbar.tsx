@@ -87,13 +87,15 @@ export default function Navbar() {
         const pricingRect = pricingSection.getBoundingClientRect();
         
         // Hide navbar when:
-        // 1. We've scrolled past most of how-it-works (its bottom is in upper half of viewport)
-        //    This means we're at the very end of "Tu Camino Directo" or past it
-        // 2. AND pricing section hasn't reached the upper portion of viewport yet
+        // 1. We're exiting "Cómo Funciona" (end of "Tu Camino Directo")
+        // 2. AND "Nuestros planes" hasn't started entering the viewport yet
+        //
+        // Note: Using a symmetric "enter viewport" threshold avoids the feeling
+        // that the navbar takes longer to re-appear than to disappear.
         const isExitingHowItWorks = howItWorksRect.bottom < window.innerHeight * 0.5;
-        const hasReachedPricing = pricingRect.top <= window.innerHeight * 0.3;
-        
-        setShouldHideNav(isExitingHowItWorks && !hasReachedPricing);
+        const pricingIsEnteringViewport = pricingRect.top <= window.innerHeight * 0.9;
+
+        setShouldHideNav(isExitingHowItWorks && !pricingIsEnteringViewport);
       }
     };
 
