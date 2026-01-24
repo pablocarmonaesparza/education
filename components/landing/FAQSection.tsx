@@ -51,19 +51,21 @@ export default function FAQSection() {
             {faqs.map((faq, index) => (
               <div 
                 key={index} 
-className={`rounded-2xl transition-all duration-300 ${
+                className={`rounded-2xl transition-all duration-150 ${
                   openIndex === index
-                    ? "bg-[#1472FF]/10"
-                    : "bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800/50"
+                    ? "bg-gray-200 dark:bg-gray-700 border-b-4 border-gray-300 dark:border-gray-600"
+                    : "bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 border-b-4 border-gray-300 dark:border-gray-600 hover:border-b-0 hover:mt-1 active:border-b-0 active:mt-1"
                 }`}
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full flex justify-between items-center text-left p-6 md:p-8"
+                  className={`w-full flex justify-between items-center text-left p-6 md:p-8 transition-all duration-150 ${
+                    openIndex === index ? "mt-0" : ""
+                  }`}
                 >
-                  <span className={`text-lg md:text-xl font-bold transition-colors pr-8 tracking-tight ${
+                  <span className={`text-lg md:text-xl font-bold uppercase tracking-wide pr-8 ${
                     openIndex === index 
-                      ? "text-[#1472FF]" 
+                      ? "text-[#4b4b4b] dark:text-white" 
                       : "text-[#4b4b4b] dark:text-white"
                   }`}>
                     {faq.question}
@@ -71,11 +73,7 @@ className={`rounded-2xl transition-all duration-300 ${
                   <motion.div
                     animate={{ rotate: openIndex === index ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
-                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                      openIndex === index 
-                        ? "bg-[#1472FF] text-white" 
-                        : "bg-gray-100 dark:bg-gray-800 text-[#777777]"
-                    }`}
+                    className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-gray-300 dark:bg-gray-600 text-[#4b4b4b] dark:text-white"
                   >
                     <svg
                       className="w-5 h-5"
