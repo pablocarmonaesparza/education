@@ -11,12 +11,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [showSupabaseWarning, setShowSupabaseWarning] = useState<boolean>(false);
   const router = useRouter();
   
   // Lazy initialization of Supabase client to avoid SSR issues
   const [supabase, setSupabase] = useState<any>(null);
   
   useEffect(() => {
+    setIsMounted(true);
+    
     if (typeof window !== 'undefined') {
       // Check if Supabase is configured before trying to create client
       const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -31,26 +35,16 @@ export default function LoginPage() {
       if (configured) {
         try {
           setSupabase(createClient());
+          setShowSupabaseWarning(false);
         } catch (error: any) {
           console.error('Error initializing Supabase client:', error);
+          setShowSupabaseWarning(true);
         }
+      } else {
+        setShowSupabaseWarning(true);
       }
     }
   }, []);
-
-  // Verificar si Supabase está configurado
-  const isSupabaseConfigured = () => {
-    if (typeof window === 'undefined') return false;
-    
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-    return url &&
-           key &&
-           url !== 'https://your-project.supabase.co' &&
-           key !== 'your-anon-key-here' &&
-           !url.includes('your-project');
-  };
 
   const translateError = (errorMessage: string): string => {
     // Error especial cuando Supabase no está configurado
@@ -161,7 +155,7 @@ export default function LoginPage() {
             </div>
 
             {/* Advertencia si Supabase no está configurado */}
-            {!isSupabaseConfigured() && (
+            {isMounted && showSupabaseWarning && (
               <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/30 border-2 border-yellow-300 dark:border-yellow-700 rounded-2xl">
                 <div className="flex items-start gap-3">
                   <svg className="w-6 h-6 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -197,7 +191,7 @@ export default function LoginPage() {
               <input
                 type="email"
                 id="email"
-                className="w-full px-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
+                className="w-full px-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
                 placeholder="Correo electrónico"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -207,7 +201,7 @@ export default function LoginPage() {
               <input
                 type="password"
                 id="password"
-                className="w-full px-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:ring-2 focus:ring-[#1472FF] focus:border-transparent transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
+                className="w-full px-4 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
                 placeholder="Contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
