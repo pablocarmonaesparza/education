@@ -21,23 +21,10 @@ export default function LessonItem({
   isCurrent = false,
   onClick,
 }: LessonItemProps) {
-  // Determine colors based on state
-  const getBorderColor = () => {
-    if (isCompleted) return '#22c55e'; // green-500
-    if (isCurrent) return '#1472FF'; // blue
-    return '#e5e7eb'; // gray-200
-  };
-
-  const getBottomBorderColor = () => {
-    if (isCompleted) return '#16a34a'; // green-600
-    if (isCurrent) return '#0E5FCC'; // darker blue
-    return '#d1d5db'; // gray-300
-  };
-
   const getRightPanelBg = () => {
     if (isCompleted) return 'bg-[#22c55e]'; // green-500
     if (isCurrent) return 'bg-[#1472FF]'; // blue
-    return 'bg-gray-100 dark:bg-gray-900';
+    return 'bg-gray-100 dark:bg-gray-800';
   };
 
   const getRightPanelText = () => {
@@ -89,25 +76,22 @@ export default function LessonItem({
     );
   };
 
+  // Determine border classes based on state
+  const getBorderClasses = () => {
+    if (isCompleted) return 'border-[#22c55e] shadow-[0_3px_0_0_#16a34a]';
+    if (isCurrent) return 'border-[#1472FF] shadow-[0_3px_0_0_#0E5FCC]';
+    return 'border-gray-200 dark:border-gray-700 shadow-[0_3px_0_0_#d1d5db] dark:shadow-[0_3px_0_0_#030712]';
+  };
+
   return (
     <button
       onClick={onClick}
       className="w-full text-left transition-all duration-150 hover:scale-[1.01] active:scale-[0.99]"
     >
-      {/* Outer wrapper for depth effect - the shadow/depth is OUTSIDE the border */}
+      {/* Main card with border and depth effect */}
       <div
-        className="rounded-2xl"
-        style={{
-          boxShadow: `0 3px 0 0 ${getBottomBorderColor()}`,
-        }}
+        className={`flex overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border-[3px] ${getBorderClasses()}`}
       >
-        {/* Main card with border */}
-        <div
-          className="flex overflow-hidden rounded-2xl bg-white dark:bg-gray-900"
-          style={{
-            border: `3px solid ${getBorderColor()}`,
-          }}
-        >
           {/* Left Panel - White with video info */}
           <div className="flex-shrink-0 w-40 sm:w-48 p-4 flex flex-col bg-white dark:bg-gray-900">
             {/* Top row - Counter left, Duration right */}
@@ -149,7 +133,6 @@ export default function LessonItem({
             </h3>
           </div>
         </div>
-      </div>
     </button>
   );
 }
