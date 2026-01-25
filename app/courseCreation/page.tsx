@@ -117,7 +117,7 @@ export default function CourseCreationPage() {
   }, [router, supabase]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-950 flex flex-col">
       <OnboardingNavbar />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-12">
@@ -151,7 +151,7 @@ export default function CourseCreationPage() {
                   className="absolute inset-0 bg-[#1472FF] rounded-2xl animate-pulse"
                   style={{ boxShadow: '0 4px 0 0 #0E5FCC' }}
                 />
-                <div className="absolute inset-2 bg-white dark:bg-gray-900 rounded-xl flex items-center justify-center">
+                <div className="absolute inset-2 bg-white dark:bg-gray-950 rounded-xl flex items-center justify-center">
                   <span className="text-4xl animate-bounce">🤖</span>
                 </div>
               </div>

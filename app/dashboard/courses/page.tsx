@@ -116,7 +116,7 @@ export default function CoursesPage() {
   });
 
   return (
-    <div className="p-8 bg-white dark:bg-gray-900 min-h-screen">
+    <div className="p-8 bg-white dark:bg-gray-950 min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">todos los cursos</h1>
@@ -133,7 +133,7 @@ export default function CoursesPage() {
             placeholder="Buscar por nombre, descripción o tema..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-6 py-4 pl-14 rounded-2xl border-2 border-gray-200 dark:border-gray-700 focus:border-[#1472FF] focus:ring-2 focus:ring-[#1472FF]/20 outline-none transition-all text-gray-900 dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400"
+            className="w-full px-6 py-4 pl-14 rounded-2xl border-2 border-gray-200 dark:border-black focus:border-[#1472FF] focus:ring-2 focus:ring-[#1472FF]/20 outline-none transition-all text-gray-900 dark:text-white bg-white dark:bg-gray-950 placeholder-gray-400"
           />
           <svg
             className="absolute left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -161,7 +161,7 @@ export default function CoursesPage() {
               className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold whitespace-nowrap transition-all duration-150 ${
                 selectedCategory === category.id
                   ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC]'
-                  : 'bg-white dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-200 dark:border-gray-700 hover:border-[#1472FF]'
+                  : 'bg-white dark:bg-gray-950 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-200 dark:border-black hover:border-[#1472FF]'
               }`}
             >
               <span className="text-xl">{category.icon}</span>

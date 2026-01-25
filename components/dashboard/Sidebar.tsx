@@ -64,7 +64,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 border-r-2 border-gray-200 dark:border-gray-800 flex flex-col z-50 w-64">
+    <aside className="fixed left-0 top-0 h-screen bg-white dark:bg-gray-950 border-r-2 border-gray-200 dark:border-gray-800 flex flex-col z-50 w-64">
       {/* Logo */}
       <div className="p-4 flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center">
@@ -145,7 +145,7 @@ export default function Sidebar() {
                 className="fixed inset-0 z-10" 
                 onClick={() => setShowProfileMenu(false)} 
               />
-              <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700 py-2 z-20 shadow-lg">
+              <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-gray-950 rounded-2xl border-2 border-gray-200 dark:border-black py-2 z-20 shadow-lg">
                 <button className="w-full rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center justify-center gap-2 px-4 py-3 mx-2 mb-2">
                   Mejorar Plan
                 </button>

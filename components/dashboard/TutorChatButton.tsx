@@ -117,7 +117,7 @@ export default function TutorChatButton() {
   return (
     <aside
       ref={asideRef}
-      className="fixed right-0 top-0 h-screen bg-white dark:bg-gray-900 border-l-2 border-gray-200 dark:border-gray-800 flex flex-col z-40"
+      className="fixed right-0 top-0 h-screen bg-white dark:bg-gray-950 border-l-2 border-gray-200 dark:border-gray-800 flex flex-col z-40"
       style={{ width: `${width}px` }}
     >
       {/* Resize Handle */}
@@ -148,7 +148,7 @@ export default function TutorChatButton() {
       </div>
 
       {/* Messages - Clean and spacious */}
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 bg-white dark:bg-gray-900">
+      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 bg-white dark:bg-gray-950">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -159,7 +159,7 @@ export default function TutorChatButton() {
                 className={`px-4 py-3 rounded-xl ${
                   message.role === 'user'
                     ? 'bg-[#1472FF] text-white'
-                    : 'bg-gray-50 dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-200'
+                    : 'bg-gray-50 dark:bg-gray-950 text-[#4b4b4b] dark:text-gray-200'
                 }`}
               >
                 <p className="text-sm leading-relaxed">{message.content}</p>
@@ -171,7 +171,7 @@ export default function TutorChatButton() {
         {isLoading && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
-              <div className="bg-gray-50 dark:bg-gray-900 px-4 py-3 rounded-xl">
+              <div className="bg-gray-50 dark:bg-gray-950 px-4 py-3 rounded-xl">
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                   <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -185,7 +185,7 @@ export default function TutorChatButton() {
       </div>
 
       {/* Input - Elegant with subtle shadow */}
-      <div className="px-6 py-4 bg-white dark:bg-gray-900 flex-shrink-0">
+      <div className="px-6 py-4 bg-white dark:bg-gray-950 flex-shrink-0">
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="relative">
             <input
@@ -194,7 +194,7 @@ export default function TutorChatButton() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Escribe tu mensaje..."
-              className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all shadow-sm"
+              className="w-full px-4 py-3 bg-white dark:bg-gray-950 border border-gray-200 dark:border-black rounded-xl text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all shadow-sm"
             />
           </div>
           <button

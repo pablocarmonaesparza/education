@@ -78,7 +78,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
   const hasVideos = Object.keys(videosByPhase).length > 0;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 p-6">
+    <div className="min-h-screen bg-white dark:bg-gray-950 p-6">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">videos favoritos</h1>

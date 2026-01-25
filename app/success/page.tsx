@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default function SuccessPage() {
   return (
-    <main className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
+    <main className="min-h-screen flex flex-col bg-white dark:bg-gray-950">
       <Navbar />
       <section className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center text-center">
         <div className="w-24 h-24 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-6">
