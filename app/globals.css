@@ -395,3 +395,14 @@ p.text-2xl {
   }
 }
 
+/* Phase divider line */
+.phase-divider {
+  background-color: #e5e7eb; /* gray-200 */
+}
+
+@media (prefers-color-scheme: dark) {
+  .phase-divider {
+    background-color: #030712; /* gray-950 */
+  }
+}
+

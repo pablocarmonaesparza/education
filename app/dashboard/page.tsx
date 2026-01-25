@@ -507,7 +507,7 @@ export default function DashboardPage() {
                   <div className="mb-6">
                     {/* Divider - same width as progress bar (80% centered) */}
                     <div className="flex justify-center mb-4">
-                      <div className="w-[80%] h-[3px] bg-gray-200 dark:bg-gray-800 rounded-full" />
+                      <div className="w-[80%] h-[3px] phase-divider rounded-full" />
                     </div>
                     <div className="w-[400px] mx-auto">
                       <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
