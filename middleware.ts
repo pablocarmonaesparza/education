@@ -60,8 +60,17 @@ export async function middleware(request: NextRequest) {
 
     return supabaseResponse
   } catch (e) {
-    // If a problem occurred, redirect to login
-    return NextResponse.redirect(new URL('/auth/login', request.url))
+    // Log the error for debugging
+    console.error('Middleware error:', e)
+    
+    // If we're on a protected route and there's an error, redirect to login
+    const protectedRoutes = ['/dashboard', '/intake', '/onboarding']
+    if (protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
+      return NextResponse.redirect(new URL('/auth/login?error=session_error', request.url))
+    }
+    
+    // For non-protected routes, just continue
+    return NextResponse.next()
   }
 }
 

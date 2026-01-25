@@ -7,14 +7,17 @@ export async function GET(request: Request) {
   const code = searchParams.get('code')
   const error = searchParams.get('error')
   const errorDescription = searchParams.get('error_description')
+  const fromPage = searchParams.get('from') // 'signup' or 'login'
   
-  // Use the canonical domain for production, or origin for development
-  const baseUrl = process.env.NODE_ENV === 'production' ? 'https://itera.la' : origin
+  // Always use the request origin to ensure cookies work correctly with PKCE
+  // This is critical because PKCE stores the code verifier in cookies on the original domain
+  const baseUrl = origin
 
-  // Handle OAuth errors
+  // Handle OAuth errors - redirect back to the page the user came from
   if (error) {
     console.error('OAuth error:', error, errorDescription)
-    return NextResponse.redirect(`${baseUrl}/auth/login?error=${encodeURIComponent(errorDescription || error)}`)
+    const errorPage = fromPage === 'signup' ? '/auth/signup' : '/auth/login'
+    return NextResponse.redirect(`${baseUrl}${errorPage}?error=${encodeURIComponent(errorDescription || error)}`)
   }
 
   if (code) {
@@ -40,11 +43,13 @@ export async function GET(request: Request) {
       }
     )
     
-    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
+    const { data: sessionData, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
     
     if (exchangeError) {
-      console.error('Error exchanging code:', exchangeError)
-      return NextResponse.redirect(`${baseUrl}/auth/login?error=confirmation_failed`)
+      console.error('Error exchanging code:', exchangeError.message, exchangeError)
+      // Redirect back to the appropriate page on error
+      const errorPage = fromPage === 'signup' ? '/auth/signup' : '/auth/login'
+      return NextResponse.redirect(`${baseUrl}${errorPage}?error=${encodeURIComponent('Error de autenticación. Por favor intenta de nuevo.')}`)
     }
 
     // Check if there's a pending project idea from the landing page
@@ -59,9 +64,10 @@ export async function GET(request: Request) {
     
     if (user) {
       if (hasPendingIdea) {
+        // User has a pending project idea, go to onboarding
         redirectUrl = `${baseUrl}/onboarding`
       } else {
-        // Check if user has a personalized path
+        // Check if user has a personalized path (existing user)
         const { data: intakeData } = await supabase
           .from('intake_responses')
           .select('generated_path')
@@ -71,17 +77,24 @@ export async function GET(request: Request) {
           .maybeSingle()
 
         if (intakeData?.generated_path) {
+          // Existing user with a path - go to dashboard
           redirectUrl = `${baseUrl}/dashboard`
         } else {
+          // New user or user without a path - go to onboarding
           redirectUrl = `${baseUrl}/onboarding`
         }
       }
+    } else {
+      // This shouldn't happen after successful code exchange, but handle it
+      console.error('No user found after successful code exchange')
+      const errorPage = fromPage === 'signup' ? '/auth/signup' : '/auth/login'
+      return NextResponse.redirect(`${baseUrl}${errorPage}?error=${encodeURIComponent('Error al obtener información del usuario.')}`)
     }
 
     // Create response with redirect
     const response = NextResponse.redirect(redirectUrl)
     
-    // Set all cookies on the response
+    // Set all cookies on the response - this is critical for the session to persist
     cookiesToSet.forEach(({ name, value, options }) => {
       response.cookies.set(name, value, options)
     })

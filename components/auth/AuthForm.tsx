@@ -82,13 +82,15 @@ export default function AuthForm({ mode }: AuthFormProps) {
     setError(null);
 
     try {
+      // Use dynamic redirect URL with mode info
+      const redirectUrl = `${window.location.origin}/auth/callback?from=${mode}`;
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: redirectUrl,
           queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
+            prompt: 'select_account',
           },
         },
       });
@@ -130,7 +132,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
             data: {
               name,
             },
-            emailRedirectTo: `${window.location.origin}/auth/callback`,
+            emailRedirectTo: `${window.location.origin}/auth/callback?from=signup`,
           },
         });
 

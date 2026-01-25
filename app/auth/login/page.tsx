@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import AuthNavbar from '@/components/auth/AuthNavbar';
 import { createClient } from '@/lib/supabase/client';
@@ -14,12 +14,19 @@ export default function LoginPage() {
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [showSupabaseWarning, setShowSupabaseWarning] = useState<boolean>(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   
   // Lazy initialization of Supabase client to avoid SSR issues
   const [supabase, setSupabase] = useState<any>(null);
   
   useEffect(() => {
     setIsMounted(true);
+    
+    // Check for error in URL params (from OAuth callback or redirect)
+    const urlError = searchParams.get('error');
+    if (urlError) {
+      setError(decodeURIComponent(urlError));
+    }
     
     if (typeof window !== 'undefined') {
       // Check if Supabase is configured before trying to create client
@@ -112,10 +119,13 @@ export default function LoginPage() {
     setError(null);
 
     try {
+      // Use dynamic redirect URL based on current origin to ensure PKCE flow works correctly
+      const redirectUrl = `${window.location.origin}/auth/callback?from=login`;
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: 'https://itera.la/auth/callback',
+          redirectTo: redirectUrl,
           queryParams: {
             prompt: 'select_account',
           },

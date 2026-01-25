@@ -120,7 +120,7 @@ export default function LessonItem({
               </div>
 
               {/* Duration badge */}
-              <div className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-gray-900 text-sm font-medium text-gray-600 dark:text-gray-300">
+              <div className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 border border-b-2 border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-300">
                 {duration}
               </div>
             </div>
