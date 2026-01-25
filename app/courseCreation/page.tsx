@@ -151,7 +151,7 @@ export default function CourseCreationPage() {
                   className="absolute inset-0 bg-[#1472FF] rounded-2xl animate-pulse"
                   style={{ boxShadow: '0 4px 0 0 #0E5FCC' }}
                 />
-                <div className="absolute inset-2 bg-white dark:bg-gray-900 rounded-xl flex items-center justify-center">
+                <div className="absolute inset-2 bg-white dark:bg-gray-950 rounded-xl flex items-center justify-center">
                   <span className="text-4xl animate-bounce">🤖</span>
                 </div>
               </div>

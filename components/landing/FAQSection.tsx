@@ -53,8 +53,8 @@ export default function FAQSection() {
                 key={index} 
                 className={`rounded-2xl transition-all duration-150 ${
                   openIndex === index
-                    ? "bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-600"
-                    : "bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-[1.02] active:scale-[0.98]"
+                    ? "bg-white dark:bg-gray-950 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-600"
+                    : "bg-white dark:bg-gray-950 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-[1.02] active:scale-[0.98]"
                 }`}
               >
                 <button
@@ -106,7 +106,7 @@ export default function FAQSection() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-50 dark:bg-gray-900 py-8">
+      <footer className="bg-gray-50 dark:bg-gray-950 py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-center md:text-left mb-4 md:mb-0">

@@ -188,7 +188,7 @@ export default function NewHeroSection() {
                       className={`px-3 py-2 rounded-xl text-xs font-medium border-2 border-b-4 transition-all duration-150 flex items-center gap-1.5 ${
                         selectedOption === option.id
                           ? "bg-[#1472FF] text-white border-[#1472FF] border-b-[#0E5FCC]"
-                          : "bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-200 dark:hover:bg-gray-800"
+                          : "bg-gray-100 dark:bg-gray-950 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-200 dark:hover:bg-gray-800"
                       } active:border-b-2 active:mt-0.5`}
                     >
                       <span>{option.icon}</span>
@@ -298,7 +298,7 @@ export default function NewHeroSection() {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Auth Form */}
-              <div className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 relative">
+              <div className="bg-white dark:bg-gray-950 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 relative">
                 {/* Close Button - Inside the card */}
               <button
                   onClick={() => {

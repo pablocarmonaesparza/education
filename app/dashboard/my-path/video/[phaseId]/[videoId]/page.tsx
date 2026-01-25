@@ -248,7 +248,7 @@ export default function VideoPage() {
 
         {/* Description */}
         {video.description && (
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <div className="bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mb-6">
             <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Descripción</h3>
             <p className="text-gray-600 dark:text-gray-400">{video.description}</p>
           </div>

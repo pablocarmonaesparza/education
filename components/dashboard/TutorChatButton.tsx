@@ -159,7 +159,7 @@ export default function TutorChatButton() {
                 className={`px-4 py-3 rounded-xl ${
                   message.role === 'user'
                     ? 'bg-[#1472FF] text-white'
-                    : 'bg-gray-50 dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200'
+                    : 'bg-gray-50 dark:bg-gray-950 text-[#4b4b4b] dark:text-gray-200'
                 }`}
               >
                 <p className="text-sm leading-relaxed">{message.content}</p>
@@ -171,7 +171,7 @@ export default function TutorChatButton() {
         {isLoading && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
-              <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3 rounded-xl">
+              <div className="bg-gray-50 dark:bg-gray-950 px-4 py-3 rounded-xl">
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                   <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -194,7 +194,7 @@ export default function TutorChatButton() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Escribe tu mensaje..."
-              className="w-full px-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all shadow-sm"
+              className="w-full px-4 py-3 bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all shadow-sm"
             />
           </div>
           <button

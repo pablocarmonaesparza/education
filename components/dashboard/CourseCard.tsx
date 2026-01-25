@@ -24,7 +24,7 @@ export default function CourseCard({
   return (
     <Link
       href={`/dashboard/course/${id}`}
-      className="block bg-white dark:bg-gray-800 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-gray-200 dark:border-gray-700 hover:border-[#1472FF] dark:hover:border-[#1472FF] group"
+      className="block bg-white dark:bg-gray-950 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-gray-200 dark:border-gray-700 hover:border-[#1472FF] dark:hover:border-[#1472FF] group"
     >
       {/* Header */}
       <div className="relative bg-[#1472FF] p-6">

@@ -477,7 +477,7 @@ export default function DashboardPage() {
                     className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide transition-all duration-150 ${
                       activePhaseId === phaseId
                         ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1'
-                        : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
+                        : 'bg-white dark:bg-gray-950 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700'
                     }`}
                   >
                     {phaseData.phaseName}
@@ -510,7 +510,7 @@ export default function DashboardPage() {
                   <div className="mb-6">
                     {/* Divider - same width as progress bar (80% centered) */}
                     <div className="flex justify-center mb-4">
-                      <div className="w-[80%] h-1 bg-gray-100 dark:bg-gray-800 rounded-full" />
+                      <div className="w-[80%] h-1 bg-gray-100 dark:bg-gray-950 rounded-full" />
                     </div>
                     <div className="w-[400px] mx-auto">
                       <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
@@ -608,7 +608,7 @@ export default function DashboardPage() {
             <div className="flex justify-end mb-6">
               <button
                 onClick={handleCloseVideo}
-                className="px-5 py-2.5 rounded-2xl font-bold uppercase tracking-wide text-sm bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-white border-b-4 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
+                className="px-5 py-2.5 rounded-2xl font-bold uppercase tracking-wide text-sm bg-gray-100 dark:bg-gray-950 text-[#4b4b4b] dark:text-white border-b-4 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -657,7 +657,7 @@ export default function DashboardPage() {
 
             {/* Description */}
             {selectedVideo?.description && (
-              <div className="mt-6 p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800">
+              <div className="mt-6 p-6 bg-gray-50 dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-800">
                 <h3 className="font-bold text-[#4b4b4b] dark:text-white mb-2">Descripción</h3>
                 <p className="text-gray-600 dark:text-gray-400">{selectedVideo.description}</p>
               </div>

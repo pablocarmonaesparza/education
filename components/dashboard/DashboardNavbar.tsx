@@ -108,7 +108,7 @@ export default function DashboardNavbar() {
             {/* Navigation - Center (Desktop only) */}
             <div 
               ref={navRef}
-              className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2 bg-gray-100 dark:bg-gray-800 rounded-2xl p-1"
+              className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2 bg-gray-100 dark:bg-gray-950 rounded-2xl p-1"
             >
               {/* Sliding background indicator */}
               <div
@@ -173,7 +173,7 @@ export default function DashboardNavbar() {
                     className="fixed inset-0 z-10" 
                     onClick={() => setShowProfileMenu(false)} 
                   />
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700 py-2 z-20 shadow-lg">
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-950 rounded-2xl border-2 border-gray-200 dark:border-gray-700 py-2 z-20 shadow-lg">
                     <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-700">
                       <p className="text-sm font-bold text-[#4b4b4b] dark:text-white truncate">{userName || 'Usuario'}</p>
                       <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{user?.profile?.email}</p>
@@ -250,7 +250,7 @@ export default function DashboardNavbar() {
 
         {/* Mobile Profile Dropdown */}
         {showProfileMenu && (
-          <div className="md:hidden absolute right-4 top-20 w-48 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-700 py-2 z-50 shadow-lg">
+          <div className="md:hidden absolute right-4 top-20 w-48 bg-white dark:bg-gray-950 rounded-2xl border-2 border-gray-200 dark:border-gray-700 py-2 z-50 shadow-lg">
             <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-700">
               <p className="text-sm font-bold text-[#4b4b4b] dark:text-white truncate">{userName || 'Usuario'}</p>
               <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{user?.profile?.email}</p>
@@ -314,7 +314,7 @@ export default function DashboardNavbar() {
           </div>
 
           {/* Divider */}
-          <div className="my-4 h-0.5 bg-gray-200 dark:bg-gray-800" />
+          <div className="my-4 h-0.5 bg-gray-200 dark:bg-gray-950" />
 
           {/* Upgrade Plan Button (Mobile) */}
           <button 

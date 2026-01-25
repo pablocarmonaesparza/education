@@ -37,7 +37,7 @@ export default function LessonItem({
   const getRightPanelBg = () => {
     if (isCompleted) return 'bg-[#22c55e]'; // green-500
     if (isCurrent) return 'bg-[#1472FF]'; // blue
-    return 'bg-gray-100 dark:bg-gray-800';
+    return 'bg-gray-100 dark:bg-gray-950';
   };
 
   const getRightPanelText = () => {
@@ -103,13 +103,13 @@ export default function LessonItem({
       >
         {/* Main card with border */}
         <div
-          className="flex overflow-hidden rounded-2xl bg-white dark:bg-gray-900"
+          className="flex overflow-hidden rounded-2xl bg-white dark:bg-gray-950"
           style={{
             border: `3px solid ${getBorderColor()}`,
           }}
         >
           {/* Left Panel - White with video info */}
-          <div className="flex-shrink-0 w-40 sm:w-48 p-4 flex flex-col bg-white dark:bg-gray-900">
+          <div className="flex-shrink-0 w-40 sm:w-48 p-4 flex flex-col bg-white dark:bg-gray-950">
             {/* Top row - Counter left, Duration right */}
             <div className="flex items-center justify-between mb-4">
               {/* Lesson counter - plain text */}
@@ -120,7 +120,7 @@ export default function LessonItem({
               </div>
 
               {/* Duration badge */}
-              <div className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm font-medium text-gray-600 dark:text-gray-300">
+              <div className="px-3 py-1 rounded-lg bg-gray-100 dark:bg-gray-950 text-sm font-medium text-gray-600 dark:text-gray-300">
                 {duration}
               </div>
             </div>
