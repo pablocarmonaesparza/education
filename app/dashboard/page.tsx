@@ -49,6 +49,17 @@ export default function DashboardPage() {
   const phaseSectionsRef = useRef<Map<string, HTMLDivElement>>(new Map());
   const isScrollingToPhaseRef = useRef(false);
   const supabase = createClient();
+  const [isDark, setIsDark] = useState(false);
+
+  // Detect dark mode for gradient colors
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDark(mediaQuery.matches);
+
+    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
 
   // Listen for chat width changes
   useEffect(() => {
@@ -462,8 +473,14 @@ export default function DashboardPage() {
             <div className="relative">
               {/* Gradient overlays - left and right edges (match background color for fade effect) */}
               {/* Using exact hex colors: white #ffffff for light, gray-900 #111827 for dark */}
-              <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#ffffff] dark:from-[#111827] to-transparent z-10 pointer-events-none" />
-              <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#ffffff] dark:from-[#111827] to-transparent z-10 pointer-events-none" />
+              <div
+                className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
+                style={{ background: `linear-gradient(to right, ${isDark ? '#111827' : '#ffffff'}, transparent)` }}
+              />
+              <div
+                className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none"
+                style={{ background: `linear-gradient(to left, ${isDark ? '#111827' : '#ffffff'}, transparent)` }}
+              />
 
               <div
                 ref={horizontalScrollRef}
