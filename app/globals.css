@@ -349,7 +349,7 @@ p.text-2xl {
 
 @media (prefers-color-scheme: dark) {
   .textarea-dark-bg {
-    background-color: #111827; /* gray-900 for input contrast */
+    background-color: #111827; /* gray-900 - consistent with system */
   }
 }
 
