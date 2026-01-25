@@ -280,7 +280,7 @@ function CarouselRow({ courses, direction, duration, isPaused, onSelectCourse }:
         <button
           key={`${course.id}-${index}`}
           onClick={() => onSelectCourse(course)}
-          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-[#0a1e3d] rounded-2xl p-4 md:p-5 border-2 border-[#1472FF]/30 border-b-4 border-[#0E5FCC] text-left cursor-pointer hover:scale-105 hover:border-[#1472FF] transition-all duration-200"
+          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-[#0a1e3d] rounded-2xl p-4 md:p-5 border-2 border-[#030712] border-b-4 border-b-black text-left cursor-pointer hover:border-[#1f2937] transition-all duration-200"
         >
           {/* Icon */}
           <div className="text-3xl md:text-4xl mb-3">
