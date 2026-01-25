@@ -241,7 +241,7 @@ export default function ProjectContextPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
       <OnboardingNavbar />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-12">
@@ -355,7 +355,7 @@ export default function ProjectContextPage() {
                   <span className={`inline-block px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${
                     isDragging
                       ? 'bg-[#1472FF] text-white shadow-[0_3px_0_0_#0E5FCC]'
-                      : 'bg-gray-100 dark:bg-gray-950 text-[#4b4b4b] dark:text-gray-300 shadow-[0_3px_0_0_#d1d5db] dark:shadow-[0_3px_0_0_#374151]'
+                      : 'bg-gray-100 dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-300 shadow-[0_3px_0_0_#d1d5db] dark:shadow-[0_3px_0_0_#374151]'
                   }`}>
                     {currentLabel}
                   </span>
@@ -369,7 +369,7 @@ export default function ProjectContextPage() {
             <motion.button
               onClick={handlePrevious}
               whileTap={{ scale: 0.98 }}
-              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide bg-gray-100 dark:bg-gray-950 text-[#4b4b4b] dark:text-white border-b-4 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
+              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide bg-gray-100 dark:bg-gray-900 text-[#4b4b4b] dark:text-white border-b-4 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />

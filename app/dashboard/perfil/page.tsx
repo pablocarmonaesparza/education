@@ -144,7 +144,7 @@ export default function PerfilPage() {
         )}
 
         {/* Profile Card */}
-        <div className="bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
           {/* Avatar Section */}
           <div className="p-6 flex items-center gap-4 border-b border-gray-100 dark:border-gray-800">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#1472FF] to-[#5BA0FF] flex items-center justify-center text-white text-2xl font-bold">
@@ -158,7 +158,7 @@ export default function PerfilPage() {
                   ? 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-400'
                   : profile.tier === 'personalized'
                   ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400'
-                  : 'bg-gray-100 dark:bg-gray-950 text-gray-600 dark:text-gray-400'
+                  : 'bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400'
               }`}>
                 Plan {getTierName(profile.tier)}
               </span>
@@ -186,7 +186,7 @@ export default function PerfilPage() {
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-950 dark:text-white focus:border-[#1472FF] focus:outline-none"
+                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-900 dark:text-white focus:border-[#1472FF] focus:outline-none"
                     placeholder="Tu nombre"
                   />
                   <button
@@ -227,7 +227,7 @@ export default function PerfilPage() {
 
         {/* Project Card */}
         {profile.projectIdea && (
-          <div className="bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
             <div className="p-6">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Tu Proyecto</h3>
               <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{profile.projectIdea}</p>
@@ -236,7 +236,7 @@ export default function PerfilPage() {
         )}
 
         {/* Configuration Section */}
-        <div id="configuracion" className="bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+        <div id="configuracion" className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
           <div className="p-6 border-b border-gray-100 dark:border-gray-800">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Configuración</h3>
           </div>
@@ -266,7 +266,7 @@ export default function PerfilPage() {
         </div>
 
         {/* Danger Zone */}
-        <div className="bg-white dark:bg-gray-950 rounded-2xl border border-red-200 dark:border-red-900 overflow-hidden">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-red-200 dark:border-red-900 overflow-hidden">
           <div className="p-6 border-b border-red-100 dark:border-red-900/50">
             <h3 className="text-lg font-bold text-red-600 dark:text-red-500">Zona de peligro</h3>
           </div>

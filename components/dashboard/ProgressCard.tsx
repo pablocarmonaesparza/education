@@ -11,7 +11,7 @@ export default function ProgressCard({ title, progress, total, icon }: ProgressC
   const percentage = total > 0 ? Math.round((progress / total) * 100) : 0;
 
   return (
-    <div className="bg-white dark:bg-gray-950 rounded-2xl shadow-md p-6 border-2 border-gray-200 dark:border-gray-700 transition-colors">
+    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md p-6 border-2 border-gray-200 dark:border-gray-700 transition-colors">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-lg font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">{title}</h3>

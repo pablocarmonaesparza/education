@@ -172,7 +172,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
   return (
     <div className="w-full max-w-md">
-      <div className="bg-white dark:bg-gray-950 rounded-2xl p-8 md:p-10 border-2 border-gray-200 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 md:p-10 border-2 border-gray-200 dark:border-gray-700">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
@@ -233,7 +233,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full px-4 py-4 bg-white dark:bg-gray-950 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
+              className="w-full px-4 py-4 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
               placeholder="Nombre completo"
             />
           )}
@@ -244,7 +244,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-4 bg-white dark:bg-gray-950 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
+            className="w-full px-4 py-4 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
             placeholder="Correo electrónico"
           />
 
@@ -255,7 +255,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={6}
-            className="w-full px-4 py-4 bg-white dark:bg-gray-950 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
+            className="w-full px-4 py-4 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
             placeholder="Contraseña (mínimo 6 caracteres)"
           />
 
@@ -284,7 +284,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
           type="button"
           onClick={handleGoogleLogin}
           disabled={loading || oauthLoading}
-          className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-950 border-2 border-b-4 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-4 rounded-2xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-900 border-2 border-b-4 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-4 rounded-2xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {oauthLoading ? (
             <svg className="animate-spin h-5 w-5 text-gray-700 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" suppressHydrationWarning>
