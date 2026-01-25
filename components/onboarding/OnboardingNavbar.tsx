@@ -7,22 +7,18 @@ import Image from 'next/image';
 export default function OnboardingNavbar() {
   const [isDark, setIsDark] = useState(false);
 
-  // Detect dark mode
+  // Detect dark mode using system preference
   useEffect(() => {
-    const checkDarkMode = () => {
-      setIsDark(document.documentElement.classList.contains('dark'));
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const checkDarkMode = (e?: MediaQueryListEvent | MediaQueryList) => {
+      setIsDark(e ? e.matches : mediaQuery.matches);
     };
     
-    checkDarkMode();
+    checkDarkMode(mediaQuery);
     
-    // Watch for changes
-    const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-    
-    return () => observer.disconnect();
+    mediaQuery.addEventListener('change', checkDarkMode);
+    return () => mediaQuery.removeEventListener('change', checkDarkMode);
   }, []);
 
   return (

@@ -78,7 +78,7 @@ export default function DashboardContent(props: DashboardContentProps) {
   const projectTitle = getProjectTitle(props.userProject);
 
   return (
-    <div className="min-h-screen bg-gray-50/30 dark:bg-[#0a1e3d] p-4 sm:p-6 lg:p-8 font-sans text-gray-900 dark:text-white">
+    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-950 p-4 sm:p-6 lg:p-8 font-sans text-gray-900 dark:text-white">
       <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Section - Welcome & Context */}

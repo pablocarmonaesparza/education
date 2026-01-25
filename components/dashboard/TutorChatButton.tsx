@@ -117,7 +117,7 @@ export default function TutorChatButton() {
   return (
     <aside
       ref={asideRef}
-      className="fixed right-0 top-0 h-screen bg-white dark:bg-[#0a1e3d] flex flex-col z-40"
+      className="fixed right-0 top-0 h-screen bg-white dark:bg-gray-950 border-l-2 border-gray-200 dark:border-gray-800 flex flex-col z-40"
       style={{ width: `${width}px` }}
     >
       {/* Resize Handle */}
@@ -148,7 +148,7 @@ export default function TutorChatButton() {
       </div>
 
       {/* Messages - Clean and spacious */}
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 bg-white dark:bg-[#0a1e3d]">
+      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 bg-white dark:bg-gray-950">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -185,7 +185,7 @@ export default function TutorChatButton() {
       </div>
 
       {/* Input - Elegant with subtle shadow */}
-      <div className="px-6 py-4 bg-white dark:bg-[#0a1e3d] flex-shrink-0">
+      <div className="px-6 py-4 bg-white dark:bg-gray-950 flex-shrink-0">
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="relative">
             <input

@@ -349,7 +349,7 @@ p.text-2xl {
 
 @media (prefers-color-scheme: dark) {
   .textarea-dark-bg {
-    background-color: #0c2341;
+    background-color: #111827; /* gray-900 for input contrast */
   }
 }
 
@@ -359,6 +359,6 @@ p.text-2xl {
 
 @media (prefers-color-scheme: dark) {
   .textarea-dark-border {
-    border-color: #1e4976;
+    border-color: #374151; /* gray-700 */
   }
 }

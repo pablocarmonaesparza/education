@@ -116,7 +116,7 @@ export default function CoursesPage() {
   });
 
   return (
-    <div className="p-8 bg-white dark:bg-[#0a1e3d] min-h-screen">
+    <div className="p-8 bg-white dark:bg-gray-950 min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">todos los cursos</h1>

@@ -51,7 +51,7 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-white dark:bg-[#0a1e3d]">
+      <div className="min-h-screen bg-white dark:bg-gray-950">
         <Sidebar />
         <DashboardContent>{children}</DashboardContent>
         <TutorChatButton />
