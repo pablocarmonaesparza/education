@@ -395,23 +395,3 @@ p.text-2xl {
   }
 }
 
-/* Sidebar border - dark mode should use gray-950 (#030712) */
-.sidebar-border-right {
-  border-right-width: 2px;
-  border-right-color: #e5e7eb; /* gray-200 */
-}
-
-.sidebar-border-left {
-  border-left-width: 2px;
-  border-left-color: #e5e7eb; /* gray-200 */
-}
-
-@media (prefers-color-scheme: dark) {
-  .sidebar-border-right {
-    border-right-color: #030712; /* gray-950 */
-  }
-
-  .sidebar-border-left {
-    border-left-color: #030712; /* gray-950 */
-  }
-}
