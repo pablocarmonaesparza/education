@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import OnboardingNavbar from '@/components/onboarding/OnboardingNavbar';
+import { createClient } from '@/lib/supabase/client';
 
 const steps = [
   {
@@ -25,7 +26,39 @@ const steps = [
 
 export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+  // Check if user already has a generated path - if so, redirect to dashboard
+  useEffect(() => {
+    const checkExistingPath = async () => {
+      try {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (user) {
+          const { data: intakeData } = await supabase
+            .from('intake_responses')
+            .select('generated_path')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          if (intakeData?.generated_path) {
+            // User already has a path, redirect to dashboard
+            router.replace('/dashboard');
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Error checking existing path:', error);
+      }
+      setIsLoading(false);
+    };
+
+    checkExistingPath();
+  }, [router]);
 
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
@@ -37,6 +70,15 @@ export default function OnboardingPage() {
   };
 
   const isLastStep = currentStep === steps.length - 1;
+
+  // Show loading while checking for existing path
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">

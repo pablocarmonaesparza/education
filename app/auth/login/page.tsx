@@ -97,10 +97,31 @@ function LoginContent() {
       if (signInError) {
         setError(translateError(signInError.message));
       } else {
-        // Wait for session to be fully established before redirect
-        await new Promise(resolve => setTimeout(resolve, 100));
-        // Use window.location for more reliable redirect on mobile
-        window.location.href = '/dashboard';
+        // Wait for session to be fully established and cookies to be set
+        await new Promise(resolve => setTimeout(resolve, 200));
+
+        // Check if user has a personalized path to determine redirect
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: intakeData } = await supabase
+            .from('intake_responses')
+            .select('generated_path')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          if (intakeData?.generated_path) {
+            // User has a path - go to dashboard
+            window.location.href = '/dashboard';
+          } else {
+            // No path yet - go to onboarding
+            window.location.href = '/onboarding';
+          }
+        } else {
+          // Fallback to dashboard
+          window.location.href = '/dashboard';
+        }
       }
     } catch (err: any) {
       setError(translateError(err.message || 'Ocurrió un error. Intenta de nuevo.'));

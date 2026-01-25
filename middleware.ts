@@ -53,9 +53,10 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl)
     }
 
-    // If authenticated user tries to access login/signup, redirect to dashboard
+    // If authenticated user tries to access login/signup, redirect to onboarding
+    // (onboarding will then redirect to dashboard if they already have a path)
     if (user && (request.nextUrl.pathname === '/auth/login' || request.nextUrl.pathname === '/auth/signup')) {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
+      return NextResponse.redirect(new URL('/onboarding', request.url))
     }
 
     return supabaseResponse
