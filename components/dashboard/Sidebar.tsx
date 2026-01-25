@@ -64,7 +64,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 border-r-2 border-gray-200 dark:border-gray-800 flex flex-col z-50 w-64">
+    <aside className="fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 sidebar-border-right flex flex-col z-50 w-64">
       {/* Logo */}
       <div className="p-4 flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center">
