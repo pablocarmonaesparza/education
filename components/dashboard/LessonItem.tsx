@@ -77,10 +77,11 @@ export default function LessonItem({
   };
 
   // Determine border classes based on state
+  // Uses same colors as landing page textarea: gray-600 (#4b5563) light, gray-950 (#030712) dark
   const getBorderClasses = () => {
     if (isCompleted) return 'border-[#22c55e] shadow-[0_3px_0_0_#16a34a]';
     if (isCurrent) return 'border-[#1472FF] shadow-[0_3px_0_0_#0E5FCC]';
-    return 'border-gray-200 dark:border-gray-700 shadow-[0_3px_0_0_#d1d5db] dark:shadow-[0_3px_0_0_#030712]';
+    return 'border-[#4b5563] dark:border-[#030712] shadow-[0_3px_0_0_#4b5563] dark:shadow-[0_3px_0_0_#030712]';
   };
 
   return (
