@@ -354,7 +354,7 @@ p.text-2xl {
 }
 
 .textarea-dark-border {
-  border-color: #e5e7eb;
+  border-color: #4b5563; /* gray-600 - dark gray */
 }
 
 @media (prefers-color-scheme: dark) {
