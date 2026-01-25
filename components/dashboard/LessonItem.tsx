@@ -1,7 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-
 interface LessonItemProps {
   lessonNumber: number;
   totalLessons: number;
@@ -23,16 +21,6 @@ export default function LessonItem({
   isCurrent = false,
   onClick,
 }: LessonItemProps) {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setIsDark(mediaQuery.matches);
-
-    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
-    mediaQuery.addEventListener('change', handler);
-    return () => mediaQuery.removeEventListener('change', handler);
-  }, []);
   const getRightPanelBg = () => {
     if (isCompleted) return 'bg-[#22c55e]'; // green-500
     if (isCurrent) return 'bg-[#1472FF]'; // blue
@@ -88,27 +76,17 @@ export default function LessonItem({
     );
   };
 
-  // Determine border and shadow colors based on state
-  // Uses same colors as landing page textarea: gray-600 (#4b5563) light, gray-950 (#030712) dark
-  const getBorderStyle = () => {
+  // Determine border classes based on state
+  // Uses CSS classes from globals.css that respond to prefers-color-scheme
+  const getBorderClasses = () => {
     if (isCompleted) {
-      return {
-        borderColor: '#22c55e',
-        boxShadow: '0 3px 0 0 #16a34a'
-      };
+      return 'border-[#22c55e] shadow-[0_3px_0_0_#16a34a]';
     }
     if (isCurrent) {
-      return {
-        borderColor: '#1472FF',
-        boxShadow: '0 3px 0 0 #0E5FCC'
-      };
+      return 'border-[#1472FF] shadow-[0_3px_0_0_#0E5FCC]';
     }
-    // Default state: gray-600 for light, gray-950 for dark
-    const borderColor = isDark ? '#030712' : '#4b5563';
-    return {
-      borderColor,
-      boxShadow: `0 3px 0 0 ${borderColor}`
-    };
+    // Default state uses CSS class from globals.css
+    return 'lesson-item-border-pending';
   };
 
   return (
@@ -118,8 +96,7 @@ export default function LessonItem({
     >
       {/* Main card with border and depth effect */}
       <div
-        className="flex overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border-[3px]"
-        style={getBorderStyle()}
+        className={`flex overflow-hidden rounded-2xl bg-white dark:bg-gray-900 border-[3px] ${getBorderClasses()}`}
       >
           {/* Left Panel - White with video info */}
           <div className="flex-shrink-0 w-40 sm:w-48 p-4 flex flex-col bg-white dark:bg-gray-900">

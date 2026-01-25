@@ -362,3 +362,35 @@ p.text-2xl {
     border-color: #030712; /* gray-950 */
   }
 }
+
+/* Dashboard horizontal scroll gradient fade effect */
+.gradient-fade-left {
+  background: linear-gradient(to right, #ffffff, transparent);
+}
+
+.gradient-fade-right {
+  background: linear-gradient(to left, #ffffff, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  .gradient-fade-left {
+    background: linear-gradient(to right, #111827, transparent);
+  }
+
+  .gradient-fade-right {
+    background: linear-gradient(to left, #111827, transparent);
+  }
+}
+
+/* LessonItem pending state border and shadow */
+.lesson-item-border-pending {
+  border-color: #4b5563; /* gray-600 */
+  box-shadow: 0 3px 0 0 #4b5563;
+}
+
+@media (prefers-color-scheme: dark) {
+  .lesson-item-border-pending {
+    border-color: #030712; /* gray-950 */
+    box-shadow: 0 3px 0 0 #030712;
+  }
+}
