@@ -7,20 +7,21 @@ export default function AnimatedBackground() {
   const [bgColor, setBgColor] = useState<string>("");
 
   useEffect(() => {
-    // Detect dark mode immediately on mount
-    const checkDarkMode = () => {
-      const isDark = document.documentElement.classList.contains("dark");
+    // Detect dark mode using system preference (prefers-color-scheme)
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    const checkDarkMode = (e?: MediaQueryListEvent | MediaQueryList) => {
+      const isDark = e ? e.matches : mediaQuery.matches;
       setIsDarkMode(isDark);
     };
 
     // Initial check
-    checkDarkMode();
+    checkDarkMode(mediaQuery);
 
-    // Watch for class changes on html element
-    const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    // Watch for system preference changes
+    mediaQuery.addEventListener('change', checkDarkMode);
 
-    return () => observer.disconnect();
+    return () => mediaQuery.removeEventListener('change', checkDarkMode);
   }, []);
 
   useEffect(() => {
