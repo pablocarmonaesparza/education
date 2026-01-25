@@ -53,8 +53,8 @@ export default function FAQSection() {
                 key={index} 
                 className={`rounded-2xl transition-all duration-150 ${
                   openIndex === index
-                    ? "bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-gray-300 dark:border-gray-600"
-                    : "bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700 hover:scale-[1.02] active:scale-[0.98]"
+                    ? "bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-600"
+                    : "bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-[1.02] active:scale-[0.98]"
                 }`}
               >
                 <button
