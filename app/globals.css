@@ -9,7 +9,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a1e3d;
+    --background: #030712;
     --foreground: #f3f4f6;
   }
 }
@@ -23,7 +23,7 @@ html {
 }
 
 html.dark {
-  background-color: #0a1e3d;
+  background-color: #030712;
 }
 
 section {
@@ -32,13 +32,9 @@ section {
 
 /* Mobile: snap scroll enabled (same as desktop) */
 
-html.dark {
-  background-color: #0a1e3d;
-}
-
 @media (prefers-color-scheme: dark) {
   html:not(.light) {
-    background-color: #0a1e3d;
+    background-color: #030712;
   }
 }
 

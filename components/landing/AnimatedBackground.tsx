@@ -30,11 +30,11 @@ export default function AnimatedBackground() {
 
     // Base colors
     const lightBase = { r: 255, g: 255, b: 255 }; // #FFFFFF
-    const darkBase = { r: 10, g: 30, b: 61 };     // #0a1e3d (azul marino)
+    const darkBase = { r: 3, g: 7, b: 18 };       // #030712 (gray-950 - azul marino oscuro del sistema)
     const accent = { r: 20, g: 114, b: 255 };     // #1472FF
 
     const baseColor = isDarkMode ? darkBase : lightBase;
-    const initialBgColor = isDarkMode ? "#0a1e3d" : "#FFFFFF";
+    const initialBgColor = isDarkMode ? "#030712" : "#FFFFFF";
     
     // Set initial background color
     setBgColor(initialBgColor);
@@ -94,7 +94,7 @@ export default function AnimatedBackground() {
   }
 
   // Initial color based on mode
-  const initialColor = isDarkMode ? "#0a1e3d" : "#FFFFFF";
+  const initialColor = isDarkMode ? "#030712" : "#FFFFFF";
 
   return (
     <div
