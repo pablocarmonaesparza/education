@@ -420,7 +420,7 @@ export default function DashboardPage() {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Main scrollable container - everything scrolls together */}
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden">
         {/* Greeting - Animated visibility based on scroll position */}
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
@@ -555,7 +555,7 @@ export default function DashboardPage() {
           }`}
           style={{ right: `${chatWidth}px` }}
         >
-          <div className="bg-white dark:bg-gray-900 pb-4 pt-2 flex justify-center">
+          <div className="bg-white dark:bg-gray-900 pb-4 flex justify-center">
             <div className="w-[80%] relative h-[37px] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex items-center justify-center border-2 border-b-4 border-gray-200 dark:border-gray-950">
               <div
                 className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"
