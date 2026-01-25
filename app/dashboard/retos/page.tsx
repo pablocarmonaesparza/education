@@ -238,7 +238,7 @@ export default function RetosPage() {
       <div className="h-full flex gap-4 p-4 max-w-7xl mx-auto w-full">
         
         {/* Sidebar - Exercise List */}
-        <div className="w-80 flex-shrink-0 h-full flex flex-col bg-gray-50 dark:bg-gray-950 rounded-2xl overflow-hidden">
+        <div className="w-80 flex-shrink-0 h-full flex flex-col bg-gray-50 dark:bg-gray-900 rounded-2xl overflow-hidden">
           {/* Header */}
           <div className="p-4 border-b border-gray-200 dark:border-gray-800">
             <h2 className="font-bold text-gray-900 dark:text-white mb-1">Retos</h2>
@@ -284,7 +284,7 @@ export default function RetosPage() {
                         ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
                         : isActive
                           ? 'bg-[#1472FF] text-white'
-                          : 'border-2 border-gray-300 dark:border-black text-gray-500 dark:text-gray-400'
+                          : 'border-2 border-gray-300 dark:border-gray-950 text-gray-500 dark:text-gray-400'
                   }`}>
                     {isCompleted ? (
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -313,7 +313,7 @@ export default function RetosPage() {
                       {exercise.title}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className={`text-xs px-1.5 py-0.5 rounded ${isLocked ? 'bg-gray-100 text-gray-400 dark:bg-gray-950 dark:text-gray-500' : getTypeColor()}`}>
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${isLocked ? 'bg-gray-100 text-gray-400 dark:bg-gray-900 dark:text-gray-500' : getTypeColor()}`}>
                         {exercise.type}
                       </span>
                       <span className="text-xs text-gray-400">
@@ -355,10 +355,10 @@ export default function RetosPage() {
                     disabled={!currentExercise.isUnlocked && !currentExercise.isCompleted}
                     className={`flex-shrink-0 px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ${
                       !currentExercise.isUnlocked && !currentExercise.isCompleted
-                        ? 'bg-gray-100 dark:bg-gray-950 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                        ? 'bg-gray-100 dark:bg-gray-900 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                         : currentExercise.isCompleted
                           ? 'bg-blue-50 dark:bg-blue-900/30 text-[#1472FF] dark:text-[#5BA0FF] hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-400'
-                          : 'bg-gray-100 dark:bg-gray-950 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-[#1472FF] dark:hover:text-[#5BA0FF]'
+                          : 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-[#1472FF] dark:hover:text-[#5BA0FF]'
                     }`}
                   >
                     {!currentExercise.isUnlocked && !currentExercise.isCompleted ? (
@@ -391,7 +391,7 @@ export default function RetosPage() {
               <div className="flex-1 overflow-y-auto">
                 <div className="grid gap-6">
                   {/* Description */}
-                  <div className="bg-white dark:bg-gray-950 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                  <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
                       <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -420,8 +420,8 @@ export default function RetosPage() {
                   {currentExercise.videos_required && currentExercise.videos_required.length > 0 && (
                     <div className={`rounded-2xl p-6 border ${
                       currentExercise.missingVideos.length > 0
-                        ? 'bg-gray-50 dark:bg-gray-950 border-gray-300 dark:border-black'
-                        : 'bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800'
+                        ? 'bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-950'
+                        : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800'
                     }`}>
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
                         <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -445,7 +445,7 @@ export default function RetosPage() {
                               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
                                 isWatched
                                   ? 'bg-blue-50 dark:bg-blue-950/50 text-[#1472FF] dark:text-[#5BA0FF] hover:bg-blue-100 dark:hover:bg-blue-900/50'
-                                  : 'bg-gray-100 dark:bg-gray-950 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                                  : 'bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
                               }`}
                             >
                               {isWatched ? (
@@ -467,7 +467,7 @@ export default function RetosPage() {
 
                   {/* Time & Difficulty */}
                   <div className="flex gap-4">
-                    <div className="flex-1 bg-white dark:bg-gray-950 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
+                    <div className="flex-1 bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
                           <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -480,7 +480,7 @@ export default function RetosPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex-1 bg-white dark:bg-gray-950 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
+                    <div className="flex-1 bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
                           <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">

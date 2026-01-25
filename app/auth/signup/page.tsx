@@ -161,12 +161,12 @@ export default function SignupPage() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col relative overflow-hidden bg-white dark:bg-gray-950">
+    <main className="min-h-screen flex flex-col relative overflow-hidden bg-white dark:bg-gray-900">
       <AuthNavbar />
 
       <section className="min-h-screen flex items-center justify-center py-12 md:py-20 px-4 relative z-10">
         <div className="w-full max-w-md">
-          <div className="bg-white dark:bg-gray-950 rounded-2xl p-8 md:p-10 border-2 border-gray-200 dark:border-black">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 md:p-10 border-2 border-gray-200 dark:border-gray-950">
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
@@ -221,7 +221,7 @@ export default function SignupPage() {
               <input
                 type="text"
                 id="name"
-                className="w-full px-4 py-4 bg-white dark:bg-gray-950 border-2 border-gray-200 dark:border-black rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
+                className="w-full px-4 py-4 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-950 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
                 placeholder="Nombre completo"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -231,7 +231,7 @@ export default function SignupPage() {
               <input
                 type="email"
                 id="email"
-                className="w-full px-4 py-4 bg-white dark:bg-gray-950 border-2 border-gray-200 dark:border-black rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
+                className="w-full px-4 py-4 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-950 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
                 placeholder="Correo electrónico"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -242,7 +242,7 @@ export default function SignupPage() {
               <input
                   type={showPassword ? "text" : "password"}
                 id="password"
-                  className="w-full px-4 py-4 pr-12 bg-white dark:bg-gray-950 border-2 border-gray-200 dark:border-black rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-4 pr-12 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-950 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
                   placeholder="Contraseña (mínimo 6 caracteres)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -278,9 +278,9 @@ export default function SignupPage() {
 
             {/* Divider */}
             <div className="mt-6 mb-4 flex items-center">
-              <div className="flex-1 border-t border-gray-300 dark:border-black"></div>
+              <div className="flex-1 border-t border-gray-300 dark:border-gray-950"></div>
               <span className="px-4 text-sm text-gray-500 dark:text-gray-400">O continúa con</span>
-              <div className="flex-1 border-t border-gray-300 dark:border-black"></div>
+              <div className="flex-1 border-t border-gray-300 dark:border-gray-950"></div>
             </div>
 
             {/* Google OAuth */}
@@ -288,7 +288,7 @@ export default function SignupPage() {
               type="button"
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-950 text-gray-700 dark:text-gray-300 border-2 border-b-4 border-gray-200 dark:border-black py-4 rounded-2xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border-2 border-b-4 border-gray-200 dark:border-gray-950 py-4 rounded-2xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path

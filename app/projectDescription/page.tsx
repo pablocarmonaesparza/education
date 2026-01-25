@@ -23,7 +23,7 @@ export default function ProjectDescriptionPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
       <OnboardingNavbar />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-12">
@@ -48,8 +48,8 @@ export default function ProjectDescriptionPage() {
                   : '0 4px 0 0 #d1d5db'
               }}
             >
-              <div className={`relative w-full bg-white dark:bg-gray-950 rounded-2xl border-2 transition-all duration-300 ${
-                error ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-black focus-within:border-[#1472FF]"
+              <div className={`relative w-full bg-white dark:bg-gray-900 rounded-2xl border-2 transition-all duration-300 ${
+                error ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-gray-950 focus-within:border-[#1472FF]"
               }`}>
                 <textarea
                   value={projectIdea}
@@ -101,7 +101,7 @@ export default function ProjectDescriptionPage() {
                 <button
                   key={suggestion.label}
                   onClick={() => setProjectIdea(suggestion.description)}
-                  className="px-4 py-2 text-sm rounded-xl border-2 border-gray-200 dark:border-black text-[#777777] dark:text-gray-400 hover:border-[#1472FF] hover:text-[#1472FF] transition-all shadow-[0_2px_0_0_#e5e7eb] dark:shadow-[0_2px_0_0_#374151] hover:shadow-[0_2px_0_0_#1472FF]"
+                  className="px-4 py-2 text-sm rounded-xl border-2 border-gray-200 dark:border-gray-950 text-[#777777] dark:text-gray-400 hover:border-[#1472FF] hover:text-[#1472FF] transition-all shadow-[0_2px_0_0_#e5e7eb] dark:shadow-[0_2px_0_0_#374151] hover:shadow-[0_2px_0_0_#1472FF]"
                 >
                   {suggestion.label}
                 </button>
@@ -113,7 +113,7 @@ export default function ProjectDescriptionPage() {
           <div className="flex justify-center gap-4">
             <button
               onClick={() => router.back()}
-              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide bg-gray-100 dark:bg-gray-950 text-[#4b4b4b] dark:text-white border-b-4 border-gray-300 dark:border-black hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
+              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide bg-gray-100 dark:bg-gray-900 text-[#4b4b4b] dark:text-white border-b-4 border-gray-300 dark:border-gray-950 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />

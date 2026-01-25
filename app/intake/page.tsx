@@ -172,7 +172,7 @@ export default function IntakePage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
       <OnboardingNavbar />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-12">
@@ -189,7 +189,7 @@ export default function IntakePage() {
             </div>
 
             <div className="mb-8">
-              <div className="relative bg-white dark:bg-gray-950 rounded-2xl p-6 border-2 border-gray-200 dark:border-black hover:border-gray-300 dark:hover:border-gray-600 focus-within:border-[#1472FF] transition-all duration-300">
+              <div className="relative bg-white dark:bg-gray-900 rounded-2xl p-6 border-2 border-gray-200 dark:border-gray-950 hover:border-gray-300 dark:hover:border-gray-600 focus-within:border-[#1472FF] transition-all duration-300">
                   <label className="block text-sm font-bold text-[#4b4b4b] dark:text-white mb-2">
                     Cuéntanos sobre tu proyecto
                   </label>
@@ -202,7 +202,7 @@ export default function IntakePage() {
                     }}
                     placeholder="Ejemplo: Quiero crear un chatbot para atención al cliente que integre con WhatsApp y use IA para dar respuestas inteligentes a las preguntas más comunes..."
                     rows={4}
-                    className="w-full min-h-[80px] bg-white dark:bg-gray-950 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 resize-none focus:outline-none font-light leading-relaxed"
+                    className="w-full min-h-[80px] bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 resize-none focus:outline-none font-light leading-relaxed"
                   />
 
                   {error && (
@@ -268,7 +268,7 @@ export default function IntakePage() {
             </p>
 
             <div className="mb-10">
-              <div className="w-full bg-gray-100 dark:bg-gray-950 rounded-full h-4 overflow-hidden">
+              <div className="w-full bg-gray-100 dark:bg-gray-900 rounded-full h-4 overflow-hidden">
                 <div
                   className="bg-[#1472FF] h-4 rounded-full transition-all duration-500 ease-out"
                   style={{ width: `${progress}%` }}

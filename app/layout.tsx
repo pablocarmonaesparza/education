@@ -105,7 +105,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} ${darkerGrotesque.variable}`} suppressHydrationWarning>
-      <body className={`antialiased bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen overscroll-none`}>
+      <body className={`antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen overscroll-none`}>
         <HashScrollHandler />
         {children}
       </body>

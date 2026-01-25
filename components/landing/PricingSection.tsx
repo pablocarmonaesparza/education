@@ -96,7 +96,7 @@ export default function PricingSection() {
               className={`relative rounded-2xl p-5 md:p-6 transition-all duration-300 flex flex-col ${
                 tier.popular
                   ? "bg-[#1472FF]/10 dark:bg-[#1472FF]/20 border-2 border-b-4 border-[#1472FF] dark:border-[#1472FF]"
-                  : "bg-white dark:bg-gray-950 border-2 border-b-4 border-gray-200 dark:border-black border-b-gray-300 dark:border-b-black"
+                  : "bg-white dark:bg-gray-900 border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950"
               }`}
             >
               {/* Popular Badge */}
@@ -158,7 +158,7 @@ export default function PricingSection() {
                 className={`w-full py-4 rounded-2xl font-bold text-sm md:text-base uppercase tracking-wide transition-all duration-150 mt-auto ${
                   tier.popular
                     ? "bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1"
-                    : "bg-white dark:bg-gray-950 text-[#1472FF] border-2 border-b-4 border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10 active:border-b-2 active:mt-[2px]"
+                    : "bg-white dark:bg-gray-900 text-[#1472FF] border-2 border-b-4 border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10 active:border-b-2 active:mt-[2px]"
                 }`}
               >
                 {tier.cta}

@@ -161,7 +161,7 @@ export default function Navbar() {
       transition={{ duration: 0.4, ease: "easeInOut" }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "backdrop-blur-md bg-white/50 dark:bg-gray-950/50"
+          ? "backdrop-blur-md bg-white/50 dark:bg-gray-900/50"
           : ""
       }`}
     >
@@ -203,7 +203,7 @@ export default function Navbar() {
             {/* Sliding indicator - gray button that slides behind text */}
             {activeSection && (
               <motion.div
-                className="absolute top-0 bottom-0 my-auto h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-300 dark:border-black z-0"
+                className="absolute top-0 bottom-0 my-auto h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-300 dark:border-gray-950 z-0"
                 initial={{ 
                   opacity: 0,
                   scale: 0.8,
@@ -318,7 +318,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden fixed inset-0 z-[100] bg-white dark:bg-gray-950"
+            className="md:hidden fixed inset-0 z-[100] bg-white dark:bg-gray-900"
             style={{ height: '100dvh' }}
           >
             <div className="h-full flex flex-col">
@@ -405,7 +405,7 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="hidden md:block lg:hidden overflow-hidden bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800"
+            className="hidden md:block lg:hidden overflow-hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800"
           >
             <div className="container mx-auto px-4 py-6">
               <div className="flex flex-col gap-4">
@@ -434,7 +434,7 @@ export default function Navbar() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.3 }}
-                  className="pt-4 border-t border-gray-200 dark:border-black"
+                  className="pt-4 border-t border-gray-200 dark:border-gray-950"
                 >
                   <Link
                     href="/auth/signup"

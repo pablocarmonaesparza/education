@@ -248,7 +248,7 @@ export default function VideoPage() {
 
         {/* Description */}
         {video.description && (
-          <div className="bg-white dark:bg-gray-950 rounded-2xl border border-gray-200 dark:border-black p-6 mb-6">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-950 p-6 mb-6">
             <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Descripción</h3>
             <p className="text-gray-600 dark:text-gray-400">{video.description}</p>
           </div>
@@ -261,7 +261,7 @@ export default function VideoPage() {
             <button
               onClick={() => goToVideo(currentIndex - 1)}
               disabled={currentIndex === 0}
-              className="px-4 py-2 rounded-xl border border-gray-200 dark:border-black text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-950 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -275,7 +275,7 @@ export default function VideoPage() {
             <button
               onClick={() => goToVideo(currentIndex + 1)}
               disabled={currentIndex === allVideos.length - 1}
-              className="px-4 py-2 rounded-xl border border-gray-200 dark:border-black text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-950 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
