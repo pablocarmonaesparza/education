@@ -359,6 +359,6 @@ p.text-2xl {
 
 @media (prefers-color-scheme: dark) {
   .textarea-dark-border {
-    border-color: #1f2937; /* gray-800 - visible border */
+    border-color: #030712; /* gray-950 */
   }
 }
