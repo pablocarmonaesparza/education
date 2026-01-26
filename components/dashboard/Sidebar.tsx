@@ -153,7 +153,7 @@ export default function Sidebar() {
                 className="w-9 h-9 rounded-xl object-cover flex-shrink-0"
               />
             ) : (
-              <IconButton as="div" size="sm">
+              <IconButton as="div" size="lg">
                 {userInitials}
               </IconButton>
             )}

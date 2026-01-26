@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import LessonItem from '@/components/dashboard/LessonItem';
 import IconButton from '@/components/shared/IconButton';
+import { summarizeProject } from '@/lib/utils/utils';
 
 const greetings = [
   "Hola",
@@ -535,10 +536,10 @@ export default function DashboardPage() {
                     </svg>
                   </IconButton>
 
-                  {/* Project text */}
+                  {/* Project text: resumen del sistema, máx. 2 líneas */}
                   <div className="px-12 min-w-0">
-                    <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3 break-words hyphens-auto leading-relaxed">
-                      {project}
+                    <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
+                      {summarizeProject(project)}
                     </p>
                     
                     {/* Dots indicator */}
@@ -585,10 +586,10 @@ export default function DashboardPage() {
                       </svg>
                     </IconButton>
 
-                    {/* Project text */}
+                    {/* Project text: resumen del sistema, máx. 2 líneas */}
                     <div className="px-12 min-w-0">
-                      <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3 break-words hyphens-auto leading-relaxed">
-                        {project}
+                      <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
+                        {summarizeProject(project)}
                       </p>
                       
                       {/* Dots indicator */}
