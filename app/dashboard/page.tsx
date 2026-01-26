@@ -390,14 +390,18 @@ export default function DashboardPage() {
       setActivePhaseId(currentVideo.phaseId);
       centerHorizontalButton(currentVideo.phaseId, true);
 
-      // Scroll to the video item - use getBoundingClientRect for accurate position
+      // Scroll to center the video item in the viewport
       const containerRect = container.getBoundingClientRect();
       const elementRect = videoElement.getBoundingClientRect();
       const scrollTop = container.scrollTop;
-      const targetTop = scrollTop + elementRect.top - containerRect.top - 120;
+      
+      // Calculate center position: element top - (viewport height / 2) + (element height / 2)
+      const viewportHeight = containerRect.height;
+      const elementHeight = elementRect.height;
+      const targetTop = scrollTop + elementRect.top - containerRect.top - (viewportHeight / 2) + (elementHeight / 2);
 
       container.scrollTo({
-        top: targetTop,
+        top: Math.max(0, targetTop),
         behavior: 'smooth'
       });
 

@@ -86,12 +86,12 @@ export default function LessonItem({
           {title}
         </h3>
 
-        {/* Expandable "Why watch this video?" button - hidden for completed videos */}
-        {!isCompleted && (
+        {/* Expandable "Why watch this video?" button - only for current video */}
+        {isCurrent && (
           <div className="mb-3">
             <div
               onClick={handleExpandClick}
-              className={`text-xs font-medium flex items-center gap-1 ${getExpandButtonColor()} hover:opacity-80 transition-opacity cursor-pointer`}
+              className={`text-xs font-bold flex items-center gap-1 ${getExpandButtonColor()} hover:opacity-80 transition-opacity cursor-pointer`}
             >
               <span>¿Para qué ver este video?</span>
               <svg 
