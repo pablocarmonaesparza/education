@@ -485,8 +485,8 @@ export default function DashboardPage() {
                 ))}
               </div>
             </div>
-            {/* Gradient fade below horizontal scroll */}
-            <div className="h-4 bg-gradient-to-b from-white dark:from-gray-900 to-transparent pointer-events-none -mb-4" />
+            {/* Gradient fade below - positioned absolute to not add space */}
+            <div className="absolute left-0 right-0 bottom-0 h-6 bg-gradient-to-b from-white dark:from-gray-900 to-transparent pointer-events-none translate-y-full" />
           </div>
         )}
 
@@ -494,7 +494,7 @@ export default function DashboardPage() {
         {/* Video cards content */}
         <div className="pb-24">
           {videos.length > 0 && (
-            <div className="py-6 space-y-6">
+            <div className="pt-2 pb-6 space-y-6">
             {Object.entries(videosByPhase).map(([phaseId, phaseData], phaseIndex) => (
               <div
                 key={phaseId}
