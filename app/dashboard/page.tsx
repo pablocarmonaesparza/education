@@ -501,7 +501,7 @@ export default function DashboardPage() {
         {/* Greeting - Animated visibility based on scroll position */}
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            showGreeting ? 'max-h-[240px] opacity-100 pt-6 pb-2' : 'max-h-0 opacity-0 pt-0 pb-0'
+            showGreeting ? 'max-h-[240px] opacity-100 pt-6 pb-0' : 'max-h-0 opacity-0 pt-0 pb-0'
           }`}
         >
           <div className="max-w-2xl mx-auto px-4 text-center">
