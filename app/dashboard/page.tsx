@@ -318,33 +318,26 @@ export default function DashboardPage() {
         // Skip if we're programmatically scrolling
         if (isScrollingToPhaseRef.current) return;
 
-        // Find the section that occupies most of the visible area
-        let bestEntry: IntersectionObserverEntry | null = null;
-        let highestRatio = 0;
+        // Find the section closest to the top of the viewport
+        let topEntry: IntersectionObserverEntry | null = null;
+        let topPosition = Infinity;
 
         entries.forEach((entry) => {
-          if (entry.isIntersecting && entry.intersectionRatio > highestRatio) {
-            highestRatio = entry.intersectionRatio;
-            bestEntry = entry;
+          if (entry.isIntersecting) {
+            const rect = entry.boundingClientRect;
+            // Simple: find entry with smallest positive top, or smallest negative if all negative
+            if (rect.top >= 0 && rect.top < topPosition) {
+              topPosition = rect.top;
+              topEntry = entry;
+            } else if (topPosition === Infinity && rect.top < 0 && rect.top > -rect.height * 0.8) {
+              topPosition = -rect.top;
+              topEntry = entry;
+            }
           }
         });
 
-        // If no entry with good ratio, find the one closest to top
-        if (!bestEntry) {
-          let topPosition = Infinity;
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const rect = entry.boundingClientRect;
-              if (Math.abs(rect.top) < topPosition) {
-                topPosition = Math.abs(rect.top);
-                bestEntry = entry;
-              }
-            }
-          });
-        }
-
-        if (bestEntry) {
-          const phaseId = bestEntry.target.getAttribute('data-phase-id');
+        if (topEntry) {
+          const phaseId = topEntry.target.getAttribute('data-phase-id');
           if (phaseId && phaseId !== activePhaseId) {
             setActivePhaseId(phaseId);
             centerHorizontalButton(phaseId, true);
@@ -354,8 +347,8 @@ export default function DashboardPage() {
 
       const observer = new IntersectionObserver(observerCallback, {
         root: container,
-        rootMargin: '-5% 0px -50% 0px',
-        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1]
+        rootMargin: '0px 0px -60% 0px',
+        threshold: [0, 0.1, 0.5]
       });
 
       // Observe all phase sections
@@ -382,11 +375,11 @@ export default function DashboardPage() {
       setActivePhaseId(phaseId);
       centerHorizontalButton(phaseId, true);
 
-      // Calculate scroll position - leave more space at top so content is visible
+      // Calculate scroll position - more offset = more space visible at top
       const sectionTop = section.offsetTop;
 
       container.scrollTo({
-        top: sectionTop - 20,
+        top: sectionTop - 120,
         behavior: 'smooth'
       });
 
