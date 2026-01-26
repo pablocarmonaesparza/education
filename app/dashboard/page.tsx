@@ -536,8 +536,8 @@ export default function DashboardPage() {
                       description={video.description}
                       isCompleted={video.isCompleted}
                       isCurrent={video.isCurrent}
-                      isExpanded={expandedVideoId === video.id}
-                      onToggleExpand={() => setExpandedVideoId(expandedVideoId === video.id ? null : video.id)}
+                      isExpanded={expandedVideoId === String(video.id)}
+                      onToggleExpand={() => setExpandedVideoId(expandedVideoId === String(video.id) ? null : String(video.id))}
                       onClick={() => handleVideoSelect(video)}
                     />
                   ))}

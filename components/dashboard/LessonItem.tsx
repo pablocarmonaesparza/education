@@ -81,9 +81,9 @@ export default function LessonItem({
 
         {/* Expandable "Why watch this video?" button - accent blue */}
         <div className="mb-3">
-          <button
+          <div
             onClick={handleExpandClick}
-            className="text-xs font-medium flex items-center gap-1 text-[#1472FF] hover:opacity-80 transition-opacity"
+            className="text-xs font-medium flex items-center gap-1 text-[#1472FF] hover:opacity-80 transition-opacity cursor-pointer"
           >
             <span>¿Para qué ver este video?</span>
             <svg 
@@ -94,7 +94,7 @@ export default function LessonItem({
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
-          </button>
+          </div>
           
           {isExpanded && description && (
             <p className={`text-xs mt-2 leading-relaxed ${getSecondaryTextColor()}`}>
