@@ -51,12 +51,12 @@ export default function LessonItem({
 
   const getExpandButtonColor = () => {
     // When item is green (completed) or blue (current), use navy blue
-    if (isCompleted || isCurrent) return 'text-[#030712]';
+    if (isCompleted || isCurrent) return 'text-[var(--background)]';
     // Otherwise use accent blue
     return 'text-[#1472FF]';
   };
 
-  // Determine border classes based on state
+  // Determine border and depth (3px shadow) based on state — same structure for all
   const getBorderClasses = () => {
     if (isCompleted) {
       return 'border-[#22c55e] shadow-[0_3px_0_0_#16a34a]';
@@ -64,7 +64,7 @@ export default function LessonItem({
     if (isCurrent) {
       return 'border-[#1472FF] shadow-[0_3px_0_0_#0E5FCC]';
     }
-    return 'lesson-item-border-pending';
+    return 'border-gray-300 dark:border-gray-700 shadow-[0_3px_0_0_#9ca3af] dark:shadow-[0_3px_0_0_#1f2937]';
   };
 
   const handleExpandClick = (e: React.MouseEvent) => {
@@ -79,7 +79,7 @@ export default function LessonItem({
     >
       {/* Simplified card - narrower width */}
       <div
-        className={`w-[220px] rounded-2xl p-4 border-2 ${getCardBg()} ${getBorderClasses()} shadow-none`}
+        className={`w-[220px] rounded-2xl p-4 border-2 ${getCardBg()} ${getBorderClasses()}`}
       >
         {/* Title at top - larger */}
         <h3 className={`text-lg font-bold leading-tight mb-2 ${getTextColor()}`}>
