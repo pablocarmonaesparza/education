@@ -5,6 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import Button from '@/components/shared/Button';
+import IconButton from '@/components/shared/IconButton';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -121,17 +123,16 @@ export default function Sidebar() {
             const isActive = pathname === item.href;
             return (
               <li key={item.href}>
-                <Link
+                <Button
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-150 ${
-                    isActive
-                      ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC]'
-                      : 'text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                  }`}
+                  variant={isActive ? 'nav-active' : 'nav-inactive'}
+                  size="md"
+                  rounded2xl
+                  className="flex items-center gap-3 justify-start w-full"
                 >
                   <span className="flex-shrink-0">{item.icon}</span>
-                  <span className="font-bold uppercase">{item.name}</span>
-                </Link>
+                  <span>{item.name}</span>
+                </Button>
               </li>
             );
           })}
@@ -152,9 +153,9 @@ export default function Sidebar() {
                 className="w-9 h-9 rounded-xl object-cover flex-shrink-0"
               />
             ) : (
-              <div className="w-9 h-9 rounded-xl bg-[#1472FF] flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+              <IconButton as="div" size="sm">
                 {userInitials}
-              </div>
+              </IconButton>
             )}
             <div className="flex-1 text-left overflow-hidden">
               <p className="text-sm font-bold text-[#4b4b4b] dark:text-white truncate">{userName || 'Usuario'}</p>

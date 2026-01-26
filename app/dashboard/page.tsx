@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import LessonItem from '@/components/dashboard/LessonItem';
+import IconButton from '@/components/shared/IconButton';
 
 const greetings = [
   "Hola",
@@ -525,13 +526,14 @@ export default function DashboardPage() {
                   </button>
 
                   {/* Trailing chevron/plus - plus if no more projects, blue accent */}
-                  <button
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-[#0E5FCC] bg-[#1472FF] text-white hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all duration-150"
+                  <IconButton
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                    aria-label="Añadir o ver proyecto"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                     </svg>
-                  </button>
+                  </IconButton>
 
                   {/* Project text */}
                   <div className="px-12 min-w-0">
@@ -574,13 +576,14 @@ export default function DashboardPage() {
                     </button>
 
                     {/* Trailing chevron/plus - plus if no more projects, blue accent */}
-                    <button
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-[#0E5FCC] bg-[#1472FF] text-white hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all duration-150"
+                    <IconButton
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                      aria-label="Añadir o ver proyecto"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                       </svg>
-                    </button>
+                    </IconButton>
 
                     {/* Project text */}
                     <div className="px-12 min-w-0">

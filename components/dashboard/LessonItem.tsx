@@ -56,15 +56,15 @@ export default function LessonItem({
     return 'text-[#1472FF]';
   };
 
-  // Determine border and depth (3px shadow) based on state — same structure for all
+  // Standard depth: border-2 + border-b-4 (canonical button style). Colors vary by state.
   const getBorderClasses = () => {
     if (isCompleted) {
-      return 'border-[#22c55e] shadow-[0_3px_0_0_#16a34a]';
+      return 'border-2 border-b-4 border-[#16a34a] group-active:border-b-2 group-active:mt-[2px]';
     }
     if (isCurrent) {
-      return 'border-[#1472FF] shadow-[0_3px_0_0_#0E5FCC]';
+      return 'border-2 border-b-4 border-[#0E5FCC] group-active:border-b-2 group-active:mt-[2px]';
     }
-    return 'border-gray-300 dark:border-gray-700 shadow-[0_3px_0_0_#9ca3af] dark:shadow-[0_3px_0_0_#1f2937]';
+    return 'border-2 border-b-4 border-gray-300 dark:border-gray-700 group-active:border-b-2 group-active:mt-[2px]';
   };
 
   const handleExpandClick = (e: React.MouseEvent) => {
@@ -75,11 +75,11 @@ export default function LessonItem({
   return (
     <button
       onClick={onClick}
-      className="text-left transition-all duration-150 hover:scale-[1.01] active:scale-[0.99]"
+      className="group text-left transition-all duration-150"
     >
-      {/* Simplified card - narrower width */}
+      {/* Simplified card - standard depth (border-b-4) like canonical buttons */}
       <div
-        className={`w-[220px] rounded-2xl p-4 border-2 ${getCardBg()} ${getBorderClasses()}`}
+        className={`w-[220px] rounded-2xl p-4 transition-all duration-150 ${getCardBg()} ${getBorderClasses()}`}
       >
         {/* Title at top - larger */}
         <h3 className={`text-lg font-bold leading-tight mb-2 ${getTextColor()}`}>

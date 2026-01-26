@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import Button from '@/components/shared/Button';
 
 interface Message {
   id: string;
@@ -197,13 +198,15 @@ export default function TutorChatButton() {
               className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-950 rounded-xl text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all shadow-sm"
             />
           </div>
-          <button
+          <Button
             type="submit"
+            variant="primary"
+            size="md"
             disabled={!input.trim() || isLoading}
-            className="w-full px-4 py-3 bg-[#1472FF] text-white rounded-xl hover:bg-[#1265e0] transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold uppercase tracking-wide flex items-center justify-center"
+            className="w-full flex items-center justify-center"
           >
             Enviar Mensaje
-          </button>
+          </Button>
         </form>
       </div>
     </aside>
