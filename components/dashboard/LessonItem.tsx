@@ -49,6 +49,13 @@ export default function LessonItem({
     return 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700';
   };
 
+  const getExpandButtonColor = () => {
+    // When item is green (completed) or blue (current), use navy blue
+    if (isCompleted || isCurrent) return 'text-[#030712]';
+    // Otherwise use accent blue
+    return 'text-[#1472FF]';
+  };
+
   // Determine border classes based on state
   const getBorderClasses = () => {
     if (isCompleted) {
@@ -79,11 +86,11 @@ export default function LessonItem({
           {title}
         </h3>
 
-        {/* Expandable "Why watch this video?" button - accent blue */}
+        {/* Expandable "Why watch this video?" button - navy blue when green/blue, accent blue otherwise */}
         <div className="mb-3">
           <div
             onClick={handleExpandClick}
-            className="text-xs font-medium flex items-center gap-1 text-[#1472FF] hover:opacity-80 transition-opacity cursor-pointer"
+            className={`text-xs font-medium flex items-center gap-1 ${getExpandButtonColor()} hover:opacity-80 transition-opacity cursor-pointer`}
           >
             <span>¿Para qué ver este video?</span>
             <svg 
