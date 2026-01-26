@@ -384,7 +384,7 @@ export default function DashboardPage() {
       const sectionTop = section.offsetTop;
 
       container.scrollTo({
-        top: sectionTop - 50,
+        top: sectionTop - 100,
         behavior: 'smooth'
       });
 
