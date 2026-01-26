@@ -384,14 +384,14 @@ p.text-2xl {
 
 /* LessonItem pending state border and shadow */
 .lesson-item-border-pending {
-  border-color: #d1d5db; /* gray-300 - light gray for light mode */
-  box-shadow: 0 3px 0 0 #9ca3af; /* gray-400 - slightly darker for depth */
+  border-color: #d1d5db !important; /* gray-300 - light gray for light mode */
+  box-shadow: 0 3px 0 0 #9ca3af !important; /* gray-400 - slightly darker for depth */
 }
 
 @media (prefers-color-scheme: dark) {
   .lesson-item-border-pending {
-    border-color: #030712; /* gray-950 */
-    box-shadow: 0 3px 0 0 #030712;
+    border-color: #030712 !important; /* gray-950 */
+    box-shadow: 0 3px 0 0 #030712 !important;
   }
 }
 

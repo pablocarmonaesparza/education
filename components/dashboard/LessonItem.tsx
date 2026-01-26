@@ -79,7 +79,7 @@ export default function LessonItem({
     >
       {/* Simplified card - narrower width */}
       <div
-        className={`w-[220px] rounded-2xl p-4 border-[3px] ${getCardBg()} ${getBorderClasses()}`}
+        className={`w-[220px] rounded-2xl p-4 border-2 ${getCardBg()} ${getBorderClasses()} shadow-none`}
       >
         {/* Title at top - larger */}
         <h3 className={`text-lg font-bold leading-tight mb-2 ${getTextColor()}`}>
