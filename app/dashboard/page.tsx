@@ -501,7 +501,7 @@ export default function DashboardPage() {
         {/* Greeting - Animated visibility based on scroll position */}
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            showGreeting ? 'max-h-[260px] opacity-100 pt-6 pb-10' : 'max-h-0 opacity-0 pt-0 pb-0'
+            showGreeting ? 'max-h-[240px] opacity-100 pt-6 pb-6' : 'max-h-0 opacity-0 pt-0 pb-0'
           }`}
         >
           <div className="max-w-2xl mx-auto px-4 text-center">
@@ -511,9 +511,9 @@ export default function DashboardPage() {
               </h1>
             )}
             {project && (
-              <div className="flex justify-center px-4 my-4">
+              <div className="flex justify-center px-4 mt-4 mb-2">
                 {/* Project selector button */}
-                <div className="relative w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-5">
+                <div className="relative w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-4">
                   {/* Leading chevron - disabled if first project */}
                   <button
                     disabled={true}
@@ -534,13 +534,13 @@ export default function DashboardPage() {
                   </button>
 
                   {/* Project text */}
-                  <div className="px-12 min-w-0 py-1">
+                  <div className="px-12 min-w-0">
                     <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3 break-words hyphens-auto leading-relaxed">
                       {project}
                     </p>
                     
                     {/* Dots indicator */}
-                    <div className="flex justify-center gap-1.5 mt-4">
+                    <div className="flex justify-center gap-1.5 mt-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
                     </div>
                   </div>
@@ -556,13 +556,13 @@ export default function DashboardPage() {
             {/* Project name - shows when greeting is hidden */}
             <div
               className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                !showGreeting ? 'max-h-[160px] opacity-100 py-4' : 'max-h-0 opacity-0 py-0'
+                !showGreeting ? 'max-h-[140px] opacity-100 py-2' : 'max-h-0 opacity-0 py-0'
               }`}
             >
               {project && (
-                <div className="flex justify-center px-4 my-4">
+                <div className="flex justify-center px-4">
                   {/* Project selector button */}
-                  <div className="relative w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-5">
+                  <div className="relative w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-4">
                     {/* Leading chevron - disabled if first project */}
                     <button
                       disabled={true}
@@ -583,13 +583,13 @@ export default function DashboardPage() {
                     </button>
 
                     {/* Project text */}
-                    <div className="px-12 min-w-0 py-1">
+                    <div className="px-12 min-w-0">
                       <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3 break-words hyphens-auto leading-relaxed">
                         {project}
                       </p>
                       
                       {/* Dots indicator */}
-                      <div className="flex justify-center gap-1.5 mt-4">
+                      <div className="flex justify-center gap-1.5 mt-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
                       </div>
                     </div>
