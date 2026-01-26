@@ -501,7 +501,7 @@ export default function DashboardPage() {
         {/* Greeting - Animated visibility based on scroll position */}
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            showGreeting ? 'max-h-[240px] opacity-100 pt-6 pb-6' : 'max-h-0 opacity-0 pt-0 pb-0'
+            showGreeting ? 'max-h-[240px] opacity-100 pt-6 pb-2' : 'max-h-0 opacity-0 pt-0 pb-0'
           }`}
         >
           <div className="max-w-2xl mx-auto px-4 text-center">
@@ -552,7 +552,7 @@ export default function DashboardPage() {
 
         {/* Project + Section Navigation - Sticky at top */}
         {videos.length > 0 && Object.keys(videosByPhase).length > 0 && (
-          <div className={`sticky top-0 z-20 bg-white dark:bg-gray-900 transition-all duration-300 ${showGreeting ? 'mt-6' : 'pt-2'}`}>
+          <div className={`sticky top-0 z-20 bg-white dark:bg-gray-900 transition-all duration-300 ${showGreeting ? 'mt-2' : 'pt-2'}`}>
             {/* Project name - shows when greeting is hidden */}
             <div
               className={`overflow-hidden transition-all duration-300 ease-in-out ${
