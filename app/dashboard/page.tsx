@@ -460,9 +460,13 @@ export default function DashboardPage() {
             </div>
 
             <div className="relative">
+              {/* Gradient fade on edges */}
+              <div className="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-gradient-to-r from-white dark:from-gray-900 to-transparent" />
+              <div className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-gradient-to-l from-white dark:from-gray-900 to-transparent" />
+              
               <div
                 ref={horizontalScrollRef}
-                className="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-4"
+                className="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-12"
                 style={{ scrollBehavior: 'smooth' }}
               >
                 {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
@@ -551,6 +555,8 @@ export default function DashboardPage() {
           }`}
           style={{ right: `${chatWidth}px` }}
         >
+          {/* Gradient fade above progress bar */}
+          <div className="h-8 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none" />
           <div className="bg-white dark:bg-gray-900 pb-4 flex justify-center">
             <div className="w-[80%] relative h-[37px] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex items-center justify-center border-2 border-b-4 border-gray-200 dark:border-gray-950">
               <div
