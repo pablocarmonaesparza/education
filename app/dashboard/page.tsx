@@ -485,6 +485,8 @@ export default function DashboardPage() {
                 ))}
               </div>
             </div>
+            {/* Gradient fade below horizontal scroll */}
+            <div className="h-8 bg-gradient-to-b from-white dark:from-gray-900 to-transparent pointer-events-none -mb-8" />
           </div>
         )}
 
