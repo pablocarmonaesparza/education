@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 interface LessonItemProps {
   lessonNumber: number;
   totalLessons: number;
@@ -11,6 +9,8 @@ interface LessonItemProps {
   description?: string;
   isCompleted?: boolean;
   isCurrent?: boolean;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
   onClick?: () => void;
 }
 
@@ -22,9 +22,10 @@ export default function LessonItem({
   description,
   isCompleted = false,
   isCurrent = false,
+  isExpanded = false,
+  onToggleExpand,
   onClick,
 }: LessonItemProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
 
   // Determine background and text colors based on state
   const getCardBg = () => {
@@ -61,7 +62,7 @@ export default function LessonItem({
 
   const handleExpandClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsExpanded(!isExpanded);
+    onToggleExpand?.();
   };
 
   return (
@@ -73,16 +74,16 @@ export default function LessonItem({
       <div
         className={`w-[220px] rounded-2xl p-4 border-[3px] ${getCardBg()} ${getBorderClasses()}`}
       >
-        {/* Title at top */}
-        <h3 className={`text-base font-bold leading-tight mb-2 ${getTextColor()}`}>
+        {/* Title at top - larger */}
+        <h3 className={`text-lg font-bold leading-tight mb-2 ${getTextColor()}`}>
           {title}
         </h3>
 
-        {/* Expandable "Why watch this video?" button */}
+        {/* Expandable "Why watch this video?" button - accent blue */}
         <div className="mb-3">
           <button
             onClick={handleExpandClick}
-            className={`text-xs font-medium flex items-center gap-1 ${getSecondaryTextColor()} hover:opacity-80 transition-opacity`}
+            className="text-xs font-medium flex items-center gap-1 text-[#1472FF] hover:opacity-80 transition-opacity"
           >
             <span>¿Para qué ver este video?</span>
             <svg 

@@ -44,6 +44,7 @@ export default function DashboardPage() {
   const [isVideoPlayerOpen, setIsVideoPlayerOpen] = useState(false);
   const [isVideoPlayerClosing, setIsVideoPlayerClosing] = useState(false);
   const [chatWidth, setChatWidth] = useState(256);
+  const [expandedVideoId, setExpandedVideoId] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const phaseSectionsRef = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -535,6 +536,8 @@ export default function DashboardPage() {
                       description={video.description}
                       isCompleted={video.isCompleted}
                       isCurrent={video.isCurrent}
+                      isExpanded={expandedVideoId === video.id}
+                      onToggleExpand={() => setExpandedVideoId(expandedVideoId === video.id ? null : video.id)}
                       onClick={() => handleVideoSelect(video)}
                     />
                   ))}
