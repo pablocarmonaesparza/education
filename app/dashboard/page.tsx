@@ -460,14 +460,9 @@ export default function DashboardPage() {
             </div>
 
             <div className="relative">
-              {/* Gradient overlays - left and right edges (match background color for fade effect) */}
-              {/* Using CSS classes from globals.css that respond to prefers-color-scheme */}
-              <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none gradient-fade-left" />
-              <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none gradient-fade-right" />
-
               <div
                 ref={horizontalScrollRef}
-                className="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-16"
+                className="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-4"
                 style={{ scrollBehavior: 'smooth' }}
               >
                 {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
