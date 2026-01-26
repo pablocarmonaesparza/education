@@ -94,12 +94,14 @@ Supabase Insert
     "user_id": "{{ $json.body.user_id }}",
     "responses": {
       "project_idea": "{{ $json.body.project_idea }}",
+      "project_summary": "{{ $json.body.project_summary }}",
       "submitted_at": "{{ $json.body.timestamp }}"
     },
     "generated_path": "{{ $json.course }}",
     "created_at": "{{ $now }}"
   }
   ```
+  Incluye `project_summary` si el backend lo envía (overview en 2 líneas por ChatGPT); el dashboard lo muestra en el selector de proyecto.
 
 ---
 

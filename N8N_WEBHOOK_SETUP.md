@@ -46,9 +46,12 @@ El webhook recibirá un JSON con esta estructura:
   "user_email": "usuario@email.com",
   "user_name": "Nombre Usuario",
   "project_idea": "Quiero crear un chatbot para...",
+  "project_summary": "Resumen en 2 líneas generado por ChatGPT (overview del proyecto).",
   "timestamp": "2025-01-12T10:30:00.000Z"
 }
 ```
+
+**`project_summary`** (opcional): El backend genera un overview de la idea en ~2 líneas vía OpenAI (ChatGPT) y lo envía en el body. **Al insertar en `intake_responses`**, incluye `project_summary` en `responses` (p. ej. `responses.project_summary`) para que el dashboard lo muestre en el selector de proyecto. Si falta, el dashboard usa la idea completa.
 
 ### Paso 4: Conectar con Supabase (Education System)
 

@@ -412,7 +412,10 @@ const result = await response.json();
 
 await supabase.from('intake_responses').insert({
   user_id: user.id,
-  responses: { project_idea: projectIdea },
+  responses: { 
+    project_idea: projectIdea, 
+    project_summary: result.project_summary  // overview 2 líneas (ChatGPT), si el backend lo envía
+  },
   generated_path: result.course, // ← Guarda el objeto course completo
 });
 ```

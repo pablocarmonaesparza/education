@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { summarizeProjectWithOpenAI } from '@/lib/openai/summarizeProject';
 
 // Aumentar el timeout a 5 minutos (300 segundos)
 export const maxDuration = 300;
@@ -81,6 +82,17 @@ export async function POST(request: NextRequest) {
 
     console.log('Usuario verificado/creado en public.users:', user.id);
 
+    const projectIdea = body.project_idea || '';
+    let projectSummary = '';
+    if (projectIdea && process.env.OPENAI_API_KEY) {
+      try {
+        projectSummary = await summarizeProjectWithOpenAI(projectIdea);
+        body.project_summary = projectSummary;
+      } catch (e) {
+        console.warn('Could not generate project summary (OpenAI):', e);
+      }
+    }
+
     const N8N_WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL;
 
     if (!N8N_WEBHOOK_URL || N8N_WEBHOOK_URL.includes('tu-webhook-n8n.com')) {
@@ -97,7 +109,7 @@ export async function POST(request: NextRequest) {
     console.log('User ID:', body.user_id);
 
     // Llamar al webhook de n8n - este ahora responderá inmediatamente
-    // y continuará procesando en background
+    // y continuará procesando en background (body incluye project_summary si OpenAI está configurado)
     fetch(N8N_WEBHOOK_URL, {
       method: 'POST',
       headers: {

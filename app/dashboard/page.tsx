@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import LessonItem from '@/components/dashboard/LessonItem';
 import IconButton from '@/components/shared/IconButton';
-import { summarizeProject } from '@/lib/utils/utils';
 
 const greetings = [
   "Hola",
@@ -36,6 +35,7 @@ export default function DashboardPage() {
   const [userName, setUserName] = useState<string>('');
   const [greeting, setGreeting] = useState<string>('');
   const [project, setProject] = useState<string>('');
+  const [projectSummary, setProjectSummary] = useState<string>('');
   const [videos, setVideos] = useState<Video[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activePhaseId, setActivePhaseId] = useState<string>('');
@@ -105,16 +105,16 @@ export default function DashboardPage() {
           .limit(1)
           .single();
         
-        // Get project idea
+        // Get project idea and AI-generated summary (2 lines, from OpenAI after onboarding)
         const projectIdea = 
           intakeData?.responses?.project_idea ||
           intakeData?.responses?.project ||
           intakeData?.responses?.idea ||
           '';
+        const summary = intakeData?.responses?.project_summary || '';
         
-        if (projectIdea) {
-          setProject(projectIdea);
-        }
+        if (projectIdea) setProject(projectIdea);
+        if (summary) setProjectSummary(summary);
 
         // Get videos from generated_path
         if (intakeData?.generated_path) {
@@ -536,10 +536,10 @@ export default function DashboardPage() {
                     </svg>
                   </IconButton>
 
-                  {/* Project text: resumen del sistema, máx. 2 líneas */}
+                  {/* Project text: overview por IA (2 líneas) o idea completa si no hay resumen */}
                   <div className="px-12 min-w-0">
                     <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
-                      {summarizeProject(project)}
+                      {projectSummary || project}
                     </p>
                     
                     {/* Dots indicator */}
@@ -586,10 +586,10 @@ export default function DashboardPage() {
                       </svg>
                     </IconButton>
 
-                    {/* Project text: resumen del sistema, máx. 2 líneas */}
+                    {/* Project text: overview por IA (2 líneas) o idea completa si no hay resumen */}
                     <div className="px-12 min-w-0">
                       <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
-                        {summarizeProject(project)}
+                        {projectSummary || project}
                       </p>
                       
                       {/* Dots indicator */}
