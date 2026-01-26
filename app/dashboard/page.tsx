@@ -305,61 +305,66 @@ export default function DashboardPage() {
     }
   }, [scrollDirection]);
 
-  // Intersection Observer for detecting active section during scroll
+  // Scroll-based detection for active section
   useEffect(() => {
     if (videos.length === 0) return;
 
-    // Wait for refs to be populated
-    const timer = setTimeout(() => {
-      const container = scrollContainerRef.current;
-      if (!container) return;
+    const container = scrollContainerRef.current;
+    if (!container) return;
 
-      const observerCallback = (entries: IntersectionObserverEntry[]) => {
-        // Skip if we're programmatically scrolling
-        if (isScrollingToPhaseRef.current) return;
+    const handleScroll = () => {
+      // Skip if we're programmatically scrolling
+      if (isScrollingToPhaseRef.current) return;
 
-        // Find the section closest to the top of the viewport
-        let topEntry: IntersectionObserverEntry | null = null;
-        let topPosition = Infinity;
+      const containerRect = container.getBoundingClientRect();
+      const referencePoint = containerRect.top + 150; // 150px from top of container
 
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const rect = entry.boundingClientRect;
-            // Simple: find entry with smallest positive top, or smallest negative if all negative
-            if (rect.top >= 0 && rect.top < topPosition) {
-              topPosition = rect.top;
-              topEntry = entry;
-            } else if (topPosition === Infinity && rect.top < 0 && rect.top > -rect.height * 0.8) {
-              topPosition = -rect.top;
-              topEntry = entry;
-            }
-          }
-        });
+      let closestSection: string | null = null;
+      let closestDistance = Infinity;
 
-        if (topEntry) {
-          const phaseId = topEntry.target.getAttribute('data-phase-id');
-          if (phaseId && phaseId !== activePhaseId) {
-            setActivePhaseId(phaseId);
-            centerHorizontalButton(phaseId, true);
+      // Find the section whose top is closest to (but above) the reference point
+      phaseSectionsRef.current.forEach((el, phaseId) => {
+        const rect = el.getBoundingClientRect();
+        const sectionTop = rect.top;
+        
+        // Section is "active" when its top has passed the reference point
+        // but the section is still visible (not completely scrolled past)
+        if (sectionTop <= referencePoint && rect.bottom > containerRect.top) {
+          const distance = referencePoint - sectionTop;
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestSection = phaseId;
           }
         }
-      };
-
-      const observer = new IntersectionObserver(observerCallback, {
-        root: container,
-        rootMargin: '0px 0px -60% 0px',
-        threshold: [0, 0.1, 0.5]
       });
 
-      // Observe all phase sections
-      phaseSectionsRef.current.forEach((el) => {
-        observer.observe(el);
-      });
+      // If no section found (at very top), use first section
+      if (!closestSection && phaseSectionsRef.current.size > 0) {
+        closestSection = Array.from(phaseSectionsRef.current.keys())[0];
+      }
 
-      return () => observer.disconnect();
-    }, 200);
+      if (closestSection && closestSection !== activePhaseId) {
+        setActivePhaseId(closestSection);
+        centerHorizontalButton(closestSection, true);
+      }
+    };
 
-    return () => clearTimeout(timer);
+    // Debounce scroll handler
+    let rafId: number;
+    const debouncedScroll = () => {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(handleScroll);
+    };
+
+    container.addEventListener('scroll', debouncedScroll, { passive: true });
+    
+    // Initial check
+    setTimeout(handleScroll, 100);
+
+    return () => {
+      container.removeEventListener('scroll', debouncedScroll);
+      cancelAnimationFrame(rafId);
+    };
   }, [videos, activePhaseId, centerHorizontalButton]);
 
   // Scroll to section when clicking on navigation button
@@ -375,11 +380,11 @@ export default function DashboardPage() {
       setActivePhaseId(phaseId);
       centerHorizontalButton(phaseId, true);
 
-      // Calculate scroll position - more offset = more space visible at top
+      // Calculate scroll position - scroll to show section title near the top
       const sectionTop = section.offsetTop;
 
       container.scrollTo({
-        top: sectionTop - 120,
+        top: sectionTop - 10,
         behavior: 'smooth'
       });
 
