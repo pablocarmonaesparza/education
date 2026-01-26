@@ -318,23 +318,33 @@ export default function DashboardPage() {
         // Skip if we're programmatically scrolling
         if (isScrollingToPhaseRef.current) return;
 
-        // Find the most visible section
-        let topEntry: IntersectionObserverEntry | null = null;
-        let topPosition = Infinity;
+        // Find the section that occupies most of the visible area
+        let bestEntry: IntersectionObserverEntry | null = null;
+        let highestRatio = 0;
 
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const rect = entry.boundingClientRect;
-            // Find the entry closest to the top of the viewport
-            if (rect.top < topPosition && rect.top >= -rect.height / 2) {
-              topPosition = rect.top;
-              topEntry = entry;
-            }
+          if (entry.isIntersecting && entry.intersectionRatio > highestRatio) {
+            highestRatio = entry.intersectionRatio;
+            bestEntry = entry;
           }
         });
 
-        if (topEntry) {
-          const phaseId = topEntry.target.getAttribute('data-phase-id');
+        // If no entry with good ratio, find the one closest to top
+        if (!bestEntry) {
+          let topPosition = Infinity;
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const rect = entry.boundingClientRect;
+              if (Math.abs(rect.top) < topPosition) {
+                topPosition = Math.abs(rect.top);
+                bestEntry = entry;
+              }
+            }
+          });
+        }
+
+        if (bestEntry) {
+          const phaseId = bestEntry.target.getAttribute('data-phase-id');
           if (phaseId && phaseId !== activePhaseId) {
             setActivePhaseId(phaseId);
             centerHorizontalButton(phaseId, true);
@@ -344,8 +354,8 @@ export default function DashboardPage() {
 
       const observer = new IntersectionObserver(observerCallback, {
         root: container,
-        rootMargin: '-10% 0px -70% 0px',
-        threshold: [0, 0.1, 0.2, 0.3, 0.4, 0.5]
+        rootMargin: '-5% 0px -50% 0px',
+        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1]
       });
 
       // Observe all phase sections
@@ -372,11 +382,11 @@ export default function DashboardPage() {
       setActivePhaseId(phaseId);
       centerHorizontalButton(phaseId, true);
 
-      // Calculate scroll position - offset hides divider but shows title
+      // Calculate scroll position - leave more space at top so content is visible
       const sectionTop = section.offsetTop;
 
       container.scrollTo({
-        top: sectionTop - 60,
+        top: sectionTop - 20,
         behavior: 'smooth'
       });
 
@@ -503,27 +513,16 @@ export default function DashboardPage() {
                   if (el) phaseSectionsRef.current.set(phaseId, el);
                 }}
               >
-                {/* Phase Divider and Title */}
-                {phaseIndex > 0 ? (
-                  <div className="mb-6">
-                    {/* Divider with section name in the middle: ----- SECTION ----- */}
-                    <div className="flex items-center justify-center gap-4 w-[80%] mx-auto">
-                      <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-700 rounded-full" />
-                      <h2 className="text-sm font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase whitespace-nowrap">
-                        {phaseData.phaseName}
-                      </h2>
-                      <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-700 rounded-full" />
-                    </div>
+                {/* Phase Divider and Title: ----- SECTION ----- */}
+                <div className="mb-6">
+                  <div className="flex items-center justify-center gap-4 w-[80%] mx-auto">
+                    <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-700 rounded-full" />
+                    <h2 className="text-sm font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase whitespace-nowrap">
+                      {phaseData.phaseName}
+                    </h2>
+                    <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-700 rounded-full" />
                   </div>
-                ) : (
-                  <div className="mb-6">
-                    <div className="w-[400px] mx-auto">
-                      <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
-                        {phaseData.phaseName}
-                      </h2>
-                    </div>
-                  </div>
-                )}
+                </div>
                 
                 {/* Videos in this phase */}
                 <div className="w-[400px] mx-auto space-y-4">
