@@ -380,11 +380,11 @@ export default function DashboardPage() {
       setActivePhaseId(phaseId);
       centerHorizontalButton(phaseId, true);
 
-      // Calculate scroll position - scroll to show section title near the top
+      // Calculate scroll position - leave space to see divider title
       const sectionTop = section.offsetTop;
 
       container.scrollTo({
-        top: sectionTop - 10,
+        top: sectionTop - 50,
         behavior: 'smooth'
       });
 
