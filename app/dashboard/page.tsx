@@ -368,6 +368,51 @@ export default function DashboardPage() {
     };
   }, [videos, activePhaseId, centerHorizontalButton]);
 
+  // Auto-scroll to current video after 2 seconds on initial load
+  useEffect(() => {
+    if (videos.length === 0 || isLoading) return;
+
+    const timer = setTimeout(() => {
+      const currentVideo = videos.find(v => v.isCurrent);
+      if (!currentVideo) return;
+
+      const container = scrollContainerRef.current;
+      if (!container) return;
+
+      // Find the video item element (wrapper div)
+      const videoElement = container.querySelector(`[data-video-id="${currentVideo.id}"]`) as HTMLElement;
+      if (!videoElement) return;
+
+      // Mark that we're programmatically scrolling
+      isScrollingToPhaseRef.current = true;
+
+      // Update active phase
+      setActivePhaseId(currentVideo.phaseId);
+      centerHorizontalButton(currentVideo.phaseId, true);
+
+      // Scroll to the video item - use getBoundingClientRect for accurate position
+      const containerRect = container.getBoundingClientRect();
+      const elementRect = videoElement.getBoundingClientRect();
+      const scrollTop = container.scrollTop;
+      const targetTop = scrollTop + elementRect.top - containerRect.top - 120;
+
+      container.scrollTo({
+        top: targetTop,
+        behavior: 'smooth'
+      });
+
+      // Expand the video automatically
+      setExpandedVideoId(String(currentVideo.id));
+
+      // Reset the flag after scroll completes
+      setTimeout(() => {
+        isScrollingToPhaseRef.current = false;
+      }, 1000);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [videos, isLoading, centerHorizontalButton]);
+
   // Scroll to section when clicking on navigation button
   const scrollToPhase = useCallback((phaseId: string) => {
     const section = phaseSectionsRef.current.get(phaseId);
@@ -526,20 +571,21 @@ export default function DashboardPage() {
                 {/* Videos in this phase */}
                 <div className="w-[220px] mx-auto space-y-4">
                   {phaseData.videos.map((video) => (
-                    <LessonItem
-                      key={video.id}
-                      lessonNumber={video.order + 1}
-                      totalLessons={totalCount}
-                      duration={formatDuration(video.duration)}
-                      category={video.phaseName}
-                      title={video.title}
-                      description={video.description}
-                      isCompleted={video.isCompleted}
-                      isCurrent={video.isCurrent}
-                      isExpanded={expandedVideoId === String(video.id)}
-                      onToggleExpand={() => setExpandedVideoId(expandedVideoId === String(video.id) ? null : String(video.id))}
-                      onClick={() => handleVideoSelect(video)}
-                    />
+                    <div key={video.id} data-video-id={video.id}>
+                      <LessonItem
+                        lessonNumber={video.order + 1}
+                        totalLessons={totalCount}
+                        duration={formatDuration(video.duration)}
+                        category={video.phaseName}
+                        title={video.title}
+                        description={video.description}
+                        isCompleted={video.isCompleted}
+                        isCurrent={video.isCurrent}
+                        isExpanded={expandedVideoId === String(video.id)}
+                        onToggleExpand={() => setExpandedVideoId(expandedVideoId === String(video.id) ? null : String(video.id))}
+                        onClick={() => handleVideoSelect(video)}
+                      />
+                    </div>
                   ))}
                 </div>
               </div>

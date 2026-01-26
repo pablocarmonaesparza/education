@@ -86,29 +86,31 @@ export default function LessonItem({
           {title}
         </h3>
 
-        {/* Expandable "Why watch this video?" button - navy blue when green/blue, accent blue otherwise */}
-        <div className="mb-3">
-          <div
-            onClick={handleExpandClick}
-            className={`text-xs font-medium flex items-center gap-1 ${getExpandButtonColor()} hover:opacity-80 transition-opacity cursor-pointer`}
-          >
-            <span>¿Para qué ver este video?</span>
-            <svg 
-              className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
+        {/* Expandable "Why watch this video?" button - hidden for completed videos */}
+        {!isCompleted && (
+          <div className="mb-3">
+            <div
+              onClick={handleExpandClick}
+              className={`text-xs font-medium flex items-center gap-1 ${getExpandButtonColor()} hover:opacity-80 transition-opacity cursor-pointer`}
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
+              <span>¿Para qué ver este video?</span>
+              <svg 
+                className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+            
+            {isExpanded && description && (
+              <p className={`text-xs mt-2 leading-relaxed ${getSecondaryTextColor()}`}>
+                {description}
+              </p>
+            )}
           </div>
-          
-          {isExpanded && description && (
-            <p className={`text-xs mt-2 leading-relaxed ${getSecondaryTextColor()}`}>
-              {description}
-            </p>
-          )}
-        </div>
+        )}
 
         {/* Bottom row: Lesson number left, Duration right */}
         <div className="flex items-center justify-between">
