@@ -512,9 +512,39 @@ export default function DashboardPage() {
             )}
             {project && (
               <div className="flex justify-center px-4 mt-2">
-                <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3 w-[80%]">
-                  {project}
-                </p>
+                {/* Project selector button */}
+                <div className="relative w-[80%] rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-4">
+                  {/* Leading chevron - disabled if first project */}
+                  <button
+                    disabled={true}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+
+                  {/* Trailing chevron/plus - plus if no more projects */}
+                  <button
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                  </button>
+
+                  {/* Project text */}
+                  <div className="px-10">
+                    <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3">
+                      {project}
+                    </p>
+                    
+                    {/* Dots indicator */}
+                    <div className="flex justify-center gap-1.5 mt-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -531,9 +561,39 @@ export default function DashboardPage() {
             >
               {project && (
                 <div className="flex justify-center px-4 pb-2">
-                  <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3 w-[80%]">
-                    {project}
-                  </p>
+                  {/* Project selector button */}
+                  <div className="relative w-[80%] rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-4">
+                    {/* Leading chevron - disabled if first project */}
+                    <button
+                      disabled={true}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+
+                    {/* Trailing chevron/plus - plus if no more projects */}
+                    <button
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </button>
+
+                    {/* Project text */}
+                    <div className="px-10">
+                      <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3">
+                        {project}
+                      </p>
+                      
+                      {/* Dots indicator */}
+                      <div className="flex justify-center gap-1.5 mt-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
