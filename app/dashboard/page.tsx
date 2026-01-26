@@ -506,14 +506,13 @@ export default function DashboardPage() {
                 {/* Phase Divider and Title */}
                 {phaseIndex > 0 ? (
                   <div className="mb-6">
-                    {/* Divider - same width as progress bar (80% centered) */}
-                    <div className="flex justify-center mb-4">
-                      <div className="w-[80%] h-[3px] phase-divider rounded-full" />
-                    </div>
-                    <div className="w-[400px] mx-auto">
-                      <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
+                    {/* Divider with section name in the middle: ----- SECTION ----- */}
+                    <div className="flex items-center justify-center gap-4 w-[80%] mx-auto">
+                      <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-700 rounded-full" />
+                      <h2 className="text-sm font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase whitespace-nowrap">
                         {phaseData.phaseName}
                       </h2>
+                      <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-700 rounded-full" />
                     </div>
                   </div>
                 ) : (
