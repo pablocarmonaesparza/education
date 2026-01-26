@@ -56,11 +56,11 @@ export default function LessonItem({
   return (
     <button
       onClick={onClick}
-      className="w-full text-left transition-all duration-150 hover:scale-[1.01] active:scale-[0.99]"
+      className="text-left transition-all duration-150 hover:scale-[1.01] active:scale-[0.99]"
     >
-      {/* Simplified card */}
+      {/* Simplified card - narrower width */}
       <div
-        className={`rounded-2xl p-4 border-[3px] ${getCardBg()} ${getBorderClasses()}`}
+        className={`w-[220px] rounded-2xl p-4 border-[3px] ${getCardBg()} ${getBorderClasses()}`}
       >
         {/* Top row: Lesson number left, Duration right */}
         <div className="flex items-center justify-between mb-2">

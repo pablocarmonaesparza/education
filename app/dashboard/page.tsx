@@ -523,7 +523,7 @@ export default function DashboardPage() {
                 </div>
                 
                 {/* Videos in this phase */}
-                <div className="w-[400px] mx-auto space-y-4">
+                <div className="w-[220px] mx-auto space-y-4">
                   {phaseData.videos.map((video) => (
                     <LessonItem
                       key={video.id}
