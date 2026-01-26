@@ -532,6 +532,7 @@ export default function DashboardPage() {
                       duration={formatDuration(video.duration)}
                       category={video.phaseName}
                       title={video.title}
+                      description={video.description}
                       isCompleted={video.isCompleted}
                       isCurrent={video.isCurrent}
                       onClick={() => handleVideoSelect(video)}
