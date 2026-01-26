@@ -384,8 +384,8 @@ p.text-2xl {
 
 /* LessonItem pending state border and shadow */
 .lesson-item-border-pending {
-  border-color: #4b5563; /* gray-600 */
-  box-shadow: 0 3px 0 0 #4b5563;
+  border-color: #374151; /* gray-700 - dark gray for light mode */
+  box-shadow: 0 3px 0 0 #374151;
 }
 
 @media (prefers-color-scheme: dark) {
