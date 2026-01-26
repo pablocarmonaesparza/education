@@ -390,20 +390,39 @@ export default function DashboardPage() {
       setActivePhaseId(currentVideo.phaseId);
       centerHorizontalButton(currentVideo.phaseId, true);
 
-      // Scroll to center the video item in the viewport
+      // Smooth scroll to center the video item in the viewport
       const containerRect = container.getBoundingClientRect();
       const elementRect = videoElement.getBoundingClientRect();
-      const scrollTop = container.scrollTop;
+      const startScrollTop = container.scrollTop;
       
       // Calculate center position: element top - (viewport height / 2) + (element height / 2)
       const viewportHeight = containerRect.height;
       const elementHeight = elementRect.height;
-      const targetTop = scrollTop + elementRect.top - containerRect.top - (viewportHeight / 2) + (elementHeight / 2);
+      const targetTop = Math.max(0, startScrollTop + elementRect.top - containerRect.top - (viewportHeight / 2) + (elementHeight / 2));
 
-      container.scrollTo({
-        top: Math.max(0, targetTop),
-        behavior: 'smooth'
-      });
+      // Smooth scroll animation with easing
+      const duration = 800; // 800ms for smoother animation
+      const startTime = performance.now();
+      
+      const easeInOutCubic = (t: number) => t < 0.5 
+        ? 4 * t * t * t 
+        : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+      const animateScroll = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeInOutCubic(progress);
+        
+        container.scrollTop = startScrollTop + (targetTop - startScrollTop) * easedProgress;
+        
+        if (progress < 1) {
+          requestAnimationFrame(animateScroll);
+        } else {
+          isScrollingToPhaseRef.current = false;
+        }
+      };
+      
+      requestAnimationFrame(animateScroll);
 
       // Expand the video automatically
       setExpandedVideoId(String(currentVideo.id));

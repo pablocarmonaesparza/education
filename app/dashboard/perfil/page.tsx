@@ -247,8 +247,8 @@ export default function PerfilPage() {
                 <p className="font-medium text-gray-900 dark:text-white">Plan actual</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Plan {getTierName(profile.tier)}</p>
               </div>
-              <button className="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-950 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm">
-                Cambiar plan
+              <button className="px-4 py-2 rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150">
+                Mejorar Plan
               </button>
             </div>
 

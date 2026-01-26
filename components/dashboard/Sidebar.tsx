@@ -53,6 +53,33 @@ export default function Sidebar() {
       ),
     },
     {
+      name: 'Sesiones',
+      href: '/dashboard/sesiones',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      ),
+    },
+    {
+      name: 'Calendario',
+      href: '/dashboard/calendario',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      ),
+    },
+    {
+      name: 'Newsletters',
+      href: '/dashboard/newsletters',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      ),
+    },
+    {
       name: 'Retos',
       href: '/dashboard/retos',
       icon: (
@@ -146,9 +173,6 @@ export default function Sidebar() {
                 onClick={() => setShowProfileMenu(false)} 
               />
               <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-950 py-2 z-20 shadow-lg">
-                <button className="w-full rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center justify-center gap-2 px-4 py-3 mx-2 mb-2">
-                  Mejorar Plan
-                </button>
                 <Link
                   href="/dashboard/perfil"
                   onClick={() => setShowProfileMenu(false)}
