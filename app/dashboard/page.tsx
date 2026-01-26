@@ -513,7 +513,7 @@ export default function DashboardPage() {
             {project && (
               <div className="flex justify-center px-4 mt-2">
                 {/* Project selector button */}
-                <div className="relative w-[80%] rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-4">
+                <div className="relative w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-4">
                   {/* Leading chevron - disabled if first project */}
                   <button
                     disabled={true}
@@ -524,9 +524,9 @@ export default function DashboardPage() {
                     </svg>
                   </button>
 
-                  {/* Trailing chevron/plus - plus if no more projects */}
+                  {/* Trailing chevron/plus - plus if no more projects, blue accent */}
                   <button
-                    className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-[#0E5FCC] bg-[#1472FF] text-white hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all duration-150"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -534,8 +534,8 @@ export default function DashboardPage() {
                   </button>
 
                   {/* Project text */}
-                  <div className="px-10">
-                    <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3">
+                  <div className="px-12 min-w-0">
+                    <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3 break-words hyphens-auto">
                       {project}
                     </p>
                     
@@ -562,7 +562,7 @@ export default function DashboardPage() {
               {project && (
                 <div className="flex justify-center px-4 pb-2">
                   {/* Project selector button */}
-                  <div className="relative w-[80%] rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-4">
+                  <div className="relative w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-4">
                     {/* Leading chevron - disabled if first project */}
                     <button
                       disabled={true}
@@ -573,9 +573,9 @@ export default function DashboardPage() {
                       </svg>
                     </button>
 
-                    {/* Trailing chevron/plus - plus if no more projects */}
+                    {/* Trailing chevron/plus - plus if no more projects, blue accent */}
                     <button
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-[#0E5FCC] bg-[#1472FF] text-white hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all duration-150"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -583,8 +583,8 @@ export default function DashboardPage() {
                     </button>
 
                     {/* Project text */}
-                    <div className="px-10">
-                      <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3">
+                    <div className="px-12 min-w-0">
+                      <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3 break-words hyphens-auto">
                         {project}
                       </p>
                       
@@ -605,7 +605,7 @@ export default function DashboardPage() {
               
               <div
                 ref={horizontalScrollRef}
-                className="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-12"
+                className="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-12 min-w-0"
                 style={{ scrollBehavior: 'smooth' }}
               >
                 {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
@@ -613,7 +613,7 @@ export default function DashboardPage() {
                     key={phaseId}
                     data-phase-id={phaseId}
                     onClick={() => scrollToPhase(phaseId)}
-                    className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide transition-all duration-150 ${
+                    className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide transition-all duration-150 whitespace-nowrap ${
                       activePhaseId === phaseId
                         ? 'bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px]'
                         : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-b-4 border-gray-200 dark:border-gray-950 hover:bg-gray-50 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px]'
