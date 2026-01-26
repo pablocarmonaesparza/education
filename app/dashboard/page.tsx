@@ -511,9 +511,11 @@ export default function DashboardPage() {
               </h1>
             )}
             {project && (
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 line-clamp-1">
-                {project}
-              </p>
+              <div className="flex justify-center px-4 mt-2">
+                <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3 w-[80%]">
+                  {project}
+                </p>
+              </div>
             )}
           </div>
         </div>
@@ -529,7 +531,7 @@ export default function DashboardPage() {
             >
               {project && (
                 <div className="flex justify-center px-4 pb-2">
-                  <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3 max-w-md">
+                  <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-3 w-[80%]">
                     {project}
                   </p>
                 </div>
