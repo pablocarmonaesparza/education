@@ -412,7 +412,7 @@ export default function DashboardPage() {
       setTimeout(() => {
         isScrollingToPhaseRef.current = false;
       }, 1000);
-    }, 2000);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [videos, isLoading, centerHorizontalButton]);
