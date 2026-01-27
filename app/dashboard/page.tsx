@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import LessonItem from '@/components/dashboard/LessonItem';
 import IconButton from '@/components/shared/IconButton';
+import Button from '@/components/shared/Button';
 
 const greetings = [
   "Hola",
@@ -47,6 +48,7 @@ export default function DashboardPage() {
   const [isVideoPlayerClosing, setIsVideoPlayerClosing] = useState(false);
   const [chatWidth, setChatWidth] = useState(256);
   const [expandedVideoId, setExpandedVideoId] = useState<string | null>(null);
+  const [showCreateCourseModal, setShowCreateCourseModal] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const phaseSectionsRef = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -526,10 +528,11 @@ export default function DashboardPage() {
                     </svg>
                   </button>
 
-                  {/* Trailing chevron/plus - plus if no more projects, blue accent */}
+                  {/* Trailing chevron/plus - crear nuevo curso */}
                   <IconButton
                     className="absolute right-3 top-1/2 -translate-y-1/2"
                     aria-label="Añadir o ver proyecto"
+                    onClick={() => setShowCreateCourseModal(true)}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -576,10 +579,11 @@ export default function DashboardPage() {
                       </svg>
                     </button>
 
-                    {/* Trailing chevron/plus - plus if no more projects, blue accent */}
+                    {/* Trailing chevron/plus - crear nuevo curso */}
                     <IconButton
                       className="absolute right-3 top-1/2 -translate-y-1/2"
                       aria-label="Añadir o ver proyecto"
+                      onClick={() => setShowCreateCourseModal(true)}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -795,6 +799,64 @@ export default function DashboardPage() {
                 <p className="text-gray-600 dark:text-gray-400">{selectedVideo.description}</p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Modal: Crear nuevo curso */}
+      {showCreateCourseModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm"
+          onClick={() => setShowCreateCourseModal(false)}
+        >
+          <div
+            className="relative w-full max-w-md rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowCreateCourseModal(false)}
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150"
+              aria-label="Cerrar"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-xl border-2 border-b-4 border-[#0E5FCC] bg-[#1472FF] flex items-center justify-center text-white">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              </div>
+              <h2 className="text-xl font-bold text-[#4b4b4b] dark:text-white">Crear un nuevo curso</h2>
+            </div>
+
+            <p className="text-sm text-[#777777] dark:text-gray-400 mb-6 leading-relaxed">
+              Describe tu idea de proyecto y generaremos un curso personalizado para ti.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                variant="primary"
+                size="md"
+                className="flex-1 justify-center"
+                onClick={() => {
+                  setShowCreateCourseModal(false);
+                  router.push('/intake');
+                }}
+              >
+                Crear curso
+              </Button>
+              <Button
+                variant="secondary"
+                size="md"
+                className="flex-1 justify-center"
+                onClick={() => setShowCreateCourseModal(false)}
+              >
+                Cancelar
+              </Button>
+            </div>
           </div>
         </div>
       )}
