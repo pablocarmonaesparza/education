@@ -528,19 +528,8 @@ export default function DashboardPage() {
                     </svg>
                   </button>
 
-                  {/* Trailing chevron/plus - crear nuevo curso */}
-                  <IconButton
-                    className="absolute right-3 top-1/2 -translate-y-1/2"
-                    aria-label="Añadir o ver proyecto"
-                    onClick={() => setShowCreateCourseModal(true)}
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  </IconButton>
-
                   {/* Project text: overview por IA (2 líneas) o idea completa si no hay resumen */}
-                  <div className="px-12 min-w-0">
+                  <div className="px-12 min-w-0 pointer-events-none">
                     <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
                       {projectSummary || project}
                     </p>
@@ -550,6 +539,17 @@ export default function DashboardPage() {
                       <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
                     </div>
                   </div>
+
+                  {/* Trailing + crear nuevo curso (después del texto para quedar encima y recibir clics) */}
+                  <IconButton
+                    className="absolute right-3 top-1/2 -translate-y-1/2 z-10"
+                    aria-label="Añadir o ver proyecto"
+                    onClick={() => setShowCreateCourseModal(true)}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                  </IconButton>
                 </div>
               </div>
             )}
@@ -579,19 +579,8 @@ export default function DashboardPage() {
                       </svg>
                     </button>
 
-                    {/* Trailing chevron/plus - crear nuevo curso */}
-                    <IconButton
-                      className="absolute right-3 top-1/2 -translate-y-1/2"
-                      aria-label="Añadir o ver proyecto"
-                      onClick={() => setShowCreateCourseModal(true)}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                    </IconButton>
-
                     {/* Project text: overview por IA (2 líneas) o idea completa si no hay resumen */}
-                    <div className="px-12 min-w-0">
+                    <div className="px-12 min-w-0 pointer-events-none">
                       <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
                         {projectSummary || project}
                       </p>
@@ -601,6 +590,17 @@ export default function DashboardPage() {
                         <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
                       </div>
                     </div>
+
+                    {/* Trailing + crear nuevo curso (después del texto para quedar encima y recibir clics) */}
+                    <IconButton
+                      className="absolute right-3 top-1/2 -translate-y-1/2 z-10"
+                      aria-label="Añadir o ver proyecto"
+                      onClick={() => setShowCreateCourseModal(true)}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </IconButton>
                   </div>
                 </div>
               )}
