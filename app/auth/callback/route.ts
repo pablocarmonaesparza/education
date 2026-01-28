@@ -8,9 +8,8 @@ export async function GET(request: Request) {
   const error = searchParams.get('error')
   const errorDescription = searchParams.get('error_description')
   const fromPage = searchParams.get('from') // 'signup' or 'login'
-  
+
   // Always use the request origin to ensure cookies work correctly with PKCE
-  // This is critical because PKCE stores the code verifier in cookies on the original domain
   const baseUrl = origin
 
   // Handle OAuth errors - redirect back to the page the user came from
@@ -22,10 +21,14 @@ export async function GET(request: Request) {
 
   if (code) {
     const cookieStore = await cookies()
-    
+
+    // Create a response first so we can set cookies on it
+    // We'll update the redirect URL later
+    let redirectUrl = `${baseUrl}/onboarding`
+
     // Store cookies to set on the response
     const cookiesToSet: { name: string; value: string; options: any }[] = []
-    
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -37,55 +40,62 @@ export async function GET(request: Request) {
           setAll(cookies) {
             cookies.forEach((cookie) => {
               cookiesToSet.push(cookie)
+              // Also set on cookieStore so subsequent Supabase calls in this request can read them
+              try {
+                cookieStore.set(cookie.name, cookie.value, cookie.options)
+              } catch {
+                // May fail in some contexts, that's okay - we set them on the response below
+              }
             })
           },
         },
       }
     )
-    
+
     const { data: sessionData, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
-    
+
     if (exchangeError) {
-      console.error('Error exchanging code:', exchangeError.message, exchangeError)
-      // Redirect back to the appropriate page on error
+      console.error('Error exchanging code for session:', exchangeError.message, exchangeError)
+
+      // If PKCE exchange fails, redirect to a client-side handler that can do the exchange
+      // The browser client has the code_verifier cookie that the server may not be able to read
       const errorPage = fromPage === 'signup' ? '/auth/signup' : '/auth/login'
-      return NextResponse.redirect(`${baseUrl}${errorPage}?error=${encodeURIComponent('Error de autenticación. Por favor intenta de nuevo.')}`)
+      return NextResponse.redirect(
+        `${baseUrl}${errorPage}?code=${encodeURIComponent(code)}&exchange_on_client=true`
+      )
     }
 
-    // Check if there's a pending project idea from the landing page
-    const pendingIdeaCookie = cookieStore.get('pendingProjectIdea')
-    const hasPendingIdea = !!pendingIdeaCookie?.value
+    // Successfully exchanged code for session
+    const user = sessionData?.user
 
-    // Get user to check if they have a personalized path
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    // Determine redirect URL
-    let redirectUrl = `${baseUrl}/onboarding`
-    
     if (user) {
+      // Check if there's a pending project idea from the landing page
+      const pendingIdeaCookie = cookieStore.get('pendingProjectIdea')
+      const hasPendingIdea = !!pendingIdeaCookie?.value
+
       if (hasPendingIdea) {
-        // User has a pending project idea, go to onboarding
         redirectUrl = `${baseUrl}/onboarding`
       } else {
         // Check if user has a personalized path (existing user)
-        const { data: intakeData } = await supabase
-          .from('intake_responses')
-          .select('generated_path')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .maybeSingle()
+        try {
+          const { data: intakeData } = await supabase
+            .from('intake_responses')
+            .select('generated_path')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle()
 
-        if (intakeData?.generated_path) {
-          // Existing user with a path - go to dashboard
-          redirectUrl = `${baseUrl}/dashboard`
-        } else {
-          // New user or user without a path - go to onboarding
+          if (intakeData?.generated_path) {
+            redirectUrl = `${baseUrl}/dashboard`
+          } else {
+            redirectUrl = `${baseUrl}/onboarding`
+          }
+        } catch {
           redirectUrl = `${baseUrl}/onboarding`
         }
       }
     } else {
-      // This shouldn't happen after successful code exchange, but handle it
       console.error('No user found after successful code exchange')
       const errorPage = fromPage === 'signup' ? '/auth/signup' : '/auth/login'
       return NextResponse.redirect(`${baseUrl}${errorPage}?error=${encodeURIComponent('Error al obtener información del usuario.')}`)
@@ -93,8 +103,8 @@ export async function GET(request: Request) {
 
     // Create response with redirect
     const response = NextResponse.redirect(redirectUrl)
-    
-    // Set all cookies on the response - this is critical for the session to persist
+
+    // Set all cookies on the response - critical for session persistence
     cookiesToSet.forEach(({ name, value, options }) => {
       response.cookies.set(name, value, options)
     })

@@ -24,13 +24,13 @@ function SignupContent() {
   
   useEffect(() => {
     setIsMounted(true);
-    
+
     // Check for error in URL params (from OAuth callback or redirect)
     const urlError = searchParams.get('error');
     if (urlError) {
       setError(decodeURIComponent(urlError));
     }
-    
+
     if (typeof window !== 'undefined') {
       // Check if Supabase is configured before trying to create client
       const url = process.env.NEXT_PUBLIC_SUPABASE_URL || (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_SUPABASE_URL;
@@ -42,12 +42,36 @@ function SignupContent() {
         key !== 'your-anon-key-here' &&
         !url.includes('your-project') &&
         url.startsWith('https://') &&
-        key.length > 20; // Anon keys are typically very long
+        key.length > 20;
 
       if (configured) {
         try {
-          setSupabase(createClient());
+          const client = createClient();
+          setSupabase(client);
           setShowSupabaseWarning(false);
+
+          // Handle client-side PKCE exchange fallback
+          // When the server callback can't read the code_verifier cookie,
+          // it redirects back here with the code for client-side exchange
+          const code = searchParams.get('code');
+          const exchangeOnClient = searchParams.get('exchange_on_client');
+          if (code && exchangeOnClient === 'true') {
+            setLoading(true);
+            setError(null);
+            client.auth.exchangeCodeForSession(code).then(({ data, error: exchangeErr }) => {
+              if (exchangeErr) {
+                console.error('Client-side code exchange failed:', exchangeErr);
+                setError('Error de autenticación con Google. Por favor intenta de nuevo.');
+                setLoading(false);
+              } else if (data?.session) {
+                // New signup via Google - go to onboarding
+                window.location.href = '/onboarding';
+              } else {
+                setError('Error al crear la cuenta. Por favor intenta de nuevo.');
+                setLoading(false);
+              }
+            });
+          }
         } catch (error: any) {
           console.error('Error initializing Supabase client:', error);
           setShowSupabaseWarning(true);
