@@ -138,6 +138,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
         if (error) throw error;
 
+        if (data?.session) {
+          // Auto-confirmed signup (session created immediately)
+          window.location.href = '/onboarding';
+          return;
+        }
+
         setMessage('Cuenta creada. Revisa tu email para confirmar tu cuenta.');
         // Limpiar el formulario
         setEmail('');
@@ -151,19 +157,36 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
         if (error) throw error;
 
-        // Check if there's a pending project idea from the landing page
-        const pendingIdea = typeof window !== 'undefined' ? sessionStorage.getItem('pendingProjectIdea') : null;
-        
-        setMessage('Inicio de sesión exitoso. Redirigiendo...');
-        setTimeout(() => {
+        if (data?.session) {
+          // Check if there's a pending project idea from the landing page
+          const pendingIdea = typeof window !== 'undefined' ? sessionStorage.getItem('pendingProjectIdea') : null;
+
           if (pendingIdea) {
             // Redirect to onboarding to create the course with the saved idea
-            router.push('/onboarding');
+            window.location.href = '/onboarding';
           } else {
-          router.push('/dashboard');
+            // Check if user has a personalized path
+            try {
+              const { data: intakeData } = await supabase
+                .from('intake_responses')
+                .select('generated_path')
+                .eq('user_id', data.session.user.id)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+              if (intakeData?.generated_path) {
+                window.location.href = '/dashboard';
+              } else {
+                window.location.href = '/onboarding';
+              }
+            } catch {
+              window.location.href = '/onboarding';
+            }
           }
-          router.refresh();
-        }, 1000);
+        } else {
+          setError('Error al iniciar sesión. Por favor intenta de nuevo.');
+        }
       }
     } catch (err: any) {
       setError(translateError(err.message || 'Ocurrió un error. Intenta de nuevo.'));

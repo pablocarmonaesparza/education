@@ -203,7 +203,7 @@ export default function Navbar() {
             {/* Sliding indicator - gray button that slides behind text */}
             {activeSection && (
               <motion.div
-                className="absolute top-0 bottom-0 my-auto h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-600 dark:border-gray-950 z-0"
+                className="absolute top-0 bottom-0 my-auto h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-400 dark:border-gray-600 z-0"
                 initial={{ 
                   opacity: 0,
                   scale: 0.8,
@@ -434,7 +434,7 @@ export default function Navbar() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.3 }}
-                  className="pt-4 border-t border-gray-200 dark:border-gray-950"
+                  className="pt-4 border-t border-gray-200 dark:border-gray-600"
                 >
                   <Link
                     href="/auth/signup"

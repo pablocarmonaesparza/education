@@ -108,7 +108,7 @@ function SignupContent() {
       // Use dynamic redirect URL based on current origin
       const redirectUrl = `${window.location.origin}/auth/callback?from=signup`;
       
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -121,6 +121,9 @@ function SignupContent() {
 
       if (signUpError) {
         setError(translateError(signUpError.message));
+      } else if (signUpData?.session) {
+        // Auto-confirmed signup (session created immediately)
+        window.location.href = '/onboarding';
       } else {
         setSuccess('¡Cuenta creada! Revisa tu email para confirmar tu cuenta.');
         // Limpiar el formulario

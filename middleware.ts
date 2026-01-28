@@ -13,6 +13,11 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next()
     }
 
+    // Skip middleware for auth callback - it handles its own session and redirects
+    if (request.nextUrl.pathname.startsWith('/auth/callback')) {
+      return NextResponse.next()
+    }
+
     // Create a response that we can modify
     let supabaseResponse = NextResponse.next({
       request,
@@ -53,24 +58,19 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(loginUrl)
     }
 
-    // If authenticated user tries to access login/signup, redirect to onboarding
-    // (onboarding will then redirect to dashboard if they already have a path)
+    // If authenticated user tries to access login/signup, redirect to dashboard
+    // The dashboard/onboarding pages handle their own routing logic client-side
     if (user && (request.nextUrl.pathname === '/auth/login' || request.nextUrl.pathname === '/auth/signup')) {
-      return NextResponse.redirect(new URL('/onboarding', request.url))
+      return NextResponse.redirect(new URL('/dashboard', request.url))
     }
 
     return supabaseResponse
   } catch (e) {
     // Log the error for debugging
     console.error('Middleware error:', e)
-    
-    // If we're on a protected route and there's an error, redirect to login
-    const protectedRoutes = ['/dashboard', '/intake', '/onboarding']
-    if (protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
-      return NextResponse.redirect(new URL('/auth/login?error=session_error', request.url))
-    }
-    
-    // For non-protected routes, just continue
+
+    // If we're on a protected route and there's an error, allow through
+    // Let the client-side handle auth state rather than creating redirect loops
     return NextResponse.next()
   }
 }

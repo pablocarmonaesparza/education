@@ -116,7 +116,7 @@ export default function NewHeroSection() {
             style={{
               boxShadow: idea.length > MAX_CHARACTERS
                 ? '0 4px 0 0 #fca5a5'
-                : isDark ? '0 4px 0 0 #4b5563' : '0 4px 0 0 #9ca3af'
+                : isDark ? '0 4px 0 0 #4b5563' : '0 4px 0 0 #d1d5db'
             }}
           >
               <div className={`relative w-full textarea-dark-bg rounded-2xl border-2 transition-all duration-300 ${

@@ -89,39 +89,36 @@ function LoginContent() {
     setError(null);
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (signInError) {
         setError(translateError(signInError.message));
-      } else {
-        // Wait for session to be fully established and cookies to be set
-        await new Promise(resolve => setTimeout(resolve, 200));
-
-        // Check if user has a personalized path to determine redirect
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
+      } else if (signInData?.session) {
+        // Session is established, now check where to redirect
+        try {
           const { data: intakeData } = await supabase
             .from('intake_responses')
             .select('generated_path')
-            .eq('user_id', user.id)
+            .eq('user_id', signInData.session.user.id)
             .order('created_at', { ascending: false })
             .limit(1)
             .maybeSingle();
 
           if (intakeData?.generated_path) {
-            // User has a path - go to dashboard
             window.location.href = '/dashboard';
           } else {
-            // No path yet - go to onboarding
             window.location.href = '/onboarding';
           }
-        } else {
-          // Fallback to dashboard
-          window.location.href = '/dashboard';
+        } catch {
+          // If intake check fails, default to onboarding
+          window.location.href = '/onboarding';
         }
+      } else {
+        // Sign in returned no error but no session - shouldn't happen
+        setError('Error al iniciar sesión. Por favor intenta de nuevo.');
       }
     } catch (err: any) {
       setError(translateError(err.message || 'Ocurrió un error. Intenta de nuevo.'));
