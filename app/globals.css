@@ -14,12 +14,11 @@
   }
 }
 
-/* Base: snap scroll enabled (como estaba originalmente) */
+/* Base: snap scroll enabled — desktop sin overflow-x para no afectar scroll-snap */
 html {
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   overscroll-behavior: none;
-  overflow-x: hidden;
   background-color: #ffffff;
 }
 
@@ -31,8 +30,6 @@ section {
   scroll-snap-align: start;
 }
 
-/* Mobile: snap scroll enabled (same as desktop) */
-
 @media (prefers-color-scheme: dark) {
   html:not(.light) {
     background-color: #111827;
@@ -42,8 +39,15 @@ section {
 body {
   font-family: Arial, Helvetica, sans-serif;
   overscroll-behavior: none;
-  overflow-x: hidden;
   background-color: inherit;
+}
+
+/* Solo móvil: overflow-x hidden para evitar scroll horizontal */
+@media (max-width: 767px) {
+  html,
+  body {
+    overflow-x: hidden;
+  }
 }
 
 /* Apply Darker Grotesque to all headings and subtitle paragraphs */

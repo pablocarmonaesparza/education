@@ -89,16 +89,16 @@ export default function NewHeroSection() {
   };
 
   return (
-    <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-16 sm:pt-20 pb-16 sm:pb-20 px-3 sm:px-4">
-      <div className="container mx-auto px-2 sm:px-4 md:px-6 lg:px-8 relative z-10 w-full max-w-2xl">
+    <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20 pb-20 max-md:pt-16 max-md:pb-16 max-md:px-3">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full max-md:px-3">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center mb-6 sm:mb-8 max-w-2xl mx-auto"
+          className="text-center mb-8 max-w-2xl mx-auto max-md:mb-6"
         >
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white leading-tight tracking-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white leading-tight tracking-tight max-md:text-3xl">
             un curso a partir de tu idea
           </h1>
         </motion.div>
@@ -108,7 +108,7 @@ export default function NewHeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="w-full max-w-xl mx-auto"
+          className="max-w-xl mx-auto w-full"
         >
           {/* Textarea wrapper with counter and depth effect */}
           <div
@@ -130,7 +130,7 @@ export default function NewHeroSection() {
               onFocus={() => setShowOptions(true)}
               onBlur={() => setShowOptions(false)}
               placeholder="Describe tu idea y haremos un curso personalizado para ti."
-              className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-3 sm:px-4 pt-4 pb-2 min-h-[120px] sm:min-h-0"
+              className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 pt-4 pb-2 max-md:px-3 max-md:min-h-[120px]"
               rows={3}
             />
 
@@ -172,7 +172,7 @@ export default function NewHeroSection() {
                 <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-3 font-medium">
                   O elige una idea para inspirarte
                 </p>
-                <div className="flex flex-wrap justify-center gap-2 sm:gap-2">
+                <div className="flex flex-wrap justify-center gap-2">
                   {suggestionOptions.map((option, index) => (
                     <motion.button
                       key={option.id}
@@ -185,7 +185,7 @@ export default function NewHeroSection() {
                         setIdea(option.description);
                         textareaRef.current?.focus();
                       }}
-                      className={`px-3 py-2.5 sm:py-2 rounded-xl text-xs font-medium border-2 border-b-4 transition-all duration-150 flex items-center gap-1.5 min-h-[44px] touch-manipulation ${
+                      className={`px-3 py-2 rounded-xl text-xs font-medium border-2 border-b-4 transition-all duration-150 flex items-center gap-1.5 max-md:py-2.5 max-md:min-h-[44px] max-md:touch-manipulation ${
                         selectedOption === option.id
                           ? "bg-[#1472FF] text-white border-[#1472FF] border-b-[#0E5FCC]"
                           : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -213,7 +213,7 @@ export default function NewHeroSection() {
               }}
               onClick={handleGenerateCourse}
               disabled={!idea.trim() || idea.trim().length < MIN_CHARACTERS || idea.trim().length > MAX_CHARACTERS}
-              className="inline-flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-10 py-3.5 sm:py-4 rounded-2xl font-bold text-white text-sm sm:text-base uppercase tracking-wide bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0 min-h-[48px] touch-manipulation w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-3 px-10 py-4 rounded-2xl font-bold text-white text-base uppercase tracking-wide bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0 max-md:gap-2 max-md:px-6 max-md:py-3.5 max-md:text-sm max-md:min-h-[48px] max-md:touch-manipulation max-md:w-full"
             >
               Generar mi curso
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -270,7 +270,7 @@ export default function NewHeroSection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm overflow-y-auto"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm max-md:p-3 max-md:overflow-y-auto"
           >
             {/* Backdrop */}
             <motion.div
@@ -294,11 +294,11 @@ export default function NewHeroSection() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-md max-h-[90dvh] my-auto z-10"
+              className="relative w-full max-w-md z-10 max-md:max-h-[90dvh] max-md:my-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Auth Form */}
-              <div className="bg-white dark:bg-gray-900 rounded-2xl overflow-y-auto border border-gray-200 dark:border-gray-600 relative max-h-[90dvh]">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-600 relative max-md:overflow-y-auto max-md:max-h-[90dvh]">
                 {/* Close Button - Inside the card */}
               <button
                   onClick={() => {
