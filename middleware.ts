@@ -18,6 +18,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next()
     }
 
+
     // Create a response that we can modify
     let supabaseResponse = NextResponse.next({
       request,

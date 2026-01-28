@@ -41,48 +41,8 @@ function LoginContent() {
 
       if (configured) {
         try {
-          const client = createClient();
-          setSupabase(client);
+          setSupabase(createClient());
           setShowSupabaseWarning(false);
-
-          // Handle client-side PKCE exchange fallback
-          // When the server callback can't read the code_verifier cookie,
-          // it redirects back here with the code for client-side exchange
-          const code = searchParams.get('code');
-          const exchangeOnClient = searchParams.get('exchange_on_client');
-          if (code && exchangeOnClient === 'true') {
-            setLoading(true);
-            setError(null);
-            client.auth.exchangeCodeForSession(code).then(({ data, error: exchangeErr }) => {
-              if (exchangeErr) {
-                console.error('Client-side code exchange failed:', exchangeErr);
-                setError('Error de autenticación con Google. Por favor intenta de nuevo.');
-                setLoading(false);
-              } else if (data?.session) {
-                // Success! Redirect to dashboard or onboarding
-                client
-                  .from('intake_responses')
-                  .select('generated_path')
-                  .eq('user_id', data.session.user.id)
-                  .order('created_at', { ascending: false })
-                  .limit(1)
-                  .maybeSingle()
-                  .then(({ data: intakeData }) => {
-                    if (intakeData?.generated_path) {
-                      window.location.href = '/dashboard';
-                    } else {
-                      window.location.href = '/onboarding';
-                    }
-                  })
-                  .catch(() => {
-                    window.location.href = '/onboarding';
-                  });
-              } else {
-                setError('Error al iniciar sesión. Por favor intenta de nuevo.');
-                setLoading(false);
-              }
-            });
-          }
         } catch (error: any) {
           console.error('Error initializing Supabase client:', error);
           setShowSupabaseWarning(true);
