@@ -175,21 +175,21 @@ export default function IntakePage() {
     <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
       <OnboardingNavbar />
 
-      <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-12">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-20 pb-12">
         <div className="w-full max-w-2xl mx-auto">
         {!loading ? (
           <>
-            <div className="text-center mb-10">
-              <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">
+            <div className="text-center mb-8 sm:mb-10">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-3 sm:mb-4 tracking-tight">
                 qué quieres construir
               </h1>
-              <p className="text-lg text-[#777777] dark:text-gray-400 max-w-lg mx-auto">
+              <p className="text-base sm:text-lg text-[#777777] dark:text-gray-400 max-w-lg mx-auto">
                 Describe tu idea y crearemos tu curso personalizado.
               </p>
             </div>
 
-            <div className="mb-8">
-              <div className="relative bg-white dark:bg-gray-900 rounded-2xl p-6 border-2 border-gray-200 dark:border-gray-950 hover:border-gray-300 dark:hover:border-gray-600 focus-within:border-[#1472FF] transition-all duration-300">
+            <div className="mb-6 sm:mb-8">
+              <div className="relative bg-white dark:bg-gray-900 rounded-2xl p-4 sm:p-6 border-2 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 focus-within:border-[#1472FF] transition-all duration-300">
                   <label className="block text-sm font-bold text-[#4b4b4b] dark:text-white mb-2">
                     Cuéntanos sobre tu proyecto
                   </label>
@@ -216,7 +216,7 @@ export default function IntakePage() {
                     </div>
                   )}
 
-                  <div className="flex justify-between items-center mt-3 pt-3 border-t border-gray-100">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mt-3 pt-3 border-t border-gray-100">
                     <p className={`text-sm font-medium ${
                       projectIdea.length >= 100
                         ? "text-green-600"
@@ -242,7 +242,7 @@ export default function IntakePage() {
               <button
                 onClick={handleCreateCourse}
                 disabled={!projectIdea.trim() || projectIdea.trim().length < 100}
-                className="px-8 py-4 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0 flex items-center gap-2"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0 flex items-center justify-center gap-2 min-h-[48px] touch-manipulation"
               >
                 CREAR MI CURSO PERSONALIZADO
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

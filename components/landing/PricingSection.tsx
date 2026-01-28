@@ -69,23 +69,23 @@ export default function PricingSection() {
   ];
 
   return (
-    <section id="pricing" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20 pb-24">
-      <div className="container mx-auto px-4 relative z-10 w-full">
+    <section id="pricing" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-16 sm:pt-20 pb-16 sm:pb-24">
+      <div className="container mx-auto px-3 sm:px-4 relative z-10 w-full">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
           viewport={{ once: true }}
-          className="mb-12"
+          className="mb-8 sm:mb-12"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center text-[#4b4b4b] dark:text-white leading-tight tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center text-[#4b4b4b] dark:text-white leading-tight tracking-tight">
             nuestros planes
           </h2>
         </motion.div>
 
         {/* Pricing Cards */}
-        <div className="grid lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto w-full">
           {tiers.map((tier, index) => (
             <motion.div
               key={tier.id}

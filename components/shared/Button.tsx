@@ -80,8 +80,9 @@ export default function Button({
     .join(' ');
 
   if (href && !disabled) {
+    const { type: _t, ...linkRest } = rest;
     return (
-      <Link href={href} className={root} aria-disabled={undefined}>
+      <Link href={href} className={root} aria-disabled={undefined} {...linkRest}>
         {children}
       </Link>
     );

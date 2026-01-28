@@ -37,11 +37,11 @@ export default function FAQSection() {
       <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-20">
         <div className="w-full max-w-4xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-10 md:mb-16">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white mb-6 leading-tight tracking-tight">
+          <div className="text-center mb-8 sm:mb-10 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 sm:mb-6 leading-tight tracking-tight">
               preguntas frecuentes
             </h2>
-            <p className="text-lg md:text-xl text-[#777777] dark:text-gray-400 max-w-xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-[#777777] dark:text-gray-400 max-w-xl mx-auto px-2">
               encuentra respuestas a tus dudas más comunes
             </p>
           </div>
@@ -54,14 +54,14 @@ export default function FAQSection() {
                 className={`rounded-2xl transition-all duration-150 ${
                   openIndex === index
                     ? "bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 border-b-4 border-b-gray-300 dark:border-b-gray-600"
-                    : "bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 border-b-4 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 hover:scale-[1.02] active:scale-[0.98]"
+                    : "bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 border-b-4 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 sm:hover:scale-[1.02] active:scale-[0.98]"
                 }`}
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full flex justify-between items-center text-left p-6 md:p-8"
+                  className="w-full flex justify-between items-center text-left p-4 sm:p-6 md:p-8 min-h-[56px] touch-manipulation"
                 >
-                  <span className="text-lg md:text-xl font-bold uppercase tracking-wide pr-8 text-[#4b4b4b] dark:text-white">
+                  <span className="text-base sm:text-lg md:text-xl font-bold uppercase tracking-wide pr-6 sm:pr-8 text-[#4b4b4b] dark:text-white text-left">
                     {faq.question}
                   </span>
                   <motion.div

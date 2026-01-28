@@ -7,12 +7,16 @@ import { usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Button from '@/components/shared/Button';
 import IconButton from '@/components/shared/IconButton';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { mobileOpen, setMobileOpen } = useSidebar();
   const [user, setUser] = useState<any>(null);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const supabase = createClient();
+
+  const closeDrawer = () => setMobileOpen(false);
 
   useEffect(() => {
     async function fetchUser() {
@@ -93,10 +97,27 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 flex flex-col z-50 w-64">
-      {/* Logo */}
-      <div className="p-4 flex items-center justify-between">
-        <Link href="/dashboard" className="flex items-center">
+    <>
+      {/* Overlay when drawer open on mobile */}
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="Cerrar menú"
+        onClick={closeDrawer}
+        onKeyDown={(e) => e.key === 'Enter' && closeDrawer()}
+        className={`fixed inset-0 z-40 bg-black/50 md:hidden transition-opacity duration-300 ${
+          mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      />
+
+      <aside
+        className={`fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 flex flex-col z-50 w-64 transform transition-transform duration-300 ease-out ${
+          mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
+        {/* Logo + close on mobile */}
+        <div className="p-4 flex items-center justify-between">
+          <Link href="/dashboard" onClick={closeDrawer} className="flex items-center">
           <Image
             src="/images/itera-logo-light.png"
             alt="Itera"
@@ -114,7 +135,17 @@ export default function Sidebar() {
             priority
           />
         </Link>
-      </div>
+          <button
+            type="button"
+            onClick={closeDrawer}
+            className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all"
+            aria-label="Cerrar menú"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
       {/* Navigation */}
       <nav className="flex-1 px-3 py-4 overflow-y-auto">
@@ -129,6 +160,7 @@ export default function Sidebar() {
                   size="md"
                   rounded2xl
                   className="flex items-center gap-3 justify-start w-full"
+                  onClick={closeDrawer}
                 >
                   <span className="flex-shrink-0">{item.icon}</span>
                   <span>{item.name}</span>
@@ -173,10 +205,10 @@ export default function Sidebar() {
                 className="fixed inset-0 z-10" 
                 onClick={() => setShowProfileMenu(false)} 
               />
-              <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-950 py-2 z-20 shadow-lg">
+              <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-600 py-2 z-20 shadow-lg">
                 <Link
                   href="/dashboard/perfil"
-                  onClick={() => setShowProfileMenu(false)}
+                  onClick={() => { setShowProfileMenu(false); closeDrawer(); }}
                   className="w-full text-left px-4 py-2.5 text-sm font-medium text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -185,7 +217,7 @@ export default function Sidebar() {
                   Mi Perfil
                 </Link>
                 <button
-                  onClick={handleLogout}
+                  onClick={() => { setShowProfileMenu(false); closeDrawer(); handleLogout(); }}
                   className="w-full text-left px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,5 +231,6 @@ export default function Sidebar() {
         </div>
       </div>
     </aside>
+    </>
   );
 }

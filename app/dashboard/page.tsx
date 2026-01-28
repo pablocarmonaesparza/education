@@ -47,6 +47,7 @@ export default function DashboardPage() {
   const [isVideoPlayerOpen, setIsVideoPlayerOpen] = useState(false);
   const [isVideoPlayerClosing, setIsVideoPlayerClosing] = useState(false);
   const [chatWidth, setChatWidth] = useState(256);
+  const [isMobile, setIsMobile] = useState(false);
   const [expandedVideoId, setExpandedVideoId] = useState<string | null>(null);
   const [showCreateCourseModal, setShowCreateCourseModal] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -76,6 +77,14 @@ export default function DashboardPage() {
     }
 
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    setIsMobile(mq.matches);
+    const h = () => setIsMobile(mq.matches);
+    mq.addEventListener('change', h);
+    return () => mq.removeEventListener('change', h);
   }, []);
 
   useEffect(() => {
@@ -515,13 +524,13 @@ export default function DashboardPage() {
               </h1>
             )}
             {project && (
-              <div className="flex justify-center px-4 mt-4 mb-2">
+              <div className="flex justify-center px-2 sm:px-4 mt-4 mb-2">
                 {/* Project selector button */}
-                <div className="relative w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-4">
+                <div className="relative w-[95%] sm:w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-600 border-b-4 border-b-gray-300 dark:border-b-gray-600 bg-white dark:bg-gray-900 p-3 sm:p-4">
                   {/* Leading chevron - disabled if first project */}
                   <button
                     disabled={true}
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150"
+                    className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -529,20 +538,20 @@ export default function DashboardPage() {
                   </button>
 
                   {/* Project text: overview por IA (2 líneas) o idea completa si no hay resumen */}
-                  <div className="px-12 min-w-0 pointer-events-none">
-                    <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
+                  <div className="pl-10 pr-12 sm:px-12 min-w-0 pointer-events-none">
+                    <p className="text-center text-xs sm:text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
                       {projectSummary || project}
                     </p>
                     
                     {/* Dots indicator */}
-                    <div className="flex justify-center gap-1.5 mt-2">
+                    <div className="flex justify-center gap-1.5 mt-1.5 sm:mt-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
                     </div>
                   </div>
 
                   {/* Trailing + crear nuevo curso (después del texto para quedar encima y recibir clics) */}
                   <IconButton
-                    className="absolute right-3 top-1/2 -translate-y-1/2 z-10"
+                    className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-10"
                     aria-label="Añadir o ver proyecto"
                     onClick={() => setShowCreateCourseModal(true)}
                   >
@@ -566,13 +575,13 @@ export default function DashboardPage() {
               }`}
             >
               {project && (
-                <div className="flex justify-center px-4">
+                <div className="flex justify-center px-2 sm:px-4">
                   {/* Project selector button */}
-                  <div className="relative w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-4">
+                  <div className="relative w-[95%] sm:w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-600 border-b-4 border-b-gray-300 dark:border-b-gray-600 bg-white dark:bg-gray-900 p-3 sm:p-4">
                     {/* Leading chevron - disabled if first project */}
                     <button
                       disabled={true}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150"
+                      className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -580,20 +589,20 @@ export default function DashboardPage() {
                     </button>
 
                     {/* Project text: overview por IA (2 líneas) o idea completa si no hay resumen */}
-                    <div className="px-12 min-w-0 pointer-events-none">
-                      <p className="text-center text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
+                    <div className="pl-10 pr-12 sm:px-12 min-w-0 pointer-events-none">
+                      <p className="text-center text-xs sm:text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
                         {projectSummary || project}
                       </p>
                       
                       {/* Dots indicator */}
-                      <div className="flex justify-center gap-1.5 mt-2">
+                      <div className="flex justify-center gap-1.5 mt-1.5 sm:mt-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
                       </div>
                     </div>
 
                     {/* Trailing + crear nuevo curso (después del texto para quedar encima y recibir clics) */}
                     <IconButton
-                      className="absolute right-3 top-1/2 -translate-y-1/2 z-10"
+                      className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-10"
                       aria-label="Añadir o ver proyecto"
                       onClick={() => setShowCreateCourseModal(true)}
                     >
@@ -608,12 +617,12 @@ export default function DashboardPage() {
 
             <div className="relative">
               {/* Gradient fade on edges */}
-              <div className="absolute left-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-gradient-to-r from-white dark:from-gray-900 to-transparent" />
-              <div className="absolute right-0 top-0 bottom-0 w-12 z-10 pointer-events-none bg-gradient-to-l from-white dark:from-gray-900 to-transparent" />
+              <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-12 z-10 pointer-events-none bg-gradient-to-r from-white dark:from-gray-900 to-transparent" />
+              <div className="absolute right-0 top-0 bottom-0 w-6 sm:w-12 z-10 pointer-events-none bg-gradient-to-l from-white dark:from-gray-900 to-transparent" />
               
               <div
                 ref={horizontalScrollRef}
-                className="flex gap-3 overflow-x-auto scrollbar-hide py-2 px-12 min-w-0"
+                className="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide py-2 px-4 sm:px-12 min-w-0"
                 style={{ scrollBehavior: 'smooth' }}
               >
                 {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
@@ -651,10 +660,10 @@ export default function DashboardPage() {
                 }}
               >
                 {/* Phase Divider and Title: ----- SECTION ----- */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-center gap-4 w-[80%] mx-auto">
+                <div className="mb-4 sm:mb-6">
+                  <div className="flex items-center justify-center gap-2 sm:gap-4 w-[95%] sm:w-[80%] mx-auto">
                     <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-700 rounded-full" />
-                    <h2 className="text-sm font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase whitespace-nowrap">
+                    <h2 className="text-xs sm:text-sm font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase whitespace-nowrap">
                       {phaseData.phaseName}
                     </h2>
                     <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-700 rounded-full" />
@@ -662,7 +671,7 @@ export default function DashboardPage() {
                 </div>
                 
                 {/* Videos in this phase */}
-                <div className="w-[220px] mx-auto space-y-4">
+                <div className="w-full max-w-[220px] mx-auto px-2 sm:px-0 space-y-4">
                   {phaseData.videos.map((video) => (
                     <div key={video.id} data-video-id={video.id}>
                       <LessonItem
@@ -691,15 +700,15 @@ export default function DashboardPage() {
       {/* Progress Bar - Fixed at bottom, 80% width of content area between sidebars */}
       {videos.length > 0 && (
         <div
-          className={`fixed bottom-0 left-64 z-30 transition-all duration-150 ease-in-out ${
+          className={`fixed bottom-0 left-0 md:left-64 z-30 transition-all duration-150 ease-in-out ${
             showProgressBar ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
           }`}
-          style={{ right: `${chatWidth}px` }}
+          style={{ right: isMobile ? 0 : `${chatWidth}px` }}
         >
           {/* Gradient fade above progress bar */}
           <div className="h-8 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none" />
           <div className="bg-white dark:bg-gray-900 pb-4 flex justify-center">
-            <div className="w-[80%] relative h-[37px] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex items-center justify-center border-2 border-b-4 border-gray-200 dark:border-gray-950">
+            <div className="w-[90%] sm:w-[80%] max-w-2xl relative h-[37px] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex items-center justify-center border-2 border-b-4 border-gray-200 dark:border-gray-600">
               <div
                 className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"
                 style={{
@@ -718,20 +727,20 @@ export default function DashboardPage() {
       {/* Video Player Overlay - Animated, only covers content area between sidebars */}
       {(selectedVideo || isVideoPlayerClosing) && (
         <div
-          className={`fixed top-0 bottom-0 flex items-center justify-center transition-all ease-out ${
+          className={`fixed top-0 md:top-0 bottom-0 flex items-center justify-center transition-all ease-out pt-14 md:pt-0 ${
             isVideoPlayerOpen && !isVideoPlayerClosing
               ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm'
               : 'bg-white/0 dark:bg-gray-900/0'
           }`}
           style={{
             transitionDuration: '400ms',
-            left: '256px',
-            right: `${chatWidth}px`,
+            left: isMobile ? 0 : 256,
+            right: isMobile ? 0 : `${chatWidth}px`,
             zIndex: 35,
           }}
         >
           <div
-            className={`w-full max-w-4xl mx-auto px-8 transition-all ease-out ${
+            className={`w-full max-w-4xl mx-auto px-4 sm:px-8 overflow-y-auto max-h-full transition-all ease-out ${
               isVideoPlayerOpen && !isVideoPlayerClosing
                 ? 'opacity-100 scale-100 translate-y-0'
                 : 'opacity-0 scale-95 translate-y-8'
@@ -806,15 +815,15 @@ export default function DashboardPage() {
       {/* Modal: Crear nuevo curso — popup de venta */}
       {showCreateCourseModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm overflow-y-auto"
           onClick={() => setShowCreateCourseModal(false)}
         >
           <div
-            className="relative w-full max-w-lg rounded-2xl border-2 border-b-4 border-[#0E5FCC] bg-white dark:bg-gray-900 shadow-2xl overflow-hidden"
+            className="relative w-full max-w-lg max-h-[90dvh] my-auto rounded-2xl border-2 border-b-4 border-[#0E5FCC] bg-white dark:bg-gray-900 shadow-2xl overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header acento */}
-            <div className="bg-gradient-to-br from-[#1472FF] to-[#0E5FCC] px-6 py-5 text-center">
+            <div className="bg-gradient-to-br from-[#1472FF] to-[#0E5FCC] px-4 sm:px-6 py-4 sm:py-5 text-center">
               <button
                 onClick={() => setShowCreateCourseModal(false)}
                 className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-xl bg-white/20 text-white hover:bg-white/30 active:scale-95 transition-all"
@@ -829,15 +838,15 @@ export default function DashboardPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-tight">
                 Curso personalizado para tu proyecto
               </h2>
-              <p className="text-white/90 text-sm mt-1">
+              <p className="text-white/90 text-xs sm:text-sm mt-1">
                 Videos a medida con IA · Solo tú decides qué aprender
               </p>
             </div>
 
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               <p className="text-[#4b4b4b] dark:text-gray-300 text-base leading-relaxed mb-5">
                 Cuéntanos tu idea y te generamos un curso único: módulos, vídeos y ejercicios pensados para ti. Ideal para automatizar con IA, chatbots o lo que tengas en mente.
               </p>
