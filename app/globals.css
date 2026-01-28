@@ -354,12 +354,12 @@ p.text-2xl {
 }
 
 .textarea-dark-border {
-  border-color: #4b5563; /* gray-600 - dark gray */
+  border-color: #d1d5db; /* gray-300 - light gray, matches component system */
 }
 
 @media (prefers-color-scheme: dark) {
   .textarea-dark-border {
-    border-color: #030712; /* gray-950 */
+    border-color: #4b5563; /* gray-600 - lighter than gray-950, matches docs */
   }
 }
 

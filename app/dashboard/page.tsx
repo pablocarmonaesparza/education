@@ -803,59 +803,89 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Modal: Crear nuevo curso */}
+      {/* Modal: Crear nuevo curso — popup de venta */}
       {showCreateCourseModal && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 dark:bg-black/70 backdrop-blur-sm"
           onClick={() => setShowCreateCourseModal(false)}
         >
           <div
-            className="relative w-full max-w-md rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 p-6 shadow-xl"
+            className="relative w-full max-w-lg rounded-2xl border-2 border-b-4 border-[#0E5FCC] bg-white dark:bg-gray-900 shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              onClick={() => setShowCreateCourseModal(false)}
-              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150"
-              aria-label="Cerrar"
-            >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-xl border-2 border-b-4 border-[#0E5FCC] bg-[#1472FF] flex items-center justify-center text-white">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            {/* Header acento */}
+            <div className="bg-gradient-to-br from-[#1472FF] to-[#0E5FCC] px-6 py-5 text-center">
+              <button
+                onClick={() => setShowCreateCourseModal(false)}
+                className="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-xl bg-white/20 text-white hover:bg-white/30 active:scale-95 transition-all"
+                aria-label="Cerrar"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <div className="w-14 h-14 mx-auto mb-3 rounded-2xl border-2 border-b-4 border-white/30 bg-white/20 flex items-center justify-center">
+                <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
-              <h2 className="text-xl font-bold text-[#4b4b4b] dark:text-white">Crear un nuevo curso</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">
+                Curso personalizado para tu proyecto
+              </h2>
+              <p className="text-white/90 text-sm mt-1">
+                Videos a medida con IA · Solo tú decides qué aprender
+              </p>
             </div>
 
-            <p className="text-sm text-[#777777] dark:text-gray-400 mb-6 leading-relaxed">
-              Describe tu idea de proyecto y generaremos un curso personalizado para ti.
-            </p>
+            <div className="p-6">
+              <p className="text-[#4b4b4b] dark:text-gray-300 text-base leading-relaxed mb-5">
+                Cuéntanos tu idea y te generamos un curso único: módulos, vídeos y ejercicios pensados para ti. Ideal para automatizar con IA, chatbots o lo que tengas en mente.
+              </p>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button
-                variant="primary"
-                size="md"
-                className="flex-1 justify-center"
-                onClick={() => {
-                  setShowCreateCourseModal(false);
-                  router.push('/intake');
-                }}
-              >
-                Crear curso
-              </Button>
-              <Button
-                variant="secondary"
-                size="md"
-                className="flex-1 justify-center"
-                onClick={() => setShowCreateCourseModal(false)}
-              >
-                Cancelar
-              </Button>
+              <ul className="space-y-3 mb-6">
+                {[
+                  'Videos y módulos generados con IA según tu objetivo',
+                  'Ruta de aprendizaje solo para ti',
+                  'Acceso inmediato y para siempre',
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-sm text-[#4b4b4b] dark:text-gray-300">
+                    <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#1472FF]/15 dark:bg-[#1472FF]/25 flex items-center justify-center">
+                      <svg className="w-3.5 h-3.5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="rounded-xl border-2 border-b-4 border-[#0E5FCC] bg-[#1472FF]/10 dark:bg-[#1472FF]/15 p-4 mb-6 text-center">
+                <p className="text-xs uppercase tracking-wider font-bold text-[#1472FF] dark:text-[#60a5fa] mb-1">Pago único</p>
+                <p className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white">
+                  $9.99 <span className="text-base font-normal text-[#777777] dark:text-gray-400">USD</span>
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="w-full justify-center rounded-2xl"
+                  onClick={() => {
+                    setShowCreateCourseModal(false);
+                    router.push('/intake');
+                  }}
+                >
+                  Crear mi curso — $9.99 USD
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => setShowCreateCourseModal(false)}
+                  className="text-sm text-[#777777] dark:text-gray-400 hover:text-[#4b4b4b] dark:hover:text-gray-300 transition-colors"
+                >
+                  Ahora no, gracias
+                </button>
+              </div>
             </div>
           </div>
         </div>

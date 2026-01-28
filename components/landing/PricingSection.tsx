@@ -96,7 +96,7 @@ export default function PricingSection() {
               className={`relative rounded-2xl p-5 md:p-6 transition-all duration-300 flex flex-col ${
                 tier.popular
                   ? "bg-[#1472FF]/10 dark:bg-[#1472FF]/20 border-2 border-b-4 border-[#1472FF] dark:border-[#1472FF]"
-                  : "bg-white dark:bg-gray-900 border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950"
+                  : "bg-white dark:bg-gray-900 border-2 border-b-4 border-gray-200 dark:border-gray-600 border-b-gray-300 dark:border-b-gray-600"
               }`}
             >
               {/* Popular Badge */}

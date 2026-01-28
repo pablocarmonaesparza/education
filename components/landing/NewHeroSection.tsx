@@ -116,7 +116,7 @@ export default function NewHeroSection() {
             style={{
               boxShadow: idea.length > MAX_CHARACTERS
                 ? '0 4px 0 0 #fca5a5'
-                : isDark ? '0 4px 0 0 #030712' : '0 4px 0 0 #4b5563'
+                : isDark ? '0 4px 0 0 #4b5563' : '0 4px 0 0 #9ca3af'
             }}
           >
               <div className={`relative w-full textarea-dark-bg rounded-2xl border-2 transition-all duration-300 ${
@@ -188,7 +188,7 @@ export default function NewHeroSection() {
                       className={`px-3 py-2 rounded-xl text-xs font-medium border-2 border-b-4 transition-all duration-150 flex items-center gap-1.5 ${
                         selectedOption === option.id
                           ? "bg-[#1472FF] text-white border-[#1472FF] border-b-[#0E5FCC]"
-                          : "bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 hover:bg-gray-200 dark:hover:bg-gray-800"
+                          : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700"
                       } active:border-b-2 active:mt-0.5`}
                     >
                       <span>{option.icon}</span>
@@ -298,7 +298,7 @@ export default function NewHeroSection() {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Auth Form */}
-              <div className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-950 relative">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-600 relative">
                 {/* Close Button - Inside the card */}
               <button
                   onClick={() => {
