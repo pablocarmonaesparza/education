@@ -290,7 +290,7 @@ export default function VideoPage() {
             className={`px-6 py-3 rounded-xl font-semibold transition-all ${
               isCompleted
                 ? 'bg-green-500 text-white cursor-default'
-                : 'bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white hover:opacity-90'
+                : 'bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all'
             } disabled:opacity-70`}
           >
             {isCompleted ? (

@@ -7,6 +7,10 @@ export default function HashScrollHandler() {
   const pathname = usePathname();
 
   useEffect(() => {
+    document.body.dataset.route = pathname ?? "";
+  }, [pathname]);
+
+  useEffect(() => {
     // Handle hash navigation when the page loads or route changes
     const handleHashScroll = () => {
       const hash = window.location.hash;

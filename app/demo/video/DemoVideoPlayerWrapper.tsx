@@ -17,7 +17,7 @@ export default function DemoVideoPlayerWrapper({ videoUrl, title }: DemoVideoPla
           title={title}
         />
       ) : (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-[#1472FF] to-[#5BA0FF]">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#1472FF]">
           <svg className="w-16 h-16 text-white/80" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8 5v14l11-7z" />
           </svg>

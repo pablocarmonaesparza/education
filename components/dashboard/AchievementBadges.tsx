@@ -152,7 +152,7 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
 
   const rarityColors = {
     common: 'from-gray-400 to-gray-500',
-    rare: 'bg-[#5BA0FF]',
+    rare: 'bg-[#1472FF]',
     epic: 'bg-[#1472FF]',
     legendary: 'from-yellow-400 to-orange-500',
   };

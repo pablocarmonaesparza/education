@@ -25,7 +25,7 @@ export default function MercadoPagoSuccessPage() {
         <p className="text-lg text-gray-700 mb-8">
           Tu compra se ha completado con éxito a través de Mercado Pago. ¡Gracias!
         </p>
-        <Link href="/dashboard" className="px-6 py-3 bg-[#1472FF] text-white font-semibold rounded-lg hover:bg-[#0E5FCC]">
+        <Link href="/dashboard" className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">
           Ir al Dashboard
         </Link>
       </section>

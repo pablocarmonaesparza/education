@@ -10,8 +10,8 @@ const interactive =
   'hover:bg-[#1265e0] active:border-b-2 active:mt-[2px]';
 
 const sizes = {
-  sm: 'w-8 h-8',
-  lg: 'w-9 h-9',
+  sm: 'w-[42px] h-[42px]',
+  lg: 'w-[42px] h-[42px]',
 } as const;
 
 export interface IconButtonProps {

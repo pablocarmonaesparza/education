@@ -254,7 +254,7 @@ export default function IntakePage() {
         ) : (
           <div className="text-center">
             <div className="relative w-24 h-24 mx-auto mb-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] rounded-full animate-pulse"></div>
+              <div className="absolute inset-0 bg-[#1472FF] rounded-full animate-pulse"></div>
               <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center">
                 <span className="text-4xl animate-bounce">🤖</span>
               </div>

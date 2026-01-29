@@ -29,7 +29,7 @@ export default function SuccessPage() {
         </p>
         <Link 
           href="/dashboard" 
-          className="px-8 py-4 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150"
+          className="inline-flex items-center justify-center px-8 py-4 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all duration-150"
         >
           IR AL DASHBOARD
         </Link>

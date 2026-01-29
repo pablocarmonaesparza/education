@@ -25,17 +25,6 @@ function Block({
 }
 
 export default function ComponentesPage() {
-  const grays = [
-    ['200', '#e5e7eb'],
-    ['300', '#d1d5db'],
-    ['400', '#9ca3af'],
-    ['500', '#6b7280'],
-    ['600', '#4b5563'],
-    ['700', '#374151'],
-    ['800', '#1f2937'],
-    ['950', '#030712'],
-  ] as const;
-
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-950">
       <header className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 sticky top-0 z-10">
@@ -68,30 +57,53 @@ export default function ComponentesPage() {
               Modo claro
             </h2>
 
-            <Block title="Brand" labelClass="text-[#777777]">
+            <Block title="Colores de acento" labelClass="text-[#777777]">
               <div className="flex flex-wrap gap-3">
                 {[
-                  ['#1472FF', '#0E5FCC', 'primary'],
-                  ['#22c55e', '#16a34a', 'completado'],
-                  ['#5BA0FF', null, 'light'],
-                ].map(([bg, border, name]) => (
+                  ['#1472FF', 'primary'],
+                  ['#22c55e', 'completado'],
+                ].map(([bg, name]) => (
                   <div key={name} className="flex flex-col items-center gap-1">
-                    <div className="w-14 h-14 rounded-xl border-2 border-b-4" style={{ backgroundColor: bg, borderColor: border || bg }} />
+                    <div className="w-[42px] h-[42px] rounded-xl" style={{ backgroundColor: bg }} />
                     <span className="text-[10px] text-[#4b4b4b] font-mono">{bg}</span>
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-[#777777] mt-2">border-b profundidad mismo tono o más oscuro</p>
             </Block>
 
-            <Block title="Neutros (bordes / profundidad)" code="gray-200 → gray-950" labelClass="text-[#777777]">
+            <Block title="Colores de acento borde y profundidad" labelClass="text-[#777777]">
               <div className="flex flex-wrap gap-2">
-                {grays.map(([name, hex]) => (
-                  <div key={name} className="flex flex-col items-center gap-0.5">
-                    <div className="w-10 h-10 rounded-lg border border-gray-300" style={{ backgroundColor: hex }} />
-                    <span className="text-[10px] text-[#4b4b4b] font-mono">gray-{name}</span>
+                <div className="flex flex-col items-center gap-0.5">
+                  <div className="w-[42px] h-[42px] rounded-xl border border-gray-300" style={{ backgroundColor: '#0E5FCC' }} />
+                  <span className="text-[10px] text-[#4b4b4b] font-mono">#0E5FCC</span>
+                </div>
+                <div className="flex flex-col items-center gap-0.5">
+                  <div className="w-[42px] h-[42px] rounded-xl border border-gray-300" style={{ backgroundColor: '#16a34a' }} />
+                  <span className="text-[10px] text-[#4b4b4b] font-mono">#16a34a</span>
+                </div>
+              </div>
+            </Block>
+
+            <Block title="Fondo y profundidad" labelClass="text-[#777777]">
+              <div className="space-y-3">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-1">Color de Fondo (Claro) Primario</p>
+                  <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-col items-center gap-0.5">
+                      <div className="w-[42px] h-[42px] rounded-xl border border-gray-300 bg-white" />
+                      <span className="text-[10px] text-[#4b4b4b] font-mono">Blanco</span>
+                    </div>
                   </div>
-                ))}
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-1">Fondos / Profundidad</p>
+                  <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-col items-center gap-0.5">
+                      <div className="w-[42px] h-[42px] rounded-xl border border-gray-300 bg-gray-300" />
+                      <span className="text-[10px] text-[#4b4b4b] font-mono">gray-300</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </Block>
 
@@ -107,84 +119,46 @@ export default function ComponentesPage() {
             <Block title="Botones · Depth" code="border-2 border-b-4 · active:border-b-2 active:mt-[2px]" labelClass="text-[#777777]">
               <div className="flex flex-wrap gap-2">
                 <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">Primary</button>
-                <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-white text-[#4b4b4b] border-2 border-b-4 border-gray-200 border-b-gray-300 hover:bg-gray-50 active:border-b-2 active:mt-[2px] transition-all">Secondary</button>
                 <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-white text-[#4b4b4b] border-2 border-b-4 border-gray-200 border-b-gray-300 hover:bg-gray-50 active:border-b-2 active:mt-[2px] transition-all">Outline</button>
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                <button className="px-4 py-3 rounded-2xl text-sm font-bold uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">Nav active</button>
-                <button className="px-4 py-3 rounded-2xl text-sm font-bold uppercase tracking-wide bg-transparent text-[#4b4b4b] hover:bg-gray-100 active:border-b-2 active:mt-[2px] transition-all">Nav inactive</button>
-              </div>
             </Block>
 
-            <Block title="Botones · Flat (sin profundidad)" labelClass="text-[#777777]">
-              <div className="flex flex-wrap gap-2">
-                <button className="px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wide bg-transparent text-[#4b4b4b] hover:bg-gray-100 transition-all">Ghost</button>
-                <button className="w-8 h-8 rounded-xl flex items-center justify-center bg-transparent text-[#4b4b4b] hover:bg-gray-100 transition-all"><PlusIcon /></button>
-              </div>
-              <code className="text-[10px] text-[#777777] block mt-1 font-mono">ghost · icon-ghost</code>
-            </Block>
-
-            <Block title="Botones · Tamaños" code="sm · md · lg · xl · icon" labelClass="text-[#777777]">
+            <Block title="Botones icono (+, avatar)" labelClass="text-[#777777]">
               <div className="flex flex-wrap items-center gap-2">
-                <button className="px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-xl bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">sm</button>
-                <button className="px-4 py-3 text-sm font-bold uppercase tracking-wide rounded-xl bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">md</button>
-                <button className="px-6 py-3 text-sm font-bold uppercase tracking-wide rounded-xl bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">lg</button>
-                <button className="px-6 py-4 text-base font-bold uppercase tracking-wide rounded-xl bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">xl</button>
-                <button className="w-8 h-8 rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all"><PlusIcon /></button>
+                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all" aria-label="Añadir"><PlusIcon /></button>
+                <div className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] text-sm font-bold transition-all cursor-default">PC</div>
+                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-white text-[#4b4b4b] border-2 border-b-4 border-gray-200 border-b-gray-300 hover:bg-gray-50 active:border-b-2 active:mt-[2px] transition-all" aria-label="Añadir"><PlusIcon /></button>
+                <div className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-white text-[#4b4b4b] border-2 border-b-4 border-gray-200 border-b-gray-300 hover:bg-gray-50 text-sm font-bold transition-all cursor-default">PC</div>
+                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-transparent text-[#4b4b4b] hover:bg-gray-100 transition-all" aria-label="Añadir"><PlusIcon /></button>
+                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-transparent text-[#4b4b4b] text-sm font-bold hover:bg-gray-100 transition-all">PC</button>
               </div>
+              <code className="text-[10px] text-[#777777] block mt-1 font-mono">42×42px · Primary · Outline · Ghost (sin contorno, hit zone + hover)</code>
             </Block>
 
-            <Block title="IconButton · sm / lg / as div" labelClass="text-[#777777]">
-              <div className="flex flex-wrap items-center gap-2">
-                <button className="w-8 h-8 rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all"><PlusIcon /></button>
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] text-sm font-bold">PC</div>
+            <Block title="Tipografía" code="Darker Grotesque · tamaños en rem" labelClass="text-[#777777]">
+              <div className="space-y-3">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Título · <code className="font-mono">text-2xl (1.5rem)</code></p>
+                  <p className="font-extrabold tracking-tight text-[#4b4b4b] leading-tight normal-case" style={{ fontSize: '1.5rem' }}>curso personalizado para tu proyecto</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Subtítulo · <code className="font-mono">text-lg (1.125rem)</code></p>
+                  <p className="font-bold tracking-wide text-[#4b4b4b] normal-case" style={{ fontSize: '1.125rem' }}>Videos a medida con IA</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Headline · <code className="font-mono">text-sm (0.875rem)</code></p>
+                  <p className="font-bold uppercase tracking-wider text-[#4b4b4b]" style={{ fontSize: '0.875rem' }}>Sección</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Body · <code className="font-mono">text-base (1rem)</code></p>
+                  <p className="text-[#4b4b4b]" style={{ fontSize: '1rem' }}>Texto de párrafo normal.</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Caption · <code className="font-mono">text-xs (0.75rem)</code></p>
+                  <p className="text-[#777777]" style={{ fontSize: '0.75rem' }}>Texto secundario o pie.</p>
+                </div>
               </div>
-              <code className="text-[10px] text-[#777777] block mt-1 font-mono">IconButton size=sm | lg, as=div</code>
-            </Block>
-
-            <Block title="Tipografías · Headings" code="Darker Grotesque · uppercase · tracking-tight/wide" labelClass="text-[#777777]">
-              <div className="space-y-1">
-                {[
-                  ['text-4xl font-extrabold tracking-tight', 'H1'],
-                  ['text-3xl font-extrabold tracking-tight', 'H2'],
-                  ['text-2xl font-extrabold tracking-tight', 'H3'],
-                  ['text-xl font-extrabold tracking-tight', 'H4'],
-                  ['text-lg font-bold tracking-wide', 'H5'],
-                  ['text-base font-bold tracking-wide', 'H6'],
-                ].map(([cls, label]) => (
-                  <div key={label}>
-                    <span className={`${cls} text-[#4b4b4b] leading-tight`}>{label}</span>
-                    <code className="text-[10px] text-[#777777] font-mono ml-2">{cls}</code>
-                  </div>
-                ))}
-              </div>
-            </Block>
-
-            <Block title="Tipografías · Body" labelClass="text-[#777777]">
-              <div className="space-y-1">
-                <p className="text-base text-[#4b4b4b]">Body base · text-base</p>
-                <p className="text-sm text-[#777777]">Body sm · text-sm</p>
-                <p className="text-xs text-[#777777]">Body xs · text-xs</p>
-              </div>
-            </Block>
-
-            <Block title="Tamaños de texto" code="xs → 6xl" labelClass="text-[#777777]">
-              <div className="space-y-0.5">
-                {[
-                  ['xs', 'text-xs'],
-                  ['sm', 'text-sm'],
-                  ['base', 'text-base'],
-                  ['lg', 'text-lg'],
-                  ['xl', 'text-xl'],
-                  ['2xl', 'text-2xl'],
-                  ['3xl', 'text-3xl'],
-                  ['4xl', 'text-4xl'],
-                  ['5xl', 'text-5xl'],
-                  ['6xl', 'text-6xl'],
-                ].map(([s, cls]) => (
-                  <p key={s} className={`${cls} text-[#4b4b4b]`}>text-{s}</p>
-                ))}
-              </div>
+              <p className="text-[10px] text-[#777777] mt-2 border-t border-gray-200 pt-2">Regla: títulos y subtítulos en minúsculas, salvo nombre de usuario.</p>
             </Block>
 
             <Block title="Cards · Neutral / Primary / Completado" code="border-2 border-b-4 · rounded-2xl" labelClass="text-[#777777]">
@@ -238,30 +212,53 @@ export default function ComponentesPage() {
               Modo oscuro
             </h2>
 
-            <Block title="Brand" labelClass="text-gray-400">
+            <Block title="Colores de acento" labelClass="text-gray-400">
               <div className="flex flex-wrap gap-3">
                 {[
-                  ['#1472FF', '#0E5FCC', 'primary'],
-                  ['#22c55e', '#16a34a', 'completado'],
-                  ['#5BA0FF', null, 'light'],
-                ].map(([bg, border, name]) => (
+                  ['#1472FF', 'primary'],
+                  ['#22c55e', 'completado'],
+                ].map(([bg, name]) => (
                   <div key={name} className="flex flex-col items-center gap-1">
-                    <div className="w-14 h-14 rounded-xl border-2 border-b-4" style={{ backgroundColor: bg, borderColor: border || bg }} />
+                    <div className="w-[42px] h-[42px] rounded-xl" style={{ backgroundColor: bg }} />
                     <span className="text-[10px] text-gray-300 font-mono">{bg}</span>
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-gray-400 mt-2">border-b profundidad mismo tono o más oscuro</p>
             </Block>
 
-            <Block title="Neutros (bordes / profundidad)" code="gray-600 → gray-950" labelClass="text-gray-400">
+            <Block title="Colores de acento borde y profundidad" labelClass="text-gray-400">
               <div className="flex flex-wrap gap-2">
-                {grays.map(([name, hex]) => (
-                  <div key={name} className="flex flex-col items-center gap-0.5">
-                    <div className="w-10 h-10 rounded-lg border border-gray-600" style={{ backgroundColor: hex }} />
-                    <span className="text-[10px] text-gray-300 font-mono">gray-{name}</span>
+                <div className="flex flex-col items-center gap-0.5">
+                  <div className="w-[42px] h-[42px] rounded-xl border border-gray-600" style={{ backgroundColor: '#0E5FCC' }} />
+                  <span className="text-[10px] text-gray-300 font-mono">#0E5FCC</span>
+                </div>
+                <div className="flex flex-col items-center gap-0.5">
+                  <div className="w-[42px] h-[42px] rounded-xl border border-gray-600" style={{ backgroundColor: '#16a34a' }} />
+                  <span className="text-[10px] text-gray-300 font-mono">#16a34a</span>
+                </div>
+              </div>
+            </Block>
+
+            <Block title="Fondo y profundidad" labelClass="text-gray-400">
+              <div className="space-y-3">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Color de Fondo (Oscuro) Primario</p>
+                  <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-col items-center gap-0.5">
+                      <div className="w-[42px] h-[42px] rounded-xl border border-gray-600 bg-gray-800" />
+                      <span className="text-[10px] text-gray-300 font-mono">gray-800</span>
+                    </div>
                   </div>
-                ))}
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1">Fondos / Profundidad</p>
+                  <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-col items-center gap-0.5">
+                      <div className="w-[42px] h-[42px] rounded-xl border border-gray-600 bg-gray-950" />
+                      <span className="text-[10px] text-gray-300 font-mono">gray-950</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </Block>
 
@@ -277,91 +274,53 @@ export default function ComponentesPage() {
             <Block title="Botones · Depth" code="border-2 border-b-4 · active:border-b-2 active:mt-[2px]" labelClass="text-gray-400">
               <div className="flex flex-wrap gap-2">
                 <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">Primary</button>
-                <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-gray-800 text-gray-300 border-2 border-b-4 border-gray-950 border-b-gray-950 hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all">Secondary</button>
                 <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-gray-900 text-gray-300 border-2 border-b-4 border-gray-950 border-b-gray-950 hover:bg-gray-800 active:border-b-2 active:mt-[2px] transition-all">Outline</button>
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                <button className="px-4 py-3 rounded-2xl text-sm font-bold uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">Nav active</button>
-                <button className="px-4 py-3 rounded-2xl text-sm font-bold uppercase tracking-wide bg-transparent text-gray-300 hover:bg-gray-800 active:border-b-2 active:mt-[2px] transition-all">Nav inactive</button>
-              </div>
             </Block>
 
-            <Block title="Botones · Flat" labelClass="text-gray-400">
-              <div className="flex flex-wrap gap-2">
-                <button className="px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-wide bg-transparent text-gray-300 hover:bg-gray-800 transition-all">Ghost</button>
-                <button className="w-8 h-8 rounded-xl flex items-center justify-center bg-transparent text-gray-300 hover:bg-gray-800 transition-all"><PlusIcon /></button>
-              </div>
-              <code className="text-[10px] text-gray-400 block mt-1 font-mono">ghost · icon-ghost</code>
-            </Block>
-
-            <Block title="Botones · Tamaños" code="sm · md · lg · xl · icon" labelClass="text-gray-400">
+            <Block title="Botones icono (+, avatar)" labelClass="text-gray-400">
               <div className="flex flex-wrap items-center gap-2">
-                <button className="px-4 py-2 text-sm font-bold uppercase tracking-wide rounded-xl bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">sm</button>
-                <button className="px-4 py-3 text-sm font-bold uppercase tracking-wide rounded-xl bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">md</button>
-                <button className="px-6 py-3 text-sm font-bold uppercase tracking-wide rounded-xl bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">lg</button>
-                <button className="px-6 py-4 text-base font-bold uppercase tracking-wide rounded-xl bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">xl</button>
-                <button className="w-8 h-8 rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all"><PlusIcon /></button>
+                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all" aria-label="Añadir"><PlusIcon /></button>
+                <div className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] text-sm font-bold transition-all cursor-default">PC</div>
+                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-gray-900 text-gray-300 border-2 border-b-4 border-gray-950 border-b-gray-950 hover:bg-gray-800 active:border-b-2 active:mt-[2px] transition-all" aria-label="Añadir"><PlusIcon /></button>
+                <div className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-gray-900 text-gray-300 border-2 border-b-4 border-gray-950 border-b-gray-950 hover:bg-gray-800 text-sm font-bold transition-all cursor-default">PC</div>
+                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-transparent text-gray-300 hover:bg-gray-800 transition-all" aria-label="Añadir"><PlusIcon /></button>
+                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-transparent text-gray-300 text-sm font-bold hover:bg-gray-800 transition-all">PC</button>
               </div>
+              <code className="text-[10px] text-gray-400 block mt-1 font-mono">42×42px · Primary · Outline · Ghost (sin contorno, hit zone + hover)</code>
             </Block>
 
-            <Block title="IconButton · sm / lg / as div" labelClass="text-gray-400">
-              <div className="flex flex-wrap items-center gap-2">
-                <button className="w-8 h-8 rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all"><PlusIcon /></button>
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] text-sm font-bold">PC</div>
+            <Block title="Tipografía" code="Darker Grotesque · tamaños en rem" labelClass="text-gray-400">
+              <div className="space-y-3">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Título · <code className="font-mono">text-2xl (1.5rem)</code></p>
+                  <p className="font-extrabold tracking-tight text-white leading-tight normal-case" style={{ fontSize: '1.5rem' }}>curso personalizado para tu proyecto</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Subtítulo · <code className="font-mono">text-lg (1.125rem)</code></p>
+                  <p className="font-bold tracking-wide text-gray-300 normal-case" style={{ fontSize: '1.125rem' }}>Videos a medida con IA</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Headline · <code className="font-mono">text-sm (0.875rem)</code></p>
+                  <p className="font-bold uppercase tracking-wider text-gray-300" style={{ fontSize: '0.875rem' }}>Sección</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Body · <code className="font-mono">text-base (1rem)</code></p>
+                  <p className="text-gray-300" style={{ fontSize: '1rem' }}>Texto de párrafo normal.</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Caption · <code className="font-mono">text-xs (0.75rem)</code></p>
+                  <p className="text-gray-400" style={{ fontSize: '0.75rem' }}>Texto secundario o pie.</p>
+                </div>
               </div>
-              <code className="text-[10px] text-gray-400 block mt-1 font-mono">IconButton size=sm | lg, as=div</code>
-            </Block>
-
-            <Block title="Tipografías · Headings" code="Darker Grotesque · uppercase · tracking-tight/wide" labelClass="text-gray-400">
-              <div className="space-y-1">
-                {[
-                  ['text-4xl font-extrabold tracking-tight', 'H1'],
-                  ['text-3xl font-extrabold tracking-tight', 'H2'],
-                  ['text-2xl font-extrabold tracking-tight', 'H3'],
-                  ['text-xl font-extrabold tracking-tight', 'H4'],
-                  ['text-lg font-bold tracking-wide', 'H5'],
-                  ['text-base font-bold tracking-wide', 'H6'],
-                ].map(([cls, label]) => (
-                  <div key={label}>
-                    <span className={`${cls} text-white leading-tight`}>{label}</span>
-                    <code className="text-[10px] text-gray-400 font-mono ml-2">{cls}</code>
-                  </div>
-                ))}
-              </div>
-            </Block>
-
-            <Block title="Tipografías · Body" labelClass="text-gray-400">
-              <div className="space-y-1">
-                <p className="text-base text-gray-300">Body base · text-base</p>
-                <p className="text-sm text-gray-400">Body sm · text-sm</p>
-                <p className="text-xs text-gray-400">Body xs · text-xs</p>
-              </div>
-            </Block>
-
-            <Block title="Tamaños de texto" code="xs → 6xl" labelClass="text-gray-400">
-              <div className="space-y-0.5">
-                {[
-                  ['xs', 'text-xs'],
-                  ['sm', 'text-sm'],
-                  ['base', 'text-base'],
-                  ['lg', 'text-lg'],
-                  ['xl', 'text-xl'],
-                  ['2xl', 'text-2xl'],
-                  ['3xl', 'text-3xl'],
-                  ['4xl', 'text-4xl'],
-                  ['5xl', 'text-5xl'],
-                  ['6xl', 'text-6xl'],
-                ].map(([s, cls]) => (
-                  <p key={s} className={`${cls} text-gray-300`}>text-{s}</p>
-                ))}
-              </div>
+              <p className="text-[10px] text-gray-400 mt-2 border-t border-gray-700 pt-2">Regla: títulos y subtítulos en minúsculas, salvo nombre de usuario.</p>
             </Block>
 
             <Block title="Cards · Neutral / Primary / Completado" code="border-2 border-b-4 · rounded-2xl" labelClass="text-gray-400">
               <div className="flex flex-wrap gap-3">
-                <div className="w-36 rounded-2xl p-4 border-2 border-b-4 border-gray-950 border-b-gray-950 bg-gray-800 hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all">
+                <div className="w-36 rounded-2xl p-4 border-2 border-b-4 border-gray-950 border-b-gray-950 bg-gray-900 hover:bg-gray-800 active:border-b-2 active:mt-[2px] transition-all">
                   <p className="text-sm font-bold text-white">Neutral</p>
-                  <p className="text-[10px] text-gray-400 mt-0.5">gray-950/800</p>
+                  <p className="text-[10px] text-gray-400 mt-0.5">gray-950 · fondo</p>
                 </div>
                 <div className="w-36 rounded-2xl p-4 border-2 border-b-4 border-[#0E5FCC] bg-[#1472FF] text-white hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">
                   <p className="text-sm font-bold">Primary</p>

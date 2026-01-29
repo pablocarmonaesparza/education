@@ -19,11 +19,11 @@ const variants = {
   primary:
     'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#1265e0]',
   secondary:
-    'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-950 hover:bg-gray-50 dark:hover:bg-gray-700',
+    'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 hover:bg-gray-50 dark:hover:bg-gray-700',
   ghost:
     'bg-transparent text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
   outline:
-    'bg-white dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-950 hover:bg-gray-50 dark:hover:bg-gray-800',
+    'bg-white dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 hover:bg-gray-50 dark:hover:bg-gray-800',
   'nav-active':
     'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#1265e0]',
   'nav-inactive':
@@ -39,8 +39,8 @@ const sizes = {
   md: 'px-4 py-3 text-sm',
   lg: 'px-6 py-3 text-sm',
   xl: 'px-6 py-4 text-base',
-  icon: 'w-8 h-8',
-  'icon-sm': 'w-8 h-8',
+  icon: 'w-[42px] h-[42px]',
+  'icon-sm': 'w-[42px] h-[42px]',
 } as const;
 
 type Variant = keyof typeof variants;

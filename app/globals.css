@@ -14,9 +14,8 @@
   }
 }
 
-/* Base: snap scroll enabled — desktop sin overflow-x para no afectar scroll-snap */
+/* Base: scroll-snap solo en landing (/) para no bloquear scroll arriba en /componentes, etc. */
 html {
-  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   overscroll-behavior: none;
   background-color: #ffffff;
@@ -26,7 +25,11 @@ html.dark {
   background-color: #111827;
 }
 
-section {
+html:has(body[data-route="/"]) {
+  scroll-snap-type: y mandatory;
+}
+
+body[data-route="/"] section {
   scroll-snap-align: start;
 }
 

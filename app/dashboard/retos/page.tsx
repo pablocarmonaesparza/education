@@ -165,7 +165,7 @@ export default function RetosPage() {
   };
 
   const getTypeColor = () => {
-    return 'bg-blue-50 text-[#1472FF] dark:bg-blue-950/50 dark:text-[#5BA0FF]';
+    return 'bg-blue-50 text-[#1472FF] dark:bg-blue-950/50 dark:text-[#1472FF]';
   };
 
   const getDifficultyDots = (difficulty: number) => {
@@ -204,7 +204,7 @@ export default function RetosPage() {
 
           <div className="max-w-2xl mx-auto mt-16">
             <div className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/50 dark:to-gray-900 rounded-2xl border border-blue-100 dark:border-blue-900 p-12 text-center">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#1472FF] to-[#5BA0FF] flex items-center justify-center">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] flex items-center justify-center">
                 <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -218,7 +218,7 @@ export default function RetosPage() {
               </p>
               <button
                 onClick={() => router.push('/intake')}
-                className="px-6 py-3 rounded-full font-semibold text-sm text-white bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all"
+                className="px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all"
               >
                 Crear mi curso
               </button>
@@ -249,7 +249,7 @@ export default function RetosPage() {
             <div className="flex items-center gap-2">
               <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] transition-all duration-500"
+                  className="h-full bg-[#1472FF] transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -357,8 +357,8 @@ export default function RetosPage() {
                       !currentExercise.isUnlocked && !currentExercise.isCompleted
                         ? 'bg-gray-100 dark:bg-gray-900 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                         : currentExercise.isCompleted
-                          ? 'bg-blue-50 dark:bg-blue-900/30 text-[#1472FF] dark:text-[#5BA0FF] hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-400'
-                          : 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-[#1472FF] dark:hover:text-[#5BA0FF]'
+                          ? 'bg-blue-50 dark:bg-blue-900/30 text-[#1472FF] dark:text-[#1472FF] hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-400'
+                          : 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-[#1472FF] dark:hover:text-[#1472FF]'
                     }`}
                   >
                     {!currentExercise.isUnlocked && !currentExercise.isCompleted ? (
@@ -444,7 +444,7 @@ export default function RetosPage() {
                               onClick={() => router.push(`/dashboard`)}
                               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
                                 isWatched
-                                  ? 'bg-blue-50 dark:bg-blue-950/50 text-[#1472FF] dark:text-[#5BA0FF] hover:bg-blue-100 dark:hover:bg-blue-900/50'
+                                  ? 'bg-blue-50 dark:bg-blue-950/50 text-[#1472FF] dark:text-[#1472FF] hover:bg-blue-100 dark:hover:bg-blue-900/50'
                                   : 'bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
                               }`}
                             >

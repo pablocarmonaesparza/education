@@ -147,7 +147,7 @@ export default function PerfilPage() {
         <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-950 overflow-hidden mb-6">
           {/* Avatar Section */}
           <div className="p-6 flex items-center gap-4 border-b border-gray-100 dark:border-gray-800">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#1472FF] to-[#5BA0FF] flex items-center justify-center text-white text-2xl font-bold">
+            <div className="w-20 h-20 rounded-full bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] flex items-center justify-center text-white text-2xl font-bold">
               {userInitials}
             </div>
             <div>
@@ -192,7 +192,7 @@ export default function PerfilPage() {
                   <button
                     onClick={handleSaveName}
                     disabled={isSaving}
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#1472FF] to-[#5BA0FF] text-white font-medium hover:opacity-90 disabled:opacity-50"
+                    className="px-4 py-2 rounded-xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] disabled:opacity-50 disabled:active:border-b-4 disabled:active:mt-0 transition-all"
                   >
                     {isSaving ? 'Guardando...' : 'Guardar'}
                   </button>
@@ -201,7 +201,7 @@ export default function PerfilPage() {
                       setIsEditing(false);
                       setEditName(profile.name);
                     }}
-                    className="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-950 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="px-4 py-2 rounded-xl font-bold text-sm uppercase tracking-wide bg-white dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-300 border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 hover:bg-gray-50 dark:hover:bg-gray-800 active:border-b-2 active:mt-[2px] transition-all"
                   >
                     Cancelar
                   </button>
