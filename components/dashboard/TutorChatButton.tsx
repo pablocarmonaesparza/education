@@ -157,10 +157,10 @@ export default function TutorChatButton() {
           >
             <div className={`max-w-[85%] ${message.role === 'user' ? 'order-2' : 'order-1'}`}>
               <div
-                className={`px-4 py-3 rounded-xl ${
+                className={`px-4 py-3 rounded-2xl border-2 border-b-4 ${
                   message.role === 'user'
-                    ? 'bg-[#1472FF] text-white'
-                    : 'bg-gray-50 dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-200'
+                    ? 'bg-[#1472FF] text-white border-[#0E5FCC] border-b-[#0E5FCC]'
+                    : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950'
                 }`}
               >
                 <p className="text-sm leading-relaxed">{message.content}</p>
@@ -172,7 +172,7 @@ export default function TutorChatButton() {
         {isLoading && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
-              <div className="bg-gray-50 dark:bg-gray-900 px-4 py-3 rounded-xl">
+              <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950">
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                   <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />

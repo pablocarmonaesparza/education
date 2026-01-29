@@ -526,11 +526,11 @@ export default function DashboardPage() {
             {project && (
               <div className="flex justify-center px-2 sm:px-4 mt-4 mb-2">
                 {/* Project selector button */}
-                <div className="relative w-[95%] sm:w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-600 border-b-4 border-b-gray-300 dark:border-b-gray-700 bg-white dark:bg-gray-800 p-3 sm:p-4">
+                <div className="relative w-[95%] sm:w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-800 p-3 sm:p-4">
                   {/* Leading chevron - disabled if first project */}
                   <button
                     disabled={true}
-                    className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 active:border-b-2 active:mt-[2px] transition-all duration-150"
+                    className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 active:border-b-2 active:mt-[2px] transition-all duration-150"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -577,11 +577,11 @@ export default function DashboardPage() {
               {project && (
                 <div className="flex justify-center px-2 sm:px-4">
                   {/* Project selector button */}
-                  <div className="relative w-[95%] sm:w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-600 border-b-4 border-b-gray-300 dark:border-b-gray-700 bg-white dark:bg-gray-800 p-3 sm:p-4">
+                  <div className="relative w-[95%] sm:w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-800 p-3 sm:p-4">
                     {/* Leading chevron - disabled if first project */}
                     <button
                       disabled={true}
-                      className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 active:border-b-2 active:mt-[2px] transition-all duration-150"
+                      className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 active:border-b-2 active:mt-[2px] transition-all duration-150"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -661,12 +661,12 @@ export default function DashboardPage() {
               >
                 {/* Phase Divider and Title: ----- SECTION ----- */}
                 <div className="mb-4 sm:mb-6">
-                  <div className="flex items-center justify-center gap-2 sm:gap-4 w-[95%] sm:w-[80%] mx-auto">
-                    <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-700 rounded-full" />
-                    <h2 className="text-xs sm:text-sm font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase whitespace-nowrap">
+                  <div className="flex items-center justify-center gap-2 sm:gap-4 w-[95%] sm:w-[80%] mx-auto px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950">
+                    <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-600 rounded-full" />
+                    <h2 className="text-xs sm:text-sm font-bold text-gray-500 dark:text-white tracking-wider uppercase whitespace-nowrap">
                       {phaseData.phaseName}
                     </h2>
-                    <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-700 rounded-full" />
+                    <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-600 rounded-full" />
                   </div>
                 </div>
                 
@@ -708,7 +708,7 @@ export default function DashboardPage() {
           {/* Gradient fade above progress bar */}
           <div className="h-8 bg-gradient-to-t from-white dark:from-gray-900 to-transparent pointer-events-none" />
           <div className="bg-white dark:bg-gray-900 pb-4 flex justify-center">
-            <div className="w-[90%] sm:w-[80%] max-w-2xl relative h-[37px] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex items-center justify-center border-2 border-gray-200 dark:border-gray-600 border-b-4 border-b-gray-300 dark:border-b-gray-700">
+            <div className="w-[90%] sm:w-[80%] max-w-2xl relative h-[37px] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex items-center justify-center border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950">
               <div
                 className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"
                 style={{
