@@ -4,7 +4,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import LessonItem from '@/components/dashboard/LessonItem';
-import { IconButton, Button, Spinner } from '@/components/ui';
+import IconButton from '@/components/shared/IconButton';
+import Button from '@/components/shared/Button';
 
 const greetings = [
   "Hola",
@@ -500,7 +501,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <Spinner />
+        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }

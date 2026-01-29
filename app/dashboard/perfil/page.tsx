@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { SpinnerPage, SectionHeader, Button } from '@/components/ui';
 
 interface UserProfile {
   id: string;
@@ -110,7 +109,11 @@ export default function PerfilPage() {
     : 'U';
 
   if (isLoading) {
-    return <SpinnerPage />;
+    return (
+      <div className="h-[calc(100vh-10rem)] md:h-[calc(100vh-11rem)] bg-transparent flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
   }
 
   if (!profile) {
@@ -126,7 +129,10 @@ export default function PerfilPage() {
       <div className="container mx-auto px-4 py-8 max-w-2xl">
         
         {/* Header */}
-        <SectionHeader title="mi perfil" subtitle="Gestiona tu información personal" />
+        <div className="mb-8">
+          <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">mi perfil</h1>
+          <p className="mt-2 text-gray-500 dark:text-gray-400">Gestiona tu información personal</p>
+        </div>
 
         {/* Message */}
         {message && (
@@ -183,24 +189,22 @@ export default function PerfilPage() {
                     className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-950 dark:bg-gray-900 dark:text-white focus:border-[#1472FF] focus:outline-none"
                     placeholder="Tu nombre"
                   />
-                  <Button
-                    variant="primary"
-                    size="sm"
+                  <button
                     onClick={handleSaveName}
                     disabled={isSaving}
+                    className="px-4 py-2 rounded-xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] disabled:opacity-50 disabled:active:border-b-4 disabled:active:mt-0 transition-all"
                   >
                     {isSaving ? 'Guardando...' : 'Guardar'}
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
+                  </button>
+                  <button
                     onClick={() => {
                       setIsEditing(false);
                       setEditName(profile.name);
                     }}
+                    className="px-4 py-2 rounded-xl font-bold text-sm uppercase tracking-wide bg-white dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-300 border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 hover:bg-gray-50 dark:hover:bg-gray-800 active:border-b-2 active:mt-[2px] transition-all"
                   >
                     Cancelar
-                  </Button>
+                  </button>
                 </div>
               ) : (
                 <p className="text-gray-900 dark:text-white">{profile.name || 'Sin nombre'}</p>
@@ -243,9 +247,9 @@ export default function PerfilPage() {
                 <p className="font-medium text-gray-900 dark:text-white">Plan actual</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Plan {getTierName(profile.tier)}</p>
               </div>
-              <Button variant="primary" depth="bottom" size="sm" rounded2xl>
+              <button className="px-4 py-2 rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150">
                 Mejorar Plan
-              </Button>
+              </button>
             </div>
 
             {/* Notifications */}

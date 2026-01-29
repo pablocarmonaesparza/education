@@ -5,7 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { Button, IconButton } from '@/components/ui';
+import Button from '@/components/shared/Button';
+import IconButton from '@/components/shared/IconButton';
 import { useSidebar } from '@/contexts/SidebarContext';
 
 export default function Sidebar() {
