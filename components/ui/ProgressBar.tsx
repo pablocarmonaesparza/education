@@ -27,6 +27,8 @@ export interface ProgressBarProps {
   trackClassName?: string;
   /** Animate the fill on mount. Default true. */
   animate?: boolean;
+  /** Animation duration in ms. Default 500. */
+  durationMs?: number;
   className?: string;
 }
 
@@ -58,6 +60,7 @@ export default function ProgressBar({
   color = 'primary',
   trackClassName,
   animate = true,
+  durationMs = 500,
   className = '',
 }: ProgressBarProps) {
   const clamped = Math.max(0, Math.min(100, value));
@@ -70,9 +73,12 @@ export default function ProgressBar({
     >
       <div
         className={`${heightMap[size]} rounded-full ${fillColors[color]} ${
-          animate ? 'transition-all duration-500' : ''
+          animate ? 'transition-all' : ''
         }`}
-        style={{ width: `${clamped}%` }}
+        style={{
+          width: `${clamped}%`,
+          ...(animate ? { transitionDuration: `${durationMs}ms` } : {}),
+        }}
       />
     </div>
   );

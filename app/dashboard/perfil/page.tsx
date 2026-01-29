@@ -243,7 +243,7 @@ export default function PerfilPage() {
                 <p className="font-medium text-gray-900 dark:text-white">Plan actual</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Plan {getTierName(profile.tier)}</p>
               </div>
-              <Button variant="primary" size="sm" rounded2xl>
+              <Button variant="primary" depth="bottom" size="sm" rounded2xl>
                 Mejorar Plan
               </Button>
             </div>
@@ -272,9 +272,12 @@ export default function PerfilPage() {
                 <p className="font-medium text-gray-900 dark:text-white">Cerrar sesión</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Salir de tu cuenta en este dispositivo</p>
               </div>
-              <Button variant="danger" size="sm" onClick={handleLogout}>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 rounded-xl bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 text-sm font-medium transition-colors"
+              >
                 Cerrar sesión
-              </Button>
+              </button>
             </div>
           </div>
         </div>

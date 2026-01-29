@@ -221,7 +221,7 @@ export default function DashboardContent(props: DashboardContentProps) {
               </h3>
               
               <div className="relative pt-1 mb-6">
-                <ProgressBar value={props.overallProgress} size="lg" color="primary" className="mb-2" />
+                <ProgressBar value={props.overallProgress} size="lg" color="primary" durationMs={1000} className="mb-2" />
                 <div className="flex justify-between text-xs text-[#777777] dark:text-gray-400 font-medium">
                   <span>Inicio</span>
                   <span>Meta: 100%</span>
