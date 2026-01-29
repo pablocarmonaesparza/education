@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useSidebar } from '@/contexts/SidebarContext';
-import { Card, CardFlat, Tag, StatCard, ProgressBar, Button } from '@/components/ui';
+import { StatCard, ProgressBar } from '@/components/ui';
 
 interface DashboardContentProps {
   userName: string;
@@ -112,9 +112,9 @@ export default function DashboardContent(props: DashboardContentProps) {
               <div className="p-6 sm:p-8">
                 <div className="flex items-start justify-between mb-6">
                   <div>
-                    <Tag variant="primary" className="text-xs font-bold mb-3">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#1472FF]/10 text-[#1472FF] border border-[#1472FF]/20 mb-3">
                       Continuar donde lo dejaste
-                    </Tag>
+                    </span>
                     <h2 className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
                       {currentVideoData?.description || 'Siguiente lección'}
                     </h2>

@@ -205,7 +205,7 @@ export default function RetosPage() {
             title="Aún no tienes retos"
             description="Los retos se generan automáticamente cuando creas tu curso personalizado. Son ejercicios prácticos diseñados específicamente para tu proyecto."
             action={
-              <Button variant="primary" onClick={() => router.push('/intake')}>
+              <Button variant="primary" size="lg" onClick={() => router.push('/intake')}>
                 Crear mi curso
               </Button>
             }
@@ -233,7 +233,7 @@ export default function RetosPage() {
             </p>
             {/* Progress */}
             <div className="flex items-center gap-2">
-              <ProgressBar value={progressPercent} size="md" color="primary" className="flex-1" />
+              <ProgressBar value={progressPercent} size="md" color="primary" trackClassName="bg-gray-200 dark:bg-gray-700" className="flex-1" />
               <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
                 {completedCount}/{totalCount}
               </span>
