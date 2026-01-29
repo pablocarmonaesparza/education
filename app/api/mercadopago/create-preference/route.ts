@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { MercadoPagoConfig, Preference } from 'mercadopago'; // Correct import
+import { MercadoPagoConfig, Preference } from 'mercadopago';
+import { createClient } from '@/lib/supabase/server';
 
 const client = new MercadoPagoConfig({ accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN! });
 
 export async function POST(req: NextRequest) {
   try {
+    // Verificar autenticación
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+
     const { title, unit_price, quantity = 1 } = await req.json();
 
     const preference = new Preference(client); // Use the instantiated client
