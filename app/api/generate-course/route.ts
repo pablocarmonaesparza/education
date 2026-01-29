@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
 
     const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL;
 
-    if (!N8N_WEBHOOK_URL || N8N_WEBHOOK_URL.includes('tu-webhook-n8n.com')) {
+    if (!N8N_WEBHOOK_URL || N8N_WEBHOOK_URL.includes('tu-webhook-n8n.com') || N8N_WEBHOOK_URL.includes('your-n8n-instance.com')) {
       return NextResponse.json(
         {
           success: false,
