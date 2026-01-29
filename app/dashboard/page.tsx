@@ -833,10 +833,10 @@ export default function DashboardPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-              <h2 className="text-xl font-bold text-[#4b4b4b] dark:text-white pr-10">
+              <h2 className="text-xl font-extrabold uppercase tracking-tight text-[#4b4b4b] dark:text-white pr-10 leading-tight">
                 Curso personalizado para tu proyecto
               </h2>
-              <p className="text-sm text-[#777777] dark:text-gray-400 mt-1">
+              <p className="text-sm font-bold uppercase tracking-wide text-[#777777] dark:text-gray-400 mt-1">
                 Videos a medida con IA · Solo tú decides qué aprender
               </p>
             </div>
