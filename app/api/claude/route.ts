@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { ClaudeChatRequest, ClaudeChatResponse, CustomPath } from '@/types/claude';
+import { createClient } from '@/lib/supabase/server';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -8,6 +9,13 @@ const anthropic = new Anthropic({
 
 export async function POST(req: Request) {
   try {
+    // Verificar autenticación
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+
     const { message, history }: ClaudeChatRequest = await req.json();
 
     if (!message) {
