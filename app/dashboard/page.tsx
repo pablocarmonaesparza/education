@@ -822,8 +822,8 @@ export default function DashboardPage() {
             className="relative w-full max-w-lg max-h-[90dvh] my-auto rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-900 shadow-2xl overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header — mismo estilo que resto del sistema */}
-            <div className="relative px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            {/* Header — estilo proyecto, sin línea ni subtítulo */}
+            <div className="relative px-4 sm:px-6 py-4">
               <button
                 onClick={() => setShowCreateCourseModal(false)}
                 className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all"
@@ -833,12 +833,9 @@ export default function DashboardPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
-              <h2 className="text-xl font-extrabold uppercase tracking-tight text-[#4b4b4b] dark:text-white pr-10 leading-tight">
+              <h2 className="text-xl font-extrabold uppercase tracking-tight leading-tight text-[#4b4b4b] dark:text-white pr-10">
                 Curso personalizado para tu proyecto
               </h2>
-              <p className="text-sm font-bold uppercase tracking-wide text-[#777777] dark:text-gray-400 mt-1">
-                Videos a medida con IA · Solo tú decides qué aprender
-              </p>
             </div>
 
             <div className="p-4 sm:p-6">
