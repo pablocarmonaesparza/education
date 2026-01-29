@@ -13,11 +13,10 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next()
     }
 
-    // Skip middleware for auth callback - it handles its own session and redirects
-    if (request.nextUrl.pathname.startsWith('/auth/callback')) {
+    // Skip middleware for all auth routes — they handle their own logic
+    if (request.nextUrl.pathname.startsWith('/auth/')) {
       return NextResponse.next()
     }
-
 
     // Create a response that we can modify
     let supabaseResponse = NextResponse.next({
@@ -57,12 +56,6 @@ export async function middleware(request: NextRequest) {
       const loginUrl = new URL('/auth/login', request.url)
       loginUrl.searchParams.set('redirectedFrom', request.nextUrl.pathname)
       return NextResponse.redirect(loginUrl)
-    }
-
-    // If authenticated user tries to access login/signup, redirect to dashboard
-    // The dashboard/onboarding pages handle their own routing logic client-side
-    if (user && (request.nextUrl.pathname === '/auth/login' || request.nextUrl.pathname === '/auth/signup')) {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
     }
 
     return supabaseResponse
