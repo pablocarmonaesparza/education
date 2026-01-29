@@ -31,7 +31,7 @@ export default function LessonItem({
   const getCardBg = () => {
     if (isCompleted) return 'bg-[#22c55e]';
     if (isCurrent) return 'bg-[#1472FF]';
-    return 'bg-white dark:bg-gray-900';
+    return 'bg-white dark:bg-gray-800';
   };
 
   const getTextColor = () => {
@@ -46,7 +46,7 @@ export default function LessonItem({
 
   const getDurationBg = () => {
     if (isCompleted || isCurrent) return 'bg-white/20 border-white/30';
-    return 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700';
+    return 'bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-600';
   };
 
   const getExpandButtonColor = () => {
@@ -64,7 +64,7 @@ export default function LessonItem({
     if (isCurrent) {
       return 'border-2 border-b-4 border-[#0E5FCC] group-active:border-b-2 group-active:mt-[2px]';
     }
-    return 'border-2 border-b-4 border-gray-300 dark:border-gray-700 group-active:border-b-2 group-active:mt-[2px]';
+    return 'border-2 border-b-4 border-gray-300 dark:border-gray-600 border-b-gray-300 dark:border-b-gray-700 group-active:border-b-2 group-active:mt-[2px]';
   };
 
   const handleExpandClick = (e: React.MouseEvent) => {
