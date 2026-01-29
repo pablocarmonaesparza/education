@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { Spinner } from '@/components/ui';
 
 interface Message {
   id: string;
@@ -380,7 +381,7 @@ ${completedVideosText}
   if (isLoading) {
     return (
       <div className="h-full flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
+        <Spinner />
       </div>
     );
   }

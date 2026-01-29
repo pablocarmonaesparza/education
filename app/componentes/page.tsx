@@ -1,9 +1,31 @@
 'use client';
 
 import Link from 'next/link';
+import {
+  Button,
+  IconButton,
+  Card, CardFlat,
+  Input, Textarea, SearchInput,
+  Divider,
+  Typography, Title, Subtitle, Headline, Body, Caption,
+  ProgressBar,
+  StatCard,
+  Tag,
+  Spinner, SpinnerPage,
+  SectionHeader,
+  EmptyState,
+} from '@/components/ui';
 
 const PlusIcon = () => (
-  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+  </svg>
+);
+
+const LightningIcon = () => (
+  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+  </svg>
 );
 
 /** Bloque genérico de sección con título y optional code */
@@ -39,6 +61,7 @@ export default function ComponentesPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+        {/* Mode indicators */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
           <div className="rounded-xl border-2 border-gray-200 bg-white p-4 flex items-center gap-3">
             <div className="w-4 h-4 rounded-full bg-[#1472FF]" />
@@ -57,6 +80,7 @@ export default function ComponentesPage() {
               Modo claro
             </h2>
 
+            {/* Colores de acento */}
             <Block title="Colores de acento" labelClass="text-[#777777]">
               <div className="flex flex-wrap gap-3">
                 {[
@@ -71,6 +95,7 @@ export default function ComponentesPage() {
               </div>
             </Block>
 
+            {/* Colores de profundidad */}
             <Block title="Colores de acento borde y profundidad" labelClass="text-[#777777]">
               <div className="flex flex-wrap gap-2">
                 <div className="flex flex-col items-center gap-0.5">
@@ -84,6 +109,7 @@ export default function ComponentesPage() {
               </div>
             </Block>
 
+            {/* Fondo y profundidad */}
             <Block title="Fondo y profundidad" labelClass="text-[#777777]">
               <div className="space-y-3">
                 <div>
@@ -107,6 +133,7 @@ export default function ComponentesPage() {
               </div>
             </Block>
 
+            {/* Texto */}
             <Block title="Texto" labelClass="text-[#777777]">
               <div className="flex flex-wrap gap-4">
                 <span className="text-sm font-bold text-[#4b4b4b]">#4b4b4b</span>
@@ -116,75 +143,148 @@ export default function ComponentesPage() {
               <code className="text-[10px] text-[#777777] block mt-1 font-mono">text-[#4b4b4b] · text-[#777777]</code>
             </Block>
 
-            <Block title="Botones · Depth" code="border-2 border-b-4 · active:border-b-2 active:mt-[2px]" labelClass="text-[#777777]">
+            {/* Botones — real components */}
+            <Block title="Botones · Depth" code="<Button variant=... />" labelClass="text-[#777777]">
               <div className="flex flex-wrap gap-2">
-                <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">Primary</button>
-                <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-white text-[#4b4b4b] border-2 border-b-4 border-gray-200 border-b-gray-300 hover:bg-gray-50 active:border-b-2 active:mt-[2px] transition-all">Outline</button>
+                <Button variant="primary" size="sm">Primary</Button>
+                <Button variant="outline" size="sm">Outline</Button>
+                <Button variant="secondary" size="sm">Secondary</Button>
+                <Button variant="ghost" size="sm">Ghost</Button>
+                <Button variant="completado" size="sm">Completado</Button>
+                <Button variant="danger" size="sm">Danger</Button>
               </div>
             </Block>
 
-            <Block title="Botones icono (+, avatar)" labelClass="text-[#777777]">
+            {/* Botones icono — real components */}
+            <Block title="Botones icono (+, avatar)" code="<IconButton variant=... />" labelClass="text-[#777777]">
               <div className="flex flex-wrap items-center gap-2">
-                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all" aria-label="Añadir"><PlusIcon /></button>
-                <div className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] text-sm font-bold transition-all cursor-default">PC</div>
-                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-white text-[#4b4b4b] border-2 border-b-4 border-gray-200 border-b-gray-300 hover:bg-gray-50 active:border-b-2 active:mt-[2px] transition-all" aria-label="Añadir"><PlusIcon /></button>
-                <div className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-white text-[#4b4b4b] border-2 border-b-4 border-gray-200 border-b-gray-300 hover:bg-gray-50 text-sm font-bold transition-all cursor-default">PC</div>
-                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-transparent text-[#4b4b4b] hover:bg-gray-100 transition-all" aria-label="Añadir"><PlusIcon /></button>
-                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-transparent text-[#4b4b4b] text-sm font-bold hover:bg-gray-100 transition-all">PC</button>
+                <IconButton variant="primary" aria-label="Añadir"><PlusIcon /></IconButton>
+                <IconButton as="div" variant="primary">PC</IconButton>
+                <IconButton variant="outline" aria-label="Añadir"><PlusIcon /></IconButton>
+                <IconButton as="div" variant="outline">PC</IconButton>
+                <IconButton variant="ghost" aria-label="Añadir"><PlusIcon /></IconButton>
+                <IconButton as="div" variant="ghost">PC</IconButton>
               </div>
-              <code className="text-[10px] text-[#777777] block mt-1 font-mono">42×42px · Primary · Outline · Ghost (sin contorno, hit zone + hover)</code>
+              <code className="text-[10px] text-[#777777] block mt-1 font-mono">42×42px · Primary · Outline · Ghost</code>
             </Block>
 
-            <Block title="Tipografía" code="Darker Grotesque · tamaños en rem" labelClass="text-[#777777]">
+            {/* Tipografía — real components */}
+            <Block title="Tipografía" code="<Typography level=... />" labelClass="text-[#777777]">
               <div className="space-y-3">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Título · <code className="font-mono">text-2xl (1.5rem)</code></p>
-                  <p className="font-extrabold tracking-tight text-[#4b4b4b] leading-tight normal-case" style={{ fontSize: '1.5rem' }}>curso personalizado para tu proyecto</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Título · text-2xl</p>
+                  <Title>curso personalizado para tu proyecto</Title>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Subtítulo · <code className="font-mono">text-lg (1.125rem)</code></p>
-                  <p className="font-bold tracking-wide text-[#4b4b4b] normal-case" style={{ fontSize: '1.125rem' }}>Videos a medida con IA</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Subtítulo · text-lg</p>
+                  <Subtitle>Videos a medida con IA</Subtitle>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Headline · <code className="font-mono">text-sm (0.875rem)</code></p>
-                  <p className="font-bold uppercase tracking-wider text-[#4b4b4b]" style={{ fontSize: '0.875rem' }}>Sección</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Headline · text-sm</p>
+                  <Headline>Sección</Headline>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Body · <code className="font-mono">text-base (1rem)</code></p>
-                  <p className="text-[#4b4b4b]" style={{ fontSize: '1rem' }}>Texto de párrafo normal.</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Body · text-base</p>
+                  <Body>Texto de párrafo normal.</Body>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Caption · <code className="font-mono">text-xs (0.75rem)</code></p>
-                  <p className="text-[#777777]" style={{ fontSize: '0.75rem' }}>Texto secundario o pie.</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#777777] mb-0.5">Caption · text-xs</p>
+                  <Caption>Texto secundario o pie.</Caption>
                 </div>
               </div>
               <p className="text-[10px] text-[#777777] mt-2 border-t border-gray-200 pt-2">Regla: títulos y subtítulos en minúsculas, salvo nombre de usuario.</p>
             </Block>
 
-            <Block title="Cards · Neutral / Primary / Completado" code="border-2 border-b-4 · rounded-2xl" labelClass="text-[#777777]">
+            {/* Cards — real components */}
+            <Block title="Cards · Neutral / Primary / Completado" code="<Card variant=... />" labelClass="text-[#777777]">
               <div className="flex flex-wrap gap-3">
-                <div className="w-36 rounded-2xl p-4 border-2 border-b-4 border-gray-200 border-b-gray-300 bg-white hover:bg-gray-50 active:border-b-2 active:mt-[2px] transition-all">
-                  <p className="text-sm font-bold text-[#4b4b4b]">Neutral</p>
+                <Card variant="neutral" interactive className="w-36">
+                  <p className="text-sm font-bold text-[#4b4b4b] dark:text-white">Neutral</p>
                   <p className="text-[10px] text-[#777777] mt-0.5">gray-200/300</p>
-                </div>
-                <div className="w-36 rounded-2xl p-4 border-2 border-b-4 border-[#0E5FCC] bg-[#1472FF] text-white hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">
+                </Card>
+                <Card variant="primary" interactive className="w-36">
                   <p className="text-sm font-bold">Primary</p>
                   <p className="text-[10px] text-white/80 mt-0.5">#1472FF</p>
-                </div>
-                <div className="w-36 rounded-2xl p-4 border-2 border-b-4 border-[#16a34a] bg-[#22c55e] text-white active:border-b-2 active:mt-[2px] transition-all">
+                </Card>
+                <Card variant="completado" className="w-36">
                   <p className="text-sm font-bold">Completado</p>
                   <p className="text-[10px] text-white/80 mt-0.5">#22c55e</p>
-                </div>
+                </Card>
               </div>
             </Block>
 
-            <Block title="Input · Textarea" code="border-2 border-b-4 · focus:ring-2 focus:ring-[#1472FF]/20" labelClass="text-[#777777]">
+            {/* CardFlat */}
+            <Block title="Card Flat (sin profundidad)" code="<CardFlat />" labelClass="text-[#777777]">
+              <CardFlat className="p-4 max-w-xs">
+                <p className="text-sm font-bold text-[#4b4b4b]">CardFlat</p>
+                <p className="text-[10px] text-[#777777] mt-0.5">Solo border-2, sin border-b-4</p>
+              </CardFlat>
+            </Block>
+
+            {/* Input — real components */}
+            <Block title="Input · Textarea · SearchInput" code="<Input /> <Textarea /> <SearchInput />" labelClass="text-[#777777]">
               <div className="space-y-3 max-w-xs">
-                <input type="text" placeholder="Placeholder" className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 border-b-4 border-b-gray-300 bg-white text-[#4b4b4b] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all text-sm" />
-                <textarea rows={2} placeholder="Placeholder" className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 border-b-4 border-b-gray-300 bg-white text-[#4b4b4b] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all resize-none text-sm" />
+                <Input placeholder="Input placeholder" />
+                <Textarea rows={2} placeholder="Textarea placeholder" />
+                <SearchInput placeholder="Buscar..." />
               </div>
             </Block>
 
+            {/* Divider — real component */}
+            <Block title="Divisor" code="<Divider />" labelClass="text-[#777777]">
+              <Divider />
+              <div className="mt-3">
+                <Divider title="Sección" />
+              </div>
+            </Block>
+
+            {/* ProgressBar — real component */}
+            <Block title="ProgressBar" code="<ProgressBar value={...} />" labelClass="text-[#777777]">
+              <div className="space-y-3 max-w-xs">
+                <ProgressBar value={65} />
+                <ProgressBar value={40} size="lg" color="green" />
+                <ProgressBar value={80} size="sm" color="primary" />
+              </div>
+            </Block>
+
+            {/* StatCard — real component */}
+            <Block title="StatCard" code="<StatCard icon=... value=... label=... />" labelClass="text-[#777777]">
+              <div className="grid grid-cols-2 gap-3 max-w-xs">
+                <StatCard icon="🔥" value={5} label="Racha Días" color="orange" />
+                <StatCard icon="⭐" value={3} label="Nivel" color="blue" />
+              </div>
+            </Block>
+
+            {/* Tag — real component */}
+            <Block title="Tag" code="<Tag variant=... />" labelClass="text-[#777777]">
+              <div className="flex flex-wrap gap-2">
+                <Tag variant="primary">Primary</Tag>
+                <Tag variant="outline">Outline</Tag>
+                <Tag variant="success">Success</Tag>
+                <Tag variant="warning">Warning</Tag>
+                <Tag variant="neutral">Neutral</Tag>
+              </div>
+            </Block>
+
+            {/* Spinner — real component */}
+            <Block title="Spinner" code="<Spinner /> <Spinner size='lg' />" labelClass="text-[#777777]">
+              <div className="flex items-center gap-4">
+                <Spinner size="sm" />
+                <Spinner size="md" />
+                <Spinner size="lg" />
+              </div>
+            </Block>
+
+            {/* SectionHeader — real component */}
+            <Block title="SectionHeader" code="<SectionHeader title=... subtitle=... />" labelClass="text-[#777777]">
+              <SectionHeader
+                title="retos"
+                subtitle="Practica lo que aprendes"
+                action={<Button variant="primary" size="sm">Nuevo</Button>}
+              />
+            </Block>
+
+            {/* Espaciado */}
             <Block title="Espaciado" code="p-4 · px-6 py-4 · gap-3 · space-y-4" labelClass="text-[#777777]">
               <div className="flex flex-wrap items-end gap-2">
                 {[1, 2, 3, 4, 6, 8, 10, 12].map((n) => (
@@ -196,22 +296,15 @@ export default function ComponentesPage() {
               </div>
               <p className="text-xs text-[#777777] mt-2">Radios: rounded-xl (0.75rem), rounded-2xl (1rem)</p>
             </Block>
-
-            <Block title="Divisor" code="h-[2px] · bg-gray-300 · sin caja" labelClass="text-[#777777]">
-              <div className="flex items-center gap-4">
-                <div className="flex-1 h-[2px] bg-gray-300 rounded-full" />
-                <span className="text-sm font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">Sección</span>
-                <div className="flex-1 h-[2px] bg-gray-300 rounded-full" />
-              </div>
-            </Block>
           </div>
 
           {/* ─── DERECHA: MODO OSCURO ─── */}
-          <div className="space-y-12 rounded-2xl border-2 border-gray-700 bg-gray-900 p-6 lg:p-8">
+          <div className="space-y-12 rounded-2xl border-2 border-gray-700 bg-gray-900 p-6 lg:p-8 dark">
             <h2 className="text-lg font-extrabold uppercase tracking-tight text-white pb-2 border-b-2 border-gray-700">
               Modo oscuro
             </h2>
 
+            {/* Colores de acento */}
             <Block title="Colores de acento" labelClass="text-gray-400">
               <div className="flex flex-wrap gap-3">
                 {[
@@ -226,6 +319,7 @@ export default function ComponentesPage() {
               </div>
             </Block>
 
+            {/* Colores de profundidad */}
             <Block title="Colores de acento borde y profundidad" labelClass="text-gray-400">
               <div className="flex flex-wrap gap-2">
                 <div className="flex flex-col items-center gap-0.5">
@@ -239,6 +333,7 @@ export default function ComponentesPage() {
               </div>
             </Block>
 
+            {/* Fondo y profundidad */}
             <Block title="Fondo y profundidad" labelClass="text-gray-400">
               <div className="space-y-3">
                 <div>
@@ -262,6 +357,7 @@ export default function ComponentesPage() {
               </div>
             </Block>
 
+            {/* Texto */}
             <Block title="Texto" labelClass="text-gray-400">
               <div className="flex flex-wrap gap-4">
                 <span className="text-sm font-bold text-white">white</span>
@@ -271,75 +367,148 @@ export default function ComponentesPage() {
               <code className="text-[10px] text-gray-400 block mt-1 font-mono">dark:text-white · dark:text-gray-400</code>
             </Block>
 
-            <Block title="Botones · Depth" code="border-2 border-b-4 · active:border-b-2 active:mt-[2px]" labelClass="text-gray-400">
+            {/* Botones — real components */}
+            <Block title="Botones · Depth" code="<Button variant=... />" labelClass="text-gray-400">
               <div className="flex flex-wrap gap-2">
-                <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">Primary</button>
-                <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-gray-900 text-gray-300 border-2 border-b-4 border-gray-950 border-b-gray-950 hover:bg-gray-800 active:border-b-2 active:mt-[2px] transition-all">Outline</button>
+                <Button variant="primary" size="sm">Primary</Button>
+                <Button variant="outline" size="sm">Outline</Button>
+                <Button variant="secondary" size="sm">Secondary</Button>
+                <Button variant="ghost" size="sm">Ghost</Button>
+                <Button variant="completado" size="sm">Completado</Button>
+                <Button variant="danger" size="sm">Danger</Button>
               </div>
             </Block>
 
-            <Block title="Botones icono (+, avatar)" labelClass="text-gray-400">
+            {/* Botones icono — real components */}
+            <Block title="Botones icono (+, avatar)" code="<IconButton variant=... />" labelClass="text-gray-400">
               <div className="flex flex-wrap items-center gap-2">
-                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all" aria-label="Añadir"><PlusIcon /></button>
-                <div className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] text-sm font-bold transition-all cursor-default">PC</div>
-                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-gray-900 text-gray-300 border-2 border-b-4 border-gray-950 border-b-gray-950 hover:bg-gray-800 active:border-b-2 active:mt-[2px] transition-all" aria-label="Añadir"><PlusIcon /></button>
-                <div className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-gray-900 text-gray-300 border-2 border-b-4 border-gray-950 border-b-gray-950 hover:bg-gray-800 text-sm font-bold transition-all cursor-default">PC</div>
-                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-transparent text-gray-300 hover:bg-gray-800 transition-all" aria-label="Añadir"><PlusIcon /></button>
-                <button className="w-[42px] h-[42px] rounded-xl flex items-center justify-center bg-transparent text-gray-300 text-sm font-bold hover:bg-gray-800 transition-all">PC</button>
+                <IconButton variant="primary" aria-label="Añadir"><PlusIcon /></IconButton>
+                <IconButton as="div" variant="primary">PC</IconButton>
+                <IconButton variant="outline" aria-label="Añadir"><PlusIcon /></IconButton>
+                <IconButton as="div" variant="outline">PC</IconButton>
+                <IconButton variant="ghost" aria-label="Añadir"><PlusIcon /></IconButton>
+                <IconButton as="div" variant="ghost">PC</IconButton>
               </div>
-              <code className="text-[10px] text-gray-400 block mt-1 font-mono">42×42px · Primary · Outline · Ghost (sin contorno, hit zone + hover)</code>
+              <code className="text-[10px] text-gray-400 block mt-1 font-mono">42×42px · Primary · Outline · Ghost</code>
             </Block>
 
-            <Block title="Tipografía" code="Darker Grotesque · tamaños en rem" labelClass="text-gray-400">
+            {/* Tipografía — real components */}
+            <Block title="Tipografía" code="<Typography level=... />" labelClass="text-gray-400">
               <div className="space-y-3">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Título · <code className="font-mono">text-2xl (1.5rem)</code></p>
-                  <p className="font-extrabold tracking-tight text-white leading-tight normal-case" style={{ fontSize: '1.5rem' }}>curso personalizado para tu proyecto</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Título · text-2xl</p>
+                  <Title>curso personalizado para tu proyecto</Title>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Subtítulo · <code className="font-mono">text-lg (1.125rem)</code></p>
-                  <p className="font-bold tracking-wide text-gray-300 normal-case" style={{ fontSize: '1.125rem' }}>Videos a medida con IA</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Subtítulo · text-lg</p>
+                  <Subtitle>Videos a medida con IA</Subtitle>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Headline · <code className="font-mono">text-sm (0.875rem)</code></p>
-                  <p className="font-bold uppercase tracking-wider text-gray-300" style={{ fontSize: '0.875rem' }}>Sección</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Headline · text-sm</p>
+                  <Headline>Sección</Headline>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Body · <code className="font-mono">text-base (1rem)</code></p>
-                  <p className="text-gray-300" style={{ fontSize: '1rem' }}>Texto de párrafo normal.</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Body · text-base</p>
+                  <Body>Texto de párrafo normal.</Body>
                 </div>
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Caption · <code className="font-mono">text-xs (0.75rem)</code></p>
-                  <p className="text-gray-400" style={{ fontSize: '0.75rem' }}>Texto secundario o pie.</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Caption · text-xs</p>
+                  <Caption>Texto secundario o pie.</Caption>
                 </div>
               </div>
               <p className="text-[10px] text-gray-400 mt-2 border-t border-gray-700 pt-2">Regla: títulos y subtítulos en minúsculas, salvo nombre de usuario.</p>
             </Block>
 
-            <Block title="Cards · Neutral / Primary / Completado" code="border-2 border-b-4 · rounded-2xl" labelClass="text-gray-400">
+            {/* Cards — real components */}
+            <Block title="Cards · Neutral / Primary / Completado" code="<Card variant=... />" labelClass="text-gray-400">
               <div className="flex flex-wrap gap-3">
-                <div className="w-36 rounded-2xl p-4 border-2 border-b-4 border-gray-950 border-b-gray-950 bg-gray-900 hover:bg-gray-800 active:border-b-2 active:mt-[2px] transition-all">
+                <Card variant="neutral" interactive className="w-36">
                   <p className="text-sm font-bold text-white">Neutral</p>
                   <p className="text-[10px] text-gray-400 mt-0.5">gray-950 · fondo</p>
-                </div>
-                <div className="w-36 rounded-2xl p-4 border-2 border-b-4 border-[#0E5FCC] bg-[#1472FF] text-white hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all">
+                </Card>
+                <Card variant="primary" interactive className="w-36">
                   <p className="text-sm font-bold">Primary</p>
                   <p className="text-[10px] text-white/80 mt-0.5">#1472FF</p>
-                </div>
-                <div className="w-36 rounded-2xl p-4 border-2 border-b-4 border-[#16a34a] bg-[#22c55e] text-white active:border-b-2 active:mt-[2px] transition-all">
+                </Card>
+                <Card variant="completado" className="w-36">
                   <p className="text-sm font-bold">Completado</p>
                   <p className="text-[10px] text-white/80 mt-0.5">#22c55e</p>
-                </div>
+                </Card>
               </div>
             </Block>
 
-            <Block title="Input · Textarea" code="border-gray-950 · bg-gray-900 · placeholder-gray-500" labelClass="text-gray-400">
+            {/* CardFlat */}
+            <Block title="Card Flat (sin profundidad)" code="<CardFlat />" labelClass="text-gray-400">
+              <CardFlat className="p-4 max-w-xs">
+                <p className="text-sm font-bold text-white">CardFlat</p>
+                <p className="text-[10px] text-gray-400 mt-0.5">Solo border-2, sin border-b-4</p>
+              </CardFlat>
+            </Block>
+
+            {/* Input — real components */}
+            <Block title="Input · Textarea · SearchInput" code="<Input /> <Textarea /> <SearchInput />" labelClass="text-gray-400">
               <div className="space-y-3 max-w-xs">
-                <input type="text" placeholder="Placeholder" className="w-full px-4 py-3 rounded-xl border-2 border-gray-950 border-b-4 border-b-gray-950 bg-gray-900 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all text-sm" />
-                <textarea rows={2} placeholder="Placeholder" className="w-full px-4 py-3 rounded-xl border-2 border-gray-950 border-b-4 border-b-gray-950 bg-gray-900 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all resize-none text-sm" />
+                <Input placeholder="Input placeholder" />
+                <Textarea rows={2} placeholder="Textarea placeholder" />
+                <SearchInput placeholder="Buscar..." />
               </div>
             </Block>
 
+            {/* Divider — real component */}
+            <Block title="Divisor" code="<Divider />" labelClass="text-gray-400">
+              <Divider />
+              <div className="mt-3">
+                <Divider title="Sección" />
+              </div>
+            </Block>
+
+            {/* ProgressBar — real component */}
+            <Block title="ProgressBar" code="<ProgressBar value={...} />" labelClass="text-gray-400">
+              <div className="space-y-3 max-w-xs">
+                <ProgressBar value={65} />
+                <ProgressBar value={40} size="lg" color="green" />
+                <ProgressBar value={80} size="sm" color="primary" />
+              </div>
+            </Block>
+
+            {/* StatCard — real component */}
+            <Block title="StatCard" code="<StatCard icon=... value=... label=... />" labelClass="text-gray-400">
+              <div className="grid grid-cols-2 gap-3 max-w-xs">
+                <StatCard icon="🔥" value={5} label="Racha Días" color="orange" />
+                <StatCard icon="⭐" value={3} label="Nivel" color="blue" />
+              </div>
+            </Block>
+
+            {/* Tag — real component */}
+            <Block title="Tag" code="<Tag variant=... />" labelClass="text-gray-400">
+              <div className="flex flex-wrap gap-2">
+                <Tag variant="primary">Primary</Tag>
+                <Tag variant="outline">Outline</Tag>
+                <Tag variant="success">Success</Tag>
+                <Tag variant="warning">Warning</Tag>
+                <Tag variant="neutral">Neutral</Tag>
+              </div>
+            </Block>
+
+            {/* Spinner — real component */}
+            <Block title="Spinner" code="<Spinner /> <Spinner size='lg' />" labelClass="text-gray-400">
+              <div className="flex items-center gap-4">
+                <Spinner size="sm" />
+                <Spinner size="md" />
+                <Spinner size="lg" />
+              </div>
+            </Block>
+
+            {/* SectionHeader — real component */}
+            <Block title="SectionHeader" code="<SectionHeader title=... subtitle=... />" labelClass="text-gray-400">
+              <SectionHeader
+                title="retos"
+                subtitle="Practica lo que aprendes"
+                action={<Button variant="primary" size="sm">Nuevo</Button>}
+              />
+            </Block>
+
+            {/* Espaciado */}
             <Block title="Espaciado" code="p-4 · px-6 py-4 · gap-3 · space-y-4" labelClass="text-gray-400">
               <div className="flex flex-wrap items-end gap-2">
                 {[1, 2, 3, 4, 6, 8, 10, 12].map((n) => (
@@ -351,15 +520,20 @@ export default function ComponentesPage() {
               </div>
               <p className="text-xs text-gray-400 mt-2">Radios: rounded-xl (0.75rem), rounded-2xl (1rem)</p>
             </Block>
-
-            <Block title="Divisor" code="h-[2px] · bg-gray-600 · sin caja" labelClass="text-gray-400">
-              <div className="flex items-center gap-4">
-                <div className="flex-1 h-[2px] bg-gray-600 rounded-full" />
-                <span className="text-sm font-bold text-white uppercase tracking-wider whitespace-nowrap">Sección</span>
-                <div className="flex-1 h-[2px] bg-gray-600 rounded-full" />
-              </div>
-            </Block>
           </div>
+        </div>
+
+        {/* ─── EMPTY STATE (full-width section) ─── */}
+        <div className="mt-8 space-y-6">
+          <h2 className="text-lg font-extrabold uppercase tracking-tight text-[#4b4b4b] dark:text-white">
+            Empty State
+          </h2>
+          <EmptyState
+            icon={<LightningIcon />}
+            title="Aún no tienes retos"
+            description="Los retos se generan automáticamente al crear tu curso personalizado."
+            action={<Button variant="primary">Crear mi curso</Button>}
+          />
         </div>
       </main>
     </div>

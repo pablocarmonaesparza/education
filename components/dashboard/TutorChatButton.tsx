@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import Button from '@/components/shared/Button';
+import { Button } from '@/components/ui';
 
 interface Message {
   id: string;
