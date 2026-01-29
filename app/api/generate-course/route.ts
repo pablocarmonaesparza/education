@@ -93,13 +93,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const N8N_WEBHOOK_URL = process.env.NEXT_PUBLIC_N8N_WEBHOOK_URL;
+    const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL;
 
     if (!N8N_WEBHOOK_URL || N8N_WEBHOOK_URL.includes('tu-webhook-n8n.com')) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Webhook not configured. Please set NEXT_PUBLIC_N8N_WEBHOOK_URL in .env.local'
+          error: 'Webhook not configured. Please set N8N_WEBHOOK_URL in .env.local'
         },
         { status: 500 }
       );
