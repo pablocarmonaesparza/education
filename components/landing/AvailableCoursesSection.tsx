@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { Button } from "@/components/ui";
 
 const courseTypes = [
   { 
@@ -478,15 +479,19 @@ export default function AvailableCoursesSection() {
               </div>
 
               {/* CTA */}
-              <Link
+              <Button
                 href="/auth/signup"
-                className="w-full px-6 py-3 rounded-2xl font-bold uppercase tracking-wide transition-all duration-150 inline-flex items-center justify-center gap-2 bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1"
+                variant="primary"
+                depth="bottom"
+                size="none"
+                rounded2xl
+                className="w-full px-6 py-3 inline-flex items-center justify-center gap-2"
               >
                 Crear mi curso personalizado
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
-              </Link>
+              </Button>
             </motion.div>
           </motion.div>
         )}

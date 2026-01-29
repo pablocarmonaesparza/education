@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import OnboardingNavbar from '@/components/onboarding/OnboardingNavbar';
 import { createClient } from '@/lib/supabase/client';
+import { Spinner } from '@/components/ui';
 
 const steps = [
   {
@@ -75,7 +76,7 @@ export default function OnboardingPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
+        <Spinner />
       </div>
     );
   }

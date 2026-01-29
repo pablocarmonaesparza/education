@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { SpinnerPage, SectionHeader, EmptyState, Button, ProgressBar } from '@/components/ui';
 
 interface Exercise {
   number: number;
@@ -186,44 +187,29 @@ export default function RetosPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="h-[calc(100vh-10rem)] md:h-[calc(100vh-11rem)] bg-transparent flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <SpinnerPage />;
   }
 
   if (!hasExercises) {
     return (
       <div className="min-h-full bg-transparent">
         <div className="container mx-auto px-4 py-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">retos</h1>
-            <p className="mt-2 text-gray-500 dark:text-gray-400">Practica lo que aprendes</p>
-          </div>
+          <SectionHeader title="retos" subtitle="Practica lo que aprendes" />
 
-          <div className="max-w-2xl mx-auto mt-16">
-            <div className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/50 dark:to-gray-900 rounded-2xl border border-blue-100 dark:border-blue-900 p-12 text-center">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] flex items-center justify-center">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
-                Aún no tienes retos
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-6">
-                Los retos se generan automáticamente cuando creas tu curso personalizado. 
-                Son ejercicios prácticos diseñados específicamente para tu proyecto.
-              </p>
-              <button
-                onClick={() => router.push('/intake')}
-                className="px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all"
-              >
+          <EmptyState
+            icon={
+              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            }
+            title="Aún no tienes retos"
+            description="Los retos se generan automáticamente cuando creas tu curso personalizado. Son ejercicios prácticos diseñados específicamente para tu proyecto."
+            action={
+              <Button variant="primary" onClick={() => router.push('/intake')}>
                 Crear mi curso
-              </button>
-            </div>
-          </div>
+              </Button>
+            }
+          />
         </div>
       </div>
     );
@@ -247,12 +233,7 @@ export default function RetosPage() {
             </p>
             {/* Progress */}
             <div className="flex items-center gap-2">
-              <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-[#1472FF] transition-all duration-500"
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
+              <ProgressBar value={progressPercent} size="md" color="primary" className="flex-1" />
               <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
                 {completedCount}/{totalCount}
               </span>

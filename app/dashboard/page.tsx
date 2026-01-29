@@ -4,8 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import LessonItem from '@/components/dashboard/LessonItem';
-import IconButton from '@/components/shared/IconButton';
-import Button from '@/components/shared/Button';
+import { IconButton, Button, Divider, Spinner } from '@/components/ui';
 
 const greetings = [
   "Hola",
@@ -501,7 +500,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
+        <Spinner />
       </div>
     );
   }
@@ -661,12 +660,8 @@ export default function DashboardPage() {
               >
                 {/* Phase Divider and Title: ----- SECTION ----- (sin caja alrededor) */}
                 <div className="mb-4 sm:mb-6">
-                  <div className="flex items-center justify-center gap-2 sm:gap-4 w-[95%] sm:w-[80%] mx-auto">
-                    <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-600 rounded-full" />
-                    <h2 className="text-xs sm:text-sm font-bold text-gray-500 dark:text-white tracking-wider uppercase whitespace-nowrap">
-                      {phaseData.phaseName}
-                    </h2>
-                    <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-600 rounded-full" />
+                  <div className="w-[95%] sm:w-[80%] mx-auto">
+                    <Divider title={phaseData.phaseName} />
                   </div>
                 </div>
                 

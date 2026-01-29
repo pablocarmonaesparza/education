@@ -8,6 +8,7 @@ import React from 'react';
    Focus: ring-2 ring-[#1472FF]/20 border-[#1472FF]
    ─────────────────────────────────────────────────────────── */
 
+/* — Variant: default (depth borders, rounded-xl, py-3, text-sm) — */
 const sharedBase =
   'w-full px-4 py-3 rounded-xl text-sm transition-all ' +
   'focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF]';
@@ -22,10 +23,26 @@ const darkMode =
 
 const inputBase = `${sharedBase} ${lightMode} ${darkMode}`;
 
+/* — Variant: flat (no depth, rounded-2xl, py-4, auth-style) — */
+const inputFlat =
+  'w-full px-4 py-4 rounded-2xl transition-all ' +
+  'focus:outline-none ' +
+  'border-2 border-gray-200 dark:border-gray-950 ' +
+  'bg-white dark:bg-gray-900 text-gray-900 dark:text-white ' +
+  'placeholder-gray-400 dark:placeholder-gray-500';
+
+export type InputVariant = 'default' | 'flat';
+
 /* ── Input ── */
 
 export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'className'> {
+  /**
+   * Visual variant.
+   * - `'default'` — depth border (border-b-4), rounded-xl, py-3, text-sm
+   * - `'flat'`    — no depth border, rounded-2xl, py-4 (auth pages)
+   */
+  variant?: InputVariant;
   className?: string;
 }
 
@@ -35,10 +52,12 @@ export interface InputProps
  * ```tsx
  * <Input placeholder="Tu nombre" />
  * <Input type="email" placeholder="correo@ejemplo.com" />
+ * <Input variant="flat" placeholder="Auth-style input" />
  * ```
  */
-export function Input({ className = '', ...rest }: InputProps) {
-  return <input className={`${inputBase} ${className}`} {...rest} />;
+export function Input({ variant = 'default', className = '', ...rest }: InputProps) {
+  const base = variant === 'flat' ? inputFlat : inputBase;
+  return <input className={`${base} ${className}`} {...rest} />;
 }
 
 /* ── Textarea ── */

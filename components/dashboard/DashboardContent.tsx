@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useSidebar } from '@/contexts/SidebarContext';
+import { Card, CardFlat, Tag, StatCard, ProgressBar, Button } from '@/components/ui';
 
 interface DashboardContentProps {
   userName: string;
@@ -111,9 +112,9 @@ export default function DashboardContent(props: DashboardContentProps) {
               <div className="p-6 sm:p-8">
                 <div className="flex items-start justify-between mb-6">
                   <div>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#1472FF]/10 text-[#1472FF] mb-3">
+                    <Tag variant="primary" className="text-xs font-bold mb-3">
                       Continuar donde lo dejaste
-                    </span>
+                    </Tag>
                     <h2 className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
                       {currentVideoData?.description || 'Siguiente lección'}
                     </h2>
@@ -179,9 +180,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                 <div className="flex flex-wrap gap-2">
                   {props.skills && props.skills.length > 0 ? (
                     props.skills.slice(0, 6).map((skill, i) => (
-                      <span key={i} className="px-3 py-1 bg-[#1472FF]/10 text-[#0E5FCC] rounded-full text-sm font-medium border border-[#1472FF]/20">
-                        {skill}
-                      </span>
+                      <Tag key={i} variant="primary">{skill}</Tag>
                     ))
                   ) : (
                     <p className="text-sm text-gray-500">Se definirán en tu ruta</p>
@@ -198,9 +197,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                 <div className="flex flex-wrap gap-2">
                   {props.tools && props.tools.length > 0 ? (
                     props.tools.slice(0, 6).map((tool, i) => (
-                      <span key={i} className="px-3 py-1 bg-[#1472FF]/10 text-[#0E5FCC] rounded-full text-sm font-medium border border-[#1472FF]/20">
-                        {tool}
-                      </span>
+                      <Tag key={i} variant="primary">{tool}</Tag>
                     ))
                   ) : (
                     <p className="text-sm text-gray-500">Se definirán en tu ruta</p>
@@ -224,12 +221,7 @@ export default function DashboardContent(props: DashboardContentProps) {
               </h3>
               
               <div className="relative pt-1 mb-6">
-                <div className="overflow-hidden h-3 mb-2 text-xs flex rounded-full bg-gray-100 dark:bg-gray-900">
-                  <div 
-                    style={{ width: `${props.overallProgress}%` }} 
-                    className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-[#1472FF] transition-all duration-1000 rounded-full"
-                  />
-                </div>
+                <ProgressBar value={props.overallProgress} size="lg" color="primary" className="mb-2" />
                 <div className="flex justify-between text-xs text-[#777777] dark:text-gray-400 font-medium">
                   <span>Inicio</span>
                   <span>Meta: 100%</span>
@@ -252,26 +244,10 @@ export default function DashboardContent(props: DashboardContentProps) {
             <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border-2 border-gray-200 dark:border-gray-950 shadow-sm">
               <h3 className="font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">tu actividad</h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 rounded-2xl bg-orange-50 dark:bg-orange-900/20 border-2 border-orange-200 dark:border-orange-800 text-center">
-                  <div className="text-2xl mb-1">🔥</div>
-                  <div className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white">{props.streak || 0}</div>
-                  <div className="text-xs text-[#777777] dark:text-gray-400 uppercase font-bold tracking-wide">Racha Días</div>
-                </div>
-                <div className="p-4 rounded-2xl bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800 text-center">
-                  <div className="text-2xl mb-1">🎯</div>
-                  <div className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white">{props.weeklyProgress || 0}</div>
-                  <div className="text-xs text-[#777777] dark:text-gray-400 uppercase font-bold tracking-wide">Videos Sem.</div>
-                </div>
-                <div className="p-4 rounded-2xl bg-[#1472FF]/10 border-2 border-[#1472FF]/30 text-center">
-                  <div className="text-2xl mb-1">⭐</div>
-                  <div className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white">{props.level || 1}</div>
-                  <div className="text-xs text-[#777777] dark:text-gray-400 uppercase font-bold tracking-wide">Nivel</div>
-                </div>
-                <div className="p-4 rounded-2xl bg-[#1472FF]/10 border-2 border-[#1472FF]/30 text-center">
-                  <div className="text-2xl mb-1">⚡</div>
-                  <div className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white">{props.currentXP || 0}</div>
-                  <div className="text-xs text-[#777777] dark:text-gray-400 uppercase font-bold tracking-wide">XP Total</div>
-                </div>
+                <StatCard icon="🔥" value={props.streak || 0} label="Racha Días" color="orange" />
+                <StatCard icon="🎯" value={props.weeklyProgress || 0} label="Videos Sem." color="green" />
+                <StatCard icon="⭐" value={props.level || 1} label="Nivel" color="blue" />
+                <StatCard icon="⚡" value={props.currentXP || 0} label="XP Total" color="blue" />
               </div>
             </div>
 

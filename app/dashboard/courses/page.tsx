@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { SectionHeader, SearchInput } from '@/components/ui';
 
 export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -118,37 +119,15 @@ export default function CoursesPage() {
   return (
     <div className="p-8 bg-white dark:bg-gray-900 min-h-screen">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">todos los cursos</h1>
-        <p className="text-[#777777] dark:text-gray-400">
-          Explora el catálogo completo de contenido disponible
-        </p>
-      </div>
+      <SectionHeader title="todos los cursos" subtitle="Explora el catálogo completo de contenido disponible" />
 
       {/* Search Bar */}
       <div className="mb-8">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Buscar por nombre, descripción o tema..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-6 py-4 pl-14 rounded-2xl border-2 border-gray-200 dark:border-gray-950 focus:border-[#1472FF] focus:ring-2 focus:ring-[#1472FF]/20 outline-none transition-all text-gray-900 dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400"
-          />
-          <svg
-            className="absolute left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </div>
+        <SearchInput
+          placeholder="Buscar por nombre, descripción o tema..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
 
       {/* Category Filters */}

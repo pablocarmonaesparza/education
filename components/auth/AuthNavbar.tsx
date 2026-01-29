@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { Button } from '@/components/ui';
 
 export default function AuthNavbar() {
   const pathname = usePathname();
@@ -57,25 +58,33 @@ export default function AuthNavbar() {
 
           {/* Auth Button - Show opposite page */}
           {isSignupPage ? (
-            <Link
+            <Button
               href="/auth/login"
-              className="px-7 py-3 rounded-2xl font-bold uppercase tracking-wide bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 inline-flex items-center gap-2"
+              variant="primary"
+              depth="bottom"
+              size="none"
+              rounded2xl
+              className="px-7 py-3 inline-flex items-center gap-2"
             >
               Iniciar Sesión
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
-            </Link>
+            </Button>
           ) : (
-            <Link
+            <Button
               href="/auth/signup"
-              className="px-7 py-3 rounded-2xl font-bold uppercase tracking-wide bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 inline-flex items-center gap-2"
+              variant="primary"
+              depth="bottom"
+              size="none"
+              rounded2xl
+              className="px-7 py-3 inline-flex items-center gap-2"
             >
               Comenzar
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
-            </Link>
+            </Button>
           )}
         </div>
       </div>
