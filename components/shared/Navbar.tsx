@@ -444,7 +444,7 @@ export default function Navbar() {
                   <Link
                     href="/auth/signup"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block py-3 px-4 text-center font-bold uppercase tracking-wide rounded-2xl transition-all bg-[#1472FF] border-b-4 border-[#0E5FCC] text-white hover:bg-[#1265e0]"
+                    className="block py-3 px-4 text-center font-bold uppercase tracking-wide rounded-2xl transition-all bg-[#1472FF] border-b-4 border-[#0E5FCC] text-white hover:bg-[#0E5FCC]"
                   >
                     Comenzar
                   </Link>

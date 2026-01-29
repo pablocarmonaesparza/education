@@ -137,7 +137,7 @@ export default function CourseCreationPage() {
                 <p className="text-[#777777] dark:text-gray-400 mb-6">{error}</p>
                 <button
                   onClick={() => router.push('/projectDescription')}
-                  className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150"
+                  className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150"
                 >
                   Intentar de nuevo
                 </button>

@@ -241,7 +241,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
           </p>
           <Link
             href="/dashboard/my-path"
-            className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all"
+            className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] transition-all"
           >
             Explorar mi ruta
           </Link>

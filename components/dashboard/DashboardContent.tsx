@@ -153,7 +153,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                 <div className="flex flex-wrap gap-4">
                   <Link
                     href={`/dashboard/my-path/video/${props.currentPhase || 1}/${props.currentVideo || 1}`}
-                    className="flex-1 sm:flex-none inline-flex justify-center items-center px-6 py-4 rounded-2xl text-base font-bold uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150"
+                    className="flex-1 sm:flex-none inline-flex justify-center items-center px-6 py-4 rounded-2xl text-base font-bold uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150"
                   >
                     <svg className="mr-2 -ml-1 w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
                     REPRODUCIR VIDEO

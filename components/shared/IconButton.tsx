@@ -7,7 +7,7 @@
 const base =
   'rounded-xl border-2 border-b-4 border-[#0E5FCC] bg-[#1472FF] text-white flex items-center justify-center text-sm font-bold transition-all duration-150 flex-shrink-0';
 const interactive =
-  'hover:bg-[#1265e0] active:border-b-2 active:mt-[2px]';
+  'hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px]';
 
 const sizes = {
   sm: 'w-[42px] h-[42px]',

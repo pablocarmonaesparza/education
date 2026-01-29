@@ -380,7 +380,7 @@ export default function ProjectContextPage() {
             <motion.button
               onClick={handleNext}
               whileTap={{ scale: 0.98 }}
-              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
+              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
             >
               {currentIndex === allQuestions.length - 1 ? 'Crear mi curso' : 'Siguiente'}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -142,7 +142,7 @@ export default function DashboardNavbar() {
             <div className="hidden md:flex items-center gap-3">
               {/* Upgrade Plan */}
               <button 
-                className="px-5 py-2.5 rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150"
+                className="px-5 py-2.5 rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150"
               >
                 Mejorar Plan
               </button>
@@ -318,7 +318,7 @@ export default function DashboardNavbar() {
 
           {/* Upgrade Plan Button (Mobile) */}
           <button 
-            className="w-full px-4 py-3 rounded-2xl font-bold uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center justify-center gap-2"
+            className="w-full px-4 py-3 rounded-2xl font-bold uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center justify-center gap-2"
           >
             Mejorar Plan
           </button>

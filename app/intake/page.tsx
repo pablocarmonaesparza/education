@@ -242,7 +242,7 @@ export default function IntakePage() {
               <button
                 onClick={handleCreateCourse}
                 disabled={!projectIdea.trim() || projectIdea.trim().length < 100}
-                className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0 flex items-center justify-center gap-2 min-h-[48px] touch-manipulation"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0 flex items-center justify-center gap-2 min-h-[48px] touch-manipulation"
               >
                 CREAR MI CURSO PERSONALIZADO
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

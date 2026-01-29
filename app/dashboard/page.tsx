@@ -6,6 +6,9 @@ import { createClient } from '@/lib/supabase/client';
 import LessonItem from '@/components/dashboard/LessonItem';
 import IconButton from '@/components/shared/IconButton';
 import Button from '@/components/shared/Button';
+import CompositeCard from '@/components/shared/CompositeCard';
+import HorizontalScroll from '@/components/shared/HorizontalScroll';
+import VerticalScroll from '@/components/shared/VerticalScroll';
 
 const greetings = [
   "Hola",
@@ -510,7 +513,7 @@ export default function DashboardPage() {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Main scrollable container - everything scrolls together */}
-      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden">
+      <VerticalScroll ref={scrollContainerRef} flex1>
         {/* Greeting - Animated visibility based on scroll position */}
         <div
           className={`overflow-hidden transition-all duration-300 ease-in-out ${
@@ -525,41 +528,37 @@ export default function DashboardPage() {
             )}
             {project && (
               <div className="flex justify-center px-2 sm:px-4 mt-4 mb-2">
-                {/* Project selector button */}
-                <div className="relative w-[95%] sm:w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-800 p-3 sm:p-4">
-                  {/* Leading chevron - disabled if first project */}
-                  <button
-                    disabled={true}
-                    className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 active:border-b-2 active:mt-[2px] transition-all duration-150"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-
-                  {/* Project text: overview por IA (2 líneas) o idea completa si no hay resumen */}
-                  <div className="pl-10 pr-12 sm:px-12 min-w-0 pointer-events-none">
-                    <p className="text-center text-xs sm:text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
-                      {projectSummary || project}
-                    </p>
-                    
-                    {/* Dots indicator */}
-                    <div className="flex justify-center gap-1.5 mt-1.5 sm:mt-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
-                    </div>
+                <CompositeCard
+                  className="w-[95%] sm:w-[80%] max-w-4xl"
+                  contentClassName="pointer-events-none"
+                  leading={
+                    <button
+                      disabled
+                      className="w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-700 text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 active:border-b-2 active:mt-[2px] transition-all duration-150"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                  }
+                  trailing={
+                    <IconButton
+                      aria-label="Añadir o ver proyecto"
+                      onClick={() => setShowCreateCourseModal(true)}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                    </IconButton>
+                  }
+                >
+                  <p className="text-center text-xs sm:text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
+                    {projectSummary || project}
+                  </p>
+                  <div className="flex justify-center gap-1.5 mt-1.5 sm:mt-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
                   </div>
-
-                  {/* Trailing + crear nuevo curso (después del texto para quedar encima y recibir clics) */}
-                  <IconButton
-                    className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-10"
-                    aria-label="Añadir o ver proyecto"
-                    onClick={() => setShowCreateCourseModal(true)}
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                    </svg>
-                  </IconButton>
-                </div>
+                </CompositeCard>
               </div>
             )}
           </div>
@@ -576,71 +575,57 @@ export default function DashboardPage() {
             >
               {project && (
                 <div className="flex justify-center px-2 sm:px-4">
-                  {/* Project selector button */}
-                  <div className="relative w-[95%] sm:w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-800 p-3 sm:p-4">
-                    {/* Leading chevron - disabled if first project */}
-                    <button
-                      disabled={true}
-                      className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 active:border-b-2 active:mt-[2px] transition-all duration-150"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                      </svg>
-                    </button>
-
-                    {/* Project text: overview por IA (2 líneas) o idea completa si no hay resumen */}
-                    <div className="pl-10 pr-12 sm:px-12 min-w-0 pointer-events-none">
-                      <p className="text-center text-xs sm:text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
-                        {projectSummary || project}
-                      </p>
-                      
-                      {/* Dots indicator */}
-                      <div className="flex justify-center gap-1.5 mt-1.5 sm:mt-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
-                      </div>
+                  <CompositeCard
+                    className="w-[95%] sm:w-[80%] max-w-4xl"
+                    contentClassName="pointer-events-none"
+                    leading={
+                      <button
+                        disabled
+                        className="w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-700 text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 active:border-b-2 active:mt-[2px] transition-all duration-150"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </button>
+                    }
+                    trailing={
+                      <IconButton
+                        aria-label="Añadir o ver proyecto"
+                        onClick={() => setShowCreateCourseModal(true)}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                        </svg>
+                      </IconButton>
+                    }
+                  >
+                    <p className="text-center text-xs sm:text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
+                      {projectSummary || project}
+                    </p>
+                    <div className="flex justify-center gap-1.5 mt-1.5 sm:mt-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
                     </div>
-
-                    {/* Trailing + crear nuevo curso (después del texto para quedar encima y recibir clics) */}
-                    <IconButton
-                      className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-10"
-                      aria-label="Añadir o ver proyecto"
-                      onClick={() => setShowCreateCourseModal(true)}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                    </IconButton>
-                  </div>
+                  </CompositeCard>
                 </div>
               )}
             </div>
 
-            <div className="relative">
-              {/* Gradient fade on edges */}
-              <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-12 z-10 pointer-events-none bg-gradient-to-r from-white dark:from-gray-900 to-transparent" />
-              <div className="absolute right-0 top-0 bottom-0 w-6 sm:w-12 z-10 pointer-events-none bg-gradient-to-l from-white dark:from-gray-900 to-transparent" />
-              
-              <div
-                ref={horizontalScrollRef}
-                className="flex gap-2 sm:gap-3 overflow-x-auto scrollbar-hide py-2 px-4 sm:px-12 min-w-0"
-                style={{ scrollBehavior: 'smooth' }}
-              >
-                {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
-                  <button
-                    key={phaseId}
-                    data-phase-id={phaseId}
-                    onClick={() => scrollToPhase(phaseId)}
-                    className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide transition-all duration-150 whitespace-nowrap ${
-                      activePhaseId === phaseId
-                        ? 'bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px]'
-                        : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-b-4 border-gray-200 dark:border-gray-950 hover:bg-gray-50 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px]'
-                    }`}
-                  >
-                    {phaseData.phaseName}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <HorizontalScroll ref={horizontalScrollRef} fadeEdges>
+              {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
+                <button
+                  key={phaseId}
+                  data-phase-id={phaseId}
+                  onClick={() => scrollToPhase(phaseId)}
+                  className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide transition-all duration-150 whitespace-nowrap ${
+                    activePhaseId === phaseId
+                      ? 'bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px]'
+                      : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-b-4 border-gray-200 dark:border-gray-950 hover:bg-gray-50 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px]'
+                  }`}
+                >
+                  {phaseData.phaseName}
+                </button>
+              ))}
+            </HorizontalScroll>
             {/* Gradient fade below - positioned absolute to not add space */}
             <div className="absolute left-0 right-0 bottom-0 h-6 bg-gradient-to-b from-white dark:from-gray-900 to-transparent pointer-events-none translate-y-full" />
           </div>
@@ -695,7 +680,7 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
-      </div>
+      </VerticalScroll>
 
       {/* Progress Bar - Fixed at bottom, 80% width of content area between sidebars */}
       {videos.length > 0 && (

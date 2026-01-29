@@ -1,14 +1,13 @@
 'use client';
 
 import Link from 'next/link';
+import { depthBase } from '@/lib/design-tokens';
 
 const baseCommon =
   'font-bold uppercase tracking-wide transition-all duration-150 ' +
   'disabled:opacity-50 disabled:cursor-not-allowed';
 
-const baseDepth =
-  baseCommon +
-  ' border-2 border-b-4 active:border-b-2 active:mt-[2px] disabled:active:border-b-4 disabled:active:mt-0';
+const baseDepth = baseCommon + ' ' + depthBase;
 
 const baseFlat = baseCommon;
 
@@ -17,19 +16,19 @@ const flatVariants = ['ghost', 'nav-inactive', 'icon-ghost'] as const;
 
 const variants = {
   primary:
-    'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#1265e0]',
+    'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#0E5FCC]',
   secondary:
-    'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 hover:bg-gray-50 dark:hover:bg-gray-700',
+    'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 hover:bg-gray-300 dark:hover:bg-gray-900',
   ghost:
     'bg-transparent text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
   outline:
-    'bg-white dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 hover:bg-gray-50 dark:hover:bg-gray-800',
+    'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 hover:bg-gray-300 dark:hover:bg-gray-900',
   'nav-active':
-    'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#1265e0]',
+    'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#0E5FCC]',
   'nav-inactive':
     'bg-transparent text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
   icon:
-    'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#1265e0] p-0 flex items-center justify-center',
+    'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#0E5FCC] p-0 flex items-center justify-center',
   'icon-ghost':
     'bg-transparent text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 p-0 flex items-center justify-center',
 } as const;
@@ -96,14 +95,13 @@ export default function Button({
   );
 }
 
-/** Canonical depth + active styles only (no bg/border colors). Use for custom UIs like LessonItem. */
-export const depthStyle =
-  'border-2 border-b-4 transition-all duration-150 active:border-b-2 active:mt-[2px]';
+/** Depth structure only (from design tokens). Use with color classes in LessonItem, cards, etc. */
+export { depthStructure as depthStyle } from '@/lib/design-tokens';
 
 /** Tailwind class for primary depth colors. */
 export const depthPrimary =
-  'bg-[#1472FF] border-[#0E5FCC] hover:bg-[#1265e0]';
+  'bg-[#1472FF] border-[#0E5FCC] hover:bg-[#0E5FCC]';
 
 /** Tailwind class for secondary depth colors. */
 export const depthSecondary =
-  'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-950 hover:bg-gray-50 dark:hover:bg-gray-700';
+  'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-900 hover:bg-gray-300 dark:hover:bg-gray-900';

@@ -218,7 +218,7 @@ export default function RetosPage() {
               </p>
               <button
                 onClick={() => router.push('/intake')}
-                className="px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all"
+                className="px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] transition-all"
               >
                 Crear mi curso
               </button>

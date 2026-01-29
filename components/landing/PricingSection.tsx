@@ -157,7 +157,7 @@ export default function PricingSection() {
                 onClick={handleSelectPlan}
                 className={`w-full py-4 rounded-2xl font-bold text-sm md:text-base uppercase tracking-wide transition-all duration-150 mt-auto ${
                   tier.popular
-                    ? "bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1"
+                    ? "bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1"
                     : "bg-white dark:bg-gray-900 text-[#1472FF] border-2 border-b-4 border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10 active:border-b-2 active:mt-[2px]"
                 }`}
               >

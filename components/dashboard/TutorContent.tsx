@@ -394,7 +394,7 @@ ${completedVideosText}
             <h2 className="text-lg font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">tutor ia</h2>
             <button
               onClick={createNewConversation}
-              className="p-2 rounded-2xl bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150"
+              className="p-2 rounded-2xl bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150"
               title="Nueva conversación"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -557,7 +557,7 @@ ${completedVideosText}
             <button
               onClick={sendMessage}
               disabled={!inputMessage.trim() || isSending}
-              className="p-4 bg-[#1472FF] text-white rounded-2xl border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0"
+              className="p-4 bg-[#1472FF] text-white rounded-2xl border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

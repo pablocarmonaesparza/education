@@ -192,7 +192,7 @@ export default function PerfilPage() {
                   <button
                     onClick={handleSaveName}
                     disabled={isSaving}
-                    className="px-4 py-2 rounded-xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] disabled:opacity-50 disabled:active:border-b-4 disabled:active:mt-0 transition-all"
+                    className="px-4 py-2 rounded-xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] disabled:opacity-50 disabled:active:border-b-4 disabled:active:mt-0 transition-all"
                   >
                     {isSaving ? 'Guardando...' : 'Guardar'}
                   </button>
@@ -247,7 +247,7 @@ export default function PerfilPage() {
                 <p className="font-medium text-gray-900 dark:text-white">Plan actual</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">Plan {getTierName(profile.tier)}</p>
               </div>
-              <button className="px-4 py-2 rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150">
+              <button className="px-4 py-2 rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150">
                 Mejorar Plan
               </button>
             </div>

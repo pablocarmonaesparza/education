@@ -28,8 +28,20 @@ export default function TutorChatButton() {
   const [width, setWidth] = useState(DEFAULT_WIDTH);
   const [isResizing, setIsResizing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
   const asideRef = useRef<HTMLAsideElement>(null);
+
+  const LINE_HEIGHT = 24;
+  const MAX_LINES = 5;
+
+  const adjustTextareaHeight = useCallback(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    const h = Math.min(el.scrollHeight, MAX_LINES * LINE_HEIGHT);
+    el.style.height = `${h}px`;
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -40,10 +52,12 @@ export default function TutorChatButton() {
   }, [messages]);
 
   useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    textareaRef.current?.focus();
   }, []);
+
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [input, adjustTextareaHeight]);
 
   // Update CSS variable for layout
   useEffect(() => {
@@ -185,8 +199,8 @@ export default function TutorChatButton() {
               <div
                 className={`px-4 py-3 rounded-2xl border-2 border-b-4 ${
                   message.role === 'user'
-                    ? 'bg-[#1472FF] text-white border-[#0E5FCC] border-b-[#0E5FCC]'
-                    : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950'
+                    ? 'bg-gray-300 dark:bg-gray-900 text-[#4b4b4b] dark:text-white border-[#aeb3bb] dark:border-gray-900 border-b-[#aeb3bb] dark:border-b-gray-900'
+                    : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900'
                 }`}
               >
                 <p className="text-sm leading-relaxed">{message.content}</p>
@@ -198,7 +212,7 @@ export default function TutorChatButton() {
         {isLoading && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
-              <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950">
+              <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900">
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                   <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -211,17 +225,23 @@ export default function TutorChatButton() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input - Elegant with subtle shadow */}
+      {/* Input - textarea crece hasta 5 líneas */}
       <div className="px-6 py-4 bg-white dark:bg-gray-900 flex-shrink-0">
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form ref={formRef} onSubmit={handleSubmit} className="space-y-3">
           <div className="relative">
-            <input
-              ref={inputRef}
-              type="text"
+            <textarea
+              ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  formRef.current?.requestSubmit();
+                }
+              }}
               placeholder="Escribe tu mensaje..."
-              className="w-full px-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-950 rounded-xl text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all shadow-sm"
+              rows={1}
+              className="w-full min-h-[3rem] max-h-[7.5rem] px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-900 border-b-4 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all resize-none overflow-y-auto"
             />
           </div>
           <Button
