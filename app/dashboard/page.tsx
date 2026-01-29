@@ -659,9 +659,9 @@ export default function DashboardPage() {
                   if (el) phaseSectionsRef.current.set(phaseId, el);
                 }}
               >
-                {/* Phase Divider and Title: ----- SECTION ----- */}
+                {/* Phase Divider and Title: ----- SECTION ----- (sin caja alrededor) */}
                 <div className="mb-4 sm:mb-6">
-                  <div className="flex items-center justify-center gap-2 sm:gap-4 w-[95%] sm:w-[80%] mx-auto px-3 py-2 rounded-xl bg-gray-100 dark:bg-gray-800 border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950">
+                  <div className="flex items-center justify-center gap-2 sm:gap-4 w-[95%] sm:w-[80%] mx-auto">
                     <div className="flex-1 h-[2px] bg-gray-300 dark:bg-gray-600 rounded-full" />
                     <h2 className="text-xs sm:text-sm font-bold text-gray-500 dark:text-white tracking-wider uppercase whitespace-nowrap">
                       {phaseData.phaseName}
