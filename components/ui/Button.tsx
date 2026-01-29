@@ -12,10 +12,15 @@ const baseCommon =
   'font-bold uppercase tracking-wide transition-all duration-150 ' +
   'disabled:opacity-50 disabled:cursor-not-allowed';
 
-/** Depth variants get the 3-D border treatment. */
-const baseDepth =
+/** Full depth variants get the 3-D border treatment on all sides. */
+const baseDepthFull =
   baseCommon +
   ' border-2 border-b-4 active:border-b-2 active:mt-[2px] disabled:active:border-b-4 disabled:active:mt-0';
+
+/** Bottom-only depth: only the bottom border is visible (landing-page style). */
+const baseDepthBottom =
+  baseCommon +
+  ' border-b-4 active:border-b-0 active:mt-1 disabled:border-b-4 disabled:mt-0';
 
 /** Flat variants have no visible border. */
 const baseFlat = baseCommon;
@@ -77,15 +82,26 @@ const sizeStyles = {
   md: 'px-4 py-3 text-sm',
   lg: 'px-6 py-3 text-sm',
   xl: 'px-6 py-4 text-base',
+  /** No size classes — consumer provides sizing via className. */
+  none: '',
 } as const;
 
 export type ButtonVariant = keyof typeof variantStyles;
 export type ButtonSize = keyof typeof sizeStyles;
+export type ButtonDepth = 'full' | 'bottom';
 
 export interface ButtonProps
   extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  /**
+   * Depth border style for depth variants.
+   * - `'full'`   (default) — border-2 border-b-4  (all-sides depth)
+   * - `'bottom'` — border-b-4 only (landing-page style, bigger press)
+   *
+   * Ignored for flat variants (ghost, nav-inactive, danger).
+   */
+  depth?: ButtonDepth;
   /** Render as Next.js Link when provided. */
   href?: string;
   /** Use rounded-2xl instead of default rounded-xl. */
@@ -106,6 +122,7 @@ export interface ButtonProps
 export default function Button({
   variant = 'primary',
   size = 'md',
+  depth,
   href,
   rounded2xl = false,
   className = '',
@@ -113,10 +130,17 @@ export default function Button({
   children,
   ...rest
 }: ButtonProps) {
-  const useDepth = depthVariants.has(variant);
+  const isDepthVariant = depthVariants.has(variant);
+  const effectiveDepth = depth ?? 'full';
+
+  const base = !isDepthVariant
+    ? baseFlat
+    : effectiveDepth === 'bottom'
+      ? baseDepthBottom
+      : baseDepthFull;
 
   const cls = [
-    useDepth ? baseDepth : baseFlat,
+    base,
     rounded2xl ? 'rounded-2xl' : 'rounded-xl',
     variantStyles[variant],
     sizeStyles[size],
@@ -162,3 +186,7 @@ export const depthPrimaryColors =
 /** Outline depth color classes only. */
 export const depthOutlineColors =
   'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 hover:bg-gray-50 dark:hover:bg-gray-800';
+
+/** Bottom-only depth border classes (landing-page style). */
+export const depthBottomClasses =
+  'border-b-4 transition-all duration-150 active:border-b-0 active:mt-1';

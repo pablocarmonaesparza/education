@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import AuthNavbar from '@/components/auth/AuthNavbar';
 import { createClient } from '@/lib/supabase/client';
+import { Button, Input } from '@/components/ui';
 
 function LoginContent() {
   const [email, setEmail] = useState<string>('');
@@ -216,33 +217,37 @@ function LoginContent() {
 
             {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-              <input
+              <Input
                 type="email"
                 id="email"
-                className="w-full px-4 py-4 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-950 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
+                variant="flat"
                 placeholder="Correo electrónico"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
 
-              <input
+              <Input
                 type="password"
                 id="password"
-                className="w-full px-4 py-4 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-950 rounded-2xl focus:outline-none transition-all placeholder:text-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white"
+                variant="flat"
                 placeholder="Contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
 
-              <button
+              <Button
                 type="submit"
+                variant="primary"
+                depth="bottom"
+                size="none"
+                rounded2xl
                 disabled={loading}
-                className="w-full py-4 rounded-2xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0"
+                className="w-full py-4 text-sm"
               >
                 {loading ? 'Iniciando sesión...' : 'INICIAR SESIÓN'}
-              </button>
+              </Button>
             </form>
 
             {/* Divider */}

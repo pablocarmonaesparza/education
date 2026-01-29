@@ -4,8 +4,8 @@
    ─────────────────────────────────────────────────────────── */
 
 // Button
-export { default as Button, depthClasses, depthPrimaryColors, depthOutlineColors } from './Button';
-export type { ButtonProps, ButtonVariant, ButtonSize } from './Button';
+export { default as Button, depthClasses, depthPrimaryColors, depthOutlineColors, depthBottomClasses } from './Button';
+export type { ButtonProps, ButtonVariant, ButtonSize, ButtonDepth } from './Button';
 
 // IconButton
 export { default as IconButton } from './IconButton';
@@ -17,7 +17,7 @@ export type { CardProps, CardVariant } from './Card';
 
 // Input
 export { Input, Textarea, SearchInput } from './Input';
-export type { InputProps, TextareaProps, SearchInputProps } from './Input';
+export type { InputProps, InputVariant, TextareaProps, SearchInputProps } from './Input';
 
 // Divider
 export { default as Divider } from './Divider';
