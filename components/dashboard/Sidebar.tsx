@@ -135,18 +135,16 @@ export default function Sidebar() {
             priority
           />
         </Link>
-          <Button
-            variant="outline"
-            size="icon"
-            rounded2xl={false}
+          <button
+            type="button"
             onClick={closeDrawer}
-            className="md:hidden"
+            className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all"
             aria-label="Cerrar menú"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </Button>
+          </button>
         </div>
 
       {/* Navigation */}
@@ -207,7 +205,7 @@ export default function Sidebar() {
                 className="fixed inset-0 z-10" 
                 onClick={() => setShowProfileMenu(false)} 
               />
-              <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-gray-900 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 py-2 z-20">
+              <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-600 py-2 z-20 shadow-lg">
                 <Link
                   href="/dashboard/perfil"
                   onClick={() => { setShowProfileMenu(false); closeDrawer(); }}

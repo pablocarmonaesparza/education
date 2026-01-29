@@ -528,17 +528,14 @@ export default function DashboardPage() {
                 {/* Project selector button */}
                 <div className="relative w-[95%] sm:w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-800 p-3 sm:p-4">
                   {/* Leading chevron - disabled if first project */}
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    rounded2xl={false}
-                    disabled
-                    className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-10 opacity-50 cursor-not-allowed"
+                  <button
+                    disabled={true}
+                    className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 active:border-b-2 active:mt-[2px] transition-all duration-150"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
-                  </Button>
+                  </button>
 
                   {/* Project text: overview por IA (2 líneas) o idea completa si no hay resumen */}
                   <div className="pl-10 pr-12 sm:px-12 min-w-0 pointer-events-none">
@@ -582,17 +579,14 @@ export default function DashboardPage() {
                   {/* Project selector button */}
                   <div className="relative w-[95%] sm:w-[80%] max-w-4xl rounded-2xl border-2 border-gray-200 dark:border-gray-950 border-b-4 border-b-gray-300 dark:border-b-gray-950 bg-white dark:bg-gray-800 p-3 sm:p-4">
                     {/* Leading chevron - disabled if first project */}
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      rounded2xl={false}
-                      disabled
-                      className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-10 opacity-50 cursor-not-allowed"
+                    <button
+                      disabled={true}
+                      className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-400 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-200 dark:hover:bg-gray-600 active:border-b-2 active:mt-[2px] transition-all duration-150"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
-                    </Button>
+                    </button>
 
                     {/* Project text: overview por IA (2 líneas) o idea completa si no hay resumen */}
                     <div className="pl-10 pr-12 sm:px-12 min-w-0 pointer-events-none">
@@ -632,16 +626,18 @@ export default function DashboardPage() {
                 style={{ scrollBehavior: 'smooth' }}
               >
                 {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
-                  <Button
+                  <button
                     key={phaseId}
-                    variant={activePhaseId === phaseId ? 'primary' : 'secondary'}
-                    size="sm"
-                    rounded2xl={false}
+                    data-phase-id={phaseId}
                     onClick={() => scrollToPhase(phaseId)}
-                    className="flex-shrink-0 whitespace-nowrap"
+                    className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide transition-all duration-150 whitespace-nowrap ${
+                      activePhaseId === phaseId
+                        ? 'bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#1265e0] active:border-b-2 active:mt-[2px]'
+                        : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-b-4 border-gray-200 dark:border-gray-950 hover:bg-gray-50 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px]'
+                    }`}
                   >
                     {phaseData.phaseName}
-                  </Button>
+                  </button>
                 ))}
               </div>
             </div>
@@ -756,18 +752,15 @@ export default function DashboardPage() {
           >
             {/* Close Button */}
             <div className="flex justify-end mb-6">
-              <Button
-                variant="outline"
-                size="md"
-                rounded2xl
+              <button
                 onClick={handleCloseVideo}
-                className="flex items-center gap-2"
+                className="px-5 py-2.5 rounded-2xl font-bold uppercase tracking-wide text-sm bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white border-2 border-b-4 border-gray-200 dark:border-gray-950 hover:bg-gray-50 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150 flex items-center gap-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
                 Cerrar
-              </Button>
+              </button>
             </div>
 
             {/* Video Info */}
@@ -831,18 +824,15 @@ export default function DashboardPage() {
           >
             {/* Header — estilo proyecto, sin línea ni subtítulo */}
             <div className="relative px-4 sm:px-6 py-4">
-              <Button
-                variant="outline"
-                size="icon"
-                rounded2xl={false}
+              <button
                 onClick={() => setShowCreateCourseModal(false)}
-                className="absolute top-4 right-4"
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-950 bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all"
                 aria-label="Cerrar"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-              </Button>
+              </button>
               <h2 className="text-xl font-extrabold uppercase tracking-tight leading-tight text-[#4b4b4b] dark:text-white pr-10">
                 Curso personalizado para tu proyecto
               </h2>
@@ -874,8 +864,7 @@ export default function DashboardPage() {
                 <Button
                   variant="primary"
                   size="lg"
-                  rounded2xl
-                  className="w-full justify-center"
+                  className="w-full justify-center rounded-2xl"
                   onClick={() => {
                     setShowCreateCourseModal(false);
                     router.push('/intake');
@@ -883,15 +872,13 @@ export default function DashboardPage() {
                 >
                   Crear mi curso
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="md"
-                  rounded2xl={false}
+                <button
+                  type="button"
                   onClick={() => setShowCreateCourseModal(false)}
-                  className="text-sm text-[#777777] dark:text-gray-400 hover:text-[#4b4b4b] dark:hover:text-gray-300 w-full justify-center"
+                  className="text-sm text-[#777777] dark:text-gray-400 hover:text-[#4b4b4b] dark:hover:text-gray-300 transition-colors"
                 >
                   Ahora no, gracias
-                </Button>
+                </button>
               </div>
             </div>
           </div>
