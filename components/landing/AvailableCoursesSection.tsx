@@ -2,8 +2,8 @@
 
 import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
-import { Button } from "@/components/ui";
+import Button from "@/components/ui/Button";
+import Tag from "@/components/ui/Tag";
 
 const courseTypes = [
   { 
@@ -383,9 +383,13 @@ export default function AvailableCoursesSection() {
           viewport={{ once: true }}
           className="mt-10 mb-16 flex justify-center"
         >
-          <Link
+          <Button
+            variant="outline"
+            depth="bottom"
+            size="none"
+            rounded2xl
             href="/auth/signup"
-            className="px-10 py-4 rounded-2xl font-bold uppercase tracking-wide transition-all duration-150 inline-flex items-center gap-2 bg-white text-[#1472FF] border-b-4 border-gray-300 hover:bg-gray-100 active:border-b-0 active:mt-1"
+            className="px-10 py-4 inline-flex items-center gap-2 text-[#1472FF] bg-white border-b-gray-300 hover:bg-gray-100"
           >
             Comenzar
             <svg
@@ -401,7 +405,7 @@ export default function AvailableCoursesSection() {
                 d="M13 7l5 5m0 0l-5 5m5-5H6"
               />
             </svg>
-          </Link>
+          </Button>
         </motion.div>
       </div>
 
@@ -421,7 +425,7 @@ export default function AvailableCoursesSection() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="relative w-full max-w-lg bg-[#0a1e3d] rounded-2xl p-6 md:p-8 border-2 border-[#1472FF]/30 border-b-4 border-[#0E5FCC]"
+              className="relative w-full max-w-lg bg-[#0a1e3d] rounded-2xl p-6 md:p-8 border-2 border-b-4 border-[#1472FF]/30 border-b-[#0E5FCC]"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}
@@ -452,12 +456,13 @@ export default function AvailableCoursesSection() {
               {/* Topics */}
               <div className="flex flex-wrap gap-2 mb-6">
                 {selectedCourse.topics.map((topic, i) => (
-                  <span
+                  <Tag
                     key={i}
-                    className="px-3 py-1 bg-[#1472FF]/30 text-white text-sm font-medium rounded-full border border-[#1472FF]/50"
+                    variant="primary"
+                    className="bg-[#1472FF]/30 text-white border-[#1472FF]/50"
                   >
                     {topic}
-                  </span>
+                  </Tag>
                 ))}
               </div>
 

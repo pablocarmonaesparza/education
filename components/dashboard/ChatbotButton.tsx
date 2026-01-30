@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 
 export default function ChatbotButton() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -23,10 +25,10 @@ export default function ChatbotButton() {
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
       {/* Mensaje tipo "burbuja" cuando está expandido */}
       {isExpanded && (
-        <div className="bg-white dark:bg-gray-900 rounded-2xl p-4 mb-2 w-72 border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 animate-in fade-in slide-in-from-bottom-4 duration-200">
+        <Card variant="neutral" padding="md" className="mb-2 w-72 animate-in fade-in slide-in-from-bottom-4 duration-200">
           <div className="flex justify-between items-start mb-2">
             <h3 className="font-semibold text-[#4b4b4b] dark:text-white">Tutor IA</h3>
-            <button 
+            <button
               onClick={(e) => {
                 e.stopPropagation();
                 setIsExpanded(false);
@@ -41,23 +43,24 @@ export default function ChatbotButton() {
           <p className="text-sm text-[#777777] dark:text-gray-400 mb-3">
             ¿Tienes alguna duda sobre tu lección? Estoy aquí para ayudarte.
           </p>
-          <button
+          <Button
+            variant="primary"
+            size="md"
             onClick={() => router.push('/dashboard/tutor')}
-            className="w-full py-2 px-4 rounded-xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] transition-all"
+            className="w-full"
           >
             Abrir Chat Completo
-          </button>
-        </div>
+          </Button>
+        </Card>
       )}
 
       {/* Botón Flotante */}
-      <button
+      <Button
+        variant="primary"
+        size="none"
         onClick={handleClick}
-        className={`
-          flex items-center justify-center rounded-2xl border-2 border-b-4 border-[#0E5FCC] bg-[#1472FF] text-white
-          hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] transition-all duration-150
-          ${isExpanded ? 'w-12 h-12' : 'w-14 h-14'}
-        `}
+        className={`flex items-center justify-center ${isExpanded ? 'w-12 h-12' : 'w-14 h-14'}`}
+        rounded2xl
         aria-label="Abrir Tutor IA"
       >
         {isExpanded ? (
@@ -69,11 +72,7 @@ export default function ChatbotButton() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
           </svg>
         )}
-      </button>
+      </Button>
     </div>
   );
 }
-
-
-
-

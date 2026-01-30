@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import Button from '@/components/shared/Button';
+import Button from '@/components/ui/Button';
 
 interface Message {
   id: string;
@@ -158,7 +158,7 @@ export default function TutorChatButton() {
   return (
     <aside
       ref={asideRef}
-      className="hidden md:flex fixed right-0 top-0 h-screen bg-white dark:bg-gray-900 flex-col z-40"
+      className="hidden md:flex fixed right-0 top-0 h-screen bg-white dark:bg-gray-800 flex-col z-40"
       style={{ width: `${width}px` }}
     >
       {/* Resize Handle */}
@@ -189,7 +189,7 @@ export default function TutorChatButton() {
       </div>
 
       {/* Messages - Clean and spacious */}
-      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 bg-white dark:bg-gray-900">
+      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 bg-white dark:bg-gray-800">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -199,8 +199,8 @@ export default function TutorChatButton() {
               <div
                 className={`px-4 py-3 rounded-2xl border-2 border-b-4 ${
                   message.role === 'user'
-                    ? 'bg-gray-300 dark:bg-gray-900 text-[#4b4b4b] dark:text-white border-[#aeb3bb] dark:border-gray-900 border-b-[#aeb3bb] dark:border-b-gray-900'
-                    : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900'
+                    ? 'bg-gray-300 dark:bg-gray-800 text-[#4b4b4b] dark:text-white border-[#aeb3bb] dark:border-gray-950 border-b-[#aeb3bb] dark:border-b-gray-950'
+                    : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950'
                 }`}
               >
                 <p className="text-sm leading-relaxed">{message.content}</p>
@@ -226,7 +226,7 @@ export default function TutorChatButton() {
       </div>
 
       {/* Input - textarea crece hasta 5 líneas */}
-      <div className="px-6 py-4 bg-white dark:bg-gray-900 flex-shrink-0">
+      <div className="px-6 py-4 bg-white dark:bg-gray-800 flex-shrink-0">
         <form ref={formRef} onSubmit={handleSubmit} className="space-y-3">
           <div className="relative">
             <textarea

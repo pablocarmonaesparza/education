@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Card from '@/components/ui/Card';
 
 const sections = [
   {
@@ -43,25 +44,27 @@ const sections = [
 
 export default function CourseStructureSection() {
   return (
-    <section id="course-structure" className="bg-white py-24 md:py-32">
+    <section id="course-structure" className="bg-white dark:bg-gray-800 py-24 md:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header - Lomma style */}
+        {/* Header */}
         <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center text-gray-900 mb-4 leading-tight">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center text-[#4b4b4b] dark:text-white mb-4 leading-tight">
             Un Currículum Práctico
           </h2>
-          <p className="text-xl md:text-2xl text-center text-gray-600 max-w-3xl mx-auto font-light">
+          <p className="text-xl md:text-2xl text-center text-[#777777] dark:text-gray-400 max-w-3xl mx-auto font-light">
             Aprende las habilidades clave para construir con inteligencia
             artificial.
           </p>
         </div>
 
-        {/* Cards Grid - Lomma style */}
+        {/* Cards Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {sections.map((section) => (
-            <div
+            <Card
               key={section.id}
-              className="relative bg-white rounded-2xl p-8 border border-gray-100 hover:border-gray-200 transition-all duration-300 overflow-hidden group"
+              variant="neutral"
+              padding="lg"
+              className="relative overflow-hidden group"
             >
               <Image
                 src={section.image}
@@ -71,12 +74,12 @@ export default function CourseStructureSection() {
                 className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity"
               />
               <div className="relative z-10">
-                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+                <h3 className="text-2xl md:text-3xl font-bold text-[#4b4b4b] dark:text-white mb-3">
                   {section.title}
                 </h3>
-                <p className="text-base md:text-lg text-gray-600 leading-relaxed">{section.description}</p>
+                <p className="text-base md:text-lg text-[#777777] dark:text-gray-400 leading-relaxed">{section.description}</p>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </div>

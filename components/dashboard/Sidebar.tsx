@@ -5,8 +5,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import Button from '@/components/shared/Button';
-import IconButton from '@/components/shared/IconButton';
+import Button from '@/components/ui/Button';
+import IconButton from '@/components/ui/IconButton';
+import { CardFlat } from '@/components/ui/Card';
 import { useSidebar } from '@/contexts/SidebarContext';
 
 export default function Sidebar() {
@@ -111,7 +112,7 @@ export default function Sidebar() {
       />
 
       <aside
-        className={`fixed left-0 top-0 h-screen bg-white dark:bg-gray-900 flex flex-col z-50 w-64 transform transition-transform duration-300 ease-out ${
+        className={`fixed left-0 top-0 h-screen bg-white dark:bg-gray-800 flex flex-col z-50 w-64 transform transition-transform duration-300 ease-out ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
         }`}
       >
@@ -135,16 +136,16 @@ export default function Sidebar() {
             priority
           />
         </Link>
-          <button
-            type="button"
+          <IconButton
+            variant="outline"
             onClick={closeDrawer}
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all"
             aria-label="Cerrar menú"
+            className="md:hidden"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </IconButton>
         </div>
 
       {/* Navigation */}
@@ -205,7 +206,7 @@ export default function Sidebar() {
                 className="fixed inset-0 z-10" 
                 onClick={() => setShowProfileMenu(false)} 
               />
-              <div className="absolute bottom-full mb-2 left-0 right-0 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-600 py-2 z-20 shadow-lg">
+              <CardFlat className="absolute bottom-full mb-2 left-0 right-0 py-2 z-20 shadow-lg">
                 <Link
                   href="/dashboard/perfil"
                   onClick={() => { setShowProfileMenu(false); closeDrawer(); }}
@@ -225,7 +226,7 @@ export default function Sidebar() {
                   </svg>
                   Cerrar sesión
                 </button>
-              </div>
+              </CardFlat>
             </>
           )}
         </div>

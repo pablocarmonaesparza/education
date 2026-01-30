@@ -1,5 +1,8 @@
 'use client';
 
+import Card from '@/components/ui/Card';
+import ProgressBar from '@/components/ui/ProgressBar';
+
 interface ProgressCardProps {
   title: string;
   progress: number;
@@ -11,7 +14,7 @@ export default function ProgressCard({ title, progress, total, icon }: ProgressC
   const percentage = total > 0 ? Math.round((progress / total) * 100) : 0;
 
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-md p-6 border-2 border-gray-200 dark:border-gray-950 transition-colors">
+    <Card variant="neutral" padding="lg" className="shadow-md">
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-lg font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">{title}</h3>
@@ -28,16 +31,11 @@ export default function ProgressCard({ title, progress, total, icon }: ProgressC
 
       {/* Progress Bar */}
       <div className="relative">
-        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-[#1472FF] rounded-full transition-all duration-500"
-            style={{ width: `${percentage}%` }}
-          />
-        </div>
+        <ProgressBar value={percentage} size="lg" color="primary" trackClassName="bg-gray-200 dark:bg-gray-700" durationMs={500} />
         <span className="absolute right-0 -top-6 text-sm font-bold text-[#1472FF]">
           {percentage}%
         </span>
       </div>
-    </div>
+    </Card>
   );
 }

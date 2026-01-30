@@ -6,6 +6,8 @@ import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
+import { CardFlat } from '@/components/ui/Card';
+import IconButton from '@/components/ui/IconButton';
 
 export default function DashboardHeader() {
   const [user, setUser] = useState<User | null>(null);
@@ -84,7 +86,7 @@ export default function DashboardHeader() {
   const userDisplayName = userProfile?.name || userProfile?.email?.split('@')[0] || 'Usuario';
 
   return (
-    <header className="fixed top-0 left-0 right-0 h-20 bg-white dark:bg-gray-900 border-b-2 border-gray-200 dark:border-gray-950 z-30 flex items-center justify-between px-4">
+    <header className="fixed top-0 left-0 right-0 h-20 bg-white dark:bg-gray-800 border-b-2 border-gray-200 dark:border-gray-950 z-30 flex items-center justify-between px-4">
       {/* Logo */}
       <Link href="/dashboard" className="flex items-center gap-2">
         {isDark ? (
@@ -111,30 +113,32 @@ export default function DashboardHeader() {
       {/* Right side - Settings and Profile */}
       <div className="flex items-center gap-4">
         {/* Settings Button */}
-        <button
-          onClick={() => setShowSettingsMenu(!showSettingsMenu)}
-          className="relative p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-          aria-label="Configuración"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
+        <div className="relative">
+          <IconButton
+            variant="ghost"
+            onClick={() => setShowSettingsMenu(!showSettingsMenu)}
+            aria-label="Configuración"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </IconButton>
 
           {/* Settings Dropdown Menu */}
           {showSettingsMenu && (
             <>
-              <div 
-                className="fixed inset-0 z-10" 
+              <div
+                className="fixed inset-0 z-10"
                 onClick={() => setShowSettingsMenu(false)}
               />
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-2 border-gray-200 dark:border-gray-950 py-2 z-20">
+              <CardFlat className="absolute right-0 top-full mt-2 w-48 shadow-lg py-2 z-20">
                 <button
                   onClick={() => {
                     setShowSettingsMenu(false);
                     // TODO: Navigate to settings page
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full text-left px-4 py-2 text-sm text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Configuración
                 </button>
@@ -143,14 +147,14 @@ export default function DashboardHeader() {
                     setShowSettingsMenu(false);
                     // TODO: Navigate to preferences page
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full text-left px-4 py-2 text-sm text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Preferencias
                 </button>
-              </div>
+              </CardFlat>
             </>
           )}
-        </button>
+        </div>
 
         {/* Profile Button */}
         <div className="relative">
@@ -179,8 +183,8 @@ export default function DashboardHeader() {
                 className="fixed inset-0 z-10" 
                 onClick={() => setShowProfileMenu(false)}
               />
-              <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-900 rounded-2xl shadow-lg border-2 border-gray-200 dark:border-gray-950 py-2 z-20">
-                <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-950">
+              <CardFlat className="absolute right-0 top-full mt-2 w-56 shadow-lg py-2 z-20">
+                <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-900">
                   <p className="text-sm font-bold text-[#4b4b4b] dark:text-gray-100">{userDisplayName}</p>
                   <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{userProfile?.email}</p>
                 </div>
@@ -189,7 +193,7 @@ export default function DashboardHeader() {
                     setShowProfileMenu(false);
                     // TODO: Navigate to profile page
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full text-left px-4 py-2 text-sm text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Ver Perfil
                 </button>
@@ -202,7 +206,7 @@ export default function DashboardHeader() {
                 >
                   Cerrar Sesión
                 </button>
-              </div>
+              </CardFlat>
             </>
           )}
         </div>

@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import OnboardingNavbar from '@/components/onboarding/OnboardingNavbar';
+import Button from '@/components/ui/Button';
+import ProgressBar from '@/components/ui/ProgressBar';
 
 export default function CourseCreationPage() {
   const [progress, setProgress] = useState(0);
@@ -117,7 +119,7 @@ export default function CourseCreationPage() {
   }, [router, supabase]);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-800 flex flex-col">
       <OnboardingNavbar />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-12">
@@ -135,12 +137,14 @@ export default function CourseCreationPage() {
                 </div>
                 <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 lowercase">algo salió mal</h2>
                 <p className="text-[#777777] dark:text-gray-400 mb-6">{error}</p>
-                <button
+                <Button
+                  variant="primary"
+                  size="lg"
+                  rounded2xl
                   onClick={() => router.push('/projectDescription')}
-                  className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150"
                 >
                   Intentar de nuevo
-                </button>
+                </Button>
               </div>
             </div>
           ) : (
@@ -151,7 +155,7 @@ export default function CourseCreationPage() {
                   className="absolute inset-0 bg-[#1472FF] rounded-2xl animate-pulse"
                   style={{ boxShadow: '0 4px 0 0 #0E5FCC' }}
                 />
-                <div className="absolute inset-2 bg-white dark:bg-gray-900 rounded-xl flex items-center justify-center">
+                <div className="absolute inset-2 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center">
                   <span className="text-4xl animate-bounce">🤖</span>
                 </div>
               </div>
@@ -166,19 +170,7 @@ export default function CourseCreationPage() {
 
               {/* Progress Bar with depth effect */}
               <div className="mb-10">
-                <div
-                  className="w-full h-4 bg-gray-200 dark:bg-gray-700 rounded-xl overflow-hidden"
-                  style={{ boxShadow: '0 3px 0 0 #d1d5db' }}
-                >
-                  <div
-                    className="bg-[#1472FF] h-4 rounded-xl transition-all duration-500 ease-out"
-                    style={{
-                      width: `${progress}%`,
-                      boxShadow: progress > 0 ? '0 3px 0 0 #0E5FCC' : 'none',
-                      borderRadius: progress >= 100 ? '0.75rem' : '0.75rem 0 0 0.75rem'
-                    }}
-                  />
-                </div>
+                <ProgressBar value={progress} size="lg" color="primary" durationMs={500} />
                 <p className="text-sm font-bold text-[#1472FF] mt-3">{progress}%</p>
               </div>
 

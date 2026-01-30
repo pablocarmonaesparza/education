@@ -1,6 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import Button from '@/components/ui/Button';
+import Tag from '@/components/ui/Tag';
+import Card from '@/components/ui/Card';
+import { SearchInput } from '@/components/ui';
 
 export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -116,7 +120,7 @@ export default function CoursesPage() {
   });
 
   return (
-    <div className="p-8 bg-white dark:bg-gray-900 min-h-screen">
+    <div className="p-8 bg-white dark:bg-gray-800 min-h-screen">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">todos los cursos</h1>
@@ -133,7 +137,7 @@ export default function CoursesPage() {
             placeholder="Buscar por nombre, descripción o tema..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-6 py-4 pl-14 rounded-2xl border-2 border-gray-200 dark:border-gray-950 focus:border-[#1472FF] focus:ring-2 focus:ring-[#1472FF]/20 outline-none transition-all text-gray-900 dark:text-white bg-white dark:bg-gray-900 placeholder-gray-400"
+            className="w-full px-6 py-4 pl-14 rounded-2xl border-2 border-gray-200 dark:border-gray-900 focus:border-[#1472FF] focus:ring-2 focus:ring-[#1472FF]/20 outline-none transition-all text-[#4b4b4b] dark:text-white bg-white dark:bg-gray-800 placeholder-gray-400"
           />
           <svg
             className="absolute left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -155,29 +159,28 @@ export default function CoursesPage() {
       <div className="mb-8 overflow-x-auto">
         <div className="flex gap-3 pb-4">
           {categories.map((category) => (
-            <button
+            <Button
               key={category.id}
+              variant={selectedCategory === category.id ? 'primary' : 'outline'}
+              size="md"
+              rounded2xl
               onClick={() => setSelectedCategory(category.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold whitespace-nowrap transition-all duration-150 ${
-                selectedCategory === category.id
-                  ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC]'
-                  : 'bg-white dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-200 dark:border-gray-950 hover:border-[#1472FF]'
-              }`}
+              className="flex items-center gap-2 whitespace-nowrap"
             >
               <span className="text-xl">{category.icon}</span>
               <span>{category.name}</span>
-              <span className={`text-sm ${selectedCategory === category.id ? 'text-white opacity-80' : 'text-gray-500'}`}>
+              <span className={`text-sm ${selectedCategory === category.id ? 'text-white opacity-80' : 'text-[#777777]'}`}>
                 ({category.count})
               </span>
-            </button>
+            </Button>
           ))}
         </div>
       </div>
 
       {/* Results Count */}
       <div className="mb-6">
-        <p className="text-gray-600">
-          Mostrando <span className="font-bold text-gray-900">{filteredModules.length}</span> módulos
+        <p className="text-[#777777]">
+          Mostrando <span className="font-bold text-[#4b4b4b]">{filteredModules.length}</span> módulos
           {searchQuery && <span> para "<span className="font-semibold">{searchQuery}</span>"</span>}
         </p>
       </div>
@@ -186,9 +189,12 @@ export default function CoursesPage() {
       {filteredModules.length > 0 ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredModules.map((module) => (
-            <div
+            <Card
               key={module.id}
-              className="bg-white rounded-xl shadow-md border-2 border-gray-200 hover:border-purple-400 transition-all hover:shadow-xl group"
+              variant="neutral"
+              padding="none"
+              interactive
+              className="group"
             >
               <div className="p-6">
                 {/* Header */}
@@ -199,37 +205,33 @@ export default function CoursesPage() {
                   }`}>
                     {categories.find(c => c.id === module.category)?.icon || '📚'}
                   </div>
-                  <span className={`text-xs font-semibold px-3 py-1 rounded-full ${
-                    module.level === 'Principiante' ? 'bg-green-100 text-green-700' :
-                    module.level === 'Intermedio' ? 'bg-yellow-100 text-yellow-700' :
-                    'bg-red-100 text-red-700'
-                  }`}>
+                  <Tag variant={
+                    module.level === 'Principiante' ? 'success' :
+                    module.level === 'Intermedio' ? 'warning' : 'neutral'
+                  } className="text-xs">
                     {module.level}
-                  </span>
+                  </Tag>
                 </div>
 
                 {/* Title & Description */}
-                <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#1472FF] transition-colors">
+                <h3 className="text-xl font-bold text-[#4b4b4b] mb-2 group-hover:text-[#1472FF] transition-colors">
                   {module.title}
                 </h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-[#777777] mb-4">
                   {module.description}
                 </p>
 
                 {/* Topics */}
                 <div className="flex flex-wrap gap-2 mb-4">
                   {module.topics.map((topic, index) => (
-                    <span
-                      key={index}
-                      className="text-xs bg-[#1472FF]/10 text-[#1472FF] px-2 py-1 rounded"
-                    >
+                    <Tag key={index} variant="primary" className="text-xs">
                       {topic}
-                    </span>
+                    </Tag>
                   ))}
                 </div>
 
                 {/* Stats */}
-                <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                <div className="flex items-center justify-between text-sm text-[#777777] mb-4">
                   <div className="flex items-center gap-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -245,31 +247,32 @@ export default function CoursesPage() {
                 </div>
 
                 {/* CTA */}
-                <button className="w-full bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white py-3 rounded-lg font-semibold hover:from-[#0E5FCC] hover:to-[#1472FF] transition-all">
-                  Ver Módulo →
-                </button>
+                <Button variant="primary" size="md" className="w-full">
+                  Ver Módulo
+                </Button>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       ) : (
         <div className="text-center py-16">
           <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-2xl font-bold text-gray-900 mb-2">
+          <h3 className="text-2xl font-bold text-[#4b4b4b] mb-2">
             No se encontraron resultados
           </h3>
-          <p className="text-gray-600 mb-6">
+          <p className="text-[#777777] mb-6">
             Intenta con otros términos de búsqueda o categoría
           </p>
-          <button
+          <Button
+            variant="primary"
+            size="lg"
             onClick={() => {
               setSearchQuery('');
               setSelectedCategory('all');
             }}
-            className="bg-gradient-to-r from-[#1472FF] to-[#0E5FCC] text-white px-6 py-3 rounded-lg font-semibold hover:from-[#0E5FCC] hover:to-[#1472FF]"
           >
             Limpiar Filtros
-          </button>
+          </Button>
         </div>
       )}
     </div>

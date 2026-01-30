@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Card from '@/components/ui/Card';
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -49,13 +50,12 @@ export default function FAQSection() {
           {/* FAQ Items */}
           <div className="w-full space-y-2">
             {faqs.map((faq, index) => (
-              <div 
-                key={index} 
-                className={`rounded-2xl transition-all duration-150 ${
-                  openIndex === index
-                    ? "bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 border-b-4 border-b-gray-300 dark:border-b-gray-600"
-                    : "bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 border-b-4 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-[0.98] md:hover:scale-[1.02]"
-                }`}
+              <Card
+                key={index}
+                variant="neutral"
+                padding="none"
+                interactive={openIndex !== index}
+                className={openIndex !== index ? "md:hover:scale-[1.02] active:scale-[0.98]" : ""}
               >
                 <button
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
@@ -99,31 +99,31 @@ export default function FAQSection() {
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </Card>
             ))}
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-50 dark:bg-gray-900 py-8">
+      <footer className="bg-gray-50 dark:bg-gray-800 py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-center md:text-left mb-4 md:mb-0">
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-[#777777] dark:text-gray-400">
                 &copy; {currentYear} Itera. Todos los derechos reservados.
               </p>
             </div>
             <div className="flex gap-6">
               <Link
                 href="/terms"
-                className="text-gray-600 dark:text-gray-400 hover:text-[#1472FF] dark:hover:text-[#1472FF] transition-colors"
+                className="text-[#777777] dark:text-gray-400 hover:text-[#1472FF] dark:hover:text-[#1472FF] transition-colors"
               >
                 Términos
               </Link>
               <Link
                 href="/privacy"
-                className="text-gray-600 dark:text-gray-400 hover:text-[#1472FF] dark:hover:text-[#1472FF] transition-colors"
+                className="text-[#777777] dark:text-gray-400 hover:text-[#1472FF] dark:hover:text-[#1472FF] transition-colors"
               >
                 Privacidad
               </Link>

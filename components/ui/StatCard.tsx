@@ -18,7 +18,7 @@ const colorStyles: Record<StatCardColor, string> = {
   green:
     'bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800',
   neutral:
-    'bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800',
+    'bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-900',
 };
 
 export interface StatCardProps {

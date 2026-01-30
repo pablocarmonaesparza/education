@@ -1,6 +1,6 @@
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
-import Link from 'next/link';
+import { Button } from '@/components/ui';
 
 export default function MercadoPagoCancelPage() {
   return (
@@ -25,9 +25,9 @@ export default function MercadoPagoCancelPage() {
         <p className="text-lg text-gray-700 mb-8">
           Tu proceso de pago con Mercado Pago ha sido cancelado. Puedes intentarlo de nuevo.
         </p>
-        <Link href="/pricing" className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] transition-all">
+        <Button variant="primary" size="lg" rounded2xl href="/pricing">
           Volver a Precios
-        </Link>
+        </Button>
       </section>
       <Footer />
     </main>

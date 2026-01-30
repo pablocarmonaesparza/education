@@ -1,3 +1,7 @@
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
+import Divider from '@/components/ui/Divider';
+
 export default function ProblemSolutionSection() {
   const problems = [
     {
@@ -46,83 +50,87 @@ export default function ProblemSolutionSection() {
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-20 bg-gray-50 dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#4b4b4b] dark:text-white mb-4">
             ¿Por Qué Los Cursos Tradicionales No Funcionan?
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-[#777777] dark:text-gray-400 max-w-3xl mx-auto">
             Los cursos lineales asumen que todos tienen las mismas necesidades. La realidad es diferente.
           </p>
         </div>
 
         {/* Problems Grid */}
         <div className="mb-20">
-          <h3 className="text-2xl font-bold text-center text-gray-800 mb-8">
+          <h3 className="text-2xl font-bold text-center text-[#4b4b4b] dark:text-white mb-8">
             Los Problemas Que Enfrentas
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {problems.map((problem, index) => (
-              <div
+              <Card
                 key={index}
-                className="bg-white p-6 rounded-lg border-l-4 border-gray-300"
+                variant="neutral"
+                padding="lg"
+                className="border-l-4 border-l-gray-300 dark:border-l-gray-600"
               >
                 <div className="text-4xl mb-4">{problem.icon}</div>
-                <h4 className="text-lg font-bold text-gray-900 mb-2">
+                <h4 className="text-lg font-bold text-[#4b4b4b] dark:text-white mb-2">
                   {problem.title}
                 </h4>
-                <p className="text-gray-600">{problem.description}</p>
-              </div>
+                <p className="text-[#777777] dark:text-gray-400">{problem.description}</p>
+              </Card>
             ))}
           </div>
         </div>
 
         {/* Divider */}
         <div className="flex items-center justify-center mb-20">
-          <div className="border-t-2 border-gray-300 flex-grow max-w-xs"></div>
-          <div className="mx-4 text-3xl">✨</div>
-          <div className="border-t-2 border-gray-300 flex-grow max-w-xs"></div>
+          <Divider title="✨" className="max-w-2xl w-full" />
         </div>
 
         {/* Solutions Grid */}
         <div>
-          <h3 className="text-2xl font-bold text-center text-gray-800 mb-8">
+          <h3 className="text-2xl font-bold text-center text-[#4b4b4b] dark:text-white mb-8">
             Nuestra Solución: Aprendizaje Personalizado con IA
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {solutions.map((solution, index) => (
-              <div
+              <Card
                 key={index}
-                className="bg-[#1472FF]/10 p-6 rounded-lg border-l-4 border-[#1472FF]"
+                variant="neutral"
+                padding="lg"
+                className="border-l-4 border-l-[#1472FF] bg-[#1472FF]/10 dark:bg-[#1472FF]/10"
               >
                 <div className="text-4xl mb-4">{solution.icon}</div>
-                <h4 className="text-lg font-bold text-gray-900 mb-2">
+                <h4 className="text-lg font-bold text-[#4b4b4b] dark:text-white mb-2">
                   {solution.title}
                 </h4>
-                <p className="text-gray-700">{solution.description}</p>
-              </div>
+                <p className="text-[#4b4b4b] dark:text-gray-300">{solution.description}</p>
+              </Card>
             ))}
           </div>
         </div>
 
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
-          <div className="bg-[#1472FF] text-white py-8 px-6 rounded-2xl max-w-3xl mx-auto">
+          <Card variant="primary" padding="lg" className="max-w-3xl mx-auto py-8">
             <h3 className="text-2xl font-bold mb-4">
               Deja de Perder Tiempo en Contenido Irrelevante
             </h3>
             <p className="text-lg mb-6 opacity-90">
               Obtén una ruta personalizada basada en tu proyecto real en menos de 5 minutos.
             </p>
-            <a
+            <Button
+              variant="outline"
+              size="lg"
               href="/auth/signup"
-              className="inline-block bg-white text-[#0E5FCC] px-8 py-4 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all transform hover:scale-105"
+              className="text-[#0E5FCC] dark:text-[#0E5FCC] bg-white dark:bg-white hover:bg-gray-100 dark:hover:bg-gray-100"
             >
               Crear Cuenta Gratis
-            </a>
-          </div>
+            </Button>
+          </Card>
         </div>
       </div>
     </section>

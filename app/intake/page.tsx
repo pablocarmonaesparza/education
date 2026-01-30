@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import OnboardingNavbar from '@/components/onboarding/OnboardingNavbar';
+import Button from '@/components/ui/Button';
+import ProgressBar from '@/components/ui/ProgressBar';
 
 export default function IntakePage() {
   const [projectIdea, setProjectIdea] = useState('');
@@ -172,7 +174,7 @@ export default function IntakePage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-800 flex flex-col">
       <OnboardingNavbar />
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 pt-20 pb-12">
@@ -189,7 +191,7 @@ export default function IntakePage() {
             </div>
 
             <div className="mb-6 sm:mb-8">
-              <div className="relative bg-white dark:bg-gray-900 rounded-2xl p-4 sm:p-6 border-2 border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 focus-within:border-[#1472FF] transition-all duration-300">
+              <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 border-2 border-gray-200 dark:border-gray-900 hover:border-gray-300 dark:hover:border-gray-700 focus-within:border-[#1472FF] transition-all duration-300">
                   <label className="block text-sm font-bold text-[#4b4b4b] dark:text-white mb-2">
                     Cuéntanos sobre tu proyecto
                   </label>
@@ -202,7 +204,7 @@ export default function IntakePage() {
                     }}
                     placeholder="Ejemplo: Quiero crear un chatbot para atención al cliente que integre con WhatsApp y use IA para dar respuestas inteligentes a las preguntas más comunes..."
                     rows={4}
-                    className="w-full min-h-[80px] bg-white dark:bg-gray-900 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 resize-none focus:outline-none font-light leading-relaxed"
+                    className="w-full min-h-[80px] bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 resize-none focus:outline-none font-light leading-relaxed"
                   />
 
                   {error && (
@@ -239,16 +241,19 @@ export default function IntakePage() {
             </div>
 
             <div className="flex justify-center">
-              <button
+              <Button
+                variant="primary"
+                size="xl"
+                rounded2xl
                 onClick={handleCreateCourse}
                 disabled={!projectIdea.trim() || projectIdea.trim().length < 100}
-                className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:border-b-4 disabled:mt-0 flex items-center justify-center gap-2 min-h-[48px] touch-manipulation"
+                className="w-full sm:w-auto flex items-center justify-center gap-2"
               >
                 CREAR MI CURSO PERSONALIZADO
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
-              </button>
+              </Button>
             </div>
           </>
         ) : (
@@ -268,12 +273,7 @@ export default function IntakePage() {
             </p>
 
             <div className="mb-10">
-              <div className="w-full bg-gray-100 dark:bg-gray-900 rounded-full h-4 overflow-hidden">
-                <div
-                  className="bg-[#1472FF] h-4 rounded-full transition-all duration-500 ease-out"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
+              <ProgressBar value={progress} size="lg" color="primary" durationMs={500} />
               <p className="text-sm font-bold text-[#1472FF] mt-3">{progress}%</p>
             </div>
 

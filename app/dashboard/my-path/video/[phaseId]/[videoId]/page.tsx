@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
+import { SpinnerPage } from '@/components/ui/Spinner';
+import Button from '@/components/ui/Button';
+import IconButton from '@/components/ui/IconButton';
 
 interface Video {
   id: string;
@@ -178,9 +181,7 @@ export default function VideoPage() {
 
   if (loading) {
     return (
-      <div className="min-h-full bg-transparent flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
-      </div>
+      <SpinnerPage />
     );
   }
 
@@ -188,7 +189,7 @@ export default function VideoPage() {
     return (
       <div className="min-h-full bg-transparent flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Video no encontrado</h2>
+          <h2 className="text-xl font-bold text-[#4b4b4b] dark:text-white mb-2">Video no encontrado</h2>
           <Link href="/dashboard" className="text-[#1472FF] hover:underline">
             Volver al inicio
           </Link>
@@ -204,7 +205,7 @@ export default function VideoPage() {
         {/* Back Button */}
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-[#777777] dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-6 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -215,11 +216,11 @@ export default function VideoPage() {
         {/* Video Header */}
         <div className="mb-6">
           <p className="text-sm text-[#1472FF] font-medium mb-1">{phase}</p>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl md:text-3xl font-bold text-[#4b4b4b] dark:text-white">
             {video.title}
           </h1>
           {video.duration && (
-            <p className="text-gray-500 dark:text-gray-400 mt-2">Duración: {video.duration}</p>
+            <p className="text-[#777777] dark:text-gray-400 mt-2">Duración: {video.duration}</p>
           )}
         </div>
 
@@ -248,8 +249,8 @@ export default function VideoPage() {
 
         {/* Description */}
         {video.description && (
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-950 p-6 mb-6">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Descripción</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 p-6 mb-6">
+            <h3 className="font-semibold text-[#4b4b4b] dark:text-white mb-2">Descripción</h3>
             <p className="text-gray-600 dark:text-gray-400">{video.description}</p>
           </div>
         )}
@@ -258,59 +259,59 @@ export default function VideoPage() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Navigation */}
           <div className="flex items-center gap-3">
-            <button
+            <IconButton
+              variant="outline"
               onClick={() => goToVideo(currentIndex - 1)}
               disabled={currentIndex === 0}
-              className="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-950 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              aria-label="Video anterior"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
-            </button>
-            
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            </IconButton>
+
+            <span className="text-sm text-[#777777] dark:text-gray-400">
               {currentIndex + 1} de {allVideos.length}
             </span>
-            
-            <button
+
+            <IconButton
+              variant="outline"
               onClick={() => goToVideo(currentIndex + 1)}
               disabled={currentIndex === allVideos.length - 1}
-              className="px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-950 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              aria-label="Video siguiente"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
-            </button>
+            </IconButton>
           </div>
 
           {/* Complete Button */}
-          <button
+          <Button
+            variant={isCompleted ? 'completado' : 'primary'}
+            size="lg"
             onClick={handleMarkComplete}
             disabled={isCompleted || markingComplete}
-            className={`px-6 py-3 rounded-xl font-semibold transition-all ${
-              isCompleted
-                ? 'bg-green-500 text-white cursor-default'
-                : 'bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] transition-all'
-            } disabled:opacity-70`}
+            className="flex items-center gap-2"
           >
             {isCompleted ? (
-              <span className="flex items-center gap-2">
+              <>
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 Completado
-              </span>
+              </>
             ) : markingComplete ? (
               'Guardando...'
             ) : (
-              <span className="flex items-center gap-2">
+              <>
                 Marcar como completado
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-              </span>
+              </>
             )}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

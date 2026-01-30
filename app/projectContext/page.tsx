@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import OnboardingNavbar from '@/components/onboarding/OnboardingNavbar';
+import Button from '@/components/ui/Button';
 
 // Sections with their questions
 const sections = [
@@ -241,7 +242,7 @@ export default function ProjectContextPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-white dark:bg-gray-800 flex flex-col">
       <OnboardingNavbar />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-12">
@@ -355,7 +356,7 @@ export default function ProjectContextPage() {
                   <span className={`inline-block px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${
                     isDragging
                       ? 'bg-[#1472FF] text-white shadow-[0_3px_0_0_#0E5FCC]'
-                      : 'bg-gray-100 dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-300 shadow-[0_3px_0_0_#d1d5db] dark:shadow-[0_3px_0_0_#374151]'
+                      : 'bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 shadow-[0_3px_0_0_#d1d5db] dark:shadow-[0_3px_0_0_#111827]'
                   }`}>
                     {currentLabel}
                   </span>
@@ -366,27 +367,31 @@ export default function ProjectContextPage() {
 
           {/* Navigation Buttons */}
           <div className="flex justify-center gap-4">
-            <motion.button
+            <Button
+              variant="outline"
+              size="lg"
+              rounded2xl
               onClick={handlePrevious}
-              whileTap={{ scale: 0.98 }}
-              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide bg-gray-100 dark:bg-gray-900 text-[#4b4b4b] dark:text-white border-b-4 border-gray-300 dark:border-gray-950 hover:bg-gray-200 dark:hover:bg-gray-700 active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
+              className="flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
               </svg>
               Anterior
-            </motion.button>
+            </Button>
 
-            <motion.button
+            <Button
+              variant="primary"
+              size="lg"
+              rounded2xl
               onClick={handleNext}
-              whileTap={{ scale: 0.98 }}
-              className="px-6 py-3 rounded-2xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center gap-2"
+              className="flex items-center gap-2"
             >
               {currentIndex === allQuestions.length - 1 ? 'Crear mi curso' : 'Siguiente'}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
-            </motion.button>
+            </Button>
           </div>
 
           {/* Section-based dots indicator with depth effect */}

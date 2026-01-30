@@ -117,11 +117,11 @@ export default function NewHeroSection() {
             style={{
               boxShadow: idea.length > MAX_CHARACTERS
                 ? '0 4px 0 0 #fca5a5'
-                : isDark ? '0 4px 0 0 #4b5563' : '0 4px 0 0 #d1d5db'
+                : isDark ? '0 4px 0 0 #111827' : '0 4px 0 0 #d1d5db'
             }}
           >
-              <div className={`relative w-full textarea-dark-bg rounded-2xl border-2 transition-all duration-300 ${
-                    idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "textarea-dark-border"
+              <div className={`relative w-full bg-white dark:bg-gray-800 rounded-2xl border-2 transition-all duration-300 ${
+                    idea.length > MAX_CHARACTERS ? "border-red-300 dark:border-red-500" : "border-gray-300 dark:border-gray-900"
                   }`}>
               <textarea
               ref={textareaRef}
@@ -303,7 +303,7 @@ export default function NewHeroSection() {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Auth Form */}
-              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-600 relative max-md:overflow-y-auto max-md:max-h-[90dvh]">
+              <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 relative max-md:overflow-y-auto max-md:max-h-[90dvh]">
                 {/* Close Button - Inside the card */}
               <button
                   onClick={() => {

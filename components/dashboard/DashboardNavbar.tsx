@@ -5,6 +5,9 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
+import Button from '@/components/ui/Button';
+import { CardFlat } from '@/components/ui/Card';
+import Divider from '@/components/ui/Divider';
 
 export default function DashboardNavbar() {
   const pathname = usePathname();
@@ -81,7 +84,7 @@ export default function DashboardNavbar() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b-2 border-gray-200 dark:border-gray-950">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b-2 border-gray-200 dark:border-gray-950">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-20 relative">
             
@@ -108,7 +111,7 @@ export default function DashboardNavbar() {
             {/* Navigation - Center (Desktop only) */}
             <div 
               ref={navRef}
-              className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2 bg-gray-100 dark:bg-gray-900 rounded-2xl p-1"
+              className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2 bg-gray-100 dark:bg-gray-800 rounded-2xl p-1"
             >
               {/* Sliding background indicator */}
               <div
@@ -141,11 +144,9 @@ export default function DashboardNavbar() {
             {/* Right side - Upgrade + Profile (Desktop) */}
             <div className="hidden md:flex items-center gap-3">
               {/* Upgrade Plan */}
-              <button 
-                className="px-5 py-2.5 rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150"
-              >
+              <Button variant="primary" size="md" rounded2xl>
                 Mejorar Plan
-              </button>
+              </Button>
               
               {/* Profile button */}
               <div className="relative">
@@ -173,8 +174,8 @@ export default function DashboardNavbar() {
                     className="fixed inset-0 z-10" 
                     onClick={() => setShowProfileMenu(false)} 
                   />
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-950 py-2 z-20 shadow-lg">
-                    <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-950">
+                  <CardFlat className="absolute right-0 top-full mt-2 w-48 py-2 z-20 shadow-lg">
+                    <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-900">
                       <p className="text-sm font-bold text-[#4b4b4b] dark:text-white truncate">{userName || 'Usuario'}</p>
                       <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{user?.profile?.email}</p>
                     </div>
@@ -197,7 +198,7 @@ export default function DashboardNavbar() {
                       </svg>
                       Cerrar sesión
                     </button>
-                  </div>
+                  </CardFlat>
                 </>
               )}
               </div>
@@ -250,8 +251,8 @@ export default function DashboardNavbar() {
 
         {/* Mobile Profile Dropdown */}
         {showProfileMenu && (
-          <div className="md:hidden absolute right-4 top-20 w-48 bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-950 py-2 z-50 shadow-lg">
-            <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-950">
+          <CardFlat className="md:hidden absolute right-4 top-20 w-48 py-2 z-50 shadow-lg">
+            <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-900">
               <p className="text-sm font-bold text-[#4b4b4b] dark:text-white truncate">{userName || 'Usuario'}</p>
               <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{user?.profile?.email}</p>
             </div>
@@ -274,7 +275,7 @@ export default function DashboardNavbar() {
               </svg>
               Cerrar sesión
             </button>
-          </div>
+          </CardFlat>
         )}
       </nav>
 
@@ -287,7 +288,7 @@ export default function DashboardNavbar() {
       )}
 
       {/* Mobile Menu Drawer */}
-      <div className={`fixed top-20 left-0 right-0 bg-white dark:bg-gray-900 border-b-2 border-gray-200 dark:border-gray-950 z-40 md:hidden transform transition-transform duration-300 ease-out ${
+      <div className={`fixed top-20 left-0 right-0 bg-white dark:bg-gray-800 border-b-2 border-gray-200 dark:border-gray-950 z-40 md:hidden transform transition-transform duration-300 ease-out ${
         showMobileMenu ? 'translate-y-0' : '-translate-y-full'
       }`}>
         <div className="container mx-auto px-4 py-4">
@@ -314,14 +315,12 @@ export default function DashboardNavbar() {
           </div>
 
           {/* Divider */}
-          <div className="my-4 h-0.5 bg-gray-200 dark:bg-gray-900" />
+          <Divider className="my-4" />
 
           {/* Upgrade Plan Button (Mobile) */}
-          <button 
-            className="w-full px-4 py-3 rounded-2xl font-bold uppercase tracking-wide text-white bg-[#1472FF] border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150 flex items-center justify-center gap-2"
-          >
+          <Button variant="primary" size="lg" rounded2xl className="w-full">
             Mejorar Plan
-          </button>
+          </Button>
         </div>
       </div>
     </>

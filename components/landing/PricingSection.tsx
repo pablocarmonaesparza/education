@@ -2,6 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import Tag from '@/components/ui/Tag';
 
 export default function PricingSection() {
   const router = useRouter();
@@ -93,77 +96,83 @@ export default function PricingSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 * (index + 3) }}
               viewport={{ once: true }}
-              className={`relative rounded-2xl p-5 md:p-6 transition-all duration-300 flex flex-col ${
-                tier.popular
-                  ? "bg-[#1472FF]/10 dark:bg-[#1472FF]/20 border-2 border-b-4 border-[#1472FF] dark:border-[#1472FF]"
-                  : "bg-white dark:bg-gray-900 border-2 border-b-4 border-gray-200 dark:border-gray-600 border-b-gray-300 dark:border-b-gray-600"
-              }`}
             >
-              {/* Popular Badge */}
-              {tier.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-[#1472FF] text-white px-4 py-1 rounded-full text-xs font-bold">
-                    🔥 MÁS POPULAR
-                  </div>
-                </div>
-              )}
-
-              {/* Title */}
-              <div className="mb-3">
-                <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">{tier.name}</h3>
-              </div>
-
-              <p className="text-[#777777] dark:text-gray-400 text-sm mb-5">{tier.description}</p>
-
-              {/* Pricing */}
-              <div className="mb-4">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl md:text-4xl font-bold text-[#1472FF]">
-                    {formatPrice(tier.price, tier.isMonthly)}
-                  </span>
-                  {tier.price > 0 && (
-                    <span className="text-gray-500 dark:text-gray-400 text-xs md:text-sm">USD</span>
-                  )}
-                </div>
-                <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  {tier.price === 0 ? "Sin tarjeta de crédito" : "Cancela cuando quieras"}
-                </p>
-              </div>
-
-              {/* Features */}
-              <ul className="space-y-2 mb-4 flex-1">
-                {tier.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <svg
-                      className="w-4 h-4 flex-shrink-0 text-green-500 mt-0.5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    <span className="text-xs md:text-sm text-gray-700 dark:text-gray-300 leading-snug">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* CTA Button */}
-              <button
-                onClick={handleSelectPlan}
-                className={`w-full py-4 rounded-2xl font-bold text-sm md:text-base uppercase tracking-wide transition-all duration-150 mt-auto ${
+              <Card
+                variant="neutral"
+                padding="lg"
+                className={`relative flex flex-col md:p-6 ${
                   tier.popular
-                    ? "bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1"
-                    : "bg-white dark:bg-gray-900 text-[#1472FF] border-2 border-b-4 border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10 active:border-b-2 active:mt-[2px]"
+                    ? "bg-[#1472FF]/10 dark:bg-[#1472FF]/20 border-[#1472FF] dark:border-[#1472FF] border-b-[#1472FF] dark:border-b-[#1472FF]"
+                    : ""
                 }`}
               >
-                {tier.cta}
-              </button>
+                {/* Popular Badge */}
+                {tier.popular && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <Tag variant="primary" className="bg-[#1472FF] text-white border-transparent">
+                      🔥 MÁS POPULAR
+                    </Tag>
+                  </div>
+                )}
 
+                {/* Title */}
+                <div className="mb-3">
+                  <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">{tier.name}</h3>
+                </div>
+
+                <p className="text-[#777777] dark:text-gray-400 text-sm mb-5">{tier.description}</p>
+
+                {/* Pricing */}
+                <div className="mb-4">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl md:text-4xl font-bold text-[#1472FF]">
+                      {formatPrice(tier.price, tier.isMonthly)}
+                    </span>
+                    {tier.price > 0 && (
+                      <span className="text-[#777777] dark:text-gray-400 text-xs md:text-sm">USD</span>
+                    )}
+                  </div>
+                  <p className="text-xs md:text-sm text-[#777777] dark:text-gray-400 mt-1">
+                    {tier.price === 0 ? "Sin tarjeta de crédito" : "Cancela cuando quieras"}
+                  </p>
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-2 mb-4 flex-1">
+                  {tier.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <svg
+                        className="w-4 h-4 flex-shrink-0 text-[#22c55e] mt-0.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      <span className="text-xs md:text-sm text-[#4b4b4b] dark:text-gray-300 leading-snug">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA Button */}
+                <Button
+                  variant={tier.popular ? "primary" : "outline"}
+                  depth={tier.popular ? "bottom" : "full"}
+                  size="none"
+                  rounded2xl
+                  onClick={handleSelectPlan}
+                  className={`w-full py-4 text-sm md:text-base mt-auto ${
+                    !tier.popular ? "text-[#1472FF] border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10" : ""
+                  }`}
+                >
+                  {tier.cta}
+                </Button>
+              </Card>
             </motion.div>
           ))}
         </div>

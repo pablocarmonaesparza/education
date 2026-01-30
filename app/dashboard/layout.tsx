@@ -33,10 +33,10 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     <>
       <DashboardMobileHeader />
       <main
-        className="transition-all duration-150 min-h-screen relative pt-14 md:pt-0 ml-0 md:ml-64"
+        className="transition-all duration-150 min-h-screen relative pt-14 md:pt-0 ml-0 md:ml-64 bg-white dark:bg-gray-800"
         style={{ marginRight: isMobile ? 0 : `${chatWidth}px` }}
       >
-        <div className="px-4 sm:px-6">
+        <div className="px-4 sm:px-6 min-h-full">
           {children}
         </div>
       </main>
@@ -51,7 +51,7 @@ export default function DashboardLayout({
 }) {
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-white dark:bg-gray-900">
+      <div className="min-h-screen bg-white dark:bg-gray-800">
         <Sidebar />
         <DashboardContent>{children}</DashboardContent>
         <TutorChatButton />

@@ -9,7 +9,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #111827;
+    --background: #1f2937;
     --foreground: #f3f4f6;
   }
 }
@@ -22,7 +22,7 @@ html {
 }
 
 html.dark {
-  background-color: #111827;
+  background-color: #1f2937;
 }
 
 html:has(body[data-route="/"]) {
@@ -35,7 +35,7 @@ body[data-route="/"] section {
 
 @media (prefers-color-scheme: dark) {
   html:not(.light) {
-    background-color: #111827;
+    background-color: #1f2937;
   }
 }
 
@@ -358,17 +358,17 @@ p.text-2xl {
 
 @media (prefers-color-scheme: dark) {
   .textarea-dark-bg {
-    background-color: #111827; /* gray-900 - same as page background */
+    background-color: #1f2937; /* gray-800 - one step lighter than page bg */
   }
 }
 
 .textarea-dark-border {
-  border-color: #d1d5db; /* gray-300 - light gray, matches component system */
+  border-color: #d1d5db; /* gray-300 */
 }
 
 @media (prefers-color-scheme: dark) {
   .textarea-dark-border {
-    border-color: #4b5563; /* gray-600 - lighter than gray-950, matches docs */
+    border-color: #111827; /* gray-900 - matches page bg for depth effect */
   }
 }
 
@@ -383,11 +383,11 @@ p.text-2xl {
 
 @media (prefers-color-scheme: dark) {
   .gradient-fade-left {
-    background: linear-gradient(to right, #111827, transparent);
+    background: linear-gradient(to right, #1f2937, transparent);
   }
 
   .gradient-fade-right {
-    background: linear-gradient(to left, #111827, transparent);
+    background: linear-gradient(to left, #1f2937, transparent);
   }
 }
 
@@ -398,7 +398,7 @@ p.text-2xl {
 
 @media (prefers-color-scheme: dark) {
   .phase-divider {
-    background-color: #030712; /* gray-950 */
+    background-color: #111827; /* gray-900 */
   }
 }
 

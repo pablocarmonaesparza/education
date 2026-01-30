@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { SpinnerPage } from '@/components/ui/Spinner';
+import Button from '@/components/ui/Button';
 
 interface UserProfile {
   id: string;
@@ -110,16 +112,14 @@ export default function PerfilPage() {
 
   if (isLoading) {
     return (
-      <div className="h-[calc(100vh-10rem)] md:h-[calc(100vh-11rem)] bg-transparent flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
-      </div>
+      <SpinnerPage />
     );
   }
 
   if (!profile) {
     return (
       <div className="min-h-full bg-transparent flex items-center justify-center">
-        <p className="text-gray-500 dark:text-gray-400">No se pudo cargar el perfil</p>
+        <p className="text-[#777777] dark:text-gray-400">No se pudo cargar el perfil</p>
       </div>
     );
   }
@@ -131,7 +131,7 @@ export default function PerfilPage() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">mi perfil</h1>
-          <p className="mt-2 text-gray-500 dark:text-gray-400">Gestiona tu información personal</p>
+          <p className="mt-2 text-[#777777] dark:text-gray-400">Gestiona tu información personal</p>
         </div>
 
         {/* Message */}
@@ -144,21 +144,21 @@ export default function PerfilPage() {
         )}
 
         {/* Profile Card */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-950 overflow-hidden mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
           {/* Avatar Section */}
           <div className="p-6 flex items-center gap-4 border-b border-gray-100 dark:border-gray-800">
             <div className="w-20 h-20 rounded-full bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] flex items-center justify-center text-white text-2xl font-bold">
               {userInitials}
             </div>
             <div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">{profile.name || 'Sin nombre'}</h2>
-              <p className="text-gray-500 dark:text-gray-400">{profile.email}</p>
+              <h2 className="text-xl font-bold text-[#4b4b4b] dark:text-white">{profile.name || 'Sin nombre'}</h2>
+              <p className="text-[#777777] dark:text-gray-400">{profile.email}</p>
               <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${
                 profile.tier === 'premium' 
                   ? 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-400'
                   : profile.tier === 'personalized'
                   ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400'
-                  : 'bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400'
+                  : 'bg-gray-100 dark:bg-gray-900 text-[#777777] dark:text-gray-400'
               }`}>
                 Plan {getTierName(profile.tier)}
               </span>
@@ -170,7 +170,7 @@ export default function PerfilPage() {
             {/* Name */}
             <div className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Nombre</label>
+                <label className="text-sm font-medium text-[#777777] dark:text-gray-400">Nombre</label>
                 {!isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
@@ -186,77 +186,79 @@ export default function PerfilPage() {
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-950 dark:bg-gray-900 dark:text-white focus:border-[#1472FF] focus:outline-none"
+                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-900 dark:bg-gray-800 dark:text-white focus:border-[#1472FF] focus:outline-none"
                     placeholder="Tu nombre"
                   />
-                  <button
+                  <Button
+                    variant="primary"
+                    size="md"
                     onClick={handleSaveName}
                     disabled={isSaving}
-                    className="px-4 py-2 rounded-xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] disabled:opacity-50 disabled:active:border-b-4 disabled:active:mt-0 transition-all"
                   >
                     {isSaving ? 'Guardando...' : 'Guardar'}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="md"
                     onClick={() => {
                       setIsEditing(false);
                       setEditName(profile.name);
                     }}
-                    className="px-4 py-2 rounded-xl font-bold text-sm uppercase tracking-wide bg-white dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-300 border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 hover:bg-gray-50 dark:hover:bg-gray-800 active:border-b-2 active:mt-[2px] transition-all"
                   >
                     Cancelar
-                  </button>
+                  </Button>
                 </div>
               ) : (
-                <p className="text-gray-900 dark:text-white">{profile.name || 'Sin nombre'}</p>
+                <p className="text-[#4b4b4b] dark:text-white">{profile.name || 'Sin nombre'}</p>
               )}
             </div>
 
             {/* Email */}
             <div className="p-6">
-              <label className="text-sm font-medium text-gray-500 dark:text-gray-400 block mb-2">Correo electrónico</label>
-              <p className="text-gray-900 dark:text-white">{profile.email}</p>
+              <label className="text-sm font-medium text-[#777777] dark:text-gray-400 block mb-2">Correo electrónico</label>
+              <p className="text-[#4b4b4b] dark:text-white">{profile.email}</p>
             </div>
 
             {/* Member Since */}
             <div className="p-6">
-              <label className="text-sm font-medium text-gray-500 dark:text-gray-400 block mb-2">Miembro desde</label>
-              <p className="text-gray-900 dark:text-white">{formatDate(profile.createdAt)}</p>
+              <label className="text-sm font-medium text-[#777777] dark:text-gray-400 block mb-2">Miembro desde</label>
+              <p className="text-[#4b4b4b] dark:text-white">{formatDate(profile.createdAt)}</p>
             </div>
           </div>
         </div>
 
         {/* Project Card */}
         {profile.projectIdea && (
-          <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-950 overflow-hidden mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
             <div className="p-6">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Tu Proyecto</h3>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{profile.projectIdea}</p>
+              <h3 className="text-lg font-bold text-[#4b4b4b] dark:text-white mb-2">Tu Proyecto</h3>
+              <p className="text-[#777777] dark:text-gray-400 leading-relaxed">{profile.projectIdea}</p>
             </div>
           </div>
         )}
 
         {/* Configuration Section */}
-        <div id="configuracion" className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-950 overflow-hidden mb-6">
+        <div id="configuracion" className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
           <div className="p-6 border-b border-gray-100 dark:border-gray-800">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Configuración</h3>
+            <h3 className="text-lg font-bold text-[#4b4b4b] dark:text-white">Configuración</h3>
           </div>
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
             {/* Plan */}
             <div className="p-6 flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">Plan actual</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Plan {getTierName(profile.tier)}</p>
+                <p className="font-medium text-[#4b4b4b] dark:text-white">Plan actual</p>
+                <p className="text-sm text-[#777777] dark:text-gray-400">Plan {getTierName(profile.tier)}</p>
               </div>
-              <button className="px-4 py-2 rounded-2xl font-bold uppercase tracking-wide text-sm bg-[#1472FF] text-white border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-0 active:mt-1 transition-all duration-150">
+              <Button variant="primary" size="md" rounded2xl>
                 Mejorar Plan
-              </button>
+              </Button>
             </div>
 
             {/* Notifications */}
             <div className="p-6 flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">Notificaciones</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Recibe actualizaciones por correo</p>
+                <p className="font-medium text-[#4b4b4b] dark:text-white">Notificaciones</p>
+                <p className="text-sm text-[#777777] dark:text-gray-400">Recibe actualizaciones por correo</p>
               </div>
               <button className="w-12 h-6 rounded-full bg-[#1472FF] relative transition-colors">
                 <span className="absolute right-1 top-1 w-4 h-4 rounded-full bg-white transition-transform" />
@@ -266,22 +268,23 @@ export default function PerfilPage() {
         </div>
 
         {/* Danger Zone */}
-        <div className="bg-white dark:bg-gray-900 rounded-2xl border border-red-200 dark:border-red-900 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-red-200 dark:border-red-900 overflow-hidden">
           <div className="p-6 border-b border-red-100 dark:border-red-900/50">
             <h3 className="text-lg font-bold text-red-600 dark:text-red-500">Zona de peligro</h3>
           </div>
           <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-gray-900 dark:text-white">Cerrar sesión</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">Salir de tu cuenta en este dispositivo</p>
+                <p className="font-medium text-[#4b4b4b] dark:text-white">Cerrar sesión</p>
+                <p className="text-sm text-[#777777] dark:text-gray-400">Salir de tu cuenta en este dispositivo</p>
               </div>
-              <button
+              <Button
+                variant="danger"
+                size="md"
                 onClick={handleLogout}
-                className="px-4 py-2 rounded-xl bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 text-sm font-medium transition-colors"
               >
                 Cerrar sesión
-              </button>
+              </Button>
             </div>
           </div>
         </div>

@@ -30,3 +30,8 @@ export const depthStructure = `${depth.border} ${depth.bottom} ${depth.transitio
 
 /** Active en elementos dentro de `group` (p. ej. LessonItem). */
 export const depthActiveGroup = 'group-active:border-b-2 group-active:mt-[2px]';
+
+/** Regla: Primary, Outline y Nav Bar siempre la misma altura — px-4 py-2, text-sm, min-h-[40px]. */
+export const DEPTH_BUTTON_HEIGHT = 'min-h-[40px]';
+export const DEPTH_BUTTON_PADDING = 'px-4 py-2';
+export const DEPTH_BUTTON_TEXT = 'text-sm';

@@ -2,6 +2,10 @@
 
 import Link from 'next/link';
 import { useState, useMemo, useEffect } from 'react';
+import Button from '@/components/ui/Button';
+import EmptyState from '@/components/ui/EmptyState';
+import Card, { CardFlat } from '@/components/ui/Card';
+import Tag from '@/components/ui/Tag';
 
 interface FavoritesContentProps {
   learningPath?: any;
@@ -78,7 +82,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
   const hasVideos = Object.keys(videosByPhase).length > 0;
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 p-6">
+    <div className="min-h-screen bg-white dark:bg-gray-800 p-6">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">videos favoritos</h1>
@@ -166,9 +170,9 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
                             
                             {video.section && (
                               <div className="flex items-center gap-2 mb-3">
-                                <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-medium">
+                                <Tag variant="neutral" className="text-xs px-2 py-0.5">
                                   {video.section}
-                                </span>
+                                </Tag>
                               </div>
                             )}
 
@@ -229,23 +233,21 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
           })}
         </div>
       ) : (
-        <div className="bg-gray-50 rounded-xl border border-gray-200 p-12 text-center max-w-2xl mx-auto mt-12">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <EmptyState
+          icon={
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-          </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Aún no tienes videos favoritos</h3>
-          <p className="text-gray-500 mb-6 max-w-sm mx-auto">
-            Marca videos como favoritos mientras aprendes para crear tu propia colección personalizada y acceder a ellos rápidamente.
-          </p>
-          <Link
-            href="/dashboard/my-path"
-            className="inline-flex items-center justify-center px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] transition-all"
-          >
-            Explorar mi ruta
-          </Link>
-        </div>
+          }
+          title="Aún no tienes videos favoritos"
+          description="Marca videos como favoritos mientras aprendes para crear tu propia colección personalizada y acceder a ellos rápidamente."
+          action={
+            <Button variant="primary" size="md" href="/dashboard/my-path">
+              Explorar mi ruta
+            </Button>
+          }
+          className="max-w-2xl mx-auto mt-12"
+        />
       )}
     </div>
   );

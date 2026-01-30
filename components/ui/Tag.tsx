@@ -16,7 +16,7 @@ const variantStyles: Record<TagVariant, string> = {
 
   /** White bg, gray text, neutral border */
   outline:
-    'bg-white dark:bg-gray-900 text-[#4b4b4b] dark:text-gray-300 border border-gray-200 dark:border-gray-700',
+    'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border border-gray-200 dark:border-gray-700',
 
   /** Green-tinted bg, green text */
   success:

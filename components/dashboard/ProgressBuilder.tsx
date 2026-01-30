@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { CardFlat } from '@/components/ui/Card';
+import ProgressBar from '@/components/ui/ProgressBar';
 
 interface ProgressBuilderProps {
   totalProgress: number; // 0-100
@@ -168,7 +170,7 @@ export default function ProgressBuilder({
     : 100;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+    <CardFlat className="shadow-lg overflow-hidden">
       {/* Header with Car Visual */}
       <div className="bg-[#1472FF] p-6">
         <div className="text-center mb-2">
@@ -187,14 +189,7 @@ export default function ProgressBuilder({
             <span>{totalProgress}% completado</span>
             <span>{videosWatched}/{totalVideos} videos</span>
           </div>
-          <div className="w-full bg-white/30 rounded-full h-4 overflow-hidden">
-            <div
-              className="bg-white rounded-full h-4 transition-all duration-1000 ease-out relative"
-              style={{ width: `${totalProgress}%` }}
-            >
-              <div className="absolute inset-0 bg-white/50 animate-shimmer" />
-            </div>
-          </div>
+          <ProgressBar value={totalProgress} size="lg" color="white" durationMs={1000} className="h-4" />
         </div>
       </div>
 
@@ -248,20 +243,15 @@ export default function ProgressBuilder({
               <div className="text-3xl">{nextPart.emoji}</div>
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-bold text-gray-900">
+                  <span className="font-bold text-[#4b4b4b] dark:text-white">
                     Próxima pieza: {nextPart.name}
                   </span>
-                  <span className="text-sm text-gray-500">{nextPart.unlockAt}%</span>
+                  <span className="text-sm text-[#777777] dark:text-gray-400">{nextPart.unlockAt}%</span>
                 </div>
-                <p className="text-xs text-gray-600 mb-2">
+                <p className="text-xs text-[#777777] dark:text-gray-400 mb-2">
                   {nextPart.description}
                 </p>
-                <div className="w-full bg-yellow-200 rounded-full h-2">
-                  <div
-                    className="bg-yellow-500 rounded-full h-2 transition-all duration-500"
-                    style={{ width: `${progressToNext}%` }}
-                  />
-                </div>
+                <ProgressBar value={progressToNext} size="md" color="yellow" durationMs={500} />
               </div>
             </div>
           </div>
@@ -278,13 +268,13 @@ export default function ProgressBuilder({
       </div>
 
       {/* Stats Footer */}
-      <div className="bg-gray-50 px-4 py-3 border-t border-gray-200">
+      <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-t border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-4">
-            <span className="text-gray-600">
-              <span className="font-bold text-green-600">{unlockedParts.length}</span>/{parts.length} piezas
+            <span className="text-[#777777] dark:text-gray-400">
+              <span className="font-bold text-[#22c55e]">{unlockedParts.length}</span>/{parts.length} piezas
             </span>
-            <span className="text-gray-600">
+            <span className="text-[#777777] dark:text-gray-400">
               <span className="font-bold text-[#1472FF]">{phasesCompleted}</span>/{totalPhases} fases
             </span>
           </div>
@@ -321,15 +311,6 @@ export default function ProgressBuilder({
         )}
       </div>
 
-      <style jsx>{`
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-        .animate-shimmer {
-          animation: shimmer 2s infinite;
-        }
-      `}</style>
-    </div>
+    </CardFlat>
   );
 }

@@ -12,10 +12,10 @@ const base =
   'rounded-2xl border-2 border-b-4 transition-all duration-150';
 
 const variantStyles = {
-  /** White / dark-gray-900 with neutral depth border */
+  /** White / dark-gray-800 with neutral depth border */
   neutral:
-    'bg-white dark:bg-gray-900 ' +
-    'border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 ' +
+    'bg-white dark:bg-gray-800 ' +
+    'border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'text-[#4b4b4b] dark:text-white',
 
   /** #1472FF background with #0E5FCC depth border */
@@ -28,7 +28,7 @@ const variantStyles = {
 } as const;
 
 const hoverStyles = {
-  neutral: 'hover:bg-gray-50 dark:hover:bg-gray-800',
+  neutral: 'hover:bg-gray-50 dark:hover:bg-gray-900',
   primary: 'hover:bg-[#1265e0]',
   completado: '', // completado has no hover in the design system
 } as const;
@@ -116,7 +116,7 @@ export function CardFlat({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={`rounded-2xl border-2 border-gray-200 dark:border-gray-950 bg-white dark:bg-gray-900 ${className}`}
+      className={`rounded-2xl border-2 border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 ${className}`}
       {...rest}
     >
       {children}

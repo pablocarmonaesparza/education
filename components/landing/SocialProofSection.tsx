@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Card from '@/components/ui/Card';
 
 export default function SocialProofSection() {
   const testimonials = [
@@ -67,9 +68,9 @@ export default function SocialProofSection() {
   ];
 
   return (
-    <section className="py-24 md:py-32 bg-white">
+    <section className="py-24 md:py-32 bg-white dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Stats Grid - Lomma style */}
+        {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-24 md:mb-32">
           {stats.map((stat, index) => (
             <motion.div
@@ -83,27 +84,27 @@ export default function SocialProofSection() {
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#1472FF] text-white mb-4">
                 {stat.icon}
               </div>
-              <div className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              <div className="text-3xl md:text-4xl font-bold text-[#4b4b4b] dark:text-white mb-2">
                 {stat.number}
               </div>
-              <div className="text-sm md:text-base text-gray-600">
+              <div className="text-sm md:text-base text-[#777777] dark:text-gray-400">
                 {stat.label}
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Section Header - Lomma style */}
+        {/* Section Header */}
         <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 leading-tight">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#4b4b4b] dark:text-white mb-4 leading-tight">
             Lo Que Dicen Nuestros Estudiantes
           </h2>
-          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto font-light">
+          <p className="text-xl md:text-2xl text-[#777777] dark:text-gray-400 max-w-3xl mx-auto font-light">
             Personas reales construyendo proyectos reales con IA
           </p>
         </div>
 
-        {/* Testimonials Grid - Lomma style */}
+        {/* Testimonials Grid */}
         <div className="grid md:grid-cols-3 gap-6 md:gap-8">
           {testimonials.map((testimonial, index) => (
             <motion.div
@@ -112,42 +113,43 @@ export default function SocialProofSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
               viewport={{ once: true }}
-              className="bg-white p-8 md:p-10 rounded-2xl border border-gray-100 hover:border-gray-200 transition-all duration-300"
             >
-              {/* Rating */}
-              <div className="flex gap-1 mb-4">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <svg
-                    key={i}
-                    className="w-5 h-5 text-yellow-400 fill-current"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
+              <Card variant="neutral" padding="lg" className="md:p-10 h-full">
+                {/* Rating */}
+                <div className="flex gap-1 mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <svg
+                      key={i}
+                      className="w-5 h-5 text-yellow-400 fill-current"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
 
-              {/* Quote */}
-              <p className="text-gray-700 mb-6 leading-relaxed">
-                "{testimonial.quote}"
-              </p>
+                {/* Quote */}
+                <p className="text-[#4b4b4b] dark:text-gray-300 mb-6 leading-relaxed">
+                  &ldquo;{testimonial.quote}&rdquo;
+                </p>
 
-              {/* Author */}
-              <div className="flex items-center gap-4">
-                <img
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div>
-                  <div className="font-semibold text-gray-900">
-                    {testimonial.name}
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    {testimonial.role}
+                {/* Author */}
+                <div className="flex items-center gap-4">
+                  <img
+                    src={testimonial.image}
+                    alt={testimonial.name}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                  <div>
+                    <div className="font-semibold text-[#4b4b4b] dark:text-white">
+                      {testimonial.name}
+                    </div>
+                    <div className="text-sm text-[#777777] dark:text-gray-400">
+                      {testimonial.role}
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Card>
             </motion.div>
           ))}
         </div>
@@ -160,14 +162,13 @@ export default function SocialProofSection() {
           viewport={{ once: true }}
           className="mt-20 text-center"
         >
-          <p className="text-gray-600 mb-8">Confiado por profesionales en:</p>
+          <p className="text-[#777777] dark:text-gray-400 mb-8">Confiado por profesionales en:</p>
           <div className="flex flex-wrap justify-center items-center gap-12 opacity-50">
-            {/* Placeholder para logos de empresas */}
-            <div className="text-2xl font-bold text-gray-400">Google</div>
-            <div className="text-2xl font-bold text-gray-400">Meta</div>
-            <div className="text-2xl font-bold text-gray-400">Amazon</div>
-            <div className="text-2xl font-bold text-gray-400">Microsoft</div>
-            <div className="text-2xl font-bold text-gray-400">Apple</div>
+            <div className="text-2xl font-bold text-gray-400 dark:text-gray-500">Google</div>
+            <div className="text-2xl font-bold text-gray-400 dark:text-gray-500">Meta</div>
+            <div className="text-2xl font-bold text-gray-400 dark:text-gray-500">Amazon</div>
+            <div className="text-2xl font-bold text-gray-400 dark:text-gray-500">Microsoft</div>
+            <div className="text-2xl font-bold text-gray-400 dark:text-gray-500">Apple</div>
           </div>
         </motion.div>
       </div>

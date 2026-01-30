@@ -3,6 +3,10 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { SpinnerPage } from '@/components/ui/Spinner';
+import Button from '@/components/ui/Button';
+import ProgressBar from '@/components/ui/ProgressBar';
+import Tag from '@/components/ui/Tag';
 
 interface Exercise {
   number: number;
@@ -187,9 +191,7 @@ export default function RetosPage() {
 
   if (isLoading) {
     return (
-      <div className="h-[calc(100vh-10rem)] md:h-[calc(100vh-11rem)] bg-transparent flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
-      </div>
+      <SpinnerPage />
     );
   }
 
@@ -199,7 +201,7 @@ export default function RetosPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">retos</h1>
-            <p className="mt-2 text-gray-500 dark:text-gray-400">Practica lo que aprendes</p>
+            <p className="mt-2 text-[#777777] dark:text-gray-400">Practica lo que aprendes</p>
           </div>
 
           <div className="max-w-2xl mx-auto mt-16">
@@ -209,19 +211,20 @@ export default function RetosPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+              <h2 className="text-2xl font-bold text-[#4b4b4b] dark:text-white mb-3">
                 Aún no tienes retos
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-6">
+              <p className="text-[#777777] dark:text-gray-400 max-w-md mx-auto mb-6">
                 Los retos se generan automáticamente cuando creas tu curso personalizado. 
                 Son ejercicios prácticos diseñados específicamente para tu proyecto.
               </p>
-              <button
+              <Button
+                variant="primary"
+                size="lg"
                 onClick={() => router.push('/intake')}
-                className="px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wide text-white bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] transition-all"
               >
                 Crear mi curso
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -238,22 +241,17 @@ export default function RetosPage() {
       <div className="h-full flex gap-4 p-4 max-w-7xl mx-auto w-full">
         
         {/* Sidebar - Exercise List */}
-        <div className="w-80 flex-shrink-0 h-full flex flex-col bg-gray-50 dark:bg-gray-900 rounded-2xl overflow-hidden">
+        <div className="w-80 flex-shrink-0 h-full flex flex-col bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden">
           {/* Header */}
           <div className="p-4 border-b border-gray-200 dark:border-gray-800">
-            <h2 className="font-bold text-gray-900 dark:text-white mb-1">Retos</h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">
+            <h2 className="font-bold text-[#4b4b4b] dark:text-white mb-1">Retos</h2>
+            <p className="text-xs text-[#777777] dark:text-gray-400 mb-3 line-clamp-2">
               {exercisesData?.user_project}
             </p>
             {/* Progress */}
             <div className="flex items-center gap-2">
-              <div className="flex-1 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-[#1472FF] transition-all duration-500"
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
-              <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+              <ProgressBar value={progressPercent} size="sm" color="primary" durationMs={500} className="flex-1" />
+              <span className="text-xs font-medium text-[#777777] dark:text-gray-400">
                 {completedCount}/{totalCount}
               </span>
             </div>
@@ -284,7 +282,7 @@ export default function RetosPage() {
                         ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
                         : isActive
                           ? 'bg-[#1472FF] text-white'
-                          : 'border-2 border-gray-300 dark:border-gray-950 text-gray-500 dark:text-gray-400'
+                          : 'border-2 border-gray-300 dark:border-gray-900 text-[#777777] dark:text-gray-400'
                   }`}>
                     {isCompleted ? (
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -307,13 +305,13 @@ export default function RetosPage() {
                         : isActive 
                           ? 'text-[#1472FF]' 
                           : isCompleted
-                            ? 'text-gray-500 dark:text-gray-400'
-                            : 'text-gray-900 dark:text-white'
+                            ? 'text-[#777777] dark:text-gray-400'
+                            : 'text-[#4b4b4b] dark:text-white'
                     }`}>
                       {exercise.title}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className={`text-xs px-1.5 py-0.5 rounded ${isLocked ? 'bg-gray-100 text-gray-400 dark:bg-gray-900 dark:text-gray-500' : getTypeColor()}`}>
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${isLocked ? 'bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500' : getTypeColor()}`}>
                         {exercise.type}
                       </span>
                       <span className="text-xs text-gray-400">
@@ -336,15 +334,15 @@ export default function RetosPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-2">
-                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${getTypeColor()}`}>
+                      <Tag variant="primary" className="text-xs">
                         {currentExercise.type}
-                      </span>
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                      </Tag>
+                      <span className="text-xs text-[#777777] dark:text-gray-400">
                         Fase {currentExercise.phase}
                       </span>
                       {getDifficultyDots(currentExercise.difficulty)}
                     </div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                    <h1 className="text-2xl font-bold text-[#4b4b4b] dark:text-white">
                       {currentExercise.number}. {currentExercise.title}
                     </h1>
                   </div>
@@ -355,10 +353,10 @@ export default function RetosPage() {
                     disabled={!currentExercise.isUnlocked && !currentExercise.isCompleted}
                     className={`flex-shrink-0 px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ${
                       !currentExercise.isUnlocked && !currentExercise.isCompleted
-                        ? 'bg-gray-100 dark:bg-gray-900 text-gray-400 dark:text-gray-500 cursor-not-allowed'
+                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
                         : currentExercise.isCompleted
-                          ? 'bg-blue-50 dark:bg-blue-900/30 text-[#1472FF] dark:text-[#1472FF] hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-400'
-                          : 'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-[#1472FF] dark:hover:text-[#1472FF]'
+                          ? 'bg-blue-50 dark:bg-blue-900/30 text-[#1472FF] dark:text-[#1472FF] hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-400'
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-[#1472FF] dark:hover:text-[#1472FF]'
                     }`}
                   >
                     {!currentExercise.isUnlocked && !currentExercise.isCompleted ? (
@@ -391,27 +389,27 @@ export default function RetosPage() {
               <div className="flex-1 overflow-y-auto">
                 <div className="grid gap-6">
                   {/* Description */}
-                  <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
+                    <h3 className="text-lg font-semibold text-[#4b4b4b] dark:text-white mb-3 flex items-center gap-2">
                       <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       Descripción
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                    <p className="text-[#777777] dark:text-gray-400 leading-relaxed">
                       {currentExercise.description}
                     </p>
                   </div>
 
                   {/* Deliverable */}
                   <div className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-gray-900 rounded-2xl p-6 border border-blue-200 dark:border-blue-900">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                    <h3 className="text-lg font-semibold text-[#4b4b4b] dark:text-white mb-3 flex items-center gap-2">
                       <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       Entregable
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                    <p className="text-[#777777] dark:text-gray-400 leading-relaxed">
                       {currentExercise.deliverable}
                     </p>
                   </div>
@@ -420,10 +418,10 @@ export default function RetosPage() {
                   {currentExercise.videos_required && currentExercise.videos_required.length > 0 && (
                     <div className={`rounded-2xl p-6 border ${
                       currentExercise.missingVideos.length > 0
-                        ? 'bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-950'
-                        : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800'
+                        ? 'bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-900'
+                        : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-800'
                     }`}>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
+                      <h3 className="text-lg font-semibold text-[#4b4b4b] dark:text-white mb-1 flex items-center gap-2">
                         <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -431,7 +429,7 @@ export default function RetosPage() {
                         Videos requeridos
                       </h3>
                       {currentExercise.missingVideos.length > 0 && (
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                        <p className="text-sm text-[#777777] dark:text-gray-400 mb-3">
                           Completa los videos pendientes para desbloquear este reto
                         </p>
                       )}
@@ -445,7 +443,7 @@ export default function RetosPage() {
                               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
                                 isWatched
                                   ? 'bg-blue-50 dark:bg-blue-950/50 text-[#1472FF] dark:text-[#1472FF] hover:bg-blue-100 dark:hover:bg-blue-900/50'
-                                  : 'bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                                  : 'bg-gray-100 dark:bg-gray-800 text-[#777777] dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
                               }`}
                             >
                               {isWatched ? (
@@ -467,7 +465,7 @@ export default function RetosPage() {
 
                   {/* Time & Difficulty */}
                   <div className="flex gap-4">
-                    <div className="flex-1 bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
+                    <div className="flex-1 bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
                           <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -475,12 +473,12 @@ export default function RetosPage() {
                           </svg>
                         </div>
                         <div>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">Tiempo estimado</p>
-                          <p className="font-semibold text-gray-900 dark:text-white">{currentExercise.time_minutes} minutos</p>
+                          <p className="text-xs text-[#777777] dark:text-gray-400">Tiempo estimado</p>
+                          <p className="font-semibold text-[#4b4b4b] dark:text-white">{currentExercise.time_minutes} minutos</p>
                         </div>
                       </div>
                     </div>
-                    <div className="flex-1 bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
+                    <div className="flex-1 bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
                           <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -488,7 +486,7 @@ export default function RetosPage() {
                           </svg>
                         </div>
                         <div>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">Dificultad</p>
+                          <p className="text-xs text-[#777777] dark:text-gray-400">Dificultad</p>
                           <div className="mt-1">{getDifficultyDots(currentExercise.difficulty)}</div>
                         </div>
                       </div>

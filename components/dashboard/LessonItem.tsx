@@ -64,7 +64,7 @@ export default function LessonItem({
     if (isCurrent) {
       return 'border-2 border-b-4 border-[#0E5FCC] group-active:border-b-2 group-active:mt-[2px]';
     }
-    return 'border-2 border-b-4 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950 group-active:border-b-2 group-active:mt-[2px]';
+    return 'border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 group-active:border-b-2 group-active:mt-[2px]';
   };
 
   const handleExpandClick = (e: React.MouseEvent) => {

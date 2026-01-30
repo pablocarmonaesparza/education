@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import AuthNavbar from '@/components/auth/AuthNavbar';
 import { createClient } from '@/lib/supabase/client';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, Spinner } from '@/components/ui';
 
 function LoginContent() {
   const [email, setEmail] = useState<string>('');
@@ -167,12 +167,12 @@ function LoginContent() {
   };
 
   return (
-    <main className="min-h-screen flex flex-col relative overflow-hidden bg-white dark:bg-gray-900">
+    <main className="min-h-screen flex flex-col relative overflow-hidden bg-white dark:bg-gray-800">
       <AuthNavbar />
 
       <section className="min-h-screen flex items-center justify-center py-12 md:py-20 px-4 relative z-10">
         <div className="w-full max-w-md">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 md:p-10 border-2 border-gray-200 dark:border-gray-950">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-10 border-2 border-gray-200 dark:border-gray-900">
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
@@ -197,12 +197,15 @@ function LoginContent() {
                     <p className="text-yellow-700 dark:text-yellow-400 text-sm mb-3">
                       Supabase aún no está configurado. Puedes explorar la plataforma en modo demo.
                     </p>
-                    <Link
+                    <Button
+                      variant="primary"
+                      size="md"
+                      rounded2xl
                       href="/demo"
-                      className="inline-block bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-2xl text-sm font-bold uppercase tracking-wide border-b-4 border-yellow-600 hover:border-yellow-700 active:border-b-0 active:mt-1 transition-all duration-150"
+                      className="bg-yellow-500 hover:bg-yellow-600 border-yellow-600"
                     >
                       Ver Demo
-                    </Link>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -252,17 +255,21 @@ function LoginContent() {
 
             {/* Divider */}
             <div className="mt-6 mb-4 flex items-center">
-              <div className="flex-1 border-t border-gray-300 dark:border-gray-950"></div>
+              <div className="flex-1 border-t border-gray-300 dark:border-gray-900"></div>
               <span className="px-4 text-sm text-gray-500 dark:text-gray-400">O continúa con</span>
-              <div className="flex-1 border-t border-gray-300 dark:border-gray-950"></div>
+              <div className="flex-1 border-t border-gray-300 dark:border-gray-900"></div>
             </div>
 
             {/* Google OAuth */}
-            <button
+            <Button
               type="button"
+              variant="outline"
+              depth="full"
+              size="none"
+              rounded2xl
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 border-2 border-b-4 border-gray-200 dark:border-gray-950 py-4 rounded-2xl font-bold hover:bg-gray-50 dark:hover:bg-gray-700 active:border-b-2 active:mt-[2px] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-3 py-4"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
@@ -283,7 +290,7 @@ function LoginContent() {
                 />
               </svg>
               <span>{loading ? 'Conectando...' : 'Continuar con Google'}</span>
-            </button>
+            </Button>
 
             {/* Signup Link */}
             <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
@@ -302,10 +309,10 @@ function LoginContent() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <main className="min-h-screen flex flex-col relative overflow-hidden bg-white dark:bg-gray-900">
+      <main className="min-h-screen flex flex-col relative overflow-hidden bg-white dark:bg-gray-800">
         <AuthNavbar />
         <section className="min-h-screen flex items-center justify-center py-12 md:py-20 px-4 relative z-10">
-          <div className="w-8 h-8 border-2 border-[#1472FF] border-t-transparent rounded-full animate-spin" />
+          <Spinner />
         </section>
       </main>
     }>

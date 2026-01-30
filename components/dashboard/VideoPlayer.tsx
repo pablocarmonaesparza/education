@@ -1,5 +1,7 @@
 'use client';
 
+import Button from '@/components/ui/Button';
+
 interface VideoPlayerProps {
   videoId?: string; // Made optional as videoUrl will be primary
   videoUrl: string;
@@ -38,8 +40,8 @@ export default function VideoPlayer({
       <p className="text-base mb-4">URL: {videoUrl}</p>
       {videoId && <p className="text-sm text-gray-400">Video ID: {videoId} (Platform: {platform})</p>}
       <div className="flex gap-4 mt-4">
-        <button onClick={handleFakeProgress} className="px-4 py-2 bg-blue-500 rounded-md">Simulate Progress</button>
-        <button onClick={handleFakeComplete} className="px-4 py-2 bg-green-500 rounded-md">Simulate Complete</button>
+        <Button variant="primary" size="md" onClick={handleFakeProgress}>Simulate Progress</Button>
+        <Button variant="completado" size="md" onClick={handleFakeComplete}>Simulate Complete</Button>
       </div>
     </div>
   );

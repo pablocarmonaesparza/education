@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import { CardFlat } from '@/components/ui/Card';
+import Tag from '@/components/ui/Tag';
 
 interface Badge {
   id: string;
@@ -167,12 +169,12 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
   const earnedCount = allBadges.filter(b => b.earned).length;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-4">
+    <CardFlat className="shadow-lg p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-lg font-bold text-gray-900">Logros</h3>
-          <p className="text-sm text-gray-500">
+          <h3 className="text-lg font-bold text-[#4b4b4b] dark:text-white">Logros</h3>
+          <p className="text-sm text-[#777777] dark:text-gray-400">
             {earnedCount}/{allBadges.length} desbloqueados
           </p>
         </div>
@@ -190,7 +192,7 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
               transition-all duration-200 hover:scale-105
               ${badge.earned
                 ? `${rarityBorders[badge.rarity]} ${rarityColors[badge.rarity]} bg-opacity-10`
-                : 'border-gray-200 bg-gray-100'
+                : 'border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800'
               }
             `}
           >
@@ -198,7 +200,7 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
               {badge.icon}
             </span>
             {badge.earned && (
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#22c55e] rounded-full border-2 border-white dark:border-gray-900" />
             )}
           </button>
         ))}
@@ -206,13 +208,13 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
 
       {/* Selected Badge Detail */}
       {selectedBadge && (
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+        <div className="mt-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
           <div className="flex items-start gap-3">
             <div className={`
               w-12 h-12 rounded-lg flex items-center justify-center
               ${selectedBadge.earned
                 ? `${rarityColors[selectedBadge.rarity]}`
-                : 'bg-gray-200'
+                : 'bg-gray-200 dark:bg-gray-700'
               }
             `}>
               <span className={`text-2xl ${selectedBadge.earned ? '' : 'grayscale'}`}>
@@ -221,31 +223,31 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <h4 className="font-bold text-gray-900">{selectedBadge.name}</h4>
-                <span className={`
-                  text-xs px-2 py-0.5 rounded-full font-medium
-                  ${selectedBadge.rarity === 'common' ? 'bg-gray-200 text-gray-600' : ''}
-                  ${selectedBadge.rarity === 'rare' ? 'bg-[#1472FF]/10 text-[#1472FF]' : ''}
-                  ${selectedBadge.rarity === 'epic' ? 'bg-[#1472FF]/10 text-[#1472FF]' : ''}
-                  ${selectedBadge.rarity === 'legendary' ? 'bg-yellow-100 text-yellow-600' : ''}
-                `}>
+                <h4 className="font-bold text-[#4b4b4b] dark:text-white">{selectedBadge.name}</h4>
+                <Tag
+                  variant={
+                    selectedBadge.rarity === 'common' ? 'neutral' :
+                    selectedBadge.rarity === 'legendary' ? 'warning' : 'primary'
+                  }
+                  className="text-xs px-2 py-0.5"
+                >
                   {selectedBadge.rarity === 'common' && 'Común'}
                   {selectedBadge.rarity === 'rare' && 'Raro'}
                   {selectedBadge.rarity === 'epic' && 'Épico'}
                   {selectedBadge.rarity === 'legendary' && 'Legendario'}
-                </span>
+                </Tag>
               </div>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-[#777777] dark:text-gray-400 mt-1">
                 {selectedBadge.description}
               </p>
               <div className="flex items-center gap-4 mt-2 text-xs">
-                <span className="text-green-600 font-medium">
+                <span className="text-[#22c55e] font-medium">
                   +{selectedBadge.xpReward} XP
                 </span>
                 {selectedBadge.earned ? (
-                  <span className="text-gray-500">✓ Desbloqueado</span>
+                  <span className="text-[#777777] dark:text-gray-400">✓ Desbloqueado</span>
                 ) : (
-                  <span className="text-gray-400">{selectedBadge.requirement}</span>
+                  <span className="text-[#777777] dark:text-gray-500">{selectedBadge.requirement}</span>
                 )}
               </div>
             </div>
@@ -257,6 +259,6 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
       <button className="mt-3 w-full text-center text-sm text-[#1472FF] hover:text-[#0E5FCC] font-medium">
         Ver todos los logros →
       </button>
-    </div>
+    </CardFlat>
   );
 }

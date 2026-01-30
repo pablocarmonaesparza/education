@@ -31,7 +31,7 @@ function Block({
 
 export default function ComponentesPage() {
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-950">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-800">
       <header className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-extrabold uppercase tracking-tight text-[#4b4b4b] dark:text-white">
@@ -160,10 +160,11 @@ export default function ComponentesPage() {
 
             <Block title="Botones · Depth" code="border-2 border-b-4 · active:border-b-2 active:mt-[2px]" labelClass="text-[#777777]">
               <div className="flex flex-wrap gap-2">
-                <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] transition-all">Primary</button>
-                <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-white text-[#4b4b4b] border-2 border-b-4 border-gray-200 border-b-gray-300 hover:bg-gray-300 active:border-b-2 active:mt-[2px] transition-all">Outline</button>
-                <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-gray-300 text-[#4b4b4b] border-2 border-b-4 border-[#aeb3bb] border-b-[#aeb3bb] hover:bg-[#aeb3bb] active:border-b-2 active:mt-[2px] transition-all">Nav Bar</button>
+                <button className="min-h-[40px] flex items-center px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] transition-all">Primary</button>
+                <button className="min-h-[40px] flex items-center px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-white text-[#4b4b4b] border-2 border-b-4 border-gray-200 border-b-gray-300 hover:bg-gray-300 active:border-b-2 active:mt-[2px] transition-all">Outline</button>
+                <button className="min-h-[40px] flex items-center px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-gray-300 text-[#4b4b4b] border-2 border-b-4 border-[#aeb3bb] border-b-[#aeb3bb] hover:bg-[#aeb3bb] active:border-b-2 active:mt-[2px] transition-all">Nav Bar</button>
               </div>
+              <p className="text-[10px] text-[#777777] mt-2 border-t border-gray-200 pt-2">Regla: misma altura siempre — <code className="font-mono">px-4 py-2</code>, <code className="font-mono">text-sm</code>, <code className="font-mono">min-h-[40px]</code>.</p>
             </Block>
 
             <Block title="Botones icono (+, avatar)" labelClass="text-[#777777]">
@@ -269,7 +270,7 @@ export default function ComponentesPage() {
               <p className="text-[10px] text-[#777777] mb-2">Pestañas de fases, strips. Opcional: gradientes en bordes.</p>
               <div className="flex gap-2 overflow-x-auto scrollbar-hide py-2 -mx-1">
                 {['Fase 1', 'Fase 2', 'Fase 3'].map((l, i) => (
-                  <span key={l} className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide border-2 border-b-4 ${i === 0 ? 'bg-[#1472FF] text-white border-[#0E5FCC]' : 'bg-white text-[#4b4b4b] border-gray-200 border-b-gray-300'}`}>{l}</span>
+                  <span key={l} className={`flex-shrink-0 min-h-[40px] inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide border-2 border-b-4 ${i === 0 ? 'bg-[#1472FF] text-white border-[#0E5FCC]' : 'bg-white text-[#4b4b4b] border-gray-200 border-b-gray-300'}`}>{l}</span>
                 ))}
               </div>
               <code className="text-[10px] text-[#777777] block mt-1 font-mono">flex gap-2 overflow-x-auto scrollbar-hide</code>
@@ -397,10 +398,11 @@ export default function ComponentesPage() {
 
             <Block title="Botones · Depth" code="border-2 border-b-4 · active:border-b-2 active:mt-[2px]" labelClass="text-gray-400">
               <div className="flex flex-wrap gap-2">
-                <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] transition-all">Primary</button>
-                <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-gray-800 text-gray-300 border-2 border-b-4 border-gray-900 border-b-gray-900 hover:bg-gray-900 active:border-b-2 active:mt-[2px] transition-all">Outline</button>
-                <button className="px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-gray-900 text-gray-300 border-2 border-b-4 border-gray-900 border-b-gray-900 hover:bg-gray-900 active:border-b-2 active:mt-[2px] transition-all">Nav Bar</button>
+                <button className="min-h-[40px] flex items-center px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-[#1472FF] text-white border-2 border-b-4 border-[#0E5FCC] hover:bg-[#0E5FCC] active:border-b-2 active:mt-[2px] transition-all">Primary</button>
+                <button className="min-h-[40px] flex items-center px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-gray-800 text-gray-300 border-2 border-b-4 border-gray-900 border-b-gray-900 hover:bg-gray-900 active:border-b-2 active:mt-[2px] transition-all">Outline</button>
+                <button className="min-h-[40px] flex items-center px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide bg-gray-900 text-gray-300 border-2 border-b-4 border-gray-900 border-b-gray-900 hover:bg-gray-900 active:border-b-2 active:mt-[2px] transition-all">Nav Bar</button>
               </div>
+              <p className="text-[10px] text-gray-400 mt-2 border-t border-gray-950 pt-2">Regla: misma altura siempre — <code className="font-mono">px-4 py-2</code>, <code className="font-mono">text-sm</code>, <code className="font-mono">min-h-[40px]</code>.</p>
             </Block>
 
             <Block title="Botones icono (+, avatar)" labelClass="text-gray-400">
@@ -505,7 +507,7 @@ export default function ComponentesPage() {
             <Block title="Scroll horizontal" code="overflow-x-auto · scrollbar-hide" labelClass="text-gray-400">
               <div className="flex gap-2 overflow-x-auto scrollbar-hide py-2 -mx-1">
                 {['Fase 1', 'Fase 2', 'Fase 3'].map((l, i) => (
-                  <span key={l} className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide border-2 border-b-4 ${i === 0 ? 'bg-[#1472FF] text-white border-[#0E5FCC]' : 'bg-gray-800 text-gray-300 border-gray-900 border-b-gray-900'}`}>{l}</span>
+                  <span key={l} className={`flex-shrink-0 min-h-[40px] inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide border-2 border-b-4 ${i === 0 ? 'bg-[#1472FF] text-white border-[#0E5FCC]' : 'bg-gray-800 text-gray-300 border-gray-900 border-b-gray-900'}`}>{l}</span>
                 ))}
               </div>
               <code className="text-[10px] text-gray-400 block mt-1 font-mono">flex gap-2 overflow-x-auto scrollbar-hide</code>
@@ -608,7 +610,7 @@ export default function ComponentesPage() {
               <p className="text-xs font-bold uppercase tracking-wider text-[#777777] dark:text-gray-400 mb-2">HorizontalScroll</p>
               <HorizontalScroll fadeEdges>
                 {['Fase 1', 'Fase 2', 'Fase 3'].map((l, i) => (
-                  <span key={l} className={`flex-shrink-0 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide border-2 border-b-4 ${i === 0 ? 'bg-[#1472FF] text-white border-[#0E5FCC]' : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900'}`}>{l}</span>
+                  <span key={l} className={`flex-shrink-0 min-h-[40px] inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide border-2 border-b-4 ${i === 0 ? 'bg-[#1472FF] text-white border-[#0E5FCC]' : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900'}`}>{l}</span>
                 ))}
               </HorizontalScroll>
             </div>

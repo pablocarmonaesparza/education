@@ -28,13 +28,13 @@ export default function AnimatedBackground() {
     // Wait until we know the actual dark mode state
     if (isDarkMode === null) return;
 
-    // Base colors
+    // Base colors — dark = gray-800 (#1f2937), mismo que textarea/cards
     const lightBase = { r: 255, g: 255, b: 255 }; // #FFFFFF
-    const darkBase = { r: 17, g: 24, b: 39 };     // #111827 (gray-900)
+    const darkBase = { r: 31, g: 41, b: 55 };     // #1f2937 (gray-800)
     const accent = { r: 20, g: 114, b: 255 };     // #1472FF
 
     const baseColor = isDarkMode ? darkBase : lightBase;
-    const initialBgColor = isDarkMode ? "#111827" : "#FFFFFF";
+    const initialBgColor = isDarkMode ? "#1f2937" : "#FFFFFF";
     
     // Set initial background color
     setBgColor(initialBgColor);
@@ -93,8 +93,8 @@ export default function AnimatedBackground() {
     return null;
   }
 
-  // Initial color based on mode
-  const initialColor = isDarkMode ? "#111827" : "#FFFFFF";
+  // Initial color based on mode — dark = gray-800
+  const initialColor = isDarkMode ? "#1f2937" : "#FFFFFF";
 
   return (
     <div
