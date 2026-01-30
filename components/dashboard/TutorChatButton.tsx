@@ -199,8 +199,8 @@ export default function TutorChatButton() {
               <div
                 className={`px-4 py-3 rounded-2xl border-2 border-b-4 ${
                   message.role === 'user'
-                    ? 'bg-gray-300 dark:bg-gray-800 text-[#4b4b4b] dark:text-white border-[#aeb3bb] dark:border-gray-950 border-b-[#aeb3bb] dark:border-b-gray-950'
-                    : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-950 border-b-gray-300 dark:border-b-gray-950'
+                    ? 'bg-gray-300 dark:bg-gray-800 text-[#4b4b4b] dark:text-white border-[#aeb3bb] dark:border-gray-900 border-b-[#aeb3bb] dark:border-b-gray-900'
+                    : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900'
                 }`}
               >
                 <p className="text-sm leading-relaxed">{message.content}</p>
@@ -212,7 +212,7 @@ export default function TutorChatButton() {
         {isLoading && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
-              <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-700">
+              <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900">
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                   <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -241,7 +241,7 @@ export default function TutorChatButton() {
               }}
               placeholder="Escribe tu mensaje..."
               rows={1}
-              className="w-full min-h-[3rem] max-h-[7.5rem] px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-700 bg-white dark:bg-gray-800 text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all resize-none overflow-y-auto"
+              className="w-full min-h-[3rem] max-h-[7.5rem] px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-900 border-b-4 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all resize-none overflow-y-auto"
             />
           </div>
           <Button

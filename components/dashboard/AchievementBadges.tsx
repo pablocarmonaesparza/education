@@ -192,7 +192,7 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
               transition-all duration-200 hover:scale-105
               ${badge.earned
                 ? `${rarityBorders[badge.rarity]} ${rarityColors[badge.rarity]} bg-opacity-10`
-                : 'border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800'
+                : 'border-gray-200 dark:border-gray-900 bg-gray-100 dark:bg-gray-800'
               }
             `}
           >

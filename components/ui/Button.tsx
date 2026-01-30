@@ -34,13 +34,13 @@ const variantStyles = {
   /** White / dark-gray filled with neutral depth border */
   outline:
     'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 ' +
-    'border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-700 ' +
+    'border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'hover:bg-gray-50 dark:hover:bg-gray-900',
 
   /** Same as outline visually */
   secondary:
     'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 ' +
-    'border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-700 ' +
+    'border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'hover:bg-gray-50 dark:hover:bg-gray-700',
 
   /** Transparent, no border – just hover highlight */
@@ -185,7 +185,7 @@ export const depthPrimaryColors =
 
 /** Outline depth color classes only. */
 export const depthOutlineColors =
-  'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900';
+  'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900';
 
 /** Bottom-only depth border classes (landing-page style). */
 export const depthBottomClasses =

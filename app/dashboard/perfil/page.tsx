@@ -144,7 +144,7 @@ export default function PerfilPage() {
         )}
 
         {/* Profile Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
           {/* Avatar Section */}
           <div className="p-6 flex items-center gap-4 border-b border-gray-100 dark:border-gray-800">
             <div className="w-20 h-20 rounded-full bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] flex items-center justify-center text-white text-2xl font-bold">
@@ -186,7 +186,7 @@ export default function PerfilPage() {
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:border-[#1472FF] focus:outline-none"
+                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-900 dark:bg-gray-800 dark:text-white focus:border-[#1472FF] focus:outline-none"
                     placeholder="Tu nombre"
                   />
                   <Button
@@ -229,7 +229,7 @@ export default function PerfilPage() {
 
         {/* Project Card */}
         {profile.projectIdea && (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
             <div className="p-6">
               <h3 className="text-lg font-bold text-[#4b4b4b] dark:text-white mb-2">Tu Proyecto</h3>
               <p className="text-[#777777] dark:text-gray-400 leading-relaxed">{profile.projectIdea}</p>
@@ -238,7 +238,7 @@ export default function PerfilPage() {
         )}
 
         {/* Configuration Section */}
-        <div id="configuracion" className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 overflow-hidden mb-6">
+        <div id="configuracion" className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
           <div className="p-6 border-b border-gray-100 dark:border-gray-800">
             <h3 className="text-lg font-bold text-[#4b4b4b] dark:text-white">Configuración</h3>
           </div>

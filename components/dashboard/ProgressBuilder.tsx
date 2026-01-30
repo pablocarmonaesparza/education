@@ -268,7 +268,7 @@ export default function ProgressBuilder({
       </div>
 
       {/* Stats Footer */}
-      <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-t border-gray-200 dark:border-gray-700">
+      <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-t border-gray-200 dark:border-gray-900">
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-4">
             <span className="text-[#777777] dark:text-gray-400">

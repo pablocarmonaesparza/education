@@ -184,7 +184,7 @@ export default function DashboardHeader() {
                 onClick={() => setShowProfileMenu(false)}
               />
               <CardFlat className="absolute right-0 top-full mt-2 w-56 shadow-lg py-2 z-20">
-                <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-700">
+                <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-900">
                   <p className="text-sm font-bold text-[#4b4b4b] dark:text-gray-100">{userDisplayName}</p>
                   <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{userProfile?.email}</p>
                 </div>

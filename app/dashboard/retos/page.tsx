@@ -282,7 +282,7 @@ export default function RetosPage() {
                         ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
                         : isActive
                           ? 'bg-[#1472FF] text-white'
-                          : 'border-2 border-gray-300 dark:border-gray-700 text-[#777777] dark:text-gray-400'
+                          : 'border-2 border-gray-300 dark:border-gray-900 text-[#777777] dark:text-gray-400'
                   }`}>
                     {isCompleted ? (
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -418,7 +418,7 @@ export default function RetosPage() {
                   {currentExercise.videos_required && currentExercise.videos_required.length > 0 && (
                     <div className={`rounded-2xl p-6 border ${
                       currentExercise.missingVideos.length > 0
-                        ? 'bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-700'
+                        ? 'bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-900'
                         : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-800'
                     }`}>
                       <h3 className="text-lg font-semibold text-[#4b4b4b] dark:text-white mb-1 flex items-center gap-2">

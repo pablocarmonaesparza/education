@@ -22,7 +22,7 @@ const variantStyles = {
   /** White / dark-gray with neutral depth border */
   outline:
     `${depthBase} bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 ` +
-    'border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-700 ' +
+    'border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'hover:bg-gray-50 dark:hover:bg-gray-900',
 
   /** No border, transparent bg, hover highlight only */

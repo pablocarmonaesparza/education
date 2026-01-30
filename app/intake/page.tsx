@@ -191,7 +191,7 @@ export default function IntakePage() {
             </div>
 
             <div className="mb-6 sm:mb-8">
-              <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 border-2 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-700 focus-within:border-[#1472FF] transition-all duration-300">
+              <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 border-2 border-gray-200 dark:border-gray-900 hover:border-gray-300 dark:hover:border-gray-700 focus-within:border-[#1472FF] transition-all duration-300">
                   <label className="block text-sm font-bold text-[#4b4b4b] dark:text-white mb-2">
                     Cuéntanos sobre tu proyecto
                   </label>

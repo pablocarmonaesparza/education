@@ -691,7 +691,7 @@ export default function DashboardPage() {
           {/* Gradient fade above progress bar */}
           <div className="h-8 bg-gradient-to-t from-white dark:from-gray-800 to-transparent pointer-events-none" />
           <div className="bg-white dark:bg-gray-800 pb-4 flex justify-center">
-            <div className="w-[90%] sm:w-[80%] max-w-2xl relative h-[37px] rounded-xl overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-700">
+            <div className="w-[90%] sm:w-[80%] max-w-2xl relative h-[37px] rounded-xl overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-900 border-b-4 border-b-gray-300 dark:border-b-gray-900">
               <div
                 className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"
                 style={{
@@ -765,7 +765,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Video Player */}
-            <div className="aspect-video bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center border-2 border-b-4 border-gray-800 dark:border-gray-700">
+            <div className="aspect-video bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center border-2 border-b-4 border-gray-800 dark:border-gray-900">
               {selectedVideo?.videoUrl ? (
                 <video
                   src={selectedVideo.videoUrl}

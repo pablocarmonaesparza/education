@@ -15,7 +15,7 @@ const variantStyles = {
   /** White / dark-gray-800 with neutral depth border */
   neutral:
     'bg-white dark:bg-gray-800 ' +
-    'border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-700 ' +
+    'border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'text-[#4b4b4b] dark:text-white',
 
   /** #1472FF background with #0E5FCC depth border */
@@ -116,7 +116,7 @@ export function CardFlat({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={`rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 ${className}`}
+      className={`rounded-2xl border-2 border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 ${className}`}
       {...rest}
     >
       {children}

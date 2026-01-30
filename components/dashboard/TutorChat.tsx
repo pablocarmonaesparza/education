@@ -11,13 +11,13 @@ export default function TutorChat() {
     <div className="fixed bottom-0 left-0 right-0 z-40">
       {/* Chat panel */}
       <div
-        className={`bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-800 shadow-lg transition-all duration-300 ease-in-out ${
+        className={`bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-900 shadow-lg transition-all duration-300 ease-in-out ${
           isOpen ? 'h-96' : 'h-0'
         } overflow-hidden`}
       >
         <div className="h-full flex flex-col">
           {/* Chat header */}
-          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-900 flex items-center justify-between">
             <h3 className="font-semibold text-[#4b4b4b] dark:text-white">Tutor IA</h3>
             <span className="text-xs text-[#777777] dark:text-gray-400">Pregúntame sobre tu curso</span>
           </div>
@@ -37,12 +37,12 @@ export default function TutorChat() {
           </div>
 
           {/* Chat input */}
-          <div className="p-4 border-t border-gray-100 dark:border-gray-800">
+          <div className="p-4 border-t border-gray-100 dark:border-gray-900">
             <div className="flex gap-2">
               <input
                 type="text"
                 placeholder="Escribe tu pregunta..."
-                className="flex-1 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white focus:outline-none focus:border-[#1472FF] text-sm"
+                className="flex-1 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white focus:outline-none focus:border-[#1472FF] text-sm"
               />
               <IconButton variant="primary">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

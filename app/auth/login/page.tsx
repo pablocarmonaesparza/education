@@ -189,7 +189,7 @@ function LoginContent() {
 
       <section className="min-h-screen flex items-center justify-center py-12 md:py-20 px-4 relative z-10">
         <div className="w-full max-w-md">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-10 border-2 border-b-4 border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-10 border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900">
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
@@ -272,9 +272,9 @@ function LoginContent() {
 
             {/* Divider */}
             <div className="mt-6 mb-4 flex items-center">
-              <div className="flex-1 border-t border-gray-300 dark:border-gray-700"></div>
+              <div className="flex-1 border-t border-gray-300 dark:border-gray-900"></div>
               <span className="px-4 text-sm text-gray-500 dark:text-gray-400">O continúa con</span>
-              <div className="flex-1 border-t border-gray-300 dark:border-gray-700"></div>
+              <div className="flex-1 border-t border-gray-300 dark:border-gray-900"></div>
             </div>
 
             {/* Google OAuth */}

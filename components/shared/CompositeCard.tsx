@@ -18,7 +18,7 @@ export interface CompositeCardProps {
 const cardBase =
   'relative rounded-2xl p-3 sm:p-4 ' +
   'bg-white dark:bg-gray-800 ' +
-  'border-2 border-gray-200 dark:border-gray-700 border-b-4 border-b-gray-300 dark:border-b-gray-700 ' +
+  'border-2 border-gray-200 dark:border-gray-900 border-b-4 border-b-gray-300 dark:border-b-gray-900 ' +
   depthStructure;
 
 export default function CompositeCard({
