@@ -5,8 +5,14 @@ import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { SpinnerPage } from '@/components/ui/Spinner';
 import Button from '@/components/ui/Button';
+import { CardFlat } from '@/components/ui/Card';
 import ProgressBar from '@/components/ui/ProgressBar';
 import Tag from '@/components/ui/Tag';
+import StatCard from '@/components/ui/StatCard';
+import { Subtitle, Headline, Body, Caption } from '@/components/ui/Typography';
+import SectionHeader from '@/components/ui/SectionHeader';
+import EmptyState from '@/components/ui/EmptyState';
+import Divider from '@/components/ui/Divider';
 
 interface Exercise {
   number: number;
@@ -38,13 +44,14 @@ export default function RetosPage() {
   const [currentExercise, setCurrentExercise] = useState<Exercise | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasExercises, setHasExercises] = useState(false);
+  const [expandedNumber, setExpandedNumber] = useState<number | null>(null);
   const supabase = createClient();
   const router = useRouter();
 
   useEffect(() => {
     async function fetchData() {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (user) {
         // Fetch exercises
         const { data: exercisesResult } = await supabase
@@ -85,7 +92,7 @@ export default function RetosPage() {
             const requiredVideos = ex.videos_required || [];
             const missingVideos = requiredVideos.filter((vid: number) => !completedVideosSet.has(vid));
             const isUnlocked = missingVideos.length === 0;
-            
+
             return {
               ...ex,
               isCompleted: completedExercisesSet.has(ex.number),
@@ -160,7 +167,7 @@ export default function RetosPage() {
         isCompleted: ex.number === exerciseNumber ? !currentlyCompleted : ex.isCompleted
       }));
       setExercisesData({ ...exercisesData, exercises: updatedExercises });
-      
+
       // Update current exercise if it's the one being toggled
       if (currentExercise?.number === exerciseNumber) {
         setCurrentExercise({ ...currentExercise, isCompleted: !currentlyCompleted });
@@ -168,270 +175,303 @@ export default function RetosPage() {
     }
   };
 
-  const getTypeColor = () => {
-    return 'bg-blue-50 text-[#1472FF] dark:bg-blue-950/50 dark:text-[#1472FF]';
-  };
-
-  const getDifficultyDots = (difficulty: number) => {
-    return (
-      <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <div
-            key={i}
-            className={`w-2 h-2 rounded-full ${
-              i <= difficulty
-                ? 'bg-[#1472FF]'
-                : 'bg-gray-200 dark:bg-gray-700'
-            }`}
-          />
-        ))}
-      </div>
-    );
-  };
-
+  // ── Loading ──
   if (isLoading) {
-    return (
-      <SpinnerPage />
-    );
+    return <SpinnerPage />;
   }
 
+  // ── Empty State ──
   if (!hasExercises) {
     return (
-      <div className="min-h-full bg-transparent">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">retos</h1>
-            <p className="mt-2 text-[#777777] dark:text-gray-400">Practica lo que aprendes</p>
-          </div>
-
-          <div className="max-w-2xl mx-auto mt-16">
-            <div className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/50 dark:to-gray-900 rounded-2xl border border-blue-100 dark:border-blue-900 p-12 text-center">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] flex items-center justify-center">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h2 className="text-2xl font-bold text-[#4b4b4b] dark:text-white mb-3">
-                Aún no tienes retos
-              </h2>
-              <p className="text-[#777777] dark:text-gray-400 max-w-md mx-auto mb-6">
-                Los retos se generan automáticamente cuando creas tu curso personalizado. 
-                Son ejercicios prácticos diseñados específicamente para tu proyecto.
-              </p>
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={() => router.push('/intake')}
-              >
-                Crear mi curso
-              </Button>
-            </div>
-          </div>
-        </div>
+      <div className="min-h-full bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8">
+        <SectionHeader title="retos" subtitle="practica lo que aprendes" />
+        <EmptyState
+          icon={
+            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          }
+          title="aun no tienes retos"
+          description="Los retos se generan automaticamente cuando creas tu curso personalizado. Son ejercicios practicos disenados especificamente para tu proyecto."
+          action={
+            <Button variant="primary" size="lg" onClick={() => router.push('/intake')}>
+              Crear mi curso
+            </Button>
+          }
+        />
       </div>
     );
   }
 
+  // ── Calculations ──
   const completedCount = exercisesData?.exercises.filter(ex => ex.isCompleted).length || 0;
   const totalCount = exercisesData?.total_exercises || 0;
   const progressPercent = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
+  // Group exercises by phase
+  const phases = exercisesData?.exercises.reduce((acc, ex) => {
+    if (!acc[ex.phase]) acc[ex.phase] = [];
+    acc[ex.phase].push(ex);
+    return acc;
+  }, {} as Record<number, Exercise[]>) || {};
+
+  const unlockedCount = exercisesData?.exercises.filter(e => e.isUnlocked && !e.isCompleted).length || 0;
+  const lockedCount = exercisesData?.exercises.filter(e => !e.isUnlocked && !e.isCompleted).length || 0;
+
+  // ── Main Content ──
   return (
-    <div className="h-[calc(100vh-10rem)] md:h-[calc(100vh-11rem)] bg-transparent overflow-hidden">
-      <div className="h-full flex gap-4 p-4 max-w-7xl mx-auto w-full">
-        
-        {/* Sidebar - Exercise List */}
-        <div className="w-80 flex-shrink-0 h-full flex flex-col bg-gray-50 dark:bg-gray-800 rounded-2xl overflow-hidden">
-          {/* Header */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-800">
-            <h2 className="font-bold text-[#4b4b4b] dark:text-white mb-1">Retos</h2>
-            <p className="text-xs text-[#777777] dark:text-gray-400 mb-3 line-clamp-2">
-              {exercisesData?.user_project}
-            </p>
-            {/* Progress */}
-            <div className="flex items-center gap-2">
-              <ProgressBar value={progressPercent} size="sm" color="primary" durationMs={500} className="flex-1" />
-              <span className="text-xs font-medium text-[#777777] dark:text-gray-400">
-                {completedCount}/{totalCount}
-              </span>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-[#4b4b4b] dark:text-white">
+      <div className="max-w-7xl mx-auto space-y-8">
 
-          {/* Exercise List */}
-          <div className="flex-1 overflow-y-auto">
-            {exercisesData?.exercises.map((exercise) => {
-              const isActive = currentExercise?.number === exercise.number;
-              const isCompleted = exercise.isCompleted;
-              const isLocked = !exercise.isUnlocked && !isCompleted;
+        {/* Header */}
+        <SectionHeader title="retos" subtitle={exercisesData?.user_project} />
 
-              return (
-                <button
-                  key={exercise.number}
-                  onClick={() => setCurrentExercise(exercise)}
-                  className={`w-full flex items-center gap-3 p-3 text-left transition-colors ${
-                    isActive 
-                      ? 'bg-blue-50 dark:bg-blue-950/50 border-l-2 border-[#1472FF]' 
-                      : 'hover:bg-gray-100 dark:hover:bg-gray-800 border-l-2 border-transparent'
-                  } ${isLocked ? 'opacity-50' : ''}`}
-                >
-                  {/* Number/Check/Lock */}
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    isCompleted 
-                      ? 'bg-[#1472FF] text-white'
-                      : isLocked
-                        ? 'bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500'
-                        : isActive
-                          ? 'bg-[#1472FF] text-white'
-                          : 'border-2 border-gray-300 dark:border-gray-900 text-[#777777] dark:text-gray-400'
-                  }`}>
-                    {isCompleted ? (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                    ) : isLocked ? (
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
-                    ) : (
-                      <span className="text-sm font-medium">{exercise.number}</span>
-                    )}
-                  </div>
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-medium truncate ${
-                      isLocked
-                        ? 'text-gray-400 dark:text-gray-500'
-                        : isActive 
-                          ? 'text-[#1472FF]' 
-                          : isCompleted
-                            ? 'text-[#777777] dark:text-gray-400'
-                            : 'text-[#4b4b4b] dark:text-white'
-                    }`}>
-                      {exercise.title}
-                    </p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className={`text-xs px-1.5 py-0.5 rounded ${isLocked ? 'bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500' : getTypeColor()}`}>
-                        {exercise.type}
-                      </span>
-                      <span className="text-xs text-gray-400">
-                        {exercise.time_minutes} min
-                      </span>
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+          {/* ── Left Column: Exercise List (2/3) ── */}
+          <div className="lg:col-span-2 space-y-6">
 
-        {/* Main Content - Current Exercise */}
-        <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-          {currentExercise && (
-            <>
-              {/* Exercise Header */}
-              <div className="flex-shrink-0 mb-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-3 mb-2">
-                      <Tag variant="primary" className="text-xs">
-                        {currentExercise.type}
-                      </Tag>
-                      <span className="text-xs text-[#777777] dark:text-gray-400">
-                        Fase {currentExercise.phase}
-                      </span>
-                      {getDifficultyDots(currentExercise.difficulty)}
-                    </div>
-                    <h1 className="text-2xl font-bold text-[#4b4b4b] dark:text-white">
-                      {currentExercise.number}. {currentExercise.title}
-                    </h1>
-                  </div>
+            {/* Progress Summary Card */}
+            <CardFlat className="p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <Subtitle>tu progreso en retos</Subtitle>
+                <span className="text-2xl font-extrabold text-[#1472FF]">
+                  {Math.round(progressPercent)}%
+                </span>
+              </div>
+              <ProgressBar value={progressPercent} size="lg" color="primary" durationMs={1000} className="mb-2" />
+              <div className="flex justify-between">
+                <Caption>{completedCount} de {totalCount} completados</Caption>
+                <Caption>{exercisesData?.practice_hours} horas de practica</Caption>
+              </div>
+            </CardFlat>
 
-                  {/* Complete Button */}
-                  <button
-                    onClick={() => toggleExerciseCompletion(currentExercise.number, currentExercise.isCompleted, currentExercise.isUnlocked)}
-                    disabled={!currentExercise.isUnlocked && !currentExercise.isCompleted}
-                    className={`flex-shrink-0 px-4 py-2 rounded-xl font-medium text-sm transition-all flex items-center gap-2 ${
-                      !currentExercise.isUnlocked && !currentExercise.isCompleted
-                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-                        : currentExercise.isCompleted
-                          ? 'bg-blue-50 dark:bg-blue-900/30 text-[#1472FF] dark:text-[#1472FF] hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-400'
-                          : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:text-[#1472FF] dark:hover:text-[#1472FF]'
-                    }`}
-                  >
-                    {!currentExercise.isUnlocked && !currentExercise.isCompleted ? (
-                      <>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                        <span>Bloqueado</span>
-                      </>
-                    ) : currentExercise.isCompleted ? (
-                      <>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span>Completado</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span>Marcar completado</span>
-                      </>
-                    )}
-                  </button>
+            {/* Exercise List grouped by Phase */}
+            {Object.entries(phases)
+              .sort(([a], [b]) => Number(a) - Number(b))
+              .map(([phaseNum, phaseExercises]) => (
+              <div key={phaseNum} className="space-y-3">
+                <Divider title={`Fase ${phaseNum}`} />
+                <div className="space-y-3">
+                  {phaseExercises.map((exercise) => {
+                    const isSelected = currentExercise?.number === exercise.number;
+                    const isCompleted = exercise.isCompleted;
+                    const isLocked = !exercise.isUnlocked && !isCompleted;
+                    const isExpanded = expandedNumber === exercise.number;
+
+                    return (
+                      <div
+                        key={exercise.number}
+                        onClick={() => {
+                          setCurrentExercise(exercise);
+                          setExpandedNumber(prev => prev === exercise.number ? null : exercise.number);
+                        }}
+                        className={`cursor-pointer transition-all duration-150 ${isLocked ? 'opacity-60' : ''}`}
+                      >
+                        <CardFlat
+                          className={`shadow-sm hover:shadow-md transition-shadow ${
+                            isSelected
+                              ? 'ring-2 ring-[#1472FF] ring-offset-2 dark:ring-offset-gray-800'
+                              : ''
+                          }`}
+                        >
+                          <div className="p-4 sm:p-5">
+                            {/* Top Row: Status Circle + Title + Meta */}
+                            <div className="flex items-start gap-3">
+                              {/* Status indicator circle */}
+                              <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                isCompleted
+                                  ? 'bg-[#22c55e] text-white'
+                                  : isLocked
+                                    ? 'bg-gray-200 dark:bg-gray-700 text-[#777777] dark:text-gray-500'
+                                    : isSelected
+                                      ? 'bg-[#1472FF] text-white'
+                                      : 'border-2 border-gray-300 dark:border-gray-900 text-[#777777] dark:text-gray-400'
+                              }`}>
+                                {isCompleted ? (
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                  </svg>
+                                ) : isLocked ? (
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                  </svg>
+                                ) : (
+                                  <span className="text-sm font-bold">{exercise.number}</span>
+                                )}
+                              </div>
+
+                              {/* Content */}
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-base font-bold truncate mb-1 ${
+                                  isLocked
+                                    ? 'text-[#777777] dark:text-gray-500'
+                                    : isCompleted
+                                      ? 'text-[#777777] dark:text-gray-400'
+                                      : 'text-[#4b4b4b] dark:text-white'
+                                }`}>
+                                  {exercise.title}
+                                </p>
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <Tag variant={isLocked ? 'neutral' : 'primary'} className="!text-xs !px-2 !py-0.5">
+                                    {exercise.type}
+                                  </Tag>
+                                  <Caption>{exercise.time_minutes} min</Caption>
+                                  <div className="flex gap-1">
+                                    {[1, 2, 3, 4, 5].map((i) => (
+                                      <div
+                                        key={i}
+                                        className={`w-1.5 h-1.5 rounded-full ${
+                                          i <= exercise.difficulty
+                                            ? 'bg-[#1472FF]'
+                                            : 'bg-gray-200 dark:bg-gray-700'
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Chevron (mobile only) */}
+                              <div className="flex-shrink-0 lg:hidden self-center">
+                                <svg
+                                  className={`w-5 h-5 text-[#777777] transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                                  fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                              </div>
+                            </div>
+
+                            {/* Expanded Detail (MOBILE ONLY) */}
+                            {isExpanded && (
+                              <div className="lg:hidden mt-4 pt-4 border-t border-gray-200 dark:border-gray-900 space-y-4">
+                                <Body className="leading-relaxed">{exercise.description}</Body>
+
+                                {/* Entregable */}
+                                <div className="bg-[#1472FF]/5 dark:bg-[#1472FF]/10 rounded-xl p-4">
+                                  <Headline className="mb-2 !text-[#1472FF]">entregable</Headline>
+                                  <Body className="leading-relaxed">{exercise.deliverable}</Body>
+                                </div>
+
+                                {/* Videos Required */}
+                                {exercise.videos_required?.length > 0 && (
+                                  <div>
+                                    <Headline className="mb-2">videos requeridos</Headline>
+                                    {exercise.missingVideos.length > 0 && (
+                                      <Caption className="mb-2">
+                                        Completa los videos pendientes para desbloquear este reto
+                                      </Caption>
+                                    )}
+                                    <div className="flex flex-wrap gap-2">
+                                      {exercise.videos_required.map((videoNum) => {
+                                        const isWatched = completedVideos.has(videoNum);
+                                        return (
+                                          <button
+                                            key={videoNum}
+                                            onClick={(e) => { e.stopPropagation(); router.push('/dashboard'); }}
+                                          >
+                                            <Tag variant={isWatched ? 'success' : 'neutral'} className="!text-xs">
+                                              {isWatched ? '✓' : '▶'} Video #{videoNum}
+                                            </Tag>
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Action Button */}
+                                <div className="flex gap-3">
+                                  {exercise.isUnlocked && !exercise.isCompleted && (
+                                    <Button
+                                      variant="primary"
+                                      size="sm"
+                                      onClick={(e: React.MouseEvent) => { e.stopPropagation(); toggleExerciseCompletion(exercise.number, false, true); }}
+                                      className="flex-1"
+                                    >
+                                      Marcar completado
+                                    </Button>
+                                  )}
+                                  {exercise.isCompleted && (
+                                    <Button
+                                      variant="completado"
+                                      size="sm"
+                                      onClick={(e: React.MouseEvent) => { e.stopPropagation(); toggleExerciseCompletion(exercise.number, true, true); }}
+                                      className="flex-1"
+                                    >
+                                      Completado
+                                    </Button>
+                                  )}
+                                  {isLocked && (
+                                    <Button variant="outline" size="sm" disabled className="flex-1">
+                                      Bloqueado
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </CardFlat>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
+            ))}
+          </div>
 
-              {/* Exercise Content */}
-              <div className="flex-1 overflow-y-auto">
-                <div className="grid gap-6">
+          {/* ── Right Column: Detail + Stats (1/3) ── */}
+          <div className="hidden lg:block space-y-8">
+
+            {/* Selected Exercise Detail */}
+            {currentExercise && (
+              <CardFlat className="shadow-sm sticky top-8">
+                <div className="p-6 space-y-5">
+                  {/* Header: type + phase + difficulty */}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Tag variant="primary">{currentExercise.type}</Tag>
+                    <Tag variant="neutral">Fase {currentExercise.phase}</Tag>
+                    <div className="flex gap-1 ml-auto">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <div
+                          key={i}
+                          className={`w-2 h-2 rounded-full ${
+                            i <= currentExercise.difficulty
+                              ? 'bg-[#1472FF]'
+                              : 'bg-gray-200 dark:bg-gray-700'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Title */}
+                  <h2 className="text-xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white leading-tight">
+                    {currentExercise.number}. {currentExercise.title}
+                  </h2>
+
                   {/* Description */}
-                  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-800">
-                    <h3 className="text-lg font-semibold text-[#4b4b4b] dark:text-white mb-3 flex items-center gap-2">
-                      <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Descripción
-                    </h3>
-                    <p className="text-[#777777] dark:text-gray-400 leading-relaxed">
-                      {currentExercise.description}
-                    </p>
+                  <div>
+                    <Headline className="mb-2">descripcion</Headline>
+                    <Body className="leading-relaxed">{currentExercise.description}</Body>
                   </div>
 
                   {/* Deliverable */}
-                  <div className="bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/30 dark:to-gray-900 rounded-2xl p-6 border border-blue-200 dark:border-blue-900">
-                    <h3 className="text-lg font-semibold text-[#4b4b4b] dark:text-white mb-3 flex items-center gap-2">
-                      <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Entregable
-                    </h3>
-                    <p className="text-[#777777] dark:text-gray-400 leading-relaxed">
-                      {currentExercise.deliverable}
-                    </p>
+                  <div className="bg-[#1472FF]/5 dark:bg-[#1472FF]/10 rounded-xl p-4">
+                    <Headline className="mb-2 !text-[#1472FF]">entregable</Headline>
+                    <Body className="leading-relaxed">{currentExercise.deliverable}</Body>
                   </div>
 
                   {/* Videos Required */}
-                  {currentExercise.videos_required && currentExercise.videos_required.length > 0 && (
-                    <div className={`rounded-2xl p-6 border ${
-                      currentExercise.missingVideos.length > 0
-                        ? 'bg-gray-50 dark:bg-gray-800 border-gray-300 dark:border-gray-900'
-                        : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-800'
-                    }`}>
-                      <h3 className="text-lg font-semibold text-[#4b4b4b] dark:text-white mb-1 flex items-center gap-2">
-                        <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Videos requeridos
-                      </h3>
+                  {currentExercise.videos_required?.length > 0 && (
+                    <div>
+                      <Headline className="mb-2">videos requeridos</Headline>
                       {currentExercise.missingVideos.length > 0 && (
-                        <p className="text-sm text-[#777777] dark:text-gray-400 mb-3">
+                        <Caption className="mb-3">
                           Completa los videos pendientes para desbloquear este reto
-                        </p>
+                        </Caption>
                       )}
                       <div className="flex flex-wrap gap-2">
                         {currentExercise.videos_required.map((videoNum) => {
@@ -439,23 +479,12 @@ export default function RetosPage() {
                           return (
                             <button
                               key={videoNum}
-                              onClick={() => router.push(`/dashboard`)}
-                              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                                isWatched
-                                  ? 'bg-blue-50 dark:bg-blue-950/50 text-[#1472FF] dark:text-[#1472FF] hover:bg-blue-100 dark:hover:bg-blue-900/50'
-                                  : 'bg-gray-100 dark:bg-gray-800 text-[#777777] dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
-                              }`}
+                              onClick={() => router.push('/dashboard')}
+                              className="cursor-pointer"
                             >
-                              {isWatched ? (
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                </svg>
-                              ) : (
-                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                  <path d="M8 5v14l11-7z" />
-                                </svg>
-                              )}
-                              Video #{videoNum}
+                              <Tag variant={isWatched ? 'success' : 'neutral'} className="!text-xs">
+                                {isWatched ? '✓' : '▶'} Video #{videoNum}
+                              </Tag>
                             </button>
                           );
                         })}
@@ -463,39 +492,51 @@ export default function RetosPage() {
                     </div>
                   )}
 
-                  {/* Time & Difficulty */}
-                  <div className="flex gap-4">
-                    <div className="flex-1 bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
-                          <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="text-xs text-[#777777] dark:text-gray-400">Tiempo estimado</p>
-                          <p className="font-semibold text-[#4b4b4b] dark:text-white">{currentExercise.time_minutes} minutos</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex-1 bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-200 dark:border-gray-800">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
-                          <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="text-xs text-[#777777] dark:text-gray-400">Dificultad</p>
-                          <div className="mt-1">{getDifficultyDots(currentExercise.difficulty)}</div>
-                        </div>
-                      </div>
-                    </div>
+                  {/* Time & Difficulty Stats */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <StatCard icon="⏱️" value={`${currentExercise.time_minutes}`} label="Minutos" color="blue" />
+                    <StatCard icon="⚡" value={`${currentExercise.difficulty}/5`} label="Dificultad" color="orange" />
+                  </div>
+
+                  {/* Action Button */}
+                  <div>
+                    {!currentExercise.isUnlocked && !currentExercise.isCompleted ? (
+                      <Button variant="outline" disabled className="w-full">
+                        Bloqueado
+                      </Button>
+                    ) : currentExercise.isCompleted ? (
+                      <Button
+                        variant="completado"
+                        className="w-full"
+                        onClick={() => toggleExerciseCompletion(currentExercise.number, true, true)}
+                      >
+                        Completado
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="primary"
+                        className="w-full"
+                        onClick={() => toggleExerciseCompletion(currentExercise.number, false, true)}
+                      >
+                        Marcar completado
+                      </Button>
+                    )}
                   </div>
                 </div>
+              </CardFlat>
+            )}
+
+            {/* Challenge Stats */}
+            <CardFlat className="p-6 shadow-sm">
+              <Subtitle className="mb-4">tu actividad</Subtitle>
+              <div className="grid grid-cols-2 gap-4">
+                <StatCard icon="✅" value={String(completedCount)} label="Completados" color="green" />
+                <StatCard icon="🔓" value={String(unlockedCount)} label="Disponibles" color="blue" />
+                <StatCard icon="🔒" value={String(lockedCount)} label="Bloqueados" color="neutral" />
+                <StatCard icon="🎯" value={String(totalCount)} label="Total Retos" color="orange" />
               </div>
-            </>
-          )}
+            </CardFlat>
+          </div>
         </div>
       </div>
     </div>
