@@ -610,7 +610,7 @@ export default function ComponentesPage() {
               <p className="text-xs font-bold uppercase tracking-wider text-[#777777] dark:text-gray-400 mb-2">HorizontalScroll</p>
               <HorizontalScroll fadeEdges>
                 {['Fase 1', 'Fase 2', 'Fase 3'].map((l, i) => (
-                  <span key={l} className={`flex-shrink-0 min-h-[40px] inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide border-2 border-b-4 ${i === 0 ? 'bg-[#1472FF] text-white border-[#0E5FCC]' : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900'}`}>{l}</span>
+                  <span key={l} className={`flex-shrink-0 min-h-[40px] inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide border-2 border-b-4 ${i === 0 ? 'bg-[#1472FF] text-white border-[#0E5FCC]' : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-700'}`}>{l}</span>
                 ))}
               </HorizontalScroll>
             </div>

@@ -9,14 +9,31 @@ export async function GET(request: Request) {
   const errorDescription = searchParams.get('error_description')
   const fromPage = searchParams.get('from')
 
+  // Determine where to redirect on error
+  const errorPage = fromPage === 'signup' ? '/auth/signup' : '/auth/login'
+
   if (error) {
-    console.error('OAuth error:', error, errorDescription)
-    const errorPage = fromPage === 'signup' ? '/auth/signup' : '/auth/login'
-    return NextResponse.redirect(`${origin}${errorPage}?error=${encodeURIComponent(errorDescription || error)}`)
+    console.error('[auth/callback] OAuth error:', error, errorDescription)
+    return NextResponse.redirect(
+      `${origin}${errorPage}?error=${encodeURIComponent(errorDescription || error)}`
+    )
   }
 
-  if (code) {
+  if (!code) {
+    console.error('[auth/callback] No code parameter received')
+    return NextResponse.redirect(
+      `${origin}/auth/login?error=${encodeURIComponent('No se recibió código de autenticación.')}`
+    )
+  }
+
+  try {
     const cookieStore = await cookies()
+
+    // Log available cookies for debugging PKCE issues
+    const allCookies = cookieStore.getAll()
+    const codeVerifierCookie = allCookies.find(c => c.name.includes('code_verifier'))
+    console.log('[auth/callback] Code verifier cookie present:', !!codeVerifierCookie)
+    console.log('[auth/callback] Total cookies:', allCookies.length)
 
     // Accumulate cookies that Supabase wants to set so we can apply them to the response
     const cookiesToSet: { name: string; value: string; options: any }[] = []
@@ -32,7 +49,6 @@ export async function GET(request: Request) {
           setAll(cookies) {
             cookies.forEach((cookie) => {
               cookiesToSet.push(cookie)
-              // Also set on the cookie store so subsequent reads (like getUser) see updated values
               try {
                 cookieStore.set(cookie.name, cookie.value, cookie.options)
               } catch {
@@ -47,18 +63,28 @@ export async function GET(request: Request) {
     const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
 
     if (exchangeError) {
-      console.error('Error exchanging code:', exchangeError.message)
-      const errorPage = fromPage === 'signup' ? '/auth/signup' : '/auth/login'
-      return NextResponse.redirect(`${origin}${errorPage}?error=${encodeURIComponent('Error de autenticación. Por favor intenta de nuevo.')}`)
+      console.error('[auth/callback] Exchange error:', exchangeError.message)
+
+      // If PKCE code verifier is missing, provide a clearer message
+      const userMessage = exchangeError.message.includes('code_verifier')
+        ? 'La sesión de autenticación expiró. Por favor intenta de nuevo.'
+        : 'Error de autenticación. Por favor intenta de nuevo.'
+
+      return NextResponse.redirect(
+        `${origin}${errorPage}?error=${encodeURIComponent(userMessage)}`
+      )
     }
 
     const { data: { user } } = await supabase.auth.getUser()
 
     if (!user) {
-      console.error('No user found after successful code exchange')
-      const errorPage = fromPage === 'signup' ? '/auth/signup' : '/auth/login'
-      return NextResponse.redirect(`${origin}${errorPage}?error=${encodeURIComponent('Error al obtener información del usuario.')}`)
+      console.error('[auth/callback] No user found after successful code exchange')
+      return NextResponse.redirect(
+        `${origin}${errorPage}?error=${encodeURIComponent('Error al obtener información del usuario.')}`
+      )
     }
+
+    console.log('[auth/callback] User authenticated:', user.id)
 
     // Check if user has an existing learning path
     const { data: intakeData } = await supabase
@@ -73,6 +99,8 @@ export async function GET(request: Request) {
       ? `${origin}/dashboard`
       : `${origin}/onboarding`
 
+    console.log('[auth/callback] Redirecting to:', redirectUrl)
+
     // Create response and apply all accumulated cookies
     const response = NextResponse.redirect(redirectUrl)
     cookiesToSet.forEach(({ name, value, options }) => {
@@ -80,7 +108,10 @@ export async function GET(request: Request) {
     })
 
     return response
+  } catch (err: any) {
+    console.error('[auth/callback] Unexpected error:', err?.message || err)
+    return NextResponse.redirect(
+      `${origin}${errorPage}?error=${encodeURIComponent('Error inesperado durante la autenticación. Por favor intenta de nuevo.')}`
+    )
   }
-
-  return NextResponse.redirect(`${origin}/auth/login?error=no_code`)
 }

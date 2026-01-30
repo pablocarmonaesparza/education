@@ -17,6 +17,7 @@ function SignupContent() {
   const [success, setSuccess] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const [showSupabaseWarning, setShowSupabaseWarning] = useState<boolean>(false);
+  const [redirectingToGoogle, setRedirectingToGoogle] = useState<boolean>(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -34,8 +35,8 @@ function SignupContent() {
 
     if (typeof window !== 'undefined') {
       // Check if Supabase is configured before trying to create client
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL || (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_SUPABASE_URL;
-      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
       const configured = url &&
         key &&
@@ -168,8 +169,14 @@ function SignupContent() {
         return;
       }
 
-      // If data.url exists, Supabase will handle the redirect automatically
-      // Don't set loading to false as we're redirecting
+      // With PKCE flow, we need to manually redirect to the OAuth URL
+      if (data?.url) {
+        setRedirectingToGoogle(true);
+        window.location.href = data.url;
+      } else {
+        setError('No se pudo obtener la URL de autenticación. Intenta de nuevo.');
+        setLoading(false);
+      }
     } catch (err: any) {
       console.error('Google OAuth error:', err);
       setError(translateError(err.message || 'Error al iniciar sesión con Google'));
@@ -177,13 +184,23 @@ function SignupContent() {
     }
   };
 
+  // Show a full-page loading screen when redirecting to Google
+  if (redirectingToGoogle) {
+    return (
+      <main className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-800">
+        <Spinner size="lg" />
+        <p className="mt-4 text-[#777777] dark:text-gray-400 text-sm">Redirigiendo a Google...</p>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen flex flex-col relative overflow-hidden bg-white dark:bg-gray-800">
       <AuthNavbar />
 
       <section className="min-h-screen flex items-center justify-center py-12 md:py-20 px-4 relative z-10">
         <div className="w-full max-w-md">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-10 border-2 border-gray-200 dark:border-gray-900">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-10 border-2 border-b-4 border-gray-200 dark:border-gray-700 border-b-gray-300 dark:border-b-gray-700">
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
@@ -241,7 +258,7 @@ function SignupContent() {
               <Input
                 type="text"
                 id="name"
-                variant="flat"
+                variant="default"
                 placeholder="Nombre completo"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -251,7 +268,7 @@ function SignupContent() {
               <Input
                 type="email"
                 id="email"
-                variant="flat"
+                variant="default"
                 placeholder="Correo electrónico"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -262,7 +279,7 @@ function SignupContent() {
               <Input
                   type={showPassword ? "text" : "password"}
                 id="password"
-                  variant="flat"
+                  variant="default"
                   className="pr-12"
                   placeholder="Contraseña (mínimo 6 caracteres)"
                 value={password}
@@ -303,9 +320,9 @@ function SignupContent() {
 
             {/* Divider */}
             <div className="mt-6 mb-4 flex items-center">
-              <div className="flex-1 border-t border-gray-300 dark:border-gray-900"></div>
+              <div className="flex-1 border-t border-gray-300 dark:border-gray-700"></div>
               <span className="px-4 text-sm text-gray-500 dark:text-gray-400">O continúa con</span>
-              <div className="flex-1 border-t border-gray-300 dark:border-gray-900"></div>
+              <div className="flex-1 border-t border-gray-300 dark:border-gray-700"></div>
             </div>
 
             {/* Google OAuth */}

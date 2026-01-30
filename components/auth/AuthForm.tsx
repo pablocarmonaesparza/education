@@ -199,7 +199,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
   return (
     <div className="w-full max-w-md">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-10 border-2 border-gray-200 dark:border-gray-900">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-10 border-2 border-gray-200 dark:border-gray-700">
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
@@ -308,9 +308,9 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
         {/* Divider */}
         <div className="mt-6 mb-4 flex items-center">
-          <div className="flex-1 border-t border-gray-300 dark:border-gray-900"></div>
+          <div className="flex-1 border-t border-gray-300 dark:border-gray-700"></div>
           <span className="px-4 text-sm text-gray-500 dark:text-gray-400">O continúa con</span>
-          <div className="flex-1 border-t border-gray-300 dark:border-gray-900"></div>
+          <div className="flex-1 border-t border-gray-300 dark:border-gray-700"></div>
         </div>
 
         {/* Google OAuth */}

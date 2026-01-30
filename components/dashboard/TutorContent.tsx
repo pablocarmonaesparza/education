@@ -485,7 +485,7 @@ ${completedVideosText}
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 </div>
-                <div className="flex-1 bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-100 dark:border-gray-900">
+                <div className="flex-1 bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-100 dark:border-gray-700">
                   <p className="text-[#4b4b4b] dark:text-white">
                     Hola{userContext?.userName ? ` ${userContext.userName.split(' ')[0]}` : ''}, ¿en qué te puedo ayudar?
                   </p>
@@ -516,7 +516,7 @@ ${completedVideosText}
                 <div className={`flex-1 rounded-2xl p-4 ${
                   msg.role === 'user'
                     ? 'bg-[#1472FF] text-white ml-12'
-                    : 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-900 text-[#4b4b4b] dark:text-white mr-12'
+                    : 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-[#4b4b4b] dark:text-white mr-12'
                 }`}>
                   <p className="whitespace-pre-wrap">{msg.content}</p>
                 </div>
@@ -530,7 +530,7 @@ ${completedVideosText}
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 </div>
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-100 dark:border-gray-900">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-100 dark:border-gray-700">
                   <div className="flex gap-1">
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -552,7 +552,7 @@ ${completedVideosText}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Escribe tu pregunta..."
-              className="flex-1 resize-none border-2 border-gray-200 dark:border-gray-900 rounded-2xl px-4 py-4 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
+              className="flex-1 resize-none border-2 border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-4 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
               rows={1}
               disabled={isSending}
             />

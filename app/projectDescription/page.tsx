@@ -50,7 +50,7 @@ export default function ProjectDescriptionPage() {
               }}
             >
               <div className={`relative w-full bg-white dark:bg-gray-800 rounded-2xl border-2 transition-all duration-300 ${
-                error ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-gray-900 focus-within:border-[#1472FF]"
+                error ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-gray-700 focus-within:border-[#1472FF]"
               }`}>
                 <textarea
                   value={projectIdea}
@@ -102,7 +102,7 @@ export default function ProjectDescriptionPage() {
                 <button
                   key={suggestion.label}
                   onClick={() => setProjectIdea(suggestion.description)}
-                  className="px-4 py-2 text-sm rounded-xl border-2 border-gray-200 dark:border-gray-900 text-[#777777] dark:text-gray-400 hover:border-[#1472FF] hover:text-[#1472FF] transition-all shadow-[0_2px_0_0_#e5e7eb] dark:shadow-[0_2px_0_0_#374151] hover:shadow-[0_2px_0_0_#1472FF]"
+                  className="px-4 py-2 text-sm rounded-xl border-2 border-gray-200 dark:border-gray-700 text-[#777777] dark:text-gray-400 hover:border-[#1472FF] hover:text-[#1472FF] transition-all shadow-[0_2px_0_0_#e5e7eb] dark:shadow-[0_2px_0_0_#374151] hover:shadow-[0_2px_0_0_#1472FF]"
                 >
                   {suggestion.label}
                 </button>

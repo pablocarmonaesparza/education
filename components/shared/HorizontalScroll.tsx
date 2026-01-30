@@ -21,11 +21,11 @@ const HorizontalScroll = forwardRef<HTMLDivElement, HorizontalScrollProps>(
         {fadeEdges && (
           <>
             <div
-              className="absolute left-0 top-0 bottom-0 w-6 sm:w-12 z-10 pointer-events-none bg-gradient-to-r from-white dark:from-gray-950 to-transparent"
+              className="absolute left-0 top-0 bottom-0 w-6 sm:w-12 z-10 pointer-events-none bg-gradient-to-r from-white dark:from-gray-800 to-transparent"
               aria-hidden
             />
             <div
-              className="absolute right-0 top-0 bottom-0 w-6 sm:w-12 z-10 pointer-events-none bg-gradient-to-l from-white dark:from-gray-950 to-transparent"
+              className="absolute right-0 top-0 bottom-0 w-6 sm:w-12 z-10 pointer-events-none bg-gradient-to-l from-white dark:from-gray-800 to-transparent"
               aria-hidden
             />
           </>

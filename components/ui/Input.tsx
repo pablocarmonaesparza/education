@@ -18,7 +18,7 @@ const lightMode =
   'bg-white text-[#4b4b4b] placeholder-gray-400';
 
 const darkMode =
-  'dark:border-gray-900 dark:border-b-gray-900 ' +
+  'dark:border-gray-700 dark:border-b-gray-700 ' +
   'dark:bg-gray-800 dark:text-white dark:placeholder-gray-500';
 
 const inputBase = `${sharedBase} ${lightMode} ${darkMode}`;
@@ -27,7 +27,7 @@ const inputBase = `${sharedBase} ${lightMode} ${darkMode}`;
 const inputFlat =
   'w-full px-4 py-4 rounded-2xl transition-all ' +
   'focus:outline-none ' +
-  'border-2 border-gray-200 dark:border-gray-900 ' +
+  'border-2 border-gray-200 dark:border-gray-700 ' +
   'bg-white dark:bg-gray-800 text-gray-900 dark:text-white ' +
   'placeholder-gray-400 dark:placeholder-gray-500';
 
@@ -117,7 +117,7 @@ export function SearchInput({ icon, className = '', ...rest }: SearchInputProps)
   return (
     <div className="relative">
       <input
-        className={`w-full px-6 py-4 pl-14 rounded-2xl border-2 border-gray-200 dark:border-gray-900 ` +
+        className={`w-full px-6 py-4 pl-14 rounded-2xl border-2 border-gray-200 dark:border-gray-700 ` +
           'focus:border-[#1472FF] focus:ring-2 focus:ring-[#1472FF]/20 outline-none transition-all ' +
           'text-[#4b4b4b] dark:text-white bg-white dark:bg-gray-800 placeholder-gray-400 text-sm ' +
           className}

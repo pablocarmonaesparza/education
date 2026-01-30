@@ -128,7 +128,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                   </div>
                 </div>
 
-                <CardFlat className="p-4 sm:p-6 mb-6 bg-gray-50 dark:bg-gray-800 border-gray-100 dark:border-gray-900 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+                <CardFlat className="p-4 sm:p-6 mb-6 bg-gray-50 dark:bg-gray-800 border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
                    {/* Video Thumbnail Placeholder */}
                   <div className="w-full sm:w-48 h-28 bg-[#1472FF]/10 rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
                     <div className="absolute inset-0 bg-black/5 group-hover:bg-black/10 transition-colors" />
