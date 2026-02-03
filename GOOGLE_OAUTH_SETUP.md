@@ -81,6 +81,8 @@ Esta guía te ayudará a configurar el login con Google para tu aplicación.
 
 ## ⚙️ Paso 4: Configurar Supabase
 
+### 4.1 Configurar el Proveedor de Google
+
 1. Ve al [Dashboard de Supabase](https://app.supabase.com/)
 2. Selecciona tu proyecto
 3. Ve a **Authentication > Providers**
@@ -90,6 +92,26 @@ Esta guía te ayudará a configurar el login con Google para tu aplicación.
 7. Pega el **Client Secret** de Google
 8. En **Authorized Client IDs**, agrega el mismo Client ID
 9. Haz clic en "Save"
+
+### 4.2 Configurar URLs de Redirección (MUY IMPORTANTE)
+
+**Este paso es crítico para evitar que el usuario vea un flash de la página principal antes de ser redirigido.**
+
+1. Ve a **Authentication > URL Configuration**
+2. En **Site URL**, configura tu dominio base:
+   - Desarrollo: `http://localhost:3000`
+   - Producción: `https://tu-dominio.com`
+3. En **Redirect URLs**, **DEBES agregar** las siguientes URLs:
+   ```
+   http://localhost:3000/auth/callback
+   https://tu-dominio.com/auth/callback
+   ```
+   
+   > ⚠️ **IMPORTANTE**: Si no agregas `/auth/callback` aquí, Supabase ignorará 
+   > el `redirectTo` de tu código y redirigirá a la URL base (Site URL), 
+   > causando un flash de la página principal antes de completar la autenticación.
+
+4. Haz clic en "Save"
 
 ## 🧪 Paso 5: Probar el Login con Google
 
@@ -162,6 +184,24 @@ Esta guía te ayudará a configurar el login con Google para tu aplicación.
 1. Verifica que exista el archivo `/app/auth/callback/route.ts`
 2. Asegúrate de que el código maneje correctamente el `code` del query parameter
 3. Revisa los logs del servidor para ver errores
+
+### Flash de la página principal (Hero) antes del redirect
+
+**Síntoma**: Después del login con Google, el usuario ve brevemente la página principal (Hero) antes de ser redirigido al dashboard.
+
+**Causa**: La URL `/auth/callback` no está en la lista de "Redirect URLs" de Supabase, por lo que Supabase ignora el `redirectTo` del código y redirige a la página principal.
+
+**Solución**:
+1. Ve a Supabase Dashboard > **Authentication > URL Configuration**
+2. En **Redirect URLs**, asegúrate de tener:
+   ```
+   http://localhost:3000/auth/callback
+   https://tu-dominio.com/auth/callback
+   ```
+3. Guarda los cambios
+4. Limpia las cookies del navegador y vuelve a intentar
+
+**Nota**: La aplicación incluye un `OAuthRedirectHandler` que maneja este caso mostrando un loading mientras redirige, pero la solución correcta es configurar las URLs en Supabase.
 
 ## 📝 Notas Importantes
 

@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import Tag from '@/components/ui/Tag';
 
 export default function PricingSection() {
   const router = useRouter();
@@ -106,12 +105,12 @@ export default function PricingSection() {
                     : ""
                 }`}
               >
-                {/* Popular Badge */}
+                {/* Popular Badge - inside card to avoid section overflow-hidden clipping */}
                 {tier.popular && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Tag variant="primary" className="bg-[#1472FF] text-white border-transparent">
-                      🔥 MÁS POPULAR
-                    </Tag>
+                  <div className="flex justify-center -mt-1 mb-3">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#1472FF] text-white border-transparent font-display">
+                      más popular
+                    </span>
                   </div>
                 )}
 
