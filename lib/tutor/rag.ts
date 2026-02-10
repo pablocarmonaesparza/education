@@ -28,8 +28,8 @@ export async function searchRelevantDocuments(
   matchCount: number = 5
 ): Promise<RAGDocument[]> {
   const { data, error } = await supabase.rpc('search_videos_hybrid', {
-    query_embedding: JSON.stringify(queryEmbedding),
-    match_threshold: 0.7,
+    query_embedding: queryEmbedding,
+    match_threshold: 0.5,
     match_count: matchCount,
   });
 
@@ -55,10 +55,10 @@ export function formatRAGContext(documents: RAGDocument[]): string {
   if (documents.length === 0) return '';
 
   const formatted = documents.map((doc) => {
-    // Truncar contenido largo
+    // Truncar contenido largo (1500 chars para dar contexto suficiente)
     const content =
-      doc.content.length > 500
-        ? doc.content.substring(0, 500) + '...'
+      doc.content.length > 1500
+        ? doc.content.substring(0, 1500) + '...'
         : doc.content;
 
     return `--- ${doc.topic} > ${doc.subtopic} ---\n${doc.description}\n${content}`;

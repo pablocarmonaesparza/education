@@ -214,7 +214,7 @@ export default function TutorChatButton() {
       />
 
       {/* Header: solo título y acciones */}
-      <div className="px-4 py-4 flex items-center justify-between flex-shrink-0 border-b border-gray-200 dark:border-gray-700">
+      <div className="px-4 py-4 flex items-center justify-between flex-shrink-0">
         <h3 className="text-base font-semibold text-[#4b4b4b] dark:text-gray-200">Tutor IA</h3>
         <div className="flex items-center gap-1">
           <button
