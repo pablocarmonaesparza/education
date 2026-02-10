@@ -86,8 +86,8 @@ export default function PricingSection() {
           </h2>
         </motion.div>
 
-        {/* Pricing Cards */}
-        <div className="grid lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto">
+        {/* Pricing Cards - items-stretch + h-full for equal height */}
+        <div className="grid lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto items-stretch">
           {tiers.map((tier, index) => (
             <motion.div
               key={tier.id}
@@ -95,11 +95,12 @@ export default function PricingSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 * (index + 3) }}
               viewport={{ once: true }}
+              className="h-full flex"
             >
               <Card
                 variant="neutral"
                 padding="lg"
-                className={`relative flex flex-col md:p-6 ${
+                className={`relative flex flex-col md:p-6 h-full w-full ${
                   tier.popular
                     ? "bg-[#1472FF]/10 dark:bg-[#1472FF]/20 border-[#1472FF] dark:border-[#1472FF] border-b-[#1472FF] dark:border-b-[#1472FF]"
                     : ""

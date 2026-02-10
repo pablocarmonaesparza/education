@@ -18,7 +18,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { messages, courseContext } = await request.json();
+    const { messages, courseContext, model: modelId } = await request.json();
+
+    // Map frontend model id to OpenAI model (solo ChatGPT está integrado; resto usa gpt-4o-mini por ahora)
+    const openaiModelMap: Record<string, string> = {
+      'chatgpt-5.2': 'gpt-4o',
+      'chatgpt-mini': 'gpt-4o-mini',
+      'gemini-pro-3': 'gpt-4o-mini',
+      'gemini-flash-3': 'gpt-4o-mini',
+      'claude-opus-4.6': 'gpt-4o-mini',
+      'claude-haiku-4.5': 'gpt-4o-mini',
+    };
+    const openaiModel = openaiModelMap[modelId] ?? 'gpt-4o-mini';
 
     const openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
@@ -55,7 +66,7 @@ LO QUE NO DEBES HACER:
 - No preguntes cosas que ya sabes por el contexto`;
 
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: openaiModel,
       messages: [
         { role: 'system', content: systemPrompt },
         ...messages,
