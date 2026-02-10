@@ -348,57 +348,11 @@ export default function TutorChatButton() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input: modelo a la izquierda (misma altura que botón) + textfield con enviar dentro */}
+      {/* Input: textfield con 2 renglones + renglón abajo [modelo | spacer | enviar] */}
       <div className="px-4 py-4 bg-white dark:bg-gray-800 flex-shrink-0">
-        <form ref={formRef} onSubmit={handleSubmit} className="flex items-stretch gap-2">
-          {/* Selector de modelo: pegado a la izquierda, misma altura que el botón (h-9) */}
-          <div className="relative flex-shrink-0 h-9" ref={modelDropdownRef}>
-            <button
-              type="button"
-              onClick={() => setModelDropdownOpen((o) => !o)}
-              className="h-full flex items-center gap-1.5 pl-2.5 pr-2 rounded-xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white text-xs font-bold outline-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-150 active:border-b-2 active:mt-[2px] min-w-0"
-              aria-label="Modelo de IA"
-              aria-expanded={modelDropdownOpen}
-              aria-haspopup="listbox"
-            >
-              <Image src={selectedModelData.icon} alt="" width={20} height={20} className="rounded object-contain flex-shrink-0 w-5 h-5" />
-              {width >= 280 && (
-                <span className="truncate max-w-[100px] font-bold">{selectedModelData.label}</span>
-              )}
-              {width >= 360 && (
-                <span className="px-1.5 py-0.5 rounded-md bg-[#777777]/15 dark:bg-gray-600 text-[#777777] dark:text-gray-400 text-xs font-bold tabular-nums border border-[#777777]/30 dark:border-gray-500/50">
-                  {priceString(selectedModelData.price)}
-                </span>
-              )}
-              <svg className={`w-4 h-4 flex-shrink-0 text-[#777777] dark:text-gray-400 transition-transform ${modelDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-            {modelDropdownOpen && (
-              <ul
-                role="listbox"
-                className="absolute left-0 top-full mt-1 z-50 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 shadow-lg py-1 min-w-[200px] max-h-[280px] overflow-y-auto"
-                aria-label="Modelos disponibles"
-              >
-                {TUTOR_MODELS.map((m) => (
-                  <li key={m.id} role="option" aria-selected={selectedModel === m.id}>
-                    <button
-                      type="button"
-                      onClick={() => { setSelectedModel(m.id); setModelDropdownOpen(false); }}
-                      className={`w-full flex items-center gap-2 px-2.5 py-2 text-left text-xs font-bold transition-colors ${selectedModel === m.id ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20 text-[#1472FF] dark:text-[#1472FF]' : 'text-[#4b4b4b] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'}`}
-                    >
-                      <Image src={m.icon} alt="" width={20} height={20} className="rounded object-contain flex-shrink-0 w-5 h-5" />
-                      <span className="flex-1 truncate">{m.label}</span>
-                      <span className="px-1.5 py-0.5 rounded-md bg-[#777777]/15 dark:bg-gray-600 text-[#777777] dark:text-gray-400 tabular-nums border border-[#777777]/30 dark:border-gray-500/50">{priceString(m.price)}</span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          {/* Textfield: 2 renglones + botón enviar dentro (derecha) */}
-          <div className="flex-1 min-w-0 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 overflow-hidden flex flex-col">
+        <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-0">
+          <div className="rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 overflow-hidden">
+            {/* Renglón 1–2: solo texto */}
             <textarea
               ref={textareaRef}
               value={input}
@@ -413,7 +367,53 @@ export default function TutorChatButton() {
               rows={2}
               className="w-full min-h-[4rem] max-h-[4rem] px-4 py-3 text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-0 bg-transparent resize-none overflow-y-auto border-0 border-none"
             />
-            <div className="flex items-center justify-end px-2 pb-2 pt-0">
+            {/* Renglón abajo: modelo (izq, sin contorno, solo chevron) | spacer | enviar (derecha) */}
+            <div className="flex items-center gap-2 px-2 pb-2 pt-0">
+              <div className="relative flex-shrink-0 h-9 flex items-center" ref={modelDropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setModelDropdownOpen((o) => !o)}
+                  className="h-9 flex items-center gap-1.5 pl-1 pr-1 rounded-lg text-[#4b4b4b] dark:text-white text-xs font-bold outline-none cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border-0 border-transparent bg-transparent min-w-0"
+                  aria-label="Modelo de IA"
+                  aria-expanded={modelDropdownOpen}
+                  aria-haspopup="listbox"
+                >
+                  <Image src={selectedModelData.icon} alt="" width={20} height={20} className="rounded object-contain flex-shrink-0 w-5 h-5" />
+                  {width >= 280 && (
+                    <span className="truncate max-w-[100px] font-bold">{selectedModelData.label}</span>
+                  )}
+                  {width >= 360 && (
+                    <span className="px-1.5 py-0.5 rounded-md bg-[#777777]/15 dark:bg-gray-600 text-[#777777] dark:text-gray-400 text-xs font-bold tabular-nums border border-[#777777]/30 dark:border-gray-500/50">
+                      {priceString(selectedModelData.price)}
+                    </span>
+                  )}
+                  <svg className={`w-4 h-4 flex-shrink-0 text-[#777777] dark:text-gray-400 transition-transform ${modelDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {modelDropdownOpen && (
+                  <ul
+                    role="listbox"
+                    className="absolute left-0 bottom-full mb-1 z-50 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 shadow-lg py-1 min-w-[200px] max-h-[280px] overflow-y-auto"
+                    aria-label="Modelos disponibles"
+                  >
+                    {TUTOR_MODELS.map((m) => (
+                      <li key={m.id} role="option" aria-selected={selectedModel === m.id}>
+                        <button
+                          type="button"
+                          onClick={() => { setSelectedModel(m.id); setModelDropdownOpen(false); }}
+                          className={`w-full flex items-center gap-2 px-2.5 py-2 text-left text-xs font-bold transition-colors ${selectedModel === m.id ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20 text-[#1472FF] dark:text-[#1472FF]' : 'text-[#4b4b4b] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                        >
+                          <Image src={m.icon} alt="" width={20} height={20} className="rounded object-contain flex-shrink-0 w-5 h-5" />
+                          <span className="flex-1 truncate">{m.label}</span>
+                          <span className="px-1.5 py-0.5 rounded-md bg-[#777777]/15 dark:bg-gray-600 text-[#777777] dark:text-gray-400 tabular-nums border border-[#777777]/30 dark:border-gray-500/50">{priceString(m.price)}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <div className="flex-1 min-w-0" aria-hidden="true" />
               <button
                 type="submit"
                 disabled={!input.trim() || isStreaming}
