@@ -202,7 +202,7 @@ export default function TutorChatButton() {
   return (
     <aside
       ref={asideRef}
-      className="hidden md:flex fixed right-0 top-0 h-screen bg-white dark:bg-gray-800 flex-col z-40"
+      className="hidden md:flex fixed right-0 top-0 h-screen flex-col z-40 backdrop-blur-xl bg-white/60 dark:bg-gray-800/60 border-l border-white/40 dark:border-white/10 shadow-[-4px_0_24px_rgba(0,0,0,0.06)] dark:shadow-[-4px_0_24px_rgba(0,0,0,0.25)]"
       style={{ width: `${width}px` }}
     >
       {/* Resize Handle */}
