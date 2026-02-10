@@ -2,91 +2,148 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
-import Button from '@/components/ui/Button';
+import Spinner from '@/components/ui/Spinner';
+import { useTutorChat } from '@/lib/hooks/useTutorChat';
+import { TUTOR_MODELS } from '@/lib/tutor/models';
 
-interface Message {
-  id: string;
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: Date;
-}
-
-const DEFAULT_WIDTH = 256; // 16rem = 256px (w-64)
+const DEFAULT_WIDTH = 256;
 const MIN_WIDTH = 256;
 const MAX_WIDTH = 480;
 
-export default function TutorChatButton() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: 'Hola, soy tu tutor de IA personal. Estoy aquí para ayudarte con cualquier duda sobre tu curso. ¿En qué puedo ayudarte hoy?',
-      timestamp: new Date()
+// Simple markdown renderer for assistant messages
+function renderMarkdown(text: string) {
+  const lines = text.split('\n');
+  const elements: React.ReactNode[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+
+    // Bullet lists
+    if (line.match(/^[-*]\s/)) {
+      const items: string[] = [line.replace(/^[-*]\s/, '')];
+      while (i + 1 < lines.length && lines[i + 1].match(/^[-*]\s/)) {
+        i++;
+        items.push(lines[i].replace(/^[-*]\s/, ''));
+      }
+      elements.push(
+        <ul key={i} className="list-disc list-inside space-y-1 my-1">
+          {items.map((item, j) => (
+            <li key={j}>{formatInline(item)}</li>
+          ))}
+        </ul>
+      );
+      continue;
     }
-  ]);
+
+    // Code blocks
+    if (line.startsWith('```')) {
+      const codeLines: string[] = [];
+      i++;
+      while (i < lines.length && !lines[i].startsWith('```')) {
+        codeLines.push(lines[i]);
+        i++;
+      }
+      elements.push(
+        <pre key={i} className="bg-gray-100 dark:bg-gray-900 rounded-xl p-3 my-2 overflow-x-auto text-xs">
+          <code>{codeLines.join('\n')}</code>
+        </pre>
+      );
+      continue;
+    }
+
+    // Empty lines
+    if (!line.trim()) {
+      elements.push(<br key={i} />);
+      continue;
+    }
+
+    // Regular paragraph
+    elements.push(<p key={i} className="my-0.5">{formatInline(line)}</p>);
+  }
+
+  return elements;
+}
+
+function formatInline(text: string): React.ReactNode {
+  // Bold
+  const parts = text.split(/(\*\*[^*]+\*\*|`[^`]+`)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return (
+        <code key={i} className="bg-gray-100 dark:bg-gray-900 px-1.5 py-0.5 rounded text-xs">
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    return part;
+  });
+}
+
+export default function TutorChatButton() {
+  const {
+    messages,
+    isStreaming,
+    streamingContent,
+    conversations,
+    activeConversationId,
+    isLoadingMessages,
+    sendMessage,
+    selectConversation,
+    createNewConversation,
+    deleteConversation,
+    selectedModel,
+    setSelectedModel,
+  } = useTutorChat();
+
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [width, setWidth] = useState(DEFAULT_WIDTH);
   const [isResizing, setIsResizing] = useState(false);
-  const [selectedModel, setSelectedModel] = useState<string>('chatgpt-mini');
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
+  const [showConversations, setShowConversations] = useState(false);
   const modelDropdownRef = useRef<HTMLDivElement>(null);
+  const conversationsRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const asideRef = useRef<HTMLAsideElement>(null);
 
-  const tutorModels = [
-    { id: 'chatgpt-5.2', label: 'ChatGPT 5.2', icon: '/icons/tutor-models/chatgpt.png', price: 4 },
-    { id: 'chatgpt-mini', label: 'ChatGPT (Mini)', icon: '/icons/tutor-models/chatgpt.png', price: 1 },
-    { id: 'gemini-pro-3', label: 'Gemini Pro 3', icon: '/icons/tutor-models/gemini.png', price: 3 },
-    { id: 'gemini-flash-3', label: 'Gemini Flash 3', icon: '/icons/tutor-models/gemini.png', price: 2 },
-    { id: 'claude-opus-4.6', label: 'Claude Opus 4.6', icon: '/icons/tutor-models/claude.png', price: 4 },
-    { id: 'claude-haiku-4.5', label: 'Claude Haiku 4.5', icon: '/icons/tutor-models/claude.png', price: 2 },
-  ] as const;
-  const selectedModelData = tutorModels.find((m) => m.id === selectedModel)!;
+  const selectedModelData = TUTOR_MODELS.find((m) => m.id === selectedModel) || TUTOR_MODELS[1];
   const priceString = (n: number) => '$'.repeat(n);
 
+  // Close dropdowns on outside click
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (modelDropdownRef.current && !modelDropdownRef.current.contains(e.target as Node)) {
         setModelDropdownOpen(false);
       }
+      if (conversationsRef.current && !conversationsRef.current.contains(e.target as Node)) {
+        setShowConversations(false);
+      }
     }
-    if (modelDropdownOpen) {
+    if (modelDropdownOpen || showConversations) {
       document.addEventListener('mousedown', handleClickOutside);
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
-  }, [modelDropdownOpen]);
+  }, [modelDropdownOpen, showConversations]);
 
-  const LINE_HEIGHT = 24;
-  const MAX_LINES = 5;
-
-  const adjustTextareaHeight = useCallback(() => {
-    const el = textareaRef.current;
-    if (!el) return;
-    el.style.height = 'auto';
-    const h = Math.min(el.scrollHeight, MAX_LINES * LINE_HEIGHT);
-    el.style.height = `${h}px`;
-  }, []);
-
+  // Scroll to bottom on new messages or streaming
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, streamingContent]);
 
+  // Focus textarea on mount
   useEffect(() => {
     textareaRef.current?.focus();
   }, []);
 
-  useEffect(() => {
-    adjustTextareaHeight();
-  }, [input, adjustTextareaHeight]);
-
-  // Update CSS variable for layout
+  // CSS variable for layout
   useEffect(() => {
     document.documentElement.style.setProperty('--chat-width', `${width}px`);
     return () => {
@@ -94,7 +151,7 @@ export default function TutorChatButton() {
     };
   }, [width]);
 
-  // Handle resize
+  // Resize handling
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     setIsResizing(true);
@@ -103,15 +160,10 @@ export default function TutorChatButton() {
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing) return;
-
       const newWidth = window.innerWidth - e.clientX;
-      const clampedWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, newWidth));
-      setWidth(clampedWidth);
+      setWidth(Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, newWidth)));
     };
-
-    const handleMouseUp = () => {
-      setIsResizing(false);
-    };
+    const handleMouseUp = () => setIsResizing(false);
 
     if (isResizing) {
       document.addEventListener('mousemove', handleMouseMove);
@@ -119,7 +171,6 @@ export default function TutorChatButton() {
       document.body.style.cursor = 'ew-resize';
       document.body.style.userSelect = 'none';
     }
-
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
@@ -130,57 +181,22 @@ export default function TutorChatButton() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || isLoading) return;
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: input.trim(),
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    if (!input.trim() || isStreaming) return;
+    const content = input.trim();
     setInput('');
-    setIsLoading(true);
+    await sendMessage(content);
+  };
 
-    try {
-      const response = await fetch('/api/tutor-chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...messages, userMessage].map(m => ({
-            role: m.role,
-            content: m.content,
-          })),
-          model: selectedModel,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Error en la respuesta del servidor');
-      }
-
-      const data = await response.json();
-
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: data.message || 'Lo siento, no pude procesar tu pregunta.',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, aiMessage]);
-    } catch (error) {
-      console.error('Error calling tutor API:', error);
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: 'Lo siento, hubo un error al procesar tu mensaje. Por favor intenta de nuevo.',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
+  // Format relative time
+  const relativeTime = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'ahora';
+    if (mins < 60) return `${mins}m`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h`;
+    const days = Math.floor(hours / 24);
+    return `${days}d`;
   };
 
   return (
@@ -197,50 +213,85 @@ export default function TutorChatButton() {
         }`}
       />
 
-      {/* Header - solo selector de modelo con estilo design system (contorno + profundidad) */}
-      <div className="px-4 py-4 flex-shrink-0">
-        <div className="relative w-full" ref={modelDropdownRef}>
+      {/* Header: solo título y acciones */}
+      <div className="px-4 py-4 flex items-center justify-between flex-shrink-0 border-b border-gray-200 dark:border-gray-700">
+        <h3 className="text-base font-semibold text-[#4b4b4b] dark:text-gray-200">Tutor IA</h3>
+        <div className="flex items-center gap-1">
           <button
             type="button"
-            onClick={() => setModelDropdownOpen((o) => !o)}
-            className="w-full flex items-center gap-2 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white text-sm font-medium pl-2 pr-2 py-2.5 focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] outline-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-150 active:border-b-2 active:mt-[2px]"
-            aria-label="Modelo de IA"
-            aria-expanded={modelDropdownOpen}
-            aria-haspopup="listbox"
+            onClick={createNewConversation}
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400"
+            aria-label="Nueva conversacion"
           >
-            <Image src={selectedModelData.icon} alt="" width={20} height={20} className="rounded object-contain flex-shrink-0 w-5 h-5" />
-            <span className="flex-1 text-left truncate text-xs">{selectedModelData.label}</span>
-            <span className="text-[#777777] dark:text-gray-400 font-normal tabular-nums text-xs">{priceString(selectedModelData.price)}</span>
-            <svg className={`w-3.5 h-3.5 flex-shrink-0 text-[#777777] dark:text-gray-400 transition-transform ${modelDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
           </button>
-          {modelDropdownOpen && (
-            <ul
-              role="listbox"
-              className="absolute left-0 right-0 top-full mt-1 z-50 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 shadow-lg py-1 max-h-[280px] overflow-y-auto"
-              aria-label="Modelos disponibles"
+          <div className="relative" ref={conversationsRef}>
+            <button
+              type="button"
+              onClick={() => setShowConversations((o) => !o)}
+              className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400"
+              aria-label="Historial"
             >
-              {tutorModels.map((m) => (
-                <li key={m.id} role="option" aria-selected={selectedModel === m.id}>
-                  <button
-                    type="button"
-                    onClick={() => { setSelectedModel(m.id); setModelDropdownOpen(false); }}
-                    className={`w-full flex items-center gap-2 px-2.5 py-2 text-left text-xs transition-colors ${selectedModel === m.id ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20 text-[#1472FF] dark:text-[#1472FF]' : 'text-[#4b4b4b] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'}`}
-                  >
-                    <Image src={m.icon} alt="" width={18} height={18} className="rounded object-contain flex-shrink-0 w-[18px] h-[18px]" />
-                    <span className="flex-1 truncate font-medium">{m.label}</span>
-                    <span className="text-[#777777] dark:text-gray-400 font-normal tabular-nums">{priceString(m.price)}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+            {showConversations && (
+              <div className="absolute right-0 top-full mt-1 z-50 w-64 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 shadow-lg max-h-[300px] overflow-y-auto">
+                <div className="p-2">
+                  {conversations.length === 0 ? (
+                    <p className="text-xs text-[#777777] dark:text-gray-400 text-center py-4">Sin conversaciones previas</p>
+                  ) : (
+                    conversations.map((conv) => (
+                      <div
+                        key={conv.id}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer transition-colors group ${
+                          activeConversationId === conv.id ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                        }`}
+                        onClick={() => { selectConversation(conv.id); setShowConversations(false); }}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs font-medium truncate ${activeConversationId === conv.id ? 'text-[#1472FF]' : 'text-[#4b4b4b] dark:text-white'}`}>{conv.title}</p>
+                          <p className="text-[10px] text-[#777777] dark:text-gray-400">{relativeTime(conv.updatedAt)}</p>
+                        </div>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); deleteConversation(conv.id); }} className="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 transition-all flex-shrink-0" aria-label="Eliminar">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Messages - Clean and spacious */}
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 bg-white dark:bg-gray-800">
+        {/* Loading messages indicator */}
+        {isLoadingMessages && (
+          <div className="flex justify-center py-8">
+            <Spinner size="sm" />
+          </div>
+        )}
+
+        {/* Welcome message when no conversation */}
+        {!isLoadingMessages && messages.length === 0 && !activeConversationId && (
+          <div className="flex justify-start">
+            <div className="max-w-[85%]">
+              <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 text-[#4b4b4b] dark:text-gray-300">
+                <p className="text-sm leading-relaxed">
+                  Hola, soy tu tutor de IA personal. Estoy aqui para ayudarte con cualquier duda sobre tu curso. ¿En que puedo ayudarte hoy?
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Message bubbles */}
         {messages.map((message) => (
           <div
             key={message.id}
@@ -254,13 +305,33 @@ export default function TutorChatButton() {
                     : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900'
                 }`}
               >
-                <p className="text-sm leading-relaxed">{message.content}</p>
+                <div className="text-sm leading-relaxed">
+                  {message.role === 'assistant'
+                    ? renderMarkdown(message.content)
+                    : <p>{message.content}</p>
+                  }
+                </div>
               </div>
             </div>
           </div>
         ))}
 
-        {isLoading && (
+        {/* Streaming bubble */}
+        {isStreaming && streamingContent && (
+          <div className="flex justify-start">
+            <div className="max-w-[85%]">
+              <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 text-[#4b4b4b] dark:text-gray-300">
+                <div className="text-sm leading-relaxed">
+                  {renderMarkdown(streamingContent)}
+                  <span className="inline-block w-1.5 h-4 bg-[#1472FF] rounded-sm animate-pulse ml-0.5 align-text-bottom" />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Loading dots (before first token arrives) */}
+        {isStreaming && !streamingContent && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
               <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900">
@@ -273,13 +344,15 @@ export default function TutorChatButton() {
             </div>
           </div>
         )}
+
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input - textarea crece hasta 5 líneas */}
-      <div className="px-6 py-4 bg-white dark:bg-gray-800 flex-shrink-0">
-        <form ref={formRef} onSubmit={handleSubmit} className="space-y-3">
-          <div className="relative">
+      {/* Input: textfield con 2 renglones de texto + renglón abajo (modelos + enviar) */}
+      <div className="px-4 py-4 bg-white dark:bg-gray-800 flex-shrink-0">
+        <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-0">
+          <div className="rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 overflow-hidden">
+            {/* Renglón 1–2: solo texto, altura fija 2 líneas */}
             <textarea
               ref={textareaRef}
               value={input}
@@ -291,19 +364,67 @@ export default function TutorChatButton() {
                 }
               }}
               placeholder="Escribe tu mensaje..."
-              rows={1}
-              className="w-full min-h-[3rem] max-h-[7.5rem] px-4 py-3 rounded-xl border-2 border-gray-200 dark:border-gray-900 border-b-4 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] transition-all resize-none overflow-y-auto"
+              rows={2}
+              className="w-full min-h-[4rem] max-h-[4rem] px-4 py-3 text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-0 bg-transparent resize-none overflow-y-auto border-0 border-none"
             />
+            {/* Renglón abajo: modelos (pegado a la derecha, sin contorno) + botón enviar (flecha arriba) */}
+            <div className="flex items-center justify-end gap-1 px-2 pb-2 pt-0">
+              <div className="relative flex-shrink-0" ref={modelDropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setModelDropdownOpen((o) => !o)}
+                  className="flex items-center justify-end gap-1 py-1.5 pr-1 pl-2 rounded-lg text-[#4b4b4b] dark:text-white text-xs font-medium outline-none cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border-0 border-transparent bg-transparent min-w-0"
+                  aria-label="Modelo de IA"
+                  aria-expanded={modelDropdownOpen}
+                  aria-haspopup="listbox"
+                >
+                  {width < 280 ? (
+                    <Image src={selectedModelData.icon} alt="" width={16} height={16} className="rounded object-contain flex-shrink-0 w-4 h-4" />
+                  ) : (
+                    <>
+                      <Image src={selectedModelData.icon} alt="" width={16} height={16} className="rounded object-contain flex-shrink-0 w-4 h-4" />
+                      <span className="truncate max-w-[120px]">{selectedModelData.label}</span>
+                      {width >= 380 && <span className="text-[#777777] dark:text-gray-400 tabular-nums flex-shrink-0">{priceString(selectedModelData.price)}</span>}
+                    </>
+                  )}
+                  <svg className={`w-4 h-4 flex-shrink-0 text-[#777777] dark:text-gray-400 transition-transform ${modelDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {modelDropdownOpen && (
+                  <ul
+                    role="listbox"
+                    className="absolute right-0 bottom-full mb-1 z-50 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 shadow-lg py-1 min-w-[180px] max-h-[280px] overflow-y-auto"
+                    aria-label="Modelos disponibles"
+                  >
+                    {TUTOR_MODELS.map((m) => (
+                      <li key={m.id} role="option" aria-selected={selectedModel === m.id}>
+                        <button
+                          type="button"
+                          onClick={() => { setSelectedModel(m.id); setModelDropdownOpen(false); }}
+                          className={`w-full flex items-center gap-2 px-2.5 py-2 text-left text-xs transition-colors ${selectedModel === m.id ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20 text-[#1472FF] dark:text-[#1472FF]' : 'text-[#4b4b4b] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                        >
+                          <Image src={m.icon} alt="" width={18} height={18} className="rounded object-contain flex-shrink-0 w-[18px] h-[18px]" />
+                          <span className="flex-1 truncate font-medium">{m.label}</span>
+                          <span className="text-[#777777] dark:text-gray-400 font-normal tabular-nums">{priceString(m.price)}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <button
+                type="submit"
+                disabled={!input.trim() || isStreaming}
+                className="w-9 h-9 flex items-center justify-center rounded-xl border-2 border-b-4 border-[#1472FF] border-b-[#0E5FCC] bg-[#1472FF] text-white hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                aria-label="Enviar mensaje"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                </svg>
+              </button>
+            </div>
           </div>
-          <Button
-            type="submit"
-            variant="primary"
-            size="md"
-            disabled={!input.trim() || isLoading}
-            className="w-full flex items-center justify-center"
-          >
-            Enviar Mensaje
-          </Button>
         </form>
       </div>
     </aside>

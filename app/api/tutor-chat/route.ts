@@ -1,84 +1,153 @@
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
 import { createClient } from '@/lib/supabase/server';
+import { getModel } from '@/lib/tutor/models';
+import { streamFromProvider } from '@/lib/tutor/providers';
+import { generateQueryEmbedding, searchRelevantDocuments, formatRAGContext } from '@/lib/tutor/rag';
+import { getUserContext, buildSystemPrompt } from '@/lib/tutor/context';
+import { createConversation, saveMessage, generateConversationTitle } from '@/lib/tutor/conversations';
+import type { TutorStreamChunk } from '@/types/tutor';
+
+export const maxDuration = 60; // Allow up to 60s for streaming responses
+
+function encodeChunk(chunk: TutorStreamChunk): string {
+  return JSON.stringify(chunk) + '\n';
+}
 
 export async function POST(request: NextRequest) {
   try {
-    // Verificar autenticación
+    // 1. Auth
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json(
-        { error: 'OpenAI API key not configured' },
-        { status: 500 }
-      );
+    // 2. Parse request
+    const body = await request.json();
+    const { messages, model: modelId, conversationId: existingConvId } = body;
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return NextResponse.json({ error: 'Mensajes requeridos' }, { status: 400 });
     }
 
-    const { messages, courseContext, model: modelId } = await request.json();
+    // 3. Resolve model
+    const model = getModel(modelId);
 
-    // Map frontend model id to OpenAI model (solo ChatGPT está integrado; resto usa gpt-4o-mini por ahora)
-    const openaiModelMap: Record<string, string> = {
-      'chatgpt-5.2': 'gpt-4o',
-      'chatgpt-mini': 'gpt-4o-mini',
-      'gemini-pro-3': 'gpt-4o-mini',
-      'gemini-flash-3': 'gpt-4o-mini',
-      'claude-opus-4.6': 'gpt-4o-mini',
-      'claude-haiku-4.5': 'gpt-4o-mini',
-    };
-    const openaiModel = openaiModelMap[modelId] ?? 'gpt-4o-mini';
+    // 4. Conversation — create or use existing
+    let conversationId = existingConvId;
+    let isNewConversation = false;
 
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+    if (!conversationId) {
+      const lastUserMessage = messages[messages.length - 1]?.content || '';
+      const title = generateConversationTitle(lastUserMessage);
+      const conv = await createConversation(supabase, user.id, title);
+      if (conv) {
+        conversationId = conv.id;
+        isNewConversation = true;
+      }
+    }
 
-    const systemPrompt = `Eres el tutor IA de Itera, una plataforma educativa sobre IA y automatización.
+    // 5. Save user message
+    const lastUserMessage = messages[messages.length - 1];
+    if (conversationId && lastUserMessage?.role === 'user') {
+      await saveMessage(supabase, conversationId, 'user', lastUserMessage.content);
+    }
 
-${courseContext || ''}
+    // 6. Parallel: user context + embedding
+    const lastUserContent = lastUserMessage?.content || '';
+    const [userContext, queryEmbedding] = await Promise.all([
+      getUserContext(supabase, user.id),
+      generateQueryEmbedding(lastUserContent).catch((err) => {
+        console.error('Embedding generation failed, skipping RAG:', err);
+        return null;
+      }),
+    ]);
 
-TU ROL:
-- Eres un ASISTENTE - estás aquí para AYUDAR cuando el estudiante te pregunte algo
-- NO tomes iniciativa ni sugieras cosas si no te lo piden
-- NO preguntes información que ya tienes en el contexto (nombre, proyecto, progreso)
-- Responde de forma concisa y directa a lo que te pregunten
+    // 7. RAG search
+    let ragContext = '';
+    if (queryEmbedding) {
+      const docs = await searchRelevantDocuments(supabase, queryEmbedding);
+      ragContext = formatRAGContext(docs);
+    }
 
-CÓMO RESPONDER:
-- Si te saludan, saluda de vuelta brevemente y pregunta en qué puedes ayudar
-- Si te hacen una pregunta técnica, responde usando el contexto de su proyecto cuando sea relevante
-- Usa la información de las clases que ya completó para saber qué conceptos ya conoce
-- Usa la clase actual para saber en qué tema está
-- Respuestas cortas y al punto (2-3 párrafos máximo)
-- Siempre en español
+    // 8. Build system prompt
+    const systemPrompt = buildSystemPrompt(userContext, ragContext);
 
-LO QUE SABES HACER:
-- Explicar conceptos de IA, automatización, APIs, prompting, RAG, agentes, MCP
-- Ayudar a resolver dudas sobre las clases
-- Dar ejemplos aplicados al proyecto del estudiante
-- Resolver problemas técnicos
-
-LO QUE NO DEBES HACER:
-- No des discursos largos ni motivacionales
-- No sugieras cosas si no te lo piden
-- No repitas información que el estudiante ya sabe
-- No preguntes cosas que ya sabes por el contexto`;
-
-    const response = await openai.chat.completions.create({
-      model: openaiModel,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        ...messages,
-      ],
-      max_tokens: 800,
+    // 9. Stream from provider
+    const providerStream = streamFromProvider(model.provider, {
+      model: model.apiModel,
+      systemPrompt,
+      messages: messages.map((m: any) => ({
+        role: m.role,
+        content: m.content,
+      })),
+      maxTokens: 1200,
       temperature: 0.7,
     });
 
-    const assistantMessage = response.choices[0]?.message?.content || 'Lo siento, no pude procesar tu pregunta.';
+    // 10. Transform to NDJSON + save assistant message on completion
+    let fullResponse = '';
+    const encoder = new TextEncoder();
 
-    return NextResponse.json({ message: assistantMessage });
-  } catch (error) {
+    const outputStream = new ReadableStream({
+      async start(controller) {
+        // Send conversation ID first (for new conversations)
+        if (isNewConversation && conversationId) {
+          controller.enqueue(
+            encoder.encode(
+              encodeChunk({ type: 'conversation_id', conversationId })
+            )
+          );
+        }
+
+        try {
+          const reader = providerStream.getReader();
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            fullResponse += value;
+            controller.enqueue(
+              encoder.encode(
+                encodeChunk({ type: 'text_delta', content: value })
+              )
+            );
+          }
+
+          // Send done signal
+          controller.enqueue(encoder.encode(encodeChunk({ type: 'done' })));
+          controller.close();
+
+          // Save assistant message after stream completes (non-blocking)
+          if (conversationId && fullResponse) {
+            saveMessage(supabase, conversationId, 'assistant', fullResponse).catch(
+              (err) => console.error('Error saving assistant message:', err)
+            );
+          }
+        } catch (error: any) {
+          console.error('Stream error:', error);
+          controller.enqueue(
+            encoder.encode(
+              encodeChunk({
+                type: 'error',
+                error: error.message || 'Error al generar respuesta',
+              })
+            )
+          );
+          controller.close();
+        }
+      },
+    });
+
+    return new Response(outputStream, {
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Transfer-Encoding': 'chunked',
+        'Cache-Control': 'no-cache',
+      },
+    });
+  } catch (error: any) {
     console.error('Tutor chat error:', error);
     return NextResponse.json(
       { error: 'Error al procesar tu mensaje' },
