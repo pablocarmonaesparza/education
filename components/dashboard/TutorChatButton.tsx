@@ -197,28 +197,13 @@ export default function TutorChatButton() {
         }`}
       />
 
-      {/* Header - Tutor IA + model dropdown */}
-      <div className="px-4 py-4 flex flex-col gap-3 flex-shrink-0 border-b border-gray-200 dark:border-gray-700">
-        <div className="flex items-center justify-between gap-2">
-          <h3 className="text-base font-semibold text-[#4b4b4b] dark:text-gray-200">Tutor IA</h3>
-          <div className="flex items-center gap-1">
-            <button type="button" className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400" aria-label="Nueva conversación">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
-            <button type="button" className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400" aria-label="Más opciones">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-              </svg>
-            </button>
-          </div>
-        </div>
+      {/* Header - solo selector de modelo con estilo design system (contorno + profundidad) */}
+      <div className="px-4 py-4 flex-shrink-0">
         <div className="relative w-full" ref={modelDropdownRef}>
           <button
             type="button"
             onClick={() => setModelDropdownOpen((o) => !o)}
-            className="w-full flex items-center gap-2 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white text-sm font-medium pl-2 pr-2 py-2 focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] outline-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            className="w-full flex items-center gap-2 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white text-sm font-medium pl-2 pr-2 py-2.5 focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] outline-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-150 active:border-b-2 active:mt-[2px]"
             aria-label="Modelo de IA"
             aria-expanded={modelDropdownOpen}
             aria-haspopup="listbox"
@@ -233,7 +218,7 @@ export default function TutorChatButton() {
           {modelDropdownOpen && (
             <ul
               role="listbox"
-              className="absolute left-0 right-0 top-full mt-1 z-50 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg py-1 max-h-[280px] overflow-y-auto"
+              className="absolute left-0 right-0 top-full mt-1 z-50 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 shadow-lg py-1 max-h-[280px] overflow-y-auto"
               aria-label="Modelos disponibles"
             >
               {tutorModels.map((m) => (
