@@ -49,6 +49,51 @@ export async function searchRelevantDocuments(
 }
 
 /**
+ * Trae la transcripcion COMPLETA de una clase por su subtopic.
+ * Junta todos los chunks ordenados para reconstruir el script del video.
+ */
+export async function getCurrentClassTranscript(
+  supabase: SupabaseClient,
+  subtopic: string
+): Promise<string> {
+  const { data, error } = await supabase
+    .from('education_system')
+    .select('id, content, topic, description')
+    .eq('subtopic', subtopic)
+    .order('id', { ascending: true });
+
+  if (error || !data || data.length === 0) {
+    console.error('Current class transcript error:', error);
+    return '';
+  }
+
+  // Extraer solo el audio script de cada chunk y eliminar duplicados de overlap
+  const scripts: string[] = [];
+  const seenLines = new Set<string>();
+
+  for (const chunk of data) {
+    // El content tiene formato "Lecture Number: X | ... | Audio Script: ..."
+    const scriptMatch = chunk.content.match(/Audio Script:\s*([\s\S]*?)(\s*\|\s*Tags:|$)/);
+    const script = scriptMatch ? scriptMatch[1].trim() : chunk.content;
+
+    // Dividir en lineas numeradas y filtrar duplicados (por overlap entre chunks)
+    const lines = script.split(/\n\n+/).filter(Boolean);
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed && !seenLines.has(trimmed)) {
+        seenLines.add(trimmed);
+        scripts.push(trimmed);
+      }
+    }
+  }
+
+  const topic = data[0].topic;
+  const description = data[0].description;
+
+  return `[${topic} > ${subtopic}] ${description}\n\n${scripts.join('\n\n')}`;
+}
+
+/**
  * Formatea los documentos RAG para inyectar en el system prompt.
  */
 export function formatRAGContext(documents: RAGDocument[]): string {

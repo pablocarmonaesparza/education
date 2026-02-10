@@ -154,7 +154,10 @@ export function useTutorChat(): UseTutorChatReturn {
         });
 
         if (!response.ok) {
-          throw new Error('Error en la respuesta del servidor');
+          const errorData = await response.json().catch(() => null);
+          const errorMessage = errorData?.error || `Error del servidor (${response.status})`;
+          console.error('[useTutorChat] Server error:', errorMessage);
+          throw new Error(errorMessage);
         }
 
         const reader = response.body?.getReader();
@@ -225,12 +228,12 @@ export function useTutorChat(): UseTutorChatReturn {
       } catch (error: any) {
         if (error.name === 'AbortError') return;
 
-        console.error('Chat error:', error);
+        console.error('[useTutorChat] Chat error:', error?.message || error);
         const errorMsg: TutorMessage = {
           id: `temp-error-${Date.now()}`,
           conversationId: activeConversationId || '',
           role: 'assistant',
-          content: 'Lo siento, hubo un error al procesar tu mensaje. Por favor intenta de nuevo.',
+          content: `Error: ${error?.message || 'Error desconocido'}. Intenta de nuevo.`,
           createdAt: new Date().toISOString(),
         };
         setMessages((prev) => [...prev, errorMsg]);

@@ -56,6 +56,7 @@ export interface TutorUserContext {
   totalVideos: number;
   currentModuleTitle: string | null;
   currentVideoTitle: string | null;
+  currentVideoSubtopic: string | null;
   currentVideoDescription: string | null;
   learningPathSummary: string | null;
   exercisesSummary: string | null;

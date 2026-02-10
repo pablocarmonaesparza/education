@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { getModel } from '@/lib/tutor/models';
 import { streamFromProvider } from '@/lib/tutor/providers';
-import { generateQueryEmbedding, searchRelevantDocuments, formatRAGContext } from '@/lib/tutor/rag';
+import { generateQueryEmbedding, searchRelevantDocuments, formatRAGContext, getCurrentClassTranscript } from '@/lib/tutor/rag';
 import { getUserContext, buildSystemPrompt } from '@/lib/tutor/context';
 import { createConversation, saveMessage, generateConversationTitle } from '@/lib/tutor/conversations';
 import type { TutorStreamChunk } from '@/types/tutor';
@@ -55,23 +55,59 @@ export async function POST(request: NextRequest) {
 
     // 6. Parallel: user context + embedding
     const lastUserContent = lastUserMessage?.content || '';
+    console.log('[tutor-chat] Step 6: Getting user context + embedding for:', lastUserContent.substring(0, 50));
+
     const [userContext, queryEmbedding] = await Promise.all([
-      getUserContext(supabase, user.id),
+      getUserContext(supabase, user.id).catch((err) => {
+        console.error('[tutor-chat] getUserContext failed:', err);
+        return {
+          userName: null, projectDescription: null, tier: 'basic',
+          completedVideos: 0, totalVideos: 0, currentModuleTitle: null,
+          currentVideoTitle: null, currentVideoSubtopic: null,
+          currentVideoDescription: null, learningPathSummary: null,
+          exercisesSummary: null,
+        };
+      }),
       generateQueryEmbedding(lastUserContent).catch((err) => {
-        console.error('Embedding generation failed, skipping RAG:', err);
+        console.error('[tutor-chat] Embedding generation failed:', err?.message || err);
         return null;
       }),
     ]);
 
-    // 7. RAG search
+    console.log('[tutor-chat] Step 7: User context loaded, embedding:', queryEmbedding ? 'OK' : 'FAILED');
+
+    // 7. RAG search + current class transcript (in parallel)
     let ragContext = '';
-    if (queryEmbedding) {
-      const docs = await searchRelevantDocuments(supabase, queryEmbedding);
-      ragContext = formatRAGContext(docs);
-    }
+    let currentClassTranscript = '';
+
+    const ragPromise = queryEmbedding
+      ? searchRelevantDocuments(supabase, queryEmbedding)
+          .then((docs) => {
+            console.log('[tutor-chat] RAG found', docs.length, 'documents');
+            ragContext = formatRAGContext(docs);
+          })
+          .catch((err: any) => {
+            console.error('[tutor-chat] RAG search failed:', err?.message || err);
+          })
+      : Promise.resolve();
+
+    const transcriptPromise = userContext.currentVideoSubtopic
+      ? getCurrentClassTranscript(supabase, userContext.currentVideoSubtopic)
+          .then((transcript) => {
+            console.log('[tutor-chat] Current class transcript loaded:', transcript.length, 'chars');
+            currentClassTranscript = transcript;
+          })
+          .catch((err: any) => {
+            console.error('[tutor-chat] Transcript fetch failed:', err?.message || err);
+          })
+      : Promise.resolve();
+
+    await Promise.all([ragPromise, transcriptPromise]);
 
     // 8. Build system prompt
-    const systemPrompt = buildSystemPrompt(userContext, ragContext);
+    const systemPrompt = buildSystemPrompt(userContext, ragContext, currentClassTranscript);
+    console.log('[tutor-chat] Step 8: System prompt built, length:', systemPrompt.length);
+    console.log('[tutor-chat] Step 9: Streaming from provider:', model.provider, model.apiModel);
 
     // 9. Stream from provider
     const providerStream = streamFromProvider(model.provider, {
@@ -148,9 +184,10 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error: any) {
-    console.error('Tutor chat error:', error);
+    console.error('[tutor-chat] FATAL ERROR:', error?.message || error);
+    console.error('[tutor-chat] Stack:', error?.stack);
     return NextResponse.json(
-      { error: 'Error al procesar tu mensaje' },
+      { error: error?.message || 'Error al procesar tu mensaje' },
       { status: 500 }
     );
   }

@@ -56,6 +56,8 @@ export default function DashboardPage() {
   const [isMobile, setIsMobile] = useState(false);
   const [expandedVideoId, setExpandedVideoId] = useState<string | null>(null);
   const [showCreateCourseModal, setShowCreateCourseModal] = useState(false);
+  const [completedExercises, setCompletedExercises] = useState<Set<number>>(new Set());
+  const [exercisesByPhase, setExercisesByPhase] = useState<Record<number, number[]>>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const phaseSectionsRef = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -205,6 +207,35 @@ export default function DashboardPage() {
           });
 
           setVideos(allVideos);
+
+          // Fetch exercise progress and user_exercises for section gating (videos + retos)
+          const { data: exercisesRow } = await supabase
+            .from('user_exercises')
+            .select('exercises')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+
+          const { data: exerciseProgressData } = await supabase
+            .from('exercise_progress')
+            .select('exercise_number, completed')
+            .eq('user_id', user.id);
+
+          const completedExSet = new Set(
+            (exerciseProgressData || [])
+              .filter((p: any) => p.completed)
+              .map((p: any) => p.exercise_number)
+          );
+          setCompletedExercises(completedExSet);
+
+          const byPhase: Record<number, number[]> = {};
+          (exercisesRow?.exercises || []).forEach((ex: any) => {
+            const phaseNum = Number(ex.phase) || 1;
+            if (!byPhase[phaseNum]) byPhase[phaseNum] = [];
+            byPhase[phaseNum].push(Number(ex.number));
+          });
+          setExercisesByPhase(byPhase);
         }
       }
       setIsLoading(false);
@@ -231,6 +262,23 @@ export default function DashboardPage() {
     acc[video.phaseId].videos.push(video);
     return acc;
   }, {} as Record<string, { phaseName: string; videos: Video[] }>);
+
+  const phaseOrder = Object.keys(videosByPhase);
+
+  // Section gating: phase is complete when all videos + all retos of that phase are done
+  const isPhaseComplete = (phaseIndex: number) => {
+    const phaseId = phaseOrder[phaseIndex];
+    const phaseData = videosByPhase[phaseId];
+    if (!phaseData) return false;
+    const allVideosDone = phaseData.videos.every((v) => v.isCompleted);
+    const phaseNum = phaseIndex + 1;
+    const exNumbers = exercisesByPhase[phaseNum];
+    const allRetosDone = !exNumbers?.length || exNumbers.every((n) => completedExercises.has(n));
+    return allVideosDone && allRetosDone;
+  };
+
+  const isPhaseUnlocked = (phaseIndex: number) =>
+    phaseIndex === 0 || isPhaseComplete(phaseIndex - 1);
 
   const completedCount = videos.filter(v => v.isCompleted).length;
   const totalCount = videos.length;
@@ -640,21 +688,24 @@ export default function DashboardPage() {
         <div className="pb-24">
           {videos.length > 0 && (
             <div className="pt-2 pb-6 space-y-6">
-            {Object.entries(videosByPhase).map(([phaseId, phaseData], phaseIndex) => (
+            {Object.entries(videosByPhase).map(([phaseId, phaseData], phaseIndex) => {
+              const unlocked = isPhaseUnlocked(phaseIndex);
+              return (
               <div
                 key={phaseId}
                 data-phase-id={phaseId}
                 ref={(el) => {
                   if (el) phaseSectionsRef.current.set(phaseId, el);
                 }}
+                className="relative"
               >
                 {/* Phase Divider and Title */}
-                <div className="mb-4 sm:mb-6 w-[95%] sm:w-[80%] mx-auto">
+                <div className={`mb-4 sm:mb-6 w-[95%] sm:w-[80%] mx-auto transition-opacity ${unlocked ? 'opacity-100' : 'opacity-60'}`}>
                   <Divider title={phaseData.phaseName} />
                 </div>
                 
-                {/* Videos in this phase */}
-                <div className="w-full max-w-[220px] mx-auto px-2 sm:px-0 space-y-4">
+                {/* Videos in this phase - list always visible */}
+                <div className={`w-full max-w-[220px] mx-auto px-2 sm:px-0 space-y-4 transition-opacity ${unlocked ? 'opacity-100' : 'opacity-60'}`}>
                   {phaseData.videos.map((video) => (
                     <div key={video.id} data-video-id={video.id}>
                       <LessonItem
@@ -668,13 +719,36 @@ export default function DashboardPage() {
                         isCurrent={video.isCurrent}
                         isExpanded={expandedVideoId === String(video.id)}
                         onToggleExpand={() => setExpandedVideoId(expandedVideoId === String(video.id) ? null : String(video.id))}
-                        onClick={() => handleVideoSelect(video)}
+                        onClick={() => unlocked && handleVideoSelect(video)}
                       />
                     </div>
                   ))}
                 </div>
+
+                {/* Overlay when section is locked: visible but blocked */}
+                {!unlocked && (
+                  <div
+                    className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-[2px] min-h-[120px] pointer-events-auto"
+                    aria-hidden="true"
+                  >
+                    <div className="text-center px-4 max-w-[200px]">
+                      <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                        <svg className="w-6 h-6 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                      </div>
+                      <p className="text-sm font-bold text-[#4b4b4b] dark:text-gray-300">
+                        Sección bloqueada
+                      </p>
+                      <p className="text-xs text-[#777777] dark:text-gray-400 mt-1">
+                        Completa todos los videos y retos de la sección anterior para desbloquear
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
-            ))}
+            );
+            })}
             </div>
           )}
         </div>
