@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import Button from '@/components/ui/Button';
 
 interface Message {
@@ -27,10 +28,36 @@ export default function TutorChatButton() {
   const [isLoading, setIsLoading] = useState(false);
   const [width, setWidth] = useState(DEFAULT_WIDTH);
   const [isResizing, setIsResizing] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<string>('chatgpt-mini');
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
+  const modelDropdownRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const asideRef = useRef<HTMLAsideElement>(null);
+
+  const tutorModels = [
+    { id: 'chatgpt-5.2', label: 'ChatGPT 5.2', icon: '/icons/tutor-models/chatgpt.png', price: 4 },
+    { id: 'chatgpt-mini', label: 'ChatGPT (Mini)', icon: '/icons/tutor-models/chatgpt.png', price: 1 },
+    { id: 'gemini-pro-3', label: 'Gemini Pro 3', icon: '/icons/tutor-models/gemini.png', price: 3 },
+    { id: 'gemini-flash-3', label: 'Gemini Flash 3', icon: '/icons/tutor-models/gemini.png', price: 2 },
+    { id: 'claude-opus-4.6', label: 'Claude Opus 4.6', icon: '/icons/tutor-models/claude.png', price: 4 },
+    { id: 'claude-haiku-4.5', label: 'Claude Haiku 4.5', icon: '/icons/tutor-models/claude.png', price: 2 },
+  ] as const;
+  const selectedModelData = tutorModels.find((m) => m.id === selectedModel)!;
+  const priceString = (n: number) => '$'.repeat(n);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (modelDropdownRef.current && !modelDropdownRef.current.contains(e.target as Node)) {
+        setModelDropdownOpen(false);
+      }
+    }
+    if (modelDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [modelDropdownOpen]);
 
   const LINE_HEIGHT = 24;
   const MAX_LINES = 5;
@@ -125,6 +152,7 @@ export default function TutorChatButton() {
             role: m.role,
             content: m.content,
           })),
+          model: selectedModel,
         }),
       });
 
@@ -169,22 +197,60 @@ export default function TutorChatButton() {
         }`}
       />
 
-      {/* Header - Minimalist */}
-      <div className="px-6 py-5 flex items-center justify-between flex-shrink-0">
-        <div className="flex items-center gap-3">
+      {/* Header - Tutor IA + model dropdown */}
+      <div className="px-4 py-4 flex flex-col gap-3 flex-shrink-0 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between gap-2">
           <h3 className="text-base font-semibold text-[#4b4b4b] dark:text-gray-200">Tutor IA</h3>
+          <div className="flex items-center gap-1">
+            <button type="button" className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400" aria-label="Nueva conversación">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </button>
+            <button type="button" className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-gray-500 dark:text-gray-400" aria-label="Más opciones">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+              </svg>
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        <div className="relative w-full" ref={modelDropdownRef}>
+          <button
+            type="button"
+            onClick={() => setModelDropdownOpen((o) => !o)}
+            className="w-full flex items-center gap-2 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white text-sm font-medium pl-2 pr-2 py-2 focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] outline-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            aria-label="Modelo de IA"
+            aria-expanded={modelDropdownOpen}
+            aria-haspopup="listbox"
+          >
+            <Image src={selectedModelData.icon} alt="" width={20} height={20} className="rounded object-contain flex-shrink-0 w-5 h-5" />
+            <span className="flex-1 text-left truncate text-xs">{selectedModelData.label}</span>
+            <span className="text-[#777777] dark:text-gray-400 font-normal tabular-nums text-xs">{priceString(selectedModelData.price)}</span>
+            <svg className={`w-3.5 h-3.5 flex-shrink-0 text-[#777777] dark:text-gray-400 transition-transform ${modelDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
           </button>
-          <button className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-            </svg>
-          </button>
+          {modelDropdownOpen && (
+            <ul
+              role="listbox"
+              className="absolute left-0 right-0 top-full mt-1 z-50 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg py-1 max-h-[280px] overflow-y-auto"
+              aria-label="Modelos disponibles"
+            >
+              {tutorModels.map((m) => (
+                <li key={m.id} role="option" aria-selected={selectedModel === m.id}>
+                  <button
+                    type="button"
+                    onClick={() => { setSelectedModel(m.id); setModelDropdownOpen(false); }}
+                    className={`w-full flex items-center gap-2 px-2.5 py-2 text-left text-xs transition-colors ${selectedModel === m.id ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20 text-[#1472FF] dark:text-[#1472FF]' : 'text-[#4b4b4b] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                  >
+                    <Image src={m.icon} alt="" width={18} height={18} className="rounded object-contain flex-shrink-0 w-[18px] h-[18px]" />
+                    <span className="flex-1 truncate font-medium">{m.label}</span>
+                    <span className="text-[#777777] dark:text-gray-400 font-normal tabular-nums">{priceString(m.price)}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 

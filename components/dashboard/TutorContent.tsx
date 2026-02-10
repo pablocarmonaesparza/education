@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import Spinner from '@/components/ui/Spinner';
 import IconButton from '@/components/ui/IconButton';
@@ -54,15 +55,32 @@ export default function TutorContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [selectedModel, setSelectedModel] = useState<string>('chatgpt-mini');
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
+  const modelDropdownRef = useRef<HTMLDivElement>(null);
 
   const tutorModels = [
-    { id: 'chatgpt-5.2', label: 'ChatGPT 5.2' },
-    { id: 'chatgpt-mini', label: 'ChatGPT (Mini)' },
-    { id: 'gemini-pro-3', label: 'Gemini Pro 3' },
-    { id: 'gemini-flash-3', label: 'Gemini Flash 3' },
-    { id: 'claude-opus-4.6', label: 'Claude Opus 4.6' },
-    { id: 'claude-haiku-4.5', label: 'Claude Haiku 4.5' },
+    { id: 'chatgpt-5.2', label: 'ChatGPT 5.2', icon: '/icons/tutor-models/chatgpt.png', price: 4 },
+    { id: 'chatgpt-mini', label: 'ChatGPT (Mini)', icon: '/icons/tutor-models/chatgpt.png', price: 1 },
+    { id: 'gemini-pro-3', label: 'Gemini Pro 3', icon: '/icons/tutor-models/gemini.png', price: 3 },
+    { id: 'gemini-flash-3', label: 'Gemini Flash 3', icon: '/icons/tutor-models/gemini.png', price: 2 },
+    { id: 'claude-opus-4.6', label: 'Claude Opus 4.6', icon: '/icons/tutor-models/claude.png', price: 4 },
+    { id: 'claude-haiku-4.5', label: 'Claude Haiku 4.5', icon: '/icons/tutor-models/claude.png', price: 2 },
   ] as const;
+
+  const selectedModelData = tutorModels.find((m) => m.id === selectedModel)!;
+  const priceString = (n: number) => '$'.repeat(n);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (modelDropdownRef.current && !modelDropdownRef.current.contains(e.target as Node)) {
+        setModelDropdownOpen(false);
+      }
+    }
+    if (modelDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [modelDropdownOpen]);
 
   useEffect(() => {
     async function loadUserContext() {
@@ -486,18 +504,67 @@ ${completedVideosText}
                 </p>
               </div>
             </div>
-            <select
-              value={selectedModel}
-              onChange={(e) => setSelectedModel(e.target.value)}
-              className="flex-shrink-0 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white text-sm font-medium px-3 py-2 focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] outline-none cursor-pointer"
-              aria-label="Modelo de IA"
-            >
-              {tutorModels.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
+            <div className="relative flex-shrink-0" ref={modelDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setModelDropdownOpen((o) => !o)}
+                className="flex items-center gap-2 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white text-sm font-medium pl-2 pr-3 py-2 focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] outline-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors min-w-[180px]"
+                aria-label="Modelo de IA"
+                aria-expanded={modelDropdownOpen}
+                aria-haspopup="listbox"
+              >
+                <Image
+                  src={selectedModelData.icon}
+                  alt=""
+                  width={20}
+                  height={20}
+                  className="rounded object-contain flex-shrink-0 w-5 h-5"
+                />
+                <span className="flex-1 text-left truncate">{selectedModelData.label}</span>
+                <span className="text-[#777777] dark:text-gray-400 font-normal tabular-nums">
+                  {priceString(selectedModelData.price)}
+                </span>
+                <svg className={`w-4 h-4 flex-shrink-0 text-[#777777] dark:text-gray-400 transition-transform ${modelDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {modelDropdownOpen && (
+                <ul
+                  role="listbox"
+                  className="absolute right-0 top-full mt-1 z-50 w-64 max-w-[calc(100vw-2rem)] rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg py-1"
+                  aria-label="Modelos disponibles"
+                >
+                  {tutorModels.map((m) => (
+                    <li key={m.id} role="option" aria-selected={selectedModel === m.id}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedModel(m.id);
+                          setModelDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-2 px-3 py-2.5 text-left text-sm transition-colors ${
+                          selectedModel === m.id
+                            ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20 text-[#1472FF] dark:text-[#1472FF]'
+                            : 'text-[#4b4b4b] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
+                        }`}
+                      >
+                        <Image
+                          src={m.icon}
+                          alt=""
+                          width={20}
+                          height={20}
+                          className="rounded object-contain flex-shrink-0 w-5 h-5"
+                        />
+                        <span className="flex-1 truncate font-medium">{m.label}</span>
+                        <span className="text-[#777777] dark:text-gray-400 font-normal tabular-nums">
+                          {priceString(m.price)}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
 
