@@ -23,6 +23,11 @@ export default function PerfilPage() {
   const [editName, setEditName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [telegramLinked, setTelegramLinked] = useState(false);
+  const [telegramUsername, setTelegramUsername] = useState<string | null>(null);
+  const [telegramCode, setTelegramCode] = useState<string | null>(null);
+  const [telegramLoading, setTelegramLoading] = useState(false);
+  const [telegramCodeExpiry, setTelegramCodeExpiry] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -56,10 +61,22 @@ export default function PerfilPage() {
           projectIdea,
         });
         setEditName(userData?.name || user.user_metadata?.name || '');
+
+        // Verificar si tiene Telegram vinculado
+        try {
+          const res = await fetch('/api/telegram-link');
+          if (res.ok) {
+            const data = await res.json();
+            setTelegramLinked(data.linked);
+            setTelegramUsername(data.telegramUsername);
+          }
+        } catch {
+          // Silenciar error — no es crítico
+        }
       }
       setIsLoading(false);
     }
-    
+
     fetchProfile();
   }, [supabase]);
 
@@ -88,6 +105,44 @@ export default function PerfilPage() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push('/');
+  };
+
+  const handleGenerateTelegramCode = async () => {
+    setTelegramLoading(true);
+    setTelegramCode(null);
+    try {
+      const res = await fetch('/api/telegram-link', { method: 'POST' });
+      const data = await res.json();
+      if (res.ok) {
+        setTelegramCode(data.code);
+        setTelegramCodeExpiry(data.expiresAt);
+      } else {
+        setMessage({ type: 'error', text: data.error || 'Error al generar código' });
+        setTimeout(() => setMessage(null), 3000);
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Error de conexión' });
+      setTimeout(() => setMessage(null), 3000);
+    }
+    setTelegramLoading(false);
+  };
+
+  const handleUnlinkTelegram = async () => {
+    setTelegramLoading(true);
+    try {
+      const res = await fetch('/api/telegram-link', { method: 'DELETE' });
+      if (res.ok) {
+        setTelegramLinked(false);
+        setTelegramUsername(null);
+        setTelegramCode(null);
+        setMessage({ type: 'success', text: 'Telegram desvinculado correctamente' });
+        setTimeout(() => setMessage(null), 3000);
+      }
+    } catch {
+      setMessage({ type: 'error', text: 'Error al desvincular' });
+      setTimeout(() => setMessage(null), 3000);
+    }
+    setTelegramLoading(false);
   };
 
   const formatDate = (dateString: string) => {
@@ -263,6 +318,68 @@ export default function PerfilPage() {
               <button className="w-12 h-6 rounded-full bg-[#1472FF] relative transition-colors">
                 <span className="absolute right-1 top-1 w-4 h-4 rounded-full bg-white transition-transform" />
               </button>
+            </div>
+
+            {/* Telegram */}
+            <div className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-[#4b4b4b] dark:text-white">Telegram</p>
+                  <p className="text-sm text-[#777777] dark:text-gray-400">
+                    {telegramLinked
+                      ? `Vinculado como @${telegramUsername || 'usuario'}`
+                      : 'Conecta tu tutor AI a Telegram'
+                    }
+                  </p>
+                </div>
+                {telegramLinked ? (
+                  <Button
+                    variant="outline"
+                    size="md"
+                    onClick={handleUnlinkTelegram}
+                    disabled={telegramLoading}
+                  >
+                    {telegramLoading ? 'Desvinculando...' : 'Desvincular'}
+                  </Button>
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="md"
+                    onClick={handleGenerateTelegramCode}
+                    disabled={telegramLoading}
+                  >
+                    {telegramLoading ? 'Generando...' : 'Conectar'}
+                  </Button>
+                )}
+              </div>
+
+              {/* Código de vinculación */}
+              {telegramCode && !telegramLinked && (
+                <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl">
+                  <p className="text-sm text-[#777777] dark:text-gray-400 mb-2">
+                    Tu código de vinculación (expira en 10 min):
+                  </p>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="font-mono text-2xl font-bold tracking-widest text-[#1472FF]">
+                      {telegramCode}
+                    </span>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(telegramCode);
+                        setMessage({ type: 'success', text: 'Código copiado' });
+                        setTimeout(() => setMessage(null), 2000);
+                      }}
+                      className="text-sm text-[#1472FF] hover:underline"
+                    >
+                      Copiar
+                    </button>
+                  </div>
+                  <div className="text-xs text-[#777777] dark:text-gray-400 space-y-1">
+                    <p>1. Abre <a href="https://t.me/IteraTutorBot" target="_blank" rel="noopener noreferrer" className="text-[#1472FF] hover:underline">@IteraTutorBot</a> en Telegram</p>
+                    <p>2. Envía: <span className="font-mono bg-gray-200 dark:bg-gray-800 px-1 rounded">/vincular {telegramCode}</span></p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
