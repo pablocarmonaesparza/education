@@ -351,8 +351,9 @@ export default function TutorChatButton() {
       {/* Input: textfield con 2 renglones + renglón abajo [modelo | spacer | enviar] */}
       <div className="px-4 py-4 bg-white dark:bg-gray-800 flex-shrink-0">
         <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-0">
-          <div className="rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 overflow-hidden">
-            {/* Renglón 1–2: solo texto */}
+          <div className="rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 overflow-visible">
+            {/* Renglón 1–2: solo texto (overflow interno para no salir del borde) */}
+            <div className="overflow-hidden rounded-t-2xl">
             <textarea
               ref={textareaRef}
               value={input}
@@ -367,6 +368,7 @@ export default function TutorChatButton() {
               rows={2}
               className="w-full min-h-[4rem] max-h-[4rem] px-4 py-3 text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-0 bg-transparent resize-none overflow-y-auto border-0 border-none"
             />
+            </div>
             {/* Renglón abajo: modelo (izq, sin contorno, solo chevron) | spacer | enviar (derecha) */}
             <div className="flex items-center gap-2 px-2 pb-2 pt-0">
               <div className="relative flex-shrink-0 h-9 flex items-center" ref={modelDropdownRef}>
@@ -378,7 +380,9 @@ export default function TutorChatButton() {
                   aria-expanded={modelDropdownOpen}
                   aria-haspopup="listbox"
                 >
-                  <Image src={selectedModelData.icon} alt="" width={20} height={20} className="rounded object-contain flex-shrink-0 w-5 h-5" />
+                  <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+                    <Image src={selectedModelData.icon} alt="" width={20} height={20} className="w-5 h-5 rounded object-contain" />
+                  </span>
                   {width >= 280 && (
                     <span className="truncate max-w-[100px] font-bold">{selectedModelData.label}</span>
                   )}
@@ -404,7 +408,9 @@ export default function TutorChatButton() {
                           onClick={() => { setSelectedModel(m.id); setModelDropdownOpen(false); }}
                           className={`w-full flex items-center gap-2 px-2.5 py-2 text-left text-xs font-bold transition-colors ${selectedModel === m.id ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20 text-[#1472FF] dark:text-[#1472FF]' : 'text-[#4b4b4b] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'}`}
                         >
-                          <Image src={m.icon} alt="" width={20} height={20} className="rounded object-contain flex-shrink-0 w-5 h-5" />
+                          <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
+                            <Image src={m.icon} alt="" width={20} height={20} className="w-5 h-5 rounded object-contain" />
+                          </span>
                           <span className="flex-1 truncate">{m.label}</span>
                           <span className="px-1.5 py-0.5 rounded-md bg-[#777777]/15 dark:bg-gray-600 text-[#777777] dark:text-gray-400 tabular-nums border border-[#777777]/30 dark:border-gray-500/50">{priceString(m.price)}</span>
                         </button>
