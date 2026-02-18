@@ -79,21 +79,18 @@ export default function AuthForm({ mode }: AuthFormProps) {
       setError('Supabase no está inicializado. Por favor recarga la página.');
       return;
     }
-    
+
     setOauthLoading(true);
     setError(null);
 
     try {
-      // Use dynamic redirect URL with mode info
       const redirectUrl = `${window.location.origin}/auth/callback?from=${mode}`;
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
+
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUrl,
-          queryParams: {
-            prompt: 'select_account',
-          },
+          queryParams: { prompt: 'select_account' },
         },
       });
 
