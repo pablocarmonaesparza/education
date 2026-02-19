@@ -381,6 +381,43 @@ export default function PerfilPage() {
                 </div>
               )}
             </div>
+
+            {/* Newsletters */}
+            <div className="p-6">
+              <div className="mb-4">
+                <p className="font-medium text-[#4b4b4b] dark:text-white">Newsletters</p>
+                <p className="text-sm text-[#777777] dark:text-gray-400">Elige qué notificaciones quieres recibir por correo</p>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-[#4b4b4b] dark:text-gray-300">Oportunidades de trabajo</p>
+                    <p className="text-xs text-[#777777] dark:text-gray-400">Recibe ofertas de trabajo relacionadas con tu proyecto</p>
+                  </div>
+                  <button className="w-12 h-6 rounded-full bg-[#1472FF] relative transition-colors">
+                    <span className="absolute right-1 top-1 w-4 h-4 rounded-full bg-white transition-transform" />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-[#4b4b4b] dark:text-gray-300">Calendario de actividades</p>
+                    <p className="text-xs text-[#777777] dark:text-gray-400">Aviso de sesiones, talleres y eventos del mes</p>
+                  </div>
+                  <button className="w-12 h-6 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors">
+                    <span className="absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform" />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-[#4b4b4b] dark:text-gray-300">Nuevos productos en Pitch</p>
+                    <p className="text-xs text-[#777777] dark:text-gray-400">Entérate cuando alguien publique un producto nuevo</p>
+                  </div>
+                  <button className="w-12 h-6 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors">
+                    <span className="absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform" />
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

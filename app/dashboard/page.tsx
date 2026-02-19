@@ -7,7 +7,9 @@ import LessonItem from '@/components/dashboard/LessonItem';
 import IconButton from '@/components/ui/IconButton';
 import Button from '@/components/ui/Button';
 import Spinner from '@/components/ui/Spinner';
-import Card from '@/components/ui/Card';
+import Card, { CardFlat } from '@/components/ui/Card';
+import Tag from '@/components/ui/Tag';
+import { Headline, Body, Caption } from '@/components/ui/Typography';
 import Divider from '@/components/ui/Divider';
 import CompositeCard from '@/components/shared/CompositeCard';
 import HorizontalScroll from '@/components/shared/HorizontalScroll';
@@ -37,6 +39,21 @@ interface Video {
   videoUrl?: string;
 }
 
+interface Exercise {
+  number: number;
+  phase: number;
+  type: string;
+  title: string;
+  description: string;
+  deliverable: string;
+  videos_required: number[];
+  time_minutes: number;
+  difficulty: number;
+  isCompleted: boolean;
+  isUnlocked: boolean;
+  missingVideos: number[];
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [userName, setUserName] = useState<string>('');
@@ -56,6 +73,8 @@ export default function DashboardPage() {
   const [isMobile, setIsMobile] = useState(false);
   const [expandedVideoId, setExpandedVideoId] = useState<string | null>(null);
   const [showCreateCourseModal, setShowCreateCourseModal] = useState(false);
+  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [completedExercises, setCompletedExercises] = useState<Set<number>>(new Set());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const phaseSectionsRef = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -205,11 +224,46 @@ export default function DashboardPage() {
           });
 
           setVideos(allVideos);
+
+          // Fetch exercises for retos integration
+          const { data: exercisesResult } = await supabase
+            .from('user_exercises')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
+
+          if (exercisesResult) {
+            const { data: exerciseProgressData } = await supabase
+              .from('exercise_progress')
+              .select('exercise_number, completed')
+              .eq('user_id', user.id);
+
+            const completedExSet = new Set(
+              (exerciseProgressData || [])
+                .filter((p: any) => p.completed)
+                .map((p: any) => p.exercise_number)
+            );
+            setCompletedExercises(completedExSet);
+
+            const parsedExercises = (exercisesResult.exercises || []).map((ex: any) => {
+              const requiredVideos = ex.videos_required || [];
+              const missingVideos = requiredVideos.filter((vid: number) => !completedVideos.has(vid));
+              return {
+                ...ex,
+                isCompleted: completedExSet.has(ex.number),
+                isUnlocked: missingVideos.length === 0,
+                missingVideos,
+              };
+            });
+            setExercises(parsedExercises);
+          }
         }
       }
       setIsLoading(false);
     }
-    
+
     fetchUserData();
   }, [supabase]);
 
@@ -503,6 +557,50 @@ export default function DashboardPage() {
     }, 400);
   };
 
+  // Group exercises by phase
+  const exercisesByPhase = exercises.reduce((acc, ex) => {
+    if (!acc[ex.phase]) acc[ex.phase] = [];
+    acc[ex.phase].push(ex);
+    return acc;
+  }, {} as Record<number, Exercise[]>);
+
+  // Toggle exercise completion
+  const toggleExerciseCompletion = async (exerciseNumber: number, currentlyCompleted: boolean, isUnlocked: boolean) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    if (!isUnlocked && !currentlyCompleted) return;
+
+    if (currentlyCompleted) {
+      await supabase
+        .from('exercise_progress')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('exercise_number', exerciseNumber);
+    } else {
+      await supabase
+        .from('exercise_progress')
+        .upsert({
+          user_id: user.id,
+          exercise_number: exerciseNumber,
+          completed: true,
+          completed_at: new Date().toISOString()
+        }, { onConflict: 'user_id,exercise_number' });
+    }
+
+    setCompletedExercises(prev => {
+      const newSet = new Set(prev);
+      if (currentlyCompleted) newSet.delete(exerciseNumber);
+      else newSet.add(exerciseNumber);
+      return newSet;
+    });
+
+    setExercises(prev => prev.map(ex =>
+      ex.number === exerciseNumber
+        ? { ...ex, isCompleted: !currentlyCompleted }
+        : ex
+    ));
+  };
+
   // Loading state
   if (isLoading) {
     return (
@@ -672,6 +770,100 @@ export default function DashboardPage() {
                       />
                     </div>
                   ))}
+
+                  {/* Reto for this phase */}
+                  {(() => {
+                    const phaseNum = parseInt(phaseId) || (Object.keys(videosByPhase).indexOf(phaseId) + 1);
+                    const phaseExercises = exercisesByPhase[phaseNum];
+                    if (!phaseExercises || phaseExercises.length === 0) return null;
+
+                    // Show the first incomplete exercise, or the first one
+                    const exercise = phaseExercises.find(ex => !ex.isCompleted) || phaseExercises[0];
+                    const isLocked = !exercise.isUnlocked && !exercise.isCompleted;
+
+                    return (
+                      <CardFlat className={`mt-4 shadow-sm ${isLocked ? 'opacity-60' : ''}`}>
+                        <div className="p-4 space-y-3">
+                          {/* Header */}
+                          <div className="flex items-center gap-2">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                              exercise.isCompleted
+                                ? 'bg-[#22c55e] text-white'
+                                : isLocked
+                                  ? 'bg-gray-200 dark:bg-gray-700 text-[#777777]'
+                                  : 'bg-[#1472FF] text-white'
+                            }`}>
+                              {exercise.isCompleted ? (
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                </svg>
+                              ) : isLocked ? (
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                              ) : (
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                              )}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <Headline className="!text-xs">reto de la fase</Headline>
+                            </div>
+                            <Tag variant={exercise.isCompleted ? 'success' : isLocked ? 'neutral' : 'primary'} className="!text-xs !px-2 !py-0.5">
+                              {exercise.type}
+                            </Tag>
+                          </div>
+
+                          {/* Exercise info */}
+                          <p className="text-sm font-bold text-[#4b4b4b] dark:text-white leading-tight">
+                            {exercise.title}
+                          </p>
+                          <Caption className="line-clamp-2">{exercise.description}</Caption>
+
+                          {/* Meta */}
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Caption>{exercise.time_minutes} min</Caption>
+                            <div className="flex gap-0.5">
+                              {[1, 2, 3, 4, 5].map((i) => (
+                                <div
+                                  key={i}
+                                  className={`w-1.5 h-1.5 rounded-full ${
+                                    i <= exercise.difficulty ? 'bg-[#1472FF]' : 'bg-gray-200 dark:bg-gray-700'
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Action */}
+                          {exercise.isCompleted ? (
+                            <Button
+                              variant="completado"
+                              size="sm"
+                              className="w-full"
+                              onClick={() => toggleExerciseCompletion(exercise.number, true, true)}
+                            >
+                              Completado
+                            </Button>
+                          ) : isLocked ? (
+                            <Button variant="outline" size="sm" disabled className="w-full">
+                              Completa los videos para desbloquear
+                            </Button>
+                          ) : (
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              className="w-full"
+                              onClick={() => toggleExerciseCompletion(exercise.number, false, true)}
+                            >
+                              Marcar completado
+                            </Button>
+                          )}
+                        </div>
+                      </CardFlat>
+                    );
+                  })()}
                 </div>
               </div>
             ))}
