@@ -4,7 +4,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import {
   searchSyllabusWithReranker,
-  generateSearchQueries,
+  generateSearchQueriesWithAI,
   formatSyllabusForPrompt,
 } from './rag';
 import {
@@ -72,11 +72,16 @@ export async function generateCourseInline(
 
   console.log('[course-gen] Starting inline generation for user:', input.userId);
 
-  // ───── Step 1: RAG search with reranker ─────
+  // ───── Step 1: AI-powered query generation + RAG search with reranker ─────
   let stepStart = Date.now();
-  console.log('[course-gen] Step 1: RAG search with Cohere reranker');
-  const searchQueries = generateSearchQueries(input.projectIdea);
-  console.log('[course-gen] Generated', searchQueries.length, 'search queries');
+  console.log('[course-gen] Step 1: Generating AI search queries + RAG with Cohere reranker');
+  const searchQueries = await generateSearchQueriesWithAI(
+    anthropic,
+    supabase,
+    input.projectIdea,
+    input.questionnaire
+  );
+  console.log('[course-gen] Generated', searchQueries.length, 'AI search queries');
 
   const relevantDocs = await searchSyllabusWithReranker(
     supabase,
@@ -96,7 +101,10 @@ export async function generateCourseInline(
     syllabusContext
   );
 
-  const courseUserMessage = `#UserMessage\n"${input.projectIdea}"\n\n_____\n\n#UserProfile\n`;
+  const questionnaireContext = Object.keys(input.questionnaire).length > 0
+    ? `\n\n#UserProfile\n${JSON.stringify(input.questionnaire, null, 2)}`
+    : '';
+  const courseUserMessage = `#UserMessage\n"${input.projectIdea}"${questionnaireContext}`;
 
   const courseResponse = await anthropic.messages.create({
     model: 'claude-sonnet-4-5-20250929',

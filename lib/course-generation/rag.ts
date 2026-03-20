@@ -1,5 +1,6 @@
 // lib/course-generation/rag.ts — RAG with Cohere reranker for course generation
 
+import Anthropic from '@anthropic-ai/sdk';
 import { generateQueryEmbedding } from '@/lib/tutor/rag';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { CohereClient } from 'cohere-ai';
@@ -92,45 +93,97 @@ export async function searchSyllabusWithReranker(
 }
 
 /**
- * Generate smart search queries based on the user's project idea.
+ * Fetch the syllabus taxonomy (section > concept pairs) from Supabase.
  */
-export function generateSearchQueries(projectIdea: string): string[] {
-  const keywords = projectIdea.toLowerCase();
+async function fetchSyllabusTaxonomy(
+  supabase: SupabaseClient
+): Promise<string> {
+  const { data, error } = await supabase
+    .from('education_system_vectorized')
+    .select('section, concept')
+    .order('section')
+    .order('concept');
 
-  const queries = [
-    'LLM fundamentals introduction',
-    'API integration configuration',
-    'prompt engineering techniques',
+  if (error || !data) {
+    console.error('[rag] Failed to fetch taxonomy:', error);
+    return '';
+  }
+
+  const grouped: Record<string, Set<string>> = {};
+  for (const row of data) {
+    if (!grouped[row.section]) grouped[row.section] = new Set();
+    grouped[row.section].add(row.concept);
+  }
+
+  return Object.entries(grouped)
+    .map(([section, concepts]) => `${section}: ${[...concepts].join(', ')}`)
+    .join('\n');
+}
+
+/**
+ * Generate search queries using Claude, aligned to the real syllabus vocabulary.
+ */
+export async function generateSearchQueriesWithAI(
+  anthropic: Anthropic,
+  supabase: SupabaseClient,
+  projectIdea: string,
+  questionnaire: Record<string, any>
+): Promise<string[]> {
+  const taxonomy = await fetchSyllabusTaxonomy(supabase);
+
+  const response = await anthropic.messages.create({
+    model: 'claude-sonnet-4-5-20250929',
+    max_tokens: 1024,
+    temperature: 0,
+    system: `Eres un motor de búsqueda semántica. Tu trabajo es generar queries de búsqueda en ESPAÑOL para encontrar los videos más relevantes de un syllabus educativo sobre IA y automatización.
+
+TAXONOMÍA DEL SYLLABUS DISPONIBLE:
+${taxonomy}
+
+REGLAS:
+- Genera entre 8 y 14 queries de búsqueda
+- Cada query debe ser una frase corta (3-8 palabras) en español
+- Las queries deben cubrir: fundamentos necesarios, herramientas específicas, implementación del proyecto, y deployment
+- Usa el vocabulario EXACTO de la taxonomía cuando sea posible (nombres de secciones y conceptos)
+- Incluye queries tanto específicas al proyecto como de fundamentos generales
+- NO repitas queries similares
+
+Responde SOLO con un JSON array de strings. Sin explicaciones.
+Ejemplo: ["fundamentos de LLMs y selección de modelos", "API de WhatsApp webhooks", "deploy básico producción"]`,
+    messages: [{
+      role: 'user',
+      content: `PROYECTO: ${projectIdea}\n\nCUESTIONARIO: ${JSON.stringify(questionnaire)}`,
+    }],
+  });
+
+  const text = response.content[0].type === 'text' ? response.content[0].text : '[]';
+
+  try {
+    const parsed = JSON.parse(text);
+    if (Array.isArray(parsed) && parsed.length > 0) {
+      console.log('[rag] AI-generated queries:', parsed);
+      return parsed;
+    }
+  } catch {
+    const match = text.match(/\[[\s\S]*\]/);
+    if (match) {
+      try {
+        const parsed = JSON.parse(match[0]);
+        if (Array.isArray(parsed)) return parsed;
+      } catch { /* fall through */ }
+    }
+  }
+
+  // Fallback: basic queries if AI fails
+  console.warn('[rag] AI query generation failed, using fallback');
+  return [
+    'fundamentos de LLMs y selección de modelos',
+    'configuración de APIs',
+    'automatización con n8n y Make',
+    'bases de datos y Supabase',
+    'deploy en producción',
+    projectIdea.slice(0, 100),
   ];
-
-  if (keywords.includes('whatsapp') || keywords.includes('chat') || keywords.includes('bot'))
-    queries.push('chatbot development', 'webhook configuration', 'messaging integration');
-  if (keywords.includes('shopify') || keywords.includes('ecommerce') || keywords.includes('tienda'))
-    queries.push('Shopify API integration', 'ecommerce automation');
-  if (keywords.includes('automat') || keywords.includes('n8n') || keywords.includes('make'))
-    queries.push('workflow automation n8n', 'Make automation');
-  if (keywords.includes('content') || keywords.includes('video') || keywords.includes('marketing'))
-    queries.push('content generation AI', 'marketing automation');
-  if (keywords.includes('database') || keywords.includes('datos') || keywords.includes('base'))
-    queries.push('database storage configuration', 'data management');
-  if (keywords.includes('agente') || keywords.includes('agent'))
-    queries.push('AI agent development', 'autonomous agents');
-  if (keywords.includes('web') || keywords.includes('app') || keywords.includes('aplicacion'))
-    queries.push('web application development', 'frontend integration');
-  if (keywords.includes('api'))
-    queries.push('API development REST', 'API authentication');
-  if (keywords.includes('deploy') || keywords.includes('produccion') || keywords.includes('production'))
-    queries.push('deployment production', 'hosting configuration');
-
-  // Always include broad coverage queries
-  queries.push(
-    'automation tools setup',
-    'code generation AI tools',
-    'testing deployment production'
-  );
-
-  // Deduplicate
-  return [...new Set(queries)];
 }
 
 /**
