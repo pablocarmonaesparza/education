@@ -1,4 +1,4 @@
-import PageNavbar from '@/components/shared/PageNavbar';
+import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
 import { Title, Subtitle, Body } from '@/components/ui/Typography';
 import Card from '@/components/ui/Card';
@@ -6,7 +6,7 @@ import Card from '@/components/ui/Card';
 export default function ConferenciasPage() {
   return (
     <main className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
-      <PageNavbar />
+      <Navbar />
       <section className="flex-grow container mx-auto px-4 py-12 max-w-4xl">
         <div className="mb-12 text-center">
           <Title className="mb-4">conferencias</Title>

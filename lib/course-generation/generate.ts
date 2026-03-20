@@ -62,9 +62,18 @@ export async function generateCourseInline(
     apiKey: process.env.ANTHROPIC_API_KEY,
   });
 
+  const pipelineStart = Date.now();
+  const timings: Record<string, number> = {};
+  const tick = (label: string, start: number) => {
+    const ms = Date.now() - start;
+    timings[label] = ms;
+    console.log(`[course-gen] ⏱ ${label}: ${(ms / 1000).toFixed(1)}s`);
+  };
+
   console.log('[course-gen] Starting inline generation for user:', input.userId);
 
   // ───── Step 1: RAG search with reranker ─────
+  let stepStart = Date.now();
   console.log('[course-gen] Step 1: RAG search with Cohere reranker');
   const searchQueries = generateSearchQueries(input.projectIdea);
   console.log('[course-gen] Generated', searchQueries.length, 'search queries');
@@ -77,8 +86,10 @@ export async function generateCourseInline(
   console.log('[course-gen] Found', relevantDocs.length, 'relevant documents after reranking');
 
   const syllabusContext = formatSyllabusForPrompt(relevantDocs);
+  tick('1_rag_search', stepStart);
 
   // ───── Step 2: Generate course plan with Claude ─────
+  stepStart = Date.now();
   console.log('[course-gen] Step 2: Generating course plan with Claude Sonnet');
   const courseSystemPrompt = getCourseGenerationPrompt(
     input.projectIdea,
@@ -112,8 +123,10 @@ export async function generateCourseInline(
     courseResult.course.phases.length,
     'phases'
   );
+  tick('2_claude_course', stepStart);
 
   // ───── Step 3: Save to intake_responses ─────
+  stepStart = Date.now();
   console.log('[course-gen] Step 3: Saving course to intake_responses');
   const { error: saveError } = await supabase.from('intake_responses').insert({
     user_id: input.userId,
@@ -128,8 +141,10 @@ export async function generateCourseInline(
     console.error('[course-gen] Error saving to intake_responses:', saveError);
     throw new Error(`Failed to save course: ${saveError.message}`);
   }
+  tick('3_save_course', stepStart);
 
   // ───── Step 4: Generate exercises with Claude ─────
+  stepStart = Date.now();
   console.log('[course-gen] Step 4: Generating exercises with Claude Sonnet');
 
   const userData = [
@@ -172,8 +187,10 @@ export async function generateCourseInline(
     'exercises,',
     exerciseResult.practice_hours
   );
+  tick('4_claude_exercises', stepStart);
 
   // ───── Step 5: Save to user_exercises ─────
+  stepStart = Date.now();
   console.log('[course-gen] Step 5: Saving exercises to user_exercises');
   const { error: exerciseSaveError } = await supabase
     .from('user_exercises')
@@ -190,8 +207,12 @@ export async function generateCourseInline(
     console.error('[course-gen] Error saving exercises:', exerciseSaveError);
     throw new Error(`Failed to save exercises: ${exerciseSaveError.message}`);
   }
+  tick('5_save_exercises', stepStart);
 
+  const totalSeconds = ((Date.now() - pipelineStart) / 1000).toFixed(1);
   console.log('[course-gen] Pipeline complete for user:', input.userId);
+  console.log(`[course-gen] ⏱ TOTAL: ${totalSeconds}s`);
+  console.log('[course-gen] ⏱ Breakdown:', JSON.stringify(timings, null, 2));
 }
 
 /**
