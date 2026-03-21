@@ -2,11 +2,7 @@
 
 import OpenAI from 'openai';
 import type { SupabaseClient } from '@supabase/supabase-js';
-import {
-  searchSyllabusWithReranker,
-  generateSearchQueriesWithAI,
-  formatSyllabusForPrompt,
-} from './rag';
+import { fetchFullCatalog } from './rag';
 import {
   getCourseGenerationPrompt,
   EXERCISE_GENERATION_PROMPT,
@@ -70,26 +66,11 @@ export async function generateCourseInline(
 
   console.log('[course-gen] Starting inline generation for user:', input.userId);
 
-  // ───── Step 1: AI-powered query generation + RAG search with reranker ─────
+  // ───── Step 1: Fetch full video catalog ─────
   let stepStart = Date.now();
-  console.log('[course-gen] Step 1: Generating AI search queries + RAG with Cohere reranker');
-  const searchQueries = await generateSearchQueriesWithAI(
-    openai,
-    supabase,
-    input.projectIdea,
-    input.questionnaire
-  );
-  console.log('[course-gen] Generated', searchQueries.length, 'AI search queries');
-
-  const relevantDocs = await searchSyllabusWithReranker(
-    supabase,
-    input.projectIdea,
-    searchQueries
-  );
-  console.log('[course-gen] Found', relevantDocs.length, 'relevant documents after reranking');
-
-  const syllabusContext = formatSyllabusForPrompt(relevantDocs);
-  tick('1_rag_search', stepStart);
+  console.log('[course-gen] Step 1: Fetching full video catalog');
+  const syllabusContext = await fetchFullCatalog(supabase);
+  tick('1_fetch_catalog', stepStart);
 
   // ───── Step 2: Generate course plan with OpenAI GPT-4o ─────
   stepStart = Date.now();

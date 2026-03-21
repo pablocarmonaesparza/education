@@ -205,3 +205,34 @@ export function formatSyllabusForPrompt(docs: SyllabusDocument[]): string {
     )
     .join('\n\n---\n\n');
 }
+
+/**
+ * Fetch the FULL video catalog from Supabase.
+ * At ~461 videos × ~180 chars each = ~83K chars (~21K tokens),
+ * this fits comfortably in GPT-4o's 128K context window.
+ * This gives the model complete visibility to select the best 50-70 videos.
+ */
+export async function fetchFullCatalog(
+  supabase: SupabaseClient
+): Promise<string> {
+  const { data, error } = await supabase
+    .from('education_system_vectorized')
+    .select('id, section, concept, lecture, description')
+    .order('section_id')
+    .order('concept_id')
+    .order('lecture_id');
+
+  if (error || !data) {
+    console.error('[rag] Failed to fetch full catalog:', error);
+    throw new Error('Failed to fetch video catalog from database');
+  }
+
+  console.log(`[rag] Fetched full catalog: ${data.length} videos`);
+
+  return data
+    .map(
+      (v) =>
+        `[ID:${v.id}] ${v.section} > ${v.concept} > ${v.lecture}\n${v.description}`
+    )
+    .join('\n\n');
+}

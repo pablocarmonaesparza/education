@@ -16,7 +16,7 @@ Tu trabajo es crear un PLAN DE APRENDIZAJE DETALLADO video por video para el usu
 CONTEXTO - SYLLABUS DISPONIBLE
 ═══════════════════════════════════════════════════════════════
 
-Tienes acceso a los siguientes videos del curso, seleccionados como los más relevantes para el proyecto del usuario:
+Tienes acceso al CATÁLOGO COMPLETO del curso (~461 videos en 19 secciones). Tu trabajo es seleccionar los 50-70 más relevantes para el proyecto del usuario:
 
 <syllabus_videos>
 ${syllabusContext}
