@@ -1,6 +1,6 @@
 // lib/course-generation/generate.ts — Inline course + exercise generation pipeline
 
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import {
   searchSyllabusWithReranker,
@@ -49,18 +49,16 @@ interface ExerciseResult {
  *
  * Steps:
  * 1. RAG search with Cohere reranker to find relevant syllabus videos
- * 2. Claude Sonnet generates personalized course plan
+ * 2. OpenAI GPT-4o generates personalized course plan
  * 3. Save to intake_responses
- * 4. Claude Sonnet generates practical exercises
+ * 4. OpenAI GPT-4o generates practical exercises
  * 5. Save to user_exercises
  */
 export async function generateCourseInline(
   supabase: SupabaseClient,
   input: GenerateCourseInput
 ): Promise<void> {
-  const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-  });
+  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   const pipelineStart = Date.now();
   const timings: Record<string, number> = {};
@@ -76,7 +74,7 @@ export async function generateCourseInline(
   let stepStart = Date.now();
   console.log('[course-gen] Step 1: Generating AI search queries + RAG with Cohere reranker');
   const searchQueries = await generateSearchQueriesWithAI(
-    anthropic,
+    openai,
     supabase,
     input.projectIdea,
     input.questionnaire
@@ -93,9 +91,9 @@ export async function generateCourseInline(
   const syllabusContext = formatSyllabusForPrompt(relevantDocs);
   tick('1_rag_search', stepStart);
 
-  // ───── Step 2: Generate course plan with Claude ─────
+  // ───── Step 2: Generate course plan with OpenAI GPT-4o ─────
   stepStart = Date.now();
-  console.log('[course-gen] Step 2: Generating course plan with Claude Sonnet');
+  console.log('[course-gen] Step 2: Generating course plan with GPT-4o');
   const courseSystemPrompt = getCourseGenerationPrompt(
     input.projectIdea,
     syllabusContext
@@ -106,18 +104,17 @@ export async function generateCourseInline(
     : '';
   const courseUserMessage = `#UserMessage\n"${input.projectIdea}"${questionnaireContext}`;
 
-  const courseResponse = await anthropic.messages.create({
-    model: 'claude-sonnet-4-5-20250929',
+  const courseResponse = await openai.chat.completions.create({
+    model: 'gpt-4o',
     max_tokens: 16000,
     temperature: 0.3,
-    system: courseSystemPrompt,
-    messages: [{ role: 'user', content: courseUserMessage }],
+    messages: [
+      { role: 'system', content: courseSystemPrompt },
+      { role: 'user', content: courseUserMessage },
+    ],
   });
 
-  const courseText =
-    courseResponse.content[0].type === 'text'
-      ? courseResponse.content[0].text
-      : '';
+  const courseText = courseResponse.choices[0]?.message?.content?.trim() ?? '';
 
   const courseResult = parseJSONResponse<CourseResult>(courseText);
   if (!courseResult?.success || !courseResult.course) {
@@ -131,7 +128,7 @@ export async function generateCourseInline(
     courseResult.course.phases.length,
     'phases'
   );
-  tick('2_claude_course', stepStart);
+  tick('2_openai_course', stepStart);
 
   // ───── Step 3: Save to intake_responses ─────
   stepStart = Date.now();
@@ -151,9 +148,9 @@ export async function generateCourseInline(
   }
   tick('3_save_course', stepStart);
 
-  // ───── Step 4: Generate exercises with Claude ─────
+  // ───── Step 4: Generate exercises with OpenAI GPT-4o ─────
   stepStart = Date.now();
-  console.log('[course-gen] Step 4: Generating exercises with Claude Sonnet');
+  console.log('[course-gen] Step 4: Generating exercises with GPT-4o');
 
   const userData = [
     `##Name\n${input.userName}`,
@@ -171,18 +168,17 @@ export async function generateCourseInline(
 
   const exerciseMessage = buildExerciseUserMessage(userData, courseData);
 
-  const exerciseResponse = await anthropic.messages.create({
-    model: 'claude-sonnet-4-5-20250929',
+  const exerciseResponse = await openai.chat.completions.create({
+    model: 'gpt-4o',
     max_tokens: 16000,
     temperature: 0.3,
-    system: EXERCISE_GENERATION_PROMPT,
-    messages: [{ role: 'user', content: exerciseMessage }],
+    messages: [
+      { role: 'system', content: EXERCISE_GENERATION_PROMPT },
+      { role: 'user', content: exerciseMessage },
+    ],
   });
 
-  const exerciseText =
-    exerciseResponse.content[0].type === 'text'
-      ? exerciseResponse.content[0].text
-      : '';
+  const exerciseText = exerciseResponse.choices[0]?.message?.content?.trim() ?? '';
 
   const exerciseResult = parseJSONResponse<ExerciseResult>(exerciseText);
   if (!exerciseResult?.success || !exerciseResult.exercises) {
@@ -195,7 +191,7 @@ export async function generateCourseInline(
     'exercises,',
     exerciseResult.practice_hours
   );
-  tick('4_claude_exercises', stepStart);
+  tick('4_openai_exercises', stepStart);
 
   // ───── Step 5: Save to user_exercises ─────
   stepStart = Date.now();

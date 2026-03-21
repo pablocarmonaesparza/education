@@ -1,6 +1,6 @@
 // lib/course-generation/rag.ts — RAG with Cohere reranker for course generation
 
-import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { generateQueryEmbedding } from '@/lib/tutor/rag';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { CohereClient } from 'cohere-ai';
@@ -121,21 +121,24 @@ async function fetchSyllabusTaxonomy(
 }
 
 /**
- * Generate search queries using Claude, aligned to the real syllabus vocabulary.
+ * Generate search queries using OpenAI, aligned to the real syllabus vocabulary.
  */
 export async function generateSearchQueriesWithAI(
-  anthropic: Anthropic,
+  openai: OpenAI,
   supabase: SupabaseClient,
   projectIdea: string,
   questionnaire: Record<string, any>
 ): Promise<string[]> {
   const taxonomy = await fetchSyllabusTaxonomy(supabase);
 
-  const response = await anthropic.messages.create({
-    model: 'claude-sonnet-4-5-20250929',
+  const response = await openai.chat.completions.create({
+    model: 'gpt-4o-mini',
     max_tokens: 1024,
     temperature: 0,
-    system: `Eres un motor de búsqueda semántica. Tu trabajo es generar queries de búsqueda en ESPAÑOL para encontrar los videos más relevantes de un syllabus educativo sobre IA y automatización.
+    messages: [
+      {
+        role: 'system',
+        content: `Eres un motor de búsqueda semántica. Tu trabajo es generar queries de búsqueda en ESPAÑOL para encontrar los videos más relevantes de un syllabus educativo sobre IA y automatización.
 
 TAXONOMÍA DEL SYLLABUS DISPONIBLE:
 ${taxonomy}
@@ -150,13 +153,15 @@ REGLAS:
 
 Responde SOLO con un JSON array de strings. Sin explicaciones.
 Ejemplo: ["fundamentos de LLMs y selección de modelos", "API de WhatsApp webhooks", "deploy básico producción"]`,
-    messages: [{
-      role: 'user',
-      content: `PROYECTO: ${projectIdea}\n\nCUESTIONARIO: ${JSON.stringify(questionnaire)}`,
-    }],
+      },
+      {
+        role: 'user',
+        content: `PROYECTO: ${projectIdea}\n\nCUESTIONARIO: ${JSON.stringify(questionnaire)}`,
+      },
+    ],
   });
 
-  const text = response.content[0].type === 'text' ? response.content[0].text : '[]';
+  const text = response.choices[0]?.message?.content?.trim() ?? '[]';
 
   try {
     const parsed = JSON.parse(text);
