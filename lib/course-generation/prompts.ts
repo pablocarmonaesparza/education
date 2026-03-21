@@ -38,14 +38,16 @@ INSTRUCCIONES CRÍTICAS
    - Qué tecnologías necesita (APIs, automatización, bases de datos, etc.)
    - Nivel de experiencia implícito
 
-2. **SELECCIONA** entre 50-70 videos específicos del syllabus que sean MÁS relevantes
+2. **SELECCIONA** entre 50-70 videos específicos del syllabus que sean MÁS relevantes.
+   ⚠️ MÍNIMO ABSOLUTO: 50 videos. Si generas menos de 50, el resultado es INVÁLIDO.
+   ⚠️ Cada fase debe tener entre 5 y 10 videos. NO generes fases con solo 2-3 videos.
 
 3. **ORGANIZA** en 8-12 FASES LÓGICAS de aprendizaje:
-   - FASE 1: FUNDAMENTOS (conceptos base necesarios)
-   - FASE 2: HERRAMIENTAS (setup de ambiente y APIs)
-   - FASE 3: CONSTRUCCIÓN (implementación paso a paso)
-   - FASE 4: INTEGRACIÓN (conectar con sistemas externos)
-   - Etc.
+   - FASE 1: FUNDAMENTOS (conceptos base necesarios) — ~6-8 videos
+   - FASE 2: HERRAMIENTAS (setup de ambiente y APIs) — ~6-8 videos
+   - FASE 3: CONSTRUCCIÓN (implementación paso a paso) — ~8-10 videos
+   - FASE 4: INTEGRACIÓN (conectar con sistemas externos) — ~6-8 videos
+   - Etc. Cada fase debe tener al menos 5 videos.
 
 4. **ORDEN SECUENCIAL GLOBAL**: Los videos deben estar numerados del 1 al N de forma continua, NO reiniciar en cada fase
 
@@ -55,7 +57,6 @@ INSTRUCCIONES CRÍTICAS
    - \`subsection\`: Subsección del syllabus
    - \`description\`: Descripción exacta del video del syllabus
    - \`duration\`: Duración exacta del video
-   - \`why_relevant\`: Explicación ESPECÍFICA de por qué este video es crítico para EL PROYECTO de este usuario
 
 6. **PARA CADA FASE** incluye:
    - \`phase_number\`: 1, 2, 3...
@@ -72,10 +73,13 @@ REGLAS ESTRICTAS
 ❌ NO uses descripciones genéricas - todo debe ser específico al proyecto
 ❌ NO agrupes por secciones del syllabus - agrupa por FASES LÓGICAS DE APRENDIZAJE
 ❌ NO reinicies el order en cada fase - debe ser secuencial global
+❌ NO generes menos de 50 videos en total — esto invalida el resultado
+❌ NO generes fases con menos de 5 videos — cada fase necesita profundidad
 ✅ SÍ usa los datos exactos del syllabus (section, subsection, description, duration)
 ✅ SÍ explica específicamente por qué cada video importa para ESTE proyecto
 ✅ SÍ ordena los videos en la secuencia pedagógica óptima
 ✅ SÍ asegúrate de que el plan sea accionable y completo
+✅ SÍ genera TODOS los videos de cada fase — no te detengas ni resumas
 
 ═══════════════════════════════════════════════════════════════
 FORMATO DE RESPUESTA (JSON ESTRICTO)
@@ -96,14 +100,12 @@ Responde ÚNICAMENTE con un JSON válido. Sin explicaciones antes o después.
         "phase_duration": "2-3 horas",
         "description": "Por qué esta fase es crítica para tu proyecto",
         "videos": [
-          {
-            "order": 1,
-            "section": "Introducción",
-            "subsection": "Stack",
-            "description": "Panorama de LLMs disponibles en el mercado",
-            "duration": "2:30",
-            "why_relevant": "Para elegir entre Claude, GPT-4 o Llama para tu chatbot"
-          }
+          {"order": 1, "section": "Introducción", "subsection": "Stack", "description": "Panorama de LLMs", "duration": "2:30"},
+          {"order": 2, "section": "Fundamentals", "subsection": "Selección de modelos", "description": "Comparar modelos", "duration": "3:00"},
+          {"order": 3, "section": "Fundamentals", "subsection": "Ventana de contexto", "description": "Ventana de contexto", "duration": "2:45"},
+          {"order": 4, "section": "Fundamentals", "subsection": "Selección de modelos", "description": "Costos por modelo", "duration": "3:15"},
+          {"order": 5, "section": "Fundamentals", "subsection": "Selección de modelos", "description": "Elegir modelo correcto", "duration": "4:00"},
+          {"order": 6, "section": "AI", "subsection": "ChatGPT", "description": "Modelos en ChatGPT", "duration": "3:30"}
         ]
       }
     ],
@@ -118,7 +120,9 @@ Responde ÚNICAMENTE con un JSON válido. Sin explicaciones antes o después.
       "Comenzar con video #1: Panorama de LLMs"
     ]
   }
-}`;
+}
+
+IMPORTANTE: El ejemplo solo muestra 1 fase con 6 videos. Tu respuesta debe tener 8-12 fases con 5-10 videos CADA UNA, totalizando 50-70 videos.`;
 }
 
 /**
