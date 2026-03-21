@@ -86,11 +86,10 @@ export async function generateCourseInline(
   const courseUserMessage = `#UserMessage\n"${input.projectIdea}"${questionnaireContext}`;
 
   const courseResponse = await openai.chat.completions.create({
-    model: 'gpt-4o',
-    max_tokens: 16000,
-    temperature: 0.3,
+    model: 'o4-mini',
+    max_completion_tokens: 16000,
     messages: [
-      { role: 'system', content: courseSystemPrompt },
+      { role: 'developer', content: courseSystemPrompt },
       { role: 'user', content: courseUserMessage },
     ],
   });
@@ -150,11 +149,10 @@ export async function generateCourseInline(
   const exerciseMessage = buildExerciseUserMessage(userData, courseData);
 
   const exerciseResponse = await openai.chat.completions.create({
-    model: 'gpt-4o',
-    max_tokens: 16000,
-    temperature: 0.3,
+    model: 'o4-mini',
+    max_completion_tokens: 16000,
     messages: [
-      { role: 'system', content: EXERCISE_GENERATION_PROMPT },
+      { role: 'developer', content: EXERCISE_GENERATION_PROMPT },
       { role: 'user', content: exerciseMessage },
     ],
   });
