@@ -77,8 +77,8 @@ export default function CourseCreationPage() {
           }
         }, 2000);
 
-        // Check completion
-        const checkCompletion = async (): Promise<boolean> => {
+        // Check completion — returns 'done', 'error', or 'pending'
+        const checkCompletion = async (): Promise<'done' | 'error' | 'pending'> => {
           const { data } = await supabase
             .from('intake_responses')
             .select('generated_path')
@@ -87,13 +87,15 @@ export default function CourseCreationPage() {
             .limit(1)
             .maybeSingle();
 
-          return !!(data && data.generated_path);
+          if (!data || !data.generated_path) return 'pending';
+          if (data.generated_path._error) return 'error';
+          return 'done';
         };
 
         pollInterval = setInterval(async () => {
-          const completed = await checkCompletion();
+          const status = await checkCompletion();
 
-          if (completed) {
+          if (status === 'done') {
             cleanup();
             setProgress(100);
             sessionStorage.removeItem('projectIdea');
@@ -101,6 +103,9 @@ export default function CourseCreationPage() {
             setTimeout(() => {
               router.push('/dashboard');
             }, 1000);
+          } else if (status === 'error') {
+            cleanup();
+            setError('Hubo un error generando tu curso. Por favor intenta de nuevo.');
           }
         }, 3000);
 

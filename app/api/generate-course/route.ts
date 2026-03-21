@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { summarizeProjectWithOpenAI } from '@/lib/openai/summarizeProject';
 import { generateCourseInline } from '@/lib/course-generation/generate';
@@ -83,24 +83,51 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Launch inline course generation (async, non-blocking)
+    // Launch inline course generation with after() so Vercel keeps
+    // the function alive after sending the response (respects maxDuration)
     console.log('Starting inline course generation for user:', body.user_id);
 
-    generateCourseInline(supabase, {
-      userId: body.user_id,
-      userName: body.user_name || 'Usuario',
-      userEmail: body.user_email || user.email || '',
-      projectIdea,
-      projectSummary,
-      questionnaire: body.questionnaire || {},
-    }).catch((err) => {
-      console.error('Inline course generation failed:', err);
+    const userId = body.user_id;
+    const userName = body.user_name || 'Usuario';
+    const userEmail = body.user_email || user.email || '';
+    const questionnaire = body.questionnaire || {};
+
+    after(async () => {
+      try {
+        await generateCourseInline(supabase, {
+          userId,
+          userName,
+          userEmail,
+          projectIdea,
+          projectSummary,
+          questionnaire,
+        });
+      } catch (err: any) {
+        console.error('Inline course generation failed:', err);
+        // Write error state so frontend detects it on next poll (~3s)
+        try {
+          await supabase.from('intake_responses').insert({
+            user_id: userId,
+            responses: {
+              project_idea: projectIdea,
+              submitted_at: new Date().toISOString(),
+            },
+            generated_path: {
+              _error: true,
+              error_message: err?.message || 'Error desconocido durante la generación del curso',
+              failed_at: new Date().toISOString(),
+            },
+          });
+        } catch (dbErr) {
+          console.error('Failed to write error state to DB:', dbErr);
+        }
+      }
     });
 
     // Respond immediately to frontend
     return NextResponse.json({
       status: 'processing',
-      job_id: body.user_id,
+      job_id: userId,
       message: 'Course generation started. This will take ~2-3 minutes.',
       estimated_time: 150,
     });
