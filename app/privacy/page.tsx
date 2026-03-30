@@ -68,8 +68,8 @@ export default function PrivacyPage() {
               <Subtitle className="mb-3">1.3 Información de Terceros</Subtitle>
               <Body>
                 Podemos recibir información sobre ti de proveedores de servicios de terceros, como servicios de 
-                autenticación (Google OAuth) y proveedores de análisis, siempre de acuerdo con sus políticas de 
-                privacidad.
+                autenticación (Google OAuth, TikTok Login Kit) y proveedores de análisis, siempre de acuerdo con 
+                sus políticas de privacidad.
               </Body>
             </Card>
           </section>
@@ -88,6 +88,8 @@ export default function PrivacyPage() {
                 <li><strong>Comunicación:</strong> enviarte actualizaciones sobre tu progreso, notificaciones 
                     importantes y respuestas a tus consultas</li>
                 <li><strong>Personalización:</strong> adaptar el contenido educativo a tus necesidades y preferencias</li>
+                <li><strong>Publicación de contenido:</strong> cuando lo solicites expresamente, publicar contenido 
+                    educativo en tu perfil de TikTok</li>
                 <li><strong>Seguridad:</strong> detectar y prevenir fraudes, abusos y actividades no autorizadas</li>
                 <li><strong>Cumplimiento legal:</strong> cumplir con obligaciones legales y responder a solicitudes 
                     legales</li>
@@ -111,6 +113,8 @@ export default function PrivacyPage() {
                 <li><strong>Proveedores de servicios:</strong> con terceros que nos ayudan a operar nuestra plataforma 
                     (hosting, procesamiento de pagos, análisis, autenticación). Estos proveedores están obligados 
                     contractualmente a proteger tu información</li>
+                <li><strong>TikTok:</strong> cuando conectas tu cuenta de TikTok y solicitas publicar contenido, 
+                    compartimos el video y metadatos necesarios con TikTok a través de su API</li>
                 <li><strong>Cumplimiento legal:</strong> cuando sea requerido por ley, orden judicial o proceso legal</li>
                 <li><strong>Protección de derechos:</strong> para proteger nuestros derechos, propiedad o seguridad, 
                     o la de nuestros usuarios</li>
@@ -136,8 +140,8 @@ export default function PrivacyPage() {
               <Body className="mb-4">
                 Conservamos tu información personal durante el tiempo necesario para cumplir con los propósitos 
                 descritos en esta política, a menos que la ley requiera o permita un período de retención más largo. 
-                Cuando elimines tu cuenta, eliminaremos o anonimizaremos tu información personal, excepto cuando 
-                estemos legalmente obligados a conservarla.
+                Cuando elimines tu cuenta, eliminaremos o anonimizaremos tu información personal dentro de 30 días, 
+                excepto cuando estemos legalmente obligados a conservarla.
               </Body>
               <Subtitle className="mb-3">4.2 Seguridad</Subtitle>
               <Body className="mb-3">
@@ -159,7 +163,7 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <Headline className="mb-4">5. tus derechos (GDPR y otras leyes de privacidad)</Headline>
+            <Headline className="mb-4">5. tus derechos</Headline>
             <Card variant="neutral" padding="md" className="mb-4">
               <Body className="mb-3">
                 Dependiendo de tu ubicación, tienes los siguientes derechos respecto a tus datos personales:
@@ -181,7 +185,7 @@ export default function PrivacyPage() {
                     consentimiento, puedes retirarlo en cualquier momento</li>
               </ul>
               <Body className="mb-3">
-                Para ejercer estos derechos, puedes contactarnos en privacy@itera.com. Responderemos a tu solicitud 
+                Para ejercer estos derechos, puedes contactarnos en pablo@itera.la. Responderemos a tu solicitud 
                 dentro de un plazo razonable y de acuerdo con la ley aplicable.
               </Body>
               <Body>
@@ -201,7 +205,6 @@ export default function PrivacyPage() {
                 <li><strong>Cookies esenciales:</strong> necesarias para el funcionamiento básico de la plataforma</li>
                 <li><strong>Cookies de funcionalidad:</strong> para recordar tus preferencias y mejorar tu experiencia</li>
                 <li><strong>Cookies de análisis:</strong> para entender cómo los usuarios interactúan con nuestra plataforma</li>
-                <li><strong>Cookies de marketing:</strong> para personalizar contenido y medir la efectividad de campañas</li>
               </ul>
               <Body>
                 Puedes controlar y gestionar las cookies a través de la configuración de tu navegador. Ten en cuenta 
@@ -218,63 +221,123 @@ export default function PrivacyPage() {
                 información personal de menores de 18 años. Si descubrimos que hemos recopilado información de un 
                 menor sin el consentimiento de los padres, tomaremos medidas para eliminar esa información 
                 inmediatamente. Si eres padre o tutor y crees que tu hijo nos ha proporcionado información personal, 
-                contáctanos en privacy@itera.com.
+                contáctanos en pablo@itera.la.
               </Body>
             </Card>
           </section>
 
           <section>
-            <Headline className="mb-4">8. cambios a esta política</Headline>
+            <Headline className="mb-4">8. integración con tiktok</Headline>
+            <Card variant="neutral" padding="md" className="mb-4">
+              <Body className="mb-4">
+                Itera se integra con la API de TikTok para permitir a los usuarios publicar contenido educativo 
+                directamente en sus perfiles de TikTok como parte del proceso de aprendizaje. A continuación 
+                detallamos exactamente qué datos recopilamos y cómo los utilizamos:
+              </Body>
+
+              <Subtitle className="mb-3">8.1 Login Kit (user.info.basic)</Subtitle>
+              <Body className="mb-3">
+                Cuando conectas tu cuenta de TikTok a Itera, utilizamos el Login Kit de TikTok para autenticarte. 
+                A través del scope <strong>user.info.basic</strong>, accedemos únicamente a:
+              </Body>
+              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+                <li>Tu Open ID (identificador único de TikTok)</li>
+                <li>Tu nombre para mostrar (display name)</li>
+                <li>Tu foto de perfil (avatar URL)</li>
+              </ul>
+              <Body className="mb-4">
+                No accedemos a tu contenido privado, listas de seguidores, mensajes directos ni ningún otro 
+                dato más allá de la información básica de perfil listada arriba.
+              </Body>
+
+              <Subtitle className="mb-3">8.2 Content Posting API (video.upload y video.publish)</Subtitle>
+              <Body className="mb-3">
+                A través de los scopes <strong>video.upload</strong> y <strong>video.publish</strong>, Itera 
+                puede publicar videos en tu perfil de TikTok. Esto funciona de la siguiente manera:
+              </Body>
+              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+                <li><strong>video.upload:</strong> Permite subir un video a TikTok como borrador para que 
+                    lo revises y edites antes de publicar</li>
+                <li><strong>video.publish:</strong> Permite publicar contenido directamente en tu perfil 
+                    de TikTok cuando tú lo solicitas</li>
+              </ul>
+              <Body className="mb-4">
+                <strong>Consentimiento explícito:</strong> La publicación de contenido en TikTok solo ocurre 
+                cuando tú lo solicitas expresamente mediante una acción en la Plataforma (por ejemplo, 
+                haciendo clic en un botón de &quot;Publicar en TikTok&quot;). Nunca publicamos contenido de forma 
+                automática sin tu consentimiento explícito.
+              </Body>
+
+              <Subtitle className="mb-3">8.3 Almacenamiento de Datos de TikTok</Subtitle>
+              <Body className="mb-3">
+                Los datos obtenidos de TikTok se almacenan de la siguiente manera:
+              </Body>
+              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+                <li>Tu Open ID y token de acceso se almacenan de forma segura y encriptada en nuestra base de datos</li>
+                <li>Los tokens de acceso se utilizan únicamente para las operaciones que tú solicites</li>
+                <li>No almacenamos tus videos de TikTok ni tu contenido privado</li>
+              </ul>
+
+              <Subtitle className="mb-3">8.4 Revocación de Permisos</Subtitle>
+              <Body className="mb-3">
+                Puedes desconectar tu cuenta de TikTok en cualquier momento:
+              </Body>
+              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+                <li>Desde la configuración de tu cuenta en Itera</li>
+                <li>Desde la configuración de privacidad de TikTok (Ajustes → Seguridad → Gestionar permisos de aplicaciones)</li>
+              </ul>
+              <Body>
+                Al desconectar tu cuenta, eliminaremos tu Open ID y token de acceso de TikTok de nuestros 
+                sistemas dentro de 24 horas. Cualquier contenido que ya hayas publicado en TikTok permanecerá 
+                en tu perfil de TikTok y se rige por los términos de servicio de TikTok.
+              </Body>
+            </Card>
+          </section>
+
+          <section>
+            <Headline className="mb-4">9. eliminación de datos</Headline>
+            <Card variant="neutral" padding="md" className="mb-4">
+              <Body className="mb-3">
+                Puedes solicitar la eliminación de todos tus datos personales en cualquier momento:
+              </Body>
+              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+                <li>Enviando un correo a <strong>pablo@itera.la</strong> con el asunto &quot;Solicitud de eliminación de datos&quot;</li>
+                <li>Desde la configuración de tu cuenta, seleccionando &quot;Eliminar mi cuenta&quot;</li>
+              </ul>
+              <Body>
+                Procesaremos tu solicitud dentro de 30 días. La eliminación incluye todos tus datos personales, 
+                progreso de cursos, tokens de acceso de terceros (incluyendo TikTok), y cualquier contenido 
+                asociado a tu cuenta. Los datos que estemos legalmente obligados a conservar (como registros 
+                de transacciones) se mantendrán en forma anonimizada.
+              </Body>
+            </Card>
+          </section>
+
+          <section>
+            <Headline className="mb-4">10. cambios a esta política</Headline>
             <Card variant="neutral" padding="md" className="mb-4">
               <Body>
                 Podemos actualizar esta Política de Privacidad ocasionalmente para reflejar cambios en nuestras 
                 prácticas o por razones legales, operativas o regulatorias. Te notificaremos de cambios materiales 
-                mediante un aviso prominente en la plataforma o por correo electrónico. La fecha de "Última 
-                actualización" en la parte superior de esta página indica cuándo se realizó la última revisión. 
+                mediante un aviso prominente en la plataforma o por correo electrónico. La fecha de &quot;Última 
+                actualización&quot; en la parte superior de esta página indica cuándo se realizó la última revisión. 
                 Te recomendamos revisar esta política periódicamente.
               </Body>
             </Card>
           </section>
 
           <section>
-            <Headline className="mb-4">9. información de contacto</Headline>
+            <Headline className="mb-4">11. información de contacto</Headline>
             <Card variant="neutral" padding="md" className="mb-4">
               <Body className="mb-3">
                 Si tienes preguntas, preocupaciones o solicitudes relacionadas con esta Política de Privacidad o 
                 el procesamiento de tus datos personales, puedes contactarnos:
               </Body>
               <Body className="mb-2">
-                <strong>Email de Privacidad:</strong> privacy@itera.com
-              </Body>
-              <Body className="mb-2">
-                <strong>Email General:</strong> support@itera.com
+                <strong>Email:</strong> pablo@itera.la
               </Body>
               <Body>
-                <strong>Dirección:</strong> [Dirección de la empresa]
-              </Body>
-            </Card>
-          </section>
-
-          <section>
-            <Headline className="mb-4">10. información específica por región</Headline>
-            <Card variant="neutral" padding="md" className="mb-4">
-              <Subtitle className="mb-3">10.1 Usuarios del Espacio Económico Europeo (EEE)</Subtitle>
-              <Body className="mb-4">
-                Si eres residente del EEE, tienes derechos adicionales bajo el Reglamento General de Protección 
-                de Datos (GDPR). Esta política cumple con los requisitos del GDPR. Tu información se procesa 
-                según las bases legales descritas en la Sección 2.
-              </Body>
-              <Subtitle className="mb-3">10.2 Usuarios de California (CCPA)</Subtitle>
-              <Body className="mb-4">
-                Si eres residente de California, tienes derechos adicionales bajo la Ley de Privacidad del 
-                Consumidor de California (CCPA), incluyendo el derecho a saber qué información personal recopilamos, 
-                el derecho a solicitar la eliminación de tu información personal, y el derecho a optar por no 
-                vender tu información personal (aunque no vendemos información personal).
-              </Body>
-              <Subtitle className="mb-3">10.3 Usuarios de otros países</Subtitle>
-              <Body>
-                Respetamos las leyes de privacidad aplicables en tu jurisdicción. Si tienes preguntas sobre cómo 
-                se aplican estas leyes a tu información, contáctanos.
+                <strong>Sitio web:</strong> www.itera.la
               </Body>
             </Card>
           </section>
