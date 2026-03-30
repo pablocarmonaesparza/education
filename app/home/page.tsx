@@ -78,6 +78,10 @@ export default function TikTokHomePage({
       <footer className="border-t bg-white py-3 text-center text-xs text-gray-400">
         Itera © 2026 —{' '}
         <a href="https://www.itera.la" className="underline">itera.la</a>
+        {' · '}
+        <Link href="/terms" className="underline">Términos y Condiciones</Link>
+        {' · '}
+        <Link href="/privacy" className="underline">Política de Privacidad</Link>
       </footer>
     </main>
   );

@@ -24,7 +24,7 @@ export default function TermsPage() {
 
         <Card variant="neutral" padding="lg" className="mb-6">
           <Body className="mb-4">
-            Bienvenido a Itera. Estos términos y condiciones ("Términos") rigen el uso de nuestra plataforma 
+            Bienvenido a Itera. Estos términos y condiciones (&quot;Términos&quot;) rigen el uso de nuestra plataforma 
             de cursos personalizados de inteligencia artificial y automatización. Al acceder o utilizar nuestros 
             servicios, aceptas estar sujeto a estos Términos. Si no estás de acuerdo con alguna parte de estos 
             términos, no debes utilizar nuestros servicios.
@@ -63,6 +63,7 @@ export default function TermsPage() {
                 <li>Seguimiento de progreso y gamificación</li>
                 <li>Herramientas de aprendizaje interactivas</li>
                 <li>Soporte y tutoría mediante chat con IA</li>
+                <li>Publicación de contenido educativo en redes sociales (incluyendo TikTok)</li>
               </ul>
             </Card>
           </section>
@@ -101,26 +102,55 @@ export default function TermsPage() {
           <Divider />
 
           <section>
-            <Headline className="mb-4">4. propiedad intelectual y contenido</Headline>
+            <Headline className="mb-4">4. integración con tiktok y terceros</Headline>
             <Card variant="neutral" padding="md" className="mb-4">
-              <Subtitle className="mb-3">4.1 Propiedad de Itera</Subtitle>
+              <Body className="mb-3">
+                Itera se integra con servicios de terceros para mejorar la experiencia educativa:
+              </Body>
+              <Subtitle className="mb-3">4.1 TikTok</Subtitle>
+              <Body className="mb-3">
+                Itera utiliza la API de TikTok para permitirte publicar contenido educativo en tu perfil de TikTok. 
+                Al conectar tu cuenta de TikTok:
+              </Body>
+              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+                <li>Autorizas a Itera a acceder a tu información básica de perfil (nombre, avatar)</li>
+                <li>Autorizas a Itera a subir y publicar videos en tu perfil <strong>solo cuando tú lo solicites</strong></li>
+                <li>Puedes revocar estos permisos en cualquier momento desde la configuración de tu cuenta o desde TikTok</li>
+              </ul>
+              <Body className="mb-4">
+                El uso de TikTok está sujeto a los Términos de Servicio y Política de Privacidad de TikTok.
+              </Body>
+              <Subtitle className="mb-3">4.2 Otros Servicios</Subtitle>
+              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300">
+                <li><strong>Stripe y MercadoPago:</strong> procesamiento de pagos</li>
+                <li><strong>Supabase:</strong> almacenamiento de datos y autenticación</li>
+                <li><strong>Servicios de IA:</strong> personalización del aprendizaje</li>
+              </ul>
+            </Card>
+          </section>
+
+          <Divider />
+
+          <section>
+            <Headline className="mb-4">5. propiedad intelectual y contenido</Headline>
+            <Card variant="neutral" padding="md" className="mb-4">
+              <Subtitle className="mb-3">5.1 Propiedad de Itera</Subtitle>
               <Body className="mb-4">
                 Todos los derechos de propiedad intelectual sobre la plataforma, incluyendo pero no limitado a 
                 el diseño, código fuente, logotipos, marcas comerciales, y contenido educativo creado por Itera, 
                 son propiedad exclusiva de Itera o sus licenciantes.
               </Body>
-              <Subtitle className="mb-3">4.2 Contenido del Usuario</Subtitle>
+              <Subtitle className="mb-3">5.2 Contenido del Usuario</Subtitle>
               <Body className="mb-3">
-                Retienes todos los derechos sobre el contenido que creas o proporcionas a través de la plataforma 
-                (como descripciones de proyectos, comentarios, etc.). Sin embargo, al utilizar nuestros servicios, 
-                otorgas a Itera una licencia mundial, no exclusiva, libre de regalías para usar, reproducir, 
-                modificar y distribuir dicho contenido únicamente para proporcionar y mejorar nuestros servicios.
+                Retienes todos los derechos sobre el contenido que creas o proporcionas a través de la plataforma. 
+                Al utilizar nuestros servicios, otorgas a Itera una licencia mundial, no exclusiva, libre de regalías 
+                para usar, reproducir, modificar y distribuir dicho contenido únicamente para proporcionar y mejorar 
+                nuestros servicios.
               </Body>
-              <Subtitle className="mb-3">4.3 Contenido Prohibido</Subtitle>
+              <Subtitle className="mb-3">5.3 Contenido Prohibido</Subtitle>
               <Body>
                 No debes subir, publicar o transmitir contenido que sea ilegal, difamatorio, abusivo, acosador, 
-                que viole derechos de propiedad intelectual, o que de cualquier otra manera viole estos Términos. 
-                Nos reservamos el derecho de eliminar cualquier contenido que consideremos inapropiado.
+                que viole derechos de propiedad intelectual, o que de cualquier otra manera viole estos Términos.
               </Body>
             </Card>
           </section>
@@ -128,55 +158,12 @@ export default function TermsPage() {
           <Divider />
 
           <section>
-            <Headline className="mb-4">5. pagos y facturación</Headline>
-            <Card variant="neutral" padding="md" className="mb-4">
-              <Subtitle className="mb-3">5.1 Precios</Subtitle>
-              <Body className="mb-4">
-                Los precios de nuestros servicios se muestran en la plataforma y están sujetos a cambios sin 
-                previo aviso. Todos los precios incluyen los impuestos aplicables, a menos que se indique lo contrario.
-              </Body>
-              <Subtitle className="mb-3">5.2 Procesamiento de Pagos</Subtitle>
-              <Body className="mb-4">
-                Los pagos se procesan a través de proveedores de servicios de pago de terceros (como Stripe y 
-                MercadoPago). Al realizar un pago, aceptas los términos y condiciones de estos proveedores. 
-                No almacenamos información completa de tarjetas de crédito en nuestros servidores.
-              </Body>
-              <Subtitle className="mb-3">5.3 Reembolsos</Subtitle>
-              <Body className="mb-3">
-                Nuestra política de reembolsos es la siguiente:
-              </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
-                <li>Los reembolsos se consideran caso por caso dentro de los primeros 14 días de la compra</li>
-                <li>No se otorgan reembolsos por contenido ya consumido o cursos completados</li>
-                <li>Los reembolsos se procesarán al método de pago original dentro de 5-10 días hábiles</li>
-              </ul>
-              <Subtitle className="mb-3">5.4 Pagos Atrasados</Subtitle>
-              <Body>
-                Si un pago falla o se rechaza, nos reservamos el derecho de suspender o terminar tu acceso a 
-                los servicios hasta que se resuelva el problema de pago.
-              </Body>
-            </Card>
-          </section>
-
-          <Divider />
-
-          <section>
-            <Headline className="mb-4">6. uso aceptable</Headline>
+            <Headline className="mb-4">6. pagos y facturación</Headline>
             <Card variant="neutral" padding="md" className="mb-4">
               <Body className="mb-3">
-                Al utilizar nuestros servicios, te comprometes a:
-              </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
-                <li>Usar los servicios únicamente para fines legales y educativos</li>
-                <li>No intentar acceder a áreas restringidas de la plataforma</li>
-                <li>No interferir con el funcionamiento de la plataforma</li>
-                <li>No usar bots, scripts automatizados o métodos similares para acceder a los servicios</li>
-                <li>No compartir tu cuenta con terceros</li>
-                <li>No intentar descargar o distribuir contenido de manera no autorizada</li>
-                <li>Respetar los derechos de propiedad intelectual de otros</li>
-              </ul>
-              <Body>
-                La violación de estas reglas puede resultar en la terminación inmediata de tu cuenta sin reembolso.
+                Los precios se muestran en la plataforma. Los pagos se procesan a través de Stripe y MercadoPago. 
+                No almacenamos información completa de tarjetas de crédito. Los reembolsos se consideran caso por caso 
+                dentro de los primeros 14 días de la compra.
               </Body>
             </Card>
           </section>
@@ -184,22 +171,13 @@ export default function TermsPage() {
           <Divider />
 
           <section>
-            <Headline className="mb-4">7. limitación de responsabilidad</Headline>
+            <Headline className="mb-4">7. uso aceptable</Headline>
             <Card variant="neutral" padding="md" className="mb-4">
               <Body className="mb-3">
-                En la máxima medida permitida por la ley aplicable:
-              </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
-                <li>Los servicios se proporcionan "tal cual" y "según disponibilidad" sin garantías de ningún tipo</li>
-                <li>No garantizamos que los servicios estarán disponibles de manera ininterrumpida o libre de errores</li>
-                <li>No seremos responsables de daños indirectos, incidentales, especiales o consecuentes</li>
-                <li>Nuestra responsabilidad total no excederá el monto que hayas pagado por los servicios en los 
-                    12 meses anteriores al evento que dio lugar a la reclamación</li>
-              </ul>
-              <Body>
-                Algunas jurisdicciones no permiten la exclusión de garantías implícitas o la limitación de 
-                responsabilidad por daños incidentales, por lo que algunas de las limitaciones anteriores pueden 
-                no aplicarse a ti.
+                Al utilizar nuestros servicios, te comprometes a no usar la plataforma para fines ilegales, 
+                no interferir con su funcionamiento, no usar herramientas automatizadas para extraer contenido, 
+                y respetar los derechos de propiedad intelectual de otros. La violación puede resultar en la 
+                terminación inmediata de tu cuenta.
               </Body>
             </Card>
           </section>
@@ -207,13 +185,12 @@ export default function TermsPage() {
           <Divider />
 
           <section>
-            <Headline className="mb-4">8. indemnización</Headline>
+            <Headline className="mb-4">8. limitación de responsabilidad</Headline>
             <Card variant="neutral" padding="md" className="mb-4">
               <Body>
-                Aceptas indemnizar, defender y mantener indemne a Itera, sus afiliados, directores, empleados 
-                y agentes de y contra cualquier reclamación, responsabilidad, daño, pérdida o gasto (incluyendo 
-                honorarios de abogados) que surja de o esté relacionado con tu uso de los servicios, tu violación 
-                de estos Términos, o tu violación de cualquier derecho de otra persona.
+                Los servicios se proporcionan &quot;tal cual&quot; y &quot;según disponibilidad&quot;. No garantizamos que los 
+                servicios sean ininterrumpidos o libres de errores. En la máxima medida permitida por la ley, 
+                no seremos responsables de daños indirectos, incidentales, especiales o consecuentes.
               </Body>
             </Card>
           </section>
@@ -224,10 +201,9 @@ export default function TermsPage() {
             <Headline className="mb-4">9. ley aplicable y jurisdicción</Headline>
             <Card variant="neutral" padding="md" className="mb-4">
               <Body>
-                Estos Términos se regirán e interpretarán de acuerdo con las leyes del país donde Itera opera, 
-                sin dar efecto a ningún principio de conflictos de leyes. Cualquier disputa que surja de o esté 
-                relacionada con estos Términos será sometida a la jurisdicción exclusiva de los tribunales 
-                competentes en la ubicación de Itera.
+                Estos Términos se regirán e interpretarán de conformidad con las leyes de los Estados Unidos 
+                Mexicanos. Cualquier controversia derivada de estos Términos será sometida a la jurisdicción 
+                de los tribunales competentes de la Ciudad de México, México.
               </Body>
             </Card>
           </section>
@@ -239,8 +215,7 @@ export default function TermsPage() {
             <Card variant="neutral" padding="md" className="mb-4">
               <Body>
                 Nos reservamos el derecho de modificar estos Términos en cualquier momento. Te notificaremos de 
-                cambios materiales mediante un aviso en la plataforma o por correo electrónico. Tu uso continuado 
-                de los servicios después de dichos cambios constituye tu aceptación de los nuevos términos.
+                cambios materiales mediante un aviso en la plataforma o por correo electrónico.
               </Body>
             </Card>
           </section>
@@ -254,10 +229,10 @@ export default function TermsPage() {
                 Si tienes preguntas sobre estos Términos, puedes contactarnos:
               </Body>
               <Body className="mb-2">
-                <strong>Email:</strong> legal@itera.com
+                <strong>Email:</strong> pablo@itera.la
               </Body>
               <Body>
-                <strong>Dirección:</strong> [Dirección de la empresa]
+                <strong>Ubicación:</strong> Playa del Carmen, Quintana Roo, México
               </Body>
             </Card>
           </section>
