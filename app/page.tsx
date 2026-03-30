@@ -8,6 +8,7 @@ import Navbar from "@/components/shared/Navbar";
 import StructuredData from "@/components/shared/StructuredData";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import OAuthRedirectHandler from "@/components/shared/OAuthRedirectHandler";
+import Footer from "@/components/shared/Footer";
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
       <AvailableCoursesSection />
       <PricingSection />
       <FAQSection />
+      <Footer />
     </main>
   );
 }
