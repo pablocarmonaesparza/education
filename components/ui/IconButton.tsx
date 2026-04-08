@@ -1,9 +1,11 @@
 'use client';
 
 import React from 'react';
+import { depthBase as depthToken } from '@/lib/design-tokens';
 
 /* ───────────────────────────────────────────────────────────
    Design-system Icon Button · 42×42px
+   Depth values come from lib/design-tokens.ts
    Variants: primary (depth), outline (depth), ghost (flat)
    ─────────────────────────────────────────────────────────── */
 
@@ -11,18 +13,15 @@ const base =
   'rounded-xl flex items-center justify-center text-sm font-bold ' +
   'transition-all duration-150 flex-shrink-0';
 
-const depthBase =
-  'border-2 border-b-4 active:border-b-2 active:mt-[2px]';
-
 const variantStyles = {
   /** Blue filled with #0E5FCC depth border */
   primary:
-    `${depthBase} bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#1265e0]`,
+    `${depthToken} bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#1265e0]`,
 
   /** White / dark-gray with neutral depth border */
   outline:
-    `${depthBase} bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 ` +
-    'border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
+    `${depthToken} bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 ` +
+    'border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'hover:bg-gray-50 dark:hover:bg-gray-900',
 
   /** No border, transparent bg, hover highlight only */

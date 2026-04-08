@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
+import { depth } from '@/lib/design-tokens';
 
 /* ───────────────────────────────────────────────────────────
    Design-system Input & Textarea
-   Depth borders: border-2 border-b-4
+   Depth values come from lib/design-tokens.ts
    Focus: ring-2 ring-[#1472FF]/20 border-[#1472FF]
    ─────────────────────────────────────────────────────────── */
 
@@ -14,7 +15,7 @@ const sharedBase =
   'focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF]';
 
 const lightMode =
-  'border-2 border-gray-200 border-b-4 border-b-gray-300 ' +
+  `${depth.border} border-gray-300 ${depth.bottom} border-b-gray-300 ` +
   'bg-white text-[#4b4b4b] placeholder-gray-400';
 
 const darkMode =
@@ -39,7 +40,7 @@ export interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'className'> {
   /**
    * Visual variant.
-   * - `'default'` — depth border (border-b-4), rounded-xl, py-3, text-sm
+   * - `'default'` — depth border (border-b-8), rounded-xl, py-3, text-sm
    * - `'flat'`    — no depth border, rounded-2xl, py-4 (auth pages)
    */
   variant?: InputVariant;

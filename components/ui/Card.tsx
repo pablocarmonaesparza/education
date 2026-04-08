@@ -1,21 +1,21 @@
 'use client';
 
 import React from 'react';
+import { depthStructure, depth } from '@/lib/design-tokens';
 
 /* ───────────────────────────────────────────────────────────
    Design-system Card
-   border-2 border-b-4 · rounded-2xl
+   Depth values come from lib/design-tokens.ts
    Variants: neutral, primary, completado
    ─────────────────────────────────────────────────────────── */
 
-const base =
-  'rounded-2xl border-2 border-b-4 transition-all duration-150';
+const base = `rounded-2xl ${depthStructure}`;
 
 const variantStyles = {
   /** White / dark-gray-800 with neutral depth border */
   neutral:
     'bg-white dark:bg-gray-800 ' +
-    'border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
+    'border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'text-[#4b4b4b] dark:text-white',
 
   /** #1472FF background with #0E5FCC depth border */
@@ -33,8 +33,7 @@ const hoverStyles = {
   completado: '', // completado has no hover in the design system
 } as const;
 
-const interactiveDepth =
-  'active:border-b-2 active:mt-[2px] cursor-pointer';
+const interactiveDepth = `${depth.active} cursor-pointer`;
 
 export type CardVariant = keyof typeof variantStyles;
 
@@ -101,7 +100,7 @@ export default function Card({
 /* ── Flat card (no depth border) ── */
 
 /**
- * A lighter card variant without the depth border-b-4.
+ * A lighter card variant without depth.
  * Uses border-2 only, rounded-2xl.
  * Seen in dashboard stat rows, profile sections, etc.
  *

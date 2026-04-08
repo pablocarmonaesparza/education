@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import React from 'react';
+import { depthBase, depthBottomOnly } from '@/lib/design-tokens';
 
 /* ───────────────────────────────────────────────────────────
    Design-system Button
-   Canonical depth: border-2 border-b-4 · active:border-b-2 active:mt-[2px]
+   Depth values come from lib/design-tokens.ts
    ─────────────────────────────────────────────────────────── */
 
 const baseCommon =
@@ -13,14 +14,10 @@ const baseCommon =
   'disabled:opacity-50 disabled:cursor-not-allowed';
 
 /** Full depth variants get the 3-D border treatment on all sides. */
-const baseDepthFull =
-  baseCommon +
-  ' border-2 border-b-4 active:border-b-2 active:mt-[2px] disabled:active:border-b-4 disabled:active:mt-0';
+const baseDepthFull = baseCommon + ' ' + depthBase;
 
 /** Bottom-only depth: only the bottom border is visible (landing-page style). */
-const baseDepthBottom =
-  baseCommon +
-  ' border-b-4 active:border-b-0 active:mt-1 disabled:border-b-4 disabled:mt-0';
+const baseDepthBottom = baseCommon + ' ' + depthBottomOnly;
 
 /** Flat variants have no visible border. */
 const baseFlat = baseCommon;
@@ -34,13 +31,13 @@ const variantStyles = {
   /** White / dark-gray filled with neutral depth border */
   outline:
     'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 ' +
-    'border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
+    'border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'hover:bg-gray-50 dark:hover:bg-gray-900',
 
   /** Same as outline visually */
   secondary:
     'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 ' +
-    'border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
+    'border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'hover:bg-gray-50 dark:hover:bg-gray-700',
 
   /** Transparent, no border – just hover highlight */
@@ -67,7 +64,7 @@ const variantStyles = {
     'hover:bg-red-100 dark:hover:bg-red-900',
 } as const;
 
-/** Variants that use depth (border-b-4) */
+/** Variants that use depth (border-b-8) */
 const depthVariants: ReadonlySet<string> = new Set([
   'primary',
   'outline',
@@ -96,8 +93,8 @@ export interface ButtonProps
   size?: ButtonSize;
   /**
    * Depth border style for depth variants.
-   * - `'full'`   (default) — border-2 border-b-4  (all-sides depth)
-   * - `'bottom'` — border-b-4 only (landing-page style, bigger press)
+   * - `'full'`   (default) — border-4 border-b-8  (all-sides depth)
+   * - `'bottom'` — border-b-8 only (landing-page style, bigger press)
    *
    * Ignored for flat variants (ghost, nav-inactive, danger).
    */
@@ -175,9 +172,10 @@ export default function Button({
 
 /* ── Helper exports ── */
 
-/** Bare depth border classes (no colors). Useful for custom depth elements. */
-export const depthClasses =
-  'border-2 border-b-4 transition-all duration-150 active:border-b-2 active:mt-[2px]';
+/** @deprecated Use depthBase from '@/lib/design-tokens' instead. */
+export { depthBase as depthClasses } from '@/lib/design-tokens';
+/** @deprecated Use depthBottomOnly from '@/lib/design-tokens' instead. */
+export { depthBottomOnly as depthBottomClasses } from '@/lib/design-tokens';
 
 /** Primary depth color classes only. */
 export const depthPrimaryColors =
@@ -186,7 +184,3 @@ export const depthPrimaryColors =
 /** Outline depth color classes only. */
 export const depthOutlineColors =
   'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 hover:bg-gray-50 dark:hover:bg-gray-900';
-
-/** Bottom-only depth border classes (landing-page style). */
-export const depthBottomClasses =
-  'border-b-4 transition-all duration-150 active:border-b-0 active:mt-1';

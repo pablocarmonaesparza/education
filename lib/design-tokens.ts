@@ -7,7 +7,7 @@
 
 /** Contorno estándar (border). 2px en todos los lados. */
 export const DEPTH_BORDER_PX = 2;
-/** Profundidad (border-bottom). 4px. */
+/** Profundidad (border-bottom). 4px (100% más que el borde lateral de 2px). */
 export const DEPTH_BOTTOM_PX = 4;
 /** En active: border-bottom pasa a 2px y se compensa con mt 2px. */
 export const DEPTH_ACTIVE_BOTTOM_PX = 2;
@@ -30,6 +30,10 @@ export const depthStructure = `${depth.border} ${depth.bottom} ${depth.transitio
 
 /** Active en elementos dentro de `group` (p. ej. LessonItem). */
 export const depthActiveGroup = 'group-active:border-b-2 group-active:mt-[2px]';
+
+/** Bottom-only depth (landing CTA style): solo border inferior, sin borders laterales. */
+export const depthBottomOnly =
+  `${depth.bottom} active:border-b-0 active:mt-[4px] disabled:${depth.bottom} disabled:mt-0 ${depth.transition}`;
 
 /** Regla: Primary, Outline y Nav Bar siempre la misma altura — px-4 py-2, text-sm, min-h-[40px]. */
 export const DEPTH_BUTTON_HEIGHT = 'min-h-[40px]';
