@@ -63,8 +63,21 @@ export function Input({ variant = 'default', className = '', ...rest }: InputPro
 
 /* ── Textarea ── */
 
+const textareaFlat =
+  'w-full px-4 py-4 rounded-2xl transition-all ' +
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1472FF]/20 focus-visible:border-[#1472FF] ' +
+  'border-2 border-gray-200 dark:border-gray-900 ' +
+  'bg-white dark:bg-gray-800 text-gray-900 dark:text-white ' +
+  'placeholder-gray-400 dark:placeholder-gray-500 resize-none';
+
 export interface TextareaProps
   extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'className'> {
+  /**
+   * Visual variant.
+   * - `'default'` — depth border (border-b-8), rounded-xl, py-3, text-sm
+   * - `'flat'`    — no depth border, rounded-2xl, py-4 (auth/landing-style)
+   */
+  variant?: InputVariant;
   className?: string;
 }
 
@@ -73,15 +86,12 @@ export interface TextareaProps
  *
  * ```tsx
  * <Textarea placeholder="Describe tu proyecto..." rows={4} />
+ * <Textarea variant="flat" placeholder="Landing-style textarea" rows={6} />
  * ```
  */
-export function Textarea({ className = '', ...rest }: TextareaProps) {
-  return (
-    <textarea
-      className={`${inputBase} resize-none ${className}`}
-      {...rest}
-    />
-  );
+export function Textarea({ variant = 'default', className = '', ...rest }: TextareaProps) {
+  const base = variant === 'flat' ? textareaFlat : `${inputBase} resize-none`;
+  return <textarea className={`${base} ${className}`} {...rest} />;
 }
 
 /* ── Search Input (with icon slot) ── */
