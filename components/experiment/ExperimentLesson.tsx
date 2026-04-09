@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import {
   AnimatePresence,
   animate,
@@ -2070,65 +2070,69 @@ function TapMatchStep({
         {step.prompt}
       </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {/* Terms column */}
-        <div className="space-y-3">
+      {/* Row-aligned grid: each row is [term | divider | def] so the i-th term
+          sits at the same vertical level as the i-th def slot. */}
+      <div className="relative">
+        {/* Central vertical divider */}
+        <div
+          aria-hidden="true"
+          className="absolute top-0 bottom-0 left-1/2 w-px bg-gray-200 dark:bg-gray-800 -translate-x-1/2 pointer-events-none"
+        />
+        <div className="grid grid-cols-2 gap-x-6 gap-y-3 items-stretch auto-rows-fr">
           {step.pairs.map((pair, i) => {
-            const badge = pairBadgeForTerm(i);
-            const isInPair = badge !== null;
-            const isSelected = attempt.selectedTerm === i;
-            return (
-              <button
-                key={`term-${i}`}
-                type="button"
-                aria-label={`término: ${pair.term}`}
-                aria-pressed={isSelected || isInPair}
-                disabled={submitted}
-                onClick={() => onTermClick(i)}
-                className={`relative w-full rounded-xl ${depth.border} px-4 py-4 text-center text-base font-bold transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
-                  submitted
-                    ? 'cursor-default'
-                    : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
-                } ${classForTerm(i)}`}
-              >
-                {badge !== null && (
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-extrabold opacity-70">
-                    {badge}
-                  </span>
-                )}
-                {pair.term}
-              </button>
-            );
-          })}
-        </div>
+            const displayDefIdx = i; // row i → defOrder[i] def slot
+            const pairIdx = defOrder[displayDefIdx];
 
-        {/* Defs column (shuffled) */}
-        <div className="space-y-3">
-          {defOrder.map((pairIdx, displayDefIdx) => {
-            const badge = pairBadgeForDef(pairIdx);
-            const isInPair = badge !== null;
-            const isSelected = attempt.selectedDef === displayDefIdx;
+            const termBadge = pairBadgeForTerm(i);
+            const termIsInPair = termBadge !== null;
+            const termIsSelected = attempt.selectedTerm === i;
+
+            const defBadge = pairBadgeForDef(pairIdx);
+            const defIsInPair = defBadge !== null;
+            const defIsSelected = attempt.selectedDef === displayDefIdx;
+
             return (
-              <button
-                key={`def-${displayDefIdx}`}
-                type="button"
-                aria-label={`definición: ${step.pairs[pairIdx].def}`}
-                aria-pressed={isSelected || isInPair}
-                disabled={submitted}
-                onClick={() => onDefClick(displayDefIdx)}
-                className={`relative w-full rounded-xl ${depth.border} px-4 py-4 text-left text-sm md:text-base font-medium transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
-                  submitted
-                    ? 'cursor-default'
-                    : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
-                } ${classForDef(displayDefIdx)}`}
-              >
-                {badge !== null && (
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-extrabold opacity-70">
-                    {badge}
-                  </span>
-                )}
-                {step.pairs[pairIdx].def}
-              </button>
+              <Fragment key={`row-${i}`}>
+                <button
+                  type="button"
+                  aria-label={`término: ${pair.term}`}
+                  aria-pressed={termIsSelected || termIsInPair}
+                  disabled={submitted}
+                  onClick={() => onTermClick(i)}
+                  className={`relative w-full h-full min-h-[4.5rem] rounded-xl ${depth.border} px-4 py-4 text-center text-base font-bold flex items-center justify-center transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
+                    submitted
+                      ? 'cursor-default'
+                      : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
+                  } ${classForTerm(i)}`}
+                >
+                  {termBadge !== null && (
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-extrabold opacity-70">
+                      {termBadge}
+                    </span>
+                  )}
+                  <span>{pair.term}</span>
+                </button>
+
+                <button
+                  type="button"
+                  aria-label={`definición: ${step.pairs[pairIdx].def}`}
+                  aria-pressed={defIsSelected || defIsInPair}
+                  disabled={submitted}
+                  onClick={() => onDefClick(displayDefIdx)}
+                  className={`relative w-full h-full min-h-[4.5rem] rounded-xl ${depth.border} px-4 py-4 text-center text-sm md:text-base font-medium flex items-center justify-center transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
+                    submitted
+                      ? 'cursor-default'
+                      : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
+                  } ${classForDef(displayDefIdx)}`}
+                >
+                  {defBadge !== null && (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-extrabold opacity-70">
+                      {defBadge}
+                    </span>
+                  )}
+                  <span className="leading-snug">{step.pairs[pairIdx].def}</span>
+                </button>
+              </Fragment>
             );
           })}
         </div>
