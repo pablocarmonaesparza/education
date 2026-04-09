@@ -1,7 +1,13 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useMotionValue,
+  useTransform,
+} from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
@@ -1632,6 +1638,8 @@ function CelebrationStep({
 
 /* ─── XP bar ─── */
 
+const XP_MILESTONES = [0.25, 0.5, 0.75, 1];
+
 function XpBar({
   xp,
   total,
@@ -1642,19 +1650,64 @@ function XpBar({
   delta: { gain: number; id: number } | null;
 }) {
   const pct = total === 0 ? 0 : Math.min(100, (xp / total) * 100);
+
+  // Animated number ticker: count from previous xp to current xp over ~600ms
+  const xpMotion = useMotionValue(xp);
+  const xpRounded = useTransform(xpMotion, (v) => Math.round(v));
+  const [displayXp, setDisplayXp] = useState(xp);
+  useEffect(() => {
+    const controls = animate(xpMotion, xp, {
+      duration: 0.6,
+      ease: 'easeOut',
+    });
+    const unsub = xpRounded.on('change', (v) => setDisplayXp(v));
+    return () => {
+      controls.stop();
+      unsub();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [xp]);
+
+  // Glow pulse: briefly highlight the bar when a new xp delta arrives
+  const [glow, setGlow] = useState(false);
+  useEffect(() => {
+    if (delta === null) return;
+    setGlow(true);
+    const t = setTimeout(() => setGlow(false), 500);
+    return () => clearTimeout(t);
+  }, [delta?.id]);
+
   return (
     <div className="relative">
-      <div className="h-2 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
+      <div
+        className={`relative h-2 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden transition-shadow duration-300 ${
+          glow ? 'shadow-[0_0_18px_4px_rgba(34,197,94,0.55)]' : ''
+        }`}
+      >
         <motion.div
           className="h-full rounded-full bg-[#22c55e]"
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         />
+        {/* Milestone markers — small dark notches above 0% (exclusive of 100) */}
+        {XP_MILESTONES.slice(0, -1).map((m) => {
+          const reached = pct >= m * 100;
+          return (
+            <span
+              key={m}
+              className={`absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-[2px] h-2 rounded-full transition-colors duration-300 ${
+                reached ? 'bg-white/70' : 'bg-gray-300 dark:bg-gray-700'
+              }`}
+              style={{ left: `${m * 100}%` }}
+              aria-hidden="true"
+            />
+          );
+        })}
       </div>
       <div className="mt-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-[#777777] dark:text-gray-400">
         <span>xp</span>
         <span className="tabular-nums">
-          {xp} / {total}
+          {displayXp} / {total}
         </span>
       </div>
       <AnimatePresence>
