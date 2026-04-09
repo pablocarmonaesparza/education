@@ -1646,7 +1646,7 @@ function XpBar({
     <div className="relative">
       <div className="h-2 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
         <motion.div
-          className="h-full rounded-full bg-[#1472FF]"
+          className="h-full rounded-full bg-[#22c55e]"
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         />
