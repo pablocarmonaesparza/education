@@ -534,9 +534,9 @@ export default function ExperimentLesson() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950">
-      {/* Top bar: XP bar + divider + (exit, back/progress/forward, lives) */}
+      {/* Top bar: exit + back/progress/forward + lives */}
       <header className="relative px-4 py-4">
-        <div className="absolute left-4 bottom-4">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2">
           <IconButton
             variant="outline"
             aria-label="Salir de la lección"
@@ -552,7 +552,7 @@ export default function ExperimentLesson() {
             </svg>
           </IconButton>
         </div>
-        <div className="absolute right-4 bottom-4 flex items-center gap-2">
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
           {streak >= 2 && <StreakBadge count={streak} />}
           <div
             className={`inline-flex items-center gap-2 h-[42px] px-4 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthBase} origin-center transition-transform duration-200 ${livesPulse ? 'scale-125' : 'scale-100'}`}
@@ -570,42 +570,38 @@ export default function ExperimentLesson() {
             )}
           </div>
         </div>
-        <div className="mx-auto max-w-2xl space-y-3">
-          <XpBar xp={xp} total={totalXp} delta={xpDelta} />
-          <div className="border-t border-gray-200 dark:border-gray-800" />
-          <div className="flex items-center gap-3">
-            <IconButton
-              variant="outline"
-              aria-label="Etapa anterior"
-              onClick={handleBack}
-              disabled={index === 0}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </IconButton>
-            <SegmentedProgress total={STEPS.length} current={index} />
-            <IconButton
-              variant="outline"
-              aria-label="Etapa siguiente"
-              onClick={handleForward}
-              disabled={index >= maxVisited || ctaDisabled || needsCheck}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </IconButton>
-          </div>
+        <div className="mx-auto max-w-2xl flex items-center gap-3">
+          <IconButton
+            variant="outline"
+            aria-label="Etapa anterior"
+            onClick={handleBack}
+            disabled={index === 0}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+          </IconButton>
+          <SegmentedProgress total={STEPS.length} current={index} />
+          <IconButton
+            variant="outline"
+            aria-label="Etapa siguiente"
+            onClick={handleForward}
+            disabled={index >= maxVisited || ctaDisabled || needsCheck}
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2.5}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </IconButton>
         </div>
       </header>
 
@@ -719,15 +715,19 @@ export default function ExperimentLesson() {
         </div>
       </main>
 
-      {/* Bottom CTA */}
+      {/* Bottom: XP bar + divider + CTA */}
       <footer className="px-4 py-6">
-        <div className="mx-auto max-w-2xl flex justify-end">
-          <div
-            className={`inline-block transition-transform duration-200 ${ctaBounce ? 'scale-110' : 'scale-100'}`}
-          >
-            <Button variant="primary" size="lg" onClick={handleCta} disabled={ctaDisabled}>
-              {ctaLabel}
-            </Button>
+        <div className="mx-auto max-w-2xl space-y-4">
+          <XpBar xp={xp} total={totalXp} delta={xpDelta} />
+          <div className="border-t border-gray-200 dark:border-gray-800" />
+          <div className="flex justify-end">
+            <div
+              className={`inline-block transition-transform duration-200 ${ctaBounce ? 'scale-110' : 'scale-100'}`}
+            >
+              <Button variant="primary" size="lg" onClick={handleCta} disabled={ctaDisabled}>
+                {ctaLabel}
+              </Button>
+            </div>
           </div>
         </div>
       </footer>
