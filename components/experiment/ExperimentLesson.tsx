@@ -18,16 +18,16 @@ import { depth, depthBase } from '@/lib/design-tokens';
 type Option = { id: number; text: string };
 
 type TapMatchAttempt = {
-  matched: number[];
+  // user-built pairs (no validation while building)
+  pairs: { termIdx: number; defIdx: number }[];
   selectedTerm: number | null;
   selectedDef: number | null;
-  wrongAttempts: number;
 };
 
 type Step =
   | { kind: 'concept'; title: string; body: string; image?: string }
   | { kind: 'concept-visual'; title: string; body: string }
-  | { kind: 'celebration'; emoji: string; title: string; body: string }
+  | { kind: 'celebration'; emoji: string; title: string; body: string; section?: string }
   | {
       kind: 'mcq';
       prompt: string;
@@ -123,10 +123,9 @@ function isScoreable(step: Step): boolean {
 }
 
 const initialTapMatch: TapMatchAttempt = {
-  matched: [],
+  pairs: [],
   selectedTerm: null,
   selectedDef: null,
-  wrongAttempts: 0,
 };
 
 function getInitialAttempt(step: Step): unknown {
@@ -168,7 +167,7 @@ function isAttemptComplete(step: Step, attempt: unknown): boolean {
     case 'order-steps':
       return (attempt as number[]).length === step.steps.length;
     case 'tap-match':
-      return (attempt as TapMatchAttempt).matched.length === step.pairs.length;
+      return (attempt as TapMatchAttempt).pairs.length === step.pairs.length;
     case 'ai-prompt':
       return (attempt as string).trim().length >= 10;
     default:
@@ -202,10 +201,16 @@ function isAttemptCorrect(step: Step, attempt: unknown): boolean {
       );
     }
     case 'tap-match': {
+      // Validated only on submit: every user pair must match its expected
+      // partner (term i ↔ defOrder[defIdx] === i). Since defOrder is internal
+      // to the renderer, we instead verify that the user paired the right
+      // semantic term with the right definition by checking termIdx equality
+      // with the original pair index — which is exactly what defOrder[defIdx]
+      // resolves to. The renderer normalizes attempt.pairs.defIdx to ALWAYS
+      // store the original pair index, so the check is direct.
       const a = attempt as TapMatchAttempt;
-      // Scored by final state: all pairs matched counts as correct.
-      // wrongAttempts is tracked for UX feedback but does not fail the exercise.
-      return a.matched.length === step.pairs.length;
+      if (a.pairs.length !== step.pairs.length) return false;
+      return a.pairs.every((p) => p.termIdx === p.defIdx);
     }
     case 'ai-prompt':
       return analyzePrompt(attempt as string).score >= 60;
@@ -328,6 +333,7 @@ const STEPS: Step[] = [
     emoji: '🎉',
     title: 'conquistaste los conceptos de RAG',
     body: 'Retrieval, augmentation, generation y grounding ya son parte de tu vocabulario.',
+    section: 'fin de la sección 1 · conceptos',
   },
   {
     kind: 'order-steps',
@@ -378,6 +384,7 @@ const STEPS: Step[] = [
     emoji: '🚀',
     title: 'ahora viene la parte divertida',
     body: 'Ya dominas las piezas. Es hora de que escribas tu propio prompt de sistema.',
+    section: 'fin de la sección 2 · práctica',
   },
   {
     kind: 'ai-prompt',
@@ -527,9 +534,9 @@ export default function ExperimentLesson() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950">
-      {/* Top bar: exit + back + segmented progress + forward + lives + XP bar */}
+      {/* Top bar: XP bar + divider + (exit, back/progress/forward, lives) */}
       <header className="relative px-4 py-4">
-        <div className="absolute left-4 top-4">
+        <div className="absolute left-4 bottom-4">
           <IconButton
             variant="outline"
             aria-label="Salir de la lección"
@@ -545,40 +552,7 @@ export default function ExperimentLesson() {
             </svg>
           </IconButton>
         </div>
-        <div className="mx-auto max-w-2xl flex items-center gap-3">
-          <IconButton
-            variant="outline"
-            aria-label="Etapa anterior"
-            onClick={handleBack}
-            disabled={index === 0}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </IconButton>
-          <SegmentedProgress total={STEPS.length} current={index} />
-          <IconButton
-            variant="outline"
-            aria-label="Etapa siguiente"
-            onClick={handleForward}
-            disabled={index >= maxVisited || ctaDisabled || needsCheck}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </IconButton>
-        </div>
-        <div className="absolute right-4 top-4 flex items-center gap-2">
+        <div className="absolute right-4 bottom-4 flex items-center gap-2">
           {streak >= 2 && <StreakBadge count={streak} />}
           <div
             className={`inline-flex items-center gap-2 h-[42px] px-4 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthBase} origin-center transition-transform duration-200 ${livesPulse ? 'scale-125' : 'scale-100'}`}
@@ -596,9 +570,42 @@ export default function ExperimentLesson() {
             )}
           </div>
         </div>
-        {/* XP bar — second row in header, spanning the same max-w-2xl */}
-        <div className="mx-auto max-w-2xl mt-3">
+        <div className="mx-auto max-w-2xl space-y-3">
           <XpBar xp={xp} total={totalXp} delta={xpDelta} />
+          <div className="border-t border-gray-200 dark:border-gray-800" />
+          <div className="flex items-center gap-3">
+            <IconButton
+              variant="outline"
+              aria-label="Etapa anterior"
+              onClick={handleBack}
+              disabled={index === 0}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </IconButton>
+            <SegmentedProgress total={STEPS.length} current={index} />
+            <IconButton
+              variant="outline"
+              aria-label="Etapa siguiente"
+              onClick={handleForward}
+              disabled={index >= maxVisited || ctaDisabled || needsCheck}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </IconButton>
+          </div>
         </div>
       </header>
 
@@ -616,6 +623,7 @@ export default function ExperimentLesson() {
               emoji={step.emoji}
               title={step.title}
               body={step.body}
+              section={step.section}
               streak={streak}
               xpGained={xp}
               correctSoFar={(() => {
@@ -933,7 +941,7 @@ function ConceptVisualStep({
   return (
     <div className="space-y-6">
       <Title className="!text-2xl md:!text-3xl text-center">{title}</Title>
-      <Card variant="neutral" padding="lg">
+      <div className="w-full">
         <svg
           viewBox="0 0 600 150"
           xmlns="http://www.w3.org/2000/svg"
@@ -1012,7 +1020,7 @@ function ConceptVisualStep({
             );
           })}
         </svg>
-      </Card>
+      </div>
       <Body className="text-center text-[#777777] dark:text-gray-400">{body}</Body>
     </div>
   );
@@ -1409,7 +1417,7 @@ function TapSequenceStep({
                     '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] text-white';
                 } else {
                   stateClass =
-                    '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 opacity-70';
+                    '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
                 }
               }
 
@@ -1428,7 +1436,7 @@ function TapSequenceStep({
                   {itemSize === 'block' && (
                     <span
                       className={`mr-2 font-extrabold ${
-                        submitted && isCorrectPos ? 'text-white' : 'text-[#1472FF]'
+                        submitted ? 'text-white' : 'text-[#1472FF]'
                       }`}
                     >
                       {pos + 1}.
@@ -1555,6 +1563,7 @@ function CelebrationStep({
   emoji,
   title,
   body,
+  section,
   correctSoFar,
   totalSoFar,
   streak,
@@ -1563,6 +1572,7 @@ function CelebrationStep({
   emoji: string;
   title: string;
   body: string;
+  section?: string;
   correctSoFar: number;
   totalSoFar: number;
   streak: number;
@@ -1584,7 +1594,13 @@ function CelebrationStep({
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25, duration: 0.35 }}
+        className="space-y-2"
       >
+        {section && (
+          <p className="text-xs font-bold uppercase tracking-wider text-[#1472FF]">
+            {section}
+          </p>
+        )}
         <Title className="!text-3xl md:!text-4xl">{title}</Title>
       </motion.div>
       <motion.div
@@ -1679,7 +1695,7 @@ function TrueFalseStep({
   const selectedHover =
     ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] hover:text-[#ef4444]';
 
-  const renderOption = (value: boolean, label: string, icon: string) => {
+  const renderOption = (value: boolean, label: string) => {
     const isSelected = attempt === value;
     const isCorrectOption = step.answer === value;
 
@@ -1714,37 +1730,25 @@ function TrueFalseStep({
         onMouseLeave={() => {
           if (suppressHover === value) setSuppressHover(null);
         }}
-        className={`flex-1 rounded-2xl ${depth.border} p-6 md:p-8 transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
+        className={`min-w-[10rem] rounded-xl ${depth.border} px-8 py-4 transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] text-base md:text-lg font-medium ${
           submitted
             ? 'cursor-default'
             : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
         } ${stateClass}`}
       >
-        <div className="flex flex-col items-center gap-3">
-          <span className="text-5xl font-extrabold leading-none" aria-hidden="true">
-            {icon}
-          </span>
-          <span className="text-base md:text-lg font-extrabold uppercase tracking-wide">
-            {label}
-          </span>
-        </div>
+        {label}
       </button>
     );
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
-        {step.prompt}
+        {step.statement}
       </h3>
-      <Card variant="neutral" padding="lg">
-        <p className="text-lg md:text-xl font-medium text-[#4b4b4b] dark:text-gray-200 text-center italic leading-relaxed">
-          “{step.statement}”
-        </p>
-      </Card>
-      <div className="flex gap-4">
-        {renderOption(true, 'verdadero', '✓')}
-        {renderOption(false, 'falso', '✗')}
+      <div className="flex justify-center gap-4">
+        {renderOption(true, 'verdadero', '')}
+        {renderOption(false, 'falso', '')}
       </div>
       {submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
@@ -1871,15 +1875,13 @@ function TapMatchStep({
   onChange: (a: TapMatchAttempt) => void;
   submitted: boolean;
 }) {
-  // Shuffle definitions once per mount. Using a simple deterministic rotation
-  // keeps render stable across re-renders inside StrictMode double-invokes.
+  // Shuffle definitions once per mount. defOrder[displaySlot] = original pair index.
   const defOrder = useMemo(() => {
     const idx = step.pairs.map((_, i) => i);
     for (let i = idx.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [idx[i], idx[j]] = [idx[j], idx[i]];
     }
-    // Guarantee at least one displacement so the pairing is not trivial.
     const isIdentity = idx.every((v, i) => v === i);
     if (isIdentity && idx.length > 1) {
       [idx[0], idx[1]] = [idx[1], idx[0]];
@@ -1888,97 +1890,121 @@ function TapMatchStep({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step.pairs.length]);
 
-  const [wrongFlash, setWrongFlash] = useState<{ term: number; def: number } | null>(null);
-
-  useEffect(() => {
-    if (!wrongFlash) return;
-    const t = setTimeout(() => setWrongFlash(null), 450);
-    return () => clearTimeout(t);
-  }, [wrongFlash]);
+  // Helpers: find which pair (if any) a term/def is currently bound to
+  const findPairByTerm = (termIdx: number) =>
+    attempt.pairs.findIndex((p) => p.termIdx === termIdx);
+  const findPairByDef = (defIdx: number) =>
+    attempt.pairs.findIndex((p) => p.defIdx === defIdx);
 
   const onTermClick = (termIdx: number) => {
     if (submitted) return;
-    if (attempt.matched.includes(termIdx)) return;
-    if (attempt.selectedDef !== null) {
-      const pairIdx = defOrder[attempt.selectedDef];
-      if (termIdx === pairIdx) {
-        onChange({
-          matched: [...attempt.matched, termIdx],
-          selectedTerm: null,
-          selectedDef: null,
-          wrongAttempts: attempt.wrongAttempts,
-        });
-      } else {
-        setWrongFlash({ term: termIdx, def: attempt.selectedDef });
-        onChange({
-          matched: attempt.matched,
-          selectedTerm: null,
-          selectedDef: null,
-          wrongAttempts: attempt.wrongAttempts + 1,
-        });
-      }
-    } else {
-      onChange({ ...attempt, selectedTerm: termIdx });
+    // If the term is already bound, unbind it (let user re-pair)
+    const existing = findPairByTerm(termIdx);
+    if (existing >= 0) {
+      onChange({
+        ...attempt,
+        pairs: attempt.pairs.filter((_, i) => i !== existing),
+        selectedTerm: null,
+        selectedDef: null,
+      });
+      return;
     }
+    if (attempt.selectedDef !== null) {
+      // Pair this term with the previously-selected def slot
+      const defOriginal = defOrder[attempt.selectedDef];
+      const newPairs = [
+        ...attempt.pairs,
+        { termIdx, defIdx: defOriginal },
+      ];
+      onChange({
+        pairs: newPairs,
+        selectedTerm: null,
+        selectedDef: null,
+      });
+      return;
+    }
+    onChange({ ...attempt, selectedTerm: termIdx });
   };
 
-  const onDefClick = (defIdx: number) => {
+  const onDefClick = (displayDefIdx: number) => {
     if (submitted) return;
-    const pairIdx = defOrder[defIdx];
-    if (attempt.matched.includes(pairIdx)) return;
-    if (attempt.selectedTerm !== null) {
-      if (attempt.selectedTerm === pairIdx) {
-        onChange({
-          matched: [...attempt.matched, pairIdx],
-          selectedTerm: null,
-          selectedDef: null,
-          wrongAttempts: attempt.wrongAttempts,
-        });
-      } else {
-        setWrongFlash({ term: attempt.selectedTerm, def: defIdx });
-        onChange({
-          matched: attempt.matched,
-          selectedTerm: null,
-          selectedDef: null,
-          wrongAttempts: attempt.wrongAttempts + 1,
-        });
-      }
-    } else {
-      onChange({ ...attempt, selectedDef: defIdx });
+    const defOriginal = defOrder[displayDefIdx];
+    const existing = findPairByDef(defOriginal);
+    if (existing >= 0) {
+      // Unbind
+      onChange({
+        ...attempt,
+        pairs: attempt.pairs.filter((_, i) => i !== existing),
+        selectedTerm: null,
+        selectedDef: null,
+      });
+      return;
     }
+    if (attempt.selectedTerm !== null) {
+      const newPairs = [
+        ...attempt.pairs,
+        { termIdx: attempt.selectedTerm, defIdx: defOriginal },
+      ];
+      onChange({
+        pairs: newPairs,
+        selectedTerm: null,
+        selectedDef: null,
+      });
+      return;
+    }
+    onChange({ ...attempt, selectedDef: displayDefIdx });
+  };
+
+  // Color cluster: each user pair gets a stable index → matching number for visual link.
+  // After submit, correct pairs go green, wrong pairs go red.
+  const pairBadgeForTerm = (termIdx: number): number | null => {
+    const i = findPairByTerm(termIdx);
+    return i >= 0 ? i + 1 : null;
+  };
+  const pairBadgeForDef = (defOriginal: number): number | null => {
+    const i = findPairByDef(defOriginal);
+    return i >= 0 ? i + 1 : null;
   };
 
   const classForTerm = (termIdx: number) => {
-    const isMatched = attempt.matched.includes(termIdx);
+    const pairIdx = findPairByTerm(termIdx);
+    const isInPair = pairIdx >= 0;
     const isSelected = attempt.selectedTerm === termIdx;
-    const isWrong = wrongFlash?.term === termIdx;
 
-    if (isMatched) {
-      return '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] text-white cursor-default';
+    if (submitted && isInPair) {
+      const pair = attempt.pairs[pairIdx];
+      const correct = pair.termIdx === pair.defIdx;
+      return correct
+        ? '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] text-white'
+        : '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
     }
-    if (isWrong) {
-      return '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
+    if (isInPair) {
+      return '[--depth-color:#1472FF] border-[#1472FF] bg-white dark:bg-gray-800 text-[#1472FF]';
     }
     if (isSelected) {
-      return '[--depth-color:#1472FF] border-[#1472FF] bg-white dark:bg-gray-800 text-[#1472FF]';
+      return '[--depth-color:#1472FF] border-[#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
     }
     return '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
   };
 
-  const classForDef = (defIdx: number) => {
-    const pairIdx = defOrder[defIdx];
-    const isMatched = attempt.matched.includes(pairIdx);
-    const isSelected = attempt.selectedDef === defIdx;
-    const isWrong = wrongFlash?.def === defIdx;
+  const classForDef = (displayDefIdx: number) => {
+    const defOriginal = defOrder[displayDefIdx];
+    const pairIdx = findPairByDef(defOriginal);
+    const isInPair = pairIdx >= 0;
+    const isSelected = attempt.selectedDef === displayDefIdx;
 
-    if (isMatched) {
-      return '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] text-white cursor-default';
+    if (submitted && isInPair) {
+      const pair = attempt.pairs[pairIdx];
+      const correct = pair.termIdx === pair.defIdx;
+      return correct
+        ? '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] text-white'
+        : '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
     }
-    if (isWrong) {
-      return '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
+    if (isInPair) {
+      return '[--depth-color:#1472FF] border-[#1472FF] bg-white dark:bg-gray-800 text-[#1472FF]';
     }
     if (isSelected) {
-      return '[--depth-color:#1472FF] border-[#1472FF] bg-white dark:bg-gray-800 text-[#1472FF]';
+      return '[--depth-color:#1472FF] border-[#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
     }
     return '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
   };
@@ -1993,22 +2019,28 @@ function TapMatchStep({
         {/* Terms column */}
         <div className="space-y-3">
           {step.pairs.map((pair, i) => {
-            const isMatched = attempt.matched.includes(i);
+            const badge = pairBadgeForTerm(i);
+            const isInPair = badge !== null;
             const isSelected = attempt.selectedTerm === i;
             return (
               <button
                 key={`term-${i}`}
                 type="button"
                 aria-label={`término: ${pair.term}`}
-                aria-pressed={isSelected || isMatched}
-                disabled={submitted || isMatched}
+                aria-pressed={isSelected || isInPair}
+                disabled={submitted}
                 onClick={() => onTermClick(i)}
-                className={`w-full rounded-xl ${depth.border} px-4 py-4 text-center text-base font-bold transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
-                  submitted || isMatched
+                className={`relative w-full rounded-xl ${depth.border} px-4 py-4 text-center text-base font-bold transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
+                  submitted
                     ? 'cursor-default'
                     : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
                 } ${classForTerm(i)}`}
               >
+                {badge !== null && (
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-extrabold opacity-70">
+                    {badge}
+                  </span>
+                )}
                 {pair.term}
               </button>
             );
@@ -2017,23 +2049,29 @@ function TapMatchStep({
 
         {/* Defs column (shuffled) */}
         <div className="space-y-3">
-          {defOrder.map((pairIdx, defIdx) => {
-            const isMatched = attempt.matched.includes(pairIdx);
-            const isSelected = attempt.selectedDef === defIdx;
+          {defOrder.map((pairIdx, displayDefIdx) => {
+            const badge = pairBadgeForDef(pairIdx);
+            const isInPair = badge !== null;
+            const isSelected = attempt.selectedDef === displayDefIdx;
             return (
               <button
-                key={`def-${defIdx}`}
+                key={`def-${displayDefIdx}`}
                 type="button"
                 aria-label={`definición: ${step.pairs[pairIdx].def}`}
-                aria-pressed={isSelected || isMatched}
-                disabled={submitted || isMatched}
-                onClick={() => onDefClick(defIdx)}
-                className={`w-full rounded-xl ${depth.border} px-4 py-4 text-left text-sm md:text-base font-medium transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
-                  submitted || isMatched
+                aria-pressed={isSelected || isInPair}
+                disabled={submitted}
+                onClick={() => onDefClick(displayDefIdx)}
+                className={`relative w-full rounded-xl ${depth.border} px-4 py-4 text-left text-sm md:text-base font-medium transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
+                  submitted
                     ? 'cursor-default'
                     : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
-                } ${classForDef(defIdx)}`}
+                } ${classForDef(displayDefIdx)}`}
               >
+                {badge !== null && (
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-extrabold opacity-70">
+                    {badge}
+                  </span>
+                )}
                 {step.pairs[pairIdx].def}
               </button>
             );
@@ -2043,14 +2081,9 @@ function TapMatchStep({
 
       {!submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
-          toca un término y luego su definición
+          forma los 4 pares, después toca comprobar
         </p>
       )}
-
-      {/* Live region for screen readers on wrong pair attempts */}
-      <div role="status" aria-live="polite" className="sr-only">
-        {wrongFlash ? 'emparejamiento incorrecto, intenta otra vez.' : ''}
-      </div>
 
       {submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
