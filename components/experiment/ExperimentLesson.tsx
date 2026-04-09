@@ -553,7 +553,7 @@ export default function ExperimentLesson() {
           </IconButton>
         </div>
         <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-          {streak >= 2 && <StreakBadge count={streak} />}
+          <StreakBadge count={streak} />
           <div
             className={`inline-flex items-center gap-2 h-[42px] px-4 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthBase} origin-center transition-transform duration-200 ${livesPulse ? 'scale-125' : 'scale-100'}`}
             aria-label={HAS_UNLIMITED_LIVES ? 'vidas ilimitadas' : `${lives} vidas`}
