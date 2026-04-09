@@ -540,9 +540,9 @@ export default function ExperimentLesson() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950">
-      {/* Top bar: exit + back/progress/forward + lives */}
-      <header className="relative px-4 py-4">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2">
+      {/* Top bar: single flex row, no absolute positioning — scales cleanly to mobile */}
+      <header className="px-4 py-4">
+        <div className="mx-auto max-w-5xl flex items-center gap-2 md:gap-3">
           <IconButton
             variant="outline"
             aria-label="Salir de la lección"
@@ -557,14 +557,49 @@ export default function ExperimentLesson() {
               />
             </svg>
           </IconButton>
-        </div>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+          <div className="flex-1 min-w-0 flex items-center gap-2 md:gap-3">
+            <div className="hidden md:block">
+              <IconButton
+                variant="outline"
+                aria-label="Etapa anterior"
+                onClick={handleBack}
+                disabled={index === 0}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </IconButton>
+            </div>
+            <SegmentedProgress total={STEPS.length} current={index} />
+            <div className="hidden md:block">
+              <IconButton
+                variant="outline"
+                aria-label="Etapa siguiente"
+                onClick={handleForward}
+                disabled={index >= maxVisited || ctaDisabled || needsCheck}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </IconButton>
+            </div>
+          </div>
           <StreakBadge count={streak} />
           <div
-            className={`inline-flex items-center gap-2 h-[42px] px-4 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthBase} origin-center transition-transform duration-200 ${livesPulse ? 'scale-125' : 'scale-100'}`}
+            className={`inline-flex items-center gap-2 h-[42px] px-3 md:px-4 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthBase} origin-center transition-transform duration-200 ${livesPulse ? 'scale-125' : 'scale-100'}`}
             aria-label={HAS_UNLIMITED_LIVES ? 'vidas ilimitadas' : `${lives} vidas`}
           >
-            <svg className="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+            <svg className="w-5 h-5 text-red-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 21s-7-4.5-9.5-9C.5 8 3 4 6.5 4c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3C21 4 23.5 8 21.5 12 19 16.5 12 21 12 21z" />
             </svg>
             {HAS_UNLIMITED_LIVES ? (
@@ -575,39 +610,6 @@ export default function ExperimentLesson() {
               <span className="text-sm font-bold tabular-nums">{lives}</span>
             )}
           </div>
-        </div>
-        <div className="mx-auto max-w-2xl flex items-center gap-3">
-          <IconButton
-            variant="outline"
-            aria-label="Etapa anterior"
-            onClick={handleBack}
-            disabled={index === 0}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </IconButton>
-          <SegmentedProgress total={STEPS.length} current={index} />
-          <IconButton
-            variant="outline"
-            aria-label="Etapa siguiente"
-            onClick={handleForward}
-            disabled={index >= maxVisited || ctaDisabled || needsCheck}
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </IconButton>
         </div>
       </header>
 
