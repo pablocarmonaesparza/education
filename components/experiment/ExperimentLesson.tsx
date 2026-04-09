@@ -2105,7 +2105,7 @@ function StreakBadge({ count }: { count: number }) {
       <span className="text-lg leading-none" aria-hidden="true">
         🔥
       </span>
-      <span className="text-sm font-bold tabular-nums">x{count}</span>
+      <span className="text-sm font-bold tabular-nums">{count}</span>
     </div>
   );
 }
