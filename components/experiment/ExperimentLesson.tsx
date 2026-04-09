@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
@@ -25,7 +26,7 @@ type TapMatchAttempt = {
 
 type Step =
   | { kind: 'concept'; title: string; body: string; image?: string }
-  | { kind: 'concept-visual'; title: string; body: string; visualLabel: string }
+  | { kind: 'concept-visual'; title: string; body: string }
   | { kind: 'celebration'; emoji: string; title: string; body: string }
   | {
       kind: 'mcq';
@@ -33,6 +34,7 @@ type Step =
       options: Option[];
       correctId: number;
       explanation: string;
+      xp?: number;
     }
   | {
       kind: 'multi-select';
@@ -40,6 +42,7 @@ type Step =
       options: Option[];
       correctIds: number[];
       explanation: string;
+      xp?: number;
     }
   | {
       kind: 'true-false';
@@ -47,6 +50,7 @@ type Step =
       statement: string;
       answer: boolean;
       explanation: string;
+      xp?: number;
     }
   | {
       kind: 'fill-blank';
@@ -56,6 +60,7 @@ type Step =
       tokens: string[];
       correctTokenIndex: number;
       explanation: string;
+      xp?: number;
     }
   | {
       kind: 'code-completion';
@@ -65,6 +70,7 @@ type Step =
       tokens: string[];
       correctTokenIndex: number;
       explanation: string;
+      xp?: number;
     }
   | {
       kind: 'build-prompt';
@@ -72,6 +78,7 @@ type Step =
       tokens: string[];
       correctOrder: number[];
       explanation: string;
+      xp?: number;
     }
   | {
       kind: 'order-steps';
@@ -79,19 +86,27 @@ type Step =
       steps: string[];
       correctOrder: number[];
       explanation: string;
+      xp?: number;
     }
   | {
       kind: 'tap-match';
       prompt: string;
       pairs: { term: string; def: string }[];
       explanation: string;
+      xp?: number;
     }
   | {
       kind: 'ai-prompt';
       prompt: string;
       instructions: string;
       placeholder: string;
+      xp?: number;
     };
+
+function getStepXp(step: Step, fallback = 10): number {
+  if ('xp' in step && typeof step.xp === 'number') return step.xp;
+  return fallback;
+}
 
 /* ─── helpers ─── */
 
@@ -254,6 +269,7 @@ const STEPS: Step[] = [
     correctId: 2,
     explanation:
       'RAG = Retrieval-Augmented Generation: el modelo queda atado a información concreta.',
+    xp: 10,
   },
   {
     kind: 'fill-blank',
@@ -263,12 +279,12 @@ const STEPS: Step[] = [
     tokens: ['inventa', 'recupera', 'ignora', 'traduce'],
     correctTokenIndex: 1,
     explanation: 'Recuperar (retrieval) es el paso R de RAG.',
+    xp: 10,
   },
   {
     kind: 'concept-visual',
     title: 'el flujo básico',
     body: 'El usuario pregunta, el agente busca en una base de conocimiento y responde citando lo que encontró.',
-    visualLabel: 'diagrama del flujo RAG',
   },
   {
     kind: 'true-false',
@@ -278,6 +294,7 @@ const STEPS: Step[] = [
     answer: false,
     explanation:
       'Falso: mayor temperatura aumenta la variabilidad y tiende a fabricar más, no menos.',
+    xp: 10,
   },
   {
     kind: 'multi-select',
@@ -291,6 +308,7 @@ const STEPS: Step[] = [
     correctIds: [2, 3],
     explanation:
       'Citas + permiso para declarar ausencia de evidencia son las dos palancas más fuertes.',
+    xp: 20,
   },
   {
     kind: 'tap-match',
@@ -303,12 +321,13 @@ const STEPS: Step[] = [
     ],
     explanation:
       'Las tres letras de RAG más grounding resumen toda la arquitectura del agente.',
+    xp: 25,
   },
   {
     kind: 'celebration',
     emoji: '🎉',
-    title: '¡vas por buen camino!',
-    body: 'Ya dominas los conceptos base. Sigamos con la parte práctica.',
+    title: 'conquistaste los conceptos de RAG',
+    body: 'Retrieval, augmentation, generation y grounding ya son parte de tu vocabulario.',
   },
   {
     kind: 'order-steps',
@@ -322,6 +341,7 @@ const STEPS: Step[] = [
     correctOrder: [1, 2, 3, 0],
     explanation:
       'Primero la pregunta, luego retrieval, luego contexto al modelo, luego generación con citas.',
+    xp: 20,
   },
   {
     kind: 'concept',
@@ -338,6 +358,7 @@ const STEPS: Step[] = [
     correctTokenIndex: 1,
     explanation:
       'En RAG, el contexto recuperado se inyecta al modelo bajo la clave "context".',
+    xp: 25,
   },
   {
     kind: 'build-prompt',
@@ -350,6 +371,13 @@ const STEPS: Step[] = [
     ],
     correctOrder: [1, 2, 3, 0],
     explanation: 'Rol → condición → fallback → requisito de citas.',
+    xp: 20,
+  },
+  {
+    kind: 'celebration',
+    emoji: '🚀',
+    title: 'ahora viene la parte divertida',
+    body: 'Ya dominas las piezas. Es hora de que escribas tu propio prompt de sistema.',
   },
   {
     kind: 'ai-prompt',
@@ -357,6 +385,7 @@ const STEPS: Step[] = [
     instructions:
       'Escribe un prompt de sistema para un asistente RAG que responda solo con base en la información recuperada y cite sus fuentes.',
     placeholder: 'Eres un asistente que...',
+    xp: 50,
   },
 ];
 
@@ -376,6 +405,17 @@ export default function ExperimentLesson() {
   const [streak, setStreak] = useState(0);
   const [ctaBounce, setCtaBounce] = useState(false);
   const [firstSubmitted, setFirstSubmitted] = useState<Set<number>>(() => new Set());
+  const [xp, setXp] = useState(0);
+  const [xpDelta, setXpDelta] = useState<{ gain: number; id: number } | null>(null);
+
+  const totalXp = useMemo(
+    () =>
+      STEPS.reduce(
+        (acc, s) => (isScoreable(s) ? acc + getStepXp(s) : acc),
+        0,
+      ),
+    [],
+  );
 
   useEffect(() => {
     if (!livesPulse) return;
@@ -392,6 +432,12 @@ export default function ExperimentLesson() {
     const t = setTimeout(() => setCtaBounce(false), 400);
     return () => clearTimeout(t);
   }, [ctaBounce]);
+
+  useEffect(() => {
+    if (xpDelta === null) return;
+    const t = setTimeout(() => setXpDelta(null), 900);
+    return () => clearTimeout(t);
+  }, [xpDelta?.id]);
 
   const step = STEPS[index];
   const isLast = index === STEPS.length - 1;
@@ -431,6 +477,8 @@ export default function ExperimentLesson() {
     setScoredSteps(new Set());
     setFirstSubmitted(new Set());
     setStreak(0);
+    setXp(0);
+    setXpDelta(null);
     setShowResult(false);
   };
 
@@ -448,8 +496,14 @@ export default function ExperimentLesson() {
         const correct = isAttemptCorrect(step, attempt);
         setFirstSubmitted((s) => new Set(s).add(index));
         if (correct) {
-          setStreak((s) => s + 1);
+          const newStreak = streak + 1;
+          setStreak(newStreak);
           setCtaBounce(true);
+          const base = getStepXp(step);
+          const streakBonus = newStreak >= 3 ? 5 : 0;
+          const gain = base + streakBonus;
+          setXp((x) => x + gain);
+          setXpDelta((prev) => ({ gain, id: (prev?.id ?? 0) + 1 }));
         } else {
           setStreak(0);
           if (!HAS_UNLIMITED_LIVES) {
@@ -473,9 +527,9 @@ export default function ExperimentLesson() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950">
-      {/* Top bar: exit + back + segmented progress + forward + lives */}
+      {/* Top bar: exit + back + segmented progress + forward + lives + XP bar */}
       <header className="relative px-4 py-4">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2">
+        <div className="absolute left-4 top-4">
           <IconButton
             variant="outline"
             aria-label="Salir de la lección"
@@ -524,7 +578,7 @@ export default function ExperimentLesson() {
             </svg>
           </IconButton>
         </div>
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+        <div className="absolute right-4 top-4 flex items-center gap-2">
           {streak >= 2 && <StreakBadge count={streak} />}
           <div
             className={`inline-flex items-center gap-2 h-[42px] px-4 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthBase} origin-center transition-transform duration-200 ${livesPulse ? 'scale-125' : 'scale-100'}`}
@@ -542,6 +596,10 @@ export default function ExperimentLesson() {
             )}
           </div>
         </div>
+        {/* XP bar — second row in header, spanning the same max-w-2xl */}
+        <div className="mx-auto max-w-2xl mt-3">
+          <XpBar xp={xp} total={totalXp} delta={xpDelta} />
+        </div>
       </header>
 
       {/* Content */}
@@ -551,17 +609,23 @@ export default function ExperimentLesson() {
             <ConceptStep title={step.title} body={step.body} image={step.image} />
           )}
           {step.kind === 'concept-visual' && (
-            <ConceptVisualStep
-              title={step.title}
-              body={step.body}
-              visualLabel={step.visualLabel}
-            />
+            <ConceptVisualStep title={step.title} body={step.body} />
           )}
           {step.kind === 'celebration' && (
             <CelebrationStep
               emoji={step.emoji}
               title={step.title}
               body={step.body}
+              streak={streak}
+              xpGained={xp}
+              correctSoFar={(() => {
+                let n = 0;
+                for (let i = 0; i < index; i++) {
+                  if (isScoreable(STEPS[i]) && firstSubmitted.has(i) && !scoredSteps.has(i)) n++;
+                }
+                return n;
+              })()}
+              totalSoFar={STEPS.slice(0, index).filter(isScoreable).length}
             />
           )}
           {step.kind === 'mcq' && (
@@ -851,23 +915,103 @@ function ConceptStep({
 function ConceptVisualStep({
   title,
   body,
-  visualLabel,
 }: {
   title: string;
   body: string;
-  visualLabel: string;
 }) {
+  // 4 boxes + 3 arrows, left-to-right. Box width 120, height 70, gaps 40.
+  const boxes = [
+    { label: 'usuario', icon: '❓', x: 10 },
+    { label: 'retrieval', icon: '🔍', x: 170 },
+    { label: 'contexto', icon: '📄', x: 330 },
+    { label: 'respuesta', icon: '🤖', x: 490 },
+  ];
+  const boxW = 100;
+  const boxH = 70;
+  const boxY = 40;
+
   return (
     <div className="space-y-6">
       <Title className="!text-2xl md:!text-3xl text-center">{title}</Title>
-      <Card
-        variant="neutral"
-        padding="lg"
-        className="aspect-[16/9] flex items-center justify-center"
-      >
-        <p className="text-xs font-bold uppercase tracking-wider text-[#777777] dark:text-gray-400">
-          {visualLabel}
-        </p>
+      <Card variant="neutral" padding="lg">
+        <svg
+          viewBox="0 0 600 150"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-full h-auto"
+          role="img"
+          aria-label="Diagrama del flujo RAG: usuario, retrieval, contexto, respuesta"
+        >
+          <defs>
+            <marker
+              id="rag-arrow"
+              viewBox="0 0 10 10"
+              refX="8"
+              refY="5"
+              markerWidth="6"
+              markerHeight="6"
+              orient="auto-start-reverse"
+            >
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#aeb3bb" />
+            </marker>
+          </defs>
+          {boxes.map((b, i) => {
+            const delay = i * 0.15;
+            const arrowDelay = delay + 0.1;
+            return (
+              <g key={b.label}>
+                <motion.g
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay, duration: 0.3 }}
+                >
+                  <rect
+                    x={b.x}
+                    y={boxY}
+                    width={boxW}
+                    height={boxH}
+                    rx={12}
+                    ry={12}
+                    fill="white"
+                    stroke="#1472FF"
+                    strokeWidth={2}
+                  />
+                  <text
+                    x={b.x + boxW / 2}
+                    y={boxY + 32}
+                    textAnchor="middle"
+                    fontSize="22"
+                  >
+                    {b.icon}
+                  </text>
+                  <text
+                    x={b.x + boxW / 2}
+                    y={boxY + 55}
+                    textAnchor="middle"
+                    fontSize="12"
+                    fontWeight="700"
+                    fill="#4b4b4b"
+                  >
+                    {b.label}
+                  </text>
+                </motion.g>
+                {i < boxes.length - 1 && (
+                  <motion.line
+                    x1={b.x + boxW + 4}
+                    y1={boxY + boxH / 2}
+                    x2={boxes[i + 1].x - 6}
+                    y2={boxY + boxH / 2}
+                    stroke="#aeb3bb"
+                    strokeWidth={2}
+                    markerEnd="url(#rag-arrow)"
+                    initial={{ opacity: 0, pathLength: 0 }}
+                    animate={{ opacity: 1, pathLength: 1 }}
+                    transition={{ delay: arrowDelay, duration: 0.3 }}
+                  />
+                )}
+              </g>
+            );
+          })}
+        </svg>
       </Card>
       <Body className="text-center text-[#777777] dark:text-gray-400">{body}</Body>
     </div>
@@ -1411,18 +1555,106 @@ function CelebrationStep({
   emoji,
   title,
   body,
+  correctSoFar,
+  totalSoFar,
+  streak,
+  xpGained,
 }: {
   emoji: string;
   title: string;
   body: string;
+  correctSoFar: number;
+  totalSoFar: number;
+  streak: number;
+  xpGained: number;
 }) {
   return (
-    <div className="text-center space-y-6">
-      <div className="text-8xl md:text-9xl leading-none" aria-hidden="true">
+    <div className="text-center space-y-6 relative">
+      <ConfettiEffect count={60} pattern="radial" shape="circle" />
+      <motion.div
+        className="text-8xl md:text-9xl leading-none"
+        aria-hidden="true"
+        initial={{ scale: 0.3, opacity: 0 }}
+        animate={{ scale: [0.3, 1.15, 1], opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
         {emoji}
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25, duration: 0.35 }}
+      >
+        <Title className="!text-3xl md:!text-4xl">{title}</Title>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.45, duration: 0.3 }}
+        className="flex flex-wrap justify-center gap-3"
+      >
+        <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
+          ✓ {correctSoFar}/{totalSoFar}
+        </span>
+        <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
+          🔥 x{streak}
+        </span>
+        <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
+          +{xpGained} XP
+        </span>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6, duration: 0.35 }}
+      >
+        <Body className="!text-lg text-[#777777] dark:text-gray-400">{body}</Body>
+      </motion.div>
+    </div>
+  );
+}
+
+/* ─── XP bar ─── */
+
+function XpBar({
+  xp,
+  total,
+  delta,
+}: {
+  xp: number;
+  total: number;
+  delta: { gain: number; id: number } | null;
+}) {
+  const pct = total === 0 ? 0 : Math.min(100, (xp / total) * 100);
+  return (
+    <div className="relative">
+      <div className="h-2 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
+        <motion.div
+          className="h-full rounded-full bg-[#1472FF]"
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+        />
       </div>
-      <Title className="!text-3xl md:!text-4xl">{title}</Title>
-      <Body className="!text-lg text-[#777777] dark:text-gray-400">{body}</Body>
+      <div className="mt-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-[#777777] dark:text-gray-400">
+        <span>xp</span>
+        <span className="tabular-nums">
+          {xp} / {total}
+        </span>
+      </div>
+      <AnimatePresence>
+        {delta !== null && (
+          <motion.span
+            key={`xp-delta-${delta.id}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: [0, 1, 1, 0], y: -24 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.9, ease: 'easeOut' }}
+            className="absolute right-0 -top-3 text-sm font-extrabold text-[#22c55e]"
+          >
+            +{delta.gain} XP
+          </motion.span>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
