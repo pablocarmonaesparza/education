@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   AnimatePresence,
   animate,
@@ -2013,42 +2013,86 @@ function TapMatchStep({
     onChange({ ...attempt, selectedDef: displayDefIdx });
   };
 
-  // Color-coded pairs: each pair index gets a unique border shade.
-  // No number badges — the matching color links term ↔ definition.
-  const PAIR_COLORS = ['#1472FF', '#269DFF', '#0A3877', '#052147'];
-
-  const styleForItem = (
-    pairIdx: number,
-    isCorrect?: boolean,
-  ): React.CSSProperties => {
-    if (pairIdx < 0) return { ['--depth-color' as string]: '#e5e7eb' };
-    if (isCorrect === true)
-      return {
-        ['--depth-color' as string]: '#16a34a',
-        borderColor: '#16a34a',
-      };
-    if (isCorrect === false)
-      return {
-        ['--depth-color' as string]: '#b91c1c',
-        borderColor: '#b91c1c',
-      };
-    const color = PAIR_COLORS[pairIdx % PAIR_COLORS.length];
-    return { ['--depth-color' as string]: color, borderColor: color };
-  };
-
-  const classForItem = (
-    pairIdx: number,
+  // Class helpers — Tailwind-only, no inline styles.
+  const classForBtn = (
+    isPaired: boolean,
     isSelected: boolean,
     isCorrect?: boolean,
   ) => {
-    if (isCorrect === true) return 'bg-[#22c55e] text-white';
-    if (isCorrect === false) return 'bg-red-500 text-white';
-    if (pairIdx >= 0)
-      return 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200';
+    if (isCorrect === true)
+      return '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] text-white';
+    if (isCorrect === false)
+      return '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
+    if (isPaired)
+      return '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200';
     if (isSelected)
-      return 'border-[#1472FF] [--depth-color:#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
-    return 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+      return '[--depth-color:#1472FF] border-[#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
+    return '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
   };
+
+  // --- Arrow geometry ---
+  // We measure positions off the grid container via a ref.
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [arrows, setArrows] = useState<
+    { x1: number; y1: number; x2: number; y2: number; correct?: boolean }[]
+  >([]);
+
+  const computeArrows = useCallback(() => {
+    const grid = gridRef.current;
+    if (!grid || attempt.pairs.length === 0) {
+      setArrows([]);
+      return;
+    }
+    const gridRect = grid.getBoundingClientRect();
+    const btns = grid.querySelectorAll<HTMLElement>('[data-match-role]');
+    // Map termIdx → element, defDisplayIdx → element
+    const termEls = new Map<number, HTMLElement>();
+    const defEls = new Map<number, HTMLElement>();
+    btns.forEach((el) => {
+      const role = el.dataset.matchRole;
+      const idx = Number(el.dataset.matchIdx);
+      if (role === 'term') termEls.set(idx, el);
+      else defEls.set(idx, el);
+    });
+
+    const newArrows = attempt.pairs.map((p) => {
+      const termEl = termEls.get(p.termIdx);
+      // Find which displayDefIdx corresponds to defIdx = p.defIdx
+      const displayIdx = defOrder.indexOf(p.defIdx);
+      const defEl = defEls.get(displayIdx);
+      if (!termEl || !defEl)
+        return { x1: 0, y1: 0, x2: 0, y2: 0 };
+      const tRect = termEl.getBoundingClientRect();
+      const dRect = defEl.getBoundingClientRect();
+      const correct = submitted ? p.termIdx === p.defIdx : undefined;
+      return {
+        x1: tRect.right - gridRect.left,
+        y1: tRect.top + tRect.height / 2 - gridRect.top,
+        x2: dRect.left - gridRect.left,
+        y2: dRect.top + dRect.height / 2 - gridRect.top,
+        correct,
+      };
+    });
+    setArrows(newArrows);
+  }, [attempt.pairs, defOrder, submitted]);
+
+  useEffect(() => {
+    computeArrows();
+  }, [computeArrows]);
+
+  // Recompute on resize
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    const ro = new ResizeObserver(() => computeArrows());
+    ro.observe(grid);
+    return () => ro.disconnect();
+  }, [computeArrows]);
+
+  const hasPairs = attempt.pairs.length > 0;
+  const hasSelection =
+    attempt.selectedTerm !== null || attempt.selectedDef !== null;
+  const showDivider = !hasPairs && !hasSelection;
 
   return (
     <div className="space-y-6">
@@ -2056,29 +2100,105 @@ function TapMatchStep({
         {step.prompt}
       </h3>
 
-      {/* Row-aligned grid: each row is [term | divider | def] so the i-th term
-          sits at the same vertical level as the i-th def slot. */}
       <div className="relative">
-        {/* Central vertical divider */}
+        {/* Central vertical divider — fades out once user starts pairing */}
         <div
           aria-hidden="true"
-          className="absolute top-0 bottom-0 left-1/2 w-px bg-gray-200 dark:bg-gray-800 -translate-x-1/2 pointer-events-none"
+          className={`absolute top-0 bottom-0 left-[38%] w-px bg-gray-200 dark:bg-gray-800 pointer-events-none transition-opacity duration-300 ${showDivider ? 'opacity-100' : 'opacity-0'}`}
         />
-        <div className="grid grid-cols-2 gap-x-6 gap-y-3 items-stretch auto-rows-fr">
+
+        {/* Arrow overlay SVG */}
+        {arrows.length > 0 && (
+          <svg
+            aria-hidden="true"
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            style={{ zIndex: 1 }}
+          >
+            <defs>
+              <marker
+                id="match-arrow"
+                viewBox="0 0 10 10"
+                refX="8"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#aeb3bb" />
+              </marker>
+              <marker
+                id="match-arrow-green"
+                viewBox="0 0 10 10"
+                refX="8"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a" />
+              </marker>
+              <marker
+                id="match-arrow-red"
+                viewBox="0 0 10 10"
+                refX="8"
+                refY="5"
+                markerWidth="6"
+                markerHeight="6"
+                orient="auto-start-reverse"
+              >
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c" />
+              </marker>
+            </defs>
+            {arrows.map((a, idx) => {
+              const color =
+                a.correct === true
+                  ? '#16a34a'
+                  : a.correct === false
+                    ? '#b91c1c'
+                    : '#aeb3bb';
+              const marker =
+                a.correct === true
+                  ? 'url(#match-arrow-green)'
+                  : a.correct === false
+                    ? 'url(#match-arrow-red)'
+                    : 'url(#match-arrow)';
+              return (
+                <line
+                  key={idx}
+                  x1={a.x1 + 4}
+                  y1={a.y1}
+                  x2={a.x2 - 4}
+                  y2={a.y2}
+                  stroke={color}
+                  strokeWidth={2}
+                  markerEnd={marker}
+                />
+              );
+            })}
+          </svg>
+        )}
+
+        {/* Grid: 40% terms | 60% definitions */}
+        <div
+          ref={gridRef}
+          className="grid grid-cols-[2fr_3fr] gap-x-8 gap-y-3 items-stretch auto-rows-fr"
+        >
           {step.pairs.map((pair, i) => {
             const displayDefIdx = i;
             const defOrigIdx = defOrder[displayDefIdx];
 
             const termPairIdx = findPairByTerm(i);
             const defPairIdx = findPairByDef(defOrigIdx);
+            const termIsPaired = termPairIdx >= 0;
+            const defIsPaired = defPairIdx >= 0;
 
             const termCorrect =
-              submitted && termPairIdx >= 0
+              submitted && termIsPaired
                 ? attempt.pairs[termPairIdx].termIdx ===
                   attempt.pairs[termPairIdx].defIdx
                 : undefined;
             const defCorrect =
-              submitted && defPairIdx >= 0
+              submitted && defIsPaired
                 ? attempt.pairs[defPairIdx].termIdx ===
                   attempt.pairs[defPairIdx].defIdx
                 : undefined;
@@ -2087,37 +2207,38 @@ function TapMatchStep({
               <Fragment key={`row-${i}`}>
                 <button
                   type="button"
+                  data-match-role="term"
+                  data-match-idx={i}
                   aria-label={`término: ${pair.term}`}
                   aria-pressed={
-                    attempt.selectedTerm === i || termPairIdx >= 0
+                    attempt.selectedTerm === i || termIsPaired
                   }
                   disabled={submitted}
                   onClick={() => onTermClick(i)}
-                  style={styleForItem(termPairIdx, termCorrect)}
-                  className={`w-full h-full min-h-[4.5rem] rounded-xl ${depth.border} px-4 py-4 text-center text-base font-bold flex items-center justify-center transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
+                  className={`w-full h-full min-h-[3.5rem] rounded-xl ${depth.border} px-3 py-3 text-center text-sm md:text-base font-bold flex items-center justify-center transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
                     submitted
                       ? 'cursor-default'
                       : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
-                  } ${classForItem(termPairIdx, attempt.selectedTerm === i, termCorrect)}`}
+                  } ${classForBtn(termIsPaired, attempt.selectedTerm === i, termCorrect)}`}
                 >
                   {pair.term}
                 </button>
 
                 <button
                   type="button"
+                  data-match-role="def"
+                  data-match-idx={displayDefIdx}
                   aria-label={`definición: ${step.pairs[defOrigIdx].def}`}
                   aria-pressed={
-                    attempt.selectedDef === displayDefIdx ||
-                    defPairIdx >= 0
+                    attempt.selectedDef === displayDefIdx || defIsPaired
                   }
                   disabled={submitted}
                   onClick={() => onDefClick(displayDefIdx)}
-                  style={styleForItem(defPairIdx, defCorrect)}
-                  className={`w-full h-full min-h-[4.5rem] rounded-xl ${depth.border} px-4 py-4 text-center text-sm md:text-base font-medium flex items-center justify-center transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
+                  className={`w-full h-full min-h-[3.5rem] rounded-xl ${depth.border} px-4 py-3 text-center text-sm md:text-base font-medium flex items-center justify-center transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
                     submitted
                       ? 'cursor-default'
                       : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
-                  } ${classForItem(defPairIdx, attempt.selectedDef === displayDefIdx, defCorrect)}`}
+                  } ${classForBtn(defIsPaired, attempt.selectedDef === displayDefIdx, defCorrect)}`}
                 >
                   <span className="leading-snug">
                     {step.pairs[defOrigIdx].def}
@@ -2141,36 +2262,6 @@ function TapMatchStep({
         </p>
       )}
     </div>
-  );
-}
-
-/* ─── pair badge (tap-match) ─── */
-
-function PairBadge({
-  count,
-  position,
-  state,
-}: {
-  count: number;
-  position: 'left' | 'right';
-  state: 'paired' | 'correct' | 'wrong';
-}) {
-  // Solid circle that "points" toward the divider between the two columns.
-  // paired state is on white cards → blue circle + white number.
-  // correct/wrong states are on colored cards → white circle + colored number.
-  const styles =
-    state === 'paired'
-      ? 'bg-[#1472FF] text-white'
-      : state === 'correct'
-        ? 'bg-white text-[#16a34a]'
-        : 'bg-white text-[#b91c1c]';
-  return (
-    <span
-      aria-hidden="true"
-      className={`absolute ${position === 'left' ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center text-sm font-extrabold shadow-sm ${styles}`}
-    >
-      {count}
-    </span>
   );
 }
 
