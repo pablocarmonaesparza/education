@@ -2024,7 +2024,7 @@ function TapMatchStep({
     if (isCorrect === false)
       return '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
     if (isPaired)
-      return '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200';
+      return '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-600 text-[#4b4b4b] dark:text-gray-200';
     if (isSelected)
       return '[--depth-color:#1472FF] border-[#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
     return '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
@@ -2119,41 +2119,6 @@ function TapMatchStep({
             className="absolute inset-0 w-full h-full pointer-events-none"
             style={{ zIndex: 1 }}
           >
-            <defs>
-              <marker
-                id="match-arrow"
-                viewBox="0 0 10 10"
-                refX="8"
-                refY="5"
-                markerWidth="6"
-                markerHeight="6"
-                orient="auto-start-reverse"
-              >
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#aeb3bb" />
-              </marker>
-              <marker
-                id="match-arrow-green"
-                viewBox="0 0 10 10"
-                refX="8"
-                refY="5"
-                markerWidth="6"
-                markerHeight="6"
-                orient="auto-start-reverse"
-              >
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a" />
-              </marker>
-              <marker
-                id="match-arrow-red"
-                viewBox="0 0 10 10"
-                refX="8"
-                refY="5"
-                markerWidth="6"
-                markerHeight="6"
-                orient="auto-start-reverse"
-              >
-                <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c" />
-              </marker>
-            </defs>
             {arrows.map((a, idx) => {
               const color =
                 a.correct === true
@@ -2161,12 +2126,6 @@ function TapMatchStep({
                   : a.correct === false
                     ? '#b91c1c'
                     : '#aeb3bb';
-              const marker =
-                a.correct === true
-                  ? 'url(#match-arrow-green)'
-                  : a.correct === false
-                    ? 'url(#match-arrow-red)'
-                    : 'url(#match-arrow)';
               return (
                 <line
                   key={idx}
@@ -2176,7 +2135,6 @@ function TapMatchStep({
                   y2={a.y2}
                   stroke={color}
                   strokeWidth={2}
-                  markerEnd={marker}
                 />
               );
             })}
