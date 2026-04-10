@@ -1534,7 +1534,6 @@ function AiPromptStep({
       </p>
 
       <Textarea
-        variant="flat"
         value={attempt}
         onChange={(e) => onChange(e.target.value)}
         placeholder={step.placeholder}
