@@ -1533,14 +1533,21 @@ function AiPromptStep({
         {step.instructions}
       </p>
 
-      <Textarea
-        value={attempt}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={step.placeholder}
-        rows={6}
-        disabled={submitted}
-        className="focus:border-gray-300 focus:ring-0 dark:focus:border-gray-900"
-      />
+      <div className="relative w-full bg-white dark:bg-gray-800 rounded-2xl border-2 transition-all duration-300 border-gray-300 dark:border-gray-900">
+        <textarea
+          value={attempt}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={step.placeholder}
+          rows={6}
+          disabled={submitted}
+          className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 pt-4 pb-2"
+        />
+        <div className="px-4 pb-2 flex justify-end">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+            {attempt.length}/500
+          </p>
+        </div>
+      </div>
 
       {analysis && (
         <div
