@@ -261,6 +261,9 @@ function analyzePrompt(text: string): { score: number; feedback: string } {
 // Usuarios pagados / owners no pierden vidas ni ven el modal.
 const HAS_UNLIMITED_LIVES = true;
 
+// Mock: racha de días consecutivos usando la app (vendría del backend).
+const DAILY_STREAK = 5;
+
 /* ─── lesson data ─── */
 
 const STEPS: Step[] = [
@@ -594,7 +597,7 @@ export default function ExperimentLesson() {
               </IconButton>
             </div>
           </div>
-          <StreakBadge count={streak} />
+          <StreakBadge count={DAILY_STREAK} />
           <div
             className={`inline-flex items-center gap-2 h-[42px] px-3 md:px-4 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthBase} origin-center transition-transform duration-200 ${livesPulse ? 'scale-125' : 'scale-100'}`}
             aria-label={HAS_UNLIMITED_LIVES ? 'vidas ilimitadas' : `${lives} vidas`}
@@ -1621,7 +1624,7 @@ function CelebrationStep({
           ✓ {correctSoFar}/{totalSoFar}
         </span>
         <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
-          🔥 x{streak}
+          🔥 {DAILY_STREAK} días
         </span>
         <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
           +{xpGained} XP
@@ -2207,7 +2210,7 @@ function StreakBadge({ count }: { count: number }) {
   return (
     <div
       className={`inline-flex items-center gap-2 h-[42px] px-4 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthBase}`}
-      aria-label={`racha de ${count} aciertos seguidos`}
+      aria-label={`racha de ${count} días`}
     >
       <span className="text-lg leading-none" aria-hidden="true">
         🔥
