@@ -2013,58 +2013,41 @@ function TapMatchStep({
     onChange({ ...attempt, selectedDef: displayDefIdx });
   };
 
-  // Color cluster: each user pair gets a stable index → matching number for visual link.
-  // After submit, correct pairs go green, wrong pairs go red.
-  const pairBadgeForTerm = (termIdx: number): number | null => {
-    const i = findPairByTerm(termIdx);
-    return i >= 0 ? i + 1 : null;
-  };
-  const pairBadgeForDef = (defOriginal: number): number | null => {
-    const i = findPairByDef(defOriginal);
-    return i >= 0 ? i + 1 : null;
-  };
+  // Color-coded pairs: each pair index gets a unique border shade.
+  // No number badges — the matching color links term ↔ definition.
+  const PAIR_COLORS = ['#1472FF', '#269DFF', '#0A3877', '#052147'];
 
-  const classForTerm = (termIdx: number) => {
-    const pairIdx = findPairByTerm(termIdx);
-    const isInPair = pairIdx >= 0;
-    const isSelected = attempt.selectedTerm === termIdx;
-
-    if (submitted && isInPair) {
-      const pair = attempt.pairs[pairIdx];
-      const correct = pair.termIdx === pair.defIdx;
-      return correct
-        ? '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] text-white'
-        : '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
-    }
-    if (isInPair) {
-      return '[--depth-color:#1472FF] border-[#1472FF] bg-white dark:bg-gray-800 text-[#1472FF]';
-    }
-    if (isSelected) {
-      return '[--depth-color:#1472FF] border-[#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
-    }
-    return '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+  const styleForItem = (
+    pairIdx: number,
+    isCorrect?: boolean,
+  ): React.CSSProperties => {
+    if (pairIdx < 0) return { ['--depth-color' as string]: '#e5e7eb' };
+    if (isCorrect === true)
+      return {
+        ['--depth-color' as string]: '#16a34a',
+        borderColor: '#16a34a',
+      };
+    if (isCorrect === false)
+      return {
+        ['--depth-color' as string]: '#b91c1c',
+        borderColor: '#b91c1c',
+      };
+    const color = PAIR_COLORS[pairIdx % PAIR_COLORS.length];
+    return { ['--depth-color' as string]: color, borderColor: color };
   };
 
-  const classForDef = (displayDefIdx: number) => {
-    const defOriginal = defOrder[displayDefIdx];
-    const pairIdx = findPairByDef(defOriginal);
-    const isInPair = pairIdx >= 0;
-    const isSelected = attempt.selectedDef === displayDefIdx;
-
-    if (submitted && isInPair) {
-      const pair = attempt.pairs[pairIdx];
-      const correct = pair.termIdx === pair.defIdx;
-      return correct
-        ? '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] text-white'
-        : '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
-    }
-    if (isInPair) {
-      return '[--depth-color:#1472FF] border-[#1472FF] bg-white dark:bg-gray-800 text-[#1472FF]';
-    }
-    if (isSelected) {
-      return '[--depth-color:#1472FF] border-[#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
-    }
-    return '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+  const classForItem = (
+    pairIdx: number,
+    isSelected: boolean,
+    isCorrect?: boolean,
+  ) => {
+    if (isCorrect === true) return 'bg-[#22c55e] text-white';
+    if (isCorrect === false) return 'bg-red-500 text-white';
+    if (pairIdx >= 0)
+      return 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200';
+    if (isSelected)
+      return 'border-[#1472FF] [--depth-color:#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
+    return 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
   };
 
   return (
@@ -2083,75 +2066,62 @@ function TapMatchStep({
         />
         <div className="grid grid-cols-2 gap-x-6 gap-y-3 items-stretch auto-rows-fr">
           {step.pairs.map((pair, i) => {
-            const displayDefIdx = i; // row i → defOrder[i] def slot
-            const pairIdx = defOrder[displayDefIdx];
+            const displayDefIdx = i;
+            const defOrigIdx = defOrder[displayDefIdx];
 
-            const termBadge = pairBadgeForTerm(i);
-            const termIsInPair = termBadge !== null;
-            const termIsSelected = attempt.selectedTerm === i;
+            const termPairIdx = findPairByTerm(i);
+            const defPairIdx = findPairByDef(defOrigIdx);
 
-            const defBadge = pairBadgeForDef(pairIdx);
-            const defIsInPair = defBadge !== null;
-            const defIsSelected = attempt.selectedDef === displayDefIdx;
+            const termCorrect =
+              submitted && termPairIdx >= 0
+                ? attempt.pairs[termPairIdx].termIdx ===
+                  attempt.pairs[termPairIdx].defIdx
+                : undefined;
+            const defCorrect =
+              submitted && defPairIdx >= 0
+                ? attempt.pairs[defPairIdx].termIdx ===
+                  attempt.pairs[defPairIdx].defIdx
+                : undefined;
 
             return (
               <Fragment key={`row-${i}`}>
                 <button
                   type="button"
                   aria-label={`término: ${pair.term}`}
-                  aria-pressed={termIsSelected || termIsInPair}
+                  aria-pressed={
+                    attempt.selectedTerm === i || termPairIdx >= 0
+                  }
                   disabled={submitted}
                   onClick={() => onTermClick(i)}
-                  className={`relative w-full h-full min-h-[4.5rem] rounded-xl ${depth.border} px-4 py-4 text-center text-base font-bold flex items-center justify-center transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
+                  style={styleForItem(termPairIdx, termCorrect)}
+                  className={`w-full h-full min-h-[4.5rem] rounded-xl ${depth.border} px-4 py-4 text-center text-base font-bold flex items-center justify-center transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
                     submitted
                       ? 'cursor-default'
                       : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
-                  } ${classForTerm(i)}`}
+                  } ${classForItem(termPairIdx, attempt.selectedTerm === i, termCorrect)}`}
                 >
-                  {termBadge !== null && (
-                    <PairBadge
-                      count={termBadge}
-                      position="right"
-                      state={
-                        submitted
-                          ? attempt.pairs[findPairByTerm(i)].termIdx ===
-                            attempt.pairs[findPairByTerm(i)].defIdx
-                            ? 'correct'
-                            : 'wrong'
-                          : 'paired'
-                      }
-                    />
-                  )}
-                  <span>{pair.term}</span>
+                  {pair.term}
                 </button>
 
                 <button
                   type="button"
-                  aria-label={`definición: ${step.pairs[pairIdx].def}`}
-                  aria-pressed={defIsSelected || defIsInPair}
+                  aria-label={`definición: ${step.pairs[defOrigIdx].def}`}
+                  aria-pressed={
+                    attempt.selectedDef === displayDefIdx ||
+                    defPairIdx >= 0
+                  }
                   disabled={submitted}
                   onClick={() => onDefClick(displayDefIdx)}
-                  className={`relative w-full h-full min-h-[4.5rem] rounded-xl ${depth.border} px-4 py-4 text-center text-sm md:text-base font-medium flex items-center justify-center transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
+                  style={styleForItem(defPairIdx, defCorrect)}
+                  className={`w-full h-full min-h-[4.5rem] rounded-xl ${depth.border} px-4 py-4 text-center text-sm md:text-base font-medium flex items-center justify-center transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
                     submitted
                       ? 'cursor-default'
                       : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
-                  } ${classForDef(displayDefIdx)}`}
+                  } ${classForItem(defPairIdx, attempt.selectedDef === displayDefIdx, defCorrect)}`}
                 >
-                  {defBadge !== null && (
-                    <PairBadge
-                      count={defBadge}
-                      position="left"
-                      state={
-                        submitted
-                          ? attempt.pairs[findPairByDef(pairIdx)].termIdx ===
-                            attempt.pairs[findPairByDef(pairIdx)].defIdx
-                            ? 'correct'
-                            : 'wrong'
-                          : 'paired'
-                      }
-                    />
-                  )}
-                  <span className="leading-snug">{step.pairs[pairIdx].def}</span>
+                  <span className="leading-snug">
+                    {step.pairs[defOrigIdx].def}
+                  </span>
                 </button>
               </Fragment>
             );
