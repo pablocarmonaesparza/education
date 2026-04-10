@@ -2065,11 +2065,16 @@ function TapMatchStep({
       const tRect = termEl.getBoundingClientRect();
       const dRect = defEl.getBoundingClientRect();
       const correct = submitted ? p.termIdx === p.defIdx : undefined;
+      const y1Raw = tRect.top + tRect.height / 2 - gridRect.top;
+      const y2Raw = dRect.top + dRect.height / 2 - gridRect.top;
+      // Snap to horizontal when elements are in the same row (< 10px diff)
+      const snap = Math.abs(y1Raw - y2Raw) < 10;
+      const yMid = (y1Raw + y2Raw) / 2;
       return {
         x1: tRect.right - gridRect.left,
-        y1: tRect.top + tRect.height / 2 - gridRect.top,
+        y1: snap ? yMid : y1Raw,
         x2: dRect.left - gridRect.left,
-        y2: dRect.top + dRect.height / 2 - gridRect.top,
+        y2: snap ? yMid : y2Raw,
         correct,
       };
     });
@@ -2101,10 +2106,10 @@ function TapMatchStep({
       </h3>
 
       <div className="relative">
-        {/* Central vertical divider — fades out once user starts pairing */}
+        {/* Central vertical divider — centered in the 25% gap between the two columns */}
         <div
           aria-hidden="true"
-          className={`absolute top-0 bottom-0 left-[38%] w-px bg-gray-200 dark:bg-gray-800 pointer-events-none transition-opacity duration-300 ${showDivider ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute top-0 bottom-0 left-[37.5%] w-px bg-gray-200 dark:bg-gray-800 pointer-events-none transition-opacity duration-300 ${showDivider ? 'opacity-100' : 'opacity-0'}`}
         />
 
         {/* Arrow overlay SVG */}
@@ -2181,7 +2186,7 @@ function TapMatchStep({
         {/* Grid: 40% terms | 60% definitions */}
         <div
           ref={gridRef}
-          className="grid grid-cols-[2fr_3fr] gap-x-8 gap-y-3 items-stretch auto-rows-fr"
+          className="grid grid-cols-[25%_50%] justify-between gap-y-3 items-stretch auto-rows-fr"
         >
           {step.pairs.map((pair, i) => {
             const displayDefIdx = i;
