@@ -1539,6 +1539,7 @@ function AiPromptStep({
         placeholder={step.placeholder}
         rows={6}
         disabled={submitted}
+        className="focus:border-gray-300 focus:ring-0 dark:focus:border-gray-900"
       />
 
       {analysis && (
