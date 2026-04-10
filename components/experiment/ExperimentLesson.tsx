@@ -1805,8 +1805,8 @@ function TrueFalseStep({
         {step.statement}
       </h3>
       <div className="flex justify-center gap-4">
-        {renderOption(true, 'verdadero', '')}
-        {renderOption(false, 'falso', '')}
+        {renderOption(true, 'Verdadero')}
+        {renderOption(false, 'Falso')}
       </div>
       {submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
