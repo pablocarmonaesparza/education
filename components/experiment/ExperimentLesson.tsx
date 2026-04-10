@@ -2106,9 +2106,18 @@ function TapMatchStep({
                   } ${classForTerm(i)}`}
                 >
                   {termBadge !== null && (
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-extrabold opacity-70">
-                      {termBadge}
-                    </span>
+                    <PairBadge
+                      count={termBadge}
+                      position="right"
+                      state={
+                        submitted
+                          ? attempt.pairs[findPairByTerm(i)].termIdx ===
+                            attempt.pairs[findPairByTerm(i)].defIdx
+                            ? 'correct'
+                            : 'wrong'
+                          : 'paired'
+                      }
+                    />
                   )}
                   <span>{pair.term}</span>
                 </button>
@@ -2126,9 +2135,18 @@ function TapMatchStep({
                   } ${classForDef(displayDefIdx)}`}
                 >
                   {defBadge !== null && (
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-extrabold opacity-70">
-                      {defBadge}
-                    </span>
+                    <PairBadge
+                      count={defBadge}
+                      position="left"
+                      state={
+                        submitted
+                          ? attempt.pairs[findPairByDef(pairIdx)].termIdx ===
+                            attempt.pairs[findPairByDef(pairIdx)].defIdx
+                            ? 'correct'
+                            : 'wrong'
+                          : 'paired'
+                      }
+                    />
                   )}
                   <span className="leading-snug">{step.pairs[pairIdx].def}</span>
                 </button>
@@ -2150,6 +2168,36 @@ function TapMatchStep({
         </p>
       )}
     </div>
+  );
+}
+
+/* ─── pair badge (tap-match) ─── */
+
+function PairBadge({
+  count,
+  position,
+  state,
+}: {
+  count: number;
+  position: 'left' | 'right';
+  state: 'paired' | 'correct' | 'wrong';
+}) {
+  // Solid circle that "points" toward the divider between the two columns.
+  // paired state is on white cards → blue circle + white number.
+  // correct/wrong states are on colored cards → white circle + colored number.
+  const styles =
+    state === 'paired'
+      ? 'bg-[#1472FF] text-white'
+      : state === 'correct'
+        ? 'bg-white text-[#16a34a]'
+        : 'bg-white text-[#b91c1c]';
+  return (
+    <span
+      aria-hidden="true"
+      className={`absolute ${position === 'left' ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center text-sm font-extrabold shadow-sm ${styles}`}
+    >
+      {count}
+    </span>
   );
 }
 
