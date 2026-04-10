@@ -328,10 +328,10 @@ const STEPS: Step[] = [
     kind: 'tap-match',
     prompt: 'empareja cada concepto con su definición',
     pairs: [
-      { term: 'retrieval', def: 'buscar fragmentos relevantes en una base de datos.' },
-      { term: 'augmentation', def: 'inyectar ese contexto dentro del prompt.' },
-      { term: 'generation', def: 'producir la respuesta final con el modelo.' },
-      { term: 'grounding', def: 'atar la respuesta a la evidencia recuperada.' },
+      { term: 'Retrieval', def: 'Buscar fragmentos relevantes en una base de datos.' },
+      { term: 'Augmentation', def: 'Inyectar ese contexto dentro del prompt.' },
+      { term: 'Generation', def: 'Producir la respuesta final con el modelo.' },
+      { term: 'Grounding', def: 'Atar la respuesta a la evidencia recuperada.' },
     ],
     explanation:
       'Las tres letras de RAG más grounding resumen toda la arquitectura del agente.',
@@ -379,9 +379,9 @@ const STEPS: Step[] = [
     kind: 'build-prompt',
     prompt: 'arma un prompt de sistema',
     tokens: [
-      'cita las fuentes.',
-      'eres un asistente.',
-      'responde solo si',
+      'Cita las fuentes.',
+      'Eres un asistente.',
+      'Responde solo si',
       'hay evidencia recuperada.',
     ],
     correctOrder: [1, 2, 3, 0],
@@ -1229,7 +1229,7 @@ function MultiSelectStep({
 
       {!submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
-          elige las opciones correctas
+          Elige las opciones correctas.
         </p>
       )}
 
@@ -1413,7 +1413,7 @@ function TapSequenceStep({
       >
         {attempt.length === 0 ? (
           <p className="text-sm text-[#aeb3bb] text-center py-6">
-            toca cada pieza en el orden correcto
+            Toca cada pieza en el orden correcto.
           </p>
         ) : (
           <div className={poolLayout}>
@@ -2161,7 +2161,7 @@ function TapMatchStep({
 
       {!submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
-          forma los 4 pares, después toca comprobar
+          Forma los 4 pares, después toca comprobar.
         </p>
       )}
 
