@@ -1,5 +1,7 @@
 'use client';
 
+import { depthStructure, depthActiveGroup } from '@/lib/design-tokens';
+
 interface RetoItemProps {
   title: string;
   type: string;
@@ -29,12 +31,12 @@ export default function RetoItem({
 
   const getBorderClasses = () => {
     if (isCompleted) {
-      return 'border-2 border-b-4 border-[#16a34a] group-active:border-b-2 group-active:mt-[2px]';
+      return `${depthStructure} border-[#16a34a] ${depthActiveGroup}`;
     }
     if (isLocked) {
-      return 'border-2 border-b-4 border-gray-200 dark:border-gray-600 border-b-gray-300 dark:border-b-gray-600';
+      return `${depthStructure} border-gray-200 dark:border-gray-600 border-b-gray-300 dark:border-b-gray-600`;
     }
-    return 'border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 group-active:border-b-2 group-active:mt-[2px]';
+    return `${depthStructure} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthActiveGroup}`;
   };
 
   const getTextColor = () => {

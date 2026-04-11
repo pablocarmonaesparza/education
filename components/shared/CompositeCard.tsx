@@ -4,7 +4,7 @@ import { depthStructure } from '@/lib/design-tokens';
 
 /**
  * Caja compuesta: leading | content | trailing.
- * Misma depth que cards (border-2 border-b-4). Usar en selector de proyecto, etc.
+ * Misma depth que cards (via depthStructure token). Usar en selector de proyecto, etc.
  * Cambiar estilos aquí actualiza dashboard y /componentes.
  */
 export interface CompositeCardProps {
@@ -18,7 +18,7 @@ export interface CompositeCardProps {
 const cardBase =
   'relative rounded-2xl p-3 sm:p-4 ' +
   'bg-white dark:bg-gray-800 ' +
-  'border-2 border-gray-200 dark:border-gray-900 border-b-4 border-b-gray-300 dark:border-b-gray-900 ' +
+  'border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
   depthStructure;
 
 export default function CompositeCard({

@@ -1,5 +1,7 @@
 'use client';
 
+import { depthStructure, depthActiveGroup } from '@/lib/design-tokens';
+
 interface LessonItemProps {
   lessonNumber: number;
   totalLessons: number;
@@ -56,15 +58,14 @@ export default function LessonItem({
     return 'text-[#1472FF]';
   };
 
-  // Standard depth: border-2 + border-b-4 (canonical button style). Colors vary by state.
   const getBorderClasses = () => {
     if (isCompleted) {
-      return 'border-2 border-b-4 border-[#16a34a] group-active:border-b-2 group-active:mt-[2px]';
+      return `${depthStructure} border-[#16a34a] ${depthActiveGroup}`;
     }
     if (isCurrent) {
-      return 'border-2 border-b-4 border-[#0E5FCC] group-active:border-b-2 group-active:mt-[2px]';
+      return `${depthStructure} border-[#0E5FCC] ${depthActiveGroup}`;
     }
-    return 'border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 group-active:border-b-2 group-active:mt-[2px]';
+    return `${depthStructure} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthActiveGroup}`;
   };
 
   const handleExpandClick = (e: React.MouseEvent) => {
@@ -77,7 +78,7 @@ export default function LessonItem({
       onClick={onClick}
       className="group text-left transition-all duration-150"
     >
-      {/* Simplified card - standard depth (border-b-4) like canonical buttons */}
+      {/* Simplified card - standard depth via design tokens */}
       <div
         className={`w-[220px] rounded-2xl p-4 transition-all duration-150 ${getCardBg()} ${getBorderClasses()}`}
       >

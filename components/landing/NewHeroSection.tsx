@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef, useEffect } from "react";
 import AuthForm from "@/components/auth/AuthForm";
 import { Button } from "@/components/ui";
+import { depth } from '@/lib/design-tokens';
 
 const MIN_CHARACTERS = 100;
 const MAX_CHARACTERS = 1000;
@@ -186,11 +187,11 @@ export default function NewHeroSection() {
                         setIdea(option.description);
                         textareaRef.current?.focus();
                       }}
-                      className={`px-3 py-2 rounded-xl text-xs font-medium border-2 border-b-4 transition-all duration-150 flex items-center gap-1.5 max-md:py-2.5 max-md:min-h-[44px] max-md:touch-manipulation ${
+                      className={`px-3 py-2 rounded-xl text-xs font-medium ${depth.border} ${depth.bottom} transition-all duration-150 flex items-center gap-1.5 max-md:py-2.5 max-md:min-h-[44px] max-md:touch-manipulation ${
                         selectedOption === option.id
                           ? "bg-[#1472FF] text-white border-[#1472FF] border-b-[#0E5FCC]"
                           : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700"
-                      } active:border-b-2 active:mt-0.5`}
+                      } ${depth.active}`}
                     >
                       <span>{option.icon}</span>
                       <span>{option.label}</span>

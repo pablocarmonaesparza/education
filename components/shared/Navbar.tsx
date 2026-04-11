@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui";
+import { depth } from '@/lib/design-tokens';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -204,7 +205,7 @@ export default function Navbar() {
             {/* Sliding indicator - gray button that slides behind text */}
             {activeSection && (
               <motion.div
-                className="absolute top-0 bottom-0 my-auto h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-400 dark:border-gray-600 z-0"
+                className={`absolute top-0 bottom-0 my-auto h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl ${depth.bottom} border-gray-400 dark:border-gray-600 z-0`}
                 initial={{ 
                   opacity: 0,
                   scale: 0.8,
@@ -392,7 +393,7 @@ export default function Navbar() {
                 <Link
                   href="/auth/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block py-4 text-center font-bold text-lg uppercase tracking-wide rounded-2xl bg-[#1472FF] border-b-4 border-[#0E5FCC] text-white"
+                  className={`block py-4 text-center font-bold text-lg uppercase tracking-wide rounded-2xl bg-[#1472FF] ${depth.bottom} border-[#0E5FCC] text-white`}
                 >
                   Comenzar
                 </Link>
@@ -444,7 +445,7 @@ export default function Navbar() {
                   <Link
                     href="/auth/signup"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block py-3 px-4 text-center font-bold uppercase tracking-wide rounded-2xl transition-all bg-[#1472FF] border-b-4 border-[#0E5FCC] text-white hover:bg-[#0E5FCC]"
+                    className={`block py-3 px-4 text-center font-bold uppercase tracking-wide rounded-2xl transition-all bg-[#1472FF] ${depth.bottom} border-[#0E5FCC] text-white hover:bg-[#0E5FCC]`}
                   >
                     Comenzar
                   </Link>

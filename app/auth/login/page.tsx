@@ -6,6 +6,7 @@ import Link from 'next/link';
 import AuthNavbar from '@/components/auth/AuthNavbar';
 import { createClient } from '@/lib/supabase/client';
 import { Button, Input, Spinner } from '@/components/ui';
+import { depth } from '@/lib/design-tokens';
 
 function LoginContent() {
   const [email, setEmail] = useState<string>('');
@@ -189,7 +190,7 @@ function LoginContent() {
 
       <section className="min-h-screen flex items-center justify-center py-12 md:py-20 px-4 relative z-10">
         <div className="w-full max-w-md">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-10 border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900">
+          <div className={`bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-10 ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900`}>
             {/* Header */}
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">

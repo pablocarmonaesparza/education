@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { depth } from '@/lib/design-tokens';
 
 /* ───────────────────────────────────────────────────────────
    Design-system Empty State
@@ -44,7 +45,7 @@ export default function EmptyState({
       className={`max-w-2xl mx-auto mt-16 bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/50 dark:to-gray-900 rounded-2xl border border-blue-100 dark:border-blue-900 p-12 text-center ${className}`}
     >
       {/* Icon circle */}
-      <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] flex items-center justify-center">
+      <div className={`w-20 h-20 mx-auto mb-6 rounded-full bg-[#1472FF] ${depth.border} ${depth.bottom} border-[#0E5FCC] flex items-center justify-center`}>
         {icon}
       </div>
 

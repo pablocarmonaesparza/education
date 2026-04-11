@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Spinner from '@/components/ui/Spinner';
 import { useTutorChat } from '@/lib/hooks/useTutorChat';
 import { TUTOR_MODELS } from '@/lib/tutor/models';
+import { depth } from '@/lib/design-tokens';
 
 const DEFAULT_WIDTH = 256;
 const MIN_WIDTH = 256;
@@ -239,7 +240,7 @@ export default function TutorChatButton() {
               </svg>
             </button>
             {showConversations && (
-              <div className="absolute right-0 top-full mt-1 z-50 w-64 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 shadow-lg max-h-[300px] overflow-y-auto">
+              <div className={`absolute right-0 top-full mt-1 z-50 w-64 rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 shadow-lg max-h-[300px] overflow-y-auto`}>
                 <div className="p-2">
                   {conversations.length === 0 ? (
                     <p className="text-xs text-[#777777] dark:text-gray-400 text-center py-4">Sin conversaciones previas</p>
@@ -282,7 +283,7 @@ export default function TutorChatButton() {
         {!isLoadingMessages && messages.length === 0 && !activeConversationId && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
-              <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 text-[#4b4b4b] dark:text-gray-300">
+              <div className={`bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 text-[#4b4b4b] dark:text-gray-300`}>
                 <p className="text-sm leading-relaxed">
                   Hola, soy tu tutor de IA personal. Estoy aqui para ayudarte con cualquier duda sobre tu curso. ¿En que puedo ayudarte hoy?
                 </p>
@@ -299,7 +300,7 @@ export default function TutorChatButton() {
           >
             <div className={`max-w-[85%] ${message.role === 'user' ? 'order-2' : 'order-1'}`}>
               <div
-                className={`px-4 py-3 rounded-2xl border-2 border-b-4 ${
+                className={`px-4 py-3 rounded-2xl ${depth.border} ${depth.bottom} ${
                   message.role === 'user'
                     ? 'bg-gray-300 dark:bg-gray-800 text-[#4b4b4b] dark:text-white border-[#aeb3bb] dark:border-gray-900 border-b-[#aeb3bb] dark:border-b-gray-900'
                     : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900'
@@ -320,7 +321,7 @@ export default function TutorChatButton() {
         {isStreaming && streamingContent && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
-              <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 text-[#4b4b4b] dark:text-gray-300">
+              <div className={`bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 text-[#4b4b4b] dark:text-gray-300`}>
                 <div className="text-sm leading-relaxed">
                   {renderMarkdown(streamingContent)}
                   <span className="inline-block w-1.5 h-4 bg-[#1472FF] rounded-sm animate-pulse ml-0.5 align-text-bottom" />
@@ -334,7 +335,7 @@ export default function TutorChatButton() {
         {isStreaming && !streamingContent && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
-              <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900">
+              <div className={`bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900`}>
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                   <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -351,7 +352,7 @@ export default function TutorChatButton() {
       {/* Input: textfield con 2 renglones + renglón abajo [modelo | spacer | enviar] */}
       <div className="px-4 py-4 bg-white dark:bg-gray-800 flex-shrink-0">
         <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-0">
-          <div className="rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 overflow-visible">
+          <div className={`rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 overflow-visible`}>
             {/* Renglón 1–2: solo texto (overflow interno para no salir del borde) */}
             <div className="overflow-hidden rounded-t-2xl">
             <textarea
@@ -398,7 +399,7 @@ export default function TutorChatButton() {
                 {modelDropdownOpen && (
                   <ul
                     role="listbox"
-                    className="absolute left-0 bottom-full mb-1 z-50 rounded-2xl border-2 border-b-4 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 shadow-lg py-1 min-w-[200px] max-h-[280px] overflow-y-auto"
+                    className={`absolute left-0 bottom-full mb-1 z-50 rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 shadow-lg py-1 min-w-[200px] max-h-[280px] overflow-y-auto`}
                     aria-label="Modelos disponibles"
                   >
                     {TUTOR_MODELS.map((m) => (
@@ -423,7 +424,7 @@ export default function TutorChatButton() {
               <button
                 type="submit"
                 disabled={!input.trim() || isStreaming}
-                className="w-9 h-9 flex items-center justify-center rounded-xl border-2 border-b-4 border-[#1472FF] border-b-[#0E5FCC] bg-[#1472FF] text-white hover:bg-[#1265e0] active:border-b-2 active:mt-[2px] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
+                className={`w-9 h-9 flex items-center justify-center rounded-xl ${depth.border} ${depth.bottom} border-[#1472FF] border-b-[#0E5FCC] bg-[#1472FF] text-white hover:bg-[#1265e0] ${depth.active} transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0`}
                 aria-label="Enviar mensaje"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

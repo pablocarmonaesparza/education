@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Button from "@/components/ui/Button";
 import Tag from "@/components/ui/Tag";
+import { depth } from '@/lib/design-tokens';
 
 const courseTypes = [
   { 
@@ -310,7 +311,7 @@ function CarouselRow({ courses, direction, duration, isPaused, onSelectCourse }:
         <button
           key={`${course.id}-${index}`}
           onClick={() => onSelectCourse(course)}
-          className="flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-[#0a1e3d] rounded-2xl p-4 md:p-5 border-2 border-[#4b5563] border-b-4 border-b-[#4b5563] text-left cursor-pointer transition-all duration-200"
+          className={`flex-shrink-0 w-[200px] md:w-[240px] lg:w-[280px] bg-[#0a1e3d] rounded-2xl p-4 md:p-5 ${depth.border} border-[#4b5563] ${depth.bottom} border-b-[#4b5563] text-left cursor-pointer transition-all duration-200`}
         >
           {/* Icon */}
           <div className="text-3xl md:text-4xl mb-3">
@@ -454,7 +455,7 @@ export default function AvailableCoursesSection() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="relative w-full max-w-lg bg-[#0a1e3d] rounded-2xl p-6 md:p-8 border-2 border-b-4 border-[#1472FF]/30 border-b-[#0E5FCC]"
+              className={`relative w-full max-w-lg bg-[#0a1e3d] rounded-2xl p-6 md:p-8 ${depth.border} ${depth.bottom} border-[#1472FF]/30 border-b-[#0E5FCC]`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}

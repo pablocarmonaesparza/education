@@ -11,9 +11,10 @@
 
 | Token              | Valor                                                              |
 | ------------------ | ------------------------------------------------------------------ |
-| `depthBase`        | `border-2 border-b-4 active:border-b-2 active:mt-[2px] ...`       |
-| `depthStructure`   | `border-2 border-b-4 transition-all duration-150` (sin active)     |
-| `depthActiveGroup` | `group-active:border-b-2 group-active:mt-[2px]`                   |
+| `depthBase`        | `border-4 border-b-8 active:border-b-4 active:mt-[4px] ...`       |
+| `depthStructure`   | `border-4 border-b-8 transition-all duration-150` (sin active)     |
+| `depthActiveGroup` | `group-active:border-b-4 group-active:mt-[4px]`                   |
+| `depthBottomOnly`  | `border-b-8 active:border-b-0 active:mt-1 ...` (landing CTAs)     |
 
 ### Botones (constantes)
 
@@ -262,8 +263,8 @@ import VerticalScroll from '@/components/shared/VerticalScroll';
 Toda la UI interactiva usa el sistema de depth:
 
 ```
-Estado normal:   border-2 (todos lados) + border-b-4 (sombra 3D)
-Estado activo:   border-b-2 (colapsa) + mt-[2px] (empuja hacia abajo)
+Estado normal:   border-4 (todos lados) + border-b-8 (sombra 3D)
+Estado activo:   border-b-4 (colapsa) + mt-[4px] (empuja hacia abajo)
 Transicion:      transition-all duration-150
 ```
 
@@ -272,7 +273,7 @@ Transicion:      transition-all duration-150
 - **Custom elements:** Importar `depthBase` de `lib/design-tokens.ts`.
 - **Dentro de `group`:** Usar `depthStructure` + `depthActiveGroup`.
 
-**Nunca escribir `border-2 border-b-4 active:border-b-2 active:mt-[2px]` manualmente.** Siempre usar el componente o el token.
+**Nunca escribir `border-4 border-b-8 active:border-b-4 active:mt-[4px]` manualmente.** Siempre usar el componente o el token.
 
 ---
 

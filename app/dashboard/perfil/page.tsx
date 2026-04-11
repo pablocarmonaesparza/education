@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { SpinnerPage } from '@/components/ui/Spinner';
 import Button from '@/components/ui/Button';
+import { depth } from '@/lib/design-tokens';
 
 interface UserProfile {
   id: string;
@@ -202,7 +203,7 @@ export default function PerfilPage() {
         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
           {/* Avatar Section */}
           <div className="p-6 flex items-center gap-4 border-b border-gray-100 dark:border-gray-800">
-            <div className="w-20 h-20 rounded-full bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] flex items-center justify-center text-white text-2xl font-bold">
+            <div className={`w-20 h-20 rounded-full bg-[#1472FF] ${depth.border} ${depth.bottom} border-[#0E5FCC] flex items-center justify-center text-white text-2xl font-bold`}>
               {userInitials}
             </div>
             <div>

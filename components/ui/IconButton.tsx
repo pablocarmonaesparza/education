@@ -11,7 +11,8 @@ import { depthBase as depthToken } from '@/lib/design-tokens';
 
 const base =
   'rounded-xl flex items-center justify-center text-sm font-bold ' +
-  'transition-all duration-150 flex-shrink-0';
+  'transition-all duration-150 flex-shrink-0 ' +
+  'disabled:opacity-50 disabled:cursor-not-allowed';
 
 const variantStyles = {
   /** Blue filled with #0E5FCC depth border */

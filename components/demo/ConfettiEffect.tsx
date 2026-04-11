@@ -9,7 +9,6 @@ import { motion } from 'framer-motion';
    ─────────────────────────────────────────────────────────── */
 
 const COLORS = ['#1472FF', '#0E5FCC', '#22c55e', '#16a34a', '#facc15', '#f97316', '#ef4444'];
-const PARTICLE_COUNT = 40;
 
 interface Particle {
   id: number;
@@ -23,22 +22,55 @@ interface Particle {
   delay: number;
 }
 
-function generateParticles(): Particle[] {
-  return Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
-    id: i,
-    x: (Math.random() - 0.5) * 600,
-    y: -(Math.random() * 500 + 200),
-    rotation: Math.random() * 720 - 360,
-    color: COLORS[Math.floor(Math.random() * COLORS.length)],
-    size: Math.random() * 8 + 4,
-    shape: Math.random() > 0.5 ? 'square' : 'circle',
-    duration: Math.random() * 1.5 + 1.5,
-    delay: Math.random() * 0.3,
-  }));
+interface ConfettiEffectProps {
+  /** Number of particles. Default 40. */
+  count?: number;
+  /** 'burst' = upward fountain. 'radial' = explodes in all directions from center. */
+  pattern?: 'burst' | 'radial';
+  /** Force a single shape. Default: random square or circle. */
+  shape?: 'square' | 'circle';
 }
 
-export default function ConfettiEffect() {
-  const particles = useMemo(() => generateParticles(), []);
+function generateParticles(
+  count: number,
+  pattern: 'burst' | 'radial',
+  forcedShape?: 'square' | 'circle',
+): Particle[] {
+  return Array.from({ length: count }, (_, i) => {
+    let x: number;
+    let y: number;
+    if (pattern === 'radial') {
+      const angle = Math.random() * Math.PI * 2;
+      const distance = Math.random() * 500 + 200;
+      x = Math.cos(angle) * distance;
+      y = Math.sin(angle) * distance;
+    } else {
+      x = (Math.random() - 0.5) * 600;
+      y = -(Math.random() * 500 + 200);
+    }
+    return {
+      id: i,
+      x,
+      y,
+      rotation: Math.random() * 720 - 360,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      size: Math.random() * 8 + 4,
+      shape: forcedShape ?? (Math.random() > 0.5 ? 'square' : 'circle'),
+      duration: Math.random() * 1.5 + 1.5,
+      delay: Math.random() * 0.3,
+    };
+  });
+}
+
+export default function ConfettiEffect({
+  count = 40,
+  pattern = 'burst',
+  shape,
+}: ConfettiEffectProps = {}) {
+  const particles = useMemo(
+    () => generateParticles(count, pattern, shape),
+    [count, pattern, shape],
+  );
 
   return (
     <div className="fixed inset-0 z-[100] pointer-events-none overflow-hidden">

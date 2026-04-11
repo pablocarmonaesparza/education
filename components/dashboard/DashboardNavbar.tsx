@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client';
 import Button from '@/components/ui/Button';
 import { CardFlat } from '@/components/ui/Card';
 import Divider from '@/components/ui/Divider';
+import { depth } from '@/lib/design-tokens';
 
 export default function DashboardNavbar() {
   const pathname = usePathname();
@@ -303,7 +304,7 @@ export default function DashboardNavbar() {
                   onClick={() => setShowMobileMenu(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-150 ${
                     isActive
-                      ? 'bg-[#1472FF] text-white border-b-4 border-[#0E5FCC]'
+                      ? `bg-[#1472FF] text-white ${depth.bottom} border-[#0E5FCC]`
                       : 'text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900'
                   }`}
                 >

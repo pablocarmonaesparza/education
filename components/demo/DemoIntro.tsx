@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Title, Body, Caption, Tag, StatCard } from '@/components/ui';
+import { depth } from '@/lib/design-tokens';
 import type { LessonData } from '@/lib/demo-data';
 
 /* ───────────────────────────────────────────────────────────
@@ -27,7 +28,7 @@ export default function DemoIntro({ lesson }: DemoIntroProps) {
       <Tag variant="primary">{lesson.topic}</Tag>
 
       {/* Icon */}
-      <div className="w-20 h-20 mx-auto rounded-full bg-[#1472FF] border-2 border-b-4 border-[#0E5FCC] flex items-center justify-center">
+      <div className={`w-20 h-20 mx-auto rounded-full bg-[#1472FF] ${depth.border} ${depth.bottom} border-[#0E5FCC] flex items-center justify-center`}>
         <span className="text-3xl">🤖</span>
       </div>
 

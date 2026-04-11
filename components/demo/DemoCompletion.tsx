@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Title, Caption, Button, StatCard, ProgressBar } from '@/components/ui';
+import { depth } from '@/lib/design-tokens';
 import ConfettiEffect from './ConfettiEffect';
 
 /* ───────────────────────────────────────────────────────────
@@ -41,7 +42,7 @@ export default function DemoCompletion({
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', damping: 12, stiffness: 200, delay: 0.2 }}
-        className="w-24 h-24 mx-auto rounded-full bg-[#22c55e] border-2 border-b-4 border-[#16a34a] flex items-center justify-center"
+        className={`w-24 h-24 mx-auto rounded-full bg-[#22c55e] ${depth.border} ${depth.bottom} border-[#16a34a] flex items-center justify-center`}
       >
         <span className="text-4xl">🏆</span>
       </motion.div>
