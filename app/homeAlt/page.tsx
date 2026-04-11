@@ -1,25 +1,15 @@
-import Navbar from '@/components/shared/Navbar';
-import Footer from '@/components/shared/Footer';
-import AltHeroSection from '@/components/homeAlt/AltHeroSection';
-import AltTickerSection from '@/components/homeAlt/AltTickerSection';
-import AltMissionSection from '@/components/homeAlt/AltMissionSection';
-import AltServicesSection from '@/components/homeAlt/AltServicesSection';
-import AltCtaSection from '@/components/homeAlt/AltCtaSection';
-import AltTestimonialsSection from '@/components/homeAlt/AltTestimonialsSection';
-
+/**
+ * DEV-ONLY: Preview of the Webflow "Freight" template.
+ * Served via iframe from public/webflow/ for local comparison only.
+ * Not intended for production deployment.
+ */
 export default function HomeAltPage() {
   return (
-    <>
-      <Navbar />
-      <main>
-        <AltHeroSection />
-        <AltTickerSection />
-        <AltMissionSection />
-        <AltServicesSection />
-        <AltCtaSection />
-        <AltTestimonialsSection />
-      </main>
-      <Footer />
-    </>
+    <iframe
+      src="/webflow/index.html"
+      title="Webflow Template Preview"
+      sandbox="allow-scripts allow-same-origin"
+      className="w-screen h-screen border-0"
+    />
   );
 }
