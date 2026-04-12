@@ -542,7 +542,7 @@ export default function ExperimentLesson() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-gray-950">
       {/* Top bar: single flex row, no absolute positioning — scales cleanly to mobile */}
       <header className="px-4 py-4">
         <div className="mx-auto max-w-5xl flex items-center gap-2 md:gap-3">
@@ -599,7 +599,7 @@ export default function ExperimentLesson() {
           </div>
           <StreakBadge count={DAILY_STREAK} />
           <div
-            className={`inline-flex items-center gap-2 h-[42px] px-3 md:px-4 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthBase} origin-center transition-transform duration-200 ${livesPulse ? 'scale-125' : 'scale-100'}`}
+            className={`inline-flex items-center gap-2 h-[42px] px-3 md:px-4 rounded-xl bg-gray-800 text-gray-300 border-gray-900 border-b-gray-900 ${depthBase} origin-center transition-transform duration-200 ${livesPulse ? 'scale-125' : 'scale-100'}`}
             aria-label={HAS_UNLIMITED_LIVES ? 'vidas ilimitadas' : `${lives} vidas`}
           >
             <svg className="w-5 h-5 text-red-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
@@ -730,7 +730,7 @@ export default function ExperimentLesson() {
       <footer className="px-4 py-6">
         <div className="mx-auto max-w-2xl space-y-4">
           <XpBar xp={xp} total={totalXp} delta={xpDelta} />
-          <div className="border-t border-gray-200 dark:border-gray-800" />
+          <div className="border-t border-gray-800" />
           <div className="flex justify-end">
             <div
               className={`inline-block transition-transform duration-200 ${ctaBounce ? 'scale-110' : 'scale-100'}`}
@@ -786,14 +786,14 @@ function ResultModal({
 }) {
   const percent = Math.round(accuracy * 100);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/40 dark:bg-white/10 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/10 backdrop-blur-sm">
       {passed && <ConfettiEffect count={120} pattern="radial" shape="circle" />}
       <Card variant="neutral" padding="lg" className="relative z-[110] w-full max-w-md">
         <div className="text-center space-y-5">
           <Title className="!text-3xl">
             {passed ? 'lección completada' : 'repetir lección'}
           </Title>
-          <Body className="text-[#777777] dark:text-gray-400">
+          <Body className="text-gray-400">
             Acertaste {correctCount} de {totalMcq} ejercicios ({percent}%).
             {passed ? ' ¡Buen trabajo!' : ' Necesitas al menos 80% para avanzar.'}
           </Body>
@@ -838,16 +838,16 @@ function NoLivesModal({
   const pad = (n: number) => n.toString().padStart(2, '0');
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/40 dark:bg-white/10 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/10 backdrop-blur-sm">
       <Card variant="neutral" padding="lg" className="relative z-[110] w-full max-w-md">
         <div className="text-center space-y-5">
-          <div className="mx-auto w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+          <div className="mx-auto w-16 h-16 rounded-full bg-red-900/30 flex items-center justify-center">
             <svg className="w-9 h-9 text-red-500" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 21s-7-4.5-9.5-9C.5 8 3 4 6.5 4c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3C21 4 23.5 8 21.5 12 19 16.5 12 21 12 21z" />
             </svg>
           </div>
           <Title className="!text-3xl">ya no tienes más vidas</Title>
-          <Body className="text-[#777777] dark:text-gray-400">
+          <Body className="text-gray-400">
             Espera a que se recarguen tus vidas o consigue más ahora mismo para
             seguir aprendiendo.
           </Body>
@@ -877,10 +877,10 @@ function NoLivesModal({
 function TimeSegment({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <span className="text-3xl md:text-4xl font-extrabold tabular-nums text-[#4b4b4b] dark:text-white">
+      <span className="text-3xl md:text-4xl font-extrabold tabular-nums text-white">
         {value}
       </span>
-      <span className="text-[10px] font-bold uppercase tracking-wider text-[#777777] dark:text-gray-400">
+      <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400">
         {label}
       </span>
     </div>
@@ -896,7 +896,7 @@ function SegmentedProgress({ total, current }: { total: number; current: number 
         <div
           key={i}
           className={`flex-1 h-3 rounded-full transition-colors duration-200 ${
-            i <= current ? 'bg-[#1472FF]' : 'bg-gray-200 dark:bg-gray-800'
+            i <= current ? 'bg-[#1472FF]' : 'bg-gray-800'
           }`}
         />
       ))}
@@ -926,7 +926,7 @@ function ConceptStep({
         />
       )}
       <Title className="!text-3xl md:!text-4xl">{title}</Title>
-      <Body className="!text-lg text-[#777777] dark:text-gray-400">{body}</Body>
+      <Body className="!text-lg text-gray-400">{body}</Body>
     </div>
   );
 }
@@ -990,7 +990,7 @@ function ConceptVisualStep({
                     height={boxH}
                     rx={12}
                     ry={12}
-                    fill="white"
+                    fill="#1f2937"
                     stroke="#1472FF"
                     strokeWidth={2}
                   />
@@ -1008,7 +1008,7 @@ function ConceptVisualStep({
                     textAnchor="middle"
                     fontSize="12"
                     fontWeight="700"
-                    fill="#4b4b4b"
+                    fill="#e5e7eb"
                   >
                     {b.label}
                   </text>
@@ -1032,7 +1032,7 @@ function ConceptVisualStep({
           })}
         </svg>
       </div>
-      <Body className="text-center text-[#777777] dark:text-gray-400">{body}</Body>
+      <Body className="text-center text-gray-400">{body}</Body>
     </div>
   );
 }
@@ -1051,13 +1051,13 @@ function MultipleChoiceStep({
   const [suppressHoverId, setSuppressHoverId] = useState<number | null>(null);
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-600';
+    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-800 border-gray-600';
   const selectedHover =
-    ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] [&_p]:hover:text-[#ef4444]';
+    ' hover:border-[#ef4444] hover:bg-gray-900 hover:[--depth-color:#b91c1c] [&_p]:hover:text-[#ef4444]';
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white text-center leading-tight">
         {step.prompt}
       </h3>
 
@@ -1067,14 +1067,14 @@ function MultipleChoiceStep({
           const isCorrectOption = option.id === step.correctId;
 
           let stateClass =
-            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 hover:border-[#1472FF] hover:[--depth-color:#1472FF] [&_p]:hover:text-[#1472FF]';
+            '[--depth-color:#e5e7eb] border-gray-700 hover:border-[#1472FF] hover:[--depth-color:#1472FF] [&_p]:hover:text-[#1472FF]';
           if (submitted) {
             if (isCorrectOption) {
               stateClass = '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] [&_p]:text-white';
             } else if (isSelected) {
               stateClass = '[--depth-color:#b91c1c] border-red-700 bg-red-500 [&_p]:text-white';
             } else {
-              stateClass = '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60';
+              stateClass = '[--depth-color:#e5e7eb] border-gray-700 opacity-60';
             }
           } else if (isSelected) {
             stateClass =
@@ -1101,7 +1101,7 @@ function MultipleChoiceStep({
                   : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
               } ${stateClass}`}
             >
-              <p className="text-base md:text-lg font-medium text-[#4b4b4b] dark:text-gray-200">
+              <p className="text-base md:text-lg font-medium text-gray-200">
                 {option.text}
               </p>
             </button>
@@ -1110,7 +1110,7 @@ function MultipleChoiceStep({
       </div>
 
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-gray-400">
           {step.explanation}
         </p>
       )}
@@ -1138,13 +1138,13 @@ function MultiSelectStep({
   };
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-600';
+    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-800 border-gray-600';
   const selectedHover =
-    ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] [&_p]:hover:text-[#ef4444] [&_.dot]:hover:border-[#ef4444] [&_.dot]:hover:bg-[#ef4444]';
+    ' hover:border-[#ef4444] hover:bg-gray-900 hover:[--depth-color:#b91c1c] [&_p]:hover:text-[#ef4444] [&_.dot]:hover:border-[#ef4444] [&_.dot]:hover:bg-[#ef4444]';
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white text-center leading-tight">
         {step.prompt}
       </h3>
 
@@ -1154,8 +1154,8 @@ function MultiSelectStep({
           const isCorrectOption = step.correctIds.includes(option.id);
 
           let stateClass =
-            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 hover:border-[#1472FF] hover:[--depth-color:#1472FF] [&_p]:hover:text-[#1472FF] [&_.dot]:hover:border-[#1472FF]';
-          let boxClass = 'border-gray-300 dark:border-gray-600';
+            '[--depth-color:#e5e7eb] border-gray-700 hover:border-[#1472FF] hover:[--depth-color:#1472FF] [&_p]:hover:text-[#1472FF] [&_.dot]:hover:border-[#1472FF]';
+          let boxClass = 'border-gray-600';
           let showCheck = false;
           let checkColor = 'text-white';
 
@@ -1175,8 +1175,8 @@ function MultiSelectStep({
               checkColor = 'text-red-600';
             } else {
               stateClass =
-                '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60';
-              boxClass = 'border-gray-300 dark:border-gray-600';
+                '[--depth-color:#e5e7eb] border-gray-700 opacity-60';
+              boxClass = 'border-gray-600';
             }
           } else if (isSelected) {
             stateClass =
@@ -1218,7 +1218,7 @@ function MultiSelectStep({
                     </svg>
                   )}
                 </span>
-                <p className="text-base md:text-lg font-medium text-[#4b4b4b] dark:text-gray-200">
+                <p className="text-base md:text-lg font-medium text-gray-200">
                   {option.text}
                 </p>
               </div>
@@ -1228,13 +1228,13 @@ function MultiSelectStep({
       </div>
 
       {!submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-gray-400">
           Elige las opciones correctas.
         </p>
       )}
 
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-gray-400">
           {step.explanation}
         </p>
       )}
@@ -1275,7 +1275,7 @@ function FillBlankStep({
   const correct = submitted && attempt === step.correctTokenIndex;
 
   let slotClass =
-    '[--depth-color:#e5e7eb] border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#aeb3bb]';
+    '[--depth-color:#e5e7eb] border-dashed border-gray-700 bg-gray-800 text-[#aeb3bb]';
   if (submitted) {
     if (correct) {
       slotClass =
@@ -1286,16 +1286,16 @@ function FillBlankStep({
     }
   } else if (filled !== null) {
     const base =
-      '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-600 text-[#4b4b4b] dark:text-gray-200 border-solid';
+      '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-800 border-gray-600 text-gray-200 border-solid';
     const hover =
-      ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:text-[#ef4444] hover:[--depth-color:#b91c1c]';
+      ' hover:border-[#ef4444] hover:bg-gray-900 hover:text-[#ef4444] hover:[--depth-color:#b91c1c]';
     slotClass = suppressSlotHover ? base : base + hover;
   }
 
   return (
     <div className="space-y-8">
       {/* Sentence with inline blank — matches prompt styling of other exercises */}
-      <h3 className="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 text-2xl md:text-3xl font-extrabold tracking-tight text-white text-center leading-tight">
         <span>{step.sentenceBefore}</span>
         <button
           data-slot="fill-blank"
@@ -1323,13 +1323,13 @@ function FillBlankStep({
           const disabled = submitted || used;
 
           let tokenClass =
-            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+            '[--depth-color:#e5e7eb] border-gray-700 bg-gray-800 text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
           if (used) {
             tokenClass =
-              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-30 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] border-gray-700 opacity-30 text-gray-200';
           } else if (submitted) {
             tokenClass =
-              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] border-gray-700 opacity-60 text-gray-200';
           }
 
           return (
@@ -1355,7 +1355,7 @@ function FillBlankStep({
       </div>
 
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-gray-400">
           {step.explanation}
         </p>
       )}
@@ -1402,14 +1402,14 @@ function TapSequenceStep({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white text-center leading-tight">
         {prompt}
       </h3>
 
       {/* Assembly area — container stays neutral always; items light individually */}
       <div
         style={{ ['--depth-color' as string]: '#e5e7eb' }}
-        className={`rounded-2xl ${depth.border} border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 ${assemblyMin} transition-all duration-150`}
+        className={`rounded-2xl ${depth.border} border-dashed border-gray-700 bg-gray-900 p-4 ${assemblyMin} transition-all duration-150`}
       >
         {attempt.length === 0 ? (
           <p className="text-sm text-[#aeb3bb] text-center py-6">
@@ -1421,7 +1421,7 @@ function TapSequenceStep({
               const isCorrectPos = submitted && correctOrder[pos] === tokIdx;
 
               let stateClass =
-                '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#ef4444] hover:text-[#ef4444] hover:[--depth-color:#b91c1c]';
+                '[--depth-color:#e5e7eb] border-gray-700 bg-gray-800 text-gray-200 hover:border-[#ef4444] hover:text-[#ef4444] hover:[--depth-color:#b91c1c]';
               if (submitted) {
                 if (isCorrectPos) {
                   stateClass =
@@ -1468,13 +1468,13 @@ function TapSequenceStep({
           const disabled = used || submitted;
 
           let tokenClass =
-            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+            '[--depth-color:#e5e7eb] border-gray-700 bg-gray-800 text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
           if (used) {
             tokenClass =
-              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-30 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] border-gray-700 opacity-30 text-gray-200';
           } else if (submitted) {
             tokenClass =
-              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] border-gray-700 opacity-60 text-gray-200';
           }
 
           return (
@@ -1496,7 +1496,7 @@ function TapSequenceStep({
       </div>
 
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-gray-400">
           {explanation}
         </p>
       )}
@@ -1526,24 +1526,24 @@ function AiPromptStep({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white text-center leading-tight">
         {step.prompt}
       </h3>
-      <p className="text-base text-[#777777] dark:text-gray-400 text-center">
+      <p className="text-base text-gray-400 text-center">
         {step.instructions}
       </p>
 
-      <div className="relative w-full bg-white dark:bg-gray-800 rounded-2xl border-2 transition-all duration-300 border-gray-300 dark:border-gray-900">
+      <div className="relative w-full bg-gray-800 rounded-2xl border-2 transition-all duration-300 border-gray-900">
         <textarea
           value={attempt}
           onChange={(e) => onChange(e.target.value)}
           placeholder={step.placeholder}
           rows={6}
           disabled={submitted}
-          className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 pt-4 pb-2"
+          className="w-full bg-transparent text-sm text-gray-100 placeholder-gray-400 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 pt-4 pb-2"
         />
         <div className="px-4 pb-2 flex justify-end">
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+          <p className="text-xs font-medium text-gray-400">
             {attempt.length}/500
           </p>
         </div>
@@ -1552,23 +1552,23 @@ function AiPromptStep({
       {analysis && (
         <div
           style={{ ['--depth-color' as string]: '#e5e7eb' }}
-          className={`rounded-2xl ${depth.border} border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 space-y-3 [box-shadow:0_4px_0_0_var(--depth-color)]`}
+          className={`rounded-2xl ${depth.border} border-gray-700 bg-gray-900 p-5 space-y-3 [box-shadow:0_4px_0_0_var(--depth-color)]`}
         >
           <div className="flex items-center justify-between gap-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#777777] dark:text-gray-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
               análisis de la IA
             </span>
             <span className="text-2xl font-extrabold" style={{ color: scoreColor }}>
               {analysis.score}/100
             </span>
           </div>
-          <div className="h-3 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+          <div className="h-3 rounded-full bg-gray-800 overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{ width: `${analysis.score}%`, backgroundColor: scoreColor }}
             />
           </div>
-          <p className="text-sm text-[#4b4b4b] dark:text-gray-300">{analysis.feedback}</p>
+          <p className="text-sm text-gray-300">{analysis.feedback}</p>
         </div>
       )}
     </div>
@@ -1627,13 +1627,13 @@ function CelebrationStep({
         transition={{ delay: 0.45, duration: 0.3 }}
         className="flex flex-wrap justify-center gap-3"
       >
-        <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
+        <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-gray-900">
           ✓ {correctSoFar}/{totalSoFar}
         </span>
-        <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
+        <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-gray-900">
           🔥 {DAILY_STREAK} días
         </span>
-        <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
+        <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-gray-900">
           +{xpGained} XP
         </span>
       </motion.div>
@@ -1642,7 +1642,7 @@ function CelebrationStep({
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 0.35 }}
       >
-        <Body className="!text-lg text-[#777777] dark:text-gray-400">{body}</Body>
+        <Body className="!text-lg text-gray-400">{body}</Body>
       </motion.div>
     </div>
   );
@@ -1692,7 +1692,7 @@ function XpBar({
   return (
     <div className="relative">
       <div
-        className={`relative h-2 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden transition-shadow duration-300 ${
+        className={`relative h-2 rounded-full bg-gray-800 overflow-hidden transition-shadow duration-300 ${
           glow ? 'shadow-[0_0_18px_4px_rgba(34,197,94,0.55)]' : ''
         }`}
       >
@@ -1708,7 +1708,7 @@ function XpBar({
             <span
               key={m}
               className={`absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-[2px] h-2 rounded-full transition-colors duration-300 ${
-                reached ? 'bg-white/70' : 'bg-gray-300 dark:bg-gray-700'
+                reached ? 'bg-white/70' : 'bg-gray-700'
               }`}
               style={{ left: `${m * 100}%` }}
               aria-hidden="true"
@@ -1716,7 +1716,7 @@ function XpBar({
           );
         })}
       </div>
-      <div className="mt-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-[#777777] dark:text-gray-400">
+      <div className="mt-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-gray-400">
         <span>xp</span>
         <span className="tabular-nums">
           {displayXp} / {total}
@@ -1756,16 +1756,16 @@ function TrueFalseStep({
   const [suppressHover, setSuppressHover] = useState<boolean | null>(null);
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-600 text-[#4b4b4b] dark:text-gray-200';
+    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-800 border-gray-600 text-gray-200';
   const selectedHover =
-    ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] hover:text-[#ef4444]';
+    ' hover:border-[#ef4444] hover:bg-gray-900 hover:[--depth-color:#b91c1c] hover:text-[#ef4444]';
 
   const renderOption = (value: boolean, label: string) => {
     const isSelected = attempt === value;
     const isCorrectOption = step.answer === value;
 
     let stateClass =
-      '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+      '[--depth-color:#e5e7eb] border-gray-700 bg-gray-800 text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
     if (submitted) {
       if (isCorrectOption) {
         stateClass =
@@ -1775,7 +1775,7 @@ function TrueFalseStep({
           '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
       } else {
         stateClass =
-          '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60';
+          '[--depth-color:#e5e7eb] border-gray-700 opacity-60';
       }
     } else if (isSelected) {
       stateClass =
@@ -1808,7 +1808,7 @@ function TrueFalseStep({
 
   return (
     <div className="space-y-8">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white text-center leading-tight">
         {step.statement}
       </h3>
       <div className="flex justify-center gap-4">
@@ -1816,7 +1816,7 @@ function TrueFalseStep({
         {renderOption(false, 'Falso')}
       </div>
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-gray-400">
           {step.explanation}
         </p>
       )}
@@ -1841,7 +1841,7 @@ function CodeCompletionStep({
   const correct = submitted && attempt === step.correctTokenIndex;
 
   let slotClass =
-    'border-dashed border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-950 text-[#aeb3bb]';
+    'border-dashed border-gray-400 border-gray-600 bg-gray-950 text-[#aeb3bb]';
   if (submitted) {
     if (correct) {
       slotClass =
@@ -1852,17 +1852,17 @@ function CodeCompletionStep({
     }
   } else if (filled !== null) {
     slotClass =
-      'border-[#1472FF] bg-white dark:bg-gray-950 text-[#1472FF] border-solid hover:border-[#ef4444] hover:text-[#ef4444]';
+      'border-[#1472FF] bg-gray-950 text-[#1472FF] border-solid hover:border-[#ef4444] hover:text-[#ef4444]';
   }
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white text-center leading-tight">
         {step.prompt}
       </h3>
 
       <Card variant="neutral" padding="lg" className="overflow-x-auto">
-        <pre className="font-mono text-sm md:text-base text-[#4b4b4b] dark:text-gray-200 whitespace-pre-wrap break-words leading-relaxed">
+        <pre className="font-mono text-sm md:text-base text-gray-200 whitespace-pre-wrap break-words leading-relaxed">
 {step.codeBefore}
 <button
   type="button"
@@ -1888,13 +1888,13 @@ function CodeCompletionStep({
           const disabled = submitted || used;
 
           let tokenClass =
-            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+            '[--depth-color:#e5e7eb] border-gray-700 bg-gray-800 text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
           if (used) {
             tokenClass =
-              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-30 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] border-gray-700 opacity-30 text-gray-200';
           } else if (submitted) {
             tokenClass =
-              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] border-gray-700 opacity-60 text-gray-200';
           }
 
           return (
@@ -1919,7 +1919,7 @@ function CodeCompletionStep({
       </div>
 
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-gray-400">
           {step.explanation}
         </p>
       )}
@@ -2031,10 +2031,10 @@ function TapMatchStep({
     if (isCorrect === false)
       return '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
     if (isPaired)
-      return '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-600 text-[#4b4b4b] dark:text-gray-200';
+      return '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-800 border-gray-600 text-gray-200';
     if (isSelected)
-      return '[--depth-color:#1472FF] border-[#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
-    return '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+      return '[--depth-color:#1472FF] border-[#1472FF] bg-gray-900 text-[#1472FF]';
+    return '[--depth-color:#e5e7eb] border-gray-700 bg-gray-800 text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
   };
 
   // --- Arrow geometry ---
@@ -2108,7 +2108,7 @@ function TapMatchStep({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white text-center leading-tight">
         {step.prompt}
       </h3>
 
@@ -2116,7 +2116,7 @@ function TapMatchStep({
         {/* Central vertical divider — centered in the 25% gap between the two columns */}
         <div
           aria-hidden="true"
-          className={`absolute top-0 bottom-0 left-[37.5%] w-px bg-gray-200 dark:bg-gray-800 pointer-events-none transition-opacity duration-300 ${showDivider ? 'opacity-100' : 'opacity-0'}`}
+          className={`absolute top-0 bottom-0 left-[37.5%] w-px bg-gray-800 pointer-events-none transition-opacity duration-300 ${showDivider ? 'opacity-100' : 'opacity-0'}`}
         />
 
         {/* Arrow overlay SVG */}
@@ -2221,13 +2221,13 @@ function TapMatchStep({
       </div>
 
       {!submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-gray-400">
           Forma los 4 pares, después toca comprobar.
         </p>
       )}
 
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-gray-400">
           {step.explanation}
         </p>
       )}
@@ -2240,7 +2240,7 @@ function TapMatchStep({
 function StreakBadge({ count }: { count: number }) {
   return (
     <div
-      className={`inline-flex items-center gap-2 h-[42px] px-4 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthBase}`}
+      className={`inline-flex items-center gap-2 h-[42px] px-4 rounded-xl bg-gray-800 text-gray-300 border-gray-900 border-b-gray-900 ${depthBase}`}
       aria-label={`racha de ${count} días`}
     >
       <span className="text-lg leading-none" aria-hidden="true">
