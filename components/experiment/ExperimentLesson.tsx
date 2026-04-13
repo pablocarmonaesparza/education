@@ -730,7 +730,7 @@ export default function ExperimentLesson() {
       <footer className="px-4 py-6">
         <div className="mx-auto max-w-2xl space-y-4">
           <XpBar xp={xp} total={totalXp} delta={xpDelta} />
-          <div className="border-t border-gray-200 dark:border-gray-800" />
+          <div className="border-t border-gray-200 dark:border-gray-900" />
           <div className="flex justify-end">
             <div
               className={`inline-block transition-transform duration-200 ${ctaBounce ? 'scale-110' : 'scale-100'}`}
@@ -990,7 +990,7 @@ function ConceptVisualStep({
                     height={boxH}
                     rx={12}
                     ry={12}
-                    fill="white"
+                    className="fill-white dark:fill-gray-800"
                     stroke="#1472FF"
                     strokeWidth={2}
                   />
@@ -1008,7 +1008,7 @@ function ConceptVisualStep({
                     textAnchor="middle"
                     fontSize="12"
                     fontWeight="700"
-                    fill="#4b4b4b"
+                    className="fill-[#4b4b4b] dark:fill-gray-200"
                   >
                     {b.label}
                   </text>
@@ -1051,7 +1051,7 @@ function MultipleChoiceStep({
   const [suppressHoverId, setSuppressHoverId] = useState<number | null>(null);
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-800';
+    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-900';
   const selectedHover =
     ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] [&_p]:hover:text-[#ef4444]';
 
@@ -1067,14 +1067,14 @@ function MultipleChoiceStep({
           const isCorrectOption = option.id === step.correctId;
 
           let stateClass =
-            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 hover:border-[#1472FF] hover:[--depth-color:#1472FF] [&_p]:hover:text-[#1472FF]';
+            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 hover:border-[#1472FF] hover:[--depth-color:#1472FF] [&_p]:hover:text-[#1472FF]';
           if (submitted) {
             if (isCorrectOption) {
               stateClass = '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] [&_p]:text-white';
             } else if (isSelected) {
               stateClass = '[--depth-color:#b91c1c] border-red-700 bg-red-500 [&_p]:text-white';
             } else {
-              stateClass = '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60';
+              stateClass = '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 opacity-60';
             }
           } else if (isSelected) {
             stateClass =
@@ -1138,7 +1138,7 @@ function MultiSelectStep({
   };
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-800';
+    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-900';
   const selectedHover =
     ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] [&_p]:hover:text-[#ef4444] [&_.dot]:hover:border-[#ef4444] [&_.dot]:hover:bg-[#ef4444]';
 
@@ -1154,8 +1154,8 @@ function MultiSelectStep({
           const isCorrectOption = step.correctIds.includes(option.id);
 
           let stateClass =
-            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 hover:border-[#1472FF] hover:[--depth-color:#1472FF] [&_p]:hover:text-[#1472FF] [&_.dot]:hover:border-[#1472FF]';
-          let boxClass = 'border-gray-300 dark:border-gray-800';
+            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 hover:border-[#1472FF] hover:[--depth-color:#1472FF] [&_p]:hover:text-[#1472FF] [&_.dot]:hover:border-[#1472FF]';
+          let boxClass = 'border-gray-300 dark:border-gray-900';
           let showCheck = false;
           let checkColor = 'text-white';
 
@@ -1175,8 +1175,8 @@ function MultiSelectStep({
               checkColor = 'text-red-600';
             } else {
               stateClass =
-                '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60';
-              boxClass = 'border-gray-300 dark:border-gray-800';
+                '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 opacity-60';
+              boxClass = 'border-gray-300 dark:border-gray-900';
             }
           } else if (isSelected) {
             stateClass =
@@ -1275,7 +1275,7 @@ function FillBlankStep({
   const correct = submitted && attempt === step.correctTokenIndex;
 
   let slotClass =
-    '[--depth-color:#e5e7eb] border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#aeb3bb]';
+    '[--depth-color:#e5e7eb] border-dashed border-gray-300 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#aeb3bb]';
   if (submitted) {
     if (correct) {
       slotClass =
@@ -1286,7 +1286,7 @@ function FillBlankStep({
     }
   } else if (filled !== null) {
     const base =
-      '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-800 text-[#4b4b4b] dark:text-gray-200 border-solid';
+      '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-900 text-[#4b4b4b] dark:text-gray-200 border-solid';
     const hover =
       ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:text-[#ef4444] hover:[--depth-color:#b91c1c]';
     slotClass = suppressSlotHover ? base : base + hover;
@@ -1323,13 +1323,13 @@ function FillBlankStep({
           const disabled = submitted || used;
 
           let tokenClass =
-            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
           if (used) {
             tokenClass =
-              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-30 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 opacity-30 text-[#4b4b4b] dark:text-gray-200';
           } else if (submitted) {
             tokenClass =
-              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 opacity-60 text-[#4b4b4b] dark:text-gray-200';
           }
 
           return (
@@ -1409,7 +1409,7 @@ function TapSequenceStep({
       {/* Assembly area — container stays neutral always; items light individually */}
       <div
         style={{ ['--depth-color' as string]: '#e5e7eb' }}
-        className={`rounded-2xl ${depth.border} border-dashed border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 ${assemblyMin} transition-all duration-150`}
+        className={`rounded-2xl ${depth.border} border-dashed border-gray-300 dark:border-gray-900 bg-white dark:bg-gray-900 p-4 ${assemblyMin} transition-all duration-150`}
       >
         {attempt.length === 0 ? (
           <p className="text-sm text-[#aeb3bb] text-center py-6">
@@ -1421,7 +1421,7 @@ function TapSequenceStep({
               const isCorrectPos = submitted && correctOrder[pos] === tokIdx;
 
               let stateClass =
-                '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#ef4444] hover:text-[#ef4444] hover:[--depth-color:#b91c1c]';
+                '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#ef4444] hover:text-[#ef4444] hover:[--depth-color:#b91c1c]';
               if (submitted) {
                 if (isCorrectPos) {
                   stateClass =
@@ -1468,13 +1468,13 @@ function TapSequenceStep({
           const disabled = used || submitted;
 
           let tokenClass =
-            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
           if (used) {
             tokenClass =
-              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-30 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 opacity-30 text-[#4b4b4b] dark:text-gray-200';
           } else if (submitted) {
             tokenClass =
-              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 opacity-60 text-[#4b4b4b] dark:text-gray-200';
           }
 
           return (
@@ -1552,7 +1552,7 @@ function AiPromptStep({
       {analysis && (
         <div
           style={{ ['--depth-color' as string]: '#e5e7eb' }}
-          className={`rounded-2xl ${depth.border} border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-5 space-y-3 [box-shadow:0_4px_0_0_var(--depth-color)]`}
+          className={`rounded-2xl ${depth.border} border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-900 p-5 space-y-3 [box-shadow:0_4px_0_0_var(--depth-color)]`}
         >
           <div className="flex items-center justify-between gap-3">
             <span className="text-xs font-bold uppercase tracking-wider text-[#777777] dark:text-gray-400">
@@ -1756,7 +1756,7 @@ function TrueFalseStep({
   const [suppressHover, setSuppressHover] = useState<boolean | null>(null);
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-800 text-[#4b4b4b] dark:text-gray-200';
+    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-900 text-[#4b4b4b] dark:text-gray-200';
   const selectedHover =
     ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] hover:text-[#ef4444]';
 
@@ -1765,7 +1765,7 @@ function TrueFalseStep({
     const isCorrectOption = step.answer === value;
 
     let stateClass =
-      '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+      '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
     if (submitted) {
       if (isCorrectOption) {
         stateClass =
@@ -1775,7 +1775,7 @@ function TrueFalseStep({
           '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
       } else {
         stateClass =
-          '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60';
+          '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 opacity-60';
       }
     } else if (isSelected) {
       stateClass =
@@ -1841,7 +1841,7 @@ function CodeCompletionStep({
   const correct = submitted && attempt === step.correctTokenIndex;
 
   let slotClass =
-    'border-dashed border-gray-400 dark:border-gray-800 bg-white dark:bg-gray-950 text-[#aeb3bb]';
+    'border-dashed border-gray-400 dark:border-gray-900 bg-white dark:bg-gray-950 text-[#aeb3bb]';
   if (submitted) {
     if (correct) {
       slotClass =
@@ -1888,13 +1888,13 @@ function CodeCompletionStep({
           const disabled = submitted || used;
 
           let tokenClass =
-            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+            '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
           if (used) {
             tokenClass =
-              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-30 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 opacity-30 text-[#4b4b4b] dark:text-gray-200';
           } else if (submitted) {
             tokenClass =
-              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 opacity-60 text-[#4b4b4b] dark:text-gray-200';
           }
 
           return (
@@ -2031,10 +2031,10 @@ function TapMatchStep({
     if (isCorrect === false)
       return '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
     if (isPaired)
-      return '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-800 text-[#4b4b4b] dark:text-gray-200';
+      return '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-900 text-[#4b4b4b] dark:text-gray-200';
     if (isSelected)
       return '[--depth-color:#1472FF] border-[#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
-    return '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+    return '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
   };
 
   // --- Arrow geometry ---
