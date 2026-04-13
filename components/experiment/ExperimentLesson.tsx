@@ -1051,7 +1051,7 @@ function MultipleChoiceStep({
   const [suppressHoverId, setSuppressHoverId] = useState<number | null>(null);
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-600';
+    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-800';
   const selectedHover =
     ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] [&_p]:hover:text-[#ef4444]';
 
@@ -1138,7 +1138,7 @@ function MultiSelectStep({
   };
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-600';
+    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-800';
   const selectedHover =
     ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] [&_p]:hover:text-[#ef4444] [&_.dot]:hover:border-[#ef4444] [&_.dot]:hover:bg-[#ef4444]';
 
@@ -1155,7 +1155,7 @@ function MultiSelectStep({
 
           let stateClass =
             '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 hover:border-[#1472FF] hover:[--depth-color:#1472FF] [&_p]:hover:text-[#1472FF] [&_.dot]:hover:border-[#1472FF]';
-          let boxClass = 'border-gray-300 dark:border-gray-600';
+          let boxClass = 'border-gray-300 dark:border-gray-800';
           let showCheck = false;
           let checkColor = 'text-white';
 
@@ -1176,7 +1176,7 @@ function MultiSelectStep({
             } else {
               stateClass =
                 '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 opacity-60';
-              boxClass = 'border-gray-300 dark:border-gray-600';
+              boxClass = 'border-gray-300 dark:border-gray-800';
             }
           } else if (isSelected) {
             stateClass =
@@ -1286,7 +1286,7 @@ function FillBlankStep({
     }
   } else if (filled !== null) {
     const base =
-      '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-600 text-[#4b4b4b] dark:text-gray-200 border-solid';
+      '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-800 text-[#4b4b4b] dark:text-gray-200 border-solid';
     const hover =
       ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:text-[#ef4444] hover:[--depth-color:#b91c1c]';
     slotClass = suppressSlotHover ? base : base + hover;
@@ -1708,7 +1708,7 @@ function XpBar({
             <span
               key={m}
               className={`absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-[2px] h-2 rounded-full transition-colors duration-300 ${
-                reached ? 'bg-white/70' : 'bg-gray-300 dark:bg-gray-700'
+                reached ? 'bg-white/70' : 'bg-gray-300 dark:bg-gray-800'
               }`}
               style={{ left: `${m * 100}%` }}
               aria-hidden="true"
@@ -1756,7 +1756,7 @@ function TrueFalseStep({
   const [suppressHover, setSuppressHover] = useState<boolean | null>(null);
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-600 text-[#4b4b4b] dark:text-gray-200';
+    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-800 text-[#4b4b4b] dark:text-gray-200';
   const selectedHover =
     ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] hover:text-[#ef4444]';
 
@@ -1841,7 +1841,7 @@ function CodeCompletionStep({
   const correct = submitted && attempt === step.correctTokenIndex;
 
   let slotClass =
-    'border-dashed border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-950 text-[#aeb3bb]';
+    'border-dashed border-gray-400 dark:border-gray-800 bg-white dark:bg-gray-950 text-[#aeb3bb]';
   if (submitted) {
     if (correct) {
       slotClass =
@@ -2031,7 +2031,7 @@ function TapMatchStep({
     if (isCorrect === false)
       return '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
     if (isPaired)
-      return '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-600 text-[#4b4b4b] dark:text-gray-200';
+      return '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-800 text-[#4b4b4b] dark:text-gray-200';
     if (isSelected)
       return '[--depth-color:#1472FF] border-[#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
     return '[--depth-color:#e5e7eb] border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
