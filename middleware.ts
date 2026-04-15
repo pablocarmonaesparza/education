@@ -50,11 +50,19 @@ export async function middleware(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     const protectedRoutes = ['/dashboard', '/intake', '/onboarding']
+    const { pathname } = request.nextUrl
+
+    // A route is protected if the pathname equals it exactly OR starts with
+    // a trailing slash. This avoids accidentally protecting sibling routes
+    // like /dashboardAlpha that merely share a prefix.
+    const isProtected = protectedRoutes.some(
+      (route) => pathname === route || pathname.startsWith(`${route}/`),
+    )
 
     // If the user is not authenticated and trying to access a protected route, redirect to login
-    if (!user && protectedRoutes.some(route => request.nextUrl.pathname.startsWith(route))) {
+    if (!user && isProtected) {
       const loginUrl = new URL('/auth/login', request.url)
-      loginUrl.searchParams.set('redirectedFrom', request.nextUrl.pathname)
+      loginUrl.searchParams.set('redirectedFrom', pathname)
       return NextResponse.redirect(loginUrl)
     }
 
