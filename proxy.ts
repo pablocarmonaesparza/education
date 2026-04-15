@@ -69,7 +69,7 @@ export async function proxy(request: NextRequest) {
     return supabaseResponse
   } catch (e) {
     // Log the error for debugging
-    console.error('Middleware error:', e)
+    console.error('Proxy error:', e)
 
     // If we're on a protected route and there's an error, allow through
     // Let the client-side handle auth state rather than creating redirect loops

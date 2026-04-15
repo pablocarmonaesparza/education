@@ -56,9 +56,12 @@ export default function CourseCreationPage() {
         // Ruta "curso completo": un solo request síncrono al endpoint que
         // arma el generated_path con TODAS las lecciones activas.
         if (isFullCourse) {
+          const abortController = new AbortController();
+          const fetchTimeout = setTimeout(() => abortController.abort(), 30000);
           const fullResponse = await fetch('/api/generate-course-full', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            signal: abortController.signal,
             body: JSON.stringify({
               user_id: user.id,
               user_email: user.email,
@@ -66,6 +69,7 @@ export default function CourseCreationPage() {
               timestamp: new Date().toISOString(),
             }),
           });
+          clearTimeout(fetchTimeout);
 
           if (!fullResponse.ok) {
             const errorData = await fullResponse.json().catch(() => ({}));
