@@ -145,4 +145,4 @@ rm -rf .next
 
 # 5) Fresh server.
 echo "dev-clean: starting next dev --webpack (PORT=${PORT})"
-exec node ./node_modules/.bin/next dev --webpack --port "${PORT}"
+exec node ./node_modules/.bin/next dev --port "${PORT}"
