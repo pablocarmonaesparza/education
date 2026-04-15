@@ -266,7 +266,9 @@ const DAILY_STREAK = 5;
 
 /* ─── lesson data ─── */
 
-const STEPS: Step[] = [
+export type { Step };
+
+export const DEFAULT_STEPS: Step[] = [
   {
     kind: 'concept',
     title: 'qué es un agente RAG',
@@ -407,7 +409,8 @@ const STEPS: Step[] = [
 
 /* ─── main component ─── */
 
-export default function ExperimentLesson() {
+export default function ExperimentLesson({ steps: propSteps }: { steps?: Step[] } = {}) {
+  const STEPS = propSteps ?? DEFAULT_STEPS;
   const router = useRouter();
   const [index, setIndex] = useState(0);
   const [maxVisited, setMaxVisited] = useState(0);

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import OnboardingNavbar from '@/components/onboarding/OnboardingNavbar';
@@ -12,13 +12,21 @@ export default function CourseCreationPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
+  // Guard contra doble ejecución de useEffect (React StrictMode en dev) —
+  // evita dos POSTs al endpoint de generación.
+  const hasStartedRef = useRef(false);
 
   useEffect(() => {
+    if (hasStartedRef.current) return;
+    hasStartedRef.current = true;
+
     const startCourseGeneration = async () => {
       // Get project idea from sessionStorage
       const projectIdea = sessionStorage.getItem('projectIdea');
-      
-      if (!projectIdea) {
+      const courseMode = sessionStorage.getItem('courseMode');
+      const isFullCourse = courseMode === 'full';
+
+      if (!projectIdea && !isFullCourse) {
         router.push('/projectDescription');
         return;
       }
@@ -44,6 +52,40 @@ export default function CourseCreationPage() {
         // Get questionnaire answers from sessionStorage
         const projectContextRaw = sessionStorage.getItem('projectContext');
         const questionnaireAnswers = projectContextRaw ? JSON.parse(projectContextRaw) : {};
+
+        // Ruta "curso completo": un solo request síncrono al endpoint que
+        // arma el generated_path con TODAS las lecciones activas.
+        if (isFullCourse) {
+          const fullResponse = await fetch('/api/generate-course-full', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_id: user.id,
+              user_email: user.email,
+              user_name: user.user_metadata?.name || 'Usuario',
+              timestamp: new Date().toISOString(),
+            }),
+          });
+
+          if (!fullResponse.ok) {
+            const errorData = await fullResponse.json().catch(() => ({}));
+            throw new Error(errorData?.error || 'Error al preparar el curso completo');
+          }
+
+          // Llena la barra de progreso rápido y navega al dashboard
+          let fullProgress = 0;
+          progressInterval = setInterval(() => {
+            fullProgress = Math.min(fullProgress + 8, 100);
+            setProgress(fullProgress);
+            if (fullProgress >= 100 && progressInterval) {
+              clearInterval(progressInterval);
+              sessionStorage.removeItem('projectIdea');
+              sessionStorage.removeItem('courseMode');
+              setTimeout(() => router.push('/dashboard'), 400);
+            }
+          }, 60);
+          return;
+        }
 
         // Start course generation
         const response = await fetch('/api/generate-course', {

@@ -16,10 +16,20 @@ export default function ProjectDescriptionPage() {
       return;
     }
 
-    // Save to sessionStorage for next steps
+    // Save to sessionStorage for next steps (ruta personalizada)
     sessionStorage.setItem('projectIdea', projectIdea);
+    sessionStorage.removeItem('courseMode');
 
     // Navigate to optional context page
+    router.push('/projectContext');
+  };
+
+  const handleFullCourse = () => {
+    // Ruta "curso completo": ignora el textarea, se marca el modo,
+    // pasa por la encuesta (skippable) y el dashboard mostrará TODAS las
+    // lecciones activas ordenadas cronológicamente.
+    sessionStorage.setItem('courseMode', 'full');
+    sessionStorage.setItem('projectIdea', 'Curso completo de Itera');
     router.push('/projectContext');
   };
 
@@ -42,12 +52,11 @@ export default function ProjectDescriptionPage() {
           {/* Text Area with depth effect */}
           <div className="mb-8">
             <div
-              className="rounded-2xl"
-              style={{
-                boxShadow: error
-                  ? '0 4px 0 0 #fca5a5'
-                  : '0 4px 0 0 #d1d5db'
-              }}
+              className={`rounded-2xl ${
+                error
+                  ? 'shadow-[0_4px_0_0_#fca5a5] dark:shadow-[0_4px_0_0_#7f1d1d]'
+                  : 'shadow-[0_4px_0_0_#d1d5db] dark:shadow-[0_4px_0_0_#111827]'
+              }`}
             >
               <div className={`relative w-full bg-white dark:bg-gray-800 rounded-2xl border-2 transition-all duration-300 ${
                 error ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-gray-900 focus-within:border-[#1472FF]"
@@ -99,13 +108,14 @@ export default function ProjectDescriptionPage() {
                 { label: 'Bot para WhatsApp', description: 'Quiero integrar un bot en WhatsApp Business que atienda consultas, tome pedidos y programe citas de forma automática.' },
                 { label: 'Análisis de datos con IA', description: 'Necesito analizar grandes volúmenes de datos de clientes para identificar patrones de compra y predecir tendencias de ventas.' },
               ].map((suggestion) => (
-                <button
+                <Button
                   key={suggestion.label}
+                  variant="outline"
+                  size="sm"
                   onClick={() => setProjectIdea(suggestion.description)}
-                  className="px-4 py-2 text-sm rounded-xl border-2 border-gray-200 dark:border-gray-900 text-[#777777] dark:text-gray-400 hover:border-[#1472FF] hover:text-[#1472FF] transition-all shadow-[0_2px_0_0_#e5e7eb] dark:shadow-[0_2px_0_0_#374151] hover:shadow-[0_2px_0_0_#1472FF]"
                 >
                   {suggestion.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -138,6 +148,17 @@ export default function ProjectDescriptionPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </Button>
+          </div>
+
+          {/* Full course shortcut — sin personalizar, recorrido cronológico completo */}
+          <div className="flex justify-center mt-8">
+            <button
+              type="button"
+              onClick={handleFullCourse}
+              className="text-sm text-[#777777] dark:text-gray-400 hover:text-[#1472FF] dark:hover:text-[#1472FF] underline decoration-dotted underline-offset-4 transition-colors"
+            >
+              o tomar el curso completo
+            </button>
           </div>
         </div>
       </main>
