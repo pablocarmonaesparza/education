@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "next dev --webpack",
+    "dev:clean": "bash ./scripts/dev-clean.sh",
+    "clean": "rm -rf .next",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
