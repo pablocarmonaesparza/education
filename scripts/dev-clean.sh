@@ -144,5 +144,5 @@ echo "dev-clean: removing $(pwd)/.next"
 rm -rf .next
 
 # 5) Fresh server.
-echo "dev-clean: starting next dev --webpack (PORT=${PORT})"
+echo "dev-clean: starting next dev (PORT=${PORT})"
 exec node ./node_modules/.bin/next dev --port "${PORT}"
