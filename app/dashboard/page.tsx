@@ -779,25 +779,13 @@ export default function DashboardPage() {
                   <Divider title={phaseData.phaseName} />
                 </div>
                 
-                {/* Videos in this phase — zigzag path (Duolingo-style) on sm+,
-                    centered stack on mobile */}
-                <div className="w-full max-w-md mx-auto px-2 sm:px-0 space-y-4 sm:space-y-0">
+                {/* Videos in this phase — centered stack with dashed connectors */}
+                <div className="w-full max-w-[220px] mx-auto px-2 sm:px-0">
                   {phaseData.videos.map((video, idx) => {
-                    const pos = idx % 6;
-                    const nextPos = (idx + 1) % 6;
-                    // Mobile: always centered; sm+: zigzag rotation through 6 positions.
-                    const offsetClass = [
-                      'mx-auto sm:ml-0 sm:mr-auto',
-                      'mx-auto sm:ml-[15%] sm:mr-auto',
-                      'mx-auto',
-                      'mx-auto sm:ml-auto sm:mr-[15%]',
-                      'mx-auto sm:ml-auto sm:mr-0',
-                      'mx-auto sm:ml-auto sm:mr-[15%]',
-                    ][pos];
                     const isLast = idx === phaseData.videos.length - 1;
                     return (
                       <div key={video.id}>
-                        <div data-video-id={video.id} className={`w-[220px] ${offsetClass}`}>
+                        <div data-video-id={video.id}>
                           <LessonItem
                             lessonNumber={video.order + 1}
                             totalLessons={totalCount}
@@ -810,7 +798,7 @@ export default function DashboardPage() {
                             onClick={() => handleVideoSelect(video)}
                           />
                         </div>
-                        {!isLast && <PathConnector fromPos={pos} toPos={nextPos} />}
+                        {!isLast && <PathConnector />}
                       </div>
                     );
                   })}
