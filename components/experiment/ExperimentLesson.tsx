@@ -409,7 +409,10 @@ export const DEFAULT_STEPS: Step[] = [
 
 /* ─── main component ─── */
 
-export default function ExperimentLesson({ steps: propSteps }: { steps?: Step[] } = {}) {
+export default function ExperimentLesson({
+  steps: propSteps,
+  onClose,
+}: { steps?: Step[]; onClose?: () => void } = {}) {
   const STEPS = propSteps ?? DEFAULT_STEPS;
   const router = useRouter();
   const [index, setIndex] = useState(0);
@@ -466,7 +469,13 @@ export default function ExperimentLesson({ steps: propSteps }: { steps?: Step[] 
   const ctaDisabled = needsCheck && !complete;
   const ctaLabel = needsCheck ? 'comprobar' : isLast ? 'terminar' : 'continuar';
 
-  const handleExit = () => router.push('/');
+  const handleExit = () => {
+    if (onClose) {
+      onClose();
+    } else {
+      router.push('/');
+    }
+  };
 
   const resetStateForStep = (i: number) => {
     setAttempt(getInitialAttempt(STEPS[i]));

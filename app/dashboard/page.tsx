@@ -16,6 +16,8 @@ import CompositeCard from '@/components/shared/CompositeCard';
 import { depth } from '@/lib/design-tokens';
 import HorizontalScroll from '@/components/shared/HorizontalScroll';
 import VerticalScroll from '@/components/shared/VerticalScroll';
+import ExperimentLesson from '@/components/experiment/ExperimentLesson';
+import { getLessonSteps } from '@/components/experiment/lessonRegistry';
 
 const greetings = [
   "Hola",
@@ -30,6 +32,7 @@ const greetings = [
 
 interface Video {
   id: string;
+  lectureId?: number;
   title: string;
   description: string;
   duration: number | null;
@@ -211,8 +214,16 @@ export default function DashboardPage() {
                 }
               }
               
+              // Capture the real education_system.id for lesson content lookup
+              const rawLectureId = video.lecture_id ?? video.id;
+              const parsedLectureId = rawLectureId !== undefined && rawLectureId !== null
+                ? Number(rawLectureId)
+                : undefined;
+              const lectureId = Number.isFinite(parsedLectureId) ? parsedLectureId : undefined;
+
               allVideos.push({
                 id: videoId,
+                lectureId,
                 title: videoTitle,
                 description: videoDescription,
                 duration: durationSeconds,
@@ -908,36 +919,44 @@ export default function DashboardPage() {
               )}
             </div>
 
-            {/* Video Player */}
-            <div className={`aspect-video bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center ${depth.border} ${depth.bottom} border-gray-800 dark:border-gray-900`}>
-              {selectedVideo?.videoUrl ? (
-                <video
-                  src={selectedVideo.videoUrl}
-                  controls
-                  autoPlay
-                  className="w-full h-full"
-                >
-                  Tu navegador no soporta el tag de video.
-                </video>
-              ) : (
-                <div className="text-center text-gray-400 p-8">
-                  <svg className="w-20 h-20 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <p className="text-lg font-medium">Video próximamente disponible</p>
-                  <p className="text-sm mt-1 opacity-70">El contenido se está preparando</p>
-                </div>
-              )}
-            </div>
+            {/* Lesson content — ExperimentLesson if available, else placeholder */}
+            {(() => {
+              const lectureId = selectedVideo?.lectureId;
+              const lessonSteps =
+                typeof lectureId === 'number' && Number.isFinite(lectureId)
+                  ? getLessonSteps(lectureId)
+                  : null;
 
-            {/* Description */}
-            {selectedVideo?.description && (
-              <Card variant="neutral" padding="lg" className="mt-6">
-                <h3 className="font-bold text-[#4b4b4b] dark:text-white mb-2">Descripción</h3>
-                <p className="text-[#777777] dark:text-gray-400">{selectedVideo.description}</p>
-              </Card>
-            )}
+              if (lessonSteps) {
+                return (
+                  <div className={`rounded-2xl overflow-hidden ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900`}>
+                    <ExperimentLesson steps={lessonSteps} onClose={handleCloseVideo} />
+                  </div>
+                );
+              }
+
+              return (
+                <>
+                  <div className={`aspect-video bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center ${depth.border} ${depth.bottom} border-gray-800 dark:border-gray-900`}>
+                    <div className="text-center text-gray-400 p-8">
+                      <svg className="w-20 h-20 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-lg font-medium">Lección interactiva próximamente</p>
+                      <p className="text-sm mt-1 opacity-70">El contenido se está preparando</p>
+                    </div>
+                  </div>
+
+                  {selectedVideo?.description && (
+                    <Card variant="neutral" padding="lg" className="mt-6">
+                      <h3 className="font-bold text-[#4b4b4b] dark:text-white mb-2">Descripción</h3>
+                      <p className="text-[#777777] dark:text-gray-400">{selectedVideo.description}</p>
+                    </Card>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </div>
       )}
