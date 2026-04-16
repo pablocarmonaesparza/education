@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import LessonItem from '@/components/dashboard/LessonItem';
+import PathConnector from '@/components/dashboard/PathConnector';
 import RetoItem from '@/components/dashboard/RetoItem';
 import IconButton from '@/components/ui/IconButton';
 import Button from '@/components/ui/Button';
@@ -282,13 +283,6 @@ export default function DashboardPage() {
 
     fetchUserData();
   }, [supabase]);
-
-  const formatDuration = (seconds: number | undefined | null) => {
-    if (!seconds || isNaN(seconds)) return '0:00';
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
 
   // Group videos by phase
   const videosByPhase = videos.reduce((acc, video) => {
@@ -785,25 +779,41 @@ export default function DashboardPage() {
                   <Divider title={phaseData.phaseName} />
                 </div>
                 
-                {/* Videos in this phase */}
-                <div className="w-full max-w-[220px] mx-auto px-2 sm:px-0 space-y-4">
-                  {phaseData.videos.map((video) => (
-                    <div key={video.id} data-video-id={video.id}>
-                      <LessonItem
-                        lessonNumber={video.order + 1}
-                        totalLessons={totalCount}
-                        duration={formatDuration(video.duration)}
-                        category={video.phaseName}
-                        title={video.title}
-                        description={video.description}
-                        isCompleted={video.isCompleted}
-                        isCurrent={video.isCurrent}
-                        isExpanded={expandedVideoId === String(video.id)}
-                        onToggleExpand={() => setExpandedVideoId(expandedVideoId === String(video.id) ? null : String(video.id))}
-                        onClick={() => handleVideoSelect(video)}
-                      />
-                    </div>
-                  ))}
+                {/* Videos in this phase — zigzag path (Duolingo-style) on sm+,
+                    centered stack on mobile */}
+                <div className="w-full max-w-md mx-auto px-2 sm:px-0 space-y-4 sm:space-y-0">
+                  {phaseData.videos.map((video, idx) => {
+                    const pos = idx % 6;
+                    const nextPos = (idx + 1) % 6;
+                    // Mobile: always centered; sm+: zigzag rotation through 6 positions.
+                    const offsetClass = [
+                      'mx-auto sm:ml-0 sm:mr-auto',
+                      'mx-auto sm:ml-[15%] sm:mr-auto',
+                      'mx-auto',
+                      'mx-auto sm:ml-auto sm:mr-[15%]',
+                      'mx-auto sm:ml-auto sm:mr-0',
+                      'mx-auto sm:ml-auto sm:mr-[15%]',
+                    ][pos];
+                    const isLast = idx === phaseData.videos.length - 1;
+                    return (
+                      <div key={video.id}>
+                        <div data-video-id={video.id} className={`w-[220px] ${offsetClass}`}>
+                          <LessonItem
+                            lessonNumber={video.order + 1}
+                            totalLessons={totalCount}
+                            title={video.title}
+                            description={video.description}
+                            isCompleted={video.isCompleted}
+                            isCurrent={video.isCurrent}
+                            isExpanded={expandedVideoId === String(video.id)}
+                            onToggleExpand={() => setExpandedVideoId(expandedVideoId === String(video.id) ? null : String(video.id))}
+                            onClick={() => handleVideoSelect(video)}
+                          />
+                        </div>
+                        {!isLast && <PathConnector fromPos={pos} toPos={nextPos} />}
+                      </div>
+                    );
+                  })}
 
                   {/* Reto for this phase */}
                   {(() => {

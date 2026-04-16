@@ -5,8 +5,6 @@ import { depthStructure, depthActiveGroup } from '@/lib/design-tokens';
 interface LessonItemProps {
   lessonNumber: number;
   totalLessons: number;
-  duration: string;
-  category: string;
   title: string;
   description?: string;
   isCompleted?: boolean;
@@ -19,7 +17,6 @@ interface LessonItemProps {
 export default function LessonItem({
   lessonNumber,
   totalLessons,
-  duration,
   title,
   description,
   isCompleted = false,
@@ -113,16 +110,13 @@ export default function LessonItem({
           </div>
         )}
 
-        {/* Bottom row: Lesson number left, Duration right */}
-        <div className="flex items-center justify-between">
-          <div className={`text-sm ${getSecondaryTextColor()}`}>
-            <span className={`font-bold ${getTextColor()}`}>{lessonNumber}</span>
-            <span> de </span>
-            <span>{totalLessons}</span>
-          </div>
-
-          <div className={`px-2 py-0.5 rounded-lg border border-b-2 text-xs font-medium ${getDurationBg()} ${isCompleted || isCurrent ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`}>
-            {duration}
+        {/* Bottom row: Lesson number in right-aligned pill */}
+        <div className="flex items-center justify-end">
+          <div
+            aria-label={`Lección ${lessonNumber} de ${totalLessons}`}
+            className={`px-2 py-0.5 rounded-lg border border-b-2 text-xs font-medium ${getDurationBg()} ${isCompleted || isCurrent ? 'text-white' : 'text-gray-600 dark:text-gray-300'}`}
+          >
+            <span aria-hidden="true">{lessonNumber}/{totalLessons}</span>
           </div>
         </div>
       </div>
