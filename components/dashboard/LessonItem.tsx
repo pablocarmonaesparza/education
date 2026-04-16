@@ -91,7 +91,7 @@ export default function LessonItem({
               onClick={handleExpandClick}
               className={`text-xs font-bold flex items-center gap-1 ${getExpandButtonColor()} hover:opacity-80 transition-opacity cursor-pointer`}
             >
-              <span>¿Para qué ver este video?</span>
+              <span>¿Para qué tomar esta lección?</span>
               <svg 
                 className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} 
                 fill="none" 
