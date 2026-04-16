@@ -855,8 +855,8 @@ export default function DashboardPage() {
                       <div key={video.id}>
                         <div data-video-id={video.id}>
                           <LessonItem
-                            lessonNumber={video.order + 1}
-                            totalLessons={totalCount}
+                            lessonNumber={idx + 1}
+                            totalLessons={phaseData.videos.length}
                             title={video.title}
                             description={video.description}
                             isCompleted={video.isCompleted}
