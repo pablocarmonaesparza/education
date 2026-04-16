@@ -557,7 +557,7 @@ export default function ExperimentLesson({
     <div className={`${onClose ? 'h-full' : 'min-h-screen'} flex flex-col bg-white dark:bg-gray-950`}>
       {/* Top bar: single flex row, no absolute positioning — scales cleanly to mobile */}
       <header className="px-4 py-4">
-        <div className="mx-auto max-w-5xl flex items-center gap-2 md:gap-3">
+        <div className="mx-auto max-w-2xl flex items-center gap-2 md:gap-3">
           <IconButton
             variant="outline"
             aria-label="Salir de la lección"
@@ -738,7 +738,7 @@ export default function ExperimentLesson({
         </div>
       </main>
 
-      {/* Bottom: XP bar + divider + CTA */}
+      {/* Bottom: XP bar + divider + CTA — matches header width for visual alignment */}
       <footer className="px-4 py-6">
         <div className="mx-auto max-w-2xl space-y-4">
           <XpBar xp={xp} total={totalXp} delta={xpDelta} />
