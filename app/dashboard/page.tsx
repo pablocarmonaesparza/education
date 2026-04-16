@@ -60,6 +60,88 @@ interface Exercise {
   missingVideos: number[];
 }
 
+type IntakeRow = {
+  responses: any;
+  generated_path: any;
+  created_at?: string;
+};
+
+type RouteMode = 'full' | 'personalized';
+
+/**
+ * Turn an intake_responses.generated_path into a flat Video[] with isCompleted
+ * and isCurrent computed against the user's completedVideos set.
+ *
+ * Extracted from the dashboard so the same logic drives both the initial
+ * fetch and the route-switching derive effect. Pure; no React calls.
+ *
+ * Videos are keyed with a `${mode}:` prefix so the full and personalized
+ * routes keep independent progress in video_progress even when ordinals
+ * (order=1, 2, ...) collide between the two generated paths.
+ */
+function buildVideosFromIntake(
+  path: any,
+  completedVideos: Set<string>,
+  mode: RouteMode,
+): Video[] {
+  if (!path) return [];
+  const allVideos: Video[] = [];
+  let videoOrder = 0;
+  let foundCurrent = false;
+  const phases = path.phases || path.course?.phases || path.modules || path.sections || [];
+
+  phases.forEach((phase: any, phaseIndex: number) => {
+    const phaseVideos = phase.videos || phase.content || phase.lessons || [];
+    const phaseName = phase.phase_name || phase.title || phase.name || `Fase ${phaseIndex + 1}`;
+    const phaseId = phase.phase_number || phase.id || `phase-${phaseIndex}`;
+
+    phaseVideos.forEach((video: any) => {
+      const rawId = video.order?.toString() || video.id || `video-${videoOrder}`;
+      const videoId = `${mode}:${rawId}`;
+      const isCompleted = completedVideos.has(videoId);
+      const isCurrent = !isCompleted && !foundCurrent;
+      if (isCurrent) foundCurrent = true;
+
+      const videoTitle = video.description || video.title || video.name || `Video ${videoOrder + 1}`;
+      const videoDescription = video.why_relevant || video.summary || '';
+
+      let durationSeconds: number | null = null;
+      if (video.duration) {
+        if (typeof video.duration === 'string' && video.duration.includes(':')) {
+          const [mins, secs] = video.duration.split(':').map(Number);
+          durationSeconds = mins * 60 + (secs || 0);
+        } else if (typeof video.duration === 'number') {
+          durationSeconds = video.duration;
+        } else {
+          durationSeconds = parseInt(video.duration) || null;
+        }
+      }
+
+      const rawLectureId = video.lecture_id ?? video.id;
+      const parsedLectureId =
+        rawLectureId !== undefined && rawLectureId !== null ? Number(rawLectureId) : undefined;
+      const lectureId = Number.isFinite(parsedLectureId) ? parsedLectureId : undefined;
+
+      allVideos.push({
+        id: videoId,
+        lectureId,
+        title: videoTitle,
+        description: videoDescription,
+        duration: durationSeconds,
+        order: videoOrder,
+        phaseId: phaseId.toString(),
+        phaseName,
+        isCompleted,
+        isCurrent,
+        videoUrl: video.video_url || video.url || undefined,
+      });
+      videoOrder++;
+    });
+  });
+
+  return allVideos;
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [userName, setUserName] = useState<string>('');
@@ -84,6 +166,12 @@ export default function DashboardPage() {
   const [isRetoOverlayOpen, setIsRetoOverlayOpen] = useState(false);
   const [isRetoOverlayClosing, setIsRetoOverlayClosing] = useState(false);
   const [completedExercises, setCompletedExercises] = useState<Set<number>>(new Set());
+  // Multi-route state: user may have a full-course intake and/or a
+  // personalized intake. activeMode decides which one is rendered.
+  const [activeMode, setActiveMode] = useState<RouteMode>('full');
+  const [fullIntake, setFullIntake] = useState<IntakeRow | null>(null);
+  const [personalizedIntake, setPersonalizedIntake] = useState<IntakeRow | null>(null);
+  const [completedVideoIdSet, setCompletedVideoIdSet] = useState<Set<string>>(new Set());
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const phaseSectionsRef = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -141,106 +229,51 @@ export default function DashboardPage() {
         const randomGreeting = greetings[Math.floor(Math.random() * greetings.length)];
         setGreeting(randomGreeting);
 
-        // Fetch user's data from intake_responses
-        const { data: intakeData } = await supabase
+        // Fetch ALL intake_responses (newest first) so we can separate the
+        // user's full-course intake from their personalized one and let the
+        // chevrons navigate between the two.
+        const { data: intakesRaw } = await supabase
           .from('intake_responses')
-          .select('responses, generated_path')
+          .select('responses, generated_path, created_at')
           .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(1)
-          .single();
-        
-        // Get project idea and AI-generated summary (2 lines, from OpenAI after onboarding)
-        const projectIdea = 
-          intakeData?.responses?.project_idea ||
-          intakeData?.responses?.project ||
-          intakeData?.responses?.idea ||
-          '';
-        const summary = intakeData?.responses?.project_summary || '';
-        
-        if (projectIdea) setProject(projectIdea);
-        if (summary) setProjectSummary(summary);
+          .order('created_at', { ascending: false });
 
-        // Get videos from generated_path
-        if (intakeData?.generated_path) {
+        const intakes: IntakeRow[] = (intakesRaw || []) as IntakeRow[];
+        const full = intakes.find((i) => i.responses?.mode === 'full') ?? null;
+        const personalized = intakes.find((i) => i.responses?.mode !== 'full') ?? null;
+        setFullIntake(full);
+        setPersonalizedIntake(personalized);
+
+        // Initial active mode: the most recent intake wins. If only one exists,
+        // pick whichever side has data.
+        const latest = intakes[0];
+        const initialMode: RouteMode =
+          latest && latest.responses?.mode !== 'full'
+            ? 'personalized'
+            : full
+              ? 'full'
+              : personalized
+                ? 'personalized'
+                : 'full';
+        setActiveMode(initialMode);
+
+        // Load progress + exercises regardless of which route is active.
+        // The derive effect below reads fullIntake/personalizedIntake and
+        // completedVideoIdSet and populates `videos`, `project`, and
+        // `projectSummary` for the current activeMode.
+        if (full || personalized) {
           // Fetch video progress
           const { data: progressData } = await supabase
             .from('video_progress')
             .select('video_id, completed')
             .eq('user_id', user.id);
 
-          const completedVideos = new Set(
+          const completedVideos = new Set<string>(
             (progressData || [])
               .filter((p: any) => p.completed)
               .map((p: any) => p.video_id)
           );
-
-          // Parse generated_path to get videos
-          const path = intakeData.generated_path;
-          const allVideos: Video[] = [];
-          let videoOrder = 0;
-          let foundCurrent = false;
-
-          // Handle different possible structures (n8n format: course.phases)
-          const phases = path.phases || path.course?.phases || path.modules || path.sections || [];
-          
-          phases.forEach((phase: any, phaseIndex: number) => {
-            const phaseVideos = phase.videos || phase.content || phase.lessons || [];
-            const phaseName = phase.phase_name || phase.title || phase.name || `Fase ${phaseIndex + 1}`;
-            const phaseId = phase.phase_number || phase.id || `phase-${phaseIndex}`;
-            
-            phaseVideos.forEach((video: any) => {
-              const videoId = video.order?.toString() || video.id || `video-${videoOrder}`;
-              const isCompleted = completedVideos.has(videoId);
-              const isCurrent = !isCompleted && !foundCurrent;
-              
-              if (isCurrent) {
-                foundCurrent = true;
-              }
-              
-              // n8n format: description is the video title, why_relevant is the description
-              const videoTitle = video.description || video.title || video.name || `Video ${videoOrder + 1}`;
-              const videoDescription = video.why_relevant || video.summary || '';
-              
-              // Parse duration from "2:30" format to seconds
-              let durationSeconds: number | null = null;
-              if (video.duration) {
-                if (typeof video.duration === 'string' && video.duration.includes(':')) {
-                  const [mins, secs] = video.duration.split(':').map(Number);
-                  durationSeconds = (mins * 60) + (secs || 0);
-                } else if (typeof video.duration === 'number') {
-                  durationSeconds = video.duration;
-                } else {
-                  durationSeconds = parseInt(video.duration) || null;
-                }
-              }
-              
-              // Capture the real education_system.id for lesson content lookup
-              const rawLectureId = video.lecture_id ?? video.id;
-              const parsedLectureId = rawLectureId !== undefined && rawLectureId !== null
-                ? Number(rawLectureId)
-                : undefined;
-              const lectureId = Number.isFinite(parsedLectureId) ? parsedLectureId : undefined;
-
-              allVideos.push({
-                id: videoId,
-                lectureId,
-                title: videoTitle,
-                description: videoDescription,
-                duration: durationSeconds,
-                order: videoOrder,
-                phaseId: phaseId.toString(),
-                phaseName,
-                isCompleted,
-                isCurrent,
-                videoUrl: video.video_url || video.url || undefined,
-              });
-              
-              videoOrder++;
-            });
-          });
-
-          setVideos(allVideos);
+          setCompletedVideoIdSet(completedVideos);
 
           // Fetch exercises for retos integration
           const { data: exercisesResult } = await supabase
@@ -283,6 +316,29 @@ export default function DashboardPage() {
 
     fetchUserData();
   }, [supabase]);
+
+  // Re-derive the rendered videos + project summary whenever the active
+  // route, the source intakes, or the completion set changes. This is the
+  // single source of truth for what the dashboard shows — handleLessonComplete
+  // and the chevron toggle only mutate upstream state and let this effect
+  // recompute downstream UI.
+  useEffect(() => {
+    const intake = activeMode === 'full' ? fullIntake : personalizedIntake;
+    if (!intake) {
+      setVideos([]);
+      setProject('');
+      setProjectSummary('');
+      return;
+    }
+    setVideos(buildVideosFromIntake(intake.generated_path, completedVideoIdSet, activeMode));
+    setProject(
+      intake.responses?.project_idea ||
+        intake.responses?.project ||
+        intake.responses?.idea ||
+        '',
+    );
+    setProjectSummary(intake.responses?.project_summary || '');
+  }, [activeMode, fullIntake, personalizedIntake, completedVideoIdSet]);
 
   // Group videos by phase
   const videosByPhase = videos.reduce((acc, video) => {
@@ -597,8 +653,15 @@ export default function DashboardPage() {
       return;
     }
 
-    // 3. Update videos: mark this one completed and promote the next
-    // non-completed video (in order) to isCurrent.
+    // 3. Update the completion set so the derive effect keeps future route
+    // switches and exercises in sync, and also patch the current videos
+    // array optimistically so the current card turns green right away.
+    setCompletedVideoIdSet((prev) => {
+      if (prev.has(video.id)) return prev;
+      const next = new Set(prev);
+      next.add(video.id);
+      return next;
+    });
     setVideos((prev) => {
       let nextCurrentAssigned = false;
       return prev.map((v) => {
@@ -706,6 +769,79 @@ export default function DashboardPage() {
     );
   }
 
+  // ── Route switcher UI (shared between the hero card and the sticky card) ──
+  const hasFull = !!fullIntake;
+  const hasPersonalized = !!personalizedIntake;
+  const leftDisabled = activeMode === 'full' || !hasFull;
+  const rightDisabled = activeMode === 'personalized' || !hasPersonalized;
+
+  const goFull = () => {
+    if (!hasFull || activeMode === 'full') return;
+    setActivePhaseId('');
+    setActiveMode('full');
+  };
+  const goPersonalized = () => {
+    if (!hasPersonalized || activeMode === 'personalized') return;
+    setActivePhaseId('');
+    setActiveMode('personalized');
+  };
+
+  const routeLeadingChevron = (
+    <IconButton
+      variant="outline"
+      disabled={leftDisabled}
+      aria-label="Ir al curso completo"
+      onClick={leftDisabled ? undefined : goFull}
+      className="flex-shrink-0"
+    >
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+      </svg>
+    </IconButton>
+  );
+
+  const routeTrailingChevron = (
+    <IconButton
+      variant="outline"
+      disabled={rightDisabled}
+      aria-label="Ir al curso personalizado"
+      onClick={rightDisabled ? undefined : goPersonalized}
+      className="flex-shrink-0"
+    >
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+      </svg>
+    </IconButton>
+  );
+
+  const routeCardContent = activeMode === 'full' ? (
+    <>
+      <p className="text-center text-xs sm:text-sm text-[#777777] dark:text-gray-400 leading-relaxed">
+        Actualmente estás en el curso completo.
+      </p>
+      <button
+        type="button"
+        onClick={() => setShowCreateCourseModal(true)}
+        className="pointer-events-auto block mx-auto text-center text-xs sm:text-sm font-bold text-[#1472FF] hover:text-[#0E5FCC] transition-colors mt-0.5"
+      >
+        Crea tu curso personalizado
+      </button>
+      <div className="flex justify-center gap-1.5 mt-1.5 sm:mt-2">
+        <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
+        <div className={`w-1.5 h-1.5 rounded-full ${hasPersonalized ? 'bg-gray-400 dark:bg-gray-500' : 'bg-gray-300 dark:bg-gray-700'}`} />
+      </div>
+    </>
+  ) : (
+    <>
+      <p className="text-center text-xs sm:text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
+        {projectSummary || project || 'Tu curso personalizado'}
+      </p>
+      <div className="flex justify-center gap-1.5 mt-1.5 sm:mt-2">
+        <div className={`w-1.5 h-1.5 rounded-full ${hasFull ? 'bg-gray-400 dark:bg-gray-500' : 'bg-gray-300 dark:bg-gray-700'}`} />
+        <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
+      </div>
+    </>
+  );
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
@@ -723,39 +859,15 @@ export default function DashboardPage() {
                 {greeting.toLowerCase()}, {userName}
               </h1>
             )}
-            {project && (
+            {(hasFull || hasPersonalized) && (
               <div className="flex justify-center px-2 sm:px-4 mt-4 mb-2">
                 <CompositeCard
                   className="w-[95%] sm:w-[80%] max-w-4xl"
                   contentClassName="pointer-events-none"
-                  leading={
-                    <IconButton
-                      variant="outline"
-                      disabled
-                      aria-label="Anterior"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                      </svg>
-                    </IconButton>
-                  }
-                  trailing={
-                    <IconButton
-                      aria-label="Añadir o ver proyecto"
-                      onClick={() => setShowCreateCourseModal(true)}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                    </IconButton>
-                  }
+                  leading={routeLeadingChevron}
+                  trailing={routeTrailingChevron}
                 >
-                  <p className="text-center text-xs sm:text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
-                    {projectSummary || project}
-                  </p>
-                  <div className="flex justify-center gap-1.5 mt-1.5 sm:mt-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
-                  </div>
+                  {routeCardContent}
                 </CompositeCard>
               </div>
             )}
@@ -771,40 +883,15 @@ export default function DashboardPage() {
                 !showGreeting ? 'max-h-[140px] opacity-100 py-2' : 'max-h-0 opacity-0 py-0'
               }`}
             >
-              {project && (
+              {(hasFull || hasPersonalized) && (
                 <div className="flex justify-center px-2 sm:px-4">
                   <CompositeCard
                     className="w-[95%] sm:w-[80%] max-w-4xl"
                     contentClassName="pointer-events-none"
-                    leading={
-                      <IconButton
-                        variant="outline"
-                        disabled
-                        aria-label="Anterior"
-                        className="flex-shrink-0"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                      </IconButton>
-                    }
-                    trailing={
-                      <IconButton
-                        aria-label="Añadir o ver proyecto"
-                        onClick={() => setShowCreateCourseModal(true)}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                        </svg>
-                      </IconButton>
-                    }
+                    leading={routeLeadingChevron}
+                    trailing={routeTrailingChevron}
                   >
-                    <p className="text-center text-xs sm:text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
-                      {projectSummary || project}
-                    </p>
-                    <div className="flex justify-center gap-1.5 mt-1.5 sm:mt-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
-                    </div>
+                    {routeCardContent}
                   </CompositeCard>
                 </div>
               )}
