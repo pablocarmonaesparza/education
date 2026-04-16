@@ -863,103 +863,109 @@ export default function DashboardPage() {
       )}
 
       {/* Video Player Overlay - Animated, only covers content area between sidebars */}
-      {(selectedVideo || isVideoPlayerClosing) && (
-        <div
-          className={`fixed top-0 md:top-0 bottom-0 flex items-center justify-center transition-all ease-out pt-14 md:pt-0 ${
-            isVideoPlayerOpen && !isVideoPlayerClosing
-              ? 'bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm'
-              : 'bg-white/0 dark:bg-gray-800/0'
-          }`}
-          style={{
-            transitionDuration: '400ms',
-            left: isMobile ? 0 : 256,
-            right: isMobile ? 0 : `${chatWidth}px`,
-            zIndex: 35,
-          }}
-        >
+      {(selectedVideo || isVideoPlayerClosing) && (() => {
+        const lectureId = selectedVideo?.lectureId;
+        const lessonSteps =
+          typeof lectureId === 'number' && Number.isFinite(lectureId)
+            ? getLessonSteps(lectureId)
+            : null;
+        const hasLesson = !!lessonSteps;
+
+        return (
           <div
-            className={`w-full max-w-4xl mx-auto px-4 sm:px-8 overflow-y-auto max-h-full transition-all ease-out ${
+            className={`fixed top-0 md:top-0 bottom-0 flex items-center justify-center transition-all ease-out pt-14 md:pt-0 ${
               isVideoPlayerOpen && !isVideoPlayerClosing
-                ? 'opacity-100 scale-100 translate-y-0'
-                : 'opacity-0 scale-95 translate-y-8'
+                ? 'bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm'
+                : 'bg-white/0 dark:bg-gray-800/0'
             }`}
             style={{
               transitionDuration: '400ms',
-              transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+              left: isMobile ? 0 : 256,
+              right: isMobile ? 0 : `${chatWidth}px`,
+              zIndex: 35,
             }}
           >
-            {/* Close Button */}
-            <div className="flex justify-end mb-6">
-              <Button
-                variant="outline"
-                size="md"
-                rounded2xl
-                onClick={handleCloseVideo}
-                className="flex items-center gap-2"
+            {hasLesson ? (
+              // Lesson path: full-bleed ExperimentLesson, own X button closes the overlay.
+              <div
+                className={`w-full h-full flex transition-all ease-out ${
+                  isVideoPlayerOpen && !isVideoPlayerClosing
+                    ? 'opacity-100 scale-100 translate-y-0'
+                    : 'opacity-0 scale-95 translate-y-8'
+                }`}
+                style={{
+                  transitionDuration: '400ms',
+                  transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                Cerrar
-              </Button>
-            </div>
+                <ExperimentLesson steps={lessonSteps!} onClose={handleCloseVideo} />
+              </div>
+            ) : (
+              // Placeholder path: original wrapper with Cerrar button + title + "próximamente" box.
+              <div
+                className={`w-full max-w-4xl mx-auto px-4 sm:px-8 overflow-y-auto max-h-full transition-all ease-out ${
+                  isVideoPlayerOpen && !isVideoPlayerClosing
+                    ? 'opacity-100 scale-100 translate-y-0'
+                    : 'opacity-0 scale-95 translate-y-8'
+                }`}
+                style={{
+                  transitionDuration: '400ms',
+                  transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                }}
+              >
+                {/* Close Button */}
+                <div className="flex justify-end mb-6">
+                  <Button
+                    variant="outline"
+                    size="md"
+                    rounded2xl
+                    onClick={handleCloseVideo}
+                    className="flex items-center gap-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Cerrar
+                  </Button>
+                </div>
 
-            {/* Video Info */}
-            <div className="mb-4">
-              <p className="text-sm text-[#1472FF] font-bold uppercase tracking-wide mb-1">
-                {selectedVideo?.phaseName}
-              </p>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white">
-                {selectedVideo?.title}
-              </h1>
-              {selectedVideo?.duration && (
-                <p className="text-[#777777] dark:text-gray-400 mt-1 text-sm">
-                  Duración: {formatDuration(selectedVideo.duration)}
-                </p>
-              )}
-            </div>
-
-            {/* Lesson content — ExperimentLesson if available, else placeholder */}
-            {(() => {
-              const lectureId = selectedVideo?.lectureId;
-              const lessonSteps =
-                typeof lectureId === 'number' && Number.isFinite(lectureId)
-                  ? getLessonSteps(lectureId)
-                  : null;
-
-              if (lessonSteps) {
-                return (
-                  <div className={`rounded-2xl overflow-hidden ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900`}>
-                    <ExperimentLesson steps={lessonSteps} onClose={handleCloseVideo} />
-                  </div>
-                );
-              }
-
-              return (
-                <>
-                  <div className={`aspect-video bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center ${depth.border} ${depth.bottom} border-gray-800 dark:border-gray-900`}>
-                    <div className="text-center text-gray-400 p-8">
-                      <svg className="w-20 h-20 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <p className="text-lg font-medium">Lección interactiva próximamente</p>
-                      <p className="text-sm mt-1 opacity-70">El contenido se está preparando</p>
-                    </div>
-                  </div>
-
-                  {selectedVideo?.description && (
-                    <Card variant="neutral" padding="lg" className="mt-6">
-                      <h3 className="font-bold text-[#4b4b4b] dark:text-white mb-2">Descripción</h3>
-                      <p className="text-[#777777] dark:text-gray-400">{selectedVideo.description}</p>
-                    </Card>
+                {/* Video Info */}
+                <div className="mb-4">
+                  <p className="text-sm text-[#1472FF] font-bold uppercase tracking-wide mb-1">
+                    {selectedVideo?.phaseName}
+                  </p>
+                  <h1 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white">
+                    {selectedVideo?.title}
+                  </h1>
+                  {selectedVideo?.duration && (
+                    <p className="text-[#777777] dark:text-gray-400 mt-1 text-sm">
+                      Duración: {formatDuration(selectedVideo.duration)}
+                    </p>
                   )}
-                </>
-              );
-            })()}
+                </div>
+
+                <div className={`aspect-video bg-gray-900 rounded-2xl overflow-hidden flex items-center justify-center ${depth.border} ${depth.bottom} border-gray-800 dark:border-gray-900`}>
+                  <div className="text-center text-gray-400 p-8">
+                    <svg className="w-20 h-20 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-lg font-medium">Lección interactiva próximamente</p>
+                    <p className="text-sm mt-1 opacity-70">El contenido se está preparando</p>
+                  </div>
+                </div>
+
+                {selectedVideo?.description && (
+                  <Card variant="neutral" padding="lg" className="mt-6">
+                    <h3 className="font-bold text-[#4b4b4b] dark:text-white mb-2">Descripción</h3>
+                    <p className="text-[#777777] dark:text-gray-400">{selectedVideo.description}</p>
+                  </Card>
+                )}
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Reto Overlay - Same pattern as video player, covers content area between sidebars */}
       {(selectedExercise || isRetoOverlayClosing) && (
