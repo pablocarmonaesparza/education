@@ -554,7 +554,7 @@ export default function ExperimentLesson({
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950">
+    <div className={`${onClose ? 'h-full' : 'min-h-screen'} flex flex-col bg-white dark:bg-gray-950`}>
       {/* Top bar: single flex row, no absolute positioning — scales cleanly to mobile */}
       <header className="px-4 py-4">
         <div className="mx-auto max-w-5xl flex items-center gap-2 md:gap-3">

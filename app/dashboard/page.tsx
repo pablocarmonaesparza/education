@@ -886,12 +886,13 @@ export default function DashboardPage() {
             }}
           >
             {hasLesson ? (
-              // Lesson path: full-bleed ExperimentLesson, own X button closes the overlay.
+              // Lesson path: ExperimentLesson fills the full area between sidebars,
+              // self-contained (its own X button closes the overlay).
               <div
-                className={`w-full h-full flex transition-all ease-out ${
+                className={`w-full h-full transition-all ease-out ${
                   isVideoPlayerOpen && !isVideoPlayerClosing
-                    ? 'opacity-100 scale-100 translate-y-0'
-                    : 'opacity-0 scale-95 translate-y-8'
+                    ? 'opacity-100 scale-100'
+                    : 'opacity-0 scale-95'
                 }`}
                 style={{
                   transitionDuration: '400ms',
