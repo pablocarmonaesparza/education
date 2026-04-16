@@ -13,7 +13,7 @@ export const LESSON_REGISTRY: Record<number, Step[]> = {
 };
 
 /**
- * Devuelve los steps de la lección, o null si aún no está escrita.
+ * Devuelve los steps de la lección si están tipados, o null si aún no.
  */
 export function getLessonSteps(lectureId: number): Step[] | null {
   return LESSON_REGISTRY[lectureId] ?? null;
