@@ -103,7 +103,7 @@ export default function LessonItem({
             </div>
             
             {isExpanded && description && (
-              <p className={`text-xs mt-2 leading-relaxed ${getSecondaryTextColor()}`}>
+              <p className={`text-xs mt-2 leading-relaxed whitespace-pre-line ${getSecondaryTextColor()}`}>
                 {description}
               </p>
             )}
