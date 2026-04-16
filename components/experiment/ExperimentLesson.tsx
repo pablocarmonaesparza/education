@@ -412,7 +412,17 @@ export const DEFAULT_STEPS: Step[] = [
 export default function ExperimentLesson({
   steps: propSteps,
   onClose,
-}: { steps?: Step[]; onClose?: () => void } = {}) {
+  onComplete,
+}: {
+  steps?: Step[];
+  onClose?: () => void;
+  /** Fires once when the user finishes the lesson successfully (clicks
+   * "terminar" in the result modal after passing, or exits a non-scoreable
+   * placeholder lesson which is considered passed by default). May be async;
+   * the overlay waits for it to resolve before closing so the caller can
+   * persist progress before the UI advances. */
+  onComplete?: () => void | Promise<void>;
+} = {}) {
   const STEPS = propSteps ?? DEFAULT_STEPS;
   const router = useRouter();
   const [index, setIndex] = useState(0);
@@ -474,6 +484,19 @@ export default function ExperimentLesson({
       onClose();
     } else {
       router.push('/');
+    }
+  };
+
+  const [isFinishing, setIsFinishing] = useState(false);
+  const handleFinish = async () => {
+    if (isFinishing) return;
+    setIsFinishing(true);
+    try {
+      await onComplete?.();
+    } catch (err) {
+      console.warn('[experiment] onComplete threw, closing anyway', err);
+    } finally {
+      handleExit();
     }
   };
 
@@ -763,6 +786,7 @@ export default function ExperimentLesson({
           totalMcq={totalScoreable}
           onRetry={handleRestart}
           onExit={handleExit}
+          onFinish={handleFinish}
         />
       )}
 
@@ -788,6 +812,7 @@ function ResultModal({
   totalMcq,
   onRetry,
   onExit,
+  onFinish,
 }: {
   passed: boolean;
   accuracy: number;
@@ -795,8 +820,10 @@ function ResultModal({
   totalMcq: number;
   onRetry: () => void;
   onExit: () => void;
+  onFinish: () => void;
 }) {
   const percent = Math.round(accuracy * 100);
+  const hasExercises = totalMcq > 0;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-white/40 dark:bg-white/10 backdrop-blur-sm">
       {passed && <ConfettiEffect count={120} pattern="radial" shape="circle" />}
@@ -806,15 +833,17 @@ function ResultModal({
             {passed ? 'lección completada' : 'repetir lección'}
           </Title>
           <Body className="text-[#777777] dark:text-gray-400">
-            Acertaste {correctCount} de {totalMcq} ejercicios ({percent}%).
+            {hasExercises
+              ? `Acertaste ${correctCount} de ${totalMcq} ejercicios (${percent}%).`
+              : 'Has revisado toda la lección.'}
             {passed ? ' ¡Buen trabajo!' : ' Necesitas al menos 80% para avanzar.'}
           </Body>
           <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-            <Button variant={passed ? 'outline' : 'primary'} size="lg" onClick={onRetry}>
-              repetir
+            <Button variant={passed ? 'outline' : 'primary'} size="lg" onClick={passed ? onExit : onRetry}>
+              {passed ? 'cerrar' : 'repetir'}
             </Button>
             {passed && (
-              <Button variant="primary" size="lg" onClick={onExit}>
+              <Button variant="primary" size="lg" onClick={onFinish}>
                 terminar
               </Button>
             )}

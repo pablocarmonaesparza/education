@@ -18,7 +18,7 @@ import { depth } from '@/lib/design-tokens';
 import HorizontalScroll from '@/components/shared/HorizontalScroll';
 import VerticalScroll from '@/components/shared/VerticalScroll';
 import ExperimentLesson from '@/components/experiment/ExperimentLesson';
-import { getLessonSteps } from '@/components/experiment/lessonRegistry';
+import { getLessonStepsOrPlaceholder } from '@/components/experiment/lessonRegistry';
 
 const greetings = [
   "Hola",
@@ -567,6 +567,74 @@ export default function DashboardPage() {
     }, 400);
   };
 
+  // Mark the selected lesson as completed: persist to Supabase FIRST, then
+  // recompute local state so the UI only advances when the DB actually wrote.
+  // Also recomputes exercise unlocking so retos that depend on this lesson
+  // light up without a page refresh.
+  const handleLessonComplete = async (video: Video) => {
+    if (video.isCompleted) return;
+
+    // 1. Verify auth. No session → bail, don't touch UI.
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      console.warn('[dashboard] lesson complete: no user session, skipping', authError);
+      return;
+    }
+
+    // 2. Persist first. Abort local update on error so the dashboard never
+    // shows progress that wasn't saved.
+    const { error: writeError } = await supabase.from('video_progress').upsert(
+      {
+        user_id: user.id,
+        video_id: video.id,
+        completed: true,
+        completed_at: new Date().toISOString(),
+      },
+      { onConflict: 'user_id,video_id' },
+    );
+    if (writeError) {
+      console.warn('[dashboard] failed to persist video_progress', writeError);
+      return;
+    }
+
+    // 3. Update videos: mark this one completed and promote the next
+    // non-completed video (in order) to isCurrent.
+    setVideos((prev) => {
+      let nextCurrentAssigned = false;
+      return prev.map((v) => {
+        if (v.id === video.id) {
+          return { ...v, isCompleted: true, isCurrent: false };
+        }
+        if (v.isCompleted) {
+          return { ...v, isCurrent: false };
+        }
+        if (!nextCurrentAssigned) {
+          nextCurrentAssigned = true;
+          return { ...v, isCurrent: true };
+        }
+        return { ...v, isCurrent: false };
+      });
+    });
+
+    // 4. Recompute exercises.isUnlocked: drop this lecture from any
+    // pending missingVideos list. `missingVideos` holds education_system.id
+    // numbers, so match against video.lectureId (not the string order).
+    if (typeof video.lectureId === 'number') {
+      setExercises((prev) =>
+        prev.map((ex) => {
+          const missing = Array.isArray((ex as any).missingVideos)
+            ? (ex as any).missingVideos.filter((id: number) => id !== video.lectureId)
+            : (ex as any).missingVideos;
+          return {
+            ...ex,
+            missingVideos: missing,
+            isUnlocked: Array.isArray(missing) ? missing.length === 0 : (ex as any).isUnlocked,
+          };
+        }),
+      );
+    }
+  };
+
   // Handle reto selection with animation
   const handleRetoSelect = (exercise: Exercise) => {
     setSelectedExercise(exercise);
@@ -860,16 +928,15 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Lesson Overlay — ExperimentLesson when the lesson is tipified,
-          minimal "próximamente" card otherwise. Both paths stay centered
-          between sidebar and tutor IA using max-w-5xl. */}
+      {/* Lesson Overlay — ExperimentLesson for every lesson. Lessons with
+          tipified content use the registry steps; the rest get a short
+          placeholder (concept + celebration) so the UI is always consistent
+          and the user can mark the lesson as completed. */}
       {(selectedVideo || isVideoPlayerClosing) && (() => {
-        const lectureId = selectedVideo?.lectureId;
-        const lessonSteps =
-          typeof lectureId === 'number' && Number.isFinite(lectureId)
-            ? getLessonSteps(lectureId)
-            : null;
-        const hasLesson = !!lessonSteps;
+        const lessonSteps = getLessonStepsOrPlaceholder(
+          selectedVideo?.lectureId,
+          selectedVideo?.title ?? '',
+        );
         const animClass =
           isVideoPlayerOpen && !isVideoPlayerClosing
             ? 'opacity-100 scale-100'
@@ -893,51 +960,16 @@ export default function DashboardPage() {
               zIndex: 35,
             }}
           >
-            {hasLesson ? (
-              <div
-                className={`w-full max-w-5xl mx-auto h-full transition-all ease-out ${animClass}`}
-                style={animStyle}
-              >
-                <ExperimentLesson steps={lessonSteps!} onClose={handleCloseVideo} />
-              </div>
-            ) : (
-              <div
-                className={`w-full max-w-3xl mx-auto flex flex-col h-full transition-all ease-out ${animClass}`}
-                style={animStyle}
-              >
-                <header className="px-4 py-4">
-                  <IconButton
-                    variant="outline"
-                    aria-label="Cerrar"
-                    onClick={handleCloseVideo}
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </IconButton>
-                </header>
-                <div className="flex-1 flex items-center justify-center px-6">
-                  <div className="text-center max-w-lg">
-                    <p className="text-sm text-[#1472FF] font-bold uppercase tracking-wide mb-2">
-                      {selectedVideo?.phaseName}
-                    </p>
-                    <h1 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 lowercase tracking-tight">
-                      {selectedVideo?.title}
-                    </h1>
-                    <p className="text-base text-[#777777] dark:text-gray-400 mb-6 leading-relaxed">
-                      Estamos preparando el contenido interactivo de esta lección. Vuelve pronto.
-                    </p>
-                    {selectedVideo?.description && (
-                      <Card variant="neutral" padding="md" className="text-left">
-                        <p className="text-sm text-[#777777] dark:text-gray-400 whitespace-pre-line">
-                          {selectedVideo.description}
-                        </p>
-                      </Card>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
+            <div
+              className={`w-full max-w-5xl mx-auto h-full transition-all ease-out ${animClass}`}
+              style={animStyle}
+            >
+              <ExperimentLesson
+                steps={lessonSteps}
+                onClose={handleCloseVideo}
+                onComplete={() => selectedVideo && handleLessonComplete(selectedVideo)}
+              />
+            </div>
           </div>
         );
       })()}
