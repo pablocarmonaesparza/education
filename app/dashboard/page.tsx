@@ -639,10 +639,13 @@ export default function DashboardPage() {
 
     // 2. Persist first. Abort local update on error so the dashboard never
     // shows progress that wasn't saved.
+    // Note: `section_id` is NOT NULL in the schema, so we persist the
+    // lesson's phase id alongside the video id.
     const { error: writeError } = await supabase.from('video_progress').upsert(
       {
         user_id: user.id,
         video_id: video.id,
+        section_id: `${activeMode}:${video.phaseId}`,
         completed: true,
         completed_at: new Date().toISOString(),
       },

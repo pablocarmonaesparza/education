@@ -567,7 +567,16 @@ export default function ExperimentLesson({
       return;
     }
     if (isLast) {
-      setShowResult(true);
+      // The last slide is already a celebration (with confetti + emoji +
+      // stats). If the user passed the lesson, skip the result popup and
+      // finish directly — the celebration slide IS the completion screen.
+      // Only show the result modal when the user failed, so they still get
+      // the "repetir lección" affordance.
+      if (passed) {
+        handleFinish();
+      } else {
+        setShowResult(true);
+      }
       return;
     }
     const next = index + 1;
