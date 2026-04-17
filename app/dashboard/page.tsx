@@ -1056,8 +1056,8 @@ export default function DashboardPage() {
           <div
             className={`fixed top-0 md:top-0 bottom-0 flex items-stretch justify-center transition-all ease-out pt-14 md:pt-0 ${
               isVideoPlayerOpen && !isVideoPlayerClosing
-                ? 'bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm'
-                : 'bg-white/0 dark:bg-gray-800/0'
+                ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm'
+                : 'bg-white/0 dark:bg-gray-950/0'
             }`}
             style={{
               transitionDuration: '400ms',
@@ -1085,8 +1085,8 @@ export default function DashboardPage() {
         <div
           className={`fixed top-0 md:top-0 bottom-0 flex items-center justify-center transition-all ease-out pt-14 md:pt-0 ${
             isRetoOverlayOpen && !isRetoOverlayClosing
-              ? 'bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm'
-              : 'bg-white/0 dark:bg-gray-800/0'
+              ? 'bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm'
+              : 'bg-white/0 dark:bg-gray-950/0'
           }`}
           style={{
             transitionDuration: '400ms',
