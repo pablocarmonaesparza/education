@@ -800,7 +800,23 @@ export default function DashboardPage() {
     </IconButton>
   );
 
-  const routeTrailingChevron = (
+  // When the user doesn't have a personalized intake yet, the trailing
+  // affordance becomes a "+" button that opens the CreateCourseModal so
+  // there's a clear way to create one. Once they have it, it behaves as a
+  // normal right-chevron that navigates to the personalized route.
+  const showCreateAffordance = activeMode === 'full' && !hasPersonalized;
+  const routeTrailingChevron = showCreateAffordance ? (
+    <IconButton
+      variant="primary"
+      aria-label="Crear curso personalizado"
+      onClick={() => setShowCreateCourseModal(true)}
+      className="flex-shrink-0"
+    >
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+      </svg>
+    </IconButton>
+  ) : (
     <IconButton
       variant="outline"
       disabled={rightDisabled}
