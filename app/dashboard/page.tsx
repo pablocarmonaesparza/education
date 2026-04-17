@@ -881,7 +881,7 @@ export default function DashboardPage() {
             {(hasFull || hasPersonalized) && (
               <div className="flex justify-center px-2 sm:px-4 mt-4 mb-2">
                 <CompositeCard
-                  className="w-[95%] sm:w-[80%] max-w-4xl"
+                  className="w-[90%] sm:w-[80%] max-w-2xl"
                   contentClassName="pointer-events-none"
                   leading={routeLeadingChevron}
                   trailing={routeTrailingChevron}
@@ -905,7 +905,7 @@ export default function DashboardPage() {
               {(hasFull || hasPersonalized) && (
                 <div className="flex justify-center px-2 sm:px-4">
                   <CompositeCard
-                    className="w-[95%] sm:w-[80%] max-w-4xl"
+                    className="w-[90%] sm:w-[80%] max-w-2xl"
                     contentClassName="pointer-events-none"
                     leading={routeLeadingChevron}
                     trailing={routeTrailingChevron}
