@@ -878,19 +878,19 @@ export default function DashboardPage() {
                 {greeting.toLowerCase()}, {userName}
               </h1>
             )}
-            {(hasFull || hasPersonalized) && (
-              <div className="flex justify-center px-2 sm:px-4 mt-4 mb-2">
-                <CompositeCard
-                  className="w-[90%] sm:w-[80%] max-w-2xl"
-                  contentClassName="pointer-events-none"
-                  leading={routeLeadingChevron}
-                  trailing={routeTrailingChevron}
-                >
-                  {routeCardContent}
-                </CompositeCard>
-              </div>
-            )}
           </div>
+          {(hasFull || hasPersonalized) && (
+            <div className="flex justify-center mt-4 mb-2">
+              <CompositeCard
+                className="w-[90%] sm:w-[80%] max-w-2xl"
+                contentClassName="pointer-events-none"
+                leading={routeLeadingChevron}
+                trailing={routeTrailingChevron}
+              >
+                {routeCardContent}
+              </CompositeCard>
+            </div>
+          )}
         </div>
 
         {/* Project + Section Navigation - Sticky at top */}
