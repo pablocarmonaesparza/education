@@ -1142,7 +1142,7 @@ function MultipleChoiceStep({
   const [suppressHoverId, setSuppressHoverId] = useState<number | null>(null);
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-900';
+    '[--depth-color:#aeb3bb] dark:[--depth-color:#4b5563] border-[#aeb3bb] bg-gray-200 dark:bg-gray-700 dark:border-gray-600';
   const selectedHover =
     ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] [&_p]:hover:text-[#ef4444]';
 
@@ -1229,7 +1229,7 @@ function MultiSelectStep({
   };
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-900';
+    '[--depth-color:#aeb3bb] dark:[--depth-color:#4b5563] border-[#aeb3bb] bg-gray-200 dark:bg-gray-700 dark:border-gray-600';
   const selectedHover =
     ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] [&_p]:hover:text-[#ef4444] [&_.dot]:hover:border-[#ef4444] [&_.dot]:hover:bg-[#ef4444]';
 
@@ -1847,7 +1847,7 @@ function TrueFalseStep({
   const [suppressHover, setSuppressHover] = useState<boolean | null>(null);
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-900 text-[#4b4b4b] dark:text-gray-200';
+    '[--depth-color:#aeb3bb] dark:[--depth-color:#4b5563] border-[#aeb3bb] bg-gray-200 dark:bg-gray-700 dark:border-gray-600 text-[#4b4b4b] dark:text-gray-200';
   const selectedHover =
     ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] hover:text-[#ef4444]';
 
@@ -2122,7 +2122,7 @@ function TapMatchStep({
     if (isCorrect === false)
       return '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
     if (isPaired)
-      return '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-900 text-[#4b4b4b] dark:text-gray-200';
+      return '[--depth-color:#aeb3bb] dark:[--depth-color:#4b5563] border-[#aeb3bb] bg-gray-200 dark:bg-gray-700 dark:border-gray-600 text-[#4b4b4b] dark:text-gray-200';
     if (isSelected)
       return '[--depth-color:#1472FF] border-[#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
     return '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
