@@ -19,6 +19,7 @@ import HorizontalScroll from '@/components/shared/HorizontalScroll';
 import VerticalScroll from '@/components/shared/VerticalScroll';
 import ExperimentLesson from '@/components/experiment/ExperimentLesson';
 import { getLessonStepsOrPlaceholder } from '@/components/experiment/lessonRegistry';
+import { useSidebar } from '@/contexts/SidebarContext';
 
 const greetings = [
   "Hola",
@@ -144,6 +145,7 @@ function buildVideosFromIntake(
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { setLessonNav } = useSidebar();
   const [userName, setUserName] = useState<string>('');
   const [greeting, setGreeting] = useState<string>('');
   const [project, setProject] = useState<string>('');
@@ -417,17 +419,23 @@ export default function DashboardPage() {
       const scrollY = container.scrollTop;
       const difference = scrollY - lastScrollY;
 
-      // Greeting: only visible when at the very top
-      if (scrollY <= 10) {
-        setShowGreeting(true);
-      } else {
-        setShowGreeting(false);
-      }
+      // Greeting: hysteresis so collapsing the greeting (240px layout shift)
+      // can't bounce scrollTop back under the threshold and re-trigger. Show
+      // only near the very top; hide once we're clearly past it.
+      setShowGreeting((prev) => {
+        if (prev && scrollY > 80) return false;
+        if (!prev && scrollY < 4) return true;
+        return prev;
+      });
 
-      // Detect scroll direction with threshold
+      // Detect scroll direction with threshold. Skip while a programmatic
+      // scroll is in flight (auto-scroll to current lesson, tab clicks, etc.)
+      // so the progress bar doesn't hide on a scroll the user didn't make.
       if (Math.abs(difference) > threshold) {
-        const newDirection = difference > 0 ? 'down' : 'up';
-        setScrollDirection(newDirection);
+        if (!isScrollingToPhaseRef.current) {
+          const newDirection = difference > 0 ? 'down' : 'up';
+          setScrollDirection(newDirection);
+        }
         lastScrollY = scrollY > 0 ? scrollY : 0;
       }
     };
@@ -525,6 +533,12 @@ export default function DashboardPage() {
       // Mark that we're programmatically scrolling
       isScrollingToPhaseRef.current = true;
 
+      // Programmatic scroll shouldn't hide the progress bar — if the user was
+      // previously scrolled in a direction that hid it, force it back on when
+      // we auto-advance to the next lesson.
+      setShowProgressBar(true);
+      setScrollDirection('up');
+
       // Update active phase
       setActivePhaseId(currentVideo.phaseId);
       centerHorizontalButton(currentVideo.phaseId, true);
@@ -588,13 +602,26 @@ export default function DashboardPage() {
       setActivePhaseId(phaseId);
       centerHorizontalButton(phaseId, true);
 
-      // Calculate scroll position - leave space to see divider title
-      const sectionTop = section.offsetTop;
+      // Collapse the greeting first. Its 240px max-height transition runs for
+      // ~300ms and moves every phase section upward by that amount — if we
+      // measure before it settles, we land 240px too low and the previous
+      // section peeks in. Wait past the transition before measuring.
+      setShowGreeting(false);
 
-      container.scrollTo({
-        top: sectionTop - 120,
-        behavior: 'smooth'
-      });
+      window.setTimeout(() => {
+        const sectionRect = section.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const sectionTopFromScrollTop =
+          container.scrollTop + (sectionRect.top - containerRect.top);
+        const stickyHeader = container.querySelector<HTMLElement>('.sticky');
+        const stickyHeight = stickyHeader?.offsetHeight ?? 160;
+        const gradientBuffer = 16;
+
+        container.scrollTo({
+          top: sectionTopFromScrollTop - stickyHeight - gradientBuffer,
+          behavior: 'smooth',
+        });
+      }, 320);
 
       // Reset flag after scroll completes
       setTimeout(() => {
@@ -622,6 +649,37 @@ export default function DashboardPage() {
       setIsVideoPlayerClosing(false);
     }, 400);
   };
+
+  // Swap the left sidebar for a lesson nav while a lesson is open. The nav
+  // lists every lesson in the current phase so the user can jump between
+  // them without closing the overlay.
+  useEffect(() => {
+    if (!selectedVideo) {
+      setLessonNav(null);
+      return;
+    }
+    const phase = videosByPhase[selectedVideo.phaseId];
+    if (!phase) return;
+    setLessonNav({
+      phaseName: phase.phaseName,
+      activeLessonId: selectedVideo.id,
+      lessons: phase.videos.map((v, idx) => ({
+        id: v.id,
+        title: v.title,
+        order: idx + 1,
+        isCompleted: v.isCompleted,
+        isCurrent: v.isCurrent,
+      })),
+      onSelectLesson: (id) => {
+        const next = phase.videos.find((v) => v.id === id);
+        if (next) setSelectedVideo(next);
+      },
+    });
+  }, [selectedVideo, videosByPhase, setLessonNav]);
+
+  // Always clear the lesson nav on unmount so navigating away from the
+  // dashboard doesn't leave a stale sidebar state behind.
+  useEffect(() => () => setLessonNav(null), [setLessonNav]);
 
   // Mark the selected lesson as completed: persist to Supabase FIRST, then
   // recompute local state so the UI only advances when the DB actually wrote.
@@ -939,7 +997,7 @@ export default function DashboardPage() {
         {/* Video cards content */}
         <div className="pb-24">
           {videos.length > 0 && (
-            <div className="pt-2 pb-6 space-y-6">
+            <div className="pt-8 pb-6 space-y-6">
             {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
               <div
                 key={phaseId}
@@ -948,8 +1006,8 @@ export default function DashboardPage() {
                   if (el) phaseSectionsRef.current.set(phaseId, el);
                 }}
               >
-                {/* Phase Divider and Title */}
-                <div className="mb-4 sm:mb-6 w-[95%] sm:w-[80%] mx-auto">
+                {/* Phase Divider and Title — full width to match the tabs bar */}
+                <div className="mb-4 sm:mb-6 px-4 sm:px-12">
                   <Divider title={phaseData.phaseName} />
                 </div>
                 
@@ -1017,8 +1075,8 @@ export default function DashboardPage() {
         >
           {/* Gradient fade above progress bar */}
           <div className="h-8 bg-gradient-to-t from-white dark:from-gray-800 to-transparent pointer-events-none" />
-          <div className="bg-white dark:bg-gray-800 pb-4 flex justify-center">
-            <div className={`w-[90%] sm:w-[80%] max-w-2xl relative h-[37px] rounded-xl overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-800 ${depth.border} border-gray-200 dark:border-gray-900 ${depth.bottom} border-b-gray-300 dark:border-b-gray-900`}>
+          <div className="bg-white dark:bg-gray-800 pb-4 px-4 sm:px-12">
+            <div className={`w-full relative h-[37px] rounded-xl overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-800 ${depth.border} border-gray-200 dark:border-gray-900 ${depth.bottom} border-b-gray-300 dark:border-b-gray-900`}>
               <div
                 className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"
                 style={{
@@ -1052,6 +1110,30 @@ export default function DashboardPage() {
           transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
         };
 
+        // Figure out what "siguiente" means for this lesson. If the next
+        // lesson is in the same phase, offer "siguiente lección"; if this is
+        // the last lesson of the phase and another phase exists, offer
+        // "siguiente sección". When the course is finished, fall back to the
+        // single-button "terminar" flow.
+        let nextVideo: Video | null = null;
+        let nextLabel: string | undefined;
+        if (selectedVideo) {
+          const i = videos.findIndex((v) => v.id === selectedVideo.id);
+          if (i >= 0 && i < videos.length - 1) {
+            nextVideo = videos[i + 1];
+            nextLabel =
+              nextVideo.phaseId === selectedVideo.phaseId
+                ? 'siguiente lección'
+                : 'siguiente sección';
+          }
+        }
+        const onNext = nextVideo
+          ? () => {
+              const v = nextVideo!;
+              setSelectedVideo(v);
+            }
+          : undefined;
+
         return (
           <div
             className={`fixed top-0 md:top-0 bottom-0 flex items-stretch justify-center transition-all ease-out pt-14 md:pt-0 ${
@@ -1071,9 +1153,12 @@ export default function DashboardPage() {
               style={animStyle}
             >
               <ExperimentLesson
+                key={selectedVideo?.id ?? 'none'}
                 steps={lessonSteps}
                 onClose={handleCloseVideo}
                 onComplete={() => selectedVideo && handleLessonComplete(selectedVideo)}
+                onNext={onNext}
+                nextLabel={nextLabel}
               />
             </div>
           </div>
