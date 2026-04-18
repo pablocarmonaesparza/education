@@ -987,7 +987,7 @@ function SegmentedProgress({ total, current }: { total: number; current: number 
         <div
           key={i}
           className={`flex-1 h-3 rounded-full transition-colors duration-200 ${
-            i <= current ? 'bg-[#1472FF]' : 'bg-gray-200 dark:bg-gray-800'
+            i <= current ? 'bg-[#1472FF]' : 'bg-gray-200 dark:bg-gray-900'
           }`}
         />
       ))}
