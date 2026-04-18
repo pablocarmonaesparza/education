@@ -997,6 +997,70 @@ function SegmentedProgress({ total, current }: { total: number; current: number 
 
 /* ─── step renderers ─── */
 
+/**
+ * Render the body of a concept slide with minimal markdown support:
+ *   **bold**        → <strong>
+ *   - item / • item → <ul><li>
+ *   blank line      → paragraph break
+ *
+ * Content is authored by us (server-side in Supabase), so it's trusted.
+ */
+function renderMarkdownBody(body: string): React.ReactNode {
+  const lines = body.split('\n');
+  const blocks: React.ReactNode[] = [];
+  let listBuffer: string[] = [];
+
+  const parseInline = (text: string): React.ReactNode => {
+    const parts: React.ReactNode[] = [];
+    const re = /\*\*([^*]+)\*\*/g;
+    let last = 0;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(text)) !== null) {
+      if (m.index > last) parts.push(text.slice(last, m.index));
+      parts.push(
+        <strong key={`b-${m.index}`} className="font-bold text-[#4b4b4b] dark:text-white">
+          {m[1]}
+        </strong>,
+      );
+      last = re.lastIndex;
+    }
+    if (last < text.length) parts.push(text.slice(last));
+    return parts.length > 0 ? <>{parts}</> : text;
+  };
+
+  const flushList = () => {
+    if (listBuffer.length > 0) {
+      blocks.push(
+        <ul
+          key={`ul-${blocks.length}`}
+          className="list-disc pl-6 space-y-1 text-left mx-auto max-w-md"
+        >
+          {listBuffer.map((item, i) => (
+            <li key={i}>{parseInline(item)}</li>
+          ))}
+        </ul>,
+      );
+      listBuffer = [];
+    }
+  };
+
+  lines.forEach((raw, i) => {
+    const line = raw.trim();
+    const bulletMatch = line.match(/^[-•]\s+(.*)$/);
+    if (bulletMatch) {
+      listBuffer.push(bulletMatch[1]);
+      return;
+    }
+    flushList();
+    if (line.length > 0) {
+      blocks.push(<p key={`p-${i}`}>{parseInline(line)}</p>);
+    }
+  });
+  flushList();
+
+  return blocks;
+}
+
 function ConceptStep({
   title,
   body,
@@ -1017,7 +1081,9 @@ function ConceptStep({
         />
       )}
       <Title className="!text-3xl md:!text-4xl">{title}</Title>
-      <Body className="!text-lg text-[#777777] dark:text-gray-400">{body}</Body>
+      <div className="text-base md:text-lg text-[#777777] dark:text-gray-400 space-y-3 leading-relaxed">
+        {renderMarkdownBody(body)}
+      </div>
     </div>
   );
 }
