@@ -18,7 +18,12 @@ import { depth } from '@/lib/design-tokens';
 import HorizontalScroll from '@/components/shared/HorizontalScroll';
 import VerticalScroll from '@/components/shared/VerticalScroll';
 import ExperimentLesson from '@/components/experiment/ExperimentLesson';
-import { getLessonStepsOrPlaceholder } from '@/components/experiment/lessonRegistry';
+import type { Step } from '@/components/experiment/ExperimentLesson';
+import {
+  fetchPublishedLectures,
+  fetchLectureAsSteps,
+  type LectureRow,
+} from '@/lib/lessons/fromSupabase';
 import { useSidebar } from '@/contexts/SidebarContext';
 
 const greetings = [
@@ -143,6 +148,40 @@ function buildVideosFromIntake(
   return allVideos;
 }
 
+/**
+ * Build the rendered Video[] from the Supabase `lectures` table rows.
+ * This replaces the old buildVideosFromIntake for the MVP — the curriculum
+ * source of truth is now `lectures`, not intake_responses.generated_path.
+ *
+ * The Video.id is the lecture's UUID (string), which is also what we use
+ * as video_id in video_progress, so progress tracking stays consistent.
+ */
+function buildVideosFromLectures(
+  lectures: LectureRow[],
+  completedVideos: Set<string>,
+): Video[] {
+  const result: Video[] = [];
+  let foundCurrent = false;
+  lectures.forEach((lec, idx) => {
+    const isCompleted = completedVideos.has(lec.id);
+    const isCurrent = !isCompleted && !foundCurrent;
+    if (isCurrent) foundCurrent = true;
+    result.push({
+      id: lec.id,
+      lectureId: undefined, // UUID-based now, not numeric
+      title: lec.title,
+      description: lec.narrative_arc ?? '',
+      duration: lec.estimated_minutes * 60,
+      order: idx,
+      phaseId: lec.section_id.toString(),
+      phaseName: lec.section_name,
+      isCompleted,
+      isCurrent,
+    });
+  });
+  return result;
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const { setLessonNav } = useSidebar();
@@ -174,6 +213,9 @@ export default function DashboardPage() {
   const [fullIntake, setFullIntake] = useState<IntakeRow | null>(null);
   const [personalizedIntake, setPersonalizedIntake] = useState<IntakeRow | null>(null);
   const [completedVideoIdSet, setCompletedVideoIdSet] = useState<Set<string>>(new Set());
+  const [publishedLectures, setPublishedLectures] = useState<LectureRow[]>([]);
+  const [selectedSteps, setSelectedSteps] = useState<Step[] | null>(null);
+  const [isLoadingSteps, setIsLoadingSteps] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const phaseSectionsRef = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -259,11 +301,16 @@ export default function DashboardPage() {
                 : 'full';
         setActiveMode(initialMode);
 
+        // Fetch the published curriculum from `lectures` table — the source
+        // of truth for what the dashboard renders. Intake_responses only
+        // feeds the top CompositeCard copy (mode/summary).
+        const lectures = await fetchPublishedLectures();
+        setPublishedLectures(lectures);
+
         // Load progress + exercises regardless of which route is active.
-        // The derive effect below reads fullIntake/personalizedIntake and
-        // completedVideoIdSet and populates `videos`, `project`, and
-        // `projectSummary` for the current activeMode.
-        if (full || personalized) {
+        // The derive effect below reads publishedLectures and
+        // completedVideoIdSet and populates `videos`.
+        if (full || personalized || lectures.length > 0) {
           // Fetch video progress
           const { data: progressData } = await supabase
             .from('video_progress')
@@ -319,28 +366,44 @@ export default function DashboardPage() {
     fetchUserData();
   }, [supabase]);
 
-  // Re-derive the rendered videos + project summary whenever the active
-  // route, the source intakes, or the completion set changes. This is the
-  // single source of truth for what the dashboard shows — handleLessonComplete
-  // and the chevron toggle only mutate upstream state and let this effect
-  // recompute downstream UI.
+  // Re-derive the rendered videos from the Supabase `lectures` table
+  // whenever the published lectures or the completion set change.
+  // Project/summary copy still comes from intake_responses for the
+  // CompositeCard header (route switcher).
+  useEffect(() => {
+    setVideos(buildVideosFromLectures(publishedLectures, completedVideoIdSet));
+  }, [publishedLectures, completedVideoIdSet]);
+
   useEffect(() => {
     const intake = activeMode === 'full' ? fullIntake : personalizedIntake;
-    if (!intake) {
-      setVideos([]);
-      setProject('');
-      setProjectSummary('');
-      return;
-    }
-    setVideos(buildVideosFromIntake(intake.generated_path, completedVideoIdSet, activeMode));
     setProject(
-      intake.responses?.project_idea ||
-        intake.responses?.project ||
-        intake.responses?.idea ||
+      intake?.responses?.project_idea ||
+        intake?.responses?.project ||
+        intake?.responses?.idea ||
         '',
     );
-    setProjectSummary(intake.responses?.project_summary || '');
-  }, [activeMode, fullIntake, personalizedIntake, completedVideoIdSet]);
+    setProjectSummary(intake?.responses?.project_summary || '');
+  }, [activeMode, fullIntake, personalizedIntake]);
+
+  // Fetch slides from Supabase when the user opens a lesson.
+  useEffect(() => {
+    if (!selectedVideo) {
+      setSelectedSteps(null);
+      return;
+    }
+    let cancelled = false;
+    setIsLoadingSteps(true);
+    (async () => {
+      const steps = await fetchLectureAsSteps(selectedVideo.id);
+      if (!cancelled) {
+        setSelectedSteps(steps.length > 0 ? steps : null);
+        setIsLoadingSteps(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedVideo]);
 
   // Group videos by phase
   const videosByPhase = videos.reduce((acc, video) => {
@@ -1092,15 +1155,15 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Lesson Overlay — ExperimentLesson for every lesson. Lessons with
-          tipified content use the registry steps; the rest get a short
-          placeholder (concept + celebration) so the UI is always consistent
-          and the user can mark the lesson as completed. */}
+      {/* Lesson Overlay — ExperimentLesson reads slides from Supabase
+          (lecture_slides JSONB). While they load we render a spinner.
+          If the lecture has no slides yet, a minimal "próximamente" state. */}
       {(selectedVideo || isVideoPlayerClosing) && (() => {
-        const lessonSteps = getLessonStepsOrPlaceholder(
-          selectedVideo?.lectureId,
-          selectedVideo?.title ?? '',
-        );
+        const placeholderSteps: Step[] = [
+          { kind: 'concept', title: (selectedVideo?.title ?? '').toLowerCase(), body: 'Estamos preparando el contenido interactivo de esta lección.' },
+          { kind: 'celebration', emoji: '🚧', title: 'próximamente', body: 'Vuelve pronto.', section: 'en construcción' },
+        ];
+        const lessonSteps = selectedSteps ?? (isLoadingSteps ? null : placeholderSteps);
         const animClass =
           isVideoPlayerOpen && !isVideoPlayerClosing
             ? 'opacity-100 scale-100'
@@ -1152,14 +1215,20 @@ export default function DashboardPage() {
               className={`w-full max-w-5xl mx-auto h-full transition-all ease-out ${animClass}`}
               style={animStyle}
             >
-              <ExperimentLesson
-                key={selectedVideo?.id ?? 'none'}
-                steps={lessonSteps}
-                onClose={handleCloseVideo}
-                onComplete={() => selectedVideo && handleLessonComplete(selectedVideo)}
-                onNext={onNext}
-                nextLabel={nextLabel}
-              />
+              {lessonSteps === null ? (
+                <div className="h-full flex items-center justify-center">
+                  <Spinner size="lg" />
+                </div>
+              ) : (
+                <ExperimentLesson
+                  key={selectedVideo?.id ?? 'none'}
+                  steps={lessonSteps}
+                  onClose={handleCloseVideo}
+                  onComplete={() => selectedVideo && handleLessonComplete(selectedVideo)}
+                  onNext={onNext}
+                  nextLabel={nextLabel}
+                />
+              )}
             </div>
           </div>
         );
