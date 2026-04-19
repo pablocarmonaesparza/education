@@ -46,6 +46,13 @@ El orden de las fases es no-negociable. La investigación confirma que invertir 
 
 **Restricción de tipo:** el Engage usa **siempre opción múltiple con 3 opciones** (una correcta, dos distractores plausibles). Verdadero/falso no aplica — es 50% lotería y diluye el efecto de hypercorrection, que requiere confianza genuina antes del error.
 
+**Sub-patrones permitidos del Engage** (para evitar que 50+ lecciones se sientan como copia):
+- **Diagnóstico hacia atrás** — *¿qué pasó?* Persona pregunta a AI → recibe respuesta confiada → pregunta al usuario por qué. Para lecciones conceptuales.
+- **Acción hacia adelante** — *¿cómo lo arreglas?* Persona intenta algo → obtiene mal resultado → pregunta al usuario qué cambiaría. Para lecciones procedimentales.
+- **Elección razonada** — *¿qué deberías hacer?* Persona enfrenta decisión con 3 opciones — dos populares incorrectas, una correcta pero menos obvia. Para lecciones evaluativas o donde el tema central es decidir entre herramientas.
+
+Los tres cumplen la estructura base (situación cotidiana + misconception + revelación). Opus elige el sub-patrón según la ruta cognitiva.
+
 ### 2.3 Auto-clasificación vía Bloom
 Opus identifica el verbo dominante del learning objective y ajusta automáticamente la ratio explicación/ejercicio. No se le dice qué tipo de lección es; él lo descubre.
 
@@ -54,6 +61,13 @@ Opus identifica el verbo dominante del learning objective y ajusta automáticame
 | Recordar / Entender | Conceptual | 40 / 60 | Inducción + hypercorrection |
 | Aplicar / Analizar | Procedimental | 25 / 75 | Progressive fading: worked example completo → completion task → problema abierto |
 | Evaluar / Crear | Mixta avanzada | 30 / 70 | Casos + aplicación directa, con fading incorporado |
+
+**Tiebreaker cuando el verbo es ambiguo.** El objetivo de aprendizaje puede reescribirse de muchas formas — y un autor podría flipar la ruta de la misma lección. Usa el **test de éxito** para romper el empate:
+
+- Si al terminar la lección el usuario debe **explicar, diagnosticar o reconocer** → ruta **conceptual**.
+- Si al terminar debe **producir, arreglar, secuenciar o decidir entre alternativas** → ruta **procedimental**.
+
+Ejemplo: *Qué son los tokens* suena a "conocer" (conceptual). Pero si el outcome real es *estimar cuánto cuesta una app*, entonces el usuario debe **producir una estimación** — eso lo vuelve procedimental. El test de éxito manda sobre la intuición del verbo.
 
 **Nota sobre los ratios:** son defaults operativos, no hallazgos de research. Funcionan como forcing function para mantener consistencia entre lecciones y constreñir la libertad creativa de Opus. Se ajustarán con datos reales de uso. Lo que sí está research-backed es el patrón de progressive fading (Sweller, Renkl) y la superioridad de worked examples sobre problem-solving para novices en tareas procedimentales (meta-análisis Barbieri, Clerjuste & Chawla, 2023: ~30% mejor retención en tests diferidos).
 
@@ -70,8 +84,8 @@ Opus identifica el verbo dominante del learning objective y ajusta automáticame
 2. Bodies gramaticales, sin abreviaciones, para audiencia no técnica.
 3. Inducción: experiencia → lógica → nombre. Nunca definir primero.
 4. Escenarios evergreen, fun, universales. Nunca médicos, financieros o personales íntimos.
-5. Máximo 2-3 renglones de body. Preferir 10 slides cortas a 3 largas.
-6. Excepción: bullets o ejemplos enumerados pueden tener más renglones.
+5. Máximo 2-3 renglones de body — como proxy renderer-independent: **≤ 250 caracteres** o **≤ 45 palabras** por body de concept slide. Preferir 10 slides cortas a 3 largas.
+6. Excepción: bullets o ejemplos enumerados pueden llegar hasta **≤ 400 caracteres** si cada bullet aporta información distinta y no se puede partir sin perder coherencia.
 7. Al inicio usar ChatGPT en ejemplos (más popular). No "un asistente" abstracto.
 8. Claude-first argumentado (datos, stack, coherencia). No publicitario.
 9. Nada de palabras infantiles tipo "trucos". Lenguaje adulto.
@@ -94,10 +108,11 @@ María · Diego · Lucía · Tomás · Paola · Rodrigo · Sofía · Andrés · 
 **Aplicación técnica:** el string `{user_first_name}` en el JSON de un slide se reemplaza al render por el nombre del usuario autenticado. Funciona en `title`, `body`, `prompt`, `statement`, `options[].text`, etc.
 
 **Cuándo usarlo:**
-- **Contexto genérico** (cualquier persona podría estar en esa situación — recibir un PDF largo, redactar un correo, pedirle algo a ChatGPT): puedes usar `{user_first_name}` en lugar de un nombre del roster.
-- **Contexto específico** (un rol narrativo fijo — "María, dueña de cafetería que vende frappés"): usa un nombre del roster. Meter el nombre del usuario como "dueño de cafetería" rompe inmersión si no lo es.
+- **Engage** (pregunta-trampa, slide 1): **siempre roster**. El Engage monta un escenario narrativo fuerte con personaje + situación + misconception. Meter el nombre del usuario ahí rompe la distancia que hace la hypercorrection memorable.
+- **Explore / Explain**: roster por default. `{user_first_name}` solo si el slide es un callout directo al usuario, no una narrativa de tercera persona.
+- **Elaborate / Evaluate**: aquí puedes usar `{user_first_name}` en contextos genéricos (recibir un PDF, redactar un correo, decidir qué modelo usar). En contextos específicos (un rol narrativo fijo — "dueño de cafetería que vende frappés") sigue siendo roster.
 
-**Regla:** el generator puede elegir entre roster y `{user_first_name}` según el contexto. No hay cuota obligatoria.
+**Regla de decisión:** si el escenario funciona con cualquier persona anónima del mundo, puedes usar `{user_first_name}`. Si el personaje necesita un rol, oficio o historia específica para que el ejercicio tenga sentido, usa roster.
 
 ---
 
@@ -128,11 +143,11 @@ María · Diego · Lucía · Tomás · Paola · Rodrigo · Sofía · Andrés · 
 |---|---|---|
 | Engage | 1 | Opción múltiple una correcta (pregunta-trampa, 3 opciones) |
 | Explore | 1–2 | Concepto, concepto visual |
-| Explain | 2–3 | Concepto + (V/F o completar el hueco) |
-| Elaborate | 3–4 | OM varias correctas, ordenar pasos, emparejar, completar código, escribir prompt |
+| Explain | 1–2 | Concepto + (V/F o completar el hueco) |
+| Elaborate | 3–5 | OM varias correctas, ordenar pasos, emparejar, completar código, escribir prompt |
 | Evaluate | 2 | OM una correcta (callback a Engage) + celebración |
 
-**Total: 10–12 slides por lección.**
+**Total: 10 slides por lección (fijo en MVP).** Los rangos por fase permiten balance conceptual vs procedimental. Subir a 11–12 slides solo se justifica si el tema requiere un worked example extra; si crece más, la lección probablemente debe dividirse en dos.
 
 ### 5.3 Distribución por ruta cognitiva
 
@@ -195,9 +210,9 @@ Ambos comparten estructura base: situación cotidiana + misconception común + r
 Antes de entregar una lección, Opus debe verificar estos diez puntos. Si falla alguno, regenera.
 
 1. ¿La lección abre con ejercicio (fase Engage), no con concepto o explicación? *Excepción intencional a la regla de forma #10; el Engage funciona por hypercorrection y no necesita orientación previa.*
-2. ¿Cada concepto introducido se prueba al menos una vez dentro de la misma lección?
+2. ¿Cada concepto introducido se prueba al menos una vez dentro de la misma lección? *Un "concepto" = una idea nombrable (ej: **alucinación**, **token**, **ventana de contexto**, **los 4 ingredientes del prompt**). "Probarlo" = al menos un slide scoreable que evalúe comprensión directa — reconocerlo en un escenario nuevo, no recordar su nombre.*
 3. ¿El callback final demuestra que el usuario ahora entiende lo que al inicio no entendía, o es simple repetición de la pregunta inicial?
-4. ¿El usuario sale con algo concreto aplicable en las próximas 24 horas?
+4. ¿El usuario sale con algo concreto aplicable en las próximas 24 horas? *"Concreto" = al menos uno de: un **prompt listo para copiar y pegar**, una **decisión tomada** (qué modelo elegir, qué flujo seguir), un **checklist o bucle repetible** (ej: los 4 ingredientes del prompt, el bucle AI-literate). Si la lección termina con "ahora ya sabes X" sin producir uno de esos tres outputs, no cumple.*
 5. ¿Se respetaron las 10 reglas de forma?
 6. ¿La ratio explicación/ejercicio corresponde al verbo Bloom del objetivo?
 7. ¿El lenguaje es adulto, claro, sin hacerse el cool?
@@ -218,4 +233,6 @@ Antes de entregar una lección, Opus debe verificar estos diez puntos. Si falla 
 
 ---
 
-**Versión:** 0.3 — Ajustes desde v0.2: Engage restringido a opción múltiple (no V/F por lotería) · roster de 30 nombres + variable `{user_first_name}` con self-reference effect · check #10 del rubric cualitativo sin umbral · callout en check #1 sobre excepción a regla de forma #10 · `SKILL.md` siguiente paso movido al backlog · backlog expandido con índice de conceptos para spaced retrieval operacional.
+**Versión:** 0.4 — Ajustes desde v0.3 (Codex review): total de slides fijo a 10 con rangos coherentes entre 5.2 y 5.3 · tiebreaker explícito conceptual vs procedimental por test de éxito · regla clara de cuándo usar roster vs `{user_first_name}` (Engage siempre roster, Elaborate/Evaluate según contexto genérico/específico) · 3 sub-patrones del Engage documentados para evitar template fatigue · rubric #2 y #4 operacionalizados con criterio auditable · proxies renderer-independent para "2-3 renglones" (≤ 250 chars / 45 palabras).
+
+Desde v0.2: Engage restringido a opción múltiple (no V/F por lotería) · roster de 30 nombres + variable `{user_first_name}` con self-reference effect · check #10 del rubric cualitativo sin umbral · backlog expandido con índice de conceptos para spaced retrieval operacional.
