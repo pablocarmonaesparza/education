@@ -3,6 +3,8 @@
 > **Regla absoluta:** Todo nuevo UI debe usar SOLO estos componentes y tokens.
 > Nunca escribir colores hex inline, depth effects manuales, ni clases Tailwind sueltas para UI que ya tiene componente.
 
+> **Contrato pedagógico de lecciones:** ver [`docs/METODOLOGIA.md`](./docs/METODOLOGIA.md). Cualquier lección o slide que se cree (a mano, por SQL, por generator AI, por n8n) debe cumplirlo. El outline maestro del curso vive en [`docs/OUTLINE_2026.md`](./docs/OUTLINE_2026.md).
+
 ---
 
 ## Tokens de Diseno (`lib/design-tokens.ts`)
