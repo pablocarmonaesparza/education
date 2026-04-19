@@ -1,4 +1,4 @@
-# Metodología Itera — v0.3
+# Metodología Itera — v0.7
 
 > Documento vivo. Es el contrato pedagógico que gobierna la creación de cada lección en Itera.
 
@@ -84,6 +84,16 @@ Ejemplo: *Qué son los tokens* suena a "conocer" (conceptual). Pero si el outcom
 2. Bodies gramaticales, sin abreviaciones, para audiencia no técnica.
 3. Inducción: experiencia → lógica → nombre. Nunca definir primero.
 4. Escenarios evergreen, fun, universales. Nunca médicos, financieros o personales íntimos.
+
+   | ❌ Evitar | ✅ Preferir |
+   |---|---|
+   | "correo para pedir cita médica" | "correo para pedir días libres e irse a Hawaii" |
+   | "mensaje a tu ex" | "mensaje para convencer a un amigo de ir a un concierto" |
+   | "resumen de tus gastos bancarios" | "plan para organizar un viaje de mochilero" |
+   | "tarea de la universidad" | "propuesta para lanzar un food truck de tacos" |
+   | "email a recursos humanos" | "email para pedir una reunión con tu ídolo" |
+
+   La inmersión narrativa (narrative transportation) solo funciona si el alumno se siente representado sin incomodidad. Situaciones aspiracionales o lúdicas atraen a cualquiera; situaciones mundanas o íntimas excluyen.
 5. Máximo 2-3 renglones de body — como proxy renderer-independent: **≤ 250 caracteres** o **≤ 45 palabras** por body de concept slide. Preferir 10 slides cortas a 3 largas.
 6. Excepción: bullets o ejemplos enumerados pueden llegar hasta **≤ 400 caracteres** si cada bullet aporta información distinta y no se puede partir sin perder coherencia.
 6.5. **Casos dentro de preguntas (mcq, true-false, etc.):** el setup del caso (antes de las opciones o antes del statement) debe caber en **máximo 3 renglones**. Dos es óptimo, uno es mejor, tres es aceptable, cuatro es inaceptable. Si el caso requiere más contexto, mueve el contexto al slide de concept anterior y deja la pregunta limpia. Como proxy: **≤ 200 caracteres** de prompt/setup.
@@ -97,6 +107,7 @@ Ejemplo: *Qué son los tokens* suena a "conocer" (conceptual). Pero si el outcom
 7. Al inicio usar ChatGPT en ejemplos (más popular). No "un asistente" abstracto.
 8. Claude-first argumentado (datos, stack, coherencia). No publicitario.
 9. Nada de palabras infantiles tipo "trucos". Lenguaje adulto.
+9.1. **Nunca usar abreviaciones técnicas sin introducirlas.** La audiencia no es técnica. La primera vez que aparece `API`, `LLM`, `MCP`, `RAG`, `RLS`, etc., se introduce en palabras llanas (*"API — la manera programática de hablarle a un modelo"*). Después de introducida, se puede usar la sigla. Abreviaciones de chat (`msg`, `DM`, `q`) están prohibidas siempre.
 10. Orientar antes de preguntar (la slide previa al ejercicio da el marco). **Excepción explícita:** la pregunta-trampa del Engage, por diseño.
 
 ---
@@ -144,6 +155,8 @@ María · Diego · Lucía · Tomás · Paola · Rodrigo · Sofía · Andrés · 
 - Escribir un prompt (auto-verificación)
 
 **Deferido:** prompt evaluado por AI (pendiente por costo de API por llamada).
+
+**Nota sobre "escribir un prompt (auto-verificación)":** este tipo **no forma parte del algoritmo por defecto**. Se reserva para lecciones cuyo skill *enseñado* sea específicamente escribir prompts (cursos de prompting avanzado), y aun ahí requiere una rúbrica determinista atada a la lección concreta — nunca el analizador genérico. Razones para excluirlo por defecto: (1) la calificación puede contradecir la lección recién dada, (2) costo de tokens si se conecta a un LLM real, (3) es redundante con mcq/order-steps/tap-match, que ya hacen retrieval practice con scoring determinista.
 
 ### 5.2 Mapeo de slides por fase
 
@@ -241,7 +254,11 @@ Antes de entregar una lección, Opus debe verificar estos diez puntos. Si falla 
 
 ---
 
-**Versión:** 0.5 — Ajustes desde v0.4 (feedback de uso real): **regla 6.5** casos dentro de preguntas ≤ 3 renglones (óptimo 2, ideal 1, 4 inaceptable; proxy ≤ 200 chars de setup) · **regla 6.6** personajes solo en casos/problemas, no en slides puramente explicativas · bonus técnico: en tap-match el campo `term` siempre debe ser más corto que `def` (grid 25%/50% del renderer).
+**Versión:** 0.7 — Consolidación: absorbida la memoria personal `MEMORY.md` + 4 feedback files (body_copy, miyagi_pedagogy, scenarios, no_creative_fixes) para que este documento sea la **única fuente de verdad pedagógica**. Contenido migrado: **regla 4** ahora incluye tabla ❌ vs ✅ de escenarios + explicación de narrative transportation · **regla 9.1** nueva: nunca usar abreviaciones técnicas (API, LLM, MCP, RAG, RLS) sin introducirlas primero en palabras llanas · **sección 5.1** aclaración: "escribir un prompt (auto-verificación)" no forma parte del algoritmo por defecto; reservado para cursos de prompting con rúbrica determinista.
+
+v0.6 — Ajustes desde v0.5 (feedback UX sobre lecciones renderizadas): **regla 6.7** slides explicativas sin personaje hablan al usuario directo (no narrar en tercera persona cuando no hay caso) · **regla 6.8** mayúscula inicial consistente en todo valor textual visible (tap-match, order-steps, opciones de mcq, tokens) · **regla 6.9** en tap-match, `term` siempre ≤ `def` para que el grid 25/50 del renderer no rompa el alineado.
+
+v0.5 — Ajustes desde v0.4 (feedback de uso real): **regla 6.5** casos dentro de preguntas ≤ 3 renglones (óptimo 2, ideal 1, 4 inaceptable; proxy ≤ 200 chars de setup) · **regla 6.6** personajes solo en casos/problemas, no en slides puramente explicativas · bonus técnico: en tap-match el campo `term` siempre debe ser más corto que `def` (grid 25%/50% del renderer).
 
 v0.4 — Ajustes desde v0.3 (Codex review): total de slides fijo a 10 con rangos coherentes entre 5.2 y 5.3 · tiebreaker explícito conceptual vs procedimental por test de éxito · regla clara de cuándo usar roster vs `{user_first_name}` (Engage siempre roster, Elaborate/Evaluate según contexto genérico/específico) · 3 sub-patrones del Engage documentados para evitar template fatigue · rubric #2 y #4 operacionalizados con criterio auditable · proxies renderer-independent para "2-3 renglones" (≤ 250 chars / 45 palabras).
 
