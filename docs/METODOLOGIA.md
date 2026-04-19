@@ -88,6 +88,12 @@ Ejemplo: *Qué son los tokens* suena a "conocer" (conceptual). Pero si el outcom
 6. Excepción: bullets o ejemplos enumerados pueden llegar hasta **≤ 400 caracteres** si cada bullet aporta información distinta y no se puede partir sin perder coherencia.
 6.5. **Casos dentro de preguntas (mcq, true-false, etc.):** el setup del caso (antes de las opciones o antes del statement) debe caber en **máximo 3 renglones**. Dos es óptimo, uno es mejor, tres es aceptable, cuatro es inaceptable. Si el caso requiere más contexto, mueve el contexto al slide de concept anterior y deja la pregunta limpia. Como proxy: **≤ 200 caracteres** de prompt/setup.
 6.6. **Personajes solo en casos y problemas.** Los slides puramente explicativas (concept, concept-visual) **no deben tener personajes** del roster. Los personajes existen para montar un caso o problema concreto; en slides informativas desvían la atención del concepto. La regla concreta: si el slide es explicación directa del mecanismo o la regla, no nombres a nadie; si el slide presenta un escenario, problema o pregunta, sí usa un personaje del roster.
+
+6.7. **Slides explicativas sin personaje hablan al usuario directo.** Cuando un slide explica un concepto sin caso, **no narres en tercera persona** ("el usuario observa que…"). Habla al usuario con lenguaje directo: *"fíjate en…"*, *"la regla es X"*, *"ahora lo aplicas así"*. Mantiene la presencia sin inventar un protagonista artificial.
+
+6.8. **Mayúscula inicial consistente.** Cada valor textual visible (pares de tap-match, pasos de order-steps, opciones de mcq, etiquetas de token en fill-blank/code-completion) inicia con mayúscula. No importa si es una sola palabra o una frase; la columna o lista entera mantiene el mismo estilo sin mezclar casos.
+
+6.9. **En tap-match, `term` siempre es más corto que `def`.** El renderer usa un grid 25%/50% donde la columna del `term` es más angosta. Meter un texto largo ahí rompe el alineado y puede empujar el botón de comprobar fuera del viewport. Regla práctica: `term` ≤ 30 caracteres; `def` puede llegar a 80.
 7. Al inicio usar ChatGPT en ejemplos (más popular). No "un asistente" abstracto.
 8. Claude-first argumentado (datos, stack, coherencia). No publicitario.
 9. Nada de palabras infantiles tipo "trucos". Lenguaje adulto.

@@ -998,6 +998,28 @@ function SegmentedProgress({ total, current }: { total: number; current: number 
 /* ─── step renderers ─── */
 
 /**
+ * Inline markdown for single-line strings (explanations, short labels, etc.).
+ * Only supports **bold**. Returns JSX suitable for nesting inside a <p>.
+ */
+function renderInlineMarkdown(text: string): React.ReactNode {
+  const parts: React.ReactNode[] = [];
+  const re = /\*\*([^*]+)\*\*/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) parts.push(text.slice(last, m.index));
+    parts.push(
+      <strong key={`b-${m.index}`} className="font-bold text-[#4b4b4b] dark:text-white">
+        {m[1]}
+      </strong>,
+    );
+    last = re.lastIndex;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return parts.length > 0 ? <>{parts}</> : text;
+}
+
+/**
  * Render the body of a concept slide with minimal markdown support:
  *   **bold**        → <strong>
  *   - item / • item → <ul><li>
@@ -1010,24 +1032,6 @@ function renderMarkdownBody(body: string): React.ReactNode {
   const blocks: React.ReactNode[] = [];
   let listBuffer: string[] = [];
 
-  const parseInline = (text: string): React.ReactNode => {
-    const parts: React.ReactNode[] = [];
-    const re = /\*\*([^*]+)\*\*/g;
-    let last = 0;
-    let m: RegExpExecArray | null;
-    while ((m = re.exec(text)) !== null) {
-      if (m.index > last) parts.push(text.slice(last, m.index));
-      parts.push(
-        <strong key={`b-${m.index}`} className="font-bold text-[#4b4b4b] dark:text-white">
-          {m[1]}
-        </strong>,
-      );
-      last = re.lastIndex;
-    }
-    if (last < text.length) parts.push(text.slice(last));
-    return parts.length > 0 ? <>{parts}</> : text;
-  };
-
   const flushList = () => {
     if (listBuffer.length > 0) {
       blocks.push(
@@ -1036,7 +1040,7 @@ function renderMarkdownBody(body: string): React.ReactNode {
           className="list-disc pl-6 space-y-1 text-left mx-auto max-w-md"
         >
           {listBuffer.map((item, i) => (
-            <li key={i}>{parseInline(item)}</li>
+            <li key={i}>{renderInlineMarkdown(item)}</li>
           ))}
         </ul>,
       );
@@ -1053,7 +1057,7 @@ function renderMarkdownBody(body: string): React.ReactNode {
     }
     flushList();
     if (line.length > 0) {
-      blocks.push(<p key={`p-${i}`}>{parseInline(line)}</p>);
+      blocks.push(<p key={`p-${i}`}>{renderInlineMarkdown(line)}</p>);
     }
   });
   flushList();
@@ -1268,7 +1272,7 @@ function MultipleChoiceStep({
 
       {submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
-          {step.explanation}
+          {renderInlineMarkdown(step.explanation)}
         </p>
       )}
     </div>
@@ -1392,7 +1396,7 @@ function MultiSelectStep({
 
       {submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
-          {step.explanation}
+          {renderInlineMarkdown(step.explanation)}
         </p>
       )}
     </div>
@@ -1513,7 +1517,7 @@ function FillBlankStep({
 
       {submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
-          {step.explanation}
+          {renderInlineMarkdown(step.explanation)}
         </p>
       )}
     </div>
@@ -1555,7 +1559,12 @@ function TapSequenceStep({
       : 'flex flex-wrap gap-2 justify-center';
   const itemPadding = itemSize === 'block' ? 'px-5 py-4' : 'px-4 py-2';
   const itemAlign = itemSize === 'block' ? 'text-left w-full' : 'text-center';
-  const assemblyMin = itemSize === 'block' ? 'min-h-[14rem]' : 'min-h-[5.5rem]';
+  // Assembly starts small and grows as items are added. No reserved empty space.
+  const assemblyMin = itemSize === 'block' ? 'min-h-[4rem]' : 'min-h-[3.5rem]';
+  // Available items = items not yet used. Once selected, they disappear from the pool.
+  const availableIndices = items
+    .map((_, i) => i)
+    .filter((i) => !attempt.includes(i));
 
   return (
     <div className="space-y-6">
@@ -1618,43 +1627,43 @@ function TapSequenceStep({
         )}
       </div>
 
-      {/* Token pool */}
-      <div className={poolLayout}>
-        {items.map((text, i) => {
-          const used = attempt.includes(i);
-          const disabled = used || submitted;
+      {/* Pool — only items not yet selected. Once tapped, they disappear from
+          here and appear in the assembly above. */}
+      {availableIndices.length > 0 && (
+        <div className={poolLayout}>
+          {availableIndices.map((i) => {
+            const text = items[i];
+            const disabled = submitted;
 
-          let tokenClass =
-            '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
-          if (used) {
-            tokenClass =
-              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-30 text-[#4b4b4b] dark:text-gray-200';
-          } else if (submitted) {
-            tokenClass =
-              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-60 text-[#4b4b4b] dark:text-gray-200';
-          }
+            let tokenClass =
+              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+            if (submitted) {
+              tokenClass =
+                '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-60 text-[#4b4b4b] dark:text-gray-200';
+            }
 
-          return (
-            <button
-              key={i}
-              type="button"
-              disabled={disabled}
-              onClick={() => addToken(i)}
-              className={`rounded-xl ${depth.border} ${itemPadding} ${itemAlign} text-base md:text-lg font-medium transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
-                disabled
-                  ? 'cursor-default'
-                  : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
-              } ${tokenClass}`}
-            >
-              {text}
-            </button>
-          );
-        })}
-      </div>
+            return (
+              <button
+                key={i}
+                type="button"
+                disabled={disabled}
+                onClick={() => addToken(i)}
+                className={`rounded-xl ${depth.border} ${itemPadding} ${itemAlign} text-base md:text-lg font-medium transition-all duration-150 [box-shadow:0_4px_0_0_var(--depth-color)] ${
+                  disabled
+                    ? 'cursor-default'
+                    : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
+                } ${tokenClass}`}
+              >
+                {text}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
-          {explanation}
+          {renderInlineMarkdown(explanation)}
         </p>
       )}
     </div>
@@ -1974,7 +1983,7 @@ function TrueFalseStep({
       </div>
       {submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
-          {step.explanation}
+          {renderInlineMarkdown(step.explanation)}
         </p>
       )}
     </div>
@@ -2077,7 +2086,7 @@ function CodeCompletionStep({
 
       {submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
-          {step.explanation}
+          {renderInlineMarkdown(step.explanation)}
         </p>
       )}
     </div>
@@ -2385,7 +2394,7 @@ function TapMatchStep({
 
       {submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
-          {step.explanation}
+          {renderInlineMarkdown(step.explanation)}
         </p>
       )}
     </div>
