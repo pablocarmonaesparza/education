@@ -86,6 +86,8 @@ Ejemplo: *Qué son los tokens* suena a "conocer" (conceptual). Pero si el outcom
 4. Escenarios evergreen, fun, universales. Nunca médicos, financieros o personales íntimos.
 5. Máximo 2-3 renglones de body — como proxy renderer-independent: **≤ 250 caracteres** o **≤ 45 palabras** por body de concept slide. Preferir 10 slides cortas a 3 largas.
 6. Excepción: bullets o ejemplos enumerados pueden llegar hasta **≤ 400 caracteres** si cada bullet aporta información distinta y no se puede partir sin perder coherencia.
+6.5. **Casos dentro de preguntas (mcq, true-false, etc.):** el setup del caso (antes de las opciones o antes del statement) debe caber en **máximo 3 renglones**. Dos es óptimo, uno es mejor, tres es aceptable, cuatro es inaceptable. Si el caso requiere más contexto, mueve el contexto al slide de concept anterior y deja la pregunta limpia. Como proxy: **≤ 200 caracteres** de prompt/setup.
+6.6. **Personajes solo en casos y problemas.** Los slides puramente explicativas (concept, concept-visual) **no deben tener personajes** del roster. Los personajes existen para montar un caso o problema concreto; en slides informativas desvían la atención del concepto. La regla concreta: si el slide es explicación directa del mecanismo o la regla, no nombres a nadie; si el slide presenta un escenario, problema o pregunta, sí usa un personaje del roster.
 7. Al inicio usar ChatGPT en ejemplos (más popular). No "un asistente" abstracto.
 8. Claude-first argumentado (datos, stack, coherencia). No publicitario.
 9. Nada de palabras infantiles tipo "trucos". Lenguaje adulto.
@@ -233,6 +235,8 @@ Antes de entregar una lección, Opus debe verificar estos diez puntos. Si falla 
 
 ---
 
-**Versión:** 0.4 — Ajustes desde v0.3 (Codex review): total de slides fijo a 10 con rangos coherentes entre 5.2 y 5.3 · tiebreaker explícito conceptual vs procedimental por test de éxito · regla clara de cuándo usar roster vs `{user_first_name}` (Engage siempre roster, Elaborate/Evaluate según contexto genérico/específico) · 3 sub-patrones del Engage documentados para evitar template fatigue · rubric #2 y #4 operacionalizados con criterio auditable · proxies renderer-independent para "2-3 renglones" (≤ 250 chars / 45 palabras).
+**Versión:** 0.5 — Ajustes desde v0.4 (feedback de uso real): **regla 6.5** casos dentro de preguntas ≤ 3 renglones (óptimo 2, ideal 1, 4 inaceptable; proxy ≤ 200 chars de setup) · **regla 6.6** personajes solo en casos/problemas, no en slides puramente explicativas · bonus técnico: en tap-match el campo `term` siempre debe ser más corto que `def` (grid 25%/50% del renderer).
+
+v0.4 — Ajustes desde v0.3 (Codex review): total de slides fijo a 10 con rangos coherentes entre 5.2 y 5.3 · tiebreaker explícito conceptual vs procedimental por test de éxito · regla clara de cuándo usar roster vs `{user_first_name}` (Engage siempre roster, Elaborate/Evaluate según contexto genérico/específico) · 3 sub-patrones del Engage documentados para evitar template fatigue · rubric #2 y #4 operacionalizados con criterio auditable · proxies renderer-independent para "2-3 renglones" (≤ 250 chars / 45 palabras).
 
 Desde v0.2: Engage restringido a opción múltiple (no V/F por lotería) · roster de 30 nombres + variable `{user_first_name}` con self-reference effect · check #10 del rubric cualitativo sin umbral · backlog expandido con índice de conceptos para spaced retrieval operacional.

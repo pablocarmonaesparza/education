@@ -2379,7 +2379,7 @@ function TapMatchStep({
 
       {!submitted && (
         <p className="text-center text-sm text-[#777777] dark:text-gray-400">
-          Forma los 4 pares, después toca comprobar.
+          Forma los {step.pairs.length} pares, después toca comprobar.
         </p>
       )}
 
