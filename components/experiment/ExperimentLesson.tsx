@@ -1000,20 +1000,37 @@ function SegmentedProgress({ total, current }: { total: number; current: number 
 
 /**
  * Inline markdown for single-line strings (explanations, short labels, etc.).
- * Only supports **bold**. Returns JSX suitable for nesting inside a <p>.
+ * Supports **bold** and *italic*. Returns JSX suitable for nesting inside a <p>.
+ *
+ * Only these two fields in lesson content render markdown:
+ *   - concept/concept-visual `body` (via renderMarkdownBody)
+ *   - exercise `explanation` (via this function)
+ * All other fields (title, prompt, statement, options, tokens, steps, pairs)
+ * render literally — authors must not use markdown there. See METODOLOGIA
+ * regla 13.
  */
 function renderInlineMarkdown(text: string): React.ReactNode {
+  // Match **bold** first (two asterisks), then *italic* (one asterisk).
+  // Order matters: `\*\*...\*\*` must be tried before `\*...\*`.
+  const re = /\*\*([^*]+)\*\*|\*([^*\n]+)\*/g;
   const parts: React.ReactNode[] = [];
-  const re = /\*\*([^*]+)\*\*/g;
   let last = 0;
   let m: RegExpExecArray | null;
   while ((m = re.exec(text)) !== null) {
     if (m.index > last) parts.push(text.slice(last, m.index));
-    parts.push(
-      <strong key={`b-${m.index}`} className="font-bold text-[#4b4b4b] dark:text-white">
-        {m[1]}
-      </strong>,
-    );
+    if (m[1] !== undefined) {
+      parts.push(
+        <strong key={`b-${m.index}`} className="font-bold text-[#4b4b4b] dark:text-white">
+          {m[1]}
+        </strong>,
+      );
+    } else {
+      parts.push(
+        <em key={`i-${m.index}`} className="italic">
+          {m[2]}
+        </em>,
+      );
+    }
     last = re.lastIndex;
   }
   if (last < text.length) parts.push(text.slice(last));
@@ -1023,7 +1040,9 @@ function renderInlineMarkdown(text: string): React.ReactNode {
 /**
  * Render the body of a concept slide with minimal markdown support:
  *   **bold**        → <strong>
+ *   *italic*        → <em>
  *   - item / • item → <ul><li>
+ *   1. item / 2.    → (numbered — not yet a real <ol>, kept as inline text)
  *   blank line      → paragraph break
  *
  * Content is authored by us (server-side in Supabase), so it's trusted.

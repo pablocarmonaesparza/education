@@ -1,4 +1,4 @@
-# Metodología Itera — v0.8
+# Metodología Itera — v0.9
 
 > Documento vivo. Es el contrato pedagógico que gobierna la creación de cada lección en Itera.
 
@@ -96,7 +96,7 @@ Ejemplo: *Qué son los tokens* suena a "conocer" (conceptual). Pero si el outcom
    La inmersión narrativa (narrative transportation) solo funciona si el alumno se siente representado sin incomodidad. Situaciones aspiracionales o lúdicas atraen a cualquiera; situaciones mundanas o íntimas excluyen.
 5. Máximo 2-3 renglones de body — como proxy renderer-independent: **≤ 250 caracteres** o **≤ 45 palabras** por body de concept slide. Preferir 10 slides cortas a 3 largas.
 6. Excepción: bullets o ejemplos enumerados pueden llegar hasta **≤ 400 caracteres** si cada bullet aporta información distinta y no se puede partir sin perder coherencia.
-6.5. **Casos dentro de preguntas (mcq, true-false, etc.):** el setup del caso (antes de las opciones o antes del statement) debe caber en **máximo 3 renglones**. Dos es óptimo, uno es mejor, tres es aceptable, cuatro es inaceptable. Si el caso requiere más contexto, mueve el contexto al slide de concept anterior y deja la pregunta limpia. Como proxy: **≤ 200 caracteres** de prompt/setup.
+6.5. **Casos dentro de preguntas (mcq, true-false, etc.):** el setup del caso (antes de las opciones o antes del statement) debe caber en **máximo 3 renglones**. Dos es óptimo, uno es mejor, tres es aceptable, cuatro es inaceptable. Si el caso requiere más contexto, mueve el contexto al slide de concept anterior y deja la pregunta limpia. Como proxy: **≤ 180 caracteres** de prompt/setup (el renderer rompe ~60 chars por línea; 200 renderiza 4 líneas en casos con palabras largas).
 6.6. **Personajes solo en casos y problemas.** Los slides puramente explicativas (concept, concept-visual) **no deben tener personajes** del roster. Los personajes existen para montar un caso o problema concreto; en slides informativas desvían la atención del concepto. La regla concreta: si el slide es explicación directa del mecanismo o la regla, no nombres a nadie; si el slide presenta un escenario, problema o pregunta, sí usa un personaje del roster.
 
 6.7. **Slides explicativas sin personaje hablan al usuario directo.** Cuando un slide explica un concepto sin caso, **no narres en tercera persona** ("el usuario observa que…"). Habla al usuario con lenguaje directo: *"fíjate en…"*, *"la regla es X"*, *"ahora lo aplicas así"*. Mantiene la presencia sin inventar un protagonista artificial.
@@ -116,6 +116,11 @@ Ejemplo: *Qué son los tokens* suena a "conocer" (conceptual). Pero si el outcom
     - **Zonas seguras para trampas de alucinación:** datos privados no públicos (ventas internas, inventario, contactos personales), matemática o lógica que el modelo puede inventar, detalles específicos pedidos a un modelo sin web search activado.
     - **Zonas grises a evitar:** *"¿quién es el mejor X de mi colonia?"* (web search lo resuelve), *"¿qué dice esta imagen?"* (multimodal lo resuelve), *"¿cuál es la noticia de hoy?"* (web search lo resuelve).
     - **Prueba pre-envío:** *"¿puedo defender la respuesta incorrecta con una capacidad real de ChatGPT en 2026?"* Si sí, reescribe el escenario.
+
+13. **Markdown inline solo en `body` y `explanation`.** El renderer solo aplica markdown (`**bold**`, `*italic*`, bullets) en dos campos: `body` de concept/concept-visual (vía `renderMarkdownBody`) y `explanation` de cualquier ejercicio (vía `renderInlineMarkdown`). En **todo lo demás** — `title`, `prompt`, `statement`, `options[].text`, `steps[]`, `pairs[].term`/`def`, `tokens[]`, `sentenceBefore`, `sentenceAfter` — el JSON se renderiza **tal cual**, así que `*algo*` y `**algo**` aparecen literal con asteriscos visibles.
+    - **Regla de autor:** nunca metas `*...*` ni `**...**` en los campos no-soportados.
+    - **Emphasis alternativo en esos campos:** usa comillas dobles (`"hazme un párrafo"`), cursivas tipográficas del español con comillas simples, o reformula la frase para que el énfasis sea sintáctico (p. ej. *"le dio otro párrafo distinto"* → *"le dio un párrafo completamente distinto"*).
+    - **Títulos (`title`):** el componente `<Title>` ya los renderiza extrabold por default. `**bold**` dentro es redundante y visible como asteriscos. Si necesitas un acento tipográfico dentro de un título, reformula o parte el concepto en dos slides — no intentes meter énfasis inline.
 
 ---
 
@@ -261,7 +266,9 @@ Antes de entregar una lección, Opus debe verificar estos diez puntos. Si falla 
 
 ---
 
-**Versión:** 0.8 — Ajustes desde v0.7 (feedback de uso real sobre L1): **regla 11** order-steps solo es válido si cada par adyacente tiene causa/lógica que justifique el orden exacto; si dos pasos pueden intercambiarse, no es ordering — es lista paralela, va como bullets · **regla 12** trampas de mcq deben ser robustas contra capacidades 2026 de ChatGPT (web search, multimodal, tools); escenarios tipo *"el mejor electricista de mi colonia"* están rotos porque web search los resuelve. Zonas seguras documentadas: datos privados internos, matemática inventada, sin-web-search.
+**Versión:** 0.9 — Ajustes desde v0.8 (feedback de render real sobre L2): **regla 13** nueva — markdown solo vive en `body` y `explanation`; en todos los demás campos el JSON se renderiza literal, así que `*...*` y `**...**` aparecen con asteriscos visibles. Para emphasis en título/prompt/opciones/pairs/tokens/steps usar comillas o reformular. **Proxy de regla 6.5** apretado de ≤200 a ≤180 chars — el renderer rompe ~60 chars/línea y 200 se iba a 4 renglones en casos con palabras largas. **Renderer:** `renderMarkdownBody` y `renderInlineMarkdown` extendidos para soportar `*italic*` además de `**bold**` (antes solo bold, por eso *recuerda* aparecía literal en body).
+
+v0.8 — Ajustes desde v0.7 (feedback de uso real sobre L1): **regla 11** order-steps solo es válido si cada par adyacente tiene causa/lógica que justifique el orden exacto; si dos pasos pueden intercambiarse, no es ordering — es lista paralela, va como bullets · **regla 12** trampas de mcq deben ser robustas contra capacidades 2026 de ChatGPT (web search, multimodal, tools); escenarios tipo *"el mejor electricista de mi colonia"* están rotos porque web search los resuelve. Zonas seguras documentadas: datos privados internos, matemática inventada, sin-web-search.
 
 v0.7 — Consolidación: absorbida la memoria personal `MEMORY.md` + 4 feedback files (body_copy, miyagi_pedagogy, scenarios, no_creative_fixes) para que este documento sea la **única fuente de verdad pedagógica**. Contenido migrado: **regla 4** ahora incluye tabla ❌ vs ✅ de escenarios + explicación de narrative transportation · **regla 9.1** nueva: nunca usar abreviaciones técnicas (API, LLM, MCP, RAG, RLS) sin introducirlas primero en palabras llanas · **sección 5.1** aclaración: "escribir un prompt (auto-verificación)" no forma parte del algoritmo por defecto; reservado para cursos de prompting con rúbrica determinista.
 
