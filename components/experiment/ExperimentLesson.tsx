@@ -695,6 +695,7 @@ export default function ExperimentLesson({
                 return n;
               })()}
               totalSoFar={STEPS.slice(0, index).filter(isScoreable).length}
+              passed={passed}
             />
           )}
           {step.kind === 'mcq' && (
@@ -1752,6 +1753,7 @@ function CelebrationStep({
   totalSoFar,
   streak,
   xpGained,
+  passed = true,
 }: {
   emoji: string;
   title: string;
@@ -1761,10 +1763,22 @@ function CelebrationStep({
   totalSoFar: number;
   streak: number;
   xpGained: number;
+  passed?: boolean;
 }) {
+  // When the user did NOT pass the lesson, the final slide must NOT look
+  // like a win: no confetti, no celebration copy, neutral emoji, score badge
+  // in warning color. Otherwise the user may think they passed when they
+  // actually need to retry. Keep "pass" path visually identical to before.
+  const displayEmoji = passed ? emoji : '📚';
+  const displayTitle = passed ? title : 'no pasaste todavía';
+  const displayBody = passed
+    ? body
+    : 'Para pasar la lección necesitas al menos 80% de aciertos. Revisa los conceptos y reintenta — el hypercorrection effect hace que lo que fallaste hoy se te quede mejor mañana.';
+  const accentColor = passed ? '#1472FF' : '#f59e0b'; // primary blue vs amber warning
+
   return (
     <div className="text-center space-y-6 relative">
-      <ConfettiEffect count={60} pattern="radial" shape="circle" />
+      {passed && <ConfettiEffect count={60} pattern="radial" shape="circle" />}
       <motion.div
         className="text-8xl md:text-9xl leading-none"
         aria-hidden="true"
@@ -1772,7 +1786,7 @@ function CelebrationStep({
         animate={{ scale: [0.3, 1.15, 1], opacity: 1 }}
         transition={{ duration: 0.6 }}
       >
-        {emoji}
+        {displayEmoji}
       </motion.div>
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -1781,11 +1795,14 @@ function CelebrationStep({
         className="space-y-2"
       >
         {section && (
-          <p className="text-xs font-bold uppercase tracking-wider text-[#1472FF]">
+          <p
+            className="text-xs font-bold uppercase tracking-wider"
+            style={{ color: accentColor }}
+          >
             {section}
           </p>
         )}
-        <Title className="!text-3xl md:!text-4xl">{title}</Title>
+        <Title className="!text-3xl md:!text-4xl">{displayTitle}</Title>
       </motion.div>
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -1793,22 +1810,31 @@ function CelebrationStep({
         transition={{ delay: 0.45, duration: 0.3 }}
         className="flex flex-wrap justify-center gap-3"
       >
-        <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
-          ✓ {correctSoFar}/{totalSoFar}
+        <span
+          className="rounded-full border-2 px-4 py-2 text-sm font-bold bg-white dark:bg-gray-900"
+          style={{ borderColor: accentColor, color: accentColor }}
+        >
+          {passed ? '✓' : '✗'} {correctSoFar}/{totalSoFar}
         </span>
-        <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
-          🔥 {DAILY_STREAK} días
-        </span>
-        <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
-          +{xpGained} XP
-        </span>
+        {passed && (
+          <>
+            <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
+              🔥 {DAILY_STREAK} días
+            </span>
+            <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
+              +{xpGained} XP
+            </span>
+          </>
+        )}
       </motion.div>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 0.35 }}
       >
-        <Body className="!text-lg text-[#777777] dark:text-gray-400">{body}</Body>
+        <Body className="!text-lg text-[#777777] dark:text-gray-400">
+          {displayBody}
+        </Body>
       </motion.div>
     </div>
   );

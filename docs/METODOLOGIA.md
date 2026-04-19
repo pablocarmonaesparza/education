@@ -1,4 +1,4 @@
-# Metodología Itera — v0.7
+# Metodología Itera — v0.8
 
 > Documento vivo. Es el contrato pedagógico que gobierna la creación de cada lección en Itera.
 
@@ -109,6 +109,13 @@ Ejemplo: *Qué son los tokens* suena a "conocer" (conceptual). Pero si el outcom
 9. Nada de palabras infantiles tipo "trucos". Lenguaje adulto.
 9.1. **Nunca usar abreviaciones técnicas sin introducirlas.** La audiencia no es técnica. La primera vez que aparece `API`, `LLM`, `MCP`, `RAG`, `RLS`, etc., se introduce en palabras llanas (*"API — la manera programática de hablarle a un modelo"*). Después de introducida, se puede usar la sigla. Abreviaciones de chat (`msg`, `DM`, `q`) están prohibidas siempre.
 10. Orientar antes de preguntar (la slide previa al ejercicio da el marco). **Excepción explícita:** la pregunta-trampa del Engage, por diseño.
+
+11. **Order-steps exige orden estrictamente necesario.** Un ejercicio de ordenar pasos solo es válido si **cada par adyacente tiene una razón causal o lógica para estar en ese orden específico**. Si dos pasos pueden intercambiarse sin cambiar el resultado, no es un problema de ordenar — es una lista de criterios paralelos y va como bullet en un concept slide, no como ejercicio scoreable. **Proxy pre-envío:** antes de crear el ejercicio, Opus debe poder completar *"El paso N debe ir antes del paso N+1 **porque** ___"* para cada par. Si alguna razón se reduce a *"para que se vea ordenado"* o *"porque sí"*, el ejercicio está mal clasificado — conviértelo en bullets o reemplázalo por un mcq/tap-match que sí capture la relación real.
+
+12. **Trampas de mcq deben ser robustas contra AI moderno.** El misconception que explota la pregunta-trampa (Engage) o cualquier mcq conceptual debe ser **inequívocamente incorrecto en 2026**, no una verdad parcial que capacidades modernas (web search, herramientas, multimodal, memoria) hayan vuelto gris. Si un usuario puede defender la respuesta "mala" con *"pero ChatGPT ahora puede buscar en internet / ver imágenes / usar herramientas"*, la pregunta está rota.
+    - **Zonas seguras para trampas de alucinación:** datos privados no públicos (ventas internas, inventario, contactos personales), matemática o lógica que el modelo puede inventar, detalles específicos pedidos a un modelo sin web search activado.
+    - **Zonas grises a evitar:** *"¿quién es el mejor X de mi colonia?"* (web search lo resuelve), *"¿qué dice esta imagen?"* (multimodal lo resuelve), *"¿cuál es la noticia de hoy?"* (web search lo resuelve).
+    - **Prueba pre-envío:** *"¿puedo defender la respuesta incorrecta con una capacidad real de ChatGPT en 2026?"* Si sí, reescribe el escenario.
 
 ---
 
@@ -254,7 +261,9 @@ Antes de entregar una lección, Opus debe verificar estos diez puntos. Si falla 
 
 ---
 
-**Versión:** 0.7 — Consolidación: absorbida la memoria personal `MEMORY.md` + 4 feedback files (body_copy, miyagi_pedagogy, scenarios, no_creative_fixes) para que este documento sea la **única fuente de verdad pedagógica**. Contenido migrado: **regla 4** ahora incluye tabla ❌ vs ✅ de escenarios + explicación de narrative transportation · **regla 9.1** nueva: nunca usar abreviaciones técnicas (API, LLM, MCP, RAG, RLS) sin introducirlas primero en palabras llanas · **sección 5.1** aclaración: "escribir un prompt (auto-verificación)" no forma parte del algoritmo por defecto; reservado para cursos de prompting con rúbrica determinista.
+**Versión:** 0.8 — Ajustes desde v0.7 (feedback de uso real sobre L1): **regla 11** order-steps solo es válido si cada par adyacente tiene causa/lógica que justifique el orden exacto; si dos pasos pueden intercambiarse, no es ordering — es lista paralela, va como bullets · **regla 12** trampas de mcq deben ser robustas contra capacidades 2026 de ChatGPT (web search, multimodal, tools); escenarios tipo *"el mejor electricista de mi colonia"* están rotos porque web search los resuelve. Zonas seguras documentadas: datos privados internos, matemática inventada, sin-web-search.
+
+v0.7 — Consolidación: absorbida la memoria personal `MEMORY.md` + 4 feedback files (body_copy, miyagi_pedagogy, scenarios, no_creative_fixes) para que este documento sea la **única fuente de verdad pedagógica**. Contenido migrado: **regla 4** ahora incluye tabla ❌ vs ✅ de escenarios + explicación de narrative transportation · **regla 9.1** nueva: nunca usar abreviaciones técnicas (API, LLM, MCP, RAG, RLS) sin introducirlas primero en palabras llanas · **sección 5.1** aclaración: "escribir un prompt (auto-verificación)" no forma parte del algoritmo por defecto; reservado para cursos de prompting con rúbrica determinista.
 
 v0.6 — Ajustes desde v0.5 (feedback UX sobre lecciones renderizadas): **regla 6.7** slides explicativas sin personaje hablan al usuario directo (no narrar en tercera persona cuando no hay caso) · **regla 6.8** mayúscula inicial consistente en todo valor textual visible (tap-match, order-steps, opciones de mcq, tokens) · **regla 6.9** en tap-match, `term` siempre ≤ `def` para que el grid 25/50 del renderer no rompa el alineado.
 
