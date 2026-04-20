@@ -1,4 +1,4 @@
-# Metodología Itera — v0.9
+# Metodología Itera — v0.10
 
 > Documento vivo. Es el contrato pedagógico que gobierna la creación de cada lección en Itera.
 
@@ -121,6 +121,11 @@ Ejemplo: *Qué son los tokens* suena a "conocer" (conceptual). Pero si el outcom
     - **Regla de autor:** nunca metas `*...*` ni `**...**` en los campos no-soportados.
     - **Emphasis alternativo en esos campos:** usa comillas dobles (`"hazme un párrafo"`), cursivas tipográficas del español con comillas simples, o reformula la frase para que el énfasis sea sintáctico (p. ej. *"le dio otro párrafo distinto"* → *"le dio un párrafo completamente distinto"*).
     - **Títulos (`title`):** el componente `<Title>` ya los renderiza extrabold por default. `**bold**` dentro es redundante y visible como asteriscos. Si necesitas un acento tipográfico dentro de un título, reformula o parte el concepto en dos slides — no intentes meter énfasis inline.
+
+14. **Lecciones autocontenidas. Cero callbacks cross-lección.** Cada lección debe funcionar tomada en cualquier orden, sin referencias a personajes, situaciones o slides de otras lecciones. El único callback permitido es **dentro de la misma lección** (Engage ↔ Evaluate), que es parte fundamental del patrón de hypercorrection. **Recap de sección**, si existe, apunta a **conceptos aprendidos** (*"ya viste tokens, ventana de contexto y alucinación"*), nunca a personajes (*"recuerdas a María de la lección 2"*).
+    - **Razones pedagógicas:** la ruta personalizada del curso arma cursos custom eligiendo lecciones según el input del usuario. Si una lección referencia otra que el usuario no tomó, el callback rompe la narrativa. Lecciones autocontenidas = ruta personalizada viable.
+    - **Razones técnicas:** generadores automáticos (`/generate-lecture` skill futura) escriben una lección por vez. Sin memoria cross-lección el prompt al modelo es tractable (input: `lecture_title` + `bloom_verb` → output: 10 slides). Con memoria cross-lección, el prompt debe cargar contexto de 20+ lecciones previas y la probabilidad de error crece exponencialmente.
+    - **Test pre-envío:** si sacaras esta lección del curso y la pusieras sola en un landing page, ¿sigue funcionando igual de bien? Si no, rompe la regla — quita las referencias cruzadas.
 
 ---
 
@@ -266,7 +271,9 @@ Antes de entregar una lección, Opus debe verificar estos diez puntos. Si falla 
 
 ---
 
-**Versión:** 0.9 — Ajustes desde v0.8 (feedback de render real sobre L2): **regla 13** nueva — markdown solo vive en `body` y `explanation`; en todos los demás campos el JSON se renderiza literal, así que `*...*` y `**...**` aparecen con asteriscos visibles. Para emphasis en título/prompt/opciones/pairs/tokens/steps usar comillas o reformular. **Proxy de regla 6.5** apretado de ≤200 a ≤180 chars — el renderer rompe ~60 chars/línea y 200 se iba a 4 renglones en casos con palabras largas. **Renderer:** `renderMarkdownBody` y `renderInlineMarkdown` extendidos para soportar `*italic*` además de `**bold**` (antes solo bold, por eso *recuerda* aparecía literal en body).
+**Versión:** 0.10 — Ajustes desde v0.9 (pivote a arquitectura 10 secciones × 100 lecciones con ruta personalizada): **regla 14** nueva — lecciones autocontenidas, cero callbacks cross-lección. El único callback permitido es dentro de la misma lección (Engage ↔ Evaluate). Recap de sección, si existe, apunta a conceptos no a personajes. Razones: (1) ruta personalizada solo funciona si una lección cae en cualquier orden, (2) generadores automáticos escriben una lección por vez sin memoria cross-lección, lo que hace el prompt tractable.
+
+v0.9 — Ajustes desde v0.8 (feedback de render real sobre L2): **regla 13** nueva — markdown solo vive en `body` y `explanation`; en todos los demás campos el JSON se renderiza literal, así que `*...*` y `**...**` aparecen con asteriscos visibles. Para emphasis en título/prompt/opciones/pairs/tokens/steps usar comillas o reformular. **Proxy de regla 6.5** apretado de ≤200 a ≤180 chars — el renderer rompe ~60 chars/línea y 200 se iba a 4 renglones en casos con palabras largas. **Renderer:** `renderMarkdownBody` y `renderInlineMarkdown` extendidos para soportar `*italic*` además de `**bold**` (antes solo bold, por eso *recuerda* aparecía literal en body).
 
 v0.8 — Ajustes desde v0.7 (feedback de uso real sobre L1): **regla 11** order-steps solo es válido si cada par adyacente tiene causa/lógica que justifique el orden exacto; si dos pasos pueden intercambiarse, no es ordering — es lista paralela, va como bullets · **regla 12** trampas de mcq deben ser robustas contra capacidades 2026 de ChatGPT (web search, multimodal, tools); escenarios tipo *"el mejor electricista de mi colonia"* están rotos porque web search los resuelve. Zonas seguras documentadas: datos privados internos, matemática inventada, sin-web-search.
 

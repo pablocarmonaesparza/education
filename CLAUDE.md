@@ -3,7 +3,30 @@
 > **Regla absoluta:** Todo nuevo UI debe usar SOLO estos componentes y tokens.
 > Nunca escribir colores hex inline, depth effects manuales, ni clases Tailwind sueltas para UI que ya tiene componente.
 
-> **Contrato pedagógico de lecciones:** ver [`docs/METODOLOGIA.md`](./docs/METODOLOGIA.md). Cualquier lección o slide que se cree (a mano, por SQL, por generator AI, por n8n) debe cumplirlo. El outline maestro del curso vive en [`docs/OUTLINE_2026.md`](./docs/OUTLINE_2026.md).
+> **Contrato pedagógico de lecciones:** ver [`docs/METODOLOGIA.md`](./docs/METODOLOGIA.md). Cualquier lección o slide que se cree (a mano, por SQL, por generator AI, por n8n) debe cumplirlo. El outline maestro del curso vive en [`docs/LESSONS_v1.md`](./docs/LESSONS_v1.md).
+
+---
+
+## 🧠 Contexto de producto — leer antes de tocar copy, pricing, landing o lecciones
+
+**Fuentes de verdad no-técnicas:**
+
+| Doc | Qué es | Cuándo leerlo |
+|---|---|---|
+| [`docs/CONTEXT.md`](./docs/CONTEXT.md) | Qué es Itera, audiencia, modelo de negocio, roadmap, pricing | Antes de tocar landing, copy de marketing, pricing, o cualquier cosa estratégica |
+| [`docs/METODOLOGIA.md`](./docs/METODOLOGIA.md) | Contrato pedagógico (10 slides/lección, 5E, hypercorrection, reglas de forma) | Obligatorio antes de crear/editar cualquier lección o slide |
+| [`docs/LESSONS_v1.md`](./docs/LESSONS_v1.md) | Las 100 lecciones firmadas, 10 secciones | Antes de añadir/editar lecciones |
+| [`docs/SCHEMA_v1.md`](./docs/SCHEMA_v1.md) | Schema de DB (sections, lectures, slides) | Antes de tocar migrations o queries |
+
+**Tesis central (no negociable):** Itera vende **retención + ejecución**, no información. El formato principal son **ejercicios interactivos cortos (no videos)**. Audiencia: LATAM no-técnico.
+
+**Memoria cross-sesión:** este repo tiene un skill [`itera-context`](./.claude/skills/itera-context/SKILL.md) que carga los docs + hace `recall` en Supermemory al inicio. Invócalo con `/itera-context` o al comienzo de cualquier sesión sobre producto, copy, estrategia o lecciones. Al terminar trabajo significativo, invócalo otra vez para guardar lo aprendido.
+
+**Reglas de operación con Pablo:**
+- Después de cambios de código, subir a GitHub siempre (a menos que estemos en una rama de experimento).
+- Minúsculas en títulos y bodies gramaticales (heredado del contrato pedagógico).
+- Moneda siempre en USD.
+- Evitar jerga interna en UI pública — explicar cosas como "ruta personalizada" en lenguaje llano.
 
 ---
 
