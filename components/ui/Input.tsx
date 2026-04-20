@@ -89,10 +89,12 @@ export interface TextareaProps
  * <Textarea variant="flat" placeholder="Landing-style textarea" rows={6} />
  * ```
  */
-export function Textarea({ variant = 'default', className = '', ...rest }: TextareaProps) {
-  const base = variant === 'flat' ? textareaFlat : `${inputBase} resize-none`;
-  return <textarea className={`${base} ${className}`} {...rest} />;
-}
+export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+  function Textarea({ variant = 'default', className = '', ...rest }, ref) {
+    const base = variant === 'flat' ? textareaFlat : `${inputBase} resize-none`;
+    return <textarea ref={ref} className={`${base} ${className}`} {...rest} />;
+  }
+);
 
 /* ── Search Input (with icon slot) ── */
 

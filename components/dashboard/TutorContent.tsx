@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import Spinner from '@/components/ui/Spinner';
 import IconButton from '@/components/ui/IconButton';
+import { Textarea } from '@/components/ui/Input';
+import { Subtitle } from '@/components/ui/Typography';
 
 interface Message {
   id: string;
@@ -67,7 +69,7 @@ export default function TutorContent() {
     { id: 'claude-haiku-4.5', label: 'Claude Haiku 4.5', icon: '/icons/tutor-models/claude.png', price: 2 },
   ] as const;
 
-  const selectedModelData = tutorModels.find((m) => m.id === selectedModel)!;
+  const selectedModelData = tutorModels.find((m) => m.id === selectedModel) ?? tutorModels[0];
   const priceString = (n: number) => '$'.repeat(n);
 
   useEffect(() => {
@@ -422,7 +424,7 @@ ${completedVideosText}
       <div className="w-72 border-r-2 border-gray-200 dark:border-gray-900 flex flex-col">
         <div className="p-4 border-b-2 border-gray-200 dark:border-gray-900">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-lg font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">tutor ia</h2>
+            <Subtitle className="tracking-tight">tutor ia</Subtitle>
             <IconButton
               variant="primary"
               onClick={createNewConversation}
@@ -638,13 +640,14 @@ ${completedVideosText}
 
         <div className="p-4 border-t border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800">
           <div className="max-w-3xl mx-auto flex items-end gap-2">
-            <textarea
+            <Textarea
               ref={textareaRef}
+              variant="flat"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Escribe tu pregunta..."
-              className="flex-1 resize-none border-2 border-gray-200 dark:border-gray-900 rounded-2xl px-4 py-4 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
+              className="flex-1"
               rows={1}
               disabled={isSending}
             />

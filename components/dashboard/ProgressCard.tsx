@@ -2,6 +2,7 @@
 
 import Card from '@/components/ui/Card';
 import ProgressBar from '@/components/ui/ProgressBar';
+import { Subtitle, Caption } from '@/components/ui/Typography';
 
 interface ProgressCardProps {
   title: string;
@@ -17,10 +18,10 @@ export default function ProgressCard({ title, progress, total, icon }: ProgressC
     <Card variant="neutral" padding="lg" className="shadow-md">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-lg font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">{title}</h3>
-          <p className="text-sm text-[#777777] dark:text-gray-400 mt-1">
+          <Subtitle>{title}</Subtitle>
+          <Caption className="mt-1">
             {progress} de {total} completados
-          </p>
+          </Caption>
         </div>
         {icon && (
           <div className="text-[#1472FF]">

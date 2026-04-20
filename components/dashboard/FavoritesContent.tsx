@@ -107,7 +107,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
                   <div className="w-8 h-8 rounded-lg bg-[#1472FF]/10 flex items-center justify-center text-[#1472FF] font-bold flex-shrink-0">
                     {phaseTitle.split(':')[0].replace('Fase ', '')}
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900 flex-1 text-left group-hover:text-[#1472FF] transition-colors">
+                  <h2 className="text-xl font-bold text-[#4b4b4b] dark:text-white flex-1 text-left group-hover:text-[#1472FF] transition-colors">
                     {phaseTitle.split(':')[1]}
                   </h2>
                   <svg
@@ -162,7 +162,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
                                 href={`/dashboard/my-path/video/${phaseNumber}/${videoOrder}`}
                                 className="flex-1"
                               >
-                                <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 group-hover:text-[#1472FF] transition-colors">
+                                <h3 className="font-semibold text-[#4b4b4b] dark:text-white text-sm line-clamp-2 group-hover:text-[#1472FF] transition-colors">
                                   {video.description || `Video ${video.order}`}
                                 </h3>
                               </Link>
@@ -177,7 +177,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
                             )}
 
                             {video.why_relevant && (
-                              <p className="text-xs text-gray-500 line-clamp-2 italic mb-4">
+                              <p className="text-xs text-[#777777] dark:text-gray-400 line-clamp-2 italic mb-4">
                                 {video.why_relevant}
                               </p>
                             )}

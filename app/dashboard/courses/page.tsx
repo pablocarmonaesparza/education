@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button';
 import Tag from '@/components/ui/Tag';
 import Card from '@/components/ui/Card';
 import { SearchInput } from '@/components/ui';
+import { Title, Subtitle, Body } from '@/components/ui/Typography';
 
 export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -123,36 +124,19 @@ export default function CoursesPage() {
     <div className="p-8 bg-white dark:bg-gray-800 min-h-screen">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">todos los cursos</h1>
-        <p className="text-[#777777] dark:text-gray-400">
+        <Title className="mb-2 tracking-tight">todos los cursos</Title>
+        <Body className="text-[#777777] dark:text-gray-400">
           Explora el catálogo completo de contenido disponible
-        </p>
+        </Body>
       </div>
 
       {/* Search Bar */}
       <div className="mb-8">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Buscar por nombre, descripción o tema..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-6 py-4 pl-14 rounded-2xl border-2 border-gray-200 dark:border-gray-900 focus:border-[#1472FF] focus:ring-2 focus:ring-[#1472FF]/20 outline-none transition-all text-[#4b4b4b] dark:text-white bg-white dark:bg-gray-800 placeholder-gray-400"
-          />
-          <svg
-            className="absolute left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </div>
+        <SearchInput
+          placeholder="Buscar por nombre, descripción o tema..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
 
       {/* Category Filters */}
@@ -199,10 +183,7 @@ export default function CoursesPage() {
               <div className="p-6">
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`text-3xl ${
-                    module.level === 'Principiante' ? '' :
-                    module.level === 'Intermedio' ? 'text-yellow-500' : 'text-red-500'
-                  }`}>
+                  <div className="text-3xl">
                     {categories.find(c => c.id === module.category)?.icon || '📚'}
                   </div>
                   <Tag variant={
@@ -214,9 +195,9 @@ export default function CoursesPage() {
                 </div>
 
                 {/* Title & Description */}
-                <h3 className="text-xl font-bold text-[#4b4b4b] mb-2 group-hover:text-[#1472FF] transition-colors">
+                <Subtitle as="h3" className="mb-2 group-hover:text-[#1472FF] transition-colors">
                   {module.title}
-                </h3>
+                </Subtitle>
                 <p className="text-sm text-[#777777] mb-4">
                   {module.description}
                 </p>
@@ -257,9 +238,9 @@ export default function CoursesPage() {
       ) : (
         <div className="text-center py-16">
           <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-2xl font-bold text-[#4b4b4b] mb-2">
+          <Title as="h3" className="mb-2">
             No se encontraron resultados
-          </h3>
+          </Title>
           <p className="text-[#777777] mb-6">
             Intenta con otros términos de búsqueda o categoría
           </p>

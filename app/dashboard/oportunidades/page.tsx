@@ -178,9 +178,9 @@ export default function OportunidadesPage() {
                       <div className="p-4 sm:p-5">
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex-1 min-w-0">
-                            <p className="text-base font-bold text-[#4b4b4b] dark:text-white truncate">
+                            <Body className="font-bold truncate">
                               {opp.title}
-                            </p>
+                            </Body>
                             <Caption className="mt-0.5">{opp.company} · {opp.location}</Caption>
                           </div>
                           <Tag variant={typeVariants[opp.type]} className="!text-xs flex-shrink-0">
@@ -227,9 +227,9 @@ export default function OportunidadesPage() {
                   </div>
 
                   <div>
-                    <h2 className="text-xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white leading-tight">
+                    <Subtitle className="leading-tight">
                       {selectedOpp.title}
-                    </h2>
+                    </Subtitle>
                     <Caption className="mt-1">{selectedOpp.company} · {selectedOpp.location}</Caption>
                   </div>
 

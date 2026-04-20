@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import Card, { CardFlat } from '@/components/ui/Card';
 import Tag from '@/components/ui/Tag';
-import { Headline, Body, Caption } from '@/components/ui/Typography';
+import { Subtitle, Headline, Body, Caption } from '@/components/ui/Typography';
 import { SearchInput } from '@/components/ui/Input';
 import SectionHeader from '@/components/ui/SectionHeader';
 import EmptyState from '@/components/ui/EmptyState';
@@ -110,11 +110,11 @@ const categories = ['Todos', 'Salud & Bienestar', 'Productividad', 'E-commerce',
 
 const avatarColors = [
   'bg-[#1472FF]',
-  'bg-emerald-500',
-  'bg-orange-500',
-  'bg-purple-500',
-  'bg-pink-500',
-  'bg-teal-500',
+  'bg-[#22c55e]',
+  'bg-[#0E5FCC]',
+  'bg-gray-500',
+  'bg-[#1472FF]',
+  'bg-[#22c55e]',
 ];
 
 export default function PitchPage() {
@@ -207,9 +207,9 @@ export default function PitchPage() {
                     <Caption className="truncate">{product.author}</Caption>
                   </div>
 
-                  <p className="font-bold text-lg text-[#4b4b4b] dark:text-white mb-1">
+                  <Subtitle className="mb-1">
                     {product.name}
-                  </p>
+                  </Subtitle>
 
                   <Body className="text-[#777777] dark:text-gray-400 line-clamp-2 text-sm mb-3 flex-1">
                     {product.description}

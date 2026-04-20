@@ -1,6 +1,7 @@
 'use client';
 
 import { depthStructure, depthActiveGroup } from '@/lib/design-tokens';
+import { Subtitle } from '@/components/ui/Typography';
 
 interface RetoItemProps {
   title: string;
@@ -101,9 +102,9 @@ export default function RetoItem({
         </div>
 
         {/* Title */}
-        <h3 className={`text-lg font-bold leading-tight mb-3 ${getTextColor()}`}>
+        <Subtitle as="h3" className={`leading-tight mb-3 ${getTextColor()}`}>
           {title}
-        </h3>
+        </Subtitle>
 
         {/* Bottom row: Type pill left, difficulty + time right */}
         <div className="flex items-center justify-between">

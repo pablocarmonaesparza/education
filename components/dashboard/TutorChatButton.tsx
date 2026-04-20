@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Spinner from '@/components/ui/Spinner';
+import { Textarea } from '@/components/ui/Input';
 import { useTutorChat } from '@/lib/hooks/useTutorChat';
 import { TUTOR_MODELS } from '@/lib/tutor/models';
 import { depth } from '@/lib/design-tokens';
@@ -109,7 +110,7 @@ export default function TutorChatButton() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const asideRef = useRef<HTMLAsideElement>(null);
+  const asideRef = useRef<HTMLElement>(null);
 
   const selectedModelData = TUTOR_MODELS.find((m) => m.id === selectedModel) || TUTOR_MODELS[1];
   const priceString = (n: number) => '$'.repeat(n);
@@ -355,8 +356,9 @@ export default function TutorChatButton() {
           <div className={`rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 overflow-visible`}>
             {/* Renglón 1–2: solo texto (overflow interno para no salir del borde) */}
             <div className="overflow-hidden rounded-t-2xl">
-            <textarea
+            <Textarea
               ref={textareaRef}
+              variant="flat"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => {
@@ -367,7 +369,7 @@ export default function TutorChatButton() {
               }}
               placeholder="Escribe tu mensaje..."
               rows={2}
-              className="w-full min-h-[4rem] max-h-[4rem] px-4 py-3 text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-0 bg-transparent resize-none overflow-y-auto border-0 border-none"
+              className="!min-h-[4rem] !max-h-[4rem] !border-0 !rounded-none !bg-transparent !ring-0 !shadow-none focus:!ring-0 focus-visible:!ring-0 overflow-y-auto"
             />
             </div>
             {/* Renglón abajo: modelo (izq, sin contorno, solo chevron) | spacer | enviar (derecha) */}

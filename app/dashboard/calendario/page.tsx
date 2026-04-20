@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import Button from '@/components/ui/Button';
 import { CardFlat } from '@/components/ui/Card';
 import Tag from '@/components/ui/Tag';
-import { Headline, Body, Caption } from '@/components/ui/Typography';
+import { Subtitle, Headline, Body, Caption } from '@/components/ui/Typography';
 import SectionHeader from '@/components/ui/SectionHeader';
 import IconButton from '@/components/ui/IconButton';
 import Divider from '@/components/ui/Divider';
@@ -203,9 +203,9 @@ export default function CalendarioPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                   </IconButton>
-                  <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white">
+                  <Subtitle className="!text-xl !font-extrabold">
                     {MONTHS_ES[currentMonth].toLowerCase()} {currentYear}
-                  </h2>
+                  </Subtitle>
                   <IconButton variant="outline" aria-label="Mes siguiente" onClick={nextMonth}>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -317,7 +317,7 @@ export default function CalendarioPage() {
                             </Tag>
                             <Caption>{ev.time} · {ev.duration}</Caption>
                           </div>
-                          <p className="font-bold text-[#4b4b4b] dark:text-white">{ev.title}</p>
+                          <Body className="font-bold !text-[#4b4b4b] dark:!text-white">{ev.title}</Body>
                           <Body className="mt-1 text-[#777777] dark:text-gray-400 text-sm">{ev.description}</Body>
                         </div>
                       </div>
@@ -354,14 +354,14 @@ export default function CalendarioPage() {
                             <span className="text-xs font-bold text-[#1472FF] uppercase leading-none">
                               {formatEventDate(ev.date).split(' ')[1]}
                             </span>
-                            <span className="text-lg font-extrabold text-[#4b4b4b] dark:text-white leading-none">
+                            <Subtitle as="span" className="!leading-none">
                               {new Date(ev.date).getDate()}
-                            </span>
+                            </Subtitle>
                           </div>
                           <div className="min-w-0">
-                            <p className="font-bold text-sm text-[#4b4b4b] dark:text-white group-hover:text-[#1472FF] transition-colors truncate">
+                            <Headline as="p" className="!normal-case group-hover:!text-[#1472FF] transition-colors truncate">
                               {ev.title}
-                            </p>
+                            </Headline>
                             <Caption>{ev.time} · {typeLabels[ev.type]}</Caption>
                           </div>
                         </div>

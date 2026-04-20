@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button';
 import Tag from '@/components/ui/Tag';
 import ProgressBar from '@/components/ui/ProgressBar';
 import StatCard from '@/components/ui/StatCard';
+import { Title, Subtitle, Headline, Body, Caption } from '@/components/ui/Typography';
 
 interface DashboardContentProps {
   userName: string;
@@ -89,20 +90,20 @@ export default function DashboardContent(props: DashboardContentProps) {
         {/* Header Section - Welcome & Context */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
+            <Title className="mb-2">
               hola, {props.userName.split(' ')[0].toLowerCase()}
-            </h1>
-            <p className="text-[#777777] dark:text-gray-400">
+            </Title>
+            <Body className="text-[#777777] dark:text-gray-400">
               {props.streak && props.streak > 0
                 ? `¡Estás en una racha de ${props.streak} días! Sigue así.`
                 : 'Listo para continuar tu aprendizaje hoy?'}
-            </p>
+            </Body>
           </div>
           <div className="text-right hidden md:block">
-            <p className="text-sm text-[#777777] dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Tu Proyecto</p>
-            <p className="font-extrabold text-lg text-[#1472FF]">
+            <Headline className="mb-1">Tu Proyecto</Headline>
+            <Subtitle className="text-[#1472FF]">
               {projectTitle}
-            </p>
+            </Subtitle>
           </div>
         </header>
 
@@ -119,12 +120,12 @@ export default function DashboardContent(props: DashboardContentProps) {
                     <Tag variant="primary" className="mb-3 text-xs font-bold">
                       Continuar donde lo dejaste
                     </Tag>
-                    <h2 className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
+                    <Title as="h2" className="mb-2">
                       {currentVideoData?.description || 'Siguiente lección'}
-                    </h2>
-                    <p className="text-[#777777] dark:text-gray-400">
+                    </Title>
+                    <Body className="text-[#777777] dark:text-gray-400">
                       {currentPhaseData?.phase_name ? `Fase ${props.currentPhase}: ${currentPhaseData.phase_name}` : 'Cargando ruta...'}
-                    </p>
+                    </Body>
                   </div>
                 </div>
 
@@ -138,12 +139,12 @@ export default function DashboardContent(props: DashboardContentProps) {
                   </div>
 
                   <div className="flex-1">
-                    <h3 className="font-bold text-[#4b4b4b] dark:text-white mb-2 line-clamp-1">
+                    <Headline className="mb-2 line-clamp-1">
                       {currentVideoData?.section || 'Lección actual'}
-                    </h3>
-                    <p className="text-sm text-[#777777] dark:text-gray-400 mb-4 line-clamp-2">
+                    </Headline>
+                    <Caption className="mb-4 line-clamp-2">
                       {currentVideoData?.why_relevant || 'Aprende los conceptos clave para avanzar en tu proyecto.'}
-                    </p>
+                    </Caption>
                     <div className="flex items-center gap-4 text-sm text-[#777777] dark:text-gray-400 font-medium">
                        <span className="flex items-center gap-1">
                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -185,7 +186,7 @@ export default function DashboardContent(props: DashboardContentProps) {
               <CardFlat className="p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
                   <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                  <h3 className="font-bold text-[#4b4b4b] dark:text-white">Habilidades en Desarrollo</h3>
+                  <Headline>Habilidades en Desarrollo</Headline>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {props.skills && props.skills.length > 0 ? (
@@ -193,7 +194,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                       <Tag key={i} variant="primary">{skill}</Tag>
                     ))
                   ) : (
-                    <p className="text-sm text-[#777777] dark:text-gray-400">Se definirán en tu ruta</p>
+                    <Caption>Se definirán en tu ruta</Caption>
                   )}
                 </div>
               </CardFlat>
@@ -202,7 +203,7 @@ export default function DashboardContent(props: DashboardContentProps) {
               <CardFlat className="p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
                   <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                  <h3 className="font-bold text-[#4b4b4b] dark:text-white">Stack Tecnológico</h3>
+                  <Headline>Stack Tecnológico</Headline>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {props.tools && props.tools.length > 0 ? (
@@ -210,7 +211,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                       <Tag key={i} variant="primary">{tool}</Tag>
                     ))
                   ) : (
-                    <p className="text-sm text-[#777777] dark:text-gray-400">Se definirán en tu ruta</p>
+                    <Caption>Se definirán en tu ruta</Caption>
                   )}
                 </div>
               </CardFlat>
@@ -223,12 +224,12 @@ export default function DashboardContent(props: DashboardContentProps) {
 
             {/* Overall Progress Card */}
             <CardFlat className="p-6 shadow-sm">
-              <h3 className="font-extrabold text-[#4b4b4b] dark:text-white mb-6 flex items-center justify-between tracking-tight">
+              <Subtitle className="mb-6 flex items-center justify-between">
                 tu progreso
                 <span className="text-2xl font-extrabold text-[#1472FF]">
                   {props.overallProgress}%
                 </span>
-              </h3>
+              </Subtitle>
 
               <div className="relative pt-1 mb-6">
                 <ProgressBar value={props.overallProgress} size="lg" color="primary" durationMs={1000} className="mb-2" />
@@ -252,7 +253,7 @@ export default function DashboardContent(props: DashboardContentProps) {
 
             {/* Activity Stats */}
             <CardFlat className="p-6 shadow-sm">
-              <h3 className="font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">tu actividad</h3>
+              <Subtitle className="mb-4">tu actividad</Subtitle>
               <div className="grid grid-cols-2 gap-4">
                 <StatCard icon="🔥" value={String(props.streak || 0)} label="Racha Días" color="orange" />
                 <StatCard icon="🎯" value={String(props.weeklyProgress || 0)} label="Videos Sem." color="green" />

@@ -9,7 +9,7 @@ import { CardFlat } from '@/components/ui/Card';
 import ProgressBar from '@/components/ui/ProgressBar';
 import Tag from '@/components/ui/Tag';
 import StatCard from '@/components/ui/StatCard';
-import { Subtitle, Headline, Body, Caption } from '@/components/ui/Typography';
+import { Title, Subtitle, Headline, Body, Caption } from '@/components/ui/Typography';
 import SectionHeader from '@/components/ui/SectionHeader';
 import EmptyState from '@/components/ui/EmptyState';
 import Divider from '@/components/ui/Divider';
@@ -236,9 +236,9 @@ export default function RetosPage() {
             <CardFlat className="p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <Subtitle>tu progreso en retos</Subtitle>
-                <span className="text-2xl font-extrabold text-[#1472FF]">
+                <Title as="span" className="!text-[#1472FF]">
                   {Math.round(progressPercent)}%
-                </span>
+                </Title>
               </div>
               <ProgressBar value={progressPercent} size="lg" color="primary" durationMs={1000} className="mb-2" />
               <div className="flex justify-between">
@@ -263,9 +263,18 @@ export default function RetosPage() {
                     return (
                       <div
                         key={exercise.number}
+                        role="button"
+                        tabIndex={0}
                         onClick={() => {
                           setCurrentExercise(exercise);
                           setExpandedNumber(prev => prev === exercise.number ? null : exercise.number);
+                        }}
+                        onKeyDown={(e: React.KeyboardEvent) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setCurrentExercise(exercise);
+                            setExpandedNumber(prev => prev === exercise.number ? null : exercise.number);
+                          }
                         }}
                         className={`cursor-pointer transition-all duration-150 ${isLocked ? 'opacity-60' : ''}`}
                       >
@@ -448,9 +457,9 @@ export default function RetosPage() {
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white leading-tight">
+                  <Subtitle className="!text-xl !font-extrabold !tracking-tight !leading-tight">
                     {currentExercise.number}. {currentExercise.title}
-                  </h2>
+                  </Subtitle>
 
                   {/* Description */}
                   <div>

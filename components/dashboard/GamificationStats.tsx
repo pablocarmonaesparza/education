@@ -71,17 +71,17 @@ export default function GamificationStats({
       {/* Stats Grid */}
       <div className="p-4 grid grid-cols-2 gap-4">
         {/* Streak */}
-        <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-4 border border-red-100 dark:border-red-800">
+        <div className="bg-[#1472FF]/10 rounded-lg p-4 border border-[#1472FF]/20">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-2xl">🔥</span>
             <span className="text-sm font-medium text-[#777777] dark:text-gray-400">Racha</span>
           </div>
-          <div className="text-3xl font-bold text-red-600 dark:text-red-400">
+          <div className="text-3xl font-bold text-[#1472FF] dark:text-[#1472FF]">
             {streak}
             <span className="text-sm font-normal ml-1">días</span>
           </div>
           {streak >= 7 && (
-            <p className="text-xs text-red-500 mt-1">¡Increíble racha!</p>
+            <p className="text-xs text-[#1472FF] mt-1">¡Increíble racha!</p>
           )}
         </div>
 

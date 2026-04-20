@@ -10,7 +10,7 @@ import Button from '@/components/ui/Button';
 import Spinner from '@/components/ui/Spinner';
 import Card, { CardFlat } from '@/components/ui/Card';
 import Tag from '@/components/ui/Tag';
-import { Headline, Body, Caption } from '@/components/ui/Typography';
+import { Title, Subtitle, Headline, Body, Caption } from '@/components/ui/Typography';
 import Divider from '@/components/ui/Divider';
 import CompositeCard from '@/components/shared/CompositeCard';
 import { depth } from '@/lib/design-tokens';
@@ -646,9 +646,9 @@ export default function DashboardPage() {
         >
           <div className="max-w-2xl mx-auto px-4 text-center">
             {userName && (
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">
+              <Title className="text-3xl md:text-4xl lg:text-5xl">
                 {greeting.toLowerCase()}, {userName}
-              </h1>
+              </Title>
             )}
             {project && (
               <div className="flex justify-center px-2 sm:px-4 mt-4 mb-2">
@@ -837,15 +837,15 @@ export default function DashboardPage() {
           <div className="bg-white dark:bg-gray-800 pb-4 flex justify-center">
             <div className={`w-[90%] sm:w-[80%] max-w-2xl relative h-[37px] rounded-xl overflow-hidden flex items-center justify-center bg-gray-100 dark:bg-gray-800 ${depth.border} border-gray-200 dark:border-gray-900 ${depth.bottom} border-b-gray-300 dark:border-b-gray-900`}>
               <div
-                className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-500 ease-out"
+                className="absolute left-0 top-0 h-full bg-[#22c55e] transition-all duration-500 ease-out"
                 style={{
                   width: `${progressPercentage}%`,
                   borderRadius: progressPercentage >= 100 ? '0.75rem' : '0.75rem 0 0 0.75rem'
                 }}
               />
-              <span className="relative z-10 text-sm font-bold uppercase tracking-wide text-[#4b4b4b] dark:text-white">
+              <Headline as="span" className="relative z-10 dark:text-white">
                 {progressPercentage}% ({completedCount} de {totalCount})
-              </span>
+              </Headline>
             </div>
           </div>
         </div>
@@ -895,12 +895,12 @@ export default function DashboardPage() {
 
             {/* Video Info */}
             <div className="mb-4">
-              <p className="text-sm text-[#1472FF] font-bold uppercase tracking-wide mb-1">
+              <Headline className="text-[#1472FF] dark:text-[#1472FF] mb-1">
                 {selectedVideo?.phaseName}
-              </p>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white">
+              </Headline>
+              <Title className="md:text-3xl">
                 {selectedVideo?.title}
-              </h1>
+              </Title>
               {selectedVideo?.duration && (
                 <p className="text-[#777777] dark:text-gray-400 mt-1 text-sm">
                   Duración: {formatDuration(selectedVideo.duration)}
@@ -925,8 +925,8 @@ export default function DashboardPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <p className="text-lg font-medium">Video próximamente disponible</p>
-                  <p className="text-sm mt-1 opacity-70">El contenido se está preparando</p>
+                  <Subtitle className="font-medium">Video próximamente disponible</Subtitle>
+                  <Caption className="mt-1 opacity-70">El contenido se está preparando</Caption>
                 </div>
               )}
             </div>
@@ -934,8 +934,8 @@ export default function DashboardPage() {
             {/* Description */}
             {selectedVideo?.description && (
               <Card variant="neutral" padding="lg" className="mt-6">
-                <h3 className="font-bold text-[#4b4b4b] dark:text-white mb-2">Descripción</h3>
-                <p className="text-[#777777] dark:text-gray-400">{selectedVideo.description}</p>
+                <Headline className="dark:text-white mb-2">Descripción</Headline>
+                <Body className="text-[#777777] dark:text-gray-400">{selectedVideo.description}</Body>
               </Card>
             )}
           </div>
@@ -992,13 +992,13 @@ export default function DashboardPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <span className="text-sm text-[#1472FF] font-bold uppercase tracking-wide">
+                <Headline as="span" className="text-[#1472FF] dark:text-[#1472FF]">
                   reto · {selectedExercise?.type}
-                </span>
+                </Headline>
               </div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white">
+              <Title className="md:text-3xl">
                 {selectedExercise?.title}
-              </h1>
+              </Title>
               <div className="flex items-center gap-3 mt-2">
                 <div className="flex items-center gap-1.5">
                   <div className="flex gap-0.5">
@@ -1130,15 +1130,15 @@ export default function DashboardPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </IconButton>
-              <h2 className="text-xl font-extrabold uppercase tracking-tight leading-tight text-[#4b4b4b] dark:text-white pr-10">
+              <Title as="h2" className="text-xl uppercase pr-10">
                 Curso personalizado para tu proyecto
-              </h2>
+              </Title>
             </div>
 
             <div className="p-4 sm:p-6">
-              <p className="text-[#4b4b4b] dark:text-gray-300 text-base leading-relaxed mb-5">
+              <Body className="leading-relaxed mb-5">
                 Cuéntanos tu idea y te generamos un curso único: módulos, vídeos y ejercicios pensados para ti. Ideal para automatizar con IA, chatbots o lo que tengas en mente.
-              </p>
+              </Body>
 
               <ul className="space-y-3 mb-6">
                 {[

@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { CardFlat } from '@/components/ui/Card';
 import Tag from '@/components/ui/Tag';
+import Button from '@/components/ui/Button';
+import { Subtitle, Headline, Body, Caption } from '@/components/ui/Typography';
 
 interface Badge {
   id: string;
@@ -161,8 +163,8 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
 
   const rarityBorders = {
     common: 'border-gray-300',
-    rare: 'border-blue-400',
-    epic: 'border-purple-400',
+    rare: 'border-[#1472FF]',
+    epic: 'border-[#0E5FCC]',
     legendary: 'border-yellow-400',
   };
 
@@ -173,10 +175,10 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-lg font-bold text-[#4b4b4b] dark:text-white">Logros</h3>
-          <p className="text-sm text-[#777777] dark:text-gray-400">
+          <Subtitle>logros</Subtitle>
+          <Caption>
             {earnedCount}/{allBadges.length} desbloqueados
-          </p>
+          </Caption>
         </div>
         <div className="text-2xl">🏅</div>
       </div>
@@ -223,7 +225,7 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <h4 className="font-bold text-[#4b4b4b] dark:text-white">{selectedBadge.name}</h4>
+                <Headline>{selectedBadge.name}</Headline>
                 <Tag
                   variant={
                     selectedBadge.rarity === 'common' ? 'neutral' :
@@ -237,9 +239,9 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
                   {selectedBadge.rarity === 'legendary' && 'Legendario'}
                 </Tag>
               </div>
-              <p className="text-sm text-[#777777] dark:text-gray-400 mt-1">
+              <Caption className="mt-1">
                 {selectedBadge.description}
-              </p>
+              </Caption>
               <div className="flex items-center gap-4 mt-2 text-xs">
                 <span className="text-[#22c55e] font-medium">
                   +{selectedBadge.xpReward} XP
@@ -256,9 +258,9 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
       )}
 
       {/* View All Link */}
-      <button className="mt-3 w-full text-center text-sm text-[#1472FF] hover:text-[#0E5FCC] font-medium">
+      <Button variant="ghost" size="sm" className="mt-3 w-full text-[#1472FF] hover:text-[#0E5FCC]">
         Ver todos los logros →
-      </button>
+      </Button>
     </CardFlat>
   );
 }

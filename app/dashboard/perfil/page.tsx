@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { SpinnerPage } from '@/components/ui/Spinner';
 import Button from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Title, Subtitle, Body, Caption } from '@/components/ui/Typography';
 import { depth } from '@/lib/design-tokens';
 
 interface UserProfile {
@@ -186,8 +188,8 @@ export default function PerfilPage() {
         
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">mi perfil</h1>
-          <p className="mt-2 text-[#777777] dark:text-gray-400">Gestiona tu información personal</p>
+          <Title className="tracking-tight">mi perfil</Title>
+          <Body className="mt-2 text-[#777777] dark:text-gray-400">Gestiona tu información personal</Body>
         </div>
 
         {/* Message */}
@@ -207,8 +209,8 @@ export default function PerfilPage() {
               {userInitials}
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#4b4b4b] dark:text-white">{profile.name || 'Sin nombre'}</h2>
-              <p className="text-[#777777] dark:text-gray-400">{profile.email}</p>
+              <Subtitle as="h2">{profile.name || 'Sin nombre'}</Subtitle>
+              <Caption>{profile.email}</Caption>
               <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${
                 profile.tier === 'premium' 
                   ? 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-400'
@@ -228,21 +230,23 @@ export default function PerfilPage() {
               <div className="flex items-center justify-between mb-2">
                 <label className="text-sm font-medium text-[#777777] dark:text-gray-400">Nombre</label>
                 {!isEditing && (
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={() => setIsEditing(true)}
-                    className="text-sm text-[#1472FF] hover:underline"
+                    className="text-[#1472FF] hover:underline"
                   >
                     Editar
-                  </button>
+                  </Button>
                 )}
               </div>
               {isEditing ? (
                 <div className="flex gap-2">
-                  <input
+                  <Input
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-900 dark:bg-gray-800 dark:text-white focus:border-[#1472FF] focus:outline-none"
+                    className="flex-1"
                     placeholder="Tu nombre"
                   />
                   <Button
@@ -287,7 +291,7 @@ export default function PerfilPage() {
         {profile.projectIdea && (
           <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
             <div className="p-6">
-              <h3 className="text-lg font-bold text-[#4b4b4b] dark:text-white mb-2">Tu Proyecto</h3>
+              <Subtitle as="h3" className="mb-2">Tu Proyecto</Subtitle>
               <p className="text-[#777777] dark:text-gray-400 leading-relaxed">{profile.projectIdea}</p>
             </div>
           </div>
@@ -296,7 +300,7 @@ export default function PerfilPage() {
         {/* Configuration Section */}
         <div id="configuracion" className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
           <div className="p-6 border-b border-gray-100 dark:border-gray-800">
-            <h3 className="text-lg font-bold text-[#4b4b4b] dark:text-white">Configuración</h3>
+            <Subtitle as="h3">Configuración</Subtitle>
           </div>
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
             {/* Plan */}
@@ -364,16 +368,18 @@ export default function PerfilPage() {
                     <span className="font-mono text-2xl font-bold tracking-widest text-[#1472FF]">
                       {telegramCode}
                     </span>
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => {
                         navigator.clipboard.writeText(telegramCode);
                         setMessage({ type: 'success', text: 'Código copiado' });
                         setTimeout(() => setMessage(null), 2000);
                       }}
-                      className="text-sm text-[#1472FF] hover:underline"
+                      className="text-[#1472FF] hover:underline"
                     >
                       Copiar
-                    </button>
+                    </Button>
                   </div>
                   <div className="text-xs text-[#777777] dark:text-gray-400 space-y-1">
                     <p>1. Abre <a href="https://t.me/itera_la_bot" target="_blank" rel="noopener noreferrer" className="text-[#1472FF] hover:underline">@itera_la_bot</a> en Telegram</p>
@@ -425,7 +431,7 @@ export default function PerfilPage() {
         {/* Danger Zone */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-red-200 dark:border-red-900 overflow-hidden">
           <div className="p-6 border-b border-red-100 dark:border-red-900/50">
-            <h3 className="text-lg font-bold text-red-600 dark:text-red-500">Zona de peligro</h3>
+            <Subtitle as="h3" className="text-red-600 dark:text-red-500">Zona de peligro</Subtitle>
           </div>
           <div className="p-6">
             <div className="flex items-center justify-between">

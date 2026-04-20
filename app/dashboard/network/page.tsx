@@ -101,11 +101,11 @@ const mockProfiles: Profile[] = [
 // Colors for avatar backgrounds
 const avatarColors = [
   'bg-[#1472FF]',
-  'bg-emerald-500',
-  'bg-orange-500',
-  'bg-purple-500',
-  'bg-pink-500',
-  'bg-teal-500',
+  'bg-[#22c55e]',
+  'bg-[#0E5FCC]',
+  'bg-gray-500',
+  'bg-[#1472FF]',
+  'bg-[#22c55e]',
 ];
 
 export default function NetworkPage() {
@@ -170,7 +170,7 @@ export default function NetworkPage() {
                       </div>
                     )}
                     <div className="min-w-0">
-                      <p className="font-bold text-[#4b4b4b] dark:text-white truncate">{profile.name}</p>
+                      <Body className="font-bold truncate">{profile.name}</Body>
                       <Caption className="truncate">{profile.role} · {profile.location}</Caption>
                     </div>
                   </div>

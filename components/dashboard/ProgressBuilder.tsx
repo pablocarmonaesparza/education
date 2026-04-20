@@ -206,9 +206,9 @@ export default function ProgressBuilder({
                 className={`
                   relative p-3 rounded-lg text-center transition-all duration-300
                   ${isUnlocked
-                    ? 'bg-green-50 border-2 border-green-300'
+                    ? 'bg-[#22c55e]/10 border-2 border-[#22c55e]/40'
                     : isNext
-                    ? 'bg-yellow-50 border-2 border-yellow-300 animate-pulse'
+                    ? 'bg-gray-100 border-2 border-gray-300 animate-pulse'
                     : 'bg-gray-100 border-2 border-gray-200'
                   }
                 `}
@@ -216,18 +216,18 @@ export default function ProgressBuilder({
                 <div className={`text-2xl mb-1 ${!isUnlocked && 'grayscale opacity-40'}`}>
                   {part.emoji}
                 </div>
-                <div className={`text-xs font-medium ${isUnlocked ? 'text-green-700' : 'text-gray-400'}`}>
+                <div className={`text-xs font-medium ${isUnlocked ? 'text-[#16a34a]' : 'text-gray-400'}`}>
                   {part.name}
                 </div>
                 {isUnlocked && (
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#22c55e] rounded-full flex items-center justify-center">
                     <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
                   </div>
                 )}
                 {isNext && (
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-500 rounded-full flex items-center justify-center">
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#777777] rounded-full flex items-center justify-center">
                     <span className="text-[8px]">🔜</span>
                   </div>
                 )}
@@ -238,7 +238,7 @@ export default function ProgressBuilder({
 
         {/* Next Part Progress */}
         {nextPart && (
-          <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-900">
             <div className="flex items-center gap-3">
               <div className="text-3xl">{nextPart.emoji}</div>
               <div className="flex-1">
@@ -259,10 +259,10 @@ export default function ProgressBuilder({
 
         {/* Completion Message */}
         {totalProgress >= 95 && (
-          <div className="bg-green-50 rounded-lg p-4 border border-green-200 text-center">
+          <div className="bg-[#22c55e]/10 rounded-lg p-4 border border-[#22c55e]/30 text-center">
             <div className="text-4xl mb-2">🏆</div>
-            <h4 className="font-bold text-green-700">¡Proyecto Completado!</h4>
-            <p className="text-sm text-green-600">Tu coche está listo para conquistar el mundo</p>
+            <h4 className="font-bold text-[#16a34a]">¡Proyecto Completado!</h4>
+            <p className="text-sm text-[#22c55e]">Tu coche está listo para conquistar el mundo</p>
           </div>
         )}
       </div>
@@ -295,12 +295,12 @@ export default function ProgressBuilder({
                   key={part.id}
                   className={`flex items-center gap-2 text-xs p-2 rounded ${
                     totalProgress >= part.unlockAt
-                      ? 'bg-green-100'
+                      ? 'bg-[#22c55e]/10'
                       : 'bg-gray-100'
                   }`}
                 >
                   <span>{part.emoji}</span>
-                  <span className={totalProgress >= part.unlockAt ? 'text-green-700' : 'text-gray-400'}>
+                  <span className={totalProgress >= part.unlockAt ? 'text-[#16a34a]' : 'text-gray-400'}>
                     {part.name}
                   </span>
                   <span className="ml-auto text-gray-400">{part.unlockAt}%</span>

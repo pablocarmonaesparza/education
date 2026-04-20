@@ -8,6 +8,8 @@ import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 import { CardFlat } from '@/components/ui/Card';
 import IconButton from '@/components/ui/IconButton';
+import Button from '@/components/ui/Button';
+import { Body, Caption } from '@/components/ui/Typography';
 
 export default function DashboardHeader() {
   const [user, setUser] = useState<User | null>(null);
@@ -133,24 +135,28 @@ export default function DashboardHeader() {
                 onClick={() => setShowSettingsMenu(false)}
               />
               <CardFlat className="absolute right-0 top-full mt-2 w-48 shadow-lg py-2 z-20">
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => {
                     setShowSettingsMenu(false);
                     // TODO: Navigate to settings page
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full justify-start rounded-none"
                 >
                   Configuración
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => {
                     setShowSettingsMenu(false);
                     // TODO: Navigate to preferences page
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full justify-start rounded-none"
                 >
                   Preferencias
-                </button>
+                </Button>
               </CardFlat>
             </>
           )}
@@ -185,27 +191,31 @@ export default function DashboardHeader() {
               />
               <CardFlat className="absolute right-0 top-full mt-2 w-56 shadow-lg py-2 z-20">
                 <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-900">
-                  <p className="text-sm font-bold text-[#4b4b4b] dark:text-gray-100">{userDisplayName}</p>
-                  <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{userProfile?.email}</p>
+                  <Body className="text-sm font-bold">{userDisplayName}</Body>
+                  <Caption className="truncate">{userProfile?.email}</Caption>
                 </div>
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => {
                     setShowProfileMenu(false);
                     // TODO: Navigate to profile page
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full justify-start rounded-none"
                 >
                   Ver Perfil
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
                   onClick={() => {
                     setShowProfileMenu(false);
                     handleLogout();
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full justify-start rounded-none"
                 >
                   Cerrar Sesión
-                </button>
+                </Button>
               </CardFlat>
             </>
           )}

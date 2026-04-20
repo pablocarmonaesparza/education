@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import Card, { CardFlat } from '@/components/ui/Card';
 import Tag from '@/components/ui/Tag';
-import { Headline, Body, Caption } from '@/components/ui/Typography';
+import { Subtitle, Headline, Body, Caption } from '@/components/ui/Typography';
 import SectionHeader from '@/components/ui/SectionHeader';
 import EmptyState from '@/components/ui/EmptyState';
 import Divider from '@/components/ui/Divider';
@@ -160,7 +160,7 @@ export default function SesionesPage() {
                     <rect x="2" y="4" width="20" height="13" rx="2" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 21h8M12 17v4" />
                   </svg>
-                  <p className="text-gray-400 text-xs uppercase font-bold tracking-wide">Próxima sesión</p>
+                  <Headline className="text-gray-400">Próxima sesión</Headline>
                 </div>
               </div>
               <div className="p-5 sm:p-6 flex-1">
@@ -170,9 +170,9 @@ export default function SesionesPage() {
                   </Tag>
                   <Caption>{formatDate(upcoming[0].date)} · {upcoming[0].time}</Caption>
                 </div>
-                <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white leading-tight mb-2">
+                <Subtitle className="leading-tight mb-2">
                   {upcoming[0].title}
-                </h2>
+                </Subtitle>
                 <Body className="text-[#777777] dark:text-gray-400 line-clamp-2 mb-4">
                   {upcoming[0].description}
                 </Body>
@@ -283,9 +283,9 @@ export default function SesionesPage() {
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white leading-tight">
+                  <Subtitle className="leading-tight">
                     {selectedSession.title}
-                  </h2>
+                  </Subtitle>
 
                   {/* Date & time */}
                   <div className="flex items-center gap-2 text-[#777777] dark:text-gray-400">
@@ -301,7 +301,7 @@ export default function SesionesPage() {
                       {selectedSession.instructorInitials}
                     </div>
                     <div>
-                      <p className="font-bold text-sm text-[#4b4b4b] dark:text-white">{selectedSession.instructor}</p>
+                      <Body className="font-bold text-sm">{selectedSession.instructor}</Body>
                       <Caption>Instructor</Caption>
                     </div>
                   </div>
@@ -383,18 +383,18 @@ function SessionCard({
             {/* Date badge */}
             <div className={`w-14 h-14 rounded-xl flex flex-col items-center justify-center flex-shrink-0 ${
               isLive
-                ? 'bg-orange-100 dark:bg-orange-900/30'
+                ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20'
                 : isRecorded
                   ? 'bg-gray-100 dark:bg-gray-700'
                   : 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20'
             }`}>
               <span className={`text-xs font-bold uppercase leading-none ${
-                isLive ? 'text-orange-600' : isRecorded ? 'text-[#777777]' : 'text-[#1472FF]'
+                isLive ? 'text-[#1472FF]' : isRecorded ? 'text-[#777777]' : 'text-[#1472FF]'
               }`}>
                 {new Date(session.date).toLocaleDateString('es-MX', { month: 'short' })}
               </span>
               <span className={`text-xl font-extrabold leading-none ${
-                isLive ? 'text-orange-600' : isRecorded ? 'text-[#4b4b4b] dark:text-gray-300' : 'text-[#1472FF]'
+                isLive ? 'text-[#1472FF]' : isRecorded ? 'text-[#4b4b4b] dark:text-gray-300' : 'text-[#1472FF]'
               }`}>
                 {new Date(session.date).getDate()}
               </span>
@@ -410,9 +410,9 @@ function SessionCard({
                   {session.topic}
                 </Tag>
               </div>
-              <p className="font-bold text-[#4b4b4b] dark:text-white truncate mb-1">
+              <Body className="font-bold truncate mb-1">
                 {session.title}
-              </p>
+              </Body>
               <div className="flex items-center gap-2 flex-wrap">
                 <Caption>{session.time} · {session.duration}</Caption>
                 <Caption>·</Caption>
