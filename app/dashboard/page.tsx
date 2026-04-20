@@ -25,6 +25,8 @@ import {
   type LectureRow,
 } from '@/lib/lessons/fromSupabase';
 import { useSidebar } from '@/contexts/SidebarContext';
+import MaintenancePage from '@/components/maintenance/MaintenancePage';
+import { isMaintenanceMode } from '@/lib/maintenance';
 
 const greetings = [
   "Hola",
@@ -182,7 +184,7 @@ function buildVideosFromLectures(
   return result;
 }
 
-export default function DashboardPage() {
+function DashboardPageContent() {
   const router = useRouter();
   const { setLessonNav } = useSidebar();
   const [userName, setUserName] = useState<string>('');
@@ -1475,4 +1477,16 @@ export default function DashboardPage() {
       )}
     </div>
   );
+}
+
+/**
+ * Outer wrapper: gate the dashboard behind the maintenance flag. When the
+ * flag is off, render the full DashboardPageContent (all hooks, fetches,
+ * UI). When the flag is on, render the MaintenancePage and don't even
+ * mount DashboardPageContent, so its effects/queries don't fire against
+ * tables that may no longer exist during the schema rebuild.
+ */
+export default function DashboardPage() {
+  if (isMaintenanceMode()) return <MaintenancePage />;
+  return <DashboardPageContent />;
 }
