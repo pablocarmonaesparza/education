@@ -5,75 +5,102 @@ import { motion } from "framer-motion";
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 
+/**
+ * Three-plan pricing section:
+ *  - Gratis    → signup, no checkout
+ *  - Mensual   → signup → onboarding → /checkout?plan=monthly
+ *  - Anual     → signup → onboarding → /checkout?plan=yearly
+ *
+ * The actual checkout happens after the questionnaire, from the paywall
+ * step. From the landing we only carry the intent via query string.
+ */
+
+type TierId = 'basic' | 'monthly' | 'yearly';
+
+interface Tier {
+  id: TierId;
+  name: string;
+  priceLabel: string;
+  priceSuffix?: string;
+  popular: boolean;
+  description: string;
+  footnote: string;
+  features: string[];
+  cta: string;
+}
+
+const tiers: Tier[] = [
+  {
+    id: 'basic',
+    name: 'gratis',
+    priceLabel: 'Gratis',
+    popular: false,
+    description: 'Acceso completo para aprender a tu ritmo.',
+    footnote: 'Sin tarjeta de crédito',
+    features: [
+      'Acceso completo a los 400+ micro-videos (1-3 min c/u)',
+      'Contenido organizado en 12 secciones',
+      'Acceso a la comunidad general en Slack',
+      'Casos de uso enfocados en LATAM',
+      'Actualizaciones de contenido incluidas',
+    ],
+    cta: 'COMENZAR GRATIS',
+  },
+  {
+    id: 'monthly',
+    name: 'mensual',
+    priceLabel: '$19',
+    priceSuffix: '/mes',
+    popular: true,
+    description: 'La experiencia completa con IA personalizada.',
+    footnote: 'Cancela cuando quieras',
+    features: [
+      'Todo lo del plan Gratis',
+      'Curso personalizado generado por AI según tu proyecto',
+      'De 400+ videos, la AI selecciona los 10-200 que necesitas',
+      'Acceso a la comunidad prioritaria en Discord',
+      'Asistente virtual de seguimiento',
+    ],
+    cta: 'COMENZAR MENSUAL',
+  },
+  {
+    id: 'yearly',
+    name: 'anual',
+    priceLabel: '$199',
+    priceSuffix: '/año',
+    popular: false,
+    description: 'El plan mensual con 2 meses gratis.',
+    footnote: 'Equivale a $16.58/mes',
+    features: [
+      'Todo lo del plan Mensual',
+      'Ahorra $29 USD al año',
+      'Mismos beneficios, pagos simplificados',
+      'Prioridad en nuevas funciones',
+      'Cancela cuando quieras',
+    ],
+    cta: 'COMENZAR ANUAL',
+  },
+];
+
 export default function PricingSection() {
   const router = useRouter();
 
-  const formatPrice = (usdPrice: number, isMonthly: boolean = false) => {
-    if (usdPrice === 0) {
-      return "Gratis";
-    }
-    return `$${usdPrice}${isMonthly ? "/mes" : ""}`;
+  const handleSelectPlan = (planId: TierId) => {
+    // We always go to signup first; after onboarding the paywall step
+    // reads this intent and pre-selects the plan.
+    const target =
+      planId === 'basic'
+        ? '/auth/signup'
+        : `/auth/signup?plan=${planId}`;
+    router.push(target);
   };
-
-  const handleSelectPlan = () => {
-    router.push("/auth/signup");
-  };
-
-  const tiers = [
-    {
-      id: "basic",
-      name: "básico",
-      price: 0,
-      isMonthly: false,
-      popular: false,
-      description: "Acceso completo para aprender a tu ritmo.",
-      features: [
-        "Acceso completo a los 400+ micro-videos (1-3 min c/u)",
-        "Contenido organizado en 12 secciones",
-        "Acceso a la comunidad general en Slack",
-        "Casos de uso enfocados en LATAM",
-        "Actualizaciones de contenido incluidas",
-      ],
-      cta: "COMENZAR GRATIS",
-    },
-    {
-      id: "plus",
-      name: "plus",
-      price: 19,
-      isMonthly: true,
-      popular: true,
-      description: "La experiencia completa con IA personalizada.",
-      features: [
-        "Todo lo del plan Básico",
-        "Curso personalizado generado por AI según tu proyecto",
-        "De 400+ videos, la AI selecciona los 10-200 que necesitas",
-        "Acceso a la comunidad prioritaria en Discord",
-        "Asistente virtual de seguimiento (Limitado)",
-      ],
-      cta: "COMENZAR CON PLUS",
-    },
-    {
-      id: "pro",
-      name: "pro",
-      price: 199,
-      isMonthly: true,
-      popular: false,
-      description: "Experiencia premium con tutoría personalizada.",
-      features: [
-        "Todo lo del plan Plus",
-        "Tutoría quincenal con Pablo de forma individual",
-        "Hasta 5 cursos personalizados por mes",
-        "Contexto acumulativo entre sesiones",
-        "Asistente virtual de seguimiento (Ilimitado)",
-      ],
-      cta: "COMENZAR CON PRO",
-    },
-  ];
 
   return (
-    <section id="pricing" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20 pb-24 max-md:pt-16 max-md:pb-16">
+    <section
+      id="pricing"
+      className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20 pb-24 max-md:pt-16 max-md:pb-16"
+    >
       <div className="container mx-auto px-4 relative z-10 w-full max-md:px-3">
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -86,7 +113,6 @@ export default function PricingSection() {
           </h2>
         </motion.div>
 
-        {/* Pricing Cards - items-stretch + h-full for equal height */}
         <div className="grid lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto items-stretch">
           {tiers.map((tier, index) => (
             <motion.div
@@ -102,11 +128,10 @@ export default function PricingSection() {
                 padding="lg"
                 className={`relative flex flex-col md:p-6 h-full w-full ${
                   tier.popular
-                    ? "bg-[#1472FF]/10 dark:bg-[#1472FF]/20 border-[#1472FF] dark:border-[#1472FF] border-b-[#1472FF] dark:border-b-[#1472FF]"
-                    : ""
+                    ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20 border-[#1472FF] dark:border-[#1472FF] border-b-[#1472FF] dark:border-b-[#1472FF]'
+                    : ''
                 }`}
               >
-                {/* Popular Badge - inside card to avoid section overflow-hidden clipping */}
                 {tier.popular && (
                   <div className="flex justify-center -mt-1 mb-3">
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#1472FF] text-white border-transparent font-display">
@@ -115,29 +140,37 @@ export default function PricingSection() {
                   </div>
                 )}
 
-                {/* Title */}
                 <div className="mb-3">
-                  <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">{tier.name}</h3>
+                  <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
+                    {tier.name}
+                  </h3>
                 </div>
 
-                <p className="text-[#777777] dark:text-gray-400 text-sm mb-5">{tier.description}</p>
+                <p className="text-[#777777] dark:text-gray-400 text-sm mb-5">
+                  {tier.description}
+                </p>
 
-                {/* Pricing */}
                 <div className="mb-4">
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl md:text-4xl font-bold text-[#1472FF]">
-                      {formatPrice(tier.price, tier.isMonthly)}
+                      {tier.priceLabel}
+                      {tier.priceSuffix && (
+                        <span className="text-xl md:text-2xl font-bold">
+                          {tier.priceSuffix}
+                        </span>
+                      )}
                     </span>
-                    {tier.price > 0 && (
-                      <span className="text-[#777777] dark:text-gray-400 text-xs md:text-sm">USD</span>
+                    {tier.priceLabel !== 'Gratis' && (
+                      <span className="text-[#777777] dark:text-gray-400 text-xs md:text-sm">
+                        USD
+                      </span>
                     )}
                   </div>
                   <p className="text-xs md:text-sm text-[#777777] dark:text-gray-400 mt-1">
-                    {tier.price === 0 ? "Sin tarjeta de crédito" : "Cancela cuando quieras"}
+                    {tier.footnote}
                   </p>
                 </div>
 
-                {/* Features */}
                 <ul className="space-y-2 mb-4 flex-1">
                   {tier.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-2">
@@ -154,20 +187,23 @@ export default function PricingSection() {
                           d="M5 13l4 4L19 7"
                         />
                       </svg>
-                      <span className="text-xs md:text-sm text-[#4b4b4b] dark:text-gray-300 leading-snug">{feature}</span>
+                      <span className="text-xs md:text-sm text-[#4b4b4b] dark:text-gray-300 leading-snug">
+                        {feature}
+                      </span>
                     </li>
                   ))}
                 </ul>
 
-                {/* CTA Button */}
                 <Button
-                  variant={tier.popular ? "primary" : "outline"}
-                  depth={tier.popular ? "bottom" : "full"}
+                  variant={tier.popular ? 'primary' : 'outline'}
+                  depth={tier.popular ? 'bottom' : 'full'}
                   size="none"
                   rounded2xl
-                  onClick={handleSelectPlan}
+                  onClick={() => handleSelectPlan(tier.id)}
                   className={`w-full py-4 text-sm md:text-base mt-auto ${
-                    !tier.popular ? "text-[#1472FF] border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10" : ""
+                    !tier.popular
+                      ? 'text-[#1472FF] border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10'
+                      : ''
                   }`}
                 >
                   {tier.cta}
@@ -176,10 +212,8 @@ export default function PricingSection() {
             </motion.div>
           ))}
         </div>
-
       </div>
 
-      {/* Next section indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -189,10 +223,8 @@ export default function PricingSection() {
       >
         <button
           onClick={() => {
-            const element = document.getElementById("faq");
-            if (element) {
-              element.scrollIntoView({ behavior: "smooth" });
-            }
+            const element = document.getElementById('faq');
+            if (element) element.scrollIntoView({ behavior: 'smooth' });
           }}
           className="flex flex-col items-center gap-1 cursor-pointer group"
         >
@@ -205,7 +237,7 @@ export default function PricingSection() {
             viewBox="0 0 24 24"
             stroke="currentColor"
             animate={{ y: [0, 4, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           >
             <path
               strokeLinecap="round"

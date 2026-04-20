@@ -35,6 +35,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Gate: la generación personalizada requiere suscripción activa.
+    // El plan Gratis usa /api/generate-course-full (sin gate).
+    const { data: profile } = await supabase
+      .from('users')
+      .select('subscription_active')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (!profile?.subscription_active) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Necesitas una suscripción activa para generar un curso personalizado.',
+          code: 'subscription_required',
+        },
+        { status: 402 }
+      );
+    }
+
     // Asegurar que el usuario existe en public.users
     const { error: insertError } = await supabase
       .from('users')

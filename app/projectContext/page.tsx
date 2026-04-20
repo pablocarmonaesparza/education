@@ -222,11 +222,13 @@ export default function ProjectContextPage() {
     });
 
     sessionStorage.setItem('projectContext', JSON.stringify(responses));
-    router.push('/courseCreation');
+    // Paywall step — the user picks Gratis / Mensual / Anual before we
+    // trigger the (possibly expensive) course generation.
+    router.push('/checkout');
   };
 
   const handleSkip = () => {
-    router.push('/courseCreation');
+    router.push('/checkout');
   };
 
   const progress = ((currentIndex + 1) / allQuestions.length) * 100;
