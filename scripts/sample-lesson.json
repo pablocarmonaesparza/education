@@ -1,0 +1,57 @@
+{
+  "slug": "sample-con-violaciones",
+  "title": "Sample lesson para probar lint",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "content": {
+        "prompt": "Esta pregunta usa **markdown** en el prompt y tiene un setup intencionalmente muy muy muy muy muy largo para exceder el límite de 180 caracteres que marca la regla 6.5 de la metodología v0.9 de Itera y así disparar el aviso correspondiente. ¿Qué pasa?",
+        "options": [
+          {"id": 0, "text": "opción minúscula mala"},
+          {"id": 1, "text": "Opción con **markdown** adentro"},
+          {"id": 2, "text": "Opción correcta"}
+        ],
+        "correctId": 2,
+        "explanation": "La explicación sí puede tener **markdown** porque se renderiza."
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "content": {
+        "title": "Concepto con María adentro",
+        "body": "Este body es muy largo intencionalmente para probar la regla 5 que limita a 250 caracteres. María observa que el modelo genera texto prediciendo palabra por palabra. Sigue escribiendo y escribiendo y escribiendo hasta pasar de 250 caracteres sin bullets, lo cual debería disparar la violación de regla 5 que trata sobre body length."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "tap-match",
+      "content": {
+        "prompt": "Empareja conceptos",
+        "pairs": [
+          {"term": "Este term es demasiado largo y debería ser flagged", "def": "Def corto"},
+          {"term": "Token", "def": "unidad mínima"}
+        ],
+        "explanation": "..."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "content": {
+        "title": "qué es una API",
+        "body": "Una API te cuesta $47 al mes si usas Claude. Nada más. Otros modelos de $100. Lo que hay que hacer con una API."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "celebration",
+      "content": {
+        "title": "brillante",
+        "body": "completaste la lección",
+        "emoji": "🎉"
+      }
+    }
+  ]
+}

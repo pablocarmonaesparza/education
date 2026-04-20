@@ -1,0 +1,71 @@
+{
+  "slug": "sample-clean",
+  "title": "sample que debe pasar con cero violaciones",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "content": {
+        "prompt": "Fernanda pregunta a ChatGPT por ventas de su vecina Rosa del puesto de tamales. ¿Qué debe hacer?",
+        "options": [
+          {"id": 0, "text": "Felicitar a Rosa por el número dado"},
+          {"id": 1, "text": "Asumir invento y verificar aparte"},
+          {"id": 2, "text": "Preguntar a ChatGPT su fuente"}
+        ],
+        "correctId": 1,
+        "explanation": "Dato privado, no público — el modelo **inventa** con confianza."
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "content": {
+        "title": "qué es una alucinación",
+        "body": "Cuando el modelo no sabe la respuesta, completa con lo más probable según sus patrones. A ese invento con confianza se le llama alucinación. Es el error más común cuando pides datos específicos."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "true-false",
+      "content": {
+        "prompt": "Afirma: ChatGPT siempre avisa cuando no sabe la respuesta.",
+        "answer": false,
+        "explanation": "Por default *no avisa*. Completa con lo que suene más creíble."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "tap-match",
+      "content": {
+        "prompt": "Empareja tipo de dato con acción",
+        "pairs": [
+          {"term": "Dato público", "def": "Verifica en una fuente si el dato es crítico"},
+          {"term": "Dato reciente", "def": "Activa web search o busca en Google"},
+          {"term": "Dato privado", "def": "Asume alucinación hasta verificar aparte"}
+        ],
+        "explanation": "La regla práctica: si el dato no existe en un registro público, trata el output como hipótesis."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "fill-blank",
+      "content": {
+        "prompt": "Completa",
+        "sentenceBefore": "El modelo completa tu pregunta con ",
+        "sentenceAfter": " que suenan creíbles.",
+        "tokens": ["Patrones", "Datos", "Fuentes"],
+        "correctTokenIndex": 0,
+        "explanation": "Son patrones aprendidos, no búsqueda."
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "celebration",
+      "content": {
+        "title": "brillante",
+        "body": "terminaste la lección",
+        "emoji": "🎉"
+      }
+    }
+  ]
+}

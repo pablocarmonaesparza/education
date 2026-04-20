@@ -1,0 +1,108 @@
+[
+  {
+    "slug": "edge-01-content-null",
+    "title": "content es null",
+    "slides": [
+      {"order_in_lecture": 1, "kind": "concept", "content": null}
+    ]
+  },
+  {
+    "slug": "edge-02-content-missing",
+    "title": "content falta",
+    "slides": [
+      {"order_in_lecture": 1, "kind": "concept"}
+    ]
+  },
+  {
+    "slug": "edge-03-kind-invalido",
+    "title": "kind no reconocido",
+    "slides": [
+      {"order_in_lecture": 1, "kind": "frankenstein", "content": {"body": "texto"}}
+    ]
+  },
+  {
+    "slug": "edge-04-moneda-formatos",
+    "title": "variantes de moneda",
+    "slides": [
+      {
+        "order_in_lecture": 1,
+        "kind": "concept",
+        "content": {
+          "title": "precios variados",
+          "body": "Planes: $47 USD al mes, $1,000 USD anual, también $5M sin etiqueta (debe fallar)."
+        }
+      }
+    ]
+  },
+  {
+    "slug": "edge-05-titulos-permitidos",
+    "title": "títulos con nombres propios del allowlist",
+    "slides": [
+      {"order_in_lecture": 1, "kind": "concept", "content": {"title": "ChatGPT en profundidad", "body": "ok"}},
+      {"order_in_lecture": 2, "kind": "concept", "content": {"title": "qué es una API", "body": "ok"}},
+      {"order_in_lecture": 3, "kind": "concept", "content": {"title": "APIs, MCPs y skills", "body": "ok"}},
+      {"order_in_lecture": 4, "kind": "concept", "content": {"title": "Claude vs Gemini", "body": "ok"}}
+    ]
+  },
+  {
+    "slug": "edge-06-emoji-al-inicio",
+    "title": "emoji antes del texto",
+    "slides": [
+      {"order_in_lecture": 1, "kind": "concept", "content": {"title": "🚀 comenzar", "body": "ok"}}
+    ]
+  },
+  {
+    "slug": "edge-07-tokens-consistentes-minuscula",
+    "title": "tokens intencionalmente en minúscula",
+    "slides": [
+      {
+        "order_in_lecture": 1,
+        "kind": "fill-blank",
+        "content": {
+          "prompt": "completa",
+          "sentenceBefore": "un modelo de ",
+          "sentenceAfter": " usa patrones.",
+          "tokens": ["lenguaje", "código", "números"],
+          "correctTokenIndex": 0,
+          "explanation": "todos consistentes en minúscula, no debe flaggear"
+        }
+      }
+    ]
+  },
+  {
+    "slug": "edge-08-moneda-en-options",
+    "title": "monto en options debe flaggear",
+    "slides": [
+      {
+        "order_in_lecture": 1,
+        "kind": "mcq",
+        "content": {
+          "prompt": "¿Cuánto cuesta?",
+          "options": [
+            {"id": 0, "text": "$47 al mes"},
+            {"id": 1, "text": "$100 USD anuales"},
+            {"id": 2, "text": "Depende"}
+          ],
+          "correctId": 1,
+          "explanation": "ok"
+        }
+      }
+    ]
+  },
+  {
+    "slug": "edge-09-setup-en-180-exacto",
+    "title": "setup en el límite exacto 180",
+    "slides": [
+      {
+        "order_in_lecture": 1,
+        "kind": "mcq",
+        "content": {
+          "prompt": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx?",
+          "options": [{"id": 0, "text": "Uno"}, {"id": 1, "text": "Dos"}],
+          "correctId": 0,
+          "explanation": "exactamente 180 chars no debe flaggear"
+        }
+      }
+    ]
+  }
+]
