@@ -31,7 +31,7 @@ export default function FeedbackBanner({
       transition={{ type: 'spring', damping: 28, stiffness: 350 }}
       className={`fixed bottom-0 left-0 right-0 z-50 px-4 pt-5 pb-8 rounded-t-2xl shadow-lg ${
         isCorrect
-          ? 'bg-[#22c55e]'
+          ? 'bg-completado'
           : 'bg-red-50 dark:bg-red-950 border-t-2 border-red-200 dark:border-red-800'
       }`}
     >

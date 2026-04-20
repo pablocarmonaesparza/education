@@ -53,11 +53,11 @@ export default function HeroSection() {
           <br />
           la{" "}
           <span className="relative inline-block">
-            <span className="relative z-10 text-[#1472FF]">
+            <span className="relative z-10 text-primary">
               IA
             </span>
             <motion.span
-              className="absolute -inset-1 bg-[#1472FF]/50 blur-lg"
+              className="absolute -inset-1 bg-primary/50 blur-lg"
               animate={{
                 opacity: [0.5, 0.8, 0.5],
               }}

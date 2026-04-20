@@ -172,7 +172,7 @@ export default function ProgressBuilder({
   return (
     <CardFlat className="shadow-lg overflow-hidden">
       {/* Header with Car Visual */}
-      <div className="bg-[#1472FF] p-6">
+      <div className="bg-primary p-6">
         <div className="text-center mb-2">
           <h3 className="text-white font-bold text-xl">Construye tu Proyecto</h3>
           <p className="text-white/80 text-sm">Cada video te acerca más a tu meta</p>
@@ -243,12 +243,12 @@ export default function ProgressBuilder({
               <div className="text-3xl">{nextPart.emoji}</div>
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-bold text-[#4b4b4b] dark:text-white">
+                  <span className="font-bold text-ink dark:text-white">
                     Próxima pieza: {nextPart.name}
                   </span>
-                  <span className="text-sm text-[#777777] dark:text-gray-400">{nextPart.unlockAt}%</span>
+                  <span className="text-sm text-ink-muted dark:text-gray-400">{nextPart.unlockAt}%</span>
                 </div>
-                <p className="text-xs text-[#777777] dark:text-gray-400 mb-2">
+                <p className="text-xs text-ink-muted dark:text-gray-400 mb-2">
                   {nextPart.description}
                 </p>
                 <ProgressBar value={progressToNext} size="md" color="yellow" durationMs={500} />
@@ -271,16 +271,16 @@ export default function ProgressBuilder({
       <div className="bg-gray-50 dark:bg-gray-800 px-4 py-3 border-t border-gray-200 dark:border-gray-900">
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-4">
-            <span className="text-[#777777] dark:text-gray-400">
-              <span className="font-bold text-[#22c55e]">{unlockedParts.length}</span>/{parts.length} piezas
+            <span className="text-ink-muted dark:text-gray-400">
+              <span className="font-bold text-completado">{unlockedParts.length}</span>/{parts.length} piezas
             </span>
-            <span className="text-[#777777] dark:text-gray-400">
-              <span className="font-bold text-[#1472FF]">{phasesCompleted}</span>/{totalPhases} fases
+            <span className="text-ink-muted dark:text-gray-400">
+              <span className="font-bold text-primary">{phasesCompleted}</span>/{totalPhases} fases
             </span>
           </div>
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="text-[#1472FF] hover:text-[#0E5FCC] font-medium"
+            className="text-primary hover:text-primary-dark font-medium"
           >
             {showDetails ? 'Ocultar' : 'Ver piezas'}
           </button>

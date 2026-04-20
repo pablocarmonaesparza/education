@@ -27,20 +27,20 @@ export default function ChatbotButton() {
       {isExpanded && (
         <Card variant="neutral" padding="md" className="mb-2 w-72 animate-in fade-in slide-in-from-bottom-4 duration-200">
           <div className="flex justify-between items-start mb-2">
-            <h3 className="font-semibold text-[#4b4b4b] dark:text-white">Tutor IA</h3>
+            <h3 className="font-semibold text-ink dark:text-white">Tutor IA</h3>
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 setIsExpanded(false);
               }}
-              className="text-gray-400 hover:text-[#4b4b4b] dark:hover:text-white transition-colors"
+              className="text-gray-400 hover:text-ink dark:hover:text-white transition-colors"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
-          <p className="text-sm text-[#777777] dark:text-gray-400 mb-3">
+          <p className="text-sm text-ink-muted dark:text-gray-400 mb-3">
             ¿Tienes alguna duda sobre tu lección? Estoy aquí para ayudarte.
           </p>
           <Button

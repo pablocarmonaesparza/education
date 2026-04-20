@@ -54,17 +54,17 @@ export default function ProblemSolutionSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#4b4b4b] dark:text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-ink dark:text-white mb-4">
             ¿Por Qué Los Cursos Tradicionales No Funcionan?
           </h2>
-          <p className="text-xl text-[#777777] dark:text-gray-400 max-w-3xl mx-auto">
+          <p className="text-xl text-ink-muted dark:text-gray-400 max-w-3xl mx-auto">
             Los cursos lineales asumen que todos tienen las mismas necesidades. La realidad es diferente.
           </p>
         </div>
 
         {/* Problems Grid */}
         <div className="mb-20">
-          <h3 className="text-2xl font-bold text-center text-[#4b4b4b] dark:text-white mb-8">
+          <h3 className="text-2xl font-bold text-center text-ink dark:text-white mb-8">
             Los Problemas Que Enfrentas
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -76,10 +76,10 @@ export default function ProblemSolutionSection() {
                 className="border-l-4 border-l-gray-300 dark:border-l-gray-600"
               >
                 <div className="text-4xl mb-4">{problem.icon}</div>
-                <h4 className="text-lg font-bold text-[#4b4b4b] dark:text-white mb-2">
+                <h4 className="text-lg font-bold text-ink dark:text-white mb-2">
                   {problem.title}
                 </h4>
-                <p className="text-[#777777] dark:text-gray-400">{problem.description}</p>
+                <p className="text-ink-muted dark:text-gray-400">{problem.description}</p>
               </Card>
             ))}
           </div>
@@ -92,7 +92,7 @@ export default function ProblemSolutionSection() {
 
         {/* Solutions Grid */}
         <div>
-          <h3 className="text-2xl font-bold text-center text-[#4b4b4b] dark:text-white mb-8">
+          <h3 className="text-2xl font-bold text-center text-ink dark:text-white mb-8">
             Nuestra Solución: Aprendizaje Personalizado con IA
           </h3>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -101,13 +101,13 @@ export default function ProblemSolutionSection() {
                 key={index}
                 variant="neutral"
                 padding="lg"
-                className="border-l-4 border-l-[#1472FF] bg-[#1472FF]/10 dark:bg-[#1472FF]/10"
+                className="border-l-4 border-l-primary bg-primary/10 dark:bg-primary/10"
               >
                 <div className="text-4xl mb-4">{solution.icon}</div>
-                <h4 className="text-lg font-bold text-[#4b4b4b] dark:text-white mb-2">
+                <h4 className="text-lg font-bold text-ink dark:text-white mb-2">
                   {solution.title}
                 </h4>
-                <p className="text-[#4b4b4b] dark:text-gray-300">{solution.description}</p>
+                <p className="text-ink dark:text-gray-300">{solution.description}</p>
               </Card>
             ))}
           </div>
@@ -126,7 +126,7 @@ export default function ProblemSolutionSection() {
               variant="outline"
               size="lg"
               href="/auth/signup"
-              className="text-[#0E5FCC] dark:text-[#0E5FCC] bg-white dark:bg-white hover:bg-gray-100 dark:hover:bg-gray-100"
+              className="text-primary-dark dark:text-primary-dark bg-white dark:bg-white hover:bg-gray-100 dark:hover:bg-gray-100"
             >
               Crear Cuenta Gratis
             </Button>

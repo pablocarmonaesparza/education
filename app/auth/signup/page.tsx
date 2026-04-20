@@ -190,7 +190,7 @@ function SignupContent() {
     return (
       <main className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-800">
         <Spinner size="lg" />
-        <p className="mt-4 text-[#777777] dark:text-gray-400 text-sm">Redirigiendo a Google...</p>
+        <p className="mt-4 text-ink-muted dark:text-gray-400 text-sm">Redirigiendo a Google...</p>
       </main>
     );
   }
@@ -204,10 +204,10 @@ function SignupContent() {
           <div className={`bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-10 ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900`}>
             {/* Header */}
             <div className="text-center mb-8">
-              <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
+              <h1 className="text-3xl md:text-4xl font-extrabold text-ink dark:text-white mb-2 tracking-tight">
                 crea tu cuenta
               </h1>
-              <p className="text-[#777777] dark:text-gray-400">
+              <p className="text-ink-muted dark:text-gray-400">
                 Comienza tu viaje en IA y automatización
               </p>
             </div>
@@ -361,7 +361,7 @@ function SignupContent() {
             {/* Login Link */}
             <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
             ¿Ya tienes cuenta?{' '}
-              <Link href="/auth/login" className="text-[#1472FF] hover:text-[#0E5FCC] font-semibold">
+              <Link href="/auth/login" className="text-primary hover:text-primary-dark font-semibold">
                 Inicia sesión
               </Link>
           </p>

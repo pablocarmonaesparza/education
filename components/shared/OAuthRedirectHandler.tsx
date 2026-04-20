@@ -42,7 +42,7 @@ export default function OAuthRedirectHandler() {
       <div className="fixed inset-0 z-[9999] bg-white dark:bg-gray-900 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <svg 
-            className="animate-spin h-10 w-10 text-[#1472FF]" 
+            className="animate-spin h-10 w-10 text-primary" 
             xmlns="http://www.w3.org/2000/svg" 
             fill="none" 
             viewBox="0 0 24 24"

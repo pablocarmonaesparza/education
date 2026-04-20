@@ -220,7 +220,7 @@ export default function RetosPage() {
 
   // ── Main Content ──
   return (
-    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-[#4b4b4b] dark:text-white">
+    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-ink dark:text-white">
       <div className="max-w-7xl mx-auto space-y-8">
 
         {/* Header */}
@@ -236,7 +236,7 @@ export default function RetosPage() {
             <CardFlat className="p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <Subtitle>tu progreso en retos</Subtitle>
-                <span className="text-2xl font-extrabold text-[#1472FF]">
+                <span className="text-2xl font-extrabold text-primary">
                   {Math.round(progressPercent)}%
                 </span>
               </div>
@@ -272,7 +272,7 @@ export default function RetosPage() {
                         <CardFlat
                           className={`shadow-sm hover:shadow-md transition-shadow ${
                             isSelected
-                              ? 'ring-2 ring-[#1472FF] ring-offset-2 dark:ring-offset-gray-800'
+                              ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-gray-800'
                               : ''
                           }`}
                         >
@@ -282,12 +282,12 @@ export default function RetosPage() {
                               {/* Status indicator circle */}
                               <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
                                 isCompleted
-                                  ? 'bg-[#22c55e] text-white'
+                                  ? 'bg-completado text-white'
                                   : isLocked
-                                    ? 'bg-gray-200 dark:bg-gray-700 text-[#777777] dark:text-gray-500'
+                                    ? 'bg-gray-200 dark:bg-gray-700 text-ink-muted dark:text-gray-500'
                                     : isSelected
-                                      ? 'bg-[#1472FF] text-white'
-                                      : 'border-2 border-gray-300 dark:border-gray-900 text-[#777777] dark:text-gray-400'
+                                      ? 'bg-primary text-white'
+                                      : 'border-2 border-gray-300 dark:border-gray-900 text-ink-muted dark:text-gray-400'
                               }`}>
                                 {isCompleted ? (
                                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -306,10 +306,10 @@ export default function RetosPage() {
                               <div className="flex-1 min-w-0">
                                 <p className={`text-base font-bold truncate mb-1 ${
                                   isLocked
-                                    ? 'text-[#777777] dark:text-gray-500'
+                                    ? 'text-ink-muted dark:text-gray-500'
                                     : isCompleted
-                                      ? 'text-[#777777] dark:text-gray-400'
-                                      : 'text-[#4b4b4b] dark:text-white'
+                                      ? 'text-ink-muted dark:text-gray-400'
+                                      : 'text-ink dark:text-white'
                                 }`}>
                                   {exercise.title}
                                 </p>
@@ -324,7 +324,7 @@ export default function RetosPage() {
                                         key={i}
                                         className={`w-1.5 h-1.5 rounded-full ${
                                           i <= exercise.difficulty
-                                            ? 'bg-[#1472FF]'
+                                            ? 'bg-primary'
                                             : 'bg-gray-200 dark:bg-gray-700'
                                         }`}
                                       />
@@ -336,7 +336,7 @@ export default function RetosPage() {
                               {/* Chevron (mobile only) */}
                               <div className="flex-shrink-0 lg:hidden self-center">
                                 <svg
-                                  className={`w-5 h-5 text-[#777777] transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                                  className={`w-5 h-5 text-ink-muted transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
                                   fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 >
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -350,8 +350,8 @@ export default function RetosPage() {
                                 <Body className="leading-relaxed">{exercise.description}</Body>
 
                                 {/* Entregable */}
-                                <div className="bg-[#1472FF]/5 dark:bg-[#1472FF]/10 rounded-xl p-4">
-                                  <Headline className="mb-2 !text-[#1472FF]">entregable</Headline>
+                                <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-4">
+                                  <Headline className="mb-2 !text-primary">entregable</Headline>
                                   <Body className="leading-relaxed">{exercise.deliverable}</Body>
                                 </div>
 
@@ -439,7 +439,7 @@ export default function RetosPage() {
                           key={i}
                           className={`w-2 h-2 rounded-full ${
                             i <= currentExercise.difficulty
-                              ? 'bg-[#1472FF]'
+                              ? 'bg-primary'
                               : 'bg-gray-200 dark:bg-gray-700'
                           }`}
                         />
@@ -448,7 +448,7 @@ export default function RetosPage() {
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white leading-tight">
+                  <h2 className="text-xl font-extrabold tracking-tight text-ink dark:text-white leading-tight">
                     {currentExercise.number}. {currentExercise.title}
                   </h2>
 
@@ -459,8 +459,8 @@ export default function RetosPage() {
                   </div>
 
                   {/* Deliverable */}
-                  <div className="bg-[#1472FF]/5 dark:bg-[#1472FF]/10 rounded-xl p-4">
-                    <Headline className="mb-2 !text-[#1472FF]">entregable</Headline>
+                  <div className="bg-primary/5 dark:bg-primary/10 rounded-xl p-4">
+                    <Headline className="mb-2 !text-primary">entregable</Headline>
                     <Body className="leading-relaxed">{currentExercise.deliverable}</Body>
                   </div>
 

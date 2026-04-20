@@ -70,10 +70,10 @@ export default function ReorderExercise({
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${
                   isCorrectPosition
-                    ? 'bg-[#22c55e] text-white'
+                    ? 'bg-completado text-white'
                     : isWrongPosition
                       ? 'bg-red-500 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-[#4b4b4b] dark:text-gray-300'
+                      : 'bg-gray-100 dark:bg-gray-700 text-ink dark:text-gray-300'
                 }`}
               >
                 {index + 1}
@@ -95,10 +95,10 @@ export default function ReorderExercise({
                       submitted ? 'cursor-default' : 'cursor-pointer'
                     } ${
                       isCorrectPosition
-                        ? 'border-[#22c55e] bg-green-50 dark:bg-green-900/20'
+                        ? 'border-completado bg-green-50 dark:bg-green-900/20'
                         : isWrongPosition
                           ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                          : 'border-[#1472FF] bg-[#1472FF]/5 dark:bg-[#1472FF]/10'
+                          : 'border-primary bg-primary/5 dark:bg-primary/10'
                     }`}
                   >
                     <Body>{placedItem.text}</Body>
@@ -110,7 +110,7 @@ export default function ReorderExercise({
                     animate={{ opacity: 1 }}
                     className="flex-1 h-12 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center"
                   >
-                    <span className="text-xs text-[#777777] dark:text-gray-400">
+                    <span className="text-xs text-ink-muted dark:text-gray-400">
                       Toca una opcion para colocarla aqui
                     </span>
                   </motion.div>

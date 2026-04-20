@@ -154,8 +154,8 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
 
   const rarityColors = {
     common: 'from-gray-400 to-gray-500',
-    rare: 'bg-[#1472FF]',
-    epic: 'bg-[#1472FF]',
+    rare: 'bg-primary',
+    epic: 'bg-primary',
     legendary: 'from-yellow-400 to-orange-500',
   };
 
@@ -173,8 +173,8 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-lg font-bold text-[#4b4b4b] dark:text-white">Logros</h3>
-          <p className="text-sm text-[#777777] dark:text-gray-400">
+          <h3 className="text-lg font-bold text-ink dark:text-white">Logros</h3>
+          <p className="text-sm text-ink-muted dark:text-gray-400">
             {earnedCount}/{allBadges.length} desbloqueados
           </p>
         </div>
@@ -200,7 +200,7 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
               {badge.icon}
             </span>
             {badge.earned && (
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#22c55e] rounded-full border-2 border-white dark:border-gray-900" />
+              <div className="absolute -top-1 -right-1 w-3 h-3 bg-completado rounded-full border-2 border-white dark:border-gray-900" />
             )}
           </button>
         ))}
@@ -223,7 +223,7 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <h4 className="font-bold text-[#4b4b4b] dark:text-white">{selectedBadge.name}</h4>
+                <h4 className="font-bold text-ink dark:text-white">{selectedBadge.name}</h4>
                 <Tag
                   variant={
                     selectedBadge.rarity === 'common' ? 'neutral' :
@@ -237,17 +237,17 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
                   {selectedBadge.rarity === 'legendary' && 'Legendario'}
                 </Tag>
               </div>
-              <p className="text-sm text-[#777777] dark:text-gray-400 mt-1">
+              <p className="text-sm text-ink-muted dark:text-gray-400 mt-1">
                 {selectedBadge.description}
               </p>
               <div className="flex items-center gap-4 mt-2 text-xs">
-                <span className="text-[#22c55e] font-medium">
+                <span className="text-completado font-medium">
                   +{selectedBadge.xpReward} XP
                 </span>
                 {selectedBadge.earned ? (
-                  <span className="text-[#777777] dark:text-gray-400">✓ Desbloqueado</span>
+                  <span className="text-ink-muted dark:text-gray-400">✓ Desbloqueado</span>
                 ) : (
-                  <span className="text-[#777777] dark:text-gray-500">{selectedBadge.requirement}</span>
+                  <span className="text-ink-muted dark:text-gray-500">{selectedBadge.requirement}</span>
                 )}
               </div>
             </div>
@@ -256,7 +256,7 @@ export default function AchievementBadges({ earnedBadges = ['first-video', 'firs
       )}
 
       {/* View All Link */}
-      <button className="mt-3 w-full text-center text-sm text-[#1472FF] hover:text-[#0E5FCC] font-medium">
+      <button className="mt-3 w-full text-center text-sm text-primary hover:text-primary-dark font-medium">
         Ver todos los logros →
       </button>
     </CardFlat>

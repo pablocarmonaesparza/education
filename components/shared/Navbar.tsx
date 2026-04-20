@@ -249,7 +249,7 @@ export default function Navbar() {
                   onClick={(e) => handleNavClick(e, link.href)}
                   className={`relative px-4 py-2 transition-colors duration-300 font-bold uppercase tracking-wide text-sm cursor-pointer ${
                     activeSection === link.id
-                      ? "text-[#4b4b4b] dark:text-white"
+                      ? "text-ink dark:text-white"
                       : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                   }`}
                 >
@@ -374,7 +374,7 @@ export default function Navbar() {
                         onClick={(e) => handleNavClick(e, link.href)}
                         className={`block py-4 px-4 rounded-xl transition-all font-medium text-lg cursor-pointer ${
                           activeSection === link.id
-                            ? "text-[#1472FF] bg-blue-50 dark:bg-blue-900/30"
+                            ? "text-primary bg-blue-50 dark:bg-blue-900/30"
                             : "text-gray-900 dark:text-white"
                         }`}
                       >
@@ -393,7 +393,7 @@ export default function Navbar() {
                 <Link
                   href="/auth/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`block py-4 text-center font-bold text-lg uppercase tracking-wide rounded-2xl bg-[#1472FF] ${depth.bottom} border-[#0E5FCC] text-white`}
+                  className={`block py-4 text-center font-bold text-lg uppercase tracking-wide rounded-2xl bg-primary ${depth.bottom} border-primary-dark text-white`}
                 >
                   Comenzar
                 </Link>
@@ -427,7 +427,7 @@ export default function Navbar() {
                       onClick={(e) => handleNavClick(e, link.href)}
                       className={`block py-3 px-4 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all font-medium cursor-pointer ${
                         activeSection === link.id
-                          ? "text-[#1472FF] bg-blue-50 dark:bg-blue-900/30"
+                          ? "text-primary bg-blue-50 dark:bg-blue-900/30"
                           : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                       }`}
                     >
@@ -445,7 +445,7 @@ export default function Navbar() {
                   <Link
                     href="/auth/signup"
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block py-3 px-4 text-center font-bold uppercase tracking-wide rounded-2xl transition-all bg-[#1472FF] ${depth.bottom} border-[#0E5FCC] text-white hover:bg-[#0E5FCC]`}
+                    className={`block py-3 px-4 text-center font-bold uppercase tracking-wide rounded-2xl transition-all bg-primary ${depth.bottom} border-primary-dark text-white hover:bg-primary-dark`}
                   >
                     Comenzar
                   </Link>

@@ -883,7 +883,7 @@ function ResultModal({
           <Title className="!text-3xl">
             {passed ? 'lección completada' : 'repetir lección'}
           </Title>
-          <Body className="text-[#777777] dark:text-gray-400">
+          <Body className="text-ink-muted dark:text-gray-400">
             {hasExercises
               ? `Acertaste ${correctCount} de ${totalMcq} ejercicios (${percent}%).`
               : 'Has revisado toda la lección.'}
@@ -939,7 +939,7 @@ function NoLivesModal({
             </svg>
           </div>
           <Title className="!text-3xl">ya no tienes más vidas</Title>
-          <Body className="text-[#777777] dark:text-gray-400">
+          <Body className="text-ink-muted dark:text-gray-400">
             Espera a que se recarguen tus vidas o consigue más ahora mismo para
             seguir aprendiendo.
           </Body>
@@ -969,10 +969,10 @@ function NoLivesModal({
 function TimeSegment({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <span className="text-3xl md:text-4xl font-extrabold tabular-nums text-[#4b4b4b] dark:text-white">
+      <span className="text-3xl md:text-4xl font-extrabold tabular-nums text-ink dark:text-white">
         {value}
       </span>
-      <span className="text-[10px] font-bold uppercase tracking-wider text-[#777777] dark:text-gray-400">
+      <span className="text-[10px] font-bold uppercase tracking-wider text-ink-muted dark:text-gray-400">
         {label}
       </span>
     </div>
@@ -988,7 +988,7 @@ function SegmentedProgress({ total, current }: { total: number; current: number 
         <div
           key={i}
           className={`flex-1 h-3 rounded-full transition-colors duration-200 ${
-            i <= current ? 'bg-[#1472FF]' : 'bg-gray-200 dark:bg-gray-900'
+            i <= current ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-900'
           }`}
         />
       ))}
@@ -1020,7 +1020,7 @@ function renderInlineMarkdown(text: string): React.ReactNode {
     if (m.index > last) parts.push(text.slice(last, m.index));
     if (m[1] !== undefined) {
       parts.push(
-        <strong key={`b-${m.index}`} className="font-bold text-[#4b4b4b] dark:text-white">
+        <strong key={`b-${m.index}`} className="font-bold text-ink dark:text-white">
           {m[1]}
         </strong>,
       );
@@ -1105,7 +1105,7 @@ function ConceptStep({
         />
       )}
       <Title className="!text-3xl md:!text-4xl">{title}</Title>
-      <div className="text-base md:text-lg text-[#777777] dark:text-gray-400 space-y-3 leading-relaxed">
+      <div className="text-base md:text-lg text-ink-muted dark:text-gray-400 space-y-3 leading-relaxed">
         {renderMarkdownBody(body)}
       </div>
     </div>
@@ -1189,7 +1189,7 @@ function ConceptVisualStep({
                     textAnchor="middle"
                     fontSize="12"
                     fontWeight="700"
-                    className="fill-[#4b4b4b] dark:fill-gray-200"
+                    className="fill-ink dark:fill-gray-200"
                   >
                     {b.label}
                   </text>
@@ -1213,7 +1213,7 @@ function ConceptVisualStep({
           })}
         </svg>
       </div>
-      <Body className="text-center text-[#777777] dark:text-gray-400">{body}</Body>
+      <Body className="text-center text-ink-muted dark:text-gray-400">{body}</Body>
     </div>
   );
 }
@@ -1238,7 +1238,7 @@ function MultipleChoiceStep({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-ink dark:text-white text-center leading-tight">
         {step.prompt}
       </h3>
 
@@ -1248,10 +1248,10 @@ function MultipleChoiceStep({
           const isCorrectOption = option.id === step.correctId;
 
           let stateClass =
-            '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 hover:border-[#1472FF] hover:[--depth-color:#1472FF] [&_p]:hover:text-[#1472FF]';
+            '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 hover:border-primary hover:[--depth-color:#1472FF] [&_p]:hover:text-primary';
           if (submitted) {
             if (isCorrectOption) {
-              stateClass = '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] [&_p]:text-white';
+              stateClass = '[--depth-color:#16a34a] border-completado-dark bg-completado [&_p]:text-white';
             } else if (isSelected) {
               stateClass = '[--depth-color:#b91c1c] border-red-700 bg-red-500 [&_p]:text-white';
             } else {
@@ -1282,7 +1282,7 @@ function MultipleChoiceStep({
                   : 'cursor-pointer active:translate-y-[2px] active:[box-shadow:0_2px_0_0_var(--depth-color)]'
               } ${stateClass}`}
             >
-              <p className="text-base md:text-lg font-medium text-[#4b4b4b] dark:text-gray-200">
+              <p className="text-base md:text-lg font-medium text-ink dark:text-gray-200">
                 {option.text}
               </p>
             </button>
@@ -1291,7 +1291,7 @@ function MultipleChoiceStep({
       </div>
 
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-ink-muted dark:text-gray-400">
           {renderInlineMarkdown(step.explanation)}
         </p>
       )}
@@ -1325,7 +1325,7 @@ function MultiSelectStep({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-ink dark:text-white text-center leading-tight">
         {step.prompt}
       </h3>
 
@@ -1335,20 +1335,20 @@ function MultiSelectStep({
           const isCorrectOption = step.correctIds.includes(option.id);
 
           let stateClass =
-            '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 hover:border-[#1472FF] hover:[--depth-color:#1472FF] [&_p]:hover:text-[#1472FF] [&_.dot]:hover:border-[#1472FF]';
+            '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 hover:border-primary hover:[--depth-color:#1472FF] [&_p]:hover:text-primary [&_.dot]:hover:border-primary';
           let boxClass = 'border-gray-300 dark:border-gray-900';
           let showCheck = false;
           let checkColor = 'text-white';
 
           if (submitted) {
             if (isCorrectOption && isSelected) {
-              stateClass = '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] [&_p]:text-white';
+              stateClass = '[--depth-color:#16a34a] border-completado-dark bg-completado [&_p]:text-white';
               boxClass = 'bg-white border-white';
               showCheck = true;
-              checkColor = 'text-[#16a34a]';
+              checkColor = 'text-completado-dark';
             } else if (isCorrectOption && !isSelected) {
-              stateClass = '[--depth-color:#16a34a] border-[#16a34a]';
-              boxClass = 'border-[#16a34a]';
+              stateClass = '[--depth-color:#16a34a] border-completado-dark';
+              boxClass = 'border-completado-dark';
             } else if (!isCorrectOption && isSelected) {
               stateClass = '[--depth-color:#b91c1c] border-red-700 bg-red-500 [&_p]:text-white';
               boxClass = 'bg-white border-white';
@@ -1364,7 +1364,7 @@ function MultiSelectStep({
               suppressHoverId === option.id
                 ? baseSelected
                 : baseSelected + selectedHover;
-            boxClass = 'bg-[#4b4b4b] border-[#4b4b4b]';
+            boxClass = 'bg-ink border-ink';
             showCheck = true;
             checkColor = 'text-white';
           }
@@ -1399,7 +1399,7 @@ function MultiSelectStep({
                     </svg>
                   )}
                 </span>
-                <p className="text-base md:text-lg font-medium text-[#4b4b4b] dark:text-gray-200">
+                <p className="text-base md:text-lg font-medium text-ink dark:text-gray-200">
                   {option.text}
                 </p>
               </div>
@@ -1409,13 +1409,13 @@ function MultiSelectStep({
       </div>
 
       {!submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-ink-muted dark:text-gray-400">
           Elige las opciones correctas.
         </p>
       )}
 
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-ink-muted dark:text-gray-400">
           {renderInlineMarkdown(step.explanation)}
         </p>
       )}
@@ -1460,14 +1460,14 @@ function FillBlankStep({
   if (submitted) {
     if (correct) {
       slotClass =
-        '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] text-white border-solid';
+        '[--depth-color:#16a34a] border-completado-dark bg-completado text-white border-solid';
     } else if (attempt !== null) {
       slotClass =
         '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white border-solid';
     }
   } else if (filled !== null) {
     const base =
-      '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-900 text-[#4b4b4b] dark:text-gray-200 border-solid';
+      '[--depth-color:#aeb3bb] border-[#aeb3bb] bg-gray-200 dark:bg-gray-800 dark:border-gray-900 text-ink dark:text-gray-200 border-solid';
     const hover =
       ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:text-[#ef4444] hover:[--depth-color:#b91c1c]';
     slotClass = suppressSlotHover ? base : base + hover;
@@ -1476,7 +1476,7 @@ function FillBlankStep({
   return (
     <div className="space-y-8">
       {/* Sentence with inline blank — matches prompt styling of other exercises */}
-      <h3 className="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="flex flex-wrap items-center justify-center gap-x-3 gap-y-3 text-2xl md:text-3xl font-extrabold tracking-tight text-ink dark:text-white text-center leading-tight">
         <span>{step.sentenceBefore}</span>
         <button
           data-slot="fill-blank"
@@ -1504,13 +1504,13 @@ function FillBlankStep({
           const disabled = submitted || used;
 
           let tokenClass =
-            '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+            '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-ink dark:text-gray-200 hover:border-primary hover:[--depth-color:#1472FF] hover:text-primary';
           if (used) {
             tokenClass =
-              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-30 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-30 text-ink dark:text-gray-200';
           } else if (submitted) {
             tokenClass =
-              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-60 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-60 text-ink dark:text-gray-200';
           }
 
           return (
@@ -1536,7 +1536,7 @@ function FillBlankStep({
       </div>
 
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-ink-muted dark:text-gray-400">
           {renderInlineMarkdown(step.explanation)}
         </p>
       )}
@@ -1588,7 +1588,7 @@ function TapSequenceStep({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-ink dark:text-white text-center leading-tight">
         {prompt}
       </h3>
 
@@ -1607,11 +1607,11 @@ function TapSequenceStep({
               const isCorrectPos = submitted && correctOrder[pos] === tokIdx;
 
               let stateClass =
-                '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#ef4444] hover:text-[#ef4444] hover:[--depth-color:#b91c1c]';
+                '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-ink dark:text-gray-200 hover:border-[#ef4444] hover:text-[#ef4444] hover:[--depth-color:#b91c1c]';
               if (submitted) {
                 if (isCorrectPos) {
                   stateClass =
-                    '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] text-white';
+                    '[--depth-color:#16a34a] border-completado-dark bg-completado text-white';
                 } else {
                   stateClass =
                     '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
@@ -1633,7 +1633,7 @@ function TapSequenceStep({
                   {itemSize === 'block' && (
                     <span
                       className={`mr-2 font-extrabold ${
-                        submitted ? 'text-white' : 'text-[#1472FF]'
+                        submitted ? 'text-white' : 'text-primary'
                       }`}
                     >
                       {pos + 1}.
@@ -1656,10 +1656,10 @@ function TapSequenceStep({
             const disabled = submitted;
 
             let tokenClass =
-              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-ink dark:text-gray-200 hover:border-primary hover:[--depth-color:#1472FF] hover:text-primary';
             if (submitted) {
               tokenClass =
-                '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-60 text-[#4b4b4b] dark:text-gray-200';
+                '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-60 text-ink dark:text-gray-200';
             }
 
             return (
@@ -1682,7 +1682,7 @@ function TapSequenceStep({
       )}
 
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-ink-muted dark:text-gray-400">
           {renderInlineMarkdown(explanation)}
         </p>
       )}
@@ -1712,10 +1712,10 @@ function AiPromptStep({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-ink dark:text-white text-center leading-tight">
         {step.prompt}
       </h3>
-      <p className="text-base text-[#777777] dark:text-gray-400 text-center">
+      <p className="text-base text-ink-muted dark:text-gray-400 text-center">
         {step.instructions}
       </p>
 
@@ -1741,7 +1741,7 @@ function AiPromptStep({
           className={`rounded-2xl ${depth.border} border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-900 p-5 space-y-3 [box-shadow:0_4px_0_0_var(--depth-color)]`}
         >
           <div className="flex items-center justify-between gap-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#777777] dark:text-gray-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-ink-muted dark:text-gray-400">
               análisis de la IA
             </span>
             <span className="text-2xl font-extrabold" style={{ color: scoreColor }}>
@@ -1754,7 +1754,7 @@ function AiPromptStep({
               style={{ width: `${analysis.score}%`, backgroundColor: scoreColor }}
             />
           </div>
-          <p className="text-sm text-[#4b4b4b] dark:text-gray-300">{analysis.feedback}</p>
+          <p className="text-sm text-ink dark:text-gray-300">{analysis.feedback}</p>
         </div>
       )}
     </div>
@@ -1837,10 +1837,10 @@ function CelebrationStep({
         </span>
         {passed && (
           <>
-            <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
+            <span className="rounded-full border-2 border-primary px-4 py-2 text-sm font-bold text-primary bg-white dark:bg-gray-900">
               🔥 {DAILY_STREAK} días
             </span>
-            <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
+            <span className="rounded-full border-2 border-primary px-4 py-2 text-sm font-bold text-primary bg-white dark:bg-gray-900">
               +{xpGained} XP
             </span>
           </>
@@ -1851,7 +1851,7 @@ function CelebrationStep({
         animate={{ opacity: 1 }}
         transition={{ delay: 0.6, duration: 0.35 }}
       >
-        <Body className="!text-lg text-[#777777] dark:text-gray-400">
+        <Body className="!text-lg text-ink-muted dark:text-gray-400">
           {displayBody}
         </Body>
       </motion.div>
@@ -1908,7 +1908,7 @@ function XpBar({
         }`}
       >
         <motion.div
-          className="h-full rounded-full bg-[#22c55e]"
+          className="h-full rounded-full bg-completado"
           animate={{ width: `${pct}%` }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
         />
@@ -1927,7 +1927,7 @@ function XpBar({
           );
         })}
       </div>
-      <div className="mt-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-[#777777] dark:text-gray-400">
+      <div className="mt-1 flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-ink-muted dark:text-gray-400">
         <span>xp</span>
         <span className="tabular-nums">
           {displayXp} / {total}
@@ -1941,7 +1941,7 @@ function XpBar({
             animate={{ opacity: [0, 1, 1, 0], y: -24 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.9, ease: 'easeOut' }}
-            className="absolute right-0 -top-3 text-sm font-extrabold text-[#22c55e]"
+            className="absolute right-0 -top-3 text-sm font-extrabold text-completado"
           >
             +{delta.gain} XP
           </motion.span>
@@ -1967,7 +1967,7 @@ function TrueFalseStep({
   const [suppressHover, setSuppressHover] = useState<boolean | null>(null);
 
   const baseSelected =
-    '[--depth-color:#aeb3bb] dark:[--depth-color:#4b5563] border-[#aeb3bb] bg-gray-200 dark:bg-gray-700 dark:border-gray-600 text-[#4b4b4b] dark:text-gray-200';
+    '[--depth-color:#aeb3bb] dark:[--depth-color:#4b5563] border-[#aeb3bb] bg-gray-200 dark:bg-gray-700 dark:border-gray-600 text-ink dark:text-gray-200';
   const selectedHover =
     ' hover:border-[#ef4444] hover:bg-white dark:hover:bg-gray-900 hover:[--depth-color:#b91c1c] hover:text-[#ef4444]';
 
@@ -1976,11 +1976,11 @@ function TrueFalseStep({
     const isCorrectOption = step.answer === value;
 
     let stateClass =
-      '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+      '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-ink dark:text-gray-200 hover:border-primary hover:[--depth-color:#1472FF] hover:text-primary';
     if (submitted) {
       if (isCorrectOption) {
         stateClass =
-          '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] text-white';
+          '[--depth-color:#16a34a] border-completado-dark bg-completado text-white';
       } else if (isSelected) {
         stateClass =
           '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
@@ -2019,7 +2019,7 @@ function TrueFalseStep({
 
   return (
     <div className="space-y-8">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-ink dark:text-white text-center leading-tight">
         {step.statement}
       </h3>
       <div className="flex justify-center gap-4">
@@ -2027,7 +2027,7 @@ function TrueFalseStep({
         {renderOption(false, 'Falso')}
       </div>
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-ink-muted dark:text-gray-400">
           {renderInlineMarkdown(step.explanation)}
         </p>
       )}
@@ -2056,24 +2056,24 @@ function CodeCompletionStep({
   if (submitted) {
     if (correct) {
       slotClass =
-        'border-[#16a34a] bg-[#22c55e] text-white border-solid';
+        'border-completado-dark bg-completado text-white border-solid';
     } else if (attempt !== null) {
       slotClass =
         'border-red-700 bg-red-500 text-white border-solid';
     }
   } else if (filled !== null) {
     slotClass =
-      'border-[#1472FF] bg-white dark:bg-gray-950 text-[#1472FF] border-solid hover:border-[#ef4444] hover:text-[#ef4444]';
+      'border-primary bg-white dark:bg-gray-950 text-primary border-solid hover:border-[#ef4444] hover:text-[#ef4444]';
   }
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-ink dark:text-white text-center leading-tight">
         {step.prompt}
       </h3>
 
       <Card variant="neutral" padding="lg" className="overflow-x-auto">
-        <pre className="font-mono text-sm md:text-base text-[#4b4b4b] dark:text-gray-200 whitespace-pre-wrap break-words leading-relaxed">
+        <pre className="font-mono text-sm md:text-base text-ink dark:text-gray-200 whitespace-pre-wrap break-words leading-relaxed">
 {step.codeBefore}
 <button
   type="button"
@@ -2099,13 +2099,13 @@ function CodeCompletionStep({
           const disabled = submitted || used;
 
           let tokenClass =
-            '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+            '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-ink dark:text-gray-200 hover:border-primary hover:[--depth-color:#1472FF] hover:text-primary';
           if (used) {
             tokenClass =
-              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-30 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-30 text-ink dark:text-gray-200';
           } else if (submitted) {
             tokenClass =
-              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-60 text-[#4b4b4b] dark:text-gray-200';
+              '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 opacity-60 text-ink dark:text-gray-200';
           }
 
           return (
@@ -2130,7 +2130,7 @@ function CodeCompletionStep({
       </div>
 
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-ink-muted dark:text-gray-400">
           {renderInlineMarkdown(step.explanation)}
         </p>
       )}
@@ -2238,14 +2238,14 @@ function TapMatchStep({
     isCorrect?: boolean,
   ) => {
     if (isCorrect === true)
-      return '[--depth-color:#16a34a] border-[#16a34a] bg-[#22c55e] text-white';
+      return '[--depth-color:#16a34a] border-completado-dark bg-completado text-white';
     if (isCorrect === false)
       return '[--depth-color:#b91c1c] border-red-700 bg-red-500 text-white';
     if (isPaired)
-      return '[--depth-color:#aeb3bb] dark:[--depth-color:#4b5563] border-[#aeb3bb] bg-gray-200 dark:bg-gray-700 dark:border-gray-600 text-[#4b4b4b] dark:text-gray-200';
+      return '[--depth-color:#aeb3bb] dark:[--depth-color:#4b5563] border-[#aeb3bb] bg-gray-200 dark:bg-gray-700 dark:border-gray-600 text-ink dark:text-gray-200';
     if (isSelected)
-      return '[--depth-color:#1472FF] border-[#1472FF] bg-gray-100 dark:bg-gray-900 text-[#1472FF]';
-    return '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-200 hover:border-[#1472FF] hover:[--depth-color:#1472FF] hover:text-[#1472FF]';
+      return '[--depth-color:#1472FF] border-primary bg-gray-100 dark:bg-gray-900 text-primary';
+    return '[--depth-color:#e5e7eb] dark:[--depth-color:#111827] border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-ink dark:text-gray-200 hover:border-primary hover:[--depth-color:#1472FF] hover:text-primary';
   };
 
   // --- Arrow geometry ---
@@ -2319,7 +2319,7 @@ function TapMatchStep({
 
   return (
     <div className="space-y-6">
-      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white text-center leading-tight">
+      <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-ink dark:text-white text-center leading-tight">
         {step.prompt}
       </h3>
 
@@ -2432,13 +2432,13 @@ function TapMatchStep({
       </div>
 
       {!submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-ink-muted dark:text-gray-400">
           Forma los {step.pairs.length} pares, después toca comprobar.
         </p>
       )}
 
       {submitted && (
-        <p className="text-center text-sm text-[#777777] dark:text-gray-400">
+        <p className="text-center text-sm text-ink-muted dark:text-gray-400">
           {renderInlineMarkdown(step.explanation)}
         </p>
       )}
@@ -2451,7 +2451,7 @@ function TapMatchStep({
 function StreakBadge({ count }: { count: number }) {
   return (
     <div
-      className={`inline-flex items-center gap-2 h-[42px] px-4 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthBase}`}
+      className={`inline-flex items-center gap-2 h-[42px] px-4 rounded-xl bg-white dark:bg-gray-800 text-ink dark:text-gray-300 border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthBase}`}
       aria-label={`racha de ${count} días`}
     >
       <span className="text-lg leading-none" aria-hidden="true">

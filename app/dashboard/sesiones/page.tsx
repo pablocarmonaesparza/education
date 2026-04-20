@@ -142,7 +142,7 @@ export default function SesionesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-[#4b4b4b] dark:text-white">
+    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-ink dark:text-white">
       <div className="max-w-7xl mx-auto space-y-8">
         <SectionHeader
           title="sesiones"
@@ -156,7 +156,7 @@ export default function SesionesPage() {
               {/* Thumbnail / placeholder */}
               <div className="w-full sm:w-64 h-40 sm:h-auto bg-gray-900 flex items-center justify-center flex-shrink-0">
                 <div className="text-center">
-                  <svg className="w-12 h-12 mx-auto text-[#1472FF] mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-12 h-12 mx-auto text-primary mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <rect x="2" y="4" width="20" height="13" rx="2" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 21h8M12 17v4" />
                   </svg>
@@ -170,16 +170,16 @@ export default function SesionesPage() {
                   </Tag>
                   <Caption>{formatDate(upcoming[0].date)} · {upcoming[0].time}</Caption>
                 </div>
-                <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white leading-tight mb-2">
+                <h2 className="text-xl font-extrabold text-ink dark:text-white leading-tight mb-2">
                   {upcoming[0].title}
                 </h2>
-                <Body className="text-[#777777] dark:text-gray-400 line-clamp-2 mb-4">
+                <Body className="text-ink-muted dark:text-gray-400 line-clamp-2 mb-4">
                   {upcoming[0].description}
                 </Body>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-[#1472FF] flex items-center justify-center text-white text-xs font-bold">
+                      <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">
                         {upcoming[0].instructorInitials}
                       </div>
                       <Caption>{upcoming[0].instructor}</Caption>
@@ -283,12 +283,12 @@ export default function SesionesPage() {
                   </div>
 
                   {/* Title */}
-                  <h2 className="text-xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white leading-tight">
+                  <h2 className="text-xl font-extrabold tracking-tight text-ink dark:text-white leading-tight">
                     {selectedSession.title}
                   </h2>
 
                   {/* Date & time */}
-                  <div className="flex items-center gap-2 text-[#777777] dark:text-gray-400">
+                  <div className="flex items-center gap-2 text-ink-muted dark:text-gray-400">
                     <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
@@ -297,11 +297,11 @@ export default function SesionesPage() {
 
                   {/* Instructor */}
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#1472FF] flex items-center justify-center text-white font-bold text-sm">
+                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">
                       {selectedSession.instructorInitials}
                     </div>
                     <div>
-                      <p className="font-bold text-sm text-[#4b4b4b] dark:text-white">{selectedSession.instructor}</p>
+                      <p className="font-bold text-sm text-ink dark:text-white">{selectedSession.instructor}</p>
                       <Caption>Instructor</Caption>
                     </div>
                   </div>
@@ -315,7 +315,7 @@ export default function SesionesPage() {
                   {/* Attendees */}
                   {selectedSession.status !== 'recorded' && (
                     <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-[#777777]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 text-ink-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                       <Caption>{selectedSession.attendees} de {selectedSession.maxAttendees} lugares ocupados</Caption>
@@ -345,7 +345,7 @@ export default function SesionesPage() {
                     <rect x="2" y="4" width="20" height="13" rx="2" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 21h8M12 17v4" />
                   </svg>
-                  <Body className="text-[#777777] dark:text-gray-400">Selecciona una sesión para ver los detalles</Body>
+                  <Body className="text-ink-muted dark:text-gray-400">Selecciona una sesión para ver los detalles</Body>
                 </div>
               </CardFlat>
             )}
@@ -375,7 +375,7 @@ function SessionCard({
     <div onClick={onClick} className="cursor-pointer">
       <CardFlat
         className={`shadow-sm hover:shadow-md transition-shadow ${
-          isSelected ? 'ring-2 ring-[#1472FF] ring-offset-2 dark:ring-offset-gray-800' : ''
+          isSelected ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-gray-800' : ''
         }`}
       >
         <div className="p-4 sm:p-5">
@@ -386,15 +386,15 @@ function SessionCard({
                 ? 'bg-orange-100 dark:bg-orange-900/30'
                 : isRecorded
                   ? 'bg-gray-100 dark:bg-gray-700'
-                  : 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20'
+                  : 'bg-primary/10 dark:bg-primary/20'
             }`}>
               <span className={`text-xs font-bold uppercase leading-none ${
-                isLive ? 'text-orange-600' : isRecorded ? 'text-[#777777]' : 'text-[#1472FF]'
+                isLive ? 'text-orange-600' : isRecorded ? 'text-ink-muted' : 'text-primary'
               }`}>
                 {new Date(session.date).toLocaleDateString('es-MX', { month: 'short' })}
               </span>
               <span className={`text-xl font-extrabold leading-none ${
-                isLive ? 'text-orange-600' : isRecorded ? 'text-[#4b4b4b] dark:text-gray-300' : 'text-[#1472FF]'
+                isLive ? 'text-orange-600' : isRecorded ? 'text-ink dark:text-gray-300' : 'text-primary'
               }`}>
                 {new Date(session.date).getDate()}
               </span>
@@ -410,14 +410,14 @@ function SessionCard({
                   {session.topic}
                 </Tag>
               </div>
-              <p className="font-bold text-[#4b4b4b] dark:text-white truncate mb-1">
+              <p className="font-bold text-ink dark:text-white truncate mb-1">
                 {session.title}
               </p>
               <div className="flex items-center gap-2 flex-wrap">
                 <Caption>{session.time} · {session.duration}</Caption>
                 <Caption>·</Caption>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-5 h-5 rounded-full bg-[#1472FF] flex items-center justify-center text-white text-[10px] font-bold">
+                  <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center text-white text-[10px] font-bold">
                     {session.instructorInitials}
                   </div>
                   <Caption>{session.instructor}</Caption>
@@ -428,12 +428,12 @@ function SessionCard({
             {/* Action indicator */}
             <div className="flex-shrink-0 self-center">
               {isRecorded ? (
-                <svg className="w-5 h-5 text-[#777777]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-ink-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               ) : (
-                <svg className="w-5 h-5 text-[#777777]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-ink-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               )}

@@ -175,7 +175,7 @@ export default function PerfilPage() {
   if (!profile) {
     return (
       <div className="min-h-full bg-transparent flex items-center justify-center">
-        <p className="text-[#777777] dark:text-gray-400">No se pudo cargar el perfil</p>
+        <p className="text-ink-muted dark:text-gray-400">No se pudo cargar el perfil</p>
       </div>
     );
   }
@@ -186,8 +186,8 @@ export default function PerfilPage() {
         
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">mi perfil</h1>
-          <p className="mt-2 text-[#777777] dark:text-gray-400">Gestiona tu información personal</p>
+          <h1 className="text-3xl font-extrabold text-ink dark:text-white tracking-tight">mi perfil</h1>
+          <p className="mt-2 text-ink-muted dark:text-gray-400">Gestiona tu información personal</p>
         </div>
 
         {/* Message */}
@@ -203,18 +203,18 @@ export default function PerfilPage() {
         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
           {/* Avatar Section */}
           <div className="p-6 flex items-center gap-4 border-b border-gray-100 dark:border-gray-800">
-            <div className={`w-20 h-20 rounded-full bg-[#1472FF] ${depth.border} ${depth.bottom} border-[#0E5FCC] flex items-center justify-center text-white text-2xl font-bold`}>
+            <div className={`w-20 h-20 rounded-full bg-primary ${depth.border} ${depth.bottom} border-primary-dark flex items-center justify-center text-white text-2xl font-bold`}>
               {userInitials}
             </div>
             <div>
-              <h2 className="text-xl font-bold text-[#4b4b4b] dark:text-white">{profile.name || 'Sin nombre'}</h2>
-              <p className="text-[#777777] dark:text-gray-400">{profile.email}</p>
+              <h2 className="text-xl font-bold text-ink dark:text-white">{profile.name || 'Sin nombre'}</h2>
+              <p className="text-ink-muted dark:text-gray-400">{profile.email}</p>
               <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${
                 profile.tier === 'premium' 
                   ? 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-400'
                   : profile.tier === 'personalized'
                   ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-400'
-                  : 'bg-gray-100 dark:bg-gray-900 text-[#777777] dark:text-gray-400'
+                  : 'bg-gray-100 dark:bg-gray-900 text-ink-muted dark:text-gray-400'
               }`}>
                 Plan {getTierName(profile.tier)}
               </span>
@@ -226,11 +226,11 @@ export default function PerfilPage() {
             {/* Name */}
             <div className="p-6">
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-[#777777] dark:text-gray-400">Nombre</label>
+                <label className="text-sm font-medium text-ink-muted dark:text-gray-400">Nombre</label>
                 {!isEditing && (
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="text-sm text-[#1472FF] hover:underline"
+                    className="text-sm text-primary hover:underline"
                   >
                     Editar
                   </button>
@@ -242,7 +242,7 @@ export default function PerfilPage() {
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-900 dark:bg-gray-800 dark:text-white focus:border-[#1472FF] focus:outline-none"
+                    className="flex-1 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-900 dark:bg-gray-800 dark:text-white focus:border-primary focus:outline-none"
                     placeholder="Tu nombre"
                   />
                   <Button
@@ -265,20 +265,20 @@ export default function PerfilPage() {
                   </Button>
                 </div>
               ) : (
-                <p className="text-[#4b4b4b] dark:text-white">{profile.name || 'Sin nombre'}</p>
+                <p className="text-ink dark:text-white">{profile.name || 'Sin nombre'}</p>
               )}
             </div>
 
             {/* Email */}
             <div className="p-6">
-              <label className="text-sm font-medium text-[#777777] dark:text-gray-400 block mb-2">Correo electrónico</label>
-              <p className="text-[#4b4b4b] dark:text-white">{profile.email}</p>
+              <label className="text-sm font-medium text-ink-muted dark:text-gray-400 block mb-2">Correo electrónico</label>
+              <p className="text-ink dark:text-white">{profile.email}</p>
             </div>
 
             {/* Member Since */}
             <div className="p-6">
-              <label className="text-sm font-medium text-[#777777] dark:text-gray-400 block mb-2">Miembro desde</label>
-              <p className="text-[#4b4b4b] dark:text-white">{formatDate(profile.createdAt)}</p>
+              <label className="text-sm font-medium text-ink-muted dark:text-gray-400 block mb-2">Miembro desde</label>
+              <p className="text-ink dark:text-white">{formatDate(profile.createdAt)}</p>
             </div>
           </div>
         </div>
@@ -287,8 +287,8 @@ export default function PerfilPage() {
         {profile.projectIdea && (
           <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
             <div className="p-6">
-              <h3 className="text-lg font-bold text-[#4b4b4b] dark:text-white mb-2">Tu Proyecto</h3>
-              <p className="text-[#777777] dark:text-gray-400 leading-relaxed">{profile.projectIdea}</p>
+              <h3 className="text-lg font-bold text-ink dark:text-white mb-2">Tu Proyecto</h3>
+              <p className="text-ink-muted dark:text-gray-400 leading-relaxed">{profile.projectIdea}</p>
             </div>
           </div>
         )}
@@ -296,14 +296,14 @@ export default function PerfilPage() {
         {/* Configuration Section */}
         <div id="configuracion" className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
           <div className="p-6 border-b border-gray-100 dark:border-gray-800">
-            <h3 className="text-lg font-bold text-[#4b4b4b] dark:text-white">Configuración</h3>
+            <h3 className="text-lg font-bold text-ink dark:text-white">Configuración</h3>
           </div>
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
             {/* Plan */}
             <div className="p-6 flex items-center justify-between">
               <div>
-                <p className="font-medium text-[#4b4b4b] dark:text-white">Plan actual</p>
-                <p className="text-sm text-[#777777] dark:text-gray-400">Plan {getTierName(profile.tier)}</p>
+                <p className="font-medium text-ink dark:text-white">Plan actual</p>
+                <p className="text-sm text-ink-muted dark:text-gray-400">Plan {getTierName(profile.tier)}</p>
               </div>
               <Button variant="primary" size="md" rounded2xl>
                 Mejorar Plan
@@ -313,10 +313,10 @@ export default function PerfilPage() {
             {/* Notifications */}
             <div className="p-6 flex items-center justify-between">
               <div>
-                <p className="font-medium text-[#4b4b4b] dark:text-white">Notificaciones</p>
-                <p className="text-sm text-[#777777] dark:text-gray-400">Recibe actualizaciones por correo</p>
+                <p className="font-medium text-ink dark:text-white">Notificaciones</p>
+                <p className="text-sm text-ink-muted dark:text-gray-400">Recibe actualizaciones por correo</p>
               </div>
-              <button className="w-12 h-6 rounded-full bg-[#1472FF] relative transition-colors">
+              <button className="w-12 h-6 rounded-full bg-primary relative transition-colors">
                 <span className="absolute right-1 top-1 w-4 h-4 rounded-full bg-white transition-transform" />
               </button>
             </div>
@@ -325,8 +325,8 @@ export default function PerfilPage() {
             <div className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-[#4b4b4b] dark:text-white">Telegram</p>
-                  <p className="text-sm text-[#777777] dark:text-gray-400">
+                  <p className="font-medium text-ink dark:text-white">Telegram</p>
+                  <p className="text-sm text-ink-muted dark:text-gray-400">
                     {telegramLinked
                       ? `Vinculado como @${telegramUsername || 'usuario'}`
                       : 'Conecta tu tutor AI a Telegram'
@@ -357,11 +357,11 @@ export default function PerfilPage() {
               {/* Código de vinculación */}
               {telegramCode && !telegramLinked && (
                 <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl">
-                  <p className="text-sm text-[#777777] dark:text-gray-400 mb-2">
+                  <p className="text-sm text-ink-muted dark:text-gray-400 mb-2">
                     Tu código de vinculación (expira en 10 min):
                   </p>
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="font-mono text-2xl font-bold tracking-widest text-[#1472FF]">
+                    <span className="font-mono text-2xl font-bold tracking-widest text-primary">
                       {telegramCode}
                     </span>
                     <button
@@ -370,13 +370,13 @@ export default function PerfilPage() {
                         setMessage({ type: 'success', text: 'Código copiado' });
                         setTimeout(() => setMessage(null), 2000);
                       }}
-                      className="text-sm text-[#1472FF] hover:underline"
+                      className="text-sm text-primary hover:underline"
                     >
                       Copiar
                     </button>
                   </div>
-                  <div className="text-xs text-[#777777] dark:text-gray-400 space-y-1">
-                    <p>1. Abre <a href="https://t.me/itera_la_bot" target="_blank" rel="noopener noreferrer" className="text-[#1472FF] hover:underline">@itera_la_bot</a> en Telegram</p>
+                  <div className="text-xs text-ink-muted dark:text-gray-400 space-y-1">
+                    <p>1. Abre <a href="https://t.me/itera_la_bot" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">@itera_la_bot</a> en Telegram</p>
                     <p>2. Envía: <span className="font-mono bg-gray-200 dark:bg-gray-800 px-1 rounded">/vincular {telegramCode}</span></p>
                   </div>
                 </div>
@@ -386,23 +386,23 @@ export default function PerfilPage() {
             {/* Newsletters */}
             <div className="p-6">
               <div className="mb-4">
-                <p className="font-medium text-[#4b4b4b] dark:text-white">Newsletters</p>
-                <p className="text-sm text-[#777777] dark:text-gray-400">Elige qué notificaciones quieres recibir por correo</p>
+                <p className="font-medium text-ink dark:text-white">Newsletters</p>
+                <p className="text-sm text-ink-muted dark:text-gray-400">Elige qué notificaciones quieres recibir por correo</p>
               </div>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-[#4b4b4b] dark:text-gray-300">Oportunidades de trabajo</p>
-                    <p className="text-xs text-[#777777] dark:text-gray-400">Recibe ofertas de trabajo relacionadas con tu proyecto</p>
+                    <p className="text-sm font-medium text-ink dark:text-gray-300">Oportunidades de trabajo</p>
+                    <p className="text-xs text-ink-muted dark:text-gray-400">Recibe ofertas de trabajo relacionadas con tu proyecto</p>
                   </div>
-                  <button className="w-12 h-6 rounded-full bg-[#1472FF] relative transition-colors">
+                  <button className="w-12 h-6 rounded-full bg-primary relative transition-colors">
                     <span className="absolute right-1 top-1 w-4 h-4 rounded-full bg-white transition-transform" />
                   </button>
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-[#4b4b4b] dark:text-gray-300">Calendario de actividades</p>
-                    <p className="text-xs text-[#777777] dark:text-gray-400">Aviso de sesiones, talleres y eventos del mes</p>
+                    <p className="text-sm font-medium text-ink dark:text-gray-300">Calendario de actividades</p>
+                    <p className="text-xs text-ink-muted dark:text-gray-400">Aviso de sesiones, talleres y eventos del mes</p>
                   </div>
                   <button className="w-12 h-6 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors">
                     <span className="absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform" />
@@ -410,8 +410,8 @@ export default function PerfilPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-[#4b4b4b] dark:text-gray-300">Nuevos productos en Pitch</p>
-                    <p className="text-xs text-[#777777] dark:text-gray-400">Entérate cuando alguien publique un producto nuevo</p>
+                    <p className="text-sm font-medium text-ink dark:text-gray-300">Nuevos productos en Pitch</p>
+                    <p className="text-xs text-ink-muted dark:text-gray-400">Entérate cuando alguien publique un producto nuevo</p>
                   </div>
                   <button className="w-12 h-6 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors">
                     <span className="absolute left-1 top-1 w-4 h-4 rounded-full bg-white transition-transform" />
@@ -430,8 +430,8 @@ export default function PerfilPage() {
           <div className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium text-[#4b4b4b] dark:text-white">Cerrar sesión</p>
-                <p className="text-sm text-[#777777] dark:text-gray-400">Salir de tu cuenta en este dispositivo</p>
+                <p className="font-medium text-ink dark:text-white">Cerrar sesión</p>
+                <p className="text-sm text-ink-muted dark:text-gray-400">Salir de tu cuenta en este dispositivo</p>
               </div>
               <Button
                 variant="danger"

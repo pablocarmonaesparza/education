@@ -64,10 +64,10 @@ export default function DifferentiatorsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#4b4b4b] dark:text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-ink dark:text-white mb-4">
             ¿Qué Hace Diferente a Este Curso?
           </h2>
-          <p className="text-xl text-[#777777] dark:text-gray-400 max-w-3xl mx-auto">
+          <p className="text-xl text-ink-muted dark:text-gray-400 max-w-3xl mx-auto">
             No es solo otro curso de IA. Es una experiencia de aprendizaje personalizada y práctica.
           </p>
         </div>
@@ -82,18 +82,18 @@ export default function DifferentiatorsSection() {
               className="group relative"
             >
               {/* Gradient background on hover */}
-              <div className="absolute inset-0 bg-[#1472FF] opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300" />
 
               {/* Icon */}
-              <div className="inline-flex p-3 rounded-xl bg-[#1472FF] text-white mb-4">
+              <div className="inline-flex p-3 rounded-xl bg-primary text-white mb-4">
                 {item.icon}
               </div>
 
               {/* Content */}
-              <h3 className="text-xl font-bold text-[#4b4b4b] dark:text-white mb-3">
+              <h3 className="text-xl font-bold text-ink dark:text-white mb-3">
                 {item.title}
               </h3>
-              <p className="text-[#777777] dark:text-gray-400 leading-relaxed">
+              <p className="text-ink-muted dark:text-gray-400 leading-relaxed">
                 {item.description}
               </p>
             </Card>

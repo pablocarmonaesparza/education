@@ -16,21 +16,21 @@ const flatVariants = ['ghost', 'nav-inactive', 'icon-ghost'] as const;
 
 const variants = {
   primary:
-    'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#0E5FCC]',
+    'bg-primary text-white border-primary-dark hover:bg-primary-dark',
   secondary:
-    'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 hover:bg-gray-300 dark:hover:bg-gray-900',
+    'bg-white dark:bg-gray-800 text-ink dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 hover:bg-gray-300 dark:hover:bg-gray-900',
   ghost:
-    'bg-transparent text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
+    'bg-transparent text-ink dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
   outline:
-    'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 hover:bg-gray-300 dark:hover:bg-gray-900',
+    'bg-white dark:bg-gray-800 text-ink dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 hover:bg-gray-300 dark:hover:bg-gray-900',
   'nav-active':
-    'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#0E5FCC]',
+    'bg-primary text-white border-primary-dark hover:bg-primary-dark',
   'nav-inactive':
-    'bg-transparent text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
+    'bg-transparent text-ink dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
   icon:
-    'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#0E5FCC] p-0 flex items-center justify-center',
+    'bg-primary text-white border-primary-dark hover:bg-primary-dark p-0 flex items-center justify-center',
   'icon-ghost':
-    'bg-transparent text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 p-0 flex items-center justify-center',
+    'bg-transparent text-ink dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 p-0 flex items-center justify-center',
 } as const;
 
 const sizes = {
@@ -100,7 +100,7 @@ export { depthStructure as depthStyle } from '@/lib/design-tokens';
 
 /** Tailwind class for primary depth colors. */
 export const depthPrimary =
-  'bg-[#1472FF] border-[#0E5FCC] hover:bg-[#0E5FCC]';
+  'bg-primary border-primary-dark hover:bg-primary-dark';
 
 /** Tailwind class for secondary depth colors. */
 export const depthSecondary =

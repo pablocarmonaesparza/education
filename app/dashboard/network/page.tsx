@@ -100,7 +100,7 @@ const mockProfiles: Profile[] = [
 
 // Colors for avatar backgrounds
 const avatarColors = [
-  'bg-[#1472FF]',
+  'bg-primary',
   'bg-emerald-500',
   'bg-orange-500',
   'bg-purple-500',
@@ -124,7 +124,7 @@ export default function NetworkPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-[#4b4b4b] dark:text-white">
+    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-ink dark:text-white">
       <div className="max-w-7xl mx-auto space-y-8">
         <SectionHeader
           title="network"
@@ -170,7 +170,7 @@ export default function NetworkPage() {
                       </div>
                     )}
                     <div className="min-w-0">
-                      <p className="font-bold text-[#4b4b4b] dark:text-white truncate">{profile.name}</p>
+                      <p className="font-bold text-ink dark:text-white truncate">{profile.name}</p>
                       <Caption className="truncate">{profile.role} · {profile.location}</Caption>
                     </div>
                   </div>
@@ -178,7 +178,7 @@ export default function NetworkPage() {
                   {/* Project */}
                   <div className="mb-4">
                     <Headline className="mb-1">proyecto</Headline>
-                    <Body className="text-[#777777] dark:text-gray-400 line-clamp-2 text-sm">{profile.project}</Body>
+                    <Body className="text-ink-muted dark:text-gray-400 line-clamp-2 text-sm">{profile.project}</Body>
                   </div>
 
                   {/* Skills */}

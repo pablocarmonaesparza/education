@@ -182,17 +182,17 @@ export default function IntakePage() {
         {!loading ? (
           <>
             <div className="text-center mb-8 sm:mb-10">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-3 sm:mb-4 tracking-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-ink dark:text-white mb-3 sm:mb-4 tracking-tight">
                 qué quieres construir
               </h1>
-              <p className="text-base sm:text-lg text-[#777777] dark:text-gray-400 max-w-lg mx-auto">
+              <p className="text-base sm:text-lg text-ink-muted dark:text-gray-400 max-w-lg mx-auto">
                 Describe tu idea y crearemos tu curso personalizado.
               </p>
             </div>
 
             <div className="mb-6 sm:mb-8">
-              <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 border-2 border-gray-200 dark:border-gray-900 hover:border-gray-300 dark:hover:border-gray-700 focus-within:border-[#1472FF] transition-all duration-300">
-                  <label className="block text-sm font-bold text-[#4b4b4b] dark:text-white mb-2">
+              <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 border-2 border-gray-200 dark:border-gray-900 hover:border-gray-300 dark:hover:border-gray-700 focus-within:border-primary transition-all duration-300">
+                  <label className="block text-sm font-bold text-ink dark:text-white mb-2">
                     Cuéntanos sobre tu proyecto
                   </label>
 
@@ -259,22 +259,22 @@ export default function IntakePage() {
         ) : (
           <div className="text-center">
             <div className="relative w-24 h-24 mx-auto mb-8">
-              <div className="absolute inset-0 bg-[#1472FF] rounded-full animate-pulse"></div>
+              <div className="absolute inset-0 bg-primary rounded-full animate-pulse"></div>
               <div className="absolute inset-2 bg-white rounded-full flex items-center justify-center">
                 <span className="text-4xl animate-bounce">🤖</span>
               </div>
             </div>
 
-            <h2 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-3 tracking-tight">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-ink dark:text-white mb-3 tracking-tight">
               creando tu curso personalizado
             </h2>
-            <p className="text-[#777777] dark:text-gray-400 mb-10">
+            <p className="text-ink-muted dark:text-gray-400 mb-10">
               Nuestra IA está diseñando tu ruta de aprendizaje
             </p>
 
             <div className="mb-10">
               <ProgressBar value={progress} size="lg" color="primary" durationMs={500} />
-              <p className="text-sm font-bold text-[#1472FF] mt-3">{progress}%</p>
+              <p className="text-sm font-bold text-primary mt-3">{progress}%</p>
             </div>
 
             <div className="space-y-4 text-left max-w-sm mx-auto">

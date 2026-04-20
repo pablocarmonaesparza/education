@@ -17,19 +17,19 @@ export default function Footer() {
           <div className="flex gap-6">
             <Link
               href="/terms"
-              className="text-gray-600 dark:text-gray-400 hover:text-[#1472FF] dark:hover:text-[#1472FF] transition-colors"
+              className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
             >
               Términos
             </Link>
             <Link
               href="/privacy"
-              className="text-gray-600 dark:text-gray-400 hover:text-[#1472FF] dark:hover:text-[#1472FF] transition-colors"
+              className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
             >
               Privacidad
             </Link>
             <Link
               href="/about"
-              className="text-gray-600 dark:text-gray-400 hover:text-[#1472FF] dark:hover:text-[#1472FF] transition-colors"
+              className="text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
             >
               Nosotros
             </Link>

@@ -81,13 +81,13 @@ export default function SocialProofSection() {
               viewport={{ once: true }}
               className="text-center"
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#1472FF] text-white mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary text-white mb-4">
                 {stat.icon}
               </div>
-              <div className="text-3xl md:text-4xl font-bold text-[#4b4b4b] dark:text-white mb-2">
+              <div className="text-3xl md:text-4xl font-bold text-ink dark:text-white mb-2">
                 {stat.number}
               </div>
-              <div className="text-sm md:text-base text-[#777777] dark:text-gray-400">
+              <div className="text-sm md:text-base text-ink-muted dark:text-gray-400">
                 {stat.label}
               </div>
             </motion.div>
@@ -96,10 +96,10 @@ export default function SocialProofSection() {
 
         {/* Section Header */}
         <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#4b4b4b] dark:text-white mb-4 leading-tight">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-ink dark:text-white mb-4 leading-tight">
             Lo Que Dicen Nuestros Estudiantes
           </h2>
-          <p className="text-xl md:text-2xl text-[#777777] dark:text-gray-400 max-w-3xl mx-auto font-light">
+          <p className="text-xl md:text-2xl text-ink-muted dark:text-gray-400 max-w-3xl mx-auto font-light">
             Personas reales construyendo proyectos reales con IA
           </p>
         </div>
@@ -129,7 +129,7 @@ export default function SocialProofSection() {
                 </div>
 
                 {/* Quote */}
-                <p className="text-[#4b4b4b] dark:text-gray-300 mb-6 leading-relaxed">
+                <p className="text-ink dark:text-gray-300 mb-6 leading-relaxed">
                   &ldquo;{testimonial.quote}&rdquo;
                 </p>
 
@@ -141,10 +141,10 @@ export default function SocialProofSection() {
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div>
-                    <div className="font-semibold text-[#4b4b4b] dark:text-white">
+                    <div className="font-semibold text-ink dark:text-white">
                       {testimonial.name}
                     </div>
-                    <div className="text-sm text-[#777777] dark:text-gray-400">
+                    <div className="text-sm text-ink-muted dark:text-gray-400">
                       {testimonial.role}
                     </div>
                   </div>
@@ -162,7 +162,7 @@ export default function SocialProofSection() {
           viewport={{ once: true }}
           className="mt-20 text-center"
         >
-          <p className="text-[#777777] dark:text-gray-400 mb-8">Confiado por profesionales en:</p>
+          <p className="text-ink-muted dark:text-gray-400 mb-8">Confiado por profesionales en:</p>
           <div className="flex flex-wrap justify-center items-center gap-12 opacity-50">
             <div className="text-2xl font-bold text-gray-400 dark:text-gray-500">Google</div>
             <div className="text-2xl font-bold text-gray-400 dark:text-gray-500">Meta</div>

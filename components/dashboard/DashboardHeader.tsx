@@ -138,7 +138,7 @@ export default function DashboardHeader() {
                     setShowSettingsMenu(false);
                     // TODO: Navigate to settings page
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full text-left px-4 py-2 text-sm text-ink dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Configuración
                 </button>
@@ -147,7 +147,7 @@ export default function DashboardHeader() {
                     setShowSettingsMenu(false);
                     // TODO: Navigate to preferences page
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full text-left px-4 py-2 text-sm text-ink dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Preferencias
                 </button>
@@ -170,7 +170,7 @@ export default function DashboardHeader() {
                 className="w-8 h-8 rounded-full object-cover"
               />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-[#1472FF] flex items-center justify-center text-white text-sm font-semibold">
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-semibold">
                 {userInitials}
               </div>
             )}
@@ -185,15 +185,15 @@ export default function DashboardHeader() {
               />
               <CardFlat className="absolute right-0 top-full mt-2 w-56 shadow-lg py-2 z-20">
                 <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-900">
-                  <p className="text-sm font-bold text-[#4b4b4b] dark:text-gray-100">{userDisplayName}</p>
-                  <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{userProfile?.email}</p>
+                  <p className="text-sm font-bold text-ink dark:text-gray-100">{userDisplayName}</p>
+                  <p className="text-xs text-ink-muted dark:text-gray-400 truncate">{userProfile?.email}</p>
                 </div>
                 <button
                   onClick={() => {
                     setShowProfileMenu(false);
                     // TODO: Navigate to profile page
                   }}
-                  className="w-full text-left px-4 py-2 text-sm text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className="w-full text-left px-4 py-2 text-sm text-ink dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   Ver Perfil
                 </button>

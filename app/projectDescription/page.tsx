@@ -41,10 +41,10 @@ export default function ProjectDescriptionPage() {
         <div className="w-full max-w-2xl mx-auto">
           {/* Header */}
           <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight lowercase">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-ink dark:text-white mb-4 tracking-tight lowercase">
               cuéntanos sobre tu proyecto
             </h1>
-            <p className="text-base text-[#777777] dark:text-gray-400 max-w-lg mx-auto leading-relaxed">
+            <p className="text-base text-ink-muted dark:text-gray-400 max-w-lg mx-auto leading-relaxed">
               Describe qué quieres construir y crearemos un curso personalizado para ti.
             </p>
           </div>
@@ -59,7 +59,7 @@ export default function ProjectDescriptionPage() {
               }`}
             >
               <div className={`relative w-full bg-white dark:bg-gray-800 rounded-2xl border-2 transition-all duration-300 ${
-                error ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-gray-900 focus-within:border-[#1472FF]"
+                error ? "border-red-300 dark:border-red-500" : "border-gray-200 dark:border-gray-900 focus-within:border-primary"
               }`}>
                 <textarea
                   value={projectIdea}
@@ -98,7 +98,7 @@ export default function ProjectDescriptionPage() {
 
           {/* Suggestions */}
           <div className="mb-10">
-            <p className="text-sm text-[#777777] dark:text-gray-400 mb-3 text-center">¿Necesitas inspiración? Aquí algunas ideas:</p>
+            <p className="text-sm text-ink-muted dark:text-gray-400 mb-3 text-center">¿Necesitas inspiración? Aquí algunas ideas:</p>
             <div className="flex flex-wrap gap-2 justify-center">
               {[
                 { label: 'Chatbot de atención al cliente', description: 'Quiero crear un chatbot que responda preguntas frecuentes de mis clientes sobre horarios, precios y disponibilidad de productos automáticamente.' },
@@ -155,7 +155,7 @@ export default function ProjectDescriptionPage() {
             <button
               type="button"
               onClick={handleFullCourse}
-              className="text-sm text-[#777777] dark:text-gray-400 hover:text-[#1472FF] dark:hover:text-[#1472FF] underline decoration-dotted underline-offset-4 transition-colors"
+              className="text-sm text-ink-muted dark:text-gray-400 hover:text-primary dark:hover:text-primary underline decoration-dotted underline-offset-4 transition-colors"
             >
               o tomar el curso completo
             </button>

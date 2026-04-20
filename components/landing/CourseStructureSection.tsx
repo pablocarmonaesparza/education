@@ -48,10 +48,10 @@ export default function CourseStructureSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16 md:mb-20">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center text-[#4b4b4b] dark:text-white mb-4 leading-tight">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center text-ink dark:text-white mb-4 leading-tight">
             Un Currículum Práctico
           </h2>
-          <p className="text-xl md:text-2xl text-center text-[#777777] dark:text-gray-400 max-w-3xl mx-auto font-light">
+          <p className="text-xl md:text-2xl text-center text-ink-muted dark:text-gray-400 max-w-3xl mx-auto font-light">
             Aprende las habilidades clave para construir con inteligencia
             artificial.
           </p>
@@ -74,10 +74,10 @@ export default function CourseStructureSection() {
                 className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity"
               />
               <div className="relative z-10">
-                <h3 className="text-2xl md:text-3xl font-bold text-[#4b4b4b] dark:text-white mb-3">
+                <h3 className="text-2xl md:text-3xl font-bold text-ink dark:text-white mb-3">
                   {section.title}
                 </h3>
-                <p className="text-base md:text-lg text-[#777777] dark:text-gray-400 leading-relaxed">{section.description}</p>
+                <p className="text-base md:text-lg text-ink-muted dark:text-gray-400 leading-relaxed">{section.description}</p>
               </div>
             </Card>
           ))}

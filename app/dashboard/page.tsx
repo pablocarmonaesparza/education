@@ -958,29 +958,29 @@ function DashboardPageContent() {
 
   const routeCardContent = activeMode === 'full' ? (
     <>
-      <p className="text-center text-xs sm:text-sm text-[#777777] dark:text-gray-400 leading-relaxed">
+      <p className="text-center text-xs sm:text-sm text-ink-muted dark:text-gray-400 leading-relaxed">
         Actualmente estás en el curso completo.
       </p>
       <button
         type="button"
         onClick={() => setShowCreateCourseModal(true)}
-        className="pointer-events-auto block mx-auto text-center text-xs sm:text-sm font-bold text-[#1472FF] hover:text-[#0E5FCC] transition-colors mt-0.5"
+        className="pointer-events-auto block mx-auto text-center text-xs sm:text-sm font-bold text-primary hover:text-primary-dark transition-colors mt-0.5"
       >
         Crea tu curso personalizado
       </button>
       <div className="flex justify-center gap-1.5 mt-1.5 sm:mt-2">
-        <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
+        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
         <div className={`w-1.5 h-1.5 rounded-full ${hasPersonalized ? 'bg-gray-400 dark:bg-gray-500' : 'bg-gray-300 dark:bg-gray-700'}`} />
       </div>
     </>
   ) : (
     <>
-      <p className="text-center text-xs sm:text-sm text-[#777777] dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
+      <p className="text-center text-xs sm:text-sm text-ink-muted dark:text-gray-400 line-clamp-2 break-words hyphens-auto leading-relaxed">
         {projectSummary || project || 'Tu curso personalizado'}
       </p>
       <div className="flex justify-center gap-1.5 mt-1.5 sm:mt-2">
         <div className={`w-1.5 h-1.5 rounded-full ${hasFull ? 'bg-gray-400 dark:bg-gray-500' : 'bg-gray-300 dark:bg-gray-700'}`} />
-        <div className="w-1.5 h-1.5 rounded-full bg-[#1472FF]" />
+        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
       </div>
     </>
   );
@@ -997,7 +997,7 @@ function DashboardPageContent() {
         >
           <div className="max-w-2xl mx-auto px-4 text-center">
             {userName && (
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-ink dark:text-white tracking-tight">
                 {greeting.toLowerCase()}, {userName}
               </h1>
             )}
@@ -1149,7 +1149,7 @@ function DashboardPageContent() {
                   borderRadius: progressPercentage >= 100 ? '0.75rem' : '0.75rem 0 0 0.75rem'
                 }}
               />
-              <span className="relative z-10 text-sm font-bold uppercase tracking-wide text-[#4b4b4b] dark:text-white">
+              <span className="relative z-10 text-sm font-bold uppercase tracking-wide text-ink dark:text-white">
                 {progressPercentage}% ({completedCount} de {totalCount})
               </span>
             </div>
@@ -1281,16 +1281,16 @@ function DashboardPageContent() {
             {/* Reto Header */}
             <div className="mb-6">
               <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-full bg-[#1472FF]/10 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <span className="text-sm text-[#1472FF] font-bold uppercase tracking-wide">
+                <span className="text-sm text-primary font-bold uppercase tracking-wide">
                   reto · {selectedExercise?.type}
                 </span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white">
+              <h1 className="text-2xl md:text-3xl font-extrabold text-ink dark:text-white">
                 {selectedExercise?.title}
               </h1>
               <div className="flex items-center gap-3 mt-2">
@@ -1300,7 +1300,7 @@ function DashboardPageContent() {
                       <div
                         key={i}
                         className={`w-2 h-2 rounded-full ${
-                          i <= (selectedExercise?.difficulty || 0) ? 'bg-[#1472FF]' : 'bg-gray-200 dark:bg-gray-700'
+                          i <= (selectedExercise?.difficulty || 0) ? 'bg-primary' : 'bg-gray-200 dark:bg-gray-700'
                         }`}
                       />
                     ))}
@@ -1315,13 +1315,13 @@ function DashboardPageContent() {
             {/* Description Card */}
             <Card variant="neutral" padding="lg" className="mb-4">
               <Headline className="mb-2">descripción</Headline>
-              <Body className="text-[#777777] dark:text-gray-400">{selectedExercise?.description}</Body>
+              <Body className="text-ink-muted dark:text-gray-400">{selectedExercise?.description}</Body>
             </Card>
 
             {/* Deliverable Card */}
             <Card variant="neutral" padding="lg" className="mb-4">
               <Headline className="mb-2">entregable</Headline>
-              <Body className="text-[#777777] dark:text-gray-400">{selectedExercise?.deliverable}</Body>
+              <Body className="text-ink-muted dark:text-gray-400">{selectedExercise?.deliverable}</Body>
             </Card>
 
             {/* Required Videos Status */}
@@ -1335,7 +1335,7 @@ function DashboardPageContent() {
                     return (
                       <div key={videoNum} className="flex items-center gap-2">
                         <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          isWatched ? 'bg-[#22c55e]' : 'bg-gray-200 dark:bg-gray-700'
+                          isWatched ? 'bg-completado' : 'bg-gray-200 dark:bg-gray-700'
                         }`}>
                           {isWatched ? (
                             <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1345,7 +1345,7 @@ function DashboardPageContent() {
                             <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500" />
                           )}
                         </div>
-                        <Caption className={isWatched ? 'line-through text-[#777777]' : ''}>
+                        <Caption className={isWatched ? 'line-through text-ink-muted' : ''}>
                           {video?.title || `Video ${videoNum}`}
                         </Caption>
                       </div>
@@ -1424,13 +1424,13 @@ function DashboardPageContent() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </IconButton>
-              <h2 className="text-xl font-extrabold uppercase tracking-tight leading-tight text-[#4b4b4b] dark:text-white pr-10">
+              <h2 className="text-xl font-extrabold uppercase tracking-tight leading-tight text-ink dark:text-white pr-10">
                 Curso personalizado para tu proyecto
               </h2>
             </div>
 
             <div className="p-4 sm:p-6">
-              <p className="text-[#4b4b4b] dark:text-gray-300 text-base leading-relaxed mb-5">
+              <p className="text-ink dark:text-gray-300 text-base leading-relaxed mb-5">
                 Cuéntanos tu idea y te generamos un curso único: módulos, vídeos y ejercicios pensados para ti. Ideal para automatizar con IA, chatbots o lo que tengas en mente.
               </p>
 
@@ -1440,9 +1440,9 @@ function DashboardPageContent() {
                   'Ruta de aprendizaje solo para ti',
                   'Acceso inmediato y para siempre',
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm text-[#4b4b4b] dark:text-gray-300">
+                  <li key={i} className="flex items-center gap-3 text-sm text-ink dark:text-gray-300">
                     <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                      <svg className="w-3 h-3 text-[#4b4b4b] dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-3 h-3 text-ink dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                       </svg>
                     </span>
@@ -1466,7 +1466,7 @@ function DashboardPageContent() {
                 <button
                   type="button"
                   onClick={() => setShowCreateCourseModal(false)}
-                  className="text-sm text-[#777777] dark:text-gray-400 hover:text-[#4b4b4b] dark:hover:text-gray-300 transition-colors"
+                  className="text-sm text-ink-muted dark:text-gray-400 hover:text-ink dark:hover:text-gray-300 transition-colors"
                 >
                   Ahora no, gracias
                 </button>

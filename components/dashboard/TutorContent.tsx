@@ -422,7 +422,7 @@ ${completedVideosText}
       <div className="w-72 border-r-2 border-gray-200 dark:border-gray-900 flex flex-col">
         <div className="p-4 border-b-2 border-gray-200 dark:border-gray-900">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="text-lg font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">tutor ia</h2>
+            <h2 className="text-lg font-extrabold text-ink dark:text-white tracking-tight">tutor ia</h2>
             <IconButton
               variant="primary"
               onClick={createNewConversation}
@@ -434,7 +434,7 @@ ${completedVideosText}
             </IconButton>
           </div>
           {userContext && (
-            <p className="text-xs text-[#777777] dark:text-gray-400">
+            <p className="text-xs text-ink-muted dark:text-gray-400">
               {userContext.completedVideos}/{userContext.totalVideos} videos • {userContext.completedExercises}/{userContext.totalExercises} retos
             </p>
           )}
@@ -448,7 +448,7 @@ ${completedVideosText}
                   key={conv.id}
                   className={`group relative ${
                     selectedConversationId === conv.id 
-                      ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20' 
+                      ? 'bg-primary/10 dark:bg-primary/20' 
                       : 'hover:bg-gray-50 dark:hover:bg-gray-900'
                   }`}
                 >
@@ -456,10 +456,10 @@ ${completedVideosText}
                     onClick={() => setSelectedConversationId(conv.id)}
                     className="w-full text-left p-3 pr-10"
                   >
-                    <p className="text-sm font-medium text-[#4b4b4b] dark:text-white truncate">
+                    <p className="text-sm font-medium text-ink dark:text-white truncate">
                       {conv.title}
                     </p>
-                    <p className="text-xs text-[#777777] dark:text-gray-400 mt-1">
+                    <p className="text-xs text-ink-muted dark:text-gray-400 mt-1">
                       {new Date(conv.updated_at).toLocaleDateString('es-MX', {
                         day: 'numeric',
                         month: 'short',
@@ -478,7 +478,7 @@ ${completedVideosText}
               ))}
             </div>
           ) : (
-            <div className="p-4 text-center text-[#777777] dark:text-gray-400 text-sm">
+            <div className="p-4 text-center text-ink-muted dark:text-gray-400 text-sm">
               No hay conversaciones
             </div>
           )}
@@ -490,14 +490,14 @@ ${completedVideosText}
         <div className="p-4 border-b border-gray-200 dark:border-gray-900">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-full bg-[#1472FF] flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
               </div>
               <div className="min-w-0">
-                <h3 className="font-semibold text-[#4b4b4b] dark:text-white">Tutor IA</h3>
-                <p className="text-xs text-[#777777] dark:text-gray-400 truncate">
+                <h3 className="font-semibold text-ink dark:text-white">Tutor IA</h3>
+                <p className="text-xs text-ink-muted dark:text-gray-400 truncate">
                   {userContext?.currentVideo 
                     ? `Clase actual: ${userContext.currentVideo.title}`
                     : 'Tu asistente de aprendizaje'}
@@ -508,7 +508,7 @@ ${completedVideosText}
               <button
                 type="button"
                 onClick={() => setModelDropdownOpen((o) => !o)}
-                className="flex items-center gap-2 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white text-sm font-medium pl-2 pr-3 py-2 focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF] outline-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors min-w-[180px]"
+                className="flex items-center gap-2 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-ink dark:text-white text-sm font-medium pl-2 pr-3 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors min-w-[180px]"
                 aria-label="Modelo de IA"
                 aria-expanded={modelDropdownOpen}
                 aria-haspopup="listbox"
@@ -521,10 +521,10 @@ ${completedVideosText}
                   className="rounded object-contain flex-shrink-0 w-5 h-5"
                 />
                 <span className="flex-1 text-left truncate">{selectedModelData.label}</span>
-                <span className="text-[#777777] dark:text-gray-400 font-normal tabular-nums">
+                <span className="text-ink-muted dark:text-gray-400 font-normal tabular-nums">
                   {priceString(selectedModelData.price)}
                 </span>
-                <svg className={`w-4 h-4 flex-shrink-0 text-[#777777] dark:text-gray-400 transition-transform ${modelDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className={`w-4 h-4 flex-shrink-0 text-ink-muted dark:text-gray-400 transition-transform ${modelDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
@@ -544,8 +544,8 @@ ${completedVideosText}
                         }}
                         className={`w-full flex items-center gap-2 px-3 py-2.5 text-left text-sm transition-colors ${
                           selectedModel === m.id
-                            ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20 text-[#1472FF] dark:text-[#1472FF]'
-                            : 'text-[#4b4b4b] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
+                            ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary'
+                            : 'text-ink dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
                         }`}
                       >
                         <Image
@@ -556,7 +556,7 @@ ${completedVideosText}
                           className="rounded object-contain flex-shrink-0 w-5 h-5"
                         />
                         <span className="flex-1 truncate font-medium">{m.label}</span>
-                        <span className="text-[#777777] dark:text-gray-400 font-normal tabular-nums">
+                        <span className="text-ink-muted dark:text-gray-400 font-normal tabular-nums">
                           {priceString(m.price)}
                         </span>
                       </button>
@@ -572,13 +572,13 @@ ${completedVideosText}
           <div className="max-w-3xl mx-auto space-y-4">
             {messages.length === 0 && (
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#1472FF] flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 </div>
                 <div className="flex-1 bg-white dark:bg-gray-800 rounded-2xl p-4 border border-gray-100 dark:border-gray-900">
-                  <p className="text-[#4b4b4b] dark:text-white">
+                  <p className="text-ink dark:text-white">
                     Hola{userContext?.userName ? ` ${userContext.userName.split(' ')[0]}` : ''}, ¿en qué te puedo ayudar?
                   </p>
                 </div>
@@ -593,7 +593,7 @@ ${completedVideosText}
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                   msg.role === 'user' 
                     ? 'bg-gray-200 dark:bg-gray-700' 
-                    : 'bg-[#1472FF]'
+                    : 'bg-primary'
                 }`}>
                   {msg.role === 'user' ? (
                     <svg className="w-4 h-4 text-gray-600 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -607,8 +607,8 @@ ${completedVideosText}
                 </div>
                 <div className={`flex-1 rounded-2xl p-4 ${
                   msg.role === 'user'
-                    ? 'bg-[#1472FF] text-white ml-12'
-                    : 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-900 text-[#4b4b4b] dark:text-white mr-12'
+                    ? 'bg-primary text-white ml-12'
+                    : 'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-900 text-ink dark:text-white mr-12'
                 }`}>
                   <p className="whitespace-pre-wrap">{msg.content}</p>
                 </div>
@@ -617,7 +617,7 @@ ${completedVideosText}
 
             {isSending && (
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#1472FF] flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                   <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
@@ -644,7 +644,7 @@ ${completedVideosText}
               onChange={(e) => setInputMessage(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Escribe tu pregunta..."
-              className="flex-1 resize-none border-2 border-gray-200 dark:border-gray-900 rounded-2xl px-4 py-4 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#1472FF] focus:border-transparent"
+              className="flex-1 resize-none border-2 border-gray-200 dark:border-gray-900 rounded-2xl px-4 py-4 bg-white dark:bg-gray-800 text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               rows={1}
               disabled={isSending}
             />

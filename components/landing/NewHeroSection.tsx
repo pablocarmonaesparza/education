@@ -100,7 +100,7 @@ export default function NewHeroSection() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center mb-8 max-w-2xl mx-auto max-md:mb-6"
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white leading-tight tracking-tight max-md:text-3xl">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-ink dark:text-white leading-tight tracking-tight max-md:text-3xl">
             un curso a partir de tu idea
           </h1>
         </motion.div>
@@ -189,7 +189,7 @@ export default function NewHeroSection() {
                       }}
                       className={`px-3 py-2 rounded-xl text-xs font-medium ${depth.border} ${depth.bottom} transition-all duration-150 flex items-center gap-1.5 max-md:py-2.5 max-md:min-h-[44px] max-md:touch-manipulation ${
                         selectedOption === option.id
-                          ? "bg-[#1472FF] text-white border-[#1472FF] border-b-[#0E5FCC]"
+                          ? "bg-primary text-white border-primary border-b-primary-dark"
                           : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 border-b-gray-300 dark:border-b-gray-600 hover:bg-gray-200 dark:hover:bg-gray-700"
                       } ${depth.active}`}
                     >

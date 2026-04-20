@@ -132,7 +132,7 @@ export default function DashboardNavbar() {
                     data-active={isActive}
                     className={`relative z-10 px-4 py-2 rounded-xl text-sm font-bold uppercase tracking-wide transition-colors duration-300 ${
                       isActive
-                        ? 'text-[#4b4b4b] dark:text-white'
+                        ? 'text-ink dark:text-white'
                         : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                     }`}
                   >
@@ -162,7 +162,7 @@ export default function DashboardNavbar() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full bg-[#1472FF] flex items-center justify-center text-white text-xs font-semibold">
+                  <div className="w-full h-full bg-primary flex items-center justify-center text-white text-xs font-semibold">
                     {userInitials}
                   </div>
                 )}
@@ -177,13 +177,13 @@ export default function DashboardNavbar() {
                   />
                   <CardFlat className="absolute right-0 top-full mt-2 w-48 py-2 z-20 shadow-lg">
                     <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-900">
-                      <p className="text-sm font-bold text-[#4b4b4b] dark:text-white truncate">{userName || 'Usuario'}</p>
-                      <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{user?.profile?.email}</p>
+                      <p className="text-sm font-bold text-ink dark:text-white truncate">{userName || 'Usuario'}</p>
+                      <p className="text-xs text-ink-muted dark:text-gray-400 truncate">{user?.profile?.email}</p>
                     </div>
                     <Link
                       href="/dashboard/perfil"
                       onClick={() => setShowProfileMenu(false)}
-                      className="w-full text-left px-4 py-2.5 text-sm font-medium text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
+                      className="w-full text-left px-4 py-2.5 text-sm font-medium text-ink dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -222,7 +222,7 @@ export default function DashboardNavbar() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full bg-[#1472FF] flex items-center justify-center text-white text-xs font-semibold">
+                  <div className="w-full h-full bg-primary flex items-center justify-center text-white text-xs font-semibold">
                     {userInitials}
                   </div>
                 )}
@@ -254,13 +254,13 @@ export default function DashboardNavbar() {
         {showProfileMenu && (
           <CardFlat className="md:hidden absolute right-4 top-20 w-48 py-2 z-50 shadow-lg">
             <div className="px-4 py-3 border-b-2 border-gray-200 dark:border-gray-900">
-              <p className="text-sm font-bold text-[#4b4b4b] dark:text-white truncate">{userName || 'Usuario'}</p>
-              <p className="text-xs text-[#777777] dark:text-gray-400 truncate">{user?.profile?.email}</p>
+              <p className="text-sm font-bold text-ink dark:text-white truncate">{userName || 'Usuario'}</p>
+              <p className="text-xs text-ink-muted dark:text-gray-400 truncate">{user?.profile?.email}</p>
             </div>
             <Link
               href="/dashboard/perfil"
               onClick={() => setShowProfileMenu(false)}
-              className="w-full text-left px-4 py-2.5 text-sm font-medium text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
+              className="w-full text-left px-4 py-2.5 text-sm font-medium text-ink dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -304,8 +304,8 @@ export default function DashboardNavbar() {
                   onClick={() => setShowMobileMenu(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-150 ${
                     isActive
-                      ? `bg-[#1472FF] text-white ${depth.bottom} border-[#0E5FCC]`
-                      : 'text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900'
+                      ? `bg-primary text-white ${depth.bottom} border-primary-dark`
+                      : 'text-ink dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900'
                   }`}
                 >
                   {link.icon}

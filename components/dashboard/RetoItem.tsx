@@ -24,14 +24,14 @@ export default function RetoItem({
   const isLocked = !isUnlocked && !isCompleted;
 
   const getCardBg = () => {
-    if (isCompleted) return 'bg-[#22c55e]';
+    if (isCompleted) return 'bg-completado';
     if (isLocked) return 'bg-gray-100 dark:bg-gray-700';
     return 'bg-white dark:bg-gray-800';
   };
 
   const getBorderClasses = () => {
     if (isCompleted) {
-      return `${depthStructure} border-[#16a34a] ${depthActiveGroup}`;
+      return `${depthStructure} border-completado-dark ${depthActiveGroup}`;
     }
     if (isLocked) {
       return `${depthStructure} border-gray-200 dark:border-gray-600 border-b-gray-300 dark:border-b-gray-600`;
@@ -41,32 +41,32 @@ export default function RetoItem({
 
   const getTextColor = () => {
     if (isCompleted) return 'text-white';
-    if (isLocked) return 'text-[#777777] dark:text-gray-400';
-    return 'text-[#4b4b4b] dark:text-white';
+    if (isLocked) return 'text-ink-muted dark:text-gray-400';
+    return 'text-ink dark:text-white';
   };
 
   const getSecondaryTextColor = () => {
     if (isCompleted) return 'text-white/80';
-    if (isLocked) return 'text-[#777777]/60 dark:text-gray-500';
-    return 'text-[#777777] dark:text-gray-400';
+    if (isLocked) return 'text-ink-muted/60 dark:text-gray-500';
+    return 'text-ink-muted dark:text-gray-400';
   };
 
   const getIconBg = () => {
     if (isCompleted) return 'bg-white/20';
     if (isLocked) return 'bg-gray-200 dark:bg-gray-600';
-    return 'bg-[#1472FF]/10';
+    return 'bg-primary/10';
   };
 
   const getIconColor = () => {
     if (isCompleted) return 'text-white';
-    if (isLocked) return 'text-[#777777] dark:text-gray-400';
-    return 'text-[#1472FF]';
+    if (isLocked) return 'text-ink-muted dark:text-gray-400';
+    return 'text-primary';
   };
 
   const getTypeBg = () => {
     if (isCompleted) return 'bg-white/20 border-white/30 text-white';
-    if (isLocked) return 'bg-gray-200 dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-[#777777] dark:text-gray-400';
-    return 'bg-[#1472FF]/10 border-[#1472FF]/20 text-[#1472FF]';
+    if (isLocked) return 'bg-gray-200 dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-ink-muted dark:text-gray-400';
+    return 'bg-primary/10 border-primary/20 text-primary';
   };
 
   return (
@@ -119,7 +119,7 @@ export default function RetoItem({
                   key={i}
                   className={`w-1.5 h-1.5 rounded-full ${
                     i <= difficulty
-                      ? isCompleted ? 'bg-white/80' : isLocked ? 'bg-gray-300 dark:bg-gray-500' : 'bg-[#1472FF]'
+                      ? isCompleted ? 'bg-white/80' : isLocked ? 'bg-gray-300 dark:bg-gray-500' : 'bg-primary'
                       : isCompleted ? 'bg-white/30' : 'bg-gray-200 dark:bg-gray-600'
                   }`}
                 />

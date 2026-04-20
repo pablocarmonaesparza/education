@@ -23,8 +23,8 @@ export default function SuccessPage() {
             />
           </svg>
         </div>
-        <h1 className="text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">pago exitoso</h1>
-        <p className="text-lg text-[#777777] dark:text-gray-400 mb-8">
+        <h1 className="text-4xl font-extrabold text-ink dark:text-white mb-4 tracking-tight">pago exitoso</h1>
+        <p className="text-lg text-ink-muted dark:text-gray-400 mb-8">
           Tu compra se ha completado con éxito. ¡Gracias!
         </p>
         <Button variant="primary" size="lg" rounded2xl href="/dashboard">

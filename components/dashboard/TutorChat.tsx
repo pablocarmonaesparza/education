@@ -18,18 +18,18 @@ export default function TutorChat() {
         <div className="h-full flex flex-col">
           {/* Chat header */}
           <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-900 flex items-center justify-between">
-            <h3 className="font-semibold text-[#4b4b4b] dark:text-white">Tutor IA</h3>
-            <span className="text-xs text-[#777777] dark:text-gray-400">Pregúntame sobre tu curso</span>
+            <h3 className="font-semibold text-ink dark:text-white">Tutor IA</h3>
+            <span className="text-xs text-ink-muted dark:text-gray-400">Pregúntame sobre tu curso</span>
           </div>
 
           {/* Chat messages */}
           <div className="flex-1 overflow-y-auto p-4">
             <div className="flex gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#1472FF] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
                 IA
               </div>
               <div className="bg-gray-100 dark:bg-gray-800 rounded-2xl rounded-tl-none px-4 py-2 max-w-[80%]">
-                <p className="text-sm text-[#4b4b4b] dark:text-gray-300">
+                <p className="text-sm text-ink dark:text-gray-300">
                   ¡Hola! Soy tu tutor IA. ¿En qué puedo ayudarte con tu curso?
                 </p>
               </div>
@@ -42,7 +42,7 @@ export default function TutorChat() {
               <input
                 type="text"
                 placeholder="Escribe tu pregunta..."
-                className="flex-1 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-white focus:outline-none focus:border-[#1472FF] text-sm"
+                className="flex-1 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-900 bg-white dark:bg-gray-800 text-ink dark:text-white focus:outline-none focus:border-primary text-sm"
               />
               <IconButton variant="primary">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

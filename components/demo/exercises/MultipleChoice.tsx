@@ -56,13 +56,13 @@ export default function MultipleChoice({
           // State-based color classes
           const stateClass = submitted
             ? isCorrectOption
-              ? 'border-[#22c55e] bg-green-50 dark:bg-green-900/20'
+              ? 'border-completado bg-green-50 dark:bg-green-900/20'
               : isSelected
                 ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
                 : 'border-gray-200 dark:border-gray-700'
             : isSelected
-              ? 'border-[#1472FF] bg-[#1472FF]/10'
-              : 'border-gray-200 dark:border-gray-700 hover:border-[#1472FF]/50';
+              ? 'border-primary bg-primary/10'
+              : 'border-gray-200 dark:border-gray-700 hover:border-primary/50';
 
           return (
             <button
@@ -79,12 +79,12 @@ export default function MultipleChoice({
                 <span
                   className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
                     submitted && isCorrectOption
-                      ? 'bg-[#22c55e] text-white'
+                      ? 'bg-completado text-white'
                       : submitted && isSelected && !isCorrectOption
                         ? 'bg-red-500 text-white'
                         : isSelected
-                          ? 'bg-[#1472FF] text-white'
-                          : 'bg-gray-100 dark:bg-gray-700 text-[#4b4b4b] dark:text-gray-300'
+                          ? 'bg-primary text-white'
+                          : 'bg-gray-100 dark:bg-gray-700 text-ink dark:text-gray-300'
                   }`}
                 >
                   {optionLetters[index]}

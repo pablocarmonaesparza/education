@@ -111,13 +111,13 @@ export default function MatchingPairs({
                 disabled={submitted || isMatched}
                 className={`w-full text-left rounded-2xl p-3 ${depthBase} transition-all duration-150 ${
                   isMatched
-                    ? 'border-[#22c55e] bg-green-50 dark:bg-green-900/20 cursor-default'
+                    ? 'border-completado bg-green-50 dark:bg-green-900/20 cursor-default'
                     : isSelected
-                      ? 'border-[#1472FF] bg-[#1472FF]/10 scale-[1.02]'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-[#1472FF]/50 cursor-pointer'
+                      ? 'border-primary bg-primary/10 scale-[1.02]'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-primary/50 cursor-pointer'
                 }`}
               >
-                <Body className={`text-sm font-bold ${isMatched ? '!text-[#22c55e]' : ''}`}>
+                <Body className={`text-sm font-bold ${isMatched ? '!text-completado' : ''}`}>
                   {pair.left}
                 </Body>
               </button>
@@ -146,15 +146,15 @@ export default function MatchingPairs({
                 transition={{ duration: 0.4 }}
                 className={`w-full text-left rounded-2xl p-3 ${depthBase} transition-colors duration-150 ${
                   isMatched
-                    ? 'border-[#22c55e] bg-green-50 dark:bg-green-900/20 cursor-default'
+                    ? 'border-completado bg-green-50 dark:bg-green-900/20 cursor-default'
                     : isWrongFlashing
                       ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
                       : selectedLeft && !isMatched
-                        ? 'border-gray-200 dark:border-gray-700 hover:border-[#1472FF]/50 cursor-pointer'
+                        ? 'border-gray-200 dark:border-gray-700 hover:border-primary/50 cursor-pointer'
                         : 'border-gray-200 dark:border-gray-700 cursor-default opacity-70'
                 }`}
               >
-                <Caption className={`${isMatched ? '!text-[#22c55e]' : ''}`}>
+                <Caption className={`${isMatched ? '!text-completado' : ''}`}>
                   {pair.right}
                 </Caption>
               </motion.button>

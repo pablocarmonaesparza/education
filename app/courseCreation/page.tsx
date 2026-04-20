@@ -186,8 +186,8 @@ export default function CourseCreationPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </div>
-                <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 lowercase">algo salió mal</h2>
-                <p className="text-[#777777] dark:text-gray-400 mb-6">{error}</p>
+                <h2 className="text-xl font-extrabold text-ink dark:text-white mb-2 lowercase">algo salió mal</h2>
+                <p className="text-ink-muted dark:text-gray-400 mb-6">{error}</p>
                 <Button
                   variant="primary"
                   size="lg"
@@ -203,7 +203,7 @@ export default function CourseCreationPage() {
               {/* Animated Icon with depth */}
               <div className="relative w-24 h-24 mx-auto mb-8">
                 <div
-                  className="absolute inset-0 bg-[#1472FF] rounded-2xl animate-pulse"
+                  className="absolute inset-0 bg-primary rounded-2xl animate-pulse"
                   style={{ boxShadow: '0 4px 0 0 #0E5FCC' }}
                 />
                 <div className="absolute inset-2 bg-white dark:bg-gray-800 rounded-xl flex items-center justify-center">
@@ -212,17 +212,17 @@ export default function CourseCreationPage() {
               </div>
 
               {/* Title */}
-              <h1 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-3 tracking-tight lowercase">
+              <h1 className="text-2xl md:text-3xl font-extrabold text-ink dark:text-white mb-3 tracking-tight lowercase">
                 creando tu curso personalizado
               </h1>
-              <p className="text-[#777777] dark:text-gray-400 mb-10">
+              <p className="text-ink-muted dark:text-gray-400 mb-10">
                 Nuestra IA está diseñando tu ruta de aprendizaje
               </p>
 
               {/* Progress Bar with depth effect */}
               <div className="mb-10">
                 <ProgressBar value={progress} size="lg" color="primary" durationMs={500} />
-                <p className="text-sm font-bold text-[#1472FF] mt-3">{progress}%</p>
+                <p className="text-sm font-bold text-primary mt-3">{progress}%</p>
               </div>
 
               {/* Loading Steps with depth effect */}
@@ -247,12 +247,12 @@ export default function CourseCreationPage() {
                     }`}>
                       {progress >= step.threshold ? '✓' : ''}
                     </div>
-                    <span className="text-sm text-[#4b4b4b] dark:text-gray-300 font-medium">{step.label}</span>
+                    <span className="text-sm text-ink dark:text-gray-300 font-medium">{step.label}</span>
                   </div>
                 ))}
               </div>
 
-              <p className="text-xs text-[#777777] dark:text-gray-500 mt-10">
+              <p className="text-xs text-ink-muted dark:text-gray-500 mt-10">
                 Esto puede tomar 2-3 minutos. No cierres esta página.
               </p>
             </>

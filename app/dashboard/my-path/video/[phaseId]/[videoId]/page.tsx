@@ -189,8 +189,8 @@ export default function VideoPage() {
     return (
       <div className="min-h-full bg-transparent flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-bold text-[#4b4b4b] dark:text-white mb-2">Video no encontrado</h2>
-          <Link href="/dashboard" className="text-[#1472FF] hover:underline">
+          <h2 className="text-xl font-bold text-ink dark:text-white mb-2">Video no encontrado</h2>
+          <Link href="/dashboard" className="text-primary hover:underline">
             Volver al inicio
           </Link>
         </div>
@@ -205,7 +205,7 @@ export default function VideoPage() {
         {/* Back Button */}
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-2 text-[#777777] dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-6 transition-colors"
+          className="inline-flex items-center gap-2 text-ink-muted dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-6 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -215,12 +215,12 @@ export default function VideoPage() {
 
         {/* Video Header */}
         <div className="mb-6">
-          <p className="text-sm text-[#1472FF] font-medium mb-1">{phase}</p>
-          <h1 className="text-2xl md:text-3xl font-bold text-[#4b4b4b] dark:text-white">
+          <p className="text-sm text-primary font-medium mb-1">{phase}</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-ink dark:text-white">
             {video.title}
           </h1>
           {video.duration && (
-            <p className="text-[#777777] dark:text-gray-400 mt-2">Duración: {video.duration}</p>
+            <p className="text-ink-muted dark:text-gray-400 mt-2">Duración: {video.duration}</p>
           )}
         </div>
 
@@ -250,7 +250,7 @@ export default function VideoPage() {
         {/* Description */}
         {video.description && (
           <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 p-6 mb-6">
-            <h3 className="font-semibold text-[#4b4b4b] dark:text-white mb-2">Descripción</h3>
+            <h3 className="font-semibold text-ink dark:text-white mb-2">Descripción</h3>
             <p className="text-gray-600 dark:text-gray-400">{video.description}</p>
           </div>
         )}
@@ -270,7 +270,7 @@ export default function VideoPage() {
               </svg>
             </IconButton>
 
-            <span className="text-sm text-[#777777] dark:text-gray-400">
+            <span className="text-sm text-ink-muted dark:text-gray-400">
               {currentIndex + 1} de {allVideos.length}
             </span>
 

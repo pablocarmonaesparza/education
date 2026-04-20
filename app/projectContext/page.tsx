@@ -256,7 +256,7 @@ export default function ProjectContextPage() {
               exit={{ opacity: 0, y: 10 }}
               className="text-center mb-4"
             >
-              <h2 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase">
+              <h2 className="text-2xl md:text-3xl font-extrabold text-ink dark:text-white tracking-tight lowercase">
                 {currentSection.name.toLowerCase()}
               </h2>
             </motion.div>
@@ -264,11 +264,11 @@ export default function ProjectContextPage() {
 
           {/* Progress counter */}
           <div className="flex items-center justify-center gap-2 mb-8">
-            <span className="text-sm text-[#777777] dark:text-gray-500">
+            <span className="text-sm text-ink-muted dark:text-gray-500">
               {currentIndex + 1} de {allQuestions.length} para personalizar tu curso
             </span>
             <span className="text-sm text-gray-300 dark:text-gray-600">•</span>
-            <span className="text-sm text-[#777777] dark:text-gray-500">
+            <span className="text-sm text-ink-muted dark:text-gray-500">
               ~{Math.ceil((allQuestions.length - currentIndex) * 0.2)} min
             </span>
           </div>
@@ -283,7 +283,7 @@ export default function ProjectContextPage() {
               transition={{ duration: 0.3, ease: 'easeOut' }}
               className="mb-12"
             >
-              <h2 className="text-xl md:text-2xl font-bold text-[#4b4b4b] dark:text-white text-center mb-10 leading-relaxed">
+              <h2 className="text-xl md:text-2xl font-bold text-ink dark:text-white text-center mb-10 leading-relaxed">
                 {currentQuestion.question}
               </h2>
               
@@ -291,10 +291,10 @@ export default function ProjectContextPage() {
               <div className="max-w-md mx-auto px-4">
                 {/* Labels - extremes only */}
                 <div className="flex justify-between mb-4">
-                  <span className="text-xs text-[#777777] dark:text-gray-500 max-w-[120px] text-left leading-tight">
+                  <span className="text-xs text-ink-muted dark:text-gray-500 max-w-[120px] text-left leading-tight">
                     {currentQuestion.labels[0]}
                   </span>
-                  <span className="text-xs text-[#777777] dark:text-gray-500 max-w-[120px] text-right leading-tight">
+                  <span className="text-xs text-ink-muted dark:text-gray-500 max-w-[120px] text-right leading-tight">
                     {currentQuestion.labels[4]}
                   </span>
                 </div>
@@ -309,7 +309,7 @@ export default function ProjectContextPage() {
 
                   {/* Filled Track */}
                   <div
-                    className="absolute h-3 bg-[#1472FF] rounded-full transition-all duration-150"
+                    className="absolute h-3 bg-primary rounded-full transition-all duration-150"
                     style={{
                       width: `${((currentValue - 1) / 4) * 100}%`,
                       boxShadow: '0 2px 0 0 #0E5FCC'
@@ -324,10 +324,10 @@ export default function ProjectContextPage() {
                         onClick={() => handleSliderChange(step)}
                         className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold transition-all duration-200 ${
                           currentValue === step
-                            ? 'bg-[#1472FF] text-white scale-110 shadow-[0_3px_0_0_#0E5FCC]'
+                            ? 'bg-primary text-white scale-110 shadow-[0_3px_0_0_#0E5FCC]'
                             : currentValue > step
-                              ? 'bg-[#1472FF] text-white shadow-[0_3px_0_0_#0E5FCC]'
-                              : 'bg-gray-200 dark:bg-gray-700 text-[#777777] dark:text-gray-400 shadow-[0_3px_0_0_#d1d5db] dark:shadow-[0_3px_0_0_#374151] hover:bg-gray-300 dark:hover:bg-gray-600'
+                              ? 'bg-primary text-white shadow-[0_3px_0_0_#0E5FCC]'
+                              : 'bg-gray-200 dark:bg-gray-700 text-ink-muted dark:text-gray-400 shadow-[0_3px_0_0_#d1d5db] dark:shadow-[0_3px_0_0_#374151] hover:bg-gray-300 dark:hover:bg-gray-600'
                         }`}
                       >
                         {step}
@@ -355,8 +355,8 @@ export default function ProjectContextPage() {
                 <div className="text-center mt-8">
                   <span className={`inline-block px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${
                     isDragging
-                      ? 'bg-[#1472FF] text-white shadow-[0_3px_0_0_#0E5FCC]'
-                      : 'bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 shadow-[0_3px_0_0_#d1d5db] dark:shadow-[0_3px_0_0_#111827]'
+                      ? 'bg-primary text-white shadow-[0_3px_0_0_#0E5FCC]'
+                      : 'bg-gray-100 dark:bg-gray-800 text-ink dark:text-gray-300 shadow-[0_3px_0_0_#d1d5db] dark:shadow-[0_3px_0_0_#111827]'
                   }`}>
                     {currentLabel}
                   </span>
@@ -417,9 +417,9 @@ export default function ProjectContextPage() {
                           onClick={() => setCurrentIndex(globalIdx)}
                           className={`h-3 rounded-full transition-all duration-300 ${
                             isCurrentQuestion
-                              ? 'w-8 bg-[#1472FF] shadow-[0_2px_0_0_#0E5FCC]'
+                              ? 'w-8 bg-primary shadow-[0_2px_0_0_#0E5FCC]'
                               : isAnswered
-                                ? 'w-3 bg-[#1472FF] shadow-[0_2px_0_0_#0E5FCC]'
+                                ? 'w-3 bg-primary shadow-[0_2px_0_0_#0E5FCC]'
                                 : 'w-3 bg-gray-200 dark:bg-gray-700 shadow-[0_2px_0_0_#d1d5db] dark:shadow-[0_2px_0_0_#374151] hover:bg-gray-300'
                           }`}
                         />
@@ -433,7 +433,7 @@ export default function ProjectContextPage() {
                         sectionAnswered
                           ? 'w-4 bg-green-500 shadow-[0_2px_0_0_#16a34a]'
                           : sectionPartial
-                            ? 'w-4 bg-[#1472FF]/50 shadow-[0_2px_0_0_#0E5FCC]/50'
+                            ? 'w-4 bg-primary/50 shadow-[0_2px_0_0_#0E5FCC]/50'
                             : 'w-4 bg-gray-200 dark:bg-gray-700 shadow-[0_2px_0_0_#d1d5db] dark:shadow-[0_2px_0_0_#374151] hover:bg-gray-300'
                       }`}
                       title={section.name}
