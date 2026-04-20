@@ -8,7 +8,10 @@ import { Button } from '@/components/ui';
 
 export default function AuthNavbar() {
   const pathname = usePathname();
+  const isLoginPage = pathname === '/auth/login';
   const isSignupPage = pathname === '/auth/signup';
+  const showLoginButton = isSignupPage;
+  const showSignupButton = isLoginPage || pathname?.startsWith('/auth/forgot') || pathname?.startsWith('/auth/reset');
   const [isDark, setIsDark] = useState(false);
 
   // Detect dark mode
@@ -57,7 +60,7 @@ export default function AuthNavbar() {
           </Link>
 
           {/* Auth Button - Show opposite page */}
-          {isSignupPage ? (
+          {showLoginButton ? (
             <Button
               href="/auth/login"
               variant="primary"
@@ -71,7 +74,7 @@ export default function AuthNavbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </Button>
-          ) : (
+          ) : showSignupButton ? (
             <Button
               href="/auth/signup"
               variant="primary"
@@ -85,7 +88,7 @@ export default function AuthNavbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </Button>
-          )}
+          ) : null}
         </div>
       </div>
     </nav>
