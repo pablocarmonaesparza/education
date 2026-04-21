@@ -11,7 +11,7 @@
  * Remove or flip the env var once the new schema + content are back.
  */
 
-import { Title, Body, Caption } from '@/components/ui/Typography';
+import { Body, Caption } from '@/components/ui/Typography';
 import Card from '@/components/ui/Card';
 
 export default function MaintenancePage() {
@@ -19,7 +19,9 @@ export default function MaintenancePage() {
     <main className="min-h-screen w-full flex items-center justify-center bg-white dark:bg-gray-950 px-4">
       <Card variant="neutral" padding="lg" className="max-w-xl w-full text-center space-y-4">
         <div className="text-5xl" aria-hidden="true">🛠️</div>
-        <Title>itera vuelve pronto</Title>
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white leading-tight">
+          itera vuelve pronto
+        </h1>
         <Body>
           Estamos reconstruyendo el curso desde la raíz para la siguiente versión
           del producto. Durante estos días, el contenido está temporalmente fuera
