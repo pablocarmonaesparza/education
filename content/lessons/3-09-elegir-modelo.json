@@ -1,0 +1,203 @@
+{
+  "section_id": 3,
+  "slug": "elegir-modelo",
+  "title": "Qué modelo elegir y cuándo",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Mauricio usa ChatGPT para todo: redactar contratos, buscar datos con fuentes, trabajar en Google Docs, programar. ¿Qué está pasando con sus resultados?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Está bien — ChatGPT es el más popular, así que da el mejor resultado en cualquier tarea"
+          },
+          {
+            "id": 1,
+            "text": "Pierde calidad en cada tarea: cada asistente tiene un terreno donde rinde mejor que los demás"
+          },
+          {
+            "id": 2,
+            "text": "No pasa nada — todos los asistentes hoy dan resultados prácticamente iguales"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Mauricio está dejando calidad sobre la mesa. **Cada tarea tiene su mejor asistente**: Claude para texto largo con matices, Gemini dentro de Google Docs, Perplexity para búsqueda con fuentes. Cambiar toma segundos; la diferencia de output es notoria.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Los 4 criterios de decisión",
+        "body": "Antes de abrir un asistente, pregúntate:\n\n- **Tarea**: ¿texto, búsqueda, imagen?\n- **Precisión**: ¿puede fallar o necesita ser exacto?\n- **Presupuesto**: ¿plan gratis o pagado?\n- **Entorno**: ¿Google Docs, navegador, código?"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Matriz rápida de decisión",
+        "body": "Una guía por tipo de tarea:\n\n- **Texto corto** → ChatGPT\n- **Texto largo con matices** → Claude\n- **Google Docs/Sheets** → Gemini\n- **Búsqueda con fuentes** → Perplexity\n- **Imagen rápida** → ChatGPT\n- **Código complejo** → Claude"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Cuándo NO cambiar de modelo",
+        "body": "El cambio cuesta **contexto mental**. No cambies si:\n\n- La tarea dura menos de 2 minutos\n- Ya estás en medio de un chat largo con contexto\n- La diferencia de calidad es marginal para tu caso\n\nAI cambiante sin razón = fricción sin payoff."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "fill-blank",
+      "phase": "explain",
+      "content": {
+        "prompt": "Completa la regla:",
+        "sentenceBefore": "La pregunta clave antes de elegir modelo es: ",
+        "sentenceAfter": " — después eliges.",
+        "tokens": [
+          "Qué tipo de tarea es",
+          "Cuál es el más barato",
+          "Cuál es el más popular"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "**Tipo de tarea** decide. Precio es segundo criterio. Popularidad es ruido que no dice nada del ajuste a tu caso. Empezar por la tarea te evita defaults malos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada tarea con el asistente más adecuado:",
+        "pairs": [
+          {
+            "term": "Redactar email directo",
+            "def": "ChatGPT — rápido y suficiente"
+          },
+          {
+            "term": "Analizar paper de 40 páginas",
+            "def": "Claude — profundidad en texto largo"
+          },
+          {
+            "term": "Redactar en Google Docs",
+            "def": "Gemini — sin salir del documento"
+          },
+          {
+            "term": "Investigar mercado con fuentes",
+            "def": "Perplexity — búsqueda con citas"
+          }
+        ],
+        "explanation": "Cada tarea tiene un óptimo. El ejercicio no es memorizar, es **acostumbrarse a preguntar qué tipo de tarea** antes de actuar.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Marca las razones válidas para cambiar de asistente:",
+        "options": [
+          {
+            "id": 0,
+            "text": "La tarea requiere web search con fuentes verificables"
+          },
+          {
+            "id": 1,
+            "text": "Vas a trabajar texto largo con matices"
+          },
+          {
+            "id": 2,
+            "text": "Trabajas dentro de Gmail o Google Docs"
+          },
+          {
+            "id": 3,
+            "text": "Un amigo lo usa y te dijo que probaras"
+          },
+          {
+            "id": 4,
+            "text": "El logo del otro es más bonito"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Cambiar por **ajuste a la tarea**, no por recomendación social o estética. Los amigos no conocen tu caso; los logos no suman al output.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tienes que analizar un contrato de 60 páginas. Abres ChatGPT por costumbre, pero ya sabes los criterios. ¿Qué haces?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sigues con ChatGPT — total todos son parecidos"
+          },
+          {
+            "id": 1,
+            "text": "Cambias a Claude — texto largo con matices es su territorio"
+          },
+          {
+            "id": 2,
+            "text": "Lo lees a mano — ninguna AI sirve para contratos"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Contrato largo = Claude. El cambio cuesta 30 segundos, el resultado es notoriamente mejor. **Elegir bien es disciplina, no obsesión.**",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Mauricio tiene 5 tareas hoy: email rápido, análisis de PDF de 40 páginas, generar una imagen, investigar datos de mercado, responder chat en Gmail. ¿Qué hace?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Todo en ChatGPT como antes — es más simple"
+          },
+          {
+            "id": 1,
+            "text": "ChatGPT para email, Claude para PDF, ChatGPT para imagen, Perplexity para datos, Gemini para Gmail"
+          },
+          {
+            "id": 2,
+            "text": "Todo en Claude porque 'es el mejor'"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Mauricio ya cambia de modelo como quien cambia de llave en una caja de herramientas. **Sin esfuerzo mental extra**, obtiene el mejor output en cada caso. Esa disciplina se paga sola.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🧭",
+        "title": "Criterio propio de elección",
+        "body": "Ya tienes el criterio para elegir asistente por tarea: tipo de trabajo, precisión, presupuesto y entorno. Próxima vez que abras uno, pregúntate cuál encaja."
+      }
+    }
+  ]
+}

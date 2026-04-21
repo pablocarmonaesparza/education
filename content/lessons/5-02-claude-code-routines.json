@@ -1,0 +1,198 @@
+{
+  "section_id": 5,
+  "slug": "claude-code-routines",
+  "title": "Claude Code Routines: tu primer agente que trabaja solo",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Lucía repite la misma secuencia cada mañana: abre Claude Code, pide resumen de cambios del proyecto, lo publica en Slack. 15 minutos diarios. ¿Puede saltarse esos 15 minutos?",
+        "options": [
+          {
+            "id": 0,
+            "text": "No, siempre tiene que iniciar el chat ella misma"
+          },
+          {
+            "id": 1,
+            "text": "Sí, si programa la secuencia para que corra sola cada día"
+          },
+          {
+            "id": 2,
+            "text": "Solo si contrata a un asistente humano que la abra por ella"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Claude Code ofrece **Routines**: instrucciones programadas que corren solas en un horario o evento. Lucía deja de abrir el chat; la secuencia se ejecuta y ella solo lee el resultado. 15 minutos diarios por 365 días son 91 horas al año.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es una Routine",
+        "body": "Una **Routine** es un prompt programado: Claude lo ejecuta en un horario o cuando ocurre un evento, con acceso a tus archivos y servicios externos.\n\nSe dispara, por ejemplo:\n\n- Cada día a las 9 de la mañana\n- Cuando llega un email nuevo\n- Cuando subes un cambio nuevo al proyecto\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Anatomía de una Routine",
+        "body": "Tres piezas definen una Routine:\n\n- **Trigger**: qué la arranca. Puede ser *cron* (un horario fijo: cada día 9am) o *webhook* (un aviso externo: llegó un email)\n- **Instrucciones**: qué debe hacer Claude, paso a paso\n- **Herramientas**: a qué puede acceder (archivos, Slack, servicios externos)\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Casos reales de Routines",
+        "body": "Cuatro ejemplos útiles para arrancar:\n\n- **Reporte diario del equipo**: Claude lee los cambios recientes en el proyecto, los resume y los publica en Slack\n- **Newsletter filtrada**: revisa las fuentes que te interesan y te manda un email con lo importante\n- **Inbox limpio**: cada noche clasifica y archiva correos\n- **Alerta de métricas**: revisa un dashboard y avisa si algo se cae\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Una Routine necesita que tengas abierto Claude Code todo el tiempo.",
+        "answer": false,
+        "explanation": "Falso. Las Routines corren en la nube de Anthropic. Tu computadora puede estar apagada. Eso es justo lo que las hace útiles: Claude trabaja sin ti presente.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para crear tu primera Routine:",
+        "steps": [
+          "Identificar una tarea que repites manualmente cada día o semana",
+          "Escribir las instrucciones como prompt claro",
+          "Definir el trigger (cada día 9am, cuando llega email, etc.)",
+          "Conectar las herramientas que necesita (Slack, Drive, etc.)",
+          "Probar una vez en modo manual para validar",
+          "Activar la programación y vigilar los primeros días"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "explanation": "El orden importa. **Validar manualmente antes de activar** evita que corra mal 30 veces antes de que lo notes. Como todo flujo, empieza chiquito y escala.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada caso con el trigger adecuado:",
+        "pairs": [
+          {
+            "term": "Resumen diario del equipo",
+            "def": "Cron — cada día a las 9 de la mañana"
+          },
+          {
+            "term": "Clasificar email al llegar",
+            "def": "Webhook — el servidor de correo avisa"
+          },
+          {
+            "term": "Revisar un cambio en el código",
+            "def": "Webhook — GitHub avisa al abrirse el cambio"
+          },
+          {
+            "term": "Reporte semanal de métricas",
+            "def": "Cron — cada lunes a las 8 de la mañana"
+          }
+        ],
+        "explanation": "Cada caso pide un trigger distinto. **Cron** para cosas que pasan en un horario. **Webhook** para cosas que responden a un evento. Elegir bien evita que Claude corra mil veces cuando debía correr una.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que una tarea es buena candidata para Routine?",
+        "options": [
+          {
+            "id": 0,
+            "text": "La haces al menos 3 veces por semana"
+          },
+          {
+            "id": 1,
+            "text": "Los pasos son los mismos cada vez"
+          },
+          {
+            "id": 2,
+            "text": "El resultado puede ser revisado, no requiere aprobación en vivo"
+          },
+          {
+            "id": 3,
+            "text": "Cambias de criterio cada vez"
+          },
+          {
+            "id": 4,
+            "text": "Requiere decisión ética importante"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las 3 primeras son señales claras: frecuente, repetible, no-crítica-en-tiempo-real. Las últimas 2 son **malas candidatas** — tareas que cambian o son éticamente sensibles merecen humano en el loop.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Lucía configura su Routine: cada día a las 9am, resumir los cambios del proyecto y publicarlos en Slack. ¿Qué gana al tercer día?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada, sigue abriendo Claude para verificar que corrió"
+          },
+          {
+            "id": 1,
+            "text": "Abre Slack a las 9:05 y ya está el resumen listo, sin tocar Claude"
+          },
+          {
+            "id": 2,
+            "text": "Todo sigue igual, solo añadió una herramienta al flujo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Lucía pasó de *trabajar con AI* a *la AI trabaja por mí*. Esa es la diferencia entre quien escala con AI y quien la usa solo como asistente manual.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "⏰",
+        "title": "Tu primer trabajador digital",
+        "body": "Ya sabes qué es una Routine, cuáles son sus tres piezas (trigger, instrucciones, herramientas) y cómo saber si una tarea tuya es buena candidata. Hoy mismo puedes identificar una y escribir el prompt."
+      }
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "section_id": 5,
+  "slug": "conectar-slack-email-whatsapp",
+  "title": "Conectar Slack, email y WhatsApp a tus flujos",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Cristina monta un flujo que avisa al equipo cuando el sitio se cae. Decide mandar la alerta al correo del equipo. ¿Qué pasa al día siguiente?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El equipo reacciona a tiempo — todos revisan su correo seguido"
+          },
+          {
+            "id": 1,
+            "text": "La alerta llega, pero nadie la ve hasta horas después"
+          },
+          {
+            "id": 2,
+            "text": "El correo es mejor que otros canales porque queda registrado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El correo es bueno para cosas formales con adjuntos, pero pésimo para urgencias. La gente lo revisa cada varias horas. Una caída necesita un canal de atención inmediata — un mensaje directo al teléfono.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Los 4 canales esenciales",
+        "body": "Para automatización útil:\n\n- **Slack** — trabajo en equipo, notificaciones que se discuten\n- **Email** — formal, con archivos, registros\n- **WhatsApp/Telegram** — urgente, personal, alta apertura\n- **SMS** (mensajes de texto del teléfono) — alertas críticas que no pueden perderse"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cada canal tiene su tono",
+        "body": "Regla práctica:\n\n- **Slack** → info que el equipo va a discutir (reportes, alertas semi-urgentes)\n- **Email** → entregable, resumen formal, algo con adjuntos\n- **WhatsApp** → urgente, personal, \"necesito que lo veas ahora\"\n- **SMS** → alerta crítica que no puede esperar"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "La trampa del canal inadecuado",
+        "body": "Dos errores frecuentes:\n\n- Todo a WhatsApp → saturación, ignoras lo urgente real\n- Todo a email → latencia, el momento se pasa\n\nLa automatización bien diseñada **enruta según prioridad**: crítico → WhatsApp, semanal → email."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "El mejor canal es el que tú usas más, sin importar el tipo de mensaje.",
+        "answer": false,
+        "explanation": "Falso. El mejor canal depende del **tipo de mensaje**. Un reporte semanal no pertenece al mismo canal que una alerta de caída del servidor. Mezclar todo en un canal satura la atención.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la automatización con el canal correcto:",
+        "pairs": [
+          {
+            "term": "Alerta de caída del sitio",
+            "def": "WhatsApp o SMS — urgente, atención inmediata"
+          },
+          {
+            "term": "Reporte semanal de ventas",
+            "def": "Email — formal con adjuntos"
+          },
+          {
+            "term": "Nuevo lead entrante",
+            "def": "Slack — el equipo lo discute y responde"
+          },
+          {
+            "term": "Resumen diario del equipo",
+            "def": "Slack — contexto grupal compartido"
+          }
+        ],
+        "explanation": "La regla: **canal = tipo de atención que necesita el mensaje**. Urgente → personal. Revisable → equipo. Formal → email.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que un mensaje va en canal equivocado?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Llega tarde y ya no sirve"
+          },
+          {
+            "id": 1,
+            "text": "La gente lo ignora sistemáticamente"
+          },
+          {
+            "id": 2,
+            "text": "Satura tu atención y te hace ignorar mensajes reales"
+          },
+          {
+            "id": 3,
+            "text": "Lo lees y actúas a tiempo"
+          },
+          {
+            "id": 4,
+            "text": "Genera acciones en el equipo"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las 3 primeras son banderas rojas. Llegar tarde, ser ignorado, saturar — el canal no encaja. Las dos últimas son señales de **canal correcto**: actúas, el equipo responde.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tienes un bot de monitoreo. Detecta una caída del servicio. ¿A qué canal enrutas la alerta?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Email — para registrarlo"
+          },
+          {
+            "id": 1,
+            "text": "WhatsApp o SMS al responsable de turno + Slack al canal de incidentes"
+          },
+          {
+            "id": 2,
+            "text": "Notion para que quede documentado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Caída crítica = urgencia = **canal personal inmediato** (WhatsApp, SMS) al responsable, + contexto en Slack para el equipo. Email llega tarde; Notion es para documentar después.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Cristina rehace sus flujos con canales correctos. ¿Qué cambia para su día a día?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — el contenido es el mismo"
+          },
+          {
+            "id": 1,
+            "text": "Urgencias a WhatsApp al momento, reportes al email, discusión en Slack — cada cosa en su lugar"
+          },
+          {
+            "id": 2,
+            "text": "Recibe más mensajes en total"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Cristina pasó de 'todo al mismo buzón' a **canales enrutados por prioridad**. Su atención deja de saturarse y las cosas importantes las ve a tiempo.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "📣",
+        "title": "Enrutamiento por canal dominado",
+        "body": "Ya sabes llevar cada output a su canal: urgencias al teléfono, reportes al email, discusión al equipo."
+      }
+    }
+  ]
+}

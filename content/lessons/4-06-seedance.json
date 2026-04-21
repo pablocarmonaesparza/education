@@ -1,0 +1,197 @@
+{
+  "section_id": 4,
+  "slug": "seedance",
+  "title": "Seedance: video con calidad y velocidad",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Daniela necesita 5 clips de perfumes girando para Instagram esta semana. Prueba Sora: queda bello, pero tarda 4 minutos por clip y le come el crédito. ¿Qué le conviene?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Insistir con Sora: si es el modelo más avanzado, seguro terminará dando mejores clips que cualquier alternativa"
+          },
+          {
+            "id": 1,
+            "text": "Usar un modelo que priorice velocidad e iteración para clips cortos de producto, aunque el techo visual sea un poco menor"
+          },
+          {
+            "id": 2,
+            "text": "Subir la resolución y añadir más detalle al prompt: así Sora tardará menos porque tendrá menos decisiones que tomar"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El mejor modelo no es el más avanzado en absoluto, sino el que gana en tu caso. Para 5 clips cortos de producto con iteración rápida, conviene un modelo veloz y barato. Ese sweet spot es el que vas a nombrar en esta lección.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es Seedance",
+        "body": "**Seedance** es un modelo de generación de video de ByteDance. Ventajas principales:\n\n- Clips de buena calidad en segundos, no minutos\n- Movimiento natural (cámara y objetos)\n- Soporta texto-a-video e imagen-a-video\n- Precio competitivo frente a Sora"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Dónde brilla Seedance",
+        "body": "Casos donde Seedance suele ganar:\n\n- **Producto girando o moviéndose** con fondo limpio\n- **Cámara con movimiento suave** (dolly, pan)\n- **Clips cortos de 5-8 segundos** para social media\n- **Animar una imagen fija** con movimiento contextual"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Seedance no hace todo",
+        "body": "Seedance no es universal. Pierde frente a:\n\n- **Sora** en escenas fotorrealistas complejas\n- **Kling** en movimiento humano realista (caras, cuerpos)\n- **Veo** en escenas con mucha profundidad y detalle\n\nEs una herramienta fuerte, no la única."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Seedance reemplaza a todos los demás modelos de video.",
+        "answer": false,
+        "explanation": "Falso. Seedance es **muy fuerte en velocidad + movimiento**, pero cada modelo brilla distinto. El mejor workflow mezcla herramientas: Seedance para clips de producto, Sora o Kling para escenas humanas, etc.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso con la herramienta ideal:",
+        "pairs": [
+          {
+            "term": "Producto girando limpio",
+            "def": "Seedance — velocidad y movimiento"
+          },
+          {
+            "term": "Escena humana realista",
+            "def": "Kling — movimiento corporal"
+          },
+          {
+            "term": "Escena fotorrealista compleja",
+            "def": "Sora o Veo — detalle y profundidad"
+          },
+          {
+            "term": "Brainstorm rápido de ideas",
+            "def": "Pika o ChatGPT — iteración barata"
+          }
+        ],
+        "explanation": "No hay 'mejor modelo universal'. **Mejor modelo para este caso** sí lo hay. Elegir bien ahorra tiempo y dinero.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que Seedance es buena opción?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Quieres un clip corto con movimiento controlado"
+          },
+          {
+            "id": 1,
+            "text": "Necesitas iterar varias veces rápido"
+          },
+          {
+            "id": 2,
+            "text": "Partes de una imagen fija que quieres animar"
+          },
+          {
+            "id": 3,
+            "text": "Quieres generar una película de 60 minutos"
+          },
+          {
+            "id": 4,
+            "text": "Necesitas una escena de 30 personas bailando en detalle"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las primeras 3 son el sweet spot de Seedance. Los otros 2 están fuera del alcance de cualquier modelo de video actual — no es limitación de Seedance, es del estado del arte.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Una marca te pide 5 clips de 6 segundos de su producto, cada uno con un movimiento distinto (girando, acercándose, alejándose). ¿Qué eliges?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sora — siempre lo mejor sin importar costo"
+          },
+          {
+            "id": 1,
+            "text": "Seedance — iteras los 5 clips rápido con movimiento controlado"
+          },
+          {
+            "id": 2,
+            "text": "Grabación real en estudio con cámara motorizada"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "5 clips con movimiento + iteración rápida = **Seedance**. Sora sería más caro y lento para este caso. Estudio real toma días. Seedance entrega en 1 hora.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Daniela rehace su clip de producto. Ahora con criterio. ¿Qué decide?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Vuelve a probar Sora aunque sea lento"
+          },
+          {
+            "id": 1,
+            "text": "Abre Seedance, sube la foto del producto, pide 6 segundos con giro suave, itera 2 veces, listo"
+          },
+          {
+            "id": 2,
+            "text": "Contrata a un motion designer"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Daniela pasó de probar todo sin criterio a **usar la herramienta ajustada al caso**. Resultado: un clip limpio en minutos, no días.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🌊",
+        "title": "Seedance en tu caja de herramientas",
+        "body": "Ya tienes el criterio: velocidad + movimiento controlado + iteración barata = Seedance. Aplícalo en el próximo clip de producto que necesites."
+      }
+    }
+  ]
+}

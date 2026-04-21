@@ -80,7 +80,7 @@ Ejemplo: *Qué son los tokens* suena a "conocer" (conceptual). Pero si el outcom
 
 ## 3. Reglas de forma
 
-1. Títulos en minúsculas.
+1. **Gramática natural del español.** Mayúscula al inicio de oración, nombres propios y siglas técnicas (API, MCP, LLM). Títulos de sección y lecciones en *Sentence case* (solo la primera letra va en mayúscula, salvo nombres propios). Ejemplo: *"Qué es un LLM"*, no *"qué es un llm"* ni *"Qué Es Un LLM"*. Regla derogada en v0.11: antes se exigía todo minúsculas; creaba fricción sin payoff real y colisionaba con el criterio gramatical del lector.
 2. Bodies gramaticales, sin abreviaciones, para audiencia no técnica.
 3. Inducción: experiencia → lógica → nombre. Nunca definir primero.
 4. Escenarios evergreen, fun, universales. Nunca médicos, financieros o personales íntimos.
@@ -101,7 +101,7 @@ Ejemplo: *Qué son los tokens* suena a "conocer" (conceptual). Pero si el outcom
 
 6.7. **Slides explicativas sin personaje hablan al usuario directo.** Cuando un slide explica un concepto sin caso, **no narres en tercera persona** ("el usuario observa que…"). Habla al usuario con lenguaje directo: *"fíjate en…"*, *"la regla es X"*, *"ahora lo aplicas así"*. Mantiene la presencia sin inventar un protagonista artificial.
 
-6.8. **Mayúscula inicial consistente.** Cada valor textual visible (pares de tap-match, pasos de order-steps, opciones de mcq, etiquetas de token en fill-blank/code-completion) inicia con mayúscula. No importa si es una sola palabra o una frase; la columna o lista entera mantiene el mismo estilo sin mezclar casos.
+6.8. **Consistencia gramatical en listas.** Cada valor textual visible (pares de tap-match, pasos de order-steps, opciones de mcq, etiquetas de token en fill-blank/code-completion) sigue la gramática natural: mayúscula inicial cuando es el arranque de una frase, nombres propios respetados. La lista entera mantiene el mismo estilo sin mezclar casos (no poner una opción con mayúscula inicial y la siguiente en minúscula sin razón).
 
 6.9. **En tap-match, `term` siempre es más corto que `def`.** El renderer usa un grid 25%/50% donde la columna del `term` es más angosta. Meter un texto largo ahí rompe el alineado y puede empujar el botón de comprobar fuera del viewport. Regla práctica: `term` ≤ 30 caracteres; `def` puede llegar a 80.
 7. Al inicio usar ChatGPT en ejemplos (más popular). No "un asistente" abstracto.
@@ -112,10 +112,15 @@ Ejemplo: *Qué son los tokens* suena a "conocer" (conceptual). Pero si el outcom
 
 11. **Order-steps exige orden estrictamente necesario.** Un ejercicio de ordenar pasos solo es válido si **cada par adyacente tiene una razón causal o lógica para estar en ese orden específico**. Si dos pasos pueden intercambiarse sin cambiar el resultado, no es un problema de ordenar — es una lista de criterios paralelos y va como bullet en un concept slide, no como ejercicio scoreable. **Proxy pre-envío:** antes de crear el ejercicio, Opus debe poder completar *"El paso N debe ir antes del paso N+1 **porque** ___"* para cada par. Si alguna razón se reduce a *"para que se vea ordenado"* o *"porque sí"*, el ejercicio está mal clasificado — conviértelo en bullets o reemplázalo por un mcq/tap-match que sí capture la relación real.
 
-12. **Trampas de mcq deben ser robustas contra AI moderno.** El misconception que explota la pregunta-trampa (Engage) o cualquier mcq conceptual debe ser **inequívocamente incorrecto en 2026**, no una verdad parcial que capacidades modernas (web search, herramientas, multimodal, memoria) hayan vuelto gris. Si un usuario puede defender la respuesta "mala" con *"pero ChatGPT ahora puede buscar en internet / ver imágenes / usar herramientas"*, la pregunta está rota.
-    - **Zonas seguras para trampas de alucinación:** datos privados no públicos (ventas internas, inventario, contactos personales), matemática o lógica que el modelo puede inventar, detalles específicos pedidos a un modelo sin web search activado.
-    - **Zonas grises a evitar:** *"¿quién es el mejor X de mi colonia?"* (web search lo resuelve), *"¿qué dice esta imagen?"* (multimodal lo resuelve), *"¿cuál es la noticia de hoy?"* (web search lo resuelve).
-    - **Prueba pre-envío:** *"¿puedo defender la respuesta incorrecta con una capacidad real de ChatGPT en 2026?"* Si sí, reescribe el escenario.
+12. **Trampas de mcq deben ser robustas contra AI moderno Y exigir pensamiento adulto.** El misconception que explota la pregunta-trampa (Engage) o cualquier mcq conceptual debe cumplir **dos pruebas**:
+
+    **a) Robustez técnica** — La respuesta incorrecta debe ser inequívocamente incorrecta en 2026. Si un usuario puede defender la respuesta "mala" con *"pero ChatGPT ahora puede buscar en internet / ver imágenes / usar herramientas"*, la pregunta está rota. **Zonas seguras:** datos privados no públicos, matemática que el modelo puede inventar, detalles específicos pedidos sin web search activado. **Zonas grises a evitar:** *"¿quién es el mejor X de mi colonia?"* (web search lo resuelve), *"¿qué dice esta imagen?"* (multimodal lo resuelve).
+
+    **b) Altura intelectual** — El misconception tiene que ser algo que un **adulto no-técnico defendería con confianza genuina**, no una pifia obvia disfrazada de pregunta. Si la respuesta correcta se intuye por descarte o porque las otras opciones suenan absurdas, la trampa no enseña nada — condesciende. El objetivo es que el alumno responda mal *con convicción* antes de que la corrección aterrice.
+
+    - **Ejemplos que pasan ambas pruebas:** *"un token es una palabra"* (intuitivo pero falso: *"Platzi"* son 3 tokens); *"el modelo te avisa cuando no sabe"* (se asume humanización, es falso); *"más contexto siempre mejora la respuesta"* (falso: ventana de contexto degrada al final); *"un prompt más largo siempre es mejor"* (falso: dilución de instrucción).
+    - **Ejemplos que fallan (demasiado tontos):** *"¿itera tiene videos o ejercicios?"* (se resuelve mirando el curso), *"¿la AI aprende cuando le enseñas?"* (pregunta mecánica básica sin tensión real).
+    - **Prueba pre-envío:** *"¿un adulto inteligente que nunca ha usado AI puede defender con convicción la respuesta incorrecta?"* Si no, sube la barra.
 
 13. **Markdown inline solo en `body` y `explanation`.** El renderer solo aplica markdown (`**bold**`, `*italic*`, bullets) en dos campos: `body` de concept/concept-visual (vía `renderMarkdownBody`) y `explanation` de cualquier ejercicio (vía `renderInlineMarkdown`). En **todo lo demás** — `title`, `prompt`, `statement`, `options[].text`, `steps[]`, `pairs[].term`/`def`, `tokens[]`, `sentenceBefore`, `sentenceAfter` — el JSON se renderiza **tal cual**, así que `*algo*` y `**algo**` aparecen literal con asteriscos visibles.
     - **Regla de autor:** nunca metas `*...*` ni `**...**` en los campos no-soportados.
@@ -271,7 +276,9 @@ Antes de entregar una lección, Opus debe verificar estos diez puntos. Si falla 
 
 ---
 
-**Versión:** 0.10 — Ajustes desde v0.9 (pivote a arquitectura 10 secciones × 100 lecciones con ruta personalizada): **regla 14** nueva — lecciones autocontenidas, cero callbacks cross-lección. El único callback permitido es dentro de la misma lección (Engage ↔ Evaluate). Recap de sección, si existe, apunta a conceptos no a personajes. Razones: (1) ruta personalizada solo funciona si una lección cae en cualquier orden, (2) generadores automáticos escriben una lección por vez sin memoria cross-lección, lo que hace el prompt tractable.
+**Versión:** 0.11 — Ajustes desde v0.10 (feedback de uso real sobre intro renderizada): **regla 1** derogada — ya no se exige todo minúsculas; se usa gramática natural del español (mayúscula al inicio de oración, nombres propios, siglas técnicas). Títulos de lecciones y secciones en *Sentence case*. **Regla 12 endurecida** — las pregunta-trampas ahora deben pasar DOS pruebas: robustez técnica (incorrecta en 2026) + altura intelectual (un adulto no-técnico la defendería con confianza genuina). Se rechaza trivia disfrazada tipo *"¿itera tiene videos o ejercicios?"*. **Regla 6.8 reformulada** — consistencia gramatical en lugar de mayúscula inicial forzada. Eliminada la sección de introducción del curso (meta-lecciones sobre el formato tienden a condescender); ahora son 10 secciones × 100 lecciones empezando por fundamentos.
+
+v0.10 — Ajustes desde v0.9 (pivote a arquitectura 10 secciones × 100 lecciones con ruta personalizada): **regla 14** nueva — lecciones autocontenidas, cero callbacks cross-lección. El único callback permitido es dentro de la misma lección (Engage ↔ Evaluate). Recap de sección, si existe, apunta a conceptos no a personajes. Razones: (1) ruta personalizada solo funciona si una lección cae en cualquier orden, (2) generadores automáticos escriben una lección por vez sin memoria cross-lección, lo que hace el prompt tractable.
 
 v0.9 — Ajustes desde v0.8 (feedback de render real sobre L2): **regla 13** nueva — markdown solo vive en `body` y `explanation`; en todos los demás campos el JSON se renderiza literal, así que `*...*` y `**...**` aparecen con asteriscos visibles. Para emphasis en título/prompt/opciones/pairs/tokens/steps usar comillas o reformular. **Proxy de regla 6.5** apretado de ≤200 a ≤180 chars — el renderer rompe ~60 chars/línea y 200 se iba a 4 renglones en casos con palabras largas. **Renderer:** `renderMarkdownBody` y `renderInlineMarkdown` extendidos para soportar `*italic*` además de `**bold**` (antes solo bold, por eso *recuerda* aparecía literal en body).
 

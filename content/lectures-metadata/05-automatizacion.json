@@ -1,0 +1,140 @@
+{
+  "section_id": 5,
+  "section_slug": "automatizacion",
+  "section_display": "automatización",
+  "source": "claude-in-session",
+  "lectures": [
+    {
+      "slug": "automatizar-con-ai",
+      "title": "automatizar con AI vs sin AI",
+      "display_order": 1,
+      "learning_objective": "decidir cuándo una tarea repetitiva conviene automatizar con AI y cuándo con scripts tradicionales",
+      "bloom_verb": "evaluar",
+      "cognitive_route": "mixta",
+      "concept_name": "criterio de automatización",
+      "narrative_arc": "Alguien tiene una tarea que repite cada semana: descargar un reporte, limpiar datos, enviar por email. Piensa que automatizar significa programar. No sabe que con AI puede hacerlo sin código, pero también que a veces un script clásico es más estable y barato. Saber cuándo usar cuál cambia cuánto tiempo recupera.",
+      "scenario_character": "Mariana"
+    },
+    {
+      "slug": "claude-code-routines",
+      "title": "Claude Code Routines",
+      "display_order": 2,
+      "learning_objective": "configurar una routine de Claude Code para ejecutar tareas recurrentes sin supervisión humana",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "routines en Claude Code",
+      "narrative_arc": "Alguien abre su terminal cada mañana para correr la misma secuencia de comandos: revisar logs, actualizar ramas, ejecutar pruebas. Lo hace a mano, distraído. No sabe que puede definir toda esa secuencia como una routine que arranque sola a una hora fija.",
+      "scenario_character": "Pablo"
+    },
+    {
+      "slug": "cron-schedulers",
+      "title": "cron y schedulers básicos",
+      "display_order": 3,
+      "learning_objective": "explicar cómo funciona un cron y qué tipos de tareas conviene correr automáticamente a horas fijas",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "cron y schedulers",
+      "narrative_arc": "Alguien ha oído hablar de 'correr algo cada madrugada' pero asume que eso requiere un servidor dedicado o conocimiento de DevOps. No sabe que hay mecanismos simples y gratuitos que permiten disparar cualquier proceso en horarios fijos sin montar infraestructura propia.",
+      "scenario_character": "Sebastián"
+    },
+    {
+      "slug": "mcp-schedulers",
+      "title": "MCP schedulers",
+      "display_order": 4,
+      "learning_objective": "usar un MCP scheduler para ejecutar acciones automáticas disparadas por agentes de AI",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "MCP schedulers",
+      "narrative_arc": "Alguien tiene un agente que ejecuta tareas solo cuando lo invoca. Le gustaría que el agente mismo arrancara a ciertas horas: revisar emails a las 9, publicar a mediodía, cerrar tareas a las 6. Un MCP scheduler convierte al agente en un trabajador autónomo con reloj propio.",
+      "scenario_character": "Javier"
+    },
+    {
+      "slug": "n8n",
+      "title": "n8n: tu primer flujo",
+      "display_order": 5,
+      "learning_objective": "construir un flujo en n8n que conecte dos servicios distintos sin escribir código",
+      "bloom_verb": "crear",
+      "cognitive_route": "mixta",
+      "concept_name": "flujo en n8n",
+      "narrative_arc": "Alguien ha visto Zapier o Make pero los encontró limitados o caros. No sabe que existe una alternativa open source llamada n8n con más flexibilidad y sin límite de operaciones. Empezar con un primer flujo simple abre la puerta a cientos de automatizaciones posteriores.",
+      "scenario_character": "Isabella"
+    },
+    {
+      "slug": "make",
+      "title": "Make: alternativa visual",
+      "display_order": 6,
+      "learning_objective": "usar Make para automatizar un flujo visual entre apps populares en pocos minutos",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "automatización con Make",
+      "narrative_arc": "Alguien quiere automatizar pero n8n le parece demasiado técnico. Make ofrece una interfaz más visual con drag-and-drop y plantillas pre-armadas. Para alguien sin experiencia técnica, la curva de entrada es notablemente más corta y los primeros resultados llegan antes.",
+      "scenario_character": "Ricardo"
+    },
+    {
+      "slug": "triggers",
+      "title": "triggers: qué dispara un flujo",
+      "display_order": 7,
+      "learning_objective": "explicar qué es un trigger y cómo elegir el correcto para iniciar una automatización",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "trigger de un flujo",
+      "narrative_arc": "Alguien arma su primera automatización y elige 'cada 5 minutos' para chequear una condición. Consume recursos todo el día sin razón. No sabe que hay triggers basados en eventos reales (un email nuevo, un formulario enviado) que disparan solo cuando hace falta.",
+      "scenario_character": "Ximena"
+    },
+    {
+      "slug": "conectar-slack-email-whatsapp",
+      "title": "conectar Slack, email, WhatsApp",
+      "display_order": 8,
+      "learning_objective": "usar webhooks y conectores nativos para enlazar Slack, email y WhatsApp con un flujo automatizado",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "conexión de canales",
+      "narrative_arc": "Alguien quiere que su sistema le avise por WhatsApp cuando algo importante pasa. Asume que necesita contratar a un desarrollador. No sabe que cada plataforma ya tiene un conector nativo listo para armar un puente en menos de 10 minutos sin tocar código.",
+      "scenario_character": "Luis"
+    },
+    {
+      "slug": "browserbase",
+      "title": "Browserbase: automatizar el browser",
+      "display_order": 9,
+      "learning_objective": "usar Browserbase para que un agente navegue sitios sin API y complete tareas en su lugar",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "automatización del browser",
+      "narrative_arc": "Alguien tiene que completar el mismo formulario en un sitio sin API todos los lunes por la mañana. Lo hace a mano. No sabe que puede poner un agente a navegar como humano: llenar campos, hacer clics, subir archivos, mientras trabaja en otra cosa.",
+      "scenario_character": "Emilio"
+    },
+    {
+      "slug": "etica-derechos-contenido",
+      "title": "ética y derechos en contenido generado",
+      "display_order": 10,
+      "learning_objective": "decidir cómo publicar contenido generado con AI respetando derechos de autor y transparencia con la audiencia",
+      "bloom_verb": "evaluar",
+      "cognitive_route": "mixta",
+      "concept_name": "ética del contenido con AI",
+      "narrative_arc": "Alguien usa imágenes generadas por AI en un post comercial y las vende como propias. Empieza a recibir reclamos y una demanda por uso indebido del estilo de un artista. No sabe que hay reglas ya claras sobre qué se puede y qué no, aunque la legislación vaya detrás de la tecnología.",
+      "scenario_character": "Daniela"
+    },
+    {
+      "slug": "monitorear-automatizacion",
+      "title": "monitorear una automatización",
+      "display_order": 11,
+      "learning_objective": "configurar alertas que detecten cuándo un flujo automatizado falla antes de que se acumule el daño",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "monitoreo de un flujo",
+      "narrative_arc": "Alguien arma un flujo que corre cada hora y se olvida de él. Tres semanas después descubre que dejó de correr el primer día por un error de credencial. Perdió 500 ejecuciones silenciosas. Monitorear un flujo es parte del flujo mismo, no un lujo opcional.",
+      "scenario_character": "Samuel"
+    },
+    {
+      "slug": "primer-bot",
+      "title": "tu primer bot que trabaja solo",
+      "display_order": 12,
+      "learning_objective": "construir un bot simple que ejecute una tarea completa sin supervisión humana",
+      "bloom_verb": "crear",
+      "cognitive_route": "mixta",
+      "concept_name": "bot autónomo",
+      "narrative_arc": "Alguien ha hecho automatizaciones sueltas pero nunca un bot completo que opere solo de principio a fin. No sabe cómo conectar un trigger con procesamiento inteligente y con un output final en un solo sistema. El primer bot autónomo es el puente a todo lo que viene después.",
+      "scenario_character": "Ana"
+    }
+  ]
+}

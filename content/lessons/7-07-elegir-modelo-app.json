@@ -1,0 +1,197 @@
+{
+  "section_id": 7,
+  "slug": "elegir-modelo-app",
+  "title": "Elegir modelo para tu app: criterio final",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Mauricio va a poner AI en su app. Pregunta en Twitter qué modelo usar y recibe 50 respuestas distintas: GPT-5, Claude Opus, Gemini, Llama. ¿Qué hace?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Probar los 50 antes de decidir"
+          },
+          {
+            "id": 1,
+            "text": "Armar criterio propio por tarea: calidad, latencia y costo. No hay un modelo universalmente mejor"
+          },
+          {
+            "id": 2,
+            "text": "Seguir al que tenga más seguidores en Twitter"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Elegir modelo sin criterio propio = seguir modas. **Tu caso define el modelo**: chatbot simple = modelo barato/rápido. Análisis legal complejo = modelo top-tier. Sin saber tu caso, cualquier 'mejor modelo' es ruido.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 4 dimensiones del criterio",
+        "body": "Evalúa cada modelo en:\n\n- **Calidad** en tu tarea específica (no benchmarks abstractos)\n- **Latencia**: ¿importa respuesta <2s o puedes esperar 10s?\n- **Costo**: ¿cuánto por request y al mes?\n- **Disponibilidad**: rate limits, uptime histórico"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Tiers de modelos (2026)",
+        "body": "Mental model:\n\n- **Tier premium**: GPT-5, Claude Opus, Gemini Ultra. Máxima calidad, máximo costo\n- **Tier estándar**: GPT-4o, Claude Sonnet, Gemini Pro. Balance\n- **Tier mini**: GPT-4o-mini, Claude Haiku, Gemini Flash."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "La regla del modelo más chico que funciona",
+        "body": "Principio clave:\n\n- Empieza con el modelo **más chico** que pueda\n- Mide calidad con tu caso real (no benchmarks)\n- Si la calidad es suficiente → listo\n- Si no → sube al siguiente tier\n\nMuchos usan modelos premium cuando el mini resolvería."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "El modelo con mejor puntaje en benchmarks es el mejor para tu app.",
+        "answer": false,
+        "explanation": "Falso. Benchmarks son **generalistas**. Tu tarea es específica. Modelo con mejor benchmark puede ser peor en tu caso por estilo, formato o idioma. **Evalúa con tus propios ejemplos** siempre.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso con el tier de modelo sugerido:",
+        "pairs": [
+          {
+            "term": "Clasificar emails",
+            "def": "Tier mini: rápido y barato para tareas simples"
+          },
+          {
+            "term": "Análisis legal con matices",
+            "def": "Tier premium: calidad crítica justifica el costo"
+          },
+          {
+            "term": "Chatbot conversacional",
+            "def": "Tier estándar: buen balance de calidad y precio"
+          },
+          {
+            "term": "Datos sensibles sin salir",
+            "def": "Modelo open source auto-hospedado en tu servidor"
+          }
+        ],
+        "explanation": "**La tarea define el tier**. Usar premium para clasificar emails es como contratar abogado para pedir café: costoso y sin beneficio. Ajuste al caso = eficiencia.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué pasos sigues al elegir modelo para tu app?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Definir las 3-5 tareas que tu app pedirá al modelo"
+          },
+          {
+            "id": 1,
+            "text": "Probar cada tarea con 2-3 modelos de tiers distintos"
+          },
+          {
+            "id": 2,
+            "text": "Comparar calidad, latencia y costo en tus casos reales"
+          },
+          {
+            "id": 3,
+            "text": "Elegir el más famoso en Twitter"
+          },
+          {
+            "id": 4,
+            "text": "Elegir el más caro por seguridad"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros son **método empírico**. Elegir por fama o precio son atajos sin garantía. **Probar con tus casos reales** es la única forma de saber.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu app tiene 3 tipos de tareas: clasificar tickets, resumir llamadas largas y redactar respuestas de soporte. ¿Qué haces?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un solo modelo premium para las 3 tareas"
+          },
+          {
+            "id": 1,
+            "text": "Modelo distinto por tarea: mini para clasificar, estándar para resumir, estándar-premium para redactar"
+          },
+          {
+            "id": 2,
+            "text": "El modelo más nuevo del mercado para todas"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Modelo por tarea** gana a 'uno para todo'. Cada tarea tiene su óptimo. Es 15% más código pero baja la factura 40-60% sin perder calidad.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Mauricio aplica criterio propio. Después de una semana probando, ¿qué tiene?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sigue leyendo Twitter para ver 'el nuevo mejor'"
+          },
+          {
+            "id": 1,
+            "text": "Una matriz por tarea: qué modelo usa, por qué, costo esperado. Decisión basada en su caso"
+          },
+          {
+            "id": 2,
+            "text": "Eligió el modelo más caro para sentirse seguro"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Mauricio pasó de **seguir modas** a **elegir con criterio**. Esa autonomía se construye probando con tu caso real. Una vez que la tienes, el ruido externo pierde poder sobre ti.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🧭",
+        "title": "Criterio de modelo para app",
+        "body": "Ya tienes el criterio: tarea, calidad, latencia y costo. Elige por caso real, no por hype. Ese filtro te sirve para cualquier modelo que salga mañana."
+      }
+    }
+  ]
+}

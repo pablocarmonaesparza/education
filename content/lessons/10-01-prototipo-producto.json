@@ -1,0 +1,197 @@
+{
+  "section_id": 10,
+  "slug": "prototipo-producto",
+  "title": "De prototipo a producto",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Diana lanzó una mini-app. Le encanta. Quiere 'abrirla al mundo'. Pero al compartir con 3 amigos, rompe con errores que en su máquina no pasaban.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — subir es lanzar"
+          },
+          {
+            "id": 1,
+            "text": "Prototipo → producto requiere más que deploy: manejo de errores, seguridad, performance para varios usuarios, onboarding, soporte. Es un salto cualitativo"
+          },
+          {
+            "id": 2,
+            "text": "Tiene que cerrar y hacerla de nuevo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Prototipo** funciona en tu máquina con tu caso de uso. **Producto** soporta usuarios distintos, casos edge, fallos, escalamiento. Pasar de uno a otro no es 'deploy' — es repensar: errores, seguridad, performance, UX, soporte. Saltar pasos produce apps rotas.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Lo que separa prototipo de producto",
+        "body": "Dimensiones clave:\n\n- **Errores**: prototipo asume camino feliz; producto maneja fallas\n- **Seguridad**: prototipo ignora Row Level Security (RLS); producto la exige\n- **Performance**: prototipo funciona para 1; producto para muchos\n- **UX**: prototipo es para ti; producto para extraños"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "La lista de verificación mínima",
+        "body": "Antes de invitar usuarios reales:\n\n- **Auth funcional** si requiere cuentas\n- **RLS** si hay datos por usuario\n- **Manejo de errores** con mensajes útiles\n- **Logging básico** para depurar remoto\n- **Backups** de tu base de datos"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "La disciplina del círculo cerrado",
+        "body": "Antes de abrir a extraños:\n\n- Invita 3-5 amigos a usarla\n- Observa errores que tú nunca viste\n- Escucha sus dudas\n- Itera sobre lo que encuentras\n\n**El círculo pequeño es tu primer filtro de calidad.**"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Si tu prototipo funciona en tu máquina, está listo para ser producto.",
+        "answer": false,
+        "explanation": "Falso. **Funcionar en tu máquina es el inicio**, no el final. Producción introduce variables que no tenías: red, concurrencia, navegadores distintos, casos raros de uso. Sin prepararlas, el producto rompe desde el día uno.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada aspecto con su diferencia prototipo vs producto:",
+        "pairs": [
+          {
+            "term": "Errores",
+            "def": "Prototipo: ignora · Producto: maneja"
+          },
+          {
+            "term": "Seguridad",
+            "def": "Prototipo: sin RLS · Producto: con RLS"
+          },
+          {
+            "term": "Performance",
+            "def": "Prototipo: 1 usuario · Producto: muchos"
+          },
+          {
+            "term": "UX",
+            "def": "Prototipo: para ti · Producto: para extraños"
+          }
+        ],
+        "explanation": "Cada dimensión exige trabajo. **Subestimar estas diferencias** es razón principal por la que apps 'lanzan' pero no sostienen usuarios.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu app está lista para usuarios reales?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tienes auth y RLS donde aplica"
+          },
+          {
+            "id": 1,
+            "text": "Los errores muestran mensajes útiles, no stack traces"
+          },
+          {
+            "id": 2,
+            "text": "Varias personas externas la usaron sin romperla"
+          },
+          {
+            "id": 3,
+            "text": "Funciona perfecto solo en tu máquina"
+          },
+          {
+            "id": 4,
+            "text": "Nunca has probado con datos reales"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros son mínimos. Los últimos 2 son trampas — 'funciona para mí' no equivale a 'funciona para otros'. **El test real está fuera de tu máquina**.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu app está 80%. Quieres invitar 50 amigos. ¿Qué haces primero?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Invitar a los 50 directo"
+          },
+          {
+            "id": 1,
+            "text": "Invitar 3-5, observar errores y confusiones, corregir, luego abrir a los 50. Doble paso evita apagar el entusiasmo si rompe al inicio"
+          },
+          {
+            "id": 2,
+            "text": "Esperar a tener 100% perfecto"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**3-5 → iterar → 50** es mejor que **0 → 50 → pánico**. Los primeros usuarios encuentran issues que tú no viste. Corregirlos antes del lanzamiento masivo protege tu momentum.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Diana invita 5 amigos primero. Descubre 7 bugs. ¿Qué aprendió?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Que su app es mala"
+          },
+          {
+            "id": 1,
+            "text": "Que 'funciona para mí' ≠ 'funciona para todos'. Arregla los 7 issues y luego abre a más. Su app está 2x mejor después, y los 50 amigos llegan a una experiencia sólida"
+          },
+          {
+            "id": 2,
+            "text": "Que lanzar no vale la pena"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Diana pasó **del prototipo al producto temprano**. Los 5 amigos fueron filtro de calidad gratis. Esa disciplina es lo que separa lanzamientos que mueren al día 2 de los que ganan tracción.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🏗️",
+        "title": "Puente prototipo-producto",
+        "body": "Ya sabes qué separa un prototipo de un producto. Hoy: elige una app tuya y aplica la lista mínima antes de compartirla."
+      }
+    }
+  ]
+}

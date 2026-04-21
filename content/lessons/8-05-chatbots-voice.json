@@ -1,0 +1,198 @@
+{
+  "section_id": 8,
+  "slug": "chatbots-voice",
+  "title": "Chatbots y voice agents",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Joaquín quiere un bot de soporte para su tienda. Lo imagina solo como chat de texto. Su cofundadora sugiere: 'también voz, para call center'. Joaquín duda: '¿es muy distinto?'.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — es el mismo agente con micrófono"
+          },
+          {
+            "id": 1,
+            "text": "Cambian la latencia tolerada, el estilo conversacional y el manejo de interrupciones — un voice agent requiere diseño específico desde el inicio"
+          },
+          {
+            "id": 2,
+            "text": "Solo cambia el idioma soportado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "En **chat** el usuario tolera 3-5 segundos de espera y lee párrafos. En **voz** todo cambia: necesita responder en menos de un segundo, con frases cortas, y saber qué hacer cuando el humano lo interrumpe. No es el mismo bot con micrófono — es otro diseño.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Diferencias clave",
+        "body": "Chat vs voz:\n\n- **Latencia**: chat tolera 3-5s, voz exige <1s\n- **Longitud**: chat permite respuestas largas, voz pide frases cortas\n- **Interrupciones**: en voz el usuario puede cortar al agente\n- **Formato**: chat soporta bullets y links; voz no"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Stack típico de voice agent",
+        "body": "Cuatro piezas conectadas:\n\n- **STT** — transcribe voz a texto (Whisper, Deepgram)\n- **Modelo de lenguaje** — decide qué responder (GPT-4o, Claude Haiku)\n- **TTS** — convierte texto a voz (ElevenLabs, OpenAI TTS)\n- **Telefonía** — conecta con llamadas reales (Twilio, Vapi, Retell)"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Casos de uso típicos",
+        "body": "Voice agents brillan en:\n\n- **Atención telefónica** 24/7 para preguntas comunes\n- **Agendamiento** de citas automático\n- **Calificación** de leads entrantes\n- **Encuestas** conversacionales\n\nChatbots brillan en: soporte por web, WhatsApp, email."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Voice agents modernos son indistinguibles de humanos en llamadas largas.",
+        "answer": false,
+        "explanation": "Falso. Para llamadas cortas simples sí. Para conversaciones largas o emotivas, aún hay diferencia. **Lo más importante: transparencia.** Declarar 'soy AI' desde el saludo gana confianza y cumple regulaciones emergentes.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada tecnología con su rol en un voice agent:",
+        "pairs": [
+          {
+            "term": "Whisper / Deepgram",
+            "def": "Transcribe voz a texto"
+          },
+          {
+            "term": "GPT-4o / Claude Haiku",
+            "def": "Decide qué responder (caso típico)"
+          },
+          {
+            "term": "ElevenLabs / OpenAI TTS",
+            "def": "Convierte texto a voz (caso típico)"
+          },
+          {
+            "term": "Twilio / Vapi / Retell",
+            "def": "Integra con telefonía (caso típico)"
+          }
+        ],
+        "explanation": "Un voice agent es un **stack de piezas**, no un solo modelo. Cada capa puede elegirse distinto según casos y presupuesto.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu voice agent está bien diseñado?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Responde en menos de 1 segundo"
+          },
+          {
+            "id": 1,
+            "text": "Maneja interrupciones sin romper"
+          },
+          {
+            "id": 2,
+            "text": "Responde con frases cortas, no párrafos"
+          },
+          {
+            "id": 3,
+            "text": "Declara que es AI desde el inicio"
+          },
+          {
+            "id": 4,
+            "text": "Responde con links y bullet points"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "Latencia baja, manejo de interrupciones, frases cortas y transparencia = bien. Responder con formato de texto (bullets) es **antipatrón de voz** — nadie lo escucha bien.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu restaurante recibe 50 llamadas al día preguntando horarios, reservas y menú. ¿Qué construyes?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Chatbot web solamente"
+          },
+          {
+            "id": 1,
+            "text": "Voice agent con Vapi/Retell + Claude Haiku + herramientas para consultar disponibilidad. Maneja el 80% solo, escala a humano el 20%"
+          },
+          {
+            "id": 2,
+            "text": "Contratar un recepcionista"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "50 llamadas/día con preguntas comunes = **sweet spot de voice agent**. Libera al humano para lo complejo. Chatbot web pierde a la persona que marca desde la calle.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Joaquín diseña su bot: chat para web/WhatsApp + voice para teléfono. ¿Qué gana al lanzar ambos?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — duplica el esfuerzo"
+          },
+          {
+            "id": 1,
+            "text": "Cubre a sus clientes por el canal que ellos prefieren. Voice responde el teléfono; chat responde WhatsApp. Cada canal en su formato óptimo"
+          },
+          {
+            "id": 2,
+            "text": "Solo gana en volumen — la calidad de atención baja en ambos canales"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Joaquín construyó **omnicanal con AI**. Chat y voice son agentes con mismo cerebro pero distinto cuerpo. El cliente elige; él cubre todo. Esa flexibilidad es el valor real.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "📞",
+        "title": "Chat y voz en tu repertorio",
+        "body": "Ya sabes cuándo elegir cuál: chat para texto asíncrono, voz para teléfono en tiempo real. Cada canal con su formato óptimo."
+      }
+    }
+  ]
+}

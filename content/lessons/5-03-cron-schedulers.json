@@ -1,0 +1,197 @@
+{
+  "section_id": 5,
+  "slug": "cron-schedulers",
+  "title": "Cron y schedulers: la base de toda automatización",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Rodrigo configuró un bot que le manda un reporte por email. Pero descubre que solo corre cuando él abre la app manualmente. Alguien le dice: necesitas un cron.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Una app de moda como Zapier para conectar servicios"
+          },
+          {
+            "id": 1,
+            "text": "Un programador de tareas de Unix que corre comandos en horarios fijos"
+          },
+          {
+            "id": 2,
+            "text": "Un lenguaje de programación complejo que reemplaza a Python"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Cron** existe desde los 70s en Unix. Es el programador de tareas más usado del mundo. Detrás de Zapier, GitHub Actions o cualquier *ejecuta cada día a las 9am* hay un cron (o un equivalente moderno). Entenderlo te da control real sobre tus automatizaciones.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es cron",
+        "body": "**Cron** es un programa que ejecuta tareas según un horario:\n\n- Cada día a las 9am\n- Cada lunes a las 8\n- Cada 15 minutos\n\nLa sintaxis es una cadena de 5 campos (minuto hora día mes día-semana) que define **cuándo**."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Alternativas modernas a cron clásico",
+        "body": "Cron funciona pero tiene fricciones. Alternativas útiles:\n\n- **GitHub Actions** — cron + ejecución en la nube\n- **Vercel Cron Jobs** — si ya usas Vercel\n- **Supabase pg_cron** — cron dentro de la base de datos\n- **MCP (Model Context Protocol) schedulers** — cron unido a agentes de AI\n\nTodas heredan la sintaxis de los 5 campos."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Anatomía de un cron: 5 campos",
+        "body": "La expresión clásica:\n\n`0 9 * * 1-5` = a las 9:00 de lunes a viernes\n\n- Minuto (0-59)\n- Hora (0-23)\n- Día del mes (1-31)\n- Mes (1-12)\n- Día de semana (0-6, domingo=0)\n\nEl asterisco significa 'cualquiera'."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Un cron garantiza que tu tarea se ejecute incluso si el servidor está apagado.",
+        "answer": false,
+        "explanation": "Falso. Cron solo corre si el sistema está encendido. Si tu laptop duerme, el cron no corre. Por eso muchos usan **crons en la nube** (GitHub Actions, Vercel, Supabase): el servidor siempre está arriba.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la expresión cron con lo que significa:",
+        "pairs": [
+          {
+            "term": "0 9 ∗ ∗ ∗",
+            "def": "Todos los días a las 9am"
+          },
+          {
+            "term": "∗/15 ∗ ∗ ∗ ∗",
+            "def": "Cada 15 minutos"
+          },
+          {
+            "term": "0 8 ∗ ∗ 1",
+            "def": "Cada lunes a las 8am"
+          },
+          {
+            "term": "0 0 1 ∗ ∗",
+            "def": "Primer día de cada mes, medianoche"
+          }
+        ],
+        "explanation": "No necesitas memorizar la sintaxis. **crontab.guru** traduce expresiones en vivo. En cron real se escribe `*` (asterisco) para *cualquier valor*; leer una expresión básica es habilidad fundamental en automatización.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué casos son ideales para un cron?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Enviar reporte diario a las 9am"
+          },
+          {
+            "id": 1,
+            "text": "Limpiar caché cada madrugada"
+          },
+          {
+            "id": 2,
+            "text": "Recordar pagar facturas el día 1 de cada mes"
+          },
+          {
+            "id": 3,
+            "text": "Responder en vivo a un usuario"
+          },
+          {
+            "id": 4,
+            "text": "Disparar algo cuando llega un email"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Cron es **horario**, no evento. Para 'cuando llega email' usas webhook, no cron. Para 'en tiempo real' usas otra capa. Cron brilla en tareas periódicas predecibles.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres un reporte semanal de ventas cada lunes a las 8am. ¿Dónde lo configuras?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Cron en tu laptop — pero solo corre si está encendida"
+          },
+          {
+            "id": 1,
+            "text": "Cron en la nube (GitHub Actions, Supabase pg_cron, Vercel Cron) — corre aunque tú duermas"
+          },
+          {
+            "id": 2,
+            "text": "Abrir la app manualmente cada lunes"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Cron local muere si tu computadora se apaga. **Cron en la nube** es la opción profesional. GitHub Actions es gratis hasta cierto uso. Supabase y Vercel integran bien si ya usas el stack.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Rodrigo vuelve a su bot. ¿Qué hace ahora con lo aprendido?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sigue abriendo la app manualmente cada mañana"
+          },
+          {
+            "id": 1,
+            "text": "Mete el bot en un GitHub Action con un cron diario a las 9am, corre solo y él solo recibe el email"
+          },
+          {
+            "id": 2,
+            "text": "Cambia a otra herramienta sin scheduler"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Rodrigo pasó de automatización a medias a **automatización real**. En la práctica, su cron queda como `0 9 * * *` dentro del workflow de GitHub. El bot ya no depende de él: eso es exactamente lo que cron desbloquea.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "⏱️",
+        "title": "Cron desbloqueado",
+        "body": "Tienes la base de todo scheduler. Cualquier tarea repetitiva — reportes, limpiezas, recordatorios — ya puede correr sola en piloto automático."
+      }
+    }
+  ]
+}

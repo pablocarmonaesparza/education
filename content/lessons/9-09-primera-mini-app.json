@@ -1,0 +1,202 @@
+{
+  "section_id": 9,
+  "slug": "primer-mini-app",
+  "title": "Tu primera mini-app",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Renata sabe Claude Code, Cursor, Git y vibe coding, pero su carpeta de proyectos está vacía. Un amigo le dice: arma algo hoy. ¿Qué debería construir primero?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Una app con potencial de negocio: landing, pricing y onboarding desde el día uno"
+          },
+          {
+            "id": 1,
+            "text": "Una mini-app que ella misma usaría para un problema suyo: rastreador de hábitos, checklist o dashboard personal"
+          },
+          {
+            "id": 2,
+            "text": "Un clon simplificado de una app famosa para practicar con un caso de uso validado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "La trampa: primer proyecto = algo vendible o un clon de una app probada. La realidad: **el primer proyecto es para ti**. Pequeño, útil, terminable en 1-2 tardes. La motivación viene de completarlo y usarlo, no de imaginarlo grande.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Anatomía de una mini-app",
+        "body": "Lo mínimo para que sea útil:\n\n- **1 caso de uso claro**: yo la necesito para X\n- **1 interfaz simple**: un formulario o una lista\n- **1 backend básico**: base de datos, API, o puro frontend\n- **Deploy** accesible por URL: Vercel, Netlify o Replit"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "5 ideas de primera mini-app",
+        "body": "Buenas opciones:\n\n- **Rastreador de hábitos** con historial\n- **Calculadora** específica a tu trabajo\n- **Dashboard de métricas** de tu día\n- **Generador** de algo recurrente (plantillas, mensajes)\n- **Formulario** + AI que clasifica/responde\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "La regla del día uno",
+        "body": "En la primera sesión, logra:\n\n- Algo que corre (aunque sea simple)\n- Commit inicial\n- Deploy accesible por URL\n\n**Imperfecto pero real > perfecto imaginado**. Puedes iterar sin fin después; el día 1 es sobre existir."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Tu primera mini-app debe estar pulida y lista para tener 1000 usuarios.",
+        "answer": false,
+        "explanation": "Falso. **Tu primera mini-app es para ti**. No necesita landing, pricing, marketing. Solo funcionar. Si después la quieres abrir al mundo, genial. Arrancar con pensamiento de producto mata la mayoría de primeros proyectos.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para tu primera mini-app:",
+        "steps": [
+          "Elegir problema pequeño que tú tienes",
+          "Describir la app en 3 frases (qué hace, para qué, quién usa)",
+          "Elegir herramienta (Bolt, Lovable, v0, Cursor)",
+          "Generar primer MVP con AI guiada",
+          "Hacer commit inicial a Git",
+          "Deploy en Vercel/Netlify/Replit",
+          "Usarla tú mismo una semana",
+          "Iterar según lo que descubras"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "explanation": "El orden minimiza fricción: **problema → descripción → MVP → deploy → uso → iteración**. Saltar el uso propio antes de iterar es la fuente principal de apps muertas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la herramienta con lo que gana tu primera mini-app:",
+        "pairs": [
+          {
+            "term": "Bolt / Lovable / v0",
+            "def": "Primer MVP en 20 min"
+          },
+          {
+            "term": "Git + GitHub",
+            "def": "Red de seguridad"
+          },
+          {
+            "term": "Vercel / Netlify",
+            "def": "Deploy en minutos"
+          },
+          {
+            "term": "Claude Code / Cursor",
+            "def": "Iterar con precisión"
+          }
+        ],
+        "explanation": "**Stack moderno para mini-apps existe**. Juntas estas piezas te permiten ir de idea a URL en horas. Sin este stack, tomaría semanas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu mini-app es buen candidato?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tú mismo la usarías"
+          },
+          {
+            "id": 1,
+            "text": "Se puede describir en 3 frases"
+          },
+          {
+            "id": 2,
+            "text": "Se puede completar en 1-3 tardes"
+          },
+          {
+            "id": 3,
+            "text": "Requiere 10 meses de desarrollo"
+          },
+          {
+            "id": 4,
+            "text": "Tiene que competir con Google"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Personal + simple + finiquitable = señales verdes. **Escala o ambición grande = trampa de primer proyecto**. Empezar chico te prepara para grande después.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Renata arma un rastreador de lecturas con etiquetas en 2 tardes y lo despliega en Vercel. ¿Qué ganó realmente?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Una app pequeña que no le servirá hasta que agregue usuarios y la monetice"
+          },
+          {
+            "id": 1,
+            "text": "Una app que usa cada día y la experiencia del ciclo completo: vibe coding, Git y deploy. La siguiente será más ambiciosa y más rápida"
+          },
+          {
+            "id": 2,
+            "text": "Práctica técnica que habría sido más valiosa siguiendo un tutorial avanzado en lugar de un proyecto propio"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Renata consolidó **todo el stack en un proyecto real**. La app no tiene que ser impresionante: el valor está en haber ejecutado el ciclo completo con un caso propio. La siguiente iteración ya no parte de cero.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🚀",
+        "title": "Primera mini-app en producción",
+        "body": "Cerraste vibe coding. La última sección: implementación — cómo pasar de prototipo a producto real que vive en el mundo."
+      }
+    }
+  ]
+}

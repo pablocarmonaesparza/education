@@ -1,0 +1,197 @@
+{
+  "section_id": 11,
+  "slug": "anthropic-skills",
+  "title": "Anthropic Skills: capacidades invocables",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Dario lee sobre 'Anthropic Skills' y 'Model Context Protocol (MCP)' al mismo tiempo. Se confunde: '¿son lo mismo? ¿cuándo uso cuál?'. Un amigo le explica la diferencia. ¿Cuál es?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Son idénticos, solo cambia el nombre"
+          },
+          {
+            "id": 1,
+            "text": "MCP es protocolo para conectar herramientas externas. Skills son capacidades reutilizables que añaden a Claude instrucciones + recursos para tareas específicas (ej: 'escribir tests', 'generar brand style')"
+          },
+          {
+            "id": 2,
+            "text": "Skills reemplazan a MCP completamente"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**MCP** = protocolo para herramientas externas. **Skills** = paquetes de instrucciones + context + scripts que Claude puede invocar para tareas específicas (como una skill humana). Son complementarios: Skills pueden usar MCPs internamente.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es una Skill",
+        "body": "Una **Skill** es un paquete reutilizable que contiene:\n\n- **Prompt/instrucciones** especializadas\n- **Scripts** que la skill puede ejecutar\n- **Recursos** (templates, ejemplos, referencias)\n- **Metadata** de cuándo invocarla\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Skills vs MCP vs Tools",
+        "body": "Distinción clave:\n\n- **Tool**: acción individual (ej: `read_file`)\n- **MCP**: conjunto de tools via protocolo estándar\n- **Skill**: 'manera de hacer X' — prompt + tools + contexto especializado\n\nSkill = 'experto especializado'."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Ejemplos de Skills útiles",
+        "body": "Casos reales:\n\n- **write-tests**: conoce tu stack y convenciones\n- **brand-voice**: copy en la voz de tu marca\n- **code-review**: aplica tu checklist antes de commitear"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Las Skills solo sirven para tareas triviales que ya haría Claude igual.",
+        "answer": false,
+        "explanation": "Falso. Las Skills brillan en **tareas con convenciones específicas**: tu código, tu voz, tu proceso. Sin skill, pides 'escribe tests' y Claude adivina tu stack. Con skill, Claude sabe exactamente cómo escribes tests en tu repo.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada herramienta con su necesidad típica:",
+        "pairs": [
+          {
+            "term": "MCP",
+            "def": "Conectar Claude a tu base de datos"
+          },
+          {
+            "term": "Skill de estilo",
+            "def": "Que Claude escriba siguiendo tu voz"
+          },
+          {
+            "term": "Tool",
+            "def": "Ejecutar una función puntual y atómica"
+          },
+          {
+            "term": "Skill de proceso",
+            "def": "Seguir un onboarding estándar completo"
+          }
+        ],
+        "explanation": "**MCP para conectar. Skill para especializar. Tool para actuar.** Las 3 capas conviven — no eliges una sola.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué casos son ideales para crear una Skill?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Proceso repetible con convenciones específicas"
+          },
+          {
+            "id": 1,
+            "text": "Tareas donde necesitas que Claude siga tu estilo"
+          },
+          {
+            "id": 2,
+            "text": "Workflows con pasos estandarizados"
+          },
+          {
+            "id": 3,
+            "text": "Una pregunta puntual única"
+          },
+          {
+            "id": 4,
+            "text": "Sumar 2 + 2"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros justifican el overhead de crear skill. Una pregunta única no — basta un prompt. Las skills son **inversión para reuso**; si no hay reuso, sobran.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu equipo tiene un proceso para crear post de blog: investigar, redactar en tu voz, revisar con checklist, publicar. ¿Qué construyes?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un MCP que conecte tu CMS"
+          },
+          {
+            "id": 1,
+            "text": "Una Skill 'create-blog-post' que encapsula todo el proceso + MCP para publicar en el CMS"
+          },
+          {
+            "id": 2,
+            "text": "Pedirle a Claude 'haz un post' sin contexto"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Skill para el proceso + MCP para la herramienta.** Se complementan. La skill sabe tu voz y checklist; el MCP publica en tu CMS. Juntos: un agente especializado en blog.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Dario crea 3 skills para su trabajo diario. ¿Qué cambió después de una semana?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — Claude sigue igual"
+          },
+          {
+            "id": 1,
+            "text": "Las tareas que antes requerían explicar contexto cada vez, ahora se resuelven invocando la skill. Trabajo repetitivo especializado baja 60% en tiempo"
+          },
+          {
+            "id": 2,
+            "text": "Gasta más tiempo explicando a Claude"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Dario convirtió procesos manuales en **skills reutilizables**. La inversión inicial (armar las skills) se paga en semanas de uso. Cada skill bien hecha es productividad permanente.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🎓",
+        "title": "Skills en tu repertorio",
+        "body": "Ya diferencias skill de MCP. La siguiente lección entra a Apify: scraping programático a escala."
+      }
+    }
+  ]
+}

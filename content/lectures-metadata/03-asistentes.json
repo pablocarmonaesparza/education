@@ -1,0 +1,108 @@
+{
+  "section_id": 3,
+  "section_slug": "asistentes",
+  "section_display": "asistentes",
+  "source": "claude-in-session",
+  "lectures": [
+    {
+      "slug": "mapa-de-modelos",
+      "title": "el mapa de modelos en 2026",
+      "display_order": 1,
+      "learning_objective": "comparar los asistentes de AI dominantes usando criterios estables como acceso a web, manejo de archivos y estilo de respuesta",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "panorama de asistentes",
+      "narrative_arc": "Alguien lleva tiempo usando un solo asistente porque es el primero que conoció. Los demás le suenan lejanos, 'otra cosa'. No sabe que hay diferencias reales entre ellos ni por qué alguien elegiría uno sobre otro. Antes de profundizar en cualquiera, necesita el mapa completo con nombres y posiciones.",
+      "scenario_character": "Gabriel"
+    },
+    {
+      "slug": "chatgpt",
+      "title": "ChatGPT en profundidad",
+      "display_order": 2,
+      "learning_objective": "describir para qué tareas ChatGPT es la mejor opción y qué modos tiene disponibles",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "modos de ChatGPT",
+      "narrative_arc": "Alguien ha usado ChatGPT durante meses sin explorar sus modos más allá del chat básico. No sabe que hay búsqueda web, voz avanzada, canvas y projects. Cada uno resuelve un caso distinto. Antes de explorar otros asistentes, vale exprimir lo que ya tiene abierto.",
+      "scenario_character": "Fernanda"
+    },
+    {
+      "slug": "claude",
+      "title": "Claude en profundidad",
+      "display_order": 3,
+      "learning_objective": "describir el estilo de Claude y para qué tipo de tareas supera a otros asistentes",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "estilo de Claude",
+      "narrative_arc": "Alguien prueba Claude por primera vez y se desconcierta: le contradice más, hace más preguntas, a veces se niega a ciertas tareas. En otros asistentes estaría incómodo, aquí termina con un output más limpio. La personalidad del modelo no es un bug, es parte del diseño.",
+      "scenario_character": "Isabella"
+    },
+    {
+      "slug": "gemini",
+      "title": "Gemini y Google Workspace",
+      "display_order": 4,
+      "learning_objective": "usar Gemini dentro de Google Docs, Sheets y Gmail para tareas del día a día",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "Gemini en Workspace",
+      "narrative_arc": "Alguien edita sus documentos en Google Docs y revisa correos en Gmail sin saber que Gemini está ahí listo para redactar, resumir y organizar. Sigue abriendo ChatGPT en otra pestaña para todo. La integración nativa puede ahorrarle docenas de cambios de contexto al día.",
+      "scenario_character": "Natalia"
+    },
+    {
+      "slug": "perplexity",
+      "title": "Perplexity: búsqueda con AI",
+      "display_order": 5,
+      "learning_objective": "usar Perplexity para obtener respuestas con fuentes verificables en lugar de diez enlaces azules",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "búsqueda con Perplexity",
+      "narrative_arc": "Alguien busca algo en Google, recibe diez enlaces azules, abre cuatro, cierra tres, copia datos sueltos de uno. Podría haber pedido la respuesta directamente con fuentes citadas. El problema no es que Google sea malo, es que para ciertas preguntas la interfaz de búsqueda clásica ya quedó atrás.",
+      "scenario_character": "Ricardo"
+    },
+    {
+      "slug": "deep-research",
+      "title": "deep research: investigar con AI",
+      "display_order": 6,
+      "learning_objective": "configurar un deep research para obtener un reporte estructurado con fuentes sobre un tema",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "deep research",
+      "narrative_arc": "Alguien necesita investigar un mercado nuevo para un proyecto y calcula que le tomará dos días: buscar, leer, tomar notas, sintetizar. No sabe que existe una modalidad que hace el rastreo por él mientras trabaja en otra cosa, y le entrega un informe con fuentes. Delegar la investigación cambia la velocidad de decisión.",
+      "scenario_character": "Ximena"
+    },
+    {
+      "slug": "gpts-y-projects",
+      "title": "customizar: GPTs y Projects",
+      "display_order": 7,
+      "learning_objective": "crear un GPT o Project personalizado para una tarea recurrente del trabajo",
+      "bloom_verb": "crear",
+      "cognitive_route": "mixta",
+      "concept_name": "GPTs y Projects",
+      "narrative_arc": "Alguien repite el mismo prompt largo cada vez que abre ChatGPT: su rol, su empresa, su estilo preferido. Pega el mismo texto veinte veces al día. No sabe que puede guardarlo de una vez y arrancar cada sesión ya configurado. La personalización no es estética, es ahorro de fricción repetida.",
+      "scenario_character": "Javier"
+    },
+    {
+      "slug": "elegir-modelo",
+      "title": "qué modelo elegir y cuándo",
+      "display_order": 8,
+      "learning_objective": "decidir qué modelo usar según la tarea, el presupuesto y la precisión que necesitas",
+      "bloom_verb": "evaluar",
+      "cognitive_route": "mixta",
+      "concept_name": "criterio de elección de modelo",
+      "narrative_arc": "Alguien elige su asistente por costumbre, no por tarea. Usa el mismo para redactar, investigar, programar y resumir, sin pensar si es el mejor para cada caso. La diferencia entre elegir bien y mal es entre un output aceptable y uno excelente, con el mismo esfuerzo de prompt.",
+      "scenario_character": "Mauricio"
+    },
+    {
+      "slug": "stack-personal",
+      "title": "tu stack personal de AI",
+      "display_order": 9,
+      "learning_objective": "construir un stack de dos o tres asistentes que cubran las tareas de tu semana",
+      "bloom_verb": "crear",
+      "cognitive_route": "mixta",
+      "concept_name": "stack personal de AI",
+      "narrative_arc": "Alguien ha probado seis asistentes distintos y se queda paralizado cambiando entre todos. Nunca decide cuáles son 'los suyos'. El costo no es económico, es mental: cada herramienta extra roba atención. Lo que necesita es un stack chico y deliberado.",
+      "scenario_character": "Alejandra"
+    }
+  ],
+  "version": "v1.2-codex-reviewed"
+}

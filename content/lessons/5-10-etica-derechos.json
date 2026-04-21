@@ -1,0 +1,197 @@
+{
+  "section_id": 5,
+  "slug": "etica-derechos-contenido",
+  "title": "Ética y derechos en contenido y automatización con AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Camila genera imágenes con AI para su marca. Usa el estilo de un ilustrador famoso sin permiso. Un cliente le escribe preguntando si el contenido es seguro de usar.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Es AI, por lo tanto el contenido es libre de derechos"
+          },
+          {
+            "id": 1,
+            "text": "Generar contenido con AI no lo exime de obligaciones: estilos protegidos, marcas, rostros reales, y datos personales siguen teniendo consideraciones legales y éticas"
+          },
+          {
+            "id": 2,
+            "text": "Ningún contenido con AI se puede usar comercialmente"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "La AI no lava derechos. **Clonar el estilo identificable de un artista vivo, usar rostros reales sin permiso, o generar imágenes de marcas comerciales** puede meter a Camila en problemas legales y reputacionales. La herramienta no te da permiso.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Tres zonas de riesgo",
+        "body": "Al generar o automatizar contenido, cuida:\n\n- **Estilos protegidos**: clonar a un artista vivo identificable\n- **Rostros y personas reales**: sin consentimiento\n- **Marcas comerciales**: logos, trade dress, nombres\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Datos personales en automatización",
+        "body": "Al automatizar flujos con datos:\n\n- **No mandes** datos personales a modelos sin consentimiento\n- **No guardes** info sensible en herramientas sin políticas claras\n- **Documenta** qué data pasa por qué modelo\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "El tema de atribución",
+        "body": "Buenas prácticas emergentes:\n\n- **Declarar** cuando el contenido fue generado con AI\n- **No vender** como 'hecho a mano' lo que es AI\n- **Respetar** licencias de modelos (algunos piden atribución)\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Usar AI borra la responsabilidad legal sobre el contenido generado.",
+        "answer": false,
+        "explanation": "Falso. **El usuario del contenido es responsable**, no el modelo. Si publicas algo difamatorio, marca registrada o con rostro sin permiso, tú eres responsable. La AI es herramienta, no escudo.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada caso con el riesgo principal:",
+        "pairs": [
+          {
+            "term": "Estilo de artista vivo",
+            "def": "Riesgo de copyright de estilo"
+          },
+          {
+            "term": "Rostro de persona real",
+            "def": "Derecho de imagen y consentimiento"
+          },
+          {
+            "term": "Logo de marca famosa",
+            "def": "Riesgo de marca registrada"
+          },
+          {
+            "term": "Datos de clientes",
+            "def": "Protección de datos personales"
+          }
+        ],
+        "explanation": "Cada tipo de uso tiene su zona de riesgo distinta. **Reconocer el tipo** te permite decidir si aplica o necesitas permiso/alternativa.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas son seguras al usar AI para contenido?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Generar personajes originales sin usar estilo de artistas vivos"
+          },
+          {
+            "id": 1,
+            "text": "Declarar que el contenido fue generado con AI cuando importe"
+          },
+          {
+            "id": 2,
+            "text": "Usar rostros y personas 100% inventados por el modelo"
+          },
+          {
+            "id": 3,
+            "text": "Clonar logos de empresas para hacer memes virales"
+          },
+          {
+            "id": 4,
+            "text": "Generar imágenes de figuras públicas en situaciones falsas"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las 3 primeras son seguras. Las 2 últimas son territorio problemático — marcas registradas y falsificación de figuras públicas te ponen en riesgo legal y reputacional.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres crear un personaje-mascota para tu marca usando AI. ¿Cuál es el mejor enfoque?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Pedirle 'al estilo de Studio Ghibli' porque te gusta esa estética"
+          },
+          {
+            "id": 1,
+            "text": "Crear una mascota original con estilo descrito en términos generales (caricatura suave, colores cálidos, expresión amable)"
+          },
+          {
+            "id": 2,
+            "text": "Usar el logo de una marca famosa adaptado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Describir **estética general** es seguro. Clonar estilos identificables o logos conocidos no. El resultado suele ser igual de bueno cuando describes sin copiar.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Camila revisa sus piezas. ¿Qué ajusta con este criterio?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — fueron generadas con AI"
+          },
+          {
+            "id": 1,
+            "text": "Regenera las que clonaban estilo identificable, describe estilos generales, verifica que no haya logos o rostros sin permiso"
+          },
+          {
+            "id": 2,
+            "text": "Deja todo y espera que nadie note"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Camila entendió que **el criterio ético y legal aplica al que usa el contenido**. Pequeños ajustes en prompts evitan riesgos grandes. Es disciplina, no paranoia.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "⚖️",
+        "title": "Criterio ético encendido",
+        "body": "Tienes una brújula para no pisar minas al generar o automatizar con AI. Aplicas el criterio en cada pieza antes de publicar."
+      }
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "section_id": 10,
+  "slug": "despedida",
+  "title": "Despedida y siguientes pasos",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Rodrigo acaba de terminar un curso intensivo de AI. Quiere que lo aprendido se quede. ¿Qué le conviene más esta semana?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Repasar los apuntes del curso a fondo"
+          },
+          {
+            "id": 1,
+            "text": "Encadenar otro curso mientras todavía tiene impulso"
+          },
+          {
+            "id": 2,
+            "text": "Elegir un problema real de su día y construir algo que lo resuelva"
+          }
+        ],
+        "correctId": 2,
+        "explanation": "La intuición dice: *\"si repaso más, retengo más\"*. Pero el conocimiento se cristaliza con **uso**, no con relectura. Un proyecto pequeño ejecutado esta semana vale más que otro curso sin aplicar. El repaso sin aplicación se evapora en días.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Lo que acabas de adquirir",
+        "body": "Cerraste 10 secciones de Itera. Ahora entiendes:\n\n- Fundamentos de cómo funciona la AI\n- Cómo elegir y usar asistentes\n- Cómo generar contenido profesional\n- Cómo automatizar flujos\n- Cómo armar un stack de AI\n- Cómo lanzar un producto real"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué hacer esta semana",
+        "body": "Tres opciones concretas:\n\n- **Automatizar**: elige una tarea repetitiva y arma un bot esta semana\n- **Construir**: mini-app personal con vibe coding + deploy\n- **Integrar**: un Model Context Protocol (MCP) + un agente para algo real de tu trabajo\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Cómo seguir aprendiendo",
+        "body": "El curso te dio bases, no un final. Para mantener el filo:\n\n- **Construye en público**: publica lo que haces, suma comunidad\n- **Sigue a quienes ya construyen**, en LATAM y afuera\n- **Lee la documentación oficial** de los modelos que uses\n- **Prueba cada release**: media hora basta para formar criterio"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Terminar este curso te hace experto en AI aplicada.",
+        "answer": false,
+        "explanation": "Falso. Te da **fundamentos sólidos** para operar y construir con criterio. Ser 'experto' viene con años de aplicación. Pero ya no eres principiante: tienes lenguaje, criterio, herramientas. Eso basta para empezar a construir cosas reales.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el perfil con el primer proyecto post-curso ideal:",
+        "pairs": [
+          {
+            "term": "Emprendedor con idea",
+            "def": "Mini-app con vibe coding y primeros 10 usuarios"
+          },
+          {
+            "term": "Empleado en empresa",
+            "def": "Automatizar una tarea repetitiva de su rol"
+          },
+          {
+            "term": "Freelancer",
+            "def": "Flujo de trabajo personal potenciado por un agente"
+          },
+          {
+            "term": "Cambiando de carrera",
+            "def": "Construir en público y armar un portafolio"
+          }
+        ],
+        "explanation": "Cada perfil tiene su primer paso natural. **No esperes al proyecto perfecto** — el primero te revela lo que sigue.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué actitudes mantendrán tu ventaja en AI?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Construir algo nuevo cada mes"
+          },
+          {
+            "id": 1,
+            "text": "Leer releases de modelos y probarlos rápidamente"
+          },
+          {
+            "id": 2,
+            "text": "Hablar con otros que construyen"
+          },
+          {
+            "id": 3,
+            "text": "Consumir tutoriales sin aplicar"
+          },
+          {
+            "id": 4,
+            "text": "Esperar a que 'todo se estabilice'"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Construir + probar + comunidad = ventaja sostenible. Consumo pasivo y espera pasiva son **receta de irrelevancia**. AI no se estabilizará pronto — los que se mueven con ella ganan.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Acabas de terminar Itera. Hoy es lunes. ¿Qué haces esta semana?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Empezar otro curso antes de aplicar nada"
+          },
+          {
+            "id": 1,
+            "text": "Elegir un problema real y lanzar algo imperfecto el viernes"
+          },
+          {
+            "id": 2,
+            "text": "Revisar el curso otra vez de principio a fin"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Algo lanzado esta semana** le gana a otro curso el mes que viene. El conocimiento se consolida construyendo; revisar el curso otra vez es procrastinación disfrazada de preparación.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Rodrigo eligió automatizar sus reportes semanales con un agente. Lo armó y lo puso a correr en tres días. ¿Qué ganó?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada relevante, es un proyecto demasiado pequeño"
+          },
+          {
+            "id": 1,
+            "text": "Un sistema que corre solo y evidencia de que puede ejecutar"
+          },
+          {
+            "id": 2,
+            "text": "Experiencia, pero debió haber apuntado a algo más grande"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Rodrigo convirtió conocimiento en capacidad demostrada. **El primer proyecto pequeño ejecutado pesa más que cinco grandes imaginados**. Ganó momentum, que es lo más difícil de conseguir al salir de un curso.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🎉",
+        "title": "¡Terminaste Itera!",
+        "body": "100 lecciones completadas. Ahora la parte más importante: construir algo real. El mundo de 2026 recompensa a quien ejecuta, no a quien solo aprende. Nos vemos en tu primer lanzamiento."
+      }
+    }
+  ]
+}

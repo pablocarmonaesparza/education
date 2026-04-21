@@ -1,0 +1,218 @@
+{
+  "section_id": 2,
+  "slug": "iterar-un-prompt",
+  "title": "Iterar un prompt",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Pablo pide un post de LinkedIn a ChatGPT. Primera versión sale mediocre. Se rinde, lo publica, y esa noche pasa 2 horas editándolo a mano. ¿Cuál es el problema?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Ninguno — editar a mano es el flujo normal porque ChatGPT nunca da algo publicable al primer intento"
+          },
+          {
+            "id": 1,
+            "text": "No iteró: una segunda o tercera versión con feedback específico habría llegado al resultado en 30 segundos en lugar de 2 horas"
+          },
+          {
+            "id": 2,
+            "text": "Usó el modelo equivocado — necesitaba uno más avanzado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Iterar **no es pedirle lo mismo de nuevo**. Es decirle al modelo qué no te gustó y qué quieres cambiar. Con 2 o 3 iteraciones cortas se llega a lo que queda bien — con mucho menos esfuerzo que editar a mano.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Iterar es conversar",
+        "body": "Iterar **no es reescribir** el prompt desde cero. Es seguir la conversación diciéndole al modelo qué ajustar: *'más corto', 'tono informal', 'quita el emoji final', 'usa ejemplo concreto'*. El modelo recuerda y ajusta."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "El ciclo de 30 segundos",
+        "body": "La iteración buena toma 3 pasos:\n\n1. Lees el output\n2. Identificas en **una frase** qué no está bien\n3. Le dices al modelo exactamente eso\n\nRepites 2-3 veces. Total: menos de 2 minutos. Iterar mal es pedir 'mejóralo' sin especificar — pierdes tiempo."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el feedback malo con su versión útil:",
+        "pairs": [
+          {
+            "term": "Mejóralo",
+            "def": "Ajusta el segundo párrafo, suena forzado"
+          },
+          {
+            "term": "Hazlo mejor",
+            "def": "Usa frases más cortas, máximo 12 palabras cada una"
+          },
+          {
+            "term": "No me gusta",
+            "def": "Quita los adjetivos exagerados tipo 'revolucionario'"
+          },
+          {
+            "term": "Cámbialo",
+            "def": "Cambia el tono a algo más directo, menos corporativo"
+          }
+        ],
+        "explanation": "El modelo no puede leer tu mente. *'Mejóralo'* le da cero información. *'Frases más cortas, máximo 12 palabras'* le da un criterio accionable. El esfuerzo de ser específico lo recuperas 5x en calidad del output.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos de una iteración efectiva:",
+        "steps": [
+          "Lees el output del modelo completo",
+          "Identificas la parte específica que no funciona",
+          "Le dices al modelo qué cambiar en una frase concreta",
+          "Recibes la nueva versión y vuelves al paso 1 si aún no está bien",
+          "Aceptas cuando pasa tu filtro de 'publicable'"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "explanation": "El orden importa: leer → identificar → pedir. Saltarte la identificación (paso 2) te lleva al 'mejóralo' genérico y te regresa al inicio sin progreso.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Recibes un correo del modelo que no te gusta. Marca cuáles son formas útiles de pedir iteración:",
+        "options": [
+          {
+            "id": 0,
+            "text": "'Quita el saludo, empieza directo con el pedido'"
+          },
+          {
+            "id": 1,
+            "text": "'Acorta a máximo 3 renglones'"
+          },
+          {
+            "id": 2,
+            "text": "'El tono es muy formal, hazlo como si le escribiera a un amigo'"
+          },
+          {
+            "id": 3,
+            "text": "'Mejóralo'"
+          },
+          {
+            "id": 4,
+            "text": "'No me gusta, intenta otra cosa'"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las tres primeras dan una instrucción clara y accionable. Las otras dos dejan al modelo adivinando — y cuando adivina sin info, repite lo mismo con ligeras variaciones.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Le pides a ChatGPT un resumen de un artículo. La primera versión tiene los puntos correctos pero suena a plantilla. ¿Cuál es la mejor segunda iteración?",
+        "options": [
+          {
+            "id": 0,
+            "text": "'Hazlo mejor, con más personalidad'"
+          },
+          {
+            "id": 1,
+            "text": "'Reescríbelo como si se lo explicaras a un amigo tomando café: tono casual, frases más cortas, una analogía concreta'"
+          },
+          {
+            "id": 2,
+            "text": "'Intenta de nuevo'"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Le das **criterio + ejemplo**: tono, estructura, y una guía concreta (amigo tomando café + analogía). El modelo ajusta con precisión. Las otras dos opciones te devuelven la misma plantilla tibia.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "fill-blank",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Completa la regla:",
+        "sentenceBefore": "La iteración buena siempre incluye ",
+        "sentenceAfter": " de qué cambiar.",
+        "tokens": [
+          "Instrucción específica",
+          "Insistencia general",
+          "Repetición exacta"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "**Instrucción específica** es lo único que hace que la iteración avance. Insistir 'mejóralo' tres veces da tres versiones distintas pero igual de tibias.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Pablo vuelve a intentar su post de LinkedIn. La primera versión sale mediocre. ¿Qué hace según lo que aprendió?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Lo publica y se dedica a editarlo a mano en la noche"
+          },
+          {
+            "id": 1,
+            "text": "Lee la versión, identifica qué no funciona (demasiado corporativo, sin ejemplo concreto), y le dice al modelo exactamente eso"
+          },
+          {
+            "id": 2,
+            "text": "Borra el chat y empieza de cero con otro prompt"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Pablo ya no se rinde ni empieza de cero. **Conversa con el modelo** dando feedback específico. En 3 iteraciones cortas llega a algo publicable — el tiempo total es 5 minutos en vez de 2 horas editando a mano.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔁",
+        "title": "Iteración sin frustración",
+        "body": "Ahora sabes convertir un output tibio en algo publicable en minutos. La próxima lección va al paso que la mayoría salta: verificar lo que dice el modelo."
+      }
+    }
+  ]
+}

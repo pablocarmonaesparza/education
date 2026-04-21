@@ -1,0 +1,202 @@
+{
+  "section_id": 6,
+  "slug": "rag",
+  "title": "RAG: retrieval + generation",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Renata tiene 200 PDFs de su empresa y quiere que el chatbot responda con esa información. Los pega en el prompt y no caben en la ventana de contexto.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Cambiar a un modelo con ventana de contexto enorme y pegar los 200 PDFs completos"
+          },
+          {
+            "id": 1,
+            "text": "Guardar los PDFs aparte y enviar al modelo solo los fragmentos que responden cada pregunta"
+          },
+          {
+            "id": 2,
+            "text": "Copiar los PDFs uno por uno en cada nueva conversación"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El patrón se llama **RAG** (*retrieval augmented generation*, o recuperación aumentada con generación). En vez de meter todo al prompt, guardas los documentos aparte, buscas solo los fragmentos relevantes a la pregunta y se los pasas al modelo. Así el modelo genera la respuesta con contexto curado, no con información irrelevante.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es RAG",
+        "body": "**RAG** viene de *retrieval augmented generation*: recuperar y luego generar. El flujo es:\n\n1. El usuario hace una pregunta\n2. El sistema busca fragmentos relevantes en tus documentos\n3. Los inyecta en el prompt como contexto\n4. El modelo genera la respuesta usando **esos** fragmentos"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Por qué RAG y no solo prompt grande",
+        "body": "Aun con ventanas enormes, RAG gana porque:\n\n- **Más barato**: solo pagas por los tokens relevantes\n- **Más rápido**: menos tokens, respuesta más veloz\n- **Más preciso**: el modelo se enfoca en lo relevante\n- **Escalable**: crece a millones de documentos sin cambiar nada"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "RAG no es perfecto",
+        "body": "Retos reales del patrón:\n\n- **Cortar bien los documentos**: si los divides mal, pierdes contexto entre fragmentos\n- **Elegir los mejores**: los fragmentos más parecidos no siempre son los que responden la pregunta\n- **Alucinaciones**: el modelo aún puede inventar si los fragmentos son pobres"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Con RAG, el modelo solo responde con información de tus documentos y no alucina.",
+        "answer": false,
+        "explanation": "Falso. RAG **reduce** alucinaciones pero no las elimina. Si los fragmentos recuperados son pobres o ambiguos, el modelo sigue pudiendo inventar. Buenas prácticas: pedir que cite fuente, agregar 'si no sabes, di que no sabes'.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos de un RAG típico:",
+        "steps": [
+          "Dividir los documentos en fragmentos manejables",
+          "Convertir cada fragmento en un vector numérico",
+          "Guardar los vectores en una base de datos vectorial",
+          "El usuario hace una pregunta",
+          "Convertir la pregunta en un vector numérico",
+          "Recuperar los fragmentos más parecidos a la pregunta",
+          "Inyectar esos fragmentos en el prompt como contexto",
+          "El modelo genera la respuesta usando ese contexto"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "explanation": "Los primeros 3 son **indexación** (una sola vez, cuando preparas los documentos). Los últimos 5 son **tiempo de consulta** (cada vez que alguien pregunta). Entender esta separación es clave para diseñar y depurar RAG.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada componente con su rol:",
+        "pairs": [
+          {
+            "term": "Fragmentación",
+            "def": "Dividir los documentos en trozos manejables"
+          },
+          {
+            "term": "Embedding",
+            "def": "Convertir texto en un vector numérico"
+          },
+          {
+            "term": "Base vectorial",
+            "def": "Guarda y busca vectores por similitud"
+          },
+          {
+            "term": "Reordenamiento",
+            "def": "Ajustar los resultados con un segundo modelo"
+          }
+        ],
+        "explanation": "Cada parte es una pieza del flujo de RAG. **Diagnosticar fallos** exige saber qué pieza revisar: ¿la fragmentación?, ¿el embedding?, ¿el prompt final?",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu RAG necesita mejoras?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Respuestas citan fragmentos irrelevantes"
+          },
+          {
+            "id": 1,
+            "text": "El modelo inventa información no presente en los docs"
+          },
+          {
+            "id": 2,
+            "text": "Tarda 20 segundos en responder"
+          },
+          {
+            "id": 3,
+            "text": "Responde correctamente usando 2-3 fragmentos relevantes"
+          },
+          {
+            "id": 4,
+            "text": "Cita fuente con página y documento"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros son síntomas de problemas (mal ranking, alucinación, latencia alta). Los últimos 2 son **señales de buen RAG**. Saber distinguirlos te evita perseguir los problemas equivocados.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Renata arma su RAG con los 200 PDFs. Un cliente pregunta algo muy específico. ¿Qué pasa?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El chatbot dice: 'contexto lleno, no puedo responder'"
+          },
+          {
+            "id": 1,
+            "text": "El sistema recupera los fragmentos relevantes, se los pasa al modelo y genera una respuesta precisa citando los documentos"
+          },
+          {
+            "id": 2,
+            "text": "El chatbot devuelve los 200 PDFs completos para que el cliente los lea"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Renata construyó un **experto en sus PDFs**. RAG convierte cientos de documentos en un asistente consultable. Sin este patrón, responder con información propia sería imposible o absurdamente caro.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "📖",
+        "title": "RAG en tu caja de herramientas",
+        "body": "Ya entiendes el patrón más importante para conectar AI con tus propios datos: indexar, recuperar solo lo relevante y generar con ese contexto curado."
+      }
+    }
+  ]
+}

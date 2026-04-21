@@ -1,0 +1,198 @@
+{
+  "section_id": 8,
+  "slug": "react-loop",
+  "title": "ReAct loop: razonar y actuar",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Sofía lee documentación de agentes y se topa con 'ReAct loop'. Piensa: '¿otro framework de React JS?'. No, es otra cosa. ¿Qué es el ReAct loop en AI?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Una librería frontend"
+          },
+          {
+            "id": 1,
+            "text": "Reason + Act: el patrón donde un agente alterna razonamiento y acción en cada paso — piensa, actúa, observa el resultado, piensa otra vez, hasta lograr la meta"
+          },
+          {
+            "id": 2,
+            "text": "Un tipo específico de modelo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**ReAct** = Reasoning + Acting. Es el patrón estándar de agentes: el modelo **piensa en voz alta** qué debe hacer, **actúa** llamando una tool, **observa** el resultado, y **repite**. Ese loop explícito hace al agente coherente y debuggable.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Los 4 pasos del ReAct",
+        "body": "En cada iteración:\n\n- **Thought** — qué debo hacer ahora y por qué\n- **Action** — qué tool llamar\n- **Observation** — qué devolvió la tool\n- **Repeat o stop** — ¿lo suficiente o sigo?\n\nCada paso queda visible."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Ejemplo concreto",
+        "body": "Pregunta: '¿capital del país con más habitantes en Sudamérica?'\n\n- **Thought**: qué país tiene más habitantes\n- **Action**: search('país más habitantes Sudamérica')\n- **Observation**: Brasil\n- **Thought**: ahora su capital\n- **Action**: search('capital Brasil')\n- **Observation**: Brasilia. Listo."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Por qué ReAct es mejor que 'pregunta-respuesta'",
+        "body": "Ventajas:\n\n- **Razonamiento explícito** evita saltos lógicos erróneos\n- **Debuggable**: ves dónde se confundió el agente\n- **Acumulable**: cada observación se vuelve contexto para el siguiente paso\n- **Seguro**: puedes auditar cada acción antes de repetir"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "El ReAct loop solo sirve para agentes simples de búsqueda web.",
+        "answer": false,
+        "explanation": "Falso. ReAct es el **patrón general de agentes**. Aplica igual a búsqueda, análisis, ops, dev, support. Donde haya iteración entre razonamiento y acción, ReAct es el modelo mental.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos de una iteración ReAct típica:",
+        "steps": [
+          "El agente recibe (o mantiene) el objetivo",
+          "Thought: qué debo hacer ahora",
+          "Action: elegir y ejecutar tool",
+          "Observation: recibir el resultado",
+          "Thought: ¿me acerca al objetivo? ¿qué sigue?",
+          "Decidir: seguir iterando o terminar"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "explanation": "El ciclo se repite hasta completar el objetivo. **Cada paso es visible y debuggable**. Esa transparencia convierte agentes de misterio a sistema.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada paso del ReAct con su propósito:",
+        "pairs": [
+          {
+            "term": "Thought",
+            "def": "Razonar sobre qué hacer"
+          },
+          {
+            "term": "Action",
+            "def": "Ejecutar una tool"
+          },
+          {
+            "term": "Observation",
+            "def": "Integrar resultado recibido"
+          },
+          {
+            "term": "Loop termination",
+            "def": "Decidir cuándo parar"
+          }
+        ],
+        "explanation": "Cada elemento cumple un rol. **Omitir uno rompe el patrón**: sin Thought, acción ciega. Sin Observation, repetición infinita. Sin termination, bucle eterno.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu agente ReAct funciona bien?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Los thoughts son coherentes y relevantes"
+          },
+          {
+            "id": 1,
+            "text": "Las tools llamadas avanzan hacia el objetivo"
+          },
+          {
+            "id": 2,
+            "text": "El loop termina cuando el objetivo se cumple"
+          },
+          {
+            "id": 3,
+            "text": "Llama la misma tool 100 veces sin avanzar"
+          },
+          {
+            "id": 4,
+            "text": "Thoughts no tienen relación con las actions"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros indican sanidad. Los últimos 2 son **patrones de agente roto**. Repetir sin avance o pensar sin relación con actuar son banderas rojas típicas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Sofía implementa ReAct en su agente. Un caso se atora en loop infinito. ¿Qué mira?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tira todo el código y empieza de nuevo"
+          },
+          {
+            "id": 1,
+            "text": "Lee los Thoughts y Observations del loop. Identifica que el agente no reconoce cuándo parar. Ajusta el prompt con criterio de parada claro"
+          },
+          {
+            "id": 2,
+            "text": "Asume que el modelo está roto"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**ReAct es debuggable porque todo está a la vista**. Sofía no adivina — lee el pensamiento explícito del agente. Esa transparencia la convierte de pasajera a ingeniera.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔄",
+        "title": "Loop ReAct interiorizado",
+        "body": "Ya ves cómo piensa un agente: Thought → Action → Observation → repetir hasta cumplir el objetivo. Transparente y debuggable."
+      }
+    }
+  ]
+}

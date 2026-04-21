@@ -1,0 +1,198 @@
+{
+  "section_id": 4,
+  "slug": "workflows-contenido",
+  "title": "Workflow de contenido con AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Fernanda sabe usar Flux, Seedance, ElevenLabs y Suno, pero cada reel de producto le toma 4 horas. ¿Qué le falta?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Una app que integre todas las herramientas"
+          },
+          {
+            "id": 1,
+            "text": "Una secuencia definida: qué abre primero, qué output alimenta a qué"
+          },
+          {
+            "id": 2,
+            "text": "Más práctica con cada herramienta por separado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Fernanda domina las piezas pero no el pegamento. El problema no es la skill en cada herramienta, sino el orden entre ellas. Sin una secuencia definida, cada pieza empieza desde cero.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es un workflow de contenido",
+        "body": "**Workflow** — flujo de trabajo repetible — es la secuencia fija de pasos para producir un tipo de pieza:\n\n- Qué generas primero\n- Qué herramienta usas en cada paso\n- Cómo pasas el resultado de una como entrada de la siguiente\n- Dónde revisas y dónde exportas"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Un workflow ejemplo: video corto para redes",
+        "body": "Para un reel de 15 segundos:\n\n- **1.** Guion en Claude o ChatGPT\n- **2.** Imagen clave en Flux\n- **3.** Imagen → video en Seedance\n- **4.** Voz en ElevenLabs\n- **5.** Música de fondo en Suno\n- **6.** Ensamblaje en editor (CapCut, Premiere, etc.)"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "La regla del orden correcto",
+        "body": "El orden no es arbitrario. **Primero el guion**: define todo lo demás. **Luego la imagen**: fija la estética. **Después el video**: hereda la imagen. **Al final voz y música**: ajustan al ritmo del video.\n\nSaltar pasos genera retrabajos."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Un workflow bien diseñado se usa una vez y luego se desecha.",
+        "answer": false,
+        "explanation": "Falso. Un workflow **se reusa**. Esa es toda su ventaja. La primera vez toma horas diseñarlo; de ahí en adelante es plantilla y produces 5x más rápido. Si cada pieza es un workflow nuevo, no estás usando workflows.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos de un workflow para un video corto de producto:",
+        "steps": [
+          "Escribir el guion y mensaje clave",
+          "Generar imagen clave del producto (Flux)",
+          "Convertir la imagen en clip de video (Seedance)",
+          "Generar la narración (ElevenLabs)",
+          "Añadir música de fondo (Suno)",
+          "Ensamblar todo en un editor"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "explanation": "Guion primero define todo. Imagen fija estética. Video hereda imagen. Voz y música se ajustan al video ya hecho. Ensamblaje al final. **Orden = menos retrabajos.**",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada paso del workflow con la herramienta:",
+        "pairs": [
+          {
+            "term": "Guion",
+            "def": "Claude o ChatGPT para el mensaje"
+          },
+          {
+            "term": "Imagen",
+            "def": "Flux o DALL-E para la estética"
+          },
+          {
+            "term": "Video",
+            "def": "Seedance o Kling animan la imagen"
+          },
+          {
+            "term": "Voz",
+            "def": "ElevenLabs o PlayHT para la narración"
+          }
+        ],
+        "explanation": "Cada paso tiene su herramienta óptima. El workflow **liga las herramientas en orden**; el resultado es producción predecible en vez de improvisación caótica.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu workflow está bien diseñado?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Cada vez tardas menos en entregar una pieza"
+          },
+          {
+            "id": 1,
+            "text": "Sabes exactamente qué herramienta abrir en cada paso"
+          },
+          {
+            "id": 2,
+            "text": "Puedes delegar parte del workflow a otra persona"
+          },
+          {
+            "id": 3,
+            "text": "Cada pieza es completamente distinta a la anterior"
+          },
+          {
+            "id": 4,
+            "text": "Cada proyecto requiere reinventar el proceso"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los tres primeros son señales de un buen workflow: velocidad, claridad, delegación. Los últimos dos son señales de **caos, no de workflow**. Si todo es nuevo cada vez, no hay proceso.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Fernanda documenta su workflow: guion → imagen → video → voz → música → ensamble. ¿Qué gana en el siguiente reel?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada concreto: los workflows solo sirven para equipos grandes"
+          },
+          {
+            "id": 1,
+            "text": "Baja de 4 horas a 45 minutos: sabe qué abrir, en qué orden y con qué entrada"
+          },
+          {
+            "id": 2,
+            "text": "Tarda más porque ahora sigue una lista rígida"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El workflow convirtió caos en línea de producción. Fernanda pasó de artesanía improvisada a **sistema repetible**, y la velocidad viene precisamente de no decidir el orden otra vez.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "⚙️",
+        "title": "Workflow de contenido dominado",
+        "body": "Ahora sabes diseñar un workflow: orden fijo, herramienta por paso, salida de una alimenta la siguiente. En tus próximas 24 horas, documenta el workflow de la pieza que más repites."
+      }
+    }
+  ]
+}

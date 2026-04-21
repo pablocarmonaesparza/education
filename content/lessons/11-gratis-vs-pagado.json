@@ -1,0 +1,218 @@
+{
+  "section_id": 2,
+  "slug": "gratis-vs-pagado",
+  "title": "Gratis vs pagado: qué cambia",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Rodrigo paga ChatGPT Plus 8 meses sin chequear si lo usa. Un amigo en gratis se queja que 'se llena rápido'. ¿Quién hace mejor cuentas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Rodrigo — pagar siempre es mejor porque tiene acceso ilimitado"
+          },
+          {
+            "id": 1,
+            "text": "El amigo — ahorra 240 USD al año en algo que solo usa ocasionalmente"
+          },
+          {
+            "id": 2,
+            "text": "Ninguno de los dos ha hecho las cuentas: la decisión correcta depende de cuánto lo usan en la práctica"
+          }
+        ],
+        "correctId": 2,
+        "explanation": "Los dos decidieron por instinto, no por datos. Pagar *tiene sentido* si usas el modelo diario; no pagar *tiene sentido* si solo pides algo 2-3 veces por semana. El error es no comparar **contra tu uso real**, no el precio en sí.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué cambia al pagar",
+        "body": "En los asistentes como ChatGPT, Claude o Gemini, pagar desbloquea tres cosas:\n\n- Acceso a los **modelos más nuevos** y más capaces\n- **Sin tope** (o muy alto) de mensajes por día\n- **Features avanzadas**: voz, imagen y archivos grandes"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Qué ofrece el tier gratis",
+        "body": "El tier gratis suele ser más útil de lo que parece:\n\n- Acceso a modelos capaces (aunque no el más nuevo)\n- Cantidad limitada de mensajes por día\n- Sin algunas features avanzadas\n\nPara uso casual (1-2 preguntas al día), el tier gratis rinde."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el perfil con el tier que le conviene:",
+        "pairs": [
+          {
+            "term": "Consulta 2-3 veces por semana",
+            "def": "Tier gratis — no pagues por algo que casi no usas"
+          },
+          {
+            "term": "Uso diario intensivo",
+            "def": "Tier pagado — el tiempo ahorrado paga la suscripción fácil"
+          },
+          {
+            "term": "Procesa archivos grandes",
+            "def": "Tier pagado — las features avanzadas solo están ahí arriba"
+          },
+          {
+            "term": "Curiosidades esporádicas",
+            "def": "Tier gratis — con el tope diario alcanza de sobra"
+          }
+        ],
+        "explanation": "El tier correcto depende de **cómo lo usas**, no de cuánto ganas. Gente con ingreso alto que solo lo usa ocasionalmente debería estar en gratis; gente con ingreso medio que lo usa todo el día debería pagar.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que conviene pasar al tier pagado?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Llegas al tope de mensajes diarios varias veces por semana"
+          },
+          {
+            "id": 1,
+            "text": "Necesitas features que solo están en el pagado (web search, voice, archivos)"
+          },
+          {
+            "id": 2,
+            "text": "Usas AI para trabajo, no solo curiosidad"
+          },
+          {
+            "id": 3,
+            "text": "Tus amigos tienen el pagado"
+          },
+          {
+            "id": 4,
+            "text": "Viste un ad diciéndote que 'ya es hora de upgrade'"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las tres primeras son señales reales: tope + necesidad de features + uso productivo. Las dos últimas son ruido social o marketing, no datos de tu uso.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Una amiga tuya usa ChatGPT gratis para escribir 2-3 emails al día y resumir algún artículo ocasional. Llega al tope como 1 vez por mes. ¿Le recomiendas pagar 20 USD al mes?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sí — siempre es mejor tener acceso al modelo más nuevo"
+          },
+          {
+            "id": 1,
+            "text": "No — a su uso, 20 USD/mes salen a casi 1 USD por email; a mano le cuesta nada"
+          },
+          {
+            "id": 2,
+            "text": "Sí, pero solo en meses intensos de trabajo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Hacer la cuenta por uso real evita gastar en algo que no necesitas. Para su perfil, el tier gratis rinde con sobra. Si su uso crece después, el upgrade siempre está ahí.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "fill-blank",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Completa la regla:",
+        "sentenceBefore": "La decisión de pagar un asistente debe basarse en ",
+        "sentenceAfter": ", no en el precio en sí.",
+        "tokens": [
+          "Tu uso real",
+          "Lo que usan otros",
+          "La marca del modelo"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "**Tu uso real** es el único dato relevante. Precio absoluto, presión social y marca son ruido que distraen de la pregunta simple: *¿lo usas lo suficiente para justificarlo?*",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para decidir si vale la pena pagar:",
+        "steps": [
+          "Llevas nota durante una semana de cuántas veces usaste AI",
+          "Calculas cuánto tiempo te ahorró en total",
+          "Comparas ese tiempo contra los 20 USD del plan pagado",
+          "Chequeas si chocas con el tope gratis o con features que solo están en pagado",
+          "Decides con datos reales, no por instinto"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "explanation": "Una semana de datos vale más que un año de intuición. Si después del ejercicio el pagado cuesta menos que el tiempo ahorrado, vale. Si no, no.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Rodrigo hace el ejercicio por una semana. Resulta que usa ChatGPT solo 4 veces al día para tareas simples y nunca pega en el tope ni en las features pagadas. ¿Qué hace?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Cancela el Plus — no lo justifica su uso real"
+          },
+          {
+            "id": 1,
+            "text": "Mantiene el Plus porque podría necesitarlo en el futuro"
+          },
+          {
+            "id": 2,
+            "text": "Sube al plan Pro más caro para aprovechar lo que paga"
+          }
+        ],
+        "correctId": 0,
+        "explanation": "Rodrigo decide por datos, no por inercia. Cancela, se ahorra 240 USD al año, y sabe que si su uso crece puede volver al Plus en 10 segundos. Decisión adulta con AI.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "💳",
+        "title": "Gasto con criterio",
+        "body": "Ahora sabes cuándo pagar un asistente y cuándo el tier gratis alcanza. La regla simple: decide con datos de tu uso real, no con intuición ni presión social."
+      }
+    }
+  ]
+}

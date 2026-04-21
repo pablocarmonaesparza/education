@@ -1,0 +1,140 @@
+{
+  "section_id": 6,
+  "section_slug": "bases-de-datos",
+  "section_display": "bases de datos",
+  "source": "claude-in-session",
+  "lectures": [
+    {
+      "slug": "que-es-una-bd",
+      "title": "qué es una base de datos",
+      "display_order": 1,
+      "learning_objective": "describir qué es una base de datos y por qué organizar información en ella es distinto a una hoja de cálculo",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "base de datos",
+      "narrative_arc": "Alguien guarda toda su información de clientes en un Google Sheets gigante. Funciona hasta que el archivo tiene 10 mil filas y empieza a crashear. No sabe que una base de datos no es complicada; es una herramienta pensada para volúmenes y búsquedas que una hoja de cálculo ya no aguanta.",
+      "scenario_character": "Rodrigo"
+    },
+    {
+      "slug": "notion",
+      "title": "Notion como base de datos",
+      "display_order": 2,
+      "learning_objective": "usar Notion como base de datos simple para organizar proyectos, clientes o tareas con filtros y vistas",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "Notion como base de datos",
+      "narrative_arc": "Alguien usa Notion como bloc de notas y nada más. No sabe que cada página puede convertirse en una base de datos con filtros, ordenamientos y relaciones entre tablas. Para proyectos personales o equipos pequeños, es la base de datos sin fricción que no se siente como base de datos.",
+      "scenario_character": "Tomás"
+    },
+    {
+      "slug": "airtable",
+      "title": "Airtable",
+      "display_order": 3,
+      "learning_objective": "usar Airtable para armar una base de datos visual con relaciones entre tablas para un proyecto real",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "Airtable",
+      "narrative_arc": "Alguien necesita algo más potente que Notion pero menos técnico que postgres. Airtable está justo en ese punto medio: relaciones, automatizaciones, vistas tipo calendario o kanban, API nativa. Para muchos proyectos que crecen pero no a escala enterprise, es el sweet spot.",
+      "scenario_character": "Paola"
+    },
+    {
+      "slug": "supabase",
+      "title": "Supabase y postgres moderno",
+      "display_order": 4,
+      "learning_objective": "describir qué ofrece Supabase sobre postgres y cuándo conviene usarlo en vez de una base más simple",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "Supabase",
+      "narrative_arc": "Alguien escucha 'postgres' y asume que es algo para equipos técnicos grandes con DevOps. No sabe que Supabase hace postgres accesible con auth, storage, realtime y pgvector incluidos. Para un proyecto que quiere crecer sin rearquitecturas, la diferencia es enorme.",
+      "scenario_character": "Jorge"
+    },
+    {
+      "slug": "sql-basico",
+      "title": "SQL básico",
+      "display_order": 5,
+      "learning_objective": "escribir consultas SQL básicas para leer, filtrar y ordenar datos de una tabla",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "SQL básico",
+      "narrative_arc": "Alguien tiene acceso a una base de datos pero siempre le pide a un desarrollador que le saque los reportes. Las preguntas simples tardan días en responderse. No sabe que cuatro comandos de SQL resuelven el 80% de las consultas que manda pedir.",
+      "scenario_character": "Carlos"
+    },
+    {
+      "slug": "crms",
+      "title": "CRMs: HubSpot y Salesforce",
+      "display_order": 6,
+      "learning_objective": "usar un CRM como HubSpot o Salesforce enriquecido con AI para gestionar leads y seguimientos",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "CRMs con AI",
+      "narrative_arc": "Alguien tiene clientes en una hoja de cálculo, leads en otra, correos en un tercer lado. Nunca tiene visibilidad completa de su pipeline. Un CRM con AI centraliza todo y además hace el seguimiento automático de cada prospecto según su etapa.",
+      "scenario_character": "Valeria"
+    },
+    {
+      "slug": "embeddings",
+      "title": "embeddings: texto como vector",
+      "display_order": 7,
+      "learning_objective": "explicar qué es un embedding y por qué permite buscar por significado en lugar de palabras exactas",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "embedding",
+      "narrative_arc": "Alguien busca 'libros sobre resiliencia' en su propia base de notas y no encuentra nada, aunque tiene docenas de apuntes sobre el tema con palabras distintas. El problema es que busca por coincidencia literal. Convertir el texto en vectores permite buscar por idea, no por match exacto.",
+      "scenario_character": "Gabriel"
+    },
+    {
+      "slug": "rag",
+      "title": "RAG: retrieval + generation",
+      "display_order": 8,
+      "learning_objective": "describir cómo RAG combina búsqueda con generación para responder preguntas sobre datos privados",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "RAG",
+      "narrative_arc": "Alguien quiere un asistente que responda preguntas sobre los documentos internos de su empresa. No sabe que simplemente pegar los documentos al modelo no escala: el contexto se satura. Necesita una arquitectura que recupere solo los fragmentos relevantes y los pase al modelo. Eso se llama RAG.",
+      "scenario_character": "Mauricio"
+    },
+    {
+      "slug": "rls",
+      "title": "seguridad: row level security",
+      "display_order": 9,
+      "learning_objective": "aplicar row level security en postgres para que cada usuario vea solo sus propios datos",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "row level security",
+      "narrative_arc": "Alguien lanza una app multi-usuario y asume que filtrar 'por user_id' en el frontend es suficiente seguridad. Un atacante encuentra el endpoint y ve los datos de todos. RLS mueve el filtro al nivel de base de datos, donde no depende de que el cliente se comporte bien.",
+      "scenario_character": "Alejandra"
+    },
+    {
+      "slug": "api-keys",
+      "title": "manejar API keys y secretos",
+      "display_order": 10,
+      "learning_objective": "usar un manejador de secretos para que las API keys no acaben en código público ni en logs",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "manejo de secretos",
+      "narrative_arc": "Alguien sube su proyecto a GitHub con la API key de OpenAI hardcoded en un archivo. Tres horas después recibe un email: 'tu cuenta gastó 2000 USD en un minuto'. Los bots escanean repos públicos en segundos. Nunca hay que pegar un secreto en código.",
+      "scenario_character": "Renata"
+    },
+    {
+      "slug": "data-leakage",
+      "title": "evitar data leakage",
+      "display_order": 11,
+      "learning_objective": "decidir qué información del usuario se puede enviar al modelo y qué debe quedar fuera del prompt",
+      "bloom_verb": "evaluar",
+      "cognitive_route": "mixta",
+      "concept_name": "data leakage",
+      "narrative_arc": "Alguien arma un asistente de soporte para clientes. Instintivamente le pasa el perfil completo del usuario al modelo en cada turno: nombre, email, historial, tarjeta. Un día el modelo, en otra conversación con otro cliente, menciona datos del primero. La fuga es involuntaria pero costosa.",
+      "scenario_character": "Ricardo"
+    },
+    {
+      "slug": "primer-datastore",
+      "title": "tu primer datastore conectado a AI",
+      "display_order": 12,
+      "learning_objective": "construir un datastore simple que un asistente de AI pueda consultar para responder con información propia",
+      "bloom_verb": "crear",
+      "cognitive_route": "mixta",
+      "concept_name": "datastore con AI",
+      "narrative_arc": "Alguien ha visto cada bloque por separado: base de datos, embeddings, RAG, seguridad. Nunca los ha conectado en un sistema funcional. Armar un datastore propio, aunque sea pequeño, es el paso que transforma teoría acumulada en una capacidad técnica real y aplicable.",
+      "scenario_character": "Natalia"
+    }
+  ]
+}

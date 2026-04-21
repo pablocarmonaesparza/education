@@ -1,0 +1,199 @@
+{
+  "section_id": 3,
+  "slug": "prompts-adaptados-por-asistente",
+  "title": "Prompts adaptados por asistente",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Ana usa un prompt que le funciona perfecto en ChatGPT. Lo copia literal en Claude y en Gemini, y los outputs salen tibios. ¿Qué está pasando?",
+        "options": [
+          {
+            "id": 0,
+            "text": "ChatGPT simplemente es mejor que los otros dos para cualquier tarea"
+          },
+          {
+            "id": 1,
+            "text": "Cada modelo responde mejor a un estilo de prompt distinto; el mismo texto literal no saca lo mejor de Claude ni de Gemini"
+          },
+          {
+            "id": 2,
+            "text": "Claude y Gemini están limitados en la versión gratis y por eso responden peor"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Un prompt no es un texto universal. ChatGPT responde bien a lenguaje natural, Claude rinde con secciones explícitas, Gemini prefiere instrucciones enumeradas. **Adaptar el prompt al modelo** es lo que recupera la calidad que se pierde al copiar literal.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Por qué cada modelo responde distinto",
+        "body": "Cada asistente tiene un **estilo de entrenamiento** distinto:\n\n- **ChatGPT** — lenguaje natural, conversacional\n- **Claude** — respeta estructura, distingue matices\n- **Gemini** — funciona mejor con instrucciones tipo lista\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cómo habla cada modelo",
+        "body": "Ajustes prácticos por modelo:\n\n- **ChatGPT** — frases directas funcionan solas\n- **Claude** — aprovecha secciones explícitas de contexto y tarea\n- **Gemini** — responde mejor a instrucciones enumeradas paso a paso"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "El mismo contenido, tres formatos",
+        "body": "Tarea idéntica (resumir un artículo en 3 bullets, tono casual), tres envolturas:\n\n- **ChatGPT** — frase directa\n- **Claude** — secciones separando el artículo y la tarea\n- **Gemini** — pasos numerados del 1 al 3"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "fill-blank",
+      "phase": "explain",
+      "content": {
+        "prompt": "Completa:",
+        "sentenceBefore": "Claude aprovecha especialmente los prompts que usan ",
+        "sentenceAfter": " para separar contexto de tarea.",
+        "tokens": [
+          "etiquetas XML o secciones",
+          "frases muy cortas",
+          "emojis decorativos"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "Claude rinde mejor cuando el prompt separa visualmente contexto y tarea con **etiquetas o secciones**. No es obligatorio, pero aprovecha el estilo con el que fue entrenado y eleva la calidad del output.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada asistente con el estilo de prompt que lo hace brillar:",
+        "pairs": [
+          {
+            "term": "ChatGPT",
+            "def": "Lenguaje conversacional natural, sin adornos"
+          },
+          {
+            "term": "Claude",
+            "def": "Secciones explícitas separando contexto y tarea"
+          },
+          {
+            "term": "Gemini",
+            "def": "Instrucciones enumeradas paso a paso"
+          }
+        ],
+        "explanation": "Cada modelo tiene su idioma preferido: ChatGPT va fluido, Claude pide estructura, Gemini sigue listas. **Reordenar el prompt toma 30 segundos** y el salto de calidad lo justifica.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Cuáles son señales de que tu prompt no está adaptado al modelo que lo recibe?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El mismo prompt da calidad muy distinta según el asistente"
+          },
+          {
+            "id": 1,
+            "text": "Claude te pide aclaraciones que en ChatGPT no pedía"
+          },
+          {
+            "id": 2,
+            "text": "Gemini responde con cosas genéricas o incompletas"
+          },
+          {
+            "id": 3,
+            "text": "ChatGPT responde un poco más rápido que los otros dos"
+          },
+          {
+            "id": 4,
+            "text": "Tu conexión a internet está lenta"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las tres primeras son **desajuste modelo-prompt**: el modelo no encuentra estructura en lo que le mandaste. Velocidad de respuesta y conexión son variables de infraestructura, no de prompt. Si un modelo falla de forma persistente con el mismo texto, el texto es el que no habla su idioma.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tienes un prompt que funciona bien en ChatGPT pero quieres el output de Claude para análisis matizado. ¿Qué haces?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Lo copias literal — Claude debería entenderlo igual"
+          },
+          {
+            "id": 1,
+            "text": "Lo reestructuras con etiquetas o secciones: <contexto>, <tarea>, <formato>, aprovechando el estilo de Claude"
+          },
+          {
+            "id": 2,
+            "text": "Abandonas Claude porque 'no funciona como ChatGPT'"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El mismo contenido, estructura distinta. Claude rinde mejor con **límites claros** entre contexto, tarea y formato. 30 segundos de reestructuración y el output sube 30% en calidad.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Ana abre sus 3 asistentes al día siguiente. ¿Qué hace distinto?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Usa el mismo prompt literal en los 3 como antes"
+          },
+          {
+            "id": 1,
+            "text": "Mantiene el prompt en ChatGPT; lo reestructura con secciones para Claude; lo enumera para Gemini"
+          },
+          {
+            "id": 2,
+            "text": "Abandona Claude y Gemini, se queda solo con ChatGPT"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Ana ya sabe que el prompt es **un lenguaje que hay que adaptar**, no un texto universal. Con 30 segundos de ajuste por modelo, recupera calidad sin cambiar de herramienta.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🎛️",
+        "title": "Un prompt por modelo",
+        "body": "Ahora sabes adaptar tu prompt al asistente. La siguiente: cómo decidir qué modelo usar según la tarea."
+      }
+    }
+  ]
+}

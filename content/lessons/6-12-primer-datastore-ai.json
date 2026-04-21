@@ -1,0 +1,198 @@
+{
+  "section_id": 6,
+  "slug": "primer-datastore",
+  "title": "Tu primer datastore conectado a AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Javier quiere montar un bot que conteste las preguntas frecuentes de su cafetería. Ya tiene las preguntas en un Notion. ¿Qué debería hacer primero?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Esperar a tener la base de datos perfecta elegida"
+          },
+          {
+            "id": 1,
+            "text": "Conectar el Notion que ya tiene a un bot y probar con un caso real"
+          },
+          {
+            "id": 2,
+            "text": "Contratar a un consultor antes de tocar nada"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "La trampa clásica: *elijo la base de datos perfecta primero*. La verdad: **el primer datastore es un experimento**. Usa la herramienta que ya tienes, conecta un caso, aprende en vivo. Migrar después es barato si el caso es simple.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Anatomía de un primer datastore útil",
+        "body": "Un datastore conectado a AI mínimo tiene tres piezas:\n\n- **1 tabla** con datos reales (clientes, documentos, preguntas frecuentes)\n- **1 conector** para que la AI consulte esos datos: una API (la manera programática de que un app le hable a otra) o un MCP (protocolo moderno para conectar AI a herramientas)\n- **1 caso de uso** concreto (resumir, clasificar, responder)"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cuatro ideas de primer datastore",
+        "body": "Para empezar hoy:\n\n- **Preguntas frecuentes** en Notion → bot que las contesta\n- **Clientes** en Airtable → resumen al abrir cada ticket\n- **Notas personales** en Supabase → chat que responde con tu contenido\n- **Productos** en Supabase con búsqueda semántica"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "La regla del producto mínimo",
+        "body": "Tu primer datastore es un **producto mínimo viable**:\n\n- Funciona para el 80% de los casos comunes\n- Falla con gracia en los casos raros\n- Mejora con uso real, no con imaginación\n- Se reemplaza con otra herramienta si el caso crece"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Tu primer datastore debe usar la base de datos más avanzada que conozcas, aunque tu equipo viva en otra herramienta.",
+        "answer": false,
+        "explanation": "Falso. **Usa la base de datos que ya conoces y donde ya están tus datos**. Forzar Supabase con búsqueda semántica cuando tu equipo vive en Notion es sobreingeniería. Migra cuando el uso real te lo exija.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para lanzar tu primer datastore conectado a AI:",
+        "steps": [
+          "Elegir un caso concreto: qué pregunta contestaría el bot con estos datos",
+          "Ubicar los datos en una herramienta accesible (Notion, Airtable, Supabase)",
+          "Conectar la AI a los datos (por MCP, por API, o por n8n)",
+          "Configurar seguridad mínima (llaves en variables de entorno, reglas de acceso a filas)",
+          "Probar con cinco o diez casos reales",
+          "Lanzar con monitoreo básico e iterar"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "explanation": "**Caso primero, datos segundo, conexión después.** La seguridad entra desde el principio, no al final — una llave expuesta al inicio es una llave expuesta para siempre. Probar con casos reales antes de lanzar evita que el bot invente respuestas delante del primer usuario.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada caso con el datastore más adecuado:",
+        "pairs": [
+          {
+            "term": "Preguntas frecuentes",
+            "def": "Notion con búsqueda y generación"
+          },
+          {
+            "term": "Gestión de clientes",
+            "def": "Airtable conectado por MCP"
+          },
+          {
+            "term": "App web con usuarios",
+            "def": "Supabase con reglas de acceso por fila"
+          },
+          {
+            "term": "Miles de documentos",
+            "def": "Supabase con búsqueda semántica"
+          }
+        ],
+        "explanation": "**El datastore correcto depende del caso y del equipo.** No hay una respuesta universal. Saber cómo elegir es más importante que memorizar cuál es mejor: miras qué herramienta ya usas, cuánto dato tienes, y qué tipo de búsqueda necesitas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu primer datastore está bien elegido?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Puedes describir el caso en una frase"
+          },
+          {
+            "id": 1,
+            "text": "Los datos ya existen o son fáciles de ingresar"
+          },
+          {
+            "id": 2,
+            "text": "El equipo puede mantenerlo sin un ingeniero"
+          },
+          {
+            "id": 3,
+            "text": "Usa la base de datos más sofisticada posible"
+          },
+          {
+            "id": 4,
+            "text": "Necesitas tres semanas para configurarlo"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "**Claridad, accesibilidad y mantenibilidad son señales verdes.** Sofisticación y setup largo son trampas: si necesitas tres semanas solo para empezar, estás construyendo el datastore equivocado. Pequeño, real y sostenible le gana a grande, ideal y frágil.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Javier conecta su Notion de preguntas frecuentes a un bot por MCP. En dos horas tiene el bot respondiendo. ¿Qué lección se lleva?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Que necesitaba un desarrollador senior desde el principio"
+          },
+          {
+            "id": 1,
+            "text": "Que un datastore útil se arma en horas si eliges caso simple y herramientas que ya usas"
+          },
+          {
+            "id": 2,
+            "text": "Que las bases de datos son imposibles sin experiencia técnica profunda"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Javier no se volvió experto en bases de datos: **eligió un caso concreto, usó la herramienta que ya tenía, y conectó la AI**. Esa es la secuencia que consolida todo lo aprendido y la que tú aplicas a tu primer datastore hoy.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "💾",
+        "title": "Datos conectados a AI",
+        "body": "Ya tienes la receta para montar tu primer datastore: un caso simple, la herramienta que ya usas, y una conexión directa. Elige hoy qué datos quieres conectar y arma la versión mínima en menos de una tarde."
+      }
+    }
+  ]
+}

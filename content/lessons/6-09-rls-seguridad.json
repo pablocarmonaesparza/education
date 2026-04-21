@@ -1,0 +1,197 @@
+{
+  "section_id": 6,
+  "slug": "rls",
+  "title": "Row Level Security: permisos por fila",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Adriana hizo una app donde cada usuario guarda sus apuntes. Todos tienen que hacer login. Un usuario reporta: 'veo los apuntes de otro cliente'. ¿Qué le está faltando?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — con login ya cada usuario solo ve lo suyo"
+          },
+          {
+            "id": 1,
+            "text": "Una regla en la base de datos que diga quién puede ver qué fila"
+          },
+          {
+            "id": 2,
+            "text": "Una contraseña más fuerte para los usuarios"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Login verifica **quién eres**. No dice **qué puedes ver**. Sin una regla extra en la base de datos, cualquier usuario con login accede a todas las filas. Esa regla se llama **Row Level Security (RLS)**: permisos fila por fila. Es el error de seguridad número uno en apps con Supabase.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es Row Level Security",
+        "body": "**RLS** (Row Level Security) es una regla en la base de datos que define qué filas puede ver, crear, editar o borrar cada usuario.\n\nSe aplica sola en cada consulta — no depende del código de la app."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Por qué importa tanto",
+        "body": "**Sin RLS:** cualquier usuario con login ve **todas** las filas de la tabla.\n\n**Con RLS:** cada usuario solo ve sus propias filas, aunque el código de la app tenga un bug."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Una política en lenguaje llano",
+        "body": "Una **política RLS** típica en Supabase se lee así:\n\n*'al consultar apuntes, solo devuelve las filas donde el dueño (`user_id`) sea el usuario autenticado en esta sesión'*.\n\nEso es todo. Una regla por acción: ver, crear, editar, borrar."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Con RLS activo, aunque un atacante obtenga la llave pública de la app, no puede leer los datos de otros usuarios.",
+        "answer": true,
+        "explanation": "Verdadero. La llave pública sirve para conectarse a la base de datos; **RLS decide qué filas puede ver** quien se conecta. Sin sesión válida de un usuario, no aparece ninguna fila protegida. RLS es la segunda capa contra filtraciones.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada caso con la política RLS adecuada:",
+        "pairs": [
+          {
+            "term": "Apuntes personales",
+            "def": "SELECT: auth.uid() = user_id"
+          },
+          {
+            "term": "Posts públicos todos ven",
+            "def": "SELECT: true (sin restricción)"
+          },
+          {
+            "term": "Solo admins pueden borrar",
+            "def": "DELETE: role = 'admin' (caso típico)"
+          },
+          {
+            "term": "Solo autor edita su post",
+            "def": "UPDATE: auth.uid() = author_id"
+          }
+        ],
+        "explanation": "Las políticas se componen. **Una tabla puede tener reglas distintas para SELECT, INSERT, UPDATE, DELETE**. Eso permite granularidad sin complejidad.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué tablas deberían tener RLS activado?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tabla de apuntes personales de usuarios"
+          },
+          {
+            "id": 1,
+            "text": "Tabla de transacciones de pago"
+          },
+          {
+            "id": 2,
+            "text": "Tabla de mensajes privados entre usuarios"
+          },
+          {
+            "id": 3,
+            "text": "Tabla de países (catálogo público)"
+          },
+          {
+            "id": 4,
+            "text": "Tabla de configuración global no sensible"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Datos personales, financieros y privados **exigen** RLS. Catálogos públicos y configs no sensibles no la necesitan. La regla: **cualquier cosa que no debería ver cualquiera, con RLS**.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Lanzas una app con login donde cada usuario guarda data propia. ¿Cuándo configuras RLS?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Después, cuando tenga tiempo"
+          },
+          {
+            "id": 1,
+            "text": "Antes de cualquier deploy con usuarios reales — crear tabla y política RLS van juntos desde el primer día"
+          },
+          {
+            "id": 2,
+            "text": "Nunca — la autenticación basta"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "RLS se configura **desde el día 0**. Añadirlo después significa que ya tuviste una ventana de exposición. Es tan rápido de configurar que no hay excusa para omitirlo inicialmente.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Adriana activa RLS y escribe una política por tabla. El usuario que se quejó abre la app. ¿Qué ve ahora?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sigue viendo apuntes de otros — RLS no arregla fugas previas"
+          },
+          {
+            "id": 1,
+            "text": "Solo sus propios apuntes, garantizado por la base de datos, aunque el código de la app tenga un bug"
+          },
+          {
+            "id": 2,
+            "text": "Una pantalla de error mientras Adriana no revise todas las filas una por una"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Adriana pasó de confiar solo en el código de la app a tener la seguridad **dentro de la base de datos**. RLS aplica la regla en cada consulta, aunque el código falle. Es el cinturón de seguridad: no se siente hasta que te salva.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔒",
+        "title": "Seguridad a nivel fila dominada",
+        "body": "Ya sabes por qué login no basta y cómo una política RLS protege cada tabla. Revisa ahora tus tablas sensibles y activa RLS con una política mínima por tabla."
+      }
+    }
+  ]
+}

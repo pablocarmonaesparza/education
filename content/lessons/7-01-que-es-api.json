@@ -1,0 +1,198 @@
+{
+  "section_id": 7,
+  "slug": "que-es-una-api",
+  "title": "Qué es una API (y por qué te desbloquea todo)",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Paola quiere que cada venta de su tienda online cree una fila en Google Sheets automáticamente. Le preguntan: \"¿la tienda tiene API?\". ¿Qué significa esa pregunta?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Si la tienda tiene un sitio web al que se puede entrar"
+          },
+          {
+            "id": 1,
+            "text": "Si la tienda usa un lenguaje de programación moderno"
+          },
+          {
+            "id": 2,
+            "text": "Si la tienda ofrece una puerta para que otras apps le hablen y pidan datos sin humano de por medio"
+          }
+        ],
+        "correctId": 2,
+        "explanation": "\"Tener API\" no significa tener web ni estar programada en tecnología moderna. Significa que la app expone una puerta formal por donde otro software puede pedirle cosas (leer ventas, crear un cliente, actualizar stock) sin que haya una persona haciendo clic. Sin esa puerta, la automatización en Sheets no existe.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "La metáfora del restaurante",
+        "body": "Piensa una API como un menú:\n\n- **La aplicación** = el restaurante\n- **El menú** = la API (lista de acciones disponibles)\n- **Tú pides** = envías una request\n- **Llega el plato** = recibes la respuesta\n\nNo ves la cocina. No te importa cómo se hizo."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "APIs que ya usas sin saber",
+        "body": "Muchas apps que amas consumen APIs:\n\n- Cuando Google Maps muestra tráfico, llama a APIs de tráfico\n- Tu app de banco consume la API interna del banco\n- Integromat/Zapier son **orquestadores de APIs**\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Por qué las APIs te desbloquean",
+        "body": "Con APIs puedes:\n\n- **Conectar** dos apps que no hablan entre sí (Notion + ChatGPT)\n- **Automatizar** acciones que harías a mano\n- **Construir** apps propias sobre servicios existentes\n- **Escalar** procesos que antes pedían una persona"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Para usar una API necesitas ser programador.",
+        "answer": false,
+        "explanation": "Falso. Herramientas como n8n, Make, Zapier orquestan APIs **sin código**. Pero saber leer documentación de API y entender request/response te da autonomía aun sin programar profesionalmente.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el concepto con su significado:",
+        "pairs": [
+          {
+            "term": "Endpoint",
+            "def": "URL específica de una acción de la API"
+          },
+          {
+            "term": "Request",
+            "def": "Lo que tú mandas a la API"
+          },
+          {
+            "term": "Response",
+            "def": "Lo que la API te devuelve"
+          },
+          {
+            "term": "API key",
+            "def": "Tu identificación para usar la API"
+          }
+        ],
+        "explanation": "Cuatro conceptos básicos. Con estos entiendes 90% de lo que leerás sobre APIs. **No necesitas más para empezar**; el resto viene con práctica.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué cosas desbloquean las APIs?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Conectar tu gestión de clientes (CRM) a tu chatbot"
+          },
+          {
+            "id": 1,
+            "text": "Automatizar 'cuando llega email → guardar en Drive'"
+          },
+          {
+            "id": 2,
+            "text": "Llamar a un modelo de AI desde tu app propia"
+          },
+          {
+            "id": 3,
+            "text": "Hacer que dos apps que no tienen integración nativa hablen"
+          },
+          {
+            "id": 4,
+            "text": "Eliminar la necesidad de humanos en cualquier proceso"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "Las 4 primeras son reales. La última no — APIs amplifican, no reemplazan humanos en procesos complejos. Saber qué resuelve y qué no te evita expectativas infladas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres que cuando llegue un formulario de tu sitio, se cree un contacto en HubSpot. ¿Qué necesitas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Copiar manualmente cada formulario"
+          },
+          {
+            "id": 1,
+            "text": "Un flujo (n8n/Make/Zapier) que llame a la API de HubSpot con los datos del form"
+          },
+          {
+            "id": 2,
+            "text": "Un programador senior por 2 meses"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "API de HubSpot + orquestador = integración en 30 min. No necesitas un programador; tampoco tienes que hacerlo manual. Las APIs abrieron este tipo de flujos para todos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Volvamos a Paola y su tienda online. Ahora que entiende qué es una API, ¿qué es lo primero que debería revisar para automatizar ventas en Sheets?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Si la tienda y Sheets tienen API pública documentada"
+          },
+          {
+            "id": 1,
+            "text": "Si puede contratar a un programador por varios meses"
+          },
+          {
+            "id": 2,
+            "text": "Si el diseño del sitio web es moderno"
+          }
+        ],
+        "correctId": 0,
+        "explanation": "La pregunta correcta cambió: ya no es \"¿puedo pagar a alguien?\" sino \"¿ambas apps exponen API?\". Si las dos tienen puerta abierta, un flujo en n8n/Zapier resuelve en minutos. Esa es la lente nueva que una API desbloquea: ver procesos repetitivos como automatizables por default.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔌",
+        "title": "Concepto de API desbloqueado",
+        "body": "El resto de la sección construye sobre esta idea. La siguiente lección: llamar a un modelo de AI desde código."
+      }
+    }
+  ]
+}

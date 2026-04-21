@@ -1,0 +1,197 @@
+{
+  "section_id": 6,
+  "slug": "crms",
+  "title": "CRMs: HubSpot y Salesforce con AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Gabriela usa HubSpot (un CRM: gestor de relaciones con clientes) con 2000 contactos. Cada vez que quiere análisis copia uno a uno a ChatGPT. ¿Por qué es un error?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Copiar garantiza privacidad — conectar la AI al CRM expone todos los datos al modelo"
+          },
+          {
+            "id": 1,
+            "text": "El CRM puede conectarse directo a la AI para que lea, escriba y automatice — copiar a mano pierde la mayor parte del valor"
+          },
+          {
+            "id": 2,
+            "text": "ChatGPT no entiende datos de ventas — hace falta un modelo especializado en cada industria"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "HubSpot y Salesforce se conectan a la AI vía interfaz de programación (API) o Model Context Protocol (MCP). Eso desbloquea resumir leads, clasificar, sugerir próximos pasos y reportes automáticos. Copiar a mano pierde escalabilidad y contexto.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "HubSpot vs Salesforce rápido",
+        "body": "**HubSpot:**\n- Más amigable, curva baja\n- Suite integrada (CRM + marketing + service)\n- Ideal para PyMEs y startups\n\n**Salesforce:**\n- Más poderoso y customizable\n- Ecosistema enorme\n- Empresas medianas-grandes\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Lo que AI desbloquea en tu CRM",
+        "body": "Casos de valor real:\n\n- **Clasificar** leads por intención al entrar\n- **Resumir** notas de llamada automáticamente\n- **Escribir** el próximo mensaje con tono del vendedor\n- **Priorizar** pipeline según señales\n- **Reportes** narrativos en vez de solo tablas"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Cómo conectar AI a CRM",
+        "body": "Tres caminos:\n\n- **Nativo**: HubSpot y Salesforce ya tienen AI integrada (Breeze, Einstein). Limitada pero sin setup\n- **MCP**: Claude con MCP de HubSpot/Salesforce lee y escribe directo\n- **API**: via n8n, Make o código — máxima flexibilidad\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Conectar AI a tu CRM elimina la necesidad de que los vendedores lo actualicen.",
+        "answer": false,
+        "explanation": "Falso. AI **automatiza lo repetitivo** (clasificar, resumir, sugerir), pero los vendedores siguen siendo clave: validan, cierran, aportan contexto. AI amplifica, no reemplaza.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la tarea con la automatización AI+CRM:",
+        "pairs": [
+          {
+            "term": "Lead llena formulario",
+            "def": "AI clasifica y enruta al vendedor"
+          },
+          {
+            "term": "Vendedor tuvo llamada",
+            "def": "AI resume y actualiza notas"
+          },
+          {
+            "term": "Lead queda en silencio",
+            "def": "AI sugiere un follow-up a tiempo"
+          },
+          {
+            "term": "Cierre de mes",
+            "def": "AI genera reporte narrativo"
+          }
+        ],
+        "explanation": "Cada momento del pipeline tiene una AI-tarea natural. **No es un bot que reemplaza vendedor** — son 10 pequeñas automatizaciones que liberan horas semanales.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué automatizaciones AI+CRM ahorran tiempo real?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Resumir notas de llamadas largas"
+          },
+          {
+            "id": 1,
+            "text": "Clasificar leads por calidad"
+          },
+          {
+            "id": 2,
+            "text": "Sugerir próximo mensaje según el contexto"
+          },
+          {
+            "id": 3,
+            "text": "Cerrar tratos sin vendedor humano"
+          },
+          {
+            "id": 4,
+            "text": "Reemplazar al director comercial"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros son valor real. Cerrar tratos complejos y dirigir comercial requieren humano. **AI complementa, no sustituye** los momentos críticos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu equipo de ventas pierde horas redactando follow-ups. ¿Cómo lo resuelves con AI+CRM?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Copian cada lead a ChatGPT y pegan la respuesta"
+          },
+          {
+            "id": 1,
+            "text": "Flujo en n8n o Routine: detecta leads que necesitan follow-up → AI redacta draft personalizado → vendedor revisa y envía"
+          },
+          {
+            "id": 2,
+            "text": "Contratan más vendedores"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Draft automático + revisión humana**: AI escribe el 80%, el vendedor pule el 20%. De 15 min por follow-up a 3. Copiar manual mata el ahorro.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Gabriela conecta HubSpot con AI. Dos semanas después, ¿qué cambió?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — sigue copiando y pegando"
+          },
+          {
+            "id": 1,
+            "text": "Los leads llegan clasificados, las notas se resumen solas, los follow-ups salen en drafts. El equipo recupera horas diarias"
+          },
+          {
+            "id": 2,
+            "text": "Se rompió el CRM"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Gabriela conectó su CRM a AI. No reemplazó a nadie — **multiplicó la productividad** de cada vendedor al automatizar lo repetitivo.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "💼",
+        "title": "CRM con AI integrado",
+        "body": "Ya sabes cómo activar tu CRM con AI: clasificar leads, resumir llamadas y redactar follow-ups con revisión humana. Cada automatización pequeña libera horas al equipo."
+      }
+    }
+  ]
+}

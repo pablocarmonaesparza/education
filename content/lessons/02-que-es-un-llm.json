@@ -1,0 +1,190 @@
+{
+  "section_id": 2,
+  "slug": "que-es-un-llm",
+  "title": "Qué es un LLM",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Carlos le pregunta a ChatGPT una capital y responde bien. Luego le pregunta: '¿entendiste?' y dice 'sí, por supuesto'. Carlos concluye que entiende. ¿Qué error comete?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Ninguno — responder bien prueba que entiende"
+          },
+          {
+            "id": 1,
+            "text": "El modelo predice la palabra más probable que sigue; no entiende como humano, aunque por fuera se vea igual"
+          },
+          {
+            "id": 2,
+            "text": "ChatGPT solo entiende preguntas simples; con preguntas complejas fallaría"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "ChatGPT predijo 'París' porque esa palabra sigue a 'capital de Francia' con **altísima probabilidad** en los millones de textos que leyó. No necesita entender para responder bien. Esa distinción cambia cómo lo usas.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué significa LLM",
+        "body": "**modelo de lenguaje (LLM)** es la sigla de *Large Language Model*: modelo grande de lenguaje. Es un programa que aprendió a predecir qué palabra sigue después de otra, basado en miles de millones de textos que leyó durante su entrenamiento."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Predice, no piensa",
+        "body": "Cuando le escribes una pregunta, el modelo **no piensa** la respuesta. Calcula cuál es la siguiente palabra más probable, luego la siguiente, y así hasta formar un párrafo. Es tan bueno en eso que parece entender."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Por qué a veces se equivoca",
+        "body": "Como predice en vez de razonar, puede dar una respuesta que **suena correcta** pero es falsa. En matemática, datos específicos o contextos nuevos se equivoca con total confianza: para él, todo es 'qué palabra sigue'."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Un LLM busca respuestas en internet antes de contestarte.",
+        "answer": false,
+        "explanation": "Falso. Un LLM *no busca nada* por default — genera texto con lo que aprendió en su entrenamiento. ChatGPT sí tiene web search como modo opcional, pero el LLM base es **predicción pura**.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Marca todas las afirmaciones verdaderas sobre un LLM:",
+        "options": [
+          {
+            "id": 0,
+            "text": "Es un programa que aprendió patrones de millones de textos"
+          },
+          {
+            "id": 1,
+            "text": "Predice la siguiente palabra según probabilidades"
+          },
+          {
+            "id": 2,
+            "text": "Es el motor detrás de ChatGPT, Claude y Gemini"
+          },
+          {
+            "id": 3,
+            "text": "Tiene conciencia y opiniones propias"
+          },
+          {
+            "id": 4,
+            "text": "Es una base de datos con todas las respuestas del mundo"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las tres primeras describen cómo funciona un LLM. Conciencia y base de datos son mitos comunes — ni piensa ni guarda respuestas, genera una cada vez con predicción estadística.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la característica con quién la cumple:",
+        "pairs": [
+          {
+            "term": "Predecir palabras",
+            "def": "Lo que hace un LLM al generar texto"
+          },
+          {
+            "term": "Entender significado",
+            "def": "Lo que hace un humano al leer"
+          },
+          {
+            "term": "Millones de textos",
+            "def": "Datos que necesita un LLM para aprender"
+          },
+          {
+            "term": "Pocos ejemplos",
+            "def": "Datos que necesita un humano para aprender"
+          }
+        ],
+        "explanation": "El LLM imita patrones estadísticos; el humano comprende conceptos. Esa diferencia explica por qué *aún siendo preciso*, el modelo no 'sabe' como tú.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "fill-blank",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Completa la frase con la palabra correcta:",
+        "sentenceBefore": "Un LLM genera su respuesta ",
+        "sentenceAfter": " sin realmente entenderla.",
+        "tokens": [
+          "Prediciendo",
+          "Razonando",
+          "Buscando"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "El LLM **predice** palabra por palabra. Parece razonar porque el resultado es coherente, pero el proceso es estadístico, no conceptual.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Carlos vuelve a probar: le pregunta a ChatGPT '¿cuál es la capital de Francia?' y recibe 'París'. Ahora sí, ¿qué explica mejor esa respuesta?",
+        "options": [
+          {
+            "id": 0,
+            "text": "ChatGPT respondió bien, entonces entiende mis preguntas"
+          },
+          {
+            "id": 1,
+            "text": "ChatGPT predijo 'París' porque sigue a 'capital de Francia' con probabilidad altísima; no necesita entender"
+          },
+          {
+            "id": 2,
+            "text": "ChatGPT buscó en Google la respuesta y me la copió"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Carlos ya no confunde **respuesta correcta** con **comprensión**. Son cosas distintas, y esa distinción cambia cómo escribes los prompts y cuándo puedes confiar en el output.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🧠",
+        "title": "LLM sin magia",
+        "body": "Ahora sabes qué hace (y qué no) un modelo de lenguaje. La próxima lección entra a cómo aprendió a hacerlo desde cero."
+      }
+    }
+  ]
+}

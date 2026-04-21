@@ -1,0 +1,97 @@
+{
+  "section_id": 9,
+  "section_slug": "vibe-coding",
+  "section_display": "vibe coding",
+  "source": "claude-in-session",
+  "lectures": [
+    {
+      "slug": "que-es-vibe-coding",
+      "title": "qué es vibe coding",
+      "display_order": 1,
+      "learning_objective": "describir qué es vibe coding y en qué se diferencia de programar tradicional",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "vibe coding",
+      "narrative_arc": "Alguien oye 'vibe coding' y lo asocia con programación de baja calidad, algo poco serio. La realidad es otra: es describir lo que quieres en lenguaje natural, iterar sobre lo que la AI produce, y obtener código funcional sin necesidad de ser programador tradicional. El vibe cambia la relación entera con el código.",
+      "scenario_character": "Isabella"
+    },
+    {
+      "slug": "claude-code",
+      "title": "Claude Code",
+      "display_order": 2,
+      "learning_objective": "usar Claude Code para editar un proyecto entero desde la terminal con instrucciones en lenguaje natural",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "Claude Code",
+      "narrative_arc": "Alguien quiere modificar un proyecto grande sin tener que recorrer cada archivo manualmente. Claude Code lee la estructura completa, entiende el contexto del proyecto y ejecuta cambios coherentes por toda la base de código. No es autocompletar, es un colaborador que opera en el proyecto.",
+      "scenario_character": "Mauricio"
+    },
+    {
+      "slug": "cursor",
+      "title": "Cursor",
+      "display_order": 3,
+      "learning_objective": "usar Cursor para escribir código más rápido con sugerencias contextuales al nivel del proyecto completo",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "Cursor",
+      "narrative_arc": "Alguien ha escrito código con autocomplete de VS Code y le parece suficiente herramienta. Cursor es otro nivel: sugiere cambios multi-archivo, entiende el proyecto entero, hace refactors con una frase simple. La curva de productividad sube notablemente al cambiar de herramienta de edición.",
+      "scenario_character": "Alejandra"
+    },
+    {
+      "slug": "codex-cli",
+      "title": "Codex CLI",
+      "display_order": 4,
+      "learning_objective": "usar Codex CLI para revisar un cambio real y comparar sus observaciones con las de otro asistente antes de aceptar la corrección",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "segunda opinión con Codex",
+      "narrative_arc": "Alguien usa solo un asistente para todo y se siente cómodo con sus opiniones. No sabe que contar con una segunda AI, entrenada distinto, cambia el juego: una propone, la otra critica, uno decide con más información. Codex CLI es ese segundo punto de vista que no comparte sesgos con el primero.",
+      "scenario_character": "Diego"
+    },
+    {
+      "slug": "git-github",
+      "title": "git y GitHub: primeros pasos",
+      "display_order": 5,
+      "learning_objective": "usar git y GitHub para guardar versiones de un proyecto y compartirlo con otros colaboradores",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "git y GitHub básicos",
+      "narrative_arc": "Alguien guarda 'backup_final_v2.zip', 'backup_final_v3.zip', 'backup_final_verdadero.zip' en su escritorio. Piensa que git es solo para equipos técnicos grandes. No sabe que git es exactamente la herramienta que resuelve ese caos, de una manera que escala a cualquier proyecto de cualquier tamaño.",
+      "scenario_character": "Camila"
+    },
+    {
+      "slug": "iterar-codigo",
+      "title": "iterar sobre código con AI",
+      "display_order": 6,
+      "learning_objective": "usar AI para iterar sobre código existente hasta que pase las pruebas y cumpla los requerimientos",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "iteración de código con AI",
+      "narrative_arc": "Alguien le pide a la AI que 'arregle el bug', recibe código nuevo, lo pega, se rompe otra cosa. Itera a ciegas y se frustra. No sabe que hay un método claro: describir el bug, pasar el test que falla, pedir el fix con constraints, re-correr pruebas. Iterar código no es rezar, es ingeniería.",
+      "scenario_character": "Tomás"
+    },
+    {
+      "slug": "whisper",
+      "title": "Whisper y transcripción con AI",
+      "display_order": 7,
+      "learning_objective": "usar Whisper para transcribir audio o video a texto con precisión en múltiples idiomas",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "transcripción con Whisper",
+      "narrative_arc": "Alguien tiene 20 horas de reuniones grabadas y nunca las revisa porque transcribirlas a mano sería imposible. Whisper las convierte en texto fiel en minutos, con timestamps incluidos, listo para buscar, resumir o citar. Audio que estaba muerto vuelve a ser información accesible.",
+      "scenario_character": "Ricardo"
+    },
+    {
+      "slug": "primer-mini-app",
+      "title": "tu primer mini-app",
+      "display_order": 8,
+      "learning_objective": "construir una mini-app funcional end-to-end desde la idea inicial hasta el deploy que otros pueden usar",
+      "bloom_verb": "crear",
+      "cognitive_route": "mixta",
+      "concept_name": "mini-app",
+      "narrative_arc": "Alguien ha aprendido piezas sueltas pero nunca ha terminado una app completa. Se queda siempre en 'casi lista' y nunca la muestra. Una mini-app es un ejercicio deliberadamente acotado: una idea, un día, un deploy visible. La primera es la más importante porque desbloquea las siguientes.",
+      "scenario_character": "Emilio"
+    }
+  ],
+  "version": "v1.2-codex-reviewed"
+}

@@ -1,0 +1,197 @@
+{
+  "section_id": 7,
+  "slug": "manejar-api-keys",
+  "title": "Manejar API keys: lifecycle completo",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Una llave API (la credencial de la interfaz con la que la app habla al proveedor de AI) vive en los servidores de Valeria. Un dev renuncia. ¿Qué debe hacer con la llave?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada, la llave vive en el servidor y el exdev ya no tiene acceso al repo"
+          },
+          {
+            "id": 1,
+            "text": "Rotarla de inmediato: emitir una nueva, migrar el uso y revocar la anterior"
+          },
+          {
+            "id": 2,
+            "text": "Cambiar la contraseña del dashboard del proveedor y dejar la llave igual"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Una llave API no es como una contraseña: no se protege con cambiar el login. Si el exdev clonó el repo, vio la llave en logs o la copió a su máquina, sigue siendo válida hasta que se revoque. Las llaves tienen **ciclo de vida** — se crean, se rotan y se revocan — y cada salida del equipo dispara ese proceso.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 4 etapas del lifecycle",
+        "body": "Cada llave API pasa por:\n\n- **Creación**: con scope mínimo necesario\n- **Uso**: en entornos separados (dev/staging/prod)\n- **Rotación**: cada pocos meses o ante sospecha\n- **Revocación**: cuando alguien se va o cambia el uso"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Scoping: el principio de mínimo privilegio",
+        "body": "Cada llave debe poder **solo lo que necesita**:\n\n- Llave de bot que solo lee → scope read-only\n- Llave de app que solo usa GPT-4o → limitar modelo\n- Llave con budget cap → no más de $X/mes\n\nOpenAI, Anthropic, Google ya soportan esto. Úsalo."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Rotación: por qué y cómo",
+        "body": "Rotar una llave significa emitir una nueva, migrar el uso y revocar la vieja. Hazlo:\n\n- **Cada 3-6 meses** como política\n- **Cuando alguien deja el equipo**\n- **A la menor sospecha de filtración**\n\nLa rotación es rutinaria si el sistema está bien diseñado."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Compartir la misma API key entre dev, staging y producción simplifica el mantenimiento.",
+        "answer": false,
+        "explanation": "Falso. **Separar llaves por entorno** es norma. Si la llave de dev se filtra, no afecta producción. Si un dev se va, revocas solo su llave. Una llave para todo = imposible aislar incidentes.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada escenario con la acción apropiada:",
+        "pairs": [
+          {
+            "term": "Un dev deja el equipo",
+            "def": "Revocar sus llaves inmediatamente"
+          },
+          {
+            "term": "Sospecha de leak",
+            "def": "Rotar urgente y auditar logs"
+          },
+          {
+            "term": "Nueva app necesita acceso",
+            "def": "Crear llave con scope mínimo"
+          },
+          {
+            "term": "Han pasado 6 meses",
+            "def": "Rotación rutinaria programada"
+          }
+        ],
+        "explanation": "Cada caso tiene su protocolo. **Tener el protocolo escrito** te permite actuar rápido sin pánico cuando pasa algo.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas de lifecycle de API keys son mínimas en producción?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Llave separada por entorno (dev, staging, prod)"
+          },
+          {
+            "id": 1,
+            "text": "Scope limitado: cada llave solo lo que necesita"
+          },
+          {
+            "id": 2,
+            "text": "Rotación periódica documentada"
+          },
+          {
+            "id": 3,
+            "text": "Una sola llave para todo el equipo"
+          },
+          {
+            "id": 4,
+            "text": "Compartir llaves por WhatsApp para accesibilidad"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros son práctica estándar. Los últimos 2 son **antipatrones** frecuentes. Reconocerlos te permite mejorar tu setup si ves cualquiera.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Rodrigo programa una migración para mover su app a un nuevo proveedor. Durante la migración, ¿cuál es el orden seguro de operaciones con llaves?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Borrar primero la llave vieja, luego crear la nueva y desplegar"
+          },
+          {
+            "id": 1,
+            "text": "Crear la llave nueva con scope mínimo, desplegar, verificar tráfico, luego revocar la vieja"
+          },
+          {
+            "id": 2,
+            "text": "Reutilizar la llave actual en el proveedor nuevo para no romper nada"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Rotar sin downtime exige **solapar**: la llave nueva entra, la vieja se mantiene viva hasta confirmar que todo el tráfico migró, y solo entonces se revoca. Borrar primero deja la app tumbada; reutilizar llaves mezcla credenciales entre sistemas y rompe el aislamiento.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Volvamos al caso de Valeria: el dev renuncia. Ahora que tiene lifecycle, ¿qué hace en los primeros 10 minutos?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Espera una semana para ver si alguien reporta uso extraño y entonces decide"
+          },
+          {
+            "id": 1,
+            "text": "Revoca las llaves asociadas a la identidad del exdev en cada proveedor, rota las llaves compartidas y audita el uso reciente"
+          },
+          {
+            "id": 2,
+            "text": "Le pide que firme un acuerdo de confidencialidad y mantiene las llaves activas"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Al inicio de la lección la respuesta intuitiva era 'no hacer nada porque el exdev ya no tiene acceso al repo'. Ahora sabes que las llaves son válidas hasta que se revoquen, y el protocolo convierte un momento de pánico en una checklist de 10 minutos.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🗝️",
+        "title": "Lifecycle de keys en orden",
+        "body": "Ya tienes el protocolo: crear con scope mínimo, separar por entorno, rotar periódicamente y revocar al instante cuando cambia el equipo. Tus llaves ahora son activos gestionados, no bombas de tiempo."
+      }
+    }
+  ]
+}

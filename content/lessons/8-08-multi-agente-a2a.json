@@ -1,0 +1,197 @@
+{
+  "section_id": 8,
+  "slug": "multi-agente-a2a",
+  "title": "Multi-agente y protocolo A2A",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Eugenia tiene un agente que investiga, otro que redacta, otro que publica. Funcionan por separado. Quiere que se pasen trabajo entre sí automáticamente. Oye 'multi-agente' y 'A2A'.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Dos agentes peleándose"
+          },
+          {
+            "id": 1,
+            "text": "Multi-agente: sistemas donde varios agentes colaboran. A2A (Agent-to-Agent): protocolo para que agentes se comuniquen con estándar, no ad-hoc"
+          },
+          {
+            "id": 2,
+            "text": "Solo una curiosidad académica"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Multi-agente** es la arquitectura donde varios agentes especializados colaboran en tareas. **A2A** es protocolo emergente para que se comuniquen: como Model Context Protocol (MCP) para modelo↔tool, pero agente↔agente. Permite componer sistemas complejos sin pegar cada integración a mano.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Por qué multi-agente en lugar de uno solo",
+        "body": "Ventajas de dividir en varios agentes:\n\n- **Especialización**: cada agente experto en una tarea\n- **Contexto acotado**: no metes todo en un prompt gigante\n- **Debuggeable**: ves qué agente falló\n- **Escalable**: añades agentes sin rediseñar el todo"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Patrones de multi-agente",
+        "body": "Arquitecturas comunes:\n\n- **Orquestador + especialistas**: un agente coordina, los otros ejecutan\n- **Pipeline**: agente A pasa su salida a B, y B a C\n- **Debate**: dos agentes discuten para llegar a mejor respuesta\n- **Peer-to-peer**: los agentes se consultan entre sí de forma abierta"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Qué aporta A2A",
+        "body": "Sin A2A, cada integración entre agentes es código a medida. Con A2A obtienes:\n\n- **Mensajes estandarizados** entre agentes\n- **Descubrimiento** de agentes disponibles\n- **Handshakes** de autenticación y capacidades\n- **Observabilidad**: qué agente habló con cuál y cuándo"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Siempre que un sistema tenga varios agentes, produce mejor resultado que uno solo.",
+        "answer": false,
+        "explanation": "Falso. Multi-agente **introduce complejidad**: coordinación, latencia, costo, fallas en cadena. Solo vale la pena cuando la tarea realmente se beneficia de especialización. Un agente bien diseñado puede superar a 3 mal orquestados.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el patrón multi-agente con su caso:",
+        "pairs": [
+          {
+            "term": "Orquestador + especialistas",
+            "def": "Investigación compleja con sub-tareas"
+          },
+          {
+            "term": "Pipeline",
+            "def": "Contenido: investigar → redactar → publicar"
+          },
+          {
+            "term": "Debate",
+            "def": "Decisiones donde 2 perspectivas mejoran"
+          },
+          {
+            "term": "Peer-to-peer",
+            "def": "Sistemas abiertos donde agentes descubren otros"
+          }
+        ],
+        "explanation": "Cada patrón encaja con ciertos casos. **Elegir mal el patrón complica sin beneficio**. Pipeline para contenido; orquestador para complejidad; debate para decisiones.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Cuándo vale la pena multi-agente en lugar de uno solo?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tareas con sub-tareas muy distintas (investigar, escribir, publicar)"
+          },
+          {
+            "id": 1,
+            "text": "Cuando un solo agente se confunde por tener demasiadas tools"
+          },
+          {
+            "id": 2,
+            "text": "Cuando quieres reusar piezas en varios workflows"
+          },
+          {
+            "id": 3,
+            "text": "Para cualquier problema para verse 'avanzado'"
+          },
+          {
+            "id": 4,
+            "text": "Cuando el problema es simple y un solo prompt bastaría"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Especialización, reducción de complejidad por agente y reuso son razones válidas. **Usar multi-agente por moda o para impresionar** es sobreingeniería — el costo sale caro.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres un sistema que: investiga un tema, redacta un artículo, genera imagen, publica en blog. ¿Cómo lo arquitectas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un solo agente mega-complejo con 20 tools"
+          },
+          {
+            "id": 1,
+            "text": "Pipeline multi-agente: agente investigador → agente redactor → agente diseñador → agente publicador. Cada uno especializado"
+          },
+          {
+            "id": 2,
+            "text": "Escribir cuatro prompts separados a ChatGPT a mano"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Sub-tareas distintas = pipeline multi-agente**. Cada agente especializado es mejor que uno genérico. Y si quieres cambiar solo 'redactor', lo haces sin tocar el resto.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Eugenia diseña su pipeline multi-agente para contenido. ¿Qué gana?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Más complejidad sin beneficio"
+          },
+          {
+            "id": 1,
+            "text": "Agentes especializados que reutiliza en varios workflows. El redactor también escribe emails; el investigador también hace research para ventas. Modularidad real"
+          },
+          {
+            "id": 2,
+            "text": "Se confunde y lo abandona"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Eugenia entendió el valor: **no es 'varios agentes por defecto', es modularidad que paga con reuso**. Esa es la diferencia entre sobreingeniería y arquitectura bien pensada.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🤝",
+        "title": "Multi-agente y A2A",
+        "body": "Ya piensas en agentes como equipo. La siguiente lección profundiza: orquestación de equipos de bots."
+      }
+    }
+  ]
+}

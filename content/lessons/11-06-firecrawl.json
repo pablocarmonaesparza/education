@@ -1,0 +1,197 @@
+{
+  "section_id": 11,
+  "slug": "firecrawl",
+  "title": "Firecrawl: extraer web con AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Micaela quiere que su agente lea cada día el blog de un competidor y resuma los posts nuevos. El sitio no tiene interfaz de programación (API) pública. ¿Qué conviene?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Programar un lector de HTML desde cero para ese blog"
+          },
+          {
+            "id": 1,
+            "text": "Usar un servicio que convierta cualquier página a texto limpio, listo para el modelo"
+          },
+          {
+            "id": 2,
+            "text": "Cambiar de competidor a uno con interfaz de programación (API)"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Firecrawl** es un servicio de extracción web diseñado para AI: le das una URL o dominio y devuelve Markdown limpio y estructurado. Perfecto para alimentar agentes que leen web o recuperación con generación (RAG). Cero parser manual.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué hace Firecrawl",
+        "body": "Firecrawl ofrece 3 operaciones:\n\n- **Scrape**: una URL → Markdown limpio\n- **Crawl**: un dominio → todas las páginas en Markdown\n- **Extract**: data estructurada por schema que definas\n\nIdeal para alimentar AI con contenido web curado."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Firecrawl vs Apify vs Browserbase",
+        "body": "Tres niveles de abstracción:\n\n- **Firecrawl** — de URL a Markdown, casi sin programar\n- **Apify** — extractores listos para sitios populares\n- **Browserbase** — navegador programable para lógica a medida\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Por qué 'AI-first'",
+        "body": "Firecrawl está diseñado para alimentar modelos de AI:\n\n- Entrega Markdown, el formato que los modelos digieren mejor\n- Remueve menús, anuncios y avisos de cookies en automático\n- Maneja sitios que cargan contenido con JavaScript\n- Trae servidor oficial del protocolo de contexto para modelos (MCP) para conectarlo a un agente\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Firecrawl reemplaza completamente a Apify y Browserbase.",
+        "answer": false,
+        "explanation": "Falso. **Firecrawl brilla en contenido textual limpio**. Si necesitas data estructurada específica (productos con precio, reseñas con rating), Apify o scraping custom siguen ganando. Son capas complementarias.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso con la herramienta ideal:",
+        "pairs": [
+          {
+            "term": "Blog entero a Markdown",
+            "def": "Firecrawl crawl para alimentar un agente con texto limpio"
+          },
+          {
+            "term": "Productos con precio y reseñas",
+            "def": "Apify: actores con datos estructurados específicos"
+          },
+          {
+            "term": "Flujo custom en app dinámica",
+            "def": "Browserbase: navegador programable con código propio"
+          },
+          {
+            "term": "Un artículo a texto plano",
+            "def": "Firecrawl scrape de una sola URL"
+          }
+        ],
+        "explanation": "Cada herramienta tiene su zona fuerte. **Firecrawl para texto limpio. Apify para datos estructurados. Browserbase para flujos a medida.**",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué hace a Firecrawl buena opción para RAG?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Output en Markdown listo para indexar"
+          },
+          {
+            "id": 1,
+            "text": "Remueve elementos de UI que distraen"
+          },
+          {
+            "id": 2,
+            "text": "Maneja sitios dinámicos sin configurar"
+          },
+          {
+            "id": 3,
+            "text": "Genera embeddings automáticamente"
+          },
+          {
+            "id": 4,
+            "text": "Escribe el chatbot por ti"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros son ventajas reales. Generar embeddings y escribir chatbot quedan fuera del scope — Firecrawl entrega **texto limpio**; el resto es tu pipeline.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu agente debe leer el blog del competidor (50 posts) y resumir cada uno. ¿Cómo lo haces?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Programar un extractor propio en Python para ese blog específico"
+          },
+          {
+            "id": 1,
+            "text": "Firecrawl crawlea el blog, entrega cada post en Markdown y Claude lo resume"
+          },
+          {
+            "id": 2,
+            "text": "Leer a mano los 50 posts"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Firecrawl **quita la parte aburrida de la extracción**. El agente queda con texto limpio y se concentra en el análisis. Tiempo de desarrollo: minutos en vez de días.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Micaela arma su flujo con Firecrawl + Claude. ¿Qué obtiene?",
+        "options": [
+          {
+            "id": 0,
+            "text": "HTML crudo que alguien tiene que limpiar a mano"
+          },
+          {
+            "id": 1,
+            "text": "Los posts nuevos del competidor en Markdown limpio, resumidos por Claude y enviados a Slack cada mañana, sin mantener un extractor propio"
+          },
+          {
+            "id": 2,
+            "text": "Lo dejó para cuando 'tenga tiempo'"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Micaela pasó de 'intento imposible' a un **sistema que corre solo**. Firecrawl junto con AI arma un flujo de inteligencia competitiva en horas, no semanas.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔥",
+        "title": "Web a AI sin fricción",
+        "body": "Ya tienes la pieza para alimentar AI con contenido web: URL → Markdown limpio → modelo. Cero mantener extractores."
+      }
+    }
+  ]
+}

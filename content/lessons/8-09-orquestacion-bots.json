@@ -1,0 +1,197 @@
+{
+  "section_id": 8,
+  "slug": "orquestacion",
+  "title": "Orquestación de equipos de bots",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Rodrigo tiene 5 agentes separados: soporte, ventas, research, contenido, operaciones. Un cliente llega con una duda que mezcla pago y envío. ¿Cuál es la mejor forma de manejarlo?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Que el cliente hable con cada agente por separado"
+          },
+          {
+            "id": 1,
+            "text": "Un agente coordinador que derive la duda al especialista correcto y junte las respuestas"
+          },
+          {
+            "id": 2,
+            "text": "Fusionar los 5 agentes en uno solo que haga todo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Orquestar** significa hacer que agentes especializados colaboren bajo un coordinador. El coordinador no hace el trabajo, **enruta y gestiona**. Es como un manager humano que asigna tareas al experto correcto y consolida la respuesta final.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Roles en un equipo de bots",
+        "body": "Un equipo de agentes suele tener cuatro roles:\n\n- **Orquestador**: recibe el pedido y decide a quién derivar\n- **Especialistas**: ejecutan tareas de su dominio\n- **Revisor**: valida el resultado antes de entregar\n- **Puente humano**: escala al humano cuando algo es crítico\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Estrategias de orquestación",
+        "body": "Tres formas comunes de coordinar:\n\n- **Delegación secuencial**: llama a un agente, espera la respuesta, llama al siguiente\n- **Llamada en paralelo**: llama a varios al mismo tiempo y consolida resultados\n- **Ruteo dinámico**: elige al agente según el tipo de pedido\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "El orquestador no hace el trabajo",
+        "body": "Error común: meter en el orquestador lógica que pertenece a un especialista.\n\n**Regla**: el orquestador solo enruta y consolida. Si cargas el razonamiento del dominio en él, pierdes la ventaja de la especialización. Mantenlo simple y delegante."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Un buen orquestador puede hacer la tarea de cualquier especialista como respaldo si alguno falla.",
+        "answer": false,
+        "explanation": "Falso. Un orquestador que intenta hacer el trabajo del especialista **rompe la separación de roles**. Si un especialista falla, el orquestador debe reintentar o escalar, no suplantarlo. Cada agente en su rol mantiene el sistema mantenible.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada rol con lo que hace:",
+        "pairs": [
+          {
+            "term": "Orquestador",
+            "def": "Enruta cada pedido al especialista correcto"
+          },
+          {
+            "term": "Especialista",
+            "def": "Ejecuta la tarea concreta de su dominio"
+          },
+          {
+            "term": "Revisor",
+            "def": "Valida el resultado antes de entregarlo al cliente"
+          },
+          {
+            "term": "Puente humano",
+            "def": "Escala a una persona cuando el caso es crítico"
+          }
+        ],
+        "explanation": "Cada rol tiene su responsabilidad. **Claridad de roles = equipo que funciona**. Cuando los roles se difuminan aparecen duplicidades, huecos y fallos en cadena.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu orquestación funciona bien?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El orquestador enruta cada pedido al especialista correcto"
+          },
+          {
+            "id": 1,
+            "text": "Cuando un especialista falla, el orquestador reintenta o escala"
+          },
+          {
+            "id": 2,
+            "text": "El registro muestra qué agente hizo cada paso"
+          },
+          {
+            "id": 3,
+            "text": "El orquestador termina haciendo el trabajo de todos"
+          },
+          {
+            "id": 4,
+            "text": "Ningún agente sabe qué hizo el anterior"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los tres primeros son señales de un sistema sano. Los dos últimos son **señales de mal diseño**: un orquestador sobrecargado o agentes sin contexto rompen la colaboración.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un cliente hace una pregunta que requiere consultar su cuenta, revisar un pago y redactar una respuesta formal. ¿Cómo orquestas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un solo agente gigante que intente hacer todo a la vez"
+          },
+          {
+            "id": 1,
+            "text": "El orquestador parte la pregunta en sub-tareas, llama al agente de cuentas y al de pagos, el revisor valida y devuelve una respuesta unificada"
+          },
+          {
+            "id": 2,
+            "text": "Responder al cliente que pregunte a cada agente por separado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Partir en sub-tareas y orquestar** da una respuesta completa sin sobrecargar a un solo agente. Cada especialista hace lo suyo y el orquestador consolida. El cliente recibe una sola respuesta coherente, no tres fragmentos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Rodrigo orquesta sus 5 agentes bajo un coordinador. ¿Qué cambia para sus clientes?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada, siguen escribiendo a cada agente por separado"
+          },
+          {
+            "id": 1,
+            "text": "Preguntan una vez al coordinador y reciben una respuesta unificada de los especialistas que haga falta consultar"
+          },
+          {
+            "id": 2,
+            "text": "Los errores se multiplican porque ahora hay más agentes"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Rodrigo pasó de **5 islas** a un **equipo coordinado**. El cliente ve una sola puerta de entrada; detrás trabajan los especialistas necesarios. Esa experiencia limpia es el resultado de una orquestación bien pensada.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🎼",
+        "title": "Equipos de bots en acción",
+        "body": "Ya sabes diseñar sistemas multi-agente coordinados: orquestador, especialistas, revisor y puente humano, cada uno en su rol."
+      }
+    }
+  ]
+}

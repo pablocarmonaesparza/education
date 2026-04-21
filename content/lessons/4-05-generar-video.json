@@ -1,0 +1,197 @@
+{
+  "section_id": 4,
+  "slug": "generar-video",
+  "title": "Video con AI: panorama general",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Emilio quiere un clip corto de su producto para Instagram. Pregunta en un grupo: \"¿lo hago con ChatGPT?\" ¿Qué le conviene hacer?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sí, ChatGPT lo hace tan bien como cualquier herramienta dedicada"
+          },
+          {
+            "id": 1,
+            "text": "ChatGPT sirve para casos generales, pero hay modelos dedicados con ventajas claras"
+          },
+          {
+            "id": 2,
+            "text": "No se puede generar video con AI todavía"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "ChatGPT tiene video integrado (Sora) y funciona para casos generales. Pero modelos dedicados como Seedance, Kling o Veo tienen ventajas concretas en movimiento, fotorealismo o duración. Conocer 3-4 bien cubre casi todo.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cómo funciona generar video",
+        "body": "Un modelo de video toma un prompt (texto) o una imagen inicial y genera un **clip corto**, típicamente de 3 a 10 segundos. Los modelos líderes hoy son Sora, Seedance, Kling y Veo."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Dos modos: texto-a-video y imagen-a-video",
+        "body": "Dos formas principales:\n\n- **Texto a video**: describes en palabras y el modelo genera todo\n- **Imagen a video**: partes de una imagen ya creada y el modelo la anima\n\nImagen-a-video suele dar más control porque partes de una referencia visual fija."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Sora sirve, pero hay alternativas dedicadas",
+        "body": "Sora es el modelo de video integrado en ChatGPT y sirve para casos generales. Pero **Seedance, Kling y Veo** tienen ventajas específicas en movimiento, fotorealismo o duración. Para trabajo serio, conocer varias opciones compensa."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Hoy puedes generar un comercial de 2 minutos completo con un solo prompt.",
+        "answer": false,
+        "explanation": "Falso. Los modelos generan clips de **3 a 10 segundos** típicamente. Un comercial real se arma pegando varios clips + edición. Saberlo te evita expectativas irreales.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el modelo con su fortaleza principal:",
+        "pairs": [
+          {
+            "term": "Sora",
+            "def": "Generalista integrado en ChatGPT"
+          },
+          {
+            "term": "Veo",
+            "def": "Fotorealismo y detalle fino"
+          },
+          {
+            "term": "Kling",
+            "def": "Movimiento complejo y fluido"
+          },
+          {
+            "term": "Seedance",
+            "def": "Velocidad y calidad en clips cortos"
+          }
+        ],
+        "explanation": "Cada modelo tiene su punto fuerte. No se trata de 'cuál es el mejor', sino de 'cuál es el mejor para tu caso'. Conocer 3-4 y sus fortalezas ya te pone adelante.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué casos son realistas hoy para video con AI?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Clip de 5 segundos para redes sociales"
+          },
+          {
+            "id": 1,
+            "text": "Escena corta de relleno para un video editado"
+          },
+          {
+            "id": 2,
+            "text": "Animación de una imagen fija para tu feed"
+          },
+          {
+            "id": 3,
+            "text": "Película completa de 90 minutos sin editar"
+          },
+          {
+            "id": 4,
+            "text": "Entrevista continua de 20 minutos"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los tres primeros son **realistas hoy**. Películas largas y entrevistas continuas aún no — los modelos generan segundos, no horas. Saber los límites evita frustraciones.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Necesitas una animación corta de un producto girando para Instagram. ¿Qué enfoque eliges?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Texto-a-video desde cero describiendo el producto"
+          },
+          {
+            "id": 1,
+            "text": "Imagen-a-video: tomas tu foto del producto y la animas girando"
+          },
+          {
+            "id": 2,
+            "text": "Grabas en video real en un estudio alquilado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Imagen-a-video** mantiene el producto idéntico al que ya tienes. Texto-a-video inventaría un producto nuevo. Empezar de una imagen te da control y consistencia.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Emilio vuelve con criterio. Quiere un clip de 8 segundos de su producto moviéndose con calidad profesional. ¿Qué decide?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Abre las 12 herramientas y prueba una por una"
+          },
+          {
+            "id": 1,
+            "text": "Toma la foto de producto, la lleva a imagen-a-video en Seedance o Kling, obtiene un clip limpio"
+          },
+          {
+            "id": 2,
+            "text": "Se rinde y contrata un videógrafo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Emilio ya sabe: **imagen-a-video + modelo especializado** da control y calidad. El resultado sale en minutos, no días. Pasó de parálisis a decisión informada.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🎬",
+        "title": "Panorama de video con AI dominado",
+        "body": "Ya tienes el mapa: clips de 3 a 10 segundos, texto-a-video vs imagen-a-video, y 3-4 modelos con fortalezas distintas. Suficiente para decidir qué usar en tu próximo clip."
+      }
+    }
+  ]
+}

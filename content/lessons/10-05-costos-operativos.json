@@ -1,0 +1,197 @@
+{
+  "section_id": 10,
+  "slug": "costos-operativos",
+  "title": "Costos operativos reales",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Isaac lanzó su app con 20 usuarios. Primer mes: factura de $400 USD entre OpenAI, Supabase, Vercel. 20 usuarios no pagan tanto. Isaac entra en pánico: '¿es viable esto?'.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Que la app no es viable como idea"
+          },
+          {
+            "id": 1,
+            "text": "Calcular costo unitario por usuario o por operación — y diseñar para que sea viable. $400 USD entre 20 usuarios = $20 USD/user/mes, alto pero manejable si el producto cobra"
+          },
+          {
+            "id": 2,
+            "text": "Que Vercel y Supabase son estafa"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Costos operativos = costos variables por usuario + costos fijos**. Sin entender la unidad económica (cuánto cuesta atender a 1 usuario), no sabes si escalar es negocio o pérdida. $400 USD/20 users = $20 USD CAC operativo; si cobras $50 USD, ganas. Si cobras $5 USD, pierdes.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Los 3 tipos de costos",
+        "body": "Separa:\n\n- **Fijos**: Vercel, hosting, subs. No cambian con usuarios. Ej: $50 USD/mes\n- **Variables**: tokens de AI, storage, egreso. Crecen con uso. Ej: $0.02 USD/request\n- **Semi-fijos**: BD, logs. Saltan por tier al crecer."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las grandes fuentes de costo en apps con AI",
+        "body": "En orden típico:\n\n- **Tokens de AI** (50-80% del costo)\n- **Hosting** (10-20%)\n- **BD** (5-15%)\n- **Storage** (5-10%)\n- **Otros** (logging, emails, etc.)\n\nOptimizar AI tokens es el palanca principal para bajar factura."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Palancas para optimizar",
+        "body": "Orden de impacto:\n\n- **Modelo más barato** donde sirva (GPT-4o-mini, Haiku)\n- **Prompts cortos**: cada token suma\n- **Caching**: evitar recalcular lo mismo\n- **Recuperación curada** (RAG): mandar solo el fragmento relevante, no el documento entero"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Los costos de AI son un porcentaje fijo del uso, sin importar cómo diseñes tu app.",
+        "answer": false,
+        "explanation": "Falso. **El costo por usuario puede variar 10x según diseño**: prompts cortos vs largos, modelo caro vs barato, caching o no, chunking correcto del RAG. La ingeniería correcta puede convertir app inviable en rentable.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la técnica con lo que optimiza:",
+        "pairs": [
+          {
+            "term": "Caching de prompts",
+            "def": "Reduce re-cómputo de inputs repetidos"
+          },
+          {
+            "term": "Modelo mini en clasificación",
+            "def": "Baja costo en tareas simples"
+          },
+          {
+            "term": "Max tokens ajustado",
+            "def": "Respuestas del tamaño correcto"
+          },
+          {
+            "term": "Rate limits por user",
+            "def": "Previene abuso de un solo usuario"
+          }
+        ],
+        "explanation": "Cada técnica es palanca real. **Combinarlas puede bajar factura 60-80%**. Aplicar una sola deja dinero en la mesa.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas mantienen costos bajo control?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Monitorear costos diariamente, no al final de mes"
+          },
+          {
+            "id": 1,
+            "text": "Alertas si gasto diario supera umbral"
+          },
+          {
+            "id": 2,
+            "text": "Modelo correcto por tarea (no el más caro para todo)"
+          },
+          {
+            "id": 3,
+            "text": "Ignorar costos hasta que llegue la factura"
+          },
+          {
+            "id": 4,
+            "text": "Usar siempre el modelo top-tier por 'calidad'"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Monitoreo + alerta + elección correcta = control real. Ignorar y sobreinvertir son **trampas que aplastan startups**. Costos vistos temprano son problemas resolvibles.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu app clasifica 1000 tickets al día. Usas GPT-4o. Factura mensual alta. ¿Qué haces?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Subir precio a clientes"
+          },
+          {
+            "id": 1,
+            "text": "Cambiar clasificación a GPT-4o-mini o Claude Haiku — tarea simple, modelo adecuado. Factura baja 15-20x sin pérdida medible de calidad"
+          },
+          {
+            "id": 2,
+            "text": "Cerrar la app"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Clasificación binaria no necesita GPT-4o**. Cambiar a mini es acción directa. Muchas apps cargan factura alta por no haber ajustado modelo por tarea. Optimización antes de subir precios.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Isaac optimiza: cambia modelos por tarea, añade cache, ajusta max tokens. ¿Qué gana?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — la factura sigue igual"
+          },
+          {
+            "id": 1,
+            "text": "De $400 USD a $80 USD con los mismos 20 usuarios. El costo por usuario pasa de $20 a $4 USD. La app se vuelve económicamente viable"
+          },
+          {
+            "id": 2,
+            "text": "La calidad se volvió inaceptable"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Isaac entendió que **costos son diseño, no destino**. Con ingeniería consciente, la misma app puede ser 5x más barata sin perder valor. Esa disciplina distingue startups que sobreviven de las que se quedan sin pista.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "💵",
+        "title": "Economía unitaria bajo control",
+        "body": "Ahora puedes estimar el costo real por usuario y ajustar modelo, prompts y caching para que tu app sea rentable desde el día uno."
+      }
+    }
+  ]
+}

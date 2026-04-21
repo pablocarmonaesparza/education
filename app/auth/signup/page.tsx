@@ -34,6 +34,13 @@ function SignupContent() {
       setError(decodeURIComponent(urlError));
     }
 
+    // Capture preferred plan from landing CTA (monthly|yearly) and persist
+    // across signup flow so /paywall can highlight it after the encuesta.
+    const plan = searchParams.get('plan');
+    if (plan === 'monthly' || plan === 'yearly') {
+      sessionStorage.setItem('preferredPlan', plan);
+    }
+
     if (typeof window !== 'undefined') {
       // Check if Supabase is configured before trying to create client
       const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

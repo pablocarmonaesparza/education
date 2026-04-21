@@ -1,0 +1,197 @@
+{
+  "section_id": 4,
+  "slug": "nano-banana",
+  "title": "Nano Banana: editar con contexto",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Camila tiene una foto de producto perfecta. Solo quiere cambiar el fondo de blanco a madera. Usa DALL-E y le pide 'cambia el fondo a madera'.",
+        "options": [
+          {
+            "id": 0,
+            "text": "DALL-E no sirve para editar, solo generar desde cero"
+          },
+          {
+            "id": 1,
+            "text": "Le falta una herramienta de edición contextual (como Nano Banana), que mantiene el producto y solo cambia la zona pedida"
+          },
+          {
+            "id": 2,
+            "text": "Tiene que pagar Photoshop y hacerlo a mano"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Generación y edición son tareas distintas. DALL-E **regenera todo** al pedir cambios. Nano Banana está diseñado para **editar contextualmente**: mantiene lo que no tocas y cambia solo la zona específica. Usar la herramienta correcta resuelve en segundos.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es Nano Banana",
+        "body": "**Nano Banana** es un modelo (de Google/DeepMind) enfocado en **edición de imagen con contexto**. A diferencia de DALL-E, puedes:\n\n- Apuntar a una zona específica\n- Cambiar solo esa parte\n- Mantener el resto intacto\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Casos típicos de edición contextual",
+        "body": "Nano Banana brilla en:\n\n- **Cambiar fondo** manteniendo el producto\n- **Quitar objetos** sin rastro\n- **Cambiar color** de una prenda específica\n- **Ajustar iluminación** en una zona\n- **Retoque fino** sin alterar el resto"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "ChatGPT/DALL-E puede editar, pero no bien",
+        "body": "DALL-E tiene un modo de edición (inpainting), pero:\n\n- Es más burdo que Nano Banana en precisión\n- No mantiene bien la consistencia del producto\n- Suele regenerar más de lo pedido\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Generar una imagen nueva y editarla son la misma tarea con las mismas herramientas.",
+        "answer": false,
+        "explanation": "Falso. Son tareas distintas. **Generar** parte de cero; **editar** preserva contexto. Usar un modelo de generación para editar es como pintar sobre un cuadro terminado — casi siempre acabas repintando todo.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la tarea con la herramienta ideal:",
+        "pairs": [
+          {
+            "term": "Crear imagen nueva desde cero",
+            "def": "DALL-E, Flux, Midjourney — generación"
+          },
+          {
+            "term": "Cambiar fondo de una foto",
+            "def": "Nano Banana — edición contextual"
+          },
+          {
+            "term": "Quitar un objeto específico",
+            "def": "Nano Banana — borrado con relleno"
+          },
+          {
+            "term": "Generar 10 variantes nuevas",
+            "def": "DALL-E, Flux — generación en serie"
+          }
+        ],
+        "explanation": "Generar vs editar = dos familias de herramientas. Conocer cuál usar te evita la frustración de 'pedí cambiar fondo y me cambió todo'.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué casos son ideales para Nano Banana?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Quitar el fondo de una foto de producto"
+          },
+          {
+            "id": 1,
+            "text": "Cambiar el color de la playera de una modelo"
+          },
+          {
+            "id": 2,
+            "text": "Quitar a una persona del fondo de una foto de vacaciones"
+          },
+          {
+            "id": 3,
+            "text": "Crear una imagen desde cero de un personaje nuevo"
+          },
+          {
+            "id": 4,
+            "text": "Diseñar un logo partiendo de texto"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros son **ediciones quirúrgicas** con contexto preservado. Crear personajes o logos son generación desde cero — ahí usas DALL-E o Flux, no Nano Banana.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un fotógrafo tiene 50 fotos de producto para un catálogo, todas con el mismo fondo que necesita cambiar. ¿Qué elige?",
+        "options": [
+          {
+            "id": 0,
+            "text": "DALL-E — pide regenerar cada foto con fondo nuevo"
+          },
+          {
+            "id": 1,
+            "text": "Nano Banana — cambia solo el fondo manteniendo el producto idéntico en las 50"
+          },
+          {
+            "id": 2,
+            "text": "Photoshop manual foto por foto (50 horas)"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "50 fotos con producto consistente + cambio de fondo = **Nano Banana**. DALL-E regenera = inconsistencia. Photoshop = horas. Nano Banana = minutos con consistencia.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Camila vuelve a su foto de producto. Solo quiere cambiar el fondo. ¿Qué hace ahora?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Vuelve a DALL-E pidiendo lo mismo, esperando suerte"
+          },
+          {
+            "id": 1,
+            "text": "Abre Nano Banana, marca el fondo, pide el cambio a madera. El producto queda idéntico"
+          },
+          {
+            "id": 2,
+            "text": "Contrata a un diseñador para que lo edite en Photoshop"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Camila usó DALL-E para algo que no era su especialidad. Nano Banana es **exactamente** para este caso: edición quirúrgica con producto intacto. El resultado es limpio en una iteración.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🍌",
+        "title": "Edición contextual sin dolor",
+        "body": "Ahora sabes cuándo usar Nano Banana: edición quirúrgica que mantiene lo que no tocas. Generación ≠ edición."
+      }
+    }
+  ]
+}

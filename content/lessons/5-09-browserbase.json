@@ -1,0 +1,197 @@
+{
+  "section_id": 5,
+  "slug": "browserbase",
+  "title": "Browserbase: automatizar el browser",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Roberto quiere extraer precios de 20 tiendas cada día. Las tiendas son chicas y no tienen interfaz de programación (API — la manera estructurada de pedir datos a un sitio).",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sin API no hay manera confiable de automatizarlo"
+          },
+          {
+            "id": 1,
+            "text": "Browserbase ofrece navegadores en la nube con direcciones de red (IP) rotadas, sesiones persistentes y manejo de captchas — pensado para automatizar la web con inteligencia artificial"
+          },
+          {
+            "id": 2,
+            "text": "Poner un script de scraping en su laptop y dejarla prendida todo el día"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El scraping clásico pelea contra bloqueos de red y captchas. **Browserbase** (y servicios similares) ofrecen navegadores en la nube con todas las piezas resueltas: pool de direcciones de red rotadas, sesiones autenticadas y solución de captchas. Abres un navegador de forma programática y recorres los sitios sin los dolores de cabeza de la infraestructura.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es Browserbase",
+        "body": "**Browserbase** es un servicio de navegadores en la nube. En vez de abrir Chrome en tu máquina:\n\n- Pides un navegador remoto vía API\n- Le envías instrucciones (navegar, hacer clic, extraer)\n- Guardas sesiones autenticadas entre corridas\n- Rotación automática de direcciones de red"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cuándo conviene Browserbase",
+        "body": "Casos ideales:\n\n- **Scraping** de sitios sin API\n- **Automatización** en apps web (Salesforce, Notion, etc.) cuando la API no alcanza\n- **Pruebas** automatizadas de tus propios sitios\n- **Agentes** de inteligencia artificial que necesitan navegar por ti"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Browserbase vs Playwright local",
+        "body": "**Playwright local** (gratis):\n- Corre en tu máquina\n- Usa tu dirección de red, vulnerable a bloqueos\n- Las sesiones desaparecen si apagas la laptop\n\n**Browserbase** (de paga):\n- Corre en la nube\n- Direcciones de red rotadas, resistente a bloqueos\n- Sesiones persistentes entre corridas"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Usar Browserbase te exime de revisar los términos de servicio de los sitios que scrapeas.",
+        "answer": false,
+        "explanation": "Falso. La herramienta no te da permiso. **Los términos de cada sitio siguen aplicando**. Scraping de datos personales o con restricciones explícitas es problemático legalmente sin importar la herramienta. Usa con criterio.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso con la herramienta:",
+        "pairs": [
+          {
+            "term": "Scraping diario a 50 sitios",
+            "def": "Browserbase — direcciones de red rotadas en la nube"
+          },
+          {
+            "term": "Prueba local de tu sitio",
+            "def": "Playwright — gratis, corre en tu máquina"
+          },
+          {
+            "term": "Agente que navega por ti",
+            "def": "Browserbase — sesiones persistentes en la nube"
+          },
+          {
+            "term": "Prueba unitaria puntual",
+            "def": "Playwright — suficiente para uso esporádico"
+          }
+        ],
+        "explanation": "Cada caso pide su herramienta. **Browserbase para producción, Playwright para desarrollo.** Confundir los dos lleva a sobreinvertir en infraestructura o a quedarse corto cuando importa.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué problemas resuelve Browserbase que Playwright local no?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Bloqueos de dirección de red por scraping intenso"
+          },
+          {
+            "id": 1,
+            "text": "Sesiones autenticadas que persisten entre corridas"
+          },
+          {
+            "id": 2,
+            "text": "Correr 100 navegadores en paralelo sin montar infraestructura propia"
+          },
+          {
+            "id": 3,
+            "text": "Te da permiso legal para scrapear cualquier sitio"
+          },
+          {
+            "id": 4,
+            "text": "Interpreta el contenido del sitio por ti, sin que tú definas qué extraer"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las tres primeras son ventajas reales de infraestructura. Las dos últimas no: Browserbase no otorga permiso legal ni decide por ti qué extraer. Saber qué resuelve y qué no te evita expectativas irreales.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres un agente que entre a Salesforce cada mañana y exporte reportes. Salesforce tiene API, pero no cubre lo que necesitas. ¿Qué eliges?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Playwright en tu laptop — ya lo tienes configurado y es gratis"
+          },
+          {
+            "id": 1,
+            "text": "Browserbase — sesiones persistentes para no volver a autenticarte cada día, y si algo falla lo retomas desde donde se quedó"
+          },
+          {
+            "id": 2,
+            "text": "Dejar el flujo a un asistente humano que entre cada mañana"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Para automatización diaria con autenticación, **Browserbase** mantiene la sesión entre corridas. Playwright local pedirá login cada vez que apagues la laptop, rompiendo el flujo automático justo cuando más lo necesitas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Roberto vuelve a su flujo de precios de las 20 tiendas. ¿Cómo lo arma bien?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Pone Playwright en su laptop y la deja prendida toda la noche"
+          },
+          {
+            "id": 1,
+            "text": "Corrida diaria programada en Browserbase con direcciones de red rotadas, Claude extrae los precios y los guarda en una hoja. Todo corre en la nube"
+          },
+          {
+            "id": 2,
+            "text": "Revisa una tienda por día a mano hasta que termine la lista"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Roberto pasó de un scraping frágil a un **flujo robusto en la nube**. Corrida programada más Browserbase más Claude para leer la página: automatización que no se cae cuando él cierra la laptop.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🌐",
+        "title": "Navegador automatizado desbloqueado",
+        "body": "Ya tienes la pieza para navegar la web de forma programática: sesiones persistentes, direcciones de red rotadas y agentes que leen páginas por ti."
+      }
+    }
+  ]
+}

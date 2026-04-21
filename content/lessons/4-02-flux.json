@@ -1,0 +1,197 @@
+{
+  "section_id": 4,
+  "slug": "flux",
+  "title": "Flux: imagen profesional",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Sebastián diseña un flyer con DALL-E en ChatGPT. Al imprimirlo, el texto sale borroso y las manos de la modelo tienen seis dedos. ¿Qué le conviene hacer?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Repetir el prompt varias veces hasta que DALL-E acierte por casualidad"
+          },
+          {
+            "id": 1,
+            "text": "Cambiar a un modelo entrenado para calidad profesional, como Flux"
+          },
+          {
+            "id": 2,
+            "text": "Descartar la AI y contratar a un diseñador humano"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "DALL-E es útil para ideas y posts, pero falla en resolución, tipografía y manos. Flux está entrenado para calidad comercial: imprimible, manos correctas, texto legible. Elegir la herramienta correcta resuelve el problema sin descartar la AI.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es Flux",
+        "body": "**Flux** (de Black Forest Labs) es un modelo de imagen enfocado en **calidad profesional**. Supera a DALL-E en:\n\n- Resolución y detalle fino\n- Texto legible dentro de la imagen\n- Manos, dedos y anatomía humana\n- Consistencia de estilo entre imágenes"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cuándo Flux vale la pena",
+        "body": "Flux justifica cambiar desde ChatGPT cuando:\n\n- **Imprimes**: flyers, portadas, posters\n- **Hay texto** en la imagen (titulares, logos)\n- **Hay rostros** en primer plano\n- **Necesitas consistencia** entre imágenes del mismo proyecto"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "ChatGPT puede, pero se nota la diferencia",
+        "body": "DALL-E integrado en ChatGPT funciona para:\n\n- Post de Instagram casual\n- Thumbnail rápida\n- Ilustración conceptual\n\nPero al imprimir una valla o un flyer profesional, la diferencia entre DALL-E y Flux es **visible sin comparar lado a lado**."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Flux y DALL-E dan calidad equivalente, solo cambia el precio.",
+        "answer": false,
+        "explanation": "Falso. Hay una **diferencia real y visible** en calidad, sobre todo en resolución, manos, texto y fotorealismo. No es solo precio: es output. Para trabajo que se imprime o se vende, Flux paga su ajuste.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso con la herramienta correcta:",
+        "pairs": [
+          {
+            "term": "Thumbnail de YouTube rápida",
+            "def": "DALL-E / ChatGPT — suficiente y rápido"
+          },
+          {
+            "term": "Poster de 70x100 cm imprimible",
+            "def": "Flux — resolución y detalle comercial"
+          },
+          {
+            "term": "Imagen con headline legible",
+            "def": "Flux — texto en imagen funciona mejor"
+          },
+          {
+            "term": "Idea rápida para brainstorming",
+            "def": "DALL-E / ChatGPT — iteración veloz"
+          }
+        ],
+        "explanation": "No es *'Flux para todo'*. Es **Flux cuando la calidad importa lo suficiente para justificar el paso extra**. Para ideas rápidas, DALL-E sigue siendo el default eficiente.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué ventajas claras ofrece Flux sobre DALL-E?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Mejor resolución para imprimir"
+          },
+          {
+            "id": 1,
+            "text": "Genera texto legible dentro de la imagen"
+          },
+          {
+            "id": 2,
+            "text": "Mejor consistencia de estilo entre varias imágenes"
+          },
+          {
+            "id": 3,
+            "text": "Entiende prompts en cualquier idioma igual de bien"
+          },
+          {
+            "id": 4,
+            "text": "Conserva los derechos de autor del usuario que genera"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Resolución, texto y consistencia son diferencias reales y medibles. El manejo de idiomas y los derechos de autor no son ventajas de Flux sobre DALL-E: ambos modelos responden mejor en inglés y los términos legales dependen del servicio donde se use, no del modelo.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un cliente pide 5 imágenes para una campaña impresa con el mismo personaje. Un amigo te sugiere DALL-E. ¿Qué eliges y por qué?",
+        "options": [
+          {
+            "id": 0,
+            "text": "DALL-E — es más rápido y el cliente no notará"
+          },
+          {
+            "id": 1,
+            "text": "Flux — consistencia entre imágenes del mismo personaje y calidad imprimible"
+          },
+          {
+            "id": 2,
+            "text": "Contratar ilustrador humano — ningún modelo sirve para campañas"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Consistencia entre imágenes es **donde Flux brilla**. Al imprimir, el cliente nota diferencia. Elegir Flux aquí es ajuste a la tarea, no snobismo.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Sebastián rehace el flyer con lo que ya sabe. Quiere iterar rápido y que la versión final salga imprimible. ¿Qué flujo elige?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Vuelve a DALL-E con prompts más largos y cruza los dedos"
+          },
+          {
+            "id": 1,
+            "text": "Explora ideas rápidas en DALL-E y lleva la elegida a Flux para la versión final imprimible"
+          },
+          {
+            "id": 2,
+            "text": "Descarta la AI y contrata a un diseñador humano desde cero"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Sebastián usa **cada herramienta en su rol**: DALL-E para explorar rápido y barato, Flux para producir la versión imprimible sin texto borroso ni manos raras. Ese flujo mixto es lo que separa a un aficionado de alguien que entrega calidad comercial.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🖼️",
+        "title": "Flux para trabajo real",
+        "body": "Ahora sabes cuándo Flux justifica el cambio: imprenta, texto legible, rostros en primer plano y consistencia entre imágenes del mismo proyecto."
+      }
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "section_id": 10,
+  "slug": "iterar-feedback",
+  "title": "Iterar con feedback real",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Valeria lanza su app. Tiene 40 usuarios. Ella imagina qué features necesitan y las construye. 2 meses después, los 40 siguen siendo los mismos — cero crecimiento.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Construir más features rápido"
+          },
+          {
+            "id": 1,
+            "text": "Iterar con feedback real: hablar con usuarios, ver cómo usan la app, entender qué les falta. Lo que tú imaginas ≠ lo que ellos necesitan"
+          },
+          {
+            "id": 2,
+            "text": "Hacer marketing agresivo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Construir sin feedback** es una de las razones principales de apps muertas. Los fundadores proyectan sus deseos en la app y construyen en dirección equivocada. El feedback real (conversaciones, analytics, observación) evita esto. Es la brújula.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 3 fuentes de feedback",
+        "body": "Necesitas las 3:\n\n- **Conversación directa** (entrevistas, llamadas) — profundo, sesgado\n- **Analytics** (qué features usan, dónde abandonan) — objetivo sin 'por qué'\n- **Quién se va y por qué** — la señal más clara de fallo del producto"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Preguntas que dan feedback útil",
+        "body": "En entrevistas:\n\n- '¿Qué esperabas al entrar?' (expectativa vs realidad)\n- '¿Cuándo lo usaste por última vez?' (comportamiento, no opinión)\n- '¿Qué te frustra cuando lo usas?' (fricción real)\n- '¿Si desaparece mañana, qué usarías?' (alternativas)"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Qué feedback tomar y qué ignorar",
+        "body": "No todo el feedback es oro. Distingue:\n\n- **Usuarios activos**: sus quejas son diagnóstico real\n- **Los que no entraron**: revelan por qué no entran\n- **Extraños opinando**: ruido, no señal\n- **Tu familia y amigos**: optimistas por cortesía"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Si la mayoría de usuarios pide una feature, debes construirla.",
+        "answer": false,
+        "explanation": "Falso. **Mayoría ≠ relevancia estratégica**. A veces lo que piden es síntoma, no causa. Buen product manager escucha, pero **ejecuta según visión + evidencia**. Construir lo que piden sin pensar puede desenfocar el producto.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la señal con su interpretación:",
+        "pairs": [
+          {
+            "term": "Usuarios activos abandonando",
+            "def": "Problema urgente, investigar YA"
+          },
+          {
+            "term": "Muchos piden feature X",
+            "def": "Investigar el problema subyacente"
+          },
+          {
+            "term": "Nuevos abandonan onboarding",
+            "def": "Fricción en la entrada — investigar el paso que rompe"
+          },
+          {
+            "term": "Power users contentos",
+            "def": "El producto sirve para ellos, aprender qué los engancha"
+          }
+        ],
+        "explanation": "**Cada señal apunta a distintas acciones**. Leer bien los datos te permite priorizar lo que mueve la aguja.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas convierten feedback en iteración productiva?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Hablar con 5-10 usuarios al mes mínimo"
+          },
+          {
+            "id": 1,
+            "text": "Analytics simples de activación y retención"
+          },
+          {
+            "id": 2,
+            "text": "Experimentos pequeños antes de rebuilds grandes"
+          },
+          {
+            "id": 3,
+            "text": "Construir todo lo que pidan sin criterio"
+          },
+          {
+            "id": 4,
+            "text": "Ignorar usuarios y seguir tu visión 100%"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Conversación + datos + experimentos = iteración sana. Construir todo o ignorar todo son **extremos peligrosos**. El balance: escuchar con criterio, decidir con visión.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tus analytics muestran que 70% de nuevos usuarios abandonan en el onboarding. ¿Qué haces?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Construir nueva feature avanzada"
+          },
+          {
+            "id": 1,
+            "text": "Hablar con 5 usuarios que abandonaron: '¿qué te frustró?'. Analytics dice qué pasa; conversación dice por qué. Luego iterar sobre la causa real"
+          },
+          {
+            "id": 2,
+            "text": "Ignorar, llegarán más usuarios"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**70% abandono en onboarding es la prioridad #1**. Construir feature avanzada cuando la puerta está rota es absurdo. Entender por qué se van + corregir recupera el cohorte siguiente.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Valeria empieza a hablar con 5 usuarios por semana. ¿Qué descubre?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Que todo está perfecto, solo falta marketing"
+          },
+          {
+            "id": 1,
+            "text": "Que 3 de los 5 tenían el mismo bloqueo que ella no vio. Corrigiendo eso, la retención sube. Las features que iba a construir solas no habrían movido nada"
+          },
+          {
+            "id": 2,
+            "text": "Que los usuarios no saben lo que quieren"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Valeria entendió que **feedback real cambia prioridades**. Lo que ella imaginaba necesario era distinto de lo que realmente bloqueaba. Esa diferencia es la que separa construir apps vivas de construir apps muertas.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔄",
+        "title": "Iteración guiada por usuarios",
+        "body": "Ya construyes hacia donde importa: escuchando, midiendo y decidiendo con evidencia."
+      }
+    }
+  ]
+}

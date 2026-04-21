@@ -1,0 +1,197 @@
+{
+  "section_id": 5,
+  "slug": "monitorear-automatizacion",
+  "title": "Monitorear una automatización (antes de que falle en silencio)",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Rodrigo armó un flujo que resume los emails del equipo en Slack. Funcionó la primera semana, lo dejó correr. ¿Qué es lo más probable en 3 meses?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Seguirá funcionando igual, los flujos que arrancan bien no fallan solos"
+          },
+          {
+            "id": 1,
+            "text": "En algún momento fallará sin avisar, y él no lo notará hasta que alguien pregunte por el resumen"
+          },
+          {
+            "id": 2,
+            "text": "Se volverá más rápido con el tiempo porque aprende del uso"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Todo flujo automatizado falla tarde o temprano: una interfaz cambia, un token expira, un servicio se cae. Sin alertas, la falla es invisible hasta que alguien externo la nota, y eso suele tardar días.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 3 preguntas del monitoreo",
+        "body": "Para todo flujo automatizado:\n\n- **¿Corrió?** — se disparó cuando debía\n- **¿Funcionó?** — terminó sin error\n- **¿Hizo lo esperado?** — el output es coherente\n\nUn flujo puede correr y no fallar, pero entregar basura. Monitorear las 3."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Alertas mínimas indispensables",
+        "body": "Configura al menos:\n\n- **Notificación si falla**: flujo rompe → mensaje a Slack o WhatsApp\n- **Heartbeat**: si no corre en X horas, alerta (puede estar apagado sin avisar)\n- **Log básico**: registro de cada ejecución con timestamp y resultado"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "El peligro del fallo silencioso",
+        "body": "Peor que un flujo ruidoso es uno que:\n\n- Corre pero no hace nada: la interfaz programática (API) del servicio externo cambió\n- Hace la mitad: se cortó a medio camino\n- Produce basura: el modelo alucinó y nadie revisó"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Si tu flujo no te reportó error, es seguro asumir que funciona.",
+        "answer": false,
+        "explanation": "Falso. Un flujo puede **fallar en silencio**: corrió, no reportó, pero nada pasó. Por eso hace falta **heartbeat** (alerta si X días sin corrida) y revisión periódica del output real, no solo del estado.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada síntoma con su causa probable:",
+        "pairs": [
+          {
+            "term": "No corre desde hace días",
+            "def": "El disparador está desconectado — revisar webhook o cron"
+          },
+          {
+            "term": "Corre pero entrega vacío",
+            "def": "El servicio externo cambió — revisar la integración"
+          },
+          {
+            "term": "Falla de forma intermitente",
+            "def": "Topaste el límite de peticiones del modelo o servicio"
+          },
+          {
+            "term": "Responde pero fuera de tema",
+            "def": "El prompt perdió contexto — revisar las instrucciones"
+          }
+        ],
+        "explanation": "Saber distinguir síntomas acelera la reparación. **No todos los fallos se arreglan igual**. Identificar la causa antes de tocar nada ahorra horas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales conviene vigilar en un flujo crítico?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tasa de errores por día"
+          },
+          {
+            "id": 1,
+            "text": "Latencia, o cuánto tarda cada corrida en completarse"
+          },
+          {
+            "id": 2,
+            "text": "Volumen de corridas contra el esperado"
+          },
+          {
+            "id": 3,
+            "text": "Cantidad de pasos visuales en la interfaz del flujo"
+          },
+          {
+            "id": 4,
+            "text": "Opiniones del equipo sobre si el flujo se siente lento"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Errores, latencia y volumen son las tres métricas básicas. Cuántos pasos tiene la interfaz es decoración, y las opiniones no son datos. Pocas métricas bien elegidas superan a muchas métricas ignoradas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu flujo de resumen diario corre por cron a las 9am. ¿Qué alerta básica configuras?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Solo alerta si el flujo devuelve error — así evitas ruido de notificaciones"
+          },
+          {
+            "id": 1,
+            "text": "Alerta si el flujo falla más un heartbeat que avise si no corrió antes de las 11am"
+          },
+          {
+            "id": 2,
+            "text": "Agendar una revisión semanal del historial y confiar en que se ve raro si algo pasa"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Alerta en error más heartbeat = **detectas fallos activos y fallos silenciosos**. Solo alertar en error deja pasar los casos donde el flujo ni siquiera arrancó. Con 5 minutos de configuración, ahorras días de confusión.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Rodrigo configura alerta en error más heartbeat sobre su flujo. ¿Cuál es el beneficio concreto que va a notar?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El flujo deja de fallar porque el monitoreo lo protege de caídas futuras"
+          },
+          {
+            "id": 1,
+            "text": "Cuando algo falla, se entera en minutos y puede arreglarlo antes de que el equipo lo note"
+          },
+          {
+            "id": 2,
+            "text": "Las corridas se vuelven más rápidas porque el monitoreo optimiza el flujo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Monitorear no evita que el flujo falle — lo hace visible cuando falla. Rodrigo pasó de fallos silenciosos a **fallos detectables y corregibles**. El costo es mínimo; el beneficio es confianza real en que el flujo está entregando.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "📊",
+        "title": "Ojos puestos en tus flujos",
+        "body": "Tus automatizaciones ya no fallan en silencio. Configura alerta por error más un heartbeat en un flujo tuyo hoy."
+      }
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "section_id": 11,
+  "slug": "primera-integracion",
+  "title": "Tu primera integración MCP real",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Francisco quiere armar su primer agente que lea su correo y archive los importantes con un resumen. ¿Qué estrategia le deja más aprendizaje real?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Esperar a tener tres meses libres para un proyecto enorme y perfecto"
+          },
+          {
+            "id": 1,
+            "text": "Algo pequeño y real que funcione con un caso concreto que ya hace a mano"
+          },
+          {
+            "id": 2,
+            "text": "Intentar reemplazar su trabajo completo con el agente desde el día uno"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "La trampa: esperar al proyecto perfecto. La realidad: el primer proyecto que corre de principio a fin enseña más que diez tutoriales seguidos. Un caso pequeño y real convierte el conocimiento en habilidad.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Anatomía de una integración real",
+        "body": "Una integración real usa cinco piezas: conectores MCP (Model Context Protocol, puentes a apps como Notion), una skill con el procedimiento, un agente que orquesta el flujo, frenos humanos antes de acciones críticas y monitoreo básico."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Ideas para tu primera integración",
+        "body": "Buenos candidatos primera vez:\n\n- **Correo + notas**: archivar emails con resumen\n- **Datos + chat**: aviso cuando una métrica cae\n- **Web + notas**: resumen semanal de blogs\n- **Clientes + AI**: borrador de respuesta a cada lead"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "La regla del alcance mínimo",
+        "body": "Tu primera integración **no** tiene que:\n\n- Cubrir casos raros\n- Verse pulida\n- Tener todas las funciones\n\nSí tiene que:\n- Resolver **un caso real** que ya haces a mano\n- Funcionar con un ejemplo sin romperse\n- Tener **freno humano** antes de acciones serias"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Tu primera integración debe estar 100% pulida antes de usarla en producción.",
+        "answer": false,
+        "explanation": "Falso. **Lanza con alcance mínimo**, úsala 2 semanas, identifica los problemas reales, mejora. Pulir antes de uso real es pulir imaginado. Los verdaderos fallos solo aparecen con uso.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para armar tu primera integración:",
+        "steps": [
+          "Elegir un caso concreto que ya haces a mano",
+          "Identificar qué conectores y skill necesitas",
+          "Instalar y configurar los conectores uno a uno",
+          "Escribir la skill que encapsula el procedimiento",
+          "Armar el agente que orquesta todo el flujo",
+          "Añadir frenos humanos antes de acciones críticas",
+          "Probar con tres a cinco casos reales",
+          "Activar y monitorear durante la primera semana"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "explanation": "El orden protege: primero **saber qué**, luego **probar piezas**, luego **ensamblar**, luego **proteger**, luego **lanzar y medir**. Saltarse pasos suele terminar en sistema frágil.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada pieza con su rol dentro de la integración:",
+        "pairs": [
+          {
+            "term": "Conector (MCP)",
+            "def": "Conecta con apps externas como Notion o Slack"
+          },
+          {
+            "term": "Skill",
+            "def": "Encapsula el procedimiento paso a paso"
+          },
+          {
+            "term": "Agente",
+            "def": "Orquesta el flujo completo de principio a fin"
+          },
+          {
+            "term": "Freno humano",
+            "def": "Pide aprobación antes de acciones críticas"
+          }
+        ],
+        "explanation": "Cada pieza tiene un rol distinto. Juntas forman el sistema. Entender qué hace cada capa te permite diagnosticar rápido cuando algo falla.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu primera integración está bien diseñada?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Resuelve un caso real que ya hacías manual"
+          },
+          {
+            "id": 1,
+            "text": "Tiene guardrails para acciones críticas"
+          },
+          {
+            "id": 2,
+            "text": "Se puede describir el flujo en una frase"
+          },
+          {
+            "id": 3,
+            "text": "Cubre 100% de casos imaginables"
+          },
+          {
+            "id": 4,
+            "text": "Requiere 3 meses de desarrollo antes de lanzar"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Caso real + seguridad + claridad = señales verdes. Los últimos 2 son trampas de sobreingeniería. **Pequeño que funciona > grande que nunca lanza.**",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Francisco eligió su caso real: agente que lee su correo matutino, archiva los importantes y deja un resumen en sus notas. Lo arma en una semana. ¿Qué gana de verdad?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada relevante porque es un proyecto pequeño de juguete"
+          },
+          {
+            "id": 1,
+            "text": "Un sistema que corre solo cada mañana y todo lo aprendido pasa de teoría a habilidad"
+          },
+          {
+            "id": 2,
+            "text": "Se complicó la vida sin ningún beneficio práctico al final"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Francisco cruzó el puente de aprendiz a constructor. El proyecto no tiene que ser impresionante — tiene que existir, funcionar y ahorrarle tiempo real. Eso consolida lo aprendido como ningún tutorial logra hacerlo.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🚀",
+        "title": "Primera integración real",
+        "body": "Ya sabes cómo diseñar tu primera integración real. Elige un caso pequeño esta semana y ármalo: así pasa de teoría a habilidad."
+      }
+    }
+  ]
+}

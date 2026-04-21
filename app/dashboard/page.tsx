@@ -48,6 +48,7 @@ interface Video {
   order: number;
   phaseId: string;
   phaseName: string;
+  phaseOrder: number;
   isCompleted: boolean;
   isCurrent: boolean;
   videoUrl?: string;
@@ -139,6 +140,9 @@ function buildVideosFromIntake(
         order: videoOrder,
         phaseId: phaseId.toString(),
         phaseName,
+        // Intake-based videos don't have a separate phaseOrder; use phaseIndex
+        // to preserve the order supplied by the generated_path.
+        phaseOrder: phaseIndex,
         isCompleted,
         isCurrent,
         videoUrl: video.video_url || video.url || undefined,
@@ -177,6 +181,7 @@ function buildVideosFromLectures(
       order: idx,
       phaseId: lec.section_id.toString(),
       phaseName: lec.section_name,
+      phaseOrder: lec.section_display_order,
       isCompleted,
       isCurrent,
     });
@@ -202,7 +207,6 @@ function DashboardPageContent() {
   const [isVideoPlayerClosing, setIsVideoPlayerClosing] = useState(false);
   const [chatWidth, setChatWidth] = useState(256);
   const [isMobile, setIsMobile] = useState(false);
-  const [expandedVideoId, setExpandedVideoId] = useState<string | null>(null);
   const [showCreateCourseModal, setShowCreateCourseModal] = useState(false);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
@@ -407,17 +411,26 @@ function DashboardPageContent() {
     };
   }, [selectedVideo]);
 
-  // Group videos by phase
+  // Group videos by phase. Using a plain object here is fine for lookup by
+  // phaseId, but `Object.entries` on it would re-sort numeric-string keys
+  // (so section_id 11 would always land after 10). We track phaseOrder per
+  // phase and expose an `orderedPhaseEntries` sorted by that value so the
+  // UI respects the curriculum's `section.display_order`.
   const videosByPhase = videos.reduce((acc, video) => {
     if (!acc[video.phaseId]) {
       acc[video.phaseId] = {
         phaseName: video.phaseName,
+        phaseOrder: video.phaseOrder,
         videos: []
       };
     }
     acc[video.phaseId].videos.push(video);
     return acc;
-  }, {} as Record<string, { phaseName: string; videos: Video[] }>);
+  }, {} as Record<string, { phaseName: string; phaseOrder: number; videos: Video[] }>);
+
+  const orderedPhaseEntries = Object.entries(videosByPhase).sort(
+    ([, a], [, b]) => a.phaseOrder - b.phaseOrder,
+  );
 
   const completedCount = videos.filter(v => v.isCompleted).length;
   const totalCount = videos.length;
@@ -428,7 +441,7 @@ function DashboardPageContent() {
     if (videos.length > 0 && Object.keys(videosByPhase).length > 0 && !activePhaseId) {
       // Find the current video's phase (the one the user is on)
       const currentVideo = videos.find(v => v.isCurrent);
-      const initialPhaseId = currentVideo ? currentVideo.phaseId : Object.keys(videosByPhase)[0];
+      const initialPhaseId = currentVideo ? currentVideo.phaseId : orderedPhaseEntries[0]?.[0];
       setActivePhaseId(initialPhaseId);
     }
   }, [videos, videosByPhase, activePhaseId]);
@@ -641,9 +654,6 @@ function DashboardPageContent() {
       };
       
       requestAnimationFrame(animateScroll);
-
-      // Expand the video automatically
-      setExpandedVideoId(String(currentVideo.id));
 
       // Reset the flag after scroll completes
       setTimeout(() => {
@@ -1040,7 +1050,7 @@ function DashboardPageContent() {
             </div>
 
             <HorizontalScroll ref={horizontalScrollRef} fadeEdges>
-              {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
+              {orderedPhaseEntries.map(([phaseId, phaseData]) => (
                 <Button
                   key={phaseId}
                   data-phase-id={phaseId}
@@ -1063,7 +1073,7 @@ function DashboardPageContent() {
         <div className="pb-24">
           {videos.length > 0 && (
             <div className="pt-8 pb-6 space-y-6">
-            {Object.entries(videosByPhase).map(([phaseId, phaseData]) => (
+            {orderedPhaseEntries.map(([phaseId, phaseData]) => (
               <div
                 key={phaseId}
                 data-phase-id={phaseId}
@@ -1087,11 +1097,8 @@ function DashboardPageContent() {
                             lessonNumber={idx + 1}
                             totalLessons={phaseData.videos.length}
                             title={video.title}
-                            description={video.description}
                             isCompleted={video.isCompleted}
                             isCurrent={video.isCurrent}
-                            isExpanded={expandedVideoId === String(video.id)}
-                            onToggleExpand={() => setExpandedVideoId(expandedVideoId === String(video.id) ? null : String(video.id))}
                             onClick={() => handleVideoSelect(video)}
                           />
                         </div>
@@ -1102,7 +1109,7 @@ function DashboardPageContent() {
 
                   {/* Reto for this phase */}
                   {(() => {
-                    const phaseNum = parseInt(phaseId) || (Object.keys(videosByPhase).indexOf(phaseId) + 1);
+                    const phaseNum = parseInt(phaseId) || (orderedPhaseEntries.findIndex(([pid]) => pid === phaseId) + 1);
                     const phaseExercises = exercisesByPhase[phaseNum];
                     if (!phaseExercises || phaseExercises.length === 0) return null;
 

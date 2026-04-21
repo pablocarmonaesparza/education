@@ -1,0 +1,198 @@
+{
+  "section_id": 5,
+  "slug": "triggers",
+  "title": "Triggers: qué dispara un flujo",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Ximena armó su primer flujo en Make para resumir emails con AI. Lo activa, espera una hora y nada pasa. El flujo está activo pero no ejecutó. ¿Por qué?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Make está roto, hay que cambiar de herramienta"
+          },
+          {
+            "id": 1,
+            "text": "Su trigger no se disparó: el evento configurado aún no ocurrió"
+          },
+          {
+            "id": 2,
+            "text": "Falta pagar el plan premium para que ejecute"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Un flujo activo no es lo mismo que un flujo ejecutándose. **El trigger es el punto de entrada**: define qué evento dispara la ejecución. Si el trigger espera un email y no llega ninguno, el flujo nunca corre. Es la causa más frecuente de flujos que parecen no funcionar.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es un trigger",
+        "body": "El **trigger** es el primer nodo del flujo: define qué evento lo dispara.\n\nCategorías:\n- **Tiempo** (tipo reloj programado): a las 9am cada día\n- **Evento**: llegó un email nuevo\n- **Acción en app**: se creó un Issue en GitHub\n- **Manual**: lo disparas tú con un botón"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Dos familias de triggers",
+        "body": "**Polling** (el sistema revisa cada X minutos):\n- Pregunta a la app si hay algo nuevo\n- Tiene latencia de hasta unos minutos\n- Más común en Zapier\n\n**Webhook** (la app avisa al instante):\n- El servicio notifica apenas pasa algo\n- Casi tiempo real\n- Más común en n8n y Make avanzado"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Errores típicos con triggers",
+        "body": "Tres fallas frecuentes:\n\n- **Trigger equivocado**: elegiste 'email enviado' pero querías 'email recibido'\n- **Filtro mal puesto**: dispara con todo en vez de solo los casos que te interesan\n- **Permisos insuficientes**: la app no tiene acceso al servicio y nunca detecta el evento"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Un trigger por tiempo corre exactamente a la hora configurada, sin retraso.",
+        "answer": false,
+        "explanation": "Falso. La mayoría de plataformas tienen una ventana de tolerancia de uno a cinco minutos. Para tareas críticas como alertas urgentes eso importa; para la mayoría de casos no. Saberlo evita sustos cuando el reporte de las 9am llega a las 9:03.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada caso con el tipo de trigger:",
+        "pairs": [
+          {
+            "term": "Reporte diario a las 9am",
+            "def": "Trigger por tiempo (reloj programado)"
+          },
+          {
+            "term": "Nuevo lead en tu formulario",
+            "def": "Webhook — aviso instantáneo de la app"
+          },
+          {
+            "term": "Email con asunto específico",
+            "def": "Polling de Gmail — revisa cada pocos minutos"
+          },
+          {
+            "term": "Botón que tú presionas",
+            "def": "Trigger manual — lo disparas a mano"
+          }
+        ],
+        "explanation": "Cada trigger sirve un propósito distinto. **Elegir el correcto** determina si tu flujo responde a tiempo o se pierde el momento del evento.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican un trigger mal configurado?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El flujo no corre aunque el evento sucedió"
+          },
+          {
+            "id": 1,
+            "text": "El flujo corre demasiadas veces, sin discriminar"
+          },
+          {
+            "id": 2,
+            "text": "Corre con datos incompletos o vacíos"
+          },
+          {
+            "id": 3,
+            "text": "Funciona bien y entrega el resultado esperado"
+          },
+          {
+            "id": 4,
+            "text": "Corre incluso cuando el evento no pasó"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "explanation": "Las cuatro señales marcadas indican un trigger mal configurado. Cuando todo fluye bien es porque el trigger está en orden. **Primera cosa a revisar cuando un flujo falla**: el trigger.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres que tu flujo corra apenas llegue un email con 'factura' en el asunto. ¿Qué trigger eliges?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Trigger por tiempo que revise el correo cada 5 minutos"
+          },
+          {
+            "id": 1,
+            "text": "Trigger de Gmail con filtro por asunto 'factura'"
+          },
+          {
+            "id": 2,
+            "text": "Trigger manual cada vez que te acuerdes"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Gmail con filtro por asunto** captura exactamente los emails que te interesan, al momento que llegan. Un trigger por tiempo cada 5 minutos agrega latencia; el manual se olvida.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Ximena revisa su flujo. Descubre que el trigger era 'correo enviado por ella', no 'correo recibido'. Lo cambia. ¿Qué pasa?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — los flujos no se arreglan con cambios"
+          },
+          {
+            "id": 1,
+            "text": "El siguiente email entrante dispara el flujo correctamente. El problema era el trigger, no el resto"
+          },
+          {
+            "id": 2,
+            "text": "Tiene que rehacer todo el flujo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "La mayoría de los flujos 'que no funcionan' tienen el trigger mal configurado. Ximena aprendió a mirar ahí primero, y esa es la habilidad de diagnóstico más valiosa en automatización.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🎯",
+        "title": "Triggers dominados",
+        "body": "Ya sabes elegir el disparador correcto para cada caso y por qué revisar siempre el trigger primero cuando un flujo no corre."
+      }
+    }
+  ]
+}

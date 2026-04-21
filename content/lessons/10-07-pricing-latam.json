@@ -1,0 +1,197 @@
+{
+  "section_id": 10,
+  "slug": "pricing-latam",
+  "title": "Pricing para LATAM",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Valeria copia el pricing de una app gringa: $29 USD al mes. Lanza en Colombia, México y Argentina. Casi nadie paga. ¿Qué debería cambiar?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Subirlo a $49 USD al mes para verse premium"
+          },
+          {
+            "id": 1,
+            "text": "Ajustar el rango: $5-15 USD para individuos y $20-50 USD para equipos"
+          },
+          {
+            "id": 2,
+            "text": "No cobrar nada en LATAM y vivir de donaciones"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "$29 USD en LATAM no tiene la misma sensación de costo que en Estados Unidos. **Ajustar el precio al poder adquisitivo local** triplica la conversión. Los SaaS gringos ya lo aprendieron: muchos tienen planes regionales.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Rangos realistas en LATAM",
+        "body": "Para software de consumo y prosumer:\n\n- **Gratis** — atraer y probar valor\n- **$3-9 USD/mes** — early adopter individual\n- **$10-19 USD/mes** — prosumer consolidado\n- **$20-49 USD/mes** — equipos pequeños\n- **$50 USD+** — empresas"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Monedas y formatos",
+        "body": "Formato típico de pricing LATAM-facing:\n\n- **Mostrar en USD** es el estándar\n- **Cobrar mensual** pesa más que anual\n- **Stripe y Mercado Pago** son los procesadores default\n- **Aceptar tarjetas locales** evita fricción"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Freemium bien diseñado",
+        "body": "Estructura típica:\n\n- **Free**: funcionalidad básica con un límite claro\n- **Pro**: levanta límites y agrega features premium\n- **Team/Business**: multi-usuario, admin y soporte\n\nEl plan free debe ser útil pero **dejar ganas de más**."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Si tu app es buena, puedes cobrar lo que cobran las gringas sin perder usuarios LATAM.",
+        "answer": false,
+        "explanation": "Falso. **El valor percibido se ancla al poder adquisitivo**. Una app valiosa cobrando $29 USD en LATAM pierde usuarios que sí pagarían $9 USD. Ajustar el pricing captura demanda que de otro modo no convierte.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el segmento con el rango de precio sugerido:",
+        "pairs": [
+          {
+            "term": "Estudiante o freelancer",
+            "def": "$3-5 USD/mes — entrada accesible"
+          },
+          {
+            "term": "Profesional consolidado",
+            "def": "$10-19 USD/mes — caso típico individual"
+          },
+          {
+            "term": "Equipo pequeño",
+            "def": "$25-50 USD/mes por equipo de 3-5"
+          },
+          {
+            "term": "Empresa mediana",
+            "def": "$100 USD+/mes con SLA y soporte"
+          }
+        ],
+        "explanation": "Cada segmento tiene su zona de precio. **Conocer a tu usuario define el pricing**, no copiar números de apps gringas sin contexto.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas mejoran la conversión de pricing en LATAM?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Free tier con valor real pero acotado"
+          },
+          {
+            "id": 1,
+            "text": "Precios ajustados al poder adquisitivo local"
+          },
+          {
+            "id": 2,
+            "text": "Aceptar métodos de pago regionales como Mercado Pago"
+          },
+          {
+            "id": 3,
+            "text": "Copiar el pricing gringo sin ajuste"
+          },
+          {
+            "id": 4,
+            "text": "Obligar suscripción anual por adelantado"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Free valioso + precio local + pagos regionales = conversión alta. Copiar pricing gringo u obligar anual son **fricciones que matan la conversión en LATAM**.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu app es para freelancers en LATAM. ¿Qué pricing inicial eliges?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Gratis siempre, monetizar con ads"
+          },
+          {
+            "id": 1,
+            "text": "Free con 3 proyectos, Pro $7 USD/mes y Team $19 USD/mes"
+          },
+          {
+            "id": 2,
+            "text": "$49 USD al mes desde el inicio, sin free tier"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Free útil, Pro accesible y Team escalable**. Cubre al prosumer individual y al equipo pequeño con precios que LATAM sí paga. Free con ads es un camino doloroso; $49 USD upfront espanta.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Valeria ajusta su pricing: $5 USD/mes básico, $12 USD/mes pro y Mercado Pago integrado. ¿Qué pasa?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — los precios no importan si el producto es bueno"
+          },
+          {
+            "id": 1,
+            "text": "La conversión sube de 0.5% a 4% y el volumen compensa el ticket menor"
+          },
+          {
+            "id": 2,
+            "text": "Quiebra por cobrar demasiado poco para sostener el negocio"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Valeria pasó de **pricing aspiracional a pricing ajustado**. Ganó más usuarios y más ingresos al mismo tiempo. La lección: ajustar al mercado supera a copiar benchmarks descontextualizados.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🏷️",
+        "title": "Pricing LATAM-fit",
+        "body": "Tu pricing ya convierte. Siguiente lección: cold email con AI para crecer."
+      }
+    }
+  ]
+}

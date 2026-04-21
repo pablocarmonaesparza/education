@@ -1,0 +1,203 @@
+{
+  "section_id": 2,
+  "slug": "ventana-de-contexto",
+  "title": "Ventana de contexto",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Paola lleva 2 horas con ChatGPT en un proyecto complejo. Al final el modelo contradice cosas que acordaron al inicio. Paola concluye que se 'confundió'. ¿Qué pasa realmente?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El modelo se confundió por la complejidad — pasa cuando las conversaciones son largas"
+          },
+          {
+            "id": 1,
+            "text": "La información del inicio salió de la ventana de contexto del modelo; ya no puede leerla"
+          },
+          {
+            "id": 2,
+            "text": "Hay un bug que se arregla si refrescas la página"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El modelo no se confundió. Tiene un límite de cuántos tokens puede 'ver' al mismo tiempo. Cuando la conversación excede ese límite, las partes más viejas quedan **fuera de su vista** como si nunca hubieran pasado.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es la ventana de contexto",
+        "body": "La **ventana de contexto** es la cantidad máxima de tokens (fragmentos de texto) que un modelo puede leer de una vez. Incluye todo: tu pregunta, el historial, las instrucciones de sistema. Nada puede pasar ese límite combinado."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Tamaños típicos en 2026",
+        "body": "Las ventanas de contexto varían por modelo:\n\n- **ChatGPT 5**: ~200K tokens (~150 mil palabras)\n- **Claude Sonnet 4.5**: ~200K tokens\n- **Claude con contexto extendido**: 1M tokens (~750 mil palabras)\n- **Gemini 2.5 Pro**: 1M-2M tokens\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Qué pasa al llenarla",
+        "body": "Cuando tu conversación se acerca al límite, pasan dos cosas comunes:\n\n- Las partes más viejas del chat se **truncan** y el modelo ya no las ve\n- El modelo empieza a **contradecirse** porque perdió contexto de acuerdos anteriores\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "fill-blank",
+      "phase": "explain",
+      "content": {
+        "prompt": "Completa:",
+        "sentenceBefore": "Cuando una conversación excede la ventana de contexto, el modelo ",
+        "sentenceAfter": " lo más viejo del historial.",
+        "tokens": [
+          "Olvida",
+          "Resume",
+          "Guarda"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "*Olvida* es el término informal. Técnicamente el texto viejo **sale de su campo de lectura**; el modelo ya no lo procesa. Para él es como si nunca hubiera existido.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso con la estrategia correcta:",
+        "pairs": [
+          {
+            "term": "Conversación de 2 horas",
+            "def": "Resume el contexto importante en un mensaje nuevo"
+          },
+          {
+            "term": "Documento de 100 páginas",
+            "def": "Usa un modelo con contexto extendido (1M tokens)"
+          },
+          {
+            "term": "Tarea corta única",
+            "def": "Empieza un chat nuevo para no arrastrar ruido"
+          },
+          {
+            "term": "Proyecto con memoria",
+            "def": "Guarda los acuerdos fuera del chat (notas, base de datos)"
+          }
+        ],
+        "explanation": "No hay una sola técnica: depende del tamaño del trabajo. Lo importante es **ser consciente** de que el contexto tiene límite y actuar antes de llegar al borde.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué ocupa espacio en la ventana de contexto?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Todos los mensajes previos en la conversación"
+          },
+          {
+            "id": 1,
+            "text": "Los archivos que subiste al chat"
+          },
+          {
+            "id": 2,
+            "text": "Las instrucciones de sistema invisibles"
+          },
+          {
+            "id": 3,
+            "text": "El avatar de tu perfil"
+          },
+          {
+            "id": 4,
+            "text": "El tiempo que pasaste en la conversación"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Todo el texto procesable cuenta: chat, archivos, system prompt. Avatar y tiempo no son tokens, no ocupan ventana.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un amigo sube un PDF de 300 páginas a ChatGPT y espera respuestas sobre cualquier parte. Responde bien al inicio pero olvida detalles del centro. ¿Qué lo explica?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El PDF excedió la ventana de contexto; solo cabe parte del documento"
+          },
+          {
+            "id": 1,
+            "text": "Los PDFs son más difíciles para el modelo que el texto plano"
+          },
+          {
+            "id": 2,
+            "text": "ChatGPT no puede leer PDFs en absoluto"
+          }
+        ],
+        "correctId": 0,
+        "explanation": "300 páginas son aprox 150K-200K tokens, cerca del límite de ChatGPT. El modelo puede 'verlo' al principio pero pierde foco al final. Solución: partir el documento o usar un modelo con ventana más grande.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Paola vuelve a su conversación larga. El modelo ha empezado a contradecirse. ¿Cuál es su mejor jugada?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Seguir preguntando, eventualmente vuelve a acordarse"
+          },
+          {
+            "id": 1,
+            "text": "Empezar un chat nuevo y pegar un resumen de los acuerdos clave del anterior"
+          },
+          {
+            "id": 2,
+            "text": "Refrescar la página para que se 'reinicie'"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Paola ya entiende que el modelo no puede 'recordar' lo que salió de su ventana. La solución es **darle el contexto de vuelta** en un chat limpio, resumido y compacto. Así recupera los acuerdos sin arrastrar el ruido.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🪟",
+        "title": "Ventana con límite",
+        "body": "Ahora sabes por qué los modelos 'olvidan' conversaciones largas. Ya puedes anticipar el borde, resumir los acuerdos clave y abrir un chat limpio antes de que el contexto se desborde."
+      }
+    }
+  ]
+}

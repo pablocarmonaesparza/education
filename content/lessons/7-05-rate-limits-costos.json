@@ -1,0 +1,197 @@
+{
+  "section_id": 7,
+  "slug": "rate-limits-costos",
+  "title": "Rate limits y costos: lo que te rompe en producción",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Rodrigo lanza una app con GPT-4o. En testing con 5 usuarios funciona perfecto. El día del lanzamiento entran 50 usuarios a la vez y la app empieza a devolver error. ¿Qué falló?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El código está mal; en producción deberían caber los mismos llamados que en testing"
+          },
+          {
+            "id": 1,
+            "text": "El proveedor limita cuántos llamados por minuto acepta, y esa cuota se satura con más usuarios simultáneos"
+          },
+          {
+            "id": 2,
+            "text": "GPT-4o se cae cuando hay mucha gente usándolo al mismo tiempo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Cada proveedor pone una cuota máxima de llamados por minuto. En testing con pocos usuarios nunca la tocas; en producción con tráfico real se satura y la app devuelve error 429. No es bug de código ni caída del modelo: es una regla de negocio del proveedor que hay que planear.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué son los rate limits",
+        "body": "Un **rate limit** es cuántas requests el proveedor te acepta por minuto/hora. Se expresan como:\n\n- **RPM**: requests por minuto\n- **TPM**: tokens por minuto\n- **RPD**: requests por día (tier free)\n\nSi excedes, recibes error `429`."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Costos: dos componentes",
+        "body": "Los modelos cobran por tokens:\n\n- **Input tokens** (tu prompt) — más baratos\n- **Output tokens** (la respuesta) — más caros\n\nModelos baratos (GPT-4o-mini, Claude Haiku) cuestan cents por millón de tokens."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Estrategias para controlar costos",
+        "body": "En orden de impacto:\n\n- **Elegir modelo adecuado**: GPT-4o-mini para tareas simples\n- **Prompts cortos**: cada token suma\n- **Caché de prompts** (cuando hay repetición) — Anthropic y OpenAI lo soportan\n- **Max tokens**: limita la respuesta a lo necesario"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Los rate limits se pueden ignorar en producción si pagas el tier pro.",
+        "answer": false,
+        "explanation": "Falso. Aun en tiers altos hay **límites** — solo son más altos. Toda app en producción necesita manejar `429` con retries exponential backoff, queues o fallbacks. Es parte del diseño, no opcional.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la situación con la estrategia:",
+        "pairs": [
+          {
+            "term": "Picos de tráfico esporádicos",
+            "def": "Cola con reintentos y espera (caso típico)"
+          },
+          {
+            "term": "Costos mensuales altos",
+            "def": "Bajar a un modelo más barato por tarea"
+          },
+          {
+            "term": "Prompts largos repetidos",
+            "def": "Caché de prompts del proveedor"
+          },
+          {
+            "term": "Respuestas muy largas",
+            "def": "Ajustar max_tokens al mínimo necesario"
+          }
+        ],
+        "explanation": "Cada problema tiene solución específica. **Diagnosticar bien ahorra soluciones mal aplicadas**: no cambies de modelo si el issue es max_tokens mal configurado.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas reducen costos sin sacrificar calidad?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Usar modelo más barato para tareas simples (clasificar, extraer)"
+          },
+          {
+            "id": 1,
+            "text": "Limitar max_tokens al necesario"
+          },
+          {
+            "id": 2,
+            "text": "Caché de prompts que se repiten"
+          },
+          {
+            "id": 3,
+            "text": "Prompts de 2000 palabras para 'asegurar contexto'"
+          },
+          {
+            "id": 4,
+            "text": "Enviar múltiples documentos completos como contexto"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros bajan costo sin perder calidad. Los últimos 2 **inflan costos** sin beneficio — modelos no necesitan ese volumen de contexto para tareas comunes.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu app procesa 10,000 mensajes al día clasificándolos como 'urgente' o 'no urgente'. ¿Qué modelo eliges?",
+        "options": [
+          {
+            "id": 0,
+            "text": "GPT-4o — el más poderoso, no importa el costo"
+          },
+          {
+            "id": 1,
+            "text": "GPT-4o-mini o Claude Haiku — clasificación binaria no necesita razonamiento top-tier, ahorras 20x en costo"
+          },
+          {
+            "id": 2,
+            "text": "El modelo más caro posible por seguridad"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Clasificación binaria = **tarea simple**. Modelo top-tier sería gastar de más sin beneficio. Elegir modelo **adecuado a la tarea** puede bajar la factura de $1000 USD a $50 USD sin perder precisión notable.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Rodrigo vuelve a su app del inicio. Ahora que entiende rate limits y costos, ¿qué haría primero para que aguante a los 50 usuarios simultáneos?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Cambiar el modelo al más caro disponible para que nunca se sature"
+          },
+          {
+            "id": 1,
+            "text": "Encolar los llamados y reintentarlos con espera si el proveedor responde 429, y usar un modelo barato para lo simple"
+          },
+          {
+            "id": 2,
+            "text": "Esperar a que el proveedor suba la cuota por sí solo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Poner una cola con reintentos absorbe los picos de tráfico sin perder llamados, y bajar a GPT-4o-mini o Claude Haiku en tareas simples reduce la factura sin perder calidad. Son dos disciplinas básicas: manejar la cuota del proveedor y pagar solo lo que la tarea necesita.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "💰",
+        "title": "Rate limits y costos bajo control",
+        "body": "Ya sabes por qué una app rompe con tráfico real y qué disciplinas básicas la hacen sostenible: elegir el modelo adecuado, limitar max_tokens, cachear y manejar reintentos."
+      }
+    }
+  ]
+}

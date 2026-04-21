@@ -1,0 +1,198 @@
+{
+  "section_id": 5,
+  "slug": "n8n",
+  "title": "n8n: tu primer flujo visual",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Renata quiere automatizar: \"cuando llegue email con factura → resumir con AI → guardar en Drive → avisar en Slack\". Piensa que necesita aprender Python o pagar desarrollador.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tiene razón: un flujo así exige programar en Python desde cero"
+          },
+          {
+            "id": 1,
+            "text": "Existen editores visuales donde arrastras bloques (email, AI, Drive, Slack) y los conectas; ese flujo se arma en 20 a 30 minutos"
+          },
+          {
+            "id": 2,
+            "text": "Es fácil, pero tiene que contratar un desarrollador por semanas"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Herramientas como **n8n**, Make o Zapier bajan la barrera: en vez de programar, arrastras bloques. El flujo de Renata conecta 4 nodos y toma 20 a 30 minutos la primera vez. La segunda, 5 minutos.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es n8n",
+        "body": "**n8n** es un editor visual de automatizaciones. Cada paso del flujo es un **nodo** que conecta con servicios:\n\n- Gmail, Slack, Drive, Notion\n- OpenAI, Claude, Anthropic\n- Webhooks, HTTP, bases de datos\n\nConectas nodos con líneas."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "n8n vs Make vs Zapier",
+        "body": "Las tres hacen lo mismo, con matices:\n\n- **n8n** — open source, puedes self-host, más poder técnico\n- **Make** (antes Integromat) — UI visual agradable, buena para no-técnicos\n- **Zapier** — más servicios integrados, más caro en volumen\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Anatomía de un flujo",
+        "body": "Todo flujo tiene:\n\n- **Trigger**: qué lo dispara (email llega, webhook, cron)\n- **Nodos intermedios**: acciones, transformaciones, llamadas a AI\n- **Salida**: acción final (notificación, archivo, base de datos)\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Para usar n8n necesitas saber programar.",
+        "answer": false,
+        "explanation": "Falso. La mayoría de flujos se arman sin una línea de código. Ayuda entender conceptos básicos (qué es una interfaz programática para conectar apps, cómo viaja la información entre ellas), pero no requiere programar. Y cuando lo requiere, hay nodos de \"ejecutar código\" opcionales.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para crear tu primer flujo en n8n:",
+        "steps": [
+          "Identificar la tarea que quieres automatizar",
+          "Abrir n8n y crear un workflow nuevo",
+          "Agregar el trigger (Gmail, webhook, cron)",
+          "Conectar el nodo siguiente (AI, Slack, Drive)",
+          "Probar el flujo en modo manual con datos reales",
+          "Activar el workflow para que corra solo"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "explanation": "La clave: **probar antes de activar**. Probar con datos reales revela errores que en el editor se ven perfectos. Activar sin probar es como publicar sin leer.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada parte de un flujo con su función:",
+        "pairs": [
+          {
+            "term": "Trigger",
+            "def": "Qué dispara el flujo"
+          },
+          {
+            "term": "Nodo de AI",
+            "def": "Agrega criterio (clasificar, resumir)"
+          },
+          {
+            "term": "Nodo de acción",
+            "def": "Ejecuta algo externo (enviar, guardar)"
+          },
+          {
+            "term": "Condición IF",
+            "def": "Ramifica el flujo según resultado"
+          }
+        ],
+        "explanation": "Los 4 tipos cubren casi todo lo que vas a construir. Dominar estos bloques te da poder para armar decenas de flujos distintos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué casos son ideales para n8n?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Resumir correos entrantes y archivarlos"
+          },
+          {
+            "id": 1,
+            "text": "Clasificar tickets de soporte con AI y asignarlos"
+          },
+          {
+            "id": 2,
+            "text": "Publicar contenido en varias redes desde una fuente única"
+          },
+          {
+            "id": 3,
+            "text": "Hacer un video editado de 5 minutos"
+          },
+          {
+            "id": 4,
+            "text": "Redactar un post de blog creativo desde cero"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "n8n brilla en flujos de datos y acciones entre apps. Edición de video o escritura creativa son tareas de herramientas dedicadas, no de automatización de flujos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Renata arma su flujo de facturas. ¿Cómo luce?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Escribe un script de Python de 400 líneas"
+          },
+          {
+            "id": 1,
+            "text": "En n8n: trigger Gmail → nodo AI que resume → nodo Drive que guarda → nodo Slack que notifica. 4 bloques conectados"
+          },
+          {
+            "id": 2,
+            "text": "Contrata un desarrollador por 3 semanas"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Renata convirtió una tarea diaria en un flujo visual de 4 bloques. La próxima vez que necesite un flujo similar, copia y ajusta. Esa multiplicación es el valor real de n8n.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔗",
+        "title": "Tu primer flujo visual",
+        "body": "Ya tienes el concepto central de **n8n**: bloques conectados. Con trigger + nodos + salida armas decenas de flujos distintos sin escribir código."
+      }
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "section_id": 5,
+  "slug": "make",
+  "title": "Make: alternativa visual sin fricción",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Rodrigo abre n8n por recomendación. A los 10 minutos se frustra: le piden instalar, configurar credenciales, entender JSON. ¿Qué conclusión saca con criterio?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Como n8n es el más técnico, es mejor siempre"
+          },
+          {
+            "id": 1,
+            "text": "Cada herramienta gana en un escenario: conviene elegir por nivel y caso"
+          },
+          {
+            "id": 2,
+            "text": "Debe aprender n8n a fuerza aunque le duela"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "No es *cuál es mejor*. Es *cuál para ti ahora*. **Make** (antes Integromat) tiene una interfaz muy pulida y curva de aprendizaje baja, ideal para empezar. **n8n** tiene más poder pero pide más de ti. Empezar con Make y migrar a n8n si crece no tiene nada de malo.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es Make",
+        "body": "**Make** es una plataforma visual de automatización. Como n8n o Zapier: arrastras *módulos* (equivalentes a nodos) y los conectas con líneas para definir el flujo."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cuándo elegir Make",
+        "body": "Make gana cuando:\n\n- Eres no-técnico o estás empezando\n- No quieres instalar nada (vive en la nube)\n- Tu flujo tiene menos de 10 a 15 módulos\n- Valoras la facilidad de uso sobre el control fino\n\nSi necesitas autoalojar o lógica muy a medida, n8n sigue ganando."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Comparativa rápida: Zapier, Make, n8n",
+        "body": "Las 3 alternativas del mercado:\n\n- **Zapier** — más simple, más servicios integrados, más caro por volumen\n- **Make** — interfaz pulida, precio medio, buen poder\n- **n8n** — open source, autoalojable, más poder, más técnico"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Si migras de Make a n8n, tienes que reescribir todos tus flujos desde cero.",
+        "answer": true,
+        "explanation": "Verdadero. Los formatos no son compatibles. La lógica se traslada (entiendes lo que hacías), pero hay que reconstruir. Por eso importa empezar donde vas a quedarte un rato — migrar cuesta tiempo.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada caso con la herramienta ideal:",
+        "pairs": [
+          {
+            "term": "No-técnico empezando",
+            "def": "Elegir Make por su interfaz amable"
+          },
+          {
+            "term": "Lógica compleja a medida",
+            "def": "Elegir n8n por su poder técnico"
+          },
+          {
+            "term": "Prototipar un flujo rápido",
+            "def": "Elegir Zapier por sus servicios listos"
+          },
+          {
+            "term": "Autoalojado por privacidad",
+            "def": "Elegir n8n por ser open source"
+          }
+        ],
+        "explanation": "Cada herramienta tiene su punto fuerte. **Elegir por tu perfil más las necesidades del caso** vence a seguir modas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué ventajas concretas tiene Make sobre n8n?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Interfaz más visual y fácil de aprender"
+          },
+          {
+            "id": 1,
+            "text": "No requiere instalar nada ni configurar un servidor"
+          },
+          {
+            "id": 2,
+            "text": "Escenarios visuales con rutas claras"
+          },
+          {
+            "id": 3,
+            "text": "Es open source y autoalojable"
+          },
+          {
+            "id": 4,
+            "text": "Tiene más servicios integrados que Zapier"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "La interfaz, el vivir en la nube y la visualización son reales. Make **no** es open source ni tiene más integraciones que Zapier (Zapier sigue ganando en cantidad de servicios). Conocer las ventajas reales evita decisiones mal informadas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Una agencia quiere que 5 personas no-técnicas mantengan flujos. ¿Qué eliges?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Elegir n8n porque es la herramienta más poderosa"
+          },
+          {
+            "id": 1,
+            "text": "Elegir Make para que las 5 personas colaboren sin depender del técnico"
+          },
+          {
+            "id": 2,
+            "text": "Escribir el flujo en Python a mano para tener control total"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Cuando el equipo es no-técnico, la facilidad de uso gana al poder. Make baja la fricción. n8n sería más flexible pero solo una o dos personas lo manejarían bien. **Elegir por equipo, no solo por features.**",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Rodrigo, no-técnico, quiere automatizar: correo entra → resumen → guardar en Drive → avisar en Slack. ¿Qué elige con criterio?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Insistir con n8n aunque le tome semanas configurarlo"
+          },
+          {
+            "id": 1,
+            "text": "Empezar con Make, armar el flujo en 15 minutos y migrar después si hace falta"
+          },
+          {
+            "id": 2,
+            "text": "Pausar todo y aprender Python desde cero primero"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Rodrigo eligió la herramienta que **lo mueve hoy**, no la que teóricamente es mejor. Hecho supera a perfecto. Si después crece, migra. Empezar barato es la jugada maestra.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🧩",
+        "title": "Criterio entre plataformas visuales",
+        "body": "Ya sabes elegir entre Zapier, Make y n8n según tu perfil y el caso. Con ese criterio claro, cualquier plataforma visual deja de intimidar."
+      }
+    }
+  ]
+}

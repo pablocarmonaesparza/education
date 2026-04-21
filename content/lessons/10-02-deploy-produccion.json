@@ -1,0 +1,197 @@
+{
+  "section_id": 10,
+  "slug": "deploy-produccion",
+  "title": "Deploy a producción sin dolor",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Diego terminó su app y quiere ponerla online. Busca en YouTube y los tutoriales hablan de servidores, dominios, certificados. ¿Qué le conviene hacer?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tomar un curso de infraestructura de 2 meses antes de poder publicarla"
+          },
+          {
+            "id": 1,
+            "text": "Conectar su repositorio a una plataforma moderna y tenerla online en minutos"
+          },
+          {
+            "id": 2,
+            "text": "Pagar una agencia, es demasiado técnico para hacerlo solo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Las plataformas modernas de deploy (Vercel, Netlify, Railway, Render, Fly) eliminaron casi toda la fricción. Para la mayoría de apps: conectas tu código, ellos construyen, sirven y renuevan el certificado. Aprender infraestructura antes de publicar es el camino largo.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 5 plataformas modernas",
+        "body": "Cada una con su mejor caso:\n\n- **Vercel** — apps Next.js y frontend moderno\n- **Netlify** — sitios estáticos\n- **Railway** — backends y bases de datos\n- **Render** — alternativa balanceada\n- **Fly.io** — edge, escalable globalmente\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Flujo moderno de deploy",
+        "body": "En 2026 el patrón es:\n\n1. Tu código en GitHub\n2. Conectar el repositorio a la plataforma\n3. Cada cambio a la rama principal publica solo\n4. Cada propuesta de cambio genera una URL de vista previa\n5. Variables de entorno en la interfaz de la plataforma\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Entornos: dev, staging y prod",
+        "body": "Práctica estándar:\n\n- **Dev** — tu máquina local\n- **Staging** — URL privada en la nube para probar antes de lanzar\n- **Prod** — URL pública que ven los usuarios\n\nLos cambios fluyen: dev → staging → prod."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Hoy puedes tener una app con base de datos, inicio de sesión y dominio, sin montar un servidor propio.",
+        "answer": true,
+        "explanation": "Verdadero. Supabase (base de datos e inicio de sesión) más Vercel (frontend y rutas del servidor) te dan un producto completo sin tocar ningún servidor. Aprovecha este nivel de abstracción, te ahorras meses.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la app con la plataforma sugerida:",
+        "pairs": [
+          {
+            "term": "Landing estática bonita",
+            "def": "Netlify o Vercel (caso típico)"
+          },
+          {
+            "term": "App Next.js con backend",
+            "def": "Vercel más Supabase (caso típico)"
+          },
+          {
+            "term": "Backend Python con datos",
+            "def": "Railway o Render (caso típico)"
+          },
+          {
+            "term": "App con usuarios globales",
+            "def": "Vercel más Fly.io en edge (caso típico)"
+          }
+        ],
+        "explanation": "Cada stack tiene su combinación natural. **Saber cuál elegir te ahorra fricción** — forzar Vercel para un backend Python sería pelear contra la plataforma.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas hacen tu deploy profesional?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Conectar tu código para que cada cambio publique solo"
+          },
+          {
+            "id": 1,
+            "text": "Generar una URL de vista previa antes de fusionar cambios"
+          },
+          {
+            "id": 2,
+            "text": "Tener un entorno de pruebas separado de producción"
+          },
+          {
+            "id": 3,
+            "text": "Subir archivos a mano cada vez que hay un cambio"
+          },
+          {
+            "id": 4,
+            "text": "Saltarte el entorno de pruebas y tocar producción directo"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Publicación automática más vistas previas más entorno de pruebas es el estándar moderno. Subir a mano y saltarse el entorno de pruebas son **antipatrones de 2010**. Las plataformas modernas convierten lo profesional en el default.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres lanzar tu app Next.js hoy. ¿Cuál es el camino directo?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Rentar un servidor, configurar el sistema y aprender redes primero"
+          },
+          {
+            "id": 1,
+            "text": "Subir el código a GitHub, conectarlo en Vercel, poner variables de entorno y tener URL pública en minutos"
+          },
+          {
+            "id": 2,
+            "text": "Comprar un plan empresarial de una nube grande por si la app crece mucho"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Vercel hace trivial algo que antes tomaba semanas**. Aprender infraestructura grande tiene su momento, no es el día 1. Sobre-contratar antes de tener usuarios es al revés.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Diego subió su app a Vercel y en 5 minutos tenía URL pública. ¿Qué lección saca?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Que lanzar todavía es tan difícil como antes, solo que con otro nombre"
+          },
+          {
+            "id": 1,
+            "text": "Que publicar bajó de semanas a minutos; ahora la limitante es hacer un buen producto, no publicarlo"
+          },
+          {
+            "id": 2,
+            "text": "Que saltarse el entorno de pruebas es seguro mientras la app sea pequeña"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Diego descubrió que **hoy la limitante no es publicar, es el producto**. Antes, publicar era el obstáculo mayor. Ahora el foco puede ir 100% a construir valor para el usuario.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🚢",
+        "title": "Deploy sin dolor",
+        "body": "Ya tienes camino al mundo. La siguiente lección: monitoreo y registros, para saber qué pasa cuando la app ya está en la calle."
+      }
+    }
+  ]
+}

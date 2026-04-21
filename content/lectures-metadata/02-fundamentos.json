@@ -1,0 +1,141 @@
+{
+  "section_id": 2,
+  "section_slug": "fundamentos",
+  "section_display": "fundamentos",
+  "source": "claude-in-session",
+  "lectures": [
+    {
+      "slug": "que-es-ai",
+      "title": "qué es AI",
+      "display_order": 1,
+      "learning_objective": "explicar qué significa que una máquina sea inteligente hoy y qué no",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "inteligencia artificial",
+      "narrative_arc": "Alguien escucha 'AI' todos los días en las noticias y lo confunde con robots, ciencia ficción o 'computación avanzada'. Le preguntas qué hace una AI moderna en concreto y la respuesta es vaga. Antes de avanzar al resto del curso, necesita un punto de partida claro sobre qué sí es y qué no es.",
+      "scenario_character": "María"
+    },
+    {
+      "slug": "que-es-un-llm",
+      "title": "qué es un LLM",
+      "display_order": 2,
+      "learning_objective": "describir qué hace un modelo de lenguaje y por qué predice palabras",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "modelo de lenguaje",
+      "narrative_arc": "Alguien usa ChatGPT todos los días sin haberse preguntado nunca cómo funciona por dentro. Piensa que 'entiende' como un humano o que 'busca en internet' lo que responde. La verdad es otra: el modelo hace predicciones estadísticas sobre la siguiente palabra, y esa distinción cambia cómo se le habla.",
+      "scenario_character": "Carlos"
+    },
+    {
+      "slug": "como-aprende-un-modelo",
+      "title": "cómo aprende un modelo",
+      "display_order": 3,
+      "learning_objective": "describir cómo un modelo aprende de texto sin ser programado con reglas",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "entrenamiento de un modelo",
+      "narrative_arc": "Alguien imagina que detrás de ChatGPT hay ingenieros escribiendo reglas del tipo 'si el usuario pregunta X, responde Y'. La realidad es otra: el modelo aprendió por su cuenta de millones de textos, sin supervisión directa de cada respuesta. Esa diferencia explica por qué a veces se equivoca de maneras extrañas.",
+      "scenario_character": "Valeria"
+    },
+    {
+      "slug": "que-son-los-tokens",
+      "title": "qué son los tokens",
+      "display_order": 4,
+      "learning_objective": "explicar qué es un token y cómo afecta el costo y la longitud de una conversación",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "token",
+      "narrative_arc": "Alguien ve en el panel de precios de OpenAI que cobran 'por token' y asume que un token es una palabra. Calcula mal su presupuesto y se lleva una sorpresa al final del mes. Antes de usar cualquier API necesita entender qué cuenta como token y por qué una palabra larga puede valer tres.",
+      "scenario_character": "Andrés"
+    },
+    {
+      "slug": "ventana-de-contexto",
+      "title": "ventana de contexto",
+      "display_order": 5,
+      "learning_objective": "explicar por qué un modelo olvida lo que le dijiste al principio de una conversación larga",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "ventana de contexto",
+      "narrative_arc": "Alguien lleva dos horas trabajando con ChatGPT en un proyecto complejo cuando empieza a notar que el modelo contradice cosas que acordaron al principio. Piensa que el modelo se 'confundió'. Lo que pasó en realidad es que la información más vieja quedó fuera de lo que el modelo puede leer ahora.",
+      "scenario_character": "Paola"
+    },
+    {
+      "slug": "alucinacion",
+      "title": "alucinación: cuándo el modelo inventa",
+      "display_order": 6,
+      "learning_objective": "distinguir señales de alucinación en una respuesta y decidir cuándo verificar antes de usarla",
+      "bloom_verb": "analizar",
+      "cognitive_route": "procedimental",
+      "concept_name": "alucinación",
+      "narrative_arc": "Alguien le pregunta a ChatGPT por las ventas de su tienda la semana pasada y recibe una respuesta con números precisos y seguros. Los usa para una reunión y queda mal frente a su equipo cuando descubren que los números eran inventados. Antes de confiar en cualquier dato del modelo, hay que saber cuándo puede inventar.",
+      "scenario_character": "Jorge"
+    },
+    {
+      "slug": "los-4-ingredientes-del-prompt",
+      "title": "los 4 ingredientes del prompt",
+      "display_order": 7,
+      "learning_objective": "escribir un prompt que incluya los cuatro ingredientes necesarios para obtener buen resultado",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "ingredientes del prompt",
+      "narrative_arc": "Alguien le pide a ChatGPT algo como 'escríbeme un correo' y recibe algo tibio, genérico, inutilizable. Lo intenta tres veces con ligeras variaciones, siempre el mismo resultado flojo. No está rota la herramienta; falta que el prompt cargue lo que el modelo necesita saber para producir algo útil.",
+      "scenario_character": "Mariana"
+    },
+    {
+      "slug": "iterar-un-prompt",
+      "title": "iterar un prompt",
+      "display_order": 8,
+      "learning_objective": "usar feedback del modelo para mejorar un prompt en pocos intentos",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "iteración de un prompt",
+      "narrative_arc": "Alguien pide un post de LinkedIn, lo ve mediocre, se rinde y lo publica tal cual. No intenta corregir el rumbo. Pierde horas más tarde editándolo a mano cuando una segunda iteración de 30 segundos lo habría resuelto. Iterar no es frustración, es el ciclo natural del trabajo con AI.",
+      "scenario_character": "Pablo"
+    },
+    {
+      "slug": "verificar-el-modelo",
+      "title": "verificar lo que dice el modelo",
+      "display_order": 9,
+      "learning_objective": "aplicar un chequeo rápido para validar una respuesta del modelo antes de usarla",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "verificación del modelo",
+      "narrative_arc": "Alguien recibe una respuesta con nombres, fechas y cifras de parte del modelo. La copia directo a un reporte sin revisar. Semanas después descubre que una de las fechas estaba mal y el reporte ya había circulado con clientes. Un chequeo de 20 segundos habría atrapado el error.",
+      "scenario_character": "Lucía"
+    },
+    {
+      "slug": "cuando-usar-ai",
+      "title": "cuándo usar AI y cuándo no",
+      "display_order": 10,
+      "learning_objective": "decidir si una tarea específica conviene delegar a AI o hacer a mano",
+      "bloom_verb": "evaluar",
+      "cognitive_route": "mixta",
+      "concept_name": "criterio de uso de AI",
+      "narrative_arc": "Alguien acaba de aprender a usar AI y empieza a meterla en absolutamente todo: desde buscar una dirección hasta redactar un agradecimiento de dos líneas. A veces funciona, a veces es más lento que hacerlo a mano. Le falta un criterio claro para decidir antes de abrir ChatGPT.",
+      "scenario_character": "Renata"
+    },
+    {
+      "slug": "gratis-vs-pagado",
+      "title": "gratis vs pagado: qué cambia",
+      "display_order": 11,
+      "learning_objective": "elegir entre el tier gratis y el pagado según lo que realmente se necesita",
+      "bloom_verb": "evaluar",
+      "cognitive_route": "mixta",
+      "concept_name": "diferencias entre tiers",
+      "narrative_arc": "Alguien paga 20 USD al mes por el plan plus sin preguntarse si lo usa lo suficiente para justificarlo. Otro se queda en el tier gratis sin saber que pierde horas por limitaciones que el pagado resolvería. En ambos casos falta comparar contra el uso real antes de suscribirse.",
+      "scenario_character": "Rodrigo"
+    },
+    {
+      "slug": "bucle-ai-literate",
+      "title": "el bucle del usuario AI-literate",
+      "display_order": 12,
+      "learning_objective": "aplicar el bucle prompt-iterar-verificar-ejecutar en una tarea real de trabajo",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "ciclo de trabajo con AI",
+      "narrative_arc": "Alguien ha visto prompts, iteración y verificación como cosas sueltas. No tiene el hábito de encadenarlas. Cada tarea con AI la empieza de cero. Lo que le falta es el bucle como método único, el mismo que aplica desde redactar un correo hasta lanzar un producto.",
+      "scenario_character": "Tomás"
+    }
+  ],
+  "version": "v1.2-codex-reviewed"
+}

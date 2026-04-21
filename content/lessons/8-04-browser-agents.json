@@ -1,0 +1,197 @@
+{
+  "section_id": 8,
+  "slug": "browser-agents",
+  "title": "Browser agents: navegar la web por ti",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Matías necesita que algo entre a Salesforce, descargue un reporte, y lo suba a su Drive. No hay interfaz de programación (API) que cubra todo el flujo. ¿Qué arquitectura le sirve?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un navegador con AI integrada que resuma páginas"
+          },
+          {
+            "id": 1,
+            "text": "Un agente que controla un navegador real y usa la web como una persona"
+          },
+          {
+            "id": 2,
+            "text": "Un bot que solo busca en Google y devuelve links"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Un **browser agent** es un agente AI con herramientas de navegador: click, type, screenshot, navigate. El modelo ve la página y decide qué hacer. Resuelve casos donde no hay interfaz de programación (API) disponible.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Anatomía de un browser agent",
+        "body": "Piezas típicas:\n\n- **Navegador controlado** (Playwright, Browserbase, Chrome)\n- **Herramientas de navegación**: navigate, click, type, screenshot\n- **Visión del DOM**: el agente ve qué hay en la página\n- **Loop de razonamiento**: piensa, actúa, observa, repite"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Opciones 2026",
+        "body": "Soluciones destacadas:\n\n- **Claude Computer Use** (Anthropic) — nativo en Claude\n- **Browserbase + herramientas custom** — máxima flexibilidad\n- **ChatGPT Operator** (OpenAI) — producto integrado\n- **Model Context Protocol (MCP) de navegador** — estándar abierto"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Cuándo justifica el costo",
+        "body": "Es lento y frágil, pero vale la pena cuando:\n\n- **No hay API** disponible del servicio\n- **Tareas humanas** que requieren interfaz web\n- **Flujos entre muchas apps** sin integración directa\n- **Sistemas viejos** sin forma programática de entrar"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Un browser agent es tan confiable como una API bien hecha.",
+        "answer": false,
+        "explanation": "Falso. Los browser agents son **más frágiles**: cambios de diseño, latencia, captchas, sesiones que expiran. Si existe una API, prefiérela siempre — el agente es plan B.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso con lo que deberías usar:",
+        "pairs": [
+          {
+            "term": "Servicio con API pública",
+            "def": "API directa — sin browser agent"
+          },
+          {
+            "term": "App interna sin API",
+            "def": "Browser agent — última opción útil"
+          },
+          {
+            "term": "Scraping masivo de productos",
+            "def": "Apify o Firecrawl (caso típico)"
+          },
+          {
+            "term": "Formulario con lógica compleja",
+            "def": "Browser agent — la interfaz es la API"
+          }
+        ],
+        "explanation": "Elegir **el nivel correcto de abstracción** evita pagar de más en complejidad. El browser agent es potente pero caro — úsalo solo cuando aporta valor único.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué problemas reales de un browser agent debes mitigar?",
+        "options": [
+          {
+            "id": 0,
+            "text": "La interfaz cambia y rompe los clicks"
+          },
+          {
+            "id": 1,
+            "text": "Las sesiones expiran y piden login otra vez"
+          },
+          {
+            "id": 2,
+            "text": "La latencia es alta comparada con una API"
+          },
+          {
+            "id": 3,
+            "text": "Son infinitamente rápidos y sin errores"
+          },
+          {
+            "id": 4,
+            "text": "No requieren mantenimiento"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los tres primeros son reales y frecuentes. Los últimos dos son **mitos**. Saber los riesgos te permite planear mantenimiento y respaldos desde el principio.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Paola necesita descargar un reporte de Salesforce cada mañana. ¿Qué arquitectura elige?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un browser agent que entra a Salesforce cada mañana"
+          },
+          {
+            "id": 1,
+            "text": "La API de Salesforce, y browser agent solo si la API no cubre algo"
+          },
+          {
+            "id": 2,
+            "text": "Pedirle a alguien del equipo que lo haga cada día"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**API primero, browser agent después.** Salesforce tiene API robusta para reportes. Un browser agent sería excesivo y más frágil. Elige las herramientas en orden de simplicidad.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Volvemos al caso de Matías: la app interna de Salesforce no tiene API para su flujo completo. ¿Qué hace ahora?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sigue haciendo el flujo manual para siempre"
+          },
+          {
+            "id": 1,
+            "text": "Arma un browser agent con límites claros y aprobación humana antes de enviar o borrar"
+          },
+          {
+            "id": 2,
+            "text": "Abandona la idea de automatizar este flujo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Matías usa el browser agent **cuando es la mejor opción**, con **límites conscientes** de su fragilidad. Esa disciplina evita sorpresas y hace viable automatizar lo que antes era imposible.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🖱️",
+        "title": "Browser agents en tu caja",
+        "body": "Tienes la pieza para automatizar apps sin API: API primero, browser agent cuando no queda de otra, con límites claros."
+      }
+    }
+  ]
+}

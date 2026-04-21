@@ -1,0 +1,197 @@
+{
+  "section_id": 6,
+  "slug": "que-es-una-bd",
+  "title": "Qué es una base de datos (y por qué AI la necesita)",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Mauricio tiene sus 300 clientes en un Excel y le pide a ChatGPT consejos para su negocio. Los consejos llegan genéricos, como si fueran para cualquier empresa. ¿Por qué?",
+        "options": [
+          {
+            "id": 0,
+            "text": "ChatGPT no sabe leer archivos de Excel"
+          },
+          {
+            "id": 1,
+            "text": "ChatGPT no puede ver ese Excel a menos que Mauricio se lo pegue dentro del chat cada vez"
+          },
+          {
+            "id": 2,
+            "text": "El Excel tiene demasiados clientes y ChatGPT se pierde"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El Excel vive en la computadora de Mauricio, no dentro de ChatGPT. Para que la AI use esos datos necesita un canal estable de lectura: eso es lo que da una **base de datos conectada**, no un archivo suelto.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es una base de datos",
+        "body": "Una **base de datos (BD)** guarda información estructurada:\n\n- En **tablas** con filas y columnas\n- Consultable desde código, automatizaciones o apps\n- Cambios visibles en todas las herramientas conectadas al instante\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Familias de bases de datos",
+        "body": "Tres grupos principales:\n\n- **No-code** (Notion, Airtable) — UI amable, para equipos\n- **SQL tradicional** (Supabase, Postgres) — poder técnico y escala\n- **Vectoriales** (Pinecone, pgvector) — para embeddings y recuperación con generación (RAG)\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Por qué AI necesita una BD",
+        "body": "Sin BD la AI solo responde con lo que le pegas en el chat. Con BD puede:\n\n- Consultar tu catálogo de productos en vivo\n- Leer el historial de cada cliente\n- Escribir resultados sin que los pegues tú\n- Alimentar búsquedas semánticas con tu contenido\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Un Excel en Google Drive cuenta como base de datos para conectar con AI.",
+        "answer": false,
+        "explanation": "Falso. Un Excel puede leerse con APIs rudimentarias, pero **no escala** ni mantiene integridad. Para pasos ocasionales sirve; para AI conectada en producción, necesitas una BD real.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada caso con el tipo de BD adecuado:",
+        "pairs": [
+          {
+            "term": "Clientes de un equipo",
+            "def": "Notion o Airtable para uso compartido no técnico"
+          },
+          {
+            "term": "App con miles de usuarios",
+            "def": "Supabase o Postgres para escala y concurrencia"
+          },
+          {
+            "term": "Búsqueda en 10 mil documentos",
+            "def": "Base vectorial como pgvector para búsquedas semánticas"
+          },
+          {
+            "term": "Agenda de eventos internos",
+            "def": "Airtable u hoja estructurada para uso puntual de equipo"
+          }
+        ],
+        "explanation": "Cada caso pide su familia. **Empezar simple, migrar cuando crezca**. Sobreingeniería al inicio cuesta tiempo sin beneficio.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué ventajas te da conectar AI a una BD?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Respuestas basadas en tus datos, no genéricas"
+          },
+          {
+            "id": 1,
+            "text": "Automatizaciones que actualizan datos solas"
+          },
+          {
+            "id": 2,
+            "text": "Historial que persiste entre conversaciones"
+          },
+          {
+            "id": 3,
+            "text": "Hace que la AI nunca falle"
+          },
+          {
+            "id": 4,
+            "text": "Elimina la necesidad de revisar resultados"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Personalización, automatización y persistencia son reales. AI conectada a BD **sigue fallando** y sigue necesitando revisión. La BD no cura los límites del modelo — los alimenta con contexto real.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres que tu chatbot responda usando información de tus 200 clientes. ¿Por dónde empiezas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Pegar el Excel en cada prompt manualmente"
+          },
+          {
+            "id": 1,
+            "text": "Poner los clientes en Airtable o Notion, conectar el chatbot para que consulte en vivo"
+          },
+          {
+            "id": 2,
+            "text": "Memorizar todos los clientes tú mismo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "200 clientes en Airtable/Notion + chatbot conectado = respuestas con contexto real. Pegar manualmente no escala; memorizar es humanamente imposible.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Mauricio pasa sus 300 clientes de Excel a Airtable y conecta su chatbot. ¿Qué cambia respecto al inicio?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada relevante, solo cambió la interfaz de edición"
+          },
+          {
+            "id": 1,
+            "text": "El chatbot ahora lee a cada cliente en vivo sin que Mauricio tenga que pegar nada en el chat"
+          },
+          {
+            "id": 2,
+            "text": "Pierde la libertad de editar los datos como lo hacía en Excel"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Al inicio la AI respondía genérica porque no veía el Excel. Con la BD conectada, los datos están disponibles para las herramientas sin intervención manual: pasan de estáticos a activos.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🗄️",
+        "title": "BD como habilitador de AI",
+        "body": "Ya entiendes por qué una AI sin base de datos responde siempre genérica, y cuándo conviene Notion, Airtable, Supabase o una base vectorial para cambiar eso."
+      }
+    }
+  ]
+}

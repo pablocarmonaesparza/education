@@ -1,0 +1,197 @@
+{
+  "section_id": 5,
+  "slug": "automatizar-con-ai",
+  "title": "Automatizar con AI vs sin AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Andrés escucha \"automatiza con AI\" y lo cree nuevo y mágico. Pero su empresa lleva años con Zapier sin AI: si llega email con factura, se guarda en Drive.",
+        "options": [
+          {
+            "id": 0,
+            "text": "AI es moda, Zapier sigue siendo suficiente"
+          },
+          {
+            "id": 1,
+            "text": "Son capas complementarias: sin AI maneja reglas fijas; con AI, tareas que requieren criterio"
+          },
+          {
+            "id": 2,
+            "text": "Hay que migrar todo a AI urgentemente"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Automatización tradicional = reglas fijas (si X → haz Y). AI añade una capa: **criterio**. 'Si llega email → clasifícalo, resúmelo, prioriza'. Las dos coexisten. No es reemplazo, es nueva capa.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Dos capas de automatización",
+        "body": "**Sin AI (reglas fijas):**\n- Si X pasa, haz Y\n- Zapier, Make, cron, scripts\n- Rápido, barato, predecible\n\n**Con AI (criterio):**\n- Clasifica, resume, responde en lenguaje\n- Frameworks como LangChain o agentes personalizados\n- Más lento y caro, pero resuelve lo que reglas fijas no"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cuándo cada capa",
+        "body": "**Reglas fijas** para:\n- Archivar, notificar, copiar datos\n- Cualquier cosa determinística\n\n**AI** para:\n- Clasificar emails por tema\n- Resumir documentos\n- Responder con tono adecuado\n- Extraer info de texto libre"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "El flujo híbrido es el óptimo",
+        "body": "La mayoría de automatizaciones reales **mezclan** ambas capas:\n\n- Trigger determinístico (llega email) → AI clasifica → reglas enrutan\n\nPonerlo todo en AI es caro e innecesario. Ponerlo todo en reglas no escala a texto libre. La mezcla gana."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Las automatizaciones tradicionales tipo Zapier quedarán obsoletas con AI.",
+        "answer": false,
+        "explanation": "Falso. Las reglas fijas seguirán siendo la base. AI añade criterio donde antes no lo había, pero la mayoría de pasos (mover archivos, enviar notificaciones) seguirán siendo reglas. Son capas, no competidores.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la tarea con el tipo de automatización:",
+        "pairs": [
+          {
+            "term": "Mover archivos a Drive",
+            "def": "Reglas fijas — Zapier/Make"
+          },
+          {
+            "term": "Clasificar emails por tema",
+            "def": "AI — requiere criterio de lenguaje"
+          },
+          {
+            "term": "Notificar en Slack cuando X",
+            "def": "Reglas fijas — determinístico"
+          },
+          {
+            "term": "Resumir llamada de 1 hora",
+            "def": "AI — comprensión de lenguaje"
+          }
+        ],
+        "explanation": "Cada tarea pide su capa. **Reglas para lo determinístico, AI para el criterio**. Mezclar bien es la habilidad clave.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué tareas requieren AI (no solo reglas)?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Clasificar un ticket de soporte por urgencia"
+          },
+          {
+            "id": 1,
+            "text": "Responder a un cliente con tono apropiado"
+          },
+          {
+            "id": 2,
+            "text": "Extraer datos de una factura escaneada"
+          },
+          {
+            "id": 3,
+            "text": "Enviar email cuando llegue un pago"
+          },
+          {
+            "id": 4,
+            "text": "Archivar un archivo en Drive"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los primeros 3 requieren **criterio o comprensión de lenguaje** — solo AI. Los últimos 2 son reglas puras — Zapier los resuelve más barato y rápido.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres automatizar: 'cuando llegue email con factura, guardarla en Drive y avisar en Slack'. ¿Qué eliges?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un agente con GPT-4 para detectar el email"
+          },
+          {
+            "id": 1,
+            "text": "Zapier o Make — reglas fijas bastan (trigger email + condición de asunto)"
+          },
+          {
+            "id": 2,
+            "text": "Escribir un sistema multi-agente desde cero"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Tarea determinística = **reglas fijas**. AI sería caro e innecesario. Parte de la sabiduría es saber cuándo NO usar AI.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Andrés recibe 100 emails diarios y quiere clasificarlos por urgencia automáticamente. ¿Qué elegiría ahora?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sigue con Zapier y reglas manuales por palabras clave"
+          },
+          {
+            "id": 1,
+            "text": "Flujo híbrido: Zapier trigger → AI clasifica urgencia → Zapier enruta a canal correspondiente"
+          },
+          {
+            "id": 2,
+            "text": "Los lee todos él mismo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Andrés entendió que no es 'sin AI vs con AI'. Es **capas**. Zapier para lo determinístico, AI para clasificar. Juntos producen un flujo que antes no era posible.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔀",
+        "title": "Dos capas, un flujo",
+        "body": "Ya sabes cuándo AI suma y cuándo sobra: reglas fijas para lo determinístico, AI para el criterio. El flujo híbrido es el que gana en la vida real."
+      }
+    }
+  ]
+}

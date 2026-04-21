@@ -1,0 +1,197 @@
+{
+  "section_id": 10,
+  "slug": "monitoreo-logs",
+  "title": "Monitoreo y logs: ojos sobre tu app",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Paulina lanzó su app. Tres días sin quejas: asume que todo funciona. Al día 4, un cliente le dice: llevo una semana con error al pagar.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Revisar la app manualmente cada mañana"
+          },
+          {
+            "id": 1,
+            "text": "Configurar alertas automáticas y logs que avisen cuando algo falle"
+          },
+          {
+            "id": 2,
+            "text": "Esperar a que los usuarios reporten los problemas"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Lo que no monitoreas, no ves**. Un pago roto no se reporta solo — la mayoría de usuarios simplemente se van. Revisar a mano no escala y esperar reportes pierde clientes. Las alertas convierten fallos invisibles en visibles.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 3 capas de observabilidad",
+        "body": "Necesitas las 3:\n\n- **Logs**: qué pasó (texto de eventos)\n- **Métricas**: cuánto (números agregados: latencia, errores, volumen)\n- **Alertas**: avísame cuando algo se desvíe (umbrales + notificación)\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Herramientas accesibles",
+        "body": "Para empezar sin complicarse:\n\n- **Sentry** — captura errores de frontend y backend\n- **Axiom / Logtail** — logs con búsqueda rápida\n- **Vercel** — métricas y logs integrados al deploy\n- **Supabase logs** — queries y auth\n- **Slack webhook** — recibe alertas donde ya miras"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Qué alertar vs qué no",
+        "body": "Reglas para no saturarte:\n\n- **Alerta**: errores 5xx, tasa de errores >1%, servicios caídos, pagos fallidos\n- **No alerta**: cada 404 (ruido), warnings menores, logs info\n\n**Regla de oro**: si la alerta no requiere acción, no debe alertar."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Si tu app no tira errores visibles, está funcionando bien.",
+        "answer": false,
+        "explanation": "Falso. Una app puede estar 'sin errores' y tener: pagos rotos silenciosamente, data mal guardada, performance terrible, usuarios que se van antes de quejarse. **Monitorear síntomas, no solo errores duros**.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada señal con su nivel de alerta:",
+        "pairs": [
+          {
+            "term": "Pago roto 3 veces en 5 min",
+            "def": "Alerta crítica inmediata (caso típico)"
+          },
+          {
+            "term": "Latencia subió 50%",
+            "def": "Alerta moderada para investigar"
+          },
+          {
+            "term": "Un 404 en una página vieja",
+            "def": "Log, no alerta (caso típico)"
+          },
+          {
+            "term": "Nuevo usuario creado",
+            "def": "Log informativo (caso típico)"
+          }
+        ],
+        "explanation": "**Severidad proporcional al impacto**. Sobre-alertar genera ceguera; sub-alertar genera sorpresas. La calibración correcta se aprende con uso.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales conviene monitorear desde el día 1?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tasa de errores 5xx"
+          },
+          {
+            "id": 1,
+            "text": "Latencia promedio de endpoints críticos"
+          },
+          {
+            "id": 2,
+            "text": "Tasa de éxito de operaciones clave (pagar, login)"
+          },
+          {
+            "id": 3,
+            "text": "Color del CSS de cada botón"
+          },
+          {
+            "id": 4,
+            "text": "Nombre del servidor que responde"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Errores, latencia y éxito de operaciones son **señales sustantivas**. Los últimos 2 son ruido. **Pocas métricas que importan** gana a muchas métricas que no.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Acabas de lanzar. ¿Qué monitoreo mínimo configuras el primer día?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Ninguno — ya me daré cuenta"
+          },
+          {
+            "id": 1,
+            "text": "Sentry para errores, alerta a Slack si la tasa sube de 1%, y logs de la plataforma"
+          },
+          {
+            "id": 2,
+            "text": "Setup completo de Prometheus + Grafana + PagerDuty"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Mínimo indispensable día 1**: errores + alert + logs. Setup enterprise completo es overkill para una app con 10 usuarios. Escalar monitoreo con la app es sabio.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Paulina configura Sentry y alertas a Slack. Al siguiente fallo de pago, ¿qué cambia?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Se entera una semana después, igual que antes"
+          },
+          {
+            "id": 1,
+            "text": "Recibe alerta en minutos y corrige antes de que más usuarios lo sufran"
+          },
+          {
+            "id": 2,
+            "text": "Sentry bloquea el fallo y los errores dejan de ocurrir"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Paulina pasó de **invisibilidad a visibilidad**. Los errores siguen pasando (inevitable), pero ahora los ve y reacciona. Monitoreo no elimina fallos; reduce el tiempo entre que ocurren y que los arreglas.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "👁️",
+        "title": "Ojos sobre tu app",
+        "body": "Ya tienes el principio: alertas para lo que importa, logs para entender, severidad proporcional al impacto. Tu app deja de operar a ciegas."
+      }
+    }
+  ]
+}

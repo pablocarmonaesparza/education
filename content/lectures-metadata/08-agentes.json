@@ -1,0 +1,118 @@
+{
+  "section_id": 8,
+  "section_slug": "agentes",
+  "section_display": "agentes",
+  "source": "claude-in-session",
+  "lectures": [
+    {
+      "slug": "asistente-vs-agente",
+      "title": "asistente vs agente",
+      "display_order": 1,
+      "learning_objective": "distinguir entre un asistente que responde y un agente que actúa en el mundo real",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "asistente vs agente",
+      "narrative_arc": "Alguien llama 'agente' a cualquier modelo que usa, indistintamente. No distingue entre chatear con ChatGPT y tener un sistema que actúa en el mundo: revisa email, ejecuta código, hace compras. La diferencia entre asistente y agente es la diferencia entre recibir consejo y ver algo ejecutado.",
+      "scenario_character": "Valeria"
+    },
+    {
+      "slug": "tool-use",
+      "title": "tool use: cómo un modelo usa herramientas",
+      "display_order": 2,
+      "learning_objective": "explicar cómo un modelo decide qué herramienta usar y cómo le pasa los argumentos correctos",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "tool use",
+      "narrative_arc": "Alguien ha visto agentes ejecutar acciones pero no entiende cómo el modelo 'sabe' llamar a una herramienta y no a otra. Lo ve como magia inexplicable. En realidad es un protocolo simple: el modelo elige una función y le pasa argumentos estructurados. Comprender esto abre la caja negra.",
+      "scenario_character": "Pablo"
+    },
+    {
+      "slug": "react-loop",
+      "title": "ReAct loop: razonar y actuar",
+      "display_order": 3,
+      "learning_objective": "describir cómo un agente alterna razonamiento y acción en un loop para resolver tareas complejas",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "ReAct loop",
+      "narrative_arc": "Alguien ha usado agentes que ejecutan una acción tras otra sin pensar y se traban en el primer obstáculo inesperado. ReAct es distinto: el agente piensa, actúa, observa el resultado, piensa de nuevo. Ese bucle le permite manejar tareas que no tienen receta fija desde el principio.",
+      "scenario_character": "Jorge"
+    },
+    {
+      "slug": "browser-agents",
+      "title": "browser agents",
+      "display_order": 4,
+      "learning_objective": "usar un browser agent para navegar sitios web y completar tareas sin depender de API oficial",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "browser agent",
+      "narrative_arc": "Alguien necesita interactuar con un portal gubernamental que no tiene API pública disponible. Un browser agent le permite al modelo controlar un navegador real: leer la página, llenar formularios, hacer clics, subir archivos. Es la API que la oficina nunca construyó pero igual funciona.",
+      "scenario_character": "Gabriel"
+    },
+    {
+      "slug": "chatbots-voice",
+      "title": "chatbots y voice agents",
+      "display_order": 5,
+      "learning_objective": "usar un chatbot o voice agent listo para atender preguntas frecuentes de un negocio",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "chatbots y voice agents",
+      "narrative_arc": "Alguien atiende clientes por WhatsApp y responde lo mismo veinte veces al día: horarios, precios, disponibilidad. No sabe que un chatbot simple puede cubrir el 80% de esas preguntas, dejándole tiempo para las que sí requieren juicio humano y presencia real.",
+      "scenario_character": "Renata"
+    },
+    {
+      "slug": "memoria-persistente",
+      "title": "memoria persistente",
+      "display_order": 6,
+      "learning_objective": "aplicar memoria persistente a un agente para que recuerde al usuario entre conversaciones",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "memoria persistente",
+      "narrative_arc": "Alguien arma un chatbot útil pero cada nueva conversación empieza de cero. Los clientes repiten su historia cada vez y se frustran. Asume que es un límite del modelo. No lo es: existen capas de memoria que persisten contexto entre sesiones. Un agente con memoria se siente humano.",
+      "scenario_character": "Carlos"
+    },
+    {
+      "slug": "openclaw",
+      "title": "OpenClaw: tu agente local",
+      "display_order": 7,
+      "learning_objective": "usar OpenClaw para correr un agente local que controla tu computadora sin enviar datos a la nube",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "OpenClaw",
+      "narrative_arc": "Alguien quiere un agente que maneje archivos locales y apps del sistema sin subir nada a servidores remotos. OpenClaw hace exactamente eso: corre local, tiene acceso al sistema operativo, trabaja offline para tareas privadas. Es el agente que no tiene que pedir permiso externo.",
+      "scenario_character": "Mariana"
+    },
+    {
+      "slug": "multi-agente-a2a",
+      "title": "multi-agente y A2A protocol",
+      "display_order": 8,
+      "learning_objective": "explicar cómo múltiples agentes se coordinan mediante A2A protocol para resolver tareas complejas",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "A2A protocol",
+      "narrative_arc": "Alguien tiene un agente 'investigador' y un agente 'redactor' trabajando por separado. Copia el resultado de uno al otro a mano cada vez. A2A protocol les permite hablarse directo, pasarse contexto, decidir entre ellos quién hace qué siguiente. Coordinación automática sin humano en medio.",
+      "scenario_character": "Sebastián"
+    },
+    {
+      "slug": "orquestacion",
+      "title": "orquestación de equipos de bots",
+      "display_order": 9,
+      "learning_objective": "diseñar un flujo de orquestación donde un bot coordinador asigna tareas a un equipo de bots especializados",
+      "bloom_verb": "crear",
+      "cognitive_route": "mixta",
+      "concept_name": "orquestación de bots",
+      "narrative_arc": "Alguien tiene cinco agentes especializados (ventas, soporte, contenido, data, admin). Todos corren por separado, sin coordinación entre sí. Un bot coordinador los organiza como un manager humano: asigna tareas, cobra resultados, decide escalamientos. La orquestación es la plantilla del equipo digital.",
+      "scenario_character": "Javier"
+    },
+    {
+      "slug": "primer-agente-negocio",
+      "title": "tu primer agente para tu negocio",
+      "display_order": 10,
+      "learning_objective": "construir un agente con un caso de uso concreto para tu negocio que libere tiempo o genere ingresos",
+      "bloom_verb": "crear",
+      "cognitive_route": "mixta",
+      "concept_name": "agente de negocio",
+      "narrative_arc": "Alguien ha aprendido cada pieza de agentes por separado. Llegó el momento de construir uno propio para su negocio real: atender clientes, cualificar leads, analizar datos de ventas, publicar contenido automáticamente. El primer agente propio cambia cómo percibe su propio trabajo cotidiano.",
+      "scenario_character": "Ximena"
+    }
+  ]
+}

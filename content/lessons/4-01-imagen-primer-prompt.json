@@ -1,0 +1,198 @@
+{
+  "section_id": 4,
+  "slug": "imagen-primer-prompt",
+  "title": "Imagen con AI: el primer prompt",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Ana ha visto imágenes de AI en redes. Cree que generar una requiere saber Photoshop, inglés perfecto o técnicas raras.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Como dice Ana — requiere conocimiento técnico previo"
+          },
+          {
+            "id": 1,
+            "text": "El primer prompt correcto genera algo decente en 15 segundos; lo difícil es mejorar el resultado, no hacer el primero"
+          },
+          {
+            "id": 2,
+            "text": "Solo funciona bien en inglés, en español los resultados son malos"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Generar una primera imagen es **más simple que editar una foto en el celular**. Lo difícil no es el primer intento — es iterar para llegar a algo profesional. Y los modelos actuales (incluido DALL-E) entienden español perfectamente.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cómo funciona generar imagen",
+        "body": "Un modelo de imagen (como DALL-E, Flux, Midjourney) recibe un prompt en texto y **genera una imagen nueva** aprendida de millones de fotos y pinturas. No copia — sintetiza un resultado único por cada prompt."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Anatomía de un prompt visual simple",
+        "body": "Un primer prompt útil incluye:\n\n- **Sujeto** — qué aparece (una persona, un objeto, un paisaje)\n- **Acción o estado** — qué está haciendo o cómo está\n- **Estilo** — fotografía, ilustración, 3D, acuarela, etc.\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "ChatGPT sirve, modelos dedicados escalan",
+        "body": "ChatGPT con DALL-E genera imágenes **suficientes** para ideas rápidas, mockups y posts casuales. Para trabajo comercial (impresos, campañas, producto), modelos dedicados como Flux o Midjourney ganan en calidad y control."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Los modelos de imagen entienden solo prompts en inglés.",
+        "answer": false,
+        "explanation": "Falso. Los modelos modernos entienden español, portugués y otros idiomas sin problema. En inglés hay un poco más de vocabulario visual aprendido, pero la diferencia en casos normales es menor al 10%.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para generar tu primera imagen útil:",
+        "steps": [
+          "Abres ChatGPT y eliges el modo de imagen (o una app dedicada)",
+          "Escribes un prompt con sujeto + acción + estilo",
+          "Recibes la primera versión",
+          "Identificas qué cambiarías (más iluminación, otro ángulo, otro color)",
+          "Pides la iteración con instrucción específica",
+          "Guardas la versión que te sirve"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "explanation": "El flujo es idéntico al de un prompt de texto: **prompt → output → iterar**. No generes solo una vez — la segunda suele ser mucho mejor que la primera.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la palabra clave con lo que controla en una imagen:",
+        "pairs": [
+          {
+            "term": "Fotografía realista",
+            "def": "Controla el estilo general del render"
+          },
+          {
+            "term": "Primer plano",
+            "def": "Controla la composición y distancia"
+          },
+          {
+            "term": "Luz cálida",
+            "def": "Controla la iluminación y temperatura"
+          },
+          {
+            "term": "Acuarela sobre papel",
+            "def": "Controla la técnica artística"
+          }
+        ],
+        "explanation": "El prompt visual es un **lenguaje de palabras clave**. Cada palabra importa. Aprender 10-15 palabras clave bien te da control inmediato sobre estilo, composición y mood.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué características tiene un buen primer prompt de imagen?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Menciona el sujeto principal claramente"
+          },
+          {
+            "id": 1,
+            "text": "Incluye un estilo (fotografía, ilustración, 3D)"
+          },
+          {
+            "id": 2,
+            "text": "Da contexto de escena o iluminación"
+          },
+          {
+            "id": 3,
+            "text": "Tiene 300 palabras describiendo todo"
+          },
+          {
+            "id": 4,
+            "text": "Está en inglés antiguo shakesperiano"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "**Simple y preciso** — sujeto, estilo, contexto. 300 palabras no ayudan; la mayoría las ignora o las mezcla mal. Menos es más en prompts visuales.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Ana decide intentarlo. Quiere una imagen para un post: 'un panadero en una cocina acogedora, al amanecer'. ¿Qué prompt le recomiendas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "'Panadero'"
+          },
+          {
+            "id": 1,
+            "text": "'Un panadero trabajando en una panadería acogedora al amanecer, fotografía realista con luz cálida'"
+          },
+          {
+            "id": 2,
+            "text": "'Hazme una imagen bonita'"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Ana ya combina **sujeto + contexto + estilo + iluminación** en una sola frase. El output va a ser específico al caso, no un panadero genérico. Ese es el primer prompt útil.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🎨",
+        "title": "Primera imagen generada",
+        "body": "Acabas de armar tu primer prompt visual: sujeto + acción + estilo. En 24 horas prueba una imagen para algo real — un post, un mockup, una idea."
+      }
+    }
+  ]
+}

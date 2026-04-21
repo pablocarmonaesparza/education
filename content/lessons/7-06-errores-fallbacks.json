@@ -1,0 +1,197 @@
+{
+  "section_id": 7,
+  "slug": "errores-fallbacks",
+  "title": "Errores y fallbacks: qué hacer cuando el modelo falla",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "María pone su chatbot en producción. Funciona bien hasta que OpenAI tiene una caída de 2 horas. Su app deja de responder y los clientes reclaman. ¿Qué le faltó diseñar?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Contratar el plan Enterprise de OpenAI — el acuerdo de servicio (SLA) garantiza que no haya caídas"
+          },
+          {
+            "id": 1,
+            "text": "Un fallback: cuando el proveedor primario falla, el sistema cambia automáticamente a uno secundario (otro modelo u otra interfaz de programación) y mantiene el servicio"
+          },
+          {
+            "id": 2,
+            "text": "Mostrar el error técnico al usuario para que entienda que no es culpa de la app"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Los outages pasan siempre** — OpenAI, Anthropic y Google caen. Un SLA te paga dinero si incumplen, pero no te devuelve usuarios perdidos. El diseño responsable asume la falla y tiene un **fallback**: otro modelo, respuesta cached o un mensaje amable.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Tipos de errores en APIs de AI",
+        "body": "Los principales:\n\n- **Network/timeout** — conexión lenta o caída\n- **Rate limit (429)** — excediste cuota por minuto\n- **Server error (5xx)** — el proveedor tiene problema\n- **Invalid request (400)** — mal formato de tu petición\n- **Quota exceeded** — tu cuota mensual se agotó"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Capas de fallback",
+        "body": "Estrategia en orden de inversión:\n\n- **Retry con backoff**: reintenta en 1s, 2s, 4s\n- **Modelo alternativo**: si GPT-4o falla, intenta Claude\n- **Respuesta cached**: si había una similar, úsala\n- **Mensaje por default**: texto pre-escrito al usuario"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "El diseño 'gracefully degrading'",
+        "body": "El objetivo no es que todo funcione siempre — es **fallar grácil**:\n\n- Usuario no ve error feo\n- App sigue útil aunque reducida\n- Se loguea el problema para review\n- Se recupera sola cuando el proveedor vuelve\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Con un proveedor premium (OpenAI Enterprise, Anthropic) los outages dejan de ser problema.",
+        "answer": false,
+        "explanation": "Falso. Los tiers premium dan SLAs y prioridad, pero **aún tienen outages**. La mejor estrategia es **multi-proveedor**: usar primario + tener segundo listo. El SLA te compensa en dinero; no te devuelve los usuarios perdidos.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el error con la acción ideal:",
+        "pairs": [
+          {
+            "term": "Error 429 (rate limit)",
+            "def": "Retry con backoff exponencial"
+          },
+          {
+            "term": "Error 5xx del proveedor",
+            "def": "Fallback a otro modelo o proveedor"
+          },
+          {
+            "term": "Error 400 (mal formado)",
+            "def": "Loguear y ajustar código — no retry"
+          },
+          {
+            "term": "Timeout de red",
+            "def": "Retry 2-3 veces y loguear"
+          }
+        ],
+        "explanation": "**No todos los errores se tratan igual**. Retry un 400 es inútil (siempre fallará). Retry un 5xx tiene sentido. Saber distinguir es parte del oficio.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué piezas componen una estrategia robusta de fallback?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Retry con backoff exponencial en errores transitorios"
+          },
+          {
+            "id": 1,
+            "text": "Proveedor secundario si el primario cae"
+          },
+          {
+            "id": 2,
+            "text": "Circuit breaker: si el proveedor falla consistentemente, dejar de intentar"
+          },
+          {
+            "id": 3,
+            "text": "Ignorar todos los errores silenciosamente"
+          },
+          {
+            "id": 4,
+            "text": "Mostrar stack trace al usuario"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las 3 primeras son prácticas estándar. Ignorar errores o mostrar stack traces son **antipatrones** — rompen confianza y producen experiencia terrible.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu chatbot depende de OpenAI. ¿Cómo evitas caer cuando OpenAI tenga outage?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Rezar — no hay solución"
+          },
+          {
+            "id": 1,
+            "text": "Diseñar fallback: si OpenAI falla, usar Claude para la misma tarea. Sistema detecta y cambia automáticamente"
+          },
+          {
+            "id": 2,
+            "text": "Cerrar la app durante outages"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Multi-proveedor** es la defensa real. Cuesta un poco de complejidad (mantener dos integraciones), pero quita el riesgo de caída total. Para producción seria, no es opcional.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "María rediseña su chatbot con fallbacks. En la siguiente caída de OpenAI, ¿qué pasa?",
+        "options": [
+          {
+            "id": 0,
+            "text": "La app cae otra vez porque sigue dependiendo de OpenAI"
+          },
+          {
+            "id": 1,
+            "text": "El sistema detecta los errores 5xx de OpenAI, cambia a Claude automáticamente y responde con leve degradación — los usuarios casi no lo notan"
+          },
+          {
+            "id": 2,
+            "text": "Los usuarios reciben un stack trace y deciden si reintentar"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "María pasó de **frágil** a **resiliente**. Su app sobrevive caídas del proveedor principal sin que el usuario lo note. Eso es lo que distingue un producto de un prototipo.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🛟",
+        "title": "Resiliencia incorporada",
+        "body": "Tu app aguanta caídas. Ya distingues errores transitorios de errores de código, y sabes cómo degradar con gracia."
+      }
+    }
+  ]
+}

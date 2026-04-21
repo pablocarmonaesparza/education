@@ -1,0 +1,119 @@
+{
+  "section_id": 4,
+  "section_slug": "contenido",
+  "section_display": "contenido",
+  "source": "claude-in-session",
+  "lectures": [
+    {
+      "slug": "imagen-primer-prompt",
+      "title": "imagen con AI: el primer prompt",
+      "display_order": 1,
+      "learning_objective": "usar un modelo de imagen para generar una primera ilustración partiendo solo de texto",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "primera imagen con AI",
+      "narrative_arc": "Alguien ha visto imágenes generadas por AI en redes sociales pero nunca ha hecho una. Asume que requiere habilidades artísticas o que el resultado será frustrante. La realidad: el primer prompt correcto produce algo decente en 15 segundos. Lo que falta es entender qué pedir y cómo estructurarlo.",
+      "scenario_character": "Ana"
+    },
+    {
+      "slug": "flux",
+      "title": "Flux: imagen profesional",
+      "display_order": 2,
+      "learning_objective": "usar Flux para generar imágenes con calidad de producción para proyectos comerciales",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "Flux para imagen profesional",
+      "narrative_arc": "Alguien usa el generador gratuito que viene con su asistente para todo y los resultados se ven planos, genéricos, con tipografías raras. No sabe que hay modelos dedicados como Flux con otro nivel de calidad. Para proyectos con peso comercial, la herramienta correcta cambia el resultado.",
+      "scenario_character": "Sebastián"
+    },
+    {
+      "slug": "nano-banana",
+      "title": "Nano Banana: editar con contexto",
+      "display_order": 3,
+      "learning_objective": "usar Nano Banana para editar una imagen manteniendo contexto sin recrear todo desde cero",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "edición con Nano Banana",
+      "narrative_arc": "Alguien tiene una foto de producto y quiere cambiar solo el fondo. Le pide al modelo y le regenera la foto completa: producto distinto, iluminación distinta, todo desalineado. Con herramientas de edición contextual puede intervenir solo la zona que quiere tocar sin perder el resto.",
+      "scenario_character": "Camila"
+    },
+    {
+      "slug": "prompts-visuales",
+      "title": "prompts visuales: el lenguaje de la imagen",
+      "display_order": 4,
+      "learning_objective": "describir los elementos clave de un prompt visual para dirigir el resultado del modelo",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "vocabulario de prompts visuales",
+      "narrative_arc": "Alguien pide 'una foto profesional' y recibe algo que parece cualquier cosa menos profesional. No sabe que hay un vocabulario establecido: tipo de plano, iluminación, lente, mood, composición. Antes de pedir mejor, hay que aprender a nombrar lo que uno quiere ver.",
+      "scenario_character": "Luis"
+    },
+    {
+      "slug": "generar-video",
+      "title": "generar video: panorama 2026",
+      "display_order": 5,
+      "learning_objective": "identificar los principales modelos de video con AI y qué tipo de clip produce cada uno",
+      "bloom_verb": "recordar",
+      "cognitive_route": "conceptual",
+      "concept_name": "panorama de video con AI",
+      "narrative_arc": "Alguien ha visto clips virales hechos con AI pero no sabe qué modelo los produjo ni si están a su alcance. Asume que solo los estudios grandes los producen. En realidad hay varios modelos accesibles con fortalezas distintas: realismo, estilización, duración, costo por clip. Antes de elegir, necesita el mapa.",
+      "scenario_character": "Emilio"
+    },
+    {
+      "slug": "seedance",
+      "title": "Seedance: el estándar de calidad actual",
+      "display_order": 6,
+      "learning_objective": "usar Seedance para generar clips con calidad cinematográfica desde texto o imagen",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "Seedance para video",
+      "narrative_arc": "Alguien intentó generar un video con un modelo antiguo y obtuvo algo con personajes deformados y movimientos extraños. Se dio por vencido con el formato. Los modelos actuales alcanzan calidad comparable a filmación real; conviene probar antes de descartar video generativo.",
+      "scenario_character": "Daniela"
+    },
+    {
+      "slug": "otros-video-models",
+      "title": "otros video models: Kling, Veo, Sora",
+      "display_order": 7,
+      "learning_objective": "elegir entre Kling, Veo y Sora según el tipo de clip y el presupuesto del proyecto",
+      "bloom_verb": "evaluar",
+      "cognitive_route": "mixta",
+      "concept_name": "criterio entre video models",
+      "narrative_arc": "Alguien tiene claro que quiere generar video, pero cada uno de los tres modelos principales (Kling, Veo, Sora) tiene sus fortalezas. Para pedir algo dramático, un corto estilizado o un anuncio corto, la elección correcta cambia. Sin criterio, desperdicia créditos probando todos.",
+      "scenario_character": "Samuel"
+    },
+    {
+      "slug": "elevenlabs",
+      "title": "voz con ElevenLabs",
+      "display_order": 8,
+      "learning_objective": "usar ElevenLabs para generar voz natural en distintos idiomas y tonos",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "voz con ElevenLabs",
+      "narrative_arc": "Alguien necesita narrar un video en inglés y no tiene a nadie nativo a la mano. Contrata un actor por hora o desiste. No sabe que hay plataformas que generan voz humana indistinguible en segundos, en cualquier idioma. El costo baja de cientos de dólares a centavos.",
+      "scenario_character": "Natalia"
+    },
+    {
+      "slug": "audio-musica",
+      "title": "audio y música generativa",
+      "display_order": 9,
+      "learning_objective": "usar modelos de audio para generar efectos o pistas musicales para un proyecto propio",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "música y audio generativo",
+      "narrative_arc": "Alguien edita un video y necesita música de fondo. Busca bibliotecas libres y suena todo genérico, repetido. No sabe que puede describir el mood y el género para generar música única, sin problemas de licencia ni royalty fees.",
+      "scenario_character": "Diego"
+    },
+    {
+      "slug": "workflows-contenido",
+      "title": "combinar todo: workflows reales",
+      "display_order": 10,
+      "learning_objective": "construir un workflow que combine texto, imagen, video y audio para un proyecto concreto",
+      "bloom_verb": "crear",
+      "cognitive_route": "mixta",
+      "concept_name": "workflow de contenido AI",
+      "narrative_arc": "Alguien ha probado cada herramienta por separado: un prompt de texto acá, una imagen allá, un clip de video por otro lado. Nunca conecta las piezas en un resultado final. Un contenido profesional nace de encadenar herramientas en un orden específico, no de dominar cada una suelta.",
+      "scenario_character": "Fernanda"
+    }
+  ],
+  "version": "v1.1-reviewed"
+}

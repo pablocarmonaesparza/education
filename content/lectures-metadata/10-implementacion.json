@@ -1,0 +1,119 @@
+{
+  "section_id": 10,
+  "section_slug": "implementacion",
+  "section_display": "implementación",
+  "source": "claude-in-session",
+  "lectures": [
+    {
+      "slug": "prototipo-producto",
+      "title": "de prototipo a producto",
+      "display_order": 1,
+      "learning_objective": "describir qué separa un prototipo funcional de un producto listo para usuarios reales que pagan",
+      "bloom_verb": "entender",
+      "cognitive_route": "conceptual",
+      "concept_name": "prototipo vs producto",
+      "narrative_arc": "Alguien tiene un prototipo que funciona en su máquina sin problemas. Lo enseña a un cliente y todo se rompe en minutos. No sabe que el salto de prototipo a producto es más que código: es latencia, manejo de errores, onboarding, documentación, soporte. La última milla es el 80% del trabajo real.",
+      "scenario_character": "Javier"
+    },
+    {
+      "slug": "deploy-produccion",
+      "title": "deploy a producción",
+      "display_order": 2,
+      "learning_objective": "usar un servicio como Vercel o Fly para poner tu app en producción con un dominio propio",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "deploy a producción",
+      "narrative_arc": "Alguien tiene su app corriendo local perfectamente. Le enseña a un amigo y 'no se ve' desde otra computadora. Para que terceros accedan, la app debe vivir en un servidor público. Servicios modernos hacen el deploy en tres comandos simples. El primer deploy propio es el bautismo de la app.",
+      "scenario_character": "Ana"
+    },
+    {
+      "slug": "monitoreo-logs",
+      "title": "monitoreo y logs",
+      "display_order": 3,
+      "learning_objective": "configurar monitoreo y logs para detectar problemas en producción antes de que los reporten los usuarios",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "monitoreo y logs",
+      "narrative_arc": "Alguien lanza su app y cierra la laptop satisfecho. Dos semanas después un usuario le escribe: 'no sirve desde hace 3 días'. Si hubiera tenido monitoreo, habría visto el error el primer día. Los logs son la caja negra de tu app: sin ellos estás volando a ciegas en producción.",
+      "scenario_character": "Samuel"
+    },
+    {
+      "slug": "fallbacks",
+      "title": "fallbacks cuando el modelo falla",
+      "display_order": 4,
+      "learning_objective": "implementar fallbacks que mantengan la app útil cuando el modelo principal tiene latencia alta o falla del todo",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "fallbacks en producción",
+      "narrative_arc": "Alguien integra un modelo y asume que siempre responderá sin problemas. OpenAI tiene un downtime un martes por la tarde. Su app devuelve timeouts y los usuarios se quejan en redes. Un fallback a un modelo alternativo o a una respuesta por defecto mantiene la app viva cuando el modelo no lo está.",
+      "scenario_character": "Daniela"
+    },
+    {
+      "slug": "costos-operativos",
+      "title": "costos operativos reales",
+      "display_order": 5,
+      "learning_objective": "evaluar el costo real por usuario de tu app y ajustar modelo, caché o pricing antes de escalar",
+      "bloom_verb": "evaluar",
+      "cognitive_route": "mixta",
+      "concept_name": "costos operativos reales",
+      "narrative_arc": "Alguien celebra que su app creció a 100 usuarios activos, hasta que llega la factura mensual de 2000 USD. No sabe que el costo por usuario debe calcularse antes, no después. Cada llamada al modelo es dinero real, y el negocio solo cierra si el pricing cubre el costo unitario con margen.",
+      "scenario_character": "Sofía"
+    },
+    {
+      "slug": "primeros-usuarios",
+      "title": "primeros usuarios: a quién y cómo",
+      "display_order": 6,
+      "learning_objective": "ejecutar un proceso manual de outreach para conseguir los primeros 10 usuarios reales de tu app",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "primeros usuarios",
+      "narrative_arc": "Alguien lanza su app y hace un post en redes sociales. Cero usuarios. Piensa que 'si el producto es bueno, la gente llega sola'. No llega. Los primeros 10 usuarios se consiguen uno a uno, en conversaciones personales con gente que tiene exactamente el problema que el producto resuelve.",
+      "scenario_character": "Luis"
+    },
+    {
+      "slug": "pricing-latam",
+      "title": "pricing para LATAM",
+      "display_order": 7,
+      "learning_objective": "decidir el precio de tu app en USD considerando el poder adquisitivo real de la audiencia LATAM",
+      "bloom_verb": "evaluar",
+      "cognitive_route": "mixta",
+      "concept_name": "pricing para LATAM",
+      "narrative_arc": "Alguien pone su app a 29 USD al mes y no vende nada. Copió el precio de apps estadounidenses sin considerar que un usuario en Lima o en Buenos Aires no paga lo mismo que uno en San Francisco. El pricing para LATAM requiere otro cálculo, otra presentación de valor, otro test.",
+      "scenario_character": "Paola"
+    },
+    {
+      "slug": "cold-email",
+      "title": "cold email con AI",
+      "display_order": 8,
+      "learning_objective": "usar AI para redactar cold emails personalizados a prospectos específicos sin sonar a plantilla",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "cold email con AI",
+      "narrative_arc": "Alguien envía un cold email idéntico a 500 prospectos y obtiene cero respuestas reales. No sabe que el arte del cold email es la personalización profunda a escala: AI puede leer el perfil de cada prospecto y adaptar el ángulo. La diferencia entre 0% y 5% de respuesta está en la personalización.",
+      "scenario_character": "Valeria"
+    },
+    {
+      "slug": "iterar-feedback",
+      "title": "iterar con feedback real",
+      "display_order": 9,
+      "learning_objective": "aplicar un ciclo corto de release-feedback-fix con los primeros usuarios reales para mejorar rápido",
+      "bloom_verb": "aplicar",
+      "cognitive_route": "procedimental",
+      "concept_name": "iteración con feedback",
+      "narrative_arc": "Alguien lanza su app, recibe feedback confuso de sus primeros usuarios y lo ignora 'porque ya tiene su plan definido'. Pierde la oportunidad de ver el producto desde otros ojos. El feedback real no siempre se aplica literal, pero siempre hay que escucharlo. Iterar con usuarios separa producto amado de producto olvidado.",
+      "scenario_character": "Renata"
+    },
+    {
+      "slug": "despedida",
+      "title": "despedida y siguientes pasos",
+      "display_order": 10,
+      "learning_objective": "construir un plan de 30 días para ejecutar lo aprendido del curso en un proyecto propio concreto",
+      "bloom_verb": "crear",
+      "cognitive_route": "mixta",
+      "concept_name": "plan de 30 días post-curso",
+      "narrative_arc": "Alguien termina el curso con mucho aprendido pero sin plan concreto. Sabe cosas, pero no sabe qué hacer el próximo lunes por la mañana. Una última lección cierra el ciclo: convertir el aprendizaje acumulado en un siguiente paso ejecutable, esta semana, con compromiso real y fecha.",
+      "scenario_character": "Diego"
+    }
+  ],
+  "version": "v1.1-reviewed"
+}

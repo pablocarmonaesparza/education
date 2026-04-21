@@ -1,0 +1,197 @@
+{
+  "section_id": 4,
+  "slug": "audio-musica",
+  "title": "Música y audio con AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Diego hace un video y necesita música de fondo. Recorre YouTube, busca música gratis y acaba usando una pista genérica que no encaja con la emoción del video.",
+        "options": [
+          {
+            "id": 0,
+            "text": "La música con AI suena falsa, mejor seguir con YouTube"
+          },
+          {
+            "id": 1,
+            "text": "Puede generar una pista ajustada a la emoción en minutos con Suno o Udio"
+          },
+          {
+            "id": 2,
+            "text": "Tiene que componerla él mismo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Suno y Udio** cambiaron el juego en 2024-2025. Generan música con melodía, letra y estructura convincente. Para música de fondo, videos cortos o prototipos, sirve — y libera de la frustración de buscar pistas gratis que no encajan.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué puedes generar hoy",
+        "body": "Las herramientas principales de audio/música con AI permiten:\n\n- **Música de fondo** instrumental\n- **Canciones con letra y voz** cantada\n- **Efectos de sonido** para video/juegos\n- **Jingles y audio branding** para marcas"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las herramientas a conocer",
+        "body": "Mapa corto:\n\n- **Suno / Udio** — canciones completas con letra y voz\n- **ElevenLabs Sound Effects** — efectos de sonido puntuales\n- **AIVA, Soundraw** — música instrumental para video y juegos\n- **Stable Audio** — loops y elementos para producción"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Cuándo conviene y cuándo no",
+        "body": "**Conviene** para: música de fondo, prototipos, redes sociales, mood de un video.\n\n**No conviene** para: single que vas a publicar en Spotify como artista (aún suena genérico para ese nivel), o cuando necesitas emoción específica muy fina.\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Con AI puedes generar una canción con letra, melodía y voz en menos de 2 minutos.",
+        "answer": true,
+        "explanation": "Verdadero. Suno o Udio generan una canción completa de 2-3 minutos en menos de un minuto de espera. La calidad varía, pero el tiempo es real. Hace 3 años esto era ciencia ficción.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la necesidad con la herramienta:",
+        "pairs": [
+          {
+            "term": "Canción completa con letra",
+            "def": "Suno o Udio — música con voz"
+          },
+          {
+            "term": "Música de fondo instrumental",
+            "def": "AIVA o Soundraw — video y juegos"
+          },
+          {
+            "term": "Efecto de sonido de puerta",
+            "def": "ElevenLabs Sound Effects (caso típico)"
+          },
+          {
+            "term": "Loop de beat para producir",
+            "def": "Stable Audio — elementos sueltos"
+          }
+        ],
+        "explanation": "Cada herramienta sirve una capa distinta de audio. Conocer el mapa te da opciones sin pelearte con una sola.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Para qué casos es sensato usar música generada con AI?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Música de fondo para un video corporativo"
+          },
+          {
+            "id": 1,
+            "text": "Jingle de 15 segundos para un anuncio"
+          },
+          {
+            "id": 2,
+            "text": "Música ambiente para un podcast"
+          },
+          {
+            "id": 3,
+            "text": "Single de un artista real para Spotify"
+          },
+          {
+            "id": 4,
+            "text": "Score emocional fino para una película de cine"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los tres primeros son casos buenos: fondo, jingle, ambiente. Los últimos dos requieren producción humana o equipo especializado — aún fuera del alcance de AI genérica.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Necesitas un fondo musical suave y esperanzador para un video de producto de 30 segundos. ¿Qué haces?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Buscas 2 horas en YouTube hasta encontrar algo decente"
+          },
+          {
+            "id": 1,
+            "text": "Abres Suno, pides 'fondo instrumental suave, esperanzador, piano y cuerdas, 30 segundos', generas 3 opciones y eliges"
+          },
+          {
+            "id": 2,
+            "text": "Contratas a un compositor"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "30 segundos de mood específico = **AI gana al buscador de YouTube**. Generas 3 variaciones en 5 minutos, eliges la mejor. Buscar pistas gratis que encajen toma horas y rara vez funciona.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Diego vuelve a su video. ¿Qué decide ahora?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sigue buscando música gratis en YouTube aunque no encaje"
+          },
+          {
+            "id": 1,
+            "text": "Abre Suno, genera una pista ajustada a la emoción del video, la usa, publica"
+          },
+          {
+            "id": 2,
+            "text": "Paga licencia de música en un banco de sonidos"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Diego pasó de resignación ('música genérica es lo que hay') a **música ajustada al caso en minutos**. El video queda mejor y no gasta horas buscando.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🎵",
+        "title": "Audio generativo desbloqueado",
+        "body": "Ya sabes qué herramienta usar para canción con letra, música instrumental, efectos de sonido o loops. Y cuándo conviene AI y cuándo no."
+      }
+    }
+  ]
+}

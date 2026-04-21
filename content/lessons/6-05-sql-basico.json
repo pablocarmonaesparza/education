@@ -1,0 +1,197 @@
+{
+  "section_id": 6,
+  "slug": "sql-basico",
+  "title": "SQL básico: el lenguaje de las bases de datos",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Tomás necesita 'clientes que compraron más de 500 USD este mes'. El panel visual de su sistema no lo permite. ¿Qué le conviene más?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Contratar un desarrollador cada vez que necesite una consulta"
+          },
+          {
+            "id": 1,
+            "text": "Aprender lo mínimo de SQL — es más chico de lo que parece"
+          },
+          {
+            "id": 2,
+            "text": "Exportar todo a Excel y filtrar ahí cada semana"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "SQL parece un muro, pero la base cabe en **4 palabras**. Con esas 4 resuelves el 80% de las consultas reales. Aprenderlas cuesta menos que depender de otros o pelear con Excel cada semana.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 4 palabras clave que necesitas",
+        "body": "Con estas 4 ya haces el 80% de las consultas:\n\n- **SELECT** — qué columnas traer\n- **FROM** — de qué tabla\n- **WHERE** — con qué filtro\n- **ORDER BY** — cómo ordenar\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Operaciones útiles más allá del básico",
+        "body": "Para cubrir el 95%, añade:\n\n- **JOIN** — combinar dos tablas\n- **COUNT, SUM, AVG** — agregados\n- **GROUP BY** — agrupar resultados\n- **LIMIT** — limitar cuántas filas\n\nSon conceptos — no memorices sintaxis, entiende la idea."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "AI + SQL = combo poderoso",
+        "body": "No necesitas memorizar SQL perfecto. Con AI:\n\n- Describes lo que quieres en lenguaje natural\n- Le das el esquema de tu tabla\n- AI genera la query\n- Tú la lees, ejecutas y revisas\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Para usar SQL bien, hay que memorizar toda la sintaxis.",
+        "answer": false,
+        "explanation": "Falso. SQL es **más sobre entender conceptos** (filtrar, unir, agrupar) que sintaxis. AI rellena la sintaxis; tú aportas el criterio. Memorizar rinde poco frente a entender bien.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la palabra SQL con lo que hace:",
+        "pairs": [
+          {
+            "term": "SELECT",
+            "def": "Define qué columnas traer"
+          },
+          {
+            "term": "WHERE",
+            "def": "Filtra filas por condición"
+          },
+          {
+            "term": "JOIN",
+            "def": "Combina dos tablas relacionadas"
+          },
+          {
+            "term": "GROUP BY",
+            "def": "Agrupa filas para agregados"
+          }
+        ],
+        "explanation": "Cada palabra es una operación conceptual. **Entender el concepto** es lo importante; la sintaxis exacta la completa AI o un tutorial rápido.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué consultas se resuelven con SQL básico (SELECT + WHERE + ORDER)?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Los 10 clientes más recientes"
+          },
+          {
+            "id": 1,
+            "text": "Productos con precio mayor a 100"
+          },
+          {
+            "id": 2,
+            "text": "Órdenes del mes de enero"
+          },
+          {
+            "id": 3,
+            "text": "Total de ventas agrupado por país"
+          },
+          {
+            "id": 4,
+            "text": "Promedio de gasto por cliente usando datos de 3 tablas"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros son filtros + orden básicos. Los 2 últimos requieren GROUP BY y JOIN — conceptos siguientes. **SQL crece por capas**: empieza por las 4 palabras, añade cuando necesites.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres 'clientes que compraron más de 500 USD en el último mes'. ¿Qué haces?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Exportar todo a Excel y filtrar ahí"
+          },
+          {
+            "id": 1,
+            "text": "Pedirle a AI la query SQL con tu esquema y 'clientes con SUM(monto) > 500 en último mes'. Revisar y ejecutar"
+          },
+          {
+            "id": 2,
+            "text": "Contratar un analista para cada consulta"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "AI genera la query, tú la revisas y ejecutas. **SQL + AI = poder analítico sin ser analista**. Exportar cada vez es ineficiente; contratar es excesivo.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Tomás aprende las 4 palabras básicas + usa AI para las complejas. Un mes después, ¿qué cambió?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — sigue pidiéndole todo a un desarrollador"
+          },
+          {
+            "id": 1,
+            "text": "Responde preguntas de negocio en minutos. SQL dejó de ser barrera y ya no necesita pedir cada consulta a un desarrollador"
+          },
+          {
+            "id": 2,
+            "text": "Se volvió desarrollador junior"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Tomás pasó de **dependencia** a **autonomía**. No se hizo desarrollador — ganó fluidez mínima suficiente para resolver sus preguntas. Ese umbral es el que importa.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔤",
+        "title": "SQL básico en el bolsillo",
+        "body": "Ya tienes el lenguaje de las bases de datos en tu repertorio. SELECT, WHERE, JOIN y ORDER más AI te llevan al 80% de cualquier consulta."
+      }
+    }
+  ]
+}

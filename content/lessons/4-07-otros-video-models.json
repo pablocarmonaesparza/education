@@ -1,0 +1,197 @@
+{
+  "section_id": 4,
+  "slug": "otros-video-models",
+  "title": "Kling, Veo y compañía: cuándo elegir cuál",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Samuel produce contenido y usa Seedance para todo. Un cliente le pide un clip de 10 segundos con una persona caminando y hablando a cámara.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Escribir mejores prompts en Seedance"
+          },
+          {
+            "id": 1,
+            "text": "Cambiar de modelo según el caso, no usar uno para todo"
+          },
+          {
+            "id": 2,
+            "text": "Esperar a la próxima versión de Seedance"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Samuel cayó en la trampa del 'una sola herramienta para todo'. Cada modelo de video tiene **fortalezas distintas**. Conocer 3-4 y cuándo usar cada una es más útil que dominar solo uno a fondo.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 4 opciones que debes conocer",
+        "body": "Para cubrir casi todos los casos hoy, conoce estas cuatro:\n\n- **Sora** (OpenAI) — generalista accesible en ChatGPT\n- **Veo** (Google) — fotorealismo y detalle\n- **Kling** (Kuaishou) — humanos y movimiento corporal\n- **Seedance** (ByteDance) — velocidad y clips cortos de producto"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Runway, Pika, Luma — el segundo tier",
+        "body": "Herramientas útiles pero más específicas:\n\n- **Runway** — suite completa con editor profesional\n- **Pika** — estilos creativos e iteración barata\n- **Luma (Dream Machine)** — animación de imágenes con movimiento suave\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Matriz de decisión rápida",
+        "body": "Guía por caso:\n\n- **Persona hablando** → Kling\n- **Producto moviéndose** → Seedance\n- **Escena fotorrealista compleja** → Veo\n- **Clip rápido y general** → Sora\n- **Editor con timeline** → Runway"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Hay que suscribirse a los 7 modelos para trabajar bien.",
+        "answer": false,
+        "explanation": "Falso. Con **2-3 suscripciones bien elegidas** cubres la mayoría de casos profesionales. La mayoría de gente usa Sora + uno especializado (Kling, Seedance o Veo) según su tipo de contenido.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso con el modelo adecuado:",
+        "pairs": [
+          {
+            "term": "Persona caminando y hablando",
+            "def": "Kling — fuerte en movimiento humano natural"
+          },
+          {
+            "term": "Producto con movimiento limpio",
+            "def": "Seedance — rápido para clips cortos de producto"
+          },
+          {
+            "term": "Escena urbana fotorrealista",
+            "def": "Veo — detalle denso y escenas complejas"
+          },
+          {
+            "term": "Clip rápido dentro de ChatGPT",
+            "def": "Sora — generalista integrado, sin abrir otra app"
+          }
+        ],
+        "explanation": "Cada modelo tiene territorio. Saber el mapa te evita pelear contra la herramienta equivocada.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué criterios valen la pena al elegir modelo de video?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tipo de movimiento (objeto, persona, cámara)"
+          },
+          {
+            "id": 1,
+            "text": "Duración del clip necesitado"
+          },
+          {
+            "id": 2,
+            "text": "Presupuesto por generación"
+          },
+          {
+            "id": 3,
+            "text": "El color del logo del modelo"
+          },
+          {
+            "id": 4,
+            "text": "Cuál salió hace menos tiempo"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los tres primeros son criterios reales. Color del logo y novedad no importan — el modelo más nuevo no siempre es mejor para tu caso específico.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un cliente pide un clip de 10 segundos con una modelo caminando hacia la cámara en una calle fotorrealista. ¿Qué stack usas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Solo Seedance — es rápida"
+          },
+          {
+            "id": 1,
+            "text": "Kling para el movimiento humano, y si falla el fondo urbano detallado, pruebas Veo"
+          },
+          {
+            "id": 2,
+            "text": "Pika porque es más barata"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Persona caminando = **Kling primero**. Si el fondo se ve flojo, probar Veo. Probar con criterio ahorra iteraciones ciegas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Samuel vuelve al clip de la persona caminando. ¿Qué hace ahora con criterio?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Insiste en Seedance aunque la cara se vea rara"
+          },
+          {
+            "id": 1,
+            "text": "Abre Kling, genera el clip de la persona con movimiento natural, entrega al cliente"
+          },
+          {
+            "id": 2,
+            "text": "Le dice al cliente que no se puede"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Samuel cambió de 'una herramienta para todo' a 'la mejor herramienta por caso'. Cinco segundos de decisión valen una entrega limpia.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🎥",
+        "title": "Mapa completo de video con AI",
+        "body": "Ya tienes un mapa claro: Sora, Veo, Kling y Seedance cada uno con su territorio. La próxima vez que pidas un clip, elige el modelo por caso, no por costumbre."
+      }
+    }
+  ]
+}

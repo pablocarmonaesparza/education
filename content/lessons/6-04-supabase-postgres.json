@@ -1,0 +1,197 @@
+{
+  "section_id": 6,
+  "slug": "supabase",
+  "title": "Supabase: Postgres moderno con baterías incluidas",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Mariana quiere una app con login, base de datos propia por usuario y búsqueda en vivo. Le dicen: usa Supabase. ¿Qué es Supabase?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Una base de datos en la nube, parecida a un Google Sheets con permisos"
+          },
+          {
+            "id": 1,
+            "text": "Un paquete con base de datos Postgres, login, storage y tiempo real, todo integrado y listo para conectar"
+          },
+          {
+            "id": 2,
+            "text": "Un hosting para subir tu sitio web estático, como Vercel o Netlify"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Supabase no es solo una base de datos. Viene con login de usuarios, storage para archivos, realtime para cambios en vivo y Row Level Security (RLS) para permisos por fila. Postgres real debajo, así que escalas si crece. Montar eso a mano toma semanas; Supabase lo entrega en una tarde.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué trae Supabase",
+        "body": "**Postgres** como base + extras integrados:\n\n- **Auth** (login con email, Google, etc.)\n- **Storage** (archivos e imágenes)\n- **Realtime** (cambios en vivo en la UI)\n- **Row Level Security** (permisos a nivel fila)\n- **Edge Functions** (serverless)"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Supabase vs Firebase",
+        "body": "Ambos ofrecen 'BD + auth + storage'. Diferencias:\n\n- **Firebase**: NoSQL, propietario de Google, scaling auto\n- **Supabase**: SQL (Postgres), open source, self-hosteable\n\nSi ya sabes SQL o piensas que vas a necesitarlo, Supabase gana."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Supabase para apps con AI",
+        "body": "Capacidades útiles cuando hay AI:\n\n- **pgvector**: guarda embeddings para búsqueda semántica y recuperación con generación (RAG)\n- **Edge functions**: corren código cerca del usuario para llamar modelos\n- **Realtime**: empuja respuestas de chatbots con streaming a la UI"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Supabase requiere saber SQL para usarlo básicamente.",
+        "answer": false,
+        "explanation": "Falso. Supabase tiene **Studio visual** (UI para crear tablas y consultas) y librerías que generan SQL por ti. Puedes empezar sin saber SQL; saber SQL desbloquea más poder después.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el componente de Supabase con lo que hace:",
+        "pairs": [
+          {
+            "term": "Auth",
+            "def": "Login y registro de usuarios"
+          },
+          {
+            "term": "Storage",
+            "def": "Subir y servir archivos e imágenes"
+          },
+          {
+            "term": "Realtime",
+            "def": "Notifica cambios a la UI en vivo"
+          },
+          {
+            "term": "Vectores",
+            "def": "Guarda embeddings para RAG y búsqueda semántica"
+          }
+        ],
+        "explanation": "Cada pieza resuelve un capítulo de una app web. Juntas cubren casi todo lo que necesitas sin pegar 5 servicios a mano. La pieza de vectores es la extensión pgvector de Postgres.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Cuándo Supabase es buena elección?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un MVP con usuarios, login y datos propios"
+          },
+          {
+            "id": 1,
+            "text": "Un chatbot con historial por usuario"
+          },
+          {
+            "id": 2,
+            "text": "Un RAG con embeddings de documentos"
+          },
+          {
+            "id": 3,
+            "text": "Una simple landing sin backend"
+          },
+          {
+            "id": 4,
+            "text": "Un dashboard personal sin autenticación"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros aprovechan todo el stack. Una landing sola no necesita Supabase — sería sobreingeniería. Un dashboard personal sin usuarios tampoco. **Supabase brilla cuando hay usuarios y datos dinámicos.**",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres construir una app con login de usuarios, donde cada uno guarde sus apuntes y tenga búsqueda semántica. ¿Qué stack mínimo?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Excel compartido con contraseñas"
+          },
+          {
+            "id": 1,
+            "text": "Supabase (auth + BD + pgvector) + frontend web. Un solo servicio cubre el backend completo"
+          },
+          {
+            "id": 2,
+            "text": "Montar Postgres, auth, storage por separado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Supabase cubre los 3 puntos: usuarios, datos, vectores. Montarlo por partes es sobreingeniería. Excel no tiene auth real.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Volviendo al inicio: Mariana siguió el consejo y usó Supabase. ¿Qué describe mejor lo que obtuvo en una tarde?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Una base de datos aislada donde después tuvo que montar login, permisos y storage por separado"
+          },
+          {
+            "id": 1,
+            "text": "Un backend completo con login, base de datos con permisos por fila y storage, todo integrado desde el primer día"
+          },
+          {
+            "id": 2,
+            "text": "Un hosting de archivos estáticos al que le conectó una base de datos externa por aparte"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Ese es el punto de la lección: Supabase entrega el paquete integrado, no una base de datos pelada. Por eso una tarde basta para tener una app con usuarios, datos y archivos funcionando de verdad.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "⚡",
+        "title": "Backend moderno desbloqueado",
+        "body": "Ya sabes cuándo Supabase es la decisión correcta y qué piezas trae. Con eso puedes armar apps con usuarios, datos y AI sin montar cinco servicios a mano."
+      }
+    }
+  ]
+}

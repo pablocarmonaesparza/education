@@ -1,0 +1,197 @@
+{
+  "section_id": 4,
+  "slug": "prompts-visuales",
+  "title": "El vocabulario visual que eleva un prompt",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Diego le pide a un generador de imágenes \"una foto bonita de una mujer en la calle\" y obtiene resultados genéricos, distintos cada vez, ninguno utilizable. ¿Qué le falta al prompt?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Hacerlo más largo y poético, con adjetivos emotivos que describan el ambiente"
+          },
+          {
+            "id": 1,
+            "text": "Palabras específicas del lenguaje visual: tipo de toma, luz, lente y estilo"
+          },
+          {
+            "id": 2,
+            "text": "Pagar por un modelo premium con mejor calidad"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Los modelos de imagen entienden un **lenguaje visual** concreto: *\"primer plano\"*, *\"luz dorada\"*, *\"estilo editorial\"*. Saber 15 o 20 palabras clave sube la calidad más que un párrafo largo. Más adjetivos vagos no ayudan; precisión técnica sí.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 4 dimensiones de un prompt visual",
+        "body": "Un prompt fuerte cubre cuatro cosas:\n\n- **Sujeto**: qué aparece\n- **Composición**: desde dónde se ve (primer plano, plano general, vista cenital)\n- **Iluminación**: tipo de luz (luz dorada, luz dura, contraluz)\n- **Estilo**: estética (editorial, cinemático, minimalista)"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Palabras clave que cambian el resultado",
+        "body": "Pequeños cambios con efecto grande:\n\n- **Lente**: \"lente 35mm\", \"lente 85mm\", \"gran angular\"\n- **Luz**: \"luz natural suave\", \"hora dorada\", \"neón nocturno\"\n- **Ambiente**: \"minimalista\", \"dramático\", \"nostálgico\"\n- **Render**: \"render 3D\", \"ilustración plana\", \"fotorrealista\""
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Menos adjetivos, más sustantivos visuales",
+        "body": "'Bonito', 'increíble', 'épico' no dicen nada al modelo. En cambio:\n\n- 'Primer plano' > 'bonita foto cercana'\n- 'Hora dorada' > 'bonita iluminación'\n- 'Cinemático 35mm' > 'estilo película'\n\nLa precisión técnica vence a la poesía vaga."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Un prompt visual más largo siempre da mejor imagen.",
+        "answer": false,
+        "explanation": "Falso. Más largo ≠ mejor. Muchas palabras vagas confunden al modelo. **Pocas palabras precisas** (sujeto + composición + luz + estilo) casi siempre ganan contra un párrafo genérico.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada palabra clave con lo que controla:",
+        "pairs": [
+          {
+            "term": "Primer plano",
+            "def": "Distancia y composición del sujeto"
+          },
+          {
+            "term": "Hora dorada",
+            "def": "Tipo de luz y temperatura"
+          },
+          {
+            "term": "Lente 85mm",
+            "def": "Profundidad y bokeh del fondo"
+          },
+          {
+            "term": "Estilo editorial",
+            "def": "Estética general del render"
+          }
+        ],
+        "explanation": "Cada palabra clave controla una dimensión distinta. Combinar 3-4 palabras bien elegidas te da control fino sin escribir párrafos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Cuáles son palabras clave útiles para un prompt visual?",
+        "options": [
+          {
+            "id": 0,
+            "text": "'Lente 50mm'"
+          },
+          {
+            "id": 1,
+            "text": "'Luz suave natural'"
+          },
+          {
+            "id": 2,
+            "text": "'Minimalista editorial'"
+          },
+          {
+            "id": 3,
+            "text": "'Bonito y cool'"
+          },
+          {
+            "id": 4,
+            "text": "'Algo increíble'"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los tres primeros son **específicos visualmente** — el modelo los traduce a decisiones reales. 'Bonito' e 'increíble' son ruido: el modelo no sabe qué hacer con ellos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres una foto de un café con estética cálida y cercana. ¿Qué prompt funciona mejor?",
+        "options": [
+          {
+            "id": 0,
+            "text": "'Un café muy bonito y acogedor'"
+          },
+          {
+            "id": 1,
+            "text": "'Taza de café en mesa de madera, primer plano, hora dorada, lente 50mm, estilo editorial'"
+          },
+          {
+            "id": 2,
+            "text": "'Café, por favor hazlo increíble'"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El segundo es concreto en **sujeto + composición + luz + lente + estilo**. Los otros dos son adjetivos vagos — el modelo te dará cualquier cosa que parezca café.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Diego rehace el prompt de la mujer en la calle con vocabulario visual. ¿Qué versión traduce mejor su intención al modelo?",
+        "options": [
+          {
+            "id": 0,
+            "text": "\"Mujer bonita en la calle, muy chida y vibrante\""
+          },
+          {
+            "id": 1,
+            "text": "\"Mujer caminando en una calle de ciudad, lente 35mm, luz dorada de la tarde, estilo cinemático\""
+          },
+          {
+            "id": 2,
+            "text": "\"Mujer, calle\""
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Diego pasó de un prompt vago a uno con las 4 dimensiones: sujeto, composición, luz y estilo. El resultado ahora es **repetible** y alineado a su intención, no aleatorio.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🎯",
+        "title": "Vocabulario visual adquirido",
+        "body": "Ya hablas el idioma de los modelos de imagen. La siguiente lección: entrar al mundo del video con AI."
+      }
+    }
+  ]
+}

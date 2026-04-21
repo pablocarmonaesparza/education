@@ -1,0 +1,197 @@
+{
+  "section_id": 3,
+  "slug": "claude",
+  "title": "Claude en profundidad",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Isabella le pide a Claude un correo agresivo para reclamarle a un proveedor. Claude, en vez de escribirlo, le pregunta si está segura del tono. ¿Qué pasa?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Claude está fallando; debería obedecer sin cuestionar como los demás asistentes"
+          },
+          {
+            "id": 1,
+            "text": "Así está entrenado Claude: cuando detecta consecuencias reales, prefiere aclarar antes de ejecutar"
+          },
+          {
+            "id": 2,
+            "text": "Claude no entiende bien el español y por eso interpreta mal la instrucción"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Claude está entrenado para ser **honesto y cauteloso** cuando detecta que podrías arrepentirte de lo que pides. No es una falla: es parte del diseño. Si confirmas, lo hace sin más fricción.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "El estilo de Claude",
+        "body": "Claude, el asistente de Anthropic, se entrenó con énfasis en **honestidad y razonamiento matizado**. Por eso a veces cuestiona antes de ejecutar y prefiere aclarar dudas a adivinar."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Dónde Claude destaca",
+        "body": "Claude es especialmente fuerte en:\n\n- **Textos largos con matices** (contratos, ensayos, reportes)\n- **Análisis crítico** de un documento que le pasas\n- **Código bien comentado** y ordenado\n- **Conversaciones donde quieres que te contradiga**, no solo que apruebe"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Cuándo no es tu mejor opción",
+        "body": "Claude queda por detrás de otros asistentes en:\n\n- **Generar imágenes** — ChatGPT con DALL-E lo supera\n- **Integración con Google** — Gemini vive dentro de Workspace\n- **Velocidad bruta** — ChatGPT responde un poco más rápido\n\nNinguno es universal: eliges según la tarea."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Cuando Claude te hace preguntas antes de responder, es porque no entendió lo que pediste.",
+        "answer": false,
+        "explanation": "Falso. Claude pregunta cuando detecta **ambigüedad con consecuencias**: prefiere aclarar a adivinar. Si prefieres que actúe directo, díselo — por ejemplo: \"no preguntes, asume lo razonable y dame una respuesta\".",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada tarea con el asistente que mejor encaja:",
+        "pairs": [
+          {
+            "term": "Revisar un contrato largo",
+            "def": "Claude — texto largo con matices legales"
+          },
+          {
+            "term": "Generar una ilustración",
+            "def": "ChatGPT — trae DALL-E integrado"
+          },
+          {
+            "term": "Ensayo con contraargumentos",
+            "def": "Claude — razonamiento matizado"
+          },
+          {
+            "term": "Mover datos en Google Sheets",
+            "def": "Gemini — nativo en Workspace"
+          }
+        ],
+        "explanation": "Cada tarea tiene su asistente ideal. Regla simple: **Claude para profundidad textual**, ChatGPT para multimedia y ecosistema, Gemini para Google.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué rasgos caracterizan a Claude frente a otros asistentes?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tiende a contradecirte cuando detecta un riesgo en lo que pides"
+          },
+          {
+            "id": 1,
+            "text": "Maneja mejor textos largos cuidando los matices"
+          },
+          {
+            "id": 2,
+            "text": "A veces rechaza tareas que considera problemáticas"
+          },
+          {
+            "id": 3,
+            "text": "Siempre es más barato que ChatGPT"
+          },
+          {
+            "id": 4,
+            "text": "Genera las mejores imágenes del mercado"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Contradicción constructiva, texto largo y rechazo por seguridad son el perfil de Claude. Precio e imágenes no son sus fortalezas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Necesitas un resumen crítico de un reporte de 50 páginas, con contraargumentos incluidos. ¿A qué asistente acudes primero?",
+        "options": [
+          {
+            "id": 0,
+            "text": "A Claude, porque maneja mejor el texto largo con análisis matizado"
+          },
+          {
+            "id": 1,
+            "text": "A ChatGPT, porque responde más rápido aunque el análisis sea más superficial"
+          },
+          {
+            "id": 2,
+            "text": "A Gemini, porque al vivir en Google Docs lee el PDF más rápido"
+          }
+        ],
+        "correctId": 0,
+        "explanation": "Todos hacen resúmenes, pero para **análisis crítico de texto largo con contraargumentos**, Claude entrega más profundidad. La velocidad no compensa la pérdida de matiz.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Isabella vuelve al correo que quería escribir. Claude le cuestionó el tono. Ahora que entiende su estilo, ¿qué le conviene hacer?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Cambiarse a ChatGPT porque siente que Claude la está juzgando"
+          },
+          {
+            "id": 1,
+            "text": "Confirmarle a Claude que sí quiere el tono agresivo; Claude ejecuta sin más fricción"
+          },
+          {
+            "id": 2,
+            "text": "Escribirle un prompt mucho más largo explicando sus razones para convencerlo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Claude pregunta una vez; si confirmas, ejecuta. Isabella entiende que **el cuestionamiento es cortesía, no bloqueo**: basta con decir \"sí, así lo quiero\" para desbloquear la tarea.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "📝",
+        "title": "Claude sin desconcierto",
+        "body": "Ahora entiendes el estilo de Claude: cuestiona por cortesía, no por bloqueo. Sabes cuándo te conviene y cómo desbloquearlo cuando pregunta."
+      }
+    }
+  ]
+}

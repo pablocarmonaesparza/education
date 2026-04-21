@@ -1,0 +1,197 @@
+{
+  "section_id": 5,
+  "slug": "mcp-schedulers",
+  "title": "MCP schedulers: cron con inteligencia",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Julián tiene un cron que cada día a las 9am pide a Claude 'genera el reporte'. Hay días sin datos nuevos y otros con alertas urgentes. ¿Qué le conviene?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Dejar el cron a las 9am y que Claude ignore los días sin datos"
+          },
+          {
+            "id": 1,
+            "text": "Un MCP scheduler: Claude decide cuándo correr según el resultado anterior"
+          },
+          {
+            "id": 2,
+            "text": "Correr el cron cada hora para no perderse una alerta"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El cron clásico es **fijo** (corre a las 9am pase lo que pase). Un **Model Context Protocol (MCP) scheduler** deja que Claude lea el resultado y decida cuándo volver a correr: si hay alerta vuelve pronto, si todo está en calma espera. Programación dinámica, no calendario rígido.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es un MCP scheduler",
+        "body": "Un **MCP scheduler** es un servidor MCP que expone a Claude la capacidad de programar tareas futuras. Claude puede:\n\n- Crear un scheduled task\n- Listar tareas pendientes\n- Cancelar o modificar schedules\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cron fijo vs programación dinámica",
+        "body": "**Cron clásico:**\n- Cada día a las 9am, pase lo que pase\n- Tú lo defines una vez\n\n**MCP scheduler:**\n- Claude ejecuta, evalúa, decide la siguiente corrida\n- Programación adaptativa\n\nPara flujos simples, cron gana en simplicidad."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Casos donde brilla el MCP scheduler",
+        "body": "Ejemplos donde la decisión temporal importa:\n\n- **Monitoreo de métricas**: si todo está OK, revisar mañana; si hay alerta, revisar en 1h\n- **Seguimiento de cliente**: tras respuesta, esperar 3 días; sin respuesta, recordar mañana\n- **Investigación iterativa**: cada corrida ajusta el siguiente paso según lo que encuentra"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Un MCP scheduler reemplaza completamente a los cron tradicionales.",
+        "answer": false,
+        "explanation": "Falso. Para 'correr cada día a las 9am sin falta', cron clásico es más barato y confiable. MCP scheduler aporta valor cuando la **decisión de cuándo correr** cambia según el resultado anterior. Son capas distintas.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la necesidad con la herramienta:",
+        "pairs": [
+          {
+            "term": "Reporte diario fijo",
+            "def": "Cron clásico: ritmo determinístico"
+          },
+          {
+            "term": "Alerta que se repite",
+            "def": "MCP scheduler: ritmo adaptativo"
+          },
+          {
+            "term": "Limpieza semanal de inbox",
+            "def": "Cron clásico: ritmo semanal fijo"
+          },
+          {
+            "term": "Follow-up de leads",
+            "def": "MCP scheduler: decide con criterio"
+          }
+        ],
+        "explanation": "**Cron para ritmos fijos. MCP scheduler para ritmos inteligentes.** Saber cuál abrir te ahorra ingeniería innecesaria.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué capacidades desbloquea un MCP scheduler?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Claude programa su propia siguiente ejecución"
+          },
+          {
+            "id": 1,
+            "text": "El intervalo cambia según el resultado previo"
+          },
+          {
+            "id": 2,
+            "text": "Claude puede cancelar un schedule si ya no aplica"
+          },
+          {
+            "id": 3,
+            "text": "Elimina la necesidad de infraestructura"
+          },
+          {
+            "id": 4,
+            "text": "Funciona sin ninguna configuración"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Programación propia, adaptabilidad y cancelación son las 3 capacidades clave. Sigue requiriendo infraestructura (servidor MCP) y configuración inicial. No es magia, es una capa sobre cron.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres un seguimiento automático de leads: si responden → un flujo; si no responden en 3 días → recordatorio; si siguen sin responder en una semana → archivar. ¿Qué conviene?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Cron clásico simple"
+          },
+          {
+            "id": 1,
+            "text": "MCP scheduler — cada corrida Claude evalúa respuesta y programa la siguiente acción con criterio"
+          },
+          {
+            "id": 2,
+            "text": "Hacerlo a mano cada día"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Las ramas condicionales según resultado previo son el sweet spot del MCP scheduler. Cron clásico obligaría a reglas rígidas que no se ajustan al caso real de cada lead.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Julián rediseña su cron diario del reporte. ¿Qué elige?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Cron fijo a las 9am, siempre igual sin importar qué haya"
+          },
+          {
+            "id": 1,
+            "text": "MCP scheduler: si hay datos nuevos genera el reporte, si no, espera 24h más"
+          },
+          {
+            "id": 2,
+            "text": "Revisar el dashboard manualmente cada mañana"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Julián ya no depende del calendario rígido. Con un MCP scheduler, Claude decide cuándo el reporte tiene sentido: misma tarea que al inicio, pero ahora adaptativa.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔁",
+        "title": "Programación adaptativa",
+        "body": "Ya diferencias cron fijo de scheduler inteligente. La siguiente lección entra a n8n, la herramienta visual que convierte flujos en bloques."
+      }
+    }
+  ]
+}

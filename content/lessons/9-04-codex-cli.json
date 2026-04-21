@@ -1,0 +1,197 @@
+{
+  "section_id": 9,
+  "slug": "codex-cli",
+  "title": "Codex CLI: el agente de código de OpenAI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Santiago usa Claude Code pero su empresa migró todo a OpenAI. Oye de Codex CLI y se pregunta si debe empezar de cero.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sí, son productos distintos con lógicas distintas; aprender Claude Code no sirve de mucho para Codex CLI"
+          },
+          {
+            "id": 1,
+            "text": "No, los conceptos se trasladan; cambia el modelo y algunos comandos, pero el patrón de agente en terminal es el mismo"
+          },
+          {
+            "id": 2,
+            "text": "Depende: Codex CLI funciona en modo chat y Claude Code en modo agente, son paradigmas opuestos"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Codex CLI (OpenAI) llena el mismo rol que Claude Code: un agente que vive en la terminal, lee tu repo, edita archivos y corre comandos. Si ya dominas uno, aprendes el otro en horas. Lo que cambia es el modelo de fondo, el costo y algunas convenciones del ecosistema.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué hace Codex CLI",
+        "body": "Capacidades paralelas a Claude Code:\n\n- Lee y modifica el repo completo\n- Ejecuta comandos en tu máquina\n- Acceso a los modelos de razonamiento de OpenAI\n- Se integra con el resto del ecosistema OpenAI\n- Usa herramientas y corre en loop como agente"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cuándo elegir Codex CLI",
+        "body": "Tiene sentido si:\n\n- Tu empresa ya está estandarizada en OpenAI\n- Necesitas los modelos de razonamiento profundo de OpenAI\n- Quieres que unifique billing con ChatGPT Team o Enterprise\n- Tu modelo favorito para código es GPT"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Claude Code vs Codex CLI",
+        "body": "Las similitudes dominan; las diferencias son de matiz:\n\n- **Claude Code**: fuerte en tareas largas y razonamiento sostenido\n- **Codex CLI**: integración nativa con el resto del ecosistema OpenAI\n\nEn 2026 los dos son competentes para código real."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Codex CLI y Claude Code son intercambiables al 100%.",
+        "answer": false,
+        "explanation": "Falso. Son **muy similares conceptualmente**, pero cada uno tiene fortalezas distintas y convenciones propias. Cambiar de uno a otro implica reaprender comandos. Para la mayoría, la elección se reduce a qué modelo y qué proveedor ya usa tu stack.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso con la herramienta más natural:",
+        "pairs": [
+          {
+            "term": "Equipo ya en OpenAI",
+            "def": "Codex CLI aprovecha el mismo billing y modelos"
+          },
+          {
+            "term": "Equipo ya en Anthropic",
+            "def": "Claude Code encaja sin duplicar proveedores"
+          },
+          {
+            "term": "Prefieres GPT para código",
+            "def": "Codex CLI te deja elegir el modelo GPT que quieras"
+          },
+          {
+            "term": "Prefieres Claude para código",
+            "def": "Claude Code te da acceso directo a Sonnet y Opus"
+          }
+        ],
+        "explanation": "**La elección suele reducirse a dos cosas**: qué proveedor ya usa tu equipo y qué modelo te da mejores resultados. Funcionalmente, para el 90% de tareas son equivalentes.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué factores sí deben pesar al elegir entre Codex CLI y Claude Code?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Qué proveedor de AI ya usa tu empresa"
+          },
+          {
+            "id": 1,
+            "text": "Qué modelo te da mejores resultados en tu código"
+          },
+          {
+            "id": 2,
+            "text": "Qué herramientas del ecosistema necesitas conectar"
+          },
+          {
+            "id": 3,
+            "text": "Cuál tiene mejor logo"
+          },
+          {
+            "id": 4,
+            "text": "Cuál sale más en TikTok esta semana"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los tres primeros son criterios reales: stack actual, calidad del modelo en tu código y las integraciones que necesitas. Logo y tendencias son ruido. **Evalúa por utilidad concreta a tu caso**, no por estética ni por hype.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu equipo quiere estandarizar un agente de código en la terminal. Ya usan ChatGPT Team para chat. ¿Qué elección tiene más sentido?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Claude Code, porque es el que más menciona la gente en redes"
+          },
+          {
+            "id": 1,
+            "text": "Codex CLI, porque ya están en OpenAI y unifica billing, modelos y soporte"
+          },
+          {
+            "id": 2,
+            "text": "Adoptar los dos al mismo tiempo sin definir un criterio común"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Estandarizar el stack** es un criterio práctico: reducir proveedores simplifica billing, seguridad y soporte. Si el equipo ya está en OpenAI, Codex CLI se integra sin duplicar cuentas ni procesos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Santiago probó Codex CLI durante una semana viniendo de Claude Code. ¿Qué conclusión es la más realista?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Que son tan distintos que tuvo que empezar su aprendizaje desde cero"
+          },
+          {
+            "id": 1,
+            "text": "Que los conceptos se trasladaron casi 1:1 y solo tuvo que aprender comandos nuevos y ajustar su estilo"
+          },
+          {
+            "id": 2,
+            "text": "Que Codex CLI es inferior y volvió a Claude Code sin probar nada"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "La **habilidad se traslada**: dominar un agente de terminal te da 80% del camino con el otro. Lo que cambia son comandos, atajos y el modelo de fondo. Elegir herramienta no es un matrimonio; es usar la que mejor encaje con tu stack hoy.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔧",
+        "title": "Codex CLI en tu vocabulario",
+        "body": "Ya sabes que el patrón de agente en terminal es estándar: cambia el modelo, no la idea. Puedes elegir herramienta por stack y preferencia, sin miedo a casarte con una."
+      }
+    }
+  ]
+}

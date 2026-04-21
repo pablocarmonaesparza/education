@@ -1,0 +1,197 @@
+{
+  "section_id": 3,
+  "slug": "mapa-de-modelos",
+  "title": "El mapa de modelos en 2026",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Gabriel usa ChatGPT desde hace 2 años. Un amigo le recomienda Claude, otro Gemini. Gabriel dice: 'son lo mismo con otro nombre'. ¿Qué le falta ver?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tiene razón — todos usan la misma tecnología por debajo"
+          },
+          {
+            "id": 1,
+            "text": "Cada modelo tiene diferencias reales en acceso a web, manejo de archivos, tono y precisión para tareas específicas"
+          },
+          {
+            "id": 2,
+            "text": "Los otros son copias más baratas de ChatGPT"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Por dentro son parecidos, pero ahí termina el parecido. **Claude** es más cuidadoso con matices, **Gemini** está integrado con Google Workspace, **ChatGPT** tiene el ecosistema más amplio de plugins. Usar uno solo deja capacidades sobre la mesa.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Los 4 asistentes dominantes",
+        "body": "En 2026, cuatro nombres cubren casi todos los usos reales:\n\n- **ChatGPT** (OpenAI) — el más conocido, ecosistema más amplio\n- **Claude** (Anthropic) — razonamiento cuidadoso, texto largo\n- **Gemini** (Google) — integrado con Google Workspace\n- **Perplexity** — búsqueda con citas verificables"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Criterios estables para compararlos",
+        "body": "Los modelos cambian de versión cada mes, pero estos criterios perduran:\n\n- **Acceso a web** — ¿busca en tiempo real?\n- **Manejo de archivos** — ¿procesa PDFs, imágenes, audio?\n- **Estilo de respuesta** — ¿directo, matizado, estructurado?\n- **Ecosistema** — ¿se conecta con lo que ya usas?"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Por qué no hay uno mejor para todo",
+        "body": "Cada asistente optimiza cosas distintas. ChatGPT es el más versátil, pero Claude supera en análisis de texto largo, Gemini gana con Google Docs, Perplexity con citar fuentes."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Todos los asistentes dan la misma respuesta para el mismo prompt.",
+        "answer": false,
+        "explanation": "Falso. Mismo prompt, 4 asistentes = 4 respuestas distintas en tono, profundidad, formato. Esa diversidad es el punto — usar el correcto para cada tarea sube la calidad sin cambiar el esfuerzo.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el asistente con su fortaleza distintiva:",
+        "pairs": [
+          {
+            "term": "ChatGPT",
+            "def": "Ecosistema amplio de plugins y GPTs personalizados"
+          },
+          {
+            "term": "Claude",
+            "def": "Análisis cuidadoso de textos largos con matices"
+          },
+          {
+            "term": "Gemini",
+            "def": "Integración nativa con Google Docs, Sheets, Gmail"
+          },
+          {
+            "term": "Perplexity",
+            "def": "Búsqueda con citas a fuentes verificables"
+          }
+        ],
+        "explanation": "Ningún asistente es el mejor en todo. Cada uno tiene un **territorio donde brilla** — conocerlo te permite elegir sin dudar según la tarea.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué factores importan al comparar asistentes?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Si tiene acceso a web en tiempo real"
+          },
+          {
+            "id": 1,
+            "text": "Cómo maneja archivos grandes o imágenes"
+          },
+          {
+            "id": 2,
+            "text": "El estilo de sus respuestas (directo, matizado, estructurado)"
+          },
+          {
+            "id": 3,
+            "text": "Cuál tiene la campaña de marketing más viral"
+          },
+          {
+            "id": 4,
+            "text": "Cuál es el favorito de los influencers que sigues"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Lo que importa son **capacidades reales**: web, archivos, tono. El marketing y la popularidad cambian rápido y no predicen si un asistente sirve para tu tarea.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Renata quiere resumir una novela de 300 páginas para su club de lectura. ¿Cuál asistente le sirve más?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Claude — maneja texto largo con más matices y precisión"
+          },
+          {
+            "id": 1,
+            "text": "Gemini — por defecto"
+          },
+          {
+            "id": 2,
+            "text": "ChatGPT — todos son iguales"
+          }
+        ],
+        "correctId": 0,
+        "explanation": "Para **textos largos donde el matiz importa**, Claude suele superar. ChatGPT también funciona, pero Claude tiene ventaja en ese uso específico. La decisión es por tarea, no por costumbre.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Gabriel vuelve a la conversación con sus amigos. ¿Qué responde ahora cuando le preguntan si hay diferencia entre asistentes?",
+        "options": [
+          {
+            "id": 0,
+            "text": "No hay diferencia, son lo mismo con otro logo"
+          },
+          {
+            "id": 1,
+            "text": "Hay diferencias reales en web, archivos y tono — el mejor depende de la tarea"
+          },
+          {
+            "id": 2,
+            "text": "Claude es el mejor para todo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Gabriel ya entiende el panorama. No defiende a ninguno como 'el mejor' — **el mejor depende del caso**. Ese criterio se vuelve un filtro para los próximos años de cambios.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🗺️",
+        "title": "Mapa en la cabeza",
+        "body": "Ya tienes el panorama base: 4 asistentes, 4 criterios estables. Ahora eliges por tarea, no por costumbre."
+      }
+    }
+  ]
+}

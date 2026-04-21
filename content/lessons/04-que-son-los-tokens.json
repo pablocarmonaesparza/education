@@ -1,0 +1,197 @@
+{
+  "section_id": 2,
+  "slug": "que-son-los-tokens",
+  "title": "Qué son los tokens",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Andrés ve los precios de OpenAI: '1 millón de tokens = 5 USD'. Planea escribir 800.000 palabras al mes y presupuesta 4 USD. ¿Qué error comete?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Ninguno — token y palabra son lo mismo en español"
+          },
+          {
+            "id": 1,
+            "text": "Está subestimando: en español muchas palabras se parten en 2 o 3 tokens, así que su uso real costará más"
+          },
+          {
+            "id": 2,
+            "text": "Está sobreestimando: tokens son más pequeños que palabras y le van a durar mucho más"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "En español (y más aún en palabras largas o compuestas), una palabra puede valer **2 o 3 tokens**. *'Inteligencia'* son 4 tokens. *'Platzi'* son 3. Andrés va a gastar 40-70% más de lo que calculó si no ajusta.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es un token",
+        "body": "Un **token** es la unidad mínima que procesa un modelo de lenguaje (LLM — large language model). Puede ser una palabra completa ('casa'), un trozo de palabra ('ción'), o un signo. El modelo siempre lee y escribe en tokens."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Ejemplos reales",
+        "body": "Para que lo veas en concreto:\n\n- **'hola'** → 1 token\n- **'computadora'** → 2 tokens (compu-tadora)\n- **'inteligencia'** → 4 tokens\n- **'Platzi'** → 3 tokens\n- **'123'** → 1 token\n\nRegla rápida en español: **1 palabra ≈ 1.5-2 tokens** en promedio."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Por qué importa",
+        "body": "Los tokens determinan dos cosas críticas:\n\n- **Costo**: te cobran por token de entrada y salida\n- **Longitud**: hay un límite de tokens por conversación (la *ventana de contexto*)\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Cuando usas ChatGPT en su interfaz web (no desde una conexión de programador), no pagas por tokens.",
+        "answer": false,
+        "explanation": "Falso. Los tokens siempre existen. En la interfaz web no los ves porque pagas una mensualidad fija. Pero internamente cada respuesta consume tokens, y por eso hay **límite diario de mensajes** en los planes gratis y plus.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué cosas consumen tokens en una conversación con un LLM?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Lo que tú le escribes (el prompt)"
+          },
+          {
+            "id": 1,
+            "text": "Lo que el modelo te responde"
+          },
+          {
+            "id": 2,
+            "text": "El contexto del sistema invisible (instrucciones del asistente)"
+          },
+          {
+            "id": 3,
+            "text": "Cada clic del ratón en la interfaz"
+          },
+          {
+            "id": 4,
+            "text": "Cuánto tiempo dura la conversación en minutos"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Tres cosas gastan tokens: tu prompt, la respuesta del modelo, y el *system prompt* invisible que define la personalidad del asistente. El tiempo y los clics no — los tokens miden texto, no actividad.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada texto con su aproximación en tokens:",
+        "pairs": [
+          {
+            "term": "Un email corto",
+            "def": "Entre 150 y 300 tokens"
+          },
+          {
+            "term": "Un artículo de blog",
+            "def": "Entre 1.000 y 2.000 tokens"
+          },
+          {
+            "term": "Un libro completo",
+            "def": "Entre 80.000 y 200.000 tokens"
+          },
+          {
+            "term": "Chat largo de ChatGPT",
+            "def": "Entre 5.000 y 20.000 tokens"
+          }
+        ],
+        "explanation": "Estimar tokens es casi tan útil como estimar palabras. Con la práctica, ves un texto y sabes cuánto cuesta o cuánto cabe en una ventana de contexto.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un bot con ChatGPT lee 1.000 emails al mes (500 tokens cada uno) y responde (300 tokens cada uno). A 5 USD por millón de tokens, ¿cuánto gasta al mes?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Unos 50 USD"
+          },
+          {
+            "id": 1,
+            "text": "Unos 4 USD"
+          },
+          {
+            "id": 2,
+            "text": "Unos 400 USD"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Cálculo: 1.000 emails × (500 + 300) tokens = 800.000 tokens/mes. A 5 USD por millón: **4 USD al mes**. El costo por token es barato *cuando sabes hacer la cuenta*.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Andrés rehace su presupuesto después de la lección. Va a escribir 800.000 palabras en español. ¿Qué número de tokens estima?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Unos 800.000 tokens (1 palabra = 1 token)"
+          },
+          {
+            "id": 1,
+            "text": "Entre 1.2 y 1.6 millones de tokens (1 palabra vale 1.5-2 tokens en español)"
+          },
+          {
+            "id": 2,
+            "text": "Unos 400.000 tokens (los tokens son el doble de grandes que las palabras)"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Andrés ya no confunde tokens con palabras. Su presupuesto real está entre **6 y 8 USD/mes** (a 5 USD por millón), no los 4 USD que calculó mal la primera vez.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🪙",
+        "title": "Tokens, no palabras",
+        "body": "Ahora entiendes la unidad real de un LLM. Cuando veas precios o límites de tokens, ya sabes qué significan y cómo estimarlos."
+      }
+    }
+  ]
+}

@@ -25,10 +25,10 @@ export default function SuccessPage() {
         </div>
         <h1 className="text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">pago exitoso</h1>
         <p className="text-lg text-[#777777] dark:text-gray-400 mb-8">
-          Tu compra se ha completado con éxito. ¡Gracias!
+          tu suscripción está activa. ahora generamos tu ruta personalizada.
         </p>
-        <Button variant="primary" size="lg" rounded2xl href="/dashboard">
-          IR AL DASHBOARD
+        <Button variant="primary" size="lg" rounded2xl href="/courseCreation">
+          generar mi ruta
         </Button>
       </section>
       <Footer />

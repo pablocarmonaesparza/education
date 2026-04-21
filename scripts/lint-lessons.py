@@ -530,7 +530,7 @@ def collect_text(content: dict) -> list[str]:
 # ============================================================================
 
 SLIDE_CHECKS = [
-    check_title_lowercase,
+    # check_title_lowercase,  # derogada en METODOLOGIA v0.11 — gramática natural
     check_body_length,
     check_setup_length,
     check_character_in_concept,

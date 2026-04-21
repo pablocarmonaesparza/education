@@ -1,0 +1,197 @@
+{
+  "section_id": 8,
+  "slug": "tool-use",
+  "title": "Tool use: cómo un modelo usa herramientas",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Rafael le pide a ChatGPT: «¿qué temperatura hace ahora mismo en Monterrey?». ChatGPT responde «22 grados con cielo despejado». ¿Cómo lo supo?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Consultó un servicio de clima en tiempo real por su cuenta"
+          },
+          {
+            "id": 1,
+            "text": "Solo responde texto, así que inventó un número plausible"
+          },
+          {
+            "id": 2,
+            "text": "Usó tool use: pidió al sistema ejecutar una función de clima y recibió el resultado"
+          }
+        ],
+        "correctId": 2,
+        "explanation": "Un modelo por sí solo no sale a internet ni ejecuta nada. Con **tool use**, el modelo indica qué función llamar y con qué argumentos; el sistema la ejecuta y devuelve el resultado al modelo. Esa es la base de cualquier agente.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cómo funciona tool use",
+        "body": "El flujo tiene cinco pasos:\n\n1. Le das al modelo una lista de **tools disponibles** (nombre, descripción, argumentos).\n2. El modelo decide si necesita alguna y emite una *tool call*.\n3. El sistema ejecuta la tool.\n4. Devuelve el resultado al modelo.\n5. El modelo continúa con ese contexto nuevo."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las tools son manos y ojos del modelo",
+        "body": "El modelo es el cerebro; las tools lo conectan al mundo:\n\n- **Ojos**: consultar clima, base de datos, buscar en la web.\n- **Manos**: enviar un correo, crear un ticket, mover un archivo.\n- **Memoria**: guardar o leer estado persistente entre sesiones."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Qué hace a una tool bien diseñada",
+        "body": "Cuatro principios:\n\n- **Descripción clara** del qué hace y cuándo usarla.\n- **Argumentos tipados** con ejemplos concretos.\n- **Errores informativos** para que el modelo entienda qué falló.\n- **Idempotencia** cuando aplique: llamarla dos veces no debe duplicar efectos."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Con tool use, el modelo ejecuta código Python directamente en tu máquina.",
+        "answer": false,
+        "explanation": "Falso. El modelo **no ejecuta nada**. Solo emite una indicación («llamar la tool X con argumentos Y») y tu sistema la ejecuta. El modelo ve el resultado y sigue. Esa separación es clave para seguridad y control.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada tipo de tool con un ejemplo:",
+        "pairs": [
+          {
+            "term": "Consulta",
+            "def": "get_weather(ciudad)"
+          },
+          {
+            "term": "Acción",
+            "def": "send_email(destinatario, asunto)"
+          },
+          {
+            "term": "Memoria",
+            "def": "save_to_notion(pagina)"
+          },
+          {
+            "term": "Cómputo",
+            "def": "calculate(expresion)"
+          }
+        ],
+        "explanation": "Categorizar las tools ayuda a diseñar mejor el stack. **Un agente completo mezcla consultas, acciones, memoria y cómputo** — casi nunca basta con un solo tipo.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu definición de tool está bien hecha?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El modelo llama la tool correcta sin confundirse"
+          },
+          {
+            "id": 1,
+            "text": "Argumentos claros con tipos y ejemplos"
+          },
+          {
+            "id": 2,
+            "text": "Los errores devuelven un mensaje que el modelo entiende"
+          },
+          {
+            "id": 3,
+            "text": "La descripción tiene 500 palabras detalladas"
+          },
+          {
+            "id": 4,
+            "text": "No tiene documentación para darle más flexibilidad"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Claridad + tipos + errores útiles = buena tool. Descripciones enormes o sin documentación son antipatrones. **El modelo usa la descripción como su guía**, así que debe ser clara y concisa.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres un agente que busque productos en tu base de datos y arme ofertas. ¿Qué tools le conviene darle?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Una sola tool monstruo llamada «haz todo»"
+          },
+          {
+            "id": 1,
+            "text": "Tres tools separadas: buscar productos, ver detalle y crear oferta"
+          },
+          {
+            "id": 2,
+            "text": "Una tool que ejecute SQL libre y que el modelo invente las consultas"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Granularidad intermedia**: ni una tool gigante ni una puerta abierta. Entre tres y cinco tools específicas dan control y previsibilidad. Una tool monstruo confunde al modelo; SQL libre es un riesgo de seguridad.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Rafael arma su primer agente con cuatro tools bien definidas. En la primera corrida, ¿qué debería observar en los logs?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El modelo ignora las tools y solo responde con texto largo"
+          },
+          {
+            "id": 1,
+            "text": "El modelo lee la tarea, llama las tools en orden, recibe resultados y encadena hasta terminar"
+          },
+          {
+            "id": 2,
+            "text": "El modelo ejecuta código Python aleatorio en la máquina de Rafael"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Rafael acaba de ver el **loop de tool use** en acción: el modelo pasó de «responder texto» a «observar el mundo y actuar». Esa transición es la esencia de un agente, y contesta la duda del inicio de la lección.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔧",
+        "title": "Tool use, dominado",
+        "body": "Ya entiendes cómo un modelo sale del texto puro: pide, recibe, encadena. Ese ciclo es la columna vertebral de cualquier agente."
+      }
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "section_id": 7,
+  "slug": "clis-ai",
+  "title": "CLIs de AI: Claude Code, Gemini CLI, Ollama",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Rodrigo quiere AI en su terminal sin abrir navegador. Lee que Claude Code, Gemini CLI y Ollama son CLIs de AI. ¿Cuál describe mejor la diferencia?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Son marcas distintas del mismo producto, elegir la más barata"
+          },
+          {
+            "id": 1,
+            "text": "Resuelven casos distintos: Claude Code asiste a programar, Gemini CLI integra con Google, Ollama corre modelos locales"
+          },
+          {
+            "id": 2,
+            "text": "Claude Code es la más nueva, así que reemplaza a las otras dos"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**CLI** — interfaz de línea de comandos, o sea AI desde tu terminal, sin navegador. Cada una ocupa un nicho: **Claude Code** para programar asistido, **Gemini CLI** para quien vive en Google Cloud, **Ollama** para correr modelos abiertos localmente sin pagar **API** (la manera programática de hablarle a un modelo externo). No se reemplazan, se complementan.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es una CLI de AI",
+        "body": "Una **CLI** (interfaz de línea de comandos) te da AI en tu terminal:\n\n- Escribes prompts sin abrir navegador\n- Puede leer archivos de tu proyecto\n- Ejecuta comandos del sistema\n- Corre tareas largas sin supervisión"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 3 CLIs importantes",
+        "body": "Panorama 2026:\n\n- **Claude Code** (Anthropic) — lee tu repo, modifica archivos y ejecuta\n- **Gemini CLI** (Google) — integra con Google Cloud y Workspace\n- **Ollama** — corre modelos abiertos (Llama, Mistral, Qwen) en tu máquina"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Cuándo elegir cuál",
+        "body": "Regla práctica:\n\n- **Codeas en un proyecto** → Claude Code\n- **Trabajas mucho en Google Cloud** → Gemini CLI\n- **Necesitas privacidad total** (data que no sale de tu máquina) → Ollama\n- **Quieres modelos gratis/abiertos** → Ollama"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Ollama requiere que pagues API tokens cada vez que usas un modelo.",
+        "answer": false,
+        "explanation": "Falso. Ollama corre modelos **localmente** en tu máquina: pagas en GB de disco y RAM, no en tokens. Sin internet. Ideal para data sensible o experimentos constantes donde el costo se acumularía.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada caso con la CLI ideal:",
+        "pairs": [
+          {
+            "term": "Refactorizar repo",
+            "def": "Claude Code — asistente de código"
+          },
+          {
+            "term": "Consultar BigQuery",
+            "def": "Gemini CLI — stack de Google"
+          },
+          {
+            "term": "Data confidencial",
+            "def": "Ollama — todo corre en tu máquina"
+          },
+          {
+            "term": "Modelos abiertos",
+            "def": "Ollama — Llama, Mistral, Qwen"
+          }
+        ],
+        "explanation": "Cada CLI tiene su ecosistema. **Elegir por caso + stack** gana a elegir por popularidad. Muchos equipos usan las tres según el día.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué ventajas ofrece una CLI de AI frente a un chat en el navegador?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Acceso directo a archivos del proyecto"
+          },
+          {
+            "id": 1,
+            "text": "Ejecución de comandos del sistema"
+          },
+          {
+            "id": 2,
+            "text": "Integración con el flujo de terminal"
+          },
+          {
+            "id": 3,
+            "text": "Interfaz visual con imágenes de alta resolución"
+          },
+          {
+            "id": 4,
+            "text": "Pensada para personas sin experiencia técnica"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las tres primeras son ventajas reales de una CLI. La interfaz visual es justo lo que una terminal **no** ofrece por default, y una CLI asume comodidad con línea de comandos — no es amigable para novatos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "El equipo legal de Daniela revisa contratos confidenciales que no pueden salir de la empresa. Quieren apoyarse en AI. ¿Qué opción recomiendas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "ChatGPT Plus con una cuenta corporativa — es rápido y conocido"
+          },
+          {
+            "id": 1,
+            "text": "Ollama con Llama o Qwen en un servidor interno — nada sale de la empresa"
+          },
+          {
+            "id": 2,
+            "text": "Seguir revisando manualmente hasta que haya una solución oficial"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Data sensible que no puede salir = **Ollama u otra CLI que corra localmente**. Mandar contratos a ChatGPT expone información. Revisar manual pierde el beneficio de la AI. Ollama mantiene privacidad total.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Rodrigo prueba las tres CLIs. ¿Qué stack adopta?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Solo Claude Code, para no repartir la atención entre tres herramientas"
+          },
+          {
+            "id": 1,
+            "text": "Claude Code para desarrollo diario, Ollama para data sensible, Gemini CLI cuando toque Google Cloud"
+          },
+          {
+            "id": 2,
+            "text": "La más popular según X, y se compromete con esa por un año"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Rodrigo armó un **stack multi-CLI por caso**. Cada CLI resuelve un tipo de tarea mejor; consolidar en una sola deja ventajas sobre la mesa. La flexibilidad por caso gana a la lealtad a una marca.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "⌨️",
+        "title": "CLIs dominadas",
+        "body": "Ya sabes cuándo elegir Claude Code, Gemini CLI u Ollama. Siguiente paso: instala una en tu terminal y pruébala con un proyecto real."
+      }
+    }
+  ]
+}

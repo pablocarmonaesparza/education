@@ -1,0 +1,197 @@
+{
+  "section_id": 3,
+  "slug": "chatgpt",
+  "title": "ChatGPT en profundidad",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Fernanda lleva un año pagando ChatGPT Plus. Lo usa solo para escribir en el chat básico. Un compañero le pregunta si usó el canvas o los projects. Ella dice: '¿de qué me hablas?'.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Su plan Plus no incluye esas funciones, necesita Pro"
+          },
+          {
+            "id": 1,
+            "text": "Fernanda usa 20% de lo que paga — ChatGPT tiene varios modos que casi nadie explora"
+          },
+          {
+            "id": 2,
+            "text": "Canvas y projects son betas privadas, su cuenta no tiene acceso"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Plus incluye **todo**: chat, canvas, projects, voice, web search, imagen. La mayoría de usuarios paga por capacidades que nunca abren. Conocer los modos multiplica el valor sin costo extra.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Los modos de ChatGPT",
+        "body": "Más allá del chat, ChatGPT Plus tiene modos especializados:\n\n- **Web search** — busca en internet en tiempo real\n- **Canvas** — editor lado a lado para textos y código\n- **Voice** — conversación hablada\n- **Projects** — carpetas con contexto persistente entre chats\n- **GPTs** — asistentes a medida con instrucciones guardadas"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cuándo usar cada modo",
+        "body": "Cada modo brilla en un caso distinto:\n\n- Necesitas datos recientes → **web search**\n- Editas un documento largo → **canvas**\n- Manos ocupadas (manejando, cocinando) → **voice**\n- Proyecto con muchos chats relacionados → **projects**\n- Tarea que repites siempre igual → **GPT a medida**"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Dónde brilla ChatGPT vs otros",
+        "body": "Comparado con Claude o Gemini, ChatGPT gana en:\n\n- **Ecosistema** — más GPTs y más integraciones\n- **Generación de imagen** nativa (DALL-E integrado)\n- **Voice** natural y rápido\n- **Popularidad** — más tutoriales y más plugins"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "El chat básico y Canvas de ChatGPT hacen lo mismo, solo se ven distinto.",
+        "answer": false,
+        "explanation": "Falso. Canvas es un **editor lado a lado** — puedes editar fragmentos del texto del modelo, comentar partes específicas, iterar sin perder lo bueno. El chat básico regenera todo cada vez. Son herramientas distintas.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada tarea con el modo ideal de ChatGPT:",
+        "pairs": [
+          {
+            "term": "Noticias recientes",
+            "def": "Web search — datos en tiempo real"
+          },
+          {
+            "term": "Pulir un ensayo",
+            "def": "Canvas — editor lado a lado con el modelo"
+          },
+          {
+            "term": "Consulta mientras manejas",
+            "def": "Voice — conversación hablada"
+          },
+          {
+            "term": "Tarea que repites siempre",
+            "def": "GPT a medida — instrucciones guardadas"
+          }
+        ],
+        "explanation": "Cada modo es una herramienta específica. Usar el chat básico para todo es como escribir en Word sin saber que existe Excel para números.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué incluye el plan ChatGPT Plus (20 USD/mes)?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Acceso al modelo más nuevo"
+          },
+          {
+            "id": 1,
+            "text": "Web search, Canvas, Voice, Projects"
+          },
+          {
+            "id": 2,
+            "text": "Creación de GPTs personalizados"
+          },
+          {
+            "id": 3,
+            "text": "Tutoría humana con ingenieros de OpenAI"
+          },
+          {
+            "id": 4,
+            "text": "Acceso a GPT-6 antes que cualquier otro usuario"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Plus incluye todas las capacidades del producto. No incluye tutoría humana ni acceso anticipado a modelos futuros — eso es marketing que no existe.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un amigo te dice: 'ChatGPT no me funciona para pulir mi guion de 80 páginas del podcast, se traba'. ¿Qué modo le recomiendas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Le recomiendas Canvas para editar por secciones sin regenerar todo"
+          },
+          {
+            "id": 1,
+            "text": "Le dices que ChatGPT no sirve para documentos largos"
+          },
+          {
+            "id": 2,
+            "text": "Le recomiendas pagar Pro para textos largos"
+          }
+        ],
+        "correctId": 0,
+        "explanation": "Canvas es exactamente el caso: **editar por secciones**. El problema no era ChatGPT — era usar el chat básico. Cambiar de modo resuelve sin pagar más.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Fernanda abre su ChatGPT al día siguiente. ¿Qué hace distinto según lo que aprendió?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sigue usando solo el chat básico como antes"
+          },
+          {
+            "id": 1,
+            "text": "Elige el modo según la tarea: voice para tareas manuales, canvas para editar textos largos, projects para trabajos recurrentes"
+          },
+          {
+            "id": 2,
+            "text": "Cancela el Plus porque total con el chat básico le alcanza"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Fernanda ya ve su ChatGPT como una caja de herramientas, no un solo chat. El valor del Plus crece cuando usa las capacidades que ya pagaba pero no tocaba.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "💬",
+        "title": "ChatGPT sin ángulos ciegos",
+        "body": "Ahora conoces los cinco modos y sabes cuándo usar cada uno. Abre tu ChatGPT y prueba canvas o voice hoy mismo."
+      }
+    }
+  ]
+}

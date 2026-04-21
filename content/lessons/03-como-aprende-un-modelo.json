@@ -1,0 +1,202 @@
+{
+  "section_id": 2,
+  "slug": "como-aprende-un-modelo",
+  "title": "Cómo aprende un modelo",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Valeria ve a ChatGPT responder medicina con precisión. ¿Cómo aprendió todo eso?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Médicos le enseñaron respuestas una por una durante el entrenamiento"
+          },
+          {
+            "id": 1,
+            "text": "Leyó millones de textos médicos por su cuenta y extrajo patrones"
+          },
+          {
+            "id": 2,
+            "text": "Consulta una base de datos médica cada vez que le preguntan"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Nadie escribió las respuestas. El modelo aprendió *por su cuenta* de libros, papers y sitios médicos en su entrenamiento. Esa diferencia explica por qué a veces inventa con autoridad: **no sabe** qué parte aprendió bien y qué parte confundió.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Aprendizaje sin profesor",
+        "body": "Un modelo de lenguaje (LLM) no se entrena con un manual. Se le muestran **millones de textos** y ajusta sus parámetros hasta predecir la siguiente palabra con precisión. Sin supervisión directa de cada ejemplo."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "De qué aprende",
+        "body": "Los datos de entrenamiento son una mezcla enorme:\n\n- Libros y papers académicos\n- Wikipedia completa\n- Código de GitHub\n- Foros como Reddit y Stack Overflow\n- Noticias, blogs, manuales, leyes\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Por qué eso explica sus errores",
+        "body": "Como aprendió por su cuenta, hay temas donde leyó mucho y sabe bien, y otros donde leyó poco o información contradictoria. **No tiene manera de saber** cuál es cuál al responder: para él todo es predicción. Por eso puede equivocarse con confianza."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "fill-blank",
+      "phase": "explain",
+      "content": {
+        "prompt": "Completa la frase:",
+        "sentenceBefore": "Un LLM aprende ajustando sus parámetros internos para ",
+        "sentenceAfter": " cada vez mejor.",
+        "tokens": [
+          "Predecir la siguiente palabra",
+          "Memorizar respuestas completas",
+          "Buscar en internet"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "El entrenamiento es siempre el mismo objetivo: **predecir la siguiente palabra** con más precisión. Todo lo que el modelo 'sabe' emerge de hacerse cada vez mejor en ese juego.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena las fases que pasa un modelo desde que no sabe nada hasta que puede conversar:",
+        "steps": [
+          "Empieza sin saber nada, con parámetros aleatorios",
+          "Lee millones de textos y ajusta parámetros para predecir palabras mejor",
+          "Se prueba contra tareas (preguntas y respuestas)",
+          "Humanos le dan feedback sobre cuáles respuestas son mejores",
+          "Queda listo para hablar con usuarios reales"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "explanation": "Primero aprende a predecir (autosupervisado), después se afina con feedback humano (RLHF). Ese segundo paso es lo que hace que ChatGPT se sienta útil y no solo un predictor crudo.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el tipo de dato con cuánto lo 'sabe' el modelo:",
+        "pairs": [
+          {
+            "term": "Código Python",
+            "def": "Muy bien — aprendió de millones de repos públicos"
+          },
+          {
+            "term": "Datos privados",
+            "def": "No lo sabe — nunca los leyó durante el entrenamiento"
+          },
+          {
+            "term": "Noticias de hoy",
+            "def": "No las sabe — su entrenamiento terminó antes"
+          },
+          {
+            "term": "Literatura clásica",
+            "def": "Muy bien — libros enteros en sus datos"
+          }
+        ],
+        "explanation": "El modelo domina lo que abunda en internet público y desconoce lo reciente, lo privado y lo de nicho. Esa asimetría es su punto ciego.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "De lo siguiente, ¿qué es cierto sobre cómo aprende un LLM?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Aprende sin supervisión directa de cada ejemplo"
+          },
+          {
+            "id": 1,
+            "text": "Su conocimiento tiene una fecha de corte"
+          },
+          {
+            "id": 2,
+            "text": "Temas con muchos datos los sabe mejor"
+          },
+          {
+            "id": 3,
+            "text": "Tiene un equipo de humanos escribiendo cada respuesta"
+          },
+          {
+            "id": 4,
+            "text": "Actualiza su conocimiento en tiempo real mientras conversas"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Aprende solo, tiene corte, y los temas masivos los domina. Los otros dos son mitos: nadie escribe sus respuestas una por una, y no aprende durante tus conversaciones — su 'cerebro' quedó fijo al terminar el entrenamiento.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Si la mamá de Valeria le pregunta cómo hizo ChatGPT para saber tanto, ¿qué respuesta es más exacta?",
+        "options": [
+          {
+            "id": 0,
+            "text": "OpenAI tiene un equipo gigante que le enseña cada tema"
+          },
+          {
+            "id": 1,
+            "text": "Leyó millones de textos en internet durante su entrenamiento y aprendió patrones por su cuenta"
+          },
+          {
+            "id": 2,
+            "text": "Se conecta a Google cada vez que le preguntas algo nuevo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Valeria ya no necesita imaginar un equipo humano detrás. Entiende que el aprendizaje viene de *leer mucho y predecir* — un proceso masivo pero automático.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "📚",
+        "title": "Entrenamiento sin maestro",
+        "body": "Ahora sabes cómo aprende un modelo: leyendo mucho y ajustando parámetros. La próxima lección explica por qué hablar con él cuesta 'por token'."
+      }
+    }
+  ]
+}

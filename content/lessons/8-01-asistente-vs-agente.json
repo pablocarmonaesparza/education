@@ -1,0 +1,197 @@
+{
+  "section_id": 8,
+  "slug": "asistente-vs-agente",
+  "title": "Asistente vs agente: qué cambia",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Clara usa ChatGPT todos los días y lo llama 'su asistente'. En una reunión escucha 'agente' y cree que es lo mismo con otro nombre. ¿Qué los distingue en realidad?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un agente es la misma herramienta con un nombre más moderno"
+          },
+          {
+            "id": 1,
+            "text": "Un asistente responde y se detiene a esperar; un agente recibe una meta y sigue actuando por su cuenta hasta cumplirla"
+          },
+          {
+            "id": 2,
+            "text": "Un agente siempre necesita pagar una suscripción distinta a la del asistente"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El asistente trabaja por turnos: tú preguntas, él responde, esperas para pedir otra cosa. El agente trabaja por objetivo: le das una meta, él decide los pasos, usa herramientas y sigue hasta cumplirla. Esa diferencia — esperar tu instrucción frente a avanzar solo — define dos categorías distintas.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 3 diferencias clave",
+        "body": "Asistente y agente se separan en tres puntos:\n\n- **Iniciativa**: el asistente reacciona a cada pregunta; el agente actúa por su cuenta.\n- **Duración**: el asistente vive un turno — preguntas y respuesta; el agente avanza varios pasos seguidos.\n- **Herramientas**: el asistente usa una de vez en cuando; el agente encadena varias para llegar a la meta."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cuándo quieres cuál",
+        "body": "Pide un **asistente** cuando necesitas:\n- Respuestas puntuales\n- Conversación y dudas sueltas\n- Ideas y lluvia de opciones\n- Una tarea corta de un solo paso\n\nPide un **agente** cuando el trabajo tiene:\n- Varios pasos encadenados\n- Rutinas que se repiten\n- Vigilancia continua de algo\n- Investigación que requiere iterar"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "No todo debe ser agente",
+        "body": "Armar un agente para cada cosa es un error común:\n\n- Usar un agente para responder un correo corto es exagerado.\n- Usar un agente para buscar una fecha sobra.\n\nEl agente **solo gana valor** cuando el problema requiere **varios pasos y decisiones** entre medias."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Todos los asistentes terminarán convirtiéndose en agentes en el futuro.",
+        "answer": false,
+        "explanation": "Falso. Asistente y agente sirven para problemas distintos. Un chat sencillo seguirá siendo asistente y un investigador autónomo seguirá siendo agente. Son **dos categorías que conviven**, no una que sustituye a la otra.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada caso con lo que mejor encaja:",
+        "pairs": [
+          {
+            "term": "Responder chat de soporte",
+            "def": "Asistente — un turno, responde y espera"
+          },
+          {
+            "term": "Investigar 20 competidores",
+            "def": "Agente — avanza solo en varios pasos"
+          },
+          {
+            "term": "Explicar un concepto rápido",
+            "def": "Asistente — una sola pregunta y respuesta"
+          },
+          {
+            "term": "Vigilar métricas cada hora",
+            "def": "Agente — repite la tarea sin pedir permiso"
+          }
+        ],
+        "explanation": "Saber **clasificar tu caso** antes de construir te ahorra trabajo innecesario. No todo problema necesita un agente.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu caso necesita un agente y no solo un asistente?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Requiere varios pasos encadenados para terminar"
+          },
+          {
+            "id": 1,
+            "text": "El siguiente paso depende del resultado del anterior"
+          },
+          {
+            "id": 2,
+            "text": "Tiene que avanzar sin que alguien espere en cada paso"
+          },
+          {
+            "id": 3,
+            "text": "Es una pregunta simple con respuesta directa"
+          },
+          {
+            "id": 4,
+            "text": "Necesita respuesta inmediata en una conversación"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las tres primeras son señales claras de agente. Las dos últimas son territorio de asistente. **Elegir bien** evita construir de más y frustrarte en el camino.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres algo que cada hora revise tus notificaciones, mida la urgencia, responda las sencillas y pase las importantes a ti. ¿Asistente o agente?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Asistente — tú le preguntas cada hora qué llegó"
+          },
+          {
+            "id": 1,
+            "text": "Agente — corre solo cada hora, decide qué hacer y te avisa solo si hace falta"
+          },
+          {
+            "id": 2,
+            "text": "Ninguno — mejor revisar todo a mano cada rato"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Varios pasos, decisión en el camino y tiempo sin ti presente es la receta de un **agente**. Un asistente necesita que tú arranques cada vuelta. Aquí el valor está en que actúe solo mientras haces otra cosa.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Clara ya separa asistente de agente. ¿Cómo cambia la manera en que elige cuál usar?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Intenta convertir cada tarea que hace en un agente autónomo"
+          },
+          {
+            "id": 1,
+            "text": "Sigue usando ChatGPT para preguntas sueltas y reserva agentes para tareas con varios pasos que se repiten"
+          },
+          {
+            "id": 2,
+            "text": "Decide dejar de usar AI porque se volvió demasiado complicada"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Clara adoptó el criterio correcto: **la herramienta depende del caso**. No todo es agente y no todo es asistente. Saber distinguirlos es el primer paso para construir bien con AI.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔀",
+        "title": "Distinción clave adquirida",
+        "body": "Ya separas asistente de agente. La próxima vez que elijas una herramienta de AI, vas a saber cuál de los dos necesitas de verdad."
+      }
+    }
+  ]
+}

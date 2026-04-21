@@ -1,0 +1,197 @@
+{
+  "section_id": 3,
+  "slug": "gemini",
+  "title": "Gemini y Google Workspace",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Natalia resume documentos en Google Docs con ChatGPT: copia el texto, lo pega en ChatGPT, pide resumen, lo pega de vuelta. ¿Qué le ahorraría más tiempo?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Pagar la versión paga de ChatGPT para que responda más rápido"
+          },
+          {
+            "id": 1,
+            "text": "Usar Gemini dentro de Docs: resume el texto sin salir del documento"
+          },
+          {
+            "id": 2,
+            "text": "Aprender atajos de teclado para copiar y pegar más rápido"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Gemini está **integrado nativamente** en Docs, Sheets, Gmail. Resume sin copiar y pegar. El ahorro no son segundos: son cambios de contexto mentales que acumulan fricción todo el día.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es Gemini",
+        "body": "Gemini es el asistente de AI de Google. Su ventaja clave: **está incrustado en Google Workspace**. Aparece como un botón en Docs, Sheets, Gmail, Drive, Calendar. No requiere abrir otra app ni copiar texto."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Dónde Gemini gana",
+        "body": "Gemini supera a ChatGPT y Claude cuando:\n\n- Trabajas **dentro de Google Docs/Sheets/Gmail**\n- Necesitas acceso a **archivos de tu Drive**\n- Quieres redactar emails **con contexto de tu bandeja**\n- Analizas datos en Sheets **sin exportarlos**"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "ChatGPT puede, pero no sin fricción",
+        "body": "ChatGPT también puede resumir un Google Doc — pero le tienes que **copiar el texto** y después pegar la respuesta de vuelta. Son 4 pasos vs 1 clic en Gemini. Para tareas de edición dentro de Workspace, esa diferencia se acumula en horas semanales."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Para resumir un Google Doc, la ventaja de Gemini sobre ChatGPT es el ahorro de fricción, no una mejor calidad de modelo.",
+        "answer": true,
+        "explanation": "La calidad del resumen entre Gemini y ChatGPT es **comparable**. Lo que cambia es el flujo: Gemini resume dentro del documento, sin copiar y pegar. El valor real es la fricción eliminada, no un modelo superior.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la tarea con cómo Gemini la resuelve sin salir de Workspace:",
+        "pairs": [
+          {
+            "term": "Redactar email",
+            "def": "Gemini en Gmail sugiere borrador con tu contexto"
+          },
+          {
+            "term": "Resumir documento largo",
+            "def": "Gemini en Docs resume sin copiar texto"
+          },
+          {
+            "term": "Analizar una tabla de datos",
+            "def": "Gemini en Sheets responde preguntas sobre las celdas"
+          },
+          {
+            "term": "Encontrar archivo específico",
+            "def": "Gemini en Drive busca por descripción, no solo nombre"
+          }
+        ],
+        "explanation": "Cada integración nativa **elimina un copia-pega**. El beneficio real no es el output del modelo — es el flujo sin fricción.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿En cuáles de estos casos Gemini es la mejor elección?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Trabajas horas al día dentro de Google Docs"
+          },
+          {
+            "id": 1,
+            "text": "Necesitas analizar datos en una hoja de Sheets"
+          },
+          {
+            "id": 2,
+            "text": "Redactas muchos correos en Gmail"
+          },
+          {
+            "id": 3,
+            "text": "Escribes código y vives en tu editor, no en Docs"
+          },
+          {
+            "id": 4,
+            "text": "Usas Outlook y Word, no Google Workspace"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "La ventaja de Gemini **se activa dentro de Google Workspace**. Si tu trabajo no pasa por Docs, Sheets o Gmail, pierde su valor diferencial — ChatGPT o Claude te sirven igual o mejor.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un colega tuyo vive en Google Docs todo el día. Usa ChatGPT copiando-pegando. ¿Qué le recomiendas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Probar Gemini dentro de Docs — el ahorro diario es grande aunque el modelo base sea comparable"
+          },
+          {
+            "id": 1,
+            "text": "Seguir con ChatGPT porque el modelo es superior"
+          },
+          {
+            "id": 2,
+            "text": "Cambiar a Claude por el razonamiento"
+          }
+        ],
+        "correctId": 0,
+        "explanation": "Aunque ChatGPT o Claude sean un poco mejores en calidad pura, **Gemini gana por fricción cero** para su caso. La mejor herramienta es la que usas sin esfuerzo, no la que tiene el mejor benchmark.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Natalia vuelve a su Google Doc al día siguiente. Necesita resumir 15 páginas. ¿Qué conviene?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Copia todo, abre ChatGPT, pega, pide resumen y lo pega de vuelta en el Doc"
+          },
+          {
+            "id": 1,
+            "text": "Abre Gemini desde el botón dentro del Doc, pide el resumen y listo"
+          },
+          {
+            "id": 2,
+            "text": "Descarga el Doc como PDF y lo sube a ChatGPT para que lo lea"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Natalia elimina el ritual de copiar y pegar. Gemini responde en segundos **dentro del documento**, con el contexto ya cargado. Lo que antes era molesto ahora es invisible.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🌐",
+        "title": "Gemini con contexto",
+        "body": "Ahora sabes cuándo Gemini gana: dentro de Google Workspace, donde elimina el copia y pega. Si vives en Docs, Sheets o Gmail, abre el botón de Gemini hoy y ahórrate la fricción."
+      }
+    }
+  ]
+}

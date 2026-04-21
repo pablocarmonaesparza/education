@@ -1,0 +1,197 @@
+{
+  "section_id": 10,
+  "slug": "cold-email",
+  "title": "Cold email con AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Guillermo manda el mismo correo de ventas a 500 contactos. Respuestas: 0. Un colega le dice que es genérico.",
+        "options": [
+          {
+            "id": 0,
+            "text": "La AI no sirve para correos de ventas, siempre cae en spam"
+          },
+          {
+            "id": 1,
+            "text": "La AI puede leer el LinkedIn de cada contacto y escribir un correo único"
+          },
+          {
+            "id": 2,
+            "text": "Hay que mandar solo 10 correos a la semana, escritos a mano"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Bien usada, la AI investiga al contacto, encuentra algo específico y redacta un correo que sí se nota personalizado. 500 correos genéricos con 0% de respuesta pierden contra 100 correos con AI con 8% de respuesta.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Anatomía de un correo de ventas con AI",
+        "body": "Pipeline típico:\n\n- **Lista**: nombre, correo, empresa, LinkedIn\n- **Investigación**: la AI lee LinkedIn y la web del contacto\n- **Gancho**: encuentra algo específico (post reciente, rol, logro)\n- **Redacción**: escribe el correo conectando ese gancho con tu oferta"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 3 reglas del correo que convierte",
+        "body": "Fundamentos:\n\n- **Personalización real**: algo específico al contacto, no \"vi tu perfil\"\n- **Relevancia**: el valor que ofreces es claro para su caso\n- **Cierre fácil**: \"¿tienes 15 min esta semana?\" pesa más que \"¿te puedo llamar?\""
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Herramientas para automatizar",
+        "body": "Stack típico en 2026:\n\n- **Lista de contactos**: Apollo, Clay, Apify\n- **Investigación con AI**: Claude o GPT leyendo LinkedIn o la web\n- **Envío con seguimiento**: Instantly, Smartlead, Lemlist\n- **Gestión de clientes**: HubSpot para registrar respuestas"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Los correos de ventas automatizados con AI no necesitan revisión humana.",
+        "answer": false,
+        "explanation": "Falso. La revisión humana es **no-negociable**: la AI puede malinterpretar contexto, ofender o inventar datos. El flujo correcto es AI redacta, humano revisa, se envía. Sin revisión, dañas la reputación de tu remitente.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada parte del correo con su función:",
+        "pairs": [
+          {
+            "term": "Gancho personalizado",
+            "def": "Capta la atención con algo relevante al contacto"
+          },
+          {
+            "term": "Propuesta de valor",
+            "def": "Explica por qué esto le interesa a esta persona"
+          },
+          {
+            "term": "Prueba social",
+            "def": "Genera credibilidad mostrando resultados con otros"
+          },
+          {
+            "term": "Cierre fácil",
+            "def": "Pide una acción chica que facilita responder"
+          }
+        ],
+        "explanation": "Los 4 elementos componen un correo efectivo. Saltarse uno baja la conversión: gancho sin propuesta pierde el hilo, propuesta sin cierre deja al contacto sin saber qué hacer.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas hacen el correo de ventas con AI efectivo y ético?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Personalizar con información pública del contacto"
+          },
+          {
+            "id": 1,
+            "text": "Revisar cada correo antes de enviarlo"
+          },
+          {
+            "id": 2,
+            "text": "Incluir una opción clara para darse de baja"
+          },
+          {
+            "id": 3,
+            "text": "Enviar 10,000 por día sin revisión"
+          },
+          {
+            "id": 4,
+            "text": "Mentir sobre quién eres para que respondan"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Personalización honesta, revisión manual y opción de baja son la base de un envío efectivo y sostenible. El spam masivo y la mentira son antipatrones que destruyen tu dominio y tu reputación de remitente.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres conseguir reuniones con 100 fundadores de startups en Latam. ¿Cómo lo abordas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Mandar la misma plantilla a los 100"
+          },
+          {
+            "id": 1,
+            "text": "Investigar a cada contacto con AI, generar un gancho por su LinkedIn, revisar los 100 en una hora y enviar"
+          },
+          {
+            "id": 2,
+            "text": "Esperar a que se acerquen ellos"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Investigación con AI más revisión humana es cómo una persona alcanza 100 contactos personalizados en una tarde. Sin ese flujo, era trabajo de un equipo entero de ventas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Guillermo rehace su campaña: 100 correos personalizados con AI. ¿Qué cambia frente a los 500 genéricos iniciales?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sigue con 0 respuestas"
+          },
+          {
+            "id": 1,
+            "text": "Diez por ciento de respuestas, 10 reuniones agendadas y 3 clientes cerrados"
+          },
+          {
+            "id": 2,
+            "text": "Lo marcan como spam masivo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Guillermo entendió que menos correos con personalización real pesan más que muchos genéricos. La AI multiplica capacidad, pero la relevancia con el contacto sigue siendo la clave — no el volumen.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "📧",
+        "title": "Contacto inteligente",
+        "body": "Ya puedes redactar correos de ventas que sí consiguen reuniones."
+      }
+    }
+  ]
+}

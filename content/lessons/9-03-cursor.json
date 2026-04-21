@@ -1,0 +1,198 @@
+{
+  "section_id": 9,
+  "slug": "cursor",
+  "title": "Cursor: el IDE con AI integrada",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Lucía usa VS Code con Copilot y siente la AI 'pegada' al editor. Una colega le sugiere probar Cursor. ¿Qué cambia realmente entre uno y otro?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada relevante: es el mismo VS Code con un nombre distinto y precio más alto"
+          },
+          {
+            "id": 1,
+            "text": "Cursor es un fork de VS Code rediseñado AI-first: chat con todo el repo, modo agente multi-archivo y autocomplete contextual"
+          },
+          {
+            "id": 2,
+            "text": "Cursor reemplaza al programador: tú describes la app y no necesitas revisar código"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Cursor es un **fork de VS Code** rediseñado desde cero con AI como primer ciudadano: chat que entiende todo tu repo, modo agente para cambios multi-archivo y autocomplete que lee contexto. Copilot es una capa sobre VS Code; Cursor es el editor repensado.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 3 capacidades clave",
+        "body": "Cursor se apoya en tres piezas:\n\n- **Tab completion**: sugiere líneas y bloques leyendo el repo entero\n- **Chat con repo**: preguntas sobre tu código con contexto real\n- **Agent mode**: cambios multi-archivo con revisión paso a paso"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cursor vs Copilot vs Claude Code",
+        "body": "Panorama:\n\n- **Copilot** — autocomplete y chat en VS Code (más básico)\n- **Cursor** — IDE AI-first, mejor integrado\n- **Windsurf** — alternativa tipo Cursor de Codeium\n- **Claude Code** — CLI, mejor para autonomía agentica\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Dónde Cursor brilla",
+        "body": "Ideal para:\n\n- Trabajo continuo dentro de un repo\n- Autocomplete con contexto del proyecto\n- Chats rápidos sin salir del editor\n- Cambios medianos con supervisión en tiempo real\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Cursor funciona sin configurar nada para todos los lenguajes.",
+        "answer": false,
+        "explanation": "Falso. **Configurarlo bien mejora mucho la experiencia**: reglas custom, contexto del repo, archivo de preferencias. Sin config, funciona decente; con config, se vuelve tu mejor herramienta.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la feature de Cursor con el caso donde ayuda:",
+        "pairs": [
+          {
+            "term": "Tab completion",
+            "def": "Escribiendo línea por línea"
+          },
+          {
+            "term": "Chat con repo",
+            "def": "Entender código ajeno rápido"
+          },
+          {
+            "term": "Agent mode",
+            "def": "Cambio multi-archivo supervisado"
+          },
+          {
+            "term": "Reglas custom",
+            "def": "Adherirse a convenciones del repo"
+          }
+        ],
+        "explanation": "Cada feature tiene su momento. **Saber cuál invocar** multiplica productividad. Escribir código línea por línea tiene su feature; cambios complejos tienen otra.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas sacan mayor valor de Cursor en un repo real?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Escribir reglas en .cursorrules con las convenciones del proyecto"
+          },
+          {
+            "id": 1,
+            "text": "Usar el chat del repo para entender código ajeno antes de modificarlo"
+          },
+          {
+            "id": 2,
+            "text": "Leer las sugerencias de tab antes de aceptarlas"
+          },
+          {
+            "id": 3,
+            "text": "Abrir un chat nuevo por cada archivo para que el contexto no se mezcle"
+          },
+          {
+            "id": 4,
+            "text": "Pedirle siempre que escriba tests después del cambio para cerrar el loop"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "explanation": "Configurar, entender y revisar son el núcleo; pedir tests cierra el loop de verificación. Abrir un chat por archivo **te quita** justamente la superpotencia de Cursor: que entiende el repo entero de un vistazo.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Caes en un repo nuevo con 80 archivos y te piden un cambio en 2 horas. ¿Por dónde empiezas con Cursor?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Buscar el archivo exacto del cambio y editar directo sin explorar el resto"
+          },
+          {
+            "id": 1,
+            "text": "Abrir el chat del repo y preguntar por arquitectura, puntos de entrada y dónde vive la lógica que vas a tocar"
+          },
+          {
+            "id": 2,
+            "text": "Clonar el repo en otra carpeta y reescribir la feature desde cero para no romper nada"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El dolor de entrar a un repo ajeno era mapearlo a mano. El **chat del repo** te da arquitectura y anclas en minutos, y después editas con criterio. Saltar al archivo sin mapa suele terminar en cambios que rompen algo conectado.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Tras dos semanas probando Cursor, Lucía revisa su flujo. ¿Qué decisión aprovecha mejor lo que aprendió?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Usar Cursor solo para autocomplete y abrir ChatGPT en otra pestaña para cualquier pregunta sobre el repo"
+          },
+          {
+            "id": 1,
+            "text": "Adoptar Cursor como editor diario y reservar una CLI agentica para cambios grandes desatendidos, eligiendo según el tipo de tarea"
+          },
+          {
+            "id": 2,
+            "text": "Dejar a Cursor decidir todo en modo agente sin revisar los diffs, porque conoce el repo mejor que ella"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El stack moderno combina **IDE con AI** para el día a día con revisión y una **CLI agentica** para tareas largas desatendidas. Ir a ChatGPT en otra pestaña te hace perder el contexto del repo; delegar sin revisar diffs renuncia al criterio que Cursor amplifica, no reemplaza.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🖥️",
+        "title": "Cursor en tu editor",
+        "body": "Ya sabes qué hace Cursor distinto: fork de VS Code AI-first, chat con el repo, modo agente y reglas custom. Ábrelo hoy en un repo real y pídele el mapa."
+      }
+    }
+  ]
+}

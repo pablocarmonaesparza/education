@@ -1,0 +1,197 @@
+{
+  "section_id": 9,
+  "slug": "revisar-codigo-generado",
+  "title": "Revisar código generado antes de aceptar",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Iván acepta todo lo que la AI le genera sin leerlo. Dos semanas después: su app tiene un bug que manda datos de clientes a una URL rara. Iván descubre que la AI metió esa línea.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — así funciona vibe coding"
+          },
+          {
+            "id": 1,
+            "text": "Revisar lo generado antes de aceptar. Aunque no programes, entender qué hace el código evita bugs, vulnerabilidades y leaks"
+          },
+          {
+            "id": 2,
+            "text": "Cambiar de modelo más inteligente"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Aceptar código ciego es **la forma más rápida de quemarse**. AI puede generar código con bugs, vulnerabilidades, data leaks. No necesitas ser dev senior para notar algo raro: una URL sospechosa, un log excesivo, permisos amplios. Revisar es **no-negociable**.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué puede salir mal",
+        "body": "Errores comunes en código AI:\n\n- **Seguridad**: sin validar input, credenciales hardcodeadas\n- **Performance**: queries ineficientes o loops pesados\n- **Lógica**: casos borde que no considera\n- **Alucinación**: librerías o APIs que no existen"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Checklist mínimo para revisar",
+        "body": "Antes de aceptar cualquier cambio, pregúntate:\n\n- **¿Qué hace?** (en 1 frase)\n- **¿Hay URLs o llamadas externas?**\n- **¿Hay credenciales o keys visibles?**\n- **¿Borra o modifica data sin confirmar?**\n- **¿Usa librerías que reconozco?**\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "La AI puede ayudarte a revisar",
+        "body": "Pídele a la AI que te explique:\n\n- 'Explica qué hace este código en español simple'\n- 'Revisa si hay riesgos de seguridad'\n- 'Verifica que no haya hardcoded secrets'\n- 'Lista los side effects'\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Si un modelo top-tier generó el código, es seguro aceptarlo sin revisar.",
+        "answer": false,
+        "explanation": "Falso. **Ningún modelo es infalible**. Los top-tier reducen errores, no los eliminan. Y los mejores modelos pueden generar código que funciona pero no hace lo que tú querías. Revisar es para **entender lo que aceptas**, no solo detectar errores del modelo.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada señal con el riesgo:",
+        "pairs": [
+          {
+            "term": "URL desconocida",
+            "def": "Posible data leak o conexión maliciosa"
+          },
+          {
+            "term": "Key hardcodeada",
+            "def": "Secreto expuesto — riesgo alto"
+          },
+          {
+            "term": "Librería rara",
+            "def": "Posible alucinación o paquete malicioso"
+          },
+          {
+            "term": "Borrado sin confirmar",
+            "def": "Riesgo de pérdida de datos"
+          }
+        ],
+        "explanation": "Cada patrón tiene su alerta. **No necesitas ser experto** para notar señales obvias. Ser cauteloso con lo que no entiendes es la defensa más útil.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas protegen al vibe coder de aceptar mal código?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Pedirle a la AI que explique su cambio antes de aceptar"
+          },
+          {
+            "id": 1,
+            "text": "Buscar en docs oficiales librerías que no conoces"
+          },
+          {
+            "id": 2,
+            "text": "Correr el código en entorno aislado primero"
+          },
+          {
+            "id": 3,
+            "text": "Aceptar todo rápido para ir más rápido"
+          },
+          {
+            "id": 4,
+            "text": "Confiar 100% en que la AI sabe mejor"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Explicación + verificación + aislamiento = defensa en capas. Los últimos 2 son los que llevan a desastres. **Confianza ciega es enemiga de vibe coding sostenible**.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "La AI genera un cambio de 80 líneas. No entiendes todo. ¿Qué haces?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Acéptalo y prueba si funciona"
+          },
+          {
+            "id": 1,
+            "text": "Pedirle a la AI: 'explícame cada sección en 1-2 frases'. Si algo no entiendes, preguntar hasta quedar claro. Entonces aceptar o pedir cambios"
+          },
+          {
+            "id": 2,
+            "text": "Rechazar todo y programarlo tú mismo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**'No lo entiendo' no es razón para aceptar ni para abandonar**. Es razón para pedir explicación. AI es tu maestro gratis — úsalo. Entender lo que aceptas es la habilidad clave del vibe coder maduro.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Iván adopta disciplina de revisión. ¿Qué cambia en la siguiente iteración?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tarda mucho más sin beneficio"
+          },
+          {
+            "id": 1,
+            "text": "Pregunta, entiende, acepta con conciencia. Su código tiene menos bugs, él aprende más, y evita sustos como el leak anterior. Productivo Y seguro"
+          },
+          {
+            "id": 2,
+            "text": "Deja de usar AI por miedo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Iván entendió la diferencia crucial: **vibe coding sin revisar = ruleta rusa; vibe coding con revisar = superpoder**. La disciplina no lo hace lento — lo hace sostenible.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔍",
+        "title": "Criterio de revisión activado",
+        "body": "Ya no aceptas código a ciegas. La siguiente lección entra a Whisper: transcribir audio con AI."
+      }
+    }
+  ]
+}

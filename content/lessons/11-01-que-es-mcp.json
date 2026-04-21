@@ -1,0 +1,197 @@
+{
+  "section_id": 11,
+  "slug": "que-es-mcp",
+  "title": "Qué es MCP (Model Context Protocol)",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Sebastián escuchó 'Model Context Protocol (MCP)' 10 veces esta semana. ¿Qué es?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Otro nombre para una interfaz de programación (API) tradicional"
+          },
+          {
+            "id": 1,
+            "text": "Un estándar abierto para conectar modelos de AI con herramientas externas"
+          },
+          {
+            "id": 2,
+            "text": "Un modelo nuevo de Anthropic"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "MCP (Model Context Protocol) es un estándar abierto: define un lenguaje común para que modelos de AI hablen con herramientas, datos y prompts. Una API tradicional es una conexión específica entre dos sistemas. MCP es la regla compartida que todos siguen, como USB. Por eso un MCP server lo usa cualquier cliente compatible sin código adaptado.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué aporta MCP",
+        "body": "Antes, cada conexión entre AI y herramienta era código a medida y cambiar de modelo obligaba a rehacerlo.\n\nCon MCP, un servidor expone sus herramientas una sola vez y cualquier modelo compatible las usa."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué expone un MCP server",
+        "body": "Tres cosas:\n\n- **Tools**: acciones que el modelo puede ejecutar (leer archivo, consultar API)\n- **Resources**: datos que el modelo puede leer (documentos, contexto)\n- **Prompts**: plantillas reutilizables\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "MCPs que ya existen",
+        "body": "Catálogo actual (y creciendo):\n\n- **Notion**, **Slack**, **Gmail**, **Google Drive**\n- **Supabase**, **PostgreSQL**, **Airtable**\n- **GitHub**, **Linear**, **Jira**\n- **Browserbase**, **Apify**, **Firecrawl**\n\nMuchos son oficiales o comunitarios."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "MCP solo funciona con modelos de Anthropic.",
+        "answer": false,
+        "explanation": "Falso. MCP es **estándar abierto**. OpenAI, Google y otros soportan o están adoptando MCP. Servidores MCP funcionan con cualquier cliente compatible. Ese es justo el punto: estándar en lugar de silos.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada concepto MCP con lo que representa:",
+        "pairs": [
+          {
+            "term": "MCP Server",
+            "def": "Expone herramientas/recursos"
+          },
+          {
+            "term": "MCP Client",
+            "def": "El modelo o app que consume"
+          },
+          {
+            "term": "Tool",
+            "def": "Acción ejecutable"
+          },
+          {
+            "term": "Resource",
+            "def": "Dato leíble"
+          }
+        ],
+        "explanation": "Cuatro conceptos básicos. Con estos entiendes toda la documentación de MCP. **El server expone, el client consume** — arquitectura clásica.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué ventajas da usar MCP sobre integrar APIs tradicionales?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Una integración funciona con múltiples modelos"
+          },
+          {
+            "id": 1,
+            "text": "Reutilizas MCPs open source ya hechos"
+          },
+          {
+            "id": 2,
+            "text": "Migrar de modelo no rompe integraciones"
+          },
+          {
+            "id": 3,
+            "text": "Elimina la necesidad de escribir código"
+          },
+          {
+            "id": 4,
+            "text": "Funciona sin configuración"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las 3 primeras son ventajas reales. MCP **no elimina código** ni funciona sin config — es un estándar, no magia. Pero ahorra enormes cantidades de código custom al reutilizar.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres que Claude lea tu Notion y tu Gmail al mismo tiempo. ¿Qué necesitas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Dos integraciones custom desde cero"
+          },
+          {
+            "id": 1,
+            "text": "Instalar el MCP de Notion + el MCP de Gmail. Claude los ve como tools disponibles y los usa"
+          },
+          {
+            "id": 2,
+            "text": "Migrar todo a una sola herramienta"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Ya existen MCPs oficiales para Notion y Gmail. Instalas ambos, Claude los detecta, los usa. En minutos tienes AI conectada a 2 servicios. **El valor de un estándar se ve así.**",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Sebastián ya entiende MCP. ¿Qué cambia en su forma de conectar AI con otras herramientas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada: sigue tratando cada integración como un desarrollo aparte"
+          },
+          {
+            "id": 1,
+            "text": "Antes de escribir código, revisa si ya existe un MCP server público y lo reutiliza"
+          },
+          {
+            "id": 2,
+            "text": "Deja de usar AI porque MCP suena complicado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Sebastián adoptó el principio de **reutilizar antes de reescribir**. Con MCP, la primera pregunta deja de ser *cómo conecto esto* y pasa a ser *ya existe un server público que lo haga*. Ese cambio de reflejo es lo que multiplica la velocidad de construir con AI.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔗",
+        "title": "MCP desbloqueado",
+        "body": "Tienes la pieza más importante del stack AI 2026. La siguiente lección: escribe tu primer MCP server."
+      }
+    }
+  ]
+}

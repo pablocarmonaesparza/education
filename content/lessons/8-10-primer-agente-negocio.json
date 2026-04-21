@@ -1,0 +1,202 @@
+{
+  "section_id": 8,
+  "slug": "primer-agente-negocio",
+  "title": "Tu primer agente para tu negocio",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Ema ya estudió cómo funcionan los agentes: qué herramientas usan, cómo razonan, cómo recuerdan. Pero no ha lanzado ninguno real. ¿Con cuál debería empezar?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un agente universal que haga todo"
+          },
+          {
+            "id": 1,
+            "text": "El agente más chiquito posible que automatice una tarea repetitiva real de su negocio. Escalar después, pero primero lanzar uno que ahorra horas a la semana"
+          },
+          {
+            "id": 2,
+            "text": "Esperar a saber más"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Tu primer agente** no tiene que ser impresionante. Tiene que **ahorrar tiempo real** en algo que repites cada semana. Eso consolida todo lo aprendido y genera momentum. Tentación típica: intentar el agente perfecto. Resultado típico: nunca se lanza.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Marco de decisión",
+        "body": "Elige tu primer agente respondiendo:\n\n- **¿Qué tarea repites 3 o más veces por semana?**\n- **¿Qué pasos están bien definidos?**\n- **¿Qué herramientas necesita para ejecutarla?**\n- **¿Qué riesgo si falla?** (menor → mejor para empezar)"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Ideas de primer agente por perfil",
+        "body": "Según tu trabajo:\n\n- **Ventas**: resume prospectos y sugiere seguimientos\n- **Soporte**: responde preguntas frecuentes usando tu documentación\n- **Marketing**: investiga a la competencia cada semana\n- **Operaciones**: monitorea procesos y avisa si algo falla"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Anatomía de tu primer agente",
+        "body": "Lo mínimo para ser útil:\n\n- **1 disparador claro** (tiempo fijo, evento, manual)\n- **2 a 5 herramientas** bien definidas\n- **1 objetivo** simple y medible\n- **Protecciones** para acciones críticas\n- **Monitoreo** básico con alerta"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Tu primer agente debe ser impresionante para justificar el esfuerzo.",
+        "answer": false,
+        "explanation": "Falso. **Tu primer agente debe existir y funcionar**. Puede ser aburrido. Si automatiza 2 horas semanales = 104 horas anuales. Esa ecuación gana a cualquier agente impresionante que nunca se lanzó.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para lanzar tu primer agente:",
+        "steps": [
+          "Identificar una tarea repetitiva que haces manualmente",
+          "Listar los pasos exactos que sigues al hacerla",
+          "Identificar qué herramientas externas necesita",
+          "Diseñar protecciones para acciones irreversibles",
+          "Construir el agente con tu framework preferido",
+          "Probar con 5 casos reales sin activarlo en producción",
+          "Lanzar con monitoreo y revisar las primeras corridas",
+          "Iterar según lo que encuentres"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "explanation": "El orden importa: **caso real → pasos → tools → guardrails → construcción → prueba → lanzamiento → iteración**. Saltar pasos es la receta para fallar.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el componente con lo que aporta a tu primer agente:",
+        "pairs": [
+          {
+            "term": "Disparador claro",
+            "def": "Decide cuándo se ejecuta el agente"
+          },
+          {
+            "term": "Herramientas definidas",
+            "def": "Son las capacidades del agente"
+          },
+          {
+            "term": "Protecciones",
+            "def": "Evitan que haga daño si algo sale mal"
+          },
+          {
+            "term": "Monitoreo",
+            "def": "Te avisa cuando algo se rompe"
+          }
+        ],
+        "explanation": "Los 4 elementos son mínimos. **Ninguno es opcional** en un agente que corre sin tu supervisión constante. Saltar las protecciones o el monitoreo es pedir dolor de cabeza.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu primer agente es buen candidato?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Tarea repetitiva real, no imaginada"
+          },
+          {
+            "id": 1,
+            "text": "Pasos claros que ya haces a mano"
+          },
+          {
+            "id": 2,
+            "text": "Riesgo bajo si falla una corrida"
+          },
+          {
+            "id": 3,
+            "text": "Requiere inventar tecnología nueva"
+          },
+          {
+            "id": 4,
+            "text": "Cubre 100% de los casos imaginables"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros te dan camino al éxito. Los últimos 2 te llevan a parálisis. **Tu primer agente es iteración pequeña, no moonshot**.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Ema elige: agente que resume leads nuevos de su HubSpot cada mañana y los publica en Slack con prioridad sugerida. ¿Qué pasa 2 semanas después?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Se frustra y lo apaga"
+          },
+          {
+            "id": 1,
+            "text": "Ella empieza el día con leads ya priorizados. Recupera 30 min diarios. El equipo de ventas actúa más rápido. Considera el siguiente agente"
+          },
+          {
+            "id": 2,
+            "text": "Todo sigue igual"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Ema cruzó el puente más importante: **de aprendiz a operador**. Un agente funcionando que ahorra tiempo real es la validación que ningún tutorial da. Desde ahí, el resto escala.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🤖",
+        "title": "Primer agente lanzado",
+        "body": "Cerraste la sección de agentes. La siguiente entra a vibe coding: construir software con AI como copiloto de verdad."
+      }
+    }
+  ]
+}

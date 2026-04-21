@@ -1,0 +1,205 @@
+{
+  "section_id": 3,
+  "slug": "stack-personal",
+  "title": "Tu stack personal de AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Alejandra usa 9 asistentes distintos. Cada mañana tarda 10 minutos decidiendo cuál abrir para cada tarea. ¿Qué le conviene hacer?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Seguir con los 9 — tener más opciones siempre da mejores resultados"
+          },
+          {
+            "id": 1,
+            "text": "Reducir a 2 o 3 asistentes con un rol fijo cada uno"
+          },
+          {
+            "id": 2,
+            "text": "Usar solo el que mejor le funcione y dejar los demás guardados por si acaso"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Alejandra sufre **fatiga de decisión**. Cada herramienta extra suma carga mental. 2-3 asistentes con roles claros cubren el 95% de los casos; más opciones roban tiempo sin aportar valor real.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es un stack personal",
+        "body": "Tu **stack personal** son los 2-3 asistentes que usas con roles definidos. No los que tienes instalados — los que decides mantener.\n\nLa meta es que **no pienses** cuál abrir: cada tarea ya tiene su default asignado."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Un stack base sólido",
+        "body": "Para la mayoría de perfiles:\n\n- **ChatGPT** — asistente generalista (chat, imagen, voice)\n- **Claude** — para texto largo y análisis cuidadoso\n- **Perplexity** — para investigación con fuentes\n\nTres herramientas, tres roles claros."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Por qué 2-3 es el número mágico",
+        "body": "Más de 3 = fatiga de decisión. Menos de 2 = te pierdes capacidades. El rango 2-3:\n\n- Cubre las tareas del 95% de los casos\n- Cada asistente queda especializado por tipo\n- No gastas minutos eligiendo cada mañana"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "fill-blank",
+      "phase": "explain",
+      "content": {
+        "prompt": "Completa la regla:",
+        "sentenceBefore": "Tu stack es óptimo cuando abres la herramienta ",
+        "sentenceAfter": " según la tarea.",
+        "tokens": [
+          "Sin pensar",
+          "Después de dudar",
+          "Después de preguntarle a otros"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "Un stack bien construido **elimina la decisión**. Si cada mañana te preguntas cuál abrir, el stack aún no está calibrado o tienes demasiadas opciones.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para armar tu stack personal:",
+        "steps": [
+          "Lista las 10 tareas con asistentes que más repites en una semana",
+          "Identifica qué tipo son: texto corto, texto largo, búsqueda, imagen, código",
+          "Elige el mejor asistente por tipo (máximo 3 asistentes totales)",
+          "Asigna cada tarea a su asistente default",
+          "Úsalo 2 semanas sin cambiar — observa qué funciona y qué no",
+          "Ajusta el stack si ves que una herramienta no aporta valor"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "explanation": "El stack no se elige por intuición. **Datos de tus tareas reales** (las 10 más frecuentes) deciden qué herramientas vale la pena mantener.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada perfil con un stack sugerido:",
+        "pairs": [
+          {
+            "term": "Escritor/creador de contenido",
+            "def": "Claude + ChatGPT + Perplexity"
+          },
+          {
+            "term": "Vive en Google Workspace",
+            "def": "Gemini + Claude + Perplexity"
+          },
+          {
+            "term": "Developer full-time",
+            "def": "Claude + ChatGPT + CLI propia"
+          },
+          {
+            "term": "Researcher académico",
+            "def": "Perplexity + Claude + ChatGPT"
+          }
+        ],
+        "explanation": "No hay un stack universal. **Depende del perfil**. Elige en función de tu trabajo real, no de recomendaciones genéricas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu stack no está bien calibrado?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Pasas más de 2 minutos decidiendo cuál asistente abrir"
+          },
+          {
+            "id": 1,
+            "text": "Hay herramientas que no has abierto en un mes"
+          },
+          {
+            "id": 2,
+            "text": "Siempre acabas volviendo al mismo aunque otro sería mejor"
+          },
+          {
+            "id": 3,
+            "text": "Usas solo una herramienta para todo"
+          },
+          {
+            "id": 4,
+            "text": "Tus amigos tienen stacks distintos al tuyo"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "Las primeras 4 son señales de desajuste. Que tus amigos tengan stacks distintos es **normal y correcto** — cada quien con sus tareas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Alejandra rehace su stack. Sus tareas frecuentes: escribir posts, resumir papers, investigar, redactar emails, generar imágenes. ¿Qué decisión le conviene?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Quedarse con los 9 — cada app puede servir para algo puntual"
+          },
+          {
+            "id": 1,
+            "text": "Quedarse con 3 asistentes, cada uno con su rol fijo para cubrir esas tareas"
+          },
+          {
+            "id": 2,
+            "text": "Usar un solo asistente para todo y así no tener que elegir nunca"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Alejandra pasa de fatiga de decisión a claridad. 3 asistentes con rol definido cubren sus tareas sin decisión diaria. Quedarse en 1 pierde capacidades; quedarse en 9 mantiene la fatiga.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🏛️",
+        "title": "Stack propio definido",
+        "body": "Cerraste con un stack deliberado: 2-3 asistentes con roles fijos que eliminan la decisión diaria."
+      }
+    }
+  ]
+}

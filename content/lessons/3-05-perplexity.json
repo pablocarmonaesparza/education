@@ -1,0 +1,197 @@
+{
+  "section_id": 3,
+  "slug": "perplexity",
+  "title": "Perplexity: búsqueda con AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Ricardo necesita 5 datos verificables del mercado de café orgánico para un reporte. Ya usa ChatGPT todos los días. ¿Qué herramienta le conviene más?",
+        "options": [
+          {
+            "id": 0,
+            "text": "ChatGPT con búsqueda web activada, ya lo conoce bien"
+          },
+          {
+            "id": 1,
+            "text": "Perplexity, diseñado para búsqueda con fuentes citadas"
+          },
+          {
+            "id": 2,
+            "text": "Google de toda la vida, más confiable que cualquier AI"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "ChatGPT con búsqueda web puede responder, pero cita fuentes de forma inconsistente. Perplexity está construido alrededor de la cita: cada afirmación trae el link numerado al artículo exacto. Para un reporte donde la verificabilidad manda, esa diferencia de diseño ahorra horas de revisión.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es Perplexity",
+        "body": "Perplexity es un **motor de búsqueda con AI**. Le haces una pregunta, busca en tiempo real, y te responde con **citas numeradas** a las fuentes. No es un asistente general como ChatGPT — es un reemplazo directo de Google para preguntas con respuesta."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Dónde Perplexity brilla",
+        "body": "Perplexity gana cuando:\n\n- Necesitas una **respuesta verificable** (no un resumen vago)\n- Investigas un tema con **datos recientes**\n- Quieres **profundizar** (tiene modo deep research)\n- Te importan las **fuentes citadas** para un reporte o post"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "ChatGPT puede, pero no es lo mismo",
+        "body": "ChatGPT con búsqueda web también consulta internet, pero:\n\n- Cita menos seguido y con menos precisión\n- Mezcla conocimiento entrenado con datos nuevos, a veces de forma contradictoria\n- No está diseñado primariamente para investigación"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Perplexity puede reemplazar a ChatGPT para todo.",
+        "answer": false,
+        "explanation": "Falso. Perplexity es **búsqueda**, no asistente general. No escribe ensayos creativos, no mantiene conversación larga, no programa. Pero para la tarea específica de *'contesta esta pregunta con fuentes'*, supera.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la pregunta con el flujo ideal:",
+        "pairs": [
+          {
+            "term": "Dato de mercado con fuente",
+            "def": "Perplexity — respuesta con cita verificable"
+          },
+          {
+            "term": "Redactar un ensayo creativo",
+            "def": "ChatGPT o Claude — generación libre"
+          },
+          {
+            "term": "Investigación profunda",
+            "def": "Perplexity con modo deep research"
+          },
+          {
+            "term": "Brainstorming de ideas",
+            "def": "ChatGPT o Claude — no necesita fuentes"
+          }
+        ],
+        "explanation": "**Si la tarea pide fuentes, Perplexity.** Si la tarea es creación o análisis sin fuentes, los asistentes generales. Son herramientas complementarias, no competidoras.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿En qué casos Perplexity aporta más que ChatGPT?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Investigación de mercado con datos recientes"
+          },
+          {
+            "id": 1,
+            "text": "Preparar un reporte que requiere citas"
+          },
+          {
+            "id": 2,
+            "text": "Validar un hecho antes de publicarlo"
+          },
+          {
+            "id": 3,
+            "text": "Generar un slogan creativo"
+          },
+          {
+            "id": 4,
+            "text": "Depurar código con bugs"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Investigación, reportes, validación: **tareas donde la fuente manda**. Creatividad y código son territorio de ChatGPT/Claude.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Necesitas citar 3 estudios sobre efectividad de la meditación para un artículo. ¿Dónde arrancas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Perplexity: pregunta y recibes respuesta con links a estudios reales"
+          },
+          {
+            "id": 1,
+            "text": "ChatGPT: pides los estudios, pero corres riesgo de URLs inventadas"
+          },
+          {
+            "id": 2,
+            "text": "Google Scholar directamente — ninguna AI sirve para esto"
+          }
+        ],
+        "correctId": 0,
+        "explanation": "Perplexity está **diseñado para citar fuentes verificables**. ChatGPT puede alucinar URLs (zona de riesgo conocida). Google Scholar funciona pero Perplexity hace la primera pasada con resumen útil.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Ricardo necesita los 5 datos de mercado otra vez. ¿Qué hace distinto?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Abre Google, revisa 10 enlaces azules, lee 20 minutos"
+          },
+          {
+            "id": 1,
+            "text": "Abre Perplexity, pregunta, recibe los 5 datos con fuentes citadas en 1 minuto"
+          },
+          {
+            "id": 2,
+            "text": "Le pregunta a ChatGPT sin activar web search"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Ricardo aprendió que **Perplexity es su Google con fuentes ya revisables**. Lo que tomaba 20 minutos toma 1. El ahorro a escala semanal es varias horas.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔎",
+        "title": "Búsqueda con fuentes",
+        "body": "Ya sabes cuándo Perplexity supera a Google y a los asistentes generales. Úsalo hoy: toma una pregunta que ibas a googlear y resuélvela con fuentes citadas en Perplexity."
+      }
+    }
+  ]
+}

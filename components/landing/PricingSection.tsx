@@ -8,65 +8,70 @@ import Card from '@/components/ui/Card';
 export default function PricingSection() {
   const router = useRouter();
 
-  const formatPrice = (usdPrice: number, isMonthly: boolean = false) => {
+  const MONTHLY_ANNUALIZED = 19 * 12;
+  const YEARLY_SAVINGS = MONTHLY_ANNUALIZED - 199;
+
+  const formatPrice = (usdPrice: number, period?: string) => {
     if (usdPrice === 0) {
       return "Gratis";
     }
-    return `$${usdPrice}${isMonthly ? "/mes" : ""}`;
+    return `$${usdPrice}${period ?? ""}`;
   };
 
-  const handleSelectPlan = () => {
-    router.push("/auth/signup");
+  const handleSelectPlan = (plan: "free" | "monthly" | "yearly") => {
+    if (plan === "free") {
+      router.push("/auth/signup");
+    } else {
+      router.push(`/auth/signup?plan=${plan}`);
+    }
   };
 
   const tiers = [
     {
-      id: "basic",
-      name: "básico",
+      id: "free" as const,
+      name: "gratis",
       price: 0,
-      isMonthly: false,
+      period: undefined,
       popular: false,
-      description: "Acceso completo para aprender a tu ritmo.",
+      description: "Acceso al catálogo de lecciones, sin personalización.",
       features: [
-        "Acceso completo a los 400+ micro-videos (1-3 min c/u)",
-        "Contenido organizado en 12 secciones",
-        "Acceso a la comunidad general en Slack",
+        "Acceso al catálogo de lecciones",
+        "Contenido organizado por secciones",
+        "Acceso a la comunidad general",
         "Casos de uso enfocados en LATAM",
-        "Actualizaciones de contenido incluidas",
       ],
       cta: "COMENZAR GRATIS",
     },
     {
-      id: "plus",
-      name: "plus",
+      id: "monthly" as const,
+      name: "mensual",
       price: 19,
-      isMonthly: true,
+      period: "/mes",
       popular: true,
       description: "La experiencia completa con IA personalizada.",
       features: [
-        "Todo lo del plan Básico",
-        "Curso personalizado generado por AI según tu proyecto",
-        "De 400+ videos, la AI selecciona los 10-200 que necesitas",
-        "Acceso a la comunidad prioritaria en Discord",
-        "Asistente virtual de seguimiento (Limitado)",
+        "Todo lo del plan gratis",
+        "Ruta personalizada generada por AI según tu proyecto",
+        "La IA selecciona las lecciones que necesitas",
+        "Asistente virtual de seguimiento",
+        "Cancela cuando quieras",
       ],
-      cta: "COMENZAR CON PLUS",
+      cta: "COMENZAR MENSUAL",
     },
     {
-      id: "pro",
-      name: "pro",
+      id: "yearly" as const,
+      name: "anual",
       price: 199,
-      isMonthly: true,
+      period: "/año",
       popular: false,
-      description: "Experiencia premium con tutoría personalizada.",
+      description: `Todo lo del mensual, con ahorro de $${YEARLY_SAVINGS}.`,
       features: [
-        "Todo lo del plan Plus",
-        "Tutoría quincenal con Pablo de forma individual",
-        "Hasta 5 cursos personalizados por mes",
-        "Contexto acumulativo entre sesiones",
-        "Asistente virtual de seguimiento (Ilimitado)",
+        "Todo lo del plan mensual",
+        `Ahorras $${YEARLY_SAVINGS} vs. pagar mensual`,
+        "Acceso priorizado a nuevas lecciones",
+        "Cancela cuando quieras",
       ],
-      cta: "COMENZAR CON PRO",
+      cta: "COMENZAR ANUAL",
     },
   ];
 
@@ -126,7 +131,7 @@ export default function PricingSection() {
                 <div className="mb-4">
                   <div className="flex items-baseline gap-2">
                     <span className="text-3xl md:text-4xl font-bold text-[#1472FF]">
-                      {formatPrice(tier.price, tier.isMonthly)}
+                      {formatPrice(tier.price, tier.period)}
                     </span>
                     {tier.price > 0 && (
                       <span className="text-[#777777] dark:text-gray-400 text-xs md:text-sm">USD</span>
@@ -165,7 +170,7 @@ export default function PricingSection() {
                   depth={tier.popular ? "bottom" : "full"}
                   size="none"
                   rounded2xl
-                  onClick={handleSelectPlan}
+                  onClick={() => handleSelectPlan(tier.id)}
                   className={`w-full py-4 text-sm md:text-base mt-auto ${
                     !tier.popular ? "text-[#1472FF] border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10" : ""
                   }`}

@@ -1,0 +1,197 @@
+{
+  "section_id": 8,
+  "slug": "memoria-persistente",
+  "title": "Memoria persistente en agentes",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Andrea tiene un chatbot. Cada conversación empieza de cero: no recuerda nombre ni historial. Sus clientes se frustran repitiendo todo. ¿Qué le falta al bot?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada, los bots simplemente no pueden recordar entre sesiones"
+          },
+          {
+            "id": 1,
+            "text": "Guardar datos del usuario afuera del chat y recuperarlos al iniciar el siguiente"
+          },
+          {
+            "id": 2,
+            "text": "Alargar la ventana de contexto al máximo posible"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "La ventana de contexto es memoria de corto plazo: se borra al cerrar el chat. Para que el bot recuerde entre sesiones hay que guardar datos en un lugar externo y recuperarlos al iniciar. Eso es memoria persistente.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Dos tipos de memoria",
+        "body": "**Corto plazo**: la ventana de contexto del modelo. Se pierde al cerrar el chat.\n\n**Largo plazo**: guardada afuera en una base de datos. El agente la consulta al empezar la siguiente conversación y así te reconoce."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué guardar y qué no",
+        "body": "Guarda:\n- Datos factuales (nombre, empresa, rol)\n- Preferencias explícitas ('prefiero emails cortos')\n- Historial de temas discutidos\n- Decisiones tomadas\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Tres formas de guardar memoria",
+        "body": "- **Memoria simple**: una tabla con datos clave del usuario (nombre, cargo, preferencias).\n- **Búsqueda semántica**: se guardan conversaciones pasadas y se recuperan las relevantes al preguntar.\n- **Resumen rodante**: cada cierto número de mensajes el agente resume y descarta el resto."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Basta con meter toda la historia de conversaciones en el system prompt.",
+        "answer": false,
+        "explanation": "Falso. Eso no escala: en la conversación 100 el prompt sería gigante, caro y lento, y el modelo pierde precisión. La solución es memoria curada: datos clave en una tabla más búsqueda del historial, nunca la transcripción completa.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada tipo de información con su almacenamiento ideal:",
+        "pairs": [
+          {
+            "term": "Nombre y cargo del usuario",
+            "def": "Tabla con datos clave del usuario"
+          },
+          {
+            "term": "Preferencias declaradas",
+            "def": "Tabla con datos clave del usuario"
+          },
+          {
+            "term": "Historial de conversaciones",
+            "def": "Búsqueda semántica sobre resúmenes"
+          },
+          {
+            "term": "Saludos y relleno",
+            "def": "No guardar, es ruido"
+          }
+        ],
+        "explanation": "No todo merece persistir. Los datos que usarás siempre van a una tabla; el historial extenso a búsqueda semántica; lo demás se descarta. Curar lo que entra evita que la memoria se vuelva basurero.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas mejoran la memoria de un agente?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Extraer los datos clave al final de cada conversación"
+          },
+          {
+            "id": 1,
+            "text": "Recuperar la memoria relevante al iniciar la siguiente"
+          },
+          {
+            "id": 2,
+            "text": "Resumir las conversaciones largas en frases cortas"
+          },
+          {
+            "id": 3,
+            "text": "Guardar cada palabra dicha por el usuario al pie de la letra"
+          },
+          {
+            "id": 4,
+            "text": "Nunca borrar ni actualizar, aunque la realidad cambie"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los tres primeros son curación sana. Los últimos dos son antipatrones: guardarlo todo vuelve inútil la memoria, y no actualizar hace que el agente repita cosas que ya dejaron de ser ciertas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un cliente habla con tu chatbot 5 veces al mes. ¿Cómo evitas que repita todo en cada visita?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Pegar toda la historia anterior dentro de cada prompt"
+          },
+          {
+            "id": 1,
+            "text": "Guardar sus datos clave más un resumen de cada sesión y recuperarlos al iniciar"
+          },
+          {
+            "id": 2,
+            "text": "Mantener abierto el mismo chat para siempre"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Datos clave más resumen es el equilibrio. El cliente siente continuidad sin que el bot cargue cada palabra anterior. Así construyes relación sin inflar el prompt ni el costo.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Andrea agrega memoria persistente a su bot. ¿Qué cambia para sus clientes en la siguiente visita?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada, siguen teniendo que repetir su nombre y su caso"
+          },
+          {
+            "id": 1,
+            "text": "El bot los saluda por su nombre y retoma el tema de la sesión pasada"
+          },
+          {
+            "id": 2,
+            "text": "El bot empieza a olvidar también dentro de la conversación actual"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Al guardar datos clave y resúmenes afuera del chat, el bot los recupera al iniciar y el cliente siente continuidad desde el primer mensaje. Pasó de amnésico a tener memoria útil.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🧠",
+        "title": "Memoria activada",
+        "body": "Ya sabes separar memoria de corto y largo plazo y elegir qué guardar. Con eso tus agentes dejan de ser amnésicos y empiezan a construir relación real con el usuario."
+      }
+    }
+  ]
+}

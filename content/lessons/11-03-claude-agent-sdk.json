@@ -1,0 +1,197 @@
+{
+  "section_id": 11,
+  "slug": "claude-agent-sdk",
+  "title": "Claude Agent SDK: construir agentes propios",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Beatriz quiere construir un agente que revise inventario y cree órdenes de compra sola. ¿Qué necesita programar?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El bucle completo: llamar al modelo, parsear respuestas, ejecutar herramientas, manejar errores, repetir"
+          },
+          {
+            "id": 1,
+            "text": "Solo las herramientas y el prompt inicial — una librería puede manejar el bucle de decisiones por ella"
+          },
+          {
+            "id": 2,
+            "text": "Tiene que entrenar un modelo propio desde cero"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Escribir el bucle de agente desde cero es doloroso y propenso a errores. El Claude Agent SDK (un SDK — kit de desarrollo — oficial de Anthropic) abstrae ese bucle. Beatriz provee las herramientas y el prompt, y el kit gestiona las iteraciones hasta que el modelo termina.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es el Claude Agent SDK",
+        "body": "El **Agent SDK** es una librería oficial de Anthropic que simplifica construir agentes:\n\n- Maneja el ciclo pensar-actuar-observar\n- Integra servidores MCP (Model Context Protocol) automáticamente\n- Gestiona contexto entre pasos\n- Provee herramientas base: archivos, terminal, web"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "SDK vs escribir todo a mano",
+        "body": "Sin SDK:\n- Tú llamas al modelo y parseas cada herramienta\n- Tú manejas errores, tiempos y contexto\n\nCon SDK:\n- Inicializas el agente con sus herramientas\n- Le das el prompt y él corre el bucle\n\nAhorro de código: 5 a 10 veces."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Casos de agentes con Agent SDK",
+        "body": "Ejemplos reales:\n\n- **Investigación**: busca en la web, resume, compila un reporte\n- **Datos**: consulta la base de datos, transforma, genera insights\n- **Operaciones**: monitorea un sistema y actúa ante incidentes\n- **Desarrollo**: lee código, modifica, corre pruebas"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Con el Agent SDK, cualquier tarea se resuelve con un solo prompt inicial.",
+        "answer": false,
+        "explanation": "Falso. El Agent SDK **maneja el bucle de ejecución**, no diseña el agente por ti. Un buen agente requiere pensar qué herramientas le das, qué límites pones y qué salvaguardas aplicas. El SDK automatiza ejecución, no sustituye diseño.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada concepto del SDK con lo que hace:",
+        "pairs": [
+          {
+            "term": "Agente",
+            "def": "El orquestador que corre el bucle de ejecución"
+          },
+          {
+            "term": "Herramientas",
+            "def": "Funciones que el modelo puede invocar en cada paso"
+          },
+          {
+            "term": "Prompt de sistema",
+            "def": "Rol e instrucciones persistentes durante toda la sesión"
+          },
+          {
+            "term": "Mensajes",
+            "def": "Historial de la conversación y las acciones tomadas"
+          }
+        ],
+        "explanation": "Estos cuatro conceptos cubren el 90% de lo que usarás. **El Agent SDK baja la fricción** para que te concentres en el diseño, no en la plomería interna.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué ventajas da el Agent SDK frente a programar todo a mano?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Manejo automático del bucle de ejecución del agente"
+          },
+          {
+            "id": 1,
+            "text": "Integración nativa con servidores MCP"
+          },
+          {
+            "id": 2,
+            "text": "Observabilidad del proceso: qué herramienta llamó y cuándo"
+          },
+          {
+            "id": 3,
+            "text": "Diseña el agente por ti"
+          },
+          {
+            "id": 4,
+            "text": "Elimina la necesidad de revisar los resultados"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las tres primeras son reales. **Sigues necesitando diseñar el agente**: qué herramientas le das y qué salvaguardas aplicas. El SDK ayuda en la ejecución, no en el pensamiento de diseño.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Diego quiere un agente que investigue 20 competidores, extraiga 5 datos de cada uno y los cargue al sistema de gestión de clientes (CRM). ¿Qué opción usa?",
+        "options": [
+          {
+            "id": 0,
+            "text": "ChatGPT manualmente, copiando resultados a su CRM uno por uno"
+          },
+          {
+            "id": 1,
+            "text": "Agent SDK con herramientas de búsqueda web, escritura al CRM y extracción — el agente itera y completa solo"
+          },
+          {
+            "id": 2,
+            "text": "Contratar un becario por dos semanas"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Tarea iterativa con múltiples herramientas es **el terreno ideal del Agent SDK**. Un agente bien diseñado hace en 15 minutos lo que manualmente toma días. El becario no escala y ChatGPT manual tampoco.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Beatriz arma su agente de inventario con el Agent SDK. ¿Qué obtiene al final?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Más código que escribir y mantener manualmente"
+          },
+          {
+            "id": 1,
+            "text": "Un agente que revisa stock, compara precios y crea órdenes en ciclo cerrado — funciona mientras ella duerme, armado en días y no meses"
+          },
+          {
+            "id": 2,
+            "text": "Un prototipo que abandona porque es demasiado complicado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Beatriz construyó un **trabajador digital** apoyándose en el SDK. El SDK no es magia — simplifica la construcción al manejar el bucle. El resultado: agentes útiles armados en días, no en meses.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🤖",
+        "title": "Agent SDK en el bolsillo",
+        "body": "Ya sabes cómo el Agent SDK corre el bucle por ti. Tu próximo paso: elige una tarea repetitiva de tu trabajo y lista las tres herramientas que un agente necesitaría para resolverla."
+      }
+    }
+  ]
+}

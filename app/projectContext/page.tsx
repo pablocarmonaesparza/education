@@ -222,11 +222,11 @@ export default function ProjectContextPage() {
     });
 
     sessionStorage.setItem('projectContext', JSON.stringify(responses));
-    router.push('/courseCreation');
+    router.push('/paywall');
   };
 
   const handleSkip = () => {
-    router.push('/courseCreation');
+    router.push('/paywall');
   };
 
   const progress = ((currentIndex + 1) / allQuestions.length) * 100;

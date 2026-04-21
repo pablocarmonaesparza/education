@@ -1,0 +1,197 @@
+{
+  "section_id": 9,
+  "slug": "whisper",
+  "title": "Whisper: transcripción con AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Alba graba entrevistas en español de 1 hora. Transcribirlas a mano le toma 4-5 horas cada una. Un amigo le menciona Whisper. ¿Qué es razonable esperar?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Funciona bien solo en inglés; para español todavía es poco confiable"
+          },
+          {
+            "id": 1,
+            "text": "Transcribe español con calidad comparable a humano en audio limpio, por centavos de dólar la hora"
+          },
+          {
+            "id": 2,
+            "text": "Transcribe gratis e identifica automáticamente quién habló en cada momento"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Whisper (de OpenAI) es el modelo de transcripción más usado. Soporta español y 90+ idiomas con calidad fuerte en audio limpio. Usado vía interfaz de programación (API) cuesta ~$0.006 USD por minuto; corrido local es gratis. Lo que no hace por sí solo: separar hablantes (eso requiere una herramienta extra).",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es Whisper",
+        "body": "**Whisper** es un modelo de speech-to-text:\n\n- Recibe audio (MP3, WAV, etc.)\n- Devuelve transcripción en texto\n- Soporta 90+ idiomas\n- Detecta idioma automáticamente\n- Puede traducir a inglés mientras transcribe"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cómo usarlo",
+        "body": "Tres formas:\n\n- **API de OpenAI** — pagas por minuto, sin instalar nada\n- **Local** — corres Whisper en tu máquina, gratis\n- **Apps que lo envuelven** — Descript, Otter y varias ya usan Whisper por dentro"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Dónde brilla y dónde flaquea",
+        "body": "**Bien en:** audio limpio, un solo hablante, podcasts profesionales, idiomas principales.\n\n**Flaquea en:** varios hablantes encimados, mucho ruido de fondo, acentos muy marcados con términos técnicos, audio de muy baja calidad."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Whisper puede identificar quién habla (speaker diarization) automáticamente.",
+        "answer": false,
+        "explanation": "Falso. Whisper transcribe pero **no separa hablantes nativamente**. Para identificar 'habló A, luego B', necesitas **speaker diarization** adicional (pyannote, AssemblyAI, herramientas complementarias). Whisper + diarization = solución completa.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso con el enfoque correcto:",
+        "pairs": [
+          {
+            "term": "Entrevista de una persona",
+            "def": "Whisper directo, sin extras"
+          },
+          {
+            "term": "Reunión con varios hablantes",
+            "def": "Whisper más una herramienta que separa voces"
+          },
+          {
+            "term": "Podcast en español a inglés",
+            "def": "Whisper en modo traducción al inglés"
+          },
+          {
+            "term": "Llamada con mucho ruido",
+            "def": "Limpiar el audio primero y después pasarlo por Whisper"
+          }
+        ],
+        "explanation": "Whisper es potente pero no lo hace todo solo. Combinarlo con limpieza previa o con una herramienta que separe hablantes multiplica su utilidad. Conocer sus límites evita frustración.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué flujos se desbloquean con transcripción accesible?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Resumen automático de reuniones con AI"
+          },
+          {
+            "id": 1,
+            "text": "Subtítulos automáticos para videos"
+          },
+          {
+            "id": 2,
+            "text": "Búsqueda en el contenido de podcasts"
+          },
+          {
+            "id": 3,
+            "text": "Transcripción instantánea perfecta en cualquier audio"
+          },
+          {
+            "id": 4,
+            "text": "Traducir voz a voz en tiempo real sin latencia"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros son reales hoy. Los últimos 2 son **aspiraciones aún imperfectas**: con audio malo Whisper falla, y la traducción voz-a-voz en tiempo real todavía arrastra retrasos notorios.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Grabas 10 reuniones por semana de 1 hora cada una. ¿Cómo sacas valor?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Reescuchar cada grabación entera para recordar lo importante"
+          },
+          {
+            "id": 1,
+            "text": "Whisper transcribe, Claude resume y extrae tareas, y guardas el resultado en Notion; de 10 horas de reuniones a unos minutos de revisión"
+          },
+          {
+            "id": 2,
+            "text": "Contratar un asistente dedicado a tomar notas"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Transcribir con Whisper y resumir con otro modelo de AI es el flujo estrella: pasas de horas revisando grabaciones a un resumen con acciones listo en minutos, sin perder contexto.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Alba implementa Whisper + resumen con AI para sus entrevistas. ¿Qué cambia?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Casi nada; sigue tardando lo mismo"
+          },
+          {
+            "id": 1,
+            "text": "De 4-5 horas por entrevista pasa a minutos, y el costo cae a centavos de dólar"
+          },
+          {
+            "id": 2,
+            "text": "La calidad es tan mala que abandona la idea"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Alba cambió la economía de su trabajo. Lo que era barrera (costo y tiempo) dejó de serlo. Esta transformación de costos es frecuente al integrar AI bien.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🎙️",
+        "title": "Transcripción automática",
+        "body": "Ya tienes la pieza para convertir audio en texto en minutos y abrir flujos completos encima."
+      }
+    }
+  ]
+}

@@ -1,0 +1,218 @@
+{
+  "section_id": 2,
+  "slug": "verificar-el-modelo",
+  "title": "Verificar lo que dice el modelo",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Lucía recibe un reporte del modelo con nombres, fechas y cifras. Lo envía al cliente. Dos semanas después descubre que una fecha estaba mal y ya circuló. ¿Dónde falló?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El modelo debería haber avisado que no estaba seguro de la fecha"
+          },
+          {
+            "id": 1,
+            "text": "No hubo paso de verificación: datos específicos del output siempre necesitan fuente externa antes de publicar"
+          },
+          {
+            "id": 2,
+            "text": "Usó el modelo equivocado; uno más caro no se habría equivocado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El modelo nunca avisa que no está seguro — por default **se afirma a sí mismo** con confianza. El único freno es el paso humano de verificación. 20 segundos habrían evitado un error que circuló con clientes y costó reputación.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Verificar no es paranoia",
+        "body": "**Verificar** un output del modelo es tan rutinario como releer un mensaje antes de mandarlo. No implica desconfiar de todo — es saber dónde están los datos que necesitan segunda opinión y cuáles pueden pasar directo."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Qué sí verificar, qué no",
+        "body": "**Siempre verifica**:\n\n- Nombres, empresas, productos específicos\n- Fechas, cifras y datos numéricos\n- Citas textuales atribuidas a alguien\n- Referencias a leyes, artículos, publicaciones\n\n**No hace falta verificar**:\n\n- Texto que tú aportaste de fuente propia\n- Ideas generales, ejemplos inventados, tono\n- Estructura, redacción, organización"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada tipo de output con la acción correcta:",
+        "pairs": [
+          {
+            "term": "Fecha de un evento histórico",
+            "def": "Verificar en Wikipedia o fuente oficial"
+          },
+          {
+            "term": "Email con tu contexto",
+            "def": "Revisar tono, no hace falta verificar hechos externos"
+          },
+          {
+            "term": "Cita atribuida a Steve Jobs",
+            "def": "Buscar la cita textual antes de usarla"
+          },
+          {
+            "term": "Resumen de artículo pegado",
+            "def": "Pasa sin verificar externa (tú aportaste la fuente)"
+          }
+        ],
+        "explanation": "El criterio es **de dónde vino el dato**. Si el modelo lo sacó de su entrenamiento, verifica. Si tú le diste la fuente (texto, documento, datos reales), el output se queda dentro de tu fuente.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena el flujo de verificación rápida:",
+        "steps": [
+          "Recibes el output del modelo",
+          "Identificas los datos específicos: nombres, fechas, cifras, citas",
+          "Buscas cada dato en una fuente externa confiable",
+          "Corriges lo que no coincida (o lo quitas si no puedes verificar)",
+          "Publicas solo la versión verificada"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "explanation": "El flujo es mecánico, no opcional. Saltarte un paso convierte una herramienta útil en una bomba de tiempo reputacional.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Marca los casos donde verificar es obligatorio antes de publicar:",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un tweet con una cita de Einstein"
+          },
+          {
+            "id": 1,
+            "text": "Un correo que tú redactaste con ChatGPT para pedir vacaciones"
+          },
+          {
+            "id": 2,
+            "text": "Un reporte con cifras financieras de un competidor"
+          },
+          {
+            "id": 3,
+            "text": "Un resumen que ChatGPT te hizo de un paper que le pegaste"
+          },
+          {
+            "id": 4,
+            "text": "Una biografía de un cliente poco conocido"
+          }
+        ],
+        "correctIds": [
+          0,
+          2,
+          4
+        ],
+        "explanation": "Las tres verificables tienen datos específicos que el modelo puede inventar (citas, cifras, datos personales). Las otras dos son de tu propia autoría o de fuente que le diste — no requieren verificación externa, solo revisión de tono.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "fill-blank",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Completa la regla:",
+        "sentenceBefore": "Si el dato específico vino del entrenamiento del modelo, ",
+        "sentenceAfter": " antes de publicarlo.",
+        "tokens": [
+          "Verifica en fuente externa",
+          "Pregúntale al modelo si está seguro",
+          "Confía en su criterio"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "**Verificación externa** es la única que funciona. Preguntarle al modelo 'estás seguro' no sirve — siempre se afirma. La fuente externa (Wikipedia, sitio oficial, base propia) es el único freno real.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un compañero te pasa un párrafo con ChatGPT que dice: 'Según estudio de Harvard 2023, 87% de profesionales usa AI'. ¿Qué haces antes de compartirlo?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Lo compartes, Harvard es una fuente respetada"
+          },
+          {
+            "id": 1,
+            "text": "Buscas el estudio específico; si no lo encuentras en fuente original, quitas la cifra o reemplazas por una verificable"
+          },
+          {
+            "id": 2,
+            "text": "Le pides a ChatGPT el link del estudio y lo incluyes"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Citas con institución + año + cifra específica son **alta zona de alucinación**. Muchos 'estudios de Harvard' citados así no existen. Pedirle al modelo el link no ayuda — también puede inventar URLs. La única salida es buscar tú.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Lucía vuelve a usar el modelo para un reporte. Esta vez con datos del cliente. ¿Cuál es su flujo correcto antes de enviar?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Copia el output directo como la vez pasada; ya aprendió que ChatGPT mejoró desde entonces"
+          },
+          {
+            "id": 1,
+            "text": "Identifica nombres, fechas y cifras; verifica cada uno contra la fuente original; envía solo lo verificado"
+          },
+          {
+            "id": 2,
+            "text": "Le pregunta al modelo si los datos están correctos antes de enviar"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Lucía ya incorporó el paso de verificación a su flujo. El tiempo extra son 30 segundos por dato, y le ahorra errores que costarían días de arreglo con clientes.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔍",
+        "title": "Verificación integrada",
+        "body": "Ahora tienes el filtro que protege tu reputación cuando usas AI para trabajo real: identificar nombres, fechas, cifras y citas, y pasarlos por una fuente externa antes de publicar."
+      }
+    }
+  ]
+}

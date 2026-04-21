@@ -1,0 +1,197 @@
+{
+  "section_id": 9,
+  "slug": "iterar-codigo",
+  "title": "Iterar sobre código con AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Tobías le pide a la AI \"hazme una página de login\". Recibe 200 líneas, pero no era lo que quería. Pide \"cámbiala\". Recibe otra versión distinta. Tampoco funciona. ¿Qué pasa?",
+        "options": [
+          {
+            "id": 0,
+            "text": "La AI necesita más rondas para entender; hay que seguir diciendo \"cámbiala\" hasta que acierte"
+          },
+          {
+            "id": 1,
+            "text": "\"Cámbiala\" no dice qué cambiar ni qué conservar, así que la AI regenera desde cero cada vez"
+          },
+          {
+            "id": 2,
+            "text": "El modelo no sirve para código; Tobías necesita uno más caro o más nuevo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Iterar con AI no es \"insistir\" ni \"pedirlo diferente\". Es dar **feedback preciso sobre qué cambia y qué se queda**. Sin eso, el modelo regenera desde cero y pierdes el avance anterior. La habilidad real del vibe coder es **formular peticiones específicas**.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las 3 formas de iterar",
+        "body": "Para refinar código con AI:\n\n- **Pedir cambio específico** (en vez de 'arréglalo' → 'centra el botón')\n- **Apuntar al código exacto** (selecciona la línea/función)\n- **Preguntar antes de cambiar** ('¿qué sugieres?' antes de pedir cambio)\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Usar diffs para control",
+        "body": "Herramientas modernas (Claude Code, Cursor) muestran **diffs** antes de aplicar:\n\n- Ves línea por línea qué cambia\n- Aceptas o rechazas por cambio\n- Si algo no te gusta, rechazas sin perder el resto\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Commits entre iteraciones",
+        "body": "Patrón clave:\n\n1. AI hace un cambio\n2. Pruebas que funciona\n3. **Commit**\n4. Siguiente cambio\n\nSi la siguiente iteración rompe algo, vuelves al commit anterior. Iterar sin commits = construir castillo en arena."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Si le pides a la AI 'arréglalo' y no funciona, el modelo simplemente es malo.",
+        "answer": false,
+        "explanation": "Falso. 'Arréglalo' es prompt insuficiente. El modelo no ve tu pantalla ni sabe qué específicamente no te gusta. **La responsabilidad del feedback útil es tuya**. Mejor feedback = mejores iteraciones.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el prompt pobre con una versión mejor:",
+        "pairs": [
+          {
+            "term": "'Arréglalo'",
+            "def": "'El botón no se centra, debe quedar en medio horizontal'"
+          },
+          {
+            "term": "'Hazlo mejor'",
+            "def": "'Cambia el fondo a azul y sube la tipografía a 18px'"
+          },
+          {
+            "term": "'Otra vez pero bien'",
+            "def": "'Mantén el diseño pero usa el formato del header en línea 10'"
+          },
+          {
+            "term": "'No funciona'",
+            "def": "'Al enviar el form sale error X en consola'"
+          }
+        ],
+        "explanation": "Cada prompt específico **le da al modelo qué cambiar y qué mantener**. La habilidad real del vibe coder es formular peticiones precisas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas mejoran tu iteración con AI?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Commits después de cada cambio que funciona"
+          },
+          {
+            "id": 1,
+            "text": "Feedback preciso, no genérico"
+          },
+          {
+            "id": 2,
+            "text": "Probar cada iteración antes de la siguiente"
+          },
+          {
+            "id": 3,
+            "text": "Pedir 5 cambios en el mismo prompt"
+          },
+          {
+            "id": 4,
+            "text": "Aceptar sin leer lo que cambió"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Commits + precisión + prueba = ciclo sano. Bombardear 5 cambios o no leer son antipatrones. **Iteración controlada** gana a velocidad caótica.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu app funciona al 80%. Quieres ajustar 3 cosas. ¿Cómo lo haces?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un solo prompt con las 3 cosas juntas"
+          },
+          {
+            "id": 1,
+            "text": "Un cambio a la vez: pedir, probar, commit. Luego el siguiente. Si algo rompe, vuelves al commit anterior y cambias de enfoque"
+          },
+          {
+            "id": 2,
+            "text": "Pedir que rehaga toda la app"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Pequeños pasos + commits** es la disciplina que convierte vibe coding de frustrante a productivo. Tres cambios juntos sin probar = debug dolor cuando algo falla.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Tobías vuelve a su login. Ahora pide cambios específicos, prueba cada uno y hace commit. ¿Qué cambia?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada: el problema era el modelo, no el método"
+          },
+          {
+            "id": 1,
+            "text": "Cada cambio útil se acumula y puede volver al último commit si una iteración rompe algo"
+          },
+          {
+            "id": 2,
+            "text": "Tarda más porque ahora escribe prompts más largos"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Tobías entendió que **vibe coding sin disciplina falla**. Con feedback preciso, pruebas y commits, cada avance queda guardado y experimentar deja de dar miedo. La diferencia está en el método, no en el modelo.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔄",
+        "title": "Iteración dominada",
+        "body": "Hoy, en tu próximo prompt a la AI: pide un cambio concreto, prueba, y haz commit antes del siguiente. Ese es el bucle."
+      }
+    }
+  ]
+}

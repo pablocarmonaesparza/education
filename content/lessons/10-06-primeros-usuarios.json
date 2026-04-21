@@ -1,0 +1,197 @@
+{
+  "section_id": 10,
+  "slug": "primeros-usuarios",
+  "title": "Primeros usuarios: a quién y cómo",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Natalia lanzó su app. La compartió en Twitter, Instagram y LinkedIn. Dos semanas después: 30 visitas, cero usuarios activos. ¿Qué le recomendarías?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Pagar anuncios para conseguir tráfico real"
+          },
+          {
+            "id": 1,
+            "text": "Escribirle uno a uno a 10 o 20 personas que tienen el problema, invitarlas y acompañarlas"
+          },
+          {
+            "id": 2,
+            "text": "Publicar con más frecuencia hasta que el algoritmo la empuje"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Los **primeros usuarios** casi nunca vienen de publicaciones ni de anuncios. Vienen de **conversaciones uno a uno**: mensajes directos, correos, llamadas. Al inicio tu ventaja no es escala, es atención personalizada. Un usuario ganado en conversación vale más que 100 visitas anónimas.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "La estrategia de los 10",
+        "body": "Paul Graham lo resume así: **haz cosas que no escalan**. Al principio, elegir 10 o 20 personas ideales y tratarlas una por una bate a cualquier intento de tráfico masivo."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cómo se ven los primeros 10 buenos",
+        "body": "Cuatro señales: **tienen el problema** que resuelves, **son accesibles** desde tu red, **dan feedback honesto** (no solo elogios) y **toleran errores** porque el valor les importa más que el acabado."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Qué evitar al arrancar",
+        "body": "Tres errores típicos: **lanzar masivo sin acompañar** (se pierden sin feedback), **pagar anuncios** antes de saber si tu producto encaja, y **esperar tracción orgánica** que rara vez llega sin empuje manual."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Si tu producto es bueno, los usuarios aparecerán solos.",
+        "answer": false,
+        "explanation": "Falso. **Los primeros usuarios se van a buscar**, no llegan solos. Incluso productos excelentes necesitan empuje manual al inicio. Asumir 'si es bueno se difunde' es la razón principal de apps muertas.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada canal con la etapa donde funciona:",
+        "pairs": [
+          {
+            "term": "Mensajes y correos personales",
+            "def": "Para los primeros 10 a 50 usuarios"
+          },
+          {
+            "term": "Comunidades donde ya están",
+            "def": "Para pasar de 50 a varios cientos"
+          },
+          {
+            "term": "Contenido orgánico",
+            "def": "Cuando ya sabes que el producto encaja"
+          },
+          {
+            "term": "Anuncios pagados",
+            "def": "Para escalar algo que ya funciona"
+          }
+        ],
+        "explanation": "Cada canal funciona en su etapa. Empezar con **anuncios pagados antes de saber si el producto encaja** es quemar dinero. El orden natural es: personal, comunidad, contenido y al final anuncios.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué prácticas te consiguen primeros usuarios?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Mandar mensajes personales explicando qué hiciste y por qué"
+          },
+          {
+            "id": 1,
+            "text": "Preguntar '¿esto resolvería tu problema X?' y escuchar"
+          },
+          {
+            "id": 2,
+            "text": "Acompañar personalmente el primer uso"
+          },
+          {
+            "id": 3,
+            "text": "Lanzar en todos lados sin seguimiento"
+          },
+          {
+            "id": 4,
+            "text": "Esperar que la gente te descubra sola"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Personal + escucha + acompañamiento = cómo se consiguen primeros usuarios. Masivo o pasivo son **trampas que dan ilusión de actividad sin resultados**.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu app ayuda a freelancers a organizar proyectos. ¿Cómo consigues los primeros 10 usuarios?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Publicar en Twitter y esperar que lleguen"
+          },
+          {
+            "id": 1,
+            "text": "Escribirle a 20 freelancers que conoces, explicarles qué hace tu app y acompañarlos al usarla"
+          },
+          {
+            "id": 2,
+            "text": "Pagar anuncios en Google desde el primer día"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Red cercana, mensaje personal y acompañamiento** es la receta para los primeros 10. Los anuncios antes de saber si el producto encaja queman dinero, y un tuit sin seguimiento desaparece en el feed.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Natalia cambia de estrategia. Escribe 25 mensajes personales, obtiene 7 respuestas y 4 personas empiezan a usar la app. ¿Qué aprendió?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Que publicar en redes sociales no sirve nunca"
+          },
+          {
+            "id": 1,
+            "text": "Que los primeros usuarios salen de conversaciones, no de impresiones, y cada uno trae feedback útil"
+          },
+          {
+            "id": 2,
+            "text": "Que necesita contratar un equipo de marketing cuanto antes"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Natalia pasó de **esperar tráfico a construir usuarios**. Esa disciplina de ganar uno por uno arma bases sólidas: la escala viene después, pero el arranque siempre es manual.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "👥",
+        "title": "Primeros usuarios ganados",
+        "body": "Ya sabes cómo arrancar: lista de 10 a 20 personas, mensaje personal, acompañamiento y feedback. El arranque manual es lo que construye bases sólidas."
+      }
+    }
+  ]
+}

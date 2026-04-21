@@ -1,0 +1,219 @@
+{
+  "section_id": 2,
+  "slug": "alucinacion",
+  "title": "Alucinación: cuándo el modelo inventa",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Jorge pide a ChatGPT las ventas de su tienda. Recibe números precisos: '247 unidades, 12.400 USD'. Los usa en junta. Su contador dice después que son inventados. ¿Qué pasó?",
+        "options": [
+          {
+            "id": 0,
+            "text": "ChatGPT calculó un promedio basado en tiendas parecidas"
+          },
+          {
+            "id": 1,
+            "text": "No tiene acceso a esos datos y generó números que suenan razonables"
+          },
+          {
+            "id": 2,
+            "text": "Los datos eran reales pero de hace varios meses"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El modelo **no está conectado** al punto de venta de Jorge ni a su base de datos. Cuando le preguntas algo que no sabe, no dice *'no sé'* por default: **genera la continuación más probable** según patrones de texto. Esa respuesta puede sonar muy creíble y seguir siendo inventada.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es una alucinación",
+        "body": "Una **alucinación** es cuando el modelo responde algo que *suena correcto pero no lo es*. No miente a propósito ni se 'equivoca' como humano: genera la continuación de texto más probable según sus patrones, aunque no tenga base real."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Por qué pasa",
+        "body": "El modelo siempre intenta **completar con tokens probables**. Si le preguntas algo que no sabe (datos privados, hechos específicos, nombres reales), no dice 'no sé' por default — inventa algo plausible. Su tarea es predecir, no verificar."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Cuáles de los siguientes son escenarios donde el modelo alucina con frecuencia?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Datos privados de tu negocio o cuenta"
+          },
+          {
+            "id": 1,
+            "text": "Nombres y biografías de personas poco famosas"
+          },
+          {
+            "id": 2,
+            "text": "Citas específicas atribuidas a alguien"
+          },
+          {
+            "id": 3,
+            "text": "Código que use librerías inventadas"
+          },
+          {
+            "id": 4,
+            "text": "Definiciones de conceptos muy conocidos (amor, democracia, Python)"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "Las primeras cuatro son zonas de alto riesgo. Las definiciones genéricas suelen estar bien cubiertas porque aparecen miles de veces en su entrenamiento. La regla: **entre más específico y privado, mayor el riesgo de alucinación**.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el tipo de pregunta con el riesgo de alucinación:",
+        "pairs": [
+          {
+            "term": "Ventas de mi tienda",
+            "def": "Riesgo alto — dato privado, no tiene acceso"
+          },
+          {
+            "term": "Qué es un token",
+            "def": "Riesgo bajo — concepto público y masivo"
+          },
+          {
+            "term": "Biografía de mi abuelo",
+            "def": "Riesgo alto — persona no famosa"
+          },
+          {
+            "term": "Capital de Francia",
+            "def": "Riesgo bajo — hecho público y canónico"
+          }
+        ],
+        "explanation": "Pide al modelo lo que está en miles de textos públicos y suele acertar. Pídele lo específico, privado o de nicho y **asume alucinación hasta verificar**.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para manejar una respuesta del modelo con datos específicos:",
+        "steps": [
+          "Recibir la respuesta con el dato específico",
+          "Distinguir si el dato es público y masivo o privado y de nicho",
+          "Si es privado o de nicho, tratarlo como posible alucinación",
+          "Verificar el dato en una fuente externa confiable",
+          "Usar el dato solo si pasó la verificación"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "explanation": "Sin este bucle, cada respuesta con números o nombres es una mina sin detonar. La clasificación *público vs privado* te dice cuándo puedes confiar y cuándo necesitas verificar.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "fill-blank",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Completa:",
+        "sentenceBefore": "La regla práctica frente a un dato específico del modelo es: ",
+        "sentenceAfter": " hasta verificar en fuente externa.",
+        "tokens": [
+          "Asumir alucinación",
+          "Confiar ciegamente",
+          "Pedirle opinión"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "**Asumir alucinación** no es paranoia, es higiene. Te cuesta 30 segundos de verificación y te ahorra hacer el ridículo en una junta como el caso de Jorge.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un compañero te pasa un párrafo hecho con ChatGPT que cita: 'Según un estudio de Harvard de 2023, el 87% de profesionales usa AI'. ¿Qué haces antes de compartir?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Busco el estudio en Google o en la página de Harvard para confirmar que existe"
+          },
+          {
+            "id": 1,
+            "text": "Lo comparto — ChatGPT cita fuentes reales la mayoría del tiempo"
+          },
+          {
+            "id": 2,
+            "text": "Le pregunto a ChatGPT si está seguro de ese dato"
+          }
+        ],
+        "correctId": 0,
+        "explanation": "Citas específicas a estudios o personas son **zona clásica de alucinación**: el modelo junta un nombre prestigioso con un número plausible. Preguntarle al modelo si *'está seguro'* no sirve — casi siempre se reafirma. La única salida es **verificar fuera del modelo**.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Jorge aprende la lección. La semana siguiente necesita datos de ventas para otra reunión. ¿Cuál es el flujo correcto?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Le pregunta a ChatGPT y esta vez le dice que esté muy seguro"
+          },
+          {
+            "id": 1,
+            "text": "Descarta ChatGPT por completo para cualquier dato específico"
+          },
+          {
+            "id": 2,
+            "text": "Saca los datos de su sistema de ventas y le pide a ChatGPT que los analice e interprete"
+          }
+        ],
+        "correctId": 2,
+        "explanation": "ChatGPT no tiene tus datos, pero **sí puede analizarlos si se los pegas**. El flujo correcto es: tú aportas los datos reales, el modelo aporta análisis y redacción. Así evitas la alucinación y aprovechas lo que el modelo sí hace bien.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🚨",
+        "title": "Alucinación detectada",
+        "body": "Ya sabes cuándo el modelo inventa con confianza y cómo protegerte: clasifica público vs privado y verifica antes de usar cualquier dato específico."
+      }
+    }
+  ]
+}

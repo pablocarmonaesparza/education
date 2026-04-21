@@ -1,0 +1,198 @@
+{
+  "section_id": 7,
+  "slug": "llamar-modelo-codigo",
+  "title": "Llamar a un modelo de AI desde código",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Diego usa ChatGPT todos los días. Cuando quiere que su app propia haga lo mismo, se bloquea. '¿Cómo le hablo a GPT desde código?'. ¿Qué necesita?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Entrenar su propio modelo"
+          },
+          {
+            "id": 1,
+            "text": "Llamar a la API del modelo: envía una request con tu prompt, recibe la respuesta como texto. En 5 líneas de código tienes AI en tu app"
+          },
+          {
+            "id": 2,
+            "text": "Descargar GPT completo y correrlo localmente"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Llamar a un modelo desde código es **más simple de lo que parece**: envías un POST a la interfaz de programación (API) del proveedor con tu prompt, recibes JSON con la respuesta. OpenAI, Anthropic y Google tienen SDKs que simplifican esto a 5 líneas.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Anatomía de una llamada a modelo",
+        "body": "Toda llamada a una API de modelo tiene la misma forma:\n\n- **Endpoint** (ej: `/v1/chat/completions`)\n- **Método**: POST\n- **Request body** con `model`, `messages`, `temperature`, `max_tokens`"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Los SDK oficiales acortan el código",
+        "body": "Cada proveedor tiene un SDK (kit de desarrollo) que envuelve la API en funciones listas:\n\n- **`openai`** (Python, JS)\n- **`@anthropic-ai/sdk`** (JS) / **`anthropic`** (Python)\n- **`@google/genai`** (JS) / **`google-genai`** (Python)"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "La primera llamada mínima",
+        "body": "En Python con OpenAI:\n\n```python\nfrom openai import OpenAI\nclient = OpenAI()\nrespuesta = client.chat.completions.create(\n    model='gpt-4o-mini',\n    messages=[{'role': 'user', 'content': 'Hola'}]\n)\nprint(respuesta.choices[0].message.content)\n```\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Llamar a un modelo desde código es idéntico a usarlo en ChatGPT, solo cambia la interfaz.",
+        "answer": false,
+        "explanation": "Falso. Desde API **controlas**: qué modelo exacto, temperatura, max tokens, formato JSON, streaming. ChatGPT abstrae todo eso. Desde código ganas poder; pierdes la interfaz amigable.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el parámetro con lo que controla:",
+        "pairs": [
+          {
+            "term": "model",
+            "def": "Qué modelo usar"
+          },
+          {
+            "term": "messages",
+            "def": "Conversación a enviar"
+          },
+          {
+            "term": "temperature",
+            "def": "Qué tan creativa es la respuesta"
+          },
+          {
+            "term": "max_tokens",
+            "def": "Límite de longitud de respuesta"
+          }
+        ],
+        "explanation": "Estos 4 parámetros son los que usarás más. Dominarlos te da control fino sobre qué y cómo te responde el modelo.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué ventajas te da usar API vs chat humano?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Automatizar 1000 prompts sin clicks"
+          },
+          {
+            "id": 1,
+            "text": "Forzar formato de respuesta (ej: JSON válido)"
+          },
+          {
+            "id": 2,
+            "text": "Elegir modelo exacto y parámetros"
+          },
+          {
+            "id": 3,
+            "text": "UI visual para iterar rápido"
+          },
+          {
+            "id": 4,
+            "text": "Acceso a modelos experimentales no disponibles en chat"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "explanation": "Las 4 son ventajas de la API. UI visual es **desventaja** frente al chat. Saber cuándo usar qué canal importa: chat para explorar, API para producir a escala.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres procesar 500 reseñas de clientes clasificándolas por sentimiento. ¿Qué haces?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Copiar una por una en ChatGPT"
+          },
+          {
+            "id": 1,
+            "text": "Script en Python con el SDK de OpenAI, iteras las 500, guardas resultados en CSV. 10 min de código, 30 min de ejecución"
+          },
+          {
+            "id": 2,
+            "text": "Contratar un analista"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "500 tareas repetitivas = API + script = 40 min total. Copiar manual tomaría horas. El costo de aprender a llamar APIs paga en el primer caso real.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Diego hace su primera llamada a la API desde código. ¿Qué desbloquea?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — sigue usando ChatGPT manual"
+          },
+          {
+            "id": 1,
+            "text": "Ahora puede meter AI dentro de su app, procesar miles de entradas a escala y automatizar flujos sin clicks"
+          },
+          {
+            "id": 2,
+            "text": "Rompió su cuenta de OpenAI"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Diego cruzó el puente más importante: pasó de **consumidor** del chat a **constructor** que integra modelos en producto. Esa habilidad separa a quien solo usa AI de quien la pone a trabajar en su negocio.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🛠️",
+        "title": "Primera llamada a modelo",
+        "body": "Ya sabes la anatomía de una llamada a modelo desde código: endpoint, método POST, parámetros clave, y el SDK para acortarlo a 5 líneas."
+      }
+    }
+  ]
+}

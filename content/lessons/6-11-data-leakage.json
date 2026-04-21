@@ -1,0 +1,197 @@
+{
+  "section_id": 6,
+  "slug": "data-leakage",
+  "title": "Evitar data leakage en flujos con AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Pilar clasifica sus leads mandando nombre, email y teléfono a ChatGPT. Lleva meses así y nada malo ha pasado. ¿Qué tan riesgoso es lo que hace?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Bajo riesgo — si nadie se ha quejado, no hay problema"
+          },
+          {
+            "id": 1,
+            "text": "Alto riesgo — está mandando datos personales a un tercero sin base legal, lo cual puede violar leyes de protección de datos"
+          },
+          {
+            "id": 2,
+            "text": "Cero riesgo — ChatGPT no guarda los datos de las conversaciones"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El riesgo es real aunque todavía no se haya manifestado. Mandar datos personales a un servicio externo sin contrato específico ni consentimiento del cliente puede violar leyes como la europea de protección de datos. El daño no es que \"pase algo\" — es el incumplimiento en sí.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Tres tipos de datos sensibles",
+        "body": "Requieren cuidado especial:\n\n- **Datos personales identificables**: nombre, correo, teléfono, dirección\n- **Datos financieros**: tarjetas, cuentas, transacciones\n- **Datos de salud, orientación o raza**: máxima sensibilidad"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Tácticas para no filtrar datos",
+        "body": "Prácticas clave:\n\n- **Anonimizar** antes de mandar: \"cliente_42\" en vez de \"juan@empresa.com\"\n- **Firmar un contrato de tratamiento de datos** (DPA) con el proveedor de AI\n- **Hospedar el modelo en tus servidores** si los datos son muy sensibles\n- **Minimizar**: mandar solo lo estrictamente necesario"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "No todos los planes tratan tus datos igual",
+        "body": "Antes de mandar información sensible, conoce la diferencia:\n\n- **Plan Enterprise de OpenAI o Anthropic** — contrato incluido, no entrenan con tus datos\n- **API pagada** (la interfaz técnica para conectar la AI a tu programa): no entrena por default\n- **ChatGPT gratuito** — sí puede usar tus conversaciones"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "La API de OpenAI (plan pagado) por default usa tus datos para entrenar modelos futuros.",
+        "answer": false,
+        "explanation": "Falso. La API pagada de OpenAI **no entrena con tus datos** por default (desde marzo 2023). ChatGPT consumer sí, a menos que lo desactives. Conocer la diferencia entre API y consumer es clave.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la práctica con su nivel de riesgo:",
+        "pairs": [
+          {
+            "term": "Mandar datos sin anonimizar",
+            "def": "Alto riesgo — expones a tus clientes"
+          },
+          {
+            "term": "Anonimizar antes de mandar",
+            "def": "Riesgo reducido — ya no viajan identidades"
+          },
+          {
+            "term": "Hospedar el modelo tú mismo",
+            "def": "Máximo control — los datos nunca salen"
+          },
+          {
+            "term": "Firmar contrato de tratamiento",
+            "def": "Cumplimiento legal — tienes base contractual"
+          }
+        ],
+        "explanation": "Cada capa suma protección. **Anonimizar + contrato firmado** suele ser el balance práctico para la mayoría. Hospedar en tus propios servidores se reserva para casos críticos (salud, legal, gobierno).",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican riesgo de filtración de datos en tu flujo?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Mandas datos personales sin anonimizar a servicios externos"
+          },
+          {
+            "id": 1,
+            "text": "No sabes qué plan de AI estás usando"
+          },
+          {
+            "id": 2,
+            "text": "Guardas registros con datos sensibles sin cifrar"
+          },
+          {
+            "id": 3,
+            "text": "Usas la API pagada con contrato de tratamiento firmado"
+          },
+          {
+            "id": 4,
+            "text": "Anonimizas los datos antes de enviarlos"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros son **banderas rojas**. Los últimos 2 son **prácticas seguras**. Saber distinguir te permite auditar tus propios flujos y corregirlos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu flujo clasifica leads. Cada lead tiene nombre, correo, teléfono y mensaje. ¿Qué mandas a la API de AI?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Todo tal cual — es lo más simple"
+          },
+          {
+            "id": 1,
+            "text": "Solo el mensaje, reemplazando nombres y correos por etiquetas. El resto se queda en tu base de datos"
+          },
+          {
+            "id": 2,
+            "text": "Nada — mejor no usar AI"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Principio de mínimos datos**: la AI solo recibe lo que necesita para la tarea. Correo y teléfono no aportan a \"clasificar urgencia del mensaje\", así que se quedan fuera. Menos data expuesta = menos riesgo.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Después de esta lección, Pilar ajusta su flujo de leads. ¿Qué cambio tiene sentido?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Sigue mandando todo y espera que no pase nada"
+          },
+          {
+            "id": 1,
+            "text": "Anonimiza los leads antes de clasificar, usa una API con contrato de tratamiento firmado y documenta el flujo"
+          },
+          {
+            "id": 2,
+            "text": "Abandona la automatización por miedo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Pilar pasó de automatización imprudente a **automatización responsable**. No perdió el beneficio — ganó cumplimiento y tranquilidad. Se puede tener ambas.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🛡️",
+        "title": "Datos sensibles bajo control",
+        "body": "Ya tienes el criterio para no filtrar datos: anonimiza antes de mandar, elige un plan con contrato y manda solo lo mínimo necesario."
+      }
+    }
+  ]
+}

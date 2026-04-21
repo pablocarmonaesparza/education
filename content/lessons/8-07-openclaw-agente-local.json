@@ -1,0 +1,197 @@
+{
+  "section_id": 8,
+  "slug": "openclaw",
+  "title": "OpenClaw: tu agente local",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Pablo quiere un agente que organice archivos en su laptop sin subir nada a la nube. ¿Qué opción es realista hoy?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Imposible: todo agente necesita la nube del proveedor para pensar"
+          },
+          {
+            "id": 1,
+            "text": "Puede correr un agente open source que ejecuta en su máquina y llama al modelo que él elija"
+          },
+          {
+            "id": 2,
+            "text": "Solo si paga un plan empresarial con acceso privado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Existen agentes open source como OpenClaw, Open Interpreter y Aider que corren en tu máquina. Ellos son quienes ven la pantalla y ejecutan acciones; el modelo de lenguaje (LLM) se consulta aparte por una interfaz de programación o API. Así controlas qué puede ver y qué puede hacer.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es OpenClaw",
+        "body": "Un agente de escritorio open source que:\n\n- Corre en tu máquina, no en la nube\n- Observa la pantalla y ejecuta acciones por ti\n- Usa el modelo de lenguaje (LLM) que elijas: Claude, GPT u otro local\n- Tú decides qué puede ver y qué puede hacer"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Ventajas frente a un agente en la nube",
+        "body": "Razones para preferirlo local:\n\n- **Privacidad**: la pantalla y los archivos no salen a servidores ajenos\n- **Control**: tú decides el alcance y los límites\n- **Costo**: pagas solo el uso del modelo, sin plan empresarial\n- **Sin internet**: con un modelo local sigue funcionando offline"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Casos donde el agente local gana",
+        "body": "Dónde brilla lo local:\n\n- **Flujos personales** en tu máquina: archivos, apps, carpetas\n- **Datos sensibles** que no pueden salir a servidores ajenos\n- **Automatización de escritorio** sin quedar atado a un proveedor\n- **Experimentación** sin pagar un plan premium de Claude u OpenAI"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Un agente local es automáticamente más seguro que uno en la nube.",
+        "answer": false,
+        "explanation": "Falso. Lo local quita un riesgo (que tus datos viajen afuera) pero añade otros: un agente con acceso a tu máquina puede borrar o modificar archivos reales si no le pones límites. La seguridad nace del **diseño** — revisión humana, alcance acotado, logs — no del lugar donde corre.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada caso con la mejor ubicación:",
+        "pairs": [
+          {
+            "term": "Datos sensibles de la empresa",
+            "def": "Local — así nada sale a servidores ajenos"
+          },
+          {
+            "term": "Demo público en un evento",
+            "def": "Nube — más fácil de montar y escalar"
+          },
+          {
+            "term": "Ordenar archivos personales",
+            "def": "Local — los archivos ya viven en tu máquina"
+          },
+          {
+            "term": "Servicio prendido 24/7 a miles",
+            "def": "Nube — disponibilidad y escala continua"
+          }
+        ],
+        "explanation": "Ni la nube ni lo local son mejores en abstracto. **Elige según el caso**: sensibilidad de los datos, escala, costo y disponibilidad. Saber combinarlos amplía tus herramientas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué precauciones mínimas debe tener un agente local?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Aprobación humana antes de acciones destructivas como borrar archivos o enviar correos"
+          },
+          {
+            "id": 1,
+            "text": "Registro de cada acción que ejecuta"
+          },
+          {
+            "id": 2,
+            "text": "Alcance limitado a carpetas o apps específicas"
+          },
+          {
+            "id": 3,
+            "text": "Confianza ciega: que haga lo que quiera"
+          },
+          {
+            "id": 4,
+            "text": "Sin límite en las herramientas que puede usar"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Aprobación, registro y alcance limitado son innegociables. **Confianza ciega es un desastre esperando a pasar**: un agente con acceso a tu máquina y sin límites puede borrar días de trabajo en segundos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Quieres un agente que ordene tu carpeta de Descargas cada día. ¿Nube o local?",
+        "options": [
+          {
+            "id": 0,
+            "text": "En la nube, porque un servicio moderno trabajará más rápido"
+          },
+          {
+            "id": 1,
+            "text": "Local, porque la carpeta vive en tu laptop y puedes limitar el alcance solo a ella"
+          },
+          {
+            "id": 2,
+            "text": "Ninguno: mejor hacerlo a mano todos los días"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Los archivos viven en tu máquina, así que el agente también debe vivir ahí. Subirlos a un servidor ajeno solo para que la AI los organice sería lento, costoso y riesgoso. Regla útil: **donde vive el dato, vive el agente**.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Pablo arma un agente local con alcance solo en Descargas y Documentos, y le exige aprobación para borrar. ¿Qué gana?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada: igual podría hacerlo a mano cada día"
+          },
+          {
+            "id": 1,
+            "text": "Un agente local que ordena archivos según sus reglas, con privacidad, control y una hora diaria recuperada"
+          },
+          {
+            "id": 2,
+            "text": "Un riesgo alto de perder todos sus archivos por un error del agente"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Pablo logró un **agente local con diseño seguro**: sus datos no salen de la máquina, él decide qué puede tocar, y el trabajo repetitivo se automatiza. Esa mezcla solo aparece cuando combinas ejecución local con límites claros.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "💻",
+        "title": "Agente local en tu arsenal",
+        "body": "Ahora sabes cuándo conviene un agente en la nube y cuándo uno corriendo en tu propia máquina, con límites claros."
+      }
+    }
+  ]
+}

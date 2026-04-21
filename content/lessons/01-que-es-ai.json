@@ -1,0 +1,201 @@
+{
+  "section_id": 2,
+  "slug": "que-es-ai",
+  "title": "Qué es AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "En una junta, el jefe de María dice: 'vamos a meter AI en el producto'. Todos asumen que significa agregar un ChatGPT dentro de la app. ¿Qué les falta considerar?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada, meter ChatGPT es exactamente lo que significa agregar AI"
+          },
+          {
+            "id": 1,
+            "text": "AI es solo para empresas grandes con ingenieros, no encaja en cualquier producto"
+          },
+          {
+            "id": 2,
+            "text": "AI es una categoría amplia: hay modelos para texto, imagen, voz, video o decisiones. ChatGPT es uno"
+          }
+        ],
+        "correctId": 2,
+        "explanation": "AI **no es sinónimo de ChatGPT**. Meter AI en un producto puede significar imagen, voz, video o decisiones automáticas según el problema que quieras resolver.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "AI no es una sola cosa",
+        "body": "ChatGPT puede hacer casi todo (imagen, voz, video, búsqueda), pero para **calidad profesional** hay modelos especializados:\n\n- imagen → **Flux**\n- voz → **ElevenLabs**\n- video → **Seedance**\n- decisiones automáticas → **agentes**\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Lo que AI hace hoy",
+        "body": "Una AI moderna aprende patrones de mucho texto, imagen o audio y después **genera contenido nuevo** siguiendo esos patrones. No razona como humano. No tiene conciencia. Predice con base en lo que vio."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Lo que AI no es",
+        "body": "AI moderna **no es** un robot que camina. **No es** una conciencia digital. **No es** Skynet. Y **no es** solo ChatGPT. Esas imágenes vienen de películas o de marketing, no de cómo funciona hoy."
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Cuando una empresa dice 'usamos AI' siempre se refiere a que tiene un ChatGPT integrado.",
+        "answer": false,
+        "explanation": "Falso. 'Usar AI' puede significar texto, imagen, voz, video, decisiones o cualquier combinación. ChatGPT es una entrada popular entre *muchas otras*.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada herramienta con el tipo de AI que es:",
+        "pairs": [
+          {
+            "term": "ChatGPT",
+            "def": "AI de texto"
+          },
+          {
+            "term": "Flux",
+            "def": "AI de imagen"
+          },
+          {
+            "term": "ElevenLabs",
+            "def": "AI de voz humana"
+          },
+          {
+            "term": "Seedance",
+            "def": "AI de video"
+          },
+          {
+            "term": "OpenClaw",
+            "def": "AI que toma decisiones y actúa"
+          }
+        ],
+        "explanation": "Cada herramienta resuelve un tipo distinto de problema. AI no es una cosa, son muchas piezas que se combinan según lo que necesitas producir.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Una amiga tuya dice: 'quiero meter AI en mi pastelería'. ¿Qué preguntas le ayudan a aterrizar qué tipo de AI necesita?",
+        "options": [
+          {
+            "id": 0,
+            "text": "¿Qué tarea quieres que haga la AI?"
+          },
+          {
+            "id": 1,
+            "text": "¿El resultado va a ser texto, imagen o decisión?"
+          },
+          {
+            "id": 2,
+            "text": "¿Va a usarla ella sola o va a atender clientes?"
+          },
+          {
+            "id": 3,
+            "text": "¿Ya tiene Wi-Fi suficientemente rápido para AI?"
+          },
+          {
+            "id": 4,
+            "text": "¿Qué marca de computadora usa en la pastelería?"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Las tres primeras son las preguntas que *aterrizan el caso de uso*. Las otras dos son ruido técnico que no decide qué AI sirve.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Rodrigo dice: 'ChatGPT ya tiene voz, imagen y búsqueda web integradas. Con eso me alcanza, no necesito aprender nada más.' ¿Cuál es el problema con ese plan?",
+        "options": [
+          {
+            "id": 0,
+            "text": "ChatGPT hace de todo, pero en imagen, voz y video los resultados son mediocres. Para calidad profesional hay herramientas dedicadas que lo superan por mucho"
+          },
+          {
+            "id": 1,
+            "text": "Ningún problema — ChatGPT cubre todos los casos con calidad suficiente para cualquier uso"
+          },
+          {
+            "id": 2,
+            "text": "Necesita aprender Google Docs primero antes de tocar cualquier AI"
+          }
+        ],
+        "correctId": 0,
+        "explanation": "ChatGPT es la *navaja suiza* de AI: útil para todo, excelente para nada en particular. Para un flyer profesional usas **Flux**, para narrar un video en voz natural **ElevenLabs**, para un clip cinematográfico **Seedance**. ChatGPT es buen inicio, no destino final.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Al final de la junta de María, el jefe pregunta: '¿qué tipo de AI deberíamos meter en el producto?'. Si María toma la palabra primero, ¿por dónde empieza?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Proponiendo meter ChatGPT porque es el más conocido"
+          },
+          {
+            "id": 1,
+            "text": "Definiendo qué problema quieren resolver — eso decide qué tipo de AI embona"
+          },
+          {
+            "id": 2,
+            "text": "Sugiriendo esperar a que otro equipo investigue primero"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "El problema decide la herramienta, no al revés. Meter AI sin definir el caso de uso garantiza que no sirva para nada específico.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🧠",
+        "title": "AI sin las películas",
+        "body": "Ahora sabes que AI es una categoría, no un producto. La próxima lección entra al corazón: qué es un modelo de lenguaje, la pieza que hace funcionar a ChatGPT y Claude."
+      }
+    }
+  ]
+}

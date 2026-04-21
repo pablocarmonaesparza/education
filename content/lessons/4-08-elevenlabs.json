@@ -1,0 +1,197 @@
+{
+  "section_id": 4,
+  "slug": "elevenlabs",
+  "title": "ElevenLabs: voz con AI que suena humana",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Natalia ya paga ChatGPT Plus y necesita narrar un video explicativo de 3 minutos. ¿Qué hace?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Usa la voz de ChatGPT, ya la tiene y las voces AI son todas parecidas"
+          },
+          {
+            "id": 1,
+            "text": "Prueba ElevenLabs: está diseñada para narrar contenido, no para chatear"
+          },
+          {
+            "id": 2,
+            "text": "Mejor graba su propia voz aunque le tome horas editar"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "La voz de ChatGPT está optimizada para chat conversacional corto, no para narrar piezas largas. ElevenLabs es una herramienta distinta pensada para producir audio: controla entonación, pausas y emoción en tramos largos. Tenerlas como si fueran lo mismo cuesta tiempo y calidad.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es ElevenLabs",
+        "body": "**ElevenLabs** es un modelo especializado en generación y clonación de voz. Lo diferencia:\n\n- Voces en decenas de idiomas con acento natural\n- Emociones y pausas convincentes\n- Clonación de tu voz con 1-3 minutos de audio\n- Output listo para publicar"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Casos típicos donde brilla",
+        "body": "ElevenLabs justifica el cambio cuando:\n\n- **Narras** un video explicativo, tutorial o curso\n- **Produces** un podcast sin micrófono profesional\n- **Grabas** un audiolibro o audio-post\n- **Doblas** a otro idioma manteniendo tu voz"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Por qué no alcanza con ChatGPT voz",
+        "body": "El modo voz de ChatGPT suena decente para conversar. Al narrar un video largo, aparecen límites claros:\n\n- La entonación se vuelve plana\n- Las pausas se sienten mecánicas\n- El audio pegado suena cortado"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Clonar tu voz con ElevenLabs requiere grabar horas de audio.",
+        "answer": false,
+        "explanation": "Falso. Con **1 a 3 minutos** de audio limpio, ElevenLabs puede generar una clonación razonable. Para mejor calidad, 10-30 minutos ayudan, pero no son obligatorios.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso con la herramienta de voz:",
+        "pairs": [
+          {
+            "term": "Chat conversacional en vivo",
+            "def": "ChatGPT voz — suficiente y rápido"
+          },
+          {
+            "term": "Narración de video explicativo",
+            "def": "ElevenLabs — emoción y pausas (caso típico)"
+          },
+          {
+            "term": "Clonar tu voz para contenido",
+            "def": "ElevenLabs — clonación nativa"
+          },
+          {
+            "term": "Audiolibro profesional",
+            "def": "ElevenLabs — calidad de producción"
+          }
+        ],
+        "explanation": "ChatGPT voz sirve para chat. ElevenLabs sirve para **producir**. Saber cuál abrir por tarea te ahorra retrabajos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué ventajas concretas ofrece ElevenLabs sobre alternativas básicas?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Clonación de voz a partir de muestras cortas"
+          },
+          {
+            "id": 1,
+            "text": "Control de emociones y pausas"
+          },
+          {
+            "id": 2,
+            "text": "Soporta decenas de idiomas con acento natural"
+          },
+          {
+            "id": 3,
+            "text": "Es gratis e ilimitado sin cuenta"
+          },
+          {
+            "id": 4,
+            "text": "Genera video además de audio"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Clonación, control fino y multilenguaje son diferencias reales. No es gratis ilimitado (hay tiers) y no genera video. Conocer las ventajas reales evita pagar por mitos.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un cliente te pide doblar un video de 2 minutos al inglés, manteniendo un tono similar a tu voz. ¿Qué eliges?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Grabas tú mismo en inglés aunque tu acento sea fuerte"
+          },
+          {
+            "id": 1,
+            "text": "Clonas tu voz en ElevenLabs, generas el audio en inglés, suena como tú pero con acento nativo"
+          },
+          {
+            "id": 2,
+            "text": "Contratas a un locutor de inglés nativo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Este es **exactamente** el caso de ElevenLabs: clonación + multilenguaje. Mantienes tu identidad vocal con acento natural. Grabarlo tú mismo con acento fuerte daña la pieza.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Natalia vuelve al video de 3 minutos. ¿Qué decide ahora?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Reusa la voz de ChatGPT porque ya la paga, aunque se sienta plana"
+          },
+          {
+            "id": 1,
+            "text": "Abre ElevenLabs, elige una voz cálida y narra los 3 minutos con pausas naturales"
+          },
+          {
+            "id": 2,
+            "text": "Pospone el video hasta que ChatGPT mejore su voz"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Natalia pasó de asumir que todas las voces AI son lo mismo a **elegir la herramienta correcta por tarea**. El video sale con calidad de producción y ella tarda menos que grabándolo manual.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🎙️",
+        "title": "Voz profesional sin estudio",
+        "body": "Ya sabes cuándo ElevenLabs justifica el cambio y cuándo ChatGPT voz basta. Esa decisión te ahorra retrabajos y hace que tu contenido suene a pieza producida."
+      }
+    }
+  ]
+}

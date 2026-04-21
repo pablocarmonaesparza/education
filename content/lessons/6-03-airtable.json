@@ -1,0 +1,197 @@
+{
+  "section_id": 6,
+  "slug": "airtable",
+  "title": "Airtable: la base de datos visual más poderosa",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Mauricio lleva sus clientes en Notion y quiere reportes con fórmulas serias y automatizaciones. ¿Qué le conviene hacer?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Quedarse en Notion: cualquier herramienta moderna sirve igual para datos"
+          },
+          {
+            "id": 1,
+            "text": "Mover los clientes a Airtable, que nació como base de datos y tiene fórmulas y automatizaciones más potentes"
+          },
+          {
+            "id": 2,
+            "text": "Exportar todo a Excel y conectar Notion a la hoja"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Notion es un editor de documentos que incluye tablas; Airtable es una **base de datos (BD)** con interfaz visual. Cuando la pieza central son los datos —reportes, fórmulas, automatizaciones— Airtable rinde mejor. Cuando lo central son documentos, Notion gana.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es Airtable",
+        "body": "**Airtable** es una base de datos relacional con interfaz visual. Lo que la distingue:\n\n- Fórmulas al estilo de Excel\n- Vistas avanzadas: Gantt, Kanban, calendario, formularios\n- Automatizaciones nativas sin salir de la plataforma\n- Conexión por API (la vía para que otras apps lean o escriban tus datos)"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Airtable frente a Notion",
+        "body": "Diferencias clave:\n\n- **Velocidad con datos**: Airtable aguanta más volumen\n- **Fórmulas**: Airtable llega a nivel Excel; Notion es más básico\n- **Documentos**: Notion gana, Airtable es base de datos\n- **Automatizaciones**: Airtable trae motor propio integrado"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Casos donde Airtable brilla",
+        "body": "Le saca provecho cuando tienes:\n\n- Gestión de clientes con cálculos complejos\n- Pipelines de producción: editorial, tareas, inventario\n- Bases colaborativas con permisos por rol\n- Formularios públicos que alimentan la tabla\n- Datos con relaciones entre varias tablas"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Airtable aguanta cualquier volumen de datos, por grande que sea.",
+        "answer": false,
+        "explanation": "Falso. Airtable tiene **límites duros**: cuotas de filas por plan y tope de llamadas a la API. Para apps con millones de registros se queda corto. Para equipos con decenas de miles, sobra.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la necesidad con la herramienta que le conviene:",
+        "pairs": [
+          {
+            "term": "Wiki con tabla embebida",
+            "def": "Notion — el documento es lo principal"
+          },
+          {
+            "term": "Clientes con fórmulas",
+            "def": "Airtable — los datos son lo principal"
+          },
+          {
+            "term": "Calendario editorial con notas",
+            "def": "Notion — mezcla de texto y tabla"
+          },
+          {
+            "term": "Pipeline con cálculos",
+            "def": "Airtable — fórmulas y automatizaciones"
+          }
+        ],
+        "explanation": "La regla: **Notion para contenido con datos dentro. Airtable para datos con interfaz bonita.** Elegir según cuál es el elemento principal ahorra frustración.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué capacidades tiene Airtable que Notion no tiene o hace peor?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Fórmulas con potencia de Excel"
+          },
+          {
+            "id": 1,
+            "text": "Automatizaciones nativas con lógica condicional"
+          },
+          {
+            "id": 2,
+            "text": "Formularios públicos que alimentan tablas"
+          },
+          {
+            "id": 3,
+            "text": "Edición colaborativa de documentos"
+          },
+          {
+            "id": 4,
+            "text": "Wikis jerárquicas"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Airtable gana en fórmulas, automatizaciones y formularios. Documentos y wikis son territorio de Notion. **Cada herramienta tiene su fortaleza — ninguna es 'mejor' en todo.**",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu pipeline editorial tiene: 50 piezas en distintos estados, fechas, responsables, canales de publicación, métricas. ¿Qué eliges?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Notion — para poder escribir las piezas ahí mismo"
+          },
+          {
+            "id": 1,
+            "text": "Airtable — para el pipeline de gestión, con enlace a Google Docs para escribir las piezas"
+          },
+          {
+            "id": 2,
+            "text": "Excel exportado manualmente"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Pipeline con métricas y estados va en Airtable. Para escribir las piezas, usa una herramienta distinta como Google Docs o Notion. **Una sola herramienta para todo suele mezclar roles y empeorar ambos.**",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Mauricio decide qué hacer con su setup. ¿Qué le conviene?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Migra todo, incluidas las notas personales, a Airtable"
+          },
+          {
+            "id": 1,
+            "text": "Mueve clientes y pipelines a Airtable y deja notas y wikis en Notion: cada herramienta en su rol"
+          },
+          {
+            "id": 2,
+            "text": "Se queda en Notion y aguanta los límites para no cambiar"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Mauricio aplica la regla: **cada herramienta en su rol**. Clientes y pipelines van a Airtable, que es base de datos de verdad. Notas y wikis se quedan en Notion, que es editor. Los datos viven donde rinden mejor.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🗂️",
+        "title": "Airtable en tu stack",
+        "body": "Ya sabes distinguir cuándo conviene una base de datos visual como Airtable y cuándo un editor con tablas como Notion. Escoge por cuál es el elemento principal y tu setup rinde mejor."
+      }
+    }
+  ]
+}

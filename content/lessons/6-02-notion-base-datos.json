@@ -1,0 +1,197 @@
+{
+  "section_id": 6,
+  "slug": "notion",
+  "title": "Notion como base de datos",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Valeria usa Notion para notas, páginas y listas. Alguien le dice que Notion también funciona como base de datos. Ella piensa: \"es solo texto bonito con tablas decorativas\".",
+        "options": [
+          {
+            "id": 0,
+            "text": "Solo sirve para tomar notas"
+          },
+          {
+            "id": 1,
+            "text": "Es una base de datos real con columnas tipadas y filtros"
+          },
+          {
+            "id": 2,
+            "text": "Notion quedó obsoleto y conviene cambiar a Excel"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Notion Databases son **tablas reales**: columnas con tipo (fecha, persona, select), filtros, vistas y relaciones. Muchos equipos manejan ahí su gestión de clientes, tareas y contenido — no como adorno, sino como base de datos funcional conectable a automatizaciones.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Una database de Notion, por dentro",
+        "body": "Cada database es una tabla con:\n\n- **Columnas tipadas**: texto, número, fecha, persona, select\n- **Vistas**: tabla, tablero, calendario, lista\n- **Filtros y orden**: por cualquier propiedad\n- **Relaciones**: entre una tabla y otra"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cuándo Notion encaja como base de datos",
+        "body": "Notion gana como base de datos si:\n\n- Tu equipo **ya lo usa** para notas\n- La interfaz visual importa más que el rendimiento\n- Tienes menos de 10 a 50 mil filas\n- Necesitas varias vistas (tablero, calendario, tabla)"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Conectar Notion a la AI",
+        "body": "Notion ofrece una API — la interfaz para que un programa externo le hable. Con eso una automatización o una AI puede:\n\n- **Leer** filas filtradas\n- **Escribir** filas nuevas\n- **Actualizar** propiedades"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Notion puede manejar fácilmente una tabla con millones de registros.",
+        "answer": false,
+        "explanation": "Falso. Notion empieza a arrastrar pasadas las decenas de miles de filas. Para millones, usa una BD real (Supabase, Postgres). Notion brilla en tamaños humanos, no masivos.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada elemento de Notion con su equivalente en una base de datos clásica:",
+        "pairs": [
+          {
+            "term": "Database",
+            "def": "Una tabla completa"
+          },
+          {
+            "term": "Propiedad",
+            "def": "Una columna de la tabla"
+          },
+          {
+            "term": "Página",
+            "def": "Una fila dentro de la tabla"
+          },
+          {
+            "term": "Relación",
+            "def": "Un enlace hacia otra tabla"
+          }
+        ],
+        "explanation": "Notion es una base de datos con **otra interfaz**. Una vez que ves los equivalentes, todo lo que sabes de bases de datos aplica: filtrar, relacionar, automatizar.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué casos son ideales para Notion como base de datos?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Gestión de clientes de 200 contactos para un equipo no técnico"
+          },
+          {
+            "id": 1,
+            "text": "Biblioteca de contenido con etiquetas y calendario editorial"
+          },
+          {
+            "id": 2,
+            "text": "Proyectos con tareas, responsables y fechas"
+          },
+          {
+            "id": 3,
+            "text": "Aplicación pública con 100 mil usuarios simultáneos"
+          },
+          {
+            "id": 4,
+            "text": "Almacén de datos con 50 millones de eventos diarios"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los tres primeros son el **punto dulce** de Notion: equipos humanos, datos manejables. Los dos últimos requieren una base de datos industrial; usar Notion para ellos termina en dolor.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu equipo ya organiza clientes y proyectos en Notion. Quieres que un bot resuma cada mañana los nuevos contactos. ¿Qué haces primero?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Migrar todo a otra herramienta antes de armar el bot"
+          },
+          {
+            "id": 1,
+            "text": "Conectar el bot a la API de Notion y leer los contactos en vivo"
+          },
+          {
+            "id": 2,
+            "text": "Descargar el archivo CSV cada mañana y procesarlo aparte"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Aprovechar el Notion que **ya usan** es más eficiente que migrar. Si algún día crece demasiado, migras; hoy, conectar vía API desbloquea el flujo sin cambiar nada.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Valeria deja de ver su Notion como \"notas bonitas\" y empieza a usarlo como base de datos activa. ¿Qué cambia en la práctica?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada, sigue siendo exactamente lo mismo"
+          },
+          {
+            "id": 1,
+            "text": "Ahora alimenta automatizaciones y el equipo ve actualizaciones en vivo"
+          },
+          {
+            "id": 2,
+            "text": "Pierde la simplicidad original de las notas"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Valeria no cambió de herramienta — **activó capacidades** que su herramienta ya tenía. Notion pasó de repositorio a centro de datos conectado.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "📚",
+        "title": "Notion como base de datos real",
+        "body": "Ya ves tu Notion con otros ojos: columnas tipadas, vistas, filtros y una API que lo conecta con automatizaciones y AI."
+      }
+    }
+  ]
+}

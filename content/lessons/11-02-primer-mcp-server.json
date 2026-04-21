@@ -1,0 +1,198 @@
+{
+  "section_id": 11,
+  "slug": "primer-mcp-server",
+  "title": "Tu primer MCP server",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Paloma quiere conectar su inventario a Claude vía MCP (Model Context Protocol). Nadie en su equipo lo ha hecho antes. ¿Qué es más realista para su primera versión?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Contratar a un consultor especializado por 3 meses"
+          },
+          {
+            "id": 1,
+            "text": "Exponer dos funciones simples con el kit oficial en una tarde"
+          },
+          {
+            "id": 2,
+            "text": "Construir todo el protocolo de comunicación desde cero"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "La intuición dice que un protocolo nuevo requiere meses. La realidad: el kit oficial de MCP (el paquete que instalas) resuelve todo lo técnico. Tú escribes dos funciones de Python o TypeScript, les pones un decorador, y ya tienes un MCP server. Paloma puede tener una versión útil en una tarde.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las tres piezas de un MCP server",
+        "body": "Un **MCP server** es un programa que expone funciones de tu sistema para que la AI las pueda usar. Tiene tres piezas:\n\n- **Funciones**: lo que la AI puede ejecutar\n- **Descripción**: qué hace cada una\n- **Canal**: cómo conversa con la AI\n\nEl kit oficial resuelve el canal."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Ejemplo: MCP que consulta inventario",
+        "body": "Así se ve una función expuesta al modelo:\n\n- Nombre claro: `consultar_stock`\n- Descripción: *\"obtiene la cantidad disponible de un producto por su código\"*\n- Argumento: `sku` (texto)\n- Resultado: número de unidades\n\nEl decorador del kit convierte esa función en una herramienta que Claude puede usar."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "La descripción es lo que el modelo lee",
+        "body": "Claude elige qué función usar leyendo su descripción. Si la descripción es vaga, la elegirá mal. Regla:\n\n- Describe **qué hace** la función, no cómo\n- Incluye un ejemplo corto de uso\n- Declara el tipo de cada argumento\n- Devuelve errores con mensaje claro"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Para escribir un MCP server necesitas entender a fondo cómo viajan los mensajes por debajo del protocolo.",
+        "answer": false,
+        "explanation": "Falso. El kit oficial **resuelve toda la plomería técnica**. Tú escribes funciones normales de Python o TypeScript y les pones un decorador. La parte de bajo nivel la resuelve el kit — tú te concentras en qué hacen tus funciones.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para crear tu primer MCP server:",
+        "steps": [
+          "Identificar qué sistema quieres conectar a la AI",
+          "Elegir dos o tres funciones clave para empezar",
+          "Instalar el kit oficial de MCP",
+          "Escribir las funciones y marcarlas con el decorador",
+          "Probar con Claude usando conversación real",
+          "Iterar y añadir funciones según aparezca la necesidad"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "explanation": "El orden protege contra la sobreingeniería. Primero identificas el sistema, luego recortas el alcance a lo mínimo útil, después instalas el kit — si no sabes qué expones, el código que escribas estará inflado. Probar al final revela si la interfaz quedó clara para el modelo.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada decisión con su razón:",
+        "pairs": [
+          {
+            "term": "Nombres descriptivos",
+            "def": "El modelo elige la función leyendo su nombre"
+          },
+          {
+            "term": "Descripciones con ejemplo",
+            "def": "El modelo entiende cuándo usarla y cuándo no"
+          },
+          {
+            "term": "Tipos declarados en argumentos",
+            "def": "Previene llamadas mal formadas"
+          },
+          {
+            "term": "Errores con mensaje claro",
+            "def": "El modelo puede reintentar o corregirse"
+          }
+        ],
+        "explanation": "Diseñar un MCP es **diseñar una interfaz para que un modelo la use**. Las buenas prácticas son parecidas a diseñar una API bien documentada, con énfasis extra en claridad semántica porque el consumidor es un modelo, no un humano.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu MCP server está bien diseñado?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El modelo elige la función correcta sin dudar"
+          },
+          {
+            "id": 1,
+            "text": "Los errores son claros cuando algo falla"
+          },
+          {
+            "id": 2,
+            "text": "Otra persona del equipo puede extenderlo sin preguntar"
+          },
+          {
+            "id": 3,
+            "text": "Tiene cincuenta funciones para cubrir cualquier caso"
+          },
+          {
+            "id": 4,
+            "text": "El modelo tiene que adivinar cuándo usar cada función"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Claridad, manejo de errores y extensibilidad son señales sanas. Exceso de funciones o adivinanza son **antipatrones** — pocas funciones bien descritas funcionan mejor que muchas mal definidas, porque el modelo tiene menos espacio para confundirse.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Paloma termina su MCP server de inventario. Lo conecta a Claude. ¿Cuál es la mejor forma de validarlo antes de usarlo en su tienda?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Ejecutar la función directamente desde el código y confirmar que devuelve el dato"
+          },
+          {
+            "id": 1,
+            "text": "Pedirle a Claude en lenguaje natural que consulte un producto y ver si elige la función correcta"
+          },
+          {
+            "id": 2,
+            "text": "Revisar que no haya errores de sintaxis en el archivo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "La función puede funcionar perfecta aislada y aun así la descripción puede estar tan confusa que Claude nunca la elija, o la llame con argumentos equivocados. **Probar con conversación real** es lo único que revela si la interfaz que ve el modelo es clara.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔧",
+        "title": "MCP server propio",
+        "body": "Ya conoces las tres piezas, la regla de las descripciones claras, y el orden para construir tu primer MCP server sin morir en el intento. Empieza con dos funciones — lo demás es iterar."
+      }
+    }
+  ]
+}

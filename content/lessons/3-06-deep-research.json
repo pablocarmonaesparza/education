@@ -1,0 +1,197 @@
+{
+  "section_id": 3,
+  "slug": "deep-research",
+  "title": "Deep research: investigar con AI",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Ximena tiene 2 días bloqueados para investigar un mercado nuevo: reportes, competidores, síntesis. Le dicen que active deep research en ChatGPT. ¿Qué esperar?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Una respuesta inmediata tipo chat, como siempre"
+          },
+          {
+            "id": 1,
+            "text": "Un reporte con fuentes citadas tras 10-30 minutos de búsqueda"
+          },
+          {
+            "id": 2,
+            "text": "Nada distinto: el modelo no accede a información nueva"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Deep research no es un chat más rápido: es un modo que dedica 10-30 minutos a leer docenas de fuentes y entregar un reporte estructurado con citas. No reemplaza tu análisis final, pero sí la fase lenta de recopilación.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es deep research",
+        "body": "**Deep research** es un modo especializado donde el modelo:\n\n- Busca activamente en la web (no solo memoria)\n- Lee decenas o cientos de páginas\n- Sintetiza con fuentes citadas\n- Entrega un reporte estructurado (no un chat)\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Cómo se usa",
+        "body": "El patrón es:\n\n1. Activas el modo (botón en la interfaz)\n2. Escribes un prompt con **rol, pregunta central, alcance y formato**\n3. El modelo tarda 10-30 minutos (no instantáneo)\n4. Recibes un reporte con secciones, datos y citas\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Lo que deep research no es",
+        "body": "No es magia:\n\n- **No reemplaza tu juicio** — es insumo estructurado para que tú decidas\n- **Puede inventar o citar mal** — verifica las fuentes importantes\n- **No ve datos privados** si no se los das tú\n- **Consume más créditos** que un chat normal\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Un reporte de deep research está listo para copiar-pegar al cliente final sin revisar.",
+        "answer": false,
+        "explanation": "Falso. **Siempre verifica las citas clave** y ajusta el tono al cliente. Deep research acelera la recopilación; el ensamblaje final sigue siendo tuyo. Si entregas sin revisar, arriesgas publicar con alucinaciones.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el componente de un buen prompt de deep research con un ejemplo:",
+        "pairs": [
+          {
+            "term": "Rol",
+            "def": "Eres un analista de mercado senior"
+          },
+          {
+            "term": "Pregunta central",
+            "def": "¿Qué tan saturado está el mercado de café orgánico en CDMX?"
+          },
+          {
+            "term": "Alcance",
+            "def": "Enfoca en 2024-2026, solo competidores con más de 5 sucursales"
+          },
+          {
+            "term": "Formato",
+            "def": "Reporte con 5 secciones, cada una con tabla comparativa y fuentes"
+          }
+        ],
+        "explanation": "Un prompt vago genera un reporte vago. **Rol + pregunta central + alcance + formato** aplican con doble intensidad aquí: vas a esperar 20 minutos por el output, así que el brief tiene que estar afilado antes de lanzar.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Cuándo deep research vale la pena?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Investigación de mercado antes de lanzar producto"
+          },
+          {
+            "id": 1,
+            "text": "Investigar a fondo una empresa o persona antes de una decisión"
+          },
+          {
+            "id": 2,
+            "text": "Análisis competitivo con múltiples fuentes"
+          },
+          {
+            "id": 3,
+            "text": "Pregunta sencilla con respuesta en un párrafo"
+          },
+          {
+            "id": 4,
+            "text": "Conversación casual con el modelo"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Deep research es para **investigación de verdad**. Pregunta simple o conversación: chat normal. Solo activas este modo cuando el reporte extenso justifica los 20-30 minutos de espera.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un colega lanza un deep research con el prompt: 'investígame el mercado X'. Recibe un reporte genérico. ¿Qué le faltó?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada, deep research siempre genérico — es limitación del modelo"
+          },
+          {
+            "id": 1,
+            "text": "Especificar rol, alcance y formato; sin límites claros, el modelo entrega lo más genérico posible"
+          },
+          {
+            "id": 2,
+            "text": "Esperar más tiempo, 20 min no es suficiente para profundidad"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Deep research obedece a su prompt. **Sin límites claros, devuelve una enciclopedia aburrida**. Un prompt con rol, pregunta afilada, alcance acotado y formato claro entrega un reporte útil.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Ximena prepara su investigación de mercado. Tiene 2 días bloqueados. ¿Qué hace según lo que aprendió?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Lee reportes a mano 2 días completos como antes"
+          },
+          {
+            "id": 1,
+            "text": "Lanza un deep research con prompt afilado, espera 20 min, verifica citas clave, usa el resto del tiempo para análisis y decisiones"
+          },
+          {
+            "id": 2,
+            "text": "Le pide a un consultor externo que lo haga"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Ximena usa deep research como **multiplicador de su tiempo**, no como reemplazo de su juicio. Lo que eran 2 días de lectura son 30 minutos de verificación + 1 día de análisis real.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🔬",
+        "title": "Deep research como aliado",
+        "body": "Acabas de aprender a delegar la parte lenta de investigar. La próxima vez que necesites un reporte con fuentes, lanza un deep research con rol, pregunta, alcance y formato afilados."
+      }
+    }
+  ]
+}

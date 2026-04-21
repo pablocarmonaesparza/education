@@ -1,0 +1,198 @@
+{
+  "section_id": 5,
+  "slug": "primer-bot",
+  "title": "Tu primer bot que trabaja solo",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Renata estudió automatización durante meses. Sabe de triggers, n8n, canales y monitoreo. Quiere lanzar su primer bot y se pregunta por dónde empezar para que sea exitoso.",
+        "options": [
+          {
+            "id": 0,
+            "text": "Diseñar el bot completo en papel antes de tocar ninguna herramienta"
+          },
+          {
+            "id": 1,
+            "text": "Elegir una tarea repetitiva que ya hace a mano y automatizar solo esa"
+          },
+          {
+            "id": 2,
+            "text": "Pedirle a una IA que genere el flujo completo y copiarlo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Diseñar primero en papel suena prudente pero genera parálisis: siempre faltan detalles que solo aparecen al construir. El primer bot debe ser **una tarea real y pequeña** que ya haces a mano. Eso da feedback inmediato y evita el bot imaginado que nunca arranca.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Anatomía de un primer bot útil",
+        "body": "Un bot pequeño que vale la pena:\n\n- **Un trigger claro** (cron diario o webhook)\n- **Un paso de AI** que añade criterio\n- **Un canal de salida** donde lo ves\n- **Monitoreo básico** para que no falle en silencio"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "5 ideas de primer bot",
+        "body": "Buenos candidatos para arrancar:\n\n- **Resumen de tu inbox** cada mañana a Slack\n- **Alerta de menciones** de tu marca en web\n- **Digest semanal** de tus fuentes favoritas\n- **Auto-clasificador** de tickets que llegan\n- **Reporte diario** de métricas clave"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "La regla del 80/20 del primer bot",
+        "body": "No intentes cubrir todos los casos. Apunta al 80% más común:\n\n- Funciona para emails estándar (no edge cases raros)\n- Falla grácil cuando no encaja (te avisa)\n- Mejora con uso real, no con imaginación\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Tu primer bot debe estar completo y pulido antes de activarlo.",
+        "answer": false,
+        "explanation": "Falso. **Lánzalo simple**, úsalo una semana, identifica los 2-3 ajustes reales que necesita, ajusta. Pulir sin uso real es perder tiempo en problemas imaginarios. Pulir sobre uso real es invertir bien.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para lanzar tu primer bot hoy:",
+        "steps": [
+          "Elige una tarea pequeña que ya haces cada día o semana",
+          "Diseña el flujo mínimo: trigger, paso de AI, salida, alerta de error",
+          "Ármalo en tu herramienta elegida (n8n, Make, Routines)",
+          "Prueba con datos reales en modo manual",
+          "Activa con monitoreo básico",
+          "Úsalo una semana y ajusta lo que falle"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "explanation": "El orden protege contra la parálisis: **pequeño, simple, real, iterativo**. Cada paso es barato. Saltarse la prueba manual o el monitoreo casi garantiza dolor de cabeza.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el componente con su función en el bot:",
+        "pairs": [
+          {
+            "term": "Trigger",
+            "def": "Cuándo corre el bot"
+          },
+          {
+            "term": "Paso de AI",
+            "def": "Qué criterio añade"
+          },
+          {
+            "term": "Salida",
+            "def": "Dónde ves el resultado"
+          },
+          {
+            "term": "Alerta de error",
+            "def": "Te avisa si falla"
+          }
+        ],
+        "explanation": "Los 4 componentes son **el núcleo de cualquier bot**. Entender sus roles te permite variar las piezas sin perder la estructura.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que tu primer bot es bueno candidato para lanzarlo?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Se puede describir en una frase clara"
+          },
+          {
+            "id": 1,
+            "text": "La tarea ya existe y la haces a mano"
+          },
+          {
+            "id": 2,
+            "text": "Puedes probarlo con 3-5 casos reales"
+          },
+          {
+            "id": 3,
+            "text": "Necesita cubrir 100% de los casos imaginables"
+          },
+          {
+            "id": 4,
+            "text": "No empiezas hasta que el diseño sea perfecto"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Claridad, tarea real, testeable = señales verdes. Los últimos 2 son **trampas mentales** que te impiden lanzar. El primer bot pequeño vale más que el gran bot imaginado.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Renata decide su primer bot: resumen diario del inbox en Slack. Aplicando lo aprendido, ¿cómo lo lanza?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Dedica tres semanas a pulirlo en privado antes de activarlo"
+          },
+          {
+            "id": 1,
+            "text": "Lo arma simple, prueba con datos reales, lo activa con alerta de error y ajusta con el uso de la semana"
+          },
+          {
+            "id": 2,
+            "text": "Pospone el lanzamiento hasta que cubra todos los casos posibles"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Renata pasó de **saber** a **tener**. Un bot imperfecto corriendo hoy supera a un bot ideal imaginado: entrega valor desde el día uno y el uso real revela los ajustes que importan, no los que imaginamos.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🤖",
+        "title": "Sección de automatización cerrada",
+        "body": "Tienes tu primer bot real. La siguiente sección entra al mundo de los datos: bases, embeddings, y cómo conectar AI a tu propia información."
+      }
+    }
+  ]
+}

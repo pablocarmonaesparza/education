@@ -1,0 +1,209 @@
+{
+  "section_id": 2,
+  "slug": "cuando-usar-ai",
+  "title": "Cuándo usar AI y cuándo no",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Renata mete AI en todo: pregunta direcciones que ya sabe, pide redactar 'gracias' de 2 líneas, consulta triviales. Al final del día lleva 1 hora extra. ¿Qué pasa?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Está usando mal los prompts; con mejor prompt cada tarea sería más rápida"
+          },
+          {
+            "id": 1,
+            "text": "Está usando AI para tareas donde hacerla a mano es más rápido; el 'impuesto de AI' se acumula en tareas triviales"
+          },
+          {
+            "id": 2,
+            "text": "Necesita un modelo más rápido para que responda en segundos"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "AI tiene un **costo mínimo de fricción**: abrir, escribir el prompt, leer el output, validar. Para tareas de 10 segundos, ese costo es mayor que hacerlo a mano. El truco no es usar AI siempre, sino **saber cuándo sí y cuándo no**.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "AI es una herramienta, no un hábito",
+        "body": "Como cualquier herramienta, AI tiene **costo de uso**: tiempo de escribir el prompt, verificar el output, iterar si hace falta. Para que valga la pena, la tarea tiene que ser **más cara sin AI** que con AI."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Dónde sí brilla",
+        "body": "AI rinde mucho en:\n\n- Tareas **largas** de escritura o resumen\n- **Traducción** y adaptación entre idiomas\n- **Código repetitivo** o cambios masivos\n- **Lluvia de ideas** cuando necesitas muchas opciones rápido\n- Procesar documentos largos que no tendrías tiempo de leer"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Dónde no vale la pena",
+        "body": "AI es mal trato cuando:\n\n- La tarea toma **menos de 30 segundos** a mano\n- Necesitas un **dato preciso** (riesgo de alucinación)\n- Hay **datos privados** que no deberías subir a la nube\n- Requiere **juicio humano genuino** (disculpas, despidos, feedback personal)"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja la tarea con la respuesta correcta:",
+        "pairs": [
+          {
+            "term": "Escribir 20 descripciones",
+            "def": "Usa AI — tarea larga y repetitiva que se acelera 10x"
+          },
+          {
+            "term": "Mandar 'gracias' rápido",
+            "def": "A mano — toma 5 segundos, abrir ChatGPT toma más"
+          },
+          {
+            "term": "Redactar un despido",
+            "def": "A mano — el juicio humano no se delega a la AI"
+          },
+          {
+            "term": "Resumir un PDF de 80 páginas",
+            "def": "Usa AI — tarea larga de comprensión que lleva horas"
+          }
+        ],
+        "explanation": "La regla de oro: AI cuando la tarea sería **más lenta a mano**. A mano cuando es trivial o requiere tu juicio genuino. No todo debe pasar por un prompt.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿En cuáles de estos casos vale la pena usar AI?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Traducir un artículo de 5 páginas al inglés"
+          },
+          {
+            "id": 1,
+            "text": "Responder 'sí' a una pregunta de sí/no por WhatsApp"
+          },
+          {
+            "id": 2,
+            "text": "Armar un borrador de contrato a partir de notas"
+          },
+          {
+            "id": 3,
+            "text": "Calcular 15% de 80 (usas la calculadora)"
+          },
+          {
+            "id": 4,
+            "text": "Resumir una reunión de 1 hora transcrita"
+          }
+        ],
+        "correctIds": [
+          0,
+          2,
+          4
+        ],
+        "explanation": "Traducir, redactar contratos, resumir reuniones: tareas largas que AI acelera 10x. Responder 'sí' o hacer una cuenta simple: a mano o con calculadora es instantáneo y seguro.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos de decisión antes de abrir ChatGPT:",
+        "steps": [
+          "Piensas cuánto tiempo te tomaría la tarea a mano",
+          "Estimás cuánto te costaría hacerla con AI (prompt + verificación)",
+          "Comparas ambos y eliges el camino más corto",
+          "Si eliges AI, te aseguras de no estar compartiendo datos sensibles",
+          "Ejecutas por el camino elegido"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "explanation": "La decisión toma 5 segundos pero te ahorra horas al mes. Con la práctica se vuelve automática — sabes en qué tareas abrir ChatGPT sin pensarlo.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Un amigo te pide consejo: quiere usar ChatGPT para escribirle un brindis a su mejor amigo en su boda. ¿Qué le dices?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Buena idea — ChatGPT le ayuda a encontrar las palabras correctas"
+          },
+          {
+            "id": 1,
+            "text": "Mejor no: un brindis pide su voz real y anécdotas propias; si lo escribe AI suena genérico y se nota"
+          },
+          {
+            "id": 2,
+            "text": "Dale, pero pídele que lo haga 'con emoción'"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Hay zonas donde AI **degrada** en lugar de ayudar. Un brindis necesita tu voz real y recuerdos propios. El público siente la diferencia entre *escrito por ti* y *escrito por plantilla*.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Renata ajusta su enfoque. Al día siguiente le llega esta tarea: escribir un resumen ejecutivo de 30 páginas de reporte de mercado para su jefe. ¿Qué hace?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Lo lee a mano línea por línea para evitar alucinaciones"
+          },
+          {
+            "id": 1,
+            "text": "Le pega el reporte a ChatGPT, le pide un resumen ejecutivo, verifica los datos clave contra el original y entrega"
+          },
+          {
+            "id": 2,
+            "text": "Lo divide entre tres compañeros para que cada uno lea 10 páginas"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Tarea larga + tú aportas la fuente = caso ideal para AI. El resumen sale en minutos, la verificación de datos clave en 5 minutos más. Total: 15 minutos vs 2 horas leyendo a mano.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "⚖️",
+        "title": "AI con criterio",
+        "body": "Ahora sabes cuándo abrir ChatGPT vale la pena y cuándo pierdes más tiempo. La regla es simple: **¿sería más lento a mano?** Si sí, AI. Si no, a mano."
+      }
+    }
+  ]
+}

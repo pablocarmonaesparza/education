@@ -1,0 +1,217 @@
+{
+  "section_id": 2,
+  "slug": "los-4-ingredientes-del-prompt",
+  "title": "Los 4 ingredientes del prompt",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Mariana pide a ChatGPT: 'escríbeme un correo' y recibe algo tibio. Lo intenta 3 veces y sale igual de flojo. Concluye que ChatGPT no sirve para correos. ¿Qué le falta?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Un modelo más potente — ChatGPT básico no alcanza para correos serios"
+          },
+          {
+            "id": 1,
+            "text": "Un prompt con los cuatro ingredientes: rol, tarea, contexto y formato. Sin eso, el modelo no puede producir algo útil"
+          },
+          {
+            "id": 2,
+            "text": "Escribir el correo a mano — ChatGPT no puede imitar tono personal"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "ChatGPT **sí puede** escribir correos excelentes. Lo que le falta a Mariana no es un modelo mejor, es darle al modelo los **cuatro ingredientes** mínimos para producir algo específico: quién es, qué hacer, contexto del caso, y formato esperado.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Los 4 ingredientes",
+        "body": "Un prompt útil casi siempre tiene cuatro piezas:\n\n- **Rol**: quién actúa como el modelo (editor, abogado, marketer)\n- **Tarea**: qué quieres que produzca exactamente\n- **Contexto**: la información específica que necesita para no inventar\n- **Formato**: cómo quieres que presente la respuesta"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "El prompt corregido con los 4 ingredientes",
+        "body": "Así se ve el prompt flojo, arreglado:\n\n*\"Eres un gerente directo (rol). Escribe un correo de 4 renglones (tarea + formato) pidiendo llegar a las 9 el lunes, porque viene un cliente desde Monterrey (contexto).\"*"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada ingrediente con un ejemplo concreto:",
+        "pairs": [
+          {
+            "term": "Rol",
+            "def": "Eres un editor de revista especializado en viajes"
+          },
+          {
+            "term": "Tarea",
+            "def": "Resume este artículo en 3 puntos clave"
+          },
+          {
+            "term": "Contexto",
+            "def": "El artículo habla de un hotel en Tulum con eco-turismo"
+          },
+          {
+            "term": "Formato",
+            "def": "En bullets de máximo 15 palabras cada uno"
+          }
+        ],
+        "explanation": "Los ingredientes no compiten, se suman. Un buen prompt los combina en un párrafo natural. El modelo no necesita formalismo, necesita **la información suficiente** para no adivinar.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena estos fragmentos para armar un prompt que funcione:",
+        "steps": [
+          "Eres un copywriter con experiencia en LATAM",
+          "Escribe un texto para una landing page",
+          "Vendo un curso de fotografía de bodas para principiantes a 399 USD",
+          "Tres secciones: hero con una frase, beneficios en bullets, botón de llamada a la acción"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "Rol → tarea → contexto → formato es el orden natural. El modelo construye mejor la respuesta cuando le llega la información en ese flujo: primero quién es, después qué hace, después con qué datos, y al final cómo presentarla.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Marca los ingredientes en este prompt: 'Eres un abogado laboral. Redacta contrato freelance para un diseñador (20h/semana, 1.500 USD/mes) con 5 cláusulas numeradas.'",
+        "options": [
+          {
+            "id": 0,
+            "text": "Rol (abogado laboral)"
+          },
+          {
+            "id": 1,
+            "text": "Tarea (redactar un contrato)"
+          },
+          {
+            "id": 2,
+            "text": "Contexto (freelance diseñador, 20h/semana, 1.500 USD/mes)"
+          },
+          {
+            "id": 3,
+            "text": "Formato (5 cláusulas numeradas)"
+          },
+          {
+            "id": 4,
+            "text": "Precio del servicio del abogado"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "Los 4 están presentes en este prompt. La quinta opción es trampa — el precio del abogado no es parte del ingrediente, es información irrelevante para la tarea.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Samuel escribe: 'hazme un plan de marketing'. El resultado es genérico y no le sirve. ¿Qué ingrediente falta más críticamente?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Rol — no definió desde qué perspectiva debe hablar el modelo"
+          },
+          {
+            "id": 1,
+            "text": "Contexto — no dijo qué producto, qué audiencia, qué presupuesto"
+          },
+          {
+            "id": 2,
+            "text": "Formato — no especificó si quiere un documento o bullets"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Sin contexto, el modelo no puede producir algo específico. 'Plan de marketing' puede ser de mil cosas. Los otros ingredientes también ayudan, pero el **contexto** es el que hace la diferencia entre *mediocre* y *útil*.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "fill-blank",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Completa la regla práctica:",
+        "sentenceBefore": "Si el output del modelo es genérico, casi siempre te falta ",
+        "sentenceAfter": " en el prompt.",
+        "tokens": [
+          "Contexto",
+          "Paciencia",
+          "Palabras"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "Falta de **contexto** es la causa #1 de respuestas flojas. El modelo puede ser brillante pero no lee tu mente: si no le das los detalles, llena huecos con lo más genérico posible.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Mariana reintenta: 'Eres gerente directa. Escribe correo corto al equipo pidiendo puntualidad el lunes para la demo del cliente de Monterrey. Máximo 4 renglones.' ¿Qué puso?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Solo rol y tarea"
+          },
+          {
+            "id": 1,
+            "text": "Los 4: rol (gerente directa), tarea (redactar correo), contexto (cliente de Monterrey, lunes), formato (corto, 4 renglones)"
+          },
+          {
+            "id": 2,
+            "text": "Solo tarea y formato"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Mariana ya no culpa al modelo. Aprendió a **armar el prompt** con lo mínimo indispensable. Con esos 4 ingredientes, el output pasa de genérico a publicable de un día para otro.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🧪",
+        "title": "Prompt con receta",
+        "body": "Ahora tienes la receta de un prompt útil. La próxima lección te enseña qué hacer cuando un buen prompt aún no da el resultado que buscas."
+      }
+    }
+  ]
+}

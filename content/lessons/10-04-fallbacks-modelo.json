@@ -1,0 +1,197 @@
+{
+  "section_id": 10,
+  "slug": "fallbacks",
+  "title": "Fallbacks cuando el modelo falla",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Mauricio tiene un chatbot con Claude. Un día Anthropic tiene una caída de 1 hora. Mauricio ve a sus usuarios frustrados y él tampoco puede hacer nada. ¿Qué le faltó prever?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada, las caídas son inevitables"
+          },
+          {
+            "id": 1,
+            "text": "Un plan de respaldo que cambie a otro modelo o muestre un mensaje honesto cuando el principal falla"
+          },
+          {
+            "id": 2,
+            "text": "Contratar un proveedor distinto de una vez"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Las caídas pasan: todos los proveedores caen alguna vez. Un diseño robusto asume la caída y **degrada con elegancia**: cambia a modelo secundario, usa respuesta guardada, o muestra mensaje honesto. Las apps en producción seria tienen respaldo desde el día 1.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Las capas del plan de respaldo",
+        "body": "De menor a mayor costo, cuando el modelo principal falla:\n\n- **Reintentar**: a veces es un error pasajero que se resuelve solo\n- **Cambiar modelo**: Claude cae, llamas a GPT-4o o Gemini\n- **Usar respuesta guardada**: devolver una respuesta previa similar\n- **Mensaje honesto**: avisar al usuario que el sistema está lento"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Estrategia multi-modelo",
+        "body": "Configuración típica de una app seria:\n\n- **Principal**: el mejor modelo para tu caso (calidad y costo)\n- **Secundario**: de otro proveedor, con calidad parecida\n- **Terciario (opcional)**: un modelo más simple o una respuesta guardada"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Qué degradar y qué no",
+        "body": "Tres decisiones clave del diseño robusto:\n\n- Un mensaje de error honesto es mejor que una respuesta inventada\n- Un modelo más barato con menor calidad es mejor que el silencio total\n- Un aviso *\"intentando resolver...\"* es mejor que una espera sin explicación"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Tener un plan de respaldo elimina por completo las caídas de servicio.",
+        "answer": false,
+        "explanation": "Falso. Un plan de respaldo **reduce el impacto**, no elimina las caídas. El respaldo también puede fallar. Pero el sistema **degrada con elegancia** en lugar de caer por completo. Eso es lo que los usuarios notan y agradecen.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja cada tipo de falla con su estrategia de respaldo:",
+        "pairs": [
+          {
+            "term": "Pérdida de red",
+            "def": "Reintentar esperando un poco más cada vez"
+          },
+          {
+            "term": "El proveedor devuelve error",
+            "def": "Cambiar al proveedor secundario"
+          },
+          {
+            "term": "Llegaste al límite del modelo",
+            "def": "Formar una cola o usar modelo alternativo"
+          },
+          {
+            "term": "Error en tu código",
+            "def": "No reintentar; arreglar el código antes"
+          }
+        ],
+        "explanation": "Cada falla pide una estrategia distinta. Reintentar un error de tu lado es inútil; cambiar de modelo cuando se llega al límite sí tiene sentido. **Diagnóstico correcto igual a solución eficiente**.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué elementos indispensables tiene un sistema de respaldo?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Detectar el tipo de error y reaccionar acorde"
+          },
+          {
+            "id": 1,
+            "text": "Tener al menos un proveedor secundario configurado"
+          },
+          {
+            "id": 2,
+            "text": "Mensajes honestos al usuario cuando falla todo"
+          },
+          {
+            "id": 3,
+            "text": "Reintentar cualquier error una y otra vez sin parar"
+          },
+          {
+            "id": 4,
+            "text": "Silenciar todos los errores para no preocupar al usuario"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Diagnóstico, redundancia y honestidad forman un sistema robusto. Reintentar sin parar o silenciar son **malas prácticas que empeoran la situación**. La transparencia y el control son aliados.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Tu chatbot depende de Claude. ¿Cómo lo haces robusto sin rehacer toda la arquitectura?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Rezar cada mañana para que no falle"
+          },
+          {
+            "id": 1,
+            "text": "Meter la llamada en una función que intenta Claude, si falla prueba con GPT-4o, guarda registro y avisa al usuario si ambos fallan"
+          },
+          {
+            "id": 2,
+            "text": "Migrar todo a un solo proveedor para siempre"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Envolver la llamada, usar varios proveedores y guardar registro** es el patrón estándar. No requiere rehacer la app, solo añadir una capa extra encima. La mayoría de las apps serias funcionan así.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Mauricio implementa el plan multi-proveedor. En la siguiente caída de Anthropic, ¿qué pasa?",
+        "options": [
+          {
+            "id": 0,
+            "text": "La app cae otra vez igual que la primera vez"
+          },
+          {
+            "id": 1,
+            "text": "El sistema detecta el error, cambia a GPT-4o y los usuarios siguen atendidos. Mauricio ve el cambio en el registro y confirma que todo sigue"
+          },
+          {
+            "id": 2,
+            "text": "Tiene que mandar mensaje a cada usuario por WhatsApp"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Mauricio pasó de una **app frágil a una app resistente**. Las caídas siguen siendo inevitables, pero ya no son catastróficas. Esa diferencia define un producto frente a un prototipo.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🛡️",
+        "title": "Resistencia ante fallas",
+        "body": "Tu app ahora aguanta caídas de los proveedores. La siguiente lección entra a costos operativos reales."
+      }
+    }
+  ]
+}

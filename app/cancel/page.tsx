@@ -22,11 +22,11 @@ export default function CancelPage() {
           />
         </svg>
         <h1 className="text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">pago cancelado</h1>
-        <p className="text-lg text-gray-700 mb-8">
-          Tu proceso de pago ha sido cancelado. Puedes intentarlo de nuevo.
+        <p className="text-lg text-gray-700 dark:text-gray-400 mb-8">
+          no se cobró nada. puedes intentarlo de nuevo o elegir el plan gratis.
         </p>
-        <Button variant="primary" size="lg" rounded2xl href="/pricing">
-          Volver a Precios
+        <Button variant="primary" size="lg" rounded2xl href="/paywall">
+          volver a elegir plan
         </Button>
       </section>
       <Footer />

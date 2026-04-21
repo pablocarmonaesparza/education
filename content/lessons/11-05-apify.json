@@ -1,0 +1,197 @@
+{
+  "section_id": 11,
+  "slug": "apify-api",
+  "title": "Apify: scraping programático a escala",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Rodrigo necesita datos de productos de Amazon cada semana. Su primer impulso: programar un scraper desde cero con Playwright. ¿Cuál es el camino inteligente?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Programar el scraper desde cero — así tiene control total"
+          },
+          {
+            "id": 1,
+            "text": "Usar un scraper ya hecho y mantenido por otros, y solo invocarlo con parámetros"
+          },
+          {
+            "id": 2,
+            "text": "Copiar los productos a mano una vez por semana"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Para sitios comunes como Amazon ya existen scrapers listos, mantenidos y probados. Construir desde cero toma semanas y exige mantenimiento cuando el sitio cambia. La regla es: reutiliza antes de reinventar.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es un Apify Actor",
+        "body": "Un **Actor** es un scraper reusable en la plataforma Apify:\n\n- Tiene parámetros (URL, filtros, cantidad)\n- Corre en la nube de Apify\n- Devuelve data estructurada (JSON, CSV, Excel)\n"
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Apify vs Browserbase",
+        "body": "Diferencias clave:\n\n- **Browserbase**: infraestructura de browsers — tú escribes la lógica\n- **Apify**: actors prehechos + infraestructura — usas lo que ya existe\n\nSi hay actor para tu caso → Apify gana en tiempo."
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Cuándo elegir Apify",
+        "body": "Ideal si:\n\n- Scrapear un sitio popular (hay actor listo)\n- Necesitas correr scrapers en schedule sin manejar infra\n- Data estructurada como output final (no crawling custom)\n- Quieres minimizar tiempo de desarrollo\n"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Usar Apify te exime de revisar los términos de servicio del sitio que quieres scrapear.",
+        "answer": false,
+        "explanation": "Falso. **Los términos del sitio siguen aplicando**. Apify facilita el acto técnico, no te da permiso legal. Cada caso requiere criterio: datos públicos, no personales, respetando los límites de peticiones es una buena guía.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso con la herramienta ideal:",
+        "pairs": [
+          {
+            "term": "Productos de Amazon",
+            "def": "Apify Amazon Scraper — actor listo"
+          },
+          {
+            "term": "Sitio custom muy dinámico",
+            "def": "Browserbase + Playwright propio"
+          },
+          {
+            "term": "Reseñas de Google Maps",
+            "def": "Apify Maps Scraper (caso típico)"
+          },
+          {
+            "term": "Tu propia app interna",
+            "def": "Conexión directa a tu base de datos"
+          }
+        ],
+        "explanation": "Tres niveles de esfuerzo: si el sitio tiene una **interfaz** oficial para pedirle datos (una API), úsala. Si no, y existe un actor de Apify, úsalo. Si tampoco, construye con Browserbase.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué ventajas tiene Apify sobre construir tu scraper?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Actors prehechos para sitios populares"
+          },
+          {
+            "id": 1,
+            "text": "Infraestructura de corrida incluida (no montar server)"
+          },
+          {
+            "id": 2,
+            "text": "Mantenimiento cuando el sitio cambia su estructura"
+          },
+          {
+            "id": 3,
+            "text": "Te da permiso legal para scrapear cualquier cosa"
+          },
+          {
+            "id": 4,
+            "text": "Funciona sin configuración para casos únicos"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Prehechos, infra y mantenimiento son valor real. **No te da permiso legal** ni funciona sin config inicial. Saber los límites te evita expectativas irreales.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Necesitas datos semanales de productos en Amazon de 3 categorías. ¿Qué haces?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Programar tu scraper custom con Selenium"
+          },
+          {
+            "id": 1,
+            "text": "Usar el Amazon Scraper de Apify con schedule semanal, obtener JSON con data estructurada lista"
+          },
+          {
+            "id": 2,
+            "text": "Copiar a mano cada semana"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Amazon + data estructurada semanal = **Apify con actor listo**. Custom tomaría semanas y mantenimiento. Manual no escala. Apify entrega en horas.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Rodrigo finalmente integra Apify para su flujo semanal. ¿Qué gana?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Nada — sigue programando todo desde cero"
+          },
+          {
+            "id": 1,
+            "text": "Para los sitios populares usa actores listos, y solo construye desde cero lo que no tiene actor. Días en lugar de meses"
+          },
+          {
+            "id": 2,
+            "text": "Lo abandona por complicado"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Rodrigo usó **lo que ya existía** para los casos comunes y solo construyó lo nuevo. Esa disciplina — reutilizar antes de reinventar — es la diferencia entre productivo y perdido.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🕷️",
+        "title": "Scraping a escala desbloqueado",
+        "body": "Ahora sabes cuándo usar una conexión directa, cuándo un actor de Apify y cuándo construir tu propio scraper. Reutiliza antes de reinventar."
+      }
+    }
+  ]
+}

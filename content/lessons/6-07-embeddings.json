@@ -1,0 +1,198 @@
+{
+  "section_id": 6,
+  "slug": "embeddings",
+  "title": "Embeddings: texto como vectores",
+  "source": "claude-in-session-v2",
+  "slides": [
+    {
+      "order_in_lecture": 1,
+      "kind": "mcq",
+      "phase": "engage",
+      "content": {
+        "prompt": "Mariana tiene 5000 preguntas frecuentes de clientes y quiere que su chatbot encuentre la respuesta correcta aunque el cliente la escriba con otras palabras. ¿Cómo lo resuelve?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Añadir manualmente sinónimos a cada pregunta"
+          },
+          {
+            "id": 1,
+            "text": "Convertir cada texto en números que representen su significado"
+          },
+          {
+            "id": 2,
+            "text": "Pagar un chatbot más caro, los buenos ya entienden todo"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Agregar sinónimos a mano no escala: un cliente escribirá mañana una frase nueva. La solución son los **embeddings** — convierten cada texto en un vector de números que captura su *significado*. Así *no puedo pagar* queda cerca de *problemas de facturación* aunque no compartan palabras.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 2,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Qué es un embedding",
+        "body": "Un **embedding** es una representación numérica del significado de un texto.\n\nTexto → modelo → vector de números (por ejemplo, 1536 dimensiones).\n\nTextos con significado similar producen vectores **cercanos**, aunque no compartan palabras."
+      }
+    },
+    {
+      "order_in_lecture": 3,
+      "kind": "concept",
+      "phase": "explore",
+      "content": {
+        "title": "Modelos de embeddings comunes",
+        "body": "Los más usados en 2026:\n\n- **OpenAI text-embedding-3-small** — 1536 dims, barato, buena base\n- **OpenAI text-embedding-3-large** — 3072 dims, mejor calidad\n- **Cohere embed-v3** — multi-idioma fuerte\n- **Voyage, Jina** — alternativas especializadas\n"
+      }
+    },
+    {
+      "order_in_lecture": 4,
+      "kind": "concept",
+      "phase": "explain",
+      "content": {
+        "title": "Dónde se guardan",
+        "body": "Los embeddings se guardan en una **base de datos vectorial** — una base de datos hecha para comparar vectores por cercanía:\n\n- **pgvector** (Postgres/Supabase) — se integra con tu base de datos\n- **Pinecone** — especializada, escalable, de pago\n- **Qdrant, Weaviate, Chroma** — alternativas open source"
+      }
+    },
+    {
+      "order_in_lecture": 5,
+      "kind": "true-false",
+      "phase": "explain",
+      "content": {
+        "prompt": "Verdadero o falso:",
+        "statement": "Los embeddings pueden compararse con otros embeddings de modelos distintos.",
+        "answer": false,
+        "explanation": "Falso. Cada modelo produce un **espacio vectorial propio**. Un embedding de OpenAI no se puede comparar con uno de Cohere. Elige un modelo y quédate con él en toda tu base de datos. Migrar después significa regenerar todos los vectores desde cero.",
+        "xp": 10
+      }
+    },
+    {
+      "order_in_lecture": 6,
+      "kind": "order-steps",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Ordena los pasos para usar embeddings en tu caso:",
+        "steps": [
+          "Reunir los textos que quieres indexar (preguntas frecuentes, documentos, productos)",
+          "Elegir un modelo de embedding (OpenAI, Cohere)",
+          "Generar un embedding por cada texto",
+          "Guardar los vectores en una base de datos vectorial",
+          "Cuando el usuario haga una consulta, generar su embedding",
+          "Buscar los vectores más cercanos en la base y devolverlos"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "explanation": "El flujo es siempre el mismo: **indexar una vez + consultar cada vez**. El indexado es costoso; la consulta es instantánea.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "tap-match",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Empareja el caso de uso con lo que habilita el embedding:",
+        "pairs": [
+          {
+            "term": "Búsqueda semántica",
+            "def": "Encontrar la respuesta correcta aunque el usuario la escriba con otras palabras"
+          },
+          {
+            "term": "Recomendación",
+            "def": "Mostrar productos cercanos al que el usuario está viendo"
+          },
+          {
+            "term": "Chatbot sobre tus documentos",
+            "def": "Pasarle al modelo los fragmentos más relevantes antes de responder"
+          },
+          {
+            "term": "Detectar duplicados",
+            "def": "Dos textos casi iguales porque sus vectores quedan muy cerca"
+          }
+        ],
+        "explanation": "Los embeddings habilitan *encontrar cosas parecidas por significado*. Sirven para buscar, recomendar, agrupar y detectar duplicados. **Una técnica, múltiples aplicaciones.**",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "multi-select",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "¿Qué señales indican que embeddings resuelven tu caso?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Buscas texto por significado, no por palabras exactas"
+          },
+          {
+            "id": 1,
+            "text": "Tienes decenas a miles de documentos donde buscar"
+          },
+          {
+            "id": 2,
+            "text": "Usuarios hacen preguntas en sus propias palabras"
+          },
+          {
+            "id": 3,
+            "text": "Tienes solo 10 entradas fijas en una tabla"
+          },
+          {
+            "id": 4,
+            "text": "Necesitas búsqueda exacta por ID"
+          }
+        ],
+        "correctIds": [
+          0,
+          1,
+          2
+        ],
+        "explanation": "Los 3 primeros son clave. 10 entradas fijas no justifican embeddings (pura lógica basta). Búsqueda por ID es SQL, no vectorial. **Embeddings resuelven ambigüedad semántica a escala.**",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 9,
+      "kind": "mcq",
+      "phase": "evaluate",
+      "content": {
+        "prompt": "Mariana indexa sus 5000 preguntas frecuentes con embeddings. Un cliente escribe \"no me deja cobrar\". ¿Qué pasa?",
+        "options": [
+          {
+            "id": 0,
+            "text": "El chatbot no encuentra nada porque las palabras no coinciden con ninguna pregunta guardada"
+          },
+          {
+            "id": 1,
+            "text": "El vector de la frase queda cerca del vector de \"problemas de facturación\", así que el chatbot devuelve la respuesta correcta"
+          },
+          {
+            "id": 2,
+            "text": "El chatbot se inventa una respuesta cualquiera"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Mariana pasó de **búsqueda literal** (falla con ambigüedad) a **búsqueda semántica** (captura significado). Mismo contenido, mucho más útil para clientes que escriben como hablan.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 10,
+      "kind": "celebration",
+      "phase": "evaluate",
+      "content": {
+        "emoji": "🧮",
+        "title": "Texto como vectores desbloqueado",
+        "body": "Ya entiendes los embeddings: convierten texto en números que capturan significado y hacen posible buscar por lo que algo quiere decir, no solo por palabras exactas."
+      }
+    }
+  ]
+}
