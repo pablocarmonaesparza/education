@@ -23,7 +23,9 @@ export default function Navbar() {
     };
   }, [mobileMenuOpen]);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState<string | null>(null);
+  // Default to "hero" so the indicator pill is active on page load.
+  // The scroll handler updates as the user scrolls into other sections.
+  const [activeSection, setActiveSection] = useState<string | null>("hero");
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
   const [isDark, setIsDark] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);

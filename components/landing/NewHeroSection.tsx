@@ -99,10 +99,41 @@ export default function NewHeroSection() {
         </motion.div>
       </motion.div>
 
-      {/* Interaction hint — desktop only */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[11px] tracking-[0.14em] uppercase text-black/40 dark:text-white/40 font-mono pointer-events-none hidden md:block">
-        mueve · haz click
-      </div>
+      {/* Next-section indicator — same pattern as PricingSection's FAQ link */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:block"
+      >
+        <button
+          onClick={() => {
+            document
+              .getElementById('pricing')
+              ?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="flex flex-col items-center gap-1 cursor-pointer group"
+        >
+          <span className="text-sm font-semibold tracking-wide text-black/40 dark:text-white/40 group-hover:text-black/60 dark:group-hover:text-white/60 transition-colors">
+            Precios
+          </span>
+          <motion.svg
+            className="w-5 h-5 text-black/40 dark:text-white/40 group-hover:text-black/60 dark:group-hover:text-white/60 transition-colors"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            animate={{ y: [0, 4, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </motion.svg>
+        </button>
+      </motion.div>
 
       {/* Auth Modal — preserved from previous hero (signup entry point) */}
       <AnimatePresence mode="wait">
