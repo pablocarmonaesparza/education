@@ -55,15 +55,14 @@ export default function Navbar() {
     { href: "#faq", label: "FAQ", id: "faq" },
   ];
 
-  // Track if navbar should be hidden (approaching available-courses)
-  const [shouldHideNav, setShouldHideNav] = useState(false);
-
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
       setScrolled(scrollY > 20);
 
-      // Detect active section
+      // Detect active section — only for sections currently present in navLinks.
+      // If we're above the first section (still in the hero), clear activeSection
+      // so the indicator pill doesn't get stuck on the first link.
       const navHeight = 100;
       let currentSection: string | null = null;
 
@@ -71,7 +70,6 @@ export default function Navbar() {
         const section = document.getElementById(link.id);
         if (section) {
           const rect = section.getBoundingClientRect();
-          // Check if section is in view (with some tolerance)
           if (rect.top <= navHeight + 50 && rect.bottom > navHeight) {
             currentSection = link.id;
           }
@@ -79,27 +77,6 @@ export default function Navbar() {
       }
 
       setActiveSection(currentSection);
-
-      // Check if we should hide navbar (only during available-courses section, but hide slightly before entering)
-      const howItWorksSection = document.getElementById("how-it-works");
-      const availableCoursesSection = document.getElementById("available-courses");
-      const pricingSection = document.getElementById("pricing");
-      
-      if (howItWorksSection && availableCoursesSection && pricingSection) {
-        const howItWorksRect = howItWorksSection.getBoundingClientRect();
-        const pricingRect = pricingSection.getBoundingClientRect();
-        
-        // Hide navbar when:
-        // 1. We're exiting "Cómo Funciona" (end of "Tu Camino Directo")
-        // 2. AND "Nuestros planes" hasn't started entering the viewport yet
-        //
-        // Note: Using a symmetric "enter viewport" threshold avoids the feeling
-        // that the navbar takes longer to re-appear than to disappear.
-        const isExitingHowItWorks = howItWorksRect.bottom < window.innerHeight * 0.5;
-        const pricingIsEnteringViewport = pricingRect.top <= window.innerHeight * 0.9;
-
-        setShouldHideNav(isExitingHowItWorks && !pricingIsEnteringViewport);
-      }
     };
 
     // Initial check
@@ -154,17 +131,11 @@ export default function Navbar() {
     return null;
   }
 
-  // Hide navbar when approaching "available-courses" section
-  const isHidden = shouldHideNav;
-
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: isHidden ? -100 : 0 }}
-      transition={{ duration: 0.4, ease: "easeInOut" }}
+    <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "backdrop-blur-md bg-white/50 dark:bg-gray-800/50"
+          ? "backdrop-blur-md bg-white/80 dark:bg-gray-800/80"
           : ""
       }`}
     >
@@ -455,6 +426,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </nav>
   );
 }
