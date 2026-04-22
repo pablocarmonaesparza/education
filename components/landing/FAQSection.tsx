@@ -11,14 +11,19 @@ export default function FAQSection() {
 
   const faqs = [
     {
-      question: "¿Necesito experiencia previa en programación o IA?",
+      question: "¿Necesito experiencia previa en programación o AI?",
       answer:
-        "No necesariamente. El curso está diseñado para adaptarse a diferentes niveles. Si eres principiante, tu ruta personalizada incluirá los fundamentos necesarios.",
+        "No. El catálogo está pensado para gente sin background técnico — el test interno es '¿lo entendería alguien de 55 años que jamás programó?'. Si estás empezando, la ruta completa te lleva paso a paso desde los fundamentos. Si ya usas AI todos los días, la ruta personalizada salta lo que ya sabes.",
     },
     {
-      question: "¿Cuánto tiempo me tomará completar el curso?",
+      question: "¿Son videos?",
       answer:
-        "Depende de tu ruta personalizada y tiempo disponible. El contenido total es de 10.5-19.7 horas, pero tu ruta personalizada probablemente será de 6-12 horas.",
+        "No. En Itera aprendes con ejercicios interactivos cortos — respondes preguntas, resuelves casos, construyes cosas pequeñas. Cada lección son 10 mini-slides que te toman alrededor de 10 minutos. No es ver a alguien hablar: es practicar hasta que te sale.",
+    },
+    {
+      question: "¿Cuánto tiempo me toma completar el curso?",
+      answer:
+        "Cada lección dura unos 10 minutos. La ruta completa son 100 lecciones — cerca de 17 horas en total, pero repartidas en sesiones cortas para que te quepan en el día. Si escoges la ruta personalizada según tu proyecto, suele ser entre 3 y 8 horas de contenido.",
     },
     {
       question: "¿Qué pasa si el curso no me funciona?",
@@ -26,9 +31,9 @@ export default function FAQSection() {
         "Tienes 30 días para probarlo. Si no estás satisfecho por cualquier razón, te devolvemos el 100% de tu dinero, sin preguntas.",
     },
     {
-      question: "¿Cómo funciona la personalización con IA?",
+      question: "¿Cómo funciona la ruta personalizada?",
       answer:
-        "Antes de comprar, respondes 5-7 preguntas sobre tu proyecto, experiencia, meta e industria. Nuestra IA analiza tus respuestas y genera una ruta de aprendizaje específica para ti.",
+        "Nos cuentas qué quieres construir o aprender a hacer en unas cuantas preguntas. El sistema analiza tu respuesta y arma una ruta con solo las lecciones que necesitas, en el orden correcto, sin relleno. Si después cambias de idea puedes volver a la ruta completa cuando quieras.",
     },
   ];
 

@@ -7,77 +7,93 @@ import Tag from "@/components/ui/Tag";
 import { depth } from '@/lib/design-tokens';
 
 const courseTypes = [
-  { 
-    id: 1, 
-    title: "Chatbots Inteligentes", 
-    topics: ["LLMs", "APIs", "Automatización"], 
+  {
+    id: 1,
+    title: "fundamentos de AI",
+    topics: ["LLMs", "Tokens", "Prompting"],
+    icon: "🧩",
+    description: "Entiende qué es un modelo de AI, cómo piensa, qué lo limita y por qué a veces se equivoca. La base que hace que todo lo demás tenga sentido.",
+    modules: ["Qué es un LLM", "Tokens y ventana de contexto", "Prompting básico", "Por qué alucina"]
+  },
+  {
+    id: 2,
+    title: "asistentes del día a día",
+    topics: ["ChatGPT", "Claude", "Gemini"],
     icon: "💬",
-    description: "Aprende a crear chatbots inteligentes que entienden contexto, responden preguntas complejas y se integran con WhatsApp, Telegram y más.",
-    modules: ["Fundamentos de LLMs", "Diseño de conversaciones", "Integración con plataformas", "Manejo de contexto"]
+    description: "Aprende a sacarle provecho real a ChatGPT, Claude, Gemini, Perplexity y Grok. Cuál usar para qué, cómo hablarle a cada uno y cuándo combinarlos.",
+    modules: ["ChatGPT a fondo", "Claude proyectos", "Gemini + Google", "Perplexity research"]
   },
-  { 
-    id: 2, 
-    title: "Automatización de Procesos", 
-    topics: ["n8n", "Workflows", "APIs"], 
+  {
+    id: 3,
+    title: "crear imágenes con AI",
+    topics: ["Flux", "Nano Banana", "Imagen"],
+    icon: "🎨",
+    description: "Genera imágenes para tu marca, redes o productos con Flux, Nano Banana y otros modelos. Sin pagar stock, sin diseñador, sin complicarte.",
+    modules: ["Flux básico", "Estilo consistente", "Edición con AI", "Tu primer set de imágenes"]
+  },
+  {
+    id: 4,
+    title: "crear video y audio con AI",
+    topics: ["Kling", "ElevenLabs", "Seedance"],
+    icon: "🎬",
+    description: "Crea videos cortos, voces naturales y animaciones para contenido de redes sin equipo ni estudio. Herramientas como Kling, Seedance y ElevenLabs.",
+    modules: ["Video con Kling", "Voces con ElevenLabs", "Animación básica", "Tu primer reel AI"]
+  },
+  {
+    id: 5,
+    title: "automatizar lo repetitivo",
+    topics: ["n8n", "MCP", "Apify"],
     icon: "⚙️",
-    description: "Domina n8n y otras herramientas para automatizar tareas repetitivas, conectar aplicaciones y crear workflows inteligentes.",
-    modules: ["Introducción a n8n", "Conectores y APIs", "Lógica condicional", "Automatización avanzada"]
+    description: "Que las tareas aburridas se hagan solas. Conecta apps, agenda tareas y automatiza flujos con n8n, MCP schedulers y Claude Code Routines.",
+    modules: ["n8n desde cero", "MCP schedulers", "Claude Code Routines", "Tu primera automatización"]
   },
-  { 
-    id: 3, 
-    title: "Análisis de Datos con IA", 
-    topics: ["Data & Analytics", "Visualización", "Métricas"], 
-    icon: "📊",
-    description: "Transforma datos en insights accionables usando IA para análisis predictivo, visualización y reportes automáticos.",
-    modules: ["Preparación de datos", "Modelos predictivos", "Visualización", "Dashboards inteligentes"]
+  {
+    id: 6,
+    title: "tus datos con AI",
+    topics: ["Supabase", "RAG", "Embeddings"],
+    icon: "🗂️",
+    description: "Haz que la AI use tus notas, documentos o base de datos para responderte con contexto real, en vez de respuestas genéricas de internet.",
+    modules: ["Supabase básico", "RAG simple", "Embeddings", "Privacidad de datos"]
   },
-  { 
-    id: 4, 
-    title: "Productos con IA", 
-    topics: ["Vibe-Coding", "Deployment", "Productos"], 
-    icon: "🚀",
-    description: "Construye productos completos con IA: desde la idea hasta el deployment, usando las mejores prácticas de desarrollo.",
-    modules: ["Ideación con IA", "Prototipado rápido", "MVP development", "Escalamiento"]
+  {
+    id: 7,
+    title: "APIs, MCPs y skills",
+    topics: ["APIs", "MCP", "Skills"],
+    icon: "🔌",
+    description: "Hazle super-poderes a los asistentes: conéctalos a APIs, MCPs y skills a medida. Deja de copiar-pegar prompts y construye tu propio asistente.",
+    modules: ["APIs básicas", "Tu primer MCP", "Anthropic Skills", "Claude Agent SDK"]
   },
-  { 
-    id: 5, 
-    title: "Agentes Autónomos", 
-    topics: ["Agentes", "LLMs", "MCP"], 
+  {
+    id: 8,
+    title: "tu primer agente",
+    topics: ["Agentes", "Browser", "Voice"],
     icon: "🤖",
-    description: "Crea agentes que toman decisiones, ejecutan tareas y aprenden de sus interacciones de forma autónoma.",
-    modules: ["Arquitectura de agentes", "Toma de decisiones", "Memory systems", "Multi-agent systems"]
+    description: "Crea un agente que navegue, tome decisiones y ejecute tareas por ti: agendar reuniones, investigar, comprar cosas o seguir instrucciones largas.",
+    modules: ["Browser agents", "Voice agents", "OpenClaw", "Multi-agente"]
   },
-  { 
-    id: 6, 
-    title: "Sistemas RAG", 
-    topics: ["RAG", "Vector Stores", "Embeddings"], 
-    icon: "🧠",
-    description: "Implementa sistemas de Retrieval Augmented Generation para que tus IAs accedan a conocimiento específico de tu empresa.",
-    modules: ["Embeddings 101", "Vector databases", "Chunking strategies", "RAG optimization"]
+  {
+    id: 9,
+    title: "construir hablando con AI",
+    topics: ["Claude Code", "Cursor", "Vibe coding"],
+    icon: "⚡",
+    description: "Construye apps, scripts y herramientas describiendo lo que quieres en español. Claude Code, Cursor y GitHub — sin saber programar a fondo.",
+    modules: ["Claude Code básico", "Cursor desde cero", "GitHub workflow", "Tu primer proyecto"]
   },
-  { 
-    id: 7, 
-    title: "Integraciones Empresariales", 
-    topics: ["APIs", "Webhooks", "Integraciones"], 
-    icon: "🔗",
-    description: "Conecta sistemas empresariales, CRMs, ERPs y herramientas de productividad con flujos de IA automatizados.",
-    modules: ["APIs REST y GraphQL", "Webhooks", "Autenticación", "Sincronización de datos"]
+  {
+    id: 10,
+    title: "sacar tu idea al mundo",
+    topics: ["Deploy", "Go-to-market", "Monitoreo"],
+    icon: "🌎",
+    description: "Publica tu proyecto, mídelo y hazlo crecer. Deploy sin miedo, monitoreo básico y pasos concretos para llegar a tus primeros usuarios reales.",
+    modules: ["Deploy simple", "Monitoreo básico", "Go-to-market", "Tu primer usuario"]
   },
-  { 
-    id: 8, 
-    title: "Monetización con IA", 
-    topics: ["Finanzas", "Métricas", "Productos"], 
-    icon: "💰",
-    description: "Aprende a crear productos de IA rentables, establecer precios y escalar tu negocio de forma sostenible.",
-    modules: ["Modelos de negocio", "Pricing strategies", "Unit economics", "Growth hacking"]
-  },
-  { 
-    id: 9, 
-    title: "E-commerce Inteligente", 
-    topics: ["APIs", "Automatización", "Productos"], 
-    icon: "🛒",
-    description: "Automatiza tu tienda online con IA: recomendaciones personalizadas, atención al cliente y gestión de inventario.",
-    modules: ["Recomendaciones", "Chatbots de ventas", "Gestión automática", "Análisis de comportamiento"]
+  {
+    id: 11,
+    title: "prompting que funciona",
+    topics: ["Prompting", "Contexto", "Técnicas"],
+    icon: "✍️",
+    description: "Deja de escribir prompts genéricos. Aprende a dar contexto, estructurar preguntas y conseguir respuestas útiles — sin trucos raros ni fórmulas mágicas.",
+    modules: ["Contexto explícito", "Few-shot", "Chain-of-thought", "Iteración"]
   },
   { 
     id: 10, 
@@ -369,7 +385,7 @@ export default function AvailableCoursesSection() {
               posibilidades infinitas
             </h2>
             <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
-              con nuestros más de 1,000 videos, generamos cursos personalizados para cualquier proyecto de IA y automatización
+              100 lecciones interactivas organizadas en 10 secciones, más la ruta personalizada que arma tu propio curso según lo que quieras construir
             </p>
           </div>
         </motion.div>

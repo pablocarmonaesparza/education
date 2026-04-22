@@ -269,10 +269,9 @@ export default function Navbar() {
             <Button
               href="/auth/signup"
               variant="primary"
-              depth="bottom"
+              depth="full"
               size="none"
-              rounded2xl
-              className="px-7 py-3 inline-flex items-center gap-2"
+              className="px-6 py-3 inline-flex items-center gap-2"
             >
               Comenzar
               <svg
@@ -393,7 +392,7 @@ export default function Navbar() {
                 <Link
                   href="/auth/signup"
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`block py-4 text-center font-bold text-lg uppercase tracking-wide rounded-2xl bg-[#1472FF] ${depth.bottom} border-[#0E5FCC] text-white`}
+                  className={`block py-4 text-center font-bold text-lg uppercase tracking-wide rounded-xl bg-[#1472FF] ${depth.border} ${depth.bottom} border-[#0E5FCC] text-white`}
                 >
                   Comenzar
                 </Link>
@@ -445,7 +444,7 @@ export default function Navbar() {
                   <Link
                     href="/auth/signup"
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block py-3 px-4 text-center font-bold uppercase tracking-wide rounded-2xl transition-all bg-[#1472FF] ${depth.bottom} border-[#0E5FCC] text-white hover:bg-[#0E5FCC]`}
+                    className={`block py-3 px-4 text-center font-bold uppercase tracking-wide rounded-xl transition-all bg-[#1472FF] ${depth.border} ${depth.bottom} border-[#0E5FCC] text-white hover:bg-[#0E5FCC]`}
                   >
                     Comenzar
                   </Link>

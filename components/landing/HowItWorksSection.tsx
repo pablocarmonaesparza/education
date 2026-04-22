@@ -7,19 +7,19 @@ import Image from "next/image";
 const steps = [
   {
     title: "el problema",
-    description: "Los cursos genéricos te hacen recorrer caminos interminables. Pasas horas viendo contenido que no aplica a lo que realmente quieres construir.",
+    description: "Tienes YouTube, newsletters y threads llenos de AI. Pero después de tres videos seguidos no usas nada al día siguiente. No te falta información — te falta practicarla.",
     imageLight: "/images/how-it-works-1-dark.png",
     imageDark: "/images/how-it-works-1-light.png",
   },
   {
-    title: "cuéntanos tu idea",
-    description: "Describe el proyecto que quieres crear. Nuestra IA analiza miles de videos y selecciona únicamente los que necesitas para tu objetivo específico.",
+    title: "aprendes haciendo",
+    description: "En Itera no ves videos: respondes preguntas, resuelves casos cortos y construyes ejercicios interactivos. Te equivocas, corriges al momento, y lo que aprendes se queda.",
     imageLight: "/images/how-it-works-2-light.png",
     imageDark: "/images/how-it-works-2-dark.png",
   },
   {
-    title: "tu camino directo",
-    description: "Recibe un curso personalizado con videos ordenados paso a paso. Sin rodeos, sin relleno. Solo lo esencial para construir tu proyecto.",
+    title: "lo usas mañana",
+    description: "Cada lección dura 10 minutos y al terminar ya puedes aplicarla. Sigue la ruta completa de 100 lecciones o cuéntanos qué quieres construir y armamos una ruta personalizada para ti.",
     imageLight: "/images/how-it-works-3-light.png",
     imageDark: "/images/how-it-works-3-dark.png",
   },
