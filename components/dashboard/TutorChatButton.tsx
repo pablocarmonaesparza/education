@@ -110,7 +110,7 @@ export default function TutorChatButton() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const asideRef = useRef<HTMLAsideElement>(null);
+  const asideRef = useRef<HTMLElement>(null);
 
   const selectedModelData = TUTOR_MODELS.find((m) => m.id === selectedModel) || TUTOR_MODELS[1];
   const priceString = (n: number) => '$'.repeat(n);
