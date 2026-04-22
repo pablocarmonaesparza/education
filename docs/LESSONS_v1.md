@@ -11,7 +11,7 @@
 >
 > **Versión:** 2 — Post feedback de render real de v1:
 >  - Eliminada la sección "Introducción" (meta-lecciones condescendían).
->  - Sección 7 dividida en "APIs" (7) + "MCPs y Skills" (8) — la más
+>  - Sección 7 dividida en "API" (7) + "MCP y Skills" (8) — la más
 >    densa del outline original y con dos universos distintos adentro.
 >  - +2 lecciones nuevas:
 >    - Sec 2 Asistentes L8: *"Prompts adaptados por asistente"*
@@ -29,8 +29,8 @@
 | 3 | Contenido | 10 |
 | 4 | Automatización | 12 |
 | 5 | Bases de datos | 12 |
-| 6 | APIs | 7 |
-| 7 | MCPs y Skills | 8 |
+| 6 | API | 7 |
+| 7 | MCP y Skills | 8 |
 | 8 | Agentes | 10 |
 | 9 | Vibe coding | 9 |
 | 10 | Implementación | 10 |
@@ -109,7 +109,7 @@
 11. Evitar data leakage
 12. Tu primer datastore conectado a AI
 
-## 6. APIs (7) *— dividida de la ex-sec 7*
+## 6. API (7) *— dividida de la ex-sec 7*
 
 1. Qué es una API
 2. Llamar a un modelo desde código
@@ -119,7 +119,7 @@
 6. Errores y fallbacks
 7. Elegir modelo para tu app
 
-## 7. MCPs y Skills (8) *— dividida de la ex-sec 7*
+## 7. MCP y Skills (8) *— dividida de la ex-sec 7*
 
 1. Qué es MCP
 2. Tu primer MCP server
