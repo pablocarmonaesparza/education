@@ -315,16 +315,23 @@ function DashboardPageContent() {
         // The derive effect below reads publishedLectures and
         // completedVideoIdSet and populates `videos`.
         if (full || personalized || lectures.length > 0) {
-          // Fetch video progress
-          const { data: progressData } = await supabase
-            .from('video_progress')
-            .select('video_id, completed')
+          // Fetch lesson progress from `user_progress` (post-schema-v1 table).
+          // The column is `is_completed` (not `completed`) and the FK is
+          // `lecture_id` (not `video_id`). The dashboard keys videos by the
+          // lecture's UUID, so the Set is built directly from `lecture_id`.
+          const { data: progressData, error: progressError } = await supabase
+            .from('user_progress')
+            .select('lecture_id, is_completed')
             .eq('user_id', user.id);
+
+          if (progressError) {
+            console.warn('[dashboard] failed to fetch user_progress', progressError);
+          }
 
           const completedVideos = new Set<string>(
             (progressData || [])
-              .filter((p: any) => p.completed)
-              .map((p: any) => p.video_id)
+              .filter((p: any) => p.is_completed)
+              .map((p: any) => p.lecture_id)
           );
           setCompletedVideoIdSet(completedVideos);
 
@@ -773,7 +780,12 @@ function DashboardPageContent() {
   // Also recomputes exercise unlocking so retos that depend on this lesson
   // light up without a page refresh.
   const handleLessonComplete = async (video: Video) => {
-    if (video.isCompleted) return;
+    // NOTE: we used to early-return here when video.isCompleted was already
+    // true, but that prevented re-completions from hitting the DB write path
+    // (so attempts wouldn't increment and started_at wouldn't be preserved
+    // for analytics on replays). The guard now only skips the local UI-state
+    // re-arrange below — the DB write always runs.
+    const alreadyCompleted = video.isCompleted;
 
     // 1. Verify auth. No session → bail, don't touch UI.
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -784,26 +796,100 @@ function DashboardPageContent() {
 
     // 2. Persist first. Abort local update on error so the dashboard never
     // shows progress that wasn't saved.
-    // Note: `section_id` is NOT NULL in the schema, so we persist the
-    // lesson's phase id alongside the video id.
-    const { error: writeError } = await supabase.from('video_progress').upsert(
-      {
+    //
+    // Schema (post-pivot): table is `user_progress`, FK is `lecture_id`, the
+    // boolean is `is_completed`. Several columns are NOT NULL with no default
+    // (started_at, last_active_at, slides_completed, xp_earned, attempts).
+    //
+    // We split UPDATE vs INSERT (instead of a single upsert) so re-completions
+    // preserve `started_at`, `xp_earned`, and increment `attempts` instead of
+    // clobbering them — important for the analytics view in
+    // supabase/migrations/003 that computes `completed_at - started_at`.
+    //
+    // `slides_completed` is set to the lecture's real terminal slide count
+    // (queried inline) so `is_completed=true` is internally consistent with
+    // the slide count, instead of a misleading 0.
+    //
+    // KNOWN GAP (out of scope for this fix): on first completion via this
+    // path, `started_at = completed_at` because nothing tracks the moment
+    // the lesson actually opened. Fixing that requires a separate "lesson
+    // start" hook on lesson open — flagged for follow-up.
+    const now = new Date().toISOString();
+
+    // Count published slides for this lecture so `slides_completed` reflects
+    // reality. Read failure is FATAL — falling back to 0 would write
+    // `slides_completed=0` with `is_completed=true`, which is exactly the
+    // analytics inconsistency this whole branch is here to prevent.
+    const { count: slideCount, error: slideCountError } = await supabase
+      .from('slides')
+      .select('id', { count: 'exact', head: true })
+      .eq('lecture_id', video.id)
+      .neq('status', 'archived');
+    if (slideCountError || slideCount == null) {
+      console.warn(
+        '[dashboard] failed to count slides for lecture, aborting completion write to avoid bogus slides_completed=0',
+        slideCountError,
+      );
+      return;
+    }
+    const terminalSlideCount = slideCount;
+
+    // Look up existing row so we can choose UPDATE vs INSERT and preserve
+    // fields that should NOT be reset on re-completion.
+    const { data: existing, error: existingError } = await supabase
+      .from('user_progress')
+      .select('started_at, attempts, xp_earned, slides_completed')
+      .eq('user_id', user.id)
+      .eq('lecture_id', video.id)
+      .maybeSingle();
+    if (existingError) {
+      console.warn('[dashboard] failed to read existing user_progress', existingError);
+      return;
+    }
+
+    let writeError: any = null;
+    if (existing) {
+      const { error } = await supabase
+        .from('user_progress')
+        .update({
+          last_active_at: now,
+          completed_at: now,
+          is_completed: true,
+          slides_completed: Math.max(existing.slides_completed ?? 0, terminalSlideCount),
+          attempts: (existing.attempts ?? 0) + 1,
+        })
+        .eq('user_id', user.id)
+        .eq('lecture_id', video.id);
+      writeError = error;
+    } else {
+      const { error } = await supabase.from('user_progress').insert({
         user_id: user.id,
-        video_id: video.id,
-        section_id: `${activeMode}:${video.phaseId}`,
-        completed: true,
-        completed_at: new Date().toISOString(),
-      },
-      { onConflict: 'user_id,video_id' },
-    );
+        lecture_id: video.id,
+        started_at: now,
+        last_active_at: now,
+        completed_at: now,
+        is_completed: true,
+        slides_completed: terminalSlideCount,
+        xp_earned: 0,
+        attempts: 1,
+      });
+      writeError = error;
+    }
     if (writeError) {
-      console.warn('[dashboard] failed to persist video_progress', writeError);
+      console.warn('[dashboard] failed to persist user_progress', writeError);
       return;
     }
 
     // 3. Update the completion set so the derive effect keeps future route
     // switches and exercises in sync, and also patch the current videos
     // array optimistically so the current card turns green right away.
+    //
+    // Skip the local-state re-arrange on a replay (the lesson was already
+    // green and `current` was already advanced past it) — otherwise we'd
+    // bounce `current` back to the next-incomplete lesson even if the user
+    // is mid-way through somewhere else.
+    if (alreadyCompleted) return;
+
     setCompletedVideoIdSet((prev) => {
       if (prev.has(video.id)) return prev;
       const next = new Set(prev);
