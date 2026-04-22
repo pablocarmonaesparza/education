@@ -25,8 +25,6 @@ import {
   type LectureRow,
 } from '@/lib/lessons/fromSupabase';
 import { useSidebar } from '@/contexts/SidebarContext';
-import MaintenancePage from '@/components/maintenance/MaintenancePage';
-import { isMaintenanceMode } from '@/lib/maintenance';
 
 const greetings = [
   "Hola",
@@ -1501,13 +1499,10 @@ function DashboardPageContent() {
 }
 
 /**
- * Outer wrapper: gate the dashboard behind the maintenance flag. When the
- * flag is off, render the full DashboardPageContent (all hooks, fetches,
- * UI). When the flag is on, render the MaintenancePage and don't even
- * mount DashboardPageContent, so its effects/queries don't fire against
- * tables that may no longer exist during the schema rebuild.
+ * Dashboard entrypoint. The maintenance wrapper was removed once the
+ * 100-lesson curriculum landed. If you need to gate the dashboard again,
+ * re-import `isMaintenanceMode`/`MaintenancePage` and wrap the return.
  */
 export default function DashboardPage() {
-  if (isMaintenanceMode()) return <MaintenancePage />;
   return <DashboardPageContent />;
 }
