@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import LessonItem from '@/components/dashboard/LessonItem';
@@ -416,27 +416,40 @@ function DashboardPageContent() {
   // (so section_id 11 would always land after 10). We track phaseOrder per
   // phase and expose an `orderedPhaseEntries` sorted by that value so the
   // UI respects the curriculum's `section.display_order`.
-  const videosByPhase = videos.reduce((acc, video) => {
-    if (!acc[video.phaseId]) {
-      acc[video.phaseId] = {
-        phaseName: video.phaseName,
-        phaseOrder: video.phaseOrder,
-        videos: []
-      };
-    }
-    acc[video.phaseId].videos.push(video);
-    return acc;
-  }, {} as Record<string, { phaseName: string; phaseOrder: number; videos: Video[] }>);
+  // Memoized so its identity is stable across renders. Without useMemo this
+  // object is a new reference on every render, which turned the initial-phase
+  // useEffect (deps include videosByPhase) into an infinite loop.
+  const videosByPhase = useMemo(
+    () =>
+      videos.reduce((acc, video) => {
+        if (!acc[video.phaseId]) {
+          acc[video.phaseId] = {
+            phaseName: video.phaseName,
+            phaseOrder: video.phaseOrder,
+            videos: [],
+          };
+        }
+        acc[video.phaseId].videos.push(video);
+        return acc;
+      }, {} as Record<string, { phaseName: string; phaseOrder: number; videos: Video[] }>),
+    [videos],
+  );
 
-  const orderedPhaseEntries = Object.entries(videosByPhase).sort(
-    ([, a], [, b]) => a.phaseOrder - b.phaseOrder,
+  const orderedPhaseEntries = useMemo(
+    () =>
+      Object.entries(videosByPhase).sort(
+        ([, a], [, b]) => a.phaseOrder - b.phaseOrder,
+      ),
+    [videosByPhase],
   );
 
   const completedCount = videos.filter(v => v.isCompleted).length;
   const totalCount = videos.length;
   const progressPercentage = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
 
-  // Set initial active phase and center it
+  // Set initial active phase and center it. We only need to react to `videos`
+  // — videosByPhase is derived from videos, so depending on both re-runs the
+  // effect every time we recompute the derived map.
   useEffect(() => {
     if (videos.length > 0 && Object.keys(videosByPhase).length > 0 && !activePhaseId) {
       // Find the current video's phase (the one the user is on)
@@ -444,7 +457,8 @@ function DashboardPageContent() {
       const initialPhaseId = currentVideo ? currentVideo.phaseId : orderedPhaseEntries[0]?.[0];
       setActivePhaseId(initialPhaseId);
     }
-  }, [videos, videosByPhase, activePhaseId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [videos, activePhaseId]);
 
   // Center button in horizontal scroll
   const centerHorizontalButton = useCallback((phaseId: string, smooth: boolean = true) => {

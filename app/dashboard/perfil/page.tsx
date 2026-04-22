@@ -365,10 +365,15 @@ export default function PerfilPage() {
                       {telegramCode}
                     </span>
                     <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(telegramCode);
-                        setMessage({ type: 'success', text: 'Código copiado' });
-                        setTimeout(() => setMessage(null), 2000);
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(telegramCode);
+                          setMessage({ type: 'success', text: 'Código copiado' });
+                        } catch {
+                          setMessage({ type: 'error', text: 'No se pudo copiar' });
+                        } finally {
+                          setTimeout(() => setMessage(null), 2000);
+                        }
                       }}
                       className="text-sm text-[#1472FF] hover:underline"
                     >
