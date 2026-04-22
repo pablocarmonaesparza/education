@@ -15,7 +15,11 @@ Para el sistema de gamification de Itera, Pablo eligió **look-and-feel estilo D
 - Milestones celebrables (primera lección, sección completa, racha 7/30, 10/50/100 lecciones, primer reto, semana laboral completa).
 
 **No va (B2C):**
-- Hearts / vidas limitadas.
+- Hearts / vidas limitadas como **mecánica** (drainage por error, gating de
+  contenido, bloqueo por fallar). El **slot visual** del corazón ∞ sí se
+  mantiene en `StatsPills` como decoración / placeholder por consistencia
+  con el lenguaje visual Duolingo — cuando haya algo concreto que medir
+  ahí (lives, energy, gemas, créditos) se sustituye por la métrica real.
 - Email reminders antes de perder racha.
 - Push notifications.
 - Leaderboards / ligas / competencia entre usuarios.

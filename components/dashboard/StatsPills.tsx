@@ -5,14 +5,14 @@ import { createClient } from '@/lib/supabase/client';
 import { getUserStats, type UserStats } from '@/lib/gamification';
 
 /**
- * Pills de racha, XP y nivel — conectadas a user_stats.
+ * Pills del header del tutor: corazón ∞ + racha + XP.
  *
- * Itera es B2B (ver docs/memory/decision_gamification_duolingo_b2b.md):
- * no hay pill de "vidas ilimitadas". Los datos reales vienen del trigger
- * Postgres `on_user_progress_complete` vía la tabla `user_stats`.
- *
- * Usado en TutorChatButton y reutilizable donde haga falta un resumen
- * compacto.
+ * Racha y XP vienen de user_stats (trigger Postgres
+ * `on_user_progress_complete`). El corazón ∞ es decorativo por ahora — no
+ * hay sistema de hearts/lives (Itera es B2B, no aplica el drainage de
+ * Duolingo, ver docs/memory/decision_gamification_duolingo_b2b.md). Se
+ * mantiene el slot visual; cuando haya algo concreto que medir ahí (lives,
+ * energy, gemas, créditos) se sustituye el literal por la métrica real.
  */
 export default function StatsPills() {
   const supabase = createClient();
@@ -59,9 +59,21 @@ export default function StatsPills() {
     'border-2 border-gray-300 dark:border-gray-900 ' +
     'border-b-4 border-b-gray-300 dark:border-b-gray-900';
 
+  // Pill decorativa de "vidas ilimitadas". No depende de loading ni de
+  // user_stats — siempre se ve igual mientras no haya métrica que medir.
+  const heartPill = (
+    <div className={pillClass} aria-label="vidas ilimitadas">
+      <svg className="w-4 h-4 text-red-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 21s-7-4.5-9.5-9C.5 8 3 4 6.5 4c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3C21 4 23.5 8 21.5 12 19 16.5 12 21 12 21z" />
+      </svg>
+      <span className="text-base font-bold leading-none translate-y-[1px]" aria-hidden="true">∞</span>
+    </div>
+  );
+
   if (loading) {
     return (
       <div className="flex items-center gap-2 sm:gap-3">
+        {heartPill}
         <div className={pillClass} aria-label="cargando racha">
           <span className="text-sm leading-none opacity-40" aria-hidden="true">🔥</span>
           <span className="text-sm font-bold tabular-nums opacity-40">—</span>
@@ -81,6 +93,7 @@ export default function StatsPills() {
 
   return (
     <div className="flex items-center gap-2 sm:gap-3">
+      {heartPill}
       <div
         className={pillClass}
         aria-label={`racha de ${streak} ${streak === 1 ? 'día' : 'días'}`}
