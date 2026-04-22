@@ -21,12 +21,14 @@ interface Exercise {
   title: string;
   description: string;
   deliverable: string;
-  videos_required: number[];
+  // IDs de lecciones requeridas (lecture_id UUID en el schema nuevo).
+  // Mantenemos tipo amplio para tolerar filas legacy con number[].
+  videos_required: Array<string | number>;
   time_minutes: number;
   difficulty: number;
   isCompleted: boolean;
   isUnlocked: boolean;
-  missingVideos: number[];
+  missingVideos: Array<string | number>;
 }
 
 interface UserExercises {
@@ -40,7 +42,7 @@ interface UserExercises {
 export default function RetosPage() {
   const [exercisesData, setExercisesData] = useState<UserExercises | null>(null);
   const [completedExercises, setCompletedExercises] = useState<Set<number>>(new Set());
-  const [completedVideos, setCompletedVideos] = useState<Set<number>>(new Set());
+  const [completedLectures, setCompletedLectures] = useState<Set<string>>(new Set());
   const [currentExercise, setCurrentExercise] = useState<Exercise | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [hasExercises, setHasExercises] = useState(false);
@@ -53,7 +55,12 @@ export default function RetosPage() {
       const { data: { user } } = await supabase.auth.getUser();
 
       if (user) {
-        // Fetch exercises
+        // TODO: el sistema de retos vive sobre `user_exercises` y
+        // `exercise_progress`, que fueron dropeadas en
+        // supabase/migrations/000_nuke_legacy.sql. Las queries fallan en
+        // runtime y los datos se muestran vacíos (empty state). La
+        // reconstrucción del sistema de retos sobre el schema v1 está
+        // fuera del scope del P0 de gamification.
         const { data: exercisesResult } = await supabase
           .from('user_exercises')
           .select('*')
@@ -63,7 +70,6 @@ export default function RetosPage() {
           .single();
 
         if (exercisesResult) {
-          // Fetch exercise progress
           const { data: progressData } = await supabase
             .from('exercise_progress')
             .select('exercise_number, completed')
@@ -76,21 +82,28 @@ export default function RetosPage() {
           );
           setCompletedExercises(completedExercisesSet);
 
-          // Fetch video progress to check which videos are completed
-          const { data: videoProgressData } = await supabase
-            .from('video_progress')
-            .select('video_id')
-            .eq('user_id', user.id);
+          // Fetch completed lectures from user_progress (schema v1).
+          // Filtramos por is_completed=true — el bug anterior era que cualquier
+          // fila de la tabla video_progress desbloqueaba el reto.
+          const { data: progressRows } = await supabase
+            .from('user_progress')
+            .select('lecture_id')
+            .eq('user_id', user.id)
+            .eq('is_completed', true);
 
-          const completedVideosSet = new Set(
-            (videoProgressData || []).map((v: any) => v.video_id)
+          const completedLecturesSet = new Set<string>(
+            (progressRows || []).map((v: { lecture_id: string }) => v.lecture_id)
           );
-          setCompletedVideos(completedVideosSet);
+          setCompletedLectures(completedLecturesSet);
 
-          // Parse exercises with unlock status
+          // Parse exercises with unlock status.
+          // videos_required puede venir como string[] (lecture UUIDs) o
+          // number[] (IDs legacy de education_system). Comparamos como string.
           const exercises = (exercisesResult.exercises || []).map((ex: any) => {
-            const requiredVideos = ex.videos_required || [];
-            const missingVideos = requiredVideos.filter((vid: number) => !completedVideosSet.has(vid));
+            const requiredVideos: Array<string | number> = ex.videos_required || [];
+            const missingVideos = requiredVideos.filter(
+              (vid) => !completedLecturesSet.has(String(vid))
+            );
             const isUnlocked = missingVideos.length === 0;
 
             return {
@@ -366,10 +379,10 @@ export default function RetosPage() {
                                     )}
                                     <div className="flex flex-wrap gap-2">
                                       {exercise.videos_required.map((videoNum) => {
-                                        const isWatched = completedVideos.has(videoNum);
+                                        const isWatched = completedLectures.has(String(videoNum));
                                         return (
                                           <button
-                                            key={videoNum}
+                                            key={String(videoNum)}
                                             onClick={(e) => { e.stopPropagation(); router.push('/dashboard'); }}
                                           >
                                             <Tag variant={isWatched ? 'success' : 'neutral'} className="!text-xs">
@@ -475,10 +488,10 @@ export default function RetosPage() {
                       )}
                       <div className="flex flex-wrap gap-2">
                         {currentExercise.videos_required.map((videoNum) => {
-                          const isWatched = completedVideos.has(videoNum);
+                          const isWatched = completedLectures.has(String(videoNum));
                           return (
                             <button
-                              key={videoNum}
+                              key={String(videoNum)}
                               onClick={() => router.push('/dashboard')}
                               className="cursor-pointer"
                             >

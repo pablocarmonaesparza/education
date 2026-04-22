@@ -34,15 +34,13 @@ export default function VideoPage() {
   const [allVideos, setAllVideos] = useState<{ video: Video; phaseId: string; phaseName: string }[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [loading, setLoading] = useState(true);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [markingComplete, setMarkingComplete] = useState(false);
-  
+
   const supabase = createClient();
 
   useEffect(() => {
     async function fetchVideo() {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) {
         router.push('/auth/login');
         return;
@@ -61,18 +59,6 @@ export default function VideoPage() {
         router.push('/dashboard');
         return;
       }
-
-      // Get progress data
-      const { data: progressData } = await supabase
-        .from('video_progress')
-        .select('video_id, completed')
-        .eq('user_id', user.id);
-
-      const completedSet = new Set(
-        (progressData || [])
-          .filter((p: any) => p.completed)
-          .map((p: any) => p.video_id)
-      );
 
       const path = intakeData.generated_path;
       const rawPhases = path.phases || path.course?.phases || path.modules || path.sections || [];
@@ -117,7 +103,6 @@ export default function VideoPage() {
           if (pId === phaseId && vId === videoId) {
             foundVideo = videoObj;
             foundPhaseName = pName;
-            setIsCompleted(completedSet.has(vId));
           }
 
           globalOrder++;
@@ -137,40 +122,6 @@ export default function VideoPage() {
 
     fetchVideo();
   }, [phaseId, videoId, supabase, router]);
-
-  const handleMarkComplete = async () => {
-    if (!video || markingComplete) return;
-    
-    setMarkingComplete(true);
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-
-    const { error } = await supabase
-      .from('video_progress')
-      .upsert({
-        user_id: user.id,
-        video_id: video.id,
-        completed: true,
-        completed_at: new Date().toISOString(),
-      }, {
-        onConflict: 'user_id,video_id'
-      });
-
-    if (!error) {
-      setIsCompleted(true);
-      
-      // Auto-navigate to next video after marking complete
-      if (currentIndex < allVideos.length - 1) {
-        const next = allVideos[currentIndex + 1];
-        setTimeout(() => {
-          router.push(`/dashboard/my-path/video/${next.phaseId}/${next.video.id}`);
-        }, 500);
-      }
-    }
-    
-    setMarkingComplete(false);
-  };
 
   const goToVideo = (index: number) => {
     if (index >= 0 && index < allVideos.length) {
@@ -286,31 +237,19 @@ export default function VideoPage() {
             </IconButton>
           </div>
 
-          {/* Complete Button */}
+          {/* Continuar en el dashboard — el progreso real se registra al
+              terminar la lección interactiva desde el overlay del dashboard,
+              que escribe en user_progress con XP real. */}
           <Button
-            variant={isCompleted ? 'completado' : 'primary'}
+            variant="primary"
             size="lg"
-            onClick={handleMarkComplete}
-            disabled={isCompleted || markingComplete}
+            href="/dashboard"
             className="flex items-center gap-2"
           >
-            {isCompleted ? (
-              <>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Completado
-              </>
-            ) : markingComplete ? (
-              'Guardando...'
-            ) : (
-              <>
-                Marcar como completado
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </>
-            )}
+            Hacer la lección interactiva
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </Button>
         </div>
       </div>

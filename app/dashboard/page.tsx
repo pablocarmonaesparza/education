@@ -18,12 +18,13 @@ import { depth } from '@/lib/design-tokens';
 import HorizontalScroll from '@/components/shared/HorizontalScroll';
 import VerticalScroll from '@/components/shared/VerticalScroll';
 import ExperimentLesson from '@/components/experiment/ExperimentLesson';
-import type { Step } from '@/components/experiment/ExperimentLesson';
+import type { Step, LessonCompletionResult } from '@/components/experiment/ExperimentLesson';
 import {
   fetchPublishedLectures,
   fetchLectureAsSteps,
   type LectureRow,
 } from '@/lib/lessons/fromSupabase';
+import { getUserStats, type UserStats } from '@/lib/gamification';
 import { useSidebar } from '@/contexts/SidebarContext';
 
 const greetings = [
@@ -211,6 +212,7 @@ function DashboardPageContent() {
   const [isRetoOverlayOpen, setIsRetoOverlayOpen] = useState(false);
   const [isRetoOverlayClosing, setIsRetoOverlayClosing] = useState(false);
   const [completedExercises, setCompletedExercises] = useState<Set<number>>(new Set());
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
   // Multi-route state: user may have a full-course intake and/or a
   // personalized intake. activeMode decides which one is rendered.
   const [activeMode, setActiveMode] = useState<RouteMode>('full');
@@ -328,6 +330,11 @@ function DashboardPageContent() {
             console.warn('[dashboard] failed to fetch user_progress', progressError);
           }
 
+          // Fetch gamification stats (XP, level, streak) desde user_stats.
+          // El trigger `on_user_progress_complete` la mantiene al día
+          // cuando se escribe is_completed=true.
+          setUserStats(await getUserStats(supabase, user.id));
+
           const completedVideos = new Set<string>(
             (progressData || [])
               .filter((p: any) => p.is_completed)
@@ -335,7 +342,12 @@ function DashboardPageContent() {
           );
           setCompletedVideoIdSet(completedVideos);
 
-          // Fetch exercises for retos integration
+          // Fetch exercises for retos integration.
+          // TODO: `user_exercises` y `exercise_progress` fueron dropeadas
+          // en 000_nuke_legacy. La query falla silenciosa y `exercisesResult`
+          // queda null, así que el bloque retos-integration no ejecuta.
+          // Reconstruir el sistema de retos sobre schema v1 es una tarea
+          // aparte del sprint de gamification.
           const { data: exercisesResult } = await supabase
             .from('user_exercises')
             .select('*')
@@ -358,8 +370,12 @@ function DashboardPageContent() {
             setCompletedExercises(completedExSet);
 
             const parsedExercises = (exercisesResult.exercises || []).map((ex: any) => {
-              const requiredVideos = ex.videos_required || [];
-              const missingVideos = requiredVideos.filter((vid: number) => !completedVideos.has(vid));
+              const requiredVideos: Array<string | number> = ex.videos_required || [];
+              // completedVideos es Set<string> de lecture_id UUID.
+              // videos_required puede ser number[] (legacy) o string[] (UUIDs).
+              const missingVideos = requiredVideos.filter(
+                (vid) => !completedVideos.has(String(vid))
+              );
               return {
                 ...ex,
                 isCompleted: completedExSet.has(ex.number),
@@ -779,7 +795,12 @@ function DashboardPageContent() {
   // recompute local state so the UI only advances when the DB actually wrote.
   // Also recomputes exercise unlocking so retos that depend on this lesson
   // light up without a page refresh.
-  const handleLessonComplete = async (video: Video) => {
+  const handleLessonComplete = async (video: Video, _result?: LessonCompletionResult) => {
+    // El parámetro `_result` viene de ExperimentLesson con { xpGained,
+    // correctCombo }. No lo usamos para persistir XP — la fuente de verdad
+    // es `award_lecture_xp` que corre en el trigger Postgres y suma
+    // slides.xp reales. Lo recibimos solo para mantener el contrato y
+    // permitir animaciones locales futuras.
     // NOTE: we used to early-return here when video.isCompleted was already
     // true, but that prevented re-completions from hitting the DB write path
     // (so attempts wouldn't increment and started_at wouldn't be preserved
@@ -862,6 +883,9 @@ function DashboardPageContent() {
         .eq('lecture_id', video.id);
       writeError = error;
     } else {
+      // xp_earned queda en 0 en el INSERT — el trigger
+      // `on_user_progress_complete` lo sobrescribe con SUM(slides.xp) al
+      // detectar is_completed=true. El cliente no calcula XP.
       const { error } = await supabase.from('user_progress').insert({
         user_id: user.id,
         lecture_id: video.id,
@@ -878,6 +902,16 @@ function DashboardPageContent() {
     if (writeError) {
       console.warn('[dashboard] failed to persist user_progress', writeError);
       return;
+    }
+
+    // El trigger `on_user_progress_complete` ya actualizó user_stats.
+    // Re-fetch para que la racha/XP/nivel en el UI (TutorChatButton,
+    // próxima celebration) reflejen el nuevo estado.
+    setUserStats(await getUserStats(supabase, user.id));
+    // Notifica a StatsPills (montado en el layout, separado de este árbol)
+    // para que también refetchee sin depender de props.
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('itera:stats-refresh'));
     }
 
     // 3. Update the completion set so the derive effect keeps future route
@@ -1331,9 +1365,12 @@ function DashboardPageContent() {
                   key={selectedVideo?.id ?? 'none'}
                   steps={lessonSteps}
                   onClose={handleCloseVideo}
-                  onComplete={() => selectedVideo && handleLessonComplete(selectedVideo)}
+                  onComplete={async (result) => {
+                    if (selectedVideo) await handleLessonComplete(selectedVideo, result);
+                  }}
                   onNext={onNext}
                   nextLabel={nextLabel}
+                  dailyStreak={userStats?.currentStreak ?? 0}
                 />
               )}
             </div>

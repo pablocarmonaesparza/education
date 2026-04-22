@@ -11,7 +11,7 @@ import {
 import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
-import ConfettiEffect from '@/components/demo/ConfettiEffect';
+import ConfettiEffect from '@/components/shared/ConfettiEffect';
 import IconButton from '@/components/ui/IconButton';
 import { Textarea } from '@/components/ui/Input';
 import { Title, Body } from '@/components/ui/Typography';
@@ -256,14 +256,6 @@ function analyzePrompt(text: string): { score: number; feedback: string } {
   return { score, feedback };
 }
 
-/* ─── feature flags ─── */
-
-// Usuarios pagados / owners no pierden vidas ni ven el modal.
-const HAS_UNLIMITED_LIVES = true;
-
-// Mock: racha de días consecutivos usando la app (vendría del backend).
-const DAILY_STREAK = 5;
-
 /* ─── lesson data ─── */
 
 export type { Step };
@@ -409,12 +401,23 @@ export const DEFAULT_STEPS: Step[] = [
 
 /* ─── main component ─── */
 
+export type LessonCompletionResult = {
+  /** XP ganado en esta sesión (base + combo bonus). El dashboard lo
+   * ignora y confía en el trigger Postgres que suma slides.xp — pero
+   * se expone por si algún caller lo quiere para animar localmente. */
+  xpGained: number;
+  /** Racha de respuestas correctas consecutivas (combo de la sesión,
+   * NO la racha diaria). Se resetea al cerrar la lección. */
+  correctCombo: number;
+};
+
 export default function ExperimentLesson({
   steps: propSteps,
   onClose,
   onComplete,
   onNext,
   nextLabel,
+  dailyStreak = 0,
 }: {
   steps?: Step[];
   onClose?: () => void;
@@ -422,14 +425,18 @@ export default function ExperimentLesson({
    * "terminar" in the result modal after passing, or exits a non-scoreable
    * placeholder lesson which is considered passed by default). May be async;
    * the overlay waits for it to resolve before closing so the caller can
-   * persist progress before the UI advances. */
-  onComplete?: () => void | Promise<void>;
+   * persist progress before the UI advances. Recibe `xpGained` y
+   * `correctCombo` de la sesión. */
+  onComplete?: (result: LessonCompletionResult) => void | Promise<void>;
   /** When provided, the last step shows two CTAs: "menú principal" (secondary)
    * and `nextLabel` (primary). Clicking next runs `onComplete` and then this
    * callback without closing the overlay — letting the caller swap the lesson
    * in-place for the next one in the ruta. */
   onNext?: () => void | Promise<void>;
   nextLabel?: string;
+  /** Racha diaria real del usuario (user_stats.current_streak). Se muestra
+   * en la celebration. 0 = no mostrar racha. */
+  dailyStreak?: number;
 } = {}) {
   const STEPS = propSteps ?? DEFAULT_STEPS;
   const router = useRouter();
@@ -441,8 +448,13 @@ export default function ExperimentLesson({
   const [scoredSteps, setScoredSteps] = useState<Set<number>>(() => new Set());
   const [livesPulse, setLivesPulse] = useState(false);
   const [showResult, setShowResult] = useState(false);
-  const [showNoLives, setShowNoLives] = useState(false);
-  const [streak, setStreak] = useState(0);
+  // Itera B2B: vidas ilimitadas. El modal `NoLivesModal` nunca se dispara;
+  // el estado vive sólo para compat con otros callbacks que aún lo referencien.
+  const [showNoLives] = useState(false);
+  // correctCombo: respuestas correctas consecutivas dentro de esta sesión.
+  // NO es la racha diaria (esa vive en user_stats.current_streak y se pasa
+  // como prop `dailyStreak`). Se resetea al cerrar o reiniciar la lección.
+  const [correctCombo, setCorrectCombo] = useState(0);
   const [ctaBounce, setCtaBounce] = useState(false);
   const [firstSubmitted, setFirstSubmitted] = useState<Set<number>>(() => new Set());
   const [xp, setXp] = useState(0);
@@ -463,9 +475,10 @@ export default function ExperimentLesson({
     return () => clearTimeout(t);
   }, [livesPulse]);
 
-  useEffect(() => {
-    if (!HAS_UNLIMITED_LIVES && lives === 0) setShowNoLives(true);
-  }, [lives]);
+  // Itera B2B: vidas ilimitadas por diseño (ver
+  // docs/memory/decision_gamification_duolingo_b2b.md). El contador `lives`
+  // existe para poder animar decrementos visuales futuros, pero nunca llega
+  // a 0 ni bloquea al usuario.
 
   useEffect(() => {
     if (!ctaBounce) return;
@@ -496,11 +509,16 @@ export default function ExperimentLesson({
   };
 
   const [isFinishing, setIsFinishing] = useState(false);
+  const buildCompletionResult = (): LessonCompletionResult => ({
+    xpGained: xp,
+    correctCombo,
+  });
+
   const handleFinish = async () => {
     if (isFinishing) return;
     setIsFinishing(true);
     try {
-      await onComplete?.();
+      await onComplete?.(buildCompletionResult());
     } catch (err) {
       console.warn('[experiment] onComplete threw, closing anyway', err);
     } finally {
@@ -514,7 +532,7 @@ export default function ExperimentLesson({
     if (isFinishing) return;
     setIsFinishing(true);
     try {
-      await onComplete?.();
+      await onComplete?.(buildCompletionResult());
       await onNext?.();
     } catch (err) {
       console.warn('[experiment] onComplete/onNext threw', err);
@@ -550,7 +568,7 @@ export default function ExperimentLesson({
     setLives(5);
     setScoredSteps(new Set());
     setFirstSubmitted(new Set());
-    setStreak(0);
+    setCorrectCombo(0);
     setXp(0);
     setXpDelta(null);
     setShowResult(false);
@@ -570,20 +588,17 @@ export default function ExperimentLesson({
         const correct = isAttemptCorrect(step, attempt);
         setFirstSubmitted((s) => new Set(s).add(index));
         if (correct) {
-          const newStreak = streak + 1;
-          setStreak(newStreak);
+          const newCombo = correctCombo + 1;
+          setCorrectCombo(newCombo);
           setCtaBounce(true);
           const base = getStepXp(step);
-          const streakBonus = newStreak >= 3 ? 5 : 0;
-          const gain = base + streakBonus;
+          const comboBonus = newCombo >= 3 ? 5 : 0;
+          const gain = base + comboBonus;
           setXp((x) => x + gain);
           setXpDelta((prev) => ({ gain, id: (prev?.id ?? 0) + 1 }));
         } else {
-          setStreak(0);
-          if (!HAS_UNLIMITED_LIVES) {
-            setLives((l) => Math.max(0, l - 1));
-            setLivesPulse(true);
-          }
+          setCorrectCombo(0);
+          // Itera es B2B: vidas ilimitadas — no decrementamos ni bloqueamos.
           setScoredSteps((s) => new Set(s).add(index));
         }
       }
@@ -685,7 +700,7 @@ export default function ExperimentLesson({
               title={step.title}
               body={step.body}
               section={step.section}
-              streak={streak}
+              dailyStreak={dailyStreak}
               xpGained={xp}
               correctSoFar={(() => {
                 let n = 0;
@@ -1770,7 +1785,7 @@ function CelebrationStep({
   section,
   correctSoFar,
   totalSoFar,
-  streak,
+  dailyStreak,
   xpGained,
   passed = true,
 }: {
@@ -1780,7 +1795,8 @@ function CelebrationStep({
   section?: string;
   correctSoFar: number;
   totalSoFar: number;
-  streak: number;
+  /** Racha diaria real (user_stats.current_streak). 0 = no mostrar pill. */
+  dailyStreak: number;
   xpGained: number;
   passed?: boolean;
 }) {
@@ -1837,9 +1853,11 @@ function CelebrationStep({
         </span>
         {passed && (
           <>
-            <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
-              🔥 {DAILY_STREAK} días
-            </span>
+            {dailyStreak > 0 && (
+              <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
+                🔥 {dailyStreak} {dailyStreak === 1 ? 'día' : 'días'}
+              </span>
+            )}
             <span className="rounded-full border-2 border-[#1472FF] px-4 py-2 text-sm font-bold text-[#1472FF] bg-white dark:bg-gray-900">
               +{xpGained} XP
             </span>

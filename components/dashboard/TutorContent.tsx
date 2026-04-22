@@ -105,18 +105,20 @@ export default function TutorContent() {
         .limit(1)
         .single();
 
-      // Get video progress
-      const { data: videoProgress } = await supabase
-        .from('video_progress')
-        .select('video_id, completed, updated_at')
+      // Get lecture progress (schema v1).
+      // TutorContent enriquece el system prompt del tutor con qué lecciones
+      // ha completado el usuario. Antes leía video_progress (tabla legacy
+      // dropeada); ahora lee user_progress por lecture_id.
+      const { data: lectureProgress } = await supabase
+        .from('user_progress')
+        .select('lecture_id, is_completed, last_active_at')
         .eq('user_id', user.id)
-        .order('updated_at', { ascending: false });
+        .order('last_active_at', { ascending: false });
 
-      // Get exercise progress
-      const { data: exerciseProgress } = await supabase
-        .from('exercise_progress')
-        .select('exercise_id, completed')
-        .eq('user_id', user.id);
+      // exercise_progress también fue dropeado en migration 000_nuke_legacy;
+      // hasta que se rediseñe el sistema de retos sobre el schema v1, aquí
+      // no hay forma de saber qué retos completó el usuario.
+      const exerciseProgress: Array<{ exercise_id: string; completed: boolean }> = [];
 
       // Build video info from generated_path
       const allVideos: VideoInfo[] = [];
@@ -131,7 +133,13 @@ export default function TutorContent() {
             for (const video of phase.videos) {
               totalVideos++;
               const videoId = `phase-${phase.order}-video-${video.order}`;
-              const isCompleted = videoProgress?.some(vp => vp.video_id === videoId && vp.completed) || false;
+              // Buscamos por lecture_id que matchee el synthetic `videoId`.
+              // Con el schema actual los IDs legacy no matchean UUIDs reales;
+              // el completed por defecto es false hasta que el path se vincule
+              // con lectures publicadas.
+              const isCompleted = lectureProgress?.some(
+                (lp) => lp.lecture_id === videoId && lp.is_completed
+              ) || false;
               
               const videoInfo: VideoInfo = {
                 id: videoId,
@@ -159,14 +167,11 @@ export default function TutorContent() {
         currentPhase = 'Completado';
       }
 
-      // Get exercises count
-      const { data: userExercises } = await supabase
-        .from('user_exercises')
-        .select('id')
-        .eq('user_id', user.id);
-
-      const totalExercises = userExercises?.length || 0;
-      const completedExercisesCount = exerciseProgress?.filter(e => e.completed).length || 0;
+      // user_exercises y exercise_progress fueron dropeadas en 000_nuke_legacy.
+      // Hasta que el sistema de retos se reconstruya sobre schema v1 no hay
+      // forma de contar retos; se reportan como 0.
+      const totalExercises = 0;
+      const completedExercisesCount = 0;
 
       // Extract project idea from responses
       const projectIdea = 

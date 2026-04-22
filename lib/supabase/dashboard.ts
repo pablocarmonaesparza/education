@@ -66,28 +66,29 @@ export async function getLearningPath(
     return null;
   }
 
-  // Fetch all video progress for this user
+  // Fetch lecture progress from user_progress (schema v1).
+  // La tabla legacy `video_progress` fue dropeada en 000_nuke_legacy.
   const { data: progressData, error: progressError } = await supabase
-    .from('video_progress')
-    .select('*')
+    .from('user_progress')
+    .select('lecture_id, is_completed, completed_at, last_active_at, started_at, xp_earned')
     .eq('user_id', userId);
 
   if (progressError) {
-    console.error('Error fetching video progress:', progressError);
+    console.error('Error fetching user_progress:', progressError);
   }
 
   const videoProgressMap = new Map<string, VideoProgress>();
   (progressData || []).forEach((p: any) => {
-    videoProgressMap.set(p.video_id, {
-      id: p.id,
-      userId: p.user_id,
-      videoId: p.video_id,
-      moduleId: p.section_id,
-      completed: p.completed,
-      lastPosition: p.last_position || 0,
+    videoProgressMap.set(String(p.lecture_id), {
+      id: p.lecture_id,
+      userId,
+      videoId: String(p.lecture_id),
+      moduleId: '',
+      completed: p.is_completed,
+      lastPosition: 0,
       completedAt: p.completed_at,
-      createdAt: p.created_at,
-      updatedAt: p.updated_at,
+      createdAt: p.started_at,
+      updatedAt: p.last_active_at,
     });
   });
 
@@ -263,96 +264,37 @@ export function getContinueLearning(learningPath: LearningPath | null): Continue
 }
 
 // ============================================
-// VIDEO PROGRESS
+// STUDENT STATS — desde user_progress + user_stats
 // ============================================
-
-export async function updateVideoProgress(
-  supabase: SupabaseClient,
-  userId: string,
-  videoId: string,
-  moduleId: string,
-  position: number,
-  completed: boolean = false
-): Promise<VideoProgress | null> {
-  const updateData: any = {
-    user_id: userId,
-    video_id: videoId,
-    section_id: moduleId,
-    last_position: position,
-    updated_at: new Date().toISOString(),
-  };
-
-  if (completed) {
-    updateData.completed = true;
-    updateData.completed_at = new Date().toISOString();
-  }
-
-  const { data, error } = await supabase
-    .from('video_progress')
-    .upsert(updateData, {
-      onConflict: 'user_id,video_id',
-    })
-    .select()
-    .single();
-
-  if (error) {
-    console.error('Error updating video progress:', error);
-    return null;
-  }
-
-  return {
-    id: data.id,
-    userId: data.user_id,
-    videoId: data.video_id,
-    moduleId: data.section_id,
-    completed: data.completed,
-    lastPosition: data.last_position,
-    completedAt: data.completed_at,
-    createdAt: data.created_at,
-    updatedAt: data.updated_at,
-  };
-}
-
-export async function markVideoCompleted(
-  supabase: SupabaseClient,
-  userId: string,
-  videoId: string,
-  moduleId: string
-): Promise<boolean> {
-  const result = await updateVideoProgress(supabase, userId, videoId, moduleId, 0, true);
-  return result !== null;
-}
-
-// ============================================
-// STUDENT STATS
-// ============================================
+//
+// Las helpers `updateVideoProgress` / `markVideoCompleted` que vivían aquí
+// fueron eliminadas junto con la tabla `video_progress` (ver migration
+// 000_nuke_legacy y 006_user_stats_and_gamification). Hoy el flujo real es:
+//   - El cliente escribe `is_completed = true` en `user_progress`.
+//   - Un trigger de Postgres dispara `award_lecture_xp` y
+//     `recalculate_user_stats`, que mantienen `user_stats` al día.
+//   - Las vistas que necesiten racha/XP/level leen `user_stats` via
+//     `lib/gamification.ts`.
 
 export async function getStudentStats(
   supabase: SupabaseClient,
   userId: string,
   learningPath: LearningPath | null
 ): Promise<StudentStats> {
-  // Get video progress for calculating watch time and streaks
-  const { data: progressData } = await supabase
-    .from('video_progress')
-    .select('*')
+  // user_stats agrega total_xp, level, current_streak, longest_streak,
+  // last_activity_date y lessons_completed. Mantenido por el trigger.
+  const { data: stats } = await supabase
+    .from('user_stats')
+    .select('current_streak, longest_streak, last_activity_date, lessons_completed')
     .eq('user_id', userId)
-    .order('updated_at', { ascending: false });
+    .maybeSingle();
 
-  const completedProgress = (progressData || []).filter((p: any) => p.completed);
-  
-  // Calculate minutes watched (estimate based on completed videos)
-  // In a real implementation, you'd track actual watch time
-  const minutesWatched = completedProgress.reduce((sum: number, p: any) => {
-    // Estimate 3 minutes per video if we don't have duration
-    return sum + 3;
-  }, 0);
+  const lessonsCompleted = stats?.lessons_completed ?? 0;
 
-  // Calculate streak
-  const { currentStreak, longestStreak } = calculateStreak(progressData || []);
-
-  // Get last active timestamp
-  const lastActiveAt = progressData?.[0]?.updated_at || null;
+  // Estimación simple de minutos de estudio: 3 min por lección completada.
+  // El trigger no calcula tiempo real todavía; cuando haya `duration_seconds`
+  // poblado en `lectures`, reemplazar por una agregación real.
+  const minutesWatched = lessonsCompleted * 3;
 
   return {
     totalProgress: learningPath?.progressPercentage || 0,
@@ -361,74 +303,14 @@ export async function getStudentStats(
     modulesCompleted: learningPath?.modules.filter(m => m.isCompleted).length || 0,
     totalModules: learningPath?.modules.length || 0,
     minutesWatched,
-    currentStreak,
-    longestStreak,
-    lastActiveAt,
+    currentStreak: stats?.current_streak ?? 0,
+    longestStreak: stats?.longest_streak ?? 0,
+    lastActiveAt: stats?.last_activity_date ?? null,
   };
 }
 
-function calculateStreak(progressData: any[]): { currentStreak: number; longestStreak: number } {
-  if (!progressData || progressData.length === 0) {
-    return { currentStreak: 0, longestStreak: 0 };
-  }
-
-  // Get unique dates when user was active
-  const activeDates = new Set<string>();
-  progressData.forEach((p) => {
-    if (p.updated_at) {
-      const date = new Date(p.updated_at).toISOString().split('T')[0];
-      activeDates.add(date);
-    }
-  });
-
-  const sortedDates = Array.from(activeDates).sort().reverse();
-  
-  if (sortedDates.length === 0) {
-    return { currentStreak: 0, longestStreak: 0 };
-  }
-
-  const today = new Date().toISOString().split('T')[0];
-  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-
-  // Calculate current streak
-  let currentStreak = 0;
-  if (sortedDates[0] === today || sortedDates[0] === yesterday) {
-    currentStreak = 1;
-    for (let i = 1; i < sortedDates.length; i++) {
-      const prevDate = new Date(sortedDates[i - 1]);
-      const currDate = new Date(sortedDates[i]);
-      const diffDays = Math.round((prevDate.getTime() - currDate.getTime()) / 86400000);
-      
-      if (diffDays === 1) {
-        currentStreak++;
-      } else {
-        break;
-      }
-    }
-  }
-
-  // Calculate longest streak (simplified)
-  let longestStreak = currentStreak;
-  let tempStreak = 1;
-  
-  for (let i = 1; i < sortedDates.length; i++) {
-    const prevDate = new Date(sortedDates[i - 1]);
-    const currDate = new Date(sortedDates[i]);
-    const diffDays = Math.round((prevDate.getTime() - currDate.getTime()) / 86400000);
-    
-    if (diffDays === 1) {
-      tempStreak++;
-      longestStreak = Math.max(longestStreak, tempStreak);
-    } else {
-      tempStreak = 1;
-    }
-  }
-
-  return { currentStreak, longestStreak };
-}
-
 // ============================================
-// RECENT ACTIVITY
+// RECENT ACTIVITY — desde user_progress
 // ============================================
 
 export async function getRecentActivity(
@@ -437,30 +319,29 @@ export async function getRecentActivity(
   limit: number = 10
 ): Promise<ActivityEvent[]> {
   const { data: progressData } = await supabase
-    .from('video_progress')
-    .select('*')
+    .from('user_progress')
+    .select('lecture_id, is_completed, completed_at, last_active_at')
     .eq('user_id', userId)
-    .order('updated_at', { ascending: false })
+    .eq('is_completed', true)
+    .order('completed_at', { ascending: false })
     .limit(limit);
 
   const activities: ActivityEvent[] = [];
 
   (progressData || []).forEach((p: any) => {
-    if (p.completed && p.completed_at) {
+    if (p.completed_at) {
       activities.push({
-        id: `video-completed-${p.id}`,
+        id: `lecture-completed-${p.lecture_id}`,
         type: 'video_completed',
-        title: 'Video completado',
-        description: `Completaste un video`,
-        metadata: { videoId: p.video_id, moduleId: p.section_id },
+        title: 'Lección completada',
+        description: 'Completaste una lección',
+        metadata: { videoId: String(p.lecture_id), moduleId: '' },
         createdAt: p.completed_at,
       });
     }
   });
 
-  return activities.sort((a, b) => 
-    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  ).slice(0, limit);
+  return activities;
 }
 
 // ============================================

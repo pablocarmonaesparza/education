@@ -6,6 +6,7 @@ import Spinner from '@/components/ui/Spinner';
 import { useTutorChat } from '@/lib/hooks/useTutorChat';
 import { TUTOR_MODELS } from '@/lib/tutor/models';
 import { depth } from '@/lib/design-tokens';
+import StatsPills from '@/components/dashboard/StatsPills';
 
 const DEFAULT_WIDTH = 256;
 const MIN_WIDTH = 256;
@@ -214,26 +215,12 @@ export default function TutorChatButton() {
         }`}
       />
 
-      {/* Stats bar: vidas, racha, XP — igual que en las lecciones. Gap coincide
-          con la barra de secciones (gap-2 sm:gap-3) y cada pill flex-1 para
-          ocupar el ancho del panel sin romper el layout cuando se redimensiona. */}
-      <div className="px-4 pt-3 pb-2 flex items-center gap-2 sm:gap-3 flex-shrink-0">
-        <div className="flex-1 min-w-0 inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-300 dark:border-gray-900 border-b-4 border-b-gray-300 dark:border-b-gray-900" aria-label="vidas ilimitadas">
-          <svg className="w-4 h-4 text-red-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 21s-7-4.5-9.5-9C.5 8 3 4 6.5 4c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3C21 4 23.5 8 21.5 12 19 16.5 12 21 12 21z" />
-          </svg>
-          <span className="text-base font-bold leading-none translate-y-[1px]" aria-hidden="true">∞</span>
-        </div>
-        <div className="flex-1 min-w-0 inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-300 dark:border-gray-900 border-b-4 border-b-gray-300 dark:border-b-gray-900" aria-label="racha de 5 días">
-          <span className="text-sm leading-none" aria-hidden="true">🔥</span>
-          <span className="text-sm font-bold tabular-nums">5</span>
-        </div>
-        <div className="flex-1 min-w-0 inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-2 border-gray-300 dark:border-gray-900 border-b-4 border-b-gray-300 dark:border-b-gray-900" aria-label="150 XP">
-          <svg className="w-4 h-4 text-yellow-500 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M13 2L4.5 13.5h6L11 22l8.5-11.5h-6L13 2z" />
-          </svg>
-          <span className="text-sm font-bold tabular-nums">150</span>
-        </div>
+      {/* Stats bar: racha y XP reales desde user_stats. Itera B2B — sin
+          pill de vidas. StatsPills refetchea al montar; el dashboard dispara
+          refresh después de completar una lección (el trigger Postgres hace
+          el cálculo real). */}
+      <div className="px-4 pt-3 pb-2 flex-shrink-0">
+        <StatsPills />
       </div>
 
       {/* Header: solo título y acciones */}

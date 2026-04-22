@@ -10,8 +10,10 @@ export async function getUserContext(
   supabase: SupabaseClient,
   userId: string
 ): Promise<TutorUserContext> {
-  // Queries en paralelo para minimizar latencia
-  const [userResult, intakeResult, progressResult, exercisesResult] =
+  // Queries en paralelo para minimizar latencia.
+  // Nota: video_progress y user_exercises fueron dropeadas en 000_nuke_legacy.
+  // El progreso ahora vive en user_progress por lecture_id (UUID).
+  const [userResult, intakeResult, progressResult] =
     await Promise.all([
       // 1. Datos del usuario
       supabase
@@ -27,23 +29,16 @@ export async function getUserContext(
         .order('created_at', { ascending: false })
         .limit(1)
         .maybeSingle(),
-      // 3. Progreso de videos
+      // 3. Progreso de lecciones (schema v1)
       supabase
-        .from('video_progress')
-        .select('video_id, completed, section_id')
+        .from('user_progress')
+        .select('lecture_id, is_completed')
         .eq('user_id', userId),
-      // 4. Ejercicios
-      supabase
-        .from('user_exercises')
-        .select('total_exercises, exercises')
-        .eq('user_id', userId)
-        .maybeSingle(),
     ]);
 
   const user = userResult.data;
   const intake = intakeResult.data;
   const progress = progressResult.data || [];
-  const exercises = exercisesResult.data;
 
   // Extraer proyecto del intake
   const projectDescription =
@@ -52,7 +47,7 @@ export async function getUserContext(
     null;
 
   // Calcular progreso
-  const completedVideos = progress.filter((p: any) => p.completed).length;
+  const completedVideos = progress.filter((p: any) => p.is_completed).length;
   const generatedPath = intake?.generated_path;
   const totalVideos = generatedPath?.total_videos ||
     generatedPath?.phases?.reduce(
@@ -66,8 +61,11 @@ export async function getUserContext(
   let currentVideoTitle: string | null = null;
   let currentVideoSubtopic: string | null = null;
   let currentVideoDescription: string | null = null;
-  const completedVideoIds = new Set(
-    progress.filter((p: any) => p.completed).map((p: any) => p.video_id)
+  // user_progress usa lecture_id (UUID). El learning path generado todavía
+  // usa `order` como clave sintética — hasta que se enlacen, el matching
+  // funciona solo cuando generated_path apunte a UUIDs reales de lectures.
+  const completedVideoIds = new Set<string>(
+    progress.filter((p: any) => p.is_completed).map((p: any) => String(p.lecture_id))
   );
 
   // Construir resumen de learning path para el tutor
@@ -108,16 +106,9 @@ export async function getUserContext(
     learningPathSummary = phaseSummaries.join('\n');
   }
 
-  // Resumen de ejercicios
-  let exercisesSummary: string | null = null;
-  if (exercises?.exercises) {
-    const exerciseList = Array.isArray(exercises.exercises)
-      ? exercises.exercises
-      : [];
-    const completed = exerciseList.filter((e: any) => e.completed).length;
-    const total = exercises.total_exercises || exerciseList.length;
-    exercisesSummary = `${completed}/${total} ejercicios completados`;
-  }
+  // Resumen de ejercicios: user_exercises fue dropeada en 000_nuke_legacy;
+  // hasta que el sistema de retos se reconstruya no hay data real.
+  const exercisesSummary: string | null = null;
 
   return {
     userName: user?.name || null,

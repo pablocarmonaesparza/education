@@ -8,6 +8,7 @@ Los skills `/itera-memory-save` e `/itera-memory-load` leen y escriben este dire
 
 ## Decisiones
 
+- [gamification estilo duolingo pero b2b — visual sí, virales no](decision_gamification_duolingo_b2b.md) — 2026-04-22 — badges con tiers de rareza + 2 rachas separadas (correctCombo local vs dailyStreak persistida); sin hearts/email/ligas.
 - [landing realineada a ejercicios interactivos + dos rutas](decision_landing_pivote_ejercicios.md) — 2026-04-22 — 5 archivos de `components/landing/` pasaron de "videos" a "ejercicios"; scope copy only.
 
 ## Aprendizajes
@@ -41,7 +42,7 @@ Los skills `/itera-memory-save` e `/itera-memory-load` leen y escriben este dire
 
 ## Gotchas
 
-- [posicionamiento real vs context_md (empresa vs latam universal)](gotcha_posicionamiento_empresa_vs_latam.md) — 2026-04-22 — `CONTEXT.md` dice "LATAM no-técnico 55 años"; Pablo aclaró que la pelea actual es "aprender AI para tu empresa".
+- [posicionamiento real vs context_md (empresa vs latam universal)](gotcha_posicionamiento_empresa_vs_latam.md) — 2026-04-22 — `CONTEXT.md` dice "LATAM no-técnico 55 años"; Pablo aclaró B2B/empresa, y que descarta hearts/email-reminders por ser mecánicas B2C.
 - [deuda técnica acumulada en components/landing/](gotcha_landing_technical_debt.md) — 2026-04-22 — dead code con copy viejo + ~15 violaciones de `CLAUDE.md`; no bloqueante para el pivot de copy.
 - [extraer pat de supabase cli desde macos keychain](gotcha_supabase_pat_desde_keychain.md) — 2026-04-21 — `security find-generic-password ... | base64 -d` para usar Management API.
 - [oauth de supabase: allow_list con patterns /** es obligatorio](gotcha_supabase_oauth_allow_list.md) — 2026-04-21 — si falla matching, Supabase cae silenciosamente a site_url.
