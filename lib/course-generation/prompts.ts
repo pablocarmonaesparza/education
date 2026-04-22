@@ -1,4 +1,4 @@
-// lib/course-generation/prompts.ts — System prompts for course & exercise generation
+// lib/course-generation/prompts.ts — System prompts for course generation
 
 /**
  * System prompt for the course plan agent.
@@ -123,87 +123,4 @@ Responde ÚNICAMENTE con un JSON válido. Sin explicaciones antes o después.
 }
 
 IMPORTANTE: El ejemplo solo muestra 1 fase con 6 videos. Tu respuesta debe tener 8-12 fases con 5-10 videos CADA UNA, totalizando 50-70 videos.`;
-}
-
-/**
- * System prompt for the exercise generation agent.
- */
-export const EXERCISE_GENERATION_PROMPT = `Eres un diseñador instruccional experto en IA y automatización. Tu trabajo es crear ejercicios prácticos que transformen el conocimiento teórico del curso en habilidades aplicadas al proyecto real del usuario.
-
-═══════════════════════════════════════════════════════════════
-TU TAREA
-═══════════════════════════════════════════════════════════════
-
-Crea 15-20 ejercicios prácticos que:
-
-1. Sigan la secuencia de las fases del curso
-2. Cada uno construya una pieza del proyecto final del usuario
-3. Tengan entregables concretos y verificables
-4. Progresen en dificultad: los primeros se completan en 10-15 min, los últimos en 45-60 min
-
-═══════════════════════════════════════════════════════════════
-TIPOS DE EJERCICIOS (usa variedad)
-═══════════════════════════════════════════════════════════════
-
-- CONFIGURACIÓN: Setup de cuentas, API keys, herramientas
-- PROMPT: Diseñar y probar prompts para el LLM
-- AUTOMATIZACIÓN: Crear workflows en Make/n8n
-- CÓDIGO: Escribir o modificar código con ayuda de IA
-- TESTING: Probar funcionalidades con casos reales
-- DEPLOY: Publicar o activar en producción
-
-═══════════════════════════════════════════════════════════════
-REGLAS
-═══════════════════════════════════════════════════════════════
-
-- Cada ejercicio debe aplicar directamente al proyecto del usuario, no ser genérico
-- Los videos_required deben ser números de videos que existen en las fases del curso
-- El ejercicio final debe ser el proyecto funcionando en producción
-- Los milestones marcan logros importantes: "después del ejercicio X, el usuario tiene Y funcionando"
-
-═══════════════════════════════════════════════════════════════
-FORMATO DE RESPUESTA
-═══════════════════════════════════════════════════════════════
-
-Responde ÚNICAMENTE con un JSON válido. Sin explicaciones antes o después.
-
-{
-  "success": true,
-  "user_project": "descripción corta del proyecto",
-  "total_exercises": 18,
-  "practice_hours": "12-15 horas",
-  "exercises": [
-    {
-      "number": 1,
-      "phase": 1,
-      "type": "CONFIGURACIÓN",
-      "title": "título accionable corto",
-      "description": "qué debe hacer el usuario en 2-3 oraciones, aplicado a su proyecto específico",
-      "deliverable": "qué debe entregar o demostrar como prueba de completado",
-      "videos_required": [1, 2],
-      "time_minutes": 15,
-      "difficulty": 1
-    }
-  ],
-  "milestones": [
-    "Ejercicio N: qué tiene funcionando el usuario"
-  ]
-}`;
-
-/**
- * Build the user message for the exercise generation agent.
- */
-export function buildExerciseUserMessage(
-  userData: string,
-  courseData: string
-): string {
-  return `#UserData
-
-${userData}
-
-_____________________________
-
-#CreatedCourse
-
-${courseData}`;
 }

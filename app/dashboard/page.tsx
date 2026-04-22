@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import LessonItem from '@/components/dashboard/LessonItem';
 import PathConnector from '@/components/dashboard/PathConnector';
-import RetoItem from '@/components/dashboard/RetoItem';
 import IconButton from '@/components/ui/IconButton';
 import Button from '@/components/ui/Button';
 import Spinner from '@/components/ui/Spinner';
@@ -51,21 +50,6 @@ interface Video {
   isCompleted: boolean;
   isCurrent: boolean;
   videoUrl?: string;
-}
-
-interface Exercise {
-  number: number;
-  phase: number;
-  type: string;
-  title: string;
-  description: string;
-  deliverable: string;
-  videos_required: number[];
-  time_minutes: number;
-  difficulty: number;
-  isCompleted: boolean;
-  isUnlocked: boolean;
-  missingVideos: number[];
 }
 
 type IntakeRow = {
@@ -207,11 +191,6 @@ function DashboardPageContent() {
   const [chatWidth, setChatWidth] = useState(256);
   const [isMobile, setIsMobile] = useState(false);
   const [showCreateCourseModal, setShowCreateCourseModal] = useState(false);
-  const [exercises, setExercises] = useState<Exercise[]>([]);
-  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
-  const [isRetoOverlayOpen, setIsRetoOverlayOpen] = useState(false);
-  const [isRetoOverlayClosing, setIsRetoOverlayClosing] = useState(false);
-  const [completedExercises, setCompletedExercises] = useState<Set<number>>(new Set());
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   // Multi-route state: user may have a full-course intake and/or a
   // personalized intake. activeMode decides which one is rendered.
@@ -313,9 +292,9 @@ function DashboardPageContent() {
         const lectures = await fetchPublishedLectures();
         setPublishedLectures(lectures);
 
-        // Load progress + exercises regardless of which route is active.
-        // The derive effect below reads publishedLectures and
-        // completedVideoIdSet and populates `videos`.
+        // Load progress regardless of which route is active. The derive
+        // effect below reads publishedLectures and completedVideoIdSet
+        // and populates `videos`.
         if (full || personalized || lectures.length > 0) {
           // Fetch lesson progress from `user_progress` (post-schema-v1 table).
           // The column is `is_completed` (not `completed`) and the FK is
@@ -341,50 +320,6 @@ function DashboardPageContent() {
               .map((p: any) => p.lecture_id)
           );
           setCompletedVideoIdSet(completedVideos);
-
-          // Fetch exercises for retos integration.
-          // TODO: `user_exercises` y `exercise_progress` fueron dropeadas
-          // en 000_nuke_legacy. La query falla silenciosa y `exercisesResult`
-          // queda null, así que el bloque retos-integration no ejecuta.
-          // Reconstruir el sistema de retos sobre schema v1 es una tarea
-          // aparte del sprint de gamification.
-          const { data: exercisesResult } = await supabase
-            .from('user_exercises')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .single();
-
-          if (exercisesResult) {
-            const { data: exerciseProgressData } = await supabase
-              .from('exercise_progress')
-              .select('exercise_number, completed')
-              .eq('user_id', user.id);
-
-            const completedExSet = new Set(
-              (exerciseProgressData || [])
-                .filter((p: any) => p.completed)
-                .map((p: any) => p.exercise_number)
-            );
-            setCompletedExercises(completedExSet);
-
-            const parsedExercises = (exercisesResult.exercises || []).map((ex: any) => {
-              const requiredVideos: Array<string | number> = ex.videos_required || [];
-              // completedVideos es Set<string> de lecture_id UUID.
-              // videos_required puede ser number[] (legacy) o string[] (UUIDs).
-              const missingVideos = requiredVideos.filter(
-                (vid) => !completedVideos.has(String(vid))
-              );
-              return {
-                ...ex,
-                isCompleted: completedExSet.has(ex.number),
-                isUnlocked: missingVideos.length === 0,
-                missingVideos,
-              };
-            });
-            setExercises(parsedExercises);
-          }
         }
       }
       setIsLoading(false);
@@ -793,8 +728,6 @@ function DashboardPageContent() {
 
   // Mark the selected lesson as completed: persist to Supabase FIRST, then
   // recompute local state so the UI only advances when the DB actually wrote.
-  // Also recomputes exercise unlocking so retos that depend on this lesson
-  // light up without a page refresh.
   const handleLessonComplete = async (video: Video, _result?: LessonCompletionResult) => {
     // El parámetro `_result` viene de ExperimentLesson con { xpGained,
     // correctCombo }. No lo usamos para persistir XP — la fuente de verdad
@@ -915,8 +848,8 @@ function DashboardPageContent() {
     }
 
     // 3. Update the completion set so the derive effect keeps future route
-    // switches and exercises in sync, and also patch the current videos
-    // array optimistically so the current card turns green right away.
+    // switches in sync, and also patch the current videos array optimistically
+    // so the current card turns green right away.
     //
     // Skip the local-state re-arrange on a replay (the lesson was already
     // green and `current` was already advanced past it) — otherwise we'd
@@ -946,86 +879,6 @@ function DashboardPageContent() {
         return { ...v, isCurrent: false };
       });
     });
-
-    // 4. Recompute exercises.isUnlocked: drop this lecture from any
-    // pending missingVideos list. `missingVideos` holds education_system.id
-    // numbers, so match against video.lectureId (not the string order).
-    if (typeof video.lectureId === 'number') {
-      setExercises((prev) =>
-        prev.map((ex) => {
-          const missing = Array.isArray((ex as any).missingVideos)
-            ? (ex as any).missingVideos.filter((id: number) => id !== video.lectureId)
-            : (ex as any).missingVideos;
-          return {
-            ...ex,
-            missingVideos: missing,
-            isUnlocked: Array.isArray(missing) ? missing.length === 0 : (ex as any).isUnlocked,
-          };
-        }),
-      );
-    }
-  };
-
-  // Handle reto selection with animation
-  const handleRetoSelect = (exercise: Exercise) => {
-    setSelectedExercise(exercise);
-    requestAnimationFrame(() => {
-      setIsRetoOverlayOpen(true);
-    });
-  };
-
-  // Handle closing reto overlay with animation
-  const handleCloseReto = () => {
-    setIsRetoOverlayClosing(true);
-    setIsRetoOverlayOpen(false);
-    setTimeout(() => {
-      setSelectedExercise(null);
-      setIsRetoOverlayClosing(false);
-    }, 400);
-  };
-
-  // Group exercises by phase
-  const exercisesByPhase = exercises.reduce((acc, ex) => {
-    if (!acc[ex.phase]) acc[ex.phase] = [];
-    acc[ex.phase].push(ex);
-    return acc;
-  }, {} as Record<number, Exercise[]>);
-
-  // Toggle exercise completion
-  const toggleExerciseCompletion = async (exerciseNumber: number, currentlyCompleted: boolean, isUnlocked: boolean) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return;
-    if (!isUnlocked && !currentlyCompleted) return;
-
-    if (currentlyCompleted) {
-      await supabase
-        .from('exercise_progress')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('exercise_number', exerciseNumber);
-    } else {
-      await supabase
-        .from('exercise_progress')
-        .upsert({
-          user_id: user.id,
-          exercise_number: exerciseNumber,
-          completed: true,
-          completed_at: new Date().toISOString()
-        }, { onConflict: 'user_id,exercise_number' });
-    }
-
-    setCompletedExercises(prev => {
-      const newSet = new Set(prev);
-      if (currentlyCompleted) newSet.delete(exerciseNumber);
-      else newSet.add(exerciseNumber);
-      return newSet;
-    });
-
-    setExercises(prev => prev.map(ex =>
-      ex.number === exerciseNumber
-        ? { ...ex, isCompleted: !currentlyCompleted }
-        : ex
-    ));
   };
 
   // Loading state
@@ -1238,29 +1091,6 @@ function DashboardPageContent() {
                       </div>
                     );
                   })}
-
-                  {/* Reto for this phase */}
-                  {(() => {
-                    const phaseNum = parseInt(phaseId) || (orderedPhaseEntries.findIndex(([pid]) => pid === phaseId) + 1);
-                    const phaseExercises = exercisesByPhase[phaseNum];
-                    if (!phaseExercises || phaseExercises.length === 0) return null;
-
-                    const exercise = phaseExercises.find(ex => !ex.isCompleted) || phaseExercises[0];
-
-                    return (
-                      <div className="mt-4">
-                        <RetoItem
-                          title={exercise.title}
-                          type={exercise.type}
-                          difficulty={exercise.difficulty}
-                          timeMinutes={exercise.time_minutes}
-                          isCompleted={exercise.isCompleted}
-                          isUnlocked={exercise.isUnlocked}
-                          onClick={() => handleRetoSelect(exercise)}
-                        />
-                      </div>
-                    );
-                  })()}
                 </div>
               </div>
             ))}
@@ -1377,170 +1207,6 @@ function DashboardPageContent() {
           </div>
         );
       })()}
-
-      {/* Reto Overlay - Same pattern as video player, covers content area between sidebars */}
-      {(selectedExercise || isRetoOverlayClosing) && (
-        <div
-          className={`fixed top-0 md:top-0 bottom-0 flex items-center justify-center transition-all ease-out pt-14 md:pt-0 ${
-            isRetoOverlayOpen && !isRetoOverlayClosing
-              ? 'bg-white dark:bg-gray-800'
-              : 'bg-transparent'
-          }`}
-          style={{
-            transitionDuration: '400ms',
-            left: isMobile ? 0 : 256,
-            right: isMobile ? 0 : `${chatWidth}px`,
-            zIndex: 35,
-          }}
-        >
-          <div
-            className={`w-full max-w-2xl mx-auto px-4 sm:px-8 overflow-y-auto max-h-full transition-all ease-out ${
-              isRetoOverlayOpen && !isRetoOverlayClosing
-                ? 'opacity-100 scale-100 translate-y-0'
-                : 'opacity-0 scale-95 translate-y-8'
-            }`}
-            style={{
-              transitionDuration: '400ms',
-              transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
-            }}
-          >
-            {/* Close Button */}
-            <div className="flex justify-end mb-6">
-              <Button
-                variant="outline"
-                size="md"
-                rounded2xl
-                onClick={handleCloseReto}
-                className="flex items-center gap-2"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                Cerrar
-              </Button>
-            </div>
-
-            {/* Reto Header */}
-            <div className="mb-6">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 rounded-full bg-[#1472FF]/10 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <span className="text-sm text-[#1472FF] font-bold uppercase tracking-wide">
-                  reto · {selectedExercise?.type}
-                </span>
-              </div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-[#4b4b4b] dark:text-white">
-                {selectedExercise?.title}
-              </h1>
-              <div className="flex items-center gap-3 mt-2">
-                <div className="flex items-center gap-1.5">
-                  <div className="flex gap-0.5">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <div
-                        key={i}
-                        className={`w-2 h-2 rounded-full ${
-                          i <= (selectedExercise?.difficulty || 0) ? 'bg-[#1472FF]' : 'bg-gray-200 dark:bg-gray-700'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <Caption className="font-medium">Dificultad</Caption>
-                </div>
-                <Caption>·</Caption>
-                <Caption className="font-medium">{selectedExercise?.time_minutes} min estimados</Caption>
-              </div>
-            </div>
-
-            {/* Description Card */}
-            <Card variant="neutral" padding="lg" className="mb-4">
-              <Headline className="mb-2">descripción</Headline>
-              <Body className="text-[#777777] dark:text-gray-400">{selectedExercise?.description}</Body>
-            </Card>
-
-            {/* Deliverable Card */}
-            <Card variant="neutral" padding="lg" className="mb-4">
-              <Headline className="mb-2">entregable</Headline>
-              <Body className="text-[#777777] dark:text-gray-400">{selectedExercise?.deliverable}</Body>
-            </Card>
-
-            {/* Required Videos Status */}
-            {selectedExercise && selectedExercise.videos_required.length > 0 && (
-              <Card variant="neutral" padding="lg" className="mb-6">
-                <Headline className="mb-3">videos necesarios</Headline>
-                <div className="space-y-2">
-                  {selectedExercise.videos_required.map((videoNum) => {
-                    const video = videos.find(v => v.id === String(videoNum) || v.order === videoNum - 1);
-                    const isWatched = video?.isCompleted || false;
-                    return (
-                      <div key={videoNum} className="flex items-center gap-2">
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          isWatched ? 'bg-[#22c55e]' : 'bg-gray-200 dark:bg-gray-700'
-                        }`}>
-                          {isWatched ? (
-                            <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                            </svg>
-                          ) : (
-                            <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500" />
-                          )}
-                        </div>
-                        <Caption className={isWatched ? 'line-through text-[#777777]' : ''}>
-                          {video?.title || `Video ${videoNum}`}
-                        </Caption>
-                      </div>
-                    );
-                  })}
-                </div>
-              </Card>
-            )}
-
-            {/* Action Button */}
-            <div className="pb-8">
-              {selectedExercise?.isCompleted ? (
-                <Button
-                  variant="completado"
-                  size="lg"
-                  className="w-full justify-center"
-                  onClick={() => {
-                    toggleExerciseCompletion(selectedExercise.number, true, true);
-                    handleCloseReto();
-                  }}
-                >
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Completado
-                </Button>
-              ) : !selectedExercise?.isUnlocked ? (
-                <Button variant="outline" size="lg" disabled className="w-full justify-center">
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                  </svg>
-                  Completa los videos para desbloquear
-                </Button>
-              ) : (
-                <Button
-                  variant="primary"
-                  size="lg"
-                  className="w-full justify-center"
-                  onClick={() => {
-                    toggleExerciseCompletion(selectedExercise.number, false, true);
-                    handleCloseReto();
-                  }}
-                >
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Marcar como completado
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Modal: Crear nuevo curso — sistema */}
       {showCreateCourseModal && (

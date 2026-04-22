@@ -59,7 +59,6 @@ export interface TutorUserContext {
   currentVideoSubtopic: string | null;
   currentVideoDescription: string | null;
   learningPathSummary: string | null;
-  exercisesSummary: string | null;
 }
 
 export interface StreamProviderParams {

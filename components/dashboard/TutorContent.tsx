@@ -38,8 +38,6 @@ interface UserContext {
   currentVideo: VideoInfo | null;
   completedVideosList: VideoInfo[];
   currentPhase: string;
-  completedExercises: number;
-  totalExercises: number;
 }
 
 export default function TutorContent() {
@@ -115,11 +113,6 @@ export default function TutorContent() {
         .eq('user_id', user.id)
         .order('last_active_at', { ascending: false });
 
-      // exercise_progress también fue dropeado en migration 000_nuke_legacy;
-      // hasta que se rediseñe el sistema de retos sobre el schema v1, aquí
-      // no hay forma de saber qué retos completó el usuario.
-      const exerciseProgress: Array<{ exercise_id: string; completed: boolean }> = [];
-
       // Build video info from generated_path
       const allVideos: VideoInfo[] = [];
       const completedVideosList: VideoInfo[] = [];
@@ -167,12 +160,6 @@ export default function TutorContent() {
         currentPhase = 'Completado';
       }
 
-      // user_exercises y exercise_progress fueron dropeadas en 000_nuke_legacy.
-      // Hasta que el sistema de retos se reconstruya sobre schema v1 no hay
-      // forma de contar retos; se reportan como 0.
-      const totalExercises = 0;
-      const completedExercisesCount = 0;
-
       // Extract project idea from responses
       const projectIdea = 
         intakeData?.responses?.project_idea ||
@@ -191,8 +178,6 @@ export default function TutorContent() {
         currentVideo,
         completedVideosList,
         currentPhase,
-        totalExercises,
-        completedExercises: completedExercisesCount,
       });
 
       // Load conversations
@@ -325,7 +310,6 @@ PROGRESO ACTUAL:
 - Fase actual: ${userContext.currentPhase}
 - Video/clase actual: ${userContext.currentVideo ? `"${userContext.currentVideo.title}" en la fase "${userContext.currentVideo.phase}"` : 'Todos completados'}
 - Videos completados: ${userContext.completedVideos}/${userContext.totalVideos}
-- Retos completados: ${userContext.completedExercises}/${userContext.totalExercises}
 
 CLASES/VIDEOS YA COMPLETADOS:
 ${completedVideosText}
@@ -440,7 +424,7 @@ ${completedVideosText}
           </div>
           {userContext && (
             <p className="text-xs text-[#777777] dark:text-gray-400">
-              {userContext.completedVideos}/{userContext.totalVideos} videos • {userContext.completedExercises}/{userContext.totalExercises} retos
+              {userContext.completedVideos}/{userContext.totalVideos} videos
             </p>
           )}
         </div>

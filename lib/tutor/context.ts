@@ -11,8 +11,7 @@ export async function getUserContext(
   userId: string
 ): Promise<TutorUserContext> {
   // Queries en paralelo para minimizar latencia.
-  // Nota: video_progress y user_exercises fueron dropeadas en 000_nuke_legacy.
-  // El progreso ahora vive en user_progress por lecture_id (UUID).
+  // Progreso vive en user_progress por lecture_id (UUID).
   const [userResult, intakeResult, progressResult] =
     await Promise.all([
       // 1. Datos del usuario
@@ -106,10 +105,6 @@ export async function getUserContext(
     learningPathSummary = phaseSummaries.join('\n');
   }
 
-  // Resumen de ejercicios: user_exercises fue dropeada en 000_nuke_legacy;
-  // hasta que el sistema de retos se reconstruya no hay data real.
-  const exercisesSummary: string | null = null;
-
   return {
     userName: user?.name || null,
     projectDescription,
@@ -121,7 +116,6 @@ export async function getUserContext(
     currentVideoSubtopic,
     currentVideoDescription,
     learningPathSummary,
-    exercisesSummary,
   };
 }
 
@@ -147,7 +141,6 @@ export function buildSystemPrompt(
   if (userContext.currentModuleTitle) ctx.push(`modulo actual: "${userContext.currentModuleTitle}"`);
   if (userContext.currentVideoTitle) ctx.push(`clase actual: "${userContext.currentVideoTitle}"`);
   if (userContext.currentVideoDescription) ctx.push(`tema de la clase: ${userContext.currentVideoDescription}`);
-  if (userContext.exercisesSummary) ctx.push(`ejercicios: ${userContext.exercisesSummary}`);
 
   if (ctx.length > 0) {
     parts.push(`\n<estudiante>\n${ctx.join('\n')}\n</estudiante>`);

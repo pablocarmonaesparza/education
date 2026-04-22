@@ -3,11 +3,7 @@
 import OpenAI from 'openai';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { fetchFullCatalog } from './rag';
-import {
-  getCourseGenerationPrompt,
-  EXERCISE_GENERATION_PROMPT,
-  buildExerciseUserMessage,
-} from './prompts';
+import { getCourseGenerationPrompt } from './prompts';
 
 interface GenerateCourseInput {
   userId: string;
@@ -31,15 +27,6 @@ interface CourseResult {
   };
 }
 
-interface ExerciseResult {
-  success: boolean;
-  user_project: string;
-  total_exercises: number;
-  practice_hours: string;
-  exercises: any[];
-  milestones: string[];
-}
-
 /**
  * Full course generation pipeline — replaces the n8n workflow.
  *
@@ -47,8 +34,10 @@ interface ExerciseResult {
  * 1. RAG search with Cohere reranker to find relevant syllabus videos
  * 2. OpenAI GPT-4o generates personalized course plan
  * 3. Save to intake_responses
- * 4. OpenAI GPT-4o generates practical exercises
- * 5. Save to user_exercises
+ *
+ * (El Step 4/5 generaba retos y los guardaba en `user_exercises`. Ambas
+ * tablas y el feature de retos fueron retirados; los `evaluate` slides de
+ * cada lección cumplen ese rol ahora.)
  */
 export async function generateCourseInline(
   supabase: SupabaseClient,
@@ -111,86 +100,48 @@ export async function generateCourseInline(
   tick('2_openai_course', stepStart);
 
   // ───── Step 3: Save to intake_responses ─────
+  // Preferimos UPDATE del draft activo del usuario (creado durante el
+  // onboarding por /projectDescription y /projectContext). Si no hay draft
+  // (edge case: generación directa sin pasar por onboarding), hacemos INSERT.
   stepStart = Date.now();
   console.log('[course-gen] Step 3: Saving course to intake_responses');
-  const { error: saveError } = await supabase.from('intake_responses').insert({
-    user_id: input.userId,
-    responses: {
-      project_idea: input.projectIdea,
-      submitted_at: new Date().toISOString(),
-    },
-    generated_path: courseResult.course,
-  });
+
+  const { data: draft } = await supabase
+    .from('intake_responses')
+    .select('id, responses')
+    .eq('user_id', input.userId)
+    .is('generated_path', null)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const mergedResponses = {
+    ...(draft?.responses || {}),
+    project_idea: input.projectIdea,
+    questionnaire: input.questionnaire,
+    submitted_at: new Date().toISOString(),
+  };
+
+  const saveError = draft
+    ? (await supabase
+        .from('intake_responses')
+        .update({
+          responses: mergedResponses,
+          generated_path: courseResult.course,
+        })
+        .eq('id', draft.id)
+        .eq('user_id', input.userId)).error
+    : (await supabase.from('intake_responses').insert({
+        user_id: input.userId,
+        responses: mergedResponses,
+        generated_path: courseResult.course,
+      })).error;
 
   if (saveError) {
     console.error('[course-gen] Error saving to intake_responses:', saveError);
     throw new Error(`Failed to save course: ${saveError.message}`);
   }
   tick('3_save_course', stepStart);
-
-  // ───── Step 4: Generate exercises with OpenAI GPT-4o ─────
-  stepStart = Date.now();
-  console.log('[course-gen] Step 4: Generating exercises with GPT-4o');
-
-  const userData = [
-    `##Name\n${input.userName}`,
-    `##Message\n"${input.projectIdea}"`,
-    `##Responses\n${JSON.stringify(input.questionnaire)}`,
-  ].join('\n\n___\n\n');
-
-  const courseData = [
-    `##LearningPathSummary\n${courseResult.course.learning_path_summary.join('\n')}`,
-    `##NextSteps\n${courseResult.course.next_steps.join('\n')}`,
-    `##Phases\n${JSON.stringify(courseResult.course.phases)}`,
-    `##Recommendations\n${courseResult.course.recommendations.join('\n')}`,
-    `##TotalVideos\n${courseResult.course.total_videos}`,
-  ].join('\n\n___\n\n');
-
-  const exerciseMessage = buildExerciseUserMessage(userData, courseData);
-
-  const exerciseResponse = await openai.chat.completions.create({
-    model: 'o4-mini',
-    max_completion_tokens: 16000,
-    messages: [
-      { role: 'developer', content: EXERCISE_GENERATION_PROMPT },
-      { role: 'user', content: exerciseMessage },
-    ],
-  });
-
-  const exerciseText = exerciseResponse.choices[0]?.message?.content?.trim() ?? '';
-
-  const exerciseResult = parseJSONResponse<ExerciseResult>(exerciseText);
-  if (!exerciseResult?.success || !exerciseResult.exercises) {
-    throw new Error('Failed to generate exercises: invalid AI response');
-  }
-
-  console.log(
-    '[course-gen] Exercises generated:',
-    exerciseResult.total_exercises,
-    'exercises,',
-    exerciseResult.practice_hours
-  );
-  tick('4_openai_exercises', stepStart);
-
-  // ───── Step 5: Save to user_exercises ─────
-  stepStart = Date.now();
-  console.log('[course-gen] Step 5: Saving exercises to user_exercises');
-  const { error: exerciseSaveError } = await supabase
-    .from('user_exercises')
-    .insert({
-      user_id: input.userId,
-      user_project: exerciseResult.user_project,
-      total_exercises: exerciseResult.total_exercises,
-      practice_hours: exerciseResult.practice_hours,
-      exercises: exerciseResult.exercises,
-      milestones: exerciseResult.milestones,
-    });
-
-  if (exerciseSaveError) {
-    console.error('[course-gen] Error saving exercises:', exerciseSaveError);
-    throw new Error(`Failed to save exercises: ${exerciseSaveError.message}`);
-  }
-  tick('5_save_exercises', stepStart);
 
   const totalSeconds = ((Date.now() - pipelineStart) / 1000).toFixed(1);
   console.log('[course-gen] Pipeline complete for user:', input.userId);
