@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
         role: m.role,
         content: m.content,
       })),
-      maxTokens: 1200,
+      maxTokens: 400,
       temperature: 0.7,
     });
 
