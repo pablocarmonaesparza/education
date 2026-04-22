@@ -105,21 +105,8 @@ export default function PricingSection() {
               <Card
                 variant="neutral"
                 padding="lg"
-                className={`relative flex flex-col md:p-6 h-full w-full ${
-                  tier.popular
-                    ? "bg-[#1472FF]/10 dark:bg-[#1472FF]/20 border-[#1472FF] dark:border-[#1472FF] border-b-[#1472FF] dark:border-b-[#1472FF]"
-                    : ""
-                }`}
+                className="relative flex flex-col md:p-6 h-full w-full"
               >
-                {/* Popular Badge - inside card to avoid section overflow-hidden clipping */}
-                {tier.popular && (
-                  <div className="flex justify-center -mt-1 mb-3">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#1472FF] text-white border-transparent font-display">
-                      más popular
-                    </span>
-                  </div>
-                )}
-
                 {/* Title */}
                 <div className="mb-3">
                   <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">{tier.name}</h3>

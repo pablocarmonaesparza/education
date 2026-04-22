@@ -48,6 +48,7 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
+    { href: "#hero", label: "Inicio", id: "hero" },
     // Hidden temporarily — re-enable by uncommenting:
     // { href: "#how-it-works", label: "Cómo Funciona", id: "how-it-works" },
     // { href: "#available-courses", label: "Cursos", id: "available-courses" },
@@ -133,10 +134,10 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-sm ${
         scrolled
-          ? "backdrop-blur-md bg-white/80 dark:bg-gray-800/80"
-          : ""
+          ? "bg-white/90 dark:bg-gray-800/90 backdrop-blur-md"
+          : "bg-white/40 dark:bg-gray-800/40"
       }`}
     >
       <div className="container mx-auto px-4">
