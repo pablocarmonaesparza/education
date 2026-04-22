@@ -21,8 +21,9 @@ export default function Home() {
       <Navbar />
       <StructuredData />
       <NewHeroSection />
-      <HowItWorksSection />
-      <AvailableCoursesSection />
+      {/* Hidden temporarily — re-enable by uncommenting: */}
+      {/* <HowItWorksSection /> */}
+      {/* <AvailableCoursesSection /> */}
       <PricingSection />
       <FAQSection />
       <Footer />

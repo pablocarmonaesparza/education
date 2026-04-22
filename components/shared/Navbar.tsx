@@ -48,8 +48,9 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { href: "#how-it-works", label: "Cómo Funciona", id: "how-it-works" },
-    { href: "#available-courses", label: "Cursos", id: "available-courses" },
+    // Hidden temporarily — re-enable by uncommenting:
+    // { href: "#how-it-works", label: "Cómo Funciona", id: "how-it-works" },
+    // { href: "#available-courses", label: "Cursos", id: "available-courses" },
     { href: "#pricing", label: "Precios", id: "pricing" },
     { href: "#faq", label: "FAQ", id: "faq" },
   ];
