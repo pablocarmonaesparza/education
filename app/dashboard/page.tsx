@@ -634,45 +634,76 @@ function DashboardPageContent() {
     return () => clearTimeout(timer);
   }, [videos, isLoading, centerHorizontalButton]);
 
-  // Scroll to section when clicking on navigation button
+  // Scroll to section when clicking on navigation button.
+  //
+  // Why a manual rAF animation instead of `scrollTo({behavior: 'smooth'})`:
+  // the browser's smooth scroll has variable duration (200–1000ms depending
+  // on distance), and we have no way to know when it ends. Previously we
+  // dropped `isScrollingToPhaseRef` after a fixed 500ms timeout, which often
+  // fired mid-animation — the scroll observer then ran, picked the section
+  // halfway through the viewport (usually the previous one), and bounced
+  // `activePhaseId` back. Driving the scroll ourselves lets us flip the flag
+  // deterministically when the animation actually completes, matching the
+  // pattern used by the auto-scroll-to-current-video effect above.
   const scrollToPhase = useCallback((phaseId: string) => {
     const section = phaseSectionsRef.current.get(phaseId);
     const container = scrollContainerRef.current;
+    if (!section || !container) return;
 
-    if (section && container) {
-      // Mark that we're programmatically scrolling
-      isScrollingToPhaseRef.current = true;
+    // Mark that we're programmatically scrolling — prevents the scroll
+    // observer from competing for `activePhaseId` while we animate.
+    isScrollingToPhaseRef.current = true;
 
-      // Update active phase immediately for responsive feel
-      setActivePhaseId(phaseId);
-      centerHorizontalButton(phaseId, true);
+    // Update active phase immediately for responsive feel.
+    setActivePhaseId(phaseId);
+    centerHorizontalButton(phaseId, true);
 
-      // Collapse the greeting first. Its 240px max-height transition runs for
-      // ~300ms and moves every phase section upward by that amount — if we
-      // measure before it settles, we land 240px too low and the previous
-      // section peeks in. Wait past the transition before measuring.
-      setShowGreeting(false);
+    // Collapse the greeting first. Its 240px max-height transition runs for
+    // ~300ms and moves every phase section upward by that amount — if we
+    // measure before it settles, we land 240px too low and the previous
+    // section peeks in. Wait past the transition before measuring.
+    setShowGreeting(false);
 
-      window.setTimeout(() => {
-        const sectionRect = section.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        const sectionTopFromScrollTop =
-          container.scrollTop + (sectionRect.top - containerRect.top);
-        const stickyHeader = container.querySelector<HTMLElement>('.sticky');
-        const stickyHeight = stickyHeader?.offsetHeight ?? 160;
-        const gradientBuffer = 16;
+    window.setTimeout(() => {
+      const sectionRect = section.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const sectionTopFromScrollTop =
+        container.scrollTop + (sectionRect.top - containerRect.top);
+      const stickyHeader = container.querySelector<HTMLElement>('.sticky');
+      const stickyHeight = stickyHeader?.offsetHeight ?? 160;
+      const gradientBuffer = 16;
 
-        container.scrollTo({
-          top: sectionTopFromScrollTop - stickyHeight - gradientBuffer,
-          behavior: 'smooth',
-        });
-      }, 320);
+      const startScrollTop = container.scrollTop;
+      const targetTop = Math.max(
+        0,
+        sectionTopFromScrollTop - stickyHeight - gradientBuffer,
+      );
 
-      // Reset flag after scroll completes
-      setTimeout(() => {
-        isScrollingToPhaseRef.current = false;
-      }, 500);
-    }
+      // Same easing + duration pattern as the auto-scroll-to-current-video
+      // animation, so both flows feel identical.
+      const duration = 600;
+      const startTime = performance.now();
+      const easeInOutCubic = (t: number) =>
+        t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+      const animateScroll = (currentTime: number) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeInOutCubic(progress);
+        container.scrollTop = startScrollTop + (targetTop - startScrollTop) * eased;
+
+        if (progress < 1) {
+          requestAnimationFrame(animateScroll);
+        } else {
+          // Drop the flag only when the animation has fully landed. The
+          // observer's next tick will then see the actual final viewport
+          // and confirm `phaseId` instead of bouncing back.
+          isScrollingToPhaseRef.current = false;
+        }
+      };
+
+      requestAnimationFrame(animateScroll);
+    }, 320);
   }, [centerHorizontalButton]);
 
   // Handle video selection with animation
