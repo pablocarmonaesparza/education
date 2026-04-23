@@ -221,6 +221,10 @@ function DashboardPageContent() {
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const phaseSectionsRef = useRef<Map<string, HTMLDivElement>>(new Map());
   const isScrollingToPhaseRef = useRef(false);
+  // Flips true while a lesson completion write is in flight so the modal
+  // shell's Escape handler refuses to close mid-persist. handleCloseVideo
+  // also bails when this is set to keep all dismiss paths consistent.
+  const isCompletingRef = useRef(false);
   const supabase = createClient();
 
   // Listen for chat width changes
@@ -740,6 +744,10 @@ function DashboardPageContent() {
 
   // Handle closing video player with animation
   const handleCloseVideo = () => {
+    // Refuse to close while a completion write is in flight. All dismiss
+    // paths (header X, loading-state X, Escape, click-outside) end here,
+    // so guarding once covers them all.
+    if (isCompletingRef.current) return;
     setIsVideoPlayerClosing(true);
     setIsVideoPlayerOpen(false);
     // Wait for animation to complete before removing video
@@ -880,30 +888,38 @@ function DashboardPageContent() {
     // re-arrange below — the DB write always runs.
     const alreadyCompleted = video.isCompleted;
 
-    // 1. Verify auth. No session → bail, don't touch UI.
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
-      console.warn('[dashboard] lesson complete: no user session, skipping', authError);
-      return;
-    }
+    // 1. Verify auth. No session → THROW so ExperimentLesson catches and
+    // stays on the lesson (CTA re-enables) instead of closing on a
+    // failed write. Console.warn keeps visibility in dev logs.
+    isCompletingRef.current = true;
+    try {
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
+      if (authError || !user) {
+        console.warn('[dashboard] lesson complete: no user session', authError);
+        throw new Error(
+          `Sin sesión para guardar el progreso${authError ? `: ${authError.message}` : ''}`,
+        );
+      }
 
-    // 2. Persist via the shared helper so dashboard + /lecture/[slug] write
-    // identical row shapes (no drift). The DB shape rationale lives in
-    // lib/lessons/persist-completion.ts (split UPDATE-vs-INSERT, slide
-    // count for is_completed consistency, etc). Local UI state updates
-    // below are dashboard-specific and stay inline.
-    const persistResult = await persistLessonCompletion(supabase, user.id, video.id);
-    if (!persistResult.ok) {
-      console.warn('[dashboard] failed to persist user_progress:', persistResult.error);
-      return;
-    }
-
-    // El trigger `on_user_progress_complete` ya actualizó user_stats.
-    // Re-fetch para que la racha/XP/nivel en el UI (TutorChatButton,
-    // próxima celebration) reflejen el nuevo estado.
-    const previousLevel = userStats?.level ?? 1;
-    const freshStats = await getUserStats(supabase, user.id);
-    setUserStats(freshStats);
+      // 2. Persist via the shared helper so dashboard + /lecture/[slug] write
+      // identical row shapes (no drift). The DB shape rationale lives in
+      // lib/lessons/persist-completion.ts (split UPDATE-vs-INSERT, slide
+      // count for is_completed consistency, etc). Local UI state updates
+      // below are dashboard-specific and stay inline.
+      const persistResult = await persistLessonCompletion(supabase, user.id, video.id);
+      if (!persistResult.ok) {
+        console.warn('[dashboard] failed to persist user_progress:', persistResult.error);
+        throw new Error(
+          `No se pudo guardar el progreso: ${persistResult.error ?? 'error desconocido'}`,
+        );
+      }
+      // 3+ Side-effects after a successful persist (dashboard-specific UI).
+      // El trigger `on_user_progress_complete` ya actualizó user_stats.
+      // Re-fetch para que la racha/XP/nivel en el UI (TutorChatButton,
+      // próxima celebration) reflejen el nuevo estado.
+      const previousLevel = userStats?.level ?? 1;
+      const freshStats = await getUserStats(supabase, user.id);
+      setUserStats(freshStats);
     // Notifica a StatsPills y GamificationSummary (montados en layout/perfil,
     // fuera de este árbol) para que también refetcheen.
     if (typeof window !== 'undefined') {
@@ -948,6 +964,13 @@ function DashboardPageContent() {
         return { ...v, isCurrent: false };
       });
     });
+    } finally {
+      // Always clear the in-flight flag so a future Escape / close click
+      // can dismiss the lesson again. The flag exists so the dialog
+      // shell's Escape handler can refuse to close while a write is
+      // pending (preventing race with the persistence call).
+      isCompletingRef.current = false;
+    }
   };
 
   // Loading state

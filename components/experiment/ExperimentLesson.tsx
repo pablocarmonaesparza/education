@@ -16,6 +16,7 @@ import IconButton from '@/components/ui/IconButton';
 import { Textarea } from '@/components/ui/Input';
 import { Title, Body } from '@/components/ui/Typography';
 import { depth, depthBase } from '@/lib/design-tokens';
+import SlideFlagButton from './SlideFlagButton';
 
 /* ───────────────────────────────────────────────────────────
    Experiment Lesson — Mimo-style flow, Itera design system
@@ -418,6 +419,7 @@ export default function ExperimentLesson({
   onNext,
   nextLabel,
   dailyStreak = 0,
+  lectureId,
 }: {
   steps?: Step[];
   onClose?: () => void;
@@ -437,6 +439,9 @@ export default function ExperimentLesson({
   /** Racha diaria real del usuario (user_stats.current_streak). Se muestra
    * en la celebration. 0 = no mostrar racha. */
   dailyStreak?: number;
+  /** UUID de la lecture padre. Se denormaliza al slide_flag al reportar
+   * para acelerar queries por sección en el admin dashboard. */
+  lectureId?: string;
 } = {}) {
   const STEPS = propSteps ?? DEFAULT_STEPS;
   const router = useRouter();
@@ -519,10 +524,14 @@ export default function ExperimentLesson({
     setIsFinishing(true);
     try {
       await onComplete?.(buildCompletionResult());
-    } catch (err) {
-      console.warn('[experiment] onComplete threw, closing anyway', err);
-    } finally {
       handleExit();
+    } catch (err) {
+      // onComplete threw → DO NOT exit. Re-enable the CTA so the user can
+      // retry. Silently closing on a failed write would lose the lesson's
+      // progress (auth fail, network blip, RLS reject) without the user
+      // noticing.
+      console.warn('[experiment] onComplete threw, staying on lesson for retry', err);
+      setIsFinishing(false);
     }
   };
 
@@ -535,7 +544,9 @@ export default function ExperimentLesson({
       await onComplete?.(buildCompletionResult());
       await onNext?.();
     } catch (err) {
-      console.warn('[experiment] onComplete/onNext threw', err);
+      // Same rationale as handleFinish: stay on the lesson on failure so
+      // the user can retry instead of advancing past an unsaved completion.
+      console.warn('[experiment] onComplete/onNext threw, staying for retry', err);
     } finally {
       setIsFinishing(false);
     }
@@ -640,6 +651,11 @@ export default function ExperimentLesson({
             variant="outline"
             aria-label="Salir de la lección"
             onClick={handleExit}
+            // Disabled while a completion write is in flight to avoid the
+            // user navigating away mid-await and racing the persistence
+            // call. Re-enables either when the write succeeds (we exit) or
+            // fails (handleFinish flips isFinishing back).
+            disabled={isFinishing}
             className="w-[50px] h-[50px]"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -690,6 +706,11 @@ export default function ExperimentLesson({
               </IconButton>
             </div>
           </div>
+          <SlideFlagButton
+            slideId={(step as { id?: string }).id}
+            lectureId={lectureId}
+            userAttempt={attempt}
+          />
         </div>
       </header>
 
