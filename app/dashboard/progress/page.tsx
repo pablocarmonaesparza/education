@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { SpinnerPage } from '@/components/ui/Spinner';
 import GamificationSummary from '@/components/dashboard/GamificationSummary';
+import BadgeGrid from '@/components/dashboard/BadgeGrid';
 
 type SectionProgress = {
   sectionId: number;
@@ -27,8 +28,12 @@ type DayBucket = {
  * Todo depende de user_progress (schema v1). El trigger Postgres
  * `on_user_progress_complete` mantiene xp_earned al día por cada fila.
  *
- * Nota: queries inline en lugar de helpers de `lib/analytics/` — ese módulo
- * lo construye Education y todavía no publica. Refactor directo cuando salga.
+ * Nota: queries inline en lugar de helpers de `lib/analytics/`. Ese módulo
+ * ya existe (Education lo publicó, ver `lib/analytics/`) pero sus helpers
+ * user-facing están al nivel de "current section"; para XP por sección y
+ * heatmap por día necesito agregados que aún no están expuestos ahí.
+ * Refactor pendiente: extender `lib/analytics/user.ts` con estos helpers
+ * (tarea de gamification, no de education — ellos solo expusieron la base).
  */
 export default function ProgressPage() {
   const supabase = createClient();
@@ -121,6 +126,8 @@ export default function ProgressPage() {
         </div>
 
         <GamificationSummary />
+
+        <BadgeGrid />
 
         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden">
           <div className="p-6 border-b border-gray-100 dark:border-gray-800">

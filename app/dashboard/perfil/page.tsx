@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client';
 import { SpinnerPage } from '@/components/ui/Spinner';
 import Button from '@/components/ui/Button';
 import GamificationSummary from '@/components/dashboard/GamificationSummary';
+import BadgeGrid from '@/components/dashboard/BadgeGrid';
 import { depth } from '@/lib/design-tokens';
 
 interface UserProfile {
@@ -19,6 +20,7 @@ interface UserProfile {
   subscriptionPlan: 'monthly' | 'yearly' | null;
   subscriptionStatus: string | null;
   currentPeriodEnd: string | null;
+  cancelAtPeriodEnd: boolean;
   hasStripeCustomer: boolean;
 }
 
@@ -71,6 +73,7 @@ export default function PerfilPage() {
           subscriptionPlan: userData?.subscription_plan ?? null,
           subscriptionStatus: userData?.subscription_status ?? null,
           currentPeriodEnd: userData?.current_period_end ?? null,
+          cancelAtPeriodEnd: userData?.cancel_at_period_end ?? false,
           hasStripeCustomer: !!userData?.stripe_customer_id,
         });
         setEditName(userData?.name || user.user_metadata?.name || '');
@@ -333,6 +336,11 @@ export default function PerfilPage() {
           <GamificationSummary />
         </div>
 
+        {/* Badges del usuario — lee catálogo + user_badges vía /lib/gamification */}
+        <div className="mb-6">
+          <BadgeGrid />
+        </div>
+
         {/* Configuration Section */}
         <div id="configuracion" className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
           <div className="p-6 border-b border-gray-100 dark:border-gray-800">
@@ -351,14 +359,18 @@ export default function PerfilPage() {
                       </p>
                       {profile.currentPeriodEnd && (
                         <p className="text-xs text-ink-muted dark:text-gray-400 mt-1">
-                          Próxima renovación: {formatDate(profile.currentPeriodEnd)}
+                          {profile.cancelAtPeriodEnd
+                            ? `Se cancela el ${formatDate(profile.currentPeriodEnd)}`
+                            : `Próxima renovación: ${formatDate(profile.currentPeriodEnd)}`}
                         </p>
                       )}
-                      {profile.subscriptionStatus && profile.subscriptionStatus !== 'active' && (
-                        <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
-                          Estado: {profile.subscriptionStatus}
-                        </p>
-                      )}
+                      {profile.subscriptionStatus &&
+                        profile.subscriptionStatus !== 'active' &&
+                        profile.subscriptionStatus !== 'trialing' && (
+                          <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                            Estado: {profile.subscriptionStatus}
+                          </p>
+                        )}
                     </>
                   ) : (
                     <p className="text-sm text-ink-muted dark:text-gray-400">

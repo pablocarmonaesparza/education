@@ -100,3 +100,102 @@ export async function getCompletedLectureIds(
 
   return new Set((data ?? []).map((row: { lecture_id: string }) => row.lecture_id));
 }
+
+// ============================================================================
+// Badges — catálogo estático + unlocks por usuario.
+//
+// La tabla `badges` es public read; `user_badges` es per-user via RLS.
+// El trigger `on_user_progress_complete` llama a `evaluate_user_badges` al
+// completar una lección, así que el frontend solo necesita LEER.
+// ============================================================================
+
+export type BadgeRarity = 'common' | 'rare' | 'epic' | 'legendary';
+
+export type BadgeCatalogEntry = {
+  id: string;
+  name: string;
+  description: string;
+  emoji: string;
+  rarity: BadgeRarity;
+  xpReward: number;
+  displayOrder: number;
+};
+
+export type UserBadge = BadgeCatalogEntry & {
+  unlocked: boolean;
+  unlockedAt: string | null;
+};
+
+export async function getBadgeCatalog(
+  supabase: SupabaseClient,
+): Promise<BadgeCatalogEntry[]> {
+  const { data, error } = await supabase
+    .from('badges')
+    .select('id, name, description, emoji, rarity, xp_reward, display_order')
+    .order('display_order', { ascending: true });
+
+  if (error) {
+    console.warn('[gamification] failed to fetch badge catalog', error);
+    return [];
+  }
+
+  return (data ?? []).map((row: any) => ({
+    id: row.id,
+    name: row.name,
+    description: row.description,
+    emoji: row.emoji,
+    rarity: row.rarity as BadgeRarity,
+    xpReward: row.xp_reward ?? 0,
+    displayOrder: row.display_order ?? 0,
+  }));
+}
+
+// Combina catálogo + unlocks del usuario en una sola lista, en orden de
+// display. Cada entrada incluye `unlocked` y `unlockedAt` para que la UI
+// renderice locked vs unlocked con el mismo dato.
+export async function getUserBadges(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<UserBadge[]> {
+  const [catalog, { data: unlocks, error: unlocksError }] = await Promise.all([
+    getBadgeCatalog(supabase),
+    supabase
+      .from('user_badges')
+      .select('badge_id, unlocked_at')
+      .eq('user_id', userId),
+  ]);
+
+  if (unlocksError) {
+    console.warn('[gamification] failed to fetch user_badges', unlocksError);
+  }
+
+  const byId = new Map<string, string>();
+  (unlocks ?? []).forEach((row: any) => {
+    byId.set(row.badge_id as string, row.unlocked_at as string);
+  });
+
+  return catalog.map((b) => ({
+    ...b,
+    unlocked: byId.has(b.id),
+    unlockedAt: byId.get(b.id) ?? null,
+  }));
+}
+
+// IDs de badges desbloqueados — útil para diff pre/post completion y disparar
+// modal de unlock en el cliente.
+export async function getUnlockedBadgeIds(
+  supabase: SupabaseClient,
+  userId: string,
+): Promise<Set<string>> {
+  const { data, error } = await supabase
+    .from('user_badges')
+    .select('badge_id')
+    .eq('user_id', userId);
+
+  if (error) {
+    console.warn('[gamification] failed to fetch unlocked badge ids', error);
+    return new Set();
+  }
+
+  return new Set((data ?? []).map((row: { badge_id: string }) => row.badge_id));
+}

@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+# Guard contra imports huérfanos: bloquea commits donde un archivo staged
+# importa un módulo que no está en el git index.
+#
+# Ver scripts/check-import-orphans.mjs para detalles + docs/memory/
+# gotcha_cruces_estructurales_recurrentes.md §8 para el patrón estructural
+# que este hook resuelve.
+#
+# Para bypass de emergencia: git commit --no-verify
+node scripts/check-import-orphans.mjs
