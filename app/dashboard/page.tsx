@@ -221,6 +221,19 @@ function DashboardPageContent() {
   const horizontalScrollRef = useRef<HTMLDivElement>(null);
   const phaseSectionsRef = useRef<Map<string, HTMLDivElement>>(new Map());
   const isScrollingToPhaseRef = useRef(false);
+  // Monotonic counter incremented at the start of every scrollToPhase
+  // call. The 320ms delayed-start setTimeout, the rAF animation loop, and
+  // the post-animation 500ms unlock timer all capture this version at
+  // their start and bail if they ever see a newer one. That covers the
+  // race where scroll B is dispatched while scroll A is still in any of
+  // those three stages.
+  const scrollVersionRef = useRef(0);
+  // Tracks the pending setTimeout that drops `isScrollingToPhaseRef` 500ms
+  // after the section-bar scroll animation lands. Cleared at the start of
+  // each new scrollToPhase. Combined with scrollVersionRef so even if the
+  // clear races with a fire-in-flight, the version check stops it from
+  // unlocking the wrong scroll.
+  const phaseUnlockTimeoutRef = useRef<number | null>(null);
   // Flips true while a lesson completion write is in flight so the modal
   // shell's Escape handler refuses to close mid-persist. handleCloseVideo
   // also bails when this is set to keep all dismiss paths consistent.
@@ -583,11 +596,22 @@ function DashboardPageContent() {
     };
   }, [videos, activePhaseId, centerHorizontalButton]);
 
-  // Auto-scroll to current video after 2 seconds on initial load
+  // Auto-scroll to current video after 2 seconds on initial load.
+  //
+  // Participates in scrollVersionRef like scrollToPhase does — if the user
+  // clicks a section button before our 1s timer fires (or while we're
+  // mid-animation), they bump the version and our work bails at the next
+  // checkpoint. Otherwise our pending timer would race their click and
+  // either steal `isScrollingToPhaseRef` or worse, jump the scroll back.
   useEffect(() => {
     if (videos.length === 0 || isLoading) return;
 
+    const myVersion = ++scrollVersionRef.current;
+
     const timer = setTimeout(() => {
+      // Bail if a user click bumped the version during the 1s wait.
+      if (scrollVersionRef.current !== myVersion) return;
+
       const currentVideo = videos.find(v => v.isCurrent);
       if (!currentVideo) return;
 
@@ -615,7 +639,7 @@ function DashboardPageContent() {
       const containerRect = container.getBoundingClientRect();
       const elementRect = videoElement.getBoundingClientRect();
       const startScrollTop = container.scrollTop;
-      
+
       // Calculate center position: element top - (viewport height / 2) + (element height / 2)
       const viewportHeight = containerRect.height;
       const elementHeight = elementRect.height;
@@ -624,29 +648,39 @@ function DashboardPageContent() {
       // Smooth scroll animation with easing
       const duration = 800; // 800ms for smoother animation
       const startTime = performance.now();
-      
-      const easeInOutCubic = (t: number) => t < 0.5 
-        ? 4 * t * t * t 
+
+      const easeInOutCubic = (t: number) => t < 0.5
+        ? 4 * t * t * t
         : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
       const animateScroll = (currentTime: number) => {
+        // Bail if a user click invalidated this animation.
+        if (scrollVersionRef.current !== myVersion) return;
+
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const easedProgress = easeInOutCubic(progress);
-        
+
         container.scrollTop = startScrollTop + (targetTop - startScrollTop) * easedProgress;
-        
+
         if (progress < 1) {
           requestAnimationFrame(animateScroll);
         } else {
-          isScrollingToPhaseRef.current = false;
+          // Same version-gated unlock as scrollToPhase. Backup setTimeout
+          // below also gates on version so it can't unlock the wrong scroll.
+          if (scrollVersionRef.current === myVersion) {
+            isScrollingToPhaseRef.current = false;
+          }
         }
       };
-      
+
       requestAnimationFrame(animateScroll);
 
-      // Reset the flag after scroll completes
+      // Backup: if the rAF chain is dropped (tab backgrounded etc) and never
+      // fires the final progress-1 branch, this still releases the flag.
+      // Version-gated so a user click in flight isn't unlocked here.
       setTimeout(() => {
+        if (scrollVersionRef.current !== myVersion) return;
         isScrollingToPhaseRef.current = false;
       }, 1000);
     }, 1000);
@@ -670,6 +704,17 @@ function DashboardPageContent() {
     const container = scrollContainerRef.current;
     if (!section || !container) return;
 
+    // Cancel any pending unlock from a previous scroll AND bump the
+    // version counter so any in-flight delayed-start, rAF, or unlock
+    // belonging to a previous scrollToPhase call exits at its next
+    // checkpoint instead of completing and toggling the flag at the
+    // wrong time.
+    if (phaseUnlockTimeoutRef.current !== null) {
+      clearTimeout(phaseUnlockTimeoutRef.current);
+      phaseUnlockTimeoutRef.current = null;
+    }
+    const myVersion = ++scrollVersionRef.current;
+
     // Mark that we're programmatically scrolling — prevents the scroll
     // observer from competing for `activePhaseId` while we animate.
     isScrollingToPhaseRef.current = true;
@@ -685,6 +730,10 @@ function DashboardPageContent() {
     setShowGreeting(false);
 
     window.setTimeout(() => {
+      // Bail if a newer scrollToPhase invalidated this one during the
+      // 320ms greeting-collapse delay.
+      if (scrollVersionRef.current !== myVersion) return;
+
       const sectionRect = section.getBoundingClientRect();
       const containerRect = container.getBoundingClientRect();
       const sectionTopFromScrollTop =
@@ -707,6 +756,9 @@ function DashboardPageContent() {
         t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 
       const animateScroll = (currentTime: number) => {
+        // Bail if a newer scrollToPhase invalidated this animation.
+        if (scrollVersionRef.current !== myVersion) return;
+
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const eased = easeInOutCubic(progress);
@@ -715,10 +767,18 @@ function DashboardPageContent() {
         if (progress < 1) {
           requestAnimationFrame(animateScroll);
         } else {
-          // Drop the flag only when the animation has fully landed. The
-          // observer's next tick will then see the actual final viewport
-          // and confirm `phaseId` instead of bouncing back.
-          isScrollingToPhaseRef.current = false;
+          // Animation done. Hold the lock for an extra 500ms so a small
+          // touch overshoot, trackpad rubber-band, or wheel inertia tick
+          // RIGHT AFTER the animation doesn't immediately re-trigger the
+          // scroll observer with the viewport sitting on a section
+          // boundary — that race was bouncing `activePhaseId` back to
+          // the previous section as soon as the user touched the screen.
+          phaseUnlockTimeoutRef.current = window.setTimeout(() => {
+            // Bail if a newer scrollToPhase invalidated this unlock.
+            if (scrollVersionRef.current !== myVersion) return;
+            isScrollingToPhaseRef.current = false;
+            phaseUnlockTimeoutRef.current = null;
+          }, 500);
         }
       };
 
@@ -1170,13 +1230,44 @@ function DashboardPageContent() {
                   <Divider title={phaseData.phaseName} />
                 </div>
                 
-                {/* Videos in this phase — centered stack with dashed connectors */}
-                <div className="w-full max-w-[220px] mx-auto px-2 sm:px-0">
+                {/* Videos in this phase — Duolingo-style serpentine path.
+                    Mobile: container is max-w-[220px] (card width), no offsets.
+                    Desktop: container widens to max-w-2xl and each card slides
+                    horizontally per a low-frequency sine wave so the eye
+                    follows a serpentine, NOT a high-frequency zigzag. The
+                    `isMobile` flag (set by the dashboard's resize listener)
+                    is used to gate the offset to desktop only — applying the
+                    transform unconditionally would push cards off-screen on
+                    narrow viewports. */}
+                <div className="w-full max-w-[220px] md:max-w-2xl mx-auto px-2 sm:px-0">
                   {phaseData.videos.map((video, idx) => {
                     const isLast = idx === phaseData.videos.length - 1;
+                    // Serpentine fórmula: low-freq sine. Period = 8 lessons
+                    // means the wave returns to center every 8 lessons (so a
+                    // typical 10-12 lesson section traces ~1.5 full cycles).
+                    // Amplitude 120px keeps the card visible even in the
+                    // narrowest md viewport (~512px content area at 1024px
+                    // viewport with sidebar+chat reserved): card half = 110,
+                    // offset 120 → max card edge 230 from center, fits in
+                    // half-width 256.
+                    const ZIGZAG_PERIOD = 8;
+                    const ZIGZAG_AMPLITUDE = 120;
+                    const offsetFor = (i: number) =>
+                      isMobile
+                        ? 0
+                        : Math.sin((i * Math.PI) / ZIGZAG_PERIOD) * ZIGZAG_AMPLITUDE;
+                    const offset = offsetFor(idx);
+                    const nextOffset = isLast ? 0 : offsetFor(idx + 1);
                     return (
                       <div key={video.id}>
-                        <div data-video-id={video.id}>
+                        <div
+                          data-video-id={video.id}
+                          // translateX (transform) instead of margin so the
+                          // card's hit-target and depth shadow don't reflow
+                          // when the offset changes between viewport sizes.
+                          style={{ transform: `translateX(${offset}px)` }}
+                          className="transition-transform duration-200"
+                        >
                           <LessonItem
                             lessonNumber={idx + 1}
                             totalLessons={phaseData.videos.length}
@@ -1186,7 +1277,12 @@ function DashboardPageContent() {
                             onClick={() => handleVideoSelect(video)}
                           />
                         </div>
-                        {!isLast && <PathConnector />}
+                        {!isLast && (
+                          <PathConnector
+                            fromOffset={offset}
+                            toOffset={nextOffset}
+                          />
+                        )}
                       </div>
                     );
                   })}
