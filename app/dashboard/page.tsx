@@ -708,6 +708,13 @@ function DashboardPageContent() {
 
   // Handle video selection with animation
   const handleVideoSelect = (video: Video) => {
+    // Capture the element that opened the lesson so the a11y effect can
+    // restore focus when the overlay closes. Best-effort: the element
+    // may be unmounted before close (lessons re-render after completion),
+    // and the effect handles that case by skipping the restore.
+    if (typeof document !== 'undefined') {
+      lessonTriggerRef.current = document.activeElement as HTMLElement | null;
+    }
     setSelectedVideo(video);
     // Small delay to allow state to set before animation starts
     requestAnimationFrame(() => {
@@ -756,6 +763,91 @@ function DashboardPageContent() {
   // Always clear the lesson nav on unmount so navigating away from the
   // dashboard doesn't leave a stale sidebar state behind.
   useEffect(() => () => setLessonNav(null), [setLessonNav]);
+
+  // A11y for the lesson overlay (treats it as a true modal dialog).
+  //
+  // Three concerns kept in separate effects so they each run at the right
+  // moment in the open → close lifecycle:
+  //
+  //   1. Background lock — inert + aria-hidden on dashboard chrome for the
+  //      ENTIRE time the overlay is mounted (open AND animating-closed).
+  //   2. Initial focus — move keyboard focus to the close button on open.
+  //      Re-runs when the lesson content (selectedSteps) finishes loading
+  //      so the close button's `.focus()` doesn't no-op while the spinner
+  //      is showing.
+  //   3. Focus restore — return focus to the element that opened the
+  //      dialog, but only after the overlay FULLY unmounts (selectedVideo
+  //      goes null), not at close-start. Otherwise focus jumps back to the
+  //      page while the exit animation is still painting.
+  const lessonTriggerRef = useRef<HTMLElement | null>(null);
+
+  // (1) Background lock — full lifetime of overlay
+  useEffect(() => {
+    const overlayActive = isVideoPlayerOpen || isVideoPlayerClosing;
+    if (!overlayActive) return;
+
+    const sidebars = Array.from(document.querySelectorAll('aside.fixed'));
+    const mobileHeaders = Array.from(
+      document.querySelectorAll('header.md\\:hidden.fixed'),
+    );
+    const dashboardChromeRoot = document.querySelector(
+      '[data-dashboard-chrome="true"]',
+    );
+    const targets = [
+      ...sidebars,
+      ...mobileHeaders,
+      ...(dashboardChromeRoot ? [dashboardChromeRoot] : []),
+    ] as HTMLElement[];
+
+    targets.forEach((el) => {
+      el.setAttribute('inert', '');
+      el.setAttribute('aria-hidden', 'true');
+    });
+
+    return () => {
+      targets.forEach((el) => {
+        el.removeAttribute('inert');
+        el.removeAttribute('aria-hidden');
+      });
+    };
+  }, [isVideoPlayerOpen, isVideoPlayerClosing]);
+
+  // (2) Initial focus — fires on open; re-fires whenever the dialog's
+  // contents swap so we land on the new close button.
+  //
+  // Trigger inputs:
+  //   - isVideoPlayerOpen → fire on open
+  //   - selectedSteps → fire when fetched lesson mounts in place of spinner
+  //   - isLoadingSteps → fire on the empty-lesson path too (fetch resolves
+  //     with no steps → selectedSteps stays null but loading flips off and
+  //     we swap from the loading-spinner branch to ExperimentLesson with
+  //     placeholder steps; without this dep, the swap silently leaves
+  //     focus on the about-to-be-removed close button → falls to body).
+  useEffect(() => {
+    if (!isVideoPlayerOpen) return;
+    const dialog = document.querySelector('[role="dialog"]') as HTMLElement | null;
+    if (!dialog) return;
+    const closeBtn = dialog.querySelector(
+      '[aria-label="Salir de la lección"]',
+    ) as HTMLElement | null;
+    (closeBtn ?? dialog).focus({ preventScroll: true });
+  }, [isVideoPlayerOpen, selectedSteps, isLoadingSteps]);
+
+  // (3) Focus restore — runs only when the overlay fully unmounts.
+  // selectedVideo is the latest of the three states to clear (see
+  // handleCloseVideo), so depending on it ensures we don't jump back to
+  // the trigger while the exit animation is still painting.
+  useEffect(() => {
+    if (selectedVideo) return;
+    const trigger = lessonTriggerRef.current;
+    lessonTriggerRef.current = null;
+    if (!trigger || !document.contains(trigger)) return;
+    try {
+      trigger.focus({ preventScroll: true });
+    } catch {
+      // best-effort — ignore failures (element may have become unfocusable)
+    }
+  }, [selectedVideo]);
 
   // Mark the selected lesson as completed: persist to Supabase FIRST, then
   // recompute local state so the UI only advances when the DB actually wrote.
@@ -1013,6 +1105,13 @@ function DashboardPageContent() {
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
+      {/* Dashboard chrome wrapper — VerticalScroll + sticky progress bar.
+          data-dashboard-chrome marks it so the inert effect above can
+          deactivate keyboard/AT focus here while the lesson overlay is
+          open. The lesson overlay is rendered as a sibling AFTER this
+          wrapper closes (search for "Lesson Overlay" below), so the
+          inert flag never reaches it. */}
+      <div className="flex-1 flex flex-col overflow-hidden" data-dashboard-chrome="true">
       {/* Main scrollable container - everything scrolls together */}
       <VerticalScroll ref={scrollContainerRef} flex1>
         {/* Greeting - Animated visibility based on scroll position */}
@@ -1157,6 +1256,8 @@ function DashboardPageContent() {
         </div>
       )}
 
+      </div>{/* /data-dashboard-chrome — anything below is overlay/modal level */}
+
       {/* Lesson Overlay — ExperimentLesson reads slides from Supabase
           (lecture_slides JSONB). While they load we render a spinner.
           If the lecture has no slides yet, a minimal "próximamente" state. */}
@@ -1201,7 +1302,79 @@ function DashboardPageContent() {
 
         return (
           <div
-            className={`fixed top-0 md:top-0 bottom-0 flex items-stretch justify-center transition-all ease-out pt-14 md:pt-0 ${
+            // Mobile: cover the dashboard mobile header (z-30) with the lesson
+            // overlay (z-40) so the lesson is true fullscreen — gives the
+            // progress bar the top edge and the CTA the bottom edge with
+            // no chrome eating space. Desktop unchanged.
+            // height uses 100dvh so iOS Safari's collapsing URL bar doesn't
+            // push the footer below the visual viewport.
+            //
+            // We deliberately animate ONLY background-color (not transition-all):
+            // animating "all" together with the inline `height: 100dvh` confuses
+            // the browser into stalling the inner div's opacity/scale animation
+            // half-way through, leaving the lesson semi-transparent.
+            //
+            // role/aria-modal mark this as a true modal dialog. Focus trap and
+            // background `inert` are wired up in the useEffect below (search
+            // for `selectedVideo` + `inert`).
+            role="dialog"
+            aria-modal="true"
+            aria-label={selectedVideo?.title ? `Lección: ${selectedVideo.title}` : 'Lección'}
+            // tabIndex=-1 makes the dialog itself focusable as a fallback
+            // when the close button isn't yet in the DOM (loading spinner).
+            tabIndex={-1}
+            // Shell-level keyboard handlers:
+            //   - Escape always closes (works even while lessonSteps is
+            //     loading and there's no close button rendered yet).
+            //   - Tab / Shift+Tab loop focus inside the dialog
+            //     (`aria-modal` + background `inert` are not a focus trap on
+            //     their own).
+            onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                e.preventDefault();
+                handleCloseVideo();
+                return;
+              }
+              if (e.key !== 'Tab') return;
+              // Filter to actually-tabbable elements:
+              // querySelectorAll returns matches for the selector but
+              // doesn't know about CSS visibility, so on mobile the
+              // `hidden md:block` desktop-only nav arrows in
+              // ExperimentLesson would still be counted as first/last and
+              // let Tab escape the dialog. offsetParent === null is the
+              // cheap test for `display:none` (anywhere in the chain).
+              const candidates = Array.from(
+                e.currentTarget.querySelectorAll<HTMLElement>(
+                  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+                ),
+              );
+              const focusables = candidates.filter((el) => {
+                if (el.hasAttribute('disabled')) return false;
+                if (el.getAttribute('aria-hidden') === 'true') return false;
+                // offsetParent==null catches display:none (Tailwind `hidden`).
+                if (el.offsetParent === null && el !== e.currentTarget) return false;
+                return true;
+              });
+              if (focusables.length === 0) {
+                // Nothing focusable yet (loading spinner) — keep focus on
+                // the dialog itself so Tab doesn't escape into the inert
+                // background.
+                e.preventDefault();
+                e.currentTarget.focus();
+                return;
+              }
+              const first = focusables[0];
+              const last = focusables[focusables.length - 1];
+              const active = document.activeElement;
+              if (e.shiftKey && active === first) {
+                e.preventDefault();
+                last.focus();
+              } else if (!e.shiftKey && active === last) {
+                e.preventDefault();
+                first.focus();
+              }
+            }}
+            className={`fixed inset-x-0 top-0 flex items-stretch justify-center transition-[background-color] ease-out ${
               isVideoPlayerOpen && !isVideoPlayerClosing
                 ? 'bg-white dark:bg-gray-800'
                 : 'bg-transparent'
@@ -1210,16 +1383,47 @@ function DashboardPageContent() {
               transitionDuration: '400ms',
               left: isMobile ? 0 : 256,
               right: isMobile ? 0 : `${chatWidth}px`,
-              zIndex: 35,
+              height: '100dvh',
+              zIndex: 40,
             }}
           >
             <div
-              className={`w-full max-w-5xl mx-auto h-full transition-all ease-out ${animClass}`}
+              // Animate ONLY opacity + transform. transition-all here used to
+              // also animate `height` whenever the parent's `100dvh` changed
+              // (mobile URL-bar collapse, devtools), interrupting the open
+              // animation and leaving the lesson stuck semi-transparent.
+              className={`w-full max-w-5xl mx-auto h-full transition-[opacity,transform] ease-out ${animClass}`}
               style={animStyle}
             >
               {lessonSteps === null ? (
-                <div className="h-full flex items-center justify-center">
-                  <Spinner size="lg" />
+                // Loading state — show a close affordance for pointer/touch/
+                // voice users (Escape covers keyboard at the dialog shell).
+                // The button is positioned with the same top-left layout that
+                // ExperimentLesson uses for its own close button so the click
+                // target doesn't move when the lesson finishes loading.
+                <div className="h-full flex flex-col">
+                  <header className="px-4 pt-2 pb-3 md:py-4 flex-shrink-0">
+                    <div className="mx-auto max-w-2xl flex items-center">
+                      <IconButton
+                        variant="outline"
+                        aria-label="Salir de la lección"
+                        onClick={handleCloseVideo}
+                        className="w-[50px] h-[50px]"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2.5}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </IconButton>
+                    </div>
+                  </header>
+                  <div className="flex-1 flex items-center justify-center">
+                    <Spinner size="lg" />
+                  </div>
                 </div>
               ) : (
                 <ExperimentLesson

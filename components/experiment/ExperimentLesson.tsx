@@ -624,9 +624,17 @@ export default function ExperimentLesson({
   };
 
   return (
-    <div className={`${onClose ? 'h-full' : 'min-h-screen'} flex flex-col bg-white dark:bg-gray-800`}>
-      {/* Top bar: single flex row, no absolute positioning — scales cleanly to mobile */}
-      <header className="px-4 py-4">
+    // h-full + overflow-hidden caps the column at the parent's height (the
+    // overlay container in the dashboard, or the viewport in standalone).
+    // Without overflow-hidden, when content is taller than the available
+    // space the children push the container past it and the footer slides
+    // off-screen (mobile especially: ~78px below the viewport in iPhone
+    // emulation). The main element below is the only scroller.
+    <div className={`${onClose ? 'h-full' : 'min-h-screen'} flex flex-col overflow-hidden bg-white dark:bg-gray-800`}>
+      {/* Top bar: single flex row, no absolute positioning — scales cleanly to mobile.
+          Mobile gets tight top padding so the progress bar sits right under the
+          mobile header (or top edge if the overlay covers it). */}
+      <header className="px-4 pt-2 pb-3 md:py-4 flex-shrink-0">
         <div className="mx-auto max-w-2xl flex items-center gap-2 md:gap-3">
           <IconButton
             variant="outline"
@@ -685,9 +693,18 @@ export default function ExperimentLesson({
         </div>
       </header>
 
-      {/* Content */}
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-2xl">
+      {/* Content
+          - flex-1 takes the space between header and footer.
+          - overflow-y-auto enables scroll when slide content is taller than
+            the available space (was missing → mobile users couldn't reach the
+            bottom of long slides). Touch scroll is enabled by default on
+            iOS Safari for any element with overflow:auto.
+          - The inner wrapper uses min-h-full so when the content fits, the
+            flex centering still works; when it doesn't fit, it grows and
+            the main scrolls. */}
+      <main className="flex-1 overflow-y-auto overscroll-contain">
+        <div className="min-h-full flex items-center justify-center px-4 py-6 md:py-12">
+          <div className="w-full max-w-2xl">
           {step.kind === 'concept' && (
             <ConceptStep title={step.title} body={step.body} image={step.image} />
           )}
@@ -793,11 +810,14 @@ export default function ExperimentLesson({
               submitted={submitted}
             />
           )}
+          </div>
         </div>
       </main>
 
-      {/* Bottom: XP bar + divider + CTA — matches header width for visual alignment */}
-      <footer className="px-4 py-6">
+      {/* Bottom: XP bar + divider + CTA — matches header width for visual alignment.
+          pb honours iOS safe-area-inset so the CTA never slides under the home
+          indicator / browser bottom bar. md:pb-6 keeps desktop spacing. */}
+      <footer className="px-4 pt-4 pb-[max(env(safe-area-inset-bottom),1rem)] md:py-6 flex-shrink-0">
         <div className="mx-auto max-w-2xl space-y-4">
           <XpBar xp={xp} total={totalXp} delta={xpDelta} />
           <div className="border-t border-gray-200 dark:border-gray-900" />
