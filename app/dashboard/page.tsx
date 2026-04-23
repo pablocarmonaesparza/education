@@ -23,16 +23,9 @@ import {
   fetchLectureAsSteps,
   type LectureRow,
 } from '@/lib/lessons/fromSupabase';
-import {
-  getUserStats,
-  getUnlockedBadgeIds,
-  getBadgeCatalog,
-  type UserStats,
-  type BadgeCatalogEntry,
-} from '@/lib/gamification';
+import { getUserStats, type UserStats } from '@/lib/gamification';
 import { persistLessonCompletion } from '@/lib/lessons/persist-completion';
 import LevelUpModal from '@/components/dashboard/LevelUpModal';
-import BadgeUnlockModal from '@/components/dashboard/BadgeUnlockModal';
 import { useSidebar } from '@/contexts/SidebarContext';
 
 const greetings = [
@@ -207,13 +200,6 @@ function DashboardPageContent() {
   // cierra (queremos la secuencia: celebration de lección → cierre → modal).
   const [pendingLevelUp, setPendingLevelUp] = useState<{ level: number; totalXp: number } | null>(null);
   const [showLevelUp, setShowLevelUp] = useState(false);
-  // Badge queue: el trigger `evaluate_user_badges` puede desbloquear varios
-  // de un tirón. Los mostramos uno por uno después del level-up. Mantenemos
-  // un catálogo local para convertir id → { name, emoji, xpReward, … }.
-  const [badgeCatalog, setBadgeCatalog] = useState<BadgeCatalogEntry[]>([]);
-  const [unlockedBadgeIds, setUnlockedBadgeIds] = useState<Set<string>>(new Set());
-  const [pendingBadges, setPendingBadges] = useState<string[]>([]);
-  const [showBadgeId, setShowBadgeId] = useState<string | null>(null);
 
   // Cuando hay un level-up pendiente y el overlay de la lección ya cerró
   // completamente, mostrar el modal. Evita superposición con la celebration.
@@ -222,21 +208,6 @@ function DashboardPageContent() {
       setShowLevelUp(true);
     }
   }, [pendingLevelUp, isVideoPlayerOpen, isVideoPlayerClosing]);
-
-  // Cola de badges: abrir el siguiente cuando (a) overlay cerró, (b) no hay
-  // level-up pendiente ni mostrando, (c) no hay ya un badge abierto.
-  useEffect(() => {
-    if (
-      pendingBadges.length > 0 &&
-      !showBadgeId &&
-      !isVideoPlayerOpen &&
-      !isVideoPlayerClosing &&
-      !showLevelUp &&
-      !pendingLevelUp
-    ) {
-      setShowBadgeId(pendingBadges[0]);
-    }
-  }, [pendingBadges, showBadgeId, isVideoPlayerOpen, isVideoPlayerClosing, showLevelUp, pendingLevelUp]);
   // Multi-route state: user may have a full-course intake and/or a
   // personalized intake. activeMode decides which one is rendered.
   const [activeMode, setActiveMode] = useState<RouteMode>('full');
@@ -358,17 +329,10 @@ function DashboardPageContent() {
             console.warn('[dashboard] failed to fetch user_progress', progressError);
           }
 
-          // Fetch gamification stats (XP, level, streak) desde user_stats +
-          // catálogo de badges + unlocks del usuario. El trigger
-          // `on_user_progress_complete` mantiene los 3 al día en Postgres.
-          const [freshStats, catalog, unlockedIds] = await Promise.all([
-            getUserStats(supabase, user.id),
-            getBadgeCatalog(supabase),
-            getUnlockedBadgeIds(supabase, user.id),
-          ]);
-          setUserStats(freshStats);
-          setBadgeCatalog(catalog);
-          setUnlockedBadgeIds(unlockedIds);
+          // Fetch gamification stats (XP, level, streak) desde user_stats.
+          // El trigger `on_user_progress_complete` la mantiene al día
+          // cuando se escribe is_completed=true.
+          setUserStats(await getUserStats(supabase, user.id));
 
           const completedVideos = new Set<string>(
             (progressData || [])
@@ -950,37 +914,23 @@ function DashboardPageContent() {
         );
       }
       // 3+ Side-effects after a successful persist (dashboard-specific UI).
-      // El trigger `on_user_progress_complete` ya actualizó user_stats,
-      // user_progress.xp_earned y user_badges. Re-fetch stats + unlocks.
+      // El trigger `on_user_progress_complete` ya actualizó user_stats.
+      // Re-fetch para que la racha/XP/nivel en el UI (TutorChatButton,
+      // próxima celebration) reflejen el nuevo estado.
       const previousLevel = userStats?.level ?? 1;
-      const previousUnlocked = unlockedBadgeIds;
-      const [freshStats, freshUnlocked] = await Promise.all([
-        getUserStats(supabase, user.id),
-        getUnlockedBadgeIds(supabase, user.id),
-      ]);
+      const freshStats = await getUserStats(supabase, user.id);
       setUserStats(freshStats);
-      setUnlockedBadgeIds(freshUnlocked);
-
-      // Notifica a StatsPills, GamificationSummary y BadgeGrid (montados en
-      // layout/perfil, fuera de este árbol) para que también refetcheen.
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new Event('itera:stats-refresh'));
-      }
-
-      // Level-up: si el trigger subió el nivel, celebramos.
-      if (freshStats.level > previousLevel) {
-        setPendingLevelUp({ level: freshStats.level, totalXp: freshStats.totalXp });
-      }
-
-      // Badges recién desbloqueados: diff contra snapshot previo. Se agregan
-      // a la queue y se muestran uno por uno tras el level-up (si hubo).
-      const newlyUnlocked: string[] = [];
-      freshUnlocked.forEach((id) => {
-        if (!previousUnlocked.has(id)) newlyUnlocked.push(id);
-      });
-      if (newlyUnlocked.length > 0) {
-        setPendingBadges((prev) => [...prev, ...newlyUnlocked]);
-      }
+    // Notifica a StatsPills y GamificationSummary (montados en layout/perfil,
+    // fuera de este árbol) para que también refetcheen.
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('itera:stats-refresh'));
+    }
+    // Level-up: si el trigger subió el nivel, celebramos. El modal queda
+    // pendiente y se muestra después de que el overlay de la lección se
+    // cierre (useEffect abajo lo abre cuando `pendingLevelUp` existe).
+    if (freshStats.level > previousLevel) {
+      setPendingLevelUp({ level: freshStats.level, totalXp: freshStats.totalXp });
+    }
 
     // 3. Update the completion set so the derive effect keeps future route
     // switches in sync, and also patch the current videos array optimistically
@@ -1220,78 +1170,23 @@ function DashboardPageContent() {
                   <Divider title={phaseData.phaseName} />
                 </div>
                 
-                {/* Videos in this phase — zigzag path (Duolingo-style).
-                    Cards alternate left/right; in desktop the opposite slot
-                    holds a milestone hint so the wide-screen empty space is
-                    used. Mobile keeps the same zigzag but without the hint
-                    (no horizontal room). Container widens from max-w-[220px]
-                    to max-w-2xl so there's space to alternate. */}
-                <div className="w-full max-w-2xl mx-auto px-4 sm:px-0">
+                {/* Videos in this phase — centered stack with dashed connectors */}
+                <div className="w-full max-w-[220px] mx-auto px-2 sm:px-0">
                   {phaseData.videos.map((video, idx) => {
-                    const total = phaseData.videos.length;
-                    const isLast = idx === total - 1;
-                    // Position alternates: even idx → left, odd → right.
-                    const isLeft = idx % 2 === 0;
-                    // Milestone hint: how many lessons remain in this phase
-                    // AFTER this one. The very last one celebrates the
-                    // section completion. Already-completed lessons show
-                    // no hint to avoid noise.
-                    const remainingAfter = total - (idx + 1);
-                    let milestoneHint: string | null = null;
-                    if (!video.isCompleted) {
-                      const phaseLower = phaseData.phaseName.toLowerCase();
-                      if (remainingAfter === 0) {
-                        milestoneHint = `con esta terminas ${phaseLower}`;
-                      } else if (remainingAfter === 1) {
-                        milestoneHint = `1 lección más para terminar ${phaseLower}`;
-                      } else {
-                        milestoneHint = `${remainingAfter} lecciones para terminar ${phaseLower}`;
-                      }
-                    }
-                    // Connector below this card curves to the next side.
-                    const nextIsLeft = !isLeft;
-
+                    const isLast = idx === phaseData.videos.length - 1;
                     return (
                       <div key={video.id}>
-                        <div
-                          className={`flex items-center gap-2 md:gap-6 ${
-                            isLeft ? 'justify-start' : 'justify-end'
-                          }`}
-                        >
-                          {!isLeft && milestoneHint && (
-                            <div
-                              aria-hidden="true"
-                              className="hidden md:block flex-1 min-w-0 text-right"
-                            >
-                              <Caption className="text-gray-500 dark:text-gray-400">
-                                {milestoneHint}
-                              </Caption>
-                            </div>
-                          )}
-                          <div data-video-id={video.id} className="flex-shrink-0">
-                            <LessonItem
-                              lessonNumber={idx + 1}
-                              totalLessons={total}
-                              title={video.title}
-                              isCompleted={video.isCompleted}
-                              isCurrent={video.isCurrent}
-                              onClick={() => handleVideoSelect(video)}
-                            />
-                          </div>
-                          {isLeft && milestoneHint && (
-                            <div
-                              aria-hidden="true"
-                              className="hidden md:block flex-1 min-w-0 text-left"
-                            >
-                              <Caption className="text-gray-500 dark:text-gray-400">
-                                {milestoneHint}
-                              </Caption>
-                            </div>
-                          )}
+                        <div data-video-id={video.id}>
+                          <LessonItem
+                            lessonNumber={idx + 1}
+                            totalLessons={phaseData.videos.length}
+                            title={video.title}
+                            isCompleted={video.isCompleted}
+                            isCurrent={video.isCurrent}
+                            onClick={() => handleVideoSelect(video)}
+                          />
                         </div>
-                        {!isLast && (
-                          <PathConnector fromLeft={isLeft} toLeft={nextIsLeft} />
-                        )}
+                        {!isLast && <PathConnector />}
                       </div>
                     );
                   })}
@@ -1603,31 +1498,6 @@ function DashboardPageContent() {
         onClose={() => {
           setShowLevelUp(false);
           setPendingLevelUp(null);
-        }}
-      />
-
-      {/* Badge unlock celebration — se abre uno por uno desde pendingBadges
-          queue. Al cerrar, pasa al siguiente. Ver useEffect y
-          handleLessonComplete (diff de unlockedBadgeIds). */}
-      <BadgeUnlockModal
-        open={showBadgeId !== null}
-        badge={(() => {
-          if (!showBadgeId) return null;
-          const b = badgeCatalog.find((x) => x.id === showBadgeId);
-          return b
-            ? {
-                id: b.id,
-                name: b.name,
-                description: b.description,
-                emoji: b.emoji,
-                rarity: b.rarity,
-                xpReward: b.xpReward,
-              }
-            : null;
-        })()}
-        onClose={() => {
-          setShowBadgeId(null);
-          setPendingBadges((prev) => prev.slice(1));
         }}
       />
     </div>
