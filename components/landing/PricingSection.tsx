@@ -33,10 +33,10 @@ export default function PricingSection() {
       price: 0,
       period: undefined,
       popular: false,
-      description: "Explora el catálogo completo a tu ritmo. Sin ruta personalizada.",
+      description: "Prueba las primeras lecciones y la sección de fundamentos. Sin ruta personalizada.",
       features: [
-        "Las 100 lecciones interactivas",
-        "Organizadas en 10 secciones",
+        "Las primeras 20 lecciones",
+        "Sección de fundamentos completa",
         "Acceso a la comunidad",
         "Ejemplos pensados para LATAM",
       ],
@@ -125,7 +125,11 @@ export default function PricingSection() {
                     )}
                   </div>
                   <p className="text-xs md:text-sm text-ink-muted dark:text-gray-400 mt-1">
-                    {tier.price === 0 ? "Sin tarjeta de crédito" : "Cancela cuando quieras"}
+                    {tier.price === 0
+                      ? "Sin tarjeta de crédito"
+                      : tier.id === "yearly"
+                        ? `Ahorras $${YEARLY_SAVINGS} vs. mensual`
+                        : "Cancela cuando quieras"}
                   </p>
                 </div>
 

@@ -286,16 +286,36 @@ export default function HeroShader() {
     }
 
     resize();
-    animationId = requestAnimationFrame(frame);
+
+    // IntersectionObserver pauses the animation loop when the canvas scrolls
+    // out of viewport. Massive win on mobile: no CPU spent painting frames
+    // the user can't see. The observer fires immediately on observe() if the
+    // canvas is intersecting, which kicks off the initial animation.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (!animationId) {
+            t0 = performance.now();
+            animationId = requestAnimationFrame(frame);
+          }
+        } else if (animationId) {
+          cancelAnimationFrame(animationId);
+          animationId = 0;
+        }
+      },
+      { threshold: 0 },
+    );
+    io.observe(canvas);
 
     return () => {
-      cancelAnimationFrame(animationId);
+      if (animationId) cancelAnimationFrame(animationId);
       window.removeEventListener('pointermove', onMove);
       window.removeEventListener('pointerleave', onLeave);
       window.removeEventListener('pointerup', onUp);
       canvas.removeEventListener('pointerdown', onDown);
       window.removeEventListener('resize', resize);
       ro.disconnect();
+      io.disconnect();
     };
   }, []);
 
