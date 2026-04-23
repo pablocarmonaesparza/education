@@ -49,7 +49,20 @@ export async function proxy(request: NextRequest) {
       data: { user },
     } = await supabase.auth.getUser()
 
-    const protectedRoutes = ['/dashboard', '/intake', '/onboarding']
+    // ── Auth layer: rutas que requieren estar loggeado ──────────────
+    // Tier `basic` (gratis) tiene acceso al catálogo completo de lecciones,
+    // así que /dashboard solo necesita auth, no subscription. El onboarding
+    // (projectDescription/projectContext) y /paywall están aquí porque son
+    // post-signup flow; si cae aquí sin cookie, mándalo a login primero.
+    const protectedRoutes = [
+      '/dashboard',
+      '/intake',
+      '/onboarding',
+      '/projectDescription',
+      '/projectContext',
+      '/paywall',
+      '/courseCreation',
+    ]
     const { pathname } = request.nextUrl
 
     // A route is protected if the pathname equals it exactly OR starts with
@@ -64,6 +77,65 @@ export async function proxy(request: NextRequest) {
       const loginUrl = new URL('/auth/login', request.url)
       loginUrl.searchParams.set('redirectedFrom', pathname)
       return NextResponse.redirect(loginUrl)
+    }
+
+    // ── Subscription layer: endpoints premium (solo tier pagado) ───
+    // /api/generate-course llama a OpenAI + Cohere para generar la ruta
+    // personalizada — es el core del tier mensual/anual y donde se queman
+    // los tokens caros. El gratis usa /api/generate-course-full (solo SQL
+    // sintético sin LLM), que NO se protege.
+    //
+    // La page /courseCreation sirve ambos tiers (decide qué endpoint
+    // llamar por tier); por eso el gate vive a nivel endpoint, no page.
+    // Defensa en profundidad adicional dentro del handler para cubrir
+    // llamadas server-to-server o casos donde el matcher no aplique.
+    //
+    // Chequeo `subscription_active` (bool) en vez de `tier` (enum) porque
+    // el webhook de Stripe ya lo escribe de forma autoritativa en
+    // `checkout.session.completed` y `customer.subscription.*`. Sidesteppea
+    // el mismatch entre tier='personalized' (webhook) vs PAID_TIER='premium'
+    // (lib/stripe/config.ts) que Finance está por arreglar en un commit
+    // aparte — este gate funciona igual antes y después del fix.
+    const premiumRoutes = ['/api/generate-course']
+    const isPremium = premiumRoutes.some(
+      // match exacto O prefijo con '/' — intencionalmente NO matchea
+      // '/api/generate-course-full' porque NO empieza con '/api/generate-course/'.
+      (route) => pathname === route || pathname.startsWith(`${route}/`),
+    )
+
+    if (user && isPremium) {
+      const { data: profile, error: profileError } = await supabase
+        .from('users')
+        .select('subscription_active')
+        .eq('id', user.id)
+        .maybeSingle()
+
+      // Fail-closed en cualquier ambigüedad (error o row sin subscription_active=true).
+      // maybeSingle devuelve {data:null, error:null} cuando RLS oculta la row;
+      // lo tratamos igual que "no paga" — no hay manera legítima de no tener fila.
+      const hasActiveSub = !profileError && profile?.subscription_active === true
+
+      if (!hasActiveSub) {
+        if (profileError) {
+          console.error('[proxy] subscription check failed for', user.id, profileError)
+        }
+
+        // Para rutas de API respondemos 402 (Payment Required) — no es
+        // navegación, no tiene sentido redirect. El cliente del fetch
+        // maneja el código. Para rutas de page (si luego se añaden) se
+        // haría redirect a /paywall.
+        if (pathname.startsWith('/api/')) {
+          return NextResponse.json(
+            { error: 'subscription_required', message: 'Suscripción activa requerida para generar tu ruta personalizada.' },
+            { status: 402 },
+          )
+        }
+
+        const paywallUrl = new URL('/paywall', request.url)
+        paywallUrl.searchParams.set('from', pathname)
+        if (profileError) paywallUrl.searchParams.set('reason', 'check_failed')
+        return NextResponse.redirect(paywallUrl)
+      }
     }
 
     return supabaseResponse

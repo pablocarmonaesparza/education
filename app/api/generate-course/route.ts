@@ -35,6 +35,31 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Gate de suscripción (defensa en profundidad). El middleware proxy.ts
+    // también filtra /api/generate-course, pero repetimos el check aquí
+    // para cubrir llamadas server-to-server o bypass por misconfiguración
+    // del matcher. Este endpoint llama OpenAI + Cohere — es costoso.
+    // El tier gratis usa /api/generate-course-full (SQL sintético).
+    const { data: profile, error: profileError } = await supabase
+      .from('users')
+      .select('subscription_active')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (profileError || profile?.subscription_active !== true) {
+      if (profileError) {
+        console.error('[generate-course] subscription check failed for', user.id, profileError);
+      }
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'subscription_required',
+          message: 'Suscripción activa requerida para generar tu ruta personalizada.',
+        },
+        { status: 402 }
+      );
+    }
+
     // Asegurar que el usuario existe en public.users
     const { error: insertError } = await supabase
       .from('users')
@@ -104,20 +129,46 @@ export async function POST(request: NextRequest) {
         });
       } catch (err: any) {
         console.error('Inline course generation failed:', err);
-        // Write error state so frontend detects it on next poll (~3s)
+        // Write error state so frontend detects it on next poll (~3s).
+        // Preferimos actualizar el draft del user (si existe) en vez de
+        // insertar una fila extra — mismo patrón que el path feliz.
         try {
-          await supabase.from('intake_responses').insert({
-            user_id: userId,
-            responses: {
-              project_idea: projectIdea,
-              submitted_at: new Date().toISOString(),
-            },
-            generated_path: {
-              _error: true,
-              error_message: err?.message || 'Error desconocido durante la generación del curso',
-              failed_at: new Date().toISOString(),
-            },
-          });
+          const { data: draft } = await supabase
+            .from('intake_responses')
+            .select('id, responses')
+            .eq('user_id', userId)
+            .is('generated_path', null)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          const errorPath = {
+            _error: true,
+            error_message: err?.message || 'Error desconocido durante la generación del curso',
+            failed_at: new Date().toISOString(),
+          };
+          const baseResponses = {
+            project_idea: projectIdea,
+            questionnaire,
+            submitted_at: new Date().toISOString(),
+          };
+
+          if (draft) {
+            await supabase
+              .from('intake_responses')
+              .update({
+                responses: { ...(draft.responses || {}), ...baseResponses },
+                generated_path: errorPath,
+              })
+              .eq('id', draft.id)
+              .eq('user_id', userId);
+          } else {
+            await supabase.from('intake_responses').insert({
+              user_id: userId,
+              responses: baseResponses,
+              generated_path: errorPath,
+            });
+          }
         } catch (dbErr) {
           console.error('Failed to write error state to DB:', dbErr);
         }
