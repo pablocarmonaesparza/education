@@ -22,9 +22,9 @@ export default function Home() {
       <Navbar />
       <StructuredData />
       <NewHeroSection />
-      {/* Viejas secciones escondidas — el landing nuevo es Hero → ProjectInput → Pricing → FAQ */}
+      {/* Secciones archivadas — landing actual: Hero → Pricing → FAQ. */}
       {/* <HowItWorksSection /> */}
-      <ProjectInputSection />
+      {/* <ProjectInputSection /> */}
       {/* <AvailableCoursesSection /> */}
       <PricingSection />
       <FAQSection />
