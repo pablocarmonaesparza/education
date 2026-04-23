@@ -36,10 +36,10 @@
 
 | Token              | Valor                                                              |
 | ------------------ | ------------------------------------------------------------------ |
-| `depthBase`        | `border-4 border-b-8 active:border-b-4 active:mt-[4px] ...`       |
-| `depthStructure`   | `border-4 border-b-8 transition-all duration-150` (sin active)     |
-| `depthActiveGroup` | `group-active:border-b-4 group-active:mt-[4px]`                   |
-| `depthBottomOnly`  | `border-b-8 active:border-b-0 active:mt-1 ...` (landing CTAs)     |
+| `depthBase`        | `border-2 border-b-4 active:border-b-2 active:mt-[2px] ...`       |
+| `depthStructure`   | `border-2 border-b-4 transition-all duration-150` (sin active)     |
+| `depthActiveGroup` | `group-active:border-b-2 group-active:mt-[2px]`                   |
+| `depthBottomOnly`  | `border-b-4 active:border-b-0 active:mt-[4px] ...` (landing CTAs) |
 
 ### Botones (constantes)
 
@@ -73,20 +73,31 @@ Solo usar estos colores. Nunca inventar tonos ni usar otros hex.
 
 ## Tipografia
 
-| Nivel     | Componente    | Size       | Weight      | Case       | Tag por defecto |
-| --------- | ------------- | ---------- | ----------- | ---------- | --------------- |
-| title     | `<Title>`     | `text-2xl` | extrabold   | lowercase  | `h1`            |
-| subtitle  | `<Subtitle>`  | `text-lg`  | bold        | lowercase  | `h2`            |
-| headline  | `<Headline>`  | `text-sm`  | bold        | UPPERCASE  | `h3`            |
-| body      | `<Body>`      | `text-base`| normal      | normal     | `p`             |
-| caption   | `<Caption>`   | `text-xs`  | normal      | normal     | `p`             |
+| Nivel     | Componente    | Size                                 | Weight      | Case       | Tag por defecto |
+| --------- | ------------- | ------------------------------------ | ----------- | ---------- | --------------- |
+| display   | `<Display>`   | `text-4xl md:text-5xl lg:text-6xl`   | extrabold   | lowercase  | `h1`            |
+| title     | `<Title>`     | `text-2xl`                           | extrabold   | lowercase  | `h1`            |
+| subtitle  | `<Subtitle>`  | `text-lg`                            | bold        | lowercase  | `h2`            |
+| headline  | `<Headline>`  | `text-sm`                            | bold        | UPPERCASE  | `h3`            |
+| body      | `<Body>`      | `text-base`                          | normal      | normal     | `p`             |
+| caption   | `<Caption>`   | `text-xs`                            | normal      | normal     | `p`             |
 
 **Fuente:** Darker Grotesque (headings), Inter (body heredado del layout).
 **Regla:** Titulos y subtitulos siempre en minusculas, excepto nombres propios.
 
-```tsx
-import { Title, Subtitle, Headline, Body, Caption } from '@/components/ui/Typography';
+**Cuándo usar cada uno:**
+- `<Display>` → hero de página (landing, maintenance, error fullscreen).
+- `<Title>` → título de card, sección, modal o cualquier bloque interno.
+- `<Subtitle>` → bajada de display/title.
+- `<Headline>` → micro-encabezado tipo "SECCIÓN" en uppercase.
+- `<Body>` / `<Caption>` → párrafo y secundario.
 
+**Nunca** escribir `<h1 className="text-4xl ...">` para un hero — usar `<Display>`. Esto evita la divergencia que tenía landing/dashboard antes.
+
+```tsx
+import { Display, Title, Subtitle, Headline, Body, Caption } from '@/components/ui/Typography';
+
+<Display>itera vuelve pronto</Display>
 <Title>curso personalizado para tu proyecto</Title>
 <Subtitle>videos a medida con ia</Subtitle>
 <Headline>seccion</Headline>
@@ -288,8 +299,8 @@ import VerticalScroll from '@/components/shared/VerticalScroll';
 Toda la UI interactiva usa el sistema de depth:
 
 ```
-Estado normal:   border-4 (todos lados) + border-b-8 (sombra 3D)
-Estado activo:   border-b-4 (colapsa) + mt-[4px] (empuja hacia abajo)
+Estado normal:   border-2 (todos lados) + border-b-4 (sombra 3D)
+Estado activo:   border-b-2 (colapsa) + mt-[2px] (empuja hacia abajo)
 Transicion:      transition-all duration-150
 ```
 
@@ -298,7 +309,7 @@ Transicion:      transition-all duration-150
 - **Custom elements:** Importar `depthBase` de `lib/design-tokens.ts`.
 - **Dentro de `group`:** Usar `depthStructure` + `depthActiveGroup`.
 
-**Nunca escribir `border-4 border-b-8 active:border-b-4 active:mt-[4px]` manualmente.** Siempre usar el componente o el token.
+**Nunca escribir `border-2 border-b-4 active:border-b-2 active:mt-[2px]` manualmente.** Siempre usar el componente o el token.
 
 ---
 

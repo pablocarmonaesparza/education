@@ -24,7 +24,7 @@ export { default as Divider } from './Divider';
 export type { DividerProps } from './Divider';
 
 // Typography
-export { default as Typography, Title, Subtitle, Headline, Body, Caption } from './Typography';
+export { default as Typography, Display, Title, Subtitle, Headline, Body, Caption } from './Typography';
 export type { TypographyProps, TypographyLevel } from './Typography';
 
 // ProgressBar

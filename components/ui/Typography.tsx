@@ -6,16 +6,28 @@ import React from 'react';
    Design-system Typography
    Font: Darker Grotesque (inherited from layout)
 
-   Level       Size          Weight         Case         Color (light)   Color (dark)
-   ─────────   ───────────   ────────────   ──────────   ─────────────   ────────────
-   title       text-2xl      extrabold      lowercase    #4b4b4b         white
-   subtitle    text-lg       bold           lowercase    #4b4b4b         gray-300
-   headline    text-sm       bold           UPPERCASE    #4b4b4b         gray-300
-   body        text-base     normal         normal       #4b4b4b         gray-300
-   caption     text-xs       normal         normal       #777777         gray-400
+   Level       Size                                Weight       Case         Color (light)   Color (dark)
+   ─────────   ─────────────────────────────────   ──────────   ──────────   ─────────────   ────────────
+   display     text-4xl md:text-5xl lg:text-6xl   extrabold    lowercase    #4b4b4b         white
+   title       text-2xl                            extrabold    lowercase    #4b4b4b         white
+   subtitle    text-lg                             bold         lowercase    #4b4b4b         gray-300
+   headline    text-sm                             bold         UPPERCASE    #4b4b4b         gray-300
+   body        text-base                           normal       normal       #4b4b4b         gray-300
+   caption     text-xs                             normal       normal       #777777         gray-400
+   ───────────────────────────────────────────────────────────
+
+   Cuándo usar cada uno:
+   - display  → hero de página (landing, maintenance, error fullscreen).
+   - title    → título de card, sección, modal, bloque interno.
+   - subtitle → bajada de display/title.
+   - headline → micro-encabezado tipo "SECCIÓN" en uppercase.
+   - body     → párrafo estándar.
+   - caption  → pie/secundario.
    ─────────────────────────────────────────────────────────── */
 
 const levels = {
+  display:
+    'text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white leading-tight normal-case',
   title:
     'text-2xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white leading-tight normal-case',
   subtitle:
@@ -31,7 +43,8 @@ const levels = {
 export type TypographyLevel = keyof typeof levels;
 
 /** Default HTML tag for each level. */
-const defaultTags: Record<TypographyLevel, keyof JSX.IntrinsicElements> = {
+const defaultTags: Record<TypographyLevel, keyof React.JSX.IntrinsicElements> = {
+  display: 'h1',
   title: 'h1',
   subtitle: 'h2',
   headline: 'h3',
@@ -42,7 +55,7 @@ const defaultTags: Record<TypographyLevel, keyof JSX.IntrinsicElements> = {
 export interface TypographyProps {
   level?: TypographyLevel;
   /** Override the rendered HTML element. */
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
   className?: string;
   children?: React.ReactNode;
 }
@@ -51,6 +64,7 @@ export interface TypographyProps {
  * Design-system text component.
  *
  * ```tsx
+ * <Typography level="display">itera vuelve pronto</Typography>
  * <Typography level="title">curso personalizado para tu proyecto</Typography>
  * <Typography level="subtitle">Videos a medida con IA</Typography>
  * <Typography level="headline">Sección</Typography>
@@ -72,6 +86,10 @@ export default function Typography({
 }
 
 /* ── Named convenience exports ── */
+
+export function Display(props: Omit<TypographyProps, 'level'>) {
+  return <Typography level="display" {...props} />;
+}
 
 export function Title(props: Omit<TypographyProps, 'level'>) {
   return <Typography level="title" {...props} />;

@@ -29,12 +29,6 @@ export default function NewHeroSection() {
     setShowAuthModal(true);
   };
 
-  const handleHowItWorks = () => {
-    document
-      .getElementById('how-it-works')
-      ?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section
       id="hero"
@@ -71,12 +65,14 @@ export default function NewHeroSection() {
           Más de 100 lecciones de AI, Automatización, Vibe Coding y mucho más
         </p>
 
-        {/* CTAs */}
+        {/* CTA — single primary action. Secondary CTA removed after
+            hiding #how-it-works; the bottom chevron to #pricing handles
+            the "learn more" affordance. */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.25 }}
-          className="mt-9 flex gap-3 justify-center pointer-events-auto max-md:flex-col max-md:items-stretch max-md:w-full max-md:max-w-xs"
+          className="mt-9 flex justify-center pointer-events-auto max-md:w-full max-md:max-w-xs"
         >
           <Button
             variant="primary"
@@ -86,15 +82,6 @@ export default function NewHeroSection() {
             className="px-6 py-3 text-sm max-md:w-full max-md:min-h-[48px]"
           >
             empezar gratis
-          </Button>
-          <Button
-            variant="outline"
-            depth="full"
-            size="none"
-            onClick={handleHowItWorks}
-            className="px-6 py-3 text-sm max-md:w-full max-md:min-h-[48px]"
-          >
-            cómo funciona →
           </Button>
         </motion.div>
       </motion.div>
