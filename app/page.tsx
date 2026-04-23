@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import NewHeroSection from "@/components/landing/NewHeroSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
+import ProjectInputSection from "@/components/landing/ProjectInputSection";
 import AvailableCoursesSection from "@/components/landing/AvailableCoursesSection";
 import PricingSection from "@/components/landing/PricingSection";
 import FAQSection from "@/components/landing/FAQSection";
@@ -21,8 +22,10 @@ export default function Home() {
       <Navbar />
       <StructuredData />
       <NewHeroSection />
-      <HowItWorksSection />
-      <AvailableCoursesSection />
+      {/* Viejas secciones escondidas — el landing nuevo es Hero → ProjectInput → Pricing → FAQ */}
+      {/* <HowItWorksSection /> */}
+      <ProjectInputSection />
+      {/* <AvailableCoursesSection /> */}
       <PricingSection />
       <FAQSection />
       <Footer />
