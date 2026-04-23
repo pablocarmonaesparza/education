@@ -192,6 +192,26 @@ function DashboardPageContent() {
   const [isVideoPlayerClosing, setIsVideoPlayerClosing] = useState(false);
   const [chatWidth, setChatWidth] = useState(256);
   const [isMobile, setIsMobile] = useState(false);
+  // Width REAL del container del path de lecciones, medida en runtime
+  // por ResizeObserver. Se usa para decidir si activar el zigzag —
+  // una decisión basada en viewport NO basta porque el tutor panel es
+  // resizable: en 1024px viewport con el chat ancho, el container del
+  // path puede ser < 490px y el zigzag de amplitud 120 sacaría las
+  // cards. Medir directo es a prueba de chatWidth, sidebar collapse,
+  // o cualquier cambio de layout futuro.
+  const [pathContainerWidth, setPathContainerWidth] = useState(0);
+  // Callback ref instead of useRef so we measure on commit (not on a
+  // later useEffect tick) — useRef + useEffect was firing while the
+  // ref was still null on this dashboard's render order, leaving
+  // pathContainerWidth at 0 and the zigzag permanently disabled.
+  // The latest container that mounts wins (all phases share width).
+  const pathContainerEl = useRef<HTMLDivElement | null>(null);
+  const setPathContainerRef = useCallback((el: HTMLDivElement | null) => {
+    pathContainerEl.current = el;
+    if (el) {
+      setPathContainerWidth(Math.round(el.clientWidth));
+    }
+  }, []);
   const [showCreateCourseModal, setShowCreateCourseModal] = useState(false);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   // Level-up celebration: el trigger Postgres recalcula `level` al completar
@@ -270,6 +290,35 @@ function DashboardPageContent() {
     mq.addEventListener('change', h);
     return () => mq.removeEventListener('change', h);
   }, []);
+
+  useEffect(() => {
+    const remeasure = () => {
+      const el = pathContainerEl.current;
+      if (!el) return;
+      setPathContainerWidth(Math.round(el.clientWidth));
+    };
+
+    // Initial sample + window resize backup.
+    remeasure();
+    window.addEventListener('resize', remeasure);
+
+    // ResizeObserver catches container width changes that don't fire a
+    // window resize event — the resizable tutor panel animates
+    // marginRight over 150ms in the dashboard layout, so a chatWidth
+    // state update on its own would measure pre-animation. RO ticks on
+    // every frame of the animation and lands the final width.
+    let ro: ResizeObserver | null = null;
+    const el = pathContainerEl.current;
+    if (el && typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => remeasure());
+      ro.observe(el);
+    }
+
+    return () => {
+      window.removeEventListener('resize', remeasure);
+      if (ro) ro.disconnect();
+    };
+  }, [chatWidth, isMobile, videos.length]);
 
   useEffect(() => {
     async function fetchUserData() {
@@ -1231,51 +1280,75 @@ function DashboardPageContent() {
                 </div>
                 
                 {/* Videos in this phase — Duolingo-style serpentine path.
-                    Mobile: container is max-w-[220px] (card width), no offsets.
-                    Desktop: container widens to max-w-2xl and each card slides
-                    horizontally per a low-frequency sine wave so the eye
-                    follows a serpentine, NOT a high-frequency zigzag. The
-                    `isMobile` flag (set by the dashboard's resize listener)
-                    is used to gate the offset to desktop only — applying the
-                    transform unconditionally would push cards off-screen on
-                    narrow viewports. */}
-                <div className="w-full max-w-[220px] md:max-w-2xl mx-auto px-2 sm:px-0">
+                    Container: max-w-[220px] (card width) below lg, widens to
+                    max-w-2xl at lg+. Zigzag offset is gated on the ACTUAL
+                    measured container width (pathContainerWidth) instead
+                    of viewport — that's the only way to handle the
+                    resizable tutor panel: a wide chat on a 1024px
+                    viewport could push the path container below the safe
+                    width even though the viewport "looks like desktop".
+                    Min safe width = card (220) + 2*amplitude (240) +
+                    margin (30) = 490px. Below that, no offset. */}
+                <div
+                  ref={setPathContainerRef}
+                  className="w-full max-w-[220px] lg:max-w-2xl mx-auto px-2 sm:px-0"
+                >
                   {phaseData.videos.map((video, idx) => {
                     const isLast = idx === phaseData.videos.length - 1;
                     // Serpentine fórmula: low-freq sine. Period = 8 lessons
                     // means the wave returns to center every 8 lessons (so a
                     // typical 10-12 lesson section traces ~1.5 full cycles).
-                    // Amplitude 120px keeps the card visible even in the
-                    // narrowest md viewport (~512px content area at 1024px
-                    // viewport with sidebar+chat reserved): card half = 110,
-                    // offset 120 → max card edge 230 from center, fits in
-                    // half-width 256.
                     const ZIGZAG_PERIOD = 8;
                     const ZIGZAG_AMPLITUDE = 120;
+                    const ZIGZAG_MIN_CONTAINER_W =
+                      220 + 2 * ZIGZAG_AMPLITUDE + 30;
+                    const hasZigzagSpace =
+                      pathContainerWidth >= ZIGZAG_MIN_CONTAINER_W;
                     const offsetFor = (i: number) =>
-                      isMobile
-                        ? 0
-                        : Math.sin((i * Math.PI) / ZIGZAG_PERIOD) * ZIGZAG_AMPLITUDE;
+                      hasZigzagSpace
+                        ? Math.sin((i * Math.PI) / ZIGZAG_PERIOD) * ZIGZAG_AMPLITUDE
+                        : 0;
                     const offset = offsetFor(idx);
                     const nextOffset = isLast ? 0 : offsetFor(idx + 1);
                     return (
                       <div key={video.id}>
-                        <div
-                          data-video-id={video.id}
-                          // translateX (transform) instead of margin so the
-                          // card's hit-target and depth shadow don't reflow
-                          // when the offset changes between viewport sizes.
-                          style={{ transform: `translateX(${offset}px)` }}
-                          className="transition-transform duration-200"
-                        >
-                          <LessonItem
-                            lessonNumber={idx + 1}
-                            totalLessons={phaseData.videos.length}
-                            title={video.title}
-                            isCompleted={video.isCompleted}
-                            isCurrent={video.isCurrent}
-                            onClick={() => handleVideoSelect(video)}
-                          />
+                        {/* Outer wrapper centers the card horizontally
+                            inside the (wider) container so the inner
+                            wrapper's translateX moves the card relative
+                            to the container CENTER, not the container
+                            LEFT edge. Without this, the wrapper stretched
+                            to 100% width and translateX(0) anchored cards
+                            to the left edge — the visible bug Pablo
+                            reported as "todo descuadrado". */}
+                        <div className="flex justify-center">
+                          <div
+                            data-video-id={video.id}
+                            // translateX (transform) instead of margin so
+                            // the card's hit-target and depth shadow don't
+                            // reflow when the offset changes between
+                            // viewport sizes. data-video-id stays on this
+                            // tight wrapper so the scroll observer measures
+                            // the actual card, not the centering parent.
+                            //
+                            // Inline transform deliberately, with NO Tailwind
+                            // transform/transition utilities: those add
+                            // `transform: translate3d(var(--tw-translate-x))`
+                            // via CSS that sobrescribe el inline style and
+                            // we'd lose the offset entirely (computed
+                            // transform = identity). Tradeoff: no animation
+                            // between offsets — fine because each card has a
+                            // single fixed offset by idx, no transitions.
+                            style={{ transform: `translateX(${offset}px)` }}
+                          >
+                            <LessonItem
+                              lessonNumber={idx + 1}
+                              totalLessons={phaseData.videos.length}
+                              title={video.title}
+                              isCompleted={video.isCompleted}
+                              isCurrent={video.isCurrent}
+                              onClick={() => handleVideoSelect(video)}
+                            />
+                          </div>
                         </div>
                         {!isLast && (
                           <PathConnector
