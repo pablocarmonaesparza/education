@@ -1,13 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
-
-type Plan = 'monthly' | 'yearly';
-
-const PRICE_BY_PLAN: Record<Plan, string | undefined> = {
-  monthly: process.env.STRIPE_PRICE_MONTHLY,
-  yearly: process.env.STRIPE_PRICE_YEARLY,
-};
+import { stripe, STRIPE_PRICES, type BillingPlan } from '@/lib/stripe/config';
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,25 +10,46 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'no autenticado' }, { status: 401 });
     }
 
-    const { plan } = (await req.json()) as { plan?: Plan };
+    const { plan } = (await req.json()) as { plan?: BillingPlan };
     if (plan !== 'monthly' && plan !== 'yearly') {
       return NextResponse.json({ error: 'plan inválido' }, { status: 400 });
     }
 
-    const priceId = PRICE_BY_PLAN[plan];
+    const priceId = STRIPE_PRICES[plan];
     if (!priceId) {
       return NextResponse.json({ error: 'price id no configurado' }, { status: 500 });
     }
 
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from('users')
-      .select('stripe_customer_id')
+      .select('stripe_customer_id, subscription_active, subscription_status')
       .eq('id', user.id)
       .maybeSingle();
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: '2025-11-17.clover',
-    });
+    // Fail-closed: si Supabase falla (RLS, red, tabla), no creamos checkout.
+    // Prefiero error visible que crear un segundo customer a la chica.
+    if (profileError) {
+      console.error('[create-checkout] profile select failed:', profileError.message);
+      return NextResponse.json(
+        { error: 'no pudimos validar tu cuenta — reintenta en unos segundos.' },
+        { status: 503 }
+      );
+    }
+
+    // Guard: si el user ya tiene una suscripción activa, no dejamos abrir
+    // un segundo checkout. Para cambiar plan (mensual ↔ anual) se usa el
+    // Customer Portal desde /dashboard/perfil. Esto también previene que
+    // dos tabs o un doble-click creen dos customers/suscripciones.
+    if (profile?.subscription_active) {
+      return NextResponse.json(
+        {
+          error: 'ya_tienes_suscripcion_activa',
+          message:
+            'ya tienes una suscripción activa — cambia de plan desde "mi suscripción" en tu perfil.',
+        },
+        { status: 409 }
+      );
+    }
 
     const origin = req.nextUrl.origin;
     const session = await stripe.checkout.sessions.create({

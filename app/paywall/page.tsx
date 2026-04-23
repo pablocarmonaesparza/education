@@ -1,28 +1,88 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import { Spinner } from '@/components/ui';
+import { createClient } from '@/lib/supabase/client';
+import { loadLatestDraftForRehydrate } from '@/lib/onboarding/persistIntake';
 
 type Plan = 'monthly' | 'yearly';
 
 const MONTHLY_ANNUALIZED = 19 * 12;
 const YEARLY_SAVINGS = MONTHLY_ANNUALIZED - 199;
 
-export default function PaywallPage() {
+function PaywallContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const canceled = searchParams.get('canceled') === '1';
+  const planFromQuery = searchParams.get('plan');
   const [loadingPlan, setLoadingPlan] = useState<Plan | 'free' | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [preferredPlan, setPreferredPlan] = useState<Plan | null>(null);
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
     const stored = sessionStorage.getItem('preferredPlan');
-    if (stored === 'monthly' || stored === 'yearly') {
-      setPreferredPlan(stored);
-    }
-  }, []);
+    const preferred =
+      planFromQuery === 'monthly' || planFromQuery === 'yearly'
+        ? planFromQuery
+        : stored === 'monthly' || stored === 'yearly'
+          ? (stored as Plan)
+          : null;
+    if (preferred) setPreferredPlan(preferred);
+
+    // Guard: user autenticado + sin subscription activa + con projectIdea.
+    // Orden importante:
+    //   1. auth
+    //   2. subscription_active → si ya paga, mandar a /courseCreation (el
+    //      propio /courseCreation redirige a /dashboard si ya está generado).
+    //      Esto evita rebotes indeseados cuando no hay draft null pero el
+    //      user ya está suscrito.
+    //   3. rehidratar draft desde DB si sessionStorage se perdió.
+    const check = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace('/auth/login?redirectedFrom=/paywall');
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('users')
+        .select('subscription_active')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (profile?.subscription_active) {
+        router.replace('/courseCreation');
+        return;
+      }
+
+      if (!sessionStorage.getItem('projectIdea')) {
+        const draft = await loadLatestDraftForRehydrate(supabase, user.id);
+        if (!draft?.projectIdea) {
+          router.replace('/projectDescription');
+          return;
+        }
+        sessionStorage.setItem('intakeResponseId', draft.id);
+        sessionStorage.setItem('projectIdea', draft.projectIdea);
+        if (draft.courseMode === 'full') sessionStorage.setItem('courseMode', 'full');
+        else sessionStorage.removeItem('courseMode');
+        if (draft.questionnaire) {
+          sessionStorage.setItem(
+            'projectContext',
+            JSON.stringify(draft.questionnaire)
+          );
+        }
+      }
+
+      setIsChecking(false);
+    };
+    void check();
+  }, [router, planFromQuery]);
 
   const startCheckout = async (plan: Plan) => {
     setError(null);
@@ -78,7 +138,7 @@ export default function PaywallPage() {
         'cancela cuando quieras',
       ],
       cta: 'empezar mensual',
-      popular: preferredPlan ? preferredPlan === 'monthly' : true,
+      popular: preferredPlan ? preferredPlan === 'monthly' : preferredPlan === null,
       onClick: () => startCheckout('monthly'),
     },
     {
@@ -99,6 +159,14 @@ export default function PaywallPage() {
     },
   ];
 
+  if (isChecking) {
+    return (
+      <main className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+        <Spinner />
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-white dark:bg-gray-900 flex flex-col items-center justify-center py-12 px-4">
       <div className="max-w-6xl w-full">
@@ -115,6 +183,14 @@ export default function PaywallPage() {
             elige cómo quieres aprender. puedes cambiar de plan cuando quieras.
           </p>
         </motion.div>
+
+        {canceled && (
+          <div className="mb-6 mx-auto max-w-md p-4 bg-yellow-50 dark:bg-yellow-900/30 border-2 border-yellow-300 dark:border-yellow-700 rounded-2xl text-center">
+            <p className="text-sm text-yellow-800 dark:text-yellow-300 font-medium">
+              cancelaste el pago. puedes reintentar o continuar con el plan gratis.
+            </p>
+          </div>
+        )}
 
         <div className="grid lg:grid-cols-3 gap-4 md:gap-6 items-stretch">
           {tiers.map((tier, index) => (
@@ -211,7 +287,25 @@ export default function PaywallPage() {
         {error && (
           <p className="text-center text-sm text-red-500 mt-6">{error}</p>
         )}
+
+        <p className="text-center text-xs text-ink-muted dark:text-gray-500 mt-8">
+          pagos procesados por Stripe. puedes cancelar en cualquier momento.
+        </p>
       </div>
     </main>
+  );
+}
+
+export default function PaywallPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+          <Spinner />
+        </main>
+      }
+    >
+      <PaywallContent />
+    </Suspense>
   );
 }
