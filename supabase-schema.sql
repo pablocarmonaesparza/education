@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS public.users (
   name TEXT,
   tier TEXT CHECK (tier IN ('basic', 'personalized', 'premium')) DEFAULT 'basic',
   stripe_customer_id TEXT,
-  mercadopago_customer_id TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -62,7 +61,7 @@ CREATE TABLE IF NOT EXISTS public.payments (
   user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
   amount INTEGER NOT NULL, -- Amount in cents
   currency TEXT DEFAULT 'USD',
-  provider TEXT CHECK (provider IN ('stripe', 'mercadopago')) NOT NULL,
+  provider TEXT CHECK (provider = 'stripe') NOT NULL,
   provider_payment_id TEXT, -- External payment ID
   status TEXT CHECK (status IN ('pending', 'succeeded', 'failed', 'refunded')) DEFAULT 'pending',
   tier TEXT CHECK (tier IN ('basic', 'personalized', 'premium')),
