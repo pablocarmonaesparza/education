@@ -564,12 +564,12 @@ export default function ComponentesPage() {
             Navbar (landing)
           </h2>
           <p className="text-sm text-ink dark:text-gray-300 mb-4">
-            Logo | links centrados (Cómo Funciona, Cursos, Precios, FAQ) | CTA. Scrolled: <code className="font-mono text-xs">backdrop-blur bg-white/50 dark:bg-gray-900/50</code>. Indicador pill real: <code className="font-mono text-xs">absolute top-0 bottom-0 my-auto h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-400 dark:border-gray-600</code>. Links: <code className="font-mono text-xs">text-ink dark:text-white</code> activo, <code className="font-mono text-xs">text-gray-600 dark:text-gray-300</code> inactivo.
+            Logo | links centrados (Cómo Funciona, Cursos, Precios, FAQ) | CTA. Scrolled: <code className="font-mono text-xs">backdrop-blur bg-white/50 dark:bg-gray-900/50</code>. Indicador pill real: <code className="font-mono text-xs">absolute top-0 bottom-0 my-auto h-[40px] bg-gray-200 dark:bg-gray-700 rounded-xl border-2 border-b-4 border-gray-400 dark:border-gray-600</code>. Links: <code className="font-mono text-xs">text-ink dark:text-white</code> activo, <code className="font-mono text-xs">text-gray-600 dark:text-gray-300</code> inactivo.
           </p>
           <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-gray-100 dark:bg-gray-800">
             <div className="h-6 w-20 rounded bg-gray-300 dark:bg-gray-600" />
             <div className="relative hidden lg:flex items-center gap-3">
-              <div className="absolute top-0 bottom-0 my-auto h-9 bg-gray-200 dark:bg-gray-700 rounded-2xl border-b-4 border-gray-400 dark:border-gray-600 z-0 left-0 w-[76px]" />
+              <div className={`absolute top-0 bottom-0 my-auto h-[40px] bg-gray-200 dark:bg-gray-700 rounded-xl ${depth.border} ${depth.bottom} border-gray-400 dark:border-gray-600 border-b-gray-400 dark:border-b-gray-600 z-0 left-0 w-[76px]`} />
               <span className="relative z-10 px-4 py-2 text-sm font-bold uppercase tracking-wide text-ink dark:text-white">Activo</span>
               <span className="relative z-10 px-4 py-2 text-sm font-bold uppercase tracking-wide text-gray-600 dark:text-gray-300">Link 2</span>
             </div>
