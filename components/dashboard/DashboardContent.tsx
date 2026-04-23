@@ -83,24 +83,24 @@ export default function DashboardContent(props: DashboardContentProps) {
   const projectTitle = getProjectTitle(props.userProject);
 
   return (
-    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-[#4b4b4b] dark:text-white">
+    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-ink dark:text-white">
       <div className="max-w-7xl mx-auto space-y-8">
 
         {/* Header Section - Welcome & Context */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
+            <h1 className="text-3xl font-extrabold text-ink dark:text-white mb-2 tracking-tight">
               hola, {props.userName.split(' ')[0].toLowerCase()}
             </h1>
-            <p className="text-[#777777] dark:text-gray-400">
+            <p className="text-ink-muted dark:text-gray-400">
               {props.streak && props.streak > 0
                 ? `¡Estás en una racha de ${props.streak} días! Sigue así.`
                 : 'Listo para continuar tu aprendizaje hoy?'}
             </p>
           </div>
           <div className="text-right hidden md:block">
-            <p className="text-sm text-[#777777] dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Tu Proyecto</p>
-            <p className="font-extrabold text-lg text-[#1472FF]">
+            <p className="text-sm text-ink-muted dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Tu Proyecto</p>
+            <p className="font-extrabold text-lg text-primary">
               {projectTitle}
             </p>
           </div>
@@ -119,10 +119,10 @@ export default function DashboardContent(props: DashboardContentProps) {
                     <Tag variant="primary" className="mb-3 text-xs font-bold">
                       Continuar donde lo dejaste
                     </Tag>
-                    <h2 className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
+                    <h2 className="text-2xl font-extrabold text-ink dark:text-white mb-2 tracking-tight">
                       {currentVideoData?.description || 'Siguiente lección'}
                     </h2>
-                    <p className="text-[#777777] dark:text-gray-400">
+                    <p className="text-ink-muted dark:text-gray-400">
                       {currentPhaseData?.phase_name ? `Fase ${props.currentPhase}: ${currentPhaseData.phase_name}` : 'Cargando ruta...'}
                     </p>
                   </div>
@@ -130,21 +130,21 @@ export default function DashboardContent(props: DashboardContentProps) {
 
                 <CardFlat className="p-4 sm:p-6 mb-6 bg-gray-50 dark:bg-gray-800 border-gray-100 dark:border-gray-900 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
                    {/* Video Thumbnail Placeholder */}
-                  <div className="w-full sm:w-48 h-28 bg-[#1472FF]/10 rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
+                  <div className="w-full sm:w-48 h-28 bg-primary/10 rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
                     <div className="absolute inset-0 bg-black/5 group-hover:bg-black/10 transition-colors" />
-                    <svg className="w-12 h-12 text-[#1472FF] opacity-80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-12 h-12 text-primary opacity-80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M8 5v14l11-7z" />
                     </svg>
                   </div>
 
                   <div className="flex-1">
-                    <h3 className="font-bold text-[#4b4b4b] dark:text-white mb-2 line-clamp-1">
+                    <h3 className="font-bold text-ink dark:text-white mb-2 line-clamp-1">
                       {currentVideoData?.section || 'Lección actual'}
                     </h3>
-                    <p className="text-sm text-[#777777] dark:text-gray-400 mb-4 line-clamp-2">
+                    <p className="text-sm text-ink-muted dark:text-gray-400 mb-4 line-clamp-2">
                       {currentVideoData?.why_relevant || 'Aprende los conceptos clave para avanzar en tu proyecto.'}
                     </p>
-                    <div className="flex items-center gap-4 text-sm text-[#777777] dark:text-gray-400 font-medium">
+                    <div className="flex items-center gap-4 text-sm text-ink-muted dark:text-gray-400 font-medium">
                        <span className="flex items-center gap-1">
                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                          {currentVideoData?.duration || '5 min'}
@@ -171,7 +171,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                     size="lg"
                     rounded2xl
                     href="/dashboard/my-path"
-                    className="flex-1 sm:flex-none text-[#1472FF] border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10"
+                    className="flex-1 sm:flex-none text-primary border-primary hover:bg-primary/5 dark:hover:bg-primary/10"
                   >
                     VER RUTA COMPLETA
                   </Button>
@@ -184,8 +184,8 @@ export default function DashboardContent(props: DashboardContentProps) {
               {/* Skills Card */}
               <CardFlat className="p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
-                  <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                  <h3 className="font-bold text-[#4b4b4b] dark:text-white">Habilidades en Desarrollo</h3>
+                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                  <h3 className="font-bold text-ink dark:text-white">Habilidades en Desarrollo</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {props.skills && props.skills.length > 0 ? (
@@ -193,7 +193,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                       <Tag key={i} variant="primary">{skill}</Tag>
                     ))
                   ) : (
-                    <p className="text-sm text-[#777777] dark:text-gray-400">Se definirán en tu ruta</p>
+                    <p className="text-sm text-ink-muted dark:text-gray-400">Se definirán en tu ruta</p>
                   )}
                 </div>
               </CardFlat>
@@ -201,8 +201,8 @@ export default function DashboardContent(props: DashboardContentProps) {
               {/* Tools Card */}
               <CardFlat className="p-6 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
-                  <svg className="w-5 h-5 text-[#1472FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                  <h3 className="font-bold text-[#4b4b4b] dark:text-white">Stack Tecnológico</h3>
+                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                  <h3 className="font-bold text-ink dark:text-white">Stack Tecnológico</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {props.tools && props.tools.length > 0 ? (
@@ -210,7 +210,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                       <Tag key={i} variant="primary">{tool}</Tag>
                     ))
                   ) : (
-                    <p className="text-sm text-[#777777] dark:text-gray-400">Se definirán en tu ruta</p>
+                    <p className="text-sm text-ink-muted dark:text-gray-400">Se definirán en tu ruta</p>
                   )}
                 </div>
               </CardFlat>
@@ -223,16 +223,16 @@ export default function DashboardContent(props: DashboardContentProps) {
 
             {/* Overall Progress Card */}
             <CardFlat className="p-6 shadow-sm">
-              <h3 className="font-extrabold text-[#4b4b4b] dark:text-white mb-6 flex items-center justify-between tracking-tight">
+              <h3 className="font-extrabold text-ink dark:text-white mb-6 flex items-center justify-between tracking-tight">
                 tu progreso
-                <span className="text-2xl font-extrabold text-[#1472FF]">
+                <span className="text-2xl font-extrabold text-primary">
                   {props.overallProgress}%
                 </span>
               </h3>
 
               <div className="relative pt-1 mb-6">
                 <ProgressBar value={props.overallProgress} size="lg" color="primary" durationMs={1000} className="mb-2" />
-                <div className="flex justify-between text-xs text-[#777777] dark:text-gray-400 font-medium">
+                <div className="flex justify-between text-xs text-ink-muted dark:text-gray-400 font-medium">
                   <span>Inicio</span>
                   <span>Meta: 100%</span>
                 </div>
@@ -240,19 +240,19 @@ export default function DashboardContent(props: DashboardContentProps) {
 
               <div className="space-y-4">
                 <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-2xl">
-                  <span className="text-sm text-[#777777] dark:text-gray-400">Videos completados</span>
-                  <span className="font-bold text-[#4b4b4b] dark:text-white">{props.completedVideos} <span className="text-[#777777] dark:text-gray-400 font-normal">/ {props.totalVideos}</span></span>
+                  <span className="text-sm text-ink-muted dark:text-gray-400">Videos completados</span>
+                  <span className="font-bold text-ink dark:text-white">{props.completedVideos} <span className="text-ink-muted dark:text-gray-400 font-normal">/ {props.totalVideos}</span></span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-2xl">
-                  <span className="text-sm text-[#777777] dark:text-gray-400">Fases</span>
-                  <span className="font-bold text-[#4b4b4b] dark:text-white">{props.phasesCompleted} <span className="text-[#777777] dark:text-gray-400 font-normal">/ {props.totalPhases}</span></span>
+                  <span className="text-sm text-ink-muted dark:text-gray-400">Fases</span>
+                  <span className="font-bold text-ink dark:text-white">{props.phasesCompleted} <span className="text-ink-muted dark:text-gray-400 font-normal">/ {props.totalPhases}</span></span>
                 </div>
               </div>
             </CardFlat>
 
             {/* Activity Stats */}
             <CardFlat className="p-6 shadow-sm">
-              <h3 className="font-extrabold text-[#4b4b4b] dark:text-white mb-4 tracking-tight">tu actividad</h3>
+              <h3 className="font-extrabold text-ink dark:text-white mb-4 tracking-tight">tu actividad</h3>
               <div className="grid grid-cols-2 gap-4">
                 <StatCard icon="🔥" value={String(props.streak || 0)} label="Racha Días" color="orange" />
                 <StatCard icon="🎯" value={String(props.weeklyProgress || 0)} label="Videos Sem." color="green" />

@@ -12,7 +12,7 @@ export type StatCardColor = 'blue' | 'orange' | 'green' | 'neutral';
 
 const colorStyles: Record<StatCardColor, string> = {
   blue:
-    'bg-[#1472FF]/10 border-2 border-[#1472FF]/30',
+    'bg-primary/10 border-2 border-primary/30',
   orange:
     'bg-orange-50 dark:bg-orange-900/20 border-2 border-orange-200 dark:border-orange-800',
   green:
@@ -52,10 +52,10 @@ export default function StatCard({
       className={`p-4 rounded-2xl text-center ${colorStyles[color]} ${className}`}
     >
       <div className="text-2xl mb-1">{icon}</div>
-      <div className="text-2xl font-extrabold text-[#4b4b4b] dark:text-white">
+      <div className="text-2xl font-extrabold text-ink dark:text-white">
         {value}
       </div>
-      <div className="text-xs text-[#777777] dark:text-gray-400 uppercase font-bold tracking-wide">
+      <div className="text-xs text-ink-muted dark:text-gray-400 uppercase font-bold tracking-wide">
         {label}
       </div>
     </div>

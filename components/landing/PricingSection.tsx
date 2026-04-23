@@ -86,7 +86,7 @@ export default function PricingSection() {
           viewport={{ once: true }}
           className="mb-12 max-md:mb-8"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center text-[#4b4b4b] dark:text-white leading-tight tracking-tight max-md:text-3xl">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center text-ink dark:text-white leading-tight tracking-tight max-md:text-3xl">
             nuestros planes
           </h2>
         </motion.div>
@@ -109,22 +109,22 @@ export default function PricingSection() {
               >
                 {/* Title */}
                 <div className="mb-3">
-                  <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">{tier.name}</h3>
+                  <h3 className="text-3xl md:text-4xl font-extrabold text-ink dark:text-white tracking-tight">{tier.name}</h3>
                 </div>
 
-                <p className="text-[#777777] dark:text-gray-400 text-sm mb-5">{tier.description}</p>
+                <p className="text-ink-muted dark:text-gray-400 text-sm mb-5">{tier.description}</p>
 
                 {/* Pricing */}
                 <div className="mb-4">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl md:text-4xl font-bold text-[#1472FF]">
+                    <span className="text-3xl md:text-4xl font-bold text-primary">
                       {formatPrice(tier.price, tier.period)}
                     </span>
                     {tier.price > 0 && (
-                      <span className="text-[#777777] dark:text-gray-400 text-xs md:text-sm">USD</span>
+                      <span className="text-ink-muted dark:text-gray-400 text-xs md:text-sm">USD</span>
                     )}
                   </div>
-                  <p className="text-xs md:text-sm text-[#777777] dark:text-gray-400 mt-1">
+                  <p className="text-xs md:text-sm text-ink-muted dark:text-gray-400 mt-1">
                     {tier.price === 0 ? "Sin tarjeta de crédito" : "Cancela cuando quieras"}
                   </p>
                 </div>
@@ -134,7 +134,7 @@ export default function PricingSection() {
                   {tier.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <svg
-                        className="w-4 h-4 flex-shrink-0 text-[#22c55e] mt-0.5"
+                        className="w-4 h-4 flex-shrink-0 text-completado mt-0.5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -146,7 +146,7 @@ export default function PricingSection() {
                           d="M5 13l4 4L19 7"
                         />
                       </svg>
-                      <span className="text-xs md:text-sm text-[#4b4b4b] dark:text-gray-300 leading-snug">{feature}</span>
+                      <span className="text-xs md:text-sm text-ink dark:text-gray-300 leading-snug">{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -159,7 +159,7 @@ export default function PricingSection() {
                   rounded2xl
                   onClick={() => handleSelectPlan(tier.id)}
                   className={`w-full py-4 text-sm md:text-base mt-auto ${
-                    !tier.popular ? "text-[#1472FF] border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10" : ""
+                    !tier.popular ? "text-primary border-primary hover:bg-primary/5 dark:hover:bg-primary/10" : ""
                   }`}
                 >
                   {tier.cta}

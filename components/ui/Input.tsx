@@ -6,17 +6,17 @@ import { depth } from '@/lib/design-tokens';
 /* ───────────────────────────────────────────────────────────
    Design-system Input & Textarea
    Depth values come from lib/design-tokens.ts
-   Focus: ring-2 ring-[#1472FF]/20 border-[#1472FF]
+   Focus: ring-2 ring-primary/20 border-primary
    ─────────────────────────────────────────────────────────── */
 
 /* — Variant: default (depth borders, rounded-xl, py-3, text-sm) — */
 const sharedBase =
   'w-full px-4 py-3 rounded-xl text-sm transition-all ' +
-  'focus:outline-none focus:ring-2 focus:ring-[#1472FF]/20 focus:border-[#1472FF]';
+  'focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary';
 
 const lightMode =
   `${depth.border} border-gray-300 ${depth.bottom} border-b-gray-300 ` +
-  'bg-white text-[#4b4b4b] placeholder-gray-400';
+  'bg-white text-ink placeholder-gray-400';
 
 const darkMode =
   'dark:border-gray-900 dark:border-b-gray-900 ' +
@@ -65,7 +65,7 @@ export function Input({ variant = 'default', className = '', ...rest }: InputPro
 
 const textareaFlat =
   'w-full px-4 py-4 rounded-2xl transition-all ' +
-  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1472FF]/20 focus-visible:border-[#1472FF] ' +
+  'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary ' +
   'border-2 border-gray-200 dark:border-gray-900 ' +
   'bg-white dark:bg-gray-800 text-gray-900 dark:text-white ' +
   'placeholder-gray-400 dark:placeholder-gray-500 resize-none';
@@ -129,8 +129,8 @@ export function SearchInput({ icon, className = '', ...rest }: SearchInputProps)
     <div className="relative">
       <input
         className={`w-full px-6 py-4 pl-14 rounded-2xl border-2 border-gray-200 dark:border-gray-900 ` +
-          'focus:border-[#1472FF] focus:ring-2 focus:ring-[#1472FF]/20 outline-none transition-all ' +
-          'text-[#4b4b4b] dark:text-white bg-white dark:bg-gray-800 placeholder-gray-400 text-sm ' +
+          'focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all ' +
+          'text-ink dark:text-white bg-white dark:bg-gray-800 placeholder-gray-400 text-sm ' +
           className}
         {...rest}
       />

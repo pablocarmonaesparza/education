@@ -85,8 +85,8 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
     <div className="min-h-screen bg-white dark:bg-gray-800 p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">videos favoritos</h1>
-        <p className="text-[#777777] dark:text-gray-400">
+        <h1 className="text-3xl font-extrabold text-ink dark:text-white mb-2 tracking-tight">videos favoritos</h1>
+        <p className="text-ink-muted dark:text-gray-400">
           Tus videos guardados organizados por fase
         </p>
       </div>
@@ -104,10 +104,10 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
                   onClick={() => togglePhase(phaseTitle)}
                   className="w-full flex items-center gap-3 pb-2 border-b border-gray-100 hover:border-gray-200 transition-colors group"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-[#1472FF]/10 flex items-center justify-center text-[#1472FF] font-bold flex-shrink-0">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary font-bold flex-shrink-0">
                     {phaseTitle.split(':')[0].replace('Fase ', '')}
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900 flex-1 text-left group-hover:text-[#1472FF] transition-colors">
+                  <h2 className="text-xl font-bold text-gray-900 flex-1 text-left group-hover:text-primary transition-colors">
                     {phaseTitle.split(':')[1]}
                   </h2>
                   <svg
@@ -132,17 +132,17 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
                     return (
                       <div
                         key={`${phaseNumber}-${videoOrder}-${index}`}
-                        className="bg-white rounded-xl border border-gray-200 hover:border-[#1472FF]/30 hover:shadow-lg transition-all duration-200 overflow-hidden group flex flex-col h-full"
+                        className="bg-white rounded-xl border border-gray-200 hover:border-primary/30 hover:shadow-lg transition-all duration-200 overflow-hidden group flex flex-col h-full"
                       >
                         <Link
                           href={`/dashboard/my-path/video/${phaseNumber}/${videoOrder}`}
                           className="block relative overflow-hidden aspect-video"
                         >
                           {/* Thumbnail Placeholder */}
-                          <div className="absolute inset-0 bg-[#1472FF]/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
-                            <div className="absolute inset-0 bg-[#1472FF]/10 group-hover:bg-[#1472FF]/20 transition-all" />
+                          <div className="absolute inset-0 bg-primary/10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+                            <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-all" />
                             <div className="w-12 h-12 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/50 transition-all">
-                              <svg className="w-6 h-6 text-[#1472FF] ml-1" fill="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-6 h-6 text-primary ml-1" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z" />
                               </svg>
                             </div>
@@ -162,7 +162,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
                                 href={`/dashboard/my-path/video/${phaseNumber}/${videoOrder}`}
                                 className="flex-1"
                               >
-                                <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 group-hover:text-[#1472FF] transition-colors">
+                                <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 group-hover:text-primary transition-colors">
                                   {video.description || `Video ${video.order}`}
                                 </h3>
                               </Link>
@@ -186,7 +186,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
                           <div className="pt-3 border-t border-gray-50 flex items-center justify-between mt-2">
                             <Link
                               href={`/dashboard/my-path/video/${phaseNumber}/${videoOrder}`}
-                              className="text-xs text-[#1472FF] font-medium hover:text-[#0E5FCC] flex items-center gap-1"
+                              className="text-xs text-primary font-medium hover:text-primary-dark flex items-center gap-1"
                             >
                               Ver video
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

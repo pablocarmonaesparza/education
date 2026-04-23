@@ -54,13 +54,13 @@ export default function ExperimentShowcase() {
             >
               <Link
                 href="/#hero"
-                className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1472FF] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+                className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
                 aria-label={`Abrir ${item.title}`}
               >
                 <CompositeCard
                   contentClassName="!text-left"
                   leading={
-                    <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-[#1472FF]/10 text-[#0E5FCC] dark:text-[#1472FF] font-extrabold text-xl">
+                    <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10 text-primary-dark dark:text-primary font-extrabold text-xl">
                       {item.id}
                     </div>
                   }
@@ -78,13 +78,13 @@ export default function ExperimentShowcase() {
                       </Tag>
                     ))}
                   </div>
-                  <Headline className="mt-2 !normal-case !text-base !text-[#4b4b4b] dark:!text-white !font-bold !tracking-normal">
+                  <Headline className="mt-2 !normal-case !text-base !text-ink dark:!text-white !font-bold !tracking-normal">
                     {item.title}
                   </Headline>
                   <div className="mt-3">
                     <div className="flex items-center justify-between mb-1">
                       <Caption>progreso del proyecto</Caption>
-                      <Caption className="!text-[#0E5FCC] dark:!text-[#1472FF] !font-bold">
+                      <Caption className="!text-primary-dark dark:!text-primary !font-bold">
                         {item.progress}%
                       </Caption>
                     </div>

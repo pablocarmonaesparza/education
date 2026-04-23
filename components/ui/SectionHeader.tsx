@@ -43,11 +43,11 @@ export default function SectionHeader({
     <div className={`mb-8 ${className}`}>
       <div className="flex items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">
+          <h1 className="text-3xl font-extrabold text-ink dark:text-white tracking-tight">
             {title}
           </h1>
           {subtitle && (
-            <p className="mt-2 text-[#777777] dark:text-gray-400">{subtitle}</p>
+            <p className="mt-2 text-ink-muted dark:text-gray-400">{subtitle}</p>
           )}
         </div>
         {action && <div>{action}</div>}

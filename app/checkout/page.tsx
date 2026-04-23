@@ -172,10 +172,10 @@ function CheckoutContent() {
       <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-12">
         <div className="w-full max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-3 tracking-tight lowercase">
+            <h1 className="text-3xl md:text-4xl font-extrabold text-ink dark:text-white mb-3 tracking-tight lowercase">
               elige cómo quieres aprender
             </h1>
-            <p className="text-base text-[#777777] dark:text-gray-400 max-w-lg mx-auto">
+            <p className="text-base text-ink-muted dark:text-gray-400 max-w-lg mx-auto">
               Ya tenemos tu proyecto y tus respuestas. Elige un plan para
               continuar.
             </p>
@@ -208,29 +208,29 @@ function CheckoutContent() {
                   padding="lg"
                   className={`relative flex flex-col h-full w-full ${
                     highlighted
-                      ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20 border-[#1472FF] dark:border-[#1472FF] border-b-[#1472FF] dark:border-b-[#1472FF]'
+                      ? 'bg-primary/10 dark:bg-primary/20 border-primary dark:border-primary border-b-primary dark:border-b-primary'
                       : ''
                   }`}
                 >
                   {plan.popular && (
                     <div className="flex justify-center -mt-1 mb-3">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#1472FF] text-white">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-primary text-white">
                         más popular
                       </span>
                     </div>
                   )}
 
-                  <h3 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight lowercase mb-2">
+                  <h3 className="text-3xl font-extrabold text-ink dark:text-white tracking-tight lowercase mb-2">
                     {plan.name}
                   </h3>
 
-                  <p className="text-[#777777] dark:text-gray-400 text-sm mb-4">
+                  <p className="text-ink-muted dark:text-gray-400 text-sm mb-4">
                     {plan.description}
                   </p>
 
                   <div className="mb-4">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-3xl font-bold text-[#1472FF]">
+                      <span className="text-3xl font-bold text-primary">
                         {plan.priceLabel}
                         {plan.priceSuffix && (
                           <span className="text-xl font-bold">
@@ -239,12 +239,12 @@ function CheckoutContent() {
                         )}
                       </span>
                       {plan.priceLabel !== 'Gratis' && (
-                        <span className="text-[#777777] dark:text-gray-400 text-xs">
+                        <span className="text-ink-muted dark:text-gray-400 text-xs">
                           USD
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-[#777777] dark:text-gray-400 mt-1">
+                    <p className="text-xs text-ink-muted dark:text-gray-400 mt-1">
                       {plan.footnote}
                     </p>
                   </div>
@@ -253,7 +253,7 @@ function CheckoutContent() {
                     {plan.features.map((f, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <svg
-                          className="w-4 h-4 flex-shrink-0 text-[#22c55e] mt-0.5"
+                          className="w-4 h-4 flex-shrink-0 text-completado mt-0.5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -265,7 +265,7 @@ function CheckoutContent() {
                             d="M5 13l4 4L19 7"
                           />
                         </svg>
-                        <span className="text-xs text-[#4b4b4b] dark:text-gray-300 leading-snug">
+                        <span className="text-xs text-ink dark:text-gray-300 leading-snug">
                           {f}
                         </span>
                       </li>
@@ -284,7 +284,7 @@ function CheckoutContent() {
                     }}
                     className={`w-full py-4 text-sm mt-auto ${
                       !plan.popular
-                        ? 'text-[#1472FF] border-[#1472FF] hover:bg-[#1472FF]/5'
+                        ? 'text-primary border-primary hover:bg-primary/5'
                         : ''
                     }`}
                   >
@@ -295,7 +295,7 @@ function CheckoutContent() {
             })}
           </div>
 
-          <p className="text-center text-xs text-[#777777] dark:text-gray-500 mt-8">
+          <p className="text-center text-xs text-ink-muted dark:text-gray-500 mt-8">
             Pagos procesados por Stripe. Puedes cancelar en cualquier momento.
           </p>
         </div>

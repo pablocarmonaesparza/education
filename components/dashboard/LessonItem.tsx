@@ -22,8 +22,8 @@ export default function LessonItem({
 
   // Determine background and text colors based on state
   const getCardBg = () => {
-    if (isCompleted) return 'bg-[#22c55e]';
-    if (isCurrent) return 'bg-[#1472FF]';
+    if (isCompleted) return 'bg-completado';
+    if (isCurrent) return 'bg-primary';
     return 'bg-white dark:bg-gray-800';
   };
 
@@ -39,10 +39,10 @@ export default function LessonItem({
 
   const getBorderClasses = () => {
     if (isCompleted) {
-      return `${depthStructure} border-[#16a34a] ${depthActiveGroup}`;
+      return `${depthStructure} border-completado-dark ${depthActiveGroup}`;
     }
     if (isCurrent) {
-      return `${depthStructure} border-[#0E5FCC] ${depthActiveGroup}`;
+      return `${depthStructure} border-primary-dark ${depthActiveGroup}`;
     }
     return `${depthStructure} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ${depthActiveGroup}`;
   };

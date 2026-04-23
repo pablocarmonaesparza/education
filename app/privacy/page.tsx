@@ -41,7 +41,7 @@ export default function PrivacyPage() {
               <Body className="mb-3">
                 Recopilamos información que nos proporcionas directamente, incluyendo:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li><strong>Información de cuenta:</strong> nombre, dirección de correo electrónico, contraseña 
                     (encriptada), y foto de perfil</li>
                 <li><strong>Información de perfil:</strong> descripción de proyectos, preferencias de aprendizaje, 
@@ -55,7 +55,7 @@ export default function PrivacyPage() {
               <Body className="mb-3">
                 Cuando utilizas nuestros servicios, recopilamos automáticamente:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li><strong>Datos de uso:</strong> páginas visitadas, tiempo de permanencia, videos visualizados, 
                     progreso en cursos</li>
                 <li><strong>Datos técnicos:</strong> dirección IP, tipo de navegador, sistema operativo, 
@@ -80,7 +80,7 @@ export default function PrivacyPage() {
               <Body className="mb-3">
                 Utilizamos la información recopilada para los siguientes propósitos:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li><strong>Proporcionar servicios:</strong> generar cursos personalizados, gestionar tu cuenta, 
                     procesar pagos y proporcionar soporte</li>
                 <li><strong>Mejorar nuestros servicios:</strong> analizar el uso de la plataforma para mejorar 
@@ -109,7 +109,7 @@ export default function PrivacyPage() {
                 No vendemos tu información personal. Compartimos tu información únicamente en las siguientes 
                 circunstancias:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li><strong>Proveedores de servicios:</strong> con terceros que nos ayudan a operar nuestra plataforma 
                     (hosting, procesamiento de pagos, análisis, autenticación). Estos proveedores están obligados 
                     contractualmente a proteger tu información</li>
@@ -148,7 +148,7 @@ export default function PrivacyPage() {
                 Implementamos medidas de seguridad técnicas y organizativas apropiadas para proteger tu información 
                 personal contra acceso no autorizado, alteración, divulgación o destrucción, incluyendo:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li>Encriptación de datos en tránsito y en reposo</li>
                 <li>Autenticación segura y gestión de contraseñas</li>
                 <li>Acceso restringido a datos personales solo para personal autorizado</li>
@@ -168,7 +168,7 @@ export default function PrivacyPage() {
               <Body className="mb-3">
                 Dependiendo de tu ubicación, tienes los siguientes derechos respecto a tus datos personales:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li><strong>Derecho de acceso:</strong> puedes solicitar una copia de los datos personales que 
                     tenemos sobre ti</li>
                 <li><strong>Derecho de rectificación:</strong> puedes solicitar que corrijamos información 
@@ -201,7 +201,7 @@ export default function PrivacyPage() {
               <Body className="mb-3">
                 Utilizamos cookies y tecnologías similares para:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li><strong>Cookies esenciales:</strong> necesarias para el funcionamiento básico de la plataforma</li>
                 <li><strong>Cookies de funcionalidad:</strong> para recordar tus preferencias y mejorar tu experiencia</li>
                 <li><strong>Cookies de análisis:</strong> para entender cómo los usuarios interactúan con nuestra plataforma</li>
@@ -240,7 +240,7 @@ export default function PrivacyPage() {
                 Cuando conectas tu cuenta de TikTok a Itera, utilizamos el Login Kit de TikTok para autenticarte. 
                 A través del scope <strong>user.info.basic</strong>, accedemos únicamente a:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li>Tu Open ID (identificador único de TikTok)</li>
                 <li>Tu nombre para mostrar (display name)</li>
                 <li>Tu foto de perfil (avatar URL)</li>
@@ -255,7 +255,7 @@ export default function PrivacyPage() {
                 A través de los scopes <strong>video.upload</strong> y <strong>video.publish</strong>, Itera 
                 puede publicar videos en tu perfil de TikTok. Esto funciona de la siguiente manera:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li><strong>video.upload:</strong> Permite subir un video a TikTok como borrador para que 
                     lo revises y edites antes de publicar</li>
                 <li><strong>video.publish:</strong> Permite publicar contenido directamente en tu perfil 
@@ -272,7 +272,7 @@ export default function PrivacyPage() {
               <Body className="mb-3">
                 Los datos obtenidos de TikTok se almacenan de la siguiente manera:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li>Tu Open ID y token de acceso se almacenan de forma segura y encriptada en nuestra base de datos</li>
                 <li>Los tokens de acceso se utilizan únicamente para las operaciones que tú solicites</li>
                 <li>No almacenamos tus videos de TikTok ni tu contenido privado</li>
@@ -282,7 +282,7 @@ export default function PrivacyPage() {
               <Body className="mb-3">
                 Puedes desconectar tu cuenta de TikTok en cualquier momento:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li>Desde la configuración de tu cuenta en Itera</li>
                 <li>Desde la configuración de privacidad de TikTok (Ajustes → Seguridad → Gestionar permisos de aplicaciones)</li>
               </ul>
@@ -300,7 +300,7 @@ export default function PrivacyPage() {
               <Body className="mb-3">
                 Puedes solicitar la eliminación de todos tus datos personales en cualquier momento:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li>Enviando un correo a <strong>pablo@itera.la</strong> con el asunto &quot;Solicitud de eliminación de datos&quot;</li>
                 <li>Desde la configuración de tu cuenta, seleccionando &quot;Eliminar mi cuenta&quot;</li>
               </ul>

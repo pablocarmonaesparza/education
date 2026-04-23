@@ -199,10 +199,10 @@ export default function AuthForm({ mode }: AuthFormProps) {
       <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-10 border-2 border-gray-200 dark:border-gray-900">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-ink dark:text-white mb-2 tracking-tight">
             {mode === 'login' ? 'inicia sesión' : 'crea tu cuenta'}
           </h1>
-          <p className="text-[#777777] dark:text-gray-400">
+          <p className="text-ink-muted dark:text-gray-400">
             {mode === 'login'
               ? 'Continúa tu aprendizaje'
               : 'Comienza tu viaje en IA y automatización'}
@@ -342,14 +342,14 @@ export default function AuthForm({ mode }: AuthFormProps) {
           {mode === 'login' ? (
             <>
               ¿No tienes cuenta?{' '}
-              <Link href="/auth/signup" className="text-[#1472FF] hover:text-[#0E5FCC] font-semibold">
+              <Link href="/auth/signup" className="text-primary hover:text-primary-dark font-semibold">
                 Regístrate gratis
               </Link>
             </>
           ) : (
             <>
               ¿Ya tienes cuenta?{' '}
-              <Link href="/auth/login" className="text-[#1472FF] hover:text-[#0E5FCC] font-semibold">
+              <Link href="/auth/login" className="text-primary hover:text-primary-dark font-semibold">
                 Inicia sesión
               </Link>
             </>

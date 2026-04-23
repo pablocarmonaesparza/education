@@ -12,11 +12,11 @@ export type TagVariant = 'primary' | 'outline' | 'success' | 'warning' | 'neutra
 const variantStyles: Record<TagVariant, string> = {
   /** Blue-tinted bg, blue text, subtle border */
   primary:
-    'bg-[#1472FF]/10 text-[#0E5FCC] dark:text-[#1472FF] border border-[#1472FF]/20',
+    'bg-primary/10 text-primary-dark dark:text-primary border border-primary/20',
 
   /** White bg, gray text, neutral border */
   outline:
-    'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border border-gray-200 dark:border-gray-900',
+    'bg-white dark:bg-gray-800 text-ink dark:text-gray-300 border border-gray-200 dark:border-gray-900',
 
   /** Green-tinted bg, green text */
   success:
@@ -28,7 +28,7 @@ const variantStyles: Record<TagVariant, string> = {
 
   /** Gray bg, subtle */
   neutral:
-    'bg-gray-100 dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border border-gray-200 dark:border-gray-900',
+    'bg-gray-100 dark:bg-gray-800 text-ink dark:text-gray-300 border border-gray-200 dark:border-gray-900',
 };
 
 export interface TagProps {

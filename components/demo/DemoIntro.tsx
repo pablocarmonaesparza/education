@@ -28,7 +28,7 @@ export default function DemoIntro({ lesson }: DemoIntroProps) {
       <Tag variant="primary">{lesson.topic}</Tag>
 
       {/* Icon */}
-      <div className={`w-20 h-20 mx-auto rounded-full bg-[#1472FF] ${depth.border} ${depth.bottom} border-[#0E5FCC] flex items-center justify-center`}>
+      <div className={`w-20 h-20 mx-auto rounded-full bg-primary ${depth.border} ${depth.bottom} border-primary-dark flex items-center justify-center`}>
         <span className="text-3xl">🤖</span>
       </div>
 

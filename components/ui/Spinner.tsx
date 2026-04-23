@@ -17,7 +17,7 @@ const sizeStyles: Record<SpinnerSize, string> = {
 
 export interface SpinnerProps {
   size?: SpinnerSize;
-  /** Override the accent color class. Default: border-[#1472FF]. */
+  /** Override the accent color class. Default: border-primary. */
   color?: string;
   className?: string;
 }
@@ -32,7 +32,7 @@ export interface SpinnerProps {
  */
 export default function Spinner({
   size = 'md',
-  color = 'border-[#1472FF]',
+  color = 'border-primary',
   className = '',
 }: SpinnerProps) {
   return (

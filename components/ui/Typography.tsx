@@ -27,17 +27,17 @@ import React from 'react';
 
 const levels = {
   display:
-    'text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white leading-tight normal-case',
+    'text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-ink dark:text-white leading-tight normal-case',
   title:
-    'text-2xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white leading-tight normal-case',
+    'text-2xl font-extrabold tracking-tight text-ink dark:text-white leading-tight normal-case',
   subtitle:
-    'text-lg font-bold tracking-wide text-[#4b4b4b] dark:text-gray-300 normal-case',
+    'text-lg font-bold tracking-wide text-ink dark:text-gray-300 normal-case',
   headline:
-    'text-sm font-bold uppercase tracking-wider text-[#4b4b4b] dark:text-gray-300',
+    'text-sm font-bold uppercase tracking-wider text-ink dark:text-gray-300',
   body:
-    'text-base text-[#4b4b4b] dark:text-gray-300',
+    'text-base text-ink dark:text-gray-300',
   caption:
-    'text-xs text-[#777777] dark:text-gray-400',
+    'text-xs text-ink-muted dark:text-gray-400',
 } as const;
 
 export type TypographyLevel = keyof typeof levels;

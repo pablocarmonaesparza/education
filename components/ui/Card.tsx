@@ -16,15 +16,15 @@ const variantStyles = {
   neutral:
     'bg-white dark:bg-gray-800 ' +
     'border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
-    'text-[#4b4b4b] dark:text-white',
+    'text-ink dark:text-white',
 
   /** #1472FF background with #0E5FCC depth border */
   primary:
-    'bg-[#1472FF] border-[#0E5FCC] text-white',
+    'bg-primary border-primary-dark text-white',
 
   /** #22c55e background with #16a34a depth border */
   completado:
-    'bg-[#22c55e] border-[#16a34a] text-white',
+    'bg-completado border-completado-dark text-white',
 } as const;
 
 const hoverStyles = {

@@ -435,7 +435,7 @@ export default function AvailableCoursesSection() {
             size="none"
             rounded2xl
             href="/auth/signup"
-            className="px-10 py-4 inline-flex items-center gap-2 text-[#1472FF] bg-white border-b-gray-300 hover:bg-gray-100"
+            className="px-10 py-4 inline-flex items-center gap-2 text-primary bg-white border-b-gray-300 hover:bg-gray-100"
           >
             Comenzar
             <svg
@@ -471,7 +471,7 @@ export default function AvailableCoursesSection() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className={`relative w-full max-w-lg bg-[#0a1e3d] rounded-2xl p-6 md:p-8 ${depth.border} ${depth.bottom} border-[#1472FF]/30 border-b-[#0E5FCC]`}
+              className={`relative w-full max-w-lg bg-[#0a1e3d] rounded-2xl p-6 md:p-8 ${depth.border} ${depth.bottom} border-primary/30 border-b-primary-dark`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close button */}
@@ -505,7 +505,7 @@ export default function AvailableCoursesSection() {
                   <Tag
                     key={i}
                     variant="primary"
-                    className="bg-[#1472FF]/30 text-white border-[#1472FF]/50"
+                    className="bg-primary/30 text-white border-primary/50"
                   >
                     {topic}
                   </Tag>
@@ -520,7 +520,7 @@ export default function AvailableCoursesSection() {
                 <div className="space-y-2">
                   {selectedCourse.modules?.map((module, i) => (
                     <div key={i} className="flex items-center gap-3 text-white/90">
-                      <div className="w-6 h-6 rounded-full bg-[#1472FF]/30 flex items-center justify-center text-xs font-bold text-white">
+                      <div className="w-6 h-6 rounded-full bg-primary/30 flex items-center justify-center text-xs font-bold text-white">
                         {i + 1}
                       </div>
                       <span className="text-sm md:text-base">{module}</span>

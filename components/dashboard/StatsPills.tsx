@@ -55,7 +55,7 @@ export default function StatsPills() {
 
   const pillClass =
     'flex-1 min-w-0 inline-flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl ' +
-    'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 ' +
+    'bg-white dark:bg-gray-800 text-ink dark:text-gray-300 ' +
     'border-2 border-gray-300 dark:border-gray-900 ' +
     'border-b-4 border-b-gray-300 dark:border-b-gray-900';
 

@@ -64,9 +64,9 @@ export default function DashboardAlphaPage() {
       <main className="max-w-4xl mx-auto px-6 py-10">
         {/* hero */}
         <div className="mb-8">
-          <Caption className="mb-2 text-[#1472FF]">preview · curso completo</Caption>
+          <Caption className="mb-2 text-primary">preview · curso completo</Caption>
           <Title className="mb-3">hola de nuevo</Title>
-          <Body className="text-[#777777] dark:text-gray-400 max-w-2xl">
+          <Body className="text-ink-muted dark:text-gray-400 max-w-2xl">
             Este es el recorrido que verás cuando elijas la opción
             &quot;tomar el curso completo&quot; en el onboarding: las {TOTAL_LESSONS} lecciones
             activas del catálogo, agrupadas en {PHASES.length} fases y en el orden
@@ -81,7 +81,7 @@ export default function DashboardAlphaPage() {
             <Caption>0 / {TOTAL_LESSONS}</Caption>
           </div>
           <ProgressBar value={0} color="primary" size="md" />
-          <Body className="mt-3 text-[#777777] dark:text-gray-400">
+          <Body className="mt-3 text-ink-muted dark:text-gray-400">
             Empieza por la primera fase. Cada fase abre la siguiente conforme avances.
           </Body>
         </Card>
@@ -147,7 +147,7 @@ export default function DashboardAlphaPage() {
           </Button>
         </div>
 
-        <Caption className="mt-8 text-center text-[#777777] dark:text-gray-400">
+        <Caption className="mt-8 text-center text-ink-muted dark:text-gray-400">
           Preview estático. Cuando el usuario inicia sesión y elige &quot;curso completo&quot; en el onboarding,
           el dashboard real (<Link href="/dashboard" className="underline decoration-dotted underline-offset-4">/dashboard</Link>)
           muestra estas mismas fases con progreso real, reproductor de video y ejercicios.

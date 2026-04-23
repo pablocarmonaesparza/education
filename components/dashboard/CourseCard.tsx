@@ -33,10 +33,10 @@ export default function CourseCard({
         variant="neutral"
         padding="none"
         interactive
-        className="overflow-hidden hover:border-[#1472FF] dark:hover:border-[#1472FF] shadow-md hover:shadow-xl"
+        className="overflow-hidden hover:border-primary dark:hover:border-primary shadow-md hover:shadow-xl"
       >
         {/* Header */}
-        <div className="relative bg-[#1472FF] p-6">
+        <div className="relative bg-primary p-6">
           <div className="text-5xl mb-2">{icon}</div>
           <h3 className="text-xl font-extrabold text-white group-hover:underline tracking-tight">
             {title}
@@ -52,9 +52,9 @@ export default function CourseCard({
 
         {/* Body */}
         <div className="p-6">
-          <p className="text-[#777777] dark:text-gray-400 mb-4 line-clamp-2">{description}</p>
+          <p className="text-ink-muted dark:text-gray-400 mb-4 line-clamp-2">{description}</p>
 
-          <div className="flex items-center justify-between text-sm text-[#777777] dark:text-gray-400">
+          <div className="flex items-center justify-between text-sm text-ink-muted dark:text-gray-400">
             <div className="flex items-center gap-1">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />

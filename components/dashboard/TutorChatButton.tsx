@@ -210,8 +210,8 @@ export default function TutorChatButton() {
       {/* Resize Handle */}
       <div
         onMouseDown={handleMouseDown}
-        className={`absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-[#1472FF]/50 transition-colors ${
-          isResizing ? 'bg-[#1472FF]' : 'bg-transparent hover:bg-gray-300 dark:hover:bg-gray-600'
+        className={`absolute left-0 top-0 bottom-0 w-1 cursor-ew-resize hover:bg-primary/50 transition-colors ${
+          isResizing ? 'bg-primary' : 'bg-transparent hover:bg-gray-300 dark:hover:bg-gray-600'
         }`}
       />
 
@@ -225,7 +225,7 @@ export default function TutorChatButton() {
 
       {/* Header: solo título y acciones */}
       <div className="px-4 py-4 flex items-center justify-between flex-shrink-0">
-        <h3 className="text-base font-semibold text-[#4b4b4b] dark:text-gray-200">Tutor IA</h3>
+        <h3 className="text-base font-semibold text-ink dark:text-gray-200">Tutor IA</h3>
         <div className="flex items-center gap-1">
           <button
             type="button"
@@ -252,19 +252,19 @@ export default function TutorChatButton() {
               <div className={`absolute right-0 top-full mt-1 z-50 w-64 rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 shadow-lg max-h-[300px] overflow-y-auto`}>
                 <div className="p-2">
                   {conversations.length === 0 ? (
-                    <p className="text-xs text-[#777777] dark:text-gray-400 text-center py-4">Sin conversaciones previas</p>
+                    <p className="text-xs text-ink-muted dark:text-gray-400 text-center py-4">Sin conversaciones previas</p>
                   ) : (
                     conversations.map((conv) => (
                       <div
                         key={conv.id}
                         className={`flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer transition-colors group ${
-                          activeConversationId === conv.id ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+                          activeConversationId === conv.id ? 'bg-primary/10 dark:bg-primary/20' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
                         }`}
                         onClick={() => { selectConversation(conv.id); setShowConversations(false); }}
                       >
                         <div className="flex-1 min-w-0">
-                          <p className={`text-xs font-medium truncate ${activeConversationId === conv.id ? 'text-[#1472FF]' : 'text-[#4b4b4b] dark:text-white'}`}>{conv.title}</p>
-                          <p className="text-[10px] text-[#777777] dark:text-gray-400">{relativeTime(conv.updatedAt)}</p>
+                          <p className={`text-xs font-medium truncate ${activeConversationId === conv.id ? 'text-primary' : 'text-ink dark:text-white'}`}>{conv.title}</p>
+                          <p className="text-[10px] text-ink-muted dark:text-gray-400">{relativeTime(conv.updatedAt)}</p>
                         </div>
                         <button type="button" onClick={(e) => { e.stopPropagation(); deleteConversation(conv.id); }} className="opacity-0 group-hover:opacity-100 w-6 h-6 flex items-center justify-center rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 text-red-500 transition-all flex-shrink-0" aria-label="Eliminar">
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
@@ -292,7 +292,7 @@ export default function TutorChatButton() {
         {!isLoadingMessages && messages.length === 0 && !activeConversationId && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
-              <div className={`bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 text-[#4b4b4b] dark:text-gray-300`}>
+              <div className={`bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 text-ink dark:text-gray-300`}>
                 <p className="text-sm leading-relaxed">
                   Hola, soy tu tutor de IA personal. Estoy aqui para ayudarte con cualquier duda sobre tu curso. ¿En que puedo ayudarte hoy?
                 </p>
@@ -311,8 +311,8 @@ export default function TutorChatButton() {
               <div
                 className={`px-4 py-3 rounded-2xl ${depth.border} ${depth.bottom} ${
                   message.role === 'user'
-                    ? 'bg-gray-300 dark:bg-gray-800 text-[#4b4b4b] dark:text-white border-[#aeb3bb] dark:border-gray-900 border-b-[#aeb3bb] dark:border-b-gray-900'
-                    : 'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900'
+                    ? 'bg-gray-300 dark:bg-gray-800 text-ink dark:text-white border-[#aeb3bb] dark:border-gray-900 border-b-[#aeb3bb] dark:border-b-gray-900'
+                    : 'bg-white dark:bg-gray-800 text-ink dark:text-gray-300 border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900'
                 }`}
               >
                 <div className="text-sm leading-relaxed">
@@ -330,10 +330,10 @@ export default function TutorChatButton() {
         {isStreaming && streamingContent && (
           <div className="flex justify-start">
             <div className="max-w-[85%]">
-              <div className={`bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 text-[#4b4b4b] dark:text-gray-300`}>
+              <div className={`bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 text-ink dark:text-gray-300`}>
                 <div className="text-sm leading-relaxed">
                   {renderMarkdown(streamingContent)}
-                  <span className="inline-block w-1.5 h-4 bg-[#1472FF] rounded-sm animate-pulse ml-0.5 align-text-bottom" />
+                  <span className="inline-block w-1.5 h-4 bg-primary rounded-sm animate-pulse ml-0.5 align-text-bottom" />
                 </div>
               </div>
             </div>
@@ -346,9 +346,9 @@ export default function TutorChatButton() {
             <div className="max-w-[85%]">
               <div className={`bg-white dark:bg-gray-800 px-4 py-3 rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900`}>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <div className="w-1.5 h-1.5 bg-[#1472FF] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
               </div>
             </div>
@@ -376,7 +376,7 @@ export default function TutorChatButton() {
               }}
               placeholder="Escribe tu mensaje..."
               rows={2}
-              className="w-full min-h-[4rem] max-h-[4rem] px-4 py-3 text-sm text-[#4b4b4b] dark:text-white placeholder-gray-400 focus:outline-none focus:ring-0 bg-transparent resize-none overflow-y-auto border-0 border-none"
+              className="w-full min-h-[4rem] max-h-[4rem] px-4 py-3 text-sm text-ink dark:text-white placeholder-gray-400 focus:outline-none focus:ring-0 bg-transparent resize-none overflow-y-auto border-0 border-none"
             />
             </div>
             {/* Renglón abajo: modelo (izq, sin contorno, solo chevron) | spacer | enviar (derecha) */}
@@ -385,7 +385,7 @@ export default function TutorChatButton() {
                 <button
                   type="button"
                   onClick={() => setModelDropdownOpen((o) => !o)}
-                  className="h-9 flex items-center gap-1.5 pl-1 pr-1 rounded-lg text-[#4b4b4b] dark:text-white text-xs font-bold outline-none cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border-0 border-transparent bg-transparent min-w-0"
+                  className="h-9 flex items-center gap-1.5 pl-1 pr-1 rounded-lg text-ink dark:text-white text-xs font-bold outline-none cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border-0 border-transparent bg-transparent min-w-0"
                   aria-label="Modelo de IA"
                   aria-expanded={modelDropdownOpen}
                   aria-haspopup="listbox"
@@ -397,11 +397,11 @@ export default function TutorChatButton() {
                     <span className="truncate max-w-[100px] font-bold">{selectedModelData.label}</span>
                   )}
                   {width >= 360 && (
-                    <span className="px-1.5 py-0.5 rounded-md bg-[#777777]/15 dark:bg-gray-600 text-[#777777] dark:text-gray-400 text-xs font-bold tabular-nums border border-[#777777]/30 dark:border-gray-500/50">
+                    <span className="px-1.5 py-0.5 rounded-md bg-ink-muted/15 dark:bg-gray-600 text-ink-muted dark:text-gray-400 text-xs font-bold tabular-nums border border-ink-muted/30 dark:border-gray-500/50">
                       {priceString(selectedModelData.price)}
                     </span>
                   )}
-                  <svg className={`w-4 h-4 flex-shrink-0 text-[#777777] dark:text-gray-400 transition-transform ${modelDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className={`w-4 h-4 flex-shrink-0 text-ink-muted dark:text-gray-400 transition-transform ${modelDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
@@ -416,13 +416,13 @@ export default function TutorChatButton() {
                         <button
                           type="button"
                           onClick={() => { setSelectedModel(m.id); setModelDropdownOpen(false); }}
-                          className={`w-full flex items-center gap-2 px-2.5 py-2 text-left text-xs font-bold transition-colors ${selectedModel === m.id ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20 text-[#1472FF] dark:text-[#1472FF]' : 'text-[#4b4b4b] dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+                          className={`w-full flex items-center gap-2 px-2.5 py-2 text-left text-xs font-bold transition-colors ${selectedModel === m.id ? 'bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary' : 'text-ink dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700'}`}
                         >
                           <span className="flex-shrink-0 w-5 h-5 flex items-center justify-center">
                             <Image src={m.icon} alt="" width={20} height={20} className="w-5 h-5 rounded object-contain" />
                           </span>
                           <span className="flex-1 truncate">{m.label}</span>
-                          <span className="px-1.5 py-0.5 rounded-md bg-[#777777]/15 dark:bg-gray-600 text-[#777777] dark:text-gray-400 tabular-nums border border-[#777777]/30 dark:border-gray-500/50">{priceString(m.price)}</span>
+                          <span className="px-1.5 py-0.5 rounded-md bg-ink-muted/15 dark:bg-gray-600 text-ink-muted dark:text-gray-400 tabular-nums border border-ink-muted/30 dark:border-gray-500/50">{priceString(m.price)}</span>
                         </button>
                       </li>
                     ))}
@@ -433,7 +433,7 @@ export default function TutorChatButton() {
               <button
                 type="submit"
                 disabled={!input.trim() || isStreaming}
-                className={`w-9 h-9 flex items-center justify-center rounded-xl ${depth.border} ${depth.bottom} border-[#1472FF] border-b-[#0E5FCC] bg-[#1472FF] text-white hover:bg-[#1265e0] ${depth.active} transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0`}
+                className={`w-9 h-9 flex items-center justify-center rounded-xl ${depth.border} ${depth.bottom} border-primary border-b-primary-dark bg-primary text-white hover:bg-[#1265e0] ${depth.active} transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0`}
                 aria-label="Enviar mensaje"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

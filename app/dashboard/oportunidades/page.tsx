@@ -120,7 +120,7 @@ export default function OportunidadesPage() {
   if (isLoading) return <SpinnerPage />;
 
   return (
-    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-[#4b4b4b] dark:text-white">
+    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-ink dark:text-white">
       <div className="max-w-7xl mx-auto space-y-8">
         <SectionHeader
           title="oportunidades"
@@ -131,14 +131,14 @@ export default function OportunidadesPage() {
         {userProject && (
           <CardFlat className="p-4 sm:p-5">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#1472FF] flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
                 <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.547-.547z" />
                 </svg>
               </div>
               <div>
                 <Headline>tu proyecto</Headline>
-                <Body className="mt-1 leading-relaxed text-[#777777] dark:text-gray-400">{userProject}</Body>
+                <Body className="mt-1 leading-relaxed text-ink-muted dark:text-gray-400">{userProject}</Body>
                 <Caption className="mt-2">Las oportunidades se filtran segun tu perfil y proyecto</Caption>
               </div>
             </div>
@@ -171,14 +171,14 @@ export default function OportunidadesPage() {
                     <CardFlat
                       className={`shadow-sm hover:shadow-md transition-shadow ${
                         isSelected
-                          ? 'ring-2 ring-[#1472FF] ring-offset-2 dark:ring-offset-gray-800'
+                          ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-gray-800'
                           : ''
                       }`}
                     >
                       <div className="p-4 sm:p-5">
                         <div className="flex items-start justify-between gap-3">
                           <div className="flex-1 min-w-0">
-                            <p className="text-base font-bold text-[#4b4b4b] dark:text-white truncate">
+                            <p className="text-base font-bold text-ink dark:text-white truncate">
                               {opp.title}
                             </p>
                             <Caption className="mt-0.5">{opp.company} · {opp.location}</Caption>
@@ -188,7 +188,7 @@ export default function OportunidadesPage() {
                           </Tag>
                         </div>
 
-                        <Body className="mt-3 line-clamp-2 text-[#777777] dark:text-gray-400">
+                        <Body className="mt-3 line-clamp-2 text-ink-muted dark:text-gray-400">
                           {opp.description}
                         </Body>
 
@@ -227,7 +227,7 @@ export default function OportunidadesPage() {
                   </div>
 
                   <div>
-                    <h2 className="text-xl font-extrabold tracking-tight text-[#4b4b4b] dark:text-white leading-tight">
+                    <h2 className="text-xl font-extrabold tracking-tight text-ink dark:text-white leading-tight">
                       {selectedOpp.title}
                     </h2>
                     <Caption className="mt-1">{selectedOpp.company} · {selectedOpp.location}</Caption>
@@ -258,7 +258,7 @@ export default function OportunidadesPage() {
                   <svg className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
                   </svg>
-                  <Body className="text-[#777777] dark:text-gray-400">Selecciona una oportunidad para ver los detalles</Body>
+                  <Body className="text-ink-muted dark:text-gray-400">Selecciona una oportunidad para ver los detalles</Body>
                 </div>
               </CardFlat>
             )}

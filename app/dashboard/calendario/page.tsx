@@ -184,7 +184,7 @@ export default function CalendarioPage() {
   for (let d = 1; d <= daysInMonth; d++) calendarDays.push(d);
 
   return (
-    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-[#4b4b4b] dark:text-white">
+    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-ink dark:text-white">
       <div className="max-w-7xl mx-auto space-y-8">
         <SectionHeader
           title="calendario"
@@ -203,7 +203,7 @@ export default function CalendarioPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                   </IconButton>
-                  <h2 className="text-xl font-extrabold text-[#4b4b4b] dark:text-white">
+                  <h2 className="text-xl font-extrabold text-ink dark:text-white">
                     {MONTHS_ES[currentMonth].toLowerCase()} {currentYear}
                   </h2>
                   <IconButton variant="outline" aria-label="Mes siguiente" onClick={nextMonth}>
@@ -240,10 +240,10 @@ export default function CalendarioPage() {
                         onClick={() => setSelectedDate(dateStr === selectedDate ? null : dateStr)}
                         className={`aspect-square rounded-xl flex flex-col items-center justify-center relative transition-all duration-150 text-sm font-medium ${
                           isSelected
-                            ? 'bg-[#1472FF] text-white'
+                            ? 'bg-primary text-white'
                             : isToday
-                              ? 'bg-[#1472FF]/10 text-[#1472FF] font-bold'
-                              : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-[#4b4b4b] dark:text-gray-300'
+                              ? 'bg-primary/10 text-primary font-bold'
+                              : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-ink dark:text-gray-300'
                         }`}
                       >
                         {day}
@@ -254,8 +254,8 @@ export default function CalendarioPage() {
                                 key={ev.id}
                                 className={`w-1.5 h-1.5 rounded-full ${
                                   isSelected ? 'bg-white' :
-                                  ev.type === 'sesion' ? 'bg-[#1472FF]' :
-                                  ev.type === 'taller' ? 'bg-[#22c55e]' :
+                                  ev.type === 'sesion' ? 'bg-primary' :
+                                  ev.type === 'taller' ? 'bg-completado' :
                                   ev.type === 'deadline' ? 'bg-orange-500' :
                                   'bg-gray-400'
                                 }`}
@@ -271,11 +271,11 @@ export default function CalendarioPage() {
                 {/* Legend */}
                 <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#1472FF]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-primary" />
                     <Caption>Sesión</Caption>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e]" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-completado" />
                     <Caption>Taller</Caption>
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -302,7 +302,7 @@ export default function CalendarioPage() {
                 </Headline>
                 {selectedEvents.length === 0 ? (
                   <CardFlat className="p-5 shadow-sm">
-                    <Body className="text-[#777777] dark:text-gray-400 text-center">
+                    <Body className="text-ink-muted dark:text-gray-400 text-center">
                       No hay actividades programadas para este día
                     </Body>
                   </CardFlat>
@@ -317,8 +317,8 @@ export default function CalendarioPage() {
                             </Tag>
                             <Caption>{ev.time} · {ev.duration}</Caption>
                           </div>
-                          <p className="font-bold text-[#4b4b4b] dark:text-white">{ev.title}</p>
-                          <Body className="mt-1 text-[#777777] dark:text-gray-400 text-sm">{ev.description}</Body>
+                          <p className="font-bold text-ink dark:text-white">{ev.title}</p>
+                          <Body className="mt-1 text-ink-muted dark:text-gray-400 text-sm">{ev.description}</Body>
                         </div>
                       </div>
                     </CardFlat>
@@ -334,7 +334,7 @@ export default function CalendarioPage() {
               <div className="p-6">
                 <Headline className="mb-4">proximos eventos</Headline>
                 {upcomingEvents.length === 0 ? (
-                  <Body className="text-[#777777] dark:text-gray-400">No hay eventos próximos</Body>
+                  <Body className="text-ink-muted dark:text-gray-400">No hay eventos próximos</Body>
                 ) : (
                   <div className="space-y-4">
                     {upcomingEvents.map((ev) => (
@@ -351,15 +351,15 @@ export default function CalendarioPage() {
                         <div className="flex items-start gap-3">
                           {/* Date badge */}
                           <div className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-700 flex flex-col items-center justify-center flex-shrink-0">
-                            <span className="text-xs font-bold text-[#1472FF] uppercase leading-none">
+                            <span className="text-xs font-bold text-primary uppercase leading-none">
                               {formatEventDate(ev.date).split(' ')[1]}
                             </span>
-                            <span className="text-lg font-extrabold text-[#4b4b4b] dark:text-white leading-none">
+                            <span className="text-lg font-extrabold text-ink dark:text-white leading-none">
                               {new Date(ev.date).getDate()}
                             </span>
                           </div>
                           <div className="min-w-0">
-                            <p className="font-bold text-sm text-[#4b4b4b] dark:text-white group-hover:text-[#1472FF] transition-colors truncate">
+                            <p className="font-bold text-sm text-ink dark:text-white group-hover:text-primary transition-colors truncate">
                               {ev.title}
                             </p>
                             <Caption>{ev.time} · {typeLabels[ev.type]}</Caption>

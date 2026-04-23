@@ -47,7 +47,7 @@ export default function ExperimentTicker() {
             </Tag>
             <span
               aria-hidden
-              className="w-2 h-2 rounded-full bg-[#1472FF] shrink-0"
+              className="w-2 h-2 rounded-full bg-primary shrink-0"
             />
           </div>
         ))}

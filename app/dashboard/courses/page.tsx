@@ -123,8 +123,8 @@ export default function CoursesPage() {
     <div className="p-8 bg-white dark:bg-gray-800 min-h-screen">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-[#4b4b4b] dark:text-white mb-2 tracking-tight">todos los cursos</h1>
-        <p className="text-[#777777] dark:text-gray-400">
+        <h1 className="text-3xl font-extrabold text-ink dark:text-white mb-2 tracking-tight">todos los cursos</h1>
+        <p className="text-ink-muted dark:text-gray-400">
           Explora el catálogo completo de contenido disponible
         </p>
       </div>
@@ -137,7 +137,7 @@ export default function CoursesPage() {
             placeholder="Buscar por nombre, descripción o tema..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full px-6 py-4 pl-14 rounded-2xl border-2 border-gray-200 dark:border-gray-900 focus:border-[#1472FF] focus:ring-2 focus:ring-[#1472FF]/20 outline-none transition-all text-[#4b4b4b] dark:text-white bg-white dark:bg-gray-800 placeholder-gray-400"
+            className="w-full px-6 py-4 pl-14 rounded-2xl border-2 border-gray-200 dark:border-gray-900 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all text-ink dark:text-white bg-white dark:bg-gray-800 placeholder-gray-400"
           />
           <svg
             className="absolute left-5 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -169,7 +169,7 @@ export default function CoursesPage() {
             >
               <span className="text-xl">{category.icon}</span>
               <span>{category.name}</span>
-              <span className={`text-sm ${selectedCategory === category.id ? 'text-white opacity-80' : 'text-[#777777]'}`}>
+              <span className={`text-sm ${selectedCategory === category.id ? 'text-white opacity-80' : 'text-ink-muted'}`}>
                 ({category.count})
               </span>
             </Button>
@@ -179,8 +179,8 @@ export default function CoursesPage() {
 
       {/* Results Count */}
       <div className="mb-6">
-        <p className="text-[#777777]">
-          Mostrando <span className="font-bold text-[#4b4b4b]">{filteredModules.length}</span> módulos
+        <p className="text-ink-muted">
+          Mostrando <span className="font-bold text-ink">{filteredModules.length}</span> módulos
           {searchQuery && <span> para "<span className="font-semibold">{searchQuery}</span>"</span>}
         </p>
       </div>
@@ -214,10 +214,10 @@ export default function CoursesPage() {
                 </div>
 
                 {/* Title & Description */}
-                <h3 className="text-xl font-bold text-[#4b4b4b] mb-2 group-hover:text-[#1472FF] transition-colors">
+                <h3 className="text-xl font-bold text-ink mb-2 group-hover:text-primary transition-colors">
                   {module.title}
                 </h3>
-                <p className="text-sm text-[#777777] mb-4">
+                <p className="text-sm text-ink-muted mb-4">
                   {module.description}
                 </p>
 
@@ -231,7 +231,7 @@ export default function CoursesPage() {
                 </div>
 
                 {/* Stats */}
-                <div className="flex items-center justify-between text-sm text-[#777777] mb-4">
+                <div className="flex items-center justify-between text-sm text-ink-muted mb-4">
                   <div className="flex items-center gap-1">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -257,10 +257,10 @@ export default function CoursesPage() {
       ) : (
         <div className="text-center py-16">
           <div className="text-6xl mb-4">🔍</div>
-          <h3 className="text-2xl font-bold text-[#4b4b4b] mb-2">
+          <h3 className="text-2xl font-bold text-ink mb-2">
             No se encontraron resultados
           </h3>
-          <p className="text-[#777777] mb-6">
+          <p className="text-ink-muted mb-6">
             Intenta con otros términos de búsqueda o categoría
           </p>
           <Button

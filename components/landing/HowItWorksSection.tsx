@@ -145,12 +145,12 @@ export default function HowItWorksSection() {
               style={{ scrollSnapAlign: 'center' }}
             >
               {/* Title */}
-              <h3 className="text-3xl md:text-4xl font-extrabold text-[#1472FF] mb-4 text-center tracking-tight">
+              <h3 className="text-3xl md:text-4xl font-extrabold text-primary mb-4 text-center tracking-tight">
                 {step.title.toLowerCase()}
               </h3>
 
               {/* Description */}
-              <p className="text-base text-[#4b4b4b] dark:text-gray-300 leading-relaxed text-center max-w-sm mb-8">
+              <p className="text-base text-ink dark:text-gray-300 leading-relaxed text-center max-w-sm mb-8">
                 {step.description}
               </p>
 
@@ -183,7 +183,7 @@ export default function HowItWorksSection() {
               onClick={() => goToSlide(i)}
               className={`h-2 rounded-full transition-all duration-300 ${
                 mobileActiveIndex === i
-                  ? "bg-[#1472FF] w-8"
+                  ? "bg-primary w-8"
                   : "bg-gray-300 dark:bg-gray-600 w-2"
               }`}
             />
@@ -209,7 +209,7 @@ export default function HowItWorksSection() {
               viewport={{ once: true }}
               className="text-center mb-10 md:mb-14"
             >
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white leading-tight tracking-tight">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-ink dark:text-white leading-tight tracking-tight">
                 cómo funciona
               </h2>
             </motion.div>
@@ -223,15 +223,15 @@ export default function HowItWorksSection() {
                     <div key={i} className="space-y-4">
                       <h3 className={`text-2xl md:text-3xl font-extrabold transition-colors duration-500 tracking-tight ${
                         activeIndex === i
-                          ? "text-[#1472FF]"
-                          : "text-[#1472FF]/30 dark:text-[#1472FF]/40"
+                          ? "text-primary"
+                          : "text-primary/30 dark:text-primary/40"
                       }`}>
                         {s.title}
                       </h3>
                       <p className={`text-base md:text-lg leading-relaxed transition-colors duration-500 ${
                         activeIndex === i
-                          ? "text-[#4b4b4b] dark:text-gray-300"
-                          : "text-[#4b4b4b]/30 dark:text-gray-500/50"
+                          ? "text-ink dark:text-gray-300"
+                          : "text-ink/30 dark:text-gray-500/50"
                       }`}>
                         {s.description}
                       </p>
@@ -292,11 +292,11 @@ export default function HowItWorksSection() {
               }}
               className="flex flex-col items-center gap-1 cursor-pointer group"
             >
-              <span className="text-sm font-semibold tracking-wide text-[#4b4b4b]/60 dark:text-white/60 group-hover:text-[#4b4b4b]/80 dark:group-hover:text-white/80 transition-colors">
+              <span className="text-sm font-semibold tracking-wide text-ink/60 dark:text-white/60 group-hover:text-ink/80 dark:group-hover:text-white/80 transition-colors">
                 Cursos
               </span>
               <motion.svg
-                className="w-5 h-5 text-[#4b4b4b]/60 dark:text-white/60 group-hover:text-[#4b4b4b]/80 dark:group-hover:text-white/80 transition-colors"
+                className="w-5 h-5 text-ink/60 dark:text-white/60 group-hover:text-ink/80 dark:group-hover:text-white/80 transition-colors"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

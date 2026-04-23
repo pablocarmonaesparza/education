@@ -43,7 +43,7 @@ export default function ExperimentFlow() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 relative">
           <div
             aria-hidden
-            className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-[#1472FF]/20 via-[#1472FF] to-[#1472FF]/20"
+            className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-primary/20 via-primary to-primary/20"
           />
 
           {STEPS.map((step, i) => (
@@ -57,7 +57,7 @@ export default function ExperimentFlow() {
             >
               <Card variant="neutral" padding="lg" className="h-full relative">
                 <div
-                  className={`absolute -top-4 left-4 flex items-center justify-center w-10 h-10 rounded-full bg-[#1472FF] text-white text-sm font-extrabold border-[#0E5FCC] ${depthStructure}`}
+                  className={`absolute -top-4 left-4 flex items-center justify-center w-10 h-10 rounded-full bg-primary text-white text-sm font-extrabold border-primary-dark ${depthStructure}`}
                 >
                   {step.step}
                 </div>
@@ -65,7 +65,7 @@ export default function ExperimentFlow() {
                 <div className="text-4xl mt-2" aria-hidden>
                   {step.icon}
                 </div>
-                <Headline className="mt-3 !text-[#1472FF]">
+                <Headline className="mt-3 !text-primary">
                   {step.title}
                 </Headline>
                 <Body className="mt-2">{step.description}</Body>

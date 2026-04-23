@@ -17,17 +17,17 @@ const base =
 const variantStyles = {
   /** Blue filled with #0E5FCC depth border */
   primary:
-    `${depthToken} bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#1265e0]`,
+    `${depthToken} bg-primary text-white border-primary-dark hover:bg-[#1265e0]`,
 
   /** White / dark-gray with neutral depth border */
   outline:
-    `${depthToken} bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 ` +
+    `${depthToken} bg-white dark:bg-gray-800 text-ink dark:text-gray-300 ` +
     'border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'hover:bg-gray-50 dark:hover:bg-gray-900',
 
   /** No border, transparent bg, hover highlight only */
   ghost:
-    'bg-transparent text-[#4b4b4b] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
+    'bg-transparent text-ink dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
 } as const;
 
 const sizeStyles = {

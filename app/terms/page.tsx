@@ -57,7 +57,7 @@ export default function TermsPage() {
                 Itera es una plataforma SaaS que ofrece cursos personalizados de inteligencia artificial y 
                 automatización generados mediante tecnología de IA. Nuestros servicios incluyen:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300">
                 <li>Generación de cursos personalizados basados en proyectos específicos del usuario</li>
                 <li>Acceso a contenido educativo en formato de video</li>
                 <li>Seguimiento de progreso y gamificación</li>
@@ -83,7 +83,7 @@ export default function TermsPage() {
               <Body className="mb-3">
                 Te comprometes a:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li>Proporcionar información veraz y actualizada</li>
                 <li>Mantener la seguridad de tu cuenta y contraseña</li>
                 <li>Notificarnos inmediatamente de cualquier uso no autorizado</li>
@@ -112,7 +112,7 @@ export default function TermsPage() {
                 Itera utiliza la API de TikTok para permitirte publicar contenido educativo en tu perfil de TikTok. 
                 Al conectar tu cuenta de TikTok:
               </Body>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300 mb-4">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
                 <li>Autorizas a Itera a acceder a tu información básica de perfil (nombre, avatar)</li>
                 <li>Autorizas a Itera a subir y publicar videos en tu perfil <strong>solo cuando tú lo solicites</strong></li>
                 <li>Puedes revocar estos permisos en cualquier momento desde la configuración de tu cuenta o desde TikTok</li>
@@ -121,7 +121,7 @@ export default function TermsPage() {
                 El uso de TikTok está sujeto a los Términos de Servicio y Política de Privacidad de TikTok.
               </Body>
               <Subtitle className="mb-3">4.2 Otros Servicios</Subtitle>
-              <ul className="list-disc list-inside space-y-2 ml-4 text-[#4b4b4b] dark:text-gray-300">
+              <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300">
                 <li><strong>Stripe y MercadoPago:</strong> procesamiento de pagos</li>
                 <li><strong>Supabase:</strong> almacenamiento de datos y autenticación</li>
                 <li><strong>Servicios de IA:</strong> personalización del aprendizaje</li>

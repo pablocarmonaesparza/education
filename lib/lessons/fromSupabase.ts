@@ -144,5 +144,9 @@ export function slideRowToStep(row: SlideRow): Step {
 
 export async function fetchLectureAsSteps(lectureId: string): Promise<Step[]> {
   const rows = await fetchLectureSlides(lectureId);
-  return rows.map(slideRowToStep);
+  // Anexamos el `id` del slide al Step (extra al shape declarado) para que
+  // SlideFlagButton pueda referenciarlo al reportar via /api/slides/[id]/flag.
+  // slideRowToStep queda puro: la mezcla del id se hace acá para no inflar
+  // la API que ya usan callers que no necesitan flagging.
+  return rows.map((row) => ({ id: row.id, ...slideRowToStep(row) } as Step));
 }

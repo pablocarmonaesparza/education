@@ -77,7 +77,7 @@ export default function ExperimentBento() {
               <span className="text-3xl" aria-hidden>
                 🎬
               </span>
-              <Headline className="!text-[#1472FF] mt-3">video ia</Headline>
+              <Headline className="!text-primary mt-3">video ia</Headline>
               <Body className="mt-1">
                 lecciones cortas con voz y pizarra sincronizadas.
               </Body>
@@ -96,7 +96,7 @@ export default function ExperimentBento() {
               <span className="text-3xl" aria-hidden>
                 🧪
               </span>
-              <Headline className="!text-[#1472FF] mt-3">retos</Headline>
+              <Headline className="!text-primary mt-3">retos</Headline>
               <Body className="mt-1">
                 ejercicios con feedback instantáneo del tutor.
               </Body>
@@ -117,7 +117,7 @@ export default function ExperimentBento() {
                   🤖
                 </span>
                 <div>
-                  <Headline className="!text-[#1472FF]">tutor ia</Headline>
+                  <Headline className="!text-primary">tutor ia</Headline>
                   <Body className="mt-1">
                     pregúntale cualquier cosa sobre tu curso; conoce tu
                     proyecto y tu progreso.

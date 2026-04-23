@@ -76,12 +76,12 @@ export default function FillInBlank({
               className={`inline-block min-w-[100px] mx-1 px-2 py-0.5 rounded text-sm font-mono font-bold transition-all duration-150 ${
                 answer
                   ? isCorrect
-                    ? 'bg-[#22c55e]/30 border border-[#22c55e] text-[#22c55e]'
+                    ? 'bg-completado/30 border border-completado text-completado'
                     : isWrong
                       ? 'bg-red-500/30 border border-red-500 text-red-400'
-                      : 'bg-[#1472FF]/30 border border-[#1472FF] text-[#1472FF] cursor-pointer hover:bg-[#1472FF]/20'
+                      : 'bg-primary/30 border border-primary text-primary cursor-pointer hover:bg-primary/20'
                   : isActive
-                    ? 'bg-gray-700 border-2 border-dashed border-[#1472FF] text-gray-500 animate-pulse'
+                    ? 'bg-gray-700 border-2 border-dashed border-primary text-gray-500 animate-pulse'
                     : 'bg-gray-700 border border-dashed border-gray-500 text-gray-500'
               }`}
             >

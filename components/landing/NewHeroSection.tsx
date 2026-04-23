@@ -54,7 +54,7 @@ export default function NewHeroSection() {
         {/* H1 — single line, lowercase, Darker Grotesque black (900) */}
         <h1 className="font-display font-black lowercase whitespace-nowrap text-4xl sm:text-5xl md:text-7xl lg:text-8xl leading-[1] tracking-[-0.025em] text-[#0a0a0a] dark:text-white m-0">
           ai de{' '}
-          <em className="not-italic font-black text-[#1472FF]">0 a 100</em>
+          <em className="not-italic font-black text-primary">0 a 100</em>
         </h1>
 
         {/* Subtitle */}

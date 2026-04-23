@@ -38,7 +38,7 @@ export default function ExperimentCTA() {
                 size="xl"
                 href="/#hero"
                 rounded2xl
-                className="!bg-white !text-[#0E5FCC] !border-white !border-b-white/70"
+                className="!bg-white !text-primary-dark !border-white !border-b-white/70"
               >
                 empezar gratis
               </Button>

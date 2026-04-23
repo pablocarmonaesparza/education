@@ -44,10 +44,10 @@ export default function FAQSection() {
         <div className="w-full max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-10 md:mb-16 max-md:mb-8">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#4b4b4b] dark:text-white mb-6 leading-tight tracking-tight max-md:text-3xl max-md:mb-4">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-ink dark:text-white mb-6 leading-tight tracking-tight max-md:text-3xl max-md:mb-4">
               preguntas frecuentes
             </h2>
-            <p className="text-lg md:text-xl text-[#777777] dark:text-gray-400 max-w-xl mx-auto max-md:text-base max-md:px-2">
+            <p className="text-lg md:text-xl text-ink-muted dark:text-gray-400 max-w-xl mx-auto max-md:text-base max-md:px-2">
               encuentra respuestas a tus dudas más comunes
             </p>
           </div>
@@ -66,13 +66,13 @@ export default function FAQSection() {
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
                   className="w-full flex justify-between items-center text-left p-6 md:p-8 max-md:p-4 max-md:min-h-[56px] max-md:touch-manipulation"
                 >
-                  <span className="text-lg md:text-xl font-bold pr-8 text-[#4b4b4b] dark:text-white text-left max-md:text-base max-md:pr-6">
+                  <span className="text-lg md:text-xl font-bold pr-8 text-ink dark:text-white text-left max-md:text-base max-md:pr-6">
                     {faq.question}
                   </span>
                   <motion.div
                     animate={{ rotate: openIndex === index ? 180 : 0 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-[#4b4b4b] dark:text-white"
+                    className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center bg-gray-200 dark:bg-gray-700 text-ink dark:text-white"
                   >
                     <svg
                       className="w-5 h-5"
@@ -98,7 +98,7 @@ export default function FAQSection() {
                       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
                       className="overflow-hidden"
                     >
-                      <div className="px-6 md:px-8 pb-6 md:pb-8 text-base md:text-lg text-[#777777] dark:text-gray-400 leading-relaxed">
+                      <div className="px-6 md:px-8 pb-6 md:pb-8 text-base md:text-lg text-ink-muted dark:text-gray-400 leading-relaxed">
                         {faq.answer}
                       </div>
                     </motion.div>
@@ -115,20 +115,20 @@ export default function FAQSection() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-center md:text-left mb-4 md:mb-0">
-              <p className="text-[#777777] dark:text-gray-400">
+              <p className="text-ink-muted dark:text-gray-400">
                 &copy; {currentYear} Itera. Todos los derechos reservados.
               </p>
             </div>
             <div className="flex gap-6">
               <Link
                 href="/terms"
-                className="text-[#777777] dark:text-gray-400 hover:text-[#1472FF] dark:hover:text-[#1472FF] transition-colors"
+                className="text-ink-muted dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
               >
                 Términos
               </Link>
               <Link
                 href="/privacy"
-                className="text-[#777777] dark:text-gray-400 hover:text-[#1472FF] dark:hover:text-[#1472FF] transition-colors"
+                className="text-ink-muted dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
               >
                 Privacidad
               </Link>

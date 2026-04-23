@@ -109,7 +109,7 @@ const mockProducts: Product[] = [
 const categories = ['Todos', 'Salud & Bienestar', 'Productividad', 'E-commerce', 'Analytics', 'Marketing', 'Finanzas'];
 
 const avatarColors = [
-  'bg-[#1472FF]',
+  'bg-primary',
   'bg-emerald-500',
   'bg-orange-500',
   'bg-purple-500',
@@ -134,7 +134,7 @@ export default function PitchPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-[#4b4b4b] dark:text-white">
+    <div className="min-h-screen bg-gray-50/30 dark:bg-gray-800 p-4 sm:p-6 lg:p-8 font-sans text-ink dark:text-white">
       <div className="max-w-7xl mx-auto space-y-8">
         <SectionHeader
           title="pitch"
@@ -207,11 +207,11 @@ export default function PitchPage() {
                     <Caption className="truncate">{product.author}</Caption>
                   </div>
 
-                  <p className="font-bold text-lg text-[#4b4b4b] dark:text-white mb-1">
+                  <p className="font-bold text-lg text-ink dark:text-white mb-1">
                     {product.name}
                   </p>
 
-                  <Body className="text-[#777777] dark:text-gray-400 line-clamp-2 text-sm mb-3 flex-1">
+                  <Body className="text-ink-muted dark:text-gray-400 line-clamp-2 text-sm mb-3 flex-1">
                     {product.description}
                   </Body>
 
@@ -226,7 +226,7 @@ export default function PitchPage() {
 
                   {/* Footer: Likes + CTA */}
                   <div className="flex items-center justify-between mt-auto">
-                    <div className="flex items-center gap-1.5 text-[#777777] dark:text-gray-400">
+                    <div className="flex items-center gap-1.5 text-ink-muted dark:text-gray-400">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                       </svg>

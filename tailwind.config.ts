@@ -19,6 +19,20 @@ const config: Config = {
           DEFAULT: "#1472FF",
           dark: "#0E5FCC",
         },
+        // Alias oficiales del design system (ver CLAUDE.md).
+        // Cambiar aqui propaga a toda la app — nunca usar hex inline.
+        primary: {
+          DEFAULT: "#1472FF",
+          dark: "#0E5FCC",
+        },
+        completado: {
+          DEFAULT: "#22c55e",
+          dark: "#16a34a",
+        },
+        ink: {
+          DEFAULT: "#4b4b4b", // Text Main (light)
+          muted: "#777777",   // Text Muted
+        },
       },
       borderRadius: {
         "2xl": "1rem",

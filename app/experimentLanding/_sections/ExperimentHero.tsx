@@ -56,7 +56,7 @@ export default function ExperimentHero() {
                 animate={{ y: 0, opacity: 1, rotateX: 0 }}
                 exit={{ y: -30, opacity: 0, rotateX: 60 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
-                className="inline-block text-[#1472FF]"
+                className="inline-block text-primary"
                 style={{ transformStyle: "preserve-3d" }}
               >
                 {ROTATING_WORDS[wordIndex]}
@@ -126,7 +126,7 @@ export default function ExperimentHero() {
           animate={{ y: [0, 6, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
         >
-          <Caption className="!text-[#777777] dark:!text-gray-400">
+          <Caption className="!text-ink-muted dark:!text-gray-400">
             desliza para explorar ↓
           </Caption>
         </motion.div>
@@ -141,7 +141,7 @@ function HeroChip({ icon, label }: { icon: string; label: string }) {
       <span className="text-2xl" aria-hidden>
         {icon}
       </span>
-      <span className="text-sm font-bold text-[#4b4b4b] dark:text-gray-300">
+      <span className="text-sm font-bold text-ink dark:text-gray-300">
         {label}
       </span>
     </Card>

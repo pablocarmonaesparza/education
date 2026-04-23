@@ -108,10 +108,10 @@ export default function PaywallPage() {
           transition={{ duration: 0.5 }}
           className="text-center mb-10"
         >
-          <h1 className="text-4xl md:text-5xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight mb-3">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-ink dark:text-white tracking-tight mb-3">
             tu ruta está lista
           </h1>
-          <p className="text-lg text-[#777777] dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-lg text-ink-muted dark:text-gray-400 max-w-2xl mx-auto">
             elige cómo quieres aprender. puedes cambiar de plan cuando quieras.
           </p>
         </motion.div>
@@ -130,35 +130,35 @@ export default function PaywallPage() {
                 padding="lg"
                 className={`relative flex flex-col md:p-6 h-full w-full ${
                   tier.popular
-                    ? 'bg-[#1472FF]/10 dark:bg-[#1472FF]/20 border-[#1472FF] dark:border-[#1472FF] border-b-[#1472FF] dark:border-b-[#1472FF]'
+                    ? 'bg-primary/10 dark:bg-primary/20 border-primary dark:border-primary border-b-primary dark:border-b-primary'
                     : ''
                 }`}
               >
                 {tier.popular && (
                   <div className="flex justify-center -mt-1 mb-3">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#1472FF] text-white border-transparent font-display">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-primary text-white border-transparent font-display">
                       recomendado
                     </span>
                   </div>
                 )}
 
                 <div className="mb-3">
-                  <h3 className="text-3xl md:text-4xl font-extrabold text-[#4b4b4b] dark:text-white tracking-tight">
+                  <h3 className="text-3xl md:text-4xl font-extrabold text-ink dark:text-white tracking-tight">
                     {tier.name}
                   </h3>
                 </div>
 
-                <p className="text-[#777777] dark:text-gray-400 text-sm mb-5">
+                <p className="text-ink-muted dark:text-gray-400 text-sm mb-5">
                   {tier.description}
                 </p>
 
                 <div className="mb-4">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl md:text-4xl font-bold text-[#1472FF]">
+                    <span className="text-3xl md:text-4xl font-bold text-primary">
                       {tier.price}
                     </span>
                     {tier.period && (
-                      <span className="text-[#777777] dark:text-gray-400 text-xs md:text-sm">
+                      <span className="text-ink-muted dark:text-gray-400 text-xs md:text-sm">
                         USD {tier.period}
                       </span>
                     )}
@@ -169,7 +169,7 @@ export default function PaywallPage() {
                   {tier.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <svg
-                        className="w-4 h-4 flex-shrink-0 text-[#22c55e] mt-0.5"
+                        className="w-4 h-4 flex-shrink-0 text-completado mt-0.5"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -181,7 +181,7 @@ export default function PaywallPage() {
                           d="M5 13l4 4L19 7"
                         />
                       </svg>
-                      <span className="text-xs md:text-sm text-[#4b4b4b] dark:text-gray-300 leading-snug">
+                      <span className="text-xs md:text-sm text-ink dark:text-gray-300 leading-snug">
                         {feature}
                       </span>
                     </li>
@@ -197,7 +197,7 @@ export default function PaywallPage() {
                   disabled={loadingPlan !== null}
                   className={`w-full py-4 text-sm md:text-base mt-auto ${
                     !tier.popular
-                      ? 'text-[#1472FF] border-[#1472FF] hover:bg-[#1472FF]/5 dark:hover:bg-[#1472FF]/10'
+                      ? 'text-primary border-primary hover:bg-primary/5 dark:hover:bg-primary/10'
                       : ''
                   }`}
                 >

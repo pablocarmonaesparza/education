@@ -33,9 +33,9 @@ export interface ProgressBarProps {
 }
 
 const fillColors = {
-  primary: 'bg-[#1472FF]',
+  primary: 'bg-primary',
   white: 'bg-white',
-  green: 'bg-[#22c55e]',
+  green: 'bg-completado',
   yellow: 'bg-yellow-500',
 } as const;
 

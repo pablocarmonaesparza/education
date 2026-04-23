@@ -26,37 +26,37 @@ const baseFlat = baseCommon;
 const variantStyles = {
   /** Blue filled with depth border */
   primary:
-    'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#1265e0]',
+    'bg-primary text-white border-primary-dark hover:bg-[#1265e0]',
 
   /** White / dark-gray filled with neutral depth border */
   outline:
-    'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 ' +
+    'bg-white dark:bg-gray-800 text-ink dark:text-gray-300 ' +
     'border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'hover:bg-gray-50 dark:hover:bg-gray-900',
 
   /** Same as outline visually */
   secondary:
-    'bg-white dark:bg-gray-800 text-[#4b4b4b] dark:text-gray-300 ' +
+    'bg-white dark:bg-gray-800 text-ink dark:text-gray-300 ' +
     'border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'hover:bg-gray-50 dark:hover:bg-gray-700',
 
   /** Transparent, no border – just hover highlight */
   ghost:
-    'bg-transparent text-[#4b4b4b] dark:text-gray-300 ' +
+    'bg-transparent text-ink dark:text-gray-300 ' +
     'hover:bg-gray-100 dark:hover:bg-gray-800',
 
   /** Sidebar active state */
   'nav-active':
-    'bg-[#1472FF] text-white border-[#0E5FCC] hover:bg-[#1265e0]',
+    'bg-primary text-white border-primary-dark hover:bg-[#1265e0]',
 
   /** Sidebar inactive state */
   'nav-inactive':
-    'bg-transparent text-[#4b4b4b] dark:text-gray-300 ' +
+    'bg-transparent text-ink dark:text-gray-300 ' +
     'hover:bg-gray-100 dark:hover:bg-gray-800',
 
   /** Completado (green) with depth */
   completado:
-    'bg-[#22c55e] text-white border-[#16a34a] hover:bg-[#1eab54]',
+    'bg-completado text-white border-completado-dark hover:bg-[#1eab54]',
 
   /** Danger / destructive */
   danger:
@@ -179,7 +179,7 @@ export { depthBottomOnly as depthBottomClasses } from '@/lib/design-tokens';
 
 /** Primary depth color classes only. */
 export const depthPrimaryColors =
-  'bg-[#1472FF] border-[#0E5FCC] hover:bg-[#1265e0]';
+  'bg-primary border-primary-dark hover:bg-[#1265e0]';
 
 /** Outline depth color classes only. */
 export const depthOutlineColors =

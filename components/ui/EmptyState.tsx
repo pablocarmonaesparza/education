@@ -45,15 +45,15 @@ export default function EmptyState({
       className={`max-w-2xl mx-auto mt-16 bg-gradient-to-br from-blue-50 to-white dark:from-blue-950/50 dark:to-gray-900 rounded-2xl border border-blue-100 dark:border-blue-900 p-12 text-center ${className}`}
     >
       {/* Icon circle */}
-      <div className={`w-20 h-20 mx-auto mb-6 rounded-full bg-[#1472FF] ${depth.border} ${depth.bottom} border-[#0E5FCC] flex items-center justify-center`}>
+      <div className={`w-20 h-20 mx-auto mb-6 rounded-full bg-primary ${depth.border} ${depth.bottom} border-primary-dark flex items-center justify-center`}>
         {icon}
       </div>
 
-      <h2 className="text-2xl font-bold text-[#4b4b4b] dark:text-white mb-3">
+      <h2 className="text-2xl font-bold text-ink dark:text-white mb-3">
         {title}
       </h2>
 
-      <p className="text-[#777777] dark:text-gray-400 max-w-md mx-auto mb-6">
+      <p className="text-ink-muted dark:text-gray-400 max-w-md mx-auto mb-6">
         {description}
       </p>
 
