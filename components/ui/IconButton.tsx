@@ -17,7 +17,7 @@ const base =
 const variantStyles = {
   /** Blue filled with #0E5FCC depth border */
   primary:
-    `${depthToken} bg-primary text-white border-primary-dark hover:bg-[#1265e0]`,
+    `${depthToken} bg-primary text-white border-primary-dark hover:bg-primary-hover`,
 
   /** White / dark-gray with neutral depth border */
   outline:

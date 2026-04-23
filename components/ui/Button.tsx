@@ -26,7 +26,7 @@ const baseFlat = baseCommon;
 const variantStyles = {
   /** Blue filled with depth border */
   primary:
-    'bg-primary text-white border-primary-dark hover:bg-[#1265e0]',
+    'bg-primary text-white border-primary-dark hover:bg-primary-hover',
 
   /** White / dark-gray filled with neutral depth border */
   outline:
@@ -47,7 +47,7 @@ const variantStyles = {
 
   /** Sidebar active state */
   'nav-active':
-    'bg-primary text-white border-primary-dark hover:bg-[#1265e0]',
+    'bg-primary text-white border-primary-dark hover:bg-primary-hover',
 
   /** Sidebar inactive state */
   'nav-inactive':
@@ -179,7 +179,7 @@ export { depthBottomOnly as depthBottomClasses } from '@/lib/design-tokens';
 
 /** Primary depth color classes only. */
 export const depthPrimaryColors =
-  'bg-primary border-primary-dark hover:bg-[#1265e0]';
+  'bg-primary border-primary-dark hover:bg-primary-hover';
 
 /** Outline depth color classes only. */
 export const depthOutlineColors =

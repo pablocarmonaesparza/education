@@ -24,6 +24,7 @@ const config: Config = {
         primary: {
           DEFAULT: "#1472FF",
           dark: "#0E5FCC",
+          hover: "#1265e0", // Hover sobre primary (ver DESIGN_SYSTEM.md)
         },
         completado: {
           DEFAULT: "#22c55e",

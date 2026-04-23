@@ -29,7 +29,7 @@ const variantStyles = {
 
 const hoverStyles = {
   neutral: 'hover:bg-gray-50 dark:hover:bg-gray-900',
-  primary: 'hover:bg-[#1265e0]',
+  primary: 'hover:bg-primary-hover',
   completado: '', // completado has no hover in the design system
 } as const;
 

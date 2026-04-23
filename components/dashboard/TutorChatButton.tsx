@@ -433,7 +433,7 @@ export default function TutorChatButton() {
               <button
                 type="submit"
                 disabled={!input.trim() || isStreaming}
-                className={`w-9 h-9 flex items-center justify-center rounded-xl ${depth.border} ${depth.bottom} border-primary border-b-primary-dark bg-primary text-white hover:bg-[#1265e0] ${depth.active} transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0`}
+                className={`w-9 h-9 flex items-center justify-center rounded-xl ${depth.border} ${depth.bottom} border-primary border-b-primary-dark bg-primary text-white hover:bg-primary-hover ${depth.active} transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0`}
                 aria-label="Enviar mensaje"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
