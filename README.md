@@ -138,12 +138,14 @@ Education/
 │   │   ├── ProgressBuilder.tsx
 │   │   └── DashboardClientLayout.tsx
 │   ├── landing/                  # Landing page sections
-│   │   ├── HeroSection.tsx
-│   │   ├── ProblemSolutionSection.tsx
-│   │   ├── DifferentiatorsSection.tsx
+│   │   ├── NewHeroSection.tsx
+│   │   ├── HowItWorksSection.tsx
+│   │   ├── AvailableCoursesSection.tsx
 │   │   ├── CourseStructureSection.tsx
 │   │   ├── PricingSection.tsx
-│   │   └── FAQSection.tsx
+│   │   ├── FAQSection.tsx
+│   │   ├── AnimatedBackground.tsx
+│   │   └── HeroShader.tsx
 │   └── shared/                   # Shared components
 │       ├── Navbar.tsx
 │       └── Footer.tsx
@@ -489,20 +491,18 @@ Triggers course generation workflow.
 
 ### Landing Page Components
 
-**HeroSection.tsx**
-- Main hero with CTA buttons
-- Animated gradient background
-- Value proposition
+**NewHeroSection.tsx**
+- Hero reconstruido desde el handoff de Claude Design
+- Textarea "describe tu idea" + CTA primary
+- Fondo animado con `AnimatedBackground` + `HeroShader`
 
-**ProblemSolutionSection.tsx**
-- Before/after comparison
-- Problem identification
-- Solution presentation
+**HowItWorksSection.tsx**
+- Proceso 3 pasos (pendiente decisión visual: Remotion vs screenshots)
+- Scroll-driven animations
 
-**DifferentiatorsSection.tsx**
-- 3 key differentiators
-- Icon + description format
-- Benefit highlighting
+**AvailableCoursesSection.tsx**
+- Carrusel de tipos de curso disponibles
+- Modal expandible por curso
 
 **CourseStructureSection.tsx**
 - Sample course phases
@@ -720,8 +720,6 @@ npm run lint         # Run ESLint
 - `components/auth/AuthForm.tsx` - Authentication form
 - `components/dashboard/Sidebar.tsx` - Dashboard navigation
 - `components/dashboard/VideoPlayer.tsx` - Video player component
-- `components/landing/DifferentiatorsSection.tsx` - Landing differentiators
-- `components/landing/HeroSection.tsx` - Landing hero
 
 ### New Files (Staged):
 - `app/dashboard/my-path/video/[phaseId]/[videoId]/VideoPlayerClient.tsx` - Client video player
