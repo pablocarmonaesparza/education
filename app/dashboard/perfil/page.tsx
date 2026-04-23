@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { SpinnerPage } from '@/components/ui/Spinner';
 import Button from '@/components/ui/Button';
+import GamificationSummary from '@/components/dashboard/GamificationSummary';
 import { depth } from '@/lib/design-tokens';
 
 interface UserProfile {
@@ -14,6 +15,11 @@ interface UserProfile {
   tier: string;
   createdAt: string;
   projectIdea?: string;
+  subscriptionActive: boolean;
+  subscriptionPlan: 'monthly' | 'yearly' | null;
+  subscriptionStatus: string | null;
+  currentPeriodEnd: string | null;
+  hasStripeCustomer: boolean;
 }
 
 export default function PerfilPage() {
@@ -29,6 +35,7 @@ export default function PerfilPage() {
   const [telegramCode, setTelegramCode] = useState<string | null>(null);
   const [telegramLoading, setTelegramLoading] = useState(false);
   const [telegramCodeExpiry, setTelegramCodeExpiry] = useState<string | null>(null);
+  const [billingLoading, setBillingLoading] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
@@ -60,6 +67,11 @@ export default function PerfilPage() {
           tier: userData?.tier || 'basic',
           createdAt: userData?.created_at || user.created_at,
           projectIdea,
+          subscriptionActive: userData?.subscription_active ?? false,
+          subscriptionPlan: userData?.subscription_plan ?? null,
+          subscriptionStatus: userData?.subscription_status ?? null,
+          currentPeriodEnd: userData?.current_period_end ?? null,
+          hasStripeCustomer: !!userData?.stripe_customer_id,
         });
         setEditName(userData?.name || user.user_metadata?.name || '');
 
@@ -106,6 +118,29 @@ export default function PerfilPage() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push('/');
+  };
+
+  const handleManageSubscription = async () => {
+    setBillingLoading(true);
+    setMessage(null);
+    try {
+      const res = await fetch('/api/stripe/create-portal-session', {
+        method: 'POST',
+      });
+      const data = await res.json();
+      if (!res.ok || !data.sessionUrl) {
+        throw new Error(data.error || 'no se pudo abrir el portal');
+      }
+      window.location.href = data.sessionUrl;
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message });
+      setTimeout(() => setMessage(null), 4000);
+      setBillingLoading(false);
+    }
+  };
+
+  const handleUpgrade = () => {
+    router.push('/paywall');
   };
 
   const handleGenerateTelegramCode = async () => {
@@ -293,21 +328,65 @@ export default function PerfilPage() {
           </div>
         )}
 
+        {/* Gamification summary — lee user_stats vía /lib/gamification */}
+        <div className="mb-6">
+          <GamificationSummary />
+        </div>
+
         {/* Configuration Section */}
         <div id="configuracion" className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-900 overflow-hidden mb-6">
           <div className="p-6 border-b border-gray-100 dark:border-gray-800">
             <h3 className="text-lg font-bold text-ink dark:text-white">Configuración</h3>
           </div>
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
-            {/* Plan */}
-            <div className="p-6 flex items-center justify-between">
-              <div>
-                <p className="font-medium text-ink dark:text-white">Plan actual</p>
-                <p className="text-sm text-ink-muted dark:text-gray-400">Plan {getTierName(profile.tier)}</p>
+            {/* Mi Suscripción */}
+            <div className="p-6">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-ink dark:text-white">Mi suscripción</p>
+                  {profile.subscriptionActive && profile.subscriptionPlan ? (
+                    <>
+                      <p className="text-sm text-ink-muted dark:text-gray-400">
+                        Plan {profile.subscriptionPlan === 'yearly' ? 'anual ($199 USD/año)' : 'mensual ($19 USD/mes)'}
+                      </p>
+                      {profile.currentPeriodEnd && (
+                        <p className="text-xs text-ink-muted dark:text-gray-400 mt-1">
+                          Próxima renovación: {formatDate(profile.currentPeriodEnd)}
+                        </p>
+                      )}
+                      {profile.subscriptionStatus && profile.subscriptionStatus !== 'active' && (
+                        <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                          Estado: {profile.subscriptionStatus}
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <p className="text-sm text-ink-muted dark:text-gray-400">
+                      Plan gratis — actualiza para desbloquear la ruta personalizada
+                    </p>
+                  )}
+                </div>
+                {profile.hasStripeCustomer ? (
+                  <Button
+                    variant="outline"
+                    size="md"
+                    rounded2xl
+                    onClick={handleManageSubscription}
+                    disabled={billingLoading}
+                  >
+                    {billingLoading ? 'Abriendo…' : 'Gestionar'}
+                  </Button>
+                ) : (
+                  <Button
+                    variant="primary"
+                    size="md"
+                    rounded2xl
+                    onClick={handleUpgrade}
+                  >
+                    Mejorar plan
+                  </Button>
+                )}
               </div>
-              <Button variant="primary" size="md" rounded2xl>
-                Mejorar Plan
-              </Button>
             </div>
 
             {/* Notifications */}

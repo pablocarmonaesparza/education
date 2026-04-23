@@ -24,6 +24,8 @@ import {
   type LectureRow,
 } from '@/lib/lessons/fromSupabase';
 import { getUserStats, type UserStats } from '@/lib/gamification';
+import { persistLessonCompletion } from '@/lib/lessons/persist-completion';
+import LevelUpModal from '@/components/dashboard/LevelUpModal';
 import { useSidebar } from '@/contexts/SidebarContext';
 
 const greetings = [
@@ -192,6 +194,20 @@ function DashboardPageContent() {
   const [isMobile, setIsMobile] = useState(false);
   const [showCreateCourseModal, setShowCreateCourseModal] = useState(false);
   const [userStats, setUserStats] = useState<UserStats | null>(null);
+  // Level-up celebration: el trigger Postgres recalcula `level` al completar
+  // lección. Si sube, `handleLessonComplete` llena `pendingLevelUp`, y el
+  // useEffect abajo abre el modal una vez que el overlay de la lección se
+  // cierra (queremos la secuencia: celebration de lección → cierre → modal).
+  const [pendingLevelUp, setPendingLevelUp] = useState<{ level: number; totalXp: number } | null>(null);
+  const [showLevelUp, setShowLevelUp] = useState(false);
+
+  // Cuando hay un level-up pendiente y el overlay de la lección ya cerró
+  // completamente, mostrar el modal. Evita superposición con la celebration.
+  useEffect(() => {
+    if (pendingLevelUp && !isVideoPlayerOpen && !isVideoPlayerClosing) {
+      setShowLevelUp(true);
+    }
+  }, [pendingLevelUp, isVideoPlayerOpen, isVideoPlayerClosing]);
   // Multi-route state: user may have a full-course intake and/or a
   // personalized intake. activeMode decides which one is rendered.
   const [activeMode, setActiveMode] = useState<RouteMode>('full');
@@ -871,103 +887,33 @@ function DashboardPageContent() {
       return;
     }
 
-    // 2. Persist first. Abort local update on error so the dashboard never
-    // shows progress that wasn't saved.
-    //
-    // Schema (post-pivot): table is `user_progress`, FK is `lecture_id`, the
-    // boolean is `is_completed`. Several columns are NOT NULL with no default
-    // (started_at, last_active_at, slides_completed, xp_earned, attempts).
-    //
-    // We split UPDATE vs INSERT (instead of a single upsert) so re-completions
-    // preserve `started_at`, `xp_earned`, and increment `attempts` instead of
-    // clobbering them — important for the analytics view in
-    // supabase/migrations/003 that computes `completed_at - started_at`.
-    //
-    // `slides_completed` is set to the lecture's real terminal slide count
-    // (queried inline) so `is_completed=true` is internally consistent with
-    // the slide count, instead of a misleading 0.
-    //
-    // KNOWN GAP (out of scope for this fix): on first completion via this
-    // path, `started_at = completed_at` because nothing tracks the moment
-    // the lesson actually opened. Fixing that requires a separate "lesson
-    // start" hook on lesson open — flagged for follow-up.
-    const now = new Date().toISOString();
-
-    // Count published slides for this lecture so `slides_completed` reflects
-    // reality. Read failure is FATAL — falling back to 0 would write
-    // `slides_completed=0` with `is_completed=true`, which is exactly the
-    // analytics inconsistency this whole branch is here to prevent.
-    const { count: slideCount, error: slideCountError } = await supabase
-      .from('slides')
-      .select('id', { count: 'exact', head: true })
-      .eq('lecture_id', video.id)
-      .neq('status', 'archived');
-    if (slideCountError || slideCount == null) {
-      console.warn(
-        '[dashboard] failed to count slides for lecture, aborting completion write to avoid bogus slides_completed=0',
-        slideCountError,
-      );
-      return;
-    }
-    const terminalSlideCount = slideCount;
-
-    // Look up existing row so we can choose UPDATE vs INSERT and preserve
-    // fields that should NOT be reset on re-completion.
-    const { data: existing, error: existingError } = await supabase
-      .from('user_progress')
-      .select('started_at, attempts, xp_earned, slides_completed')
-      .eq('user_id', user.id)
-      .eq('lecture_id', video.id)
-      .maybeSingle();
-    if (existingError) {
-      console.warn('[dashboard] failed to read existing user_progress', existingError);
-      return;
-    }
-
-    let writeError: any = null;
-    if (existing) {
-      const { error } = await supabase
-        .from('user_progress')
-        .update({
-          last_active_at: now,
-          completed_at: now,
-          is_completed: true,
-          slides_completed: Math.max(existing.slides_completed ?? 0, terminalSlideCount),
-          attempts: (existing.attempts ?? 0) + 1,
-        })
-        .eq('user_id', user.id)
-        .eq('lecture_id', video.id);
-      writeError = error;
-    } else {
-      // xp_earned queda en 0 en el INSERT — el trigger
-      // `on_user_progress_complete` lo sobrescribe con SUM(slides.xp) al
-      // detectar is_completed=true. El cliente no calcula XP.
-      const { error } = await supabase.from('user_progress').insert({
-        user_id: user.id,
-        lecture_id: video.id,
-        started_at: now,
-        last_active_at: now,
-        completed_at: now,
-        is_completed: true,
-        slides_completed: terminalSlideCount,
-        xp_earned: 0,
-        attempts: 1,
-      });
-      writeError = error;
-    }
-    if (writeError) {
-      console.warn('[dashboard] failed to persist user_progress', writeError);
+    // 2. Persist via the shared helper so dashboard + /lecture/[slug] write
+    // identical row shapes (no drift). The DB shape rationale lives in
+    // lib/lessons/persist-completion.ts (split UPDATE-vs-INSERT, slide
+    // count for is_completed consistency, etc). Local UI state updates
+    // below are dashboard-specific and stay inline.
+    const persistResult = await persistLessonCompletion(supabase, user.id, video.id);
+    if (!persistResult.ok) {
+      console.warn('[dashboard] failed to persist user_progress:', persistResult.error);
       return;
     }
 
     // El trigger `on_user_progress_complete` ya actualizó user_stats.
     // Re-fetch para que la racha/XP/nivel en el UI (TutorChatButton,
     // próxima celebration) reflejen el nuevo estado.
-    setUserStats(await getUserStats(supabase, user.id));
-    // Notifica a StatsPills (montado en el layout, separado de este árbol)
-    // para que también refetchee sin depender de props.
+    const previousLevel = userStats?.level ?? 1;
+    const freshStats = await getUserStats(supabase, user.id);
+    setUserStats(freshStats);
+    // Notifica a StatsPills y GamificationSummary (montados en layout/perfil,
+    // fuera de este árbol) para que también refetcheen.
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('itera:stats-refresh'));
+    }
+    // Level-up: si el trigger subió el nivel, celebramos. El modal queda
+    // pendiente y se muestra después de que el overlay de la lección se
+    // cierre (useEffect abajo lo abre cuando `pendingLevelUp` existe).
+    if (freshStats.level > previousLevel) {
+      setPendingLevelUp({ level: freshStats.level, totalXp: freshStats.totalXp });
     }
 
     // 3. Update the completion set so the derive effect keeps future route
@@ -1429,6 +1375,7 @@ function DashboardPageContent() {
                 <ExperimentLesson
                   key={selectedVideo?.id ?? 'none'}
                   steps={lessonSteps}
+                  lectureId={selectedVideo?.id}
                   onClose={handleCloseVideo}
                   onComplete={async (result) => {
                     if (selectedVideo) await handleLessonComplete(selectedVideo, result);
@@ -1518,6 +1465,18 @@ function DashboardPageContent() {
           </Card>
         </div>
       )}
+
+      {/* Level-up celebration — se abre cuando el trigger Postgres sube el
+          nivel y el overlay de la lección ya cerró. Ver handleLessonComplete. */}
+      <LevelUpModal
+        open={showLevelUp && pendingLevelUp !== null}
+        level={pendingLevelUp?.level ?? 1}
+        totalXp={pendingLevelUp?.totalXp ?? 0}
+        onClose={() => {
+          setShowLevelUp(false);
+          setPendingLevelUp(null);
+        }}
+      />
     </div>
   );
 }
