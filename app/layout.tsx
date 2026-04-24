@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s | Itera",
   },
   description:
-    "Aprende a construir proyectos con IA en 3 semanas. Ruta 100% personalizada por Claude AI. 400+ micro-videos, gamificación, y de la idea al MVP. Garantía de 30 días.",
+    "Aprende a construir con inteligencia artificial en 3 semanas. Ejercicios cortos e interactivos, ruta personalizada por Claude AI, de la idea al MVP.",
   keywords: [
     "curso inteligencia artificial",
     "aprender IA",
@@ -57,28 +57,25 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "es_ES",
+    // es_419 = UN code para español latinoamericano. Mejor señal regional
+    // que "es_ES" (España). Ver docs/research/SEO_AUDIT_v1.md §2.3.
+    locale: "es_419",
     alternateLocale: ["es_MX", "es_AR", "es_CO"],
     url: "https://itera.la",
     siteName: "Itera",
     title: "Itera | Aprende IA Construyendo Tu Proyecto",
     description:
-      "Aprende IA con una ruta 100% personalizada. 400+ videos de 1-3 min, gamificación, y construye tu MVP. Garantía de 30 días.",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Itera - Aprende IA Construyendo",
-      },
-    ],
+      "Ejercicios cortos, ruta personalizada por Claude AI, y de la idea al MVP en 3 semanas.",
+    // `images` omitido: `app/opengraph-image.tsx` genera el OG dinámico y
+    // Next.js lo inyecta automáticamente.
   },
   twitter: {
     card: "summary_large_image",
     title: "Itera | Aprende IA Construyendo Tu Proyecto",
     description:
-      "Ruta 100% personalizada por Claude AI. 400+ micro-videos. De la idea al MVP.",
-    images: ["/og-image.jpg"],
+      "Ruta personalizada por Claude AI. Ejercicios cortos. De la idea al MVP.",
+    // `images` omitido: file-based `app/opengraph-image.tsx` se reutiliza
+    // como twitter:image automáticamente.
     creator: "@iterala",
   },
   robots: {
