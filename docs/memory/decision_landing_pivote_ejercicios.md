@@ -3,6 +3,7 @@ type: decision
 title: landing realineada a ejercicios interactivos + dos rutas
 date: 2026-04-22
 tags: [landing, copy, pivote, ejercicios]
+dept: [cpo, cmo]
 ---
 
 Se realinearon 5 archivos de `components/landing/` del posicionamiento viejo ("curso personalizado de videos") al nuevo ("ejercicios interactivos + dos rutas: completa y personalizada"). Scope: copy only, cero cambios de layout/componentes/visuales.

@@ -3,6 +3,7 @@ type: aprendizaje
 title: pipeline de review de lecciones con evaluator + linter + auto-fix en batches paralelos
 date: 2026-04-21
 tags: [lecciones, review, metodologia, agents]
+dept: [cpo, cto]
 ---
 
 Para revisar las 100 lecciones contra la metodología, lo que funcionó fue el skill `/itera-review` con esta forma:

@@ -3,6 +3,7 @@ type: gotcha
 title: posicionamiento real vs context_md (empresa vs latam universal)
 date: 2026-04-22
 tags: [posicionamiento, audiencia, b2b, context_md]
+dept: [cmo, cpo]
 ---
 
 `docs/CONTEXT.md` posiciona la audiencia como "LATAM no-técnico, 25-55 años, test: ¿lo entendería alguien de 55 años que jamás programó?". Pero Pablo aclaró el 22 abril 2026 que la pelea real actual es más "aprender AI para tu empresa/trabajo" — posicionamiento más profesional/B2B que universal. `CONTEXT.md` podría estar stale en este punto.

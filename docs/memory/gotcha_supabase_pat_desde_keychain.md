@@ -3,6 +3,7 @@ type: gotcha
 title: extraer el pat de supabase cli desde macos keychain para usar management api
 date: 2026-04-21
 tags: [supabase, cli, macos, keychain, management-api]
+dept: [cto]
 ---
 
 El Supabase CLI guarda el Personal Access Token en macOS Keychain (servicio "Supabase CLI", cuenta "supabase") en formato `go-keyring-base64:<base64>`. Para usarlo con la Management API sin pedirle al usuario que genere uno nuevo:

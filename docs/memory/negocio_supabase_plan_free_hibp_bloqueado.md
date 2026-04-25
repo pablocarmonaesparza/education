@@ -3,6 +3,7 @@ type: negocio
 title: hibp (leaked password protection) requiere supabase pro — bloqueado en free
 date: 2026-04-21
 tags: [supabase, pricing, seguridad, plan]
+dept: [cto, cfo]
 ---
 
 Activar **HaveIBeenPwned leaked password protection** en Supabase devuelve `402 Payment Required` con el mensaje *"Configuring leaked password protection via HaveIBeenPwned.org is available on Pro Plans and up."* en el plan Free.

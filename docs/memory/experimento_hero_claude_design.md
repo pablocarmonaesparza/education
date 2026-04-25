@@ -3,6 +3,7 @@ type: experimento
 title: hero rediseñado via claude design
 date: 2026-04-22
 tags: [hero, landing, claude_design, diseno]
+dept: [cmo]
 ---
 
 Pablo va a traer un diseño de hero desde **Claude Design** (producto nuevo de Anthropic Labs lanzado el 17 abril 2026, disponible en `claude.ai/design`). El H1 actual — "un curso a partir de tu idea" — le gusta visualmente pero no comunica el posicionamiento nuevo de "aprender AI para tu empresa". Esperando el output para implementar.

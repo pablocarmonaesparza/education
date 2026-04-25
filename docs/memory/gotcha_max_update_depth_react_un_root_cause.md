@@ -3,6 +3,7 @@ type: gotcha
 title: "maximum update depth exceeded" casi siempre tiene un solo root cause
 date: 2026-04-21
 tags: [react, debugging, performance]
+dept: [cto]
 ---
 
 Cuando React reporta "Maximum update depth exceeded" en varios componentes a la vez (XpBar, useTutorChat, dashboard, etc.), normalmente hay **un solo infinite loop** — los demás errores son colaterales porque React reporta cada setState que ocurre durante el mismo render ciclo. No persigas cada mensaje; busca la causa raíz.

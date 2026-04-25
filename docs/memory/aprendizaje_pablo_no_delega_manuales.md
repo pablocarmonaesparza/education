@@ -3,6 +3,7 @@ type: aprendizaje
 title: pablo no quiere instrucciones manuales — ejecutar directamente vía mcp/cli
 date: 2026-04-21
 tags: [operacion, pablo, workflow]
+dept: [orq]
 ---
 
 Cuando hay una operación que yo puedo ejecutar directamente (via MCP Supabase, Supabase CLI, Management API, gh, git, etc.), **hacerla directamente** en vez de pedirle a Pablo que entre al Dashboard y haga clics. Feedback literal: *"Espera todo lo que me pides puedes hacerlo tu directamente."*

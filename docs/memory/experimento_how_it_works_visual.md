@@ -3,6 +3,7 @@ type: experimento
 title: representación visual de how it works cuando el producto aún no existe
 date: 2026-04-22
 tags: [how_it_works, landing, remotion, demo]
+dept: [cmo]
 ---
 
 La sección "cómo funciona" de la landing promete ejercicios interactivos (mcq, tap-match, fill-blank, etc.) pero el producto real todavía no está en ese estado completo al inicio. Pablo no está convencido de cómo representarlo visualmente. Considera dos opciones: (a) videos hechos con **Remotion** que simulen el formato de ejercicios, (b) **screenshots del demo** actual capturados y tratados con el mismo estilo visual. Decisión pendiente.

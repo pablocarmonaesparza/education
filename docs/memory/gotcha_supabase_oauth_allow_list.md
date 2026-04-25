@@ -3,6 +3,7 @@ type: gotcha
 title: oauth de supabase: site_url + allow_list deben estar configurados con patterns /**
 date: 2026-04-21
 tags: [supabase, oauth, google, auth]
+dept: [cto]
 ---
 
 Si Supabase OAuth cae en `http://127.0.0.1:3000/?code=...` (o en la home en vez de `/auth/callback`), el problema es que el `redirectTo` que manda el cliente **no matchea el allow_list**, y Supabase hace fallback silencioso a `site_url`. El crash ocurre porque la home no tiene el handler para intercambiar el code.

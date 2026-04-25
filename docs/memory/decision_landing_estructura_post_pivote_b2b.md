@@ -3,6 +3,7 @@ type: decision
 title: landing — estado al cerrar agente Landing 22-23 abril
 date: 2026-04-23
 tags: [landing, handoff, estructura, b2b, hero-shader]
+dept: [cpo, cmo]
 ---
 
 Cierre del agente Landing tras 11 commits del fin de semana 22-23 abril. Estado para que el próximo agente que tome el frente Landing entre con contexto sin reconstruirlo desde `git log`.

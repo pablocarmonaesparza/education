@@ -3,6 +3,7 @@ type: aprendizaje
 title: perplexity mcp instalado + heurística de búsqueda web
 date: 2026-04-22
 tags: [perplexity, mcp, tooling, busqueda]
+dept: [orq]
 ---
 
 Instalado el MCP de Perplexity a nivel **usuario** (`~/.claude.json` scope user). Disponible en todas las sesiones de Claude Code, cualquier proyecto. Tres herramientas:

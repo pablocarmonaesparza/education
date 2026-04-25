@@ -3,6 +3,7 @@ type: decision
 title: gamification estilo duolingo pero b2b — visual sí, mecánicas virales no
 date: 2026-04-22
 tags: [gamification, b2b, duolingo, badges, racha, xp]
+dept: [cpo, cgo]
 ---
 
 Para el sistema de gamification de Itera, Pablo eligió **look-and-feel estilo Duolingo** (badges con tiers de rareza, unlock celebrations, progreso visible, catálogo amplio) pero descartando explícitamente las mecánicas virales B2C. Además hay **dos conceptos distintos de "racha"** que viven en variables separadas.

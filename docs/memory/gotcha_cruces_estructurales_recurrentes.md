@@ -3,6 +3,7 @@ type: gotcha
 title: cruces estructurales que reaparecen entre conversaciones itera
 date: 2026-04-22
 tags: [arquitectura, cruces, deuda, coordinacion, orquestacion]
+dept: [orq]
 ---
 
 Durante la orquestación del 2026-04-22 aparecieron cruces estructurales que van a reaparecer cada vez que se hagan rondas de coordinación entre las 12 conversaciones (ver `metodologia_orquestacion_12_conversaciones.md`). Dejarlos documentados acelera la siguiente ronda.

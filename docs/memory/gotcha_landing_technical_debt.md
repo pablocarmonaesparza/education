@@ -3,6 +3,7 @@ type: gotcha
 title: deuda técnica acumulada en components/landing/
 date: 2026-04-22
 tags: [landing, technical_debt, design_system, dead_code]
+dept: [cto, cmo]
 ---
 
 La carpeta `components/landing/` tiene dos problemas acumulados que no son bloqueantes pero importan:

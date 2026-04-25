@@ -3,6 +3,7 @@ type: gotcha
 title: `git commit` sin pathspec levanta archivos staged de otros agentes
 date: 2026-04-23
 tags: [git, coordinacion, agentes_paralelos]
+dept: [cto]
 ---
 
 En este repo hay múltiples agentes (backend, gamification, mailing, education, components…) trabajando en paralelo. Casi siempre hay archivos staged por otros que todavía no han hecho su commit. Si yo hago:
