@@ -641,7 +641,7 @@ export default function ExperimentLesson({
     // space the children push the container past it and the footer slides
     // off-screen (mobile especially: ~78px below the viewport in iPhone
     // emulation). The main element below is the only scroller.
-    <div className={`${onClose ? 'h-full' : 'min-h-screen'} flex flex-col overflow-hidden bg-white dark:bg-gray-800`}>
+    <div className={`${onClose ? 'h-full' : 'h-[100dvh]'} flex flex-col overflow-hidden bg-white dark:bg-gray-800`}>
       {/* Top bar: single flex row, no absolute positioning — scales cleanly to mobile.
           Mobile gets tight top padding so the progress bar sits right under the
           mobile header (or top edge if the overlay covers it). */}
