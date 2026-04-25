@@ -467,12 +467,12 @@ cp "$WEB/.env.local" "$ENV_BACKUP"
 sed -i '' \
   -e '/^# NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_/s/^# //' \
   -e '/^# STRIPE_SECRET_KEY=sk_test_/s/^# //' \
-  -e '/^# STRIPE_WEBHOOK_SECRET=whsec_3db7d9e2/s/^# //' \
+  -e '/^# STRIPE_WEBHOOK_SECRET=/s/^# //' \
   -e '/^# STRIPE_PRICE_MONTHLY=price_1TOLaG/s/^# //' \
   -e '/^# STRIPE_PRICE_YEARLY=price_1TOLal/s/^# //' \
   -e '/^NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_/s/^/# /' \
   -e '/^STRIPE_SECRET_KEY=sk_live_/s/^/# /' \
-  -e '/^STRIPE_WEBHOOK_SECRET=whsec_vXlci7s6/s/^/# /' \
+  -e '/^STRIPE_WEBHOOK_SECRET=/s/^/# /' \
   -e '/^STRIPE_PRICE_MONTHLY=price_1TOKuR/s/^/# /' \
   -e '/^STRIPE_PRICE_YEARLY=price_1TOKvW/s/^/# /' \
   "$WEB/.env.local"
@@ -687,7 +687,7 @@ Endpoint live ya creado: `we_1TOLTwJeqJcWonQScSXrHqEP` → `https://itera.la/api
 |---|---|
 | Price mensual test | `price_1TOLaGJeqJcWonQSjOPk44mB` |
 | Price anual test | `price_1TOLalJeqJcWonQSsz5vx2nW` |
-| Webhook signing secret (CLI persistente) | `whsec_3db7d9e2c5604aa4f08b30f8e1da24103c2fd03df7ef01bbc08dd845a7765722` |
+| Webhook signing secret (CLI persistente) | **No documentar en git.** Leer desde `.env.local` o regenerar con `stripe listen`. |
 
 ### 11.5. Preview user para tests
 
@@ -711,7 +711,7 @@ URL:        https://mteicafdzilhxkawyvxw.supabase.co
 `.env.local` actual (como de 2026-04-23 19:00):
 
 - **LIVE mode activo.** Las 5 vars `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_MONTHLY`, `STRIPE_PRICE_YEARLY` apuntan a live.
-- **TEST mode comentado.** Las mismas 5 vars con `pk_test_...`/`sk_test_...`/`whsec_3db7d9e2.../price_1TOLa.../price_1TOLal...` están en líneas 16-20, prefijadas con `#`. Para activar test, descomentar y comentar las live (o usar el script de la sección 9.1).
+- **TEST mode comentado.** Las mismas 5 vars con placeholders de test están en líneas 16-20, prefijadas con `#`. Para activar test, descomentar y comentar las live (o usar el script de la sección 9.1). No pegar secrets reales en este doc.
 - **No hay vars Mercado Pago.** Las 2 vacías que estaban (`NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY`, `MERCADO_PAGO_ACCESS_TOKEN`) fueron eliminadas el 2026-04-23.
 - **Backup live disponible** en `/tmp/itera-env-live-backup.env` (3351 bytes, byte-exacto).
 
