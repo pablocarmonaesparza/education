@@ -60,14 +60,19 @@ Ver:
 
 ## GBrain Configuration (configured by /setup-gbrain)
 
-- Engine: pglite (local, en `~/.gbrain/brain.pglite`)
-- Config file: `~/.gbrain/config.json` (mode 0600)
-- Setup date: 2026-04-27
+- Engine: **postgres** (Supabase remoto)
+- Project: **"LLM's Memory"** (`bfybskvhngitvyoewoeq`, region us-east-1, ACTIVE_HEALTHY)
+- Pooler host: `aws-1-us-east-1.pooler.supabase.com:5432` (session mode, prepared statements ON)
+- Config file: `~/.gbrain/config.json` (mode 0600, contiene URL con password DB)
+- Setup date: 2026-04-27 (migrado desde pglite el mismo día)
 - MCP registered: yes (user scope, abs path `/Users/pablocarmona/.bun/bin/gbrain serve`)
-- Memory sync: off (multi-machine bloqueado por unpaid Supabase invoices — restaurar cuando se desbloquee)
+- Memory sync: cross-machine via supabase remoto (codex en otras máquinas puede conectarse con misma URL)
 - Current repo policy: read-write (github.com/pablocarmonaesparza/education)
+- PGLite backup: `~/.gbrain/brain.pglite` (preservado por `gbrain migrate` como rollback)
 
-**Migración futura a Supabase remoto** (cuando la org Supabase tenga payments al día): `gbrain migrate --to supabase`. Permite sync con Codex en otras máquinas.
+**Pooler aws-1 (no aws-0):** este proyecto vive en el pool aws-1-us-east-1. aws-0-us-east-1 devuelve "Tenant or user not found" — gotcha conocido de Supabase 2026 (pools múltiples por región).
+
+**Acceso desde codex u otra máquina:** copiar `database_url` de `~/.gbrain/config.json` y exportarlo como `GBRAIN_DATABASE_URL` antes de invocar gbrain en la otra máquina.
 
 ---
 

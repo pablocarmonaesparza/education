@@ -14,6 +14,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### decisiones
 
+- [tesis core — vendemos concentración + operación, no información](decision_tesis_concentracion_plataforma.md) — 2026-04-27 — `[cpo, ceo]` — itera no compite en contenido AI; compite en "el lugar para concentrarse a aprender" + "el lugar para operar AI con tu propia cuenta LLM"; norte de toda decisión de producto.
 - [stripe-only + USD único + mercado pago descartado](decision_cfo_stripe_only_usd_mp_descartado.md) — 2026-04-24 — `[cfo]` — itera procesa solo con stripe en USD; MP descartado definitivamente; reabre solo si pivote b2c retail latam o regulación.
 - [landing — estado al cerrar agente Landing 22-23 abril](decision_landing_estructura_post_pivote_b2b.md) — 2026-04-23 — `[cpo, cmo]` — landing prod = Hero (shader + "ai de 0 a 100") → Pricing → FAQ; archivadas vivas HowItWorks/AvailableCourses/ProjectInput; `/landingPrueba` con 6 candidatas espera eval.
 - [mailing transaccional-only + ESP = AgentMail](decision_mailing_transaccional_only.md) — 2026-04-23 — `[cpo, cto]` — 5 correos permitidos (welcome, password reset, primera lección, payment receipt, failed charge); ESP = AgentMail; rollback de Resend.
@@ -43,12 +44,15 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### metodología
 
-- [protocolo claude+codex — dos orquestadores trabajando juntos](metodologia_protocolo_claude_codex.md) — 2026-04-25 — `[orq, cto]` — 4 reglas base + 4 ajustes claude + split de roles + memoria en 3 capas (canónico/índice/efímero).
+- [estructura actual de agentes — c-level (no más 12 conversaciones)](metodologia_estructura_agentes_clevel.md) — 2026-04-27 — `[orq]` — estructura nueva: CEO/CFO/CMO/CGO/CTO/CPO + Orquestador en Claude Code + 1 en Codex; las 12 conversaciones por dominio quedan deprecadas; pablo solo, ~50k MXN budget, target ~10 usuarios mes.
+- [protocolo claude+codex — dos orquestadores trabajando juntos](metodologia_protocolo_claude_codex.md) — 2026-04-27 — `[orq, cto]` — reglas de autonomía CTO: detectar CEO-level, investigar cuando falte dominio, consultar cuando pablo sí debe decidir; operación vía Conductor.build.
 - [ritual de cierre por C-suite — escribir antes de cerrar sesión](metodologia_ritual_cierre_csuite.md) — 2026-04-25 — `[orq]` — cada conversación-departamento escribe sus decisiones nuevas en `docs/memory/` antes de salir; corre el linter; INDEX a mano.
 - [orquestación itera — 12 conversaciones paralelas + orquestador](metodologia_orquestacion_12_conversaciones.md) — 2026-04-22 — `[orq]` — patrón de trabajo de pablo: 12 convos por dominio + 1 Orquestador que coordina cruces; regla obligatoria leer `INDEX.md` antes de orquestar.
 
 ### gotchas
 
+- [3 tensiones de producto detectadas cross-departamental tras ronda de 10-preguntas](gotcha_tensiones_producto_cross_departamental.md) — 2026-04-27 — `[cpo, ceo]` — pitch "Duolingo" vs producto "tutor privado custom"; 500 individuos vs 50 empresas (arquitectura distinta); PLG individuo→empresa vs B2B-only. Bloquean entregables de producto hasta resolución.
+- [duolingo entrando a AI antes que itera complete operación es la amenaza real](gotcha_duolingo_pivote_ai_es_la_amenaza.md) — 2026-04-27 — `[cpo, ceo]` — coursera/udemy/platzi no preocupan; duolingo sí porque ya domina formato sticky; el moat es llegar a fase operación (cuenta LLM del usuario adentro de la plataforma) antes de que ellos pivoteen.
 - [cruces estructurales recurrentes entre conversaciones itera](gotcha_cruces_estructurales_recurrentes.md) — 2026-04-22 — `[orq]` — 9 fracturas que reaparecen cada ronda de orquestación.
 - [`git commit` sin pathspec levanta archivos staged de otros agentes](gotcha_commit_staged_files.md) — 2026-04-23 — `[cto]` — usar `git commit -- <path>` con pathspec explícito; alternativa stash + commit + pop.
 - [welcome email — hook en signup ya existe, falta hook en checkout](gotcha_welcome_email_hook_signup_existe.md) — 2026-04-22 — `[cto]` — `auth/callback/route.ts:114-121` dispara welcome en signup; falta hook al `checkout.session.completed` + idempotencia + E2E + DKIM.
@@ -64,7 +68,9 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### CEO
 
-*sin output todavía. cuando se cierre una decisión de visión/scope, vive aquí.*
+- [tesis core — vendemos concentración + operación, no información](decision_tesis_concentracion_plataforma.md) — decision — 2026-04-27 *(comparte con cpo)*
+- [3 tensiones de producto cross-departamental tras ronda 10-preguntas](gotcha_tensiones_producto_cross_departamental.md) — gotcha — 2026-04-27 *(comparte con cpo)*
+- [duolingo entrando a AI antes que itera complete operación](gotcha_duolingo_pivote_ai_es_la_amenaza.md) — gotcha — 2026-04-27 *(comparte con cpo)*
 
 ### CFO
 
@@ -88,6 +94,9 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### CPO
 
+- [tesis core — vendemos concentración + operación, no información](decision_tesis_concentracion_plataforma.md) — decision — 2026-04-27 *(comparte con ceo)*
+- [3 tensiones de producto cross-departamental tras ronda 10-preguntas](gotcha_tensiones_producto_cross_departamental.md) — gotcha — 2026-04-27 *(comparte con ceo)*
+- [duolingo entrando a AI antes que itera complete operación](gotcha_duolingo_pivote_ai_es_la_amenaza.md) — gotcha — 2026-04-27 *(comparte con ceo)*
 - [landing — estado al cerrar agente Landing 22-23 abril](decision_landing_estructura_post_pivote_b2b.md) — decision — 2026-04-23 *(comparte con cmo)*
 - [mailing transaccional-only + ESP = AgentMail](decision_mailing_transaccional_only.md) — decision — 2026-04-23 *(comparte con cto)*
 - [mailing itera — scope transaccional-only, sin engagement emails](decision_mailing_scope_transaccional_only.md) — decision — 2026-04-22 *(comparte con cto)*
@@ -98,7 +107,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### CTO
 
-- [protocolo claude+codex](metodologia_protocolo_claude_codex.md) — metodologia — 2026-04-25 *(comparte con orq)*
+- [protocolo claude+codex](metodologia_protocolo_claude_codex.md) — metodologia — 2026-04-27 *(comparte con orq)*
 - [telegram como canal alterno de lecciones diarias](experimento_telegram_canal_lecciones.md) — experimento — 2026-04-24 *(comparte con cgo)*
 - [`git commit` sin pathspec levanta archivos staged de otros agentes](gotcha_commit_staged_files.md) — gotcha — 2026-04-23
 - [mailing transaccional-only + ESP = AgentMail](decision_mailing_transaccional_only.md) — decision — 2026-04-23 *(comparte con cpo)*
@@ -113,7 +122,8 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### ORQ
 
-- [protocolo claude+codex](metodologia_protocolo_claude_codex.md) — metodologia — 2026-04-25 *(comparte con cto)*
+- [estructura actual de agentes — c-level (no más 12 conversaciones)](metodologia_estructura_agentes_clevel.md) — metodologia — 2026-04-27
+- [protocolo claude+codex](metodologia_protocolo_claude_codex.md) — metodologia — 2026-04-27 *(comparte con cto)*
 - [ritual de cierre por C-suite](metodologia_ritual_cierre_csuite.md) — metodologia — 2026-04-25
 - [perplexity mcp instalado + heurística de búsqueda web](aprendizaje_perplexity_mcp.md) — aprendizaje — 2026-04-22
 - [orquestación itera — 12 conversaciones paralelas](metodologia_orquestacion_12_conversaciones.md) — metodologia — 2026-04-22
@@ -121,5 +131,3 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 - [pablo no delega manuales](aprendizaje_pablo_no_delega_manuales.md) — aprendizaje — 2026-04-21
 
 ### SHARED
-
-*sin output. usar cuando una decisión cruza ≥3 departamentos sin un dueño claro.*
