@@ -472,7 +472,7 @@ export default function PerfilPage() {
                     </button>
                   </div>
                   <div className="text-xs text-ink-muted dark:text-gray-400 space-y-1">
-                    <p>1. Abre <a href="https://t.me/itera_la_bot" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">@itera_la_bot</a> en Telegram</p>
+                    <p>1. Abre <a href="https://t.me/itera_ia_bot" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">@itera_ia_bot</a> en Telegram</p>
                     <p>2. Envía: <span className="font-mono bg-gray-200 dark:bg-gray-800 px-1 rounded">/vincular {telegramCode}</span></p>
                   </div>
                 </div>

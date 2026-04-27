@@ -1,15 +1,24 @@
 ---
 type: experimento
 title: telegram como canal alterno de lecciones diarias
-date: 2026-04-24
+date: 2026-04-27
 tags: [telegram, lecciones, canal_alterno, mvp, bot]
 dept: [cgo, cto]
 ---
 
-# Telegram como canal alterno de lecciones diarias — estado al cerrar sesión 2026-04-24
+# Telegram como canal alterno de lecciones diarias — activo en prod desde 2026-04-27
 
-> Última actualización: 2026-04-24
-> Estado: **MVP construido + en pausa esperando decisión de Pablo sobre identidad del bot**
+> Última actualización: 2026-04-27 (sesión ralph-wiggum)
+> Estado: **MVP en producción con cron diario activo. Bot identity decidido: `@itera_ia_bot` (camino A). 1 user vinculado: Pablo.**
+
+## Cambios 2026-04-27 (ralph-wiggum)
+
+- Limpiada sesión atorada de Pablo en `telegram_sessions` (slide 1 desde 2026-04-23)
+- POST manual a `tg-daily-send` → respuesta `{"ok":true,"total":1,"sent":1,...}` HTTP 200. Confirma token válido y endpoint funcional. Pablo recibió mensaje real con [empezar →]
+- Row de hoy creado en `telegram_daily_sends` (`send_date=2026-04-27`)
+- Cron `telegram-daily-lesson` re-schedulado: `jobid=2, schedule='0 15 * * *', active=true`
+- UI commit: `app/dashboard/perfil/page.tsx:475` finalizado en `@itera_ia_bot` (camino A)
+- Mirrors de migrations + functions commiteados al repo
 
 ## TL;DR
 
@@ -60,31 +69,26 @@ Al completar slide 10:
 | Edge function `telegram-bot` v9 | ACTIVE, verify_jwt:false |
 | Edge function `tg-daily-send` v2 | ACTIVE, verify_jwt:false |
 | Edge function `tg-demo` | borrada |
-| pg_cron job `telegram-daily-lesson` | **UNSCHEDULED (pausa, reactivar con `cron.schedule(...)` cuando se resuelva bot identity)** |
+| pg_cron job `telegram-daily-lesson` | ACTIVO (`jobid=2`, `schedule='0 15 * * *'`, reactivado 2026-04-27) |
 | `FUNCTION_SECRET` | rotado 2026-04-24 (el viejo `itera_tg_2024_secret` quedó en logs) |
 | `TELEGRAM_BOT_TOKEN` | apunta a `@itera_ia_bot` (id 8714326778) |
 | Webhook de `@itera_ia_bot` | configurado al edge function `telegram-bot` con `?secret=<nuevo>` |
 | Webhook de `@itera_la_bot` | desconocido — no tengo el token; si tenía webhook al edge function con `?secret=itera_tg_2024_secret`, ahora da 401 (zombie) |
 
-## Decisión bloqueante pendiente — bot identity
+## Bot identity — RESUELTO 2026-04-27 (camino A)
 
-Existen **dos bots Itera registrados en Telegram**:
+Camino elegido: **A — quedarse con `@itera_ia_bot`**. UI commiteada, cron activo apuntando a este bot.
 
-| Bot | id | Token disponible | Description set | Estado |
-|---|---|---|---|---|
-| `@itera_ia_bot` | 8714326778 | sí, en TELEGRAM_BOT_TOKEN | "Educación de IA" | activo, recibe webhooks, manda mensajes |
-| `@itera_la_bot` | desconocido | **NO está en filesystem ni Supabase secrets** | ninguna (cascarón) | existe pero token sólo accesible vía @BotFather |
+| Bot | id | Estado actual |
+|---|---|---|
+| `@itera_ia_bot` | 8714326778 | OFICIAL — webhook activo, manda mensajes en prod |
+| `@itera_la_bot` | desconocido | DEPRECADO — borrar en `@BotFather` cuando Pablo tenga 30s libres |
 
-Pablo expresó molestia porque los mensajes le llegan de `@itera_ia_bot` y él esperaba `@itera_la_bot` (matching brand `itera.la`). La UI del dashboard apuntaba originalmente a `@itera_la_bot`; en `app/dashboard/perfil/page.tsx:475` se editó a `@itera_ia_bot` (cambio sin commit).
+## Riesgos pendientes (requieren acción humana de Pablo en BotFather)
 
-**Caminos para resolver:**
-
-- **A. Quedarse con `@itera_ia_bot`**: commitear el cambio de UI, rotar token (porque se pegó en chat), borrar `@itera_la_bot` en BotFather.
-- **B. Migrar a `@itera_la_bot`**: Pablo trae el token desde `@BotFather` → `/mybots` → `@itera_la_bot` → `API Token`. Yo roto `TELEGRAM_BOT_TOKEN`, seteo webhook nuevo, reverto UI, deshabilito `@itera_ia_bot`.
-
-## Riesgo de seguridad pendiente (Pablo manual)
-
-Pablo pegó en chat el token `8714326778:AAEpRUhwGLpqbuOYBJMSwS8b49ye25SzFks` de `@itera_ia_bot`. Token expuesto en logs de conversación. **Acción**: rotar en `@BotFather` → `/token` y actualizar `supabase secrets set TELEGRAM_BOT_TOKEN=<nuevo>`.
+1. **Rotar token de `@itera_ia_bot`** — sigue siendo el que se pegó en chat. Aunque el sistema funciona con él, está públicamente visible en logs de conversación. Pasos: `@BotFather` → `/token` → `@itera_ia_bot` → confirmar → copiar nuevo → `supabase secrets set TELEGRAM_BOT_TOKEN=<nuevo>` → re-setear webhook. **Costo:** ~3 min. **Bloquea producción mientras tanto:** no, el token actual funciona; pero cualquiera que lea ese chat puede mandar mensajes en nombre del bot.
+2. **Borrar `@itera_la_bot`** en BotFather (`/deletebot`). Sin urgencia, solo para limpieza.
+3. **Verificación end-to-end real (Pablo)** — tap [empezar →] en el mensaje de hoy 2026-04-27 y completar slides 1→10. Confirma que `editMessageText` in-place + trigger `on_user_progress_complete` funcionan. Hasta que se haga, no sabemos si XP/streak se otorgan correctamente vía Telegram.
 
 ## To-dos diferidos del codex review (no bloquean MVP, sí cuando escale)
 
@@ -97,22 +101,21 @@ Pablo pegó en chat el token `8714326778:AAEpRUhwGLpqbuOYBJMSwS8b49ye25SzFks` de
 7. Dead code `rGeneric` para slide kinds no publicados. Si Education saca `concept-visual` / `code-completion` / `build-prompt`, hay que escribir sus renderers reales.
 8. Tablas legacy `tutor_conversations` y `tutor_messages` con `source='telegram'` ya no se alimentan (3+6 rows residuales). Decidir si borrar o conservar para historial.
 
-## Verificación end-to-end pendiente
+## Verificación parcial 2026-04-27
 
-Pablo NO ha tapeado el botón [empezar →] en el mensaje que le mandé via tg-daily-send. Por tanto no se ha confirmado en producción real:
-- Que el flujo slides 1→10 funciona slide por slide
-- Que `editMessageText` actualiza el mensaje en su lugar (UX clave)
-- Que al completar slide 10 dispara correctamente el trigger `on_user_progress_complete` y otorga XP + streak
+✅ **Token válido**: POST manual a `tg-daily-send` respondió `{ok:true, total:1, sent:1}` HTTP 200
+✅ **Idempotencia funciona**: row del 2026-04-27 creado en `telegram_daily_sends`
+✅ **Mensaje entregado**: Telegram aceptó el `sendMessage` (status 200)
+⏳ **Flujo slide 1→10**: pendiente — requiere Pablo tap [empezar →] y completar
+⏳ **Trigger XP/streak vía bot**: pendiente — depende de completar la lección
 
-Hay un row de prueba en `telegram_daily_sends` (Pablo, 2026-04-23) que se backfilleó manualmente — esto bloquea el envío de hoy 2026-04-24 si se reactiva el cron, **a menos** que se borre primero.
-
-## Archivos modificados sin commit
+## Archivos commiteados 2026-04-27
 
 ```
-app/dashboard/perfil/page.tsx         # 1 línea: itera_la_bot → itera_ia_bot (revertir si camino B)
-supabase/functions/telegram-bot/index.ts        # nuevo (mirror del v9)
-supabase/functions/tg-daily-send/index.ts       # nuevo (mirror del v2)
-supabase/migrations/009b_telegram_lessons.sql   # nuevo (mirror)
+app/dashboard/perfil/page.tsx         # @itera_la_bot → @itera_ia_bot (1 línea)
+supabase/functions/telegram-bot/index.ts        # mirror del v9 deployed
+supabase/functions/tg-daily-send/index.ts       # mirror del v3 deployed
+supabase/migrations/009b_telegram_lessons.sql   # mirror
 supabase/migrations/010_telegram_daily_send_idempotency.sql  # nuevo (mirror)
 docs/memory/experimento_telegram_canal_lecciones.md  # este archivo
 docs/memory/INDEX.md                  # actualizar con la línea nueva
@@ -124,15 +127,10 @@ docs/memory/INDEX.md                  # actualizar con la línea nueva
 - **Mailing**: si en el futuro un evento dispara por ambos canales (ej. "primera lección completada"), dedupe. Hoy no hay traslape.
 - **B2B empresa-first** (gotcha_posicionamiento_empresa_vs_latam): copy del bot es seco/profesional, sin "no pierdas tu racha", sin emojis FOMO. No mandar engagement.
 
-## Reactivación del cron (para futuro yo o futuro orquestador)
-
-Cuando se resuelva bot identity:
+## Cron diario — referencia (ya activo)
 
 ```sql
--- 1. Limpiar idempotencia stub si todavía hay row backfill de 2026-04-23
-delete from telegram_daily_sends where send_date < current_date;
-
--- 2. Re-schedulear el cron (mismo schedule que tenía)
+-- jobid=2, active=true desde 2026-04-27
 select cron.schedule(
   'telegram-daily-lesson',
   '0 15 * * *',
@@ -144,10 +142,10 @@ select cron.schedule(
   );
   $$
 );
-```
 
-Si camino B (migrar a @itera_la_bot), antes de re-schedulear:
-1. `supabase secrets set TELEGRAM_BOT_TOKEN=<nuevo>` con el token de `@itera_la_bot`
-2. `supabase functions deploy telegram-bot` (refresca env)
-3. `curl https://api.telegram.org/bot<NUEVO>/setWebhook?url=https://mteicafdzilhxkawyvxw.supabase.co/functions/v1/telegram-bot?secret=<FUNCTION_SECRET>&drop_pending_updates=true&allowed_updates[]=message&allowed_updates[]=callback_query`
-4. (opcional) revertir UI: `app/dashboard/perfil/page.tsx:475` itera_ia_bot → itera_la_bot
+-- para pausar (si hace falta)
+-- select cron.unschedule('telegram-daily-lesson');
+
+-- para invocar manualmente (test)
+-- curl -X POST https://mteicafdzilhxkawyvxw.supabase.co/functions/v1/tg-daily-send -H "Content-Type: application/json" -d '{}'
+```
