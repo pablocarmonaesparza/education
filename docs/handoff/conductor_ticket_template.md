@@ -1,6 +1,8 @@
 # plantilla — ticket conductor.build
 
 > **propósito:** todo ticket que pablo abra en conductor.build sale con esta forma. el orquestador (claude) redacta, pablo da click. self-contained — el ejecutor (codex u otro agente) no necesita preguntar nada para arrancar.
+>
+> **antes de redactar el ticket, el orquestador corre:** `gbrain query "<tema del ticket>"` para extraer decisiones canónicas relevantes y pegarlas en el campo "referencias".
 
 ## cuándo usar
 
@@ -46,6 +48,7 @@ P0 (bloquea otra cosa) | P1 (esta semana) | P2 (eventual)
 ## referencias
 - decisión canónica: `docs/memory/<archivo>.md`
 - handoff previo (si lo hay): `docs/handoff/<archivo>.md`
+- búsqueda gbrain: `gbrain query "<tema>"` (memoria semántica completa)
 ```
 
 ## ejemplo concreto

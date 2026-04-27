@@ -1,0 +1,24 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git fetch --quiet origin main 2>/dev/null; AHEAD=$(git rev-list --count HEAD..origin/main 2>/dev/null || echo 0); if [ \"$AHEAD\" -gt 0 ]; then echo \"⚠ origin/main tiene $AHEAD commits nuevos. corre 'git pull' antes de operar para tener memoria fresca.\"; fi; bash scripts/lint-memory.sh 2>/dev/null | tail -15 || true"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "PEND=$(git diff --name-only docs/memory/ 2>/dev/null | wc -l | tr -d ' '); UNTRACKED=$(git ls-files --others --exclude-standard docs/memory/ 2>/dev/null | wc -l | tr -d ' '); TOTAL=$((PEND + UNTRACKED)); if [ \"$TOTAL\" -gt 0 ]; then echo \"📝 ritual de cierre pendiente: $TOTAL cambios sin commit en docs/memory/. corre /itera-memory-save o git commit con pathspec explícito.\"; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

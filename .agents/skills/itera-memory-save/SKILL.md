@@ -36,7 +36,7 @@ Guarda memoria cross-sesión para el proyecto Itera como archivos markdown en `d
 ## Qué NO guardar
 
 - Código, paths, estructura de carpetas → está en el repo, se deriva leyendo.
-- Lo que ya está en `CLAUDE.md`, `docs/CONTEXT.md`, `docs/METODOLOGIA.md`, `docs/LESSONS_v1.md`, `docs/SCHEMA_v1.md` → se leen directamente. Si una decisión cambia uno de estos docs, edítalo directamente ahí — no dupliques en memoria.
+- Lo que ya está en `AGENTS.md`, `docs/CONTEXT.md`, `docs/METODOLOGIA.md`, `docs/LESSONS_v1.md`, `docs/SCHEMA_v1.md` → se leen directamente. Si una decisión cambia uno de estos docs, edítalo directamente ahí — no dupliques en memoria.
 - Historial de git → `git log` es la fuente.
 - Estado ephemeral ("lo que estoy haciendo ahora") → eso es plan/todo, no memoria.
 - Secretos: claves de API, tokens, contraseñas. Nunca.
@@ -101,7 +101,7 @@ Guarda memoria cross-sesión para el proyecto Itera como archivos markdown en `d
 
 - **Captura el *por qué* literal** cuando es una corrección del usuario ("no, eso no funcionó porque…"). El por qué textual de Pablo pesa más que tu interpretación.
 - **Fechas siempre absolutas**. Si el usuario dijo "la semana pasada", convierte a fecha concreta antes de escribir.
-- **Títulos en minúsculas** (estilo del proyecto, coherente con `CLAUDE.md`).
+- **Títulos en minúsculas** (estilo del proyecto, coherente con `AGENTS.md`).
 - **Moneda en USD siempre** si aparece dinero.
 - **Una memoria por archivo**. No mezclar temas.
 - **Multi-departamento.** Si una decisión cruza más de un C-suite (ej. mailing = `[cpo, cto]`, gamification = `[cpo, cgo]`), usa lista en `dept`. No dupliques el archivo por dept — un solo archivo lo cubre.

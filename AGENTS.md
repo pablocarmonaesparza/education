@@ -20,7 +20,7 @@
 
 **Tesis central (no negociable):** Itera vende **retención + ejecución**, no información. El formato principal son **ejercicios interactivos cortos (no videos)**. Audiencia: LATAM no-técnico.
 
-**Memoria cross-sesión:** este repo tiene un skill [`itera-context`](./.claude/skills/itera-context/SKILL.md) que carga los docs + hace `recall` en Supermemory al inicio. Invócalo con `/itera-context` o al comienzo de cualquier sesión sobre producto, copy, estrategia o lecciones. Al terminar trabajo significativo, invócalo otra vez para guardar lo aprendido.
+**Memoria cross-sesión:** este repo tiene un skill [`itera-context`](./.Codex/skills/itera-context/SKILL.md) que carga los docs + hace `recall` en Supermemory al inicio. Invócalo con `/itera-context` o al comienzo de cualquier sesión sobre producto, copy, estrategia o lecciones. Al terminar trabajo significativo, invócalo otra vez para guardar lo aprendido.
 
 **Reglas de operación con Pablo:**
 - Después de cambios de código, subir a GitHub siempre (a menos que estemos en una rama de experimento).
@@ -32,42 +32,34 @@
 
 ## 🧠 Memoria compartida — gbrain (obligatorio leer al arrancar)
 
-Itera usa **gbrain** como capa de búsqueda semántica sobre la memoria canónica. La fuente de verdad sigue siendo `docs/memory/` markdown en git; gbrain es el índice rápido para encontrar y recuperar contexto entre las 6 conversaciones C-suite.
+Itera usa **gbrain** como capa de búsqueda semántica sobre la memoria canónica. La fuente de verdad sigue siendo `docs/memory/` markdown en git; gbrain es el índice rápido para encontrar y recuperar contexto.
 
-**Antes de responder a cualquier pregunta sobre decisiones previas, copy, pricing, schema o estrategia:**
+**Antes de cualquier task técnica, ejecutar:**
 
 ```bash
-gbrain query "<tema>" --no-expand 2>/dev/null | head -20
+git pull --quiet origin main 2>/dev/null
+gbrain query "<tema de la task>" --no-expand 2>/dev/null | head -20
+bash scripts/lint-memory.sh | tail -15
 ```
 
-`mcp__gbrain__*` tools también están disponibles directo en Claude Code (registrado a user scope). Si la task es de un C-suite específico, filtrar en `docs/memory/INDEX.md` por sección "## por departamento" → tu dept.
+`gbrain query "<tema>"` busca en toda la memoria importada (decisiones, gotchas, handoffs, docs canónicos). Es la primera fuente para resolver "¿qué decidió X dpto sobre Y?".
 
-**Ritual de cierre (al cerrar sesión con decisión nueva):**
+**Filtrar por departamento:**
 
-1. Escribir archivo en `docs/memory/<tipo>_<slug>.md` con frontmatter completo (`type`, `title`, `date`, `tags`, `dept: [...]`).
-2. `bash scripts/lint-memory.sh` exit 0.
-3. `gbrain import docs/memory/ --no-embed && gbrain embed --stale &` (re-indexar).
-4. Commitear con pathspec explícito.
+Cada archivo en `docs/memory/` tiene frontmatter `dept: [cto, cpo, ...]`. Para tasks de codex/CTO, priorizar `dept: [cto, shared]`. Si la task cruza otro dept (cpo, cmo, etc.), leer también esos.
 
-**Fallback si gbrain no responde:** la memoria es markdown en filesystem. `grep -r` siempre funciona. No bloquea.
+**Al cerrar una task con decisión nueva:**
 
-Ver:
-- [protocolo claude+codex](./docs/memory/metodologia_protocolo_claude_codex.md)
-- [ritual de cierre por C-suite](./docs/memory/metodologia_ritual_cierre_csuite.md)
-- [plantilla ticket conductor](./docs/handoff/conductor_ticket_template.md)
+1. Escribir archivo en `docs/memory/<tipo>_<slug>.md` con frontmatter completo (`type`, `title`, `date`, `tags`, `dept`).
+2. `bash scripts/lint-memory.sh` debe pasar (exit 0).
+3. Re-importar a gbrain: `gbrain import docs/memory/ --no-embed && gbrain embed --stale &`.
+4. Commitear con pathspec explícito: `git commit -- docs/memory/<archivo> -m "..."`.
 
----
+**Fallback si gbrain no responde:** la memoria está en filesystem markdown. `grep -r "<tema>" docs/memory/` siempre funciona. No bloquea operación.
 
-## GBrain Configuration (configured by /setup-gbrain)
-
-- Engine: pglite (local, en `~/.gbrain/brain.pglite`)
-- Config file: `~/.gbrain/config.json` (mode 0600)
-- Setup date: 2026-04-27
-- MCP registered: yes (user scope, abs path `/Users/pablocarmona/.bun/bin/gbrain serve`)
-- Memory sync: off (multi-machine bloqueado por unpaid Supabase invoices — restaurar cuando se desbloquee)
-- Current repo policy: read-write (github.com/pablocarmonaesparza/education)
-
-**Migración futura a Supabase remoto** (cuando la org Supabase tenga payments al día): `gbrain migrate --to supabase`. Permite sync con Codex en otras máquinas.
+Ver protocolo completo claude+codex: [`docs/memory/metodologia_protocolo_claude_codex.md`](./docs/memory/metodologia_protocolo_claude_codex.md).
+Ritual de cierre por C-suite: [`docs/memory/metodologia_ritual_cierre_csuite.md`](./docs/memory/metodologia_ritual_cierre_csuite.md).
+Plantilla ticket conductor: [`docs/handoff/conductor_ticket_template.md`](./docs/handoff/conductor_ticket_template.md).
 
 ---
 

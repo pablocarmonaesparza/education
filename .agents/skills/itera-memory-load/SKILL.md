@@ -30,7 +30,7 @@ Recupera la memoria cross-sesión del proyecto Itera desde `docs/memory/` y la a
    - **Si la sesión es de un C-suite específico** (CFO, CMO, CGO, CPO, CTO, ORQ): usa la sección "## por departamento" del INDEX para filtrar. Lee primero las memorias con tu `dept` en el frontmatter, después las marcadas `[shared]`. Las de otros C-suite se leen solo si el usuario las pide explícitamente o si el tema lo requiere.
 
 3. **Cruza con docs canónicos cuando sean relevantes al tema actual**:
-   - `CLAUDE.md`, `docs/CONTEXT.md`, `docs/METODOLOGIA.md`, `docs/LESSONS_v1.md`, `docs/SCHEMA_v1.md`.
+   - `AGENTS.md`, `docs/CONTEXT.md`, `docs/METODOLOGIA.md`, `docs/LESSONS_v1.md`, `docs/SCHEMA_v1.md`.
    - Si una memoria contradice un doc canónico → gana el doc. Los docs se actualizan conscientemente en git; la memoria puede estar stale. Marca mentalmente esa memoria para limpieza en la próxima `/itera-memory-save`.
 
 4. **Presenta un resumen corto** al usuario, agrupado por tipo. Nunca vuelques el contenido completo — resume por título. El contenido lo usas internamente para decidir cómo ayudar en los turnos siguientes.
