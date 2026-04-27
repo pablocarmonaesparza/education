@@ -8,17 +8,31 @@ dept: [cgo, cto]
 
 # Telegram como canal alterno de lecciones diarias — activo en prod desde 2026-04-27
 
-> Última actualización: 2026-04-27 (sesión ralph-wiggum)
-> Estado: **MVP en producción con cron diario activo. Bot identity decidido: `@itera_ia_bot` (camino A). 1 user vinculado: Pablo.**
+> Última actualización: 2026-04-27 (sesión ralph-wiggum, 2 rounds)
+> Estado: **MVP en producción con cron diario activo. Bot oficial: `@itera_la_bot` (id 7717722983). 1 user vinculado: Pablo.**
 
-## Cambios 2026-04-27 (ralph-wiggum)
+## ⚠️ Corrección importante — la memoria del 24 abril estaba equivocada sobre el bot
 
+La memoria escrita el 2026-04-24 decía que `TELEGRAM_BOT_TOKEN` apuntaba a `@itera_ia_bot` (id 8714326778). **No es así.** Verificado con `getMe` el 2026-04-27: el token actual es de `@itera_la_bot` (id `7717722983`, username `itera_la_bot`). No sé si rotó después o si la memoria nació mal — pero la realidad es la que cuenta. La UI debe apuntar a `@itera_la_bot`.
+
+## Cambios 2026-04-27 (ralph-wiggum, round 1 + round 2)
+
+**Round 1** — reactivación:
 - Limpiada sesión atorada de Pablo en `telegram_sessions` (slide 1 desde 2026-04-23)
-- POST manual a `tg-daily-send` → respuesta `{"ok":true,"total":1,"sent":1,...}` HTTP 200. Confirma token válido y endpoint funcional. Pablo recibió mensaje real con [empezar →]
-- Row de hoy creado en `telegram_daily_sends` (`send_date=2026-04-27`)
+- POST manual a `tg-daily-send` → respuesta `{"ok":true,"total":1,"sent":1,...}` HTTP 200
 - Cron `telegram-daily-lesson` re-schedulado: `jobid=2, schedule='0 15 * * *', active=true`
-- UI commit: `app/dashboard/perfil/page.tsx:475` finalizado en `@itera_ia_bot` (camino A)
-- Mirrors de migrations + functions commiteados al repo
+- UI commiteada (incorrectamente) a `@itera_ia_bot` siguiendo memoria stale
+- Mirrors de migrations + functions commiteados
+
+**Round 2** — fix del callback muerto:
+- Pablo tapeó [empezar →] y no pasó nada. Diagnóstico vía edge function temporal `tg-debug`:
+  - bot real es `@itera_la_bot` (no `@itera_ia_bot`)
+  - webhook URL apuntaba bien al edge function `telegram-bot` PERO con secret viejo (`itera_tg_2024_secret`)
+  - telegram recibía 401 en cada callback, `pending_update_count: 1` con `last_error_message: "Wrong response from the webhook: 401 Unauthorized"`
+- Reset webhook con `setWebhook` usando el `FUNCTION_SECRET` actual (64 chars) + `drop_pending_updates: true`
+- Revertida UI a `@itera_la_bot` en `app/dashboard/perfil/page.tsx:475`
+- Re-disparado `tg-daily-send` para que Pablo reciba un mensaje fresh con [empezar →]
+- `tg-debug` queda deployada como herramienta de diagnóstico, gateada por `FUNCTION_SECRET` (acciones: `info`, `setwebhook`)
 
 ## TL;DR
 
@@ -75,20 +89,20 @@ Al completar slide 10:
 | Webhook de `@itera_ia_bot` | configurado al edge function `telegram-bot` con `?secret=<nuevo>` |
 | Webhook de `@itera_la_bot` | desconocido — no tengo el token; si tenía webhook al edge function con `?secret=itera_tg_2024_secret`, ahora da 401 (zombie) |
 
-## Bot identity — RESUELTO 2026-04-27 (camino A)
+## Bot identity — RESUELTO 2026-04-27 (round 2 corrigió el malentendido)
 
-Camino elegido: **A — quedarse con `@itera_ia_bot`**. UI commiteada, cron activo apuntando a este bot.
+Bot oficial: **`@itera_la_bot`** (id `7717722983`). Verificado vía `getMe` con el token activo en supabase secrets.
 
 | Bot | id | Estado actual |
 |---|---|---|
-| `@itera_ia_bot` | 8714326778 | OFICIAL — webhook activo, manda mensajes en prod |
-| `@itera_la_bot` | desconocido | DEPRECADO — borrar en `@BotFather` cuando Pablo tenga 30s libres |
+| `@itera_la_bot` | 7717722983 | OFICIAL — webhook activo con `?secret=<FUNCTION_SECRET>`, manda mensajes en prod |
+| `@itera_ia_bot` | 8714326778 | DEPRECADO — solo existía en memoria stale del 24 abril, nunca fue el bot real con el token actual. Pablo puede borrarlo en `@BotFather` |
 
 ## Riesgos pendientes (requieren acción humana de Pablo en BotFather)
 
-1. **Rotar token de `@itera_ia_bot`** — sigue siendo el que se pegó en chat. Aunque el sistema funciona con él, está públicamente visible en logs de conversación. Pasos: `@BotFather` → `/token` → `@itera_ia_bot` → confirmar → copiar nuevo → `supabase secrets set TELEGRAM_BOT_TOKEN=<nuevo>` → re-setear webhook. **Costo:** ~3 min. **Bloquea producción mientras tanto:** no, el token actual funciona; pero cualquiera que lea ese chat puede mandar mensajes en nombre del bot.
-2. **Borrar `@itera_la_bot`** en BotFather (`/deletebot`). Sin urgencia, solo para limpieza.
-3. **Verificación end-to-end real (Pablo)** — tap [empezar →] en el mensaje de hoy 2026-04-27 y completar slides 1→10. Confirma que `editMessageText` in-place + trigger `on_user_progress_complete` funcionan. Hasta que se haga, no sabemos si XP/streak se otorgan correctamente vía Telegram.
+1. **Rotar token de `@itera_la_bot`** — el token actual nunca fue pegado en chat (el de `@itera_ia_bot` sí, pero ese bot no es el activo). De todos modos, vale la pena rotarlo periódicamente. Pasos: `@BotFather` → `/token` → `@itera_la_bot` → confirmar → copiar nuevo → `supabase secrets set TELEGRAM_BOT_TOKEN=<nuevo>` → invocar `tg-debug?action=setwebhook&secret=<FUNCTION_SECRET>` para resetear el hook con el nuevo token.
+2. **Borrar `@itera_ia_bot`** en BotFather (`/deletebot`). Cleanup — nunca fue el bot oficial con el token actual.
+3. **Verificación end-to-end real (Pablo)** — tap [empezar →] en el mensaje fresh que se reenvió en round 2 y completar slides 1→10. Confirma que `editMessageText` in-place + trigger `on_user_progress_complete` funcionan.
 
 ## To-dos diferidos del codex review (no bloquean MVP, sí cuando escale)
 
@@ -112,9 +126,10 @@ Camino elegido: **A — quedarse con `@itera_ia_bot`**. UI commiteada, cron acti
 ## Archivos commiteados 2026-04-27
 
 ```
-app/dashboard/perfil/page.tsx         # @itera_la_bot → @itera_ia_bot (1 línea)
+app/dashboard/perfil/page.tsx         # @itera_la_bot (final, después de revertir el cambio incorrecto del round 1)
 supabase/functions/telegram-bot/index.ts        # mirror del v9 deployed
 supabase/functions/tg-daily-send/index.ts       # mirror del v3 deployed
+supabase/functions/tg-debug/index.ts            # nueva — herramienta de diagnóstico gateada por FUNCTION_SECRET
 supabase/migrations/009b_telegram_lessons.sql   # mirror
 supabase/migrations/010_telegram_daily_send_idempotency.sql  # nuevo (mirror)
 docs/memory/experimento_telegram_canal_lecciones.md  # este archivo
