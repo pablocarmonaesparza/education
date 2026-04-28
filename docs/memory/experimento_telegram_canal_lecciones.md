@@ -32,7 +32,16 @@ La memoria escrita el 2026-04-24 decía que `TELEGRAM_BOT_TOKEN` apuntaba a `@it
 - Reset webhook con `setWebhook` usando el `FUNCTION_SECRET` actual (64 chars) + `drop_pending_updates: true`
 - Revertida UI a `@itera_la_bot` en `app/dashboard/perfil/page.tsx:475`
 - Re-disparado `tg-daily-send` para que Pablo reciba un mensaje fresh con [empezar →]
-- `tg-debug` queda deployada como herramienta de diagnóstico, gateada por `FUNCTION_SECRET` (acciones: `info`, `setwebhook`)
+- `tg-debug` queda deployada como herramienta de diagnóstico, gateada por `FUNCTION_SECRET` (acciones: `info`, `setwebhook`, `send`, `force_slide_1`, `test_callback`)
+
+**Round 3** — fix del editMessage invisible:
+- Pablo dijo "le pique y no pasa nada" otra vez. Diagnóstico:
+  - los logs del telegram-bot mostraron POST 200 a las 19:24:48 UTC (callback procesado)
+  - sesión de Pablo updated a `current_slide_index=1, last_message_id=24` (todo coherente)
+  - **el bot SÍ procesó el callback, pero el `editMessageText` no se reflejaba visiblemente en su cliente de Telegram**
+- Causa raíz: cuando el bot procesa `start_hoy` callback, hace `editMessageText` sobre el mensaje "tu lección de hoy" reemplazándolo con la pregunta del slide 1. **Algunos clientes (web, ios viejos, web sin reload) no muestran cambios in-place visiblemente** — el mensaje cambia en el server pero el usuario sigue viendo el contenido original sin notificación.
+- Fix aplicado en `supabase/functions/telegram-bot/index.ts` línea 535: `cmdHoy(chatId, tgUserId, null)` en vez de `cmdHoy(chatId, tgUserId, messageId)`. Eso fuerza que el slide 1 llegue como **mensaje NUEVO** (con notificación, scroll automático), no como edit silencioso. Avances entre slides siguen usando `editMessage` (donde sí se ve porque el usuario está mirando ese bubble activamente).
+- Deployada v10 vía `supabase functions deploy telegram-bot --no-verify-jwt`.
 
 ## TL;DR
 

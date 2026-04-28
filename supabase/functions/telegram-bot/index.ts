@@ -527,7 +527,12 @@ async function handleCallback(chatId: number, tgUserId: number, messageId: numbe
     return;
   }
   if (data === "start_hoy") {
-    await cmdHoy(chatId, tgUserId, messageId);
+    // FIX 2026-04-28: pasar null en vez de messageId para que el slide 1
+    // llegue como MENSAJE NUEVO en vez de edit. Algunos clientes de telegram
+    // (web, ios viejos) no actualizan visiblemente los editMessage, lo que
+    // hacía que el usuario tapeara [empezar →] y "no pasara nada" aunque
+    // el bot procesara el callback correctamente.
+    await cmdHoy(chatId, tgUserId, null);
     return;
   }
   const s = await getSession(chatId);
