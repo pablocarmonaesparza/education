@@ -1255,7 +1255,11 @@ function DashboardPageContent() {
               )}
             </div>
 
-            <HorizontalScroll ref={horizontalScrollRef} fadeEdges>
+            <HorizontalScroll
+              ref={horizontalScrollRef}
+              fadeEdges
+              className="[justify-content:safe_center]"
+            >
               {orderedPhaseEntries.map(([phaseId, phaseData]) => (
                 <Button
                   key={phaseId}
