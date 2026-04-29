@@ -2,11 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import {
-  getUserBadges,
-  type UserBadge,
-  type BadgeRarity,
-} from '@/lib/gamification';
+import { getUserBadges, type UserBadge } from '@/lib/gamification';
+import { rarityClasses } from '@/lib/gamification-rarity';
 
 /**
  * Grid de badges del usuario. Lee catálogo + unlocks desde
@@ -149,43 +146,3 @@ function BadgeTile({ badge }: { badge: UserBadge }) {
   );
 }
 
-/**
- * Colores por rarity — usa los tokens semánticos del design system. Evito
- * tonos fuera de la paleta documentada en `CLAUDE.md`.
- *   common    → neutral
- *   rare      → primary (azul)
- *   epic      → púrpura
- *   legendary → dorado (amber)
- */
-function rarityClasses(rarity: BadgeRarity): {
-  bg: string;
-  border: string;
-  text: string;
-} {
-  switch (rarity) {
-    case 'rare':
-      return {
-        bg: 'bg-primary/10',
-        border: 'border-primary/30',
-        text: 'text-primary',
-      };
-    case 'epic':
-      return {
-        bg: 'bg-purple-50 dark:bg-purple-900/20',
-        border: 'border-purple-300 dark:border-purple-700',
-        text: 'text-purple-700 dark:text-purple-300',
-      };
-    case 'legendary':
-      return {
-        bg: 'bg-amber-50 dark:bg-amber-900/20',
-        border: 'border-amber-400 dark:border-amber-600',
-        text: 'text-amber-700 dark:text-amber-300',
-      };
-    default:
-      return {
-        bg: 'bg-gray-100 dark:bg-gray-800',
-        border: 'border-gray-300 dark:border-gray-700',
-        text: 'text-ink dark:text-white',
-      };
-  }
-}

@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import LessonItem from '@/components/dashboard/LessonItem';
-import PathConnector from '@/components/dashboard/PathConnector';
 import IconButton from '@/components/ui/IconButton';
 import Button from '@/components/ui/Button';
 import Spinner from '@/components/ui/Spinner';
@@ -23,9 +22,16 @@ import {
   fetchLectureAsSteps,
   type LectureRow,
 } from '@/lib/lessons/fromSupabase';
-import { getUserStats, type UserStats } from '@/lib/gamification';
+import {
+  getUnlockedBadgeIds,
+  getUserBadges,
+  getUserStats,
+  type UserBadge,
+  type UserStats,
+} from '@/lib/gamification';
 import { persistLessonCompletion } from '@/lib/lessons/persist-completion';
 import LevelUpModal from '@/components/dashboard/LevelUpModal';
+import BadgeUnlockModal from '@/components/dashboard/BadgeUnlockModal';
 import { useSidebar } from '@/contexts/SidebarContext';
 
 const greetings = [
@@ -190,7 +196,12 @@ function DashboardPageContent() {
   const [selectedVideo, setSelectedVideo] = useState<Video | null>(null);
   const [isVideoPlayerOpen, setIsVideoPlayerOpen] = useState(false);
   const [isVideoPlayerClosing, setIsVideoPlayerClosing] = useState(false);
-  const [chatWidth, setChatWidth] = useState(256);
+  // Ancho del sidebar derecho (gamification). Antes era dinámico cuando el
+  // chat era resizable; ahora el chat es un FAB flotante y el sidebar de
+  // gamification tiene ancho fijo igual al sidebar izquierdo (256px / w-64).
+  // Si el ancho cambia, actualizar también `SIDEBAR_WIDTH_PX` en
+  // `app/dashboard/layout.tsx` y `w-64` en `GamificationSidebar.tsx`.
+  const chatWidth = 256;
   const [isMobile, setIsMobile] = useState(false);
   // Width REAL del container del path de lecciones, medida en runtime
   // por ResizeObserver. Se usa para decidir si activar el zigzag —
@@ -220,6 +231,8 @@ function DashboardPageContent() {
   // cierra (queremos la secuencia: celebration de lección → cierre → modal).
   const [pendingLevelUp, setPendingLevelUp] = useState<{ level: number; totalXp: number } | null>(null);
   const [showLevelUp, setShowLevelUp] = useState(false);
+  const [pendingBadges, setPendingBadges] = useState<UserBadge[]>([]);
+  const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
 
   // Cuando hay un level-up pendiente y el overlay de la lección ya cerró
   // completamente, mostrar el modal. Evita superposición con la celebration.
@@ -228,6 +241,20 @@ function DashboardPageContent() {
       setShowLevelUp(true);
     }
   }, [pendingLevelUp, isVideoPlayerOpen, isVideoPlayerClosing]);
+
+  // Badge unlocks van después de la secuencia lección → level-up. La cola
+  // permite mostrar varios badges uno por uno sin solapar modales.
+  useEffect(() => {
+    if (
+      pendingBadges.length > 0 &&
+      !isVideoPlayerOpen &&
+      !isVideoPlayerClosing &&
+      !showLevelUp &&
+      pendingLevelUp === null
+    ) {
+      setShowBadgeUnlock(true);
+    }
+  }, [pendingBadges, isVideoPlayerOpen, isVideoPlayerClosing, showLevelUp, pendingLevelUp]);
   // Multi-route state: user may have a full-course intake and/or a
   // personalized intake. activeMode decides which one is rendered.
   const [activeMode, setActiveMode] = useState<RouteMode>('full');
@@ -260,29 +287,6 @@ function DashboardPageContent() {
   const isCompletingRef = useRef(false);
   const supabase = createClient();
 
-  // Listen for chat width changes
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      const width = getComputedStyle(document.documentElement).getPropertyValue('--chat-width');
-      if (width) {
-        setChatWidth(parseInt(width, 10) || 256);
-      }
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['style']
-    });
-
-    // Initial value
-    const initialWidth = getComputedStyle(document.documentElement).getPropertyValue('--chat-width');
-    if (initialWidth) {
-      setChatWidth(parseInt(initialWidth, 10) || 256);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
     setIsMobile(mq.matches);
@@ -302,11 +306,10 @@ function DashboardPageContent() {
     remeasure();
     window.addEventListener('resize', remeasure);
 
-    // ResizeObserver catches container width changes that don't fire a
-    // window resize event — the resizable tutor panel animates
-    // marginRight over 150ms in the dashboard layout, so a chatWidth
-    // state update on its own would measure pre-animation. RO ticks on
-    // every frame of the animation and lands the final width.
+    // ResizeObserver catches container width changes que no disparan window
+    // resize — el sidebar derecho ya no es resizable, pero el observer sigue
+    // sirviendo para cualquier cambio dinámico futuro (mobile↔desktop swap,
+    // sidebar collapse, etc.).
     let ro: ResizeObserver | null = null;
     const el = pathContainerEl.current;
     if (el && typeof ResizeObserver !== 'undefined') {
@@ -318,7 +321,7 @@ function DashboardPageContent() {
       window.removeEventListener('resize', remeasure);
       if (ro) ro.disconnect();
     };
-  }, [chatWidth, isMobile, videos.length]);
+  }, [isMobile, videos.length]);
 
   useEffect(() => {
     async function fetchUserData() {
@@ -1010,6 +1013,8 @@ function DashboardPageContent() {
         );
       }
 
+      const prevUnlockedIds = await getUnlockedBadgeIds(supabase, user.id);
+
       // 2. Persist via the shared helper so dashboard + /lecture/[slug] write
       // identical row shapes (no drift). The DB shape rationale lives in
       // lib/lessons/persist-completion.ts (split UPDATE-vs-INSERT, slide
@@ -1024,7 +1029,7 @@ function DashboardPageContent() {
       }
       // 3+ Side-effects after a successful persist (dashboard-specific UI).
       // El trigger `on_user_progress_complete` ya actualizó user_stats.
-      // Re-fetch para que la racha/XP/nivel en el UI (TutorChatButton,
+      // Re-fetch para que la racha/XP/nivel en el UI (GamificationSidebar,
       // próxima celebration) reflejen el nuevo estado.
       const previousLevel = userStats?.level ?? 1;
       const freshStats = await getUserStats(supabase, user.id);
@@ -1039,6 +1044,14 @@ function DashboardPageContent() {
     // cierre (useEffect abajo lo abre cuando `pendingLevelUp` existe).
     if (freshStats.level > previousLevel) {
       setPendingLevelUp({ level: freshStats.level, totalXp: freshStats.totalXp });
+    }
+
+    const allBadges = await getUserBadges(supabase, user.id);
+    const newlyUnlocked = allBadges.filter((badge) => (
+      badge.unlocked && !prevUnlockedIds.has(badge.id)
+    ));
+    if (newlyUnlocked.length > 0) {
+      setPendingBadges(newlyUnlocked);
     }
 
     // 3. Update the completion set so the derive effect keeps future route
@@ -1351,10 +1364,7 @@ function DashboardPageContent() {
                           </div>
                         </div>
                         {!isLast && (
-                          <PathConnector
-                            fromOffset={offset}
-                            toOffset={nextOffset}
-                          />
+                          <div aria-hidden="true" className="h-8" />
                         )}
                       </div>
                     );
@@ -1613,12 +1623,12 @@ function DashboardPageContent() {
 
             <div className="p-4 sm:p-6">
               <p className="text-ink dark:text-gray-300 text-base leading-relaxed mb-5">
-                Cuéntanos tu idea y te generamos un curso único: módulos, vídeos y ejercicios pensados para ti. Ideal para automatizar con IA, chatbots o lo que tengas en mente.
+                Cuéntanos tu idea y te generamos un curso único: módulos, lecciones y ejercicios pensados para ti. Ideal para automatizar con IA, chatbots o lo que tengas en mente.
               </p>
 
               <ul className="space-y-3 mb-6">
                 {[
-                  'Videos y módulos generados con IA según tu objetivo',
+                  'Lecciones y módulos generados con IA según tu objetivo',
                   'Ruta de aprendizaje solo para ti',
                   'Acceso inmediato y para siempre',
                 ].map((item, i) => (
@@ -1667,6 +1677,17 @@ function DashboardPageContent() {
         onClose={() => {
           setShowLevelUp(false);
           setPendingLevelUp(null);
+        }}
+      />
+
+      {/* Badge celebration — se muestra después del level-up si ambos pasan
+          en la misma lección. */}
+      <BadgeUnlockModal
+        open={showBadgeUnlock && pendingBadges.length > 0}
+        badge={pendingBadges[0] ?? null}
+        onClose={() => {
+          setShowBadgeUnlock(false);
+          setPendingBadges((prev) => prev.slice(1));
         }}
       />
     </div>
