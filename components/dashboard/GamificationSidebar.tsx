@@ -12,7 +12,6 @@ import {
 } from '@/lib/gamification';
 import { rarityClasses } from '@/lib/gamification-rarity';
 import ProgressBar from '@/components/ui/ProgressBar';
-import StatCard from '@/components/ui/StatCard';
 import Card from '@/components/ui/Card';
 import { Headline, Caption } from '@/components/ui/Typography';
 import StatsPills from './StatsPills';
@@ -28,10 +27,10 @@ import StatsPills from './StatsPills';
  * Composición (de arriba a abajo, separación por spacing — sin líneas):
  *   1. **StatsPills**: corazón ∞ decorativo + racha 🔥 + XP ⚡ (paridad
  *      Duolingo, decisión B2B en `decision_gamification_duolingo_b2b.md`).
+ *      Aquí ya viven racha y XP, así que el sidebar no los duplica abajo.
  *   2. **Nivel** — `Card variant="primary"` con número de nivel grande +
  *      barra de progreso al siguiente nivel + caption con xp restante.
- *   3. **Stats grid 2-col** — `StatCard` para racha y lecciones.
- *   4. **Logros** — Headline "tus logros (X/N)" + grid 2-col de badges
+ *   3. **Logros** — Headline "tus logros (X/N)" + grid 2-col de badges
  *      con tiers de rareza (colores via `lib/gamification-rarity`).
  *
  * **Reglas estrictas (después del fix de Pablo 2026-04-29):**
@@ -135,24 +134,6 @@ export default function GamificationSidebar() {
               : 'nivel máximo alcanzado'}
           </p>
         </Card>
-
-        {/* Stats grid: racha + lecciones */}
-        <div className="grid grid-cols-2 gap-2">
-          <StatCard
-            icon="🔥"
-            value={resolved.currentStreak}
-            label={resolved.currentStreak === 1 ? 'día' : 'días'}
-            color="orange"
-          />
-          <StatCard
-            icon="📚"
-            value={resolved.lessonsCompleted}
-            label={
-              resolved.lessonsCompleted === 1 ? 'lección' : 'lecciones'
-            }
-            color="blue"
-          />
-        </div>
 
         {/* Logros */}
         <div className="space-y-3">
