@@ -6,10 +6,28 @@ tags: [telegram, lecciones, canal_alterno, mvp, bot]
 dept: [cgo, cto]
 ---
 
-# Telegram como canal alterno de lecciones diarias — activo en prod desde 2026-04-27
+# Telegram como canal alterno de lecciones diarias — sandbox interno desde 2026-04-28
 
-> Última actualización: 2026-04-27 (sesión ralph-wiggum, 2 rounds)
-> Estado: **MVP en producción con cron diario activo. Bot oficial: `@itera_la_bot` (id 7717722983). 1 user vinculado: Pablo.**
+> Última actualización: 2026-04-28 (post-research WhatsApp)
+> Estado: **Sandbox interno para dogfooding. Bot oficial: `@itera_la_bot` (id 7717722983). 1 user vinculado: Pablo.**
+
+## ⚠️ Cambio de rol 2026-04-28: Telegram pasa a SANDBOX INTERNO
+
+Decisión tomada en sesión 2026-04-28: **WhatsApp es el canal de producción real para Itera**. Telegram pasa a ser sandbox interno para que Pablo y testers internos puedan iterar pedagógicamente sin tocar WA producción.
+
+Razones del pivot a WA:
+- penetración LATAM ~90%+ vs Telegram <10%
+- branding más empresarial (B2B-first)
+- costos $5-10 MXN/user/mes (smart pausing) — <2% del revenue target $20 USD
+
+Telegram NO se descontinúa porque:
+- el backend (slides, sessions, daily_sends, RPC) es 100% reusable entre canales
+- mantener TG vivo cuesta ~0 hours/mes
+- útil para iteración pedagógica sin esperar template approval de Meta
+
+Ver:
+- [decision_pivot_whatsapp_canal_real.md](decision_pivot_whatsapp_canal_real.md) — la decisión maestra
+- [research_whatsapp_setup_mexico.md](research_whatsapp_setup_mexico.md) — detalle técnico/legal del setup WA
 
 ## ⚠️ Corrección importante — la memoria del 24 abril estaba equivocada sobre el bot
 
