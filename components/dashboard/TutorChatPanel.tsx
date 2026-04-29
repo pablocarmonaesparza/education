@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Spinner from '@/components/ui/Spinner';
-import IconButton from '@/components/ui/IconButton';
+import { Subtitle } from '@/components/ui/Typography';
 import { useTutorChat } from '@/lib/hooks/useTutorChat';
 import { TUTOR_MODELS } from '@/lib/tutor/models';
 import { depth } from '@/lib/design-tokens';
@@ -187,10 +187,8 @@ export default function TutorChatPanel({
   return (
     <div className="flex flex-col h-full w-full bg-white dark:bg-gray-800 overflow-hidden">
       {/* Header: título y acciones */}
-      <div className="px-4 py-3 flex items-center justify-between flex-shrink-0 border-b border-gray-100 dark:border-gray-900">
-        <h3 className="text-base font-bold text-ink dark:text-gray-200 lowercase">
-          tutor ia
-        </h3>
+      <div className="px-4 py-3 flex items-center justify-between flex-shrink-0">
+        <Subtitle className="text-base">tutor ia</Subtitle>
         <div className="flex items-center gap-1">
           <button
             type="button"
@@ -432,7 +430,7 @@ export default function TutorChatPanel({
       </div>
 
       {/* Input + selector de modelo */}
-      <div className="px-4 py-4 bg-white dark:bg-gray-800 flex-shrink-0 border-t border-gray-100 dark:border-gray-900">
+      <div className="px-4 py-4 bg-white dark:bg-gray-800 flex-shrink-0">
         <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-0">
           <div
             className={`rounded-2xl ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 bg-white dark:bg-gray-800 overflow-visible`}
