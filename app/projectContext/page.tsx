@@ -5,124 +5,76 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import OnboardingNavbar from '@/components/onboarding/OnboardingNavbar';
 import Button from '@/components/ui/Button';
+import { Spinner } from '@/components/ui';
+import { createClient } from '@/lib/supabase/client';
+import { upsertIntakeDraft, loadLatestDraftForRehydrate } from '@/lib/onboarding/persistIntake';
 
-// Sections with their questions
+// 5 preguntas reemplazan las 20 anteriores. Las 20 originales estaban
+// calibradas para founders (sales experience, pricing, launches, etc) y
+// no aplican al mercado real de Itera (LATAM no-técnico, mayormente
+// empleados que quieren no quedarse fuera de la curva IA). Estas 5
+// cubren los ejes que el LLM realmente necesita para personalizar:
+// contexto, tiempo disponible, familiaridad con IA, nivel técnico,
+// objetivo. El resto la IA lo infiere del prompt del usuario.
 const sections = [
   {
-    id: 'technical',
-    name: 'Experiencia Técnica',
+    id: 'context',
+    name: 'tu contexto',
     questions: [
       {
-        id: 'ai_familiarity',
-        question: '¿Qué tan familiarizado estás con ChatGPT, Claude o herramientas similares?',
-        labels: ['Nunca las he usado', 'Las he probado', 'Uso ocasional', 'Uso frecuente', 'Uso avanzado diario'],
-      },
-      {
-        id: 'prompting',
-        question: '¿Qué tan efectivo eres escribiendo prompts para obtener buenos resultados?',
-        labels: ['No sé qué es un prompt', 'Prompts básicos', 'Buenos resultados', 'Técnicas avanzadas', 'Experto en prompting'],
-      },
-      {
-        id: 'automation',
-        question: '¿Has creado flujos de automatización que conecten diferentes apps?',
-        labels: ['Nunca', 'He explorado', 'Flujos simples', 'Varios flujos', 'Flujos en producción'],
-      },
-      {
-        id: 'coding',
-        question: '¿Cuál es tu nivel de experiencia escribiendo código?',
-        labels: ['Ninguno', 'He modificado código', 'Scripts básicos', 'Programo seguido', 'Desarrollo profesional'],
-      },
-      {
-        id: 'apis',
-        question: '¿Sabes qué es una API y has hecho llamadas a servicios externos?',
-        labels: ['No sé qué es', 'Entiendo el concepto', 'He hecho llamadas', 'Las uso seguido', 'Las diseño e implemento'],
-      },
-      {
-        id: 'databases',
-        question: '¿Has trabajado con bases de datos (SQL, Airtable, Supabase)?',
-        labels: ['Nunca', 'He explorado', 'Consultas básicas', 'Las uso seguido', 'Diseño schemas'],
-      },
-      {
-        id: 'content',
-        question: '¿Generas contenido para redes, blogs, emails o video regularmente?',
-        labels: ['No genero contenido', 'Ocasionalmente', 'Regularmente', 'Es parte de mi trabajo', 'Es mi trabajo principal'],
-      },
-      {
-        id: 'vibe_coding',
-        question: '¿Has usado herramientas que generan código desde prompts (Cursor, Lovable)?',
-        labels: ['No las conozco', 'He escuchado', 'Las he probado', 'Las uso seguido', 'Son mis herramientas principales'],
-      },
-    ],
-  },
-  {
-    id: 'business',
-    name: 'Contexto de Negocio',
-    questions: [
-      {
-        id: 'project_clarity',
-        question: '¿Qué tan definido tienes el proyecto que quieres construir?',
-        labels: ['Solo una idea vaga', 'Idea general', 'Concepto claro', 'Plan definido', 'Roadmap detallado'],
-      },
-      {
-        id: 'sales_experience',
-        question: '¿Has vendido algo (producto, servicio, consultoría) de forma directa?',
-        labels: ['Nunca he vendido', 'Pocas veces', 'Algunas ventas', 'Vendo regularmente', 'Ventas son mi fuerte'],
-      },
-      {
-        id: 'pricing',
-        question: '¿Sabes cómo estructurar precios y modelos de monetización?',
-        labels: ['No tengo idea', 'Nociones básicas', 'He definido precios', 'Tengo experiencia', 'Experto en pricing'],
-      },
-      {
-        id: 'launches',
-        question: '¿Cuántos proyectos has llevado de idea a lanzamiento?',
-        labels: ['Ninguno', 'Uno incompleto', 'Uno completo', '2-3 proyectos', 'Más de 3'],
-      },
-      {
-        id: 'goal',
-        question: '¿Qué describe mejor lo que quieres lograr con este curso?',
-        labels: ['Explorar IA', 'Aprender habilidades', 'Crear un proyecto', 'Lanzar un producto', 'Escalar mi negocio'],
-      },
-      {
-        id: 'timeline',
-        question: '¿En cuánto tiempo necesitas tener resultados concretos?',
-        labels: ['Sin prisa', '6+ meses', '3-6 meses', '1-3 meses', 'Lo antes posible'],
-      },
-    ],
-  },
-  {
-    id: 'learning',
-    name: 'Estilo de Aprendizaje',
-    questions: [
-      {
-        id: 'confidence',
-        question: '¿Qué tan seguro te sientes aprendiendo tecnología nueva?',
-        labels: ['Me intimida', 'Algo inseguro', 'Normal', 'Bastante seguro', 'Muy seguro'],
-      },
-      {
-        id: 'problem_solving',
-        question: 'Cuando te trabas en un problema técnico, ¿qué haces?',
-        labels: ['Me frustro y paro', 'Pido ayuda pronto', 'Busco un poco', 'Investigo a fondo', 'Disfruto el reto'],
-      },
-      {
-        id: 'courses_completed',
-        question: '¿Cuántos cursos online has completado (no solo empezado)?',
-        labels: ['Ninguno', '1-2 cursos', '3-5 cursos', '6-10 cursos', 'Más de 10'],
-      },
-      {
-        id: 'learning_style',
-        question: '¿Cómo prefieres aprender algo nuevo?',
-        labels: ['Leyendo teoría', 'Videos paso a paso', 'Ejemplos prácticos', 'Haciendo proyectos', 'Experimentando solo'],
+        id: 'context',
+        question: '¿esto es para tu trabajo o un proyecto personal?',
+        labels: [
+          'solo quiero aprender',
+          'trabajo en una empresa',
+          'freelance / consultoría',
+          'mi propio negocio activo',
+          'estoy lanzando algo nuevo',
+        ],
       },
       {
         id: 'time_available',
-        question: '¿Cuántas horas a la semana puedes dedicar a este curso?',
+        question: '¿cuánto tiempo a la semana puedes dedicar?',
         labels: ['1-2 horas', '3-5 horas', '5-10 horas', '10-15 horas', '+15 horas'],
       },
+    ],
+  },
+  {
+    id: 'level_goal',
+    name: 'tu nivel y objetivo',
+    questions: [
       {
-        id: 'english',
-        question: '¿Qué tan cómodo te sientes con documentación en inglés?',
-        labels: ['No entiendo inglés', 'Muy básico', 'Leo con traductor', 'Leo bien', 'Totalmente cómodo'],
+        id: 'ai_familiarity',
+        question: '¿qué tan familiarizado estás con chatgpt, claude o herramientas similares?',
+        labels: [
+          'nunca las he usado',
+          'las he probado',
+          'uso ocasional',
+          'uso frecuente',
+          'uso avanzado diario',
+        ],
+      },
+      {
+        id: 'technical_level',
+        question: '¿cuál es tu nivel técnico?',
+        labels: [
+          'nada técnico',
+          'hojas de cálculo / no-code',
+          'scripts básicos',
+          'programo seguido',
+          'desarrollo profesional',
+        ],
+      },
+      {
+        id: 'goal',
+        question: '¿qué quieres lograr en los próximos 3 meses?',
+        labels: [
+          'explorar y entender qué es ia',
+          'automatizar tareas de mi trabajo',
+          'construir un proyecto / herramienta',
+          'lanzar un producto',
+          'escalar algo que ya tengo',
+        ],
       },
     ],
   },
@@ -166,14 +118,66 @@ export default function ProjectContextPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [isDragging, setIsDragging] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [isRehydrating, setIsRehydrating] = useState(true);
   const router = useRouter();
 
-  // Check if project idea exists
+  // Check if project idea exists. Si se perdió sessionStorage (recarga,
+  // cambio de tab) pero hay draft activo en DB, rehidratamos desde ahí antes
+  // de rebotar al paso anterior.
   useEffect(() => {
-    const projectIdea = sessionStorage.getItem('projectIdea');
-    if (!projectIdea) {
-      router.push('/projectDescription');
-    }
+    let cancelled = false;
+    const ensure = async () => {
+      if (sessionStorage.getItem('projectIdea')) {
+        setIsRehydrating(false);
+        return;
+      }
+
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace('/auth/login?redirectedFrom=/projectContext');
+        return;
+      }
+      const draft = await loadLatestDraftForRehydrate(supabase, user.id);
+      if (cancelled) return;
+
+      if (!draft?.projectIdea) {
+        router.replace('/projectDescription');
+        return;
+      }
+
+      sessionStorage.setItem('intakeResponseId', draft.id);
+      sessionStorage.setItem('projectIdea', draft.projectIdea);
+      if (draft.courseMode === 'full') sessionStorage.setItem('courseMode', 'full');
+      else sessionStorage.removeItem('courseMode');
+
+      if (draft.questionnaire) {
+        sessionStorage.setItem(
+          'projectContext',
+          JSON.stringify(draft.questionnaire)
+        );
+        const hydrated: Record<string, number> = {};
+        for (const [key, value] of Object.entries(draft.questionnaire)) {
+          if (
+            value &&
+            typeof value === 'object' &&
+            'value' in value &&
+            typeof (value as { value: unknown }).value === 'number'
+          ) {
+            hydrated[key] = (value as { value: number }).value;
+          }
+        }
+        if (Object.keys(hydrated).length > 0) setAnswers(hydrated);
+      }
+
+      setIsRehydrating(false);
+    };
+    void ensure();
+    return () => {
+      cancelled = true;
+    };
   }, [router]);
 
   const currentQuestion = allQuestions[currentIndex];
@@ -207,10 +211,46 @@ export default function ProjectContextPage() {
     }
   };
 
+  const persistAndGoToPaywall = async (
+    responses: Record<string, QuestionResponse>
+  ) => {
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push('/auth/login?redirectedFrom=/projectContext');
+        return;
+      }
+
+      const existingId = sessionStorage.getItem('intakeResponseId') || undefined;
+      const result = await upsertIntakeDraft(
+        supabase,
+        user.id,
+        { questionnaire: responses, step: 'questionnaire_complete' },
+        existingId
+      );
+
+      if ('error' in result) {
+        setSaveError('No pudimos guardar tus respuestas. Intenta de nuevo.');
+        setIsSaving(false);
+        return;
+      }
+
+      sessionStorage.setItem('intakeResponseId', result.id);
+      sessionStorage.setItem('projectContext', JSON.stringify(responses));
+      router.push('/paywall');
+    } catch {
+      setSaveError('Error inesperado. Intenta de nuevo.');
+      setIsSaving(false);
+    }
+  };
+
   const finishQuestionnaire = () => {
     // Build responses with full context
     const responses: Record<string, QuestionResponse> = {};
-    
+
     allQuestions.forEach(q => {
       const value = answers[q.id] ?? 3;
       responses[q.id] = {
@@ -221,12 +261,23 @@ export default function ProjectContextPage() {
       };
     });
 
-    sessionStorage.setItem('projectContext', JSON.stringify(responses));
-    router.push('/paywall');
+    void persistAndGoToPaywall(responses);
   };
 
   const handleSkip = () => {
-    router.push('/paywall');
+    // Persistimos lo que haya (aunque sea parcial) para no perderlo.
+    const responses: Record<string, QuestionResponse> = {};
+    allQuestions.forEach(q => {
+      const value = answers[q.id];
+      if (value === undefined) return;
+      responses[q.id] = {
+        question: q.question,
+        value,
+        label: q.labels[value - 1],
+        section: q.sectionName,
+      };
+    });
+    void persistAndGoToPaywall(responses);
   };
 
   const progress = ((currentIndex + 1) / allQuestions.length) * 100;
@@ -241,12 +292,30 @@ export default function ProjectContextPage() {
     return start;
   };
 
+  if (isRehydrating) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-gray-800 flex flex-col">
+        <OnboardingNavbar />
+        <main className="flex-1 flex items-center justify-center">
+          <Spinner />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-800 flex flex-col">
       <OnboardingNavbar />
 
       <main className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-12">
         <div className="w-full max-w-2xl mx-auto">
+          {saveError && (
+            <div className="mb-6 mx-auto max-w-md p-3 bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-800 rounded-2xl text-center">
+              <p className="text-sm text-red-700 dark:text-red-400 font-medium">
+                {saveError}
+              </p>
+            </div>
+          )}
           {/* Section Name - Always visible at top */}
           <AnimatePresence mode="wait">
             <motion.div
@@ -385,9 +454,14 @@ export default function ProjectContextPage() {
               size="lg"
               rounded2xl
               onClick={handleNext}
+              disabled={isSaving}
               className="flex items-center gap-2"
             >
-              {currentIndex === allQuestions.length - 1 ? 'Crear mi curso' : 'Siguiente'}
+              {isSaving
+                ? 'Guardando…'
+                : currentIndex === allQuestions.length - 1
+                  ? 'Crear mi curso'
+                  : 'Siguiente'}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>

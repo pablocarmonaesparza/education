@@ -56,17 +56,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Cargar todas las lecciones activas en orden cronológico.
-    // Traemos también duration y youtube_url desde education_system_vectorized
-    // (misma fila por lecture_id) para que si en algún momento se poblan, el
-    // dashboard y el reproductor los consuman sin cambios adicionales.
+    // Cargar todas las lecciones publicadas joineadas con sections para el
+    // display name. Schema actual (post-pivot SCHEMA_v1):
+    //   - `lectures` con uuid id, section_id smallint FK, title, est_minutes,
+    //     learning_objective, narrative_arc, etc.
+    //   - `sections` con smallint id, name, display_name, display_order.
+    // El antiguo `education_system` con (lecture, section, volume, concept,
+    // description) NO existe en la DB actual — el endpoint estaba leyendo una
+    // tabla legacy que ya fue pivotada. Reescrito para usar el schema real.
     const { data: lessons, error: lessonsError } = await supabase
-      .from('education_system')
-      .select('id, lecture, section, section_id, volume, concept, concept_id, description')
-      .eq('status', 'Active')
+      .from('lectures')
+      .select(
+        'id, slug, section_id, display_order, title, display_title, learning_objective, narrative_arc, concept_name, est_minutes, status, sections!inner(id, name, display_name, display_order)',
+      )
+      .eq('status', 'published')
       .order('section_id', { ascending: true })
-      .order('volume', { ascending: true })
-      .order('id', { ascending: true });
+      .order('display_order', { ascending: true });
 
     if (lessonsError) {
       return NextResponse.json(
@@ -76,38 +81,37 @@ export async function POST(request: NextRequest) {
     }
     if (!lessons || lessons.length === 0) {
       return NextResponse.json(
-        { success: false, error: 'No se encontraron lecciones activas en education_system.' },
+        { success: false, error: 'No se encontraron lecciones publicadas.' },
         { status: 500 },
       );
     }
 
-    // Cargar duration y youtube_url desde la vista vectorizada (misma fila por lecture_id)
-    const lessonIds = lessons.map((l: any) => l.id);
-    const { data: media } = await supabase
-      .from('education_system_vectorized')
-      .select('lecture_id, duration, youtube_url')
-      .in('lecture_id', lessonIds);
-
-    const mediaByLessonId = new Map<number, { duration: number | null; youtube_url: string | null }>();
-    for (const m of (media ?? []) as Array<{ lecture_id: number; duration: number | null; youtube_url: string | null }>) {
-      mediaByLessonId.set(m.lecture_id, { duration: m.duration, youtube_url: m.youtube_url });
-    }
-
     // Agrupar por sección preservando el orden. Emitimos cada video con
-    // múltiples alias (description/title/name, why_relevant/description) para
-    // que todos los consumidores del codebase lo lean correctamente:
-    //  - app/dashboard/page.tsx usa video.description como título
-    //  - lib/tutor/context.ts y lib/supabase/dashboard.ts usan video.title
+    // múltiples alias (title/name, why_relevant/summary) para que todos
+    // los consumidores del codebase lo lean correctamente:
+    //  - app/dashboard/page.tsx usa video.description como título — al
+    //    omitir description aquí, el dashboard cae a `title` (correcto).
+    //  - lib/tutor/context.ts y lib/supabase/dashboard.ts usan video.title.
     //  - ambos leen why_relevant como explicación secundaria.
-    type LessonRow = {
+    type SectionEmbed = {
       id: number;
-      lecture: string;
-      section: string;
+      name: string;
+      display_name: string | null;
+      display_order: number;
+    };
+    type LessonRow = {
+      id: string;
+      slug: string;
       section_id: number;
-      volume: number | null;
-      concept: string | null;
-      concept_id: string | null;
-      description: string | null;
+      display_order: number;
+      title: string;
+      display_title: string | null;
+      learning_objective: string | null;
+      narrative_arc: string | null;
+      concept_name: string | null;
+      est_minutes: number | null;
+      status: string;
+      sections: SectionEmbed | SectionEmbed[];
     };
 
     type Phase = {
@@ -138,7 +142,7 @@ export async function POST(request: NextRequest) {
         section_id: number;
         concept: string | null;
         concept_id: string | null;
-        lecture_id: number;
+        lecture_id: string;
       }>;
     };
 
@@ -146,37 +150,49 @@ export async function POST(request: NextRequest) {
     let order = 1;
 
     for (const row of lessons as LessonRow[]) {
+      // Supabase devuelve relaciones embed como objeto cuando hay 1 fila
+      // (inner join con FK no-null). Algunas versiones lo envuelven en array.
+      // Normalizamos a un objeto único.
+      const sectionRow: SectionEmbed | null = Array.isArray(row.sections)
+        ? row.sections[0] ?? null
+        : row.sections ?? null;
+      const sectionName = sectionRow?.display_name || sectionRow?.name || `Sección ${row.section_id}`;
+
       const phase =
         phaseMap.get(row.section_id) ??
         {
           id: `phase-${row.section_id}`,
           phase_number: row.section_id,
-          phase_name: row.section,
-          title: row.section,
-          name: row.section,
-          description: `Sección ${row.section_id}: ${row.section}`,
+          phase_name: sectionName,
+          title: sectionName,
+          name: sectionName,
+          description: `Sección ${row.section_id}: ${sectionName}`,
           videos: [],
         };
-      const mediaRow = mediaByLessonId.get(row.id);
-      const durationSec = mediaRow?.duration ?? 0;
-      const youtubeUrl = mediaRow?.youtube_url ?? '';
+
+      // Schema actual usa minutos (est_minutes); lo convertimos a segundos
+      // para mantener el contrato con el dashboard. URL se deja vacío porque
+      // las lecciones del modo full no tienen video — son lecturas/ejercicios.
+      const durationSec = (row.est_minutes ?? 0) * 60;
+      const lectureTitle = row.display_title || row.title;
+      const lectureSummary = row.learning_objective || row.narrative_arc || '';
 
       phase.videos.push({
-        id: String(row.id),
+        id: row.id,
         order,
-        title: row.lecture,
-        name: row.lecture,
-        why_relevant: row.description ?? '',
-        summary: row.description ?? '',
-        subsection: row.concept,
+        title: lectureTitle,
+        name: lectureTitle,
+        why_relevant: lectureSummary,
+        summary: lectureSummary,
+        subsection: row.concept_name,
         duration: durationSec,
         duration_seconds: durationSec,
-        video_url: youtubeUrl,
-        url: youtubeUrl,
-        section: row.section,
+        video_url: '',
+        url: '',
+        section: sectionName,
         section_id: row.section_id,
-        concept: row.concept,
-        concept_id: row.concept_id,
+        concept: row.concept_name,
+        concept_id: null,
         lecture_id: row.id,
       });
       phaseMap.set(row.section_id, phase);
@@ -198,17 +214,45 @@ export async function POST(request: NextRequest) {
       next_steps: [],
     };
 
-    // Guardar en intake_responses para que el dashboard lo lea
-    const { error: saveError } = await supabase.from('intake_responses').insert({
-      user_id: user.id,
-      responses: {
-        project_idea: 'Curso completo de Itera',
-        project_summary: 'El usuario eligió recorrer todas las lecciones en orden cronológico.',
-        mode: 'full',
-        submitted_at: new Date().toISOString(),
-      },
-      generated_path: generatedPath,
-    });
+    // Guardar en intake_responses. Preferimos UPDATE del draft activo del
+    // usuario (creado durante el onboarding por /projectDescription y
+    // /projectContext). Si no hay draft, hacemos INSERT.
+    const { data: draft } = await supabase
+      .from('intake_responses')
+      .select('id, responses')
+      .eq('user_id', user.id)
+      .is('generated_path', null)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    const mergedResponses = {
+      ...((draft?.responses as Record<string, unknown> | null) || {}),
+      project_idea: 'Curso completo de Itera',
+      project_summary:
+        'El usuario eligió recorrer todas las lecciones en orden cronológico.',
+      mode: 'full',
+      submitted_at: new Date().toISOString(),
+    };
+
+    const saveError = draft
+      ? (
+          await supabase
+            .from('intake_responses')
+            .update({
+              responses: mergedResponses,
+              generated_path: generatedPath,
+            })
+            .eq('id', draft.id)
+            .eq('user_id', user.id)
+        ).error
+      : (
+          await supabase.from('intake_responses').insert({
+            user_id: user.id,
+            responses: mergedResponses,
+            generated_path: generatedPath,
+          })
+        ).error;
 
     if (saveError) {
       return NextResponse.json(

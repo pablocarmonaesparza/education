@@ -4,33 +4,123 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import OnboardingNavbar from '@/components/onboarding/OnboardingNavbar';
 import Button from '@/components/ui/Button';
+import { createClient } from '@/lib/supabase/client';
+import { upsertIntakeDraft } from '@/lib/onboarding/persistIntake';
 
 export default function ProjectDescriptionPage() {
-  const [projectIdea, setProjectIdea] = useState('');
+  // Pre-populate from `pendingProjectIdea` if the user arrived here via the
+  // landing ProjectInputSection. SessionStorage wins for email signup;
+  // cookie is a fallback for OAuth flows where sessionStorage gets wiped
+  // on the round-trip to the provider. Consume-and-clear so a second visit
+  // doesn't re-populate stale input.
+  //
+  // Defensive reads: sessionStorage puede throw en Safari modo privado o
+  // cuando el storage está bloqueado. decodeURIComponent puede throw si la
+  // cookie llegó malformada (`%E0%A4%A` etc). Cualquiera de los dos crashea
+  // el render del page entero si no se aísla.
+  const [projectIdea, setProjectIdea] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    let fromSession: string | null = null;
+    let cookieRaw: string | null = null;
+    try {
+      fromSession = sessionStorage.getItem('pendingProjectIdea');
+    } catch {
+      fromSession = null;
+    }
+    try {
+      const cookieMatch = document.cookie.match(
+        /(?:^|;\s*)pendingProjectIdea=([^;]+)/
+      );
+      cookieRaw = cookieMatch ? cookieMatch[1] : null;
+    } catch {
+      cookieRaw = null;
+    }
+    // Unconditionally clear both sources so a second visit doesn't
+    // re-populate from whichever one was left behind.
+    if (fromSession !== null || cookieRaw) {
+      try {
+        sessionStorage.removeItem('pendingProjectIdea');
+      } catch {
+        // ignore — storage might be blocked
+      }
+      try {
+        document.cookie = 'pendingProjectIdea=; path=/; max-age=0';
+      } catch {
+        // ignore
+      }
+    }
+    if (fromSession) return fromSession;
+    if (cookieRaw) {
+      try {
+        return decodeURIComponent(cookieRaw);
+      } catch {
+        return '';
+      }
+    }
+    return '';
+  });
   const [error, setError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
 
+  const persistAndGo = async (idea: string, mode: 'personalized' | 'full') => {
+    setIsSaving(true);
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.push('/auth/login?redirectedFrom=/projectDescription');
+        return;
+      }
+
+      const existingId = sessionStorage.getItem('intakeResponseId') || undefined;
+      const result = await upsertIntakeDraft(
+        supabase,
+        user.id,
+        { projectIdea: idea, courseMode: mode, step: 'description' },
+        existingId
+      );
+
+      if ('error' in result) {
+        setError('No pudimos guardar tu idea. Intenta de nuevo.');
+        setIsSaving(false);
+        return;
+      }
+
+      sessionStorage.setItem('intakeResponseId', result.id);
+      sessionStorage.setItem('projectIdea', idea);
+      if (mode === 'full') sessionStorage.setItem('courseMode', 'full');
+      else sessionStorage.removeItem('courseMode');
+
+      router.push('/projectContext');
+    } catch {
+      setError('Error inesperado. Intenta de nuevo.');
+      setIsSaving(false);
+    }
+  };
+
+  // Cap del textarea. Sin esto, alguien puede pegar megabytes y termina en
+  // Supabase JSON + en el prompt que mandamos a OpenAI (token amplifier +
+  // costo). 1200 es lo que ya valida /api/validate-idea, así que mantenemos
+  // el contrato consistente cliente↔server.
+  const IDEA_MAX_CHARS = 1200;
+  const IDEA_MIN_CHARS = 100;
+
   const handleContinue = () => {
-    if (!projectIdea.trim() || projectIdea.trim().length < 100) {
-      setError('Por favor describe tu idea con al menos 100 caracteres');
+    const trimmed = projectIdea.trim();
+    if (!trimmed || trimmed.length < IDEA_MIN_CHARS) {
+      setError(`Por favor describe tu idea con al menos ${IDEA_MIN_CHARS} caracteres`);
       return;
     }
-
-    // Save to sessionStorage for next steps (ruta personalizada)
-    sessionStorage.setItem('projectIdea', projectIdea);
-    sessionStorage.removeItem('courseMode');
-
-    // Navigate to optional context page
-    router.push('/projectContext');
+    if (trimmed.length > IDEA_MAX_CHARS) {
+      setError(`Tu idea es demasiado larga. Máximo ${IDEA_MAX_CHARS} caracteres.`);
+      return;
+    }
+    void persistAndGo(projectIdea, 'personalized');
   };
 
   const handleFullCourse = () => {
-    // Ruta "curso completo": ignora el textarea, se marca el modo,
-    // pasa por la encuesta (skippable) y el dashboard mostrará TODAS las
-    // lecciones activas ordenadas cronológicamente.
-    sessionStorage.setItem('courseMode', 'full');
-    sessionStorage.setItem('projectIdea', 'Curso completo de Itera');
-    router.push('/projectContext');
+    void persistAndGo('Curso completo de Itera', 'full');
   };
 
   return (
@@ -64,20 +154,31 @@ export default function ProjectDescriptionPage() {
                 <textarea
                   value={projectIdea}
                   onChange={(e) => {
-                    setProjectIdea(e.target.value);
+                    // Hard cap a IDEA_MAX_CHARS aunque maxLength del HTML
+                    // limita el typing — defense in depth contra paste de
+                    // contenido que el browser permita (algunos respetan
+                    // maxLength solo en typing, no en paste).
+                    const next = e.target.value.slice(0, IDEA_MAX_CHARS);
+                    setProjectIdea(next);
                     setError(null);
                   }}
                   placeholder="Describe tu idea y haremos un curso personalizado para ti."
                   rows={2}
+                  maxLength={IDEA_MAX_CHARS}
                   className="w-full bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 resize-none focus:outline-none focus:ring-0 font-light leading-relaxed px-4 py-3"
                 />
 
                 {/* Character count */}
                 <div className="px-4 pb-2 flex justify-end">
                   <p className={`text-xs font-medium ${
-                    projectIdea.length >= 100 ? "text-green-500" : "text-gray-400 dark:text-gray-500"
+                    projectIdea.length > IDEA_MAX_CHARS - 100
+                      ? "text-yellow-600 dark:text-yellow-400"
+                      : projectIdea.length >= IDEA_MIN_CHARS
+                        ? "text-green-500"
+                        : "text-gray-400 dark:text-gray-500"
                   }`}>
-                    {projectIdea.length}/100
+                    {projectIdea.length}/{IDEA_MIN_CHARS}
+                    {projectIdea.length > IDEA_MAX_CHARS - 100 && ` (máx ${IDEA_MAX_CHARS})`}
                   </p>
                 </div>
               </div>
@@ -101,12 +202,16 @@ export default function ProjectDescriptionPage() {
             <p className="text-sm text-ink-muted dark:text-gray-400 mb-3 text-center">¿Necesitas inspiración? Aquí algunas ideas:</p>
             <div className="flex flex-wrap gap-2 justify-center">
               {[
-                { label: 'Chatbot de atención al cliente', description: 'Quiero crear un chatbot que responda preguntas frecuentes de mis clientes sobre horarios, precios y disponibilidad de productos automáticamente.' },
-                { label: 'Automatización de reportes', description: 'Necesito automatizar la generación de reportes semanales que extraiga datos de mis ventas y los envíe por correo a mi equipo.' },
-                { label: 'Asistente de ventas con IA', description: 'Quiero un asistente inteligente que califique leads, sugiera productos y ayude a mi equipo de ventas a cerrar más tratos.' },
-                { label: 'Generador de contenido', description: 'Necesito una herramienta que genere publicaciones para redes sociales, blogs y emails de marketing usando inteligencia artificial.' },
-                { label: 'Bot para WhatsApp', description: 'Quiero integrar un bot en WhatsApp Business que atienda consultas, tome pedidos y programe citas de forma automática.' },
-                { label: 'Análisis de datos con IA', description: 'Necesito analizar grandes volúmenes de datos de clientes para identificar patrones de compra y predecir tendencias de ventas.' },
+                // Mezcla rebalanceada: ~70% empleados (chips 1-4) + ~30%
+                // founder/negocio (chips 5-6). Antes estaba 100% founder y
+                // dejaba fuera al mercado real de Itera (LATAM no-técnico
+                // mayormente empleados aprendiendo IA para su trabajo).
+                { label: 'Automatizar reportes en Excel', description: 'Quiero automatizar reportes que hago semanalmente en Excel. Sacar datos de varias hojas, formatearlos y mandarlos por correo a mi jefe sin tener que repetir el mismo proceso manual cada lunes.' },
+                { label: 'Redactar emails y propuestas', description: 'Quiero redactar correos profesionales, propuestas comerciales y respuestas a clientes mucho más rápido. Que la IA me ayude a estructurar, mejorar el tono y adaptar al contexto.' },
+                { label: 'Resumir reuniones y notas', description: 'Tengo muchas reuniones cada semana y pierdo tiempo escribiendo notas y resúmenes. Quiero usar IA para transcribir, resumir puntos clave y sacar action items automáticamente.' },
+                { label: 'Investigar competencia y mercado', description: 'Necesito investigar competencia, tendencias y mercado para mi área de trabajo. Que la IA me ayude a sintetizar información de varias fuentes y producir reportes accionables para mi equipo.' },
+                { label: 'Construir un chatbot para mi negocio', description: 'Quiero crear un chatbot que responda preguntas frecuentes de mis clientes sobre horarios, precios y disponibilidad de productos automáticamente, integrado a mi web o WhatsApp.' },
+                { label: 'Generar contenido para redes', description: 'Necesito una herramienta que genere publicaciones para redes sociales, blogs y emails de marketing usando inteligencia artificial, alineada al tono de mi marca.' },
               ].map((suggestion) => (
                 <Button
                   key={suggestion.label}
@@ -140,25 +245,29 @@ export default function ProjectDescriptionPage() {
               size="lg"
               rounded2xl
               onClick={handleContinue}
-              disabled={projectIdea.length < 100}
+              disabled={projectIdea.length < 100 || isSaving}
               className="flex items-center gap-2"
             >
-              Siguiente
+              {isSaving ? 'Guardando…' : 'Siguiente'}
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </Button>
           </div>
 
-          {/* Full course shortcut — sin personalizar, recorrido cronológico completo */}
+          {/* Full course shortcut — sin personalizar, recorrido cronológico completo.
+              Variant `ghost` lo hace claramente botón (padding + hover) sin
+              pelear visualmente con el primary "Siguiente" de arriba. */}
           <div className="flex justify-center mt-8">
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="md"
+              rounded2xl
               onClick={handleFullCourse}
-              className="text-sm text-ink-muted dark:text-gray-400 hover:text-primary dark:hover:text-primary underline decoration-dotted underline-offset-4 transition-colors"
+              disabled={isSaving}
             >
               o tomar el curso completo
-            </button>
+            </Button>
           </div>
         </div>
       </main>

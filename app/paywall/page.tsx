@@ -1,13 +1,16 @@
 'use client';
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import { Spinner } from '@/components/ui';
 import { createClient } from '@/lib/supabase/client';
-import { loadLatestDraftForRehydrate } from '@/lib/onboarding/persistIntake';
+import {
+  loadLatestDraftForRehydrate,
+  upsertIntakeDraft,
+} from '@/lib/onboarding/persistIntake';
 
 type Plan = 'monthly' | 'yearly';
 
@@ -23,6 +26,11 @@ function PaywallContent() {
   const [error, setError] = useState<string | null>(null);
   const [preferredPlan, setPreferredPlan] = useState<Plan | null>(null);
   const [isChecking, setIsChecking] = useState(true);
+  // Lock síncrono para guardar contra doble-click. React state + `disabled`
+  // tiene una ventana de varios ms entre el primer setLoadingPlan y el
+  // re-render; en esa ventana el segundo click llega con `loadingPlan=null`
+  // y dispara un upsert duplicado. useRef es síncrono y sí cierra la ventana.
+  const submitLockRef = useRef(false);
 
   useEffect(() => {
     const stored = sessionStorage.getItem('preferredPlan');
@@ -104,9 +112,63 @@ function PaywallContent() {
     }
   };
 
-  const continueFree = () => {
+  const continueFree = async () => {
+    // Lock síncrono — cierra la ventana entre dos clicks rápidos antes de que
+    // React re-renderice `disabled`. Evita upserts duplicados que crearían
+    // dos drafts activos para el mismo user (Codex flagged P1).
+    if (submitLockRef.current) return;
+    submitLockRef.current = true;
+    setError(null);
     setLoadingPlan('free');
-    router.push('/courseCreation');
+
+    // El tier gratis sirve el catálogo completo (modo "full"), no la ruta
+    // personalizada. /courseCreation ramifica entre full/personalized según
+    // este flag; sin él cae al endpoint premium /api/generate-course y el
+    // proxy responde 402 ("subscription_required"), rompiendo el flujo gratis.
+    //
+    // Persistimos el cambio en DB ANTES de navegar para que /courseCreation
+    // no caiga al path premium si rehidrata desde DB (recarga, tab nuevo,
+    // sessionStorage perdido). También copiamos `projectIdea` desde
+    // sessionStorage al draft si la DB no lo tiene — en el path normal
+    // /projectDescription ya escribió la idea, pero defensivamente cubrimos
+    // el caso donde sessionStorage tiene idea sin draft asociado, para que
+    // /courseCreation no rebote al user a /projectDescription pidiéndole
+    // que escriba de nuevo.
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        router.replace('/auth/login?redirectedFrom=/paywall');
+        return;
+      }
+
+      const sessionIdea = sessionStorage.getItem('projectIdea')?.trim() || '';
+      const existingId =
+        sessionStorage.getItem('intakeResponseId') || undefined;
+      const patch: Parameters<typeof upsertIntakeDraft>[2] = {
+        courseMode: 'full',
+      };
+      if (sessionIdea) patch.projectIdea = sessionIdea;
+
+      const result = await upsertIntakeDraft(supabase, user.id, patch, existingId);
+
+      if ('error' in result) {
+        setError(
+          'No pudimos preparar tu acceso gratis. Intenta de nuevo en un momento.',
+        );
+        setLoadingPlan(null);
+        submitLockRef.current = false;
+        return;
+      }
+
+      sessionStorage.setItem('intakeResponseId', result.id);
+      sessionStorage.setItem('courseMode', 'full');
+      router.push('/courseCreation');
+    } catch {
+      setError('Error inesperado. Intenta de nuevo.');
+      setLoadingPlan(null);
+      submitLockRef.current = false;
+    }
   };
 
   const tiers = [
@@ -133,7 +195,7 @@ function PaywallContent() {
       description: 'la experiencia completa con ia personalizada.',
       features: [
         'ruta personalizada generada por ia',
-        'la ia selecciona los videos que necesitas',
+        'la ia selecciona las lecciones que necesitas',
         'asistente virtual de seguimiento',
         'cancela cuando quieras',
       ],

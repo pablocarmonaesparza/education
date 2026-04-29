@@ -200,6 +200,31 @@ export default function Sidebar() {
         </nav>
       )}
 
+      {/* B2B CTA — solo en nav normal, no durante una lección. Aparece para
+          todos los users del dashboard (independientemente del tier) porque
+          el momento de captura B2B es justo cuando alguien YA está usando
+          Itera y se acuerda de su empresa. Pre-llena email/nombre vía
+          ?ref=dashboard que /empresas lee del searchParams + auth session. */}
+      {!lessonNav && (
+        <div className="px-3 pt-2 pb-1">
+          <Link
+            href="/empresas?ref=dashboard"
+            className="block rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary p-3 transition-colors group"
+            onClick={closeDrawer}
+          >
+            <p className="text-xs text-ink-muted dark:text-gray-400 mb-1 leading-snug">
+              ¿esto le sirve a tu equipo?
+            </p>
+            <p className="text-sm font-bold text-ink dark:text-gray-200 group-hover:text-primary dark:group-hover:text-primary transition-colors flex items-center gap-1">
+              capacitar a mi empresa
+              <svg className="w-3 h-3 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+              </svg>
+            </p>
+          </Link>
+        </div>
+      )}
+
       {/* Bottom Section - Profile */}
       <div className="p-3">
         <div className="relative">
