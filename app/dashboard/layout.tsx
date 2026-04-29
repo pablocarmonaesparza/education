@@ -3,7 +3,12 @@
 import { useEffect, useState } from 'react';
 import Sidebar from '@/components/dashboard/Sidebar';
 import GamificationSidebar from '@/components/dashboard/GamificationSidebar';
-import FloatingChat from '@/components/dashboard/FloatingChat';
+// Tutor IA archivado por decisión de Pablo (2026-04-29). Para reactivarlo:
+// re-importar `FloatingChat` y montarlo dentro del SidebarProvider abajo.
+// El componente sigue vivo en `components/dashboard/FloatingChat.tsx` +
+// `TutorChatPanel.tsx` + el hook `lib/hooks/useTutorChat.ts` + la API
+// `app/api/tutor-chat/route.ts`.
+// import FloatingChat from '@/components/dashboard/FloatingChat';
 import DashboardMobileHeader from '@/components/dashboard/DashboardMobileHeader';
 import { SidebarProvider } from '@/contexts/SidebarContext';
 
@@ -47,7 +52,7 @@ export default function DashboardLayout({
         <Sidebar />
         <DashboardContent>{children}</DashboardContent>
         <GamificationSidebar />
-        <FloatingChat />
+        {/* <FloatingChat /> — archivado, ver comentario arriba */}
       </div>
     </SidebarProvider>
   );
