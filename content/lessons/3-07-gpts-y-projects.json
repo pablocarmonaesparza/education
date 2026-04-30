@@ -2,30 +2,30 @@
   "section_id": 3,
   "slug": "gpts-y-projects",
   "title": "Customizar: GPTs y Projects",
-  "source": "claude-in-session-v2",
+  "source": "claude-in-session-v4",
   "slides": [
     {
       "order_in_lecture": 1,
       "kind": "mcq",
       "phase": "engage",
       "content": {
-        "prompt": "Javier abre ChatGPT cada mañana. Pega las mismas 10 líneas de contexto: su rol, su empresa, su tono y su formato preferido. Lo hace unas 20 veces al día. ¿Qué está pasando?",
+        "prompt": "Javier abre ChatGPT y pega 10 líneas de contexto: rol, empresa, tono, formato. Lo hace 20 veces al día. ¿Qué falla?",
         "options": [
           {
             "id": 0,
-            "text": "Está bien: así garantiza que cada respuesta salga con su contexto correcto"
+            "text": "Está bien: así garantiza que cada respuesta salga con contexto"
           },
           {
             "id": 1,
-            "text": "Está pagando fricción evitable — ChatGPT tiene formas de guardar ese contexto una sola vez"
+            "text": "Paga fricción evitable: ChatGPT puede guardar ese contexto una sola vez y arrancar configurado"
           },
           {
             "id": 2,
-            "text": "Debería escribir un prompt más corto para no perder tanto tiempo"
+            "text": "Necesita un prompt más corto para no tardar tanto"
           }
         ],
         "correctId": 1,
-        "explanation": "Javier está pagando el mismo peaje de fricción 20 veces al día. Repetir el contexto no lo hace más seguro ni el prompt corto resuelve el problema: lo que necesita es **guardar ese contexto una vez** y que cada chat arranque ya configurado.",
+        "explanation": "Javier está pagando el mismo peaje 20 veces al día. Repetir contexto no lo hace más seguro y un prompt corto tampoco resuelve el problema. Lo que necesita es **guardarlo una vez** para que cada chat arranque ya configurado.",
         "xp": 20
       }
     },
@@ -35,101 +35,70 @@
       "phase": "explore",
       "content": {
         "title": "GPTs vs Projects",
-        "body": "Dos formas de guardar contexto en ChatGPT:\n\n- **GPT custom** — asistente con personalidad fija (rol + instrucciones + archivos). Reutilizable para una tarea recurrente.\n- **Project** — carpeta que agrupa chats relacionados con contexto compartido."
+        "body": "Dos formas de guardar contexto en ChatGPT:\n\n- **GPT custom**: asistente con personalidad fija (rol + instrucciones + archivos), reutilizable para una tarea recurrente\n- **Project**: carpeta que agrupa chats relacionados con contexto compartido"
       }
     },
     {
       "order_in_lecture": 3,
       "kind": "concept",
-      "phase": "explore",
+      "phase": "explain",
       "content": {
-        "title": "Cuándo usar cada uno",
-        "body": "**GPT custom** cuando repites la misma tarea con el mismo tono: traducir, responder clientes, revisar propuestas.\n\n**Project** cuando un solo trabajo grande genera muchos chats: un libro, un lanzamiento, un cliente con varias tareas."
+        "title": "anatomía de un GPT custom",
+        "body": "Un GPT custom tiene cuatro piezas: **nombre + imagen**, **instrucciones** (el system prompt fijo), **conocimiento** (archivos consultables) y **capacidades** (web, código, imagen). Lo configuras una vez, lo usas infinito."
       }
     },
     {
       "order_in_lecture": 4,
-      "kind": "concept",
-      "phase": "explain",
-      "content": {
-        "title": "Anatomía de un GPT custom",
-        "body": "Un GPT custom tiene:\n\n- **Nombre** e imagen\n- **Instrucciones** (el system prompt que siempre aplica)\n- **Conocimiento** (archivos que puede consultar)\n- **Capacidades** (web, código, imagen activables)\n\nLo creas una vez, lo usas infinitas."
-      }
-    },
-    {
-      "order_in_lecture": 5,
-      "kind": "fill-blank",
-      "phase": "explain",
-      "content": {
-        "prompt": "Completa la regla:",
-        "sentenceBefore": "Si repites el mismo contexto más de 3 veces, conviene ",
-        "sentenceAfter": " en vez de seguir pegándolo.",
-        "tokens": [
-          "Crear un GPT custom",
-          "Escribir más rápido",
-          "Usar otro modelo"
-        ],
-        "correctTokenIndex": 0,
-        "explanation": "**3 veces** es el umbral práctico. Más allá, cada repetición es fricción que acumulas. 10 minutos creando un GPT te ahorran horas mensuales.",
-        "xp": 15
-      }
-    },
-    {
-      "order_in_lecture": 6,
-      "kind": "order-steps",
+      "kind": "build-prompt",
       "phase": "elaborate",
       "content": {
-        "prompt": "Ordena los pasos para crear tu primer GPT custom útil:",
-        "steps": [
-          "Identificas una tarea que repites varias veces por semana",
-          "Escribes las instrucciones con rol + tono + formato esperado",
-          "Subes archivos relevantes (ejemplos, guías de marca, plantillas)",
-          "Lo pruebas con 3 casos reales",
-          "Ajustas las instrucciones según lo que falle",
-          "Lo usas como tu asistente permanente para esa tarea"
+        "prompt": "Worked example: arma las instrucciones del GPT custom de Javier. Toca los tokens etiquetados en orden ROL, TAREA, CONTEXTO, FORMATO:",
+        "tokens": [
+          "[ROL] Eres director comercial B2B en una pyme manufacturera",
+          "[TAREA] Redacta correos de seguimiento a leads",
+          "[CONTEXTO] La empresa vende empaques industriales en LATAM, ticket 5.000 USD",
+          "[FORMATO] Asunto + 4 renglones + CTA cerrado"
         ],
         "correctOrder": [
           0,
           1,
           2,
-          3,
-          4,
-          5
+          3
         ],
-        "explanation": "El orden importa: **primero identifica una tarea recurrente real**, no construyas un GPT para algo que haces una vez al año. El ajuste con casos reales es lo que lo vuelve útil.",
+        "explanation": "Este es el patrón a copiar para instrucciones de GPT custom: **rol + tarea + contexto + formato** etiquetados. Sin alguno de los cuatro, el GPT contesta genérico y vuelves al peaje del copy-paste.",
         "xp": 15
       }
     },
     {
-      "order_in_lecture": 7,
+      "order_in_lecture": 5,
       "kind": "tap-match",
       "phase": "elaborate",
       "content": {
-        "prompt": "Empareja cada caso con GPT custom o Project:",
+        "prompt": "Empareja el caso con GPT custom o Project:",
         "pairs": [
           {
             "term": "Traducir posts al inglés",
-            "def": "GPT custom — tarea repetida con mismo tono"
+            "def": "GPT custom: tarea repetida con el mismo tono"
           },
           {
             "term": "Libro que vas escribiendo",
-            "def": "Project — muchos chats del mismo proyecto"
+            "def": "Project: muchos chats del mismo proyecto"
           },
           {
             "term": "Responder quejas de clientes",
-            "def": "GPT custom — mismo tono de marca siempre"
+            "def": "GPT custom: mismo tono de marca cada vez"
           },
           {
-            "term": "Cliente con muchas tareas",
-            "def": "Project — agrupa chats relacionados del mismo trabajo"
+            "term": "Cliente con varias tareas",
+            "def": "Project: agrupa chats del mismo trabajo"
           }
         ],
-        "explanation": "GPT = **una tarea repetida**. Project = **un proyecto con varias tareas**. La diferencia práctica: GPTs se reutilizan infinito, Projects acompañan un trabajo en tiempo.",
+        "explanation": "GPT custom = **una tarea repetida**. Project = **un proyecto con varias tareas**. La diferencia práctica: GPTs se reutilizan infinito, Projects acompañan un trabajo en el tiempo.",
         "xp": 15
       }
     },
     {
-      "order_in_lecture": 8,
+      "order_in_lecture": 6,
       "kind": "multi-select",
       "phase": "elaborate",
       "content": {
@@ -141,7 +110,7 @@
           },
           {
             "id": 1,
-            "text": "Ejemplos de output deseado"
+            "text": "Ejemplos del output deseado"
           },
           {
             "id": 2,
@@ -153,7 +122,7 @@
           },
           {
             "id": 4,
-            "text": "Fotos personales sin relación a la tarea"
+            "text": "Fotos personales sin relación con la tarea"
           }
         ],
         "correctIds": [
@@ -161,7 +130,54 @@
           1,
           2
         ],
-        "explanation": "Rol + ejemplos + no-hacer = GPT útil. Nunca compartas contraseñas o datos personales irrelevantes: los GPTs pueden ser compartidos y el contenido puede filtrarse.",
+        "explanation": "Rol + ejemplos + reglas de no-hacer = GPT útil. **Nunca compartas contraseñas o datos personales irrelevantes**: los GPTs pueden compartirse y el contenido puede filtrarse a quien tenga el link.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "build-prompt",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Isabella quiere un GPT que reescriba notas técnicas en lenguaje llano para clientes. Arma sus instrucciones:",
+        "tokens": [
+          "[ROL] Eres editora técnica que traduce a clientes no técnicos",
+          "[TAREA] Reescribe notas internas en lenguaje llano",
+          "[CONTEXTO] Audiencia es PYME que compra software financiero",
+          "[FORMATO] Bullets cortos + 1 ejemplo concreto al final"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "Cuando los cuatro ingredientes están etiquetados, el GPT entiende **qué hacer y para quién** desde el primer mensaje. Sin contexto de audiencia, el output saldrá en jerga técnica que la PYME no entiende.",
+        "xp": 20
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Acabas de crear un GPT custom para responder quejas. ¿Qué haces antes de meterlo a producción?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Lo usas directo en clientes reales para ahorrar tiempo"
+          },
+          {
+            "id": 1,
+            "text": "Lo pruebas con 3 quejas reales del histórico, ajustas instrucciones según lo que falle, y solo entonces lo conectas"
+          },
+          {
+            "id": 2,
+            "text": "Le pides que se pruebe a sí mismo y reportes"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Probar con casos reales** antes de meter un GPT a producción es lo que separa el GPT útil del GPT vergonzoso. Un cliente real merecía una mejor respuesta de tu primer prototipo.",
         "xp": 15
       }
     },
@@ -170,19 +186,19 @@
       "kind": "mcq",
       "phase": "evaluate",
       "content": {
-        "prompt": "Javier vuelve a abrir ChatGPT al día siguiente, con sus mismas 10 líneas de contexto listas para pegar. ¿Qué le conviene hacer?",
+        "prompt": "Javier vuelve a abrir ChatGPT al día siguiente con sus 10 líneas listas para pegar. ¿Qué le conviene hacer ahora?",
         "options": [
           {
             "id": 0,
-            "text": "Pegar el contexto como siempre: ya es parte de su rutina y le da resultados"
+            "text": "Pegar el contexto como siempre: es parte de su rutina"
           },
           {
             "id": 1,
-            "text": "Pasar 15 minutos creando un GPT custom con ese rol, empresa y tono. Desde ahora lo abre directo y arranca"
+            "text": "Pasar 15 minutos creando un GPT custom con ese rol, empresa y tono. Desde mañana lo abre directo"
           },
           {
             "id": 2,
-            "text": "Guardar el contexto en una nota aparte y copiarlo más rápido cada vez"
+            "text": "Guardar el contexto en una nota y copiarlo más rápido"
           }
         ],
         "correctId": 1,
@@ -197,7 +213,7 @@
       "content": {
         "emoji": "🔧",
         "title": "ChatGPT a tu medida",
-        "body": "Acabas de ver cómo personalizar ChatGPT. La siguiente: cómo adaptar prompts según el asistente que uses."
+        "body": "Ya sabes cuándo usar GPT custom y cuándo Project, y cómo armar instrucciones con los 4 ingredientes etiquetados. Hoy puedes empacar tu peor copy-paste recurrente en un GPT propio."
       }
     }
   ]

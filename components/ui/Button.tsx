@@ -40,6 +40,12 @@ const variantStyles = {
     'border-gray-300 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900 ' +
     'hover:bg-gray-50 dark:hover:bg-gray-700',
 
+  /** Outline con acento primary: mismo depth azul que primary (lateral primary, base primary-dark). */
+  'outline-primary':
+    'bg-white dark:bg-gray-800 text-primary ' +
+    'border-primary border-b-primary-dark ' +
+    'hover:bg-primary/5 dark:hover:bg-primary/10',
+
   /** Transparent, no border – just hover highlight */
   ghost:
     'bg-transparent text-ink dark:text-gray-300 ' +
@@ -68,6 +74,7 @@ const variantStyles = {
 const depthVariants: ReadonlySet<string> = new Set([
   'primary',
   'outline',
+  'outline-primary',
   'secondary',
   'nav-active',
   'completado',

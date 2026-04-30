@@ -46,8 +46,8 @@ export default function PrivacyPage() {
                     (encriptada), y foto de perfil</li>
                 <li><strong>Información de perfil:</strong> descripción de proyectos, preferencias de aprendizaje, 
                     y objetivos educativos</li>
-                <li><strong>Información de pago:</strong> procesada a través de proveedores de terceros (Stripe, 
-                    MercadoPago). No almacenamos información completa de tarjetas de crédito</li>
+                <li><strong>Información de pago:</strong> procesada a través de Stripe. No almacenamos
+                    información completa de tarjetas de crédito</li>
                 <li><strong>Contenido generado:</strong> descripciones de proyectos, interacciones con el tutor de IA, 
                     comentarios y feedback</li>
               </ul>
@@ -56,7 +56,7 @@ export default function PrivacyPage() {
                 Cuando utilizas nuestros servicios, recopilamos automáticamente:
               </Body>
               <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300 mb-4">
-                <li><strong>Datos de uso:</strong> páginas visitadas, tiempo de permanencia, videos visualizados, 
+                <li><strong>Datos de uso:</strong> páginas visitadas, tiempo de permanencia, lecciones vistas, 
                     progreso en cursos</li>
                 <li><strong>Datos técnicos:</strong> dirección IP, tipo de navegador, sistema operativo, 
                     dispositivo utilizado</li>

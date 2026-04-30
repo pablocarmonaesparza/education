@@ -2,14 +2,14 @@
   "section_id": 9,
   "slug": "primer-mini-app",
   "title": "Tu primera mini-app",
-  "source": "claude-in-session-v2",
+  "source": "claude-in-session-v4",
   "slides": [
     {
       "order_in_lecture": 1,
       "kind": "mcq",
       "phase": "engage",
       "content": {
-        "prompt": "Renata sabe Claude Code, Cursor, Git y vibe coding, pero su carpeta de proyectos está vacía. Un amigo le dice: arma algo hoy. ¿Qué debería construir primero?",
+        "prompt": "Renata sabe Claude Code, Cursor, Git y vibe coding, pero no ha publicado nada. Un amigo le dice 'arma algo hoy'. ¿Qué construye primero?",
         "options": [
           {
             "id": 0,
@@ -17,15 +17,15 @@
           },
           {
             "id": 1,
-            "text": "Una mini-app que ella misma usaría para un problema suyo: rastreador de hábitos, checklist o dashboard personal"
+            "text": "Una mini-app personal para un problema suyo: rastreador de hábitos, checklist o dashboard"
           },
           {
             "id": 2,
-            "text": "Un clon simplificado de una app famosa para practicar con un caso de uso validado"
+            "text": "Un clon de una app famosa para practicar con un caso validado"
           }
         ],
         "correctId": 1,
-        "explanation": "La trampa: primer proyecto = algo vendible o un clon de una app probada. La realidad: **el primer proyecto es para ti**. Pequeño, útil, terminable en 1-2 tardes. La motivación viene de completarlo y usarlo, no de imaginarlo grande.",
+        "explanation": "La trampa: primer proyecto = algo vendible o un clon. La realidad: **el primer proyecto es para ti**. Pequeño, útil, terminable en una o dos tardes. La motivación viene de completarlo y usarlo, no de imaginarlo grande.",
         "xp": 20
       }
     },
@@ -34,38 +34,67 @@
       "kind": "concept",
       "phase": "explore",
       "content": {
-        "title": "Anatomía de una mini-app",
-        "body": "Lo mínimo para que sea útil:\n\n- **1 caso de uso claro**: yo la necesito para X\n- **1 interfaz simple**: un formulario o una lista\n- **1 backend básico**: base de datos, API, o puro frontend\n- **Deploy** accesible por URL: Vercel, Netlify o Replit"
+        "title": "anatomía de una mini-app",
+        "body": "Lo mínimo para que sea útil:\n\n- **Un caso de uso claro**: yo la necesito para X\n- **Una interfaz simple**: formulario o lista\n- **Un backend básico**: BD ligera o solo frontend\n- **Deploy** accesible por URL"
       }
     },
     {
       "order_in_lecture": 3,
       "kind": "concept",
-      "phase": "explore",
+      "phase": "explain",
       "content": {
-        "title": "5 ideas de primera mini-app",
-        "body": "Buenas opciones:\n\n- **Rastreador de hábitos** con historial\n- **Calculadora** específica a tu trabajo\n- **Dashboard de métricas** de tu día\n- **Generador** de algo recurrente (plantillas, mensajes)\n- **Formulario** + AI que clasifica/responde\n"
+        "title": "la regla del día uno",
+        "body": "En la primera sesión, logra: algo que corre (aunque sea simple), commit inicial y deploy con URL. **Imperfecto pero real > perfecto imaginado**. Iterar viene después; el día uno es sobre existir."
       }
     },
     {
       "order_in_lecture": 4,
-      "kind": "concept",
-      "phase": "explain",
+      "kind": "build-prompt",
+      "phase": "elaborate",
       "content": {
-        "title": "La regla del día uno",
-        "body": "En la primera sesión, logra:\n\n- Algo que corre (aunque sea simple)\n- Commit inicial\n- Deploy accesible por URL\n\n**Imperfecto pero real > perfecto imaginado**. Puedes iterar sin fin después; el día 1 es sobre existir."
+        "prompt": "Worked example: arma el prompt para que Bolt te genere tu mini-app. Ordena los tokens etiquetados ROL, TAREA, CONTEXTO, FORMATO:",
+        "tokens": [
+          "[ROL] Eres un dev frontend ágil",
+          "[TAREA] Crea una app web para registrar mis lecturas con tags",
+          "[CONTEXTO] Es de uso personal, datos en localStorage, sin login",
+          "[FORMATO] Una sola página con form de alta y lista filtrable por tag"
+        ],
+        "correctOrder": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "explanation": "Este es el patrón a copiar para arrancar: **rol + tarea + contexto + formato** le da a la herramienta lo justo para no inventar y no sobre-construir. Sin contexto el primer MVP suele venir hinchado de cosas que no pediste.",
+        "xp": 15
       }
     },
     {
       "order_in_lecture": 5,
-      "kind": "true-false",
-      "phase": "explain",
+      "kind": "tap-match",
+      "phase": "elaborate",
       "content": {
-        "prompt": "Verdadero o falso:",
-        "statement": "Tu primera mini-app debe estar pulida y lista para tener 1000 usuarios.",
-        "answer": false,
-        "explanation": "Falso. **Tu primera mini-app es para ti**. No necesita landing, pricing, marketing. Solo funcionar. Si después la quieres abrir al mundo, genial. Arrancar con pensamiento de producto mata la mayoría de primeros proyectos.",
-        "xp": 10
+        "prompt": "Empareja la herramienta con lo que aporta a tu primera mini-app:",
+        "pairs": [
+          {
+            "term": "Bolt, Lovable o v0",
+            "def": "Primer MVP en 20 minutos sin instalar nada"
+          },
+          {
+            "term": "Git y GitHub",
+            "def": "Red de seguridad y backup en la nube"
+          },
+          {
+            "term": "Vercel o Netlify",
+            "def": "Deploy con URL pública en minutos"
+          },
+          {
+            "term": "Claude Code o Cursor",
+            "def": "Iterar con precisión sobre lo generado"
+          }
+        ],
+        "explanation": "**El stack moderno para mini-apps existe**. Juntando estas piezas vas de idea a URL en horas. Sin él, lo mismo tomaría semanas y mucha fricción.",
+        "xp": 15
       }
     },
     {
@@ -73,69 +102,33 @@
       "kind": "order-steps",
       "phase": "elaborate",
       "content": {
-        "prompt": "Ordena los pasos para tu primera mini-app:",
+        "prompt": "Ordena los pasos para llegar de idea a URL pública:",
         "steps": [
-          "Elegir problema pequeño que tú tienes",
           "Describir la app en 3 frases (qué hace, para qué, quién usa)",
-          "Elegir herramienta (Bolt, Lovable, v0, Cursor)",
-          "Generar primer MVP con AI guiada",
+          "Generar primer MVP con la herramienta elegida",
           "Hacer commit inicial a Git",
-          "Deploy en Vercel/Netlify/Replit",
-          "Usarla tú mismo una semana",
-          "Iterar según lo que descubras"
+          "Deploy a Vercel o Netlify con la URL pública"
         ],
         "correctOrder": [
           0,
           1,
           2,
-          3,
-          4,
-          5,
-          6,
-          7
+          3
         ],
-        "explanation": "El orden minimiza fricción: **problema → descripción → MVP → deploy → uso → iteración**. Saltar el uso propio antes de iterar es la fuente principal de apps muertas.",
+        "explanation": "El orden es **causal**: no puedes generar sin descripción, no commiteas sin código y no deployas sin commit. Saltarse la descripción es la fuente principal de MVPs hinchados que no terminas usando.",
         "xp": 15
       }
     },
     {
       "order_in_lecture": 7,
-      "kind": "tap-match",
-      "phase": "elaborate",
-      "content": {
-        "prompt": "Empareja la herramienta con lo que gana tu primera mini-app:",
-        "pairs": [
-          {
-            "term": "Bolt / Lovable / v0",
-            "def": "Primer MVP en 20 min"
-          },
-          {
-            "term": "Git + GitHub",
-            "def": "Red de seguridad"
-          },
-          {
-            "term": "Vercel / Netlify",
-            "def": "Deploy en minutos"
-          },
-          {
-            "term": "Claude Code / Cursor",
-            "def": "Iterar con precisión"
-          }
-        ],
-        "explanation": "**Stack moderno para mini-apps existe**. Juntas estas piezas te permiten ir de idea a URL en horas. Sin este stack, tomaría semanas.",
-        "xp": 15
-      }
-    },
-    {
-      "order_in_lecture": 8,
       "kind": "multi-select",
       "phase": "elaborate",
       "content": {
-        "prompt": "¿Qué señales indican que tu mini-app es buen candidato?",
+        "prompt": "¿Qué señales indican que tu mini-app es un buen primer proyecto?",
         "options": [
           {
             "id": 0,
-            "text": "Tú mismo la usarías"
+            "text": "Tú mismo la usarías hoy"
           },
           {
             "id": 1,
@@ -151,7 +144,7 @@
           },
           {
             "id": 4,
-            "text": "Tiene que competir con Google"
+            "text": "Tiene que competir con Google desde el día uno"
           }
         ],
         "correctIds": [
@@ -159,7 +152,32 @@
           1,
           2
         ],
-        "explanation": "Personal + simple + finiquitable = señales verdes. **Escala o ambición grande = trampa de primer proyecto**. Empezar chico te prepara para grande después.",
+        "explanation": "Personal + simple + finiquitable = señales verdes. **Escala o ambición grande** = trampa de primer proyecto. Empezar chico te prepara para grande después.",
+        "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "mcq",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Generaste el MVP con Bolt en 20 min, pero pidió cosas que no encajan (login, billing). ¿Qué haces antes de iterar?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Acepta todo y luego limpia a mano cuando puedas"
+          },
+          {
+            "id": 1,
+            "text": "Pides solo lo que sí encaja: 'quita login y billing, déjalo en localStorage'. Commit limpio. Después iteras"
+          },
+          {
+            "id": 2,
+            "text": "Pides regenerar todo desde cero esperando que esta vez salga bien"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "**Cambio específico + commit limpio** es la base. Aceptar de más mete deuda desde el primer día; regenerar borra avance. Pedir 'quita X' protege lo que sí funciona y deja base sana para iterar encima.",
         "xp": 15
       }
     },
@@ -168,11 +186,11 @@
       "kind": "mcq",
       "phase": "evaluate",
       "content": {
-        "prompt": "Renata arma un rastreador de lecturas con etiquetas en 2 tardes y lo despliega en Vercel. ¿Qué ganó realmente?",
+        "prompt": "Renata arma su rastreador de lecturas en 2 tardes y lo despliega en Vercel. ¿Qué ganó realmente?",
         "options": [
           {
             "id": 0,
-            "text": "Una app pequeña que no le servirá hasta que agregue usuarios y la monetice"
+            "text": "Una app pequeña sin valor hasta que sume usuarios y la monetice"
           },
           {
             "id": 1,
@@ -180,11 +198,11 @@
           },
           {
             "id": 2,
-            "text": "Práctica técnica que habría sido más valiosa siguiendo un tutorial avanzado en lugar de un proyecto propio"
+            "text": "Práctica que habría sido más valiosa siguiendo un tutorial avanzado"
           }
         ],
         "correctId": 1,
-        "explanation": "Renata consolidó **todo el stack en un proyecto real**. La app no tiene que ser impresionante: el valor está en haber ejecutado el ciclo completo con un caso propio. La siguiente iteración ya no parte de cero.",
+        "explanation": "Renata consolidó **todo el stack en un proyecto real**. La app no necesita ser impresionante: el valor está en haber ejecutado el ciclo completo con un caso propio. La siguiente iteración ya no parte de cero.",
         "xp": 20
       }
     },
@@ -194,8 +212,8 @@
       "phase": "evaluate",
       "content": {
         "emoji": "🚀",
-        "title": "Primera mini-app en producción",
-        "body": "Cerraste vibe coding. La última sección: implementación — cómo pasar de prototipo a producto real que vive en el mundo."
+        "title": "primera mini-app en producción",
+        "body": "Cerraste el ciclo: descripción, MVP, commit y deploy con URL. Hoy puedes elegir un problema personal y armar la próxima en una tarde."
       }
     }
   ]

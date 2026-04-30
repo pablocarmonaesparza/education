@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createConversation, saveMessage, generateConversationTitle } from '@/lib/tutor/conversations';
 import type { TutorStreamChunk } from '@/types/tutor';
+import { enforceRateLimit, rateLimiters } from '@/lib/ratelimit';
 
 export const maxDuration = 60;
 
@@ -32,6 +33,9 @@ function encodeChunk(chunk: TutorStreamChunk): string {
 
 export async function POST(request: NextRequest) {
   try {
+    const blocked = await enforceRateLimit(request, rateLimiters.standard);
+    if (blocked) return blocked;
+
     // 1. Auth
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();

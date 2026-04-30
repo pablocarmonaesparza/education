@@ -8,9 +8,11 @@
 
 ## 1. Qué es Itera
 
-Plataforma de educación en AI para **audiencia no-técnica LATAM**. El formato principal son **ejercicios interactivos cortos** (no videos), organizados en lecciones de 10 slides cada una. El usuario puede tomar la **ruta completa** del curso o una **ruta personalizada** generada a partir de lo que quiere construir.
+Plataforma de educación en AI para **gente que necesita aplicar AI en su empresa o trabajo** (B2B empresa-first, LATAM). El formato principal son **ejercicios interactivos cortos** (no videos), organizados en lecciones de 10 slides cada una. El usuario puede tomar la **ruta completa** del curso o una **ruta personalizada** generada a partir de lo que quiere construir.
 
-**Tesis central:** el mercado ya tiene información sobre AI gratis (YouTube, blogs, docs). Lo que no tiene es un **sistema de retención** que convierta esa información en ejecución real en las próximas 24 horas. Itera vende retención + ejecución, no información.
+**Tesis central:** el mercado ya tiene información sobre AI gratis (YouTube, blogs, docs). Lo que no tiene es un **sistema de retención** que convierta esa información en ejecución real en el contexto laboral/empresa. Itera vende retención + ejecución, no información.
+
+**Posicionamiento literal (2026-04-22):** *"aprender AI para tu empresa/trabajo"*, no *"curso modular de AI para cualquiera"*. La retención en B2B viene del contrato con la empresa, no de hooks virales al individuo — esto afecta todo el producto (ver §2 audiencia, §6 modelo, memorias `gotcha_posicionamiento_empresa_vs_latam.md` y `decision_gamification_duolingo_b2b.md`).
 
 ---
 
@@ -27,7 +29,11 @@ Plataforma de educación en AI para **audiencia no-técnica LATAM**. El formato 
 - **Ruta personalizada:** usuario describe qué quiere construir → sistema vectoriza las lecciones con OpenAI embeddings, Cohere rerank refina el top-N, arma un curso custom. Requiere que cada lección sea **autocontenida** (cero callbacks cross-lección).
 
 ### Audiencia
-Gente de a pie LATAM, sin background técnico. Test: *"¿lo entendería alguien de 55 años que jamás programó?"*. Escenarios evergreen, fun, universales — nunca médicos, financieros íntimos ni personales.
+**Primaria (B2B empresa):** empleados y managers de PyMEs y empresas LATAM que necesitan aplicar AI en su trabajo concreto (marketing, operaciones, análisis, ventas, admin). La empresa paga, el individuo consume.
+
+**Test de claridad:** *"¿lo entendería alguien de 55 años que jamás programó, usando esto en horario laboral?"*. Mantenemos el estándar de accesibilidad — el target adulto corporativo puede ser técnico o no — pero los **escenarios** se enfocan en trabajo/empresa/ejecución, no en intereses personales ni hobbies. Nunca médicos, financieros íntimos ni asuntos privados.
+
+**Mecánicas descartadas por ser B2C** (ver `decision_gamification_duolingo_b2b.md`): hearts/vidas limitadas, email reminders anti-churn, leaderboards globales, competencia entre usuarios, push notifications de urgencia. Sí van: progreso visible, badges de completion, celebración de milestones — lo que ayuda a ver avance, no lo que genera ansiedad.
 
 ---
 
@@ -72,7 +78,8 @@ El crecimiento futuro del catálogo (200, 400, 1000 lecciones) vive en expansion
 - **Frontend:** Next.js 16 (Turbopack), React 19, Tailwind, design system propio (`CLAUDE.md`)
 - **Backend:** Supabase (Postgres + Auth + Storage + pgvector para ruta personalizada)
 - **IA SDKs:** `@anthropic-ai/sdk`, `openai`, `cohere-ai`
-- **Pagos:** Stripe + Mercado Pago (para LATAM)
+- **Pagos:** Stripe únicamente. Mercado Pago descartado y eliminado el 2026-04-22 (migración `010_drop_mercadopago.sql`) — rails Pix/OXXO/Boleto son B2C y no aplican al foco empresa.
+- **Email:** AgentMail (transaccional-only — no engagement/lifecycle/drip, ver `decision_mailing_scope_transaccional_only.md`).
 
 ### Schema de DB
 **Fuente de verdad:** `supabase/migrations/`
@@ -82,7 +89,12 @@ El crecimiento futuro del catálogo (200, 400, 1000 lecciones) vive en expansion
 - `lectures` (uuid, versionable con `supersedes_lecture_id`, freshness tracking con `last_reviewed_at`, campos pedagógicos nullable hasta publicación)
 - `slides` (uuid, JSONB content, 11 kinds enum, mismo versioning + freshness)
 
-**Tablas auxiliares planeadas** (post-MVP): `user_progress`, `slide_flags` (feedback button), `lecture_embeddings` (pgvector para ruta personalizada).
+**Tablas auxiliares ya shippeadas o en working tree**:
+- `user_progress` + `user_stats` + trigger de gamification (migraciones 003 + 006, ya en HEAD).
+- `slide_flags` + API `/api/slides/[id]/flag` + `SlideFlagButton` + admin funnel (migraciones 009 + 012, en working tree).
+- `lecture_embeddings` (pgvector para ruta personalizada — migración 003 creada, retrieval pendiente).
+- `payments` con idempotencia Stripe (migración 005).
+- `badges` + `user_badges` — pendiente (próxima migración 013, catálogo B2B).
 
 **Estrategia de versioning soft** — regenerar una lección crea una nueva row con `supersedes_lecture_id` apuntando a la vieja. No snapshots completos.
 
@@ -107,8 +119,8 @@ import a DB
 ## 6. Modelo de negocio
 
 ### Pricing
-- **Consumer:** $19 USD/mes
-- **B2B** (pendiente definir): probablemente $12-15 USD/seat con descuento por volumen, contratos anuales
+- **Consumer (rail de entrada individual):** $19 USD/mes. Canibaliza parcialmente el B2B — decisión abierta sobre qué se limita en el tier gratis (ver `decision_landing_pivote_ejercicios.md` + decisiones Landing pendientes).
+- **B2B empresa (foco principal):** research en `docs/research/R01_pricing_b2b_latam.md` — rango defendible vs Platzi Empresas / Crehana for Business / Coderhouse Business. Definir licencia por seat + descuento por volumen + contratos anuales.
 
 ### Proyecciones ARR (estimaciones honestas)
 Asumiendo ejecución decente y el timing AI de 2026:
@@ -166,9 +178,9 @@ Año 3-5. Depende de si se contrata equipo (necesario para B2B escalable) o se m
 
 Cosas que sabemos que hay que hacer pero que no son la pelea de hoy. Se activan cuando el producto lo pida o cuando llegue su fase.
 
-- **Planeación financiera de mecánicas B2C** — sistema de vidas tipo Duolingo (hearts), monetización por consumibles, tiers premium para lives ilimitadas, pricing por tier de gamificación. Deferido porque el foco actual es ejecución y B2B; cuando el curso tenga usuarios reales pagando, se diseña.
-- **Feedback button por slide** — botón de bandera para que el usuario reporte errores. Columna `slide_flags` en schema ya anticipada; UI + backend cuando haya volumen de usuarios.
-- **Q&A system para corregir errores puntuales** — eventualmente integrar con `/gstack` u otro sistema que tome reportes del flag y abra tasks de corrección.
+- **Mecánicas B2C** (hearts / vidas limitadas / email reminders / push / leaderboards) — **descartadas explícitamente al pivotar a B2B empresa-first** (ver `decision_gamification_duolingo_b2b.md`). Solo se reconsideran si aparece un rail B2C self-serve futuro, no antes.
+- **Feedback button por slide** — shippeado en working tree (migración 009 + 012, `SlideFlagButton`, `/api/slides/[id]/flag`, admin funnel). Pendiente commit por Education.
+- **Q&A system para corregir errores puntuales** — leer los `slide_flags` y abrir tasks de corrección. Se activa cuando llegue volumen real de reportes.
 - **Lint en pre-commit hook** — para que nadie pueda commitear contenido con violaciones automatizables. Trivial de agregar cuando el flujo de generación madure.
 - **Archivar `docs/OUTLINE_2026.md`** — ya no es fuente de verdad (ahora es `LESSONS_v1.md`). Renombrar a `OUTLINE_2026_legacy.md` o moverlo fuera de `docs/` para evitar confusión.
 
@@ -179,6 +191,7 @@ Cosas que sabemos que hay que hacer pero que no son la pelea de hoy. Se activan 
 Temas que necesitan call explícito del founder, no del sistema:
 
 1. **Cuándo contratar** — afecta directo el techo de ARR y valuation de exit. Solo-founder indefinido vs. equipo de 2-3 personas en año 2-3.
-2. **Plan de distribución** — la variable más grande. ¿YouTube LATAM? ¿LinkedIn founders? ¿Paid ads? ¿Referral B2B? Sin plan claro, el producto no compensa.
-3. **Tier B2B real** — $19/mes consumer no cierra unit economics sola. Definir pricing + features de tier empresa en año 1-2 o el negocio se quiebra.
-4. **Internacionalización** — ¿stay LATAM-only o expandir a España / US-Hispano / Brasil? El ceiling de mercado se multiplica 3-4x si se expande.
+2. **Plan de distribución** — research en `docs/research/R02_distribucion_latam.md`. Ejecución del plan depende del primer ciclo de venta B2B.
+3. **Tier B2B real** — research en `docs/research/R01_pricing_b2b_latam.md` con rango defendible. Validación ocurre con primeros contratos reales (semana de venta activa).
+4. **Internacionalización** — ¿stay LATAM-only o expandir a España / US-Hispano / Brasil? El ceiling de mercado se multiplica 3-4x si se expande. Diferido hasta validar PMF en LATAM.
+5. **Certificación B2B** — research en `docs/research/R03_cert_market_ai.md`. Segunda línea de revenue potencial; se activa post-MVP estable.

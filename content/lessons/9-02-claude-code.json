@@ -2,22 +2,22 @@
   "section_id": 9,
   "slug": "claude-code",
   "title": "Claude Code: el asistente de código en tu terminal",
-  "source": "claude-in-session-v2",
+  "source": "claude-in-session-v4",
   "slides": [
     {
       "order_in_lecture": 1,
       "kind": "mcq",
       "phase": "engage",
       "content": {
-        "prompt": "Rodrigo escribe código en VS Code y le pide ayuda a ChatGPT copiando y pegando fragmentos. Un amigo le dice: \"existe Claude Code\". ¿Qué cambia al usarlo?",
+        "prompt": "Rodrigo trabaja en un editor de código y le pide ayuda a ChatGPT copiando y pegando fragmentos. Un amigo le dice: 'existe Claude Code'. ¿Qué cambia al usarlo?",
         "options": [
           {
             "id": 0,
-            "text": "Nada — es el mismo Claude con otro nombre"
+            "text": "Nada, es el mismo Claude con otro nombre"
           },
           {
             "id": 1,
-            "text": "Claude Code vive en la terminal: ve tus archivos, modifica varios a la vez y corre comandos. Se acaba el copy-paste"
+            "text": "Claude Code vive en la línea de comandos: ve tus archivos, modifica varios a la vez y corre comandos. Se acaba el copy-paste"
           },
           {
             "id": 2,
@@ -25,7 +25,7 @@
           }
         ],
         "correctId": 1,
-        "explanation": "Claude Code (Anthropic) es un CLI que convierte a Claude en agente de desarrollo con acceso real a tu repo. Lee, escribe y ejecuta. En vez de copiar fragmentos, le describes el cambio y él lo aplica en todos los archivos relevantes.",
+        "explanation": "Claude Code (Anthropic) es un asistente que vive en la **línea de comandos** — la ventana donde se escriben comandos directamente, sin botones. Tiene acceso real a tu carpeta de proyecto: lee, escribe y ejecuta. En vez de copiar fragmentos, le describes el cambio y él lo aplica en todos los archivos que toque.",
         "xp": 20
       }
     },
@@ -35,37 +35,60 @@
       "phase": "explore",
       "content": {
         "title": "Qué hace Claude Code",
-        "body": "Capacidades clave:\n\n- Lee tu repo completo o archivos específicos\n- Modifica varios archivos en una sola solicitud\n- Ejecuta comandos (tests, builds, linters)\n- Mantiene el contexto de toda la conversación"
+        "body": "Capacidades clave:\n\n- Lee tu carpeta de proyecto desde la **CLI** (línea de comandos)\n- Modifica varios archivos en una sola solicitud\n- Ejecuta comandos: pruebas, builds, revisores\n- Mantiene contexto de toda la conversación"
       }
     },
     {
       "order_in_lecture": 3,
       "kind": "concept",
-      "phase": "explore",
+      "phase": "explain",
       "content": {
-        "title": "Cómo se siente usarlo",
-        "body": "En vez de 'ChatGPT explícame cómo hacer X' + copy-paste, haces:\n\n`claude 'añade un botón de exportar CSV en el dashboard, conecta con la ruta que ya usamos para PDF'`\n"
+        "title": "Un cambio real, paso a paso",
+        "body": "Pides el cambio y Claude lo aplica:\n\n- Tú escribes: **claude 'añade botón exportar a Excel'**\n- Claude leyó 4 archivos\n- Modificó 3\n- Pruebas: **18/18** ✓"
       }
     },
     {
       "order_in_lecture": 4,
-      "kind": "concept",
-      "phase": "explain",
+      "kind": "code-completion",
+      "phase": "elaborate",
       "content": {
-        "title": "Claude Code vs Cursor",
-        "body": "Ambos son AI para código:\n\n- **Claude Code** — CLI en terminal, enfocado en autonomía agentica, bueno para cambios grandes\n- **Cursor** — IDE (fork de VS Code) con AI integrada, bueno para edición asistida en tiempo real\n"
+        "prompt": "Worked example: el comando que Claude ejecutó arriba. Completa el verbo de la instrucción:",
+        "codeBefore": "$ claude '",
+        "codeAfter": " botón exportar a Excel'",
+        "tokens": [
+          "añade",
+          "borra",
+          "ignora",
+          "lee"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "El verbo del prompt es lo que Claude usa para decidir qué tipo de acción aplicar. **'añade'** dispara cambios en archivos; 'lee' solo describe sin tocar. Verbo claro = intención clara.",
+        "xp": 15
       }
     },
     {
       "order_in_lecture": 5,
-      "kind": "true-false",
-      "phase": "explain",
+      "kind": "mcq",
+      "phase": "elaborate",
       "content": {
-        "prompt": "Verdadero o falso:",
-        "statement": "Claude Code solo funciona si sabes programar bien.",
-        "answer": false,
-        "explanation": "Falso. Funciona para todos los niveles. No-programadores lo usan para scripts y mini-apps; devs senior lo usan para refactors masivos. La clave es **saber guiar y revisar**, no programar de cero.",
-        "xp": 10
+        "prompt": "Tienes que cambiar 20 archivos coordinados de un proyecto. ¿Cuál herramienta es mejor?",
+        "options": [
+          {
+            "id": 0,
+            "text": "Cursor — mejor para autocompletar línea por línea"
+          },
+          {
+            "id": 1,
+            "text": "Claude Code — autonomía agentica para cambios coordinados en muchos archivos"
+          },
+          {
+            "id": 2,
+            "text": "Pegar cada archivo en ChatGPT uno por uno"
+          }
+        ],
+        "correctId": 1,
+        "explanation": "Cursor brilla en edición fina dentro de un archivo abierto. Claude Code brilla en cambios masivos donde hay que coordinar varios archivos. **Elegir según el caso** optimiza el flujo.",
+        "xp": 15
       }
     },
     {
@@ -73,89 +96,68 @@
       "kind": "tap-match",
       "phase": "elaborate",
       "content": {
-        "prompt": "Empareja el tipo de tarea con Claude Code o Cursor:",
+        "prompt": "Empareja el tipo de tarea con la herramienta:",
         "pairs": [
           {
-            "term": "Refactor de 20 archivos",
-            "def": "Claude Code — cambios coordinados en el repo completo"
+            "term": "Cambio puntual en un método",
+            "def": "Cursor, edición rápida dentro de un archivo abierto"
+          },
+          {
+            "term": "Explorar un proyecto nuevo",
+            "def": "Claude Code, lee todo y te explica la estructura"
           },
           {
             "term": "Autocompletar en vivo",
-            "def": "Cursor — sugerencias mientras escribes línea por línea"
+            "def": "Cursor, sugerencias mientras escribes línea por línea"
           },
           {
-            "term": "Explorar un repo nuevo",
-            "def": "Claude Code — lee todo y te explica la estructura"
-          },
-          {
-            "term": "Cambio puntual en un método",
-            "def": "Cursor — edición rápida dentro de un archivo abierto"
+            "term": "Cambio en 10 archivos",
+            "def": "Claude Code, aplica el cambio coordinado en todos a la vez"
           }
         ],
-        "explanation": "Son herramientas complementarias: autonomía para cambios grandes (Claude Code) vs velocidad fina para edición en vivo (Cursor). Elegir según el caso optimiza el flujo.",
+        "explanation": "Son herramientas complementarias: autonomía para cambios grandes (Claude Code) vs velocidad fina para edición en vivo (Cursor).",
         "xp": 15
       }
     },
     {
       "order_in_lecture": 7,
-      "kind": "multi-select",
+      "kind": "order-steps",
       "phase": "elaborate",
       "content": {
-        "prompt": "¿Qué ventajas reales tiene Claude Code sobre pegar código en ChatGPT?",
-        "options": [
-          {
-            "id": 0,
-            "text": "Ve el contexto completo del repo"
-          },
-          {
-            "id": 1,
-            "text": "Modifica múltiples archivos a la vez"
-          },
-          {
-            "id": 2,
-            "text": "Ejecuta tests y revisa si su cambio funcionó"
-          },
-          {
-            "id": 3,
-            "text": "Programa por ti sin que revises"
-          },
-          {
-            "id": 4,
-            "text": "Elimina la necesidad de saber código"
-          }
+        "prompt": "Ordena los pasos del workflow básico con Claude Code:",
+        "steps": [
+          "Abrir la terminal en la carpeta del proyecto",
+          "Escribir el cambio que quieres en lenguaje natural",
+          "Revisar el diff que Claude propone antes de aplicar",
+          "Correr las pruebas para confirmar que nada se rompió"
         ],
-        "correctIds": [
+        "correctOrder": [
           0,
           1,
-          2
+          2,
+          3
         ],
-        "explanation": "Contexto completo + modificación múltiple + ejecución = ventajas reales. **Claude Code no sustituye criterio**, solo lo potencia. Aceptar sin revisar es donde viene el dolor.",
+        "explanation": "El orden es causal: Claude necesita estar en el proyecto antes de leerlo, necesita el prompt antes de generar diff, y solo se prueba después de aplicar el cambio. Saltarse el paso 3 es el error más común y el que termina rompiendo cosas.",
         "xp": 15
       }
     },
     {
       "order_in_lecture": 8,
-      "kind": "mcq",
+      "kind": "code-completion",
       "phase": "elaborate",
       "content": {
-        "prompt": "Quieres agregar autenticación con Google a tu app existente. ¿Cómo lo haces con Claude Code?",
-        "options": [
-          {
-            "id": 0,
-            "text": "Pegar cada archivo a ChatGPT uno por uno"
-          },
-          {
-            "id": 1,
-            "text": "Un solo prompt a Claude Code: 'agrega auth con Google usando Supabase, siguiendo los patrones del repo'. Claude lee, modifica los archivos necesarios, te muestra el diff"
-          },
-          {
-            "id": 2,
-            "text": "Contratar un dev por 2 semanas"
-          }
+        "prompt": "Para cambios grandes conviene que Claude planee antes de tocar archivos. Completa el flag oficial:",
+        "codeBefore": "$ claude --permission-mode ",
+        "codeAfter": " 'reorganiza el módulo de pagos'",
+        "tokens": [
+          "plan",
+          "fast",
+          "skip",
+          "verbose"
         ],
-        "correctId": 1,
-        "explanation": "Ese es el poder del agente de código: **un prompt → cambios coordinados en múltiples archivos → tú revisas**. El tiempo de 'semanas de dev' a 'una tarde guiada' es real.",
-        "xp": 15
+        "correctTokenIndex": 0,
+        "explanation": "El modo **plan** hace que Claude proponga un plan completo antes de tocar archivos. Tú apruebas, él aplica. Para cambios grandes ahorra rollback porque ves la intención antes de los cambios.",
+        "xp": 20
       }
     },
     {
@@ -171,15 +173,15 @@
           },
           {
             "id": 1,
-            "text": "Escribe menos código repetitivo y dedica más tiempo a pensar qué construir y revisar los cambios. La velocidad sube y el criterio importa más que nunca"
+            "text": "Escribe menos código repetitivo y dedica más tiempo a pensar qué construir y revisar los cambios"
           },
           {
             "id": 2,
-            "text": "Deja de revisar el código porque confía ciegamente en la AI"
+            "text": "Deja de revisar el código porque confía ciegamente en el asistente"
           }
         ],
         "correctId": 1,
-        "explanation": "Rodrigo pasó de escribir código a dirigir la construcción. El rol cambia: la AI acelera, pero la persona queda como arquitecta y revisora. Esa transformación es la grande.",
+        "explanation": "Rodrigo pasó de escribir código a dirigir la construcción. El rol cambia: el asistente acelera, pero la persona queda como arquitecta y revisora. Esa transformación es la grande.",
         "xp": 20
       }
     },
@@ -190,7 +192,7 @@
       "content": {
         "emoji": "⚡",
         "title": "Claude Code en el flow",
-        "body": "Ya sabes qué es Claude Code, cuándo conviene frente a un IDE con AI integrada, y cómo cambia el rol del dev: de escribir a dirigir y revisar."
+        "body": "Ya sabes para qué sirve Claude Code, cuándo conviene frente a Cursor, y cómo cambia el rol: de escribir a dirigir y revisar. Pruébalo hoy con un cambio chico tuyo."
       }
     }
   ]

@@ -140,7 +140,7 @@ export default function VideoPage() {
     return (
       <div className="min-h-full bg-transparent flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-bold text-ink dark:text-white mb-2">Video no encontrado</h2>
+          <h2 className="text-xl font-bold text-ink dark:text-white mb-2">Lección no encontrada</h2>
           <Link href="/dashboard" className="text-primary hover:underline">
             Volver al inicio
           </Link>
@@ -164,7 +164,7 @@ export default function VideoPage() {
           Volver al inicio
         </Link>
 
-        {/* Video Header */}
+        {/* Lesson Header */}
         <div className="mb-6">
           <p className="text-sm text-primary font-medium mb-1">{phase}</p>
           <h1 className="text-2xl md:text-3xl font-bold text-ink dark:text-white">
@@ -175,7 +175,7 @@ export default function VideoPage() {
           )}
         </div>
 
-        {/* Video Player Area */}
+        {/* Legacy media area */}
         <div className="bg-gray-900 rounded-2xl aspect-video flex items-center justify-center mb-6 overflow-hidden">
           {video.videoUrl ? (
             <video
@@ -192,7 +192,7 @@ export default function VideoPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <p className="text-lg">Video próximamente disponible</p>
+              <p className="text-lg">Lección próximamente disponible</p>
               <p className="text-sm mt-1 opacity-70">El contenido se está preparando</p>
             </div>
           )}
@@ -214,7 +214,7 @@ export default function VideoPage() {
               variant="outline"
               onClick={() => goToVideo(currentIndex - 1)}
               disabled={currentIndex === 0}
-              aria-label="Video anterior"
+              aria-label="Lección anterior"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -229,7 +229,7 @@ export default function VideoPage() {
               variant="outline"
               onClick={() => goToVideo(currentIndex + 1)}
               disabled={currentIndex === allVideos.length - 1}
-              aria-label="Video siguiente"
+              aria-label="Lección siguiente"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

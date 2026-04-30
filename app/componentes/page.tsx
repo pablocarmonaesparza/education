@@ -187,7 +187,7 @@ export default function ComponentesPage() {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-wider text-ink-muted mb-0.5">Subtítulo · <code className="font-mono">text-lg (1.125rem)</code></p>
-                  <p className="font-bold tracking-wide text-ink normal-case" style={{ fontSize: '1.125rem' }}>Videos a medida con IA</p>
+                  <p className="font-bold tracking-wide text-ink normal-case" style={{ fontSize: '1.125rem' }}>lecciones a medida con IA</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-wider text-ink-muted mb-0.5">Headline · <code className="font-mono">text-sm (0.875rem)</code></p>
@@ -425,7 +425,7 @@ export default function ComponentesPage() {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Subtítulo · <code className="font-mono">text-lg (1.125rem)</code></p>
-                  <p className="font-bold tracking-wide text-gray-300 normal-case" style={{ fontSize: '1.125rem' }}>Videos a medida con IA</p>
+                  <p className="font-bold tracking-wide text-gray-300 normal-case" style={{ fontSize: '1.125rem' }}>lecciones a medida con IA</p>
                 </div>
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">Headline · <code className="font-mono">text-sm (0.875rem)</code></p>

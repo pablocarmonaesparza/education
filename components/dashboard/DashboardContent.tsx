@@ -129,7 +129,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                 </div>
 
                 <CardFlat className="p-4 sm:p-6 mb-6 bg-gray-50 dark:bg-gray-800 border-gray-100 dark:border-gray-900 flex flex-col sm:flex-row gap-6 items-start sm:items-center">
-                   {/* Video Thumbnail Placeholder */}
+                   {/* Lesson preview placeholder */}
                   <div className="w-full sm:w-48 h-28 bg-primary/10 rounded-2xl flex items-center justify-center flex-shrink-0 relative overflow-hidden group">
                     <div className="absolute inset-0 bg-black/5 group-hover:bg-black/10 transition-colors" />
                     <svg className="w-12 h-12 text-primary opacity-80 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
@@ -150,7 +150,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                          {currentVideoData?.duration || '5 min'}
                        </span>
                        <span>•</span>
-                       <span>Video {props.currentVideo} de {currentPhaseData?.videos?.length || '?'}</span>
+                       <span>Lección {props.currentVideo} de {currentPhaseData?.videos?.length || '?'}</span>
                     </div>
                   </div>
                 </CardFlat>
@@ -164,7 +164,7 @@ export default function DashboardContent(props: DashboardContentProps) {
                     className="flex-1 sm:flex-none"
                   >
                     <svg className="mr-2 -ml-1 w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-                    REPRODUCIR VIDEO
+                    Empezar lección
                   </Button>
                   <Button
                     variant="outline"
@@ -240,7 +240,7 @@ export default function DashboardContent(props: DashboardContentProps) {
 
               <div className="space-y-4">
                 <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-2xl">
-                  <span className="text-sm text-ink-muted dark:text-gray-400">Videos completados</span>
+                  <span className="text-sm text-ink-muted dark:text-gray-400">Lecciones completadas</span>
                   <span className="font-bold text-ink dark:text-white">{props.completedVideos} <span className="text-ink-muted dark:text-gray-400 font-normal">/ {props.totalVideos}</span></span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-800 rounded-2xl">
@@ -255,7 +255,7 @@ export default function DashboardContent(props: DashboardContentProps) {
               <h3 className="font-extrabold text-ink dark:text-white mb-4 tracking-tight">tu actividad</h3>
               <div className="grid grid-cols-2 gap-4">
                 <StatCard icon="🔥" value={String(props.streak || 0)} label="Racha Días" color="orange" />
-                <StatCard icon="🎯" value={String(props.weeklyProgress || 0)} label="Videos Sem." color="green" />
+                <StatCard icon="🎯" value={String(props.weeklyProgress || 0)} label="Lecciones Sem." color="green" />
                 <StatCard icon="⭐" value={String(props.level || 1)} label="Nivel" color="blue" />
                 <StatCard icon="⚡" value={String(props.currentXP || 0)} label="XP Total" color="blue" />
               </div>

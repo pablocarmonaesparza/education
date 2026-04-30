@@ -51,7 +51,9 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "#hero", label: "Inicio", id: "hero" },
+    { href: "#cursos", label: "Cursos", id: "cursos" },
     // Hidden temporarily — re-enable by uncommenting:
+    // { href: "#capacitacion", label: "Capacitación", id: "capacitacion" },
     // { href: "#how-it-works", label: "Cómo Funciona", id: "how-it-works" },
     // { href: "#available-courses", label: "Cursos", id: "available-courses" },
     { href: "#pricing", label: "Precios", id: "pricing" },
@@ -89,21 +91,33 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Update indicator position when active section changes
+  // Update indicator position when active section changes — also remeasure on
+  // resize and after fonts load so the pill doesn't get stuck at width:0 from
+  // a measurement taken before layout/fonts settled.
   useEffect(() => {
-    if (activeSection && navRef.current) {
-      const activeLink = navRef.current.querySelector(`[data-section="${activeSection}"]`) as HTMLElement;
-      if (activeLink) {
-        const navRect = navRef.current.getBoundingClientRect();
-        const linkRect = activeLink.getBoundingClientRect();
-        // Calculate position to perfectly center the indicator with the link
-        // The link has px-4 (16px padding on each side), so we need to account for that
-        setIndicatorStyle({
-          left: linkRect.left - navRect.left,
-          width: linkRect.width,
-        });
-      }
-    }
+    const measure = () => {
+      if (!activeSection || !navRef.current) return;
+      // Skip when the desktop nav is display:none (mobile/tablet breakpoint).
+      if (navRef.current.offsetParent === null) return;
+      const activeLink = navRef.current.querySelector(`[data-section="${activeSection}"]`) as HTMLElement | null;
+      if (!activeLink) return;
+      const navRect = navRef.current.getBoundingClientRect();
+      const linkRect = activeLink.getBoundingClientRect();
+      if (linkRect.width === 0) return;
+      setIndicatorStyle({
+        left: linkRect.left - navRect.left,
+        width: linkRect.width,
+      });
+    };
+
+    const raf = requestAnimationFrame(measure);
+    window.addEventListener('resize', measure);
+    document.fonts?.ready.then(measure).catch(() => {});
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', measure);
+    };
   }, [activeSection]);
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -178,7 +192,7 @@ export default function Navbar() {
             className="hidden lg:flex items-center gap-3 absolute left-1/2 -translate-x-1/2"
           >
             {/* Sliding indicator - gray button that slides behind text */}
-            {activeSection && (
+            {activeSection && indicatorStyle.width > 0 && (
               <motion.div
                 className={`absolute top-0 bottom-0 my-auto h-[40px] bg-gray-200 dark:bg-gray-700 rounded-xl ${depth.border} ${depth.bottom} border-gray-400 dark:border-gray-600 border-b-gray-400 dark:border-b-gray-600 z-0`}
                 initial={{ 

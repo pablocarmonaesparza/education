@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 import NewHeroSection from "@/components/landing/NewHeroSection";
+import CursosSection from "@/components/landing/CursosSection";
+import CapacitacionSection from "@/components/landing/CapacitacionSection";
 import HowItWorksSection from "@/components/landing/HowItWorksSection";
 import ProjectInputSection from "@/components/landing/ProjectInputSection";
 import AvailableCoursesSection from "@/components/landing/AvailableCoursesSection";
@@ -22,7 +24,10 @@ export default function Home() {
       <Navbar />
       <StructuredData />
       <NewHeroSection />
-      {/* Secciones archivadas — landing actual: Hero → Pricing → FAQ. */}
+      <CursosSection />
+      {/* Secciones archivadas — landing actual: Hero → Cursos → Pricing → FAQ.
+          Capacitación está temporalmente oculta hasta que tengamos contenido. */}
+      {/* <CapacitacionSection /> */}
       {/* <HowItWorksSection /> */}
       {/* <ProjectInputSection /> */}
       {/* <AvailableCoursesSection /> */}

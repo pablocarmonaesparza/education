@@ -2,30 +2,30 @@
   "section_id": 9,
   "slug": "git-github",
   "title": "Git y GitHub: primeros pasos con AI",
-  "source": "claude-in-session-v2",
+  "source": "claude-in-session-v4",
   "slides": [
     {
       "order_in_lecture": 1,
       "kind": "mcq",
       "phase": "engage",
       "content": {
-        "prompt": "Martha hace vibe coding. Un cambio rompió su app, intentó deshacer y perdió partes que funcionaban. Un amigo le dice: 'necesitas Git'.",
+        "prompt": "Daniela hace vibe coding. Un cambio rompió su app, intentó deshacer y perdió partes que funcionaban. Un amigo le dice 'necesitas Git'. ¿Tiene razón?",
         "options": [
           {
             "id": 0,
-            "text": "Complicarse sin necesidad"
+            "text": "No: Git solo complica las cosas para no-programadores"
           },
           {
             "id": 1,
-            "text": "Git te da undo ilimitado y historia completa. Cada cambio queda grabado. Si algo se rompe, vuelves atrás. Es red de seguridad obligatoria para vibe coding"
+            "text": "Sí: Git guarda cada cambio como un snapshot, le da deshacer ilimitado y vuelve atrás cuando la AI rompe algo"
           },
           {
             "id": 2,
-            "text": "Nada — los no-programadores no lo necesitan"
+            "text": "Solo si planea publicar la app: para uso personal no hace falta"
           }
         ],
         "correctId": 1,
-        "explanation": "**Git** no es 'para programadores'. Es **control de versiones**: cada cambio queda guardado, puedes volver atrás, comparar versiones, mantener variantes. Para vibe coding es crítico: AI hace cambios rápidos, a veces mal; sin Git, pierdes trabajo.",
+        "explanation": "**Git** no es 'para programadores'. Es **control de versiones**: cada cambio queda guardado, puedes volver atrás y comparar. Para vibe coding es crítico: la AI hace cambios rápidos y a veces mal; sin Git, pierdes trabajo cada vez que algo se rompe.",
         "xp": 20
       }
     },
@@ -34,68 +34,62 @@
       "kind": "concept",
       "phase": "explore",
       "content": {
-        "title": "Qué es Git vs GitHub",
-        "body": "**Git** — sistema de control de versiones (local). Cada commit = foto de tu código.\n\n**GitHub** — servicio en la nube que aloja repos Git. Además: colaboración, PRs, issues, CI/CD.\n"
+        "title": "qué es Git vs GitHub",
+        "body": "Dos cosas que se usan juntas:\n\n- **Git**: sistema de control de versiones local. Cada commit es una foto de tu código\n- **GitHub**: servicio que aloja repos Git en la nube. Suma colaboración, PRs, issues y CI/CD"
       }
     },
     {
       "order_in_lecture": 3,
       "kind": "concept",
-      "phase": "explore",
+      "phase": "explain",
       "content": {
-        "title": "Los 5 comandos mínimos",
-        "body": "Con estos 5 cubres 80% del uso:\n\n- `git init` — iniciar repo\n- `git add .` — poner cambios listos para commit\n- `git commit -m 'mensaje'` — guardar snapshot\n- `git log` — ver historia\n- `git checkout [commit]` — volver a un estado anterior"
+        "title": "AI + Git = superpoder",
+        "body": "Claude Code, Cursor y Codex CLI te sugieren mensajes de commit, te explican qué cambió entre commits y resuelven conflictos básicos. **No memorizas comandos**: describes la intención y la AI ejecuta."
       }
     },
     {
       "order_in_lecture": 4,
-      "kind": "concept",
-      "phase": "explain",
+      "kind": "code-completion",
+      "phase": "elaborate",
       "content": {
-        "title": "AI + Git = superpoder",
-        "body": "Claude Code, Cursor, Codex CLI:\n\n- Te sugieren mensajes de commit\n- Te explican qué cambió entre commits\n- Te ayudan a escribir PRs\n- Pueden resolver conflictos básicos\n\nNo necesitas memorizar comandos — describes qué quieres y la AI ejecuta."
+        "prompt": "Worked example: acabas de hacer un cambio que funciona. Quieres guardarlo como snapshot con un mensaje. Completa el comando:",
+        "codeBefore": "$ git ",
+        "codeAfter": " -m 'agrega botón exportar a Excel'",
+        "tokens": [
+          "commit",
+          "push",
+          "branch",
+          "log"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "**git commit** crea el snapshot local con un mensaje. Push sube a GitHub un commit que ya existe; branch crea una rama; log lista historia. El orden sano es add → commit → push, en ese orden.",
+        "xp": 15
       }
     },
     {
       "order_in_lecture": 5,
-      "kind": "true-false",
-      "phase": "explain",
-      "content": {
-        "prompt": "Verdadero o falso:",
-        "statement": "Si usas AI para programar, puedes saltarte Git.",
-        "answer": false,
-        "explanation": "Falso. Con AI **necesitas Git más que nunca** — los cambios son rápidos, a veces incorrectos. Git es tu red de seguridad. Sin él, AI te acelera al abismo; con él, AI te acelera con rescate disponible.",
-        "xp": 10
-      }
-    },
-    {
-      "order_in_lecture": 6,
       "kind": "order-steps",
       "phase": "elaborate",
       "content": {
-        "prompt": "Ordena los pasos de un flujo de trabajo básico con Git:",
+        "prompt": "Ordena los pasos del ciclo básico tras editar un archivo:",
         "steps": [
-          "Crear un repo con git init o clonar de GitHub",
-          "Hacer cambios en los archivos",
-          "Marcar lo que irá al commit con git add",
-          "Guardar snapshot con git commit y un mensaje claro",
-          "Subir a GitHub con git push si aplica",
-          "Volver a una versión anterior con git checkout si algo sale mal"
+          "Marcar lo que irá al snapshot con git add",
+          "Guardar el snapshot con git commit y un mensaje claro",
+          "Subir el snapshot a GitHub con git push",
+          "Volver con git checkout si una iteración rompe algo"
         ],
         "correctOrder": [
           0,
           1,
           2,
-          3,
-          4,
-          5
+          3
         ],
-        "explanation": "El ciclo básico es **editar → add → commit → push**. Repetir mucho. Cada commit es tu seguro. Commits frecuentes te salvan la vida cuando AI rompe algo.",
+        "explanation": "El orden es **causal**: no puedes commitear lo que no marcaste con add, no puedes pushear lo que no commiteaste, y solo tiene sentido restaurar después de tener historia. Saltarse add es el error más común en vibe coders.",
         "xp": 15
       }
     },
     {
-      "order_in_lecture": 7,
+      "order_in_lecture": 6,
       "kind": "tap-match",
       "phase": "elaborate",
       "content": {
@@ -103,27 +97,27 @@
         "pairs": [
           {
             "term": "Commit",
-            "def": "Snapshot de tu código"
+            "def": "Snapshot de tu código en un momento"
           },
           {
             "term": "Branch",
-            "def": "Línea de trabajo paralela"
+            "def": "Línea de trabajo paralela e independiente"
           },
           {
             "term": "Merge",
-            "def": "Combinar dos ramas"
+            "def": "Combinar dos ramas en una sola"
           },
           {
             "term": "Pull Request",
-            "def": "Propuesta de cambio revisable"
+            "def": "Propuesta de cambio revisable antes de fusionar"
           }
         ],
-        "explanation": "Los 4 términos básicos. Con ellos entiendes la mayoría de conversaciones sobre Git. **No necesitas más para empezar**.",
+        "explanation": "Estos cuatro términos cubren la mayoría de conversaciones sobre Git en vibe coding. **No necesitas más para empezar** — el resto se aprende cuando aparece.",
         "xp": 15
       }
     },
     {
-      "order_in_lecture": 8,
+      "order_in_lecture": 7,
       "kind": "multi-select",
       "phase": "elaborate",
       "content": {
@@ -135,11 +129,11 @@
           },
           {
             "id": 1,
-            "text": "Mensajes de commit descriptivos (la AI los sugiere)"
+            "text": "Mensajes descriptivos (la AI los sugiere)"
           },
           {
             "id": 2,
-            "text": "Push a GitHub frecuente para tener backup"
+            "text": "Push a GitHub frecuente como backup"
           },
           {
             "id": 3,
@@ -155,8 +149,27 @@
           1,
           2
         ],
-        "explanation": "Commits frecuentes, mensajes claros y push regular = sano. Commits grandes y mensajes vagos son **antipatrones** — pierdes granularidad para volver atrás.",
+        "explanation": "Commits frecuentes, mensajes claros y push regular = sano. Commits grandes y mensajes vagos son **antipatrones**: pierdes la granularidad para volver al punto exacto donde algo todavía funcionaba.",
         "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 8,
+      "kind": "code-completion",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Una iteración de la AI rompió la app. Quieres ver el id del último commit que sí funcionaba. Completa el subcomando:",
+        "codeBefore": "$ git ",
+        "codeAfter": " --oneline",
+        "tokens": [
+          "log",
+          "status",
+          "diff",
+          "init"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "**git log --oneline** lista la historia con el id corto y el mensaje en una línea por commit. Status muestra qué está sin commitear; diff compara cambios; init crea un repo nuevo. Para encontrar el snapshot bueno usas log.",
+        "xp": 20
       }
     },
     {
@@ -164,23 +177,23 @@
       "kind": "mcq",
       "phase": "evaluate",
       "content": {
-        "prompt": "Martha adopta Git + GitHub. Al siguiente cambio que rompe algo, ¿qué hace?",
+        "prompt": "Daniela adopta Git. Al siguiente cambio que rompe algo, ¿qué hace?",
         "options": [
           {
             "id": 0,
-            "text": "Pierde horas intentando recordar qué cambió"
+            "text": "Pierde horas intentando recordar qué cambió a mano"
           },
           {
             "id": 1,
-            "text": "Con git log ve la historia, identifica el último commit que funcionaba, y con git checkout vuelve a ese estado en 30 segundos"
+            "text": "Con git log encuentra el último commit que funcionaba y vuelve a ese estado en 30 segundos"
           },
           {
             "id": 2,
-            "text": "Abandona la app"
+            "text": "Abandona la app porque ya no se puede arreglar"
           }
         ],
         "correctId": 1,
-        "explanation": "Martha dejó de sufrir. Lo que antes era **pánico** se volvió **proceso de 30 segundos**. Git transforma errores de catastróficos a corregibles. Y AI ayuda a usarlo sin memorizar.",
+        "explanation": "Daniela dejó de sufrir. Lo que antes era **pánico** se volvió **proceso de 30 segundos**. Git transforma errores de catastróficos a corregibles, y la AI ayuda a usarlo sin memorizar comandos.",
         "xp": 20
       }
     },
@@ -190,8 +203,8 @@
       "phase": "evaluate",
       "content": {
         "emoji": "🌳",
-        "title": "Red de seguridad activa",
-        "body": "Ya tienes control de versiones. La siguiente lección entra a iterar sobre código con AI."
+        "title": "red de seguridad activa",
+        "body": "Ya tienes control de versiones: commit frecuente, mensaje claro y log a la mano. Hoy puedes inicializar un repo, commitear y dormir tranquilo si una iteración rompe algo."
       }
     }
   ]

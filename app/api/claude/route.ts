@@ -1,14 +1,22 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { ClaudeChatRequest, ClaudeChatResponse, CustomPath } from '@/types/claude';
 import { createClient } from '@/lib/supabase/server';
+import { enforceRateLimit, rateLimiters } from '@/lib/ratelimit';
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const MAX_MESSAGE_CHARS = 2000;
+const MAX_HISTORY_MESSAGES = 20;
 
-export async function POST(req: Request) {
+function getAnthropicClient(): Anthropic | null {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  return apiKey ? new Anthropic({ apiKey }) : null;
+}
+
+export async function POST(req: NextRequest) {
   try {
+    const blocked = await enforceRateLimit(req, rateLimiters.ai);
+    if (blocked) return blocked;
+
     // Verificar autenticación
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -18,9 +26,16 @@ export async function POST(req: Request) {
 
     const { message, history }: ClaudeChatRequest = await req.json();
 
-    if (!message) {
+    if (!message || typeof message !== 'string') {
       return new NextResponse('Missing message in request body', { status: 400 });
     }
+
+    const anthropic = getAnthropicClient();
+    if (!anthropic) {
+      return NextResponse.json({ error: 'Claude no está configurado' }, { status: 503 });
+    }
+
+    const safeMessage = message.trim().slice(0, MAX_MESSAGE_CHARS);
 
     const messages: Anthropic.Messages.MessageParam[] = [];
 
@@ -47,17 +62,26 @@ export async function POST(req: Request) {
 
 
     // Add previous chat history
-    if (history) {
+    if (Array.isArray(history)) {
       // Ensure history roles are correct for Claude (alternating user/assistant)
-      for (const msg of history) {
-        messages.push({ role: msg.role, content: msg.content });
+      for (const msg of history.slice(-MAX_HISTORY_MESSAGES)) {
+        if (
+          (msg.role === 'user' || msg.role === 'assistant') &&
+          typeof msg.content === 'string' &&
+          msg.content.trim().length > 0
+        ) {
+          messages.push({
+            role: msg.role,
+            content: msg.content.trim().slice(0, MAX_MESSAGE_CHARS),
+          });
+        }
       }
     }
 
-    let userMessageContent = message;
+    let userMessageContent = safeMessage;
     let generatePath = false;
 
-    if (message.toLowerCase().includes('generar ruta') || message.toLowerCase().includes('generate path')) {
+    if (safeMessage.toLowerCase().includes('generar ruta') || safeMessage.toLowerCase().includes('generate path')) {
       generatePath = true;
       userMessageContent += `\n\nBased on our conversation, please generate a personalized course path in the specified JSON format.`;
     }

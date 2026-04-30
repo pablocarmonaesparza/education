@@ -2,30 +2,30 @@
   "section_id": 9,
   "slug": "cursor",
   "title": "Cursor: el IDE con AI integrada",
-  "source": "claude-in-session-v2",
+  "source": "claude-in-session-v4",
   "slides": [
     {
       "order_in_lecture": 1,
       "kind": "mcq",
       "phase": "engage",
       "content": {
-        "prompt": "Lucía usa VS Code con Copilot y siente la AI 'pegada' al editor. Una colega le sugiere probar Cursor. ¿Qué cambia realmente entre uno y otro?",
+        "prompt": "Camila usa VS Code con Copilot y siente la AI 'pegada'. Una colega le sugiere Cursor. ¿Qué cambia realmente?",
         "options": [
           {
             "id": 0,
-            "text": "Nada relevante: es el mismo VS Code con un nombre distinto y precio más alto"
+            "text": "Nada relevante: es VS Code con otro nombre y precio más alto"
           },
           {
             "id": 1,
-            "text": "Cursor es un fork de VS Code rediseñado AI-first: chat con todo el repo, modo agente multi-archivo y autocomplete contextual"
+            "text": "Cursor es un fork de VS Code rediseñado AI-first: chat con todo el repo, modo agente multi-archivo y autocomplete que lee contexto"
           },
           {
             "id": 2,
-            "text": "Cursor reemplaza al programador: tú describes la app y no necesitas revisar código"
+            "text": "Cursor reemplaza al programador y nunca hay que revisar código"
           }
         ],
         "correctId": 1,
-        "explanation": "Cursor es un **fork de VS Code** rediseñado desde cero con AI como primer ciudadano: chat que entiende todo tu repo, modo agente para cambios multi-archivo y autocomplete que lee contexto. Copilot es una capa sobre VS Code; Cursor es el editor repensado.",
+        "explanation": "Cursor es un **fork de VS Code** rediseñado con AI como primer ciudadano: chat que entiende el repo entero, modo agente para cambios multi-archivo y autocomplete con contexto. Copilot es una capa sobre VS Code; Cursor es el editor repensado.",
         "xp": 20
       }
     },
@@ -34,42 +34,40 @@
       "kind": "concept",
       "phase": "explore",
       "content": {
-        "title": "Las 3 capacidades clave",
-        "body": "Cursor se apoya en tres piezas:\n\n- **Tab completion**: sugiere líneas y bloques leyendo el repo entero\n- **Chat con repo**: preguntas sobre tu código con contexto real\n- **Agent mode**: cambios multi-archivo con revisión paso a paso"
+        "title": "las 3 capacidades clave",
+        "body": "Cursor se apoya en tres piezas:\n\n- **Tab completion**: sugiere bloques leyendo el repo entero\n- **Chat con repo**: preguntas con contexto real del código\n- **Agent mode**: cambios multi-archivo con revisión paso a paso"
       }
     },
     {
       "order_in_lecture": 3,
       "kind": "concept",
-      "phase": "explore",
+      "phase": "explain",
       "content": {
-        "title": "Cursor vs Copilot vs Claude Code",
-        "body": "Panorama:\n\n- **Copilot** — autocomplete y chat en VS Code (más básico)\n- **Cursor** — IDE AI-first, mejor integrado\n- **Windsurf** — alternativa tipo Cursor de Codeium\n- **Claude Code** — CLI, mejor para autonomía agentica\n"
+        "title": "dónde brilla y dónde no",
+        "body": "Brilla en trabajo continuo dentro de un repo, autocomplete con contexto y chats sin salir del editor. **Para cambios largos desatendidos**, una CLI agentica como Claude Code suele encajar mejor."
       }
     },
     {
       "order_in_lecture": 4,
-      "kind": "concept",
-      "phase": "explain",
+      "kind": "code-completion",
+      "phase": "elaborate",
       "content": {
-        "title": "Dónde Cursor brilla",
-        "body": "Ideal para:\n\n- Trabajo continuo dentro de un repo\n- Autocomplete con contexto del proyecto\n- Chats rápidos sin salir del editor\n- Cambios medianos con supervisión en tiempo real\n"
+        "prompt": "Worked example: en Cursor, abrir el chat del repo se invoca con un atajo. Completa la tecla principal del atajo macOS:",
+        "codeBefore": "# atajo Cursor (mac):  ⌘ + ",
+        "codeAfter": "   → abre el chat con contexto del repo",
+        "tokens": [
+          "L",
+          "K",
+          "Q",
+          "F"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "**⌘ + L** abre el panel de chat con contexto del repo en Cursor. Es la entrada más usada: pides explicación, refactor o cambio sin salir del editor. ⌘ + K es el inline edit; útil pero distinto.",
+        "xp": 15
       }
     },
     {
       "order_in_lecture": 5,
-      "kind": "true-false",
-      "phase": "explain",
-      "content": {
-        "prompt": "Verdadero o falso:",
-        "statement": "Cursor funciona sin configurar nada para todos los lenguajes.",
-        "answer": false,
-        "explanation": "Falso. **Configurarlo bien mejora mucho la experiencia**: reglas custom, contexto del repo, archivo de preferencias. Sin config, funciona decente; con config, se vuelve tu mejor herramienta.",
-        "xp": 10
-      }
-    },
-    {
-      "order_in_lecture": 6,
       "kind": "tap-match",
       "phase": "elaborate",
       "content": {
@@ -77,31 +75,31 @@
         "pairs": [
           {
             "term": "Tab completion",
-            "def": "Escribiendo línea por línea"
+            "def": "Escribir línea por línea con sugerencias contextuales"
           },
           {
             "term": "Chat con repo",
-            "def": "Entender código ajeno rápido"
+            "def": "Entender código ajeno antes de tocarlo"
           },
           {
             "term": "Agent mode",
-            "def": "Cambio multi-archivo supervisado"
+            "def": "Cambio multi-archivo con revisión paso a paso"
           },
           {
-            "term": "Reglas custom",
-            "def": "Adherirse a convenciones del repo"
+            "term": "Reglas .cursorrules",
+            "def": "Forzar las convenciones del proyecto"
           }
         ],
-        "explanation": "Cada feature tiene su momento. **Saber cuál invocar** multiplica productividad. Escribir código línea por línea tiene su feature; cambios complejos tienen otra.",
+        "explanation": "Cada feature tiene su momento. **Saber cuál invocar** multiplica productividad: línea por línea, exploración o cambio coordinado son trabajos distintos.",
         "xp": 15
       }
     },
     {
-      "order_in_lecture": 7,
+      "order_in_lecture": 6,
       "kind": "multi-select",
       "phase": "elaborate",
       "content": {
-        "prompt": "¿Qué prácticas sacan mayor valor de Cursor en un repo real?",
+        "prompt": "Marca las prácticas que sacan más valor de Cursor en un repo real:",
         "options": [
           {
             "id": 0,
@@ -109,7 +107,7 @@
           },
           {
             "id": 1,
-            "text": "Usar el chat del repo para entender código ajeno antes de modificarlo"
+            "text": "Usar el chat del repo para entender código ajeno antes de tocarlo"
           },
           {
             "id": 2,
@@ -117,11 +115,11 @@
           },
           {
             "id": 3,
-            "text": "Abrir un chat nuevo por cada archivo para que el contexto no se mezcle"
+            "text": "Abrir un chat por archivo para que el contexto no se mezcle"
           },
           {
             "id": 4,
-            "text": "Pedirle siempre que escriba tests después del cambio para cerrar el loop"
+            "text": "Pedir tests después del cambio para cerrar el loop"
           }
         ],
         "correctIds": [
@@ -130,8 +128,27 @@
           2,
           4
         ],
-        "explanation": "Configurar, entender y revisar son el núcleo; pedir tests cierra el loop de verificación. Abrir un chat por archivo **te quita** justamente la superpotencia de Cursor: que entiende el repo entero de un vistazo.",
+        "explanation": "Configurar, entender y revisar son el núcleo; pedir tests cierra el loop. Abrir un chat por archivo te quita la superpotencia de Cursor: que entiende **el repo entero** de un vistazo.",
         "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "code-completion",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "Caes en un repo nuevo. Quieres que Cursor te explique la arquitectura usando el chat del repo. Completa el símbolo que arrastra todo el repo al contexto:",
+        "codeBefore": "explica la arquitectura de este repo. usa ",
+        "codeAfter": "Codebase para mirar todo.",
+        "tokens": [
+          "@",
+          "#",
+          "/",
+          "&"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "El **@** invoca menciones en Cursor: @Codebase mete todo el repo, @Files un archivo, @Web una búsqueda. Sin @ el chat solo ve el archivo abierto, y la pregunta sale corta de contexto.",
+        "xp": 20
       }
     },
     {
@@ -139,23 +156,23 @@
       "kind": "mcq",
       "phase": "elaborate",
       "content": {
-        "prompt": "Caes en un repo nuevo con 80 archivos y te piden un cambio en 2 horas. ¿Por dónde empiezas con Cursor?",
+        "prompt": "Tienes un cambio que toca 8 archivos coordinados. ¿Qué modo de Cursor encaja mejor?",
         "options": [
           {
             "id": 0,
-            "text": "Buscar el archivo exacto del cambio y editar directo sin explorar el resto"
+            "text": "Tab completion: vas archivo por archivo aceptando sugerencias"
           },
           {
             "id": 1,
-            "text": "Abrir el chat del repo y preguntar por arquitectura, puntos de entrada y dónde vive la lógica que vas a tocar"
+            "text": "Agent mode: describes el cambio una vez y revisas el diff multi-archivo antes de aplicar"
           },
           {
             "id": 2,
-            "text": "Clonar el repo en otra carpeta y reescribir la feature desde cero para no romper nada"
+            "text": "Chat suelto: copias y pegas cada archivo y aplicas a mano"
           }
         ],
         "correctId": 1,
-        "explanation": "El dolor de entrar a un repo ajeno era mapearlo a mano. El **chat del repo** te da arquitectura y anclas en minutos, y después editas con criterio. Saltar al archivo sin mapa suele terminar en cambios que rompen algo conectado.",
+        "explanation": "**Agent mode** existe justamente para cambios multi-archivo: propone el diff completo y tú revisas. Tab completion es para edición fina dentro de un archivo; copiar y pegar borra el contexto del repo.",
         "xp": 15
       }
     },
@@ -164,23 +181,23 @@
       "kind": "mcq",
       "phase": "evaluate",
       "content": {
-        "prompt": "Tras dos semanas probando Cursor, Lucía revisa su flujo. ¿Qué decisión aprovecha mejor lo que aprendió?",
+        "prompt": "Tras dos semanas con Cursor, Camila revisa su flujo. ¿Qué decisión aprovecha mejor lo que aprendió?",
         "options": [
           {
             "id": 0,
-            "text": "Usar Cursor solo para autocomplete y abrir ChatGPT en otra pestaña para cualquier pregunta sobre el repo"
+            "text": "Usa Cursor solo para autocomplete y abre ChatGPT en otra pestaña para preguntas del repo"
           },
           {
             "id": 1,
-            "text": "Adoptar Cursor como editor diario y reservar una CLI agentica para cambios grandes desatendidos, eligiendo según el tipo de tarea"
+            "text": "Adopta Cursor como editor diario y reserva una CLI agentica para cambios grandes desatendidos, eligiendo según la tarea"
           },
           {
             "id": 2,
-            "text": "Dejar a Cursor decidir todo en modo agente sin revisar los diffs, porque conoce el repo mejor que ella"
+            "text": "Deja a Cursor decidir todo en agent mode sin revisar diffs porque conoce el repo mejor que ella"
           }
         ],
         "correctId": 1,
-        "explanation": "El stack moderno combina **IDE con AI** para el día a día con revisión y una **CLI agentica** para tareas largas desatendidas. Ir a ChatGPT en otra pestaña te hace perder el contexto del repo; delegar sin revisar diffs renuncia al criterio que Cursor amplifica, no reemplaza.",
+        "explanation": "El stack moderno combina **IDE con AI** para el día a día revisado y una **CLI agentica** para tareas largas. Saltar a ChatGPT borra el contexto del repo; delegar sin revisar diffs renuncia al criterio que Cursor amplifica.",
         "xp": 20
       }
     },
@@ -190,8 +207,8 @@
       "phase": "evaluate",
       "content": {
         "emoji": "🖥️",
-        "title": "Cursor en tu editor",
-        "body": "Ya sabes qué hace Cursor distinto: fork de VS Code AI-first, chat con el repo, modo agente y reglas custom. Ábrelo hoy en un repo real y pídele el mapa."
+        "title": "cursor en tu editor",
+        "body": "Ya sabes qué hace Cursor distinto: fork de VS Code AI-first, chat con repo, agent mode y reglas custom. Hoy puedes abrirlo en un repo real y pedirle el mapa con @Codebase."
       }
     }
   ]

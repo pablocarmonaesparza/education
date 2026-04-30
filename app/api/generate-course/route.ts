@@ -2,12 +2,16 @@ import { NextRequest, NextResponse, after } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { summarizeProjectWithOpenAI } from '@/lib/openai/summarizeProject';
 import { generateCourseInline } from '@/lib/course-generation/generate';
+import { enforceRateLimit, rateLimiters } from '@/lib/ratelimit';
 
 // 5 minutes — course generation involves two Claude calls + RAG
 export const maxDuration = 300;
 
 export async function POST(request: NextRequest) {
   try {
+    const blocked = await enforceRateLimit(request, rateLimiters.ai);
+    if (blocked) return blocked;
+
     const body = await request.json();
     const supabase = await createClient();
 

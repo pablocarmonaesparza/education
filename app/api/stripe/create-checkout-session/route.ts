@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { stripe, STRIPE_PRICES, type BillingPlan } from '@/lib/stripe/config';
+import { enforceRateLimit, rateLimiters } from '@/lib/ratelimit';
 
 export async function POST(req: NextRequest) {
   try {
+    const blocked = await enforceRateLimit(req, rateLimiters.checkout);
+    if (blocked) return blocked;
+
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {

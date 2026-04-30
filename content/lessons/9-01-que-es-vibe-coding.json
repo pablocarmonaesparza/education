@@ -2,22 +2,22 @@
   "section_id": 9,
   "slug": "que-es-vibe-coding",
   "title": "Qué es vibe coding (y por qué cambia todo)",
-  "source": "claude-in-session-v2",
+  "source": "claude-in-session-v4",
   "slides": [
     {
       "order_in_lecture": 1,
       "kind": "mcq",
       "phase": "engage",
       "content": {
-        "prompt": "Hugo no es programador pero tiene ideas. Escucha 'vibe coding' en redes. Alguien dice 'programa hablándole a la AI'. Hugo duda: '¿realmente funciona o es exageración?'.",
+        "prompt": "Sebastián escucha 'vibe coding' y un amigo le dice 'programas hablándole a la AI'. Sebastián no es dev. ¿Qué le conviene esperar?",
         "options": [
           {
             "id": 0,
-            "text": "Exageración — sigue siendo imposible sin saber programar"
+            "text": "Es exageración: sin saber programar, no se puede"
           },
           {
             "id": 1,
-            "text": "Vibe coding es real: describes lo que quieres en lenguaje natural, AI escribe código, tú revisas y guías. Funciona para mini-apps y prototipos; apps serias aún requieren criterio técnico"
+            "text": "Describes lo que quieres en lenguaje natural, la AI escribe código y tú revisas. Funciona para mini-apps y prototipos; criterio técnico sigue importando para apps serias"
           },
           {
             "id": 2,
@@ -25,7 +25,7 @@
           }
         ],
         "correctId": 1,
-        "explanation": "**Vibe coding** es programar guiando a AI en lenguaje natural. No elimina la necesidad de entender; sí baja drásticamente la barrera. Hoy puedes armar mini-apps funcionales en horas sin ser dev. Pero **apps con usuarios reales exigen criterio** que solo viene con experiencia técnica.",
+        "explanation": "**Vibe coding** es programar guiando a una AI en lenguaje natural. No elimina la necesidad de criterio: lo que baja drásticamente es la barrera de entrada. Mini-apps y prototipos son el sweet spot; apps con muchos usuarios reales todavía piden experiencia técnica.",
         "xp": 20
       }
     },
@@ -34,8 +34,8 @@
       "kind": "concept",
       "phase": "explore",
       "content": {
-        "title": "Qué permite vibe coding",
-        "body": "Hoy puedes, sin ser programador:\n\n- **Mini-apps**: scripts para tu workflow\n- **Landing pages** con lógica básica\n- **Automatizaciones** custom\n- **Prototipos** funcionales\n- **Scripts de análisis** de data propia\n"
+        "title": "qué desbloquea vibe coding",
+        "body": "Sin ser programador puedes:\n\n- **Mini-apps** para tu workflow personal\n- **Landing pages** con lógica básica\n- **Automatizaciones** propias\n- **Prototipos** funcionales\n- **Scripts** de análisis sobre tus datos"
       }
     },
     {
@@ -43,8 +43,8 @@
       "kind": "concept",
       "phase": "explore",
       "content": {
-        "title": "Qué no permite aún",
-        "body": "Limitaciones reales:\n\n- **Apps complejas** en producción requieren criterio técnico humano\n- **Seguridad crítica** exige revisión experta\n- **Arquitectura** a largo plazo necesita experiencia\n- **Debugging profundo** sigue pidiendo entender el código"
+        "title": "qué todavía exige criterio",
+        "body": "Hoy sigue pidiendo experiencia humana:\n\n- **Producción** con muchos usuarios\n- **Seguridad** crítica\n- **Arquitectura** a largo plazo\n- **Debugging** profundo cuando algo se cae"
       }
     },
     {
@@ -52,20 +52,17 @@
       "kind": "concept",
       "phase": "explain",
       "content": {
-        "title": "Las herramientas del vibe coding",
-        "body": "Categorías:\n\n- **CLI agents**: Claude Code, Codex CLI, Aider\n- **IDE integrado**: Cursor, Windsurf, Copilot\n- **No-code + AI**: v0, Bolt, Lovable, Replit Agent\n- **Chat + código**: ChatGPT, Claude en web con artifacts\n"
+        "title": "el ecosistema de herramientas",
+        "body": "Cuatro categorías:\n\n- **CLI agents**: Claude Code, Codex CLI\n- **IDE con AI**: Cursor, Windsurf\n- **No-code + AI**: v0, Bolt, Lovable, Replit\n- **Chat con código**: ChatGPT, Claude con artifacts"
       }
     },
     {
       "order_in_lecture": 5,
-      "kind": "true-false",
+      "kind": "concept",
       "phase": "explain",
       "content": {
-        "prompt": "Verdadero o falso:",
-        "statement": "Vibe coding elimina completamente la necesidad de entender código.",
-        "answer": false,
-        "explanation": "Falso. **Entender mínimamente lo que produces** es crítico: para debuggear cuando falle, para saber si la solución es segura, para guiar correctamente. No necesitas ser experto; sí necesitas criterio básico.",
-        "xp": 10
+        "title": "el cambio de rol",
+        "body": "Pasas de escribir código línea por línea a **describir lo que quieres y revisar** lo que la AI propone. El cuello de botella deja de ser la sintaxis y se vuelve la claridad de la idea."
       }
     },
     {
@@ -77,22 +74,22 @@
         "pairs": [
           {
             "term": "Landing con formulario",
-            "def": "V0, Bolt o Lovable generan la estructura al vuelo"
+            "def": "Bolt, Lovable o v0 generan la estructura al vuelo"
           },
           {
-            "term": "Modificar un repo",
-            "def": "Claude Code o Cursor trabajan sobre código existente"
+            "term": "Modificar un repo existente",
+            "def": "Claude Code o Cursor trabajan sobre código real"
           },
           {
-            "term": "Script de análisis",
+            "term": "Script de análisis suelto",
             "def": "ChatGPT con artifacts resuelve casos ocasionales"
           },
           {
             "term": "Mini-app colaborativa",
-            "def": "Replit Agent monta el entorno multiusuario listo"
+            "def": "Replit Agent monta el entorno multiusuario"
           }
         ],
-        "explanation": "Cada herramienta tiene su sweet spot. **Elegir según caso** gana a elegir por moda. Una herramienta no sirve igual para todo.",
+        "explanation": "Cada herramienta tiene su sweet spot. **Elegir según el caso** gana a elegir por moda. Una sola herramienta no encaja igual de bien en todos los escenarios.",
         "xp": 15
       }
     },
@@ -101,7 +98,7 @@
       "kind": "multi-select",
       "phase": "elaborate",
       "content": {
-        "prompt": "¿Qué actitudes hacen vibe coding exitoso?",
+        "prompt": "Marca las actitudes que hacen que vibe coding funcione bien:",
         "options": [
           {
             "id": 0,
@@ -121,7 +118,7 @@
           },
           {
             "id": 4,
-            "text": "Mantener lógica mental muy compleja en la cabeza"
+            "text": "Mantener toda la lógica del proyecto en la cabeza"
           }
         ],
         "correctIds": [
@@ -129,33 +126,20 @@
           1,
           2
         ],
-        "explanation": "Revisar, probar, entender mínimo = éxito. Aceptar ciego es **suicidio técnico** — el código puede tener bugs graves o problemas de seguridad. Vibe coding no es 'ciega confianza'.",
+        "explanation": "Revisar, probar y entender lo mínimo = sano. Aceptar a ciegas es la forma más rápida de **acumular bugs y huecos de seguridad**. Vibe coding no equivale a confianza ciega.",
         "xp": 15
       }
     },
     {
       "order_in_lecture": 8,
-      "kind": "mcq",
+      "kind": "true-false",
       "phase": "elaborate",
       "content": {
-        "prompt": "Hugo tiene la idea de una app simple: listar sus lecturas con tags y buscar por tema. ¿Qué hace?",
-        "options": [
-          {
-            "id": 0,
-            "text": "Contratar a un desarrollador por 3 meses"
-          },
-          {
-            "id": 1,
-            "text": "Abre Lovable/Bolt, describe en lenguaje natural, la AI genera la app en 20 min. Itera sobre lo que genera hasta quedar bien"
-          },
-          {
-            "id": 2,
-            "text": "Abandonar la idea hasta aprender a programar"
-          }
-        ],
-        "correctId": 1,
-        "explanation": "Este caso **es exactamente el sweet spot del vibe coding**: app simple personal, sin usuarios masivos, lógica directa. 3 meses de dev contratado es absurdo para algo que vibe coding hace en una tarde.",
-        "xp": 15
+        "prompt": "Verdadero o falso:",
+        "statement": "Vibe coding elimina la necesidad de entender qué hace tu código.",
+        "answer": false,
+        "explanation": "Falso. Necesitas **entender lo que produces** para debuggear cuando falle, evaluar si es seguro y guiar a la AI con criterio. No exige ser experto; sí exige no aceptar nada a ciegas.",
+        "xp": 10
       }
     },
     {
@@ -163,23 +147,23 @@
       "kind": "mcq",
       "phase": "evaluate",
       "content": {
-        "prompt": "Hugo lanza su primera mini-app. ¿Qué aprendió?",
+        "prompt": "Sebastián arma su primera mini-app personal en una tarde y la usa cada día. ¿Qué cambió para él?",
         "options": [
           {
             "id": 0,
-            "text": "Que necesitaba contratar a un dev senior"
+            "text": "Que necesitaba contratar a un desarrollador senior"
           },
           {
             "id": 1,
-            "text": "Que puede materializar ideas hoy que hace 2 años eran imposibles sin equipo. La barrera bajó: ahora limita la idea, no la habilidad técnica"
+            "text": "Que puede materializar ideas que hace dos años requerían un equipo. La barrera dejó de ser la habilidad técnica y pasó a ser la idea"
           },
           {
             "id": 2,
-            "text": "Que la AI es magia perfecta"
+            "text": "Que la AI es magia perfecta y no hay que revisar nada"
           }
         ],
         "correctId": 1,
-        "explanation": "Hugo cruzó la frontera más importante: **de 'tengo ideas sin forma' a 'materializo ideas'**. Esa frontera la baja el vibe coding — pero no elimina la necesidad de criterio.",
+        "explanation": "Sebastián cruzó la frontera más importante: pasó de **'tengo ideas sin forma'** a **'materializo ideas'**. Vibe coding bajó la barrera técnica, no eliminó la necesidad de criterio.",
         "xp": 20
       }
     },
@@ -189,8 +173,8 @@
       "phase": "evaluate",
       "content": {
         "emoji": "💡",
-        "title": "Vibe coding en tu mundo",
-        "body": "Ya sabes qué es. Las siguientes lecciones te llevan a las herramientas específicas. Primero: Claude Code."
+        "title": "vibe coding en tu mundo",
+        "body": "Ya entiendes qué es vibe coding, qué desbloquea y qué sigue exigiendo criterio. Hoy puedes describir una mini-app personal en tres frases y elegir la herramienta que encaje."
       }
     }
   ]

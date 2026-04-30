@@ -4,12 +4,15 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import Tag from '@/components/ui/Tag';
+import NextSectionIndicator from './NextSectionIndicator';
 
 export default function PricingSection() {
   const router = useRouter();
 
   const MONTHLY_ANNUALIZED = 19 * 12;
   const YEARLY_SAVINGS = MONTHLY_ANNUALIZED - 199;
+  const YEARLY_DISCOUNT_PCT = Math.round((YEARLY_SAVINGS / MONTHLY_ANNUALIZED) * 100);
 
   const formatPrice = (usdPrice: number, period?: string) => {
     if (usdPrice === 0) {
@@ -33,10 +36,10 @@ export default function PricingSection() {
       price: 0,
       period: undefined,
       popular: false,
-      description: "Prueba las primeras lecciones y la sección de fundamentos. Sin ruta personalizada.",
+      badge: undefined,
+      description: "Prueba la sección de fundamentos completa, sin ruta personalizada.",
       features: [
-        "Las primeras 20 lecciones",
-        "Sección de fundamentos completa",
+        "Sección de fundamentos completa (las primeras 20 lecciones)",
         "Acceso a la comunidad",
         "Ejemplos pensados para LATAM",
       ],
@@ -47,7 +50,8 @@ export default function PricingSection() {
       name: "mensual",
       price: 19,
       period: "/mes",
-      popular: true,
+      popular: false,
+      badge: undefined,
       description: "Ruta personalizada según lo que quieres construir.",
       features: [
         "Todo lo del plan gratis",
@@ -63,8 +67,9 @@ export default function PricingSection() {
       name: "anual",
       price: 199,
       period: "/año",
-      popular: false,
-      description: `Todo lo del mensual con ahorro de $${YEARLY_SAVINGS}.`,
+      popular: true,
+      badge: `${YEARLY_DISCOUNT_PCT}% de descuento`,
+      description: `Todo lo del mensual con ahorro de $${YEARLY_SAVINGS} al año.`,
       features: [
         "Todo lo del plan mensual",
         `Ahorras $${YEARLY_SAVINGS} vs. pagar mensual`,
@@ -107,6 +112,13 @@ export default function PricingSection() {
                 padding="lg"
                 className="relative flex flex-col md:p-6 h-full w-full"
               >
+                {/* Discount badge — solo aparece en el tier que lo tenga (anual). */}
+                {tier.badge && (
+                  <div className="absolute -top-3 right-4 md:right-6 z-10">
+                    <Tag variant="primary">{tier.badge}</Tag>
+                  </div>
+                )}
+
                 {/* Title */}
                 <div className="mb-3">
                   <h3 className="text-3xl md:text-4xl font-extrabold text-ink dark:text-white tracking-tight">{tier.name}</h3>
@@ -157,14 +169,12 @@ export default function PricingSection() {
 
                 {/* CTA Button */}
                 <Button
-                  variant={tier.popular ? "primary" : "outline"}
+                  variant={tier.popular ? "primary" : "outline-primary"}
                   depth={tier.popular ? "bottom" : "full"}
                   size="none"
                   rounded2xl
                   onClick={() => handleSelectPlan(tier.id)}
-                  className={`w-full py-4 text-sm md:text-base mt-auto ${
-                    !tier.popular ? "text-primary border-primary hover:bg-primary/5 dark:hover:bg-primary/10" : ""
-                  }`}
+                  className="w-full py-4 text-sm md:text-base mt-auto"
                 >
                   {tier.cta}
                 </Button>
@@ -175,43 +185,8 @@ export default function PricingSection() {
 
       </div>
 
-      {/* Next section indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-        viewport={{ once: true }}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden md:block"
-      >
-        <button
-          onClick={() => {
-            const element = document.getElementById("faq");
-            if (element) {
-              element.scrollIntoView({ behavior: "smooth" });
-            }
-          }}
-          className="flex flex-col items-center gap-1 cursor-pointer group"
-        >
-          <span className="text-sm font-semibold tracking-wide text-black/40 dark:text-white/40 group-hover:text-black/60 dark:group-hover:text-white/60 transition-colors">
-            FAQ
-          </span>
-          <motion.svg
-            className="w-5 h-5 text-black/40 dark:text-white/40 group-hover:text-black/60 dark:group-hover:text-white/60 transition-colors"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            animate={{ y: [0, 4, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </motion.svg>
-        </button>
-      </motion.div>
+      {/* Chain de scroll: pricing → faq */}
+      <NextSectionIndicator targetId="faq" label="FAQ" />
     </section>
   );
 }

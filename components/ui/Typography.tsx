@@ -66,7 +66,7 @@ export interface TypographyProps {
  * ```tsx
  * <Typography level="display">itera vuelve pronto</Typography>
  * <Typography level="title">curso personalizado para tu proyecto</Typography>
- * <Typography level="subtitle">Videos a medida con IA</Typography>
+ * <Typography level="subtitle">lecciones a medida con IA</Typography>
  * <Typography level="headline">Sección</Typography>
  * <Typography level="body">Texto de párrafo normal.</Typography>
  * <Typography level="caption">Texto secundario o pie.</Typography>

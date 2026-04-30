@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import Card from '@/components/ui/Card';
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const currentYear = new Date().getFullYear();
 
   const faqs = [
     {
@@ -110,32 +108,6 @@ export default function FAQSection() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-gray-50 dark:bg-gray-800 py-8">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-center md:text-left mb-4 md:mb-0">
-              <p className="text-ink-muted dark:text-gray-400">
-                &copy; {currentYear} Itera. Todos los derechos reservados.
-              </p>
-            </div>
-            <div className="flex gap-6">
-              <Link
-                href="/terms"
-                className="text-ink-muted dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
-              >
-                Términos
-              </Link>
-              <Link
-                href="/privacy"
-                className="text-ink-muted dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"
-              >
-                Privacidad
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </section>
   );
 }

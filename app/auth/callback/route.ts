@@ -1,6 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
+import { sendWelcomeEmail } from '@/lib/email/welcome'
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
@@ -85,6 +86,85 @@ export async function GET(request: Request) {
     }
 
     console.log('[auth/callback] User authenticated:', user.id)
+
+    // Upsert a public.users. Gating del welcome email por atomic claim
+    // sobre `welcome_email_sent_at IS NULL`:
+    //
+    //   UPDATE users SET welcome_email_sent_at = now()
+    //     WHERE id = ? AND welcome_email_sent_at IS NULL
+    //     RETURNING id
+    //
+    // Solo un llamador concurrente recibe fila — los demás skipean sin
+    // mandar. Si el envío falla, rollback del timestamp para que un
+    // callback futuro (o el endpoint manual) pueda reintentar.
+    const userName =
+      user.user_metadata?.name || user.email?.split('@')[0] || 'Usuario'
+
+    // Asegurar que la fila existe. INSERT ... ON CONFLICT DO NOTHING equivalente
+    // via maybeSingle(); el 23505 se ignora (fila ya creada por otro path
+    // como auto-login o generate-course).
+    const { error: insertError } = await supabase.from('users').insert({
+      id: user.id,
+      email: user.email,
+      name: userName,
+      tier: 'basic',
+      welcome_email_sent_at: null,
+    })
+    if (insertError && insertError.code !== '23505') {
+      console.error('[auth/callback] users.insert failed:', insertError)
+    }
+
+    if (user.email) {
+      // Claim atómico: intentamos marcar welcome_email_sent_at si todavía
+      // es NULL. El RETURNING nos dice si ganamos la carrera.
+      const stamp = new Date().toISOString()
+      const { data: claimed, error: claimError } = await supabase
+        .from('users')
+        .update({ welcome_email_sent_at: stamp })
+        .eq('id', user.id)
+        .is('welcome_email_sent_at', null)
+        .select('id')
+        .maybeSingle()
+
+      if (claimError) {
+        console.error('[auth/callback] welcome claim failed:', claimError.message)
+      } else if (claimed) {
+        // Ganamos la carrera — disparamos el welcome. Awaited (no
+        // fire-and-forget) porque si falla queremos rollback del claim
+        // para permitir retry. Latencia extra aceptable — AgentMail < 1s.
+        const sendResult = await sendWelcomeEmail({
+          userEmail: user.email,
+          userName,
+          origin,
+        })
+
+        if (!sendResult.ok) {
+          if (sendResult.reason !== 'not_configured') {
+            console.warn(
+              '[auth/callback] welcome email not sent:',
+              sendResult.reason
+            )
+          }
+          // Rollback del claim SOLO si nuestro stamp sigue ahí (no lo
+          // sobreescribió nadie). Permite que un retry futuro vuelva a
+          // intentar el envío.
+          const { error: rollbackError } = await supabase
+            .from('users')
+            .update({ welcome_email_sent_at: null })
+            .eq('id', user.id)
+            .eq('welcome_email_sent_at', stamp)
+          if (rollbackError) {
+            console.error(
+              '[auth/callback] welcome claim rollback failed:',
+              rollbackError.message
+            )
+          }
+        }
+      }
+      // claimed === null significa que otro callback ya envió el welcome
+      // (o que no existe la fila — poco probable dado el INSERT de arriba).
+      // No hacemos nada: el correo ya salió por el otro path.
+    }
 
     // Check if user has an existing learning path
     const { data: intakeData } = await supabase

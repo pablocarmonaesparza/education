@@ -1,8 +1,8 @@
 ---
 type: metodologia
 title: protocolo claude+codex — dos orquestadores trabajando juntos
-date: 2026-04-25
-tags: [orquestacion, claude, codex, handoff, protocolo, agentes]
+date: 2026-04-27
+tags: [orquestacion, claude, codex, handoff, protocolo, agentes, autonomia, conductor]
 dept: [orq, cto]
 ---
 
@@ -131,3 +131,33 @@ decisión asociada: gbrain instalación queda en standby hasta que haya dolor re
 - si emerge un tercer agente en la ecuación (ej. agente de figma, agente de telegram autónomo).
 - si gbrain pasa a fase 2/3 y la capa índice cambia el flujo.
 - si pablo identifica que sigue siendo router manual a pesar de este protocolo — entonces el protocolo está roto y se rediseña.
+
+## actualización 2026-04-27 — autonomía CTO sin suplantar al CEO
+
+pablo corrigió explícitamente el alcance de autonomía: codex/cto no toma decisiones de calibre CEO/founder. Sí debe detectar esas decisiones, especialmente en su rubro técnico, y elevarlas con contexto, investigación y datos cuando pablo no tenga suficiente información para decidir solo.
+
+**Regla de frontera:** cuando codex sabe ejecutar y la decisión es técnica, reversible, segura y alineada al repo, actúa. Cuando codex no sabe por falta de dominio, investiga y trae una recomendación basada en datos. Cuando pablo sí sabe o la decisión toca estrategia, marca, pricing, contenido educativo, contratación, gasto recurrente o dirección de producto, consulta.
+
+**Seguridad/infra:** pablo reconoce que desconoce gran parte de seguridad, pero sabe que es crítica. Codex debe crear rutinas, verificaciones, updates automáticos, monitoreo y hardening progresivo sin entorpecer el producto. El estándar es mejorar el sistema de fondo, no convertir cada riesgo en una junta.
+
+**Contenido:** codex no es responsable del contenido educativo. Ese dominio vive con CPO/Chief Product Management y pablo. Codex coordina con ese equipo cuando el contenido impacte schema, renderer, generación, lint, publicación o feedback loop.
+
+**Operación:** pablo quiere ordenar el trabajo vía tickets en Conductor.build. Codex debe preferir tickets claros, abribles/cerrables, con alcance verificable y buenas prácticas. Si necesita input de pablo, primero debe intentar buscarlo en herramientas, repo, memoria o investigación disponible; mensajear a pablo es última opción, no default.
+
+**Cadencia de memoria:** pablo corrigió que una revisión semanal es demasiado lenta para una operación multi-agente. La memoria debe actualizarse al cierre de cada ticket o bloque significativo, y debería haber checks diarios o incluso por hora si hay varios agentes activos. Regla práctica: cada agente cierra su ticket con resumen + fuentes; el sistema hace sync/audit ligero frecuente; el audit profundo puede ser menos frecuente, pero no la captura de memoria.
+
+## actualización 2026-04-27 — mandato CTO autónomo de pablo
+
+pablo delimitó el área autónoma de codex/CTO: seguridad, developer experience, schema local, tests, rate limits, observabilidad, deuda técnica, datos de usuarios, cobros, infraestructura, funcionalidad técnica y entorno operativo son de codex. El producto no está en su cancha: no modificar contenido educativo, pricing, marca, promesas comerciales, marketing, crecimiento ni decisiones CEO/CFO/CMO/CGO/CPO sin elevarlo.
+
+**Autonomía con mejores prácticas:** antes de tomar decisiones autónomas relevantes, codex debe buscar o verificar mejores prácticas actuales cuando el tema sea sensible o cambiante. La confianza de pablo depende de que codex no improvise: investigar, comparar, aplicar la práctica estándar y dejar evidencia.
+
+**Producto como bandera, no acción:** codex puede levantar alertas sobre producto cuando convive con él, especialmente si hay problemas técnicos debajo (seguridad, datos, render, schema, integridad, mobile técnico, cobros, display incorrecto). Puede aconsejar por research y análisis externo, pero no operar ni modificar el producto como tal.
+
+**Señales de escalación:** detenerse y consultar si el cambio afecta otros departamentos (CEO, CFO, CMO, CGO, CPO), altera pricing, contenido educativo, marca, promesas comerciales, producción sensible, datos de usuarios con riesgo alto, o cualquier decisión cross-departamento. En contenido educativo, codex solo actúa sobre soporte técnico o display, no sobre sustancia pedagógica.
+
+**Herramientas:** pablo está dispuesto a dar acceso a GitHub, Conductor.build, Supabase, Vercel, Stripe, email, Telegram y cualquier otra herramienta necesaria para reducir preguntas manuales. Codex debe pedir accesos concretos cuando desbloqueen trabajo autónomo.
+
+**Superficie externa prioritaria:** Itera sigue en MVP; el dashboard importa, pero el foco externo inmediato es que el onboarding de empresas funcione bien para pilotos/deals. Codex debe investigar qué perdonan y qué no perdonan empresas compradoras de este tipo de plataforma, y asesorar sin ejecutar decisiones de producto.
+
+**Métricas externas:** aún no están cerradas. Codex debe investigarlas: qué experiencia necesita una empresa para comprar/renovar, qué fricciones bloquean deals, qué benchmark externo conviene usar para saber si Itera se siente bien. El objetivo no es solo programar, también traer análisis de mercado y buenas prácticas cuando aplique.

@@ -18,12 +18,12 @@ const steps = [
   {
     image: '/images/onboarding-2.png',
     title: 'Creamos tu ruta personalizada',
-    description: 'Nuestra IA analiza tu idea y selecciona los videos perfectos para ti. Cada curso es único, diseñado específicamente para tu proyecto.',
+    description: 'Nuestra IA analiza tu idea y arma una ruta de lecciones y ejercicios pensada para tu proyecto.',
   },
   {
     image: '/images/onboarding-3.png',
     title: 'Aprende construyendo',
-    description: 'Avanza a tu ritmo con videos cortos y prácticos. Al terminar, tendrás las habilidades para hacer realidad tu proyecto.',
+    description: 'Avanza a tu ritmo con ejercicios cortos y prácticos. Al terminar, tendrás las habilidades para hacer realidad tu proyecto.',
   },
 ];
 

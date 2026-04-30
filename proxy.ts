@@ -1,7 +1,27 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
+const protectedRoutes = [
+  '/dashboard',
+  '/intake',
+  '/onboarding',
+  '/projectDescription',
+  '/projectContext',
+  '/paywall',
+  '/courseCreation',
+]
+
+const premiumRoutes = ['/api/generate-course']
+
+function matchesRoute(pathname: string, routes: string[]) {
+  return routes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
+}
+
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  const isProtected = matchesRoute(pathname, protectedRoutes)
+  const isPremium = matchesRoute(pathname, premiumRoutes)
+
   try {
     // Validate environment variables
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -9,7 +29,11 @@ export async function proxy(request: NextRequest) {
 
     if (!supabaseUrl || !supabaseAnonKey) {
       console.error('Missing Supabase environment variables')
-      // Allow request to continue if env vars are missing (development)
+      if (isProtected || isPremium) {
+        const loginUrl = new URL('/auth/login', request.url)
+        loginUrl.searchParams.set('error', 'auth_config_missing')
+        return NextResponse.redirect(loginUrl)
+      }
       return NextResponse.next()
     }
 
@@ -54,24 +78,6 @@ export async function proxy(request: NextRequest) {
     // así que /dashboard solo necesita auth, no subscription. El onboarding
     // (projectDescription/projectContext) y /paywall están aquí porque son
     // post-signup flow; si cae aquí sin cookie, mándalo a login primero.
-    const protectedRoutes = [
-      '/dashboard',
-      '/intake',
-      '/onboarding',
-      '/projectDescription',
-      '/projectContext',
-      '/paywall',
-      '/courseCreation',
-    ]
-    const { pathname } = request.nextUrl
-
-    // A route is protected if the pathname equals it exactly OR starts with
-    // a trailing slash. This avoids accidentally protecting sibling routes
-    // like /dashboardAlpha that merely share a prefix.
-    const isProtected = protectedRoutes.some(
-      (route) => pathname === route || pathname.startsWith(`${route}/`),
-    )
-
     // If the user is not authenticated and trying to access a protected route, redirect to login
     if (!user && isProtected) {
       const loginUrl = new URL('/auth/login', request.url)
@@ -96,13 +102,6 @@ export async function proxy(request: NextRequest) {
     // el mismatch entre tier='personalized' (webhook) vs PAID_TIER='premium'
     // (lib/stripe/config.ts) que Finance está por arreglar en un commit
     // aparte — este gate funciona igual antes y después del fix.
-    const premiumRoutes = ['/api/generate-course']
-    const isPremium = premiumRoutes.some(
-      // match exacto O prefijo con '/' — intencionalmente NO matchea
-      // '/api/generate-course-full' porque NO empieza con '/api/generate-course/'.
-      (route) => pathname === route || pathname.startsWith(`${route}/`),
-    )
-
     if (user && isPremium) {
       const { data: profile, error: profileError } = await supabase
         .from('users')
@@ -143,8 +142,19 @@ export async function proxy(request: NextRequest) {
     // Log the error for debugging
     console.error('Proxy error:', e)
 
-    // If we're on a protected route and there's an error, allow through
-    // Let the client-side handle auth state rather than creating redirect loops
+    if (isPremium && pathname.startsWith('/api/')) {
+      return NextResponse.json(
+        { error: 'auth_check_failed', message: 'No pudimos validar tu sesión.' },
+        { status: 401 },
+      )
+    }
+
+    if (isProtected || isPremium) {
+      const loginUrl = new URL('/auth/login', request.url)
+      loginUrl.searchParams.set('error', 'auth_check_failed')
+      return NextResponse.redirect(loginUrl)
+    }
+
     return NextResponse.next()
   }
 }

@@ -59,7 +59,7 @@ export default function TermsPage() {
               </Body>
               <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300">
                 <li>Generación de cursos personalizados basados en proyectos específicos del usuario</li>
-                <li>Acceso a contenido educativo en formato de video</li>
+                <li>Acceso a lecciones y ejercicios interactivos</li>
                 <li>Seguimiento de progreso y gamificación</li>
                 <li>Herramientas de aprendizaje interactivas</li>
                 <li>Soporte y tutoría mediante chat con IA</li>
@@ -122,7 +122,7 @@ export default function TermsPage() {
               </Body>
               <Subtitle className="mb-3">4.2 Otros Servicios</Subtitle>
               <ul className="list-disc list-inside space-y-2 ml-4 text-ink dark:text-gray-300">
-                <li><strong>Stripe y MercadoPago:</strong> procesamiento de pagos</li>
+                <li><strong>Stripe:</strong> procesamiento de pagos</li>
                 <li><strong>Supabase:</strong> almacenamiento de datos y autenticación</li>
                 <li><strong>Servicios de IA:</strong> personalización del aprendizaje</li>
               </ul>
@@ -161,9 +161,9 @@ export default function TermsPage() {
             <Headline className="mb-4">6. pagos y facturación</Headline>
             <Card variant="neutral" padding="md" className="mb-4">
               <Body className="mb-3">
-                Los precios se muestran en la plataforma. Los pagos se procesan a través de Stripe y MercadoPago. 
-                No almacenamos información completa de tarjetas de crédito. Los reembolsos se consideran caso por caso 
-                dentro de los primeros 14 días de la compra.
+                Los precios se muestran en la plataforma. Los pagos se procesan a través de Stripe. No almacenamos
+                información completa de tarjetas de crédito. Los reembolsos se consideran caso por caso dentro de
+                los primeros 14 días de la compra.
               </Body>
             </Card>
           </section>

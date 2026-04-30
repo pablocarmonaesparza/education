@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockup zigzag — Dashboard Itera</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f9fafb;
+      color: #4b4b4b;
+      padding: 32px 0 96px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #777;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 24px;
+    }
+    .controls {
+      max-width: 600px;
+      margin: 0 auto 32px;
+      padding: 16px;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+    }
+    .control-row label { min-width: 110px; color: #4b4b4b; }
+    .control-row input[type="range"] { flex: 1; }
+    .control-row .value {
+      min-width: 40px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      color: #1472FF;
+      font-weight: 600;
+    }
+    .demo {
+      max-width: 100%;
+      margin: 0 auto;
+      position: relative;
+    }
+    .lesson-row {
+      position: relative;
+      width: 100%;
+      height: 96px;
+    }
+    .lesson-card {
+      position: absolute;
+      top: 0;
+      width: 220px;
+      padding: 16px;
+      border-radius: 16px;
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-bottom: 4px solid #d1d5db;
+      transition: left 0.2s ease;
+    }
+    .lesson-card.current {
+      background: #1472FF;
+      border-color: #1472FF;
+      border-bottom-color: #0E5FCC;
+      color: white;
+    }
+    .lesson-card.completed {
+      background: #22c55e;
+      border-color: #22c55e;
+      border-bottom-color: #16a34a;
+      color: white;
+    }
+    .lesson-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .lesson-card .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-bottom-width: 2px;
+    }
+    .lesson-card.current .pill,
+    .lesson-card.completed .pill {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: white;
+    }
+    .pill-row { display: flex; justify-content: flex-end; }
+    .connector {
+      position: absolute;
+      top: 96px;
+      left: 0;
+      width: 100%;
+      height: 32px;
+      pointer-events: none;
+    }
+    /* Section container responds to viewport */
+    .demo-mobile { width: min(375px, 100%); }
+    .demo-desktop { width: min(900px, 100%); margin-top: 64px; }
+    .label {
+      max-width: 900px;
+      margin: 32px auto 12px;
+      padding: 0 16px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #777;
+    }
+    .formula {
+      max-width: 900px;
+      margin: 16px auto;
+      padding: 12px 16px;
+      background: #1f2937;
+      color: #e5e7eb;
+      border-radius: 8px;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>mockup zigzag — onda senoidal lenta</h1>
+  <p class="subtitle">offset(idx) = sin(idx · π / period) · amplitude</p>
+
+  <div class="controls">
+    <div class="control-row">
+      <label>período (lecciones por ciclo)</label>
+      <input type="range" id="period" min="4" max="14" value="8" step="1" />
+      <span class="value" id="periodVal">8</span>
+    </div>
+    <div class="control-row">
+      <label>amplitud mobile (px)</label>
+      <input type="range" id="ampMobile" min="0" max="80" value="40" step="5" />
+      <span class="value" id="ampMobileVal">40</span>
+    </div>
+    <div class="control-row">
+      <label>amplitud desktop (px)</label>
+      <input type="range" id="ampDesktop" min="0" max="320" value="220" step="10" />
+      <span class="value" id="ampDesktopVal">220</span>
+    </div>
+  </div>
+
+  <div class="label">375px (mobile)</div>
+  <div class="demo demo-mobile" id="demoMobile"></div>
+
+  <div class="label">900px (desktop)</div>
+  <div class="demo demo-desktop" id="demoDesktop"></div>
+
+  <div class="formula" id="formulaOut"></div>
+
+  <script>
+    const TITLES = [
+      'Qué es AI', 'Qué es un LLM', 'Cómo aprende un modelo',
+      'Qué son los tokens', 'Ventana de contexto',
+      'Alucinación: cuándo el modelo inventa', 'Los 4 ingredientes del prompt',
+      'Iterar un prompt', 'Verificar lo que dice el modelo',
+      'Cuándo usar AI y cuándo no', 'Gratis vs pagado: qué cambia',
+      'El bucle del usuario AI-literate',
+    ];
+    const CARD_WIDTH = 220;
+
+    function render(containerId, containerWidth, amplitude) {
+      const container = document.getElementById(containerId);
+      const period = +document.getElementById('period').value;
+      container.innerHTML = '';
+
+      // Center column = (containerWidth - CARD_WIDTH) / 2
+      const centerLeft = (containerWidth - CARD_WIDTH) / 2;
+      const positions = [];
+
+      TITLES.forEach((title, idx) => {
+        const offset = Math.sin((idx * Math.PI) / period) * amplitude;
+        const left = centerLeft + offset;
+        positions.push(left);
+
+        const row = document.createElement('div');
+        row.className = 'lesson-row';
+        row.style.height = idx === TITLES.length - 1 ? '96px' : '128px';
+
+        const card = document.createElement('div');
+        card.className = 'lesson-card';
+        if (idx === 0) card.className += ' current';
+        card.style.left = `${left}px`;
+        card.innerHTML = `
+          <h3>${title}</h3>
+          <div class="pill-row"><span class="pill">${idx + 1}/${TITLES.length}</span></div>
+        `;
+        row.appendChild(card);
+
+        // Add connector to next card
+        if (idx < TITLES.length - 1) {
+          const nextOffset = Math.sin(((idx + 1) * Math.PI) / period) * amplitude;
+          const nextLeft = centerLeft + nextOffset;
+          const startX = left + CARD_WIDTH / 2;
+          const endX = nextLeft + CARD_WIDTH / 2;
+          const midX = (startX + endX) / 2;
+          const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          svg.setAttribute('class', 'connector');
+          svg.setAttribute('viewBox', `0 0 ${containerWidth} 32`);
+          svg.setAttribute('preserveAspectRatio', 'none');
+          svg.style.width = `${containerWidth}px`;
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', `M ${startX} 0 Q ${midX} 16 ${endX} 32`);
+          path.setAttribute('fill', 'none');
+          path.setAttribute('stroke', '#d1d5db');
+          path.setAttribute('stroke-width', '3');
+          path.setAttribute('stroke-linecap', 'round');
+          path.setAttribute('stroke-dasharray', '6 6');
+          svg.appendChild(path);
+          row.appendChild(svg);
+        }
+
+        container.appendChild(row);
+      });
+
+      return positions;
+    }
+
+    function renderAll() {
+      const period = +document.getElementById('period').value;
+      const ampMobile = +document.getElementById('ampMobile').value;
+      const ampDesktop = +document.getElementById('ampDesktop').value;
+      document.getElementById('periodVal').textContent = period;
+      document.getElementById('ampMobileVal').textContent = ampMobile;
+      document.getElementById('ampDesktopVal').textContent = ampDesktop;
+
+      const mobilePositions = render('demoMobile', 375, ampMobile);
+      const desktopPositions = render('demoDesktop', 900, ampDesktop);
+
+      // Show formula output for the first 14 lessons (mobile)
+      const offsets = TITLES.map((_, idx) =>
+        (Math.sin((idx * Math.PI) / period) * ampMobile).toFixed(0)
+      );
+      document.getElementById('formulaOut').textContent =
+        `período = ${period} · amplitud mobile = ${ampMobile}px\n` +
+        `offset por lección (mobile, en px desde centro):\n` +
+        offsets.map((o, i) => `  ${String(i + 1).padStart(2, ' ')}. ${TITLES[i].padEnd(38, ' ')} → ${o > 0 ? '+' : ''}${o}px`).join('\n');
+    }
+
+    document.getElementById('period').addEventListener('input', renderAll);
+    document.getElementById('ampMobile').addEventListener('input', renderAll);
+    document.getElementById('ampDesktop').addEventListener('input', renderAll);
+
+    renderAll();
+  </script>
+</body>
+</html>

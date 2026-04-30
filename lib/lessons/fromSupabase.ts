@@ -135,18 +135,25 @@ export async function fetchLectureSlides(lectureId: string): Promise<SlideRow[]>
  *
  * If a slide's content is malformed, the frontend renders a fallback. See
  * ExperimentLesson error boundary.
+ *
+ * `id` se propaga (extra al shape declarado de Step) para que SlideFlagButton
+ * pueda referenciar el slide al reportarlo via /api/slides/[id]/flag.
+ * El cast pasa por `unknown` porque Step es una unión discriminada y agregar
+ * `id` no se prueba contra cada miembro — el contrato real lo garantiza el
+ * lint de slides + el CHECK constraint en DB.
  */
 export function slideRowToStep(row: SlideRow): Step {
   const kind = row.kind as Step['kind'];
   const content = row.content ?? {};
-  return { kind, ...(content as Record<string, unknown>) } as Step;
+  const merged = {
+    id: row.id,
+    kind,
+    ...(content as Record<string, unknown>),
+  };
+  return merged as unknown as Step;
 }
 
 export async function fetchLectureAsSteps(lectureId: string): Promise<Step[]> {
   const rows = await fetchLectureSlides(lectureId);
-  // Anexamos el `id` del slide al Step (extra al shape declarado) para que
-  // SlideFlagButton pueda referenciarlo al reportar via /api/slides/[id]/flag.
-  // slideRowToStep queda puro: la mezcla del id se hace acá para no inflar
-  // la API que ya usan callers que no necesitan flagging.
-  return rows.map((row) => ({ id: row.id, ...slideRowToStep(row) } as Step));
+  return rows.map(slideRowToStep);
 }

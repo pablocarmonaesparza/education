@@ -308,10 +308,10 @@ ${userContext.projectIdea}
 
 PROGRESO ACTUAL:
 - Fase actual: ${userContext.currentPhase}
-- Video/clase actual: ${userContext.currentVideo ? `"${userContext.currentVideo.title}" en la fase "${userContext.currentVideo.phase}"` : 'Todos completados'}
-- Videos completados: ${userContext.completedVideos}/${userContext.totalVideos}
+- Lección actual: ${userContext.currentVideo ? `"${userContext.currentVideo.title}" en la fase "${userContext.currentVideo.phase}"` : 'Todas completadas'}
+- Lecciones completadas: ${userContext.completedVideos}/${userContext.totalVideos}
 
-CLASES/VIDEOS YA COMPLETADOS:
+LECCIONES YA COMPLETADAS:
 ${completedVideosText}
     `.trim();
 
@@ -424,7 +424,7 @@ ${completedVideosText}
           </div>
           {userContext && (
             <p className="text-xs text-ink-muted dark:text-gray-400">
-              {userContext.completedVideos}/{userContext.totalVideos} videos
+              {userContext.completedVideos}/{userContext.totalVideos} lecciones
             </p>
           )}
         </div>

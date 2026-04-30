@@ -138,7 +138,7 @@ export async function generateSearchQueriesWithAI(
     messages: [
       {
         role: 'system',
-        content: `Eres un motor de búsqueda semántica. Tu trabajo es generar queries de búsqueda en ESPAÑOL para encontrar los videos más relevantes de un syllabus educativo sobre IA y automatización.
+        content: `Eres un motor de búsqueda semántica. Tu trabajo es generar queries de búsqueda en ESPAÑOL para encontrar las lecciones más relevantes de un syllabus educativo sobre IA y automatización.
 
 TAXONOMÍA DEL SYLLABUS DISPONIBLE:
 ${taxonomy}
@@ -207,10 +207,10 @@ export function formatSyllabusForPrompt(docs: SyllabusDocument[]): string {
 }
 
 /**
- * Fetch the FULL video catalog from Supabase.
- * At ~461 videos × ~180 chars each = ~83K chars (~21K tokens),
- * this fits comfortably in GPT-4o's 128K context window.
- * This gives the model complete visibility to select the best 50-70 videos.
+ * Fetch the FULL lesson catalog from Supabase.
+ * At ~100 lessons × rich metadata, this fits comfortably in GPT-4o's
+ * context window.
+ * This gives the model complete visibility to select the best lessons.
  */
 export async function fetchFullCatalog(
   supabase: SupabaseClient
@@ -224,10 +224,10 @@ export async function fetchFullCatalog(
 
   if (error || !data) {
     console.error('[rag] Failed to fetch full catalog:', error);
-    throw new Error('Failed to fetch video catalog from database');
+    throw new Error('Failed to fetch lesson catalog from database');
   }
 
-  console.log(`[rag] Fetched full catalog: ${data.length} videos`);
+  console.log(`[rag] Fetched full catalog: ${data.length} lessons`);
 
   return data
     .map(

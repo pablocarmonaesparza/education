@@ -219,34 +219,6 @@ function SignupContent() {
               </p>
             </div>
 
-            {/* Advertencia si Supabase no está configurado */}
-            {isMounted && showSupabaseWarning && (
-              <div className="mb-6 p-4 bg-yellow-50 dark:bg-yellow-900/30 border-2 border-yellow-300 dark:border-yellow-700 rounded-2xl">
-                <div className="flex items-start gap-3">
-                  <svg className="w-6 h-6 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                  <div className="flex-1">
-                    <p className="text-yellow-800 dark:text-yellow-300 text-sm font-bold mb-2">
-                      Base de datos no configurada
-                    </p>
-                    <p className="text-yellow-700 dark:text-yellow-400 text-sm mb-3">
-                      Supabase aún no está configurado. Puedes explorar la plataforma en modo demo.
-                    </p>
-                    <Button
-                      variant="primary"
-                      size="md"
-                      rounded2xl
-                      href="/demo"
-                      className="bg-yellow-500 hover:bg-yellow-600 border-yellow-600"
-                    >
-                      Ver Demo
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Error Message */}
             {error && (
               <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-800 rounded-2xl">

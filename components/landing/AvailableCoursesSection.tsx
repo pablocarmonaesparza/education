@@ -172,7 +172,7 @@ interface CarouselRowProps {
 function CarouselRow({ courses, direction, duration, isPaused, onSelectCourse }: CarouselRowProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
   const lastTimeRef = useRef<number>(0);
   const [, forceUpdate] = useState(0);
   const [singleSetWidth, setSingleSetWidth] = useState(0);

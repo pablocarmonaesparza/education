@@ -10,17 +10,17 @@ export function getCourseGenerationPrompt(
 ): string {
   return `Eres un experto en educación y diseño instruccional para IA y automatización.
 
-Tu trabajo es crear un PLAN DE APRENDIZAJE DETALLADO video por video para el usuario.
+Tu trabajo es crear un PLAN DE APRENDIZAJE DETALLADO lección por lección para el usuario.
 
 ═══════════════════════════════════════════════════════════════
 CONTEXTO - SYLLABUS DISPONIBLE
 ═══════════════════════════════════════════════════════════════
 
-Tienes acceso al CATÁLOGO COMPLETO del curso (~461 videos en 19 secciones). Tu trabajo es seleccionar los 50-70 más relevantes para el proyecto del usuario:
+Tienes acceso al CATÁLOGO COMPLETO del curso. Tu trabajo es seleccionar las lecciones más relevantes para el proyecto del usuario:
 
-<syllabus_videos>
+<syllabus_lessons>
 ${syllabusContext}
-</syllabus_videos>
+</syllabus_lessons>
 
 ═══════════════════════════════════════════════════════════════
 PROYECTO DEL USUARIO
@@ -38,48 +38,47 @@ INSTRUCCIONES CRÍTICAS
    - Qué tecnologías necesita (APIs, automatización, bases de datos, etc.)
    - Nivel de experiencia implícito
 
-2. **SELECCIONA** entre 50-70 videos específicos del syllabus que sean MÁS relevantes.
-   ⚠️ MÍNIMO ABSOLUTO: 50 videos. Si generas menos de 50, el resultado es INVÁLIDO.
-   ⚠️ Cada fase debe tener entre 5 y 10 videos. NO generes fases con solo 2-3 videos.
+2. **SELECCIONA** las lecciones específicas del syllabus que sean MÁS relevantes.
+   ⚠️ Cada fase debe tener suficiente profundidad. NO generes fases con solo 1-2 lecciones si el proyecto requiere más contexto.
 
 3. **ORGANIZA** en 8-12 FASES LÓGICAS de aprendizaje:
-   - FASE 1: FUNDAMENTOS (conceptos base necesarios) — ~6-8 videos
-   - FASE 2: HERRAMIENTAS (setup de ambiente y APIs) — ~6-8 videos
-   - FASE 3: CONSTRUCCIÓN (implementación paso a paso) — ~8-10 videos
-   - FASE 4: INTEGRACIÓN (conectar con sistemas externos) — ~6-8 videos
-   - Etc. Cada fase debe tener al menos 5 videos.
+   - FASE 1: FUNDAMENTOS (conceptos base necesarios) — ~4-8 lecciones
+   - FASE 2: HERRAMIENTAS (setup de ambiente y APIs) — ~4-8 lecciones
+   - FASE 3: CONSTRUCCIÓN (implementación paso a paso) — ~5-10 lecciones
+   - FASE 4: INTEGRACIÓN (conectar con sistemas externos) — ~4-8 lecciones
+   - Etc. Cada fase debe tener una intención clara.
 
-4. **ORDEN SECUENCIAL GLOBAL**: Los videos deben estar numerados del 1 al N de forma continua, NO reiniciar en cada fase
+4. **ORDEN SECUENCIAL GLOBAL**: Las lecciones deben estar numeradas del 1 al N de forma continua, NO reiniciar en cada fase
 
-5. **PARA CADA VIDEO** incluye:
+5. **PARA CADA LECCIÓN** incluye:
    - \`order\`: Número secuencial global (1, 2, 3... N)
    - \`section\`: Sección original del syllabus
    - \`subsection\`: Subsección del syllabus
-   - \`description\`: Descripción exacta del video del syllabus
-   - \`duration\`: Duración exacta del video
+   - \`description\`: Descripción exacta de la lección del syllabus
+   - \`duration\`: Duración estimada si está disponible
 
 6. **PARA CADA FASE** incluye:
    - \`phase_number\`: 1, 2, 3...
    - \`phase_name\`: Nombre descriptivo
-   - \`phase_duration\`: Suma de duración de videos
+   - \`phase_duration\`: Suma de duración estimada
    - \`description\`: Por qué esta fase es importante para el proyecto del usuario
-   - \`videos\`: Array de videos de esa fase
+   - \`videos\`: Array de lecciones de esa fase. Mantén la clave \`videos\` por compatibilidad con el dashboard actual.
 
 ═══════════════════════════════════════════════════════════════
 REGLAS ESTRICTAS
 ═══════════════════════════════════════════════════════════════
 
-❌ NO inventes videos que no existan en el syllabus
+❌ NO inventes lecciones que no existan en el syllabus
 ❌ NO uses descripciones genéricas - todo debe ser específico al proyecto
 ❌ NO agrupes por secciones del syllabus - agrupa por FASES LÓGICAS DE APRENDIZAJE
 ❌ NO reinicies el order en cada fase - debe ser secuencial global
-❌ NO generes menos de 50 videos en total — esto invalida el resultado
-❌ NO generes fases con menos de 5 videos — cada fase necesita profundidad
+❌ NO generes una ruta superficial si el proyecto necesita más pasos
+❌ NO generes fases de relleno solo para llegar a un número
 ✅ SÍ usa los datos exactos del syllabus (section, subsection, description, duration)
-✅ SÍ explica específicamente por qué cada video importa para ESTE proyecto
-✅ SÍ ordena los videos en la secuencia pedagógica óptima
+✅ SÍ explica específicamente por qué cada lección importa para ESTE proyecto
+✅ SÍ ordena las lecciones en la secuencia pedagógica óptima
 ✅ SÍ asegúrate de que el plan sea accionable y completo
-✅ SÍ genera TODOS los videos de cada fase — no te detengas ni resumas
+✅ SÍ genera TODAS las lecciones de cada fase — no te detengas ni resumas
 
 ═══════════════════════════════════════════════════════════════
 FORMATO DE RESPUESTA (JSON ESTRICTO)
@@ -91,7 +90,7 @@ Responde ÚNICAMENTE con un JSON válido. Sin explicaciones antes o después.
   "success": true,
   "course": {
     "user_project": "Resumen en 1 frase del proyecto del usuario",
-    "total_videos": 61,
+    "total_videos": 42,
     "estimated_hours": "15-18 horas",
     "phases": [
       {
@@ -117,10 +116,10 @@ Responde ÚNICAMENTE con un JSON válido. Sin explicaciones antes o después.
       "Dedica 2-3 horas diarias para completar en 1 semana"
     ],
     "next_steps": [
-      "Comenzar con video #1: Panorama de LLMs"
+      "Comenzar con la lección #1: Panorama de LLMs"
     ]
   }
 }
 
-IMPORTANTE: El ejemplo solo muestra 1 fase con 6 videos. Tu respuesta debe tener 8-12 fases con 5-10 videos CADA UNA, totalizando 50-70 videos.`;
+IMPORTANTE: El ejemplo solo muestra 1 fase con 6 lecciones. Tu respuesta debe tener una ruta completa, específica al proyecto y sin relleno.`;
 }

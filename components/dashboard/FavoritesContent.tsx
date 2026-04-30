@@ -16,7 +16,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
   const [expandedPhases, setExpandedPhases] = useState<Set<string>>(new Set());
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Extraer y organizar videos por fases usando useMemo
+  // Extraer y organizar lecciones por fases usando useMemo
   const videosByPhase = useMemo(() => {
     const result: Record<string, any[]> = {};
     
@@ -40,7 +40,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
         });
       }
     } catch (error) {
-      console.error('Error extracting videos:', error);
+      console.error('Error extracting lessons:', error);
     }
     
     return result;
@@ -85,9 +85,9 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
     <div className="min-h-screen bg-white dark:bg-gray-800 p-6">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-extrabold text-ink dark:text-white mb-2 tracking-tight">videos favoritos</h1>
+        <h1 className="text-3xl font-extrabold text-ink dark:text-white mb-2 tracking-tight">lecciones favoritas</h1>
         <p className="text-ink-muted dark:text-gray-400">
-          Tus videos guardados organizados por fase
+          Tus lecciones guardadas organizadas por fase
         </p>
       </div>
 
@@ -154,7 +154,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
                           )}
                         </Link>
 
-                        {/* Video Info */}
+                        {/* Lesson Info */}
                         <div className="p-4 flex-1 flex flex-col">
                           <div className="mb-auto">
                             <div className="flex items-start justify-between gap-2 mb-2">
@@ -163,7 +163,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
                                 className="flex-1"
                               >
                                 <h3 className="font-semibold text-gray-900 text-sm line-clamp-2 group-hover:text-primary transition-colors">
-                                  {video.description || `Video ${video.order}`}
+                                  {video.description || `Lección ${video.order}`}
                                 </h3>
                               </Link>
                             </div>
@@ -188,7 +188,7 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
                               href={`/dashboard/my-path/video/${phaseNumber}/${videoOrder}`}
                               className="text-xs text-primary font-medium hover:text-primary-dark flex items-center gap-1"
                             >
-                              Ver video
+                              Ver lección
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                               </svg>
@@ -239,8 +239,8 @@ export default function FavoritesContent({ learningPath }: FavoritesContentProps
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           }
-          title="Aún no tienes videos favoritos"
-          description="Marca videos como favoritos mientras aprendes para crear tu propia colección personalizada y acceder a ellos rápidamente."
+          title="Aún no tienes lecciones favoritas"
+          description="Marca lecciones como favoritas mientras aprendes para crear tu propia colección personalizada y acceder a ellas rápidamente."
           action={
             <Button variant="primary" size="md" href="/dashboard/my-path">
               Explorar mi ruta

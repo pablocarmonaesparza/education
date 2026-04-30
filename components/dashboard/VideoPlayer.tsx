@@ -20,8 +20,7 @@ export default function VideoPlayer({
   onProgress,
   onComplete,
 }: VideoPlayerProps) {
-  // Placeholder for embedded video player logic
-  // In a real application, this would embed YouTube/Vimeo iframes
+  // Legacy placeholder. The current product uses interactive lessons.
   // For now, simulate progress and completion
   const handleFakeProgress = () => {
     // Simulate some progress after a delay
@@ -35,10 +34,10 @@ export default function VideoPlayer({
 
   return (
     <div className="aspect-video w-full bg-black flex flex-col items-center justify-center text-white text-lg p-4">
-      <p className="text-xl font-bold mb-2">Video Player Placeholder</p>
+      <p className="text-xl font-bold mb-2">Lección próximamente disponible</p>
       <p className="text-base mb-1">Title: {title}</p>
       <p className="text-base mb-4">URL: {videoUrl}</p>
-      {videoId && <p className="text-sm text-gray-400">Video ID: {videoId} (Platform: {platform})</p>}
+      {videoId && <p className="text-sm text-gray-400">ID: {videoId} (fuente legacy: {platform})</p>}
       <div className="flex gap-4 mt-4">
         <Button variant="primary" size="md" onClick={handleFakeProgress}>Simulate Progress</Button>
         <Button variant="completado" size="md" onClick={handleFakeComplete}>Simulate Complete</Button>

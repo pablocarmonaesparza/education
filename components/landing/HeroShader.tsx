@@ -39,6 +39,9 @@ interface Shock {
 const SPACING = 44; // px between grid nodes
 const JITTER = 16; // per-node random offset
 const RADIUS = 2.6; // base dot radius
+const IDLE_AMPLITUDE_MULTIPLIER = 2.1;
+const IDLE_SPEED_MULTIPLIER = 1.6;
+const IDLE_AFTER_MS = 900;
 
 // Light mode: white bg, #f2f2f2 dots (per Pablo's final call in Claude Design chat)
 // Dark mode: gray-800 bg (matches AnimatedBackground elsewhere on the page),
@@ -71,6 +74,7 @@ export default function HeroShader() {
     let particles: Particle[] = [];
     const shocks: Shock[] = [];
     const mouse = { x: -9999, y: -9999, down: false, active: false };
+    let lastPointerMoveAt = performance.now();
     let animationId = 0;
 
     // Itera's tailwind config uses `darkMode: "media"`, so dark mode follows
@@ -135,6 +139,9 @@ export default function HeroShader() {
       mouse.x = x;
       mouse.y = y;
       mouse.active = x >= 0 && y >= 0 && x <= W && y <= H;
+      if (mouse.active) {
+        lastPointerMoveAt = performance.now();
+      }
     };
     const onLeave = () => {
       mouse.active = false;
@@ -206,22 +213,29 @@ export default function HeroShader() {
       ctx!.fillStyle = palette.bg;
       ctx!.fillRect(0, 0, W, H);
 
-      const time = now / 1000;
+      const baseTime = now / 1000;
       const mouseRadius = 240;
       const mouseRadius2 = mouseRadius * mouseRadius;
+      const isIdle =
+        !mouse.down &&
+        (!mouse.active || now - lastPointerMoveAt > IDLE_AFTER_MS);
+      const idleAmp = isIdle ? IDLE_AMPLITUDE_MULTIPLIER : 1;
+      const time = baseTime * (isIdle ? IDLE_SPEED_MULTIPLIER : 1);
 
       for (let k = 0; k < particles.length; k++) {
         const p = particles[k];
 
         // Idle drift — multi-harmonic wave motion
         const breathX =
-          Math.sin(time * 1.1 + p.phase) * 5.0 +
-          Math.cos(time * 0.55 + p.phase * 1.7 + p.hy * 0.006) * 3.5 +
-          Math.sin(time * 0.35 + p.hx * 0.004) * 2.0;
+          (Math.sin(time * 1.1 + p.phase) * 5.0 +
+            Math.cos(time * 0.55 + p.phase * 1.7 + p.hy * 0.006) * 3.5 +
+            Math.sin(time * 0.35 + p.hx * 0.004) * 2.0) *
+          idleAmp;
         const breathY =
-          Math.cos(time * 0.95 + p.phase * 1.3) * 5.0 +
-          Math.sin(time * 0.6 + p.phase * 0.8 + p.hx * 0.006) * 3.5 +
-          Math.cos(time * 0.3 + p.hy * 0.004) * 2.0;
+          (Math.cos(time * 0.95 + p.phase * 1.3) * 5.0 +
+            Math.sin(time * 0.6 + p.phase * 0.8 + p.hx * 0.006) * 3.5 +
+            Math.cos(time * 0.3 + p.hy * 0.004) * 2.0) *
+          idleAmp;
         const targetX = p.hx + breathX;
         const targetY = p.hy + breathY;
 

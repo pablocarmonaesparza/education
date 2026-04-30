@@ -175,7 +175,7 @@ export default function ProgressBuilder({
       <div className="bg-primary p-6">
         <div className="text-center mb-2">
           <h3 className="text-white font-bold text-xl">Construye tu Proyecto</h3>
-          <p className="text-white/80 text-sm">Cada video te acerca más a tu meta</p>
+          <p className="text-white/80 text-sm">Cada lección te acerca más a tu meta</p>
         </div>
 
         {/* Car SVG Visual */}
@@ -187,7 +187,7 @@ export default function ProgressBuilder({
         <div className="relative">
           <div className="flex justify-between text-xs text-white/80 mb-2">
             <span>{totalProgress}% completado</span>
-            <span>{videosWatched}/{totalVideos} videos</span>
+            <span>{videosWatched}/{totalVideos} lecciones</span>
           </div>
           <ProgressBar value={totalProgress} size="lg" color="white" durationMs={1000} className="h-4" />
         </div>

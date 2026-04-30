@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { stripe } from '@/lib/stripe/config';
+import { enforceRateLimit, rateLimiters } from '@/lib/ratelimit';
 
 /**
  * Stripe Customer Portal session. Redirige al usuario al portal hosted
@@ -15,6 +16,9 @@ import { stripe } from '@/lib/stripe/config';
  */
 export async function POST(req: NextRequest) {
   try {
+    const blocked = await enforceRateLimit(req, rateLimiters.standard);
+    if (blocked) return blocked;
+
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {

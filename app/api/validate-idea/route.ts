@@ -1,8 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
+import { enforceRateLimit, rateLimiters } from '@/lib/ratelimit';
+
+const MAX_IDEA_CHARS = 1200;
+
+function normalizeValidation(value: unknown): { valid: boolean; reason: string } {
+  if (!value || typeof value !== 'object') {
+    return { valid: false, reason: 'No pudimos validar la idea. Intenta de nuevo.' };
+  }
+
+  const record = value as Record<string, unknown>;
+  const valid = record.valid === true;
+  const reason =
+    typeof record.reason === 'string' && record.reason.trim().length > 0
+      ? record.reason.trim().slice(0, 300)
+      : 'No pudimos validar la idea. Intenta de nuevo.';
+
+  return { valid, reason };
+}
 
 export async function POST(req: NextRequest) {
   try {
+    const blocked = await enforceRateLimit(req, rateLimiters.ai);
+    if (blocked) return blocked;
+
     // Verificar que la API key esté configurada
     if (!process.env.OPENAI_API_KEY) {
       console.error('OPENAI_API_KEY is not configured');
@@ -39,6 +60,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const trimmedIdea = idea.trim();
+    if (trimmedIdea.length < 10) {
+      return NextResponse.json(
+        { valid: false, reason: 'Cuéntame un poco más sobre lo que quieres construir.' },
+        { status: 400 }
+      );
+    }
+
+    if (trimmedIdea.length > MAX_IDEA_CHARS) {
+      return NextResponse.json(
+        { valid: false, reason: `La idea debe tener máximo ${MAX_IDEA_CHARS} caracteres.` },
+        { status: 400 }
+      );
+    }
+
     // Validar con ChatGPT-4o-mini
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
@@ -70,7 +106,7 @@ Responde con el JSON sin texto adicional.`,
         },
         {
           role: 'user',
-          content: `Evalúa esta idea de proyecto de manera amable y constructiva: "${idea}"`,
+          content: `Evalúa esta idea de proyecto de manera amable y constructiva: "${trimmedIdea}"`,
         },
       ],
       temperature: 0.3,
@@ -97,7 +133,7 @@ Responde con el JSON sin texto adicional.`,
       );
     }
 
-    return NextResponse.json(validation);
+    return NextResponse.json(normalizeValidation(validation));
   } catch (error: any) {
     console.error('Error validating idea:', error);
     
@@ -118,5 +154,4 @@ Responde con el JSON sin texto adicional.`,
     );
   }
 }
-
 

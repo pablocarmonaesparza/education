@@ -2,30 +2,30 @@
   "section_id": 9,
   "slug": "iterar-codigo",
   "title": "Iterar sobre código con AI",
-  "source": "claude-in-session-v2",
+  "source": "claude-in-session-v4",
   "slides": [
     {
       "order_in_lecture": 1,
       "kind": "mcq",
       "phase": "engage",
       "content": {
-        "prompt": "Tobías le pide a la AI \"hazme una página de login\". Recibe 200 líneas, pero no era lo que quería. Pide \"cámbiala\". Recibe otra versión distinta. Tampoco funciona. ¿Qué pasa?",
+        "prompt": "Tomás pide a la AI 'hazme un login'. Recibe 200 líneas que no le gustan. Pide 'cámbiala'. Recibe otra versión distinta y peor. ¿Qué pasó?",
         "options": [
           {
             "id": 0,
-            "text": "La AI necesita más rondas para entender; hay que seguir diciendo \"cámbiala\" hasta que acierte"
+            "text": "La AI necesita más rondas: hay que insistir 'cámbiala' hasta que acierte"
           },
           {
             "id": 1,
-            "text": "\"Cámbiala\" no dice qué cambiar ni qué conservar, así que la AI regenera desde cero cada vez"
+            "text": "'Cámbiala' no dice qué cambiar ni qué conservar, así que la AI regenera desde cero y pierde lo bueno"
           },
           {
             "id": 2,
-            "text": "El modelo no sirve para código; Tobías necesita uno más caro o más nuevo"
+            "text": "El modelo no sirve para código; necesita uno más caro"
           }
         ],
         "correctId": 1,
-        "explanation": "Iterar con AI no es \"insistir\" ni \"pedirlo diferente\". Es dar **feedback preciso sobre qué cambia y qué se queda**. Sin eso, el modelo regenera desde cero y pierdes el avance anterior. La habilidad real del vibe coder es **formular peticiones específicas**.",
+        "explanation": "Iterar no es 'insistir'. Es **dar feedback preciso sobre qué cambia y qué se queda**. Sin eso, el modelo regenera desde cero y pierdes el avance anterior. La habilidad real del vibe coder es formular peticiones específicas.",
         "xp": 20
       }
     },
@@ -34,70 +34,68 @@
       "kind": "concept",
       "phase": "explore",
       "content": {
-        "title": "Las 3 formas de iterar",
-        "body": "Para refinar código con AI:\n\n- **Pedir cambio específico** (en vez de 'arréglalo' → 'centra el botón')\n- **Apuntar al código exacto** (selecciona la línea/función)\n- **Preguntar antes de cambiar** ('¿qué sugieres?' antes de pedir cambio)\n"
+        "title": "las 3 formas de iterar",
+        "body": "Para refinar código con AI:\n\n- **Cambio específico** ('centra el botón' en vez de 'arréglalo')\n- **Apuntar al código exacto** (selecciona la línea o función)\n- **Preguntar antes de cambiar** ('¿qué sugieres?' antes de pedir el cambio)"
       }
     },
     {
       "order_in_lecture": 3,
       "kind": "concept",
-      "phase": "explore",
+      "phase": "explain",
       "content": {
-        "title": "Usar diffs para control",
-        "body": "Herramientas modernas (Claude Code, Cursor) muestran **diffs** antes de aplicar:\n\n- Ves línea por línea qué cambia\n- Aceptas o rechazas por cambio\n- Si algo no te gusta, rechazas sin perder el resto\n"
+        "title": "el bucle iterar + commit",
+        "body": "Patrón clave: AI cambia, pruebas que funciona, **commit**, siguiente cambio. Si la próxima iteración rompe algo, vuelves al commit. Iterar sin commits es construir en arena."
       }
     },
     {
       "order_in_lecture": 4,
-      "kind": "concept",
-      "phase": "explain",
+      "kind": "code-completion",
+      "phase": "elaborate",
       "content": {
-        "title": "Commits entre iteraciones",
-        "body": "Patrón clave:\n\n1. AI hace un cambio\n2. Pruebas que funciona\n3. **Commit**\n4. Siguiente cambio\n\nSi la siguiente iteración rompe algo, vuelves al commit anterior. Iterar sin commits = construir castillo en arena."
+        "prompt": "Worked example: el botón de tu form no se centra. Completa el verbo del prompt para que la AI sepa qué cambiar y qué dejar quieto:",
+        "codeBefore": "> ",
+        "codeAfter": " el botón submit horizontalmente, deja el resto del form igual",
+        "tokens": [
+          "centra",
+          "borra",
+          "arregla",
+          "mejora"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "El verbo **'centra'** dice qué cambiar y la cláusula 'deja el resto igual' protege lo que ya funciona. 'Arregla' o 'mejora' son vagos: la AI regenera y rompe partes que estaban bien.",
+        "xp": 15
       }
     },
     {
       "order_in_lecture": 5,
-      "kind": "true-false",
-      "phase": "explain",
-      "content": {
-        "prompt": "Verdadero o falso:",
-        "statement": "Si le pides a la AI 'arréglalo' y no funciona, el modelo simplemente es malo.",
-        "answer": false,
-        "explanation": "Falso. 'Arréglalo' es prompt insuficiente. El modelo no ve tu pantalla ni sabe qué específicamente no te gusta. **La responsabilidad del feedback útil es tuya**. Mejor feedback = mejores iteraciones.",
-        "xp": 10
-      }
-    },
-    {
-      "order_in_lecture": 6,
       "kind": "tap-match",
       "phase": "elaborate",
       "content": {
-        "prompt": "Empareja el prompt pobre con una versión mejor:",
+        "prompt": "Empareja el prompt pobre con una versión útil:",
         "pairs": [
           {
             "term": "'Arréglalo'",
-            "def": "'El botón no se centra, debe quedar en medio horizontal'"
+            "def": "'El botón no se centra, déjalo en medio horizontal'"
           },
           {
             "term": "'Hazlo mejor'",
-            "def": "'Cambia el fondo a azul y sube la tipografía a 18px'"
+            "def": "'Cambia el fondo a azul y sube la fuente a 18px'"
           },
           {
             "term": "'Otra vez pero bien'",
-            "def": "'Mantén el diseño pero usa el formato del header en línea 10'"
+            "def": "'Mantén el diseño pero usa el formato del header'"
           },
           {
             "term": "'No funciona'",
             "def": "'Al enviar el form sale error X en consola'"
           }
         ],
-        "explanation": "Cada prompt específico **le da al modelo qué cambiar y qué mantener**. La habilidad real del vibe coder es formular peticiones precisas.",
+        "explanation": "Cada prompt específico le da al modelo **qué cambiar y qué mantener**. La diferencia entre frustración y avance está en el detalle del feedback, no en el modelo.",
         "xp": 15
       }
     },
     {
-      "order_in_lecture": 7,
+      "order_in_lecture": 6,
       "kind": "multi-select",
       "phase": "elaborate",
       "content": {
@@ -105,7 +103,7 @@
         "options": [
           {
             "id": 0,
-            "text": "Commits después de cada cambio que funciona"
+            "text": "Commit después de cada cambio que funciona"
           },
           {
             "id": 1,
@@ -117,7 +115,7 @@
           },
           {
             "id": 3,
-            "text": "Pedir 5 cambios en el mismo prompt"
+            "text": "Pedir 5 cambios distintos en el mismo prompt"
           },
           {
             "id": 4,
@@ -129,8 +127,27 @@
           1,
           2
         ],
-        "explanation": "Commits + precisión + prueba = ciclo sano. Bombardear 5 cambios o no leer son antipatrones. **Iteración controlada** gana a velocidad caótica.",
+        "explanation": "Commit + precisión + prueba = ciclo sano. Bombardear cinco cambios en un prompt o aceptar sin leer son antipatrones. **Iteración controlada** gana a velocidad caótica.",
         "xp": 15
+      }
+    },
+    {
+      "order_in_lecture": 7,
+      "kind": "code-completion",
+      "phase": "elaborate",
+      "content": {
+        "prompt": "La AI propuso un cambio multi-archivo. Antes de aceptar quieres ver qué tocaría exactamente. Completa el subcomando que muestra la diferencia:",
+        "codeBefore": "$ git ",
+        "codeAfter": " --staged",
+        "tokens": [
+          "diff",
+          "log",
+          "init",
+          "commit"
+        ],
+        "correctTokenIndex": 0,
+        "explanation": "**git diff --staged** te muestra línea por línea qué cambia el commit que está por entrar. Verlo antes de aceptar es el seguro contra sustos: si algo no encaja, lo rechazas sin perder el resto.",
+        "xp": 20
       }
     },
     {
@@ -146,7 +163,7 @@
           },
           {
             "id": 1,
-            "text": "Un cambio a la vez: pedir, probar, commit. Luego el siguiente. Si algo rompe, vuelves al commit anterior y cambias de enfoque"
+            "text": "Un cambio a la vez: pedir, probar, commit. Si algo rompe, vuelves al commit anterior y cambias de enfoque"
           },
           {
             "id": 2,
@@ -154,7 +171,7 @@
           }
         ],
         "correctId": 1,
-        "explanation": "**Pequeños pasos + commits** es la disciplina que convierte vibe coding de frustrante a productivo. Tres cambios juntos sin probar = debug dolor cuando algo falla.",
+        "explanation": "**Pequeños pasos + commits** convierte vibe coding de frustrante a productivo. Tres cambios juntos sin probar termina en debug doloroso cuando uno falla y no sabes cuál.",
         "xp": 15
       }
     },
@@ -163,7 +180,7 @@
       "kind": "mcq",
       "phase": "evaluate",
       "content": {
-        "prompt": "Tobías vuelve a su login. Ahora pide cambios específicos, prueba cada uno y hace commit. ¿Qué cambia?",
+        "prompt": "Tomás vuelve a su login. Ahora pide cambios específicos, prueba cada uno y hace commit. ¿Qué cambia?",
         "options": [
           {
             "id": 0,
@@ -171,7 +188,7 @@
           },
           {
             "id": 1,
-            "text": "Cada cambio útil se acumula y puede volver al último commit si una iteración rompe algo"
+            "text": "Cada cambio útil queda guardado y puede volver al último commit si una iteración rompe algo"
           },
           {
             "id": 2,
@@ -179,7 +196,7 @@
           }
         ],
         "correctId": 1,
-        "explanation": "Tobías entendió que **vibe coding sin disciplina falla**. Con feedback preciso, pruebas y commits, cada avance queda guardado y experimentar deja de dar miedo. La diferencia está en el método, no en el modelo.",
+        "explanation": "Tomás entendió que **vibe coding sin disciplina falla**. Con feedback preciso, prueba y commit, cada avance se acumula y experimentar deja de dar miedo. La diferencia está en el método, no en el modelo.",
         "xp": 20
       }
     },
@@ -189,8 +206,8 @@
       "phase": "evaluate",
       "content": {
         "emoji": "🔄",
-        "title": "Iteración dominada",
-        "body": "Hoy, en tu próximo prompt a la AI: pide un cambio concreto, prueba, y haz commit antes del siguiente. Ese es el bucle."
+        "title": "iteración dominada",
+        "body": "Ya tienes el bucle: cambio específico, prueba, commit, siguiente. Hoy puedes pedir un ajuste concreto a tu próxima AI y hacer commit antes del siguiente."
       }
     }
   ]

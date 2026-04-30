@@ -31,7 +31,7 @@ interface CourseResult {
  * Full course generation pipeline — replaces the n8n workflow.
  *
  * Steps:
- * 1. RAG search with Cohere reranker to find relevant syllabus videos
+ * 1. RAG search with Cohere reranker to find relevant syllabus lessons
  * 2. OpenAI GPT-4o generates personalized course plan
  * 3. Save to intake_responses
  *
@@ -55,9 +55,9 @@ export async function generateCourseInline(
 
   console.log('[course-gen] Starting inline generation for user:', input.userId);
 
-  // ───── Step 1: Fetch full video catalog ─────
+  // ───── Step 1: Fetch full lesson catalog ─────
   let stepStart = Date.now();
-  console.log('[course-gen] Step 1: Fetching full video catalog');
+  console.log('[course-gen] Step 1: Fetching full lesson catalog');
   const syllabusContext = await fetchFullCatalog(supabase);
   tick('1_fetch_catalog', stepStart);
 
@@ -93,7 +93,7 @@ export async function generateCourseInline(
   console.log(
     '[course-gen] Course plan generated:',
     courseResult.course.total_videos,
-    'videos in',
+    'lessons in',
     courseResult.course.phases.length,
     'phases'
   );
