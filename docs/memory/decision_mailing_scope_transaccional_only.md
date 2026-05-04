@@ -3,7 +3,7 @@ type: decision
 title: mailing itera — scope transaccional-only, sin engagement emails
 date: 2026-04-22
 tags: [mailing, emails, b2b, scope, lifecycle]
-dept: [cpo, cto]
+dept: [producto, desarrollo]
 ---
 
 El scope de Mailing para Itera es **transaccional-only**. Todos los emails de engagement / lifecycle / nurture están descartados. Esta decisión es la aplicación concreta del pivote B2B empresa-first + el descarte explícito de mecánicas B2C de Duolingo (ver `decision_gamification_duolingo_b2b.md` y `gotcha_posicionamiento_empresa_vs_latam.md`).

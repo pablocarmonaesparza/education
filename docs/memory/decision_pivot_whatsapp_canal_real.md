@@ -3,7 +3,7 @@ type: decision
 title: pivot a whatsapp como canal real, telegram queda como sandbox
 date: 2026-04-28
 tags: [whatsapp, telegram, canal, distribucion, b2b]
-dept: [cto, cmo, cfo, cpo]
+dept: [desarrollo, marketing, finanzas, producto]
 ---
 
 # Pivot a WhatsApp como canal real, Telegram queda como sandbox interno

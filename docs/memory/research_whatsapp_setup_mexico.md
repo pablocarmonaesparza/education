@@ -3,7 +3,7 @@ type: aprendizaje
 title: setup whatsapp business api desde mexico — checklist completo 2026
 date: 2026-04-28
 tags: [whatsapp, mexico, lfpdppp, waba, cloud_api, costos, templates]
-dept: [cto, cfo]
+dept: [desarrollo, finanzas]
 ---
 
 # Setup WhatsApp Business API desde México — Research Completo 2026

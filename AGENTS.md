@@ -44,9 +44,9 @@ bash scripts/lint-memory.sh | tail -15
 
 `gbrain query "<tema>"` busca en toda la memoria importada (decisiones, gotchas, handoffs, docs canónicos). Es la primera fuente para resolver "¿qué decidió X dpto sobre Y?".
 
-**Filtrar por departamento:**
+**Filtrar por dominio:**
 
-Cada archivo en `docs/memory/` tiene frontmatter `dept: [cto, cpo, ...]`. Para tasks de codex/CTO, priorizar `dept: [cto, shared]`. Si la task cruza otro dept (cpo, cmo, etc.), leer también esos.
+Cada archivo en `docs/memory/` tiene frontmatter `dept: [<dominio>, ...]` con uno o más de los 14 dominios funcionales (automatizacion, datos, desarrollo, educacion, finanzas, fundraising, imagenes, legal, marketing, orquestador, producto, redes-sociales, soporte, ventas). Para tasks técnicas (codex), priorizar `dept: [desarrollo, automatizacion]`. Si la task cruza otro dominio (producto, marketing, finanzas, etc.), leer también esos. Ver `docs/memory/metodologia_estructura_dominios.md` para el catálogo completo.
 
 **Al cerrar una task con decisión nueva:**
 

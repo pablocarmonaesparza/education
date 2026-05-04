@@ -7,11 +7,17 @@
 # valida en cada archivo de docs/memory/ (excepto INDEX.md):
 #   - frontmatter delimitado por --- al inicio
 #   - campo `type` con uno de: decision, aprendizaje, copy, negocio, experimento, metodologia, gotcha
-#   - campo `dept` con lista de: ceo, cfo, cmo, cgo, cpo, cto, orq, shared
+#   - campo `dept` con lista de: automatizacion, datos, desarrollo, educacion,
+#       finanzas, fundraising, imagenes, legal, marketing, orquestador,
+#       producto, redes-sociales, soporte, ventas
 #   - campo `date` con formato YYYY-MM-DD válido
 #
-# imprime al final dashboard de "última actualización por dept" para alertar
-# de departamentos silenciosos (>7 días sin update).
+# imprime al final dashboard de "última actualización por dominio" para alertar
+# de dominios silenciosos (>7 días sin update).
+#
+# nota: en abril 2026 se migró del modelo C-suite (ceo/cfo/cmo/cgo/cpo/cto/orq)
+# al modelo por dominios funcionales. histórico documentado en
+# docs/memory/metodologia_estructura_dominios.md
 
 set -e
 
@@ -24,7 +30,7 @@ if [ ! -d "$MEMORY_DIR" ]; then
 fi
 
 VALID_TYPES="decision aprendizaje copy negocio experimento metodologia gotcha"
-VALID_DEPTS="ceo cfo cmo cgo cpo cto orq shared"
+VALID_DEPTS="automatizacion datos desarrollo educacion finanzas fundraising imagenes legal marketing orquestador producto redes-sociales soporte ventas"
 
 errors=0
 warnings=0
@@ -101,7 +107,7 @@ done
 
 echo ""
 echo "════════════════════════════════════════════════════"
-echo "dashboard de actividad por departamento"
+echo "dashboard de actividad por dominio"
 echo "════════════════════════════════════════════════════"
 
 today_epoch=$(date +%s)
@@ -132,7 +138,7 @@ for dept in $VALID_DEPTS; do
   done
 
   if [ "$count" -eq 0 ]; then
-    printf "  %-7s  %3s docs  última: ─          %s\n" "$dept" "$count" "(sin output)"
+    printf "  %-15s  %3s docs  última: ─          %s\n" "$dept" "$count" "(sin output)"
     warnings=$((warnings + 1))
   else
     days_ago=$(( (today_epoch - latest_epoch) / 86400 ))
@@ -142,7 +148,7 @@ for dept in $VALID_DEPTS; do
     else
       flag=""
     fi
-    printf "  %-7s  %3s docs  última: %s  %s\n" "$dept" "$count" "$latest_date" "$flag"
+    printf "  %-15s  %3s docs  última: %s  %s\n" "$dept" "$count" "$latest_date" "$flag"
   fi
 done
 

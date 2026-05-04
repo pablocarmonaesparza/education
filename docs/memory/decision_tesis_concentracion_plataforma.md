@@ -3,7 +3,7 @@ type: decision
 title: tesis core itera — vendemos concentración + operación, no información
 date: 2026-04-27
 tags: [tesis, posicionamiento, producto, moat, stickiness]
-dept: [cpo, ceo]
+dept: [producto, orquestador]
 ---
 
 La tesis central de Itera, articulada por Pablo el 2026-04-27 en sesión de onboarding del rol CPO:

@@ -3,7 +3,7 @@ type: metodologia
 title: protocolo claude+codex — dos orquestadores trabajando juntos
 date: 2026-04-27
 tags: [orquestacion, claude, codex, handoff, protocolo, agentes, autonomia, conductor]
-dept: [orq, cto]
+dept: [orquestador, desarrollo]
 ---
 
 itera tiene **dos orquestadores** trabajando en paralelo:

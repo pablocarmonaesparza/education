@@ -3,7 +3,7 @@ type: experimento
 title: telegram como canal alterno de lecciones diarias
 date: 2026-04-27
 tags: [telegram, lecciones, canal_alterno, mvp, bot]
-dept: [cgo, cto]
+dept: [automatizacion, desarrollo]
 ---
 
 # Telegram como canal alterno de lecciones diarias — sandbox interno desde 2026-04-28

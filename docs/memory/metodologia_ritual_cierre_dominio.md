@@ -1,20 +1,22 @@
 ---
 type: metodologia
-title: ritual de cierre por C-suite — escribir antes de cerrar sesión
-date: 2026-04-25
-tags: [orquestacion, csuite, ritual, memoria, handoff]
-dept: [orq]
+title: ritual de cierre por dominio — escribir antes de cerrar sesión
+date: 2026-05-04
+tags: [orquestacion, dominio, ritual, memoria, handoff]
+dept: [orquestador]
 ---
 
 ## qué es esto
 
-cada conversación-departamento (CEO, CFO, CMO, CGO, CPO, CTO, ORQ) ejecuta un **ritual de cierre** antes de terminar sesión: escribe sus decisiones nuevas en `docs/memory/` con frontmatter correcto.
+cada conversación-dominio (automatizacion, datos, desarrollo, educacion, finanzas, fundraising, imagenes, legal, marketing, orquestador, producto, redes-sociales, soporte, ventas) ejecuta un **ritual de cierre** antes de terminar sesión: escribe sus decisiones nuevas en `docs/memory/` con frontmatter correcto.
 
 sin ritual de cierre, las decisiones quedan en la cabeza de pablo y mueren con la conversación. con ritual de cierre, codex y el orquestador pueden leerlas y operar sin pedirle a pablo que recuerde.
 
+ver `metodologia_estructura_dominios.md` para el catálogo completo de los 14 dominios y el mapping desde el modelo C-suite anterior.
+
 ## cuándo se aplica
 
-al **cierre de sesión** de cualquier conversación-departamento donde se haya tomado:
+al **cierre de sesión** de cualquier conversación-dominio donde se haya tomado:
 
 - una decisión que cambia el rumbo (producto, copy, pricing, schema, infra).
 - un experimento vivo que va a correr (con criterio de éxito).
@@ -43,11 +45,11 @@ type: decision | aprendizaje | copy | negocio | experimento | metodologia | gotc
 title: <una línea minúsculas>
 date: YYYY-MM-DD
 tags: [palabra1, palabra2, ...]
-dept: [una o más de: ceo, cfo, cmo, cgo, cpo, cto, orq, shared]
+dept: [una o más de: automatizacion, datos, desarrollo, educacion, finanzas, fundraising, imagenes, legal, marketing, orquestador, producto, redes-sociales, soporte, ventas]
 ---
 ```
 
-`dept` es lista — un doc puede ser cross-departamento (ej. mailing es `[cpo, cto]`, gamification es `[cpo, cgo]`).
+`dept` es lista — un doc puede ser cross-dominio (ej. mailing es `[producto, desarrollo]`, gamification es `[producto, educacion]`, telegram es `[automatizacion, desarrollo]`).
 
 ### 3. correr el linter
 
@@ -59,7 +61,7 @@ debe salir limpio (`exit 0`). si falla, corregir antes de cerrar.
 
 ## qué actualiza INDEX.md
 
-el INDEX se actualiza **a mano** por ahora. al final del ritual, agregar una línea en la sección correspondiente (por tipo) y el linter te recuerda si dejaste un dept silencioso.
+el INDEX se actualiza **a mano** por ahora. al final del ritual, agregar una línea en la sección correspondiente (por tipo) y el linter te recuerda si dejaste un dominio silencioso.
 
 futuro (fase 2): script que genera INDEX desde frontmatter automáticamente. por ahora a mano para mantener descripciones humanas.
 
@@ -74,10 +76,10 @@ futuro (fase 2): script que genera INDEX desde frontmatter automáticamente. por
 
 - **claude/codex al iniciar sesión:** leen `docs/memory/INDEX.md` + filtran por `dept` relevante a la conversación actual.
 - **pablo:** nunca le pregunta a una conversación qué decidió otra. lee de `docs/memory/`.
-- **el orquestador (claude):** sintetiza estado cross-departamento leyendo todos los `dept`.
+- **el orquestador (claude):** sintetiza estado cross-dominio leyendo todos los `dept`.
 
 ## cuándo reabrir este ritual
 
-- si la disciplina cae (linter detecta departamentos silenciosos 7+ días seguidos sin razón).
-- si el formato YAML se vuelve barrera de entrada y los C-suites empiezan a evitar escribir.
+- si la disciplina cae (linter detecta dominios silenciosos 7+ días seguidos sin razón).
+- si el formato YAML se vuelve barrera de entrada y los dominios empiezan a evitar escribir.
 - si emerge una herramienta que automatiza esto (linter generativo, hook git, etc.) — entonces este ritual se delega.

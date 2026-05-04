@@ -3,7 +3,7 @@ type: gotcha
 title: 3 tensiones de producto detectadas cross-departamental al cerrar ronda 10-preguntas
 date: 2026-04-27
 tags: [producto, cruces, decision-pendiente, cross-departamental, plg, b2b, pricing]
-dept: [cpo, ceo]
+dept: [producto, orquestador]
 ---
 
 Tras ronda de "10 preguntas" con CEO, CFO, CMO, CGO, CPO, CTO (2026-04-27), CPO detectó 3 tensiones de producto que ningún otro agente tomó. Son decisión de Pablo + CPO, ningún otro las puede resolver. Quedan abiertas hasta que Pablo conteste.

@@ -3,7 +3,7 @@ type: decision
 title: stripe-only + USD único + mercado pago descartado
 date: 2026-04-24
 tags: [billing, stripe, usd, mercado_pago, pricing, b2b]
-dept: [cfo]
+dept: [finanzas]
 ---
 
 ## decisión

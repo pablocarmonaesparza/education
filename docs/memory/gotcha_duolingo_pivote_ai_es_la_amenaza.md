@@ -3,7 +3,7 @@ type: gotcha
 title: la amenaza competitiva real es duolingo entrando a AI antes que itera complete operación
 date: 2026-04-27
 tags: [competencia, duolingo, moat, roadmap, urgencia]
-dept: [cpo, ceo]
+dept: [producto, orquestador]
 ---
 
 Pablo articuló (2026-04-27) que la competencia que NO importa y la que SÍ importa son distintas:

@@ -3,7 +3,7 @@ type: gotcha
 title: welcome email — hook en signup ya existe, falta hook en checkout
 date: 2026-04-22
 tags: [email, welcome, stripe, signup, onboarding]
-dept: [cto]
+dept: [desarrollo]
 ---
 
 El email de bienvenida de Itera **ya tiene hook implementado** en `app/auth/callback/route.ts:114-121` que dispara al completar signup (email + Google OAuth). La infraestructura (`lib/email/agentmail.ts`, `emails/WelcomeEmail.tsx`, `lib/email/welcome.ts`, `app/api/email/welcome/route.ts`) está en disco.

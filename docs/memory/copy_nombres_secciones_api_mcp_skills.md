@@ -3,7 +3,7 @@ type: copy
 title: nombres de secciones — "api" (no "apis"), "mcp y skills" (skills plural)
 date: 2026-04-21
 tags: [copy, secciones, nombres]
-dept: [cmo]
+dept: [marketing]
 ---
 
 Reglas de nombres de sección decididas con Pablo:

@@ -32,7 +32,7 @@
 
 ## 🧠 Memoria compartida — gbrain (obligatorio leer al arrancar)
 
-Itera usa **gbrain** como capa de búsqueda semántica sobre la memoria canónica. La fuente de verdad sigue siendo `docs/memory/` markdown en git; gbrain es el índice rápido para encontrar y recuperar contexto entre las 6 conversaciones C-suite.
+Itera usa **gbrain** como capa de búsqueda semántica sobre la memoria canónica. La fuente de verdad sigue siendo `docs/memory/` markdown en git; gbrain es el índice rápido para encontrar y recuperar contexto entre las 14 conversaciones por dominio (automatizacion, datos, desarrollo, educacion, finanzas, fundraising, imagenes, legal, marketing, orquestador, producto, redes-sociales, soporte, ventas).
 
 **Antes de responder a cualquier pregunta sobre decisiones previas, copy, pricing, schema o estrategia:**
 

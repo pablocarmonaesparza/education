@@ -3,7 +3,7 @@ type: decision
 title: mailing transaccional-only + ESP = AgentMail
 date: 2026-04-23
 tags: [mailing, agentmail, esp, transaccional, ralph_wiggum]
-dept: [cpo, cto]
+dept: [producto, desarrollo]
 ---
 
 # Decisión — Mailing es transaccional-only + ESP = AgentMail

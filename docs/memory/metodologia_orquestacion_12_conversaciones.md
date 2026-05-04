@@ -3,7 +3,7 @@ type: metodologia
 title: orquestación itera — 12 conversaciones paralelas + orquestador
 date: 2026-04-22
 tags: [metodologia, orquestacion, conversaciones, coordinacion]
-dept: [orq]
+dept: [orquestador]
 ---
 
 Pablo trabaja Itera con **12 conversaciones de Claude paralelas**, una por dominio funcional. Hay una 13a conversación (`Itera: Orquestrador`) cuyo único trabajo es coordinar cruces entre las otras 12.
