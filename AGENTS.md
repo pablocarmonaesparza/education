@@ -58,7 +58,8 @@ Cada archivo en `docs/memory/` tiene frontmatter `dept: [<dominio>, ...]` con un
 **Fallback si gbrain no responde:** la memoria está en filesystem markdown. `grep -r "<tema>" docs/memory/` siempre funciona. No bloquea operación.
 
 Ver protocolo completo claude+codex: [`docs/memory/metodologia_protocolo_claude_codex.md`](./docs/memory/metodologia_protocolo_claude_codex.md).
-Ritual de cierre por C-suite: [`docs/memory/metodologia_ritual_cierre_csuite.md`](./docs/memory/metodologia_ritual_cierre_csuite.md).
+Ritual de cierre por dominio: [`docs/memory/metodologia_ritual_cierre_dominio.md`](./docs/memory/metodologia_ritual_cierre_dominio.md).
+Estructura de los 14 dominios: [`docs/memory/metodologia_estructura_dominios.md`](./docs/memory/metodologia_estructura_dominios.md).
 Plantilla ticket conductor: [`docs/handoff/conductor_ticket_template.md`](./docs/handoff/conductor_ticket_template.md).
 
 ---

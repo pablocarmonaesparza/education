@@ -122,12 +122,12 @@ decisión asociada: gbrain instalación queda en standby hasta que haya dolor re
 
 ## namespacing de memoria por agente
 
-- entradas con `dept: [orq, ...]` o `dept: [cto, ...]` son típicamente escritas por claude o codex respectivamente, pero **ambos pueden escribir en cualquiera**.
+- entradas con `dept: [orquestador, ...]` o `dept: [desarrollo, ...]` son típicamente escritas por claude o codex respectivamente, pero **ambos pueden escribir en cualquiera**.
 - si tocas una entrada que no es tu dominio principal, lo marcas en el handoff o en el commit body.
 
 ## cuándo reabrir este protocolo
 
-- si pablo cambia el modelo de operación (deja de tener 6+ conversaciones C-suite).
+- si pablo cambia el modelo de operación (deja de tener 14 dominios funcionales — ver `metodologia_estructura_dominios.md`).
 - si emerge un tercer agente en la ecuación (ej. agente de figma, agente de telegram autónomo).
 - si gbrain pasa a fase 2/3 y la capa índice cambia el flujo.
 - si pablo identifica que sigue siendo router manual a pesar de este protocolo — entonces el protocolo está roto y se rediseña.
@@ -154,7 +154,7 @@ pablo delimitó el área autónoma de codex/CTO: seguridad, developer experience
 
 **Producto como bandera, no acción:** codex puede levantar alertas sobre producto cuando convive con él, especialmente si hay problemas técnicos debajo (seguridad, datos, render, schema, integridad, mobile técnico, cobros, display incorrecto). Puede aconsejar por research y análisis externo, pero no operar ni modificar el producto como tal.
 
-**Señales de escalación:** detenerse y consultar si el cambio afecta otros departamentos (CEO, CFO, CMO, CGO, CPO), altera pricing, contenido educativo, marca, promesas comerciales, producción sensible, datos de usuarios con riesgo alto, o cualquier decisión cross-departamento. En contenido educativo, codex solo actúa sobre soporte técnico o display, no sobre sustancia pedagógica.
+**Señales de escalación:** detenerse y consultar si el cambio afecta otros dominios (producto, marketing, finanzas, ventas, educacion, fundraising, legal, etc.), altera pricing, contenido educativo, marca, promesas comerciales, producción sensible, datos de usuarios con riesgo alto, o cualquier decisión cross-dominio. En contenido educativo, codex solo actúa sobre soporte técnico o display, no sobre sustancia pedagógica (ese dominio vive con `educacion`).
 
 **Herramientas:** pablo está dispuesto a dar acceso a GitHub, Conductor.build, Supabase, Vercel, Stripe, email, Telegram y cualquier otra herramienta necesaria para reducir preguntas manuales. Codex debe pedir accesos concretos cuando desbloqueen trabajo autónomo.
 

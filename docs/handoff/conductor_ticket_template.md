@@ -6,11 +6,11 @@
 
 ## cuándo usar
 
-- cuando una decisión de un C-suite (CEO/CFO/CMO/CGO/CPO/CTO/ORQ) genera trabajo ejecutable.
+- cuando una decisión de un dominio (producto, marketing, ventas, finanzas, desarrollo, etc.) genera trabajo ejecutable.
 - cuando un cruce entre conversaciones requiere acción técnica concreta.
 - cuando un experimento vivo necesita implementación.
 
-**no usar para** discusiones abiertas, exploración, brainstorming — eso queda en la conversación-departamento, no en conductor.
+**no usar para** discusiones abiertas, exploración, brainstorming — eso queda en la conversación-dominio, no en conductor.
 
 ## el formato
 
@@ -37,10 +37,10 @@
 <qué hace claude/pablo de mientras para no quedar bloqueado>
 
 ## dept origen
-<C-suite que pidió esto: cpo | cfo | cmo | cgo | cto | orq>
+<dominio que pidió esto: producto | marketing | ventas | finanzas | desarrollo | educacion | etc.>
 
 ## dept ejecutor
-<quién lo va a hacer: cto (codex usual), cpo (claude), shared>
+<quién lo va a hacer: desarrollo (codex usual), producto (claude), shared>
 
 ## prioridad
 P0 (bloquea otra cosa) | P1 (esta semana) | P2 (eventual)
@@ -57,7 +57,7 @@ P0 (bloquea otra cosa) | P1 (esta semana) | P2 (eventual)
 # agregar campo dept al frontmatter de docs/memory/
 
 ## contexto
-itera reorganizó memoria por departamento (ver `docs/memory/metodologia_ritual_cierre_csuite.md`). los archivos viejos no tienen `dept:` en su frontmatter.
+itera reorganizó memoria por dominio (ver `docs/memory/metodologia_ritual_cierre_dominio.md`). los archivos viejos no tienen `dept:` en su frontmatter.
 
 ## objetivo
 los 23 archivos en `docs/memory/` tienen `dept: [...]` en su frontmatter.
@@ -85,7 +85,7 @@ shared (claude o codex, lo que sea más rápido)
 P1
 
 ## referencias
-- decisión canónica: `docs/memory/metodologia_ritual_cierre_csuite.md`
+- decisión canónica: `docs/memory/metodologia_ritual_cierre_dominio.md`
 - protocolo claude+codex: `docs/memory/metodologia_protocolo_claude_codex.md`
 ```
 
@@ -106,4 +106,4 @@ P1
 ## referencia
 
 - protocolo claude+codex: `docs/memory/metodologia_protocolo_claude_codex.md`
-- ritual de cierre C-suite: `docs/memory/metodologia_ritual_cierre_csuite.md`
+- ritual de cierre por dominio: `docs/memory/metodologia_ritual_cierre_dominio.md`

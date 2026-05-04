@@ -90,7 +90,7 @@ el silencio NO es deuda automática — es señal de que ese dominio aún no tie
 
 ## ritual de cierre por dominio
 
-idéntico al ritual previo (`metodologia_ritual_cierre_csuite.md` — pendiente renombrar). cada conversación-dominio escribe a `docs/memory/<tipo>_<slug>.md` con frontmatter `dept: [<dominio>]` antes de cerrar.
+ver `metodologia_ritual_cierre_dominio.md`. cada conversación-dominio escribe a `docs/memory/<tipo>_<slug>.md` con frontmatter `dept: [<dominio>]` antes de cerrar.
 
 ## skills planeados (uno por dominio)
 

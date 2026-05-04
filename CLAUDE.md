@@ -40,7 +40,7 @@ Itera usa **gbrain** como capa de búsqueda semántica sobre la memoria canónic
 gbrain query "<tema>" --no-expand 2>/dev/null | head -20
 ```
 
-`mcp__gbrain__*` tools también están disponibles directo en Claude Code (registrado a user scope). Si la task es de un C-suite específico, filtrar en `docs/memory/INDEX.md` por sección "## por departamento" → tu dept.
+`mcp__gbrain__*` tools también están disponibles directo en Claude Code (registrado a user scope). Si la task es de un dominio específico, filtrar en `docs/memory/INDEX.md` por sección "## por dominio" → tu dominio.
 
 **Ritual de cierre (al cerrar sesión con decisión nueva):**
 
@@ -53,7 +53,8 @@ gbrain query "<tema>" --no-expand 2>/dev/null | head -20
 
 Ver:
 - [protocolo claude+codex](./docs/memory/metodologia_protocolo_claude_codex.md)
-- [ritual de cierre por C-suite](./docs/memory/metodologia_ritual_cierre_csuite.md)
+- [ritual de cierre por dominio](./docs/memory/metodologia_ritual_cierre_dominio.md)
+- [estructura de los 14 dominios funcionales](./docs/memory/metodologia_estructura_dominios.md)
 - [plantilla ticket conductor](./docs/handoff/conductor_ticket_template.md)
 
 ---
