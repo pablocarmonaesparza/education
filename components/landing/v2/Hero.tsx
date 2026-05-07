@@ -665,45 +665,30 @@ export default function Hero() {
             Terminas ejecutando, no estudiando.
           </p>
 
+          {/* tres CTAs intent-driven (porteado del HeroDemo del prototipo).
+              `outline` con depth porque el hero v2 tiene fondo claro — el
+              estilo glass del original requería fondo oscuro de video. */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
             className="mt-8 flex flex-wrap gap-3"
           >
-            <Button
-              href="/auth/signup"
-              variant="primary"
-              size="lg"
-              className="inline-flex items-center justify-center gap-2 whitespace-nowrap"
-            >
-              empezar gratis
-              <svg
-                viewBox="0 0 24 24"
-                width="18"
-                height="18"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
+            {[
+              { label: 'aprender ia desde cero', intent: 'beginner', primary: true },
+              { label: 'construir mi proyecto', intent: 'build' },
+              { label: 'aplicar ia en mi trabajo', intent: 'work' },
+            ].map(({ label, intent, primary }) => (
+              <Button
+                key={intent}
+                href={`/auth/signup?intent=${intent}`}
+                variant={primary ? 'primary' : 'outline'}
+                size="lg"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap"
               >
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </Button>
-            <Button variant="ghost" size="lg" className="inline-flex items-center justify-center gap-2 whitespace-nowrap">
-              <svg
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="currentColor"
-                aria-hidden="true"
-              >
-                <path d="M8 5l11 7-11 7V5z" />
-              </svg>
-              ver demo (30 seg)
-            </Button>
+                {label}
+              </Button>
+            ))}
           </motion.div>
 
           <HeroLiveStats />
