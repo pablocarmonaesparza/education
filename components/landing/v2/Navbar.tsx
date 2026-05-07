@@ -214,7 +214,12 @@ export default function NavbarV2() {
 
         {/* desktop CTA · siempre visible */}
         <div className="hidden lg:flex items-center z-10">
-          <Button href="/auth/signup" variant="primary" size="sm">
+          <Button
+            href="/auth/signup"
+            variant="primary"
+            size="sm"
+            className="inline-flex items-center justify-center gap-2"
+          >
             empezar gratis
           </Button>
         </div>
@@ -305,7 +310,7 @@ export default function NavbarV2() {
                 href="/auth/signup"
                 variant="primary"
                 size="md"
-                className="w-full justify-center"
+                className="inline-flex items-center justify-center gap-2 w-full"
               >
                 empezar gratis
               </Button>

@@ -89,7 +89,8 @@ export default function Pricing() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6 }}
           className="mb-12 max-w-3xl"
         >
@@ -102,7 +103,8 @@ export default function Pricing() {
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6, delay: 0.1 }}
           className="rounded-2xl border-2 border-gray-200 dark:border-gray-700 overflow-x-auto bg-white dark:bg-gray-800"
           style={{ borderBottomWidth: 4 }}
@@ -188,7 +190,7 @@ export default function Pricing() {
                 href="/auth/signup"
                 variant="outline"
                 size="md"
-                className="w-full justify-center"
+                className="inline-flex items-center justify-center gap-2 w-full"
               >
                 empezar gratis
               </Button>
@@ -198,7 +200,7 @@ export default function Pricing() {
                 href="/auth/signup?plan=pro"
                 variant="primary"
                 size="md"
-                className="w-full justify-center"
+                className="inline-flex items-center justify-center gap-2 w-full"
               >
                 comenzar pro
               </Button>
@@ -208,7 +210,7 @@ export default function Pricing() {
                 href="/empresas"
                 variant="outline"
                 size="md"
-                className="w-full justify-center"
+                className="inline-flex items-center justify-center gap-2 w-full"
               >
                 agendar demo
               </Button>

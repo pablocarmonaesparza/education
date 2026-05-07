@@ -16,7 +16,8 @@ export default function Problema() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6 }}
           className="max-w-3xl mb-12"
         >
@@ -34,7 +35,8 @@ export default function Problema() {
           {/* hero stat — fill primary */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="rounded-2xl border-2 border-primary-dark bg-primary text-white p-9 flex flex-col justify-between min-h-[320px]"
             style={{ borderBottomWidth: 4 }}
@@ -65,7 +67,8 @@ export default function Problema() {
           {/* stack lateral · 2 cards neutrales */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="flex flex-col gap-5"
           >

@@ -66,7 +66,8 @@ export default function FAQ() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 grid gap-12 md:grid-cols-[1fr_1.4fr]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6 }}
         >
           <Headline>preguntas frecuentes</Headline>

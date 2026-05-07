@@ -77,7 +77,8 @@ export default function Testimonios() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6 }}
           className="flex flex-wrap justify-between items-end gap-4 mb-12"
         >
@@ -93,7 +94,8 @@ export default function Testimonios() {
         <div className="grid gap-5 md:grid-cols-[1.5fr_1fr]">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.6, delay: 0.1 }}
           >
             <Card variant="primary" className="flex flex-col gap-6 p-9 h-full">
@@ -148,7 +150,8 @@ export default function Testimonios() {
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-100px' }}
                 transition={{ duration: 0.6, delay: 0.2 + i * 0.1 }}
               >
                 <Card variant="neutral" className="flex flex-col gap-4 h-full">

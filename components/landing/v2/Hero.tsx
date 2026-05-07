@@ -675,7 +675,7 @@ export default function Hero() {
               href="/auth/signup"
               variant="primary"
               size="lg"
-              className="whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap"
             >
               empezar gratis
               <svg
@@ -692,7 +692,7 @@ export default function Hero() {
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
             </Button>
-            <Button variant="ghost" size="lg" className="whitespace-nowrap">
+            <Button variant="ghost" size="lg" className="inline-flex items-center justify-center gap-2 whitespace-nowrap">
               <svg
                 viewBox="0 0 24 24"
                 width="16"

@@ -58,7 +58,7 @@ export default function CtaCierre() {
             href="/auth/signup"
             variant="primary"
             size="lg"
-            className="whitespace-nowrap"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap"
           >
             empezar gratis
             <svg
@@ -78,7 +78,7 @@ export default function CtaCierre() {
           <Button
             variant="outline"
             size="lg"
-            className="whitespace-nowrap"
+            className="inline-flex items-center justify-center gap-2 whitespace-nowrap"
             style={{
               background: 'transparent',
               color: '#fff',

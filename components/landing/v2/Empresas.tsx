@@ -134,7 +134,8 @@ export default function Empresas() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6 }}
           className="max-w-3xl mb-12"
         >
@@ -160,7 +161,8 @@ export default function Empresas() {
         {/* stats row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6, delay: 0.1 }}
           className="grid grid-cols-1 md:grid-cols-3 mb-14 overflow-hidden rounded-2xl"
           style={{
@@ -204,7 +206,8 @@ export default function Empresas() {
               <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-100px' }}
                 transition={{ duration: 0.6, delay: 0.1 + i * 0.1 }}
                 className="p-7 rounded-2xl flex flex-col gap-3.5"
                 style={{
@@ -266,7 +269,8 @@ export default function Empresas() {
         {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="flex flex-wrap justify-center gap-3 p-8 rounded-2xl items-center"
           style={{
@@ -286,13 +290,19 @@ export default function Empresas() {
             </div>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Button href="/empresas" variant="primary" size="lg">
+            <Button
+              href="/empresas"
+              variant="primary"
+              size="lg"
+              className="inline-flex items-center justify-center gap-2"
+            >
               agendar demo
             </Button>
             <Button
               href="/empresas#brochure"
               variant="outline"
               size="lg"
+              className="inline-flex items-center justify-center gap-2"
               style={{
                 background: 'transparent',
                 color: '#fff',
