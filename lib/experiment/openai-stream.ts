@@ -6,7 +6,20 @@
 
 import OpenAI from 'openai';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Lazy init: el cliente real se crea al primer uso. Evita que el build de
+// Vercel rompa en "Collecting page data" cuando OPENAI_API_KEY no está
+// configurada (preview deploys de branches sin env vars).
+let _openai: OpenAI | undefined;
+function getOpenAI(): OpenAI {
+  if (_openai) return _openai;
+  _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  return _openai;
+}
+const openai: OpenAI = new Proxy({} as OpenAI, {
+  get(_, prop, receiver) {
+    return Reflect.get(getOpenAI(), prop, receiver);
+  },
+});
 
 export interface StreamOpenAIOpts {
   systemPrompt: string;
