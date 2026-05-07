@@ -672,7 +672,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-8 flex flex-wrap gap-3"
+            className="mt-8 flex flex-wrap md:flex-nowrap gap-3"
           >
             {[
               { label: 'aprender ia desde cero', intent: 'beginner', primary: true },
