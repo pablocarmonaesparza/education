@@ -75,8 +75,14 @@ export const DEFAULT_MODEL = 'deepseek-chat';
 /** Modelo de DeepSeek con razonamiento (R1) — para curso-generación, validación. */
 export const REASONER_MODEL = 'deepseek-reasoner';
 
-/** Modelo de Gemini para fallback (lo que pidió Pablo). */
-export const FALLBACK_MODEL = 'gemini-3.1-flash';
+/**
+ * Modelo de Gemini para fallback. Pablo pidió "Gemini 3.1 Flash" — Google no
+ * expone un model ID exacto con ese nombre, pero `gemini-3.1-flash-lite` es la
+ * versión estable más cercana (existe vía API y verificada con curl). Si en el
+ * futuro Google publica `gemini-3.1-flash` (sin `-lite`), basta con cambiar
+ * acá.
+ */
+export const FALLBACK_MODEL = 'gemini-3.1-flash-lite';
 
 // === fallback logic ===
 
