@@ -1,20 +1,30 @@
 // lib/tutor/providers.ts — Motor de streaming multi-provider
+//
+// Por decisión de producto, el provider 'openai' redirige a DeepSeek+Gemini
+// (vía `lib/llm/client.ts`). Anthropic y Google nativos quedan como
+// alternativas si en algún futuro queremos otro path. El nombre
+// `streamOpenAI` se conserva por compat de la API pública.
 
-import OpenAI from 'openai';
 import Anthropic from '@anthropic-ai/sdk';
 import { GoogleGenAI } from '@google/genai';
+import { chat } from '@/lib/llm/client';
 import type { TutorProvider, StreamProviderParams } from '@/types/tutor';
 
-// --- OpenAI ---
+// --- OpenAI-compat (DeepSeek primary + Gemini fallback) ---
 
 function streamOpenAI(params: StreamProviderParams): ReadableStream<string> {
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
   return new ReadableStream({
     async start(controller) {
       try {
-        const stream = await openai.chat.completions.create({
-          model: params.model,
+        const stream = await chat({
+          // Si el caller pasa un model "gpt-*", lo respetamos? No — DeepSeek
+          // no acepta esos. Si el model empieza con 'gpt' lo mapeamos a
+          // deepseek-chat; si ya es 'deepseek-*' o 'gemini-*' lo respetamos.
+          model:
+            params.model.startsWith('deepseek-') ||
+            params.model.startsWith('gemini-')
+              ? params.model
+              : 'deepseek-chat',
           messages: [
             { role: 'system' as const, content: params.systemPrompt },
             ...params.messages.map((m) => ({

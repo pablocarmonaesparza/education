@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { chat } from '@/lib/llm/client';
 import { enforceRateLimit, rateLimiters } from '@/lib/ratelimit';
 
 const MAX_IDEA_CHARS = 1200;
@@ -24,22 +24,17 @@ export async function POST(req: NextRequest) {
     const blocked = await enforceRateLimit(req, rateLimiters.ai);
     if (blocked) return blocked;
 
-    // Verificar que la API key esté configurada
-    if (!process.env.OPENAI_API_KEY) {
-      console.error('OPENAI_API_KEY is not configured');
+    // Verificar que al menos una de las API keys de LLM esté configurada
+    if (!process.env.DEEPSEEK_API_KEY && !process.env.GEMINI_API_KEY) {
+      console.error('Neither DEEPSEEK_API_KEY nor GEMINI_API_KEY is configured');
       return NextResponse.json(
-        { 
-          valid: false, 
-          reason: 'El servicio de validación no está configurado. Por favor contacta al soporte o intenta más tarde.' 
+        {
+          valid: false,
+          reason: 'El servicio de validación no está configurado. Por favor contacta al soporte o intenta más tarde.',
         },
         { status: 503 } // Service Unavailable
       );
     }
-
-    // Crear el cliente de OpenAI solo después de verificar que la API key existe
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
 
     let body;
     try {
@@ -75,9 +70,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validar con ChatGPT-4o-mini
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+    // Validar con DeepSeek (fallback Gemini si falla)
+    const response = await chat({
+      model: 'deepseek-chat',
       messages: [
         {
           role: 'system',

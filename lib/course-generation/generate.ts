@@ -1,6 +1,6 @@
 // lib/course-generation/generate.ts — Inline course + exercise generation pipeline
 
-import OpenAI from 'openai';
+import { chat, REASONER_MODEL } from '@/lib/llm/client';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { fetchFullCatalog } from './rag';
 import { getCourseGenerationPrompt } from './prompts';
@@ -43,8 +43,6 @@ export async function generateCourseInline(
   supabase: SupabaseClient,
   input: GenerateCourseInput
 ): Promise<void> {
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
   const pipelineStart = Date.now();
   const timings: Record<string, number> = {};
   const tick = (label: string, start: number) => {
@@ -74,11 +72,14 @@ export async function generateCourseInline(
     : '';
   const courseUserMessage = `#UserMessage\n"${input.projectIdea}"${questionnaireContext}`;
 
-  const courseResponse = await openai.chat.completions.create({
-    model: 'o4-mini',
-    max_completion_tokens: 16000,
+  // Curso-generation usa el modelo con razonamiento (DeepSeek R1) por la
+  // complejidad del prompt; fallback a Gemini-3.1-flash si falla.
+  const courseResponse = await chat({
+    model: REASONER_MODEL,
+    max_tokens: 16000,
     messages: [
-      { role: 'developer', content: courseSystemPrompt },
+      // 'developer' role no existe en DeepSeek/Gemini; usamos 'system'
+      { role: 'system', content: courseSystemPrompt },
       { role: 'user', content: courseUserMessage },
     ],
   });

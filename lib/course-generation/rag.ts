@@ -1,6 +1,6 @@
 // lib/course-generation/rag.ts — RAG with Cohere reranker for course generation
 
-import OpenAI from 'openai';
+import { chat } from '@/lib/llm/client';
 import { generateQueryEmbedding } from '@/lib/tutor/rag';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { CohereClient } from 'cohere-ai';
@@ -124,15 +124,14 @@ async function fetchSyllabusTaxonomy(
  * Generate search queries using OpenAI, aligned to the real syllabus vocabulary.
  */
 export async function generateSearchQueriesWithAI(
-  openai: OpenAI,
   supabase: SupabaseClient,
   projectIdea: string,
   questionnaire: Record<string, any>
 ): Promise<string[]> {
   const taxonomy = await fetchSyllabusTaxonomy(supabase);
 
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+  const response = await chat({
+    model: 'deepseek-chat',
     max_tokens: 1024,
     temperature: 0,
     messages: [
