@@ -34,6 +34,8 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### aprendizajes
 
+- [yc canon 2026 — proceso, deal, fechas, app + interview, solo founder latam, pivots](research_yc_canon_2026.md) — 2026-05-09 — `[fundraising]` — proceso oficial yc verificado 9-may; deal $500k; f26/w27 sin fechas oficiales; quotes canon de partners; rfs s26.
+- [yc tracción benchmarks w24-w26 — números crudos por batch](research_yc_traccion_benchmarks_w24_w26.md) — 2026-05-09 — `[fundraising]` — w26 récord 14% w/w + 14 con $1m+ arr; benchmark solo founder no-us latam edtech: 0.2-5% probabilidad.
 - [perplexity mcp instalado + heurística de búsqueda web](aprendizaje_perplexity_mcp.md) — 2026-04-22 — `[orquestador]` — queries cortos tipo pregunta > briefs largos.
 - [pablo no delega manuales — ejecutar vía mcp/cli directamente](aprendizaje_pablo_no_delega_manuales.md) — 2026-04-21 — `[orquestador]` — *"espera todo lo que me pides puedes hacerlo tu directamente"*.
 - [pipeline de review de lecciones: evaluator + linter + batches paralelos](aprendizaje_pipeline_review_lecciones_paralelo.md) — 2026-04-21 — `[educacion, desarrollo]` — `/itera-review` con 10 agentes en paralelo revisó las 100 lecciones.
@@ -45,6 +47,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### negocio y stakeholders
 
+- [yc plan 86 días — f26 + w27 dos shots reales](research_yc_plan_86_dias.md) — 2026-05-09 — `[fundraising]` — 4 fases reverse-engineered desde deadline f26 estimado 1-ago; 5 inputs del pivot que el plan necesita lockeados (wedge / icp / métrica norte / pricing / canal).
 - [hibp bloqueado por plan free de supabase](negocio_supabase_plan_free_hibp_bloqueado.md) — 2026-04-21 — `[desarrollo, finanzas]` — leaked password protection requiere Pro ($25 USD/mes).
 
 ### experimentos vivos
@@ -117,7 +120,9 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### fundraising
 
-*sin output todavía. cuando se arme deck, data room, network mapping o pitch, vive aquí.*
+- [yc canon 2026 — proceso, deal, fechas, app + interview, solo founder latam, pivots](research_yc_canon_2026.md) — aprendizaje — 2026-05-09 — verificado en ycombinator.com 9-may; f26/w27 sin fechas oficiales; estimado f26 ~1-ago.
+- [yc plan 86 días — f26 + w27 dos shots reales](research_yc_plan_86_dias.md) — negocio — 2026-05-09 — plan 4 fases bloqueado en 5 inputs del pivot (wedge / icp / métrica norte / pricing / canal); tesis "exploración estratégica" sigue abierta al 9-may.
+- [yc tracción benchmarks w24-w26 — números crudos por batch](research_yc_traccion_benchmarks_w24_w26.md) — aprendizaje — 2026-05-09 — solo founder no-us latam edtech b2b: 0.2-5% odds según tracción + network + rfs match.
 
 ### imagenes
 
