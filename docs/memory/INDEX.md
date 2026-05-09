@@ -15,7 +15,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### decisiones
 
-- [tesis core — vendemos concentración + operación, no información](decision_tesis_concentracion_plataforma.md) — 2026-04-27 — `[producto, orquestador]` — itera no compite en contenido AI; compite en concentración + operación con cuenta LLM del usuario.
+- [tesis core — vendemos concentración + operación, no información](decision_tesis_concentracion_plataforma.md) — 2026-04-27 — `[producto, orquestador]` — tesis de simulador de criterio IA en exploración; prototipos visuales no son decisión de build.
 - [stripe-only + USD único + mercado pago descartado](decision_finanzas_stripe_only_usd_mp_descartado.md) — 2026-04-24 — `[finanzas]` — itera procesa solo con stripe en USD; MP descartado definitivamente.
 - [pivote whatsapp como canal real](decision_pivot_whatsapp_canal_real.md) — 2026-04-28 — `[desarrollo, marketing, finanzas, producto]` — whatsapp como canal alterno principal de delivery.
 - [landing — estado al cerrar agente Landing 22-23 abril](decision_landing_estructura_post_pivote_b2b.md) — 2026-04-23 — `[producto, marketing]` — landing prod = Hero (shader + "ai de 0 a 100") → Pricing → FAQ.
@@ -50,7 +50,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 ### metodología
 
 - [estructura de departamentos funcionales (reemplaza posiciones)](metodologia_estructura_dominios.md) — 2026-05-08 — `[orquestador]` — conversaciones visibles por departamento + dominios de frontmatter.
-- [protocolo claude+codex — dos orquestadores trabajando juntos](metodologia_protocolo_claude_codex.md) — 2026-04-27 — `[orquestador, desarrollo]` — reglas de autonomía técnica; operación vía Conductor.build.
+- [protocolo claude+codex — dos orquestadores trabajando juntos](metodologia_protocolo_claude_codex.md) — 2026-04-27 — `[orquestador, desarrollo]` — reglas de autonomía técnica; prototipos visuales aislados no son producto aprobado.
 - [ritual de cierre por dominio — escribir antes de cerrar sesión](metodologia_ritual_cierre_dominio.md) — 2026-05-04 — `[orquestador]` — cada conversación-dominio escribe sus decisiones nuevas antes de salir.
 
 ### gotchas
@@ -79,7 +79,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 ### desarrollo
 
 - [pivote whatsapp como canal real](decision_pivot_whatsapp_canal_real.md) — decision — 2026-04-28 *(comparte con marketing, finanzas, producto)*
-- [protocolo claude+codex](metodologia_protocolo_claude_codex.md) — metodologia — 2026-04-27 *(comparte con orquestador)*
+- [protocolo claude+codex](metodologia_protocolo_claude_codex.md) — metodologia — 2026-04-27 *(comparte con orquestador; prototipos aislados no son build aprobado)*
 - [supabase session pooler aws-1 vs aws-0](gotcha_supabase_pooler_aws1_us_east_1.md) — gotcha — 2026-04-27
 - [whatsapp setup mexico research](research_whatsapp_setup_mexico.md) — research — 2026-04-28 *(comparte con finanzas)*
 - [mailing transaccional-only + ESP = AgentMail](decision_mailing_transaccional_only.md) — decision — 2026-04-23 *(comparte con producto)*
@@ -129,8 +129,8 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 ### orquestador
 
 - [estructura de departamentos funcionales](metodologia_estructura_dominios.md) — metodologia — 2026-05-08
-- [tesis core — concentración + operación](decision_tesis_concentracion_plataforma.md) — decision — 2026-04-27 *(comparte con producto)*
-- [protocolo claude+codex](metodologia_protocolo_claude_codex.md) — metodologia — 2026-04-27 *(comparte con desarrollo)*
+- [tesis core — concentración + operación](decision_tesis_concentracion_plataforma.md) — decision — 2026-04-27 *(comparte con producto; simulador IA sigue en exploración estratégica)*
+- [protocolo claude+codex](metodologia_protocolo_claude_codex.md) — metodologia — 2026-04-27 *(comparte con desarrollo; prototipos visuales no son producto aprobado)*
 - [ritual de cierre por dominio](metodologia_ritual_cierre_dominio.md) — metodologia — 2026-05-04
 - [perplexity mcp instalado + heurística](aprendizaje_perplexity_mcp.md) — aprendizaje — 2026-04-22
 - [pablo no delega manuales](aprendizaje_pablo_no_delega_manuales.md) — aprendizaje — 2026-04-21
@@ -138,7 +138,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 ### producto
 
 - [convención IA mayúsculas, nunca AI](copy_convencion_ia_mayusculas.md) — copy — 2026-05-05 *(comparte con marketing)*
-- [tesis core — concentración + operación](decision_tesis_concentracion_plataforma.md) — decision — 2026-04-27 *(comparte con orquestador)*
+- [tesis core — concentración + operación](decision_tesis_concentracion_plataforma.md) — decision — 2026-04-27 *(comparte con orquestador; simulador IA sigue en exploración estratégica)*
 - [pivote whatsapp como canal real](decision_pivot_whatsapp_canal_real.md) — decision — 2026-04-28 *(comparte con desarrollo, marketing, finanzas)*
 - [landing — estado al cerrar agente Landing 22-23 abril](decision_landing_estructura_post_pivote_b2b.md) — decision — 2026-04-23 *(comparte con marketing)*
 - [mailing transaccional-only + ESP = AgentMail](decision_mailing_transaccional_only.md) — decision — 2026-04-23 *(comparte con desarrollo)*

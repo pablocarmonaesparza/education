@@ -62,3 +62,16 @@ herramientas IA -> situación laboral -> práctica guiada -> criterio -> evidenc
 - Platzi Business / Crehana / Coderhouse: training corporativo LATAM y brecha local.
 
 **Estado:** dirección estratégica para investigación, no instrucción de build. Antes de pivotear producto/copy/landing/onboarding, hacer benchmark de competencia y categoría.
+
+### Actualización 2026-05-09 — pausar build y separar exploración de producto
+
+Pablo pidió dar un paso atrás después de ver un primer prototipo visual en código (`/simulator-system`). Esa pantalla sirve solo como **ejemplo conversacional** para imaginar el simulador; no es especificación aprobada, no reemplaza onboarding/dashboard y no autoriza cambios de producto.
+
+La memoria debe tratar esta conversación así:
+
+1. **Problema vigente:** Itera necesita escapar del curso teórico y demostrar valor empresarial más tangible.
+2. **Hipótesis vigente:** el puente más prometedor es "simulador de criterio IA" / "AI readiness medible", no una herramienta tipo n8n ni un LMS genérico.
+3. **Estado vigente:** exploración estratégica. Todavía no hay PRD, IA flow definitivo, schema, métricas cerradas, pricing impact o plan de migración.
+4. **Siguiente trabajo correcto:** entender el problema, categoría, comprador, evidencia esperada y competencia antes de mover producto real.
+
+Regla operativa: cualquier prototipo visual creado en código durante esta fase se considera **artefacto desechable de conversación** hasta que Pablo diga explícitamente que se convierte en producto. Si una futura sesión encuentra `/simulator-system`, no debe asumir que es roadmap ni fuente de verdad.

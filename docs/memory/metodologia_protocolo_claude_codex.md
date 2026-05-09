@@ -161,3 +161,17 @@ pablo delimitó el área autónoma de codex/desarrollo: seguridad, developer exp
 **Superficie externa prioritaria:** Itera sigue en MVP; el dashboard importa, pero el foco externo inmediato es que el onboarding de empresas funcione bien para pilotos/deals. Codex debe investigar qué perdonan y qué no perdonan empresas compradoras de este tipo de plataforma, y asesorar sin ejecutar decisiones de producto.
 
 **Métricas externas:** aún no están cerradas. Codex debe investigarlas: qué experiencia necesita una empresa para comprar/renovar, qué fricciones bloquean deals, qué benchmark externo conviene usar para saber si Itera se siente bien. El objetivo no es solo programar, también traer análisis de mercado y buenas prácticas cuando aplique.
+
+## actualización 2026-05-09 — prototipos visuales no son decisiones de producto
+
+Cuando Pablo pida "enséñame un ejemplo en código" durante una conversación de estrategia o producto, Codex puede crear una ruta aislada para visualizar la idea, pero esa ruta es un **artefacto de exploración**, no una decisión de producto.
+
+Reglas:
+
+- usar rutas aisladas tipo `/simulator-system`, sin tocar flujos canónicos.
+- no modificar onboarding, dashboard, landing, schema, pricing, copy público ni analytics por arrastre.
+- no commitear/pushear el prototipo salvo aprobación explícita de Pablo.
+- si el prototipo convence, antes de construir se convierte en PRD/handoff por departamento.
+- si el prototipo no convence, se borra sin tratarlo como deuda.
+
+Aplicación inmediata: `/simulator-system` existe solo para conversar sobre la tesis de "simulador de criterio IA". No es source of truth, no bloquea el producto actual y no debe ser usado por otros agentes como instrucción de build.
