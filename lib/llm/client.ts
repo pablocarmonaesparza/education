@@ -81,17 +81,28 @@ export const FALLBACK_MODEL = 'gemini-3.1-flash';
 // === fallback logic ===
 
 /**
- * Decide si un error amerita fallback a Gemini. Rate limit, 5xx, timeout y
- * network errors sí. 4xx de validación o auth errors NO (esos son bugs nuestros,
- * no problema del provider).
+ * Decide si un error amerita fallback a Gemini.
+ *
+ * Fallback en:
+ *   - 402 Payment Required → DeepSeek sin balance, Gemini puede tener créditos
+ *   - 408 Request Timeout, 429 Rate Limit, 5xx → provider issue
+ *   - Network errors (ETIMEDOUT, ECONNRESET, etc.)
+ *
+ * NO fallback en:
+ *   - 400 Bad Request → nuestro payload está mal, Gemini también va a rechazar
+ *   - 401 Unauthorized → API key inválida; Gemini puede tener el mismo problema
+ *     pero al menos avisamos del error real (config bug)
+ *
+ * Cuando dudamos, fallback. Es mejor servir una respuesta de Gemini que
+ * propagar un error de DeepSeek al usuario.
  */
 function shouldFallback(err: unknown): boolean {
   if (!(err instanceof Error)) return true;
   const e = err as Error & { status?: number; code?: string };
-  if (e.status && e.status >= 500) return true;
-  if (e.status === 429) return true; // rate limit
+  if (e.status === 400 || e.status === 401) return false;
+  if (e.status && e.status >= 402) return true; // 402, 403, 408, 429, 5xx, etc.
   if (e.code === 'ETIMEDOUT' || e.code === 'ECONNRESET' || e.code === 'ECONNREFUSED') return true;
-  if (/network|timeout|fetch failed|aborted/i.test(e.message)) return true;
+  if (/network|timeout|fetch failed|aborted|insufficient balance|payment/i.test(e.message)) return true;
   return false;
 }
 
