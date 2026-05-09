@@ -1,6 +1,6 @@
 ---
 type: gotcha
-title: `git commit` sin pathspec levanta archivos staged de otros agentes
+title: git commit sin pathspec levanta archivos staged de otros agentes
 date: 2026-04-23
 tags: [git, coordinacion, agentes_paralelos]
 dept: [desarrollo]

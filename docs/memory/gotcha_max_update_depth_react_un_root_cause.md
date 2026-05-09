@@ -1,6 +1,6 @@
 ---
 type: gotcha
-title: "maximum update depth exceeded" casi siempre tiene un solo root cause
+title: "'maximum update depth exceeded' casi siempre tiene un solo root cause"
 date: 2026-04-21
 tags: [react, debugging, performance]
 dept: [desarrollo]

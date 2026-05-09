@@ -1,6 +1,6 @@
 ---
 type: gotcha
-title: oauth de supabase: site_url + allow_list deben estar configurados con patterns /**
+title: "oauth de supabase: site_url + allow_list deben estar configurados con patterns /**"
 date: 2026-04-21
 tags: [supabase, oauth, google, auth]
 dept: [desarrollo]

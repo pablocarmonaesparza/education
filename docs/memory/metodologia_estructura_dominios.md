@@ -1,14 +1,39 @@
 ---
 type: metodologia
-title: estructura de dominios funcionales (reemplaza modelo C-suite)
-date: 2026-05-04
-tags: [orquestacion, dominios, agentes, csuite, refactor]
+title: estructura de departamentos funcionales (reemplaza posiciones)
+date: 2026-05-08
+tags: [orquestacion, departamentos, dominios, agentes, refactor]
 dept: [orquestador]
 ---
+
+## departamentos visibles
+
+Estos son los departamentos que deben existir como conversaciones/proyectos visibles cuando pablo organice el sistema:
+
+| conversación | dominio |
+|---|---|
+| `Itera: Automation` | automatizacion |
+| `Itera: Desarrollo` | desarrollo |
+| `Itera: Education` | educacion |
+| `Itera: Finanzas` | finanzas |
+| `Itera: Fundraising` | fundraising |
+| `Itera: Imágenes` | imagenes |
+| `Itera: Legal` | legal |
+| `Itera: Marketing` | marketing |
+| `Itera: Orquestador` | orquestador |
+| `Itera: Producto` | producto |
+| `Itera: Redes Sociales` | redes-sociales |
+| `Itera: Ventas` | ventas |
+
+En la captura del 2026-05-08 faltaban tres conversaciones visibles: **Desarrollo, Imágenes y Redes Sociales**.
+
+`datos` y `soporte` siguen siendo dominios válidos para memoria/frontmatter, pero no necesitan conversación visible todavía. Se crean cuando haya trabajo recurrente real: analytics/north star para `datos`; primer cliente, KB, SLA o churn para `soporte`.
 
 ## qué cambió y por qué
 
 el 2026-05-04 itera migró del modelo "C-suite virtual" (CEO, CFO, CMO, CGO, CPO, CTO, ORQ, Legal) al modelo **por dominios funcionales**.
+
+el 2026-05-08 pablo confirmó el ajuste de lenguaje y operación: **volver a departamentos, no posiciones/personas**. en la UI de conversaciones/proyectos, el patrón debe ser `Itera: <Departamento>`, no cargos tipo CEO/CPO/CMO ni personajes.
 
 el modelo C-suite simulaba roles humanos. funcionaba pero tenía 3 problemas:
 
@@ -20,22 +45,22 @@ el modelo por dominios resuelve los 3.
 
 ## los 14 dominios
 
-| dominio | qué cubre | dueño operativo |
+| dominio | qué cubre | conversación dueña |
 |---|---|---|
-| **automatizacion** | crons, hooks, scheduled-tasks, agent workflows que corren solos | claude code + codex |
-| **datos** | north star metric, analytics, dashboards, cohort analysis, instrumentation | claude code (orq lidera) |
-| **desarrollo** | backend, schema, infra, security, DX, deploys, dependencies | codex (lado claude code soporta) |
-| **educacion** | contenido pedagógico, slides, metodología, lecciones, ejercicios | claude code (curriculum design) |
-| **finanzas** | costos, runway, forecast, pricing, billing, unit economics | claude code (CFO) |
-| **fundraising** | pitch, investor research, deck, data room, network mapping, raises | claude code (fundraising) |
-| **imagenes** | branding visual, ilustraciones, recraft, figma, video assets | claude code (creative) |
-| **legal** | contratos, privacidad, IP, compliance, gobierno (INPI/INAI/Indautor) | claude code (legal) |
-| **marketing** | copy, positioning, mensaje, campañas, brand voice, email content | claude code (CMO) |
-| **orquestador** | sync cross-dominio, scope, OKRs, roadmap, decisiones one-way door | claude code (este chat) |
-| **producto** | plataforma, UX, dashboard, features, PRD, user flow | claude code (CPO) |
-| **redes-sociales** | TikTok, IG, X, LinkedIn, comunidad, contenido founder-led | claude code (creative + CMO) |
-| **soporte** | atención cliente, KB, churn signals, refund SOP, account management | claude code (cuando exista) |
-| **ventas** | pipeline B2B, prospects, outbound, demos, onboarding cliente, renovaciones | claude code (CGO + sales) |
+| **automatizacion** | crons, hooks, scheduled-tasks, agent workflows que corren solos | `Itera: Automation` |
+| **datos** | north star metric, analytics, dashboards, cohort analysis, instrumentation | sin conversación visible por ahora |
+| **desarrollo** | backend, schema, infra, security, DX, deploys, dependencies | `Itera: Desarrollo` |
+| **educacion** | contenido pedagógico, slides, metodología, lecciones, ejercicios | `Itera: Education` |
+| **finanzas** | costos, runway, forecast, pricing, billing, unit economics | `Itera: Finanzas` |
+| **fundraising** | pitch, investor research, deck, data room, network mapping, raises | `Itera: Fundraising` |
+| **imagenes** | branding visual, ilustraciones, recraft, figma, video assets | `Itera: Imágenes` |
+| **legal** | contratos, privacidad, IP, compliance, gobierno (INPI/INAI/Indautor) | `Itera: Legal` |
+| **marketing** | copy, positioning, mensaje, campañas, brand voice, email content | `Itera: Marketing` |
+| **orquestador** | sync cross-dominio, scope, OKRs, roadmap, decisiones one-way door | `Itera: Orquestador` |
+| **producto** | plataforma, UX, dashboard, features, PRD, user flow | `Itera: Producto` |
+| **redes-sociales** | TikTok, IG, X, LinkedIn, comunidad, contenido founder-led | `Itera: Redes Sociales` |
+| **soporte** | atención cliente, KB, churn signals, refund SOP, account management | sin conversación visible por ahora |
+| **ventas** | pipeline B2B, prospects, outbound, demos, onboarding cliente, renovaciones | `Itera: Ventas` |
 
 ## mapping del modelo viejo
 
@@ -61,18 +86,18 @@ la mayoría de docs tienen 1 dominio (`dept: [marketing]`). los cross-dominio (g
 
 ### dueño operativo vs orq
 
-**el orquestador NO ejecuta dominios — los coordina.** si una decisión de marketing requiere eng, orquestador lee marketing y desarrollo, sintetiza, y propone handoff. nunca actúa como cmo o cto.
+**el orquestador NO ejecuta dominios — los coordina.** si una decisión de marketing requiere eng, orquestador lee marketing y desarrollo, sintetiza, y propone handoff. nunca reemplaza al departamento dueño.
 
 ### cuándo usar cada uno
 
-regla mental: **"si una persona contratada con cv específico haría esta tarea, ese dominio es el dueño."**
+regla mental: **"si esto caería naturalmente en un departamento real, ese dominio es el dueño."**
 
 - ¿un community manager lo haría? → redes-sociales
-- ¿un CFO lo haría? → finanzas
-- ¿un illustrator lo haría? → imagenes
-- ¿un growth marketer lo haría? → marketing o ventas (según si es awareness o pipeline)
-- ¿un VP Eng lo haría? → desarrollo
-- ¿un instructional designer lo haría? → educacion
+- ¿es presupuesto, costos o cobros? → finanzas
+- ¿es ilustración, assets o dirección visual? → imagenes
+- ¿es awareness/mensaje o pipeline/comercial? → marketing o ventas
+- ¿es repo, infra, seguridad o deploy? → desarrollo
+- ¿es lección, ejercicio o metodología? → educacion
 
 si dudas entre 2, lista los 2 y avanza.
 

@@ -12,7 +12,7 @@ cada conversación-dominio (automatizacion, datos, desarrollo, educacion, finanz
 
 sin ritual de cierre, las decisiones quedan en la cabeza de pablo y mueren con la conversación. con ritual de cierre, codex y el orquestador pueden leerlas y operar sin pedirle a pablo que recuerde.
 
-ver `metodologia_estructura_dominios.md` para el catálogo completo de los 14 dominios y el mapping desde el modelo C-suite anterior.
+ver `metodologia_estructura_dominios.md` para el catálogo completo de los 14 dominios y el mapping desde el modelo anterior de posiciones.
 
 ## cuándo se aplica
 

@@ -39,7 +39,7 @@ FAQ (5 preguntas, tono explicativo)
 - CTA "Comenzar →" a `/auth/signup` con `depth="full"`.
 
 **Componentes archivados** (vivos en `components/landing/` pero no rendereados; imports comentados en `app/page.tsx` para re-habilitar trivial):
-- `HowItWorksSection.tsx` — bloqueado en `experimento_how_it_works_visual` (Remotion vs screenshots vs keep illustrations).
+- `HowItWorksSection.tsx` — archivado; si revive, rediseñarlo desde la tesis vigente de simulador de criterio IA, no desde el experimento viejo.
 - `AvailableCoursesSection.tsx` — funcional, archivada junto con HowItWorks.
 - `ProjectInputSection.tsx` — textarea "describe tu proyecto" + redirect a signup con `pendingProjectIdea` en sessionStorage. Archivada por Pablo (decisión final pendiente entre borrar permanente o preservar para revival).
 
@@ -55,7 +55,7 @@ FAQ (5 preguntas, tono explicativo)
 
 **Decisiones de Pablo pendientes (orden de impacto):**
 1. `/landingPrueba` — qué secciones van a producción y en qué orden.
-2. `experimento_how_it_works_visual` — Remotion vs screenshots vs keep ilustraciones genéricas. Bloquea revival de HowItWorksSection.
+2. HowItWorksSection — si revive, decidir desde la tesis vigente de simulador de criterio IA, no desde ilustraciones genéricas viejas.
 3. ProjectInputSection — borrar permanente o preservar archivada.
 4. Páginas nuevas propuestas: `/empresa` (B2B dedicated), `/manifesto` (founder story), `/catalogo` (100 lecciones indexables).
 

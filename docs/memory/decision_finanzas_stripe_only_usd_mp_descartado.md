@@ -10,7 +10,7 @@ dept: [finanzas]
 
 itera procesa pagos **solo con stripe**. moneda única **USD**. mercado pago **descartado definitivamente**.
 
-esta decisión es canónica y no se reabre sin nuevo análisis CFO formal.
+esta decisión es canónica y no se reabre sin nuevo análisis formal de finanzas.
 
 ## razones
 
@@ -56,9 +56,9 @@ solo si ocurre **una** de estas:
 - itera entra en un país con prohibición regulatoria de cobrar en USD a empresas locales (improbable).
 - stripe sale de un país clave de itera (descontinuación regional).
 
-en cualquier otro caso, **no reabrir**. responder *"stripe-only, USD, MP descartado — ver `decision_cfo_stripe_only_usd_mp_descartado.md`"*.
+en cualquier otro caso, **no reabrir**. responder *"stripe-only, USD, MP descartado — ver `decision_finanzas_stripe_only_usd_mp_descartado.md`"*.
 
 ## historial
 
 - pre-2026-04-24: claude propuso varias veces dual-rail latam. cada propuesta fue rechazada.
-- 2026-04-24: pablo formaliza rol CFO. decisión sale de memoria personal de claude y entra al repo como canónica.
+- 2026-04-24: pablo formaliza el frente de finanzas. decisión sale de memoria personal de claude y entra al repo como canónica.

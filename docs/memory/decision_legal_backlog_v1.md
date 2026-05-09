@@ -5,9 +5,9 @@ date: 2026-05-04
 tags: [legal, backlog, scope, e-residency, contratos, terminos, privacidad, ai-disclaimer, refund, indautor, impi]
 ---
 
-# backlog inicial de frentes legales (CLO)
+# backlog inicial de frentes legales
 
-Pablo dictó el 2026-05-04, al asignarme el hat Legal/CLO, los **9 frentes** que quiere registrar para evaluar antes de decidir por dónde arrancar. Esta nota es un *backlog*, no un plan ejecutado: el orden y el alcance se deciden en una segunda pasada (investigación + priorización).
+Pablo dictó el 2026-05-04, desde el departamento Legal, los **9 frentes** que quiere registrar para evaluar antes de decidir por dónde arrancar. Esta nota es un *backlog*, no un plan ejecutado: el orden y el alcance se deciden en una segunda pasada (investigación + priorización).
 
 ## frentes a investigar
 
@@ -29,5 +29,5 @@ Pablo dictó el 2026-05-04, al asignarme el hat Legal/CLO, los **9 frentes** que
 
 ## notas operativas
 
-- **dept = `legal`** — formalizado en `scripts/lint-memory.sh` el 2026-05-04 a pedido de Pablo. Lista actual de depts válidos: `ceo cfo cmo cgo cpo cto legal orq shared`.
-- Origen del backlog: dictado verbal de Pablo durante sesión del 2026-05-04. Ver auto-memory `user_role_legal.md` para el contexto del hat.
+- **dept = `legal`** — formalizado en `scripts/lint-memory.sh` el 2026-05-04 a pedido de Pablo. Lista actual de depts válidos: `automatizacion, datos, desarrollo, educacion, finanzas, fundraising, imagenes, legal, marketing, orquestador, producto, redes-sociales, soporte, ventas`.
+- Origen del backlog: dictado verbal de Pablo durante sesión del 2026-05-04.

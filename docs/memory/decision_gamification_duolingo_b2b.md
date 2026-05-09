@@ -44,7 +44,7 @@ La feature de retos fue **eliminada del código** en commit `d146ed7` (feat(cont
 - El "practicar lo que aprendes" ahora vive dentro de los slides `evaluate` (fase 5E) de cada lección, no en retos separados.
 - Los badges que dependen de ejercicios/retos completados no existen; todo lo demás (primera lección, secciones, rachas, milestones de lecciones/XP, semana laboral) sigue válido.
 
-Docs paralelos (WISHLIST.md, gotcha_cruces_estructurales_recurrentes) pueden seguir mencionando retos como decisión pendiente — están stale. La decisión vive en el commit `d146ed7`.
+Docs paralelos legacy pueden seguir mencionando retos como decisión pendiente — están stale. La decisión vive en el commit `d146ed7`.
 
 ### Actualización 2026-04-24 — cierre P2 (badges) + bug pendiente
 

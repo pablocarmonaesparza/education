@@ -22,4 +22,4 @@ Inconsistencia importante: el **dashboard** sí respeta el contrato de `CLAUDE.m
 
 **Por qué:** la landing se escribió antes de que el design system se codificara en `CLAUDE.md` + `components/ui/`, y no se hizo un refactor de alineación cuando se añadieron los componentes. El dead code es residuo del posicionamiento viejo de "videos" (ver `decision_landing_pivote_ejercicios`).
 
-**Cuándo aplicar:** si se va a hacer refactor visual de landing, atacar estos dos frentes juntos. Si solo se toca copy (como el pivote del 22 abril), no bloquear el merge. Antes de rediseñar hero con Claude Design (ver `experimento_hero_claude_design`), decidir si se borra dead code o se migra contenido reciclable. Si `/design-review` o `/health` reportan violaciones de diseño, esta memoria explica el contexto.
+**Cuándo aplicar:** si se va a hacer refactor visual de landing, atacar estos dos frentes juntos. Si solo se toca copy (como el pivote del 22 abril), no bloquear el merge. Antes de rediseñar hero, decidir si se borra dead code o se migra contenido reciclable. Si `/design-review` o `/health` reportan violaciones de diseño, esta memoria explica el contexto.

@@ -79,7 +79,7 @@ El crecimiento futuro del catálogo (200, 400, 1000 lecciones) vive en expansion
 - **Backend:** Supabase (Postgres + Auth + Storage + pgvector para ruta personalizada)
 - **IA SDKs:** `@anthropic-ai/sdk`, `openai`, `cohere-ai`
 - **Pagos:** Stripe únicamente. Mercado Pago descartado y eliminado el 2026-04-22 (migración `010_drop_mercadopago.sql`) — rails Pix/OXXO/Boleto son B2C y no aplican al foco empresa.
-- **Email:** AgentMail (transaccional-only — no engagement/lifecycle/drip, ver `decision_mailing_scope_transaccional_only.md`).
+- **Email:** AgentMail (transaccional-only — no engagement/lifecycle/drip, ver `decision_mailing_transaccional_only.md`).
 
 ### Schema de DB
 **Fuente de verdad:** `supabase/migrations/`

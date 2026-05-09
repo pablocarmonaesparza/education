@@ -198,4 +198,4 @@ Métricas a vigilar (en orden de importancia):
   - "WhatsApp Business API setup and documentation requirements for a Mexican EdTech company in 2026"
   - "WhatsApp Cloud API 2026 interactive messages complete reference for educational micro-learning bot"
 - Decisión maestra: [decision_pivot_whatsapp_canal_real.md](decision_pivot_whatsapp_canal_real.md)
-- Telegram (sandbox actual): [experimento_telegram_canal_lecciones.md](experimento_telegram_canal_lecciones.md)
+- Telegram sandbox histórico quedó fuera de memoria activa; si se retoma, reconstruir desde git history y estado real del bot.
