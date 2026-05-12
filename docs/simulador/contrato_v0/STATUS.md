@@ -19,7 +19,7 @@
 | practice_beats catálogo | `practice_beats/*.yaml` | claude | ✅ done v1 | – | 4 stubs poblados: anonymize_keep_signal, validate_llm_output, objection_to_authority, spot_unverifiable_claims |
 | copy manager | `copy/manager_recommendation_templates.md` | claude | ✅ done v1 | – | 4 acciones con reglas de selección, slots, posfacio, tonos a evitar |
 | copy empleado | `copy/employee_runtime_strings.md` | claude | ✅ done v1 | – | onboarding sprint, strings por step type, errores, prueba de cordura |
-| sprint marketing_30d | `sprints/sprint_marketing_30d.yaml` | claude | ✅ done v1 | – | SKU vendible: 8 casos (6 ready + 2 planned tras pase 6), pricing tentativo $79-199, deliverables manager+empleado |
+| sprint marketing_30d | `sprints/sprint_marketing_30d.yaml` | claude | ✅ done v1 | – | SKU vendible: 8 casos ready + 20 practice beats; pricing tentativo $79-199, deliverables manager+empleado |
 | case_template marketing #2 | `casos/marketing_copy_with_brand_voice_v1.yaml` | claude | ✅ done v1 | – | tensión velocidad-vs-voz-de-marca; 5 steps incluyendo data_scope para contexto y artifact_review del output IA |
 | variant primary #2 | `variantes/marketing_copy_with_brand_voice__loop_b2b_v1.yaml` | claude | ✅ done v1 | – | Loop B2B SaaS corporate-cálido, 5 ejemplos históricos sintéticos LATAM |
 | variant resim #2 | `variantes/marketing_copy_with_brand_voice__nubefresh_b2c_resim_v1.yaml` | claude | ✅ done v1 | – | NubeFresh D2C tono irreverente gen z — contraste extremo para probar transferencia del PRINCIPIO de anclar tono |
@@ -44,6 +44,10 @@
 | variant primary #7 | `variantes/marketing_content_calendar_under_pressure__loop_q2_v1.yaml` | claude | ✅ done v1 | – | Loop Q2 awareness build 30 días con 10 piezas/semana, presupuesto $24k |
 | variant resim #7 | `variantes/marketing_content_calendar_under_pressure__loop_q3_launch_resim_v1.yaml` | claude | ✅ done v1 | – | Loop Q3 launch 90 días con 25 piezas/semana multi-canal, $84k — escala 3x |
 | practice beats nuevos (pase 7) | `practice_beats/practice_{spot_calendar_redundancy,content_progression_storytelling}_v1.yaml` | claude | ✅ done v1 | – | 2 nuevos: detectar redundancia disfrazada en calendar + estructurar en 4 actos (pain→deep dive→solution→social proof) |
+| case_template marketing #8 | `casos/marketing_crisis_response_with_ia_v1.yaml` | claude | ✅ done v1 | – | difficulty advanced; crisis pública con IA, riesgo legal, tono humano y escalamiento |
+| variant primary #8 | `variantes/marketing_crisis_response_with_ia__loop_viral_complaint_v1.yaml` | claude | ✅ done v1 | – | viral complaint público; presión reputacional y velocidad |
+| variant resim #8 | `variantes/marketing_crisis_response_with_ia__loop_data_breach_resim_v1.yaml` | claude | ✅ done v1 | – | data breach / PII exposure; escalamiento legal obligatorio |
+| practice beats nuevos (pase 8) | `practice_beats/practice_{crisis_approval_chain,crisis_tone_human}_v1.yaml` | claude | ✅ done v1 | – | 2 nuevos: cadena de aprobación en crisis + tono humano bajo presión |
 | schema SQL v0 | `schema/simulador_v0.sql` | codex | ✅ audit passed | ✅ candidate | bloqueantes del audit Claude resueltos: certificate_export en reports + user_id en reports, tabla human_review_queue, sprint_packages.version + unique(slug,version), evidence_kind con CHECK de los 5 kinds v0, roles aditivos documentados en SQL. **listo para migración con aprobación de Pablo** (regla cruzada: NO correr en main sin OK explícito) |
 | modelo de datos doc | `schema/MODELO_DATOS_V0.md` | codex | – | ✅ done | separación template/variant/session/events/evidence — alineado con contrato |
 | runtime lógico doc | `runtime/FLUJO_RUNTIME_V0.md` | codex | – | ✅ done | flujo empleado + manager, estados de sesión, event model, regla resim sin modular pesos |
@@ -86,17 +90,18 @@ ninguno por ahora.
 - `docs/memory/decision_simulador_first_case_marketing.md` — primer caso es marketing_urgent_campaign_pii, ICP marketing_manager LATAM 50-500
 - `docs/memory/decision_simulador_second_case_brand_voice.md` — segundo caso, tensión velocidad-vs-voz-de-marca, prueba que el simulador no depende solo de PII
 - `docs/memory/decision_simulador_third_case_segmentation.md` — tercer caso difficulty intermediate, tensión bias predictivo en segmentación, primer caso con ambigüedad ética
+- `docs/memory/decision_simulador_marketing_cases_4_7.md` — resumen de casos 4 a 7 y sus practice beats
 - `docs/memory/decision_simulador_runtime_minimo_codex.md` — runtime mínimo en lib/simulador, importer a seed rows, event model y eval stub
 
 ## handoff actual
 
-claude completó pase 6 del contrato:
-- 6 case_templates ready + 12 variantes (primary + resim por caso)
+claude completó pase 8 del contrato:
+- 8 case_templates ready + 16 variantes (primary + resim por caso)
 - 1 rúbrica versionada con LLM-judge specs
-- 16 practice_beats poblados
+- 20 practice_beats poblados
 - 2 archivos de copy (manager + empleado)
-- 1 sprint package vendible (marketing_30d) con 6 casos ready + 2 planned
-- 4 memorias en docs/memory/ indexadas: arquitectura + primeros 3 casos
+- 1 sprint package vendible (marketing_30d) con 8 casos ready + 0 planned
+- 7 memorias en docs/memory/ indexadas: arquitectura + primeros 3 casos + casos 4-7 + caso 8 + runtime Codex
 
 codex completó:
 - schema SQL candidate con bloqueantes del audit Claude resueltos
@@ -106,7 +111,7 @@ codex completó:
 - actualización de handoff/readme/status durante los pases activos
 
 próximo paso natural:
-1. Claude puede avanzar a los casos 7-8: `marketing_content_calendar_under_pressure` y `marketing_crisis_response_with_ia`
-2. Codex debe conectar parser/importer real contra YAML o generar seed SQL revisable
-3. Codex debe reemplazar el eval stub con LLM-as-judge versionado
+1. Codex debe conectar parser/importer real contra YAML o generar seed SQL revisable
+2. Codex debe reemplazar el eval stub con LLM-as-judge versionado
+3. Claude puede hacer audit fino de producto/copy sobre los 8 casos
 4. NO correr migración Supabase hasta aprobación explícita de Pablo

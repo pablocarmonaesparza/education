@@ -1,0 +1,93 @@
+# practice_beat — activar approval chain en crisis sin saltarlo
+# disparado por gaps: bypass_approval, silence_amplifies_crisis
+# duración: ≤2 min.
+
+practice_beat:
+  id: practice_crisis_approval_chain_v1
+  version: 1
+  status: active
+  duration_max_seconds: 120
+  triggered_by_gap: [bypass_approval, silence_amplifies_crisis]
+  dimension: juicio
+  applies_to_sprint_skus: [marketing_30d]
+
+  framing:
+    intro: |
+      pequeña práctica. en crisis decidiste o publicar sin approval o
+      esperar approval secuencial. ambos extremos amplifican daño.
+    why_this_matters: |
+      el approval chain en crisis NO es burocracia — es protección
+      legal + reputacional. saltarlo te expone personalmente a
+      consecuencias laborales/legales. esperarlo secuencialmente
+      pierde la ventana de holding statement. la mejor postura es:
+      paralelo + minimal + transparente.
+
+  principle_card:
+    headline: "regla del approval chain en paralelo"
+    body: |
+      en crisis con stakes medium+, sigue este patrón:
+
+      1. **publica HOLDING en 5-15 min**
+         "estamos al tanto, investigando, actualizamos en X."
+         este statement NO requiere approval extensiva. solo OK de
+         PR lead. propósito: ocupar el espacio antes que Twitter.
+
+      2. **activa approval chain EN PARALELO**
+         mismo momento que publicas holding, manda mensajes a:
+         - VP marketing
+         - legal (interno + external retainer)
+         - CEO
+         - CISO (si breach)
+         - DPO (si data involucrado)
+         que sepan TODOS al mismo tiempo. no en cascada.
+
+      3. **respuesta sustantiva = sólo cuando approval chain
+         confluye**
+         puede tomar 1-4 horas. mientras tanto, holding statement
+         actualizado cada hora con info nueva confirmada.
+
+      regla: tu rol en crisis NO es decidir. es facilitar messaging
+      cuando approval chain decide. quedarte callado = malo. publicar
+      sin approval = peor.
+
+  practice_exercise:
+    type: decision_micro
+    duration_seconds: 60
+    intro: |
+      11:30 PM, viral complaint exploded. el CEO en avión, VP en
+      cena, legal teóricamente off-hours. tienes ~30 min antes que
+      la narrativa de Twitter se cement. ¿qué haces?
+    options:
+      - id: a
+        label: "publicar respuesta completa AHORA del LLM. crisis es velocidad."
+        verdict: gap_bypass_approval
+        why: "publicar substantivo sin approval expones a la empresa Y a ti. consecuencia: legal liability + posible despido."
+      - id: b
+        label: "publicar holding statement 'estamos al tanto, update en 1h' en 5 min + mensaje paralelo a VP/legal/CEO inmediato"
+        verdict: correct
+        why: "ocupas el espacio público sin compromiso legal. activas approval chain en paralelo. en 1h tienes substantivo aprobado."
+      - id: c
+        label: "no publicar nada hasta legal + VP + CEO aprueben sustancialmente. crisis comms es serio."
+        verdict: gap_silence_amplifies_crisis
+        why: "silencio en hora crítica = admisión de culpa percibida. la narrativa la define Twitter mientras esperas."
+      - id: d
+        label: "delegar todo a agencia de PR de retainer (~30 min response)"
+        verdict: correct_with_escalation
+        why: "alternativa válida si tu approval chain interno está offline. la agencia conoce holding statement template y activa approval por ti."
+
+  reveal_after_attempt:
+    correct_principle: |
+      el approval chain en crisis existe para protegerte y proteger
+      a la empresa. saltarlo o esperarlo secuencial son ambos errores.
+      el patrón correcto es: holding minimal AHORA + chain en paralelo
+      + substantivo después. tu rol NO es decisor — es coordinator
+      de messaging.
+
+  exit:
+    transition_text: "ok, regresamos al score final."
+    log_to_telemetry: practice_beat_completed
+    contributes_to_resim_score: false
+
+  authoring:
+    written_by: claude_product
+    last_updated: 2026-05-12

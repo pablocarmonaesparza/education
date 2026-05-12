@@ -20,6 +20,9 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 - [primer caso canónico — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — 2026-05-12 — `[producto, marketing, ventas]` — Marketing Manager LATAM SaaS B2B; tensión velocidad-vs-privacidad; 5 steps + resim enterprise US; 7 gaps mapeados a practice_beats.
 - [segundo caso canónico — marketing_copy_with_brand_voice](decision_simulador_second_case_brand_voice.md) — 2026-05-12 — `[producto, marketing]` — tensión velocidad-vs-voz-de-marca; 5 steps + resim B2C Gen Z; prueba que el simulador no depende solo de PII.
 - [tercer caso canónico — marketing_segment_with_sensitive_data](decision_simulador_third_case_segmentation.md) — 2026-05-12 — `[producto, marketing, legal]` — difficulty intermediate; tensión bias predictivo en segmentación con IA + privacidad behavioral; primer caso con ambigüedad ética; resim EU GDPR strict.
+- [casos 4 a 7 del Sprint marketing_30d](decision_simulador_marketing_cases_4_7.md) — 2026-05-12 — `[producto, marketing]` — brief a agencia, competitor research, attribution reporting y content calendar; deja 7/8 casos ready.
+- [Sprint marketing_30d completo — 8 casos canónicos del Simulador v0](decision_simulador_sprint_marketing_completo_v1.md) — 2026-05-12 — `[producto, marketing, desarrollo, orquestador]` — cierre del Sprint marketing: 8 case_templates ready (incl crisis_response advanced), 16 variantes, 20 practice_beats, rúbrica versionada. listo para que Codex aplique migración + runtime.
+- [runtime mínimo del Simulador implementado por Codex](decision_simulador_runtime_minimo_codex.md) — 2026-05-12 — `[desarrollo, producto]` — `lib/simulador/` con tipos, validador, importer a seed rows, runtime de eventos y evaluation stub; no toca Supabase remoto.
 - [stripe-only + USD único + mercado pago descartado](decision_finanzas_stripe_only_usd_mp_descartado.md) — 2026-04-24 — `[finanzas]` — itera procesa solo con stripe en USD; MP descartado definitivamente.
 - [pivote whatsapp como canal real](decision_pivot_whatsapp_canal_real.md) — 2026-04-28 — `[desarrollo, marketing, finanzas, producto]` — whatsapp como canal alterno principal de delivery.
 - [landing — estado al cerrar agente Landing 22-23 abril](decision_landing_estructura_post_pivote_b2b.md) — 2026-04-23 — `[producto, marketing]` — landing prod = Hero (shader + "ai de 0 a 100") → Pricing → FAQ.
@@ -82,6 +85,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### desarrollo
 
+- [runtime mínimo del Simulador implementado por Codex](decision_simulador_runtime_minimo_codex.md) — decision — 2026-05-12 *(comparte con producto; `lib/simulador/`)*
 - [arquitectura v0 de "El Simulador"](decision_simulador_arquitectura_v0.md) — decision — 2026-05-12 *(comparte con producto, orquestador; schema/runtime/contrato v0)*
 - [pivote whatsapp como canal real](decision_pivot_whatsapp_canal_real.md) — decision — 2026-04-28 *(comparte con marketing, finanzas, producto)*
 - [protocolo claude+codex](metodologia_protocolo_claude_codex.md) — metodologia — 2026-04-27 *(comparte con orquestador; prototipos aislados no son build aprobado)*
@@ -119,10 +123,13 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### legal
 
+- [tercer caso canónico — marketing_segment_with_sensitive_data](decision_simulador_third_case_segmentation.md) — decision — 2026-05-12 *(comparte con producto, marketing; GDPR/DPIA/RoPA y privacidad behavioral)*
 - [legal backlog v1](decision_legal_backlog_v1.md) — decision — 2026-05-04
 
 ### marketing
 
+- [casos 4 a 7 del Sprint marketing_30d](decision_simulador_marketing_cases_4_7.md) — decision — 2026-05-12 *(comparte con producto)*
+- [tercer caso canónico — marketing_segment_with_sensitive_data](decision_simulador_third_case_segmentation.md) — decision — 2026-05-12 *(comparte con producto, legal)*
 - [segundo caso canónico — marketing_copy_with_brand_voice](decision_simulador_second_case_brand_voice.md) — decision — 2026-05-12 *(comparte con producto)*
 - [primer caso canónico — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — decision — 2026-05-12 *(comparte con producto, ventas)*
 - [convención IA mayúsculas, nunca AI](copy_convencion_ia_mayusculas.md) — copy — 2026-05-05 *(comparte con producto)*
@@ -144,6 +151,9 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### producto
 
+- [casos 4 a 7 del Sprint marketing_30d](decision_simulador_marketing_cases_4_7.md) — decision — 2026-05-12 *(comparte con marketing)*
+- [runtime mínimo del Simulador implementado por Codex](decision_simulador_runtime_minimo_codex.md) — decision — 2026-05-12 *(comparte con desarrollo)*
+- [tercer caso canónico — marketing_segment_with_sensitive_data](decision_simulador_third_case_segmentation.md) — decision — 2026-05-12 *(comparte con marketing, legal)*
 - [segundo caso canónico — marketing_copy_with_brand_voice](decision_simulador_second_case_brand_voice.md) — decision — 2026-05-12 *(comparte con marketing)*
 - [primer caso canónico — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — decision — 2026-05-12 *(comparte con marketing, ventas)*
 - [arquitectura v0 de "El Simulador"](decision_simulador_arquitectura_v0.md) — decision — 2026-05-12 *(comparte con desarrollo, orquestador)*
