@@ -71,9 +71,9 @@ necesita re-narrativa o el ICP está mal definido.
 
 ### H2 (construct validity)
 **predicción:** los scores agregados de los 5 participantes muestran
-varianza de al menos **1 banda completa** (A↔B, o A↔M, o M↔B) en al
-menos **3 de las 5 dimensiones** cuando los evaluamos con la rúbrica
-ciega humana.
+varianza de al menos **1 salto de banda adyacente** (A↔M o M↔B; A↔B
+cuenta como señal más fuerte) en al menos **3 de las 5 dimensiones**
+cuando los evaluamos con la rúbrica ciega humana.
 
 **si H2 falla:** el caso no diferencia; todos los participantes scorean
 similar. probablemente porque las decisiones del caso son demasiado
@@ -92,8 +92,18 @@ mismos 3 managers en 1 semana.
 
 ### H4 (humano-humano agreement = sanidad de rúbrica)
 **predicción:** los 2 evaluadores humanos externos asignan la misma
-banda (A/M/B) en al menos **70% de las cells** (dimensión × step). cells
-totales por sesión = 5 dimensiones × 5 steps = 25 cells.
+banda (A/M/B) en al menos **70% de las cells evaluables**.
+
+**cell evaluable:** combinación `step × dimensión` que el case template
+declara explícitamente en `evaluates`, `evaluates_prompt` o
+`followup.evaluates`. Para `marketing_urgent_campaign_pii_v1` son **15
+cells por sesión**, no 25:
+
+- step 1: contexto, privacidad
+- step 2: contexto, privacidad, validacion, juicio, decision
+- step 3: privacidad, validacion, juicio
+- step 4: juicio, decision
+- step 5: privacidad, juicio, decision
 
 cohen's kappa esperado: ≥0.4 (acuerdo moderado).
 
@@ -111,6 +121,10 @@ de los risk_events high detectados por los humanos. **máximo 1 false
 negative crítico (high) en toda la prueba.** precision del judge puede
 ser ≥60% (puede sobre-llamar riesgos, eso es calibrable; lo que NO se
 puede tolerar es que pierda riesgos altos).
+
+Los `risk_events high` se capturan como flags explícitos por step en
+`evaluator_1.yaml` y `evaluator_2.yaml`; no se infieren solo desde la
+banda A/M/B.
 
 **si H5 falla en recall high-risk:** el judge no es vendible al manager
 todavía. se reemplaza por evaluación humana hasta calibrar con n ≥20.
@@ -243,7 +257,7 @@ al cierre de las 5 sesiones:
 2. **face validity (H1)**: count de participantes que afirman realismo + transcripts de las frases que usaron
 3. **construct validity (H2)**: tabla de scores por participante × dimensión, calculada con bandas A/M/B
 4. **buyer validity (H3)**: count de managers que afirman decisión accionable + transcripts
-5. **humano-humano kappa (H4)**: cohen's kappa weighted sobre 25 cells × 5 sesiones = 125 cells totales
+5. **humano-humano kappa (H4)**: cohen's kappa weighted sobre 15 cells × 5 sesiones = 75 cells totales
 6. **humano-judge agreement (H5)**: % cells acuerdo + recall high-risk + precision high-risk
 7. **time on task** (mediana de los 5 participantes para completar caso)
 8. **abandono mid-session** (cuántos no terminan)
@@ -283,9 +297,11 @@ esto se acepta explícitamente. **no se concluye sobre ellos en fase 0.**
 | día | actividad | quién |
 |---|---|---|
 | 0 | OK explícito de pablo a Fase A | pablo |
-| 0-3 | claude redacta Fase B (7 archivos del packet) | claude |
-| 0-7 | pablo activa outreach pre-warming en paralelo | pablo |
-| 4-6 | codex audita Fase B + Pablo aprueba | codex + pablo |
+| 0-3 | claude redacta Fase A; codex audita núcleo experimental | claude + codex |
+| 3-4 | pablo aprueba/corrige Fase A; core se commitea con hash visible | pablo |
+| 3-7 | pablo puede hacer pre-warming informal de outreach, sin ejecutar sesiones | pablo |
+| 4-6 | claude redacta Fase B (7 archivos del packet) después del OK de Fase A | claude |
+| 6 | codex audita Fase B + Pablo aprueba | codex + pablo |
 | 7-10 | reclutamiento formal de 5 participantes + 3 managers + 2 revisores externos | pablo |
 | 10-21 | ejecución de 5 sesiones individuales (1 por día como límite, total ~10 días con buffer) | operador + participantes |
 | 21-24 | calificación humana de las 5 sesiones por evaluador1 y evaluador2 | externos |

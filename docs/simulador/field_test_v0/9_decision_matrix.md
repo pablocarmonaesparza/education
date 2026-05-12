@@ -53,7 +53,13 @@ tenga que explicar más allá del brief inicial?
 | **matar** | ≤ 2/5 completan sin ayuda |
 
 **captura:** operador anota cada vez que tiene que clarificar algo
-durante la sesión. <5 clarificaciones por sesión = "sin ayuda".
+durante la sesión.
+
+**sin ayuda** significa:
+
+- 0 clarificaciones de contenido o criterio;
+- máximo 2 clarificaciones puramente procedurales por sesión;
+- cualquier pista sobre qué decisión tomar marca la sesión como "con ayuda".
 
 ---
 
@@ -88,13 +94,13 @@ evaluador2 cuando coinciden; tomada de tie-breaker cuando aplica).
 
 |  | umbral |
 |---|---|
-| **mantener** | en ≥ 3 de las 5 dimensiones, hay al menos 1 banda completa de diferencia entre el participante top y el bottom |
+| **mantener** | en ≥ 3 de las 5 dimensiones, hay al menos 1 salto de banda adyacente entre el participante top y el bottom |
 | **zona intermedia** | en 2 de las 5 dimensiones hay 1 banda de diferencia |
 | **matar** | en ≤ 1 dimensión hay varianza; los demás scorean similar todos |
 
 **ejemplo:**
-- **mantener:** dimensión privacidad → participante top=A, bottom=B. ✓
-- **matar:** todas las 5 dimensiones → 4 participantes en M, 1 en A. ✗ (poca varianza)
+- **mantener:** dimensión privacidad → participante top=A, bottom=M o B. ✓
+- **matar:** solo 1 dimensión muestra A↔M y las otras 4 dimensiones quedan iguales. ✗
 
 ---
 
@@ -126,6 +132,9 @@ caso en fase 0.
 
 calculado: judge detectó X% de los risk_events high detectados por al
 menos UN humano.
+
+Los risk_events high se capturan como flags explícitos en las hojas de
+evaluación humana; no se infieren automáticamente desde la banda A/M/B.
 
 |  | umbral |
 |---|---|
