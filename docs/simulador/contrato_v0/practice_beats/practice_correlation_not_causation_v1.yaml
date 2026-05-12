@@ -1,0 +1,89 @@
+# practice_beat — distinguir correlación de causalidad en attribution con IA
+# disparado por gaps: causal_overclaim, invented_correlation
+# duración: ≤2 min.
+
+practice_beat:
+  id: practice_correlation_not_causation_v1
+  version: 1
+  status: active
+  duration_max_seconds: 120
+  triggered_by_gap: [causal_overclaim, invented_correlation]
+  dimension: validacion
+  applies_to_sprint_skus: [marketing_30d]
+
+  framing:
+    intro: |
+      pequeña práctica. el LLM hizo claim causal — "X causó Y" — sin
+      la evidencia para sostenerlo. solo había correlación. publicar
+      eso en reporte ejecutivo es desinformar al CMO/board.
+    why_this_matters: |
+      los LLMs son magos del lenguaje pero ciegos a confounders. ven
+      dos series temporales que se mueven juntas y escriben "X impulsó
+      Y" en lugar de "X y Y aumentaron en paralelo". en attribution
+      esto es daño real — el CMO presupuesta basado en lo que TÚ
+      dijiste que funciona, no en lo que de verdad funciona.
+
+  principle_card:
+    headline: "tres preguntas para no caer en causal overclaim"
+    body: |
+      cuando el LLM diga "X causó Y" o "X impulsó Y", aplica:
+
+      1. **¿hubo control group?**
+         no se puede claimar causalidad sin algo que no recibió X.
+         si todo el universo recibió la campaña, no sabes qué hubiera
+         pasado sin ella. mejor: "asociado con", "coincide con".
+
+      2. **¿hay confounders obvios?**
+         ¿qué más cambió al mismo tiempo? estacionalidad, otro canal,
+         pricing change, news cycle. si confounders presentes,
+         claim causal es débil.
+
+      3. **¿el orden temporal está claro?**
+         X tiene que pasar ANTES que Y. si en tu data X y Y se
+         miden semana de semana, no sabes orden. mejor reformular
+         como observación, no causalidad.
+
+      regla mental: el LLM dirá "X drove Y" porque suena bien. tú
+      reescribes como "X y Y mostraron crecimiento paralelo,
+      pendiente investigación de causa".
+
+  practice_exercise:
+    type: artifact_review_micro_discriminative
+    duration_seconds: 60
+    intro: |
+      el LLM generó estas 4 afirmaciones para el reporte al CMO.
+      clasifica cada una: USE, REWRITE, o BLOCK.
+    segments:
+      - id: 1
+        text: "LinkedIn Ads impulsó el aumento de 28% en MQL este Q vs el anterior."
+        correct_verdict: rewrite
+        why: "claim causal sin control + confounders posibles (otros canales también subieron). reescribir: 'LinkedIn Ads y MQL aumentaron en paralelo 28% este Q vs anterior; pending análisis de attribution para confirmar drivers.'"
+      - id: 2
+        text: "El cambio de mensaje en LinkedIn (week 8) coincide con el spike de leads en HubSpot la siguiente semana."
+        correct_verdict: use
+        why: "observación temporal correcta + correlación sin causal claim. honesto con la evidencia."
+      - id: 3
+        text: "Reducir spend de Meta en 30% causó la caída de 18% en MQL del canal social."
+        correct_verdict: rewrite
+        why: "claim causal posible pero sin control. reescribir: 'reducción de spend Meta 30% acompañó caída MQL social 18% — relación esperada según modelo de attribution.' (acompañar, no causar)"
+      - id: 4
+        text: "El equipo de sales reporta que 70% de SQLs cierran en Q+1 vs 45% promedio histórico. el cambio de proceso de Q1 está dando frutos."
+        correct_verdict: block
+        why: "claim causal (proceso Q1 → close rate Q+2) requiere análisis de cohortes. el LLM ni siquiera tiene la data de cohortes — está inferring."
+
+  reveal_after_attempt:
+    correct_principle: |
+      el lenguaje causal es atractivo porque suena seguro. pero en
+      attribution multi-fuente, casi nunca tienes la evidencia para
+      causalidad — solo correlación + orden temporal. la honestidad
+      ("X coincide con Y", "pending análisis", "modelo sugiere") es
+      lo que protege al CMO de presupuestar basado en ilusión.
+
+  exit:
+    transition_text: "ok, regresamos al score final."
+    log_to_telemetry: practice_beat_completed
+    contributes_to_resim_score: false
+
+  authoring:
+    written_by: claude_product
+    last_updated: 2026-05-12

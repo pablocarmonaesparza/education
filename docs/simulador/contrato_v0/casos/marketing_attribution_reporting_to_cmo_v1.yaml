@@ -1,0 +1,288 @@
+# case_template — marketing_attribution_reporting_to_cmo
+# sexto caso del Sprint. tensión: usar IA para sintetizar attribution
+# data multi-fuente sin alucinar correlaciones ni causales falsos.
+
+case_template:
+  id: marketing_attribution_reporting_to_cmo
+  version: 1
+  status: active
+  difficulty: intermediate
+  locale: es-MX
+
+  target_role: [marketing_manager, growth_marketer, demand_gen_lead, attribution_analyst]
+  sprint_skus: [marketing_30d]
+
+  duration_estimate_min: 22
+  rubric_ref: rubric_marketing_v1
+  rubric_version_used: 1.0.0
+
+  freshness:
+    live_signal: "uso de IA para reportar attribution multi-fuente al ejecutivo"
+    review_by: 2026-07-30
+    last_reviewed: 2026-05-12
+    rationale: |
+      caso "vivo" porque "pídele a GPT que me arme el reporte semanal"
+      es el flujo más común y más peligroso en marketing 2026. el LLM
+      es muy bueno haciendo prosa autoritativa con cualquier set de
+      números, incluyendo los inventados.
+
+  expected_manager_action:
+    default: entrenar
+    possible: [pilotar, entrenar, pausar, escalar]
+
+  required_template_vars:
+    - company_name
+    - industry
+    - region
+    - reporting_cadence    # weekly / monthly
+    - sources_available    # cuántas fuentes integran data
+    - cmo_pressure_level   # standard / high_q_close / board_review
+    - deadline_hours
+
+  context_template:
+    role_play: |
+      eres Marketing Manager en {company_name} ({industry}, región
+      {region}). reportas a un CMO que pide attribution {reporting_cadence}
+      con narrativa explicativa, no solo dashboard.
+    scenario: |
+      tienes data de {sources_available} fuentes (HubSpot, Google
+      Analytics, LinkedIn Ads, Meta Ads, y referrals manuales del
+      equipo de sales). los números no cuadran perfecto — fuentes
+      reportan attribution distinta porque tienen modelos distintos.
+
+      vas a usar IA para sintetizar y armar el reporte. presión:
+      {cmo_pressure_level}. deadline: {deadline_hours}h.
+
+      la trampa: el LLM va a generar narrativa autoritativa aunque
+      le des data inconsistente. va a inventar correlaciones,
+      atribuir causalidad donde no hay evidencia, y rellenar gaps
+      con plausibilidad.
+    pressure:
+      - tight_deadline_{deadline_hours}h
+      - cmo_expects_authoritative_narrative
+      - data_inconsistent_across_sources
+
+  data_policy:
+    sensitive_fields:
+      - lead_email
+      - lead_name
+      - company_revenue_exact
+    aggregate_fields_safe:
+      - source_count
+      - conversion_rate_by_source
+      - cost_per_lead_by_source
+      - revenue_attributed_by_source
+    handling_rules:
+      - "lead-level data (email + name) → bucketizar antes de pasar al LLM"
+      - "aggregate metrics → pasar al LLM, son su input legítimo"
+      - "siempre marcar source y date de cada métrica que cites en el reporte"
+
+  inputs_spec:
+    - kind: dataset
+      name: hubspot_attribution.csv
+      schema: [date, source, leads, mql, sql, opportunities, revenue_attributed]
+      row_count: 28  # 4 semanas
+      sample_rows_ref: marketing_attribution_hubspot_sample
+    - kind: dataset
+      name: ads_platforms_aggregated.csv
+      schema: [date, platform, spend, clicks, leads_pixel, conversions_pixel]
+      row_count: 28
+      sample_rows_ref: marketing_attribution_ads_sample
+    - kind: dataset
+      name: sales_attribution_manual.json
+      schema: [opportunity_id, source_self_reported, deal_size, close_quarter]
+      row_count: 14
+      sample_rows_ref: marketing_attribution_sales_sample
+    - kind: doc
+      name: cmo_briefing_template.md
+      content_template_ref: marketing_attribution_cmo_template
+
+  steps:
+    - id: 1
+      type: data_scope
+      prompt: "qué data pasarías al LLM para que sintetice el reporte?"
+      fields_available:
+        - all_3_sources_aggregate_only        # safe + utilizable
+        - all_3_sources_lead_level            # incluye PII
+        - hubspot_aggregate_only              # incompleto
+        - inconsistencies_explicit_called_out  # con tabla de discrepancias
+        - generic_summary_no_data             # placebo
+      expected_action: select_aggregate_with_discrepancies_called_out
+      capture:
+        - selected_data_set
+        - reasoning
+      evaluates: [privacidad, contexto, validacion]
+      gap_trigger_logic: |
+        si selecciona all_3_sources_lead_level: dispara pass_raw_data_with_pii (high)
+        si selecciona aggregate sin discrepancies: dispara hide_source_disagreement (medium)
+        si selecciona aggregate + discrepancies: correct
+
+    - id: 2
+      type: llm_beat
+      llm_provider: itera_provided
+      model_alias: itera_default_2026q2
+      task_to_user: |
+        redacta el prompt al LLM para que produzca:
+        1. resumen ejecutivo (3 bullets, what mattered esta semana)
+        2. fuente de variación principal (qué cambió + por qué)
+        3. recomendación accionable (1 cosa concreta para la próxima)
+        importante: el reporte va al CMO en 30 min.
+      max_turns: 2
+      capture:
+        - user_prompt
+        - model_response_report_draft
+      evaluates_prompt: [contexto, validacion, juicio]
+      followup:
+        type: decision_open_short
+        prompt: |
+          revisa el reporte que generó. ¿hay claims causales sin
+          evidencia? ¿correlaciones que el modelo inventó? ¿números
+          que no salen de tus 3 datasets? menos de 150 palabras.
+        max_chars: 500
+        evaluates: [validacion, juicio]
+
+    - id: 3
+      type: artifact_review
+      artifact: llm_attribution_report_draft
+      prompt: "revisa el reporte. marca problemas por sección."
+      review_targets:
+        - causal_overclaim                # "X causó Y" sin evidencia
+        - invented_correlation            # correlación que no salió de la data
+        - fabricated_number               # cifra que no está en datasets
+        - missing_source_attribution      # cifra sin source/date
+        - unfounded_recommendation        # recomendación basada en cifra inventada
+        - sound_analysis                  # OK
+      review_mode: multi_select_per_section
+      capture:
+        - flagged_problems_per_section
+      evaluates: [validacion, juicio]
+
+    - id: 4
+      type: decision_select
+      prompt: "¿cómo entregas el reporte al CMO?"
+      options:
+        - id: full_report_with_caveats
+          label: "reporte completo + tabla de discrepancias entre fuentes + caveats explícitos sobre claims que no puedo verificar"
+          signal: correct
+        - id: full_report_clean
+          label: "reporte limpio sin caveats — el CMO no quiere ver discrepancias"
+          signal: gap_present_uncertain_as_certain
+        - id: only_verified
+          label: "solo las 3 cifras que puedo verificar 100% — sin narrativa"
+          signal: overcorrection
+        - id: raw_llm_output
+          label: "el output del LLM tal cual — total el CMO sabe leer entre líneas"
+          signal: gap_accept_output_no_validation
+      evaluates: [decision, juicio]
+      risk_event_trigger:
+        condition: "selecciona full_report_clean o raw_llm_output AND step_3 marcó fabricated_number"
+        event: misinformed_executive_decision_basis
+        severity: high
+
+    - id: 5
+      type: decision_open_short
+      prompt: |
+        el CMO te responde: "interesante el insight de que LinkedIn
+        Ads tuvo 3x el ROI de Meta. ¿qué datos lo soportan? ¿te
+        pasaron data nueva esta semana?" tú sabes que ese insight
+        salió del LLM y NO está en los datos brutos. menos de
+        250 caracteres.
+      max_chars: 250
+      evaluates: [juicio, decision]
+      gap_trigger_logic: |
+        si responde "sí, lo confirmo": dispara pretend_full_understanding (high)
+        si responde transparente (sale del análisis del modelo, no de fuente directa, te paso los números crudos): correct
+        si responde defensivo o evasivo: deflection (medium)
+
+  evaluation_meta:
+    llm_judge_model: itera_default_2026q2
+    estimated_eval_duration_seconds: 14
+    rubric_version_used: 1.0.0
+    deterministic_signals: [step_1.selected_data_set, step_4.option_selected]
+    llm_judge_signals: [step_2.user_prompt, step_2.followup_text, step_3.justification_per_section, step_5.text]
+
+  telemetry_required:
+    - time_on_step
+    - prompt_iterations
+    - hint_requested
+    - sensitive_copy_detected
+    - answer_changed
+    - abandoned_step
+
+  evidence_emitted:
+    - kind: readiness_dimension_scores
+      shape: { contexto, privacidad, validacion, juicio, decision }
+    - kind: risk_events_detected
+      shape: [{ event_type, severity, step_id, evidence_text, timestamp }]
+    - kind: decision_replay
+      shape: ordered_list_of_decisions
+    - kind: transfer_delta
+      shape: { primary_session_id, resim_session_id, delta_per_dimension, delta_global, narrative }
+      emitted_when: resim_completed_after_primary
+    - kind: manager_recommendation
+      values: [pilotar, entrenar, pausar, escalar]
+      includes: justification_text
+
+  resimulation_spec:
+    requires_variant_with_role: resimulation
+    delay_days_default: 7
+    expected_behavior_shift_axis:
+      - cmo_pressure_level                   # standard → board_review
+      - sources_available                     # 3 → 6 (más fuentes = más inconsistencias)
+      - reporting_cadence                     # weekly → quarterly board
+
+  gap_definitions:
+    pass_raw_data_with_pii:
+      dimension: privacidad
+      severity: high
+      triggered_by: [step_1.all_3_sources_lead_level]
+    hide_source_disagreement:
+      dimension: validacion
+      severity: medium
+      triggered_by: [step_1.aggregate_only_no_discrepancies]
+    causal_overclaim:
+      dimension: validacion
+      severity: medium
+      triggered_by: [step_3.fails_mark_causal_overclaim]
+    invented_correlation:
+      dimension: validacion
+      severity: medium
+      triggered_by: [step_3.fails_mark_invented_correlation]
+    fabricated_number:
+      dimension: validacion
+      severity: high
+      triggered_by: [step_3.fails_mark_fabricated_number]
+    present_uncertain_as_certain:
+      dimension: decision
+      severity: medium
+      triggered_by: [step_4.full_report_clean]
+    overcorrection:
+      dimension: decision
+      severity: low
+      triggered_by: [step_4.only_verified]
+    accept_output_no_validation:
+      dimension: validacion
+      severity: medium
+      triggered_by: [step_4.raw_llm_output]
+    pretend_full_understanding:
+      dimension: juicio
+      severity: high
+      triggered_by: [step_5.confirms_unverified_claim]
+    deflection:
+      dimension: juicio
+      severity: medium
+      triggered_by: [step_5.evasive_response]
+
+  practice_beats:
+    causal_overclaim: practice_correlation_not_causation_v1
+    invented_correlation: practice_correlation_not_causation_v1
+    fabricated_number: practice_validate_llm_output_v1  # reusa caso 1
+    pretend_full_understanding: practice_transparent_peer_response_v1  # reusa caso 3
+    pass_raw_data_with_pii: practice_anonymize_keep_signal_v1  # reusa caso 1
+    hide_source_disagreement: practice_marketing_data_provenance_v1
+
+  authoring_meta:
+    written_by: claude_product
+    reviewed_by: codex_engineering
+    initial_review_pending: true
+    last_updated: 2026-05-12

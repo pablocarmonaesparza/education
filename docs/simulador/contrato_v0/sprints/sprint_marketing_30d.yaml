@@ -93,8 +93,11 @@ sprint_package:
 
       - id: marketing_attribution_reporting_to_cmo
         order: 6
-        status: planned
+        primary_variant_ref: marketing_attribution_reporting_to_cmo__loop_weekly_v1
+        resim_variant_ref: marketing_attribution_reporting_to_cmo__loop_board_review_resim_v1
         dimensions_emphasized: [validacion, contexto, decision]
+        difficulty: intermediate
+        status: ready  # claude_product cerró el contrato en pase 6
         tension: "reportar attribution con IA — datos parcialmente alucinados pueden engañar al ejecutivo"
 
       - id: marketing_content_calendar_under_pressure
@@ -132,7 +135,10 @@ sprint_package:
       # pase 5 (caso 5 — marketing_ad_creative_with_competitor_research)
       - practice_spot_inadvertent_plagiarism_v1
       - practice_competitive_claim_verification_v1
-      # nuevos beats se agregan según gaps emerjan en casos 6-8
+      # pase 6 (caso 6 — marketing_attribution_reporting_to_cmo)
+      - practice_correlation_not_causation_v1
+      - practice_marketing_data_provenance_v1
+      # nuevos beats se agregan según gaps emerjan en casos 7-8
 
     resim_policy:
       delay_days_default: 7
