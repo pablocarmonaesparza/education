@@ -1,0 +1,267 @@
+# sprint_package — marketing_30d
+# primer SKU vendible del Simulador. equipo de marketing 50-500 ppl LATAM,
+# 30 días, 8 casos, baseline + re-sim, reporte ejecutivo + recomendación.
+
+sprint_package:
+  id: marketing_30d
+  version: 1
+  status: draft  # codex marca active cuando el motor esté listo
+  vertical: marketing
+  duration_days: 30
+  created_at: 2026-05-12
+  created_by: claude_product
+
+  # ============================================================
+  # POSITIONING (lo que el comprador lee antes de comprar)
+  # ============================================================
+  marketing_meta:
+    public_name: "AI Readiness Sprint — Marketing 30 días"
+    one_liner: |
+      en 30 días, mide y mejora el criterio de tu equipo de marketing
+      para usar IA en flujos reales. baseline, práctica, re-simulación
+      y reporte ejecutivo accionable.
+    elevator_pitch: |
+      tu equipo de marketing ya está usando IA. la pregunta no es si
+      la usan — es si la usan bien. el Sprint mide criterio en 5
+      dimensiones (contexto, privacidad, validación, juicio, decisión)
+      con 8 casos vivos que pasan en marketing LATAM 2026: campañas
+      urgentes con feedback de clientes, redacción de copy con voz
+      ajena, segmentación con datos sensibles, briefs a agencias, ROI
+      reporting al CMO. al final tienes evidencia agregada y una de
+      4 recomendaciones: pilotar, entrenar, pausar o escalar.
+    primary_audience:
+      - head_of_marketing
+      - marketing_director
+      - growth_lead
+    secondary_audience:
+      - head_of_operations  # cuando marketing reporta a ops
+      - chro                # cuando hr coordina readiness cross-functional
+    company_size_target: 50-500 employees
+    geo_target: [MX, CO, AR, CL, US-Hispanic]
+    industries_priority:
+      - saas_b2b
+      - ecommerce
+      - servicios_profesionales
+      - retail
+      - educacion
+
+  # ============================================================
+  # OFFER (lo que se entrega)
+  # ============================================================
+  contents:
+    cases_included:
+      - id: marketing_urgent_campaign_pii
+        order: 1
+        primary_variant_ref: marketing_urgent_campaign_pii__loop_saas_b2b_v1
+        resim_variant_ref: marketing_urgent_campaign_pii__loop_enterprise_us_resim_v1
+        dimensions_emphasized: [privacidad, validacion, juicio]
+        status: ready  # claude_product cerró el contrato
+
+      - id: marketing_copy_with_brand_voice
+        order: 2
+        status: planned  # placeholder — claude lo escribirá en pase 2
+        dimensions_emphasized: [contexto, validacion, decision]
+        tension: "redactar copy con voz de marca usando IA sin diluir tono"
+
+      - id: marketing_segment_with_sensitive_data
+        order: 3
+        status: planned
+        dimensions_emphasized: [privacidad, juicio, decision]
+        tension: "segmentar audiencias usando data del CRM sin exponer PII"
+
+      - id: marketing_brief_to_agency_via_ia
+        order: 4
+        status: planned
+        dimensions_emphasized: [contexto, decision, juicio]
+        tension: "preparar brief para agencia externa usando IA — riesgo de leak de estrategia"
+
+      - id: marketing_ad_creative_with_competitor_research
+        order: 5
+        status: planned
+        dimensions_emphasized: [validacion, juicio, decision]
+        tension: "investigar competencia con IA y producir creativo — riesgo de plagio inadvertido"
+
+      - id: marketing_attribution_reporting_to_cmo
+        order: 6
+        status: planned
+        dimensions_emphasized: [validacion, contexto, decision]
+        tension: "reportar attribution con IA — datos parcialmente alucinados pueden engañar al ejecutivo"
+
+      - id: marketing_content_calendar_under_pressure
+        order: 7
+        status: planned
+        dimensions_emphasized: [contexto, juicio, decision]
+        tension: "armar calendario de 30 días con IA bajo presión — balance entre velocidad y calidad"
+
+      - id: marketing_crisis_response_with_ia
+        order: 8
+        status: planned
+        dimensions_emphasized: [juicio, privacidad, decision]
+        tension: "responder a crisis pública usando IA — riesgo de respuesta off-tone o legal-no-revisada"
+
+    rubric_ref: rubric_marketing_v1
+    rubric_version_used: 1.0.0
+
+    practice_beats_catalog:
+      - practice_anonymize_keep_signal_v1
+      - practice_validate_llm_output_v1
+      - practice_objection_to_authority_v1
+      - practice_spot_unverifiable_claims_v1
+      # nuevos beats se agregan según gaps emerjan en casos 2-8
+
+    resim_policy:
+      delay_days_default: 7
+      delay_days_range: [5, 10]
+      variants_per_case: 1  # v0: una resim por caso; v1+: variantes por dificultad
+
+    deliverables_to_manager:
+      - kind: executive_report
+        format: pdf
+        sections:
+          - executive_summary
+          - readiness_global_with_band
+          - dimensions_breakdown
+          - gaps_recurring
+          - risk_events_summary
+          - manager_recommendation (1 de 4)
+          - next_steps_with_timeframe
+      - kind: dashboard_view
+        format: web
+        sections:
+          - team_grid_with_individual_readiness
+          - dimension_heatmap
+          - completion_rate_per_case
+          - risk_events_timeline
+      - kind: certificate_export
+        format: pdf
+        per: individual
+        opt_in: true  # empleado decide si lo descarga; manager NO lo ve sin permiso
+
+    deliverables_to_employee:
+      - kind: individual_dashboard
+        format: web
+        sections:
+          - my_readiness
+          - my_dimensions
+          - my_practice_beats_completed
+          - my_session_history
+      - kind: case_session_reports
+        format: web
+        per: case
+        sections:
+          - score_with_band
+          - dimensions_breakdown_for_this_case
+          - gaps_to_practice
+          - resim_eta
+
+  # ============================================================
+  # COMMERCIAL TERMS (pricing tentativo, Pablo decide)
+  # ============================================================
+  commercial:
+    pricing_band_usd:
+      # ⚠️ TENTATIVO — Pablo confirma. ver R24 + memo pricing band.
+      min_per_seat: 79
+      max_per_seat: 199
+      team_minimum_seats: 5
+      team_maximum_seats: 50
+      bundle_discount_at: 20+
+    billing_model:
+      type: per_seat_per_sprint
+      currency: USD
+      processor: stripe
+      payment_terms: net_15
+    seat_allocation:
+      can_replace_seat_mid_sprint: false  # v0: seat es por persona, no es licencia móvil
+      seat_includes_resim: true
+      seat_includes_practice_beats: true
+      seat_includes_individual_dashboard_60_days_post_sprint: true
+    not_included_in_v0:
+      - api_access
+      - byok_llm  # bring your own key
+      - custom_cases_per_client
+      - on_premise_deployment
+      - sso_integration  # v0: email + password; SSO en v1
+      - benchmark_relative_to_industry  # v0: absoluto only
+
+  # ============================================================
+  # SUCCESS CRITERIA (cómo medimos si el Sprint funcionó)
+  # ============================================================
+  success_metrics:
+    for_buyer:
+      - metric: readiness_delta_per_team
+        target: "≥ +10 puntos entre baseline y cierre"
+        confidence: medium
+      - metric: high_risk_events_reduction
+        target: "≥ 50% reducción entre primer caso y último"
+        confidence: medium
+      - metric: manager_satisfaction_with_recommendation
+        target: "NPS ≥ 50 sobre la recomendación recibida"
+        confidence: low  # v0: pocos clientes, NPS poco robusto
+    for_us:
+      - metric: completion_rate_per_seat
+        target: "≥ 70% de seats completan los 8 casos"
+        confidence: high
+      - metric: practice_beat_engagement
+        target: "≥ 50% de gaps disparados resultan en practice completado"
+        confidence: medium
+      - metric: judge_confidence_overall
+        target: "≥ 80% de evaluaciones con confidence ≥ 0.6"
+        confidence: high
+      - metric: human_review_load
+        target: "≤ 15% de evaluaciones requieren revisión humana"
+        confidence: medium
+
+  # ============================================================
+  # OPERATIONAL CONSTRAINTS
+  # ============================================================
+  operational:
+    cases_status_required_for_launch:
+      ready: 1   # marketing_urgent_campaign_pii ya está
+      planned: 7
+      blockers_for_launch: |
+        no puede lanzarse como SKU vendible hasta que los 8 casos
+        estén `status: ready`. v0 puede correr en modo "design partner"
+        con 1-3 casos para validar maquinaria, pero no se cobra precio
+        full por menos de 8.
+    judge_throughput:
+      expected_evals_per_session: 5  # uno por step
+      expected_session_duration_sec: 1080  # 18 min
+      expected_total_evals_per_sprint_per_seat: 80  # 8 casos × ~10 evals con resim
+      llm_cost_estimate_per_seat_per_sprint_usd: 2.40  # placeholder, codex valida
+    human_review_sla:
+      low_confidence_review_hours: 48
+      practice_beat_curation_review_days: 7
+
+  # ============================================================
+  # CHANGELOG
+  # ============================================================
+  changelog:
+    - version: 1
+      date: 2026-05-12
+      author: claude_product
+      changes: |
+        sprint package inicial. 8 casos planeados, 1 ready (marketing_urgent_campaign_pii).
+        rubric v1 vinculada. 4 practice_beats en catálogo. pricing band tentativo
+        $79-199 per_seat_per_sprint pendiente validación con Pablo.
+
+  notes_for_codex: |
+    el motor debe:
+    1. crear un `sprints` row por instancia (cliente_x_team_y) referenciando este package.
+    2. al asignar el sprint, crear `assignments` rows: case_id × user_id × order.
+    3. los casos `status: planned` no pueden asignarse — assignment check.
+    4. al cerrar el sprint (todos los casos completados O ventana expirada):
+       a. agregar evidence_emitted across casos
+       b. aplicar reglas de selección de manager_recommendation_templates.md
+       c. emitir executive_report PDF + dashboard refresh
+       d. trigger billing event si el modelo es "post-completion" (Pablo decide)
+
+    el dashboard del manager NO debe mostrar:
+    - texto de respuestas individuales del empleado
+    - prompts redactados por el empleado en step_2
+    - decisiones individuales en steps decision_open_short
+
+    el dashboard SÍ puede mostrar:
+    - scores agregados por dimensión
+    - gaps recurrentes por equipo
+    - risk_events count + severity (sin texto)
+    - completion rate

@@ -1,0 +1,281 @@
+# rubric_marketing_v1
+# rúbrica del Sprint marketing_30d. dimensiones públicas (mostrables al
+# empleado y al comprador) + criterios internos (qué el LLM-as-judge
+# evalúa, qué el motor pondera, qué el detector de gaps dispara).
+#
+# regla: si la rúbrica cambia, BUMP la versión semver. casos antiguos
+# siguen referenciando su rubric_version_used original — no se re-evalúan
+# automáticamente.
+
+rubric:
+  id: rubric_marketing_v1
+  version: 1.0.0
+  applies_to_sprint_skus: [marketing_30d]
+  locale_default: es-MX
+  created_at: 2026-05-12
+  created_by: claude_product
+
+  # ============================================================
+  # CAPA PÚBLICA — qué el empleado y el comprador ven
+  # ============================================================
+  public:
+    purpose: |
+      el Simulador mide tu criterio para operar con IA en trabajo real.
+      no medimos si "sabes IA". medimos si decides bien cuando hay
+      presión, datos sensibles y stakeholders pidiendo velocidad.
+
+    dimensions:
+      - id: contexto
+        public_name: contexto
+        public_definition: |
+          qué tan bien encuadras la situación, audiencia, tono y
+          restricciones al pedirle algo a la IA. un prompt sin contexto
+          es ruleta — el modelo improvisa y el resultado depende de suerte.
+
+      - id: privacidad
+        public_name: privacidad y manejo de datos
+        public_definition: |
+          qué tan bien proteges datos personales y confidenciales en
+          cada paso. anonimizar, bucketizar o descartar campos sensibles
+          ANTES de pasar al modelo es la diferencia entre uso responsable
+          y exposición evitable.
+
+      - id: validacion
+        public_name: validación del output
+        public_definition: |
+          qué tan rigurosamente verificas el output de la IA antes de
+          usarlo. los modelos inventan cifras, generalizan en exceso y
+          a veces alucinan con confianza. validar es leer crítico, no
+          aceptar por defecto.
+
+      - id: juicio
+        public_name: juicio sobre riesgo y autoridad
+        public_definition: |
+          qué tan bien lees riesgos (privacidad, comercial, reputacional)
+          y autoridad (a quién escalar, cuándo objetar a tu jefe) antes
+          de actuar. el criterio no es solo técnico — incluye saber
+          cuándo pausar y pedir aprobación.
+
+      - id: decision
+        public_name: claridad de la decisión final
+        public_definition: |
+          qué tan clara, justificada y responsable es la acción que
+          tomas y comunicas. una buena decisión incluye qué validaste,
+          qué descartaste, qué riesgo viste y a quién se lo dijiste.
+
+    scoring_scale:
+      range: [0, 100]
+      bands:
+        - { name: "criterio inicial",       range: [0, 49],   color: red }
+        - { name: "criterio en desarrollo", range: [50, 69],  color: orange }
+        - { name: "operador competente",    range: [70, 84],  color: yellow }
+        - { name: "operador avanzado",      range: [85, 94],  color: green }
+        - { name: "operador experto",       range: [95, 100], color: emerald }
+
+    transparency_promise: |
+      ves las 5 dimensiones que evaluamos antes de empezar. el sistema
+      no te oculta qué medimos. lo que sí mantenemos interno son los
+      criterios y pesos específicos — para que la práctica no se vuelva
+      "memorizar la rúbrica" en vez de "construir criterio real".
+
+  # ============================================================
+  # CAPA INTERNA — qué el motor calcula, no se muestra al usuario
+  # ============================================================
+  internal:
+    dimension_weights:
+      # los pesos suman 100. ajustables por sprint o por caso.
+      contexto: 18
+      privacidad: 26
+      validacion: 20
+      juicio: 22
+      decision: 14
+
+    weight_modulation_per_case:
+      # SOLO para variantes que NO comparen transferencia con un primary.
+      # regla v0 (per FLUJO_RUNTIME_V0.md): NO modular pesos entre primary y resim
+      # si quieres comparar mejora. el `expected_behavior_shift` de la variante
+      # se captura en evaluación cualitativa, no en peso numérico.
+      #
+      # casos donde se PUEDE modular (no aplica a marketing_urgent_campaign_pii):
+      # - casos one-shot sin re-simulación (poco común en v0)
+      # - sprints temáticos donde el SKU vendido enfoca explícitamente UNA dimensión
+
+    scoring_method:
+      per_dimension: weighted_average_of_step_scores
+      per_step_per_dimension: llm_as_judge_with_deterministic_overrides
+      llm_judge_model: itera_default_2026q2
+      llm_judge_temperature: 0.0
+      llm_judge_max_tokens: 800
+      llm_judge_must_return:
+        - dimension_id
+        - score_0_to_100
+        - rationale_max_120_chars
+        - triggered_gaps[]
+        - confidence_0_to_1
+      llm_judge_confidence_threshold: 0.6
+      below_threshold_action: flag_for_human_review
+
+    deterministic_overrides:
+      # señales que cortocircuitan al LLM-judge. si se cumplen, el score
+      # de esa dimensión en ese step se fija sin importar lo que diga el judge.
+      - condition: "step_1.kept_fields includes any of [name, email, company] without transformation"
+        action: set_dimension_score(privacidad, step_1, 15)
+        triggers_gap: expose_pii (high)
+      - condition: "step_4.option_selected == raw_llm_output"
+        action: set_dimension_score(validacion, step_4, 20)
+        triggers_gap: accept_output_no_validation (medium)
+      - condition: "step_4.option_selected == clean_bullets AND prior steps showed risk awareness"
+        action: cap_dimension_score(decision, step_4, 60)
+        triggers_gap: weak_decision_justification (low)
+      - condition: "step_5.text matches pattern 'sí|claro|dale|adelante' without alternative proposal"
+        action: set_dimension_score(juicio, step_5, 25)
+        triggers_gap: no_risk_flag_upward (high)
+
+    rubric_per_step_per_dimension:
+      # criterios internos que el LLM-judge recibe en el prompt como
+      # guía explícita. no se publican al usuario.
+
+      step_1:
+        contexto:
+          high: "selecciona campos relevantes para campaña (complaint_or_praise → tema), descarta o transforma irrelevantes"
+          medium: "selecciona campos relevantes pero deja noise innecesario"
+          low: "descarta complaint_or_praise sin extraer tema, o mantiene irrelevantes"
+        privacidad:
+          high: "anonimiza/bucketiza TODOS los campos sensibles (name, email, company, revenue) antes de pasar al LLM"
+          medium: "anonimiza algunos pero deja al menos uno sensible expuesto"
+          low: "deja name, email o company sin transformación; o no bucketiza revenue"
+
+      step_2:
+        contexto:
+          high: "prompt incluye audiencia (LinkedIn ads + email prospects), tono, restricciones de tiempo, y formato esperado"
+          medium: "prompt incluye 2 de 3 (audiencia + tono O restricciones)"
+          low: "prompt genérico tipo 'dame 3 ángulos' sin contexto"
+        privacidad:
+          high: "el prompt NO contiene PII; usa los datos anonimizados del step 1"
+          medium: "el prompt usa datos parcialmente anonimizados"
+          low: "el prompt contiene PII o pega el CSV crudo"
+        juicio:
+          high: "el prompt menciona explícitamente que el output requerirá validación humana"
+          medium: "prompt neutral, no se compromete con validación"
+          low: "prompt pide al modelo que decida por el usuario"
+
+      step_2_followup:
+        validacion:
+          high: "identifica al menos 1 claim concreto que requiere validación + 1 que va a descartar + 1 que va a usar tal cual"
+          medium: "menciona validación de forma genérica sin especificar qué"
+          low: "no menciona validación; o acepta todo el output"
+        juicio:
+          high: "lee el output críticamente; identifica generalizaciones o cifras inventadas"
+          medium: "lee con cautela pero acepta sin questioning específico"
+          low: "elogia el output o lo toma como autoridad"
+        decision:
+          high: "decisión final clara con justificación corta"
+          medium: "decisión final clara pero sin justificación"
+          low: "decisión ambigua o difiere a Camila sin postura propia"
+
+      step_3:
+        validacion:
+          high: "marca correctamente segmentos con cifras no-verificables y con weak_segment_logic"
+          medium: "marca algunos correctamente, falla en otros"
+          low: "marca todo como problemático sin discriminación, o no marca nada"
+        privacidad:
+          high: "marca segmentos con datos sensibles expuestos (si el LLM los reintrodujo)"
+          medium: "marca parcial"
+          low: "falla en detectar exposición"
+        juicio:
+          high: "discrimina entre generic_positioning (no urgente) y unverifiable_claim (bloquea entrega)"
+          medium: "trata todo con misma severidad"
+          low: "no usa criterio de severidad"
+
+      step_4:
+        decision:
+          high: "selecciona bullets_with_context o bullets_plus_legal_flag"
+          medium: "selecciona clean_bullets"
+          low: "selecciona raw_llm_output"
+        juicio:
+          high: "respuesta incluye disclaimer de uso de PII anonimizada"
+          medium: "respuesta omite disclaimer pero la decisión es responsable"
+          low: "respuesta omite disclaimer Y la decisión transfiere responsabilidad a Camila"
+
+      step_5:
+        juicio:
+          high: "objeta proponiendo alternativa concreta (segmentar por sector/tamaño, pedir consentimiento, anonimizar antes)"
+          medium: "rechaza la idea sin alternativa, o propone alternativa débil"
+          low: "acepta sin objetar"
+        privacidad:
+          high: "menciona explícitamente por qué usar revenue_potential para targeting es problemático"
+          medium: "objeta sin nombrar la razón específica"
+          low: "no objeta o lo trata como aceptable"
+        decision:
+          high: "decisión clara comunicada con tono respetuoso pero firme"
+          medium: "decisión clara pero tono dubitativo"
+          low: "decisión ambigua o difiere"
+
+    gap_taxonomy:
+      # cada gap tiene severidad fija y dimension primaria.
+      # los practice_beats están mapeados en case_template.practice_beats_map.
+      expose_pii:
+        dimension: privacidad
+        severity: high
+        impact: "exposición de datos personales sin consentimiento → riesgo regulatorio + reputacional"
+      accept_output_no_validation:
+        dimension: validacion
+        severity: medium
+        impact: "publicar cifras o claims inventados → riesgo de credibilidad de marca"
+      poor_context:
+        dimension: contexto
+        severity: medium
+        impact: "output genérico que no convierte → desperdicio de iteración con IA"
+      weak_decision_justification:
+        dimension: decision
+        severity: low
+        impact: "tu jefe no tiene contexto para defender la campaña → menor confianza en ti"
+      no_risk_flag_upward:
+        dimension: juicio
+        severity: high
+        impact: "no objetar a tu jefe cuando propone uso problemático → arrastras a la empresa a riesgo"
+      weak_artifact_review:
+        dimension: juicio
+        severity: medium
+        impact: "no discriminar entre problemas críticos y cosméticos → bloqueas trabajo o pasas errores"
+      misread_authority:
+        dimension: juicio
+        severity: low
+        impact: "no leer la instrucción explícita de tu jefe → fricción organizacional"
+
+    aggregation_rules:
+      session_score:
+        formula: |
+          sum(dimension_score_i * weight_i) / 100
+        rounding: floor
+        ties_resolved_by: privacidad_first_then_juicio
+      session_band:
+        derived_from: session_score using public.scoring_scale.bands
+
+  # ============================================================
+  # CAMBIOS Y VERSIONADO
+  # ============================================================
+  changelog:
+    - version: 1.0.0
+      date: 2026-05-12
+      author: claude_product
+      changes: "rúbrica inicial. 5 dimensiones, pesos base, 7 gaps definidos."
+
+  notes_for_codex: |
+    el LLM-judge recibe en su system prompt:
+    - dimension_id que está evaluando
+    - rubric_per_step_per_dimension[step][dimension] como criterio
+    - el step output del usuario como input
+    - el modelo debe devolver json estructurado (ver llm_judge_must_return)
+
+    el motor de eval debe:
+    1. ejecutar deterministic_overrides ANTES de llamar al judge — si hay
+       match, fija el score y no llama al judge para esa dimension+step.
+    2. para el resto, llamar al judge una vez por (dimension, step).
+    3. agregar con dimension_weights.
+    4. aplicar weight_modulation_per_case si el caso lo requiere.
+    5. emitir gaps según triggers + agregar al evidence_emitted.
+
+    versionado: si la rúbrica cambia, BUMP semver y mantén versión vieja
+    en disco. evaluations existentes referencian su rubric_version_used
+    — NO re-evaluamos retroactivamente sin marcar explícitamente.

@@ -1,0 +1,93 @@
+# practice_beat — objetar a tu jefe sin romper la relación
+# microbeat correctivo disparado por gap: no_risk_flag_upward
+# duración: ≤2 min.
+
+practice_beat:
+  id: practice_objection_to_authority_v1
+  version: 1
+  status: active
+  duration_max_seconds: 120
+  triggered_by_gap: no_risk_flag_upward
+  dimension: juicio
+  applies_to_sprint_skus: [marketing_30d]
+
+  framing:
+    intro: |
+      en tu caso, tu jefa propuso usar revenue_potential para
+      priorizar emails. técnicamente posible, pero arrastra a la
+      empresa a un riesgo de privacidad. aceptaste o no objetaste
+      con alternativa.
+    why_this_matters: |
+      el criterio no es solo evitar el riesgo — es saber cuándo y
+      cómo decir "no" hacia arriba sin romper la relación profesional.
+      tu jefa no quiere meter a la empresa en problemas; solo está
+      bajo presión y no ve el riesgo. tu trabajo es traérselo a la
+      mesa, no esperar a que ella lo encuentre.
+
+  principle_card:
+    headline: "objetar bien tiene 3 partes"
+    body: |
+      cuando tu jefe propone algo problemático, no rechaces solo.
+      una buena objeción tiene 3 elementos:
+
+      1. reconoce el objetivo
+         "entiendo que necesitas priorizar para mover top accounts"
+
+      2. nombra el riesgo concreto
+         "usar revenue_potential significa segmentar por valor financiero
+         sin consentimiento — eso es PII categorizada y nos expone a
+         queja regulatoria"
+
+      3. propón alternativa concreta
+         "podemos segmentar por sector + tamaño de empresa para el
+         mismo efecto, o esperar al lunes para que legal lo apruebe"
+
+      rechazar sin alternativa es fricción. objetar con alternativa
+      es valor.
+
+  practice_exercise:
+    type: text_response_micro
+    duration_seconds: 60
+    intro: |
+      tu jefe te escribe por slack:
+
+      "oye, ¿podemos usar también el revenue_potential para priorizar
+      a quién mandamos el email? rankeamos top 20% y a ellos primero."
+
+      escribe en menos de 200 caracteres tu respuesta usando la
+      estructura: reconoce → nombra riesgo → propón alternativa.
+    response_max_chars: 200
+    examples:
+      good:
+        - text: "entiendo, necesitas priorizar. usar revenue para targeting es PII categorizada sin consentimiento — riesgo regulatorio. te propongo segmentar por sector + tamaño, mismo efecto, sin exposición."
+          verdict: correct
+          why: "los 3 elementos presentes, tono respetuoso pero firme, alternativa concreta"
+        - text: "sí ayuda priorizar, pero revenue_potential es dato sensible sin consentimiento. ¿te parece segmentar por sector + tamaño? cubrimos el mismo top sin meter PII en el flujo."
+          verdict: correct
+          why: "los 3 elementos presentes, pregunta abierta deja la decisión final en el jefe"
+      bad:
+        - text: "sí dale, hagámoslo así"
+          verdict: gap_no_risk_flag_upward
+          why: "aceptaste sin objetar — esto es lo que disparó el gap original"
+        - text: "no podemos hacer eso, es ilegal"
+          verdict: rechazo_sin_alternativa
+          why: "rechazo sin reconocer objetivo ni proponer alternativa — fricción innecesaria"
+        - text: "déjame revisar con legal el lunes"
+          verdict: deflection
+          why: "delega sin nombrar el riesgo ni proponer camino — tu jefe sigue sin entender por qué"
+
+  reveal_after_attempt:
+    correct_principle: |
+      objetar bien no es ser tibio ni agresivo. es traer un riesgo
+      concreto a la mesa con una alternativa concreta. el jefe sigue
+      decidiendo — tu trabajo es asegurarte de que decide con info
+      completa.
+
+  exit:
+    transition_text: "ok, regresamos al score final."
+    log_to_telemetry: practice_beat_completed
+    contributes_to_resim_score: false
+
+  authoring:
+    written_by: claude_product
+    last_updated: 2026-05-12

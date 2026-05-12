@@ -1,0 +1,250 @@
+# case_template — marketing_urgent_campaign_pii
+# primer caso canónico del Simulador. tensión velocidad-vs-privacidad.
+# Marketing Manager LATAM en SaaS B2B mid-market 2026.
+
+case_template:
+  id: marketing_urgent_campaign_pii
+  version: 1
+  status: active
+  difficulty: baseline
+  locale: es-MX
+
+  target_role: [marketing_manager, growth_marketer]
+  sprint_skus: [marketing_30d]
+
+  duration_estimate_min: 18
+  rubric_ref: rubric_marketing_v1
+  rubric_version_used: 1.0.0
+
+  freshness:
+    live_signal: "uso de feedback de clientes con IA"
+    review_by: 2026-06-30
+    last_reviewed: 2026-05-12
+    rationale: |
+      caso "vivo" porque la práctica de meter PII en LLMs corporativos
+      cambia trimestralmente (nuevas políticas, nuevos modelos, nuevas
+      regulaciones). revisar cada 60 días y actualizar template_vars
+      o sample_rows si emerge un fallo público relevante.
+
+  expected_manager_action:
+    default: entrenar
+    possible: [pilotar, entrenar, pausar, escalar]
+
+  required_template_vars:
+    - company_name
+    - industry
+    - company_size
+    - region
+    - tools_in_use
+    - data_type
+    - ai_governance_level
+    - vp_name
+    - vp_role
+    - deadline_hours
+    - quarter_label
+
+  context_template:
+    role_play: |
+      eres Marketing Manager en {company_name}, una {industry}
+      ({company_size}, región {region}). reportas a {vp_name},
+      {vp_role}. el gobierno de IA es {ai_governance_level}:
+      hay {tools_in_use} aprobados, pero los criterios de uso
+      viven en cada manager.
+    scenario: |
+      jueves 4:30 PM. {vp_name} te escribe por slack. necesita
+      3 ángulos para LinkedIn ads + 1 email a la lista de prospects
+      para mañana 9 AM, porque mañana arranca el {quarter_label}.
+      te deja el brief y un CSV con feedback de clientes que
+      Customer Success recopiló hace 2 meses. el dataset tiene
+      60 filas con {data_type}.
+
+      {vp_name} cierra el mensaje con: "no me metas a legal hoy,
+      ya están cerrados, los vemos lunes si hay algo. confío en
+      tu criterio."
+    pressure:
+      - tight_deadline_{deadline_hours}h
+      - no_approver_available
+      - vp_explicit_urgency
+      - quarter_launch_dependency
+
+  data_policy:
+    sensitive_fields: [name, email, company, revenue_potential_usd]
+    allowed_fields_after_anonymization:
+      - complaint_theme
+      - segment
+      - urgency
+      - revenue_band
+      - signed_quarter
+    handling_rules:
+      - "name, email, company → drop o reemplazar por id sintético"
+      - "revenue_potential_usd → bucketizar a banda (<25k, 25-50k, 50-100k, 100k+)"
+      - "complaint → extraer tema (UX, integración, performance, billing, soporte) y descartar el texto crudo"
+
+  inputs_spec:
+    - kind: dataset
+      name: customer_feedback.csv
+      schema: [name, email, company, complaint_or_praise, revenue_potential_usd, signed_at]
+      row_count: 60
+      sample_rows_ref: marketing_urgent_campaign_pii_sample_rows
+    - kind: doc
+      name: brief_from_vp.md
+      content_template_ref: marketing_urgent_campaign_pii_brief_template
+
+  steps:
+    - id: 1
+      type: data_scope
+      prompt: "qué campos del dataset prepararías antes de pasarlo a la IA?"
+      fields_available:
+        - name
+        - email
+        - company
+        - complaint_or_praise
+        - revenue_potential_usd
+        - signed_at
+      expected_action: anonymize_or_bucket_sensitive_fields
+      capture:
+        - selected_fields_to_keep
+        - fields_to_transform
+        - transformation_per_field
+      evaluates: [privacidad, contexto]
+      gap_trigger_logic: |
+        si keeps {name, email, company} sin transformación: dispara expose_pii (high)
+        si descarta complaint_or_praise sin extraer tema: dispara poor_context (medium)
+        si bucketiza revenue_potential_usd correctamente: refuerza señal positiva en privacidad
+
+    - id: 2
+      type: llm_beat
+      llm_provider: itera_provided
+      model_alias: itera_default_2026q2
+      task_to_user: |
+        ya scopeaste los datos. ahora redacta el prompt que le
+        enviarás al modelo de Itera para obtener 3 ángulos de
+        campaña. tienes el dataset anonimizado, el brief de
+        {vp_name}, deadline de 9 AM y audiencia: LinkedIn ads
+        + email a prospects.
+      max_turns: 2
+      capture:
+        - user_prompt
+        - model_response
+        - user_followup_decisions
+      evaluates_prompt: [contexto, privacidad, juicio]
+      followup:
+        type: decision_open_short
+        prompt: |
+          mira el output del modelo. en menos de 80 palabras:
+          ¿qué de esos ángulos vas a usar, qué vas a descartar y
+          qué necesitas validar antes de mandar a {vp_name}?
+        max_chars: 320
+        evaluates: [validacion, juicio, decision]
+
+    - id: 3
+      type: artifact_review
+      artifact: llm_output_from_step_2
+      prompt: "marca qué partes de la respuesta del modelo NO enviarías a {vp_name} tal cual."
+      review_targets:
+        - unverifiable_claim
+        - exposed_sensitive_data
+        - weak_segment_logic
+        - generic_positioning
+      review_mode: multi_select_per_target
+      capture:
+        - flagged_segments
+        - per_segment_target_marked
+      evaluates: [validacion, privacidad, juicio]
+      gap_trigger_logic: |
+        si falla en marcar segmento que contiene cifra inventada → weak_artifact_review (medium)
+        si falla en marcar segmento con dato sensible expuesto → expose_pii (high)
+        si marca todo como problemático sin discriminación → weak_artifact_review (low)
+
+    - id: 4
+      type: decision_select
+      prompt: "{vp_name} te pide los ángulos por slack. ¿cómo se los entregas?"
+      options:
+        - id: clean_bullets
+          label: "los 3 ángulos finales en bullets, listos para campaña"
+          signal: gap_weak_justification
+        - id: bullets_with_context
+          label: "los 3 ángulos + nota corta de qué validaste, qué descartaste y qué riesgo viste"
+          signal: correct
+        - id: bullets_plus_legal_flag
+          label: "los 3 ángulos + sugerencia de que legal revise el copy antes de lanzar (escalamiento responsable)"
+          signal: correct_with_escalation
+        - id: raw_llm_output
+          label: "le mando el output crudo del LLM, total tiene buen criterio y ella decide"
+          signal: gap_accept_output_no_validation
+      evaluates: [decision, juicio]
+      risk_event_trigger:
+        condition: "respuesta no incluye disclaimer de que se usó dataset con PII anonimizada"
+        event: hidden_pii_usage_from_authority
+        severity: medium
+
+    - id: 5
+      type: decision_open_short
+      prompt: |
+        {vp_name} te contesta: "gracias. oye, ¿podemos usar también el
+        revenue_potential para priorizar a quién mandamos el email?
+        rankeamos top 20% y a ellos primero." ¿qué le respondes?
+      max_chars: 280
+      evaluates: [juicio, decision, privacidad]
+      gap_trigger_logic: |
+        si acepta sin objetar: dispara no_risk_flag_upward (high)
+        si objeta proponiendo alternativa (segmentar por sector/tamaño o pedir consentimiento): correct
+        si simplemente rechaza sin alternativa: parcial — captura como juicio_medio (low)
+
+  evaluation_meta:
+    llm_judge_model: itera_default_2026q2
+    estimated_eval_duration_seconds: 12
+    rubric_version_used: 1.0.0
+    deterministic_signals: [step_1.fields_kept_match, step_4.option_selected]
+    llm_judge_signals: [step_2.user_prompt_quality, step_2.followup_text, step_3.justification_quality, step_5.text]
+
+  telemetry_required:
+    - time_on_step
+    - prompt_iterations
+    - hint_requested
+    - sensitive_copy_detected
+    - answer_changed
+    - abandoned_step
+
+  evidence_emitted:
+    - kind: readiness_dimension_scores
+      shape:
+        contexto: 0-100
+        privacidad: 0-100
+        validacion: 0-100
+        juicio: 0-100
+        decision: 0-100
+    - kind: risk_events_detected
+      shape: [{ event_type, severity, step_id, evidence_text, timestamp }]
+    - kind: decision_replay
+      shape: ordered_list_of_decisions
+    - kind: transfer_delta
+      shape: { primary_session_id, resim_session_id, delta_per_dimension, delta_global, narrative }
+      emitted_when: resim_completed_after_primary
+    - kind: manager_recommendation
+      values: [pilotar, entrenar, pausar, escalar]
+      includes: justification_text
+
+  resimulation_spec:
+    requires_variant_with_role: resimulation
+    delay_days_default: 7
+    expected_behavior_shift_axis:
+      - ai_governance_level
+      - data_sensitivity_severity
+      - time_pressure_intensity
+    scoring_note: |
+      la rúbrica NO cambia entre primary y resim. los pesos tampoco
+      (per FLUJO_RUNTIME_V0.md). el `expected_behavior_shift` del
+      variant cambia interpretación cualitativa pero NO el cálculo
+      numérico. esto preserva comparabilidad para transfer_delta.
+
+  authoring_meta:
+    written_by: claude_product
+    reviewed_by: codex_engineering
+    initial_review_pending: true
+    last_updated: 2026-05-12
+    style_notes: |
+      narrativa LATAM 2026. vp con nombre propio para sentir presión real.
+      deadline tight pero plausible (16h, no 4h irreal). pressure de
+      cierre de día (legal fuera de horario) que coincide con la realidad
+      de equipos pequeños sin gobierno formal de IA.

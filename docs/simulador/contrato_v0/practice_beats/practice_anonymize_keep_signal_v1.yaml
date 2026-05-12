@@ -1,0 +1,92 @@
+# practice_beat — anonimizar sin perder señal
+# microbeat correctivo disparado por gap: expose_pii
+# duración: ≤2 min. embebido al final de la sesión, antes del score final.
+
+practice_beat:
+  id: practice_anonymize_keep_signal_v1
+  version: 1
+  status: active
+  duration_max_seconds: 120
+  triggered_by_gap: expose_pii
+  dimension: privacidad
+  applies_to_sprint_skus: [marketing_30d]
+
+  framing:
+    intro: |
+      pequeño práctica. en el caso que acabas de hacer, parte de los
+      datos del cliente quedó expuesto al pasarlo a la IA. esto no
+      siempre es obvio — anonimizar mal puede romper la señal del
+      dato. veamos cómo se hace bien.
+    why_this_matters: |
+      cuando metes PII a un LLM corporativo, ya rompiste un principio
+      básico de protección — aunque el modelo sea "aprobado". la
+      diferencia entre uso responsable y filtración accidental no
+      depende del modelo: depende de qué le mostraste.
+
+  principle_card:
+    headline: "anonimizar es transformar, no solo borrar"
+    body: |
+      borrar nombres y emails pero dejar empresa + región + sector
+      sigue permitiendo identificar al cliente. el truco es agrupar
+      o reemplazar mientras conservas la señal útil:
+
+      • nombres → eliminar (no aportan al ángulo de campaña)
+      • emails → eliminar
+      • empresa → reemplazar por sector + tamaño aproximado
+      • revenue exacto → bucket (<25k, 25-50k, 50-100k, 100k+)
+      • complaint texto crudo → extraer tema (UX / integración /
+        performance / billing / soporte)
+      • fechas exactas → trimestre
+
+      regla: si después de anonimizar todavía podrías encontrar al
+      cliente con 30 segundos de google, no anonimizaste — solo
+      tachaste.
+
+  practice_exercise:
+    type: artifact_review_micro
+    duration_seconds: 60
+    artifact: anonymization_pairs
+    pairs:
+      - original: '{"name":"Mariana López","company":"Aurora Recursos","revenue":24000}'
+        options:
+          - id: a
+            label: '{"name":"M.L.","company":"Aurora","revenue":24000}'
+            verdict: insuficiente
+            why: "iniciales + empresa parcial todavía permiten identificación"
+          - id: b
+            label: '{"sector":"retail_mx","size":"small","revenue_band":"<25k"}'
+            verdict: correcto
+            why: "perdió identidad, mantuvo señal de targeting"
+          - id: c
+            label: '{}'
+            verdict: insuficiente
+            why: "borraste todo — sin señal el LLM no puede generar ángulos relevantes"
+      - original: '{"complaint":"el SLA tracker se rompió 3 veces este mes, mi equipo está harto","company":"Grupo Tec"}'
+        options:
+          - id: a
+            label: '{"complaint":"problema con SLA tracker","sector":"servicios_tec"}'
+            verdict: correcto
+            why: "tema preservado, identidad eliminada"
+          - id: b
+            label: '{"complaint":"se rompió 3 veces este mes, mi equipo está harto","company":"[REDACTED]"}'
+            verdict: insuficiente
+            why: "texto crudo del complaint conserva voz personal del cliente"
+          - id: c
+            label: '{"complaint_theme":"infraestructura","sector":"servicios_tec","tone":"frustrado"}'
+            verdict: correcto_avanzado
+            why: "tema + tono + sector — máxima señal con cero identidad"
+
+  reveal_after_attempt:
+    correct_principle: |
+      anonimizar bien preserva la dimensión que te sirve (tema, sector,
+      tamaño) y elimina la dimensión que identifica (nombre, email,
+      empresa exacta, fechas precisas, frases textuales con voz personal).
+
+  exit:
+    transition_text: "ok, regresamos al score final."
+    log_to_telemetry: practice_beat_completed
+    contributes_to_resim_score: false  # esto no cambia el score primary, solo entrena
+
+  authoring:
+    written_by: claude_product
+    last_updated: 2026-05-12

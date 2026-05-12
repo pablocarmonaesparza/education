@@ -1,0 +1,116 @@
+# case_variant — variante de re-simulación del primer caso
+# render contraste: Loop crece a enterprise US, ahora hay DPO disponible
+# y la data es comercial (pipeline). misma estructura, distinto comportamiento esperado.
+
+case_variant:
+  id: marketing_urgent_campaign_pii__loop_enterprise_us_resim_v1
+  template_ref: marketing_urgent_campaign_pii@v1
+  parent_variant_ref: marketing_urgent_campaign_pii__loop_saas_b2b_v1
+  variant_role: resimulation
+  delay_days_from_parent: 7
+  status: active
+
+  template_var_values:
+    company_name: Loop
+    industry: "SaaS B2B (atención al cliente con IA)"
+    company_size: enterprise_500_employees
+    region: US (HQ NYC, equipos en SF, Austin)
+    tools_in_use: [salesforce, gpt4_enterprise, slack, looker]
+    data_type: sales_pipeline_data_with_open_deals
+    ai_governance_level: strict_with_dpo_available
+    vp_name: Hannah
+    vp_role: VP_of_Sales
+    deadline_hours: 4
+    quarter_label: "Q3 2026 expansion push"
+
+  expected_behavior_shift: |
+    contexto cambió en 3 dimensiones críticas vs el primary:
+
+    1. ai_governance_level: informal_no_dpo → strict_with_dpo_available
+       → escalar a DPO/legal pasa de "opcional responsable" a "obligatorio".
+       fallar en escalar cuando el aprobador está disponible es gap high,
+       no medium. la opción `bullets_plus_legal_flag` se vuelve la
+       expectativa default, no la versión "responsable extra".
+
+    2. data_type: customer_feedback → sales_pipeline_data_with_open_deals
+       → exponer pipeline abierto a un LLM externo no es solo riesgo de
+       privacidad; es riesgo comercial (competidores, leaks de M&A,
+       distorsión de forecast). la rúbrica no cambia, pero el peso de
+       `juicio` sube — el empleado debe leer que "scrubear" PII no
+       basta cuando los datos son de pipeline.
+
+    3. time_pressure: 16h → 4h
+       → presión real para atajar protocolo. la simulación está diseñada
+       para que la trampa más fácil sea saltarse el escalamiento a DPO
+       "porque no da tiempo". superar esa trampa es la señal de criterio
+       maduro.
+
+    expected_score_delta_vs_primary:
+      - si el primary score fue alto en privacidad y bajo en juicio:
+        esperamos que en resim el juicio mejore (transferencia).
+      - si el primary score fue alto en juicio y bajo en validación:
+        esperamos que en resim la validación mejore.
+      - delta esperado del readiness global: +8 a +15 puntos si hubo
+        practice_beats efectivos entre primary y resim.
+
+  inputs_resolved:
+    synthetic: true
+    provenance_note: |
+      datos sintéticos enterprise US. account names + deal stages +
+      amounts + notas creadas para esta variante. ninguna referencia
+      a cliente real de Itera.
+    items:
+    - kind: dataset
+      name: open_pipeline.csv
+      schema: [account_name, deal_owner, deal_stage, mqa_score, deal_amount_usd, expected_close, notes]
+      row_count: 60
+      sample_rows:
+        - ["Northbridge Industries", "Hannah Lee", "negotiation", 87, 480000, "2026-08-30",
+           "VP procurement asked for 3-yr commit, waiting on legal redlines"]
+        - ["Cascade Logistics", "Marc Tan", "proposal", 72, 220000, "2026-09-15",
+           "competitive eval vs Intercom — they're cheaper but we have better LATAM coverage"]
+        - ["Foundry Health", "Hannah Lee", "negotiation", 81, 360000, "2026-08-22",
+           "HIPAA blocker on AI features — escalated to product Q3"]
+        - ["Pioneer Robotics", "Sara Kim", "discovery", 58, 140000, "2026-10-05",
+           "early stage, founder-led, may bundle with seed round announcement"]
+        - ["Atlas Supply", "Marc Tan", "negotiation", 90, 620000, "2026-08-18",
+           "M&A in progress — acquired by Continental Holdings, deal contingent on close"]
+        - ["Riverbend Networks", "Hannah Lee", "proposal", 76, 310000, "2026-09-02",
+           "CRO swap last week, new buyer wants to re-evaluate before signing"]
+        - ["Summit Pharma", "Sara Kim", "negotiation", 84, 540000, "2026-08-28",
+           "compliance review with their CISO scheduled next Tuesday"]
+        - ["Quartz Media", "Marc Tan", "discovery", 62, 180000, "2026-10-12",
+           "PE-backed, expansion contingent on Series C close in Q4"]
+
+    - kind: doc
+      name: brief_from_vp.md
+      # fin de items
+      content: |
+        need 3 outbound angles for our top 20 open deals + a closing
+        email for negotiation-stage accounts. deadline 5 AM EST tomorrow,
+        we present to the board at 10. legal/DPO is on call if you need
+        them — Maya in privacy ops is on slack until midnight. dig
+        through pipeline to find what's actually winning vs losing,
+        and write angles that close. — Hannah
+
+  rendering_meta:
+    rendered_by: claude_product
+    rendered_at: 2026-05-12
+    used_for: resim_after_primary_completion
+    triggers_when: "primary completed AND delay_days_from_parent elapsed"
+    sample_data_provenance: |
+      datos sintéticos enterprise US. account names plausibles + deal
+      stages (discovery/proposal/negotiation) + amounts en banda enterprise
+      (140k-620k USD). notes incluyen señales que un empleado debe
+      reconocer como sensibles: M&A in progress, legal blockers, CRO
+      swaps, PE round dependencies. ninguna debería ir a un LLM externo
+      sin escalamiento.
+
+  authoring_note: |
+    el contraste clave con el primary NO es que enterprise sea "más
+    difícil". es que el catálogo de riesgos cambia. en primary el
+    riesgo era PII de clientes. en resim el riesgo es pipeline data
+    de cuentas que está en negociación activa, con notas de M&A,
+    blockers de legal y dependencias de fundraising. el empleado tiene
+    que reconocer que la naturaleza del riesgo cambió, no solo la
+    presión de tiempo.

@@ -1,0 +1,104 @@
+# practice_beat — validar output del LLM antes de usarlo
+# microbeat correctivo disparado por gap: accept_output_no_validation
+# duración: ≤2 min.
+
+practice_beat:
+  id: practice_validate_llm_output_v1
+  version: 1
+  status: active
+  duration_max_seconds: 120
+  triggered_by_gap: accept_output_no_validation
+  dimension: validacion
+  applies_to_sprint_skus: [marketing_30d]
+
+  framing:
+    intro: |
+      pequeña práctica. el output de la IA en tu caso tenía afirmaciones
+      que se publicarían sin verificar. el modelo no miente con mala
+      intención — generaliza, infiere y a veces inventa. tu trabajo
+      es leer crítico.
+    why_this_matters: |
+      una campaña con cifra inventada o claim no sostenible te quema
+      con tu audiencia. los LLMs son confiados — escriben con tono
+      ejecutivo aunque no tengan evidencia. validar es la diferencia
+      entre usar IA como copywriter y usar IA como autoridad.
+
+  principle_card:
+    headline: "tres preguntas antes de aceptar un claim del LLM"
+    body: |
+      cuando leas el output, pasa cada afirmación por este filtro:
+
+      1. ¿de dónde sale esto?
+         ¿el modelo lo extrajo de mis datos o lo inventó?
+
+      2. ¿podría defender esto frente a un cliente?
+         si alguien pregunta "¿en qué se basa esa cifra?", ¿tienes
+         respuesta?
+
+      3. ¿qué pasa si está mal?
+         ¿es un error cosmético (lo arreglo después) o un error
+         que daña credibilidad (no lo uso)?
+
+      claims que no pasan los 3 filtros = no van. claims que pasan 2
+      = pueden ir si los marcas como hipótesis, no como hecho.
+
+  practice_exercise:
+    type: artifact_review_micro
+    duration_seconds: 60
+    intro: |
+      revisa este output simulado de un LLM sobre feedback de clientes.
+      marca cada claim según el filtro de 3 preguntas.
+    artifact:
+      output_simulated: |
+        "Basado en el análisis del feedback de clientes:
+
+        1. El 73% de los clientes considera que el SLA tracker es la
+           causa principal de fricción.
+        2. Las empresas de logística y retail tienen 2.4x más quejas
+           que las empresas de servicios financieros.
+        3. La integración con WhatsApp Business representa una oportunidad
+           de upsell de $1.2M anuales.
+        4. Algunos clientes mencionan problemas con la integración con
+           SAT México en el módulo de billing.
+        5. El onboarding es percibido como caótico inicialmente, pero
+           la adopción posterior es alta."
+    questions_per_claim:
+      - claim_id: 1
+        text: "El 73% de los clientes considera que el SLA tracker es la causa principal de fricción"
+        correct_verdict: invalida_cifra_inventada
+        why: "60 filas no te dan un porcentaje robusto. el modelo inventó la cifra para sonar autoritativo"
+      - claim_id: 2
+        text: "Las empresas de logística y retail tienen 2.4x más quejas que las empresas de servicios financieros"
+        correct_verdict: invalida_cifra_inventada
+        why: "ratio específico sin evidencia de muestra suficiente. clásica alucinación cuantitativa"
+      - claim_id: 3
+        text: "La integración con WhatsApp Business representa una oportunidad de upsell de $1.2M anuales"
+        correct_verdict: invalida_proyeccion_sin_base
+        why: "el modelo no tiene datos de pricing ni de penetración — la cifra es fabricada"
+      - claim_id: 4
+        text: "Algunos clientes mencionan problemas con la integración con SAT México en el módulo de billing"
+        correct_verdict: valida_tema_real
+        why: "tema real extraído del dataset (caso de Plenum Group), redactado como descripción no como hecho"
+      - claim_id: 5
+        text: "El onboarding es percibido como caótico inicialmente, pero la adopción posterior es alta"
+        correct_verdict: valida_tema_real
+        why: "tema real (caso de Ferre Norte), redactado con matiz"
+
+  reveal_after_attempt:
+    pattern: |
+      los claims 1, 2 y 3 son alucinaciones cuantitativas — el LLM
+      inventó cifras para sonar confiado. los claims 4 y 5 son temas
+      reales redactados con honestidad.
+
+      regla general: cualquier "%", ratio o cifra monetaria del output
+      requiere doble check contra los datos crudos. si el modelo da
+      una cifra que no puedes rastrear a una fila concreta, no la uses.
+
+  exit:
+    transition_text: "ok, regresamos al score final."
+    log_to_telemetry: practice_beat_completed
+    contributes_to_resim_score: false
+
+  authoring:
+    written_by: claude_product
+    last_updated: 2026-05-12
