@@ -1,0 +1,114 @@
+# case_variant — variante primary del cuarto caso
+# Loop B2B SaaS con agencia creativa de relación 2 años, deadline 3 días.
+
+case_variant:
+  id: marketing_brief_to_agency_via_ia__loop_familiar_agency_v1
+  template_ref: marketing_brief_to_agency_via_ia@v1
+  variant_role: primary
+  status: active
+
+  template_var_values:
+    company_name: Loop
+    industry: "SaaS B2B (atención al cliente con IA)"
+    region: LATAM
+    vendor_type: agencia_creativa
+    vendor_relationship: 2_anos_relacion
+    campaign_topic: "lanzamiento del módulo de auto-routing inteligente"
+    strategic_sensitivity: "contiene_lanzamiento_q3_no_publico + competitor_intel_research_interno + postmortem_campana_q4_2025"
+    deadline_days: 3
+
+  inputs_resolved:
+    synthetic: true
+    provenance_note: |
+      brief interno completo y template de agencia son ficticios.
+      datos enterprise simulated para B2B SaaS LATAM.
+    items:
+      - kind: doc
+        name: brief_interno_completo.md
+        content: |
+          # brief interno — auto-routing inteligente Q2 launch
+
+          ## 1. overview campaign
+          lanzamos el módulo de auto-routing el 15 de junio. campaña
+          de 6 semanas en LinkedIn ads + email a prospects + co-marketing
+          con 2 partners (Konecta y Atento).
+
+          ## 2. target audience
+          ops managers + heads of customer service de empresas LATAM
+          mid-market 100-500 empleados. dolor: SLA tracker no funciona,
+          routing manual cuello de botella.
+
+          ## 3. brand voice
+          corporate-cálido consultor. frases cortas. cero clichés.
+          ver `brand_voice_guide.md` para detalles.
+
+          ## 4. creative specs
+          - LinkedIn ads: 3 headlines (90 char), 3 body (180 char), 1 image
+          - email: 2 subjects (50 char), 2 body (300 palabras)
+          - landing hero: h1 (8 palabras) + bullets (3)
+
+          ## 5. launch timeline (público)
+          - junio 15: anuncio en LinkedIn + email a prospects
+          - junio 22: webinar con cliente piloto
+          - julio 6: PR release a Forbes LATAM
+          - julio 20: case study publicado
+
+          ## 6. launch plans Q3 (NO PÚBLICOS)
+          - septiembre 1: lanzamiento del módulo de IA conversacional
+            avanzada (rival directo de Sierra AI)
+          - septiembre 15: integración con HubSpot anunciada
+          - octubre: feature de voice-first
+
+          ## 7. competitive intel (INTERNO)
+          - Zendesk lanzó AI agent en abril; performance reviews
+            de clientes nuestros = mixto, no convincente
+          - Intercom Fin AI tiene mejor coverage en US pero gap
+            grande en español LATAM
+          - rivalidad con Sierra AI esperada en Q3 — ellos pricing
+            agresivo + funding fresco
+
+          ## 8. postmortem Q4 2025 (INTERNO)
+          - campaña "tu equipo merece descansar" tuvo 0.6% CTR
+            (target 2.5%)
+          - tono motivacional NO funcionó con ops managers — leen
+            como BS
+          - lección: dolor específico > inspiración
+
+          ## 9. financial targets Q2 (INTERNO)
+          - $480k ARR nuevo en Q2
+          - $200k de eso debe venir del módulo de auto-routing
+          - cost-per-meeting target: $180 (vs $240 actual)
+
+          ## 10. pricing strategy futuro (INTERNO)
+          - auto-routing: pricing inicial agresivo $99/mo por agente
+          - en Q4 subimos a $129 una vez tenemos 50 cuentas
+          - intercom cobra $250+ — ventana de penetración 6 meses
+
+      - kind: doc
+        name: brief_template_agencia.md
+        content: |
+          # template estándar de brief externo
+
+          la agencia espera el brief en este formato:
+
+          ## campaign overview
+          - 1 párrafo de qué se lanza y por qué importa
+          ## audiencia
+          - perfil profesional + dolor principal + canales
+          ## brand voice
+          - 3 reglas + 2 ejemplos buenos + 2 antiejemplos
+          ## deliverables
+          - lista específica con specs (caracteres, dimensiones, formato)
+          ## timeline
+          - fechas clave que la agencia debe conocer
+          ## tone calibration
+          - 3 frases que SÍ funcionan, 3 que NO
+          ## referencias visuales
+          - mood board / links externos
+
+  rendering_meta:
+    rendered_by: claude_product
+    rendered_at: 2026-05-12
+    used_for: fourth_simulation_session_in_sprint
+    next_in_sprint: marketing_ad_creative_with_competitor_research@v1
+    pairs_with_resim: marketing_brief_to_agency_via_ia__loop_new_freelancer_ma_resim_v1

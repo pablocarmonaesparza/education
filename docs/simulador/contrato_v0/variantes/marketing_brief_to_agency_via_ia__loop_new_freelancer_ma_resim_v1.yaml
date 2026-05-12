@@ -1,0 +1,139 @@
+# case_variant — variante resim del cuarto caso
+# Loop crece, ahora trabaja con freelancer nuevo y hay M&A en curso.
+# stakes mucho más altos por sensibilidad estratégica.
+
+case_variant:
+  id: marketing_brief_to_agency_via_ia__loop_new_freelancer_ma_resim_v1
+  template_ref: marketing_brief_to_agency_via_ia@v1
+  parent_variant_ref: marketing_brief_to_agency_via_ia__loop_familiar_agency_v1
+  variant_role: resimulation
+  delay_days_from_parent: 7
+  status: active
+
+  template_var_values:
+    company_name: Loop
+    industry: "SaaS B2B (atención al cliente con IA)"
+    region: LATAM + US (post-expansión)
+    vendor_type: freelancer_creativo_independiente
+    vendor_relationship: primera_vez_ninguna_relacion
+    campaign_topic: "rebrand silencioso post-anuncio de M&A con Continental"
+    strategic_sensitivity: "contiene_M&A_in_progress + contiene_pricing_post_M&A + contiene_layoffs_q3"
+    deadline_days: 2
+
+  expected_behavior_shift: |
+    el contraste cambia en 3 dimensiones críticas vs primary:
+
+    1. vendor_relationship: 2_años → primera_vez_ninguna
+       → la confianza pre-existente no existe. cero historial.
+       el riesgo de filtración (intencional o accidental) sube.
+       NDA por sí solo no es protección suficiente.
+
+    2. strategic_sensitivity: lanzamiento Q3 → M&A activo
+       → la naturaleza del riesgo cambia. lanzamiento Q3 = competidores
+       saben qué viene. M&A in progress = riesgo regulatorio
+       (insider trading), riesgo financiero (deal contingente),
+       y riesgo reputacional (anuncio prematuro). en M&A el costo
+       de un leak es enterprise-level: posibles billions.
+
+    3. deadline_days: 3 → 2
+       → presión de tiempo para mejor brief justo cuando los stakes
+       están en su máximo. trampa: aplicar mismo nivel de scrubbing
+       que primary cuando el contexto requiere más.
+
+    el empleado tiene que reconocer que:
+    - vendor sin historial = umbrales más estrictos de scrubbing
+    - M&A = escalar a legal/CFO obligatorio (no opcional)
+    - rebrand silencioso post-M&A = brief NO debe mencionar M&A
+      explícitamente; ni siquiera al freelancer
+
+  inputs_resolved:
+    synthetic: true
+    provenance_note: |
+      Continental Holdings es nombre ficticio. M&A scenario fully
+      synthetic. brief interno construido para reflejar real estrategic
+      complexity sin referenciar empresas reales.
+    items:
+      - kind: doc
+        name: brief_interno_completo.md
+        content: |
+          # brief interno — rebrand post-M&A (CONFIDENCIAL)
+
+          ## 1. overview campaign
+          campaña para suavizar transición de marca tras anuncio
+          M&A con Continental Holdings (agosto). objetivo: clientes
+          existentes no se asustan, prospects entienden continuidad.
+
+          ## 2. target audience
+          clientes Loop existentes + prospects en pipeline.
+          subset: cuentas con renewals Q3-Q4.
+
+          ## 3. brand voice
+          mismo voice de Loop, con guiño a "evolución" sutil.
+          NO mencionar M&A directamente.
+
+          ## 4. creative specs
+          - 1 video 30 sec
+          - 5 sequenced LinkedIn posts
+          - 1 email a clientes + 1 a prospects
+          - 1 landing post-launch
+
+          ## 5. launch timeline (público)
+          - agosto 15: anuncio M&A press release
+          - agosto 16-30: campaña rebrand
+
+          ## 6. M&A details (SUPER CONFIDENCIAL)
+          - Continental Holdings, deal $480M
+          - earn-out structure 2 años
+          - cierre legal contingente regulatorio US + LATAM
+          - 12 personas de Loop salen, post-cierre
+          - rebrand a Continental Customer Experience Suite (CCE Suite)
+
+          ## 7. competitive impact (INTERNO)
+          - Continental tiene presencia US enterprise; Loop fortalece
+            cobertura LATAM
+          - rivales (Zendesk, Intercom) probable respuesta agresiva
+          - se espera que Sierra AI lance copycat de auto-routing en
+            respuesta al combined entity
+
+          ## 8. postmortem últimas campañas (INTERNO)
+          - rebrand de competitor X tuvo 15% churn — lección: comunicar
+            continuidad obsesivamente
+          - clients de enterprise se asustan si no se les avisa antes
+
+          ## 9. financial targets post-M&A (INTERNO)
+          - retain 95% clientes existentes Loop
+          - cross-sell 30% a portafolio Continental existente
+          - $12M new ARR projected en 12 meses post-cierre
+
+          ## 10. pricing post-M&A (INTERNO)
+          - Loop existing prices grandfathered 24 meses
+          - new contracts: alineamiento con Continental tier pricing
+          - 20-30% más caro promedio
+          - enterprise discounts revisados
+
+      - kind: doc
+        name: brief_template_agencia.md
+        content: |
+          # template para freelancer (más simple que template agencia)
+
+          el freelancer espera:
+          - campaign objective (1 párrafo)
+          - audiencia (perfil + canal)
+          - brand voice (link + 2 ejemplos)
+          - deliverables (lista corta + specs)
+          - timeline (fechas hard)
+          - referencias visuales (links externos)
+
+  rendering_meta:
+    rendered_by: claude_product
+    rendered_at: 2026-05-12
+    used_for: resim_after_primary_completion
+    triggers_when: "primary completed AND delay_days_from_parent elapsed"
+
+  authoring_note: |
+    M&A in progress es una de las categorías más sensibles posibles
+    para un brief externo. el empleado tiene que reconocer que NDA
+    standard no basta — y que el brief NO puede mencionar M&A ni
+    siquiera de pasada, incluso como "evolución" sutil. la respuesta
+    correcta probablemente sea: brief mínimo + call de contexto +
+    legal/CFO en copia.

@@ -76,8 +76,10 @@ sprint_package:
 
       - id: marketing_brief_to_agency_via_ia
         order: 4
-        status: planned
+        primary_variant_ref: marketing_brief_to_agency_via_ia__loop_familiar_agency_v1
+        resim_variant_ref: marketing_brief_to_agency_via_ia__loop_new_freelancer_ma_resim_v1
         dimensions_emphasized: [contexto, decision, juicio]
+        status: ready  # claude_product cerró el contrato en pase 4
         tension: "preparar brief para agencia externa usando IA — riesgo de leak de estrategia"
 
       - id: marketing_ad_creative_with_competitor_research
@@ -121,7 +123,10 @@ sprint_package:
       - practice_spot_segmentation_bias_v1
       - practice_segment_size_protections_v1
       - practice_transparent_peer_response_v1
-      # nuevos beats se agregan según gaps emerjan en casos 4-8
+      # pase 4 (caso 4 — marketing_brief_to_agency_via_ia)
+      - practice_scrub_strategy_from_brief_v1
+      - practice_brief_completeness_v1
+      # nuevos beats se agregan según gaps emerjan en casos 5-8
 
     resim_policy:
       delay_days_default: 7
@@ -230,8 +235,8 @@ sprint_package:
   # ============================================================
   operational:
     cases_status_required_for_launch:
-      ready: 2   # marketing_urgent_campaign_pii + marketing_copy_with_brand_voice
-      planned: 6
+      ready: 3   # marketing_urgent_campaign_pii + marketing_copy_with_brand_voice + marketing_segment_with_sensitive_data
+      planned: 5
       blockers_for_launch: |
         no puede lanzarse como SKU vendible hasta que los 8 casos
         estén `status: ready`. v0 puede correr en modo "design partner"
@@ -254,8 +259,9 @@ sprint_package:
       date: 2026-05-12
       author: claude_product
       changes: |
-        sprint package inicial. 8 casos planeados, 2 ready (marketing_urgent_campaign_pii
-        + marketing_copy_with_brand_voice). rubric v1 vinculada. 7 practice_beats en catálogo. pricing band tentativo
+        sprint package inicial. 8 casos planeados, 3 ready (marketing_urgent_campaign_pii
+        + marketing_copy_with_brand_voice + marketing_segment_with_sensitive_data).
+        rubric v1 vinculada. 10 practice_beats en catálogo. pricing band tentativo
         $79-199 per_seat_per_sprint pendiente validación con Pablo.
 
   notes_for_codex: |
