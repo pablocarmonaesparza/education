@@ -63,7 +63,7 @@
 | reporte sintetico Grupo B | `../field_test_v0/manager_report_synthetic_v0.md` | claude | ✅ done v1 | ✅ reviewed | desbloquea buyer validity en paralelo; contiene disclaimer sintetico |
 | confidentiality note | `../field_test_v0/confidentiality_note.md` | codex | – | ✅ done | texto ligero; no reemplaza NDA formal si una empresa lo pide |
 | estructura operativa field test | `../field_test_v0/{sessions,managers,outreach_tracker.yaml}` | claude | ✅ done v1 | ✅ reviewed_with_fix | Codex anonimizó tracker: solo IDs, no nombres/empresas reales dentro del repo |
-| audit field test packet completo | `coordinacion/AUDIT_FIELD_TEST_PACKET_CODEX_2026_05_12.md` | codex | – | ✅ done | pre-registro base en commit `1a522dd`; faltan OK de Pablo, operador fijo y evaluadores externos antes de sesiones |
+| audit field test packet completo | `coordinacion/AUDIT_FIELD_TEST_PACKET_CODEX_2026_05_12.md` | codex | – | ✅ done | pre-registro base en commit `1a522dd`; Pablo dio OK al packet; faltan operador fijo y evaluadores externos antes de sesiones |
 | runtime motor mínimo | `lib/simulador/` + `scripts/simulador/validate-contracts.mjs` | codex | – | ✅ done | tipos, constantes, step_key estable, validador de contrato, importer YAML-objeto→seed rows, runtime de eventos/sesión + CLI `npm run simulador:validate`; validator cruza variants y practice beats |
 | eval engine stub | `lib/simulador/runtime.ts` | codex | – | ✅ stub | evaluación determinística por gaps/risk_events; LLM-as-judge real queda pendiente antes de producción |
 
@@ -120,6 +120,6 @@ codex completó:
 - actualización de handoff/readme/status durante los pases activos
 
 próximo paso natural:
-1. Pablo revisa/aprueba el packet completo del field test
-2. Pablo activa reclutamiento, evaluadores externos y operador wizard-of-oz fijo
+1. Pablo activa reclutamiento, evaluadores externos y operador wizard-of-oz fijo
+2. Claude ayuda a preparar scheduling y uso de scripts existentes, sin crear estructura nueva
 3. NO construir runtime, seed SQL, LLM-judge ni Supabase hasta que la fase 0 pase la decision matrix

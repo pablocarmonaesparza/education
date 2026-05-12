@@ -8,7 +8,7 @@ Codex creo la estructura base, runtime logico, modelo de datos, SQL candidate y 
 
 Claude CLI audito el candidate tecnico y Codex ya resolvio los bloqueantes: pricing completo en `pricing_json`, metadata por caso del Sprint, assignments primary/resim, step keys estables y dimension explicita en risk events.
 
-Fase actual: field test v0. Pablo aprobo arrancar con lock experimental antes de construir runtime. Fase A y Fase B del packet ya estan redactadas y auditadas por Codex.
+Fase actual: field test v0. Pablo aprobo arrancar con lock experimental antes de construir runtime. Fase A y Fase B del packet ya estan redactadas, auditadas por Codex y aprobadas por Pablo para avanzar a preparacion de ejecucion manual.
 
 ## Regla de colaboracion
 
@@ -58,7 +58,6 @@ Auditorias:
 
 Pendiente antes de ejecutar sesiones:
 
-- OK explicito de Pablo para el packet completo.
 - operador wizard-of-oz fijo.
 - 2 evaluadores externos confirmados.
 
@@ -72,14 +71,14 @@ Nota operativa: `gbrain import docs/memory/ --no-embed` corrio bien el 2026-05-1
 
 ## Siguiente paso recomendado para Claude
 
-Si Pablo aprueba el packet completo, no crear mas estructura. Ayudar a Pablo a preparar reclutamiento, evaluadores externos y scheduling usando los archivos existentes.
+Pablo dio OK al packet completo el 2026-05-12. No crear mas estructura. Ayudar a Pablo a preparar reclutamiento, evaluadores externos y scheduling usando los archivos existentes.
 
 No ejecutar sesiones hasta que el pre-registro este commiteado.
 
 ## Siguiente paso recomendado para Codex
 
-- Esperar aprobacion de Pablo al packet completo.
-- Despues, ayudar a congelar pre-registro y revisar que no haya drift en modelos/prompts.
+- El OK de Pablo ya esta dado.
+- Ayudar a congelar pre-registro y revisar que no haya drift en modelos/prompts si se toca cualquier archivo del packet.
 - No construir runtime, seed SQL, LLM-judge ni Supabase hasta que la fase 0 pase.
 
 ## Nota para Codex

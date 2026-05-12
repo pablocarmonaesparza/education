@@ -18,4 +18,8 @@ Claude redactó Fase B del packet y Codex la auditó como `approved_with_fixes`.
 
 **Regla operativa:** `outreach_tracker.yaml`, `sessions/` y `managers/` no deben guardar nombres, emails, empresas reales, handles ni URLs. Solo IDs anonimizados; el mapeo real vive fuera del repo.
 
-**Pendiente antes de ejecutar sesiones:** OK explícito de Pablo, operador wizard-of-oz fijo y 2 evaluadores externos confirmados. El pre-registro base ya quedó con hash visible en `1a522dd`; no editar protocolo, matriz ni judge prompt antes de sesiones salvo nuevo commit explícito.
+### Actualización 2026-05-12 — OK de Pablo para avanzar
+
+Pablo dio OK al packet completo del field test. Claude puede ayudar a preparar reclutamiento, evaluadores externos y scheduling usando los archivos existentes, sin crear nueva estructura ni ejecutar sesiones.
+
+**Pendiente antes de ejecutar sesiones:** operador wizard-of-oz fijo y 2 evaluadores externos confirmados. El pre-registro base ya quedó con hash visible en `1a522dd`; no editar protocolo, matriz ni judge prompt antes de sesiones salvo nuevo commit explícito.

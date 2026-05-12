@@ -16,7 +16,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 ### decisiones
 
 - [tesis core — vendemos concentración + operación, no información](decision_tesis_concentracion_plataforma.md) — 2026-05-12 — `[producto, orquestador]` — tesis vigente: simulación → diagnóstico → práctica → re-simulación → evidencia → siguiente caso; educación como tratamiento adaptativo.
-- [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — 2026-05-12 — `[producto, desarrollo, orquestador]` — packet completo auditado; no runtime hasta OK, pre-registro y decision matrix.
+- [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — 2026-05-12 — `[producto, desarrollo, orquestador]` — packet completo aprobado por Pablo; no runtime hasta pasar decision matrix.
 - [arquitectura v0 de "El Simulador" — acuerdo Claude/Codex](decision_simulador_arquitectura_v0.md) — 2026-05-12 — `[producto, desarrollo, orquestador]` — separación case_template/variant/session; 5 step types; 5 dimensiones; 4 manager actions; 5 evidence kinds; reglas de colaboración Claude↔Codex.
 - [primer caso canónico — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — 2026-05-12 — `[producto, marketing, ventas]` — Marketing Manager LATAM SaaS B2B; tensión velocidad-vs-privacidad; 5 steps + resim enterprise US; 7 gaps mapeados a practice_beats.
 - [segundo caso canónico — marketing_copy_with_brand_voice](decision_simulador_second_case_brand_voice.md) — 2026-05-12 — `[producto, marketing]` — tensión velocidad-vs-voz-de-marca; 5 steps + resim B2C Gen Z; prueba que el simulador no depende solo de PII.
