@@ -1,12 +1,14 @@
 import type { Config } from "tailwindcss";
+import { heroui } from "@heroui/react";
 const { fontFamily } = require("tailwindcss/defaultTheme");
 
 const config: Config = {
-  darkMode: "media",
+  darkMode: ["media", "class"],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
@@ -94,6 +96,36 @@ const config: Config = {
       };
       addUtilities(newUtilities);
     },
+    heroui({
+      themes: {
+        light: {
+          colors: {
+            primary: {
+              DEFAULT: "#6366F1",
+              foreground: "#FFFFFF",
+            },
+            secondary: {
+              DEFAULT: "#A855F7",
+              foreground: "#FFFFFF",
+            },
+          },
+        },
+        dark: {
+          colors: {
+            background: "#09090B",
+            foreground: "#FAFAFA",
+            primary: {
+              DEFAULT: "#818CF8",
+              foreground: "#FFFFFF",
+            },
+            secondary: {
+              DEFAULT: "#C084FC",
+              foreground: "#FFFFFF",
+            },
+          },
+        },
+      },
+    }),
   ],
 };
 
