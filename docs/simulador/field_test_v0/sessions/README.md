@@ -40,10 +40,10 @@ sessions/P001/
    por IDs)
 
 5. NO commitear datos de identificación personal real de
-   participantes. el `name` real del participante vive solo en
-   `outreach_tracker.yaml` (no commiteado a producción) o en notas
-   externas; en este directorio se usa solo `participant_id` (P001,
-   P002, ...).
+   participantes. la relación entre `participant_id` y persona real
+   vive fuera del repo (calendario, DM, hoja privada o notas externas).
+   en este directorio y en `outreach_tracker.yaml` se usa solo
+   `participant_id` (P001, P002, ...).
 
 ## archivos agregados al cierre de fase 0
 

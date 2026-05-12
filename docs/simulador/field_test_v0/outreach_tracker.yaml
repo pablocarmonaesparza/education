@@ -1,12 +1,16 @@
 # tracker de outreach — fase 0 field test
 #
-# propósito: bitácora viva de candidatos contactados para los 3 grupos.
+# propósito: bitácora viva anonimizada de candidatos contactados para los 3 grupos.
 # operador (Pablo) actualiza este archivo conforme avanza el reclutamiento.
 # claude lo monitorea para anticipar fricción.
 #
 # regla: actualizar fecha + estado de cada candidato. no borrar
 # entradas de candidatos que dijeron "no"; preservar como evidencia
 # de tasa de respuesta.
+#
+# regla de privacidad: NO guardar nombres reales, emails, teléfonos,
+# handles, empresas reales ni URLs de perfil en este repo. usa IDs
+# (P001, M001, E001) y conserva el mapeo real fuera del repo.
 
 meta:
   fase: 0
@@ -39,9 +43,9 @@ stats_current:
 
 candidates_grupo_a: []
 # formato por candidato:
-# - name: "Nombre Apellido"
+# - participant_id: P001
 #   role: "Marketing Manager"
-#   company: "<Empresa>"
+#   company_profile: "SaaS B2B 120 empleados"
 #   country: MX | CO | AR | CL
 #   seniority: early | mid | senior
 #   channel: linkedin_dm | email | whatsapp | referral_pablo
@@ -56,9 +60,9 @@ candidates_grupo_a: []
 
 candidates_grupo_b: []
 # formato:
-# - name: "Nombre Apellido"
+# - manager_id: M001
 #   role: "Head of Marketing"
-#   company: "<Empresa>"
+#   company_profile: "SaaS B2B 50-500 empleados"
 #   country: MX | CO | AR | CL
 #   channel: linkedin_dm | email | whatsapp | referral_pablo
 #   first_contact_date: ISO-8601
@@ -70,7 +74,7 @@ candidates_grupo_b: []
 
 candidates_evaluators: []
 # formato:
-# - name: "Nombre Apellido"
+# - evaluator_id: E001
 #   years_experience_marketing: <int>
 #   ai_usage_weekly_months: <int>
 #   country: <ISO country code>
@@ -109,7 +113,8 @@ operational_notes:
 # ============================================================
 # protocolo de actualización
 # ============================================================
-# 1. operador (Pablo) edita este archivo en cada interacción de outreach
+# 1. operador (Pablo) edita este archivo en cada interacción de outreach,
+#    usando IDs anonimizados y sin datos personales reales
 # 2. claude no edita los datos de candidatos pero sí puede:
 #    a. agregar entradas en operational_notes con timestamp
 #    b. anotar pattern observado (ej: "10 contactos sin respuesta,

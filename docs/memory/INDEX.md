@@ -16,6 +16,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 ### decisiones
 
 - [tesis core — vendemos concentración + operación, no información](decision_tesis_concentracion_plataforma.md) — 2026-05-12 — `[producto, orquestador]` — tesis vigente: simulación → diagnóstico → práctica → re-simulación → evidencia → siguiente caso; educación como tratamiento adaptativo.
+- [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — 2026-05-12 — `[producto, desarrollo, orquestador]` — packet completo auditado; no runtime hasta OK, pre-registro y decision matrix.
 - [arquitectura v0 de "El Simulador" — acuerdo Claude/Codex](decision_simulador_arquitectura_v0.md) — 2026-05-12 — `[producto, desarrollo, orquestador]` — separación case_template/variant/session; 5 step types; 5 dimensiones; 4 manager actions; 5 evidence kinds; reglas de colaboración Claude↔Codex.
 - [primer caso canónico — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — 2026-05-12 — `[producto, marketing, ventas]` — Marketing Manager LATAM SaaS B2B; tensión velocidad-vs-privacidad; 5 steps + resim enterprise US; 7 gaps mapeados a practice_beats.
 - [segundo caso canónico — marketing_copy_with_brand_voice](decision_simulador_second_case_brand_voice.md) — 2026-05-12 — `[producto, marketing]` — tensión velocidad-vs-voz-de-marca; 5 steps + resim B2C Gen Z; prueba que el simulador no depende solo de PII.
@@ -85,6 +86,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### desarrollo
 
+- [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — decision — 2026-05-12 *(comparte con producto, orquestador; bloquea runtime hasta pasar matriz)*
 - [runtime mínimo del Simulador implementado por Codex](decision_simulador_runtime_minimo_codex.md) — decision — 2026-05-12 *(comparte con producto; `lib/simulador/`)*
 - [arquitectura v0 de "El Simulador"](decision_simulador_arquitectura_v0.md) — decision — 2026-05-12 *(comparte con producto, orquestador; schema/runtime/contrato v0)*
 - [pivote whatsapp como canal real](decision_pivot_whatsapp_canal_real.md) — decision — 2026-04-28 *(comparte con marketing, finanzas, producto)*
@@ -143,6 +145,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 ### orquestador
 
 - [estructura de departamentos funcionales](metodologia_estructura_dominios.md) — metodologia — 2026-05-08
+- [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — decision — 2026-05-12 *(comparte con producto, desarrollo; lock experimental y decision matrix)*
 - [tesis core — concentración + operación](decision_tesis_concentracion_plataforma.md) — decision — 2026-05-12 *(comparte con producto; loop vigente de simulación → diagnóstico → práctica → re-simulación → evidencia)*
 - [protocolo claude+codex](metodologia_protocolo_claude_codex.md) — metodologia — 2026-04-27 *(comparte con desarrollo; prototipos visuales no son producto aprobado)*
 - [ritual de cierre por dominio](metodologia_ritual_cierre_dominio.md) — metodologia — 2026-05-04
@@ -151,6 +154,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### producto
 
+- [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — decision — 2026-05-12 *(comparte con desarrollo, orquestador; face/construct/buyer validity antes de codigo)*
 - [casos 4 a 7 del Sprint marketing_30d](decision_simulador_marketing_cases_4_7.md) — decision — 2026-05-12 *(comparte con marketing)*
 - [runtime mínimo del Simulador implementado por Codex](decision_simulador_runtime_minimo_codex.md) — decision — 2026-05-12 *(comparte con desarrollo)*
 - [tercer caso canónico — marketing_segment_with_sensitive_data](decision_simulador_third_case_segmentation.md) — decision — 2026-05-12 *(comparte con marketing, legal)*

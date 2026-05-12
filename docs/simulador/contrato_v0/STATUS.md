@@ -48,7 +48,7 @@
 | variant primary #8 | `variantes/marketing_crisis_response_with_ia__loop_viral_complaint_v1.yaml` | claude | ✅ done v1 | – | viral complaint público; presión reputacional y velocidad |
 | variant resim #8 | `variantes/marketing_crisis_response_with_ia__loop_data_breach_resim_v1.yaml` | claude | ✅ done v1 | – | data breach / PII exposure; escalamiento legal obligatorio |
 | practice beats nuevos (pase 8) | `practice_beats/practice_{crisis_approval_chain,crisis_tone_human}_v1.yaml` | claude | ✅ done v1 | – | 2 nuevos: cadena de aprobación en crisis + tono humano bajo presión |
-| schema SQL v0 | `schema/simulador_v0.sql` | codex | ✅ audit passed | ✅ candidate | bloqueantes del audit Claude resueltos: certificate_export en reports + user_id en reports, tabla human_review_queue, sprint_packages.version + unique(slug,version), evidence_kind con CHECK de los 5 kinds v0, roles aditivos documentados en SQL. **listo para migración con aprobación de Pablo** (regla cruzada: NO correr en main sin OK explícito) |
+| schema SQL v0 | `schema/simulador_v0.sql` | codex | ✅ audit passed | ✅ candidate | bloqueantes del audit Claude + Claude CLI resueltos: certificate_export, human_review_queue, versionado sprint_packages, pricing_json, metadata por caso del Sprint, assignment primary/resim, step_key estable y risk_events.dimension_key. **NO correr migracion sin OK explicito de Pablo** |
 | modelo de datos doc | `schema/MODELO_DATOS_V0.md` | codex | – | ✅ done | separación template/variant/session/events/evidence — alineado con contrato |
 | runtime lógico doc | `runtime/FLUJO_RUNTIME_V0.md` | codex | – | ✅ done | flujo empleado + manager, estados de sesión, event model, regla resim sin modular pesos |
 | contrato caso doc | `casos/CONTRATO_CASO.md` | codex | – | ✅ done | 5 step types, 5 dimensiones, sintético: true, transparencia evaluación, practice beat al final |
@@ -57,7 +57,14 @@
 | handoff coordinación | `coordinacion/HANDOFF.md` | codex | – | ✅ done | reglas Claude↔Codex |
 | audit claude → codex | `coordinacion/AUDIT_CLAUDE_2026_05_12.md` | claude | ✅ done v1 | – | revisión cruzada del schema y docs antes de correr migración |
 | audit codex → claude | `coordinacion/AUDIT_CODEX_2026_05_12.md` | codex | – | ✅ done | revisión técnica de contrato completo + cambios aplicados |
-| runtime motor mínimo | `lib/simulador/` | codex | – | ✅ done | tipos, constantes, validador de contrato, importer YAML-objeto→seed rows, runtime de eventos/sesión |
+| field test Fase A | `../field_test_v0/{README,0_experiment_protocol,9_decision_matrix}.md` | claude | ✅ done v1 | ✅ approved_with_fixes | lock experimental creado; Codex corrigio cells evaluables, varianza, completion sin ayuda, risk flags y timeline |
+| audit field test Fase A | `coordinacion/AUDIT_FIELD_TEST_CODEX_2026_05_12.md` | codex | – | ✅ done | no hay bloqueo metodologico; no autoriza runtime ni Supabase |
+| field test Fase B | `../field_test_v0/{1_participant_brief,2_response_form,3_rubric_human_simplified,4_manager_report_template,5_post_test_interview_protocol,6_calibration_sheet,7_outreach_script,8_judge_prompt_v0}.md` | claude | ✅ done v1 | ✅ approved_with_fixes | Codex corrigio severity critical/high, kappa ponderado, tiempo de outreach y model IDs actuales |
+| reporte sintetico Grupo B | `../field_test_v0/manager_report_synthetic_v0.md` | claude | ✅ done v1 | ✅ reviewed | desbloquea buyer validity en paralelo; contiene disclaimer sintetico |
+| confidentiality note | `../field_test_v0/confidentiality_note.md` | codex | – | ✅ done | texto ligero; no reemplaza NDA formal si una empresa lo pide |
+| estructura operativa field test | `../field_test_v0/{sessions,managers,outreach_tracker.yaml}` | claude | ✅ done v1 | ✅ reviewed_with_fix | Codex anonimizó tracker: solo IDs, no nombres/empresas reales dentro del repo |
+| audit field test packet completo | `coordinacion/AUDIT_FIELD_TEST_PACKET_CODEX_2026_05_12.md` | codex | – | ✅ done | pre-registro base en commit `1a522dd`; faltan OK de Pablo, operador fijo y evaluadores externos antes de sesiones |
+| runtime motor mínimo | `lib/simulador/` + `scripts/simulador/validate-contracts.mjs` | codex | – | ✅ done | tipos, constantes, step_key estable, validador de contrato, importer YAML-objeto→seed rows, runtime de eventos/sesión + CLI `npm run simulador:validate`; validator cruza variants y practice beats |
 | eval engine stub | `lib/simulador/runtime.ts` | codex | – | ✅ stub | evaluación determinística por gaps/risk_events; LLM-as-judge real queda pendiente antes de producción |
 
 ## protocolo de revisión cruzada
@@ -91,6 +98,7 @@ ninguno por ahora.
 - `docs/memory/decision_simulador_second_case_brand_voice.md` — segundo caso, tensión velocidad-vs-voz-de-marca, prueba que el simulador no depende solo de PII
 - `docs/memory/decision_simulador_third_case_segmentation.md` — tercer caso difficulty intermediate, tensión bias predictivo en segmentación, primer caso con ambigüedad ética
 - `docs/memory/decision_simulador_marketing_cases_4_7.md` — resumen de casos 4 a 7 y sus practice beats
+- `docs/memory/decision_simulador_sprint_marketing_completo_v1.md` — cierre del Sprint marketing_30d con 8 casos, 16 variantes y 20 practice beats
 - `docs/memory/decision_simulador_runtime_minimo_codex.md` — runtime mínimo en lib/simulador, importer a seed rows, event model y eval stub
 
 ## handoff actual
@@ -105,13 +113,13 @@ claude completó pase 8 del contrato:
 
 codex completó:
 - schema SQL candidate con bloqueantes del audit Claude resueltos
+- fixes post-audit Claude CLI: pricing_json, sprint_package_cases completo, assignments primary/resim, step_key estable, dimension explicita en risk_events
 - runtime lógico y modelo de datos
 - runtime técnico mínimo en `lib/simulador/`
 - audit técnico cruzado
 - actualización de handoff/readme/status durante los pases activos
 
 próximo paso natural:
-1. Codex debe conectar parser/importer real contra YAML o generar seed SQL revisable
-2. Codex debe reemplazar el eval stub con LLM-as-judge versionado
-3. Claude puede hacer audit fino de producto/copy sobre los 8 casos
-4. NO correr migración Supabase hasta aprobación explícita de Pablo
+1. Pablo revisa/aprueba el packet completo del field test
+2. Pablo activa reclutamiento, evaluadores externos y operador wizard-of-oz fijo
+3. NO construir runtime, seed SQL, LLM-judge ni Supabase hasta que la fase 0 pase la decision matrix
