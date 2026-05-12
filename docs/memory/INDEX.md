@@ -18,6 +18,8 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 - [tesis core — vendemos concentración + operación, no información](decision_tesis_concentracion_plataforma.md) — 2026-05-12 — `[producto, orquestador]` — tesis vigente: simulación → diagnóstico → práctica → re-simulación → evidencia → siguiente caso; educación como tratamiento adaptativo.
 - [arquitectura v0 de "El Simulador" — acuerdo Claude/Codex](decision_simulador_arquitectura_v0.md) — 2026-05-12 — `[producto, desarrollo, orquestador]` — separación case_template/variant/session; 5 step types; 5 dimensiones; 4 manager actions; 5 evidence kinds; reglas de colaboración Claude↔Codex.
 - [primer caso canónico — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — 2026-05-12 — `[producto, marketing, ventas]` — Marketing Manager LATAM SaaS B2B; tensión velocidad-vs-privacidad; 5 steps + resim enterprise US; 7 gaps mapeados a practice_beats.
+- [segundo caso canónico — marketing_copy_with_brand_voice](decision_simulador_second_case_brand_voice.md) — 2026-05-12 — `[producto, marketing]` — tensión velocidad-vs-voz-de-marca; 5 steps + resim B2C Gen Z; prueba que el simulador no depende solo de PII.
+- [tercer caso canónico — marketing_segment_with_sensitive_data](decision_simulador_third_case_segmentation.md) — 2026-05-12 — `[producto, marketing, legal]` — difficulty intermediate; tensión bias predictivo en segmentación con IA + privacidad behavioral; primer caso con ambigüedad ética; resim EU GDPR strict.
 - [stripe-only + USD único + mercado pago descartado](decision_finanzas_stripe_only_usd_mp_descartado.md) — 2026-04-24 — `[finanzas]` — itera procesa solo con stripe en USD; MP descartado definitivamente.
 - [pivote whatsapp como canal real](decision_pivot_whatsapp_canal_real.md) — 2026-04-28 — `[desarrollo, marketing, finanzas, producto]` — whatsapp como canal alterno principal de delivery.
 - [landing — estado al cerrar agente Landing 22-23 abril](decision_landing_estructura_post_pivote_b2b.md) — 2026-04-23 — `[producto, marketing]` — landing prod = Hero (shader + "ai de 0 a 100") → Pricing → FAQ.
@@ -80,6 +82,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### desarrollo
 
+- [arquitectura v0 de "El Simulador"](decision_simulador_arquitectura_v0.md) — decision — 2026-05-12 *(comparte con producto, orquestador; schema/runtime/contrato v0)*
 - [pivote whatsapp como canal real](decision_pivot_whatsapp_canal_real.md) — decision — 2026-04-28 *(comparte con marketing, finanzas, producto)*
 - [protocolo claude+codex](metodologia_protocolo_claude_codex.md) — metodologia — 2026-04-27 *(comparte con orquestador; prototipos aislados no son build aprobado)*
 - [supabase session pooler aws-1 vs aws-0](gotcha_supabase_pooler_aws1_us_east_1.md) — gotcha — 2026-04-27
@@ -120,6 +123,8 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### marketing
 
+- [segundo caso canónico — marketing_copy_with_brand_voice](decision_simulador_second_case_brand_voice.md) — decision — 2026-05-12 *(comparte con producto)*
+- [primer caso canónico — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — decision — 2026-05-12 *(comparte con producto, ventas)*
 - [convención IA mayúsculas, nunca AI](copy_convencion_ia_mayusculas.md) — copy — 2026-05-05 *(comparte con producto)*
 - [pivote whatsapp como canal real](decision_pivot_whatsapp_canal_real.md) — decision — 2026-04-28 *(comparte con desarrollo, finanzas, producto)*
 - [landing — estado al cerrar agente Landing 22-23 abril](decision_landing_estructura_post_pivote_b2b.md) — decision — 2026-04-23 *(comparte con producto)*
@@ -139,6 +144,9 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### producto
 
+- [segundo caso canónico — marketing_copy_with_brand_voice](decision_simulador_second_case_brand_voice.md) — decision — 2026-05-12 *(comparte con marketing)*
+- [primer caso canónico — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — decision — 2026-05-12 *(comparte con marketing, ventas)*
+- [arquitectura v0 de "El Simulador"](decision_simulador_arquitectura_v0.md) — decision — 2026-05-12 *(comparte con desarrollo, orquestador)*
 - [convención IA mayúsculas, nunca AI](copy_convencion_ia_mayusculas.md) — copy — 2026-05-05 *(comparte con marketing)*
 - [tesis core — concentración + operación](decision_tesis_concentracion_plataforma.md) — decision — 2026-05-12 *(comparte con orquestador; loop vigente de simulación → diagnóstico → práctica → re-simulación → evidencia)*
 - [pivote whatsapp como canal real](decision_pivot_whatsapp_canal_real.md) — decision — 2026-04-28 *(comparte con desarrollo, marketing, finanzas)*
@@ -158,4 +166,4 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### ventas
 
-*sin output todavía. cuando se arme outbound a Gerardo Álvarez, prospects, demos o playbooks, vive aquí.*
+- [primer caso canónico — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — decision — 2026-05-12 *(comparte con producto, marketing; ICP/comprador y evidencia vendible)*

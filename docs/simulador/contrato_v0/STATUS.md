@@ -2,9 +2,9 @@
 
 > archivo en tiempo real. cada agente actualiza su columna después de cada commit. no editar la columna del otro.
 
-última sincronización: 2026-05-12 (claude actualizando)
+última sincronización: 2026-05-12 (codex actualizando)
 
-> nota: codex creó carpetas `coordinacion/`, `runtime/`, `schema/` (vacías por ahora). claude no las toca.
+> nota: codex mantiene `coordinacion/`, `runtime/`, `schema/`; claude mantiene casos, rubricas, variantes, practice beats, copy y sprint package.
 
 ## estado por artefacto
 
@@ -24,7 +24,11 @@
 | variant primary #2 | `variantes/marketing_copy_with_brand_voice__loop_b2b_v1.yaml` | claude | ✅ done v1 | – | Loop B2B SaaS corporate-cálido, 5 ejemplos históricos sintéticos LATAM |
 | variant resim #2 | `variantes/marketing_copy_with_brand_voice__nubefresh_b2c_resim_v1.yaml` | claude | ✅ done v1 | – | NubeFresh D2C tono irreverente gen z — contraste extremo para probar transferencia del PRINCIPIO de anclar tono |
 | practice beats nuevos (pase 2) | `practice_beats/practice_{prompt_with_voice_examples,spot_tone_drift,iterate_with_intent}_v1.yaml` | claude | ✅ done v1 | – | 3 nuevos: anclar tono con ejemplos, detectar tone drift, iterar con intención |
-| schema SQL v0 | `schema/simulador_v0.sql` | codex | 🟡 audit | ✅ draft | claude auditó: 2 bloqueantes (certificate_export en reports + human_review_queue), 2 recomendables (sprint_packages.version + evidence_kind constraint). detalle en `coordinacion/AUDIT_CLAUDE_2026_05_12.md` |
+| case_template marketing #3 | `casos/marketing_segment_with_sensitive_data_v1.yaml` | claude | ✅ done v1 | – | difficulty intermediate; tensión: enriquecer segmentación con IA sin discriminar ni exponer behavioral data; 9 gaps incluyendo bias_blindness, segment_too_small, deflection, dishonest_to_peer |
+| variant primary #3 | `variantes/marketing_segment_with_sensitive_data__loop_latam_v1.yaml` | claude | ✅ done v1 | – | Loop LATAM régimen informal, CRM 8.4k leads, campaña a 5k, deadline 8h |
+| variant resim #3 | `variantes/marketing_segment_with_sensitive_data__nordlinx_eu_resim_v1.yaml` | claude | ✅ done v1 | – | NordLinx EU GDPR strict con DPO + DPIA + RoPA, escala 10x a 62k CRM/50k campaña |
+| practice beats nuevos (pase 3) | `practice_beats/practice_{spot_segmentation_bias,segment_size_protections,transparent_peer_response}_v1.yaml` | claude | ✅ done v1 | – | 3 nuevos: detectar bias en segmentación, regla k-anonimato light, respuesta transparente a peer |
+| schema SQL v0 | `schema/simulador_v0.sql` | codex | ✅ audit passed | ✅ candidate | bloqueantes del audit Claude resueltos: certificate_export en reports + user_id en reports, tabla human_review_queue, sprint_packages.version + unique(slug,version), evidence_kind con CHECK de los 5 kinds v0, roles aditivos documentados en SQL. **listo para migración con aprobación de Pablo** (regla cruzada: NO correr en main sin OK explícito) |
 | modelo de datos doc | `schema/MODELO_DATOS_V0.md` | codex | – | ✅ done | separación template/variant/session/events/evidence — alineado con contrato |
 | runtime lógico doc | `runtime/FLUJO_RUNTIME_V0.md` | codex | – | ✅ done | flujo empleado + manager, estados de sesión, event model, regla resim sin modular pesos |
 | contrato caso doc | `casos/CONTRATO_CASO.md` | codex | – | ✅ done | 5 step types, 5 dimensiones, sintético: true, transparencia evaluación, practice beat al final |
@@ -32,6 +36,7 @@
 | sprint package meta doc | `sprints/SPRINT_PACKAGE_V0.md` | codex | – | ✅ done | sprint_package vs sprint, regla "venderse antes de UI" |
 | handoff coordinación | `coordinacion/HANDOFF.md` | codex | – | ✅ done | reglas Claude↔Codex |
 | audit claude → codex | `coordinacion/AUDIT_CLAUDE_2026_05_12.md` | claude | ✅ done v1 | – | revisión cruzada del schema y docs antes de correr migración |
+| audit codex → claude | `coordinacion/AUDIT_CODEX_2026_05_12.md` | codex | – | ✅ done | revisión técnica de contrato completo + cambios aplicados |
 | runtime motor | `app/simulator-system/` o `lib/simulador/` | codex | – | ⏳ pending | ejecuta steps + captura eventos |
 | eval engine | `lib/simulador/evaluation/` | codex | – | ⏳ pending | LLM-as-judge contra rúbrica |
 
@@ -63,25 +68,27 @@ ninguno por ahora.
 
 - `docs/memory/decision_simulador_arquitectura_v0.md` — separación case_template/variant/session, 5 step types, 5 dimensiones, 4 acciones manager
 - `docs/memory/decision_simulador_first_case_marketing.md` — primer caso es marketing_urgent_campaign_pii, ICP marketing_manager LATAM 50-500
+- `docs/memory/decision_simulador_second_case_brand_voice.md` — segundo caso, tensión velocidad-vs-voz-de-marca, prueba que el simulador no depende solo de PII
+- `docs/memory/decision_simulador_third_case_segmentation.md` — tercer caso difficulty intermediate, tensión bias predictivo en segmentación, primer caso con ambigüedad ética
 
 ## handoff actual
 
-claude completó pase 1 del contrato:
-- 1 case_template + 2 variantes (primary + resim)
+claude completó pase 3 del contrato:
+- 3 case_templates ready + 6 variantes (primary + resim por caso)
 - 1 rúbrica versionada con LLM-judge specs
-- 4 practice_beats poblados
+- 10 practice_beats poblados (4+3+3 nuevos por pase)
 - 2 archivos de copy (manager + empleado)
-- 1 sprint package vendible (marketing_30d)
-- 2 memorias en docs/memory/
+- 1 sprint package vendible (marketing_30d) con 3 casos ready + 5 planned
+- 4 memorias en docs/memory/ indexadas: arquitectura + 3 casos
 
-ajustes hechos post-audit de archivos Codex (HANDOFF + FLUJO_RUNTIME + CONTRATO_CASO):
-- renombrado caso a `_v1.yaml` para alinear convención
-- `synthetic: true` agregado a `inputs_resolved` en ambas variantes
-- `transfer_delta` agregado a evidence_emitted
-- nota de scoring resim alineada (no modular pesos)
-- copy del manager incluye reglas de visibilidad + excerpts anonimizados
+codex completó:
+- schema SQL candidate con bloqueantes del audit Claude resueltos
+- runtime lógico y modelo de datos
+- audit técnico cruzado
+- actualización de handoff/readme/status durante los 3 pases
 
-próximo paso natural cuando codex esté listo:
-1. revisión cruzada de Codex sobre el contrato completo (audit del primer caso, rúbrica, sprint)
-2. Codex deriva schema SQL del contrato (no correr migración sin revisión cruzada de claude)
-3. Claude empieza segundo caso del sprint: `marketing_copy_with_brand_voice`
+próximo paso natural:
+1. Claude puede avanzar al cuarto caso: `marketing_brief_to_agency_via_ia`
+2. Codex puede empezar importer YAML -> SQL seed/candidate con los 3 casos ready
+3. Codex puede empezar runtime mínimo + LLM-judge stub determinístico
+4. NO correr migración Supabase hasta aprobación explícita de Pablo

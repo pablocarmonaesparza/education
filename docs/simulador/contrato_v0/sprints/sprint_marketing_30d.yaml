@@ -67,9 +67,12 @@ sprint_package:
 
       - id: marketing_segment_with_sensitive_data
         order: 3
-        status: planned
+        primary_variant_ref: marketing_segment_with_sensitive_data__loop_latam_v1
+        resim_variant_ref: marketing_segment_with_sensitive_data__nordlinx_eu_resim_v1
         dimensions_emphasized: [privacidad, juicio, decision]
-        tension: "segmentar audiencias usando data del CRM sin exponer PII"
+        difficulty: intermediate
+        status: ready  # claude_product cerró el contrato en pase 3
+        tension: "segmentar audiencias usando data del CRM sin exponer PII ni introducir bias predictivo"
 
       - id: marketing_brief_to_agency_via_ia
         order: 4
@@ -114,7 +117,11 @@ sprint_package:
       - practice_prompt_with_voice_examples_v1
       - practice_spot_tone_drift_v1
       - practice_iterate_with_intent_v1
-      # nuevos beats se agregan según gaps emerjan en casos 3-8
+      # pase 3 (caso 3 — marketing_segment_with_sensitive_data)
+      - practice_spot_segmentation_bias_v1
+      - practice_segment_size_protections_v1
+      - practice_transparent_peer_response_v1
+      # nuevos beats se agregan según gaps emerjan en casos 4-8
 
     resim_policy:
       delay_days_default: 7
@@ -223,8 +230,8 @@ sprint_package:
   # ============================================================
   operational:
     cases_status_required_for_launch:
-      ready: 1   # marketing_urgent_campaign_pii ya está
-      planned: 7
+      ready: 2   # marketing_urgent_campaign_pii + marketing_copy_with_brand_voice
+      planned: 6
       blockers_for_launch: |
         no puede lanzarse como SKU vendible hasta que los 8 casos
         estén `status: ready`. v0 puede correr en modo "design partner"
@@ -247,8 +254,8 @@ sprint_package:
       date: 2026-05-12
       author: claude_product
       changes: |
-        sprint package inicial. 8 casos planeados, 1 ready (marketing_urgent_campaign_pii).
-        rubric v1 vinculada. 4 practice_beats en catálogo. pricing band tentativo
+        sprint package inicial. 8 casos planeados, 2 ready (marketing_urgent_campaign_pii
+        + marketing_copy_with_brand_voice). rubric v1 vinculada. 7 practice_beats en catálogo. pricing band tentativo
         $79-199 per_seat_per_sprint pendiente validación con Pablo.
 
   notes_for_codex: |

@@ -1,0 +1,322 @@
+# case_template — marketing_segment_with_sensitive_data
+# tercer caso del Sprint marketing_30d. tensión: enriquecer segmentación
+# con IA sin discriminar ni exponer behavioral data.
+
+case_template:
+  id: marketing_segment_with_sensitive_data
+  version: 1
+  status: active
+  difficulty: intermediate  # más sutil que casos 1-2
+  locale: es-MX
+
+  target_role: [marketing_manager, growth_marketer, demand_gen_lead]
+  sprint_skus: [marketing_30d]
+
+  duration_estimate_min: 22
+  rubric_ref: rubric_marketing_v1
+  rubric_version_used: 1.0.0
+
+  freshness:
+    live_signal: "uso de IA para segmentar audiencias usando data del CRM"
+    review_by: 2026-07-30
+    last_reviewed: 2026-05-12
+    rationale: |
+      caso "vivo" porque la segmentación con IA es la fuente #1 de
+      problemas regulatorios en marketing post-2024 (GDPR + nuevas
+      leyes LATAM de protección de datos). los criterios de "uso
+      legítimo" cambian; refrescar cada 60 días.
+
+  expected_manager_action:
+    default: entrenar
+    possible: [pilotar, entrenar, pausar, escalar]
+
+  required_template_vars:
+    - company_name
+    - industry
+    - region
+    - regulation_regime         # ej: "GDPR_strict" / "LATAM_baseline" / "US_state_level"
+    - team_size
+    - crm_size_leads
+    - campaign_target_count     # cuántos leads vas a contactar
+    - deadline_hours
+
+  context_template:
+    role_play: |
+      eres Marketing Manager en {company_name} ({industry}, región
+      {region}). tu equipo de {team_size} maneja un CRM con
+      {crm_size_leads} leads acumulados — combinación de inbound (form
+      fills, demos solicitadas) y outbound trabajado.
+
+      el régimen de privacidad aplicable es {regulation_regime}. tu
+      empresa NO tiene DPO interno; usas tu criterio + best practices.
+    scenario: |
+      la VP de growth te encargó una campaña de email a
+      {campaign_target_count} leads de tu CRM. el objetivo: empujar
+      a sales-meeting a los que tienen "alta probabilidad" de comprar
+      en Q2. necesitas segmentar para que no se mande email genérico
+      a todos.
+
+      tu CRM tiene 18 campos por lead incluyendo behavioral data
+      (engagement_score, last_visit_date, content_consumed) y
+      categórica (industry, company_size, role_seniority). también
+      tienes intent_score generado por tu herramienta de tracking.
+
+      la trampa: el LLM puede segmentar de formas que parezcan
+      "eficientes" pero introduzcan sesgo (ej: priorizar por seniority
+      excluye juniors decisores; priorizar por engagement_score
+      perpetúa bias de marketing pasado). tu trabajo es segmentar
+      útil sin caer en discriminación o exposición de datos.
+
+      deadline: {deadline_hours} horas para la lista final.
+    pressure:
+      - tight_deadline_{deadline_hours}h
+      - vp_expects_efficiency_gain
+      - regulation_regime_compliance
+
+  data_policy:
+    sensitive_fields:
+      - email
+      - phone
+      - first_name
+      - last_name
+      - employer_name
+      - personal_demographics  # si existe
+    behavioral_fields:
+      - engagement_score
+      - last_visit_date
+      - content_consumed
+      - email_opens_30d
+      - clicks_30d
+      - demo_requests
+    categorical_fields:
+      - industry
+      - company_size_band
+      - role_seniority
+      - region
+      - signup_source
+    intent_signals:
+      - intent_score
+      - pricing_page_visits
+      - case_study_consumed
+    handling_rules:
+      - "sensitive_fields → NO pasar al LLM (segmentar fuera del modelo)"
+      - "behavioral_fields → bucketizar (alto/medio/bajo) antes de IA"
+      - "categorical_fields → pasar tal cual, son data estructurada"
+      - "intent_signals → bucketizar; NO mostrar el score raw al modelo"
+      - "regla 'no discriminación': la segmentación final no debe excluir grupos por seniority sola, region sola, o company_size_band solo si no se justifica con intent"
+
+  inputs_spec:
+    - kind: dataset
+      name: crm_leads_sample.csv
+      schema: [lead_id, first_name, last_name, email, phone, employer_name, industry, company_size_band, role_seniority, region, signup_source, engagement_score, last_visit_date, content_consumed, email_opens_30d, clicks_30d, demo_requests, intent_score]
+      row_count: 80
+      sample_rows_ref: marketing_segment_crm_sample
+    - kind: doc
+      name: campaign_brief.md
+      content_template_ref: marketing_segment_campaign_brief
+
+  steps:
+    - id: 1
+      type: data_scope
+      prompt: "qué campos del CRM vas a pasar al LLM para que sugiera segmentación?"
+      fields_available:
+        - all_18_fields_raw  # malo
+        - sensitive_only  # absurdo
+        - categorical_only  # incompleto
+        - categorical_plus_bucketed_behavioral  # correcto
+        - categorical_plus_raw_intent  # parcial
+        - bucketed_everything  # correcto pero perdés señal
+      expected_action: select_minimum_viable_with_buckets_and_no_pii
+      capture:
+        - selected_field_set
+        - bucketing_decisions
+        - reasoning
+      evaluates: [privacidad, contexto, juicio]
+      gap_trigger_logic: |
+        si selecciona all_18_fields_raw o cualquiera incluyendo
+        sensitive_fields: dispara expose_pii_in_segmentation (high)
+        si selecciona sensitive_only: dispara confused_data_policy (medium)
+        si selecciona categorical_plus_bucketed_behavioral: correct
+        si selecciona categorical_plus_raw_intent: parcial (intent debería bucketizarse)
+        si selecciona bucketed_everything: correct pero pierde discriminación útil
+
+    - id: 2
+      type: llm_beat
+      llm_provider: itera_provided
+      model_alias: itera_default_2026q2
+      task_to_user: |
+        ya scopeaste los datos. redacta el prompt al modelo para que
+        te sugiera 3-4 segmentos accionables de los 80 leads (campo
+        anonimizado). criterio que el VP pidió: priorizar a quienes
+        tengan mayor probabilidad de mover a sales-meeting en Q2.
+      max_turns: 2
+      capture:
+        - user_prompt
+        - model_response_segments
+        - user_followup_decisions
+      evaluates_prompt: [contexto, privacidad, juicio]
+      followup:
+        type: decision_open_short
+        prompt: |
+          mira los 3-4 segmentos sugeridos. en menos de 150 palabras:
+          ¿alguno de los segmentos te incomoda éticamente? ¿algún criterio
+          de segmentación te parece sesgado o que excluye injustamente?
+        max_chars: 600
+        evaluates: [juicio, decision, validacion]
+
+    - id: 3
+      type: artifact_review
+      artifact: llm_segments_proposed
+      prompt: "revisa los segmentos propuestos. marca qué tipo de problema (si alguno) tiene cada segmento."
+      review_targets:
+        - bias_by_seniority         # excluye juniors que pueden ser decisores
+        - bias_by_company_size      # excluye PYME que pueden ser ICP real
+        - bias_by_region            # excluye geografía sin justificación de mercado
+        - low_intent_proxy          # criterio = engagement pasado, no intent futuro
+        - exposes_individual_lead   # un segmento es tan pequeño que identifica individuos
+        - sound_segment             # OK
+      review_mode: multi_select_per_segment
+      capture:
+        - flagged_problems_per_segment
+        - sound_segments_count
+      evaluates: [juicio, validacion]
+      gap_trigger_logic: |
+        si falla en marcar segmento de tamaño < 5 como exposes_individual_lead: dispara segment_too_small_individual_id (high)
+        si marca todos los segmentos como problemáticos sin discriminación: weak_artifact_review (low)
+        si discrimina con razón específica por segmento: correct
+
+    - id: 4
+      type: decision_select
+      prompt: "¿cuál es tu acción final con la segmentación?"
+      options:
+        - id: use_top_2_filter_rest
+          label: "uso los 2 segmentos más fuertes (alta intent + role match), descarto los 1-2 con bias"
+          signal: correct
+        - id: use_all_proposed
+          label: "uso los 3-4 segmentos como salieron del modelo — confío en su criterio"
+          signal: gap_accept_output_no_validation
+        - id: reframe_segmentation
+          label: "rechazo segmentos por bias y le pido al modelo que reformule excluyendo seniority/region como criterio único"
+          signal: correct_with_iteration
+        - id: skip_segmentation_blast
+          label: "descarto segmentación; mando email genérico a los 5,000 (es más seguro éticamente)"
+          signal: gap_overcorrection
+      evaluates: [decision, juicio]
+      risk_event_trigger:
+        condition: "selecciona use_all_proposed AND alguno de los segmentos tenía flag de bias en step 3"
+        event: knowingly_using_biased_segmentation
+        severity: high
+
+    - id: 5
+      type: decision_open_short
+      prompt: |
+        el brand lead te pregunta por slack: "¿usaron IA para segmentar?
+        si sí, ¿es legal/ético usar engagement_score y intent_score para
+        decidir a quién contactar? algunos leads no saben que están siendo
+        scoreados." ¿qué le respondes?
+      max_chars: 400
+      evaluates: [juicio, decision, privacidad]
+      gap_trigger_logic: |
+        si responde defensivo o evasivo ("no te preocupes, todo está bien"): dispara deflection (medium)
+        si responde transparente con criterio (uso comportamental dentro de mi plataforma + segmentación no toca PII + tengo justificación legítima): correct
+        si responde "tienes razón, no debí" sin matiz: dispara excessive_concession (low)
+        si responde que NO usaron IA siendo que sí: dispara dishonest_to_peer (high)
+
+  evaluation_meta:
+    llm_judge_model: itera_default_2026q2
+    estimated_eval_duration_seconds: 16
+    rubric_version_used: 1.0.0
+    deterministic_signals: [step_1.selected_field_set, step_3.flagged_problems_per_segment, step_4.option_selected]
+    llm_judge_signals: [step_2.user_prompt, step_2.followup_text, step_5.text]
+
+  telemetry_required:
+    - time_on_step
+    - prompt_iterations
+    - hint_requested
+    - sensitive_copy_detected
+    - answer_changed
+    - abandoned_step
+
+  evidence_emitted:
+    - kind: readiness_dimension_scores
+      shape: { contexto, privacidad, validacion, juicio, decision }
+    - kind: risk_events_detected
+      shape: [{ event_type, severity, step_id, evidence_text, timestamp }]
+    - kind: decision_replay
+      shape: ordered_list_of_decisions
+    - kind: transfer_delta
+      shape: { primary_session_id, resim_session_id, delta_per_dimension, delta_global, narrative }
+      emitted_when: resim_completed_after_primary
+    - kind: manager_recommendation
+      values: [pilotar, entrenar, pausar, escalar]
+      includes: justification_text
+
+  resimulation_spec:
+    requires_variant_with_role: resimulation
+    delay_days_default: 7
+    expected_behavior_shift_axis:
+      - regulation_regime           # cambia de informal a GDPR estricto
+      - team_size                    # cambia: solo + agencia → enterprise + DPO
+      - campaign_target_count        # 5k → 50k (escala estrés)
+    scoring_note: |
+      la rúbrica NO cambia entre primary y resim. mismos pesos. el
+      contraste en regulation_regime tensa privacidad y juicio sin
+      alterar la fórmula numérica.
+
+  gap_definitions:
+    expose_pii_in_segmentation:
+      dimension: privacidad
+      severity: high
+      triggered_by: [step_1.includes_sensitive_fields, step_2.prompt_contains_pii]
+    confused_data_policy:
+      dimension: privacidad
+      severity: medium
+      triggered_by: [step_1.sensitive_only_selected]
+    segment_too_small_individual_id:
+      dimension: privacidad
+      severity: high
+      triggered_by: [step_3.fails_mark_small_segment]
+    bias_blindness:
+      dimension: juicio
+      severity: medium
+      triggered_by: [step_3.fails_mark_bias_by_seniority, step_3.fails_mark_bias_by_region]
+    accept_output_no_validation:
+      dimension: validacion
+      severity: medium
+      triggered_by: [step_4.use_all_proposed]
+    overcorrection:
+      dimension: decision
+      severity: low
+      triggered_by: [step_4.skip_segmentation_blast]
+    deflection:
+      dimension: juicio
+      severity: medium
+      triggered_by: [step_5.evasive_response_to_peer]
+    dishonest_to_peer:
+      dimension: juicio
+      severity: high
+      triggered_by: [step_5.denies_ai_use]
+    excessive_concession:
+      dimension: decision
+      severity: low
+      triggered_by: [step_5.full_retreat_without_principle]
+
+  practice_beats:
+    expose_pii_in_segmentation: practice_anonymize_keep_signal_v1  # reusa del caso 1
+    bias_blindness: practice_spot_segmentation_bias_v1
+    segment_too_small_individual_id: practice_segment_size_protections_v1
+    accept_output_no_validation: practice_validate_llm_output_v1   # reusa del caso 1
+    deflection: practice_transparent_peer_response_v1
+
+  authoring_meta:
+    written_by: claude_product
+    reviewed_by: codex_engineering
+    initial_review_pending: true
+    last_updated: 2026-05-12
+    difficulty_note: |
+      este caso es `intermediate` (no baseline) porque introduce
+      ambigüedad ética. los casos 1-2 tienen "mala respuesta clara"
+      (exponer PII = mal). este caso tiene "respuesta correcta con
+      matiz" — usar engagement_score puede ser legítimo o problemático
+      según contexto y justificación. la evaluación del LLM-judge
+      requiere captar el matiz, no solo detectar palabras-clave.

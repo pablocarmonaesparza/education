@@ -1,0 +1,118 @@
+# practice_beat — responder con transparencia a peer sobre uso de IA
+# microbeat correctivo disparado por gap: deflection (y soft-trigger en dishonest_to_peer)
+# duración: ≤2 min.
+
+practice_beat:
+  id: practice_transparent_peer_response_v1
+  version: 1
+  status: active
+  duration_max_seconds: 120
+  triggered_by_gap: [deflection, dishonest_to_peer, excessive_concession]
+  dimension: juicio
+  applies_to_sprint_skus: [marketing_30d]
+
+  framing:
+    intro: |
+      pequeña práctica. cuando tu peer (brand lead) te preguntó sobre
+      uso de IA y consentimiento, respondiste evasivo, deshonesto, o
+      con retracción excesiva. ninguna de las tres es buena postura.
+    why_this_matters: |
+      tu peer no es enemigo. está preguntando porque tiene una duda
+      legítima (o porque alguien arriba le preguntó). responder
+      evasivo te deja con el problema; responder deshonesto te
+      arrastra a riesgo personal; responder con retracción excesiva
+      sugiere que no tenías criterio en primer lugar. la respuesta
+      correcta tiene 3 elementos: confirma el hecho, nombra el
+      principio, ofrece next step.
+
+  principle_card:
+    headline: "estructura de respuesta transparente a peer"
+    body: |
+      cuando un peer pregunta sobre algo que hiciste con IA, tu
+      respuesta debe tener 3 partes:
+
+      1. **confirma el hecho sin disclaimer**
+         "sí, usé IA para sugerirme segmentos" — no "técnicamente
+         sí pero" o "depende de qué llamemos IA".
+
+      2. **nombra el principio que aplicaste**
+         "los criterios fueron behavioral data dentro de nuestra
+         plataforma (engagement con nuestros contenidos), no PII ni
+         data externa. la segmentación final fue revisada por mí —
+         no aplicamos lo que sugirió el modelo tal cual."
+
+      3. **ofrece next step accionable**
+         "si quieres, te paso el log del prompt + la versión final
+         que se va a mandar. también puedo escalar a legal si te
+         parece que vale revisar."
+
+      esta estructura te protege de las 3 trampas:
+      - confirma → no eres evasivo
+      - principio → no eres deshonesto (tienes justificación real)
+      - next step → no estás en retracción excesiva (mantenés tu
+        criterio + abrís el proceso)
+
+  practice_exercise:
+    type: text_response_micro
+    duration_seconds: 80
+    intro: |
+      tu brand lead te escribe por slack:
+
+      "hey, me dijo el VP que usaron IA para segmentar el outbound.
+      ¿qué tan agresivo es el targeting? ¿estos leads dieron consent
+      para que los analicemos así?"
+
+      escribe tu respuesta en menos de 250 caracteres usando la
+      estructura confirma → principio → next step.
+    response_max_chars: 250
+    examples:
+      good:
+        - text: |
+            sí, usé IA para sugerir 4 segmentos. usé behavioral data
+            de nuestra plataforma (engagement con nuestros contenidos),
+            ningún PII. yo revisé cada segmento antes de activarlo. te
+            paso el log del prompt si quieres ver el detalle.
+          verdict: correct
+          why: "los 3 elementos presentes. confirma sin defensividad, principio claro (data interna anónima), next step concreto (log compartido)."
+        - text: |
+            sí, usé IA para sugerencia inicial. los criterios fueron
+            engagement_score + content_consumed (data dentro de
+            nuestra plataforma con TOS aceptado al firmar). final
+            decision mía. ¿quieres que escale a legal antes de enviar?
+          verdict: correct
+          why: "confirma, nombra criterio + base legal (TOS), next step más conservador con offer de escalar."
+      bad:
+        - text: "no, no usé IA. solo herramientas de análisis estándar."
+          verdict: gap_dishonest_to_peer
+          why: "deshonesto. herramientas de análisis con LLM ARE IA. te quema si alguien revisa los logs."
+        - text: "no te preocupes, todo está bien. siempre hacemos esto."
+          verdict: gap_deflection
+          why: "evasivo. no responde la pregunta y no ofrece next step. el peer queda con la duda."
+        - text: |
+            tienes razón, no debí usar IA sin consultarte. paro la
+            campaña hasta que legal apruebe. perdón.
+          verdict: gap_excessive_concession
+          why: "retracción excesiva. cediste sin defender tu criterio. tu peer ahora cree que no tenías justificación — pero sí la tenías."
+        - text: |
+            es legal, IA está aprobada por IT, los datos son nuestros.
+            no entiendo cuál es tu duda.
+          verdict: defensive
+          why: "tono defensivo + cuestionar al peer. confirma + principio están pero el next step (retórico) cierra la conversación."
+
+  reveal_after_attempt:
+    correct_principle: |
+      tu peer no está atacándote. está checando porque su trabajo
+      lo requiere o porque alguien arriba le preguntó. responder con
+      transparencia + criterio + next step te protege a ti (queda
+      registro de tu razonamiento) y a la empresa (proceso documentado).
+      las 3 trampas (evasivo, deshonesto, retracción) te hacen perder
+      credibilidad — la transparencia te la da.
+
+  exit:
+    transition_text: "ok, regresamos al score final."
+    log_to_telemetry: practice_beat_completed
+    contributes_to_resim_score: false
+
+  authoring:
+    written_by: claude_product
+    last_updated: 2026-05-12

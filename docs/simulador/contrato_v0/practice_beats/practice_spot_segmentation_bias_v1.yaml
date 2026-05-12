@@ -1,0 +1,101 @@
+# practice_beat — detectar bias en segmentación generada por IA
+# microbeat correctivo disparado por gap: bias_blindness
+# duración: ≤2 min.
+
+practice_beat:
+  id: practice_spot_segmentation_bias_v1
+  version: 1
+  status: active
+  duration_max_seconds: 120
+  triggered_by_gap: bias_blindness
+  dimension: juicio
+  applies_to_sprint_skus: [marketing_30d]
+
+  framing:
+    intro: |
+      pequeña práctica. cuando le pediste al LLM que segmentara
+      audiencias, aceptaste segmentos que usan criterios sesgados
+      (seniority sola, region sola, company_size sola). no es que
+      los segmentos sean "ilegales" — es que perpetúan bias y
+      excluyen leads que podrían ser ICP real.
+    why_this_matters: |
+      el LLM aprende patrones de marketing histórico — incluyendo
+      patrones donde "decisor = VP+" o "buyer = mid-market". si
+      tomas esos patrones como verdad, repites un mundo que ya
+      era sesgado. el daño es doble: pierdes pipeline real (juniors
+      que son decisores, PYME que mueven rápido) y refuerzas un
+      modelo que el equipo de sales luego asume como "así son las
+      cosas".
+
+  principle_card:
+    headline: "tres criterios sesgados clásicos en segmentación IA"
+    body: |
+      cuando revises segmentos sugeridos por un LLM, sospecha de
+      estos patrones:
+
+      1. **seniority como única señal de intent**
+         "priorizar VPs y Directores" excluye al junior analyst que
+         está corriendo el RFP, al manager que firma la PO, al
+         founder de la PYME. la rúbrica correcta: seniority + signal
+         de intent (engagement reciente, content específico).
+
+      2. **region como filtro de mercado**
+         "excluir LATAM" o "solo US" sin evidencia de demanda. los
+         leads se eliminan a sí mismos si no son ICP — no necesitas
+         pre-filtrarlos. excepción: cuando hay restricción legal
+         (GDPR contacting non-EU prospects) o de fulfillment.
+
+      3. **company_size como proxy de presupuesto**
+         "solo enterprise" porque "tienen budget". la realidad: mid-
+         market y PYME often cierran 3x más rápido y son champion
+         futuro de tu producto. tamaño ≠ probabilidad de cierre.
+
+      regla: cada criterio de segmentación debe responder a "¿qué
+      señal de intent o ajuste de necesidad estoy usando?". si la
+      respuesta es "demográfica sola", hay bias.
+
+  practice_exercise:
+    type: artifact_review_micro_discriminative
+    duration_seconds: 60
+    intro: |
+      revisa estos 4 segmentos sugeridos por un LLM. clasifica cada
+      uno: SOUND, BIASED, o MIXED.
+    segments:
+      - id: 1
+        text: "Segment A: VPs y Directores de empresas con 250+ empleados que han abierto 3+ emails en 30 días."
+        correct_verdict: sound
+        signals_failed: []
+        why: "seniority + intent reciente (email opens). la combinación es legítima."
+      - id: 2
+        text: "Segment B: cualquier rol en empresas LATAM con engagement_score >= 70."
+        correct_verdict: sound
+        signals_failed: []
+        why: "engagement score como única señal de prioridad, sin filtrar por rol o tamaño. señal directa de intent."
+      - id: 3
+        text: "Segment C: solo VPs y C-level. excluir managers, analysts, y founders."
+        correct_verdict: biased
+        signals_failed: [seniority_as_sole_signal, excludes_decision_makers]
+        why: "seniority como único criterio. excluye founders de PYME (decisores claros) y managers de enterprise (a menudo el operativo)."
+      - id: 4
+        text: "Segment D: empresas mid-market y enterprise en US y Canada. excluir LATAM."
+        correct_verdict: biased
+        signals_failed: [region_as_market_filter_without_justification, company_size_as_proxy]
+        why: "ambos filtros son demográficos sin señal de intent. excluyes LATAM por geografía y small por tamaño sin razón explícita."
+
+  reveal_after_attempt:
+    correct_principle: |
+      bias en segmentación no es ilegal — es desperdicio de pipeline.
+      cada criterio que apliques a un segmento debe responder a
+      "¿qué evidencia de intent o ajuste tengo?". criterios demográficos
+      solos (seniority, region, size) sin evidencia complementaria
+      son red flags. tu trabajo es desafiar al LLM cuando sugiera
+      esto, no aceptarlo porque "se ve eficiente".
+
+  exit:
+    transition_text: "ok, regresamos al score final."
+    log_to_telemetry: practice_beat_completed
+    contributes_to_resim_score: false
+
+  authoring:
+    written_by: claude_product
+    last_updated: 2026-05-12

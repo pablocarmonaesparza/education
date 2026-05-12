@@ -98,8 +98,10 @@ cada gap mapeado a practice_beat correspondiente.
 - ICP + categoría: `docs/memory/decision_marketing_simulator_framing_v1.md`
 - tesis: `docs/memory/decision_tesis_concentracion_plataforma.md`
 
-## próximo caso a escribir (en orden de prioridad del sprint package)
+## siguiente caso escrito
 
 `marketing_copy_with_brand_voice` — redactar copy con voz de marca usando IA sin diluir tono. dimensiones enfatizadas: contexto, validación, decisión. tensión: cómo usas IA para escribir copy que suena a tu marca y no a "IA genérica".
 
-Claude escribe el contenido completo, Codex revisa antes de bajar a schema final.
+Estado: ya escrito como segundo caso canónico en `docs/simulador/contrato_v0/casos/marketing_copy_with_brand_voice_v1.yaml`.
+
+Ver memoria específica: `decision_simulador_second_case_brand_voice.md`.

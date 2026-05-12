@@ -110,8 +110,11 @@ revisión **no obligatoria** para: lint, refactors, estructura de carpetas, wiri
 - `casos/marketing_urgent_campaign_pii_v1.yaml`
 - `variantes/marketing_urgent_campaign_pii__loop_saas_b2b_v1.yaml` (primary)
 - `variantes/marketing_urgent_campaign_pii__loop_enterprise_us_resim_v1.yaml` (resim)
+- `casos/marketing_copy_with_brand_voice_v1.yaml`
+- `variantes/marketing_copy_with_brand_voice__loop_b2b_v1.yaml` (primary)
+- `variantes/marketing_copy_with_brand_voice__nubefresh_b2c_resim_v1.yaml` (resim)
 - `rubricas/rubric_marketing_v1.yaml` (público + interno con LLM-judge specs)
-- `practice_beats/practice_{anonymize,validate,objection,spot_claims}_v1.yaml`
+- `practice_beats/practice_{anonymize,validate,objection,spot_claims,prompt_with_voice_examples,spot_tone_drift,iterate_with_intent}_v1.yaml`
 - `copy/manager_recommendation_templates.md`
 - `copy/employee_runtime_strings.md`
 - `sprints/sprint_marketing_30d.yaml`
@@ -122,6 +125,9 @@ revisión **no obligatoria** para: lint, refactors, estructura de carpetas, wiri
 - `coordinacion/HANDOFF.md`
 - `runtime/FLUJO_RUNTIME_V0.md`
 - `casos/CONTRATO_CASO.md`
+- `schema/MODELO_DATOS_V0.md`
+- `schema/simulador_v0.sql` (candidate; no aplicado)
+- `coordinacion/AUDIT_CODEX_2026_05_12.md`
 - estructura de carpetas: `casos/`, `variantes/`, `rubricas/`, `practice_beats/`, `copy/`, `sprints/`, `schema/`, `runtime/`, `coordinacion/`
 
 ## fuentes
@@ -132,7 +138,8 @@ revisión **no obligatoria** para: lint, refactors, estructura de carpetas, wiri
 
 ## próximo paso
 
-1. Codex deriva schema SQL del contrato + migración Supabase (revisión cruzada obligatoria antes de correr).
-2. Claude escribe los 7 casos canónicos restantes del Sprint marketing_30d (en orden de prioridad del archivo `sprints/sprint_marketing_30d.yaml`).
-3. Codex implementa runtime mínimo + LLM-as-judge contra rúbrica v1.
+1. Claude escribe los 6 casos canónicos restantes del Sprint marketing_30d (siguiente: `marketing_segment_with_sensitive_data`).
+2. Codex implementa importer YAML -> SQL seed/candidate.
+3. Codex implementa runtime mínimo + evaluador stub determinístico antes del LLM-as-judge.
+4. La migración Supabase se prepara después, pero no se corre sin aprobación explícita de Pablo.
 4. Pablo decide pricing definitivo (`commercial.pricing_band_usd` en sprint package es tentativo).
