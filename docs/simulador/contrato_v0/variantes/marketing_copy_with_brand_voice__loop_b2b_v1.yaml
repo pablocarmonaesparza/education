@@ -1,0 +1,126 @@
+# case_variant — variante primary del segundo caso
+# Loop SaaS B2B mid-market, tono corporate-cálido, audiencia ops managers.
+# este es el que corre el empleado en su segunda simulación del Sprint.
+
+case_variant:
+  id: marketing_copy_with_brand_voice__loop_b2b_v1
+  template_ref: marketing_copy_with_brand_voice@v1
+  variant_role: primary
+  status: active
+
+  template_var_values:
+    company_name: Loop
+    industry: "SaaS B2B (atención al cliente con IA)"
+    region: LATAM (México, Colombia, Chile)
+    brand_voice_tone: corporate_calido_consultor
+    target_audience: "Operations Managers + Heads of Customer Service en empresas mid-market 100-500 empleados"
+    launch_topic: "nuevo módulo de auto-routing inteligente para tickets con IA"
+    num_pieces_required: 5
+    deadline_hours: 8
+
+  inputs_resolved:
+    synthetic: true
+    provenance_note: |
+      brand voice guide y ejemplos históricos son sintéticos. ninguna
+      referencia a marca real de cliente.
+    items:
+      - kind: doc
+        name: brand_voice_guide.md
+        content: |
+          # voz de marca Loop
+
+          ## tono general
+          corporate cálido. somos serios, pero no formales. hablamos con
+          el ops manager como su consultor de confianza — alguien que
+          conoce el dolor diario y propone, no impone.
+
+          ## reglas
+          - escribir en español neutro LATAM, evitar regionalismos fuertes
+          - usar "tú" no "usted"
+          - frases cortas. máximo 18 palabras por oración en headlines
+          - menciona problemas específicos del rol, no abstracciones
+          - cero clichés: nada de "soluciones de clase mundial",
+            "transformación digital", "potenciamos tu negocio"
+
+          ## permitido
+          - mencionar el dolor antes que la solución
+          - usar nombres concretos: "el ticket que se atora", "el SLA
+            que se vence", "el equipo que se quema"
+          - cifras solo si están en el dataset / public knowledge
+
+          ## prohibido
+          - tono motivacional ("creemos en ti", "tu éxito es nuestro éxito")
+          - corporate-speak ("sinergia", "stakeholder buy-in", "leveraging")
+          - prometer ROI sin contexto
+          - exclamaciones en headlines
+
+      - kind: dataset
+        name: copy_historical_winners.json
+        schema: [piece_type, original_copy, context, performance_metric]
+        sample_rows:
+          - piece_type: linkedin_post
+            original_copy: |
+              "tu equipo de soporte cierra 90 tickets al día. el otro día
+              conté: 31 minutos al día buscando contexto en 4 sistemas
+              distintos. eso son 15 horas al mes por persona. ¿qué pasaría
+              si esas horas se devolvieran al equipo?"
+            context: "post de Camila VP Growth, ago 2025"
+            performance_metric: "8.2x avg engagement"
+          - piece_type: email_subject
+            original_copy: "el ticket que se atora ya no se atora"
+            context: "campaña Q4 2025 a heads of ops"
+            performance_metric: "44% open rate (vs 22% benchmark)"
+          - piece_type: ad_headline
+            original_copy: "tu SLA no debería depender de quien esté de vacaciones"
+            context: "LinkedIn ads dic 2025"
+            performance_metric: "3.1% CTR"
+          - piece_type: blog_intro
+            original_copy: |
+              "cada vez que un cliente espera, alguien en tu equipo está
+              decidiendo si interrumpe a otra persona o asume el riesgo
+              de responder solo. esa decisión la toman 90 veces al día.
+              ese es el costo real de la falta de contexto."
+            context: "post 'el costo del context-switching en soporte', oct 2025"
+            performance_metric: "12,400 reads, 87 leads"
+          - piece_type: landing_hero
+            original_copy: |
+              "menos tickets atorados.
+              más SLA cumplidos.
+              equipo que no se quema."
+            context: "homepage h1, feb 2026"
+            performance_metric: "conversion +18% vs versión anterior"
+
+      - kind: doc
+        name: brief_launch.md
+        content: |
+          # brief lanzamiento — auto-routing inteligente con IA
+
+          ## qué lanzamos
+          módulo de auto-routing: cuando entra un ticket, el sistema
+          decide a qué agente mandarlo basado en historial del cliente,
+          tipo de problema y carga actual del equipo. usa IA para
+          contextualizar, no solo reglas fijas.
+
+          ## a quién hablamos
+          ops managers que ya tienen 30+ agentes de soporte y sienten
+          que el routing manual es un cuello de botella diario.
+
+          ## qué necesitamos
+          5 piezas para mañana 9 AM (lanzamiento Q2):
+          1. linkedin post (anuncio del módulo, 200-300 palabras)
+          2. email subject + preview text (a lista de prospects)
+          3. ad headline (linkedin ads, máximo 90 caracteres)
+          4. blog intro (post de 800 palabras, intro de 100 palabras)
+          5. hero copy de landing nueva (h1 + subtítulo)
+
+          ## qué evitar
+          - hype de IA ("revolucionario", "next-generation")
+          - venta dura ("compra ahora")
+          - cifras inventadas
+
+  rendering_meta:
+    rendered_by: claude_product
+    rendered_at: 2026-05-12
+    used_for: second_simulation_session_in_sprint
+    next_in_sprint: marketing_segment_with_sensitive_data@v1
+    pairs_with_resim: marketing_copy_with_brand_voice__nubefresh_b2c_resim_v1

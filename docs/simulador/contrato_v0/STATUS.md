@@ -19,7 +19,11 @@
 | practice_beats catálogo | `practice_beats/*.yaml` | claude | ✅ done v1 | – | 4 stubs poblados: anonymize_keep_signal, validate_llm_output, objection_to_authority, spot_unverifiable_claims |
 | copy manager | `copy/manager_recommendation_templates.md` | claude | ✅ done v1 | – | 4 acciones con reglas de selección, slots, posfacio, tonos a evitar |
 | copy empleado | `copy/employee_runtime_strings.md` | claude | ✅ done v1 | – | onboarding sprint, strings por step type, errores, prueba de cordura |
-| sprint marketing_30d | `sprints/sprint_marketing_30d.yaml` | claude | ✅ done v1 | – | SKU vendible: 8 casos (1 ready + 7 planned), pricing tentativo $79-199, deliverables manager+empleado |
+| sprint marketing_30d | `sprints/sprint_marketing_30d.yaml` | claude | ✅ done v1 | – | SKU vendible: 8 casos (2 ready + 6 planned tras pase 2), pricing tentativo $79-199, deliverables manager+empleado |
+| case_template marketing #2 | `casos/marketing_copy_with_brand_voice_v1.yaml` | claude | ✅ done v1 | – | tensión velocidad-vs-voz-de-marca; 5 steps incluyendo data_scope para contexto y artifact_review del output IA |
+| variant primary #2 | `variantes/marketing_copy_with_brand_voice__loop_b2b_v1.yaml` | claude | ✅ done v1 | – | Loop B2B SaaS corporate-cálido, 5 ejemplos históricos sintéticos LATAM |
+| variant resim #2 | `variantes/marketing_copy_with_brand_voice__nubefresh_b2c_resim_v1.yaml` | claude | ✅ done v1 | – | NubeFresh D2C tono irreverente gen z — contraste extremo para probar transferencia del PRINCIPIO de anclar tono |
+| practice beats nuevos (pase 2) | `practice_beats/practice_{prompt_with_voice_examples,spot_tone_drift,iterate_with_intent}_v1.yaml` | claude | ✅ done v1 | – | 3 nuevos: anclar tono con ejemplos, detectar tone drift, iterar con intención |
 | schema SQL v0 | `schema/simulador_v0.sql` | codex | 🟡 audit | ✅ draft | claude auditó: 2 bloqueantes (certificate_export en reports + human_review_queue), 2 recomendables (sprint_packages.version + evidence_kind constraint). detalle en `coordinacion/AUDIT_CLAUDE_2026_05_12.md` |
 | modelo de datos doc | `schema/MODELO_DATOS_V0.md` | codex | – | ✅ done | separación template/variant/session/events/evidence — alineado con contrato |
 | runtime lógico doc | `runtime/FLUJO_RUNTIME_V0.md` | codex | – | ✅ done | flujo empleado + manager, estados de sesión, event model, regla resim sin modular pesos |

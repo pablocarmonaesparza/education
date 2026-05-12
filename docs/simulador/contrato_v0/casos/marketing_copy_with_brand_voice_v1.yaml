@@ -1,0 +1,300 @@
+# case_template — marketing_copy_with_brand_voice
+# segundo caso del Sprint marketing_30d. tensión velocidad-vs-voz-de-marca.
+# Marketing Manager debe producir copy on-brand usando IA sin diluir tono.
+
+case_template:
+  id: marketing_copy_with_brand_voice
+  version: 1
+  status: active
+  difficulty: baseline
+  locale: es-MX
+
+  target_role: [marketing_manager, growth_marketer, content_lead]
+  sprint_skus: [marketing_30d]
+
+  duration_estimate_min: 20
+  rubric_ref: rubric_marketing_v1
+  rubric_version_used: 1.0.0
+
+  freshness:
+    live_signal: "uso de IA para copywriting con voz de marca"
+    review_by: 2026-07-15
+    last_reviewed: 2026-05-12
+    rationale: |
+      caso "vivo" porque la batalla principal de marketing con IA en
+      2026 no es "puedo usar IA" sino "puedo usar IA sin sonar a IA".
+      las herramientas de generación cambian rápido (GPT-5, Claude
+      4.x, Gemini 3.x); el principio de anclar voz con ejemplos NO
+      cambia. revisar cada 60 días para refrescar brand examples.
+
+  expected_manager_action:
+    default: entrenar
+    possible: [pilotar, entrenar, pausar, escalar]
+
+  required_template_vars:
+    - company_name
+    - industry
+    - region
+    - brand_voice_tone        # ej: "irreverente_casual" / "corporate_premium" / "técnico_cálido"
+    - target_audience
+    - launch_topic            # qué se está lanzando
+    - num_pieces_required     # cuántas piezas (default 5)
+    - deadline_hours
+
+  context_template:
+    role_play: |
+      eres Marketing Manager en {company_name} ({industry}, región
+      {region}). la voz de tu marca es {brand_voice_tone} — eso es
+      lo que tu audiencia ({target_audience}) reconoce y por lo que
+      vuelve. tu marca tiene 3 años acumulando ese tono.
+    scenario: |
+      estás a {deadline_hours} horas de un lanzamiento ({launch_topic}).
+      necesitas producir {num_pieces_required} piezas de copy: 1
+      LinkedIn post, 1 email subject + preview, 1 ad headline, 1 blog
+      intro, 1 hero copy de landing page.
+
+      tienes a tu disposición el modelo de Itera (provee LLM neutro,
+      no fine-tuned a tu marca). también tienes el brand voice guide
+      de la empresa y 5 piezas de copy histórico que funcionaron.
+
+      la trampa es velocidad: si usas IA sin anclar tono, sale copy
+      genérico tipo "soluciones de clase mundial" que se reconoce
+      como AI-generated en 3 segundos. si pasas 1h editando cada
+      pieza, no llegas al deadline.
+    pressure:
+      - tight_deadline_{deadline_hours}h
+      - tone_consistency_critical
+      - five_distinct_pieces
+
+  data_policy:
+    sensitive_fields: []  # este caso NO toca PII; toca IP de marca
+    confidential_fields: [brand_voice_guide, historical_high_performers, internal_examples]
+    handling_rules:
+      - "brand_voice_guide → puede pasarse al LLM (es tu activo a usar, no a proteger)"
+      - "ejemplos históricos → mismo principio, son tuyos"
+      - "regla v0: este caso enseña a USAR data interna bien, no a protegerla"
+
+  inputs_spec:
+    - kind: doc
+      name: brand_voice_guide.md
+      content_template_ref: marketing_copy_brand_voice_guide
+    - kind: dataset
+      name: copy_historical_winners.json
+      schema: [piece_type, original_copy, context, performance_metric]
+      row_count: 5
+      sample_rows_ref: marketing_copy_brand_voice_historical
+    - kind: doc
+      name: brief_launch.md
+      content_template_ref: marketing_copy_brand_voice_brief
+
+  steps:
+    - id: 1
+      type: data_scope
+      prompt: "qué inputs vas a pasar al modelo para anclar el tono?"
+      fields_available:
+        - brand_voice_guide_full
+        - brand_voice_guide_summary  # versión 200 palabras
+        - historical_examples_3      # 3 ejemplos
+        - historical_examples_5      # 5 ejemplos
+        - target_audience_profile
+        - launch_brief
+        - generic_template_request   # placebo — no incluir brand context
+      expected_action: select_minimum_viable_context_with_anchors
+      capture:
+        - selected_inputs
+        - reasoning_text
+      evaluates: [contexto, juicio]
+      gap_trigger_logic: |
+        si selecciona solo generic_template_request o sin historical_examples:
+          dispara ignore_brand_guide (high)
+        si selecciona TODO (full guide + 5 ejemplos + brief + profile):
+          dispara excessive_context (low) — prompt va a ser tan largo que
+          el modelo prioriza mal
+        si selecciona guide_summary + 3 ejemplos + brief:
+          correct (mínimo viable con anclas)
+
+    - id: 2
+      type: llm_beat
+      llm_provider: itera_provided
+      model_alias: itera_default_2026q2
+      task_to_user: |
+        ya tienes el contexto. redacta el prompt al modelo para generar
+        las {num_pieces_required} piezas. el modelo responderá UNA vez
+        con las {num_pieces_required} piezas; tendrás opción de un
+        segundo turn para refinar.
+      max_turns: 2
+      capture:
+        - user_prompt_turn_1
+        - model_response_turn_1
+        - user_prompt_turn_2  # opcional
+        - model_response_turn_2  # opcional
+      evaluates_prompt: [contexto, juicio, decision]
+      followup:
+        type: decision_open_short
+        prompt: |
+          mira las {num_pieces_required} piezas que generó el modelo.
+          en menos de 100 palabras: ¿cuál es la pieza más fuerte (más
+          on-brand)? ¿cuál es la más débil (más genérica)? ¿qué harías
+          con esa más débil — editar, reescribir, descartar?
+        max_chars: 400
+        evaluates: [validacion, juicio, decision]
+
+    - id: 3
+      type: artifact_review
+      artifact: llm_output_from_step_2
+      prompt: "revisa las {num_pieces_required} piezas generadas. marca qué problema tiene cada pieza (puede tener varios)."
+      review_targets:
+        - tone_drift              # perdió voz de marca, suena AI-generic
+        - unverifiable_claim       # cifra/afirmación sin evidencia
+        - generic_positioning      # "soluciones de clase mundial" / cliché
+        - off_target_audience      # tono no matchea {target_audience}
+        - on_brand                 # tag positivo: la pieza está bien
+        - inconsistent_with_examples  # contradice ejemplos históricos
+      review_mode: multi_select_per_piece
+      capture:
+        - flagged_problems_per_piece
+        - on_brand_pieces_count
+      evaluates: [validacion, juicio, decision]
+      gap_trigger_logic: |
+        si marca >= 3 piezas como on_brand cuando el output es claramente
+        genérico (LLM-judge detecta): dispara generic_positioning_blind (medium)
+        si marca todas las piezas como tone_drift sin discriminar:
+          dispara weak_artifact_review (low) — no está discriminando
+        si discrimina (algunas on_brand, otras flagged con razón específica):
+          correct
+
+    - id: 4
+      type: decision_open_short
+      prompt: |
+        de las {num_pieces_required} piezas, ¿cuáles entregas
+        directamente, cuáles editas y cuáles reescribes desde cero?
+        justifica brevemente (menos de 150 palabras).
+      max_chars: 600
+      evaluates: [decision, juicio]
+      gap_trigger_logic: |
+        si decide entregar todas las piezas tal cual: dispara accept_tone_drift (medium)
+        si decide reescribir TODAS desde cero: dispara excessive_iteration (low) — la IA no aportó
+        si discrimina por pieza con razón específica: correct
+
+    - id: 5
+      type: decision_select
+      prompt: "cómo entregas las piezas finales a tu equipo / brand lead?"
+      options:
+        - id: final_with_notes
+          label: "las 5 piezas finales + nota corta por pieza explicando qué editaste o reescribiste"
+          signal: correct
+        - id: final_silent
+          label: "las 5 piezas finales sin notas — son finales"
+          signal: weak_communication
+        - id: drafts_for_review
+          label: "las 5 como drafts + sugerencia de que brand lead revise antes de publicar"
+          signal: correct_with_escalation
+        - id: raw_ai_output
+          label: "el output crudo del modelo + nota 'son sugerencias del LLM, ustedes deciden'"
+          signal: gap_accept_output_no_validation
+      evaluates: [decision, juicio]
+
+  evaluation_meta:
+    llm_judge_model: itera_default_2026q2
+    estimated_eval_duration_seconds: 15  # un poco más que caso 1 por artifact_review más complejo
+    rubric_version_used: 1.0.0
+    deterministic_signals: [step_1.selected_inputs, step_3.flagged_problems_per_piece, step_5.option_selected]
+    llm_judge_signals:
+      - step_2.user_prompt_turn_1
+      - step_2.user_prompt_turn_2
+      - step_2.followup_text
+      - step_3.justification_per_piece
+      - step_4.text
+
+  telemetry_required:
+    - time_on_step
+    - prompt_iterations
+    - hint_requested
+    - sensitive_copy_detected
+    - answer_changed
+    - abandoned_step
+
+  evidence_emitted:
+    - kind: readiness_dimension_scores
+      shape:
+        contexto: 0-100
+        privacidad: 0-100  # peso bajo en este caso
+        validacion: 0-100
+        juicio: 0-100
+        decision: 0-100
+    - kind: risk_events_detected
+      shape: [{ event_type, severity, step_id, evidence_text, timestamp }]
+    - kind: decision_replay
+      shape: ordered_list_of_decisions
+    - kind: transfer_delta
+      shape: { primary_session_id, resim_session_id, delta_per_dimension, delta_global, narrative }
+      emitted_when: resim_completed_after_primary
+    - kind: manager_recommendation
+      values: [pilotar, entrenar, pausar, escalar]
+      includes: justification_text
+
+  resimulation_spec:
+    requires_variant_with_role: resimulation
+    delay_days_default: 7
+    expected_behavior_shift_axis:
+      - brand_voice_tone        # cambia: corporate → irreverente OR viceversa
+      - target_audience          # cambia: B2B SaaS pro → Gen Z B2C
+      - num_pieces_required      # puede cambiar a 8-10 piezas para escalar presión
+    scoring_note: |
+      la rúbrica NO cambia. mismos pesos. el contraste en brand_voice
+      pone a prueba si el empleado aprendió el PRINCIPIO de anclar
+      tono (no la mecánica de un tono específico).
+
+  gap_definitions:
+    ignore_brand_guide:
+      dimension: contexto
+      severity: high
+      triggered_by: [step_1.no_historical_examples_selected, step_2.prompt_no_brand_reference]
+    excessive_context:
+      dimension: contexto
+      severity: low
+      triggered_by: [step_1.all_inputs_selected]
+    accept_tone_drift:
+      dimension: validacion
+      severity: medium
+      triggered_by: [step_3.fails_mark_generic, step_4.entrega_todo_tal_cual]
+    generic_positioning_blind:
+      dimension: juicio
+      severity: medium
+      triggered_by: [step_3.high_on_brand_with_low_quality_output]
+    excessive_iteration:
+      dimension: decision
+      severity: low
+      triggered_by: [step_4.rewrites_all_pieces, step_2.user_prompt_turn_2_present_with_minimal_delta]
+    weak_artifact_review:
+      dimension: juicio
+      severity: low
+      triggered_by: [step_3.no_discrimination_in_marking]
+    weak_communication:
+      dimension: decision
+      severity: low
+      triggered_by: [step_5.final_silent]
+    accept_output_no_validation:
+      dimension: validacion
+      severity: medium
+      triggered_by: [step_5.raw_ai_output]
+
+  practice_beats:
+    ignore_brand_guide: practice_prompt_with_voice_examples_v1
+    generic_positioning_blind: practice_spot_tone_drift_v1
+    accept_tone_drift: practice_spot_tone_drift_v1
+    excessive_iteration: practice_iterate_with_intent_v1
+    accept_output_no_validation: practice_validate_llm_output_v1  # ya existe del caso 1
+
+  authoring_meta:
+    written_by: claude_product
+    reviewed_by: codex_engineering
+    initial_review_pending: true
+    last_updated: 2026-05-12
+    style_notes: |
+      caso enfocado en contexto + validación + decisión (no en privacidad).
+      esto valida que la maquinaria escala a casos donde el riesgo NO es
+      PII. las piezas de copy son artefactos manipulables — el empleado
+      lee, juzga, decide editar/reescribir. tensión de tiempo distinta:
+      no es "VP esperando", es "deadline de lanzamiento que ya está
+      anunciado".

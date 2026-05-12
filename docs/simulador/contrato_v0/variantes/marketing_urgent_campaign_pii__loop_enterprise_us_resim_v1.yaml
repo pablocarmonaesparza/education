@@ -35,9 +35,11 @@ case_variant:
     2. data_type: customer_feedback → sales_pipeline_data_with_open_deals
        → exponer pipeline abierto a un LLM externo no es solo riesgo de
        privacidad; es riesgo comercial (competidores, leaks de M&A,
-       distorsión de forecast). la rúbrica no cambia, pero el peso de
-       `juicio` sube — el empleado debe leer que "scrubear" PII no
-       basta cuando los datos son de pipeline.
+       distorsión de forecast). la rúbrica y los pesos no cambian:
+       el empleado debe leer que "scrubear" PII no basta cuando los datos
+       son de pipeline. el score conserva los mismos pesos del primary;
+       este cambio se usa como interpretacion cualitativa y para detectar
+       risk_events, no para alterar la formula.
 
     3. time_pressure: 16h → 4h
        → presión real para atajar protocolo. la simulación está diseñada

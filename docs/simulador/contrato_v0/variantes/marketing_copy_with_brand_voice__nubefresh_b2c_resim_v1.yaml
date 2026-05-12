@@ -1,0 +1,170 @@
+# case_variant — variante de re-simulación del segundo caso
+# contraste: B2C ecommerce con tono irreverente-casual, audiencia Gen Z.
+# pone a prueba si el empleado aprendió el PRINCIPIO de anclar tono,
+# no la mecánica de un tono específico.
+
+case_variant:
+  id: marketing_copy_with_brand_voice__nubefresh_b2c_resim_v1
+  template_ref: marketing_copy_with_brand_voice@v1
+  parent_variant_ref: marketing_copy_with_brand_voice__loop_b2b_v1
+  variant_role: resimulation
+  delay_days_from_parent: 7
+  status: active
+
+  template_var_values:
+    company_name: NubeFresh
+    industry: "D2C ecommerce — alimentos congelados saludables, suscripción semanal"
+    region: LATAM (México DF + Guadalajara)
+    brand_voice_tone: irreverente_casual_gen_z
+    target_audience: "Gen Z urbano 22-32 años, trabajadores remoto/híbrido, valoran tiempo > comodidad doméstica, escépticos del marketing tradicional"
+    launch_topic: "menú de primavera 2026 + nueva línea vegana (12 platos nuevos)"
+    num_pieces_required: 5
+    deadline_hours: 6
+
+  expected_behavior_shift: |
+    el caso es estructuralmente idéntico al primary, pero el tono
+    objetivo cambia radicalmente:
+
+    primary: corporate cálido consultor (B2B SaaS, ops managers)
+    resim:   irreverente casual gen z (B2C alimentos, gente joven)
+
+    el empleado tiene que reconocer que el PRINCIPIO sigue siendo el
+    mismo (anclar el tono con ejemplos, no aceptar drift, discriminar
+    qué es on-brand vs genérico), pero las MANIFESTACIONES son
+    opuestas. lo que es "on-brand" en B2B (frases cortas, mención del
+    dolor) es DIFERENTE de "on-brand" en B2C gen z (humor, referencia
+    cultural, lenguaje coloquial).
+
+    el peor error en el resim sería usar el tono que aprendió en el
+    primary — copy serio y consultor para una audiencia que valora
+    irreverencia. la rúbrica detectaría esto como `tone_drift` aunque
+    el copy esté "bien escrito".
+
+    expected_score_pattern:
+      - contexto: debería mantenerse o subir (mismo principio aplicado)
+      - juicio: debería subir si hubo practice_spot_tone_drift entre
+        primary y resim
+      - validacion: debería subir (segunda exposición al pattern de
+        discriminación)
+      - decision: similar
+      - privacidad: marginal en este caso (peso bajo, sin PII)
+
+  inputs_resolved:
+    synthetic: true
+    provenance_note: |
+      NubeFresh es marca ficticia. brand voice guide, ejemplos y brief
+      sintéticos.
+    items:
+      - kind: doc
+        name: brand_voice_guide.md
+        content: |
+          # voz de marca NubeFresh
+
+          ## tono general
+          irreverente, casual, gen z. no somos tu mamá ni tu nutricionista.
+          somos el amigo que cocina rico pero no tiene tiempo de cocinar,
+          igual que tú.
+
+          ## reglas
+          - español neutro LATAM con guiños mexicanos OK
+          - "tú" siempre, jamás "usted"
+          - humor self-aware: reírnos de nosotros mismos antes que de
+            otros
+          - referencias culturales OK si son universales gen z (TikTok,
+            doom-scrolling, monday energy)
+          - admitir las dudas que el cliente tiene en voz alta
+          - frases cortas. emojis selectivos (1 max por pieza, nunca
+            corazones)
+
+          ## permitido
+          - decir "está cabrón" / "está caro" / "está medio aburrido"
+            sobre un problema real
+          - mencionar el dolor con humor: "lunes 2pm, no hay nada en
+            el refri, otra vez"
+          - cifras solo si son reales y útiles (precio, tiempo de
+            preparación, calorías)
+
+          ## prohibido
+          - inspiration speak ("vive tu mejor versión", "transforma tu
+            vida")
+          - mom voice ("rico, sano y delicioso para ti")
+          - influencer-speak ("amo amo amo", "obsesionada con esto")
+          - emojis de corazón, fuego, o cualquier cosa cliché
+          - prometer "salud" en abstracto
+
+      - kind: dataset
+        name: copy_historical_winners.json
+        schema: [piece_type, original_copy, context, performance_metric]
+        sample_rows:
+          - piece_type: linkedin_post
+            original_copy: |
+              "encuesta no-científica entre 200 suscriptores: 73%
+              comen un platillo nuestro entre dos juntas. 21% mientras
+              caminan al transporte. 6% mientras lloran en zoom. para
+              los 6%: estamos contigo."
+            context: "post abril 2026, B2B mensaje a empresas"
+            performance_metric: "6.4x engagement"
+          - piece_type: email_subject
+            original_copy: "spoiler: el lunes va a ser lunes"
+            context: "campaña abr 2026 a lista activa"
+            performance_metric: "51% open rate"
+          - piece_type: ad_headline
+            original_copy: "comer rico no debería tomarte más tiempo que doomscrolling"
+            context: "instagram ads mar 2026"
+            performance_metric: "4.8% CTR"
+          - piece_type: blog_intro
+            original_copy: |
+              "la respuesta a 'qué hay de comer' a las 2 de la tarde,
+              cuando estás entre 3 ventanas de zoom y un email del jefe
+              que pide 'unos minutitos', no debería ser google. es
+              demasiado decisiones para un día que recién empieza."
+            context: "post 'la fatiga de decidir qué comer', feb 2026"
+            performance_metric: "8,200 reads, 412 sign-ups"
+          - piece_type: landing_hero
+            original_copy: |
+              "comida que ya está pensada.
+              tú solo abres, calientas, comes.
+              listo, ya tomaste una buena decisión hoy."
+            context: "landing principal, mar 2026"
+            performance_metric: "conversion +24%"
+
+      - kind: doc
+        name: brief_launch.md
+        content: |
+          # brief lanzamiento — menú de primavera + línea vegana
+
+          ## qué lanzamos
+          12 platos nuevos. 6 son la nueva línea vegana (primera vez
+          que hacemos vegano "que de verdad sabe a algo"). 6 son
+          renovaciones del menú regular con ingredientes de temporada.
+
+          ## a quién hablamos
+          suscriptores actuales (lista de 8k) + tier 1 de prospects
+          (warm audience de IG/TikTok que dieron like en últimos 90
+          días).
+
+          ## qué necesitamos
+          5 piezas para mañana 9 AM (lanzamiento mar 26):
+          1. instagram post (foto + caption, máximo 180 palabras)
+          2. email subject + preview text
+          3. tiktok hook (primeras 3 segundos de un video, texto que
+             aparece en pantalla)
+          4. blog intro (post de 600 palabras, intro de 80 palabras)
+          5. hero copy de landing del menú primavera (h1 + bullets)
+
+          ## qué evitar
+          - tono saludable-aburrido
+          - inspiración vacía
+          - "vibes" sin sustancia (la audiencia ya odia eso)
+
+  rendering_meta:
+    rendered_by: claude_product
+    rendered_at: 2026-05-12
+    used_for: resim_after_primary_completion
+    triggers_when: "primary completed AND delay_days_from_parent elapsed"
+  authoring_note: |
+    el contraste B2B corporate → B2C gen z es deliberadamente extremo.
+    si el empleado fue capaz de "anclar tono" en el primary, debería
+    poder hacerlo aquí. si simplemente "copió un tono" sin entender el
+    principio, va a fallar (probablemente generando algo demasiado
+    formal o demasiado motivacional).

@@ -59,8 +59,10 @@ sprint_package:
 
       - id: marketing_copy_with_brand_voice
         order: 2
-        status: planned  # placeholder — claude lo escribirá en pase 2
+        primary_variant_ref: marketing_copy_with_brand_voice__loop_b2b_v1
+        resim_variant_ref: marketing_copy_with_brand_voice__nubefresh_b2c_resim_v1
         dimensions_emphasized: [contexto, validacion, decision]
+        status: ready  # claude_product cerró el contrato en pase 2
         tension: "redactar copy con voz de marca usando IA sin diluir tono"
 
       - id: marketing_segment_with_sensitive_data
@@ -103,11 +105,16 @@ sprint_package:
     rubric_version_used: 1.0.0
 
     practice_beats_catalog:
+      # pase 1 (caso 1 — marketing_urgent_campaign_pii)
       - practice_anonymize_keep_signal_v1
       - practice_validate_llm_output_v1
       - practice_objection_to_authority_v1
       - practice_spot_unverifiable_claims_v1
-      # nuevos beats se agregan según gaps emerjan en casos 2-8
+      # pase 2 (caso 2 — marketing_copy_with_brand_voice)
+      - practice_prompt_with_voice_examples_v1
+      - practice_spot_tone_drift_v1
+      - practice_iterate_with_intent_v1
+      # nuevos beats se agregan según gaps emerjan en casos 3-8
 
     resim_policy:
       delay_days_default: 7
