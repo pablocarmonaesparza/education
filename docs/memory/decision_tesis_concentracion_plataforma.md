@@ -75,3 +75,42 @@ La memoria debe tratar esta conversación así:
 4. **Siguiente trabajo correcto:** entender el problema, categoría, comprador, evidencia esperada y competencia antes de mover producto real.
 
 Regla operativa: cualquier prototipo visual creado en código durante esta fase se considera **artefacto desechable de conversación** hasta que Pablo diga explícitamente que se convierte en producto. Si una futura sesión encuentra `/simulator-system`, no debe asumir que es roadmap ni fuente de verdad.
+
+### Actualización 2026-05-11 — perfil de producto v0: AI readiness simulator
+
+Después de investigar mercado, competencia y técnicas de simulación, Pablo y Codex aterrizaron el producto de trabajo como:
+
+> **Itera AI Readiness Simulator: una plataforma B2B donde equipos practican casos reales de trabajo con IA y la empresa recibe evidencia de qué tan listos están para usar IA con criterio, seguridad y valor.**
+
+Esto todavía **no autoriza build de plataforma completa**, pero sí define la unidad de producto y el primer loop vendible.
+
+**No es:** curso, LMS, biblioteca de prompts, automatizador tipo n8n, wrapper de ChatGPT/Claude/Gemini ni dashboard de completion.
+
+**Cliente comprador probable:** RH/L&D, transformación digital, innovación, dirección general, operaciones.
+**Usuario final:** equipos no técnicos en ventas, marketing, soporte, operaciones, finanzas, legal y liderazgo.
+**Unidad principal:** un **caso vivo**: situación laboral realista donde el usuario decide qué datos usar, qué herramienta elegir, cómo pedir ayuda a la IA, cómo validar la respuesta, qué riesgos reportar y qué recomendación final dar.
+
+**Producto vendible inicial:** **AI Readiness Sprint** — 30 días, 10 simulaciones, 1 dashboard, 1 reporte ejecutivo.
+
+**Loop mínimo completo:**
+1. onboarding post-signup captura rol, tipo de trabajo, nivel de uso, sensibilidad de datos y objetivo de negocio.
+2. mini diagnóstico inicial mide criterio real, no solo autopercepción.
+3. el usuario resuelve casos vivos por rol/departamento.
+4. Itera genera readiness score por persona/equipo.
+5. la empresa ve riesgos repetidos, brechas, progreso y recomendación de pilotos.
+6. cada mes entran nuevos casos vivos basados en cambios reales de modelos, herramientas, regulación, benchmarks, fallos públicos y prácticas del mercado.
+
+**Killer features priorizadas:**
+- **casos vivos mensuales** — justifican suscripción porque la IA cambia constantemente.
+- **AI readiness score** — mide criterio, datos, riesgo, validación, herramienta, decisión e impacto.
+- **risk heatmap por departamento** — muestra dónde se usa IA peligrosamente.
+- **decision replay** — permite ver cómo decidió el usuario paso a paso.
+- **simulador por rol** — ventas, marketing, soporte, legal, finanzas, operaciones, liderazgo.
+- **reporte ejecutivo automático** — "este equipo está listo para pilotear X, pero no Y".
+- **recomendador de pilotos** — sugiere workflows aptos para piloto, supervisión o pausa.
+
+**Scoring base:** selección de herramienta, manejo de datos sensibles, calidad de contexto, validación del output, riesgo operativo/legal, claridad de decisión final e impacto potencial.
+
+**Onboarding derivado:** para empezar no debe ser formulario largo ni dashboard denso. Debe sentirse como setup guiado: una decisión por pantalla, opción múltiple, modo claro, mucho aire, mini diagnóstico inicial y dashboard como resultado, no como menú vacío. Los prototipos de `/onboarding-system` siguen siendo exploratorios y deben tratarse como **hoja en blanco visual**, no como diseño final ni uso obligatorio del design system.
+
+**Regla para Claude Producto:** si una futura sesión trabaja producto, onboarding, dashboard, pricing o landing desde esta tesis, debe cargar esta memoria y partir del loop `caso vivo → decisión → score → evidencia → reporte`, no de "curso de IA" ni de automatización tipo workflow.
