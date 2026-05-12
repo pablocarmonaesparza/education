@@ -18,8 +18,8 @@
 
 | parámetro | valor | nota |
 |---|---|---|
-| modelo primario | `deepseek-chat` | DeepSeek API |
-| modelo fallback | `gemini-3.1-flash-lite` | Google AI Studio |
+| modelo primario | `deepseek-v4-flash` | DeepSeek API |
+| modelo fallback | `gemini-2.5-flash-lite` | Google AI Studio |
 | temperature | `0` | determinístico |
 | max_tokens (output) | `1500` | suficiente para JSON estructurado |
 | top_p | `1` | default |
@@ -309,7 +309,7 @@ operador mantiene `field_test_v0/_judge_runs.yaml`:
 runs:
   - participant_id: P001
     timestamp: ISO-8601
-    model_used: deepseek-chat | gemini-3.1-flash-lite
+    model_used: deepseek-v4-flash | gemini-2.5-flash-lite
     success: true | false
     tokens_input: <int>
     tokens_output: <int>

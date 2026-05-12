@@ -116,13 +116,14 @@ de la rúbrica. iteramos rúbrica antes de juzgar al judge.
 **predicción direccional:** el LLM-judge coincide con al menos UN
 humano en ≥70% de las cells A/M/B.
 
-**predicción asimétrica para risk_events high:** el judge detecta ≥85%
-de los risk_events high detectados por los humanos. **máximo 1 false
-negative crítico (high) en toda la prueba.** precision del judge puede
-ser ≥60% (puede sobre-llamar riesgos, eso es calibrable; lo que NO se
-puede tolerar es que pierda riesgos altos).
+**predicción asimétrica para risk_events high/critical:** el judge
+detecta ≥85% de los risk_events high o critical detectados por los
+humanos. **máximo 1 false negative crítico (high/critical) en toda la
+prueba.** precision del judge puede ser ≥60% (puede sobre-llamar
+riesgos, eso es calibrable; lo que NO se puede tolerar es que pierda
+riesgos altos).
 
-Los `risk_events high` se capturan como flags explícitos por step en
+Los `risk_events high/critical` se capturan como flags explícitos por step en
 `evaluator_1.yaml` y `evaluator_2.yaml`; no se infieren solo desde la
 banda A/M/B.
 
@@ -219,8 +220,8 @@ el reporte).
 
 el archivo `8_judge_prompt_v0.md` (Fase B) define exactamente:
 
-- modelo para el LLM beat del caso: **DeepSeek `deepseek-chat`,
-  temperature 0**, fallback Gemini `gemini-3.1-flash-lite`
+- modelo para el LLM beat del caso: **DeepSeek `deepseek-v4-flash`,
+  temperature 0**, fallback Gemini `gemini-2.5-flash-lite`
 - modelo para el LLM-judge: a definir en `8_judge_prompt_v0.md`,
   congelado pre-sesión
 - system prompts versionados
@@ -258,7 +259,7 @@ al cierre de las 5 sesiones:
 3. **construct validity (H2)**: tabla de scores por participante × dimensión, calculada con bandas A/M/B
 4. **buyer validity (H3)**: count de managers que afirman decisión accionable + transcripts
 5. **humano-humano kappa (H4)**: cohen's kappa weighted sobre 15 cells × 5 sesiones = 75 cells totales
-6. **humano-judge agreement (H5)**: % cells acuerdo + recall high-risk + precision high-risk
+6. **humano-judge agreement (H5)**: % cells acuerdo + recall high/critical-risk + precision high/critical-risk
 7. **time on task** (mediana de los 5 participantes para completar caso)
 8. **abandono mid-session** (cuántos no terminan)
 

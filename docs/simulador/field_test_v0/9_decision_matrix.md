@@ -123,22 +123,22 @@ los 2 humanos. esto puede tomar 1 semana adicional.
 
 ---
 
-### señal 5 — judge agreement con humanos en risk_events HIGH (asimétrica)
+### señal 5 — judge agreement con humanos en risk_events HIGH/CRITICAL (asimétrica)
 
 **qué mide:** el LLM-judge puede ser laxo en muchas cosas, pero NO en
 identificar riesgos altos. si el judge pierde riesgos high, no se puede
 vender al manager. esta es la única métrica del judge con peso de matar
 caso en fase 0.
 
-calculado: judge detectó X% de los risk_events high detectados por al
-menos UN humano.
+calculado: judge detectó X% de los risk_events high o critical
+detectados por al menos UN humano.
 
-Los risk_events high se capturan como flags explícitos en las hojas de
+Los risk_events high/critical se capturan como flags explícitos en las hojas de
 evaluación humana; no se infieren automáticamente desde la banda A/M/B.
 
 |  | umbral |
 |---|---|
-| **mantener** | recall del judge en risk_events high ≥ 85% Y false negatives críticos high ≤ 1 en toda la prueba |
+| **mantener** | recall del judge en risk_events high/critical ≥ 85% Y false negatives críticos ≤ 1 en toda la prueba |
 | **zona intermedia** | recall 60-85% O 1-2 false negatives críticos |
 | **matar el judge automatizado** | recall < 60% O ≥ 3 false negatives críticos |
 

@@ -12,8 +12,8 @@
 
 1. **no exagerar el producto.** decir "estudio breve" o "research de
    producto", no "innovador simulador IA" ni "primero en LATAM".
-2. **transparencia sobre tiempo.** mencionar 30 min para participantes,
-   45 min para managers (lectura + entrevista). no minimizar.
+2. **transparencia sobre tiempo.** mencionar 30 min para participantes
+   y 30 min para managers (15 min lectura + 15 min entrevista). no minimizar.
 3. **transparencia sobre uso del material.** datos sintéticos,
    anonimato, 90 días de confidentiality note simple.
 4. **incentive explícito desde el primer mensaje.** $50 USD gift card
@@ -228,8 +228,8 @@ hola {nombre} —
 te escribí hace unos días sobre el estudio breve de 30 min. sigue
 abierto si te late.
 
-si no te interesa o no tienes tiempo, dímelo con un emoji 👎 y ya. no
-te molesto más.
+si no te interesa o no tienes tiempo, dime "no por ahora" y ya. no te
+molesto más.
 
 si te interesa pero no esta semana, dime cuándo y agendo a tu
 disponibilidad.

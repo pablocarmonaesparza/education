@@ -39,7 +39,7 @@ calibration_date: 2026-05-25
 evaluator_1_id: E1
 evaluator_2_id: E2
 evaluator_3_id: null  # o E3 si se invocó tie-breaker
-judge_model: deepseek-chat
+judge_model: deepseek-v4-flash
 judge_temperature: 0
 judge_prompt_version: v0.1
 
@@ -63,11 +63,11 @@ risk_events_aggregate:
   - event_id: re_001
     step: 2
     detected_by_e1: true | false
-    severity_e1: high | medium | low | null
+    severity_e1: critical | high | medium | low | null
     detected_by_e2: true | false
-    severity_e2: high | medium | low | null
+    severity_e2: critical | high | medium | low | null
     detected_by_judge: true | false
-    severity_judge: high | medium | low | null
+    severity_judge: critical | high | medium | low | null
     description_short: |
       <descripción de qué tipo de risk_event es, máx 1 oración>
     classification:
@@ -82,8 +82,8 @@ summary:
   judge_human_agreement_count: <int>  # de 15 cells, cuántas con judge == E1 OR judge == E2
   judge_human_agreement_pct: <float>
   risk_events_total_human: <int>
-  risk_events_high_total_human: <int>
-  risk_events_high_detected_by_judge: <int>
+  risk_events_high_or_critical_total_human: <int>
+  risk_events_high_or_critical_detected_by_judge: <int>
   judge_high_risk_recall: <float>  # detected_by_judge / total_human_high
   judge_high_risk_false_negatives: <int>
   judge_high_risk_false_positives: <int>
@@ -125,16 +125,16 @@ summary:
 | P005 | 15 | ? | ?% |
 | **total** | **75** | **?** | **?%** |
 
-### parte 3 — risk_events high (señal 5 asimétrica)
+### parte 3 — risk_events high/critical (señal 5 asimétrica)
 
 | métrica | valor | umbral mantener |
 |---|---|---|
-| total risk_events high detectados por humanos (E1 OR E2) | ? | n/a |
-| risk_events high detectados por judge (de los humanos) | ? | n/a |
-| **recall del judge en high** | ?% | ≥ 85% |
+| total risk_events high/critical detectados por humanos (E1 OR E2) | ? | n/a |
+| risk_events high/critical detectados por judge (de los humanos) | ? | n/a |
+| **recall del judge en high/critical** | ?% | ≥ 85% |
 | false negatives críticos del judge en toda la prueba | ? | ≤ 1 |
-| false positives del judge (high) | ? | n/a (no mata) |
-| precision del judge en high | ?% | ≥ 60% (aceptable inicial) |
+| false positives del judge (high/critical) | ? | n/a (no mata) |
+| precision del judge en high/critical | ?% | ≥ 60% (aceptable inicial) |
 
 **interpretación contra señal 5:**
 
@@ -156,7 +156,7 @@ input crudo de `evaluator_1.yaml`, `evaluator_2.yaml`, `judge.yaml`.
 3. Codex revisa:
    - agreement counts vs YAMLs crudos
    - cálculo de kappa (formula weighted, no simple)
-   - cálculo de recall + precision para risk_events high
+   - cálculo de recall + precision para risk_events high/critical
    - clasificación true_positive/false_negative correcta
 4. Codex marca aprobación o señala correcciones
 5. solo después de aprobación de Codex el operador usa estos números
@@ -169,33 +169,38 @@ input crudo de `evaluator_1.yaml`, `evaluator_2.yaml`, `judge.yaml`.
 ### cohen's kappa weighted (E1 vs E2)
 
 ```
-po = (cells con acuerdo) / (total cells)
-pe = suma sobre cada banda (frecuencia E1 × frecuencia E2 / total²)
-kappa = (po - pe) / (1 - pe)
+bandas ordinales: A, M, B
+weights:
+  same band = 1.0
+  adjacent band (A/M or M/B) = 0.5
+  opposite band (A/B) = 0.0
+
+po_weighted = suma(observed_proportion_ij * weight_ij)
+pe_weighted = suma(expected_proportion_ij * weight_ij)
+kappa_weighted = (po_weighted - pe_weighted) / (1 - pe_weighted)
 ```
 
-para bandas ordinales (A, M, B), usar **weighted kappa con weights
-lineales**: A↔M cuenta como desacuerdo de 0.5, A↔B cuenta como
-desacuerdo de 1.0.
+Usar weighted kappa con weights lineales. No usar kappa simple para la
+decision matrix.
 
-### recall del judge en risk_events high
-
-```
-recall = (risk_events high detectados por judge AND por al menos 1 humano)
-       / (total risk_events high detectados por al menos 1 humano)
-```
-
-### precision del judge en risk_events high
+### recall del judge en risk_events high/critical
 
 ```
-precision = (risk_events high detectados por judge AND por al menos 1 humano)
-          / (total risk_events high detectados por judge)
+recall = (risk_events high/critical detectados por judge AND por al menos 1 humano)
+       / (total risk_events high/critical detectados por al menos 1 humano)
+```
+
+### precision del judge en risk_events high/critical
+
+```
+precision = (risk_events high/critical detectados por judge AND por al menos 1 humano)
+          / (total risk_events high/critical detectados por judge)
 ```
 
 ### false negative crítico
 
-un FN crítico = risk_event high detectado por al menos UN humano + NO
-detectado por el judge en absoluto.
+un FN crítico = risk_event high/critical detectado por al menos UN humano
++ NO detectado por el judge en absoluto.
 
 (severity high detectada por humano, severity medium o ausente por
 judge → cuenta como false negative parcial, no crítico. solo "judge

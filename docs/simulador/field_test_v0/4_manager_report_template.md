@@ -88,7 +88,7 @@ bandas:
 {lista de 1-4 gaps detectados durante la sesión, descritos en lenguaje
 neutro sin nombrar al participante. ejemplo:}
 
-- **{gap_id}** ({severidad: high / medium / low})
+- **{gap_id}** ({severidad: critical / high / medium / low})
   qué se observó: {1-2 oraciones describiendo el comportamiento observado en la sesión, sin culpa moral}
   por qué importa: {1 oración sobre el riesgo o costo de este gap en operación real}
 

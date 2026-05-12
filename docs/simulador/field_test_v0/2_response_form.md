@@ -151,7 +151,7 @@ step_2_main:
 ### sub-paso 2B — operador envía al modelo
 
 **el operador:**
-1. abre sesión nueva en DeepSeek (modelo `deepseek-chat`, temperature 0)
+1. abre sesión nueva en DeepSeek (modelo `deepseek-v4-flash`, temperature 0)
 2. copia literal el prompt del participante
 3. pega
 4. envía
@@ -162,10 +162,10 @@ step_2_main:
 
 ```yaml
 step_2_llm_response:
-  model_used: deepseek-chat
+  model_used: deepseek-v4-flash
   temperature: 0
   fallback_triggered: false  # true si DeepSeek falló y usamos Gemini
-  fallback_model: null | gemini-3.1-flash-lite
+  fallback_model: null | gemini-2.5-flash-lite
   model_response_full: |
     <texto literal de la respuesta del LLM>
   response_length_chars: <int>
@@ -453,7 +453,7 @@ events:
     step: 1
   - timestamp: ISO-8601
     type: llm_call
-    model: deepseek-chat
+    model: deepseek-v4-flash
     success: true
     retry_count: 0
   # ... etc

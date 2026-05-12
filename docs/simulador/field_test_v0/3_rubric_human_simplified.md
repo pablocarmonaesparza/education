@@ -260,7 +260,7 @@ cells:
 
 risk_events_flagged:  # lista vacía o eventos detectados
   - step: 2
-    severity: high  # high | medium | low
+    severity: high  # critical | high | medium | low
     description: |
       <texto libre del evaluador describiendo el evento, máx 1 oración>
   - step: 4

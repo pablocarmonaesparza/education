@@ -1,0 +1,148 @@
+# tracker de outreach — fase 0 field test
+#
+# propósito: bitácora viva de candidatos contactados para los 3 grupos.
+# operador (Pablo) actualiza este archivo conforme avanza el reclutamiento.
+# claude lo monitorea para anticipar fricción.
+#
+# regla: actualizar fecha + estado de cada candidato. no borrar
+# entradas de candidatos que dijeron "no"; preservar como evidencia
+# de tasa de respuesta.
+
+meta:
+  fase: 0
+  created_at: 2026-05-12
+  last_updated: 2026-05-12
+  operator: pablo
+  target_grupo_a: 5     # participantes que resuelven el caso
+  target_grupo_b: 3     # managers que leen reporte
+  target_evaluators: 2  # evaluadores externos
+  recruitment_deadline_days: 10  # 10 días desde inicio outreach
+
+stats_current:
+  grupo_a:
+    contacted: 0
+    confirmed: 0
+    declined: 0
+    no_response: 0
+    completed_session: 0
+  grupo_b:
+    contacted: 0
+    confirmed: 0
+    declined: 0
+    no_response: 0
+    completed_interview: 0
+  evaluators:
+    contacted: 0
+    confirmed: 0
+    declined: 0
+    contracted: 0
+
+candidates_grupo_a: []
+# formato por candidato:
+# - name: "Nombre Apellido"
+#   role: "Marketing Manager"
+#   company: "<Empresa>"
+#   country: MX | CO | AR | CL
+#   seniority: early | mid | senior
+#   channel: linkedin_dm | email | whatsapp | referral_pablo
+#   first_contact_date: ISO-8601
+#   followup_1_date: null | ISO-8601
+#   followup_2_date: null | ISO-8601
+#   response: confirmed | declined | no_response | scheduled | completed
+#   session_scheduled_date: null | ISO-8601
+#   incentive_amount_usd: 50 | 100  # según seniority
+#   notes_short: |
+#     <opcional, una línea>
+
+candidates_grupo_b: []
+# formato:
+# - name: "Nombre Apellido"
+#   role: "Head of Marketing"
+#   company: "<Empresa>"
+#   country: MX | CO | AR | CL
+#   channel: linkedin_dm | email | whatsapp | referral_pablo
+#   first_contact_date: ISO-8601
+#   response: confirmed | declined | no_response | scheduled | completed
+#   interview_scheduled_date: null | ISO-8601
+#   incentive_amount_usd: 50
+#   notes_short: |
+#     <opcional>
+
+candidates_evaluators: []
+# formato:
+# - name: "Nombre Apellido"
+#   years_experience_marketing: <int>
+#   ai_usage_weekly_months: <int>
+#   country: <ISO country code>
+#   channel: linkedin_dm | email | referral
+#   first_contact_date: ISO-8601
+#   response: confirmed | declined | no_response | contracted
+#   compensation_agreed_usd: 300 | 350 | 400 | 450 | 500
+#   contract_signed: true | false
+#   notes_short: |
+#     <opcional>
+
+# ============================================================
+# bloqueadores
+# ============================================================
+blockers:
+  - id: null  # sin bloqueadores actuales
+  # cuando aparezca un blocker, formato:
+  # - id: blocker_001
+  #   date: ISO-8601
+  #   description: |
+  #     <texto>
+  #   resolution: |
+  #     <pendiente o resuelto>
+  #   resolved_date: null | ISO-8601
+
+# ============================================================
+# bitácora operativa
+# ============================================================
+operational_notes:
+  - date: 2026-05-12
+    note: |
+      tracker inicial creado. outreach activo cuando Pablo arranque
+      con scripts de 7_outreach_script.md. claude monitorea este
+      archivo cada ~30 min después de notificación.
+
+# ============================================================
+# protocolo de actualización
+# ============================================================
+# 1. operador (Pablo) edita este archivo en cada interacción de outreach
+# 2. claude no edita los datos de candidatos pero sí puede:
+#    a. agregar entradas en operational_notes con timestamp
+#    b. anotar pattern observado (ej: "10 contactos sin respuesta,
+#       posible problema de canal/script")
+# 3. cuando un candidato pasa a "confirmed", claude verifica que cumple
+#    criterios de inclusión de 0_experiment_protocol.md secciones 4.2-4.4
+# 4. cuando un candidato completa sesión/entrevista, claude prepara los
+#    archivos del directorio sessions/<participant_id>/ con templates
+#    de responses.yaml, session_log.yaml, etc.
+
+# ============================================================
+# umbrales de alerta para claude
+# ============================================================
+alerts:
+  - condition: "día 5 desde first contact, grupo_a confirmed < 3"
+    action: |
+      anotar en operational_notes como alerta naranja; iniciar discusión
+      con Pablo sobre relajar 1 criterio de inclusión (orden: país →
+      tamaño empresa → industria → rol) o subir incentive senior a $150
+  - condition: "día 7, grupo_a confirmed < 3"
+    action: |
+      alerta roja en blockers; escalar a Pablo + Codex sesión conjunta
+      según protocolo 7_outreach_script.md sección "qué pasa si el
+      reclutamiento se atasca"
+  - condition: "día 10, grupo_a confirmed < 5"
+    action: |
+      activar contingency. opciones:
+      a) declarar fase 0 con n=3 o 4 (umbrales se ajustan, ver
+         9_decision_matrix.md sección "casos especiales")
+      b) extender 1 semana adicional
+      c) re-pensar ICP
+      Pablo decide opción
+  - condition: "evaluators_confirmed < 2 al día 5"
+    action: |
+      anotar en blockers. revisar si el ask de $300-500 USD es bajo
+      para perfil senior 8+ años (mercado actual puede pedir más).

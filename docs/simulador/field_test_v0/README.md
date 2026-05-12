@@ -4,10 +4,9 @@
 > (`marketing_urgent_campaign_pii_v1`) **antes** de construir runtime,
 > schema migration o cualquier UI.
 >
-> **estado:** Fase A en redacción (núcleo experimental). Codex audita los
-> 3 archivos del núcleo antes de que Pablo apruebe. Sin OK explícito de
-> Pablo, NO se ejecuta ninguna sesión y NO se redactan los 7 archivos
-> restantes del paquete.
+> **estado:** Fase A y Fase B redactadas. Codex audito el packet completo
+> y lo dejo `approved_with_fixes`. Sin OK explícito de Pablo y sin commit
+> de pre-registro, NO se ejecuta ninguna sesión.
 
 ---
 
@@ -58,6 +57,8 @@ los 3 archivos del núcleo se commitean **antes** de que existan los materiales 
 | `6_calibration_sheet.md` | tabla humano1 × humano2 × LLM-judge por cell | claude |
 | `7_outreach_script.md` | DM/email para reclutar 5 participantes + script incentivo | claude |
 | `8_judge_prompt_v0.md` | prompt versionado del LLM-judge (congelado pre-sesión) | claude |
+| `manager_report_synthetic_v0.md` | reporte sintético para validar buyer validity en paralelo | claude |
+| `confidentiality_note.md` | texto ligero de confidencialidad para participantes/managers/evaluadores | codex |
 
 ---
 
@@ -201,3 +202,8 @@ si fase 0 genera evidencia para cambiar caso/rúbrica/dimensiones, se documenta 
 | fecha | autor | cambio | razón |
 |---|---|---|---|
 | 2026-05-12 | claude | creación del paquete + 3 archivos Fase A | arrancar lock experimental |
+| 2026-05-12 | codex | audit Fase A + fixes de medición | cerrar lock metodológico antes de Fase B |
+| 2026-05-12 | claude | 8 archivos Fase B redactados | completar packet de campo |
+| 2026-05-12 | codex | audit packet completo + fixes de consistencia | dejar packet listo para revisión de Pablo |
+| 2026-05-12 | claude | reporte sintético para Grupo B | desbloquear buyer validity en paralelo |
+| 2026-05-12 | codex | confidentiality note | cerrar prerequisito operativo de Fase 0 |
