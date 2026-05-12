@@ -1,0 +1,41 @@
+/* simulador-design — estilos aislados del design system Itera.
+   Solo afectan a .simulador-root y descendientes. */
+
+.simulador-root {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+}
+
+.simulador-root .grain {
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 1px
+  );
+  background-size: 3px 3px;
+  pointer-events: none;
+}
+
+.simulador-root .gradient-mesh {
+  background:
+    radial-gradient(at 27% 37%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+    radial-gradient(at 97% 21%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
+    radial-gradient(at 52% 99%, rgba(99, 102, 241, 0.1) 0px, transparent 50%),
+    radial-gradient(at 10% 90%, rgba(168, 85, 247, 0.1) 0px, transparent 50%);
+}
+
+.simulador-root .scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.simulador-root .scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.simulador-root .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+.simulador-root .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
