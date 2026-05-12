@@ -19,7 +19,7 @@
 | practice_beats catálogo | `practice_beats/*.yaml` | claude | ✅ done v1 | – | 4 stubs poblados: anonymize_keep_signal, validate_llm_output, objection_to_authority, spot_unverifiable_claims |
 | copy manager | `copy/manager_recommendation_templates.md` | claude | ✅ done v1 | – | 4 acciones con reglas de selección, slots, posfacio, tonos a evitar |
 | copy empleado | `copy/employee_runtime_strings.md` | claude | ✅ done v1 | – | onboarding sprint, strings por step type, errores, prueba de cordura |
-| sprint marketing_30d | `sprints/sprint_marketing_30d.yaml` | claude | ✅ done v1 | – | SKU vendible: 8 casos (3 ready + 5 planned tras pase 3), pricing tentativo $79-199, deliverables manager+empleado |
+| sprint marketing_30d | `sprints/sprint_marketing_30d.yaml` | claude | ✅ done v1 | – | SKU vendible: 8 casos (6 ready + 2 planned tras pase 6), pricing tentativo $79-199, deliverables manager+empleado |
 | case_template marketing #2 | `casos/marketing_copy_with_brand_voice_v1.yaml` | claude | ✅ done v1 | – | tensión velocidad-vs-voz-de-marca; 5 steps incluyendo data_scope para contexto y artifact_review del output IA |
 | variant primary #2 | `variantes/marketing_copy_with_brand_voice__loop_b2b_v1.yaml` | claude | ✅ done v1 | – | Loop B2B SaaS corporate-cálido, 5 ejemplos históricos sintéticos LATAM |
 | variant resim #2 | `variantes/marketing_copy_with_brand_voice__nubefresh_b2c_resim_v1.yaml` | claude | ✅ done v1 | – | NubeFresh D2C tono irreverente gen z — contraste extremo para probar transferencia del PRINCIPIO de anclar tono |
@@ -40,6 +40,10 @@
 | variant primary #6 | `variantes/marketing_attribution_reporting_to_cmo__loop_weekly_v1.yaml` | claude | ✅ done v1 | – | reporte semanal CMO 3 fuentes (HubSpot/Ads/Sales manual), deadline 4h |
 | variant resim #6 | `variantes/marketing_attribution_reporting_to_cmo__loop_board_review_resim_v1.yaml` | claude | ✅ done v1 | – | reporte quarterly al board, 6 fuentes incl TikTok B2B + partner referrals, deadline 8h |
 | practice beats nuevos (pase 6) | `practice_beats/practice_{correlation_not_causation,marketing_data_provenance}_v1.yaml` | claude | ✅ done v1 | – | 2 nuevos: distinguir correlación de causalidad + provenance completa de cada cifra |
+| case_template marketing #7 | `casos/marketing_content_calendar_under_pressure_v1.yaml` | claude | ✅ done v1 | – | tensión velocidad vs curaduría editorial; 5 steps con artifact_review de 20 ideas calendar; 9 gaps incluyendo repetitive_calendar_blind, no_progression_storyline |
+| variant primary #7 | `variantes/marketing_content_calendar_under_pressure__loop_q2_v1.yaml` | claude | ✅ done v1 | – | Loop Q2 awareness build 30 días con 10 piezas/semana, presupuesto $24k |
+| variant resim #7 | `variantes/marketing_content_calendar_under_pressure__loop_q3_launch_resim_v1.yaml` | claude | ✅ done v1 | – | Loop Q3 launch 90 días con 25 piezas/semana multi-canal, $84k — escala 3x |
+| practice beats nuevos (pase 7) | `practice_beats/practice_{spot_calendar_redundancy,content_progression_storytelling}_v1.yaml` | claude | ✅ done v1 | – | 2 nuevos: detectar redundancia disfrazada en calendar + estructurar en 4 actos (pain→deep dive→solution→social proof) |
 | schema SQL v0 | `schema/simulador_v0.sql` | codex | ✅ audit passed | ✅ candidate | bloqueantes del audit Claude resueltos: certificate_export en reports + user_id en reports, tabla human_review_queue, sprint_packages.version + unique(slug,version), evidence_kind con CHECK de los 5 kinds v0, roles aditivos documentados en SQL. **listo para migración con aprobación de Pablo** (regla cruzada: NO correr en main sin OK explícito) |
 | modelo de datos doc | `schema/MODELO_DATOS_V0.md` | codex | – | ✅ done | separación template/variant/session/events/evidence — alineado con contrato |
 | runtime lógico doc | `runtime/FLUJO_RUNTIME_V0.md` | codex | – | ✅ done | flujo empleado + manager, estados de sesión, event model, regla resim sin modular pesos |
@@ -49,8 +53,8 @@
 | handoff coordinación | `coordinacion/HANDOFF.md` | codex | – | ✅ done | reglas Claude↔Codex |
 | audit claude → codex | `coordinacion/AUDIT_CLAUDE_2026_05_12.md` | claude | ✅ done v1 | – | revisión cruzada del schema y docs antes de correr migración |
 | audit codex → claude | `coordinacion/AUDIT_CODEX_2026_05_12.md` | codex | – | ✅ done | revisión técnica de contrato completo + cambios aplicados |
-| runtime motor | `app/simulator-system/` o `lib/simulador/` | codex | – | ⏳ pending | ejecuta steps + captura eventos |
-| eval engine | `lib/simulador/evaluation/` | codex | – | ⏳ pending | LLM-as-judge contra rúbrica |
+| runtime motor mínimo | `lib/simulador/` | codex | – | ✅ done | tipos, constantes, validador de contrato, importer YAML-objeto→seed rows, runtime de eventos/sesión |
+| eval engine stub | `lib/simulador/runtime.ts` | codex | – | ✅ stub | evaluación determinística por gaps/risk_events; LLM-as-judge real queda pendiente antes de producción |
 
 ## protocolo de revisión cruzada
 
@@ -82,25 +86,27 @@ ninguno por ahora.
 - `docs/memory/decision_simulador_first_case_marketing.md` — primer caso es marketing_urgent_campaign_pii, ICP marketing_manager LATAM 50-500
 - `docs/memory/decision_simulador_second_case_brand_voice.md` — segundo caso, tensión velocidad-vs-voz-de-marca, prueba que el simulador no depende solo de PII
 - `docs/memory/decision_simulador_third_case_segmentation.md` — tercer caso difficulty intermediate, tensión bias predictivo en segmentación, primer caso con ambigüedad ética
+- `docs/memory/decision_simulador_runtime_minimo_codex.md` — runtime mínimo en lib/simulador, importer a seed rows, event model y eval stub
 
 ## handoff actual
 
-claude completó pase 3 del contrato:
-- 3 case_templates ready + 6 variantes (primary + resim por caso)
+claude completó pase 6 del contrato:
+- 6 case_templates ready + 12 variantes (primary + resim por caso)
 - 1 rúbrica versionada con LLM-judge specs
-- 10 practice_beats poblados (4+3+3 nuevos por pase)
+- 16 practice_beats poblados
 - 2 archivos de copy (manager + empleado)
-- 1 sprint package vendible (marketing_30d) con 3 casos ready + 5 planned
-- 4 memorias en docs/memory/ indexadas: arquitectura + 3 casos
+- 1 sprint package vendible (marketing_30d) con 6 casos ready + 2 planned
+- 4 memorias en docs/memory/ indexadas: arquitectura + primeros 3 casos
 
 codex completó:
 - schema SQL candidate con bloqueantes del audit Claude resueltos
 - runtime lógico y modelo de datos
+- runtime técnico mínimo en `lib/simulador/`
 - audit técnico cruzado
-- actualización de handoff/readme/status durante los 3 pases
+- actualización de handoff/readme/status durante los pases activos
 
 próximo paso natural:
-1. Claude puede avanzar al cuarto caso: `marketing_brief_to_agency_via_ia`
-2. Codex puede empezar importer YAML -> SQL seed/candidate con los 3 casos ready
-3. Codex puede empezar runtime mínimo + LLM-judge stub determinístico
+1. Claude puede avanzar a los casos 7-8: `marketing_content_calendar_under_pressure` y `marketing_crisis_response_with_ia`
+2. Codex debe conectar parser/importer real contra YAML o generar seed SQL revisable
+3. Codex debe reemplazar el eval stub con LLM-as-judge versionado
 4. NO correr migración Supabase hasta aprobación explícita de Pablo

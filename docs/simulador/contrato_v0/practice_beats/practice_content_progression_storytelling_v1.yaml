@@ -1,0 +1,93 @@
+# practice_beat — estructurar calendario con progression narrativa
+# disparado por gaps: no_progression_storyline, accept_volume_over_quality
+# duración: ≤2 min.
+
+practice_beat:
+  id: practice_content_progression_storytelling_v1
+  version: 1
+  status: active
+  duration_max_seconds: 120
+  triggered_by_gap: [no_progression_storyline, accept_volume_over_quality]
+  dimension: juicio
+  applies_to_sprint_skus: [marketing_30d]
+
+  framing:
+    intro: |
+      pequeña práctica. tu calendario tiene 20 piezas, pero no
+      construye narrativa cumulative. cada pieza vive sola — el
+      reader que ve semana 1 no tiene razón para volver en semana 4.
+    why_this_matters: |
+      los LLMs generan piezas "isoladas" porque cada prompt es
+      independiente. pero el calendario de contenido NO es 20 piezas
+      sueltas — es UNA narrativa que se desarrolla durante 30 días.
+      sin progression, pierdes el efecto cumulative de marketing:
+      el reader recurrente, el reconocimiento de patrón, el viaje
+      hacia conversión.
+
+  principle_card:
+    headline: "estructura cumulative en 4 actos"
+    body: |
+      un calendario de 30 días con progression narrativa tiene 4
+      actos:
+
+      1. **acto 1 — semana 1: nombra el dolor**
+         5 piezas que articulan el dolor de tu audiencia con
+         especificidad. no soluciones aún. solo "ver" el problema.
+
+      2. **acto 2 — semana 2: deep dive de uno**
+         3-4 piezas profundizan UN aspecto del dolor (ej: el
+         context-switching). case studies, data, ejemplo concreto.
+
+      3. **acto 3 — semana 3: introducir la solución**
+         4-5 piezas conectan la solución TUYA al dolor establecido.
+         no como "venta" sino como "esto es lo que cambia cuando
+         resuelves esto".
+
+      4. **acto 4 — semana 4: prueba social + CTA**
+         3-4 piezas con case studies + testimonios + CTA específico.
+         ahora sí venta, pero ya construiste autoridad.
+
+      regla: cada pieza debe poder ubicarse en uno de los 4 actos.
+      si tu pieza no tiene acto, probablemente es noise.
+
+  practice_exercise:
+    type: decision_micro
+    duration_seconds: 60
+    intro: |
+      el LLM te dio 20 ideas para 4 semanas. tienes que decidir cómo
+      estructurar. elige el approach que mejor aplica progression.
+    options:
+      - id: a
+        label: "ordenar las 20 al azar y publicar 5/semana — confío en que el LLM ya pensó la progression"
+        verdict: gap_no_progression_storyline
+        why: "delegar progression al LLM = no hay progression. el LLM genera ideas aisladas, no narrativa."
+      - id: b
+        label: "agrupar las 20 ideas por theme → semana 1 'context cost', semana 2 'SLA breaks', semana 3 'auto-routing solution', semana 4 'case studies'"
+        verdict: correct
+        why: "estructura 4-actos aplicada. cada semana tiene un foco que construye narrativa cumulative."
+      - id: c
+        label: "descartar 10, publicar las 10 mejores 2-3/semana sin estructura"
+        verdict: partial
+        why: "mejor que random (menos noise) pero pierde el efecto cumulative. lo bueno: discriminó volumen. lo faltante: no estructuró narrativa."
+      - id: d
+        label: "pedirle al LLM 'reordena estas 20 ideas en 4 actos: pain → deep dive → solution → social proof', luego revisar"
+        verdict: correct
+        why: "delegar la estructura al LLM CON instrucción explícita es válido. luego revisas. este es buen uso del LLM."
+
+  reveal_after_attempt:
+    correct_principle: |
+      el LLM genera buenas piezas individuales pero no buena narrativa
+      por default. dos approaches funcionan: estructurar tú la
+      narrativa y agrupar las ideas por acto (B), o pedirle al LLM
+      explícitamente estructurar en 4 actos y revisar (D). lo que NO
+      funciona: confiar en que vendrá ordenado solo (A) o publicar
+      sueltas (C).
+
+  exit:
+    transition_text: "ok, regresamos al score final."
+    log_to_telemetry: practice_beat_completed
+    contributes_to_resim_score: false
+
+  authoring:
+    written_by: claude_product
+    last_updated: 2026-05-12

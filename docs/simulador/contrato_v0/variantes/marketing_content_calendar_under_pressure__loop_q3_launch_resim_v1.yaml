@@ -1,0 +1,122 @@
+# case_variant — variante resim del séptimo caso
+# Loop calendario 90 días Q3 con launch focus + multi-canal escalado.
+
+case_variant:
+  id: marketing_content_calendar_under_pressure__loop_q3_launch_resim_v1
+  template_ref: marketing_content_calendar_under_pressure@v1
+  parent_variant_ref: marketing_content_calendar_under_pressure__loop_q2_v1
+  variant_role: resimulation
+  delay_days_from_parent: 7
+  status: active
+
+  template_var_values:
+    company_name: Loop
+    industry: "SaaS B2B (atención al cliente con IA)"
+    region: LATAM + US
+    pieces_per_week: 25  # multi-canal escalado
+    calendar_duration_days: 90
+    quarter_objective: "Q3 lanzamiento de IA conversacional avanzada — capturar mercado antes que Sierra"
+    deadline_hours: 12
+
+  expected_behavior_shift: |
+    contraste vs primary:
+
+    1. calendar_duration_days: 30 → 90
+       → calendario de 3 meses. el riesgo de repetición disfrazada
+       sube exponencialmente. 225 piezas (25/week × 9 weeks + buffer)
+       NO pueden ser todas distintas si no hay progression real.
+
+    2. quarter_objective: awareness build → launch
+       → cambia funnel mix dramáticamente. awareness es TOFU pesado,
+       launch es BOFU heavy (case studies, demos, comparison guides).
+       el empleado tiene que reconocer que el calendario debe
+       estructurarse alrededor del lanzamiento, no como flujo continuo.
+
+    3. pieces_per_week: 10 → 25
+       → multi-canal (LinkedIn + email + blog + TikTok B2B + YouTube
+       + partners + podcasts). cada canal tiene su voice + format
+       constraints. el LLM va a uniformar; el empleado tiene que
+       diversificar.
+
+    el peor error en resim sería aplicar mismo patrón de 30-días-awareness
+    para un launch de 90 días multi-canal. la trampa: aumentar volumen
+    sin aumentar curaduría editorial.
+
+  inputs_resolved:
+    synthetic: true
+    provenance_note: |
+      datasets escalados realisticamente para Q3 launch enterprise
+      con 25 piezas/semana cross-channel.
+    items:
+      - kind: doc
+        name: brand_audience_themes.md
+        content: |
+          # brand + audience Loop Q3 launch
+
+          ## voice
+          mismo corporate-cálido (ver brand_voice_guide.md)
+
+          ## audience target Q3
+          ops managers + heads CS (existing TOFU) + CS directors mid-market
+          + VPs operations enterprise (NEW BOFU) en LATAM + US Spanish-
+          speaking.
+
+          ## themes Q3 launch
+          - "IA conversacional avanzada vs scripted bots"
+          - "auto-routing inteligente + conversational AI = stack
+            completo de ops"
+          - "case studies de pilotos Q2 que ahora escalan"
+          - "comparison: Loop vs Sierra (sin nombre directo)"
+          - "ROI calculator interactive"
+
+      - kind: dataset
+        name: past_content_performance.json
+        row_count: 90
+        sample_rows:
+          - ["linkedin_post", "tu equipo cierra 90 tickets...", "context_cost", 8.2, 12]
+          - ["linkedin_post_carousel", "5 razones por las que SLA tracker falla", "ops_pain", 14.1, 38]
+          - ["tiktok_b2b", "vista detrás del escenario: cómo decidimos auto-routing", "behind_scenes", 6.4, 18]
+          - ["youtube_demo", "auto-routing en acción: 7 días con cliente real", "case_study", 22000, 47]
+          - ["podcast_guest_spot", "Camila VP Growth en 'Customer Success' podcast", "thought_leadership", 8400, 12]
+          - ["blog_long_form", "el manual completo de auto-routing inteligente", "evergreen", 18000, 124]
+
+      - kind: doc
+        name: quarter_objectives.md
+        content: |
+          # Q3 marketing objectives Loop — LAUNCH
+
+          ## launch milestone
+          - sep 1: lanzamiento público IA conversacional
+          - sep 15: integración HubSpot anunciada
+          - oct: voice-first feature reveal
+
+          ## awareness (TOFU continuo)
+          - 80 nuevos MQL/mes
+          - share of voice +25% vs Q2
+
+          ## consideration (MOFU enfocado en launch)
+          - 250 demos solicitadas total Q
+          - 50 attendees al webinar de launch
+          - 12 case studies publicados
+
+          ## conversion (BOFU heavy)
+          - 80 nuevas opportunities total Q
+          - $1.2M ARR nuevo
+          - 35% conversion rate de demo → opp
+
+          ## constraints
+          - presupuesto contenido $84k (3x Q2)
+          - equipo: 2 content leads, 4 freelancers, 1 video lead, 1 podcast manager
+          - canales: LinkedIn + email + blog + TikTok B2B + YouTube + partner co-marketing
+
+  rendering_meta:
+    rendered_by: claude_product
+    rendered_at: 2026-05-12
+    used_for: resim_after_primary_completion
+    triggers_when: "primary completed AND delay_days_from_parent elapsed"
+
+  authoring_note: |
+    Q3 launch es el escenario donde el empleado tiene que reconocer
+    que escalar volumen sin escalar curaduría editorial = repetir
+    en grande. el calendar progression debe estructurar BOFU heavy
+    hacia el launch (sep 1), no flujo continuo awareness.

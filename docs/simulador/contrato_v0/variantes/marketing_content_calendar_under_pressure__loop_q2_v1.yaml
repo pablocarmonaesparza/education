@@ -1,0 +1,83 @@
+# case_variant — variante primary del séptimo caso
+# Loop calendario 30 días Q2 con awareness focus.
+
+case_variant:
+  id: marketing_content_calendar_under_pressure__loop_q2_v1
+  template_ref: marketing_content_calendar_under_pressure@v1
+  variant_role: primary
+  status: active
+
+  template_var_values:
+    company_name: Loop
+    industry: "SaaS B2B (atención al cliente con IA)"
+    region: LATAM
+    pieces_per_week: 10  # 5 LinkedIn + 3 email + 2 blog
+    calendar_duration_days: 30
+    quarter_objective: "Q2 awareness build vs Zendesk/Intercom + entrar 50 nuevos prospects MQL"
+    deadline_hours: 6
+
+  inputs_resolved:
+    synthetic: true
+    provenance_note: |
+      brand voice, audience profile, past performance data y quarter
+      objectives son sintéticos pero realistas para SaaS B2B LATAM 2026.
+    items:
+      - kind: doc
+        name: brand_audience_themes.md
+        content: |
+          # brand + audience Loop
+
+          ## voice
+          corporate-cálido consultor (ver brand_voice_guide.md detallado)
+
+          ## audience target Q2
+          ops managers + heads of customer service en LATAM mid-market
+          100-500 employees. dolor: SLA tracker manual + routing
+          manual + falta de contexto cliente.
+
+          ## themes priorizados Q2
+          - "context-switching cost" (lo que pierde el agente buscando info)
+          - "AI sin reemplazo" (positioning vs hype reemplazo total)
+          - "ROI de auto-routing inteligente" (case studies)
+          - "LATAM-first" (diferenciación geo)
+
+      - kind: dataset
+        name: past_content_performance.json
+        sample_rows:
+          - ["linkedin_post", "tu equipo cierra 90 tickets al día. el otro día...", "context_cost", 8.2, 12]
+          - ["linkedin_post", "AI que ayuda, no que reemplaza", "ai_no_replacement", 6.4, 8]
+          - ["email", "el ticket que se atora", "context_cost", 44, 22]
+          - ["blog", "5 razones por las que el SLA tracker falla", "ops_pain", 12400, 87]
+          - ["linkedin_post", "transformación digital con IA", "generic_filler", 2.1, 1]
+          - ["linkedin_post", "soluciones de clase mundial", "generic_filler", 1.8, 0]
+          - ["linkedin_post", "cómo Aurora Recursos redujo 41% el SLA breach", "case_study", 9.1, 14]
+          - ["email", "subject: tu lunes ya empezó (mira por qué)", "context_cost", 38, 19]
+
+      - kind: doc
+        name: quarter_objectives.md
+        content: |
+          # Q2 marketing objectives Loop
+
+          ## awareness
+          - 50 nuevos MQL en mid-market LATAM
+          - 8 case studies publicados (post auto-routing launch)
+          - share of voice +15% vs Q1 en ops manager community
+
+          ## consideration
+          - 150 demos solicitadas
+          - 25% open rate email a tier 1 prospects
+
+          ## conversion
+          - 30 nuevas opportunities closed-won
+          - $480k ARR nuevo
+
+          ## constraints
+          - presupuesto contenido $24k (incluye agencia + ads)
+          - equipo: 1 content lead, 2 freelancers, 1 social media
+
+  rendering_meta:
+    rendered_by: claude_product
+    rendered_at: 2026-05-12
+    used_for: seventh_simulation_session_in_sprint
+    next_in_sprint: marketing_crisis_response_with_ia@v1
+    pairs_with_resim: marketing_content_calendar_under_pressure__loop_q3_launch_resim_v1

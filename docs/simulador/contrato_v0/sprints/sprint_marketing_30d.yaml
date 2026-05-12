@@ -102,8 +102,10 @@ sprint_package:
 
       - id: marketing_content_calendar_under_pressure
         order: 7
-        status: planned
+        primary_variant_ref: marketing_content_calendar_under_pressure__loop_q2_v1
+        resim_variant_ref: marketing_content_calendar_under_pressure__loop_q3_launch_resim_v1
         dimensions_emphasized: [contexto, juicio, decision]
+        status: ready  # claude_product cerró el contrato en pase 7
         tension: "armar calendario de 30 días con IA bajo presión — balance entre velocidad y calidad"
 
       - id: marketing_crisis_response_with_ia
@@ -138,7 +140,10 @@ sprint_package:
       # pase 6 (caso 6 — marketing_attribution_reporting_to_cmo)
       - practice_correlation_not_causation_v1
       - practice_marketing_data_provenance_v1
-      # nuevos beats se agregan según gaps emerjan en casos 7-8
+      # pase 7 (caso 7 — marketing_content_calendar_under_pressure)
+      - practice_spot_calendar_redundancy_v1
+      - practice_content_progression_storytelling_v1
+      # nuevos beats se agregan según gaps emerjan en caso 8
 
     resim_policy:
       delay_days_default: 7
@@ -247,8 +252,8 @@ sprint_package:
   # ============================================================
   operational:
     cases_status_required_for_launch:
-      ready: 3   # marketing_urgent_campaign_pii + marketing_copy_with_brand_voice + marketing_segment_with_sensitive_data
-      planned: 5
+      ready: 6
+      planned: 2
       blockers_for_launch: |
         no puede lanzarse como SKU vendible hasta que los 8 casos
         estén `status: ready`. v0 puede correr en modo "design partner"
@@ -271,9 +276,8 @@ sprint_package:
       date: 2026-05-12
       author: claude_product
       changes: |
-        sprint package inicial. 8 casos planeados, 3 ready (marketing_urgent_campaign_pii
-        + marketing_copy_with_brand_voice + marketing_segment_with_sensitive_data).
-        rubric v1 vinculada. 10 practice_beats en catálogo. pricing band tentativo
+        sprint package inicial. 8 casos planeados, 6 ready (orders 1-6).
+        rubric v1 vinculada. 16 practice_beats en catálogo. pricing band tentativo
         $79-199 per_seat_per_sprint pendiente validación con Pablo.
 
   notes_for_codex: |
