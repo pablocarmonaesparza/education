@@ -1,0 +1,95 @@
+# practice_beat — verificar claims sobre competidores antes de publicarlos
+# disparado por gap: unverifiable_competitor_claim
+# duración: ≤2 min.
+
+practice_beat:
+  id: practice_competitive_claim_verification_v1
+  version: 1
+  status: active
+  duration_max_seconds: 120
+  triggered_by_gap: unverifiable_competitor_claim
+  dimension: validacion
+  applies_to_sprint_skus: [marketing_30d]
+
+  framing:
+    intro: |
+      pequeña práctica. el LLM mencionó cifra/dato específico sobre
+      competidor en su análisis. lo aceptaste sin verificar. publicar
+      claim no verificable sobre competidor es riesgo legal real (US
+      tiene precedente de demandas por false advertising contra
+      competidor).
+    why_this_matters: |
+      los LLMs inventan cifras con confianza. "Sierra tiene 67% market
+      share" suena autoritativo y específico — y es completamente
+      ficticio. si publicas eso en ad copy, el costo es legal +
+      reputacional. y vale lo mismo para "estudios" (the McKinsey
+      report says...), reviews ("G2 ranks X #1") y dates ("Sierra
+      lanzó en 2024").
+
+  principle_card:
+    headline: "tres reglas para claims sobre competidores"
+    body: |
+      cuando vayas a usar info sobre un competidor en copy público,
+      aplica:
+
+      1. **regla del source público linkable:**
+         si tu claim requiere "según X", X tiene que ser linkable.
+         "según G2..." sin link a G2 = no usar. "según el blog de
+         Sierra del 2 de abril 2026..." con link = OK.
+
+      2. **regla de la cifra reciente:**
+         cifras de performance, market share, customer count, churn
+         son volátiles. si tu source es de >12 meses atrás, asume
+         que está desactualizada. usa "reportado en X mes 202X" para
+         señalar la temporalidad.
+
+      3. **regla de "el competidor podría demandar?":**
+         si tu copy genera daño reputacional al competidor (X tiene
+         problemas, Y es peor que nosotros, Z miente), necesitas
+         source incontestable + legal review. mejor: comparar sin
+         atacar.
+
+      regla mental: si tu claim sobre competidor no pasa los 3 filtros,
+      reescribe sin el claim. tu producto es bueno por SÍ mismo, no
+      por hacer a otro lucir mal.
+
+  practice_exercise:
+    type: artifact_review_micro_discriminative
+    duration_seconds: 60
+    intro: |
+      el LLM te sugirió estos 4 claims sobre Sierra AI para usar en
+      ad copy. clasifica cada uno: USE, REWRITE, o BLOCK.
+    segments:
+      - id: 1
+        text: "Sierra AI ha sido nombrada #1 en G2 con un score de 4.8/5"
+        correct_verdict: block
+        why: "scores G2 requieren licencia paid intel. usar sin licencia = riesgo legal."
+      - id: 2
+        text: "Sierra AI declara en su blog oficial (febrero 2026) que su foco es 'US enterprise'"
+        correct_verdict: use
+        why: "claim verificable (linkable a blog post de Sierra). usar de la propia voz de Sierra es OK."
+      - id: 3
+        text: "Sierra tiene 67% de market share en customer service AI"
+        correct_verdict: block
+        why: "cifra específica sin source. probable invento del LLM. publicar = false advertising risk."
+      - id: 4
+        text: "Sierra fue fundada en 2024 y tiene contratos con Notion, Linear, y Vercel (per sus case studies públicos)"
+        correct_verdict: use
+        why: "fundación verificable + lista de clientes está en sus propios case studies. atribución correcta."
+
+  reveal_after_attempt:
+    correct_principle: |
+      claims sobre competidores en copy público son mina explosiva.
+      la regla es: source linkable + reciente + sin daño reputacional.
+      si dudas, no uses. tu producto debe ser bueno por sus propios
+      méritos. mencionar competidor es opcional; verificar lo que
+      dices de ellos NO es opcional.
+
+  exit:
+    transition_text: "ok, regresamos al score final."
+    log_to_telemetry: practice_beat_completed
+    contributes_to_resim_score: false
+
+  authoring:
+    written_by: claude_product
+    last_updated: 2026-05-12

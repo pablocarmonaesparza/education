@@ -1,0 +1,91 @@
+# practice_beat — detectar plagio inadvertido en output IA sobre competidores
+# disparado por gaps: inadvertent_plagiarism, naive_plagiarism_dismissal
+# duración: ≤2 min.
+
+practice_beat:
+  id: practice_spot_inadvertent_plagiarism_v1
+  version: 1
+  status: active
+  duration_max_seconds: 120
+  triggered_by_gap: [inadvertent_plagiarism, naive_plagiarism_dismissal]
+  dimension: validacion
+  applies_to_sprint_skus: [marketing_30d]
+
+  framing:
+    intro: |
+      pequeña práctica. el LLM sintetizó research de competidores y
+      te devolvió "diferenciación" que en realidad es parafraseo de
+      headlines reales de competidores. publicar eso es plagio
+      inadvertido — no fue tu intención, pero el daño es el mismo.
+    why_this_matters: |
+      los LLMs son loros estadísticos de info que vieron en su training.
+      cuando le pides "diferenciación vs Sierra AI", el modelo
+      reproduce patrones de Sierra disfrazados ligeramente. tu trabajo
+      es detectar el parafraseo antes de publicar — porque tu audiencia
+      Y los abogados de Sierra lo detectan también.
+
+  principle_card:
+    headline: "tres tests para detectar plagio inadvertido"
+    body: |
+      cuando el LLM te dé "ideas de diferenciación", aplica los 3 tests:
+
+      1. **test del competitor copy:**
+         busca el competitor headline real. si tu propuesto es
+         estructuralmente idéntico cambiando 1-2 palabras (subject/verb
+         pero misma forma), es plagio. ejemplo:
+         - sierra: "the AI that actually closes tickets"
+         - tu propuesto: "the AI that actually solves problems"
+         → mismo template, plagio inadvertido.
+
+      2. **test de search inverso:**
+         googlea el headline propuesto entre comillas. si aparecen
+         resultados de competidor, ya fue dicho. si aparecen resultados
+         de empresas no-related, OK.
+
+      3. **test de la verdad específica:**
+         tu copy debe contener algo VERDADERO sobre TI que no se
+         pueda decir del competidor. si tu copy funciona idéntico
+         para Sierra, no es diferenciación — es cliché compartido.
+
+  practice_exercise:
+    type: artifact_review_micro_discriminative
+    duration_seconds: 60
+    intro: |
+      contexto: Sierra AI tiene este headline público:
+      "the AI that actually closes customer tickets. not just routes them."
+
+      revisa estas 4 propuestas que te dio el LLM como "diferenciación".
+      clasifica cada una: PLAGIO_INADVERTIDO, OK, o DEBIL.
+    segments:
+      - id: 1
+        text: "the AI that doesn't replace your team — it makes them faster"
+        correct_verdict: ok
+        why: "estructura distinta, mensaje diferenciado (relación con team, no closing tickets)."
+      - id: 2
+        text: "the AI that closes tickets. without the magic-pixie-dust pricing."
+        correct_verdict: plagio_inadvertido
+        why: "primera frase es parafraseo casi literal del competitor. la segunda no compensa."
+      - id: 3
+        text: "AI customer service that actually works in LATAM Spanish"
+        correct_verdict: ok
+        why: "diferenciación específica (LATAM, español). no se aplica a Sierra (US focus). verdad propia."
+      - id: 4
+        text: "customer service AI for teams that take quality seriously"
+        correct_verdict: debil
+        why: "no es plagio, es genérico. cualquier competidor podría decirlo. no es diferenciación real."
+
+  reveal_after_attempt:
+    correct_principle: |
+      el LLM no "decide" plagiar — reproduce patterns. tu trabajo es
+      ser el filtro final. los 3 tests (competitor copy, search inverso,
+      verdad específica) toman 90 segundos por propuesta. invierte ese
+      tiempo o publicas plagio inadvertido.
+
+  exit:
+    transition_text: "ok, regresamos al score final."
+    log_to_telemetry: practice_beat_completed
+    contributes_to_resim_score: false
+
+  authoring:
+    written_by: claude_product
+    last_updated: 2026-05-12
