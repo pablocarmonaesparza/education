@@ -39,9 +39,9 @@ const SPRINT_AGGREGATE = {
 };
 
 function bandTone(b: BandKey | null) {
-  if (b === "A") return { bg: "bg-[#e8f5ed]", text: "text-[#0a7e3a]" };
-  if (b === "M") return { bg: "bg-[#fef4e6]", text: "text-[#a05a00]" };
-  if (b === "B") return { bg: "bg-[#fde9e9]", text: "text-[#a01818]" };
+  if (b === "A") return { bg: "bg-[var(--band-a-bg)]", text: "text-[var(--band-a-text)]" };
+  if (b === "M") return { bg: "bg-[var(--band-m-bg)]", text: "text-[var(--band-m-text)]" };
+  if (b === "B") return { bg: "bg-[var(--band-b-bg)]", text: "text-[var(--band-b-text)]" };
   return { bg: "bg-[var(--surface-3)]", text: "text-[var(--text-tertiary)]" };
 }
 
@@ -226,13 +226,13 @@ export default function DashboardPage() {
                         </div>
                         <div className="mt-1 flex items-center gap-2 text-[12px]">
                           {m.status === "completed" && (
-                            <span className="text-[#0a7e3a]">Completado</span>
+                            <span className="text-[var(--band-a-text)]">Completado</span>
                           )}
                           {m.status === "in_progress" && (
-                            <span className="text-[#a05a00] flex items-center gap-1">
+                            <span className="text-[var(--band-m-text)] flex items-center gap-1">
                               <span
                                 className="inline-block h-1.5 w-1.5 rounded-full pulse-soft"
-                                style={{ backgroundColor: "#a05a00" }}
+                                style={{ backgroundColor: "var(--band-m-text)" }}
                               />
                               En curso
                             </span>

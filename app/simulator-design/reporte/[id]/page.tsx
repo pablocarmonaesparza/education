@@ -25,16 +25,16 @@ function bandScore(b: BandKey) {
 }
 
 function bandTone(b: BandKey) {
-  if (b === "A") return { bg: "bg-[#e8f5ed]", text: "text-[#0a7e3a]", bar: "#0a7e3a" };
-  if (b === "M") return { bg: "bg-[#fef4e6]", text: "text-[#a05a00]", bar: "#cc8800" };
-  return { bg: "bg-[#fde9e9]", text: "text-[#a01818]", bar: "#c0282b" };
+  if (b === "A") return { bg: "bg-[var(--band-a-bg)]", text: "text-[var(--band-a-text)]", bar: "var(--band-a-bar)" };
+  if (b === "M") return { bg: "bg-[var(--band-m-bg)]", text: "text-[var(--band-m-text)]", bar: "var(--band-m-bar)" };
+  return { bg: "bg-[var(--band-b-bg)]", text: "text-[var(--band-b-text)]", bar: "var(--band-b-bar)" };
 }
 
 function severityTone(s: "high" | "medium" | "low") {
   if (s === "high")
-    return { bg: "bg-[#fde9e9]", text: "text-[#a01818]", label: "Alta" };
+    return { bg: "bg-[var(--band-b-bg)]", text: "text-[var(--band-b-text)]", label: "Alta" };
   if (s === "medium")
-    return { bg: "bg-[#fef4e6]", text: "text-[#a05a00]", label: "Media" };
+    return { bg: "bg-[var(--band-m-bg)]", text: "text-[var(--band-m-text)]", label: "Media" };
   return { bg: "bg-[var(--surface-3)]", text: "text-[var(--text-secondary)]", label: "Baja" };
 }
 
@@ -60,7 +60,7 @@ export default function ReportePage() {
           <div className="reading-col px-6 py-3 flex items-center gap-2 text-[12px] text-[var(--text-secondary)]">
             <span
               className="inline-block h-1.5 w-1.5 rounded-full"
-              style={{ backgroundColor: "#cc8800" }}
+              style={{ backgroundColor: "var(--band-m-bar)" }}
             />
             <span>
               <span className="text-[var(--text-primary)] font-medium">Vista preview</span>{" "}

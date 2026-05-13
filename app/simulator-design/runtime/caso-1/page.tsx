@@ -355,18 +355,18 @@ export default function RuntimePage() {
                         ? "bg-[var(--accent-soft)] text-[var(--text-primary)] font-medium"
                         : reached
                           ? "text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
-                          : "text-[var(--text-disabled)] cursor-not-allowed"
+                          : "text-[var(--text-tertiary)] cursor-not-allowed"
                     }`}
                   >
                     <span
-                      className={`flex-shrink-0 h-5 w-5 rounded-full grid place-items-center text-[10px] mono font-semibold ${
+                      className={`flex-shrink-0 h-5 w-5 rounded-full grid place-items-center text-[10px] mono font-semibold transition-colors ${
                         isCurrent
                           ? "accent-bg text-white"
                           : isCompleted
-                            ? "bg-[#0a7e3a] text-white"
+                            ? "accent-bg text-white"
                             : reached
-                              ? "bg-[var(--surface-3)] text-[var(--text-primary)]"
-                              : "bg-[var(--surface-2)] text-[var(--text-disabled)]"
+                              ? "border border-[var(--border-strong)] text-[var(--text-primary)] bg-transparent"
+                              : "border border-[var(--border)] text-[var(--text-tertiary)] bg-transparent"
                       }`}
                     >
                       {isCompleted ? (
