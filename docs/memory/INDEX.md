@@ -15,6 +15,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### decisiones
 
+- [legacy freeze plan — 5 categorías para limpieza post-pivot al simulador](decision_legacy_freeze_plan.md) — 2026-05-12 — `[orquestador, producto, desarrollo, marketing]` — archive/retain/reposition/core/forbidden v0 + filtro único + regla dura (no desarchiva sin owner+razón); tabla granular en `docs/simulador/LEGACY_FREEZE_PLAN.md`.
 - [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — 2026-05-12 — `[producto, desarrollo, orquestador]` — packet completo aprobado por Pablo; no runtime hasta pasar decision matrix; face/construct/buyer validity con 5 participantes + 3 managers + 2 evaluadores ciegos.
 - [primer caso canónico — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — 2026-05-12 — `[producto, marketing, ventas]` — Marketing Manager LATAM SaaS B2B; tensión velocidad-vs-privacidad; 5 steps + resim enterprise US; 7 gaps mapeados a practice_beats.
 - [tercer caso canónico — marketing_segment_with_sensitive_data](decision_simulador_third_case_segmentation.md) — 2026-05-12 — `[producto, marketing, legal]` — difficulty intermediate; tensión bias predictivo en segmentación con IA + privacidad behavioral; primer caso con ambigüedad ética; resim EU GDPR strict.
@@ -94,6 +95,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### desarrollo
 
+- [legacy freeze plan — 5 categorías post-pivot al simulador](decision_legacy_freeze_plan.md) — decision — 2026-05-12 *(comparte con orquestador, producto, marketing; archive/retain/reposition/core/forbidden)*
 - [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — decision — 2026-05-12 *(comparte con producto, orquestador; face/construct/buyer validity antes de código)*
 - [Sprint marketing_30d completo del Simulador v0](decision_simulador_sprint_marketing_completo_v1.md) — decision — 2026-05-12 *(comparte con producto, marketing, orquestador)*
 - [arquitectura v0 de "El Simulador"](decision_simulador_arquitectura_v0.md) — decision — 2026-05-12 *(comparte con producto, orquestador)*
@@ -146,6 +148,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### marketing
 
+- [legacy freeze plan — 5 categorías post-pivot al simulador](decision_legacy_freeze_plan.md) — decision — 2026-05-12 *(comparte con orquestador, producto, desarrollo; afecta landing copy + posicionamiento)*
 - [primer caso canónico del Simulador — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — decision — 2026-05-12 *(comparte con producto, ventas)*
 - [tercer caso canónico del Simulador — segmentation](decision_simulador_third_case_segmentation.md) — decision — 2026-05-12 *(comparte con producto, legal)*
 - [Sprint marketing_30d completo del Simulador v0](decision_simulador_sprint_marketing_completo_v1.md) — decision — 2026-05-12 *(comparte con producto, desarrollo, orquestador)*
@@ -161,6 +164,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### orquestador
 
+- [legacy freeze plan — 5 categorías post-pivot al simulador](decision_legacy_freeze_plan.md) — decision — 2026-05-12 *(comparte con producto, desarrollo, marketing; meta-decisión sobre qué se limpia)*
 - [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — decision — 2026-05-12 *(comparte con producto, desarrollo; bloquea runtime hasta pasar matriz)*
 - [Sprint marketing_30d completo del Simulador v0](decision_simulador_sprint_marketing_completo_v1.md) — decision — 2026-05-12 *(comparte con producto, marketing, desarrollo)*
 - [arquitectura v0 de "El Simulador"](decision_simulador_arquitectura_v0.md) — decision — 2026-05-12 *(comparte con producto, desarrollo)*
@@ -177,6 +181,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### producto
 
+- [legacy freeze plan — 5 categorías post-pivot al simulador](decision_legacy_freeze_plan.md) — decision — 2026-05-12 *(comparte con orquestador, desarrollo, marketing; filtro único + regla dura)*
 - [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — decision — 2026-05-12 *(comparte con desarrollo, orquestador; lock experimental antes de runtime)*
 - [primer caso canónico del Simulador — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — decision — 2026-05-12 *(comparte con marketing, ventas)*
 - [tercer caso canónico del Simulador — segmentation](decision_simulador_third_case_segmentation.md) — decision — 2026-05-12 *(comparte con marketing, legal)*
