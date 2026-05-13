@@ -183,11 +183,12 @@
   animation: pulse-soft 2.4s ease-in-out infinite;
 }
 
-/* Mono */
+/* Mono — solo familia + features, NO toca color (deja que el utility
+   `text-*` aplicado en el elemento gane). El `color: inherit` previo
+   sobrescribía `text-white` cuando el chip estaba sobre accent-bg. */
 .simulador-root .mono {
   font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
   font-feature-settings: "ss01" on, "cv01" on;
-  color: inherit;
 }
 
 /* Reading column */

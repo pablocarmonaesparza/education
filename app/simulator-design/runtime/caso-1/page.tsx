@@ -380,7 +380,7 @@ export default function RuntimePage() {
                           />
                         </svg>
                       ) : i === 0 ? (
-                        "·"
+                        <span className="block h-1.5 w-1.5 rounded-full bg-current" />
                       ) : (
                         i
                       )}
