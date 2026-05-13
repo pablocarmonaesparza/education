@@ -8,7 +8,6 @@ import {
   CardBody,
   Checkbox,
   CheckboxGroup,
-  Progress,
   Radio,
   RadioGroup,
   Textarea,
@@ -150,23 +149,15 @@ const SECTIONS: { id: SectionId; label: string }[] = [
   { id: "step5", label: STEPS[4].label },
 ];
 
-const INTRO_SLIDES = [
-  { id: 1, key: "presentacion" },
-  { id: 2, key: "rol" },
-  { id: 3, key: "situacion" },
-  { id: 4, key: "pasos" },
-  { id: 5, key: "reglas" },
-];
+const INTRO_SLIDES_COUNT = 5;
 
 // ============ PAGE ============
 
 export default function RuntimePage() {
-  // Section + intro slide state
-  const [sectionIdx, setSectionIdx] = useState(0); // 0 = intro
-  const [introSlide, setIntroSlide] = useState(1); // 1..5
-  const [maxReached, setMaxReached] = useState(0); // furthest section visited
+  const [sectionIdx, setSectionIdx] = useState(0);
+  const [introSlide, setIntroSlide] = useState(1);
+  const [maxReached, setMaxReached] = useState(0);
 
-  // Step data state
   const [fieldActions, setFieldActions] = useState<Record<string, string>>({});
   const [userPrompt, setUserPrompt] = useState("");
   const [modelResponse, setModelResponse] = useState<string | null>(null);
@@ -178,9 +169,7 @@ export default function RuntimePage() {
   const [isEvaluating, setIsEvaluating] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
-  const currentSection = SECTIONS[sectionIdx];
-  const currentStep =
-    sectionIdx === 0 ? null : STEPS[sectionIdx - 1];
+  const currentStep = sectionIdx === 0 ? null : STEPS[sectionIdx - 1];
 
   function goToSection(idx: number) {
     if (idx <= maxReached) {
@@ -195,7 +184,6 @@ export default function RuntimePage() {
       setSectionIdx(nextIdx);
       setMaxReached((m) => Math.max(m, nextIdx));
     } else {
-      // finished step5 -> evaluating
       setIsEvaluating(true);
       setTimeout(() => {
         setIsEvaluating(false);
@@ -205,10 +193,10 @@ export default function RuntimePage() {
   }
 
   function nextIntroSlide() {
-    if (introSlide < INTRO_SLIDES.length) {
+    if (introSlide < INTRO_SLIDES_COUNT) {
       setIntroSlide((s) => s + 1);
     } else {
-      advanceSection(); // moves to step1
+      advanceSection();
     }
   }
 
@@ -226,7 +214,7 @@ export default function RuntimePage() {
   }
 
   const canAdvance = useMemo(() => {
-    if (!currentStep) return introSlide === INTRO_SLIDES.length;
+    if (!currentStep) return introSlide === INTRO_SLIDES_COUNT;
     switch (currentStep.id) {
       case 1:
         return Object.keys(fieldActions).length === FIELDS.length;
@@ -251,16 +239,6 @@ export default function RuntimePage() {
     option4,
     step5Text,
   ]);
-
-  // Top progress: combine intro slides + steps progress.
-  const totalUnits = INTRO_SLIDES.length + STEPS.length; // 10
-  const completedUnits =
-    sectionIdx === 0
-      ? introSlide - 1
-      : INTRO_SLIDES.length +
-        (sectionIdx - 1) +
-        (canAdvance ? 1 : 0);
-  const progressPct = (completedUnits / totalUnits) * 100;
 
   // ============ EVALUATING ============
   if (isEvaluating) {
@@ -292,7 +270,7 @@ export default function RuntimePage() {
       <>
         <SurfaceNav />
         <main className="surface-canvas min-h-screen pb-24">
-          <div className="reading-col px-6 pt-16 text-center">
+          <div className="max-w-2xl mx-auto px-6 pt-16 text-center">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -350,39 +328,24 @@ export default function RuntimePage() {
     );
   }
 
-  // ============ MAIN RUNTIME (intro + steps) ============
+  // ============ CAPSULE PROGRESS BAR ============
+  // 5 capsules. In intro: each = one slide; in steps: each = one step.
+  const inIntro = sectionIdx === 0;
+  const capsuleCount = 5;
+  const capsuleActiveIdx = inIntro ? introSlide - 1 : sectionIdx - 1;
+  const capsuleCompletedThreshold = inIntro
+    ? introSlide - 1
+    : sectionIdx - 1 + (canAdvance ? 1 : 0);
+
+  // ============ MAIN RUNTIME ============
   return (
     <>
       <SurfaceNav />
 
-      {/* Full-width slim top progress */}
-      <div className="sticky top-14 z-30 bg-white/90 backdrop-blur-xl border-b border-black/[0.06]">
-        <Progress
-          aria-label="Progreso del caso"
-          value={progressPct}
-          classNames={{
-            base: "max-w-full",
-            track: "h-[3px] bg-transparent rounded-none",
-            indicator: "accent-bg rounded-none",
-          }}
-        />
-        <div className="max-w-7xl mx-auto px-6 py-2.5 flex items-center justify-between gap-4 text-[12px]">
-          <span className="mono text-[#86868b]">
-            {sectionIdx === 0
-              ? `Instrucciones · ${introSlide} / ${INTRO_SLIDES.length}`
-              : `Paso ${sectionIdx} / ${STEPS.length}`}
-          </span>
-          <span className="text-[#6e6e73] hidden sm:inline">
-            {sectionIdx === 0 ? "Introducción" : currentStep?.label}
-          </span>
-        </div>
-      </div>
-
-      {/* Layout: sidebar + content */}
       <div className="max-w-7xl mx-auto flex">
-        {/* Sidebar */}
-        <aside className="hidden md:block flex-shrink-0 w-60 border-r border-black/[0.06]">
-          <div className="sticky top-[100px] py-10 px-6">
+        {/* Sidebar (no border, no EVALUAMOS panel) */}
+        <aside className="hidden md:block flex-shrink-0 w-60">
+          <div className="sticky top-[80px] py-10 px-6">
             <div className="eyebrow mb-4">Secciones</div>
             <nav className="space-y-1">
               {SECTIONS.map((s, i) => {
@@ -435,431 +398,615 @@ export default function RuntimePage() {
                 );
               })}
             </nav>
-
-            <div className="mt-10 pt-6 border-t border-black/[0.06]">
-              <div className="eyebrow mb-2">Evaluamos</div>
-              <ul className="space-y-1 text-[12px] text-[#6e6e73]">
-                <li>· Contexto</li>
-                <li>· Privacidad</li>
-                <li>· Validación</li>
-                <li>· Juicio</li>
-                <li>· Decisión</li>
-              </ul>
-            </div>
           </div>
         </aside>
 
-        {/* Main content */}
-        <main className="flex-1 min-w-0 surface-canvas pb-32">
-          <AnimatePresence mode="wait">
-            {/* ============ INTRO SLIDES ============ */}
-            {sectionIdx === 0 && (
-              <motion.div
-                key={`intro-${introSlide}`}
-                initial={{ opacity: 0, x: 24 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -24 }}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="max-w-2xl mx-auto px-6 pt-16"
-              >
-                {introSlide === 1 && (
-                  <>
-                    <div className="eyebrow">
-                      Caso 01 · Marketing · 18 min
-                    </div>
-                    <h1 className="display display-tight mt-5 text-[40px] sm:text-[56px] text-[#1d1d1f]">
-                      Campaña urgente con
-                      <br />
-                      feedback de clientes.
-                    </h1>
-                    <p className="mt-8 text-[19px] text-[#6e6e73] leading-[1.55] max-w-xl">
-                      Vas a interpretar el rol de un Marketing Manager bajo
-                      presión. No hay respuesta única correcta: evaluamos tu
-                      criterio.
-                    </p>
-                  </>
-                )}
-
-                {introSlide === 2 && (
-                  <>
-                    <div className="eyebrow">Tu rol</div>
-                    <h2 className="display display-tight mt-5 text-[32px] sm:text-[40px] text-[#1d1d1f]">
-                      Marketing Manager en Loop.
-                    </h2>
-                    <p className="mt-8 text-[17px] text-[#1d1d1f] leading-[1.7]">
-                      Eres{" "}
-                      <span className="font-medium">Marketing Manager</span> en{" "}
-                      <span className="font-medium">Loop</span>, una SaaS B2B
-                      mid-market (120 empleados) que vende plataforma de
-                      atención al cliente con IA en LATAM.
-                    </p>
-                    <p className="mt-5 text-[16px] text-[#6e6e73] leading-[1.7]">
-                      Tu equipo de growth es de 6 personas. Reportas a{" "}
-                      <span className="text-[#1d1d1f]">
-                        Camila, VP of Growth
-                      </span>
-                      . El gobierno de IA en tu empresa es informal: hay GPT
-                      corporativo aprobado por IT, pero los criterios viven en
-                      cada manager.
-                    </p>
-                  </>
-                )}
-
-                {introSlide === 3 && (
-                  <>
-                    <div className="eyebrow">Qué está pasando</div>
-                    <h2 className="display display-tight mt-5 text-[32px] sm:text-[40px] text-[#1d1d1f]">
-                      Jueves · 4:30 PM.
-                      <br />
-                      <span className="text-[#6e6e73]">
-                        Quedan 16 horas hasta el deadline.
-                      </span>
-                    </h2>
-                    <p className="mt-8 text-[17px] text-[#1d1d1f] leading-[1.7]">
-                      Camila te escribe por Slack pidiéndote{" "}
-                      <span className="font-medium">
-                        3 ángulos para LinkedIn Ads + 1 email a prospects
-                      </span>{" "}
-                      para mañana 9 AM. Tienes acceso a un dataset de 60 filas
-                      con feedback de clientes (PII incluido).
-                    </p>
-                    <div className="mt-8 card-apple bg-white p-5">
-                      <div className="flex items-start gap-4">
-                        <Avatar
-                          size="sm"
-                          className="bg-[#ff5e62] text-white text-[13px] font-semibold flex-shrink-0"
-                          name="C"
-                        />
-                        <p className="text-[15px] text-[#1d1d1f] leading-[1.6] italic">
-                          «No me metas a Legal hoy, ya están cerrados. Confío
-                          en tu criterio.»
-                        </p>
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {introSlide === 4 && (
-                  <>
-                    <div className="eyebrow">Cómo vas a avanzar</div>
-                    <h2 className="display display-tight mt-5 text-[32px] sm:text-[40px] text-[#1d1d1f]">
-                      Cinco pasos.
-                    </h2>
-                    <ol className="mt-10 space-y-5">
-                      {STEPS.map((s) => (
-                        <li
-                          key={s.id}
-                          className="flex items-start gap-5 pb-5 border-b border-black/[0.06] last:border-0 last:pb-0"
-                        >
-                          <div className="flex-shrink-0 mt-1 mono text-[15px] text-[#86868b] font-medium w-8">
-                            {String(s.id).padStart(2, "0")}
-                          </div>
-                          <div>
-                            <div className="text-[17px] text-[#1d1d1f] font-medium">
-                              {s.label}
-                            </div>
-                            <div className="text-[15px] text-[#6e6e73] mt-1">
-                              {s.sub}
-                            </div>
-                          </div>
-                        </li>
-                      ))}
-                    </ol>
-                  </>
-                )}
-
-                {introSlide === 5 && (
-                  <>
-                    <div className="eyebrow">Reglas</div>
-                    <h2 className="display display-tight mt-5 text-[32px] sm:text-[40px] text-[#1d1d1f]">
-                      Antes de empezar.
-                    </h2>
-                    <ul className="mt-10 space-y-5 text-[17px] text-[#1d1d1f] leading-[1.65]">
-                      <li className="flex items-start gap-4">
-                        <span
-                          className="flex-shrink-0 mt-2 h-1.5 w-1.5 rounded-full"
-                          style={{ backgroundColor: "var(--accent)" }}
-                        />
-                        <span>Responde como lo harías en tu trabajo real.</span>
-                      </li>
-                      <li className="flex items-start gap-4">
-                        <span
-                          className="flex-shrink-0 mt-2 h-1.5 w-1.5 rounded-full"
-                          style={{ backgroundColor: "var(--accent)" }}
-                        />
-                        <span>
-                          Puedes volver a una sección anterior desde el menú
-                          lateral, pero solo a las que ya has visitado.
-                        </span>
-                      </li>
-                      <li className="flex items-start gap-4">
-                        <span
-                          className="flex-shrink-0 mt-2 h-1.5 w-1.5 rounded-full"
-                          style={{ backgroundColor: "var(--accent)" }}
-                        />
-                        <span>
-                          El modelo responde una vez por interacción. Trabaja
-                          con lo que te dé.
-                        </span>
-                      </li>
-                      <li className="flex items-start gap-4">
-                        <span
-                          className="flex-shrink-0 mt-2 h-1.5 w-1.5 rounded-full"
-                          style={{ backgroundColor: "var(--accent)" }}
-                        />
-                        <span>
-                          Evaluamos en 5 dimensiones: contexto, privacidad,
-                          validación, juicio y decisión.
-                        </span>
-                      </li>
-                    </ul>
-                  </>
-                )}
-              </motion.div>
-            )}
-
-            {/* ============ STEP CONTENT ============ */}
-            {sectionIdx > 0 && currentStep && (
-              <motion.div
-                key={`step-${currentStep.id}`}
-                initial={{ opacity: 0, x: 24 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -24 }}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="max-w-2xl mx-auto px-6 pt-14"
-              >
-                {/* eyebrow + dimensions */}
-                <div className="flex items-center gap-3 flex-wrap">
-                  <span className="eyebrow">{currentStep.label}</span>
-                  <span className="text-[#d2d2d7]">·</span>
-                  <div className="flex gap-1.5 flex-wrap">
-                    {currentStep.dimensions.map((d) => (
-                      <span
-                        key={d}
-                        className="text-[11px] text-[#6e6e73] bg-[#f5f5f7] px-2 py-0.5 rounded-full"
-                      >
-                        {d}
-                      </span>
-                    ))}
+        {/* Main */}
+        <main className="flex-1 min-w-0 surface-canvas pb-32 flex flex-col">
+          {/* Capsule progress (max-w-2xl matches content width) */}
+          <div className="pt-8 px-6">
+            <div className="max-w-2xl mx-auto flex gap-1.5">
+              {Array.from({ length: capsuleCount }).map((_, i) => {
+                const completed = i < capsuleCompletedThreshold;
+                const active = i === capsuleActiveIdx;
+                return (
+                  <div
+                    key={i}
+                    className="flex-1 h-[5px] rounded-full overflow-hidden bg-[#f5f5f7]"
+                  >
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{
+                        backgroundColor: active || completed
+                          ? "var(--accent)"
+                          : "transparent",
+                      }}
+                      initial={{ width: 0 }}
+                      animate={{
+                        width: completed || active ? "100%" : "0%",
+                      }}
+                      transition={{
+                        duration: 0.4,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                    />
                   </div>
-                </div>
+                );
+              })}
+            </div>
+          </div>
 
-                <h1 className="display display-tight mt-5 text-[#1d1d1f] text-[32px] sm:text-[40px]">
-                  {currentStep.question}
-                </h1>
-                <p className="mt-5 text-[17px] text-[#6e6e73] leading-[1.55] max-w-xl">
-                  {currentStep.why}
-                </p>
-
-                {/* Brief de Camila en step 1 */}
-                {currentStep.id === 1 && (
-                  <div className="mt-10 card-apple bg-white p-6">
-                    <div className="flex items-start gap-4">
-                      <Avatar
-                        size="sm"
-                        className="bg-[#ff5e62] text-white text-[13px] font-semibold flex-shrink-0"
-                        name="C"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 text-[12px] text-[#86868b]">
-                          <span className="text-[#1d1d1f] font-medium">
-                            Camila · VP of Growth
-                          </span>
-                          <span>·</span>
-                          <span className="mono">Jue 4:30 PM</span>
+          {/* Content: centered vertically + horizontally */}
+          <div className="flex-1 flex items-center justify-center px-6 py-12">
+            <div className="max-w-2xl w-full">
+              <AnimatePresence mode="wait">
+                {/* ============ INTRO SLIDES ============ */}
+                {sectionIdx === 0 && (
+                  <motion.div
+                    key={`intro-${introSlide}`}
+                    initial={{ opacity: 0, x: 24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -24 }}
+                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                    className="text-center"
+                  >
+                    {introSlide === 1 && (
+                      <>
+                        <div className="eyebrow">
+                          Caso 01 · Marketing · 18 min
                         </div>
-                        <p className="mt-2 text-[15px] text-[#1d1d1f] leading-[1.55]">
-                          «Hey, necesito 3 ángulos para LinkedIn Ads + 1 email
-                          a la lista de prospects para mañana 9 AM. Revisa el
-                          feedback que CS nos pasó hace 2 meses, ahí está
-                          todo.{" "}
-                          <span className="text-[#ff5e62]">
-                            No me metas a Legal hoy, ya están cerrados
-                          </span>
-                          . Confío en tu criterio.»
+                        <h1 className="display display-tight mt-6 text-[44px] sm:text-[60px] text-[#1d1d1f]">
+                          Campaña urgente con
+                          <br />
+                          feedback de clientes.
+                        </h1>
+                        <p className="mt-8 text-[19px] text-[#6e6e73] leading-[1.55] max-w-xl mx-auto">
+                          Vas a interpretar el rol de un Marketing Manager bajo
+                          presión. No hay respuesta única correcta: evaluamos
+                          tu criterio.
                         </p>
-                      </div>
-                    </div>
-                  </div>
+                      </>
+                    )}
+
+                    {introSlide === 2 && (
+                      <>
+                        <div className="eyebrow">Tu rol</div>
+                        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[#1d1d1f]">
+                          Marketing Manager en Loop.
+                        </h2>
+                        <p className="mt-8 text-[18px] text-[#1d1d1f] leading-[1.65] max-w-xl mx-auto">
+                          Eres{" "}
+                          <span className="font-medium">Marketing Manager</span>{" "}
+                          en <span className="font-medium">Loop</span>, una SaaS
+                          B2B mid-market (120 empleados) que vende plataforma de
+                          atención al cliente con IA en LATAM.
+                        </p>
+                        <p className="mt-5 text-[16px] text-[#6e6e73] leading-[1.7] max-w-xl mx-auto">
+                          Tu equipo de growth es de 6 personas. Reportas a{" "}
+                          <span className="text-[#1d1d1f]">
+                            Camila, VP of Growth
+                          </span>
+                          . El gobierno de IA en tu empresa es informal: hay GPT
+                          corporativo aprobado por IT, pero los criterios viven
+                          en cada manager.
+                        </p>
+                      </>
+                    )}
+
+                    {introSlide === 3 && (
+                      <>
+                        <div className="eyebrow">Qué está pasando</div>
+                        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[#1d1d1f]">
+                          Jueves · 4:30 PM.
+                        </h2>
+                        <p className="mt-3 text-[18px] text-[#6e6e73] leading-[1.55]">
+                          Quedan 16 horas hasta el deadline.
+                        </p>
+                        <p className="mt-8 text-[17px] text-[#1d1d1f] leading-[1.7] max-w-xl mx-auto">
+                          Camila te escribe por Slack pidiéndote{" "}
+                          <span className="font-medium">
+                            3 ángulos para LinkedIn Ads + 1 email a prospects
+                          </span>{" "}
+                          para mañana 9 AM. Tienes acceso a un dataset de 60
+                          filas con feedback de clientes (PII incluido).
+                        </p>
+                        <div className="mt-10 card-apple bg-white p-5 max-w-xl mx-auto text-left">
+                          <div className="flex items-start gap-4">
+                            <Avatar
+                              size="sm"
+                              className="bg-[#ff5e62] text-white text-[13px] font-semibold flex-shrink-0"
+                              name="C"
+                            />
+                            <p className="text-[15px] text-[#1d1d1f] leading-[1.6] italic">
+                              «No me metas a Legal hoy, ya están cerrados.
+                              Confío en tu criterio.»
+                            </p>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {introSlide === 4 && (
+                      <>
+                        <div className="eyebrow">Cómo vas a avanzar</div>
+                        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[#1d1d1f]">
+                          Cinco pasos.
+                        </h2>
+                        <ol className="mt-10 space-y-5 text-left max-w-md mx-auto">
+                          {STEPS.map((s) => (
+                            <li
+                              key={s.id}
+                              className="flex items-start gap-5"
+                            >
+                              <div className="flex-shrink-0 mt-1 mono text-[15px] text-[#86868b] font-medium w-8">
+                                {String(s.id).padStart(2, "0")}
+                              </div>
+                              <div>
+                                <div className="text-[17px] text-[#1d1d1f] font-medium">
+                                  {s.label}
+                                </div>
+                                <div className="text-[15px] text-[#6e6e73] mt-0.5">
+                                  {s.sub}
+                                </div>
+                              </div>
+                            </li>
+                          ))}
+                        </ol>
+                      </>
+                    )}
+
+                    {introSlide === 5 && (
+                      <>
+                        <div className="eyebrow">Reglas</div>
+                        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[#1d1d1f]">
+                          Antes de empezar.
+                        </h2>
+                        <ul className="mt-10 space-y-5 text-[17px] text-[#1d1d1f] leading-[1.65] text-left max-w-xl mx-auto">
+                          <li className="flex items-start gap-4">
+                            <span
+                              className="flex-shrink-0 mt-2 h-1.5 w-1.5 rounded-full"
+                              style={{ backgroundColor: "var(--accent)" }}
+                            />
+                            <span>
+                              Responde como lo harías en tu trabajo real.
+                            </span>
+                          </li>
+                          <li className="flex items-start gap-4">
+                            <span
+                              className="flex-shrink-0 mt-2 h-1.5 w-1.5 rounded-full"
+                              style={{ backgroundColor: "var(--accent)" }}
+                            />
+                            <span>
+                              Puedes volver a una sección ya visitada desde el
+                              menú lateral.
+                            </span>
+                          </li>
+                          <li className="flex items-start gap-4">
+                            <span
+                              className="flex-shrink-0 mt-2 h-1.5 w-1.5 rounded-full"
+                              style={{ backgroundColor: "var(--accent)" }}
+                            />
+                            <span>
+                              El modelo responde una vez por interacción.
+                              Trabaja con lo que te dé.
+                            </span>
+                          </li>
+                          <li className="flex items-start gap-4">
+                            <span
+                              className="flex-shrink-0 mt-2 h-1.5 w-1.5 rounded-full"
+                              style={{ backgroundColor: "var(--accent)" }}
+                            />
+                            <span>
+                              Evaluamos en 5 dimensiones: contexto, privacidad,
+                              validación, juicio y decisión.
+                            </span>
+                          </li>
+                        </ul>
+                      </>
+                    )}
+                  </motion.div>
                 )}
 
-                {/* ============ STEP 1: SCOPE FIELDS ============ */}
-                {currentStep.id === 1 && (
-                  <div className="mt-12">
-                    <div className="eyebrow mb-3">
-                      Dataset · 60 filas · 6 campos
-                    </div>
-                    <div className="card-apple bg-white overflow-hidden">
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-[13px]">
-                          <thead>
-                            <tr className="border-b border-black/[0.06] bg-[#fafafa]">
-                              <th className="text-left font-medium text-[#6e6e73] px-4 py-3">
-                                name
-                              </th>
-                              <th className="text-left font-medium text-[#6e6e73] px-4 py-3">
-                                email
-                              </th>
-                              <th className="text-left font-medium text-[#6e6e73] px-4 py-3">
-                                company
-                              </th>
-                              <th className="text-left font-medium text-[#6e6e73] px-4 py-3 hidden sm:table-cell">
-                                complaint
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {SAMPLE_FEEDBACK_ROWS.slice(0, 3).map((r) => (
-                              <tr
-                                key={r.email}
-                                className="border-b border-black/[0.04] last:border-b-0"
-                              >
-                                <td className="px-4 py-3 text-[#1d1d1f]">
-                                  {r.name}
-                                </td>
-                                <td className="px-4 py-3 text-[#6e6e73]">
-                                  {r.email}
-                                </td>
-                                <td className="px-4 py-3 text-[#6e6e73]">
-                                  {r.company}
-                                </td>
-                                <td className="px-4 py-3 text-[#6e6e73] hidden sm:table-cell truncate max-w-xs">
-                                  {r.complaint.slice(0, 60)}…
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                {/* ============ STEP CONTENT ============ */}
+                {sectionIdx > 0 && currentStep && (
+                  <motion.div
+                    key={`step-${currentStep.id}`}
+                    initial={{ opacity: 0, x: 24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -24 }}
+                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    <div className="text-center">
+                      <div className="eyebrow flex items-center justify-center gap-3 flex-wrap">
+                        <span>{currentStep.label}</span>
+                        <span className="text-[#d2d2d7]">·</span>
+                        <span className="flex gap-1.5 flex-wrap justify-center">
+                          {currentStep.dimensions.map((d) => (
+                            <span
+                              key={d}
+                              className="text-[11px] normal-case tracking-normal text-[#6e6e73] bg-[#f5f5f7] px-2 py-0.5 rounded-full"
+                            >
+                              {d}
+                            </span>
+                          ))}
+                        </span>
                       </div>
+
+                      <h1 className="display display-tight mt-6 text-[#1d1d1f] text-[32px] sm:text-[40px]">
+                        {currentStep.question}
+                      </h1>
+                      <p className="mt-5 text-[17px] text-[#6e6e73] leading-[1.55] max-w-xl mx-auto">
+                        {currentStep.why}
+                      </p>
                     </div>
 
-                    <div className="mt-10">
-                      <div className="eyebrow mb-4">Tu decisión por campo</div>
-                      <div className="space-y-3">
-                        {FIELDS.map((f) => (
-                          <div
-                            key={f.key}
-                            className="card-apple bg-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4"
-                          >
-                            <div className="sm:w-56 flex-shrink-0">
-                              <div className="flex items-center gap-2">
-                                <span className="mono text-[13px] text-[#1d1d1f] font-medium">
-                                  {f.key}
-                                </span>
-                                {f.pii && (
-                                  <span
-                                    className="text-[10px] px-1.5 py-0.5 rounded font-semibold"
-                                    style={{
-                                      color: "var(--accent)",
-                                      backgroundColor: "var(--accent-soft)",
-                                    }}
-                                  >
-                                    PII
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-[12px] text-[#86868b] mt-0.5">
-                                {f.desc}
-                              </p>
+                    {/* Brief de Camila en step 1 */}
+                    {currentStep.id === 1 && (
+                      <div className="mt-10 card-apple bg-white p-6">
+                        <div className="flex items-start gap-4">
+                          <Avatar
+                            size="sm"
+                            className="bg-[#ff5e62] text-white text-[13px] font-semibold flex-shrink-0"
+                            name="C"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 text-[12px] text-[#86868b]">
+                              <span className="text-[#1d1d1f] font-medium">
+                                Camila · VP of Growth
+                              </span>
+                              <span>·</span>
+                              <span className="mono">Jue 4:30 PM</span>
                             </div>
-                            <RadioGroup
-                              aria-label={`Acción para ${f.key}`}
-                              orientation="horizontal"
-                              value={fieldActions[f.key] || ""}
-                              onValueChange={(v) =>
-                                setFieldActions({
-                                  ...fieldActions,
-                                  [f.key]: v,
-                                })
-                              }
-                              classNames={{
-                                wrapper: "gap-2 flex-wrap",
-                              }}
-                            >
-                              {FIELD_OPTIONS.map((opt) => (
-                                <Radio
-                                  key={opt}
-                                  value={opt}
-                                  size="sm"
+                            <p className="mt-2 text-[15px] text-[#1d1d1f] leading-[1.55]">
+                              «Hey, necesito 3 ángulos para LinkedIn Ads + 1
+                              email a la lista de prospects para mañana 9 AM.
+                              Revisa el feedback que CS nos pasó hace 2 meses,
+                              ahí está todo.{" "}
+                              <span className="text-[#ff5e62]">
+                                No me metas a Legal hoy, ya están cerrados
+                              </span>
+                              . Confío en tu criterio.»
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* STEP 1: SCOPE FIELDS */}
+                    {currentStep.id === 1 && (
+                      <div className="mt-12">
+                        <div className="eyebrow mb-3">
+                          Dataset · 60 filas · 6 campos
+                        </div>
+                        <div className="card-apple bg-white overflow-hidden">
+                          <div className="overflow-x-auto">
+                            <table className="w-full text-[13px]">
+                              <thead>
+                                <tr className="bg-[#fafafa]">
+                                  <th className="text-left font-medium text-[#6e6e73] px-4 py-3">
+                                    name
+                                  </th>
+                                  <th className="text-left font-medium text-[#6e6e73] px-4 py-3">
+                                    email
+                                  </th>
+                                  <th className="text-left font-medium text-[#6e6e73] px-4 py-3">
+                                    company
+                                  </th>
+                                  <th className="text-left font-medium text-[#6e6e73] px-4 py-3 hidden sm:table-cell">
+                                    complaint
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {SAMPLE_FEEDBACK_ROWS.slice(0, 3).map((r) => (
+                                  <tr key={r.email}>
+                                    <td className="px-4 py-3 text-[#1d1d1f]">
+                                      {r.name}
+                                    </td>
+                                    <td className="px-4 py-3 text-[#6e6e73]">
+                                      {r.email}
+                                    </td>
+                                    <td className="px-4 py-3 text-[#6e6e73]">
+                                      {r.company}
+                                    </td>
+                                    <td className="px-4 py-3 text-[#6e6e73] hidden sm:table-cell truncate max-w-xs">
+                                      {r.complaint.slice(0, 60)}…
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+
+                        <div className="mt-10">
+                          <div className="eyebrow mb-4">
+                            Tu decisión por campo
+                          </div>
+                          <div className="space-y-3">
+                            {FIELDS.map((f) => (
+                              <div
+                                key={f.key}
+                                className="card-apple bg-white p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4"
+                              >
+                                <div className="sm:w-56 flex-shrink-0">
+                                  <div className="flex items-center gap-2">
+                                    <span className="mono text-[13px] text-[#1d1d1f] font-medium">
+                                      {f.key}
+                                    </span>
+                                    {f.pii && (
+                                      <span
+                                        className="text-[10px] px-1.5 py-0.5 rounded font-semibold"
+                                        style={{
+                                          color: "var(--accent)",
+                                          backgroundColor: "var(--accent-soft)",
+                                        }}
+                                      >
+                                        PII
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className="text-[12px] text-[#86868b] mt-0.5">
+                                    {f.desc}
+                                  </p>
+                                </div>
+                                <RadioGroup
+                                  aria-label={`Acción para ${f.key}`}
+                                  orientation="horizontal"
+                                  value={fieldActions[f.key] || ""}
+                                  onValueChange={(v) =>
+                                    setFieldActions({
+                                      ...fieldActions,
+                                      [f.key]: v,
+                                    })
+                                  }
                                   classNames={{
-                                    base: "m-0 max-w-fit cursor-pointer rounded-full border border-[#e5e5ea] data-[selected=true]:bg-[var(--accent-soft)] data-[selected=true]:border-[var(--accent)] px-3 py-1.5",
-                                    labelWrapper: "ml-1.5",
-                                    label:
-                                      "text-[13px] text-[#1d1d1f] font-medium",
+                                    wrapper: "gap-2 flex-wrap",
                                   }}
                                 >
-                                  {opt}
-                                </Radio>
-                              ))}
-                            </RadioGroup>
+                                  {FIELD_OPTIONS.map((opt) => (
+                                    <Radio
+                                      key={opt}
+                                      value={opt}
+                                      size="sm"
+                                      classNames={{
+                                        base: "m-0 max-w-fit cursor-pointer rounded-full border border-[#e5e5ea] data-[selected=true]:bg-[var(--accent-soft)] data-[selected=true]:border-[var(--accent)] px-3 py-1.5",
+                                        labelWrapper: "ml-1.5",
+                                        label:
+                                          "text-[13px] text-[#1d1d1f] font-medium",
+                                      }}
+                                    >
+                                      {opt}
+                                    </Radio>
+                                  ))}
+                                </RadioGroup>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* STEP 2: PROMPT + RESPONSE */}
+                    {currentStep.id === 2 && (
+                      <div className="mt-12 space-y-8">
+                        <div>
+                          <div className="eyebrow mb-3">Tu prompt</div>
+                          <Textarea
+                            placeholder="Escribe el prompt que le mandarías al GPT corporativo aprobado por IT…"
+                            value={userPrompt}
+                            onValueChange={setUserPrompt}
+                            minRows={6}
+                            isDisabled={modelResponse !== null}
+                            classNames={{
+                              inputWrapper:
+                                "bg-white border border-[#e5e5ea] data-[hover=true]:border-[#d2d2d7] group-data-[focus=true]:border-[var(--accent)] shadow-none",
+                              input:
+                                "text-[15px] text-[#1d1d1f] placeholder:text-[#86868b]",
+                            }}
+                          />
+                          {!modelResponse && (
+                            <div className="mt-3 flex justify-end">
+                              <Button
+                                radius="full"
+                                size="md"
+                                onPress={sendPrompt}
+                                isLoading={isModelThinking}
+                                isDisabled={!userPrompt.trim()}
+                                className="accent-bg text-white px-5 h-10 text-[14px] font-medium"
+                              >
+                                {isModelThinking
+                                  ? "Pensando…"
+                                  : "Enviar al modelo →"}
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+
+                        {modelResponse && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="space-y-6"
+                          >
+                            <div>
+                              <div className="eyebrow mb-3">
+                                Respuesta del modelo
+                              </div>
+                              <div className="card-apple bg-[#fafafa] p-6">
+                                <pre className="text-[14px] text-[#1d1d1f] leading-[1.6] whitespace-pre-wrap font-sans">
+                                  {modelResponse}
+                                </pre>
+                              </div>
+                            </div>
+                            <div>
+                              <div className="eyebrow mb-3">
+                                Tu siguiente paso · qué harás con esto
+                              </div>
+                              <Textarea
+                                placeholder="¿Usar tal cual? ¿Validar algo? ¿Descartar? ¿Por qué?"
+                                value={followupText}
+                                onValueChange={setFollowupText}
+                                minRows={4}
+                                classNames={{
+                                  inputWrapper:
+                                    "bg-white border border-[#e5e5ea] data-[hover=true]:border-[#d2d2d7] group-data-[focus=true]:border-[var(--accent)] shadow-none",
+                                  input:
+                                    "text-[15px] text-[#1d1d1f] placeholder:text-[#86868b]",
+                                }}
+                              />
+                            </div>
+                          </motion.div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* STEP 3: REVIEW FLAGS */}
+                    {currentStep.id === 3 && (
+                      <div className="mt-12 space-y-6">
+                        {SEGMENTS.map((seg) => (
+                          <div
+                            key={seg.id}
+                            className="card-apple bg-white p-6"
+                          >
+                            <h3 className="text-[16px] font-semibold text-[#1d1d1f]">
+                              {seg.title}
+                            </h3>
+                            <p className="mt-2 text-[14px] text-[#6e6e73] leading-[1.6]">
+                              {seg.body}
+                            </p>
+                            <div className="mt-5">
+                              <div className="eyebrow mb-3">
+                                ¿Qué le ves a este ángulo?
+                              </div>
+                              <CheckboxGroup
+                                aria-label={`Flags para ${seg.title}`}
+                                value={segmentFlags[seg.id] || []}
+                                onValueChange={(v) =>
+                                  setSegmentFlags({
+                                    ...segmentFlags,
+                                    [seg.id]: v as string[],
+                                  })
+                                }
+                                orientation="horizontal"
+                                classNames={{ wrapper: "gap-2 flex-wrap" }}
+                              >
+                                {REVIEW_TARGETS.map((t) => (
+                                  <Checkbox
+                                    key={t.id}
+                                    value={t.id}
+                                    size="sm"
+                                    classNames={{
+                                      base: "m-0 max-w-fit cursor-pointer rounded-full border border-[#e5e5ea] data-[selected=true]:bg-[var(--accent-soft)] data-[selected=true]:border-[var(--accent)] px-3 py-1.5",
+                                      wrapper: "hidden",
+                                      label:
+                                        "text-[13px] text-[#1d1d1f] font-medium",
+                                    }}
+                                  >
+                                    {t.label}
+                                  </Checkbox>
+                                ))}
+                              </CheckboxGroup>
+                            </div>
                           </div>
                         ))}
                       </div>
-                    </div>
-                  </div>
-                )}
+                    )}
 
-                {/* ============ STEP 2: PROMPT + RESPONSE ============ */}
-                {currentStep.id === 2 && (
-                  <div className="mt-12 space-y-8">
-                    <div>
-                      <div className="eyebrow mb-3">Tu prompt</div>
-                      <Textarea
-                        placeholder="Escribe el prompt que le mandarías al GPT corporativo aprobado por IT…"
-                        value={userPrompt}
-                        onValueChange={setUserPrompt}
-                        minRows={6}
-                        isDisabled={modelResponse !== null}
-                        classNames={{
-                          inputWrapper:
-                            "bg-white border border-[#e5e5ea] data-[hover=true]:border-[#d2d2d7] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-                          input:
-                            "text-[15px] text-[#1d1d1f] placeholder:text-[#86868b]",
-                        }}
-                      />
-                      {!modelResponse && (
-                        <div className="mt-3 flex justify-end">
-                          <Button
-                            radius="full"
-                            size="md"
-                            onPress={sendPrompt}
-                            isLoading={isModelThinking}
-                            isDisabled={!userPrompt.trim()}
-                            className="accent-bg text-white px-5 h-10 text-[14px] font-medium"
-                          >
-                            {isModelThinking
-                              ? "Pensando…"
-                              : "Enviar al modelo →"}
-                          </Button>
+                    {/* STEP 4: ENTREGA */}
+                    {currentStep.id === 4 && (
+                      <div className="mt-12">
+                        <RadioGroup
+                          aria-label="Opción de entrega"
+                          value={option4}
+                          onValueChange={setOption4}
+                          classNames={{ wrapper: "gap-3" }}
+                        >
+                          {ENTREGA_OPTIONS.map((opt) => {
+                            const selected = option4 === opt.id;
+                            return (
+                              <Card
+                                key={opt.id}
+                                className={`card-apple bg-white cursor-pointer transition-all ${
+                                  selected ? "ring-2" : ""
+                                }`}
+                                style={
+                                  selected
+                                    ? {
+                                        borderColor: "var(--accent)",
+                                        boxShadow:
+                                          "0 0 0 4px var(--accent-ring)",
+                                      }
+                                    : undefined
+                                }
+                                shadow="none"
+                              >
+                                <CardBody className="p-5">
+                                  <Radio
+                                    value={opt.id}
+                                    size="md"
+                                    classNames={{
+                                      wrapper: "border-[#d2d2d7]",
+                                      labelWrapper: "ml-2",
+                                    }}
+                                  >
+                                    <div>
+                                      <div className="text-[15px] font-medium text-[#1d1d1f]">
+                                        {opt.label}
+                                      </div>
+                                      <div className="text-[13px] text-[#6e6e73] mt-0.5">
+                                        {opt.sub}
+                                      </div>
+                                    </div>
+                                  </Radio>
+                                </CardBody>
+                              </Card>
+                            );
+                          })}
+                        </RadioGroup>
+                      </div>
+                    )}
+
+                    {/* STEP 5: OPEN RESPONSE */}
+                    {currentStep.id === 5 && (
+                      <div className="mt-12 space-y-6">
+                        <div className="card-apple bg-white p-6">
+                          <div className="flex items-start gap-4">
+                            <Avatar
+                              size="sm"
+                              className="bg-[#ff5e62] text-white text-[13px] font-semibold flex-shrink-0"
+                              name="C"
+                            />
+                            <div className="flex-1">
+                              <div className="text-[12px] text-[#86868b]">
+                                <span className="text-[#1d1d1f] font-medium">
+                                  Camila · VP of Growth
+                                </span>
+                                <span className="mx-1.5">·</span>
+                                <span className="mono">Vie 8:12 AM</span>
+                              </div>
+                              <p className="mt-2 text-[15px] text-[#1d1d1f] leading-[1.6]">
+                                «Perfectos los ángulos. Una más:{" "}
+                                <span className="font-medium">
+                                  segmentemos por revenue_potential
+                                </span>{" "}
+                                para mandar el email solo a los que valgan más
+                                de $50k. Eso lo armas con la misma data,
+                                ¿cierto?»
+                              </p>
+                            </div>
+                          </div>
                         </div>
-                      )}
-                    </div>
 
-                    {modelResponse && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="space-y-6"
-                      >
                         <div>
                           <div className="eyebrow mb-3">
-                            Respuesta del modelo
-                          </div>
-                          <div className="card-apple bg-[#fafafa] p-6">
-                            <pre className="text-[14px] text-[#1d1d1f] leading-[1.6] whitespace-pre-wrap font-sans">
-                              {modelResponse}
-                            </pre>
-                          </div>
-                        </div>
-                        <div>
-                          <div className="eyebrow mb-3">
-                            Tu siguiente paso · qué harás con esto
+                            Tu respuesta a Camila
                           </div>
                           <Textarea
-                            placeholder="¿Usar tal cual? ¿Validar algo? ¿Descartar? ¿Por qué?"
-                            value={followupText}
-                            onValueChange={setFollowupText}
-                            minRows={4}
+                            placeholder="Responde como lo harías por Slack en este momento…"
+                            value={step5Text}
+                            onValueChange={setStep5Text}
+                            minRows={6}
                             classNames={{
                               inputWrapper:
                                 "bg-white border border-[#e5e5ea] data-[hover=true]:border-[#d2d2d7] group-data-[focus=true]:border-[var(--accent)] shadow-none",
@@ -868,171 +1015,20 @@ export default function RuntimePage() {
                             }}
                           />
                         </div>
-                      </motion.div>
+                      </div>
                     )}
-                  </div>
+                  </motion.div>
                 )}
-
-                {/* ============ STEP 3: REVIEW FLAGS ============ */}
-                {currentStep.id === 3 && (
-                  <div className="mt-12 space-y-6">
-                    {SEGMENTS.map((seg) => (
-                      <div key={seg.id} className="card-apple bg-white p-6">
-                        <h3 className="text-[16px] font-semibold text-[#1d1d1f]">
-                          {seg.title}
-                        </h3>
-                        <p className="mt-2 text-[14px] text-[#6e6e73] leading-[1.6]">
-                          {seg.body}
-                        </p>
-                        <div className="mt-5 pt-5 border-t border-black/[0.06]">
-                          <div className="eyebrow mb-3">
-                            ¿Qué le ves a este ángulo?
-                          </div>
-                          <CheckboxGroup
-                            aria-label={`Flags para ${seg.title}`}
-                            value={segmentFlags[seg.id] || []}
-                            onValueChange={(v) =>
-                              setSegmentFlags({
-                                ...segmentFlags,
-                                [seg.id]: v as string[],
-                              })
-                            }
-                            orientation="horizontal"
-                            classNames={{ wrapper: "gap-2 flex-wrap" }}
-                          >
-                            {REVIEW_TARGETS.map((t) => (
-                              <Checkbox
-                                key={t.id}
-                                value={t.id}
-                                size="sm"
-                                classNames={{
-                                  base: "m-0 max-w-fit cursor-pointer rounded-full border border-[#e5e5ea] data-[selected=true]:bg-[var(--accent-soft)] data-[selected=true]:border-[var(--accent)] px-3 py-1.5",
-                                  wrapper: "hidden",
-                                  label:
-                                    "text-[13px] text-[#1d1d1f] font-medium",
-                                }}
-                              >
-                                {t.label}
-                              </Checkbox>
-                            ))}
-                          </CheckboxGroup>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* ============ STEP 4: ENTREGA ============ */}
-                {currentStep.id === 4 && (
-                  <div className="mt-12">
-                    <RadioGroup
-                      aria-label="Opción de entrega"
-                      value={option4}
-                      onValueChange={setOption4}
-                      classNames={{ wrapper: "gap-3" }}
-                    >
-                      {ENTREGA_OPTIONS.map((opt) => {
-                        const selected = option4 === opt.id;
-                        return (
-                          <Card
-                            key={opt.id}
-                            className={`card-apple bg-white cursor-pointer transition-all ${
-                              selected ? "ring-2" : ""
-                            }`}
-                            style={
-                              selected
-                                ? {
-                                    borderColor: "var(--accent)",
-                                    boxShadow: "0 0 0 4px var(--accent-ring)",
-                                  }
-                                : undefined
-                            }
-                            shadow="none"
-                          >
-                            <CardBody className="p-5">
-                              <Radio
-                                value={opt.id}
-                                size="md"
-                                classNames={{
-                                  wrapper: "border-[#d2d2d7]",
-                                  labelWrapper: "ml-2",
-                                }}
-                              >
-                                <div>
-                                  <div className="text-[15px] font-medium text-[#1d1d1f]">
-                                    {opt.label}
-                                  </div>
-                                  <div className="text-[13px] text-[#6e6e73] mt-0.5">
-                                    {opt.sub}
-                                  </div>
-                                </div>
-                              </Radio>
-                            </CardBody>
-                          </Card>
-                        );
-                      })}
-                    </RadioGroup>
-                  </div>
-                )}
-
-                {/* ============ STEP 5: OPEN RESPONSE ============ */}
-                {currentStep.id === 5 && (
-                  <div className="mt-12 space-y-6">
-                    <div className="card-apple bg-white p-6">
-                      <div className="flex items-start gap-4">
-                        <Avatar
-                          size="sm"
-                          className="bg-[#ff5e62] text-white text-[13px] font-semibold flex-shrink-0"
-                          name="C"
-                        />
-                        <div className="flex-1">
-                          <div className="text-[12px] text-[#86868b]">
-                            <span className="text-[#1d1d1f] font-medium">
-                              Camila · VP of Growth
-                            </span>
-                            <span className="mx-1.5">·</span>
-                            <span className="mono">Vie 8:12 AM</span>
-                          </div>
-                          <p className="mt-2 text-[15px] text-[#1d1d1f] leading-[1.6]">
-                            «Perfectos los ángulos. Una más:{" "}
-                            <span className="font-medium">
-                              segmentemos por revenue_potential
-                            </span>{" "}
-                            para mandar el email solo a los que valgan más de
-                            $50k. Eso lo armas con la misma data, ¿cierto?»
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="eyebrow mb-3">Tu respuesta a Camila</div>
-                      <Textarea
-                        placeholder="Responde como lo harías por Slack en este momento…"
-                        value={step5Text}
-                        onValueChange={setStep5Text}
-                        minRows={6}
-                        classNames={{
-                          inputWrapper:
-                            "bg-white border border-[#e5e5ea] data-[hover=true]:border-[#d2d2d7] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-                          input:
-                            "text-[15px] text-[#1d1d1f] placeholder:text-[#86868b]",
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </AnimatePresence>
+            </div>
+          </div>
         </main>
       </div>
 
-      {/* Sticky bottom action bar */}
-      <div className="fixed bottom-0 inset-x-0 z-40 bg-white/90 backdrop-blur-xl border-t border-black/[0.06]">
+      {/* Sticky bottom action bar (no border-top) */}
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-white/90 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto md:pl-60 px-6 py-4">
           <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
-            {/* Anterior */}
             {sectionIdx === 0 && introSlide > 1 ? (
               <Button
                 radius="full"
@@ -1054,12 +1050,9 @@ export default function RuntimePage() {
                 ← Anterior
               </Button>
             ) : (
-              <span className="text-[12px] text-[#86868b]">
-                {!canAdvance && sectionIdx > 0 && "Completa para avanzar."}
-              </span>
+              <span />
             )}
 
-            {/* Siguiente / Empezar caso / Terminar */}
             {sectionIdx === 0 ? (
               <Button
                 radius="full"
@@ -1067,7 +1060,7 @@ export default function RuntimePage() {
                 onPress={nextIntroSlide}
                 className="accent-bg text-white h-11 px-6 text-[14px] font-medium shadow-none btn-hover-shift"
               >
-                {introSlide === INTRO_SLIDES.length
+                {introSlide === INTRO_SLIDES_COUNT
                   ? "Empezar caso"
                   : "Siguiente"}{" "}
                 →
