@@ -1,649 +1,364 @@
 "use client";
 
-import {
-  Avatar,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Chip,
-  Link,
-  Progress,
-  Tooltip,
-} from "@heroui/react";
+import { Avatar, Button, Card, CardBody, Link, Progress } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "../_components/SurfaceNav";
 import {
-  BAND_LABELS,
-  BandKey,
   DIMENSIONS,
   TEAM_MEMBERS,
+  BAND_LABELS,
+  MANAGER_ACTIONS,
+  SPRINT_META,
 } from "../_data/case-data";
+import type { BandKey } from "../_data/case-data";
 
-const TEAM_AGGREGATE: Record<string, BandKey> = {
-  contexto: "A",
-  privacidad: "M",
-  validacion: "M",
-  juicio: "M",
-  decision: "A",
+const fadeUp = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
 };
 
-const RISK_EVENTS_TIMELINE = [
-  {
-    id: 1,
-    severity: "high" as const,
-    type: "exposed_pii_to_model",
-    title: "PII expuesto al modelo corporativo",
-    when: "hace 3 días",
-    participantId: "P001",
-  },
-  {
-    id: 2,
-    severity: "medium" as const,
-    type: "hidden_pii_usage_from_authority",
-    title: "no se disclosó uso de PII a la VP",
-    when: "hace 3 días",
-    participantId: "P001",
-  },
-  {
-    id: 3,
-    severity: "medium" as const,
-    type: "accept_output_no_validation",
-    title: "aceptó cifras del LLM sin validar",
-    when: "hace 2 días",
-    participantId: "P002",
-  },
-  {
-    id: 4,
-    severity: "high" as const,
-    type: "no_risk_flag_upward",
-    title: "no objetó propuesta riesgosa del VP",
-    when: "ayer",
-    participantId: "P003",
-  },
-];
+const SPRINT_AGGREGATE = {
+  totalSeats: 8,
+  completed: 5,
+  inProgress: 1,
+  notStarted: 2,
+  daysLeft: 6,
+  startDate: "2026-05-08",
+  endDate: "2026-06-07",
+  readinessByBand: { A: 1, M: 3, B: 1 } as Record<BandKey, number>,
+  dimensionsAvg: {
+    contexto: 78,
+    privacidad: 42,
+    validacion: 61,
+    juicio: 58,
+    decision: 72,
+  } as Record<string, number>,
+  riskEventsTotal: 3,
+  flaggedRoles: ["Marketing Manager", "Demand Gen Lead"],
+};
 
-function bandColor(b: BandKey | null) {
-  if (!b) return "default" as const;
-  if (b === "A") return "success" as const;
-  if (b === "M") return "warning" as const;
-  return "danger" as const;
-}
-
-function bandPct(b: BandKey): number {
-  if (b === "A") return 85;
-  if (b === "M") return 55;
-  return 25;
-}
-
-function bandIndicator(b: BandKey): string {
+function bandTone(b: BandKey | null) {
   if (b === "A")
-    return "bg-gradient-to-r from-emerald-500/60 to-emerald-400";
-  if (b === "M") return "bg-gradient-to-r from-amber-500/60 to-amber-400";
-  return "bg-gradient-to-r from-rose-500/60 to-rose-400";
-}
-
-function ReadinessBadge({ band }: { band: BandKey | null }) {
-  if (!band) {
-    return (
-      <Chip
-        size="sm"
-        variant="flat"
-        classNames={{
-          base: "h-5 bg-white/[0.04] border border-white/10",
-          content: "text-[10px] tracking-wider text-white/45 uppercase",
-        }}
-      >
-        pending
-      </Chip>
-    );
-  }
-  return (
-    <Chip
-      size="sm"
-      variant="flat"
-      color={bandColor(band)}
-      classNames={{
-        base:
-          band === "A"
-            ? "h-5 bg-emerald-500/15 border border-emerald-500/25"
-            : band === "M"
-            ? "h-5 bg-amber-500/15 border border-amber-500/25"
-            : "h-5 bg-rose-500/15 border border-rose-500/25",
-        content:
-          band === "A"
-            ? "text-[10px] text-emerald-300 mono uppercase tracking-wider"
-            : band === "M"
-            ? "text-[10px] text-amber-300 mono uppercase tracking-wider"
-            : "text-[10px] text-rose-300 mono uppercase tracking-wider",
-      }}
-    >
-      {band} · {BAND_LABELS[band]}
-    </Chip>
-  );
+    return {
+      bg: "bg-[#e8f5ed]",
+      text: "text-[#0a7e3a]",
+    };
+  if (b === "M")
+    return {
+      bg: "bg-[#fef4e6]",
+      text: "text-[#a05a00]",
+    };
+  if (b === "B")
+    return {
+      bg: "bg-[#fde9e9]",
+      text: "text-[#a01818]",
+    };
+  return { bg: "bg-[#f5f5f7]", text: "text-[#86868b]" };
 }
 
 export default function DashboardPage() {
-  const completedCount = TEAM_MEMBERS.filter(
-    (m) => m.status === "completed",
-  ).length;
-  const inProgressCount = TEAM_MEMBERS.filter(
-    (m) => m.status === "in_progress",
-  ).length;
+  const completionPct = Math.round(
+    (SPRINT_AGGREGATE.completed / SPRINT_AGGREGATE.totalSeats) * 100,
+  );
+  const avgReadiness = Math.round(
+    Object.values(SPRINT_AGGREGATE.dimensionsAvg).reduce((a, b) => a + b, 0) /
+      DIMENSIONS.length,
+  );
 
   return (
-    <div className="min-h-screen bg-[#08080a] text-white">
+    <>
       <SurfaceNav />
-
-      <div className="relative mx-auto max-w-7xl px-6 pt-10 pb-24">
-        {/* Background mesh */}
-        <div className="absolute top-0 right-0 w-[600px] h-[400px] aurora-soft opacity-40 pointer-events-none" />
-
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="relative"
-        >
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
-            <div>
-              <div className="inline-flex items-center gap-2 mb-3">
-                <span className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
-                  Sprint marketing_30d
-                </span>
-                <Chip
-                  size="sm"
-                  variant="flat"
-                  classNames={{
-                    base: "h-5 bg-emerald-500/15 border border-emerald-500/25",
-                    content:
-                      "text-[10px] tracking-wider text-emerald-300 uppercase font-medium flex items-center gap-1.5",
-                  }}
-                >
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                  activo
-                </Chip>
-              </div>
-              <h1 className="text-4xl md:text-5xl font-semibold tracking-[-0.025em] leading-[1.05]">
-                equipo de marketing
+      <main className="surface-canvas min-h-screen pb-24">
+        {/* Header */}
+        <section className="border-b border-black/[0.06] surface-canvas">
+          <div className="max-w-6xl mx-auto px-6 py-12">
+            <motion.div {...fadeUp}>
+              <div className="eyebrow">dashboard del manager</div>
+              <h1 className="display display-tight mt-4 text-[36px] sm:text-[44px] text-[#1d1d1f]">
+                {SPRINT_META.publicName}
               </h1>
-              <p className="text-white/55 mt-3 text-[15px]">
-                semana 2 de 4 ·{" "}
-                <span className="text-white/85">{completedCount}</span> de{" "}
-                <span className="text-white/85">{TEAM_MEMBERS.length}</span>{" "}
-                sesiones completadas
-              </p>
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              <Button
-                as={Link}
-                href="/simulator-design/reporte/P001"
-                size="md"
-                radius="full"
-                variant="flat"
-                className="h-10 px-4 bg-white/[0.04] border border-white/10 text-white hover:bg-white/[0.08] hover:border-white/20 text-[13px]"
-              >
-                ver reporte individual →
-              </Button>
-              <Button
-                size="md"
-                radius="full"
-                className="h-10 px-4 font-medium bg-white text-black hover:bg-white/90 text-[13px]"
-              >
-                exportar PDF
-              </Button>
-            </div>
+              <div className="mt-4 flex flex-wrap items-center gap-3 text-[13px] text-[#6e6e73]">
+                <span>
+                  <span className="mono text-[#1d1d1f]">
+                    {SPRINT_AGGREGATE.startDate}
+                  </span>{" "}
+                  → {SPRINT_AGGREGATE.endDate}
+                </span>
+                <span className="text-[#d2d2d7]">·</span>
+                <span>
+                  quedan{" "}
+                  <span className="text-[#1d1d1f] font-medium">
+                    {SPRINT_AGGREGATE.daysLeft} días
+                  </span>
+                </span>
+                <span className="text-[#d2d2d7]">·</span>
+                <span>
+                  <span className="text-[#1d1d1f] font-medium">
+                    {SPRINT_AGGREGATE.totalSeats}
+                  </span>{" "}
+                  asientos
+                </span>
+              </div>
+            </motion.div>
           </div>
+        </section>
 
-          {/* BENTO GRID — KPIs + Recomendación */}
-          <div className="grid grid-cols-6 gap-3 mb-3">
-            {/* Sprint progress — span 3 */}
-            <Card
-              className="col-span-6 md:col-span-3 bg-white/[0.025] border border-white/[0.06]"
-              shadow="none"
+        {/* KPI Hero Strip */}
+        <section className="max-w-6xl mx-auto px-6 mt-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black/[0.06] rounded-2xl overflow-hidden border border-black/[0.06]">
+            <motion.div {...fadeUp} className="bg-white p-8">
+              <div className="eyebrow">progreso del sprint</div>
+              <div className="display mt-4 text-[48px] text-[#1d1d1f] leading-none">
+                {completionPct}%
+              </div>
+              <Progress
+                aria-label="progreso"
+                value={completionPct}
+                classNames={{
+                  track: "h-[3px] bg-[#f5f5f7] mt-4",
+                  indicator: "accent-bg",
+                }}
+              />
+              <div className="mt-4 text-[13px] text-[#6e6e73]">
+                <span className="text-[#1d1d1f] font-medium">
+                  {SPRINT_AGGREGATE.completed}
+                </span>{" "}
+                completados ·{" "}
+                <span className="text-[#1d1d1f] font-medium">
+                  {SPRINT_AGGREGATE.inProgress}
+                </span>{" "}
+                en curso
+              </div>
+            </motion.div>
+
+            <motion.div
+              {...fadeUp}
+              transition={{ ...fadeUp.transition, delay: 0.05 }}
+              className="bg-white p-8"
             >
-              <CardBody className="p-6">
-                <div className="flex items-start justify-between mb-5">
-                  <div>
-                    <div className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
-                      progreso del Sprint
-                    </div>
-                    <div className="mt-2 flex items-baseline gap-2">
-                      <span className="text-5xl font-semibold tracking-tight bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent">
-                        47
-                      </span>
-                      <span className="text-white/45 text-[14px]">%</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-[11px] mono text-white/40 uppercase tracking-wider">
-                      día
-                    </div>
-                    <div className="mono text-[18px] text-white mt-1">
-                      14<span className="text-white/35">/30</span>
-                    </div>
-                  </div>
-                </div>
-                <Progress
-                  aria-label="progreso del sprint, día 14 de 30"
-                  value={47}
-                  size="sm"
-                  classNames={{
-                    indicator:
-                      "bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500",
-                    track: "bg-white/[0.06]",
-                  }}
+              <div className="eyebrow">readiness promedio</div>
+              <div className="display mt-4 text-[48px] text-[#1d1d1f] leading-none">
+                {avgReadiness}
+                <span className="text-[#86868b] text-[28px] ml-1">/100</span>
+              </div>
+              <div className="mt-4 flex gap-1">
+                <div
+                  className="h-[3px] flex-1 rounded-full"
+                  style={{ backgroundColor: "var(--accent)" }}
                 />
-                <div className="mt-6 pt-5 border-t border-white/[0.06] grid grid-cols-3 gap-3">
-                  <div>
-                    <div className="text-2xl font-semibold text-white">
-                      {completedCount}
-                    </div>
-                    <div className="text-[11px] text-white/45 mt-0.5 uppercase tracking-wider">
-                      completas
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-semibold text-white">
-                      {inProgressCount}
-                    </div>
-                    <div className="text-[11px] text-white/45 mt-0.5 uppercase tracking-wider">
-                      en proceso
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-semibold text-white">
-                      {TEAM_MEMBERS.length - completedCount - inProgressCount}
-                    </div>
-                    <div className="text-[11px] text-white/45 mt-0.5 uppercase tracking-wider">
-                      pendientes
-                    </div>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
+                <div className="h-[3px] flex-1 bg-[#f5f5f7] rounded-full" />
+                <div className="h-[3px] flex-1 bg-[#f5f5f7] rounded-full" />
+              </div>
+              <div className="mt-4 text-[13px] text-[#6e6e73]">
+                el equipo está en{" "}
+                <span className="text-[#1d1d1f] font-medium">banda media</span>{" "}
+                · privacidad es el gap principal
+              </div>
+            </motion.div>
 
-            {/* Readiness */}
-            <Card
-              className="col-span-3 md:col-span-2 bg-white/[0.025] border border-white/[0.06]"
-              shadow="none"
+            <motion.div
+              {...fadeUp}
+              transition={{ ...fadeUp.transition, delay: 0.1 }}
+              className="bg-white p-8"
             >
-              <CardBody className="p-6 h-full flex flex-col">
-                <div className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
-                  readiness global
-                </div>
-                <div className="flex items-baseline gap-3 mt-3">
-                  <span className="text-5xl font-semibold text-white tracking-tight">
-                    M
-                  </span>
-                  <span className="text-white/55 text-[14px]">medio</span>
-                </div>
-                <div className="mt-auto pt-5">
-                  <div className="flex items-center gap-1.5 mb-1.5 text-[10px] mono text-white/35 uppercase tracking-wider">
-                    <span>baseline</span>
-                    <span className="flex-1 h-px bg-white/10" />
-                    <span>actual</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Chip
-                      size="sm"
-                      classNames={{
-                        base: "h-5 bg-rose-500/15 border border-rose-500/25",
-                        content:
-                          "text-[10px] text-rose-300 mono uppercase tracking-wider",
-                      }}
-                    >
-                      B
-                    </Chip>
-                    <svg
-                      className="flex-1 h-px text-white/15"
-                      viewBox="0 0 100 1"
-                      preserveAspectRatio="none"
-                    >
-                      <line
-                        x1="0"
-                        y1="0.5"
-                        x2="100"
-                        y2="0.5"
-                        stroke="currentColor"
-                        strokeWidth="1"
-                        strokeDasharray="2 3"
-                      />
-                    </svg>
-                    <Chip
-                      size="sm"
-                      classNames={{
-                        base: "h-5 bg-amber-500/15 border border-amber-500/25",
-                        content:
-                          "text-[10px] text-amber-300 mono uppercase tracking-wider",
-                      }}
-                    >
-                      M
-                    </Chip>
-                  </div>
-                </div>
-              </CardBody>
-            </Card>
-
-            {/* Risk events */}
-            <Card
-              className="col-span-3 md:col-span-1 bg-white/[0.025] border border-white/[0.06]"
-              shadow="none"
-            >
-              <CardBody className="p-5 h-full flex flex-col">
-                <div className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
-                  risk events
-                </div>
-                <div className="flex items-baseline gap-2 mt-3">
-                  <span className="text-5xl font-semibold text-white tracking-tight">
-                    4
-                  </span>
-                </div>
-                <div className="mt-auto pt-3 flex gap-1.5">
-                  <Chip
-                    size="sm"
-                    classNames={{
-                      base: "h-5 bg-rose-500/15 border border-rose-500/25",
-                      content:
-                        "text-[10px] text-rose-300 mono uppercase tracking-wider",
-                    }}
+              <div className="eyebrow">eventos de riesgo</div>
+              <div className="display mt-4 text-[48px] text-[#1d1d1f] leading-none">
+                {SPRINT_AGGREGATE.riskEventsTotal}
+              </div>
+              <div className="mt-5 text-[13px] text-[#6e6e73]">
+                detectados en sesiones completadas
+              </div>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {SPRINT_AGGREGATE.flaggedRoles.map((r) => (
+                  <span
+                    key={r}
+                    className="text-[11px] text-[#1d1d1f] bg-[#f5f5f7] px-2.5 py-1 rounded-full"
                   >
-                    2 high
-                  </Chip>
-                  <Chip
-                    size="sm"
-                    classNames={{
-                      base: "h-5 bg-amber-500/15 border border-amber-500/25",
-                      content:
-                        "text-[10px] text-amber-300 mono uppercase tracking-wider",
-                    }}
-                  >
-                    2 med
-                  </Chip>
-                </div>
-              </CardBody>
-            </Card>
+                    {r}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
           </div>
+        </section>
 
-          {/* Main grid: dimensions heatmap + recomendación */}
-          <div className="grid grid-cols-6 gap-3 mb-3">
-            {/* Dimensions */}
-            <Card
-              className="col-span-6 md:col-span-4 bg-white/[0.025] border border-white/[0.06]"
-              shadow="none"
+        {/* Equipo */}
+        <section className="max-w-6xl mx-auto px-6 mt-20">
+          <motion.div {...fadeUp} className="flex items-end justify-between mb-8">
+            <div>
+              <div className="eyebrow">equipo</div>
+              <h2 className="display mt-2 text-[28px] text-[#1d1d1f]">
+                {SPRINT_AGGREGATE.totalSeats} miembros del Sprint
+              </h2>
+            </div>
+            <Button
+              as={Link}
+              href="/simulator-design/reporte/P001"
+              radius="full"
+              size="sm"
+              variant="bordered"
+              className="hidden sm:flex border-[#d2d2d7] text-[#1d1d1f] bg-white"
             >
-              <CardHeader className="px-6 py-4 border-b border-white/[0.06] flex-row justify-between">
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
-                    agregado del equipo
-                  </div>
-                  <h3 className="text-[18px] font-semibold text-white mt-1.5">
-                    5 dimensiones de criterio IA
-                  </h3>
-                </div>
-                <Tooltip content="bandas A (alto) / M (medio) / B (bajo) por dimensión. no usamos scores puntuales por la varianza del judge.">
-                  <Chip
-                    size="sm"
-                    variant="flat"
-                    classNames={{
-                      base: "h-5 bg-white/[0.04] border border-white/10 cursor-help",
-                      content: "text-[10px] text-white/55",
-                    }}
+              ver reporte ejecutivo →
+            </Button>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {TEAM_MEMBERS.map((m, i) => {
+              const tone = bandTone(m.readiness);
+              return (
+                <motion.div
+                  key={m.id}
+                  {...fadeUp}
+                  transition={{ ...fadeUp.transition, delay: i * 0.04 }}
+                >
+                  <Card className="card-apple card-apple-interactive bg-white shadow-none">
+                    <CardBody className="p-5 flex flex-row items-center gap-5">
+                      <Avatar
+                        size="lg"
+                        className="bg-[#f5f5f7] text-[#1d1d1f] text-[14px] font-semibold flex-shrink-0"
+                        name={m.initials}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[15px] font-semibold text-[#1d1d1f]">
+                            {m.initials}
+                          </span>
+                          <span className="text-[#86868b]">·</span>
+                          <span className="text-[14px] text-[#6e6e73] truncate">
+                            {m.role}
+                          </span>
+                        </div>
+                        <div className="mt-1 flex items-center gap-2 text-[12px]">
+                          {m.status === "completed" && (
+                            <span className="text-[#0a7e3a]">completado</span>
+                          )}
+                          {m.status === "in_progress" && (
+                            <span className="text-[#a05a00] flex items-center gap-1">
+                              <span
+                                className="inline-block h-1.5 w-1.5 rounded-full pulse-soft"
+                                style={{ backgroundColor: "#a05a00" }}
+                              />
+                              en curso
+                            </span>
+                          )}
+                          {m.status === "not_started" && (
+                            <span className="text-[#86868b]">no iniciado</span>
+                          )}
+                          {m.sessionDuration && (
+                            <>
+                              <span className="text-[#d2d2d7]">·</span>
+                              <span className="text-[#86868b]">
+                                {m.sessionDuration} min
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      {m.readiness && (
+                        <div
+                          className={`flex-shrink-0 text-[11px] font-semibold px-2.5 py-1 rounded-full ${tone.bg} ${tone.text}`}
+                        >
+                          {BAND_LABELS[m.readiness]}
+                        </div>
+                      )}
+                    </CardBody>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Dimensiones agregadas */}
+        <section className="max-w-6xl mx-auto px-6 mt-20">
+          <motion.div {...fadeUp} className="mb-8">
+            <div className="eyebrow">resultado agregado</div>
+            <h2 className="display mt-2 text-[28px] text-[#1d1d1f]">
+              dimensiones del equipo
+            </h2>
+            <p className="mt-3 text-[15px] text-[#6e6e73] max-w-2xl">
+              promedio de las 5 dimensiones que medimos en cada caso. el gap
+              principal del equipo se concentra en{" "}
+              <span className="text-[#1d1d1f] font-medium">privacidad</span>.
+            </p>
+          </motion.div>
+
+          <div className="card-apple bg-white p-2 sm:p-8">
+            <div className="space-y-6">
+              {DIMENSIONS.map((d, i) => {
+                const score = SPRINT_AGGREGATE.dimensionsAvg[d.id] || 0;
+                return (
+                  <motion.div
+                    key={d.id}
+                    {...fadeUp}
+                    transition={{ ...fadeUp.transition, delay: i * 0.04 }}
                   >
-                    cómo se calcula
-                  </Chip>
-                </Tooltip>
-              </CardHeader>
-              <CardBody className="p-6 space-y-5">
-                {DIMENSIONS.map((d, i) => {
-                  const band = TEAM_AGGREGATE[d.id] as BandKey;
-                  return (
-                    <motion.div
-                      key={d.id}
-                      initial={{ opacity: 0, x: -8 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: i * 0.05 }}
-                      className="space-y-2"
-                    >
-                      <div className="flex justify-between items-center text-[14px]">
-                        <span className="capitalize text-white font-medium">
+                    <div className="flex items-baseline justify-between">
+                      <div>
+                        <span className="text-[15px] font-medium text-[#1d1d1f]">
                           {d.label}
                         </span>
-                        <ReadinessBadge band={band} />
                       </div>
-                      <div className="relative h-2 bg-white/[0.05] rounded-full overflow-hidden">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${bandPct(band)}%` }}
-                          transition={{ duration: 0.7, delay: 0.1 + i * 0.05 }}
-                          className={`absolute inset-y-0 left-0 rounded-full ${bandIndicator(band)}`}
-                        />
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </CardBody>
-            </Card>
-
-            {/* Recomendación */}
-            <Card
-              className="col-span-6 md:col-span-2 bg-gradient-to-br from-indigo-500/[0.1] to-fuchsia-500/[0.08] border border-indigo-500/25 overflow-hidden"
-              shadow="none"
-            >
-              <CardBody className="p-6 h-full flex flex-col">
-                <div className="text-[11px] uppercase tracking-[0.2em] text-indigo-300 font-medium">
-                  recomendación
-                </div>
-                <h3 className="text-2xl font-semibold text-white mt-2 capitalize">
-                  entrenar
-                </h3>
-                <Chip
-                  size="sm"
-                  variant="flat"
-                  classNames={{
-                    base: "h-5 bg-indigo-500/20 border border-indigo-500/30 mt-3 self-start",
-                    content:
-                      "text-[10px] text-indigo-200 mono uppercase tracking-wider",
-                  }}
-                >
-                  semana 2 → 4
-                </Chip>
-                <p className="text-[13px] text-white/75 leading-relaxed mt-4">
-                  dimensión más débil:{" "}
-                  <span className="text-white">privacidad</span>. 3 personas
-                  dispararon{" "}
-                  <code className="text-amber-200/80 mono text-[12px]">
-                    expose_pii
-                  </code>{" "}
-                  en al menos 1 caso.
-                </p>
-                <p className="text-[13px] text-white/65 leading-relaxed mt-3">
-                  segundo Sprint enfocado en privacidad + validación consolida
-                  la mejora.
-                </p>
-                <Button
-                  className="mt-auto w-full bg-white text-black hover:bg-white/90 font-medium h-10 text-[13px]"
-                  radius="full"
-                >
-                  agendar segundo sprint →
-                </Button>
-              </CardBody>
-            </Card>
-          </div>
-
-          {/* Team grid */}
-          <Card
-            className="bg-white/[0.025] border border-white/[0.06] mb-3"
-            shadow="none"
-          >
-            <CardHeader className="px-6 py-4 border-b border-white/[0.06] flex-row justify-between">
-              <div>
-                <div className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
-                  tu equipo
-                </div>
-                <h3 className="text-[18px] font-semibold text-white mt-1.5">
-                  {TEAM_MEMBERS.length} personas
-                </h3>
-              </div>
-              <Tooltip content="los nombres están anonimizados. ves readiness agregada pero NO transcripts individuales — eso protege al empleado.">
-                <Chip
-                  size="sm"
-                  variant="flat"
-                  classNames={{
-                    base: "h-5 bg-white/[0.04] border border-white/10 cursor-help",
-                    content: "text-[10px] text-white/55",
-                  }}
-                >
-                  por qué iniciales
-                </Chip>
-              </Tooltip>
-            </CardHeader>
-            <CardBody className="p-0">
-              <div className="divide-y divide-white/[0.05]">
-                {TEAM_MEMBERS.map((m, i) => (
-                  <motion.div
-                    key={m.id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3, delay: i * 0.04 }}
-                    className="px-6 py-4 flex items-center gap-4 hover:bg-white/[0.02] transition-colors"
-                  >
-                    <Avatar
-                      size="md"
-                      name={m.initials}
-                      classNames={{
-                        base: "bg-gradient-to-br from-indigo-500/30 to-fuchsia-500/30 border border-white/10 flex-shrink-0",
-                        name: "text-white text-[13px] font-semibold",
-                      }}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <span className="mono text-[13px] text-white/45">
-                          {m.id}
-                        </span>
-                        <span className="text-white text-[14px] font-medium">
-                          {m.role}
-                        </span>
-                      </div>
-                      <div className="text-[12px] text-white/45 mt-0.5">
-                        {m.status === "completed" &&
-                          `completó en ${m.sessionDuration} min`}
-                        {m.status === "in_progress" && (
-                          <span className="flex items-center gap-1.5">
-                            <span className="h-1.5 w-1.5 rounded-full bg-amber-400 pulse-ring" />
-                            sesión en progreso
-                          </span>
-                        )}
-                        {m.status === "not_started" && "no ha iniciado"}
-                      </div>
+                      <span className="text-[15px] mono text-[#1d1d1f] font-semibold">
+                        {score}
+                      </span>
                     </div>
-                    <ReadinessBadge band={m.readiness} />
-                    <Button
-                      as={Link}
-                      href={`/simulator-design/reporte/${m.id}`}
-                      size="sm"
-                      radius="full"
-                      variant="flat"
-                      className="bg-white/[0.04] border border-white/10 text-white hover:bg-white/[0.08] text-[12px] h-8"
-                      isDisabled={m.status !== "completed"}
-                    >
-                      ver →
-                    </Button>
-                  </motion.div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
-
-          {/* Risk events timeline */}
-          <Card
-            className="bg-white/[0.025] border border-white/[0.06]"
-            shadow="none"
-          >
-            <CardHeader className="px-6 py-4 border-b border-white/[0.06]">
-              <div>
-                <div className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
-                  risk events
-                </div>
-                <h3 className="text-[18px] font-semibold text-white mt-1.5">
-                  timeline · últimos 7 días
-                </h3>
-              </div>
-            </CardHeader>
-            <CardBody className="p-6">
-              <div className="space-y-4 relative">
-                {/* Vertical line */}
-                <div className="absolute left-[7px] top-2 bottom-2 w-px bg-white/[0.06]" />
-                {RISK_EVENTS_TIMELINE.map((evt, i) => (
-                  <motion.div
-                    key={evt.id}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: i * 0.05 }}
-                    className="relative flex items-start gap-4 pl-1"
-                  >
-                    <div
-                      className={`relative flex-shrink-0 h-3.5 w-3.5 rounded-full mt-1.5 z-10 ${
-                        evt.severity === "high"
-                          ? "bg-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.6)]"
-                          : "bg-amber-500 shadow-[0_0_12px_rgba(251,191,36,0.5)]"
-                      }`}
-                    >
-                      <div
-                        className={`absolute inset-0 rounded-full ${
-                          evt.severity === "high"
-                            ? "bg-rose-500"
-                            : "bg-amber-500"
-                        } animate-ping opacity-30`}
+                    <p className="mt-1 text-[13px] text-[#6e6e73]">
+                      {d.description}
+                    </p>
+                    <div className="mt-3 h-[6px] bg-[#f5f5f7] rounded-full overflow-hidden">
+                      <motion.div
+                        className="h-full rounded-full"
+                        style={{ backgroundColor: "var(--accent)" }}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${score}%` }}
+                        transition={{
+                          duration: 0.8,
+                          delay: 0.1 + i * 0.04,
+                          ease: [0.16, 1, 0.3, 1],
+                        }}
                       />
                     </div>
-                    <div className="flex-1 min-w-0 pl-2">
-                      <div className="flex items-start justify-between gap-3 flex-wrap">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap mb-1">
-                            <Chip
-                              size="sm"
-                              classNames={{
-                                base:
-                                  evt.severity === "high"
-                                    ? "h-5 bg-rose-500/15 border border-rose-500/25"
-                                    : "h-5 bg-amber-500/15 border border-amber-500/25",
-                                content:
-                                  evt.severity === "high"
-                                    ? "text-[10px] text-rose-300 mono uppercase tracking-wider"
-                                    : "text-[10px] text-amber-300 mono uppercase tracking-wider",
-                              }}
-                            >
-                              {evt.severity}
-                            </Chip>
-                            <code className="text-[11px] text-white/55 mono break-all">
-                              {evt.type}
-                            </code>
-                          </div>
-                          <div className="text-[14px] text-white/85 leading-snug">
-                            {evt.title}
-                          </div>
-                          <div className="text-[11px] text-white/40 mt-1">
-                            participante {evt.participantId} · {evt.when}
-                          </div>
-                        </div>
-                        <Link
-                          href={`/simulator-design/reporte/${evt.participantId}`}
-                          size="sm"
-                          className="text-white/45 hover:text-white text-[12px] flex-shrink-0"
-                        >
-                          detalle →
-                        </Link>
-                      </div>
-                    </div>
                   </motion.div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
-        </motion.div>
-      </div>
-    </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Acciones recomendadas */}
+        <section className="max-w-6xl mx-auto px-6 mt-20">
+          <motion.div {...fadeUp} className="mb-8">
+            <div className="eyebrow">acciones recomendadas</div>
+            <h2 className="display mt-2 text-[28px] text-[#1d1d1f]">
+              cuatro caminos por persona
+            </h2>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {MANAGER_ACTIONS.map((a, i) => (
+              <motion.div
+                key={a.id}
+                {...fadeUp}
+                transition={{ ...fadeUp.transition, delay: i * 0.04 }}
+              >
+                <Card className="card-apple bg-white shadow-none">
+                  <CardBody className="p-5">
+                    <h3 className="text-[16px] font-semibold text-[#1d1d1f]">
+                      {a.label}
+                    </h3>
+                    <p className="mt-1.5 text-[14px] text-[#6e6e73] leading-[1.55]">
+                      {a.description}
+                    </p>
+                  </CardBody>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      </main>
+    </>
   );
 }

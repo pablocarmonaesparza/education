@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import {
-  Chip,
   Link,
   Navbar,
   NavbarBrand,
@@ -30,52 +29,43 @@ function BrandMark() {
   return (
     <Link
       href="/simulator-design"
-      className="flex items-center gap-2.5"
+      className="flex items-center gap-2"
       color="foreground"
     >
-      <div className="relative h-7 w-7">
-        <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500 opacity-90" />
-        <div className="absolute inset-[1px] rounded-[7px] bg-black/40 backdrop-blur-sm grid place-items-center">
-          <svg
-            viewBox="0 0 14 14"
-            className="h-3.5 w-3.5"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M2 7L5 4L8 7L11 4"
-              stroke="white"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d="M2 10L5 7L8 10L11 7"
-              stroke="white"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity="0.6"
-            />
-          </svg>
-        </div>
-      </div>
-      <div className="flex items-center gap-2">
-        <span className="text-[15px] font-semibold tracking-tight text-white">
-          el simulador
-        </span>
-        <Chip
-          size="sm"
-          variant="flat"
-          classNames={{
-            base: "h-5 px-2 bg-white/[0.04] border border-white/10",
-            content:
-              "text-[10px] tracking-wider uppercase text-white/60 font-medium",
-          }}
+      <div className="relative h-6 w-6 flex items-center justify-center">
+        <div
+          className="absolute inset-0 rounded-[8px]"
+          style={{ backgroundColor: "var(--accent)" }}
+        />
+        <svg
+          viewBox="0 0 14 14"
+          className="relative h-3 w-3"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          preview
-        </Chip>
+          <path
+            d="M2 7L5 4L8 7L11 4"
+            stroke="white"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M2 10L5 7L8 10L11 7"
+            stroke="white"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.7"
+          />
+        </svg>
       </div>
+      <span className="text-[15px] font-semibold tracking-tight text-[#1d1d1f]">
+        el simulador
+      </span>
+      <span className="text-[11px] font-medium text-[#86868b] uppercase tracking-[0.12em] ml-1">
+        preview
+      </span>
     </Link>
   );
 }
@@ -90,7 +80,7 @@ export function SurfaceNav() {
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
       isBordered={false}
-      className="bg-black/60 backdrop-blur-2xl border-b border-white/[0.06]"
+      className="bg-white/80 backdrop-blur-xl border-b border-black/[0.06]"
       classNames={{
         wrapper: "px-6 max-w-7xl mx-auto h-14",
       }}
@@ -98,17 +88,14 @@ export function SurfaceNav() {
       <NavbarContent justify="start">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "cerrar menú" : "abrir menú"}
-          className="md:hidden text-white"
+          className="md:hidden text-[#1d1d1f]"
         />
         <NavbarBrand>
           <BrandMark />
         </NavbarBrand>
       </NavbarContent>
 
-      <NavbarContent
-        justify="end"
-        className="hidden md:flex gap-1 bg-white/[0.03] border border-white/[0.06] rounded-full px-1 py-1"
-      >
+      <NavbarContent justify="end" className="hidden md:flex gap-6">
         {ROUTES.map((r) => {
           const active = isActive(pathname, r.href);
           return (
@@ -117,10 +104,10 @@ export function SurfaceNav() {
                 href={r.href}
                 size="sm"
                 color="foreground"
-                className={`px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all ${
+                className={`text-[13px] font-medium transition-colors ${
                   active
-                    ? "bg-white text-black"
-                    : "text-white/55 hover:text-white"
+                    ? "text-[#1d1d1f]"
+                    : "text-[#6e6e73] hover:text-[#1d1d1f]"
                 }`}
               >
                 {r.label}
@@ -130,7 +117,7 @@ export function SurfaceNav() {
         })}
       </NavbarContent>
 
-      <NavbarMenu className="bg-black/95 backdrop-blur-xl pt-6">
+      <NavbarMenu className="bg-white pt-6">
         {ROUTES.map((r) => {
           const active = isActive(pathname, r.href);
           return (
@@ -141,7 +128,7 @@ export function SurfaceNav() {
                 color="foreground"
                 onPress={() => setIsMenuOpen(false)}
                 className={`w-full py-2 ${
-                  active ? "text-white font-medium" : "text-white/60"
+                  active ? "text-[#1d1d1f] font-medium" : "text-[#6e6e73]"
                 }`}
               >
                 {r.label}

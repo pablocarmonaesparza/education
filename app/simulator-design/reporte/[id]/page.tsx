@@ -1,545 +1,392 @@
 "use client";
 
-import {
-  Avatar,
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Chip,
-  Divider,
-  Link,
-  Progress,
-} from "@heroui/react";
+import { Avatar, Button, Card, CardBody, Link } from "@heroui/react";
 import { motion } from "framer-motion";
-import { use } from "react";
 import { SurfaceNav } from "../../_components/SurfaceNav";
-import {
-  BAND_LABELS,
-  BandKey,
-  DIMENSIONS,
-  DimensionId,
-  REPORT_SYNTHETIC,
-} from "../../_data/case-data";
+import { DIMENSIONS, BAND_LABELS, REPORT_SYNTHETIC } from "../../_data/case-data";
+import type { BandKey } from "../../_data/case-data";
 
-function bandColor(b: BandKey): "success" | "warning" | "danger" {
-  if (b === "A") return "success";
-  if (b === "M") return "warning";
-  return "danger";
+const fadeUp = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const },
+};
+
+function bandScore(b: BandKey) {
+  if (b === "A") return 85;
+  if (b === "M") return 60;
+  return 35;
 }
 
-function bandIndicator(b: BandKey): string {
-  if (b === "A") return "bg-gradient-to-r from-emerald-500/60 to-emerald-400";
-  if (b === "M") return "bg-gradient-to-r from-amber-500/60 to-amber-400";
-  return "bg-gradient-to-r from-rose-500/60 to-rose-400";
-}
-
-function bandPct(b: BandKey): number {
-  if (b === "A") return 88;
-  if (b === "M") return 56;
-  return 22;
-}
-
-function severityChipClasses(s: string) {
-  if (s === "critical" || s === "high") {
+function bandTone(b: BandKey) {
+  if (b === "A")
     return {
-      base: "h-5 bg-rose-500/15 border border-rose-500/25",
-      content: "text-[10px] text-rose-300 mono uppercase tracking-wider",
+      bg: "bg-[#e8f5ed]",
+      text: "text-[#0a7e3a]",
+      bar: "#0a7e3a",
     };
-  }
-  if (s === "medium") {
+  if (b === "M")
     return {
-      base: "h-5 bg-amber-500/15 border border-amber-500/25",
-      content: "text-[10px] text-amber-300 mono uppercase tracking-wider",
+      bg: "bg-[#fef4e6]",
+      text: "text-[#a05a00]",
+      bar: "#cc8800",
     };
-  }
   return {
-    base: "h-5 bg-white/[0.04] border border-white/10",
-    content: "text-[10px] text-white/55 mono uppercase tracking-wider",
+    bg: "bg-[#fde9e9]",
+    text: "text-[#a01818]",
+    bar: "#c0282b",
   };
 }
 
-export default function ReportePage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { id } = use(params);
-  const report = REPORT_SYNTHETIC;
+function severityTone(s: "high" | "medium" | "low") {
+  if (s === "high")
+    return { bg: "bg-[#fde9e9]", text: "text-[#a01818]", label: "alta" };
+  if (s === "medium")
+    return { bg: "bg-[#fef4e6]", text: "text-[#a05a00]", label: "media" };
+  return { bg: "bg-[#f5f5f7]", text: "text-[#6e6e73]", label: "baja" };
+}
+
+export default function ReportePage() {
+  const r = REPORT_SYNTHETIC;
+  const overallScore = Math.round(
+    DIMENSIONS.reduce((acc, d) => acc + bandScore(r.bands[d.id]), 0) /
+      DIMENSIONS.length,
+  );
 
   return (
-    <div className="min-h-screen bg-[#08080a] text-white">
+    <>
       <SurfaceNav />
-
-      <div className="relative mx-auto max-w-4xl px-6 pt-10 pb-24">
-        {/* Soft background gradient */}
-        <div className="absolute top-0 right-0 w-[400px] h-[300px] aurora-soft opacity-30 pointer-events-none" />
-
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="relative"
-        >
-          {/* Sintético disclaimer */}
-          <div className="mb-6 flex items-center gap-3 px-4 py-2.5 rounded-full bg-amber-500/[0.08] border border-amber-500/20 w-fit">
-            <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
-            <span className="text-[11px] text-amber-200/80 tracking-wide">
-              reporte sintético v0 · datos no provienen de un participante real
+      <main className="surface-canvas min-h-screen pb-24">
+        {/* Disclaimer */}
+        <div className="border-b border-black/[0.06] bg-[#fafafa]">
+          <div className="reading-col px-6 py-3 flex items-center gap-2 text-[12px] text-[#6e6e73]">
+            <span
+              className="inline-block h-1.5 w-1.5 rounded-full"
+              style={{ backgroundColor: "#cc8800" }}
+            />
+            <span>
+              <span className="text-[#1d1d1f] font-medium">vista preview</span>{" "}
+              · datos sintéticos · estructura del reporte final
             </span>
           </div>
+        </div>
 
-          {/* Header */}
-          <div className="mb-10">
-            <div className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
-              reporte de sesión · diagnóstico IA en marketing
-            </div>
-            <h1 className="mt-3 text-4xl md:text-5xl font-semibold tracking-[-0.025em]">
-              participante <span className="mono">{id}</span>
+        {/* Header */}
+        <section className="reading-col px-6 pt-14">
+          <motion.div {...fadeUp}>
+            <div className="eyebrow">reporte ejecutivo · participante</div>
+            <h1 className="display display-tight mt-5 text-[40px] sm:text-[52px] text-[#1d1d1f]">
+              {r.caseTitle}.
             </h1>
+            <div className="mt-6 flex flex-wrap items-center gap-3 text-[13px] text-[#6e6e73]">
+              <Avatar
+                size="sm"
+                className="bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-semibold"
+                name={r.participantInitials}
+              />
+              <span className="text-[#1d1d1f] font-medium">
+                {r.participantInitials} · {r.role}
+              </span>
+              <span className="text-[#d2d2d7]">·</span>
+              <span className="mono">{r.participantId}</span>
+              <span className="text-[#d2d2d7]">·</span>
+              <span>{r.durationMin} min</span>
+              <span className="text-[#d2d2d7]">·</span>
+              <span>{r.evaluatedAt}</span>
+            </div>
+          </motion.div>
 
-            <div className="mt-7 grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div>
-                <div className="text-[11px] text-white/40 uppercase tracking-[0.18em] font-medium">
-                  rol
+          {/* Overall pull */}
+          <motion.div
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.06 }}
+            className="mt-12 card-apple bg-white p-8"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-start gap-8">
+              <div className="flex-shrink-0">
+                <div className="eyebrow">readiness general</div>
+                <div className="display mt-3 text-[64px] text-[#1d1d1f] leading-none">
+                  {overallScore}
+                  <span className="text-[#86868b] text-[28px] ml-1">/100</span>
                 </div>
-                <div className="text-[14px] text-white mt-1.5">
-                  {report.role}
+                <div className="mt-3">
+                  <span
+                    className={`text-[12px] font-semibold px-2.5 py-1 rounded-full ${
+                      bandTone(
+                        overallScore > 75 ? "A" : overallScore > 50 ? "M" : "B",
+                      ).bg
+                    } ${
+                      bandTone(
+                        overallScore > 75 ? "A" : overallScore > 50 ? "M" : "B",
+                      ).text
+                    }`}
+                  >
+                    banda{" "}
+                    {BAND_LABELS[
+                      overallScore > 75 ? "A" : overallScore > 50 ? "M" : "B"
+                    ]}
+                  </span>
                 </div>
               </div>
-              <div>
-                <div className="text-[11px] text-white/40 uppercase tracking-[0.18em] font-medium">
-                  caso
-                </div>
-                <div className="text-[14px] text-white mt-1.5 leading-tight">
-                  {report.caseTitle}
-                </div>
-              </div>
-              <div>
-                <div className="text-[11px] text-white/40 uppercase tracking-[0.18em] font-medium">
-                  duración
-                </div>
-                <div className="text-[14px] text-white mt-1.5">
-                  {report.durationMin} min
-                </div>
-              </div>
-              <div>
-                <div className="text-[11px] text-white/40 uppercase tracking-[0.18em] font-medium">
-                  fecha
-                </div>
-                <div className="text-[14px] text-white mt-1.5 mono">
-                  {report.evaluatedAt}
-                </div>
+              <div className="flex-1 pt-1">
+                <p className="text-[16px] text-[#1d1d1f] leading-[1.65]">
+                  {r.recommendation.reason}
+                </p>
               </div>
             </div>
-          </div>
+          </motion.div>
+        </section>
 
-          {/* Dimensiones */}
-          <Card
-            className="bg-white/[0.025] border border-white/[0.06] mb-3"
-            shadow="none"
-          >
-            <CardHeader className="px-6 py-4 border-b border-white/[0.06]">
-              <div>
-                <div className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
-                  qué evaluamos
-                </div>
-                <h2 className="text-[18px] font-semibold text-white mt-1.5">
-                  5 dimensiones de criterio operativo
-                </h2>
-              </div>
-            </CardHeader>
-            <CardBody className="p-6 space-y-5">
-              {DIMENSIONS.map((d, i) => {
-                const band = report.bands[d.id as DimensionId];
-                return (
-                  <motion.div
-                    key={d.id}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: i * 0.05 }}
-                    className="space-y-2"
-                  >
-                    <div className="flex justify-between items-start gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="text-white capitalize font-medium text-[15px]">
-                          {d.label}
-                        </div>
-                        <div className="text-[12px] text-white/50 mt-1 leading-relaxed">
-                          {d.description}
-                        </div>
-                      </div>
-                      <Chip
-                        size="sm"
-                        variant="flat"
-                        classNames={{
-                          base:
-                            band === "A"
-                              ? "h-6 bg-emerald-500/15 border border-emerald-500/25"
-                              : band === "M"
-                              ? "h-6 bg-amber-500/15 border border-amber-500/25"
-                              : "h-6 bg-rose-500/15 border border-rose-500/25",
-                          content:
-                            band === "A"
-                              ? "text-[11px] text-emerald-300 mono uppercase tracking-wider px-1"
-                              : band === "M"
-                              ? "text-[11px] text-amber-300 mono uppercase tracking-wider px-1"
-                              : "text-[11px] text-rose-300 mono uppercase tracking-wider px-1",
-                        }}
-                      >
-                        {band} · {BAND_LABELS[band]}
-                      </Chip>
-                    </div>
-                    <div className="relative h-2 bg-white/[0.05] rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${bandPct(band)}%` }}
-                        transition={{
-                          duration: 0.7,
-                          delay: 0.2 + i * 0.05,
-                          ease: [0.22, 1, 0.36, 1],
-                        }}
-                        className={`absolute inset-y-0 left-0 rounded-full ${bandIndicator(band)}`}
-                      />
-                    </div>
-                  </motion.div>
-                );
-              })}
-              <Divider className="bg-white/[0.06] my-3" />
-              <p className="text-[12px] text-white/45 leading-relaxed">
-                bandas alto (A) / medio (M) / bajo (B). no usamos scores
-                puntuales — la varianza estadística del judge no justifica
-                falsa precisión.
-              </p>
-            </CardBody>
-          </Card>
+        {/* Dimensiones */}
+        <section className="reading-col px-6 mt-20">
+          <motion.div {...fadeUp}>
+            <div className="eyebrow">desempeño por dimensión</div>
+            <h2 className="display mt-3 text-[28px] text-[#1d1d1f]">
+              las cinco dimensiones
+            </h2>
+          </motion.div>
 
-          {/* Gaps */}
-          <Card
-            className="bg-white/[0.025] border border-white/[0.06] mb-3"
-            shadow="none"
-          >
-            <CardHeader className="px-6 py-4 border-b border-white/[0.06]">
-              <div>
-                <div className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
-                  qué entrenar
-                </div>
-                <h2 className="text-[18px] font-semibold text-white mt-1.5">
-                  gaps observados durante la sesión
-                </h2>
-              </div>
-            </CardHeader>
-            <CardBody className="p-6 space-y-5">
-              {report.gaps.map((g, i) => (
+          <div className="mt-8 space-y-5">
+            {DIMENSIONS.map((d, i) => {
+              const band = r.bands[d.id];
+              const score = bandScore(band);
+              const tone = bandTone(band);
+              return (
                 <motion.div
-                  key={g.id}
-                  initial={{ opacity: 0, y: 4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: i * 0.05 }}
-                  className="pb-5 border-b border-white/[0.05] last:border-0 last:pb-0"
+                  key={d.id}
+                  {...fadeUp}
+                  transition={{ ...fadeUp.transition, delay: i * 0.04 }}
+                  className="card-apple bg-white p-6"
                 >
-                  <div className="flex items-center gap-2 mb-3 flex-wrap">
-                    <code className="text-[13px] text-white mono font-medium">
-                      {g.id}
-                    </code>
-                    <Chip
-                      size="sm"
-                      classNames={severityChipClasses(g.severity)}
-                    >
-                      {g.severity}
-                    </Chip>
-                  </div>
-                  <div className="space-y-3 text-[14px]">
-                    <div>
-                      <span className="text-[11px] text-white/40 uppercase tracking-[0.18em] font-medium">
-                        qué se observó
-                      </span>
-                      <p className="text-white/80 leading-[1.65] mt-1.5">
-                        {g.observed}
+                  <div className="flex items-baseline justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3">
+                        <span className="text-[17px] font-semibold text-[#1d1d1f]">
+                          {d.label}
+                        </span>
+                        <span
+                          className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tone.bg} ${tone.text}`}
+                        >
+                          banda {BAND_LABELS[band]}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-[14px] text-[#6e6e73] leading-[1.6]">
+                        {d.description}
                       </p>
                     </div>
-                    <div>
-                      <span className="text-[11px] text-white/40 uppercase tracking-[0.18em] font-medium">
-                        por qué importa
-                      </span>
-                      <p className="text-white/70 leading-[1.65] mt-1.5">
+                    <span className="text-[20px] mono font-semibold text-[#1d1d1f] flex-shrink-0">
+                      {score}
+                    </span>
+                  </div>
+                  <div className="mt-4 h-[5px] bg-[#f5f5f7] rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{ backgroundColor: tone.bar }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${score}%` }}
+                      transition={{
+                        duration: 0.8,
+                        delay: 0.15 + i * 0.04,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                    />
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Gaps */}
+        <section className="reading-col px-6 mt-20">
+          <motion.div {...fadeUp}>
+            <div className="eyebrow">gaps identificados</div>
+            <h2 className="display mt-3 text-[28px] text-[#1d1d1f]">
+              dónde se torció
+            </h2>
+          </motion.div>
+
+          <div className="mt-8 space-y-3">
+            {r.gaps.map((g, i) => {
+              const tone = severityTone(g.severity as "high" | "medium" | "low");
+              return (
+                <motion.div
+                  key={g.id}
+                  {...fadeUp}
+                  transition={{ ...fadeUp.transition, delay: i * 0.05 }}
+                  className="card-apple bg-white p-6"
+                >
+                  <div className="flex items-start gap-4">
+                    <span
+                      className={`text-[11px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 mt-1 ${tone.bg} ${tone.text}`}
+                    >
+                      severidad {tone.label}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="eyebrow">qué observamos</div>
+                      <p className="mt-2 text-[15px] text-[#1d1d1f] leading-[1.65]">
+                        {g.observed}
+                      </p>
+                      <div className="eyebrow mt-5">por qué importa</div>
+                      <p className="mt-2 text-[14px] text-[#6e6e73] leading-[1.65]">
                         {g.whyMatters}
                       </p>
                     </div>
                   </div>
                 </motion.div>
-              ))}
-            </CardBody>
-          </Card>
+              );
+            })}
+          </div>
+        </section>
 
-          {/* Risk events */}
-          <Card
-            className="bg-rose-500/[0.04] border border-rose-500/20 mb-3"
-            shadow="none"
-          >
-            <CardHeader className="px-6 py-4 border-b border-rose-500/10">
-              <div className="flex items-center gap-3">
-                <div className="relative flex items-center justify-center h-6 w-6">
-                  <div className="absolute inset-0 rounded-full bg-rose-500/20 animate-ping" />
-                  <div className="relative h-2 w-2 rounded-full bg-rose-400" />
-                </div>
-                <div>
-                  <div className="text-[11px] uppercase tracking-[0.2em] text-rose-300 font-medium">
-                    riesgos detectados
-                  </div>
-                  <h2 className="text-[18px] font-semibold text-white mt-1">
-                    eventos durante la sesión
-                  </h2>
-                </div>
-              </div>
-            </CardHeader>
-            <CardBody className="p-6 space-y-5">
-              {report.riskEvents.map((evt, i) => (
+        {/* Risk events */}
+        <section className="reading-col px-6 mt-20">
+          <motion.div {...fadeUp}>
+            <div className="eyebrow">eventos de riesgo</div>
+            <h2 className="display mt-3 text-[28px] text-[#1d1d1f]">
+              momentos críticos en la sesión
+            </h2>
+          </motion.div>
+
+          <div className="mt-8 space-y-3">
+            {r.riskEvents.map((e, i) => {
+              const tone = severityTone(
+                e.severity as "high" | "medium" | "low",
+              );
+              return (
                 <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -4 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: i * 0.05 }}
-                  className="pb-5 border-b border-rose-500/10 last:border-0 last:pb-0"
+                  key={e.type}
+                  {...fadeUp}
+                  transition={{ ...fadeUp.transition, delay: i * 0.05 }}
+                  className="card-apple bg-white p-6"
                 >
-                  <div className="flex items-center gap-2 mb-3 flex-wrap">
-                    <code className="text-[13px] text-white mono break-all font-medium">
-                      {evt.type}
-                    </code>
-                    <Chip
-                      size="sm"
-                      classNames={severityChipClasses(evt.severity)}
-                    >
-                      {evt.severity}
-                    </Chip>
-                    <span className="text-[11px] text-white/40 mono">
-                      paso {evt.step}
-                    </span>
-                  </div>
-                  <div className="bg-black/40 border border-white/[0.05] rounded-xl p-4">
-                    <div className="text-[10px] text-white/35 uppercase tracking-[0.2em] mb-2 font-medium">
-                      excerpt anonimizado
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="mono text-[12px] text-[#86868b] flex-shrink-0">
+                        paso {e.step}
+                      </span>
+                      <span
+                        className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tone.bg} ${tone.text}`}
+                      >
+                        {tone.label}
+                      </span>
+                      <span className="text-[14px] text-[#1d1d1f] truncate">
+                        {e.type.replace(/_/g, " ")}
+                      </span>
                     </div>
-                    <p className="text-[14px] text-white/75 italic leading-[1.65]">
-                      "...{evt.excerpt}..."
-                    </p>
                   </div>
+                  <blockquote className="mt-4 pl-4 border-l-2 border-[#e5e5ea] text-[14px] text-[#6e6e73] italic leading-[1.65]">
+                    "{e.excerpt}"
+                  </blockquote>
                 </motion.div>
-              ))}
-            </CardBody>
-          </Card>
+              );
+            })}
+          </div>
+        </section>
 
-          {/* Strengths */}
-          <Card
-            className="bg-emerald-500/[0.04] border border-emerald-500/20 mb-3"
-            shadow="none"
+        {/* Fortalezas */}
+        <section className="reading-col px-6 mt-20">
+          <motion.div {...fadeUp}>
+            <div className="eyebrow">fortalezas</div>
+            <h2 className="display mt-3 text-[28px] text-[#1d1d1f]">
+              qué hizo bien
+            </h2>
+          </motion.div>
+
+          <ul className="mt-8 space-y-4">
+            {r.strengths.map((s, i) => (
+              <motion.li
+                key={i}
+                {...fadeUp}
+                transition={{ ...fadeUp.transition, delay: i * 0.04 }}
+                className="flex items-start gap-4"
+              >
+                <span
+                  className="flex-shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full"
+                  style={{ backgroundColor: "var(--accent)" }}
+                />
+                <p className="text-[15px] text-[#1d1d1f] leading-[1.65]">{s}</p>
+              </motion.li>
+            ))}
+          </ul>
+        </section>
+
+        {/* Recomendación */}
+        <section className="reading-col px-6 mt-20">
+          <motion.div
+            {...fadeUp}
+            className="card-apple p-8"
+            style={{
+              backgroundColor: "var(--accent-soft)",
+              borderColor: "var(--accent)",
+              borderWidth: 1,
+            }}
           >
-            <CardHeader className="px-6 py-4 border-b border-emerald-500/10">
-              <div>
-                <div className="text-[11px] uppercase tracking-[0.2em] text-emerald-300 font-medium">
-                  fortalezas
-                </div>
-                <h2 className="text-[18px] font-semibold text-white mt-1.5">
-                  qué sí salió bien
-                </h2>
-              </div>
-            </CardHeader>
-            <CardBody className="p-6">
-              <ul className="space-y-3.5">
-                {report.strengths.map((s, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, x: -4 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: i * 0.05 }}
-                    className="flex gap-3 text-[14px] text-white/85 leading-[1.65]"
-                  >
-                    <div className="text-emerald-400 flex-shrink-0 mt-0.5">
-                      ✓
-                    </div>
-                    <span>{s}</span>
-                  </motion.li>
+            <div className="eyebrow accent-text">recomendación</div>
+            <h2 className="display mt-3 text-[34px] text-[#1d1d1f] capitalize">
+              {r.recommendation.action}
+            </h2>
+            <p className="mt-3 text-[15px] text-[#6e6e73]">
+              {r.recommendation.appliesTo}
+            </p>
+
+            <div className="mt-7">
+              <div className="eyebrow">próximos 7 días</div>
+              <ol className="mt-4 space-y-3">
+                {r.recommendation.nextWeekActions.map((a, i) => (
+                  <li key={i} className="flex items-start gap-4">
+                    <span className="mono text-[13px] text-[#86868b] flex-shrink-0 mt-0.5 w-5">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <p className="text-[15px] text-[#1d1d1f] leading-[1.6]">
+                      {a}
+                    </p>
+                  </li>
                 ))}
-              </ul>
-            </CardBody>
-          </Card>
+              </ol>
+            </div>
+          </motion.div>
 
-          {/* Recomendación */}
-          <Card
-            className="relative bg-gradient-to-br from-indigo-500/[0.1] via-violet-500/[0.06] to-fuchsia-500/[0.08] border border-indigo-500/25 mb-3 overflow-hidden"
-            shadow="none"
+          <motion.div
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.1 }}
+            className="mt-10 flex flex-col sm:flex-row gap-3"
           >
-            <div className="absolute -top-12 -right-12 w-48 h-48 bg-indigo-500/20 blur-3xl pointer-events-none" />
-            <CardHeader className="relative px-6 py-4 border-b border-indigo-500/15">
-              <div>
-                <div className="text-[11px] uppercase tracking-[0.2em] text-indigo-300 font-medium">
-                  recomendación accionable
-                </div>
-                <h2 className="text-3xl font-semibold text-white mt-2 capitalize tracking-tight">
-                  {report.recommendation.action}
-                </h2>
-              </div>
-            </CardHeader>
-            <CardBody className="relative p-6 space-y-6">
-              <div>
-                <div className="text-[11px] text-white/40 uppercase tracking-[0.18em] font-medium mb-2">
-                  a quién aplica
-                </div>
-                <p className="text-[14px] text-white/85 leading-[1.65]">
-                  {report.recommendation.appliesTo}
-                </p>
-              </div>
-
-              <div>
-                <div className="text-[11px] text-white/40 uppercase tracking-[0.18em] font-medium mb-4">
-                  qué hacer concretamente — próximos 7 días
-                </div>
-                <ol className="space-y-4">
-                  {report.recommendation.nextWeekActions.map((a, i) => (
-                    <li key={i} className="flex gap-4 text-[14px]">
-                      <div className="flex-shrink-0 mt-0.5">
-                        <div className="h-6 w-6 rounded-full bg-indigo-500/15 border border-indigo-500/30 grid place-items-center text-[11px] mono text-indigo-200 font-medium">
-                          {i + 1}
-                        </div>
-                      </div>
-                      <span className="text-white/85 leading-[1.65]">{a}</span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-
-              <div className="pt-4 border-t border-white/[0.06]">
-                <div className="text-[11px] text-white/40 uppercase tracking-[0.18em] font-medium mb-2">
-                  razón
-                </div>
-                <p className="text-[14px] text-white/75 italic leading-[1.65]">
-                  {report.recommendation.reason}
-                </p>
-              </div>
-            </CardBody>
-          </Card>
-
-          {/* Next step for manager */}
-          <Card
-            className="bg-white/[0.025] border border-white/[0.06] mb-3"
-            shadow="none"
-          >
-            <CardBody className="p-6">
-              <div className="text-[11px] text-white/40 uppercase tracking-[0.18em] font-medium mb-2">
-                próximo paso para ti como manager
-              </div>
-              <p className="text-[14px] text-white/85 leading-[1.65]">
-                agenda 20 min con <span className="mono">{id}</span> esta semana
-                para discutir el reporte juntos. la conversación más útil es
-                alrededor de qué piensa él/ella sobre lo observado, no defender
-                los resultados.
-              </p>
-            </CardBody>
-          </Card>
-
-          {/* What NOT to conclude */}
-          <Card
-            className="bg-white/[0.015] border border-white/[0.06] mb-3"
-            shadow="none"
-          >
-            <CardHeader className="px-6 py-3 border-b border-white/[0.05]">
-              <span className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
-                qué NO concluir de este reporte
-              </span>
-            </CardHeader>
-            <CardBody className="p-6 space-y-2.5 text-[13px] text-white/65 leading-[1.65]">
-              <p>
-                <span className="text-white/40 mr-2">·</span>diagnóstico
-                single-participant sobre 1 caso simulado — no evaluación general
-                de desempeño.
-              </p>
-              <p>
-                <span className="text-white/40 mr-2">·</span>no predice
-                comportamiento en otras situaciones (otros flujos, otra
-                presión).
-              </p>
-              <p>
-                <span className="text-white/40 mr-2">·</span>no compara con
-                otros del equipo — eso requiere diagnóstico completo.
-              </p>
-              <p>
-                <span className="text-white/40 mr-2">·</span>no certifica
-                capacidad o incapacidad — es señal sobre criterio en un
-                escenario específico.
-              </p>
-            </CardBody>
-          </Card>
-
-          {/* Technical metadata */}
-          <Card
-            className="bg-black/40 border border-white/[0.05]"
-            shadow="none"
-          >
-            <CardHeader className="px-6 py-3 border-b border-white/[0.05]">
-              <span className="text-[10px] uppercase tracking-[0.2em] text-white/40 mono">
-                metadata técnica · apéndice
-              </span>
-            </CardHeader>
-            <CardBody className="p-6 grid sm:grid-cols-2 gap-3 text-[12px] mono">
-              <div>
-                <span className="text-white/35">evaluadores:</span>{" "}
-                <span className="text-white/75">
-                  2 externos · κ {report.meta.kappa}
-                </span>
-              </div>
-              <div>
-                <span className="text-white/35">judge agreement:</span>{" "}
-                <span className="text-white/75">
-                  {report.meta.judgeAgreement}%
-                </span>
-              </div>
-              <div>
-                <span className="text-white/35">discrepancia:</span>{" "}
-                <span className="text-white/75">
-                  {report.meta.discrepancyCells} cells
-                </span>
-              </div>
-              <div>
-                <span className="text-white/35">rúbrica:</span>{" "}
-                <span className="text-white/75">
-                  {report.meta.rubricVersion}
-                </span>
-              </div>
-              <div className="sm:col-span-2">
-                <span className="text-white/35">caso:</span>{" "}
-                <span className="text-white/75">
-                  {report.meta.caseVersion}
-                </span>
-              </div>
-              <div className="sm:col-span-2">
-                <span className="text-white/35">variante:</span>{" "}
-                <span className="text-white/75">{report.meta.variant}</span>
-              </div>
-            </CardBody>
-          </Card>
-
-          {/* CTAs */}
-          <div className="mt-12 flex flex-col sm:flex-row gap-3">
             <Button
               as={Link}
               href="/simulator-design/dashboard"
-              size="lg"
-              variant="flat"
               radius="full"
-              className="h-12 px-6 bg-white/[0.04] border border-white/10 text-white hover:bg-white/[0.08]"
+              size="lg"
+              className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
             >
-              ← volver al dashboard
+              vista del manager →
             </Button>
             <Button
-              size="lg"
+              as={Link}
+              href="/simulator-design"
               radius="full"
-              className="h-12 px-6 font-medium bg-white text-black hover:bg-white/90 shadow-[0_8px_32px_-8px_rgba(255,255,255,0.4)]"
+              variant="bordered"
+              size="lg"
+              className="h-12 px-7 border-[#d2d2d7] text-[#1d1d1f] bg-white text-[15px]"
             >
-              descargar PDF
+              volver a landing
             </Button>
+          </motion.div>
+        </section>
+
+        {/* Meta footer */}
+        <section className="reading-col px-6 mt-20">
+          <div className="border-t border-black/[0.06] pt-6 flex flex-wrap gap-x-6 gap-y-2 text-[12px] text-[#86868b] mono">
+            <span>kappa {r.meta.kappa}</span>
+            <span>·</span>
+            <span>judge agreement {r.meta.judgeAgreement}%</span>
+            <span>·</span>
+            <span>rúbrica {r.meta.rubricVersion}</span>
+            <span>·</span>
+            <span>caso {r.meta.caseVersion}</span>
           </div>
-        </motion.div>
-      </div>
-    </div>
+        </section>
+      </main>
+    </>
   );
 }

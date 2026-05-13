@@ -1,116 +1,85 @@
-/* simulador-design — estilos aislados del design system Itera.
-   Solo afectan a .simulador-root y descendientes. */
+/* simulador-design — light mode, Apple-inspired aesthetic
+   evidence: NN/g (light wins for comprehension), Apple HIG (restraint, hierarchy),
+   Typeform/Duolingo (one task per screen). only affects .simulador-root descendants. */
 
 .simulador-root {
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  /* SF Pro stack via system font; falls back gracefully */
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter",
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-feature-settings: "ss01", "ss02", "cv11";
   letter-spacing: -0.011em;
   -webkit-font-smoothing: antialiased;
-  background-color: #08080a;
-  color: #f5f5f5;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #ffffff;
+  color: #1d1d1f;
 }
 
-/* Aurora — mesh gradient suave en background */
-.simulador-root .aurora {
-  background:
-    radial-gradient(at 18% 28%, rgba(99, 102, 241, 0.32) 0px, transparent 55%),
-    radial-gradient(at 88% 18%, rgba(217, 70, 239, 0.28) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(139, 92, 246, 0.22) 0px, transparent 55%),
-    radial-gradient(at 8% 88%, rgba(99, 102, 241, 0.2) 0px, transparent 50%);
+/* Apple grays */
+.simulador-root .surface-canvas { background-color: #ffffff; }
+.simulador-root .surface-tinted { background-color: #fafafa; }
+.simulador-root .surface-elevated { background-color: #f5f5f7; }
+
+/* Display typography — SF Pro Display feel */
+.simulador-root .display {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
+  letter-spacing: -0.035em;
+  font-weight: 600;
+  line-height: 1.05;
 }
 
-.simulador-root .aurora-soft {
-  background:
-    radial-gradient(at 30% 30%, rgba(99, 102, 241, 0.18) 0px, transparent 55%),
-    radial-gradient(at 75% 70%, rgba(217, 70, 239, 0.15) 0px, transparent 55%);
+.simulador-root .display-tight {
+  letter-spacing: -0.04em;
+  font-weight: 600;
+  line-height: 1.02;
 }
 
-/* Grain noise — más sutil pero perceptible */
-.simulador-root .grain {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.5;
-  mix-blend-mode: overlay;
-  background-image:
-    radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-    radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-  background-size: 4px 4px, 6px 6px;
-  background-position: 0 0, 2px 2px;
+/* Single accent — indigo */
+:root {
+  --accent: #5b6cff;
+  --accent-hover: #4a5cf0;
+  --accent-soft: rgba(91, 108, 255, 0.08);
+  --accent-ring: rgba(91, 108, 255, 0.24);
 }
 
-/* Glass card — premium glassmorphism */
-.simulador-root .glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.06),
-    0 1px 2px rgba(0, 0, 0, 0.4);
+.simulador-root .accent-text { color: var(--accent); }
+.simulador-root .accent-bg { background-color: var(--accent); }
+.simulador-root .accent-bg-soft { background-color: var(--accent-soft); }
+.simulador-root .accent-border { border-color: var(--accent); }
+.simulador-root .accent-ring {
+  box-shadow: 0 0 0 4px var(--accent-ring);
 }
 
-.simulador-root .glass-card-strong {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow:
-    inset 0 1px 0 0 rgba(255, 255, 255, 0.09),
-    0 8px 24px rgba(0, 0, 0, 0.5);
+/* Apple-ish card */
+.simulador-root .card-apple {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
-/* Gradient borders */
-.simulador-root .border-gradient {
-  position: relative;
-}
-.simulador-root .border-gradient::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.5), rgba(217, 70, 239, 0.5), rgba(99, 102, 241, 0.3));
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
+.simulador-root .card-apple:hover {
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
-/* Gradient text */
-.simulador-root .gradient-text {
-  background: linear-gradient(110deg, #fff 35%, #c4b5fd 50%, #f0abfc 60%, #fff 75%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: shimmer 8s ease-in-out infinite;
+.simulador-root .card-apple-interactive:hover {
+  transform: translateY(-1px);
 }
 
-@keyframes shimmer {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+/* Hairline dividers (Apple style) */
+.simulador-root .hairline {
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
-/* Spotlight effect for hero */
-.simulador-root .spotlight {
-  background: radial-gradient(
-    ellipse 80% 60% at 50% 0%,
-    rgba(99, 102, 241, 0.18) 0%,
-    rgba(217, 70, 239, 0.1) 30%,
-    transparent 70%
-  );
-}
-
-/* Dot pattern */
-.simulador-root .dot-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+/* Subtle dot pattern for backgrounds (very low contrast) */
+.simulador-root .dot-pattern-light {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   background-size: 24px 24px;
   background-position: 0 0;
 }
 
-/* Scrollbar */
+/* Smooth scrollbar */
 .simulador-root .scrollbar-thin::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -119,48 +88,11 @@
   background: transparent;
 }
 .simulador-root .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.12);
   border-radius: 4px;
 }
 .simulador-root .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Card hover lift */
-.simulador-root .card-lift {
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-}
-.simulador-root .card-lift:hover {
-  transform: translateY(-2px);
-  border-color: rgba(255, 255, 255, 0.16);
-}
-
-/* Glow effect */
-.simulador-root .glow-indigo {
-  box-shadow:
-    0 0 24px rgba(99, 102, 241, 0.35),
-    0 0 64px rgba(99, 102, 241, 0.2);
-}
-.simulador-root .glow-fuchsia {
-  box-shadow:
-    0 0 24px rgba(217, 70, 239, 0.35),
-    0 0 64px rgba(217, 70, 239, 0.2);
-}
-
-/* Pulse for status indicators */
-@keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.5); }
-  70% { box-shadow: 0 0 0 8px rgba(244, 63, 94, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
-}
-.simulador-root .pulse-ring {
-  animation: pulse-ring 2s infinite;
-}
-
-/* Mono font for tech bits */
-.simulador-root .mono {
-  font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
-  font-feature-settings: "ss01" on, "cv01" on;
+  background: rgba(0, 0, 0, 0.2);
 }
 
 /* Hide scrollbar but keep scroll */
@@ -170,4 +102,62 @@
 .simulador-root .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Pulse for status indicators (muted) */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+.simulador-root .pulse-soft {
+  animation: pulse-soft 2.4s ease-in-out infinite;
+}
+
+/* Mono for tech bits */
+.simulador-root .mono {
+  font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+  font-feature-settings: "ss01" on, "cv01" on;
+}
+
+/* Reading column max-width (Apple Pages-like) */
+.simulador-root .reading-col {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Generous spacing scale shortcuts */
+.simulador-root .section-pad { padding-top: 96px; padding-bottom: 96px; }
+.simulador-root .section-pad-sm { padding-top: 64px; padding-bottom: 64px; }
+
+@media (max-width: 768px) {
+  .simulador-root .section-pad { padding-top: 64px; padding-bottom: 64px; }
+  .simulador-root .section-pad-sm { padding-top: 48px; padding-bottom: 48px; }
+}
+
+/* Focus rings for accessibility — indigo accent */
+.simulador-root button:focus-visible,
+.simulador-root a:focus-visible,
+.simulador-root input:focus-visible,
+.simulador-root textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Soft chip — uppercase eyebrow */
+.simulador-root .eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6e6e73;
+}
+
+/* Apple-style "next" button hover micro-shift */
+.simulador-root .btn-hover-shift {
+  transition: transform 0.15s ease;
+}
+.simulador-root .btn-hover-shift:hover {
+  transform: translateX(2px);
 }
