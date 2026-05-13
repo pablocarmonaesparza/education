@@ -41,11 +41,11 @@ function BrandMark() {
         className="h-6 w-auto"
         priority
       />
-      <span className="text-[15px] text-[#86868b] mx-0.5">/</span>
-      <span className="text-[15px] font-semibold tracking-tight text-[#1d1d1f]">
+      <span className="text-[15px] text-[var(--text-tertiary)] mx-0.5">/</span>
+      <span className="text-[15px] font-semibold tracking-tight text-[var(--text-primary)]">
         El Simulador
       </span>
-      <span className="text-[10px] font-semibold text-[#86868b] uppercase tracking-[0.14em] ml-1 px-2 py-0.5 rounded-full bg-[#f5f5f7]">
+      <span className="text-[10px] font-semibold text-[var(--text-tertiary)] uppercase tracking-[0.14em] ml-1 px-2 py-0.5 rounded-full bg-[var(--surface-3)]">
         Preview
       </span>
     </Link>
@@ -62,7 +62,7 @@ export function SurfaceNav() {
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
       isBordered={false}
-      className="bg-white/80 backdrop-blur-xl"
+      className="surface-backdrop"
       classNames={{
         wrapper: "px-6 max-w-7xl mx-auto h-14",
       }}
@@ -70,7 +70,7 @@ export function SurfaceNav() {
       <NavbarContent justify="start">
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
-          className="md:hidden text-[#1d1d1f]"
+          className="md:hidden text-[var(--text-primary)]"
         />
         <NavbarBrand>
           <BrandMark />
@@ -88,8 +88,8 @@ export function SurfaceNav() {
                 color="foreground"
                 className={`text-[13px] font-medium transition-colors ${
                   active
-                    ? "text-[#1d1d1f]"
-                    : "text-[#6e6e73] hover:text-[#1d1d1f]"
+                    ? "text-[var(--text-primary)]"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 }`}
               >
                 {r.label}
@@ -99,7 +99,7 @@ export function SurfaceNav() {
         })}
       </NavbarContent>
 
-      <NavbarMenu className="bg-white pt-6">
+      <NavbarMenu className="bg-[var(--surface)] pt-6">
         {ROUTES.map((r) => {
           const active = isActive(pathname, r.href);
           return (
@@ -110,7 +110,7 @@ export function SurfaceNav() {
                 color="foreground"
                 onPress={() => setIsMenuOpen(false)}
                 className={`w-full py-2 ${
-                  active ? "text-[#1d1d1f] font-medium" : "text-[#6e6e73]"
+                  active ? "text-[var(--text-primary)] font-medium" : "text-[var(--text-secondary)]"
                 }`}
               >
                 {r.label}

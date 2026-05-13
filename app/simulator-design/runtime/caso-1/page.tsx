@@ -251,11 +251,11 @@ export default function RuntimePage() {
             animate={{ opacity: 1 }}
             className="max-w-md"
           >
-            <div className="mx-auto h-10 w-10 rounded-full border-2 border-[#e5e5ea] border-t-[var(--accent)] animate-spin" />
-            <h2 className="display mt-8 text-[28px] text-[#1d1d1f] text-center">
+            <div className="mx-auto h-10 w-10 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
+            <h2 className="display mt-8 text-[28px] text-[var(--text-primary)] text-center">
               Evaluando tu sesión.
             </h2>
-            <p className="mt-3 text-[15px] text-[#6e6e73] text-center">
+            <p className="mt-3 text-[15px] text-[var(--text-secondary)] text-center">
               Comparando tus 5 decisiones contra la rúbrica…
             </p>
           </motion.div>
@@ -293,10 +293,10 @@ export default function RuntimePage() {
                 </svg>
               </div>
               <div className="eyebrow mt-8">Caso terminado</div>
-              <h1 className="display mt-4 text-[40px] sm:text-[56px] text-[#1d1d1f]">
+              <h1 className="display mt-4 text-[40px] sm:text-[56px] text-[var(--text-primary)]">
                 Gracias por participar.
               </h1>
-              <p className="mt-5 text-[17px] text-[#6e6e73] max-w-lg">
+              <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-lg">
                 Tu reporte está listo. Lo encontrarás en tu cuenta y en el
                 dashboard del manager.
               </p>
@@ -316,7 +316,7 @@ export default function RuntimePage() {
                   radius="full"
                   variant="bordered"
                   size="lg"
-                  className="h-12 px-7 border-[#d2d2d7] text-[#1d1d1f] bg-white text-[15px]"
+                  className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"
                 >
                   Vista del manager
                 </Button>
@@ -352,10 +352,10 @@ export default function RuntimePage() {
                     disabled={!reached}
                     className={`group w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-[13px] transition-colors ${
                       isCurrent
-                        ? "bg-[var(--accent-soft)] text-[#1d1d1f] font-medium"
+                        ? "bg-[var(--accent-soft)] text-[var(--text-primary)] font-medium"
                         : reached
-                          ? "text-[#1d1d1f] hover:bg-[#f5f5f7]"
-                          : "text-[#c7c7cc] cursor-not-allowed"
+                          ? "text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
+                          : "text-[var(--text-disabled)] cursor-not-allowed"
                     }`}
                   >
                     <span
@@ -365,8 +365,8 @@ export default function RuntimePage() {
                           : isCompleted
                             ? "bg-[#0a7e3a] text-white"
                             : reached
-                              ? "bg-[#f5f5f7] text-[#1d1d1f]"
-                              : "bg-[#fafafa] text-[#c7c7cc]"
+                              ? "bg-[var(--surface-3)] text-[var(--text-primary)]"
+                              : "bg-[var(--surface-2)] text-[var(--text-disabled)]"
                       }`}
                     >
                       {isCompleted ? (
@@ -404,7 +404,7 @@ export default function RuntimePage() {
                 return (
                   <div
                     key={i}
-                    className="flex-1 h-[5px] rounded-full overflow-hidden bg-[#f5f5f7]"
+                    className="flex-1 h-[5px] rounded-full overflow-hidden bg-[var(--surface-3)]"
                   >
                     <motion.div
                       className="h-full rounded-full"
@@ -465,7 +465,7 @@ export default function RuntimePage() {
       </div>
 
       {/* Sticky bottom action bar (no border) */}
-      <div className="fixed bottom-0 inset-x-0 z-40 bg-white/90 backdrop-blur-xl">
+      <div className="fixed bottom-0 inset-x-0 z-40 surface-backdrop">
         <div className="max-w-7xl mx-auto md:pl-60 px-6 py-4">
           <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
             {slideIdx > 0 || sectionIdx > 0 ? (
@@ -474,7 +474,7 @@ export default function RuntimePage() {
                 size="lg"
                 variant="bordered"
                 onPress={prevSlide}
-                className="h-11 px-5 text-[14px] font-medium border-[#d2d2d7] text-[#1d1d1f] bg-white"
+                className="h-11 px-5 text-[14px] font-medium border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
               >
                 ← Anterior
               </Button>
@@ -490,7 +490,7 @@ export default function RuntimePage() {
               className={`h-11 px-6 text-[14px] font-medium ${
                 canAdvance
                   ? "accent-bg text-white hover:opacity-90"
-                  : "bg-[#f5f5f7] text-[#86868b]"
+                  : "bg-[var(--surface-3)] text-[var(--text-tertiary)]"
               } shadow-none btn-hover-shift`}
             >
               {nextButtonLabel(sectionIdx, slideIdx, currentSection.slides)} →
@@ -650,12 +650,12 @@ function IntroSlide({ slideIdx }: { slideIdx: number }) {
     return (
       <>
         <div className="eyebrow">Caso 01 · Marketing · 18 min</div>
-        <h1 className="display display-tight mt-6 text-[44px] sm:text-[60px] text-[#1d1d1f]">
+        <h1 className="display display-tight mt-6 text-[44px] sm:text-[60px] text-[var(--text-primary)]">
           Campaña urgente con
           <br />
           feedback de clientes.
         </h1>
-        <p className="mt-8 text-[19px] text-[#6e6e73] leading-[1.55]">
+        <p className="mt-8 text-[19px] text-[var(--text-secondary)] leading-[1.55]">
           Vas a interpretar el rol de un Marketing Manager bajo presión. No hay
           respuesta única correcta: evaluamos tu criterio.
         </p>
@@ -666,18 +666,18 @@ function IntroSlide({ slideIdx }: { slideIdx: number }) {
     return (
       <>
         <div className="eyebrow">Tu rol</div>
-        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[#1d1d1f]">
+        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
           Marketing Manager en Loop.
         </h2>
-        <p className="mt-8 text-[18px] text-[#1d1d1f] leading-[1.65]">
+        <p className="mt-8 text-[18px] text-[var(--text-primary)] leading-[1.65]">
           Eres <span className="font-medium">Marketing Manager</span> en{" "}
           <span className="font-medium">Loop</span>, una SaaS B2B mid-market
           (120 empleados) que vende plataforma de atención al cliente con IA en
           LATAM.
         </p>
-        <p className="mt-5 text-[16px] text-[#6e6e73] leading-[1.7]">
+        <p className="mt-5 text-[16px] text-[var(--text-secondary)] leading-[1.7]">
           Tu equipo de growth es de 6 personas. Reportas a{" "}
-          <span className="text-[#1d1d1f]">Camila, VP of Growth</span>. El
+          <span className="text-[var(--text-primary)]">Camila, VP of Growth</span>. El
           gobierno de IA en tu empresa es informal: hay GPT corporativo
           aprobado por IT, pero los criterios viven en cada manager.
         </p>
@@ -688,13 +688,13 @@ function IntroSlide({ slideIdx }: { slideIdx: number }) {
     return (
       <>
         <div className="eyebrow">Qué está pasando</div>
-        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[#1d1d1f]">
+        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
           Jueves · 4:30 PM.
         </h2>
-        <p className="mt-3 text-[18px] text-[#6e6e73] leading-[1.55]">
+        <p className="mt-3 text-[18px] text-[var(--text-secondary)] leading-[1.55]">
           Quedan 16 horas hasta el deadline.
         </p>
-        <p className="mt-8 text-[17px] text-[#1d1d1f] leading-[1.7]">
+        <p className="mt-8 text-[17px] text-[var(--text-primary)] leading-[1.7]">
           Camila te escribe por Slack pidiéndote{" "}
           <span className="font-medium">
             3 ángulos para LinkedIn Ads + 1 email a prospects
@@ -702,14 +702,14 @@ function IntroSlide({ slideIdx }: { slideIdx: number }) {
           para mañana 9 AM. Tienes acceso a un dataset de 60 filas con feedback
           de clientes (PII incluido).
         </p>
-        <div className="mt-8 card-apple bg-white p-5">
+        <div className="mt-8 card-apple bg-[var(--surface)] p-5">
           <div className="flex items-start gap-4">
             <Avatar
               size="sm"
               className="bg-[#ff5e62] text-white text-[13px] font-semibold flex-shrink-0"
               name="C"
             />
-            <p className="text-[15px] text-[#1d1d1f] leading-[1.6] italic">
+            <p className="text-[15px] text-[var(--text-primary)] leading-[1.6] italic">
               «No me metas a Legal hoy, ya están cerrados. Confío en tu
               criterio.»
             </p>
@@ -737,20 +737,20 @@ function IntroSlide({ slideIdx }: { slideIdx: number }) {
     return (
       <>
         <div className="eyebrow">Cómo vas a avanzar</div>
-        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[#1d1d1f]">
+        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
           Cinco pasos.
         </h2>
         <ol className="mt-10 space-y-5">
           {steps.map((s) => (
             <li key={s.id} className="flex items-start gap-5">
-              <div className="flex-shrink-0 mt-1 mono text-[15px] text-[#86868b] font-medium w-8">
+              <div className="flex-shrink-0 mt-1 mono text-[15px] text-[var(--text-tertiary)] font-medium w-8">
                 {String(s.id).padStart(2, "0")}
               </div>
               <div>
-                <div className="text-[17px] text-[#1d1d1f] font-medium">
+                <div className="text-[17px] text-[var(--text-primary)] font-medium">
                   {s.label}
                 </div>
-                <div className="text-[15px] text-[#6e6e73] mt-0.5">{s.sub}</div>
+                <div className="text-[15px] text-[var(--text-secondary)] mt-0.5">{s.sub}</div>
               </div>
             </li>
           ))}
@@ -762,10 +762,10 @@ function IntroSlide({ slideIdx }: { slideIdx: number }) {
     return (
       <>
         <div className="eyebrow">Reglas</div>
-        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[#1d1d1f]">
+        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
           Antes de empezar.
         </h2>
-        <ul className="mt-10 space-y-5 text-[17px] text-[#1d1d1f] leading-[1.65]">
+        <ul className="mt-10 space-y-5 text-[17px] text-[var(--text-primary)] leading-[1.65]">
           <li className="flex items-start gap-4">
             <span
               className="flex-shrink-0 mt-2 h-1.5 w-1.5 rounded-full"
@@ -815,14 +815,14 @@ function Step1Brief() {
   return (
     <>
       <div className="eyebrow">Paso 01 · Preparar datos</div>
-      <h2 className="display display-tight mt-6 text-[36px] sm:text-[44px] text-[#1d1d1f]">
+      <h2 className="display display-tight mt-6 text-[36px] sm:text-[44px] text-[var(--text-primary)]">
         Lee el brief de Camila.
       </h2>
-      <p className="mt-5 text-[17px] text-[#6e6e73] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         Antes de tocar el dataset, releélo. Lo que aceptes pasar al modelo
         define tu exposición regulatoria.
       </p>
-      <div className="mt-10 card-apple bg-white p-6">
+      <div className="mt-10 card-apple bg-[var(--surface)] p-6">
         <div className="flex items-start gap-4">
           <Avatar
             size="sm"
@@ -830,14 +830,14 @@ function Step1Brief() {
             name="C"
           />
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 text-[12px] text-[#86868b]">
-              <span className="text-[#1d1d1f] font-medium">
+            <div className="flex items-center gap-2 text-[12px] text-[var(--text-tertiary)]">
+              <span className="text-[var(--text-primary)] font-medium">
                 Camila · VP of Growth
               </span>
               <span>·</span>
               <span className="mono">Jue 4:30 PM</span>
             </div>
-            <p className="mt-2 text-[15px] text-[#1d1d1f] leading-[1.55]">
+            <p className="mt-2 text-[15px] text-[var(--text-primary)] leading-[1.55]">
               «Hey, necesito 3 ángulos para LinkedIn Ads + 1 email a la lista
               de prospects para mañana 9 AM. Revisa el feedback que CS nos pasó
               hace 2 meses, ahí está todo.{" "}
@@ -880,25 +880,25 @@ function Step1DatasetPreview() {
   return (
     <>
       <div className="eyebrow">Paso 01 · Dataset</div>
-      <h2 className="display display-tight mt-6 text-[36px] sm:text-[44px] text-[#1d1d1f]">
+      <h2 className="display display-tight mt-6 text-[36px] sm:text-[44px] text-[var(--text-primary)]">
         60 filas, 6 campos.
       </h2>
-      <p className="mt-5 text-[17px] text-[#6e6e73] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         Esto es lo que CS dejó hace 2 meses. Tres campos son datos personales
         (PII).
       </p>
-      <div className="mt-8 card-apple bg-white overflow-hidden">
+      <div className="mt-8 card-apple bg-[var(--surface)] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-[12.5px]">
             <thead>
-              <tr className="bg-[#fafafa]">
-                <th className="text-left font-medium text-[#6e6e73] px-3 py-2.5">
+              <tr className="bg-[var(--surface-2)]">
+                <th className="text-left font-medium text-[var(--text-secondary)] px-3 py-2.5">
                   name
                 </th>
-                <th className="text-left font-medium text-[#6e6e73] px-3 py-2.5">
+                <th className="text-left font-medium text-[var(--text-secondary)] px-3 py-2.5">
                   email
                 </th>
-                <th className="text-left font-medium text-[#6e6e73] px-3 py-2.5">
+                <th className="text-left font-medium text-[var(--text-secondary)] px-3 py-2.5">
                   company
                 </th>
               </tr>
@@ -906,15 +906,15 @@ function Step1DatasetPreview() {
             <tbody>
               {sample.map((r) => (
                 <tr key={r.email}>
-                  <td className="px-3 py-2.5 text-[#1d1d1f]">{r.name}</td>
-                  <td className="px-3 py-2.5 text-[#6e6e73]">{r.email}</td>
-                  <td className="px-3 py-2.5 text-[#6e6e73]">{r.company}</td>
+                  <td className="px-3 py-2.5 text-[var(--text-primary)]">{r.name}</td>
+                  <td className="px-3 py-2.5 text-[var(--text-secondary)]">{r.email}</td>
+                  <td className="px-3 py-2.5 text-[var(--text-secondary)]">{r.company}</td>
                 </tr>
               ))}
               <tr>
                 <td
                   colSpan={3}
-                  className="px-3 py-2 text-[12px] text-[#86868b] italic"
+                  className="px-3 py-2 text-[12px] text-[var(--text-tertiary)] italic"
                 >
                   …57 filas más.
                 </td>
@@ -943,12 +943,12 @@ function Step1FieldDecision({
       <div className="eyebrow">
         Paso 01 · Campo {fieldIdx} de {FIELDS.length}
       </div>
-      <h2 className="display display-tight mt-6 text-[#1d1d1f] text-[32px] sm:text-[40px]">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         ¿Qué hacer con{" "}
-        <span className="mono text-[#1d1d1f]">{field.label}</span>?
+        <span className="mono text-[var(--text-primary)]">{field.label}</span>?
       </h2>
       <div className="mt-5 flex items-center gap-3">
-        <p className="text-[17px] text-[#6e6e73]">{field.desc}</p>
+        <p className="text-[17px] text-[var(--text-secondary)]">{field.desc}</p>
         {field.pii && (
           <span
             className="text-[11px] px-2 py-0.5 rounded-full font-semibold"
@@ -972,7 +972,7 @@ function Step1FieldDecision({
           return (
             <Card
               key={opt}
-              className="card-apple bg-white cursor-pointer transition-all"
+              className="card-apple bg-[var(--surface)] cursor-pointer transition-all"
               style={
                 selected
                   ? {
@@ -988,9 +988,9 @@ function Step1FieldDecision({
                   value={opt}
                   size="md"
                   classNames={{
-                    wrapper: "border-[#d2d2d7]",
+                    wrapper: "border-[var(--border-strong)]",
                     labelWrapper: "ml-2",
-                    label: "text-[15px] font-medium text-[#1d1d1f]",
+                    label: "text-[15px] font-medium text-[var(--text-primary)]",
                   }}
                 >
                   {opt}
@@ -1022,10 +1022,10 @@ function Step2Prompt({
   return (
     <>
       <div className="eyebrow">Paso 02 · Tu prompt</div>
-      <h2 className="display display-tight mt-6 text-[#1d1d1f] text-[32px] sm:text-[40px]">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         Redacta tu prompt al modelo.
       </h2>
-      <p className="mt-5 text-[17px] text-[#6e6e73] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         La calidad del prompt define el output. Sé explícito en audiencia,
         tono, longitud y restricciones.
       </p>
@@ -1038,8 +1038,8 @@ function Step2Prompt({
           isDisabled={modelResponse !== null}
           classNames={{
             inputWrapper:
-              "bg-white border border-[#e5e5ea] data-[hover=true]:border-[#d2d2d7] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-            input: "text-[15px] text-[#1d1d1f] placeholder:text-[#86868b]",
+              "bg-[var(--surface)] border border-[var(--border)] data-[hover=true]:border-[var(--border-strong)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
+            input: "text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]",
           }}
         />
         {!modelResponse && (
@@ -1070,14 +1070,14 @@ function Step2Response({ modelResponse }: { modelResponse: string | null }) {
   return (
     <>
       <div className="eyebrow">Paso 02 · Respuesta del modelo</div>
-      <h2 className="display display-tight mt-6 text-[#1d1d1f] text-[32px] sm:text-[40px]">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         Esto te devolvió.
       </h2>
-      <p className="mt-5 text-[17px] text-[#6e6e73] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         Léelo entero antes de decidir qué harás con esta respuesta.
       </p>
-      <div className="mt-8 card-apple bg-[#fafafa] p-6 max-h-[42vh] overflow-y-auto">
-        <pre className="text-[13.5px] text-[#1d1d1f] leading-[1.6] whitespace-pre-wrap font-sans">
+      <div className="mt-8 card-apple bg-[var(--surface-2)] p-6 max-h-[42vh] overflow-y-auto">
+        <pre className="text-[13.5px] text-[var(--text-primary)] leading-[1.6] whitespace-pre-wrap font-sans">
           {modelResponse}
         </pre>
       </div>
@@ -1095,10 +1095,10 @@ function Step2Followup({
   return (
     <>
       <div className="eyebrow">Paso 02 · Tu siguiente paso</div>
-      <h2 className="display display-tight mt-6 text-[#1d1d1f] text-[32px] sm:text-[40px]">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         ¿Qué harás con esto?
       </h2>
-      <p className="mt-5 text-[17px] text-[#6e6e73] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         ¿Lo usas tal cual? ¿Validas algo primero? ¿Descartas? Explica por qué.
       </p>
       <div className="mt-8">
@@ -1109,8 +1109,8 @@ function Step2Followup({
           minRows={5}
           classNames={{
             inputWrapper:
-              "bg-white border border-[#e5e5ea] data-[hover=true]:border-[#d2d2d7] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-            input: "text-[15px] text-[#1d1d1f] placeholder:text-[#86868b]",
+              "bg-[var(--surface)] border border-[var(--border)] data-[hover=true]:border-[var(--border-strong)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
+            input: "text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]",
           }}
         />
       </div>
@@ -1132,10 +1132,10 @@ function Step3SegmentReview({
   return (
     <>
       <div className="eyebrow">Paso 03 · Ángulo {segment.id + 1} de 3</div>
-      <h2 className="display display-tight mt-6 text-[#1d1d1f] text-[28px] sm:text-[34px]">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[28px] sm:text-[34px]">
         {segment.title}
       </h2>
-      <p className="mt-5 text-[17px] text-[#1d1d1f] leading-[1.65]">
+      <p className="mt-5 text-[17px] text-[var(--text-primary)] leading-[1.65]">
         {segment.body}
       </p>
       <div className="mt-10">
@@ -1155,9 +1155,9 @@ function Step3SegmentReview({
               value={t.id}
               size="sm"
               classNames={{
-                base: "m-0 max-w-fit cursor-pointer rounded-full border border-[#e5e5ea] data-[selected=true]:bg-[var(--accent-soft)] data-[selected=true]:border-[var(--accent)] px-3 py-1.5",
+                base: "m-0 max-w-fit cursor-pointer rounded-full border border-[var(--border)] data-[selected=true]:bg-[var(--accent-soft)] data-[selected=true]:border-[var(--accent)] px-3 py-1.5",
                 wrapper: "hidden",
-                label: "text-[13px] text-[#1d1d1f] font-medium",
+                label: "text-[13px] text-[var(--text-primary)] font-medium",
               }}
             >
               {t.label}
@@ -1181,10 +1181,10 @@ function Step4Decision({
   return (
     <>
       <div className="eyebrow">Paso 04 · Entrega</div>
-      <h2 className="display display-tight mt-6 text-[#1d1d1f] text-[32px] sm:text-[40px]">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         ¿Cómo le entregas los ángulos a Camila?
       </h2>
-      <p className="mt-5 text-[17px] text-[#6e6e73] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         El formato comunica tu criterio (o la falta de él).
       </p>
       <RadioGroup
@@ -1198,7 +1198,7 @@ function Step4Decision({
           return (
             <Card
               key={opt.id}
-              className="card-apple bg-white cursor-pointer transition-all"
+              className="card-apple bg-[var(--surface)] cursor-pointer transition-all"
               style={
                 selected
                   ? {
@@ -1214,15 +1214,15 @@ function Step4Decision({
                   value={opt.id}
                   size="md"
                   classNames={{
-                    wrapper: "border-[#d2d2d7]",
+                    wrapper: "border-[var(--border-strong)]",
                     labelWrapper: "ml-2",
                   }}
                 >
                   <div>
-                    <div className="text-[15px] font-medium text-[#1d1d1f]">
+                    <div className="text-[15px] font-medium text-[var(--text-primary)]">
                       {opt.label}
                     </div>
-                    <div className="text-[13px] text-[#6e6e73] mt-0.5">
+                    <div className="text-[13px] text-[var(--text-secondary)] mt-0.5">
                       {opt.sub}
                     </div>
                   </div>
@@ -1242,13 +1242,13 @@ function Step5CamilaMessage() {
   return (
     <>
       <div className="eyebrow">Paso 05 · Camila te escribe</div>
-      <h2 className="display display-tight mt-6 text-[#1d1d1f] text-[32px] sm:text-[40px]">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         Una más para mañana.
       </h2>
-      <p className="mt-5 text-[17px] text-[#6e6e73] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         Al día siguiente, antes del lanzamiento, te llega esto.
       </p>
-      <div className="mt-8 card-apple bg-white p-6">
+      <div className="mt-8 card-apple bg-[var(--surface)] p-6">
         <div className="flex items-start gap-4">
           <Avatar
             size="sm"
@@ -1256,14 +1256,14 @@ function Step5CamilaMessage() {
             name="C"
           />
           <div className="flex-1">
-            <div className="text-[12px] text-[#86868b]">
-              <span className="text-[#1d1d1f] font-medium">
+            <div className="text-[12px] text-[var(--text-tertiary)]">
+              <span className="text-[var(--text-primary)] font-medium">
                 Camila · VP of Growth
               </span>
               <span className="mx-1.5">·</span>
               <span className="mono">Vie 8:12 AM</span>
             </div>
-            <p className="mt-2 text-[15px] text-[#1d1d1f] leading-[1.6]">
+            <p className="mt-2 text-[15px] text-[var(--text-primary)] leading-[1.6]">
               «Perfectos los ángulos. Una más:{" "}
               <span className="font-medium">
                 segmentemos por revenue_potential
@@ -1288,10 +1288,10 @@ function Step5Response({
   return (
     <>
       <div className="eyebrow">Paso 05 · Tu respuesta</div>
-      <h2 className="display display-tight mt-6 text-[#1d1d1f] text-[32px] sm:text-[40px]">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         ¿Cómo respondes?
       </h2>
-      <p className="mt-5 text-[17px] text-[#6e6e73] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         Usar revenue para targeting sin consentimiento es problemático.
         Responde como lo harías por Slack ahora mismo.
       </p>
@@ -1303,8 +1303,8 @@ function Step5Response({
           minRows={5}
           classNames={{
             inputWrapper:
-              "bg-white border border-[#e5e5ea] data-[hover=true]:border-[#d2d2d7] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-            input: "text-[15px] text-[#1d1d1f] placeholder:text-[#86868b]",
+              "bg-[var(--surface)] border border-[var(--border)] data-[hover=true]:border-[var(--border-strong)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
+            input: "text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]",
           }}
         />
       </div>

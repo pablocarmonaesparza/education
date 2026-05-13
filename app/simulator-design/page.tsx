@@ -27,7 +27,7 @@ export default function LandingPage() {
           <motion.h1
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.05 }}
-            className="display display-tight mt-6 text-[#1d1d1f] text-[44px] sm:text-[64px] md:text-[80px]"
+            className="display display-tight mt-6 text-[var(--text-primary)] text-[44px] sm:text-[64px] md:text-[80px]"
           >
             Criterio de IA,
             <br />
@@ -37,7 +37,7 @@ export default function LandingPage() {
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.1 }}
-            className="mt-8 text-[19px] sm:text-[21px] text-[#6e6e73] max-w-2xl mx-auto leading-[1.5]"
+            className="mt-8 text-[19px] sm:text-[21px] text-[var(--text-secondary)] max-w-2xl mx-auto leading-[1.5]"
           >
             Mide y mejora cómo tu equipo decide con IA en flujos reales.
             <br className="hidden sm:block" />
@@ -64,7 +64,7 @@ export default function LandingPage() {
               radius="full"
               size="lg"
               variant="bordered"
-              className="border-[#d2d2d7] text-[#1d1d1f] bg-white px-7 h-12 text-[15px] font-medium"
+              className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
             >
               Ver dashboard
             </Button>
@@ -73,7 +73,7 @@ export default function LandingPage() {
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.2 }}
-            className="mt-10 text-[13px] text-[#86868b]"
+            className="mt-10 text-[13px] text-[var(--text-tertiary)]"
           >
             Usado por equipos en SaaS B2B · LATAM
           </motion.p>
@@ -83,7 +83,7 @@ export default function LandingPage() {
       {/* ============ STATS ============ */}
       <section className="surface-tinted section-pad-sm">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black/[0.06] rounded-2xl overflow-hidden border border-black/[0.06]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--hairline)] rounded-2xl overflow-hidden border border-[var(--hairline)]">
             {[
               { stat: "88%", label: "De empleados ya usan IA en su día a día.", source: "BCG · 2025" },
               { stat: "1/3", label: "Puede escalarla con criterio claro.", source: "BCG · 2025" },
@@ -93,11 +93,11 @@ export default function LandingPage() {
                 key={i}
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: i * 0.05 }}
-                className="bg-white p-10 text-center"
+                className="bg-[var(--surface)] p-10 text-center"
               >
-                <div className="display text-[56px] sm:text-[64px] text-[#1d1d1f]">{s.stat}</div>
-                <p className="mt-3 text-[15px] text-[#1d1d1f] leading-snug">{s.label}</p>
-                <p className="mt-2 text-[12px] text-[#86868b]">{s.source}</p>
+                <div className="display text-[56px] sm:text-[64px] text-[var(--text-primary)]">{s.stat}</div>
+                <p className="mt-3 text-[15px] text-[var(--text-primary)] leading-snug">{s.label}</p>
+                <p className="mt-2 text-[12px] text-[var(--text-tertiary)]">{s.source}</p>
               </motion.div>
             ))}
           </div>
@@ -109,7 +109,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-6">
           <motion.div {...fadeUp} className="text-center mb-16">
             <span className="eyebrow">Cómo funciona</span>
-            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[#1d1d1f]">
+            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
               Tres pasos. Treinta días.
             </h2>
           </motion.div>
@@ -137,13 +137,13 @@ export default function LandingPage() {
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: 0.05 + i * 0.05 }}
               >
-                <div className="text-[#86868b] text-[13px] mono font-medium">
+                <div className="text-[var(--text-tertiary)] text-[13px] mono font-medium">
                   {step.n}
                 </div>
-                <h3 className="display mt-3 text-[24px] text-[#1d1d1f]">
+                <h3 className="display mt-3 text-[24px] text-[var(--text-primary)]">
                   {step.title}
                 </h3>
-                <p className="mt-4 text-[15px] text-[#6e6e73] leading-[1.6]">
+                <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
                   {step.body}
                 </p>
               </motion.div>
@@ -157,10 +157,10 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <motion.div {...fadeUp} className="text-center mb-16">
             <span className="eyebrow">Contenido del sprint</span>
-            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[#1d1d1f]">
+            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
               Ocho casos. Una tensión cada uno.
             </h2>
-            <p className="mt-5 text-[17px] text-[#6e6e73] max-w-2xl mx-auto">
+            <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-2xl mx-auto">
               Cada caso es un escenario real: deadline, dataset con PII, presión
               de autoridad. El equipo decide; nosotros evaluamos.
             </p>
@@ -173,24 +173,24 @@ export default function LandingPage() {
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: 0.03 * i }}
               >
-                <Card className="card-apple card-apple-interactive bg-white shadow-none">
+                <Card className="card-apple card-apple-interactive bg-[var(--surface)] shadow-none">
                   <CardBody className="p-7">
                     <div className="flex items-start gap-4">
-                      <div className="text-[13px] mono font-medium text-[#86868b] flex-shrink-0 mt-1">
+                      <div className="text-[13px] mono font-medium text-[var(--text-tertiary)] flex-shrink-0 mt-1">
                         {String(c.order).padStart(2, "0")}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-[17px] font-semibold text-[#1d1d1f] tracking-tight leading-snug capitalize-first">
+                        <h3 className="text-[17px] font-semibold text-[var(--text-primary)] tracking-tight leading-snug capitalize-first">
                           {c.title.charAt(0).toUpperCase() + c.title.slice(1)}.
                         </h3>
-                        <p className="mt-1.5 text-[14px] text-[#6e6e73]">
+                        <p className="mt-1.5 text-[14px] text-[var(--text-secondary)]">
                           Tensión: {c.tension}.
                         </p>
                         <div className="mt-4 flex flex-wrap gap-1.5">
                           {c.dimensions.map((d) => (
                             <span
                               key={d}
-                              className="text-[11px] text-[#6e6e73] bg-[#f5f5f7] px-2.5 py-1 rounded-full capitalize"
+                              className="text-[11px] text-[var(--text-secondary)] bg-[var(--surface-3)] px-2.5 py-1 rounded-full capitalize"
                             >
                               {d}
                             </span>
@@ -214,10 +214,10 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-6">
           <motion.div {...fadeUp} className="text-center mb-16">
             <span className="eyebrow">Resultado para managers</span>
-            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[#1d1d1f]">
+            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
               Cuatro acciones claras.
             </h2>
-            <p className="mt-5 text-[17px] text-[#6e6e73] max-w-2xl mx-auto">
+            <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-2xl mx-auto">
               Por persona y por equipo. Salida ejecutiva, no dashboard ornamental.
             </p>
           </motion.div>
@@ -229,12 +229,12 @@ export default function LandingPage() {
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: 0.04 * i }}
               >
-                <Card className="card-apple bg-white shadow-none">
+                <Card className="card-apple bg-[var(--surface)] shadow-none">
                   <CardBody className="p-7">
-                    <h3 className="text-[19px] font-semibold text-[#1d1d1f] capitalize">
+                    <h3 className="text-[19px] font-semibold text-[var(--text-primary)] capitalize">
                       {a.label}.
                     </h3>
-                    <p className="mt-2 text-[15px] text-[#6e6e73] leading-[1.55]">
+                    <p className="mt-2 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
                       {a.description.charAt(0).toUpperCase() +
                         a.description.slice(1)}
                       .
@@ -252,14 +252,14 @@ export default function LandingPage() {
         <div className="max-w-3xl mx-auto px-6 text-center">
           <motion.div {...fadeUp}>
             <span className="eyebrow">Precio</span>
-            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[#1d1d1f]">
+            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
               Desde{" "}
               <span className="accent-text">
                 ${SPRINT_META.pricing.min}
               </span>{" "}
               por persona.
             </h2>
-            <p className="mt-5 text-[17px] text-[#6e6e73] max-w-xl mx-auto">
+            <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-xl mx-auto">
               Precio por asiento, 30 días, cohorte de {SPRINT_META.pricing.minSeats}–
               {SPRINT_META.pricing.maxSeats} personas. USD vía Stripe.
             </p>
@@ -284,10 +284,10 @@ export default function LandingPage() {
       </section>
 
       {/* ============ FOOTER ============ */}
-      <footer className="border-t border-black/[0.06] py-12 surface-canvas">
+      <footer className="border-t border-[var(--hairline)] py-12 surface-canvas">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[13px] text-[#86868b]">© 2026 Itera · El Simulador</p>
-          <div className="flex items-center gap-6 text-[13px] text-[#86868b]">
+          <p className="text-[13px] text-[var(--text-tertiary)]">© 2026 Itera · El Simulador</p>
+          <div className="flex items-center gap-6 text-[13px] text-[var(--text-tertiary)]">
             <span>Preview interno</span>
             <span>·</span>
             <span>{SPRINT_META.geoTarget.join(" · ")}</span>

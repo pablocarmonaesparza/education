@@ -35,7 +35,7 @@ function severityTone(s: "high" | "medium" | "low") {
     return { bg: "bg-[#fde9e9]", text: "text-[#a01818]", label: "Alta" };
   if (s === "medium")
     return { bg: "bg-[#fef4e6]", text: "text-[#a05a00]", label: "Media" };
-  return { bg: "bg-[#f5f5f7]", text: "text-[#6e6e73]", label: "Baja" };
+  return { bg: "bg-[var(--surface-3)]", text: "text-[var(--text-secondary)]", label: "Baja" };
 }
 
 function capFirst(s: string) {
@@ -56,14 +56,14 @@ export default function ReportePage() {
       <SurfaceNav />
       <main className="surface-canvas min-h-screen pb-24">
         {/* Disclaimer */}
-        <div className="border-b border-black/[0.06] bg-[#fafafa]">
-          <div className="reading-col px-6 py-3 flex items-center gap-2 text-[12px] text-[#6e6e73]">
+        <div className="border-b border-[var(--hairline)] bg-[var(--surface-2)]">
+          <div className="reading-col px-6 py-3 flex items-center gap-2 text-[12px] text-[var(--text-secondary)]">
             <span
               className="inline-block h-1.5 w-1.5 rounded-full"
               style={{ backgroundColor: "#cc8800" }}
             />
             <span>
-              <span className="text-[#1d1d1f] font-medium">Vista preview</span>{" "}
+              <span className="text-[var(--text-primary)] font-medium">Vista preview</span>{" "}
               · datos sintéticos · estructura del reporte final.
             </span>
           </div>
@@ -73,23 +73,23 @@ export default function ReportePage() {
         <section className="reading-col px-6 pt-14">
           <motion.div {...fadeUp}>
             <div className="eyebrow">Reporte ejecutivo · participante</div>
-            <h1 className="display display-tight mt-5 text-[40px] sm:text-[52px] text-[#1d1d1f]">
+            <h1 className="display display-tight mt-5 text-[40px] sm:text-[52px] text-[var(--text-primary)]">
               {capFirst(r.caseTitle)}.
             </h1>
-            <div className="mt-6 flex flex-wrap items-center gap-3 text-[13px] text-[#6e6e73]">
+            <div className="mt-6 flex flex-wrap items-center gap-3 text-[13px] text-[var(--text-secondary)]">
               <Avatar
                 size="sm"
-                className="bg-[#f5f5f7] text-[#1d1d1f] text-[12px] font-semibold"
+                className="bg-[var(--surface-3)] text-[var(--text-primary)] text-[12px] font-semibold"
                 name={r.participantInitials}
               />
-              <span className="text-[#1d1d1f] font-medium">
+              <span className="text-[var(--text-primary)] font-medium">
                 {r.participantInitials} · {r.role}
               </span>
-              <span className="text-[#d2d2d7]">·</span>
+              <span className="text-[var(--border-strong)]">·</span>
               <span className="mono">{r.participantId}</span>
-              <span className="text-[#d2d2d7]">·</span>
+              <span className="text-[var(--border-strong)]">·</span>
               <span>{r.durationMin} min</span>
-              <span className="text-[#d2d2d7]">·</span>
+              <span className="text-[var(--border-strong)]">·</span>
               <span>{r.evaluatedAt}</span>
             </div>
           </motion.div>
@@ -98,14 +98,14 @@ export default function ReportePage() {
           <motion.div
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.06 }}
-            className="mt-12 card-apple bg-white p-8"
+            className="mt-12 card-apple bg-[var(--surface)] p-8"
           >
             <div className="flex flex-col sm:flex-row sm:items-start gap-8">
               <div className="flex-shrink-0">
                 <div className="eyebrow">Readiness general</div>
-                <div className="display mt-3 text-[64px] text-[#1d1d1f] leading-none">
+                <div className="display mt-3 text-[64px] text-[var(--text-primary)] leading-none">
                   {overallScore}
-                  <span className="text-[#86868b] text-[28px] ml-1">/100</span>
+                  <span className="text-[var(--text-tertiary)] text-[28px] ml-1">/100</span>
                 </div>
                 <div className="mt-3">
                   <span
@@ -118,7 +118,7 @@ export default function ReportePage() {
                 </div>
               </div>
               <div className="flex-1 pt-1">
-                <p className="text-[16px] text-[#1d1d1f] leading-[1.65]">
+                <p className="text-[16px] text-[var(--text-primary)] leading-[1.65]">
                   {capFirst(r.recommendation.reason)}
                 </p>
               </div>
@@ -130,7 +130,7 @@ export default function ReportePage() {
         <section className="reading-col px-6 mt-20">
           <motion.div {...fadeUp}>
             <div className="eyebrow">Desempeño por dimensión</div>
-            <h2 className="display mt-3 text-[28px] text-[#1d1d1f]">
+            <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
               Las cinco dimensiones.
             </h2>
           </motion.div>
@@ -145,12 +145,12 @@ export default function ReportePage() {
                   key={d.id}
                   {...fadeUp}
                   transition={{ ...fadeUp.transition, delay: i * 0.04 }}
-                  className="card-apple bg-white p-6"
+                  className="card-apple bg-[var(--surface)] p-6"
                 >
                   <div className="flex items-baseline justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3">
-                        <span className="text-[17px] font-semibold text-[#1d1d1f]">
+                        <span className="text-[17px] font-semibold text-[var(--text-primary)]">
                           {capFirst(d.label)}
                         </span>
                         <span
@@ -159,15 +159,15 @@ export default function ReportePage() {
                           Banda {BAND_DISPLAY[band]}
                         </span>
                       </div>
-                      <p className="mt-2 text-[14px] text-[#6e6e73] leading-[1.6]">
+                      <p className="mt-2 text-[14px] text-[var(--text-secondary)] leading-[1.6]">
                         {capFirst(d.description)}.
                       </p>
                     </div>
-                    <span className="text-[20px] mono font-semibold text-[#1d1d1f] flex-shrink-0">
+                    <span className="text-[20px] mono font-semibold text-[var(--text-primary)] flex-shrink-0">
                       {score}
                     </span>
                   </div>
-                  <div className="mt-4 h-[5px] bg-[#f5f5f7] rounded-full overflow-hidden">
+                  <div className="mt-4 h-[5px] bg-[var(--surface-3)] rounded-full overflow-hidden">
                     <motion.div
                       className="h-full rounded-full"
                       style={{ backgroundColor: tone.bar }}
@@ -190,7 +190,7 @@ export default function ReportePage() {
         <section className="reading-col px-6 mt-20">
           <motion.div {...fadeUp}>
             <div className="eyebrow">Gaps identificados</div>
-            <h2 className="display mt-3 text-[28px] text-[#1d1d1f]">
+            <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
               Dónde se torció.
             </h2>
           </motion.div>
@@ -203,7 +203,7 @@ export default function ReportePage() {
                   key={g.id}
                   {...fadeUp}
                   transition={{ ...fadeUp.transition, delay: i * 0.05 }}
-                  className="card-apple bg-white p-6"
+                  className="card-apple bg-[var(--surface)] p-6"
                 >
                   <div className="flex items-start gap-4">
                     <span
@@ -213,11 +213,11 @@ export default function ReportePage() {
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="eyebrow">Qué observamos</div>
-                      <p className="mt-2 text-[15px] text-[#1d1d1f] leading-[1.65]">
+                      <p className="mt-2 text-[15px] text-[var(--text-primary)] leading-[1.65]">
                         {capFirst(g.observed)}
                       </p>
                       <div className="eyebrow mt-5">Por qué importa</div>
-                      <p className="mt-2 text-[14px] text-[#6e6e73] leading-[1.65]">
+                      <p className="mt-2 text-[14px] text-[var(--text-secondary)] leading-[1.65]">
                         {capFirst(g.whyMatters)}
                       </p>
                     </div>
@@ -232,7 +232,7 @@ export default function ReportePage() {
         <section className="reading-col px-6 mt-20">
           <motion.div {...fadeUp}>
             <div className="eyebrow">Eventos de riesgo</div>
-            <h2 className="display mt-3 text-[28px] text-[#1d1d1f]">
+            <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
               Momentos críticos en la sesión.
             </h2>
           </motion.div>
@@ -247,11 +247,11 @@ export default function ReportePage() {
                   key={e.type}
                   {...fadeUp}
                   transition={{ ...fadeUp.transition, delay: i * 0.05 }}
-                  className="card-apple bg-white p-6"
+                  className="card-apple bg-[var(--surface)] p-6"
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className="mono text-[12px] text-[#86868b] flex-shrink-0">
+                      <span className="mono text-[12px] text-[var(--text-tertiary)] flex-shrink-0">
                         Paso {e.step}
                       </span>
                       <span
@@ -259,12 +259,12 @@ export default function ReportePage() {
                       >
                         {tone.label}
                       </span>
-                      <span className="text-[14px] text-[#1d1d1f] truncate capitalize">
+                      <span className="text-[14px] text-[var(--text-primary)] truncate capitalize">
                         {e.type.replace(/_/g, " ")}
                       </span>
                     </div>
                   </div>
-                  <blockquote className="mt-4 pl-4 border-l-2 border-[#e5e5ea] text-[14px] text-[#6e6e73] italic leading-[1.65]">
+                  <blockquote className="mt-4 pl-4 border-l-2 border-[var(--border)] text-[14px] text-[var(--text-secondary)] italic leading-[1.65]">
                     «{capFirst(e.excerpt)}»
                   </blockquote>
                 </motion.div>
@@ -277,7 +277,7 @@ export default function ReportePage() {
         <section className="reading-col px-6 mt-20">
           <motion.div {...fadeUp}>
             <div className="eyebrow">Fortalezas</div>
-            <h2 className="display mt-3 text-[28px] text-[#1d1d1f]">
+            <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
               Qué hizo bien.
             </h2>
           </motion.div>
@@ -294,7 +294,7 @@ export default function ReportePage() {
                   className="flex-shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full"
                   style={{ backgroundColor: "var(--accent)" }}
                 />
-                <p className="text-[15px] text-[#1d1d1f] leading-[1.65]">
+                <p className="text-[15px] text-[var(--text-primary)] leading-[1.65]">
                   {capFirst(s)}
                 </p>
               </motion.li>
@@ -314,10 +314,10 @@ export default function ReportePage() {
             }}
           >
             <div className="eyebrow accent-text">Recomendación</div>
-            <h2 className="display mt-3 text-[34px] text-[#1d1d1f]">
+            <h2 className="display mt-3 text-[34px] text-[var(--text-primary)]">
               {capFirst(r.recommendation.action)}.
             </h2>
-            <p className="mt-3 text-[15px] text-[#6e6e73]">
+            <p className="mt-3 text-[15px] text-[var(--text-secondary)]">
               {capFirst(r.recommendation.appliesTo)}
             </p>
 
@@ -326,10 +326,10 @@ export default function ReportePage() {
               <ol className="mt-4 space-y-3">
                 {r.recommendation.nextWeekActions.map((a, i) => (
                   <li key={i} className="flex items-start gap-4">
-                    <span className="mono text-[13px] text-[#86868b] flex-shrink-0 mt-0.5 w-5">
+                    <span className="mono text-[13px] text-[var(--text-tertiary)] flex-shrink-0 mt-0.5 w-5">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <p className="text-[15px] text-[#1d1d1f] leading-[1.6]">
+                    <p className="text-[15px] text-[var(--text-primary)] leading-[1.6]">
                       {capFirst(a)}
                     </p>
                   </li>
@@ -358,7 +358,7 @@ export default function ReportePage() {
               radius="full"
               variant="bordered"
               size="lg"
-              className="h-12 px-7 border-[#d2d2d7] text-[#1d1d1f] bg-white text-[15px]"
+              className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"
             >
               Volver a landing
             </Button>
@@ -367,7 +367,7 @@ export default function ReportePage() {
 
         {/* Meta footer */}
         <section className="reading-col px-6 mt-20">
-          <div className="border-t border-black/[0.06] pt-6 flex flex-wrap gap-x-6 gap-y-2 text-[12px] text-[#86868b] mono">
+          <div className="border-t border-[var(--hairline)] pt-6 flex flex-wrap gap-x-6 gap-y-2 text-[12px] text-[var(--text-tertiary)] mono">
             <span>Kappa {r.meta.kappa}</span>
             <span>·</span>
             <span>Judge agreement {r.meta.judgeAgreement}%</span>
