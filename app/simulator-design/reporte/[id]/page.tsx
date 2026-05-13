@@ -3,13 +3,19 @@
 import { Avatar, Button, Card, CardBody, Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "../../_components/SurfaceNav";
-import { DIMENSIONS, BAND_LABELS, REPORT_SYNTHETIC } from "../../_data/case-data";
+import { DIMENSIONS, REPORT_SYNTHETIC } from "../../_data/case-data";
 import type { BandKey } from "../../_data/case-data";
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const },
+};
+
+const BAND_DISPLAY: Record<BandKey, string> = {
+  A: "Alto",
+  M: "Medio",
+  B: "Bajo",
 };
 
 function bandScore(b: BandKey) {
@@ -19,31 +25,21 @@ function bandScore(b: BandKey) {
 }
 
 function bandTone(b: BandKey) {
-  if (b === "A")
-    return {
-      bg: "bg-[#e8f5ed]",
-      text: "text-[#0a7e3a]",
-      bar: "#0a7e3a",
-    };
-  if (b === "M")
-    return {
-      bg: "bg-[#fef4e6]",
-      text: "text-[#a05a00]",
-      bar: "#cc8800",
-    };
-  return {
-    bg: "bg-[#fde9e9]",
-    text: "text-[#a01818]",
-    bar: "#c0282b",
-  };
+  if (b === "A") return { bg: "bg-[#e8f5ed]", text: "text-[#0a7e3a]", bar: "#0a7e3a" };
+  if (b === "M") return { bg: "bg-[#fef4e6]", text: "text-[#a05a00]", bar: "#cc8800" };
+  return { bg: "bg-[#fde9e9]", text: "text-[#a01818]", bar: "#c0282b" };
 }
 
 function severityTone(s: "high" | "medium" | "low") {
   if (s === "high")
-    return { bg: "bg-[#fde9e9]", text: "text-[#a01818]", label: "alta" };
+    return { bg: "bg-[#fde9e9]", text: "text-[#a01818]", label: "Alta" };
   if (s === "medium")
-    return { bg: "bg-[#fef4e6]", text: "text-[#a05a00]", label: "media" };
-  return { bg: "bg-[#f5f5f7]", text: "text-[#6e6e73]", label: "baja" };
+    return { bg: "bg-[#fef4e6]", text: "text-[#a05a00]", label: "Media" };
+  return { bg: "bg-[#f5f5f7]", text: "text-[#6e6e73]", label: "Baja" };
+}
+
+function capFirst(s: string) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
 export default function ReportePage() {
@@ -52,6 +48,8 @@ export default function ReportePage() {
     DIMENSIONS.reduce((acc, d) => acc + bandScore(r.bands[d.id]), 0) /
       DIMENSIONS.length,
   );
+  const overallBand: BandKey =
+    overallScore > 75 ? "A" : overallScore > 50 ? "M" : "B";
 
   return (
     <>
@@ -65,8 +63,8 @@ export default function ReportePage() {
               style={{ backgroundColor: "#cc8800" }}
             />
             <span>
-              <span className="text-[#1d1d1f] font-medium">vista preview</span>{" "}
-              · datos sintéticos · estructura del reporte final
+              <span className="text-[#1d1d1f] font-medium">Vista preview</span>{" "}
+              · datos sintéticos · estructura del reporte final.
             </span>
           </div>
         </div>
@@ -74,9 +72,9 @@ export default function ReportePage() {
         {/* Header */}
         <section className="reading-col px-6 pt-14">
           <motion.div {...fadeUp}>
-            <div className="eyebrow">reporte ejecutivo · participante</div>
+            <div className="eyebrow">Reporte ejecutivo · participante</div>
             <h1 className="display display-tight mt-5 text-[40px] sm:text-[52px] text-[#1d1d1f]">
-              {r.caseTitle}.
+              {capFirst(r.caseTitle)}.
             </h1>
             <div className="mt-6 flex flex-wrap items-center gap-3 text-[13px] text-[#6e6e73]">
               <Avatar
@@ -104,7 +102,7 @@ export default function ReportePage() {
           >
             <div className="flex flex-col sm:flex-row sm:items-start gap-8">
               <div className="flex-shrink-0">
-                <div className="eyebrow">readiness general</div>
+                <div className="eyebrow">Readiness general</div>
                 <div className="display mt-3 text-[64px] text-[#1d1d1f] leading-none">
                   {overallScore}
                   <span className="text-[#86868b] text-[28px] ml-1">/100</span>
@@ -112,25 +110,16 @@ export default function ReportePage() {
                 <div className="mt-3">
                   <span
                     className={`text-[12px] font-semibold px-2.5 py-1 rounded-full ${
-                      bandTone(
-                        overallScore > 75 ? "A" : overallScore > 50 ? "M" : "B",
-                      ).bg
-                    } ${
-                      bandTone(
-                        overallScore > 75 ? "A" : overallScore > 50 ? "M" : "B",
-                      ).text
-                    }`}
+                      bandTone(overallBand).bg
+                    } ${bandTone(overallBand).text}`}
                   >
-                    banda{" "}
-                    {BAND_LABELS[
-                      overallScore > 75 ? "A" : overallScore > 50 ? "M" : "B"
-                    ]}
+                    Banda {BAND_DISPLAY[overallBand]}
                   </span>
                 </div>
               </div>
               <div className="flex-1 pt-1">
                 <p className="text-[16px] text-[#1d1d1f] leading-[1.65]">
-                  {r.recommendation.reason}
+                  {capFirst(r.recommendation.reason)}
                 </p>
               </div>
             </div>
@@ -140,9 +129,9 @@ export default function ReportePage() {
         {/* Dimensiones */}
         <section className="reading-col px-6 mt-20">
           <motion.div {...fadeUp}>
-            <div className="eyebrow">desempeño por dimensión</div>
+            <div className="eyebrow">Desempeño por dimensión</div>
             <h2 className="display mt-3 text-[28px] text-[#1d1d1f]">
-              las cinco dimensiones
+              Las cinco dimensiones.
             </h2>
           </motion.div>
 
@@ -162,16 +151,16 @@ export default function ReportePage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3">
                         <span className="text-[17px] font-semibold text-[#1d1d1f]">
-                          {d.label}
+                          {capFirst(d.label)}
                         </span>
                         <span
                           className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tone.bg} ${tone.text}`}
                         >
-                          banda {BAND_LABELS[band]}
+                          Banda {BAND_DISPLAY[band]}
                         </span>
                       </div>
                       <p className="mt-2 text-[14px] text-[#6e6e73] leading-[1.6]">
-                        {d.description}
+                        {capFirst(d.description)}.
                       </p>
                     </div>
                     <span className="text-[20px] mono font-semibold text-[#1d1d1f] flex-shrink-0">
@@ -200,9 +189,9 @@ export default function ReportePage() {
         {/* Gaps */}
         <section className="reading-col px-6 mt-20">
           <motion.div {...fadeUp}>
-            <div className="eyebrow">gaps identificados</div>
+            <div className="eyebrow">Gaps identificados</div>
             <h2 className="display mt-3 text-[28px] text-[#1d1d1f]">
-              dónde se torció
+              Dónde se torció.
             </h2>
           </motion.div>
 
@@ -220,16 +209,16 @@ export default function ReportePage() {
                     <span
                       className={`text-[11px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 mt-1 ${tone.bg} ${tone.text}`}
                     >
-                      severidad {tone.label}
+                      Severidad {tone.label}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <div className="eyebrow">qué observamos</div>
+                      <div className="eyebrow">Qué observamos</div>
                       <p className="mt-2 text-[15px] text-[#1d1d1f] leading-[1.65]">
-                        {g.observed}
+                        {capFirst(g.observed)}
                       </p>
-                      <div className="eyebrow mt-5">por qué importa</div>
+                      <div className="eyebrow mt-5">Por qué importa</div>
                       <p className="mt-2 text-[14px] text-[#6e6e73] leading-[1.65]">
-                        {g.whyMatters}
+                        {capFirst(g.whyMatters)}
                       </p>
                     </div>
                   </div>
@@ -242,9 +231,9 @@ export default function ReportePage() {
         {/* Risk events */}
         <section className="reading-col px-6 mt-20">
           <motion.div {...fadeUp}>
-            <div className="eyebrow">eventos de riesgo</div>
+            <div className="eyebrow">Eventos de riesgo</div>
             <h2 className="display mt-3 text-[28px] text-[#1d1d1f]">
-              momentos críticos en la sesión
+              Momentos críticos en la sesión.
             </h2>
           </motion.div>
 
@@ -263,20 +252,20 @@ export default function ReportePage() {
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3 min-w-0">
                       <span className="mono text-[12px] text-[#86868b] flex-shrink-0">
-                        paso {e.step}
+                        Paso {e.step}
                       </span>
                       <span
                         className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tone.bg} ${tone.text}`}
                       >
                         {tone.label}
                       </span>
-                      <span className="text-[14px] text-[#1d1d1f] truncate">
+                      <span className="text-[14px] text-[#1d1d1f] truncate capitalize">
                         {e.type.replace(/_/g, " ")}
                       </span>
                     </div>
                   </div>
                   <blockquote className="mt-4 pl-4 border-l-2 border-[#e5e5ea] text-[14px] text-[#6e6e73] italic leading-[1.65]">
-                    "{e.excerpt}"
+                    «{capFirst(e.excerpt)}»
                   </blockquote>
                 </motion.div>
               );
@@ -287,9 +276,9 @@ export default function ReportePage() {
         {/* Fortalezas */}
         <section className="reading-col px-6 mt-20">
           <motion.div {...fadeUp}>
-            <div className="eyebrow">fortalezas</div>
+            <div className="eyebrow">Fortalezas</div>
             <h2 className="display mt-3 text-[28px] text-[#1d1d1f]">
-              qué hizo bien
+              Qué hizo bien.
             </h2>
           </motion.div>
 
@@ -305,7 +294,9 @@ export default function ReportePage() {
                   className="flex-shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full"
                   style={{ backgroundColor: "var(--accent)" }}
                 />
-                <p className="text-[15px] text-[#1d1d1f] leading-[1.65]">{s}</p>
+                <p className="text-[15px] text-[#1d1d1f] leading-[1.65]">
+                  {capFirst(s)}
+                </p>
               </motion.li>
             ))}
           </ul>
@@ -322,16 +313,16 @@ export default function ReportePage() {
               borderWidth: 1,
             }}
           >
-            <div className="eyebrow accent-text">recomendación</div>
-            <h2 className="display mt-3 text-[34px] text-[#1d1d1f] capitalize">
-              {r.recommendation.action}
+            <div className="eyebrow accent-text">Recomendación</div>
+            <h2 className="display mt-3 text-[34px] text-[#1d1d1f]">
+              {capFirst(r.recommendation.action)}.
             </h2>
             <p className="mt-3 text-[15px] text-[#6e6e73]">
-              {r.recommendation.appliesTo}
+              {capFirst(r.recommendation.appliesTo)}
             </p>
 
             <div className="mt-7">
-              <div className="eyebrow">próximos 7 días</div>
+              <div className="eyebrow">Próximos 7 días</div>
               <ol className="mt-4 space-y-3">
                 {r.recommendation.nextWeekActions.map((a, i) => (
                   <li key={i} className="flex items-start gap-4">
@@ -339,7 +330,7 @@ export default function ReportePage() {
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <p className="text-[15px] text-[#1d1d1f] leading-[1.6]">
-                      {a}
+                      {capFirst(a)}
                     </p>
                   </li>
                 ))}
@@ -359,7 +350,7 @@ export default function ReportePage() {
               size="lg"
               className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
             >
-              vista del manager →
+              Vista del manager →
             </Button>
             <Button
               as={Link}
@@ -369,7 +360,7 @@ export default function ReportePage() {
               size="lg"
               className="h-12 px-7 border-[#d2d2d7] text-[#1d1d1f] bg-white text-[15px]"
             >
-              volver a landing
+              Volver a landing
             </Button>
           </motion.div>
         </section>
@@ -377,13 +368,13 @@ export default function ReportePage() {
         {/* Meta footer */}
         <section className="reading-col px-6 mt-20">
           <div className="border-t border-black/[0.06] pt-6 flex flex-wrap gap-x-6 gap-y-2 text-[12px] text-[#86868b] mono">
-            <span>kappa {r.meta.kappa}</span>
+            <span>Kappa {r.meta.kappa}</span>
             <span>·</span>
-            <span>judge agreement {r.meta.judgeAgreement}%</span>
+            <span>Judge agreement {r.meta.judgeAgreement}%</span>
             <span>·</span>
-            <span>rúbrica {r.meta.rubricVersion}</span>
+            <span>Rúbrica {r.meta.rubricVersion}</span>
             <span>·</span>
-            <span>caso {r.meta.caseVersion}</span>
+            <span>Caso {r.meta.caseVersion}</span>
           </div>
         </section>
       </main>

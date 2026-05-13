@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import {
   Link,
   Navbar,
@@ -14,10 +15,10 @@ import {
 import { usePathname } from "next/navigation";
 
 const ROUTES = [
-  { href: "/simulator-design", label: "landing" },
-  { href: "/simulator-design/runtime/caso-1", label: "runtime" },
-  { href: "/simulator-design/dashboard", label: "dashboard" },
-  { href: "/simulator-design/reporte/P001", label: "reporte" },
+  { href: "/simulator-design", label: "Landing" },
+  { href: "/simulator-design/runtime/caso-1", label: "Runtime" },
+  { href: "/simulator-design/dashboard", label: "Dashboard" },
+  { href: "/simulator-design/reporte/P001", label: "Reporte" },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -29,42 +30,23 @@ function BrandMark() {
   return (
     <Link
       href="/simulator-design"
-      className="flex items-center gap-2"
+      className="flex items-center gap-2.5"
       color="foreground"
     >
-      <div className="relative h-6 w-6 flex items-center justify-center">
-        <div
-          className="absolute inset-0 rounded-[8px]"
-          style={{ backgroundColor: "var(--accent)" }}
-        />
-        <svg
-          viewBox="0 0 14 14"
-          className="relative h-3 w-3"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M2 7L5 4L8 7L11 4"
-            stroke="white"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M2 10L5 7L8 10L11 7"
-            stroke="white"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            opacity="0.7"
-          />
-        </svg>
-      </div>
+      <Image
+        src="/images/itera-logo-light.png"
+        alt="Itera"
+        width={64}
+        height={32}
+        className="h-6 w-auto"
+        priority
+      />
+      <span className="text-[15px] text-[#86868b] mx-0.5">/</span>
       <span className="text-[15px] font-semibold tracking-tight text-[#1d1d1f]">
-        el simulador
+        El Simulador
       </span>
-      <span className="text-[11px] font-medium text-[#86868b] uppercase tracking-[0.12em] ml-1">
-        preview
+      <span className="text-[10px] font-semibold text-[#86868b] uppercase tracking-[0.14em] ml-1 px-2 py-0.5 rounded-full bg-[#f5f5f7]">
+        Preview
       </span>
     </Link>
   );
@@ -87,7 +69,7 @@ export function SurfaceNav() {
     >
       <NavbarContent justify="start">
         <NavbarMenuToggle
-          aria-label={isMenuOpen ? "cerrar menú" : "abrir menú"}
+          aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
           className="md:hidden text-[#1d1d1f]"
         />
         <NavbarBrand>

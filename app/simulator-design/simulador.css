@@ -33,12 +33,12 @@
   line-height: 1.02;
 }
 
-/* Single accent — indigo */
+/* Single accent — azul Itera (#1472FF) */
 :root {
-  --accent: #5b6cff;
-  --accent-hover: #4a5cf0;
-  --accent-soft: rgba(91, 108, 255, 0.08);
-  --accent-ring: rgba(91, 108, 255, 0.24);
+  --accent: #1472ff;
+  --accent-hover: #0e5fcc;
+  --accent-soft: rgba(20, 114, 255, 0.08);
+  --accent-ring: rgba(20, 114, 255, 0.24);
 }
 
 .simulador-root .accent-text { color: var(--accent); }

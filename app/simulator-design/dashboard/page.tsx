@@ -39,23 +39,17 @@ const SPRINT_AGGREGATE = {
 };
 
 function bandTone(b: BandKey | null) {
-  if (b === "A")
-    return {
-      bg: "bg-[#e8f5ed]",
-      text: "text-[#0a7e3a]",
-    };
-  if (b === "M")
-    return {
-      bg: "bg-[#fef4e6]",
-      text: "text-[#a05a00]",
-    };
-  if (b === "B")
-    return {
-      bg: "bg-[#fde9e9]",
-      text: "text-[#a01818]",
-    };
+  if (b === "A") return { bg: "bg-[#e8f5ed]", text: "text-[#0a7e3a]" };
+  if (b === "M") return { bg: "bg-[#fef4e6]", text: "text-[#a05a00]" };
+  if (b === "B") return { bg: "bg-[#fde9e9]", text: "text-[#a01818]" };
   return { bg: "bg-[#f5f5f7]", text: "text-[#86868b]" };
 }
+
+const BAND_DISPLAY: Record<BandKey, string> = {
+  A: "Alto",
+  M: "Medio",
+  B: "Bajo",
+};
 
 export default function DashboardPage() {
   const completionPct = Math.round(
@@ -74,7 +68,7 @@ export default function DashboardPage() {
         <section className="border-b border-black/[0.06] surface-canvas">
           <div className="max-w-6xl mx-auto px-6 py-12">
             <motion.div {...fadeUp}>
-              <div className="eyebrow">dashboard del manager</div>
+              <div className="eyebrow">Dashboard del manager</div>
               <h1 className="display display-tight mt-4 text-[36px] sm:text-[44px] text-[#1d1d1f]">
                 {SPRINT_META.publicName}
               </h1>
@@ -87,7 +81,7 @@ export default function DashboardPage() {
                 </span>
                 <span className="text-[#d2d2d7]">·</span>
                 <span>
-                  quedan{" "}
+                  Quedan{" "}
                   <span className="text-[#1d1d1f] font-medium">
                     {SPRINT_AGGREGATE.daysLeft} días
                   </span>
@@ -108,12 +102,12 @@ export default function DashboardPage() {
         <section className="max-w-6xl mx-auto px-6 mt-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black/[0.06] rounded-2xl overflow-hidden border border-black/[0.06]">
             <motion.div {...fadeUp} className="bg-white p-8">
-              <div className="eyebrow">progreso del sprint</div>
+              <div className="eyebrow">Progreso del sprint</div>
               <div className="display mt-4 text-[48px] text-[#1d1d1f] leading-none">
                 {completionPct}%
               </div>
               <Progress
-                aria-label="progreso"
+                aria-label="Progreso"
                 value={completionPct}
                 classNames={{
                   track: "h-[3px] bg-[#f5f5f7] mt-4",
@@ -137,7 +131,7 @@ export default function DashboardPage() {
               transition={{ ...fadeUp.transition, delay: 0.05 }}
               className="bg-white p-8"
             >
-              <div className="eyebrow">readiness promedio</div>
+              <div className="eyebrow">Readiness promedio</div>
               <div className="display mt-4 text-[48px] text-[#1d1d1f] leading-none">
                 {avgReadiness}
                 <span className="text-[#86868b] text-[28px] ml-1">/100</span>
@@ -151,9 +145,9 @@ export default function DashboardPage() {
                 <div className="h-[3px] flex-1 bg-[#f5f5f7] rounded-full" />
               </div>
               <div className="mt-4 text-[13px] text-[#6e6e73]">
-                el equipo está en{" "}
+                El equipo está en{" "}
                 <span className="text-[#1d1d1f] font-medium">banda media</span>{" "}
-                · privacidad es el gap principal
+                · privacidad es el gap principal.
               </div>
             </motion.div>
 
@@ -162,12 +156,12 @@ export default function DashboardPage() {
               transition={{ ...fadeUp.transition, delay: 0.1 }}
               className="bg-white p-8"
             >
-              <div className="eyebrow">eventos de riesgo</div>
+              <div className="eyebrow">Eventos de riesgo</div>
               <div className="display mt-4 text-[48px] text-[#1d1d1f] leading-none">
                 {SPRINT_AGGREGATE.riskEventsTotal}
               </div>
               <div className="mt-5 text-[13px] text-[#6e6e73]">
-                detectados en sesiones completadas
+                Detectados en sesiones completadas.
               </div>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {SPRINT_AGGREGATE.flaggedRoles.map((r) => (
@@ -187,9 +181,9 @@ export default function DashboardPage() {
         <section className="max-w-6xl mx-auto px-6 mt-20">
           <motion.div {...fadeUp} className="flex items-end justify-between mb-8">
             <div>
-              <div className="eyebrow">equipo</div>
+              <div className="eyebrow">Equipo</div>
               <h2 className="display mt-2 text-[28px] text-[#1d1d1f]">
-                {SPRINT_AGGREGATE.totalSeats} miembros del Sprint
+                {SPRINT_AGGREGATE.totalSeats} miembros del sprint.
               </h2>
             </div>
             <Button
@@ -200,7 +194,7 @@ export default function DashboardPage() {
               variant="bordered"
               className="hidden sm:flex border-[#d2d2d7] text-[#1d1d1f] bg-white"
             >
-              ver reporte ejecutivo →
+              Ver reporte ejecutivo →
             </Button>
           </motion.div>
 
@@ -232,7 +226,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="mt-1 flex items-center gap-2 text-[12px]">
                           {m.status === "completed" && (
-                            <span className="text-[#0a7e3a]">completado</span>
+                            <span className="text-[#0a7e3a]">Completado</span>
                           )}
                           {m.status === "in_progress" && (
                             <span className="text-[#a05a00] flex items-center gap-1">
@@ -240,11 +234,11 @@ export default function DashboardPage() {
                                 className="inline-block h-1.5 w-1.5 rounded-full pulse-soft"
                                 style={{ backgroundColor: "#a05a00" }}
                               />
-                              en curso
+                              En curso
                             </span>
                           )}
                           {m.status === "not_started" && (
-                            <span className="text-[#86868b]">no iniciado</span>
+                            <span className="text-[#86868b]">No iniciado</span>
                           )}
                           {m.sessionDuration && (
                             <>
@@ -260,7 +254,7 @@ export default function DashboardPage() {
                         <div
                           className={`flex-shrink-0 text-[11px] font-semibold px-2.5 py-1 rounded-full ${tone.bg} ${tone.text}`}
                         >
-                          {BAND_LABELS[m.readiness]}
+                          {BAND_DISPLAY[m.readiness]}
                         </div>
                       )}
                     </CardBody>
@@ -274,14 +268,14 @@ export default function DashboardPage() {
         {/* Dimensiones agregadas */}
         <section className="max-w-6xl mx-auto px-6 mt-20">
           <motion.div {...fadeUp} className="mb-8">
-            <div className="eyebrow">resultado agregado</div>
+            <div className="eyebrow">Resultado agregado</div>
             <h2 className="display mt-2 text-[28px] text-[#1d1d1f]">
-              dimensiones del equipo
+              Dimensiones del equipo.
             </h2>
             <p className="mt-3 text-[15px] text-[#6e6e73] max-w-2xl">
-              promedio de las 5 dimensiones que medimos en cada caso. el gap
+              Promedio de las 5 dimensiones que medimos en cada caso. El gap
               principal del equipo se concentra en{" "}
-              <span className="text-[#1d1d1f] font-medium">privacidad</span>.
+              <span className="text-[#1d1d1f] font-medium">Privacidad</span>.
             </p>
           </motion.div>
 
@@ -289,6 +283,9 @@ export default function DashboardPage() {
             <div className="space-y-6">
               {DIMENSIONS.map((d, i) => {
                 const score = SPRINT_AGGREGATE.dimensionsAvg[d.id] || 0;
+                const labelCapped = d.label.charAt(0).toUpperCase() + d.label.slice(1);
+                const descCapped =
+                  d.description.charAt(0).toUpperCase() + d.description.slice(1) + ".";
                 return (
                   <motion.div
                     key={d.id}
@@ -298,7 +295,7 @@ export default function DashboardPage() {
                     <div className="flex items-baseline justify-between">
                       <div>
                         <span className="text-[15px] font-medium text-[#1d1d1f]">
-                          {d.label}
+                          {labelCapped}
                         </span>
                       </div>
                       <span className="text-[15px] mono text-[#1d1d1f] font-semibold">
@@ -306,7 +303,7 @@ export default function DashboardPage() {
                       </span>
                     </div>
                     <p className="mt-1 text-[13px] text-[#6e6e73]">
-                      {d.description}
+                      {descCapped}
                     </p>
                     <div className="mt-3 h-[6px] bg-[#f5f5f7] rounded-full overflow-hidden">
                       <motion.div
@@ -331,31 +328,39 @@ export default function DashboardPage() {
         {/* Acciones recomendadas */}
         <section className="max-w-6xl mx-auto px-6 mt-20">
           <motion.div {...fadeUp} className="mb-8">
-            <div className="eyebrow">acciones recomendadas</div>
+            <div className="eyebrow">Acciones recomendadas</div>
             <h2 className="display mt-2 text-[28px] text-[#1d1d1f]">
-              cuatro caminos por persona
+              Cuatro caminos por persona.
             </h2>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {MANAGER_ACTIONS.map((a, i) => (
-              <motion.div
-                key={a.id}
-                {...fadeUp}
-                transition={{ ...fadeUp.transition, delay: i * 0.04 }}
-              >
-                <Card className="card-apple bg-white shadow-none">
-                  <CardBody className="p-5">
-                    <h3 className="text-[16px] font-semibold text-[#1d1d1f]">
-                      {a.label}
-                    </h3>
-                    <p className="mt-1.5 text-[14px] text-[#6e6e73] leading-[1.55]">
-                      {a.description}
-                    </p>
-                  </CardBody>
-                </Card>
-              </motion.div>
-            ))}
+            {MANAGER_ACTIONS.map((a, i) => {
+              const labelCapped =
+                a.label.charAt(0).toUpperCase() + a.label.slice(1);
+              const descCapped =
+                a.description.charAt(0).toUpperCase() +
+                a.description.slice(1) +
+                ".";
+              return (
+                <motion.div
+                  key={a.id}
+                  {...fadeUp}
+                  transition={{ ...fadeUp.transition, delay: i * 0.04 }}
+                >
+                  <Card className="card-apple bg-white shadow-none">
+                    <CardBody className="p-5">
+                      <h3 className="text-[16px] font-semibold text-[#1d1d1f]">
+                        {labelCapped}.
+                      </h3>
+                      <p className="mt-1.5 text-[14px] text-[#6e6e73] leading-[1.55]">
+                        {descCapped}
+                      </p>
+                    </CardBody>
+                  </Card>
+                </motion.div>
+              );
+            })}
           </div>
         </section>
       </main>
