@@ -17,157 +17,234 @@ import {
   SPRINT_META,
 } from "./_data/case-data";
 
+const STATS = [
+  { value: "88%", label: "adopción IA organizacional 2026", source: "Stanford AI Index" },
+  { value: "1/3", label: "empresas escalando valor real", source: "McKinsey State of AI" },
+  { value: "~30%", label: "transferencia de training a comportamiento", source: "Kirkpatrick L3" },
+];
+
 export default function SimuladorLanding() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[#08080a] text-white">
       <SurfaceNav />
 
-      {/* HERO */}
+      {/* ============ HERO ============ */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 gradient-mesh opacity-60" />
-        <div className="absolute inset-0 grain opacity-40" />
-        <div className="relative mx-auto max-w-6xl px-6 pt-24 pb-32">
+        {/* Aurora background */}
+        <div className="absolute inset-0 aurora opacity-80" aria-hidden />
+        <div className="absolute inset-0 spotlight" aria-hidden />
+        <div className="grain" aria-hidden />
+
+        {/* Subtle grid */}
+        <div
+          className="absolute inset-0 opacity-[0.18]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)",
+            backgroundSize: "48px 48px",
+            maskImage:
+              "radial-gradient(ellipse 80% 60% at 50% 30%, black 30%, transparent 80%)",
+          }}
+          aria-hidden
+        />
+
+        <div className="relative mx-auto max-w-7xl px-6 pt-20 pb-28">
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col items-center text-center"
           >
-            <Chip
-              size="md"
-              variant="flat"
-              color="secondary"
-              className="mb-8 backdrop-blur-md border border-white/10"
-            >
-              simulador de criterio IA · LATAM B2B 2026
-            </Chip>
-
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-semibold tracking-tight max-w-5xl">
-              <span className="text-white/95">te mostramos si tu equipo</span>
-              <br />
-              <span className="bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-indigo-300 bg-clip-text text-transparent">
-                puede usar IA con criterio
+            {/* Eyebrow */}
+            <div className="inline-flex items-center gap-2 mb-7 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/10 backdrop-blur-md">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgb(74,222,128)]" />
+              <span className="text-[12px] text-white/70 tracking-wide">
+                simulador de criterio IA
               </span>
+              <span className="text-white/30">·</span>
+              <span className="text-[12px] text-white/55 tracking-wide">
+                LATAM B2B
+              </span>
+            </div>
+
+            {/* Headline */}
+            <h1 className="text-[44px] md:text-6xl lg:text-7xl font-semibold tracking-[-0.025em] leading-[0.98] max-w-5xl">
+              <span className="text-white">criterio operativo</span>
+              <br />
+              <span className="text-white/55">en uso de IA, </span>
+              <span className="gradient-text">medible.</span>
             </h1>
 
-            <p className="mt-8 text-lg md:text-xl text-white/60 max-w-3xl leading-relaxed">
-              en situaciones reales de negocio, antes de que lo haga con
-              clientes, datos sensibles o campañas reales. evidencia conductual,
-              no test de opción múltiple.
+            {/* Sub */}
+            <p className="mt-8 text-lg md:text-xl text-white/65 max-w-2xl leading-[1.55]">
+              te mostramos si tu equipo puede usar IA con criterio en situaciones
+              reales de negocio — <span className="text-white/85">antes</span> de
+              que lo haga con clientes, datos sensibles o campañas reales.
             </p>
 
-            <div className="mt-12 flex flex-col sm:flex-row gap-4">
+            {/* CTAs */}
+            <div className="mt-12 flex flex-col sm:flex-row items-center gap-3">
               <Button
                 as={Link}
                 href="/simulator-design/runtime/caso-1"
-                color="primary"
                 size="lg"
-                className="font-medium bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-indigo-500/30"
+                className="h-12 px-6 font-medium bg-white text-black hover:bg-white/90 shadow-[0_8px_32px_-8px_rgba(255,255,255,0.4)]"
+                radius="full"
               >
-                diagnóstico de 1 caso · gratis
+                diagnóstico de 1 caso — gratis
+                <span className="ml-1">→</span>
               </Button>
               <Button
                 as={Link}
                 href="/simulator-design/dashboard"
-                variant="bordered"
                 size="lg"
-                className="border-white/15 text-white"
+                variant="flat"
+                radius="full"
+                className="h-12 px-6 bg-white/[0.04] border border-white/10 text-white hover:bg-white/[0.08] hover:border-white/20"
               >
-                ver Sprint completo →
+                ver Sprint completo
               </Button>
             </div>
 
-            <div className="mt-16 flex flex-wrap items-center justify-center gap-6 text-sm text-white/40">
-              <span>· {SPRINT_META.geoTarget.join(" / ")}</span>
-              <span>· 50-500 empleados</span>
-              <span>· SaaS B2B / ecommerce / servicios</span>
+            {/* Trust strip */}
+            <div className="mt-16 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-[12px] text-white/40 tracking-wide">
+              <span className="flex items-center gap-1.5">
+                <span className="text-white/30">·</span>
+                {SPRINT_META.geoTarget.join(" · ")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="text-white/30">·</span>
+                50–500 empleados
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="text-white/30">·</span>
+                SaaS B2B / ecommerce / servicios
+              </span>
             </div>
+          </motion.div>
+
+          {/* Bento stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-24 grid md:grid-cols-3 gap-3"
+          >
+            {STATS.map((s, i) => (
+              <Card
+                key={i}
+                className="bg-white/[0.025] border border-white/[0.06] card-lift"
+                shadow="none"
+              >
+                <CardBody className="p-6">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl md:text-4xl font-semibold tracking-tight bg-gradient-to-br from-white to-white/60 bg-clip-text text-transparent">
+                      {s.value}
+                    </span>
+                  </div>
+                  <div className="mt-2 text-[14px] text-white/75 leading-snug">
+                    {s.label}
+                  </div>
+                  <div className="mt-3 text-[11px] text-white/35 tracking-wide uppercase">
+                    {s.source}
+                  </div>
+                </CardBody>
+              </Card>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* PROBLEMA */}
-      <section className="border-t border-white/5 bg-zinc-950">
-        <div className="mx-auto max-w-6xl px-6 py-24">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
-            className="grid md:grid-cols-2 gap-12 items-start"
-          >
-            <div>
-              <span className="text-xs uppercase tracking-widest text-white/40">
+      {/* ============ PROBLEMA ============ */}
+      <section className="relative border-t border-white/[0.06]">
+        <div className="mx-auto max-w-7xl px-6 py-24">
+          <div className="grid md:grid-cols-12 gap-x-12 gap-y-8 items-start">
+            <div className="md:col-span-5">
+              <span className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
                 el problema
               </span>
-              <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">
+              <h2 className="mt-4 text-3xl md:text-5xl font-semibold tracking-[-0.02em] leading-[1.05]">
                 tu equipo ya usa IA.
                 <br />
-                <span className="text-white/50">
+                <span className="text-white/45">
                   la pregunta no es si — es si lo hace bien.
                 </span>
               </h2>
             </div>
-            <div className="space-y-6 text-white/70">
-              <p className="leading-relaxed">
-                <span className="text-white">88% de adopción organizacional</span>{" "}
-                (Stanford AI Index 2026). pero solo un tercio está escalando
-                valor real. el cuello de botella no es acceso a modelos — es
-                criterio.
+            <div className="md:col-span-7 md:pt-2 space-y-5">
+              <p className="text-[16px] md:text-[17px] text-white/75 leading-[1.65]">
+                <span className="text-white font-medium">
+                  88% de adopción organizacional
+                </span>{" "}
+                en 2026 (Stanford AI Index). pero solo un tercio está escalando
+                valor real. el cuello de botella no es acceso a modelos — es{" "}
+                <span className="text-white font-medium">criterio</span>.
               </p>
-              <p className="leading-relaxed">
+              <p className="text-[16px] md:text-[17px] text-white/75 leading-[1.65]">
                 completion rates de cursos, badges y horas de training no te
                 dicen{" "}
-                <span className="text-white">
+                <span className="text-white font-medium">
                   si tu equipo decide bien con IA
                 </span>{" "}
                 cuando hay deadline, datos sensibles y un VP pidiéndole
                 resultados a las 9 AM.
               </p>
-              <p className="leading-relaxed">
-                el Simulador hace eso. mide criterio en escenarios reales con
-                consecuencias observables.
+              <p className="text-[16px] md:text-[17px] text-white/75 leading-[1.65]">
+                el Simulador mide{" "}
+                <span className="text-white font-medium">
+                  comportamiento en escenarios reales
+                </span>{" "}
+                con consecuencias observables. evidencia conductual, no test de
+                opción múltiple.
               </p>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* COMO FUNCIONA */}
-      <section className="border-t border-white/5">
-        <div className="mx-auto max-w-6xl px-6 py-24">
-          <div className="text-center mb-16">
-            <span className="text-xs uppercase tracking-widest text-white/40">
+      {/* ============ CÓMO FUNCIONA — LOOP ============ */}
+      <section className="relative border-t border-white/[0.06] bg-gradient-to-b from-transparent via-white/[0.015] to-transparent">
+        <div className="mx-auto max-w-7xl px-6 py-24">
+          <div className="text-center mb-16 max-w-2xl mx-auto">
+            <span className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
               cómo funciona
             </span>
-            <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">
+            <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-[-0.02em]">
               el loop completo del Sprint
             </h2>
+            <p className="mt-3 text-white/55 text-[15px]">
+              6 etapas. 30 días. evidencia accionable al cierre.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-3">
             {[
-              { n: "01", label: "caso vivo", desc: "situación laboral real" },
-              { n: "02", label: "decisión", desc: "5 pasos observables" },
-              { n: "03", label: "evaluación", desc: "5 dimensiones + LLM judge" },
-              { n: "04", label: "práctica", desc: "microbeat correctivo" },
-              { n: "05", label: "re-simulación", desc: "variante 7 días después" },
-              { n: "06", label: "evidencia", desc: "manager toma acción" },
+              { n: "01", label: "caso vivo", desc: "situación laboral real con presión y datos" },
+              { n: "02", label: "decisión", desc: "5 pasos observables, no opciones múltiples" },
+              { n: "03", label: "evaluación", desc: "rúbrica versionada + LLM judge calibrado" },
+              { n: "04", label: "práctica", desc: "microbeat correctivo, ≤2 min" },
+              { n: "05", label: "re-simulación", desc: "variante a 7 días para probar transferencia" },
+              { n: "06", label: "evidencia", desc: "reporte ejecutivo + acción del manager" },
             ].map((s, i) => (
               <motion.div
                 key={s.n}
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.04 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
               >
-                <Card className="bg-white/[0.02] border border-white/5 backdrop-blur-sm h-full">
+                <Card
+                  className="bg-white/[0.025] border border-white/[0.06] h-full card-lift"
+                  shadow="none"
+                >
                   <CardBody className="p-5">
-                    <div className="text-xs text-white/30 font-mono mb-3">
+                    <div className="text-[11px] mono text-white/30 mb-3">
                       {s.n}
                     </div>
-                    <div className="text-white font-medium mb-1">{s.label}</div>
-                    <div className="text-sm text-white/40 leading-snug">
+                    <div className="text-white font-medium text-[15px]">
+                      {s.label}
+                    </div>
+                    <div className="text-[13px] text-white/55 leading-snug mt-1.5">
                       {s.desc}
                     </div>
                   </CardBody>
@@ -178,43 +255,49 @@ export default function SimuladorLanding() {
         </div>
       </section>
 
-      {/* 5 DIMENSIONES */}
-      <section className="border-t border-white/5 bg-zinc-950">
-        <div className="mx-auto max-w-6xl px-6 py-24">
-          <div className="grid md:grid-cols-2 gap-12 items-start">
-            <div>
-              <span className="text-xs uppercase tracking-widest text-white/40">
+      {/* ============ 5 DIMENSIONES ============ */}
+      <section className="relative border-t border-white/[0.06]">
+        <div className="mx-auto max-w-7xl px-6 py-24">
+          <div className="grid md:grid-cols-12 gap-x-12 gap-y-10">
+            <div className="md:col-span-5">
+              <span className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
                 qué medimos
               </span>
-              <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">
+              <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-[-0.02em] leading-tight">
                 5 dimensiones de criterio operativo con IA
               </h2>
-              <p className="mt-6 text-white/60 leading-relaxed">
+              <p className="mt-5 text-white/65 text-[15px] leading-relaxed">
                 no evaluamos si tu equipo "sabe IA". evaluamos si decide bien
                 cuando hay presión, datos sensibles, autoridad y consecuencias.
-                bandas alto / medio / bajo por dimensión.
+              </p>
+              <p className="mt-3 text-white/55 text-[14px] leading-relaxed">
+                bandas alto / medio / bajo por dimensión. nada de scores
+                puntuales falsos.
               </p>
             </div>
 
-            <div className="space-y-2">
+            <div className="md:col-span-7 space-y-2">
               {DIMENSIONS.map((d, i) => (
                 <motion.div
                   key={d.id}
-                  initial={{ opacity: 0, x: 12 }}
+                  initial={{ opacity: 0, x: 16 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: i * 0.04 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.4, delay: i * 0.05 }}
                 >
-                  <Card className="bg-white/[0.02] border border-white/5">
-                    <CardBody className="p-5 flex flex-row gap-4 items-start">
-                      <div className="text-xs font-mono text-white/30 mt-1 min-w-[24px]">
+                  <Card
+                    className="bg-white/[0.025] border border-white/[0.06] card-lift"
+                    shadow="none"
+                  >
+                    <CardBody className="p-5 flex flex-row gap-5 items-start">
+                      <div className="mono text-[12px] text-white/35 mt-0.5 min-w-[28px]">
                         0{i + 1}
                       </div>
-                      <div>
-                        <div className="font-medium text-white capitalize">
+                      <div className="flex-1">
+                        <div className="font-medium text-white capitalize text-[15px]">
                           {d.label}
                         </div>
-                        <div className="text-sm text-white/50 mt-1 leading-relaxed">
+                        <div className="text-[13px] text-white/60 mt-1.5 leading-relaxed">
                           {d.description}
                         </div>
                       </div>
@@ -227,19 +310,19 @@ export default function SimuladorLanding() {
         </div>
       </section>
 
-      {/* 8 CASOS DEL SPRINT */}
-      <section className="border-t border-white/5">
-        <div className="mx-auto max-w-6xl px-6 py-24">
-          <div className="text-center mb-16">
-            <span className="text-xs uppercase tracking-widest text-white/40">
+      {/* ============ 8 CASOS DEL SPRINT ============ */}
+      <section className="relative border-t border-white/[0.06] bg-gradient-to-b from-transparent via-white/[0.015] to-transparent">
+        <div className="mx-auto max-w-7xl px-6 py-24">
+          <div className="text-center mb-16 max-w-2xl mx-auto">
+            <span className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
               {SPRINT_META.publicName}
             </span>
-            <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">
+            <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-[-0.02em]">
               8 casos vivos, no 8 lecciones
             </h2>
-            <p className="mt-4 text-white/50 max-w-2xl mx-auto">
-              cada caso simula una situación que tu equipo de marketing vive
-              cada trimestre. con datos, presión y stakeholders reales.
+            <p className="mt-3 text-white/55 text-[15px]">
+              cada caso simula una situación que tu equipo vive cada trimestre.
+              datos, presión y stakeholders reales.
             </p>
           </div>
 
@@ -249,43 +332,55 @@ export default function SimuladorLanding() {
                 key={c.id}
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.03 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.35, delay: i * 0.03 }}
               >
-                <Card className="bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors h-full">
+                <Card
+                  className="bg-white/[0.025] border border-white/[0.06] h-full card-lift"
+                  shadow="none"
+                >
                   <CardBody className="p-6">
                     <div className="flex items-start justify-between gap-3 mb-3">
-                      <div className="text-xs font-mono text-white/30">
+                      <div className="mono text-[11px] text-white/30 tracking-wider">
                         caso 0{c.order}
                       </div>
                       <Chip
                         size="sm"
                         variant="flat"
-                        color={
-                          c.difficulty === "advanced"
-                            ? "danger"
-                            : c.difficulty === "intermediate"
-                            ? "warning"
-                            : "default"
-                        }
-                        className="text-[10px]"
+                        classNames={{
+                          base:
+                            c.difficulty === "advanced"
+                              ? "h-5 bg-rose-500/15 border border-rose-500/25"
+                              : c.difficulty === "intermediate"
+                              ? "h-5 bg-amber-500/15 border border-amber-500/25"
+                              : "h-5 bg-white/[0.04] border border-white/10",
+                          content:
+                            c.difficulty === "advanced"
+                              ? "text-[10px] tracking-wider text-rose-300 uppercase"
+                              : c.difficulty === "intermediate"
+                              ? "text-[10px] tracking-wider text-amber-300 uppercase"
+                              : "text-[10px] tracking-wider text-white/50 uppercase",
+                        }}
                       >
                         {c.difficulty}
                       </Chip>
                     </div>
-                    <h3 className="text-white font-medium text-lg leading-tight">
+                    <h3 className="text-white font-semibold text-[17px] leading-tight">
                       {c.title}
                     </h3>
-                    <p className="text-sm text-white/40 mt-2">
+                    <p className="text-[13px] text-white/55 mt-2 leading-relaxed">
                       tensión: {c.tension}
                     </p>
-                    <div className="flex flex-wrap gap-1 mt-4">
+                    <div className="flex flex-wrap gap-1.5 mt-4">
                       {c.dimensions.map((d) => (
                         <Chip
                           key={d}
                           size="sm"
                           variant="flat"
-                          className="bg-white/5 text-white/60 text-[10px]"
+                          classNames={{
+                            base: "h-5 bg-white/[0.03] border border-white/[0.08]",
+                            content: "text-[10px] text-white/60 capitalize",
+                          }}
                         >
                           {d}
                         </Chip>
@@ -299,19 +394,19 @@ export default function SimuladorLanding() {
         </div>
       </section>
 
-      {/* MANAGER ACTIONS */}
-      <section className="border-t border-white/5 bg-zinc-950">
-        <div className="mx-auto max-w-6xl px-6 py-24">
-          <div className="text-center mb-16">
-            <span className="text-xs uppercase tracking-widest text-white/40">
+      {/* ============ MANAGER ACTIONS ============ */}
+      <section className="relative border-t border-white/[0.06]">
+        <div className="mx-auto max-w-7xl px-6 py-24">
+          <div className="text-center mb-16 max-w-2xl mx-auto">
+            <span className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
               el output
             </span>
-            <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">
+            <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-[-0.02em]">
               1 reporte. 1 recomendación. 1 acción.
             </h2>
-            <p className="mt-4 text-white/50 max-w-2xl mx-auto">
-              no dashboards infinitos. al cierre del Sprint, tu equipo cae en
-              una de estas 4 acciones.
+            <p className="mt-3 text-white/55 text-[15px]">
+              no dashboards infinitos. al cierre del Sprint tu equipo cae en una
+              de estas 4 acciones.
             </p>
           </div>
 
@@ -321,20 +416,39 @@ export default function SimuladorLanding() {
                 key={a.id}
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.05 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.35, delay: i * 0.05 }}
               >
-                <Card className="bg-white/[0.02] border border-white/5 h-full">
-                  <CardBody className="p-6">
+                <Card
+                  className="bg-white/[0.025] border border-white/[0.06] h-full card-lift"
+                  shadow="none"
+                >
+                  <CardBody className="p-5">
                     <Chip
                       size="sm"
                       variant="flat"
-                      color={a.color}
-                      className="mb-3"
+                      classNames={{
+                        base:
+                          a.color === "success"
+                            ? "h-6 bg-emerald-500/15 border border-emerald-500/25 mb-4"
+                            : a.color === "primary"
+                            ? "h-6 bg-indigo-500/15 border border-indigo-500/25 mb-4"
+                            : a.color === "warning"
+                            ? "h-6 bg-amber-500/15 border border-amber-500/25 mb-4"
+                            : "h-6 bg-rose-500/15 border border-rose-500/25 mb-4",
+                        content:
+                          a.color === "success"
+                            ? "text-[11px] tracking-wider text-emerald-300 uppercase font-medium"
+                            : a.color === "primary"
+                            ? "text-[11px] tracking-wider text-indigo-300 uppercase font-medium"
+                            : a.color === "warning"
+                            ? "text-[11px] tracking-wider text-amber-300 uppercase font-medium"
+                            : "text-[11px] tracking-wider text-rose-300 uppercase font-medium",
+                      }}
                     >
                       {a.label}
                     </Chip>
-                    <p className="text-sm text-white/60 leading-relaxed">
+                    <p className="text-[13px] text-white/70 leading-relaxed">
                       {a.description}
                     </p>
                   </CardBody>
@@ -345,62 +459,65 @@ export default function SimuladorLanding() {
         </div>
       </section>
 
-      {/* PRICING */}
-      <section className="border-t border-white/5">
-        <div className="mx-auto max-w-4xl px-6 py-24 text-center">
-          <span className="text-xs uppercase tracking-widest text-white/40">
+      {/* ============ PRICING ============ */}
+      <section className="relative border-t border-white/[0.06] overflow-hidden">
+        <div className="absolute inset-0 aurora-soft opacity-60" aria-hidden />
+        <div className="relative mx-auto max-w-4xl px-6 py-24 text-center">
+          <span className="text-[11px] uppercase tracking-[0.2em] text-white/40 font-medium">
             precio
           </span>
-          <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight">
-            ${SPRINT_META.pricing.min}–${SPRINT_META.pricing.max}{" "}
-            <span className="text-white/40 text-2xl">USD</span>
-            <span className="block text-base text-white/40 font-normal mt-2">
-              por seat · por Sprint
-            </span>
+          <h2 className="mt-4 text-4xl md:text-5xl font-semibold tracking-[-0.02em]">
+            <span className="bg-gradient-to-r from-white via-white to-white/70 bg-clip-text text-transparent">
+              ${SPRINT_META.pricing.min}–${SPRINT_META.pricing.max}
+            </span>{" "}
+            <span className="text-white/45 text-3xl font-medium">USD</span>
           </h2>
-          <p className="mt-6 text-white/50 max-w-xl mx-auto">
-            equipo mínimo de 5 personas. precio según seniority y tamaño de
-            cohorte. el primer caso es diagnóstico gratis.
+          <p className="mt-3 text-white/55 text-[15px]">
+            por seat · por Sprint · equipo mínimo 5 personas
+          </p>
+          <p className="mt-5 text-white/65 max-w-xl mx-auto text-[15px] leading-relaxed">
+            precio según seniority y tamaño de cohorte. el primer caso es
+            diagnóstico gratis para que vivas el formato.
           </p>
 
-          <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="mt-12 flex flex-col sm:flex-row gap-3 justify-center">
             <Button
               as={Link}
               href="/simulator-design/runtime/caso-1"
-              color="primary"
               size="lg"
-              className="font-medium bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow-lg shadow-indigo-500/30"
+              className="h-12 px-6 font-medium bg-white text-black hover:bg-white/90 shadow-[0_8px_32px_-8px_rgba(255,255,255,0.4)]"
+              radius="full"
             >
-              arrancar diagnóstico
+              arrancar diagnóstico →
             </Button>
             <Button
               as={Link}
               href="/simulator-design/reporte/P001"
-              variant="bordered"
               size="lg"
-              className="border-white/15 text-white"
+              variant="flat"
+              radius="full"
+              className="h-12 px-6 bg-white/[0.04] border border-white/10 text-white hover:bg-white/[0.08] hover:border-white/20"
             >
-              ver reporte de ejemplo →
+              ver reporte de ejemplo
             </Button>
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="border-t border-white/5 bg-black">
-        <div className="mx-auto max-w-6xl px-6 py-12">
-          <Divider className="bg-white/5 mb-8" />
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/40">
+      {/* ============ FOOTER ============ */}
+      <footer className="border-t border-white/[0.06]">
+        <div className="mx-auto max-w-7xl px-6 py-10">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-[12px] text-white/40">
             <div className="flex items-center gap-2">
-              <div className="h-6 w-6 rounded-md bg-gradient-to-br from-indigo-500 to-fuchsia-500" />
-              <span>el simulador · itera</span>
+              <div className="h-5 w-5 rounded-md bg-gradient-to-br from-indigo-500 via-violet-500 to-fuchsia-500" />
+              <span className="text-white/55">el simulador · itera</span>
             </div>
             <div className="flex items-center gap-6">
               <span>diseño en preview · no producción</span>
               <Link
                 href="https://itera.la"
                 size="sm"
-                className="text-white/40 hover:text-white"
+                className="text-white/40 hover:text-white text-[12px]"
               >
                 itera.la
               </Link>
