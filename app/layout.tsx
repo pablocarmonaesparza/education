@@ -19,28 +19,24 @@ const darkerGrotesque = Darker_Grotesque({
 export const metadata: Metadata = {
   metadataBase: new URL('https://itera.la'),
   title: {
-    default: "Itera | Aprende IA Construyendo Tu Proyecto",
+    default: "Itera | Criterio de IA, medible.",
     template: "%s | Itera",
   },
   description:
-    "Aprende a construir con inteligencia artificial en 3 semanas. Ejercicios cortos e interactivos, ruta personalizada por Claude AI, de la idea al MVP.",
+    "Mide y mejora cómo tu equipo decide con IA en flujos reales. Diagnóstico de 30 días para equipos B2B antes de usar IA con clientes, datos sensibles o campañas.",
   keywords: [
-    "curso inteligencia artificial",
-    "aprender IA",
-    "Claude AI",
-    "automatización con IA",
-    "curso IA personalizado",
-    "MCP",
-    "RAG",
-    "agentes IA",
-    "curso IA latinoamerica",
-    "curso IA español",
-    "micro-learning IA",
-    "programación IA",
-    "proyectos IA",
-    "MVP con IA",
-    "curso online IA",
-    "itera",
+    "diagnóstico IA equipos",
+    "AI readiness B2B",
+    "criterio IA",
+    "evaluación IA equipos",
+    "gobierno IA empresa",
+    "privacidad datos IA",
+    "validación output IA",
+    "sprint IA 30 días",
+    "simulador IA empresarial",
+    "training IA managers",
+    "LATAM IA empresas",
+    "Itera",
   ],
   authors: [{ name: "Itera" }],
   creator: "Itera",
@@ -63,17 +59,17 @@ export const metadata: Metadata = {
     alternateLocale: ["es_MX", "es_AR", "es_CO"],
     url: "https://itera.la",
     siteName: "Itera",
-    title: "Itera | Aprende IA Construyendo Tu Proyecto",
+    title: "Itera | Criterio de IA, medible.",
     description:
-      "Ejercicios cortos, ruta personalizada por Claude AI, y de la idea al MVP en 3 semanas.",
+      "Diagnóstico de 30 días que mide y mejora cómo tu equipo decide con IA en flujos reales.",
     // `images` omitido: `app/opengraph-image.tsx` genera el OG dinámico y
     // Next.js lo inyecta automáticamente.
   },
   twitter: {
     card: "summary_large_image",
-    title: "Itera | Aprende IA Construyendo Tu Proyecto",
+    title: "Itera | Criterio de IA, medible.",
     description:
-      "Ruta personalizada por Claude AI. Ejercicios cortos. De la idea al MVP.",
+      "Mide y mejora cómo tu equipo decide con IA en flujos reales, en 30 días.",
     // `images` omitido: file-based `app/opengraph-image.tsx` se reutiliza
     // como twitter:image automáticamente.
     creator: "@iterala",

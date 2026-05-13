@@ -1,50 +1,32 @@
 /**
- * Home (v2) — landing porteada del prototipo claude-design al stack Next.js + Tailwind.
+ * Home (v3) — landing del Simulador como home oficial de Itera.
  *
- * Composición canónica del prototipo (`public/landing-claude-design/app.jsx:43-69`),
- * sin el HeroDemo del video (queda postergado).
+ * El producto ahora es "El Simulador": diagnóstico de criterio de IA
+ * para equipos B2B. Reemplaza al landing v2 (cursos personalizados),
+ * que queda preservado en `app/legacy-v2-cursos/page.tsx`.
  *
- * Hero (cinético) → Problema → Como → Compare → Testimonios →
- * Pricing → Empresas → FAQ → CtaCierre → Footer.
- *
- * El layout viejo queda preservado en `app/legacy/page.tsx` por si necesitamos volver.
+ * La página /simulator-design/* sigue activa como espacio de iteración
+ * visual y preview interno; usa exactamente el mismo componente para
+ * que ambas rutas se mantengan en sync.
  */
 
 import { Suspense } from "react";
 import OAuthRedirectHandler from "@/components/shared/OAuthRedirectHandler";
 import StructuredData from "@/components/shared/StructuredData";
-import Footer from "@/components/shared/Footer";
-
-import Navbar from "@/components/landing/v2/Navbar";
-import Hero from "@/components/landing/v2/Hero";
-import Problema from "@/components/landing/v2/Problema";
-import Como from "@/components/landing/v2/Como";
-import Compare from "@/components/landing/v2/Compare";
-import Testimonios from "@/components/landing/v2/Testimonios";
-import Pricing from "@/components/landing/v2/Pricing";
-import Empresas from "@/components/landing/v2/Empresas";
-import FAQ from "@/components/landing/v2/FAQ";
-import CtaCierre from "@/components/landing/v2/CtaCierre";
+import { SimuladorProviders } from "./simulator-design/providers";
+import LandingPage from "./simulator-design/page";
+import "./simulator-design/simulador.css";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white dark:bg-gray-800">
-      {/* OAuth callbacks que aterrizan en / (ej. signup con Google) */}
+    <div className="simulador-root min-h-screen surface-canvas">
       <Suspense fallback={null}>
         <OAuthRedirectHandler />
       </Suspense>
       <StructuredData />
-      <Navbar />
-      <Hero />
-      <Problema />
-      <Como />
-      <Compare />
-      <Testimonios />
-      <Pricing />
-      <Empresas />
-      <FAQ />
-      <CtaCierre />
-      <Footer />
-    </main>
+      <SimuladorProviders>
+        <LandingPage />
+      </SimuladorProviders>
+    </div>
   );
 }
