@@ -62,7 +62,7 @@ export function SurfaceNav() {
       isMenuOpen={isMenuOpen}
       onMenuOpenChange={setIsMenuOpen}
       isBordered={false}
-      className="bg-white/80 backdrop-blur-xl border-b border-black/[0.06]"
+      className="bg-white/80 backdrop-blur-xl"
       classNames={{
         wrapper: "px-6 max-w-7xl mx-auto h-14",
       }}
