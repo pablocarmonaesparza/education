@@ -1030,39 +1030,173 @@ function Step2Prompt({
         tono, longitud y restricciones.
       </p>
       <div className="mt-8">
-        <Textarea
-          placeholder="Escribe el prompt que le mandarías al GPT corporativo aprobado por IT…"
+        <AIPromptInput
           value={value}
-          onValueChange={onChange}
-          minRows={6}
-          isDisabled={modelResponse !== null}
-          classNames={{
-            inputWrapper:
-              "bg-[var(--surface)] border border-[var(--border)] data-[hover=true]:border-[var(--border-strong)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-            input: "text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]",
-          }}
+          onChange={onChange}
+          modelResponse={modelResponse}
+          isModelThinking={isModelThinking}
+          onSend={onSend}
         />
-        {!modelResponse && (
-          <div className="mt-4 flex justify-end">
-            <Button
-              radius="full"
-              size="md"
-              onPress={onSend}
-              isLoading={isModelThinking}
-              isDisabled={!value.trim()}
-              className="accent-bg text-white px-5 h-10 text-[14px] font-medium"
-            >
-              {isModelThinking ? "Pensando…" : "Enviar al modelo →"}
-            </Button>
-          </div>
-        )}
         {modelResponse && (
-          <p className="mt-4 text-[13px] text-[#0a7e3a]">
-            El modelo respondió. Pulsa «Siguiente» para leer su respuesta.
-          </p>
+          <div className="mt-5 flex items-center gap-2 text-[13px] text-[var(--band-a-text)]">
+            <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none">
+              <path
+                d="M3 8.5L6.5 12L13 4.5"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span>
+              El modelo respondió. Pulsa{" "}
+              <span className="font-medium">«Siguiente»</span> para leer.
+            </span>
+          </div>
         )}
       </div>
     </>
+  );
+}
+
+function AIPromptInput({
+  value,
+  onChange,
+  modelResponse,
+  isModelThinking,
+  onSend,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  modelResponse: string | null;
+  isModelThinking: boolean;
+  onSend: () => void;
+}) {
+  const disabled = modelResponse !== null;
+  const canSend = !disabled && !isModelThinking && value.trim().length > 0;
+
+  function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && canSend) {
+      e.preventDefault();
+      onSend();
+    }
+  }
+
+  return (
+    <div
+      className={`group relative rounded-3xl border bg-[var(--surface)] transition-all ${
+        disabled
+          ? "border-[var(--border)] opacity-70"
+          : "border-[var(--border)] hover:border-[var(--border-strong)] focus-within:border-[var(--accent)]"
+      }`}
+      style={{
+        boxShadow:
+          "0 1px 2px var(--shadow), 0 8px 24px -12px var(--shadow)",
+      }}
+    >
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onKeyDown={onKeyDown}
+        disabled={disabled}
+        rows={4}
+        placeholder="Escribe el prompt que le mandarías al modelo…"
+        className="w-full bg-transparent resize-none outline-none px-5 pt-4 pb-3 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
+        style={{ minHeight: 96, maxHeight: 240 }}
+      />
+
+      {/* Bottom toolbar */}
+      <div className="flex items-center justify-between gap-3 px-3 pb-3">
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            disabled={disabled}
+            className="flex items-center gap-1.5 text-[12px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:hover:text-[var(--text-secondary)] px-2.5 py-1.5 rounded-full hover:bg-[var(--surface-3)] disabled:hover:bg-transparent transition-colors"
+            aria-label="Selector de modelo"
+          >
+            <svg className="h-3.5 w-3.5" viewBox="0 0 14 14" fill="none">
+              <path
+                d="M7 2L8.4 5.6L12 7L8.4 8.4L7 12L5.6 8.4L2 7L5.6 5.6L7 2Z"
+                stroke="currentColor"
+                strokeWidth="1.2"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span>GPT Corporativo</span>
+            <svg
+              className="h-3 w-3 opacity-60"
+              viewBox="0 0 12 12"
+              fill="none"
+            >
+              <path
+                d="M3 4.5L6 7.5L9 4.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+          <span className="text-[12px] text-[var(--text-tertiary)] mx-1">
+            ·
+          </span>
+          <span className="text-[12px] text-[var(--text-tertiary)] flex items-center gap-1.5">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--band-a-bar)]" />
+            Aprobado por IT
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] mono text-[var(--text-tertiary)] hidden sm:inline">
+            ⌘↵
+          </span>
+          <button
+            type="button"
+            onClick={onSend}
+            disabled={!canSend}
+            aria-label="Enviar al modelo"
+            className={`h-9 w-9 rounded-full grid place-items-center transition-all ${
+              canSend
+                ? "accent-bg text-white hover:opacity-90 active:scale-95"
+                : "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
+            }`}
+          >
+            {isModelThinking ? (
+              <svg
+                className="h-4 w-4 animate-spin"
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeOpacity="0.25"
+                />
+                <path
+                  d="M14 8C14 4.69 11.31 2 8 2"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            ) : (
+              <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none">
+                <path
+                  d="M8 13V3M8 3L3.5 7.5M8 3L12.5 7.5"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
