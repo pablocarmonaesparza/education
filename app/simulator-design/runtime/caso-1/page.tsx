@@ -1195,12 +1195,15 @@ function findModelById(id: string): ModelOption | null {
 
 const BRAND_LOGO: Record<BrandKey, string | null> = {
   internal: null, // SVG inline (escudo IT)
-  openai: "/brands/openai.svg",
-  anthropic: "/brands/anthropic.svg",
-  google: "/brands/gemini.svg",
-  qwen: "/brands/qwen.svg",
-  deepseek: "/brands/deepseek.svg",
+  openai: "/brands/openai.png",
+  anthropic: "/brands/anthropic.png",
+  google: "/brands/gemini.png",
+  qwen: "/brands/qwen.png",
+  deepseek: "/brands/deepseek.png",
 };
+
+// Tamaño uniforme del contenedor cuadrado del brand mark.
+const BRAND_SIZE = 22;
 
 function BrandMark({ brand }: { brand: BrandKey }) {
   const src = BRAND_LOGO[brand];
@@ -1209,8 +1212,12 @@ function BrandMark({ brand }: { brand: BrandKey }) {
   if (!src) {
     return (
       <span
-        className="flex-shrink-0 h-6 w-6 rounded-md grid place-items-center"
-        style={{ backgroundColor: "var(--text-primary)" }}
+        className="flex-shrink-0 rounded-md grid place-items-center"
+        style={{
+          width: BRAND_SIZE,
+          height: BRAND_SIZE,
+          backgroundColor: "var(--text-primary)",
+        }}
       >
         <svg
           viewBox="0 0 16 16"
@@ -1230,13 +1237,23 @@ function BrandMark({ brand }: { brand: BrandKey }) {
   }
 
   return (
-    <span className="flex-shrink-0 h-6 w-6 rounded-md grid place-items-center overflow-hidden bg-[var(--surface)]">
+    <span
+      className="flex-shrink-0 grid place-items-center"
+      style={{ width: BRAND_SIZE, height: BRAND_SIZE }}
+    >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
         alt=""
         aria-hidden
-        className="h-[18px] w-[18px] object-contain"
+        width={BRAND_SIZE}
+        height={BRAND_SIZE}
+        className="block"
+        style={{
+          width: BRAND_SIZE,
+          height: BRAND_SIZE,
+          objectFit: "contain",
+        }}
       />
     </span>
   );
