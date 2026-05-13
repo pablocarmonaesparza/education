@@ -335,7 +335,7 @@ export default function RuntimePage() {
     <>
       <SurfaceNav />
 
-      <div className="max-w-7xl mx-auto flex">
+      <div className="max-w-7xl mx-auto flex min-h-[calc(100vh-3.5rem)]">
         {/* Sidebar (no eyebrow, no borders) */}
         <aside className="hidden md:block flex-shrink-0 w-60">
           <div className="sticky top-[80px] py-10 px-6">
