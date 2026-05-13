@@ -124,12 +124,12 @@ type SectionId = "intro" | "step1" | "step2" | "step3" | "step4" | "step5";
 // Each section declares how many slides it has.
 // Slide content is rendered by switch inside the page.
 const SECTIONS: { id: SectionId; label: string; slides: number }[] = [
-  { id: "intro", label: "Introducción", slides: 5 },
-  { id: "step1", label: "Preparar datos", slides: 2 + FIELDS.length }, // intro + dataset preview + 6 fields = 8
-  { id: "step2", label: "Interacción con la IA", slides: 3 },
-  { id: "step3", label: "Revisar el output", slides: SEGMENTS.length }, // 3
-  { id: "step4", label: "Entrega", slides: 1 },
-  { id: "step5", label: "Follow-up", slides: 2 },
+  { id: "intro", label: "Contexto", slides: 5 },
+  { id: "step1", label: "Datos", slides: 2 + FIELDS.length }, // intro + dataset preview + 6 fields = 8
+  { id: "step2", label: "IA", slides: 3 },
+  { id: "step3", label: "Revisión", slides: SEGMENTS.length }, // 3
+  { id: "step4", label: "Decisión", slides: 1 },
+  { id: "step5", label: "Respuesta", slides: 2 },
 ];
 
 // ============ PAGE ============
@@ -720,19 +720,19 @@ function IntroSlide({ slideIdx }: { slideIdx: number }) {
   }
   if (slideIdx === 3) {
     const steps = [
-      { id: 1, label: "Preparar datos", sub: "Decide qué pasa al modelo." },
+      { id: 1, label: "Datos", sub: "Decide qué pasa al modelo." },
       {
         id: 2,
-        label: "Interacción con la IA",
+        label: "IA",
         sub: "Redacta el prompt y lee la respuesta.",
       },
       {
         id: 3,
-        label: "Revisar el output",
+        label: "Revisión",
         sub: "Marca los problemas del modelo.",
       },
-      { id: 4, label: "Entrega", sub: "Define cómo se lo das a Camila." },
-      { id: 5, label: "Follow-up", sub: "Responde al VP." },
+      { id: 4, label: "Decisión", sub: "Define cómo se lo das a Camila." },
+      { id: 5, label: "Respuesta", sub: "Responde al VP." },
     ];
     return (
       <>
@@ -814,7 +814,7 @@ function IntroSlide({ slideIdx }: { slideIdx: number }) {
 function Step1Brief() {
   return (
     <>
-      <div className="eyebrow">Paso 01 · Preparar datos</div>
+      <div className="eyebrow">Paso 01 · Datos</div>
       <h2 className="display display-tight mt-6 text-[36px] sm:text-[44px] text-[var(--text-primary)]">
         Lee el brief de Camila.
       </h2>
@@ -1180,7 +1180,7 @@ function Step4Decision({
 }) {
   return (
     <>
-      <div className="eyebrow">Paso 04 · Entrega</div>
+      <div className="eyebrow">Paso 04 · Decisión</div>
       <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         ¿Cómo le entregas los ángulos a Camila?
       </h2>
