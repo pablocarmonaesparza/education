@@ -15,6 +15,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### decisiones
 
+- [archive del bot telegram diario — cron.unschedule ejecutado](decision_archive_telegram_daily_bot.md) — 2026-05-13 — `[desarrollo, producto, automatizacion]` — pablo deja de recibir notificación diaria 09:00 MX; cron.job vacía; edge functions y schema intactos (sandbox).
 - [legacy freeze plan — 5 categorías para limpieza post-pivot al simulador](decision_legacy_freeze_plan.md) — 2026-05-12 — `[orquestador, producto, desarrollo, marketing]` — archive/retain/reposition/core/forbidden v0 + filtro único + regla dura (no desarchiva sin owner+razón); tabla granular en `docs/simulador/LEGACY_FREEZE_PLAN.md`.
 - [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — 2026-05-12 — `[producto, desarrollo, orquestador]` — packet completo aprobado por Pablo; no runtime hasta pasar decision matrix; face/construct/buyer validity con 5 participantes + 3 managers + 2 evaluadores ciegos.
 - [primer caso canónico — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — 2026-05-12 — `[producto, marketing, ventas]` — Marketing Manager LATAM SaaS B2B; tensión velocidad-vs-privacidad; 5 steps + resim enterprise US; 7 gaps mapeados a practice_beats.
@@ -87,7 +88,8 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### automatizacion
 
-- [telegram como canal alterno de lecciones diarias](experimento_telegram_canal_lecciones.md) — experimento — 2026-04-27 *(comparte con desarrollo; reemplazado por whatsapp)*
+- [archive del bot telegram diario](decision_archive_telegram_daily_bot.md) — decision — 2026-05-13 *(comparte con desarrollo, producto; cron.unschedule en supabase, último vestigio operativo apagado)*
+- [telegram como canal alterno de lecciones diarias](experimento_telegram_canal_lecciones.md) — experimento — 2026-04-27 *(comparte con desarrollo; reemplazado por whatsapp; daily send apagado 13-may)*
 
 ### datos
 
@@ -95,6 +97,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### desarrollo
 
+- [archive del bot telegram diario](decision_archive_telegram_daily_bot.md) — decision — 2026-05-13 *(comparte con producto, automatizacion; cron.unschedule en supabase, edge functions intactas)*
 - [legacy freeze plan — 5 categorías post-pivot al simulador](decision_legacy_freeze_plan.md) — decision — 2026-05-12 *(comparte con orquestador, producto, marketing; archive/retain/reposition/core/forbidden)*
 - [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — decision — 2026-05-12 *(comparte con producto, orquestador; face/construct/buyer validity antes de código)*
 - [Sprint marketing_30d completo del Simulador v0](decision_simulador_sprint_marketing_completo_v1.md) — decision — 2026-05-12 *(comparte con producto, marketing, orquestador)*
@@ -181,6 +184,7 @@ plantilla de ticket conductor: ver `../handoff/conductor_ticket_template.md`.
 
 ### producto
 
+- [archive del bot telegram diario](decision_archive_telegram_daily_bot.md) — decision — 2026-05-13 *(comparte con desarrollo, automatizacion; ejecución del legacy freeze)*
 - [legacy freeze plan — 5 categorías post-pivot al simulador](decision_legacy_freeze_plan.md) — decision — 2026-05-12 *(comparte con orquestador, desarrollo, marketing; filtro único + regla dura)*
 - [field test v0 del Simulador antes de construir runtime](decision_simulador_field_test_v0.md) — decision — 2026-05-12 *(comparte con desarrollo, orquestador; lock experimental antes de runtime)*
 - [primer caso canónico del Simulador — marketing_urgent_campaign_pii](decision_simulador_first_case_marketing.md) — decision — 2026-05-12 *(comparte con marketing, ventas)*
