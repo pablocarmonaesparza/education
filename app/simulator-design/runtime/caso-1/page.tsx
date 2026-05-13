@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Avatar,
   Button,
@@ -1059,6 +1059,65 @@ function Step2Prompt({
   );
 }
 
+// ============ MODELS ============
+
+type ModelOption = {
+  id: string;
+  label: string;
+  badge?: string; // "Corporativo", "Reasoning", etc.
+};
+
+type ModelGroup = {
+  title: string;
+  families: ModelOption[][];
+};
+
+const MODEL_GROUPS: ModelGroup[] = [
+  {
+    title: "Modelos Internos",
+    families: [
+      [{ id: "gpt-corporativo", label: "GPT Corporativo", badge: "IT" }],
+    ],
+  },
+  {
+    title: "Modelos Convencionales",
+    families: [
+      [
+        { id: "chatgpt-5.5", label: "ChatGPT 5.5" },
+        { id: "chatgpt-5.5-thinking", label: "ChatGPT 5.5", badge: "Thinking" },
+      ],
+      [
+        { id: "claude-haiku-4.5", label: "Claude Haiku 4.5" },
+        { id: "claude-sonnet-4.6", label: "Claude Sonnet 4.6" },
+        { id: "claude-opus-4.7", label: "Claude Opus 4.7" },
+      ],
+      [
+        { id: "gemini-3-flash", label: "Gemini 3 Flash" },
+        { id: "gemini-3-pro", label: "Gemini 3 Pro" },
+      ],
+    ],
+  },
+  {
+    title: "Modelos Chinos",
+    families: [
+      [{ id: "qwen-3.6", label: "Qwen 3.6" }],
+      [{ id: "deepseek-v4-pro", label: "Deepseek V4 Pro" }],
+    ],
+  },
+];
+
+const DEFAULT_MODEL_ID = "gpt-corporativo";
+
+function findModelById(id: string): ModelOption | null {
+  for (const group of MODEL_GROUPS) {
+    for (const family of group.families) {
+      const found = family.find((m) => m.id === id);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
 function AIPromptInput({
   value,
   onChange,
@@ -1072,8 +1131,29 @@ function AIPromptInput({
   isModelThinking: boolean;
   onSend: () => void;
 }) {
+  const [selectedModel, setSelectedModel] = useState(DEFAULT_MODEL_ID);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const disabled = modelResponse !== null;
   const canSend = !disabled && !isModelThinking && value.trim().length > 0;
+  const currentModel = findModelById(selectedModel) ?? MODEL_GROUPS[0].families[0][0];
+  const isInternal = currentModel.id === "gpt-corporativo";
+
+  // Click-outside to close dropdown
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    function onDocClick(e: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [dropdownOpen]);
 
   function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && canSend) {
@@ -1091,7 +1171,7 @@ function AIPromptInput({
       }`}
       style={{
         boxShadow:
-          "0 1px 2px var(--shadow), 0 8px 24px -12px var(--shadow)",
+          "0 1px 2px var(--shadow), 0 6px 20px -16px var(--shadow)",
       }}
     >
       <textarea
@@ -1099,20 +1179,23 @@ function AIPromptInput({
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}
         disabled={disabled}
-        rows={4}
+        rows={2}
         placeholder="Escribe el prompt que le mandarías al modelo…"
-        className="w-full bg-transparent resize-none outline-none px-5 pt-4 pb-3 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
-        style={{ minHeight: 96, maxHeight: 240 }}
+        className="w-full bg-transparent resize-none outline-none px-5 pt-4 pb-2 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
+        style={{ minHeight: 56, maxHeight: 220 }}
       />
 
       {/* Bottom toolbar */}
       <div className="flex items-center justify-between gap-3 px-3 pb-3">
-        <div className="flex items-center gap-1">
+        {/* LEFT — model selector + IT badge */}
+        <div ref={dropdownRef} className="flex items-center gap-1 relative">
           <button
             type="button"
             disabled={disabled}
+            onClick={() => setDropdownOpen((v) => !v)}
             className="flex items-center gap-1.5 text-[12px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:hover:text-[var(--text-secondary)] px-2.5 py-1.5 rounded-full hover:bg-[var(--surface-3)] disabled:hover:bg-transparent transition-colors"
             aria-label="Selector de modelo"
+            aria-expanded={dropdownOpen}
           >
             <svg className="h-3.5 w-3.5" viewBox="0 0 14 14" fill="none">
               <path
@@ -1122,9 +1205,18 @@ function AIPromptInput({
                 strokeLinejoin="round"
               />
             </svg>
-            <span>GPT Corporativo</span>
+            <span>
+              {currentModel.label}
+              {currentModel.badge && (
+                <span className="ml-1 text-[var(--text-tertiary)]">
+                  · {currentModel.badge}
+                </span>
+              )}
+            </span>
             <svg
-              className="h-3 w-3 opacity-60"
+              className={`h-3 w-3 opacity-60 transition-transform ${
+                dropdownOpen ? "rotate-180" : ""
+              }`}
               viewBox="0 0 12 12"
               fill="none"
             >
@@ -1137,19 +1229,124 @@ function AIPromptInput({
               />
             </svg>
           </button>
-          <span className="text-[12px] text-[var(--text-tertiary)] mx-1">
-            ·
-          </span>
-          <span className="text-[12px] text-[var(--text-tertiary)] flex items-center gap-1.5">
-            <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--band-a-bar)]" />
-            Aprobado por IT
-          </span>
+
+          {isInternal && (
+            <>
+              <span className="text-[12px] text-[var(--text-tertiary)] mx-1">
+                ·
+              </span>
+              <span className="text-[12px] text-[var(--text-tertiary)] flex items-center gap-1.5">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--band-a-bar)]" />
+                Aprobado por IT
+              </span>
+            </>
+          )}
+
+          {/* Dropdown popover */}
+          <AnimatePresence>
+            {dropdownOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 8 }}
+                transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute bottom-full left-0 mb-2 w-[280px] rounded-2xl bg-[var(--surface)] border border-[var(--border)] py-2 z-50 max-h-[60vh] overflow-y-auto scrollbar-thin"
+                style={{
+                  boxShadow:
+                    "0 12px 32px -8px var(--shadow), 0 2px 6px var(--shadow)",
+                }}
+              >
+                {MODEL_GROUPS.map((group, gi) => (
+                  <div key={group.title}>
+                    {gi > 0 && (
+                      <div className="my-1.5 mx-3 h-px bg-[var(--hairline)]" />
+                    )}
+                    <div className="px-3 pt-1.5 pb-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
+                      {group.title}
+                    </div>
+                    {group.families.map((family, fi) => (
+                      <div key={fi}>
+                        {fi > 0 && (
+                          <div className="my-1 mx-3 h-px bg-[var(--hairline)] opacity-60" />
+                        )}
+                        {family.map((m) => {
+                          const isSelected = m.id === selectedModel;
+                          return (
+                            <button
+                              key={m.id}
+                              type="button"
+                              onClick={() => {
+                                setSelectedModel(m.id);
+                                setDropdownOpen(false);
+                              }}
+                              className={`group/item w-full flex items-center justify-between gap-3 px-3 py-1.5 text-left text-[13px] transition-colors ${
+                                isSelected
+                                  ? "bg-[var(--accent-soft)] text-[var(--text-primary)]"
+                                  : "text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
+                              }`}
+                            >
+                              <span className="flex items-baseline gap-1.5 min-w-0">
+                                <span className="truncate">{m.label}</span>
+                                {m.badge && (
+                                  <span className="text-[11px] text-[var(--text-tertiary)] flex-shrink-0">
+                                    · {m.badge}
+                                  </span>
+                                )}
+                              </span>
+                              {isSelected && (
+                                <svg
+                                  className="h-3.5 w-3.5 flex-shrink-0"
+                                  style={{ color: "var(--accent)" }}
+                                  viewBox="0 0 14 14"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M3 7.5L5.8 10L11 4"
+                                    stroke="currentColor"
+                                    strokeWidth="1.8"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] mono text-[var(--text-tertiary)] hidden sm:inline">
-            ⌘↵
-          </span>
+        {/* RIGHT — mic + send */}
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            disabled={disabled}
+            aria-label="Dictar por voz"
+            className="h-8 w-8 rounded-full grid place-items-center text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3)] disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none">
+              <rect
+                x="5.5"
+                y="2"
+                width="5"
+                height="8"
+                rx="2.5"
+                stroke="currentColor"
+                strokeWidth="1.4"
+              />
+              <path
+                d="M3 8C3 10.7614 5.23858 13 8 13M8 13C10.7614 13 13 10.7614 13 8M8 13V14.5"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
           <button
             type="button"
             onClick={onSend}
