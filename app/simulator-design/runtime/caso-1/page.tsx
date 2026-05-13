@@ -1191,72 +1191,53 @@ function findModelById(id: string): ModelOption | null {
   return null;
 }
 
-// ============ Brand mark (small rounded square w/ initial) ============
+// ============ Brand mark — uniform square w/ logo from /public/brands/ ============
+
+const BRAND_LOGO: Record<BrandKey, string | null> = {
+  internal: null, // SVG inline (escudo IT)
+  openai: "/brands/openai.svg",
+  anthropic: "/brands/anthropic.svg",
+  google: "/brands/gemini.svg",
+  qwen: "/brands/qwen.svg",
+  deepseek: "/brands/deepseek.svg",
+};
+
 function BrandMark({ brand }: { brand: BrandKey }) {
-  const styles: Record<BrandKey, { bg: string; fg: string; mark: React.ReactNode }> = {
-    internal: {
-      bg: "#1d1d1f",
-      fg: "#ffffff",
-      mark: (
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4">
-          <path d="M3.5 6.2L8 4l4.5 2.2v3.6L8 12 3.5 9.8V6.2z" strokeLinejoin="round" />
+  const src = BRAND_LOGO[brand];
+
+  // Internal — escudo IT inline (no hay archivo)
+  if (!src) {
+    return (
+      <span
+        className="flex-shrink-0 h-6 w-6 rounded-md grid place-items-center"
+        style={{ backgroundColor: "var(--text-primary)" }}
+      >
+        <svg
+          viewBox="0 0 16 16"
+          fill="none"
+          className="h-3.5 w-3.5"
+          style={{ color: "var(--surface)" }}
+        >
+          <path
+            d="M8 2L13 4v4.5C13 11 11 13 8 14C5 13 3 11 3 8.5V4L8 2Z"
+            stroke="currentColor"
+            strokeWidth="1.6"
+            strokeLinejoin="round"
+          />
         </svg>
-      ),
-    },
-    openai: {
-      bg: "#000000",
-      fg: "#ffffff",
-      mark: (
-        <svg viewBox="0 0 16 16" fill="currentColor">
-          <path d="M14.5 6.7c.4-1.1.3-2.4-.4-3.4C13 1.7 11.1 1 9.2 1.3c-.8-.9-2-1.4-3.2-1.4-1.9 0-3.6 1.2-4.2 3-.7.2-1.4.6-1.9 1.2C-1.4 5.3-1.5 7.5.5 9.3c-.4 1.1-.3 2.4.4 3.4 1.1 1.6 3 2.3 4.9 2 .8.9 2 1.4 3.2 1.4 1.9 0 3.6-1.2 4.2-3 .7-.2 1.4-.6 1.9-1.2 1.3-1.4 1.4-3.6-.6-5.2zM9.4 14.8c-.7 0-1.4-.2-1.9-.7l3.5-2c.2-.1.3-.3.3-.5V7.7l1.4.9v3.6c-.1 1.5-1.5 2.6-3.3 2.6zM2.7 11.2c-.4-.6-.5-1.4-.4-2.2L5.7 11c.2.1.4.1.6 0L11 8.5v1.6L7.3 12.4c-1.5.9-3.6.5-4.6-1.2zm-.8-6.4c.4-.7 1-1.2 1.8-1.5v3.7c0 .2.1.4.3.5L7.4 10l-1.4.8-3.5-2.1c-1.5-.9-2-3-.6-3.9zm12.1 2.7L10.5 5.3 11.9 4.5l3.5 2c1.4.9 1.9 2.7 1 4.1-.5.7-1.2 1.2-2 1.5V8.4c-.1-.2-.2-.4-.3-.4z" />
-        </svg>
-      ),
-    },
-    anthropic: {
-      bg: "#cc785c",
-      fg: "#ffffff",
-      mark: (
-        <svg viewBox="0 0 16 16" fill="currentColor">
-          <path d="M4.5 2.5h2.6l4.4 11h-2.6l-.9-2.4H5.3l-.9 2.4H1.8l2.7-11zm.8 6.8h2.4L6.5 5.6 5.3 9.3z" />
-        </svg>
-      ),
-    },
-    google: {
-      bg: "#1c69ff",
-      fg: "#ffffff",
-      mark: (
-        <svg viewBox="0 0 16 16" fill="currentColor">
-          <path d="M8 1L9.5 6.5L15 8L9.5 9.5L8 15L6.5 9.5L1 8L6.5 6.5L8 1Z" />
-        </svg>
-      ),
-    },
-    qwen: {
-      bg: "#615ced",
-      fg: "#ffffff",
-      mark: (
-        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6">
-          <circle cx="8" cy="8" r="4.5" />
-          <path d="M10.5 10.5L13 13" strokeLinecap="round" />
-        </svg>
-      ),
-    },
-    deepseek: {
-      bg: "#4d6bfe",
-      fg: "#ffffff",
-      mark: (
-        <svg viewBox="0 0 16 16" fill="currentColor">
-          <path d="M2.5 8c0-1 .7-1.8 1.6-2 .3-1.5 1.6-2.6 3.2-2.6.6 0 1.2.2 1.7.5.3-.1.6-.2.9-.2 1.4 0 2.5 1 2.7 2.4.9.4 1.5 1.3 1.5 2.3 0 1.4-1.1 2.5-2.5 2.5h-7C2.7 11 1.7 10 1.7 8.7c0-.3.3-.7.8-.7zm10 2c.6 0 1-.4 1-1s-.4-1-1-1-1 .4-1 1 .4 1 1 1z" />
-        </svg>
-      ),
-    },
-  };
-  const s = styles[brand];
+      </span>
+    );
+  }
+
   return (
-    <span
-      className="flex-shrink-0 h-5 w-5 rounded-md grid place-items-center"
-      style={{ backgroundColor: s.bg, color: s.fg }}
-    >
-      <span className="h-3 w-3 grid place-items-center">{s.mark}</span>
+    <span className="flex-shrink-0 h-6 w-6 rounded-md grid place-items-center overflow-hidden bg-[var(--surface)]">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt=""
+        aria-hidden
+        className="h-[18px] w-[18px] object-contain"
+      />
     </span>
   );
 }
