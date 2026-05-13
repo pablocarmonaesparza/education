@@ -1061,10 +1061,15 @@ function Step2Prompt({
 
 // ============ MODELS ============
 
+type BrandKey = "internal" | "openai" | "anthropic" | "google" | "qwen" | "deepseek";
+
 type ModelOption = {
   id: string;
   label: string;
-  badge?: string; // "Corporativo", "Reasoning", etc.
+  badge?: string; // "Thinking", "IT", etc.
+  brand: BrandKey;
+  price: 1 | 2 | 3; // 1 = barato, 3 = premium
+  intel: 1 | 2 | 3; // 1 = básico, 3 = top
 };
 
 type ModelGroup = {
@@ -1076,32 +1081,100 @@ const MODEL_GROUPS: ModelGroup[] = [
   {
     title: "Modelos Internos",
     families: [
-      [{ id: "gpt-corporativo", label: "GPT Corporativo", badge: "IT" }],
+      [
+        {
+          id: "gpt-corporativo",
+          label: "GPT Corporativo",
+          badge: "IT",
+          brand: "internal",
+          price: 1,
+          intel: 2,
+        },
+      ],
     ],
   },
   {
     title: "Modelos Convencionales",
     families: [
       [
-        { id: "chatgpt-5.5", label: "ChatGPT 5.5" },
-        { id: "chatgpt-5.5-thinking", label: "ChatGPT 5.5", badge: "Thinking" },
+        {
+          id: "chatgpt-5.5",
+          label: "ChatGPT 5.5",
+          brand: "openai",
+          price: 2,
+          intel: 2,
+        },
+        {
+          id: "chatgpt-5.5-thinking",
+          label: "ChatGPT 5.5",
+          badge: "Thinking",
+          brand: "openai",
+          price: 3,
+          intel: 3,
+        },
       ],
       [
-        { id: "claude-haiku-4.5", label: "Claude Haiku 4.5" },
-        { id: "claude-sonnet-4.6", label: "Claude Sonnet 4.6" },
-        { id: "claude-opus-4.7", label: "Claude Opus 4.7" },
+        {
+          id: "claude-haiku-4.5",
+          label: "Claude Haiku 4.5",
+          brand: "anthropic",
+          price: 1,
+          intel: 2,
+        },
+        {
+          id: "claude-sonnet-4.6",
+          label: "Claude Sonnet 4.6",
+          brand: "anthropic",
+          price: 2,
+          intel: 3,
+        },
+        {
+          id: "claude-opus-4.7",
+          label: "Claude Opus 4.7",
+          brand: "anthropic",
+          price: 3,
+          intel: 3,
+        },
       ],
       [
-        { id: "gemini-3-flash", label: "Gemini 3 Flash" },
-        { id: "gemini-3-pro", label: "Gemini 3 Pro" },
+        {
+          id: "gemini-3-flash",
+          label: "Gemini 3 Flash",
+          brand: "google",
+          price: 1,
+          intel: 2,
+        },
+        {
+          id: "gemini-3-pro",
+          label: "Gemini 3 Pro",
+          brand: "google",
+          price: 2,
+          intel: 3,
+        },
       ],
     ],
   },
   {
     title: "Modelos Chinos",
     families: [
-      [{ id: "qwen-3.6", label: "Qwen 3.6" }],
-      [{ id: "deepseek-v4-pro", label: "Deepseek V4 Pro" }],
+      [
+        {
+          id: "qwen-3.6",
+          label: "Qwen 3.6",
+          brand: "qwen",
+          price: 1,
+          intel: 2,
+        },
+      ],
+      [
+        {
+          id: "deepseek-v4-pro",
+          label: "Deepseek V4 Pro",
+          brand: "deepseek",
+          price: 1,
+          intel: 2,
+        },
+      ],
     ],
   },
 ];
@@ -1116,6 +1189,105 @@ function findModelById(id: string): ModelOption | null {
     }
   }
   return null;
+}
+
+// ============ Brand mark (small rounded square w/ initial) ============
+function BrandMark({ brand }: { brand: BrandKey }) {
+  const styles: Record<BrandKey, { bg: string; fg: string; mark: React.ReactNode }> = {
+    internal: {
+      bg: "#1d1d1f",
+      fg: "#ffffff",
+      mark: (
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4">
+          <path d="M3.5 6.2L8 4l4.5 2.2v3.6L8 12 3.5 9.8V6.2z" strokeLinejoin="round" />
+        </svg>
+      ),
+    },
+    openai: {
+      bg: "#000000",
+      fg: "#ffffff",
+      mark: (
+        <svg viewBox="0 0 16 16" fill="currentColor">
+          <path d="M14.5 6.7c.4-1.1.3-2.4-.4-3.4C13 1.7 11.1 1 9.2 1.3c-.8-.9-2-1.4-3.2-1.4-1.9 0-3.6 1.2-4.2 3-.7.2-1.4.6-1.9 1.2C-1.4 5.3-1.5 7.5.5 9.3c-.4 1.1-.3 2.4.4 3.4 1.1 1.6 3 2.3 4.9 2 .8.9 2 1.4 3.2 1.4 1.9 0 3.6-1.2 4.2-3 .7-.2 1.4-.6 1.9-1.2 1.3-1.4 1.4-3.6-.6-5.2zM9.4 14.8c-.7 0-1.4-.2-1.9-.7l3.5-2c.2-.1.3-.3.3-.5V7.7l1.4.9v3.6c-.1 1.5-1.5 2.6-3.3 2.6zM2.7 11.2c-.4-.6-.5-1.4-.4-2.2L5.7 11c.2.1.4.1.6 0L11 8.5v1.6L7.3 12.4c-1.5.9-3.6.5-4.6-1.2zm-.8-6.4c.4-.7 1-1.2 1.8-1.5v3.7c0 .2.1.4.3.5L7.4 10l-1.4.8-3.5-2.1c-1.5-.9-2-3-.6-3.9zm12.1 2.7L10.5 5.3 11.9 4.5l3.5 2c1.4.9 1.9 2.7 1 4.1-.5.7-1.2 1.2-2 1.5V8.4c-.1-.2-.2-.4-.3-.4z" />
+        </svg>
+      ),
+    },
+    anthropic: {
+      bg: "#cc785c",
+      fg: "#ffffff",
+      mark: (
+        <svg viewBox="0 0 16 16" fill="currentColor">
+          <path d="M4.5 2.5h2.6l4.4 11h-2.6l-.9-2.4H5.3l-.9 2.4H1.8l2.7-11zm.8 6.8h2.4L6.5 5.6 5.3 9.3z" />
+        </svg>
+      ),
+    },
+    google: {
+      bg: "#1c69ff",
+      fg: "#ffffff",
+      mark: (
+        <svg viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 1L9.5 6.5L15 8L9.5 9.5L8 15L6.5 9.5L1 8L6.5 6.5L8 1Z" />
+        </svg>
+      ),
+    },
+    qwen: {
+      bg: "#615ced",
+      fg: "#ffffff",
+      mark: (
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6">
+          <circle cx="8" cy="8" r="4.5" />
+          <path d="M10.5 10.5L13 13" strokeLinecap="round" />
+        </svg>
+      ),
+    },
+    deepseek: {
+      bg: "#4d6bfe",
+      fg: "#ffffff",
+      mark: (
+        <svg viewBox="0 0 16 16" fill="currentColor">
+          <path d="M2.5 8c0-1 .7-1.8 1.6-2 .3-1.5 1.6-2.6 3.2-2.6.6 0 1.2.2 1.7.5.3-.1.6-.2.9-.2 1.4 0 2.5 1 2.7 2.4.9.4 1.5 1.3 1.5 2.3 0 1.4-1.1 2.5-2.5 2.5h-7C2.7 11 1.7 10 1.7 8.7c0-.3.3-.7.8-.7zm10 2c.6 0 1-.4 1-1s-.4-1-1-1-1 .4-1 1 .4 1 1 1z" />
+        </svg>
+      ),
+    },
+  };
+  const s = styles[brand];
+  return (
+    <span
+      className="flex-shrink-0 h-5 w-5 rounded-md grid place-items-center"
+      style={{ backgroundColor: s.bg, color: s.fg }}
+    >
+      <span className="h-3 w-3 grid place-items-center">{s.mark}</span>
+    </span>
+  );
+}
+
+// ============ Level meter (3 bars) ============
+function LevelMeter({
+  value,
+  ariaLabel,
+}: {
+  value: 1 | 2 | 3;
+  ariaLabel: string;
+}) {
+  return (
+    <span
+      className="inline-flex items-end gap-[2px]"
+      aria-label={`${ariaLabel} ${value} de 3`}
+    >
+      {[1, 2, 3].map((i) => (
+        <span
+          key={i}
+          className="block w-[3px] rounded-[1px] transition-colors"
+          style={{
+            height: `${4 + i * 2}px`,
+            backgroundColor:
+              i <= value ? "currentColor" : "var(--border-strong)",
+            opacity: i <= value ? 1 : 0.5,
+          }}
+        />
+      ))}
+    </span>
+  );
 }
 
 function AIPromptInput({
@@ -1193,18 +1365,11 @@ function AIPromptInput({
             type="button"
             disabled={disabled}
             onClick={() => setDropdownOpen((v) => !v)}
-            className="flex items-center gap-1.5 text-[12px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:hover:text-[var(--text-secondary)] px-2.5 py-1.5 rounded-full hover:bg-[var(--surface-3)] disabled:hover:bg-transparent transition-colors"
+            className="flex items-center gap-2 text-[12px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:hover:text-[var(--text-secondary)] pr-2 pl-1 py-1 rounded-full hover:bg-[var(--surface-3)] disabled:hover:bg-transparent transition-colors"
             aria-label="Selector de modelo"
             aria-expanded={dropdownOpen}
           >
-            <svg className="h-3.5 w-3.5" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M7 2L8.4 5.6L12 7L8.4 8.4L7 12L5.6 8.4L2 7L5.6 5.6L7 2Z"
-                stroke="currentColor"
-                strokeWidth="1.2"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <BrandMark brand={currentModel.brand} />
             <span>
               {currentModel.label}
               {currentModel.badge && (
@@ -1279,13 +1444,14 @@ function AIPromptInput({
                                 setSelectedModel(m.id);
                                 setDropdownOpen(false);
                               }}
-                              className={`group/item w-full flex items-center justify-between gap-3 px-3 py-1.5 text-left text-[13px] transition-colors ${
+                              className={`group/item w-full flex items-center gap-2.5 px-3 py-1.5 text-left text-[13px] transition-colors ${
                                 isSelected
                                   ? "bg-[var(--accent-soft)] text-[var(--text-primary)]"
                                   : "text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
                               }`}
                             >
-                              <span className="flex items-baseline gap-1.5 min-w-0">
+                              <BrandMark brand={m.brand} />
+                              <span className="flex-1 flex items-baseline gap-1.5 min-w-0">
                                 <span className="truncate">{m.label}</span>
                                 {m.badge && (
                                   <span className="text-[11px] text-[var(--text-tertiary)] flex-shrink-0">
@@ -1293,22 +1459,34 @@ function AIPromptInput({
                                   </span>
                                 )}
                               </span>
-                              {isSelected && (
-                                <svg
-                                  className="h-3.5 w-3.5 flex-shrink-0"
-                                  style={{ color: "var(--accent)" }}
-                                  viewBox="0 0 14 14"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M3 7.5L5.8 10L11 4"
-                                    stroke="currentColor"
-                                    strokeWidth="1.8"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
+                              <span className="flex items-center gap-2 text-[var(--text-tertiary)] flex-shrink-0">
+                                <span className="flex items-center gap-1">
+                                  <span className="text-[9px] font-semibold tracking-wider">
+                                    $
+                                  </span>
+                                  <LevelMeter
+                                    value={m.price}
+                                    ariaLabel="Precio"
                                   />
-                                </svg>
-                              )}
+                                </span>
+                                <span
+                                  aria-hidden
+                                  className="h-2 w-px bg-[var(--hairline)]"
+                                />
+                                <span className="flex items-center gap-1">
+                                  <svg
+                                    className="h-2.5 w-2.5"
+                                    viewBox="0 0 10 10"
+                                    fill="currentColor"
+                                  >
+                                    <path d="M5 0L6 4L10 5L6 6L5 10L4 6L0 5L4 4L5 0Z" />
+                                  </svg>
+                                  <LevelMeter
+                                    value={m.intel}
+                                    ariaLabel="Inteligencia"
+                                  />
+                                </span>
+                              </span>
                             </button>
                           );
                         })}
