@@ -1332,7 +1332,6 @@ function AIPromptInput({
   const disabled = modelResponse !== null;
   const canSend = !disabled && !isModelThinking && value.trim().length > 0;
   const currentModel = findModelById(selectedModel) ?? MODEL_GROUPS[0].families[0][0];
-  const isInternal = currentModel.id === "gpt-corporativo";
 
   // Click-outside to close dropdown
   useEffect(() => {
@@ -1417,17 +1416,6 @@ function AIPromptInput({
             </svg>
           </button>
 
-          {isInternal && (
-            <>
-              <span className="text-[12px] text-[var(--text-tertiary)] mx-1">
-                ·
-              </span>
-              <span className="text-[12px] text-[var(--text-tertiary)] flex items-center gap-1.5">
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-[var(--band-a-bar)]" />
-                Aprobado por IT
-              </span>
-            </>
-          )}
 
           {/* Dropdown popover */}
           <AnimatePresence>
