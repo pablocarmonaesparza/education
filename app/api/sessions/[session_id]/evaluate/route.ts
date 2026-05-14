@@ -17,6 +17,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { evaluateAndPersist } from "@/lib/simulador/judge/persist";
+import { enforceRateLimit, rateLimiters } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 export const maxDuration = 60; // judge puede tardar ~15-30s
@@ -25,6 +26,10 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ session_id: string }> },
 ) {
+  // Rate-limit: el endpoint llama a Anthropic, costoso. 5 req/min por user/IP.
+  const limited = await enforceRateLimit(req, rateLimiters.ai);
+  if (limited) return limited;
+
   const { session_id } = await params;
   const supabase = await createClient();
   const {
