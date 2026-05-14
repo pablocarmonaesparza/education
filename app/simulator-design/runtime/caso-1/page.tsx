@@ -16,6 +16,7 @@ import { SurfaceNav } from "../../_components/SurfaceNav";
 
 // ============ DATA ============
 
+const TRANSCRIBE_ENABLED = process.env.NEXT_PUBLIC_ENABLE_TRANSCRIBE === "true";
 const FIELD_OPTIONS = ["Usar tal cual", "Transformar", "Descartar"] as const;
 
 const FIELDS = [
@@ -1328,6 +1329,7 @@ function useVoiceTranscription({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const disabledByFlag = disabled || !TRANSCRIBE_ENABLED;
 
   useEffect(() => {
     return () => {
@@ -1346,6 +1348,8 @@ function useVoiceTranscription({
 
   async function startRecording() {
     setRecError(null);
+
+    if (disabledByFlag) return;
 
     if (
       typeof navigator === "undefined" ||
@@ -1382,6 +1386,15 @@ function useVoiceTranscription({
         audio: true,
       });
       streamRef.current = stream;
+      if (typeof MediaRecorder === "undefined") {
+        stream.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+        return flashError(
+          "Tu navegador no soporta grabación de audio. Prueba Chrome o Safari.",
+          4000,
+        );
+      }
+
       const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
         ? "audio/webm;codecs=opus"
         : MediaRecorder.isTypeSupported("audio/webm")
@@ -1455,7 +1468,7 @@ function useVoiceTranscription({
   }
 
   function onMicClick() {
-    if (disabled) return;
+    if (disabledByFlag) return;
     if (recState === "idle" || recState === "error") {
       startRecording();
     } else if (recState === "recording") {
@@ -1587,14 +1600,18 @@ function ChatStyleTextarea({
         className="w-full bg-transparent resize-none outline-none px-5 pt-4 pb-2 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
         style={{ minHeight, maxHeight }}
       />
-      <RecordingBanner recState={recState} recError={recError} />
-      <div className="flex items-center justify-end gap-1.5 px-3 pb-3">
-        <MicButton
-          recState={recState}
-          disabled={disabled}
-          onClick={onMicClick}
-        />
-      </div>
+      {TRANSCRIBE_ENABLED && (
+        <>
+          <RecordingBanner recState={recState} recError={recError} />
+          <div className="flex items-center justify-end gap-1.5 px-3 pb-3">
+            <MicButton
+              recState={recState}
+              disabled={disabled}
+              onClick={onMicClick}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -1673,7 +1690,9 @@ function AIPromptInput({
         style={{ minHeight: 56, maxHeight: 220 }}
       />
 
-      <RecordingBanner recState={recState} recError={recError} />
+      {TRANSCRIBE_ENABLED && (
+        <RecordingBanner recState={recState} recError={recError} />
+      )}
 
       {/* Bottom toolbar */}
       <div className="flex items-center justify-between gap-3 px-3 pb-3">
@@ -1808,11 +1827,13 @@ function AIPromptInput({
 
         {/* RIGHT — mic + send */}
         <div className="flex items-center gap-1.5">
-          <MicButton
-            recState={recState}
-            disabled={disabled}
-            onClick={onMicClick}
-          />
+          {TRANSCRIBE_ENABLED && (
+            <MicButton
+              recState={recState}
+              disabled={disabled}
+              onClick={onMicClick}
+            />
+          )}
           <button
             type="button"
             onClick={onSend}

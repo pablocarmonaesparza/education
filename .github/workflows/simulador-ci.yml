@@ -1,0 +1,63 @@
+name: Simulador CI
+
+on:
+  pull_request:
+    paths:
+      - "app/simulator-design/**"
+      - "app/api/transcribe/**"
+      - "docs/memory/**"
+      - "docs/simulador/contrato_v0/**"
+      - "lib/simulador/**"
+      - "scripts/lint-memory.sh"
+      - "scripts/dev-simulador.mjs"
+      - "scripts/kill-dev.mjs"
+      - "scripts/simulador/**"
+      - "eslint.config.mjs"
+      - "next.config.js"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/simulador-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "app/simulator-design/**"
+      - "app/api/transcribe/**"
+      - "docs/memory/**"
+      - "docs/simulador/contrato_v0/**"
+      - "lib/simulador/**"
+      - "scripts/lint-memory.sh"
+      - "scripts/dev-simulador.mjs"
+      - "scripts/kill-dev.mjs"
+      - "scripts/simulador/**"
+      - "eslint.config.mjs"
+      - "next.config.js"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/simulador-ci.yml"
+
+jobs:
+  simulator:
+    runs-on: ubuntu-latest
+    env:
+      HUSKY: "0"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate simulator scope
+        run: npm run check:simulador
+
+      - name: Lint simulator scope
+        run: npm run lint:simulador
+
+      - name: Validate shared memory
+        run: bash scripts/lint-memory.sh
