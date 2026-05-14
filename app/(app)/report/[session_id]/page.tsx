@@ -1,10 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { Avatar, Button, Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
-import { DIMENSIONS, REPORT_SYNTHETIC } from "@/lib/simulador/config";
-import type { BandKey } from "@/lib/simulador/config";
+import { DIMENSIONS } from "@/lib/simulador/config";
+import type { BandKey, DimensionId } from "@/lib/simulador/config";
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
@@ -25,31 +27,284 @@ function bandScore(b: BandKey) {
 }
 
 function bandTone(b: BandKey) {
-  if (b === "A") return { bg: "bg-[var(--band-a-bg)]", text: "text-[var(--band-a-text)]", bar: "var(--band-a-bar)" };
-  if (b === "M") return { bg: "bg-[var(--band-m-bg)]", text: "text-[var(--band-m-text)]", bar: "var(--band-m-bar)" };
-  return { bg: "bg-[var(--band-b-bg)]", text: "text-[var(--band-b-text)]", bar: "var(--band-b-bar)" };
+  if (b === "A")
+    return {
+      bg: "bg-[var(--band-a-bg)]",
+      text: "text-[var(--band-a-text)]",
+      bar: "var(--band-a-bar)",
+    };
+  if (b === "M")
+    return {
+      bg: "bg-[var(--band-m-bg)]",
+      text: "text-[var(--band-m-text)]",
+      bar: "var(--band-m-bar)",
+    };
+  return {
+    bg: "bg-[var(--band-b-bg)]",
+    text: "text-[var(--band-b-text)]",
+    bar: "var(--band-b-bar)",
+  };
 }
 
 function severityTone(s: "high" | "medium" | "low") {
   if (s === "high")
-    return { bg: "bg-[var(--band-b-bg)]", text: "text-[var(--band-b-text)]", label: "Alta" };
+    return {
+      bg: "bg-[var(--band-b-bg)]",
+      text: "text-[var(--band-b-text)]",
+      label: "Alta",
+    };
   if (s === "medium")
-    return { bg: "bg-[var(--band-m-bg)]", text: "text-[var(--band-m-text)]", label: "Media" };
-  return { bg: "bg-[var(--surface-3)]", text: "text-[var(--text-secondary)]", label: "Baja" };
+    return {
+      bg: "bg-[var(--band-m-bg)]",
+      text: "text-[var(--band-m-text)]",
+      label: "Media",
+    };
+  return {
+    bg: "bg-[var(--surface-3)]",
+    text: "text-[var(--text-secondary)]",
+    label: "Baja",
+  };
 }
 
 function capFirst(s: string) {
+  if (!s) return s;
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+// ============================================================================
+// Tipos del payload que viene de /api/sessions/[id]/report
+// ============================================================================
+
+interface ReportPayload {
+  rubric_version: string;
+  case_version: string;
+  variant: string;
+  judge_model: string;
+  duration_ms: number;
+  dimensions: Array<{
+    id: DimensionId;
+    band: BandKey;
+    rationale: string;
+    confidence: number;
+  }>;
+  risk_events: Array<{
+    type: string;
+    severity: "low" | "medium" | "high";
+    step_ordinal: number;
+    evidence_text: string;
+  }>;
+  gaps: Array<{
+    id: string;
+    severity: "low" | "medium" | "high";
+    observed: string;
+    why_matters: string;
+  }>;
+  strengths: string[];
+  recommendation: {
+    action: "pilotar" | "entrenar" | "pausar" | "escalar";
+    applies_to: string;
+    next_week_actions: string[];
+    reason: string;
+  };
+}
+
+interface ReportEnvelope {
+  status: "none" | "pending_review" | "published";
+  session_status?: string | null;
+  report_id?: string;
+  generated_at?: string;
+  shared_at?: string | null;
+  payload?: ReportPayload;
+  message?: string;
+}
+
+// ============================================================================
+// PAGE
+// ============================================================================
+
+const POLL_INTERVAL_MS = 4000;
+const MAX_POLLS = 30; // ~2 minutos a 4s
+
 export default function ReportePage() {
-  const r = REPORT_SYNTHETIC;
+  const params = useParams<{ session_id: string }>();
+  const sessionId = params?.session_id ?? null;
+
+  const [envelope, setEnvelope] = useState<ReportEnvelope | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [pollCount, setPollCount] = useState(0);
+
+  useEffect(() => {
+    if (!sessionId) return;
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    async function fetchOnce() {
+      try {
+        const res = await fetch(`/api/sessions/${sessionId}/report`, {
+          cache: "no-store",
+        });
+        if (cancelled) return;
+        if (!res.ok && res.status !== 404) {
+          const data = await res.json().catch(() => null);
+          throw new Error(
+            data?.error ?? `Error ${res.status} al leer el reporte.`,
+          );
+        }
+        const data = (await res.json()) as ReportEnvelope;
+        setEnvelope(data);
+
+        // Si está en estado intermedio, seguimos polleando.
+        if (
+          data.status === "none" &&
+          data.session_status === "submitted" &&
+          pollCount < MAX_POLLS
+        ) {
+          timer = setTimeout(() => {
+            if (!cancelled) setPollCount((c) => c + 1);
+          }, POLL_INTERVAL_MS);
+        }
+      } catch (err) {
+        if (cancelled) return;
+        setError(err instanceof Error ? err.message : "Error inesperado.");
+      }
+    }
+
+    fetchOnce();
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [sessionId, pollCount]);
+
+  // ============ LOADING / WAITING / ERROR ============
+  if (error) {
+    return (
+      <ShellMessage
+        eyebrow="Error al cargar reporte"
+        title="No pudimos leer tu reporte."
+        body={error}
+      />
+    );
+  }
+
+  if (!envelope) {
+    return (
+      <ShellMessage
+        eyebrow="Cargando"
+        title="Preparando tu reporte…"
+        spinner
+      />
+    );
+  }
+
+  if (envelope.status === "none") {
+    return (
+      <ShellMessage
+        eyebrow="Evaluación en curso"
+        title="Estamos evaluando tu sesión."
+        body={
+          envelope.message ??
+          "El judge LLM compara tus 5 decisiones contra la rúbrica. Esto suele tardar ~30 segundos."
+        }
+        spinner
+      />
+    );
+  }
+
+  if (!envelope.payload) {
+    return (
+      <ShellMessage
+        eyebrow="Sin payload"
+        title="El reporte aún no tiene contenido."
+        body="Vuelve en unos segundos."
+      />
+    );
+  }
+
+  return (
+    <ReportView
+      payload={envelope.payload}
+      status={envelope.status}
+      generatedAt={envelope.generated_at}
+      sessionId={sessionId ?? ""}
+    />
+  );
+}
+
+// ============================================================================
+// SHELL MESSAGE (loading / waiting / error)
+// ============================================================================
+
+function ShellMessage({
+  eyebrow,
+  title,
+  body,
+  spinner,
+}: {
+  eyebrow: string;
+  title: string;
+  body?: string;
+  spinner?: boolean;
+}) {
+  return (
+    <>
+      <SurfaceNav />
+      <main className="surface-canvas min-h-[calc(100vh-3.5rem)] grid place-items-center px-6">
+        <motion.div {...fadeUp} className="max-w-md text-center">
+          {spinner && (
+            <div className="mx-auto h-10 w-10 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
+          )}
+          <div className={`eyebrow ${spinner ? "mt-8" : ""}`}>{eyebrow}</div>
+          <h1 className="display mt-3 text-[28px] text-[var(--text-primary)]">
+            {title}
+          </h1>
+          {body && (
+            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+              {body}
+            </p>
+          )}
+        </motion.div>
+      </main>
+    </>
+  );
+}
+
+// ============================================================================
+// REPORT VIEW
+// ============================================================================
+
+function ReportView({
+  payload,
+  status,
+  generatedAt,
+  sessionId,
+}: {
+  payload: ReportPayload;
+  status: "pending_review" | "published";
+  generatedAt?: string;
+  sessionId: string;
+}) {
+  // Normalizar dimensions a Record<id, band> para reuso del UI existente.
+  const bands: Record<string, BandKey> = {};
+  for (const d of payload.dimensions) {
+    bands[d.id] = d.band;
+  }
+
   const overallScore = Math.round(
-    DIMENSIONS.reduce((acc, d) => acc + bandScore(r.bands[d.id]), 0) /
-      DIMENSIONS.length,
+    DIMENSIONS.reduce(
+      (acc, d) => acc + bandScore((bands[d.id] ?? "M") as BandKey),
+      0,
+    ) / DIMENSIONS.length,
   );
   const overallBand: BandKey =
     overallScore > 75 ? "A" : overallScore > 50 ? "M" : "B";
+
+  const generatedDate = generatedAt ? new Date(generatedAt) : null;
+  const evaluatedAtStr = generatedDate
+    ? generatedDate.toISOString().slice(0, 10)
+    : "—";
+
+  const isPending = status === "pending_review";
 
   return (
     <>
@@ -60,11 +315,21 @@ export default function ReportePage() {
           <div className="reading-col px-6 py-3 flex items-center gap-2 text-[12px] text-[var(--text-secondary)]">
             <span
               className="inline-block h-1.5 w-1.5 rounded-full"
-              style={{ backgroundColor: "var(--band-m-bar)" }}
+              style={{
+                backgroundColor: isPending
+                  ? "var(--band-b-bar)"
+                  : "var(--band-a-bar)",
+              }}
             />
             <span>
-              <span className="text-[var(--text-primary)] font-medium">Vista preview</span>{" "}
-              · datos sintéticos · estructura del reporte final.
+              <span className="text-[var(--text-primary)] font-medium">
+                {isPending
+                  ? "En revisión humana"
+                  : "Reporte publicado"}
+              </span>{" "}
+              · judge {payload.judge_model} · rúbrica {payload.rubric_version}
+              {isPending &&
+                " · este reporte tiene risk events que requieren confirmación del equipo Itera antes de publicarse al manager."}
             </span>
           </div>
         </div>
@@ -74,23 +339,21 @@ export default function ReportePage() {
           <motion.div {...fadeUp}>
             <div className="eyebrow">Reporte ejecutivo · participante</div>
             <h1 className="display display-tight mt-5 text-[40px] sm:text-[52px] text-[var(--text-primary)]">
-              {capFirst(r.caseTitle)}.
+              Diagnóstico operativo.
             </h1>
             <div className="mt-6 flex flex-wrap items-center gap-3 text-[13px] text-[var(--text-secondary)]">
               <Avatar
                 size="sm"
                 className="bg-[var(--surface-3)] text-[var(--text-primary)] text-[12px] font-semibold"
-                name={r.participantInitials}
+                name=" "
               />
-              <span className="text-[var(--text-primary)] font-medium">
-                {r.participantInitials} · {r.role}
+              <span className="mono">
+                {sessionId.slice(0, 8).toUpperCase()}
               </span>
               <span className="text-[var(--border-strong)]">·</span>
-              <span className="mono">{r.participantId}</span>
+              <span>{evaluatedAtStr}</span>
               <span className="text-[var(--border-strong)]">·</span>
-              <span>{r.durationMin} min</span>
-              <span className="text-[var(--border-strong)]">·</span>
-              <span>{r.evaluatedAt}</span>
+              <span>{payload.case_version}</span>
             </div>
           </motion.div>
 
@@ -105,13 +368,13 @@ export default function ReportePage() {
                 <div className="eyebrow">Readiness general</div>
                 <div className="display mt-3 text-[64px] text-[var(--text-primary)] leading-none">
                   {overallScore}
-                  <span className="text-[var(--text-tertiary)] text-[28px] ml-1">/100</span>
+                  <span className="text-[var(--text-tertiary)] text-[28px] ml-1">
+                    /100
+                  </span>
                 </div>
                 <div className="mt-3">
                   <span
-                    className={`text-[12px] font-semibold px-2.5 py-1 rounded-full ${
-                      bandTone(overallBand).bg
-                    } ${bandTone(overallBand).text}`}
+                    className={`text-[12px] font-semibold px-2.5 py-1 rounded-full ${bandTone(overallBand).bg} ${bandTone(overallBand).text}`}
                   >
                     Banda {BAND_DISPLAY[overallBand]}
                   </span>
@@ -119,7 +382,7 @@ export default function ReportePage() {
               </div>
               <div className="flex-1 pt-1">
                 <p className="text-[16px] text-[var(--text-primary)] leading-[1.65]">
-                  {capFirst(r.recommendation.reason)}
+                  {capFirst(payload.recommendation.reason)}
                 </p>
               </div>
             </div>
@@ -137,9 +400,12 @@ export default function ReportePage() {
 
           <div className="mt-8 space-y-5">
             {DIMENSIONS.map((d, i) => {
-              const band = r.bands[d.id];
+              const band = (bands[d.id] ?? "M") as BandKey;
               const score = bandScore(band);
               const tone = bandTone(band);
+              const dimRationale = payload.dimensions.find(
+                (x) => x.id === d.id,
+              )?.rationale;
               return (
                 <motion.div
                   key={d.id}
@@ -160,7 +426,7 @@ export default function ReportePage() {
                         </span>
                       </div>
                       <p className="mt-2 text-[14px] text-[var(--text-secondary)] leading-[1.6]">
-                        {capFirst(d.description)}.
+                        {capFirst(dimRationale ?? d.description)}
                       </p>
                     </div>
                     <span className="text-[20px] mono font-semibold text-[var(--text-primary)] flex-shrink-0">
@@ -187,120 +453,124 @@ export default function ReportePage() {
         </section>
 
         {/* Gaps */}
-        <section className="reading-col px-6 mt-20">
-          <motion.div {...fadeUp}>
-            <div className="eyebrow">Gaps identificados</div>
-            <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
-              Dónde se torció.
-            </h2>
-          </motion.div>
+        {payload.gaps.length > 0 && (
+          <section className="reading-col px-6 mt-20">
+            <motion.div {...fadeUp}>
+              <div className="eyebrow">Gaps identificados</div>
+              <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
+                Dónde se torció.
+              </h2>
+            </motion.div>
 
-          <div className="mt-8 space-y-3">
-            {r.gaps.map((g, i) => {
-              const tone = severityTone(g.severity as "high" | "medium" | "low");
-              return (
-                <motion.div
-                  key={g.id}
-                  {...fadeUp}
-                  transition={{ ...fadeUp.transition, delay: i * 0.05 }}
-                  className="card-apple bg-[var(--surface)] p-6"
-                >
-                  <div className="flex items-start gap-4">
-                    <span
-                      className={`text-[11px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 mt-1 ${tone.bg} ${tone.text}`}
-                    >
-                      Severidad {tone.label}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <div className="eyebrow">Qué observamos</div>
-                      <p className="mt-2 text-[15px] text-[var(--text-primary)] leading-[1.65]">
-                        {capFirst(g.observed)}
-                      </p>
-                      <div className="eyebrow mt-5">Por qué importa</div>
-                      <p className="mt-2 text-[14px] text-[var(--text-secondary)] leading-[1.65]">
-                        {capFirst(g.whyMatters)}
-                      </p>
+            <div className="mt-8 space-y-3">
+              {payload.gaps.map((g, i) => {
+                const tone = severityTone(g.severity);
+                return (
+                  <motion.div
+                    key={g.id + i}
+                    {...fadeUp}
+                    transition={{ ...fadeUp.transition, delay: i * 0.05 }}
+                    className="card-apple bg-[var(--surface)] p-6"
+                  >
+                    <div className="flex items-start gap-4">
+                      <span
+                        className={`text-[11px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 mt-1 ${tone.bg} ${tone.text}`}
+                      >
+                        Severidad {tone.label}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="eyebrow">Qué observamos</div>
+                        <p className="mt-2 text-[15px] text-[var(--text-primary)] leading-[1.65]">
+                          {capFirst(g.observed)}
+                        </p>
+                        <div className="eyebrow mt-5">Por qué importa</div>
+                        <p className="mt-2 text-[14px] text-[var(--text-secondary)] leading-[1.65]">
+                          {capFirst(g.why_matters)}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </section>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Risk events */}
-        <section className="reading-col px-6 mt-20">
-          <motion.div {...fadeUp}>
-            <div className="eyebrow">Eventos de riesgo</div>
-            <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
-              Momentos críticos en la sesión.
-            </h2>
-          </motion.div>
+        {payload.risk_events.length > 0 && (
+          <section className="reading-col px-6 mt-20">
+            <motion.div {...fadeUp}>
+              <div className="eyebrow">Eventos de riesgo</div>
+              <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
+                Momentos críticos en la sesión.
+              </h2>
+            </motion.div>
 
-          <div className="mt-8 space-y-3">
-            {r.riskEvents.map((e, i) => {
-              const tone = severityTone(
-                e.severity as "high" | "medium" | "low",
-              );
-              return (
-                <motion.div
-                  key={e.type}
-                  {...fadeUp}
-                  transition={{ ...fadeUp.transition, delay: i * 0.05 }}
-                  className="card-apple bg-[var(--surface)] p-6"
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span className="mono text-[12px] text-[var(--text-tertiary)] flex-shrink-0">
-                        Paso {e.step}
-                      </span>
-                      <span
-                        className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tone.bg} ${tone.text}`}
-                      >
-                        {tone.label}
-                      </span>
-                      <span className="text-[14px] text-[var(--text-primary)] truncate capitalize">
-                        {e.type.replace(/_/g, " ")}
-                      </span>
+            <div className="mt-8 space-y-3">
+              {payload.risk_events.map((e, i) => {
+                const tone = severityTone(e.severity);
+                return (
+                  <motion.div
+                    key={e.type + i}
+                    {...fadeUp}
+                    transition={{ ...fadeUp.transition, delay: i * 0.05 }}
+                    className="card-apple bg-[var(--surface)] p-6"
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className="mono text-[12px] text-[var(--text-tertiary)] flex-shrink-0">
+                          Paso {e.step_ordinal}
+                        </span>
+                        <span
+                          className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tone.bg} ${tone.text}`}
+                        >
+                          {tone.label}
+                        </span>
+                        <span className="text-[14px] text-[var(--text-primary)] truncate capitalize">
+                          {e.type.replace(/_/g, " ")}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <blockquote className="mt-4 pl-4 border-l-2 border-[var(--border)] text-[14px] text-[var(--text-secondary)] italic leading-[1.65]">
-                    «{capFirst(e.excerpt)}»
-                  </blockquote>
-                </motion.div>
-              );
-            })}
-          </div>
-        </section>
+                    <blockquote className="mt-4 pl-4 border-l-2 border-[var(--border)] text-[14px] text-[var(--text-secondary)] italic leading-[1.65]">
+                      «{capFirst(e.evidence_text)}»
+                    </blockquote>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Fortalezas */}
-        <section className="reading-col px-6 mt-20">
-          <motion.div {...fadeUp}>
-            <div className="eyebrow">Fortalezas</div>
-            <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
-              Qué hizo bien.
-            </h2>
-          </motion.div>
+        {payload.strengths.length > 0 && (
+          <section className="reading-col px-6 mt-20">
+            <motion.div {...fadeUp}>
+              <div className="eyebrow">Fortalezas</div>
+              <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
+                Qué hizo bien.
+              </h2>
+            </motion.div>
 
-          <ul className="mt-8 space-y-4">
-            {r.strengths.map((s, i) => (
-              <motion.li
-                key={i}
-                {...fadeUp}
-                transition={{ ...fadeUp.transition, delay: i * 0.04 }}
-                className="flex items-start gap-4"
-              >
-                <span
-                  className="flex-shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full"
-                  style={{ backgroundColor: "var(--accent)" }}
-                />
-                <p className="text-[15px] text-[var(--text-primary)] leading-[1.65]">
-                  {capFirst(s)}
-                </p>
-              </motion.li>
-            ))}
-          </ul>
-        </section>
+            <ul className="mt-8 space-y-4">
+              {payload.strengths.map((s, i) => (
+                <motion.li
+                  key={i}
+                  {...fadeUp}
+                  transition={{ ...fadeUp.transition, delay: i * 0.04 }}
+                  className="flex items-start gap-4"
+                >
+                  <span
+                    className="flex-shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: "var(--accent)" }}
+                  />
+                  <p className="text-[15px] text-[var(--text-primary)] leading-[1.65]">
+                    {capFirst(s)}
+                  </p>
+                </motion.li>
+              ))}
+            </ul>
+          </section>
+        )}
 
         {/* Recomendación */}
         <section className="reading-col px-6 mt-20">
@@ -315,16 +585,16 @@ export default function ReportePage() {
           >
             <div className="eyebrow accent-text">Recomendación</div>
             <h2 className="display mt-3 text-[34px] text-[var(--text-primary)]">
-              {capFirst(r.recommendation.action)}.
+              {capFirst(payload.recommendation.action)}.
             </h2>
             <p className="mt-3 text-[15px] text-[var(--text-secondary)]">
-              {capFirst(r.recommendation.appliesTo)}
+              {capFirst(payload.recommendation.applies_to)}
             </p>
 
             <div className="mt-7">
               <div className="eyebrow">Próximos 7 días</div>
               <ol className="mt-4 space-y-3">
-                {r.recommendation.nextWeekActions.map((a, i) => (
+                {payload.recommendation.next_week_actions.map((a, i) => (
                   <li key={i} className="flex items-start gap-4">
                     <span className="mono text-[13px] text-[var(--text-tertiary)] flex-shrink-0 mt-0.5 w-5">
                       {String(i + 1).padStart(2, "0")}
@@ -368,13 +638,15 @@ export default function ReportePage() {
         {/* Meta footer */}
         <section className="reading-col px-6 mt-20">
           <div className="border-t border-[var(--hairline)] pt-6 flex flex-wrap gap-x-6 gap-y-2 text-[12px] text-[var(--text-tertiary)] mono">
-            <span>Kappa {r.meta.kappa}</span>
+            <span>Judge {payload.judge_model}</span>
             <span>·</span>
-            <span>Judge agreement {r.meta.judgeAgreement}%</span>
+            <span>Rúbrica {payload.rubric_version}</span>
             <span>·</span>
-            <span>Rúbrica {r.meta.rubricVersion}</span>
+            <span>Caso {payload.case_version}</span>
             <span>·</span>
-            <span>Caso {r.meta.caseVersion}</span>
+            <span>Variante {payload.variant}</span>
+            <span>·</span>
+            <span>Eval {(payload.duration_ms / 1000).toFixed(1)}s</span>
           </div>
         </section>
       </main>

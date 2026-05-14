@@ -11,14 +11,12 @@
  *   200 { session_id, status, evaluation_started: true }
  *   401 { error }
  *   404 { error }
- *
- * Nota: el judge real se implementa en W5. Por ahora `evaluation_started`
- * es true pero el background no hace nada (placeholder).
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { evaluateAndPersist } from "@/lib/simulador/judge/persist";
 
 export const runtime = "nodejs";
 
@@ -79,16 +77,25 @@ export async function POST(
     );
   }
 
-  // Background: disparar judge. W5 implementa el judge real.
+  // Background: judge LLM corre fuera del request/response cycle.
+  // No bloqueamos al cliente — el report aparece via polling de /api/sessions/[id]/report.
   after(async () => {
     try {
-      // TODO(W5): llamar a /api/sessions/[id]/evaluate o invocar
-      // lib/simulador/judge/run.ts directamente.
-      console.log(
-        `[session/complete] judge placeholder for session ${session_id}`,
-      );
+      const result = await evaluateAndPersist(session_id);
+      if (result.skipped) {
+        console.log(
+          `[session/complete] judge skipped for ${session_id}: ${result.reason}`,
+        );
+      } else {
+        console.log(
+          `[session/complete] judge OK for ${session_id} → report ${result.report_id} status=${result.report_status}`,
+        );
+      }
     } catch (err) {
-      console.error("[session/complete] background judge failed:", err);
+      console.error(
+        `[session/complete] background judge failed for ${session_id}:`,
+        err,
+      );
     }
   });
 
