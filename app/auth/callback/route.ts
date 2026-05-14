@@ -100,9 +100,8 @@ export async function GET(request: Request) {
     const userName =
       user.user_metadata?.name || user.email?.split('@')[0] || 'Usuario'
 
-    // Asegurar que la fila existe. INSERT ... ON CONFLICT DO NOTHING equivalente
-    // via maybeSingle(); el 23505 se ignora (fila ya creada por otro path
-    // como auto-login o generate-course).
+    // Asegurar fila en public.users (extensión legacy de auth.users con tier
+    // y stripe metadata). 23505 = ya existe, ignorado.
     const { error: insertError } = await supabase.from('users').insert({
       id: user.id,
       email: user.email,
@@ -112,6 +111,25 @@ export async function GET(request: Request) {
     })
     if (insertError && insertError.code !== '23505') {
       console.error('[auth/callback] users.insert failed:', insertError)
+    }
+
+    // Asegurar bridge row en simulador.users (linkea auth.users con el
+    // schema multi-tenant del Simulador). Sin esto, las queries con RLS
+    // del simulador no resuelven simulador.users → no se ve nada.
+    const { error: simUserInsert } = await supabase
+      .schema('simulador')
+      .from('users')
+      .insert({
+        auth_user_id: user.id,
+        email: user.email!,
+        full_name: userName,
+        locale: 'es-MX',
+      })
+    if (simUserInsert && simUserInsert.code !== '23505') {
+      console.error(
+        '[auth/callback] simulador.users.insert failed:',
+        simUserInsert
+      )
     }
 
     if (user.email) {
