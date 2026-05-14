@@ -114,26 +114,28 @@ const SEGMENTS = [
   },
 ];
 
+// 4 opciones legítimas (no jerarquía obvia). El judge evalúa la decisión
+// en contexto del resto de la sesión, no por la opción aislada.
 const ENTREGA_OPTIONS = [
   {
     id: "clean_bullets",
     label: "Los 3 ángulos finales en bullets.",
-    sub: "Listos para campaña, sin contexto adicional.",
+    sub: "Camila los aprueba o pide ajustes.",
   },
   {
     id: "bullets_with_context",
-    label: "3 ángulos + nota de qué validaste.",
-    sub: "Qué descartaste y qué riesgo viste.",
+    label: "Los 3 ángulos + qué validaste y qué descartaste.",
+    sub: "Nota corta para que ella decida con contexto.",
   },
   {
     id: "bullets_plus_legal_flag",
-    label: "3 ángulos + flag a Legal.",
-    sub: "Sugerir review antes de lanzar.",
+    label: "Los 3 ángulos + sugerencia de review con Legal.",
+    sub: "Escalamiento antes de lanzar la campaña.",
   },
   {
     id: "raw_llm_output",
-    label: "Output crudo del LLM.",
-    sub: "Ella decide qué usar.",
+    label: "El output del LLM tal cual lo recibiste.",
+    sub: "Ella elige qué partes usar.",
   },
 ];
 
@@ -872,7 +874,7 @@ function IntroSlide({ slideIdx }: { slideIdx: number }) {
             3 ángulos para LinkedIn Ads + 1 email a prospects
           </span>{" "}
           para mañana 9 AM. Tienes acceso a un dataset de 60 filas con feedback
-          de clientes (PII incluido).
+          de clientes que CS dejó hace 2 meses.
         </p>
         <div className="mt-8 card-apple bg-[var(--surface)] p-5">
           <div className="flex items-start gap-4">
@@ -1056,8 +1058,8 @@ function Step1DatasetPreview() {
         60 filas, 6 campos.
       </h2>
       <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
-        Esto es lo que CS dejó hace 2 meses. Tres campos son datos personales
-        (PII).
+        Esto es lo que CS dejó hace 2 meses. Revisa los campos antes de
+        pasar el dataset al modelo.
       </p>
       <div className="mt-8 card-apple bg-[var(--surface)] overflow-hidden">
         <div className="overflow-x-auto">
@@ -1119,19 +1121,8 @@ function Step1FieldDecision({
         ¿Qué hacer con{" "}
         <span className="mono text-[var(--text-primary)]">{field.label}</span>?
       </h2>
-      <div className="mt-5 flex items-center gap-3">
+      <div className="mt-5">
         <p className="text-[17px] text-[var(--text-secondary)]">{field.desc}</p>
-        {field.pii && (
-          <span
-            className="text-[11px] px-2 py-0.5 rounded-full font-semibold"
-            style={{
-              color: "var(--accent)",
-              backgroundColor: "var(--accent-soft)",
-            }}
-          >
-            PII
-          </span>
-        )}
       </div>
       <RadioGroup
         aria-label={`Acción para ${field.key}`}
