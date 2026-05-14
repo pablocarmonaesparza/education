@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar, Button, Card, CardBody, Link } from "@heroui/react";
+import { Avatar, Button, Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "../../_components/SurfaceNav";
 import { DIMENSIONS, REPORT_SYNTHETIC } from "../../_data/case-data";

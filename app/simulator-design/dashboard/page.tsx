@@ -6,7 +6,6 @@ import { SurfaceNav } from "../_components/SurfaceNav";
 import {
   DIMENSIONS,
   TEAM_MEMBERS,
-  BAND_LABELS,
   MANAGER_ACTIONS,
   SPRINT_META,
 } from "../_data/case-data";

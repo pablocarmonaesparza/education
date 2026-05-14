@@ -9,7 +9,9 @@
     "clean": "rm -rf .next",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
+    "lint:simulador": "eslint app/simulator-design app/api/transcribe lib/simulador scripts/simulador",
+    "check:simulador": "node scripts/simulador/check-scope.mjs",
     "simulador:validate": "node scripts/simulador/validate-contracts.mjs",
     "email:preview": "email dev --dir ./emails --port 3030",
     "prepare": "husky"
