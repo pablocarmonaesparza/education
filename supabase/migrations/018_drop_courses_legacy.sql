@@ -37,6 +37,7 @@ drop view if exists public.global_engagement cascade;
 
 -- Tablas de contenido de curso.
 drop table if exists public.user_progress cascade;
+drop table if exists public.lecture_embeddings cascade;  -- vector embeddings de lectures
 drop table if exists public.slides cascade;
 drop table if exists public.lectures cascade;
 drop table if exists public.sections cascade;
@@ -49,6 +50,7 @@ drop table if exists public.tutor_messages cascade;
 drop table if exists public.tutor_conversations cascade;
 
 -- Integración con Telegram bot.
+drop table if exists public.telegram_daily_sends cascade;  -- log de envíos diarios
 drop table if exists public.telegram_sessions cascade;
 drop table if exists public.telegram_links cascade;
 drop table if exists public.telegram_link_codes cascade;
@@ -59,9 +61,11 @@ drop table if exists public.n8n_chat_histories cascade;
 -- User reports en slides.
 drop table if exists public.slide_flags cascade;
 
--- Gamification (badges, XP).
+-- Gamification (badges, XP, user_stats).
+drop table if exists public.user_stats cascade;
 drop table if exists public.user_badges cascade;
-drop table if exists public.badges_catalog cascade;
+drop table if exists public.badges cascade;            -- catálogo (nombre real, no badges_catalog)
+drop table if exists public.badges_catalog cascade;   -- por si quedó del esquema viejo
 
 -- Funciones auxiliares de Itera Courses (si existen).
 drop function if exists public.calculate_user_xp(uuid) cascade;
