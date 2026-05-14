@@ -1372,6 +1372,52 @@ function AIPromptInput({
 
   async function startRecording() {
     setRecError(null);
+
+    // Pre-flight checks (mejor mensaje que un NotAllowedError genérico).
+    if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
+      setRecError(
+        "Tu navegador no soporta grabación de audio. Prueba Chrome o Safari.",
+      );
+      setRecState("error");
+      setTimeout(() => {
+        setRecState("idle");
+        setRecError(null);
+      }, 4000);
+      return;
+    }
+    if (!window.isSecureContext) {
+      setRecError(
+        "El micrófono solo funciona en HTTPS o localhost. Estás en un contexto no seguro.",
+      );
+      setRecState("error");
+      setTimeout(() => {
+        setRecState("idle");
+        setRecError(null);
+      }, 4000);
+      return;
+    }
+
+    // Si la Permissions API existe y el permiso ya está "denied", el
+    // browser NO va a mostrar el prompt — hay que avisar al usuario que
+    // tiene que resetearlo desde la config del sitio.
+    try {
+      // @ts-expect-error · "microphone" no está en algunas defs de TS
+      const perm = await navigator.permissions?.query({ name: "microphone" });
+      if (perm?.state === "denied") {
+        setRecError(
+          "El micrófono está bloqueado para este sitio. Resetéalo en la config del navegador (candado/aA en la barra de URL → Micrófono → Preguntar).",
+        );
+        setRecState("error");
+        setTimeout(() => {
+          setRecState("idle");
+          setRecError(null);
+        }, 6000);
+        return;
+      }
+    } catch {
+      // Permissions API no disponible o no soporta "microphone" → seguimos
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
@@ -1402,16 +1448,24 @@ function AIPromptInput({
       setRecState("recording");
     } catch (err) {
       console.error("getUserMedia failed:", err);
-      setRecError(
-        err instanceof Error && err.name === "NotAllowedError"
-          ? "Permiso de micrófono denegado."
-          : "No se pudo iniciar la grabación.",
-      );
+      let message = "No se pudo iniciar la grabación.";
+      if (err instanceof Error) {
+        if (err.name === "NotAllowedError") {
+          message =
+            "Permiso de micrófono denegado. Habilítalo en el candado/aA de la barra de URL → Micrófono → Permitir.";
+        } else if (err.name === "NotFoundError") {
+          message = "No se detectó ningún micrófono conectado.";
+        } else if (err.name === "NotReadableError") {
+          message =
+            "El micrófono está ocupado por otra app. Ciérrala y vuelve a intentar.";
+        }
+      }
+      setRecError(message);
       setRecState("error");
       setTimeout(() => {
         setRecState("idle");
         setRecError(null);
-      }, 3000);
+      }, 5000);
     }
   }
 
