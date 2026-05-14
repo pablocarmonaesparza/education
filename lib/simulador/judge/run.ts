@@ -13,6 +13,12 @@
  */
 
 import Anthropic from "@anthropic-ai/sdk";
+import type {
+  Message,
+  MessageCreateParamsNonStreaming,
+  Tool,
+  ToolUseBlock,
+} from "@anthropic-ai/sdk/resources/messages";
 import {
   buildSystemPrompt,
   buildUserPrompt,
@@ -67,18 +73,21 @@ export async function runJudge(
   const client = new Anthropic({ apiKey });
   const start = Date.now();
   let model = DEFAULT_MODEL;
+  const judgeTool = JUDGE_TOOL_SCHEMA as unknown as Tool;
+  const buildParams = (modelName: string): MessageCreateParamsNonStreaming => ({
+    model: modelName,
+    max_tokens: MAX_TOKENS,
+    temperature: 0,
+    system: systemPrompt,
+    messages: [{ role: "user", content: userPrompt }],
+    tools: [judgeTool],
+    tool_choice: { type: "tool", name: JUDGE_TOOL_SCHEMA.name },
+    stream: false,
+  });
 
-  let response: Awaited<ReturnType<typeof client.messages.create>>;
+  let response: Message;
   try {
-    response = await client.messages.create({
-      model,
-      max_tokens: MAX_TOKENS,
-      temperature: 0,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userPrompt }],
-      tools: [JUDGE_TOOL_SCHEMA],
-      tool_choice: { type: "tool", name: JUDGE_TOOL_SCHEMA.name },
-    });
+    response = await client.messages.create(buildParams(model));
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     // Si el modelo principal no existe / no está habilitado, fallback.
@@ -90,15 +99,7 @@ export async function runJudge(
         `[judge/run] modelo ${model} no disponible, fallback a ${FALLBACK_MODEL}`,
       );
       model = FALLBACK_MODEL;
-      response = await client.messages.create({
-        model,
-        max_tokens: MAX_TOKENS,
-        temperature: 0,
-        system: systemPrompt,
-        messages: [{ role: "user", content: userPrompt }],
-        tools: [JUDGE_TOOL_SCHEMA],
-        tool_choice: { type: "tool", name: JUDGE_TOOL_SCHEMA.name },
-      });
+      response = await client.messages.create(buildParams(model));
     } else {
       throw err;
     }
@@ -108,7 +109,7 @@ export async function runJudge(
 
   // Extraer el tool_use block. Con tool_choice forzado, debe haber uno.
   const toolBlock = response.content.find(
-    (b): b is Anthropic.ToolUseBlock => b.type === "tool_use",
+    (block): block is ToolUseBlock => block.type === "tool_use",
   );
   if (!toolBlock || toolBlock.name !== JUDGE_TOOL_SCHEMA.name) {
     throw new Error(
