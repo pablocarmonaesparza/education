@@ -1329,6 +1329,14 @@ function AIPromptInput({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // ============ VOICE RECORDING ============
+  type RecState = "idle" | "recording" | "processing" | "error";
+  const [recState, setRecState] = useState<RecState>("idle");
+  const [recError, setRecError] = useState<string | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+
   const disabled = modelResponse !== null;
   const canSend = !disabled && !isModelThinking && value.trim().length > 0;
   const currentModel = findModelById(selectedModel) ?? MODEL_GROUPS[0].families[0][0];
@@ -1348,11 +1356,111 @@ function AIPromptInput({
     return () => document.removeEventListener("mousedown", onDocClick);
   }, [dropdownOpen]);
 
+  // Cleanup any active stream when component unmounts
+  useEffect(() => {
+    return () => {
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+    };
+  }, []);
+
   function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && canSend) {
       e.preventDefault();
       onSend();
     }
+  }
+
+  async function startRecording() {
+    setRecError(null);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+      // Prefer codecs Whisper digests easily
+      const mime =
+        MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+          ? "audio/webm;codecs=opus"
+          : MediaRecorder.isTypeSupported("audio/webm")
+            ? "audio/webm"
+            : "";
+      const recorder = mime
+        ? new MediaRecorder(stream, { mimeType: mime })
+        : new MediaRecorder(stream);
+      chunksRef.current = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data);
+      };
+      recorder.onstop = async () => {
+        const blob = new Blob(chunksRef.current, {
+          type: mime || "audio/webm",
+        });
+        streamRef.current?.getTracks().forEach((t) => t.stop());
+        streamRef.current = null;
+        await uploadAndTranscribe(blob);
+      };
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setRecState("recording");
+    } catch (err) {
+      console.error("getUserMedia failed:", err);
+      setRecError(
+        err instanceof Error && err.name === "NotAllowedError"
+          ? "Permiso de micrófono denegado."
+          : "No se pudo iniciar la grabación.",
+      );
+      setRecState("error");
+      setTimeout(() => {
+        setRecState("idle");
+        setRecError(null);
+      }, 3000);
+    }
+  }
+
+  function stopRecording() {
+    const rec = mediaRecorderRef.current;
+    if (rec && rec.state === "recording") {
+      setRecState("processing");
+      rec.stop();
+    }
+  }
+
+  async function uploadAndTranscribe(blob: Blob) {
+    try {
+      const fd = new FormData();
+      fd.append("audio", blob, "recording.webm");
+      fd.append("language", "es");
+      const res = await fetch("/api/transcribe", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Transcription failed");
+      const text = (data.text || "").trim();
+      if (text) {
+        const sep = value.trim().length > 0 ? " " : "";
+        onChange(value + sep + text);
+      }
+      setRecState("idle");
+    } catch (err) {
+      console.error("[transcribe] upload error:", err);
+      setRecError(
+        err instanceof Error ? err.message : "Error al transcribir.",
+      );
+      setRecState("error");
+      setTimeout(() => {
+        setRecState("idle");
+        setRecError(null);
+      }, 3000);
+    }
+  }
+
+  function onMicClick() {
+    if (disabled) return;
+    if (recState === "idle" || recState === "error") {
+      startRecording();
+    } else if (recState === "recording") {
+      stopRecording();
+    }
+    // processing → no-op (botón disabled)
   }
 
   return (
@@ -1371,12 +1479,74 @@ function AIPromptInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={onKeyDown}
-        disabled={disabled}
+        disabled={disabled || recState === "recording" || recState === "processing"}
         rows={2}
         placeholder="Escribe el prompt que le mandarías al modelo…"
         className="w-full bg-transparent resize-none outline-none px-5 pt-4 pb-2 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
         style={{ minHeight: 56, maxHeight: 220 }}
       />
+
+      {/* Recording / processing overlay — slim banner above toolbar */}
+      <AnimatePresence>
+        {(recState === "recording" ||
+          recState === "processing" ||
+          recState === "error") && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.18 }}
+            className="px-5 pb-2 flex items-center gap-2.5 text-[13px]"
+          >
+            {recState === "recording" && (
+              <>
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-50 animate-ping" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+                </span>
+                <span className="text-[var(--text-secondary)] font-medium">
+                  Escuchando…
+                </span>
+                <WaveBars />
+                <span className="ml-auto text-[12px] text-[var(--text-tertiary)]">
+                  Pulsa el micrófono para parar.
+                </span>
+              </>
+            )}
+            {recState === "processing" && (
+              <>
+                <svg
+                  className="h-3.5 w-3.5 animate-spin"
+                  style={{ color: "var(--accent)" }}
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <circle
+                    cx="8"
+                    cy="8"
+                    r="6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeOpacity="0.25"
+                  />
+                  <path
+                    d="M14 8C14 4.69 11.31 2 8 2"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span className="text-[var(--text-secondary)] font-medium">
+                  Transcribiendo…
+                </span>
+              </>
+            )}
+            {recState === "error" && recError && (
+              <span className="text-[var(--band-b-text)]">⚠ {recError}</span>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Bottom toolbar */}
       <div className="flex items-center justify-between gap-3 px-3 pb-3">
@@ -1511,30 +1681,11 @@ function AIPromptInput({
 
         {/* RIGHT — mic + send */}
         <div className="flex items-center gap-1.5">
-          <button
-            type="button"
+          <MicButton
+            recState={recState}
             disabled={disabled}
-            aria-label="Dictar por voz"
-            className="h-8 w-8 rounded-full grid place-items-center text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3)] disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
-          >
-            <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none">
-              <rect
-                x="5.5"
-                y="2"
-                width="5"
-                height="8"
-                rx="2.5"
-                stroke="currentColor"
-                strokeWidth="1.4"
-              />
-              <path
-                d="M3 8C3 10.7614 5.23858 13 8 13M8 13C10.7614 13 13 10.7614 13 8M8 13V14.5"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
+            onClick={onMicClick}
+          />
           <button
             type="button"
             onClick={onSend}
@@ -1582,6 +1733,117 @@ function AIPromptInput({
         </div>
       </div>
     </div>
+  );
+}
+
+// ============ Mic button (idle / recording / processing / error) ============
+function MicButton({
+  recState,
+  disabled,
+  onClick,
+}: {
+  recState: "idle" | "recording" | "processing" | "error";
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  const isRecording = recState === "recording";
+  const isProcessing = recState === "processing";
+
+  const label =
+    recState === "recording"
+      ? "Detener grabación"
+      : recState === "processing"
+        ? "Transcribiendo"
+        : "Dictar por voz";
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled || isProcessing}
+      aria-label={label}
+      aria-pressed={isRecording}
+      className={`relative h-8 w-8 rounded-full grid place-items-center transition-colors disabled:opacity-40 ${
+        isRecording
+          ? "bg-red-500/15 text-red-500"
+          : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
+      }`}
+    >
+      {isRecording && (
+        <span
+          aria-hidden
+          className="absolute inset-0 rounded-full bg-red-500/30 animate-ping"
+        />
+      )}
+      {isProcessing ? (
+        <svg
+          className="h-4 w-4 animate-spin"
+          viewBox="0 0 16 16"
+          fill="none"
+        >
+          <circle
+            cx="8"
+            cy="8"
+            r="6"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeOpacity="0.25"
+          />
+          <path
+            d="M14 8C14 4.69 11.31 2 8 2"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        </svg>
+      ) : isRecording ? (
+        // Square stop glyph
+        <span className="relative h-2.5 w-2.5 rounded-[2px] bg-current" />
+      ) : (
+        <svg className="relative h-4 w-4" viewBox="0 0 16 16" fill="none">
+          <rect
+            x="5.5"
+            y="2"
+            width="5"
+            height="8"
+            rx="2.5"
+            stroke="currentColor"
+            strokeWidth="1.4"
+          />
+          <path
+            d="M3 8C3 10.7614 5.23858 13 8 13M8 13C10.7614 13 13 10.7614 13 8M8 13V14.5"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+        </svg>
+      )}
+    </button>
+  );
+}
+
+// ============ Waveform-ish bars while recording (decorative) ============
+function WaveBars() {
+  return (
+    <span className="inline-flex items-end gap-[2px] h-3" aria-hidden>
+      {[0, 1, 2, 3, 4].map((i) => (
+        <span
+          key={i}
+          className="block w-[2px] bg-red-500 rounded-[1px]"
+          style={{
+            height: "100%",
+            animation: `simulador-wave 0.9s ease-in-out ${i * 0.12}s infinite`,
+            transformOrigin: "bottom",
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes simulador-wave {
+          0%, 100% { transform: scaleY(0.35); }
+          50% { transform: scaleY(1); }
+        }
+      `}</style>
+    </span>
   );
 }
 
