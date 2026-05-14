@@ -1312,122 +1312,82 @@ function LevelMeter({
   );
 }
 
-function AIPromptInput({
-  value,
-  onChange,
-  modelResponse,
-  isModelThinking,
-  onSend,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  modelResponse: string | null;
-  isModelThinking: boolean;
-  onSend: () => void;
-}) {
-  const [selectedModel, setSelectedModel] = useState(DEFAULT_MODEL_ID);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+// ============ useVoiceTranscription · hook compartido ============
+type VoiceRecState = "idle" | "recording" | "processing" | "error";
 
-  // ============ VOICE RECORDING ============
-  type RecState = "idle" | "recording" | "processing" | "error";
-  const [recState, setRecState] = useState<RecState>("idle");
+function useVoiceTranscription({
+  onTranscript,
+  language = "es",
+  disabled = false,
+}: {
+  onTranscript: (text: string) => void;
+  language?: string;
+  disabled?: boolean;
+}) {
+  const [recState, setRecState] = useState<VoiceRecState>("idle");
   const [recError, setRecError] = useState<string | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
 
-  const disabled = modelResponse !== null;
-  const canSend = !disabled && !isModelThinking && value.trim().length > 0;
-  const currentModel = findModelById(selectedModel) ?? MODEL_GROUPS[0].families[0][0];
-
-  // Click-outside to close dropdown
-  useEffect(() => {
-    if (!dropdownOpen) return;
-    function onDocClick(e: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
-        setDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", onDocClick);
-    return () => document.removeEventListener("mousedown", onDocClick);
-  }, [dropdownOpen]);
-
-  // Cleanup any active stream when component unmounts
   useEffect(() => {
     return () => {
       streamRef.current?.getTracks().forEach((t) => t.stop());
     };
   }, []);
 
-  function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && canSend) {
-      e.preventDefault();
-      onSend();
-    }
-  }
+  const flashError = (msg: string, ms = 5000) => {
+    setRecError(msg);
+    setRecState("error");
+    setTimeout(() => {
+      setRecState("idle");
+      setRecError(null);
+    }, ms);
+  };
 
   async function startRecording() {
     setRecError(null);
 
-    // Pre-flight checks (mejor mensaje que un NotAllowedError genérico).
-    if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
-      setRecError(
+    if (
+      typeof navigator === "undefined" ||
+      !navigator.mediaDevices?.getUserMedia
+    ) {
+      return flashError(
         "Tu navegador no soporta grabación de audio. Prueba Chrome o Safari.",
+        4000,
       );
-      setRecState("error");
-      setTimeout(() => {
-        setRecState("idle");
-        setRecError(null);
-      }, 4000);
-      return;
     }
     if (!window.isSecureContext) {
-      setRecError(
-        "El micrófono solo funciona en HTTPS o localhost. Estás en un contexto no seguro.",
+      return flashError(
+        "El micrófono solo funciona en HTTPS o localhost.",
+        4000,
       );
-      setRecState("error");
-      setTimeout(() => {
-        setRecState("idle");
-        setRecError(null);
-      }, 4000);
-      return;
     }
 
-    // Si la Permissions API existe y el permiso ya está "denied", el
-    // browser NO va a mostrar el prompt — hay que avisar al usuario que
-    // tiene que resetearlo desde la config del sitio.
     try {
-      // @ts-expect-error · "microphone" no está en algunas defs de TS
-      const perm = await navigator.permissions?.query({ name: "microphone" });
+      const perm = await navigator.permissions?.query({
+        name: "microphone" as PermissionName,
+      });
       if (perm?.state === "denied") {
-        setRecError(
+        return flashError(
           "El micrófono está bloqueado para este sitio. Resetéalo en la config del navegador (candado/aA en la barra de URL → Micrófono → Preguntar).",
+          6000,
         );
-        setRecState("error");
-        setTimeout(() => {
-          setRecState("idle");
-          setRecError(null);
-        }, 6000);
-        return;
       }
     } catch {
-      // Permissions API no disponible o no soporta "microphone" → seguimos
+      /* Permissions API no soporta "microphone" — seguimos */
     }
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
       streamRef.current = stream;
-      // Prefer codecs Whisper digests easily
-      const mime =
-        MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
-          ? "audio/webm;codecs=opus"
-          : MediaRecorder.isTypeSupported("audio/webm")
-            ? "audio/webm"
-            : "";
+      const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+        ? "audio/webm;codecs=opus"
+        : MediaRecorder.isTypeSupported("audio/webm")
+          ? "audio/webm"
+          : "";
       const recorder = mime
         ? new MediaRecorder(stream, { mimeType: mime })
         : new MediaRecorder(stream);
@@ -1460,12 +1420,7 @@ function AIPromptInput({
             "El micrófono está ocupado por otra app. Ciérrala y vuelve a intentar.";
         }
       }
-      setRecError(message);
-      setRecState("error");
-      setTimeout(() => {
-        setRecState("idle");
-        setRecError(null);
-      }, 5000);
+      flashError(message, 5000);
     }
   }
 
@@ -1481,7 +1436,7 @@ function AIPromptInput({
     try {
       const fd = new FormData();
       fd.append("audio", blob, "recording.webm");
-      fd.append("language", "es");
+      fd.append("language", language);
       const res = await fetch("/api/transcribe", {
         method: "POST",
         body: fd,
@@ -1489,21 +1444,14 @@ function AIPromptInput({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Transcription failed");
       const text = (data.text || "").trim();
-      if (text) {
-        const sep = value.trim().length > 0 ? " " : "";
-        onChange(value + sep + text);
-      }
+      if (text) onTranscript(text);
       setRecState("idle");
     } catch (err) {
       console.error("[transcribe] upload error:", err);
-      setRecError(
+      flashError(
         err instanceof Error ? err.message : "Error al transcribir.",
+        3000,
       );
-      setRecState("error");
-      setTimeout(() => {
-        setRecState("idle");
-        setRecError(null);
-      }, 3000);
     }
   }
 
@@ -1514,7 +1462,193 @@ function AIPromptInput({
     } else if (recState === "recording") {
       stopRecording();
     }
-    // processing → no-op (botón disabled)
+  }
+
+  return { recState, recError, onMicClick };
+}
+
+// ============ Banner overlay para estados de grabación ============
+function RecordingBanner({
+  recState,
+  recError,
+}: {
+  recState: VoiceRecState;
+  recError: string | null;
+}) {
+  return (
+    <AnimatePresence>
+      {(recState === "recording" ||
+        recState === "processing" ||
+        recState === "error") && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -4 }}
+          transition={{ duration: 0.18 }}
+          className="px-5 pb-2 flex items-center gap-2.5 text-[13px]"
+        >
+          {recState === "recording" && (
+            <>
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-50 animate-ping" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+              </span>
+              <span className="text-[var(--text-secondary)] font-medium">
+                Escuchando…
+              </span>
+              <WaveBars />
+              <span className="ml-auto text-[12px] text-[var(--text-tertiary)]">
+                Pulsa el micrófono para parar.
+              </span>
+            </>
+          )}
+          {recState === "processing" && (
+            <>
+              <svg
+                className="h-3.5 w-3.5 animate-spin"
+                style={{ color: "var(--accent)" }}
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <circle
+                  cx="8"
+                  cy="8"
+                  r="6"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeOpacity="0.25"
+                />
+                <path
+                  d="M14 8C14 4.69 11.31 2 8 2"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span className="text-[var(--text-secondary)] font-medium">
+                Transcribiendo…
+              </span>
+            </>
+          )}
+          {recState === "error" && recError && (
+            <span className="text-[var(--band-b-text)]">⚠ {recError}</span>
+          )}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+// ============ ChatStyleTextarea · variante simple (sin model/send) ============
+function ChatStyleTextarea({
+  value,
+  onChange,
+  placeholder,
+  minHeight = 56,
+  maxHeight = 220,
+  disabled = false,
+  rows = 2,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  minHeight?: number;
+  maxHeight?: number;
+  disabled?: boolean;
+  rows?: number;
+}) {
+  const { recState, recError, onMicClick } = useVoiceTranscription({
+    disabled,
+    onTranscript: (text) => {
+      const sep = value.trim().length > 0 ? " " : "";
+      onChange(value + sep + text);
+    },
+  });
+  const isLocked =
+    disabled || recState === "recording" || recState === "processing";
+
+  return (
+    <div
+      className={`group relative rounded-3xl border bg-[var(--surface)] transition-all ${
+        disabled
+          ? "border-[var(--border)] opacity-70"
+          : "border-[var(--border)] hover:border-[var(--border-strong)] focus-within:border-[var(--accent)]"
+      }`}
+      style={{
+        boxShadow:
+          "0 1px 2px var(--shadow), 0 6px 20px -16px var(--shadow)",
+      }}
+    >
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={isLocked}
+        rows={rows}
+        placeholder={placeholder}
+        className="w-full bg-transparent resize-none outline-none px-5 pt-4 pb-2 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
+        style={{ minHeight, maxHeight }}
+      />
+      <RecordingBanner recState={recState} recError={recError} />
+      <div className="flex items-center justify-end gap-1.5 px-3 pb-3">
+        <MicButton
+          recState={recState}
+          disabled={disabled}
+          onClick={onMicClick}
+        />
+      </div>
+    </div>
+  );
+}
+
+function AIPromptInput({
+  value,
+  onChange,
+  modelResponse,
+  isModelThinking,
+  onSend,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  modelResponse: string | null;
+  isModelThinking: boolean;
+  onSend: () => void;
+}) {
+  const [selectedModel, setSelectedModel] = useState(DEFAULT_MODEL_ID);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const disabled = modelResponse !== null;
+  const canSend = !disabled && !isModelThinking && value.trim().length > 0;
+  const currentModel = findModelById(selectedModel) ?? MODEL_GROUPS[0].families[0][0];
+
+  const { recState, recError, onMicClick } = useVoiceTranscription({
+    disabled,
+    onTranscript: (text) => {
+      const sep = value.trim().length > 0 ? " " : "";
+      onChange(value + sep + text);
+    },
+  });
+
+  // Click-outside to close dropdown
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    function onDocClick(e: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [dropdownOpen]);
+
+  function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && canSend) {
+      e.preventDefault();
+      onSend();
+    }
   }
 
   return (
@@ -1540,67 +1674,7 @@ function AIPromptInput({
         style={{ minHeight: 56, maxHeight: 220 }}
       />
 
-      {/* Recording / processing overlay — slim banner above toolbar */}
-      <AnimatePresence>
-        {(recState === "recording" ||
-          recState === "processing" ||
-          recState === "error") && (
-          <motion.div
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.18 }}
-            className="px-5 pb-2 flex items-center gap-2.5 text-[13px]"
-          >
-            {recState === "recording" && (
-              <>
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-50 animate-ping" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
-                </span>
-                <span className="text-[var(--text-secondary)] font-medium">
-                  Escuchando…
-                </span>
-                <WaveBars />
-                <span className="ml-auto text-[12px] text-[var(--text-tertiary)]">
-                  Pulsa el micrófono para parar.
-                </span>
-              </>
-            )}
-            {recState === "processing" && (
-              <>
-                <svg
-                  className="h-3.5 w-3.5 animate-spin"
-                  style={{ color: "var(--accent)" }}
-                  viewBox="0 0 16 16"
-                  fill="none"
-                >
-                  <circle
-                    cx="8"
-                    cy="8"
-                    r="6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeOpacity="0.25"
-                  />
-                  <path
-                    d="M14 8C14 4.69 11.31 2 8 2"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <span className="text-[var(--text-secondary)] font-medium">
-                  Transcribiendo…
-                </span>
-              </>
-            )}
-            {recState === "error" && recError && (
-              <span className="text-[var(--band-b-text)]">⚠ {recError}</span>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <RecordingBanner recState={recState} recError={recError} />
 
       {/* Bottom toolbar */}
       <div className="flex items-center justify-between gap-3 px-3 pb-3">
@@ -1937,16 +2011,12 @@ function Step2Followup({
         ¿Lo usas tal cual? ¿Validas algo primero? ¿Descartas? Explica por qué.
       </p>
       <div className="mt-8">
-        <Textarea
+        <ChatStyleTextarea
           placeholder="Escribe tu decisión y el razonamiento…"
           value={value}
-          onValueChange={onChange}
-          minRows={5}
-          classNames={{
-            inputWrapper:
-              "bg-[var(--surface)] border border-[var(--border)] data-[hover=true]:border-[var(--border-strong)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-            input: "text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]",
-          }}
+          onChange={onChange}
+          rows={4}
+          minHeight={96}
         />
       </div>
     </>
@@ -2131,16 +2201,12 @@ function Step5Response({
         Responde como lo harías por Slack ahora mismo.
       </p>
       <div className="mt-8">
-        <Textarea
+        <ChatStyleTextarea
           placeholder="Tu respuesta a Camila…"
           value={value}
-          onValueChange={onChange}
-          minRows={5}
-          classNames={{
-            inputWrapper:
-              "bg-[var(--surface)] border border-[var(--border)] data-[hover=true]:border-[var(--border-strong)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-            input: "text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]",
-          }}
+          onChange={onChange}
+          rows={4}
+          minHeight={96}
         />
       </div>
     </>
