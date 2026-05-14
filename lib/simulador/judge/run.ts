@@ -19,12 +19,14 @@ import {
   JUDGE_PROMPT_VERSION,
   JUDGE_TOOL_SCHEMA,
 } from "./prompt-builder";
+import { mockJudgeOutput } from "./mock-output";
 import type { JudgeInputContext, JudgeOutput } from "./types";
 
 const DEFAULT_MODEL = process.env.SIMULADOR_JUDGE_MODEL ?? "claude-opus-4-5";
 const FALLBACK_MODEL =
   process.env.SIMULADOR_JUDGE_FALLBACK_MODEL ?? "claude-sonnet-4-5";
 const MAX_TOKENS = 4096;
+const MOCK_MODEL_TAG = "mock_judge_dev";
 
 export interface RunJudgeResult {
   output: JudgeOutput;
@@ -38,16 +40,31 @@ export async function runJudge(
   ctx: JudgeInputContext,
 ): Promise<RunJudgeResult> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    throw new Error(
-      "ANTHROPIC_API_KEY no está definido — el judge no puede correr.",
-    );
-  }
-
-  const client = new Anthropic({ apiKey });
   const systemPrompt = buildSystemPrompt();
   const userPrompt = buildUserPrompt(ctx);
 
+  // ── Fallback dev: sin API key + NODE_ENV ≠ production → mock ─────────────
+  // Permite testar el flow E2E (submit → report) sin gastar tokens ni
+  // configurar la key. En prod sigue fail-closed.
+  if (!apiKey) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "ANTHROPIC_API_KEY no está definido — el judge no puede correr en producción.",
+      );
+    }
+    console.warn(
+      "[judge/run] ANTHROPIC_API_KEY no configurado — usando mock output (dev only).",
+    );
+    return {
+      output: mockJudgeOutput(ctx),
+      model: MOCK_MODEL_TAG,
+      promptVersion: JUDGE_PROMPT_VERSION,
+      durationMs: 50,
+      inputSnapshot: { systemPrompt, userPrompt },
+    };
+  }
+
+  const client = new Anthropic({ apiKey });
   const start = Date.now();
   let model = DEFAULT_MODEL;
 

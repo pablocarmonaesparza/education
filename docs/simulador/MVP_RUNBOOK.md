@@ -27,7 +27,7 @@ Estructura del repo en orden de lectura:
 | `NEXT_PUBLIC_SUPABASE_URL`       | Cliente browser + SSR + admin.                   |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | Cliente browser.                                 |
 | `SUPABASE_SERVICE_ROLE_KEY`      | Admin client (route handlers).                   |
-| `ANTHROPIC_API_KEY`              | Judge LLM (W5).                                  |
+| `ANTHROPIC_API_KEY`              | Judge LLM (W5). En dev sin key → mock heurístico. |
 | `SIMULADOR_JUDGE_MODEL`          | Override del modelo (default `claude-opus-4-5`). |
 | `SIMULADOR_JUDGE_FALLBACK_MODEL` | Fallback (default `claude-sonnet-4-5`).          |
 | `SIMULADOR_STAFF_EMAILS`         | Allowlist comma-separated para `/admin/review`.  |
