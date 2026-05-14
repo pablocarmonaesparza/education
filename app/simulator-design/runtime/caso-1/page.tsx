@@ -1063,13 +1063,15 @@ function Step2Prompt({
 
 type BrandKey = "internal" | "openai" | "anthropic" | "google" | "qwen" | "deepseek";
 
+type Level5 = 1 | 2 | 3 | 4 | 5;
+
 type ModelOption = {
   id: string;
   label: string;
   badge?: string; // "Thinking", "IT", etc.
   brand: BrandKey;
-  price: 1 | 2 | 3; // 1 = barato, 3 = premium
-  intel: 1 | 2 | 3; // 1 = básico, 3 = top
+  price: Level5; // 1 = más barato, 5 = premium
+  intel: Level5; // 1 = básico, 5 = frontier
 };
 
 type ModelGroup = {
@@ -1088,7 +1090,7 @@ const MODEL_GROUPS: ModelGroup[] = [
           badge: "IT",
           brand: "internal",
           price: 1,
-          intel: 2,
+          intel: 3,
         },
       ],
     ],
@@ -1101,16 +1103,16 @@ const MODEL_GROUPS: ModelGroup[] = [
           id: "chatgpt-5.5",
           label: "ChatGPT 5.5",
           brand: "openai",
-          price: 2,
-          intel: 2,
+          price: 3,
+          intel: 4,
         },
         {
           id: "chatgpt-5.5-thinking",
           label: "ChatGPT 5.5",
           badge: "Thinking",
           brand: "openai",
-          price: 3,
-          intel: 3,
+          price: 5,
+          intel: 5,
         },
       ],
       [
@@ -1118,22 +1120,22 @@ const MODEL_GROUPS: ModelGroup[] = [
           id: "claude-haiku-4.5",
           label: "Claude Haiku 4.5",
           brand: "anthropic",
-          price: 1,
-          intel: 2,
+          price: 2,
+          intel: 3,
         },
         {
           id: "claude-sonnet-4.6",
           label: "Claude Sonnet 4.6",
           brand: "anthropic",
-          price: 2,
-          intel: 3,
+          price: 3,
+          intel: 4,
         },
         {
           id: "claude-opus-4.7",
           label: "Claude Opus 4.7",
           brand: "anthropic",
-          price: 3,
-          intel: 3,
+          price: 5,
+          intel: 5,
         },
       ],
       [
@@ -1142,14 +1144,14 @@ const MODEL_GROUPS: ModelGroup[] = [
           label: "Gemini 3 Flash",
           brand: "google",
           price: 1,
-          intel: 2,
+          intel: 3,
         },
         {
           id: "gemini-3-pro",
           label: "Gemini 3 Pro",
           brand: "google",
-          price: 2,
-          intel: 3,
+          price: 3,
+          intel: 5,
         },
       ],
     ],
@@ -1163,7 +1165,7 @@ const MODEL_GROUPS: ModelGroup[] = [
           label: "Qwen 3.6",
           brand: "qwen",
           price: 1,
-          intel: 2,
+          intel: 3,
         },
       ],
       [
@@ -1171,8 +1173,8 @@ const MODEL_GROUPS: ModelGroup[] = [
           id: "deepseek-v4-pro",
           label: "Deepseek V4 Pro",
           brand: "deepseek",
-          price: 1,
-          intel: 2,
+          price: 2,
+          intel: 4,
         },
       ],
     ],
@@ -1280,25 +1282,26 @@ function BrandMark({ brand }: { brand: BrandKey }) {
   );
 }
 
-// ============ Level meter (3 bars) ============
+// ============ Level meter (5 bars) ============
 function LevelMeter({
   value,
   ariaLabel,
 }: {
-  value: 1 | 2 | 3;
+  value: Level5;
   ariaLabel: string;
 }) {
+  const MAX: Level5 = 5;
   return (
     <span
       className="inline-flex items-end gap-[2px]"
-      aria-label={`${ariaLabel} ${value} de 3`}
+      aria-label={`${ariaLabel} ${value} de ${MAX}`}
     >
-      {[1, 2, 3].map((i) => (
+      {[1, 2, 3, 4, 5].map((i) => (
         <span
           key={i}
-          className="block w-[3px] rounded-[1px] transition-colors"
+          className="block w-[2.5px] rounded-[1px] transition-colors"
           style={{
-            height: `${4 + i * 2}px`,
+            height: `${3 + i * 1.6}px`,
             backgroundColor:
               i <= value ? "currentColor" : "var(--border-strong)",
             opacity: i <= value ? 1 : 0.5,
