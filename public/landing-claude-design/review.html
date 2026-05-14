@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>itera · design review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="tokens.css" />
+
+  <style>
+    /* button forced states for review */
+    .btn.force-hover.btn-primary { background: #2a82ff; }
+    .btn.force-hover.btn-outline { background: var(--bg-soft); }
+    .btn.force-hover.btn-ghost { background: var(--bg-soft); }
+    .btn.force-hover.btn-accent { background: #2dd16b; }
+    .btn.force-active { border-bottom-width: 4px !important; margin-top: 2px; margin-bottom: -2px; }
+    .btn.force-active.btn-primary { background: #0E5FCC; }
+
+    /* type-row stacks on mobile */
+    @media (max-width: 768px) {
+      .type-row { grid-template-columns: 1fr !important; gap: 8px !important; }
+    }
+
+    .vs-grid, .btn-states-grid { overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+
+  <script src="ui.js?v=8" defer></script>
+  <script src="review.js?v=8" defer></script>
+  <script src="app-review.js?v=8" defer></script>
+</body>
+</html>

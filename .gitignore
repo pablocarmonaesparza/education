@@ -40,3 +40,5 @@ next-env.d.ts
 /supabase/.branches/
 /supabase/config.toml
 .gstack/
+.claude/worktrees/
+legacy/

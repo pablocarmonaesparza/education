@@ -2,38 +2,8 @@ name: Simulador CI
 
 on:
   pull_request:
-    paths:
-      - "app/simulator-design/**"
-      - "app/api/transcribe/**"
-      - "docs/memory/**"
-      - "docs/simulador/contrato_v0/**"
-      - "lib/simulador/**"
-      - "scripts/lint-memory.sh"
-      - "scripts/dev-simulador.mjs"
-      - "scripts/kill-dev.mjs"
-      - "scripts/simulador/**"
-      - "eslint.config.mjs"
-      - "next.config.js"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/simulador-ci.yml"
   push:
     branches: [main]
-    paths:
-      - "app/simulator-design/**"
-      - "app/api/transcribe/**"
-      - "docs/memory/**"
-      - "docs/simulador/contrato_v0/**"
-      - "lib/simulador/**"
-      - "scripts/lint-memory.sh"
-      - "scripts/dev-simulador.mjs"
-      - "scripts/kill-dev.mjs"
-      - "scripts/simulador/**"
-      - "eslint.config.mjs"
-      - "next.config.js"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/simulador-ci.yml"
 
 jobs:
   simulator:
@@ -53,8 +23,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Validate simulator scope
-        run: npm run check:simulador
+      - name: Validate simulator contracts
+        run: npm run simulador:validate
+
+      - name: Typecheck simulator scope
+        run: npm run typecheck:simulador
 
       - name: Lint simulator scope
         run: npm run lint:simulador

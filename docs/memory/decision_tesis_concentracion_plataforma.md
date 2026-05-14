@@ -1,8 +1,8 @@
 ---
 type: decision
 title: tesis core itera — vendemos concentración + operación, no información
-date: 2026-04-27
-tags: [tesis, posicionamiento, producto, moat, stickiness]
+date: 2026-05-12
+tags: [tesis, posicionamiento, producto, moat, stickiness, simulador, readiness, loop]
 dept: [producto, orquestador]
 ---
 
@@ -114,3 +114,24 @@ Esto todavía **no autoriza build de plataforma completa**, pero sí define la u
 **Onboarding derivado:** para empezar no debe ser formulario largo ni dashboard denso. Debe sentirse como setup guiado: una decisión por pantalla, opción múltiple, modo claro, mucho aire, mini diagnóstico inicial y dashboard como resultado, no como menú vacío. Los prototipos de `/onboarding-system` siguen siendo exploratorios y deben tratarse como **hoja en blanco visual**, no como diseño final ni uso obligatorio del design system.
 
 **Regla para Claude Producto:** si una futura sesión trabaja producto, onboarding, dashboard, pricing o landing desde esta tesis, debe cargar esta memoria y partir del loop `caso vivo → decisión → score → evidencia → reporte`, no de "curso de IA" ni de automatización tipo workflow.
+
+### Actualización 2026-05-12 — el producto es un loop, no un curso lineal
+
+Pablo y Codex refinan la tesis: Itera debe salir del marco "curso → terminado". El producto central es un loop de entrenamiento profesional:
+
+```
+simulación → diagnóstico → práctica → re-simulación → evidencia → siguiente caso
+```
+
+La simulación es la puerta de entrada y la educación aparece solo como tratamiento cuando el diagnóstico detecta un gap. Esto evita que Itera se sienta como LMS o encuesta y lo acerca a entrenamiento serio: el usuario enfrenta un caso real, falla o demuestra criterio, recibe una práctica corta y vuelve a probar una variante.
+
+**Implicación de producto:** si un equipo no está listo, Itera no lo "reprueba" ni lo manda a un curso completo. Lo clasifica por estado y activa el siguiente paso:
+
+- **Listo:** avanza a casos más difíciles o recibe badge/certificación interna.
+- **Casi listo:** recibe micro-prácticas específicas sobre el gap detectado.
+- **No listo:** entra a una ruta corta de recuperación.
+- **Riesgo alto:** se bloquean o posponen ciertos casos y se entrena primero seguridad, datos, validación y criterio.
+
+**Por qué:** el mercado no necesita más información sobre IA; necesita saber si los equipos pueden usar IA en trabajo real sin equivocarse caro. El loop da evidencia antes/después, sostiene suscripción con casos vivos y convierte educación en remedio adaptativo, no en inventario de contenido.
+
+**Cuándo aplicar:** toda conversación futura sobre onboarding, dashboard, simulador, rutas, lecciones, pricing o venta B2B debe partir de este loop. La pregunta guía es: *"¿esto mejora simulación, diagnóstico, práctica, re-simulación o evidencia?"* Si no mejora alguna parte del loop, probablemente es accesorio.

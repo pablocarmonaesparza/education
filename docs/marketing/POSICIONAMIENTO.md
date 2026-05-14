@@ -1,8 +1,9 @@
-# posicionamiento — itera (v1, 2026-04-27)
+# posicionamiento — itera (v2, 2026-05-09)
 
 > Documento de marketing para mantener la voz consistente entre tiktok,
-> landing, decks, outbound y ventas. Autor: CMO. Estado: borrador inicial,
-> revisar con CEO.
+> landing, decks, outbound y ventas. Autor: CMO.
+>
+> **v2 changelog (2026-05-09):** actualizado con data de R20 (competencia profunda), R21 (TAM/SAM/SOM), R22 (channel benchmarks 2026) y R23 (SEO competitive). Pricing reframe T2 cerrado: $29/$25/$19 per seat/mes (era $19/$15/$11 en R01 v2). Añadida sección §5 "líneas vs competidores" con anchors validados externamente. Añadida sección §6 "outbound directo a empresa" con templates nuevos. Riesgo brand `iteraprocess.com` flagueado en §10.
 
 ---
 
@@ -32,7 +33,8 @@ variantes según contexto:
 ### 3. cuando estamos en demo, propuesta o cerrando contrato
 - **voz:** premium, consultiva, hecho a medida
 - **línea madre:** *"itera adapta el currículo a tu negocio. tu equipo no aprende ia genérica — aprende a aplicarla a tus procesos, con tus herramientas, dentro de la misma plataforma donde ejecutan."*
-- **objetivo:** justificar el precio premium ($400-500 usd por persona al año) y diferenciar de coursera, platzi y crehana
+- **pricing comunicado:** $29/seat/mes (Team 5-19) · $25/seat/mes (Business 20-99) · custom desde $19 (Enterprise 100+). Anual prepagado. **$300-348 usd por persona al año.**
+- **objetivo:** anclar en categoría productividad ai (no l&d) y diferenciar de coursera, platzi y crehana
 
 ---
 
@@ -62,6 +64,104 @@ duolingo es el competidor que más nos preocupa porque ya tiene la marca instala
 *"duolingo te enseña vocabulario. itera te hace operar ia."*
 
 esta frase vive en tiktok y en pitch deck. en la landing /empresa no aparece (ahí ya somos serios b2b, no necesitamos pelearnos con un comparable consumer).
+
+**anchor psicológico validado externamente (R20, 2026-05-09):** Duolingo Max consumer cuesta $29.99/mes. Itera B2B a $29/mes tiene paridad de precio + slot "Duolingo de AI B2B en español" abierto sin defensa por parte del incumbente.
+
+---
+
+## 5. líneas vs competidores (validadas con R20, 2026-05-09)
+
+Cada competidor tiene una línea madre específica. Usar literal en outbound + demos.
+
+### vs Sana Labs (post-merger Workday $1.1bn sept-2025)
+*"alternativa para la pyme latam que sana ya no atiende."*
+
+**contexto:** sana fue comprada por workday. próximos 12-18 meses la marca standalone se diluye y los nuevos deals migran a paquete hcm enterprise. sana pedía mínimo 300 seats; workday va a pedir más. la pyme 50-500 queda huérfana. **timing window real explotable.**
+
+### vs Coursera (Teams + Career Academy + AI Specializations)
+*"$29/mes mensual sin lock anual, vs coursera teams a $33/mes con compromiso anual — y opera con tu cuenta de claude/chatgpt, no en sandbox."*
+
+**contexto:** coursera teams cuesta $399/usuario/año = $33/mes con lock anual. itera $29/mes mensual = 30-40% más barato + radicalmente más friccionless de comprar para pyme + categoría operación. coursera juega b2g/educación pública (carlos slim foundation, mintic colombia, telecom argentina) — no en pyme flexible.
+
+### vs Multiverse
+*"no aplica latam — multiverse salió de us en julio 2024 y nunca entró."*
+
+mencionar solo si prospect lo pregunta. no pelearse con marca que no compite acá.
+
+### vs Microsoft AI-901 / AWS AI Practitioner / Google Generative AI Leader
+*"haz el cert si quieres el badge. vente a itera si quieres operar con ai todos los días."*
+
+**contexto:** los certs cloud son walled garden (cada uno asume su propio cloud). itera no compite por badge, compite por hábito + ejecución. complementarios, no sustitutos.
+
+### vs Platzi Empresas / Crehana for Business
+*"itera no compite en categoría 'training de ia'. competimos en categoría 'productividad ai con tu cuenta real'. más cerca de copilot que de platzi."*
+
+**contexto:** platzi/crehana = $14-21/seat con catálogo broad tech. itera = $29/seat con foco vertical + operación. categorías distintas, no comparables. si prospect insiste en comparar, descalificar pricing-side ("si tu budget está alineado a platzi $14, no somos fit").
+
+### la verdad estratégica (no decir literal, pero usar para framing)
+*"ningún competidor opera con la cuenta llm real del usuario dentro de la plataforma. todos venden información o sandbox. esa es la diferencia material."*
+
+---
+
+## 6. outbound directo a empresa — templates v2 (R22, 2026-05-09)
+
+Loom uplift real es +19% (no 2x como decía R02 mitigation §8). Sigue valiendo la herramienta pero ajustar expectativa interna del playbook.
+
+### template — cold linkedin a head of marketing/ops/people de pyme
+
+```
+Asunto: ai aplicada a [tu empresa], no curso genérico
+
+Hola [nombre],
+
+Vi que en [empresa] están en [sector tier 1 R13: fintech/saas/ecommerce/agencia]. Estoy seguro que tu equipo ya está usando ChatGPT o Claude — la pregunta no es esa, es si lo usan bien.
+
+Itera es la única plataforma B2B LATAM donde tu equipo aprende AI con ejercicios de 5 min/día Y opera con su cuenta real de Claude/ChatGPT dentro de la plataforma. No videos, no sandbox.
+
+$29/mes/persona, mensual sin lock anual. 30-40% más barato que Coursera Teams.
+
+¿5 minutos esta semana para mostrarte un Loom de 90s?
+
+Pablo
+```
+
+### template — cold a empresa post-Sana orphan
+
+```
+Asunto: la alternativa que sana ya no te puede ofrecer
+
+Hola [nombre],
+
+Sé que sana fue comprada por workday en septiembre. Si estabas en discovery con ellos o ya eras cliente, sabes que el mid-market 50-500 quedó fuera del foco — workday va a empaquetarlo en HCM enterprise con mínimos cada vez más altos.
+
+Itera es exactamente eso: ai upskilling + operación para la pyme latam que sana ya no atiende. $29/mes/persona, mensual, sin minimum seats.
+
+¿Vale la pena 5 min de demo esta semana?
+
+Pablo
+```
+
+### template — cold a empresa post-Coursera comparison
+
+```
+Asunto: por qué [empresa] está pagando $33/mes a coursera y obteniendo videos
+
+Hola [nombre],
+
+Vi que [empresa] tiene Coursera Teams (o equivalente). Pregunta directa: ¿tu equipo está terminando los cursos, o se quedan a la mitad?
+
+El problema con coursera no es el contenido — es el formato. 100 horas de video que nadie completa.
+
+Itera es ejercicios interactivos de 5 min/día + cuenta real de Claude/ChatGPT operando dentro de la plataforma. Cobramos $29/mes — más barato que Coursera, mejor adopción, mensual sin lock.
+
+¿15 min de demo esta semana?
+
+Pablo
+```
+
+---
+
+
 
 ---
 

@@ -225,6 +225,49 @@ case_template:
       values: [pilotar, entrenar, pausar, escalar]
       includes: justification_text
 
+  gap_definitions:
+    expose_pii:
+      dimension: privacidad
+      severity: high
+      triggered_by:
+        - step_1.includes_sensitive_in_scope
+        - step_2.prompt_contains_pii
+        - step_3.fails_mark_sensitive_data
+    accept_output_no_validation:
+      dimension: validacion
+      severity: medium
+      triggered_by:
+        - step_2.followup_no_validation_mention
+        - step_4.raw_llm_output
+    poor_context:
+      dimension: contexto
+      severity: medium
+      triggered_by:
+        - step_1.discards_complaint_signal
+        - step_2.prompt_lacks_audience_or_constraints
+    weak_decision_justification:
+      dimension: decision
+      severity: low
+      triggered_by:
+        - step_4.clean_bullets
+    no_risk_flag_upward:
+      dimension: juicio
+      severity: high
+      triggered_by:
+        - step_5.accepts_revenue_segmentation_without_objection
+    weak_artifact_review:
+      dimension: juicio
+      severity: medium
+      triggered_by:
+        - step_3.fails_mark_unverifiable_claim
+        - step_3.overflags_everything_without_discrimination
+
+  practice_beats:
+    expose_pii: practice_anonymize_keep_signal_v1
+    accept_output_no_validation: practice_validate_llm_output_v1
+    no_risk_flag_upward: practice_objection_to_authority_v1
+    weak_artifact_review: practice_spot_unverifiable_claims_v1
+
   resimulation_spec:
     requires_variant_with_role: resimulation
     delay_days_default: 7

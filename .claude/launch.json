@@ -2,26 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "Next.js Dev",
+      "name": "simulator-design",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "port": 3000,
-      "autoPort": true,
-      "readyPattern": "Ready in"
-    },
-    {
-      "name": "Onboarding Dev",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["next", "dev", "-p", "3002"],
-      "port": 3002,
-      "readyPattern": "Ready in"
-    },
-    {
-      "name": "Onboarding 3003",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["next", "dev", "-p", "3003"],
-      "port": 3003,
-      "readyPattern": "Ready in"
+      "port": 3000
     }
   ]
 }

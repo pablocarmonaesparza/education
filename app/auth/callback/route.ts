@@ -166,18 +166,23 @@ export async function GET(request: Request) {
       // No hacemos nada: el correo ya salió por el otro path.
     }
 
-    // Check if user has an existing learning path
-    const { data: intakeData } = await supabase
-      .from('intake_responses')
-      .select('generated_path')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
+    // Check si el user ya tiene una membership en simulador.organization_memberships.
+    // - si sí → /dashboard (manager) o /case/... (employee) — el dashboard decide
+    // - si no → /onboarding/org (buyer flow B2B se construye en W3)
+    //
+    // W2: tablas simulador existen pero el onboarding flow aún no está
+    // implementado. Por ahora redirige a /dashboard que tiene auth guard
+    // y mostrará empty state si no hay sprint asignado.
+    const { data: membership } = await supabase
+      .schema('simulador')
+      .from('organization_memberships')
+      .select('organization_id, role')
       .limit(1)
       .maybeSingle()
 
-    const redirectUrl = intakeData?.generated_path
+    const redirectUrl = membership
       ? `${origin}/dashboard`
-      : `${origin}/onboarding`
+      : `${origin}/dashboard` // TODO(W3): cambiar a `/onboarding/org` cuando exista
 
     console.log('[auth/callback] Redirecting to:', redirectUrl)
 

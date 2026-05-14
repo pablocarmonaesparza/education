@@ -55,13 +55,16 @@ sprint_package:
         primary_variant_ref: marketing_urgent_campaign_pii__loop_saas_b2b_v1
         resim_variant_ref: marketing_urgent_campaign_pii__loop_enterprise_us_resim_v1
         dimensions_emphasized: [privacidad, validacion, juicio]
+        difficulty: baseline
         status: ready  # claude_product cerró el contrato
+        tension: "usar feedback de clientes con IA bajo urgencia sin exponer PII ni ocultar riesgo"
 
       - id: marketing_copy_with_brand_voice
         order: 2
         primary_variant_ref: marketing_copy_with_brand_voice__loop_b2b_v1
         resim_variant_ref: marketing_copy_with_brand_voice__nubefresh_b2c_resim_v1
         dimensions_emphasized: [contexto, validacion, decision]
+        difficulty: baseline
         status: ready  # claude_product cerró el contrato en pase 2
         tension: "redactar copy con voz de marca usando IA sin diluir tono"
 
@@ -79,6 +82,7 @@ sprint_package:
         primary_variant_ref: marketing_brief_to_agency_via_ia__loop_familiar_agency_v1
         resim_variant_ref: marketing_brief_to_agency_via_ia__loop_new_freelancer_ma_resim_v1
         dimensions_emphasized: [contexto, decision, juicio]
+        difficulty: baseline
         status: ready  # claude_product cerró el contrato en pase 4
         tension: "preparar brief para agencia externa usando IA — riesgo de leak de estrategia"
 
@@ -105,6 +109,7 @@ sprint_package:
         primary_variant_ref: marketing_content_calendar_under_pressure__loop_q2_v1
         resim_variant_ref: marketing_content_calendar_under_pressure__loop_q3_launch_resim_v1
         dimensions_emphasized: [contexto, juicio, decision]
+        difficulty: baseline
         status: ready  # claude_product cerró el contrato en pase 7
         tension: "armar calendario de 30 días con IA bajo presión — balance entre velocidad y calidad"
 

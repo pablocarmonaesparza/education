@@ -20,46 +20,13 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
+import { createClient } from "@/lib/supabase/server";
+import { rateLimiters, rateLimitedResponse } from "@/lib/ratelimit";
 
 export const runtime = "nodejs"; // OpenAI SDK necesita Node, no Edge.
 export const maxDuration = 30; // segundos. Whisper procesa rápido.
 
 const MAX_AUDIO_BYTES = Number(process.env.TRANSCRIBE_MAX_BYTES ?? 8 * 1024 * 1024);
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX = Number(process.env.TRANSCRIBE_RATE_LIMIT_PER_MINUTE ?? 6);
-
-const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
-
-function getClientKey(req: NextRequest) {
-  const forwardedFor = req.headers.get("x-forwarded-for");
-  return (
-    forwardedFor?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
-    "local"
-  );
-}
-
-function rateLimit(req: NextRequest) {
-  const now = Date.now();
-  const key = getClientKey(req);
-  const bucket = rateLimitBuckets.get(key);
-
-  for (const [bucketKey, value] of rateLimitBuckets) {
-    if (value.resetAt <= now) rateLimitBuckets.delete(bucketKey);
-  }
-
-  if (!bucket || bucket.resetAt <= now) {
-    rateLimitBuckets.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return null;
-  }
-
-  if (bucket.count >= RATE_LIMIT_MAX) {
-    return Math.ceil((bucket.resetAt - now) / 1000);
-  }
-
-  bucket.count += 1;
-  return null;
-}
 
 function json(
   body: Record<string, unknown>,
@@ -74,6 +41,11 @@ function json(
   });
 }
 
+function isSameOriginRequest(req: NextRequest) {
+  const origin = req.headers.get("origin");
+  return !origin || origin === req.nextUrl.origin;
+}
+
 export async function POST(req: NextRequest) {
   if (process.env.ENABLE_TRANSCRIBE_API !== "true") {
     return json(
@@ -82,20 +54,35 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    return json(
-      { error: "OPENAI_API_KEY no configurada en el server." },
-      { status: 500 },
-    );
+  if (!isSameOriginRequest(req)) {
+    return json({ error: "Forbidden." }, { status: 403 });
   }
 
   try {
-    const retryAfter = rateLimit(req);
-    if (retryAfter !== null) {
-      return json(
-        { error: "Too many transcription requests." },
-        { status: 429, headers: { "Retry-After": String(retryAfter) } },
+    const supabase = await createClient();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user?.id) {
+      return json({ error: "Authentication required." }, { status: 401 });
+    }
+
+    if (!process.env.OPENAI_API_KEY) {
+      console.error("[transcribe] OPENAI_API_KEY is not configured.");
+      return json({ error: "Service unavailable." }, { status: 503 });
+    }
+
+    const limitResult = await rateLimiters.ai.limit(`transcribe:user:${user.id}`);
+    if (!limitResult.success) {
+      return rateLimitedResponse(
+        limitResult.remaining,
+        limitResult.reset,
+        limitResult.limit,
       );
+    }
+
+    const contentType = req.headers.get("content-type") ?? "";
+    if (!contentType.toLowerCase().startsWith("multipart/form-data")) {
+      return json({ error: "Expected multipart/form-data." }, { status: 415 });
     }
 
     const contentLength = Number(req.headers.get("content-length") ?? 0);
@@ -111,7 +98,7 @@ export async function POST(req: NextRequest) {
     const languageRaw = formData.get("language");
     const language =
       typeof languageRaw === "string" && /^[a-z]{2}$/i.test(languageRaw)
-        ? languageRaw
+        ? languageRaw.toLowerCase()
         : "es";
 
     if (!file || typeof file === "string") {
