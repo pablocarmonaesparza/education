@@ -259,7 +259,7 @@ export default function LandingPage() {
             <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
               Desde{" "}
               <span className="accent-text">
-                ${SPRINT_META.pricing.min}
+                ${SPRINT_META.pricing.fase_1_min_usd.toLocaleString("en-US")}
               </span>{" "}
               por persona.
             </h2>
