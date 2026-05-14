@@ -1193,23 +1193,30 @@ function findModelById(id: string): ModelOption | null {
 
 // ============ Brand mark — uniform square w/ logo from /public/brands/ ============
 
-const BRAND_LOGO: Record<BrandKey, string | null> = {
+// Logos por brand. Si un brand tiene `dark`, ese variant se usa cuando
+// el body está en `.dark` (next-themes attribute="class").
+type BrandLogo = { light: string; dark?: string };
+
+const BRAND_LOGO: Record<BrandKey, BrandLogo | null> = {
   internal: null, // SVG inline (escudo IT)
-  openai: "/brands/openai.png",
-  anthropic: "/brands/anthropic.png",
-  google: "/brands/gemini.png",
-  qwen: "/brands/qwen.png",
-  deepseek: "/brands/deepseek.png",
+  openai: {
+    light: "/brands/openai.png",
+    dark: "/brands/openai-dark.png",
+  },
+  anthropic: { light: "/brands/anthropic.png" },
+  google: { light: "/brands/gemini.png" },
+  qwen: { light: "/brands/qwen.png" },
+  deepseek: { light: "/brands/deepseek.png" },
 };
 
 // Tamaño uniforme del contenedor cuadrado del brand mark.
 const BRAND_SIZE = 22;
 
 function BrandMark({ brand }: { brand: BrandKey }) {
-  const src = BRAND_LOGO[brand];
+  const logo = BRAND_LOGO[brand];
 
   // Internal — escudo IT inline (no hay archivo)
-  if (!src) {
+  if (!logo) {
     return (
       <span
         className="flex-shrink-0 rounded-md grid place-items-center"
@@ -1236,6 +1243,12 @@ function BrandMark({ brand }: { brand: BrandKey }) {
     );
   }
 
+  const imgStyle = {
+    width: BRAND_SIZE,
+    height: BRAND_SIZE,
+    objectFit: "contain" as const,
+  };
+
   return (
     <span
       className="flex-shrink-0 grid place-items-center"
@@ -1243,18 +1256,26 @@ function BrandMark({ brand }: { brand: BrandKey }) {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={src}
+        src={logo.light}
         alt=""
         aria-hidden
         width={BRAND_SIZE}
         height={BRAND_SIZE}
-        className="block"
-        style={{
-          width: BRAND_SIZE,
-          height: BRAND_SIZE,
-          objectFit: "contain",
-        }}
+        className={logo.dark ? "block dark:hidden" : "block"}
+        style={imgStyle}
       />
+      {logo.dark && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={logo.dark}
+          alt=""
+          aria-hidden
+          width={BRAND_SIZE}
+          height={BRAND_SIZE}
+          className="hidden dark:block"
+          style={imgStyle}
+        />
+      )}
     </span>
   );
 }
