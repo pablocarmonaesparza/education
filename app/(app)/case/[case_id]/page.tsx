@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import {
   Avatar,
   Button,
@@ -13,6 +14,25 @@ import {
 } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import { useSession } from "@/lib/simulador/use-session";
+import { useStepPatch } from "@/lib/simulador/use-step-patch";
+
+// step_key canónicos del caso (ver simulador.case_steps).
+// El ordinal aquí coincide con el sectionIdx (1..5) — intro=0 no persiste.
+const STEP_KEY_BY_SECTION: Record<string, string> = {
+  step1: "data_scope",
+  step2: "llm_beat",
+  step3: "artifact_review",
+  step4: "decision_select",
+  step5: "decision_open_short",
+};
+const STEP_ORDER = [
+  "data_scope",
+  "llm_beat",
+  "artifact_review",
+  "decision_select",
+  "decision_open_short",
+] as const;
 
 // ============ DATA ============
 
@@ -135,6 +155,13 @@ const SECTIONS: { id: SectionId; label: string; slides: number }[] = [
 // ============ PAGE ============
 
 export default function RuntimePage() {
+  const router = useRouter();
+  const params = useParams<{ case_id: string }>();
+  const caseSlug = params?.case_id ?? null;
+
+  const session = useSession(caseSlug);
+  const { patch, flush } = useStepPatch(session.sessionId);
+
   const [sectionIdx, setSectionIdx] = useState(0);
   const [slideIdx, setSlideIdx] = useState(0);
   const [maxReached, setMaxReached] = useState(0);
@@ -148,9 +175,121 @@ export default function RuntimePage() {
   const [option4, setOption4] = useState("");
   const [step5Text, setStep5Text] = useState("");
   const [isEvaluating, setIsEvaluating] = useState(false);
-  const [showResults, setShowResults] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  // Tracking del último payload enviado por step_key. Si la próxima emisión
+  // serializa al mismo string, el efecto NO dispara PATCH (evita ruido en
+  // audit_log + ahorra round-trips). Se prefilla durante hydration.
+  const lastSentRef = useRef<Record<string, string>>({});
+  const hydratedRef = useRef(false);
 
   const currentSection = SECTIONS[sectionIdx];
+
+  // ============ HYDRATION (resume) ============
+  useEffect(() => {
+    if (session.status !== "ready" || hydratedRef.current) return;
+    const r = session.responses;
+    if (!r || typeof r !== "object") {
+      hydratedRef.current = true;
+      return;
+    }
+
+    type DataScopePayload = { field_actions?: Record<string, string> };
+    type LlmBeatPayload = {
+      user_prompt?: string;
+      model_response?: string | null;
+      followup?: string;
+    };
+    type ArtifactReviewPayload = { segment_flags?: Record<number, string[]> };
+    type DecisionSelectPayload = { option?: string };
+    type DecisionOpenShortPayload = { text?: string };
+
+    const ds = r.data_scope as DataScopePayload | undefined;
+    const lb = r.llm_beat as LlmBeatPayload | undefined;
+    const ar = r.artifact_review as ArtifactReviewPayload | undefined;
+    const dsel = r.decision_select as DecisionSelectPayload | undefined;
+    const dos = r.decision_open_short as DecisionOpenShortPayload | undefined;
+
+    if (ds?.field_actions) setFieldActions(ds.field_actions);
+    if (lb) {
+      if (typeof lb.user_prompt === "string") setUserPrompt(lb.user_prompt);
+      if (lb.model_response !== undefined)
+        setModelResponse(lb.model_response ?? null);
+      if (typeof lb.followup === "string") setFollowupText(lb.followup);
+    }
+    if (ar?.segment_flags) {
+      // claves vienen como strings desde JSON; recovertimos a number.
+      const flags: Record<number, string[]> = {};
+      for (const [k, v] of Object.entries(ar.segment_flags)) {
+        flags[Number(k)] = v as string[];
+      }
+      setSegmentFlags(flags);
+    }
+    if (typeof dsel?.option === "string") setOption4(dsel.option);
+    if (typeof dos?.text === "string") setStep5Text(dos.text);
+
+    // Pre-fill lastSentRef con los valores resumidos, evita re-emit.
+    if (ds) lastSentRef.current.data_scope = JSON.stringify(ds);
+    if (lb) lastSentRef.current.llm_beat = JSON.stringify(lb);
+    if (ar) lastSentRef.current.artifact_review = JSON.stringify(ar);
+    if (dsel) lastSentRef.current.decision_select = JSON.stringify(dsel);
+    if (dos) lastSentRef.current.decision_open_short = JSON.stringify(dos);
+
+    // Saltar al último step contestado + 1 (o quedarse en el último si todos).
+    let lastIdx = 0;
+    STEP_ORDER.forEach((sk, i) => {
+      if (r[sk]) lastIdx = i + 1; // section indexes: 0=intro, 1..5=step1..step5
+    });
+    const targetSection = Math.min(lastIdx, SECTIONS.length - 1);
+    setSectionIdx(targetSection);
+    setMaxReached(targetSection);
+
+    hydratedRef.current = true;
+  }, [session.status, session.responses]);
+
+  // ============ AUTO-PATCH por step_key ============
+  // Cada efecto se dispara cuando cambia el bucket de estado correspondiente.
+  // El hook useStepPatch hace debounce 800ms + dedup contra lastSentRef.
+
+  const emitIfChanged = useCallback(
+    (stepKey: string, payload: unknown) => {
+      if (!session.sessionId) return;
+      const serialized = JSON.stringify(payload);
+      if (lastSentRef.current[stepKey] === serialized) return;
+      lastSentRef.current[stepKey] = serialized;
+      patch(stepKey, payload);
+    },
+    [session.sessionId, patch],
+  );
+
+  useEffect(() => {
+    if (!hydratedRef.current || session.status !== "ready") return;
+    emitIfChanged("data_scope", { field_actions: fieldActions });
+  }, [fieldActions, session.status, emitIfChanged]);
+
+  useEffect(() => {
+    if (!hydratedRef.current || session.status !== "ready") return;
+    emitIfChanged("llm_beat", {
+      user_prompt: userPrompt,
+      model_response: modelResponse,
+      followup: followupText,
+    });
+  }, [userPrompt, modelResponse, followupText, session.status, emitIfChanged]);
+
+  useEffect(() => {
+    if (!hydratedRef.current || session.status !== "ready") return;
+    emitIfChanged("artifact_review", { segment_flags: segmentFlags });
+  }, [segmentFlags, session.status, emitIfChanged]);
+
+  useEffect(() => {
+    if (!hydratedRef.current || session.status !== "ready") return;
+    emitIfChanged("decision_select", { option: option4 });
+  }, [option4, session.status, emitIfChanged]);
+
+  useEffect(() => {
+    if (!hydratedRef.current || session.status !== "ready") return;
+    emitIfChanged("decision_open_short", { text: step5Text });
+  }, [step5Text, session.status, emitIfChanged]);
 
   function goToSection(idx: number) {
     if (idx <= maxReached) {
@@ -159,20 +298,52 @@ export default function RuntimePage() {
     }
   }
 
-  function advanceSection() {
+  const advanceSection = useCallback(() => {
+    const currentStepKey = STEP_KEY_BY_SECTION[currentSection.id];
     const nextIdx = sectionIdx + 1;
+
     if (nextIdx <= SECTIONS.length - 1) {
+      // Flush en background, navegamos inmediato (UX > durabilidad estricta).
+      // Si el browser cierra antes de que se envíe, se pierde sólo el último
+      // patch debounced del step (≤800ms de edición). Aceptable para MVP.
+      if (currentStepKey) {
+        void flush(currentStepKey).catch((err) =>
+          console.warn("[runtime] flush failed (non-fatal)", err),
+        );
+      }
       setSectionIdx(nextIdx);
       setSlideIdx(0);
       setMaxReached((m) => Math.max(m, nextIdx));
-    } else {
-      setIsEvaluating(true);
-      setTimeout(() => {
-        setIsEvaluating(false);
-        setShowResults(true);
-      }, 2400);
+      return;
     }
-  }
+
+    // Final submit: aquí SÍ esperamos a que todo flushe + complete responda.
+    setSubmitError(null);
+    setIsEvaluating(true);
+    (async () => {
+      try {
+        await flush();
+        if (!session.sessionId) {
+          throw new Error("Sesión no inicializada.");
+        }
+        const res = await fetch(`/api/sessions/${session.sessionId}/complete`, {
+          method: "POST",
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok) {
+          throw new Error(data?.error ?? "No se pudo enviar la sesión.");
+        }
+        // Redirigir al reporte. W5 implementará la página real con polling
+        // mientras evaluation_started=true.
+        router.push(`/report/${session.sessionId}`);
+      } catch (err) {
+        setIsEvaluating(false);
+        setSubmitError(
+          err instanceof Error ? err.message : "Error al enviar la sesión.",
+        );
+      }
+    })();
+  }, [currentSection.id, sectionIdx, flush, session.sessionId, router]);
 
   function nextSlide() {
     if (slideIdx < currentSection.slides - 1) {
@@ -240,7 +411,63 @@ export default function RuntimePage() {
     step5Text,
   ]);
 
+  // ============ SESSION LOADING ============
+  if (session.status === "creating") {
+    return (
+      <>
+        <SurfaceNav />
+        <main className="surface-canvas min-h-screen grid place-items-center px-6">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="max-w-md text-center"
+          >
+            <div className="mx-auto h-9 w-9 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
+            <p className="mt-6 text-[14px] text-[var(--text-secondary)]">
+              Preparando tu sesión…
+            </p>
+          </motion.div>
+        </main>
+      </>
+    );
+  }
+
+  // ============ SESSION ERROR ============
+  if (session.status === "error") {
+    return (
+      <>
+        <SurfaceNav />
+        <main className="surface-canvas min-h-screen grid place-items-center px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="max-w-md text-center"
+          >
+            <div className="eyebrow mb-4">No se pudo iniciar el caso</div>
+            <p className="text-[15px] text-[var(--text-secondary)]">
+              {session.error ?? "Error inesperado al cargar la sesión."}
+            </p>
+            <div className="mt-8">
+              <Button
+                onPress={() => router.push("/dashboard")}
+                radius="full"
+                size="lg"
+                variant="bordered"
+                className="h-12 px-6 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
+              >
+                Volver al dashboard
+              </Button>
+            </div>
+          </motion.div>
+        </main>
+      </>
+    );
+  }
+
   // ============ EVALUATING ============
+  // Nota: submitError se muestra solo en el bottom action bar de la pantalla
+  // de runtime; cuando hay error, isEvaluating ya se puso false y volvemos a
+  // esa pantalla. No duplicamos el mensaje aquí.
   if (isEvaluating) {
     return (
       <>
@@ -264,69 +491,9 @@ export default function RuntimePage() {
     );
   }
 
-  // ============ RESULTS ============
-  if (showResults) {
-    return (
-      <>
-        <SurfaceNav />
-        <main className="surface-canvas min-h-screen pb-24">
-          <div className="max-w-2xl mx-auto px-6 pt-16">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="h-16 w-16 rounded-full accent-bg-soft grid place-items-center">
-                <svg
-                  className="h-7 w-7"
-                  style={{ color: "var(--accent)" }}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M5 12L10 17L19 7"
-                    stroke="currentColor"
-                    strokeWidth="2.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <div className="eyebrow mt-8">Caso terminado</div>
-              <h1 className="display mt-4 text-[40px] sm:text-[56px] text-[var(--text-primary)]">
-                Gracias por participar.
-              </h1>
-              <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-lg">
-                Tu reporte está listo. Lo encontrarás en tu cuenta y en el
-                dashboard del manager.
-              </p>
-              <div className="mt-10 flex flex-col sm:flex-row gap-3">
-                <Button
-                  as="a"
-                  href="/report/P001"
-                  radius="full"
-                  size="lg"
-                  className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
-                >
-                  Ver mi reporte →
-                </Button>
-                <Button
-                  as="a"
-                  href="/dashboard"
-                  radius="full"
-                  variant="bordered"
-                  size="lg"
-                  className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"
-                >
-                  Vista del manager
-                </Button>
-              </div>
-            </motion.div>
-          </div>
-        </main>
-      </>
-    );
-  }
+  // Nota: la pantalla post-submit ("Caso terminado / Gracias por participar")
+  // fue reemplazada por router.push(`/report/${session.sessionId}`) en
+  // advanceSection. La página de reporte (W5/W6) maneja loading + judge polling.
 
   // ============ CAPSULES (one per slide of current section) ============
   const capsuleCount = currentSection.slides;
@@ -467,6 +634,11 @@ export default function RuntimePage() {
       {/* Sticky bottom action bar (no border) */}
       <div className="fixed bottom-0 inset-x-0 z-40 surface-backdrop">
         <div className="max-w-7xl mx-auto md:pl-60 px-6 py-4">
+          {submitError && (
+            <div className="max-w-2xl mx-auto mb-3 text-center text-[13px] text-[var(--band-b-text)]">
+              ⚠ {submitError}
+            </div>
+          )}
           <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
             {slideIdx > 0 || sectionIdx > 0 ? (
               <Button
