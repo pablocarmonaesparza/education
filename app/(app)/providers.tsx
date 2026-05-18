@@ -19,8 +19,8 @@ export function SimuladorProviders({ children }: { children: React.ReactNode }) 
     <HeroUIProvider navigate={router.push}>
       <NextThemesProvider
         attribute="class"
-        defaultTheme="light"
-        forcedTheme="light"
+        defaultTheme="dark"
+        forcedTheme="dark"
         enableSystem={false}
         storageKey="simulador-theme"
       >

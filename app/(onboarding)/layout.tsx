@@ -25,7 +25,7 @@ export default async function OnboardingLayout({
   }
 
   return (
-    <div className="simulador-root min-h-screen surface-canvas">
+    <div className="simulador-root dark min-h-screen surface-canvas">
       <SimuladorProviders>{children}</SimuladorProviders>
     </div>
   );

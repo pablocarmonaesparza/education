@@ -24,15 +24,19 @@ interface QueueEntry {
 }
 
 const DEBOUNCE_MS = 800;
+type RuntimeSessionMode = "authenticated" | "field_test";
 
 async function sendPatch(
   sessionId: string,
   stepKey: string,
   payload: unknown,
   metrics: Record<string, unknown> | undefined,
+  mode: RuntimeSessionMode,
 ): Promise<void> {
   try {
-    const res = await fetch(`/api/sessions/${sessionId}/responses`, {
+    const basePath =
+      mode === "field_test" ? "/api/field-test/sessions" : "/api/sessions";
+    const res = await fetch(`${basePath}/${sessionId}/responses`, {
       method: "PATCH",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -57,7 +61,11 @@ async function sendPatch(
   }
 }
 
-export function useStepPatch(sessionId: string | null) {
+export function useStepPatch(
+  sessionId: string | null,
+  options: { mode?: RuntimeSessionMode } = {},
+) {
+  const mode = options.mode ?? "authenticated";
   const queueRef = useRef<Map<string, QueueEntry>>(new Map());
 
   const patch = useCallback(
@@ -70,12 +78,12 @@ export function useStepPatch(sessionId: string | null) {
 
       const timer = setTimeout(() => {
         queue.delete(stepKey);
-        void sendPatch(sessionId, stepKey, payload, metrics);
+        void sendPatch(sessionId, stepKey, payload, metrics, mode);
       }, DEBOUNCE_MS);
 
       queue.set(stepKey, { payload, metrics, timer });
     },
-    [sessionId],
+    [sessionId, mode],
   );
 
   /**
@@ -96,11 +104,11 @@ export function useStepPatch(sessionId: string | null) {
         entries.map(async ([key, entry]) => {
           if (entry.timer) clearTimeout(entry.timer);
           queue.delete(key);
-          await sendPatch(sessionId, key, entry.payload, entry.metrics);
+          await sendPatch(sessionId, key, entry.payload, entry.metrics, mode);
         }),
       );
     },
-    [sessionId],
+    [sessionId, mode],
   );
 
   // Cleanup en unmount: cancelar timers pendientes (la ref se captura en el

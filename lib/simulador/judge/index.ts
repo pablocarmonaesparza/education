@@ -183,15 +183,13 @@ export interface EvaluateResult extends JudgeRunResult {
   context: JudgeInputContext;
 }
 
-export async function evaluate(
-  simulationSessionId: string,
-): Promise<EvaluateResult> {
-  const ctx = await buildJudgeContext(simulationSessionId);
+export async function scoreSubmission(
+  ctx: JudgeInputContext,
+): Promise<JudgeRunResult> {
   const run = await runJudge(ctx);
   const { final, applied } = applyOverrides(run.output);
 
   return {
-    context: ctx,
     raw: run.output,
     final,
     overridesApplied: applied,
@@ -201,6 +199,18 @@ export async function evaluate(
       rubricVersion: ctx.rubric.version,
       durationMs: run.durationMs,
     },
+  };
+}
+
+export async function evaluate(
+  simulationSessionId: string,
+): Promise<EvaluateResult> {
+  const ctx = await buildJudgeContext(simulationSessionId);
+  const scored = await scoreSubmission(ctx);
+
+  return {
+    context: ctx,
+    ...scored,
   };
 }
 

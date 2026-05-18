@@ -14,12 +14,7 @@ import {
 } from "@heroui/react";
 import { usePathname } from "next/navigation";
 
-const ROUTES = [
-  { href: "/", label: "Landing" },
-  { href: "/case/marketing_urgent_campaign_pii", label: "Runtime" },
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/report/P001", label: "Reporte" },
-];
+const ROUTES = [{ href: "/dashboard", label: "Dashboard" }];
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === href;
@@ -29,7 +24,7 @@ function isActive(pathname: string, href: string) {
 function BrandMark() {
   return (
     <Link
-      href="/"
+      href="/dashboard"
       className="flex items-center gap-2.5"
       color="foreground"
     >
@@ -41,13 +36,6 @@ function BrandMark() {
         className="h-6 w-auto"
         priority
       />
-      <span className="text-[15px] text-[var(--text-tertiary)] mx-0.5">/</span>
-      <span className="text-[15px] font-semibold tracking-tight text-[var(--text-primary)]">
-        El Simulador
-      </span>
-      <span className="text-[10px] font-semibold text-[var(--text-tertiary)] uppercase tracking-[0.14em] ml-1 px-2 py-0.5 rounded-full bg-[var(--surface-3)]">
-        Preview
-      </span>
     </Link>
   );
 }

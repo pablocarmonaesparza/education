@@ -24,6 +24,9 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
   const decisionSelect = responses.decision_select?.option as
     | string
     | undefined;
+  const decisionLabel = responses.decision_select?.option_label as
+    | string
+    | undefined;
 
   // Heurística simple: si dejó PII sin transformar → privacidad B + risk high.
   const piiFields = ["name", "email", "company"];
@@ -61,9 +64,14 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
     },
     {
       id: "juicio",
-      band: decisionSelect === "bullets_plus_legal_flag" ? "A" : "M",
+      band:
+        decisionSelect === "option_c" ||
+        /revisi[oó]n|control|legal/i.test(decisionLabel ?? "")
+          ? "A"
+          : "M",
       rationale:
-        decisionSelect === "bullets_plus_legal_flag"
+        decisionSelect === "option_c" ||
+        /revisi[oó]n|control|legal/i.test(decisionLabel ?? "")
           ? "Identificó la necesidad de escalar a Legal antes de lanzar."
           : "Decidió sin escalamiento explícito.",
       confidence: 0.65,
@@ -71,8 +79,9 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
     {
       id: "decision",
       band:
-        decisionSelect === "bullets_with_context" ||
-        decisionSelect === "bullets_plus_legal_flag"
+        decisionSelect === "option_b" ||
+        decisionSelect === "option_c" ||
+        /supuestos|pendientes|revisi[oó]n|control/i.test(decisionLabel ?? "")
           ? "A"
           : "M",
       rationale: "La decisión final fue clara pero podría haber incluido más contexto.",
@@ -92,7 +101,7 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
       transfer_basis_documented: false,
     });
   }
-  if (decisionSelect === "raw_llm_output") {
+  if (decisionSelect === "option_d") {
     risk_events.push({
       type: "over_relied_on_output",
       severity: "medium",
@@ -132,7 +141,7 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
       "Encuadró el prompt con audiencia y restricciones de longitud.",
     );
   }
-  if (decisionSelect === "bullets_with_context") {
+  if (decisionSelect === "option_b") {
     strengths.push(
       "Optó por entregar contexto del proceso a la stakeholder, no sólo el output.",
     );

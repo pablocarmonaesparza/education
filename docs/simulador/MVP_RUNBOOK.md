@@ -6,19 +6,27 @@ Marketing/Growth/Operations.
 
 Estructura del repo en orden de lectura:
 - `app/(public)/page.tsx` — landing copy para Head/VP.
+- `app/field-test/marketing-urgent-campaign-pii/page.tsx` — muestra pública
+  sin login del caso 1.
 - `app/(onboarding)/onboarding/{org,team,invite}/page.tsx` — flow buyer.
 - `app/(app)/case/[case_id]/page.tsx` — runtime empleado (5 steps).
 - `app/(app)/dashboard/page.tsx` — vista manager.
 - `app/(app)/report/[session_id]/page.tsx` — reporte ejecutivo.
 - `app/(app)/admin/review/page.tsx` — cola review humano (staff Itera).
 - `app/api/sessions/*` — backend del runtime.
+- `app/api/field-test/sessions/*` — backend público token-scoped del caso de
+  muestra. No usa Supabase anonymous auth ni tablas B2B.
 - `app/api/dashboard` — agregación team.
 - `app/api/admin/review/*` — staff queue endpoints.
-- `lib/simulador/judge/*` — pipeline judge (Anthropic + override matrix).
+- `lib/simulador/judge/*` — pipeline judge (Anthropic primario, DeepSeek/Gemini
+  fallback real + override matrix).
 - `lib/simulador/{config,db.types,is-staff,use-session,use-step-patch}.ts`
 - `supabase/migrations/017_simulador_v0.sql` — schema canónico.
 - `supabase/migrations/018_drop_courses_legacy.sql` — limpieza pre-MVP.
 - `supabase/migrations/019_simulador_rls.sql` — RLS multi-tenant.
+- `supabase/migrations/20260515013000_simulador_field_test.sql` — tablas
+  separadas para field-test público
+  (`field_test_sessions/events/reports/leads`).
 
 ## Variables de entorno requeridas
 
@@ -27,15 +35,31 @@ Estructura del repo en orden de lectura:
 | `NEXT_PUBLIC_SUPABASE_URL`       | Cliente browser + SSR + admin.                   |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY`  | Cliente browser.                                 |
 | `SUPABASE_SERVICE_ROLE_KEY`      | Admin client (route handlers).                   |
-| `ANTHROPIC_API_KEY`              | Judge LLM (W5). En dev sin key → mock heurístico. |
+| `ANTHROPIC_API_KEY`              | Judge LLM primario (W5). En dev sin key → mock heurístico; field-test prod puede usar fallback real. |
 | `SIMULADOR_JUDGE_MODEL`          | Override del modelo (default `claude-opus-4-5`). |
 | `SIMULADOR_JUDGE_FALLBACK_MODEL` | Fallback (default `claude-sonnet-4-5`).          |
 | `SIMULADOR_STAFF_EMAILS`         | Allowlist comma-separated para `/admin/review`.  |
 | `SENDGRID_API_KEY`               | Invitaciones (W3).                               |
 | `STRIPE_SECRET_KEY`              | (W6 deferred).                                   |
 | `UPSTASH_REDIS_REST_URL/_TOKEN`  | Rate limits prod (fail-open en dev).             |
+| `DEEPSEEK_API_KEY`               | LLM beat real + judge fallback en field-test. En prod requerido. |
+| `GEMINI_API_KEY`                 | Fallback real para LLM beat + judge field-test. En prod requerido. |
+| `FIELD_TEST_REQUIRE_REAL_LLM`    | Default real en prod. `false` solo emergency.    |
+| `FIELD_TEST_REQUIRE_RATE_LIMIT`  | Default exige Upstash en prod. `false` emergency.|
 
 ## Flujo end-to-end (manual smoke test)
+
+0. **Field-test público**
+   - `/field-test/marketing-urgent-campaign-pii` crea/resume una sesión con
+     cookie httpOnly `itera_field_test`.
+   - Persistencia separada: `simulador.field_test_sessions`,
+     `field_test_step_events`, `field_test_reports`, `field_test_leads`.
+   - Cada PATCH va por `/api/field-test/sessions/[id]/responses`.
+   - El LLM beat usa DeepSeek/Gemini vía `lib/llm/client.ts`; en producción no
+     puede caer a mock si falta credencial.
+   - Submit → `/api/field-test/sessions/[id]/complete` → judge compartido
+     (`scoreSubmission`) → mini-reporte inline. Email opcional después del
+     reporte, nunca antes.
 
 1. **Buyer onboarding**
    - `/auth/signup` (Google OAuth) → callback crea bridge user en
@@ -89,6 +113,10 @@ Estructura del repo en orden de lectura:
 - Rate limit en `/api/sessions/[id]/evaluate` (5 req/min/user vía
   `rateLimiters.ai`). Background trigger desde `/complete` es interno
   (no rate-limited).
+- Field-test público usa token opaco en cookie + tablas separadas + rate limit
+  por IP/cookie. No toca RLS del runtime autenticado.
+- `scripts/simulador/check-field-test-spoilers.mjs` bloquea leaks obvios de
+  rúbrica/risk-events en APIs pre-submit y textos contaminantes del runtime.
 - Idempotencia del judge: `evaluateAndPersist` chequea existencia previa
   de evaluation_run y skipea con `{ skipped: true, reason }`. Para
   forzar re-evaluación pasar `?force=1`.
@@ -115,6 +143,9 @@ Estructura del repo en orden de lectura:
   considerar pg-boss o cola dedicada.
 - **Sin Playwright E2E**: tests automatizados no implementados. Smoke
   test manual cubre los 3 flows críticos (buyer/employee/manager).
+- **Field-test no es calibración estadística**: la muestra pública sirve para
+  adquisición, completion y face-validity direccional. No usar sus resultados
+  como benchmark, pricing proof ni claim de mercado.
 
 ## Smoke test rápido (5 min)
 
@@ -122,20 +153,25 @@ Estructura del repo en orden de lectura:
 # Local
 export SUPABASE_SERVICE_ROLE_KEY=...
 export ANTHROPIC_API_KEY=...
+export DEEPSEEK_API_KEY=...
+export GEMINI_API_KEY=...
 export SIMULADOR_STAFF_EMAILS=pablocarmonaesparza@gmail.com
 bun dev
 
 # 1. Visita http://localhost:3000 — landing debe cargar con copy nuevo.
-# 2. Signup con Google.
-# 3. Visita /onboarding/org — crea Demo Co, industry SaaS, region MX.
-# 4. /onboarding/team — Marketing.
-# 5. /onboarding/invite — invitar email-test@.
-# 6. Visita /case/marketing_urgent_campaign_pii.
-# 7. Click "Continuar" en cada slide hasta llegar al final.
-# 8. Submit final → loading "Evaluando…" → redirect a /report/[session_id].
-# 9. Espera ~30s mientras el judge corre.
-# 10. Verifica payload: 5 dimensions + risk_events + recommendation.
-# 11. /dashboard — vista manager con 1 member completado.
-# 12. /admin/review (solo si NODE_ENV=development con allowlist vacía o
+# 2. Click "Probar 1 caso" → /field-test/marketing-urgent-campaign-pii.
+# 3. Completa el caso sin login y verifica mini-reporte inline + lead opcional.
+# 4. Verifica que /case/marketing_urgent_campaign_pii sigue pidiendo auth.
+# 5. Signup con Google.
+# 6. Visita /onboarding/org — crea Demo Co, industry SaaS, region MX.
+# 7. /onboarding/team — Marketing.
+# 8. /onboarding/invite — invitar email-test@.
+# 9. Visita /case/marketing_urgent_campaign_pii.
+# 10. Click "Continuar" en cada slide hasta llegar al final.
+# 11. Submit final → loading "Evaluando…" → redirect a /report/[session_id].
+# 12. Espera ~30s mientras el judge corre.
+# 13. Verifica payload: 5 dimensions + risk_events + recommendation.
+# 14. /dashboard — vista manager con 1 member completado.
+# 15. /admin/review (solo si NODE_ENV=development con allowlist vacía o
 #     SIMULADOR_STAFF_EMAILS incluye tu email).
 ```

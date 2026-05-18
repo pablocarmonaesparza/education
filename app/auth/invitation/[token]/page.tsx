@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
-import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import { AuthNav } from "@/components/simulador/AuthNav";
 import { createClient } from "@/lib/supabase/client";
 
 export default function InvitationLandingPage() {
@@ -69,7 +69,7 @@ export default function InvitationLandingPage() {
 
   return (
     <>
-      <SurfaceNav />
+      <AuthNav mode="signup" next={`/auth/invitation/${token ?? ""}`} />
       <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 12 }}

@@ -22,6 +22,7 @@
 import { useEffect, useState } from "react";
 
 export type SessionStatus = "creating" | "ready" | "error";
+export type RuntimeSessionMode = "authenticated" | "field_test";
 
 export interface UseSessionState {
   status: SessionStatus;
@@ -32,10 +33,17 @@ export interface UseSessionState {
   responses: Record<string, unknown>;
   /** True si la API devolvió una sesión existente (no recién creada). */
   resumed: boolean;
+  /** Status real de la sesión en backend (`in_progress`, `submitted`, etc.). */
+  simulationStatus: string | null;
+  reportStatus: string | null;
   error: string | null;
 }
 
-export function useSession(caseSlug: string | null | undefined): UseSessionState {
+export function useSession(
+  caseSlug: string | null | undefined,
+  options: { mode?: RuntimeSessionMode } = {},
+): UseSessionState {
+  const mode = options.mode ?? "authenticated";
   const [state, setState] = useState<UseSessionState>({
     status: "creating",
     sessionId: null,
@@ -43,6 +51,8 @@ export function useSession(caseSlug: string | null | undefined): UseSessionState
     caseVariantId: null,
     responses: {},
     resumed: false,
+    simulationStatus: null,
+    reportStatus: null,
     error: null,
   });
 
@@ -52,7 +62,9 @@ export function useSession(caseSlug: string | null | undefined): UseSessionState
 
     async function init() {
       try {
-        const res = await fetch("/api/sessions", {
+        const basePath =
+          mode === "field_test" ? "/api/field-test/sessions" : "/api/sessions";
+        const res = await fetch(basePath, {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ case_slug: caseSlug }),
@@ -67,10 +79,14 @@ export function useSession(caseSlug: string | null | undefined): UseSessionState
           );
         }
 
-        // Resume → traer respuestas previas.
-        let responses: Record<string, unknown> = {};
+        // Resume → traer respuestas previas. Field-test create can return
+        // responses directly because it is token-scoped, not auth-scoped.
+        let responses: Record<string, unknown> =
+          data?.responses && typeof data.responses === "object"
+            ? (data.responses as Record<string, unknown>)
+            : {};
         if (data.resumed) {
-          const r = await fetch(`/api/sessions/${data.session_id}`, {
+          const r = await fetch(`${basePath}/${data.session_id}`, {
             cache: "no-store",
           });
           if (cancelled) return;
@@ -88,6 +104,8 @@ export function useSession(caseSlug: string | null | undefined): UseSessionState
           caseVariantId: data.case_variant_id ?? null,
           responses,
           resumed: Boolean(data.resumed),
+          simulationStatus: data.status ?? null,
+          reportStatus: data.report_status ?? null,
           error: null,
         });
       } catch (err) {
@@ -99,6 +117,8 @@ export function useSession(caseSlug: string | null | undefined): UseSessionState
           caseVariantId: null,
           responses: {},
           resumed: false,
+          simulationStatus: null,
+          reportStatus: null,
           error: err instanceof Error ? err.message : "Error inesperado.",
         });
       }
@@ -108,7 +128,7 @@ export function useSession(caseSlug: string | null | undefined): UseSessionState
     return () => {
       cancelled = true;
     };
-  }, [caseSlug]);
+  }, [caseSlug, mode]);
 
   return state;
 }

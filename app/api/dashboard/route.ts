@@ -46,6 +46,13 @@ interface ReportPayload {
   risk_events?: RiskEvent[];
 }
 
+interface AvailableCase {
+  slug: string;
+  title: string;
+  difficulty: string | null;
+  duration_estimate_min: number | null;
+}
+
 function bandToScore(b: "A" | "M" | "B" | null | undefined): number | null {
   if (b === "A") return 85;
   if (b === "M") return 60;
@@ -62,23 +69,36 @@ export async function GET() {
     return NextResponse.json({ error: "No autenticado." }, { status: 401 });
   }
 
-  // Bridge user
-  const { data: simUser } = await supabase
+  // Bridge user — usamos admin client porque PostgREST puede no exponer
+  // el schema "simulador" al cliente regular si la BD no está configurada
+  // para exposed_schemas. El admin client (service_role) bypassa todo
+  // y ya validamos el user vía auth.getUser() arriba.
+  const adminForUser = createAdminClient();
+  const bridgeResult = await adminForUser
     .schema("simulador")
     .from("users")
     .select("id, full_name, email")
     .eq("auth_user_id", user.id)
     .maybeSingle();
 
+  console.log("[dashboard] bridge lookup", {
+    auth_user_id: user.id,
+    has_simUser: !!bridgeResult.data,
+    error: bridgeResult.error?.message ?? null,
+  });
+
+  const simUser = bridgeResult.data;
   if (!simUser) {
     return NextResponse.json(
-      { error: "Bridge user no inicializado. Re-loguéate." },
+      {
+        error: "Bridge user no inicializado. Re-loguéate.",
+      },
       { status: 500 },
     );
   }
 
-  // Team del user (primero)
-  const { data: membership } = await supabase
+  // Team del user — admin client por el mismo motivo (PostgREST schema exposure).
+  const { data: membership } = await adminForUser
     .schema("simulador")
     .from("team_memberships")
     .select("team_id, role")
@@ -90,12 +110,13 @@ export async function GET() {
     return NextResponse.json({
       team: null,
       sprint: null,
+      available_cases: [],
       members: [],
       aggregate: emptyAggregate(),
     });
   }
 
-  const { data: team } = await supabase
+  const { data: team } = await adminForUser
     .schema("simulador")
     .from("teams")
     .select("id, name, organization_id")
@@ -106,16 +127,17 @@ export async function GET() {
     return NextResponse.json({
       team: null,
       sprint: null,
+      available_cases: [],
       members: [],
       aggregate: emptyAggregate(),
     });
   }
 
   // Sprint más reciente del team
-  const { data: sprint } = await supabase
+  const { data: sprint } = await adminForUser
     .schema("simulador")
     .from("sprints")
-    .select("id, name, status, start_date, end_date")
+    .select("id, name, status, start_date, end_date, sprint_package_id")
     .eq("team_id", team.id)
     .order("created_at", { ascending: false })
     .limit(1)
@@ -125,10 +147,14 @@ export async function GET() {
     return NextResponse.json({
       team: { id: team.id, name: team.name },
       sprint: null,
+      available_cases: [],
       members: [],
       aggregate: emptyAggregate(),
     });
   }
+
+  const viewerRole = String(membership.role ?? "employee");
+  const canSeeTeam = ["manager", "admin", "org_admin"].includes(viewerRole);
 
   // Para el agregado completo necesitamos cruzar:
   //   team_memberships → users (todos los seats)
@@ -137,13 +163,27 @@ export async function GET() {
   // Usamos admin client para esto porque managers pueden no tener role
   // formal todavía y queremos mostrar el dashboard si es buyer/owner.
   const admin = createAdminClient();
+  const availableCases = await loadAvailableCases(
+    admin,
+    (sprint.sprint_package_id as string | null) ?? null,
+  );
 
-  // Todos los users del team
-  const { data: teamMembers } = await admin
+  // Members del team que aparecen en el dashboard.
+  // Excluimos managers/org_admins: el dashboard agrega empleados (operadores),
+  // y un manager no debe aparecerse a sí mismo como "no iniciado".
+  let membersQuery = admin
     .schema("simulador")
     .from("team_memberships")
     .select("user_id, role")
     .eq("team_id", team.id);
+
+  if (canSeeTeam) {
+    membersQuery = membersQuery.eq("role", "employee");
+  } else {
+    membersQuery = membersQuery.eq("user_id", simUser.id);
+  }
+
+  const { data: teamMembers } = await membersQuery;
 
   const userIds = (teamMembers ?? []).map((tm) => tm.user_id);
   const { data: users } = await admin
@@ -294,6 +334,7 @@ export async function GET() {
     : null;
 
   return NextResponse.json({
+    viewer_role: viewerRole,
     team: { id: team.id, name: team.name },
     sprint: {
       id: sprint.id,
@@ -302,6 +343,7 @@ export async function GET() {
       start_date: sprint.start_date,
       end_date: sprint.end_date,
     },
+    available_cases: availableCases,
     members: memberRows,
     aggregate: {
       total,
@@ -335,4 +377,54 @@ function emptyAggregate() {
     risk_events_total: 0,
     days_left: null,
   };
+}
+
+async function loadAvailableCases(
+  admin: ReturnType<typeof createAdminClient>,
+  sprintPackageId: string | null,
+): Promise<AvailableCase[]> {
+  if (sprintPackageId) {
+    const { data: packageRows } = await admin
+      .schema("simulador")
+      .from("sprint_package_cases")
+      .select(
+        "display_order, status, case_template:case_templates(slug, title, difficulty, duration_estimate_min, status)",
+      )
+      .eq("sprint_package_id", sprintPackageId)
+      .eq("status", "ready")
+      .order("display_order", { ascending: true });
+
+    const cases = (packageRows ?? [])
+      .map((row) => {
+        const template = Array.isArray(row.case_template)
+          ? row.case_template[0]
+          : row.case_template;
+        if (!template || template.status !== "active") return null;
+        return {
+          slug: String(template.slug),
+          title: String(template.title),
+          difficulty: (template.difficulty as string | null) ?? null,
+          duration_estimate_min:
+            (template.duration_estimate_min as number | null) ?? null,
+        };
+      })
+      .filter((item): item is AvailableCase => Boolean(item));
+
+    if (cases.length > 0) return cases;
+  }
+
+  const { data: templates } = await admin
+    .schema("simulador")
+    .from("case_templates")
+    .select("slug, title, difficulty, duration_estimate_min")
+    .eq("status", "active")
+    .order("updated_at", { ascending: false });
+
+  return (templates ?? []).map((template) => ({
+    slug: String(template.slug),
+    title: String(template.title),
+    difficulty: (template.difficulty as string | null) ?? null,
+    duration_estimate_min:
+      (template.duration_estimate_min as number | null) ?? null,
+  }));
 }

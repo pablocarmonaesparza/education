@@ -11,6 +11,7 @@
  */
 
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { SimuladorProviders } from "./providers";
 import "./simulador.css";
@@ -26,11 +27,12 @@ export default async function AppLayout({
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/auth/login");
+    const pathname = (await headers()).get("x-itera-pathname") ?? "/dashboard";
+    redirect(`/auth/login?next=${encodeURIComponent(pathname)}`);
   }
 
   return (
-    <div className="simulador-root min-h-screen surface-canvas">
+    <div className="simulador-root dark min-h-screen surface-canvas">
       <SimuladorProviders>{children}</SimuladorProviders>
     </div>
   );

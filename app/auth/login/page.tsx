@@ -1,267 +1,262 @@
-'use client';
+"use client";
 
-import { useState, useEffect, FormEvent, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import AuthNavbar from '@/components/auth/AuthNavbar';
-import { createClient } from '@/lib/supabase/client';
-import { Button, Input, Spinner } from '@/components/ui';
-import { depth } from '@/lib/design-tokens';
+/**
+ * /auth/login — login Apple-style del Simulador.
+ *
+ * Diseñado para integrarse con la landing pública (PublicNav arriba,
+ * tipografía display, surfaces del design system del Simulador). Cero
+ * imports del design system legacy de Itera Courses.
+ *
+ * Flow:
+ *   1. signInWithPassword o OAuth Google.
+ *   2. Si vino con `?next=/path`, redirige ahí (caso típico: aceptar invitación).
+ *   3. Si no, default a /dashboard.
+ */
+
+import { useState, useEffect, FormEvent, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { Button, Input, Link } from "@heroui/react";
+import { motion } from "framer-motion";
+import { AuthNav } from "@/components/simulador/AuthNav";
+import { createClient } from "@/lib/supabase/client";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import "../../(app)/simulador.css";
+
+const fadeUp = {
+  initial: { opacity: 0, y: 14 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
+};
+
+function translateError(errorMessage: string): string {
+  if (
+    errorMessage.includes("Failed to fetch") ||
+    errorMessage.includes("NetworkError")
+  ) {
+    return "No se pudo conectar al servidor. Verifica tu conexión.";
+  }
+  const map: Record<string, string> = {
+    "Invalid login credentials": "Email o contraseña incorrectos.",
+    "Email not confirmed": "Confirma tu email antes de iniciar sesión.",
+    "Password should be at least 6 characters":
+      "La contraseña debe tener al menos 6 caracteres.",
+    "Unable to validate email address": "Email inválido.",
+  };
+  for (const [k, v] of Object.entries(map)) {
+    if (errorMessage.includes(k)) return v;
+  }
+  return errorMessage;
+}
 
 function LoginContent() {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isMounted, setIsMounted] = useState<boolean>(false);
-  const [showSupabaseWarning, setShowSupabaseWarning] = useState<boolean>(false);
-  const [redirectingToGoogle, setRedirectingToGoogle] = useState<boolean>(false);
-  const router = useRouter();
   const searchParams = useSearchParams();
-  
-  // Lazy initialization of Supabase client to avoid SSR issues
-  const [supabase, setSupabase] = useState<any>(null);
-  
+  const next =
+    searchParams.get("next") ?? searchParams.get("redirectedFrom") ?? "/dashboard";
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [redirectingToGoogle, setRedirectingToGoogle] = useState(false);
+  const [supabase, setSupabase] = useState<SupabaseClient | null>(null);
+
   useEffect(() => {
-    setIsMounted(true);
-
-    // Check for error in URL params (from OAuth callback or redirect)
-    const urlError = searchParams.get('error');
-    if (urlError) {
-      setError(decodeURIComponent(urlError));
-    }
-
-    if (typeof window !== 'undefined') {
-      // Check if Supabase is configured before trying to create client
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-      const configured = url &&
-        key &&
-        url !== 'https://your-project.supabase.co' &&
-        key !== 'your-anon-key-here' &&
-        !url.includes('your-project');
-
-      if (configured) {
-        try {
-          setSupabase(createClient());
-          setShowSupabaseWarning(false);
-        } catch (error: any) {
-          console.error('Error initializing Supabase client:', error);
-          setShowSupabaseWarning(true);
-        }
-      } else {
-        setShowSupabaseWarning(true);
-      }
-    }
-  }, []);
-
-  const translateError = (errorMessage: string): string => {
-    // Error especial cuando Supabase no está configurado
-    if (errorMessage.includes('Failed to fetch') ||
-        errorMessage.includes('fetch') ||
-        errorMessage.includes('NetworkError')) {
-      return 'Supabase no está configurado. Usa el botón "Ver Demo" para explorar la plataforma.';
-    }
-
-    const errorMap: { [key: string]: string } = {
-      'Invalid login credentials': 'Email o contraseña incorrectos',
-      'Email not confirmed': 'Por favor confirma tu email antes de iniciar sesión',
-      'Password should be at least 6 characters': 'La contraseña debe tener al menos 6 caracteres',
-      'Unable to validate email address': 'Email inválido',
-    };
-
-    for (const [key, value] of Object.entries(errorMap)) {
-      if (errorMessage.includes(key)) {
-        return value;
-      }
-    }
-
-    return errorMessage;
-  };
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    
-    if (!supabase) {
-      setError('Supabase no está inicializado. Por favor recarga la página.');
-      return;
-    }
-    
-    setLoading(true);
-    setError(null);
+    const urlError = searchParams.get("error");
+    if (urlError) setError(decodeURIComponent(urlError));
 
     try {
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      setSupabase(createClient());
+    } catch (e) {
+      console.error("[auth/login] Supabase init failed", e);
+      setError("No se pudo inicializar el cliente. Recarga la página.");
+    }
+  }, [searchParams]);
 
-      if (signInError) {
-        setError(translateError(signInError.message));
-      } else if (signInData?.session) {
-        // Session is established, now check where to redirect
-        try {
-          const { data: intakeData } = await supabase
-            .from('intake_responses')
-            .select('generated_path')
-            .eq('user_id', signInData.session.user.id)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .maybeSingle();
-
-          if (intakeData?.generated_path) {
-            window.location.href = '/dashboard';
-          } else {
-            window.location.href = '/onboarding';
-          }
-        } catch {
-          // If intake check fails, default to onboarding
-          window.location.href = '/onboarding';
-        }
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (!supabase) {
+      setError("Cliente no inicializado. Recarga la página.");
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, error: signInErr } = await supabase.auth.signInWithPassword(
+        { email, password },
+      );
+      if (signInErr) {
+        setError(translateError(signInErr.message));
+      } else if (data?.session) {
+        window.location.href = next;
       } else {
-        // Sign in returned no error but no session - shouldn't happen
-        setError('Error al iniciar sesión. Por favor intenta de nuevo.');
+        setError("Error inesperado. Intenta de nuevo.");
       }
-    } catch (err: any) {
-      setError(translateError(err.message || 'Ocurrió un error. Intenta de nuevo.'));
+    } catch (err) {
+      setError(
+        translateError(
+          err instanceof Error ? err.message : "Error inesperado.",
+        ),
+      );
     } finally {
       setLoading(false);
     }
-  };
+  }
 
-  const handleGoogleLogin = async () => {
+  async function handleGoogleLogin() {
     if (!supabase) {
-      setError('Supabase no está inicializado. Por favor recarga la página.');
+      setError("Cliente no inicializado. Recarga la página.");
       return;
     }
-    
     setLoading(true);
     setError(null);
-
     try {
-      // Use dynamic redirect URL based on current origin to ensure PKCE flow works correctly
-      const redirectUrl = `${window.location.origin}/auth/callback?from=login`;
-      
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+      const redirectUrl = `${window.location.origin}/auth/callback?from=login&next=${encodeURIComponent(next)}`;
+      const { data, error: oauthErr } = await supabase.auth.signInWithOAuth({
+        provider: "google",
         options: {
           redirectTo: redirectUrl,
-          queryParams: {
-            prompt: 'select_account',
-          },
+          queryParams: { prompt: "select_account" },
         },
       });
-
-      if (error) {
-        setError(translateError(error.message || 'Error al iniciar sesión con Google'));
+      if (oauthErr) {
+        setError(
+          translateError(oauthErr.message || "Error al iniciar con Google."),
+        );
         setLoading(false);
         return;
       }
-
-      // With PKCE flow, we need to manually redirect to the OAuth URL
       if (data?.url) {
         setRedirectingToGoogle(true);
         window.location.href = data.url;
       } else {
-        setError('No se pudo obtener la URL de autenticación. Intenta de nuevo.');
+        setError("No se pudo obtener la URL de Google. Intenta de nuevo.");
         setLoading(false);
       }
-    } catch (err: any) {
-      console.error('Google OAuth error:', err);
-      setError(translateError(err.message || 'Error al iniciar sesión con Google'));
+    } catch (err) {
+      setError(
+        translateError(err instanceof Error ? err.message : "Error inesperado."),
+      );
       setLoading(false);
     }
-  };
+  }
 
-  // Show a full-page loading screen when redirecting to Google
   if (redirectingToGoogle) {
     return (
-      <main className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-800">
-        <Spinner size="lg" />
-        <p className="mt-4 text-ink-muted dark:text-gray-400 text-sm">Redirigiendo a Google...</p>
-      </main>
+      <div className="simulador-root min-h-screen surface-canvas grid place-items-center px-6">
+        <div className="text-center">
+          <div className="mx-auto h-9 w-9 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
+          <p className="mt-6 text-[14px] text-[var(--text-secondary)]">
+            Redirigiendo a Google…
+          </p>
+        </div>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen flex flex-col relative overflow-hidden bg-white dark:bg-gray-800">
-      <AuthNavbar />
+    <div className="simulador-root min-h-screen surface-canvas">
+      <AuthNav mode="login" next={next} />
 
-      <section className="min-h-screen flex items-center justify-center py-12 md:py-20 px-4 relative z-10">
-        <div className="w-full max-w-md">
-          <div className={`bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-10 ${depth.border} ${depth.bottom} border-gray-200 dark:border-gray-900 border-b-gray-300 dark:border-b-gray-900`}>
-            {/* Header */}
-            <div className="text-center mb-8">
-              <h1 className="text-3xl md:text-4xl font-extrabold text-ink dark:text-white mb-2 tracking-tight">
-                inicia sesión
-              </h1>
-              <p className="text-ink-muted dark:text-gray-400">
-                Continúa tu aprendizaje en IA y automatización
-              </p>
-            </div>
+      <main className="px-6 pt-16 sm:pt-24 pb-24">
+        <div className="max-w-[400px] mx-auto">
+          <motion.div {...fadeUp} className="text-center">
+            <div className="eyebrow">Cuenta</div>
+            <h1 className="display display-tight mt-5 text-[40px] sm:text-[48px] text-[var(--text-primary)]">
+              Inicia sesión.
+            </h1>
+            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+              Continúa donde lo dejaste — diagnóstico, reporte o dashboard.
+            </p>
+          </motion.div>
 
-            {/* Error Message */}
-            {error && (
-              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/30 border-2 border-red-200 dark:border-red-800 rounded-2xl">
-                <p className="text-red-600 dark:text-red-400 text-sm text-center font-medium">{error}</p>
-              </div>
-            )}
+          {error && (
+            <motion.div
+              {...fadeUp}
+              transition={{ ...fadeUp.transition, delay: 0.05 }}
+              className="mt-8 p-4 rounded-2xl bg-[var(--band-b-bg)] text-[var(--band-b-text)] text-[13.5px] text-center leading-[1.5]"
+            >
+              {error}
+            </motion.div>
+          )}
 
-            {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                type="email"
-                id="email"
-                variant="default"
-                placeholder="Correo electrónico"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+          <motion.form
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.08 }}
+            onSubmit={handleSubmit}
+            className="mt-10 space-y-3"
+          >
+            <Input
+              type="email"
+              placeholder="email@empresa.com"
+              value={email}
+              onValueChange={setEmail}
+              isRequired
+              size="lg"
+              radius="lg"
+              variant="bordered"
+              autoComplete="email"
+              classNames={{
+                inputWrapper:
+                  "h-12 bg-[var(--surface)] border-[var(--border)] data-[hover=true]:bg-[var(--surface)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
+                input: "text-[15px] text-[var(--text-primary)]",
+              }}
+            />
 
-              <Input
-                type="password"
-                id="password"
-                variant="default"
-                placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+            <Input
+              type="password"
+              placeholder="Contraseña"
+              value={password}
+              onValueChange={setPassword}
+              isRequired
+              size="lg"
+              radius="lg"
+              variant="bordered"
+              autoComplete="current-password"
+              classNames={{
+                inputWrapper:
+                  "h-12 bg-[var(--surface)] border-[var(--border)] data-[hover=true]:bg-[var(--surface)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
+                input: "text-[15px] text-[var(--text-primary)]",
+              }}
+            />
 
-              <Button
-                type="submit"
-                variant="primary"
-                depth="bottom"
-                size="none"
-                rounded2xl
-                disabled={loading}
-                className="w-full py-4 text-sm"
-              >
-                {loading ? 'Iniciando sesión...' : 'INICIAR SESIÓN'}
-              </Button>
-            </form>
+            <Button
+              type="submit"
+              isDisabled={loading || !email || !password}
+              radius="full"
+              size="lg"
+              className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none mt-2"
+            >
+              {loading ? "Iniciando sesión…" : "Continuar"}
+            </Button>
+          </motion.form>
 
-            {/* Divider */}
-            <div className="mt-6 mb-4 flex items-center">
-              <div className="flex-1 border-t border-gray-300 dark:border-gray-900"></div>
-              <span className="px-4 text-sm text-gray-500 dark:text-gray-400">O continúa con</span>
-              <div className="flex-1 border-t border-gray-300 dark:border-gray-900"></div>
-            </div>
+          <motion.div
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.12 }}
+            className="mt-7 flex items-center gap-4"
+          >
+            <div className="flex-1 h-px bg-[var(--hairline)]" />
+            <span className="text-[12px] text-[var(--text-tertiary)] tracking-wide">
+              o
+            </span>
+            <div className="flex-1 h-px bg-[var(--hairline)]" />
+          </motion.div>
 
-            {/* Google OAuth */}
+          <motion.div
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.14 }}
+            className="mt-5"
+          >
             <Button
               type="button"
-              variant="outline"
-              depth="full"
-              size="none"
-              rounded2xl
-              onClick={handleGoogleLogin}
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-3 py-4"
+              onPress={handleGoogleLogin}
+              isDisabled={loading}
+              radius="full"
+              size="lg"
+              variant="bordered"
+              className="w-full h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium gap-3 shadow-none"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" aria-hidden>
                 <path
                   fill="#4285F4"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -279,33 +274,41 @@ function LoginContent() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-              <span>{loading ? 'Conectando...' : 'Continuar con Google'}</span>
+              <span>
+                {loading ? "Conectando…" : "Continuar con Google"}
+              </span>
             </Button>
+          </motion.div>
 
-            {/* Signup Link */}
-            <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-            ¿No tienes cuenta?{' '}
-              <Link href="/auth/signup" className="text-primary hover:text-primary-dark font-semibold">
-                Regístrate gratis
-              </Link>
-          </p>
-          </div>
+          <motion.p
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.18 }}
+            className="mt-10 text-center text-[14px] text-[var(--text-secondary)]"
+          >
+            ¿Aún no tienes cuenta?{" "}
+            <Link
+              href={`/auth/signup${next !== "/dashboard" ? `?next=${encodeURIComponent(next)}` : ""}`}
+              className="text-[var(--accent)] hover:underline font-medium"
+              color="foreground"
+            >
+              Crear cuenta
+            </Link>
+          </motion.p>
         </div>
-      </section>
-    </main>
+      </main>
+    </div>
   );
 }
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={
-      <main className="min-h-screen flex flex-col relative overflow-hidden bg-white dark:bg-gray-800">
-        <AuthNavbar />
-        <section className="min-h-screen flex items-center justify-center py-12 md:py-20 px-4 relative z-10">
-          <Spinner />
-        </section>
-      </main>
-    }>
+    <Suspense
+      fallback={
+        <div className="simulador-root min-h-screen surface-canvas grid place-items-center px-6">
+          <div className="mx-auto h-9 w-9 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
+        </div>
+      }
+    >
       <LoginContent />
     </Suspense>
   );

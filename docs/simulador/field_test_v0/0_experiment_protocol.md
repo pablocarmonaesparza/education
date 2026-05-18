@@ -195,7 +195,16 @@ el reporte).
 
 ### 4.6 setup técnico (wizard-of-oz)
 
-- **0 código.** no hay UI, no hay base de datos, no hay runtime.
+> actualización operativa 2026-05-15: el repo ya contiene un runtime del
+> simulador. Para reducir fricción de adquisición se permite una variante
+> instrumentada del caso 1 en `/field-test/marketing-urgent-campaign-pii`.
+> Esta variante **no reemplaza** la calibración original con evaluadores
+> externos: sirve para completion, face validity direccional y generación de
+> leads. Cualquier resultado público del field-test debe mantener el disclaimer
+> de n pequeño / muestra sesgada, y no puede usarse como benchmark ni claim de
+> mercado.
+
+- **Protocolo original:** 0 código. no hay UI, no hay base de datos, no hay runtime.
 - materiales: Google Doc por participante (caso rendered de
   `1_participant_brief.md`) + Google Form para captura de respuestas.
 - sesión: Zoom/Meet con screen share del operador.

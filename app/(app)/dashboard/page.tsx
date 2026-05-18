@@ -85,6 +85,7 @@ interface DashboardMember {
 }
 
 interface DashboardData {
+  viewer_role?: string;
   team: { id: string; name: string } | null;
   sprint: {
     id: string;
@@ -93,6 +94,12 @@ interface DashboardData {
     start_date: string | null;
     end_date: string | null;
   } | null;
+  available_cases: Array<{
+    slug: string;
+    title: string;
+    difficulty: string | null;
+    duration_estimate_min: number | null;
+  }>;
   members: DashboardMember[];
   aggregate: {
     total: number;
@@ -146,6 +153,117 @@ function statusLabel(status: DashboardMember["session_status"]): {
     label: "No iniciado",
     classNames: "text-[var(--text-tertiary)]",
   };
+}
+
+function EmployeeDashboard({ data }: { data: DashboardData }) {
+  const member = data.members[0] ?? null;
+  const status = member ? statusLabel(member.session_status) : null;
+  const hasStarted = !!member?.session_id;
+  const hasReport = !!member?.session_id && !!member?.report_id;
+  const availableCases = data.available_cases ?? [];
+
+  return (
+    <>
+      <SurfaceNav />
+      <main className="surface-canvas min-h-screen pb-24">
+        <section className="border-b border-[var(--hairline)] surface-canvas">
+          <div className="max-w-5xl mx-auto px-6 py-12">
+            <motion.div {...fadeUp}>
+              <div className="eyebrow">Dashboard del empleado</div>
+              <h1 className="display display-tight mt-4 text-[36px] sm:text-[44px] text-[var(--text-primary)]">
+                Casos disponibles.
+              </h1>
+              <p className="mt-4 max-w-2xl text-[16px] text-[var(--text-secondary)] leading-[1.6]">
+                Entra a un caso, toma decisiones y recibe una lectura preliminar
+                de tu criterio operativo.
+              </p>
+            </motion.div>
+          </div>
+        </section>
+
+        <section className="max-w-5xl mx-auto px-6 mt-10">
+          {availableCases.length === 0 ? (
+            <motion.div
+              {...fadeUp}
+              className="card-apple bg-[var(--surface)] p-8 text-[15px] text-[var(--text-secondary)]"
+            >
+              Todavía no tienes casos asignados.
+            </motion.div>
+          ) : (
+            <div className="space-y-3">
+              {availableCases.map((caseItem, index) => {
+                const currentStatus = index === 0 ? status : null;
+                const showReport = index === 0 && hasReport;
+                return (
+                  <motion.div
+                    key={caseItem.slug}
+                    {...fadeUp}
+                    transition={{ ...fadeUp.transition, delay: index * 0.04 }}
+                  >
+                    <Card className="card-apple bg-[var(--surface)] shadow-none">
+                      <CardBody className="p-7 sm:p-8">
+                        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+                          <div className="min-w-0">
+                            <div className="eyebrow">
+                              Caso {String(index + 1).padStart(2, "0")}
+                              {caseItem.difficulty
+                                ? ` · ${caseItem.difficulty}`
+                                : ""}
+                            </div>
+                            <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
+                              {caseItem.title}
+                            </h2>
+                            <p className="mt-3 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+                              {caseItem.duration_estimate_min ?? 18} minutos ·
+                              Contexto, Datos, IA, Revisión, Decisión y
+                              Respuesta.
+                            </p>
+                            {currentStatus && (
+                              <div
+                                className={`mt-4 text-[13px] ${currentStatus.classNames}`}
+                              >
+                                {currentStatus.label}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex flex-col sm:flex-row gap-2 md:flex-shrink-0">
+                            {showReport && (
+                              <Button
+                                as={Link}
+                                href={`/report/${member.session_id}`}
+                                radius="full"
+                                size="lg"
+                                variant="bordered"
+                                className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px] font-medium"
+                              >
+                                Ver reporte
+                              </Button>
+                            )}
+                            <Button
+                              as={Link}
+                              href={`/case/${caseItem.slug}`}
+                              radius="full"
+                              size="lg"
+                              className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
+                            >
+                              {currentStatus && hasStarted
+                                ? "Continuar caso"
+                                : "Empezar caso"}
+                            </Button>
+                          </div>
+                        </div>
+                      </CardBody>
+                    </Card>
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      </main>
+    </>
+  );
 }
 
 export default function DashboardPage() {
@@ -232,12 +350,23 @@ export default function DashboardPage() {
     );
   }
 
+  const canManage = ["manager", "admin", "org_admin"].includes(
+    data.viewer_role ?? "employee",
+  );
+
+  if (!canManage) {
+    return <EmployeeDashboard data={data} />;
+  }
+
   const agg = data.aggregate;
   const completionPct = agg.completion_pct;
   const dimsAvg = agg.dimensions_avg;
   const avgReadiness = Math.round(
     DIMENSIONS.reduce((acc, d) => acc + (dimsAvg[d.id] ?? 0), 0) /
       DIMENSIONS.length,
+  );
+  const reportsAvailable = data.members.filter(
+    (member) => member.session_id && member.report_id,
   );
 
   return (
@@ -465,6 +594,72 @@ export default function DashboardPage() {
               })}
             </div>
           )}
+        </section>
+
+        {/* Reportes */}
+        <section className="max-w-6xl mx-auto px-6 mt-20">
+          <motion.div
+            {...fadeUp}
+            className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
+          >
+            <div>
+              <div className="eyebrow">Reportes</div>
+              <h2 className="display mt-2 text-[28px] text-[var(--text-primary)]">
+                Evidencia lista para revisar.
+              </h2>
+              <p className="mt-3 text-[15px] text-[var(--text-secondary)] max-w-2xl">
+                Abre los reportes individuales ya generados. El reporte agregado
+                del equipo se activa cuando existan suficientes sesiones
+                completadas.
+              </p>
+            </div>
+            <div className="text-[13px] text-[var(--text-secondary)]">
+              <span className="text-[var(--text-primary)] font-medium">
+                {reportsAvailable.length}
+              </span>{" "}
+              disponibles
+            </div>
+          </motion.div>
+
+          <div className="mt-8 card-apple bg-[var(--surface)] p-2 sm:p-5">
+            {reportsAvailable.length === 0 ? (
+              <div className="px-3 py-8 text-[14px] text-[var(--text-secondary)]">
+                Todavía no hay reportes para extraer. Aparecerán aquí cuando los
+                empleados completen el caso y el reporte quede publicado.
+              </div>
+            ) : (
+              <div className="divide-y divide-[var(--hairline)]">
+                {reportsAvailable.map((member) => {
+                  const displayName =
+                    member.full_name ?? member.email.split("@")[0];
+                  return (
+                    <div
+                      key={`${member.user_id}-report`}
+                      className="flex flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div className="min-w-0">
+                        <div className="text-[15px] font-semibold text-[var(--text-primary)] truncate">
+                          {displayName}
+                        </div>
+                        <div className="mt-1 text-[12px] text-[var(--text-tertiary)] mono">
+                          {member.report_status ?? "reporte generado"}
+                        </div>
+                      </div>
+                      <Button
+                        as={Link}
+                        href={`/report/${member.session_id}`}
+                        radius="full"
+                        size="sm"
+                        className="accent-bg text-white shrink-0 px-5 font-medium shadow-none"
+                      >
+                        Abrir reporte
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </section>
 
         {/* Dimensiones agregadas */}

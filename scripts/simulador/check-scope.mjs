@@ -22,6 +22,14 @@ if (validate.status !== 0) {
   process.exit(validate.status ?? 1);
 }
 
+const spoiler = run("node", ["scripts/simulador/check-field-test-spoilers.mjs"]);
+print(spoiler.stdout);
+print(spoiler.stderr);
+
+if (spoiler.status !== 0) {
+  process.exit(spoiler.status ?? 1);
+}
+
 const typecheck = run("node", ["scripts/simulador/typecheck-scope.mjs"]);
 print(typecheck.stdout);
 print(typecheck.stderr);

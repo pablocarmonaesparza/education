@@ -27,6 +27,7 @@ import {
 } from "./prompt-builder";
 import { mockJudgeOutput } from "./mock-output";
 import type { JudgeInputContext, JudgeOutput } from "./types";
+import { chat } from "@/lib/llm/client";
 
 const DEFAULT_MODEL = process.env.SIMULADOR_JUDGE_MODEL ?? "claude-opus-4-5";
 const FALLBACK_MODEL =
@@ -54,9 +55,12 @@ export async function runJudge(
   // configurar la key. En prod sigue fail-closed.
   if (!apiKey) {
     if (process.env.NODE_ENV === "production") {
-      throw new Error(
-        "ANTHROPIC_API_KEY no está definido — el judge no puede correr en producción.",
-      );
+      return runOpenAiCompatibleJudge({
+        ctx,
+        systemPrompt,
+        userPrompt,
+        reason: "ANTHROPIC_API_KEY no configurada",
+      });
     }
     console.warn(
       "[judge/run] ANTHROPIC_API_KEY no configurado — usando mock output (dev only).",
@@ -100,6 +104,16 @@ export async function runJudge(
       );
       model = FALLBACK_MODEL;
       response = await client.messages.create(buildParams(model));
+    } else if (isAnthropicConfigError(msg)) {
+      console.warn(
+        `[judge/run] Anthropic no disponible (${msg}); usando fallback DeepSeek/Gemini`,
+      );
+      return runOpenAiCompatibleJudge({
+        ctx,
+        systemPrompt,
+        userPrompt,
+        reason: msg,
+      });
     } else {
       throw err;
     }
@@ -132,4 +146,87 @@ export async function runJudge(
     durationMs,
     inputSnapshot: { systemPrompt, userPrompt },
   };
+}
+
+function isAnthropicConfigError(message: string): boolean {
+  return /invalid x-api-key|authentication_error|unauthorized|api key|credit balance|permission|not authorized/i.test(
+    message,
+  );
+}
+
+async function runOpenAiCompatibleJudge(input: {
+  ctx: JudgeInputContext;
+  systemPrompt: string;
+  userPrompt: string;
+  reason: string;
+}): Promise<RunJudgeResult> {
+  const start = Date.now();
+  const completion = await chat({
+    temperature: 0,
+    max_tokens: MAX_TOKENS,
+    response_format: { type: "json_object" },
+    messages: [
+      {
+        role: "system",
+        content: [
+          input.systemPrompt,
+          "",
+          "No tienes tool_use disponible. Devuelve exclusivamente un objeto JSON",
+          "válido que cumpla este JSON Schema. No uses markdown ni texto fuera",
+          "del JSON.",
+          JSON.stringify(JUDGE_TOOL_SCHEMA.input_schema),
+        ].join("\n"),
+      },
+      {
+        role: "user",
+        content: [
+          input.userPrompt,
+          "",
+          "Devuelve sólo el JSON de submit_evaluation.",
+        ].join("\n"),
+      },
+    ],
+  });
+
+  const content =
+    "choices" in completion
+      ? (completion.choices[0]?.message?.content ?? "").trim()
+      : "";
+  if (!content) {
+    throw new Error("Judge fallback no devolvió contenido.");
+  }
+
+  const output = parseJudgeJson(content);
+  if (!output?.dimensions || output.dimensions.length !== 5) {
+    throw new Error(
+      "Judge fallback output incompleto: dimensions debe tener exactamente 5 entries.",
+    );
+  }
+
+  return {
+    output,
+    model:
+      "model" in completion
+        ? `openai_compatible:${completion.model}`
+        : "openai_compatible:unknown",
+    promptVersion: `${JUDGE_PROMPT_VERSION}/openai-compatible`,
+    durationMs: Date.now() - start,
+    inputSnapshot: {
+      systemPrompt: input.systemPrompt,
+      userPrompt: [
+        input.userPrompt,
+        "",
+        `Fallback reason: ${input.reason}`,
+      ].join("\n"),
+    },
+  };
+}
+
+function parseJudgeJson(content: string): JudgeOutput {
+  const clean = content
+    .replace(/^```json\s*/i, "")
+    .replace(/^```\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .trim();
+  return JSON.parse(clean) as JudgeOutput;
 }
