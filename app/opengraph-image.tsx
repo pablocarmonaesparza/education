@@ -15,7 +15,7 @@ import { ImageResponse } from 'next/og';
  */
 
 export const runtime = 'edge';
-export const alt = 'Itera — aprende a construir con inteligencia artificial';
+export const alt = 'Itera — criterio de IA, medible';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -57,7 +57,7 @@ export default async function Image() {
             letterSpacing: '-3px',
           }}
         >
-          aprende a construir con IA.
+          criterio de IA, medible.
         </div>
 
         <div
@@ -69,7 +69,7 @@ export default async function Image() {
             fontWeight: 500,
           }}
         >
-          ruta personalizada por Claude · ejercicios cortos · de la idea al MVP
+          casos vivos · evaluacion operativa · evidencia para managers
         </div>
 
         <div

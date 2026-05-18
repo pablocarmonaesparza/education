@@ -72,7 +72,7 @@ function geminiClient(): OpenAI {
 /** Modelo de DeepSeek por default (V3.x, OpenAI-compat). */
 export const DEFAULT_MODEL = 'deepseek-chat';
 
-/** Modelo de DeepSeek con razonamiento (R1) — para curso-generación, validación. */
+/** Modelo de DeepSeek con razonamiento (R1) — para evaluación y validación. */
 export const REASONER_MODEL = 'deepseek-reasoner';
 
 /**

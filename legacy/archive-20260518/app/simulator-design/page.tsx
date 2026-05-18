@@ -2,12 +2,8 @@
 
 import { Button, Card, CardBody, Link } from "@heroui/react";
 import { motion } from "framer-motion";
-import { SurfaceNav } from "@/components/simulador/SurfaceNav";
-import {
-  SPRINT_CASES,
-  SPRINT_META,
-  MANAGER_ACTIONS,
-} from "@/lib/simulador/config";
+import { SurfaceNav } from "./_components/SurfaceNav";
+import { SPRINT_CASES, SPRINT_META, MANAGER_ACTIONS } from "./_data/case-data";
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
@@ -25,9 +21,7 @@ export default function LandingPage() {
       <section className="surface-canvas section-pad">
         <div className="max-w-5xl mx-auto px-6 text-center">
           <motion.div {...fadeUp}>
-            <span className="eyebrow">
-              Para Head/VP de Marketing, Growth y Operations · LATAM
-            </span>
+            <span className="eyebrow">Diagnóstico · 30 días · B2B</span>
           </motion.div>
 
           <motion.h1
@@ -35,9 +29,9 @@ export default function LandingPage() {
             transition={{ ...fadeUp.transition, delay: 0.05 }}
             className="display display-tight mt-6 text-[var(--text-primary)] text-[44px] sm:text-[64px] md:text-[80px]"
           >
-            ¿Tu equipo usa IA
+            Criterio de IA,
             <br />
-            <span className="accent-text">con criterio?</span>
+            <span className="accent-text">medible.</span>
           </motion.h1>
 
           <motion.p
@@ -45,9 +39,9 @@ export default function LandingPage() {
             transition={{ ...fadeUp.transition, delay: 0.1 }}
             className="mt-8 text-[19px] sm:text-[21px] text-[var(--text-secondary)] max-w-2xl mx-auto leading-[1.5]"
           >
-            Mide y mejora cómo tu equipo decide cuando usa IA en flujos reales.
+            Mide y mejora cómo tu equipo decide con IA en flujos reales.
             <br className="hidden sm:block" />
-            Diagnóstico operativo de 30 días. Reporte ejecutivo por persona.
+            Antes de que lo haga con clientes, datos sensibles o campañas.
           </motion.p>
 
           <motion.div
@@ -57,22 +51,22 @@ export default function LandingPage() {
           >
             <Button
               as={Link}
-              href="/onboarding/org"
+              href="/simulator-design/runtime/caso-1"
               radius="full"
               size="lg"
               className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
             >
-              Agendar diagnóstico para mi equipo
+              Probar el simulador
             </Button>
             <Button
               as={Link}
-              href="/case/marketing_urgent_campaign_pii"
+              href="/simulator-design/dashboard"
               radius="full"
               size="lg"
               variant="bordered"
               className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
             >
-              Probar 1 caso de muestra →
+              Ver dashboard
             </Button>
           </motion.div>
 
@@ -81,7 +75,7 @@ export default function LandingPage() {
             transition={{ ...fadeUp.transition, delay: 0.2 }}
             className="mt-10 text-[13px] text-[var(--text-tertiary)]"
           >
-            SaaS B2B mid-market · servicios profesionales · ecommerce · LATAM
+            Usado por equipos en SaaS B2B · LATAM
           </motion.p>
         </div>
       </section>
@@ -261,46 +255,29 @@ export default function LandingPage() {
             <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
               Desde{" "}
               <span className="accent-text">
-                ${SPRINT_META.pricing.fase_1_min_usd.toLocaleString("en-US")}
+                ${SPRINT_META.pricing.min}
               </span>{" "}
-              por sprint.
+              por persona.
             </h2>
             <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-xl mx-auto">
-              Fase 1 — diagnóstico operativo: $
-              {SPRINT_META.pricing.fase_1_min_usd.toLocaleString("en-US")}–$
-              {SPRINT_META.pricing.fase_1_max_usd.toLocaleString("en-US")} para
-              cohortes de {SPRINT_META.pricing.minSeats}–
+              Precio por asiento, 30 días, cohorte de {SPRINT_META.pricing.minSeats}–
               {SPRINT_META.pricing.maxSeats} personas. USD vía Stripe.
-              <br className="hidden sm:block" />
-              Fase 2 — práctica + re-diagnóstico: $
-              {SPRINT_META.pricing.fase_2_min_usd.toLocaleString("en-US")}–$
-              {SPRINT_META.pricing.fase_2_max_usd.toLocaleString("en-US")}.
             </p>
           </motion.div>
 
           <motion.div
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.1 }}
-            className="mt-12 flex flex-wrap items-center justify-center gap-3"
+            className="mt-12"
           >
             <Button
               as={Link}
-              href="/onboarding/org"
+              href="/simulator-design/runtime/caso-1"
               radius="full"
               size="lg"
               className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
             >
-              Agendar diagnóstico →
-            </Button>
-            <Button
-              as={Link}
-              href="/case/marketing_urgent_campaign_pii"
-              radius="full"
-              size="lg"
-              variant="bordered"
-              className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
-            >
-              Probar 1 caso
+              Empezar caso de muestra →
             </Button>
           </motion.div>
         </div>

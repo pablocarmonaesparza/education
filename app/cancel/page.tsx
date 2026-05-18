@@ -1,11 +1,9 @@
-import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
 import { Button } from '@/components/ui';
 
 export default function CancelPage() {
   return (
     <main className="min-h-screen flex flex-col">
-      <Navbar />
       <section className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center text-center">
         <svg
           className="w-24 h-24 text-red-500 mb-6"
@@ -23,10 +21,10 @@ export default function CancelPage() {
         </svg>
         <h1 className="text-4xl font-extrabold text-ink dark:text-white mb-4 tracking-tight">pago cancelado</h1>
         <p className="text-lg text-gray-700 dark:text-gray-400 mb-8">
-          no se cobró nada. puedes intentarlo de nuevo o elegir el plan gratis.
+          no se cobró nada. puedes volver al diagnóstico y retomarlo cuando estés listo.
         </p>
-        <Button variant="primary" size="lg" rounded2xl href="/paywall">
-          volver a elegir plan
+        <Button variant="primary" size="lg" rounded2xl href="/auth/signup?next=%2Fonboarding%2Forg">
+          volver al diagnóstico
         </Button>
       </section>
       <Footer />

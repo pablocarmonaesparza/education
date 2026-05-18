@@ -11,7 +11,8 @@
  *    (Trustpilot, G2, reviews propios con `Review` schema verificable).
  *  - Sin `sameAs`/social handles: no se listan aquí hasta confirmar que
  *    las cuentas existen bajo el dominio Itera.
- *  - Precio: $19 USD (subscription). Coincide con `docs/CONTEXT.md`.
+ *  - El producto activo es el Simulador: diagnostico operativo de criterio
+ *    de IA para equipos B2B. No describir cursos legacy en SEO publico.
  *
  * Ver `docs/research/SEO_AUDIT_v1.md §2.4` para contexto de la reescritura.
  */
@@ -24,20 +25,17 @@ export default function StructuredData() {
     '@context': 'https://schema.org',
     '@graph': [
       {
-        '@type': 'EducationalOrganization',
+        '@type': 'Organization',
         '@id': ORG_ID,
         name: 'Itera',
         url: SITE_URL,
         logo: `${SITE_URL}/favicon.png`,
         description:
-          'Plataforma de educación en inteligencia artificial para LATAM. Enfoque en retención y ejecución, no en consumir información.',
+          'Diagnostico operativo de criterio en uso de IA para equipos B2B en LATAM.',
         areaServed: [
           'MX', 'AR', 'CO', 'CL', 'PE', 'UY', 'PY', 'BO', 'EC', 'VE',
           'DO', 'GT', 'SV', 'HN', 'NI', 'CR', 'PA', 'CU',
         ],
-        // Nota: `audience` e `inLanguage` NO son válidos sobre
-        // EducationalOrganization/Organization en schema.org. Viven en el
-        // nodo Course (abajo), que sí es CreativeWork y los acepta.
       },
       {
         '@type': 'WebSite',
@@ -45,41 +43,37 @@ export default function StructuredData() {
         name: 'Itera',
         url: SITE_URL,
         description:
-          'Aprende a construir con inteligencia artificial. Ejercicios cortos e interactivos, ruta personalizada por Claude AI.',
+          'Mide y mejora como tu equipo decide con IA en flujos reales, antes de usarla con clientes, datos sensibles o campanas.',
         inLanguage: 'es-419',
         publisher: { '@id': ORG_ID },
       },
       {
-        '@type': 'Course',
-        '@id': `${SITE_URL}#course`,
-        name: 'Curso de IA aplicada, personalizado por Claude',
+        '@type': 'Service',
+        '@id': `${SITE_URL}#ai-readiness-diagnostic`,
+        name: 'Diagnostico operativo de criterio de IA',
         description:
-          'Aprende inteligencia artificial construyendo tu proyecto. 100 lecciones en 10 secciones (introducción, fundamentos, asistentes, contenido, automatización, bases de datos, APIs y MCPs, agentes, vibe coding, implementación). Ruta completa o ruta personalizada según lo que quieras construir.',
+          'Simulador de casos vivos para evaluar contexto, privacidad, validacion, juicio y decision cuando equipos usan IA bajo presion operativa.',
         provider: { '@id': ORG_ID },
-        inLanguage: 'es-419',
-        educationalLevel: 'beginner to advanced',
-        teaches: [
-          'Inteligencia artificial aplicada',
-          'Prompting y uso de LLMs',
-          'Automatización con n8n',
-          'Bases de datos y RAG',
-          'APIs, MCPs y Skills',
-          'Agentes de IA',
+        areaServed: [
+          'MX', 'AR', 'CO', 'CL', 'PE', 'UY', 'PY', 'BO', 'EC', 'VE',
+          'DO', 'GT', 'SV', 'HN', 'NI', 'CR', 'PA', 'CU',
         ],
-        hasCourseInstance: {
-          '@type': 'CourseInstance',
-          courseMode: 'online',
-          // PT3W alinea con la promesa "en 3 semanas" de la root metadata.
-          // Si el claim cambia, ajustar aquí para que el schema no contradiga.
-          courseWorkload: 'PT3W',
+        audience: {
+          '@type': 'BusinessAudience',
+          audienceType: 'B2B mid-market teams',
         },
         offers: {
           '@type': 'Offer',
-          category: 'Subscription',
+          category: 'B2B diagnostic',
           priceCurrency: 'USD',
-          price: '19',
+          priceSpecification: {
+            '@type': 'PriceSpecification',
+            minPrice: '1000',
+            maxPrice: '8000',
+            priceCurrency: 'USD',
+          },
           availability: 'https://schema.org/InStock',
-          url: `${SITE_URL}#pricing`,
+          url: `${SITE_URL}#precio`,
         },
       },
     ],

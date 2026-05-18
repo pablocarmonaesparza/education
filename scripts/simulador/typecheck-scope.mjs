@@ -3,11 +3,20 @@
 import { spawnSync } from "node:child_process";
 
 const scopedPrefixes = [
-  "app/simulator-design/",
+  "app/page.tsx",
   "app/(app)/",
-  "app/(public)/",
+  "app/(onboarding)/",
+  "app/auth/",
+  "app/field-test/",
   "app/_data_simulador_temp/",
+  "app/api/admin/",
+  "app/api/dashboard/",
+  "app/api/field-test/",
+  "app/api/invitations/",
+  "app/api/orgs/",
+  "app/api/sessions/",
   "app/api/transcribe/",
+  "components/simulador/",
   "lib/simulador/",
   "scripts/simulador/",
   "scripts/dev-simulador.mjs",

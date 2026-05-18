@@ -1,0 +1,192 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+import Tag from '@/components/ui/Tag';
+import NextSectionIndicator from './NextSectionIndicator';
+
+export default function PricingSection() {
+  const router = useRouter();
+
+  const MONTHLY_ANNUALIZED = 19 * 12;
+  const YEARLY_SAVINGS = MONTHLY_ANNUALIZED - 199;
+  const YEARLY_DISCOUNT_PCT = Math.round((YEARLY_SAVINGS / MONTHLY_ANNUALIZED) * 100);
+
+  const formatPrice = (usdPrice: number, period?: string) => {
+    if (usdPrice === 0) {
+      return "Gratis";
+    }
+    return `$${usdPrice}${period ?? ""}`;
+  };
+
+  const handleSelectPlan = (plan: "free" | "monthly" | "yearly") => {
+    if (plan === "free") {
+      router.push("/auth/signup");
+    } else {
+      router.push(`/auth/signup?plan=${plan}`);
+    }
+  };
+
+  const tiers = [
+    {
+      id: "free" as const,
+      name: "gratis",
+      price: 0,
+      period: undefined,
+      popular: false,
+      badge: undefined,
+      description: "Prueba la sección de fundamentos completa, sin ruta personalizada.",
+      features: [
+        "Sección de fundamentos completa (las primeras 20 lecciones)",
+        "Acceso a la comunidad",
+        "Ejemplos pensados para LATAM",
+      ],
+      cta: "comenzar gratis",
+    },
+    {
+      id: "monthly" as const,
+      name: "mensual",
+      price: 19,
+      period: "/mes",
+      popular: false,
+      badge: undefined,
+      description: "Ruta personalizada según lo que quieres construir.",
+      features: [
+        "Todo lo del plan gratis",
+        "Ruta personalizada según tu proyecto",
+        "Solo las lecciones que necesitas, en el orden correcto",
+        "Asistente que te recuerda y te sigue",
+        "Cancela cuando quieras",
+      ],
+      cta: "empezar mensual",
+    },
+    {
+      id: "yearly" as const,
+      name: "anual",
+      price: 199,
+      period: "/año",
+      popular: true,
+      badge: `${YEARLY_DISCOUNT_PCT}% de descuento`,
+      description: `Todo lo del mensual con ahorro de $${YEARLY_SAVINGS} al año.`,
+      features: [
+        "Todo lo del plan mensual",
+        `Ahorras $${YEARLY_SAVINGS} vs. pagar mensual`,
+        "Acceso priorizado a nuevas lecciones",
+        "Cancela cuando quieras",
+      ],
+      cta: "empezar anual",
+    },
+  ];
+
+  return (
+    <section id="pricing" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden pt-20 pb-24 max-md:pt-16 max-md:pb-16">
+      <div className="container mx-auto px-4 relative z-10 w-full max-md:px-3">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          viewport={{ once: true }}
+          className="mb-12 max-md:mb-8"
+        >
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-center text-ink dark:text-white leading-tight tracking-tight max-md:text-3xl">
+            nuestros planes
+          </h2>
+        </motion.div>
+
+        {/* Pricing Cards - items-stretch + h-full for equal height */}
+        <div className="grid lg:grid-cols-3 gap-4 md:gap-6 max-w-7xl mx-auto items-stretch">
+          {tiers.map((tier, index) => (
+            <motion.div
+              key={tier.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 * (index + 3) }}
+              viewport={{ once: true }}
+              className="h-full flex"
+            >
+              <Card
+                variant="neutral"
+                padding="lg"
+                className="relative flex flex-col md:p-6 h-full w-full"
+              >
+                {/* Discount badge — solo aparece en el tier que lo tenga (anual). */}
+                {tier.badge && (
+                  <div className="absolute -top-3 right-4 md:right-6 z-10">
+                    <Tag variant="primary">{tier.badge}</Tag>
+                  </div>
+                )}
+
+                {/* Title */}
+                <div className="mb-3">
+                  <h3 className="text-3xl md:text-4xl font-extrabold text-ink dark:text-white tracking-tight">{tier.name}</h3>
+                </div>
+
+                <p className="text-ink-muted dark:text-gray-400 text-sm mb-5">{tier.description}</p>
+
+                {/* Pricing */}
+                <div className="mb-4">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl md:text-4xl font-bold text-primary">
+                      {formatPrice(tier.price, tier.period)}
+                    </span>
+                    {tier.price > 0 && (
+                      <span className="text-ink-muted dark:text-gray-400 text-xs md:text-sm">USD</span>
+                    )}
+                  </div>
+                  <p className="text-xs md:text-sm text-ink-muted dark:text-gray-400 mt-1">
+                    {tier.price === 0
+                      ? "Sin tarjeta de crédito"
+                      : tier.id === "yearly"
+                        ? `Ahorras $${YEARLY_SAVINGS} vs. mensual`
+                        : "Cancela cuando quieras"}
+                  </p>
+                </div>
+
+                {/* Features */}
+                <ul className="space-y-2 mb-4 flex-1">
+                  {tier.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <svg
+                        className="w-4 h-4 flex-shrink-0 text-completado mt-0.5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      <span className="text-xs md:text-sm text-ink dark:text-gray-300 leading-snug">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA Button */}
+                <Button
+                  variant={tier.popular ? "primary" : "outline-primary"}
+                  depth={tier.popular ? "bottom" : "full"}
+                  size="none"
+                  rounded2xl
+                  onClick={() => handleSelectPlan(tier.id)}
+                  className="w-full py-4 text-sm md:text-base mt-auto"
+                >
+                  {tier.cta}
+                </Button>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+
+      </div>
+
+      {/* Chain de scroll: pricing → faq */}
+      <NextSectionIndicator targetId="faq" label="FAQ" />
+    </section>
+  );
+}

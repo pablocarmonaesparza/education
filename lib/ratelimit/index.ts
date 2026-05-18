@@ -39,9 +39,8 @@
 //
 // # Coordinación (plan sprint)
 //
-//   - Onboarding O5: /api/generate-course → rateLimiters.ai
+//   - Field-test LLM beat / judge → rateLimiters.ai
 //   - Finance: /api/stripe/create-checkout-session → rateLimiters.checkout
-//   - Backend P0.3 (tutor cuando vuelva): /api/tutor-chat → rateLimiters.ai
 // ----------------------------------------------------------------------------
 
 import { Ratelimit } from '@upstash/ratelimit';

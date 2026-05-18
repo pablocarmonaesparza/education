@@ -53,6 +53,7 @@ function stagedCodeFiles() {
   return out
     .split('\n')
     .filter(Boolean)
+    .filter((f) => !f.startsWith('legacy/'))
     .filter((f) => CODE_EXTENSIONS.some((ext) => f.endsWith(ext)));
 }
 
@@ -92,6 +93,10 @@ function toRel(absPath) {
  *   { kind: 'missing', candidates }    → no existe ni en disk ni en index
  */
 function resolveImport(importPath, fromAbsFile, indexed) {
+  if (importPath === '...') {
+    return { kind: 'external' };
+  }
+
   // Externos (npm, node:). No tocamos.
   if (!importPath.startsWith('.') && !importPath.startsWith('@/')) {
     return { kind: 'external' };

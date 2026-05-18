@@ -10,7 +10,7 @@ import { createClient } from '@/lib/supabase/client';
 
 // 12 preguntas, 3 secciones de 4. Mismo formato que /projectContext pero
 // reframeadas a B2B: contexto de empresa, necesidad, forma del programa.
-// Standalone — no toca Supabase, no persiste, no rutea a paywall.
+// Standalone — no toca Supabase, no persiste, no rutea a checkout.
 const sections = [
   {
     id: 'company',

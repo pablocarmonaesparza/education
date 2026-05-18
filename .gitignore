@@ -41,4 +41,6 @@ next-env.d.ts
 /supabase/config.toml
 .gstack/
 .claude/worktrees/
-legacy/
+/legacy/*
+!/legacy/archive-20260518/
+!/legacy/archive-20260518/**

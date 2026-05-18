@@ -1,5 +1,4 @@
 import { redirect } from 'next/navigation';
-import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
 import { Button } from '@/components/ui';
 import { syncSubscriptionFromSession } from '@/lib/stripe/syncFromSession';
@@ -23,7 +22,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
 
   if (!sessionId) {
     // Sin session_id no podemos verificar — fallback al flujo manual.
-    redirect('/paywall?canceled=1');
+    redirect('/auth/signup?next=%2Fonboarding%2Forg');
   }
 
   const sync = await syncSubscriptionFromSession(sessionId);
@@ -33,7 +32,6 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
   if (!sync.ok && sync.reason === 'payment_pending') {
     return (
       <main className="min-h-screen flex flex-col bg-white dark:bg-gray-800">
-        <Navbar />
         <section className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center text-center">
           <div className="w-24 h-24 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center mb-6">
             <svg
@@ -66,15 +64,14 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
     );
   }
 
-  // Si falla por otra razón (sesión inválida, stripe caído), mandamos al
-  // paywall con mensaje. El webhook puede compensar más tarde.
+  // Si falla por otra razón (sesión inválida, stripe caído), regresamos al
+  // flujo activo del diagnóstico. El webhook puede compensar más tarde.
   if (!sync.ok) {
     console.error('[/success] sync failed:', sync.reason);
     // No redirigimos en error "no_user_id_in_session" (serio, requiere soporte)
     if (sync.reason === 'no_user_id_in_session') {
       return (
         <main className="min-h-screen flex flex-col bg-white dark:bg-gray-800">
-          <Navbar />
           <section className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center text-center">
             <h1 className="text-3xl font-extrabold text-ink dark:text-white mb-4 tracking-tight">
               no pudimos asociar el pago
@@ -88,13 +85,12 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
         </main>
       );
     }
-    redirect('/paywall?canceled=1');
+    redirect('/auth/signup?next=%2Fonboarding%2Forg');
   }
 
-  // Pago confirmado y DB escrita. Mostramos confirmación + CTA a courseCreation.
+  // Pago confirmado y DB escrita. Mostramos confirmación + CTA al producto activo.
   return (
     <main className="min-h-screen flex flex-col bg-white dark:bg-gray-800">
-      <Navbar />
       <section className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center text-center">
         <div className="w-24 h-24 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-6">
           <svg
@@ -116,10 +112,10 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
           pago exitoso
         </h1>
         <p className="text-lg text-ink-muted dark:text-gray-400 mb-8">
-          tu suscripción está activa. ahora generamos tu ruta personalizada.
+          tu suscripción está activa. puedes entrar al dashboard del simulador.
         </p>
-        <Button variant="primary" size="lg" rounded2xl href="/courseCreation">
-          generar mi ruta
+        <Button variant="primary" size="lg" rounded2xl href="/dashboard">
+          ir al dashboard
         </Button>
       </section>
       <Footer />

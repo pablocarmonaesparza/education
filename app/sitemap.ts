@@ -5,12 +5,11 @@ const BASE_URL = 'https://itera.la';
 /**
  * Sitemap de Itera.
  *
- * Incluye solo rutas públicas cara-al-mundo. Las lecciones (`/lecture/[slug]`)
- * son auth-gated — no tiene sentido exponerlas al crawler porque Google no
- * podrá renderizarlas sin sesión (aparecen como redirect a `/auth/login`).
+ * Incluye solo rutas públicas cara-al-mundo. El runtime de casos, reportes,
+ * dashboard y field-test no se indexan: son producto/app, no contenido SEO.
  *
- * Cuando `/conferencias` crezca o se agreguen páginas estáticas nuevas
- * (ej. case studies, content marketing), añadirlas acá.
+ * Cuando se agreguen páginas estáticas nuevas (ej. case studies o contenido
+ * editorial), añadirlas acá. No incluir rutas de diagnóstico o app privada.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -21,12 +20,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 1.0,
-    },
-    {
-      url: `${BASE_URL}/conferencias`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.8,
     },
     {
       url: `${BASE_URL}/about`,

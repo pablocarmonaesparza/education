@@ -4,11 +4,20 @@ import { existsSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
 const targets = [
-  "app/simulator-design",
+  "app/page.tsx",
   "app/(app)",
-  "app/(public)",
+  "app/(onboarding)",
+  "app/auth",
+  "app/field-test",
+  "app/api/admin",
+  "app/api/dashboard",
+  "app/api/field-test",
+  "app/api/invitations",
+  "app/api/orgs",
+  "app/api/sessions",
   "app/_data_simulador_temp",
   "app/api/transcribe",
+  "components/simulador",
   "lib/simulador",
   "scripts/simulador",
   "scripts/dev-simulador.mjs",

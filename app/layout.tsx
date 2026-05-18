@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Darker_Grotesque } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/shared/Navbar";
 import HashScrollHandler from "@/components/shared/HashScrollHandler";
 
 const inter = Inter({
@@ -88,7 +87,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://itera.la",
   },
-  category: "education",
+  category: "technology",
 };
 
 export default function RootLayout({
@@ -97,7 +96,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} ${darkerGrotesque.variable}`} suppressHydrationWarning>
+    <html lang="es" className={`${inter.variable} ${darkerGrotesque.variable} dark`} suppressHydrationWarning>
       <body className={`antialiased bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-screen overscroll-none`}>
         <HashScrollHandler />
         {children}

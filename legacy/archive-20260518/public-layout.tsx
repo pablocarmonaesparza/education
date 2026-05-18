@@ -19,7 +19,7 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="simulador-root min-h-screen surface-canvas">
+    <div className="simulador-root dark min-h-screen surface-canvas">
       <Suspense fallback={null}>
         <OAuthRedirectHandler />
       </Suspense>

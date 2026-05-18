@@ -34,7 +34,7 @@ if (process.env.SKIP_CLEAN_NEXT !== "true") {
 }
 
 const port = firstFreePort();
-const url = `http://localhost:${port}/simulator-design`;
+const url = `http://localhost:${port}/`;
 
 console.log(`Starting Itera simulator dev server on ${url}`);
 console.log("Use `npm run kill:dev` to stop Itera dev servers for this repo.");

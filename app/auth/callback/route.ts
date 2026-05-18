@@ -1,7 +1,22 @@
-import { createServerClient } from '@supabase/ssr'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { sendWelcomeEmail } from '@/lib/email/welcome'
+
+function safeNext(value: string | null): string | null {
+  if (!value) return null
+  try {
+    const decoded = decodeURIComponent(value)
+    if (!decoded.startsWith('/') || decoded.startsWith('//')) return null
+    return decoded
+  } catch {
+    return null
+  }
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url)
@@ -9,6 +24,7 @@ export async function GET(request: Request) {
   const error = searchParams.get('error')
   const errorDescription = searchParams.get('error_description')
   const fromPage = searchParams.get('from')
+  const requestedNext = safeNext(searchParams.get('next'))
 
   // Determine where to redirect on error
   const errorPage = fromPage === 'signup' ? '/auth/signup' : '/auth/login'
@@ -37,7 +53,7 @@ export async function GET(request: Request) {
     console.log('[auth/callback] Total cookies:', allCookies.length)
 
     // Accumulate cookies that Supabase wants to set so we can apply them to the response
-    const cookiesToSet: { name: string; value: string; options: any }[] = []
+    const cookiesToSet: { name: string; value: string; options: CookieOptions }[] = []
 
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -198,9 +214,8 @@ export async function GET(request: Request) {
       .limit(1)
       .maybeSingle()
 
-    const redirectUrl = membership
-      ? `${origin}/dashboard`
-      : `${origin}/dashboard` // TODO(W3): cambiar a `/onboarding/org` cuando exista
+    const fallbackPath = membership ? '/dashboard' : '/onboarding/org'
+    const redirectUrl = `${origin}${requestedNext ?? fallbackPath}`
 
     console.log('[auth/callback] Redirecting to:', redirectUrl)
 
@@ -211,8 +226,8 @@ export async function GET(request: Request) {
     })
 
     return response
-  } catch (err: any) {
-    console.error('[auth/callback] Unexpected error:', err?.message || err)
+  } catch (err: unknown) {
+    console.error('[auth/callback] Unexpected error:', errorMessage(err))
     return NextResponse.redirect(
       `${origin}${errorPage}?error=${encodeURIComponent('Error inesperado durante la autenticación. Por favor intenta de nuevo.')}`
     )
