@@ -107,3 +107,12 @@ Si reviewer veta un bloque:
 2. lead tiene hasta 2 rondas para corregir.
 3. si sigue el desacuerdo en la tercera ronda, se escala a `PABLO_INPUT_NEEDED.md` con opciones y recomendacion.
 4. mientras tanto ambos agentes siguen con tareas no bloqueadas.
+
+## B9-001 — competitive landscape research [claude → codex review]
+
+- [2026-05-19T12:25:00-06:00] done
+- output: docs/research/competitive_landscape_v1.md (síntesis ejecutiva + decisiones D1-D7)
+- sources: docs/research/R24_competencia_simulator_category_v1.md (588 líneas, exhaustivo, ya existía)
+- decisions emitted: 7 (B9-001-D1 a D7) — 6 copy + 1 schema + 1 process. Mix de owner claude (CMO/CPO frente) + 1 codex (D6 field-test ya en su frente)
+- gates pendientes: codex review del posicionamiento, M9 loop audit (no aplica — research no toca surfaces)
+- next: B9-002 (case method + Kirkpatrick) y B9-003 (AI adoption + LATAM compliance) ya claimed; mantengo trabajo paralelo

@@ -1,13 +1,15 @@
 version: 1
 project: itera-simulador-premium
-updated_at: '2026-05-19T18:05:00.000Z'
+updated_at: '2026-05-19T18:16:22.838Z'
 source_of_truth: true
 rules:
   - si una tarea no vive aqui, no existe
   - cada tarea tiene owner, reviewer, status, depends_on, dod y notes
   - los estados validos son backlog, in_progress, review, blocked y done
   - cada agente debe claimar una tarea antes de tocarla; claims vencidos se liberan por heartbeat
-  - si una tarea bloquea a otro agente, registrar el bloqueo en docs/coord/BLOCKERS.md antes de cambiar de frente
+  - >-
+    si una tarea bloquea a otro agente, registrar el bloqueo en docs/coord/BLOCKERS.md antes de
+    cambiar de frente
   - commits de subtarea usan prefix [task:<id>]
   - PR por bloque cerrado, no por subtarea
 claim_policy:
@@ -45,7 +47,9 @@ tasks:
       - scripts/coord contiene heartbeat, board-lint, agent-sync y sync-research-to-board
       - scripts pasan en local
       - claude y codex tienen primera entrada en AGENT_STATUS.md
-    notes: "bloque 0; prerequisito de todo | passed: coord:lint, coord:heartbeat, coord:test-race, coord:sync"
+    notes: >-
+      bloque 0; prerequisito de todo | passed: coord:lint, coord:heartbeat, coord:test-race,
+      coord:sync
   - id: B0-002
     title: instalar heartbeat local
     owner: codex
@@ -57,7 +61,7 @@ tasks:
       - heartbeat.mjs corre manualmente
       - launchd/cron queda documentado o instalado sin ensuciar el repo cuando no hay alertas
       - inbox expirado escala a PABLO_INPUT_NEEDED.md
-    notes: "evita que pablo sea dispatcher | installed launchd com.itera.coord.heartbeat"
+    notes: evita que pablo sea dispatcher | installed launchd com.itera.coord.heartbeat
   - id: B0-003
     title: primer sync de claude y codex
     owner: shared
@@ -93,7 +97,9 @@ tasks:
       - 020_simulador_postgrest_grants_and_backfill.sql existe
       - incluye exposed schemas, grants, policies defensivas, ensure_bridge_user y backfill
       - migracion aplicada contra Supabase con verificacion
-    notes: "sql inicial fue propuesto por claude | applied via supabase db query because db push is blocked by legacy remote migration drift; repaired version 020 as applied"
+    notes: >-
+      sql inicial fue propuesto por claude | applied via supabase db query because db push is
+      blocked by legacy remote migration drift; repaired version 020 as applied
   - id: B1-003
     title: actualizar auth callback para ensure_bridge_user
     owner: codex
@@ -105,7 +111,9 @@ tasks:
       - app/auth/callback/route.ts usa simulador.ensure_bridge_user
       - signup/login existente crea o resuelve bridge idempotentemente
       - cuentas preexistentes no rompen dashboard/case
-    notes: "elimina bridge ad-hoc duplicado | auth callback now calls simulador.ensure_bridge_user and fails closed on bridge sync error"
+    notes: >-
+      elimina bridge ad-hoc duplicado | auth callback now calls simulador.ensure_bridge_user and
+      fails closed on bridge sync error
   - id: B1-004
     title: deploy y smoke E2E de base
     owner: codex
@@ -120,7 +128,9 @@ tasks:
       - signup -> onboarding -> case -> submit -> report funciona con cuenta nueva
       - field-test publico funciona sin login
       - HANDOFF.md tiene cierre del bloque
-    notes: "bloque 1 no cierra sin prod URL smoke | blocked by missing UPSTASH_REDIS_REST_URL/TOKEN in Vercel; see docs/coord/PABLO_INPUT_NEEDED.md pablo-001"
+    notes: >-
+      bloque 1 no cierra sin prod URL smoke | blocked by missing UPSTASH_REDIS_REST_URL/TOKEN in
+      Vercel; see docs/coord/PABLO_INPUT_NEEDED.md pablo-001
   - id: B2-001
     title: spec migracion 021 schema premium
     owner: claude
@@ -133,7 +143,7 @@ tasks:
       - spec cubre niveles, carreras, practice, longitudinal, leads_inbox y transfer
       - impacto en RLS documentado
       - decisiones producto incluidas
-    notes: "claude escribe spec; codex convierte/aplica | no depende de deploy production"
+    notes: claude escribe spec; codex convierte/aplica | no depende de deploy production
   - id: B2-002
     title: aplicar migracion 021 schema premium
     owner: codex
@@ -174,7 +184,7 @@ tasks:
     title: mapear 12 arquetipos HBR MIT HKS sin IP
     owner: claude
     reviewer: codex
-    status: backlog
+    status: in_progress
     depends_on:
       - B0-001
     dod:
@@ -182,6 +192,8 @@ tasks:
       - cada arquetipo declara decision-maker, tension, informacion incompleta y artefacto
       - sin copiar texto o IP licenciada
     notes: metodologia de casos premium
+    claimed_by: claude
+    claim_expires_at: '2026-05-19T20:13:43.883Z'
   - id: B3-002
     title: auditar 8 casos contra niveles 1-2-3
     owner: claude
@@ -342,7 +354,9 @@ tasks:
       - B2-004
       - B6-001
     dod:
-      - eventos catalogados para started, section_completed, abandoned, submitted, report_viewed y lead_captured
+      - >-
+        eventos catalogados para started, section_completed, abandoned, submitted, report_viewed y
+        lead_captured
       - dashboard admin muestra conversion
     notes: sin telemetria no hay aprendizaje de mercado
   - id: B7-001
@@ -386,7 +400,7 @@ tasks:
     title: competitive landscape research
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on:
       - B0-001
     dod:
@@ -394,11 +408,12 @@ tasks:
       - decisiones producto en yaml parseable
       - sync-research-to-board crea tasks accionables
     notes: Workera, Section AI, Attensi, Mursion, Whatfix Mirror, Sana, BetterUp, Forage
+    done_at: '2026-05-19T18:17:15.154Z'
   - id: B9-002
     title: case method y learning evaluation research
     owner: claude
     reviewer: codex
-    status: backlog
+    status: in_progress
     depends_on:
       - B0-001
     dod:
@@ -406,11 +421,13 @@ tasks:
       - kirkpatrick_mapping.md existe
       - cada doc termina con decisiones producto
     notes: HBS, HKS, MIT Sloan, Harvard Bok, Kirkpatrick
+    claimed_by: claude
+    claim_expires_at: '2026-05-19T20:13:43.356Z'
   - id: B9-003
     title: AI adoption y LATAM compliance research
     owner: claude
     reviewer: codex
-    status: backlog
+    status: in_progress
     depends_on:
       - B0-001
     dod:
@@ -418,6 +435,8 @@ tasks:
       - latam_compliance.md existe
       - cada doc tiene decision, cambio, owner y task_id
     notes: Stanford, McKinsey, Gallup, Gartner, BCG, MIT NANDA, MX/CO/BR
+    claimed_by: claude
+    claim_expires_at: '2026-05-19T20:13:43.619Z'
   - id: B10-001
     title: GStack gates como Definition of Done
     owner: shared
@@ -426,7 +445,9 @@ tasks:
     depends_on:
       - B0-001
     dod:
-      - review, qa, design-review, cso, canary, retro, autoplan, benchmark y health documentados por tipo de bloque
+      - >-
+        review, qa, design-review, cso, canary, retro, autoplan, benchmark y health documentados por
+        tipo de bloque
       - HANDOFF.md cita outputs de gates aplicables
     notes: quality gates no opcionales
   - id: B10-002
@@ -442,3 +463,91 @@ tasks:
       - Playwright E2E buyer, employee y manager
       - spoiler test extendido a auth cases
     notes: producto premium no cierra sin pruebas
+  - id: B9-001-D1
+    title: >-
+      Posicionar Itera como heredera narrativa de Wharton Interactive — capitalizar vacante
+      editorial 12-meses pre-HBP transition
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/competitive_landscape_v1.md
+      - >-
+        touch files: lib/simulador/copy/landing.ts, lib/simulador/copy/sales.ts,
+        docs/coord/audits/loop_audit_landing.md
+    notes: change_type=copy
+  - id: B9-001-D2
+    title: Reclamar la categoría 'criterio IA medible' explícitamente en homepage + materiales B2B
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on:
+      - B5-002
+    dod:
+      - apply research decision from docs/research/competitive_landscape_v1.md
+      - 'touch files: app/(public)/page.tsx, lib/simulador/copy/landing.ts'
+    notes: change_type=copy
+  - id: B9-001-D3
+    title: >-
+      Pricing tier de Sprint Fase 1: USD 4,000-8,000 para cohortes 5-50 personas (validado contra
+      anchors Section $750/seat + Whatfix $31K-300K range)
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on:
+      - B2-001
+    dod:
+      - apply research decision from docs/research/competitive_landscape_v1.md
+      - 'touch files: lib/simulador/config.ts, docs/specs/migration_022_pricing.sql'
+    notes: change_type=schema
+  - id: B9-001-D4
+    title: >-
+      Vigilancia trimestral de Whatfix Mirror release notes + Mursion On-Demand language selector —
+      son los AI-native más cercanos técnicamente
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/competitive_landscape_v1.md
+      - 'touch files: docs/coord/audits/competitive_pulse.md'
+    notes: change_type=process
+  - id: B9-001-D5
+    title: Explorar modelo 'free para learner, employer paga' como vector futuro v2 — NO Fase 1
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on:
+      - B7-001
+    dod:
+      - apply research decision from docs/research/competitive_landscape_v1.md
+      - 'touch files: docs/strategy/monetization_v2_hypothesis.md'
+    notes: change_type=process
+  - id: B9-001-D6
+    title: >-
+      Field-test público en /field-test/marketing-urgent-campaign-pii ES el canal Forage-style —
+      captura email opcional, demo del producto sin login
+    owner: codex
+    reviewer: claude
+    status: backlog
+    depends_on:
+      - B1-004
+    dod:
+      - apply research decision from docs/research/competitive_landscape_v1.md
+      - >-
+        touch files: app/field-test/marketing-urgent-campaign-pii/page.tsx,
+        lib/simulador/copy/field-test.ts
+    notes: change_type=process
+  - id: B9-001-D7
+    title: >-
+      Diferenciación copy en sección 'how we compare' del landing/sales — incluir las 3 frases
+      canónicas vs Wharton, Section, Forage
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/competitive_landscape_v1.md
+      - 'touch files: lib/simulador/copy/landing.ts, lib/simulador/copy/sales.ts'
+    notes: change_type=copy

@@ -30,7 +30,7 @@ inbox:
     task_id: B0-003
     created_at: "2026-05-19T11:58:02-06:00"
     expires_at: "2026-05-19T14:58:02-06:00"
-    status: open
+    status: acknowledged
   - id: in-claude-003
     from: codex
     to: claude
@@ -44,6 +44,6 @@ inbox:
     task_id: B2-001
     created_at: "2026-05-19T12:08:00-06:00"
     expires_at: "2026-05-19T15:08:00-06:00"
-    status: open
+    status: acknowledged
 ```
 <!-- inbox:data:end -->
