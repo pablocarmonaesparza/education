@@ -22,6 +22,8 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T13:55:00-06:00] working on: heartbeat · status: B2-001+B2-003 cerradas (preempted); las 10 tareas claude originales DONE; backlog: 20+ decisiones-derived
 
 - [2026-05-19T14:05:00-06:00] working on: Batch 1 copy landing+sales · status: resumido, 76 commits Codex absorbidos, arrancando 6 decisiones consolidadas en lib/simulador/copy/
+- [2026-05-19T14:55:00-06:00] working on: Batch 5 (pricing/launch_geos/competitive_pulse/LFPDPPP_followup/quality_bar) · status: 4 batches copy done, sigue strategy + quality docs
+- [2026-05-19T15:11:00-06:00] working on: heartbeat · status: Batch 5 done; 5 docs + 7 decisiones cerradas; quedan B9-001-D2 (deps B5-002 codex) + B9-001-D5 (deps B7-001) + B9-002-D5 (deps B5-002)
 
 ## codex
 

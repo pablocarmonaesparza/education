@@ -1,6 +1,6 @@
 version: 1
 project: itera-simulador-premium
-updated_at: '2026-05-19T20:24:53.837Z'
+updated_at: '2026-05-19T20:58:33.767Z'
 source_of_truth: true
 rules:
   - si una tarea no vive aqui, no existe
@@ -325,8 +325,8 @@ tasks:
       - doble firma enforceada antes de publicar
       - SLA 24h visible en admin
     notes: >-
-      migracion 024 aplicada; risk high crea pending_review con SLA 24h y 2 firmas; admin muestra SLA/firma;
-      backend bloquea firma duplicada y publica solo al completar required_review_count
+      migracion 024 aplicada; risk high crea pending_review con SLA 24h y 2 firmas; admin muestra
+      SLA/firma; backend bloquea firma duplicada y publica solo al completar required_review_count
     claimed_by: null
     claim_expires_at: null
     done_at: '2026-05-19T14:48:00-06:00'
@@ -498,7 +498,7 @@ tasks:
     title: testing tecnico premium
     owner: codex
     reviewer: claude
-    status: backlog
+    status: in_progress
     depends_on:
       - B4-002
       - B2-002
@@ -507,6 +507,8 @@ tasks:
       - Playwright E2E buyer, employee y manager
       - spoiler test extendido a auth cases
     notes: producto premium no cierra sin pruebas
+    claimed_by: codex
+    claim_expires_at: '2026-05-19T22:49:48.701Z'
   - id: B9-001-D1
     title: >-
       Posicionar Itera como heredera narrativa de Wharton Interactive — capitalizar vacante
@@ -539,25 +541,27 @@ tasks:
       anchors Section $750/seat + Whatfix $31K-300K range)
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on:
       - B2-001
     dod:
       - apply research decision from docs/research/competitive_landscape_v1.md
       - 'touch files: lib/simulador/config.ts, docs/specs/migration_022_pricing.sql'
     notes: change_type=schema
+    done_at: '2026-05-19T20:58:33.880Z'
   - id: B9-001-D4
     title: >-
       Vigilancia trimestral de Whatfix Mirror release notes + Mursion On-Demand language selector —
       son los AI-native más cercanos técnicamente
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on: []
     dod:
       - apply research decision from docs/research/competitive_landscape_v1.md
       - 'touch files: docs/coord/audits/competitive_pulse.md'
     notes: change_type=process
+    done_at: '2026-05-19T20:58:33.881Z'
   - id: B9-001-D5
     title: Explorar modelo 'free para learner, employer paga' como vector futuro v2 — NO Fase 1
     owner: claude
@@ -617,7 +621,7 @@ tasks:
       antes de import a BD
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on:
       - B3-001
     dod:
@@ -626,6 +630,7 @@ tasks:
         touch files: scripts/simulador/validate-case-yaml.mjs,
         docs/quality/case_admission_checklist.md
     notes: change_type=rubric
+    done_at: '2026-05-19T20:58:33.881Z'
   - id: B9-002-D3
     title: >-
       Practice beats post-evaluación SÍ pueden enseñar — runtime NO. Codificar esta distinción en
@@ -647,14 +652,17 @@ tasks:
       manager dashboard y reporte ejecutivo
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on:
       - B5-001
       - B2-001
     dod:
       - apply research decision from docs/research/case_method_principles.md
       - 'touch files: docs/design/surfaces/executive_report.md, lib/simulador/copy/report.ts'
-    notes: change_type=report
+    notes: >-
+      change_type=report | absorbida: ya cubierta en docs/design/surfaces/executive_report.md
+      sección 10 + lib/simulador/copy/report.ts.transfer_delta
+    done_at: '2026-05-19T20:58:33.881Z'
   - id: B9-002-D5
     title: >-
       Override matrix mantiene rama Escalar — justificación Kirkpatrick Performance Environment
@@ -702,25 +710,29 @@ tasks:
     title: 'v1 launch: MX + CO. BR diferido a v2 (DPO + DPIA agregan complejidad pre-design-partners)'
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on: []
     dod:
       - apply research decision from docs/research/ai_adoption_synthesis.md
       - 'touch files: docs/strategy/launch_geos_v1.md, lib/simulador/copy/legal.ts'
     notes: change_type=process
+    done_at: '2026-05-19T20:58:33.881Z'
   - id: B9-003-D3
     title: >-
       users.jurisdiction enum: MX | CO | other (drop BR de v1). Default por geo IP en signup,
       editable.
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on:
       - B2-003
     dod:
       - apply research decision from docs/research/ai_adoption_synthesis.md
       - 'touch files: docs/specs/migration_022_analytics_compliance.sql, lib/simulador/db.types.ts'
-    notes: change_type=schema
+    notes: >-
+      change_type=schema | implementada en mig 022 (users.jurisdiction enum MX/CO/other) +
+      lib/simulador/copy/legal.ts MX/CO/BR/other clauses
+    done_at: '2026-05-19T20:58:33.881Z'
   - id: B9-003-D4
     title: >-
       Aviso de privacidad MX/CO escritos en español neutro corporate. NO traducción literal —
@@ -740,12 +752,13 @@ tasks:
       específicos AI processing antes de v1 launch
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on: []
     dod:
       - apply research decision from docs/research/ai_adoption_synthesis.md
       - 'touch files: docs/research/latam_compliance_mx_followup.md'
     notes: change_type=process
+    done_at: '2026-05-19T20:58:33.881Z'
   - id: B9-003-D6
     title: >-
       Cifra anchor 6% high performers (McKinsey) entra en marketing materials como diferenciador —
@@ -759,3 +772,35 @@ tasks:
       - 'touch files: lib/simulador/copy/landing.ts, lib/simulador/copy/sales.ts'
     notes: change_type=copy
     done_at: '2026-05-19T20:19:42.097Z'
+  - id: B9-003-D5-S1
+    title: v1 launch MX con postura conservadora sin counsel LATAM contratado
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/latam_compliance_mx_followup.md
+      - 'touch files: lib/simulador/copy/legal.ts (MX section), app/privacy/page.tsx'
+    notes: change_type=process
+  - id: B9-003-D5-S2
+    title: >-
+      Triggers de upgrade a counsel LATAM: (1) primer DPA enterprise, (2) primer PII real comercial,
+      (3) cifras de multas específicas en privacy page, (4) audit externa solicitada
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/latam_compliance_mx_followup.md
+      - 'touch files: docs/research/latam_compliance_mx_followup.md'
+    notes: change_type=process
+  - id: B9-003-D5-S3
+    title: Recommended counsel list maintained internamente — no público
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/latam_compliance_mx_followup.md
+      - 'touch files: docs/research/latam_compliance_mx_followup.md'
+    notes: change_type=process

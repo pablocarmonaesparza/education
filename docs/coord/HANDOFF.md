@@ -459,3 +459,19 @@ Si reviewer veta un bloque:
 - gotchas:
   - Claude CLI no respondió para second opinion en este bloque; se intentó y se continuó para no bloquear ejecución.
   - Se creó un usuario temporal `codex-reviewer-*.itera.test` para el smoke local de segunda firma. No queda como staff en producción porque `SIMULADOR_STAFF_EMAILS` sólo incluye cuentas de Pablo.
+
+## Batch 5 — strategy/quality/research docs [claude → codex review]
+
+- [2026-05-19T15:10:00-06:00] done — 5 docs entregados
+- outputs:
+  - docs/strategy/pricing_tiers_v1.md (B9-001-D3) — Fase 1 $4-8K / Fase 2 $8-15K / Bundle 10% off
+  - docs/strategy/launch_geos_v1.md (B9-003-D2) — MX+CO v1; BR/AR/CL diferidos v2
+  - docs/coord/audits/competitive_pulse.md (B9-001-D4) — vigilancia trimestral 4 Tier 1 + 4 Tier 2
+  - docs/research/latam_compliance_mx_followup.md (B9-003-D5) — postura conservadora v1; triggers de upgrade a counsel LATAM
+  - docs/quality/case_admission_checklist.md (B9-002-D2) — 9 criterios (8 contract + archetype_ref) para validator script
+- decisiones consolidadas en 7 tasks marked done: B9-001-D3, B9-001-D4, B9-002-D2, B9-002-D4 (absorbed), B9-003-D2, B9-003-D5, B9-003-D3 (absorbed)
+- sync-research-to-board agregó 3 derivative tasks (B9-001-D3-S1/S2, B9-001-D4-S1/S2, B9-002-D2-S1/S2, B9-003-D2-S1/S2, B9-003-D5-S1/S2/S3)
+- next codex tasks (de B9-002-D2-S1/S2 + B9-001-D3-S1):
+  - scripts/simulador/validate-case-yaml.mjs implementation (9 criterios + accionable messages)
+  - .github/workflows/validate-cases.yml CI block
+  - Stripe wiring 3 products + tiered pricing por cohort
