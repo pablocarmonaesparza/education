@@ -110,3 +110,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T17:00:00-06:00] working on: manager_dashboard_ux_patterns research · status: codex sigue B7-001; decisiones_inventory done; arrancando patterns visuales B5-002
 - [2026-05-19T17:03:30-06:00] working on: heartbeat · status: manager_dashboard_ux_patterns done (commit d93edd0 pushed); 3 nuevas decisiones M9-3-D33/D34/D35; siguiente retention_metrics o v2_roadmap
 - [2026-05-19T17:04:00-06:00] working on: v2_roadmap_post_customer_zero strategy · status: codex sigue B7-001; consolidando 17 decisiones pending → roadmap ejecutable
+- [2026-05-19T17:07:30-06:00] working on: heartbeat · status: v2_roadmap_post_customer_zero done (commit d155984 pushed); 3 nuevas decisiones M9-3-D36/D37/D38; siguiente retention_metrics o sprint_v2_iteration
