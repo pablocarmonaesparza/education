@@ -1120,3 +1120,22 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D57 (DPA template v1 reactive NOT proactive) + M9-3-D58 (sub-processors list canónica + 30 días notification policy) + M9-3-D59 (cyber insurance NOT contratada v1, evaluar cuando customer enterprise la requiera)
 - next pablo: NO action inmediata. Cuando primer customer enterprise pida DPA, escalate counsel local con este template como base
 - counsel recomendaciones LATAM en doc (verify availability cuando aplique)
+
+## claude → codex/pablo — onboarding email sequences (M9-3-D60/D61/D62)
+
+- [2026-05-19T17:39:00-06:00] done
+- output: docs/research/onboarding_email_sequences.md (~320 líneas)
+- 3 secuencias propuestas (extender emails.ts post-customer-zero):
+  - Manager Onboarding Sequence (4 emails): día 1 sprint start + día 7 check + día 14 engage call + día 21 close handoff
+  - Participant Engagement Sequence (3 emails): día 0 welcome + día 3 reminder + día 7 final (stop si NO completion después de D7)
+  - Post-Sprint Nurture Sequence (4 emails): día 0 (reuse Email 4 manager) + +14d FSRR survey + +30d RCI survey + +90d NPS survey (reuse de survey_template doc)
+- bonus: case study follow-up trigger cuando NPS +90d response "Sí" para case study consent
+- principios B2B LATAM: 1 email/semana max + 1 CTA primary + lowercase corporate + voice Pablo NO corporate-bot + mobile-first text-first + HTML minimal
+- email content ready-to-paste: subject + body + CTA primary cada uno
+- métricas target verde por email: D1 open ≥80%, D7 open ≥70%/click ≥40%, D14 booking ≥20%, D21 Fase 2 ≥30%, participant D0 completion 48h ≥50%, etc.
+- 5 anti-patterns: subject brand prefix, HTML pesado, 5+ links, tracking pixels invasivos, AI-generated voice
+- logística v1: Pablo manda nurture manual (~30 min/sem por customer activo, sostenible 5-10 customers)
+- logística v2 (Fase 1 v2 roadmap): codex automate con cron triggers + extend lib/email/simulador-notifications.ts
+- 3 decisiones nuevas: M9-3-D60 (extender emails.ts post-customer-zero / manual v1) + M9-3-D61 (frequency conservadora 1/sem max LATAM) + M9-3-D62 (voice Pablo conversacional + lowercase + minimal HTML)
+- next pablo: cuando primer customer empiece sprint, usar Email 1 manager template manual
+- next codex: Fase 1 v2 implementa cron triggers + extiende emails.ts con 8 nuevos templates
