@@ -223,6 +223,7 @@ export function RuntimeExperience({
   // audit_log + ahorra round-trips). Se prefilla durante hydration.
   const lastSentRef = useRef<Record<string, string>>({});
   const hydratedRef = useRef(false);
+  const fieldTestClosedRef = useRef(false);
 
   const currentSection = SECTIONS[sectionIdx];
   const isFieldTest = mode === "field_test";
@@ -368,6 +369,61 @@ export function RuntimeExperience({
     }
   }, [currentSection.id, isFieldTest, session.sessionId]);
 
+  useEffect(() => {
+    if (!isFieldTest) return;
+    if (
+      session.simulationStatus &&
+      ["submitted", "evaluating", "published", "failed"].includes(
+        session.simulationStatus,
+      )
+    ) {
+      fieldTestClosedRef.current = true;
+    }
+  }, [isFieldTest, session.simulationStatus]);
+
+  useEffect(() => {
+    if (!isFieldTest || !session.sessionId) return;
+
+    function markAbandoned() {
+      if (fieldTestClosedRef.current || !session.sessionId) return;
+      fieldTestClosedRef.current = true;
+      void fetch(`/api/field-test/sessions/${session.sessionId}/events`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          event_name: "abandoned",
+          step_key: currentSection.id,
+          payload: {
+            section: currentSection.label,
+            section_idx: sectionIdx,
+            slide_idx: slideIdx,
+          },
+        }),
+        keepalive: true,
+      }).catch((err) =>
+        console.warn("[runtime] field-test abandonment analytics failed", err),
+      );
+    }
+
+    function onVisibilityChange() {
+      if (document.visibilityState === "hidden") markAbandoned();
+    }
+
+    window.addEventListener("pagehide", markAbandoned);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    return () => {
+      window.removeEventListener("pagehide", markAbandoned);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+    };
+  }, [
+    currentSection.id,
+    currentSection.label,
+    isFieldTest,
+    sectionIdx,
+    session.sessionId,
+    slideIdx,
+  ]);
+
   const pollFieldTestReport = useCallback(async (
     sessionId: string,
   ): Promise<ReportPayload> => {
@@ -416,6 +472,7 @@ export function RuntimeExperience({
     // Final submit: aquí SÍ esperamos a que todo flushe + complete responda.
     setSubmitError(null);
     setIsEvaluating(true);
+    if (isFieldTest) fieldTestClosedRef.current = true;
     (async () => {
       try {
         await flush();

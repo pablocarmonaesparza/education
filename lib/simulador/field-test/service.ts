@@ -29,6 +29,7 @@ export const FIELD_TEST_ANALYTICS_EVENTS = [
   "submitted",
   "report_viewed",
   "email_captured",
+  "lead_captured",
 ] as const;
 
 export type FieldTestAnalyticsEvent =
@@ -84,7 +85,7 @@ export async function insertFieldTestEvent(input: {
   metrics?: Record<string, unknown>;
 }) {
   const admin = createAdminClient();
-  await admin
+  const { error: insertError } = await admin
     .schema("simulador")
     .from("field_test_step_events")
     .insert({
@@ -95,11 +96,28 @@ export async function insertFieldTestEvent(input: {
       metrics_json: input.metrics ?? {},
     });
 
-  await admin
+  if (insertError) {
+    console.warn("[field-test] analytics insert failed", {
+      sessionId: input.sessionId,
+      eventType: input.eventType,
+      error: insertError,
+    });
+    return;
+  }
+
+  const { error: sessionError } = await admin
     .schema("simulador")
     .from("field_test_sessions")
     .update({ last_event_at: new Date().toISOString() })
     .eq("id", input.sessionId);
+
+  if (sessionError) {
+    console.warn("[field-test] last_event_at update failed", {
+      sessionId: input.sessionId,
+      eventType: input.eventType,
+      error: sessionError,
+    });
+  }
 }
 
 export async function latestFieldTestResponses(sessionId: string) {

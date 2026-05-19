@@ -52,6 +52,17 @@ interface LeadsResponse {
   summary: {
     total: number;
     by_status: Record<LeadStatus, number>;
+    funnel: {
+      window_days: number;
+      started: number;
+      submitted: number;
+      report_viewed: number;
+      lead_captured: number;
+      abandoned: number;
+      submit_rate: number;
+      report_to_lead_rate: number;
+      start_to_lead_rate: number;
+    };
   };
 }
 
@@ -151,6 +162,7 @@ export default function AdminLeadsPage() {
       count: counts?.[item.id] ?? 0,
     }));
   }, [data]);
+  const funnel = data?.summary.funnel;
 
   return (
     <>
@@ -186,6 +198,39 @@ export default function AdminLeadsPage() {
           )}
 
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            <FunnelStat
+              label="Inicios"
+              value={funnel?.started ?? 0}
+              sub={`${funnel?.window_days ?? 30} días`}
+            />
+            <FunnelStat
+              label="Enviados"
+              value={funnel?.submitted ?? 0}
+              sub={`${funnel?.submit_rate ?? 0}% submit`}
+            />
+            <FunnelStat
+              label="Report vistos"
+              value={funnel?.report_viewed ?? 0}
+              sub="post-valor"
+            />
+            <FunnelStat
+              label="Leads"
+              value={funnel?.lead_captured ?? 0}
+              sub={`${funnel?.start_to_lead_rate ?? 0}% total`}
+            />
+            <FunnelStat
+              label="Report → lead"
+              value={`${funnel?.report_to_lead_rate ?? 0}%`}
+              sub="conversión"
+            />
+            <FunnelStat
+              label="Abandono"
+              value={funnel?.abandoned ?? 0}
+              sub="explícito/inferido"
+            />
+          </div>
+
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {summaryItems.map((item) => (
               <button
                 key={item.id}
@@ -254,6 +299,26 @@ export default function AdminLeadsPage() {
         </section>
       </main>
     </>
+  );
+}
+
+function FunnelStat({
+  label,
+  value,
+  sub,
+}: {
+  label: string;
+  value: number | string;
+  sub: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-[var(--hairline)] bg-[var(--surface)] p-4">
+      <div className="eyebrow">{label}</div>
+      <div className="mt-2 mono text-[22px] font-semibold text-[var(--text-primary)]">
+        {value}
+      </div>
+      <div className="mt-1 text-[11px] text-[var(--text-tertiary)]">{sub}</div>
+    </div>
   );
 }
 
