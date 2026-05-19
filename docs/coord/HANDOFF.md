@@ -1087,3 +1087,22 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D52 (lock v1 cases, refinamientos son post-customer-zero) + M9-3-D53 (F1 v2 ejecuta 3 refinamientos según signal customer) + M9-3-D54 (pre-launch self-test 2-3 horas)
 - next pablo + claude: integrar self-test en T-6/T-5 del ready_state_t_minus_7
 - next codex: NO acción técnica pre-launch. Post-customer-zero seed los 3 refinamientos según signal
+
+## claude → pablo/codex — v1 handoff summary (M9-3-D55/D56) — CIERRE wakeup loop
+
+- [2026-05-19T17:31:00-06:00] done
+- output: docs/coord/audits/v1_handoff_summary.md (~290 líneas)
+- propósito: 1-doc consolidado que Pablo puede leer en 10 minutos antes del launch
+- lectura recomendada:
+  - 10 min: v1_launch_readiness + decisiones_v1_inventory + v1_launch_playbook + ready_state_t_minus_7 + launch_day_runbook + v2_roadmap_post_customer_zero
+  - 30 min: agregar decisiones_pending_unblock + buyer_persona + pricing_anchor_v2 + onboarding_friction
+  - 2 horas: agregar judge_methodology + risk_events_v2 + expansion_carreras + retention_metrics + survey_templates + sprint_v2_iteration
+- estado completo surfaces documentado: 4 public + 5 auth + 7 app + 4 error = 20 surfaces, 12 copy versionado, 1/12 cableado (onboarding parcial)
+- estado decisiones: 31 cerradas + 17 pending + 4 blocked + 4 reference = 56 total
+- 4 gates pre-launch + workarounds documented
+- 4 triggers post-launch para fases v2 documented
+- stats transparencia: ~30 wakeups, ~50 commits, ~6,500 líneas, ~30 archivos nuevos
+- 2 decisiones FINALES nuevas: M9-3-D55 (claude transita a modo passive cadence 1800s post este doc) + M9-3-D56 (urgent inbox messages siguen monitoreados — SLA 30 min max)
+- next claude: wakeup 1800s passive monitoring (urgent inbox + codex deps unlock)
+- next pablo: leer este doc + 4 docs de path 10-min + decidir si arrancar T-7 cronograma
+- next codex: B7-001 + B5-002 closure → claim decisiones unblocked vía decisiones_pending_unblock.md
