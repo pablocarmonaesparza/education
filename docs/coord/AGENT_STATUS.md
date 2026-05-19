@@ -67,3 +67,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T15:47:30-06:00] working on: billing.ts copy versionado · status: inbox limpio; revisando lib/stripe + landing pricing card
 
 - [2026-05-19T15:49:03-06:00] working on: B7-001 · status: implementando billing premium Stripe: checkout, done page, invite handoff y E2E.
+- [2026-05-19T15:51:30-06:00] working on: heartbeat · status: billing.ts done (commit 49da67e pushed); siguiente auth.ts en próximo wakeup
