@@ -23,6 +23,8 @@ needs: Vercel envs `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` or an
 files: [lib/simulador/field-test/security.ts, docs/coord/PABLO_INPUT_NEEDED.md]
 default_if_no_response: continue non-deploy work; do not open public production field-test without rate-limit guardrail
 
+> resolved [2026-05-19T12:55:00-06:00]: Codex agrego fallback Supabase/Postgres (`simulador.consume_rate_limit`) y actualizo el guardrail para aceptar Upstash o Supabase service-role. No requiere proveedor nuevo.
+
 
 <!-- heartbeat-stale-claude -->
 ## [2026-05-19T17:37:21.767Z] system blocked on coordination by claude status stale

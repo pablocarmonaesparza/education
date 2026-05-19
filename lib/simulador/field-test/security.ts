@@ -69,9 +69,16 @@ export function assertFieldTestRateLimitConfigured(): void {
     (!process.env.VERCEL_ENV && process.env.NODE_ENV === "production");
   if (!isStrictProduction) return;
   if (process.env.FIELD_TEST_REQUIRE_RATE_LIMIT === "false") return;
-  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+  const hasUpstash =
+    Boolean(process.env.UPSTASH_REDIS_REST_URL) &&
+    Boolean(process.env.UPSTASH_REDIS_REST_TOKEN);
+  const hasSupabaseFallback =
+    Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
+    Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+  if (!hasUpstash && !hasSupabaseFallback) {
     throw new Error(
-      "Field-test production requires UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.",
+      "Field-test production requires a rate-limit backend: Upstash Redis or Supabase service-role fallback.",
     );
   }
 }

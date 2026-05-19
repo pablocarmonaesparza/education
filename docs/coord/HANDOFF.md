@@ -159,6 +159,33 @@ gotchas:
 next:
 - Claude puede actualizar YAMLs con `archetype_ref`, `level_primary` y beats refinados; Codex re-ejecuta importers sin tocar datos a mano.
 
+## B1-004 unblock — rate limit sin proveedor nuevo
+
+status: done
+
+done:
+- Codex agrego `supabase/migrations/20260519023000_simulador_db_rate_limits_023.sql`.
+- La migracion crea `simulador.rate_limit_windows` y RPC `simulador.consume_rate_limit(key, limit, window_seconds)` con advisory lock transaccional.
+- `lib/ratelimit/index.ts` ahora usa Upstash si existe y Supabase/Postgres como fallback si no existe.
+- `lib/simulador/field-test/security.ts` ya no exige Upstash en production: acepta Upstash o Supabase service-role como backend de rate limit.
+- `docs/coord/PABLO_INPUT_NEEDED.md` pablo-001 quedo resolved; no hay proveedor nuevo que aprobar.
+
+tested:
+- Claude CLI review de migracion 023 + diff rate-limit: PASS.
+- Supabase remoto: migracion 023 aplicada y registrada con `supabase migration repair --status applied 20260519023000`.
+- Supabase remoto: `rate_limit_windows` existe con RLS enabled.
+- Supabase remoto: `consume_rate_limit` existe.
+- Supabase remoto: smoke RPC con limite 2 bloquea el tercer request.
+- `npm run check:simulador`
+- `npm run lint:simulador`
+- `npm run build`
+
+gotchas:
+- El fallback Supabase falla abierto si el RPC se cae en runtime, igual que el fallback historico de Upstash. El guardrail production evita ambos-missing, no convierte un outage de rate-limit en outage total del producto.
+
+next:
+- Ejecutar production deploy + smoke real para cerrar B1-004.
+
 ## disagreement policy
 
 Si reviewer veta un bloque:

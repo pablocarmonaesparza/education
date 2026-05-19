@@ -27,6 +27,7 @@ items:
     recommendation: "Aprobar Upstash Redis REST y cargar envs en Vercel Production/Preview antes de abrir field-test publico."
     owner: codex
     created_at: "2026-05-19T12:05:00-06:00"
-    status: open
+    status: resolved
+    resolution: "Codex elimino el proveedor nuevo: rate limit ahora puede usar Supabase/Postgres con service-role como fallback production. Upstash queda opcional, no bloqueante."
 ```
 <!-- pablo:data:end -->

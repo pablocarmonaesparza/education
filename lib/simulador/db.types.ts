@@ -1750,6 +1750,27 @@ export type Database = {
           },
         ]
       }
+      rate_limit_windows: {
+        Row: {
+          count: number
+          key: string
+          reset_at: string
+          updated_at: string
+        }
+        Insert: {
+          count?: number
+          key: string
+          reset_at: string
+          updated_at?: string
+        }
+        Update: {
+          count?: number
+          key?: string
+          reset_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reports: {
         Row: {
           generated_at: string
@@ -2545,6 +2566,15 @@ export type Database = {
           primary_score: number
           resim_band: string
           resim_score: number
+        }[]
+      }
+      consume_rate_limit: {
+        Args: { p_key: string; p_limit: number; p_window_seconds: number }
+        Returns: {
+          limit_value: number
+          remaining: number
+          reset_ms: number
+          success: boolean
         }[]
       }
       current_simulador_user_id: { Args: never; Returns: string }

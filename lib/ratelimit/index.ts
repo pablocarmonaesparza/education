@@ -1,8 +1,7 @@
 // lib/ratelimit/index.ts
 // ----------------------------------------------------------------------------
 // Rate limiting compartido para todas las API routes. Basado en @upstash/ratelimit
-// con fallback fail-open cuando no hay env vars configuradas (dev/preview sin
-// Redis). Itera es B2B: los límites están calibrados para evitar abuse, no
+// con fallback Supabase cuando no hay Redis. Itera es B2B: los límites están calibrados para evitar abuse, no
 // para monetizar consumo.
 //
 // # Uso
@@ -30,12 +29,12 @@
 //     2. cabecera x-forwarded-for / x-real-ip (IP pública tras Vercel)
 //     3. fallback "anon"
 //
-// # Fail-open
+// # Fallback
 //
 //   Si UPSTASH_REDIS_REST_URL o UPSTASH_REDIS_REST_TOKEN no están definidas,
-//   todos los limiters permiten todas las requests y se loguea un warning una
-//   sola vez por process start. Esto evita romper dev/preview sin Redis y es
-//   seguro porque el único costo es rate-abuse, no leak de datos.
+//   los limiters usan Supabase/Postgres via `simulador.consume_rate_limit`.
+//   Sólo caen fail-open si tampoco existe `SUPABASE_SERVICE_ROLE_KEY`
+//   (dev local incompleto).
 //
 // # Coordinación (plan sprint)
 //
@@ -47,6 +46,7 @@ import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 
 // ─────────────────────────────────────────────────────────────
@@ -63,7 +63,7 @@ function getRedis(): Redis | null {
   if (!url || !token) {
     if (!warnedMissing) {
       console.warn(
-        '[ratelimit] UPSTASH_REDIS_REST_URL / _TOKEN no configuradas — rate limiting deshabilitado (fail-open). Configurar en Vercel para producción.',
+        '[ratelimit] UPSTASH_REDIS_REST_URL / _TOKEN no configuradas — usando fallback Supabase si está disponible.',
       );
       warnedMissing = true;
     }
@@ -92,8 +92,8 @@ export interface LimiterLike {
 }
 
 /**
- * Crea un limiter con window + max. Si no hay Redis, devuelve un limiter
- * no-op que siempre permite (fail-open).
+ * Crea un limiter con window + max. Si no hay Redis, usa Postgres via
+ * Supabase service-role. Sólo falla abierto cuando tampoco hay service key.
  */
 function createLimiter(options: {
   max: number;
@@ -103,15 +103,15 @@ function createLimiter(options: {
   const redis = getRedis();
 
   if (!redis) {
-    // Fail-open limiter — siempre permite, sin tocar I/O.
+    const windowSeconds = windowToSeconds(options.window);
     return {
-      async limit(_identifier: string): Promise<LimitResult> {
-        return {
-          success: true,
-          remaining: options.max,
-          reset: Date.now() + 60_000,
-          limit: options.max,
-        };
+      async limit(identifier: string): Promise<LimitResult> {
+        return limitWithSupabase({
+          identifier,
+          max: options.max,
+          prefix: options.prefix,
+          windowSeconds,
+        });
       },
     };
   }
@@ -146,6 +146,70 @@ function createLimiter(options: {
       }
     },
   };
+}
+
+function windowToSeconds(window: `${number} ${'s' | 'm' | 'h' | 'd'}`): number {
+  const [rawAmount, unit] = window.split(' ') as [
+    string,
+    's' | 'm' | 'h' | 'd',
+  ];
+  const amount = Number(rawAmount);
+  const multiplier =
+    unit === 'd' ? 86_400 : unit === 'h' ? 3_600 : unit === 'm' ? 60 : 1;
+  return amount * multiplier;
+}
+
+async function limitWithSupabase(input: {
+  identifier: string;
+  max: number;
+  prefix: string;
+  windowSeconds: number;
+}): Promise<LimitResult> {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    return {
+      success: true,
+      remaining: input.max,
+      reset: Date.now() + input.windowSeconds * 1000,
+      limit: input.max,
+    };
+  }
+
+  try {
+    const admin = createAdminClient();
+    const { data, error } = await admin
+      .schema('simulador')
+      .rpc('consume_rate_limit', {
+        p_key: `${input.prefix}:${input.identifier}`,
+        p_limit: input.max,
+        p_window_seconds: input.windowSeconds,
+      })
+      .single();
+
+    if (error || !data) {
+      console.error('[ratelimit] supabase fallback error — fail-open', error);
+      return {
+        success: true,
+        remaining: input.max,
+        reset: Date.now() + input.windowSeconds * 1000,
+        limit: input.max,
+      };
+    }
+
+    return {
+      success: Boolean(data.success),
+      remaining: Number(data.remaining ?? 0),
+      reset: Number(data.reset_ms ?? Date.now() + input.windowSeconds * 1000),
+      limit: Number(data.limit_value ?? input.max),
+    };
+  } catch (err) {
+    console.error('[ratelimit] supabase fallback exception — fail-open', err);
+    return {
+      success: true,
+      remaining: input.max,
+      reset: Date.now() + input.windowSeconds * 1000,
+      limit: input.max,
+    };
+  }
 }
 
 // ─────────────────────────────────────────────────────────────

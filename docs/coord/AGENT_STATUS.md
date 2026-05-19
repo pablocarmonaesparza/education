@@ -25,6 +25,7 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T12:14:00-06:00] working on: B2-002 · status: preview deploy smoke pasa; production sigue bloqueado solo por Upstash rate-limit env
 - [2026-05-19T12:27:38-06:00] working on: B2-002/B2-004 · status: migraciones premium 021/022 aplicadas y verificadas en Supabase; regenerando tipos y gates
 - [2026-05-19T12:42:00-06:00] working on: B3-003/B3-005 · status: importers de casos y practice beats creados; Supabase remoto seedeado con 8 casos, 16 variantes y 20 beats
+- [2026-05-19T12:55:00-06:00] working on: B1-004 · status: bloqueo Upstash eliminado con rate limit Supabase/Postgres; preparando deploy production smoke
 
 ## system
 

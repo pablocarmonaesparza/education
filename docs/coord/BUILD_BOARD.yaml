@@ -114,7 +114,7 @@ tasks:
     title: deploy y smoke E2E de base
     owner: codex
     reviewer: claude
-    status: blocked
+    status: in_progress
     depends_on:
       - B1-001
       - B1-002
@@ -125,8 +125,8 @@ tasks:
       - field-test publico funciona sin login
       - HANDOFF.md tiene cierre del bloque
     notes: >-
-      bloque 1 no cierra sin prod URL smoke | blocked by missing UPSTASH_REDIS_REST_URL/TOKEN in Vercel; see
-      docs/coord/PABLO_INPUT_NEEDED.md pablo-001
+      Upstash blocker resuelto con fallback Supabase/Postgres rate limit; production deploy/smoke
+      sigue pendiente antes de cerrar bloque
   - id: B2-001
     title: spec migracion 021 schema premium
     owner: claude
