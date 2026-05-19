@@ -340,3 +340,12 @@ Si reviewer veta un bloque:
 - distribución: 12 beats N1 + 8 beats N2 + 0 N3 (intencional v1)
 - next: Codex re-corre seed-practice-beats.mjs --apply para propagar level a BD
 - next claude: B5-001 estructura reporte ejecutivo v2 (ahora desbloqueado)
+
+## B5-001 — estructura reporte ejecutivo v2 [claude → codex review]
+
+- [2026-05-19T13:50:00-06:00] done
+- output: docs/design/surfaces/executive_report.md (12 secciones + copy versionado + KPIs matriz)
+- decisiones: 6 (B5-001-D1 a D6)
+- D1/D2/D4/D6 owner codex (implementación)
+- D3/D5 owner claude (copy)
+- siguiente: las decisiones-derived tasks de B9-* (D1 D7 etc.) son backlog mío
