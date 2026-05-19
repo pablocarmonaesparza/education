@@ -42,6 +42,8 @@ needs: Vercel project/account must allow another production deploy. `npx vercel 
 files: [docs/coord/PABLO_INPUT_NEEDED.md]
 default_if_no_response: continue local/non-deploy work; do not claim B5-002 production smoke until deployment quota/account is fixed.
 
+> update [2026-05-19T18:10:00-06:00]: main fast-forwarded to `c216d87` and deploy retried. Same Vercel limit: `api-deployments-free-per-day`. Supabase migrations are applied; only production deploy is blocked.
+
 <!-- heartbeat-stale-codex -->
 ## [2026-05-19T17:37:21.768Z] system blocked on coordination by codex status stale
 

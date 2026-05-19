@@ -31,7 +31,7 @@ items:
     resolution: "Codex elimino el proveedor nuevo: rate limit ahora puede usar Supabase/Postgres con service-role como fallback production. Upstash queda opcional, no bloqueante."
   - id: pablo-002
     topic: "Vercel no permite otro production deploy hoy"
-    question: "B5-002 ya está en main y la migración 027 ya está aplicada en Supabase, pero el deploy CLI falló con `api-deployments-free-per-day`. El proyecto parece seguir bajo el límite diario del plan actual o el CLI no está usando el plan Pro correcto."
+    question: "Main ya está actualizado hasta `c216d87` con B8, B9-002-D6 y B10-001; migraciones remotas aplicadas. El deploy CLI volvió a fallar el 2026-05-19 con `api-deployments-free-per-day`. El proyecto sigue bajo límite diario del workspace o el CLI no está usando el plan Pro correcto."
     options:
       - "Confirmar/activar Pro en el workspace Vercel `pablo-7630s-projects` y reintentar deploy."
       - "Esperar al reset del límite diario y reintentar deploy mañana."
