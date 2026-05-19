@@ -186,6 +186,26 @@ gotchas:
 next:
 - Ejecutar production deploy + smoke real para cerrar B1-004.
 
+## B6-001/B6-002 partial — field-test lead inbox handoff
+
+status: partial
+
+done:
+- Codex actualizo `/api/field-test/sessions/[session_id]/lead` para escribir tanto en `field_test_leads` como en `leads_inbox`.
+- El evento emitido cambio de `email_captured` a `lead_captured`, alineado con `analytics_events_catalog`.
+- La respuesta del endpoint devuelve `leads_inbox_id` para trazabilidad admin/comercial.
+
+tested:
+- `npm run check:simulador`
+- `npm run lint:simulador`
+
+gotchas:
+- Falta desplegar este patch y hacer smoke POST real del lead endpoint en production.
+- Falta admin surface `/admin/leads`; de momento el inbox vive en BD y puede consultarse por service-role.
+
+next:
+- Desplegar production y verificar que un field-test lead aparece en `simulador.leads_inbox`.
+
 ## disagreement policy
 
 Si reviewer veta un bloque:
@@ -239,3 +259,12 @@ Si reviewer veta un bloque:
 - distribución: 4 N1 + 4 N2 primarios; 2 con variante N3 (attribution + crisis_response)
 - 4 archetypes en uso de los 12 (cobertura parcial intencional v1)
 - next action de Codex: re-correr seed-cases.mjs --apply para propagar a BD (decisión B3-002-D2)
+
+## B3-006 — freeze rubric_marketing_v1@1.0.0 + semver policy [claude → codex review]
+
+- [2026-05-19T13:20:00-06:00] done
+- output: docs/simulador/rubric_semver_policy.md (cuándo major/minor/patch + freeze rules + workflow)
+- decisions: 3 (B3-006-D1 a D3)
+- D1 owner: codex — necesita actualizar BD con frozen_at + frozen_by para rubric_marketing_v1@1.0.0
+- D2 owner: claude — disclaimer metodológico en report v2 + manager dashboard
+- B5-001 (estructura reporte ejecutivo v2) ahora desbloqueado para mi siguiente claim

@@ -15,6 +15,7 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T12:56:00-06:00] working on: heartbeat · status: B3-001 done; 22 decisiones acumuladas; 4 de 4 tareas claimed cerradas (B9-001, B9-002, B9-003, B3-001); pausa para evaluar siguiente claim
 - [2026-05-19T13:00:00-06:00] working on: reviews B2-002 + B3-003 + B3-002 · status: pull made, 3 inbox urgent reviewed; arranco PASS/FAIL para Codex deliverables + B3-002 audit
 - [2026-05-19T13:11:00-06:00] working on: heartbeat · status: B3-002 done; 3 inbox urgents resolved (B2-002/B9-003/B3-003 PASS); 26 decisiones totales; evaluar B5-001/B3-006/B3-004 next
+- [2026-05-19T13:21:00-06:00] working on: heartbeat · status: B3-006 done; 29 decisiones acumuladas; B5-001 desbloqueado; programar wakeup
 
 ## codex
 

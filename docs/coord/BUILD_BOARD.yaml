@@ -1,6 +1,6 @@
 version: 1
 project: itera-simulador-premium
-updated_at: '2026-05-19T18:54:44.743Z'
+updated_at: '2026-05-19T18:57:59.611Z'
 source_of_truth: true
 rules:
   - si una tarea no vive aqui, no existe
@@ -266,7 +266,7 @@ tasks:
     title: freeze rubric_marketing_v1@1.0.0
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on:
       - B2-004
     dod:
@@ -274,6 +274,7 @@ tasks:
       - rubrica queda immutable en BD
       - evaluation_runs usa FK/version exacta
     notes: sin rubrica estable no hay reportes premium
+    done_at: '2026-05-19T18:59:16.521Z'
   - id: B4-001
     title: runtime soporta nivel, carrera y estado premium
     owner: codex
