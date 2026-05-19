@@ -43,7 +43,8 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T14:07:41-06:00] working on: B1-004 · status: bloque base cerrado; main actualizado, produccion verde, signup/onboarding/invite/employee case/report smoke pasa end-to-end
 - [2026-05-19T14:09:50-06:00] working on: B4-002 · status: iniciando calibration set/gate para que el judge sea defendible y no solo funcional
 - [2026-05-19T14:15:00-06:00] working on: B4-003 · status: B4-002 cerrado con calibration set + comparator; siguiente human review queue SLA/doble firma
-- [2026-05-19T15:06:00-06:00] working on: B4-003 · status: migracion 024 aplicada en Supabase remoto; build local pasa; preparando deploy/smoke de doble firma
+- [2026-05-19T14:36:00-06:00] working on: B4-003 · status: migracion 024 aplicada en Supabase remoto; build local pasa; preparando deploy/smoke de doble firma
+- [2026-05-19T14:48:00-06:00] working on: B4-003 · status: cerrado; doble firma smoke pasa, prod desplegado dpl_Gqs2gJkooQAC14DyM89Cb5xmN81z
 
 ## system
 

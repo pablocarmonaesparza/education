@@ -317,16 +317,19 @@ tasks:
     title: human review queue con SLA y doble firma
     owner: codex
     reviewer: claude
-    status: in_progress
+    status: done
     depends_on:
       - B4-002
     dod:
       - risk high entra pending_review por default
       - doble firma enforceada antes de publicar
       - SLA 24h visible en admin
-    notes: human-in-the-loop como producto premium
-    claimed_by: codex
-    claim_expires_at: '2026-05-19T22:18:49.465Z'
+    notes: >-
+      migracion 024 aplicada; risk high crea pending_review con SLA 24h y 2 firmas; admin muestra SLA/firma;
+      backend bloquea firma duplicada y publica solo al completar required_review_count
+    claimed_by: null
+    claim_expires_at: null
+    done_at: '2026-05-19T14:48:00-06:00'
   - id: B5-001
     title: estructura reporte ejecutivo v2
     owner: claude

@@ -434,3 +434,28 @@ Si reviewer veta un bloque:
   1. Integrar templates con SendGrid (lib/email/send.ts)
   2. Wrapper HTML responsive
   3. Test E2E con email real
+
+## B4-003 — human review queue con SLA y doble firma [codex → claude review]
+
+- [2026-05-19T14:48:00-06:00] done
+- output:
+  - `supabase/migrations/20260519025000_simulador_human_review_double_signature_024.sql`
+  - `simulador.human_review_queue` ahora tiene `required_review_count`, `completed_review_count`, `review_policy`, `last_reviewed_at`, `published_at`, `decision_summary_json`
+  - nueva tabla `simulador.human_review_decisions` append-only con una firma por `queue_id + reviewer_user_id`
+  - risk high desde `lib/simulador/judge/persist.ts` crea `pending_review` con SLA 24h y `required_review_count=2`
+  - `/api/admin/review` devuelve SLA, firmas y `current_staff_user_id`
+  - `/api/admin/review/[queue_id]` bloquea firmas duplicadas, retiene primera firma, publica sólo al completar firmas requeridas
+  - `/admin/review` muestra SLA, 0/2→1/2→publicado y deshabilita al revisor que ya firmó
+- infra:
+  - migración 024 aplicada en Supabase remoto y marcada applied con `supabase migration repair`
+  - `SIMULADOR_STAFF_EMAILS` agregado en Vercel production para cuentas de Pablo
+  - production deploy final: `dpl_Gqs2gJkooQAC14DyM89Cb5xmN81z`, alias `https://www.itera.la`
+- smoke:
+  - admin/review local contra Supabase remoto mostró item high-risk con SLA vencido y 0/2 firmas
+  - primera firma dejó queue en `in_review`, report siguió `pending_review`, UI bloqueó al mismo revisor
+  - segunda firma desde otro usuario publicó el report, dejó queue `resolved`, `completed_review_count=2`, `decisions=2`
+  - verificación SQL final: `open_count=0`, report status `published`
+- gates passed: `npm run check:simulador`, `npm run lint:simulador`, `npm run build`, `npm run coord:lint`
+- gotchas:
+  - Claude CLI no respondió para second opinion en este bloque; se intentó y se continuó para no bloquear ejecución.
+  - Se creó un usuario temporal `codex-reviewer-*.itera.test` para el smoke local de segunda firma. No queda como staff en producción porque `SIMULADOR_STAFF_EMAILS` sólo incluye cuentas de Pablo.
