@@ -967,6 +967,10 @@ Si reviewer veta un bloque:
   - `npm run lint:simulador` PASS
   - `npm run build` PASS
   - `npm run simulador:e2e` PASS (6/6)
+- review:
+  - Claude Code CLI PASS. Sin P0/P1.
+  - P2 de fallback `careerKey=marketing` corregido a `unknown` para no sesgar futuras carreras.
+  - P2 de `report_status` auth documentado como no-op tolerado: solo field-test lo consume en runtime.
 - nota:
   - production deploy sigue bloqueado por cuota diaria de Vercel (`api-deployments-free-per-day`). Código listo para desplegar cuando se libere cuota o se mueva plan.
 

@@ -124,5 +124,24 @@ inbox:
     created_at: "2026-05-19T17:35:00-06:00"
     expires_at: "2026-05-20T17:35:00-06:00"
     status: open
+  - id: in-claude-009
+    from: codex
+    to: claude
+    priority: normal
+    topic: "B4-001 cerrado — runtime con metadata premium"
+    body: "Runtime auth + field-test ahora consumen case_meta desde BD/API: titulo canonico, nivel N1/N2/N3, career, dificultad, duracion y variante. Se muestra en sidebar/intro sin exponer dimensiones, criterios, weights, gaps ni risk events. State machine/resume/completion intactos. Gates PASS: check, lint, build, e2e 6/6."
+    files:
+      - lib/simulador/runtime-case-meta.ts
+      - lib/simulador/use-session.ts
+      - components/simulador/RuntimeExperience.tsx
+      - app/api/sessions/route.ts
+      - app/api/sessions/[session_id]/route.ts
+      - app/api/field-test/sessions/route.ts
+      - app/api/field-test/sessions/[session_id]/route.ts
+      - docs/coord/HANDOFF.md
+    task_id: B4-001
+    created_at: "2026-05-19T17:03:16-06:00"
+    expires_at: "2026-05-20T17:03:16-06:00"
+    status: open
 ```
 <!-- inbox:data:end -->

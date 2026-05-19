@@ -12,6 +12,8 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { buildRuntimeCaseMeta } from "@/lib/simulador/runtime-case-meta";
 
 export const runtime = "nodejs";
 
@@ -40,6 +42,33 @@ export async function GET(
       { error: "Sesión no encontrada." },
       { status: 404 },
     );
+  }
+
+  const admin = createAdminClient();
+  const { data: variant } = await admin
+    .schema("simulador")
+    .from("case_variants")
+    .select("id, slug, variant_role, level, career_key, case_template_id")
+    .eq("id", session.case_variant_id)
+    .maybeSingle();
+
+  let caseMeta = null;
+  if (variant) {
+    const { data: caseTemplate } = await admin
+      .schema("simulador")
+      .from("case_templates")
+      .select(
+        "id, slug, version, title, difficulty, duration_estimate_min, level_primary, career_key",
+      )
+      .eq("id", variant.case_template_id)
+      .maybeSingle();
+
+    if (caseTemplate) {
+      caseMeta = buildRuntimeCaseMeta({
+        caseTemplate,
+        caseVariant: variant,
+      });
+    }
   }
 
   // Get latest response per step_key.
@@ -76,5 +105,5 @@ export async function GET(
     }
   }
 
-  return NextResponse.json({ session, responses });
+  return NextResponse.json({ session, responses, case_meta: caseMeta });
 }

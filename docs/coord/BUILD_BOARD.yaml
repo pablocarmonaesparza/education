@@ -286,7 +286,7 @@ tasks:
     title: runtime soporta nivel, carrera y estado premium
     owner: codex
     reviewer: claude
-    status: backlog
+    status: done
     depends_on:
       - B2-002
       - B3-003
@@ -294,7 +294,8 @@ tasks:
       - runtime carga level/career desde BD
       - state machine conserva resume y completion
       - no hay spoilers de rubrica
-    notes: mantener metodologia por secciones
+    notes: case_meta via auth/field-test APIs; runtime muestra nivel/carrera sin revelar rubrica
+    done_at: '2026-05-19T17:26:00-06:00'
   - id: B4-002
     title: judge real y calibration gate
     owner: codex

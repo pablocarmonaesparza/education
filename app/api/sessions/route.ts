@@ -24,6 +24,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { buildRuntimeCaseMeta } from "@/lib/simulador/runtime-case-meta";
 
 export const runtime = "nodejs";
 
@@ -73,7 +74,9 @@ export async function POST(req: NextRequest) {
   const { data: caseTemplate } = await admin
     .schema("simulador")
     .from("case_templates")
-    .select("id, slug, version, title, duration_estimate_min, rubric_id")
+    .select(
+      "id, slug, version, title, difficulty, duration_estimate_min, rubric_id, level_primary, career_key",
+    )
     .eq("slug", caseSlug)
     .eq("status", "active")
     .order("version", { ascending: false })
@@ -90,7 +93,7 @@ export async function POST(req: NextRequest) {
   const { data: variant } = await admin
     .schema("simulador")
     .from("case_variants")
-    .select("id, slug")
+    .select("id, slug, variant_role, level, career_key")
     .eq("case_template_id", caseTemplate.id)
     .eq("variant_role", "primary")
     .eq("status", "active")
@@ -103,6 +106,11 @@ export async function POST(req: NextRequest) {
       { status: 404 },
     );
   }
+
+  const caseMeta = buildRuntimeCaseMeta({
+    caseTemplate,
+    caseVariant: variant,
+  });
 
   // ¿Ya tiene una session in_progress de este variant? → resume.
   const { data: existing } = await admin
@@ -122,6 +130,7 @@ export async function POST(req: NextRequest) {
       status: existing.status,
       case_template_id: caseTemplate.id,
       case_variant_id: variant.id,
+      case_meta: caseMeta,
       resumed: true,
     });
   }
@@ -259,6 +268,7 @@ export async function POST(req: NextRequest) {
               status: racedSession.status,
               case_template_id: caseTemplate.id,
               case_variant_id: variant.id,
+              case_meta: caseMeta,
               resumed: true,
             });
           }
@@ -289,6 +299,9 @@ export async function POST(req: NextRequest) {
       user_id: simUser.id,
       sprint_id: sprint.id,
       status: "in_progress",
+      metadata: {
+        case_meta: caseMeta,
+      },
     })
     .select("id, status")
     .single();
@@ -306,6 +319,7 @@ export async function POST(req: NextRequest) {
     status: session.status,
     case_template_id: caseTemplate.id,
     case_variant_id: variant.id,
+    case_meta: caseMeta,
     resumed: false,
   });
 }

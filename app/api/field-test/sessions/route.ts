@@ -16,6 +16,7 @@ import {
   latestFieldTestResponses,
   sanitizeText,
 } from "@/lib/simulador/field-test/service";
+import { buildRuntimeCaseMeta } from "@/lib/simulador/runtime-case-meta";
 
 export const runtime = "nodejs";
 
@@ -49,7 +50,9 @@ export async function POST(req: NextRequest) {
     const { data: existing } = await admin
       .schema("simulador")
       .from("field_test_sessions")
-      .select("id, status, case_template_id, case_variant_id, report_status, expires_at")
+      .select(
+        "id, status, case_template_id, case_variant_id, report_status, expires_at",
+      )
       .eq("case_slug", caseSlug)
       .eq("public_token_hash", hashToken(existingToken))
       .order("created_at", { ascending: false })
@@ -61,12 +64,18 @@ export async function POST(req: NextRequest) {
       new Date(String(existing.expires_at)).getTime() > Date.now()
     ) {
       const responses = await latestFieldTestResponses(existing.id as string);
+      const caseMeta = await loadCaseMeta({
+        admin,
+        caseTemplateId: existing.case_template_id as string,
+        caseVariantId: existing.case_variant_id as string,
+      });
       return NextResponse.json({
         session_id: existing.id,
         status: existing.status,
         report_status: existing.report_status,
         case_template_id: existing.case_template_id,
         case_variant_id: existing.case_variant_id,
+        case_meta: caseMeta,
         responses,
         resumed: true,
       });
@@ -76,7 +85,9 @@ export async function POST(req: NextRequest) {
   const { data: caseTemplate } = await admin
     .schema("simulador")
     .from("case_templates")
-    .select("id, slug, version")
+    .select(
+      "id, slug, version, title, difficulty, duration_estimate_min, level_primary, career_key",
+    )
     .eq("slug", caseSlug)
     .eq("status", "active")
     .order("version", { ascending: false })
@@ -93,7 +104,7 @@ export async function POST(req: NextRequest) {
   const { data: variant } = await admin
     .schema("simulador")
     .from("case_variants")
-    .select("id, slug")
+    .select("id, slug, variant_role, level, career_key")
     .eq("case_template_id", caseTemplate.id)
     .eq("variant_role", "primary")
     .eq("status", "active")
@@ -106,6 +117,11 @@ export async function POST(req: NextRequest) {
       { status: 404 },
     );
   }
+
+  const caseMeta = buildRuntimeCaseMeta({
+    caseTemplate,
+    caseVariant: variant,
+  });
 
   const token = createOpaqueToken();
   const { data: session, error } = await admin
@@ -121,6 +137,7 @@ export async function POST(req: NextRequest) {
       metadata_json: {
         source: "landing-field-test",
         protocol: "field_test_v0",
+        case_meta: caseMeta,
       },
     })
     .select("id, status, case_template_id, case_variant_id, report_status")
@@ -146,9 +163,43 @@ export async function POST(req: NextRequest) {
     report_status: session.report_status,
     case_template_id: session.case_template_id,
     case_variant_id: session.case_variant_id,
+    case_meta: caseMeta,
     responses: {},
     resumed: false,
   });
   setFieldTestCookie(res, token);
   return res;
+}
+
+async function loadCaseMeta({
+  admin,
+  caseTemplateId,
+  caseVariantId,
+}: {
+  admin: ReturnType<typeof createAdminClient>;
+  caseTemplateId: string;
+  caseVariantId: string;
+}) {
+  const [{ data: caseTemplate }, { data: variant }] = await Promise.all([
+    admin
+      .schema("simulador")
+      .from("case_templates")
+      .select(
+        "id, slug, version, title, difficulty, duration_estimate_min, level_primary, career_key",
+      )
+      .eq("id", caseTemplateId)
+      .maybeSingle(),
+    admin
+      .schema("simulador")
+      .from("case_variants")
+      .select("id, slug, variant_role, level, career_key")
+      .eq("id", caseVariantId)
+      .maybeSingle(),
+  ]);
+
+  if (!caseTemplate) return null;
+  return buildRuntimeCaseMeta({
+    caseTemplate,
+    caseVariant: variant,
+  });
 }

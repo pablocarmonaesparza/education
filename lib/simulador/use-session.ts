@@ -20,6 +20,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { RuntimeCaseMeta } from "@/lib/simulador/runtime-case-meta";
 
 export type SessionStatus = "creating" | "ready" | "error";
 export type RuntimeSessionMode = "authenticated" | "field_test";
@@ -29,6 +30,7 @@ export interface UseSessionState {
   sessionId: string | null;
   caseTemplateId: string | null;
   caseVariantId: string | null;
+  caseMeta: RuntimeCaseMeta | null;
   /** Respuestas previas indexadas por step_key. Vacío si es sesión nueva. */
   responses: Record<string, unknown>;
   /** True si la API devolvió una sesión existente (no recién creada). */
@@ -49,6 +51,7 @@ export function useSession(
     sessionId: null,
     caseTemplateId: null,
     caseVariantId: null,
+    caseMeta: null,
     responses: {},
     resumed: false,
     simulationStatus: null,
@@ -94,6 +97,13 @@ export function useSession(
           if (r.ok && d?.responses && typeof d.responses === "object") {
             responses = d.responses as Record<string, unknown>;
           }
+          if (r.ok && d?.case_meta && typeof d.case_meta === "object") {
+            data.case_meta = d.case_meta;
+          }
+          if (r.ok && d?.session && typeof d.session === "object") {
+            data.status = d.session.status ?? data.status;
+            data.report_status = d.session.report_status ?? data.report_status;
+          }
         }
 
         if (cancelled) return;
@@ -102,6 +112,10 @@ export function useSession(
           sessionId: data.session_id,
           caseTemplateId: data.case_template_id ?? null,
           caseVariantId: data.case_variant_id ?? null,
+          caseMeta:
+            data.case_meta && typeof data.case_meta === "object"
+              ? (data.case_meta as RuntimeCaseMeta)
+              : null,
           responses,
           resumed: Boolean(data.resumed),
           simulationStatus: data.status ?? null,
@@ -115,6 +129,7 @@ export function useSession(
           sessionId: null,
           caseTemplateId: null,
           caseVariantId: null,
+          caseMeta: null,
           responses: {},
           resumed: false,
           simulationStatus: null,

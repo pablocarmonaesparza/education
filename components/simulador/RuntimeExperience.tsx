@@ -24,6 +24,7 @@ import { RuntimeNav } from "@/components/simulador/RuntimeNav";
 import { useSession } from "@/lib/simulador/use-session";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
 import type { RuntimeSessionMode } from "@/lib/simulador/use-session";
+import type { RuntimeCaseMeta } from "@/lib/simulador/runtime-case-meta";
 
 // step_key canónicos del caso (ver simulador.case_steps).
 // El ordinal aquí coincide con el sectionIdx (1..5) — intro=0 no persiste.
@@ -740,6 +741,7 @@ export function RuntimeExperience({
         {/* Sidebar (no eyebrow, no borders) */}
         <aside className="hidden md:block flex-shrink-0 w-60">
           <div className="sticky top-[80px] py-10 px-6">
+            <RuntimeCaseMetaCard caseMeta={session.caseMeta} />
             <nav className="space-y-1">
               {SECTIONS.map((s, i) => {
                 const reached = i <= maxReached;
@@ -837,6 +839,7 @@ export function RuntimeExperience({
                   {renderSlide({
                     sectionId: currentSection.id,
                     slideIdx,
+                    caseMeta: session.caseMeta,
                     state: {
                       fieldActions,
                       userPrompt,
@@ -905,6 +908,36 @@ export function RuntimeExperience({
         </div>
       </div>
     </>
+  );
+}
+
+function RuntimeCaseMetaCard({
+  caseMeta,
+}: {
+  caseMeta: RuntimeCaseMeta | null;
+}) {
+  if (!caseMeta) return null;
+
+  return (
+    <div className="mb-7 rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4">
+      <div className="flex items-center gap-2">
+        <span className="rounded-full accent-bg-soft accent-text px-2 py-0.5 text-[11px] font-semibold">
+          {caseMeta.levelShortLabel}
+        </span>
+        <span className="text-[11px] text-[var(--text-tertiary)]">
+          {caseMeta.careerLabel}
+        </span>
+      </div>
+      <div className="mt-3 text-[13px] font-medium leading-snug text-[var(--text-primary)]">
+        {caseMeta.title}
+      </div>
+      <div className="mt-2 text-[12px] leading-snug text-[var(--text-secondary)]">
+        {caseMeta.levelLabel}
+        {caseMeta.durationEstimateMin
+          ? ` · ${caseMeta.durationEstimateMin} min`
+          : ""}
+      </div>
+    </div>
   );
 }
 
@@ -1158,19 +1191,21 @@ type RuntimeSetters = {
 function renderSlide({
   sectionId,
   slideIdx,
+  caseMeta,
   state,
   setters,
   sendPrompt,
 }: {
   sectionId: SectionId;
   slideIdx: number;
+  caseMeta: RuntimeCaseMeta | null;
   state: RuntimeState;
   setters: RuntimeSetters;
   sendPrompt: () => void;
 }) {
   // ============ INTRO ============
   if (sectionId === "intro") {
-    return <IntroSlide slideIdx={slideIdx} />;
+    return <IntroSlide slideIdx={slideIdx} caseMeta={caseMeta} />;
   }
 
   // ============ STEP 1 ============
@@ -1262,20 +1297,47 @@ function renderSlide({
 
 // ============ INTRO ============
 
-function IntroSlide({ slideIdx }: { slideIdx: number }) {
+function IntroSlide({
+  slideIdx,
+  caseMeta,
+}: {
+  slideIdx: number;
+  caseMeta: RuntimeCaseMeta | null;
+}) {
   if (slideIdx === 0) {
+    const title = caseMeta?.title ?? "Campaña urgente con feedback de clientes";
+    const durationLabel = caseMeta?.durationEstimateMin
+      ? `${caseMeta.durationEstimateMin} min`
+      : "18 min";
+
     return (
       <>
-        <div className="eyebrow">Caso 01 · Marketing · 18 min</div>
+        <div className="eyebrow">
+          Diagnóstico · {caseMeta?.careerLabel ?? "Marketing/Growth"} ·{" "}
+          {durationLabel}
+        </div>
+        {caseMeta && (
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            <span className="rounded-full accent-bg-soft accent-text px-3 py-1 text-[12px] font-semibold">
+              {caseMeta.levelShortLabel} · {caseMeta.levelLabel}
+            </span>
+            <span className="rounded-full bg-[var(--surface)] border border-[var(--border)] px-3 py-1 text-[12px] text-[var(--text-secondary)]">
+              {humanizeKey(caseMeta.difficulty ?? "baseline")}
+            </span>
+          </div>
+        )}
         <h1 className="display display-tight mt-6 text-[44px] sm:text-[60px] text-[var(--text-primary)]">
-          Campaña urgente con
-          <br />
-          feedback de clientes.
+          {title}.
         </h1>
         <p className="mt-8 text-[19px] text-[var(--text-secondary)] leading-[1.55]">
           Vas a interpretar el rol de un Marketing Manager bajo presión. No hay
           respuesta única correcta: evaluamos tu criterio.
         </p>
+        {caseMeta && (
+          <p className="mt-4 text-[15px] text-[var(--text-tertiary)] leading-[1.55]">
+            {caseMeta.levelDescription}
+          </p>
+        )}
       </>
     );
   }
