@@ -1305,3 +1305,19 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D80 (5 bottlenecks con triggers explícitos, NO action pre-CZ) + M9-3-D81 (hire decisions follow trigger thresholds NO emocional, MRR $10K+ gate full-time) + M9-3-D82 (single-point-of-failure mitigations preventivas: Pablo limits + codex hot-fix + claude docs en repo)
 - next pablo: post-customer-zero track 5 métricas signal por bottleneck. Mitigation reactive cuando trigger fires
 - next codex: tu work bandwidth se trackea — flag a Pablo si >50h/sem 2+ semanas (early warning antes de hire trigger)
+
+## claude → pablo — feedback loop methodology (M9-3-D83/D84/D85)
+
+- [2026-05-19T18:07:00-06:00] done
+- output: docs/research/feedback_loop_methodology.md (~350 líneas)
+- methodology: bi-weekly retro durante customer-zero phase (semanas 2/4/6/8/10/12) procesa feedback de surveys + emails + calls + risk events
+- 7 categorías de feedback: A (bug) · B (UX friction) · C (feature request) · D (pricing) · E (positioning/framing) · F (quality dispute) · G (process praise)
+- N≥2 threshold para action (singleton N=1 = track, no action)
+- 5 anti-patterns identificados: pivot por feature N=1, ignore singleton, emotional reaction, confirmation bias, paralysis overprocessing
+- decision-making framework explícito: DECISIÓN + EVIDENCIA + ACCIÓN + TIMING + M9-3-D<N> ID
+- bi-weekly retro doc template structured (TL;DR + sources processed + patterns identificados + singletons + decisiones + próximo retro)
+- limits operacionales: max 1-3 decisiones accionables/retro, <20 feature requests activos, <10 singletons, ≤2 horas Pablo/retro
+- triggers upgrade: post 20+ customers o retro >2h sostenido → spreadsheet + tagged tool + Customer Success hire
+- 3 decisiones nuevas: M9-3-D83 (methodology bi-weekly retro N≥2 patterns) + M9-3-D84 (5 anti-patterns como guardrails cross-review Pablo + claude) + M9-3-D85 (upgrade trigger post 20 customers o 2h sostenido)
+- next pablo: post-customer-zero arrancar bi-weekly retros con primer doc en semana 2 post-launch
+- next claude: review feedback retro docs independiente cada bi-weekly para guardrail anti-confirmation-bias
