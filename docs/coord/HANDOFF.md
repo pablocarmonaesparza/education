@@ -1161,3 +1161,19 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D63 (brand guidelines v1 referencia canónica + 6 audit checks) + M9-3-D64 (NO imagery v1, screenshots reales > stock > zero, NEVER AI renders) + M9-3-D65 (frame canónico OBLIGATORIO, NO improvisar bajo presión)
 - next claude/codex: cualquier nueva copy se valida contra los 6 audit checks antes de commit
 - next pablo: discovery calls usar frame canónico literal o variante closest (no improvisar)
+
+## claude → codex/pablo — integrations roadmap v2 (M9-3-D66/D67/D68/D69)
+
+- [2026-05-19T17:47:00-06:00] done
+- output: docs/research/integrations_roadmap_v2.md (~320 líneas)
+- principio: v1 stand-alone. NO integrations proactivas. Reactive a customer demand explícita (≥3 Tier 1, ≥2 Tier 2-3)
+- 9 integraciones analizadas con demand + effort + trigger:
+  - Tier 1 (alta demand, build cuando ≥3 asks): Slack (2-3 sem) + Teams (2-3 sem) + Google Workspace passive (1-2 sem) + Microsoft 365 passive (1-2 sem)
+  - Tier 2 (media demand, alineado carreras): HubSpot CRM (3-4 sem, F2 Sales) + BambooHR HRIS (2-3 sem, F3 HR)
+  - Tier 3 (enterprise ask only): Salesforce (4-6 sem) + Workday (6-8 sem) + Lattice (3-4 sem)
+- 5 NO recomendadas: Zapier/Make (low-code overhead), LMS Cornerstone/Docebo (rompe frame producto), Analytics Mixpanel (use webhook genérico), ATS Greenhouse (Forage territory), Okta SAML advanced (pre-customer-zero)
+- decisión clave: webhook genérico universal v1 cubre 80% asks sin per-integration build. Endpoint /api/webhooks/{customer_secret_token} con 4 event types (session.completed/report.published/sprint.closed/risk_event.high). Effort 1 semana codex vs 2-4 semanas per integración
+- orden recomendado expansion cuando demand confirmada: Slack → HubSpot → BambooHR → Salesforce/Workday solo enterprise ask
+- 4 decisiones nuevas: M9-3-D66 (v1 stand-alone, integrations reactivas) + M9-3-D67 (orden expansion Slack-HubSpot-BambooHR + enterprise reactive) + M9-3-D68 (webhook genérico universal v1 post-customer-zero) + M9-3-D69 (NEVER integrar LMS — rompe frame)
+- next pablo: si customer ask integration en discovery, redirect: "Webhook coming F1 post-launch, mientras Slack notifications manual via [Pablo mensaje]"
+- next codex: post-launch + ≥2 customers ask webhook → 1 sem codex para webhook genérico. NO integraciones per-target hasta ≥3 asks.

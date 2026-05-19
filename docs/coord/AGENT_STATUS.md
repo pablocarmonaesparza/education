@@ -129,3 +129,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T17:39:30-06:00] working on: heartbeat · status: onboarding_email_sequences done (commit 36b7014 pushed); 3 nuevas decisiones M9-3-D60/D61/D62; siguiente brand_guidelines o comms_calendar
 - [2026-05-19T17:40:00-06:00] working on: brand_guidelines_v1 research · status: codex sigue B7-001; email_sequences done; arrancando voz/tono/visual identity consolidados
 - [2026-05-19T17:43:30-06:00] working on: heartbeat · status: brand_guidelines_v1 done (commit 3855533 pushed); 3 nuevas decisiones M9-3-D63/D64/D65 (65 total emitidas); siguiente integrations_roadmap o feature_flag_strategy
+- [2026-05-19T17:44:00-06:00] working on: integrations_roadmap_v2 research · status: codex sigue B7-001; brand_guidelines done; arrancando orden integraciones HubSpot/Slack/Workday/Lattice
