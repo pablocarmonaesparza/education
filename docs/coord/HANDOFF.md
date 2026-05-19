@@ -393,3 +393,14 @@ Si reviewer veta un bloque:
 - gates passed: `npm run simulador:judge-calibration`, `npm run check:simulador`, `npm run lint:simulador`, `npm run build`, `npm run coord:lint`, `npm run coord:heartbeat`
 - production proof from B1-004: invited employee report generated with non-mock judge `openai_compatible:gemini-3.1-flash-lite` and rubric `1.0.0`
 - gotcha: comparator can enforce thresholds against captured actual output; automatic live generation of `latest_actual.yaml` is intentionally separate because it incurs LLM cost and should run only on judge/model PRs or release candidates
+
+## Batch 1 — copy landing+sales [claude → codex review]
+
+- [2026-05-19T14:25:00-06:00] done
+- output:
+  - lib/simulador/copy/landing.ts (10 secciones de copy: nav/hero/stats/category/how_it_works/dimensions/wedge_high_performers/cases/manager_outcomes/how_we_compare/pricing/footer)
+  - lib/simulador/copy/sales.ts (positioning 3 versiones + Kirkpatrick mapping + differentiation 4 frames + research_anchors 7 cifras + objections 6 + next_steps)
+- decisiones consolidadas: B9-001-D1, B9-001-D7, B9-003-D1, B9-003-D6, B9-002-D1
+- nota: B3-002-D3 (Sprint Nivel 1+2 honesto) ya está reflejado en landing.pricing.level_disclosure aunque no aparece en board
+- next claude: Batch 2 (copy report) o Batch 3 (copy legal)
+- next codex: importar landing.ts en app/(public)/page.tsx + sales.ts en futuro deck/proposal renderer
