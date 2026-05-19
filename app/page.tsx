@@ -7,7 +7,7 @@ import "./(app)/simulador.css";
 
 export default function Home() {
   return (
-    <div className="simulador-root dark min-h-screen surface-canvas">
+    <div className="simulador-root min-h-screen surface-canvas">
       <Suspense fallback={null}>
         <OAuthRedirectHandler />
       </Suspense>

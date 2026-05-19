@@ -130,21 +130,20 @@ export async function GET(request: Request) {
     }
 
     // Asegurar bridge row en simulador.users (linkea auth.users con el
-    // schema multi-tenant del Simulador). Sin esto, las queries con RLS
-    // del simulador no resuelven simulador.users → no se ve nada.
-    const { error: simUserInsert } = await supabase
+    // schema multi-tenant del Simulador). La función es idempotente y
+    // también cubre cuentas creadas antes del Simulador.
+    const { error: simBridgeError } = await supabase
       .schema('simulador')
-      .from('users')
-      .insert({
-        auth_user_id: user.id,
-        email: user.email!,
-        full_name: userName,
-        locale: 'es-MX',
+      .rpc('ensure_bridge_user', {
+        p_auth_user_id: user.id,
       })
-    if (simUserInsert && simUserInsert.code !== '23505') {
+    if (simBridgeError) {
       console.error(
-        '[auth/callback] simulador.users.insert failed:',
-        simUserInsert
+        '[auth/callback] simulador.ensure_bridge_user failed:',
+        simBridgeError
+      )
+      return NextResponse.redirect(
+        `${origin}${errorPage}?error=${encodeURIComponent('No pudimos sincronizar tu cuenta. Intenta de nuevo.')}`
       )
     }
 

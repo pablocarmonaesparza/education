@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactCompiler: false,
+  allowedDevOrigins: ['host.docker.internal'],
   typescript: {
     ignoreBuildErrors: true,
   },

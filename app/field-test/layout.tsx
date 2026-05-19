@@ -1,7 +1,7 @@
 /**
  * Layout publico para field-tests del Simulador.
  *
- * No pasa por auth y hereda el tema oscuro global del Simulador.
+ * No pasa por auth y hereda el tema claro global del Simulador.
  */
 
 import { SimuladorProviders } from "../(app)/providers";
@@ -13,7 +13,7 @@ export default function FieldTestLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="simulador-root dark min-h-screen surface-canvas">
+    <div className="simulador-root min-h-screen surface-canvas">
       <SimuladorProviders>{children}</SimuladorProviders>
     </div>
   );
