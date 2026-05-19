@@ -33,6 +33,18 @@ export async function GET() {
   }
 
   const admin = createAdminClient();
+  const { data: staffBridgeUserId, error: staffErr } = await admin
+    .schema("simulador")
+    .rpc("ensure_bridge_user", { p_auth_user_id: user.id });
+
+  if (staffErr || !staffBridgeUserId) {
+    console.error("[admin/review] staff bridge failed", staffErr);
+    return NextResponse.json(
+      { error: "No se pudo inicializar el usuario staff." },
+      { status: 500 },
+    );
+  }
+
   const { data: items, error } = await admin
     .schema("simulador")
     .from("human_review_queue")
@@ -103,5 +115,5 @@ export async function GET() {
     });
   }
 
-  return NextResponse.json({ items: enriched });
+  return NextResponse.json({ items: enriched, current_staff_user_id: staffBridgeUserId });
 }

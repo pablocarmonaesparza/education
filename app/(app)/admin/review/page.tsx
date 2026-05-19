@@ -75,6 +75,9 @@ const RECOMMENDATIONS = ["pilotar", "entrenar", "pausar", "escalar"] as const;
 
 export default function AdminReviewPage() {
   const [items, setItems] = useState<QueueItem[] | null>(null);
+  const [currentStaffUserId, setCurrentStaffUserId] = useState<string | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
   const [resolving, setResolving] = useState<string | null>(null);
 
@@ -88,6 +91,7 @@ export default function AdminReviewPage() {
       }
       const data = await res.json();
       setItems(data.items as QueueItem[]);
+      setCurrentStaffUserId(data.current_staff_user_id ?? null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado.");
     }
@@ -175,6 +179,7 @@ export default function AdminReviewPage() {
             <QueueCard
               key={it.queue_id}
               item={it}
+              currentStaffUserId={currentStaffUserId}
               isResolving={resolving === it.queue_id}
               onResolve={(rec, notes, decision) =>
                 resolve(it.queue_id, rec, notes, decision)
@@ -189,10 +194,12 @@ export default function AdminReviewPage() {
 
 function QueueCard({
   item,
+  currentStaffUserId,
   isResolving,
   onResolve,
 }: {
   item: QueueItem;
+  currentStaffUserId: string | null;
   isResolving: boolean;
   onResolve: (
     rec: string | null,
@@ -208,6 +215,9 @@ function QueueCard({
   const dims = item.evaluation_run?.dimension_scores_json ?? [];
   const risks = item.evaluation_run?.risk_summary_json ?? [];
   const highRisks = risks.filter((r) => r.severity === "high");
+  const hasCurrentStaffSigned = item.review_decisions.some(
+    (decision) => decision.reviewer_user_id === currentStaffUserId,
+  );
   const nextSignatureCount = item.completed_review_count + 1;
   const isFinalSignature = nextSignatureCount >= item.required_review_count;
   const sla = getSlaState(item.due_at);
@@ -374,12 +384,14 @@ function QueueCard({
                 notes,
               )
             }
-            isDisabled={isResolving}
+            isDisabled={isResolving || hasCurrentStaffSigned}
             radius="full"
             size="md"
             className="accent-bg text-white h-10 px-5 text-[14px] font-medium"
           >
-            {isResolving
+            {hasCurrentStaffSigned
+              ? "Esperando otro revisor"
+              : isResolving
               ? isFinalSignature
                 ? "Publicando…"
                 : "Firmando…"
@@ -389,7 +401,7 @@ function QueueCard({
           </Button>
           <Button
             onPress={() => onResolve(null, notes, "escalate")}
-            isDisabled={isResolving}
+            isDisabled={isResolving || hasCurrentStaffSigned}
             radius="full"
             size="md"
             variant="bordered"
@@ -398,7 +410,12 @@ function QueueCard({
             Escalar sin publicar
           </Button>
         </div>
-        {!isFinalSignature && (
+        {hasCurrentStaffSigned ? (
+          <p className="mt-3 text-[12px] text-[var(--text-tertiary)]">
+            Tu firma ya quedó guardada. La publicación queda bloqueada hasta
+            que otra persona de staff firme la revisión.
+          </p>
+        ) : !isFinalSignature && (
           <p className="mt-3 text-[12px] text-[var(--text-tertiary)]">
             Esta firma deja el reporte en revisión. Hace falta otra persona de
             staff para publicarlo.
