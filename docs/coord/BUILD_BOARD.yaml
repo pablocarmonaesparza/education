@@ -1,6 +1,6 @@
 version: 1
 project: itera-simulador-premium
-updated_at: '2026-05-19T20:20:42.362Z'
+updated_at: '2026-05-19T20:22:19.149Z'
 source_of_truth: true
 rules:
   - si una tarea no vive aqui, no existe
@@ -722,12 +722,13 @@ tasks:
       refinamiento por jurisdicción con clauses canónicas del marco aplicable
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on: []
     dod:
       - apply research decision from docs/research/ai_adoption_synthesis.md
       - 'touch files: lib/simulador/copy/legal.ts, app/privacy/page.tsx'
     notes: change_type=copy
+    done_at: '2026-05-19T20:24:28.837Z'
   - id: B9-003-D5
     title: >-
       Audit follow-up requerido: confirmar cifras LFPDPPP reforma marzo 2025 + requisitos

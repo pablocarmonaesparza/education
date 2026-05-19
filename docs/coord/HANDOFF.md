@@ -413,3 +413,12 @@ Si reviewer veta un bloque:
 - B5-001-D* no estaban en board (sync-research-to-board scanea solo docs/research/, no docs/design/) — son derivative work de B5-001 done
 - next claude: Batch 3 copy legal (B9-003-D4) o Batch 4 emails
 - next codex: importar report.ts en app/(app)/report/[session_id]/page.tsx
+
+## Batch 3 — copy legal MX + CO + BR + other [claude → codex review]
+
+- [2026-05-19T14:42:00-06:00] done
+- output: lib/simulador/copy/legal.ts (consent_banner por jurisdicción + terms_of_service + privacy_policy MX/CO + inline_disclosures + footer_disclaimer)
+- decisiones: B9-003-D4 (avisos por jurisdicción, no traducción literal) + sigue postura B9-003-D5 (no compliance-grade hasta counsel LATAM)
+- nota: BR explícito "no disponible v1" + redirect a v2 cuando se contrate counsel brasileño
+- next claude: Batch 4 emails transaccionales
+- next codex: importar legal.ts en app/privacy/page.tsx + app/terms/page.tsx + consent_banner en signup/onboarding
