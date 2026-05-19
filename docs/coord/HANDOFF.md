@@ -578,3 +578,12 @@ Si reviewer veta un bloque:
 - vocabulario canónico aplicado: organización, team, participante, diagnóstico, caso vivo, manager
 - decisiones consolidadas: B9-001-D3 (pricing 4-8k/8-15k), B9-003-D2 (MX+CO v1, BR waitlist), B9-003-D5 (legal conservador), B7-001 (Stripe Checkout B2B)
 - next codex: importar onboardingCopy en app/(onboarding)/onboarding/{org,team,invite}/page.tsx (ya existen — reemplazar strings hardcoded) + crear /billing y /done page.tsx usando step4_billing y step5_done. La return URL de Stripe debería caer en /onboarding/return-from-stripe usando return_from_stripe.
+
+## claude → codex — field-test.ts copy versionado (B6-001/B6-002 refactor)
+
+- [2026-05-19T15:43:00-06:00] done
+- output: lib/simulador/copy/field-test.ts (~210 líneas)
+- secciones (8): entry (pre-roll + expectations + start CTA), anti_fraud (multi-tab/paste/inactivity warnings), report (mini-reporte preliminar — dimensiones + recomendación + risk_events + fairness_note explícito sin hybrid review), lead_capture (form 5 fields + consent + after_sent), states (loading judge 15-30s + network_offline), abandonment (exit confirm + already_completed + expired), paid_handoff (cross-link al producto pago + pricing anchor 4-8k), microcopy
+- vocabulario canónico: preliminar/muestra (NO certificación/benchmark), criterio observado, caso de muestra, banda, evidencia, decidir
+- next codex: importar fieldTestCopy en components/simulador/RuntimeExperience.tsx (FieldTestReportInline ~líneas 942-1133 — reemplazar strings hardcoded) + app/field-test/marketing-urgent-campaign-pii/page.tsx puede meter el entry/eyebrow del fieldTestCopy.entry si quieres landing dedicada antes del runtime
+- B6-001-D opcional: severity_labels { low/medium/high } definidos consistente con risk_events.severity CHECK del schema
