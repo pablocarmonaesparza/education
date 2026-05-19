@@ -871,40 +871,58 @@ export type Database = {
       human_review_queue: {
         Row: {
           assigned_to: string | null
+          completed_review_count: number
           created_at: string
+          decision_summary_json: Json
           due_at: string | null
           evaluation_run_id: string
           id: string
+          last_reviewed_at: string | null
           override_dimension_scores_json: Json | null
           override_recommendation: string | null
+          published_at: string | null
+          required_review_count: number
           resolved_at: string | null
           resolver_notes: string | null
+          review_policy: string
           status: string
           triggered_by: string
         }
         Insert: {
           assigned_to?: string | null
+          completed_review_count?: number
           created_at?: string
+          decision_summary_json?: Json
           due_at?: string | null
           evaluation_run_id: string
           id?: string
+          last_reviewed_at?: string | null
           override_dimension_scores_json?: Json | null
           override_recommendation?: string | null
+          published_at?: string | null
+          required_review_count?: number
           resolved_at?: string | null
           resolver_notes?: string | null
+          review_policy?: string
           status?: string
           triggered_by: string
         }
         Update: {
           assigned_to?: string | null
+          completed_review_count?: number
           created_at?: string
+          decision_summary_json?: Json
           due_at?: string | null
           evaluation_run_id?: string
           id?: string
+          last_reviewed_at?: string | null
           override_dimension_scores_json?: Json | null
           override_recommendation?: string | null
+          published_at?: string | null
+          required_review_count?: number
           resolved_at?: string | null
           resolver_notes?: string | null
+          review_policy?: string
           status?: string
           triggered_by?: string
         }
@@ -921,6 +939,57 @@ export type Database = {
             columns: ["evaluation_run_id"]
             isOneToOne: false
             referencedRelation: "evaluation_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      human_review_decisions: {
+        Row: {
+          created_at: string
+          decision: string
+          id: string
+          override_dimension_scores_json: Json | null
+          override_recommendation: string | null
+          queue_id: string
+          report_payload_patch_json: Json
+          reviewer_notes: string | null
+          reviewer_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          decision?: string
+          id?: string
+          override_dimension_scores_json?: Json | null
+          override_recommendation?: string | null
+          queue_id: string
+          report_payload_patch_json?: Json
+          reviewer_notes?: string | null
+          reviewer_user_id: string
+        }
+        Update: {
+          created_at?: string
+          decision?: string
+          id?: string
+          override_dimension_scores_json?: Json | null
+          override_recommendation?: string | null
+          queue_id?: string
+          report_payload_patch_json?: Json
+          reviewer_notes?: string | null
+          reviewer_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "human_review_decisions_queue_id_fkey"
+            columns: ["queue_id"]
+            isOneToOne: false
+            referencedRelation: "human_review_queue"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "human_review_decisions_reviewer_user_id_fkey"
+            columns: ["reviewer_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]

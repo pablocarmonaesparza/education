@@ -3,13 +3,13 @@
 /**
  * /admin/review — cola de review humano para staff Itera.
  *
- * Lista evaluation_runs con risk_event severity=high que esperan confirmación
+ * Lista evaluation_runs con risk_event severity=high que esperan doble firma
  * antes de que el report se publique al manager. Staff puede:
  *   - Ver bandas + risk events + recomendación del judge
  *   - Override la recommendation (e.g. de "pausar" a "entrenar" si el judge
  *     fue muy estricto, o a "escalar" si el patrón se ve cross-equipo)
  *   - Agregar resolver_notes (visible solo staff)
- *   - Publicar → report.status='published' + queue.status='resolved'
+ *   - Firmar → primera firma retiene, segunda firma publica.
  *
  * Acceso protegido por isStaffEmail (allowlist por env).
  */
@@ -36,8 +36,14 @@ interface RiskEvent {
 interface QueueItem {
   queue_id: string;
   triggered_by: string;
-  due_at: string;
+  status: "queued" | "in_review";
+  due_at: string | null;
   created_at: string;
+  review_policy: "single" | "double_high_risk";
+  required_review_count: number;
+  completed_review_count: number;
+  last_reviewed_at: string | null;
+  published_at: string | null;
   session_id: string | null;
   evaluation_run: {
     id: string;
@@ -55,6 +61,14 @@ interface QueueItem {
     status: string;
     payload_json: Record<string, unknown>;
   } | null;
+  review_decisions: Array<{
+    id: string;
+    reviewer_user_id: string;
+    decision: "approve" | "override" | "escalate";
+    reviewer_notes: string | null;
+    override_recommendation: string | null;
+    created_at: string;
+  }>;
 }
 
 const RECOMMENDATIONS = ["pilotar", "entrenar", "pausar", "escalar"] as const;
@@ -87,6 +101,7 @@ export default function AdminReviewPage() {
     queueId: string,
     overrideRec: string | null,
     notes: string,
+    decision?: "approve" | "override" | "escalate",
   ) {
     setResolving(queueId);
     try {
@@ -94,6 +109,7 @@ export default function AdminReviewPage() {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
+          decision,
           override_recommendation: overrideRec || undefined,
           resolver_notes: notes || undefined,
         }),
@@ -125,8 +141,9 @@ export default function AdminReviewPage() {
               Review humano de reports.
             </h1>
             <p className="mt-4 text-[15px] text-[var(--text-secondary)] max-w-2xl leading-[1.55]">
-              Reports con risk events de severidad alta. Confirma o ajusta la
-              recomendación del judge antes de que se publique al manager.
+              Reports con risk events de severidad alta. Requieren doble firma
+              humana antes de publicarse al manager; la primera firma retiene el
+              reporte, la segunda lo libera.
             </p>
             <a
               href="/admin/leads"
@@ -159,7 +176,9 @@ export default function AdminReviewPage() {
               key={it.queue_id}
               item={it}
               isResolving={resolving === it.queue_id}
-              onResolve={(rec, notes) => resolve(it.queue_id, rec, notes)}
+              onResolve={(rec, notes, decision) =>
+                resolve(it.queue_id, rec, notes, decision)
+              }
             />
           ))}
         </section>
@@ -175,7 +194,11 @@ function QueueCard({
 }: {
   item: QueueItem;
   isResolving: boolean;
-  onResolve: (rec: string | null, notes: string) => void;
+  onResolve: (
+    rec: string | null,
+    notes: string,
+    decision?: "approve" | "override" | "escalate",
+  ) => void;
 }) {
   const [overrideRec, setOverrideRec] = useState<string>(
     item.evaluation_run?.computed_recommendation ?? "",
@@ -185,6 +208,9 @@ function QueueCard({
   const dims = item.evaluation_run?.dimension_scores_json ?? [];
   const risks = item.evaluation_run?.risk_summary_json ?? [];
   const highRisks = risks.filter((r) => r.severity === "high");
+  const nextSignatureCount = item.completed_review_count + 1;
+  const isFinalSignature = nextSignatureCount >= item.required_review_count;
+  const sla = getSlaState(item.due_at);
 
   return (
     <motion.div
@@ -208,10 +234,69 @@ function QueueCard({
             {new Date(item.created_at).toLocaleString("es-MX")}
           </p>
         </div>
-        <span className="text-[11px] font-semibold px-2 py-1 rounded-full bg-[var(--band-b-bg)] text-[var(--band-b-text)]">
-          {highRisks.length} risk high
-        </span>
+        <div className="flex flex-col items-end gap-2">
+          <span className="text-[11px] font-semibold px-2 py-1 rounded-full bg-[var(--band-b-bg)] text-[var(--band-b-text)]">
+            {highRisks.length} risk high
+          </span>
+          <span
+            className={`text-[11px] font-semibold px-2 py-1 rounded-full ${
+              sla.isOverdue
+                ? "bg-[var(--band-b-bg)] text-[var(--band-b-text)]"
+                : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
+            }`}
+          >
+            SLA {sla.label}
+          </span>
+        </div>
       </div>
+
+      <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="rounded-xl bg-[var(--surface-2)] p-4">
+          <div className="eyebrow">política</div>
+          <div className="mt-1 text-[14px] font-semibold text-[var(--text-primary)]">
+            {item.review_policy === "double_high_risk"
+              ? "doble firma"
+              : "firma simple"}
+          </div>
+        </div>
+        <div className="rounded-xl bg-[var(--surface-2)] p-4">
+          <div className="eyebrow">firmas</div>
+          <div className="mt-1 text-[14px] font-semibold text-[var(--text-primary)] mono">
+            {item.completed_review_count}/{item.required_review_count}
+          </div>
+        </div>
+        <div className="rounded-xl bg-[var(--surface-2)] p-4">
+          <div className="eyebrow">vencimiento</div>
+          <div className="mt-1 text-[14px] font-semibold text-[var(--text-primary)]">
+            {item.due_at ? new Date(item.due_at).toLocaleString("es-MX") : "sin SLA"}
+          </div>
+        </div>
+      </div>
+
+      {item.review_decisions.length > 0 && (
+        <div className="mt-5 rounded-xl bg-[var(--surface-2)] p-4">
+          <div className="eyebrow">firmas registradas</div>
+          <div className="mt-3 space-y-2">
+            {item.review_decisions.map((decision, index) => (
+              <div
+                key={decision.id}
+                className="flex flex-wrap items-center justify-between gap-2 text-[12px] text-[var(--text-secondary)]"
+              >
+                <span>
+                  firma {index + 1}:{" "}
+                  <strong className="text-[var(--text-primary)]">
+                    {decision.decision}
+                  </strong>
+                </span>
+                <span className="mono">
+                  {decision.reviewer_user_id.slice(0, 8)} ·{" "}
+                  {new Date(decision.created_at).toLocaleString("es-MX")}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Dimensions */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-5 gap-2">
@@ -285,7 +370,7 @@ function QueueCard({
               onResolve(
                 overrideRec === item.evaluation_run?.computed_recommendation
                   ? null
-                  : overrideRec,
+                  : overrideRec || null,
                 notes,
               )
             }
@@ -294,10 +379,45 @@ function QueueCard({
             size="md"
             className="accent-bg text-white h-10 px-5 text-[14px] font-medium"
           >
-            {isResolving ? "Publicando…" : "Confirmar y publicar"}
+            {isResolving
+              ? isFinalSignature
+                ? "Publicando…"
+                : "Firmando…"
+              : isFinalSignature
+                ? "Firmar y publicar"
+                : "Firmar revisión"}
+          </Button>
+          <Button
+            onPress={() => onResolve(null, notes, "escalate")}
+            isDisabled={isResolving}
+            radius="full"
+            size="md"
+            variant="bordered"
+            className="h-10 px-5 text-[14px] font-medium"
+          >
+            Escalar sin publicar
           </Button>
         </div>
+        {!isFinalSignature && (
+          <p className="mt-3 text-[12px] text-[var(--text-tertiary)]">
+            Esta firma deja el reporte en revisión. Hace falta otra persona de
+            staff para publicarlo.
+          </p>
+        )}
       </div>
     </motion.div>
   );
+}
+
+function getSlaState(dueAt: string | null) {
+  if (!dueAt) return { label: "sin fecha", isOverdue: false };
+  const due = new Date(dueAt).getTime();
+  const diffMs = due - Date.now();
+  if (Number.isNaN(due)) return { label: "sin fecha", isOverdue: false };
+  if (diffMs <= 0) return { label: "vencido", isOverdue: true };
+  const hours = Math.ceil(diffMs / (60 * 60 * 1000));
+  return {
+    label: hours <= 24 ? `vence en ${hours}h` : `vence en ${Math.ceil(hours / 24)}d`,
+    isOverdue: false,
+  };
 }

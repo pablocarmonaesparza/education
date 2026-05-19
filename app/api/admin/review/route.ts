@@ -1,12 +1,12 @@
 /**
  * GET /api/admin/review
  *
- * Lista la cola de review humano (status='pending') con datos del
+ * Lista la cola de review humano (queued/in_review) con datos del
  * evaluation_run + report draft adjuntos. Sólo accesible para staff Itera
  * (allowlist por email — ver lib/simulador/is-staff.ts).
  *
  * Respuesta:
- *   200 { items: [{ queue_id, due_at, eval, report, session_id }] }
+ *   200 { items: [{ queue_id, due_at, signatures, eval, report, session_id }] }
  *   401 / 403 según corresponda
  */
 
@@ -37,7 +37,7 @@ export async function GET() {
     .schema("simulador")
     .from("human_review_queue")
     .select(
-      "id, evaluation_run_id, triggered_by, status, due_at, created_at, resolver_notes, override_recommendation",
+      "id, evaluation_run_id, triggered_by, status, due_at, created_at, resolver_notes, override_recommendation, required_review_count, completed_review_count, review_policy, last_reviewed_at, published_at",
     )
     .in("status", ["queued", "in_review"])
     .order("due_at", { ascending: true });
@@ -63,6 +63,7 @@ export async function GET() {
       .maybeSingle();
 
     let report = null;
+    let decisions = null;
     if (evalRun?.simulation_session_id) {
       const { data: r } = await admin
         .schema("simulador")
@@ -74,14 +75,31 @@ export async function GET() {
       report = r ?? null;
     }
 
+    const { data: reviewDecisions } = await admin
+      .schema("simulador")
+      .from("human_review_decisions")
+      .select(
+        "id, reviewer_user_id, decision, reviewer_notes, override_recommendation, override_dimension_scores_json, created_at",
+      )
+      .eq("queue_id", it.id)
+      .order("created_at", { ascending: true });
+    decisions = reviewDecisions ?? [];
+
     enriched.push({
       queue_id: it.id,
       triggered_by: it.triggered_by,
+      status: it.status,
       due_at: it.due_at,
       created_at: it.created_at,
+      review_policy: it.review_policy,
+      required_review_count: it.required_review_count,
+      completed_review_count: it.completed_review_count,
+      last_reviewed_at: it.last_reviewed_at,
+      published_at: it.published_at,
       session_id: evalRun?.simulation_session_id ?? null,
       evaluation_run: evalRun,
       report,
+      review_decisions: decisions,
     });
   }
 

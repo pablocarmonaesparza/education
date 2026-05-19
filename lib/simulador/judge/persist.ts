@@ -249,7 +249,10 @@ export async function evaluateAndPersist(
         evaluation_run_id: evalRun.id,
         triggered_by: "high_risk_event",
         status: "queued",
-        due_at: new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
+        due_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        required_review_count: 2,
+        completed_review_count: 0,
+        review_policy: "double_high_risk",
       });
     if (hqErr) {
       console.warn("[judge/persist] human_review_queue insert warn", hqErr);
@@ -264,4 +267,3 @@ export async function evaluateAndPersist(
     result,
   };
 }
-
