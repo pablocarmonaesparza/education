@@ -23,6 +23,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 
@@ -41,6 +42,8 @@ export async function POST(
   if (!user) {
     return NextResponse.json({ error: "No autenticado." }, { status: 401 });
   }
+
+  const admin = createAdminClient();
 
   let body: {
     emails?: string[];
@@ -77,12 +80,26 @@ export async function POST(
     );
   }
 
-  // Resolver simulador.users.id del invitador.
-  const { data: simUser } = await supabase
+  // Resolver/crear simulador.users.id del invitador. En producción no
+  // dependemos de lectura RLS aquí: primero validamos auth.getUser(), luego
+  // validamos membresía org_admin explícitamente con admin client.
+  const { data: bridgeId, error: bridgeError } = await admin
+    .schema("simulador")
+    .rpc("ensure_bridge_user", { p_auth_user_id: user.id });
+
+  if (bridgeError || !bridgeId) {
+    console.error("[api/invitations] ensure_bridge_user failed:", bridgeError);
+    return NextResponse.json(
+      { error: "Bridge user no inicializado." },
+      { status: 500 },
+    );
+  }
+
+  const { data: simUser } = await admin
     .schema("simulador")
     .from("users")
     .select("id")
-    .eq("auth_user_id", user.id)
+    .eq("id", bridgeId)
     .maybeSingle();
 
   if (!simUser) {
@@ -94,7 +111,7 @@ export async function POST(
 
   // Verificar que es org_admin (RLS también lo bloquearía pero damos error
   // explícito mejor que silent fail).
-  const { data: membership } = await supabase
+  const { data: membership } = await admin
     .schema("simulador")
     .from("organization_memberships")
     .select("role")
@@ -117,7 +134,7 @@ export async function POST(
 
   for (const email of emails) {
     const token = randomUUID();
-    const { data: inv, error: insErr } = await supabase
+    const { data: inv, error: insErr } = await admin
       .schema("simulador")
       .from("invitations")
       .insert({
