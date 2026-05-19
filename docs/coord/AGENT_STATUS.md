@@ -135,3 +135,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T17:51:30-06:00] working on: heartbeat · status: feature_flag_strategy_v1 done (commit 0fca562 pushed); 3 nuevas decisiones M9-3-D70/D71/D72 (72 total); siguiente comms_calendar o dispute_resolution
 - [2026-05-19T17:52:00-06:00] working on: comms_calendar_t_minus_30 audit · status: codex sigue B7-001; feature_flags done; arrancando calendario comms 30 días pre-launch
 - [2026-05-19T17:55:30-06:00] working on: heartbeat · status: comms_calendar_t_minus_30 done (commit 881981b pushed); 3 nuevas decisiones M9-3-D73/D74/D75 (75 total); siguiente dispute_resolution o scaling_constraints
+- [2026-05-19T17:56:00-06:00] working on: dispute_resolution_playbook research · status: codex sigue B7-001; comms_calendar done; arrancando playbook customer disputes

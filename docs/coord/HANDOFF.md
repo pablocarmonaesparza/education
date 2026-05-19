@@ -1267,3 +1267,24 @@ Si reviewer veta un bloque:
 - métricas success por phase: T-30 to T-16 (engagement build), T-15 to T-0 (silence + soft launch), T-0 day-of (anuncio impact), T+1 to T+7 (conversion)
 - 3 decisiones nuevas: M9-3-D73 (cadencia 37 días ~8-12h/sem sostenible Pablo) + M9-3-D74 (launch day = VIERNES mañana CDMX, NO lunes, Buffer 2024 data) + M9-3-D75 (NO mention "Itera" en posts T-30 a T-8 — anuncio reserved para T-0 maximum impact)
 - next pablo: leer este calendar + decidir tentative launch date + arrancar T-30 setup actions
+
+## claude → pablo — dispute resolution playbook (M9-3-D76/D77/D78/D79)
+
+- [2026-05-19T17:59:00-06:00] done
+- output: docs/research/dispute_resolution_playbook.md (~360 líneas)
+- disclaimer: claude NO es lawyer. Framework de respuesta, NO asesoría legal. Legal threats → counsel
+- 7 categorías de disputes identificadas + response template ready-to-use cada una:
+  1. Refund dentro de policy (7d + 0 actividad) → refund full sin friction
+  2. Refund fuera de policy → crédito default, refund extra si Itera bug
+  3. Chargeback Stripe → intentar resolver pre-fight, contest con evidencia si actividad real
+  4. Product complaint → acknowledge + investigate + fix
+  5. Quality dispute reporte → hybrid review humano gratuito (M9-3-D77)
+  6. Legal threat / autoridad escalation → STOP + holding response 48h + counsel ASAP
+  7. NPS detractor feedback → personal outreach para understanding
+- decision tree completo cubriendo todos los cases
+- métricas dispute targets: refund ≤5% / chargeback ≤1% / chargeback win ≥70% / quality dispute ≤10% / NPS detractor follow-up ≥40%
+- 6 anti-patterns identificados: argue policy strict, emotional response, silence ante chargeback, promesas sin codex sign-off, refund extra sin documentation, handle legal solo
+- refund flows operacionales detallados con time estimates (Pablo work)
+- 4 decisiones nuevas: M9-3-D76 (refund extra-policy correcto cuando Itera bug genuino o admin error) + M9-3-D77 (hybrid review humano GRATIS para quality disputes — defensibilidad accountability) + M9-3-D78 (legal threats STOP + counsel, NUNCA Pablo admit/promise emotional sin sign-off) + M9-3-D79 (métricas dispute targets explícitos + retrospect trigger)
+- next pablo: leer + memorizar 7 templates response. NO action hasta dispute llegue.
+- next codex: quality dispute → admin/review UI ya exists. Just connect dispute_resolution flow.
