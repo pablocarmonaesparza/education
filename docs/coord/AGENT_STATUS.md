@@ -31,6 +31,7 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T12:55:00-06:00] working on: B1-004 · status: bloqueo Upstash eliminado con rate limit Supabase/Postgres; preparando deploy production smoke
 - [2026-05-19T13:04:00-06:00] working on: B6-001 · status: production redeployed; field-test session + lead capture smoke pasa y lead llega a leads_inbox
 - [2026-05-19T13:06:07-06:00] working on: B6-001 · status: implementando admin/leads para que staff opere leads_inbox sin tocar Supabase
+- [2026-05-19T13:18:00-06:00] working on: B6-002 · status: B6-001 cerrado; admin/leads live en produccion y smoke pasa; siguiente analytics funnel/admin
 
 ## system
 

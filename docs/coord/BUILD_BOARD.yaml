@@ -354,7 +354,7 @@ tasks:
     title: field-test publico production-ready
     owner: codex
     reviewer: claude
-    status: in_progress
+    status: done
     depends_on:
       - B1-004
       - B2-002
@@ -364,8 +364,9 @@ tasks:
       - email opcional post-valor
       - lead llega a leads_inbox y notificacion sales
     notes: >-
-      production live y lead llega a leads_inbox; falta admin/leads o webhook sales para cerrar
-      notificacion comercial
+      production live; lead llega a leads_inbox; admin/leads permite seguimiento comercial staff sin
+      tocar Supabase; smoke production paso contra www.itera.la
+    done_at: '2026-05-19T13:18:00-06:00'
   - id: B6-002
     title: analytics field-test y lead funnel
     owner: codex

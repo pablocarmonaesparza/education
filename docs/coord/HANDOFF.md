@@ -209,6 +209,36 @@ gotchas:
 next:
 - Construir admin surface `/admin/leads` para operar el inbox sin tocar BD.
 
+## B6-001 — field-test publico production-ready
+
+status: done
+
+done:
+- Codex agrego `/api/admin/leads` para listar `simulador.leads_inbox` con guard staff-only.
+- Codex agrego `/api/admin/leads/[lead_id]` para actualizar status, notas y owner del lead.
+- Codex agrego `/admin/leads` como bandeja interna staff para seguimiento comercial del field-test.
+- `/admin/review` ahora enlaza hacia `/admin/leads`, y `/admin/leads` enlaza de vuelta al review humano.
+- La ruta no expone `leads_inbox` publicamente: API sin sesion responde 401 y pagina admin redirige a login.
+
+tested:
+- `npm run check:simulador`
+- `npm run lint:simulador`
+- `npm run build`
+- Production deploy: `https://www.itera.la` aliased to deployment `dpl_HmSz4BnJ4Zgg1brzSXkhWR832eAg`.
+- Production smoke: `/` responde 200.
+- Production smoke: `/admin/leads` sin login redirige a `/auth/login?next=%2Fadmin%2Fleads`.
+- Production smoke: `/api/admin/leads` sin login responde 401.
+- Production smoke: `POST /api/field-test/sessions` creo session `4e0236a6-746d-4a72-838e-8aa390957658`.
+- Production smoke: `POST /api/field-test/sessions/:id/lead` creo `leads_inbox_id=45ead634-0fa9-41f1-9127-ed953f3bda60`.
+- Supabase remoto: lead verificado con `source=field_test`, `status=new`, `has_session=true`.
+
+gotchas:
+- Claude CLI se intento dos veces para review puntual, pero el proceso quedo colgado sin devolver salida. Se corto y se uso validacion local + production smoke como gate de cierre.
+- La bandeja es staff-only. Para notificacion push a Slack/email falta B6-002/B8 si Pablo quiere alertas proactivas, pero B6-001 ya no requiere abrir Supabase.
+
+next:
+- B6-002 debe convertir esta bandeja en analytics de funnel: started, abandoned, submitted, report_viewed, lead_captured y conversion por status.
+
 ## disagreement policy
 
 Si reviewer veta un bloque:
