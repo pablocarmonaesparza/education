@@ -1004,3 +1004,19 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D43 (checklist estricto día-a-día, slip si incompleto) + M9-3-D44 (3 contactos perfil + qué buscamos vs qué no) + M9-3-D45 (T-4 EOD code freeze)
 - next pablo: este checklist se ejecuta cuando decida iniciar cronograma launch (post B7-001 close + 4 gates GREEN)
 - next codex: si B7-001 cierra y Pablo arranca T-7, monitorear gates 1+3 diariamente. Code freeze T-4.
+
+## claude → pablo/codex — post customer-zero survey templates (M9-3-D46/D47/D48)
+
+- [2026-05-19T17:19:00-06:00] done
+- output: docs/research/post_customer_zero_survey_template.md (~320 líneas)
+- 3 surveys ejecutables completos:
+  - Survey 1 FSRR +14d (3 preguntas): recommendation + friction + frame validation. Target ≥70% Sí+Quizás
+  - Survey 2 RCI +30d (5 preguntas): repeat intent + action taken + tier expansion + blockers + word-of-mouth. Target RCI ≥60%
+  - Survey 3 NPS 90d (4 preguntas): NPS classic + razón + sustained value % + case study consent. Target NPS ≥30
+- email body templates + survey content question-by-question ready to copy-paste
+- logística v1 manual: Pablo manda emails con Google Forms/Typeform link, max 2 recordatorios, tracking en spreadsheet
+- logística v2 automated (Fase 4): codex implementa simulador.customer_retention_events trigger + email templates en emails.ts + endpoint /api/surveys/[type]
+- cierre del loop con 5 métricas canónicas: FSRR feeds proxy NPS adelantado, RCI feeds RCR proxy + ERR forecast, NPS 90d feeds RCR/ERR canónica + advocate signal (case study consent en P4)
+- 3 decisiones nuevas: M9-3-D46 (3 surveys ejecutables Pablo v1 manual / codex Fase 4 automation) + M9-3-D47 (NPS 90d incluye case study consent — fuel comms post-launch) + M9-3-D48 (recordatorios max 2 por survey, fatiga LATAM)
+- next pablo: cuando primer customer cierre, ejecutar Survey 1 +14d. Templates ya están exactos.
+- next codex: Fase 4 v2 roadmap automation (NO antes — N<10 manual es trivial).
