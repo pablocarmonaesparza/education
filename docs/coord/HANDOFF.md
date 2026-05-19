@@ -422,3 +422,15 @@ Si reviewer veta un bloque:
 - nota: BR explícito "no disponible v1" + redirect a v2 cuando se contrate counsel brasileño
 - next claude: Batch 4 emails transaccionales
 - next codex: importar legal.ts en app/privacy/page.tsx + app/terms/page.tsx + consent_banner en signup/onboarding
+
+## Batch 4 — copy emails 8 templates [claude side done]
+
+- [2026-05-19T14:55:00-06:00] claude entregó 8 templates en lib/simulador/copy/emails.ts
+- templates: signup_welcome, invitation, invitation_accepted, case_assigned, report_ready_employee, report_ready_manager, sprint_closing, password_reset
+- estructura por template: subject ≤60 chars, preheader ≤120 chars, body_text + body_html, variables {placeholder}
+- emailTemplateVars exportado con lista de variables esperadas por template (validation hint para codex)
+- emailCommonFooter con signature/contact/jurisdiction_disclaimer/unsubscribe
+- B7-002 sigue in_progress (owner: shared) — codex pendiente:
+  1. Integrar templates con SendGrid (lib/email/send.ts)
+  2. Wrapper HTML responsive
+  3. Test E2E con email real
