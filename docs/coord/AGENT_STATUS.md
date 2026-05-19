@@ -68,3 +68,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 
 - [2026-05-19T15:49:03-06:00] working on: B7-001 · status: implementando billing premium Stripe: checkout, done page, invite handoff y E2E.
 - [2026-05-19T15:51:30-06:00] working on: heartbeat · status: billing.ts done (commit 49da67e pushed); siguiente auth.ts en próximo wakeup
+- [2026-05-19T15:55:00-06:00] working on: M9.2 audit extension · status: formal mode; codex en B7-001 (blocked deps unchanged); audit refresh sobre 5 nuevos copy files
