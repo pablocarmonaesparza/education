@@ -1139,3 +1139,25 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D60 (extender emails.ts post-customer-zero / manual v1) + M9-3-D61 (frequency conservadora 1/sem max LATAM) + M9-3-D62 (voice Pablo conversacional + lowercase + minimal HTML)
 - next pablo: cuando primer customer empiece sprint, usar Email 1 manager template manual
 - next codex: Fase 1 v2 implementa cron triggers + extiende emails.ts con 8 nuevos templates
+
+## claude → pablo/codex — brand guidelines v1 (M9-3-D63/D64/D65)
+
+- [2026-05-19T17:43:00-06:00] done
+- output: docs/research/brand_guidelines_v1.md (~370 líneas)
+- propósito: referencia canónica para cualquier futuro material (copy, email, slide, social, sales doc)
+- voz Itera (5 traits): honesto antes que persuasivo · específico antes que vago · educativo sin paternalismo · conversacional sin informal · empírico sin tecnicismo
+- NO Itera (5 anti-traits): corporate-bot · marketing exagerado · tech-bro · defensivo · promesa ROI específico
+- voice spectrum positioned: mid-casual, mid-serio, lay-with-citations, pragmático
+- tone per surface mapped (12 surfaces) con tone target específico
+- vocabulario canónico OBLIGATORIO: 12 términos (criterio/diagnóstico/banda/decidir/manager/participante/evidencia/4 caminos/etc)
+- vocabulario PROHIBIDO: skill/score/feedback/assessment/learner — usar canónico equivalente
+- anglicismos aceptados (email/dashboard/workflow/tier/KPI/B2B) vs evitados (leverage/synergy/scale/growth over-used)
+- escritura rules: lowercase corporate LATAM · frases 12-18 palabras · voz activa · sin filler words
+- visual identity: accent indigo + accent soft + surface escalas grays + bands NON-semáforo (M9-3-D33) + typography heredada + spacing Tailwind generous + Lucide icons + cero stock photos
+- frame canónico OBLIGATORIO para describir producto + 3 variantes per audience (CFO/CMO/CTO)
+- 7 anti-frames NUNCA usar: enseña IA · certificación · curso · skills assessment · roleplay · cohort experience · quiz
+- 6 audit checks para validar fidelity de cualquier material en ~2 min
+- aplicación cross-channel: landing (confident) / LinkedIn Pablo (conversacional) / emails (utilitarian + nurture conversacional) / sales calls (educativo) / support (empático)
+- 3 decisiones nuevas: M9-3-D63 (brand guidelines v1 referencia canónica + 6 audit checks) + M9-3-D64 (NO imagery v1, screenshots reales > stock > zero, NEVER AI renders) + M9-3-D65 (frame canónico OBLIGATORIO, NO improvisar bajo presión)
+- next claude/codex: cualquier nueva copy se valida contra los 6 audit checks antes de commit
+- next pablo: discovery calls usar frame canónico literal o variante closest (no improvisar)
