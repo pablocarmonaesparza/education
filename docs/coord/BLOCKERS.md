@@ -35,6 +35,13 @@ default_if_no_response: continue with non-blocked tasks and leave inbox note
 
 > resolved [2026-05-19T11:37:33-06:00]: falso positivo por timestamp inicial placeholder; AGENT_STATUS.md actualizado con hora real.
 
+<!-- vercel-deploy-limit-20260519 -->
+## [2026-05-19T17:22:00-06:00] codex blocked on production deploy by Vercel account deployment limit
+
+needs: Vercel project/account must allow another production deploy. `npx vercel deploy --prod --yes` returned `api-deployments-free-per-day` after B5-002 was pushed to main.
+files: [docs/coord/PABLO_INPUT_NEEDED.md]
+default_if_no_response: continue local/non-deploy work; do not claim B5-002 production smoke until deployment quota/account is fixed.
+
 <!-- heartbeat-stale-codex -->
 ## [2026-05-19T17:37:21.768Z] system blocked on coordination by codex status stale
 
