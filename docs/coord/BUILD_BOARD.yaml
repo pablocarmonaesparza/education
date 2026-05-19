@@ -694,7 +694,7 @@ tasks:
       relevance score
     owner: codex
     reviewer: claude
-    status: backlog
+    status: done
     depends_on:
       - B2-003
     dod:
@@ -702,7 +702,10 @@ tasks:
       - >-
         touch files: supabase/migrations/022_simulador_analytics_compliance.sql,
         lib/simulador/copy/runtime.ts
-    notes: change_type=schema
+    notes: >-
+      change_type=schema | field-test mini-report captura NPS 0-10, relevance 1-5 y abierta;
+      evento reaction_survey_submitted catalogado, token-scoped, post-report e idempotente
+    done_at: '2026-05-19T17:57:00-06:00'
   - id: B9-003-D1
     title: >-
       Pitch comercial v2 ancla en 3 cifras: 88% adopción (Stanford) + 95% sin impacto P&L (MIT) +

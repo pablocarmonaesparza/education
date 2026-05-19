@@ -1177,3 +1177,46 @@ Si reviewer veta un bloque:
 - 4 decisiones nuevas: M9-3-D66 (v1 stand-alone, integrations reactivas) + M9-3-D67 (orden expansion Slack-HubSpot-BambooHR + enterprise reactive) + M9-3-D68 (webhook genérico universal v1 post-customer-zero) + M9-3-D69 (NEVER integrar LMS — rompe frame)
 - next pablo: si customer ask integration en discovery, redirect: "Webhook coming F1 post-launch, mientras Slack notifications manual via [Pablo mensaje]"
 - next codex: post-launch + ≥2 customers ask webhook → 1 sem codex para webhook genérico. NO integraciones per-target hasta ≥3 asks.
+
+## claude → codex — feature flag strategy v1 (M9-3-D70/D71/D72)
+
+- [2026-05-19T17:51:00-06:00] done
+- output: docs/research/feature_flag_strategy_v1.md (~320 líneas)
+- estrategia lightweight: 3 mecanismos (NO LaunchDarkly/Optimizely v1)
+  - Env Vercel flags (NEXT_PUBLIC_FEATURE_*) — rollback rápido via dashboard, latency ~1 min rebuild
+  - DB config table simulador.feature_flags — instant toggle via SQL, cache 60s
+  - Tier gating en code — derived from simulador.subscriptions.plan_key
+- 7 env flags pre-launch OBLIGATORIOS: LANDING_CTA_ENABLED, STRIPE_LIVE, JUDGE_LLM_ENABLED, AGENT_MAIL_ENABLED, FIELD_TEST_PUBLIC, PRICING_PAGE_VISIBLE, SENTRY_ENABLED
+- 5 DB flags v1 seed: hybrid_onboarding_enabled, matrix_3x5_enabled, latam_evidence_stats_visible, case_study_consent_in_nps, webhook_endpoint_active
+- mapping M9-3 decisiones → flags: D7/D11/D17/D23/D29/D33/D47/D58/D68 todos tienen flag asociado
+- 5 anti-patterns identificados: A/B testing v1 (sin volumen), per-user flags, flags como business logic permanente, tech debt accumulation, flags hiding bugs
+- 3 decisiones nuevas: M9-3-D70 (lightweight 3 mecanismos NO LaunchDarkly v1) + M9-3-D71 (7 env + 5 DB flags v1 seed + documentation pattern obligatorio) + M9-3-D72 (cleanup forzado: 90 días 100% on → REMOVE flag y commit default; 90 días 100% off → REMOVE y delete feature)
+- implementation roadmap: codex T-7 a T-0 setup env flags + lib/simulador/feature-flags.ts (2 días) → F1 v2 DB table + /admin/feature-flags + cache (1-2 días) → F2 v2 tier gating (1 día)
+- next codex: en T-7 (cuando arranque ready_state cronograma), setup 7 env flags en Vercel Production + crear lib/simulador/feature-flags.ts
+- audit trimestral alineado con competitive_pulse cadence (Q1/Q2/Q3/Q4) — cleanup tech debt forzado
+
+## codex → claude/pablo — B9-002-D6 cerrado: survey L1 post-submit
+
+- [2026-05-19T17:57:00-06:00] done
+- output:
+  - `components/simulador/RuntimeExperience.tsx`
+  - `app/api/field-test/sessions/[session_id]/survey/route.ts`
+  - `supabase/migrations/20260519033000_simulador_field_test_reaction_survey.sql`
+  - `lib/simulador/analytics.ts`
+  - `lib/simulador/field-test/service.ts`
+  - `tests/simulador/e2e/premium-flows.spec.ts`
+- que cambió:
+  - El mini-reporte del field-test ahora captura Survey L1 Reaction: NPS 0-10, relevance 1-5 y una respuesta abierta.
+  - El endpoint es token-scoped, rate-limited, exige `report_status=published` y no acepta body inválido.
+  - La captura es idempotente por sesión: `idx_field_test_reaction_survey_once` evita duplicados y el endpoint maneja carrera concurrente con respuesta `duplicate`.
+  - `reaction_survey_submitted` queda en `analytics_events_catalog`, `SIMULADOR_ANALYTICS_EVENTS` y `FIELD_TEST_ANALYTICS_EVENTS`.
+- Supabase:
+  - Migración `20260519033000_simulador_field_test_reaction_survey.sql` aplicada en remoto con `db query --linked`.
+  - Migration history reparada como applied.
+  - Constraint e índice verificados en remoto.
+- gates:
+  - `npm run check:simulador` PASS
+  - `npm run lint:simulador` PASS
+  - `npm run build` PASS
+  - `npm run simulador:e2e` PASS (7/7, ahora cubre `/survey` + dedupe)
+  - Claude Code CLI PASS sin P0/P1

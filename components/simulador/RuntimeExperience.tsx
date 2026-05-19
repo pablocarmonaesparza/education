@@ -989,6 +989,18 @@ function FieldTestReportInline({
   const [leadStatus, setLeadStatus] = useState<
     "idle" | "submitting" | "sent" | "error"
   >("idle");
+  const [survey, setSurvey] = useState<{
+    nps: number | null;
+    relevance_score: number | null;
+    open_response: string;
+  }>({
+    nps: null,
+    relevance_score: null,
+    open_response: "",
+  });
+  const [surveyStatus, setSurveyStatus] = useState<
+    "idle" | "submitting" | "sent" | "error"
+  >("idle");
 
   async function submitLead(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -1006,6 +1018,27 @@ function FieldTestReportInline({
       setLeadStatus("sent");
     } catch {
       setLeadStatus("error");
+    }
+  }
+
+  async function submitSurvey(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (survey.nps === null || survey.relevance_score === null) return;
+
+    setSurveyStatus("submitting");
+    try {
+      const res = await fetch(`/api/field-test/sessions/${sessionId}/survey`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(survey),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "No se pudo guardar la encuesta.");
+      }
+      setSurveyStatus("sent");
+    } catch {
+      setSurveyStatus("error");
     }
   }
 
@@ -1076,7 +1109,7 @@ function FieldTestReportInline({
           </div>
         </section>
 
-        <section className="mt-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <section className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="card-apple bg-[var(--surface)] p-6">
             <h2 className="text-[18px] font-semibold text-[var(--text-primary)]">
               Eventos de riesgo observados
@@ -1105,6 +1138,107 @@ function FieldTestReportInline({
               </div>
             )}
           </div>
+
+          <form
+            onSubmit={submitSurvey}
+            className="card-apple bg-[var(--surface)] p-6"
+          >
+            <h2 className="text-[18px] font-semibold text-[var(--text-primary)]">
+              ¿Qué tan útil fue?
+            </h2>
+            <p className="mt-3 text-[14px] text-[var(--text-secondary)] leading-[1.55]">
+              Tres respuestas rápidas nos ayudan a calibrar el diagnóstico sin
+              alargar la experiencia.
+            </p>
+
+            <div className="mt-6">
+              <div className="text-[13px] font-medium text-[var(--text-primary)]">
+                ¿Lo recomendarías a otro líder de equipo?
+              </div>
+              <div className="mt-3 grid grid-cols-6 gap-2">
+                {Array.from({ length: 11 }, (_, index) => index).map((score) => (
+                  <button
+                    key={score}
+                    type="button"
+                    onClick={() =>
+                      setSurvey((current) => ({ ...current, nps: score }))
+                    }
+                    className={`h-8 rounded-full text-[12px] font-medium transition ${
+                      survey.nps === score
+                        ? "accent-bg text-white"
+                        : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
+                    }`}
+                  >
+                    {score}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <div className="text-[13px] font-medium text-[var(--text-primary)]">
+                ¿Qué tan cercano se sintió a tu trabajo?
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {[1, 2, 3, 4, 5].map((score) => (
+                  <button
+                    key={score}
+                    type="button"
+                    onClick={() =>
+                      setSurvey((current) => ({
+                        ...current,
+                        relevance_score: score,
+                      }))
+                    }
+                    className={`h-9 min-w-9 rounded-full px-3 text-[12px] font-medium transition ${
+                      survey.relevance_score === score
+                        ? "accent-bg text-white"
+                        : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
+                    }`}
+                  >
+                    {score}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <textarea
+              value={survey.open_response}
+              onChange={(event) =>
+                setSurvey((current) => ({
+                  ...current,
+                  open_response: event.target.value,
+                }))
+              }
+              maxLength={900}
+              rows={4}
+              placeholder="¿Qué ajustarías para que se sintiera más real?"
+              className="mt-5 w-full resize-none rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] p-4 text-[14px] text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
+            />
+
+            <Button
+              type="submit"
+              radius="full"
+              isDisabled={
+                surveyStatus === "submitting" ||
+                surveyStatus === "sent" ||
+                survey.nps === null ||
+                survey.relevance_score === null
+              }
+              className="mt-4 h-11 accent-bg text-white text-[14px] font-medium shadow-none"
+            >
+              {surveyStatus === "sent"
+                ? "Gracias"
+                : surveyStatus === "submitting"
+                  ? "Guardando…"
+                  : "Enviar feedback"}
+            </Button>
+            {surveyStatus === "error" && (
+              <p className="mt-3 text-[13px] text-[var(--band-b-text)]">
+                No se pudo guardar. Intenta otra vez.
+              </p>
+            )}
+          </form>
 
           <form
             onSubmit={submitLead}

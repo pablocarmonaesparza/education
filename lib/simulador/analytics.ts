@@ -34,6 +34,7 @@ export const SIMULADOR_ANALYTICS_EVENTS = [
   "field_test_started",
   "field_test_abandoned",
   "field_test_submitted",
+  "reaction_survey_submitted",
   "lead_captured",
   "billing_checkout_started",
   "billing_checkout_completed",

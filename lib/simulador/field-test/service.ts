@@ -30,6 +30,7 @@ export const FIELD_TEST_ANALYTICS_EVENTS = [
   "report_viewed",
   "email_captured",
   "lead_captured",
+  "reaction_survey_submitted",
 ] as const;
 
 export type FieldTestAnalyticsEvent =

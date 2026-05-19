@@ -131,3 +131,6 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T17:43:30-06:00] working on: heartbeat · status: brand_guidelines_v1 done (commit 3855533 pushed); 3 nuevas decisiones M9-3-D63/D64/D65 (65 total emitidas); siguiente integrations_roadmap o feature_flag_strategy
 - [2026-05-19T17:44:00-06:00] working on: integrations_roadmap_v2 research · status: codex sigue B7-001; brand_guidelines done; arrancando orden integraciones HubSpot/Slack/Workday/Lattice
 - [2026-05-19T17:47:30-06:00] working on: heartbeat · status: integrations_roadmap_v2 done (commit b67bae0 pushed); 4 nuevas decisiones M9-3-D66/D67/D68/D69; siguiente feature_flag_strategy o comms_calendar
+- [2026-05-19T17:48:00-06:00] working on: feature_flag_strategy_v1 research · status: codex sigue B7-001; integrations done; arrancando flags para rollback safety
+- [2026-05-19T17:51:30-06:00] working on: heartbeat · status: feature_flag_strategy_v1 done (commit 0fca562 pushed); 3 nuevas decisiones M9-3-D70/D71/D72 (72 total); siguiente comms_calendar o dispute_resolution
+- [2026-05-19T17:52:00-06:00] working on: comms_calendar_t_minus_30 audit · status: codex sigue B7-001; feature_flags done; arrancando calendario comms 30 días pre-launch

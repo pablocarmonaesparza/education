@@ -15,10 +15,64 @@ test.afterAll(async () => {
 });
 
 test("field-test público carga sin login", async ({ page }) => {
+  const sessionResponse = page.waitForResponse(
+    (response) =>
+      response.url().endsWith("/api/field-test/sessions") &&
+      response.request().method() === "POST",
+  );
   await page.goto("/field-test/marketing-urgent-campaign-pii");
+  const sessionJson = await (await sessionResponse).json();
   await expectAppReady(page);
   await expect(page.getByText("Contexto").first()).toBeVisible();
   await expect(page.getByText(/Camila|campaña|feedback/i).first()).toBeVisible();
+
+  const sessionId = String(sessionJson.session_id);
+  const { error: updateError } = await admin
+    .schema("simulador")
+    .from("field_test_sessions")
+    .update({ status: "published", report_status: "published" })
+    .eq("id", sessionId);
+  expect(updateError, updateError?.message).toBeNull();
+
+  const survey = await page.evaluate(async (id) => {
+    const res = await fetch(`/api/field-test/sessions/${id}/survey`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nps: 8,
+        relevance_score: 5,
+        open_response: "Se sintió cercano al trabajo de marketing.",
+      }),
+    });
+    return { status: res.status, body: await res.json() };
+  }, sessionId);
+  expect(survey.status, JSON.stringify(survey.body)).toBe(200);
+
+  const duplicate = await page.evaluate(async (id) => {
+    const res = await fetch(`/api/field-test/sessions/${id}/survey`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nps: 9, relevance_score: 4 }),
+    });
+    return { status: res.status, body: await res.json() };
+  }, sessionId);
+  expect(duplicate.status, JSON.stringify(duplicate.body)).toBe(200);
+  expect(duplicate.body.duplicate).toBe(true);
+
+  const { count, error: countError } = await admin
+    .schema("simulador")
+    .from("field_test_step_events")
+    .select("id", { count: "exact", head: true })
+    .eq("field_test_session_id", sessionId)
+    .eq("event_type", "reaction_survey_submitted");
+  expect(countError, countError?.message).toBeNull();
+  expect(count).toBe(1);
+
+  await admin
+    .schema("simulador")
+    .from("field_test_sessions")
+    .delete()
+    .eq("id", sessionId);
 });
 
 test("buyer puede crear organización, equipo e invitación", async ({ page }) => {
