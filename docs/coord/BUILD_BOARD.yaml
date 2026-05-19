@@ -1,6 +1,6 @@
 version: 1
 project: itera-simulador-premium
-updated_at: '2026-05-19T18:22:28.882Z'
+updated_at: '2026-05-19T18:25:16.095Z'
 source_of_truth: true
 rules:
   - si una tarea no vive aqui, no existe
@@ -148,7 +148,7 @@ tasks:
     title: aplicar migracion 021 schema premium
     owner: codex
     reviewer: claude
-    status: backlog
+    status: in_progress
     depends_on:
       - B2-001
     dod:
@@ -156,6 +156,8 @@ tasks:
       - tipos TS regenerados si aplica
       - RLS para nuevas tablas validado
     notes: incluye practice, history, manager alerts, leads inbox
+    claimed_by: codex
+    claim_expires_at: '2026-05-19T20:25:11.048Z'
   - id: B2-003
     title: spec migracion 022 analytics, compliance y rubrics freeze
     owner: claude
@@ -172,7 +174,7 @@ tasks:
     title: aplicar migracion 022 analytics, compliance y rubrics freeze
     owner: codex
     reviewer: claude
-    status: backlog
+    status: in_progress
     depends_on:
       - B2-003
     dod:
@@ -180,11 +182,13 @@ tasks:
       - emision de evento no catalogado falla en dev
       - reports conservan rubric_version exacta
     notes: base premium de auditoria
+    claimed_by: codex
+    claim_expires_at: '2026-05-19T20:25:16.095Z'
   - id: B3-001
     title: mapear 12 arquetipos HBR MIT HKS sin IP
     owner: claude
     reviewer: codex
-    status: in_progress
+    status: done
     depends_on:
       - B0-001
     dod:
@@ -192,8 +196,7 @@ tasks:
       - cada arquetipo declara decision-maker, tension, informacion incompleta y artefacto
       - sin copiar texto o IP licenciada
     notes: metodologia de casos premium
-    claimed_by: claude
-    claim_expires_at: '2026-05-19T20:13:43.883Z'
+    done_at: '2026-05-19T18:25:34.295Z'
   - id: B3-002
     title: auditar 8 casos contra niveles 1-2-3
     owner: claude

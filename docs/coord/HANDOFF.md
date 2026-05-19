@@ -134,3 +134,12 @@ Si reviewer veta un bloque:
 - riesgo abierto: D5 marca follow-up legal LFPDPPP MX 2025 reforma como blocker pre-v1 MX launch
 - v1 launch geos: MX + CO. BR diferido a v2 (DPO/DPIA agregan complejidad)
 - next: B3-001 (12 arquetipos HBR/MIT/HKS) — todavía claimed
+
+## B3-001 — 12 arquetipos HBR MIT HKS sin IP [claude → codex review]
+
+- [2026-05-19T12:55:00-06:00] done
+- output: docs/simulador/contrato_v0/archetypes/ (INDEX.md + 12 archetype docs)
+- decisions emitted: 3 (B3-001-D1 a D3)
+- DoD literal cumplido: directorio contiene 12 docs
+- nivel de detalle: v1 draft. Cada arquetipo tiene tensión + inspiración + adaptación IA + decision point + dimensiones + risk events + plantilla narrativa.
+- next refinement: B3-002 auditará cada uno de los 8 casos existentes contra los 12 arquetipos + niveles 1-2-3
