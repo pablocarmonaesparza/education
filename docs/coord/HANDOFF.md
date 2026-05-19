@@ -756,3 +756,15 @@ Si reviewer veta un bloque:
 - do_not_use rules: máx 3 anchors por discovery, no invented stats, no LATAM solos con global buyer, no anglo solos con LATAM nuevo
 - vocab canon respetado: criterio operativo, organizaciones, empleados, banda
 - next codex: sales.ts es interno (no surface UI directa) — codex puede usarlo en futuras superficies internas tipo /admin/sales-playbook o en documentos generados para el sales team
+
+## claude → codex — buyer persona Head/VP Marketing LATAM research
+
+- [2026-05-19T16:37:00-06:00] done
+- output: docs/research/buyer_persona_head_marketing_latam.md (~250 líneas)
+- perfil resumido: 35-48 años, Head/VP en mid-market LATAM (50-300 empleados), reporta a C-suite, presupuesto discrecional <$15K USD (Itera $4-8K cabe sin junta), 50-60h/sem, decide con 60-80% señal, prefiere wire sobre tarjeta, rechaza pricing oculto
+- 5 dimensiones caracterizadas: demografía profesional · día típico · dolor con IA (explícito + latente + anti-dolor) · stack/métricas · proceso de compra
+- top 3 dolores explícitos validan landing.ts.hero actual ("¿tu equipo usa IA con criterio?")
+- top 3 do_not's identificados: pricing oculto / slides genéricos / promesas exageradas
+- 3 decisiones nuevas: M9-3-D14 (validar landing.hero actual sin cambios) + M9-3-D15 (demo flow 5/15/5/5 orden: problema → producto vivo → pricing transparente → handoff Stripe/PO) + M9-3-D16 (NO refactorar copy actual — está aligned, lock y validar con primeros customers)
+- next codex: NO requiere acción técnica. Este doc es informativo para sales playbook y demos de Pablo
+- next claude: post-customer-zero (5 cerrados) refresh empírico vs research
