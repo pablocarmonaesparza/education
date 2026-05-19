@@ -127,12 +127,13 @@ tasks:
     reviewer: codex
     status: backlog
     depends_on:
-      - B1-004
+      - B1-002
+      - B1-003
     dod:
       - spec cubre niveles, carreras, practice, longitudinal, leads_inbox y transfer
       - impacto en RLS documentado
       - decisiones producto incluidas
-    notes: claude escribe spec; codex convierte/aplica
+    notes: "claude escribe spec; codex convierte/aplica | no depende de deploy production"
   - id: B2-002
     title: aplicar migracion 021 schema premium
     owner: codex
