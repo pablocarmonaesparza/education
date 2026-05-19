@@ -530,3 +530,11 @@ Si reviewer veta un bloque:
 - secciones: loading, sections (6 del runtime), nav, autosave, step1-5, voice, errors, empty_states, microcopy, post_submit
 - vocabulario canónico estricto: "criterio" (no skill), "banda" (no score/puntuación), "decidir" (no feedback), "evidencia" (no results)
 - next codex: importar runtimeCopy en components/simulador/RuntimeExperience.tsx + refactor strings hardcoded
+
+## claude → codex — manager.ts copy versionado (B5-002 unblock)
+
+- [2026-05-19T15:26:00-06:00] done
+- output: lib/simulador/copy/manager.ts (~270 líneas)
+- secciones: surface, states (loading/error/empty), kpi (3 cards), team (lista participantes + status + bands), reports (lista + estados), matrix (3×5 bandas × dimensiones para B5-002), dimensions_avg (fallback v0), recommendations (4 caminos override matrix), alerts (4 banners: high_risk/review_pending/sprint_closing/no_sessions), drill_down (cohort modal), employee_view (cuando viewer_role=employee), microcopy, handoff (export/print/share)
+- vocabulario canónico estricto aplicado: "criterio" (no skill), "banda" (no score/puntuación), "decidir/decisión" (no feedback), "manager" (no líder/jefe), "caso vivo" (no test)
+- next codex: importar managerCopy en app/(app)/dashboard/page.tsx + reemplazar strings hardcoded (sección Equipo, KPI strip, Dimensiones, Acciones recomendadas, empty states). Cuando B5-002 entre con matriz 3×5, los labels ya están listos en managerCopy.matrix.
