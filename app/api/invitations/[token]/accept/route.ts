@@ -17,6 +17,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 
@@ -34,8 +35,10 @@ export async function POST(
     return NextResponse.json({ error: "No autenticado." }, { status: 401 });
   }
 
+  const admin = createAdminClient();
+
   // Resolver invitación.
-  const { data: inv, error: invError } = await supabase
+  const { data: inv, error: invError } = await admin
     .schema("simulador")
     .from("invitations")
     .select(
@@ -79,12 +82,26 @@ export async function POST(
     );
   }
 
-  // Resolver simulador.users.id.
-  const { data: simUser } = await supabase
+  // Resolver/crear simulador.users.id. El flujo de signup puede entregar
+  // sesión directa sin pasar por /auth/callback, así que garantizamos bridge
+  // aquí antes de crear memberships.
+  const { data: bridgeId, error: bridgeError } = await admin
+    .schema("simulador")
+    .rpc("ensure_bridge_user", { p_auth_user_id: user.id });
+
+  if (bridgeError || !bridgeId) {
+    console.error("[api/invitations/accept] ensure_bridge_user failed:", bridgeError);
+    return NextResponse.json(
+      { error: "Bridge user no inicializado. Refresca y vuelve a intentar." },
+      { status: 500 },
+    );
+  }
+
+  const { data: simUser } = await admin
     .schema("simulador")
     .from("users")
     .select("id")
-    .eq("auth_user_id", user.id)
+    .eq("id", bridgeId)
     .maybeSingle();
 
   if (!simUser) {
@@ -98,7 +115,7 @@ export async function POST(
   // viewer en otros casos). v0 simple: todos terminan como 'viewer' en
   // org_memberships (para acceso lectura del dashboard), y manager/employee
   // se aplica en team_memberships si hay team_id.
-  const { error: orgMemberErr } = await supabase
+  const { error: orgMemberErr } = await admin
     .schema("simulador")
     .from("organization_memberships")
     .insert({
@@ -117,7 +134,7 @@ export async function POST(
 
   // Si la invitación incluye team_id, crear team_membership con el rol acordado.
   if (inv.team_id) {
-    const { error: teamMemberErr } = await supabase
+    const { error: teamMemberErr } = await admin
       .schema("simulador")
       .from("team_memberships")
       .insert({
@@ -132,7 +149,7 @@ export async function POST(
   }
 
   // Marcar invitación como aceptada.
-  await supabase
+  await admin
     .schema("simulador")
     .from("invitations")
     .update({
