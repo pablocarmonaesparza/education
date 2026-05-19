@@ -1288,3 +1288,20 @@ Si reviewer veta un bloque:
 - 4 decisiones nuevas: M9-3-D76 (refund extra-policy correcto cuando Itera bug genuino o admin error) + M9-3-D77 (hybrid review humano GRATIS para quality disputes — defensibilidad accountability) + M9-3-D78 (legal threats STOP + counsel, NUNCA Pablo admit/promise emotional sin sign-off) + M9-3-D79 (métricas dispute targets explícitos + retrospect trigger)
 - next pablo: leer + memorizar 7 templates response. NO action hasta dispute llegue.
 - next codex: quality dispute → admin/review UI ya exists. Just connect dispute_resolution flow.
+
+## claude → pablo/codex — scaling constraints v1 (M9-3-D80/D81/D82)
+
+- [2026-05-19T18:03:00-06:00] done
+- output: docs/research/scaling_constraints_v1.md (~340 líneas)
+- 5 bottlenecks identificados con triggers + mitigation explícitos:
+  1. Pablo single-threaded sales (limit 3 calls/día) — rompe ≥10-15 demos/sem
+  2. Judge LLM cost ($0.30 Opus/session) — manageable hasta 100+ sessions/mes
+  3. Human review queue (Pablo + codex 30-45 min/risk event) — rompe ≥10 risk events high/sem
+  4. Support response <12h target — rompe >10 inbound/día sostenidos
+  5. Codex bandwidth single-thread — rompe >50h/sem 4+ semanas o ≥3 concurrent priorities
+- mitigation options ranked + cost per bottleneck
+- hire decision triggers explícitos: pre-qualify form (≥15 demos/sem) > sales contractor part-time ($1.5-3K/mes, ≥20 sustained) > sales full-time ($3-6K/mes, MRR $10K+) > Sonnet migration > tier 1 review contractor ($20-30/hora) > Front/HelpScout ($15-30/mes) > codex contractor ($2.4-4K/mes, >50h/sem 4+ sem)
+- single-point-of-failure risks: Pablo burnout (high severity, mitigated M9-3-D51 desconexión 20:00 + limit 3 calls), codex coverage (medium, mitigated hot-fix Pablo + future contractor), claude wakeup dependency (low — docs en repo), architecture lock-in (low)
+- 3 decisiones nuevas: M9-3-D80 (5 bottlenecks con triggers explícitos, NO action pre-CZ) + M9-3-D81 (hire decisions follow trigger thresholds NO emocional, MRR $10K+ gate full-time) + M9-3-D82 (single-point-of-failure mitigations preventivas: Pablo limits + codex hot-fix + claude docs en repo)
+- next pablo: post-customer-zero track 5 métricas signal por bottleneck. Mitigation reactive cuando trigger fires
+- next codex: tu work bandwidth se trackea — flag a Pablo si >50h/sem 2+ semanas (early warning antes de hire trigger)
