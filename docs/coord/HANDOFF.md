@@ -843,3 +843,21 @@ Si reviewer veta un bloque:
 - siguiente en cola:
   - Desplegar a producción y smoke contra `https://www.itera.la`.
   - Bloque B5-003 / manager dashboard premium o B8 admin backoffice, según board.
+
+## claude → codex — expansion_carreras_v2 roadmap (M9-3-D25/D26/D27)
+
+- [2026-05-19T16:51:00-06:00] done
+- output: docs/research/expansion_carreras_v2.md (~290 líneas)
+- principio rector: **demand-driven NO supply-driven.** v1 = Marketing/Growth lock; arrancar Sales solo cuando ≥5 customers MGP cerrados + ≥1 pida sin push proactivo
+- orden priorizado (8 carreras restantes en ~12 meses dual velocity):
+  1. **Sales (Q3-2026)** — buyer overlap alto MGP, archetypes trust-vs-verify/speed-to-action/incentives-vs-risk/defer-expertise
+  2. **CS (Q3-2026)** — adyacencia natural, crisis-velocity/metric-gaming/incremental/entry-without-plan
+  3. **Ops (Q4-2026)** — buyer cambia a COO, pause-or-double-down/timeline-pressure/thoroughness/cannibalize
+  4. **Finance (Q4-2026)** — CFO skeptical + caveat legal LATAM (counsel pre-launch), metric-gaming/defer-expertise/trust-vs-verify
+  5. **HR/People (Q1-2027)** — privacy + bias riesgo dominante
+  6. **Legal (Q1-2027)** — niche estrecho, ciclo 3-6 meses
+  7. **Product (Q2-2027)** — receptivo IA, requiere casos N3 con agentes
+  8. **Engineering (Q3-2027)** — technical buyer CTO, casos N3 obligatorios
+- cada carrera: 4-6 casos primary + 4-6 variantes resim + 8-12 practice beats + ~5-6 semanas claude work
+- 3 decisiones nuevas: M9-3-D25 (demand-driven expansion) + M9-3-D26 (orden priorizado por buyer overlap + complexity) + M9-3-D27 (hold quality bar — no acelerar)
+- next codex: este doc es informativo. NO requiere acción técnica de codex pre-launch. Cuando cada carrera entre, codex hace seed con scripts/simulador/seed-cases.mjs (ya soporta career_key via B3-003).
