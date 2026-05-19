@@ -229,13 +229,52 @@ export async function POST(req: NextRequest) {
       .select("id")
       .single();
     if (assignErr || !newAssignment) {
-      console.error("[api/sessions] assignment insert failed:", assignErr);
-      return NextResponse.json(
-        { error: "No se pudo crear assignment." },
-        { status: 500 },
-      );
+      if (assignErr?.code === "23505") {
+        const { data: racedAssignment } = await admin
+          .schema("simulador")
+          .from("assignments")
+          .select("id")
+          .eq("sprint_id", sprint.id)
+          .eq("user_id", simUser.id)
+          .eq("case_variant_id", variant.id)
+          .maybeSingle();
+
+        if (racedAssignment) {
+          assignment = racedAssignment;
+
+          const { data: racedSession } = await admin
+            .schema("simulador")
+            .from("simulation_sessions")
+            .select("id, status")
+            .eq("user_id", simUser.id)
+            .eq("case_variant_id", variant.id)
+            .in("status", ["in_progress", "paused", "not_started"])
+            .order("started_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+          if (racedSession) {
+            return NextResponse.json({
+              session_id: racedSession.id,
+              status: racedSession.status,
+              case_template_id: caseTemplate.id,
+              case_variant_id: variant.id,
+              resumed: true,
+            });
+          }
+        }
+      }
+
+      if (!assignment) {
+        console.error("[api/sessions] assignment insert failed:", assignErr);
+        return NextResponse.json(
+          { error: "No se pudo crear assignment." },
+          { status: 500 },
+        );
+      }
+    } else {
+      assignment = newAssignment;
     }
-    assignment = newAssignment;
   }
 
   // Crear session. El user puede escribir sus propias sessions vía RLS,

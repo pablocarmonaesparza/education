@@ -498,7 +498,7 @@ tasks:
     title: testing tecnico premium
     owner: codex
     reviewer: claude
-    status: in_progress
+    status: done
     depends_on:
       - B4-002
       - B2-002
@@ -506,9 +506,10 @@ tasks:
       - RLS test cross-tenant
       - Playwright E2E buyer, employee y manager
       - spoiler test extendido a auth cases
-    notes: producto premium no cierra sin pruebas
-    claimed_by: codex
-    claim_expires_at: '2026-05-19T22:49:48.701Z'
+    notes: >-
+      Cerrado por Codex: RLS cross-tenant smoke, Playwright E2E buyer/employee/manager + field-test publico,
+      spoiler-leak auth/public, judge calibration, lint simulador y build pasan. Tambien se corrigio carrera
+      idempotente en POST /api/sessions al crear assignments.
   - id: B9-001-D1
     title: >-
       Posicionar Itera como heredera narrativa de Wharton Interactive — capitalizar vacante

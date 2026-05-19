@@ -14,6 +14,12 @@ const PRE_SUBMIT_FILES = [
   "app/api/field-test/sessions/[session_id]/events/route.ts",
 ];
 
+const AUTH_PRE_SUBMIT_FILES = [
+  "app/api/sessions/route.ts",
+  "app/api/sessions/[session_id]/route.ts",
+  "app/api/sessions/[session_id]/responses/route.ts",
+];
+
 const RUNTIME_FILES = [
   "app/(app)/case/[case_id]/page.tsx",
   "components/simulador/RuntimeNav.tsx",
@@ -46,7 +52,17 @@ for (const file of PRE_SUBMIT_FILES) {
   const src = fs.readFileSync(full, "utf8");
   for (const token of forbiddenApiTokens) {
     if (src.includes(token)) {
-      issues.push(`${file}: pre-submit API leaks forbidden token "${token}"`);
+      issues.push(`${file}: field-test pre-submit API leaks forbidden token "${token}"`);
+    }
+  }
+}
+
+for (const file of AUTH_PRE_SUBMIT_FILES) {
+  const full = path.join(ROOT, file);
+  const src = fs.readFileSync(full, "utf8");
+  for (const token of forbiddenApiTokens) {
+    if (src.includes(token)) {
+      issues.push(`${file}: authenticated pre-submit API leaks forbidden token "${token}"`);
     }
   }
 }

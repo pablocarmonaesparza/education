@@ -26,6 +26,8 @@
     "simulador:validate-case-yaml": "node scripts/simulador/validate-case-yaml.mjs",
     "simulador:validate": "node scripts/simulador/validate-contracts.mjs",
     "simulador:judge-calibration": "node scripts/simulador/check-judge-calibration.mjs",
+    "simulador:test-rls": "node scripts/simulador/test-rls.mjs",
+    "simulador:e2e": "playwright test tests/simulador/e2e",
     "simulador:seed-practice-beats": "node scripts/simulador/seed-practice-beats.mjs",
     "simulador:seed-cases": "node scripts/simulador/seed-cases.mjs",
     "email:preview": "email dev --dir ./emails --port 3030",
@@ -77,6 +79,7 @@
     "@x402/fetch": "^2.10.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "husky": "^9.1.7",
     "js-yaml": "^4.1.1",
     "react-email": "^6.0.0"

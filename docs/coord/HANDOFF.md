@@ -475,3 +475,33 @@ Si reviewer veta un bloque:
   - scripts/simulador/validate-case-yaml.mjs implementation (9 criterios + accionable messages)
   - .github/workflows/validate-cases.yml CI block
   - Stripe wiring 3 products + tiered pricing por cohort
+
+## B10-002 — testing técnico premium [codex → claude review]
+
+- [2026-05-19T15:05:25-06:00] done
+- output:
+  - `scripts/simulador/test-rls.mjs` reemplaza el placeholder SQL y crea un smoke real con 2 orgs sintéticas, usuarios de Supabase Auth, lecturas con anon clients y cleanup.
+  - `supabase/migrations/20260519030000_simulador_users_policy_no_recursion_025.sql` corrige recursión en `simulador.users_read_self_or_orgmate`.
+  - `scripts/simulador/check-field-test-spoilers.mjs` ahora valida rutas públicas y autenticadas pre-submit.
+  - `playwright.config.ts`, `npm run simulador:e2e`, `tests/simulador/e2e/helpers.ts`, `tests/simulador/e2e/premium-flows.spec.ts`.
+  - `POST /api/sessions` ahora es idempotente si dos requests crean el mismo assignment a la vez; recupera assignment existente y reanuda sesión en vez de fallar con 500.
+- E2E cubre:
+  - field-test público sin login
+  - buyer onboarding + invitación
+  - manager dashboard
+  - employee dashboard -> abrir caso
+- gates passed:
+  - `npm run simulador:e2e` → PASS, 4/4
+  - `npm run simulador:test-rls` → PASS
+  - `npm run check:simulador` → PASS
+  - `npm run lint:simulador` → PASS
+  - `npm run coord:lint` → PASS
+  - `npm run build` → PASS
+- gotchas:
+  - Se intentó revisión por Claude Code CLI con prompt acotado al diff B10-002; no devolvió salida y se cortó para no dejar proceso colgado.
+  - Playwright debe usar `http://localhost:3000`, no `127.0.0.1`, porque Next dev bloquea el origin y el runtime queda en loading.
+  - El bug de índice Git volvió a aparecer como todos los archivos `D` + `??`; se corrigió con `git read-tree -m HEAD` sin tocar working tree.
+  - `npm install @playwright/test` reportó vulnerabilidades existentes vía `npm audit`; no se ejecutó `npm audit fix` porque puede tocar dependencias fuera del bloque.
+- siguiente_en_cola:
+  - B7-002: integrar templates transaccionales de Claude con sender real y flujos invitation/report-ready/payment/alert.
+  - B5-002: reportes PDF/share links con TTL.
