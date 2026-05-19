@@ -649,7 +649,10 @@ Si reviewer veta un bloque:
   - `npm run build` PASS.
   - `npm run simulador:e2e` PASS (5/5, incluye creación real de Stripe Checkout Session).
   - Supabase remoto verificado: `idx_simulador_subscriptions_checkout_session_unique` existe.
+  - producción redeployed: `dpl_3iAfLGw8Pqrh2gTogqU6tan2Qy2e`, alias `https://www.itera.la`.
+  - smoke production: `E2E_BASE_URL=https://www.itera.la npm run simulador:e2e` PASS (5/5).
 - gotchas:
+  - Vercel tenía `STRIPE_SECRET_KEY` con carácter inválido en `Authorization`; se refrescó desde `.env.local` y se redeployó antes del smoke PASS.
   - El E2E crea sesiones Stripe test reales, pero no completa pago con tarjeta; el path de webhook/done queda cubierto por código + índice remoto, y falta un test webhook sintético si queremos blindaje extra.
   - B7-002 ya estaba done aunque dependía de B7-001; con este cierre la dependencia queda coherente.
 - siguiente_en_cola:
