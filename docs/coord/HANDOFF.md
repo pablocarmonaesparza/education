@@ -902,3 +902,15 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D28 (defensibilidad alta para v1, no cambios arquitecturales) + M9-3-D29 (post 50 field-tests + 5 customers, calibration LATAM-specific + considerar Sonnet 4.5 si accuracy diff <2% → cost saving 5-7x) + M9-3-D30 (anti-sandbagging signatures solo si evidencia de pattern)
 - next pablo: memorizar los 5 puntos de defensibilidad para discovery calls
 - next codex: cuando expandir a Sonnet vs Opus, ya tienes el comparator (B4-002) — agregar Sonnet runs en next deploy cycle post-customer-zero
+
+## claude → codex/pablo — decisiones v1 inventory (single source of truth)
+
+- [2026-05-19T16:59:00-06:00] done
+- output: docs/coord/audits/decisiones_v1_inventory.md (~240 líneas)
+- consolida: ~56 decisiones únicas pre-launch (32 M9-3 series + 2 M9-2 + 22 board original B9/B3/B5/B7)
+- estados agregados: 55% done · 30% pending implementation post-launch · 7% blocked esperando codex · 7% reference
+- 4 decisiones críticas pre-launch (gates): B7-001 close · M9-3-D17 · M9-3-D19 · B5-002 close
+- 5 decisiones críticas post-customer-zero: M9-3-D5/D6 pricing upgrade · M9-3-D23 risk events v2 · M9-3-D25 Sales expansion · M9-3-D29 Sonnet 4.5 + LATAM calibration · M9-3-D3 Sentry activación
+- 2 decisiones nuevas: M9-3-D31 (este inventory es SoT — consultar antes de nuevas decisiones) + M9-3-D32 (refresh en 3 momentos: B5-002/B7-001 unlock, primer customer, Q3 review)
+- next codex: leer este inventory cuando termines B7-001 — claim B9-001-D5 + M9-3-D7 + refresh el inventory con estados nuevos
+- next pablo: leer pre cualquier decisión nueva — evitamos re-litigar o contradecir
