@@ -79,11 +79,46 @@ export async function POST(
     );
   }
 
+  const { data: inboxLead, error: inboxError } = await admin
+    .schema("simulador")
+    .from("leads_inbox")
+    .insert({
+      source: "field_test",
+      field_test_lead_id: data.id,
+      field_test_session_id: session_id,
+      name,
+      email,
+      company,
+      role: role || null,
+      team_size: teamSize || null,
+      status: "new",
+      metadata_json: {
+        report_status: session.report_status,
+        consent_to_contact: body.consent_to_contact !== false,
+      },
+    })
+    .select("id")
+    .single();
+
+  if (inboxError || !inboxLead) {
+    console.error("[field-test/lead] leads_inbox insert failed", inboxError);
+    return NextResponse.json(
+      { error: "No se pudo guardar el contacto." },
+      { status: 500 },
+    );
+  }
+
   await insertFieldTestEvent({
     sessionId: session_id,
-    eventType: "email_captured",
-    payload: { lead_id: data.id, company, role, team_size: teamSize },
+    eventType: "lead_captured",
+    payload: {
+      lead_id: data.id,
+      leads_inbox_id: inboxLead.id,
+      company,
+      role,
+      team_size: teamSize,
+    },
   });
 
-  return NextResponse.json({ ok: true, id: data.id });
+  return NextResponse.json({ ok: true, id: data.id, leads_inbox_id: inboxLead.id });
 }
