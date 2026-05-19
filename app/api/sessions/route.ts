@@ -51,8 +51,11 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Resolver simulador.users.id.
-  const { data: simUser } = await supabase
+  // Resolver simulador.users.id. Usamos admin client después de validar
+  // auth.getUser(); evita falsos negativos por RLS/schema exposure cuando
+  // el bridge existe pero PostgREST no lo expone al cliente regular.
+  const admin = createAdminClient();
+  const { data: simUser } = await admin
     .schema("simulador")
     .from("users")
     .select("id")
@@ -67,7 +70,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Resolver case_template (version activa más alta) + primary variant.
-  const { data: caseTemplate } = await supabase
+  const { data: caseTemplate } = await admin
     .schema("simulador")
     .from("case_templates")
     .select("id, slug, version, title, duration_estimate_min, rubric_id")
@@ -84,7 +87,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { data: variant } = await supabase
+  const { data: variant } = await admin
     .schema("simulador")
     .from("case_variants")
     .select("id, slug")
@@ -102,7 +105,7 @@ export async function POST(req: NextRequest) {
   }
 
   // ¿Ya tiene una session in_progress de este variant? → resume.
-  const { data: existing } = await supabase
+  const { data: existing } = await admin
     .schema("simulador")
     .from("simulation_sessions")
     .select("id, status, metadata")
@@ -126,7 +129,7 @@ export async function POST(req: NextRequest) {
   // ============================================================================
   // Resolver team del user (RLS-safe: solo lee su propia membership).
   // ============================================================================
-  const { data: teamMembership } = await supabase
+  const { data: teamMembership } = await admin
     .schema("simulador")
     .from("team_memberships")
     .select("team_id")
@@ -144,7 +147,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { data: team } = await supabase
+  const { data: team } = await admin
     .schema("simulador")
     .from("teams")
     .select("id, organization_id")
@@ -167,7 +170,6 @@ export async function POST(req: NextRequest) {
   // resuelto via team_memberships (RLS-safe). El admin client solo se usa para
   // escribir filas atadas a ese team_id/user_id.
   // ============================================================================
-  const admin = createAdminClient();
   const SPRINT_NAME = "Fase 0 — Diagnóstico standalone";
 
   // Upsert sprint (uno por team, reutilizable).
