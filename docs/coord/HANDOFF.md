@@ -239,6 +239,36 @@ gotchas:
 next:
 - B6-002 debe convertir esta bandeja en analytics de funnel: started, abandoned, submitted, report_viewed, lead_captured y conversion por status.
 
+## B6-002 — analytics field-test y lead funnel
+
+status: done
+
+done:
+- Codex agrego migracion `20260519024000_simulador_field_test_lead_event.sql` para permitir `lead_captured` en `field_test_step_events`.
+- `lib/simulador/field-test/service.ts` ahora acepta `lead_captured` y loggea errores de analytics en vez de perderlos silenciosamente.
+- `RuntimeExperience` emite `abandoned` en `pagehide`/`visibilitychange` para field-test sin cerrar.
+- `/api/admin/leads` devuelve funnel rolling 30 dias: started, submitted, report_viewed, lead_captured, abandoned y tasas de conversion.
+- `/admin/leads` muestra las metricas de funnel arriba de la bandeja comercial.
+
+tested:
+- Supabase remoto: constraint de `field_test_step_events.event_type` permite `lead_captured`.
+- `npm run check:simulador`
+- `npm run lint:simulador`
+- `npm run build`
+- Production deploy: `https://www.itera.la` aliased to deployment `dpl_6aaNSrKEqMLKNxSYXaWfszEtUXLS`.
+- Production smoke: `POST /api/field-test/sessions` creo session `a46249c5-5794-4656-950d-0e6e934e8cb1`.
+- Production smoke: `POST /api/field-test/sessions/:id/events` con `section_completed` respondio `ok`.
+- Production smoke: `POST /api/field-test/sessions/:id/lead` creo `leads_inbox_id=30073aef-6ac5-488b-babf-90f08c0c844b`.
+- Supabase remoto: eventos de esa session incluyen `field_test_started`, `section_completed` y `lead_captured`.
+- Production smoke: `/admin/leads` sin login redirige a login; `/api/admin/leads` sin login responde 401.
+
+gotchas:
+- La tasa de abandono combina evento explicito con inferencia de sesiones `in_progress` stale a 30 minutos. Esto evita que navegadores que bloqueen el keepalive de cierre oculten abandono real.
+- El funnel usa ventana rolling de 30 dias. Si Pablo quiere cohortes por campaign/source, B6-002 puede extenderse a source attribution después.
+
+next:
+- B8-001 puede construir admin backoffice completo sobre esta base: `/admin/leads`, `/admin/orgs`, `/admin/judge-health`, `/admin/audit-log`.
+
 ## disagreement policy
 
 Si reviewer veta un bloque:
