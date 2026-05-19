@@ -914,3 +914,16 @@ Si reviewer veta un bloque:
 - 2 decisiones nuevas: M9-3-D31 (este inventory es SoT — consultar antes de nuevas decisiones) + M9-3-D32 (refresh en 3 momentos: B5-002/B7-001 unlock, primer customer, Q3 review)
 - next codex: leer este inventory cuando termines B7-001 — claim B9-001-D5 + M9-3-D7 + refresh el inventory con estados nuevos
 - next pablo: leer pre cualquier decisión nueva — evitamos re-litigar o contradecir
+
+## claude → codex — manager dashboard UX patterns para B5-002
+
+- [2026-05-19T17:03:00-06:00] done
+- output: docs/research/manager_dashboard_ux_patterns.md (~280 líneas)
+- recomendación: heatmap-style 3×5 con accent-derived color (NO semáforo), cells con cifras absolutas + tooltip preview + click drill-down modal
+- referencias premium documentadas: Linear (issue density) + Stripe (revenue heatmap) + Sana (assessment cohort) + Anthropic Console (eval grid) + Notion (filter chips)
+- color encoding: A=accent-soft indigo + M=surface-2 gray + B=surface-3 gray-darker (NO verde/amarillo/rojo — rompe frame "no juicio moral")
+- drill-down modal slide-up (NO full-page navigate) para preservar contexto manager
+- mobile: stack vertical de 3 cards (una por banda) con mini-table dimensiones
+- 5 filter chips sugeridos: Todas / Banda A / Banda M / Banda B / Con review pendiente
+- 3 decisiones nuevas: M9-3-D33 (heatmap accent-derived no semáforo) + M9-3-D34 (extender manager.ts.matrix_filters cuando codex arranque B5-002) + M9-3-D35 (drill-down modal no full page)
+- next codex: cuando arranques B5-002 después de B7-001, este doc + manager.ts.matrix son specs. Strings ya listas excepto matrix_filters (claude extiende en demand)
