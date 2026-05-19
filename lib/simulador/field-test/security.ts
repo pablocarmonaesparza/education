@@ -64,7 +64,10 @@ export function assertFieldTestLlmConfigured(): void {
 }
 
 export function assertFieldTestRateLimitConfigured(): void {
-  if (process.env.NODE_ENV !== "production") return;
+  const isStrictProduction =
+    process.env.VERCEL_ENV === "production" ||
+    (!process.env.VERCEL_ENV && process.env.NODE_ENV === "production");
+  if (!isStrictProduction) return;
   if (process.env.FIELD_TEST_REQUIRE_RATE_LIMIT === "false") return;
   if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
     throw new Error(
