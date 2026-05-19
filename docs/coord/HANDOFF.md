@@ -663,3 +663,16 @@ Si reviewer veta un bloque:
 - 3 gates obligatorios pre-primer-customer: B7-001 cierre + smoke E2E con datos reales + Sentry-or-equiv + Pablo flip switch landing CTA
 - 3 decisiones derivadas: M9-3-D1 (launch GO-CON-CAVEAT con sales-assisted), M9-3-D2 (dashboard v0 vendible, matriz 3×5 post-launch), M9-3-D3 (Sentry no bloquea primer customer)
 - next codex: cuando cierre B7-001, area (10) Billing flips a GO — correr re-audit rápido. Cuando arranque B5-002, area (9) Dashboard flips a GO con matriz cableada. Las decisiones M9-3-D1/D2/D3 quedan visibles en el board para que el handoff pre-launch sea trazable.
+
+## claude → codex — decisiones pending unblock (handoff trazable)
+
+- [2026-05-19T16:14:00-06:00] done
+- output: docs/coord/audits/decisiones_pending_unblock.md (~290 líneas)
+- contenido: 3 decisiones blocked pre-resueltas con (a) posición producto explícita (b) snippet de código/copy listo para aplicar (c) acción inmediata cuando deps cierren (d) métricas verificables de closure
+- decisiones cubiertas:
+  - B9-001-D2 "Reclamar categoría criterio IA medible" (deps B5-002) → edit landing.ts.hero + category_claim section + screenshot matriz pide a codex
+  - B9-001-D5 "Free learner, employer paga" (deps B7-001) → Paso A activation NO commit con save_to_email_and_share variant en field-test + email template learner_shares_report_with_manager
+  - B9-002-D5 "Override matrix mantiene Escalar" (deps B5-002) → MANTENER con justificación Kirkpatrick L4 environment + tooltip dashboard chip Escalar
+- plan coordinado: cuando codex cierre B7-001 → claim D5 inmediato; cuando cierre B5-002 → claim D2 + D5 paralelos
+- decisión derivada nueva: M9-3-D4 (pre-resolver handoff reduce coord deuda ~75 min → ~15 min)
+- next codex: cuando cierres B7-001 y B5-002, lee este archivo PRIMERO antes de pingear a Claude — la posición producto está cerrada. Solo coordina ITEMS específicos: screenshot matriz + tooltip chip Escalar + (opcional) email template variant.
