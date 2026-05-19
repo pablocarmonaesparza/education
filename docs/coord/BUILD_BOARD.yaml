@@ -1,6 +1,6 @@
 version: 1
 project: itera-simulador-premium
-updated_at: '2026-05-19T18:16:22.838Z'
+updated_at: '2026-05-19T18:19:55.466Z'
 source_of_truth: true
 rules:
   - si una tarea no vive aqui, no existe
@@ -413,7 +413,7 @@ tasks:
     title: case method y learning evaluation research
     owner: claude
     reviewer: codex
-    status: in_progress
+    status: done
     depends_on:
       - B0-001
     dod:
@@ -421,8 +421,7 @@ tasks:
       - kirkpatrick_mapping.md existe
       - cada doc termina con decisiones producto
     notes: HBS, HKS, MIT Sloan, Harvard Bok, Kirkpatrick
-    claimed_by: claude
-    claim_expires_at: '2026-05-19T20:13:43.356Z'
+    done_at: '2026-05-19T18:19:55.571Z'
   - id: B9-003
     title: AI adoption y LATAM compliance research
     owner: claude
@@ -551,3 +550,87 @@ tasks:
       - apply research decision from docs/research/competitive_landscape_v1.md
       - 'touch files: lib/simulador/copy/landing.ts, lib/simulador/copy/sales.ts'
     notes: change_type=copy
+  - id: B9-002-D1
+    title: Documentar mapeo Itera ↔ Kirkpatrick en marketing materials y sales decks
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/case_method_principles.md
+      - >-
+        touch files: lib/simulador/copy/sales.ts, lib/simulador/copy/landing.ts,
+        docs/sales/kirkpatrick_positioning.md
+    notes: change_type=copy
+  - id: B9-002-D2
+    title: >-
+      Hard rule: cada caso 1-8 (+ variantes resim) requiere archetype_ref
+      docs/simulador/contrato_v0/archetypes/<id>.md con 1-2 entrevistas + 3+ sources documentales
+      antes de import a BD
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on:
+      - B3-001
+    dod:
+      - apply research decision from docs/research/case_method_principles.md
+      - >-
+        touch files: scripts/simulador/validate-case-yaml.mjs,
+        docs/quality/case_admission_checklist.md
+    notes: change_type=rubric
+  - id: B9-002-D3
+    title: >-
+      Practice beats post-evaluación SÍ pueden enseñar — runtime NO. Codificar esta distinción en
+      producto y copy
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/case_method_principles.md
+      - >-
+        touch files: lib/simulador/copy/runtime.ts, lib/simulador/copy/report.ts,
+        lib/simulador/copy/manager.ts
+    notes: change_type=copy
+  - id: B9-002-D4
+    title: >-
+      Transfer delta (primary→resim) es la métrica core de L3 Comportamiento. Debe estar visible en
+      manager dashboard y reporte ejecutivo
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on:
+      - B5-001
+      - B2-001
+    dod:
+      - apply research decision from docs/research/case_method_principles.md
+      - 'touch files: docs/design/surfaces/executive_report.md, lib/simulador/copy/report.ts'
+    notes: change_type=report
+  - id: B9-002-D5
+    title: >-
+      Override matrix mantiene rama Escalar — justificación Kirkpatrick Performance Environment
+      principle
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on:
+      - B5-002
+    dod:
+      - apply research decision from docs/research/case_method_principles.md
+      - 'touch files: lib/simulador/copy/manager.ts, docs/design/surfaces/manager_dashboard.md'
+    notes: change_type=copy
+  - id: B9-002-D6
+    title: >-
+      Survey L1 Reaction NO es opcional — implementar post-submit con 1 NPS + 1 abierta + 1
+      relevance score
+    owner: codex
+    reviewer: claude
+    status: backlog
+    depends_on:
+      - B2-003
+    dod:
+      - apply research decision from docs/research/case_method_principles.md
+      - >-
+        touch files: supabase/migrations/022_simulador_analytics_compliance.sql,
+        lib/simulador/copy/runtime.ts
+    notes: change_type=schema

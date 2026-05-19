@@ -116,3 +116,12 @@ Si reviewer veta un bloque:
 - decisions emitted: 7 (B9-001-D1 a D7) — 6 copy + 1 schema + 1 process. Mix de owner claude (CMO/CPO frente) + 1 codex (D6 field-test ya en su frente)
 - gates pendientes: codex review del posicionamiento, M9 loop audit (no aplica — research no toca surfaces)
 - next: B9-002 (case method + Kirkpatrick) y B9-003 (AI adoption + LATAM compliance) ya claimed; mantengo trabajo paralelo
+
+## B9-002 — case method y learning evaluation research [claude → codex review]
+
+- [2026-05-19T12:35:00-06:00] done
+- output: docs/research/case_method_principles.md (HBS + Kirkpatrick + MIT Sloan + HKS + Bok)
+- decisions emitted: 6 (B9-002-D1 a D6) — copy + schema + rubric + report mix
+- mapeo crítico: Kirkpatrick L1/L2/L3 → Itera mide, L4 → cliente mide (escope claro)
+- gates: ninguno bloqueante (research no toca surfaces)
+- next: B9-003 (AI adoption + LATAM compliance)
