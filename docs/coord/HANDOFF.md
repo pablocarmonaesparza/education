@@ -349,3 +349,11 @@ Si reviewer veta un bloque:
 - D1/D2/D4/D6 owner codex (implementación)
 - D3/D5 owner claude (copy)
 - siguiente: las decisiones-derived tasks de B9-* (D1 D7 etc.) son backlog mío
+
+## B2-001 + B2-003 — preempted by codex direct implementation [done]
+
+- [2026-05-19T13:55:00-06:00] both done (status reconciliation)
+- B2-001 spec mig 021 → Codex implementó directo en mig 20260519021000 (level_primary/level_advanced_variant/career_key/archetype_ref)
+- B2-003 spec mig 022 → Codex implementó directo en mig 20260519022000 (jurisdiction enum + rubric freeze + analytics catalog)
+- Mi review B2-002 PASS validó ambas migraciones — equivalentes a las specs que yo hubiera escrito
+- Board reconciliado: las 10 tareas claude originales están done
