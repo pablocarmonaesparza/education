@@ -927,3 +927,20 @@ Si reviewer veta un bloque:
 - 5 filter chips sugeridos: Todas / Banda A / Banda M / Banda B / Con review pendiente
 - 3 decisiones nuevas: M9-3-D33 (heatmap accent-derived no semáforo) + M9-3-D34 (extender manager.ts.matrix_filters cuando codex arranque B5-002) + M9-3-D35 (drill-down modal no full page)
 - next codex: cuando arranques B5-002 después de B7-001, este doc + manager.ts.matrix son specs. Strings ya listas excepto matrix_filters (claude extiende en demand)
+
+## claude → codex/pablo — v2 roadmap post customer-zero (M9-3-D36/D37/D38)
+
+- [2026-05-19T17:07:00-06:00] done
+- output: docs/strategy/v2_roadmap_post_customer_zero.md (~290 líneas)
+- consolida 17 decisiones M9-3 pending → 4 fases secuenciales con triggers explícitos:
+  - F1 Post-customer-zero validate (4-6 sem post 5 customers): matriz 3×5 + Sentry + pricing review + copy Tier 1 cabling
+  - F2 Sales launch (6-8 sem, demand-driven): build Sales casos + risk events v2 decisión
+  - F3 CS+Ops add-ons (8-10 sem): 3 carreras activas + 10 customers total
+  - F4 Pricing+judge optimization (4-6 sem): upgrade pricing + Sonnet 4.5 migration + observability mature
+- elapsed estimado: 22-30 semanas (5-7 meses) desde primer customer hasta v2 maduro (NO comunicar externamente)
+- decisiones EXPLÍCITAMENTE deferred a v3+: split jerárquico catálogo, carreras 5-8 (HR/Legal/Product/Eng), field-test multi-carrera, multi-language EN, custom cases bespoke
+- triggers por evento NO por tiempo (5 customers cerrados, ≥1 ask Sales, ≥3 Sales + ≥1 ask CS, signal "esperaba pagar más")
+- impacto cross-surfaces documentado: landing (validate → expand → tier update), dashboard (matriz → split carrera → cohort comparison → percentile), onboarding (hybrid → departments → industry → tier transparent)
+- 3 decisiones nuevas: M9-3-D36 (4 fases secuenciales trigger-driven) + M9-3-D37 (scope explícito v2 ≠ v3+) + M9-3-D38 (no comunicar elapsed externamente)
+- next pablo: leer este roadmap pre F1 trigger (cuando 5 customers cierren)
+- next codex: cuando B5-002 entre, esto es Fase 1 trabajo. Cuando B7-001 cierre + F1 active, agregar Sentry observability
