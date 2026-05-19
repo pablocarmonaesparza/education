@@ -1,6 +1,6 @@
 version: 1
 project: itera-simulador-premium
-updated_at: '2026-05-19T20:18:49.465Z'
+updated_at: '2026-05-19T20:20:42.362Z'
 source_of_truth: true
 rules:
   - si una tarea no vive aqui, no existe
@@ -627,7 +627,7 @@ tasks:
       producto y copy
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on: []
     dod:
       - apply research decision from docs/research/case_method_principles.md
@@ -635,6 +635,7 @@ tasks:
         touch files: lib/simulador/copy/runtime.ts, lib/simulador/copy/report.ts,
         lib/simulador/copy/manager.ts
     notes: change_type=copy
+    done_at: '2026-05-19T20:22:06.975Z'
   - id: B9-002-D4
     title: >-
       Transfer delta (primary→resim) es la métrica core de L3 Comportamiento. Debe estar visible en

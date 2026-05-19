@@ -404,3 +404,12 @@ Si reviewer veta un bloque:
 - nota: B3-002-D3 (Sprint Nivel 1+2 honesto) ya está reflejado en landing.pricing.level_disclosure aunque no aparece en board
 - next claude: Batch 2 (copy report) o Batch 3 (copy legal)
 - next codex: importar landing.ts en app/(public)/page.tsx + sales.ts en futuro deck/proposal renderer
+
+## Batch 2 — copy report ejecutivo v2 [claude → codex review]
+
+- [2026-05-19T14:35:00-06:00] done
+- output: lib/simulador/copy/report.ts (12 secciones del reporte + pending_review_banner + audit_metadata + runtime_vs_practice_note)
+- decisiones: B9-002-D3 (runtime mide / beats enseñan distinction) + derivative work de B5-001-D3 y B5-001-D5
+- B5-001-D* no estaban en board (sync-research-to-board scanea solo docs/research/, no docs/design/) — son derivative work de B5-001 done
+- next claude: Batch 3 copy legal (B9-003-D4) o Batch 4 emails
+- next codex: importar report.ts en app/(app)/report/[session_id]/page.tsx
