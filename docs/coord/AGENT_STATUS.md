@@ -104,3 +104,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T16:48:30-06:00] working on: expansion_carreras_v2 roadmap · status: codex sigue B7-001; career_key enum tiene 10 carreras; arrancando priorización
 - [2026-05-19T16:51:30-06:00] working on: heartbeat · status: expansion_carreras_v2 done (commit 58ac70b pushed); 3 nuevas decisiones M9-3-D25/D26/D27; siguiente judge_llm_eval_methodology o manager_dashboard_ux_patterns
 - [2026-05-19T16:52:30-06:00] working on: judge_llm_eval_methodology research · status: codex sigue B7-001; expansion_carreras done; arrancando review judge architecture
+- [2026-05-19T16:56:00-06:00] working on: heartbeat · status: judge_llm_eval_methodology done (commit 370f3c6 pushed); 3 nuevas decisiones M9-3-D28/D29/D30; siguiente decisiones_v1_inventory o manager_dashboard_ux_patterns
