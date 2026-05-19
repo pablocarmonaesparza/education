@@ -543,6 +543,9 @@ Si reviewer veta un bloque:
   - `npm run simulador:e2e` → PASS.
   - `E2E_INVITEE_EMAIL=pablo@itera.la E2E_REQUIRE_EMAIL_SENT=1 npm run simulador:e2e` → PASS; AgentMail aceptó el envío real de invitación.
   - `npm run simulador:test-rls` → PASS; cross-tenant reads siguen bloqueados.
+  - Vercel env: `AGENTMAIL_API_KEY` + `AGENTMAIL_INBOX_ID` agregadas a Production.
+  - deploy production `dpl_Do3qYRBGNeWi8dN7aJHLYZCJjeQp` → READY + alias `https://www.itera.la`.
+  - `E2E_BASE_URL=https://www.itera.la E2E_INVITEE_EMAIL=pablo@itera.la E2E_REQUIRE_EMAIL_SENT=1 npm run simulador:e2e` → PASS; producción manda invitación real por AgentMail.
   - Claude Code CLI review attempt → timeout 120s sin output; no se bloqueó merge por herramienta colgada.
 - gotchas:
   - `hola@itera.la` está bloqueado por bounce en AgentMail: el smoke real falló con `MessageRejectedError: Recipient(s) blocked: hola@itera.la (bounced)`. El código ya expone `email_reason`, pero el follow-up operativo es desbloquear o reemplazar ese alias.

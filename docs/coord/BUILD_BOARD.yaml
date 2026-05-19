@@ -429,7 +429,8 @@ tasks:
     notes: >-
       copy claude integrado por codex con AgentMail, no SendGrid; invitation/welcome/password
       reset/report-ready usan templates versionados; E2E real con AgentMail aceptado hacia pablo@itera.la;
-      hola@itera.la sigue bloqueado por bounce en AgentMail y queda como follow-up operativo DNS/inbox.
+      Vercel Production ya tiene AGENTMAIL_API_KEY/AGENTMAIL_INBOX_ID y smoke prod pasa; hola@itera.la
+      sigue bloqueado por bounce en AgentMail y queda como follow-up operativo DNS/inbox.
     done_at: '2026-05-19T15:29:44-06:00'
   - id: B8-001
     title: admin Itera backoffice premium

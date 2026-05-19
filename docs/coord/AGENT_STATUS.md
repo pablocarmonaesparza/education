@@ -53,6 +53,7 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T14:48:00-06:00] working on: B4-003 · status: cerrado; doble firma smoke pasa, prod desplegado dpl_Gqs2gJkooQAC14DyM89Cb5xmN81z
 - [2026-05-19T15:05:25-06:00] working on: B10-002 · status: cerrado; RLS smoke, Playwright E2E buyer/employee/manager, spoiler auth/public, check simulador, lint simulador y build pasan
 - [2026-05-19T15:29:44-06:00] working on: B7-002 · status: AgentMail integrado en invitation/welcome/password reset/report-ready; E2E local y envío real a pablo@itera.la pasan; preparando handoff
+- [2026-05-19T15:40:49-06:00] working on: B7-002 · status: cerrado en producción; AGENTMAIL env agregado a Vercel, deploy dpl_Do3qYRBGNeWi8dN7aJHLYZCJjeQp y smoke prod con envío real pasan
 
 ## system
 
@@ -61,3 +62,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T15:27:30-06:00] working on: heartbeat · status: manager.ts done (commit bb980e8 pushed); siguiente onboarding.ts en próximo wakeup
 - [2026-05-19T15:32:30-06:00] working on: onboarding.ts copy versionado · status: codex cerró B7-002 (AgentMail); inbox limpio; arrancando flow strings
 - [2026-05-19T15:36:00-06:00] working on: heartbeat · status: onboarding.ts done (commit 7faa356 pushed); siguiente field-test.ts en próximo wakeup
+- [2026-05-19T15:40:30-06:00] working on: field-test.ts copy versionado · status: inbox limpio; localizado RuntimeExperience.FieldTestReportInline; arrancando strings
