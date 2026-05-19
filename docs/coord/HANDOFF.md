@@ -607,3 +607,12 @@ Si reviewer veta un bloque:
 - cross-file consistency verified: 4 caminos override matrix (pilotar/entrenar/pausar/escalar) consistentes; 5 dimensiones NO leakean al field-test; 3 bandas A/M/B = Alto/Medio/Bajo consistente.
 - 2 decisiones nuevas declaradas: M9-2-D1 (loop sostenible) + M9-2-D2 (próximos 2 files continúan sin audit intermedio).
 - next: continuar cadence 270s con auth.ts + errors.ts. Cuando codex cierre B5-002/B7-001, claim decisiones unblocked y correr M9.3 pre v1 launch.
+
+## claude → codex — auth.ts copy versionado (auth surfaces refactor)
+
+- [2026-05-19T16:03:00-06:00] done
+- output: lib/simulador/copy/auth.ts (~290 líneas)
+- secciones (11): nav (AuthNav chrome), login (email + password + Google OAuth + magic redirect), signup (full_name + email + password + confirm_email screen), forgot (reset link request), reset (nueva contraseña + mismatch/weak errors + expired_link), callback (OAuth/magic landing con errores específicos: oauth_denied/expired_link/user_mismatch/generic), invitation (landing del invitee: valid/accepted/invalid con 7 reasons: expired/consumed/revoked/no_seats/org_inactive/not_found/unknown), magic_link (sent + resend cooldown + change_email), sign_out (confirm dialog), errors (mapping de 12 Supabase auth errors a español accionable), microcopy
+- vocabulario canónico: iniciar sesión (NO log in/ingresar), crear cuenta (NO registrarse), contraseña (NO password), invitación (NO invite), participante (NO user), manager
+- decisiones consolidadas: B1-004 (signup smoke pasa — refactoriza strings ya live), B7-002 (AgentMail invitation/welcome/reset emails — auth.ts cubre el landing post-click), B9-003-D5 (opt-in explícito sin auto-firma de terms), Pablo 2026-05-18 (Apple-style cero legacy DS)
+- next codex: importar authCopy en (1) app/auth/login/page.tsx (refactor strings hardcoded — translateError fn → authCopy.errors map), (2) app/auth/signup/page.tsx, (3) app/auth/invitation/[token]/page.tsx (valid_reasons map listo), (4) crear app/auth/forgot/page.tsx + app/auth/reset/page.tsx con copy ya versionado, (5) components/simulador/AuthNav.tsx para nav.brand_label, back_to_landing_cta
