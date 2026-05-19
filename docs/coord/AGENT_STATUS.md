@@ -106,3 +106,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T16:52:30-06:00] working on: judge_llm_eval_methodology research · status: codex sigue B7-001; expansion_carreras done; arrancando review judge architecture
 - [2026-05-19T16:56:00-06:00] working on: heartbeat · status: judge_llm_eval_methodology done (commit 370f3c6 pushed); 3 nuevas decisiones M9-3-D28/D29/D30; siguiente decisiones_v1_inventory o manager_dashboard_ux_patterns
 - [2026-05-19T16:56:30-06:00] working on: decisiones_v1_inventory audit · status: codex sigue B7-001; arrancando single source of truth pre-launch
+- [2026-05-19T16:59:30-06:00] working on: heartbeat · status: decisiones_v1_inventory done (commit d11695d pushed); 2 nuevas decisiones M9-3-D31/D32; 56 decisiones consolidadas SoT pre-launch
