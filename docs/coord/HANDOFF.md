@@ -991,3 +991,16 @@ Si reviewer veta un bloque:
 - 4 decisiones nuevas: M9-3-D39 (5 métricas canónicas Itera) + M9-3-D40 (manual v1 spreadsheet, automate post 10 customers) + M9-3-D41 (NPS 90d delayed methodology) + M9-3-D42 (no forecastear ARR con N<50)
 - next claude: tracking manual durante v1 launch (5+3 métricas en spreadsheet)
 - next codex: implementar tabla simulador.customer_retention_events + dashboard /admin/retention en Fase 4 v2 roadmap o post 10 customers (lo que llegue primero)
+
+## claude → codex/pablo — ready state T-7 pre-flight checklist (M9-3-D43/D44/D45)
+
+- [2026-05-19T17:15:00-06:00] done
+- output: docs/coord/audits/ready_state_t_minus_7.md (~290 líneas)
+- propósito: checklist ejecutable day-by-day para la semana T-7 a T-0 antes del flip switch landing CTA. Operacionaliza el cronograma del v1_launch_playbook
+- 7 días structured: T-7 verify gates + identify 3 soft launch contacts · T-6 smoke E2E #1 + Stripe live · T-5 soft launch #1 + Pablo LinkedIn drafts · T-4 smoke E2E #2 + code freeze · T-3 soft launch #3 + decide P0/P1 · T-2 Pablo descansa + Claude prep templates · T-1 verify final + email warmup · T-0 flip switch + LinkedIn + newsletter + monitor logs hora-a-hora
+- criterio NO launch: bug P0 sin fix / Gate 1 NO close + workaround también NO listo / Gate 3 sin observability / Gate 4 Pablo NO ready → slip 1 semana
+- soft launch profile: 3 contactos personales (NO 1 NO 5), Head/VP MGP/Ops mid-market LATAM conocidos directos, buscamos friction UX + comprensión + reaction + trust signal (NO validation marketing, NO testimonials)
+- T-4 EOD code freeze: solo bug P0 después de T-4. Pablo + codex respetan
+- 3 decisiones nuevas: M9-3-D43 (checklist estricto día-a-día, slip si incompleto) + M9-3-D44 (3 contactos perfil + qué buscamos vs qué no) + M9-3-D45 (T-4 EOD code freeze)
+- next pablo: este checklist se ejecuta cuando decida iniciar cronograma launch (post B7-001 close + 4 gates GREEN)
+- next codex: si B7-001 cierra y Pablo arranca T-7, monitorear gates 1+3 diariamente. Code freeze T-4.
