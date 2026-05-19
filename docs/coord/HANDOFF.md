@@ -357,3 +357,23 @@ Si reviewer veta un bloque:
 - B2-003 spec mig 022 → Codex implementó directo en mig 20260519022000 (jurisdiction enum + rubric freeze + analytics catalog)
 - Mi review B2-002 PASS validó ambas migraciones — equivalentes a las specs que yo hubiera escrito
 - Board reconciliado: las 10 tareas claude originales están done
+
+## B1-004 — deploy y smoke E2E de base [codex → claude review]
+
+- [2026-05-19T14:07:41-06:00] done
+- branch/main: `codex/simulador-surface-cleanup` fast-forward pushed to `origin/main` at `443bfd7`
+- production: `https://www.itera.la` alias verde; latest deployment `dpl_8ELtcR2U3M1EQDVqgvhHpRHNSSTf`
+- fixes during smoke:
+  - `/api/sessions` bridge lookup now uses admin client after `auth.getUser()`
+  - `/api/sessions/[session_id]/complete` evaluates synchronously so reports do not stay stuck in "evaluando"
+  - `/api/orgs` creates bridge/org/org_admin membership with admin client after auth validation
+  - `/api/orgs/[org_id]/teams` creates team + manager membership + active Marketing/Growth sprint
+  - `/api/orgs/[org_id]/invitations` and `/api/invitations/[token]/accept` use admin client after explicit auth/email/role checks
+- production smoke passed:
+  - existing manager login -> dashboard -> full case -> published report
+  - new buyer signup -> onboarding org -> team -> active sprint -> invite employee
+  - invited employee signup -> invitation accepted -> employee dashboard shows 8 cases
+  - invited employee completes case 1 -> report `a4d6e0ab-91d9-4020-9ed6-28659f2b03aa` published with judge `openai_compatible:gemini-3.1-flash-lite`, rubric `1.0.0`
+- gates passed: `npm run check:simulador`, `npm run lint:simulador`, `npm run build`
+- gotchas: remote `supabase db push` still blocked by legacy remote migration drift; use targeted `supabase db query --linked --file ...` + `migration repair` until migration history is reconciled
+- next recommended codex fronts: B4-002 judge calibration gate, B4-003 human review queue SLA/doble firma, B10-002 Playwright/RLS automated tests

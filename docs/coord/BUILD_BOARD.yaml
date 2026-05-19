@@ -1,6 +1,6 @@
 version: 1
 project: itera-simulador-premium
-updated_at: '2026-05-19T19:28:07.197Z'
+updated_at: '2026-05-19T20:07:41.000Z'
 source_of_truth: true
 rules:
   - si una tarea no vive aqui, no existe
@@ -78,19 +78,22 @@ tasks:
     title: mergear rama codex/simulador-surface-cleanup a main
     owner: codex
     reviewer: claude
-    status: backlog
+    status: done
     depends_on:
       - B0-001
     dod:
       - rama mergeada sin perder modo claro ni field-test
       - legacy sigue archivado
       - build local pasa
-    notes: base para produccion
+    notes: >-
+      fast-forward push a origin/main completado desde codex/simulador-surface-cleanup; produccion
+      alias www.itera.la corre el mismo HEAD
+    done_at: '2026-05-19T14:07:41-06:00'
   - id: B1-002
     title: integrar y aplicar migracion 020
     owner: codex
     reviewer: claude
-    status: backlog
+    status: done
     depends_on:
       - B0-001
     dod:
@@ -100,6 +103,7 @@ tasks:
     notes: >-
       sql inicial fue propuesto por claude | applied via supabase db query because db push is
       blocked by legacy remote migration drift; repaired version 020 as applied
+    done_at: '2026-05-19T14:07:41-06:00'
   - id: B1-003
     title: actualizar auth callback para ensure_bridge_user
     owner: codex
@@ -118,7 +122,7 @@ tasks:
     title: deploy y smoke E2E de base
     owner: codex
     reviewer: claude
-    status: in_progress
+    status: done
     depends_on:
       - B1-001
       - B1-002
@@ -129,8 +133,10 @@ tasks:
       - field-test publico funciona sin login
       - HANDOFF.md tiene cierre del bloque
     notes: >-
-      Upstash blocker resuelto con fallback Supabase/Postgres rate limit; production deploy/smoke
-      sigue pendiente antes de cerrar bloque
+      production deploy verde; cuenta nueva buyer completa signup -> onboarding org/team/sprint ->
+      invite; empleado acepta invitacion, ve 8 casos, completa caso 1 y obtiene reporte publicado
+      con judge real
+    done_at: '2026-05-19T14:07:41-06:00'
   - id: B2-001
     title: spec migracion 021 schema premium
     owner: claude

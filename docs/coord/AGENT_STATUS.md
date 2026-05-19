@@ -38,6 +38,7 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T13:18:00-06:00] working on: B6-002 · status: B6-001 cerrado; admin/leads live en produccion y smoke pasa; siguiente analytics funnel/admin
 - [2026-05-19T13:19:10-06:00] working on: B6-002 · status: claim tomado; revisando eventos field-test y dashboard admin para métricas de funnel
 - [2026-05-19T13:29:00-06:00] working on: B8-001 · status: B6-002 cerrado; funnel 30 dias live, lead_captured verificado en Supabase remoto
+- [2026-05-19T14:07:41-06:00] working on: B1-004 · status: bloque base cerrado; main actualizado, produccion verde, signup/onboarding/invite/employee case/report smoke pasa end-to-end
 
 ## system
 
