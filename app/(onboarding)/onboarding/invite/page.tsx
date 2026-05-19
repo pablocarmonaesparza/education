@@ -88,6 +88,10 @@ export default function OnboardingInvitePage() {
     router.push("/dashboard");
   }
 
+  function onContinueToBilling() {
+    router.push("/onboarding/billing");
+  }
+
   if (!orgId || !teamId) return null;
 
   return (
@@ -199,12 +203,21 @@ export default function OnboardingInvitePage() {
                   Invitar más
                 </Button>
                 <Button
-                  onPress={onFinish}
+                  onPress={onContinueToBilling}
                   radius="full"
                   size="lg"
                   className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
                 >
-                  Ir al dashboard →
+                  Continuar a pago →
+                </Button>
+                <Button
+                  onPress={onFinish}
+                  variant="light"
+                  radius="full"
+                  size="lg"
+                  className="h-12 text-[var(--text-secondary)]"
+                >
+                  Ir al dashboard
                 </Button>
               </div>
             </div>

@@ -9,6 +9,10 @@ import {
   type BillingPlan,
 } from '@/lib/stripe/config';
 import { sendPaymentReceipt, sendFailedCharge } from '@/lib/email/send';
+import {
+  isSimuladorCheckoutSession,
+  upsertSimuladorSubscriptionFromCheckout,
+} from '@/lib/stripe/simuladorBilling';
 
 export const runtime = 'nodejs';
 
@@ -198,6 +202,14 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
+        if (isSimuladorCheckoutSession(session)) {
+          const result = await upsertSimuladorSubscriptionFromCheckout(session);
+          if (!result.ok) {
+            throw new Error(`simulador checkout sync failed: ${result.reason}`);
+          }
+          break;
+        }
+
         const userId = session.metadata?.user_id || session.client_reference_id;
         if (!userId) {
           console.error('checkout.session.completed sin user_id', session.id);
