@@ -6,25 +6,24 @@ import { Avatar, Button, Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
 import { DIMENSIONS } from "@/lib/simulador/config";
-import type { BandKey, DimensionId } from "@/lib/simulador/config";
+import type { BandKey } from "@/lib/simulador/config";
+import {
+  BAND_DISPLAY,
+  bandScore,
+  capFirst,
+  computeOverall,
+  dimensionsById,
+  humanRiskType,
+  redactSensitiveEvidence,
+  type ReportEnvelope,
+  type ReportPayload,
+} from "@/lib/simulador/reports/model";
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const },
 };
-
-const BAND_DISPLAY: Record<BandKey, string> = {
-  A: "Alto",
-  M: "Medio",
-  B: "Bajo",
-};
-
-function bandScore(b: BandKey) {
-  if (b === "A") return 85;
-  if (b === "M") return 60;
-  return 35;
-}
 
 function bandTone(b: BandKey) {
   if (b === "A")
@@ -64,58 +63,6 @@ function severityTone(s: "high" | "medium" | "low") {
     text: "text-[var(--text-secondary)]",
     label: "Baja",
   };
-}
-
-function capFirst(s: string) {
-  if (!s) return s;
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
-
-// ============================================================================
-// Tipos del payload que viene de /api/sessions/[id]/report
-// ============================================================================
-
-interface ReportPayload {
-  rubric_version: string;
-  case_version: string;
-  variant: string;
-  judge_model: string;
-  duration_ms: number;
-  dimensions: Array<{
-    id: DimensionId;
-    band: BandKey;
-    rationale: string;
-    confidence: number;
-  }>;
-  risk_events: Array<{
-    type: string;
-    severity: "low" | "medium" | "high";
-    step_ordinal: number;
-    evidence_text: string;
-  }>;
-  gaps: Array<{
-    id: string;
-    severity: "low" | "medium" | "high";
-    observed: string;
-    why_matters: string;
-  }>;
-  strengths: string[];
-  recommendation: {
-    action: "pilotar" | "entrenar" | "pausar" | "escalar";
-    applies_to: string;
-    next_week_actions: string[];
-    reason: string;
-  };
-}
-
-interface ReportEnvelope {
-  status: "none" | "pending_review" | "published";
-  session_status?: string | null;
-  report_id?: string;
-  generated_at?: string;
-  shared_at?: string | null;
-  payload?: ReportPayload;
-  message?: string;
 }
 
 // ============================================================================
@@ -280,24 +227,18 @@ function ReportView({
   sessionId,
 }: {
   payload: ReportPayload;
-  status: "pending_review" | "published";
+  status: "pending_review" | "published" | "shared";
   generatedAt?: string;
   sessionId: string;
 }) {
-  // Normalizar dimensions a Record<id, band> para reuso del UI existente.
-  const bands: Record<string, BandKey> = {};
-  for (const d of payload.dimensions) {
-    bands[d.id] = d.band;
-  }
+  const [shareUrl, setShareUrl] = useState<string | null>(null);
+  const [shareStatus, setShareStatus] = useState<
+    "idle" | "creating" | "ready" | "copied" | "error"
+  >("idle");
+  const [shareError, setShareError] = useState<string | null>(null);
 
-  const overallScore = Math.round(
-    DIMENSIONS.reduce(
-      (acc, d) => acc + bandScore((bands[d.id] ?? "M") as BandKey),
-      0,
-    ) / DIMENSIONS.length,
-  );
-  const overallBand: BandKey =
-    overallScore > 75 ? "A" : overallScore > 50 ? "M" : "B";
+  const bands = dimensionsById(payload);
+  const { score: overallScore, band: overallBand } = computeOverall(payload);
 
   const generatedDate = generatedAt ? new Date(generatedAt) : null;
   const evaluatedAtStr = generatedDate
@@ -305,6 +246,34 @@ function ReportView({
     : "—";
 
   const isPending = status === "pending_review";
+
+  async function createShareLink() {
+    setShareStatus("creating");
+    setShareError(null);
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/report/share`, {
+        method: "POST",
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(
+          data?.error ?? `No pudimos generar el link (${res.status}).`,
+        );
+      }
+      setShareUrl(data.share_url);
+      setShareStatus("ready");
+    } catch (err) {
+      setShareStatus("error");
+      setShareError(err instanceof Error ? err.message : "Error inesperado.");
+    }
+  }
+
+  async function copyShareLink() {
+    if (!shareUrl) return;
+    await navigator.clipboard?.writeText(shareUrl);
+    setShareStatus("copied");
+    window.setTimeout(() => setShareStatus("ready"), 1800);
+  }
 
   return (
     <>
@@ -526,13 +495,17 @@ function ReportView({
                         >
                           {tone.label}
                         </span>
-                        <span className="text-[14px] text-[var(--text-primary)] truncate capitalize">
-                          {e.type.replace(/_/g, " ")}
+                        <span className="text-[14px] text-[var(--text-primary)] truncate">
+                          {humanRiskType(e.type)}
                         </span>
                       </div>
                     </div>
                     <blockquote className="mt-4 pl-4 border-l-2 border-[var(--border)] text-[14px] text-[var(--text-secondary)] italic leading-[1.65]">
-                      «{capFirst(e.evidence_text)}»
+                      «
+                      {capFirst(
+                        redactSensitiveEvidence(e.evidence_text, e.severity),
+                      )}
+                      »
                     </blockquote>
                   </motion.div>
                 );
@@ -611,8 +584,32 @@ function ReportView({
           <motion.div
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.1 }}
-            className="mt-10 flex flex-col sm:flex-row gap-3"
+            className="mt-10 flex flex-col sm:flex-row sm:flex-wrap gap-3"
           >
+            <Button
+              as={Link}
+              href={`/api/sessions/${sessionId}/report/pdf`}
+              radius="full"
+              variant="bordered"
+              size="lg"
+              className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"
+            >
+              Descargar PDF
+            </Button>
+            <Button
+              radius="full"
+              variant="bordered"
+              size="lg"
+              isLoading={shareStatus === "creating"}
+              onPress={shareUrl ? copyShareLink : createShareLink}
+              className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"
+            >
+              {shareStatus === "copied"
+                ? "Link copiado"
+                : shareUrl
+                  ? "Copiar link"
+                  : "Generar link compartible"}
+            </Button>
             <Button
               as={Link}
               href="/dashboard"
@@ -633,6 +630,31 @@ function ReportView({
               Volver a landing
             </Button>
           </motion.div>
+
+          {(shareUrl || shareError) && (
+            <motion.div
+              {...fadeUp}
+              transition={{ ...fadeUp.transition, delay: 0.16 }}
+              className="mt-5 card-apple bg-[var(--surface)] p-4"
+            >
+              {shareUrl ? (
+                <>
+                  <div className="eyebrow">Link compartible</div>
+                  <p className="mt-2 break-all text-[13px] text-[var(--text-primary)] mono">
+                    {shareUrl}
+                  </p>
+                  <p className="mt-2 text-[12px] text-[var(--text-secondary)]">
+                    Válido por 30 días. Los eventos de riesgo alto se muestran
+                    con datos sensibles anonimizados.
+                  </p>
+                </>
+              ) : (
+                <p className="text-[13px] text-[var(--band-b-text)]">
+                  {shareError}
+                </p>
+              )}
+            </motion.div>
+          )}
         </section>
 
         {/* Meta footer */}

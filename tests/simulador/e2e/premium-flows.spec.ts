@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import {
+  admin,
   cleanupSyntheticData,
   createOrgBundle,
   createSyntheticUser,
@@ -153,6 +154,152 @@ test("manager ve dashboard agregado de su sprint", async ({ page }) => {
   await expect(page.getByText("Dashboard del manager")).toBeVisible();
   await expect(page.getByText(`E2E Manager Sprint ${runId}`)).toBeVisible();
   await expect(page.getByText("Resultado agregado")).toBeVisible();
+});
+
+test("reporte publicado puede exportar PDF y generar link compartible", async ({
+  page,
+}) => {
+  const employee = await createSyntheticUser("report");
+  const { sprintId } = await createOrgBundle({
+    label: "report",
+    bridgeUserId: employee.bridgeUserId,
+    teamRole: "employee",
+    orgRole: "viewer",
+    sprintName: `E2E Report Sprint ${runId}`,
+  });
+
+  const { data: variant, error: variantError } = await admin
+    .schema("simulador")
+    .from("case_variants")
+    .select("id")
+    .eq("status", "active")
+    .eq("variant_role", "primary")
+    .limit(1)
+    .single();
+  expect(variantError, variantError?.message).toBeNull();
+  if (!variant) throw new Error("missing active primary variant");
+
+  const { data: assignment, error: assignmentError } = await admin
+    .schema("simulador")
+    .from("assignments")
+    .insert({
+      sprint_id: sprintId,
+      user_id: employee.bridgeUserId,
+      case_variant_id: variant.id,
+      assignment_kind: "primary",
+      status: "completed",
+    })
+    .select("id")
+    .single();
+  expect(assignmentError, assignmentError?.message).toBeNull();
+  if (!assignment) throw new Error("missing report assignment");
+
+  const { data: session, error: sessionError } = await admin
+    .schema("simulador")
+    .from("simulation_sessions")
+    .insert({
+      assignment_id: assignment.id,
+      case_variant_id: variant.id,
+      user_id: employee.bridgeUserId,
+      sprint_id: sprintId,
+      status: "evaluated",
+      completed_at: new Date().toISOString(),
+    })
+    .select("id")
+    .single();
+  expect(sessionError, sessionError?.message).toBeNull();
+  if (!session) throw new Error("missing report session");
+
+  const payload = {
+    rubric_version: "rubric_marketing_v1@1.0.0",
+    case_version: "marketing_urgent_campaign_pii@v1",
+    variant: "primary",
+    judge_model: "e2e-fixture",
+    duration_ms: 1200,
+    dimensions: [
+      { id: "contexto", band: "A", rationale: "encuadra bien audiencia y deadline", confidence: 0.9 },
+      { id: "privacidad", band: "M", rationale: "anonimiza parcialmente el dataset", confidence: 0.8 },
+      { id: "validacion", band: "A", rationale: "valida claims antes de enviar", confidence: 0.9 },
+      { id: "juicio", band: "M", rationale: "detecta escalamiento pero tarde", confidence: 0.8 },
+      { id: "decision", band: "A", rationale: "entrega una acción clara", confidence: 0.9 },
+    ],
+    risk_events: [
+      {
+        type: "hidden_pii_usage_from_authority",
+        severity: "high",
+        step_ordinal: 4,
+        evidence_text: "Usé mariana.lopez@aurorares.mx y USD 24000 para priorizar el email.",
+      },
+    ],
+    gaps: [
+      {
+        id: "no_risk_flag_upward",
+        severity: "high",
+        observed: "aceptó usar revenue potential sin bandera explícita.",
+        why_matters: "puede convertir datos sensibles en segmentación comercial no aprobada.",
+      },
+    ],
+    strengths: ["separó el brief del output del modelo antes de enviar."],
+    recommendation: {
+      action: "entrenar",
+      applies_to: "la persona y el proceso de revisión del equipo.",
+      next_week_actions: [
+        "definir qué campos se anonimizan antes de usar IA.",
+        "agregar revisión humana antes de lanzar campañas con datos sensibles.",
+      ],
+      reason: "buen criterio general con un evento de riesgo alto que requiere entrenamiento.",
+    },
+  };
+
+  const { error: reportError } = await admin
+    .schema("simulador")
+    .from("reports")
+    .insert({
+      sprint_id: sprintId,
+      user_id: employee.bridgeUserId,
+      simulation_session_id: session.id,
+      report_type: "participant_mirror",
+      status: "published",
+      payload_json: payload,
+    });
+  expect(reportError, reportError?.message).toBeNull();
+
+  await login(page, employee.email);
+  await expect(page).toHaveURL(/\/dashboard|\/onboarding\/org/);
+  await page.goto(`/report/${session.id}`);
+  await expect(page.getByText("Descargar PDF")).toBeVisible();
+
+  const pdfMeta = await page.evaluate(async (sessionId) => {
+    const res = await fetch(`/api/sessions/${sessionId}/report/pdf`);
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    return {
+      status: res.status,
+      type: res.headers.get("content-type"),
+      prefix: String.fromCharCode(...bytes.slice(0, 4)),
+      size: bytes.byteLength,
+      body:
+        res.status === 200
+          ? null
+          : new TextDecoder().decode(bytes.slice(0, 500)),
+    };
+  }, session.id);
+  expect(pdfMeta.status, pdfMeta.body ?? "pdf request failed").toBe(200);
+  expect(pdfMeta.type).toContain("application/pdf");
+  expect(pdfMeta.prefix).toBe("%PDF");
+  expect(pdfMeta.size).toBeGreaterThan(1000);
+
+  const share = await page.evaluate(async (sessionId) => {
+    const res = await fetch(`/api/sessions/${sessionId}/report/share`, {
+      method: "POST",
+    });
+    return { status: res.status, body: await res.json() };
+  }, session.id);
+  expect(share.status, JSON.stringify(share.body)).toBe(200);
+  expect(share.body.share_url).toContain("/shared/report/");
+
+  await page.goto(share.body.share_url);
+  await expect(page.getByText("Reporte ejecutivo compartido")).toBeVisible();
+  await expect(page.getByText("[email]")).toBeVisible();
 });
 
 test("empleado entra a su dashboard y abre el caso asignable", async ({ page }) => {

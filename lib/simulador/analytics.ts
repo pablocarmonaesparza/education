@@ -21,6 +21,8 @@ export const SIMULADOR_ANALYTICS_EVENTS = [
   "judge_failed",
   "report_viewed",
   "report_exported",
+  "report_share_link_generated",
+  "report_share_link_viewed",
   "practice_unlocked",
   "practice_started",
   "practice_completed",
@@ -36,6 +38,8 @@ export const SIMULADOR_ANALYTICS_EVENTS = [
   "billing_checkout_started",
   "billing_checkout_completed",
   "admin_review_assigned",
+  "admin_review_signature_added",
+  "admin_review_report_published",
   "admin_review_completed",
 ] as const;
 

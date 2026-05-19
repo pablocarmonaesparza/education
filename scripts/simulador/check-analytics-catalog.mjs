@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 
-const migrationPath =
-  "supabase/migrations/20260519022000_simulador_analytics_compliance_rubric_freeze_022.sql";
+const migrationsDir = "supabase/migrations";
 const codePath = "lib/simulador/analytics.ts";
 
 function read(path) {
@@ -11,14 +11,29 @@ function read(path) {
 }
 
 function extractSqlEvents(sql) {
-  const valuesBlock = sql.match(
-    /insert into simulador\.analytics_events_catalog[\s\S]*?values([\s\S]*?)on conflict/u,
-  )?.[1];
-  if (!valuesBlock) {
+  const events = new Set();
+  const insertBlocks = sql.matchAll(
+    /insert into simulador\.analytics_events_catalog[\s\S]*?values([\s\S]*?)on conflict/gu,
+  );
+  for (const block of insertBlocks) {
+    const matches = [...block[1].matchAll(/\('([a-z0-9_]+)',\s*'[^']+',/gu)];
+    for (const match of matches) events.add(match[1]);
+  }
+  return events;
+}
+
+function extractAllSqlEvents() {
+  const events = new Set();
+  for (const file of readdirSync(migrationsDir).filter((item) =>
+    item.endsWith(".sql"),
+  )) {
+    const fileEvents = extractSqlEvents(read(join(migrationsDir, file)));
+    for (const event of fileEvents) events.add(event);
+  }
+  if (events.size === 0) {
     throw new Error("Could not find analytics_events_catalog seed values.");
   }
-  const matches = [...valuesBlock.matchAll(/\('([a-z0-9_]+)',\s*'[^']+',/gu)];
-  return new Set(matches.map((match) => match[1]));
+  return events;
 }
 
 function extractTsEvents(source) {
@@ -36,7 +51,7 @@ function difference(left, right) {
   return [...left].filter((item) => !right.has(item)).sort();
 }
 
-const sqlEvents = extractSqlEvents(read(migrationPath));
+const sqlEvents = extractAllSqlEvents();
 const tsEvents = extractTsEvents(read(codePath));
 
 const missingInTs = difference(sqlEvents, tsEvents);
@@ -48,7 +63,7 @@ if (missingInTs.length > 0 || missingInSql.length > 0) {
     console.error(`Missing in lib/simulador/analytics.ts: ${missingInTs.join(", ")}`);
   }
   if (missingInSql.length > 0) {
-    console.error(`Missing in migration 022 seed: ${missingInSql.join(", ")}`);
+    console.error(`Missing in analytics catalog migrations: ${missingInSql.join(", ")}`);
   }
   process.exit(1);
 }

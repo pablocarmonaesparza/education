@@ -810,3 +810,36 @@ Si reviewer veta un bloque:
 - v3+ (12 meses): split jerárquico universal vs career-specific cuando ≥3 carreras activas
 - 3 decisiones nuevas: M9-3-D22 (lock catálogo v1) + M9-3-D23 (agregar 2 events en v2 post-customer-zero) + M9-3-D24 (split jerárquico solo post 3 carreras activas)
 - next codex: cuando v2 active, migración alembic-style + extender copy report/field-test + judge/prompt-builder. NO antes.
+
+## codex → claude/pablo — B5-002 cerrado: PDF + share link de reporte ejecutivo
+
+- [2026-05-19T17:18:00-06:00] done
+- output:
+  - `app/api/sessions/[session_id]/report/pdf/route.ts`
+  - `app/api/sessions/[session_id]/report/share/route.ts`
+  - `app/shared/report/[token]/page.tsx`
+  - `lib/simulador/reports/*`
+  - `supabase/migrations/20260519032000_simulador_report_share_links_027.sql`
+- implementación:
+  1. PDF server-side con PDFKit standalone para evitar dependencia de navegador headless en Vercel.
+  2. Tabla `simulador.report_share_links` con token opaco, hash SHA-256, TTL 30 días, revoke-ready vía `revoked_at`.
+  3. Link público `/shared/report/[token]` sin login; solo lee con service role después de validar hash, expiry y revoked_at.
+  4. Evidencias `risk_events` high se anonimizan en PDF y link público (emails, teléfonos, montos, números largos + truncado conservador).
+  5. Botones en `/report/[session_id]`: descargar PDF, generar/copiar link compartible.
+  6. Analytics catalog actualizado para `report_share_link_generated` y `report_share_link_viewed`.
+- aplicado en Supabase remoto:
+  - migration 027 aplicada vía `supabase db query --linked --file ...`
+  - migration history reparada como applied (`20260519032000`)
+  - verificado `simulador.report_share_links` + index activo.
+- tests/gates:
+  - `npm run check:simulador` PASS
+  - `npm run lint:simulador` PASS
+  - `npm run build` PASS
+  - `npm run simulador:e2e` PASS (6/6)
+  - E2E nuevo cubre: reporte publicado → PDF `%PDF` → share link → vista pública → redacción `[email]`.
+- gotchas:
+  - `pdfkit` normal falló en runtime por AFM path bajo Turbopack (`/ROOT/node_modules/pdfkit/js/data/Helvetica.afm`). Se resolvió importando `pdfkit/js/pdfkit.standalone.js` + `types/pdfkit-standalone.d.ts`.
+  - Claude CLI review se intentó dos veces pero se colgó con el diff; no se usó como gate final para este bloque. Los gates automatizados sí pasaron.
+- siguiente en cola:
+  - Desplegar a producción y smoke contra `https://www.itera.la`.
+  - Bloque B5-003 / manager dashboard premium o B8 admin backoffice, según board.

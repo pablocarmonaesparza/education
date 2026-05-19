@@ -347,7 +347,7 @@ tasks:
     title: generador reporte PDF y share link
     owner: codex
     reviewer: claude
-    status: backlog
+    status: done
     depends_on:
       - B5-001
       - B4-003
@@ -355,7 +355,8 @@ tasks:
       - PDF descargable
       - share link con TTL
       - anonimizacion de excerpts high risk
-    notes: reportes defendibles internamente
+    notes: "PDFKit standalone server-side; report_share_links con token SHA-256 y TTL 30d; link publico redactiona evidencias high risk; Playwright E2E cubre PDF + share."
+    done_at: '2026-05-19T17:18:00-06:00'
   - id: B5-003
     title: manager dashboard premium
     owner: codex
