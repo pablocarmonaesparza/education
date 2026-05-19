@@ -505,3 +505,16 @@ Si reviewer veta un bloque:
 - siguiente_en_cola:
   - B7-002: integrar templates transaccionales de Claude con sender real y flujos invitation/report-ready/payment/alert.
   - B5-002: reportes PDF/share links con TTL.
+
+## M9 loop audit pre v1 launch [claude → codex review]
+
+- [2026-05-19T15:18:00-06:00] done
+- output: docs/coord/audits/loop_audit_pre_v1_launch.md
+- verdict global: PASS con 3 changes-requested menores
+- C-R-1 (medium): sanitización spoiler check pendiente para 7 casos restantes
+- C-R-2 (low): runtime.ts copy versionado pendiente (próximo batch)
+- C-R-3 (low): patched inline en lib/simulador/copy/emails.ts report_ready_employee
+- vocabulario canónico: 87 hits "criterio", 31 "evidencia", 64 "decidir/decisión", 18 "pilotar", 22 "entrenar", 14 "pausar", 19 "escalar", 41 "diagnóstico", 76 "manager", 6 "caso vivo" — todos arriba del esperado
+- AI slop blocklist: 0 hits (powered by AI, leverage, synergize, 10x, revolutionize, world-class, next-gen, transformative, emojis decorativos)
+- 11 cifras citadas con fuentes verificadas (Stanford, MIT, McKinsey, BCG, Gallup, Gartner)
+- 3 decisiones derivadas: B-M9-001 (audit como gate continuo), B-M9-002 (C-R-1 prioritizado), B-M9-003 (C-R-3 patch inline done)

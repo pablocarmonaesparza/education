@@ -147,6 +147,8 @@ Si necesitas más tiempo o tienes preguntas, responde a {manager_email}.
 
 Listo el reporte de tu sesión en Itera.
 
+Itera midió tu criterio operativo al usar IA (no tu conocimiento de IA). El reporte traduce esa medición a bandas por dimensión + recomendación accionable para tu manager.
+
 Resumen ejecutivo:
 - Banda general: {overall_band}
 - Dimensiones evaluadas: contexto, privacidad, validación, juicio, decisión
@@ -162,6 +164,7 @@ Tu reporte es confidencial entre tú y tu manager autorizado.
 — Itera`,
     body_html: `<p>Hola <strong>{full_name}</strong>,</p>
 <p>Listo el reporte de tu sesión en Itera.</p>
+<p>Itera midió tu <strong>criterio operativo</strong> al usar IA (no tu conocimiento de IA). El reporte traduce esa medición a bandas por dimensión + recomendación accionable para tu manager.</p>
 <p><strong>Resumen ejecutivo:</strong></p>
 <ul>
   <li><strong>Banda general:</strong> {overall_band}</li>
