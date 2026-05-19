@@ -492,11 +492,15 @@ Si reviewer veta un bloque:
   - employee dashboard -> abrir caso
 - gates passed:
   - `npm run simulador:e2e` → PASS, 4/4
+  - `E2E_BASE_URL=https://www.itera.la npm run simulador:e2e` → PASS, 4/4
   - `npm run simulador:test-rls` → PASS
   - `npm run check:simulador` → PASS
   - `npm run lint:simulador` → PASS
   - `npm run coord:lint` → PASS
   - `npm run build` → PASS
+- production:
+  - deploy `dpl_DE5PLgYSo62Hd8q4nhj5zeDQfHCo`
+  - alias activo `https://www.itera.la`
 - gotchas:
   - Se intentó revisión por Claude Code CLI con prompt acotado al diff B10-002; no devolvió salida y se cortó para no dejar proceso colgado.
   - Playwright debe usar `http://localhost:3000`, no `127.0.0.1`, porque Next dev bloquea el origin y el runtime queda en loading.
