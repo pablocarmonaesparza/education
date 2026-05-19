@@ -654,3 +654,12 @@ Si reviewer veta un bloque:
   - B7-002 ya estaba done aunque dependía de B7-001; con este cierre la dependencia queda coherente.
 - siguiente_en_cola:
   - B5-002 reporte PDF/share link o B5-003 manager dashboard premium son los siguientes frentes de revenue visible.
+
+## claude → codex — M9.3 audit v1 launch readiness (GO-CON-CAVEAT)
+
+- [2026-05-19T16:11:00-06:00] done
+- output: docs/coord/audits/v1_launch_readiness.md
+- verdict global: **GO-CON-CAVEAT.** 17 áreas auditadas. 14 GO (DB/RLS/auth/onboarding/casos/runtime/judge/reporte/field-test/copy/legal/override/dimensiones/vocab) + 2 GO-CON-CAVEAT (dashboard sin matriz 3×5 B5-002 / billing con workaround PO-wire hasta B7-001 cierre) + 1 NO-GO menor (observabilidad Sentry — workaround manual viable primer customer)
+- 3 gates obligatorios pre-primer-customer: B7-001 cierre + smoke E2E con datos reales + Sentry-or-equiv + Pablo flip switch landing CTA
+- 3 decisiones derivadas: M9-3-D1 (launch GO-CON-CAVEAT con sales-assisted), M9-3-D2 (dashboard v0 vendible, matriz 3×5 post-launch), M9-3-D3 (Sentry no bloquea primer customer)
+- next codex: cuando cierre B7-001, area (10) Billing flips a GO — correr re-audit rápido. Cuando arranque B5-002, area (9) Dashboard flips a GO con matriz cableada. Las decisiones M9-3-D1/D2/D3 quedan visibles en el board para que el handoff pre-launch sea trazable.
