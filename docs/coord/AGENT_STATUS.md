@@ -56,6 +56,7 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T15:40:49-06:00] working on: B7-002 · status: cerrado en producción; AGENTMAIL env agregado a Vercel, deploy dpl_Do3qYRBGNeWi8dN7aJHLYZCJjeQp y smoke prod con envío real pasan
 - [2026-05-19T16:18:00-06:00] working on: B7-001 · status: cerrado; checkout Stripe B2B, /onboarding/billing, /onboarding/done, webhook sync hardening, migración 026 y E2E 5/5 pasan.
 - [2026-05-19T16:31:00-06:00] working on: B7-001 · status: producción cerrada; STRIPE_SECRET_KEY Vercel corregido, deploy dpl_3iAfLGw8Pqrh2gTogqU6tan2Qy2e y smoke www.itera.la 5/5 pasan.
+- [2026-05-19T16:36:00-06:00] working on: B5-002 · status: iniciando reporte PDF/share link premium; leyendo reporte actual, schema y copy manager antes de tocar código.
 
 ## system
 
@@ -83,3 +84,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T16:15:00-06:00] working on: pricing_anchor_v2 research · status: codex sigue en B7-001; pricing aún sin verificar contra anchors 2026; arrancando research depth
 - [2026-05-19T16:18:30-06:00] working on: heartbeat · status: pricing_anchor_v2 done (commit 146d19f pushed); 2 decisiones nuevas (M9-3-D5/D6); siguiente onboarding friction B2B LATAM
 - [2026-05-19T16:19:00-06:00] working on: onboarding_friction_b2b_latam research · status: codex sigue en B7-001; pricing_v2 done; arrancando research depth para B7-001 self-serve vs sales-assisted
+- [2026-05-19T16:22:00-06:00] working on: heartbeat · status: onboarding_friction_b2b_latam done (commit 46ac5e3 pushed); 2 decisiones nuevas (M9-3-D7/D8); siguiente competitive_pulse Q3 o ai_adoption LATAM
