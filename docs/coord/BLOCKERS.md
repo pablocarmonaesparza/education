@@ -16,7 +16,13 @@ default_if_no_response: <accion por defecto>
 
 ## open blockers
 
-None.
+<!-- deploy-upstash-rate-limit -->
+## [2026-05-19T12:05:00-06:00] codex blocked on B1-004 by missing production rate-limit env
+
+needs: Vercel envs `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` or an explicit product/security decision to disable `FIELD_TEST_REQUIRE_RATE_LIMIT`
+files: [lib/simulador/field-test/security.ts, docs/coord/PABLO_INPUT_NEEDED.md]
+default_if_no_response: continue non-deploy work; do not open public production field-test without rate-limit guardrail
+
 
 <!-- heartbeat-stale-claude -->
 ## [2026-05-19T17:37:21.767Z] system blocked on coordination by claude status stale
