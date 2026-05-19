@@ -14,6 +14,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const runtime = "nodejs";
 
@@ -26,6 +27,8 @@ export async function POST(req: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: "No autenticado." }, { status: 401 });
   }
+
+  const admin = createAdminClient();
 
   let body: {
     name?: string;
@@ -47,12 +50,28 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Resolver simulador.users.id del auth user.
-  const { data: simUser, error: simUserError } = await supabase
+  // Resolver/crear simulador.users.id del auth user. Este endpoint crea la
+  // primera org del buyer, así que no podemos depender de RLS de membresía.
+  const { data: bridgeId, error: bridgeError } = await admin
+    .schema("simulador")
+    .rpc("ensure_bridge_user", { p_auth_user_id: user.id });
+
+  if (bridgeError || !bridgeId) {
+    console.error("[api/orgs] ensure_bridge_user failed:", bridgeError);
+    return NextResponse.json(
+      {
+        error:
+          "No se pudo sincronizar tu cuenta. Reintenta iniciar sesión.",
+      },
+      { status: 500 },
+    );
+  }
+
+  const { data: simUser, error: simUserError } = await admin
     .schema("simulador")
     .from("users")
     .select("id")
-    .eq("auth_user_id", user.id)
+    .eq("id", bridgeId)
     .maybeSingle();
 
   if (simUserError || !simUser) {
@@ -66,10 +85,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Crear org + membership en transacción manual (Supabase no soporta tx
-  // en cliente; usamos service-role-like: insert org, capturar id, insert
-  // membership. Si falla el segundo, rollback manual del org).
-  const { data: org, error: orgError } = await supabase
+  // Crear org + membership inicial con admin client. El usuario todavía no
+  // puede cumplir `is_org_admin(organization_id)` porque esa row se crea aquí.
+  const { data: org, error: orgError } = await admin
     .schema("simulador")
     .from("organizations")
     .insert({
@@ -89,7 +107,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { error: memberError } = await supabase
+  const { error: memberError } = await admin
     .schema("simulador")
     .from("organization_memberships")
     .insert({
@@ -101,7 +119,7 @@ export async function POST(req: NextRequest) {
   if (memberError) {
     console.error("[api/orgs] org_membership.insert failed:", memberError);
     // Rollback: borrar la org que acabamos de crear.
-    await supabase
+    await admin
       .schema("simulador")
       .from("organizations")
       .delete()
