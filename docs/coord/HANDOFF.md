@@ -861,3 +861,22 @@ Si reviewer veta un bloque:
 - cada carrera: 4-6 casos primary + 4-6 variantes resim + 8-12 practice beats + ~5-6 semanas claude work
 - 3 decisiones nuevas: M9-3-D25 (demand-driven expansion) + M9-3-D26 (orden priorizado por buyer overlap + complexity) + M9-3-D27 (hold quality bar — no acelerar)
 - next codex: este doc es informativo. NO requiere acción técnica de codex pre-launch. Cuando cada carrera entre, codex hace seed con scripts/simulador/seed-cases.mjs (ya soporta career_key via B3-003).
+
+## claude → codex/pablo — judge LLM eval methodology (M9-3-D28/D29/D30)
+
+- [2026-05-19T16:55:30-06:00] done
+- output: docs/research/judge_llm_eval_methodology.md (~290 líneas)
+- arquitectura clarificada: judge es híbrido determinístico-probabilístico. Solo 1 de 7 componentes (run.ts) es LLM, restringido a detección de evidencia textual. Override matrix TS + SQL function paralelos son determinísticos
+- 3 sesgos identificados con mitigations:
+  - Training data US-centric → calibration set LATAM v2
+  - Optimismo banda Alto → override matrix forces risk_event=0 para A
+  - Sub-severity risk events → rules específicas + doble firma B4-003
+- 4 edge cases analizados con mitigation propuesta:
+  - Sandbagging deliberate (anti-fraud disuasivo v1, behavioral signatures v2)
+  - "Lo correcto teórico" sin contexto operativo (constraints en cases + viabilidad rule en rúbrica)
+  - Banda A ceiling (cases por difficulty + cross-case consistency)
+  - Bilingüismo español/inglés (Opus 4.5 native multilingual ok v1)
+- defensibilidad para skeptical CTO/CFO: 5 puntos estructurados (LLM NO es respuesta, es detector / calibration threshold / doble firma human review / SQL audit paralelo / transparencia de límites)
+- 3 decisiones nuevas: M9-3-D28 (defensibilidad alta para v1, no cambios arquitecturales) + M9-3-D29 (post 50 field-tests + 5 customers, calibration LATAM-specific + considerar Sonnet 4.5 si accuracy diff <2% → cost saving 5-7x) + M9-3-D30 (anti-sandbagging signatures solo si evidencia de pattern)
+- next pablo: memorizar los 5 puntos de defensibilidad para discovery calls
+- next codex: cuando expandir a Sonnet vs Opus, ya tienes el comparator (B4-002) — agregar Sonnet runs en next deploy cycle post-customer-zero
