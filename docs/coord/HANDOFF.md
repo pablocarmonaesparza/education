@@ -944,3 +944,46 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D36 (4 fases secuenciales trigger-driven) + M9-3-D37 (scope explícito v2 ≠ v3+) + M9-3-D38 (no comunicar elapsed externamente)
 - next pablo: leer este roadmap pre F1 trigger (cuando 5 customers cierren)
 - next codex: cuando B5-002 entre, esto es Fase 1 trabajo. Cuando B7-001 cierre + F1 active, agregar Sentry observability
+
+## codex → claude/pablo — B4-001 cerrado: runtime con metadata premium
+
+- [2026-05-19T17:03:16-06:00] done
+- output:
+  - `lib/simulador/runtime-case-meta.ts`
+  - `lib/simulador/use-session.ts`
+  - `app/api/sessions/*`
+  - `app/api/field-test/sessions/*`
+  - `components/simulador/RuntimeExperience.tsx`
+- que cambió:
+  - APIs auth y field-test devuelven `case_meta` con título, slug, versión, dificultad, duración, nivel, career, variant slug y variant role.
+  - nuevas sesiones auth guardan `metadata.case_meta`; field-test guarda `metadata_json.case_meta`.
+  - el runtime renderiza una tarjeta lateral y el primer slide con `N1/N2/N3`, career y duración.
+  - fallback canónico de títulos para los 8 casos Marketing/Growth cuando la BD viva trae slug como `title`.
+- decisión técnica:
+  - metadata no incluye dimensiones, pesos, criterios, gap IDs ni risk events. Mantiene el principio anti-spoiler.
+  - se conserva el state machine existente; no cambia persistencia de respuestas ni completion.
+- gates:
+  - `npm run check:simulador` PASS
+  - `npm run lint:simulador` PASS
+  - `npm run build` PASS
+  - `npm run simulador:e2e` PASS (6/6)
+- nota:
+  - production deploy sigue bloqueado por cuota diaria de Vercel (`api-deployments-free-per-day`). Código listo para desplegar cuando se libere cuota o se mueva plan.
+
+## claude → codex/pablo — retention metrics B2B SaaS assessment (M9-3-D39..D42)
+
+- [2026-05-19T17:11:00-06:00] done
+- output: docs/research/retention_metrics_b2b_saas_assessment.md (~300 líneas)
+- problema resuelto: Itera NO es B2B SaaS clásico (subscription) — es B2B SaaS assessment (contratos discretos $4-15K). Métricas MRR/ARR/Churn no aplican directo
+- 5 métricas canónicas adaptadas:
+  - RCR (Repeat Contract Rate): % orgs con ≥2 sprints en 12m. Target verde 40%
+  - ERR (Expansion Revenue Rate): revenue 2do contrato / 1ro. Target verde mediana ≥110%
+  - TTRC (Time to Repeat Contract): mediana ≤120 días entre sprint 1 cierre y sprint 2 contrato
+  - CAC Payback (sprint level): <2 sprints para recuperar adquisición
+  - NPS 90d delayed: ≥30 a 90 días post-sprint (NO inmediato — evita "deliverable shine bias")
+- 3 métricas proxy pre-customer-zero: RCI (intent +30d) ≥60% · FSRR (recommendation +14d) ≥70% · Engagement intra-sprint ≥80% completion
+- interpretación cross-metric: 6 combinaciones documentadas (RCR alto+ERR alto = product-market fit; RCR bajo+NPS alto = one-shot extraction; etc.)
+- anti-patterns identificados: confundir engagement con retention, NPS immediate como retention, tratar customer-zero como signal estadístico, forecastear ARR con N<50, tracking >20 métricas vanity
+- 4 decisiones nuevas: M9-3-D39 (5 métricas canónicas Itera) + M9-3-D40 (manual v1 spreadsheet, automate post 10 customers) + M9-3-D41 (NPS 90d delayed methodology) + M9-3-D42 (no forecastear ARR con N<50)
+- next claude: tracking manual durante v1 launch (5+3 métricas en spreadsheet)
+- next codex: implementar tabla simulador.customer_retention_events + dashboard /admin/retention en Fase 4 v2 roadmap o post 10 customers (lo que llegue primero)
