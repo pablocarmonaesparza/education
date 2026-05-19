@@ -496,7 +496,7 @@ tasks:
     title: GStack gates como Definition of Done
     owner: shared
     reviewer: shared
-    status: backlog
+    status: done
     depends_on:
       - B0-001
     dod:
@@ -504,7 +504,8 @@ tasks:
         review, qa, design-review, cso, canary, retro, autoplan, benchmark y health documentados por
         tipo de bloque
       - HANDOFF.md cita outputs de gates aplicables
-    notes: quality gates no opcionales
+    notes: docs/quality/gstack_gates_dod.md define gates por tipo de bloque + comandos + evidencia requerida
+    done_at: '2026-05-19T18:05:00-06:00'
   - id: B10-002
     title: testing tecnico premium
     owner: codex
@@ -591,7 +592,7 @@ tasks:
       captura email opcional, demo del producto sin login
     owner: codex
     reviewer: claude
-    status: backlog
+    status: done
     depends_on:
       - B1-004
     dod:
@@ -599,7 +600,10 @@ tasks:
       - >-
         touch files: app/field-test/marketing-urgent-campaign-pii/page.tsx,
         lib/simulador/copy/field-test.ts
-    notes: change_type=process
+    notes: >-
+      change_type=process | reconciliado con B6-001/B6-002: field-test publico live,
+      mini-report, lead capture opcional, admin/leads funnel y survey L1 post-submit
+    done_at: '2026-05-19T18:05:00-06:00'
   - id: B9-001-D7
     title: >-
       Diferenciación copy en sección 'how we compare' del landing/sales — incluir las 3 frases

@@ -1221,6 +1221,29 @@ Si reviewer veta un bloque:
   - `npm run simulador:e2e` PASS (7/7, ahora cubre `/survey` + dedupe)
   - Claude Code CLI PASS sin P0/P1
 
+## codex → claude/pablo — B10-001 cerrado: GStack gates como DoD
+
+- [2026-05-19T18:05:00-06:00] done
+- output: `docs/quality/gstack_gates_dod.md`
+- que cambió:
+  - Quedó documentada la matriz de gates por tipo de bloque: migración, backend, surface, runtime, contenido, reporte, billing, admin y deploy.
+  - Cada cierre de bloque debe citar evidencia de gates en `docs/coord/HANDOFF.md`.
+  - Si un gate aplica y no pasa, el task debe quedar `blocked`, no `done`.
+  - El mínimo técnico del Simulador queda explícito: `check:simulador`, `lint:simulador`, `build`, `simulador:e2e`, `board-lint`.
+- nota: Los skills GStack son capa adicional para review/qa/design/cso/canary/benchmark; no sustituyen checks del repo.
+
+## codex → claude/pablo — B9-001-D6 reconciliado: field-test como canal Forage-style
+
+- [2026-05-19T18:05:00-06:00] done
+- estado:
+  - Ya estaba cubierto por B6-001/B6-002 y B9-002-D6.
+  - `/field-test/marketing-urgent-campaign-pii` vive sin login.
+  - Mini-reporte inline visible después del caso.
+  - Email opcional post-valor alimenta `leads_inbox`.
+  - `/admin/leads` muestra funnel rolling 30 días.
+  - Survey L1 post-submit ya captura reaction/relevance sin contaminar el runtime.
+- decisión: se marca done en board para eliminar tarea fantasma; no requirió código nuevo.
+
 ## claude → pablo — comms calendar T-30 (M9-3-D73/D74/D75)
 
 - [2026-05-19T17:55:00-06:00] done
