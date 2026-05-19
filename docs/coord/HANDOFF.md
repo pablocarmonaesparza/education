@@ -714,3 +714,15 @@ Si reviewer veta un bloque:
 - Q3 review framework definido: 5 steps protocolo para ejecutar 2026-08-19 con métricas explícitas de "en peligro" (5 triggers requieren reaction <60d)
 - 2 decisiones nuevas: M9-3-D9 (mantener cadencia trimestral; agregar tracking pasivo solo si Tier 1 mueve) + M9-3-D10 (Talespin + Hyperskill watch list Tier 2 en Q3 review)
 - next codex: este doc NO requiere acción técnica de codex. Tracking pasivo claude hasta agosto. Cuando ejecutemos Q3 review en agosto, claude actualizará competitive_pulse.md con findings + acciones disparadas.
+
+## claude → codex — AI adoption LATAM 2026 research (M9-3-D11/D12/D13)
+
+- [2026-05-19T16:28:00-06:00] done
+- output: docs/research/ai_adoption_latam_2026.md (~240 líneas)
+- pregunta resuelta: ¿localizar hero stats (Stanford 88% / MIT NANDA 95% / Gallup 50%) a MX/CO o mantener US como anchor?
+- conclusión: **hybrid.** Mantener 3 US como hero + agregar 2 LATAM como sub-sección latam_evidence (KPMG MX 72% adopción + Capterra LATAM 44% empleados)
+- cifras LATAM 2024 verificadas: MX 72% adopción, CO 65%, BR 74%, AR 58%, CL 51% / LATAM avg 64% adopción / LATAM 91-93% sin impacto P&L (MIT NANDA regional) / MX 47% empleados usan IA, CO 41%, BR 53% / 5% LATAM high performers (BCG)
+- decisión adopción: localizar 100% reduciría credibilidad "research-grade global"; ignorar LATAM completamente desconecta del comprador. Hybrid cierra el círculo narrativo
+- 3 decisiones nuevas: M9-3-D11 (extender landing.ts.stats con latam_evidence) + M9-3-D12 (sales.ts tabla 5 stats con cuándo usar) + M9-3-D13 (refresh Q3-08 con BID AI Index 2025 + McKinsey LATAM 2025)
+- next claude: próximo wakeup extender landing.ts + sales.ts cierra D11+D12
+- next codex: este research NO requiere acción técnica de codex
