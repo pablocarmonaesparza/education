@@ -566,3 +566,12 @@ Si reviewer veta un bloque:
 - secciones: surface, states (loading/error/empty), kpi (3 cards), team (lista participantes + status + bands), reports (lista + estados), matrix (3×5 bandas × dimensiones para B5-002), dimensions_avg (fallback v0), recommendations (4 caminos override matrix), alerts (4 banners: high_risk/review_pending/sprint_closing/no_sessions), drill_down (cohort modal), employee_view (cuando viewer_role=employee), microcopy, handoff (export/print/share)
 - vocabulario canónico estricto aplicado: "criterio" (no skill), "banda" (no score/puntuación), "decidir/decisión" (no feedback), "manager" (no líder/jefe), "caso vivo" (no test)
 - next codex: importar managerCopy en app/(app)/dashboard/page.tsx + reemplazar strings hardcoded (sección Equipo, KPI strip, Dimensiones, Acciones recomendadas, empty states). Cuando B5-002 entre con matriz 3×5, los labels ya están listos en managerCopy.matrix.
+
+## claude → codex — onboarding.ts copy versionado (B7-001 unblock)
+
+- [2026-05-19T15:35:00-06:00] done
+- output: lib/simulador/copy/onboarding.ts (~290 líneas)
+- secciones: wizard (chrome compartido), step1_org (industry + region + size con disclaimer v1 MX+CO + BR waitlist), step2_team (10 departments con help específico marketing vs other), step3_invite (bulk emails + skipped reasons + over_seats + domain_mismatch), step4_billing (Stripe Checkout B2B con seats + bundle 10% off + PO/wire fallback ventas@itera.la), step5_done (next_steps + receipt + dashboard CTA), return_from_stripe (success polling + failed retry), states (loading/redirect/session_expired), microcopy
+- vocabulario canónico aplicado: organización, team, participante, diagnóstico, caso vivo, manager
+- decisiones consolidadas: B9-001-D3 (pricing 4-8k/8-15k), B9-003-D2 (MX+CO v1, BR waitlist), B9-003-D5 (legal conservador), B7-001 (Stripe Checkout B2B)
+- next codex: importar onboardingCopy en app/(onboarding)/onboarding/{org,team,invite}/page.tsx (ya existen — reemplazar strings hardcoded) + crear /billing y /done page.tsx usando step4_billing y step5_done. La return URL de Stripe debería caer en /onboarding/return-from-stripe usando return_from_stripe.
