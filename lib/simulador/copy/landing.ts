@@ -62,6 +62,28 @@ export const landingCopy = {
         source: "Gallup AI Indicator · 2026",
       },
     ],
+    // ------------------------------------------------------------------
+    // LATAM evidence sub-sección (cierra M9-3-D11)
+    // Datos locales que confirman la dirección de los 3 anchors US arriba.
+    // Tratamiento visual más pequeño que el hero — ver app/(public)/page.tsx.
+    // ------------------------------------------------------------------
+    latam_evidence: {
+      eyebrow: "Y en LATAM",
+      body:
+        "Los anchors anglo se replican en datos locales. La dirección es la misma: adopción alta sin lectura defendible del criterio operativo.",
+      items: [
+        {
+          figure: "72%",
+          body: "Organizaciones en México adoptaron IA en algún proceso de negocio.",
+          source: "KPMG México · Pulso CFO 2024",
+        },
+        {
+          figure: "44%",
+          body: "Empleados LATAM usan IA al menos una vez por semana.",
+          source: "Capterra LATAM · 2024 (promedio MX/CO/BR)",
+        },
+      ],
+    },
   },
 
   // ============================================================================

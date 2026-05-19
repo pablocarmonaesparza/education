@@ -726,3 +726,15 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D11 (extender landing.ts.stats con latam_evidence) + M9-3-D12 (sales.ts tabla 5 stats con cuándo usar) + M9-3-D13 (refresh Q3-08 con BID AI Index 2025 + McKinsey LATAM 2025)
 - next claude: próximo wakeup extender landing.ts + sales.ts cierra D11+D12
 - next codex: este research NO requiere acción técnica de codex
+
+## claude → codex — M9-3-D11 cerrado: landing.ts.stats.latam_evidence
+
+- [2026-05-19T16:30:30-06:00] done
+- output: lib/simulador/copy/landing.ts (extendido)
+- cambio: agregada sub-sección stats.latam_evidence con 2 LATAM proof points debajo de los 3 US anchors
+- LATAM stats agregados:
+  - "72%" KPMG México Pulso CFO 2024 — orgs MX adoptaron IA en algún proceso
+  - "44%" Capterra LATAM 2024 — empleados LATAM usan IA semanalmente (promedio MX/CO/BR)
+- visual treatment indicado: smaller que hero (3 US grandes + 2 LATAM debajo) — codex implementa el layout en app/(public)/page.tsx
+- vocab canon respetado: criterio operativo + organizaciones + empleados + LATAM
+- next codex: cuando refactores app/(public)/page.tsx para hidratar de landingCopy.stats, render latam_evidence como sub-sección visual debajo de items[] con: smaller figure size, sub-eyebrow "Y en LATAM", body text más pequeño. Mobile: collapse a "ver más" o stack vertical.
