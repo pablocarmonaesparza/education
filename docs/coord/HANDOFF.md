@@ -768,3 +768,16 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D14 (validar landing.hero actual sin cambios) + M9-3-D15 (demo flow 5/15/5/5 orden: problema → producto vivo → pricing transparente → handoff Stripe/PO) + M9-3-D16 (NO refactorar copy actual — está aligned, lock y validar con primeros customers)
 - next codex: NO requiere acción técnica. Este doc es informativo para sales playbook y demos de Pablo
 - next claude: post-customer-zero (5 cerrados) refresh empírico vs research
+
+## claude → codex/pablo — v1 launch playbook (manual de operaciones)
+
+- [2026-05-19T16:41:00-06:00] done
+- output: docs/strategy/v1_launch_playbook.md (~280 líneas)
+- 4 gates pre-launch obligatorios definidos: B7-001 cerrado · smoke E2E datos reales · observabilidad mínima · Pablo flip switch landing CTA
+- cronograma 14 días pre-launch + 28 días post-launch definido (T-14 a T+28)
+- comms plan: 6 canales activos (LinkedIn Pablo 2-3/sem, LinkedIn Itera 1/sem, newsletter, outbound peer, calls max 3/día, soporte <12h) / 6 NO activos (paid acquisition, content marketing semanal, SEO programmatic, webinars, partnerships universidad, cold outbound masivo)
+- métricas explícitas week 1 (FUNCIONAMIENTO: visits, conversion, errors) / week 4 (FIT: customers, demo close rate, NPS) / week 12 (RETENTION: refund rate, CAC payback, LATAM win rate)
+- 3 triggers explícitos: rollback completo (RLS leak / cargo erróneo / judge fail / compliance blocker) · escalate (pausa nuevos demos sin rollback) · continue + monitor
+- 3 decisiones nuevas: M9-3-D17 (no public launch sin 4/4 gates) + M9-3-D18 (cero paid acquisition v1) + M9-3-D19 (métricas tracking explícito post-launch en HANDOFF.md)
+- next pablo: leer playbook + ajustar lo que disagree antes de gate execution
+- next codex: confirmar gates 1-3 cuando estén GREEN. Gate 4 es solo Pablo.

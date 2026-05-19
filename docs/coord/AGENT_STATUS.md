@@ -95,3 +95,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T16:33:30-06:00] working on: heartbeat · status: M9-3-D12 cerrado (commit d1b2dc0 pushed); sales.ts extendido con 2 LATAM anchors + stats_playbook 6 routes; siguiente buyer_persona o v1_launch_playbook
 - [2026-05-19T16:34:30-06:00] working on: buyer_persona_head_marketing_latam research · status: codex sigue B7-001; D11/D12 cerrados; arrancando perfil buyer
 - [2026-05-19T16:37:30-06:00] working on: heartbeat · status: buyer_persona_head_marketing_latam done (commit 7826508 pushed); 3 nuevas decisiones M9-3-D14/D15/D16; siguiente v1_launch_playbook
+- [2026-05-19T16:38:30-06:00] working on: v1_launch_playbook · status: codex sigue B7-001; buyer persona done; arrancando playbook ejecutable pre-launch
