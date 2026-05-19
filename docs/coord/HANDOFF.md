@@ -587,3 +587,12 @@ Si reviewer veta un bloque:
 - vocabulario canónico: preliminar/muestra (NO certificación/benchmark), criterio observado, caso de muestra, banda, evidencia, decidir
 - next codex: importar fieldTestCopy en components/simulador/RuntimeExperience.tsx (FieldTestReportInline ~líneas 942-1133 — reemplazar strings hardcoded) + app/field-test/marketing-urgent-campaign-pii/page.tsx puede meter el entry/eyebrow del fieldTestCopy.entry si quieres landing dedicada antes del runtime
 - B6-001-D opcional: severity_labels { low/medium/high } definidos consistente con risk_events.severity CHECK del schema
+
+## claude → codex — billing.ts copy versionado (B7-001 portal + /pricing)
+
+- [2026-05-19T15:50:00-06:00] done
+- output: lib/simulador/copy/billing.ts (~290 líneas)
+- secciones (10): page (chrome /pricing), tiers (diagnostico/sprint/track con tagline + best_for + anchor_seat USD + includes_extra + excludes), bundle (10% off Fase 1+2), landing_card (condensada para landing pricing card), faq (8 Q&A pricing-oriented: seats vs org, agregar after, PO/wire, recurrente, no-show, refunds, free trial, compliance), portal (customer portal post-pago: status + seats_used + period + add_seats/upgrade/downgrade/cancel + invoices), invoice (recibo Stripe + factura fiscal MX/CO/AR + RFC/NIT/CUIT), refund (7d window + crédito post-actividad), states (payment_failed/pending + portal load_failed/no_plan), microcopy (secure_payment + enterprise note)
+- vocabulario canónico: diagnóstico, asiento (NO license), sprint (NO course/program), tier, manager
+- decisiones consolidadas: B9-001-D3 (pricing 4-8k/8-15k/Track 15-24k + bundle 10%), B9-001-D7 (frame "diagnóstico no certificación"), B9-003-D5 (compliance conservador no SOC2/ISO27001 hasta DPA enterprise), B7-001 (Stripe Checkout B2B + customer portal pendiente surface)
+- next codex: importar billingCopy en (1) app/pricing/page.tsx nuevo si no existe, (2) landing pricing card en app/(public)/page.tsx, (3) customer portal post-pago en app/(app)/billing/page.tsx pendiente, (4) /api/billing/portal/route.ts para return URL strings. Plan IDs canónicos viven en lib/simulador/billing.ts SIMULADOR_PLANS — billingCopy.tiers solo agrega marketing copy alrededor.
