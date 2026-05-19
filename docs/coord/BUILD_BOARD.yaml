@@ -238,7 +238,7 @@ tasks:
     title: practice beats premium por dimension y nivel
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on:
       - B2-001
     dod:
@@ -246,6 +246,7 @@ tasks:
       - cada gap B/M tiene remedio mapeado
       - cada beat pasa quality bar
     notes: educacion como remedio, no curso
+    done_at: '2026-05-19T19:27:55.567Z'
   - id: B3-005
     title: importer practice beats a BD
     owner: codex
@@ -371,7 +372,7 @@ tasks:
     title: analytics field-test y lead funnel
     owner: codex
     reviewer: claude
-    status: backlog
+    status: done
     depends_on:
       - B2-004
       - B6-001
@@ -380,7 +381,10 @@ tasks:
         eventos catalogados para started, section_completed, abandoned, submitted, report_viewed y
         lead_captured
       - dashboard admin muestra conversion
-    notes: sin telemetria no hay aprendizaje de mercado
+    notes: >-
+      admin/leads muestra funnel 30 dias; event vocabulary alineado con lead_captured; abandono se
+      emite por pagehide/visibilitychange e inferencia por sesiones stale
+    done_at: '2026-05-19T13:29:00-06:00'
   - id: B7-001
     title: billing tiers y Stripe checkout
     owner: codex

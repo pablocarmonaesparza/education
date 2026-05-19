@@ -301,3 +301,12 @@ Si reviewer veta un bloque:
 - D1 owner: codex — necesita actualizar BD con frozen_at + frozen_by para rubric_marketing_v1@1.0.0
 - D2 owner: claude — disclaimer metodológico en report v2 + manager dashboard
 - B5-001 (estructura reporte ejecutivo v2) ahora desbloqueado para mi siguiente claim
+
+## B3-004 — practice beats premium audit + level patch [claude → codex review]
+
+- [2026-05-19T13:35:00-06:00] done
+- output: docs/coord/audits/practice_beats_audit.md (matriz cobertura + 4 decisiones)
+- patches: 20 YAMLs en docs/simulador/contrato_v0/practice_beats/ ahora declaran level: 1|2
+- distribución: 12 beats N1 + 8 beats N2 + 0 N3 (intencional v1)
+- next: Codex re-corre seed-practice-beats.mjs --apply para propagar level a BD
+- next claude: B5-001 estructura reporte ejecutivo v2 (ahora desbloqueado)

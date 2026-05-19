@@ -9,6 +9,7 @@ practice_beat:
   duration_max_seconds: 120
   triggered_by_gap: [accept_tone_drift, generic_positioning_blind]
   dimension: juicio
+  level: 1
   applies_to_sprint_skus: [marketing_30d]
 
   framing:
