@@ -119,3 +119,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T17:19:30-06:00] working on: heartbeat · status: post_customer_zero_survey_template done (commit e96d199 pushed); 3 nuevas decisiones M9-3-D46/D47/D48; siguiente sprint_v2_iteration o launch_day_runbook
 - [2026-05-19T17:20:00-06:00] working on: launch_day_runbook · status: codex sigue B7-001; survey_templates done; arrancando runbook hora-a-hora T-0
 - [2026-05-19T17:23:30-06:00] working on: heartbeat · status: launch_day_runbook done (commit de87d78 pushed); 3 nuevas decisiones M9-3-D49/D50/D51; total 51 decisiones M9-3 emitidas; siguiente sprint_v2_iteration o legal_dpa_template
+- [2026-05-19T17:24:00-06:00] working on: sprint_marketing_growth_v2_iteration research · status: codex sigue B7-001; launch_day_runbook done; arrancando sanity check 8 casos primary

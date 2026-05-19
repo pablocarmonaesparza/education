@@ -974,6 +974,34 @@ Si reviewer veta un bloque:
 - nota:
   - production deploy sigue bloqueado por cuota diaria de Vercel (`api-deployments-free-per-day`). Código listo para desplegar cuando se libere cuota o se mueva plan.
 
+## codex → claude/pablo — B8-001 cerrado: admin backoffice premium
+
+- [2026-05-19T18:14:00-06:00] done
+- output:
+  - `/admin` redirige a `/admin/review`
+  - `/admin/orgs`
+  - `/admin/judge-health`
+  - `/admin/audit-log`
+  - `/api/admin/orgs`
+  - `/api/admin/judge-health`
+  - `/api/admin/audit-log`
+  - `lib/simulador/admin-auth.ts`
+- que cambió:
+  - Staff Itera puede ver orgs, seats, billing status, sprints, sessions y reports sin tocar Supabase.
+  - Staff puede monitorear judge health: runs, modelos, recomendaciones, risk events, open review y overdue review.
+  - Staff puede consultar audit log filtrable por entity/action con actor enriquecido.
+  - Review y leads ahora enlazan a orgs, judge-health y audit-log.
+- seguridad:
+  - APIs nuevas usan `requireSimuladorStaff()` + service-role solo después de validar sesión staff.
+  - No hay exposición pública; `/admin/*` sigue protegido por proxy y allowlist staff.
+- gates:
+  - `npm run check:simulador` PASS
+  - `npm run lint:simulador` PASS
+  - `npm run build` PASS
+  - `npm run simulador:e2e` PASS (7/7, incluye backoffice)
+- nota:
+  - Production deploy sigue bloqueado por cuota diaria Vercel; queda listo en rama para desplegar cuando se libere.
+
 ## claude → codex/pablo — retention metrics B2B SaaS assessment (M9-3-D39..D42)
 
 - [2026-05-19T17:11:00-06:00] done
@@ -1041,3 +1069,21 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D49 (3 categorías incident, Pablo decide category, codex executes) + M9-3-D50 (pre-positioned drafts evitan over-commit bajo presión) + M9-3-D51 (Pablo desconecta 20:00, codex passive 22:00 sin acción a menos RED — humano > timeline)
 - next pablo: T-2 weekend pre-launch review este doc + prepara HANDOFF.md template métricas
 - next codex: en T-0 ejecuta health checks + monitoring loop. Tu phone activa para RED incident only.
+
+## claude → codex/pablo — sprint MGP v2 iteration review (M9-3-D52/D53/D54)
+
+- [2026-05-19T17:27:00-06:00] done
+- output: docs/research/sprint_marketing_growth_v2_iteration.md (~280 líneas)
+- review crítico 8 casos primary: conclusión SOLID + 3 refinamientos identificados (NO bloquean launch)
+- archetype coverage: 4 de 12 archetypes usados (crisis-velocity, speed-to-action, metric-gaming, trust-vs-verify) — apropiado para MGP. Otros 8 archetypes reservados para Sales/CS/Ops (intencional, NO gap)
+- level distribution: 4 N1 + 2 N2 puros + 2 mixed N2+N3 + 0 N3 puros. Gap potencial customers con equipos N3 maduros — workaround actual: caso 6 y 8 cubren N3 via variant advanced
+- dimension coverage: privacidad heavy (3-5 casos), validación heavy (4-6), contexto posible gap (2-3) — verificar post-customer-zero con query Supabase
+- 3 refinamientos post-customer-zero (NO pre-launch):
+  - Split caso 6 attribution_reporting en N2/N3 separate files (~3 días claude)
+  - Variant LATAM agency context caso 4 brief_to_agency (~2 días)
+  - Caso N3 puro con agentes nuevo: marketing_campaign_with_ai_agents (~5 días)
+- 4 NO refinamientos explícitos: NO más casos N1 baseline (10+ = "curso" no "sprint"), NO archetypes cross-carrera en MGP, NO renombrado slugs, NO inglés v1
+- pre-launch self-test sugerido: Pablo + claude completan 8 casos como participantes en T-6 o T-5 (2-3 horas)
+- 3 decisiones nuevas: M9-3-D52 (lock v1 cases, refinamientos son post-customer-zero) + M9-3-D53 (F1 v2 ejecuta 3 refinamientos según signal customer) + M9-3-D54 (pre-launch self-test 2-3 horas)
+- next pablo + claude: integrar self-test en T-6/T-5 del ready_state_t_minus_7
+- next codex: NO acción técnica pre-launch. Post-customer-zero seed los 3 refinamientos según signal
