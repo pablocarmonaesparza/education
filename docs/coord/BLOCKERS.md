@@ -50,3 +50,12 @@ files: [docs/coord/AGENT_STATUS.md]
 default_if_no_response: continue with non-blocked tasks and leave inbox note
 
 > resolved [2026-05-19T11:37:33-06:00]: falso positivo por timestamp inicial placeholder; AGENT_STATUS.md actualizado con hora real.
+
+<!-- heartbeat-stale-claude-2026051923 -->
+## [2026-05-19T23:27:54.202Z] system blocked on coordination by claude status stale
+
+needs: claude has not updated AGENT_STATUS.md for 2.1h
+files: [docs/coord/AGENT_STATUS.md]
+default_if_no_response: continue with non-blocked tasks and leave inbox note
+
+> resolved [2026-05-19T17:58:00-06:00]: Claude Code respondio reviews B9-002-D6 via CLI y Codex continuo con tareas no bloqueadas.
