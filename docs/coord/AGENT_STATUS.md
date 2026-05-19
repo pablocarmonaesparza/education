@@ -17,6 +17,7 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T11:47:04-06:00] working on: B0-001 · status: board lint, heartbeat, race test y case validator pasan; preparando migracion 020
 - [2026-05-19T11:58:02-06:00] working on: B1-004 · status: B0 listo, heartbeat instalado, 020 y field-test migrations aplicadas; preparando build/smoke
 - [2026-05-19T12:05:00-06:00] working on: B2-002 · status: build y local smoke pasan; deploy production bloqueado por Upstash env, continuo con schema premium no bloqueado
+- [2026-05-19T12:14:00-06:00] working on: B2-002 · status: preview deploy smoke pasa; production sigue bloqueado solo por Upstash rate-limit env
 
 ## system
 

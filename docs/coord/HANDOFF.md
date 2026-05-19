@@ -76,6 +76,29 @@ next:
 - Reconciliar historial de migraciones remoto/local como tarea separada antes de depender de `db push` para deploys futuros.
 - Smoke test de field-test y auth flow en local/prod cuando el deploy este listo.
 
+## B1-004 — deploy/smoke base
+
+status: blocked for production, preview smoke passed
+
+done:
+- GitHub/Vercel preview deploy desde branch `codex/simulador-surface-cleanup` quedo Ready.
+- Preview URL verificada: `https://education-n1xxhkp2w-pablo-7630s-projects.vercel.app`.
+- Se agrego `SUPABASE_SERVICE_ROLE_KEY` a Vercel Preview para esta branch.
+- `lib/simulador/field-test/security.ts` ahora exige Upstash solo en strict production, permitiendo preview smoke sin bajar el guardrail de production.
+
+tested:
+- Preview `/` via `vercel curl`: 200.
+- Preview `/api/field-test/sessions` via `vercel curl`: 200 y crea session.
+- Preview `/dashboard` via `vercel curl --head`: 307 a `/auth/login?next=%2Fdashboard`.
+- Local `/field-test/marketing-urgent-campaign-pii`: runtime carga secciones Contexto, Datos, IA, Revisión, Decisión, Respuesta.
+
+gotchas:
+- Preview esta protegido por Vercel Authentication; usar `vercel curl` para smoke automatizado.
+- Production sigue bloqueado por falta de `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN`.
+
+next:
+- Cargar Upstash envs en Vercel Production/Preview o decidir otro proveedor/guardrail antes de abrir production field-test.
+
 ## disagreement policy
 
 Si reviewer veta un bloque:
