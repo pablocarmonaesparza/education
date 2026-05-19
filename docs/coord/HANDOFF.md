@@ -198,13 +198,16 @@ done:
 tested:
 - `npm run check:simulador`
 - `npm run lint:simulador`
+- Production deploy: `https://www.itera.la` aliased to deployment `dpl_4QnoKhmQSBFBuHr6YhRLEjfWbGz8`.
+- Production smoke: `POST /api/field-test/sessions` creo session `e364ca68-dbe4-4d91-81ab-58b11a72f359`.
+- Production smoke: `POST /api/field-test/sessions/:id/lead` creo `leads_inbox_id=5679f6ae-440a-49fb-a89a-0173999a3711`.
+- Supabase remoto: `leads_inbox` row verificado con `source=field_test`, `status=new`, `has_session=true`.
 
 gotchas:
-- Falta desplegar este patch y hacer smoke POST real del lead endpoint en production.
 - Falta admin surface `/admin/leads`; de momento el inbox vive en BD y puede consultarse por service-role.
 
 next:
-- Desplegar production y verificar que un field-test lead aparece en `simulador.leads_inbox`.
+- Construir admin surface `/admin/leads` para operar el inbox sin tocar BD.
 
 ## disagreement policy
 
