@@ -1020,3 +1020,24 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D46 (3 surveys ejecutables Pablo v1 manual / codex Fase 4 automation) + M9-3-D47 (NPS 90d incluye case study consent — fuel comms post-launch) + M9-3-D48 (recordatorios max 2 por survey, fatiga LATAM)
 - next pablo: cuando primer customer cierre, ejecutar Survey 1 +14d. Templates ya están exactos.
 - next codex: Fase 4 v2 roadmap automation (NO antes — N<10 manual es trivial).
+
+## claude → pablo/codex — launch day runbook T-0 (M9-3-D49/D50/D51)
+
+- [2026-05-19T17:23:00-06:00] done
+- output: docs/coord/audits/launch_day_runbook.md (~350 líneas)
+- cronograma hora-a-hora day-of-launch (CDMX UTC-6):
+  - 06:00-07:00 pre-launch verification (9 checks pre-flight, Pablo decide GO/NO-GO)
+  - 07:00-09:00 launch ignition (flip switch CTA → LinkedIn post 1 → newsletter → auto-responders → first monitor)
+  - 09:00-18:00 active monitoring loop cada 2h (Vercel + Stripe + AgentMail + inbox + LinkedIn engagement)
+  - 18:00-20:00 EOD wrap (metrics aggregate + Pablo retro + decide LinkedIn post 2 schedule)
+  - 22:00 codex passive monitor only (Pablo desconectado)
+- 3 categorías incident response: GREEN continue+monitor / YELLOW pause new comms+fix / RED rollback flip switch o escalate
+- triggers explícitos:
+  - RED: RLS leak / pago duplicado / judge fail >30% / compliance LATAM autoridad / producto down >15min
+  - YELLOW: bug conversion-affecting / Stripe webhook fails >2/h / AgentMail bounce >10% / Pablo demo capacity overflow
+  - GREEN: 1 isolated bug NO impide checkout / comments neutrales / métricas dentro Week 1 verde
+- métricas day 0 a trackear: 17 métricas en tabla hour 1/4/8/EOD (visits, signups, demos, Stripe checkouts, LinkedIn engagement, API errors, webhook failures)
+- 3 pre-positioned drafts ready para emergency: "estamos resolviendo issue" / "demo en próximos días" / "v1 es MGP, te avisamos cuando expandamos"
+- 3 decisiones nuevas: M9-3-D49 (3 categorías incident, Pablo decide category, codex executes) + M9-3-D50 (pre-positioned drafts evitan over-commit bajo presión) + M9-3-D51 (Pablo desconecta 20:00, codex passive 22:00 sin acción a menos RED — humano > timeline)
+- next pablo: T-2 weekend pre-launch review este doc + prepara HANDOFF.md template métricas
+- next codex: en T-0 ejecuta health checks + monitoring loop. Tu phone activa para RED incident only.
