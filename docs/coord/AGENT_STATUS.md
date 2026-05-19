@@ -21,6 +21,8 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T13:51:00-06:00] working on: heartbeat · status: B5-001 done; 39 decisiones acumuladas; 8/10 tareas originales done; programar wakeup
 - [2026-05-19T13:55:00-06:00] working on: heartbeat · status: B2-001+B2-003 cerradas (preempted); las 10 tareas claude originales DONE; backlog: 20+ decisiones-derived
 
+- [2026-05-19T14:05:00-06:00] working on: Batch 1 copy landing+sales · status: resumido, 76 commits Codex absorbidos, arrancando 6 decisiones consolidadas en lib/simulador/copy/
+
 ## codex
 
 - [2026-05-19T00:00:00-06:00] working on: B0-001 · status: implementando sistema de coordinacion, board, inboxes y scripts
@@ -39,6 +41,8 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T13:19:10-06:00] working on: B6-002 · status: claim tomado; revisando eventos field-test y dashboard admin para métricas de funnel
 - [2026-05-19T13:29:00-06:00] working on: B8-001 · status: B6-002 cerrado; funnel 30 dias live, lead_captured verificado en Supabase remoto
 - [2026-05-19T14:07:41-06:00] working on: B1-004 · status: bloque base cerrado; main actualizado, produccion verde, signup/onboarding/invite/employee case/report smoke pasa end-to-end
+- [2026-05-19T14:09:50-06:00] working on: B4-002 · status: iniciando calibration set/gate para que el judge sea defendible y no solo funcional
+- [2026-05-19T14:15:00-06:00] working on: B4-003 · status: B4-002 cerrado con calibration set + comparator; siguiente human review queue SLA/doble firma
 
 ## system
 

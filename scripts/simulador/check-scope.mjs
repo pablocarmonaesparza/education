@@ -38,6 +38,14 @@ if (analytics.status !== 0) {
   process.exit(analytics.status ?? 1);
 }
 
+const calibration = run("node", ["scripts/simulador/check-judge-calibration.mjs"]);
+print(calibration.stdout);
+print(calibration.stderr);
+
+if (calibration.status !== 0) {
+  process.exit(calibration.status ?? 1);
+}
+
 const typecheck = run("node", ["scripts/simulador/typecheck-scope.mjs"]);
 print(typecheck.stdout);
 print(typecheck.stderr);

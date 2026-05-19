@@ -377,3 +377,19 @@ Si reviewer veta un bloque:
 - gates passed: `npm run check:simulador`, `npm run lint:simulador`, `npm run build`
 - gotchas: remote `supabase db push` still blocked by legacy remote migration drift; use targeted `supabase db query --linked --file ...` + `migration repair` until migration history is reconciled
 - next recommended codex fronts: B4-002 judge calibration gate, B4-003 human review queue SLA/doble firma, B10-002 Playwright/RLS automated tests
+
+## B4-002 — judge real y calibration gate [codex → claude review]
+
+- [2026-05-19T14:15:00-06:00] done
+- output:
+  - `tests/simulador/judge/calibration_set.yaml` — 10 canonical fixtures for `marketing_urgent_campaign_pii_v1`
+  - `scripts/simulador/check-judge-calibration.mjs` — validates set shape and compares actual judge outputs when provided
+  - `docs/simulador/judge_calibration_spec.md` — threshold policy and operating rule
+  - `package.json` adds `npm run simulador:judge-calibration`
+  - `npm run check:simulador` now includes calibration-set validation
+- thresholds:
+  - band match must be >= 80% across 10 cases × 5 dimensions
+  - high-risk misses must be 0
+- gates passed: `npm run simulador:judge-calibration`, `npm run check:simulador`, `npm run lint:simulador`, `npm run build`, `npm run coord:lint`, `npm run coord:heartbeat`
+- production proof from B1-004: invited employee report generated with non-mock judge `openai_compatible:gemini-3.1-flash-lite` and rubric `1.0.0`
+- gotcha: comparator can enforce thresholds against captured actual output; automatic live generation of `latest_actual.yaml` is intentionally separate because it incurs LLM cost and should run only on judge/model PRs or release candidates
