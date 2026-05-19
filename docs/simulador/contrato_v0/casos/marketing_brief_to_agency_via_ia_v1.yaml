@@ -9,6 +9,9 @@ case_template:
   difficulty: baseline
   locale: es-MX
 
+  archetype_ref: trust-vs-verify
+  level_primary: 1
+
   target_role: [marketing_manager, growth_marketer, content_lead]
   sprint_skus: [marketing_30d]
 

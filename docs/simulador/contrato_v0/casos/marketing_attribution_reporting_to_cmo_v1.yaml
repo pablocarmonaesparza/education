@@ -9,6 +9,10 @@ case_template:
   difficulty: intermediate
   locale: es-MX
 
+  archetype_ref: speed-to-action-vs-validation
+  level_primary: 2
+  level_advanced_variant: 3
+
   target_role: [marketing_manager, growth_marketer, demand_gen_lead, attribution_analyst]
   sprint_skus: [marketing_30d]
 

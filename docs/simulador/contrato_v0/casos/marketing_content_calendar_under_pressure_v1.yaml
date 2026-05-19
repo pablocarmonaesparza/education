@@ -9,6 +9,9 @@ case_template:
   difficulty: baseline
   locale: es-MX
 
+  archetype_ref: speed-to-action-vs-validation
+  level_primary: 2
+
   target_role: [marketing_manager, content_lead, social_media_manager]
   sprint_skus: [marketing_30d]
 

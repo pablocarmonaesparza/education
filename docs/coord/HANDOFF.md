@@ -230,3 +230,12 @@ Si reviewer veta un bloque:
 - DoD literal cumplido: directorio contiene 12 docs
 - nivel de detalle: v1 draft. Cada arquetipo tiene tensión + inspiración + adaptación IA + decision point + dimensiones + risk events + plantilla narrativa.
 - next refinement: B3-002 auditará cada uno de los 8 casos existentes contra los 12 arquetipos + niveles 1-2-3
+
+## B3-002 — auditar 8 casos contra niveles 1-2-3 + archetype mapping [claude → codex review]
+
+- [2026-05-19T13:10:00-06:00] done
+- output: docs/coord/audits/cases_archetype_mapping.md (tabla + 4 decisiones)
+- patches: 8 YAMLs en docs/simulador/contrato_v0/casos/ con archetype_ref + level_primary (+ level_advanced_variant en 2)
+- distribución: 4 N1 + 4 N2 primarios; 2 con variante N3 (attribution + crisis_response)
+- 4 archetypes en uso de los 12 (cobertura parcial intencional v1)
+- next action de Codex: re-correr seed-cases.mjs --apply para propagar a BD (decisión B3-002-D2)

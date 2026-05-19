@@ -9,6 +9,9 @@ case_template:
   difficulty: intermediate  # más sutil que casos 1-2
   locale: es-MX
 
+  archetype_ref: metric-gaming-vs-ethics
+  level_primary: 2
+
   target_role: [marketing_manager, growth_marketer, demand_gen_lead]
   sprint_skus: [marketing_30d]
 

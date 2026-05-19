@@ -9,6 +9,9 @@ case_template:
   difficulty: baseline
   locale: es-MX
 
+  archetype_ref: crisis-velocity-vs-precision
+  level_primary: 1
+
   target_role: [marketing_manager, growth_marketer]
   sprint_skus: [marketing_30d]
 
