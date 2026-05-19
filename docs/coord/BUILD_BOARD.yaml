@@ -443,7 +443,7 @@ tasks:
     title: admin Itera backoffice premium
     owner: codex
     reviewer: claude
-    status: backlog
+    status: done
     depends_on:
       - B4-003
       - B6-001
@@ -451,7 +451,8 @@ tasks:
       - admin/review, admin/leads, admin/orgs, admin/judge-health y admin/audit-log existen
       - staff puede operar sin tocar BD directo
       - copy de cola y microflows aprobado
-    notes: operacion interna
+    notes: admin index + review/leads/orgs/judge-health/audit-log operables; E2E staff cubre nuevas surfaces
+    done_at: '2026-05-19T18:14:00-06:00'
   - id: B9-001
     title: competitive landscape research
     owner: claude

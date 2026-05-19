@@ -183,12 +183,7 @@ export default function AdminLeadsPage() {
               Esta bandeja existe para que el aprendizaje de mercado no se quede
               escondido en la base de datos.
             </p>
-            <a
-              href="/admin/review"
-              className="mt-5 inline-flex rounded-full bg-[var(--surface-2)] px-4 py-2 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
-            >
-              Ver review humano
-            </a>
+            <AdminLinks />
           </motion.div>
 
           {error && (
@@ -299,6 +294,27 @@ export default function AdminLeadsPage() {
         </section>
       </main>
     </>
+  );
+}
+
+function AdminLinks() {
+  return (
+    <div className="mt-5 flex flex-wrap gap-2">
+      {[
+        ["/admin/review", "Review"],
+        ["/admin/orgs", "Orgs"],
+        ["/admin/judge-health", "Judge health"],
+        ["/admin/audit-log", "Audit log"],
+      ].map(([href, label]) => (
+        <a
+          key={href}
+          href={href}
+          className="rounded-full bg-[var(--surface-2)] px-4 py-2 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
+        >
+          {label}
+        </a>
+      ))}
+    </div>
   );
 }
 

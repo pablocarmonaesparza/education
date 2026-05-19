@@ -138,6 +138,25 @@ test("buyer puede abrir checkout Stripe del simulador", async ({ page }) => {
   expect(checkoutJson.sessionUrl).toContain("https://checkout.stripe.com/");
 });
 
+test("staff puede operar backoffice premium", async ({ page }) => {
+  const staff = await createSyntheticUser("staff");
+
+  await login(page, staff.email);
+  await expect(page).toHaveURL(/\/dashboard|\/onboarding\/org/);
+
+  await page.goto("/admin/orgs");
+  await expect(page.getByText("Orgs y sprints.")).toBeVisible();
+  await expect(page.getByText("Sprints activos")).toBeVisible();
+
+  await page.goto("/admin/judge-health");
+  await expect(page.getByText("Judge health.")).toBeVisible();
+  await expect(page.getByText("Open review")).toBeVisible();
+
+  await page.goto("/admin/audit-log");
+  await expect(page.getByText("Audit log.")).toBeVisible();
+  await expect(page.getByText("Entity")).toBeVisible();
+});
+
 test("manager ve dashboard agregado de su sprint", async ({ page }) => {
   const manager = await createSyntheticUser("manager");
   await createOrgBundle({

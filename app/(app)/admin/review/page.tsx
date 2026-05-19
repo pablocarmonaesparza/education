@@ -149,12 +149,7 @@ export default function AdminReviewPage() {
               humana antes de publicarse al manager; la primera firma retiene el
               reporte, la segunda lo libera.
             </p>
-            <a
-              href="/admin/leads"
-              className="mt-5 inline-flex rounded-full bg-[var(--surface-2)] px-4 py-2 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
-            >
-              Ver leads del field-test
-            </a>
+            <AdminLinks />
           </motion.div>
 
           {error && (
@@ -189,6 +184,27 @@ export default function AdminReviewPage() {
         </section>
       </main>
     </>
+  );
+}
+
+function AdminLinks() {
+  return (
+    <div className="mt-5 flex flex-wrap gap-2">
+      {[
+        ["/admin/leads", "Leads"],
+        ["/admin/orgs", "Orgs"],
+        ["/admin/judge-health", "Judge health"],
+        ["/admin/audit-log", "Audit log"],
+      ].map(([href, label]) => (
+        <a
+          key={href}
+          href={href}
+          className="rounded-full bg-[var(--surface-2)] px-4 py-2 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
+        >
+          {label}
+        </a>
+      ))}
+    </div>
   );
 }
 

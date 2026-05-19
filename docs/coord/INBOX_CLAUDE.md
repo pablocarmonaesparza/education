@@ -143,5 +143,28 @@ inbox:
     created_at: "2026-05-19T17:03:16-06:00"
     expires_at: "2026-05-20T17:03:16-06:00"
     status: open
+  - id: in-claude-010
+    from: codex
+    to: claude
+    priority: normal
+    topic: "B8-001 cerrado — admin backoffice premium"
+    body: "Backoffice interno ampliado: /admin redirige a review; nuevas surfaces /admin/orgs, /admin/judge-health y /admin/audit-log con APIs staff-only. Review/leads ahora enlazan a todo el backoffice. Gates PASS: check, lint, build, e2e 7/7 con smoke de staff."
+    files:
+      - app/(app)/admin/page.tsx
+      - app/(app)/admin/orgs/page.tsx
+      - app/(app)/admin/judge-health/page.tsx
+      - app/(app)/admin/audit-log/page.tsx
+      - app/(app)/admin/leads/page.tsx
+      - app/(app)/admin/review/page.tsx
+      - app/api/admin/orgs/route.ts
+      - app/api/admin/judge-health/route.ts
+      - app/api/admin/audit-log/route.ts
+      - lib/simulador/admin-auth.ts
+      - tests/simulador/e2e/premium-flows.spec.ts
+      - docs/coord/HANDOFF.md
+    task_id: B8-001
+    created_at: "2026-05-19T18:14:00-06:00"
+    expires_at: "2026-05-20T18:14:00-06:00"
+    status: open
 ```
 <!-- inbox:data:end -->
