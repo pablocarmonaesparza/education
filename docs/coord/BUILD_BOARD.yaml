@@ -1,6 +1,6 @@
 version: 1
 project: itera-simulador-premium
-updated_at: '2026-05-19T18:19:55.466Z'
+updated_at: '2026-05-19T18:22:28.882Z'
 source_of_truth: true
 rules:
   - si una tarea no vive aqui, no existe
@@ -426,7 +426,7 @@ tasks:
     title: AI adoption y LATAM compliance research
     owner: claude
     reviewer: codex
-    status: in_progress
+    status: done
     depends_on:
       - B0-001
     dod:
@@ -434,8 +434,7 @@ tasks:
       - latam_compliance.md existe
       - cada doc tiene decision, cambio, owner y task_id
     notes: Stanford, McKinsey, Gallup, Gartner, BCG, MIT NANDA, MX/CO/BR
-    claimed_by: claude
-    claim_expires_at: '2026-05-19T20:13:43.619Z'
+    done_at: '2026-05-19T18:22:28.988Z'
   - id: B10-001
     title: GStack gates como Definition of Done
     owner: shared
@@ -634,3 +633,76 @@ tasks:
         touch files: supabase/migrations/022_simulador_analytics_compliance.sql,
         lib/simulador/copy/runtime.ts
     notes: change_type=schema
+  - id: B9-003-D1
+    title: >-
+      Pitch comercial v2 ancla en 3 cifras: 88% adopción (Stanford) + 95% sin impacto P&L (MIT) +
+      50% empleados usan IA hoy (Gallup) — NO en 'ROI con IA'
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/ai_adoption_synthesis.md
+      - >-
+        touch files: lib/simulador/copy/landing.ts, lib/simulador/copy/sales.ts,
+        app/(public)/page.tsx
+    notes: change_type=copy
+  - id: B9-003-D2
+    title: 'v1 launch: MX + CO. BR diferido a v2 (DPO + DPIA agregan complejidad pre-design-partners)'
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/ai_adoption_synthesis.md
+      - 'touch files: docs/strategy/launch_geos_v1.md, lib/simulador/copy/legal.ts'
+    notes: change_type=process
+  - id: B9-003-D3
+    title: >-
+      users.jurisdiction enum: MX | CO | other (drop BR de v1). Default por geo IP en signup,
+      editable.
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on:
+      - B2-003
+    dod:
+      - apply research decision from docs/research/ai_adoption_synthesis.md
+      - 'touch files: docs/specs/migration_022_analytics_compliance.sql, lib/simulador/db.types.ts'
+    notes: change_type=schema
+  - id: B9-003-D4
+    title: >-
+      Aviso de privacidad MX/CO escritos en español neutro corporate. NO traducción literal —
+      refinamiento por jurisdicción con clauses canónicas del marco aplicable
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/ai_adoption_synthesis.md
+      - 'touch files: lib/simulador/copy/legal.ts, app/privacy/page.tsx'
+    notes: change_type=copy
+  - id: B9-003-D5
+    title: >-
+      Audit follow-up requerido: confirmar cifras LFPDPPP reforma marzo 2025 + requisitos
+      específicos AI processing antes de v1 launch
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/ai_adoption_synthesis.md
+      - 'touch files: docs/research/latam_compliance_mx_followup.md'
+    notes: change_type=process
+  - id: B9-003-D6
+    title: >-
+      Cifra anchor 6% high performers (McKinsey) entra en marketing materials como diferenciador —
+      'no medimos quién sabe prompts; medimos quién tiene el proceso del 6%'
+    owner: claude
+    reviewer: codex
+    status: backlog
+    depends_on: []
+    dod:
+      - apply research decision from docs/research/ai_adoption_synthesis.md
+      - 'touch files: lib/simulador/copy/landing.ts, lib/simulador/copy/sales.ts'
+    notes: change_type=copy

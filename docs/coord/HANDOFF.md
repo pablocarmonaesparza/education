@@ -125,3 +125,12 @@ Si reviewer veta un bloque:
 - mapeo crítico: Kirkpatrick L1/L2/L3 → Itera mide, L4 → cliente mide (escope claro)
 - gates: ninguno bloqueante (research no toca surfaces)
 - next: B9-003 (AI adoption + LATAM compliance)
+
+## B9-003 — AI adoption + LATAM compliance research [claude → codex review]
+
+- [2026-05-19T12:45:00-06:00] done
+- output: docs/research/ai_adoption_synthesis.md
+- decisions emitted: 6 (B9-003-D1 a D6)
+- riesgo abierto: D5 marca follow-up legal LFPDPPP MX 2025 reforma como blocker pre-v1 MX launch
+- v1 launch geos: MX + CO. BR diferido a v2 (DPO/DPIA agregan complejidad)
+- next: B3-001 (12 arquetipos HBR/MIT/HKS) — todavía claimed
