@@ -1,8 +1,7 @@
 /**
  * POST /api/sessions/[session_id]/complete
  *
- * Marca la sesión como submitted (lista para evaluación) y dispara el
- * judge LLM en background via Next.js `after()`.
+ * Marca la sesión como submitted y corre el judge antes de responder.
  *
  * Pre: el user ya guardó respuestas en todos los step_keys del caso
  * (validación liviana — el judge maneja sessions parciales también).
@@ -14,11 +13,11 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { evaluateAndPersist } from "@/lib/simulador/judge/persist";
 
 export const runtime = "nodejs";
+export const maxDuration = 60;
 
 export async function POST(
   _req: NextRequest,
@@ -77,31 +76,37 @@ export async function POST(
     );
   }
 
-  // Background: judge LLM corre fuera del request/response cycle.
-  // No bloqueamos al cliente — el report aparece via polling de /api/sessions/[id]/report.
-  after(async () => {
-    try {
-      const result = await evaluateAndPersist(session_id);
-      if (result.skipped) {
-        console.log(
-          `[session/complete] judge skipped for ${session_id}: ${result.reason}`,
-        );
-      } else {
-        console.log(
-          `[session/complete] judge OK for ${session_id} → report ${result.report_id} status=${result.report_status}`,
-        );
-      }
-    } catch (err) {
-      console.error(
-        `[session/complete] background judge failed for ${session_id}:`,
-        err,
+  try {
+    const result = await evaluateAndPersist(session_id);
+    if (result.skipped) {
+      console.log(
+        `[session/complete] judge skipped for ${session_id}: ${result.reason}`,
+      );
+    } else {
+      console.log(
+        `[session/complete] judge OK for ${session_id} → report ${result.report_id} status=${result.report_status}`,
       );
     }
-  });
 
-  return NextResponse.json({
-    session_id,
-    status: "submitted",
-    evaluation_started: true,
-  });
+    return NextResponse.json({
+      session_id,
+      status: "submitted",
+      evaluation_started: false,
+      evaluation_run_id: result.evaluation_run_id ?? null,
+      report_id: result.report_id ?? null,
+      report_status: result.report_status ?? null,
+      skipped: result.skipped,
+    });
+  } catch (err) {
+    console.error(`[session/complete] judge failed for ${session_id}:`, err);
+    return NextResponse.json(
+      {
+        error:
+          err instanceof Error
+            ? err.message
+            : "No se pudo generar el reporte.",
+      },
+      { status: 500 },
+    );
+  }
 }
