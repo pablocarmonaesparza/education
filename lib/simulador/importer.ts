@@ -39,7 +39,7 @@ export function caseTemplateToSeedRows(template: CaseTemplateContract): CaseTemp
   const caseSteps = template.steps.map((step, index) => ({
     case_template_slug: template.id,
     case_template_version: template.version,
-    step_key: toStepKey(step.id),
+    step_key: (step as { step_key?: string }).step_key ?? step.type ?? toStepKey(step.id),
     ordinal: index + 1,
     step_type: step.type,
     prompt_template: typeof step.prompt === 'string' ? step.prompt : null,

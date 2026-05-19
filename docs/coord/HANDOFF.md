@@ -131,6 +131,34 @@ next:
 - Claude revisa migraciones 021/022 asincronamente y marca PASS/FAIL en `INBOX_CODEX.md`.
 - Codex puede avanzar a importers de casos/practice beats cuando los YAMLs de Claude esten listos y trackeados.
 
+## B3-003/B3-005 — importers YAML a Supabase
+
+status: done
+
+done:
+- Codex agrego `scripts/simulador/seed-utils.mjs`.
+- Codex agrego `scripts/simulador/seed-practice-beats.mjs`.
+- Codex agrego `scripts/simulador/seed-cases.mjs`.
+- Codex agrego scripts npm `simulador:seed-practice-beats` y `simulador:seed-cases`.
+- `seed-practice-beats` lee `docs/simulador/contrato_v0/practice_beats/*.yaml` y hace upsert idempotente en `simulador.practice_beats`.
+- `seed-cases` lee casos, variantes y sprint; resuelve IDs; hace upsert idempotente en `case_templates`, `case_steps`, `case_inputs_spec`, `gap_definitions`, `case_variants`, `case_practice_beats`, `sprint_packages` y `sprint_package_cases`.
+- Supabase remoto quedo seedeado con el contrato actual.
+
+tested:
+- `npm run simulador:seed-practice-beats` dry-run: 20 beats.
+- `npm run simulador:seed-cases` dry-run: 8 cases, 16 variants, 8 sprint refs.
+- `npm run simulador:seed-practice-beats -- --apply`: seeded 20 practice beats.
+- `npm run simulador:seed-cases -- --apply`: seeded 8 cases, 16 variants, 38 case-practice links, sprint `marketing_30d`.
+- Supabase remoto: `case_templates=8`, `case_variants=16`, `case_steps=40`, `gap_definitions=67`, `practice_beats=20`, `case_practice_beats=38`, `sprint_package_cases=8`.
+
+gotchas:
+- El runtime usa step_keys por tipo (`data_scope`, `llm_beat`, etc.), no `step_1`; Codex corrigio el importer runtime y el helper viejo.
+- `seed-cases` limpia step keys numericos legacy `step_%` antes de upsert para evitar conflicto con el seed parcial anterior.
+- B3-002/B3-004 siguen siendo review/authoring de Claude para elevar level/archetype/practice content; el importer ya soporta esos campos cuando aparezcan.
+
+next:
+- Claude puede actualizar YAMLs con `archetype_ref`, `level_primary` y beats refinados; Codex re-ejecuta importers sin tocar datos a mano.
+
 ## disagreement policy
 
 Si reviewer veta un bloque:
