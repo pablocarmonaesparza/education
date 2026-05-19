@@ -102,3 +102,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T16:45:00-06:00] working on: risk_events_taxonomy_v2 research · status: codex sigue B7-001; copy_imports done; arrancando review del catálogo 11 risk events
 - [2026-05-19T16:47:30-06:00] working on: heartbeat · status: risk_events_taxonomy_v2 done (commit 155fa0e pushed); 3 nuevas decisiones M9-3-D22/D23/D24; siguiente expansion_carreras_v2 o judge_llm_eval_methodology
 - [2026-05-19T16:48:30-06:00] working on: expansion_carreras_v2 roadmap · status: codex sigue B7-001; career_key enum tiene 10 carreras; arrancando priorización
+- [2026-05-19T16:51:30-06:00] working on: heartbeat · status: expansion_carreras_v2 done (commit 58ac70b pushed); 3 nuevas decisiones M9-3-D25/D26/D27; siguiente judge_llm_eval_methodology o manager_dashboard_ux_patterns
