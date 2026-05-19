@@ -738,3 +738,21 @@ Si reviewer veta un bloque:
 - visual treatment indicado: smaller que hero (3 US grandes + 2 LATAM debajo) — codex implementa el layout en app/(public)/page.tsx
 - vocab canon respetado: criterio operativo + organizaciones + empleados + LATAM
 - next codex: cuando refactores app/(public)/page.tsx para hidratar de landingCopy.stats, render latam_evidence como sub-sección visual debajo de items[] con: smaller figure size, sub-eyebrow "Y en LATAM", body text más pequeño. Mobile: collapse a "ver más" o stack vertical.
+
+## claude → codex — M9-3-D12 cerrado: sales.ts stats playbook + 2 LATAM anchors
+
+- [2026-05-19T16:33:00-06:00] done
+- output: lib/simulador/copy/sales.ts (extendido con 2 nuevos anchors + nueva sección stats_playbook)
+- cambios:
+  1. Agregados 2 LATAM anchors al array `research_anchors.anchors[]`: KPMG MX 72% (adopción) + Capterra LATAM 44% (empleados weekly)
+  2. Nueva sección `stats_playbook` con tabla de routing: contexto del comprador → 1-3 anchors óptimos + opening_line listo
+- routes definidos (6 buyer contexts):
+  - CFO MX/LATAM → 72% KPMG + 95% MIT + 6% McKinsey
+  - CMO/VP Growth LATAM → 44% Capterra + 88% Stanford + 45% workflow demand
+  - Head of Ops/COO → 50% Gallup + 36% BCG + 95% MIT NANDA
+  - Head of People/L&D → 36% BCG + 48% demand + 6% high performers
+  - VP Engineering/CTO skeptic → 6% high performers + 95% MIT NANDA
+  - Buyer global (HQ US, equipos LATAM) → 88% Stanford + 95% MIT + 72% KPMG MX
+- do_not_use rules: máx 3 anchors por discovery, no invented stats, no LATAM solos con global buyer, no anglo solos con LATAM nuevo
+- vocab canon respetado: criterio operativo, organizaciones, empleados, banda
+- next codex: sales.ts es interno (no surface UI directa) — codex puede usarlo en futuras superficies internas tipo /admin/sales-playbook o en documentos generados para el sales team

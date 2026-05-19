@@ -159,6 +159,78 @@ export const salesCopy = {
         implication:
           "Itera mide exactamente lo que diferencia al 6%: criterio operativo en proceso, no prompts memorizados. Si tu equipo no tiene el proceso, no llega al 6%.",
       },
+      // ----------------------------------------------------------------
+      // LATAM proof points (M9-3-D12) — usar cuando el comprador es LATAM
+      // y necesita anclaje local antes de aceptar el frame global.
+      // ----------------------------------------------------------------
+      {
+        figure: "72%",
+        body: "De organizaciones en México adoptaron IA en algún proceso de negocio.",
+        source: "KPMG México Pulso CFO · 2024",
+        implication:
+          "El frame global de Stanford 88% se replica en LATAM con misma dirección. MX está cerca del baseline US; CO 65%; BR 74%.",
+      },
+      {
+        figure: "44%",
+        body: "De empleados LATAM (MX/CO/BR avg) usa IA al menos una vez por semana.",
+        source: "Capterra LATAM · 2024",
+        implication:
+          "Adopción individual ya está en LATAM, 6 puntos abajo del 50% Gallup US. El gap se cierra rápido — y sin medición de criterio, el riesgo operativo escala con el uso.",
+      },
+    ],
+  },
+
+  // ============================================================================
+  // STATS PLAYBOOK — cuál de los 9 anchors usar según el comprador (M9-3-D12)
+  // Tabla de routing para sales: contexto del comprador → 1-3 anchors óptimos.
+  // ============================================================================
+  stats_playbook: {
+    headline: "Playbook de anchors según comprador",
+    intro:
+      "Los 9 anchors arriba no se citan todos en cada discovery. Elige 1-3 que aterricen con el contexto del comprador. Regla: empieza con global (autoridad), aterriza con local (relevancia), cierra con wedge (diferenciación).",
+    routes: [
+      {
+        buyer: "CFO MX o CFO LATAM (decisión basada en evidencia local)",
+        recommended_anchors: ["72% (KPMG MX)", "95% (MIT NANDA)", "6% (McKinsey high performers)"],
+        opening_line:
+          "KPMG México reporta que 72% de organizaciones MX ya adoptó IA. Pero MIT NANDA dice 95% sin impacto en P&L — el problema no es el modelo, es el criterio operativo. Solo 6% son high performers — la diferencia es proceso, no prompts.",
+      },
+      {
+        buyer: "CMO / VP Growth LATAM (acción y resultados de campaña)",
+        recommended_anchors: ["44% (Capterra LATAM)", "88% (Stanford)", "45% (McKinsey workflow demand)"],
+        opening_line:
+          "Stanford 88% adopción y Capterra confirma 44% empleados LATAM ya usan IA semanalmente. McKinsey: 45% de empleados pide integración en workflows reales. Tu equipo ya lo usa; lo que falta es visibilidad de cómo deciden.",
+      },
+      {
+        buyer: "Head of Operations / COO (riesgo + cumplimiento)",
+        recommended_anchors: ["50% (Gallup)", "36% (BCG satisfaction)", "95% (MIT NANDA)"],
+        opening_line:
+          "Gallup: 50% de empleados ya usa IA en el trabajo. BCG: solo 36% está satisfecho con el training de IA. MIT NANDA: 95% de pilotos sin impacto. El riesgo operativo crece sin lectura de criterio — y sin lectura, no hay defensa cuando algo sale mal.",
+      },
+      {
+        buyer: "Head of People / L&D (training programs internos existentes)",
+        recommended_anchors: ["36% (BCG satisfaction)", "48% (McKinsey demand)", "6% (McKinsey high performers)"],
+        opening_line:
+          "BCG: solo 36% satisfecho con el training de IA recibido. McKinsey: 48% pide entrenamiento formal — la demanda interna existe pero no se cierra. El gap entre training y resultados es lo que Itera mide. Tu programa de L&D necesita evidencia, no más cursos.",
+      },
+      {
+        buyer: "VP Engineering / CTO (skepticism de medición LLM)",
+        recommended_anchors: ["6% (McKinsey high performers)", "95% (MIT NANDA)"],
+        opening_line:
+          "McKinsey: 6% de empresas son high performers de IA. La diferencia no es conocimiento técnico — es proceso de validación humana + rediseño de workflows. MIT NANDA confirma: 95% de pilotos enterprise sin impacto. La medición correcta es de criterio operativo, no de skill técnico.",
+      },
+      {
+        buyer: "Buyer global (HQ en US, equipos LATAM)",
+        recommended_anchors: ["88% (Stanford)", "95% (MIT NANDA)", "72% (KPMG MX)"],
+        opening_line:
+          "Los anchors globales (Stanford 88%, MIT NANDA 95%) aplican a tu HQ. Y KPMG México confirma 72% en LATAM — tu equipo LATAM está en la misma curva. Itera mide en español neutro con calibration local sin renunciar al rigor de los anchors anglos.",
+      },
+    ],
+    do_not_use: [
+      "No mezcles >3 anchors en una sola conversación — saturas el frame.",
+      "No cites figuras sin source (invented stats rompen credibilidad — los 9 son verificables).",
+      "No uses anchors anglo solos con comprador LATAM joven — agrega el LATAM como aterrizaje.",
+      "No uses LATAM solos con comprador global o IPO-ready — usa anglo como anchor de autoridad.",
     ],
   },
 
