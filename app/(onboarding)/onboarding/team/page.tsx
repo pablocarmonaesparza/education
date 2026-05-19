@@ -12,7 +12,6 @@ import { useRouter } from "next/navigation";
 import { Button, Input, Select, SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
-import { createClient } from "@/lib/supabase/client";
 
 const DEPARTMENTS = [
   { key: "marketing", label: "Marketing / Growth" },
@@ -50,18 +49,16 @@ export default function OnboardingTeamPage() {
     setError(null);
     setSubmitting(true);
     try {
-      const supabase = createClient();
-      const { data, error: insErr } = await supabase
-        .schema("simulador")
-        .from("teams")
-        .insert({
-          organization_id: orgId,
+      const res = await fetch(`/api/orgs/${orgId}/teams`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           name: name.trim(),
           department_key: department,
-        })
-        .select("id, name")
-        .single();
-      if (insErr || !data) throw new Error(insErr?.message ?? "Error al crear equipo.");
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Error al crear equipo.");
       sessionStorage.setItem("onboarding_team_id", data.id);
       sessionStorage.setItem("onboarding_team_name", data.name);
       router.push("/onboarding/invite");
