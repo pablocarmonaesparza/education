@@ -796,3 +796,17 @@ Si reviewer veta un bloque:
 - 3 riesgos analizados: string drift, template signature mismatch, performance (todos menores)
 - 2 decisiones nuevas: M9-3-D20 (cableado es deuda explícita post-launch, NO bloquea v1) + M9-3-D21 (commits separados por surface, no big bang)
 - next codex: este audit te da el roadmap. Post-launch v1, cuando tengas bandwidth, atacar Tier 1 → 2 → 3 → 4.
+
+## claude → codex — risk_events_taxonomy_v2 research (M9-3-D22/D23/D24)
+
+- [2026-05-19T16:47:00-06:00] done
+- output: docs/research/risk_events_taxonomy_v2.md (~240 líneas)
+- finding clave: catálogo actual 11 events es SOLID para v1 — no redundancia, cobertura cross-dimensional, distribución severity coherente. NO cambiar v1.
+- 2 gaps identificados para v2 (post-customer-zero):
+  - output_used_without_attribution (transparency, dimensión decisión+juicio, severity medium)
+  - decision_under_undisclosed_ai_assistance (governance, dimensión juicio, severity medium-high)
+- mapeo validado: 11 events cubren 5 dimensiones (privacidad 5 + validación 3 + juicio 3 + decisión 2 + contexto 0 propias) y son todos disparables en al menos 1 de los 8 casos primary
+- validación empírica propuesta: query agregada después de 50+ field-tests; si algún event 0 hits, considerar deprecate
+- v3+ (12 meses): split jerárquico universal vs career-specific cuando ≥3 carreras activas
+- 3 decisiones nuevas: M9-3-D22 (lock catálogo v1) + M9-3-D23 (agregar 2 events en v2 post-customer-zero) + M9-3-D24 (split jerárquico solo post 3 carreras activas)
+- next codex: cuando v2 active, migración alembic-style + extender copy report/field-test + judge/prompt-builder. NO antes.

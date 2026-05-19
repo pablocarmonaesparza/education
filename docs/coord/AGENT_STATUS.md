@@ -99,3 +99,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T16:41:30-06:00] working on: heartbeat · status: v1_launch_playbook done (commit e0346bf pushed); 3 nuevas decisiones M9-3-D17/D18/D19; siguiente risk_events_taxonomy_v2 o copy_imports_status audit
 - [2026-05-19T16:42:00-06:00] working on: copy_imports_status audit · status: scan revela 11/12 copy files sin import; solo onboarding.ts importado en /billing y /done; arrancando audit roadmap
 - [2026-05-19T16:44:30-06:00] working on: heartbeat · status: copy_imports_status audit done (commit 0ef76bc pushed); 2 nuevas decisiones M9-3-D20/D21; siguiente risk_events_taxonomy_v2 o expansion_carreras_v2
+- [2026-05-19T16:45:00-06:00] working on: risk_events_taxonomy_v2 research · status: codex sigue B7-001; copy_imports done; arrancando review del catálogo 11 risk events
