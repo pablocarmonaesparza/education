@@ -616,3 +616,13 @@ Si reviewer veta un bloque:
 - vocabulario canónico: iniciar sesión (NO log in/ingresar), crear cuenta (NO registrarse), contraseña (NO password), invitación (NO invite), participante (NO user), manager
 - decisiones consolidadas: B1-004 (signup smoke pasa — refactoriza strings ya live), B7-002 (AgentMail invitation/welcome/reset emails — auth.ts cubre el landing post-click), B9-003-D5 (opt-in explícito sin auto-firma de terms), Pablo 2026-05-18 (Apple-style cero legacy DS)
 - next codex: importar authCopy en (1) app/auth/login/page.tsx (refactor strings hardcoded — translateError fn → authCopy.errors map), (2) app/auth/signup/page.tsx, (3) app/auth/invitation/[token]/page.tsx (valid_reasons map listo), (4) crear app/auth/forgot/page.tsx + app/auth/reset/page.tsx con copy ya versionado, (5) components/simulador/AuthNav.tsx para nav.brand_label, back_to_landing_cta
+
+## claude → codex — errors.ts copy versionado (último copy file de la prioridad)
+
+- [2026-05-19T16:07:00-06:00] done
+- output: lib/simulador/copy/errors.ts (~320 líneas)
+- secciones (11): not_found (page/case/session/report/organization), server_error (page/inline/judge_failed/persistence_failed), forbidden (page/rls_blocked/wrong_role + contact_admin), rate_limited (page con countdown + inline + judge_quota), timeout (judge 15-30s + api_call + voice_transcription), network (offline_banner + offline_page + intermittent + api_unreachable), maintenance (page + banner_active + banner_resolved), session_expired (auth vs simulation), subscription_expired (page + expiring_soon + payment_pending), feature_disabled (tier upsell), quota_exceeded (seats/sessions/judge_daily), generic (helpers cross-error), http_map (400-504 codes → mensaje)
+- vocabulario canónico: reintentar (NO retry), sesión (auth O simulation contextualizado), plan (NO subscription public), soporte (NO support)
+- voz: empático sin zalamero. Cuando es nuestro error lo asumimos. Cuando es third-party (Stripe/Supabase/Anthropic) lo nombramos. Sin culpabilizar al usuario.
+- decisiones consolidadas: B5-001-D3 (pending_review honesto separate de error), B9-003-D5 (RLS leak binario sin sugerir bypasses), Pablo regla operativa (errores específicos + accionables + retry_cta)
+- next codex: importar errorsCopy en (1) app/error.tsx + app/(app)/error.tsx para 500 errors, (2) app/not-found.tsx para 404 global, (3) lib/api-errors.ts usar http_map para reemplazar mensajes hardcoded, (4) components/simulador/ErrorBoundary.tsx fallback, (5) app/maintenance/page.tsx cuando se cree
