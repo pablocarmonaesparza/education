@@ -41,9 +41,14 @@ interface RiskEvent {
   severity: "low" | "medium" | "high";
 }
 
+type ManagerAction = "pilotar" | "entrenar" | "pausar" | "escalar";
+
 interface ReportPayload {
   dimensions?: DimensionScore[];
   risk_events?: RiskEvent[];
+  recommendation?: {
+    action?: ManagerAction;
+  };
 }
 
 interface AvailableCase {
@@ -256,14 +261,37 @@ export async function GET() {
     decision: { sum: 0, count: 0 },
   };
   let riskEventsTotal = 0;
+  let highRiskEventsTotal = 0;
+  let pendingReviewCount = 0;
   const readinessByBand: Record<"A" | "M" | "B", number> = { A: 0, M: 0, B: 0 };
+  const recommendationCounts: Record<ManagerAction, number> = {
+    pilotar: 0,
+    entrenar: 0,
+    pausar: 0,
+    escalar: 0,
+  };
+  const dimensionBandMatrix: Record<
+    string,
+    Record<"A" | "M" | "B", number>
+  > = {
+    contexto: { A: 0, M: 0, B: 0 },
+    privacidad: { A: 0, M: 0, B: 0 },
+    validacion: { A: 0, M: 0, B: 0 },
+    juicio: { A: 0, M: 0, B: 0 },
+    decision: { A: 0, M: 0, B: 0 },
+  };
 
   const memberRows = (users ?? []).map((u) => {
     const sess = sessionByUser[u.id as string] ?? null;
     const report = sess ? reportBySession[sess.id] : undefined;
     let readinessBand: "A" | "M" | "B" | null = null;
     let durationMin: number | null = null;
+    let dimensionBands: Record<string, "A" | "M" | "B"> | null = null;
+    let recommendationAction: ManagerAction | null = null;
+    let riskEventsCount = 0;
+    let highRiskEventsCount = 0;
     if (report?.payload?.dimensions && report.payload.dimensions.length > 0) {
+      dimensionBands = {};
       // Computar banda promedio rápida
       const scores = report.payload.dimensions
         .map((d) => bandToScore(d.band))
@@ -281,10 +309,26 @@ export async function GET() {
         if (dt && sc !== null) {
           dt.sum += sc;
           dt.count += 1;
+          dimensionBands[d.id] = d.band;
+          const matrixRow = dimensionBandMatrix[d.id];
+          if (matrixRow) matrixRow[d.band] += 1;
         }
       }
-      // Risk events
-      riskEventsTotal += report.payload.risk_events?.length ?? 0;
+    }
+
+    if (report?.payload) {
+      riskEventsCount = report.payload.risk_events?.length ?? 0;
+      highRiskEventsCount =
+        report.payload.risk_events?.filter((event) => event.severity === "high")
+          .length ?? 0;
+      riskEventsTotal += riskEventsCount;
+      highRiskEventsTotal += highRiskEventsCount;
+      if (report.status === "pending_review") pendingReviewCount += 1;
+
+      if (report.payload.recommendation?.action) {
+        recommendationAction = report.payload.recommendation.action;
+        recommendationCounts[recommendationAction] += 1;
+      }
     }
 
     if (sess?.started_at && sess.completed_at) {
@@ -302,6 +346,10 @@ export async function GET() {
       session_status: sess?.status ?? "not_started",
       session_duration_min: durationMin,
       readiness_band: readinessBand,
+      dimension_bands: dimensionBands,
+      recommendation_action: recommendationAction,
+      risk_events_count: riskEventsCount,
+      high_risk_events_count: highRiskEventsCount,
       report_id: report?.id ?? null,
       report_status: report?.status ?? null,
     };
@@ -353,7 +401,11 @@ export async function GET() {
       completion_pct: total > 0 ? Math.round((completed / total) * 100) : 0,
       readiness_by_band: readinessByBand,
       dimensions_avg: dimensionsAvg,
+      dimension_band_matrix: dimensionBandMatrix,
       risk_events_total: riskEventsTotal,
+      high_risk_events_total: highRiskEventsTotal,
+      pending_review_count: pendingReviewCount,
+      recommendation_counts: recommendationCounts,
       days_left: daysLeft,
     },
   });
@@ -374,7 +426,17 @@ function emptyAggregate() {
       juicio: 0,
       decision: 0,
     },
+    dimension_band_matrix: {
+      contexto: { A: 0, M: 0, B: 0 },
+      privacidad: { A: 0, M: 0, B: 0 },
+      validacion: { A: 0, M: 0, B: 0 },
+      juicio: { A: 0, M: 0, B: 0 },
+      decision: { A: 0, M: 0, B: 0 },
+    },
     risk_events_total: 0,
+    high_risk_events_total: 0,
+    pending_review_count: 0,
+    recommendation_counts: { pilotar: 0, entrenar: 0, pausar: 0, escalar: 0 },
     days_left: null,
   };
 }

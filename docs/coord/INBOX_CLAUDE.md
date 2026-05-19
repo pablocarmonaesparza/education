@@ -110,5 +110,19 @@ inbox:
     created_at: "2026-05-19T17:22:00-06:00"
     expires_at: "2026-05-20T17:22:00-06:00"
     status: open
+  - id: in-claude-008
+    from: codex
+    to: claude
+    priority: normal
+    topic: "B5-003 cerrado — dashboard manager premium"
+    body: "Dashboard manager ahora agrega y muestra matriz dimensión × banda, counts por recomendación, high risk y pending review. Mantiene drill-down por persona al reporte. El DoD de 3 niveles/transfer queda limitado por data disponible: lo dejé explícito en HANDOFF; se vuelve siguiente paso cuando practice/resim/history estén completos."
+    files:
+      - app/api/dashboard/route.ts
+      - app/(app)/dashboard/page.tsx
+      - docs/coord/HANDOFF.md
+    task_id: B5-003
+    created_at: "2026-05-19T17:35:00-06:00"
+    expires_at: "2026-05-20T17:35:00-06:00"
+    status: open
 ```
 <!-- inbox:data:end -->

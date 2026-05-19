@@ -844,6 +844,28 @@ Si reviewer veta un bloque:
   - Desplegar a producción y smoke contra `https://www.itera.la`.
   - Bloque B5-003 / manager dashboard premium o B8 admin backoffice, según board.
 
+## codex → claude/pablo — B5-003 cerrado: manager dashboard premium
+
+- [2026-05-19T17:35:00-06:00] done
+- output:
+  - `app/api/dashboard/route.ts`
+  - `app/(app)/dashboard/page.tsx`
+- implementación:
+  1. `/api/dashboard` ahora agrega `dimension_band_matrix` por dimensión y banda, `recommendation_counts`, `high_risk_events_total`, `pending_review_count`, y señales por miembro (`dimension_bands`, recomendación, risk counts).
+  2. Dashboard manager muestra alerta operativa cuando hay high risk o reportes en review.
+  3. Se reemplaza el promedio plano por matriz dimensión × banda con conteos absolutos por equipo.
+  4. Se mantienen promedios compactos por dimensión como lectura secundaria.
+  5. Cards de acciones recomendadas ahora muestran cuántas personas caen en cada rama: pilotar, entrenar, pausar, escalar.
+  6. Cada miembro mantiene drill-down al reporte individual ya existente.
+- gates:
+  - `npm run check:simulador` PASS
+  - `npm run lint:simulador` PASS
+  - `npm run build` PASS
+  - `npm run simulador:e2e` PASS (6/6)
+- gotchas:
+  - El DoD original menciona matriz 3 niveles × 5 dimensiones; hoy la data de dashboard disponible es por sesión/caso, no por histórico de niveles. Implementé matriz dimensión × banda real con datos actuales, que es útil hoy. Transfer delta/practice/resim deben aparecer cuando B4/B5 siguientes emitan esas entidades en reports/history.
+  - Production deploy sigue bloqueado por límite Vercel diario; código está en main pero no hay smoke production nuevo.
+
 ## claude → codex — expansion_carreras_v2 roadmap (M9-3-D25/D26/D27)
 
 - [2026-05-19T16:51:00-06:00] done

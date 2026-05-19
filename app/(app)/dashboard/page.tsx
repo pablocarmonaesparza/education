@@ -66,6 +66,28 @@ const BAND_DISPLAY: Record<BandKey, string> = {
   B: "Bajo",
 };
 
+const BAND_ROWS: Array<{
+  band: BandKey;
+  label: string;
+  description: string;
+}> = [
+  {
+    band: "A",
+    label: "Banda alta",
+    description: "Puede pilotar o ampliar scope.",
+  },
+  {
+    band: "M",
+    label: "Banda media",
+    description: "Necesita práctica antes de autonomía.",
+  },
+  {
+    band: "B",
+    label: "Banda baja",
+    description: "Pausar flujos sensibles y remediar.",
+  },
+];
+
 interface DashboardMember {
   user_id: string;
   full_name: string | null;
@@ -80,6 +102,10 @@ interface DashboardMember {
     | "completed";
   session_duration_min: number | null;
   readiness_band: BandKey | null;
+  dimension_bands: Record<string, BandKey> | null;
+  recommendation_action: "pilotar" | "entrenar" | "pausar" | "escalar" | null;
+  risk_events_count: number;
+  high_risk_events_count: number;
   report_id: string | null;
   report_status: string | null;
 }
@@ -109,7 +135,11 @@ interface DashboardData {
     completion_pct: number;
     readiness_by_band: Record<"A" | "M" | "B", number>;
     dimensions_avg: Record<string, number>;
+    dimension_band_matrix: Record<string, Record<"A" | "M" | "B", number>>;
     risk_events_total: number;
+    high_risk_events_total: number;
+    pending_review_count: number;
+    recommendation_counts: Record<"pilotar" | "entrenar" | "pausar" | "escalar", number>;
     days_left: number | null;
   };
 }
@@ -491,6 +521,28 @@ export default function DashboardPage() {
           </div>
         </section>
 
+        {(agg.high_risk_events_total > 0 || agg.pending_review_count > 0) && (
+          <section className="max-w-6xl mx-auto px-6 mt-6">
+            <motion.div
+              {...fadeUp}
+              className="card-apple bg-[var(--surface)] p-5 border border-[var(--band-b-text)]/30"
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <div className="eyebrow">Atención operativa</div>
+                  <p className="mt-2 text-[15px] text-[var(--text-primary)] leading-[1.55]">
+                    {agg.high_risk_events_total} eventos de riesgo alto ·{" "}
+                    {agg.pending_review_count} reportes en review humano.
+                  </p>
+                </div>
+                <span className="text-[12px] text-[var(--text-secondary)]">
+                  Revisa antes de expandir autonomía.
+                </span>
+              </div>
+            </motion.div>
+          </section>
+        )}
+
         {/* Equipo */}
         <section className="max-w-6xl mx-auto px-6 mt-20">
           <motion.div
@@ -564,10 +616,17 @@ export default function DashboardPage() {
                         </div>
                       </div>
                       {m.readiness_band && (
-                        <div
-                          className={`flex-shrink-0 text-[11px] font-semibold px-2.5 py-1 rounded-full ${tone.bg} ${tone.text}`}
-                        >
-                          {BAND_DISPLAY[m.readiness_band]}
+                        <div className="flex shrink-0 flex-col items-end gap-1">
+                          <div
+                            className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${tone.bg} ${tone.text}`}
+                          >
+                            {BAND_DISPLAY[m.readiness_band]}
+                          </div>
+                          {m.high_risk_events_count > 0 && (
+                            <span className="text-[11px] text-[var(--band-b-text)]">
+                              {m.high_risk_events_count} high risk
+                            </span>
+                          )}
                         </div>
                       )}
                     </CardBody>
@@ -662,64 +721,120 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* Dimensiones agregadas */}
+        {/* Matriz agregada */}
         <section className="max-w-6xl mx-auto px-6 mt-20">
           <motion.div {...fadeUp} className="mb-8">
             <div className="eyebrow">Resultado agregado</div>
             <h2 className="display mt-2 text-[28px] text-[var(--text-primary)]">
-              Dimensiones del equipo.
+              Matriz dimensión × banda.
             </h2>
             <p className="mt-3 text-[15px] text-[var(--text-secondary)] max-w-2xl">
-              Promedio de las 5 dimensiones que medimos en cada caso.
+              Cuenta cuántas personas cayeron en cada banda por dimensión. La
+              matriz evita esconder un gap fuerte detrás del promedio general.
             </p>
           </motion.div>
 
-          <div className="card-apple bg-[var(--surface)] p-2 sm:p-8">
-            <div className="space-y-6">
-              {DIMENSIONS.map((d, i) => {
-                const score = dimsAvg[d.id] ?? 0;
-                const labelCapped =
-                  d.label.charAt(0).toUpperCase() + d.label.slice(1);
-                const descCapped =
-                  d.description.charAt(0).toUpperCase() +
-                  d.description.slice(1) +
-                  ".";
-                return (
-                  <motion.div
-                    key={d.id}
-                    {...fadeUp}
-                    transition={{ ...fadeUp.transition, delay: i * 0.04 }}
-                  >
-                    <div className="flex items-baseline justify-between">
-                      <div>
-                        <span className="text-[15px] font-medium text-[var(--text-primary)]">
-                          {labelCapped}
+          <div className="card-apple bg-[var(--surface)] overflow-hidden">
+            <div className="hidden md:grid grid-cols-[180px_repeat(5,minmax(0,1fr))] border-b border-[var(--hairline)]">
+              <div className="p-4 text-[12px] text-[var(--text-tertiary)]">
+                Banda
+              </div>
+              {DIMENSIONS.map((dimension) => (
+                <div
+                  key={dimension.id}
+                  className="p-4 text-[12px] font-medium text-[var(--text-secondary)]"
+                >
+                  {dimension.label.charAt(0).toUpperCase() +
+                    dimension.label.slice(1)}
+                </div>
+              ))}
+            </div>
+
+            {BAND_ROWS.map((row, rowIndex) => {
+              const tone = bandTone(row.band);
+              return (
+                <motion.div
+                  key={row.band}
+                  {...fadeUp}
+                  transition={{ ...fadeUp.transition, delay: rowIndex * 0.04 }}
+                  className="grid grid-cols-1 md:grid-cols-[180px_repeat(5,minmax(0,1fr))] border-b border-[var(--hairline)] last:border-b-0"
+                >
+                  <div className="p-4 md:p-5 bg-[var(--surface-2)]">
+                    <span
+                      className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold ${tone.bg} ${tone.text}`}
+                    >
+                      {row.label}
+                    </span>
+                    <p className="mt-2 text-[12px] leading-[1.45] text-[var(--text-secondary)]">
+                      {row.description}
+                    </p>
+                  </div>
+                  {DIMENSIONS.map((dimension) => {
+                    const count =
+                      agg.dimension_band_matrix?.[dimension.id]?.[row.band] ??
+                      0;
+                    return (
+                      <div
+                        key={`${row.band}-${dimension.id}`}
+                        className="flex items-center justify-between gap-3 p-4 md:block md:p-5 border-t md:border-t-0 md:border-l border-[var(--hairline)]"
+                      >
+                        <span className="md:hidden text-[13px] text-[var(--text-secondary)]">
+                          {dimension.label.charAt(0).toUpperCase() +
+                            dimension.label.slice(1)}
+                        </span>
+                        <span className="mono text-[24px] font-semibold text-[var(--text-primary)]">
+                          {count}
+                        </span>
+                        <span className="ml-2 text-[12px] text-[var(--text-tertiary)]">
+                          {count === 1 ? "persona" : "personas"}
                         </span>
                       </div>
-                      <span className="text-[15px] mono text-[var(--text-primary)] font-semibold">
-                        {score}
-                      </span>
-                    </div>
-                    <p className="mt-1 text-[13px] text-[var(--text-secondary)]">
-                      {descCapped}
-                    </p>
-                    <div className="mt-3 h-[6px] bg-[var(--surface-3)] rounded-full overflow-hidden">
-                      <motion.div
-                        className="h-full rounded-full"
-                        style={{ backgroundColor: "var(--accent)" }}
-                        initial={{ width: 0 }}
-                        animate={{ width: `${score}%` }}
-                        transition={{
-                          duration: 0.8,
-                          delay: 0.1 + i * 0.04,
-                          ease: [0.16, 1, 0.3, 1],
-                        }}
-                      />
-                    </div>
-                  </motion.div>
-                );
-              })}
+                    );
+                  })}
+                </motion.div>
+              );
+            })}
+
+            <div className="p-4 text-[12px] text-[var(--text-tertiary)]">
+              Cuentas absolutas por sesiones completadas. Participantes en
+              curso no se incluyen hasta publicar reporte.
             </div>
+          </div>
+        </section>
+
+        {/* Promedios por dimensión */}
+        <section className="max-w-6xl mx-auto px-6 mt-10">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+            {DIMENSIONS.map((dimension, index) => {
+              const score = dimsAvg[dimension.id] ?? 0;
+              return (
+                <motion.div
+                  key={dimension.id}
+                  {...fadeUp}
+                  transition={{ ...fadeUp.transition, delay: index * 0.04 }}
+                  className="card-apple bg-[var(--surface)] p-5"
+                >
+                  <div className="text-[13px] font-medium text-[var(--text-primary)]">
+                    {dimension.label.charAt(0).toUpperCase() +
+                      dimension.label.slice(1)}
+                  </div>
+                  <div className="mt-3 mono text-[24px] font-semibold text-[var(--text-primary)]">
+                    {score}
+                    <span className="text-[14px] text-[var(--text-tertiary)]">
+                      /100
+                    </span>
+                  </div>
+                  <div className="mt-3 h-[4px] overflow-hidden rounded-full bg-[var(--surface-3)]">
+                    <motion.div
+                      className="h-full rounded-full accent-bg"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${score}%` }}
+                      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                    />
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </section>
 
@@ -748,6 +863,12 @@ export default function DashboardPage() {
                 >
                   <Card className="card-apple bg-[var(--surface)] shadow-none">
                     <CardBody className="p-5">
+                      <div className="eyebrow mb-3">
+                        {agg.recommendation_counts?.[
+                          a.id as keyof typeof agg.recommendation_counts
+                        ] ?? 0}{" "}
+                        personas
+                      </div>
                       <h3 className="text-[16px] font-semibold text-[var(--text-primary)]">
                         {labelCapped}.
                       </h3>

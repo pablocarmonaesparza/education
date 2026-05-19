@@ -361,7 +361,7 @@ tasks:
     title: manager dashboard premium
     owner: codex
     reviewer: claude
-    status: backlog
+    status: done
     depends_on:
       - B5-001
       - B2-002
@@ -369,7 +369,8 @@ tasks:
       - matriz 3 niveles x 5 dimensiones
       - drill-down por persona/equipo
       - practice, resim y transfer delta visibles
-    notes: centro de decision manager
+    notes: "API agrega matriz dimension x banda, counts de recomendacion, high-risk y pending-review; dashboard muestra alerta operativa, matriz agregada y drill-down por persona via report link. Practice/resim/transfer delta quedan sin data hasta B4/B5 siguientes."
+    done_at: '2026-05-19T17:35:00-06:00'
   - id: B6-001
     title: field-test publico production-ready
     owner: codex
