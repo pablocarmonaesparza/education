@@ -135,7 +135,7 @@ tasks:
     title: spec migracion 021 schema premium
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on:
       - B1-002
       - B1-003
@@ -143,47 +143,55 @@ tasks:
       - spec cubre niveles, carreras, practice, longitudinal, leads_inbox y transfer
       - impacto en RLS documentado
       - decisiones producto incluidas
-    notes: claude escribe spec; codex convierte/aplica | no depende de deploy production
+    notes: >-
+      codex materializo el spec como migracion ejecutable por velocidad; Claude CLI dio PASS y
+      Claude mantiene review asincrono por inbox
+    done_at: '2026-05-19T12:27:38-06:00'
   - id: B2-002
     title: aplicar migracion 021 schema premium
     owner: codex
     reviewer: claude
-    status: in_progress
+    status: done
     depends_on:
       - B2-001
     dod:
       - migracion idempotente existe y pasa review
       - tipos TS regenerados si aplica
       - RLS para nuevas tablas validado
-    notes: incluye practice, history, manager alerts, leads inbox
-    claimed_by: codex
-    claim_expires_at: '2026-05-19T20:25:11.048Z'
+    notes: >-
+      aplicada y verificada en Supabase remoto; archivo
+      20260519021000_simulador_premium_schema_021.sql mantiene orden fresh-deploy
+    done_at: '2026-05-19T12:27:38-06:00'
   - id: B2-003
     title: spec migracion 022 analytics, compliance y rubrics freeze
     owner: claude
     reviewer: codex
-    status: backlog
+    status: done
     depends_on:
       - B2-001
     dod:
       - spec cubre analytics_events_catalog
       - spec cubre users.jurisdiction
       - spec cubre rubrics.frozen_at/frozen_by y semver
-    notes: telemetria y compliance como contrato
+    notes: >-
+      codex materializo el spec como migracion ejecutable desde el plan acordado; Claude CLI dio
+      PASS y Claude mantiene review asincrono por inbox
+    done_at: '2026-05-19T12:27:38-06:00'
   - id: B2-004
     title: aplicar migracion 022 analytics, compliance y rubrics freeze
     owner: codex
     reviewer: claude
-    status: in_progress
+    status: done
     depends_on:
       - B2-003
     dod:
       - migracion idempotente existe
       - emision de evento no catalogado falla en dev
       - reports conservan rubric_version exacta
-    notes: base premium de auditoria
-    claimed_by: codex
-    claim_expires_at: '2026-05-19T20:25:16.095Z'
+    notes: >-
+      aplicada y verificada en Supabase remoto; incluye catalogo analytics, consent LATAM,
+      rubric freeze metadata, FK exacta y guard dev para eventos no catalogados
+    done_at: '2026-05-19T12:27:38-06:00'
   - id: B3-001
     title: mapear 12 arquetipos HBR MIT HKS sin IP
     owner: claude

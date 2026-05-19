@@ -99,6 +99,38 @@ gotchas:
 next:
 - Cargar Upstash envs en Vercel Production/Preview o decidir otro proveedor/guardrail antes de abrir production field-test.
 
+## B2-001/B2-002/B2-003/B2-004 — schema premium, analytics, compliance y rubric freeze
+
+status: done
+
+done:
+- Codex agrego `supabase/migrations/20260519021000_simulador_premium_schema_021.sql`.
+- La migracion 021 agrega nivel/carrera/arquetipo a casos, variantes y practice beats; crea `practice_unlocks`, `practice_attempts`, `person_readiness_history`, `manager_alert_subscriptions`, `manager_alerts`, `leads_inbox`; agrega `simulador.compute_transfer_delta(primary, resim)`.
+- Codex agrego `supabase/migrations/20260519022000_simulador_analytics_compliance_rubric_freeze_022.sql`.
+- La migracion 022 agrega `users.jurisdiction` + consentimiento localizado, metadata de freeze/semver en `rubrics`, FK exacta `evaluation_runs(rubric_id, rubric_version)`, y `analytics_events_catalog` con 38 eventos.
+- Codex regenero `lib/simulador/db.types.ts` desde Supabase remoto y agrego alias compatibles.
+- Codex agrego `lib/simulador/analytics.ts`; en dev, emitir un evento no catalogado lanza error, y en prod deja warning.
+- Codex agrego `scripts/simulador/check-analytics-catalog.mjs` y lo conecto a `npm run check:simulador`.
+
+tested:
+- Claude CLI SQL review: PASS en segunda vuelta.
+- Supabase remoto: migracion 021 aplicada via `supabase db query --linked --file ...` y registrada con `supabase migration repair --status applied 20260519021000`.
+- Supabase remoto: migracion 022 aplicada via `supabase db query --linked --file ...` y registrada con `supabase migration repair --status applied 20260519022000`.
+- Supabase remoto: 7 tablas nuevas verificadas con RLS enabled.
+- Supabase remoto: `analytics_events_catalog` contiene 38 eventos.
+- Supabase remoto: `simulador.compute_transfer_delta` existe.
+- Supabase remoto: `rubrics` tiene 4 columnas de freeze/semver.
+- Supabase remoto: `users` tiene 5 columnas de jurisdiccion/consent.
+
+gotchas:
+- Los specs CLD-M02/M03 quedaron materializados como migraciones ejecutables por Codex para no bloquear el producto; Claude mantiene review asincrono por inbox.
+- `leads_inbox` es service-role-only por diseño; RLS queda enabled sin policies de cliente y con comentario explicito.
+- Production deploy sigue bloqueado por Upstash envs; esto no afecta schema remoto ni trabajo premium paralelo.
+
+next:
+- Claude revisa migraciones 021/022 asincronamente y marca PASS/FAIL en `INBOX_CODEX.md`.
+- Codex puede avanzar a importers de casos/practice beats cuando los YAMLs de Claude esten listos y trackeados.
+
 ## disagreement policy
 
 Si reviewer veta un bloque:

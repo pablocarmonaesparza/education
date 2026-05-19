@@ -30,6 +30,14 @@ if (spoiler.status !== 0) {
   process.exit(spoiler.status ?? 1);
 }
 
+const analytics = run("node", ["scripts/simulador/check-analytics-catalog.mjs"]);
+print(analytics.stdout);
+print(analytics.stderr);
+
+if (analytics.status !== 0) {
+  process.exit(analytics.status ?? 1);
+}
+
 const typecheck = run("node", ["scripts/simulador/typecheck-scope.mjs"]);
 print(typecheck.stdout);
 print(typecheck.stderr);
