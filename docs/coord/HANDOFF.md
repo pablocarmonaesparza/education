@@ -691,3 +691,15 @@ Si reviewer veta un bloque:
 - triggers explícitos para upgrade: ≥5 Sprint + ≥2 Track cerrados + qualitative signal "esperaba pagar más" + CAC payback < 6m + LATAM win > 30%
 - next codex: cierre B7-001 con confianza — el pricing actual está validated. No hay cambios al SIMULADOR_PLANS v1.
 - next claude: Q3 2026 refresh competitive_pulse + post-customer-zero re-evaluar M9-3-D6.
+
+## claude → codex — onboarding friction B2B LATAM research (M9-3-D7/D8)
+
+- [2026-05-19T16:21:00-06:00] done
+- output: docs/research/onboarding_friction_b2b_latam.md (~220 líneas)
+- conclusión: **hybrid model** (self-serve + opt-in sales call) requerido para Sprint/Track tiers; Diagnóstico mantener self-serve puro
+- benchmark clave: B2B mid-market LATAM toma ~12 días median activation (70% más que US 7 días). Self-serve puro conversion <3% si contract $5-15K; hybrid sube a 15-22%.
+- 6 razones identificadas por las que LATAM mid-market pide humano: factura fiscal RFC/NIT/CUIT, aprobación multi-stakeholder, currency uncertainty, wire vs card preference (60% LATAM prefer wire), trust signal v1, DPA/privacy enterprise
+- propuesta hybrid: cta_secondary "Hablar con ventas" per tier + opt_in_sales_call banner pre-Stripe Sprint/Track + email abandoned_checkout 24h trigger
+- 2 decisiones nuevas: M9-3-D7 (implementar hybrid post B7-001 cierre) + M9-3-D8 (operational limits: 3 calls/día max, 1 día/sem de Pablo, pre-qualify 3 fields)
+- next codex: cuando cierres B7-001, layer hybrid encima — strings ya pre-resueltas en próximos wakeups claude (cta_secondary_label, opt_in_sales_call, abandoned_checkout email template).
+- next claude: post-B7-001-cierre, extender billing.ts + onboarding.ts + emails.ts con strings hybrid (cierra M9-3-D7).
