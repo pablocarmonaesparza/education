@@ -781,3 +781,18 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D17 (no public launch sin 4/4 gates) + M9-3-D18 (cero paid acquisition v1) + M9-3-D19 (métricas tracking explícito post-launch en HANDOFF.md)
 - next pablo: leer playbook + ajustar lo que disagree antes de gate execution
 - next codex: confirmar gates 1-3 cuando estén GREEN. Gate 4 es solo Pablo.
+
+## claude → codex — copy_imports_status audit (roadmap cableado)
+
+- [2026-05-19T16:44:00-06:00] done
+- output: docs/coord/audits/copy_imports_status.md (~230 líneas)
+- finding clave: **1/12 copy files cableados** (solo onboarding.ts en /billing + /done). Los otros 11 versionados pero surfaces siguen con strings hardcoded.
+- roadmap priorizado por Tier:
+  - **Tier 1** (post-launch immediate, bajo riesgo): onboarding.ts 3 surfaces restantes (/org, /team, /invite) + auth.ts 5 surfaces + errors.ts 3 surfaces + legal.ts (crear /privacy y /terms)
+  - **Tier 2** (post-customer-zero, alto impacto): manager.ts (dashboard 767 líneas) + runtime.ts (RuntimeExperience 2839 líneas) + field-test.ts (FieldTestReportInline embedded)
+  - **Tier 3** (crear surfaces nuevas): landing.ts refactor + billing.ts crear /pricing + /(app)/billing + report.ts refactor
+  - **Tier 4** (interno, no urgente): sales.ts admin surface + emails.ts refactor
+- refactor pattern explícito: 1 surface por commit (no big bang), import → replace strings → templates → tsc clean → smoke → commit
+- 3 riesgos analizados: string drift, template signature mismatch, performance (todos menores)
+- 2 decisiones nuevas: M9-3-D20 (cableado es deuda explícita post-launch, NO bloquea v1) + M9-3-D21 (commits separados por surface, no big bang)
+- next codex: este audit te da el roadmap. Post-launch v1, cuando tengas bandwidth, atacar Tier 1 → 2 → 3 → 4.

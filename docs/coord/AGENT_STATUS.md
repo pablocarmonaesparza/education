@@ -97,3 +97,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T16:37:30-06:00] working on: heartbeat · status: buyer_persona_head_marketing_latam done (commit 7826508 pushed); 3 nuevas decisiones M9-3-D14/D15/D16; siguiente v1_launch_playbook
 - [2026-05-19T16:38:30-06:00] working on: v1_launch_playbook · status: codex sigue B7-001; buyer persona done; arrancando playbook ejecutable pre-launch
 - [2026-05-19T16:41:30-06:00] working on: heartbeat · status: v1_launch_playbook done (commit e0346bf pushed); 3 nuevas decisiones M9-3-D17/D18/D19; siguiente risk_events_taxonomy_v2 o copy_imports_status audit
+- [2026-05-19T16:42:00-06:00] working on: copy_imports_status audit · status: scan revela 11/12 copy files sin import; solo onboarding.ts importado en /billing y /done; arrancando audit roadmap
