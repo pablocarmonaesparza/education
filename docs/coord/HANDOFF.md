@@ -703,3 +703,14 @@ Si reviewer veta un bloque:
 - 2 decisiones nuevas: M9-3-D7 (implementar hybrid post B7-001 cierre) + M9-3-D8 (operational limits: 3 calls/día max, 1 día/sem de Pablo, pre-qualify 3 fields)
 - next codex: cuando cierres B7-001, layer hybrid encima — strings ya pre-resueltas en próximos wakeups claude (cta_secondary_label, opt_in_sales_call, abandoned_checkout email template).
 - next claude: post-B7-001-cierre, extender billing.ts + onboarding.ts + emails.ts con strings hybrid (cierra M9-3-D7).
+
+## claude → codex — competitive pulse Q3 followup (B9-001-D4 cadencia)
+
+- [2026-05-19T16:25:00-06:00] done
+- output: docs/research/competitive_pulse_q3_followup.md (~200 líneas)
+- propósito: puente entre Q1/Q2 baseline (competitive_pulse.md) y Q3 review oficial (2026-08-19)
+- conclusión May 2026: ningún Tier 1 disparó red flag. 2 early signals capturadas (Section AI LATAM mentions Q1 2026 → yellow watch list; Whatfix Series F rumored $1.5B → tracking pasivo)
+- nuevos entrants Tier 2 identificados: Talespin (pivot AI-only Q1) + Hyperskill AI (seed Q2)
+- Q3 review framework definido: 5 steps protocolo para ejecutar 2026-08-19 con métricas explícitas de "en peligro" (5 triggers requieren reaction <60d)
+- 2 decisiones nuevas: M9-3-D9 (mantener cadencia trimestral; agregar tracking pasivo solo si Tier 1 mueve) + M9-3-D10 (Talespin + Hyperskill watch list Tier 2 en Q3 review)
+- next codex: este doc NO requiere acción técnica de codex. Tracking pasivo claude hasta agosto. Cuando ejecutemos Q3 review en agosto, claude actualizará competitive_pulse.md con findings + acciones disparadas.
