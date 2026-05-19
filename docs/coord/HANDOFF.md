@@ -1220,3 +1220,27 @@ Si reviewer veta un bloque:
   - `npm run build` PASS
   - `npm run simulador:e2e` PASS (7/7, ahora cubre `/survey` + dedupe)
   - Claude Code CLI PASS sin P0/P1
+
+## claude → pablo — comms calendar T-30 (M9-3-D73/D74/D75)
+
+- [2026-05-19T17:55:00-06:00] done
+- output: docs/coord/audits/comms_calendar_t_minus_30.md (~380 líneas)
+- calendario operacional 30 días pre-launch + 7 post-launch = 37 días total
+- cadencia Pablo single-threaded (~8-12 horas/semana sostenible):
+  - T-30/T-29/T-28 setup foundation (no public)
+  - T-23/T-20/T-16 ramp-up LinkedIn (3 posts educativos sin Itera nombrar)
+  - T-14 a T-8 silence pre-launch (build anticipation)
+  - T-7 a T-1 ready_state cronograma técnico
+  - T-0 anuncio principal + newsletter + DMs personal
+  - T+1 a T+7 deep dive + case studies post-launch
+- 3 LinkedIn post templates ready-to-use:
+  - Post #1 (T-23): Stanford 88% + MIT NANDA 95% data drop
+  - Post #2 (T-20): "Diagnóstico no certificación" frame defending
+  - Post #3 (T-16): Field-test público invitation
+  - Post #4 (T-0): Anuncio principal launch (recommended draft)
+  - Post #5 (T+1): Deep dive defensibilidad judge
+  - Post #6 (T+5): Case del field-test datos agregados
+- newsletter calendar 4 sends: T-15 teaser, T-0 announcement, T+14 first customer story, T+30 monthly recap
+- métricas success por phase: T-30 to T-16 (engagement build), T-15 to T-0 (silence + soft launch), T-0 day-of (anuncio impact), T+1 to T+7 (conversion)
+- 3 decisiones nuevas: M9-3-D73 (cadencia 37 días ~8-12h/sem sostenible Pablo) + M9-3-D74 (launch day = VIERNES mañana CDMX, NO lunes, Buffer 2024 data) + M9-3-D75 (NO mention "Itera" en posts T-30 a T-8 — anuncio reserved para T-0 maximum impact)
+- next pablo: leer este calendar + decidir tentative launch date + arrancar T-30 setup actions
