@@ -82,7 +82,7 @@ export default function OnboardingTeamPage() {
           className="max-w-xl w-full"
         >
           <div className="eyebrow mb-4">
-            Paso 2 de 4 · Equipo dentro de {orgName || "tu organización"}
+            Paso 2 de 5 · Equipo dentro de {orgName || "tu organización"}
           </div>
           <h1 className="display display-tight text-[var(--text-primary)] text-[32px] sm:text-[40px]">
             ¿Qué equipo vas a diagnosticar primero?

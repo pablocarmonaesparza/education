@@ -105,7 +105,7 @@ export default function OnboardingInvitePage() {
           className="max-w-xl w-full"
         >
           <div className="eyebrow mb-4">
-            Paso 3 de 4 · Invita a tu equipo
+            Paso 3 de 5 · Invita a tu equipo
           </div>
           <h1 className="display display-tight text-[var(--text-primary)] text-[32px] sm:text-[40px]">
             ¿Quiénes van a hacer el diagnóstico?

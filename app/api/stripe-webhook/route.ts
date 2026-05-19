@@ -10,6 +10,7 @@ import {
 } from '@/lib/stripe/config';
 import { sendPaymentReceipt, sendFailedCharge } from '@/lib/email/send';
 import {
+  isTerminalSimuladorPaymentSyncReason,
   isSimuladorCheckoutSession,
   upsertSimuladorSubscriptionFromCheckout,
 } from '@/lib/stripe/simuladorBilling';
@@ -205,6 +206,12 @@ export async function POST(req: NextRequest) {
         if (isSimuladorCheckoutSession(session)) {
           const result = await upsertSimuladorSubscriptionFromCheckout(session);
           if (!result.ok) {
+            if (isTerminalSimuladorPaymentSyncReason(result.reason)) {
+              console.error(
+                `[stripe-webhook][CRITICAL] terminal simulador checkout sync failure for ${session.id}: ${result.reason}`
+              );
+              break;
+            }
             throw new Error(`simulador checkout sync failed: ${result.reason}`);
           }
           break;

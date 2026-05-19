@@ -2,7 +2,10 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
 import { onboardingCopy } from "@/lib/simulador/copy/onboarding";
-import { syncSimuladorPaymentFromSession } from "@/lib/stripe/simuladorBilling";
+import {
+  findSimuladorSubscriptionByCheckoutSession,
+  syncSimuladorPaymentFromSession,
+} from "@/lib/stripe/simuladorBilling";
 import { ClearOnboardingStorage } from "./ClearOnboardingStorage";
 
 interface DonePageProps {
@@ -36,7 +39,9 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
   const returnCopy = onboardingCopy.return_from_stripe;
 
   const sync = sessionId
-    ? await syncSimuladorPaymentFromSession(sessionId)
+    ? await findSimuladorSubscriptionByCheckoutSession(sessionId).then((existing) =>
+        existing.ok ? existing : syncSimuladorPaymentFromSession(sessionId),
+      )
     : { ok: false as const, reason: "missing_session_id" };
 
   const isPaymentPending = !sync.ok && sync.reason === "payment_pending";

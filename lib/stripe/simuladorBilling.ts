@@ -12,6 +12,14 @@ export type SimuladorPaymentSyncResult =
   | { ok: true; organizationId: string; subscriptionId: string }
   | { ok: false; reason: string };
 
+const TERMINAL_SYNC_REASONS = new Set([
+  "not_simulador_checkout",
+  "missing_org_team_or_buyer_metadata",
+  "invalid_plan_metadata",
+  "invalid_seats_metadata",
+  "payment_pending",
+]);
+
 function adminClient() {
   return createAdminClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -28,10 +36,44 @@ function metadataValue(session: Stripe.Checkout.Session, key: string) {
   return session.metadata?.[key] ?? null;
 }
 
+function isPositiveInteger(value: number) {
+  return Number.isInteger(value) && value > 0;
+}
+
+export function isTerminalSimuladorPaymentSyncReason(reason: string): boolean {
+  return TERMINAL_SYNC_REASONS.has(reason);
+}
+
 export function isSimuladorCheckoutSession(
   session: Stripe.Checkout.Session,
 ): boolean {
   return metadataValue(session, "billing_product") === "simulador_b2b";
+}
+
+export async function findSimuladorSubscriptionByCheckoutSession(
+  sessionId: string,
+): Promise<SimuladorPaymentSyncResult> {
+  const admin = adminClient();
+  const { data, error } = await admin
+    .schema("simulador")
+    .from("subscriptions")
+    .select("id, organization_id")
+    .filter("metadata->>checkout_session_id", "eq", sessionId)
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    return { ok: false, reason: `subscription_lookup_failed:${error.message}` };
+  }
+  if (!data?.id || !data.organization_id) {
+    return { ok: false, reason: "subscription_not_found" };
+  }
+
+  return {
+    ok: true,
+    organizationId: String(data.organization_id),
+    subscriptionId: String(data.id),
+  };
 }
 
 export async function syncSimuladorPaymentFromSession(
@@ -48,6 +90,8 @@ export async function syncSimuladorPaymentFromSession(
   try {
     session = await stripe.checkout.sessions.retrieve(sessionId);
   } catch (err) {
+    const existing = await findSimuladorSubscriptionByCheckoutSession(sessionId);
+    if (existing.ok) return existing;
     const message = err instanceof Error ? err.message : "stripe_retrieve_failed";
     return { ok: false, reason: message };
   }
@@ -78,6 +122,9 @@ export async function upsertSimuladorSubscriptionFromCheckout(
   if (!isSimuladorBillingPlan(rawPlan)) {
     return { ok: false, reason: "invalid_plan_metadata" };
   }
+  if (!isPositiveInteger(seatsFromMetadata)) {
+    return { ok: false, reason: "invalid_seats_metadata" };
+  }
 
   const planId: SimuladorBillingPlan = rawPlan;
   const { seats, amountUsd, amountCents, plan } = computePlanAmountUsd(
@@ -104,7 +151,7 @@ export async function upsertSimuladorSubscriptionFromCheckout(
     tier: plan.subscriptionTier,
     seats,
     price_usd_total: amountUsd,
-    current_period_start: new Date().toISOString(),
+    current_period_start: new Date(session.created * 1000).toISOString(),
     current_period_end: endDate(plan.durationDays),
     metadata: {
       billing_product: "simulador_b2b",
@@ -148,6 +195,9 @@ export async function upsertSimuladorSubscriptionFromCheckout(
     .single();
 
   if (error || !created?.id) {
+    if ((error as { code?: string } | null)?.code === "23505") {
+      return findSimuladorSubscriptionByCheckoutSession(session.id);
+    }
     return {
       ok: false,
       reason: `subscription_insert_failed:${error?.message ?? "missing_id"}`,
