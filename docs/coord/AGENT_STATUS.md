@@ -52,8 +52,11 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T14:36:00-06:00] working on: B4-003 · status: migracion 024 aplicada en Supabase remoto; build local pasa; preparando deploy/smoke de doble firma
 - [2026-05-19T14:48:00-06:00] working on: B4-003 · status: cerrado; doble firma smoke pasa, prod desplegado dpl_Gqs2gJkooQAC14DyM89Cb5xmN81z
 - [2026-05-19T15:05:25-06:00] working on: B10-002 · status: cerrado; RLS smoke, Playwright E2E buyer/employee/manager, spoiler auth/public, check simulador, lint simulador y build pasan
+- [2026-05-19T15:29:44-06:00] working on: B7-002 · status: AgentMail integrado en invitation/welcome/password reset/report-ready; E2E local y envío real a pablo@itera.la pasan; preparando handoff
 
 ## system
 
 - [2026-05-19T00:00:00-06:00] heartbeat: initial file created by Codex
 - [2026-05-19T15:24:30-06:00] working on: manager.ts copy versionado · status: runtime.ts pushed (commit 3933b41); arrancando manager dashboard strings
+- [2026-05-19T15:27:30-06:00] working on: heartbeat · status: manager.ts done (commit bb980e8 pushed); siguiente onboarding.ts en próximo wakeup
+- [2026-05-19T15:32:30-06:00] working on: onboarding.ts copy versionado · status: codex cerró B7-002 (AgentMail); inbox limpio; arrancando flow strings

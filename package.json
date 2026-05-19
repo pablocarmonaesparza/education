@@ -25,6 +25,7 @@
     "check:simulador": "node scripts/simulador/check-scope.mjs",
     "simulador:validate-case-yaml": "node scripts/simulador/validate-case-yaml.mjs",
     "simulador:validate": "node scripts/simulador/validate-contracts.mjs",
+    "simulador:check-email-templates": "node scripts/simulador/check-email-templates.mjs",
     "simulador:judge-calibration": "node scripts/simulador/check-judge-calibration.mjs",
     "simulador:test-rls": "node scripts/simulador/test-rls.mjs",
     "simulador:e2e": "playwright test tests/simulador/e2e",

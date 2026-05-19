@@ -18,11 +18,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendInvitationAcceptedEmail } from "@/lib/email/simulador";
 
 export const runtime = "nodejs";
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ token: string }> },
 ) {
   const { token } = await params;
@@ -42,7 +43,7 @@ export async function POST(
     .schema("simulador")
     .from("invitations")
     .select(
-      "id, organization_id, team_id, email, intended_role, status, expires_at",
+      "id, organization_id, team_id, invited_by, email, intended_role, status, expires_at",
     )
     .eq("token", token)
     .maybeSingle();
@@ -100,7 +101,7 @@ export async function POST(
   const { data: simUser } = await admin
     .schema("simulador")
     .from("users")
-    .select("id")
+    .select("id, email, full_name")
     .eq("id", bridgeId)
     .maybeSingle();
 
@@ -149,7 +150,7 @@ export async function POST(
   }
 
   // Marcar invitación como aceptada.
-  await admin
+  const { error: inviteUpdateErr } = await admin
     .schema("simulador")
     .from("invitations")
     .update({
@@ -158,6 +159,70 @@ export async function POST(
       accepted_at: new Date().toISOString(),
     })
     .eq("id", inv.id);
+
+  if (inviteUpdateErr) {
+    console.error(
+      "[api/invitations/accept] invitation update failed:",
+      inviteUpdateErr,
+    );
+    return NextResponse.json(
+      { error: "No se pudo marcar la invitación como aceptada." },
+      { status: 500 },
+    );
+  }
+
+  // Avisar al invitador que alguien aceptó. Best-effort: nunca bloquea el
+  // accept flow ni revierte memberships.
+  try {
+    const { data: inviter } = await admin
+      .schema("simulador")
+      .from("users")
+      .select("email, full_name")
+      .eq("id", inv.invited_by)
+      .maybeSingle();
+
+    if (inviter?.email) {
+      let invitationQuery = admin
+        .schema("simulador")
+        .from("invitations")
+        .select("status")
+        .eq("organization_id", inv.organization_id);
+      if (inv.team_id) {
+        invitationQuery = invitationQuery.eq("team_id", inv.team_id);
+      }
+      const { data: invitationRows } = await invitationQuery;
+      const statuses = invitationRows ?? [];
+      const acceptedCount = statuses.filter(
+        (row) => row.status === "accepted",
+      ).length;
+      const pendingCount = statuses.filter(
+        (row) => row.status === "pending",
+      ).length;
+      const origin = req.nextUrl.origin;
+
+      const result = await sendInvitationAcceptedEmail({
+        to: inviter.email,
+        inviterName:
+          inviter.full_name ?? inviter.email.split("@")[0] ?? "manager",
+        inviteeName:
+          simUser.full_name ?? user.email?.split("@")[0] ?? "participante",
+        inviteeEmail: simUser.email ?? user.email ?? inv.email,
+        totalInvited: statuses.length,
+        acceptedCount,
+        pendingCount,
+        dashboardUrl: `${origin}/dashboard`,
+      });
+
+      if (!result.ok && result.reason !== "not_configured") {
+        console.warn(
+          "[api/invitations/accept] accepted email failed:",
+          result.reason,
+        );
+      }
+    }
+  } catch (err) {
+    console.warn("[api/invitations/accept] accepted email threw:", err);
+  }
 
   return NextResponse.json({
     organization_id: inv.organization_id,

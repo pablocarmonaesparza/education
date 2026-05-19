@@ -17,6 +17,7 @@ const scopedPrefixes = [
   "app/api/sessions/",
   "app/api/transcribe/",
   "components/simulador/",
+  "lib/email/",
   "lib/simulador/",
   "scripts/simulador/",
   "scripts/dev-simulador.mjs",

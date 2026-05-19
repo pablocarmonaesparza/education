@@ -38,6 +38,16 @@ if (analytics.status !== 0) {
   process.exit(analytics.status ?? 1);
 }
 
+const emailTemplates = run("node", [
+  "scripts/simulador/check-email-templates.mjs",
+]);
+print(emailTemplates.stdout);
+print(emailTemplates.stderr);
+
+if (emailTemplates.status !== 0) {
+  process.exit(emailTemplates.status ?? 1);
+}
+
 const calibration = run("node", ["scripts/simulador/check-judge-calibration.mjs"]);
 print(calibration.stdout);
 print(calibration.stderr);

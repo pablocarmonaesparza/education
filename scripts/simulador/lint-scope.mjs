@@ -18,6 +18,7 @@ const targets = [
   "app/_data_simulador_temp",
   "app/api/transcribe",
   "components/simulador",
+  "lib/email",
   "lib/simulador",
   "scripts/simulador",
   "scripts/dev-simulador.mjs",

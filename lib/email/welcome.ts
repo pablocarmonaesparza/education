@@ -1,4 +1,4 @@
-import { sendWelcome, type SendResult } from './send';
+import { sendSignupWelcomeEmail } from './simulador';
 
 interface SendWelcomeArgs {
   userEmail: string;
@@ -12,17 +12,17 @@ interface SendWelcomeArgs {
  * del dispatcher. Mantenemos el shim para no romper a callers existentes
  * (app/auth/callback/route.ts).
  *
- * Para nuevos callers, preferir `sendWelcome` de `./send.ts`.
+ * Para nuevos callers, preferir los templates versionados del Simulador.
  */
 export async function sendWelcomeEmail({
   userEmail,
   userName,
   origin,
 }: SendWelcomeArgs): Promise<{ ok: boolean; reason?: string; id?: string }> {
-  const result: SendResult = await sendWelcome({
+  const result = await sendSignupWelcomeEmail({
     to: userEmail,
-    userName,
-    origin,
+    fullName: userName,
+    onboardingUrl: `${origin}/onboarding/org`,
   });
 
   if (result.ok) {

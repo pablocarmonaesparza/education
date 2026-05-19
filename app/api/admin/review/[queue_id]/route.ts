@@ -22,6 +22,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isStaffEmail } from "@/lib/simulador/is-staff";
+import { sendReportReadyEmailsForSession } from "@/lib/email/simulador-notifications";
 
 export const runtime = "nodejs";
 
@@ -352,6 +353,12 @@ export async function POST(
       qUpdErr,
     );
   }
+
+  await sendReportReadyEmailsForSession({
+    simulationSessionId: evalRun.simulation_session_id,
+    reportId: report.id,
+    payloadJson: payload,
+  });
 
   return NextResponse.json({
     ok: true,

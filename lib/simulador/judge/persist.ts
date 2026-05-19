@@ -16,6 +16,7 @@
  */
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendReportReadyEmailsForSession } from "@/lib/email/simulador-notifications";
 import { evaluate, type EvaluateResult } from "./index";
 import type { JudgeRiskEvent } from "./types";
 
@@ -201,6 +202,7 @@ export async function evaluateAndPersist(
     .maybeSingle();
 
   let reportId: string;
+  const isNewReport = !existingReport;
   if (existingReport) {
     const { error: rUpdErr } = await admin
       .schema("simulador")
@@ -257,6 +259,14 @@ export async function evaluateAndPersist(
     if (hqErr) {
       console.warn("[judge/persist] human_review_queue insert warn", hqErr);
     }
+  }
+
+  if (reportStatus === "published" && isNewReport) {
+    await sendReportReadyEmailsForSession({
+      simulationSessionId,
+      reportId,
+      payloadJson,
+    });
   }
 
   return {

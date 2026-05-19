@@ -23,6 +23,9 @@ test("field-test público carga sin login", async ({ page }) => {
 test("buyer puede crear organización, equipo e invitación", async ({ page }) => {
   const buyer = await createSyntheticUser("buyer");
   const orgName = `E2E Buyer Org ${runId}`;
+  const inviteeEmail =
+    process.env.E2E_INVITEE_EMAIL ?? `employee-${runId}@itera.test`;
+  const requireEmailSent = process.env.E2E_REQUIRE_EMAIL_SENT === "1";
   trackCreatedOrgName(orgName);
 
   await login(page, buyer.email);
@@ -39,8 +42,24 @@ test("buyer puede crear organización, equipo e invitación", async ({ page }) =
   await expect(page).toHaveURL(/\/onboarding\/invite/);
   await page
     .getByLabel("Emails de los participantes")
-    .fill(`employee-${runId}@itera.test`);
-  await page.getByRole("button", { name: /Enviar/ }).click();
+    .fill(inviteeEmail);
+  const [inviteResponse] = await Promise.all([
+    page.waitForResponse(
+      (response) =>
+        response.url().includes("/api/orgs/") &&
+        response.url().includes("/invitations") &&
+        response.request().method() === "POST",
+    ),
+    page.getByRole("button", { name: /Enviar/ }).click(),
+  ]);
+  const inviteJson = await inviteResponse.json();
+  expect(inviteJson.invitations?.[0]?.email).toBe(inviteeEmail);
+  if (requireEmailSent) {
+    expect(
+      inviteJson.invitations?.[0]?.email_status,
+      inviteJson.invitations?.[0]?.email_reason ?? "email send failed",
+    ).toBe("sent");
+  }
 
   await expect(page.getByText(/invitación|invitaciones/)).toBeVisible();
   await page.getByRole("button", { name: /Ir al dashboard/ }).click();

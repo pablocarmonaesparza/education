@@ -6,7 +6,7 @@ import {
   getDefaultInboxId,
   getReplyToAddress,
 } from '@/lib/email/agentmail';
-import PasswordResetEmail from '@/emails/PasswordResetEmail';
+import { sendPasswordResetSimuladorEmail } from '@/lib/email/simulador';
 import AuthActionEmail, { type AuthActionVariant } from '@/emails/AuthActionEmail';
 
 export const runtime = 'nodejs';
@@ -180,9 +180,19 @@ export async function POST(req: Request) {
           'recovery',
           redirectTo
         );
-        subject = 'restablece tu contraseña de itera';
-        element = PasswordResetEmail({ userName, resetUrl });
-        break;
+        const result = await sendPasswordResetSimuladorEmail({
+          to: email,
+          email,
+          resetUrl,
+        });
+        if (result.ok) {
+          return NextResponse.json({ ok: true, id: result.id, actionType });
+        }
+        return NextResponse.json({
+          skipped: true,
+          reason: result.reason,
+          actionType,
+        });
       }
       case 'signup': {
         const actionUrl = buildConfirmUrl(siteUrl, tokenHash, 'email', redirectTo);

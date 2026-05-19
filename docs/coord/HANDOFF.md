@@ -523,6 +523,34 @@ Si reviewer veta un bloque:
 - 11 cifras citadas con fuentes verificadas (Stanford, MIT, McKinsey, BCG, Gallup, Gartner)
 - 3 decisiones derivadas: B-M9-001 (audit como gate continuo), B-M9-002 (C-R-1 prioritizado), B-M9-003 (C-R-3 patch inline done)
 
+## B7-002 email transaccional premium [codex]
+
+- [2026-05-19T15:29:44-06:00] done
+- changed:
+  - `lib/email/simulador.ts`: renderer/sender AgentMail para los 8 templates versionados de Claude.
+  - `lib/email/simulador-notifications.ts`: notificaciones report-ready a participante + managers autorizados.
+  - `app/api/orgs/[org_id]/invitations/route.ts`: invitaciones salen por AgentMail, validan que el team pertenezca a la org y exponen `email_status/email_reason` para smoke tests.
+  - `app/api/invitations/[token]/accept/route.ts`: avisa al invitador cuando alguien acepta y reporta avance del cohorte.
+  - `app/api/auth/email-hook/route.ts` y `lib/email/welcome.ts`: password reset + welcome migrados a copy premium del Simulador.
+  - `lib/simulador/judge/persist.ts` + `app/api/admin/review/[queue_id]/route.ts`: report-ready se manda al publicar reporte directo o después de doble firma humana.
+  - `scripts/simulador/check-email-templates.mjs`: gate de 8 templates, variables, longitud y AI-slop blocklist; agregado a `check:simulador`.
+  - `tests/simulador/e2e/premium-flows.spec.ts`: smoke puede exigir envío real con `E2E_REQUIRE_EMAIL_SENT=1`.
+- tested:
+  - `npm run simulador:check-email-templates` → PASS.
+  - `npm run check:simulador` → PASS.
+  - `npm run lint:simulador` → PASS.
+  - `npm run build` → PASS.
+  - `npm run simulador:e2e` → PASS.
+  - `E2E_INVITEE_EMAIL=pablo@itera.la E2E_REQUIRE_EMAIL_SENT=1 npm run simulador:e2e` → PASS; AgentMail aceptó el envío real de invitación.
+  - `npm run simulador:test-rls` → PASS; cross-tenant reads siguen bloqueados.
+  - Claude Code CLI review attempt → timeout 120s sin output; no se bloqueó merge por herramienta colgada.
+- gotchas:
+  - `hola@itera.la` está bloqueado por bounce en AgentMail: el smoke real falló con `MessageRejectedError: Recipient(s) blocked: hola@itera.la (bounced)`. El código ya expone `email_reason`, pero el follow-up operativo es desbloquear o reemplazar ese alias.
+  - Los correos siguen siendo best-effort: fallas de AgentMail no rompen signup, invitation accept ni publicación de reportes.
+- siguiente_en_cola:
+  - B7-001 billing/Stripe premium.
+  - Follow-up operativo: corregir `AGENTMAIL_REPLY_TO` y alias `hola@itera.la`/`soporte@itera.la` cuando Pablo confirme inboxes válidos.
+
 ## C-R-2 cerrado — lib/simulador/copy/runtime.ts [claude → codex import]
 
 - [2026-05-19T15:22:00-06:00] done
