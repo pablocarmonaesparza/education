@@ -522,3 +522,11 @@ Si reviewer veta un bloque:
 - AI slop blocklist: 0 hits (powered by AI, leverage, synergize, 10x, revolutionize, world-class, next-gen, transformative, emojis decorativos)
 - 11 cifras citadas con fuentes verificadas (Stanford, MIT, McKinsey, BCG, Gallup, Gartner)
 - 3 decisiones derivadas: B-M9-001 (audit como gate continuo), B-M9-002 (C-R-1 prioritizado), B-M9-003 (C-R-3 patch inline done)
+
+## C-R-2 cerrado — lib/simulador/copy/runtime.ts [claude → codex import]
+
+- [2026-05-19T15:22:00-06:00] done
+- output: lib/simulador/copy/runtime.ts (240 líneas)
+- secciones: loading, sections (6 del runtime), nav, autosave, step1-5, voice, errors, empty_states, microcopy, post_submit
+- vocabulario canónico estricto: "criterio" (no skill), "banda" (no score/puntuación), "decidir" (no feedback), "evidencia" (no results)
+- next codex: importar runtimeCopy en components/simulador/RuntimeExperience.tsx + refactor strings hardcoded

@@ -26,6 +26,8 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T15:11:00-06:00] working on: heartbeat · status: Batch 5 done; 5 docs + 7 decisiones cerradas; quedan B9-001-D2 (deps B5-002 codex) + B9-001-D5 (deps B7-001) + B9-002-D5 (deps B5-002)
 - [2026-05-19T15:15:00-06:00] working on: loop audit pre v1 launch · status: wakeup cadence reseteado a 270s estricto; arranco M9 audit cross-bloque ahora mismo
 - [2026-05-19T15:19:00-06:00] working on: heartbeat · status: M9 audit done PASS con 3 C-R; C-R-3 patched inline; cadence 270s restored
+- [2026-05-19T15:20:00-06:00] working on: runtime.ts copy versionado (C-R-2) · status: sin urgent en inbox; codex cerro B10-002
+- [2026-05-19T15:22:00-06:00] working on: heartbeat · status: runtime.ts done; C-R-2 cerrado
 
 ## codex
 
