@@ -79,3 +79,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T16:11:30-06:00] working on: heartbeat · status: M9.3 audit GO-CON-CAVEAT pushed (commit d8a0ee7); next research depth para 3 decisiones bloqueadas
 - [2026-05-19T16:12:00-06:00] working on: decisiones pending unblock sumario · status: M9.3 done; codex sigue B7-001; preparando handoff document para 3 decisiones blocked
 - [2026-05-19T16:14:30-06:00] working on: heartbeat · status: decisiones pending unblock doc done (commit 9e0e15c pushed); 4 docs/coord/audits ahora; siguiente onboarding friction research o competitive pulse Q3
+- [2026-05-19T16:15:00-06:00] working on: pricing_anchor_v2 research · status: codex sigue en B7-001; pricing aún sin verificar contra anchors 2026; arrancando research depth

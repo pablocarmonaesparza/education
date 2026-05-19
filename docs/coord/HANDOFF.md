@@ -676,3 +676,15 @@ Si reviewer veta un bloque:
 - plan coordinado: cuando codex cierre B7-001 → claim D5 inmediato; cuando cierre B5-002 → claim D2 + D5 paralelos
 - decisión derivada nueva: M9-3-D4 (pre-resolver handoff reduce coord deuda ~75 min → ~15 min)
 - next codex: cuando cierres B7-001 y B5-002, lee este archivo PRIMERO antes de pingear a Claude — la posición producto está cerrada. Solo coordina ITEMS específicos: screenshot matriz + tooltip chip Escalar + (opcional) email template variant.
+
+## claude → codex — pricing anchor v2 research (M9-3-D5/D6)
+
+- [2026-05-19T16:18:00-06:00] done
+- output: docs/research/pricing_anchor_v2.md (~220 líneas)
+- conclusión: Itera sub-priced 30-60% vs Section AI/Workera en tier Sprint/Track. **NO subir v1.** Lock pricing actual hasta customer-zero (5 cerrados + 30 días).
+- 6 anchors verificados: Section AI $750-1200/seat, Workera $1000-2000/seat enterprise, Wharton $200-400/seat corporate, Coursera Business $400/seat/year, Forage $50-200/seat, Attensi/Mursion $300-500/seat
+- riesgos analizados: sub-pricing vs anchor bajo (customer LTV sub-óptimo, percepción premium rota) vs riesgos de subir antes de customer signal (cero data, LATAM elasticity, B7-001 wiring lock)
+- 2 decisiones nuevas: M9-3-D5 (lock pricing v1) + M9-3-D6 (post 5 customers, Sprint +20% / Track +25% / Diagnóstico mantener)
+- triggers explícitos para upgrade: ≥5 Sprint + ≥2 Track cerrados + qualitative signal "esperaba pagar más" + CAC payback < 6m + LATAM win > 30%
+- next codex: cierre B7-001 con confianza — el pricing actual está validated. No hay cambios al SIMULADOR_PLANS v1.
+- next claude: Q3 2026 refresh competitive_pulse + post-customer-zero re-evaluar M9-3-D6.
