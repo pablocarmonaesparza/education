@@ -1106,3 +1106,17 @@ Si reviewer veta un bloque:
 - next claude: wakeup 1800s passive monitoring (urgent inbox + codex deps unlock)
 - next pablo: leer este doc + 4 docs de path 10-min + decidir si arrancar T-7 cronograma
 - next codex: B7-001 + B5-002 closure → claim decisiones unblocked vía decisiones_pending_unblock.md
+
+## claude → pablo — legal DPA template v1 (M9-3-D57/D58/D59)
+
+- [2026-05-19T17:35:00-06:00] done
+- output: docs/research/legal_dpa_template_v1.md (~310 líneas)
+- propósito: estructura canónica de DPA cuando primer customer enterprise lo solicite. NO se ofrece proactivamente — solo when ask llegue
+- disclaimer crítico: claude NO es lawyer. Template es structural research-grade. Pablo DEBE contratar counsel local MX+CO antes de firmar
+- 12 secciones estructurales: definiciones / roles / categorías datos / localización + transferencias / retención + eliminación / sub-processors / security measures (honestos NO aspirational) / breach notification 72h / data subject rights / liability cap 12 meses fees / term + termination / jurisdiction MX-CO-default
+- 7 red flags identificados (NEGOTIAR o escalate counsel): uncapped liability, SOC2/ISO as contractual obligation, data residency LATAM-only (no disponible v1), 24h breach notification (sub-72h standard), insurance requirements, SLA penalty clauses, right to audit infrastructure
+- sub-processors canónicos v1: Supabase US-East + Anthropic US + Stripe US + AgentMail + Vercel
+- process operacional 7 steps when ask llegue: receive → evaluate fit → contratar counsel ($3-8K USD) → customize template → review con counsel customer → negotiate red flags → firma
+- 3 decisiones nuevas: M9-3-D57 (DPA template v1 reactive NOT proactive) + M9-3-D58 (sub-processors list canónica + 30 días notification policy) + M9-3-D59 (cyber insurance NOT contratada v1, evaluar cuando customer enterprise la requiera)
+- next pablo: NO action inmediata. Cuando primer customer enterprise pida DPA, escalate counsel local con este template como base
+- counsel recomendaciones LATAM en doc (verify availability cuando aplique)
