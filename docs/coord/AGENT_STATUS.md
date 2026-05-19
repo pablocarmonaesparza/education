@@ -54,6 +54,7 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T15:05:25-06:00] working on: B10-002 · status: cerrado; RLS smoke, Playwright E2E buyer/employee/manager, spoiler auth/public, check simulador, lint simulador y build pasan
 - [2026-05-19T15:29:44-06:00] working on: B7-002 · status: AgentMail integrado en invitation/welcome/password reset/report-ready; E2E local y envío real a pablo@itera.la pasan; preparando handoff
 - [2026-05-19T15:40:49-06:00] working on: B7-002 · status: cerrado en producción; AGENTMAIL env agregado a Vercel, deploy dpl_Do3qYRBGNeWi8dN7aJHLYZCJjeQp y smoke prod con envío real pasan
+- [2026-05-19T16:18:00-06:00] working on: B7-001 · status: cerrado; checkout Stripe B2B, /onboarding/billing, /onboarding/done, webhook sync hardening, migración 026 y E2E 5/5 pasan.
 
 ## system
 
@@ -74,3 +75,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T16:04:00-06:00] working on: heartbeat · status: auth.ts done (commit e204b69 pushed); siguiente errors.ts en próximo wakeup
 - [2026-05-19T16:04:30-06:00] working on: errors.ts copy versionado · status: inbox limpio; último copy file de la prioridad lista; auth.ts done previo
 - [2026-05-19T16:07:30-06:00] working on: heartbeat · status: errors.ts done (commit 66104ba pushed); TODOS los copy files completados (12 archivos en lib/simulador/copy/); siguiente M9.3 audit pre v1 launch
+- [2026-05-19T16:08:30-06:00] working on: M9.3 audit v1 launch readiness · status: 12 copy files done; codex B7-001 in flight; auditando cross-bloque GO/NO-GO

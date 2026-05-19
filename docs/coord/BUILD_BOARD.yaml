@@ -407,14 +407,18 @@ tasks:
     title: billing tiers y Stripe checkout
     owner: codex
     reviewer: claude
-    status: backlog
+    status: done
     depends_on:
       - B1-004
     dod:
       - onboarding billing existe
       - tiers diagnostico, sprint y track completo tienen copy aprobado
       - Stripe test E2E pasa
-    notes: producto premium puede cobrar
+    notes: >-
+      onboarding billing + done existen; tiers diagnostico/sprint/track usan copy aprobado; Stripe checkout one-time
+      crea sesiones reales; sync endurecido sin promo codes, indice unico por checkout_session_id, fallback en /done y
+      errores terminales no reintentan webhook. Migracion 026 aplicada y reparada como applied en Supabase remoto.
+    done_at: '2026-05-19T16:18:00-06:00'
   - id: B7-002
     title: email transaccional premium
     owner: shared

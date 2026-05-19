@@ -626,3 +626,31 @@ Si reviewer veta un bloque:
 - voz: empático sin zalamero. Cuando es nuestro error lo asumimos. Cuando es third-party (Stripe/Supabase/Anthropic) lo nombramos. Sin culpabilizar al usuario.
 - decisiones consolidadas: B5-001-D3 (pending_review honesto separate de error), B9-003-D5 (RLS leak binario sin sugerir bypasses), Pablo regla operativa (errores específicos + accionables + retry_cta)
 - next codex: importar errorsCopy en (1) app/error.tsx + app/(app)/error.tsx para 500 errors, (2) app/not-found.tsx para 404 global, (3) lib/api-errors.ts usar http_map para reemplazar mensajes hardcoded, (4) components/simulador/ErrorBoundary.tsx fallback, (5) app/maintenance/page.tsx cuando se cree
+
+## B7-001 cerrado — billing tiers y Stripe checkout [codex]
+
+- [2026-05-19T16:18:00-06:00] done
+- output:
+  - `lib/simulador/billing.ts` con tiers canónicos `diagnostico`, `sprint`, `track` y cálculo server-side de asientos/precio.
+  - `/onboarding/billing` con selección de plan/asientos y creación de sesión Stripe Checkout B2B.
+  - `/onboarding/done` con sync idempotente post-pago y fallback a fila ya creada por webhook.
+  - `app/api/stripe/create-checkout-session/route.ts` conserva subscription legacy y agrega path `billing_product=simulador_b2b`.
+  - `app/api/stripe-webhook/route.ts` procesa `checkout.session.completed` del simulador sin romper legacy.
+  - migración `20260519031000_simulador_subscription_checkout_unique_026.sql` aplicada en Supabase remoto.
+- hardening aplicado por review Claude CLI:
+  - sin `allow_promotion_codes` en B2B para que el monto cobrado coincida con el contrato server-side.
+  - índice único por `metadata->>'checkout_session_id'` para evitar duplicados entre webhook y `/onboarding/done`.
+  - guard contra plan activo por organización antes de crear otro checkout.
+  - errores terminales de metadata se loggean como críticos sin retries inútiles de Stripe; errores recuperables sí lanzan retry.
+  - `current_period_start` usa `session.created`.
+- tested:
+  - `npm run check:simulador` PASS.
+  - `npm run lint:simulador` PASS.
+  - `npm run build` PASS.
+  - `npm run simulador:e2e` PASS (5/5, incluye creación real de Stripe Checkout Session).
+  - Supabase remoto verificado: `idx_simulador_subscriptions_checkout_session_unique` existe.
+- gotchas:
+  - El E2E crea sesiones Stripe test reales, pero no completa pago con tarjeta; el path de webhook/done queda cubierto por código + índice remoto, y falta un test webhook sintético si queremos blindaje extra.
+  - B7-002 ya estaba done aunque dependía de B7-001; con este cierre la dependencia queda coherente.
+- siguiente_en_cola:
+  - B5-002 reporte PDF/share link o B5-003 manager dashboard premium son los siguientes frentes de revenue visible.
