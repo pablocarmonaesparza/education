@@ -30,6 +30,7 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T12:42:00-06:00] working on: B3-003/B3-005 · status: importers de casos y practice beats creados; Supabase remoto seedeado con 8 casos, 16 variantes y 20 beats
 - [2026-05-19T12:55:00-06:00] working on: B1-004 · status: bloqueo Upstash eliminado con rate limit Supabase/Postgres; preparando deploy production smoke
 - [2026-05-19T13:04:00-06:00] working on: B6-001 · status: production redeployed; field-test session + lead capture smoke pasa y lead llega a leads_inbox
+- [2026-05-19T13:06:07-06:00] working on: B6-001 · status: implementando admin/leads para que staff opere leads_inbox sin tocar Supabase
 
 ## system
 

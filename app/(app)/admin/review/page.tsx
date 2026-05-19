@@ -128,6 +128,12 @@ export default function AdminReviewPage() {
               Reports con risk events de severidad alta. Confirma o ajusta la
               recomendación del judge antes de que se publique al manager.
             </p>
+            <a
+              href="/admin/leads"
+              className="mt-5 inline-flex rounded-full bg-[var(--surface-2)] px-4 py-2 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
+            >
+              Ver leads del field-test
+            </a>
           </motion.div>
 
           {error && (
