@@ -1,6 +1,11 @@
 "use client";
 
-import { Button, Card, CardBody, Link } from "@heroui/react";
+import { Link } from "@heroui/react";
+import {
+  AppleButton,
+  AppleCard,
+  AppleCardBody,
+} from "@/components/simulador/apple";
 import { motion } from "framer-motion";
 import { PublicNav } from "@/components/simulador/PublicNav";
 import {
@@ -55,7 +60,7 @@ export default function LandingPage() {
             transition={{ ...fadeUp.transition, delay: 0.15 }}
             className="mt-12 flex flex-wrap items-center justify-center gap-3"
           >
-            <Button
+            <AppleButton
               as={Link}
               href="/auth/signup?next=%2Fonboarding%2Forg"
               radius="full"
@@ -63,17 +68,17 @@ export default function LandingPage() {
               className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
             >
               Agendar diagnóstico para mi equipo
-            </Button>
-            <Button
+            </AppleButton>
+            <AppleButton
               as={Link}
               href="/field-test/marketing-urgent-campaign-pii"
+              tone="secondary"
               radius="full"
               size="lg"
-              variant="bordered"
               className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
             >
               Probar 1 caso de muestra →
-            </Button>
+            </AppleButton>
           </motion.div>
 
           <motion.p
@@ -179,8 +184,8 @@ export default function LandingPage() {
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: 0.03 * i }}
               >
-                <Card className="card-apple card-apple-interactive bg-[var(--surface)] shadow-none">
-                  <CardBody className="p-7">
+                <AppleCard className="card-apple card-apple-interactive bg-[var(--surface)] shadow-none">
+                  <AppleCardBody className="p-7">
                     <div className="flex items-start gap-4">
                       <div className="text-[13px] mono font-medium text-[var(--text-tertiary)] flex-shrink-0 mt-1">
                         {String(c.order).padStart(2, "0")}
@@ -207,8 +212,8 @@ export default function LandingPage() {
                         </div>
                       </div>
                     </div>
-                  </CardBody>
-                </Card>
+                  </AppleCardBody>
+                </AppleCard>
               </motion.div>
             ))}
           </div>
@@ -235,8 +240,8 @@ export default function LandingPage() {
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: 0.04 * i }}
               >
-                <Card className="card-apple bg-[var(--surface)] shadow-none">
-                  <CardBody className="p-7">
+                <AppleCard className="card-apple bg-[var(--surface)] shadow-none">
+                  <AppleCardBody className="p-7">
                     <h3 className="text-[19px] font-semibold text-[var(--text-primary)] capitalize">
                       {a.label}.
                     </h3>
@@ -245,8 +250,8 @@ export default function LandingPage() {
                         a.description.slice(1)}
                       .
                     </p>
-                  </CardBody>
-                </Card>
+                  </AppleCardBody>
+                </AppleCard>
               </motion.div>
             ))}
           </div>
@@ -283,7 +288,7 @@ export default function LandingPage() {
             transition={{ ...fadeUp.transition, delay: 0.1 }}
             className="mt-12 flex flex-wrap items-center justify-center gap-3"
           >
-            <Button
+            <AppleButton
               as={Link}
               href="/auth/signup?next=%2Fonboarding%2Forg"
               radius="full"
@@ -291,17 +296,17 @@ export default function LandingPage() {
               className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
             >
               Agendar diagnóstico →
-            </Button>
-            <Button
+            </AppleButton>
+            <AppleButton
               as={Link}
               href="/field-test/marketing-urgent-campaign-pii"
+              tone="secondary"
               radius="full"
               size="lg"
-              variant="bordered"
               className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
             >
               Probar 1 caso
-            </Button>
+            </AppleButton>
           </motion.div>
         </div>
       </section>
@@ -371,7 +376,7 @@ export default function LandingPage() {
               Treinta días, cinco a cincuenta personas, un reporte ejecutivo accionable.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-              <Button
+              <AppleButton
                 as={Link}
                 href="/auth/signup?next=%2Fonboarding%2Forg"
                 radius="full"
@@ -379,17 +384,17 @@ export default function LandingPage() {
                 className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
               >
                 Agendar diagnóstico
-              </Button>
-              <Button
+              </AppleButton>
+              <AppleButton
                 as={Link}
                 href="mailto:hola@itera.la"
+                tone="ghost"
                 radius="full"
                 size="lg"
-                variant="light"
                 className="text-[var(--text-secondary)] px-5 h-12 text-[15px] font-medium hover:text-[var(--text-primary)]"
               >
                 Hablar con ventas →
-              </Button>
+              </AppleButton>
             </div>
           </motion.div>
         </div>

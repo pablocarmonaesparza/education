@@ -12,7 +12,7 @@ scope: define qué surfaces existen, qué rutas son activas, qué ve cada rol, q
 
 ## TL;DR
 
-Producto v2 tiene **20 rutas productivas allowlist**, **3 rutas utilitarias permitidas** y **8 shells**. Este contrato es la cerca: si una pantalla no está aquí, no existe.
+Producto v2 tiene **20 rutas productivas allowlist**, **4 rutas utilitarias permitidas** y **8 shells**. Este contrato es la cerca: si una pantalla no está aquí, no existe.
 
 ## Rutas activas productivas (allowlist)
 
@@ -48,6 +48,7 @@ Producto v2 tiene **20 rutas productivas allowlist**, **3 rutas utilitarias perm
 | `/success` | retorno Stripe / estado de compra | PublicShell result | ❌ |
 | `/cancel` | retorno Stripe cancelado | PublicShell result | ❌ |
 | `/admin` | entrada staff; puede redirigir a `/admin/review` | AdminShell | ✓ admin role |
+| `/maintenance` | ventana controlada de deploy/mantenimiento | PublicShell result | ❌ |
 
 Estas rutas existen por operación/funnel, no cuentan como surfaces principales de producto.
 

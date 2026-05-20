@@ -16,6 +16,14 @@ Cuando dos guías entran en conflicto, gana la más alta:
 5. **Referencias inspiracionales** (Linear, Vercel, Anthropic, 21st.dev, Typeform)
 6. **Gusto del agente** (claude/codex) — última prioridad, requiere justificación
 
+## Apple manda vs. Apple no aplica
+
+Apple HIG manda en lo que Apple sí cubre directamente: accesibilidad, contraste, legibilidad, hit targets, focus, motion, feedback, dark mode, formularios, navegación básica, modales/sheets, jerarquía visual y uso de materiales. Si una surface contradice esas reglas, se corrige aunque se vea "más SaaS".
+
+Apple no decide por Itera el modelo de negocio, el contenido del diagnóstico, la rúbrica, el pricing, el funnel B2B, las métricas del manager ni la densidad exacta de dashboards empresariales. En esos casos gana el contrato de producto y se usan Linear, Vercel, Anthropic Console, Typeform y 21st.dev como referencias subordinadas.
+
+Regla operativa: cuando Apple no aplica, documenta la decisión como `DEC-*` en la living section, con owner y razón. No se resuelve por gusto del agente.
+
 ## Notación
 
 - **MUST** — obligatorio. Si no cumple, bloquea merge.
@@ -641,7 +649,75 @@ Cuando dos guías entran en conflicto, gana la más alta:
 
 ---
 
-## 15. Cómo usar este doc en el día a día Itera
+## 15. i18n LATAM (I18N)
+
+### HIG-RULES-I18N-01 · Locale default y formatos
+- **MUST**: default `es-MX`; detectar `accept-language` para `es-MX`, `es-CO`, `es-AR`, `pt-BR` cuando aplique.
+- **MUST**: fechas y números usan helpers compartidos (`Intl.*`), no strings manuales en componentes.
+- **Screen**: Landing pricing, onboarding billing, dashboard, reportes, admin.
+- **Source**: Apple HIG / Writing + Localization; decisión Itera LATAM.
+- **Consequence**: producto se siente importado/no local; reportes confunden fechas y montos.
+
+### HIG-RULES-I18N-02 · USD siempre explícito
+- **MUST**: pricing y billing muestran USD explícito. Ejemplo OK: `$4,000 USD`; ejemplo NO: `$4,000` sin moneda.
+- **MUST**: helpers de moneda aceptan locale, pero currency fija `USD` hasta que Pablo decida multi-moneda.
+- **Screen**: Landing, billing, receipts, reportes comerciales.
+- **Source**: decisión Itera + claridad financiera B2B.
+- **Consequence**: confusión fiscal/comercial en LATAM.
+
+### HIG-RULES-I18N-03 · Legal por jurisdicción
+- **MUST**: textos de privacidad/consentimiento contemplan MX (LFPDPPP + ARCO), CO (Ley 1581 + habeas data), BR (LGPD) y `other`.
+- **SHOULD**: usar región declarada por buyer antes que IP si existe.
+- **Screen**: signup, onboarding, field-test, privacy.
+- **Source**: decisión Itera compliance LATAM.
+- **Consequence**: riesgo legal y fricción enterprise.
+
+---
+
+## 16. Performance Budgets (PERF)
+
+### HIG-RULES-PERF-01 · Budgets por surface
+- **MUST**: LCP <2.5s, FCP <1.8s, CLS <0.1, TTI <3.5s en hardware normal.
+- **MUST**: Lighthouse performance >=90 en rutas públicas y >=85 en rutas auth/admin con datos reales.
+- **Screen**: TODAS; crítico Landing, Field-test, Runtime.
+- **Source**: Core Web Vitals + Apple HIG responsiveness.
+- **Consequence**: experiencia premium se rompe antes del contenido.
+
+### HIG-RULES-PERF-02 · Payload y animación
+- **MUST**: nuevas dependencias visuales requieren justificación; preferir HeroUI, Motion y componentes locales ya instalados.
+- **SHOULD**: lazy-load surfaces pesadas y evitar animaciones permanentes en dashboards.
+- **Screen**: Landing, Runtime, Dashboard, Report.
+- **Source**: Apple HIG / Responsiveness; decisión Itera.
+- **Consequence**: bundle crece, mobile se siente lento.
+
+---
+
+## 17. Responsive Breakpoints (RESP)
+
+### HIG-RULES-RESP-01 · Breakpoints obligatorios
+- **MUST**: cada surface crítica se verifica en 375, 768, 1024, 1280 y 1440 px.
+- **MUST**: texto no se corta ni se encima; botones largos hacen wrap o cambian copy.
+- **Screen**: TODAS.
+- **Source**: Apple HIG / Adaptivity and Layout.
+- **Consequence**: el producto falla en demo mobile/tablet.
+
+### HIG-RULES-RESP-02 · Touch vs cursor
+- **MUST**: mobile usa targets >=44px, inputs full-width y nav tipo drawer/sheet.
+- **SHOULD**: desktop puede usar sidebars persistentes, hover states y tablas densas.
+- **Screen**: PublicShell, OnboardingShell, EmployeeShell, ManagerShell, RuntimeShell, AdminShell.
+- **Source**: Apple HIG / Inputs + Adaptivity.
+- **Consequence**: UI se siente de escritorio pegada a mobile.
+
+### HIG-RULES-RESP-03 · Menú público vs sidebar auth
+- **MUST**: navbar global solo en shells públicos/auth; shells autenticados usan navegación contextual por rol.
+- **MUST**: admin/manager/employee no comparten una navbar pública.
+- **Screen**: PublicShell, AuthShell, ManagerShell, EmployeeShell, AdminShell.
+- **Source**: decisión Itera + Apple HIG Navigation.
+- **Consequence**: vuelve la confusión de producto anterior.
+
+---
+
+## 18. Cómo usar este doc en el día a día Itera
 
 1. **Antes de implementar una surface nueva**: leer las secciones aplicables (Layout, Typography, Color, Motion mínimo)
 2. **En cada commit que toca UI**: citar reglas aplicadas en el body — ej: `[HIG-RULES-BTN-01, BTN-02, MOTION-06]`
@@ -656,7 +732,7 @@ Cuando dos guías entran en conflicto, gana la más alta:
 
 ---
 
-## 16. Decisiones Itera (living section)
+## 19. Decisiones Itera (living section)
 
 > Agregar aquí decisiones nuevas que extienden o matizan las reglas anteriores. Formato:
 >
@@ -676,7 +752,7 @@ Cuando dos guías entran en conflicto, gana la más alta:
 
 ## Resumen ejecutivo
 
-**78 reglas accionables** organizadas en 14 categorías:
+**90+ reglas accionables** organizadas en 17 categorías:
 
 | Categoría | Reglas | Crítico para |
 |---|---|---|
@@ -694,7 +770,10 @@ Cuando dos guías entran en conflicto, gana la más alta:
 | Loading (LOAD) | 3 | skeleton, spinners, progress |
 | Onboarding (ONB) | 3 | wizard, field-test, first run |
 | Quick rules específicos | 18 | TF, SIDE, TAB, SHEET, PROG, ICON |
+| i18n LATAM (I18N) | 3 | pricing, legal, fechas |
+| Performance (PERF) | 2 | rutas públicas, runtime |
+| Responsive (RESP) | 3 | mobile, tablet, desktop |
 
-**Total**: 81 reglas (3 más que estimado inicial gracias a quick rules adicionales).
+**Total**: 90+ reglas (se agregaron i18n, performance y responsive como gates ejecutables).
 
-— claude · 2026-05-19 · APPLE_HIG_RULES_FOR_ITERA.md v1.0
+— claude + codex · 2026-05-20 · APPLE_HIG_RULES_FOR_ITERA.md v1.1

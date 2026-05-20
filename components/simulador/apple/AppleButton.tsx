@@ -3,7 +3,12 @@
 import { Button, type ButtonProps } from "@heroui/react";
 import { cn } from "./utils";
 
-type AppleButtonTone = "primary" | "secondary" | "ghost" | "danger";
+type AppleButtonTone =
+  | "primary"
+  | "secondary"
+  | "ghost"
+  | "danger"
+  | "destructive";
 
 const toneClass: Record<AppleButtonTone, string> = {
   primary:
@@ -13,6 +18,8 @@ const toneClass: Record<AppleButtonTone, string> = {
   ghost:
     "bg-transparent text-[var(--text-primary)] border border-transparent hover:bg-[var(--surface-3)]",
   danger:
+    "bg-[var(--band-b-bar)] text-white border border-transparent hover:opacity-95",
+  destructive:
     "bg-[var(--band-b-bar)] text-white border border-transparent hover:opacity-95",
 };
 

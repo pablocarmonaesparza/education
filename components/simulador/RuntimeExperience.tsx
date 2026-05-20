@@ -1519,7 +1519,7 @@ function IntroScreen({
           <div className="flex items-start gap-4">
             <Avatar
               size="sm"
-              className="bg-[#ff5e62] text-white text-[13px] font-semibold flex-shrink-0"
+              className="bg-[var(--avatar-c-bg)] text-white text-[13px] font-semibold flex-shrink-0"
               name="C"
             />
             <p className="text-[15px] text-[var(--text-primary)] leading-[1.6] italic">
@@ -1638,7 +1638,7 @@ function Step1Brief() {
         <div className="flex items-start gap-4">
           <Avatar
             size="sm"
-            className="bg-[#ff5e62] text-white text-[13px] font-semibold flex-shrink-0"
+            className="bg-[var(--avatar-c-bg)] text-white text-[13px] font-semibold flex-shrink-0"
             name="C"
           />
           <div className="flex-1 min-w-0">
@@ -1653,7 +1653,7 @@ function Step1Brief() {
               «Hey, necesito 3 ángulos para LinkedIn Ads + 1 email a la lista
               de prospects para mañana 9 AM. Revisa el feedback que CS nos pasó
               hace 2 meses, ahí está todo.{" "}
-              <span className="text-[#ff5e62]">
+              <span className="text-[var(--avatar-c-bg)]">
                 No me metas a Legal hoy, ya están cerrados
               </span>
               . Confío en tu criterio.»
@@ -2100,7 +2100,7 @@ function LevelMeter({
       {[1, 2, 3, 4, 5].map((i) => (
         <span
           key={i}
-          className="block w-[2.5px] rounded-[1px] transition-colors"
+          className="block w-[2.5px] rounded-[var(--radius-xs)] transition-colors"
           style={{
             height: `${3 + i * 1.6}px`,
             backgroundColor:
@@ -2398,7 +2398,7 @@ function ChatStyleTextarea({
         disabled={isLocked}
         rows={rows}
         placeholder={placeholder}
-        className="w-full bg-transparent resize-none outline-none px-5 pt-4 pb-2 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
+        className="w-full bg-transparent resize-none px-5 pt-4 pb-2 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
         style={{ minHeight, maxHeight }}
       />
       {TRANSCRIBE_ENABLED && (
@@ -2487,7 +2487,7 @@ function AIPromptInput({
         disabled={disabled || recState === "recording" || recState === "processing"}
         rows={2}
         placeholder="Escribe el prompt que le mandarías al modelo…"
-        className="w-full bg-transparent resize-none outline-none px-5 pt-4 pb-2 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
+        className="w-full bg-transparent resize-none px-5 pt-4 pb-2 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
         style={{ minHeight: 56, maxHeight: 220 }}
       />
 
@@ -2747,7 +2747,7 @@ function MicButton({
         </svg>
       ) : isRecording ? (
         // Square stop glyph
-        <span className="relative h-2.5 w-2.5 rounded-[2px] bg-current" />
+        <span className="relative h-2.5 w-2.5 rounded-[var(--radius-xs)] bg-current" />
       ) : (
         <svg className="relative h-4 w-4" viewBox="0 0 16 16" fill="none">
           <rect
@@ -2778,7 +2778,7 @@ function WaveBars() {
       {[0, 1, 2, 3, 4].map((i) => (
         <span
           key={i}
-          className="block w-[2px] bg-red-500 rounded-[1px]"
+          className="block w-[2px] rounded-[var(--radius-xs)] bg-[var(--band-b-bar)]"
           style={{
             height: "100%",
             animation: `simulador-wave 0.9s ease-in-out ${i * 0.12}s infinite`,
@@ -2978,7 +2978,7 @@ function Step5CamilaMessage() {
         <div className="flex items-start gap-4">
           <Avatar
             size="sm"
-            className="bg-[#ff5e62] text-white text-[13px] font-semibold flex-shrink-0"
+            className="bg-[var(--avatar-c-bg)] text-white text-[13px] font-semibold flex-shrink-0"
             name="C"
           />
           <div className="flex-1">
