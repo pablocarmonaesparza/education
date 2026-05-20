@@ -111,7 +111,6 @@ export default function OnboardingOrgPage() {
               placeholder="Acme LATAM"
               isRequired
               variant="bordered"
-              radius="lg"
               size="lg"
               autoFocus
             />
@@ -123,7 +122,6 @@ export default function OnboardingOrgPage() {
                 setIndustry(Array.from(keys)[0] as string)
               }
               variant="bordered"
-              radius="lg"
               size="lg"
             >
               {INDUSTRIES.map((i) => (
@@ -138,7 +136,6 @@ export default function OnboardingOrgPage() {
                 setRegion(Array.from(keys)[0] as string)
               }
               variant="bordered"
-              radius="lg"
               size="lg"
             >
               {REGIONS.map((r) => (
@@ -153,7 +150,6 @@ export default function OnboardingOrgPage() {
                 setSize(Array.from(keys)[0] as string)
               }
               variant="bordered"
-              radius="lg"
               size="lg"
             >
               {SIZES.map((s) => (

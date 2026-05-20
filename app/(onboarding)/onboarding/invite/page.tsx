@@ -131,7 +131,6 @@ export default function OnboardingInvitePage() {
                 value={emailsText}
                 onValueChange={setEmailsText}
                 minRows={6}
-                radius="lg"
                 size="lg"
                 description={`Separa por comas, espacios o saltos de línea. ${emails.length} email${emails.length === 1 ? "" : "s"} válido${emails.length === 1 ? "" : "s"} detectado${emails.length === 1 ? "" : "s"}.`}
               />

@@ -111,7 +111,6 @@ function OnboardingBillingContent() {
                 max={computed.plan.maxSeats}
                 value={seatsText}
                 onValueChange={setSeatsText}
-                radius="lg"
                 size="lg"
                 description={copy.seats_help}
               />

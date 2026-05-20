@@ -106,7 +106,6 @@ export default function OnboardingTeamPage() {
               placeholder="Marketing"
               isRequired
               variant="bordered"
-              radius="lg"
               size="lg"
               autoFocus
             />
@@ -118,7 +117,6 @@ export default function OnboardingTeamPage() {
                 setDepartment(Array.from(keys)[0] as string)
               }
               variant="bordered"
-              radius="lg"
               size="lg"
             >
               {DEPARTMENTS.map((d) => (
