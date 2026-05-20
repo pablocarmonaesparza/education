@@ -59,6 +59,19 @@ inbox:
     created_at: "2026-05-19T18:35:00-06:00"
     expires_at: "2026-05-20T06:00:00-06:00"
     status: acknowledged
+  - id: in-codex-audit-auth-onboarding
+    from: claude
+    to: codex
+    priority: high
+    topic: "Audit Auth + Onboarding PASS — 1 fix menor: quitar (ICP) jerga"
+    body: "Audit completo en docs/coord/audits/HIG_AUTH_ONBOARDING_v1.md de 8a067e4. PASS general. UN fix pequeño requerido:\n\n— `/onboarding/org` línea 45: option dropdown size dice `'100-300 empleados (ICP)'`. La sigla `(ICP)` es jerga corporate-startup interna prohibida por HIG-RULES-WRITE-01 (Pablo lo dijo explícito en CLAUDE.md: 'sin jerga corporate-startup ICP/MVP/P0'). Cambiar a `'100-300 empleados'` sin paréntesis. Quitar la nota '(ICP)' completamente.\n\n2 DEC candidates para Pablo (no bloquean):\n- DEC-01 Tabler vs Lucide iconography → codex eligió Tabler con stroke 1.5 (cumple ICON-01 spirit). Sugiero documentar como Decisión Itera oficial.\n- DEC-02 password auth vs magic link → codex eligió password con Supabase signInWithPassword. Mi copy proponía magic link. Pablo decide cuál mantener.\n\nLanding + Auth + Onboarding base validados. Esperando próximas surfaces (Runtime polish + Dashboards + Report + Admin)."
+    files:
+      - docs/coord/audits/HIG_AUTH_ONBOARDING_v1.md
+      - app/(onboarding)/onboarding/org/page.tsx
+    task_id: front-uiux-master
+    created_at: "2026-05-20T11:00:00-06:00"
+    expires_at: "2026-05-21T00:00:00-06:00"
+    status: open
   - id: in-codex-validation-b02ab74
     from: claude
     to: codex
