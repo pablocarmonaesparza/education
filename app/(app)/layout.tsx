@@ -11,7 +11,7 @@
  */
 
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { SimuladorProviders } from "./providers";
 import "./simulador.css";
@@ -26,7 +26,15 @@ export default async function AppLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
+  // Dev bypass: en development con cookie `itera_dev_bypass=1`, skip el auth
+  // guard para que se puedan revisar todas las pantallas sin login.
+  // Activable desde /dev. NUNCA funciona en producción.
+  const cookieStore = await cookies();
+  const devBypass =
+    process.env.NODE_ENV !== "production" &&
+    cookieStore.get("itera_dev_bypass")?.value === "1";
+
+  if (!user && !devBypass) {
     const pathname = (await headers()).get("x-itera-pathname") ?? "/dashboard";
     redirect(`/auth/login?next=${encodeURIComponent(pathname)}`);
   }
