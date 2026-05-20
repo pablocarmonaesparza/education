@@ -1,6 +1,9 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { syncSubscriptionFromSession } from "@/lib/stripe/syncFromSession";
+import {
+  isTerminalSimuladorPaymentSyncReason,
+  syncSimuladorPaymentFromSession,
+} from "@/lib/stripe/simuladorBilling";
 
 interface SuccessPageProps {
   searchParams: Promise<{ session_id?: string }>;
@@ -9,8 +12,8 @@ interface SuccessPageProps {
 /**
  * Server component — cierra el race con el webhook de Stripe.
  * Al llegar aquí (redirect desde Stripe Checkout), verificamos el session_id
- * contra la API de Stripe y escribimos subscription_active=true nosotros
- * mismos. El webhook eventualmente escribe lo mismo — idempotente.
+ * contra la API de Stripe y escribimos la suscripción en simulador.subscriptions
+ * nosotros mismos. El webhook eventualmente escribe lo mismo — idempotente.
  */
 export default async function SuccessPage({ searchParams }: SuccessPageProps) {
   const { session_id: sessionId } = await searchParams;
@@ -19,7 +22,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
     redirect("/auth/signup?next=%2Fonboarding%2Forg");
   }
 
-  const sync = await syncSubscriptionFromSession(sessionId);
+  const sync = await syncSimuladorPaymentFromSession(sessionId);
 
   if (!sync.ok && sync.reason === "payment_pending") {
     return (
@@ -52,7 +55,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
 
   if (!sync.ok) {
     console.error("[/success] sync failed:", sync.reason);
-    if (sync.reason === "no_user_id_in_session") {
+    if (isTerminalSimuladorPaymentSyncReason(sync.reason)) {
       return (
         <main className="min-h-screen flex flex-col bg-white dark:bg-gray-800">
           <section className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center text-center">
@@ -60,7 +63,7 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
               no pudimos asociar el pago
             </h1>
             <p className="text-lg text-gray-700 dark:text-gray-400 mb-8 max-w-md">
-              tu pago se procesó pero no pudimos asociarlo a tu cuenta. escríbenos a hola@itera.la con tu email y te ayudamos en el momento.
+              tu pago se procesó pero no pudimos asociarlo a tu organización. escríbenos a hola@itera.la con tu email y te ayudamos en el momento.
             </p>
           </section>
           <footer className="border-t border-gray-200 dark:border-gray-700 px-4 py-6 text-center text-sm text-gray-500">
