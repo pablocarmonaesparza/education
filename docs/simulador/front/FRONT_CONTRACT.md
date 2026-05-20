@@ -63,6 +63,13 @@ Estas rutas existen por operación/funnel, no cuentan como surfaces principales 
 7. `ReportShell` — reporte individual/agregado, PDF/share.
 8. `AdminShell` — backoffice Itera.
 
+### Decisión de implementación — dashboard por rol
+
+- Fecha: 2026-05-20
+- Decisión: `/dashboard` permanece como **una sola ruta role-aware**. El API entrega `viewer_role` y la pantalla renderiza la vista de empleado o manager según permisos.
+- Razón: mantiene una entrada simple post-login, evita duplicar navegación y respeta RLS/server-side filtering. `EmployeeShell` y `ManagerShell` son shells conceptuales de experiencia, no URLs separadas.
+- Implicación: si en v2 se separan rutas (`/me`, `/team`, etc.), debe hacerse con migración explícita de navegación y redirects; no por proliferación ad-hoc.
+
 ## Rutas prohibidas (NO aparecen en navegación, NO se linkean, NO se mantienen)
 
 - `/simulator-design` y subroutes (mockup viejo)
