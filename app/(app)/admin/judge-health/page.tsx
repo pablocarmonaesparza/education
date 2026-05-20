@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import { AppleButton } from "@/components/simulador/apple";
 
 type JudgeHealthResponse = {
   window_days: number;
@@ -113,14 +113,14 @@ export default function AdminJudgeHealthPage() {
           </div>
 
           <div className="mt-5">
-            <Button
-              radius="full"
+            <AppleButton
+              tone="secondary"
               size="sm"
               className="bg-[var(--surface-2)] text-[var(--text-primary)]"
               onPress={load}
             >
               Actualizar
-            </Button>
+            </AppleButton>
           </div>
 
           {data === null && !error && (

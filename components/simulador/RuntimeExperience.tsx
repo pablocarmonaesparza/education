@@ -11,9 +11,6 @@ import {
 import { useRouter } from "next/navigation";
 import {
   Avatar,
-  Button,
-  Card,
-  CardBody,
   Checkbox,
   CheckboxGroup,
   Radio,
@@ -21,6 +18,13 @@ import {
 } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RuntimeNav } from "@/components/simulador/RuntimeNav";
+import {
+  AppleButton,
+  AppleCard,
+  AppleCardBody,
+  AppleInput,
+  AppleTextarea,
+} from "@/components/simulador/apple";
 import { useSession } from "@/lib/simulador/use-session";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
 import type { RuntimeSessionMode } from "@/lib/simulador/use-session";
@@ -672,15 +676,14 @@ export function RuntimeExperience({
               {session.error ?? "Error inesperado al cargar la sesión."}
             </p>
             <div className="mt-8">
-              <Button
+              <AppleButton
                 onPress={() => router.push("/dashboard")}
-                radius="full"
+                tone="secondary"
                 size="lg"
-                variant="bordered"
                 className="h-12 px-6 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
               >
                 Volver al dashboard
-              </Button>
+              </AppleButton>
             </div>
           </motion.div>
         </main>
@@ -878,22 +881,21 @@ export function RuntimeExperience({
           )}
           <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
             {screenIdx > 0 || sectionIdx > 0 ? (
-              <Button
-                radius="full"
+              <AppleButton
+                tone="secondary"
                 size="lg"
-                variant="bordered"
                 onPress={prevScreen}
                 className="h-11 px-5 text-[14px] font-medium border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
               >
                 ← Anterior
-              </Button>
+              </AppleButton>
             ) : (
               <span />
             )}
 
-            <Button
-              radius="full"
+            <AppleButton
               size="lg"
+              tone={canAdvance ? "primary" : "secondary"}
               onPress={nextScreen}
               isDisabled={!canAdvance}
               className={`h-11 px-6 text-[14px] font-medium ${
@@ -903,7 +905,7 @@ export function RuntimeExperience({
               } shadow-none btn-hover-shift`}
             >
               {nextButtonLabel(sectionIdx, screenIdx, currentSection.screens)} →
-            </Button>
+            </AppleButton>
           </div>
         </div>
       </div>
@@ -1202,7 +1204,7 @@ function FieldTestReportInline({
               </div>
             </div>
 
-            <textarea
+            <AppleTextarea
               value={survey.open_response}
               onChange={(event) =>
                 setSurvey((current) => ({
@@ -1211,14 +1213,13 @@ function FieldTestReportInline({
                 }))
               }
               maxLength={900}
-              rows={4}
+              minRows={4}
               placeholder="¿Qué ajustarías para que se sintiera más real?"
-              className="mt-5 w-full resize-none rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] p-4 text-[14px] text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
+              className="mt-5"
             />
 
-            <Button
+            <AppleButton
               type="submit"
-              radius="full"
               isDisabled={
                 surveyStatus === "submitting" ||
                 surveyStatus === "sent" ||
@@ -1232,7 +1233,7 @@ function FieldTestReportInline({
                 : surveyStatus === "submitting"
                   ? "Guardando…"
                   : "Enviar feedback"}
-            </Button>
+            </AppleButton>
             {surveyStatus === "error" && (
               <p className="mt-3 text-[13px] text-[var(--band-b-text)]">
                 No se pudo guardar. Intenta otra vez.
@@ -1259,7 +1260,7 @@ function FieldTestReportInline({
                 ["role", "Rol"],
                 ["team_size", "Tamaño del equipo"],
               ].map(([key, placeholder]) => (
-                <input
+                <AppleInput
                   key={key}
                   required={key === "name" || key === "email" || key === "company"}
                   type={key === "email" ? "email" : "text"}
@@ -1271,13 +1272,11 @@ function FieldTestReportInline({
                       [key]: event.target.value,
                     }))
                   }
-                  className="h-11 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] px-4 text-[14px] text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                 />
               ))}
             </div>
-            <Button
+            <AppleButton
               type="submit"
-              radius="full"
               isDisabled={leadStatus === "submitting" || leadStatus === "sent"}
               className="mt-5 h-11 accent-bg text-white text-[14px] font-medium shadow-none"
             >
@@ -1286,7 +1285,7 @@ function FieldTestReportInline({
                 : leadStatus === "submitting"
                   ? "Enviando…"
                   : "Enviar reporte completo"}
-            </Button>
+            </AppleButton>
             {leadStatus === "error" && (
               <p className="mt-3 text-[13px] text-[var(--band-b-text)]">
                 No se pudo enviar. Intenta otra vez.
@@ -1771,7 +1770,7 @@ function Step1FieldDecision({
         {FIELD_OPTIONS.map((opt) => {
           const selected = value === opt;
           return (
-            <Card
+            <AppleCard
               key={opt}
               className="card-apple bg-[var(--surface)] cursor-pointer transition-all"
               style={
@@ -1782,9 +1781,8 @@ function Step1FieldDecision({
                     }
                   : undefined
               }
-              shadow="none"
             >
-              <CardBody className="p-4">
+              <AppleCardBody className="p-4">
                 <Radio
                   value={opt}
                   size="md"
@@ -1796,8 +1794,8 @@ function Step1FieldDecision({
                 >
                   {opt}
                 </Radio>
-              </CardBody>
-            </Card>
+              </AppleCardBody>
+            </AppleCard>
           );
         })}
       </RadioGroup>
@@ -2922,7 +2920,7 @@ function Step4Decision({
         {ENTREGA_OPTIONS.map((opt) => {
           const selected = value === opt.id;
           return (
-            <Card
+            <AppleCard
               key={opt.id}
               className="card-apple bg-[var(--surface)] cursor-pointer transition-all"
               style={
@@ -2933,9 +2931,8 @@ function Step4Decision({
                     }
                   : undefined
               }
-              shadow="none"
             >
-              <CardBody className="p-4">
+              <AppleCardBody className="p-4">
                 <Radio
                   value={opt.id}
                   size="md"
@@ -2953,8 +2950,8 @@ function Step4Decision({
                     </div>
                   </div>
                 </Radio>
-              </CardBody>
-            </Card>
+              </AppleCardBody>
+            </AppleCard>
           );
         })}
       </RadioGroup>

@@ -42,7 +42,7 @@ const REGIONS = [
 const SIZES = [
   { key: "10-49", label: "10–49 empleados" },
   { key: "50-100", label: "50–100 empleados" },
-  { key: "100-300", label: "100–300 empleados (ICP)" },
+  { key: "100-300", label: "100–300 empleados" },
   { key: "300-500", label: "300–500 empleados" },
   { key: "500+", label: "500+ empleados" },
 ];

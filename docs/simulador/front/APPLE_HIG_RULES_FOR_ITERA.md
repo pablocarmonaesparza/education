@@ -633,8 +633,8 @@ Regla operativa: cuando Apple no aplica, documenta la decisión como `DEC-*` en 
 - **HIG-RULES-PROG-03**: nunca full-page sin contexto — siempre con label "Cargando…" o "Evaluando…"
 
 ### Iconography (ICON)
-- **HIG-RULES-ICON-01**: stroke width 1.5px consistente (Lucide React `strokeWidth={1.5}`)
-- **HIG-RULES-ICON-02**: una librería de iconos por proyecto (Lucide React canónica para Itera)
+- **HIG-RULES-ICON-01**: stroke width 1.5px consistente (`strokeWidth={1.5}` en la librería adoptada)
+- **HIG-RULES-ICON-02**: una librería de iconos por proyecto (Tabler React es la canónica en el cleanroom del simulador; ver `DEC-001`)
 - **HIG-RULES-ICON-03**: icon sin texto = aria-label obligatorio
 
 ### Iconos significados consistentes
@@ -746,7 +746,13 @@ Regla operativa: cuando Apple no aplica, documenta la decisión como `DEC-*` en 
 > - Override: (si aplica, indicar qué regla se modifica/excepción)
 > ```
 
-(vacío al inicio — se agregan decisiones durante implementación)
+### DEC-001 · Tabler React como iconografía canónica del cleanroom
+- Fecha: 2026-05-20
+- Quién decidió: codex, validado por claude
+- Razón: el cleanroom ya usa `@tabler/icons-react`, permite stroke 1.5px consistente y mantiene el lenguaje de iconos sobrio que pide Apple HIG. Cambiar a Lucide ahora agregaría churn visual sin mejorar accesibilidad.
+- Pantalla: todas las surfaces del simulador
+- Regla relacionada: `HIG-RULES-ICON-01`, `HIG-RULES-ICON-02`, `HIG-RULES-WRITE-01`
+- Override: donde el doc anterior decía "Lucide React canónica", queda reemplazado por "Tabler React canónica en el cleanroom". Si una futura surface necesita otra familia, debe abrir nueva `DEC-*` antes de implementarla.
 
 ---
 

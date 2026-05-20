@@ -15,9 +15,9 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import { AppleButton, AppleTextarea } from "@/components/simulador/apple";
 
 interface DimensionScore {
   id: string;
@@ -384,14 +384,15 @@ function QueueCard({
             </button>
           ))}
         </div>
-        <textarea
+        <AppleTextarea
           placeholder="Notas internas (visibles solo staff)..."
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          className="mt-4 w-full min-h-[80px] p-3 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] text-[14px] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
+          minRows={3}
+          className="mt-4 min-h-[80px] w-full"
         />
         <div className="mt-4 flex gap-3">
-          <Button
+          <AppleButton
             onPress={() =>
               onResolve(
                 overrideRec === item.evaluation_run?.computed_recommendation
@@ -401,7 +402,6 @@ function QueueCard({
               )
             }
             isDisabled={isResolving || hasCurrentStaffSigned}
-            radius="full"
             size="md"
             className="accent-bg text-white h-10 px-5 text-[14px] font-medium"
           >
@@ -414,17 +414,16 @@ function QueueCard({
               : isFinalSignature
                 ? "Firmar y publicar"
                 : "Firmar revisión"}
-          </Button>
-          <Button
+          </AppleButton>
+          <AppleButton
             onPress={() => onResolve(null, notes, "escalate")}
             isDisabled={isResolving || hasCurrentStaffSigned}
-            radius="full"
             size="md"
-            variant="bordered"
+            tone="secondary"
             className="h-10 px-5 text-[14px] font-medium"
           >
             Escalar sin publicar
-          </Button>
+          </AppleButton>
         </div>
         {hasCurrentStaffSigned ? (
           <p className="mt-3 text-[12px] text-[var(--text-tertiary)]">

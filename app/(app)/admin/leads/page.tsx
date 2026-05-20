@@ -8,9 +8,9 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import { AppleButton, AppleTextarea } from "@/components/simulador/apple";
 
 type LeadStatus =
   | "new"
@@ -246,9 +246,9 @@ export default function AdminLeadsPage() {
           </div>
 
           <div className="mt-5 flex flex-wrap gap-2">
-            <Button
-              radius="full"
+            <AppleButton
               size="sm"
+              tone={status === "all" ? "primary" : "secondary"}
               className={
                 status === "all"
                   ? "accent-bg text-white"
@@ -257,15 +257,15 @@ export default function AdminLeadsPage() {
               onPress={() => setStatus("all")}
             >
               Todos
-            </Button>
-            <Button
-              radius="full"
+            </AppleButton>
+            <AppleButton
+              tone="secondary"
               size="sm"
               className="bg-[var(--surface-2)] text-[var(--text-primary)]"
               onPress={load}
             >
               Actualizar
-            </Button>
+            </AppleButton>
           </div>
 
           {data === null && !error && (
@@ -414,11 +414,12 @@ function LeadCard({
       </div>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_240px]">
-        <textarea
+        <AppleTextarea
           value={notes}
           onChange={(event) => setNotes(event.target.value)}
           placeholder="Notas internas para seguimiento comercial..."
-          className="min-h-[88px] w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3 text-[14px] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
+          minRows={3}
+          className="min-h-[88px] w-full"
         />
 
         <div className="flex flex-col gap-2">
@@ -438,24 +439,23 @@ function LeadCard({
             ))}
           </select>
 
-          <Button
-            radius="full"
+          <AppleButton
             size="sm"
             isDisabled={isSaving}
             className="accent-bg text-white"
             onPress={() => onPatch({ notes, assign_to_me: true })}
           >
             {isSaving ? "Guardando…" : "Guardar y tomar"}
-          </Button>
-          <Button
-            radius="full"
+          </AppleButton>
+          <AppleButton
+            tone="secondary"
             size="sm"
             isDisabled={isSaving}
             className="bg-[var(--surface-2)] text-[var(--text-primary)]"
             onPress={() => onPatch({ notes })}
           >
             Guardar notas
-          </Button>
+          </AppleButton>
         </div>
       </div>
     </motion.article>
