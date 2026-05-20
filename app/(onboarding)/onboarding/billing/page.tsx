@@ -184,7 +184,7 @@ function OnboardingBillingContent() {
               onPress={onCheckout}
               isLoading={submitting}
               isDisabled={submitting}
-              radius="full"
+              radius="sm"
               size="lg"
               className="accent-bg mt-6 h-12 w-full px-7 text-[15px] font-medium text-white shadow-none"
             >
@@ -193,7 +193,7 @@ function OnboardingBillingContent() {
             <Button
               onPress={() => router.push("/dashboard")}
               variant="light"
-              radius="full"
+              radius="sm"
               size="sm"
               className="mt-3 w-full text-[var(--text-secondary)]"
             >

@@ -401,7 +401,7 @@ function QueueCard({
               )
             }
             isDisabled={isResolving || hasCurrentStaffSigned}
-            radius="full"
+            radius="sm"
             size="md"
             className="accent-bg text-white h-10 px-5 text-[14px] font-medium"
           >
@@ -418,7 +418,7 @@ function QueueCard({
           <Button
             onPress={() => onResolve(null, notes, "escalate")}
             isDisabled={isResolving || hasCurrentStaffSigned}
-            radius="full"
+            radius="sm"
             size="md"
             variant="bordered"
             className="h-10 px-5 text-[14px] font-medium"

@@ -105,7 +105,7 @@ export default function AdminOrgsPage() {
 
           <div className="mt-5">
             <Button
-              radius="full"
+              radius="sm"
               size="sm"
               className="bg-[var(--surface-2)] text-[var(--text-primary)]"
               onPress={load}

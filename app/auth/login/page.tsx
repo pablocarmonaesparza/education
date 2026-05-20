@@ -222,7 +222,7 @@ function LoginContent() {
             <Button
               type="submit"
               isDisabled={loading || !email || !password}
-              radius="full"
+              radius="sm"
               size="lg"
               className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none mt-2"
             >
@@ -251,7 +251,7 @@ function LoginContent() {
               type="button"
               onPress={handleGoogleLogin}
               isDisabled={loading}
-              radius="full"
+              radius="sm"
               size="lg"
               variant="bordered"
               className="w-full h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium gap-3 shadow-none"

@@ -674,7 +674,7 @@ export function RuntimeExperience({
             <div className="mt-8">
               <Button
                 onPress={() => router.push("/dashboard")}
-                radius="full"
+                radius="sm"
                 size="lg"
                 variant="bordered"
                 className="h-12 px-6 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
@@ -879,7 +879,7 @@ export function RuntimeExperience({
           <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
             {slideIdx > 0 || sectionIdx > 0 ? (
               <Button
-                radius="full"
+                radius="sm"
                 size="lg"
                 variant="bordered"
                 onPress={prevSlide}
@@ -892,7 +892,7 @@ export function RuntimeExperience({
             )}
 
             <Button
-              radius="full"
+              radius="sm"
               size="lg"
               onPress={nextSlide}
               isDisabled={!canAdvance}
@@ -1218,7 +1218,7 @@ function FieldTestReportInline({
 
             <Button
               type="submit"
-              radius="full"
+              radius="sm"
               isDisabled={
                 surveyStatus === "submitting" ||
                 surveyStatus === "sent" ||
@@ -1277,7 +1277,7 @@ function FieldTestReportInline({
             </div>
             <Button
               type="submit"
-              radius="full"
+              radius="sm"
               isDisabled={leadStatus === "submitting" || leadStatus === "sent"}
               className="mt-5 h-11 accent-bg text-white text-[14px] font-medium shadow-none"
             >

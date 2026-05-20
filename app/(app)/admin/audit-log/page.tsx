@@ -106,7 +106,7 @@ export default function AdminAuditLogPage() {
             />
             <div className="flex items-end">
               <Button
-                radius="full"
+                radius="sm"
                 size="sm"
                 className="bg-[var(--surface-2)] text-[var(--text-primary)]"
                 onPress={load}
