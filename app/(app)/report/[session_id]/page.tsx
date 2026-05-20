@@ -590,7 +590,7 @@ function ReportView({
             <AppleButton
               as={Link}
               href={`/api/sessions/${sessionId}/report/pdf`}
-              radius="full"
+              radius="sm"
               variant="bordered"
               size="lg"
               className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"
@@ -598,7 +598,7 @@ function ReportView({
               Descargar PDF
             </AppleButton>
             <AppleButton
-              radius="full"
+              radius="sm"
               variant="bordered"
               size="lg"
               isLoading={shareStatus === "creating"}
@@ -614,7 +614,7 @@ function ReportView({
             <AppleButton
               as={Link}
               href="/dashboard"
-              radius="full"
+              radius="sm"
               size="lg"
               className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
             >
@@ -623,7 +623,7 @@ function ReportView({
             <AppleButton
               as={Link}
               href="/"
-              radius="full"
+              radius="sm"
               variant="bordered"
               size="lg"
               className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"

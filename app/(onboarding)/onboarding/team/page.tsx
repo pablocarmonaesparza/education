@@ -137,7 +137,7 @@ export default function OnboardingTeamPage() {
                 onPress={() => router.push("/onboarding/org")}
                 tone="secondary"
                 variant="bordered"
-                radius="full"
+                radius="sm"
                 size="lg"
                 className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
               >
@@ -147,7 +147,7 @@ export default function OnboardingTeamPage() {
                 type="submit"
                 isLoading={submitting}
                 isDisabled={!name.trim() || submitting}
-                radius="full"
+                radius="sm"
                 size="lg"
                 className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
               >

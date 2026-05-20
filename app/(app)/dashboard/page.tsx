@@ -256,7 +256,7 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
                               <AppleButton
                                 as={Link}
                                 href={`/report/${member.session_id}`}
-                                radius="full"
+                                radius="sm"
                                 size="lg"
                                 variant="bordered"
                                 className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px] font-medium"
@@ -267,7 +267,7 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
                             <AppleButton
                               as={Link}
                               href={`/case/${caseItem.slug}`}
-                              radius="full"
+                              radius="sm"
                               size="lg"
                               className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
                             >
@@ -361,7 +361,7 @@ export default function DashboardPage() {
               <AppleButton
                 as={Link}
                 href="/onboarding/org"
-                radius="full"
+                radius="sm"
                 size="lg"
                 className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
               >
@@ -701,7 +701,7 @@ export default function DashboardPage() {
                       <AppleButton
                         as={Link}
                         href={`/report/${member.session_id}`}
-                        radius="full"
+                        radius="sm"
                         size="sm"
                         className="accent-bg text-white shrink-0 px-5 font-medium shadow-none"
                       >

@@ -754,6 +754,16 @@ Regla operativa: cuando Apple no aplica, documenta la decisión como `DEC-*` en 
 - Regla relacionada: `HIG-RULES-ICON-01`, `HIG-RULES-ICON-02`, `HIG-RULES-WRITE-01`
 - Override: donde el doc anterior decía "Lucide React canónica", queda reemplazado por "Tabler React canónica en el cleanroom". Si una futura surface necesita otra familia, debe abrir nueva `DEC-*` antes de implementarla.
 
+### DEC-004 · Buttons usan `radius="sm"` (8px), NO pill
+- Fecha: 2026-05-20
+- Quién decidió: Pablo (CPO) + claude implementó
+- Razón: investigación research-backed. Apple HIG distingue iOS native (pill) de web/macOS (rounded moderate 8-12px). Las referencias inspiracionales de Itera son web B2B SaaS (Linear, Vercel, Anthropic Console, Stripe Dashboard, Notion, Figma, GitHub) — TODAS usan rounded-md 6-8px, NUNCA pill. Pills se reservan para chips/badges/dots/avatares/progress bars. Buttons pill desalinean con la familia de containers radius-md/lg y rompen el ritmo visual del cleanroom.
+- Pantalla: TODAS las surfaces con AppleButton
+- Regla relacionada: `HIG-RULES-MAT-03` (border radius scale)
+- Aplicación: refactor 28 usages de `radius="full"` → `radius="sm"` en Landing/Auth/Onboarding/Dashboard/Report. Exclusiones: `AppleProgress` (sí mantiene `radius="full"` — progress bars son pill correcto), `AppleBadge` pill cuando aplica, dots/avatares circulares.
+- Override: donde un button específico requiera pill por razón documentada, abrir DEC nueva. Default es `radius="sm"`.
+- Verificación: `grep -rn 'radius="full"' app/ components/simulador/LandingPage.tsx` → 0 matches después del refactor.
+
 ---
 
 ## Resumen ejecutivo

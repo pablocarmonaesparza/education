@@ -147,7 +147,7 @@ export default function OnboardingInvitePage() {
                   onPress={() => router.push("/onboarding/team")}
                   tone="secondary"
                   variant="bordered"
-                  radius="full"
+                  radius="sm"
                   size="lg"
                   className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
                 >
@@ -157,7 +157,7 @@ export default function OnboardingInvitePage() {
                   type="submit"
                   isLoading={submitting}
                   isDisabled={emails.length === 0 || submitting}
-                  radius="full"
+                  radius="sm"
                   size="lg"
                   className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
                 >
@@ -200,7 +200,7 @@ export default function OnboardingInvitePage() {
                   onPress={() => setResult(null)}
                   tone="secondary"
                   variant="bordered"
-                  radius="full"
+                  radius="sm"
                   size="lg"
                   className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
                 >
@@ -208,7 +208,7 @@ export default function OnboardingInvitePage() {
                 </AppleButton>
                 <AppleButton
                   onPress={onContinueToBilling}
-                  radius="full"
+                  radius="sm"
                   size="lg"
                   className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
                 >
@@ -218,7 +218,7 @@ export default function OnboardingInvitePage() {
                   onPress={onFinish}
                   tone="ghost"
                   variant="light"
-                  radius="full"
+                  radius="sm"
                   size="lg"
                   className="h-12 text-[var(--text-secondary)]"
                 >

@@ -213,7 +213,7 @@ function LoginContent() {
             <AppleButton
               type="submit"
               isDisabled={loading || !email || !password}
-              radius="full"
+              radius="sm"
               size="lg"
               className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none mt-2"
             >
@@ -243,7 +243,7 @@ function LoginContent() {
               onPress={handleGoogleLogin}
               isDisabled={loading}
               tone="secondary"
-              radius="full"
+              radius="sm"
               size="lg"
               className="w-full h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium gap-3 shadow-none"
             >

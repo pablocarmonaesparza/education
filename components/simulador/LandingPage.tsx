@@ -63,7 +63,7 @@ export default function LandingPage() {
             <AppleButton
               as={Link}
               href="/auth/signup?next=%2Fonboarding%2Forg"
-              radius="full"
+              radius="sm"
               size="lg"
               className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
             >
@@ -73,7 +73,7 @@ export default function LandingPage() {
               as={Link}
               href="/field-test/marketing-urgent-campaign-pii"
               tone="secondary"
-              radius="full"
+              radius="sm"
               size="lg"
               className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
             >
@@ -291,7 +291,7 @@ export default function LandingPage() {
             <AppleButton
               as={Link}
               href="/auth/signup?next=%2Fonboarding%2Forg"
-              radius="full"
+              radius="sm"
               size="lg"
               className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
             >
@@ -301,7 +301,7 @@ export default function LandingPage() {
               as={Link}
               href="/field-test/marketing-urgent-campaign-pii"
               tone="secondary"
-              radius="full"
+              radius="sm"
               size="lg"
               className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
             >
@@ -379,7 +379,7 @@ export default function LandingPage() {
               <AppleButton
                 as={Link}
                 href="/auth/signup?next=%2Fonboarding%2Forg"
-                radius="full"
+                radius="sm"
                 size="lg"
                 className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
               >
@@ -389,7 +389,7 @@ export default function LandingPage() {
                 as={Link}
                 href="mailto:hola@itera.la"
                 tone="ghost"
-                radius="full"
+                radius="sm"
                 size="lg"
                 className="text-[var(--text-secondary)] px-5 h-12 text-[15px] font-medium hover:text-[var(--text-primary)]"
               >
