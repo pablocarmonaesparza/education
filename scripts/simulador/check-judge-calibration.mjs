@@ -9,22 +9,19 @@ const DEFAULT_SET = path.join(
   ROOT,
   "tests/simulador/judge/calibration_set.yaml",
 );
-const DIMENSIONS = ["contexto", "privacidad", "validacion", "juicio", "decision"];
+const DIMENSIONS = ["contexto", "datos", "ejecucion_ia", "validacion", "juicio", "impacto"];
 const BANDS = new Set(["A", "M", "B"]);
 const SEVERITIES = new Set(["low", "medium", "high"]);
 const RECOMMENDATIONS = new Set(["pilotar", "entrenar", "pausar", "escalar"]);
 const RISK_TYPES = new Set([
-  "exposed_pii_to_model",
-  "hidden_pii_usage_from_authority",
+  "privacy_exposure",
+  "agent_overreach",
+  "missing_agent_monitoring",
+  "weak_impact_translation",
   "accepted_unverified_claim",
-  "accepted_hallucinated_figures",
-  "used_sensitive_commercial_data",
-  "shared_third_party_confidential",
-  "used_unapproved_vendor",
-  "prompt_injection_unawareness",
-  "over_relied_on_output",
-  "overblocked_without_discrimination",
-  "ignored_escalation_path",
+  "automation_without_review",
+  "cost_or_quota_runaway",
+  "customer_trust_damage",
 ]);
 
 function parseArgs(argv) {
@@ -70,8 +67,8 @@ function validateSet(doc) {
   if (!doc || typeof doc !== "object") issues.push("root must be an object");
   const cases = Array.isArray(doc?.cases) ? doc.cases : [];
   if (cases.length !== 10) issues.push(`expected exactly 10 cases, got ${cases.length}`);
-  if (doc?.rubric_ref !== "rubric_marketing_v1@1.0.0") {
-    issues.push("rubric_ref must be rubric_marketing_v1@1.0.0");
+  if (doc?.rubric_ref !== "rubric_case_factory_v1@1.0.0") {
+    issues.push("rubric_ref must be rubric_case_factory_v1@1.0.0");
   }
   if (doc?.pass_thresholds?.min_band_match_pct !== 0.8) {
     issues.push("pass_thresholds.min_band_match_pct must be 0.8");

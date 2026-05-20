@@ -36,6 +36,9 @@ Un reviewer debe contestar si:
 
 ## Distribucion minima antes del lote 50
 
+Antes del lote 50 debe existir al menos un golden case aprobado. Hoy el golden
+case activo es `sales_agent_followup_pipeline_v1`.
+
 - 15 casos N1.
 - 20 casos N2.
 - 15 casos N3.
@@ -43,4 +46,3 @@ Un reviewer debe contestar si:
 - Al menos 8 industrias cubiertas.
 - Al menos 20 herramientas registradas.
 - 30% evergreen / 70% current por lote.
-

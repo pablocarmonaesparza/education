@@ -1,0 +1,18 @@
+practice_beat:
+  id: practice_agent_log_review_v1
+  status: ready
+  dimension: validacion
+  level: 3
+  career_key: sales
+  triggered_by_gap: [missing_agent_monitoring]
+  duration_max_seconds: 300
+  principle_card:
+    headline: "los logs son parte del producto"
+    body: "si no puedes auditar lo que hizo el agente, no puedes operarlo en produccion."
+  practice_exercise:
+    type: log_review
+    prompt: "Marca retry loops, datos sensibles y acciones sin owner en logs de dry-run."
+  completion_criteria: "detecta al menos 3 eventos bloqueantes."
+  exit:
+    contributes_to_resim_score: true
+

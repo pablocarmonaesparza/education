@@ -96,3 +96,18 @@ revision no puede publicarse.
 Si un manager no puede responder "que hago con esta persona/equipo manana" al
 leer el resultado, el caso no esta listo.
 
+## Golden case activo
+
+El ejemplo canonico actual es `sales_agent_followup_pipeline_v1`.
+
+Muestra:
+
+- nivel N3;
+- herramientas actuales;
+- 30/70 evergreen/current;
+- tipos de ejercicio variados;
+- manager outcome explicito;
+- criterios de 6 dimensiones;
+- risk events;
+- practice beats;
+- variante resim.

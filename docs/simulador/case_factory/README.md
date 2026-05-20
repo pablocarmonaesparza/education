@@ -25,6 +25,17 @@ si no pasa por este sistema.
 No se crean los 50 casos todavia. Primero se cierra el framework, se validan 3
 golden cases (N1, N2, N3) y luego se dispara la fabrica.
 
+## Estado actual
+
+Por decision de Pablo, los 8 casos antiguos de Marketing/Growth fueron retirados
+del contrato activo. El catalogo activo queda con un solo golden case:
+
+`docs/simulador/contrato_v0/casos/sales_agent_followup_pipeline_v1.yaml`
+
+Ese caso muestra el framework completo en N3: tabla de datos, brief de agente,
+matriz de permisos, revision de logs, decision con tradeoff, respuesta ejecutiva,
+practice beats y re-simulacion.
+
 ## Pagina de revision
 
 Ruta local/publica sin subscripcion:
@@ -33,4 +44,3 @@ Ruta local/publica sin subscripcion:
 
 No debe linkearse desde la landing. Es un laboratorio de producto para revisar
 estructura, taxonomia, criterios y cobertura antes de publicar casos.
-

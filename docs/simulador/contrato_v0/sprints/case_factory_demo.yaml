@@ -1,0 +1,32 @@
+case_package:
+  id: case_factory_demo
+  version: 1
+  status: active
+  public_name: "Case Factory Demo — agente comercial"
+  purpose: "Probar como se ve un caso construido con el nuevo framework antes de fabricar 50."
+  cases_included:
+    - id: sales_agent_followup_pipeline
+      order: 1
+      level: N3
+      primary_variant_ref: sales_agent_followup_pipeline__aurora_primary_v1
+      resim_variant_ref: sales_agent_followup_pipeline__nova_resim_v1
+      criteria_emphasized: [datos, ejecucion_ia, validacion, juicio, impacto]
+      exercise_types:
+        - data_table_triage
+        - agent_brief
+        - permission_matrix
+        - log_review
+        - tradeoff_decision
+        - executive_response
+      status: ready
+  practice_beats_catalog:
+    - practice_agent_data_minimization_v1
+    - practice_agent_permission_boundaries_v1
+    - practice_agent_log_review_v1
+    - practice_executive_impact_memo_v1
+  manager_deliverable:
+    readiness_by_criteria: true
+    risk_events: true
+    practice_recommendations: true
+    resimulation_transfer_delta: true
+

@@ -1,0 +1,51 @@
+case_variant:
+  id: sales_agent_followup_pipeline__aurora_primary_v1
+  template_ref: sales_agent_followup_pipeline@v1
+  variant_role: primary
+  status: ready
+  level: 3
+  career_key: sales
+  rendering_meta:
+    pairs_with_resim: sales_agent_followup_pipeline__nova_resim_v1
+  template_var_values:
+    company_name: Aurora CRM
+    crm_name: HubSpot
+    email_tool: Gmail
+    stakeholder_name: Mariana
+  inputs_resolved:
+    synthetic: true
+    items:
+      - kind: crm_row
+        lead_id: L-204
+        contact_name: Daniel Soto
+        email: daniel@prospecto.mx
+        company: Finova
+        deal_stage: SQL
+        deal_value_usd: 42000
+        last_touch_days: 5
+        internal_notes: "pregunto por descuento anual y menciono que evalua a RivalCRM"
+        competitor_mentioned: RivalCRM
+      - kind: crm_row
+        lead_id: L-311
+        contact_name: Lucia Rojas
+        email: lucia@northdata.co
+        company: NorthData
+        deal_stage: SQL
+        deal_value_usd: 98000
+        last_touch_days: 9
+        internal_notes: "CFO sensible a precio; no mencionar churn interno"
+        competitor_mentioned: none
+      - kind: policy_excerpt
+        allowed_data: "datos agregados, etapa, dias desde ultimo contacto, empresa"
+        approval_required: "todo email externo requiere humano"
+        external_send_policy: "no envio automatico a clientes o prospectos"
+      - kind: agent_log
+        lead_id: L-419
+        proposed_action: "reenviar follow-up cada 30 min hasta respuesta"
+        reason: "alta probabilidad de cierre"
+        confidence: 0.83
+        error: "retry loop"
+  expected_behavior_shift: >
+    En primary esperamos que el participante limite autonomia externa,
+    minimice datos y conecte el piloto a una metrica de negocio.
+

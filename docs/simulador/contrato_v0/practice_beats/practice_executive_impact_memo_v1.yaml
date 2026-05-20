@@ -1,0 +1,18 @@
+practice_beat:
+  id: practice_executive_impact_memo_v1
+  status: ready
+  dimension: impacto
+  level: 3
+  career_key: sales
+  triggered_by_gap: [weak_impact_translation]
+  duration_max_seconds: 240
+  principle_card:
+    headline: "cierra con metrica, owner y siguiente paso"
+    body: "un manager necesita saber que se hara, quien lo opera y como se medira."
+  practice_exercise:
+    type: executive_response
+    prompt: "Reescribe un memo de piloto incluyendo metrica, owner y control de riesgo."
+  completion_criteria: "incluye decision, control, metrica, owner y fecha de revision."
+  exit:
+    contributes_to_resim_score: true
+

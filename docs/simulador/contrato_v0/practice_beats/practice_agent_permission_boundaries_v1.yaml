@@ -1,0 +1,18 @@
+practice_beat:
+  id: practice_agent_permission_boundaries_v1
+  status: ready
+  dimension: juicio
+  level: 3
+  career_key: sales
+  triggered_by_gap: [agent_overreach]
+  duration_max_seconds: 240
+  principle_card:
+    headline: "autonomia limitada, no envio libre"
+    body: "un agente puede preparar trabajo; enviar, borrar o prometer requiere gate humano."
+  practice_exercise:
+    type: permission_matrix
+    prompt: "Define read/write/send/approve para un agente comercial."
+  completion_criteria: "acciones externas requieren aprobacion humana."
+  exit:
+    contributes_to_resim_score: true
+

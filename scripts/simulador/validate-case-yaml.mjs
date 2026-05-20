@@ -9,6 +9,16 @@ const ROOT = process.cwd();
 const CONTRACT_DIR = path.join(ROOT, "docs/simulador/contrato_v0");
 const CASES_DIR = path.join(CONTRACT_DIR, "casos");
 const VARIANTS_DIR = path.join(CONTRACT_DIR, "variantes");
+const DIMENSIONS = new Set(["contexto", "datos", "ejecucion_ia", "validacion", "juicio", "impacto"]);
+const EXERCISE_TYPES = new Set([
+  "data_table_triage",
+  "workflow_builder",
+  "agent_brief",
+  "permission_matrix",
+  "log_review",
+  "tradeoff_decision",
+  "executive_response",
+]);
 
 const issues = [];
 const targetFiles = process.argv.slice(2).filter((arg) => !arg.startsWith("-"));
@@ -47,6 +57,11 @@ function validateCaseFile(filePath, variantsByTemplate) {
   check(Boolean(item.context_template?.scenario || item.context_template?.role_play), scope, "case needs decision-maker context");
   check(Boolean(item.context_template?.pressure?.length), scope, "case needs explicit pressure/tension");
   check(Boolean(item.inputs_spec?.length), scope, "case needs data/artifact inputs");
+  check(Boolean(item.case_factory_meta?.level), scope, "case needs case_factory_meta.level");
+  check(Boolean(item.case_factory_meta?.freshness?.refresh_due_at), scope, "case needs freshness.refresh_due_at");
+  check(Boolean(item.case_factory_meta?.manager_outcome?.primary_question), scope, "case needs manager outcome");
+  check(Boolean(item.output_spec?.type), scope, "case needs output_spec.type");
+  check((item.failure_modes ?? []).length >= 2, scope, "case needs at least 2 failure modes");
   check(primary.length >= 1, scope, "case needs at least one primary variant");
   check(resim.length >= 1, scope, "case needs at least one resimulation variant");
   check(Object.keys(item.gap_definitions ?? {}).length >= 2, scope, "case needs at least 2 gap/risk mappings");
@@ -58,6 +73,28 @@ function validateCaseFile(filePath, variantsByTemplate) {
   check(expectedActions >= 1, scope, "case needs at least one non-trivial expected_action");
   check(observableDecisions >= 2, scope, "case needs observable decisions, not only reading");
   check(Boolean(lastStep?.type?.startsWith("decision_")), scope, "last step should be a decision step");
+
+  const criteriaWeights = item.evaluation_meta?.criteria_weights ?? {};
+  const criteriaWeightTotal = Object.values(criteriaWeights).reduce((sum, value) => sum + Number(value), 0);
+  check(criteriaWeightTotal === 100, scope, `criteria weights must sum 100, got ${criteriaWeightTotal}`);
+
+  for (const [dimension, weight] of Object.entries(criteriaWeights)) {
+    check(DIMENSIONS.has(dimension), scope, `invalid criteria weight dimension ${dimension}`);
+    check(Number(weight) > 0, scope, `criteria weight must be positive for ${dimension}`);
+  }
+
+  for (const [index, step] of (item.steps ?? []).entries()) {
+    check(Boolean(step.exercise_type), `${scope}.steps[${index}]`, "step needs exercise_type");
+    check(EXERCISE_TYPES.has(step.exercise_type), `${scope}.steps[${index}]`, `invalid exercise_type ${step.exercise_type}`);
+    const dims = [
+      ...(step.evaluates ?? []),
+      ...(step.evaluates_prompt ?? []),
+      ...(step.followup?.evaluates ?? []),
+    ];
+    for (const dimension of dims) {
+      check(DIMENSIONS.has(dimension), `${scope}.steps[${index}]`, `invalid dimension ${dimension}`);
+    }
+  }
 
   const participantLeakText = [
     item.context_template?.role_play,

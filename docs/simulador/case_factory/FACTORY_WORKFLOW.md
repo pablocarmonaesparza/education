@@ -6,10 +6,9 @@
 2. Cerrar `CASE_TAXONOMY.yaml`.
 3. Cerrar `CASE_SCHEMA.yaml`.
 4. Cerrar `CASE_RUBRIC_V1.md`.
-5. Crear 3 golden cases:
-   - 1 N1 fundamentos;
-   - 1 N2 workflow;
-   - 1 N3 agentes.
+5. Crear golden cases:
+   - hoy existe 1 N3 agentes: `sales_agent_followup_pipeline_v1`;
+   - faltan 1 N1 fundamentos y 1 N2 workflow antes del lote 50.
 6. Correr validator automatico.
 7. Revisar manualmente contra checklist.
 8. Importar a staging.
@@ -44,4 +43,3 @@
 - Deprecar casos que dependan de features removidas.
 - Recalibrar si mas de 80% pasa N3 en primer intento.
 - Recalibrar si el tiempo real excede 1.5x el estimado.
-

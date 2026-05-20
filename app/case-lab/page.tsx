@@ -6,6 +6,8 @@ import {
   caseFactoryArtifacts,
   caseFactoryCriteria,
   caseFactoryDepartments,
+  caseFactoryExerciseTypes,
+  caseFactoryGoldenCase,
   caseFactoryLevels,
   caseFactoryManagerSignals,
   caseFactoryQualityGates,
@@ -42,10 +44,27 @@ export default function CaseLabPage() {
 
         <section className="grid gap-4 md:grid-cols-4">
           <MetricCard label="casos objetivo" value={`${caseFactoryTargetMix.totalCases}`} />
+          <MetricCard label="golden activo" value={`${caseFactoryTargetMix.activeGoldenCases}`} />
           <MetricCard label="evergreen" value={`${caseFactoryTargetMix.evergreenPercent}%`} />
           <MetricCard label="vigente" value={`${caseFactoryTargetMix.currentPercent}%`} />
-          <MetricCard label="herramientas min." value={`${caseFactoryTargetMix.minimumTools}`} />
         </section>
+
+        <Card variant="primary" padding="lg" className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+          <div>
+            <Caption className="text-white/80">golden case activo</Caption>
+            <Title className="mt-2 text-white">{caseFactoryGoldenCase.title}</Title>
+            <Body className="mt-3 text-white/90">{caseFactoryGoldenCase.managerQuestion}</Body>
+          </div>
+          <div className="flex flex-wrap content-start gap-2">
+            <Tag variant="outline">{caseFactoryGoldenCase.level}</Tag>
+            {caseFactoryGoldenCase.departments.map((department) => (
+              <Tag key={department} variant="outline">{department}</Tag>
+            ))}
+            {caseFactoryGoldenCase.exerciseTypes.map((exerciseType) => (
+              <Tag key={exerciseType} variant="outline">{exerciseType}</Tag>
+            ))}
+          </div>
+        </Card>
 
         <section className="grid gap-4 lg:grid-cols-3">
           {caseFactoryLevels.map((level) => (
@@ -63,6 +82,18 @@ export default function CaseLabPage() {
             </Card>
           ))}
         </section>
+
+        <Card variant="neutral" padding="lg">
+          <Headline className="mb-4">tipos de ejercicio contemplados</Headline>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {caseFactoryExerciseTypes.map((exerciseType) => (
+              <div key={exerciseType.id} className="rounded-2xl border-2 border-gray-200 bg-white p-4 dark:border-gray-900 dark:bg-gray-800">
+                <Subtitle>{exerciseType.name}</Subtitle>
+                <Caption>{exerciseType.family}</Caption>
+              </div>
+            ))}
+          </div>
+        </Card>
 
         <section className="grid gap-4 lg:grid-cols-2">
           <Card variant="neutral" padding="lg">
@@ -157,4 +188,3 @@ function MetricCard({ label, value }: { label: string; value: string }) {
     </Card>
   );
 }
-

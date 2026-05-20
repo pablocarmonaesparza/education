@@ -1,0 +1,70 @@
+rubric:
+  id: rubric_case_factory_v1
+  version: 1.0.0
+  applies_to_sprint_skus: [case_factory_demo]
+  locale_default: es-MX
+  created_at: 2026-05-20
+  created_by: codex_product
+
+  public:
+    purpose: >
+      medir si una persona puede aplicar IA en trabajo real: encuadrar,
+      usar datos con cuidado, ejecutar con la herramienta correcta, validar,
+      ejercer juicio e impactar el negocio.
+    dimensions:
+      - id: contexto
+        public_name: contexto
+        public_definition: entiende objetivo, audiencia, restricciones, stakeholder y exito esperado.
+      - id: datos
+        public_name: datos
+        public_definition: usa informacion suficiente, minimizada, con permisos y calidad adecuada.
+      - id: ejecucion_ia
+        public_name: ejecucion con IA
+        public_definition: elige y configura prompt, workflow o agente segun el nivel del trabajo.
+      - id: validacion
+        public_name: validacion
+        public_definition: revisa output, claims, logs, fuentes, errores y consistencia antes de actuar.
+      - id: juicio
+        public_name: juicio
+        public_definition: detecta riesgo, autoridad, escalamiento, consecuencias y limites de autonomia.
+      - id: impacto
+        public_name: impacto
+        public_definition: convierte el uso de IA en una decision, ahorro, accion o resultado visible.
+    scoring_scale:
+      bands:
+        - { id: B, name: "requiere supervision", range: [0, 64] }
+        - { id: M, name: "listo con controles", range: [65, 84] }
+        - { id: A, name: "listo para operar", range: [85, 100] }
+
+  internal:
+    level_weights:
+      N1: { contexto: 20, datos: 18, ejecucion_ia: 22, validacion: 18, juicio: 12, impacto: 10 }
+      N2: { contexto: 14, datos: 18, ejecucion_ia: 24, validacion: 16, juicio: 14, impacto: 14 }
+      N3: { contexto: 10, datos: 20, ejecucion_ia: 22, validacion: 16, juicio: 20, impacto: 12 }
+    deterministic_overrides:
+      - condition: "agent_can_send_external_email_without_human_approval"
+        action: cap_recommendation(pausar)
+        triggers_gap: agent_overreach
+      - condition: "crm_fields_include_email_or_phone_in_model_prompt_without_need"
+        action: set_dimension_band(datos, B)
+        triggers_gap: privacy_exposure
+      - condition: "no_monitoring_or_rollback_defined_for_agent"
+        action: cap_dimension_band(juicio, B)
+        triggers_gap: missing_agent_monitoring
+      - condition: "final_response_has_no_business_metric_or_owner"
+        action: cap_dimension_band(impacto, M)
+        triggers_gap: weak_impact_translation
+    gap_taxonomy:
+      privacy_exposure:
+        dimension: datos
+        severity: high
+      agent_overreach:
+        dimension: juicio
+        severity: high
+      missing_agent_monitoring:
+        dimension: validacion
+        severity: medium
+      weak_impact_translation:
+        dimension: impacto
+        severity: medium
+

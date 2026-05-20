@@ -61,9 +61,41 @@ export const caseFactoryTargetMix = {
   totalCases: 50,
   evergreenPercent: 30,
   currentPercent: 70,
+  activeGoldenCases: 1,
   minimumDepartments: 8,
   minimumIndustries: 8,
   minimumTools: 20,
+};
+
+export const caseFactoryExerciseTypes = [
+  { id: "data_table_triage", name: "tabla de datos editable", family: "data" },
+  { id: "pivot_dashboard", name: "tabla dinamica / dashboard", family: "data" },
+  { id: "workflow_builder", name: "workflow builder", family: "workflow" },
+  { id: "automation_spec", name: "spec de automatizacion", family: "workflow" },
+  { id: "agent_brief", name: "brief de agente", family: "agent" },
+  { id: "permission_matrix", name: "matriz de permisos", family: "agent" },
+  { id: "log_review", name: "revision de logs", family: "agent" },
+  { id: "tradeoff_decision", name: "decision con tradeoff", family: "decision" },
+  { id: "executive_response", name: "respuesta ejecutiva", family: "decision" },
+  { id: "counterfactual_debrief", name: "counterfactual debrief", family: "decision" },
+];
+
+export const caseFactoryGoldenCase = {
+  id: "sales_agent_followup_pipeline",
+  title: "agente de follow-up para pipeline comercial",
+  level: "N3",
+  departments: ["sales", "operations"],
+  tools: ["ChatGPT", "Claude", "HubSpot", "Gmail", "Slack", "Zapier", "n8n"],
+  exerciseTypes: [
+    "tabla de datos editable",
+    "brief de agente",
+    "matriz de permisos",
+    "revision de logs",
+    "decision con tradeoff",
+    "respuesta ejecutiva",
+  ],
+  managerQuestion:
+    "Puede delegar follow-up comercial a un agente sin perder control, privacidad ni confianza del cliente?",
 };
 
 export const caseFactoryDepartments = [
@@ -160,4 +192,3 @@ export const caseFactoryResearchAnchors = [
     signal: "casos buenos empiezan con decision, ambiguedad, datos y aplicacion real",
   },
 ];
-

@@ -71,19 +71,16 @@ La unidad de experiencia es un **caso vivo**:
 - Re-simulacion: core, no opcional.
 - Evidence: data tipada; reports son solo una vista.
 
-## Estado v0 actual
+## Estado actual
 
-- Ocho casos canonicos validados tecnicamente (Sprint completo).
-- Variantes primary y re-sim listas para los ocho casos.
-- Rubrica marketing v1 lista.
-- 20 practice beats listos para los gaps del Sprint.
-- Sprint package `marketing_30d` definido como draft vendible.
-- Schema SQL candidate corregido despues de audit Claude CLI, no aplicado.
-- Runtime tecnico minimo en `lib/simulador/`: tipos, validador, importer a seed rows, eventos de sesion y eval stub.
-- CLI `npm run simulador:validate` pasa con 8 casos ready, 16 variantes y 20 practice beats.
+- Los ocho casos antiguos de Marketing/Growth fueron retirados del contrato activo.
+- El contrato activo queda con un golden case: `sales_agent_followup_pipeline_v1`.
+- El caso tiene primary + resim, 4 practice beats y rubrica `rubric_case_factory_v1@1.0.0`.
+- El objetivo ya no es completar Marketing 30d; es validar el framework antes de fabricar 50 casos.
+- CLI `npm run simulador:validate` debe pasar con 1 caso ready, 2 variantes y 4 practice beats.
 
 ## Pendiente inmediato
 
-1. Claude puede hacer audit fino de producto/copy sobre los 8 casos.
-2. Codex genera seed SQL revisable desde el importer.
-3. Codex reemplaza eval stub con LLM-as-judge versionado.
+1. Revisar visualmente `/case-lab`.
+2. Validar si el golden case representa la experiencia esperada.
+3. Crear los golden cases N1 y N2 antes de producir el lote 50.
