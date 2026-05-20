@@ -306,12 +306,145 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ============ FAQ ============ */}
+      <section id="faq" className="surface-canvas section-pad scroll-mt-20">
+        <div className="max-w-3xl mx-auto px-6">
+          <motion.div {...fadeUp} className="text-center mb-12">
+            <span className="eyebrow">Preguntas frecuentes</span>
+            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+              Lo que más nos preguntan.
+            </h2>
+          </motion.div>
+
+          <div className="divide-y divide-[var(--hairline)] border-y border-[var(--hairline)]">
+            {[
+              {
+                q: "¿Es certificación?",
+                a: "No. Es diagnóstico operativo de criterio en uso de IA. No acreditamos, medimos. El reporte se traduce en acciones concretas, no en un certificado de pared.",
+              },
+              {
+                q: "¿Qué LLM usan para evaluar?",
+                a: "Opus 4.5 con rúbrica versionada. Risk events high pasan por review de humano staff Itera antes de publicarse en el reporte. Cada evaluación queda auditable.",
+              },
+              {
+                q: "¿Procesan PII real de mis clientes?",
+                a: "No. Los casos usan datasets sintéticos. Tu equipo no introduce información personal de clientes reales en el simulador. Compliance LATAM (LFPDPPP MX 2025, Ley 1581 CO).",
+              },
+              {
+                q: "¿Pueden facturar en MX, CO o AR?",
+                a: "Sí. Comprador paga en USD vía Stripe. Para factura fiscal mexicana, colombiana o argentina, respondes al recibo con tu RFC/NIT/CUIT y emitimos en 1-2 días hábiles.",
+              },
+              {
+                q: "¿Política de refunds?",
+                a: "Reembolso completo dentro de 7 días post-cargo si nadie de tu equipo empezó el caso vivo. Pasado ese plazo, convertimos a crédito para tu próximo sprint.",
+              },
+            ].map((item, i) => (
+              <motion.details
+                key={item.q}
+                {...fadeUp}
+                transition={{ ...fadeUp.transition, delay: 0.03 * i }}
+                className="group py-5 [&_summary::-webkit-details-marker]:hidden"
+              >
+                <summary className="flex items-center justify-between cursor-pointer text-[17px] font-medium text-[var(--text-primary)]">
+                  <span>{item.q}</span>
+                  <span className="ml-4 text-[var(--text-tertiary)] transition-transform group-open:rotate-45 text-[20px] leading-none">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
+                  {item.a}
+                </p>
+              </motion.details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ FINAL CTA STRIP ============ */}
+      <section className="surface-tinted section-pad-sm">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <motion.div {...fadeUp}>
+            <h2 className="display text-[32px] sm:text-[40px] text-[var(--text-primary)]">
+              ¿Ya tienes un sprint en la mira?
+            </h2>
+            <p className="mt-4 text-[16px] text-[var(--text-secondary)] max-w-xl mx-auto">
+              Treinta días, cinco a cincuenta personas, un reporte ejecutivo accionable.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+              <Button
+                as={Link}
+                href="/auth/signup?next=%2Fonboarding%2Forg"
+                radius="full"
+                size="lg"
+                className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
+              >
+                Agendar diagnóstico
+              </Button>
+              <Button
+                as={Link}
+                href="mailto:hola@itera.la"
+                radius="full"
+                size="lg"
+                variant="light"
+                className="text-[var(--text-secondary)] px-5 h-12 text-[15px] font-medium hover:text-[var(--text-primary)]"
+              >
+                Hablar con ventas →
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ============ FOOTER ============ */}
-      <footer className="border-t border-[var(--hairline)] py-12 surface-canvas">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[13px] text-[var(--text-tertiary)]">© 2026 Itera</p>
-          <div className="flex items-center gap-6 text-[13px] text-[var(--text-tertiary)]">
-            <span>{SPRINT_META.geoTarget.join(" · ")}</span>
+      <footer className="border-t border-[var(--hairline)] py-16 surface-canvas">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+            <div>
+              <p className="text-[12px] mono uppercase tracking-widest text-[var(--text-tertiary)] mb-4">
+                Producto
+              </p>
+              <ul className="space-y-2 text-[14px] text-[var(--text-secondary)]">
+                <li><a href="#como-funciona" className="hover:text-[var(--text-primary)]">Cómo funciona</a></li>
+                <li><a href="#casos" className="hover:text-[var(--text-primary)]">Casos del sprint</a></li>
+                <li><a href="#precio" className="hover:text-[var(--text-primary)]">Precios</a></li>
+                <li><a href="/field-test/marketing-urgent-campaign-pii" className="hover:text-[var(--text-primary)]">Probar demo</a></li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-[12px] mono uppercase tracking-widest text-[var(--text-tertiary)] mb-4">
+                Empresa
+              </p>
+              <ul className="space-y-2 text-[14px] text-[var(--text-secondary)]">
+                <li><a href="#faq" className="hover:text-[var(--text-primary)]">FAQ</a></li>
+                <li><a href="mailto:hola@itera.la" className="hover:text-[var(--text-primary)]">Contacto comercial</a></li>
+                <li><a href="mailto:soporte@itera.la" className="hover:text-[var(--text-primary)]">Soporte</a></li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-[12px] mono uppercase tracking-widest text-[var(--text-tertiary)] mb-4">
+                Legal
+              </p>
+              <ul className="space-y-2 text-[14px] text-[var(--text-secondary)]">
+                <li><a href="/privacy" className="hover:text-[var(--text-primary)]">Privacidad</a></li>
+                <li><a href="/terms" className="hover:text-[var(--text-primary)]">Términos</a></li>
+                <li><a href="mailto:legal@itera.la" className="hover:text-[var(--text-primary)]">DPA enterprise</a></li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-[12px] mono uppercase tracking-widest text-[var(--text-tertiary)] mb-4">
+                Acceso
+              </p>
+              <ul className="space-y-2 text-[14px] text-[var(--text-secondary)]">
+                <li><a href="/auth/login" className="hover:text-[var(--text-primary)]">Iniciar sesión</a></li>
+                <li><a href="/auth/signup" className="hover:text-[var(--text-primary)]">Crear cuenta</a></li>
+                <li><a href="/dashboard" className="hover:text-[var(--text-primary)]">Dashboard manager</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-12 pt-8 border-t border-[var(--hairline)] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-[13px] text-[var(--text-tertiary)]">© 2026 Itera. Diagnóstico operativo de criterio en IA.</p>
+            <p className="text-[13px] text-[var(--text-tertiary)]">{SPRINT_META.geoTarget.join(" · ")}</p>
           </div>
         </div>
       </footer>
