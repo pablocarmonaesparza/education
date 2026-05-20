@@ -1,24 +1,31 @@
-# Shell Spec — bloque 2 visual
+# Shell Spec — DRAFT (subordinado al contrato de diseño)
 
-> **Para codex**: especificación concreta por surface para shell visual del bloque 2.
-> Lee primero `FRONT_CONTRACT.md` (scope) + `PRODUCT_VISION_ONE_PAGER.md` (vibe).
-> Aquí están las decisiones de jerarquía/layout/contenido por surface — el "qué dice", no el "cómo".
+> **STATUS: DRAFT v2.** Este doc define **JERARQUÍA, COPY y ESTRUCTURA por surface** — no decisiones estéticas.
 >
-> **Reglas globales (no negociables):**
-> - Stack: Tailwind utility-first + HeroUI v2 (componentes ya disponibles) + framer-motion para transitions. NO importar `@/components/ui/*` ni `@/components/shared/*` — fueron purgados.
-> - Tipografía: minúsculas en headings/body (heredado de Itera). Excepciones: nombres propios (Stripe, AgentMail), siglas (LFPDPPP), KPIs (USD).
-> - Color: dark mode default, light mode soportado. Acentos: indigo-600/violet-600 para primary, fucsia para destructivo, verde-500 para success.
-> - Tono: conversacional LATAM serio. Sin corporate-bot ("aprovecha al máximo tu experiencia"), sin emoji-spam, sin jerga ("ICP/MVP/P0").
-> - Espacio: generoso (sección hero 24/32 unidades vertical, cards 6 padding).
-> - Animación: subtle, no over-staggered. Fade+slide 200ms ease-out. Hover scale 1.02 max.
+> **Orden de autoridad:** todas las decisiones visuales/estéticas viven en `APPLE_HIG_RULES_FOR_ITERA.md`. Cualquier mención aquí a colores, radius, shadows, motion timing, font weights, glassmorphism, etc., se subordina a ese contrato.
 >
-> **Anti-patrones a evitar:**
+> **Lo que SÍ define este doc:**
+> - Estructura vertical de cada surface (secciones + orden + propósito)
+> - Copy específico por surface (titles, sub, microcopy, CTAs)
+> - Jerarquía informacional (qué va primero, qué después)
+> - Anti-patterns de COPY y POSICIONAMIENTO (no de estética)
+>
+> **Lo que NO define este doc** (vive en `APPLE_HIG_RULES_FOR_ITERA.md`):
+> - Color tokens (ver HIG-RULES-COLOR-01..04)
+> - Typography weights/sizes (ver HIG-RULES-TYPO-01..06)
+> - Motion timings/easings (ver HIG-RULES-MOTION-01..06)
+> - Radius/shadow scales (ver HIG-RULES-MAT-03..04)
+> - Hit targets/accessibility (ver HIG-RULES-A11Y-01..07)
+> - Glassmorphism cuándo sí/no (ver HIG-RULES-MAT-01..02)
+>
+> **Anti-patterns de copy/posicionamiento (vigentes):**
 > - "Tu viaje empieza aquí" / "Transforma tu equipo" / "Desbloquea el potencial" → genérico SaaS, fuera
-> - Stock illustrations / hero con personas sonriendo en laptop → fuera, mascota geométrica o ningún ilustrado
-> - Pricing card típica de 3 columnas con check verde → reemplazar con tabla horizontal seria
-> - Testimonial avatars circulares con "CEO at TechCo" → fuera hasta tener customers reales
+> - Stock illustrations / hero con personas sonriendo en laptop → fuera (mascota geométrica o ningún ilustrado, decisión Itera)
+> - Pricing card 3 columnas con check verde → preferir tabla horizontal seria
+> - Testimonial avatars circulares "CEO at TechCo" → fuera hasta tener customers reales
 >
-> Pablo aprobó vibe target: **Linear app → Anthropic Console → Vercel Dashboard**.
+> **Referencias inspiracionales (autoridad 5, no autoridad 1):**
+> Linear / Anthropic Console / Vercel Dashboard / Typeform. Útiles cuando Apple HIG no opina sobre B2B SaaS. Subordinadas a HIG-RULES y `PRODUCT_VISION_ONE_PAGER.md` voice.
 
 ---
 

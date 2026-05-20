@@ -1,26 +1,30 @@
 ---
 type: vision
-title: Product vision one-pager v0 — feel + tono + referencias visuales
+title: Product vision one-pager — voice + tono + posicionamiento
 date: 2026-05-19
 authors: [claude]
 reviewers: [pablo]
-status: draft-v0-pending-pablo-correction
-scope: define el feel visual + tono + referencias concretas para el front v2 cleanroom. Draft v0 inferido del trabajo previo + research + memory. Pablo debe corregir antes de empezar shell visual
+status: vigente-v2-subordinado-a-HIG-RULES
+scope: define VOICE + TONO + POSICIONAMIENTO de Itera Simulador. Decisiones estéticas viven en APPLE_HIG_RULES_FOR_ITERA.md. Referencias visuales son inspiración secundaria (autoridad 5), no ley.
 ---
 
 # Product vision one-pager — Itera Simulador v2
 
-> **Nota crítica:** este es **v0 draft**. Está inferido de research previo + decisiones M9-3 + brand_guidelines_v1 + buyer_persona. Pablo debe corregir cada sección antes de que codex empiece shell visual. Sin corrección explícita de Pablo, NO arrancar implementación.
+> **Subordinado a `APPLE_HIG_RULES_FOR_ITERA.md`** (contrato de diseño). Este doc define voice/tono/posicionamiento de producto — NO la estética visual. Si hay conflicto entre este doc y HIG-RULES, gana HIG-RULES.
 
-## 1. Referencias visuales concretas
+## 1. Referencias visuales — autoridad 5 (inspiración, no ley)
 
-**Tres referencias que Itera Simulador debe sentirse como:**
+> Las referencias siguientes son inspiración. La ley de diseño es `APPLE_HIG_RULES_FOR_ITERA.md` + Apple HIG. Cuando Apple no opina sobre B2B SaaS (dashboards densos, eval grids, sidebars complejas), estas referencias guían la dirección — pero subordinadas a HIG-RULES y accesibilidad.
 
-1. **Linear (linear.app)** — issue density grids, drill-down patterns, accent color sutil, typography tight, lowercase corporate. **Usar de:** dashboard manager + admin queue
-2. **Anthropic Console (console.anthropic.com)** — eval results grids, confidence visualization, premium serio sin ser corporate-bot. **Usar de:** judge evidence display + report ejecutivo
-3. **Vercel Dashboard (vercel.com/dashboard)** — depth informacional + breathing room + tipografía generosa. **Usar de:** landing pública + onboarding wizard
+**Tres referencias que Itera Simulador puede tomar como inspiración:**
 
-**Una referencia que NO debe sentirse como:**
+1. **Linear (linear.app)** — issue density grids, drill-down patterns, typography tight, lowercase corporate. **Aplicable a:** dashboard manager + admin queue
+2. **Anthropic Console (console.anthropic.com)** — eval results grids, confidence visualization, premium serio sin corporate-bot. **Aplicable a:** judge evidence display + report ejecutivo
+3. **Vercel Dashboard (vercel.com/dashboard)** — depth informacional + breathing room + tipografía generosa. **Aplicable a:** landing pública + onboarding wizard
+
+> **Importante:** estas referencias NO definen tokens (colores, radius, motion). Esos vienen de HIG-RULES. Las referencias guían **patrones de layout y densidad** donde Apple HIG es agnóstico.
+
+**Posicionamientos que Itera NO debe imitar (anti-posicionamiento):**
 
 - **NO Notion-clone:** Itera no es app de productividad genérica
 - **NO Coursera/Udemy/Khan Academy:** no somos LMS
