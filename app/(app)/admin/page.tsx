@@ -1,7 +1,3 @@
-import Card from "@/components/ui/Card";
-import Tag from "@/components/ui/Tag";
-import { Body, Caption, Headline, Title } from "@/components/ui/Typography";
-
 const adminSections = [
   {
     title: "leads",
@@ -29,35 +25,42 @@ export default function AdminIndexPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-8 px-6 py-10">
       <section className="space-y-3">
-        <Headline>admin itera</Headline>
+        <div className="text-xs uppercase tracking-widest text-gray-500">admin itera</div>
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div className="space-y-2">
-            <Title>operación del simulador</Title>
-            <Body className="max-w-2xl leading-7">
-              Entrada única del backoffice. Las subrutas antiguas quedaron en
-              bodega durante el cleanroom; esta pantalla será la base del admin
-              visual nuevo.
-            </Body>
+            <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+              operación del simulador
+            </h1>
+            <p className="max-w-2xl leading-7 text-gray-700 dark:text-gray-300">
+              Entrada única del backoffice. Las subrutas antiguas quedaron en bodega durante el cleanroom; esta pantalla será la base del admin visual nuevo.
+            </p>
           </div>
-          <Tag variant="neutral">cleanroom front</Tag>
+          <span className="inline-flex items-center rounded-full border border-gray-300 dark:border-gray-600 px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300">
+            cleanroom front
+          </span>
         </div>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
         {adminSections.map((section) => (
-          <Card key={section.title} padding="lg">
+          <div
+            key={section.title}
+            className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm"
+          >
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-2">
-                <Title as="h2" className="text-xl">
+                <h2 className="text-xl font-bold tracking-tight text-gray-900 dark:text-white">
                   {section.title}
-                </Title>
-                <Caption className="text-sm leading-6">{section.description}</Caption>
+                </h2>
+                <p className="text-sm leading-6 text-gray-600 dark:text-gray-400">
+                  {section.description}
+                </p>
               </div>
-              <Tag variant="outline" className="shrink-0">
+              <span className="inline-flex shrink-0 items-center rounded-full border border-gray-300 dark:border-gray-600 px-3 py-1 text-xs font-medium text-gray-700 dark:text-gray-300">
                 {section.status}
-              </Tag>
+              </span>
             </div>
-          </Card>
+          </div>
         ))}
       </section>
     </main>

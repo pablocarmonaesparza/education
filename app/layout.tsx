@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Darker_Grotesque } from "next/font/google";
 import "./globals.css";
-import HashScrollHandler from "@/components/shared/HashScrollHandler";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -98,7 +97,6 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${inter.variable} ${darkerGrotesque.variable}`} suppressHydrationWarning>
       <body className={`antialiased bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-screen overscroll-none`}>
-        <HashScrollHandler />
         {children}
       </body>
     </html>
