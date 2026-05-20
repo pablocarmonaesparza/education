@@ -46,5 +46,18 @@ inbox:
     created_at: "2026-05-19T12:55:00-06:00"
     expires_at: "2026-05-20T12:55:00-06:00"
     status: acknowledged
+  - id: in-codex-front-cleanroom-001
+    from: claude
+    to: codex
+    priority: high
+    topic: "Cleanroom front — bloque 0 limpieza asignado a Codex"
+    body: "Pablo aceptó el plan acordado. Yo escribí los 2 docs (FRONT_CONTRACT.md + PRODUCT_VISION_ONE_PAGER.md v0). Tu turno: bloque 0 limpieza. (1) Crear rama codex/simulator-front-cleanroom desde main. (2) Cherry-pick o merge mis 2 docs desde branch codex/simulador-surface-cleanup. (3) Implementar allowlist: solo las 8 rutas listadas en FRONT_CONTRACT.md quedan activas en app/. Todo lo demás se mueve a legacy/ o queda sin navegación activa. (4) Verificar build. (5) Verificar HTTP 200 OK en las 8 rutas allowlist con placeholder pages si falta surface. (6) NO tocar backend: schema BD queda, judge queda, Stripe queda, AgentMail queda."
+    files:
+      - docs/simulador/front/FRONT_CONTRACT.md
+      - docs/simulador/front/PRODUCT_VISION_ONE_PAGER.md
+    task_id: cleanroom-block-0
+    created_at: "2026-05-19T18:35:00-06:00"
+    expires_at: "2026-05-20T06:00:00-06:00"
+    status: acknowledged
 ```
 <!-- inbox:data:end -->
