@@ -17,6 +17,29 @@
   --accent-soft: rgba(20, 114, 255, 0.08);
   --accent-ring: rgba(20, 114, 255, 0.24);
 
+  /* Apple HIG operational tokens */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.12);
+
+  --motion-fast: 150ms;
+  --motion-base: 250ms;
+  --motion-slow: 450ms;
+  --motion-page: 600ms;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --motion-linear: linear;
+
   /* LIGHT (default) */
   --surface: #ffffff;
   --surface-2: #fafafa;
@@ -91,14 +114,14 @@
 /* Display typography */
 .simulador-root .display {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.022em;
   font-weight: 600;
   line-height: 1.05;
   color: var(--text-primary);
 }
 
 .simulador-root .display-tight {
-  letter-spacing: -0.04em;
+  letter-spacing: -0.022em;
   font-weight: 600;
   line-height: 1.02;
 }
@@ -124,17 +147,17 @@
 .simulador-root .card-apple {
   background-color: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 18px;
-  box-shadow: 0 1px 2px var(--shadow);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
   transition:
-    box-shadow 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
+    box-shadow var(--motion-base) var(--motion-ease),
+    border-color var(--motion-base) var(--motion-ease),
+    transform var(--motion-fast) var(--motion-ease);
 }
 
 .simulador-root .card-apple:hover {
   border-color: var(--border-strong);
-  box-shadow: 0 4px 16px var(--shadow);
+  box-shadow: var(--shadow-md);
 }
 
 .simulador-root .card-apple-interactive:hover {
@@ -250,7 +273,7 @@
 
 /* Hover micro shift */
 .simulador-root .btn-hover-shift {
-  transition: transform 0.15s ease;
+  transition: transform var(--motion-fast) var(--motion-ease);
 }
 .simulador-root .btn-hover-shift:hover {
   transform: translateX(2px);
@@ -266,4 +289,20 @@
 .simulador-root [data-slot="input-wrapper"]:focus-within {
   outline: none !important;
   box-shadow: 0 0 0 4px var(--accent-ring) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .simulador-root *,
+  .simulador-root *::before,
+  .simulador-root *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .simulador-root .card-apple-interactive:hover,
+  .simulador-root .btn-hover-shift:hover {
+    transform: none !important;
+  }
 }

@@ -12,22 +12,55 @@ scope: define qué surfaces existen, qué rutas son activas, qué ve cada rol, q
 
 ## TL;DR
 
-Producto v2 tiene **8 rutas activas** y 4 roles. Este contrato es la cerca: si una pantalla no está aquí, no existe.
+Producto v2 tiene **20 rutas productivas allowlist**, **3 rutas utilitarias permitidas** y **8 shells**. Este contrato es la cerca: si una pantalla no está aquí, no existe.
 
-## Rutas activas (allowlist)
+## Rutas activas productivas (allowlist)
 
 | Ruta | Rol que la ve | Layout | Auth required |
 |---|---|---|---|
 | `/` | visitante | PublicNav | ❌ |
 | `/auth/login` | visitante | AuthLayout | ❌ |
 | `/auth/signup` | visitante | AuthLayout | ❌ |
+| `/auth/invitation` | empleado invitado | AuthLayout | ❌ / token |
+| `/onboarding/org` | manager | OnboardingShell | ✓ |
+| `/onboarding/team` | manager | OnboardingShell | ✓ |
+| `/onboarding/invite` | manager | OnboardingShell | ✓ |
+| `/onboarding/billing` | manager | OnboardingShell | ✓ |
+| `/onboarding/done` | manager | OnboardingShell | ✓ |
 | `/field-test/marketing-urgent-campaign-pii` | visitante | RuntimeLayout (no-auth variant) | ❌ |
 | `/dashboard` | empleado / manager | AppShell + RoleNav | ✓ |
 | `/case/[case_id]` | empleado | RuntimeLayout | ✓ |
 | `/report/[session_id]` | empleado (su propio) / manager (su team) | ReportLayout | ✓ |
-| `/admin` | admin Itera staff | AdminShell | ✓ admin role |
+| `/admin/leads` | admin Itera staff | AdminShell | ✓ admin role |
+| `/admin/review` | admin Itera staff | AdminShell | ✓ admin role |
+| `/admin/orgs` | admin Itera staff | AdminShell | ✓ admin role |
+| `/admin/judge-health` | admin Itera staff | AdminShell | ✓ admin role |
+| `/admin/audit-log` | admin Itera staff | AdminShell | ✓ admin role |
+| `/privacy` | visitante / usuario | PublicShell legal | ❌ |
+| `/terms` | visitante / usuario | PublicShell legal | ❌ |
 
-**Total: 8 rutas.** Cualquier otra ruta queda fuera del producto activo.
+**Total: 20 rutas productivas.** Cualquier otra ruta queda fuera del producto activo salvo las rutas utilitarias explícitas abajo.
+
+## Rutas utilitarias permitidas
+
+| Ruta | Uso | Layout | Auth required |
+|---|---|---|---|
+| `/success` | retorno Stripe / estado de compra | PublicShell result | ❌ |
+| `/cancel` | retorno Stripe cancelado | PublicShell result | ❌ |
+| `/admin` | entrada staff; puede redirigir a `/admin/review` | AdminShell | ✓ admin role |
+
+Estas rutas existen por operación/funnel, no cuentan como surfaces principales de producto.
+
+## Shells activos
+
+1. `PublicShell` — landing, legal, field-test entry/result.
+2. `AuthShell` — login, signup, invitation.
+3. `OnboardingShell` — org, team, invite, billing, done.
+4. `EmployeeShell` — dashboard empleado y reportes propios.
+5. `ManagerShell` — dashboard manager y reportes de equipo.
+6. `RuntimeShell` — caso vivo autenticado y público.
+7. `ReportShell` — reporte individual/agregado, PDF/share.
+8. `AdminShell` — backoffice Itera.
 
 ## Rutas prohibidas (NO aparecen en navegación, NO se linkean, NO se mantienen)
 
@@ -263,7 +296,7 @@ NO global navbar. NO link a "/simulator-design" desde ninguna parte. NO links cr
 ## Reglas de "está / no está en v2"
 
 ✅ Está en v2 si:
-- Una de las 8 rutas activas lo necesita
+- Una de las 20 rutas productivas o 3 utilitarias permitidas lo necesita
 - Es navegación de uno de los 4 roles definidos
 - Es dato consumido por surface activa
 
@@ -275,7 +308,6 @@ NO global navbar. NO link a "/simulator-design" desde ninguna parte. NO links cr
 
 ## Próximos pasos
 
-1. **Codex** implementa la limpieza según allowlist en branch `codex/simulator-front-cleanroom` desde main
-2. **Claude** redacta `PRODUCT_VISION_ONE_PAGER.md` v0 paralelo a este doc
-3. **Pablo** revisa + corrige + sign-off antes de empezar shell visual
-4. **Codex** arranca shell visual usando este contrato como blueprint + visión one-pager como feel
+1. **Codex** implementa shell visual usando este contrato + `APPLE_HIG_RULES_FOR_ITERA.md`.
+2. **Claude** audita copy/HIG/no-LMS por surface.
+3. **Pablo** solo decide excepciones donde Apple HIG o este contrato no cubran el caso.

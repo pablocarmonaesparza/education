@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Button, Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
+import { Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
+import { AppleButton } from "@/components/simulador/apple";
 
 export function AuthNav({
   mode,
@@ -43,16 +44,15 @@ export function AuthNav({
       </NavbarContent>
 
       <NavbarContent justify="end">
-        <Button
+        <AppleButton
           as={Link}
           href={href}
-          radius="full"
           size="sm"
-          variant="light"
+          tone="ghost"
           className="text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
         >
           {isLogin ? "Crear cuenta" : "Iniciar sesión"}
-        </Button>
+        </AppleButton>
       </NavbarContent>
     </Navbar>
   );
