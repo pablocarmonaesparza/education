@@ -158,7 +158,7 @@ export default function OnboardingInvitePage() {
                   size="lg"
                   className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
                 >
-                  Enviar {emails.length || ""} invitacion
+                  Enviar {emails.length || ""} invitación
                   {emails.length === 1 ? "" : "es"}
                 </Button>
               </div>
