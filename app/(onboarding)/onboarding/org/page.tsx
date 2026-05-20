@@ -10,9 +10,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Input, Select, SelectItem } from "@heroui/react";
+import { SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import {
+  AppleButton,
+  AppleInput,
+  AppleSelect,
+} from "@/components/simulador/apple";
 
 const INDUSTRIES = [
   { key: "saas_b2b", label: "SaaS B2B" },
@@ -99,7 +104,7 @@ export default function OnboardingOrgPage() {
           </p>
 
           <form onSubmit={onSubmit} className="mt-10 space-y-5">
-            <Input
+            <AppleInput
               label="Nombre de la organización"
               value={name}
               onValueChange={setName}
@@ -111,7 +116,7 @@ export default function OnboardingOrgPage() {
               autoFocus
             />
 
-            <Select
+            <AppleSelect
               label="Industria"
               selectedKeys={[industry]}
               onSelectionChange={(keys) =>
@@ -124,9 +129,9 @@ export default function OnboardingOrgPage() {
               {INDUSTRIES.map((i) => (
                 <SelectItem key={i.key}>{i.label}</SelectItem>
               ))}
-            </Select>
+            </AppleSelect>
 
-            <Select
+            <AppleSelect
               label="Región principal"
               selectedKeys={[region]}
               onSelectionChange={(keys) =>
@@ -139,9 +144,9 @@ export default function OnboardingOrgPage() {
               {REGIONS.map((r) => (
                 <SelectItem key={r.key}>{r.label}</SelectItem>
               ))}
-            </Select>
+            </AppleSelect>
 
-            <Select
+            <AppleSelect
               label="Tamaño del equipo"
               selectedKeys={[size]}
               onSelectionChange={(keys) =>
@@ -154,7 +159,7 @@ export default function OnboardingOrgPage() {
               {SIZES.map((s) => (
                 <SelectItem key={s.key}>{s.label}</SelectItem>
               ))}
-            </Select>
+            </AppleSelect>
 
             {error && (
               <div className="text-[13px] text-[var(--band-b-text)] bg-[var(--band-b-bg)] px-3 py-2 rounded-lg">
@@ -163,7 +168,7 @@ export default function OnboardingOrgPage() {
             )}
 
             <div className="pt-4">
-              <Button
+              <AppleButton
                 type="submit"
                 isLoading={submitting}
                 isDisabled={!name.trim() || submitting}
@@ -172,7 +177,7 @@ export default function OnboardingOrgPage() {
                 className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none w-full sm:w-auto"
               >
                 Continuar →
-              </Button>
+              </AppleButton>
             </div>
           </form>
         </motion.div>

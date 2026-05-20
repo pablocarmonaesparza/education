@@ -15,9 +15,10 @@
 
 import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Button, Input, Link } from "@heroui/react";
+import { Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import { AuthNav } from "@/components/simulador/AuthNav";
+import { AppleButton, AppleInput } from "@/components/simulador/apple";
 import { createClient } from "@/lib/supabase/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import "../../(app)/simulador.css";
@@ -185,7 +186,8 @@ function LoginContent() {
             onSubmit={handleSubmit}
             className="mt-10 space-y-3"
           >
-            <Input
+            <AppleInput
+              label="Email"
               type="email"
               placeholder="email@empresa.com"
               value={email}
@@ -193,16 +195,11 @@ function LoginContent() {
               isRequired
               size="lg"
               radius="lg"
-              variant="bordered"
               autoComplete="email"
-              classNames={{
-                inputWrapper:
-                  "h-12 bg-[var(--surface)] border-[var(--border)] data-[hover=true]:bg-[var(--surface)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-                input: "text-[15px] text-[var(--text-primary)]",
-              }}
             />
 
-            <Input
+            <AppleInput
+              label="Contraseña"
               type="password"
               placeholder="Contraseña"
               value={password}
@@ -210,16 +207,10 @@ function LoginContent() {
               isRequired
               size="lg"
               radius="lg"
-              variant="bordered"
               autoComplete="current-password"
-              classNames={{
-                inputWrapper:
-                  "h-12 bg-[var(--surface)] border-[var(--border)] data-[hover=true]:bg-[var(--surface)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-                input: "text-[15px] text-[var(--text-primary)]",
-              }}
             />
 
-            <Button
+            <AppleButton
               type="submit"
               isDisabled={loading || !email || !password}
               radius="full"
@@ -227,7 +218,7 @@ function LoginContent() {
               className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none mt-2"
             >
               {loading ? "Iniciando sesión…" : "Continuar"}
-            </Button>
+            </AppleButton>
           </motion.form>
 
           <motion.div
@@ -247,13 +238,13 @@ function LoginContent() {
             transition={{ ...fadeUp.transition, delay: 0.14 }}
             className="mt-5"
           >
-            <Button
+            <AppleButton
               type="button"
               onPress={handleGoogleLogin}
               isDisabled={loading}
+              tone="secondary"
               radius="full"
               size="lg"
-              variant="bordered"
               className="w-full h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium gap-3 shadow-none"
             >
               <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" aria-hidden>
@@ -277,7 +268,7 @@ function LoginContent() {
               <span>
                 {loading ? "Conectando…" : "Continuar con Google"}
               </span>
-            </Button>
+            </AppleButton>
           </motion.div>
 
           <motion.p

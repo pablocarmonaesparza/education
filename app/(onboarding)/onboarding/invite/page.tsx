@@ -9,9 +9,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Textarea } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import {
+  AppleButton,
+  AppleTextarea,
+} from "@/components/simulador/apple";
 
 export default function OnboardingInvitePage() {
   const router = useRouter();
@@ -122,13 +125,12 @@ export default function OnboardingInvitePage() {
 
           {!result ? (
             <form onSubmit={onSubmit} className="mt-10 space-y-5">
-              <Textarea
+              <AppleTextarea
                 label="Emails de los participantes"
                 placeholder="ana@empresa.com&#10;juan@empresa.com&#10;maria@empresa.com"
                 value={emailsText}
                 onValueChange={setEmailsText}
                 minRows={6}
-                variant="bordered"
                 radius="lg"
                 size="lg"
                 description={`Separa por comas, espacios o saltos de línea. ${emails.length} email${emails.length === 1 ? "" : "s"} válido${emails.length === 1 ? "" : "s"} detectado${emails.length === 1 ? "" : "s"}.`}
@@ -141,16 +143,17 @@ export default function OnboardingInvitePage() {
               )}
 
               <div className="pt-4 flex gap-3">
-                <Button
+                <AppleButton
                   onPress={() => router.push("/onboarding/team")}
+                  tone="secondary"
                   variant="bordered"
                   radius="full"
                   size="lg"
                   className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
                 >
                   ← Atrás
-                </Button>
-                <Button
+                </AppleButton>
+                <AppleButton
                   type="submit"
                   isLoading={submitting}
                   isDisabled={emails.length === 0 || submitting}
@@ -160,7 +163,7 @@ export default function OnboardingInvitePage() {
                 >
                   Enviar {emails.length || ""} invitacion
                   {emails.length === 1 ? "" : "es"}
-                </Button>
+                </AppleButton>
               </div>
             </form>
           ) : (
@@ -193,32 +196,34 @@ export default function OnboardingInvitePage() {
               </div>
 
               <div className="flex gap-3">
-                <Button
+                <AppleButton
                   onPress={() => setResult(null)}
+                  tone="secondary"
                   variant="bordered"
                   radius="full"
                   size="lg"
                   className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
                 >
                   Invitar más
-                </Button>
-                <Button
+                </AppleButton>
+                <AppleButton
                   onPress={onContinueToBilling}
                   radius="full"
                   size="lg"
                   className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
                 >
                   Continuar a pago →
-                </Button>
-                <Button
+                </AppleButton>
+                <AppleButton
                   onPress={onFinish}
+                  tone="ghost"
                   variant="light"
                   radius="full"
                   size="lg"
                   className="h-12 text-[var(--text-secondary)]"
                 >
                   Ir al dashboard
-                </Button>
+                </AppleButton>
               </div>
             </div>
           )}

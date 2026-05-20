@@ -2,9 +2,10 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button, Input, Radio, RadioGroup } from "@heroui/react";
+import { Radio, RadioGroup } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import { AppleButton, AppleInput } from "@/components/simulador/apple";
 import {
   computePlanAmountUsd,
   formatUsd,
@@ -103,14 +104,13 @@ function OnboardingBillingContent() {
             </p>
 
             <div className="mt-8 max-w-xs">
-              <Input
+              <AppleInput
                 label={copy.seats_label}
                 type="number"
                 min={computed.plan.minSeats}
                 max={computed.plan.maxSeats}
                 value={seatsText}
                 onValueChange={setSeatsText}
-                variant="bordered"
                 radius="lg"
                 size="lg"
                 description={copy.seats_help}
@@ -180,7 +180,7 @@ function OnboardingBillingContent() {
                 {error}
               </div>
             )}
-            <Button
+            <AppleButton
               onPress={onCheckout}
               isLoading={submitting}
               isDisabled={submitting}
@@ -189,16 +189,17 @@ function OnboardingBillingContent() {
               className="accent-bg mt-6 h-12 w-full px-7 text-[15px] font-medium text-white shadow-none"
             >
               {copy.submit_cta}
-            </Button>
-            <Button
+            </AppleButton>
+            <AppleButton
               onPress={() => router.push("/dashboard")}
+              tone="ghost"
               variant="light"
               radius="full"
               size="sm"
               className="mt-3 w-full text-[var(--text-secondary)]"
             >
               Ir al dashboard sin pagar todavía
-            </Button>
+            </AppleButton>
             <p className="mt-4 text-[12px] leading-[1.5] text-[var(--text-tertiary)]">
               {copy.terms_required}
             </p>

@@ -9,9 +9,14 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Input, Select, SelectItem } from "@heroui/react";
+import { SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import {
+  AppleButton,
+  AppleInput,
+  AppleSelect,
+} from "@/components/simulador/apple";
 
 const DEPARTMENTS = [
   { key: "marketing", label: "Marketing / Growth" },
@@ -94,7 +99,7 @@ export default function OnboardingTeamPage() {
           </p>
 
           <form onSubmit={onSubmit} className="mt-10 space-y-5">
-            <Input
+            <AppleInput
               label="Nombre del equipo"
               value={name}
               onValueChange={setName}
@@ -106,7 +111,7 @@ export default function OnboardingTeamPage() {
               autoFocus
             />
 
-            <Select
+            <AppleSelect
               label="Función"
               selectedKeys={[department]}
               onSelectionChange={(keys) =>
@@ -119,7 +124,7 @@ export default function OnboardingTeamPage() {
               {DEPARTMENTS.map((d) => (
                 <SelectItem key={d.key}>{d.label}</SelectItem>
               ))}
-            </Select>
+            </AppleSelect>
 
             {error && (
               <div className="text-[13px] text-[var(--band-b-text)] bg-[var(--band-b-bg)] px-3 py-2 rounded-lg">
@@ -128,16 +133,17 @@ export default function OnboardingTeamPage() {
             )}
 
             <div className="pt-4 flex gap-3">
-              <Button
+              <AppleButton
                 onPress={() => router.push("/onboarding/org")}
+                tone="secondary"
                 variant="bordered"
                 radius="full"
                 size="lg"
                 className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
               >
                 ← Atrás
-              </Button>
-              <Button
+              </AppleButton>
+              <AppleButton
                 type="submit"
                 isLoading={submitting}
                 isDisabled={!name.trim() || submitting}
@@ -146,7 +152,7 @@ export default function OnboardingTeamPage() {
                 className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
               >
                 Continuar →
-              </Button>
+              </AppleButton>
             </div>
           </form>
         </motion.div>

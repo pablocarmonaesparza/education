@@ -11,9 +11,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
 import { AuthNav } from "@/components/simulador/AuthNav";
+import { AppleButton, AppleIcon } from "@/components/simulador/apple";
 import { createClient } from "@/lib/supabase/client";
 
 export default function InvitationLandingPage() {
@@ -95,7 +95,7 @@ export default function InvitationLandingPage() {
                 aceptará automáticamente.
               </p>
               <div className="mt-8 flex flex-col gap-3">
-                <Button
+                <AppleButton
                   onPress={() =>
                     router.push(
                       `/auth/signup?next=/auth/invitation/${token}`,
@@ -106,20 +106,21 @@ export default function InvitationLandingPage() {
                   className="accent-bg text-white h-12 text-[15px] font-medium shadow-none"
                 >
                   Crear cuenta
-                </Button>
-                <Button
+                </AppleButton>
+                <AppleButton
                   onPress={() =>
                     router.push(
                       `/auth/login?next=/auth/invitation/${token}`,
                     )
                   }
                   variant="bordered"
+                  tone="secondary"
                   radius="full"
                   size="lg"
                   className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
                 >
                   Ya tengo cuenta
-                </Button>
+                </AppleButton>
               </div>
             </>
           )}
@@ -133,19 +134,7 @@ export default function InvitationLandingPage() {
           {status === "done" && (
             <>
               <div className="mx-auto h-12 w-12 rounded-full accent-bg-soft grid place-items-center mb-6">
-                <svg
-                  className="h-6 w-6 text-[var(--accent)]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                >
-                  <path
-                    d="M5 12L10 17L19 7"
-                    stroke="currentColor"
-                    strokeWidth="2.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <AppleIcon name="check" className="text-[var(--accent)]" />
               </div>
               <h1 className="display text-[24px] text-[var(--text-primary)]">
                 Listo. Redirigiendo al dashboard…
@@ -158,14 +147,14 @@ export default function InvitationLandingPage() {
               <div className="text-[var(--band-b-text)] text-[16px] mb-4">
                 ⚠ {errorMsg ?? "Algo salió mal."}
               </div>
-              <Button
+              <AppleButton
                 onPress={() => router.push("/")}
                 radius="full"
                 size="lg"
                 className="accent-bg text-white h-12 px-6 text-[15px] font-medium shadow-none"
               >
                 Ir al inicio
-              </Button>
+              </AppleButton>
             </>
           )}
         </motion.div>
