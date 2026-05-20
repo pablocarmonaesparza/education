@@ -94,13 +94,10 @@ function OnboardingBillingContent() {
           className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[1fr_360px]"
         >
           <section>
-            <div className="eyebrow mb-4">Paso 4 de 5 · {copy.eyebrow_context}</div>
+            <div className="eyebrow mb-4">Paso 4 de 5</div>
             <h1 className="display display-tight text-[var(--text-primary)] text-[32px] sm:text-[40px]">
               {copy.headline}
             </h1>
-            <p className="mt-5 max-w-2xl text-[17px] text-[var(--text-secondary)] leading-[1.55]">
-              {copy.body}
-            </p>
 
             <div className="mt-8 max-w-xs">
               <Input

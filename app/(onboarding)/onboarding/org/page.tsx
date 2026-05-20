@@ -89,14 +89,10 @@ export default function OnboardingOrgPage() {
           transition={{ duration: 0.4 }}
           className="max-w-xl w-full"
         >
-          <div className="eyebrow mb-4">Paso 1 de 5 · Tu organización</div>
+          <div className="eyebrow mb-4">Paso 1 de 5</div>
           <h1 className="display display-tight text-[var(--text-primary)] text-[32px] sm:text-[40px]">
             Cuéntanos sobre tu equipo.
           </h1>
-          <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
-            Usamos esto para calibrar el diagnóstico al contexto de tu
-            organización. Puedes ajustarlo después.
-          </p>
 
           <form onSubmit={onSubmit} className="mt-10 space-y-5">
             <Input

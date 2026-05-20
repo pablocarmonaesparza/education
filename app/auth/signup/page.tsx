@@ -172,14 +172,9 @@ function SignupContent() {
       <main className="px-6 pt-16 sm:pt-24 pb-24">
         <div className="max-w-[400px] mx-auto">
           <motion.div {...fadeUp} className="text-center">
-            <div className="eyebrow">Crear cuenta</div>
-            <h1 className="display display-tight mt-5 text-[40px] sm:text-[48px] text-[var(--text-primary)]">
+            <h1 className="display display-tight text-[40px] sm:text-[48px] text-[var(--text-primary)]">
               Empieza tu diagnóstico.
             </h1>
-            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
-              30 segundos. Luego configuras tu organización e invitas a tu
-              equipo.
-            </p>
           </motion.div>
 
           {error && (

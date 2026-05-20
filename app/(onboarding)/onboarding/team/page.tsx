@@ -81,17 +81,10 @@ export default function OnboardingTeamPage() {
           transition={{ duration: 0.4 }}
           className="max-w-xl w-full"
         >
-          <div className="eyebrow mb-4">
-            Paso 2 de 5 · Equipo dentro de {orgName || "tu organización"}
-          </div>
+          <div className="eyebrow mb-4">Paso 2 de 5</div>
           <h1 className="display display-tight text-[var(--text-primary)] text-[32px] sm:text-[40px]">
             ¿Qué equipo vas a diagnosticar primero?
           </h1>
-          <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
-            El caso 1 está calibrado para Marketing / Growth. Si tu equipo es
-            otro, sigamos — vamos a crear casos por industria/rol más
-            adelante.
-          </p>
 
           <form onSubmit={onSubmit} className="mt-10 space-y-5">
             <Input

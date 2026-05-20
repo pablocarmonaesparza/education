@@ -199,14 +199,9 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
         <section className="border-b border-[var(--hairline)] surface-canvas">
           <div className="max-w-5xl mx-auto px-6 py-12">
             <motion.div {...fadeUp}>
-              <div className="eyebrow">Dashboard del empleado</div>
-              <h1 className="display display-tight mt-4 text-[36px] sm:text-[44px] text-[var(--text-primary)]">
+              <h1 className="display display-tight text-[36px] sm:text-[44px] text-[var(--text-primary)]">
                 Casos disponibles.
               </h1>
-              <p className="mt-4 max-w-2xl text-[16px] text-[var(--text-secondary)] leading-[1.6]">
-                Entra a un caso, toma decisiones y recibe una lectura preliminar
-                de tu criterio operativo.
-              </p>
             </motion.div>
           </div>
         </section>
@@ -407,8 +402,7 @@ export default function DashboardPage() {
         <section className="border-b border-[var(--hairline)] surface-canvas">
           <div className="max-w-6xl mx-auto px-6 py-12">
             <motion.div {...fadeUp}>
-              <div className="eyebrow">Dashboard del manager</div>
-              <h1 className="display display-tight mt-4 text-[36px] sm:text-[44px] text-[var(--text-primary)]">
+              <h1 className="display display-tight text-[36px] sm:text-[44px] text-[var(--text-primary)]">
                 {data.sprint.name || SPRINT_META.publicName}
               </h1>
               <div className="mt-4 flex flex-wrap items-center gap-3 text-[13px] text-[var(--text-secondary)]">

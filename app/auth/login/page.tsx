@@ -160,13 +160,9 @@ function LoginContent() {
       <main className="px-6 pt-16 sm:pt-24 pb-24">
         <div className="max-w-[400px] mx-auto">
           <motion.div {...fadeUp} className="text-center">
-            <div className="eyebrow">Cuenta</div>
-            <h1 className="display display-tight mt-5 text-[40px] sm:text-[48px] text-[var(--text-primary)]">
+            <h1 className="display display-tight text-[40px] sm:text-[48px] text-[var(--text-primary)]">
               Inicia sesión.
             </h1>
-            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
-              Continúa donde lo dejaste — diagnóstico, reporte o dashboard.
-            </p>
           </motion.div>
 
           {error && (
