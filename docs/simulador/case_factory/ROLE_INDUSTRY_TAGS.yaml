@@ -1,0 +1,53 @@
+role_industry_tags:
+  version: 1.0.0
+  departments:
+    marketing:
+      roles: [marketing_manager, growth_manager, content_lead, performance_marketer, brand_manager]
+      common_tools: [chatgpt, claude, canva, hubspot, google_workspace, notion]
+    sales:
+      roles: [sales_ops_manager, account_executive, sdr_lead, revenue_operations]
+      common_tools: [hubspot, salesforce, gmail, slack, zapier, chatgpt]
+    customer_success:
+      roles: [cs_manager, implementation_manager, support_lead, customer_ops]
+      common_tools: [slack, hubspot, notion, zendesk, chatgpt]
+    operations:
+      roles: [ops_manager, process_owner, automation_specialist, chief_of_staff]
+      common_tools: [airtable, n8n, make, zapier, google_workspace, slack]
+    finance:
+      roles: [finance_manager, fp_and_a_analyst, controller, revenue_accounting]
+      common_tools: [google_workspace, looker_studio, metabase, chatgpt]
+    hr:
+      roles: [people_ops, talent_acquisition, l_and_d_manager, hrbp]
+      common_tools: [google_workspace, notion, slack, chatgpt]
+    legal:
+      roles: [legal_ops, compliance_manager, privacy_owner, contract_manager]
+      common_tools: [google_workspace, notion, claude, chatgpt]
+    product:
+      roles: [product_manager, product_ops, ux_researcher, product_marketing]
+      common_tools: [linear, figma, notion, slack, claude]
+    leadership:
+      roles: [head_of_marketing, head_of_sales, coo, ceo, chief_of_staff]
+      common_tools: [google_workspace, slack, notion, chatgpt, claude]
+
+  industries:
+    saas_b2b:
+      typical_departments: [marketing, sales, customer_success, product, operations]
+    ecommerce:
+      typical_departments: [marketing, operations, customer_success, finance]
+    fintech:
+      typical_departments: [product, legal, finance, operations, customer_success]
+    education:
+      typical_departments: [marketing, operations, hr, product]
+    healthcare:
+      typical_departments: [operations, legal, customer_success, finance]
+    retail:
+      typical_departments: [marketing, operations, finance, customer_success]
+    professional_services:
+      typical_departments: [sales, marketing, operations, finance, leadership]
+    logistics:
+      typical_departments: [operations, finance, customer_success, sales]
+    manufacturing:
+      typical_departments: [operations, finance, hr, leadership]
+    media:
+      typical_departments: [marketing, product, sales, leadership]
+

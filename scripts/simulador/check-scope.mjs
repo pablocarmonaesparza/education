@@ -56,12 +56,12 @@ if (calibration.status !== 0) {
   process.exit(calibration.status ?? 1);
 }
 
-const higAudit = run("node", ["scripts/simulador/hig-audit.mjs"]);
-print(higAudit.stdout);
-print(higAudit.stderr);
+const caseFactory = run("node", ["scripts/simulador/check-case-factory.mjs"]);
+print(caseFactory.stdout);
+print(caseFactory.stderr);
 
-if (higAudit.status !== 0) {
-  process.exit(higAudit.status ?? 1);
+if (caseFactory.status !== 0) {
+  process.exit(caseFactory.status ?? 1);
 }
 
 const typecheck = run("node", ["scripts/simulador/typecheck-scope.mjs"]);

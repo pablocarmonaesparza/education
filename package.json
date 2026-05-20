@@ -1,5 +1,5 @@
 {
-  "name": "itera-simulator",
+  "name": "ia-automation-course",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -23,7 +23,7 @@
     "lint:simulador": "node scripts/simulador/lint-scope.mjs",
     "typecheck:simulador": "node scripts/simulador/typecheck-scope.mjs",
     "check:simulador": "node scripts/simulador/check-scope.mjs",
-    "simulador:hig-audit": "node scripts/simulador/hig-audit.mjs",
+    "simulador:case-factory": "node scripts/simulador/check-case-factory.mjs",
     "simulador:validate-case-yaml": "node scripts/simulador/validate-case-yaml.mjs",
     "simulador:validate": "node scripts/simulador/validate-contracts.mjs",
     "simulador:check-email-templates": "node scripts/simulador/check-email-templates.mjs",
