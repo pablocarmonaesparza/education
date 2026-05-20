@@ -159,3 +159,5 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T20:08:00-06:00] working on: wakeup#3 monitor codex post-PURGA · status: 5c97fd0 sigue siendo tip codex/simulator-front-cleanroom, sin commits posteriores. Codex en working (10 min post-PURGA, ETA 30-45 min). No ping aún.
 - [2026-05-19T20:15:00-06:00] working on: wakeup#4 monitor codex post-PURGA · status: 5c97fd0 sigue tip, 17 min elapsed (window 30-45 min). NO ping aún.
 - [2026-05-19T20:18:00-06:00] working on: wakeup#5 monitor codex · status: 5c97fd0 sigue tip, ~20 min elapsed (window 30-45). NO ping aún (threshold 25 min).
+- [2026-05-19T20:19:00-06:00] working on: ajuste regla Pablo · status: NO esperar 25 min para ping codex. CADA wakeup (5 min) ping si codex no commits. Ejecutando ping ahora.
+- [2026-05-19T20:20:00-06:00] working on: codex FAIL+blocker via CLI · status: codex confirmó estaba bloqueado por context/branch desalineado, NO working. Va a retomar AHORA v2 re-sync + break list fix desde 5c97fd0. ETA 30-45 min (target 20:49-21:04). Pablo regla 5 min wakeup + ping cada vez es correcta — detectó blocker que iba a ser invisible 25 min.
