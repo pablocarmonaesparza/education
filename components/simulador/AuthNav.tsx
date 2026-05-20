@@ -1,23 +1,25 @@
 "use client";
 
+/**
+ * AuthNav — nav minimal para /auth/login y /auth/signup.
+ *
+ * Solo muestra el logo. El cross-link login↔signup queda únicamente al pie
+ * del form para evitar redundancia visual (DEC, Pablo 2026-05-20).
+ *
+ * Props `mode` y `next` se mantienen por compatibilidad con las páginas que
+ * lo importan; no se usan aquí porque ya no hay cross-link en el top.
+ */
+
 import Image from "next/image";
-import { Button, Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
+import { Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 
 export function AuthNav({
-  mode,
-  next,
+  mode: _mode,
+  next: _next,
 }: {
   mode: "login" | "signup";
   next: string;
 }) {
-  const isLogin = mode === "login";
-  const target = isLogin ? "/auth/signup" : "/auth/login";
-  const defaultNext = isLogin ? "/dashboard" : "/onboarding/org";
-  const href =
-    next && next !== defaultNext
-      ? `${target}?next=${encodeURIComponent(next)}`
-      : target;
-
   return (
     <Navbar
       maxWidth="full"
@@ -40,19 +42,6 @@ export function AuthNav({
             />
           </Link>
         </NavbarBrand>
-      </NavbarContent>
-
-      <NavbarContent justify="end">
-        <Button
-          as={Link}
-          href={href}
-          radius="md"
-          size="sm"
-          variant="light"
-          className="text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
-        >
-          {isLogin ? "Crear cuenta" : "Iniciar sesión"}
-        </Button>
       </NavbarContent>
     </Navbar>
   );
