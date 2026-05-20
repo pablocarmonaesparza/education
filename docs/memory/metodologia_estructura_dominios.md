@@ -50,7 +50,7 @@ el modelo por dominios resuelve los 3.
 | **automatizacion** | crons, hooks, scheduled-tasks, agent workflows que corren solos | `Itera: Automation` |
 | **datos** | north star metric, analytics, dashboards, cohort analysis, instrumentation | sin conversación visible por ahora |
 | **desarrollo** | backend, schema, infra, security, DX, deploys, dependencies | `Itera: Desarrollo` |
-| **educacion** | contenido pedagógico, slides, metodología, lecciones, ejercicios | `Itera: Education` |
+| **educacion** | metodología, casos, practice beats, re-simulación y remediación | `Itera: Education` |
 | **finanzas** | costos, runway, forecast, pricing, billing, unit economics | `Itera: Finanzas` |
 | **fundraising** | pitch, investor research, deck, data room, network mapping, raises | `Itera: Fundraising` |
 | **imagenes** | branding visual, ilustraciones, recraft, figma, video assets | `Itera: Imágenes` |
@@ -58,7 +58,7 @@ el modelo por dominios resuelve los 3.
 | **marketing** | copy, positioning, mensaje, campañas, brand voice, email content | `Itera: Marketing` |
 | **orquestador** | sync cross-dominio, scope, OKRs, roadmap, decisiones one-way door | `Itera: Orquestador` |
 | **producto** | plataforma, UX, dashboard, features, PRD, user flow | `Itera: Producto` |
-| **redes-sociales** | TikTok, IG, X, LinkedIn, comunidad, contenido founder-led | `Itera: Redes Sociales` |
+| **redes-sociales** | LinkedIn, X, comunidad, contenido founder-led y distribución social | `Itera: Redes Sociales` |
 | **soporte** | atención cliente, KB, churn signals, refund SOP, account management | sin conversación visible por ahora |
 | **ventas** | pipeline B2B, prospects, outbound, demos, onboarding cliente, renovaciones | `Itera: Ventas` |
 
@@ -82,7 +82,7 @@ para futuras lecturas de docs antes de 2026-05-04:
 
 ### dominio único o múltiple
 
-la mayoría de docs tienen 1 dominio (`dept: [marketing]`). los cross-dominio (gamification, mailing, landing) llevan lista (`dept: [producto, marketing]`).
+la mayoría de docs tienen 1 dominio (`dept: [marketing]`). los cross-dominio (reportes, billing, landing) llevan lista (`dept: [producto, marketing]`).
 
 ### dueño operativo vs orq
 
@@ -97,7 +97,7 @@ regla mental: **"si esto caería naturalmente en un departamento real, ese domin
 - ¿es ilustración, assets o dirección visual? → imagenes
 - ¿es awareness/mensaje o pipeline/comercial? → marketing o ventas
 - ¿es repo, infra, seguridad o deploy? → desarrollo
-- ¿es lección, ejercicio o metodología? → educacion
+- ¿es caso, practice beat o metodología? → educacion
 
 si dudas entre 2, lista los 2 y avanza.
 

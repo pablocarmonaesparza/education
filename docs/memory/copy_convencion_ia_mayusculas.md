@@ -10,7 +10,7 @@ Convención de copy establecida por Pablo el 2026-05-05:
 
 **Siempre escribimos `IA` en mayúsculas, nunca `AI` ni `ia`.**
 
-Aplica a todo copy de Itera: landing, dashboard, lecciones, slides, emails, documentación pública, ads, social, faq.
+Aplica a todo copy de Itera: landing, dashboard, casos, reportes, emails, documentación pública, ads, social, faq.
 
 **Género en español:** "IA" es femenino (la inteligencia artificial).
 - ✅ "la IA", "su propia IA", "aplicándola", "no se va a aplicar sola"
@@ -27,9 +27,9 @@ O crear una utility class `.case-keep { text-transform: none !important; }` en e
 **Por qué:** literal de Pablo (2026-05-05): *"Vamos a hacer una convención general. Simpre que digamos AI ó IA, es con mayúsculas y vamos a poner IA siempre, nunca AI"*.
 
 **Cuándo aplicar:**
-- Antes de escribir copy para landing, lecciones, dashboard, slides, faq, emails, ads, etc.
+- Antes de escribir copy para landing, casos, dashboard, reportes, faq, emails, ads, etc.
 - Si encuentras "AI" o "ai" en el repo o en docs canónicos, cambialo a "IA" (excepto en código: nombres de variables, identificadores, valores enum, donde el cambio puede romper APIs).
-- En lecciones donde el contenido enseña sobre el modelo de IA, "LLM" se mantiene como "LLM" (es otra sigla, no AI). Lo que cambia es solo "AI"/"ai" → "IA".
+- En casos o reportes donde el contenido menciona modelos de IA, "LLM" se mantiene como "LLM" (es otra sigla, no AI). Lo que cambia es solo "AI"/"ai" → "IA".
 
 **Excepciones:**
 - Identificadores de código (variables, function names, JSON keys, etc.) no se cambian — solo copy visible al usuario.

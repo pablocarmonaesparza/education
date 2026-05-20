@@ -28,8 +28,8 @@ export interface EmptyStateProps {
  * <EmptyState
  *   icon={<LightningIcon className="w-10 h-10 text-white" />}
  *   title="Aún no tienes retos"
- *   description="Los retos se generan automáticamente al crear tu curso."
- *   action={<Button variant="primary">Crear mi curso</Button>}
+ *   description="Los casos aparecerán cuando tu manager active un sprint."
+ *   action={<Button variant="primary">Ver field-test</Button>}
  * />
  * ```
  */

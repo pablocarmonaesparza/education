@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { stripe } from '@/lib/stripe/config';
 import { enforceRateLimit, rateLimiters } from '@/lib/ratelimit';
 
@@ -25,23 +26,56 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'no autenticado' }, { status: 401 });
     }
 
-    const { data: profile } = await supabase
-      .from('users')
-      .select('stripe_customer_id')
-      .eq('id', user.id)
+    const admin = createAdminClient();
+    const { data: bridgeId, error: bridgeError } = await admin
+      .schema('simulador')
+      .rpc('ensure_bridge_user', { p_auth_user_id: user.id });
+
+    if (bridgeError || !bridgeId) {
+      console.error('[create-portal] ensure_bridge_user failed:', bridgeError);
+      return NextResponse.json(
+        { error: 'No pudimos sincronizar tu cuenta.' },
+        { status: 500 },
+      );
+    }
+
+    const { data: membership } = await admin
+      .schema('simulador')
+      .from('organization_memberships')
+      .select('organization_id, role')
+      .eq('user_id', bridgeId)
+      .eq('role', 'org_admin')
+      .limit(1)
       .maybeSingle();
 
-    if (!profile?.stripe_customer_id) {
+    if (!membership?.organization_id) {
+      return NextResponse.json(
+        { error: 'Solo un org_admin puede administrar la suscripción.' },
+        { status: 403 },
+      );
+    }
+
+    const { data: subscription } = await admin
+      .schema('simulador')
+      .from('subscriptions')
+      .select('stripe_customer_id')
+      .eq('organization_id', membership.organization_id)
+      .in('status', ['active', 'trial'])
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (!subscription?.stripe_customer_id) {
       return NextResponse.json(
         { error: 'sin suscripción activa' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const origin = req.nextUrl.origin;
     const session = await stripe.billingPortal.sessions.create({
-      customer: profile.stripe_customer_id,
-      return_url: `${origin}/dashboard/perfil`,
+      customer: subscription.stripe_customer_id,
+      return_url: `${origin}/dashboard`,
     });
 
     return NextResponse.json({ sessionUrl: session.url });

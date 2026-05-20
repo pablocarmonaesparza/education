@@ -4,8 +4,7 @@ import React from 'react';
 
 /* ───────────────────────────────────────────────────────────
    Design-system Progress Bar
-   Seen in: dashboard overview, course cards, progress cards,
-   retos sidebar, gamification stats
+   Seen in: dashboard overview, runtime progress, reports y readiness bars
    ─────────────────────────────────────────────────────────── */
 
 export type ProgressBarSize = 'sm' | 'md' | 'lg';

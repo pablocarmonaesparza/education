@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { stripe, STRIPE_PRICES, type BillingPlan } from '@/lib/stripe/config';
+import { stripe } from '@/lib/stripe/config';
 import { enforceRateLimit, rateLimiters } from '@/lib/ratelimit';
 import {
   computePlanAmountUsd,
@@ -21,76 +21,21 @@ export async function POST(req: NextRequest) {
     }
 
     const body = (await req.json()) as {
-      plan?: BillingPlan | SimuladorBillingPlan;
+      plan?: SimuladorBillingPlan;
       billing_product?: string;
       organization_id?: string;
       team_id?: string;
       seats?: number;
     };
 
-    if (body.billing_product === 'simulador_b2b') {
-      return createSimuladorCheckoutSession(req, user, body);
-    }
-
-    const { plan } = body as { plan?: BillingPlan };
-    if (plan !== 'monthly' && plan !== 'yearly') {
-      return NextResponse.json({ error: 'plan inválido' }, { status: 400 });
-    }
-
-    const priceId = STRIPE_PRICES[plan];
-    if (!priceId) {
-      return NextResponse.json({ error: 'price id no configurado' }, { status: 500 });
-    }
-
-    const { data: profile, error: profileError } = await supabase
-      .from('users')
-      .select('stripe_customer_id, subscription_active, subscription_status')
-      .eq('id', user.id)
-      .maybeSingle();
-
-    // Fail-closed: si Supabase falla (RLS, red, tabla), no creamos checkout.
-    // Prefiero error visible que crear un segundo customer a la chica.
-    if (profileError) {
-      console.error('[create-checkout] profile select failed:', profileError.message);
+    if (body.billing_product !== 'simulador_b2b') {
       return NextResponse.json(
-        { error: 'no pudimos validar tu cuenta — reintenta en unos segundos.' },
-        { status: 503 }
+        { error: 'billing legacy removido; usa billing_product=simulador_b2b' },
+        { status: 400 },
       );
     }
 
-    // Guard: si el user ya tiene una suscripción activa, no dejamos abrir
-    // un segundo checkout. Para cambiar plan (mensual ↔ anual) se usa el
-    // Customer Portal desde /dashboard/perfil. Esto también previene que
-    // dos tabs o un doble-click creen dos customers/suscripciones.
-    if (profile?.subscription_active) {
-      return NextResponse.json(
-        {
-          error: 'ya_tienes_suscripcion_activa',
-          message:
-            'ya tienes una suscripción activa — cambia de plan desde "mi suscripción" en tu perfil.',
-        },
-        { status: 409 }
-      );
-    }
-
-    const origin = req.nextUrl.origin;
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      line_items: [{ price: priceId, quantity: 1 }],
-      ...(profile?.stripe_customer_id
-        ? { customer: profile.stripe_customer_id }
-        : { customer_email: user.email ?? undefined }),
-      client_reference_id: user.id,
-      metadata: { user_id: user.id, plan },
-      subscription_data: {
-        metadata: { user_id: user.id, plan },
-      },
-      allow_promotion_codes: true,
-      success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/cancel`,
-    });
-
-    return NextResponse.json({ sessionUrl: session.url });
+    return createSimuladorCheckoutSession(req, user, body);
   } catch (error: any) {
     console.error('Error creating Stripe checkout session:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -101,7 +46,7 @@ async function createSimuladorCheckoutSession(
   req: NextRequest,
   user: { id: string; email?: string | null },
   body: {
-    plan?: BillingPlan | SimuladorBillingPlan;
+    plan?: SimuladorBillingPlan;
     organization_id?: string;
     team_id?: string;
     seats?: number;
@@ -236,8 +181,8 @@ async function createSimuladorCheckoutSession(
           seats: String(seats),
         },
       },
-      success_url: `${origin}/onboarding/done?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/onboarding/billing?canceled=1`,
+      success_url: `${origin}/dashboard?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/dashboard?checkout=canceled`,
     });
 
     return NextResponse.json({

@@ -5,14 +5,14 @@ date: 2026-05-19
 authors: [claude]
 reviewers: [codex, pablo]
 status: published-draft
-scope: define qué surfaces existen, qué rutas son activas, qué ve cada rol, qué datos consume cada pantalla, qué acciones puede hacer cada usuario. Sirve como cerca clara entre "producto v2 nuevo" y "bodega legacy"
+scope: define qué surfaces existen, qué rutas son activas, qué ve cada rol, qué datos consume cada pantalla, qué acciones puede hacer cada usuario. Sirve como cerca clara entre el simulador corporativo y cualquier residuo histórico
 ---
 
 # Front contract — scope visible
 
 ## TL;DR
 
-Producto v2 tiene **8 rutas activas** y 4 roles. Todo lo demás del repo es bodega — fuera del front activo. Este contrato es la cerca: si una pantalla no está aquí, no existe en v2.
+Producto v2 tiene **8 rutas activas** y 4 roles. Este contrato es la cerca: si una pantalla no está aquí, no existe.
 
 ## Rutas activas (allowlist)
 
@@ -27,9 +27,9 @@ Producto v2 tiene **8 rutas activas** y 4 roles. Todo lo demás del repo es bode
 | `/report/[session_id]` | empleado (su propio) / manager (su team) | ReportLayout | ✓ |
 | `/admin` | admin Itera staff | AdminShell | ✓ admin role |
 
-**Total: 8 rutas.** Cualquier otra ruta = bodega.
+**Total: 8 rutas.** Cualquier otra ruta queda fuera del producto activo.
 
-## Rutas prohibidas (bodega — NO aparecen en navegación, NO se linkean, NO se mantienen)
+## Rutas prohibidas (NO aparecen en navegación, NO se linkean, NO se mantienen)
 
 - `/simulator-design` y subroutes (mockup viejo)
 - `/courseCreation`, `/lecture`, `/slides`, `/intake`, `/onboarding-system` (Itera Courses legacy)
@@ -39,7 +39,7 @@ Producto v2 tiene **8 rutas activas** y 4 roles. Todo lo demás del repo es bode
 - `/legacy-v2-cursos`, `/legacy` (residuos)
 - `/componentes`, `/componentesPrueba`, `/landingPrueba` (test pages)
 
-**Acción de limpieza:** estas carpetas se mueven fuera de `app/` (a `legacy/` o se eliminan). NO se referencian en navegación nueva.
+**Acción de limpieza:** estas carpetas quedan eliminadas del árbol activo. NO se referencian en navegación nueva.
 
 ## Roles + lo que cada uno ve
 
@@ -258,7 +258,7 @@ NO global navbar. NO link a "/simulator-design" desde ninguna parte. NO links cr
 
 4. **Field-test → signup conversion:** lead form en mini-reporte field-test no crea cuenta automáticamente. Solo captura email. Lead aparece en `/admin/leads` para outreach Pablo.
 
-5. **Reports compartibles:** `/shared/report/[token]` queda en bodega v2. Si manager quiere compartir, descarga PDF (M9-3-D89 data export framework).
+5. **Reports compartibles:** `/shared/report/[token]` queda fuera de esta versión visible. Si manager quiere compartir, descarga PDF (M9-3-D89 data export framework).
 
 ## Reglas de "está / no está en v2"
 
@@ -271,7 +271,7 @@ NO global navbar. NO link a "/simulator-design" desde ninguna parte. NO links cr
 - Es ruta de Itera Courses legacy
 - Es preview / mockup / experiment
 - Es feature avanzada (multi-team, multi-language, custom branding)
-- Es admin advanced (data export UI, billing portal con upgrade — esto queda en bodega hasta F1 v2 roadmap)
+- Es admin advanced (data export UI, billing portal con upgrade — fuera de esta versión visible hasta F1 v2 roadmap)
 
 ## Próximos pasos
 

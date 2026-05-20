@@ -6,7 +6,7 @@ tags: [git, coordinacion, agentes_paralelos]
 dept: [desarrollo]
 ---
 
-En este repo hay múltiples agentes (backend, gamification, mailing, education, components…) trabajando en paralelo. Casi siempre hay archivos staged por otros que todavía no han hecho su commit. Si yo hago:
+En este repo hay múltiples agentes (simulador, backend, copy, research, coordinación) trabajando en paralelo. Casi siempre hay archivos staged por otros que todavía no han hecho su commit. Si yo hago:
 
 ```
 git add mi_archivo.tsx

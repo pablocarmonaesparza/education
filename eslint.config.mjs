@@ -8,7 +8,6 @@ export default [
       "node_modules/**",
       "supabase/functions/**",
       ".claude/**",
-      "Webflow Template/**",
       "coverage/**",
     ],
   },

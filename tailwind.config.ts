@@ -21,7 +21,7 @@ const config: Config = {
           DEFAULT: "#1472FF",
           dark: "#0E5FCC",
         },
-        // Alias oficiales del design system (ver CLAUDE.md).
+        // Alias oficiales del design system (ver AGENTS.md).
         // Cambiar aqui propaga a toda la app — nunca usar hex inline.
         primary: {
           DEFAULT: "#1472FF",

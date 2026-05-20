@@ -176,15 +176,15 @@ const ENTREGA_OPTIONS = [
 
 type SectionId = "intro" | "step1" | "step2" | "step3" | "step4" | "step5";
 
-// Each section declares how many slides it has.
-// Slide content is rendered by switch inside the page.
-const SECTIONS: { id: SectionId; label: string; slides: number }[] = [
-  { id: "intro", label: "Contexto", slides: 5 },
-  { id: "step1", label: "Datos", slides: 2 + FIELDS.length }, // intro + dataset preview + 6 fields = 8
-  { id: "step2", label: "IA", slides: 3 },
-  { id: "step3", label: "Revisión", slides: SEGMENTS.length }, // 3
-  { id: "step4", label: "Decisión", slides: 1 },
-  { id: "step5", label: "Respuesta", slides: 2 },
+// Each section declares how many screens it has.
+// Screen content is rendered by switch inside the page.
+const SECTIONS: { id: SectionId; label: string; screens: number }[] = [
+  { id: "intro", label: "Contexto", screens: 5 },
+  { id: "step1", label: "Datos", screens: 2 + FIELDS.length }, // intro + dataset preview + 6 fields = 8
+  { id: "step2", label: "IA", screens: 3 },
+  { id: "step3", label: "Revisión", screens: SEGMENTS.length }, // 3
+  { id: "step4", label: "Decisión", screens: 1 },
+  { id: "step5", label: "Respuesta", screens: 2 },
 ];
 
 // ============ RUNTIME ============
@@ -202,7 +202,7 @@ export function RuntimeExperience({
   const { patch, flush } = useStepPatch(session.sessionId, { mode });
 
   const [sectionIdx, setSectionIdx] = useState(0);
-  const [slideIdx, setSlideIdx] = useState(0);
+  const [screenIdx, setScreenIdx] = useState(0);
   const [maxReached, setMaxReached] = useState(0);
 
   const [fieldActions, setFieldActions] = useState<Record<string, string>>({});
@@ -343,7 +343,7 @@ export function RuntimeExperience({
   function goToSection(idx: number) {
     if (idx <= maxReached) {
       setSectionIdx(idx);
-      setSlideIdx(0);
+      setScreenIdx(0);
     }
   }
 
@@ -397,7 +397,7 @@ export function RuntimeExperience({
           payload: {
             section: currentSection.label,
             section_idx: sectionIdx,
-            slide_idx: slideIdx,
+            screen_idx: screenIdx,
           },
         }),
         keepalive: true,
@@ -422,7 +422,7 @@ export function RuntimeExperience({
     isFieldTest,
     sectionIdx,
     session.sessionId,
-    slideIdx,
+    screenIdx,
   ]);
 
   const pollFieldTestReport = useCallback(async (
@@ -465,7 +465,7 @@ export function RuntimeExperience({
         section_idx: sectionIdx,
       });
       setSectionIdx(nextIdx);
-      setSlideIdx(0);
+      setScreenIdx(0);
       setMaxReached((m) => Math.max(m, nextIdx));
       return;
     }
@@ -514,21 +514,21 @@ export function RuntimeExperience({
     pollFieldTestReport,
   ]);
 
-  function nextSlide() {
-    if (slideIdx < currentSection.slides - 1) {
-      setSlideIdx((s) => s + 1);
+  function nextScreen() {
+    if (screenIdx < currentSection.screens - 1) {
+      setScreenIdx((s) => s + 1);
     } else {
       advanceSection();
     }
   }
 
-  function prevSlide() {
-    if (slideIdx > 0) {
-      setSlideIdx((s) => s - 1);
+  function prevScreen() {
+    if (screenIdx > 0) {
+      setScreenIdx((s) => s - 1);
     } else if (sectionIdx > 0) {
       const prevSectionIdx = sectionIdx - 1;
       setSectionIdx(prevSectionIdx);
-      setSlideIdx(SECTIONS[prevSectionIdx].slides - 1);
+      setScreenIdx(SECTIONS[prevSectionIdx].screens - 1);
     }
   }
 
@@ -569,34 +569,34 @@ export function RuntimeExperience({
 
   // ============ CAN ADVANCE PER SLIDE ============
   const canAdvance = useMemo(() => {
-    if (currentSection.id === "intro") return true; // reading slides
+    if (currentSection.id === "intro") return true; // reading screens
     if (currentSection.id === "step1") {
-      if (slideIdx === 0) return true; // brief
-      if (slideIdx === 1) return true; // dataset preview
-      const field = FIELDS[slideIdx - 2];
+      if (screenIdx === 0) return true; // brief
+      if (screenIdx === 1) return true; // dataset preview
+      const field = FIELDS[screenIdx - 2];
       return field ? !!fieldActions[field.key] : false;
     }
     if (currentSection.id === "step2") {
-      if (slideIdx === 0)
+      if (screenIdx === 0)
         return userPrompt.trim().length > 5 && modelResponse !== null;
-      if (slideIdx === 1) return modelResponse !== null;
-      if (slideIdx === 2) return followupText.trim().length > 10;
+      if (screenIdx === 1) return modelResponse !== null;
+      if (screenIdx === 2) return followupText.trim().length > 10;
     }
     if (currentSection.id === "step3") {
-      const flags = segmentFlags[slideIdx];
+      const flags = segmentFlags[screenIdx];
       return Array.isArray(flags) && flags.length > 0;
     }
     if (currentSection.id === "step4") {
       return option4 !== "";
     }
     if (currentSection.id === "step5") {
-      if (slideIdx === 0) return true; // reading Camila's msg
-      if (slideIdx === 1) return step5Text.trim().length > 20;
+      if (screenIdx === 0) return true; // reading Camila's msg
+      if (screenIdx === 1) return step5Text.trim().length > 20;
     }
     return false;
   }, [
     currentSection,
-    slideIdx,
+    screenIdx,
     fieldActions,
     userPrompt,
     modelResponse,
@@ -730,8 +730,8 @@ export function RuntimeExperience({
     );
   }
 
-  // ============ CAPSULES (one per slide of current section) ============
-  const capsuleCount = currentSection.slides;
+  // ============ CAPSULES (one per screen of current section) ============
+  const capsuleCount = currentSection.screens;
 
   return (
     <>
@@ -802,8 +802,8 @@ export function RuntimeExperience({
           <div className="pt-8 px-6">
             <div className="max-w-2xl mx-auto flex gap-1.5">
               {Array.from({ length: capsuleCount }).map((_, i) => {
-                const filled = i < slideIdx || (i === slideIdx && canAdvance);
-                const active = i === slideIdx;
+                const filled = i < screenIdx || (i === screenIdx && canAdvance);
+                const active = i === screenIdx;
                 return (
                   <div
                     key={i}
@@ -830,15 +830,15 @@ export function RuntimeExperience({
             <div className="max-w-2xl w-full">
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={`${currentSection.id}-${slideIdx}`}
+                  key={`${currentSection.id}-${screenIdx}`}
                   initial={{ opacity: 0, x: 24 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -24 }}
                   transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  {renderSlide({
+                  {renderScreen({
                     sectionId: currentSection.id,
-                    slideIdx,
+                    screenIdx,
                     caseMeta: session.caseMeta,
                     state: {
                       fieldActions,
@@ -877,12 +877,12 @@ export function RuntimeExperience({
             </div>
           )}
           <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
-            {slideIdx > 0 || sectionIdx > 0 ? (
+            {screenIdx > 0 || sectionIdx > 0 ? (
               <Button
                 radius="full"
                 size="lg"
                 variant="bordered"
-                onPress={prevSlide}
+                onPress={prevScreen}
                 className="h-11 px-5 text-[14px] font-medium border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
               >
                 ← Anterior
@@ -894,7 +894,7 @@ export function RuntimeExperience({
             <Button
               radius="full"
               size="lg"
-              onPress={nextSlide}
+              onPress={nextScreen}
               isDisabled={!canAdvance}
               className={`h-11 px-6 text-[14px] font-medium ${
                 canAdvance
@@ -902,7 +902,7 @@ export function RuntimeExperience({
                   : "bg-[var(--surface-3)] text-[var(--text-tertiary)]"
               } shadow-none btn-hover-shift`}
             >
-              {nextButtonLabel(sectionIdx, slideIdx, currentSection.slides)} →
+              {nextButtonLabel(sectionIdx, screenIdx, currentSection.screens)} →
             </Button>
           </div>
         </div>
@@ -944,13 +944,13 @@ function RuntimeCaseMetaCard({
 // ============ NEXT BUTTON LABEL ============
 function nextButtonLabel(
   sectionIdx: number,
-  slideIdx: number,
-  slidesInSection: number,
+  screenIdx: number,
+  screensInSection: number,
 ): string {
-  const lastSlideInSection = slideIdx === slidesInSection - 1;
+  const lastScreenInSection = screenIdx === screensInSection - 1;
   const lastSection = sectionIdx === SECTIONS.length - 1;
-  if (lastSlideInSection && lastSection) return "Terminar caso";
-  if (lastSlideInSection && sectionIdx === 0) return "Empezar caso";
+  if (lastScreenInSection && lastSection) return "Terminar caso";
+  if (lastScreenInSection && sectionIdx === 0) return "Empezar caso";
   return "Siguiente";
 }
 
@@ -1322,16 +1322,16 @@ type RuntimeSetters = {
   setStep5Text: (v: string) => void;
 };
 
-function renderSlide({
+function renderScreen({
   sectionId,
-  slideIdx,
+  screenIdx,
   caseMeta,
   state,
   setters,
   sendPrompt,
 }: {
   sectionId: SectionId;
-  slideIdx: number;
+  screenIdx: number;
   caseMeta: RuntimeCaseMeta | null;
   state: RuntimeState;
   setters: RuntimeSetters;
@@ -1339,19 +1339,19 @@ function renderSlide({
 }) {
   // ============ INTRO ============
   if (sectionId === "intro") {
-    return <IntroSlide slideIdx={slideIdx} caseMeta={caseMeta} />;
+    return <IntroScreen screenIdx={screenIdx} caseMeta={caseMeta} />;
   }
 
   // ============ STEP 1 ============
   if (sectionId === "step1") {
-    if (slideIdx === 0) return <Step1Brief />;
-    if (slideIdx === 1) return <Step1DatasetPreview />;
-    const field = FIELDS[slideIdx - 2];
+    if (screenIdx === 0) return <Step1Brief />;
+    if (screenIdx === 1) return <Step1DatasetPreview />;
+    const field = FIELDS[screenIdx - 2];
     if (field) {
       return (
         <Step1FieldDecision
           field={field}
-          fieldIdx={slideIdx - 1}
+          fieldIdx={screenIdx - 1}
           value={state.fieldActions[field.key] || ""}
           onChange={(v) =>
             setters.setFieldActions({ ...state.fieldActions, [field.key]: v })
@@ -1363,7 +1363,7 @@ function renderSlide({
 
   // ============ STEP 2 ============
   if (sectionId === "step2") {
-    if (slideIdx === 0) {
+    if (screenIdx === 0) {
       return (
         <Step2Prompt
           value={state.userPrompt}
@@ -1374,10 +1374,10 @@ function renderSlide({
         />
       );
     }
-    if (slideIdx === 1) {
+    if (screenIdx === 1) {
       return <Step2Response modelResponse={state.modelResponse} />;
     }
-    if (slideIdx === 2) {
+    if (screenIdx === 2) {
       return (
         <Step2Followup
           value={state.followupText}
@@ -1389,7 +1389,7 @@ function renderSlide({
 
   // ============ STEP 3 ============
   if (sectionId === "step3") {
-    const seg = SEGMENTS[slideIdx];
+    const seg = SEGMENTS[screenIdx];
     if (seg) {
       return (
         <Step3SegmentReview
@@ -1415,8 +1415,8 @@ function renderSlide({
 
   // ============ STEP 5 ============
   if (sectionId === "step5") {
-    if (slideIdx === 0) return <Step5CamilaMessage />;
-    if (slideIdx === 1) {
+    if (screenIdx === 0) return <Step5CamilaMessage />;
+    if (screenIdx === 1) {
       return (
         <Step5Response
           value={state.step5Text}
@@ -1431,14 +1431,14 @@ function renderSlide({
 
 // ============ INTRO ============
 
-function IntroSlide({
-  slideIdx,
+function IntroScreen({
+  screenIdx,
   caseMeta,
 }: {
-  slideIdx: number;
+  screenIdx: number;
   caseMeta: RuntimeCaseMeta | null;
 }) {
-  if (slideIdx === 0) {
+  if (screenIdx === 0) {
     const title = caseMeta?.title ?? "Campaña urgente con feedback de clientes";
     const durationLabel = caseMeta?.durationEstimateMin
       ? `${caseMeta.durationEstimateMin} min`
@@ -1475,7 +1475,7 @@ function IntroSlide({
       </>
     );
   }
-  if (slideIdx === 1) {
+  if (screenIdx === 1) {
     return (
       <>
         <div className="eyebrow">Tu rol</div>
@@ -1497,7 +1497,7 @@ function IntroSlide({
       </>
     );
   }
-  if (slideIdx === 2) {
+  if (screenIdx === 2) {
     return (
       <>
         <div className="eyebrow">Qué está pasando</div>
@@ -1531,7 +1531,7 @@ function IntroSlide({
       </>
     );
   }
-  if (slideIdx === 3) {
+  if (screenIdx === 3) {
     const steps = [
       { id: 1, label: "Datos", sub: "Decide qué pasa al modelo." },
       {
@@ -1571,7 +1571,7 @@ function IntroSlide({
       </>
     );
   }
-  if (slideIdx === 4) {
+  if (screenIdx === 4) {
     return (
       <>
         <div className="eyebrow">Reglas</div>

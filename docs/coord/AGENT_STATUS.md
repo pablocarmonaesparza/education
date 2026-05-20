@@ -138,3 +138,4 @@ Cada agente actualiza su seccion al cambiar de tarea o cada 45 minutos si sigue 
 - [2026-05-19T17:56:00-06:00] working on: dispute_resolution_playbook research · status: codex sigue B7-001; comms_calendar done; arrancando playbook customer disputes
 - [2026-05-19T17:59:30-06:00] working on: heartbeat · status: dispute_resolution_playbook done (commit e82e306 pushed); 4 nuevas decisiones M9-3-D76/D77/D78/D79 (79 total); siguiente scaling_constraints o feedback_loop
 - [2026-05-19T19:37:08-06:00] working on: cleanroom-block-0 · status: branch codex/simulator-front-cleanroom desde main; allowlist 8 page routes activo; legacy visible archivado; build PASS; local server cleanroom en http://localhost:3000
+- [2026-05-19T20:17:12-06:00] working on: legacy-purge · status: purga completa de cursos/LMS aplicada en repo + Supabase; build/lint/smoke PASS; preparando commit/push
