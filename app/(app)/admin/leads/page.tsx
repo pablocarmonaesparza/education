@@ -247,7 +247,7 @@ export default function AdminLeadsPage() {
 
           <div className="mt-5 flex flex-wrap gap-2">
             <Button
-              radius="sm"
+              radius="md"
               size="sm"
               className={
                 status === "all"
@@ -259,7 +259,7 @@ export default function AdminLeadsPage() {
               Todos
             </Button>
             <Button
-              radius="sm"
+              radius="md"
               size="sm"
               className="bg-[var(--surface-2)] text-[var(--text-primary)]"
               onPress={load}
@@ -439,7 +439,7 @@ function LeadCard({
           </select>
 
           <Button
-            radius="sm"
+            radius="md"
             size="sm"
             isDisabled={isSaving}
             className="accent-bg text-white"
@@ -448,7 +448,7 @@ function LeadCard({
             {isSaving ? "Guardando…" : "Guardar y tomar"}
           </Button>
           <Button
-            radius="sm"
+            radius="md"
             size="sm"
             isDisabled={isSaving}
             className="bg-[var(--surface-2)] text-[var(--text-primary)]"

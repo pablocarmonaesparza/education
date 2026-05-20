@@ -58,7 +58,7 @@ export default function LandingPage() {
             <Button
               as={Link}
               href="/auth/signup?next=%2Fonboarding%2Forg"
-              radius="sm"
+              radius="md"
               size="lg"
               className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
             >
@@ -67,7 +67,7 @@ export default function LandingPage() {
             <Button
               as={Link}
               href="/field-test/marketing-urgent-campaign-pii"
-              radius="sm"
+              radius="md"
               size="lg"
               variant="bordered"
               className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
@@ -286,7 +286,7 @@ export default function LandingPage() {
             <Button
               as={Link}
               href="/auth/signup?next=%2Fonboarding%2Forg"
-              radius="sm"
+              radius="md"
               size="lg"
               className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
             >
@@ -295,7 +295,7 @@ export default function LandingPage() {
             <Button
               as={Link}
               href="/field-test/marketing-urgent-campaign-pii"
-              radius="sm"
+              radius="md"
               size="lg"
               variant="bordered"
               className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"

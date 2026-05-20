@@ -262,7 +262,7 @@ function SignupContent() {
             <Button
               type="submit"
               isDisabled={loading || !email || !password || !name}
-              radius="sm"
+              radius="md"
               size="lg"
               className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none mt-2"
             >
@@ -291,7 +291,7 @@ function SignupContent() {
               type="button"
               onPress={handleGoogleSignup}
               isDisabled={loading}
-              radius="sm"
+              radius="md"
               size="lg"
               variant="bordered"
               className="w-full h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium gap-3 shadow-none"

@@ -589,7 +589,7 @@ function ReportView({
             <Button
               as={Link}
               href={`/api/sessions/${sessionId}/report/pdf`}
-              radius="sm"
+              radius="md"
               variant="bordered"
               size="lg"
               className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"
@@ -597,7 +597,7 @@ function ReportView({
               Descargar PDF
             </Button>
             <Button
-              radius="sm"
+              radius="md"
               variant="bordered"
               size="lg"
               isLoading={shareStatus === "creating"}
@@ -613,7 +613,7 @@ function ReportView({
             <Button
               as={Link}
               href="/dashboard"
-              radius="sm"
+              radius="md"
               size="lg"
               className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
             >
@@ -622,7 +622,7 @@ function ReportView({
             <Button
               as={Link}
               href="/"
-              radius="sm"
+              radius="md"
               variant="bordered"
               size="lg"
               className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"

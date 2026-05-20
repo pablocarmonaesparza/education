@@ -101,7 +101,7 @@ export default function InvitationLandingPage() {
                       `/auth/signup?next=/auth/invitation/${token}`,
                     )
                   }
-                  radius="sm"
+                  radius="md"
                   size="lg"
                   className="accent-bg text-white h-12 text-[15px] font-medium shadow-none"
                 >
@@ -114,7 +114,7 @@ export default function InvitationLandingPage() {
                     )
                   }
                   variant="bordered"
-                  radius="sm"
+                  radius="md"
                   size="lg"
                   className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
                 >
@@ -160,7 +160,7 @@ export default function InvitationLandingPage() {
               </div>
               <Button
                 onPress={() => router.push("/")}
-                radius="sm"
+                radius="md"
                 size="lg"
                 className="accent-bg text-white h-12 px-6 text-[15px] font-medium shadow-none"
               >

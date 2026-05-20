@@ -114,7 +114,7 @@ export default function AdminJudgeHealthPage() {
 
           <div className="mt-5">
             <Button
-              radius="sm"
+              radius="md"
               size="sm"
               className="bg-[var(--surface-2)] text-[var(--text-primary)]"
               onPress={load}

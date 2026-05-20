@@ -99,7 +99,7 @@ export function PublicNav() {
           <Button
             as={Link}
             href="/auth/login"
-            radius="sm"
+            radius="md"
             size="sm"
             variant="light"
             className="text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
@@ -111,7 +111,7 @@ export function PublicNav() {
           <Button
             as={Link}
             href="/auth/signup?next=%2Fonboarding%2Forg"
-            radius="sm"
+            radius="md"
             size="sm"
             className="accent-bg text-white text-[13.5px] font-medium h-9 px-4 shadow-none"
           >
@@ -139,7 +139,7 @@ export function PublicNav() {
           <Button
             as={Link}
             href="/auth/login"
-            radius="sm"
+            radius="md"
             size="lg"
             variant="bordered"
             onPress={() => setIsMenuOpen(false)}
@@ -150,7 +150,7 @@ export function PublicNav() {
           <Button
             as={Link}
             href="/auth/signup?next=%2Fonboarding%2Forg"
-            radius="sm"
+            radius="md"
             size="lg"
             onPress={() => setIsMenuOpen(false)}
             className="h-11 accent-bg text-white text-[14px] font-medium shadow-none"

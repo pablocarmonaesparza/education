@@ -46,7 +46,7 @@ export function AuthNav({
         <Button
           as={Link}
           href={href}
-          radius="sm"
+          radius="md"
           size="sm"
           variant="light"
           className="text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"

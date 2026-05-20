@@ -20,11 +20,12 @@ const fieldClassNames = {
   description: "text-[13px] text-[var(--text-tertiary)]",
 };
 
-export function AppleInput({ classNames, ...props }: InputProps) {
+export function AppleInput({ classNames, radius = "md", ...props }: InputProps) {
   return (
     <Input
       labelPlacement="outside"
       variant="bordered"
+      radius={radius}
       {...props}
       classNames={{
         ...fieldClassNames,
@@ -35,11 +36,12 @@ export function AppleInput({ classNames, ...props }: InputProps) {
   );
 }
 
-export function AppleTextarea({ classNames, minRows = 4, ...props }: TextAreaProps) {
+export function AppleTextarea({ classNames, minRows = 4, radius = "md", ...props }: TextAreaProps) {
   return (
     <Textarea
       labelPlacement="outside"
       variant="bordered"
+      radius={radius}
       minRows={minRows}
       {...props}
       classNames={{
@@ -51,11 +53,12 @@ export function AppleTextarea({ classNames, minRows = 4, ...props }: TextAreaPro
   );
 }
 
-export function AppleSelect({ classNames, ...props }: SelectProps) {
+export function AppleSelect({ classNames, radius = "md", ...props }: SelectProps) {
   return (
     <Select
       labelPlacement="outside"
       variant="bordered"
+      radius={radius}
       {...props}
       classNames={{
         label: fieldClassNames.label,

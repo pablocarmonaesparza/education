@@ -40,7 +40,7 @@ export function RuntimeNav({ mode }: { mode: RuntimeSessionMode }) {
           <Button
             as={Link}
             href="/auth/signup?next=%2Fonboarding%2Forg"
-            radius="sm"
+            radius="md"
             size="sm"
             className="accent-bg text-white text-[13.5px] font-medium h-9 px-4 shadow-none"
           >
@@ -50,7 +50,7 @@ export function RuntimeNav({ mode }: { mode: RuntimeSessionMode }) {
           <Button
             as={Link}
             href="/dashboard"
-            radius="sm"
+            radius="md"
             size="sm"
             variant="light"
             className="text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"

@@ -167,7 +167,7 @@ export default function OnboardingOrgPage() {
                 type="submit"
                 isLoading={submitting}
                 isDisabled={!name.trim() || submitting}
-                radius="sm"
+                radius="md"
                 size="lg"
                 className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none w-full sm:w-auto"
               >

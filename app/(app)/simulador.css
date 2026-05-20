@@ -294,6 +294,14 @@
   --tw-ring-shadow: none !important;
   --tw-ring-color: transparent !important;
   --tw-ring-offset-width: 0 !important;
+
+  /* DEC-005: force input wrappers + select triggers to radius-md (12px)
+     to match buttons. HeroUI defaults to "large" for inputs (16px) which
+     would break universal consistency. */
+  border-radius: var(--radius-md);
+}
+.simulador-root [data-slot="trigger"] {
+  border-radius: var(--radius-md);
 }
 .simulador-root [data-slot="input-wrapper"]:focus-within {
   outline: none !important;
