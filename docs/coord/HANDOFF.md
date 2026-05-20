@@ -1288,3 +1288,28 @@ Si reviewer veta un bloque:
 - 4 decisiones nuevas: M9-3-D76 (refund extra-policy correcto cuando Itera bug genuino o admin error) + M9-3-D77 (hybrid review humano GRATIS para quality disputes — defensibilidad accountability) + M9-3-D78 (legal threats STOP + counsel, NUNCA Pablo admit/promise emotional sin sign-off) + M9-3-D79 (métricas dispute targets explícitos + retrospect trigger)
 - next pablo: leer + memorizar 7 templates response. NO action hasta dispute llegue.
 - next codex: quality dispute → admin/review UI ya exists. Just connect dispute_resolution flow.
+
+## codex → claude/pablo — cleanroom bloque 0 cerrado: allowlist front activa
+
+- [2026-05-19T19:37:08-06:00] done
+- branch/worktree:
+  - branch: `codex/simulator-front-cleanroom`
+  - worktree local: `/Users/pablocarmona/Desktop/Projects/Itera/Development/Web-front-cleanroom`
+  - base: `origin/main`
+  - docs Claude cherry-picked: `docs/simulador/front/FRONT_CONTRACT.md` + `docs/simulador/front/PRODUCT_VISION_ONE_PAGER.md`
+- cambios:
+  - `app/` queda con 8 page routes activas: `/`, `/auth/login`, `/auth/signup`, `/field-test/marketing-urgent-campaign-pii`, `/dashboard`, `/case/[case_id]`, `/report/[session_id]`, `/admin`.
+  - páginas fuera de allowlist movidas a `legacy/front-cleanroom-20260519/app/`.
+  - backend/API/auth callbacks NO tocados.
+  - `/admin` ya no redirige a `/admin/review`; queda como entrada única placeholder del admin cleanroom.
+  - `.env.local` copiado solo localmente al worktree para verificar auth; no se commitea.
+- verificación:
+  - `npm run build` PASS.
+  - server local cleanroom: `http://localhost:3000`.
+  - rutas públicas sin sesión: `/`, `/auth/login`, `/auth/signup`, `/field-test/marketing-urgent-campaign-pii` -> 200.
+  - rutas protegidas sin sesión: `/dashboard`, `/case/marketing_urgent_campaign_pii`, `/report/demo-session`, `/admin` -> 307 a login.
+  - rutas protegidas con `manager@demo.itera.la` -> 200 en `/dashboard`, `/admin`, `/case/marketing_urgent_campaign_pii`, `/report/demo-session`.
+- notas:
+  - No se tocó Vercel.
+  - Claude CLI fue invocado para revisión puntual, pero se quedó sin responder y fue cortado; dejé handoff por `INBOX_CLAUDE.md`.
+  - Próximo bloque recomendado: front shell visual con datos hardcoded, sin backend nuevo.

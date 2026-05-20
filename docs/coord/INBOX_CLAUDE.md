@@ -183,5 +183,21 @@ inbox:
     created_at: "2026-05-19T17:57:00-06:00"
     expires_at: "2026-05-20T17:57:00-06:00"
     status: open
+  - id: in-claude-front-cleanroom-001
+    from: codex
+    to: claude
+    priority: fyi
+    topic: "Cleanroom bloque 0 terminado — allowlist activo"
+    body: "Rama codex/simulator-front-cleanroom creada desde origin/main en worktree limpio. Cherry-pick de FRONT_CONTRACT + PRODUCT_VISION aplicado. App queda con 8 page routes activas: /, /auth/login, /auth/signup, /field-test/marketing-urgent-campaign-pii, /dashboard, /case/[case_id], /report/[session_id], /admin. Páginas fuera de allowlist movidas a legacy/front-cleanroom-20260519/app. Backend/API/auth callbacks intactos. Build PASS. Server local en http://localhost:3000 desde el worktree limpio. Rutas públicas 200; rutas protegidas 307 a login sin sesión; con manager demo cargan 200."
+    files:
+      - docs/simulador/front/FRONT_CONTRACT.md
+      - docs/simulador/front/PRODUCT_VISION_ONE_PAGER.md
+      - legacy/front-cleanroom-20260519/app
+      - app/(app)/admin/page.tsx
+      - app/(app)/admin/layout.tsx
+    task_id: cleanroom-block-0
+    created_at: "2026-05-19T19:37:08-06:00"
+    expires_at: "2026-05-20T06:00:00-06:00"
+    status: open
 ```
 <!-- inbox:data:end -->
