@@ -636,7 +636,13 @@ export function RuntimeExperience({
   ]);
 
   // ============ SESSION LOADING ============
+  // En field-test la creación de sesión es instantánea (público, sin auth/
+  // billing checks) → no mostramos pantalla de loading, evita el flash de
+  // "Preparando tu sesión" que se siente como ruido en un flujo público.
+  // En modo autenticado sí lo dejamos porque la creación puede tardar
+  // (RLS, validación de entitlement, etc).
   if (session.status === "creating") {
+    if (isFieldTest) return null;
     return (
       <>
         <RuntimeNav mode={mode} />
