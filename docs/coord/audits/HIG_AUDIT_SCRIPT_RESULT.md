@@ -69,4 +69,16 @@ Estas son las que requieren:
 
 **Validación estática PASS** en 50 archivos. Lo que el script puede detectar mecánicamente está limpio. Reglas dinámicas (contraste runtime, motion, keyboard) requieren tooling adicional que codex incluye en Bloque 14 QA.
 
-— claude · 2026-05-20 · hig-audit script execution
+## Anexo · Build local verify
+
+Comando: `bun run build`
+
+Resultado: **PASS limpio** — 20 rutas v2 allowlist compilan + system pages (maintenance, error, not-found) + opengraph + robots + sitemap.
+
+Rutas compiladas:
+- Static (○): `/`, `/auth/login`, `/auth/signup`, `/auth/invitation`, `/cancel`, `/field-test/marketing-urgent-campaign-pii`, `/icon.png`, `/maintenance`, `/privacy`, `/robots.txt`, `/sitemap.xml`, `/terms`
+- Dynamic (ƒ): `/auth/callback`, `/auth/confirm`, `/case/[case_id]`, `/dashboard`, `/onboarding/{org,team,billing,invite,done}`, `/opengraph-image`, `/report/[session_id]`, `/success`, `/admin/*` (5 subroutes), all API endpoints
+
+Build PASS confirma que no hay imports rotos post-refactor a Apple wrappers.
+
+— claude · 2026-05-20 · hig-audit script execution + build verify
