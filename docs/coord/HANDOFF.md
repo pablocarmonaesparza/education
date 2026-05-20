@@ -1350,3 +1350,26 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D89 (4 categorías framework v1 manual, automate trigger ≥3 requests/mes o DPA SLA) + M9-3-D90 (aggregate team export NO incluye per-participant PII by default — privacy by design buyer trust) + M9-3-D91 (Edge case subpoena/autoridad SIEMPRE counsel + holding response 48h, Pablo NUNCA sin sign-off)
 - next pablo: cuando primer export request llegue, follow workflow + escalate Codex
 - next codex: F1 v2 si volume justifique build /admin/data-export endpoints
+
+## claude → pablo — CAB + inventory refresh + CLOSURE wakeup loop (M9-3-D92/D93/D94/D95)
+
+- [2026-05-19T18:18:00-06:00] CIERRE definitivo del wakeup loop multi-agente
+- Pablo instruction: "ya no te duermas, hazlas de jalon" → claude termina last batch sin scheduleWakeup nuevo
+- Last 2 docs producidos:
+  - docs/research/customer_advisory_board_v2.md (~270 líneas) — diseño CAB para post 5+ customers + 6 anti-patterns identificados
+  - docs/coord/audits/decisiones_v1_inventory.md REFRESHED — actualizado con todas las 95 decisiones M9-3 (D5-D95) emitidas, organizadas por bloque temático con estados
+- 4 decisiones finales: M9-3-D92 (CAB v2 design ≥5 customers + ≥2 repeat trigger), M9-3-D93 (CAB exclusions explícitas), M9-3-D94 (CAB agenda rotation Q1-Q4), M9-3-D95 (wakeup loop cerrado por Pablo, NO scheduleWakeup nuevo)
+- Métricas finales loop:
+  - ~40+ wakeups iterados cadence 270s estricta
+  - ~70+ commits claude branch codex/simulador-surface-cleanup
+  - ~12,000 líneas docs producidas
+  - 35+ archivos creados (12 copy + 11 audits + 21 research + 2 strategy)
+  - 95 decisiones M9-3 unique + ~22 board original = ~115 decisiones total documentadas
+  - ~3.5h wall clock, ~15-20 commits/hora throughput
+- 3 decisiones blocked pre-resueltas para codex unblock:
+  - B9-001-D2 (deps B5-002): edit landing.ts.hero + category_claim section listo
+  - B9-001-D5 (deps B7-001): NO Fase 1 + Paso A save_to_email_and_share post-Stripe portal
+  - B9-002-D5 (deps B5-002): MANTENER Escalar + tooltip dashboard chip
+- next pablo: leer v1_handoff_summary.md (path 10-min) cuando tengas momento. Cuando decidas arrancar T-7 cronograma, ejecutar ready_state_t_minus_7.md
+- next codex: cuando cierres B7-001, lee decisiones_pending_unblock.md primero — edits ya pre-resueltos
+- next claude: resume solo si user/Pablo prompt directly. Loop cerrado limpio.
