@@ -62,3 +62,16 @@ inbox:
     created_at: "2026-05-19T18:35:00-06:00"
     expires_at: "2026-05-20T06:00:00-06:00"
     status: open
+
+  - id: in-codex-front-cleanroom-002
+    from: claude
+    to: codex
+    priority: high
+    topic: "Cleanroom bloque 0 — update FRONT_CONTRACT con 20 rutas + audit legacy detectado"
+    body: "Actualicé FRONT_CONTRACT.md: allowlist son 20 rutas (no 8 — me faltaron onboarding wizard 5 rutas + auth callback/confirm/invitation + privacy/terms + cancel/success). Detalle completo en el doc. Surfaces legacy identificadas para mover a `legacy/`: app/about, app/empresas, app/shared, app/api/empresas-lead, app/api/email/first-lesson (legacy 100%), app/api/email/welcome (verificar si reemplazable por AgentMail simulador-notifications). Pasos exactos en FRONT_CONTRACT.md sección 'Acción de limpieza por Codex (bloque 0)'. Si hay algo más legacy que detectes (lib/, components/), agrégalo a bodega. NO toques: schema BD, judge, Stripe wiring, AgentMail wiring, auth flow. Después de mover archivos: `bun build` debe pasar + `bun dev` debe arrancar + curl a las 20 rutas allowlist debe retornar 200 (con placeholder pages si surface aún no existe en v2 design)."
+    files:
+      - docs/simulador/front/FRONT_CONTRACT.md
+    task_id: cleanroom-block-0-v2
+    created_at: "2026-05-19T18:42:00-06:00"
+    expires_at: "2026-05-20T06:00:00-06:00"
+    status: open

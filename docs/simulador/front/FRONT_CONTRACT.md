@@ -16,30 +16,65 @@ Producto v2 tiene **8 rutas activas** y 4 roles. Todo lo demás del repo es bode
 
 ## Rutas activas (allowlist)
 
-| Ruta | Rol que la ve | Layout | Auth required |
-|---|---|---|---|
-| `/` | visitante | PublicNav | ❌ |
-| `/auth/login` | visitante | AuthLayout | ❌ |
-| `/auth/signup` | visitante | AuthLayout | ❌ |
-| `/field-test/marketing-urgent-campaign-pii` | visitante | RuntimeLayout (no-auth variant) | ❌ |
-| `/dashboard` | empleado / manager | AppShell + RoleNav | ✓ |
-| `/case/[case_id]` | empleado | RuntimeLayout | ✓ |
-| `/report/[session_id]` | empleado (su propio) / manager (su team) | ReportLayout | ✓ |
-| `/admin` | admin Itera staff | AdminShell | ✓ admin role |
+| # | Ruta | Rol que la ve | Layout | Auth required |
+|---:|---|---|---|---|
+| 1 | `/` | visitante | PublicNav | ❌ |
+| 2 | `/auth/login` | visitante | AuthLayout | ❌ |
+| 3 | `/auth/signup` | visitante | AuthLayout | ❌ |
+| 4 | `/auth/callback` | visitante | (route handler, no UI) | ❌ |
+| 5 | `/auth/invitation/[token]` | visitante invitado | AuthLayout | ❌ |
+| 6 | `/auth/confirm` | visitante | AuthLayout | ❌ |
+| 7 | `/field-test/marketing-urgent-campaign-pii` | visitante | RuntimeLayout (no-auth variant) | ❌ |
+| 8 | `/onboarding/org` | buyer post-signup | OnboardingShell | ✓ |
+| 9 | `/onboarding/team` | buyer | OnboardingShell | ✓ |
+| 10 | `/onboarding/invite` | buyer | OnboardingShell | ✓ |
+| 11 | `/onboarding/billing` | buyer | OnboardingShell | ✓ |
+| 12 | `/onboarding/done` | buyer | OnboardingShell | ✓ |
+| 13 | `/dashboard` | empleado / manager | AppShell + RoleNav | ✓ |
+| 14 | `/case/[case_id]` | empleado | RuntimeLayout | ✓ |
+| 15 | `/report/[session_id]` | empleado (su propio) / manager (su team) | ReportLayout | ✓ |
+| 16 | `/admin` | admin Itera staff | AdminShell | ✓ admin role |
+| 17 | `/privacy` | visitante | PublicNav (minimal footer-linked) | ❌ |
+| 18 | `/terms` | visitante | PublicNav (minimal footer-linked) | ❌ |
+| 19 | `/cancel` | post-Stripe checkout canceled | minimal | ❌ |
+| 20 | `/success` | post-Stripe checkout success | minimal | ❌ |
 
-**Total: 8 rutas.** Cualquier otra ruta = bodega.
+**Total: 20 rutas activas.** Cualquier otra ruta = bodega.
+
+**Nota:** rutas 17-20 son funcionales pero NO son surfaces principales del producto. Privacy/Terms son legal compliance (LFPDPPP MX + Ley 1581 CO — B9-003-D5). Cancel/Success son Stripe redirects técnicos. Estos 4 NO requieren visión visual premium — pueden ser layout minimal.
 
 ## Rutas prohibidas (bodega — NO aparecen en navegación, NO se linkean, NO se mantienen)
+
+### Surfaces que existen HOY en `app/` y se MUEVEN a `legacy/`:
+
+- `app/about/` → Itera Courses about page
+- `app/empresas/` → Itera Courses landing for orgs
+- `app/shared/` → shared report URL (no en allowlist v2, queda para v3)
+
+### API endpoints que existen HOY en `app/api/` y se MUEVEN a `legacy/api/`:
+
+- `app/api/empresas-lead/` → Itera Courses lead capture
+- `app/api/email/` → verificar si es legacy (probably yes — emails ya manejados por AgentMail)
+
+### Surfaces que NO deben existir (ya removidas, verificar que no regresen):
 
 - `/simulator-design` y subroutes (mockup viejo)
 - `/courseCreation`, `/lecture`, `/slides`, `/intake`, `/onboarding-system` (Itera Courses legacy)
 - `/projectContext`, `/projectDescription`, `/conferencias` (legacy)
 - `/experimentllm`, `/tutor-chat`, `/experimentAlpha` (experiments)
-- `/dashboardAlpha`, `/dashboard` (versión vieja), `/homeAlt` (legacy)
+- `/dashboardAlpha`, `/homeAlt` (legacy)
 - `/legacy-v2-cursos`, `/legacy` (residuos)
 - `/componentes`, `/componentesPrueba`, `/landingPrueba` (test pages)
 
-**Acción de limpieza:** estas carpetas se mueven fuera de `app/` (a `legacy/` o se eliminan). NO se referencian en navegación nueva.
+**Acción de limpieza por Codex (bloque 0):**
+1. `mkdir -p legacy/app` y `mkdir -p legacy/api`
+2. `mv app/about legacy/app/about`
+3. `mv app/empresas legacy/app/empresas`
+4. `mv app/shared legacy/app/shared`
+5. `mv app/api/empresas-lead legacy/api/empresas-lead`
+6. Verify `app/api/email/` → si es legacy, mover; si es activo (transcribe wrapper o algo), keep
+7. Verificar que NO existen las surfaces de la lista 3 (probablemente ya removidas en commits anteriores)
+8. `bun build` debe pasar después de mover
 
 ## Roles + lo que cada uno ve
 
