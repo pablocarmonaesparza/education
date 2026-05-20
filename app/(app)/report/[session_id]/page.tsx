@@ -363,7 +363,7 @@ function ReportView({
           <motion.div {...fadeUp}>
             <div className="eyebrow">Desempeño por dimensión</div>
             <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
-              Las cinco dimensiones.
+              Las cinco dimensiones
             </h2>
           </motion.div>
 
@@ -520,7 +520,7 @@ function ReportView({
             <motion.div {...fadeUp}>
               <div className="eyebrow">Fortalezas</div>
               <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
-                Qué hizo bien.
+                Qué hizo bien
               </h2>
             </motion.div>
 

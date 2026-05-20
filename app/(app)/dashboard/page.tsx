@@ -200,7 +200,7 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
           <div className="max-w-5xl mx-auto px-6 py-12">
             <motion.div {...fadeUp}>
               <h1 className="display display-tight text-[36px] sm:text-[44px] text-[var(--text-primary)]">
-                Casos disponibles.
+                Casos disponibles
               </h1>
             </motion.div>
           </div>
@@ -720,7 +720,7 @@ export default function DashboardPage() {
           <motion.div {...fadeUp} className="mb-8">
             <div className="eyebrow">Resultado agregado</div>
             <h2 className="display mt-2 text-[28px] text-[var(--text-primary)]">
-              Matriz dimensión × banda.
+              Matriz dimensión × banda
             </h2>
             <p className="mt-3 text-[15px] text-[var(--text-secondary)] max-w-2xl">
               Cuenta cuántas personas cayeron en cada banda por dimensión. La
@@ -837,7 +837,7 @@ export default function DashboardPage() {
           <motion.div {...fadeUp} className="mb-8">
             <div className="eyebrow">Acciones recomendadas</div>
             <h2 className="display mt-2 text-[28px] text-[var(--text-primary)]">
-              Cuatro caminos por persona.
+              Cuatro caminos por persona
             </h2>
           </motion.div>
 

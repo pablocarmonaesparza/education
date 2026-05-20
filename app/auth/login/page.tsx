@@ -161,7 +161,7 @@ function LoginContent() {
         <div className="max-w-[400px] mx-auto">
           <motion.div {...fadeUp} className="text-center">
             <h1 className="display display-tight text-[40px] sm:text-[48px] text-[var(--text-primary)]">
-              Inicia sesión.
+              Inicia sesión
             </h1>
           </motion.div>
 

@@ -131,7 +131,7 @@ export default async function SharedReportPage({
         <section className="reading-col px-6 mt-20">
           <div className="eyebrow">Desempeño por dimensión</div>
           <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
-            Las cinco dimensiones.
+            Las cinco dimensiones
           </h2>
           <div className="mt-8 space-y-4">
             {DIMENSIONS.map((dimension) => {

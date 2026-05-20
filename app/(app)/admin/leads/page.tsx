@@ -176,7 +176,7 @@ export default function AdminLeadsPage() {
           >
             <div className="eyebrow">Itera staff · adquisición</div>
             <h1 className="display mt-4 text-[36px] text-[var(--text-primary)]">
-              Leads del field-test.
+              Leads del field-test
             </h1>
             <p className="mt-4 max-w-2xl text-[15px] leading-[1.55] text-[var(--text-secondary)]">
               Personas que terminaron el diagnóstico público y pidieron contacto.

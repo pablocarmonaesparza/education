@@ -116,7 +116,7 @@ export default function LandingPage() {
           <motion.div {...fadeUp} className="text-center mb-16">
             <span className="eyebrow">Cómo funciona</span>
             <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
-              Tres pasos. Treinta días.
+              Tres pasos, treinta días
             </h2>
           </motion.div>
 
@@ -164,7 +164,7 @@ export default function LandingPage() {
           <motion.div {...fadeUp} className="text-center mb-16">
             <span className="eyebrow">Contenido del sprint</span>
             <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
-              Ocho casos. Una tensión cada uno.
+              Ocho casos, una tensión cada uno
             </h2>
             <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-2xl mx-auto">
               Cada caso es un escenario real: deadline, dataset con PII, presión

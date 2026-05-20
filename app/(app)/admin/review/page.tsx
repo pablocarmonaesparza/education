@@ -142,7 +142,7 @@ export default function AdminReviewPage() {
           >
             <div className="eyebrow">Itera staff · cola interna</div>
             <h1 className="display mt-4 text-[36px] text-[var(--text-primary)]">
-              Review humano de reports.
+              Review humano de reports
             </h1>
             <p className="mt-4 text-[15px] text-[var(--text-secondary)] max-w-2xl leading-[1.55]">
               Reports con risk events de severidad alta. Requieren doble firma

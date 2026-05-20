@@ -80,7 +80,7 @@ export default function AdminAuditLogPage() {
           >
             <div className="eyebrow">Itera staff · auditoría</div>
             <h1 className="display mt-4 text-[36px] text-[var(--text-primary)]">
-              Audit log.
+              Audit log
             </h1>
             <p className="mt-4 max-w-2xl text-[15px] leading-[1.55] text-[var(--text-secondary)]">
               Cambios privilegiados y eventos auditables del simulador. Úsalo

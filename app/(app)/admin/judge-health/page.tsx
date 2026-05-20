@@ -82,7 +82,7 @@ export default function AdminJudgeHealthPage() {
           >
             <div className="eyebrow">Itera staff · evaluación</div>
             <h1 className="display mt-4 text-[36px] text-[var(--text-primary)]">
-              Judge health.
+              Judge health
             </h1>
             <p className="mt-4 max-w-2xl text-[15px] leading-[1.55] text-[var(--text-secondary)]">
               Lectura operacional del judge y la cola humana. El objetivo es
