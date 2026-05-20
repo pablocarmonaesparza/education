@@ -56,6 +56,14 @@ if (calibration.status !== 0) {
   process.exit(calibration.status ?? 1);
 }
 
+const higAudit = run("node", ["scripts/simulador/hig-audit.mjs"]);
+print(higAudit.stdout);
+print(higAudit.stderr);
+
+if (higAudit.status !== 0) {
+  process.exit(higAudit.status ?? 1);
+}
+
 const typecheck = run("node", ["scripts/simulador/typecheck-scope.mjs"]);
 print(typecheck.stdout);
 print(typecheck.stderr);
