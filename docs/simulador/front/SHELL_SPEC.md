@@ -229,15 +229,150 @@
 
 ---
 
-## Tier 2 — auth flow + onboarding (próximo wakeup)
+## Tier 2 — auth + field-test + onboarding wizard
 
-> Pendiente de redactar en próximo SHELL_SPEC wakeup. Por ahora codex puede usar
-> los placeholders existentes en app/auth/ y app/onboarding/ — solo asegurar
-> que el shell visual sea consistente con el de tier 1.
+### 5. `/auth/login` y `/auth/signup`
 
-- `/auth/login`, `/auth/signup`, `/auth/callback`, `/auth/confirm`, `/auth/invitation/[token]`
-- `/field-test/marketing-urgent-campaign-pii`
-- `/onboarding/{org,team,billing,invite,done}`
+**Layout:** centered single column, max-w-md, sin sidebar/navbar pesado. Logo arriba, formulario, CTAs.
+
+**Estructura:**
+
+1. **Top nav minimalista** (h-12):
+   - Izquierda: logo `itera` (link a `/`)
+   - Derecha: link cruzado (login↔signup) — "¿no tienes cuenta? regístrate" / "¿ya tienes cuenta? inicia sesión"
+
+2. **Card central** (rounded-2xl, p-8, border):
+   - H1 (text-2xl): `inicia sesión` o `crea tu cuenta`
+   - Sub muted: `accede al dashboard de tu sprint` / `empieza configurando tu organización`
+   - Botón Google (primary outline, full-w, con icono): `continuar con google`
+   - Separador: `o con email` (xs muted)
+   - Input email (label arriba): `tu@empresa.com`
+   - CTA primary full-w: `enviar magic link` (signup) / `enviar magic link` (login)
+   - Caption muted: `te enviamos un link para entrar sin contraseña`
+
+3. **Bottom**:
+   - Link legal: `al continuar aceptas nuestros términos y privacidad`
+   - Link sutil: contacta `hola@itera.la` si tienes problemas
+
+**Anti-patrones:**
+- NO captcha visible (Supabase auth lo maneja invisible)
+- NO password fields (magic link / OAuth únicamente)
+- NO "remember me" checkbox
+
+### 6. `/auth/callback` y `/auth/confirm`
+
+**Layout:** centered, mínimo absoluto.
+
+- Spinner sutil + texto muted: `verificando tu sesión...`
+- Sin nav, sin header
+- En error: card con mensaje claro + botón "volver a /auth/login"
+
+### 7. `/auth/invitation/[token]`
+
+**Audiencia:** empleado clickea link de invite recibido por email.
+
+**Layout:** centered card single column.
+
+1. Top: logo `itera`
+2. Card:
+   - Eyebrow muted: `te invitaron a un sprint`
+   - H1 (text-2xl): `<org name> te invita al sprint <nombre>`
+   - Sub: `el sprint dura 30 días. el caso vivo toma ~18 min. tu reporte queda al día siguiente.`
+   - Detalles del invite (compactos): rol "empleado", team "marketing", buyer "<nombre del comprador>"
+   - CTA primary: `aceptar e iniciar sesión` → flow signup/login con token
+   - CTA secundario ghost: `no soy yo / declinar` → mailto con disclaimer
+3. Bottom: `¿dudas? escríbenos a hola@itera.la`
+
+**Estados:**
+- Token válido: shell arriba
+- Token expirado: card amber con "este link ya no es válido. pide a tu admin un re-envío."
+- Token usado: redirect a /dashboard si logged-in, sino /auth/login
+
+---
+
+### 8. `/field-test/marketing-urgent-campaign-pii` (caso público demo)
+
+**Audiencia:** prospect visitante que quiere "probar el simulador sin pagar".
+
+**Layout:** topbar minimal (sin sidebar — no es sesión de empleado real), main central max-w-3xl.
+
+**Topbar (h-12):**
+- Izquierda: logo `itera` + breadcrumb `demo público › caso 1`
+- Derecha: link sutil ghost `agendar diagnóstico para mi equipo` → CTA conversión
+
+**Main content:**
+
+1. **Banner inicial** (border-l-4 indigo, p-4):
+   - "esto es un demo público. tus respuestas se anonimizan y nos sirven para mejorar el simulador. si quieres correrlo con tu equipo real, agenda diagnóstico."
+
+2. **Mismo runtime que `/case/[case_id]`** pero con 2 diferencias:
+   - Pide email + nombre + cargo + empresa antes de empezar (lead capture)
+   - Al terminar muestra reporte simplificado SIN risk events detallados — solo bandas + CTA "para reporte completo, agenda diagnóstico"
+
+**Anti-patrones:**
+- NO mostrar judge real (LLM público gratis se abusa)
+- NO permitir descargar PDF del reporte demo
+- NO compartir link público del reporte demo
+
+---
+
+### 9-13. `/onboarding/{org,team,billing,invite,done}` (wizard 5 pasos)
+
+**Audiencia:** buyer (Head/VP Marketing/Growth) que viene de pagar checkout o de signup.
+
+**Layout común a los 5 pasos:**
+
+1. **Topbar** (h-14):
+   - Izquierda: logo `itera`
+   - Centro: progress stepper visual — 5 dots `org → team → billing → invite → done`
+   - Derecha: link ghost `salir y guardar` (con confirm modal)
+
+2. **Main** centered max-w-2xl, padding generoso
+
+3. **Bottom** sticky: nav buttons `← atrás` (ghost) + `continuar →` (primary, disabled si validación falla)
+
+**Por paso:**
+
+#### `/onboarding/org` (paso 1)
+- H1: `cuéntanos de tu organización`
+- Sub: `esto define el namespace para tus sprints. puedes cambiarlo después.`
+- Form fields: nombre legal, industry (dropdown), región (mx/co/ar/cl/otros), tamaño empleados (rangos), website opcional
+- CTA: `continuar →`
+
+#### `/onboarding/team` (paso 2)
+- H1: `crea tu primer equipo`
+- Sub: `los sprints corren a nivel equipo. usualmente marketing, growth, ventas u ops.`
+- Form: nombre team, función (dropdown: marketing/growth/sales/cs/ops/finance/legal/hr/product/eng), # personas esperado
+- CTA: `continuar →`
+
+#### `/onboarding/billing` (paso 3)
+- H1: `elige tu sprint diagnóstico`
+- Tabla horizontal con 3 tiers (igual que landing /, pero con CTA "seleccionar" en cada)
+- Seleccionado: highlighted indigo
+- Caption: `pago vía stripe en USD. factura mx/co/ar disponible respondiendo al recibo.`
+- CTA: `ir a checkout →` (abre Stripe Checkout en nueva pestaña)
+
+#### `/onboarding/invite` (paso 4)
+- H1: `invita a tu equipo`
+- Sub: `agrega los emails de las 5-50 personas que correrán el caso vivo.`
+- Textarea grande (paste emails comma/newline separated)
+- Validación inline: chips de emails detectados, error en duplicados o inválidos
+- Counter: "12 emails detectados (de 50 max en tu plan)"
+- CTA: `enviar invitaciones →`
+
+#### `/onboarding/done` (paso 5)
+- H1 (text-3xl, success green): `¡todo listo, <nombre>!`
+- Sub: `tu equipo recibió las invitaciones. cuando empiecen a completar el caso, verás resultados en tu dashboard.`
+- 3 next-steps cards:
+  - "ver dashboard manager" → primary → /dashboard
+  - "previa del caso (sin gastar seat)" → ghost → /field-test/...
+  - "agenda live debrief con itera (opcional)" → ghost → mailto
+- Caption: `recibirás email cuando el primer reporte esté listo (24-48h post-completion).`
+
+**Anti-patrones onboarding:**
+- NO mostrar progress bar de % al lado de los dots (redundante)
+- NO permitir "skip" en paso billing (es paywall)
+- NO emojis-spam en el "¡todo listo!"
 
 ---
 
