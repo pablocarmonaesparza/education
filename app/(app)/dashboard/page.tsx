@@ -15,14 +15,8 @@
  */
 
 import { useEffect, useState } from "react";
-import {
-  Avatar,
-  Button,
-  Card,
-  CardBody,
-  Link,
-  Progress,
-} from "@heroui/react";
+import { Avatar, Link } from "@heroui/react";
+import { AppleButton, AppleCard, AppleCardBody, AppleProgress } from "@/components/simulador/apple";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
 import {
@@ -230,8 +224,8 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
                     {...fadeUp}
                     transition={{ ...fadeUp.transition, delay: index * 0.04 }}
                   >
-                    <Card className="card-apple bg-[var(--surface)] shadow-none">
-                      <CardBody className="p-7 sm:p-8">
+                    <AppleCard className="card-apple bg-[var(--surface)] shadow-none">
+                      <AppleCardBody className="p-7 sm:p-8">
                         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
                           <div className="min-w-0">
                             <div className="eyebrow">
@@ -259,7 +253,7 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
 
                           <div className="flex flex-col sm:flex-row gap-2 md:flex-shrink-0">
                             {showReport && (
-                              <Button
+                              <AppleButton
                                 as={Link}
                                 href={`/report/${member.session_id}`}
                                 radius="full"
@@ -268,9 +262,9 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
                                 className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px] font-medium"
                               >
                                 Ver reporte
-                              </Button>
+                              </AppleButton>
                             )}
-                            <Button
+                            <AppleButton
                               as={Link}
                               href={`/case/${caseItem.slug}`}
                               radius="full"
@@ -280,11 +274,11 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
                               {currentStatus && hasStarted
                                 ? "Continuar caso"
                                 : "Empezar caso"}
-                            </Button>
+                            </AppleButton>
                           </div>
                         </div>
-                      </CardBody>
-                    </Card>
+                      </AppleCardBody>
+                    </AppleCard>
                   </motion.div>
                 );
               })}
@@ -364,7 +358,7 @@ export default function DashboardPage() {
                 : "No estás asignado a ningún team todavía. Pide a tu admin que te invite."}
             </p>
             <div className="mt-8">
-              <Button
+              <AppleButton
                 as={Link}
                 href="/onboarding/org"
                 radius="full"
@@ -372,7 +366,7 @@ export default function DashboardPage() {
                 className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
               >
                 Iniciar onboarding →
-              </Button>
+              </AppleButton>
             </div>
           </motion.div>
         </main>
@@ -456,7 +450,7 @@ export default function DashboardPage() {
               <div className="display mt-4 text-[48px] text-[var(--text-primary)] leading-none">
                 {completionPct}%
               </div>
-              <Progress
+              <AppleProgress
                 aria-label="Progreso"
                 value={completionPct}
                 classNames={{
@@ -570,8 +564,8 @@ export default function DashboardPage() {
                 const displayName =
                   m.full_name ?? m.email.split("@")[0];
                 const card = (
-                  <Card className="card-apple card-apple-interactive bg-[var(--surface)] shadow-none">
-                    <CardBody className="p-5 flex flex-row items-center gap-5">
+                  <AppleCard className="card-apple card-apple-interactive bg-[var(--surface)] shadow-none">
+                    <AppleCardBody className="p-5 flex flex-row items-center gap-5">
                       <Avatar
                         size="lg"
                         className="bg-[var(--surface-3)] text-[var(--text-primary)] text-[14px] font-semibold flex-shrink-0"
@@ -629,8 +623,8 @@ export default function DashboardPage() {
                           )}
                         </div>
                       )}
-                    </CardBody>
-                  </Card>
+                    </AppleCardBody>
+                  </AppleCard>
                 );
                 return (
                   <motion.div
@@ -704,7 +698,7 @@ export default function DashboardPage() {
                           {member.report_status ?? "reporte generado"}
                         </div>
                       </div>
-                      <Button
+                      <AppleButton
                         as={Link}
                         href={`/report/${member.session_id}`}
                         radius="full"
@@ -712,7 +706,7 @@ export default function DashboardPage() {
                         className="accent-bg text-white shrink-0 px-5 font-medium shadow-none"
                       >
                         Abrir reporte
-                      </Button>
+                      </AppleButton>
                     </div>
                   );
                 })}
@@ -861,8 +855,8 @@ export default function DashboardPage() {
                   {...fadeUp}
                   transition={{ ...fadeUp.transition, delay: i * 0.04 }}
                 >
-                  <Card className="card-apple bg-[var(--surface)] shadow-none">
-                    <CardBody className="p-5">
+                  <AppleCard className="card-apple bg-[var(--surface)] shadow-none">
+                    <AppleCardBody className="p-5">
                       <div className="eyebrow mb-3">
                         {agg.recommendation_counts?.[
                           a.id as keyof typeof agg.recommendation_counts
@@ -875,8 +869,8 @@ export default function DashboardPage() {
                       <p className="mt-1.5 text-[14px] text-[var(--text-secondary)] leading-[1.55]">
                         {descCapped}
                       </p>
-                    </CardBody>
-                  </Card>
+                    </AppleCardBody>
+                  </AppleCard>
                 </motion.div>
               );
             })}

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Avatar, Button, Link } from "@heroui/react";
+import { Avatar, Link } from "@heroui/react";
+import { AppleButton } from "@/components/simulador/apple";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
 import { DIMENSIONS } from "@/lib/simulador/config";
@@ -586,7 +587,7 @@ function ReportView({
             transition={{ ...fadeUp.transition, delay: 0.1 }}
             className="mt-10 flex flex-col sm:flex-row sm:flex-wrap gap-3"
           >
-            <Button
+            <AppleButton
               as={Link}
               href={`/api/sessions/${sessionId}/report/pdf`}
               radius="full"
@@ -595,8 +596,8 @@ function ReportView({
               className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"
             >
               Descargar PDF
-            </Button>
-            <Button
+            </AppleButton>
+            <AppleButton
               radius="full"
               variant="bordered"
               size="lg"
@@ -609,8 +610,8 @@ function ReportView({
                 : shareUrl
                   ? "Copiar link"
                   : "Generar link compartible"}
-            </Button>
-            <Button
+            </AppleButton>
+            <AppleButton
               as={Link}
               href="/dashboard"
               radius="full"
@@ -618,8 +619,8 @@ function ReportView({
               className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
             >
               Vista del manager →
-            </Button>
-            <Button
+            </AppleButton>
+            <AppleButton
               as={Link}
               href="/"
               radius="full"
@@ -628,7 +629,7 @@ function ReportView({
               className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"
             >
               Volver a landing
-            </Button>
+            </AppleButton>
           </motion.div>
 
           {(shareUrl || shareError) && (
