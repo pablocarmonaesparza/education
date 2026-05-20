@@ -1336,3 +1336,17 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D86 (wakeup loop pattern reusable documentado para future sprints documentation-heavy) + M9-3-D87 (reservar M9-3-D ID solo strategic/operational; process-internal va en text) + M9-3-D88 (PASO 0 obligatorio: grep contra docs existentes antes de write nuevo, >50% overlap = update existing)
 - next pablo: cuando tengas 10 min, leer postmortem para inform futuros sprints (post-CZ F1 prep, expansion carreras)
 - next claude: continuar cadence 270s con remaining backlog (data_export_compliance, customer_advisory_board) OR transición a passive si lista exhausted
+
+## claude → pablo/codex — data export compliance (M9-3-D89/D90/D91)
+
+- [2026-05-19T18:15:00-06:00] done
+- output: docs/research/data_export_compliance.md (~340 líneas)
+- 4 categorías export: (1) participant individual / (2) team Controller scope / (3) aggregate non-PII / (4) audit log compliance enterprise
+- workflow v1 manual: Pablo verifies identity + Codex queries Supabase + bundle .zip + secure link 7-day expiration
+- workflow v2 automated (F1 v2 codex 2-3 semanas effort): /admin/data-export endpoints + admin UI + temporary download links
+- 5 response templates ready-to-use: acuse participant + delivery participant + acuse team + rechazo / partial + delivery team
+- 5 edge cases analizados: ex-employee (export OK), org expired (depende retention), legal subpoena (STOP + counsel), bulk request (decline), judge internals (NO include)
+- timeline targets: 5d business participant / 10d business team / 30d business audit log
+- 3 decisiones nuevas: M9-3-D89 (4 categorías framework v1 manual, automate trigger ≥3 requests/mes o DPA SLA) + M9-3-D90 (aggregate team export NO incluye per-participant PII by default — privacy by design buyer trust) + M9-3-D91 (Edge case subpoena/autoridad SIEMPRE counsel + holding response 48h, Pablo NUNCA sin sign-off)
+- next pablo: cuando primer export request llegue, follow workflow + escalate Codex
+- next codex: F1 v2 si volume justifique build /admin/data-export endpoints
