@@ -40,6 +40,15 @@
   --motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --motion-linear: linear;
 
+  /* Override HeroUI radius tokens para que TODO componente HeroUI
+     (Button/Input/Select/Card/Modal/Badge/...) use exactamente los
+     mismos valores de radius que nuestros tokens semánticos.
+     DEC-005 (Pablo 2026-05-20): todo lo redondeado en el sistema
+     debe tener la misma medida — alineado al radius de los textfields. */
+  --heroui-radius-small: var(--radius-sm);
+  --heroui-radius-medium: var(--radius-md);
+  --heroui-radius-large: var(--radius-lg);
+
   /* LIGHT (default) */
   --surface: #ffffff;
   --surface-2: #fafafa;

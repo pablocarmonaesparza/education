@@ -26,7 +26,7 @@ const toneClass: Record<AppleButtonTone, string> = {
 export function AppleButton({
   className,
   tone = "primary",
-  radius = "sm",
+  radius = "md",
   size = "md",
   ...props
 }: ButtonProps & { tone?: AppleButtonTone }) {
@@ -36,7 +36,11 @@ export function AppleButton({
       size={size}
       {...props}
       className={cn(
-        "min-h-11 px-4 text-[15px] font-medium shadow-none transition-[transform,opacity,background-color,border-color] duration-[var(--motion-fast)] ease-[var(--motion-ease)] active:scale-[0.98] active:opacity-95 disabled:scale-100",
+        // Universal rounded corner across the system: all rounded surfaces
+        // (buttons, inputs, textareas, selects) share the same radius value.
+        // We use `--radius-md` (12px) — aligned to HeroUI's default medium
+        // which now points to our token. DEC-005 (Pablo 2026-05-20).
+        "rounded-[var(--radius-md)] min-h-11 px-4 text-[15px] font-medium shadow-none transition-[transform,opacity,background-color,border-color] duration-[var(--motion-fast)] ease-[var(--motion-ease)] active:scale-[0.98] active:opacity-95 disabled:scale-100",
         toneClass[tone],
         className,
       )}
