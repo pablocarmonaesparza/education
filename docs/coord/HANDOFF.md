@@ -1321,3 +1321,18 @@ Si reviewer veta un bloque:
 - 3 decisiones nuevas: M9-3-D83 (methodology bi-weekly retro N≥2 patterns) + M9-3-D84 (5 anti-patterns como guardrails cross-review Pablo + claude) + M9-3-D85 (upgrade trigger post 20 customers o 2h sostenido)
 - next pablo: post-customer-zero arrancar bi-weekly retros con primer doc en semana 2 post-launch
 - next claude: review feedback retro docs independiente cada bi-weekly para guardrail anti-confirmation-bias
+
+## claude → pablo — wakeup loop postmortem (M9-3-D86/D87/D88)
+
+- [2026-05-19T18:11:00-06:00] done
+- output: docs/coord/audits/wakeup_loop_postmortem.md (~280 líneas)
+- métricas loop: 35-40 wakeups · ~50-60 commits · ~10,000 líneas · 85 decisiones M9-3 · 3 horas claude work
+- speed multiplier vs human baseline: ~5-10x vs Pablo solo, ~3-5x vs Pablo + consultant
+- 6 cosas que FUNCIONARON: cadence 270s forced focus, 1 task/wakeup discipline, HANDOFF.md SoT, decisiones derivadas con metadata structured, boundary explícito por agent, stale prompt tolerance
+- 6 cosas que NO funcionaron perfecto: wakeup prompts crecieron largos, sobreproducción 85 decisiones, docs duplicados (v1_handoff 30% overlap), TaskCreate not used, M9-3-D55 contradijo Pablo rule silently, codex bandwidth inferred not actively checked
+- cuándo NO usar este pattern: implementation técnico, single-decision exploration, user-facing creative, customer support, negotiation
+- cuándo SÍ usar: documentation depth, decision consolidation, pre-mortem planning, knowledge transfer prep, boilerplate generation
+- reusable pattern documented para future sprints (boundary + cadence + priority list + endgame trigger + per-wakeup discipline 5 steps)
+- 3 decisiones nuevas: M9-3-D86 (wakeup loop pattern reusable documentado para future sprints documentation-heavy) + M9-3-D87 (reservar M9-3-D ID solo strategic/operational; process-internal va en text) + M9-3-D88 (PASO 0 obligatorio: grep contra docs existentes antes de write nuevo, >50% overlap = update existing)
+- next pablo: cuando tengas 10 min, leer postmortem para inform futuros sprints (post-CZ F1 prep, expansion carreras)
+- next claude: continuar cadence 270s con remaining backlog (data_export_compliance, customer_advisory_board) OR transición a passive si lista exhausted
