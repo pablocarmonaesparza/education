@@ -15,7 +15,8 @@
 
 import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Button, Input, Link } from "@heroui/react";
+import { Button, Input } from "@heroui/react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { AuthNav } from "@/components/simulador/AuthNav";
 import { createClient } from "@/lib/supabase/client";
@@ -157,7 +158,7 @@ function LoginContent() {
     <div className="simulador-root min-h-screen surface-canvas">
       <AuthNav mode="login" next={next} />
 
-      <main className="px-6 pt-16 sm:pt-24 pb-24">
+      <main className="px-6 pt-10 sm:pt-14 pb-12">
         <div className="max-w-[400px] mx-auto">
           <motion.div {...fadeUp} className="text-center">
             <h1 className="display display-tight text-[40px] sm:text-[48px] text-[var(--text-primary)]">
@@ -179,7 +180,7 @@ function LoginContent() {
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.08 }}
             onSubmit={handleSubmit}
-            className="mt-10 space-y-3"
+            className="mt-8 space-y-2.5"
           >
             <Input
               type="email"
@@ -229,7 +230,7 @@ function LoginContent() {
           <motion.div
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.12 }}
-            className="mt-7 flex items-center gap-4"
+            className="mt-6 flex items-center gap-4"
           >
             <div className="flex-1 h-px bg-[var(--hairline)]" />
             <span className="text-[12px] text-[var(--text-tertiary)] tracking-wide">
@@ -241,7 +242,7 @@ function LoginContent() {
           <motion.div
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.14 }}
-            className="mt-5"
+            className="mt-4"
           >
             <Button
               type="button"
@@ -279,13 +280,12 @@ function LoginContent() {
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.18 }}
-            className="mt-10 text-center text-[14px] text-[var(--text-secondary)]"
+            className="mt-7 text-center text-[14px] text-[var(--text-secondary)]"
           >
             ¿Aún no tienes cuenta?{" "}
             <Link
               href={`/auth/signup${next !== "/dashboard" ? `?next=${encodeURIComponent(next)}` : ""}`}
               className="text-[var(--accent)] hover:underline font-medium"
-              color="foreground"
             >
               Crear cuenta
             </Link>
