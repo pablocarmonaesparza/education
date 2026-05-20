@@ -158,14 +158,14 @@ function LoginContent() {
     <div className="simulador-root min-h-screen surface-canvas">
       <AuthNav mode="login" next={next} />
 
-      <main className="px-6 pt-16 sm:pt-24 pb-24">
-        <div className="max-w-[400px] mx-auto">
+      <main className="px-6 py-10 min-h-[calc(100vh-3.5rem)] flex items-center justify-center">
+        <div className="max-w-[400px] w-full mx-auto">
           <motion.div {...fadeUp} className="text-center">
             <div className="eyebrow">Cuenta</div>
-            <h1 className="display display-tight mt-5 text-[40px] sm:text-[48px] text-[var(--text-primary)]">
+            <h1 className="display display-tight mt-4 text-[28px] sm:text-[32px] text-[var(--text-primary)] leading-[1.1]">
               Inicia sesión.
             </h1>
-            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+            <p className="mt-3 text-[14px] text-[var(--text-secondary)] leading-[1.5]">
               Continúa donde lo dejaste — diagnóstico, reporte o dashboard.
             </p>
           </motion.div>
@@ -184,7 +184,7 @@ function LoginContent() {
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.08 }}
             onSubmit={handleSubmit}
-            className="mt-10 space-y-3"
+            className="mt-8 space-y-5"
           >
             <AppleInput
               label="Email"
@@ -193,8 +193,7 @@ function LoginContent() {
               value={email}
               onValueChange={setEmail}
               isRequired
-              size="lg"
-              radius="lg"
+              size="md"
               autoComplete="email"
             />
 
@@ -205,8 +204,7 @@ function LoginContent() {
               value={password}
               onValueChange={setPassword}
               isRequired
-              size="lg"
-              radius="lg"
+              size="md"
               autoComplete="current-password"
             />
 
@@ -224,7 +222,7 @@ function LoginContent() {
           <motion.div
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.12 }}
-            className="mt-7 flex items-center gap-4"
+            className="mt-6 flex items-center gap-4"
           >
             <div className="flex-1 h-px bg-[var(--hairline)]" />
             <span className="text-[12px] text-[var(--text-tertiary)] tracking-wide">
@@ -236,7 +234,7 @@ function LoginContent() {
           <motion.div
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.14 }}
-            className="mt-5"
+            className="mt-4"
           >
             <AppleButton
               type="button"
