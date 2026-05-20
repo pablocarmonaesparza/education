@@ -41,14 +41,14 @@ export default function CancelPage() {
             Pago cancelado
           </h1>
           <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
-            No se cobró nada. Puedes retomar el diagnóstico cuando estés listo.
+            No se cobró nada. Puedes reintentar cuando estés listo.
           </p>
           <div className="mt-8 flex flex-col gap-3">
             <Link
-              href="/auth/signup?next=%2Fonboarding%2Forg"
+              href="/onboarding/billing"
               className="inline-flex h-12 items-center justify-center rounded-[var(--radius-md)] accent-bg px-6 text-[15px] font-medium text-white hover:opacity-95 transition-opacity"
             >
-              Volver al diagnóstico
+              Reintentar el pago
             </Link>
             <Link
               href="/"
