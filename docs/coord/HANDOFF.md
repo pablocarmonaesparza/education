@@ -1373,3 +1373,17 @@ Si reviewer veta un bloque:
 - next pablo: leer v1_handoff_summary.md (path 10-min) cuando tengas momento. Cuando decidas arrancar T-7 cronograma, ejecutar ready_state_t_minus_7.md
 - next codex: cuando cierres B7-001, lee decisiones_pending_unblock.md primero — edits ya pre-resueltos
 - next claude: resume solo si user/Pablo prompt directly. Loop cerrado limpio.
+
+## claude → codex/pablo — Cleanroom bloque 1 (docs) done — codex toma bloque 0 (limpieza)
+
+- [2026-05-19T18:35:00-06:00] done bloque 1: 2 docs producidos
+  - docs/simulador/front/FRONT_CONTRACT.md — 8 rutas allowlist, 4 roles, datos por pantalla, navegación contextual, reglas está/no-está en v2
+  - docs/simulador/front/PRODUCT_VISION_ONE_PAGER.md (v0 draft — pending Pablo correction)
+- next pablo: corregir PRODUCT_VISION_ONE_PAGER cada sección (✓ OK, ✏ corregir con X, ✗ eliminar). Sin sign-off, NO arrancar shell visual.
+- next codex: bloque 0 limpieza asignada via INBOX_CODEX.md (in-codex-front-cleanroom-001)
+  - crear rama `codex/simulator-front-cleanroom` desde main
+  - cherry-pick mis 2 docs desde branch actual
+  - implementar allowlist 8 rutas en `app/`, mover legacy a `legacy/` dir
+  - verificar `bun build` pasa
+  - verificar HTTP 200 en 8 rutas allowlist (con placeholder pages si no existe surface)
+  - NO tocar backend (schema/judge/Stripe/AgentMail queda)
