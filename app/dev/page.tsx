@@ -7,6 +7,10 @@
  * a /auth/login y se renderizan sin sesión válida (las APIs pueden devolver
  * empty/error, pero la UI se ve completa).
  *
+ * Cada ruta tiene un botón "marcar como revisada" que persiste en
+ * localStorage (key: itera_dev_reviewed_routes) para trackear progreso
+ * de QA visual.
+ *
  * NUNCA funciona en producción (chequeo de NODE_ENV en los layouts y aquí
  * también — devuelve 404).
  */
@@ -14,7 +18,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../(app)/simulador.css";
 
 const SURFACES: { group: string; routes: { path: string; label: string; note?: string }[] }[] = [
@@ -70,31 +74,70 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
   },
 ];
 
+const REVIEWED_KEY = "itera_dev_reviewed_routes";
+
 function readCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
   return match ? match[2] : null;
 }
 
+function readReviewed(): Set<string> {
+  if (typeof localStorage === "undefined") return new Set();
+  try {
+    const raw = localStorage.getItem(REVIEWED_KEY);
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? new Set(arr) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+function writeReviewed(set: Set<string>) {
+  if (typeof localStorage === "undefined") return;
+  localStorage.setItem(REVIEWED_KEY, JSON.stringify(Array.from(set)));
+}
+
 export default function DevMenuPage() {
   const [bypassActive, setBypassActive] = useState(false);
+  const [reviewed, setReviewed] = useState<Set<string>>(new Set());
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     setBypassActive(readCookie("itera_dev_bypass") === "1");
+    setReviewed(readReviewed());
   }, []);
+
+  const totalRoutes = useMemo(
+    () => SURFACES.reduce((acc, g) => acc + g.routes.length, 0),
+    [],
+  );
 
   function toggleBypass() {
     const newValue = !bypassActive;
     if (newValue) {
-      // Set cookie for 7 days
       document.cookie = `itera_dev_bypass=1; path=/; max-age=${7 * 24 * 60 * 60}`;
     } else {
-      // Remove cookie
       document.cookie = "itera_dev_bypass=; path=/; max-age=0";
     }
     setBypassActive(newValue);
+  }
+
+  function toggleReviewed(path: string) {
+    setReviewed((prev) => {
+      const next = new Set(prev);
+      if (next.has(path)) next.delete(path);
+      else next.add(path);
+      writeReviewed(next);
+      return next;
+    });
+  }
+
+  function resetReviewed() {
+    setReviewed(new Set());
+    writeReviewed(new Set());
   }
 
   if (!mounted) return null;
@@ -102,15 +145,28 @@ export default function DevMenuPage() {
   return (
     <main className="simulador-root min-h-screen surface-canvas px-6 py-12">
       <div className="mx-auto max-w-3xl">
-        <div className="eyebrow">Dev menu</div>
-        <h1 className="display display-tight mt-4 text-[var(--text-primary)] text-[32px]">
-          Acceso a todas las pantallas.
+        <h1 className="display display-tight text-[var(--text-primary)] text-[32px]">
+          Acceso a todas las pantallas
         </h1>
-        <p className="mt-3 text-[15px] text-[var(--text-secondary)] leading-[1.5]">
-          Esta página solo existe en development. Activa el bypass para entrar
-          a rutas protegidas sin login. Algunas APIs devuelven empty/error sin
-          sesión real — el layout y copy sí se renderizan.
-        </p>
+
+        <div className="mt-6 flex items-center gap-3 text-[13px] text-[var(--text-secondary)]">
+          <span>
+            <span className="font-semibold text-[var(--text-primary)]">{reviewed.size}</span>
+            <span> / {totalRoutes} revisadas</span>
+          </span>
+          {reviewed.size > 0 && (
+            <>
+              <span className="text-[var(--hairline-strong)]">·</span>
+              <button
+                type="button"
+                onClick={resetReviewed}
+                className="text-[13px] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors underline underline-offset-2"
+              >
+                Reset
+              </button>
+            </>
+          )}
+        </div>
 
         <div className="mt-8 flex items-center gap-4 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface-2)] p-5">
           <div className="flex-1">
@@ -137,38 +193,98 @@ export default function DevMenuPage() {
         </div>
 
         <div className="mt-12 space-y-10">
-          {SURFACES.map((group) => (
-            <section key={group.group}>
-              <div className="eyebrow">{group.group}</div>
-              <ul className="mt-4 space-y-2">
-                {group.routes.map((r) => (
-                  <li key={r.path}>
-                    <Link
-                      href={r.path}
-                      className="flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-4 py-3 transition-colors hover:bg-[var(--surface-2)]"
-                    >
-                      <div>
-                        <div className="text-[14px] font-medium text-[var(--text-primary)]">
-                          {r.label}
-                        </div>
-                        <div className="mt-0.5 text-[12px] text-[var(--text-tertiary)] font-mono">
-                          {r.path}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        {r.note && (
-                          <span className="text-[11px] text-[var(--text-tertiary)]">
-                            {r.note}
-                          </span>
-                        )}
-                        <span className="text-[var(--text-tertiary)]">→</span>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
+          {SURFACES.map((group) => {
+            const groupReviewed = group.routes.filter((r) => reviewed.has(r.path)).length;
+            return (
+              <section key={group.group}>
+                <div className="flex items-center gap-2">
+                  <div className="eyebrow">{group.group}</div>
+                  <span className="text-[11px] text-[var(--text-tertiary)] tabular-nums">
+                    {groupReviewed}/{group.routes.length}
+                  </span>
+                </div>
+                <ul className="mt-4 space-y-2">
+                  {group.routes.map((r) => {
+                    const isReviewed = reviewed.has(r.path);
+                    return (
+                      <li
+                        key={r.path}
+                        className={`flex items-stretch gap-0 rounded-[var(--radius-md)] border transition-colors ${
+                          isReviewed
+                            ? "border-[#16a34a]/30 bg-[#22c55e]/5"
+                            : "border-[var(--hairline)] bg-[var(--surface)] hover:bg-[var(--surface-2)]"
+                        }`}
+                      >
+                        <Link
+                          href={r.path}
+                          className="flex flex-1 items-center justify-between px-4 py-3"
+                        >
+                          <div>
+                            <div className="text-[14px] font-medium text-[var(--text-primary)]">
+                              {r.label}
+                            </div>
+                            <div className="mt-0.5 text-[12px] text-[var(--text-tertiary)] font-mono">
+                              {r.path}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            {r.note && (
+                              <span className="text-[11px] text-[var(--text-tertiary)]">
+                                {r.note}
+                              </span>
+                            )}
+                            <span className="text-[var(--text-tertiary)]">→</span>
+                          </div>
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() => toggleReviewed(r.path)}
+                          aria-label={isReviewed ? "Marcar como pendiente" : "Marcar como revisada"}
+                          aria-pressed={isReviewed}
+                          title={isReviewed ? "Revisada — click para desmarcar" : "Marcar como revisada"}
+                          className={`flex w-12 items-center justify-center border-l transition-colors ${
+                            isReviewed
+                              ? "border-[#16a34a]/30 bg-[#22c55e] text-white hover:bg-[#16a34a]"
+                              : "border-[var(--hairline)] bg-transparent text-[var(--text-tertiary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
+                          }`}
+                        >
+                          {isReviewed ? (
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              aria-hidden
+                            >
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          ) : (
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              aria-hidden
+                            >
+                              <circle cx="12" cy="12" r="9" />
+                            </svg>
+                          )}
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            );
+          })}
         </div>
 
         <div className="mt-16 rounded-[var(--radius-md)] border border-dashed border-[var(--hairline)] p-5">
@@ -178,8 +294,9 @@ export default function DevMenuPage() {
           <p className="mt-2 text-[12px] text-[var(--text-secondary)] leading-[1.55]">
             El bypass setea cookie <code className="font-mono">itera_dev_bypass=1</code> (7 días).
             Los layouts (app) y (onboarding) la leen en server-side y skip el redirect a /auth/login
-            si <code className="font-mono">NODE_ENV !== "production"</code>. En prod la cookie no tiene
-            efecto. Para limpiar: click "Desactivar".
+            si <code className="font-mono">NODE_ENV !== &quot;production&quot;</code>. En prod la cookie no tiene
+            efecto. Las marcas de "revisada" viven en <code className="font-mono">localStorage</code> del
+            browser (no se sincronizan entre dispositivos). Para limpiar todo: click "Reset" arriba.
           </p>
         </div>
       </div>
