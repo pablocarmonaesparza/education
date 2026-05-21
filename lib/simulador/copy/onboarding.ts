@@ -93,15 +93,15 @@ export const onboardingCopy = {
     region_disclaimer_br:
       "Brasil entra en v2 (LGPD requiere plantillas dedicadas). Te avisamos cuando esté listo — escríbenos para ir a la waitlist.",
     size_options: [
-      { key: "5-9", label: "5–9 participantes (Fase 1 mínimo)" },
-      { key: "10-49", label: "10–49 participantes" },
-      { key: "50-100", label: "50–100 participantes" },
-      { key: "100-300", label: "100–300 participantes (ICP)" },
-      { key: "300-500", label: "300–500 participantes" },
-      { key: "500+", label: "500+ participantes" },
+      { key: "1-10", label: "1–10 empleados" },
+      { key: "11-50", label: "11–50 empleados" },
+      { key: "51-100", label: "51–100 empleados" },
+      { key: "101-300", label: "101–300 empleados" },
+      { key: "301-500", label: "301–500 empleados" },
+      { key: "501+", label: "501+ empleados" },
     ],
     size_help:
-      "El diagnóstico Fase 1 opera con 5–50 asientos. Si tu organización tiene más, lo cotizamos en escalones (Fase 2 bundle).",
+      "El diagnóstico opera con hasta 50 asientos por org. Para organizaciones más grandes lo cotizamos en escalones — escríbenos.",
     submit_cta: "Continuar →",
     error_create: "Error al crear organización. Reintenta.",
     error_duplicate:

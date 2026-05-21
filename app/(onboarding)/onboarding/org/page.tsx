@@ -35,11 +35,12 @@ const REGIONS = [
 ];
 
 const SIZES = [
-  { key: "10-49", label: "10–49 empleados" },
-  { key: "50-100", label: "50–100 empleados" },
-  { key: "100-300", label: "100–300 empleados" },
-  { key: "300-500", label: "300–500 empleados" },
-  { key: "500+", label: "500+ empleados" },
+  { key: "1-10", label: "1–10 empleados" },
+  { key: "11-50", label: "11–50 empleados" },
+  { key: "51-100", label: "51–100 empleados" },
+  { key: "101-300", label: "101–300 empleados" },
+  { key: "301-500", label: "301–500 empleados" },
+  { key: "501+", label: "501+ empleados" },
 ];
 
 export default function OnboardingOrgPage() {
