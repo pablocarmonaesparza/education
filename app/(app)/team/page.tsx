@@ -443,7 +443,7 @@ function CaseCard({ item }: { item: CaseItem }) {
       </div>
 
       {/* TITLE */}
-      <h3 className="mt-4 text-[15.5px] font-semibold leading-[1.3] tracking-tight text-[var(--text-primary)]">
+      <h3 className="mt-4 text-[17px] font-semibold leading-[1.3] tracking-tight text-[var(--text-primary)]">
         {item.title}
       </h3>
 
