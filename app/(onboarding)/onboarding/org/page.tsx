@@ -45,9 +45,9 @@ const SIZES = [
 export default function OnboardingOrgPage() {
   const router = useRouter();
   const [name, setName] = useState("");
-  const [industry, setIndustry] = useState<string>("saas_b2b");
-  const [region, setRegion] = useState<string>("MX");
-  const [size, setSize] = useState<string>("100-300");
+  const [industry, setIndustry] = useState<string>("");
+  const [region, setRegion] = useState<string>("");
+  const [size, setSize] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -94,12 +94,11 @@ export default function OnboardingOrgPage() {
             Cuéntanos sobre tu equipo
           </h1>
 
-          <form onSubmit={onSubmit} className="mt-10 space-y-5">
+          <form onSubmit={onSubmit} className="mt-10 space-y-3">
             <Input
-              label="Nombre de la organización"
               value={name}
               onValueChange={setName}
-              placeholder="Acme LATAM"
+              placeholder="Nombre de la organización"
               variant="bordered"
               radius="lg"
               size="lg"
@@ -107,8 +106,9 @@ export default function OnboardingOrgPage() {
             />
 
             <Select
-              label="Industria"
-              selectedKeys={[industry]}
+              placeholder="Industria"
+              aria-label="Industria"
+              selectedKeys={industry ? [industry] : []}
               onSelectionChange={(keys) =>
                 setIndustry(Array.from(keys)[0] as string)
               }
@@ -122,8 +122,9 @@ export default function OnboardingOrgPage() {
             </Select>
 
             <Select
-              label="Región principal"
-              selectedKeys={[region]}
+              placeholder="Región principal"
+              aria-label="Región principal"
+              selectedKeys={region ? [region] : []}
               onSelectionChange={(keys) =>
                 setRegion(Array.from(keys)[0] as string)
               }
@@ -137,8 +138,9 @@ export default function OnboardingOrgPage() {
             </Select>
 
             <Select
-              label="Tamaño del equipo"
-              selectedKeys={[size]}
+              placeholder="Tamaño del equipo"
+              aria-label="Tamaño del equipo"
+              selectedKeys={size ? [size] : []}
               onSelectionChange={(keys) =>
                 setSize(Array.from(keys)[0] as string)
               }
@@ -161,7 +163,7 @@ export default function OnboardingOrgPage() {
               <Button
                 type="submit"
                 isLoading={submitting}
-                isDisabled={!name.trim() || submitting}
+                isDisabled={!name.trim() || !industry || !region || !size || submitting}
                 radius="md"
                 size="lg"
                 className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none w-full sm:w-auto"

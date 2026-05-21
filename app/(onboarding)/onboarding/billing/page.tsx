@@ -101,7 +101,8 @@ function OnboardingBillingContent() {
 
             <div className="mt-8 max-w-xs">
               <Input
-                label={copy.seats_label}
+                placeholder={copy.seats_label}
+                aria-label={copy.seats_label}
                 type="number"
                 min={computed.plan.minSeats}
                 max={computed.plan.maxSeats}

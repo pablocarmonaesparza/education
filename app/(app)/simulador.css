@@ -315,3 +315,21 @@
   box-shadow: none !important;
   border-color: var(--accent) !important;
 }
+
+/* Placeholder y value uniformes en inputs + select triggers.
+   Patrón Apple HIG: placeholder = nombre del campo en gris claro,
+   se borra al escribir/seleccionar; value = texto en color normal.
+   Esto reemplaza el patrón Material "label flotante" que se veía
+   doble (label + placeholder al mismo tiempo). */
+.simulador-root [data-slot="input"]::placeholder,
+.simulador-root [data-slot="input"]::-webkit-input-placeholder,
+.simulador-root [data-slot="value"][data-has-value="false"] {
+  color: var(--text-tertiary) !important;
+  opacity: 1;
+}
+.simulador-root [data-slot="input"] {
+  color: var(--text-primary);
+}
+.simulador-root [data-slot="value"] {
+  color: var(--text-primary);
+}

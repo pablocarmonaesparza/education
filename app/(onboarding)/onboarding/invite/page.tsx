@@ -110,17 +110,16 @@ export default function OnboardingInvitePage() {
           </h1>
 
           {!result ? (
-            <form onSubmit={onSubmit} className="mt-10 space-y-5">
+            <form onSubmit={onSubmit} className="mt-10 space-y-3">
               <Textarea
-                label="Emails de los participantes"
-                placeholder="ana@empresa.com&#10;juan@empresa.com&#10;maria@empresa.com"
+                placeholder="Emails de los participantes — uno por línea, coma o espacio"
                 value={emailsText}
                 onValueChange={setEmailsText}
                 minRows={6}
                 variant="bordered"
                 radius="lg"
                 size="lg"
-                description={`Separa por comas, espacios o saltos de línea. ${emails.length} email${emails.length === 1 ? "" : "s"} válido${emails.length === 1 ? "" : "s"} detectado${emails.length === 1 ? "" : "s"}.`}
+                description={`${emails.length} email${emails.length === 1 ? "" : "s"} válido${emails.length === 1 ? "" : "s"} detectado${emails.length === 1 ? "" : "s"}`}
               />
 
               {error && (

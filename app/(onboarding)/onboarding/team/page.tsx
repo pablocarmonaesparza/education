@@ -27,8 +27,8 @@ export default function OnboardingTeamPage() {
   const router = useRouter();
   const [orgId, setOrgId] = useState<string | null>(null);
   const [orgName, setOrgName] = useState("");
-  const [name, setName] = useState("Marketing");
-  const [department, setDepartment] = useState("marketing");
+  const [name, setName] = useState("");
+  const [department, setDepartment] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -86,12 +86,11 @@ export default function OnboardingTeamPage() {
             ¿Qué equipo vas a diagnosticar primero?
           </h1>
 
-          <form onSubmit={onSubmit} className="mt-10 space-y-5">
+          <form onSubmit={onSubmit} className="mt-10 space-y-3">
             <Input
-              label="Nombre del equipo"
               value={name}
               onValueChange={setName}
-              placeholder="Marketing"
+              placeholder="Nombre del equipo"
               variant="bordered"
               radius="lg"
               size="lg"
@@ -99,8 +98,9 @@ export default function OnboardingTeamPage() {
             />
 
             <Select
-              label="Función"
-              selectedKeys={[department]}
+              placeholder="Función"
+              aria-label="Función del equipo"
+              selectedKeys={department ? [department] : []}
               onSelectionChange={(keys) =>
                 setDepartment(Array.from(keys)[0] as string)
               }
@@ -132,7 +132,7 @@ export default function OnboardingTeamPage() {
               <Button
                 type="submit"
                 isLoading={submitting}
-                isDisabled={!name.trim() || submitting}
+                isDisabled={!name.trim() || !department || submitting}
                 radius="md"
                 size="lg"
                 className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
