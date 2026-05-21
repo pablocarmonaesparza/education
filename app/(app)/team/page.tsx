@@ -1,176 +1,259 @@
 "use client";
 
 /**
- * /team — dashboard del employee (catálogo de casos disponibles).
+ * /team — dashboard del employee (catálogo de casos).
  *
- * Patrón HIG: H1 display + subtítulo + 4 selects HeroUI horizontales
- * (estilo /onboarding/org) + grid de cards con borde + hover lift.
+ * Modelo de datos alineado a docs/simulador/case_factory/CASE_SCHEMA.yaml
+ * y CASE_TAXONOMY.yaml. Mock data ahora respeta:
+ *   - level (N1/N2/N3)
+ *   - estimated_minutes
+ *   - tags.departments / industries / role_families / seniority
+ *   - tools.required
+ *   - manager_outcome.primary_question (= pitch del caso)
+ *   - freshness (evergreen / current / hybrid + last_verified_at)
  *
- * Mock data por ahora hasta que cableemos con simulador.case_templates.
+ * Filtros canónicos: Nivel · Departamento · Duración · Frescura.
  */
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Select, SelectItem } from "@heroui/react";
 
-type Level = "basico" | "intermedio" | "avanzado";
-type Perfil =
+type Level = "N1" | "N2" | "N3";
+type Department =
   | "marketing"
   | "growth"
-  | "ops"
-  | "ventas"
+  | "sales"
   | "customer_success"
-  | "ingenieria"
-  | "hr";
+  | "operations"
+  | "finance"
+  | "hr"
+  | "legal"
+  | "product"
+  | "engineering_light"
+  | "leadership";
+type Seniority = "junior" | "mid" | "senior" | "manager" | "director";
+type Industry =
+  | "saas_b2b"
+  | "ecommerce"
+  | "fintech"
+  | "education"
+  | "healthcare"
+  | "retail"
+  | "professional_services";
+type Freshness = "evergreen" | "current" | "hybrid";
 type DuracionBucket = "corto" | "medio" | "largo";
-type Programa = "diagnostico" | "sprint" | "track";
 
 interface CaseItem {
   slug: string;
   title: string;
-  pitch: string;
+  primaryQuestion: string;
   level: Level;
-  perfil: Perfil;
-  durationMin: number;
-  programa: Programa;
+  department: Department;
+  industry: Industry;
+  seniority: Seniority;
+  estimatedMinutes: number;
+  freshnessType: Freshness;
+  lastVerifiedAt?: string; // ISO date — solo cuando current/hybrid
+  toolsRequired: string[];
 }
 
 // ============================================================================
-// MOCK DATA — reemplazar por fetch a /api/cases cuando se cablee BD.
+// MOCK CATALOG — alineado a CASE_SCHEMA. Reemplazar por /api/cases en BD.
 // ============================================================================
 
 const CASES: CaseItem[] = [
   {
+    slug: "sales_agent_followup_pipeline_v1",
+    title: "Agente de follow-up para oportunidades calientes",
+    primaryQuestion:
+      "¿Puede delegar follow-up sin perder control comercial ni privacidad?",
+    level: "N3",
+    department: "sales",
+    industry: "saas_b2b",
+    seniority: "manager",
+    estimatedMinutes: 24,
+    freshnessType: "current",
+    lastVerifiedAt: "2026-05-20",
+    toolsRequired: ["ChatGPT", "HubSpot", "Gmail"],
+  },
+  {
     slug: "marketing_urgent_campaign_pii",
     title: "Campaña urgente con datos sensibles",
-    pitch: "El CEO te pide lanzar mañana. El CSV tiene PII.",
-    level: "intermedio",
-    perfil: "marketing",
-    durationMin: 18,
-    programa: "diagnostico",
+    primaryQuestion:
+      "¿Sabe encuadrar urgencia comercial protegiendo privacidad de clientes?",
+    level: "N1",
+    department: "marketing",
+    industry: "saas_b2b",
+    seniority: "mid",
+    estimatedMinutes: 18,
+    freshnessType: "evergreen",
+    toolsRequired: ["ChatGPT"],
+  },
+  {
+    slug: "ops_invoice_reconciliation",
+    title: "Conciliación de facturas con IA",
+    primaryQuestion:
+      "¿Puede automatizar el match contra ERP sin perder control de cierre de mes?",
+    level: "N2",
+    department: "operations",
+    industry: "professional_services",
+    seniority: "mid",
+    estimatedMinutes: 22,
+    freshnessType: "hybrid",
+    lastVerifiedAt: "2026-04-10",
+    toolsRequired: ["Claude", "Excel"],
+  },
+  {
+    slug: "cs_churn_signal_review",
+    title: "Detección de churn con health score",
+    primaryQuestion:
+      "¿Identifica cuentas críticas sin sobre-confiar en el score del modelo?",
+    level: "N2",
+    department: "customer_success",
+    industry: "saas_b2b",
+    seniority: "senior",
+    estimatedMinutes: 25,
+    freshnessType: "current",
+    lastVerifiedAt: "2026-05-12",
+    toolsRequired: ["ChatGPT", "Salesforce", "Looker"],
   },
   {
     slug: "growth_attribution_anomaly",
     title: "Anomalía en atribución de ads",
-    pitch: "El reporte semanal muestra ROAS 4×. Algo no cuadra.",
-    level: "intermedio",
-    perfil: "growth",
-    durationMin: 20,
-    programa: "sprint",
+    primaryQuestion:
+      "¿Distingue un dato roto de una señal real antes de decidir budget?",
+    level: "N2",
+    department: "growth",
+    industry: "ecommerce",
+    seniority: "mid",
+    estimatedMinutes: 20,
+    freshnessType: "current",
+    lastVerifiedAt: "2026-05-05",
+    toolsRequired: ["ChatGPT", "Google Analytics", "Meta Ads"],
   },
   {
-    slug: "ops_invoice_reconciliation",
-    title: "Conciliación de facturas pendientes",
-    pitch: "30 facturas sin match contra el ERP. Cierre de mes.",
-    level: "basico",
-    perfil: "ops",
-    durationMin: 12,
-    programa: "diagnostico",
+    slug: "hr_candidate_screening_with_ai",
+    title: "Screening de candidatos asistido por IA",
+    primaryQuestion:
+      "¿Reduce sesgos sin perder de vista señales humanas claves?",
+    level: "N1",
+    department: "hr",
+    industry: "professional_services",
+    seniority: "mid",
+    estimatedMinutes: 15,
+    freshnessType: "evergreen",
+    toolsRequired: ["ChatGPT"],
   },
   {
-    slug: "sales_qbr_summary",
-    title: "Resumen QBR para C-level",
-    pitch: "5 cuentas claves. Tienes 1 hora.",
-    level: "avanzado",
-    perfil: "ventas",
-    durationMin: 22,
-    programa: "sprint",
+    slug: "finance_board_memo_under_deadline",
+    title: "Memo al board en 1 hora",
+    primaryQuestion:
+      "¿Convierte data financiera en narrativa C-level sin pretextos ni adornos?",
+    level: "N1",
+    department: "finance",
+    industry: "fintech",
+    seniority: "senior",
+    estimatedMinutes: 18,
+    freshnessType: "evergreen",
+    toolsRequired: ["Claude"],
   },
   {
-    slug: "cs_churn_detection",
-    title: "Detección de churn temprano",
-    pitch: "Health score de 200 cuentas. Marca las 10 críticas.",
-    level: "intermedio",
-    perfil: "customer_success",
-    durationMin: 25,
-    programa: "track",
+    slug: "legal_contract_redline_assist",
+    title: "Redline de contrato MSA con IA",
+    primaryQuestion:
+      "¿Identifica cláusulas de riesgo y cuándo escalar al abogado externo?",
+    level: "N2",
+    department: "legal",
+    industry: "saas_b2b",
+    seniority: "manager",
+    estimatedMinutes: 28,
+    freshnessType: "current",
+    lastVerifiedAt: "2026-05-15",
+    toolsRequired: ["ChatGPT", "Notion"],
   },
   {
-    slug: "eng_pr_review_under_pressure",
-    title: "Code review bajo presión de release",
-    pitch: "PR de 800 líneas, deploy en 2 horas.",
-    level: "avanzado",
-    perfil: "ingenieria",
-    durationMin: 28,
-    programa: "track",
+    slug: "product_pricing_test_call",
+    title: "Llamada de pricing test al PM",
+    primaryQuestion:
+      "¿Recomienda subida de precios con datos suficientes o solo intuición?",
+    level: "N2",
+    department: "product",
+    industry: "saas_b2b",
+    seniority: "manager",
+    estimatedMinutes: 22,
+    freshnessType: "hybrid",
+    lastVerifiedAt: "2026-04-22",
+    toolsRequired: ["ChatGPT", "Mixpanel"],
   },
   {
-    slug: "hr_candidate_screening",
-    title: "Screening de 50 candidatos",
-    pitch: "Posición tech lead. CVs anonimizados parcialmente.",
-    level: "basico",
-    perfil: "hr",
-    durationMin: 15,
-    programa: "diagnostico",
+    slug: "marketing_competitor_response_agent",
+    title: "Agente de respuesta a competencia",
+    primaryQuestion:
+      "¿Diseña respuesta táctica con autonomía limitada y monitoreo claro?",
+    level: "N3",
+    department: "marketing",
+    industry: "saas_b2b",
+    seniority: "director",
+    estimatedMinutes: 32,
+    freshnessType: "current",
+    lastVerifiedAt: "2026-05-18",
+    toolsRequired: ["Claude", "Zapier", "Slack"],
   },
   {
-    slug: "marketing_competitor_response",
-    title: "Respuesta a campaña de competencia",
-    pitch: "Lanzaron hoy. Mañana sales pregunta qué hacer.",
-    level: "avanzado",
-    perfil: "marketing",
-    durationMin: 30,
-    programa: "sprint",
+    slug: "leadership_layoff_communication",
+    title: "Comunicación de layoffs con asistencia IA",
+    primaryQuestion:
+      "¿Mantiene empatía + claridad sin que la IA suene corporativa fría?",
+    level: "N1",
+    department: "leadership",
+    industry: "saas_b2b",
+    seniority: "director",
+    estimatedMinutes: 14,
+    freshnessType: "evergreen",
+    toolsRequired: ["Claude"],
   },
   {
-    slug: "growth_pricing_test",
-    title: "Test de pricing en landing",
-    pitch: "PM quiere subir 20%. Tienes 24h para opinar.",
-    level: "intermedio",
-    perfil: "growth",
-    durationMin: 18,
-    programa: "sprint",
-  },
-  {
-    slug: "ops_supplier_evaluation",
-    title: "Evaluación de proveedor nuevo",
-    pitch: "Propuesta de 40 páginas. Compras pide tu read.",
-    level: "intermedio",
-    perfil: "ops",
-    durationMin: 25,
-    programa: "track",
-  },
-  {
-    slug: "sales_lost_deal_postmortem",
-    title: "Postmortem de deal perdido $200k",
-    pitch: "RFP gigante. Perdimos por 'fit'. Investiga.",
-    level: "avanzado",
-    perfil: "ventas",
-    durationMin: 35,
-    programa: "track",
-  },
-  {
-    slug: "cs_renewal_negotiation",
-    title: "Negociación de renovación",
-    pitch: "Cliente $500k/año. Pide 30% descuento.",
-    level: "avanzado",
-    perfil: "customer_success",
-    durationMin: 22,
-    programa: "sprint",
+    slug: "engineering_pr_review_under_pressure",
+    title: "Code review de PR grande bajo deadline",
+    primaryQuestion:
+      "¿Valida outputs de IA cuando el deploy es en 2 horas y el PR tiene 800 líneas?",
+    level: "N3",
+    department: "engineering_light",
+    industry: "saas_b2b",
+    seniority: "senior",
+    estimatedMinutes: 30,
+    freshnessType: "current",
+    lastVerifiedAt: "2026-05-10",
+    toolsRequired: ["Cursor", "GitHub Copilot"],
   },
 ];
 
 // ============================================================================
-// FILTRO definitions
+// LABEL maps
 // ============================================================================
 
-const LEVELS: { value: Level; label: string }[] = [
-  { value: "basico", label: "Básico" },
-  { value: "intermedio", label: "Intermedio" },
-  { value: "avanzado", label: "Avanzado" },
+const LEVEL_OPTIONS: { value: Level; label: string }[] = [
+  { value: "N1", label: "N1 · Fundamentos" },
+  { value: "N2", label: "N2 · Workflow" },
+  { value: "N3", label: "N3 · Agentes" },
 ];
 
-const PERFILES: { value: Perfil; label: string }[] = [
+const DEPARTMENT_OPTIONS: { value: Department; label: string }[] = [
   { value: "marketing", label: "Marketing" },
   { value: "growth", label: "Growth" },
-  { value: "ops", label: "Operaciones" },
-  { value: "ventas", label: "Ventas" },
+  { value: "sales", label: "Ventas" },
   { value: "customer_success", label: "Customer Success" },
-  { value: "ingenieria", label: "Ingeniería" },
+  { value: "operations", label: "Operaciones" },
+  { value: "finance", label: "Finanzas" },
   { value: "hr", label: "HR" },
+  { value: "legal", label: "Legal" },
+  { value: "product", label: "Producto" },
+  { value: "engineering_light", label: "Ingeniería" },
+  { value: "leadership", label: "Liderazgo" },
 ];
 
-const DURACIONES: {
+const DURACION_OPTIONS: {
   value: DuracionBucket;
   label: string;
   check: (m: number) => boolean;
@@ -180,21 +263,36 @@ const DURACIONES: {
   { value: "largo", label: "Más de 30 min", check: (m) => m > 30 },
 ];
 
-const PROGRAMAS: { value: Programa; label: string }[] = [
-  { value: "diagnostico", label: "Diagnóstico" },
-  { value: "sprint", label: "Sprint" },
-  { value: "track", label: "Track" },
+const FRESHNESS_OPTIONS: { value: Freshness; label: string }[] = [
+  { value: "current", label: "Actualizado" },
+  { value: "evergreen", label: "Clásico" },
+  { value: "hybrid", label: "Híbrido" },
 ];
 
-const LEVEL_LABEL: Record<Level, string> = Object.fromEntries(
-  LEVELS.map((l) => [l.value, l.label]),
-) as Record<Level, string>;
-const PERFIL_LABEL: Record<Perfil, string> = Object.fromEntries(
-  PERFILES.map((p) => [p.value, p.label]),
-) as Record<Perfil, string>;
-const PROGRAMA_LABEL: Record<Programa, string> = Object.fromEntries(
-  PROGRAMAS.map((p) => [p.value, p.label]),
-) as Record<Programa, string>;
+const LEVEL_SHORT: Record<Level, string> = {
+  N1: "N1",
+  N2: "N2",
+  N3: "N3",
+};
+const DEPARTMENT_LABEL: Record<Department, string> = Object.fromEntries(
+  DEPARTMENT_OPTIONS.map((d) => [d.value, d.label]),
+) as Record<Department, string>;
+const SENIORITY_LABEL: Record<Seniority, string> = {
+  junior: "Junior",
+  mid: "Mid",
+  senior: "Senior",
+  manager: "Manager",
+  director: "Director",
+};
+const INDUSTRY_LABEL: Record<Industry, string> = {
+  saas_b2b: "SaaS B2B",
+  ecommerce: "Ecommerce",
+  fintech: "Fintech",
+  education: "Educación",
+  healthcare: "Salud",
+  retail: "Retail",
+  professional_services: "Servicios prof.",
+};
 
 // ============================================================================
 // COMPONENT
@@ -220,15 +318,11 @@ function FilterSelect<T extends string>({
         const next = Array.from(keys)[0] as T | undefined;
         onChange(next ?? "");
       }}
-      // isClearable muestra una X chiquita junto al chevron cuando hay valor.
-      // onClear limpia el state local (pasamos "" para reset).
       isClearable={!!value}
       onClear={() => onChange("")}
       variant="bordered"
       radius="lg"
       size="lg"
-      // is-filter-active dispara el border-accent del simulador.css cuando hay
-      // valor seleccionado, para señalar visualmente que ese filtro está aplicado.
       className={`min-w-[180px] flex-1 ${value ? "is-filter-active" : ""}`}
     >
       {options.map((opt) => (
@@ -238,27 +332,79 @@ function FilterSelect<T extends string>({
   );
 }
 
+function FreshnessBadge({
+  freshness,
+  lastVerifiedAt,
+}: {
+  freshness: Freshness;
+  lastVerifiedAt?: string;
+}) {
+  if (freshness === "evergreen") return null;
+  const dateLabel = lastVerifiedAt
+    ? new Date(lastVerifiedAt).toLocaleDateString("es-ES", {
+        month: "short",
+        year: "numeric",
+      })
+    : null;
+  return (
+    <span className="inline-flex items-center gap-1 text-[11px] text-[var(--text-tertiary)]">
+      <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+      {dateLabel ? `act. ${dateLabel}` : "actualizado"}
+    </span>
+  );
+}
+
 function CaseCard({ item }: { item: CaseItem }) {
   return (
     <Link
       href={`/case/${item.slug}`}
       className="group flex flex-col rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--border-strong)] hover:shadow-[0_4px_16px_var(--shadow)]"
     >
-      <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-        <span>{PROGRAMA_LABEL[item.programa]}</span>
-        <span aria-hidden>·</span>
-        <span>{item.durationMin} min</span>
+      {/* TOP: nivel chip + duración + frescura */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center rounded-md bg-[var(--accent-soft)] px-1.5 py-0.5 text-[10.5px] font-semibold text-[var(--accent)] tracking-wider">
+            {LEVEL_SHORT[item.level]}
+          </span>
+          <span className="text-[11.5px] text-[var(--text-tertiary)]">
+            {item.estimatedMinutes} min
+          </span>
+        </div>
+        <FreshnessBadge
+          freshness={item.freshnessType}
+          lastVerifiedAt={item.lastVerifiedAt}
+        />
       </div>
-      <h3 className="mt-3 text-[15.5px] font-semibold leading-[1.3] tracking-tight text-[var(--text-primary)]">
+
+      {/* TITLE */}
+      <h3 className="mt-4 text-[15.5px] font-semibold leading-[1.3] tracking-tight text-[var(--text-primary)]">
         {item.title}
       </h3>
-      <p className="mt-2 text-[13px] leading-[1.5] text-[var(--text-secondary)] line-clamp-2">
-        {item.pitch}
+
+      {/* MANAGER QUESTION = pitch */}
+      <p className="mt-2 text-[13px] leading-[1.5] text-[var(--text-secondary)] line-clamp-3">
+        {item.primaryQuestion}
       </p>
-      <div className="mt-5 flex items-center gap-1.5 text-[12px] text-[var(--text-secondary)]">
-        <span>{PERFIL_LABEL[item.perfil]}</span>
+
+      {/* TOOLS */}
+      <div className="mt-4 flex flex-wrap gap-1">
+        {item.toolsRequired.slice(0, 3).map((tool) => (
+          <span
+            key={tool}
+            className="inline-flex items-center rounded-md bg-[var(--surface-2)] px-1.5 py-0.5 text-[11px] text-[var(--text-secondary)]"
+          >
+            {tool}
+          </span>
+        ))}
+      </div>
+
+      {/* FOOTER: depto · seniority · industria */}
+      <div className="mt-5 flex items-center gap-1.5 text-[11.5px] text-[var(--text-tertiary)]">
+        <span>{DEPARTMENT_LABEL[item.department]}</span>
         <span aria-hidden>·</span>
-        <span>{LEVEL_LABEL[item.level]}</span>
+        <span>{SENIORITY_LABEL[item.seniority]}</span>
+        <span aria-hidden>·</span>
+        <span>{INDUSTRY_LABEL[item.industry]}</span>
       </div>
     </Link>
   );
@@ -266,31 +412,31 @@ function CaseCard({ item }: { item: CaseItem }) {
 
 export default function TeamPage() {
   const [level, setLevel] = useState<Level | "">("");
-  const [perfil, setPerfil] = useState<Perfil | "">("");
+  const [department, setDepartment] = useState<Department | "">("");
   const [duracion, setDuracion] = useState<DuracionBucket | "">("");
-  const [programa, setPrograma] = useState<Programa | "">("");
+  const [freshness, setFreshness] = useState<Freshness | "">("");
 
   const filtered = useMemo(() => {
     return CASES.filter((c) => {
       if (level && c.level !== level) return false;
-      if (perfil && c.perfil !== perfil) return false;
-      if (programa && c.programa !== programa) return false;
+      if (department && c.department !== department) return false;
+      if (freshness && c.freshnessType !== freshness) return false;
       if (duracion) {
-        const d = DURACIONES.find((x) => x.value === duracion);
-        if (d && !d.check(c.durationMin)) return false;
+        const d = DURACION_OPTIONS.find((x) => x.value === duracion);
+        if (d && !d.check(c.estimatedMinutes)) return false;
       }
       return true;
     });
-  }, [level, perfil, duracion, programa]);
+  }, [level, department, duracion, freshness]);
 
   const anyFilterActive =
-    level !== "" || perfil !== "" || duracion !== "" || programa !== "";
+    level !== "" || department !== "" || duracion !== "" || freshness !== "";
 
   function clearAll() {
     setLevel("");
-    setPerfil("");
+    setDepartment("");
     setDuracion("");
-    setPrograma("");
+    setFreshness("");
   }
 
   return (
@@ -302,39 +448,42 @@ export default function TeamPage() {
             Catálogo de casos
           </h1>
           <p className="mt-3 text-[15px] text-[var(--text-secondary)] leading-[1.55] max-w-[640px]">
-            Elige un caso para empezar tu diagnóstico. Cada caso dura entre 12
-            y 35 minutos y evalúa tu criterio en 5 dimensiones.
+            Elige un caso para empezar tu diagnóstico. Cada caso mide tu
+            criterio operativo bajo presión real con IA — no tu memoria.
           </p>
         </header>
 
-        {/* ============ FILTROS (selects horizontales estilo onboarding) ============ */}
+        {/* ============ FILTROS canónicos ============ */}
         <section
           aria-label="Filtros"
           className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
         >
           <FilterSelect
             placeholder="Nivel"
-            options={LEVELS}
+            options={LEVEL_OPTIONS}
             value={level}
             onChange={setLevel}
           />
           <FilterSelect
-            placeholder="Perfil"
-            options={PERFILES}
-            value={perfil}
-            onChange={setPerfil}
+            placeholder="Departamento"
+            options={DEPARTMENT_OPTIONS}
+            value={department}
+            onChange={setDepartment}
           />
           <FilterSelect
             placeholder="Duración"
-            options={DURACIONES.map(({ value, label }) => ({ value, label }))}
+            options={DURACION_OPTIONS.map(({ value, label }) => ({
+              value,
+              label,
+            }))}
             value={duracion}
             onChange={setDuracion}
           />
           <FilterSelect
-            placeholder="Programa"
-            options={PROGRAMAS}
-            value={programa}
-            onChange={setPrograma}
+            placeholder="Frescura"
+            options={FRESHNESS_OPTIONS}
+            value={freshness}
+            onChange={setFreshness}
           />
         </section>
 
@@ -363,7 +512,7 @@ export default function TeamPage() {
           )}
         </div>
 
-        {/* ============ GRID DE CASOS ============ */}
+        {/* ============ GRID ============ */}
         {filtered.length > 0 ? (
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((item) => (
@@ -376,8 +525,7 @@ export default function TeamPage() {
               No hay casos con esos filtros
             </div>
             <p className="mt-2 text-[13.5px] text-[var(--text-secondary)] max-w-[360px]">
-              Prueba quitando alguno o usa el botón de arriba para limpiarlos
-              todos.
+              Prueba quitando alguno o limpia todos arriba.
             </p>
           </div>
         )}
