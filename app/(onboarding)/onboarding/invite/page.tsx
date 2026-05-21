@@ -79,12 +79,41 @@ export default function OnboardingInvitePage() {
   async function copyInviteLink() {
     if (!orgId) return;
     const url = `${window.location.origin}/join/${orgId}`;
-    try {
-      await navigator.clipboard.writeText(url);
+    // Estrategia tier:
+    //   1. navigator.clipboard.writeText (moderno, requiere user gesture
+    //      + secure context). En localhost suele funcionar, pero algunos
+    //      navegadores estrictos lo bloquean si el document perdió focus.
+    //   2. fallback document.execCommand('copy') con textarea oculto
+    //      (deprecated pero más permisivo en contextos donde el moderno falla).
+    //   3. prompt como último recurso (usuario hace el copy manual).
+    let ok = false;
+    if (navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(url);
+        ok = true;
+      } catch {
+        ok = false;
+      }
+    }
+    if (!ok) {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = url;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        ta.style.pointerEvents = "none";
+        document.body.appendChild(ta);
+        ta.select();
+        ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+      } catch {
+        ok = false;
+      }
+    }
+    if (ok) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
-    } catch {
-      // fallback: prompt
+    } else {
       window.prompt("Copia el enlace:", url);
     }
   }
