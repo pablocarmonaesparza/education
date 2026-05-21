@@ -11,6 +11,9 @@ type BrandKey = "internal" | "openai" | "anthropic" | "google" | "qwen" | "deeps
 type Level5 = 1 | 2 | 3 | 4 | 5;
 type ModelMetric = "intelligence" | "security" | "cost";
 type VoiceRecState = "idle" | "recording" | "processing" | "error";
+type AgentBriefField = "task" | "access" | "action" | "stop";
+
+type AgentBriefState = Record<AgentBriefField, string>;
 
 type PromptAttachment = {
   id: string;
@@ -206,9 +209,9 @@ const exerciseList = [
   {
     id: "agent-brief",
     eyebrow: "07 · Brief para agente",
-    title: "Delegar sin perder control.",
+    title: "Delegar una tarea sin perder control.",
     description:
-      "El participante define objetivo, permisos, límites y fallback para un agente. Es central para nivel 3: agentes en producción.",
+      "El participante convierte una tarea de cualquier área en un encargo operable: qué debe lograr, qué puede usar, qué puede hacer y cuándo debe detenerse.",
     signals: ["ejecución IA", "juicio", "datos"],
   },
   {
@@ -299,6 +302,45 @@ const workflowSteps = [
   "Entrega a Ventas",
 ];
 
+const agentBriefOptions: Record<AgentBriefField, { label: string; options: string[] }> = {
+  task: {
+    label: "Tarea",
+    options: [
+      "Ordenar insumos y detectar lo importante",
+      "Preparar un borrador para revisión",
+      "Comparar opciones y mostrar tradeoffs",
+      "Actualizar un registro con aprobación",
+    ],
+  },
+  access: {
+    label: "Acceso",
+    options: [
+      "Sólo documentos aprobados del caso",
+      "Datos agregados sin nombres ni correos",
+      "Notas internas marcadas como compartibles",
+      "Salida de otro sistema ya revisada",
+    ],
+  },
+  action: {
+    label: "Acción máxima",
+    options: [
+      "Sugerir, no ejecutar",
+      "Crear borrador interno",
+      "Clasificar y priorizar",
+      "Preparar cambio para aprobación",
+    ],
+  },
+  stop: {
+    label: "Condición de paro",
+    options: [
+      "Aparece dato sensible",
+      "Falta una fuente verificable",
+      "Hay impacto externo",
+      "La instrucción contradice una política",
+    ],
+  },
+};
+
 const runLogs = [
   { id: "l1", text: "09:02 · Agente leyó cuentas asignadas", severity: "ok" },
   { id: "l2", text: "09:03 · Incluyó correo personal en borrador", severity: "high" },
@@ -366,7 +408,12 @@ export function ExerciseLabClient() {
     "Marcar afirmaciones sin fuente",
     "Revisión humana",
   ]);
-  const [agentFallback, setAgentFallback] = useState("Pausar y pedir revisión humana");
+  const [agentBrief, setAgentBrief] = useState<AgentBriefState>({
+    task: "",
+    access: "",
+    action: "",
+    stop: "",
+  });
   const [logFlags, setLogFlags] = useState<string[]>(["l2", "l3"]);
   const [pivotFilter, setPivotFilter] = useState("riesgo");
   const [decision, setDecision] = useState("pilot");
@@ -457,7 +504,7 @@ export function ExerciseLabClient() {
               <WorkflowBuilder enabledSteps={enabledSteps} setEnabledSteps={setEnabledSteps} />
             )}
             {exercise.id === "agent-brief" && (
-              <AgentBrief fallback={agentFallback} setFallback={setAgentFallback} />
+              <AgentBrief value={agentBrief} setValue={setAgentBrief} />
             )}
             {exercise.id === "logs" && (
               <LogReview flags={logFlags} setFlags={setLogFlags} />
@@ -1923,33 +1970,88 @@ function WorkflowBuilder({
 }
 
 function AgentBrief({
-  fallback,
-  setFallback,
+  value,
+  setValue,
 }: {
-  fallback: string;
-  setFallback: (value: string) => void;
+  value: AgentBriefState;
+  setValue: (value: AgentBriefState) => void;
 }) {
+  const fields: AgentBriefField[] = ["task", "access", "action", "stop"];
+  const completed = fields.filter((field) => value[field]).length;
+
+  function updateField(field: AgentBriefField, nextValue: string) {
+    setValue({ ...value, [field]: nextValue });
+  }
+
   return (
-    <div className="grid gap-5 md:grid-cols-2">
-      <div>
-        <Label>Objetivo del agente</Label>
-        <div className="mt-2 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-[15px] leading-6 text-[var(--text-primary)]">
-          Preparar borradores de seguimiento para cuentas inactivas, sin enviar nada al cliente.
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
+        <div className="max-w-2xl">
+          <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+            Encargo controlado
+          </div>
+          <p className="mt-2 text-[15px] leading-6 text-[var(--text-secondary)]">
+            Un agente no recibe una instrucción abierta. Recibe una tarea, acceso limitado, una acción máxima y una regla clara para detenerse.
+          </p>
+        </div>
+
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          {fields.map((field) => {
+            const group = agentBriefOptions[field];
+            return (
+              <div key={field} className="rounded-2xl bg-[var(--surface-2)] p-3">
+                <Label>{group.label}</Label>
+                <div className="mt-3 grid gap-2">
+                  {group.options.map((option) => (
+                    <GuidedOption
+                      key={option}
+                      selected={value[field] === option}
+                      onClick={() => updateField(field, option)}
+                    >
+                      {option}
+                    </GuidedOption>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
-      <div>
-        <Label>Fallback obligatorio</Label>
-        <textarea
-          value={fallback}
-          onChange={(event) => setFallback(event.target.value)}
-          rows={5}
-          className="mt-2 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
-        />
+
+      <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
+        <div className="flex items-center justify-between gap-3">
+          <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+            Brief generado
+          </div>
+          <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[12px] text-[var(--text-secondary)]">
+            {completed}/4
+          </span>
+        </div>
+
+        <div className="mt-4 grid gap-3">
+          <AgentBriefLine label="Tarea" value={value.task} />
+          <AgentBriefLine label="Acceso permitido" value={value.access} />
+          <AgentBriefLine label="Puede hacer" value={value.action} />
+          <AgentBriefLine label="Debe detenerse si" value={value.stop} />
+        </div>
+
+        <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
+          <div className="text-[12px] font-medium text-[var(--text-tertiary)]">Salida esperada</div>
+          <p className="mt-2 text-[14px] leading-6 text-[var(--text-secondary)]">
+            Entregar un borrador o recomendación con supuestos visibles, dudas abiertas y siguiente paso para revisión humana.
+          </p>
+        </div>
       </div>
-      <div className="md:col-span-2 grid gap-3 sm:grid-cols-3">
-        <Fact label="Permiso" value="Borradores internos" />
-        <Fact label="Bloqueo" value="Envío externo" />
-        <Fact label="Monitoreo" value="Logs y revisión" />
+    </div>
+  );
+}
+
+function AgentBriefLine({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
+      <div className="text-[12px] text-[var(--text-tertiary)]">{label}</div>
+      <div className={`mt-1 min-h-5 text-[14px] leading-snug ${value ? "text-[var(--text-primary)]" : "text-[var(--text-tertiary)]"}`}>
+        {value || "\u00A0"}
       </div>
     </div>
   );
