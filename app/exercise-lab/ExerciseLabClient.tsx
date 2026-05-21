@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { RuntimeNav } from "@/components/simulador/RuntimeNav";
 
@@ -356,19 +356,6 @@ export function ExerciseLabClient() {
     "Recomiendo piloto interno antes de envío externo. Hay señales útiles, pero dos afirmaciones requieren fuente y los datos personales deben salir del borrador.",
   );
 
-  const guidedPromptPreview = useMemo(
-    () => {
-      const selected = findModelById(guidedModel);
-      const notes =
-        guidedVoiceNotes.length > 0
-          ? `\nNotas de voz: ${guidedVoiceNotes.map((note, index) => `${index + 1}. ${note}`).join(" ")}`
-          : "";
-      const basePrompt = guidedPrompt.trim() || "Aún no hay prompt creado.";
-      return `${basePrompt}${notes}\n\nModelo: ${selected.label}${selected.badge ? ` · ${selected.badge}` : ""}.\nPrioridades: autonomía ${guidedAutonomy}/100 · seguridad ${guidedSecurity}/100 · costo ${guidedCost}/100.`;
-    },
-    [guidedAutonomy, guidedCost, guidedModel, guidedPrompt, guidedSecurity, guidedVoiceNotes],
-  );
-
   function handleScroll(event: React.UIEvent<HTMLElement>) {
     const target = event.currentTarget;
     const nextIndex = Math.round(target.scrollTop / target.clientHeight);
@@ -404,7 +391,6 @@ export function ExerciseLabClient() {
               <GuidedPromptExercise
                 prompt={guidedPrompt}
                 setPrompt={setGuidedPrompt}
-                promptPreview={guidedPromptPreview}
                 model={guidedModel}
                 setModel={setGuidedModel}
                 voiceNotes={guidedVoiceNotes}
@@ -527,16 +513,6 @@ function ExerciseSection({
             {exercise.description}
           </p>
           <div className="mt-6">{children}</div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {exercise.signals.map((signal) => (
-              <span
-                key={signal}
-                className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[13px] text-[var(--text-secondary)]"
-              >
-                {signal}
-              </span>
-            ))}
-          </div>
         </div>
       </section>
     );
@@ -557,16 +533,6 @@ function ExerciseSection({
           <p className="mt-5 text-[16px] leading-[1.65] text-[var(--text-secondary)]">
             {exercise.description}
           </p>
-          <div className="mt-6 flex flex-wrap gap-2">
-            {exercise.signals.map((signal) => (
-              <span
-                key={signal}
-                className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[13px] text-[var(--text-secondary)]"
-              >
-                {signal}
-              </span>
-            ))}
-          </div>
           <div className="mt-8 text-[13px] text-[var(--text-tertiary)]">
             bloque {String(index + 1).padStart(2, "0")} / {exerciseList.length}
           </div>
@@ -610,7 +576,6 @@ function FreePromptExercise({
 function GuidedPromptExercise({
   prompt,
   setPrompt,
-  promptPreview,
   model,
   setModel,
   voiceNotes,
@@ -630,7 +595,6 @@ function GuidedPromptExercise({
 }: {
   prompt: string;
   setPrompt: (value: string) => void;
-  promptPreview: string;
   model: string;
   setModel: (value: string) => void;
   voiceNotes: string[];
@@ -649,7 +613,16 @@ function GuidedPromptExercise({
   setCost: (value: number) => void;
 }) {
   const [slide, setSlide] = useState(0);
-  const slides = ["Objetivo", "Audiencia", "Límites", "Ajustes"];
+  const slides = ["Objetivo", "Audiencia", "Límites", "Modelo"];
+  const recommendedModelId = chooseGuidedModelId({ autonomy, security, cost });
+  const recommendedModel = findModelById(recommendedModelId);
+  const currentModel = findModelById(model);
+
+  useEffect(() => {
+    if (model !== recommendedModelId) {
+      setModel(recommendedModelId);
+    }
+  }, [model, recommendedModelId, setModel]);
 
   function toggleGuardrail(value: string) {
     setGuardrails(
@@ -661,8 +634,9 @@ function GuidedPromptExercise({
 
   function createPrompt() {
     const guardrailText = guardrails.length > 0 ? guardrails.join("; ") : "sin restricciones adicionales";
+    const selected = findModelById(recommendedModelId);
     setPrompt(
-      `Necesito ${objective} para ${audience}.\n\nUsa sólo información agregada del caso. Reglas: ${guardrailText}.\n\nNivel de autonomía permitido: ${autonomy}/100. Prioriza seguridad ${security}/100 y costo ${cost}/100.\n\nDevuelve una respuesta breve con tres opciones, riesgos visibles y qué tendría que validar un humano antes de usarla.`,
+      `Objetivo: ${objective}.\nAudiencia: ${audience}.\nModelo sugerido: ${selected.label}${selected.badge ? ` · ${selected.badge}` : ""}.\n\nTrabaja sólo con información agregada del caso. Límites: ${guardrailText}.\n\nPrioridades: autonomía ${priorityLabel(autonomy)}, seguridad ${priorityLabel(security)} y prioridad de ahorro: ${priorityLabel(cost)}.\n\nEntrega tres opciones accionables, riesgos visibles y validaciones humanas necesarias.`,
     );
   }
 
@@ -673,106 +647,129 @@ function GuidedPromptExercise({
   ];
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[390px_minmax(0,1fr)] lg:items-start">
-      <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <div className="text-[12px] font-medium text-[var(--text-tertiary)]">
-              paso {slide + 1} de {slides.length}
+    <div className="grid gap-5 lg:grid-cols-[400px_minmax(0,1fr)] lg:items-stretch">
+      <div className="flex rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
+          <div className="flex min-h-[390px] w-full flex-col">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <div className="text-[12px] font-medium text-[var(--text-tertiary)]">
+                  paso {slide + 1} de {slides.length}
+                </div>
+                <div className="mt-1 text-[18px] font-semibold text-[var(--text-primary)]">
+                  {slides[slide]}
+                </div>
+              </div>
+              <div className="flex gap-1.5" aria-label="Progreso del builder">
+                {slides.map((item, index) => (
+                  <button
+                    key={item}
+                    type="button"
+                    onClick={() => setSlide(index)}
+                    aria-label={`Ir a ${item}`}
+                    className={`h-2 rounded-full transition-all ${
+                      index === slide ? "w-8 bg-[var(--accent)]" : "w-2 bg-[var(--surface-3)]"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="mt-1 text-[18px] font-semibold text-[var(--text-primary)]">
-              {slides[slide]}
+
+            <div className="mt-5 flex-1">
+              {slide === 0 && (
+                <GuidedSlideOptions
+                  options={guidedObjectives}
+                  value={objective}
+                  onChange={setObjective}
+                />
+              )}
+              {slide === 1 && (
+                <GuidedSlideOptions
+                  options={guidedAudiences}
+                  value={audience}
+                  onChange={setAudience}
+                />
+              )}
+              {slide === 2 && (
+                <div className="grid gap-2">
+                  {guidedGuardrails.map((guardrail) => (
+                    <GuidedOption
+                      key={guardrail}
+                      selected={guardrails.includes(guardrail)}
+                      onClick={() => toggleGuardrail(guardrail)}
+                    >
+                      {guardrail}
+                    </GuidedOption>
+                  ))}
+                </div>
+              )}
+              {slide === 3 && (
+                <div className="grid gap-3">
+                  <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-[12px] text-[var(--text-tertiary)]">
+                          modelo recomendado
+                        </div>
+                        <div className="mt-1 flex min-w-0 items-center gap-2 text-[15px] font-semibold text-[var(--text-primary)]">
+                          <BrandMark brand={recommendedModel.brand} />
+                          <span className="truncate">
+                            {recommendedModel.label}
+                            {recommendedModel.badge && (
+                              <span className="font-medium text-[var(--text-tertiary)]"> · {recommendedModel.badge}</span>
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="rounded-xl bg-[var(--surface)] px-3 py-2 text-[12px] text-[var(--text-secondary)]">
+                        aplicado
+                      </div>
+                    </div>
+                  </div>
+                  <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
+                    <Range10 label="autonomía" value={autonomy} onChange={setAutonomy} />
+                  </div>
+                  <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
+                    <Range10 label="seguridad" value={security} onChange={setSecurity} />
+                  </div>
+                  <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
+                    <Range10 label="costo bajo" value={cost} onChange={setCost} />
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-          <div className="flex gap-1.5" aria-label="Progreso del builder">
-            {slides.map((item, index) => (
+
+            <div className="mt-5 grid grid-cols-2 gap-2">
               <button
-                key={item}
                 type="button"
-                onClick={() => setSlide(index)}
-                aria-label={`Ir a ${item}`}
-                className={`h-2 rounded-full transition-all ${
-                  index === slide ? "w-8 bg-[var(--accent)]" : "w-2 bg-[var(--surface-3)]"
-                }`}
-              />
-            ))}
+                onClick={() => setSlide(Math.max(0, slide - 1))}
+                disabled={slide === 0}
+                className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-[14px] font-medium text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Atrás
+              </button>
+              {slide < slides.length - 1 ? (
+                <button
+                  type="button"
+                  onClick={() => setSlide(slide + 1)}
+                  className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+                >
+                  Siguiente
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={createPrompt}
+                  className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+                >
+                  Crear prompt
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="mt-5 min-h-[236px]">
-          {slide === 0 && (
-            <GuidedSlideOptions
-              options={guidedObjectives}
-              value={objective}
-              onChange={setObjective}
-            />
-          )}
-          {slide === 1 && (
-            <GuidedSlideOptions
-              options={guidedAudiences}
-              value={audience}
-              onChange={setAudience}
-            />
-          )}
-          {slide === 2 && (
-            <div className="grid gap-2">
-              {guidedGuardrails.map((guardrail) => (
-                <GuidedOption
-                  key={guardrail}
-                  selected={guardrails.includes(guardrail)}
-                  onClick={() => toggleGuardrail(guardrail)}
-                >
-                  {guardrail}
-                </GuidedOption>
-              ))}
-            </div>
-          )}
-          {slide === 3 && (
-            <div className="grid gap-3">
-              <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
-                <Range10 label="autonomía" value={autonomy} onChange={setAutonomy} />
-              </div>
-              <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
-                <Range10 label="seguridad" value={security} onChange={setSecurity} />
-              </div>
-              <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
-                <Range10 label="costo" value={cost} onChange={setCost} />
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="mt-5 grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => setSlide(Math.max(0, slide - 1))}
-            disabled={slide === 0}
-            className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-[14px] font-medium text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Atrás
-          </button>
-          {slide < slides.length - 1 ? (
-            <button
-              type="button"
-              onClick={() => setSlide(slide + 1)}
-              className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
-            >
-              Siguiente
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={createPrompt}
-              className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
-            >
-              Crear prompt
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div>
-        <div className="mb-3 grid gap-2 sm:grid-cols-3">
+      <div className="flex h-full flex-col">
+        <div className="mb-3 grid gap-2 sm:grid-cols-4">
           {summary.map((item) => (
             <div
               key={item.label}
@@ -784,6 +781,13 @@ function GuidedPromptExercise({
               </div>
             </div>
           ))}
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3">
+            <div className="text-[11px] text-[var(--text-tertiary)]">modelo</div>
+            <div className="mt-1 line-clamp-1 text-[13px] font-medium text-[var(--text-primary)]">
+              {currentModel.label}
+              {currentModel.badge && <span className="text-[var(--text-tertiary)]"> · {currentModel.badge}</span>}
+            </div>
+          </div>
         </div>
         <AIPromptComposer
           value={prompt}
@@ -793,15 +797,32 @@ function GuidedPromptExercise({
           voiceNotes={voiceNotes}
           onVoiceNote={(note) => setVoiceNotes([...voiceNotes, note])}
         />
-        <div className="mt-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
-          <div className="text-[13px] font-medium text-[var(--text-primary)]">preview evaluable</div>
-          <p className="mt-2 line-clamp-4 text-[13px] leading-5 text-[var(--text-secondary)]">
-            {promptPreview}
-          </p>
-        </div>
       </div>
     </div>
   );
+}
+
+function chooseGuidedModelId({
+  autonomy,
+  security,
+  cost,
+}: {
+  autonomy: number;
+  security: number;
+  cost: number;
+}) {
+  if (security >= 70 && autonomy <= 50) return "gpt-corporativo";
+  if (cost >= 80 && security < 70) return "gemini-3-flash";
+  if (autonomy >= 80 && security >= 70) return "claude-opus-4.7";
+  if (autonomy >= 70) return "claude-sonnet-4.6";
+  if (cost >= 70) return "deepseek-v4-pro";
+  return "claude-sonnet-4.6";
+}
+
+function priorityLabel(value: number) {
+  if (value >= 70) return "alta";
+  if (value >= 40) return "media";
+  return "baja";
 }
 
 function GuidedSlideOptions({
@@ -892,6 +913,10 @@ function AIPromptComposer({
     },
   });
   const canSend = value.trim().length > 0 && recState !== "recording" && recState !== "processing";
+  const textRows = value.trim()
+    ? Math.min(12, Math.max(3, value.split("\n").length + Math.ceil(value.length / 70)))
+    : 3;
+  const textMinHeight = value.trim() ? Math.min(340, Math.max(92, textRows * 23 + 54)) : 92;
 
   return (
     <div className="mt-3">
@@ -908,10 +933,10 @@ function AIPromptComposer({
             onChange(event.target.value);
           }}
           disabled={recState === "recording" || recState === "processing"}
-          rows={3}
+          rows={textRows}
           placeholder="Escribe el prompt que le mandarías al modelo..."
           className="w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 text-[15px] leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed"
-          style={{ minHeight: 92, maxHeight: 180 }}
+          style={{ minHeight: textMinHeight, maxHeight: 340 }}
         />
 
         <RecordingBanner recState={recState} recError={recError} />
