@@ -26,6 +26,8 @@ const SECTIONS = [
   { id: "respuesta", label: "Respuesta" },
 ] as const;
 
+const CONTEXT_SCREEN_COUNT = 3;
+
 const dataRows: DataRow[] = [
   {
     id: "contact_name",
@@ -39,7 +41,7 @@ const dataRows: DataRow[] = [
   {
     id: "company",
     field: "Empresa",
-    sample: "Aurora SaaS",
+    sample: "Aurora Retail",
     personal: false,
     necessary: true,
     action: "usar",
@@ -65,12 +67,12 @@ const dataRows: DataRow[] = [
   },
   {
     id: "arr",
-    field: "ARR",
-    sample: "$84,000",
+    field: "Ingreso anual estimado",
+    sample: "$84,000 USD",
     personal: false,
     necessary: true,
-    action: "agregar",
-    note: "Rango suficiente para priorizar.",
+    action: "usar",
+    note: "Dato comercial útil si se presenta como rango, no como promesa.",
   },
 ];
 
@@ -78,29 +80,29 @@ const promptBlocks = [
   {
     id: "objective",
     label: "Objetivo",
-    text: "Objetivo: crear un primer borrador de campaña enterprise para una cuenta en riesgo.",
+    text: "Objetivo: proponer tres ángulos para reactivar cuentas grandes que bajaron su uso del producto.",
   },
   {
     id: "allowed_data",
     label: "Datos permitidos",
-    text: "Datos permitidos: empresa, segmento, resumen agregado de tickets y rango de ARR. No usar nombres, emails ni texto crudo de clientes.",
+    text: "Datos permitidos: empresa, segmento, resumen agregado de tickets e ingreso anual estimado. No usar nombres, correos ni texto crudo de clientes.",
   },
   {
     id: "controls",
     label: "Controles",
-    text: "Controles: no inventar métricas, marcar cualquier claim que requiera fuente y dejar aprobación humana antes del envío.",
+    text: "Controles: no inventar métricas, marcar cualquier afirmación que requiera fuente y dejar revisión humana antes del envío.",
   },
 ];
 
 const outputSegments = [
   {
     id: "claim",
-    body: "Aurora SaaS puede reducir churn 40% en 30 días con nuestro agente.",
+    body: "Aurora puede recuperar 40% de cuentas inactivas en 30 días con nuestra plataforma.",
     flag: "Claim sin fuente",
   },
   {
     id: "pii",
-    body: "La propuesta se enviará a mariana@aurora.example antes de pasar por Legal.",
+    body: "La propuesta se enviará a mariana@aurora.example sin revisión previa.",
     flag: "Dato personal",
   },
   {
@@ -120,7 +122,7 @@ const decisionOptions = [
   {
     id: "pilot",
     title: "Piloto con aprobación",
-    sub: "Avanza hoy con Legal y control humano.",
+    sub: "Avanza hoy con revisión humana y límites claros.",
     values: { velocidad: 72, riesgo: 32, aprendizaje: 84 },
   },
   {
@@ -141,6 +143,7 @@ const actionOptions: DataAction[] = ["usar", "anonimizar", "agregar", "excluir",
 
 export function ExerciseLabClient() {
   const [sectionIdx, setSectionIdx] = useState(0);
+  const [contextScreenIdx, setContextScreenIdx] = useState(0);
   const [maxReached, setMaxReached] = useState(0);
   const [timerEnabled, setTimerEnabled] = useState(true);
   const [fieldIdx, setFieldIdx] = useState(0);
@@ -153,18 +156,29 @@ export function ExerciseLabClient() {
   const [quality, setQuality] = useState(80);
   const [autonomy, setAutonomy] = useState(30);
   const [prompt, setPrompt] = useState(
-    "Actúa como marketer B2B.\n\nCrea un primer borrador de campaña enterprise usando solo datos permitidos. No uses nombres, emails ni texto crudo de clientes. No inventes métricas. Devuelve asuntos, email breve y checklist de aprobación.",
+    "Actúa como especialista de marketing para empresas.\n\nCrea tres ángulos para reactivar cuentas grandes usando solo datos permitidos. No uses nombres, correos ni texto crudo de clientes. No inventes métricas. Devuelve asunto, promesa principal y una nota de revisión.",
   );
   const [selectedSegments, setSelectedSegments] = useState<string[]>(["claim", "pii"]);
   const [showCorrectedOutput, setShowCorrectedOutput] = useState(false);
   const [decision, setDecision] = useState("pilot");
   const [memo, setMemo] = useState(
-    "Recomiendo piloto con aprobación humana, no lanzamiento directo.\n\nMotivo: el output inicial incluye un claim no verificable y datos personales que no deben entrar a una campaña externa. Podemos avanzar hoy si limitamos el uso a borrador interno, eliminamos datos personales, pedimos fuente para cualquier métrica y dejamos Legal como aprobador antes de envío.",
+    "Recomiendo piloto con aprobación humana, no lanzamiento directo.\n\nMotivo: el output inicial incluye una promesa no verificable y datos personales que no deben entrar a una campaña externa. Podemos avanzar hoy si limitamos el uso a borrador interno, eliminamos datos personales, pedimos fuente para cualquier métrica y dejamos una revisión explícita antes del envío.",
   );
 
   const currentSection = SECTIONS[sectionIdx];
   const currentField = dataState[dataRows[fieldIdx].id];
   const selectedDecision = decisionOptions.find((option) => option.id === decision) ?? decisionOptions[1];
+  const capsuleCount = currentSection.id === "contexto" ? CONTEXT_SCREEN_COUNT : 1;
+  const activeCapsule = currentSection.id === "contexto" ? contextScreenIdx : 0;
+  const canGoBack = sectionIdx > 0 || contextScreenIdx > 0;
+  const nextLabel =
+    currentSection.id === "contexto" && contextScreenIdx < CONTEXT_SCREEN_COUNT - 1
+      ? "Continuar"
+      : currentSection.id === "contexto"
+        ? "Ir a datos"
+        : sectionIdx === SECTIONS.length - 1
+          ? "Demo completo"
+          : "Siguiente";
 
   const modelProfile = useMemo(() => {
     if (security >= 80 && autonomy <= 40) return "Modelo controlado";
@@ -175,6 +189,30 @@ export function ExerciseLabClient() {
 
   function goToSection(index: number) {
     if (index <= maxReached) setSectionIdx(index);
+  }
+
+  function nextStep() {
+    if (currentSection.id === "contexto" && contextScreenIdx < CONTEXT_SCREEN_COUNT - 1) {
+      setContextScreenIdx((screen) => Math.min(CONTEXT_SCREEN_COUNT - 1, screen + 1));
+      return;
+    }
+
+    nextSection();
+  }
+
+  function prevStep() {
+    if (currentSection.id === "contexto" && contextScreenIdx > 0) {
+      setContextScreenIdx((screen) => Math.max(0, screen - 1));
+      return;
+    }
+
+    if (sectionIdx === 1) {
+      setSectionIdx(0);
+      setContextScreenIdx(CONTEXT_SCREEN_COUNT - 1);
+      return;
+    }
+
+    prevSection();
   }
 
   function nextSection() {
@@ -205,10 +243,10 @@ export function ExerciseLabClient() {
       .join(", ");
     setPrompt(
       [
-        "Actúa como marketer B2B.",
-        `Objetivo: crear un borrador de campaña enterprise usando solo ${allowed}.`,
+        "Actúa como especialista de marketing para empresas.",
+        `Objetivo: crear tres ángulos de campaña usando solo ${allowed}.`,
         `Prioridades: seguridad ${security}/100, eficiencia ${efficiency}/100, costo ${cost}/100, calidad ${quality}/100, autonomía ${autonomy}/100.`,
-        "Controles: no usar datos personales crudos, no inventar métricas y dejar aprobación humana antes de cualquier envío externo.",
+        "Controles: no usar datos personales crudos, no inventar métricas y pedir revisión humana antes de cualquier envío externo.",
       ].join("\n\n"),
     );
   }
@@ -272,16 +310,16 @@ export function ExerciseLabClient() {
         <main className="flex-1 min-w-0 surface-canvas pb-32 flex flex-col">
           <div className="pt-8 px-6">
             <div className="max-w-2xl mx-auto flex gap-1.5">
-              {SECTIONS.map((_, index) => (
+              {Array.from({ length: capsuleCount }).map((_, index) => (
                 <div
                   key={index}
                   className="flex-1 h-[5px] rounded-full overflow-hidden bg-[var(--surface-3)]"
                 >
                   <motion.div
                     className="h-full rounded-full"
-                    style={{ backgroundColor: index <= sectionIdx ? "var(--accent)" : "transparent" }}
+                    style={{ backgroundColor: index <= activeCapsule ? "var(--accent)" : "transparent" }}
                     initial={false}
-                    animate={{ width: index <= sectionIdx ? "100%" : "0%" }}
+                    animate={{ width: index <= activeCapsule ? "100%" : "0%" }}
                     transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                   />
                 </div>
@@ -293,7 +331,7 @@ export function ExerciseLabClient() {
             <div className={`${currentSection.id === "ia" ? "max-w-4xl" : "max-w-2xl"} w-full`}>
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={currentSection.id}
+                  key={`${currentSection.id}-${currentSection.id === "contexto" ? contextScreenIdx : 0}`}
                   initial={{ opacity: 0, x: 24 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -24 }}
@@ -303,7 +341,7 @@ export function ExerciseLabClient() {
                     <ContextScreen
                       timerEnabled={timerEnabled}
                       setTimerEnabled={setTimerEnabled}
-                      onContinue={nextSection}
+                      screenIdx={contextScreenIdx}
                     />
                   )}
                   {currentSection.id === "datos" && (
@@ -361,14 +399,14 @@ export function ExerciseLabClient() {
         </main>
       </div>
 
-      <div className="fixed bottom-0 inset-x-0 z-40 surface-backdrop">
+      <div className="simulador-root fixed bottom-0 inset-x-0 z-40 surface-backdrop">
         <div className="max-w-7xl mx-auto md:pl-60 px-6 py-4">
           <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
-            {sectionIdx > 0 ? (
+            {canGoBack ? (
               <AppleButton
                 tone="secondary"
                 size="lg"
-                onPress={prevSection}
+                onPress={prevStep}
                 className="h-11 px-5 text-[14px] font-medium border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
               >
                 ← Anterior
@@ -380,15 +418,20 @@ export function ExerciseLabClient() {
             <AppleButton
               size="lg"
               tone={canGoNext ? "primary" : "secondary"}
-              onPress={nextSection}
+              onPress={nextStep}
               isDisabled={!canGoNext || sectionIdx === SECTIONS.length - 1}
+              style={
+                sectionIdx === SECTIONS.length - 1
+                  ? undefined
+                  : { backgroundColor: "var(--accent)", color: "white" }
+              }
               className={`h-11 px-6 text-[14px] font-medium ${
                 sectionIdx === SECTIONS.length - 1
                   ? "bg-[var(--surface-3)] text-[var(--text-tertiary)]"
-                  : "accent-bg text-white hover:opacity-90"
+                  : "!bg-[var(--accent)] !text-white hover:opacity-90"
               } shadow-none btn-hover-shift`}
             >
-              {sectionIdx === SECTIONS.length - 1 ? "Demo completo" : "Siguiente →"}
+              {nextLabel}
             </AppleButton>
           </div>
         </div>
@@ -419,33 +462,96 @@ function CaseMetaCard({ timerEnabled }: { timerEnabled: boolean }) {
 function ContextScreen({
   timerEnabled,
   setTimerEnabled,
-  onContinue,
+  screenIdx,
 }: {
   timerEnabled: boolean;
   setTimerEnabled: (value: boolean) => void;
-  onContinue: () => void;
+  screenIdx: number;
 }) {
+  if (screenIdx === 1) {
+    return (
+      <>
+        <div className="eyebrow">Contexto · material disponible</div>
+        <h1 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+          Recibes datos mezclados.
+        </h1>
+        <p className="mt-6 text-[18px] text-[var(--text-primary)] leading-[1.65]">
+          El equipo te comparte una lista de cuentas con nombre de contacto, empresa,
+          correo, tickets recientes e ingreso anual estimado. Algunos datos ayudan a
+          entender la oportunidad; otros pueden exponer información personal o llevar al
+          modelo a inventar promesas.
+        </p>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <ContextFact label="Útil para decidir" value="empresa, segmento, patrones de tickets" />
+          <ContextFact label="Hay que cuidar" value="nombres, correos y texto crudo de clientes" />
+          <ContextFact label="Riesgo principal" value="usar datos de más para ganar velocidad" />
+          <ContextFact label="Señal esperada" value="pasar contexto sin filtrar información sensible" />
+        </div>
+      </>
+    );
+  }
+
+  if (screenIdx === 2) {
+    return (
+      <>
+        <div className="eyebrow">Contexto · entrega esperada</div>
+        <h1 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+          La entrega no es un anuncio final.
+        </h1>
+        <p className="mt-6 text-[18px] text-[var(--text-primary)] leading-[1.65]">
+          Camila necesita material para decidir rápido: tres ángulos de campaña,
+          una promesa principal por ángulo y una nota breve de qué debe revisarse antes
+          de enviarlo a clientes. La calidad está en saber qué pedirle a la IA, qué
+          datos dejar fuera y cuándo frenar una afirmación débil.
+        </p>
+
+        <div className="mt-8 card-apple bg-[var(--surface)] p-6">
+          <div className="text-[14px] font-medium text-[var(--text-primary)]">
+            Lo que harás en el caso
+          </div>
+          <div className="mt-5 grid gap-3">
+            {[
+              "clasificar datos antes de usarlos",
+              "construir un prompt con límites claros",
+              "revisar un output con errores realistas",
+              "tomar una decisión con tradeoffs",
+              "explicar tu decisión al manager",
+            ].map((item) => (
+              <div key={item} className="flex items-start gap-3 text-[15px] text-[var(--text-primary)]">
+                <span className="mt-2 h-1.5 w-1.5 rounded-full accent-bg" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <div className="eyebrow">Contexto · caso fijo</div>
       <h1 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
-        Jueves · 4:30 PM.
+        Jueves · 4:30 p.m.
       </h1>
       <p className="mt-6 text-[18px] text-[var(--text-primary)] leading-[1.65]">
-        Camila, VP de Marketing, necesita 3 ángulos para una campaña enterprise antes de las 5.
-        El escenario, la presión y los criterios de evaluación ya vienen definidos por Itera.
-        Tu trabajo no es configurar el caso: es resolverlo con criterio.
+        Camila, VP de marketing en una plataforma de analítica para comercios,
+        necesita tres ángulos para una campaña de reactivación. El objetivo es
+        recuperar cuentas grandes que bajaron su uso del producto durante el último
+        mes. La reunión con ventas empieza a las 5.
       </p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        <ContextFact label="Stakeholder" value="VP de Marketing" />
-        <ContextFact label="Entrega" value="Hoy, antes de las 5" />
-        <ContextFact label="Cuidado" value="Datos sensibles y claims" />
+        <ContextFact label="Responsable" value="Camila, VP de marketing" />
+        <ContextFact label="Campaña" value="reactivar cuentas grandes" />
+        <ContextFact label="Entrega" value="tres ángulos antes de las 5" />
       </div>
 
       <div className="mt-8 card-apple bg-[var(--surface)] p-5">
         <p className="text-[15px] text-[var(--text-primary)] leading-[1.6] italic">
-          «No me metas a Legal hoy, ya están cerrados. Confío en tu criterio.»
+          «Necesito opciones claras para ventas. Usa los datos del equipo, pero no
+          prometas algo que no podamos defender frente a un cliente.»
         </p>
       </div>
 
@@ -454,15 +560,15 @@ function ContextScreen({
           <div>
             <div className="text-[16px] font-medium text-[var(--text-primary)]">Timer del caso</div>
             <div className="mt-1 max-w-md text-[14px] leading-6 text-[var(--text-secondary)]">
-              Puedes practicar con reloj o sin reloj. El tiempo sugerido lo define Itera:
-              12 minutos para completar este caso.
+              Este caso está estimado para 12 minutos. Puedes practicar con reloj o
+              quitarlo si solo quieres explorar el flujo.
             </div>
           </div>
-          <div className="grid grid-cols-2 rounded-2xl bg-[var(--surface-2)] p-1 sm:min-w-[240px]">
+          <div className="grid min-h-11 grid-cols-2 rounded-full bg-[var(--surface-2)] p-1 sm:min-w-[232px]">
             <button
               type="button"
               onClick={() => setTimerEnabled(true)}
-              className={`rounded-xl px-4 py-3 text-[14px] font-medium transition-colors ${
+              className={`rounded-full px-4 py-2.5 text-[14px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
                 timerEnabled
                   ? "accent-bg text-white"
                   : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -473,7 +579,7 @@ function ContextScreen({
             <button
               type="button"
               onClick={() => setTimerEnabled(false)}
-              className={`rounded-xl px-4 py-3 text-[14px] font-medium transition-colors ${
+              className={`rounded-full px-4 py-2.5 text-[14px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
                 !timerEnabled
                   ? "accent-bg text-white"
                   : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -483,17 +589,6 @@ function ContextScreen({
             </button>
           </div>
         </div>
-      </div>
-
-      <div className="mt-8 flex justify-end">
-        <AppleButton
-          size="lg"
-          tone="primary"
-          onPress={onContinue}
-          className="h-12 px-6 text-[15px] font-medium accent-bg text-white shadow-none btn-hover-shift"
-        >
-          Siguiente: datos →
-        </AppleButton>
       </div>
     </>
   );
@@ -620,7 +715,7 @@ function IaScreen({
         Dirige al modelo.
       </h2>
       <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
-        Construye el prompt y ajusta prioridades en pasos de 10. No estás diseñando el caso; estás configurando la interacción con IA dentro de sus límites.
+        Construye el prompt y ajusta prioridades en pasos de 10. La meta es pedir ayuda a la IA sin perder control sobre datos, fuentes y revisión humana.
       </p>
 
       <div className="mt-8 grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
@@ -725,7 +820,7 @@ function ReviewScreen({
           Follow-up a IA
         </div>
         <textarea
-          defaultValue="Corrige el output: elimina datos personales, quita claims sin fuente y agrega aprobación legal antes de uso externo."
+          defaultValue="Corrige el output: elimina datos personales, quita afirmaciones sin fuente y agrega revisión humana antes de uso externo."
           rows={3}
           className="w-full resize-none bg-transparent px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none"
         />
@@ -740,7 +835,7 @@ function ReviewScreen({
         <div className="mt-6 card-apple bg-[var(--band-a-bg)] p-5">
           <div className="text-[13px] font-medium text-[var(--band-a-text)]">Output corregido</div>
           <p className="mt-3 text-[15px] leading-6 text-[var(--text-primary)]">
-            Recomendamos un piloto interno para Aurora SaaS. La campaña usará solo datos agregados, no prometerá métricas sin fuente y deberá pasar por Legal antes de cualquier envío externo.
+            Recomendamos un piloto interno para Aurora Retail. La campaña usará solo datos agregados, no prometerá métricas sin fuente y deberá pasar por revisión humana antes de cualquier envío externo.
           </p>
         </div>
       )}
