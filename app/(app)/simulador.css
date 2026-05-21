@@ -319,17 +319,26 @@
 /* Placeholder y value uniformes en inputs + select triggers.
    Patrón Apple HIG: placeholder = nombre del campo en gris claro,
    se borra al escribir/seleccionar; value = texto en color normal.
-   Esto reemplaza el patrón Material "label flotante" que se veía
-   doble (label + placeholder al mismo tiempo). */
+
+   IMPORTANTE: HeroUI pone data-has-value en [data-slot="base"]
+   (el wrapper padre), NO en [data-slot="value"]. Por eso el selector
+   debe descender del base. */
 .simulador-root [data-slot="input"]::placeholder,
-.simulador-root [data-slot="input"]::-webkit-input-placeholder,
-.simulador-root [data-slot="value"][data-has-value="false"] {
+.simulador-root [data-slot="input"]::-webkit-input-placeholder {
   color: var(--text-tertiary) !important;
   opacity: 1;
 }
 .simulador-root [data-slot="input"] {
   color: var(--text-primary);
 }
-.simulador-root [data-slot="value"] {
-  color: var(--text-primary);
+/* Select trigger: value en color normal cuando hay selección */
+.simulador-root [data-slot="base"][data-has-value="true"] [data-slot="value"] {
+  color: var(--text-primary) !important;
+}
+/* Select trigger: placeholder en gris claro cuando no hay selección.
+   :not([data-has-value="true"]) cubre tanto data-has-value="false" como
+   ausencia del atributo. */
+.simulador-root [data-slot="base"]:not([data-has-value="true"]) [data-slot="value"] {
+  color: var(--text-tertiary) !important;
+  opacity: 1;
 }
