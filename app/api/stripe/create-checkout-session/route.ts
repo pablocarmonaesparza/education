@@ -4,9 +4,8 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { stripe, STRIPE_PRICES, type BillingPlan } from '@/lib/stripe/config';
 import { enforceRateLimit, rateLimiters } from '@/lib/ratelimit';
 import {
-  computePlanAmountUsd,
-  isSimuladorBillingPlan,
-  type SimuladorBillingPlan,
+  computeSimuladorAmount,
+  SIMULADOR_PRODUCT,
 } from '@/lib/simulador/billing';
 
 export async function POST(req: NextRequest) {
@@ -21,7 +20,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = (await req.json()) as {
-      plan?: BillingPlan | SimuladorBillingPlan;
+      plan?: BillingPlan;
       billing_product?: string;
       organization_id?: string;
       team_id?: string;
@@ -101,16 +100,13 @@ async function createSimuladorCheckoutSession(
   req: NextRequest,
   user: { id: string; email?: string | null },
   body: {
-    plan?: BillingPlan | SimuladorBillingPlan;
+    plan?: BillingPlan;
     organization_id?: string;
     team_id?: string;
     seats?: number;
   },
 ) {
   try {
-    if (!isSimuladorBillingPlan(body.plan)) {
-      return NextResponse.json({ error: 'plan de simulador inválido' }, { status: 400 });
-    }
     if (!body.organization_id || !body.team_id) {
       return NextResponse.json(
         { error: 'organization_id y team_id son requeridos' },
@@ -189,10 +185,22 @@ async function createSimuladorCheckoutSession(
       .eq('id', body.organization_id)
       .maybeSingle();
 
-    const { seats, amountCents, amountUsd, plan } = computePlanAmountUsd(
-      body.plan,
-      body.seats,
-    );
+    const { seats, amountCents, amountUsd, tier, isEnterprise } =
+      computeSimuladorAmount(body.seats);
+
+    // Enterprise (100+ personas) no es self-serve — el flow se corta y se
+    // redirige a ventas para negociar volumen/término.
+    if (isEnterprise) {
+      return NextResponse.json(
+        {
+          error: 'enterprise_requires_sales',
+          message: `Para ${seats}+ personas el precio se negocia. Escríbenos a ${SIMULADOR_PRODUCT.salesEmail}.`,
+          sales_email: SIMULADOR_PRODUCT.salesEmail,
+        },
+        { status: 400 },
+      );
+    }
+
     const origin = req.nextUrl.origin;
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
@@ -206,8 +214,8 @@ async function createSimuladorCheckoutSession(
             currency: 'usd',
             unit_amount: amountCents,
             product_data: {
-              name: `Itera · ${plan.label}`,
-              description: `${seats} asientos · ${org?.name ?? 'organización'} · ${team.name}`,
+              name: `${SIMULADOR_PRODUCT.label} · ${tier.label}`,
+              description: `${seats} ${seats === 1 ? 'persona' : 'personas'} · ${org?.name ?? 'organización'} · ${team.name}`,
             },
           },
         },
@@ -221,8 +229,9 @@ async function createSimuladorCheckoutSession(
         organization_name: org?.name ?? '',
         team_id: body.team_id,
         team_name: team.name,
-        plan: plan.id,
+        tier: tier.id,
         seats: String(seats),
+        price_per_seat_usd: String(tier.pricePerSeatUsd),
         amount_usd_total: String(amountUsd),
       },
       payment_intent_data: {
@@ -232,7 +241,7 @@ async function createSimuladorCheckoutSession(
           simulador_user_id: String(bridgeId),
           organization_id: body.organization_id,
           team_id: body.team_id,
-          plan: plan.id,
+          tier: tier.id,
           seats: String(seats),
         },
       },
@@ -244,7 +253,7 @@ async function createSimuladorCheckoutSession(
       sessionUrl: session.url,
       amount_usd_total: amountUsd,
       seats,
-      plan: plan.id,
+      tier: tier.id,
     });
   } catch (err) {
     console.error('[create-checkout] simulador session failed:', err);

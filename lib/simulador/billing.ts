@@ -1,124 +1,140 @@
-export type SimuladorBillingPlan = "diagnostico" | "sprint" | "track";
+/**
+ * Pricing model B2B del Simulador.
+ *
+ * Modelo aprobado por Pablo el 2026-05-18 (ver
+ * docs/memory/decision_pricing_sprint_marketing_v1.md):
+ *
+ *   1 producto único (Sprint de 30 días).
+ *   Tier automático según número de seats. Sin selección manual de plan.
+ *
+ *   | Tier         | Personas | Precio/persona |
+ *   | ------------ | -------- | -------------- |
+ *   | Team         | 1–19     | $149           |
+ *   | Business     | 20–49    | $129           |
+ *   | Business+    | 50–99    | $109           |
+ *   | Enterprise   | 100+     | desde $89 (negociable, contactar ventas) |
+ *
+ * Decisión adicional (Pablo 2026-05-20): mínimo de 1 persona en el flow
+ * self-serve. El research original tenía mínimo 5 para garantizar venta
+ * mínima $745 — ahora se permite 1+ para no friccionar early adopters
+ * que quieren probar antes de meter al equipo entero.
+ *
+ * Para 100+ personas (Enterprise) el flow self-serve se corta y se
+ * redirige a ventas — el precio es negociable según volumen, vertical
+ * y término del contrato.
+ */
 
-export interface SimuladorPlanConfig {
-  id: SimuladorBillingPlan;
+export interface SimuladorTier {
+  id: "team" | "business" | "business_plus" | "enterprise";
   label: string;
-  shortLabel: string;
-  description: string;
   minSeats: number;
-  maxSeats: number;
-  baseSeats: number;
-  baseAmountUsd: number;
-  extraSeatUsd: number;
-  capAmountUsd: number;
-  durationDays: number;
-  subscriptionTier: "fase_1_diagnostic" | "fase_2_sprint" | "fase_3_recurrente";
-  featureBullets: string[];
+  maxSeats: number | null; // null = sin límite (enterprise)
+  pricePerSeatUsd: number;
+  selfServe: boolean; // false para enterprise → redirige a ventas
 }
 
-export const SIMULADOR_PLANS: Record<SimuladorBillingPlan, SimuladorPlanConfig> = {
-  diagnostico: {
-    id: "diagnostico",
-    label: "Diagnóstico N1",
-    shortLabel: "Diagnóstico",
-    description:
-      "1 caso vivo, reporte ejecutivo por persona y dashboard agregado para manager.",
-    minSeats: 5,
-    maxSeats: 50,
-    baseSeats: 5,
-    baseAmountUsd: 4000,
-    extraSeatUsd: 100,
-    capAmountUsd: 8000,
-    durationDays: 30,
-    subscriptionTier: "fase_1_diagnostic",
-    featureBullets: [
-      "1 caso vivo de Marketing/Growth",
-      "reporte ejecutivo por participante",
-      "dashboard manager + risk events",
-    ],
+export const SIMULADOR_TIERS: SimuladorTier[] = [
+  {
+    id: "team",
+    label: "Team",
+    minSeats: 1,
+    maxSeats: 19,
+    pricePerSeatUsd: 149,
+    selfServe: true,
   },
-  sprint: {
-    id: "sprint",
-    label: "Sprint N1+N2",
-    shortLabel: "Sprint",
-    description:
-      "Diagnóstico, practice beats, re-simulación y reporte de progreso del equipo.",
-    minSeats: 5,
-    maxSeats: 50,
-    baseSeats: 5,
-    baseAmountUsd: 8000,
-    extraSeatUsd: 175,
-    capAmountUsd: 15000,
-    durationDays: 45,
-    subscriptionTier: "fase_2_sprint",
-    featureBullets: [
-      "8 casos Marketing/Growth",
-      "practice beats por gap",
-      "re-simulación + transfer delta",
-    ],
+  {
+    id: "business",
+    label: "Business",
+    minSeats: 20,
+    maxSeats: 49,
+    pricePerSeatUsd: 129,
+    selfServe: true,
   },
-  track: {
-    id: "track",
-    label: "Track completo N1-N3",
-    shortLabel: "Track completo",
-    description:
-      "Sprint completo + variantes avanzadas para equipos que ya trabajan con agentes.",
-    minSeats: 5,
-    maxSeats: 50,
-    baseSeats: 5,
-    baseAmountUsd: 15000,
-    extraSeatUsd: 300,
-    capAmountUsd: 24000,
-    durationDays: 90,
-    subscriptionTier: "fase_3_recurrente",
-    featureBullets: [
-      "N1 copiloto + N2 workflow",
-      "N3 agentes y escalamiento",
-      "review humano en riesgos high",
-    ],
+  {
+    id: "business_plus",
+    label: "Business+",
+    minSeats: 50,
+    maxSeats: 99,
+    pricePerSeatUsd: 109,
+    selfServe: true,
   },
+  {
+    id: "enterprise",
+    label: "Enterprise",
+    minSeats: 100,
+    maxSeats: null,
+    pricePerSeatUsd: 89, // floor, negociable arriba
+    selfServe: false,
+  },
+];
+
+export const SIMULADOR_PRODUCT = {
+  label: "Sprint Itera",
+  shortLabel: "Sprint",
+  description:
+    "Diagnóstico operativo de criterio de IA. Caso vivo, reporte ejecutivo por persona y matriz agregada para manager.",
+  durationDays: 30,
+  minSeats: 1,
+  maxSeatsSelfServe: 99,
+  enterpriseThreshold: 100,
+  salesEmail: "ventas@itera.la",
+  features: [
+    "1 sprint de 30 días",
+    "Reporte ejecutivo por participante",
+    "Dashboard manager + risk events",
+    "Pago único, sin renovación automática",
+  ],
 };
 
-export function planIds(): SimuladorBillingPlan[] {
-  return ["diagnostico", "sprint", "track"];
+export function computeSimuladorTier(seats: number): SimuladorTier {
+  const tier = SIMULADOR_TIERS.find((t) => {
+    if (seats < t.minSeats) return false;
+    if (t.maxSeats === null) return true;
+    return seats <= t.maxSeats;
+  });
+  return tier ?? SIMULADOR_TIERS[0];
 }
 
-export function isSimuladorBillingPlan(
-  value: unknown,
-): value is SimuladorBillingPlan {
-  return (
-    value === "diagnostico" ||
-    value === "sprint" ||
-    value === "track"
-  );
-}
-
-export function normalizeSeatCount(
-  raw: unknown,
-  plan: SimuladorPlanConfig,
-): number {
+export function normalizeSimuladorSeats(raw: unknown): number {
   const n = Number(raw);
-  if (!Number.isFinite(n)) return plan.minSeats;
-  return Math.min(plan.maxSeats, Math.max(plan.minSeats, Math.trunc(n)));
+  if (!Number.isFinite(n)) return SIMULADOR_PRODUCT.minSeats;
+  return Math.max(SIMULADOR_PRODUCT.minSeats, Math.trunc(n));
 }
 
-export function computePlanAmountUsd(
-  planId: SimuladorBillingPlan,
-  seatsRaw: unknown,
-): { seats: number; amountUsd: number; amountCents: number; plan: SimuladorPlanConfig } {
-  const plan = SIMULADOR_PLANS[planId];
-  const seats = normalizeSeatCount(seatsRaw, plan);
-  const extraSeats = Math.max(0, seats - plan.baseSeats);
-  const uncapped = plan.baseAmountUsd + extraSeats * plan.extraSeatUsd;
-  const amountUsd = Math.min(plan.capAmountUsd, uncapped);
+export interface SimuladorCheckoutAmount {
+  seats: number;
+  tier: SimuladorTier;
+  pricePerSeatUsd: number;
+  amountUsd: number;
+  amountCents: number;
+  isEnterprise: boolean;
+}
+
+export function computeSimuladorAmount(seatsRaw: unknown): SimuladorCheckoutAmount {
+  const seats = normalizeSimuladorSeats(seatsRaw);
+  const tier = computeSimuladorTier(seats);
+  const amountUsd = seats * tier.pricePerSeatUsd;
   return {
     seats,
+    tier,
+    pricePerSeatUsd: tier.pricePerSeatUsd,
     amountUsd,
     amountCents: amountUsd * 100,
-    plan,
+    isEnterprise: !tier.selfServe,
   };
 }
 
 export function formatUsd(amount: number): string {
   return `USD ${amount.toLocaleString("en-US")}`;
+}
+
+// ============================================================================
+// Compatibilidad con el modelo viejo (deprecated).
+// Mantenidos hasta que se limpien todos los call sites del código legacy.
+// ============================================================================
+
+export type SimuladorBillingPlan = "diagnostico" | "sprint" | "track";
+
+export function isSimuladorBillingPlan(value: unknown): value is SimuladorBillingPlan {
+  return value === "diagnostico" || value === "sprint" || value === "track";
 }

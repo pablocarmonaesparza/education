@@ -2,10 +2,8 @@ import Stripe from "stripe";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { stripe } from "@/lib/stripe/config";
 import {
-  computePlanAmountUsd,
-  isSimuladorBillingPlan,
-  SIMULADOR_PLANS,
-  type SimuladorBillingPlan,
+  computeSimuladorAmount,
+  SIMULADOR_PRODUCT,
 } from "@/lib/simulador/billing";
 
 export type SimuladorPaymentSyncResult =
@@ -15,7 +13,6 @@ export type SimuladorPaymentSyncResult =
 const TERMINAL_SYNC_REASONS = new Set([
   "not_simulador_checkout",
   "missing_org_team_or_buyer_metadata",
-  "invalid_plan_metadata",
   "invalid_seats_metadata",
   "payment_pending",
 ]);
@@ -113,22 +110,16 @@ export async function upsertSimuladorSubscriptionFromCheckout(
   const organizationId = metadataValue(session, "organization_id");
   const teamId = metadataValue(session, "team_id");
   const buyerUserId = metadataValue(session, "simulador_user_id");
-  const rawPlan = metadataValue(session, "plan");
   const seatsFromMetadata = Number(metadataValue(session, "seats"));
 
   if (!organizationId || !teamId || !buyerUserId) {
     return { ok: false, reason: "missing_org_team_or_buyer_metadata" };
   }
-  if (!isSimuladorBillingPlan(rawPlan)) {
-    return { ok: false, reason: "invalid_plan_metadata" };
-  }
   if (!isPositiveInteger(seatsFromMetadata)) {
     return { ok: false, reason: "invalid_seats_metadata" };
   }
 
-  const planId: SimuladorBillingPlan = rawPlan;
-  const { seats, amountUsd, amountCents, plan } = computePlanAmountUsd(
-    planId,
+  const { seats, amountUsd, amountCents, tier } = computeSimuladorAmount(
     seatsFromMetadata,
   );
   if (
@@ -148,11 +139,11 @@ export async function upsertSimuladorSubscriptionFromCheckout(
     stripe_customer_id: customerId,
     stripe_subscription_id: null,
     status: "active",
-    tier: plan.subscriptionTier,
+    tier: tier.id,
     seats,
     price_usd_total: amountUsd,
     current_period_start: new Date(session.created * 1000).toISOString(),
-    current_period_end: endDate(plan.durationDays),
+    current_period_end: endDate(SIMULADOR_PRODUCT.durationDays),
     metadata: {
       billing_product: "simulador_b2b",
       checkout_session_id: session.id,
@@ -160,8 +151,9 @@ export async function upsertSimuladorSubscriptionFromCheckout(
         typeof session.payment_intent === "string"
           ? session.payment_intent
           : session.payment_intent?.id ?? null,
-      plan: planId,
-      plan_label: SIMULADOR_PLANS[planId].label,
+      tier: tier.id,
+      tier_label: tier.label,
+      price_per_seat_usd: tier.pricePerSeatUsd,
       team_id: teamId,
       buyer_user_id: buyerUserId,
     },

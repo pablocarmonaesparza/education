@@ -196,39 +196,21 @@ export const onboardingCopy = {
   // Stripe Checkout B2B con seats configurables
   // ============================================================================
   step4_billing: {
-    eyebrow_context: "Plan + pago",
-    headline: "Confirma asientos y plan.",
-    body:
-      "El pago es seguro vía Stripe. Si tu organización requiere factura PO/wire, escríbenos antes de continuar — ajustamos el método.",
-    seats_label: "Asientos del sprint",
-    seats_help:
-      "1 asiento = 1 participante haciendo el diagnóstico. Mínimo 5, máximo 50 en Fase 1.",
-    plan_eyebrow: "Plan seleccionado",
-    plan_fase1_label: "Diagnóstico Fase 1",
-    plan_fase1_body:
-      "Diagnóstico operativo de criterio. 1 caso vivo · reporte ejecutivo por persona · matriz agregada por equipo.",
-    plan_fase2_label: "Sprint Fase 2 (add-on)",
-    plan_fase2_body:
-      "Práctica recurrente + re-simulación + reporte de progreso. Se contrata después del diagnóstico Fase 1.",
-    pricing_disclaimer:
-      "Precio mostrado en USD. Cobra Stripe. La factura llega al email del comprador.",
-    pricing_total_template: (usd: number, seats: number) =>
-      `USD ${usd.toLocaleString("en-US")} por ${seats} asientos`,
-    pricing_per_seat_template: (usd: number) =>
-      `~ USD ${usd.toLocaleString("en-US")} por persona`,
-    discount_bundle_note:
-      "Bundle Fase 1 + Fase 2 contratado junto: 10% off sobre Fase 2 (ver detalle al cierre).",
-    payment_method_eyebrow: "Método de pago",
-    payment_card_label: "Tarjeta (Stripe Checkout)",
-    payment_wire_label: "Transferencia / PO (escríbenos)",
-    payment_wire_cta: "Pedir cotización con PO →",
-    payment_wire_email: "ventas@itera.la",
+    headline: "Configura tu Sprint",
+    seats_question: "¿Cuántas personas van a participar?",
+    seats_help: "Desde 1 hasta 99 personas. Para 100+ negociamos por volumen.",
+    tier_label_template: (label: string, range: string) =>
+      `Tier ${label} · ${range}`,
+    pricing_breakdown_template: (perSeat: number, seats: number, total: number) =>
+      `USD ${perSeat} × ${seats} ${seats === 1 ? "persona" : "personas"} = USD ${total.toLocaleString("en-US")}`,
+    enterprise_headline: "Más de 99 personas",
+    enterprise_body:
+      "Para equipos grandes el precio se negocia por volumen y término. Cuéntanos cuántas personas son y armamos una propuesta.",
+    submit_cta: "Continuar a Stripe",
+    submit_enterprise_cta: "Hablar con ventas",
+    skip_cta: "Continuar sin pagar todavía",
     terms_required:
-      "Al continuar aceptas los Términos del servicio y la Política de privacidad.",
-    terms_link_label: "Ver términos",
-    privacy_link_label: "Ver privacidad",
-    submit_cta: "Continuar a Stripe →",
-    submit_redirect_note: "Te llevamos a Stripe Checkout en una nueva pestaña.",
+      "Al continuar aceptas los Términos y la Política de privacidad. Pago seguro con Stripe.",
     error_create_session: "Error al crear sesión de pago. Reintenta.",
     error_stripe_redirect:
       "No pudimos abrir Stripe. Reintenta o escríbenos a ventas@itera.la.",
