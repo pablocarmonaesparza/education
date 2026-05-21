@@ -9,6 +9,7 @@ type Permission = "permitir" | "revisar" | "bloquear";
 
 type BrandKey = "internal" | "openai" | "anthropic" | "google" | "qwen" | "deepseek";
 type Level5 = 1 | 2 | 3 | 4 | 5;
+type ModelMetric = "autonomy" | "security" | "cost";
 type VoiceRecState = "idle" | "recording" | "processing" | "error";
 
 type PromptAttachment = {
@@ -632,16 +633,26 @@ function GuidedPromptExercise({
   cost: number;
   setCost: (value: number) => void;
 }) {
-  const [slide, setSlide] = useState(0);
-  const slides = ["Objetivo", "Audiencia", "Límites", "Modelo"];
   const recommendedModelId = chooseGuidedModelId({ autonomy, security, cost });
   const recommendedModel = findModelById(recommendedModelId);
+  const guardrailText = guardrails.length > 0 ? guardrails.join("; ") : "Sin restricciones adicionales";
 
   useEffect(() => {
     if (model !== recommendedModelId) {
       setModel(recommendedModelId);
     }
   }, [model, recommendedModelId, setModel]);
+
+  function updateModelMetric(metric: ModelMetric, value: number) {
+    const next = rebalanceModelTradeoffs(
+      { autonomy, security, cost },
+      metric,
+      value,
+    );
+    setAutonomy(next.autonomy);
+    setSecurity(next.security);
+    setCost(next.cost);
+  }
 
   function toggleGuardrail(value: string) {
     setGuardrails(
@@ -652,57 +663,58 @@ function GuidedPromptExercise({
   }
 
   function createPrompt() {
-    const guardrailText = guardrails.length > 0 ? guardrails.join("; ") : "Sin restricciones adicionales";
     const selected = findModelById(recommendedModelId);
     setPrompt(
-      `Objetivo: ${objective}.\nAudiencia: ${audience}.\nModelo sugerido: ${selected.label}${selected.badge ? ` · ${selected.badge}` : ""}.\n\nTrabaja sólo con información agregada del caso. Límites: ${guardrailText}.\n\nPrioridades: autonomía ${priorityLabel(autonomy)}, seguridad ${priorityLabel(security)} y prioridad de ahorro: ${priorityLabel(cost)}.\n\nEntrega tres opciones accionables, riesgos visibles y validaciones humanas necesarias.`,
+      `Objetivo: ${objective}.\nAudiencia: ${audience}.\nModelo sugerido: ${selected.label}${selected.badge ? ` · ${selected.badge}` : ""}.\n\nTrabaja sólo con información agregada del caso. Límites: ${guardrailText}.\n\nPrioridades: autonomía ${priorityLabel(autonomy)}, seguridad ${priorityLabel(security)} y costo permitido ${budgetLabel(cost)}.\n\nEntrega tres opciones accionables, riesgos visibles y validaciones humanas necesarias.`,
     );
   }
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[400px_minmax(0,1fr)] lg:items-stretch">
-      <div className="flex rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
-        <div className="flex min-h-[390px] w-full flex-col">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <div className="text-[12px] font-medium text-[var(--text-tertiary)]">
-                Paso {slide + 1} de {slides.length}
-              </div>
-              <div className="mt-1 text-[18px] font-semibold text-[var(--text-primary)]">
-                {slides[slide]}
-              </div>
-            </div>
-            <div className="flex gap-1.5" aria-label="Progreso del builder">
-              {slides.map((item, index) => (
-                <button
-                  key={item}
-                  type="button"
-                  onClick={() => setSlide(index)}
-                  aria-label={`Ir a ${item}`}
-                  className={`h-2 rounded-full transition-all ${
-                    index === slide ? "w-8 bg-[var(--accent)]" : "w-2 bg-[var(--surface-3)]"
-                  }`}
-                />
-              ))}
-            </div>
+    <div className="grid gap-5">
+      <div className="grid gap-5 lg:grid-cols-[360px_minmax(0,1fr)]">
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
+          <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+            Respuestas
           </div>
+          <div className="mt-4 grid gap-3">
+            <ProcessAnswer index={1} label="Objetivo" value={objective} />
+            <ProcessAnswer index={2} label="Audiencia" value={audience} />
+            <ProcessAnswer index={3} label="Límites" value={guardrailText} />
+            <ProcessAnswer
+              index={4}
+              label="Modelo"
+              value={`${recommendedModel.label}${recommendedModel.badge ? ` · ${recommendedModel.badge}` : ""} · Autonomía ${autonomy} · Seguridad ${security} · Costo ${cost}`}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={createPrompt}
+            className="mt-4 min-h-11 w-full rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+          >
+            Crear prompt
+          </button>
+        </div>
 
-          <div className="mt-5 flex-1">
-            {slide === 0 && (
+        <div>
+          <div className="mb-3 text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+            Inputs y selección
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
+            <GuidedInputCard title="Objetivo">
               <GuidedSlideOptions
                 options={guidedObjectives}
                 value={objective}
                 onChange={setObjective}
               />
-            )}
-            {slide === 1 && (
+            </GuidedInputCard>
+            <GuidedInputCard title="Audiencia">
               <GuidedSlideOptions
                 options={guidedAudiences}
                 value={audience}
                 onChange={setAudience}
               />
-            )}
-            {slide === 2 && (
+            </GuidedInputCard>
+            <GuidedInputCard title="Límites">
               <div className="grid gap-2">
                 {guidedGuardrails.map((guardrail) => (
                   <GuidedOption
@@ -714,74 +726,40 @@ function GuidedPromptExercise({
                   </GuidedOption>
                 ))}
               </div>
-            )}
-            {slide === 3 && (
-              <div className="grid gap-3">
-                <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="min-w-0">
-                      <div className="text-[12px] text-[var(--text-tertiary)]">
-                        Modelo recomendado
-                      </div>
-                      <div className="mt-1 flex min-w-0 items-center gap-2 text-[15px] font-semibold text-[var(--text-primary)]">
-                        <BrandMark brand={recommendedModel.brand} />
-                        <span className="truncate">
-                          {recommendedModel.label}
-                          {recommendedModel.badge && (
-                            <span className="font-medium text-[var(--text-tertiary)]"> · {recommendedModel.badge}</span>
-                          )}
-                        </span>
-                      </div>
+            </GuidedInputCard>
+            <GuidedInputCard title="Modelo">
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <div className="text-[12px] text-[var(--text-tertiary)]">
+                      Modelo recomendado
                     </div>
-                    <div className="rounded-xl bg-[var(--surface)] px-3 py-2 text-[12px] text-[var(--text-secondary)]">
-                      Aplicado
+                    <div className="mt-1 flex min-w-0 items-center gap-2 text-[14px] font-semibold text-[var(--text-primary)]">
+                      <BrandMark brand={recommendedModel.brand} />
+                      <span className="truncate">
+                        {recommendedModel.label}
+                        {recommendedModel.badge && (
+                          <span className="font-medium text-[var(--text-tertiary)]"> · {recommendedModel.badge}</span>
+                        )}
+                      </span>
                     </div>
                   </div>
-                </div>
-                <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
-                  <Range10 label="Autonomía" value={autonomy} onChange={setAutonomy} />
-                </div>
-                <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
-                  <Range10 label="Seguridad" value={security} onChange={setSecurity} />
-                </div>
-                <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
-                  <Range10 label="Costo bajo" value={cost} onChange={setCost} />
+                  <div className="rounded-xl bg-[var(--surface)] px-2.5 py-1.5 text-[11px] text-[var(--text-secondary)]">
+                    Automático
+                  </div>
                 </div>
               </div>
-            )}
-          </div>
-
-          <div className="mt-5 grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => setSlide(Math.max(0, slide - 1))}
-              disabled={slide === 0}
-              className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-[14px] font-medium text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Atrás
-            </button>
-            {slide < slides.length - 1 ? (
-              <button
-                type="button"
-                onClick={() => setSlide(slide + 1)}
-                className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
-              >
-                Siguiente
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={createPrompt}
-                className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
-              >
-                Crear prompt
-              </button>
-            )}
+              <div className="mt-3 grid gap-2">
+                <Range10 label="Autonomía" value={autonomy} onChange={(value) => updateModelMetric("autonomy", value)} />
+                <Range10 label="Seguridad" value={security} onChange={(value) => updateModelMetric("security", value)} />
+                <Range10 label="Costo" value={cost} onChange={(value) => updateModelMetric("cost", value)} />
+              </div>
+            </GuidedInputCard>
           </div>
         </div>
       </div>
 
-      <div className="flex h-full flex-col">
+      <div>
         <AIPromptComposer
           value={prompt}
           onChange={setPrompt}
@@ -789,7 +767,6 @@ function GuidedPromptExercise({
           onSelectModel={setModel}
           voiceNotes={voiceNotes}
           onVoiceNote={(note) => setVoiceNotes([...voiceNotes, note])}
-          layout="matched"
         />
       </div>
     </div>
@@ -805,11 +782,12 @@ function chooseGuidedModelId({
   security: number;
   cost: number;
 }) {
-  if (security >= 70 && autonomy <= 50) return "gpt-corporativo";
-  if (cost >= 80 && security < 70) return "gemini-3-flash";
-  if (autonomy >= 80 && security >= 70) return "claude-opus-4.7";
-  if (autonomy >= 70) return "claude-sonnet-4.6";
-  if (cost >= 70) return "deepseek-v4-pro";
+  if (security >= 80 && autonomy <= 60) return "gpt-corporativo";
+  if (cost <= 30 && security < 70) return "gemini-3-flash";
+  if (cost <= 50 && autonomy < 80) return "deepseek-v4-pro";
+  if (autonomy >= 80 && security >= 80 && cost >= 80) return "claude-opus-4.7";
+  if (autonomy >= 70 && cost >= 60) return "claude-sonnet-4.6";
+  if (security >= 70) return "gpt-corporativo";
   return "claude-sonnet-4.6";
 }
 
@@ -817,6 +795,94 @@ function priorityLabel(value: number) {
   if (value >= 70) return "alta";
   if (value >= 40) return "media";
   return "baja";
+}
+
+function budgetLabel(value: number) {
+  if (value >= 70) return `alto (${value}/100)`;
+  if (value >= 40) return `medio (${value}/100)`;
+  return `bajo (${value}/100)`;
+}
+
+function roundTo10(value: number) {
+  return Math.max(0, Math.min(100, Math.round(value / 10) * 10));
+}
+
+function rebalanceModelTradeoffs(
+  current: { autonomy: number; security: number; cost: number },
+  metric: ModelMetric,
+  rawValue: number,
+) {
+  let autonomy = current.autonomy;
+  let security = current.security;
+  let cost = current.cost;
+  const value = roundTo10(rawValue);
+
+  if (metric === "autonomy") autonomy = value;
+  if (metric === "security") security = value;
+  if (metric === "cost") cost = value;
+
+  const cap = 120 + cost;
+  const pressure = autonomy + security;
+
+  if (pressure <= cap) {
+    return { autonomy, security, cost };
+  }
+
+  if (metric === "cost") {
+    let excess = pressure - cap;
+    while (excess > 0 && (autonomy > 0 || security > 0)) {
+      if (autonomy >= security && autonomy > 0) {
+        autonomy = roundTo10(autonomy - 10);
+      } else if (security > 0) {
+        security = roundTo10(security - 10);
+      }
+      excess -= 10;
+    }
+    return { autonomy, security, cost };
+  }
+
+  return {
+    autonomy,
+    security,
+    cost: roundTo10(pressure - 120),
+  };
+}
+
+function ProcessAnswer({
+  index,
+  label,
+  value,
+}: {
+  index: number;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="grid grid-cols-[28px_1fr] gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
+      <span className="grid h-7 w-7 place-items-center rounded-full bg-[var(--accent)] text-[12px] font-semibold text-white">
+        {index}
+      </span>
+      <span className="min-w-0">
+        <span className="block text-[12px] font-medium text-[var(--text-tertiary)]">{label}</span>
+        <span className="mt-1 block text-[14px] leading-snug text-[var(--text-primary)]">{value}</span>
+      </span>
+    </div>
+  );
+}
+
+function GuidedInputCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-h-[300px] rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-sm)]">
+      <div className="mb-3 text-[14px] font-semibold text-[var(--text-primary)]">{title}</div>
+      {children}
+    </div>
+  );
 }
 
 function GuidedSlideOptions({
@@ -852,7 +918,7 @@ function GuidedOption({
     <button
       type="button"
       onClick={onClick}
-      className={`grid min-h-14 grid-cols-[20px_1fr] items-center gap-3 rounded-2xl border px-4 py-3 text-left text-[14px] transition-colors ${
+      className={`grid min-h-11 grid-cols-[20px_1fr] items-center gap-3 rounded-2xl border px-3 py-2 text-left text-[13px] transition-colors ${
         selected
           ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--text-primary)]"
           : "border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
@@ -1923,20 +1989,20 @@ function Range10({
   onChange: (value: number) => void;
 }) {
   return (
-    <div className="mt-4">
-      <label className="flex items-center justify-between text-[14px]">
+    <div>
+      <label className="grid grid-cols-[72px_1fr_36px] items-center gap-3 text-[13px]">
         <span className="text-[var(--text-secondary)]">{label}</span>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          step={10}
+          value={value}
+          onChange={(event) => onChange(Number(event.target.value))}
+          className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-[var(--surface-3)] accent-[var(--accent)]"
+        />
         <span className="mono text-[var(--text-primary)]">{value}</span>
       </label>
-      <input
-        type="range"
-        min={0}
-        max={100}
-        step={10}
-        value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
-        className="mt-2 h-2 w-full cursor-pointer appearance-none rounded-lg bg-[var(--surface-3)] accent-[var(--accent)]"
-      />
     </div>
   );
 }
