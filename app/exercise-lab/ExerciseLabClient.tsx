@@ -511,22 +511,23 @@ function ExerciseSection({
   children: React.ReactNode;
 }) {
   if (exercise.id === "textfield-ia-libre" || exercise.id === "textfield-ia-guiado") {
+    const isGuided = exercise.id === "textfield-ia-guiado";
     return (
       <section
         id={exercise.id}
         data-exercise-section={index}
-        className="h-[calc(100vh-3.5rem)] snap-start snap-always px-6 py-16 flex items-center"
+        className="h-[calc(100vh-3.5rem)] snap-start snap-always px-6 py-14 flex items-center"
       >
-        <div className="mx-auto w-full max-w-[880px]">
+        <div className={`mx-auto w-full ${isGuided ? "max-w-6xl" : "max-w-[880px]"}`}>
           <div className="eyebrow">{exercise.eyebrow}</div>
-          <h2 className="display display-tight mt-5 text-[34px] sm:text-[52px] text-[var(--text-primary)]">
+          <h2 className={`display display-tight mt-4 text-[34px] text-[var(--text-primary)] ${isGuided ? "sm:text-[42px]" : "sm:text-[52px]"}`}>
             {exercise.title}
           </h2>
-          <p className="mt-5 max-w-2xl text-[17px] leading-[1.6] text-[var(--text-secondary)]">
+          <p className="mt-4 max-w-2xl text-[16px] leading-[1.55] text-[var(--text-secondary)]">
             {exercise.description}
           </p>
-          <div className="mt-8">{children}</div>
-          <div className="mt-5 flex flex-wrap gap-2">
+          <div className="mt-6">{children}</div>
+          <div className="mt-4 flex flex-wrap gap-2">
             {exercise.signals.map((signal) => (
               <span
                 key={signal}
@@ -647,6 +648,9 @@ function GuidedPromptExercise({
   cost: number;
   setCost: (value: number) => void;
 }) {
+  const [slide, setSlide] = useState(0);
+  const slides = ["Objetivo", "Audiencia", "Límites", "Ajustes"];
+
   function toggleGuardrail(value: string) {
     setGuardrails(
       guardrails.includes(value)
@@ -662,51 +666,125 @@ function GuidedPromptExercise({
     );
   }
 
+  const summary = [
+    { label: "objetivo", value: objective },
+    { label: "audiencia", value: audience },
+    { label: "límites", value: `${guardrails.length} activos` },
+  ];
+
   return (
-    <div className="grid gap-5 lg:grid-cols-[300px_minmax(0,1fr)]">
-      <div className="grid gap-4">
-        <GuidedSelector
-          label="Objetivo"
-          options={guidedObjectives}
-          value={objective}
-          onChange={setObjective}
-        />
-        <GuidedSelector
-          label="Audiencia"
-          options={guidedAudiences}
-          value={audience}
-          onChange={setAudience}
-        />
-        <div className="rounded-2xl bg-[var(--surface-2)] p-4">
-          <Label>Límites del caso</Label>
-          <div className="mt-3 grid gap-2">
-            {guidedGuardrails.map((guardrail) => (
-              <ChoiceButton
-                key={guardrail}
-                selected={guardrails.includes(guardrail)}
-                onClick={() => toggleGuardrail(guardrail)}
-              >
-                {guardrail}
-              </ChoiceButton>
+    <div className="grid gap-5 lg:grid-cols-[390px_minmax(0,1fr)] lg:items-start">
+      <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <div className="text-[12px] font-medium text-[var(--text-tertiary)]">
+              paso {slide + 1} de {slides.length}
+            </div>
+            <div className="mt-1 text-[18px] font-semibold text-[var(--text-primary)]">
+              {slides[slide]}
+            </div>
+          </div>
+          <div className="flex gap-1.5" aria-label="Progreso del builder">
+            {slides.map((item, index) => (
+              <button
+                key={item}
+                type="button"
+                onClick={() => setSlide(index)}
+                aria-label={`Ir a ${item}`}
+                className={`h-2 rounded-full transition-all ${
+                  index === slide ? "w-8 bg-[var(--accent)]" : "w-2 bg-[var(--surface-3)]"
+                }`}
+              />
             ))}
           </div>
         </div>
-        <div className="rounded-2xl bg-[var(--surface-2)] p-4">
-          <Label>Tradeoffs</Label>
-          <Range10 label="autonomía" value={autonomy} onChange={setAutonomy} />
-          <Range10 label="seguridad" value={security} onChange={setSecurity} />
-          <Range10 label="costo" value={cost} onChange={setCost} />
+
+        <div className="mt-5 min-h-[236px]">
+          {slide === 0 && (
+            <GuidedSlideOptions
+              options={guidedObjectives}
+              value={objective}
+              onChange={setObjective}
+            />
+          )}
+          {slide === 1 && (
+            <GuidedSlideOptions
+              options={guidedAudiences}
+              value={audience}
+              onChange={setAudience}
+            />
+          )}
+          {slide === 2 && (
+            <div className="grid gap-2">
+              {guidedGuardrails.map((guardrail) => (
+                <GuidedOption
+                  key={guardrail}
+                  selected={guardrails.includes(guardrail)}
+                  onClick={() => toggleGuardrail(guardrail)}
+                >
+                  {guardrail}
+                </GuidedOption>
+              ))}
+            </div>
+          )}
+          {slide === 3 && (
+            <div className="grid gap-3">
+              <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
+                <Range10 label="autonomía" value={autonomy} onChange={setAutonomy} />
+              </div>
+              <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
+                <Range10 label="seguridad" value={security} onChange={setSecurity} />
+              </div>
+              <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
+                <Range10 label="costo" value={cost} onChange={setCost} />
+              </div>
+            </div>
+          )}
         </div>
-        <button
-          type="button"
-          onClick={createPrompt}
-          className="min-h-12 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-        >
-          Crear prompt
-        </button>
+
+        <div className="mt-5 grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => setSlide(Math.max(0, slide - 1))}
+            disabled={slide === 0}
+            className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-[14px] font-medium text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            Atrás
+          </button>
+          {slide < slides.length - 1 ? (
+            <button
+              type="button"
+              onClick={() => setSlide(slide + 1)}
+              className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+            >
+              Siguiente
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={createPrompt}
+              className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+            >
+              Crear prompt
+            </button>
+          )}
+        </div>
       </div>
 
       <div>
+        <div className="mb-3 grid gap-2 sm:grid-cols-3">
+          {summary.map((item) => (
+            <div
+              key={item.label}
+              className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3"
+            >
+              <div className="text-[11px] text-[var(--text-tertiary)]">{item.label}</div>
+              <div className="mt-1 line-clamp-1 text-[13px] font-medium text-[var(--text-primary)]">
+                {item.value}
+              </div>
+            </div>
+          ))}
+        </div>
         <AIPromptComposer
           value={prompt}
           onChange={setPrompt}
@@ -715,9 +793,9 @@ function GuidedPromptExercise({
           voiceNotes={voiceNotes}
           onVoiceNote={(note) => setVoiceNotes([...voiceNotes, note])}
         />
-        <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
+        <div className="mt-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
           <div className="text-[13px] font-medium text-[var(--text-primary)]">preview evaluable</div>
-          <p className="mt-2 line-clamp-7 text-[13px] leading-5 text-[var(--text-secondary)]">
+          <p className="mt-2 line-clamp-4 text-[13px] leading-5 text-[var(--text-secondary)]">
             {promptPreview}
           </p>
         </div>
@@ -726,28 +804,65 @@ function GuidedPromptExercise({
   );
 }
 
-function GuidedSelector({
-  label,
+function GuidedSlideOptions({
   options,
   value,
   onChange,
 }: {
-  label: string;
   options: string[];
   value: string;
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="rounded-2xl bg-[var(--surface-2)] p-4">
-      <Label>{label}</Label>
-      <div className="mt-3 grid gap-2">
-        {options.map((option) => (
-          <ChoiceButton key={option} selected={value === option} onClick={() => onChange(option)}>
-            {option}
-          </ChoiceButton>
-        ))}
-      </div>
+    <div className="grid gap-2">
+      {options.map((option) => (
+        <GuidedOption key={option} selected={value === option} onClick={() => onChange(option)}>
+          {option}
+        </GuidedOption>
+      ))}
     </div>
+  );
+}
+
+function GuidedOption({
+  children,
+  selected,
+  onClick,
+}: {
+  children: React.ReactNode;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`grid min-h-14 grid-cols-[20px_1fr] items-center gap-3 rounded-2xl border px-4 py-3 text-left text-[14px] transition-colors ${
+        selected
+          ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--text-primary)]"
+          : "border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+      }`}
+    >
+      <span
+        className={`grid h-5 w-5 place-items-center rounded-full border ${
+          selected ? "border-[var(--accent)] bg-[var(--accent)] text-white" : "border-[var(--border-strong)]"
+        }`}
+        aria-hidden
+      >
+        {selected && (
+          <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none">
+            <path
+              d="M2.5 6.2L5 8.7L9.5 3.8"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="1.7"
+            />
+          </svg>
+        )}
+      </span>
+      <span className="leading-snug">{children}</span>
+    </button>
   );
 }
 
