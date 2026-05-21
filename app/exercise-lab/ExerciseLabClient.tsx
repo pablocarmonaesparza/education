@@ -289,9 +289,7 @@ function findModelById(id: string): ModelOption {
 
 export function ExerciseLabClient() {
   const [activeSection, setActiveSection] = useState(0);
-  const [prompt, setPrompt] = useState(
-    "Crea tres ángulos para reactivar cuentas grandes que bajaron su uso del producto. Usa sólo empresa, segmento y resumen agregado de tickets. No uses nombres ni correos. Marca cualquier afirmación que necesite fuente.",
-  );
+  const [prompt, setPrompt] = useState("");
   const [model, setModel] = useState(defaultModelId);
   const [security, setSecurity] = useState(80);
   const [quality, setQuality] = useState(70);
@@ -327,7 +325,8 @@ export function ExerciseLabClient() {
         voiceNotes.length > 0
           ? `\nNotas de voz: ${voiceNotes.map((note, index) => `${index + 1}. ${note}`).join(" ")}`
           : "";
-      return `${prompt}${notes}\n\nModelo: ${selected.label}${selected.badge ? ` · ${selected.badge}` : ""}.\nPrioridades: seguridad ${security}/100 · calidad ${quality}/100 · revisión humana obligatoria.`;
+      const basePrompt = prompt.trim() || "Aún no hay prompt escrito.";
+      return `${basePrompt}${notes}\n\nModelo: ${selected.label}${selected.badge ? ` · ${selected.badge}` : ""}.\nPrioridades: seguridad ${security}/100 · calidad ${quality}/100 · revisión humana obligatoria.`;
     },
     [model, prompt, quality, security, voiceNotes],
   );
@@ -455,6 +454,38 @@ function ExerciseSection({
   index: number;
   children: React.ReactNode;
 }) {
+  if (exercise.id === "textfield-ia") {
+    return (
+      <section
+        id={exercise.id}
+        data-exercise-section={index}
+        className="h-[calc(100vh-3.5rem)] snap-start snap-always px-6 py-16 flex items-center"
+      >
+        <div className="mx-auto w-full max-w-[880px]">
+          <div className="eyebrow">01 · textfield de IA</div>
+          <h2 className="display display-tight mt-5 text-[34px] sm:text-[52px] text-[var(--text-primary)]">
+            Redacta tu prompt al modelo.
+          </h2>
+          <p className="mt-5 max-w-2xl text-[17px] leading-[1.6] text-[var(--text-secondary)]">
+            Este bloque reproduce el campo del simulador: el participante escribe,
+            dicta una nota de voz, elige modelo y envía una instrucción real.
+          </p>
+          <div className="mt-8">{children}</div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {exercise.signals.map((signal) => (
+              <span
+                key={signal}
+                className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[13px] text-[var(--text-secondary)]"
+              >
+                {signal}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section
       id={exercise.id}
@@ -519,13 +550,8 @@ function PromptExercise({
   setQuality: (value: number) => void;
 }) {
   return (
-    <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
+    <div>
       <div>
-        <Label>Petición al modelo</Label>
-        <p className="mt-1 text-[13px] leading-5 text-[var(--text-secondary)]">
-          Este es el campo de IA del runtime: puedes elegir modelo, escribir, dictar una nota de voz
-          y enviar cuando el prompt esté listo.
-        </p>
         <AIPromptComposer
           value={prompt}
           onChange={setPrompt}
@@ -546,11 +572,16 @@ function PromptExercise({
           ))}
         </div>
       </div>
-      <div className="rounded-2xl bg-[var(--surface-2)] p-4">
-        <Label>Prioridades</Label>
-        <Range10 label="seguridad" value={security} onChange={setSecurity} />
-        <Range10 label="calidad" value={quality} onChange={setQuality} />
-        <div className="mt-5 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
+      <div className="mt-5 grid gap-4 md:grid-cols-[1fr_1fr_260px] md:items-start">
+        <div className="rounded-2xl bg-[var(--surface-2)] p-4">
+          <Label>Seguridad</Label>
+          <Range10 label="control" value={security} onChange={setSecurity} />
+        </div>
+        <div className="rounded-2xl bg-[var(--surface-2)] p-4">
+          <Label>Calidad</Label>
+          <Range10 label="criterio" value={quality} onChange={setQuality} />
+        </div>
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
           <div className="text-[13px] font-medium text-[var(--text-primary)]">preview</div>
           <p className="mt-2 line-clamp-6 text-[13px] leading-5 text-[var(--text-secondary)]">
             {promptPreview}
