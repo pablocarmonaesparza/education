@@ -29,7 +29,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   IconBriefcase,
-  IconBuilding,
   IconFileText,
   IconHome,
   IconUserCircle,
@@ -56,9 +55,10 @@ const PRIMARY: NavItem[] = [
   { href: "/casos", label: "Casos", Icon: IconBriefcase },
 ];
 
+// 'Empresa' (gestión de la org) NO va aquí — es vista de manager/org_admin.
+// Cuando hagamos role-aware (task #16), aparece solo cuando el user es admin.
 const SECONDARY: NavItem[] = [
   { href: "/perfil", label: "Perfil", Icon: IconUserCircle },
-  { href: "/empresa", label: "Empresa", Icon: IconBuilding },
 ];
 
 function isActive(pathname: string, href: string): boolean {
