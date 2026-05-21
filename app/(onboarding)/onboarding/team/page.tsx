@@ -15,13 +15,17 @@ import { SurfaceNav } from "@/components/simulador/SurfaceNav";
 
 const DEPARTMENTS = [
   { key: "marketing", label: "Marketing / Growth" },
-  { key: "operations", label: "Operations" },
-  { key: "sales", label: "Sales" },
+  { key: "operations", label: "Operaciones" },
+  { key: "sales", label: "Ventas" },
   { key: "customer_success", label: "Customer Success" },
-  { key: "engineering", label: "Engineering" },
+  { key: "engineering", label: "Ingeniería" },
   { key: "people_hr", label: "People / HR" },
   { key: "otro", label: "Otro" },
 ];
+
+const DEPARTMENT_LABELS: Record<string, string> = Object.fromEntries(
+  DEPARTMENTS.map((d) => [d.key, d.label]),
+);
 
 export default function OnboardingTeamPage() {
   const router = useRouter();
@@ -43,9 +47,17 @@ export default function OnboardingTeamPage() {
     setOrgName(n ?? "");
   }, [router]);
 
+  // El nombre del team se deriva del Select salvo cuando es "otro",
+  // que pide nombre custom al user. Evita el doble-tipeo del patrón viejo
+  // (Input + Select que decían la misma info).
+  const computedTeamName =
+    department === "otro" ? name.trim() : DEPARTMENT_LABELS[department] ?? "";
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!orgId) return;
+    if (!department) return;
+    if (department === "otro" && !name.trim()) return;
     setError(null);
     setSubmitting(true);
     try {
@@ -53,7 +65,7 @@ export default function OnboardingTeamPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: name.trim(),
+          name: computedTeamName,
           department_key: department,
         }),
       });
@@ -87,16 +99,6 @@ export default function OnboardingTeamPage() {
           </h1>
 
           <form onSubmit={onSubmit} className="mt-10 space-y-3">
-            <Input
-              value={name}
-              onValueChange={setName}
-              placeholder="Nombre del equipo"
-              variant="bordered"
-              radius="lg"
-              size="lg"
-              autoFocus
-            />
-
             <Select
               placeholder="Función"
               aria-label="Función del equipo"
@@ -107,11 +109,24 @@ export default function OnboardingTeamPage() {
               variant="bordered"
               radius="lg"
               size="lg"
+              autoFocus
             >
               {DEPARTMENTS.map((d) => (
                 <SelectItem key={d.key}>{d.label}</SelectItem>
               ))}
             </Select>
+
+            {department === "otro" && (
+              <Input
+                value={name}
+                onValueChange={setName}
+                placeholder="Nombre del equipo"
+                variant="bordered"
+                radius="lg"
+                size="lg"
+                autoFocus
+              />
+            )}
 
             {error && (
               <div className="text-[13px] text-[var(--band-b-text)] bg-[var(--band-b-bg)] px-3 py-2 rounded-lg">
@@ -132,7 +147,11 @@ export default function OnboardingTeamPage() {
               <Button
                 type="submit"
                 isLoading={submitting}
-                isDisabled={!name.trim() || !department || submitting}
+                isDisabled={
+                  !department ||
+                  (department === "otro" && !name.trim()) ||
+                  submitting
+                }
                 radius="md"
                 size="lg"
                 className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
