@@ -111,14 +111,14 @@ function OnboardingBillingContent() {
   return (
     <>
       <SurfaceNav />
-      <main className="surface-canvas h-[calc(100vh-3.5rem)] overflow-hidden flex flex-col">
+      <main className="surface-canvas h-[calc(100vh-3.5rem)] overflow-x-hidden overflow-y-hidden flex flex-col">
+        {/* ============ HEADER + STEPPER (max-w container) ============ */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="mx-auto w-full max-w-[720px] px-6 pt-8 sm:pt-10 flex-1 flex flex-col"
+          className="mx-auto w-full max-w-[720px] px-6 pt-8 sm:pt-10"
         >
-          {/* ============ HEADER ============ */}
           <div>
             <div className="eyebrow mb-2">Paso 4 de 5</div>
             <h1 className="display display-tight text-[var(--text-primary)] text-[28px] sm:text-[32px]">
@@ -126,7 +126,6 @@ function OnboardingBillingContent() {
             </h1>
           </div>
 
-          {/* ============ STEPPER + INPUT ============ */}
           <section className="mt-7 flex flex-col items-center text-center">
             <h2 className="text-[14px] font-medium text-[var(--text-primary)]">
               {copy.seats_question}
@@ -159,7 +158,6 @@ function OnboardingBillingContent() {
                   setSeatsClamped(Number(raw));
                 }}
                 onBlur={(e) => {
-                  // Si quedó vacío después de borrar, restablecer al mínimo.
                   if (e.target.value === "") setSeats(SIMULADOR_PRODUCT.minSeats);
                 }}
                 aria-label="Número de personas"
@@ -181,31 +179,43 @@ function OnboardingBillingContent() {
               {seats === 1 ? "1 persona" : `${seats} personas`} · escribe o usa los botones
             </p>
           </section>
+        </motion.div>
 
-          {/* ============ CARRUSEL DE TIERS ============ */}
-          <section className="mt-6 relative overflow-hidden" style={{ height: 280 }}>
-            <motion.div
-              className="absolute top-0 bottom-0 flex items-center"
-              animate={{
-                x: -activeTierIndex * CARD_STRIDE,
-              }}
-              transition={{ type: "spring", stiffness: 260, damping: 28 }}
-              style={{
-                left: `calc(50% - ${CARD_WIDTH / 2}px)`,
-              }}
-            >
-              {SIMULADOR_TIERS.map((tier, i) => {
-                const isActive = i === activeTierIndex;
-                return (
+        {/* ============ CARRUSEL DE TIERS (full viewport width) ============
+            Sale del max-w-[720px] del header/footer. El único clip horizontal
+            es <main> con overflow-x-hidden (= ancho del viewport). Las cards
+            adjacent se ven enteras dentro de ese ancho. */}
+        <section
+          className="relative mt-6 flex-none w-full"
+          style={{ height: 280 }}
+        >
+          <motion.div
+            className="absolute top-0 bottom-0 flex items-center"
+            animate={{ x: -activeTierIndex * CARD_STRIDE }}
+            transition={{ type: "spring", stiffness: 260, damping: 28 }}
+            style={{ left: `calc(50% - ${CARD_WIDTH / 2}px)` }}
+          >
+            {SIMULADOR_TIERS.map((tier, i) => {
+              const isActive = i === activeTierIndex;
+              // Wrapper: layout box fijo 320px + gap fijo → spacing equidistante.
+              // El scale + opacity se aplica al hijo interno para que el footprint
+              // visual cambie SIN alterar el layout. Antes el scale iba en el
+              // wrapper → la card scaleada conservaba su layout box de 320px
+              // pero su visible footprint era 275px, creando "aire" desigual
+              // entre activa-inactiva (22.4px) vs inactiva-inactiva (44.8px).
+              return (
+                <div
+                  key={tier.id}
+                  style={{ width: CARD_WIDTH, marginLeft: 8, marginRight: 8 }}
+                  className="flex-none flex items-center justify-center"
+                >
                   <motion.div
-                    key={tier.id}
                     animate={{
                       scale: isActive ? 1 : 0.86,
-                      opacity: isActive ? 1 : 0.42,
+                      opacity: isActive ? 1 : 0.4,
                     }}
                     transition={{ type: "spring", stiffness: 260, damping: 28 }}
-                    style={{ width: CARD_WIDTH, marginLeft: 8, marginRight: 8 }}
-                    className="flex-none"
+                    style={{ width: CARD_WIDTH }}
                   >
                     <TierCard
                       tier={tier}
@@ -215,57 +225,49 @@ function OnboardingBillingContent() {
                       pricePerSeat={computed.pricePerSeatUsd}
                     />
                   </motion.div>
-                );
-              })}
-            </motion.div>
-          </section>
+                </div>
+              );
+            })}
+          </motion.div>
+        </section>
 
-          {/* ============ ERROR + CTA + SKIP ============ */}
-          <div className="mt-auto pb-6 pt-4">
-            {error && (
-              <div className="mb-4 rounded-[var(--radius-md)] bg-[var(--band-b-bg)] px-4 py-2.5 text-[12px] text-[var(--band-b-text)] text-center">
-                {error}
-              </div>
-            )}
-
-            {computed.isEnterprise ? (
-              <a
-                href={`mailto:${SIMULADOR_PRODUCT.salesEmail}?subject=Itera%20%C2%B7%20${computed.seats}%20personas`}
-                className="inline-flex h-12 w-full items-center justify-center rounded-[var(--radius-md)] accent-bg text-[15px] font-medium text-white hover:opacity-95 transition-opacity"
-              >
-                {copy.submit_enterprise_cta}
-              </a>
-            ) : (
-              <Button
-                onPress={onCheckout}
-                isLoading={submitting}
-                isDisabled={submitting}
-                radius="md"
-                size="lg"
-                className="accent-bg h-12 w-full text-[15px] font-medium text-white shadow-none"
-              >
-                {copy.submit_cta}
-              </Button>
-            )}
-            <div className="mt-2 flex items-center justify-center gap-3 text-[11px] text-[var(--text-tertiary)]">
-              <Link href="/terms" className="underline hover:opacity-70 transition-opacity">
-                términos
-              </Link>
-              <span>·</span>
-              <Link href="/privacy" className="underline hover:opacity-70 transition-opacity">
-                privacidad
-              </Link>
-              <span>·</span>
-              <button
-                type="button"
-                onClick={() => router.push("/dashboard")}
-                className="underline hover:text-[var(--text-primary)] transition-colors"
-              >
-                continuar sin pagar
-              </button>
+        {/* ============ ERROR + CTA + FOOTER (max-w container) ============ */}
+        <div className="mx-auto w-full max-w-[720px] px-6 pb-6 mt-auto">
+          {error && (
+            <div className="mb-4 rounded-[var(--radius-md)] bg-[var(--band-b-bg)] px-4 py-2.5 text-[12px] text-[var(--band-b-text)] text-center">
+              {error}
             </div>
+          )}
+
+          {computed.isEnterprise ? (
+            <a
+              href={`mailto:${SIMULADOR_PRODUCT.salesEmail}?subject=Itera%20%C2%B7%20${computed.seats}%20personas`}
+              className="inline-flex h-12 w-full items-center justify-center rounded-[var(--radius-md)] accent-bg text-[15px] font-medium text-white hover:opacity-95 transition-opacity"
+            >
+              {copy.submit_enterprise_cta}
+            </a>
+          ) : (
+            <Button
+              onPress={onCheckout}
+              isLoading={submitting}
+              isDisabled={submitting}
+              radius="md"
+              size="lg"
+              className="accent-bg h-12 w-full text-[15px] font-medium text-white shadow-none"
+            >
+              {copy.submit_cta}
+            </Button>
+          )}
+          <div className="mt-2 flex items-center justify-center gap-3 text-[11px] text-[var(--text-tertiary)]">
+            <Link href="/terms" className="underline hover:opacity-70 transition-opacity">
+              términos
+            </Link>
+            <span>·</span>
+            <Link href="/privacy" className="underline hover:opacity-70 transition-opacity">
+              privacidad
+            </Link>
           </div>
-        </motion.div>
+        </div>
       </main>
     </>
   );
@@ -298,10 +300,10 @@ function TierCard({
 
   return (
     <div
-      className={`h-[268px] rounded-[var(--radius-lg)] border p-5 transition-colors ${
+      className={`h-[268px] rounded-[var(--radius-lg)] border p-5 transition-all bg-[var(--surface)] ${
         isActive
-          ? "border-[var(--accent)]/30 bg-[var(--accent-soft)]"
-          : "border-[var(--hairline)] bg-[var(--surface)]"
+          ? "border-[var(--accent)] shadow-[0_8px_24px_var(--shadow)]"
+          : "border-[var(--hairline)]"
       }`}
     >
       <div className="flex items-center justify-between">
@@ -334,7 +336,7 @@ function TierCard({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.2 }}
-                className="mt-5 border-t border-[var(--accent)]/20 pt-4"
+                className="mt-5 border-t border-[var(--hairline)] pt-4"
               >
                 <div className="flex items-baseline justify-between text-[12px] text-[var(--text-secondary)]">
                   <span>
@@ -370,7 +372,7 @@ function TierCard({
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="mt-5 border-t border-[var(--accent)]/20 pt-4 text-[12px] leading-[1.5] text-[var(--text-secondary)]"
+              className="mt-5 border-t border-[var(--hairline)] pt-4 text-[12px] leading-[1.5] text-[var(--text-secondary)]"
             >
               Para equipos grandes ajustamos por volumen y término. Cuéntanos cuántas personas son.
             </motion.p>

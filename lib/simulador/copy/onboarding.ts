@@ -208,7 +208,6 @@ export const onboardingCopy = {
       "Para equipos grandes el precio se negocia por volumen y término. Cuéntanos cuántas personas son y armamos una propuesta.",
     submit_cta: "Continuar a Stripe",
     submit_enterprise_cta: "Hablar con ventas",
-    skip_cta: "Continuar sin pagar todavía",
     terms_required:
       "Al continuar aceptas los Términos y la Política de privacidad. Pago seguro con Stripe.",
     error_create_session: "Error al crear sesión de pago. Reintenta.",
