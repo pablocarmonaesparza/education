@@ -697,14 +697,6 @@ function GuidedPromptExercise({
               muted={!modelTouched}
             />
           </div>
-          <button
-            type="button"
-            onClick={createPrompt}
-            disabled={!canCreatePrompt}
-            className="mt-4 min-h-11 w-full rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)]"
-          >
-            Crear prompt
-          </button>
         </div>
 
         <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
@@ -809,11 +801,17 @@ function GuidedPromptExercise({
             </button>
             <button
               type="button"
-              onClick={() => setActiveInput(Math.min(inputSteps.length - 1, activeInput + 1))}
-              disabled={activeInput === inputSteps.length - 1}
+              onClick={() => {
+                if (activeInput === inputSteps.length - 1) {
+                  createPrompt();
+                  return;
+                }
+                setActiveInput(Math.min(inputSteps.length - 1, activeInput + 1));
+              }}
+              disabled={activeInput === inputSteps.length - 1 && !canCreatePrompt}
               className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)]"
             >
-              Siguiente
+              {activeInput === inputSteps.length - 1 ? "Crear prompt" : "Siguiente"}
             </button>
           </div>
         </div>
@@ -827,6 +825,7 @@ function GuidedPromptExercise({
           onSelectModel={setModel}
           voiceNotes={voiceNotes}
           onVoiceNote={(note) => setVoiceNotes([...voiceNotes, note])}
+          readOnly
         />
       </div>
     </div>
@@ -1042,6 +1041,7 @@ function AIPromptComposer({
   voiceNotes,
   onVoiceNote,
   layout = "default",
+  readOnly = false,
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -1050,6 +1050,7 @@ function AIPromptComposer({
   voiceNotes: string[];
   onVoiceNote: (note: string) => void;
   layout?: "default" | "matched";
+  readOnly?: boolean;
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sent, setSent] = useState(false);
@@ -1102,13 +1103,15 @@ function AIPromptComposer({
         <textarea
           value={value}
           onChange={(event) => {
+            if (readOnly) return;
             setSent(false);
             onChange(event.target.value);
           }}
           disabled={recState === "recording" || recState === "processing"}
+          readOnly={readOnly}
           rows={matched ? 10 : textRows}
-          placeholder="Escribe el prompt que le mandarías al modelo..."
-          className={`w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 text-[15px] leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed ${matched ? "flex-1" : ""}`}
+          placeholder={readOnly ? "Crea el prompt desde Inputs y selección..." : "Escribe el prompt que le mandarías al modelo..."}
+          className={`w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 text-[15px] leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed ${matched ? "flex-1" : ""} ${readOnly ? "cursor-default" : ""}`}
           style={matched ? { minHeight: 0, maxHeight: "none" } : { minHeight: textMinHeight, maxHeight: 240 }}
         />
 
@@ -1136,33 +1139,43 @@ function AIPromptComposer({
 
         <div className="flex items-center justify-between gap-3 px-3 pb-3">
           <div className="relative flex items-center gap-1">
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept="image/*,.pdf,.csv,.xlsx,.xls,.doc,.docx,.txt,.md"
-              className="sr-only"
-              onChange={(event) => handleFiles(event.target.files)}
-              aria-label="Agregar archivo o foto"
-            />
+            {!readOnly && (
+              <>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  multiple
+                  accept="image/*,.pdf,.csv,.xlsx,.xls,.doc,.docx,.txt,.md"
+                  className="sr-only"
+                  onChange={(event) => handleFiles(event.target.files)}
+                  aria-label="Agregar archivo o foto"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  aria-label="Agregar archivo o foto"
+                  className={`grid h-9 w-9 place-items-center rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+                    attachments.length > 0
+                      ? "bg-[var(--accent-soft)] text-[var(--accent)] hover:bg-[var(--surface-3)]"
+                      : "text-[var(--text-tertiary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+                  }`}
+                >
+                  <PlusGlyph />
+                </button>
+              </>
+            )}
             <button
               type="button"
-              onClick={() => fileInputRef.current?.click()}
-              aria-label="Agregar archivo o foto"
-              className={`grid h-9 w-9 place-items-center rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
-                attachments.length > 0
-                  ? "bg-[var(--accent-soft)] text-[var(--accent)] hover:bg-[var(--surface-3)]"
-                  : "text-[var(--text-tertiary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+              onClick={() => {
+                if (!readOnly) setDropdownOpen((open) => !open);
+              }}
+              className={`flex min-h-9 items-center gap-2 rounded-2xl px-2.5 py-1.5 text-[12px] text-[var(--text-secondary)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+                readOnly
+                  ? "cursor-default"
+                  : "hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
               }`}
-            >
-              <PlusGlyph />
-            </button>
-            <button
-              type="button"
-              onClick={() => setDropdownOpen((open) => !open)}
-              className="flex min-h-9 items-center gap-2 rounded-2xl px-2.5 py-1.5 text-[12px] text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-              aria-label="Selector de modelo"
-              aria-expanded={dropdownOpen}
+              aria-label={readOnly ? "Modelo seleccionado" : "Selector de modelo"}
+              aria-expanded={readOnly ? undefined : dropdownOpen}
             >
               <BrandMark brand={currentModel.brand} />
               <span>
@@ -1171,23 +1184,25 @@ function AIPromptComposer({
                   <span className="ml-1 text-[var(--text-tertiary)]">· {currentModel.badge}</span>
                 )}
               </span>
-              <svg
-                className={`h-3 w-3 opacity-60 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
-                viewBox="0 0 12 12"
-                fill="none"
-              >
-                <path
-                  d="M3 4.5L6 7.5L9 4.5"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                />
-              </svg>
+              {!readOnly && (
+                <svg
+                  className={`h-3 w-3 opacity-60 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+                  viewBox="0 0 12 12"
+                  fill="none"
+                >
+                  <path
+                    d="M3 4.5L6 7.5L9 4.5"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                  />
+                </svg>
+              )}
             </button>
 
             <AnimatePresence>
-              {dropdownOpen && (
+              {dropdownOpen && !readOnly && (
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1259,7 +1274,7 @@ function AIPromptComposer({
           </div>
 
           <div className="flex items-center gap-1.5">
-            <MicButton recState={recState} disabled={false} onClick={onMicClick} />
+            {!readOnly && <MicButton recState={recState} disabled={false} onClick={onMicClick} />}
             <button
               type="button"
               disabled={!canSend}
