@@ -29,9 +29,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   IconBriefcase,
+  IconBuilding,
   IconFileText,
   IconHome,
   IconUserCircle,
+  IconUsers,
 } from "@tabler/icons-react";
 import type { ComponentType } from "react";
 
@@ -41,24 +43,36 @@ interface NavItem {
   Icon: ComponentType<{ size?: number; stroke?: number; className?: string }>;
 }
 
-// TODO: role-aware. Convención URL:
-//   /team = employee  → "Inicio" lleva acá (catálogo de casos personal)
-//   /staff = manager  → "Inicio" del manager (dashboard del team)
-//   /admin = Itera staff → review queue
-// Por ahora hardcodeamos al employee view porque es lo que estamos
-// construyendo activamente (Inicio → /team). Cuando se cablee el rol
-// real, "Inicio" alterna entre /team y /staff, y "Empresa" se oculta
-// para employees.
-const PRIMARY: NavItem[] = [
+// Route-aware sidebar:
+//   /staff/*  → vista del manager (Equipo + Reportes + Casos + Perfil + Empresa)
+//   /team, /casos, /reportes, /perfil (default) → vista del employee
+//                                      (Inicio + Reportes + Casos + Perfil)
+//   /admin/* → tiene su propia nav interna (este sidebar no aplica realmente
+//              pero seguimos mostrando el employee shell por ahora)
+//
+// TODO post-MVP: convertir a role-aware leyendo
+// simulador.organization_memberships del user logueado.
+
+const EMPLOYEE_PRIMARY: NavItem[] = [
   { href: "/team", label: "Inicio", Icon: IconHome },
   { href: "/reportes", label: "Reportes", Icon: IconFileText },
   { href: "/casos", label: "Casos", Icon: IconBriefcase },
 ];
 
-// 'Empresa' (gestión de la org) NO va aquí — es vista de manager/org_admin.
-// Cuando hagamos role-aware (task #16), aparece solo cuando el user es admin.
-const SECONDARY: NavItem[] = [
+const EMPLOYEE_SECONDARY: NavItem[] = [
   { href: "/perfil", label: "Perfil", Icon: IconUserCircle },
+];
+
+const MANAGER_PRIMARY: NavItem[] = [
+  { href: "/staff", label: "Inicio", Icon: IconHome },
+  { href: "/staff/equipo", label: "Equipo", Icon: IconUsers },
+  { href: "/staff/reportes", label: "Reportes", Icon: IconFileText },
+  { href: "/staff/casos", label: "Casos", Icon: IconBriefcase },
+];
+
+const MANAGER_SECONDARY: NavItem[] = [
+  { href: "/perfil", label: "Perfil", Icon: IconUserCircle },
+  { href: "/empresa", label: "Empresa", Icon: IconBuilding },
 ];
 
 function isActive(pathname: string, href: string): boolean {
@@ -97,8 +111,19 @@ function NavLink({
   );
 }
 
+function isManagerView(pathname: string): boolean {
+  return pathname === "/staff" || pathname.startsWith("/staff/");
+}
+
 export function AppSidebar() {
   const pathname = usePathname() ?? "";
+  const isManager = isManagerView(pathname);
+
+  const primaryItems = isManager ? MANAGER_PRIMARY : EMPLOYEE_PRIMARY;
+  const secondaryItems = isManager ? MANAGER_SECONDARY : EMPLOYEE_SECONDARY;
+  // El logo del brand también lleva al "home" del rol activo: manager → /staff,
+  // employee → /team.
+  const brandHref = isManager ? "/staff" : "/team";
 
   return (
     <aside
@@ -107,7 +132,7 @@ export function AppSidebar() {
     >
       {/* Brand */}
       <div className="px-2 py-1.5">
-        <Link href="/dashboard" className="inline-flex items-center" aria-label="Inicio">
+        <Link href={brandHref} className="inline-flex items-center" aria-label="Inicio">
           <Image
             src="/images/itera-logo-light.png"
             alt="Itera"
@@ -121,14 +146,14 @@ export function AppSidebar() {
 
       {/* Primary nav */}
       <nav className="mt-6 flex flex-col gap-0.5">
-        {PRIMARY.map((item) => (
+        {primaryItems.map((item) => (
           <NavLink key={item.href} item={item} active={isActive(pathname, item.href)} />
         ))}
       </nav>
 
       {/* Bottom: cuenta (sin divider — política Pablo: cero líneas innecesarias) */}
       <nav className="mt-auto flex flex-col gap-0.5">
-        {SECONDARY.map((item) => (
+        {secondaryItems.map((item) => (
           <NavLink key={item.href} item={item} active={isActive(pathname, item.href)} />
         ))}
       </nav>
