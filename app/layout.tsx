@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Darker_Grotesque } from "next/font/google";
 import "./globals.css";
+import "./(app)/simulador.css";
 
 const inter = Inter({
   subsets: ["latin"],
