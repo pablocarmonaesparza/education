@@ -234,10 +234,18 @@ const CASES: CaseItem[] = [
 // ============================================================================
 
 const LEVEL_OPTIONS: { value: Level; label: string }[] = [
-  { value: "N1", label: "N1 · Fundamentos" },
-  { value: "N2", label: "N2 · Workflow" },
-  { value: "N3", label: "N3 · Agentes" },
+  { value: "N1", label: "Fundamentos · Principiante" },
+  { value: "N2", label: "Automatización · Intermedio" },
+  { value: "N3", label: "Agentes · Avanzado" },
 ];
+
+// Label corto para mostrar dentro de la card (sin la palabra del seniority,
+// que ya se infiere y ocuparía espacio).
+const LEVEL_CARD_LABEL: Record<Level, string> = {
+  N1: "Fundamentos",
+  N2: "Automatización",
+  N3: "Agentes",
+};
 
 const DEPARTMENT_OPTIONS: { value: Department; label: string }[] = [
   { value: "marketing", label: "Marketing" },
@@ -269,11 +277,50 @@ const FRESHNESS_OPTIONS: { value: Freshness; label: string }[] = [
   { value: "hybrid", label: "Híbrido" },
 ];
 
-const LEVEL_SHORT: Record<Level, string> = {
-  N1: "N1",
-  N2: "N2",
-  N3: "N3",
+// ============================================================================
+// BRAND COLORS para tool chips — basado en los brand kits oficiales.
+// Si una tool no está en este map, usa el default neutro.
+// ============================================================================
+
+type ToolBrand = { bg: string; text: string };
+
+const TOOL_BRAND: Record<string, ToolBrand> = {
+  // LLM chats
+  ChatGPT: { bg: "#10a37f", text: "#ffffff" }, // OpenAI teal verde
+  Claude: { bg: "#d97757", text: "#ffffff" }, // Anthropic naranja
+  Gemini: { bg: "#4285f4", text: "#ffffff" }, // Google azul
+
+  // Code / dev
+  Cursor: { bg: "#000000", text: "#ffffff" },
+  "GitHub Copilot": { bg: "#000000", text: "#ffffff" },
+
+  // CRM / sales
+  HubSpot: { bg: "#ff7a59", text: "#ffffff" },
+  Salesforce: { bg: "#00a1e0", text: "#ffffff" },
+
+  // Marketing / analytics
+  "Meta Ads": { bg: "#1877f2", text: "#ffffff" },
+  "Google Analytics": { bg: "#e37400", text: "#ffffff" },
+  Looker: { bg: "#4285f4", text: "#ffffff" },
+  Mixpanel: { bg: "#7856ff", text: "#ffffff" },
+
+  // Workspace
+  Notion: { bg: "#000000", text: "#ffffff" },
+  Slack: { bg: "#4a154b", text: "#ffffff" },
+  Gmail: { bg: "#ea4335", text: "#ffffff" },
+  Excel: { bg: "#217346", text: "#ffffff" },
+
+  // Automation
+  Zapier: { bg: "#ff4a00", text: "#ffffff" },
+  Make: { bg: "#6d3aff", text: "#ffffff" },
+  n8n: { bg: "#ea4b71", text: "#ffffff" },
 };
+
+const TOOL_DEFAULT: ToolBrand = {
+  bg: "var(--surface-2)",
+  text: "var(--text-secondary)",
+};
+
 const DEPARTMENT_LABEL: Record<Department, string> = Object.fromEntries(
   DEPARTMENT_OPTIONS.map((d) => [d.value, d.label]),
 ) as Record<Department, string>;
@@ -363,8 +410,8 @@ function CaseCard({ item }: { item: CaseItem }) {
       {/* TOP: nivel chip + duración + frescura */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center rounded-md bg-[var(--accent-soft)] px-1.5 py-0.5 text-[10.5px] font-semibold text-[var(--accent)] tracking-wider">
-            {LEVEL_SHORT[item.level]}
+          <span className="inline-flex items-center rounded-md bg-[var(--accent-soft)] px-1.5 py-0.5 text-[11px] font-semibold text-[var(--accent)]">
+            {LEVEL_CARD_LABEL[item.level]}
           </span>
           <span className="text-[11.5px] text-[var(--text-tertiary)]">
             {item.estimatedMinutes} min
@@ -386,16 +433,20 @@ function CaseCard({ item }: { item: CaseItem }) {
         {item.primaryQuestion}
       </p>
 
-      {/* TOOLS */}
+      {/* TOOLS — coloreados por brand */}
       <div className="mt-4 flex flex-wrap gap-1">
-        {item.toolsRequired.slice(0, 3).map((tool) => (
-          <span
-            key={tool}
-            className="inline-flex items-center rounded-md bg-[var(--surface-2)] px-1.5 py-0.5 text-[11px] text-[var(--text-secondary)]"
-          >
-            {tool}
-          </span>
-        ))}
+        {item.toolsRequired.slice(0, 3).map((tool) => {
+          const brand = TOOL_BRAND[tool] ?? TOOL_DEFAULT;
+          return (
+            <span
+              key={tool}
+              className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] font-medium"
+              style={{ backgroundColor: brand.bg, color: brand.text }}
+            >
+              {tool}
+            </span>
+          );
+        })}
       </div>
 
       {/* FOOTER: depto · seniority · industria */}
