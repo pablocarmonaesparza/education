@@ -92,7 +92,6 @@ export default function OnboardingTeamPage() {
               value={name}
               onValueChange={setName}
               placeholder="Marketing"
-              isRequired
               variant="bordered"
               radius="lg"
               size="lg"

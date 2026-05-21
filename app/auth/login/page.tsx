@@ -187,7 +187,6 @@ function LoginContent() {
               placeholder="email@empresa.com"
               value={email}
               onValueChange={setEmail}
-              isRequired
               size="lg"
               radius="lg"
               variant="bordered"
@@ -204,7 +203,6 @@ function LoginContent() {
               placeholder="Contraseña"
               value={password}
               onValueChange={setPassword}
-              isRequired
               size="lg"
               radius="lg"
               variant="bordered"

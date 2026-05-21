@@ -209,7 +209,6 @@ function SignupContent() {
               placeholder="Tu nombre"
               value={name}
               onValueChange={setName}
-              isRequired
               size="lg"
               radius="lg"
               variant="bordered"
@@ -226,7 +225,6 @@ function SignupContent() {
               placeholder="email@empresa.com"
               value={email}
               onValueChange={setEmail}
-              isRequired
               size="lg"
               radius="lg"
               variant="bordered"
@@ -243,7 +241,6 @@ function SignupContent() {
               placeholder="Mínimo 6 caracteres"
               value={password}
               onValueChange={setPassword}
-              isRequired
               size="lg"
               radius="lg"
               variant="bordered"

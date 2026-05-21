@@ -288,7 +288,10 @@
   transform: translateX(2px);
 }
 
-/* Kill HeroUI's default focus ring on inputs (Pablo: el outline doble está mal alineado) */
+/* Inputs/Selects focus: borde accent (azul), SIN ring extra.
+   Antes había doble outline (HeroUI poner el borde negro + nosotros
+   añadir un box-shadow azul) que se veía cargado. Ahora un solo
+   borde azul reemplaza al gris, igual que los botones accent. */
 .simulador-root [data-slot="input-wrapper"] {
   --ring-offset-shadow: none !important;
   --tw-ring-shadow: none !important;
@@ -303,7 +306,12 @@
 .simulador-root [data-slot="trigger"] {
   border-radius: var(--radius-md);
 }
-.simulador-root [data-slot="input-wrapper"]:focus-within {
+.simulador-root [data-slot="input-wrapper"]:focus-within,
+.simulador-root [data-slot="input-wrapper"][data-focus="true"],
+.simulador-root [data-slot="trigger"]:focus-within,
+.simulador-root [data-slot="trigger"][data-focus="true"],
+.simulador-root [data-slot="trigger"][data-open="true"] {
   outline: none !important;
-  box-shadow: 0 0 0 4px var(--accent-ring) !important;
+  box-shadow: none !important;
+  border-color: var(--accent) !important;
 }

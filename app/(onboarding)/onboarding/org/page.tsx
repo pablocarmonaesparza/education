@@ -100,7 +100,6 @@ export default function OnboardingOrgPage() {
               value={name}
               onValueChange={setName}
               placeholder="Acme LATAM"
-              isRequired
               variant="bordered"
               radius="lg"
               size="lg"
