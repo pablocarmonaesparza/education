@@ -49,8 +49,14 @@ function OnboardingBillingContent() {
   const [orgId, setOrgId] = useState<string | null>(null);
   const [teamId, setTeamId] = useState<string | null>(null);
   const [teamName, setTeamName] = useState("");
-  const [seats, setSeats] = useState<number>(5);
-  const [interval, setInterval] = useState<BillingInterval>("yearly");
+  // seatsInput es el string que el <input> muestra. Puede quedar vacío
+  // temporalmente mientras el user borra para escribir un número nuevo.
+  // `seats` se deriva de él (con clamp). Esta separación evita el bug
+  // "no me deja borrar el 1": si seats es number controlled, al borrar
+  // todo el input se restablece a 1 inmediatamente.
+  const [seatsInput, setSeatsInput] = useState<string>("5");
+  const [intervalValue, setIntervalValue] =
+    useState<BillingInterval>("yearly");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(
     searchParams.get("canceled") ? "Checkout cancelado. No se cobró nada." : null,
@@ -69,20 +75,30 @@ function OnboardingBillingContent() {
     setTeamName(tn ?? "");
   }, [router]);
 
+  // Derivar el `seats` number desde el string visible. Si el string está
+  // vacío o no es número, caemos al mínimo (1) — el precio sigue calculando,
+  // pero el input visualmente queda vacío hasta que el user escribe.
+  const seats = useMemo(() => {
+    const n = parseInt(seatsInput, 10);
+    if (!Number.isFinite(n) || n < SIMULADOR_PRODUCT.minSeats) {
+      return SIMULADOR_PRODUCT.minSeats;
+    }
+    return Math.min(150, n);
+  }, [seatsInput]);
+
   const computed = useMemo(
-    () => computeSimuladorAmount(seats, interval),
-    [seats, interval],
+    () => computeSimuladorAmount(seats, intervalValue),
+    [seats, intervalValue],
   );
   const copy = onboardingCopy.step4_billing;
   const activeTierIndex = SIMULADOR_TIERS.findIndex((t) => t.id === computed.tier.id);
 
-  function setSeatsClamped(n: number) {
-    if (!Number.isFinite(n)) return;
-    const clamped = Math.max(
+  function adjustSeats(delta: number) {
+    const next = Math.max(
       SIMULADOR_PRODUCT.minSeats,
-      Math.min(150, Math.trunc(n)),
+      Math.min(150, seats + delta),
     );
-    setSeats(clamped);
+    setSeatsInput(String(next));
   }
 
   async function onCheckout() {
@@ -134,14 +150,58 @@ function OnboardingBillingContent() {
           </div>
 
           <section className="mt-7 flex flex-col items-center text-center">
-            <h2 className="text-[14px] font-medium text-[var(--text-primary)]">
+            {/* ============ TOGGLE Mensual / Anual (PRIMERO) ============ */}
+            <div
+              role="radiogroup"
+              aria-label="Facturación"
+              className="inline-flex items-center rounded-full border border-[var(--hairline)] bg-[var(--surface)] p-1 text-[13px]"
+            >
+              <button
+                type="button"
+                role="radio"
+                aria-checked={intervalValue === "monthly"}
+                onClick={() => setIntervalValue("monthly")}
+                className={`rounded-full px-4 py-1.5 font-medium transition-colors ${
+                  intervalValue === "monthly"
+                    ? "bg-[var(--text-primary)] text-[var(--surface)]"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                Mensual
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={intervalValue === "yearly"}
+                onClick={() => setIntervalValue("yearly")}
+                className={`relative rounded-full px-4 py-1.5 font-medium transition-colors ${
+                  intervalValue === "yearly"
+                    ? "bg-[var(--text-primary)] text-[var(--surface)]"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                Anual
+                <span
+                  className={`ml-1.5 inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                    intervalValue === "yearly"
+                      ? "bg-[var(--surface)] text-[var(--accent)]"
+                      : "bg-[var(--accent-soft)] text-[var(--accent)]"
+                  }`}
+                >
+                  −{YEARLY_DISCOUNT_PCT}%
+                </span>
+              </button>
+            </div>
+
+            {/* ============ STEPPER + INPUT EDITABLE ============ */}
+            <h2 className="mt-6 text-[14px] font-medium text-[var(--text-primary)]">
               {copy.seats_question}
             </h2>
 
-            <div className="mt-4 inline-flex items-stretch rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)]">
+            <div className="mt-3 inline-flex items-stretch rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)]">
               <button
                 type="button"
-                onClick={() => setSeatsClamped(seats - 1)}
+                onClick={() => adjustSeats(-1)}
                 disabled={seats <= SIMULADOR_PRODUCT.minSeats}
                 aria-label="Quitar una persona"
                 className="flex h-12 w-12 items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:opacity-30 transition-colors"
@@ -155,24 +215,25 @@ function OnboardingBillingContent() {
                 inputMode="numeric"
                 min={SIMULADOR_PRODUCT.minSeats}
                 max={150}
-                value={seats}
-                onChange={(e) => {
-                  const raw = e.target.value;
-                  if (raw === "") {
-                    setSeats(SIMULADOR_PRODUCT.minSeats);
-                    return;
-                  }
-                  setSeatsClamped(Number(raw));
-                }}
+                value={seatsInput}
+                onChange={(e) => setSeatsInput(e.target.value)}
                 onBlur={(e) => {
-                  if (e.target.value === "") setSeats(SIMULADOR_PRODUCT.minSeats);
+                  // Al salir, si quedó vacío o inválido, restablecer al mínimo
+                  // visible. Sin esto el input mostraría "" pero el state
+                  // computado ya está en 1 (silently).
+                  const n = parseInt(e.target.value, 10);
+                  if (!Number.isFinite(n) || n < SIMULADOR_PRODUCT.minSeats) {
+                    setSeatsInput(String(SIMULADOR_PRODUCT.minSeats));
+                  } else if (n > 150) {
+                    setSeatsInput("150");
+                  }
                 }}
                 aria-label="Número de personas"
                 className="h-12 w-16 border-x border-[var(--hairline)] bg-transparent text-center text-[18px] font-semibold tabular-nums tracking-tight text-[var(--text-primary)] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
               <button
                 type="button"
-                onClick={() => setSeatsClamped(seats + 1)}
+                onClick={() => adjustSeats(1)}
                 aria-label="Añadir una persona"
                 className="flex h-12 w-12 items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
               >
@@ -183,51 +244,8 @@ function OnboardingBillingContent() {
               </button>
             </div>
             <p className="mt-2 text-[11px] text-[var(--text-tertiary)]">
-              {seats === 1 ? "1 persona" : `${seats} personas`} · escribe o usa los botones
+              {copy.seats_question_caption}
             </p>
-
-            {/* ============ TOGGLE Mensual / Anual ============ */}
-            <div
-              role="radiogroup"
-              aria-label="Facturación"
-              className="mt-5 inline-flex items-center rounded-full border border-[var(--hairline)] bg-[var(--surface)] p-1 text-[13px]"
-            >
-              <button
-                type="button"
-                role="radio"
-                aria-checked={interval === "monthly"}
-                onClick={() => setInterval("monthly")}
-                className={`rounded-full px-4 py-1.5 font-medium transition-colors ${
-                  interval === "monthly"
-                    ? "bg-[var(--text-primary)] text-[var(--surface)]"
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                }`}
-              >
-                Mensual
-              </button>
-              <button
-                type="button"
-                role="radio"
-                aria-checked={interval === "yearly"}
-                onClick={() => setInterval("yearly")}
-                className={`relative rounded-full px-4 py-1.5 font-medium transition-colors ${
-                  interval === "yearly"
-                    ? "bg-[var(--text-primary)] text-[var(--surface)]"
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                }`}
-              >
-                Anual
-                <span
-                  className={`ml-1.5 inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
-                    interval === "yearly"
-                      ? "bg-[var(--surface)] text-[var(--accent)]"
-                      : "bg-[var(--accent-soft)] text-[var(--accent)]"
-                  }`}
-                >
-                  −{YEARLY_DISCOUNT_PCT}%
-                </span>
-              </button>
-            </div>
           </section>
         </motion.div>
 
@@ -236,8 +254,8 @@ function OnboardingBillingContent() {
             es <main> con overflow-x-hidden (= ancho del viewport). Las cards
             adjacent se ven enteras dentro de ese ancho. */}
         <section
-          className="relative mt-6 flex-none w-full"
-          style={{ height: 300 }}
+          className="relative mt-5 flex-none w-full"
+          style={{ height: 336 }}
         >
           <motion.div
             className="absolute top-0 bottom-0 flex items-center"
@@ -358,7 +376,7 @@ function TierCard({
 
   return (
     <div
-      className={`h-[284px] rounded-[var(--radius-lg)] border p-5 transition-all bg-[var(--surface)] ${
+      className={`h-[320px] rounded-[var(--radius-lg)] border p-5 transition-all bg-[var(--surface)] flex flex-col ${
         isActive
           ? "border-[var(--accent)] shadow-[0_8px_24px_var(--shadow)]"
           : "border-[var(--hairline)]"
@@ -379,64 +397,86 @@ function TierCard({
 
       {tier.selfServe ? (
         <>
-          <div className="mt-5">
-            <div className="text-[34px] font-semibold tracking-tight text-[var(--text-primary)] leading-none tabular-nums">
+          <div className="mt-4">
+            <div className="text-[30px] font-semibold tracking-tight text-[var(--text-primary)] leading-none tabular-nums">
               {formatUsd(tier.pricePerSeatUsd)}
             </div>
-            <div className="mt-1 text-[12px] text-[var(--text-tertiary)]">
+            <div className="mt-1 text-[11px] text-[var(--text-tertiary)]">
               por persona / mes
             </div>
           </div>
 
-          <AnimatePresence mode="wait">
-            {isActive && (
-              <motion.div
-                key={`active-breakdown-${interval}`}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2 }}
-                className="mt-5 border-t border-[var(--hairline)] pt-4"
-              >
-                <div className="flex items-baseline justify-between text-[12px] text-[var(--text-secondary)]">
-                  <span>
-                    {pricePerSeat} × {seats} {perSeatPeriodLabel}
+          {isActive && (
+            <motion.div
+              key={`active-${interval}`}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              className="mt-3 border-t border-[var(--hairline)] pt-3"
+            >
+              <div className="flex items-baseline justify-between text-[11px] text-[var(--text-secondary)]">
+                <span>
+                  {pricePerSeat} × {seats} {perSeatPeriodLabel}
+                </span>
+                <span className="text-[15px] font-semibold tracking-tight text-[var(--text-primary)] tabular-nums">
+                  {formatUsd(periodTotal)}
+                  <span className="ml-0.5 text-[10px] font-normal text-[var(--text-tertiary)]">
+                    {periodLabel}
                   </span>
-                  <span className="text-[18px] font-semibold tracking-tight text-[var(--text-primary)] tabular-nums">
-                    {formatUsd(periodTotal)}
-                    <span className="ml-0.5 text-[11px] font-normal text-[var(--text-tertiary)]">
-                      {periodLabel}
-                    </span>
-                  </span>
+                </span>
+              </div>
+              {interval === "yearly" && savingsUsd > 0 && (
+                <div className="mt-2 rounded-md bg-[var(--accent-soft)] px-2 py-1 text-[10.5px] text-[var(--accent)] text-center">
+                  Ahorras {formatUsd(savingsUsd)}/año · 2 meses gratis
                 </div>
-                {interval === "yearly" && savingsUsd > 0 && (
-                  <div className="mt-2 rounded-md bg-[var(--accent-soft)] px-2 py-1 text-[11px] text-[var(--accent)]">
-                    Ahorras {formatUsd(savingsUsd)} al año · 2 meses gratis
-                  </div>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              )}
+            </motion.div>
+          )}
+
+          <ul className="mt-auto space-y-1.5 pt-3 text-[11px] leading-[1.4] text-[var(--text-secondary)]">
+            {SIMULADOR_PRODUCT.features.map((f) => (
+              <li key={f} className="flex items-start gap-1.5">
+                <svg
+                  className={`mt-[3px] h-2.5 w-2.5 flex-none ${
+                    isActive ? "text-[var(--accent)]" : "text-[var(--text-tertiary)]"
+                  }`}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
         </>
       ) : (
         <>
-          <div className="mt-5">
-            <div className="text-[28px] font-semibold tracking-tight text-[var(--text-primary)] leading-tight">
+          <div className="mt-4">
+            <div className="text-[26px] font-semibold tracking-tight text-[var(--text-primary)] leading-tight">
               Negociable
             </div>
-            <div className="mt-1 text-[12px] text-[var(--text-tertiary)]">
-              desde USD {tier.pricePerSeatUsd}/persona/mes
+            <div className="mt-1 text-[11px] text-[var(--text-tertiary)]">
+              desde USD {tier.pricePerSeatUsd} / persona / mes
             </div>
           </div>
-          {isActive && (
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mt-5 border-t border-[var(--hairline)] pt-4 text-[12px] leading-[1.5] text-[var(--text-secondary)]"
-            >
-              Para equipos grandes ajustamos por volumen y término. Cuéntanos cuántas personas son.
-            </motion.p>
-          )}
+          <p className="mt-4 border-t border-[var(--hairline)] pt-3 text-[12px] leading-[1.5] text-[var(--text-secondary)]">
+            Para equipos grandes ajustamos por volumen y término. Te
+            cotizamos según vertical y duración del contrato.
+          </p>
+          <ul className="mt-auto space-y-1.5 pt-3 text-[11px] leading-[1.4] text-[var(--text-secondary)]">
+            {SIMULADOR_PRODUCT.features.map((f) => (
+              <li key={f} className="flex items-start gap-1.5">
+                <span className="mt-1 text-[var(--text-tertiary)]">·</span>
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
         </>
       )}
     </div>

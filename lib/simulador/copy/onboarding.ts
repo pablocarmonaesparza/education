@@ -198,6 +198,7 @@ export const onboardingCopy = {
   step4_billing: {
     headline: "Configura tu Sprint",
     seats_question: "¿Cuántas personas van a participar?",
+    seats_question_caption: "Desde 1 hasta 99 · escribe el número o usa los botones",
     seats_help: "Desde 1 hasta 99 personas. Para 100+ negociamos por volumen.",
     tier_label_template: (label: string, range: string) =>
       `Tier ${label} · ${range}`,
