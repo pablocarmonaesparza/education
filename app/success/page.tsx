@@ -20,6 +20,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { AuthNav } from "@/components/simulador/AuthNav";
 import { syncSubscriptionFromSession } from "@/lib/stripe/syncFromSession";
+import { isDevBypassEnabled } from "@/lib/dev/devBypass";
 import "../(app)/simulador.css";
 
 export const metadata: Metadata = {
@@ -80,10 +81,11 @@ function SuccessConfirmedView() {
 export default async function SuccessPage({ searchParams }: SuccessPageProps) {
   const { session_id: sessionId } = await searchParams;
 
-  // En dev sin session_id (acceso desde /dev menú): preview del estado OK
-  // sin tocar Stripe. En producción seguimos protegiendo con redirect.
+  // En dev local o Vercel preview sin session_id (acceso desde /dev menú):
+  // preview del estado OK sin tocar Stripe. En producción real seguimos
+  // protegiendo con redirect.
   if (!sessionId) {
-    if (process.env.NODE_ENV !== "production") {
+    if (isDevBypassEnabled()) {
       return <SuccessConfirmedView />;
     }
     redirect("/auth/signup?next=%2Fonboarding%2Forg");

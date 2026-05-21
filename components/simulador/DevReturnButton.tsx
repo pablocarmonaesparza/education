@@ -1,10 +1,13 @@
 "use client";
 
 /**
- * Botón flotante chico en la esquina top-right que vuelve al hub /dev.
- * Solo aparece cuando:
- *   1. NODE_ENV !== "production"
- *   2. Cookie `itera_dev_bypass=1` está activa
+ * Botón flotante chico en la esquina bottom-right que vuelve al hub /dev.
+ * Visible en:
+ *   - npm run dev local (NODE_ENV=development)
+ *   - Vercel preview deploys (NEXT_PUBLIC_VERCEL_ENV=preview)
+ * Oculto en producción real (Vercel production o stand-alone production).
+ *
+ * Además requiere cookie `itera_dev_bypass=1` activa.
  *
  * Se monta globalmente en app/layout.tsx para estar disponible en todas
  * las surfaces sin tener que importarlo en cada page.
@@ -13,6 +16,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { isDevBypassEnabled } from "@/lib/dev/devBypass";
 
 function readCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
@@ -25,7 +29,7 @@ export function DevReturnButton() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
+    if (!isDevBypassEnabled()) return;
     const interval = setInterval(() => {
       setVisible(readCookie("itera_dev_bypass") === "1");
     }, 500); // refresh state in case cookie was toggled in another tab
