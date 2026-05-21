@@ -616,7 +616,6 @@ function GuidedPromptExercise({
   const slides = ["Objetivo", "Audiencia", "Límites", "Modelo"];
   const recommendedModelId = chooseGuidedModelId({ autonomy, security, cost });
   const recommendedModel = findModelById(recommendedModelId);
-  const currentModel = findModelById(model);
 
   useEffect(() => {
     if (model !== recommendedModelId) {
@@ -640,155 +639,129 @@ function GuidedPromptExercise({
     );
   }
 
-  const summary = [
-    { label: "objetivo", value: objective },
-    { label: "audiencia", value: audience },
-    { label: "límites", value: `${guardrails.length} activos` },
-  ];
-
   return (
     <div className="grid gap-5 lg:grid-cols-[400px_minmax(0,1fr)] lg:items-stretch">
       <div className="flex rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
-          <div className="flex min-h-[390px] w-full flex-col">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <div className="text-[12px] font-medium text-[var(--text-tertiary)]">
-                  paso {slide + 1} de {slides.length}
-                </div>
-                <div className="mt-1 text-[18px] font-semibold text-[var(--text-primary)]">
-                  {slides[slide]}
-                </div>
+        <div className="flex min-h-[390px] w-full flex-col">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="text-[12px] font-medium text-[var(--text-tertiary)]">
+                paso {slide + 1} de {slides.length}
               </div>
-              <div className="flex gap-1.5" aria-label="Progreso del builder">
-                {slides.map((item, index) => (
-                  <button
-                    key={item}
-                    type="button"
-                    onClick={() => setSlide(index)}
-                    aria-label={`Ir a ${item}`}
-                    className={`h-2 rounded-full transition-all ${
-                      index === slide ? "w-8 bg-[var(--accent)]" : "w-2 bg-[var(--surface-3)]"
-                    }`}
-                  />
+              <div className="mt-1 text-[18px] font-semibold text-[var(--text-primary)]">
+                {slides[slide]}
+              </div>
+            </div>
+            <div className="flex gap-1.5" aria-label="Progreso del builder">
+              {slides.map((item, index) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => setSlide(index)}
+                  aria-label={`Ir a ${item}`}
+                  className={`h-2 rounded-full transition-all ${
+                    index === slide ? "w-8 bg-[var(--accent)]" : "w-2 bg-[var(--surface-3)]"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-5 flex-1">
+            {slide === 0 && (
+              <GuidedSlideOptions
+                options={guidedObjectives}
+                value={objective}
+                onChange={setObjective}
+              />
+            )}
+            {slide === 1 && (
+              <GuidedSlideOptions
+                options={guidedAudiences}
+                value={audience}
+                onChange={setAudience}
+              />
+            )}
+            {slide === 2 && (
+              <div className="grid gap-2">
+                {guidedGuardrails.map((guardrail) => (
+                  <GuidedOption
+                    key={guardrail}
+                    selected={guardrails.includes(guardrail)}
+                    onClick={() => toggleGuardrail(guardrail)}
+                  >
+                    {guardrail}
+                  </GuidedOption>
                 ))}
               </div>
-            </div>
-
-            <div className="mt-5 flex-1">
-              {slide === 0 && (
-                <GuidedSlideOptions
-                  options={guidedObjectives}
-                  value={objective}
-                  onChange={setObjective}
-                />
-              )}
-              {slide === 1 && (
-                <GuidedSlideOptions
-                  options={guidedAudiences}
-                  value={audience}
-                  onChange={setAudience}
-                />
-              )}
-              {slide === 2 && (
-                <div className="grid gap-2">
-                  {guidedGuardrails.map((guardrail) => (
-                    <GuidedOption
-                      key={guardrail}
-                      selected={guardrails.includes(guardrail)}
-                      onClick={() => toggleGuardrail(guardrail)}
-                    >
-                      {guardrail}
-                    </GuidedOption>
-                  ))}
-                </div>
-              )}
-              {slide === 3 && (
-                <div className="grid gap-3">
-                  <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="text-[12px] text-[var(--text-tertiary)]">
-                          modelo recomendado
-                        </div>
-                        <div className="mt-1 flex min-w-0 items-center gap-2 text-[15px] font-semibold text-[var(--text-primary)]">
-                          <BrandMark brand={recommendedModel.brand} />
-                          <span className="truncate">
-                            {recommendedModel.label}
-                            {recommendedModel.badge && (
-                              <span className="font-medium text-[var(--text-tertiary)]"> · {recommendedModel.badge}</span>
-                            )}
-                          </span>
-                        </div>
+            )}
+            {slide === 3 && (
+              <div className="grid gap-3">
+                <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-[12px] text-[var(--text-tertiary)]">
+                        modelo recomendado
                       </div>
-                      <div className="rounded-xl bg-[var(--surface)] px-3 py-2 text-[12px] text-[var(--text-secondary)]">
-                        aplicado
+                      <div className="mt-1 flex min-w-0 items-center gap-2 text-[15px] font-semibold text-[var(--text-primary)]">
+                        <BrandMark brand={recommendedModel.brand} />
+                        <span className="truncate">
+                          {recommendedModel.label}
+                          {recommendedModel.badge && (
+                            <span className="font-medium text-[var(--text-tertiary)]"> · {recommendedModel.badge}</span>
+                          )}
+                        </span>
                       </div>
                     </div>
-                  </div>
-                  <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
-                    <Range10 label="autonomía" value={autonomy} onChange={setAutonomy} />
-                  </div>
-                  <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
-                    <Range10 label="seguridad" value={security} onChange={setSecurity} />
-                  </div>
-                  <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
-                    <Range10 label="costo bajo" value={cost} onChange={setCost} />
+                    <div className="rounded-xl bg-[var(--surface)] px-3 py-2 text-[12px] text-[var(--text-secondary)]">
+                      aplicado
+                    </div>
                   </div>
                 </div>
-              )}
-            </div>
+                <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
+                  <Range10 label="autonomía" value={autonomy} onChange={setAutonomy} />
+                </div>
+                <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
+                  <Range10 label="seguridad" value={security} onChange={setSecurity} />
+                </div>
+                <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
+                  <Range10 label="costo bajo" value={cost} onChange={setCost} />
+                </div>
+              </div>
+            )}
+          </div>
 
-            <div className="mt-5 grid grid-cols-2 gap-2">
+          <div className="mt-5 grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setSlide(Math.max(0, slide - 1))}
+              disabled={slide === 0}
+              className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-[14px] font-medium text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Atrás
+            </button>
+            {slide < slides.length - 1 ? (
               <button
                 type="button"
-                onClick={() => setSlide(Math.max(0, slide - 1))}
-                disabled={slide === 0}
-                className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-[14px] font-medium text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-40"
+                onClick={() => setSlide(slide + 1)}
+                className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
               >
-                Atrás
+                Siguiente
               </button>
-              {slide < slides.length - 1 ? (
-                <button
-                  type="button"
-                  onClick={() => setSlide(slide + 1)}
-                  className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
-                >
-                  Siguiente
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={createPrompt}
-                  className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
-                >
-                  Crear prompt
-                </button>
-              )}
-            </div>
+            ) : (
+              <button
+                type="button"
+                onClick={createPrompt}
+                className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+              >
+                Crear prompt
+              </button>
+            )}
           </div>
         </div>
+      </div>
 
       <div className="flex h-full flex-col">
-        <div className="mb-3 grid gap-2 sm:grid-cols-4">
-          {summary.map((item) => (
-            <div
-              key={item.label}
-              className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3"
-            >
-              <div className="text-[11px] text-[var(--text-tertiary)]">{item.label}</div>
-              <div className="mt-1 line-clamp-1 text-[13px] font-medium text-[var(--text-primary)]">
-                {item.value}
-              </div>
-            </div>
-          ))}
-          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3">
-            <div className="text-[11px] text-[var(--text-tertiary)]">modelo</div>
-            <div className="mt-1 line-clamp-1 text-[13px] font-medium text-[var(--text-primary)]">
-              {currentModel.label}
-              {currentModel.badge && <span className="text-[var(--text-tertiary)]"> · {currentModel.badge}</span>}
-            </div>
-          </div>
-        </div>
         <AIPromptComposer
           value={prompt}
           onChange={setPrompt}
@@ -796,6 +769,7 @@ function GuidedPromptExercise({
           onSelectModel={setModel}
           voiceNotes={voiceNotes}
           onVoiceNote={(note) => setVoiceNotes([...voiceNotes, note])}
+          layout="matched"
         />
       </div>
     </div>
@@ -894,6 +868,7 @@ function AIPromptComposer({
   onSelectModel,
   voiceNotes,
   onVoiceNote,
+  layout = "default",
 }: {
   value: string;
   onChange: (value: string) => void;
@@ -901,6 +876,7 @@ function AIPromptComposer({
   onSelectModel: (value: string) => void;
   voiceNotes: string[];
   onVoiceNote: (note: string) => void;
+  layout?: "default" | "matched";
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sent, setSent] = useState(false);
@@ -917,11 +893,12 @@ function AIPromptComposer({
     ? Math.min(12, Math.max(3, value.split("\n").length + Math.ceil(value.length / 70)))
     : 3;
   const textMinHeight = value.trim() ? Math.min(340, Math.max(92, textRows * 23 + 54)) : 92;
+  const matched = layout === "matched";
 
   return (
-    <div className="mt-3">
+    <div className={matched ? "h-full min-h-[430px]" : "mt-3"}>
       <div
-        className="relative overflow-visible rounded-3xl border border-[var(--border)] bg-[var(--surface)] transition-colors focus-within:border-[var(--accent)]"
+        className={`relative overflow-visible rounded-3xl border border-[var(--border)] bg-[var(--surface)] transition-colors focus-within:border-[var(--accent)] ${matched ? "flex h-full min-h-[430px] flex-col" : ""}`}
         style={{
           boxShadow: "0 1px 2px var(--shadow), 0 10px 32px -22px var(--shadow)",
         }}
@@ -933,10 +910,10 @@ function AIPromptComposer({
             onChange(event.target.value);
           }}
           disabled={recState === "recording" || recState === "processing"}
-          rows={textRows}
+          rows={matched ? 10 : textRows}
           placeholder="Escribe el prompt que le mandarías al modelo..."
-          className="w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 text-[15px] leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed"
-          style={{ minHeight: textMinHeight, maxHeight: 340 }}
+          className={`w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 text-[15px] leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed ${matched ? "flex-1" : ""}`}
+          style={matched ? { minHeight: 0, maxHeight: "none" } : { minHeight: textMinHeight, maxHeight: 340 }}
         />
 
         <RecordingBanner recState={recState} recError={recError} />
