@@ -31,6 +31,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { AuthNav } from "@/components/simulador/AuthNav";
 import { createClient } from "@/lib/supabase/client";
+import "../../../(app)/simulador.css";
 
 type Status =
   | "loading"
@@ -195,7 +196,7 @@ export default function InvitationLandingPage() {
 
   if (status === "loading" || status === "checking_session") {
     return (
-      <>
+      <div className="simulador-root min-h-screen surface-canvas">
         <AuthNav mode="signup" next={`/auth/invitation/${token ?? ""}`} />
         <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6">
           <div className="text-center">
@@ -205,13 +206,13 @@ export default function InvitationLandingPage() {
             </p>
           </div>
         </main>
-      </>
+      </div>
     );
   }
 
   if (status === "accepting_existing") {
     return (
-      <>
+      <div className="simulador-root min-h-screen surface-canvas">
         <AuthNav mode="signup" next={`/auth/invitation/${token ?? ""}`} />
         <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6">
           <div className="text-center">
@@ -221,13 +222,13 @@ export default function InvitationLandingPage() {
             </p>
           </div>
         </main>
-      </>
+      </div>
     );
   }
 
   if (status === "signing_in") {
     return (
-      <>
+      <div className="simulador-root min-h-screen surface-canvas">
         <AuthNav mode="signup" next={`/auth/invitation/${token ?? ""}`} />
         <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6">
           <div className="text-center">
@@ -237,13 +238,13 @@ export default function InvitationLandingPage() {
             </p>
           </div>
         </main>
-      </>
+      </div>
     );
   }
 
   if (status === "done") {
     return (
-      <>
+      <div className="simulador-root min-h-screen surface-canvas">
         <AuthNav mode="signup" next={`/auth/invitation/${token ?? ""}`} />
         <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6">
           <div className="max-w-[440px] text-center">
@@ -266,13 +267,13 @@ export default function InvitationLandingPage() {
             </h1>
           </div>
         </main>
-      </>
+      </div>
     );
   }
 
   if (status === "invalid") {
     return (
-      <>
+      <div className="simulador-root min-h-screen surface-canvas">
         <AuthNav mode="signup" next={`/auth/invitation/${token ?? ""}`} />
         <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
           <div className="max-w-[440px] w-full text-center">
@@ -308,14 +309,14 @@ export default function InvitationLandingPage() {
             </div>
           </div>
         </main>
-      </>
+      </div>
     );
   }
 
   // ============ needs_signup / submitting (form) ============
   const submitting = status === "submitting";
   return (
-    <>
+    <div className="simulador-root min-h-screen surface-canvas">
       <AuthNav mode="signup" next={`/auth/invitation/${token ?? ""}`} />
       <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-12 flex items-center justify-center">
         <motion.div
@@ -448,6 +449,6 @@ export default function InvitationLandingPage() {
           </p>
         </motion.div>
       </main>
-    </>
+    </div>
   );
 }
