@@ -227,7 +227,9 @@ function FilterSelect<T extends string>({
       variant="bordered"
       radius="lg"
       size="lg"
-      className="min-w-[180px] flex-1"
+      // is-filter-active dispara el border-accent del simulador.css cuando hay
+      // valor seleccionado, para señalar visualmente que ese filtro está aplicado.
+      className={`min-w-[180px] flex-1 ${value ? "is-filter-active" : ""}`}
     >
       {options.map((opt) => (
         <SelectItem key={opt.value}>{opt.label}</SelectItem>

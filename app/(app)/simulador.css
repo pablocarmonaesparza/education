@@ -316,6 +316,14 @@
   border-color: var(--accent) !important;
 }
 
+/* Filter Select activo: border accent permanente cuando hay valor seleccionado.
+   Lo usa /team para señalar visualmente qué filtros están aplicados.
+   Se activa al pasar className="is-filter-active" al Select (lo hacemos
+   condicional cuando value !== ""). */
+.simulador-root .is-filter-active [data-slot="trigger"] {
+  border-color: var(--accent) !important;
+}
+
 /* Placeholder y value uniformes en inputs + select triggers.
    Patrón Apple HIG: placeholder = nombre del campo en gris claro,
    se borra al escribir/seleccionar; value = texto en color normal.
