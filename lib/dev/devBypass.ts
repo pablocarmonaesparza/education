@@ -1,21 +1,23 @@
 /**
  * Helper compartido: ¿está habilitado el dev bypass de auth?
  *
- *   - NODE_ENV !== 'production' (npm run dev local) → sí
- *   - NEXT_PUBLIC_VERCEL_ENV === 'preview' (deploy preview de Vercel) → sí
- *   - production real (Vercel production o NODE_ENV=production sin Vercel env) → no
+ * Mientras Itera está en fase de QA pre-launch, el bypass está habilitado
+ * en TODOS los environments (dev local, Vercel preview, Vercel production).
+ * La cookie `itera_dev_bypass=1` es la gate real — solo se setea desde
+ * /dev (URL no linkeada públicamente), así que actúa como passphrase
+ * implícita.
  *
- * Esto permite que Pablo + equipo revisen el preview de Vercel con el
- * bypass cookie + el botón flotante DevReturnButton sin que estén
- * accesibles en el deploy de producción.
+ * Hard-disable check: el env var NEXT_PUBLIC_DEV_BYPASS_DISABLED=1 fuerza
+ * a OFF en cualquier environment. Antes del launch real seteamos ese flag
+ * en Vercel production y removemos /dev + DevReturnButton.
  *
- * NEXT_PUBLIC_VERCEL_ENV es seteado automáticamente por Vercel:
- *   https://vercel.com/docs/projects/environment-variables/system-environment-variables
- * Su prefijo NEXT_PUBLIC_ asegura disponibilidad client-side.
+ * TODO post-launch:
+ *   1. Setear NEXT_PUBLIC_DEV_BYPASS_DISABLED=1 en Vercel production
+ *   2. (opcional) Eliminar /dev + components/simulador/DevReturnButton.tsx
+ *   3. (opcional) Reintroducir env-gate: solo preview deploys
  */
 
 export function isDevBypassEnabled(): boolean {
-  if (process.env.NODE_ENV !== "production") return true;
-  if (process.env.NEXT_PUBLIC_VERCEL_ENV === "preview") return true;
-  return false;
+  if (process.env.NEXT_PUBLIC_DEV_BYPASS_DISABLED === "1") return false;
+  return true;
 }
