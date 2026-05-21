@@ -1,3 +1,18 @@
+/**
+ * /onboarding/done — paso 5 del flow buyer B2B.
+ *
+ * Landing post-Stripe Checkout. Server component que verifica el
+ * session_id contra Stripe y resuelve uno de 3 estados:
+ *
+ *   1. OK confirmado    → "Sprint activado" + next_steps + dashboard
+ *   2. Payment pending  → spinner + "estamos procesando"
+ *   3. Falló/canceló    → ícono error + "reintenta o escríbenos"
+ *
+ * Layout estilo Apple/HIG: 1 columna centrada, icon circle 64px con
+ * color del estado, H1 display-tight sin punto, CTAs con --radius-md.
+ * Sin sidebar derecha (era legacy del DS Itera Courses).
+ */
+
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
@@ -12,7 +27,7 @@ interface DonePageProps {
   searchParams: Promise<{ session_id?: string }>;
 }
 
-function CtaLink({
+function Cta({
   href,
   children,
   variant = "primary",
@@ -23,9 +38,8 @@ function CtaLink({
 }) {
   const className =
     variant === "primary"
-      ? "accent-bg inline-flex h-12 items-center justify-center rounded-full px-7 text-[15px] font-medium text-white"
-      : "inline-flex h-12 items-center justify-center rounded-full border border-[var(--border-strong)] bg-[var(--surface)] px-7 text-[15px] font-medium text-[var(--text-primary)]";
-
+      ? "inline-flex h-12 w-full items-center justify-center rounded-[var(--radius-md)] accent-bg px-6 text-[15px] font-medium text-white hover:opacity-95 transition-opacity"
+      : "inline-flex h-12 w-full items-center justify-center rounded-[var(--radius-md)] border border-[var(--border-strong)] bg-[var(--surface)] px-6 text-[15px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors";
   return (
     <Link href={href} className={className}>
       {children}
@@ -51,91 +65,125 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
     <>
       <OnboardingNav />
       {isSynced && <ClearOnboardingStorage />}
-      <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-12">
-        <section className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[1fr_360px]">
-          <div>
-            <div className="eyebrow mb-4">
-              {isSynced
-                ? `Paso 5 de 5 · ${copy.eyebrow_context}`
-                : isPaymentPending
-                  ? returnCopy.success_eyebrow
-                  : returnCopy.failed_eyebrow}
+
+      {/* ============ PAGO CONFIRMADO ============ */}
+      {isSynced && (
+        <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
+          <div className="max-w-[560px] w-full text-center">
+            <div className="mx-auto h-16 w-16 rounded-full bg-[var(--band-a-bg)] grid place-items-center">
+              <svg
+                className="h-7 w-7 text-[var(--band-a-text)]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
             </div>
-            <h1 className="display display-tight text-[32px] text-[var(--text-primary)] sm:text-[42px]">
-              {isSynced
-                ? copy.headline
-                : isPaymentPending
-                  ? returnCopy.success_headline
-                  : returnCopy.failed_headline}
+            <h1 className="display display-tight mt-7 text-[var(--text-primary)] text-[28px] sm:text-[32px]">
+              Sprint activado
             </h1>
-            <p className="mt-5 max-w-2xl text-[17px] leading-[1.55] text-[var(--text-secondary)]">
-              {isSynced
-                ? copy.body
-                : isPaymentPending
-                  ? returnCopy.success_body
-                  : returnCopy.failed_body}
+            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+              {copy.body}
             </p>
 
-            {isSynced ? (
-              <div className="mt-10 grid gap-4 sm:grid-cols-2">
-                {copy.next_steps.map((step, index) => (
-                  <div key={step} className="card-apple bg-[var(--surface)] p-5">
-                    <div className="mb-4 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[14px] font-semibold text-[var(--accent)]">
-                      {index + 1}
-                    </div>
-                    <p className="text-[14px] leading-[1.55] text-[var(--text-secondary)]">
-                      {step}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="mt-8 rounded-2xl bg-[var(--surface-3)] p-5 text-[14px] leading-[1.55] text-[var(--text-secondary)]">
-                {isPaymentPending
-                  ? returnCopy.success_polling_note
-                  : "Si el cobro sí aparece en Stripe, no repitas el pago; escríbenos y lo reconciliamos."}
-              </div>
-            )}
+            <ul className="mt-8 space-y-3 text-left">
+              {copy.next_steps.map((step, index) => (
+                <li
+                  key={step}
+                  className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-4 py-3"
+                >
+                  <span className="mt-0.5 inline-flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[var(--accent-soft)] text-[12px] font-semibold text-[var(--accent)]">
+                    {index + 1}
+                  </span>
+                  <p className="text-[13.5px] leading-[1.55] text-[var(--text-secondary)]">
+                    {step}
+                  </p>
+                </li>
+              ))}
+            </ul>
 
-            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-              {isSynced ? (
-                <CtaLink href="/dashboard">{copy.dashboard_cta}</CtaLink>
-              ) : isPaymentPending && sessionId ? (
-                <CtaLink href={`/onboarding/done?session_id=${sessionId}`}>
-                  Volver a verificar
-                </CtaLink>
-              ) : (
-                <>
-                  <CtaLink href="/onboarding/billing">
-                    {returnCopy.failed_retry_cta}
-                  </CtaLink>
-                  <CtaLink href="mailto:ventas@itera.la" variant="secondary">
-                    {returnCopy.failed_contact_cta}
-                  </CtaLink>
-                </>
-              )}
+            <div className="mt-8">
+              <Cta href="/dashboard">{copy.dashboard_cta}</Cta>
             </div>
           </div>
+        </main>
+      )}
 
-          <aside className="card-apple h-fit bg-[var(--surface)] p-6">
-            <div className="eyebrow mb-3">{copy.timing_eyebrow}</div>
-            <p className="text-[14px] leading-[1.55] text-[var(--text-secondary)]">
-              {copy.timing_body}
-            </p>
-            <div className="mt-6 rounded-2xl bg-[var(--surface-3)] p-4">
-              <div className="eyebrow mb-2">{copy.contact_help_eyebrow}</div>
-              <p className="text-[13px] leading-[1.5] text-[var(--text-secondary)]">
-                {copy.contact_help_body}
-              </p>
+      {/* ============ PAYMENT PENDING ============ */}
+      {!isSynced && isPaymentPending && (
+        <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
+          <div className="max-w-[440px] w-full text-center">
+            <div className="mx-auto h-16 w-16 rounded-full bg-[var(--accent-soft)] grid place-items-center">
+              <svg
+                className="h-7 w-7 text-[var(--accent)] animate-spin"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden
+              >
+                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="2" strokeOpacity="0.25" />
+                <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              </svg>
             </div>
+            <h1 className="display display-tight mt-7 text-[var(--text-primary)] text-[28px] sm:text-[32px]">
+              {returnCopy.success_headline.replace(/\.$/, "")}
+            </h1>
+            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+              {returnCopy.success_body}
+            </p>
+            <p className="mt-2 text-[13px] text-[var(--text-tertiary)]">
+              {returnCopy.success_polling_note}
+            </p>
             {sessionId && (
-              <p className="mt-5 break-all text-[12px] leading-[1.5] text-[var(--text-tertiary)]">
-                Stripe session: {sessionId}
-              </p>
+              <div className="mt-8">
+                <Cta href={`/onboarding/done?session_id=${sessionId}`}>
+                  Volver a verificar
+                </Cta>
+              </div>
             )}
-          </aside>
-        </section>
-      </main>
+          </div>
+        </main>
+      )}
+
+      {/* ============ FAILED / CANCELED ============ */}
+      {!isSynced && !isPaymentPending && (
+        <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
+          <div className="max-w-[440px] w-full text-center">
+            <div className="mx-auto h-16 w-16 rounded-full bg-[var(--surface-2)] border border-[var(--hairline)] grid place-items-center">
+              <svg
+                className="h-7 w-7 text-[var(--text-tertiary)]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="15" y1="9" x2="9" y2="15" />
+                <line x1="9" y1="9" x2="15" y2="15" />
+              </svg>
+            </div>
+            <h1 className="display display-tight mt-7 text-[var(--text-primary)] text-[28px] sm:text-[32px]">
+              Pago no procesado
+            </h1>
+            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+              Stripe canceló o rechazó el cobro. No se generó ningún cargo. Puedes reintentar con otro método.
+            </p>
+            <div className="mt-8 flex flex-col gap-3">
+              <Cta href="/onboarding/billing">{returnCopy.failed_retry_cta}</Cta>
+              <Cta href="mailto:ventas@itera.la" variant="secondary">
+                Escribir a ventas
+              </Cta>
+            </div>
+          </div>
+        </main>
+      )}
     </>
   );
 }
