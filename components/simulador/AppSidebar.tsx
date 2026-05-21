@@ -44,10 +44,13 @@ interface NavItem {
 }
 
 // TODO: hacer estos items role-aware leyendo simulador.organization_memberships.
-// Por ahora layout buyer-first (manager): "Equipo" es la home + se agrega
-// /inicio cuando armemos la pantalla del employee.
+// Convención URL:
+//   /staff = manager (cliente org_admin), /team = employee, /admin = Itera.
+// Por ahora layout buyer-first (manager): "Equipo" lleva a /staff. Cuando
+// armemos /team del employee, agregamos "Inicio" (→/team) y ocultamos
+// "Equipo" + "Empresa".
 const PRIMARY: NavItem[] = [
-  { href: "/equipo", label: "Equipo", Icon: IconUsers },
+  { href: "/staff", label: "Equipo", Icon: IconUsers },
   { href: "/reportes", label: "Reportes", Icon: IconFileText },
   { href: "/casos", label: "Casos", Icon: IconBriefcase },
 ];

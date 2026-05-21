@@ -611,7 +611,7 @@ function ReportView({
             </Button>
             <Button
               as={Link}
-              href="/equipo"
+              href="/staff"
               radius="md"
               size="lg"
               className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"

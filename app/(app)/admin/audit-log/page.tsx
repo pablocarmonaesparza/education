@@ -199,10 +199,10 @@ function AdminLinks() {
   return (
     <div className="mt-5 flex flex-wrap gap-2">
       {[
-        ["/staff/review", "Review"],
-        ["/staff/leads", "Leads"],
-        ["/staff/orgs", "Orgs"],
-        ["/staff/judge-health", "Judge health"],
+        ["/admin/review", "Review"],
+        ["/admin/leads", "Leads"],
+        ["/admin/orgs", "Orgs"],
+        ["/admin/judge-health", "Judge health"],
       ].map(([href, label]) => (
         <a
           key={href}
