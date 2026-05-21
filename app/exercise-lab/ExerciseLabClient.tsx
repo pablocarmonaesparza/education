@@ -349,6 +349,7 @@ export function ExerciseLabClient() {
   const [guidedAutonomy, setGuidedAutonomy] = useState(50);
   const [guidedSecurity, setGuidedSecurity] = useState(50);
   const [guidedCost, setGuidedCost] = useState(50);
+  const [guidedResetKey, setGuidedResetKey] = useState(0);
   const [dataRows, setDataRows] = useState(initialDataRows);
   const [permissions, setPermissions] = useState<Record<string, Permission>>({
     "Leer CRM": "revisar",
@@ -372,6 +373,19 @@ export function ExerciseLabClient() {
   const [memo, setMemo] = useState(
     "Recomiendo piloto interno antes de envío externo. Hay señales útiles, pero dos afirmaciones requieren fuente y los datos personales deben salir del borrador.",
   );
+
+  useEffect(() => {
+    setGuidedPrompt("");
+    setGuidedModel(defaultModelId);
+    setGuidedVoiceNotes([]);
+    setGuidedObjective("");
+    setGuidedAudience("");
+    setGuidedGuardrailsSelected([]);
+    setGuidedAutonomy(50);
+    setGuidedSecurity(50);
+    setGuidedCost(50);
+    setGuidedResetKey((key) => key + 1);
+  }, []);
 
   function handleScroll(event: React.UIEvent<HTMLElement>) {
     const target = event.currentTarget;
@@ -406,6 +420,7 @@ export function ExerciseLabClient() {
             )}
             {exercise.id === "textfield-ia-guiado" && (
               <GuidedPromptExercise
+                key={guidedResetKey}
                 prompt={guidedPrompt}
                 setPrompt={setGuidedPrompt}
                 model={guidedModel}
@@ -795,12 +810,12 @@ function GuidedPromptExercise({
             Respuestas
           </div>
           <div className="mt-4 grid gap-3">
-            <ProcessAnswer index={1} label="Objetivo" value={objective || "Sin responder"} muted={!objective} />
-            <ProcessAnswer index={2} label="Audiencia" value={audience || "Sin responder"} muted={!audience} />
+            <ProcessAnswer index={1} label="Objetivo" value={objective} muted={!objective} />
+            <ProcessAnswer index={2} label="Audiencia" value={audience} muted={!audience} />
             <ProcessAnswer
               index={3}
               label="Límites"
-              value={guardrails.length > 0 ? guardrailText : "Sin responder"}
+              value={guardrails.length > 0 ? guardrailText : ""}
               muted={guardrails.length === 0}
             />
             <ProcessAnswer
@@ -809,7 +824,7 @@ function GuidedPromptExercise({
               value={
                 modelTouched
                   ? `${recommendedModel.label}${recommendedModel.badge ? ` · ${recommendedModel.badge}` : ""} · Inteligencia ${autonomy} · Seguridad ${security} · Costo ${cost}`
-                  : "Sin responder"
+                  : ""
               }
               muted={!modelTouched}
             />
@@ -952,7 +967,7 @@ function ProcessAnswer({
             muted ? "text-[var(--text-tertiary)]" : "text-[var(--text-primary)]"
           }`}
         >
-          {value}
+          {value || "\u00A0"}
         </span>
       </span>
     </div>
