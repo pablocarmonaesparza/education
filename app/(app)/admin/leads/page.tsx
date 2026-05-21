@@ -10,7 +10,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
-import { SurfaceNav } from "@/components/simulador/SurfaceNav";
 
 type LeadStatus =
   | "new"
@@ -166,7 +165,7 @@ export default function AdminLeadsPage() {
 
   return (
     <>
-      <SurfaceNav />
+      
       <main className="surface-canvas min-h-screen pb-24">
         <section className="reading-col px-6 pt-14">
           <motion.div

@@ -24,7 +24,6 @@ import {
   Progress,
 } from "@heroui/react";
 import { motion } from "framer-motion";
-import { SurfaceNav } from "@/components/simulador/SurfaceNav";
 import {
   DIMENSIONS,
   MANAGER_ACTIONS,
@@ -194,7 +193,7 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
 
   return (
     <>
-      <SurfaceNav />
+      
       <main className="surface-canvas min-h-screen pb-24">
         <section className="border-b border-[var(--hairline)] surface-canvas">
           <div className="max-w-5xl mx-auto px-6 py-12">
@@ -320,7 +319,7 @@ export default function DashboardPage() {
   if (error) {
     return (
       <>
-        <SurfaceNav />
+        
         <main className="surface-canvas min-h-screen grid place-items-center px-6">
           <div className="max-w-md text-center">
             <div className="eyebrow mb-3">Error al cargar dashboard</div>
@@ -334,7 +333,7 @@ export default function DashboardPage() {
   if (!data) {
     return (
       <>
-        <SurfaceNav />
+        
         <main className="surface-canvas min-h-screen grid place-items-center px-6">
           <div className="mx-auto h-9 w-9 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
         </main>
@@ -346,7 +345,7 @@ export default function DashboardPage() {
   if (!data.team || !data.sprint) {
     return (
       <>
-        <SurfaceNav />
+        
         <main className="surface-canvas min-h-screen grid place-items-center px-6 py-20">
           <motion.div {...fadeUp} className="max-w-md text-center">
             <div className="eyebrow mb-3">Dashboard del manager</div>
@@ -396,7 +395,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <SurfaceNav />
+      
       <main className="surface-canvas min-h-screen pb-24">
         {/* Header */}
         <section className="border-b border-[var(--hairline)] surface-canvas">

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Avatar, Button, Link } from "@heroui/react";
 import { motion } from "framer-motion";
-import { SurfaceNav } from "@/components/simulador/SurfaceNav";
 import { DIMENSIONS } from "@/lib/simulador/config";
 import type { BandKey } from "@/lib/simulador/config";
 import {
@@ -195,7 +194,7 @@ function ShellMessage({
 }) {
   return (
     <>
-      <SurfaceNav />
+      
       <main className="surface-canvas min-h-[calc(100vh-3.5rem)] grid place-items-center px-6">
         <motion.div {...fadeUp} className="max-w-md text-center">
           {spinner && (
@@ -277,7 +276,7 @@ function ReportView({
 
   return (
     <>
-      <SurfaceNav />
+      
       <main className="surface-canvas min-h-screen pb-24">
         {/* Disclaimer */}
         <div className="border-b border-[var(--hairline)] bg-[var(--surface-2)]">

@@ -14,7 +14,7 @@ import {
 } from "@heroui/react";
 import { usePathname } from "next/navigation";
 
-const ROUTES = [{ href: "/dashboard", label: "Dashboard" }];
+const ROUTES: { href: string; label: string }[] = [];
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === href;

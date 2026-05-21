@@ -14,6 +14,7 @@ import { redirect } from "next/navigation";
 import { headers, cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { isDevBypassEnabled } from "@/lib/dev/devBypass";
+import { AppSidebar } from "@/components/simulador/AppSidebar";
 import { SimuladorProviders } from "./providers";
 import "./simulador.css";
 
@@ -43,7 +44,13 @@ export default async function AppLayout({
 
   return (
     <div className="simulador-root min-h-screen surface-canvas">
-      <SimuladorProviders>{children}</SimuladorProviders>
+      <SimuladorProviders>
+        <AppSidebar />
+        {/* Offset del contenido para no quedar debajo del sidebar fijo
+            (224px). En mobile/tablet (md:) el sidebar está hidden y el
+            contenido vuelve a full-width. */}
+        <div className="md:pl-[224px]">{children}</div>
+      </SimuladorProviders>
     </div>
   );
 }
