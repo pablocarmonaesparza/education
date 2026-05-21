@@ -73,7 +73,49 @@ const RECOMMENDED = [
     title: "Test de pricing en landing",
     level: "Automatización",
     durationMin: 18,
-    reason: "Refuerza validación, tu dimensión más baja",
+    reason: "Refuerza validación, tu dim más baja",
+  },
+  {
+    slug: "marketing_competitor_response_agent",
+    title: "Agente de respuesta a competencia",
+    level: "Agentes",
+    durationMin: 32,
+    reason: "Salto a N3, listo si haces 2 más",
+  },
+  {
+    slug: "ops_invoice_reconciliation",
+    title: "Conciliación de facturas con IA",
+    level: "Automatización",
+    durationMin: 22,
+    reason: "Tu equipo lo recomienda",
+  },
+  {
+    slug: "cs_churn_signal_review",
+    title: "Detección de churn con health score",
+    level: "Automatización",
+    durationMin: 25,
+    reason: "Mariana lo completó con banda A",
+  },
+  {
+    slug: "marketing_urgent_campaign_pii",
+    title: "Campaña urgente con datos sensibles",
+    level: "Fundamentos",
+    durationMin: 18,
+    reason: "Caso clásico de PII bajo presión",
+  },
+  {
+    slug: "legal_contract_redline_assist",
+    title: "Redline de contrato MSA con IA",
+    level: "Automatización",
+    durationMin: 28,
+    reason: "Cross-functional, expande tu perfil",
+  },
+  {
+    slug: "product_pricing_test_call",
+    title: "Llamada de pricing test al PM",
+    level: "Automatización",
+    durationMin: 22,
+    reason: "Stakeholder C-level + tradeoff claro",
   },
 ];
 
@@ -190,25 +232,25 @@ export default function TeamHomePage() {
           </Link>
         </header>
 
-        {/* ============ BENTO 3 columnas ============ */}
-        <section className="flex-1 min-h-0 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        {/* ============ BENTO TOP: Performance + Leaderboard (2 cols) ============ */}
+        <section className="grid grid-cols-1 gap-4 lg:grid-cols-2 flex-none">
           {/* ---- Mi performance ---- */}
-          <Card className="flex flex-col">
+          <Card>
             <CardHeader
               eyebrow="Mi performance"
               cta={{ label: "Ver reporte", href: "/reportes" }}
             />
-            <div className="mt-4 flex items-baseline gap-3">
+            <div className="mt-3 flex items-baseline gap-3">
               <BandPill band={PERFORMANCE.averageBand} />
               <span className="text-[11px] text-[var(--text-tertiary)]">
                 promedio sobre {PERFORMANCE.casesCompleted} casos
               </span>
             </div>
 
-            <div className="mt-5 flex flex-1 flex-col gap-2.5 min-h-0">
+            <div className="mt-4 flex flex-col gap-2">
               {PERFORMANCE.dimensions.map((d) => (
                 <div key={d.id} className="flex items-center gap-3">
-                  <span className="w-[88px] flex-none truncate text-[12px] text-[var(--text-secondary)]">
+                  <span className="w-[100px] flex-none truncate text-[12px] text-[var(--text-secondary)]">
                     {d.label}
                   </span>
                   <div className="flex-1 h-[6px] rounded-full bg-[var(--surface-2)] overflow-hidden">
@@ -226,17 +268,15 @@ export default function TeamHomePage() {
           </Card>
 
           {/* ---- Leaderboard ---- */}
-          <Card className="flex flex-col">
+          <Card>
             <CardHeader eyebrow="Leaderboard del equipo" />
 
-            <ul className="mt-4 flex flex-1 flex-col gap-2.5 min-h-0">
+            <ul className="mt-3 flex flex-col gap-1">
               {LEADERBOARD.map((entry, i) => (
                 <li
                   key={entry.name}
                   className={`flex items-center gap-3 rounded-[var(--radius-md)] px-2 py-1.5 ${
-                    entry.isCurrentUser
-                      ? "bg-[var(--accent-soft)]"
-                      : ""
+                    entry.isCurrentUser ? "bg-[var(--accent-soft)]" : ""
                   }`}
                 >
                   <span
@@ -270,39 +310,46 @@ export default function TeamHomePage() {
               ))}
             </ul>
           </Card>
+        </section>
 
-          {/* ---- Casos recomendados ---- */}
-          <Card className="flex flex-col">
-            <CardHeader
-              eyebrow="Casos para ti"
-              cta={{ label: "Ver todos", href: "/casos" }}
-            />
+        {/* ============ BOTTOM: Casos para ti (4 cols × 2 filas) ============ */}
+        <section className="flex flex-1 min-h-0 flex-col">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+              Casos para ti
+            </span>
+            <Link
+              href="/casos"
+              className="text-[11.5px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              Ver todos →
+            </Link>
+          </div>
 
-            <div className="mt-4 flex flex-1 flex-col gap-3 min-h-0">
-              {RECOMMENDED.map((rec) => (
-                <Link
-                  key={rec.slug}
-                  href={`/case/${rec.slug}`}
-                  className="group flex flex-col rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] p-3 transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-2)]"
-                >
-                  <div className="flex items-center gap-2 text-[11px]">
-                    <span className="rounded-md bg-[var(--accent-soft)] px-1.5 py-0.5 font-semibold text-[var(--accent)]">
-                      {rec.level}
-                    </span>
-                    <span className="text-[var(--text-tertiary)]">
-                      {rec.durationMin} min
-                    </span>
-                  </div>
-                  <h3 className="mt-2 text-[14px] font-semibold leading-[1.3] tracking-tight text-[var(--text-primary)] line-clamp-2">
-                    {rec.title}
-                  </h3>
-                  <p className="mt-1.5 text-[11.5px] leading-[1.4] text-[var(--text-tertiary)] line-clamp-2">
-                    {rec.reason}
-                  </p>
-                </Link>
-              ))}
-            </div>
-          </Card>
+          <div className="mt-3 grid flex-1 min-h-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {RECOMMENDED.slice(0, 8).map((rec) => (
+              <Link
+                key={rec.slug}
+                href={`/case/${rec.slug}`}
+                className="group flex flex-col rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] p-3 transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-2)]"
+              >
+                <div className="flex items-center gap-2 text-[10.5px]">
+                  <span className="rounded-md bg-[var(--accent-soft)] px-1.5 py-0.5 font-semibold text-[var(--accent)]">
+                    {rec.level}
+                  </span>
+                  <span className="text-[var(--text-tertiary)]">
+                    {rec.durationMin} min
+                  </span>
+                </div>
+                <h3 className="mt-2 text-[13.5px] font-semibold leading-[1.3] tracking-tight text-[var(--text-primary)] line-clamp-2">
+                  {rec.title}
+                </h3>
+                <p className="mt-auto pt-2 text-[11px] leading-[1.4] text-[var(--text-tertiary)] line-clamp-2">
+                  {rec.reason}
+                </p>
+              </Link>
+            ))}
+          </div>
         </section>
       </div>
     </main>
