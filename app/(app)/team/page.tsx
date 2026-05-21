@@ -3,21 +3,21 @@
 /**
  * /team — Inicio del employee.
  *
- * Bento dashboard glance-friendly (sin scroll vertical):
- *   [Hero: avatar + greeting + nivel]
- *   [Mi performance] [Leaderboard] [Casos recomendados]
+ * Bento glance-friendly:
+ *   [Hero]
+ *   [Mi performance] [Leaderboard del equipo]
+ *   [Casos para ti — 4 cols × 2 filas usando la misma CaseCard del catálogo]
  *
- * Mock data — cuando se cablee BD se deriva de:
- *   - simulador.users.{full_name, metadata.job_title, avatar_url}
- *   - simulator_sessions agregadas (banda promedio, dim averages)
- *   - team_memberships JOIN sessions para leaderboard
- *   - case_recommendations algorítmico (level matching + department)
+ * Las cards de "Casos para ti" son IDÉNTICAS a las del catálogo (/casos)
+ * porque comparten components/simulador/CaseCard.tsx + lib/simulador/cases.ts.
  */
 
 import Link from "next/link";
+import { CaseCard } from "@/components/simulador/CaseCard";
+import { CASES, type Band, BAND_LABEL } from "@/lib/simulador/cases";
 
 // ============================================================================
-// MOCK DATA
+// MOCK USER + PERFORMANCE + LEADERBOARD
 // ============================================================================
 
 const USER = {
@@ -25,16 +25,12 @@ const USER = {
   initials: "AL",
   jobTitle: "Growth Manager",
   orgName: "Acme LATAM",
-  currentLevel: "N2" as const, // Automatización
+  currentLevelLabel: "Automatización",
 };
-
-type Band = "A" | "M" | "B";
-const BAND_LABEL: Record<Band, string> = { A: "Alta", M: "Media", B: "Baja" };
 
 const PERFORMANCE = {
   averageBand: "M" as Band,
   casesCompleted: 4,
-  casesInProgress: 1,
   dimensions: [
     { id: "contexto", label: "Contexto", score: 82 },
     { id: "datos", label: "Datos", score: 65 },
@@ -60,67 +56,26 @@ const LEADERBOARD: LeaderboardEntry[] = [
   { name: "Sofía Martín", initials: "SM", score: 69 },
 ];
 
-const RECOMMENDED = [
-  {
-    slug: "growth_attribution_anomaly",
-    title: "Anomalía en atribución de ads",
-    level: "Automatización",
-    durationMin: 20,
-    reason: "Match con tu nivel y departamento",
-  },
-  {
-    slug: "growth_pricing_test",
-    title: "Test de pricing en landing",
-    level: "Automatización",
-    durationMin: 18,
-    reason: "Refuerza validación, tu dim más baja",
-  },
-  {
-    slug: "marketing_competitor_response_agent",
-    title: "Agente de respuesta a competencia",
-    level: "Agentes",
-    durationMin: 32,
-    reason: "Salto a N3, listo si haces 2 más",
-  },
-  {
-    slug: "ops_invoice_reconciliation",
-    title: "Conciliación de facturas con IA",
-    level: "Automatización",
-    durationMin: 22,
-    reason: "Tu equipo lo recomienda",
-  },
-  {
-    slug: "cs_churn_signal_review",
-    title: "Detección de churn con health score",
-    level: "Automatización",
-    durationMin: 25,
-    reason: "Mariana lo completó con banda A",
-  },
-  {
-    slug: "marketing_urgent_campaign_pii",
-    title: "Campaña urgente con datos sensibles",
-    level: "Fundamentos",
-    durationMin: 18,
-    reason: "Caso clásico de PII bajo presión",
-  },
-  {
-    slug: "legal_contract_redline_assist",
-    title: "Redline de contrato MSA con IA",
-    level: "Automatización",
-    durationMin: 28,
-    reason: "Cross-functional, expande tu perfil",
-  },
-  {
-    slug: "product_pricing_test_call",
-    title: "Llamada de pricing test al PM",
-    level: "Automatización",
-    durationMin: 22,
-    reason: "Stakeholder C-level + tradeoff claro",
-  },
+// Casos recomendados — primeros 8 disponibles del catálogo (no completed).
+// Cuando se cablee BD, viene de algoritmo de recomendación (match por nivel,
+// departamento, dimensiones débiles, sprint del team, etc).
+const RECOMMENDED_SLUGS = [
+  "growth_attribution_anomaly",
+  "growth_pricing_test",
+  "marketing_competitor_response_agent",
+  "ops_invoice_reconciliation",
+  "marketing_urgent_campaign_pii",
+  "legal_contract_redline_assist",
+  "product_pricing_test_call",
+  "finance_board_memo_under_deadline",
 ];
 
+const RECOMMENDED = RECOMMENDED_SLUGS.map((slug) =>
+  CASES.find((c) => c.slug === slug),
+).filter((c): c is (typeof CASES)[number] => Boolean(c));
+
 // ============================================================================
-// COMPONENTS
+// Local components
 // ============================================================================
 
 function Card({
@@ -173,7 +128,11 @@ function Avatar({
   ring?: boolean;
 }) {
   const dimensions =
-    size === "lg" ? "h-14 w-14 text-[16px]" : size === "md" ? "h-9 w-9 text-[12.5px]" : "h-7 w-7 text-[11px]";
+    size === "lg"
+      ? "h-14 w-14 text-[16px]"
+      : size === "md"
+        ? "h-9 w-9 text-[12.5px]"
+        : "h-7 w-7 text-[11px]";
   return (
     <div
       className={`${dimensions} flex items-center justify-center rounded-full bg-[var(--surface-2)] font-semibold text-[var(--text-primary)] tabular-nums ${
@@ -208,8 +167,8 @@ function BandPill({ band }: { band: Band }) {
 
 export default function TeamHomePage() {
   return (
-    <main className="surface-canvas h-[calc(100vh-3.5rem)] overflow-hidden px-6 py-6 sm:px-10 sm:py-8">
-      <div className="mx-auto flex h-full w-full max-w-[1280px] flex-col gap-4">
+    <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-6 sm:px-10 sm:py-8">
+      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-4">
         {/* ============ HERO ============ */}
         <header className="flex flex-none items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5">
           <Avatar initials={USER.initials} size="lg" ring />
@@ -220,7 +179,7 @@ export default function TeamHomePage() {
             <p className="mt-1 text-[13px] text-[var(--text-secondary)]">
               {USER.jobTitle} · {USER.orgName} · Nivel actual:{" "}
               <span className="text-[var(--text-primary)] font-medium">
-                Automatización
+                {USER.currentLevelLabel}
               </span>
             </p>
           </div>
@@ -232,8 +191,8 @@ export default function TeamHomePage() {
           </Link>
         </header>
 
-        {/* ============ BENTO TOP: Performance + Leaderboard (2 cols) ============ */}
-        <section className="grid grid-cols-1 gap-4 lg:grid-cols-2 flex-none">
+        {/* ============ TOP 2 cols: Performance + Leaderboard ============ */}
+        <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {/* ---- Mi performance ---- */}
           <Card>
             <CardHeader
@@ -312,8 +271,8 @@ export default function TeamHomePage() {
           </Card>
         </section>
 
-        {/* ============ BOTTOM: Casos para ti (4 cols × 2 filas) ============ */}
-        <section className="flex flex-1 min-h-0 flex-col">
+        {/* ============ BOTTOM: Casos para ti — 4 cols × 2 filas ============ */}
+        <section>
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
               Casos para ti
@@ -326,28 +285,9 @@ export default function TeamHomePage() {
             </Link>
           </div>
 
-          <div className="mt-3 grid flex-1 min-h-0 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {RECOMMENDED.slice(0, 8).map((rec) => (
-              <Link
-                key={rec.slug}
-                href={`/case/${rec.slug}`}
-                className="group flex flex-col rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] p-3 transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-2)]"
-              >
-                <div className="flex items-center gap-2 text-[10.5px]">
-                  <span className="rounded-md bg-[var(--accent-soft)] px-1.5 py-0.5 font-semibold text-[var(--accent)]">
-                    {rec.level}
-                  </span>
-                  <span className="text-[var(--text-tertiary)]">
-                    {rec.durationMin} min
-                  </span>
-                </div>
-                <h3 className="mt-2 text-[13.5px] font-semibold leading-[1.3] tracking-tight text-[var(--text-primary)] line-clamp-2">
-                  {rec.title}
-                </h3>
-                <p className="mt-auto pt-2 text-[11px] leading-[1.4] text-[var(--text-tertiary)] line-clamp-2">
-                  {rec.reason}
-                </p>
-              </Link>
+          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {RECOMMENDED.slice(0, 8).map((item) => (
+              <CaseCard key={item.slug} item={item} />
             ))}
           </div>
         </section>
