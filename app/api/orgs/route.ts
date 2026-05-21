@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
     industry?: string;
     region?: string;
     company_size_key?: string;
+    user_job_title?: string;
   };
   try {
     body = await req.json();
@@ -83,6 +84,20 @@ export async function POST(req: NextRequest) {
       },
       { status: 500 },
     );
+  }
+
+  // Si el form de onboarding incluyó el puesto del comprador, lo persistimos
+  // en simulador.users.metadata.job_title. Best-effort: no es bloqueante.
+  const userJobTitle = body.user_job_title?.trim();
+  if (userJobTitle) {
+    const { error: metaErr } = await admin
+      .schema("simulador")
+      .from("users")
+      .update({ metadata: { job_title: userJobTitle } })
+      .eq("id", simUser.id);
+    if (metaErr) {
+      console.warn("[api/orgs] user metadata update failed:", metaErr);
+    }
   }
 
   // Crear org + membership inicial con admin client. El usuario todavía no

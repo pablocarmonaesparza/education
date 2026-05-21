@@ -169,14 +169,17 @@ export async function POST(
     );
   }
 
-  // 5. Crear org_membership.
+  // 5. Crear org_membership. Si intended_role='manager' → org_admin
+  //    (puede invitar, ver billing, etc); employee/viewer → viewer (lectura).
+  const orgMembershipRole =
+    inv.intended_role === "manager" ? "org_admin" : "viewer";
   const { error: orgMemberErr } = await admin
     .schema("simulador")
     .from("organization_memberships")
     .insert({
       organization_id: inv.organization_id,
       user_id: bridgeId,
-      role: "viewer",
+      role: orgMembershipRole,
     });
 
   if (orgMemberErr && orgMemberErr.code !== "23505") {

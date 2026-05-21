@@ -46,6 +46,7 @@ const SIZES = [
 export default function OnboardingOrgPage() {
   const router = useRouter();
   const [name, setName] = useState("");
+  const [userJobTitle, setUserJobTitle] = useState("");
   const [industry, setIndustry] = useState<string>("");
   const [region, setRegion] = useState<string>("");
   const [size, setSize] = useState<string>("");
@@ -65,6 +66,7 @@ export default function OnboardingOrgPage() {
           industry,
           region,
           company_size_key: size,
+          user_job_title: userJobTitle.trim() || undefined,
         }),
       });
       const data = await res.json();
@@ -104,6 +106,15 @@ export default function OnboardingOrgPage() {
               radius="lg"
               size="lg"
               autoFocus
+            />
+
+            <Input
+              value={userJobTitle}
+              onValueChange={setUserJobTitle}
+              placeholder="Tu puesto (ej. Head of Marketing)"
+              variant="bordered"
+              radius="lg"
+              size="lg"
             />
 
             <Select
@@ -164,7 +175,14 @@ export default function OnboardingOrgPage() {
               <Button
                 type="submit"
                 isLoading={submitting}
-                isDisabled={!name.trim() || !industry || !region || !size || submitting}
+                isDisabled={
+                  !name.trim() ||
+                  !userJobTitle.trim() ||
+                  !industry ||
+                  !region ||
+                  !size ||
+                  submitting
+                }
                 radius="md"
                 size="lg"
                 className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none w-full sm:w-auto"

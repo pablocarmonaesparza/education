@@ -112,17 +112,19 @@ export async function POST(
     );
   }
 
-  // Crear org_membership con rol acordado (org_admin si es manager,
-  // viewer en otros casos). v0 simple: todos terminan como 'viewer' en
-  // org_memberships (para acceso lectura del dashboard), y manager/employee
-  // se aplica en team_memberships si hay team_id.
+  // Crear org_membership:
+  //   - intended_role 'manager' → org_admin (puede invitar, ver billing, etc)
+  //   - employee/viewer → 'viewer' (solo lectura del dashboard)
+  // El team_membership abajo guarda el rol original del team.
+  const orgMembershipRole =
+    inv.intended_role === "manager" ? "org_admin" : "viewer";
   const { error: orgMemberErr } = await admin
     .schema("simulador")
     .from("organization_memberships")
     .insert({
       organization_id: inv.organization_id,
       user_id: simUser.id,
-      role: "viewer",
+      role: orgMembershipRole,
     });
 
   if (orgMemberErr && orgMemberErr.code !== "23505") {

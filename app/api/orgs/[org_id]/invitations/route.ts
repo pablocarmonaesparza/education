@@ -47,6 +47,12 @@ export async function POST(
   const admin = createAdminClient();
 
   let body: {
+    // Modo nuevo: array de invitaciones con role por persona.
+    invitations?: Array<{
+      email: string;
+      intended_role: "manager" | "employee" | "viewer";
+    }>;
+    // Modo legacy: array plano de emails + role global.
     emails?: string[];
     team_id?: string;
     intended_role?: "manager" | "employee" | "viewer";
@@ -57,24 +63,38 @@ export async function POST(
     return NextResponse.json({ error: "Body inválido." }, { status: 400 });
   }
 
-  const intendedRole = body.intended_role ?? "employee";
-  if (!["manager", "employee", "viewer"].includes(intendedRole)) {
-    return NextResponse.json(
-      { error: "intended_role inválido." },
-      { status: 400 },
-    );
+  // Normalizar: convertir el shape legacy a invitations[]. Una sola
+  // representación interna simplifica el resto del endpoint.
+  const invitationsInput: Array<{ email: string; intended_role: string }> = [];
+  if (Array.isArray(body.invitations)) {
+    for (const i of body.invitations) {
+      if (!i || typeof i.email !== "string") continue;
+      invitationsInput.push({
+        email: i.email,
+        intended_role: i.intended_role ?? "employee",
+      });
+    }
+  } else if (Array.isArray(body.emails)) {
+    const legacyRole = body.intended_role ?? "employee";
+    for (const e of body.emails) {
+      if (typeof e !== "string") continue;
+      invitationsInput.push({ email: e, intended_role: legacyRole });
+    }
   }
 
-  const rawEmails = body.emails ?? [];
-  const emails = Array.from(
-    new Set(
-      rawEmails
-        .map((e) => (typeof e === "string" ? e.trim().toLowerCase() : ""))
-        .filter((e) => EMAIL_RE.test(e)),
-    ),
-  );
+  // Dedupe por email + valida role.
+  const seen = new Set<string>();
+  const invitationsClean: Array<{ email: string; intended_role: string }> = [];
+  for (const i of invitationsInput) {
+    const email = i.email.trim().toLowerCase();
+    if (!EMAIL_RE.test(email)) continue;
+    if (seen.has(email)) continue;
+    if (!["manager", "employee", "viewer"].includes(i.intended_role)) continue;
+    seen.add(email);
+    invitationsClean.push({ email, intended_role: i.intended_role });
+  }
 
-  if (emails.length === 0) {
+  if (invitationsClean.length === 0) {
     return NextResponse.json(
       { error: "Debes proporcionar al menos un email válido." },
       { status: 400 },
@@ -158,7 +178,7 @@ export async function POST(
   const skipped: { email: string; reason: string }[] = [];
   const created: { id: string; email: string; token: string }[] = [];
 
-  for (const email of emails) {
+  for (const { email, intended_role } of invitationsClean) {
     const token = randomUUID();
     const { data: inv, error: insErr } = await admin
       .schema("simulador")
@@ -169,10 +189,10 @@ export async function POST(
         invited_by: simUser.id,
         email,
         token,
-        intended_role: intendedRole,
+        intended_role,
         status: "pending",
       })
-      .select("id, email, token")
+      .select("id, email, token, intended_role")
       .single();
 
     if (insErr) {

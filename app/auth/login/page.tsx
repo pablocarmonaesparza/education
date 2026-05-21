@@ -158,8 +158,8 @@ function LoginContent() {
     <div className="simulador-root min-h-screen surface-canvas">
       <AuthNav mode="login" next={next} />
 
-      <main className="px-6 pt-10 sm:pt-14 pb-12">
-        <div className="max-w-[400px] mx-auto">
+      <main className="px-6 py-12 min-h-[calc(100vh-3.5rem)] flex items-center justify-center">
+        <div className="w-full max-w-[400px]">
           <motion.div {...fadeUp} className="text-center">
             <h1 className="display display-tight text-[40px] sm:text-[48px] text-[var(--text-primary)]">
               Inicia sesión
