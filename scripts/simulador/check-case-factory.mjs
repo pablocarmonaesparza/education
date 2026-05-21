@@ -14,6 +14,7 @@ const requiredFiles = [
   "CASE_HIG.md",
   "CASE_TAXONOMY.yaml",
   "CASE_SCHEMA.yaml",
+  "CASE_CREATION_SKILL.md",
   "CASE_RUBRIC_V1.md",
   "CASE_QUALITY_CHECKLIST.md",
   "TOOL_REGISTRY.yaml",

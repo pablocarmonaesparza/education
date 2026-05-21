@@ -12,6 +12,7 @@ si no pasa por este sistema.
 | `CASE_HIG.md` | Guia estilo HIG: que esperamos de un caso Itera. |
 | `CASE_TAXONOMY.yaml` | Niveles, departamentos, roles, industrias, criterios, riesgos y herramientas. |
 | `CASE_SCHEMA.yaml` | Forma canonica que debe tener cada caso nuevo. |
+| `CASE_CREATION_SKILL.md` | Proceso operativo para crear un caso de principio a fin. |
 | `CASE_RUBRIC_V1.md` | Criterios evaluables y bandas para manager. |
 | `CASE_QUALITY_CHECKLIST.md` | Gate manual y automatico antes de publicar. |
 | `TOOL_REGISTRY.yaml` | Registro de herramientas actuales, vigencia y frecuencia de revision. |
