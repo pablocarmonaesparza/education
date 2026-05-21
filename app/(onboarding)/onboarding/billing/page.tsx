@@ -25,8 +25,6 @@ import {
   formatUsd,
   SIMULADOR_PRODUCT,
   SIMULADOR_TIERS,
-  YEARLY_DISCOUNT_PCT,
-  type BillingInterval,
   type SimuladorTier,
 } from "@/lib/simulador/billing";
 import { onboardingCopy } from "@/lib/simulador/copy/onboarding";
@@ -53,10 +51,8 @@ function OnboardingBillingContent() {
   // temporalmente mientras el user borra para escribir un número nuevo.
   // `seats` se deriva de él (con clamp). Esta separación evita el bug
   // "no me deja borrar el 1": si seats es number controlled, al borrar
-  // todo el input se restablece a 1 inmediatamente.
-  const [seatsInput, setSeatsInput] = useState<string>("5");
-  const [intervalValue, setIntervalValue] =
-    useState<BillingInterval>("yearly");
+  // todo el input se restablece inmediatamente.
+  const [seatsInput, setSeatsInput] = useState<string>("20");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(
     searchParams.get("canceled") ? "Checkout cancelado. No se cobró nada." : null,
@@ -86,10 +82,7 @@ function OnboardingBillingContent() {
     return Math.min(150, n);
   }, [seatsInput]);
 
-  const computed = useMemo(
-    () => computeSimuladorAmount(seats, intervalValue),
-    [seats, intervalValue],
-  );
+  const computed = useMemo(() => computeSimuladorAmount(seats), [seats]);
   const copy = onboardingCopy.step4_billing;
   const activeTierIndex = SIMULADOR_TIERS.findIndex((t) => t.id === computed.tier.id);
 
@@ -115,7 +108,6 @@ function OnboardingBillingContent() {
           organization_id: orgId,
           team_id: teamId,
           seats: computed.seats,
-          interval: computed.interval,
         }),
       });
       const data = await res.json();
@@ -150,51 +142,8 @@ function OnboardingBillingContent() {
           </div>
 
           <section className="mt-7 flex flex-col items-center text-center">
-            {/* ============ TOGGLE Mensual / Anual (PRIMERO) ============ */}
-            <div
-              role="radiogroup"
-              aria-label="Facturación"
-              className="inline-flex items-center rounded-full border border-[var(--hairline)] bg-[var(--surface)] p-1 text-[13px]"
-            >
-              <button
-                type="button"
-                role="radio"
-                aria-checked={intervalValue === "monthly"}
-                onClick={() => setIntervalValue("monthly")}
-                className={`rounded-full px-4 py-1.5 font-medium transition-colors ${
-                  intervalValue === "monthly"
-                    ? "bg-[var(--text-primary)] text-[var(--surface)]"
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                }`}
-              >
-                Mensual
-              </button>
-              <button
-                type="button"
-                role="radio"
-                aria-checked={intervalValue === "yearly"}
-                onClick={() => setIntervalValue("yearly")}
-                className={`relative rounded-full px-4 py-1.5 font-medium transition-colors ${
-                  intervalValue === "yearly"
-                    ? "bg-[var(--text-primary)] text-[var(--surface)]"
-                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                }`}
-              >
-                Anual
-                <span
-                  className={`ml-1.5 inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
-                    intervalValue === "yearly"
-                      ? "bg-[var(--surface)] text-[var(--accent)]"
-                      : "bg-[var(--accent-soft)] text-[var(--accent)]"
-                  }`}
-                >
-                  −{YEARLY_DISCOUNT_PCT}%
-                </span>
-              </button>
-            </div>
-
             {/* ============ STEPPER + INPUT EDITABLE ============ */}
-            <h2 className="mt-6 text-[14px] font-medium text-[var(--text-primary)]">
+            <h2 className="text-[14px] font-medium text-[var(--text-primary)]">
               {copy.seats_question}
             </h2>
 
@@ -289,9 +238,7 @@ function OnboardingBillingContent() {
                       tier={tier}
                       seats={computed.seats}
                       isActive={isActive}
-                      interval={computed.interval}
-                      periodTotal={computed.periodTotalUsd}
-                      savingsUsd={computed.savingsUsd}
+                      monthlyTotal={computed.monthlyTotalUsd}
                       pricePerSeat={computed.pricePerSeatUsd}
                     />
                   </motion.div>
@@ -354,25 +301,19 @@ function TierCard({
   tier,
   seats,
   isActive,
-  interval,
-  periodTotal,
-  savingsUsd,
+  monthlyTotal,
   pricePerSeat,
 }: {
   tier: SimuladorTier;
   seats: number;
   isActive: boolean;
-  interval: BillingInterval;
-  periodTotal: number;
-  savingsUsd: number;
+  monthlyTotal: number;
   pricePerSeat: number;
 }) {
   const range =
     tier.maxSeats === null
       ? `${tier.minSeats}+ personas`
       : `${tier.minSeats}–${tier.maxSeats} personas`;
-  const periodLabel = interval === "yearly" ? "/año" : "/mes";
-  const perSeatPeriodLabel = interval === "yearly" ? "al año" : "al mes";
 
   return (
     <div
@@ -402,13 +343,13 @@ function TierCard({
               {formatUsd(tier.pricePerSeatUsd)}
             </div>
             <div className="mt-1 text-[11px] text-[var(--text-tertiary)]">
-              por persona / mes
+              por persona
             </div>
           </div>
 
           {isActive && (
             <motion.div
-              key={`active-${interval}`}
+              key={`active-${seats}`}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
@@ -416,20 +357,12 @@ function TierCard({
             >
               <div className="flex items-baseline justify-between text-[11px] text-[var(--text-secondary)]">
                 <span>
-                  {pricePerSeat} × {seats} {perSeatPeriodLabel}
+                  {pricePerSeat} × {seats}
                 </span>
                 <span className="text-[15px] font-semibold tracking-tight text-[var(--text-primary)] tabular-nums">
-                  {formatUsd(periodTotal)}
-                  <span className="ml-0.5 text-[10px] font-normal text-[var(--text-tertiary)]">
-                    {periodLabel}
-                  </span>
+                  {formatUsd(monthlyTotal)}
                 </span>
               </div>
-              {interval === "yearly" && savingsUsd > 0 && (
-                <div className="mt-2 rounded-md bg-[var(--accent-soft)] px-2 py-1 text-[10.5px] text-[var(--accent)] text-center">
-                  Ahorras {formatUsd(savingsUsd)}/año · 2 meses gratis
-                </div>
-              )}
             </motion.div>
           )}
 
@@ -462,7 +395,7 @@ function TierCard({
               Negociable
             </div>
             <div className="mt-1 text-[11px] text-[var(--text-tertiary)]">
-              desde USD {tier.pricePerSeatUsd} / persona / mes
+              desde USD {tier.pricePerSeatUsd} / persona
             </div>
           </div>
           <p className="mt-4 border-t border-[var(--hairline)] pt-3 text-[12px] leading-[1.5] text-[var(--text-secondary)]">
