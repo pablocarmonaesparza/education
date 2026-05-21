@@ -3,14 +3,10 @@
 /**
  * /team — dashboard del employee (catálogo de casos disponibles).
  *
- * Patrón: barra de filtros arriba + grid 4 columnas de cards de caso.
- * Mock data por ahora hasta que cableemos con simulador.case_templates.
+ * Patrón HIG: H1 display + subtítulo + barra de filtros agrupada + grid
+ * de cards con borde + hover lift. Apple HIG/Anthropic console style.
  *
- * Filtros (chips multi-select):
- *   - Nivel: básico / intermedio / avanzado
- *   - Perfil: marketing, growth, ops, ventas, cs, ingeniería, hr
- *   - Duración: <15 / 15-30 / 30+ min
- *   - Programa: diagnóstico / sprint / track
+ * Mock data por ahora hasta que cableemos con simulador.case_templates.
  */
 
 import { useMemo, useState } from "react";
@@ -178,9 +174,9 @@ const DURACIONES: {
   label: string;
   check: (m: number) => boolean;
 }[] = [
-  { value: "corto", label: "< 15 min", check: (m) => m < 15 },
-  { value: "medio", label: "15-30 min", check: (m) => m >= 15 && m <= 30 },
-  { value: "largo", label: "30+ min", check: (m) => m > 30 },
+  { value: "corto", label: "Menos de 15 min", check: (m) => m < 15 },
+  { value: "medio", label: "15 a 30 min", check: (m) => m >= 15 && m <= 30 },
+  { value: "largo", label: "Más de 30 min", check: (m) => m > 30 },
 ];
 
 const PROGRAMAS: { value: Programa; label: string }[] = [
@@ -195,6 +191,9 @@ const LEVEL_LABEL: Record<Level, string> = Object.fromEntries(
 const PERFIL_LABEL: Record<Perfil, string> = Object.fromEntries(
   PERFILES.map((p) => [p.value, p.label]),
 ) as Record<Perfil, string>;
+const PROGRAMA_LABEL: Record<Programa, string> = Object.fromEntries(
+  PROGRAMAS.map((p) => [p.value, p.label]),
+) as Record<Programa, string>;
 
 // ============================================================================
 // COMPONENT
@@ -215,10 +214,11 @@ function FilterChip<T extends string>({
     <button
       type="button"
       onClick={() => onToggle(value)}
-      className={`rounded-full px-3 py-1.5 text-[12.5px] font-medium transition-colors ${
+      aria-pressed={active}
+      className={`rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-all ${
         active
           ? "bg-[var(--text-primary)] text-[var(--surface)]"
-          : "bg-[var(--surface-2)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          : "bg-transparent text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
       }`}
     >
       {label}
@@ -226,7 +226,7 @@ function FilterChip<T extends string>({
   );
 }
 
-function FilterRow<T extends string>({
+function FilterGroup<T extends string>({
   label,
   options,
   selected,
@@ -238,8 +238,8 @@ function FilterRow<T extends string>({
   onToggle: (v: T) => void;
 }) {
   return (
-    <div className="flex items-center gap-3">
-      <span className="w-[80px] flex-none text-[11px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+    <div className="flex flex-col gap-2">
+      <span className="text-[12px] font-medium text-[var(--text-tertiary)]">
         {label}
       </span>
       <div className="flex flex-wrap gap-1.5">
@@ -261,20 +261,23 @@ function CaseCard({ item }: { item: CaseItem }) {
   return (
     <Link
       href={`/case/${item.slug}`}
-      className="group flex flex-col rounded-[var(--radius-lg)] bg-[var(--surface)] p-5 transition-all hover:bg-[var(--surface-2)]"
+      className="group flex flex-col rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--border-strong)] hover:shadow-[0_4px_16px_var(--shadow)]"
     >
-      <h3 className="text-[15px] font-semibold leading-[1.3] tracking-tight text-[var(--text-primary)]">
+      <div className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+        <span>{PROGRAMA_LABEL[item.programa]}</span>
+        <span aria-hidden>·</span>
+        <span>{item.durationMin} min</span>
+      </div>
+      <h3 className="mt-3 text-[15.5px] font-semibold leading-[1.3] tracking-tight text-[var(--text-primary)]">
         {item.title}
       </h3>
       <p className="mt-2 text-[13px] leading-[1.5] text-[var(--text-secondary)] line-clamp-2">
         {item.pitch}
       </p>
-      <div className="mt-auto flex items-center gap-2 pt-4 text-[11px] text-[var(--text-tertiary)]">
+      <div className="mt-5 flex items-center gap-1.5 text-[12px] text-[var(--text-secondary)]">
         <span>{PERFIL_LABEL[item.perfil]}</span>
         <span aria-hidden>·</span>
         <span>{LEVEL_LABEL[item.level]}</span>
-        <span aria-hidden>·</span>
-        <span>{item.durationMin} min</span>
       </div>
     </Link>
   );
@@ -322,47 +325,69 @@ export default function TeamPage() {
   }
 
   return (
-    <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-10 sm:px-10">
-      <div className="mx-auto w-full max-w-[1100px]">
+    <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-8 py-12 sm:px-12 lg:px-16">
+      <div className="mx-auto w-full max-w-[1280px]">
+        {/* ============ HEADER ============ */}
+        <header>
+          <h1 className="display display-tight text-[var(--text-primary)] text-[32px] sm:text-[40px]">
+            Catálogo de casos
+          </h1>
+          <p className="mt-3 text-[15px] text-[var(--text-secondary)] leading-[1.55] max-w-[640px]">
+            Elige un caso para empezar tu diagnóstico. Cada caso dura entre 12
+            y 35 minutos y evalúa tu criterio en 5 dimensiones.
+          </p>
+        </header>
+
         {/* ============ FILTROS ============ */}
-        <div className="flex flex-col gap-3">
-          <FilterRow
+        <section
+          aria-label="Filtros"
+          className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+        >
+          <FilterGroup
             label="Nivel"
             options={LEVELS}
             selected={levels}
             onToggle={(v) => toggleSet(levels, v, setLevels)}
           />
-          <FilterRow
+          <FilterGroup
             label="Perfil"
             options={PERFILES}
             selected={perfiles}
             onToggle={(v) => toggleSet(perfiles, v, setPerfiles)}
           />
-          <FilterRow
+          <FilterGroup
             label="Duración"
             options={DURACIONES.map(({ value, label }) => ({ value, label }))}
             selected={duraciones}
             onToggle={(v) => toggleSet(duraciones, v, setDuraciones)}
           />
-          <FilterRow
+          <FilterGroup
             label="Programa"
             options={PROGRAMAS}
             selected={programas}
             onToggle={(v) => toggleSet(programas, v, setProgramas)}
           />
-        </div>
+        </section>
 
         {/* ============ RESULTS META ============ */}
-        <div className="mt-8 flex items-center justify-between text-[12px] text-[var(--text-tertiary)]">
-          <span>
-            {filtered.length} {filtered.length === 1 ? "caso" : "casos"}
-            {anyFilterActive && ` de ${CASES.length}`}
+        <div className="mt-10 flex items-center justify-between">
+          <span className="text-[13px] text-[var(--text-secondary)]">
+            <span className="font-semibold text-[var(--text-primary)]">
+              {filtered.length}
+            </span>{" "}
+            {filtered.length === 1 ? "caso" : "casos"}
+            {anyFilterActive && (
+              <span className="text-[var(--text-tertiary)]">
+                {" "}
+                de {CASES.length}
+              </span>
+            )}
           </span>
           {anyFilterActive && (
             <button
               type="button"
               onClick={clearAll}
-              className="text-[12px] text-[var(--text-secondary)] underline underline-offset-2 hover:text-[var(--text-primary)] transition-colors"
+              className="text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             >
               Limpiar filtros
             </button>
@@ -370,16 +395,20 @@ export default function TeamPage() {
         </div>
 
         {/* ============ GRID DE CASOS ============ */}
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {filtered.map((item) => (
-            <CaseCard key={item.slug} item={item} />
-          ))}
-        </div>
-
-        {filtered.length === 0 && (
-          <div className="mt-12 rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-12 text-center">
-            <p className="text-[14px] text-[var(--text-tertiary)]">
-              Sin casos con esos filtros. Limpia algunos para ver más.
+        {filtered.length > 0 ? (
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filtered.map((item) => (
+              <CaseCard key={item.slug} item={item} />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-16 flex flex-col items-center justify-center rounded-[var(--radius-lg)] border border-dashed border-[var(--hairline)] py-20 text-center">
+            <div className="text-[15px] font-medium text-[var(--text-primary)]">
+              No hay casos con esos filtros
+            </div>
+            <p className="mt-2 text-[13.5px] text-[var(--text-secondary)] max-w-[360px]">
+              Prueba quitando alguno o usa el botón de arriba para limpiarlos
+              todos.
             </p>
           </div>
         )}
