@@ -139,6 +139,28 @@ case_taxonomy:
     - current
     - hybrid
 
+  time_pressure_modes:
+    - id: no_timer
+      public_name: Sin timer
+      use_when: "La tarea mide profundidad, criterio o redaccion sin urgencia operacional."
+    - id: soft_deadline
+      public_name: Deadline visible
+      use_when: "Hay una ventana de entrega, pero el participante puede pasarse sin bloquear submit."
+    - id: fixed_timer
+      public_name: Timer fijo
+      use_when: "La tarea simula una decision de trabajo con presion real de tiempo."
+    - id: step_timer
+      public_name: Timer por seccion
+      use_when: "Cada etapa tiene una ventana operativa distinta, como triage, revision y decision."
+
+  time_pressure_metrics:
+    - total_elapsed_seconds
+    - step_elapsed_seconds
+    - time_to_first_action_seconds
+    - review_time_ratio
+    - overtime_seconds
+    - submit_after_warning
+
   risk_event_families:
     - privacy_exposure
     - confidential_strategy_leak

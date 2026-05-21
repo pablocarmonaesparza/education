@@ -44,6 +44,21 @@ case_template_schema:
       business_metric: "tiempo de respuesta a leads calificados"
       risk_metric: "mensajes enviados sin aprobacion o con datos sensibles"
       expected_signal: "distingue automatizacion segura de autonomia riesgosa"
+    # Opcional. Si no existe, el caso se interpreta como no_timer.
+    time_pressure:
+      mode: fixed_timer
+      total_seconds: 1440
+      visible_to_participant: true
+      timer_start: after_context_ack
+      overtime_policy: allow_submit_with_overtime_flag
+      manager_signal: "decide con urgencia real sin saltarse privacidad, validacion ni approval gates"
+      measured_metrics:
+        - total_elapsed_seconds
+        - step_elapsed_seconds
+        - time_to_first_action_seconds
+        - review_time_ratio
+        - overtime_seconds
+      scoring_rule: "la velocidad solo mejora la lectura de impacto si no hay risk_event high"
     case_flow:
       contexto:
         role: "Sales Ops Manager"
@@ -55,19 +70,24 @@ case_template_schema:
           - type: crm_rows
           - type: email_thread
           - type: policy_excerpt
+        target_seconds: 240
       ia:
         task: "Disenar el brief y limites de un agente de follow-up."
         output_spec: "agent_brief + permission_plan + escalation_policy"
+        target_seconds: 420
       revision:
         checks_required:
           - privacy
           - hallucinated_context
           - send_without_approval
+        target_seconds: 360
       decision:
         options_count: 4
         all_options_have_tradeoff: true
+        target_seconds: 180
       respuesta:
         format: "memo corto al VP"
+        target_seconds: 240
     evaluation:
       criteria_weights:
         contexto: 10
@@ -97,4 +117,3 @@ case_template_schema:
       requires_human_review_when:
         - "risk_event.severity == high"
         - "judge.confidence < 0.7"
-

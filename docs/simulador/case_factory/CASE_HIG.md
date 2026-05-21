@@ -20,6 +20,59 @@ util para el negocio.
 7. **Resultado manager:** el caso produce una senal accionable para el manager.
 8. **Re-sim posible:** existe una variante que mide transferencia, no memoria.
 
+## Momento de trabajo
+
+El caso debe partir de un momento laboral concreto, no de un tema abstracto.
+
+Debe responder:
+
+- que acaba de pasar;
+- quien lo pidio;
+- que artefacto tiene enfrente la persona;
+- que debe entregar;
+- que restriccion existe;
+- que decision no puede evitar.
+
+## Senal para el manager
+
+Cada caso debe declarar la pregunta operativa que el reporte contestara para el
+manager.
+
+Formato recomendado:
+
+`Puede esta persona hacer <trabajo con IA> sin causar <riesgo critico>?`
+
+Ejemplo:
+
+`Puede delegar follow-up comercial a un agente sin perder control, privacidad ni
+confianza del cliente?`
+
+## Presion temporal
+
+Algunos casos deben incluir timer. El timer mide criterio bajo urgencia, no
+velocidad vacia.
+
+Modos permitidos:
+
+- `no_timer`: tareas donde importa profundidad mas que urgencia.
+- `soft_deadline`: deadline visible; se puede entregar tarde, pero queda
+  registrado.
+- `fixed_timer`: tiempo total fijo para todo el caso.
+- `step_timer`: tiempo por seccion cuando triage, revision y decision tienen
+  ventanas distintas.
+
+Metricas minimas:
+
+- `total_elapsed_seconds`
+- `step_elapsed_seconds`
+- `time_to_first_action_seconds`
+- `review_time_ratio`
+- `overtime_seconds`
+
+Regla: una decision rapida con `risk_event high` no puede mejorar la
+recomendacion manager. Velocidad solo cuenta cuando privacidad, validacion y
+juicio estan controlados.
+
 ## Niveles
 
 ### N1 — Fundamentos / Prompt Engineering

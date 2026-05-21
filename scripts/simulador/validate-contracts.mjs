@@ -25,6 +25,7 @@ const EVIDENCE_KINDS = new Set([
   'decision_replay',
   'transfer_delta',
   'manager_recommendation',
+  'time_pressure_metrics',
 ]);
 
 const CASES_DIR = path.join(CONTRACT_DIR, 'casos');

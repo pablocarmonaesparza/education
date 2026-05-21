@@ -43,6 +43,20 @@ case_template:
       business_metric: "tiempo de respuesta a SQLs"
       risk_metric: "mensajes externos enviados sin approval o con datos sensibles"
       expected_signal: "distingue automatizacion util de autonomia riesgosa"
+    time_pressure:
+      mode: fixed_timer
+      total_seconds: 1440
+      visible_to_participant: true
+      timer_start: after_context_ack
+      overtime_policy: allow_submit_with_overtime_flag
+      manager_signal: "decide con urgencia real sin saltarse privacidad, validacion ni approval gates"
+      measured_metrics:
+        - total_elapsed_seconds
+        - step_elapsed_seconds
+        - time_to_first_action_seconds
+        - review_time_ratio
+        - overtime_seconds
+      scoring_rule: "la velocidad solo mejora la lectura de impacto si no hay risk_event high"
 
   freshness:
     type: current
@@ -150,6 +164,7 @@ case_template:
       type: data_scope
       section_label: Datos
       exercise_type: data_table_triage
+      target_seconds: 240
       prompt: "Elige que campos del CRM puede usar el agente y que transformacion requiere cada uno."
       expected_action: "minimizar datos antes de construir el agente"
       evaluates: [datos, juicio]
@@ -168,6 +183,7 @@ case_template:
       type: llm_beat
       section_label: IA
       exercise_type: agent_brief
+      target_seconds: 420
       max_turns: 2
       prompt: "Redacta el brief del agente: objetivo, inputs permitidos, salida esperada y limites."
       expected_action: "definir un agente con autonomia limitada"
@@ -181,6 +197,7 @@ case_template:
       type: artifact_review
       section_label: Revision
       exercise_type: permission_matrix
+      target_seconds: 300
       prompt: "Revisa esta matriz de permisos propuesta para el agente."
       expected_action: "marcar permisos peligrosos y missing gates"
       evaluates: [validacion, juicio, datos]
@@ -204,6 +221,7 @@ case_template:
       type: decision_select
       section_label: Decision
       exercise_type: tradeoff_decision
+      target_seconds: 180
       prompt: "El VP quiere maximizar velocidad. Elige una configuracion para piloto."
       expected_action: "elegir tradeoff defendible"
       evaluates: [juicio, impacto, ejecucion_ia]
@@ -226,6 +244,7 @@ case_template:
       type: artifact_review
       section_label: Revision
       exercise_type: log_review
+      target_seconds: 300
       prompt: "Revisa logs del dry-run y marca que eventos bloquean el piloto."
       expected_action: "detectar fallas de monitoreo y datos"
       evaluates: [validacion, juicio, impacto]
@@ -248,6 +267,7 @@ case_template:
       type: decision_open_short
       section_label: Respuesta
       exercise_type: executive_response
+      target_seconds: 240
       prompt: "Escribe un memo corto al VP: decision, controles, metrica y siguiente paso."
       expected_action: "traducir criterio a accion manager-ready"
       max_chars: 700
@@ -269,6 +289,9 @@ case_template:
     - kind: manager_recommendation
       shape: { action, rationale, controls, next_case }
       emitted_when: report_generated
+    - kind: time_pressure_metrics
+      shape: { total_elapsed_seconds, step_elapsed_seconds, review_time_ratio, overtime_seconds }
+      emitted_when: evaluation_completed
 
   gap_definitions:
     privacy_exposure:
@@ -304,4 +327,3 @@ case_template:
     requires_variant_with_role: resimulation
     transfer_principle: "mismo control de autonomia, distinto canal y stakeholder"
     scoring_rule: "misma rubrica y mismos pesos entre primary y resim"
-

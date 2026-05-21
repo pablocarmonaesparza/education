@@ -14,6 +14,7 @@ import {
   caseFactoryQualityGates,
   caseFactoryResearchAnchors,
   caseFactoryTargetMix,
+  caseFactoryTimePressureModes,
   caseFactoryTools,
 } from "@/lib/simulador/case-factory";
 
@@ -55,6 +56,9 @@ export default function CaseLabPage() {
             <Caption className="text-white/80">golden case activo</Caption>
             <Title className="mt-2 text-white">{caseFactoryGoldenCase.title}</Title>
             <Body className="mt-3 text-white/90">{caseFactoryGoldenCase.managerQuestion}</Body>
+            <Caption className="mt-4 text-white/80">
+              Timer: {caseFactoryGoldenCase.timePressure.totalMinutes} min · {caseFactoryGoldenCase.timePressure.managerSignal}
+            </Caption>
           </div>
           <div className="flex flex-wrap content-start gap-2">
             <Tag variant="outline">{caseFactoryGoldenCase.level}</Tag>
@@ -109,6 +113,18 @@ export default function CaseLabPage() {
               <div key={exerciseType.id} className="rounded-2xl border-2 border-gray-200 bg-white p-4 dark:border-gray-900 dark:bg-gray-800">
                 <Subtitle>{exerciseType.name}</Subtitle>
                 <Caption>{exerciseType.family}</Caption>
+              </div>
+            ))}
+          </div>
+        </Card>
+
+        <Card variant="neutral" padding="lg">
+          <Headline className="mb-4">presion temporal</Headline>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {caseFactoryTimePressureModes.map((mode) => (
+              <div key={mode.id} className="rounded-2xl border-2 border-gray-200 bg-white p-4 dark:border-gray-900 dark:bg-gray-800">
+                <Subtitle>{mode.name}</Subtitle>
+                <Caption>{mode.useWhen}</Caption>
               </div>
             ))}
           </div>

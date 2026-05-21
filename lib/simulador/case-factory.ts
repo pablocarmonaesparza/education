@@ -144,6 +144,38 @@ export const caseFactoryExerciseTypes = [
   { id: "counterfactual_debrief", name: "counterfactual debrief", family: "decision" },
 ];
 
+export const caseFactoryTimePressureModes = [
+  {
+    id: "no_timer",
+    name: "sin timer",
+    useWhen: "profundidad o criterio sin urgencia operacional",
+  },
+  {
+    id: "soft_deadline",
+    name: "deadline visible",
+    useWhen: "ventana de entrega con overrun permitido",
+  },
+  {
+    id: "fixed_timer",
+    name: "timer fijo",
+    useWhen: "decision laboral con presion real de tiempo",
+  },
+  {
+    id: "step_timer",
+    name: "timer por seccion",
+    useWhen: "triage, revision y decision tienen ventanas distintas",
+  },
+];
+
+export const caseFactoryTimeMetrics = [
+  "total_elapsed_seconds",
+  "step_elapsed_seconds",
+  "time_to_first_action_seconds",
+  "review_time_ratio",
+  "overtime_seconds",
+  "submit_after_warning",
+];
+
 export const caseFactoryGoldenCase = {
   id: "sales_agent_followup_pipeline",
   title: "agente de follow-up para pipeline comercial",
@@ -160,6 +192,11 @@ export const caseFactoryGoldenCase = {
   ],
   managerQuestion:
     "Puede delegar follow-up comercial a un agente sin perder control, privacidad ni confianza del cliente?",
+  timePressure: {
+    mode: "fixed_timer",
+    totalMinutes: 24,
+    managerSignal: "decide con urgencia real sin saltarse privacidad, validacion ni approval gates",
+  },
 };
 
 export const caseFactoryDepartments = [
@@ -231,6 +268,7 @@ export const caseFactoryManagerSignals = [
   "herramientas con mayor riesgo",
   "practice beats recomendados",
   "transfer delta",
+  "velocidad con control",
   "accion manager: pilotar, entrenar, pausar o escalar",
 ];
 

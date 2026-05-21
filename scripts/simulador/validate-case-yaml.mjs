@@ -19,6 +19,7 @@ const EXERCISE_TYPES = new Set([
   "tradeoff_decision",
   "executive_response",
 ]);
+const TIME_PRESSURE_MODES = new Set(["no_timer", "soft_deadline", "fixed_timer", "step_timer"]);
 
 const issues = [];
 const targetFiles = process.argv.slice(2).filter((arg) => !arg.startsWith("-"));
@@ -60,6 +61,20 @@ function validateCaseFile(filePath, variantsByTemplate) {
   check(Boolean(item.case_factory_meta?.level), scope, "case needs case_factory_meta.level");
   check(Boolean(item.case_factory_meta?.freshness?.refresh_due_at), scope, "case needs freshness.refresh_due_at");
   check(Boolean(item.case_factory_meta?.manager_outcome?.primary_question), scope, "case needs manager outcome");
+  const timePressure = item.case_factory_meta?.time_pressure ?? { mode: "no_timer" };
+  check(
+    TIME_PRESSURE_MODES.has(timePressure.mode),
+    scope,
+    `invalid time_pressure.mode ${timePressure.mode}`,
+  );
+  if (timePressure.mode !== "no_timer") {
+    check(Number(timePressure.total_seconds) > 0, scope, "timed case needs time_pressure.total_seconds");
+    check(
+      (timePressure.measured_metrics ?? []).includes("total_elapsed_seconds"),
+      scope,
+      "timed case needs total_elapsed_seconds metric",
+    );
+  }
   check(Boolean(item.output_spec?.type), scope, "case needs output_spec.type");
   check((item.failure_modes ?? []).length >= 2, scope, "case needs at least 2 failure modes");
   check(primary.length >= 1, scope, "case needs at least one primary variant");
@@ -86,6 +101,9 @@ function validateCaseFile(filePath, variantsByTemplate) {
   for (const [index, step] of (item.steps ?? []).entries()) {
     check(Boolean(step.exercise_type), `${scope}.steps[${index}]`, "step needs exercise_type");
     check(EXERCISE_TYPES.has(step.exercise_type), `${scope}.steps[${index}]`, `invalid exercise_type ${step.exercise_type}`);
+    if (timePressure.mode === "step_timer") {
+      check(Number(step.target_seconds) > 0, `${scope}.steps[${index}]`, "step_timer case needs target_seconds per step");
+    }
     const dims = [
       ...(step.evaluates ?? []),
       ...(step.evaluates_prompt ?? []),
