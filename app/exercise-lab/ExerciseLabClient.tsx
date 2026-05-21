@@ -633,9 +633,11 @@ function GuidedPromptExercise({
   cost: number;
   setCost: (value: number) => void;
 }) {
+  const [activeInput, setActiveInput] = useState(0);
   const recommendedModelId = chooseGuidedModelId({ autonomy, security, cost });
   const recommendedModel = findModelById(recommendedModelId);
   const guardrailText = guardrails.length > 0 ? guardrails.join("; ") : "Sin restricciones adicionales";
+  const inputSteps = ["Objetivo", "Audiencia", "Límites", "Modelo"];
 
   useEffect(() => {
     if (model !== recommendedModelId) {
@@ -695,26 +697,52 @@ function GuidedPromptExercise({
           </button>
         </div>
 
-        <div>
-          <div className="mb-3 text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
-            Inputs y selección
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+                Inputs y selección
+              </div>
+              <div className="mt-1 text-[18px] font-semibold text-[var(--text-primary)]">
+                {inputSteps[activeInput]}
+              </div>
+            </div>
+            <div className="flex gap-1.5" aria-label="Progreso de inputs">
+              {inputSteps.map((step, index) => (
+                <button
+                  key={step}
+                  type="button"
+                  onClick={() => setActiveInput(index)}
+                  aria-label={`Ir a ${step}`}
+                  className={`h-2 rounded-full transition-all ${
+                    index === activeInput ? "w-8 bg-[var(--accent)]" : "w-2 bg-[var(--surface-3)]"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
-          <div className="grid gap-3 md:grid-cols-2">
-            <GuidedInputCard title="Objetivo">
+
+          <div className="mt-5">
+            {activeInput === 0 && (
+              <GuidedInputCard>
               <GuidedSlideOptions
                 options={guidedObjectives}
                 value={objective}
                 onChange={setObjective}
               />
-            </GuidedInputCard>
-            <GuidedInputCard title="Audiencia">
+              </GuidedInputCard>
+            )}
+            {activeInput === 1 && (
+              <GuidedInputCard>
               <GuidedSlideOptions
                 options={guidedAudiences}
                 value={audience}
                 onChange={setAudience}
               />
-            </GuidedInputCard>
-            <GuidedInputCard title="Límites">
+              </GuidedInputCard>
+            )}
+            {activeInput === 2 && (
+              <GuidedInputCard>
               <div className="grid gap-2">
                 {guidedGuardrails.map((guardrail) => (
                   <GuidedOption
@@ -726,8 +754,10 @@ function GuidedPromptExercise({
                   </GuidedOption>
                 ))}
               </div>
-            </GuidedInputCard>
-            <GuidedInputCard title="Modelo">
+              </GuidedInputCard>
+            )}
+            {activeInput === 3 && (
+              <GuidedInputCard>
               <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
                 <div className="flex items-center justify-between gap-3">
                   <div className="min-w-0">
@@ -754,7 +784,27 @@ function GuidedPromptExercise({
                 <Range10 label="Seguridad" value={security} onChange={(value) => updateModelMetric("security", value)} />
                 <Range10 label="Costo" value={cost} onChange={(value) => updateModelMetric("cost", value)} />
               </div>
-            </GuidedInputCard>
+              </GuidedInputCard>
+            )}
+          </div>
+
+          <div className="mt-5 grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setActiveInput(Math.max(0, activeInput - 1))}
+              disabled={activeInput === 0}
+              className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-[14px] font-medium text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Atrás
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveInput(Math.min(inputSteps.length - 1, activeInput + 1))}
+              disabled={activeInput === inputSteps.length - 1}
+              className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)]"
+            >
+              Siguiente
+            </button>
           </div>
         </div>
       </div>
@@ -782,13 +832,31 @@ function chooseGuidedModelId({
   security: number;
   cost: number;
 }) {
-  if (security >= 80 && autonomy <= 60) return "gpt-corporativo";
-  if (cost <= 30 && security < 70) return "gemini-3-flash";
-  if (cost <= 50 && autonomy < 80) return "deepseek-v4-pro";
-  if (autonomy >= 80 && security >= 80 && cost >= 80) return "claude-opus-4.7";
-  if (autonomy >= 70 && cost >= 60) return "claude-sonnet-4.6";
-  if (security >= 70) return "gpt-corporativo";
-  return "claude-sonnet-4.6";
+  if (security <= 10) return autonomy >= 60 || cost >= 20 ? "deepseek-v4-pro" : "qwen-3.6";
+  if (security <= 30) return cost <= 20 ? "qwen-3.6" : "deepseek-v4-pro";
+
+  const profiles = [
+    { id: "gpt-corporativo", autonomy: 30, security: 95, cost: 45 },
+    { id: "chatgpt-5.5", autonomy: 60, security: 70, cost: 60 },
+    { id: "chatgpt-5.5-thinking", autonomy: 82, security: 82, cost: 88 },
+    { id: "claude-haiku-4.5", autonomy: 42, security: 52, cost: 30 },
+    { id: "claude-sonnet-4.6", autonomy: 76, security: 66, cost: 72 },
+    { id: "claude-opus-4.7", autonomy: 96, security: 82, cost: 100 },
+    { id: "gemini-3-flash", autonomy: 45, security: 38, cost: 15 },
+    { id: "gemini-3-pro", autonomy: 70, security: 58, cost: 55 },
+    { id: "qwen-3.6", autonomy: 50, security: 10, cost: 10 },
+    { id: "deepseek-v4-pro", autonomy: 66, security: 24, cost: 25 },
+  ];
+
+  return profiles
+    .map((profile) => ({
+      id: profile.id,
+      distance:
+        Math.abs(profile.autonomy - autonomy) * 1.05 +
+        Math.abs(profile.security - security) * 1.25 +
+        Math.abs(profile.cost - cost),
+    }))
+    .sort((a, b) => a.distance - b.distance)[0].id;
 }
 
 function priorityLabel(value: number) {
@@ -871,15 +939,12 @@ function ProcessAnswer({
 }
 
 function GuidedInputCard({
-  title,
   children,
 }: {
-  title: string;
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-[300px] rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-sm)]">
-      <div className="mb-3 text-[14px] font-semibold text-[var(--text-primary)]">{title}</div>
+    <div className="min-h-[300px] rounded-2xl bg-[var(--surface-2)] p-4">
       {children}
     </div>
   );
@@ -981,9 +1046,9 @@ function AIPromptComposer({
     recState !== "recording" &&
     recState !== "processing";
   const textRows = value.trim()
-    ? Math.min(12, Math.max(3, value.split("\n").length + Math.ceil(value.length / 70)))
+    ? Math.min(7, Math.max(3, value.split("\n").length + Math.ceil(value.length / 160)))
     : 3;
-  const textMinHeight = value.trim() ? Math.min(340, Math.max(92, textRows * 23 + 54)) : 92;
+  const textMinHeight = value.trim() ? Math.min(220, Math.max(92, textRows * 22 + 42)) : 92;
   const matched = layout === "matched";
 
   function handleFiles(files: FileList | null) {
@@ -1022,7 +1087,7 @@ function AIPromptComposer({
           rows={matched ? 10 : textRows}
           placeholder="Escribe el prompt que le mandarías al modelo..."
           className={`w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 text-[15px] leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed ${matched ? "flex-1" : ""}`}
-          style={matched ? { minHeight: 0, maxHeight: "none" } : { minHeight: textMinHeight, maxHeight: 340 }}
+          style={matched ? { minHeight: 0, maxHeight: "none" } : { minHeight: textMinHeight, maxHeight: 240 }}
         />
 
         <RecordingBanner recState={recState} recError={recError} />
