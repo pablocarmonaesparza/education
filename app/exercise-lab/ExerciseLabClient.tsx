@@ -6,6 +6,29 @@ import { RuntimeNav } from "@/components/simulador/RuntimeNav";
 type DataAction = "usar" | "anonimizar" | "agregar" | "excluir";
 type Permission = "permitir" | "revisar" | "bloquear";
 
+const modelOptions = [
+  {
+    id: "rapido",
+    name: "rápido",
+    detail: "bajo costo · borradores simples",
+  },
+  {
+    id: "balanceado",
+    name: "balanceado",
+    detail: "calidad estable · trabajo diario",
+  },
+  {
+    id: "razonamiento",
+    name: "razonamiento",
+    detail: "más caro · decisiones complejas",
+  },
+  {
+    id: "seguro",
+    name: "seguro",
+    detail: "más control · menor autonomía",
+  },
+] as const;
+
 const exerciseList = [
   {
     id: "textfield-ia",
@@ -146,9 +169,11 @@ const runLogs = [
 ];
 
 export function ExerciseLabClient() {
+  const [activeSection, setActiveSection] = useState(0);
   const [prompt, setPrompt] = useState(
     "Crea tres ángulos para reactivar cuentas grandes que bajaron su uso del producto. Usa sólo empresa, segmento y resumen agregado de tickets. No uses nombres ni correos. Marca cualquier afirmación que necesite fuente.",
   );
+  const [model, setModel] = useState<(typeof modelOptions)[number]["id"]>("balanceado");
   const [security, setSecurity] = useState(80);
   const [quality, setQuality] = useState(70);
   const [dataRows, setDataRows] = useState(initialDataRows);
@@ -176,23 +201,42 @@ export function ExerciseLabClient() {
   );
 
   const promptPreview = useMemo(
-    () =>
-      `${prompt}\n\nPrioridades: seguridad ${security}/100 · calidad ${quality}/100 · revisión humana obligatoria.`,
-    [prompt, quality, security],
+    () => {
+      const selected = modelOptions.find((option) => option.id === model) ?? modelOptions[1];
+      return `${prompt}\n\nModelo: ${selected.name} (${selected.detail}).\nPrioridades: seguridad ${security}/100 · calidad ${quality}/100 · revisión humana obligatoria.`;
+    },
+    [model, prompt, quality, security],
   );
+
+  function handleScroll(event: React.UIEvent<HTMLElement>) {
+    const target = event.currentTarget;
+    const nextIndex = Math.round(target.scrollTop / target.clientHeight);
+    setActiveSection(Math.max(0, Math.min(exerciseList.length, nextIndex)));
+  }
+
+  function scrollToSection(index: number) {
+    const section = document.querySelector<HTMLElement>(`[data-exercise-section="${index}"]`);
+    section?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   return (
     <>
       <RuntimeNav mode="field_test" />
-      <main className="simulador-root surface-canvas snap-y snap-mandatory overflow-x-hidden">
-        <IntroSection />
+      <ScrollLines activeIndex={activeSection} onSelect={scrollToSection} />
+      <main
+        className="simulador-root surface-canvas h-[calc(100vh-3.5rem)] overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth"
+        onScroll={handleScroll}
+      >
+        <IntroSection index={0} />
         {exerciseList.map((exercise, index) => (
-          <ExerciseSection key={exercise.id} exercise={exercise} index={index}>
+          <ExerciseSection key={exercise.id} exercise={exercise} index={index + 1}>
             {exercise.id === "textfield-ia" && (
               <PromptExercise
                 prompt={prompt}
                 setPrompt={setPrompt}
                 promptPreview={promptPreview}
+                model={model}
+                setModel={setModel}
                 security={security}
                 setSecurity={setSecurity}
                 quality={quality}
@@ -238,9 +282,51 @@ export function ExerciseLabClient() {
   );
 }
 
-function IntroSection() {
+function ScrollLines({
+  activeIndex,
+  onSelect,
+}: {
+  activeIndex: number;
+  onSelect: (index: number) => void;
+}) {
+  const total = exerciseList.length + 1;
+
   return (
-    <section className="min-h-[calc(100vh-3.5rem)] snap-start px-6 py-20 grid place-items-center">
+    <div className="simulador-root fixed left-4 right-4 top-[68px] z-30 md:left-1/2 md:right-auto md:w-[min(760px,calc(100vw-320px))] md:-translate-x-1/2">
+      <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${total}, minmax(0, 1fr))` }}>
+        {Array.from({ length: total }).map((_, index) => (
+          <button
+            key={index}
+            type="button"
+            aria-label={`Ir a sección ${index + 1}`}
+            onClick={() => onSelect(index)}
+            className="group h-7 min-w-0 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+          >
+            <span
+              className={`block h-[3px] rounded-sm transition-colors ${
+                index === activeIndex
+                  ? "bg-[var(--accent)]"
+                  : index < activeIndex
+                    ? "bg-[var(--text-secondary)]"
+                    : "bg-[var(--surface-3)]"
+              }`}
+            />
+          </button>
+        ))}
+      </div>
+      <div className="mt-1 text-right text-[11px] text-[var(--text-tertiary)]">
+        {String(activeIndex + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+      </div>
+    </div>
+  );
+}
+
+function IntroSection({ index }: { index: number }) {
+  return (
+    <section
+      data-exercise-section={index}
+      className="h-[calc(100vh-3.5rem)] snap-start snap-always px-6 py-20 grid place-items-center"
+    >
       <div className="max-w-3xl">
         <div className="eyebrow">exercise lab · catálogo de bloques</div>
         <h1 className="display display-tight mt-6 text-[40px] sm:text-[56px] text-[var(--text-primary)]">
@@ -273,7 +359,8 @@ function ExerciseSection({
   return (
     <section
       id={exercise.id}
-      className="min-h-[calc(100vh-3.5rem)] snap-start px-6 py-16 flex items-center"
+      data-exercise-section={index}
+      className="h-[calc(100vh-3.5rem)] snap-start snap-always px-6 py-16 flex items-center"
     >
       <div className="mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:items-center">
         <aside>
@@ -295,7 +382,7 @@ function ExerciseSection({
             ))}
           </div>
           <div className="mt-8 text-[13px] text-[var(--text-tertiary)]">
-            bloque {String(index + 1).padStart(2, "0")} / {exerciseList.length}
+            bloque {String(index).padStart(2, "0")} / {exerciseList.length}
           </div>
         </aside>
 
@@ -311,6 +398,8 @@ function PromptExercise({
   prompt,
   setPrompt,
   promptPreview,
+  model,
+  setModel,
   security,
   setSecurity,
   quality,
@@ -319,20 +408,26 @@ function PromptExercise({
   prompt: string;
   setPrompt: (value: string) => void;
   promptPreview: string;
+  model: (typeof modelOptions)[number]["id"];
+  setModel: (value: (typeof modelOptions)[number]["id"]) => void;
   security: number;
   setSecurity: (value: number) => void;
   quality: number;
   setQuality: (value: number) => void;
 }) {
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px]">
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
       <div>
         <Label>Petición al modelo</Label>
+        <p className="mt-1 text-[13px] leading-5 text-[var(--text-secondary)]">
+          Redacta como si estuvieras frente al campo de una IA real: objetivo, datos permitidos,
+          límites y qué debe revisar antes de devolver una respuesta.
+        </p>
         <textarea
           value={prompt}
           onChange={(event) => setPrompt(event.target.value)}
           rows={8}
-          className="mt-2 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+          className="mt-3 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
         />
         <div className="mt-3 flex flex-wrap gap-2">
           {[
@@ -347,7 +442,33 @@ function PromptExercise({
         </div>
       </div>
       <div className="rounded-2xl bg-[var(--surface-2)] p-4">
-        <Label>Controles</Label>
+        <Label>Modelo</Label>
+        <div className="mt-3 grid gap-2">
+          {modelOptions.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => setModel(option.id)}
+              className={`min-h-14 rounded-xl border px-4 py-3 text-left transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+                model === option.id
+                  ? "border-[var(--accent)] bg-[var(--accent)] text-white"
+                  : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
+              }`}
+            >
+              <span className="block text-[14px] font-medium">{option.name}</span>
+              <span
+                className={`mt-1 block text-[12px] leading-4 ${
+                  model === option.id ? "text-white/80" : "text-[var(--text-secondary)]"
+                }`}
+              >
+                {option.detail}
+              </span>
+            </button>
+          ))}
+        </div>
+        <div className="mt-5">
+          <Label>Prioridades</Label>
+        </div>
         <Range10 label="seguridad" value={security} onChange={setSecurity} />
         <Range10 label="calidad" value={quality} onChange={setQuality} />
         <div className="mt-5 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
