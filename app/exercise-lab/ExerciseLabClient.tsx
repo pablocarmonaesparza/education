@@ -27,7 +27,7 @@ type ModelGroup = {
 
 const modelGroups: ModelGroup[] = [
   {
-    title: "modelo interno",
+    title: "Modelo interno",
     families: [
       [
         {
@@ -42,7 +42,7 @@ const modelGroups: ModelGroup[] = [
     ],
   },
   {
-    title: "modelos convencionales",
+    title: "Modelos convencionales",
     families: [
       [
         {
@@ -103,7 +103,7 @@ const modelGroups: ModelGroup[] = [
     ],
   },
   {
-    title: "modelos chinos",
+    title: "Modelos chinos",
     families: [
       [
         {
@@ -141,7 +141,7 @@ const brandLogo: Record<BrandKey, { light: string; dark?: string } | null> = {
 const exerciseList = [
   {
     id: "textfield-ia-libre",
-    eyebrow: "01A · textfield de IA",
+    eyebrow: "01A · Textfield de IA",
     title: "Textfield de IA (A): libre.",
     description:
       "El participante recibe un campo de IA sin ayudas adicionales. Mide cómo estructura una petición cuando opera con criterio propio.",
@@ -149,7 +149,7 @@ const exerciseList = [
   },
   {
     id: "textfield-ia-guiado",
-    eyebrow: "01B · prompt guiado",
+    eyebrow: "01B · Prompt guiado",
     title: "Textfield de IA (B): guiado.",
     description:
       "El participante toma decisiones acotadas por el caso y luego genera un prompt editable. Mide criterio granular sin abrir el caso a configuración libre.",
@@ -157,7 +157,7 @@ const exerciseList = [
   },
   {
     id: "tabla-datos",
-    eyebrow: "02 · tabla editable",
+    eyebrow: "02 · Tabla editable",
     title: "Decidir qué datos entran.",
     description:
       "El participante clasifica campos reales antes de usarlos. Mide minimización, privacidad y calidad de datos sin pedir teoría.",
@@ -165,7 +165,7 @@ const exerciseList = [
   },
   {
     id: "matriz-permisos",
-    eyebrow: "03 · matriz de permisos",
+    eyebrow: "03 · Matriz de permisos",
     title: "Poner límites a una automatización.",
     description:
       "El participante define qué puede hacer el sistema solo, qué requiere revisión y qué debe bloquearse. Útil para workflows y agentes.",
@@ -173,7 +173,7 @@ const exerciseList = [
   },
   {
     id: "revision-output",
-    eyebrow: "04 · revisión de output",
+    eyebrow: "04 · Revisión de output",
     title: "Marcar errores antes de usar.",
     description:
       "El participante revisa una salida de IA con errores realistas. Mide validación, lectura de riesgo y capacidad de corregir sin aceptar todo.",
@@ -181,7 +181,7 @@ const exerciseList = [
   },
   {
     id: "comparacion-ia",
-    eyebrow: "05 · comparación de respuestas",
+    eyebrow: "05 · Comparación de respuestas",
     title: "Elegir el mejor output.",
     description:
       "El participante compara dos respuestas de IA y justifica cuál usaría. Sirve para medir criterio de calidad, no sólo preferencia estética.",
@@ -189,7 +189,7 @@ const exerciseList = [
   },
   {
     id: "workflow-builder",
-    eyebrow: "06 · workflow builder",
+    eyebrow: "06 · Workflow builder",
     title: "Armar un flujo con control humano.",
     description:
       "El participante configura pasos de trabajo con IA, revisión y entrega. Mide si entiende handoffs, checkpoints y responsabilidad.",
@@ -197,7 +197,7 @@ const exerciseList = [
   },
   {
     id: "agent-brief",
-    eyebrow: "07 · brief para agente",
+    eyebrow: "07 · Brief para agente",
     title: "Delegar sin perder control.",
     description:
       "El participante define objetivo, permisos, límites y fallback para un agente. Es central para nivel 3: agentes en producción.",
@@ -205,7 +205,7 @@ const exerciseList = [
   },
   {
     id: "logs",
-    eyebrow: "08 · revisión de logs",
+    eyebrow: "08 · Revisión de logs",
     title: "Detectar fallas en una corrida.",
     description:
       "El participante lee eventos de una automatización y marca dónde se rompió el control. Mide supervisión, no memoria.",
@@ -213,7 +213,7 @@ const exerciseList = [
   },
   {
     id: "dashboard-pivot",
-    eyebrow: "09 · dashboard / pivot",
+    eyebrow: "09 · Dashboard / pivot",
     title: "Leer señales de negocio.",
     description:
       "El participante filtra una tabla y elige qué señal llevar al manager. Mide si conecta IA con impacto operativo.",
@@ -221,7 +221,7 @@ const exerciseList = [
   },
   {
     id: "decision-memo",
-    eyebrow: "10 · decisión + memo",
+    eyebrow: "11 · Decisión + memo",
     title: "Cerrar con una recomendación.",
     description:
       "El participante elige una acción con ventajas y costos, luego escribe una explicación corta. Mide responsabilidad ejecutiva.",
@@ -235,73 +235,86 @@ const initialDataRows: Array<{
   example: string;
   action: DataAction;
 }> = [
-  { id: "contact", field: "nombre del contacto", example: "Mariana Robles", action: "anonimizar" },
-  { id: "company", field: "empresa", example: "Aurora Retail", action: "usar" },
-  { id: "email", field: "correo", example: "mariana@aurora.example", action: "excluir" },
-  { id: "tickets", field: "tickets recientes", example: "12 conversaciones", action: "agregar" as DataAction },
+  { id: "contact", field: "Nombre del contacto", example: "Mariana Robles", action: "anonimizar" },
+  { id: "company", field: "Empresa", example: "Aurora Retail", action: "usar" },
+  { id: "email", field: "Correo", example: "mariana@aurora.example", action: "excluir" },
+  { id: "tickets", field: "Tickets recientes", example: "12 conversaciones", action: "agregar" as DataAction },
 ].map((row) => ({
   ...row,
   action: row.action === "agregar" ? "usar" : row.action,
 }));
 
 const permissionRows = [
-  "leer CRM",
-  "crear borrador",
-  "enviar a cliente",
-  "actualizar pipeline",
-  "usar conversaciones crudas",
+  "Leer CRM",
+  "Crear borrador",
+  "Enviar a cliente",
+  "Actualizar pipeline",
+  "Usar conversaciones crudas",
 ];
+
+const dataActionLabels: Record<DataAction, string> = {
+  usar: "Usar",
+  anonimizar: "Anonimizar",
+  agregar: "Agregar",
+  excluir: "Excluir",
+};
+
+const permissionLabels: Record<Permission, string> = {
+  permitir: "Permitir",
+  revisar: "Revisar",
+  bloquear: "Bloquear",
+};
 
 const outputLines = [
   {
     id: "metric",
     text: "Podemos recuperar 40% de cuentas inactivas en 30 días.",
-    issue: "afirmación sin fuente",
+    issue: "Afirmación sin fuente",
   },
   {
     id: "pii",
     text: "El mensaje se enviará a mariana@aurora.example con tono urgente.",
-    issue: "dato personal",
+    issue: "Dato personal",
   },
   {
     id: "safe",
     text: "Propongo usar datos agregados y validar cualquier promesa antes de enviar.",
-    issue: "usable",
+    issue: "Usable",
   },
 ];
 
 const workflowSteps = [
-  "resumir tickets agregados",
-  "generar tres ángulos",
-  "marcar afirmaciones sin fuente",
-  "revisión humana",
-  "entrega a ventas",
+  "Resumir tickets agregados",
+  "Generar tres ángulos",
+  "Marcar afirmaciones sin fuente",
+  "Revisión humana",
+  "Entrega a Ventas",
 ];
 
 const runLogs = [
-  { id: "l1", text: "09:02 · agente leyó cuentas asignadas", severity: "ok" },
-  { id: "l2", text: "09:03 · incluyó correo personal en borrador", severity: "high" },
-  { id: "l3", text: "09:04 · generó métrica sin fuente externa", severity: "high" },
-  { id: "l4", text: "09:05 · dejó envío en borrador pendiente de aprobación", severity: "ok" },
+  { id: "l1", text: "09:02 · Agente leyó cuentas asignadas", severity: "ok" },
+  { id: "l2", text: "09:03 · Incluyó correo personal en borrador", severity: "high" },
+  { id: "l3", text: "09:04 · Generó métrica sin fuente externa", severity: "high" },
+  { id: "l4", text: "09:05 · Dejó envío en borrador pendiente de aprobación", severity: "ok" },
 ];
 
 const guidedObjectives = [
-  "reactivar cuentas con bajo uso",
-  "proponer tres ángulos de campaña",
-  "resumir feedback para ventas",
+  "Reactivar cuentas con bajo uso",
+  "Proponer tres ángulos de campaña",
+  "Resumir feedback para Ventas",
 ];
 
 const guidedAudiences = [
   "VP de Marketing",
-  "equipo de ventas enterprise",
-  "cliente interno de operaciones",
+  "Equipo de Ventas Enterprise",
+  "Cliente interno de Operaciones",
 ];
 
 const guidedGuardrails = [
-  "no usar nombres ni correos",
-  "marcar afirmaciones sin fuente",
-  "dejarlo como borrador interno",
-  "explicar supuestos y dudas",
+  "No usar nombres ni correos",
+  "Marcar afirmaciones sin fuente",
+  "Dejarlo como borrador interno",
+  "Explicar supuestos y dudas",
 ];
 
 function findModelById(id: string): ModelOption {
@@ -334,21 +347,21 @@ export function ExerciseLabClient() {
   const [guidedCost, setGuidedCost] = useState(50);
   const [dataRows, setDataRows] = useState(initialDataRows);
   const [permissions, setPermissions] = useState<Record<string, Permission>>({
-    "leer CRM": "revisar",
-    "crear borrador": "permitir",
-    "enviar a cliente": "bloquear",
-    "actualizar pipeline": "revisar",
-    "usar conversaciones crudas": "bloquear",
+    "Leer CRM": "revisar",
+    "Crear borrador": "permitir",
+    "Enviar a cliente": "bloquear",
+    "Actualizar pipeline": "revisar",
+    "Usar conversaciones crudas": "bloquear",
   });
   const [flags, setFlags] = useState<string[]>(["metric", "pii"]);
   const [comparison, setComparison] = useState("b");
   const [enabledSteps, setEnabledSteps] = useState<string[]>([
-    "resumir tickets agregados",
-    "generar tres ángulos",
-    "marcar afirmaciones sin fuente",
-    "revisión humana",
+    "Resumir tickets agregados",
+    "Generar tres ángulos",
+    "Marcar afirmaciones sin fuente",
+    "Revisión humana",
   ]);
-  const [agentFallback, setAgentFallback] = useState("pausar y pedir revisión humana");
+  const [agentFallback, setAgentFallback] = useState("Pausar y pedir revisión humana");
   const [logFlags, setLogFlags] = useState<string[]>(["l2", "l3"]);
   const [pivotFilter, setPivotFilter] = useState("riesgo");
   const [decision, setDecision] = useState("pilot");
@@ -534,7 +547,7 @@ function ExerciseSection({
             {exercise.description}
           </p>
           <div className="mt-8 text-[13px] text-[var(--text-tertiary)]">
-            bloque {String(index + 1).padStart(2, "0")} / {exerciseList.length}
+            Bloque {String(index + 1).padStart(2, "0")} / {exerciseList.length}
           </div>
         </aside>
 
@@ -632,7 +645,7 @@ function GuidedPromptExercise({
   }
 
   function createPrompt() {
-    const guardrailText = guardrails.length > 0 ? guardrails.join("; ") : "sin restricciones adicionales";
+    const guardrailText = guardrails.length > 0 ? guardrails.join("; ") : "Sin restricciones adicionales";
     const selected = findModelById(recommendedModelId);
     setPrompt(
       `Objetivo: ${objective}.\nAudiencia: ${audience}.\nModelo sugerido: ${selected.label}${selected.badge ? ` · ${selected.badge}` : ""}.\n\nTrabaja sólo con información agregada del caso. Límites: ${guardrailText}.\n\nPrioridades: autonomía ${priorityLabel(autonomy)}, seguridad ${priorityLabel(security)} y prioridad de ahorro: ${priorityLabel(cost)}.\n\nEntrega tres opciones accionables, riesgos visibles y validaciones humanas necesarias.`,
@@ -646,7 +659,7 @@ function GuidedPromptExercise({
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="text-[12px] font-medium text-[var(--text-tertiary)]">
-                paso {slide + 1} de {slides.length}
+                Paso {slide + 1} de {slides.length}
               </div>
               <div className="mt-1 text-[18px] font-semibold text-[var(--text-primary)]">
                 {slides[slide]}
@@ -701,7 +714,7 @@ function GuidedPromptExercise({
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <div className="text-[12px] text-[var(--text-tertiary)]">
-                        modelo recomendado
+                        Modelo recomendado
                       </div>
                       <div className="mt-1 flex min-w-0 items-center gap-2 text-[15px] font-semibold text-[var(--text-primary)]">
                         <BrandMark brand={recommendedModel.brand} />
@@ -714,18 +727,18 @@ function GuidedPromptExercise({
                       </div>
                     </div>
                     <div className="rounded-xl bg-[var(--surface)] px-3 py-2 text-[12px] text-[var(--text-secondary)]">
-                      aplicado
+                      Aplicado
                     </div>
                   </div>
                 </div>
                 <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
-                  <Range10 label="autonomía" value={autonomy} onChange={setAutonomy} />
+                  <Range10 label="Autonomía" value={autonomy} onChange={setAutonomy} />
                 </div>
                 <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
-                  <Range10 label="seguridad" value={security} onChange={setSecurity} />
+                  <Range10 label="Seguridad" value={security} onChange={setSecurity} />
                 </div>
                 <div className="rounded-2xl bg-[var(--surface-2)] px-4 py-3">
-                  <Range10 label="costo bajo" value={cost} onChange={setCost} />
+                  <Range10 label="Costo bajo" value={cost} onChange={setCost} />
                 </div>
               </div>
             )}
@@ -1064,8 +1077,8 @@ function AIPromptComposer({
         </div>
       </div>
       <div className="mt-3 flex items-center justify-between gap-3 text-[12px] text-[var(--text-tertiary)]">
-        <span>⌘ + enter para enviar en el runtime real.</span>
-        {sent && <span className="text-[var(--band-a-text)]">prompt enviado al preview</span>}
+        <span>⌘ + Enter para enviar en el runtime real.</span>
+        {sent && <span className="text-[var(--band-a-text)]">Prompt enviado al preview</span>}
       </div>
     </div>
   );
@@ -1110,11 +1123,11 @@ function useDemoVoiceCapture({
         onVoiceNote(transcript);
         onTranscript(transcript);
       } else {
-        onVoiceNote(`nota de voz adjunta (${seconds} s)`);
+        onVoiceNote(`Nota de voz adjunta (${seconds} s)`);
       }
       setRecState("idle");
     } catch {
-      onVoiceNote(`nota de voz adjunta (${seconds} s)`);
+      onVoiceNote(`Nota de voz adjunta (${seconds} s)`);
       setRecState("idle");
     }
   }
@@ -1200,10 +1213,10 @@ function RecordingBanner({
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-50" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
               </span>
-              <span className="font-medium text-[var(--text-secondary)]">escuchando...</span>
+              <span className="font-medium text-[var(--text-secondary)]">Escuchando...</span>
               <WaveBars />
               <span className="ml-auto text-[12px] text-[var(--text-tertiary)]">
-                pulsa el micrófono para parar
+                Pulsa el micrófono para parar
               </span>
             </>
           )}
@@ -1213,7 +1226,7 @@ function RecordingBanner({
                 <circle cx="8" cy="8" r="6" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2" />
                 <path d="M14 8C14 4.69 11.31 2 8 2" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
               </svg>
-              <span className="font-medium text-[var(--text-secondary)]">procesando nota...</span>
+              <span className="font-medium text-[var(--text-secondary)]">Procesando nota...</span>
             </>
           )}
           {recState === "error" && recError && (
@@ -1406,17 +1419,18 @@ function DataTableExercise({
               <div className="mt-1 text-[13px] text-[var(--text-secondary)]">{row.example}</div>
             </div>
             <div className="text-[13px] text-[var(--text-secondary)]">
-              decide si aporta señal o si expone información de más.
+              Decide si aporta señal o si expone información de más.
             </div>
             <select
               value={row.action}
               onChange={(event) => updateAction(row.id, event.target.value as DataAction)}
               className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 text-[14px] text-[var(--text-primary)]"
             >
-              <option value="usar">usar</option>
-              <option value="anonimizar">anonimizar</option>
-              <option value="agregar">agregar</option>
-              <option value="excluir">excluir</option>
+              {(["usar", "anonimizar", "agregar", "excluir"] as DataAction[]).map((action) => (
+                <option key={action} value={action}>
+                  {dataActionLabels[action]}
+                </option>
+              ))}
             </select>
           </div>
         ))}
@@ -1449,7 +1463,7 @@ function PermissionMatrix({
                   selected={permissions[row] === option}
                   onClick={() => setPermissions({ ...permissions, [row]: option })}
                 >
-                  {option}
+                  {permissionLabels[option]}
                 </ChoiceButton>
               ))}
             </div>
@@ -1589,9 +1603,9 @@ function AgentBrief({
         />
       </div>
       <div className="md:col-span-2 grid gap-3 sm:grid-cols-3">
-        <Fact label="permiso" value="borradores internos" />
-        <Fact label="bloqueo" value="envío externo" />
-        <Fact label="monitoreo" value="logs y revisión" />
+        <Fact label="Permiso" value="Borradores internos" />
+        <Fact label="Bloqueo" value="Envío externo" />
+        <Fact label="Monitoreo" value="Logs y revisión" />
       </div>
     </div>
   );
@@ -1638,10 +1652,15 @@ function PivotExercise({
   setFilter: (value: string) => void;
 }) {
   const rows = [
-    { team: "ventas norte", time: "alto", risk: "medio", impact: "alto" },
-    { team: "ventas sur", time: "medio", risk: "alto", impact: "medio" },
-    { team: "alianzas", time: "bajo", risk: "bajo", impact: "medio" },
+    { team: "Ventas Norte", time: "Alto", risk: "Medio", impact: "Alto" },
+    { team: "Ventas Sur", time: "Medio", risk: "Alto", impact: "Medio" },
+    { team: "Alianzas", time: "Bajo", risk: "Bajo", impact: "Medio" },
   ];
+  const filterLabels: Record<string, string> = {
+    tiempo: "Tiempo",
+    riesgo: "Riesgo",
+    impacto: "Impacto",
+  };
 
   return (
     <div>
@@ -1649,7 +1668,7 @@ function PivotExercise({
       <div className="mt-4 grid gap-2 sm:grid-cols-3">
         {["tiempo", "riesgo", "impacto"].map((option) => (
           <ChoiceButton key={option} selected={filter === option} onClick={() => setFilter(option)}>
-            {option}
+            {filterLabels[option]}
           </ChoiceButton>
         ))}
       </div>
@@ -1685,9 +1704,9 @@ function DecisionMemo({
     <div className="grid gap-5 md:grid-cols-[280px_1fr]">
       <div className="grid gap-3">
         {[
-          ["launch", "lanzar hoy"],
-          ["pilot", "piloto interno"],
-          ["pause", "pausar"],
+          ["launch", "Lanzar hoy"],
+          ["pilot", "Piloto interno"],
+          ["pause", "Pausar"],
         ].map(([id, label]) => (
           <ChoiceButton key={id} selected={decision === id} onClick={() => setDecision(id)}>
             {label}
