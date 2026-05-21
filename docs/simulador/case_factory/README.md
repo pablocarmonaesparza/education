@@ -60,3 +60,12 @@ Ruta local/publica sin subscripcion:
 
 No debe linkearse desde la landing. Es un laboratorio de producto para revisar
 estructura, taxonomia, criterios y cobertura antes de publicar casos.
+
+## Pagina de ejercicios
+
+Ruta local/publica sin subscripcion:
+
+`/exercise-lab`
+
+Muestra el catalogo visual de bloques de ejercicio. Sirve para decidir que
+interacciones entran al contrato antes de escribir `EXERCISE_BLOCK_CATALOG.yaml`.
