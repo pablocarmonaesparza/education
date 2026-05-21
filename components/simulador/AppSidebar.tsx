@@ -97,7 +97,7 @@ export function AppSidebar() {
   return (
     <aside
       aria-label="Navegación principal"
-      className="hidden md:flex md:flex-col fixed inset-y-0 left-0 z-20 w-[224px] border-r border-[var(--hairline)] bg-[var(--surface)] px-3 py-4"
+      className="hidden md:flex md:flex-col fixed inset-y-0 left-0 z-20 w-[224px] bg-[var(--surface)] px-3 py-4"
     >
       {/* Brand */}
       <div className="px-2 py-1.5">
@@ -120,8 +120,8 @@ export function AppSidebar() {
         ))}
       </nav>
 
-      {/* Bottom: cuenta */}
-      <nav className="mt-auto flex flex-col gap-0.5 border-t border-[var(--hairline)] pt-3">
+      {/* Bottom: cuenta (sin divider — política Pablo: cero líneas innecesarias) */}
+      <nav className="mt-auto flex flex-col gap-0.5">
         {SECONDARY.map((item) => (
           <NavLink key={item.href} item={item} active={isActive(pathname, item.href)} />
         ))}
