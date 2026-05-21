@@ -31,10 +31,61 @@ interface SuccessPageProps {
   searchParams: Promise<{ session_id?: string }>;
 }
 
+/**
+ * Vista del estado OK (pago confirmado).
+ * Extraída como componente para poder reusarla en preview de /dev sin
+ * tener que pasar por la verificación contra Stripe.
+ */
+function SuccessConfirmedView() {
+  return (
+    <div className="simulador-root min-h-screen surface-canvas">
+      <AuthNav mode="login" next="/" />
+      <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
+        <div className="max-w-[440px] w-full text-center">
+          <div className="mx-auto h-16 w-16 rounded-full bg-[var(--band-a-bg)] grid place-items-center">
+            <svg
+              className="h-7 w-7 text-[var(--band-a-text)]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </div>
+          <h1 className="display display-tight mt-7 text-[var(--text-primary)] text-[28px] sm:text-[32px]">
+            Pago confirmado
+          </h1>
+          <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+            Tu suscripción está activa. Puedes entrar al dashboard del
+            simulador.
+          </p>
+          <div className="mt-8">
+            <Link
+              href="/dashboard"
+              className="inline-flex h-12 items-center justify-center rounded-[var(--radius-md)] accent-bg px-6 text-[15px] font-medium text-white hover:opacity-95 transition-opacity"
+            >
+              Ir al dashboard
+            </Link>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
+
 export default async function SuccessPage({ searchParams }: SuccessPageProps) {
   const { session_id: sessionId } = await searchParams;
 
+  // En dev sin session_id (acceso desde /dev menú): preview del estado OK
+  // sin tocar Stripe. En producción seguimos protegiendo con redirect.
   if (!sessionId) {
+    if (process.env.NODE_ENV !== "production") {
+      return <SuccessConfirmedView />;
+    }
     redirect("/auth/signup?next=%2Fonboarding%2Forg");
   }
 
@@ -142,42 +193,5 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
   }
 
   // ============ PAGO CONFIRMADO ============
-  return (
-    <div className="simulador-root min-h-screen surface-canvas">
-      <AuthNav mode="login" next="/" />
-      <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
-        <div className="max-w-[440px] w-full text-center">
-          <div className="mx-auto h-16 w-16 rounded-full bg-[var(--band-a-bg)] grid place-items-center">
-            <svg
-              className="h-7 w-7 text-[var(--band-a-text)]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-          </div>
-          <h1 className="display display-tight mt-7 text-[var(--text-primary)] text-[28px] sm:text-[32px]">
-            Pago confirmado
-          </h1>
-          <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
-            Tu suscripción está activa. Puedes entrar al dashboard del
-            simulador.
-          </p>
-          <div className="mt-8">
-            <Link
-              href="/dashboard"
-              className="inline-flex h-12 items-center justify-center rounded-[var(--radius-md)] accent-bg px-6 text-[15px] font-medium text-white hover:opacity-95 transition-opacity"
-            >
-              Ir al dashboard
-            </Link>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
+  return <SuccessConfirmedView />;
 }
