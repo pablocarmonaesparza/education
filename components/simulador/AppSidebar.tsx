@@ -33,7 +33,6 @@ import {
   IconFileText,
   IconHome,
   IconUserCircle,
-  IconUsers,
 } from "@tabler/icons-react";
 import type { ComponentType } from "react";
 
@@ -43,14 +42,16 @@ interface NavItem {
   Icon: ComponentType<{ size?: number; stroke?: number; className?: string }>;
 }
 
-// TODO: hacer estos items role-aware leyendo simulador.organization_memberships.
-// Convención URL:
-//   /staff = manager (cliente org_admin), /team = employee, /admin = Itera.
-// Por ahora layout buyer-first (manager): "Equipo" lleva a /staff. Cuando
-// armemos /team del employee, agregamos "Inicio" (→/team) y ocultamos
-// "Equipo" + "Empresa".
+// TODO: role-aware. Convención URL:
+//   /team = employee  → "Inicio" lleva acá (catálogo de casos personal)
+//   /staff = manager  → "Inicio" del manager (dashboard del team)
+//   /admin = Itera staff → review queue
+// Por ahora hardcodeamos al employee view porque es lo que estamos
+// construyendo activamente (Inicio → /team). Cuando se cablee el rol
+// real, "Inicio" alterna entre /team y /staff, y "Empresa" se oculta
+// para employees.
 const PRIMARY: NavItem[] = [
-  { href: "/staff", label: "Equipo", Icon: IconUsers },
+  { href: "/team", label: "Inicio", Icon: IconHome },
   { href: "/reportes", label: "Reportes", Icon: IconFileText },
   { href: "/casos", label: "Casos", Icon: IconBriefcase },
 ];
