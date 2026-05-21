@@ -56,23 +56,17 @@ const LEADERBOARD: LeaderboardEntry[] = [
   { name: "Sofía Martín", initials: "SM", score: 69 },
 ];
 
-// Casos recomendados — primeros 8 disponibles del catálogo (no completed).
-// Cuando se cablee BD, viene de algoritmo de recomendación (match por nivel,
-// departamento, dimensiones débiles, sprint del team, etc).
-const RECOMMENDED_SLUGS = [
-  "growth_attribution_anomaly",
-  "growth_pricing_test",
-  "marketing_competitor_response_agent",
-  "ops_invoice_reconciliation",
-  "marketing_urgent_campaign_pii",
-  "legal_contract_redline_assist",
-  "product_pricing_test_call",
-  "finance_board_memo_under_deadline",
-];
-
-const RECOMMENDED = RECOMMENDED_SLUGS.map((slug) =>
-  CASES.find((c) => c.slug === slug),
-).filter((c): c is (typeof CASES)[number] => Boolean(c));
+// Casos recomendados — solo no completados. in_progress primero (debe
+// terminar lo que empezó), después available. Cuando se cablee BD, esto
+// viene del algoritmo de recomendación con priorización real (match por
+// nivel, dimensiones débiles, sprint del team, etc).
+const RECOMMENDED = CASES.filter((c) => c.userStatus !== "completed")
+  .sort((a, b) => {
+    if (a.userStatus === "in_progress" && b.userStatus !== "in_progress") return -1;
+    if (b.userStatus === "in_progress" && a.userStatus !== "in_progress") return 1;
+    return 0;
+  })
+  .slice(0, 8);
 
 // ============================================================================
 // Local components
