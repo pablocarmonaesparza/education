@@ -220,6 +220,10 @@ function FilterSelect<T extends string>({
         const next = Array.from(keys)[0] as T | undefined;
         onChange(next ?? "");
       }}
+      // isClearable muestra una X chiquita junto al chevron cuando hay valor.
+      // onClear limpia el state local (pasamos "" para reset).
+      isClearable={!!value}
+      onClear={() => onChange("")}
       variant="bordered"
       radius="lg"
       size="lg"
