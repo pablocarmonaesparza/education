@@ -43,6 +43,7 @@ type Industry =
   | "professional_services";
 type Freshness = "evergreen" | "current" | "hybrid";
 type DuracionBucket = "corto" | "medio" | "largo";
+type SortKey = "recientes" | "abecedario";
 
 interface CaseItem {
   slug: string;
@@ -277,6 +278,19 @@ const FRESHNESS_OPTIONS: { value: Freshness; label: string }[] = [
   { value: "hybrid", label: "Híbrido" },
 ];
 
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: "recientes", label: "Más recientes" },
+  { value: "abecedario", label: "Orden alfabético" },
+];
+
+// Construir TOOL_OPTIONS dinámicamente a partir de los tools únicos del
+// catálogo. Cuando esté la BD, generar desde simulador.tools.
+const TOOL_OPTIONS: { value: string; label: string }[] = Array.from(
+  new Set(CASES.flatMap((c) => c.toolsRequired)),
+)
+  .sort()
+  .map((t) => ({ value: t, label: t }));
+
 // ============================================================================
 // BRAND COLORS para tool chips — basado en los brand kits oficiales.
 // Si una tool no está en este map, usa el default neutro.
@@ -284,36 +298,41 @@ const FRESHNESS_OPTIONS: { value: Freshness; label: string }[] = [
 
 type ToolBrand = { bg: string; text: string };
 
+// Patrón: bg translúcido (alpha ~0.12-0.16) + text en color intenso.
+// Mismo estilo que el chip "Fundamentos" del nivel — protagonismo al módulo,
+// no al chip. Las brands "neutras" (negros/blancos) usan tokens del DS para
+// auto-adaptarse a light/dark mode.
 const TOOL_BRAND: Record<string, ToolBrand> = {
   // LLM chats
-  ChatGPT: { bg: "#10a37f", text: "#ffffff" }, // OpenAI teal verde
-  Claude: { bg: "#d97757", text: "#ffffff" }, // Anthropic naranja
-  Gemini: { bg: "#4285f4", text: "#ffffff" }, // Google azul
-
-  // Code / dev
-  Cursor: { bg: "#000000", text: "#ffffff" },
-  "GitHub Copilot": { bg: "#000000", text: "#ffffff" },
+  ChatGPT: { bg: "rgba(16, 163, 127, 0.12)", text: "#10a37f" },
+  Claude: { bg: "rgba(217, 119, 87, 0.14)", text: "#d97757" },
+  Gemini: { bg: "rgba(66, 133, 244, 0.12)", text: "#4285f4" },
 
   // CRM / sales
-  HubSpot: { bg: "#ff7a59", text: "#ffffff" },
-  Salesforce: { bg: "#00a1e0", text: "#ffffff" },
+  HubSpot: { bg: "rgba(255, 122, 89, 0.14)", text: "#ff7a59" },
+  Salesforce: { bg: "rgba(0, 161, 224, 0.12)", text: "#00a1e0" },
 
   // Marketing / analytics
-  "Meta Ads": { bg: "#1877f2", text: "#ffffff" },
-  "Google Analytics": { bg: "#e37400", text: "#ffffff" },
-  Looker: { bg: "#4285f4", text: "#ffffff" },
-  Mixpanel: { bg: "#7856ff", text: "#ffffff" },
+  "Meta Ads": { bg: "rgba(24, 119, 242, 0.12)", text: "#1877f2" },
+  "Google Analytics": { bg: "rgba(227, 116, 0, 0.14)", text: "#e37400" },
+  Looker: { bg: "rgba(66, 133, 244, 0.12)", text: "#4285f4" },
+  Mixpanel: { bg: "rgba(120, 86, 255, 0.14)", text: "#7856ff" },
 
   // Workspace
-  Notion: { bg: "#000000", text: "#ffffff" },
-  Slack: { bg: "#4a154b", text: "#ffffff" },
-  Gmail: { bg: "#ea4335", text: "#ffffff" },
-  Excel: { bg: "#217346", text: "#ffffff" },
+  Gmail: { bg: "rgba(234, 67, 53, 0.12)", text: "#ea4335" },
+  Slack: { bg: "rgba(74, 21, 75, 0.18)", text: "#4a154b" },
+  Excel: { bg: "rgba(33, 115, 70, 0.14)", text: "#217346" },
 
   // Automation
-  Zapier: { bg: "#ff4a00", text: "#ffffff" },
-  Make: { bg: "#6d3aff", text: "#ffffff" },
-  n8n: { bg: "#ea4b71", text: "#ffffff" },
+  Zapier: { bg: "rgba(255, 74, 0, 0.14)", text: "#ff4a00" },
+  Make: { bg: "rgba(109, 58, 255, 0.14)", text: "#6d3aff" },
+  n8n: { bg: "rgba(234, 75, 113, 0.14)", text: "#ea4b71" },
+
+  // Brands "neutras" (negros/blancos) — usan tokens del DS para que se
+  // vean bien en light y dark mode sin contraste roto.
+  Cursor: { bg: "var(--surface-2)", text: "var(--text-primary)" },
+  Notion: { bg: "var(--surface-2)", text: "var(--text-primary)" },
+  "GitHub Copilot": { bg: "var(--surface-2)", text: "var(--text-primary)" },
 };
 
 const TOOL_DEFAULT: ToolBrand = {
@@ -465,29 +484,41 @@ export default function TeamPage() {
   const [level, setLevel] = useState<Level | "">("");
   const [department, setDepartment] = useState<Department | "">("");
   const [duracion, setDuracion] = useState<DuracionBucket | "">("");
-  const [freshness, setFreshness] = useState<Freshness | "">("");
+  const [tool, setTool] = useState<string>("");
+  const [sortBy, setSortBy] = useState<SortKey>("recientes");
 
-  const filtered = useMemo(() => {
-    return CASES.filter((c) => {
+  const filteredSorted = useMemo(() => {
+    const filtered = CASES.filter((c) => {
       if (level && c.level !== level) return false;
       if (department && c.department !== department) return false;
-      if (freshness && c.freshnessType !== freshness) return false;
+      if (tool && !c.toolsRequired.includes(tool)) return false;
       if (duracion) {
         const d = DURACION_OPTIONS.find((x) => x.value === duracion);
         if (d && !d.check(c.estimatedMinutes)) return false;
       }
       return true;
     });
-  }, [level, department, duracion, freshness]);
+
+    return [...filtered].sort((a, b) => {
+      if (sortBy === "abecedario") {
+        return a.title.localeCompare(b.title, "es");
+      }
+      // recientes: por lastVerifiedAt descendente. Si falta (evergreen),
+      // empuja al final.
+      const aDate = a.lastVerifiedAt ?? "0000-00-00";
+      const bDate = b.lastVerifiedAt ?? "0000-00-00";
+      return bDate.localeCompare(aDate);
+    });
+  }, [level, department, duracion, tool, sortBy]);
 
   const anyFilterActive =
-    level !== "" || department !== "" || duracion !== "" || freshness !== "";
+    level !== "" || department !== "" || duracion !== "" || tool !== "";
 
   function clearAll() {
     setLevel("");
     setDepartment("");
     setDuracion("");
-    setFreshness("");
+    setTool("");
   }
 
   return (
@@ -531,20 +562,20 @@ export default function TeamPage() {
             onChange={setDuracion}
           />
           <FilterSelect
-            placeholder="Frescura"
-            options={FRESHNESS_OPTIONS}
-            value={freshness}
-            onChange={setFreshness}
+            placeholder="Herramientas"
+            options={TOOL_OPTIONS}
+            value={tool}
+            onChange={setTool}
           />
         </section>
 
-        {/* ============ RESULTS META ============ */}
-        <div className="mt-10 flex items-center justify-between">
+        {/* ============ RESULTS META + SORT ============ */}
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
           <span className="text-[13px] text-[var(--text-secondary)]">
             <span className="font-semibold text-[var(--text-primary)]">
-              {filtered.length}
+              {filteredSorted.length}
             </span>{" "}
-            {filtered.length === 1 ? "caso" : "casos"}
+            {filteredSorted.length === 1 ? "caso" : "casos"}
             {anyFilterActive && (
               <span className="text-[var(--text-tertiary)]">
                 {" "}
@@ -552,21 +583,44 @@ export default function TeamPage() {
               </span>
             )}
           </span>
-          {anyFilterActive && (
-            <button
-              type="button"
-              onClick={clearAll}
-              className="text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-            >
-              Limpiar filtros
-            </button>
-          )}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-[12px] text-[var(--text-tertiary)]">
+                Ordenar
+              </span>
+              <Select
+                aria-label="Ordenar"
+                selectedKeys={[sortBy]}
+                onSelectionChange={(keys) => {
+                  const next = Array.from(keys)[0] as SortKey | undefined;
+                  if (next) setSortBy(next);
+                }}
+                variant="bordered"
+                radius="md"
+                size="sm"
+                className="w-[180px]"
+              >
+                {SORT_OPTIONS.map((opt) => (
+                  <SelectItem key={opt.value}>{opt.label}</SelectItem>
+                ))}
+              </Select>
+            </div>
+            {anyFilterActive && (
+              <button
+                type="button"
+                onClick={clearAll}
+                className="text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              >
+                Limpiar filtros
+              </button>
+            )}
+          </div>
         </div>
 
         {/* ============ GRID ============ */}
-        {filtered.length > 0 ? (
+        {filteredSorted.length > 0 ? (
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filtered.map((item) => (
+            {filteredSorted.map((item) => (
               <CaseCard key={item.slug} item={item} />
             ))}
           </div>
