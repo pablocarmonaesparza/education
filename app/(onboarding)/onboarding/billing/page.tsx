@@ -25,6 +25,8 @@ import {
   formatUsd,
   SIMULADOR_PRODUCT,
   SIMULADOR_TIERS,
+  YEARLY_DISCOUNT_PCT,
+  type BillingInterval,
   type SimuladorTier,
 } from "@/lib/simulador/billing";
 import { onboardingCopy } from "@/lib/simulador/copy/onboarding";
@@ -48,6 +50,7 @@ function OnboardingBillingContent() {
   const [teamId, setTeamId] = useState<string | null>(null);
   const [teamName, setTeamName] = useState("");
   const [seats, setSeats] = useState<number>(5);
+  const [interval, setInterval] = useState<BillingInterval>("yearly");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(
     searchParams.get("canceled") ? "Checkout cancelado. No se cobró nada." : null,
@@ -66,7 +69,10 @@ function OnboardingBillingContent() {
     setTeamName(tn ?? "");
   }, [router]);
 
-  const computed = useMemo(() => computeSimuladorAmount(seats), [seats]);
+  const computed = useMemo(
+    () => computeSimuladorAmount(seats, interval),
+    [seats, interval],
+  );
   const copy = onboardingCopy.step4_billing;
   const activeTierIndex = SIMULADOR_TIERS.findIndex((t) => t.id === computed.tier.id);
 
@@ -93,6 +99,7 @@ function OnboardingBillingContent() {
           organization_id: orgId,
           team_id: teamId,
           seats: computed.seats,
+          interval: computed.interval,
         }),
       });
       const data = await res.json();
@@ -178,6 +185,49 @@ function OnboardingBillingContent() {
             <p className="mt-2 text-[11px] text-[var(--text-tertiary)]">
               {seats === 1 ? "1 persona" : `${seats} personas`} · escribe o usa los botones
             </p>
+
+            {/* ============ TOGGLE Mensual / Anual ============ */}
+            <div
+              role="radiogroup"
+              aria-label="Facturación"
+              className="mt-5 inline-flex items-center rounded-full border border-[var(--hairline)] bg-[var(--surface)] p-1 text-[13px]"
+            >
+              <button
+                type="button"
+                role="radio"
+                aria-checked={interval === "monthly"}
+                onClick={() => setInterval("monthly")}
+                className={`rounded-full px-4 py-1.5 font-medium transition-colors ${
+                  interval === "monthly"
+                    ? "bg-[var(--text-primary)] text-[var(--surface)]"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                Mensual
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={interval === "yearly"}
+                onClick={() => setInterval("yearly")}
+                className={`relative rounded-full px-4 py-1.5 font-medium transition-colors ${
+                  interval === "yearly"
+                    ? "bg-[var(--text-primary)] text-[var(--surface)]"
+                    : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                Anual
+                <span
+                  className={`ml-1.5 inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${
+                    interval === "yearly"
+                      ? "bg-[var(--surface)] text-[var(--accent)]"
+                      : "bg-[var(--accent-soft)] text-[var(--accent)]"
+                  }`}
+                >
+                  −{YEARLY_DISCOUNT_PCT}%
+                </span>
+              </button>
+            </div>
           </section>
         </motion.div>
 
@@ -187,7 +237,7 @@ function OnboardingBillingContent() {
             adjacent se ven enteras dentro de ese ancho. */}
         <section
           className="relative mt-6 flex-none w-full"
-          style={{ height: 280 }}
+          style={{ height: 300 }}
         >
           <motion.div
             className="absolute top-0 bottom-0 flex items-center"
@@ -221,7 +271,9 @@ function OnboardingBillingContent() {
                       tier={tier}
                       seats={computed.seats}
                       isActive={isActive}
-                      total={computed.amountUsd}
+                      interval={computed.interval}
+                      periodTotal={computed.periodTotalUsd}
+                      savingsUsd={computed.savingsUsd}
                       pricePerSeat={computed.pricePerSeatUsd}
                     />
                   </motion.div>
@@ -284,23 +336,29 @@ function TierCard({
   tier,
   seats,
   isActive,
-  total,
+  interval,
+  periodTotal,
+  savingsUsd,
   pricePerSeat,
 }: {
   tier: SimuladorTier;
   seats: number;
   isActive: boolean;
-  total: number;
+  interval: BillingInterval;
+  periodTotal: number;
+  savingsUsd: number;
   pricePerSeat: number;
 }) {
   const range =
     tier.maxSeats === null
       ? `${tier.minSeats}+ personas`
       : `${tier.minSeats}–${tier.maxSeats} personas`;
+  const periodLabel = interval === "yearly" ? "/año" : "/mes";
+  const perSeatPeriodLabel = interval === "yearly" ? "al año" : "al mes";
 
   return (
     <div
-      className={`h-[268px] rounded-[var(--radius-lg)] border p-5 transition-all bg-[var(--surface)] ${
+      className={`h-[284px] rounded-[var(--radius-lg)] border p-5 transition-all bg-[var(--surface)] ${
         isActive
           ? "border-[var(--accent)] shadow-[0_8px_24px_var(--shadow)]"
           : "border-[var(--hairline)]"
@@ -325,13 +383,15 @@ function TierCard({
             <div className="text-[34px] font-semibold tracking-tight text-[var(--text-primary)] leading-none tabular-nums">
               {formatUsd(tier.pricePerSeatUsd)}
             </div>
-            <div className="mt-1 text-[12px] text-[var(--text-tertiary)]">por persona</div>
+            <div className="mt-1 text-[12px] text-[var(--text-tertiary)]">
+              por persona / mes
+            </div>
           </div>
 
           <AnimatePresence mode="wait">
             {isActive && (
               <motion.div
-                key="active-breakdown"
+                key={`active-breakdown-${interval}`}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
@@ -340,20 +400,20 @@ function TierCard({
               >
                 <div className="flex items-baseline justify-between text-[12px] text-[var(--text-secondary)]">
                   <span>
-                    {pricePerSeat} × {seats}
+                    {pricePerSeat} × {seats} {perSeatPeriodLabel}
                   </span>
                   <span className="text-[18px] font-semibold tracking-tight text-[var(--text-primary)] tabular-nums">
-                    {formatUsd(total)}
+                    {formatUsd(periodTotal)}
+                    <span className="ml-0.5 text-[11px] font-normal text-[var(--text-tertiary)]">
+                      {periodLabel}
+                    </span>
                   </span>
                 </div>
-                <div className="mt-3 space-y-1.5 text-[11px] leading-[1.5] text-[var(--text-secondary)]">
-                  {SIMULADOR_PRODUCT.features.slice(0, 3).map((f) => (
-                    <div key={f} className="flex gap-1.5">
-                      <span className="text-[var(--accent)]">·</span>
-                      <span>{f}</span>
-                    </div>
-                  ))}
-                </div>
+                {interval === "yearly" && savingsUsd > 0 && (
+                  <div className="mt-2 rounded-md bg-[var(--accent-soft)] px-2 py-1 text-[11px] text-[var(--accent)]">
+                    Ahorras {formatUsd(savingsUsd)} al año · 2 meses gratis
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -365,7 +425,7 @@ function TierCard({
               Negociable
             </div>
             <div className="mt-1 text-[12px] text-[var(--text-tertiary)]">
-              desde USD {tier.pricePerSeatUsd}/persona
+              desde USD {tier.pricePerSeatUsd}/persona/mes
             </div>
           </div>
           {isActive && (

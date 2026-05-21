@@ -111,6 +111,7 @@ export async function upsertSimuladorSubscriptionFromCheckout(
   const teamId = metadataValue(session, "team_id");
   const buyerUserId = metadataValue(session, "simulador_user_id");
   const seatsFromMetadata = Number(metadataValue(session, "seats"));
+  const intervalFromMetadata = metadataValue(session, "interval");
 
   if (!organizationId || !teamId || !buyerUserId) {
     return { ok: false, reason: "missing_org_team_or_buyer_metadata" };
@@ -119,9 +120,8 @@ export async function upsertSimuladorSubscriptionFromCheckout(
     return { ok: false, reason: "invalid_seats_metadata" };
   }
 
-  const { seats, amountUsd, amountCents, tier } = computeSimuladorAmount(
-    seatsFromMetadata,
-  );
+  const { seats, periodTotalUsd, amountCents, tier, interval } =
+    computeSimuladorAmount(seatsFromMetadata, intervalFromMetadata);
   if (
     typeof session.amount_total === "number" &&
     session.amount_total !== amountCents
@@ -133,27 +133,39 @@ export async function upsertSimuladorSubscriptionFromCheckout(
     typeof session.customer === "string"
       ? session.customer
       : session.customer?.id ?? null;
+  const stripeSubscriptionId =
+    typeof session.subscription === "string"
+      ? session.subscription
+      : session.subscription?.id ?? null;
+
+  // Para subscription anual el periodo dura 1 año, mensual 1 mes. Usamos esto
+  // como current_period_end (Stripe ya lo maneja, pero lo replicamos local
+  // para queries rápidas sin tener que cruzar a Stripe).
+  const periodMs =
+    interval === "yearly"
+      ? 365 * 24 * 60 * 60 * 1000
+      : 30 * 24 * 60 * 60 * 1000;
+  const currentPeriodEnd = new Date(
+    Date.now() + periodMs,
+  ).toISOString();
 
   const payload = {
     organization_id: organizationId,
     stripe_customer_id: customerId,
-    stripe_subscription_id: null,
+    stripe_subscription_id: stripeSubscriptionId,
     status: "active",
     tier: tier.id,
     seats,
-    price_usd_total: amountUsd,
+    price_usd_total: periodTotalUsd,
     current_period_start: new Date(session.created * 1000).toISOString(),
-    current_period_end: endDate(SIMULADOR_PRODUCT.durationDays),
+    current_period_end: currentPeriodEnd,
     metadata: {
       billing_product: "simulador_b2b",
       checkout_session_id: session.id,
-      payment_intent:
-        typeof session.payment_intent === "string"
-          ? session.payment_intent
-          : session.payment_intent?.id ?? null,
       tier: tier.id,
       tier_label: tier.label,
-      price_per_seat_usd: tier.pricePerSeatUsd,
+      interval,
+      price_per_seat_usd_monthly: tier.pricePerSeatUsd,
       team_id: teamId,
       buyer_user_id: buyerUserId,
     },

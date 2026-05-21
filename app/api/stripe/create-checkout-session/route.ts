@@ -5,7 +5,9 @@ import { stripe, STRIPE_PRICES, type BillingPlan } from '@/lib/stripe/config';
 import { enforceRateLimit, rateLimiters } from '@/lib/ratelimit';
 import {
   computeSimuladorAmount,
+  isBillingInterval,
   SIMULADOR_PRODUCT,
+  type BillingInterval,
 } from '@/lib/simulador/billing';
 
 export async function POST(req: NextRequest) {
@@ -25,6 +27,7 @@ export async function POST(req: NextRequest) {
       organization_id?: string;
       team_id?: string;
       seats?: number;
+      interval?: BillingInterval;
     };
 
     if (body.billing_product === 'simulador_b2b') {
@@ -104,6 +107,7 @@ async function createSimuladorCheckoutSession(
     organization_id?: string;
     team_id?: string;
     seats?: number;
+    interval?: BillingInterval;
   },
 ) {
   try {
@@ -185,8 +189,9 @@ async function createSimuladorCheckoutSession(
       .eq('id', body.organization_id)
       .maybeSingle();
 
-    const { seats, amountCents, amountUsd, tier, isEnterprise } =
-      computeSimuladorAmount(body.seats);
+    const computed = computeSimuladorAmount(body.seats, body.interval);
+    const { seats, amountCents, periodTotalUsd, tier, isEnterprise, interval } =
+      computed;
 
     // Enterprise (100+ personas) no es self-serve — el flow se corta y se
     // redirige a ventas para negociar volumen/término.
@@ -201,11 +206,17 @@ async function createSimuladorCheckoutSession(
       );
     }
 
+    const stripeInterval: 'month' | 'year' =
+      interval === 'yearly' ? 'year' : 'month';
+    const productDescription =
+      interval === 'yearly'
+        ? `${seats} ${seats === 1 ? 'persona' : 'personas'} · ${org?.name ?? 'organización'} · ${team.name} · facturación anual (10 meses de cobro)`
+        : `${seats} ${seats === 1 ? 'persona' : 'personas'} · ${org?.name ?? 'organización'} · ${team.name} · facturación mensual`;
+
     const origin = req.nextUrl.origin;
     const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
+      mode: 'subscription',
       customer_email: user.email ?? undefined,
-      customer_creation: 'always',
       client_reference_id: user.id,
       line_items: [
         {
@@ -213,9 +224,10 @@ async function createSimuladorCheckoutSession(
           price_data: {
             currency: 'usd',
             unit_amount: amountCents,
+            recurring: { interval: stripeInterval },
             product_data: {
               name: `${SIMULADOR_PRODUCT.label} · ${tier.label}`,
-              description: `${seats} ${seats === 1 ? 'persona' : 'personas'} · ${org?.name ?? 'organización'} · ${team.name}`,
+              description: productDescription,
             },
           },
         },
@@ -231,10 +243,11 @@ async function createSimuladorCheckoutSession(
         team_name: team.name,
         tier: tier.id,
         seats: String(seats),
-        price_per_seat_usd: String(tier.pricePerSeatUsd),
-        amount_usd_total: String(amountUsd),
+        interval,
+        price_per_seat_usd_monthly: String(tier.pricePerSeatUsd),
+        period_total_usd: String(periodTotalUsd),
       },
-      payment_intent_data: {
+      subscription_data: {
         metadata: {
           billing_product: 'simulador_b2b',
           user_id: user.id,
@@ -243,6 +256,7 @@ async function createSimuladorCheckoutSession(
           team_id: body.team_id,
           tier: tier.id,
           seats: String(seats),
+          interval,
         },
       },
       success_url: `${origin}/onboarding/done?session_id={CHECKOUT_SESSION_ID}`,
@@ -251,9 +265,10 @@ async function createSimuladorCheckoutSession(
 
     return NextResponse.json({
       sessionUrl: session.url,
-      amount_usd_total: amountUsd,
+      period_total_usd: periodTotalUsd,
       seats,
       tier: tier.id,
+      interval,
     });
   } catch (err) {
     console.error('[create-checkout] simulador session failed:', err);

@@ -29,7 +29,7 @@ export interface SimuladorTier {
   label: string;
   minSeats: number;
   maxSeats: number | null; // null = sin límite (enterprise)
-  pricePerSeatUsd: number;
+  pricePerSeatUsd: number; // precio MENSUAL por persona
   selfServe: boolean; // false para enterprise → redirige a ventas
 }
 
@@ -63,10 +63,21 @@ export const SIMULADOR_TIERS: SimuladorTier[] = [
     label: "Enterprise",
     minSeats: 100,
     maxSeats: null,
-    pricePerSeatUsd: 89, // floor, negociable arriba
+    pricePerSeatUsd: 89, // floor mensual, negociable arriba
     selfServe: false,
   },
 ];
+
+// Anual: cobramos 10 meses y entregamos 12. Resulta en ~17% off.
+// El "decimos" comercial es "2 meses gratis" — psicológicamente más fuerte
+// que "17% de descuento" (Anchor effect, Kahneman 2011).
+export const YEARLY_MONTHS_BILLED = 10;
+export const MONTHS_PER_YEAR = 12;
+export const YEARLY_DISCOUNT_PCT = Math.round(
+  (1 - YEARLY_MONTHS_BILLED / MONTHS_PER_YEAR) * 100,
+);
+
+export type BillingInterval = "monthly" | "yearly";
 
 export const SIMULADOR_PRODUCT = {
   label: "Sprint Itera",
@@ -79,10 +90,10 @@ export const SIMULADOR_PRODUCT = {
   enterpriseThreshold: 100,
   salesEmail: "ventas@itera.la",
   features: [
-    "1 sprint de 30 días",
+    "Caso vivo de 30 días",
     "Reporte ejecutivo por participante",
     "Dashboard manager + risk events",
-    "Pago único, sin renovación automática",
+    "Cancela cuando quieras",
   ],
 };
 
@@ -104,22 +115,54 @@ export function normalizeSimuladorSeats(raw: unknown): number {
 export interface SimuladorCheckoutAmount {
   seats: number;
   tier: SimuladorTier;
-  pricePerSeatUsd: number;
-  amountUsd: number;
-  amountCents: number;
+  interval: BillingInterval;
+  pricePerSeatUsd: number; // mensual, igual independiente del interval
+  monthlyTotalUsd: number; // seats × pricePerSeatUsd
+  periodTotalUsd: number; // lo que Stripe cobra por periodo (mensual=mensual, anual=10 meses)
+  yearlyAtMonthlyRateUsd: number; // hipotético: 12 meses pagados al rate mensual
+  savingsUsd: number; // ahorro absoluto del anual vs pagar 12 meses
+  savingsPct: number; // ~17%
+  amountCents: number; // periodTotalUsd × 100 (lo que va a Stripe)
   isEnterprise: boolean;
 }
 
-export function computeSimuladorAmount(seatsRaw: unknown): SimuladorCheckoutAmount {
+export function isBillingInterval(value: unknown): value is BillingInterval {
+  return value === "monthly" || value === "yearly";
+}
+
+export function computeSimuladorAmount(
+  seatsRaw: unknown,
+  intervalRaw: unknown = "monthly",
+): SimuladorCheckoutAmount {
   const seats = normalizeSimuladorSeats(seatsRaw);
+  const interval: BillingInterval = isBillingInterval(intervalRaw)
+    ? intervalRaw
+    : "monthly";
   const tier = computeSimuladorTier(seats);
-  const amountUsd = seats * tier.pricePerSeatUsd;
+
+  const monthlyTotalUsd = seats * tier.pricePerSeatUsd;
+  const yearlyAtMonthlyRateUsd = monthlyTotalUsd * MONTHS_PER_YEAR;
+
+  // Anual: cobramos 10 meses, "regalamos" 2 → 17% off implícito.
+  const periodTotalUsd =
+    interval === "yearly"
+      ? monthlyTotalUsd * YEARLY_MONTHS_BILLED
+      : monthlyTotalUsd;
+
+  const savingsUsd =
+    interval === "yearly" ? yearlyAtMonthlyRateUsd - periodTotalUsd : 0;
+
   return {
     seats,
     tier,
+    interval,
     pricePerSeatUsd: tier.pricePerSeatUsd,
-    amountUsd,
-    amountCents: amountUsd * 100,
+    monthlyTotalUsd,
+    periodTotalUsd,
+    yearlyAtMonthlyRateUsd,
+    savingsUsd,
+    savingsPct: interval === "yearly" ? YEARLY_DISCOUNT_PCT : 0,
+    amountCents: periodTotalUsd * 100,
     isEnterprise: !tier.selfServe,
   };
 }
