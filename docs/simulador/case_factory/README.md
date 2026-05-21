@@ -25,6 +25,21 @@ si no pasa por este sistema.
 No se crean los 50 casos todavia. Primero se cierra el framework, se validan 3
 golden cases (N1, N2, N3) y luego se dispara la fabrica.
 
+## Perfiles activos
+
+Por decision de producto, la primera version de la fabrica se limita a 6
+profile packs:
+
+1. Marketing / Growth
+2. Sales / RevOps
+3. Customer Success / Support
+4. Operations / Automation
+5. Finance / FP&A
+6. Legal / Compliance / Privacy
+
+Product, People Ops, Data/BI y Chief of Staff quedan como expansion posterior,
+no como catalogo activo.
+
 ## Estado actual
 
 Por decision de Pablo, los 8 casos antiguos de Marketing/Growth fueron retirados

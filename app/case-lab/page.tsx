@@ -10,6 +10,7 @@ import {
   caseFactoryGoldenCase,
   caseFactoryLevels,
   caseFactoryManagerSignals,
+  caseFactoryProfilePacks,
   caseFactoryQualityGates,
   caseFactoryResearchAnchors,
   caseFactoryTargetMix,
@@ -45,8 +46,8 @@ export default function CaseLabPage() {
         <section className="grid gap-4 md:grid-cols-4">
           <MetricCard label="casos objetivo" value={`${caseFactoryTargetMix.totalCases}`} />
           <MetricCard label="golden activo" value={`${caseFactoryTargetMix.activeGoldenCases}`} />
-          <MetricCard label="evergreen" value={`${caseFactoryTargetMix.evergreenPercent}%`} />
-          <MetricCard label="vigente" value={`${caseFactoryTargetMix.currentPercent}%`} />
+          <MetricCard label="perfiles activos" value={`${caseFactoryTargetMix.activeProfilePacks}`} />
+          <MetricCard label="mix vigente" value={`${caseFactoryTargetMix.currentPercent}%`} />
         </section>
 
         <Card variant="primary" padding="lg" className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
@@ -82,6 +83,24 @@ export default function CaseLabPage() {
             </Card>
           ))}
         </section>
+
+        <Card variant="neutral" padding="lg">
+          <Headline className="mb-4">perfiles activos</Headline>
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {caseFactoryProfilePacks.map((profile) => (
+              <div key={profile.id} className="rounded-2xl border-2 border-gray-200 bg-white p-4 dark:border-gray-900 dark:bg-gray-800">
+                <Subtitle>{profile.name}</Subtitle>
+                <Caption>{profile.buyer}</Caption>
+                <Body className="mt-3">{profile.managerQuestion}</Body>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {profile.levels.map((level) => (
+                    <Tag key={level} variant="neutral">{level}</Tag>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
 
         <Card variant="neutral" padding="lg">
           <Headline className="mb-4">tipos de ejercicio contemplados</Headline>

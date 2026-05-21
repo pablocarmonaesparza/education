@@ -37,6 +37,11 @@ if (taxonomy) {
   check(taxonomy.levels?.length === 3, "taxonomy must define exactly 3 levels");
   check(taxonomy.criteria?.length === 6, "taxonomy must define exactly 6 criteria");
   check(taxonomy.departments?.length >= 8, "taxonomy needs at least 8 departments");
+  check(taxonomy.active_profile_packs?.length === 6, "taxonomy must define exactly 6 active profile packs");
+  check(
+    taxonomy.active_profile_packs?.some((profile) => profile.id === "legal_compliance_privacy"),
+    "taxonomy active profile packs must include legal_compliance_privacy",
+  );
   check(taxonomy.industries?.length >= 8, "taxonomy needs at least 8 industries");
 }
 
@@ -78,4 +83,3 @@ function readYaml(file) {
 function check(condition, message) {
   if (!condition) issues.push(message);
 }
-

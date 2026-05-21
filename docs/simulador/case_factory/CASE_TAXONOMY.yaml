@@ -50,6 +50,62 @@ case_taxonomy:
     - engineering_light
     - leadership
 
+  active_profile_packs:
+    - id: marketing_growth
+      public_name: Marketing / Growth
+      buyer: head_of_marketing_or_growth
+      departments: [marketing, growth]
+      primary_roles: [growth_manager, marketing_manager, performance_marketer, content_lead]
+      levels: [N1, N2, N3]
+      manager_question: "Puede usar IA para crear, validar y optimizar campañas sin danar marca, datos ni performance?"
+      core_outcomes: [campaign_quality, speed_to_test, brand_safety, pipeline_contribution]
+      core_risks: [privacy_exposure, hallucinated_fact_or_metric, weak_validation, copyright_or_ip_risk, customer_trust_damage]
+    - id: sales_revops
+      public_name: Sales / RevOps
+      buyer: head_of_sales_or_revenue
+      departments: [sales, operations]
+      primary_roles: [sales_ops_manager, sdr_lead, account_executive, revenue_operations]
+      levels: [N1, N2, N3]
+      manager_question: "Puede usar IA para mejorar pipeline, follow-up y CRM sin perder control comercial ni confianza del cliente?"
+      core_outcomes: [pipeline_speed, followup_quality, crm_hygiene, conversion_signal]
+      core_risks: [privacy_exposure, hallucinated_fact_or_metric, automation_without_review, agent_overreach, customer_trust_damage]
+    - id: customer_success_support
+      public_name: Customer Success / Support
+      buyer: head_of_customer_success_or_support
+      departments: [customer_success]
+      primary_roles: [cs_manager, implementation_manager, support_lead, customer_ops]
+      levels: [N1, N2, N3]
+      manager_question: "Puede usar IA para responder, escalar y resumir clientes sin inventar soluciones ni romper confianza?"
+      core_outcomes: [response_quality, escalation_accuracy, time_to_resolution, retention_signal]
+      core_risks: [hallucinated_fact_or_metric, weak_validation, compliance_escalation_miss, customer_trust_damage, privacy_exposure]
+    - id: operations_automation
+      public_name: Operations / Automation
+      buyer: coo_or_operations_lead
+      departments: [operations]
+      primary_roles: [ops_manager, process_owner, automation_specialist, chief_of_staff]
+      levels: [N1, N2, N3]
+      manager_question: "Puede redisenar procesos con IA, automatizaciones y agentes sin romper handoffs ni controles?"
+      core_outcomes: [cycle_time_reduction, handoff_quality, automation_reliability, operational_visibility]
+      core_risks: [automation_without_review, agent_overreach, cost_or_quota_runaway, weak_validation, compliance_escalation_miss]
+    - id: finance_fpa
+      public_name: Finance / FP&A
+      buyer: finance_lead_or_coo
+      departments: [finance]
+      primary_roles: [finance_manager, fp_and_a_analyst, controller, revenue_accounting]
+      levels: [N1, N2]
+      manager_question: "Puede usar IA para analizar, explicar y presentar numeros sin inventar datos ni debilitar controles?"
+      core_outcomes: [forecast_quality, variance_explanation, board_readiness, control_integrity]
+      core_risks: [hallucinated_fact_or_metric, weak_validation, confidential_strategy_leak, compliance_escalation_miss, customer_trust_damage]
+    - id: legal_compliance_privacy
+      public_name: Legal / Compliance / Privacy
+      buyer: legal_or_compliance_lead
+      departments: [legal]
+      primary_roles: [legal_ops, compliance_manager, privacy_owner, contract_manager]
+      levels: [N1, N2]
+      manager_question: "Puede usar IA para revisar riesgos legales y de privacidad sin delegar autoridad ni exponer informacion sensible?"
+      core_outcomes: [risk_triage_quality, privacy_control, escalation_accuracy, contract_review_speed]
+      core_risks: [privacy_exposure, confidential_strategy_leak, compliance_escalation_miss, weak_validation, agent_overreach]
+
   industries:
     - saas_b2b
     - ecommerce
@@ -101,4 +157,3 @@ case_taxonomy:
     - entrenar
     - pausar
     - escalar
-

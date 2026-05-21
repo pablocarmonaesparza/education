@@ -1,5 +1,17 @@
 role_industry_tags:
   version: 1.0.0
+  active_profile_pack_ids:
+    - marketing_growth
+    - sales_revops
+    - customer_success_support
+    - operations_automation
+    - finance_fpa
+    - legal_compliance_privacy
+  expansion_profile_pack_ids:
+    - product_product_ops
+    - people_ops_recruiting
+    - data_bi_analyst
+    - chief_of_staff_leadership_ops
   departments:
     marketing:
       roles: [marketing_manager, growth_manager, content_lead, performance_marketer, brand_manager]
@@ -50,4 +62,3 @@ role_industry_tags:
       typical_departments: [operations, finance, hr, leadership]
     media:
       typical_departments: [marketing, product, sales, leadership]
-
