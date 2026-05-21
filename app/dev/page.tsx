@@ -48,15 +48,31 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
     ],
   },
   {
-    group: "app autenticada",
+    group: "cliente — manager (org_admin)",
     routes: [
-      { path: "/dashboard", label: "Dashboard (role-aware)" },
+      { path: "/staff", label: "Staff (dashboard del manager)" },
+      { path: "/reportes", label: "Reportes", note: "pendiente de construir" },
+      { path: "/casos", label: "Casos", note: "pendiente de construir" },
+      { path: "/empresa", label: "Empresa (settings org)", note: "pendiente de construir" },
+    ],
+  },
+  {
+    group: "cliente — employee",
+    routes: [
+      { path: "/team", label: "Team (dashboard del empleado)", note: "esqueleto" },
+      { path: "/perfil", label: "Perfil", note: "pendiente de construir" },
+    ],
+  },
+  {
+    group: "app — flow del caso",
+    routes: [
+      { path: "/dashboard", label: "Dashboard router → /staff" },
       { path: "/case/marketing_urgent_campaign_pii", label: "Caso runtime" },
       { path: "/report/demo-session-id", label: "Reporte (session demo)", note: "404 si session no existe" },
     ],
   },
   {
-    group: "admin staff Itera",
+    group: "interno — Itera staff",
     routes: [
       { path: "/admin", label: "Admin index" },
       { path: "/admin/review", label: "Review queue" },
