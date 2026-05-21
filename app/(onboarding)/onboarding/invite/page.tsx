@@ -80,14 +80,6 @@ export default function OnboardingInvitePage() {
     }
   }
 
-  function onFinish() {
-    sessionStorage.removeItem("onboarding_org_id");
-    sessionStorage.removeItem("onboarding_org_name");
-    sessionStorage.removeItem("onboarding_team_id");
-    sessionStorage.removeItem("onboarding_team_name");
-    router.push("/dashboard");
-  }
-
   function onContinueToBilling() {
     router.push("/onboarding/billing");
   }
@@ -197,15 +189,6 @@ export default function OnboardingInvitePage() {
                   className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
                 >
                   Continuar a pago →
-                </Button>
-                <Button
-                  onPress={onFinish}
-                  variant="light"
-                  radius="md"
-                  size="lg"
-                  className="h-12 text-[var(--text-secondary)]"
-                >
-                  Ir al dashboard
                 </Button>
               </div>
             </div>
