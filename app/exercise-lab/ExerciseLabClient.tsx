@@ -9,7 +9,7 @@ type Permission = "permitir" | "revisar" | "bloquear";
 
 type BrandKey = "internal" | "openai" | "anthropic" | "google" | "qwen" | "deepseek";
 type Level5 = 1 | 2 | 3 | 4 | 5;
-type ModelMetric = "autonomy" | "security" | "cost";
+type ModelMetric = "intelligence" | "security" | "cost";
 type VoiceRecState = "idle" | "recording" | "processing" | "error";
 
 type PromptAttachment = {
@@ -343,15 +343,11 @@ export function ExerciseLabClient() {
   const [guidedPrompt, setGuidedPrompt] = useState("");
   const [guidedModel, setGuidedModel] = useState(defaultModelId);
   const [guidedVoiceNotes, setGuidedVoiceNotes] = useState<string[]>([]);
-  const [guidedObjective, setGuidedObjective] = useState(guidedObjectives[0]);
-  const [guidedAudience, setGuidedAudience] = useState(guidedAudiences[0]);
-  const [guidedGuardrailsSelected, setGuidedGuardrailsSelected] = useState<string[]>([
-    guidedGuardrails[0],
-    guidedGuardrails[1],
-    guidedGuardrails[2],
-  ]);
-  const [guidedAutonomy, setGuidedAutonomy] = useState(30);
-  const [guidedSecurity, setGuidedSecurity] = useState(80);
+  const [guidedObjective, setGuidedObjective] = useState("");
+  const [guidedAudience, setGuidedAudience] = useState("");
+  const [guidedGuardrailsSelected, setGuidedGuardrailsSelected] = useState<string[]>([]);
+  const [guidedAutonomy, setGuidedAutonomy] = useState(50);
+  const [guidedSecurity, setGuidedSecurity] = useState(50);
   const [guidedCost, setGuidedCost] = useState(50);
   const [dataRows, setDataRows] = useState(initialDataRows);
   const [permissions, setPermissions] = useState<Record<string, Permission>>({
@@ -634,10 +630,12 @@ function GuidedPromptExercise({
   setCost: (value: number) => void;
 }) {
   const [activeInput, setActiveInput] = useState(0);
+  const [modelTouched, setModelTouched] = useState(false);
   const recommendedModelId = chooseGuidedModelId({ autonomy, security, cost });
   const recommendedModel = findModelById(recommendedModelId);
   const guardrailText = guardrails.length > 0 ? guardrails.join("; ") : "Sin restricciones adicionales";
   const inputSteps = ["Objetivo", "Audiencia", "Límites", "Modelo"];
+  const canCreatePrompt = Boolean(objective && audience && guardrails.length > 0 && modelTouched);
 
   useEffect(() => {
     if (model !== recommendedModelId) {
@@ -646,6 +644,7 @@ function GuidedPromptExercise({
   }, [model, recommendedModelId, setModel]);
 
   function updateModelMetric(metric: ModelMetric, value: number) {
+    setModelTouched(true);
     const next = rebalanceModelTradeoffs(
       { autonomy, security, cost },
       metric,
@@ -667,7 +666,7 @@ function GuidedPromptExercise({
   function createPrompt() {
     const selected = findModelById(recommendedModelId);
     setPrompt(
-      `Objetivo: ${objective}.\nAudiencia: ${audience}.\nModelo sugerido: ${selected.label}${selected.badge ? ` · ${selected.badge}` : ""}.\n\nTrabaja sólo con información agregada del caso. Límites: ${guardrailText}.\n\nPrioridades: autonomía ${priorityLabel(autonomy)}, seguridad ${priorityLabel(security)} y costo permitido ${budgetLabel(cost)}.\n\nEntrega tres opciones accionables, riesgos visibles y validaciones humanas necesarias.`,
+      `Objetivo: ${objective}.\nAudiencia: ${audience}.\nModelo sugerido: ${selected.label}${selected.badge ? ` · ${selected.badge}` : ""}.\n\nTrabaja sólo con información agregada del caso. Límites: ${guardrailText}.\n\nPrioridades: inteligencia ${priorityLabel(autonomy)}, seguridad ${priorityLabel(security)} y costo permitido ${budgetLabel(cost)}.\n\nEntrega tres opciones accionables, riesgos visibles y validaciones humanas necesarias.`,
     );
   }
 
@@ -679,19 +678,30 @@ function GuidedPromptExercise({
             Respuestas
           </div>
           <div className="mt-4 grid gap-3">
-            <ProcessAnswer index={1} label="Objetivo" value={objective} />
-            <ProcessAnswer index={2} label="Audiencia" value={audience} />
-            <ProcessAnswer index={3} label="Límites" value={guardrailText} />
+            <ProcessAnswer index={1} label="Objetivo" value={objective || "Sin responder"} muted={!objective} />
+            <ProcessAnswer index={2} label="Audiencia" value={audience || "Sin responder"} muted={!audience} />
+            <ProcessAnswer
+              index={3}
+              label="Límites"
+              value={guardrails.length > 0 ? guardrailText : "Sin responder"}
+              muted={guardrails.length === 0}
+            />
             <ProcessAnswer
               index={4}
               label="Modelo"
-              value={`${recommendedModel.label}${recommendedModel.badge ? ` · ${recommendedModel.badge}` : ""} · Autonomía ${autonomy} · Seguridad ${security} · Costo ${cost}`}
+              value={
+                modelTouched
+                  ? `${recommendedModel.label}${recommendedModel.badge ? ` · ${recommendedModel.badge}` : ""} · Inteligencia ${autonomy} · Seguridad ${security} · Costo ${cost}`
+                  : "Sin responder"
+              }
+              muted={!modelTouched}
             />
           </div>
           <button
             type="button"
             onClick={createPrompt}
-            className="mt-4 min-h-11 w-full rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+            disabled={!canCreatePrompt}
+            className="mt-4 min-h-11 w-full rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)]"
           >
             Crear prompt
           </button>
@@ -780,7 +790,7 @@ function GuidedPromptExercise({
                 </div>
               </div>
               <div className="mt-3 grid gap-2">
-                <Range10 label="Autonomía" value={autonomy} onChange={(value) => updateModelMetric("autonomy", value)} />
+                <Range10 label="Inteligencia" value={autonomy} onChange={(value) => updateModelMetric("intelligence", value)} />
                 <Range10 label="Seguridad" value={security} onChange={(value) => updateModelMetric("security", value)} />
                 <Range10 label="Costo" value={cost} onChange={(value) => updateModelMetric("cost", value)} />
               </div>
@@ -885,7 +895,7 @@ function rebalanceModelTradeoffs(
   let cost = current.cost;
   const value = roundTo10(rawValue);
 
-  if (metric === "autonomy") autonomy = value;
+  if (metric === "intelligence") autonomy = value;
   if (metric === "security") security = value;
   if (metric === "cost") cost = value;
 
@@ -920,19 +930,31 @@ function ProcessAnswer({
   index,
   label,
   value,
+  muted = false,
 }: {
   index: number;
   label: string;
   value: string;
+  muted?: boolean;
 }) {
   return (
     <div className="grid grid-cols-[28px_1fr] gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
-      <span className="grid h-7 w-7 place-items-center rounded-full bg-[var(--accent)] text-[12px] font-semibold text-white">
+      <span
+        className={`grid h-7 w-7 place-items-center rounded-full text-[12px] font-semibold ${
+          muted ? "bg-[var(--surface)] text-[var(--text-tertiary)]" : "bg-[var(--accent)] text-white"
+        }`}
+      >
         {index}
       </span>
       <span className="min-w-0">
         <span className="block text-[12px] font-medium text-[var(--text-tertiary)]">{label}</span>
-        <span className="mt-1 block text-[14px] leading-snug text-[var(--text-primary)]">{value}</span>
+        <span
+          className={`mt-1 block text-[14px] leading-snug ${
+            muted ? "text-[var(--text-tertiary)]" : "text-[var(--text-primary)]"
+          }`}
+        >
+          {value}
+        </span>
       </span>
     </div>
   );
