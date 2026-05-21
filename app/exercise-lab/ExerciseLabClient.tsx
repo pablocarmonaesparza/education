@@ -672,8 +672,8 @@ function GuidedPromptExercise({
 
   return (
     <div className="grid gap-5">
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-stretch">
+        <div className="flex h-full flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
@@ -764,7 +764,7 @@ function GuidedPromptExercise({
             )}
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-2">
+          <div className="mt-auto grid grid-cols-2 gap-2 pt-5">
             <button
               type="button"
               onClick={() => setActiveInput(Math.max(0, activeInput - 1))}
@@ -790,7 +790,7 @@ function GuidedPromptExercise({
           </div>
         </div>
 
-        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
+        <div className="h-full rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
           <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
             Respuestas
           </div>
