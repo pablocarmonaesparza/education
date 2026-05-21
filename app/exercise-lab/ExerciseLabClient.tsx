@@ -140,12 +140,20 @@ const brandLogo: Record<BrandKey, { light: string; dark?: string } | null> = {
 
 const exerciseList = [
   {
-    id: "textfield-ia",
-    eyebrow: "01 · textfield de IA",
-    title: "Pedirle trabajo útil a la IA.",
+    id: "textfield-ia-libre",
+    eyebrow: "01A · textfield de IA",
+    title: "Textfield de IA (A): libre.",
     description:
-      "El participante redacta una petición completa usando objetivo, datos permitidos y límites. Mide si sabe convertir una necesidad laboral en una instrucción clara.",
+      "El participante recibe un campo de IA sin ayudas adicionales. Mide cómo estructura una petición cuando opera con criterio propio.",
     signals: ["contexto", "ejecución IA", "impacto"],
+  },
+  {
+    id: "textfield-ia-guiado",
+    eyebrow: "01B · prompt guiado",
+    title: "Textfield de IA (B): guiado.",
+    description:
+      "El participante toma decisiones acotadas por el caso y luego genera un prompt editable. Mide criterio granular sin abrir el caso a configuración libre.",
+    signals: ["contexto", "datos", "ejecución IA", "juicio"],
   },
   {
     id: "tabla-datos",
@@ -277,6 +285,25 @@ const runLogs = [
   { id: "l4", text: "09:05 · dejó envío en borrador pendiente de aprobación", severity: "ok" },
 ];
 
+const guidedObjectives = [
+  "reactivar cuentas con bajo uso",
+  "proponer tres ángulos de campaña",
+  "resumir feedback para ventas",
+];
+
+const guidedAudiences = [
+  "VP de Marketing",
+  "equipo de ventas enterprise",
+  "cliente interno de operaciones",
+];
+
+const guidedGuardrails = [
+  "no usar nombres ni correos",
+  "marcar afirmaciones sin fuente",
+  "dejarlo como borrador interno",
+  "explicar supuestos y dudas",
+];
+
 function findModelById(id: string): ModelOption {
   for (const group of modelGroups) {
     for (const family of group.families) {
@@ -289,11 +316,22 @@ function findModelById(id: string): ModelOption {
 
 export function ExerciseLabClient() {
   const [activeSection, setActiveSection] = useState(0);
-  const [prompt, setPrompt] = useState("");
-  const [model, setModel] = useState(defaultModelId);
-  const [security, setSecurity] = useState(80);
-  const [quality, setQuality] = useState(70);
-  const [voiceNotes, setVoiceNotes] = useState<string[]>([]);
+  const [freePrompt, setFreePrompt] = useState("");
+  const [freeModel, setFreeModel] = useState(defaultModelId);
+  const [freeVoiceNotes, setFreeVoiceNotes] = useState<string[]>([]);
+  const [guidedPrompt, setGuidedPrompt] = useState("");
+  const [guidedModel, setGuidedModel] = useState(defaultModelId);
+  const [guidedVoiceNotes, setGuidedVoiceNotes] = useState<string[]>([]);
+  const [guidedObjective, setGuidedObjective] = useState(guidedObjectives[0]);
+  const [guidedAudience, setGuidedAudience] = useState(guidedAudiences[0]);
+  const [guidedGuardrailsSelected, setGuidedGuardrailsSelected] = useState<string[]>([
+    guidedGuardrails[0],
+    guidedGuardrails[1],
+    guidedGuardrails[2],
+  ]);
+  const [guidedAutonomy, setGuidedAutonomy] = useState(30);
+  const [guidedSecurity, setGuidedSecurity] = useState(80);
+  const [guidedCost, setGuidedCost] = useState(50);
   const [dataRows, setDataRows] = useState(initialDataRows);
   const [permissions, setPermissions] = useState<Record<string, Permission>>({
     "leer CRM": "revisar",
@@ -318,17 +356,17 @@ export function ExerciseLabClient() {
     "Recomiendo piloto interno antes de envío externo. Hay señales útiles, pero dos afirmaciones requieren fuente y los datos personales deben salir del borrador.",
   );
 
-  const promptPreview = useMemo(
+  const guidedPromptPreview = useMemo(
     () => {
-      const selected = findModelById(model);
+      const selected = findModelById(guidedModel);
       const notes =
-        voiceNotes.length > 0
-          ? `\nNotas de voz: ${voiceNotes.map((note, index) => `${index + 1}. ${note}`).join(" ")}`
+        guidedVoiceNotes.length > 0
+          ? `\nNotas de voz: ${guidedVoiceNotes.map((note, index) => `${index + 1}. ${note}`).join(" ")}`
           : "";
-      const basePrompt = prompt.trim() || "Aún no hay prompt escrito.";
-      return `${basePrompt}${notes}\n\nModelo: ${selected.label}${selected.badge ? ` · ${selected.badge}` : ""}.\nPrioridades: seguridad ${security}/100 · calidad ${quality}/100 · revisión humana obligatoria.`;
+      const basePrompt = guidedPrompt.trim() || "Aún no hay prompt creado.";
+      return `${basePrompt}${notes}\n\nModelo: ${selected.label}${selected.badge ? ` · ${selected.badge}` : ""}.\nPrioridades: autonomía ${guidedAutonomy}/100 · seguridad ${guidedSecurity}/100 · costo ${guidedCost}/100.`;
     },
-    [model, prompt, quality, security, voiceNotes],
+    [guidedAutonomy, guidedCost, guidedModel, guidedPrompt, guidedSecurity, guidedVoiceNotes],
   );
 
   function handleScroll(event: React.UIEvent<HTMLElement>) {
@@ -352,19 +390,37 @@ export function ExerciseLabClient() {
       >
         {exerciseList.map((exercise, index) => (
           <ExerciseSection key={exercise.id} exercise={exercise} index={index}>
-            {exercise.id === "textfield-ia" && (
-              <PromptExercise
-                prompt={prompt}
-                setPrompt={setPrompt}
-                promptPreview={promptPreview}
-                model={model}
-                setModel={setModel}
-                voiceNotes={voiceNotes}
-                setVoiceNotes={setVoiceNotes}
-                security={security}
-                setSecurity={setSecurity}
-                quality={quality}
-                setQuality={setQuality}
+            {exercise.id === "textfield-ia-libre" && (
+              <FreePromptExercise
+                prompt={freePrompt}
+                setPrompt={setFreePrompt}
+                model={freeModel}
+                setModel={setFreeModel}
+                voiceNotes={freeVoiceNotes}
+                setVoiceNotes={setFreeVoiceNotes}
+              />
+            )}
+            {exercise.id === "textfield-ia-guiado" && (
+              <GuidedPromptExercise
+                prompt={guidedPrompt}
+                setPrompt={setGuidedPrompt}
+                promptPreview={guidedPromptPreview}
+                model={guidedModel}
+                setModel={setGuidedModel}
+                voiceNotes={guidedVoiceNotes}
+                setVoiceNotes={setGuidedVoiceNotes}
+                objective={guidedObjective}
+                setObjective={setGuidedObjective}
+                audience={guidedAudience}
+                setAudience={setGuidedAudience}
+                guardrails={guidedGuardrailsSelected}
+                setGuardrails={setGuidedGuardrailsSelected}
+                autonomy={guidedAutonomy}
+                setAutonomy={setGuidedAutonomy}
+                security={guidedSecurity}
+                setSecurity={setGuidedSecurity}
+                cost={guidedCost}
+                setCost={setGuidedCost}
               />
             )}
             {exercise.id === "tabla-datos" && (
@@ -454,7 +510,7 @@ function ExerciseSection({
   index: number;
   children: React.ReactNode;
 }) {
-  if (exercise.id === "textfield-ia") {
+  if (exercise.id === "textfield-ia-libre" || exercise.id === "textfield-ia-guiado") {
     return (
       <section
         id={exercise.id}
@@ -462,13 +518,12 @@ function ExerciseSection({
         className="h-[calc(100vh-3.5rem)] snap-start snap-always px-6 py-16 flex items-center"
       >
         <div className="mx-auto w-full max-w-[880px]">
-          <div className="eyebrow">01 · textfield de IA</div>
+          <div className="eyebrow">{exercise.eyebrow}</div>
           <h2 className="display display-tight mt-5 text-[34px] sm:text-[52px] text-[var(--text-primary)]">
-            Redacta tu prompt al modelo.
+            {exercise.title}
           </h2>
           <p className="mt-5 max-w-2xl text-[17px] leading-[1.6] text-[var(--text-secondary)]">
-            Este bloque reproduce el campo del simulador: el participante escribe,
-            dicta una nota de voz, elige modelo y envía una instrucción real.
+            {exercise.description}
           </p>
           <div className="mt-8">{children}</div>
           <div className="mt-5 flex flex-wrap gap-2">
@@ -524,7 +579,34 @@ function ExerciseSection({
   );
 }
 
-function PromptExercise({
+function FreePromptExercise({
+  prompt,
+  setPrompt,
+  model,
+  setModel,
+  voiceNotes,
+  setVoiceNotes,
+}: {
+  prompt: string;
+  setPrompt: (value: string) => void;
+  model: string;
+  setModel: (value: string) => void;
+  voiceNotes: string[];
+  setVoiceNotes: (notes: string[]) => void;
+}) {
+  return (
+    <AIPromptComposer
+      value={prompt}
+      onChange={setPrompt}
+      selectedModel={model}
+      onSelectModel={setModel}
+      voiceNotes={voiceNotes}
+      onVoiceNote={(note) => setVoiceNotes([...voiceNotes, note])}
+    />
+  );
+}
+
+function GuidedPromptExercise({
   prompt,
   setPrompt,
   promptPreview,
@@ -532,10 +614,18 @@ function PromptExercise({
   setModel,
   voiceNotes,
   setVoiceNotes,
+  objective,
+  setObjective,
+  audience,
+  setAudience,
+  guardrails,
+  setGuardrails,
+  autonomy,
+  setAutonomy,
   security,
   setSecurity,
-  quality,
-  setQuality,
+  cost,
+  setCost,
 }: {
   prompt: string;
   setPrompt: (value: string) => void;
@@ -544,13 +634,78 @@ function PromptExercise({
   setModel: (value: string) => void;
   voiceNotes: string[];
   setVoiceNotes: (notes: string[]) => void;
+  objective: string;
+  setObjective: (value: string) => void;
+  audience: string;
+  setAudience: (value: string) => void;
+  guardrails: string[];
+  setGuardrails: (value: string[]) => void;
+  autonomy: number;
+  setAutonomy: (value: number) => void;
   security: number;
   setSecurity: (value: number) => void;
-  quality: number;
-  setQuality: (value: number) => void;
+  cost: number;
+  setCost: (value: number) => void;
 }) {
+  function toggleGuardrail(value: string) {
+    setGuardrails(
+      guardrails.includes(value)
+        ? guardrails.filter((item) => item !== value)
+        : [...guardrails, value],
+    );
+  }
+
+  function createPrompt() {
+    const guardrailText = guardrails.length > 0 ? guardrails.join("; ") : "sin restricciones adicionales";
+    setPrompt(
+      `Necesito ${objective} para ${audience}.\n\nUsa sólo información agregada del caso. Reglas: ${guardrailText}.\n\nNivel de autonomía permitido: ${autonomy}/100. Prioriza seguridad ${security}/100 y costo ${cost}/100.\n\nDevuelve una respuesta breve con tres opciones, riesgos visibles y qué tendría que validar un humano antes de usarla.`,
+    );
+  }
+
   return (
-    <div>
+    <div className="grid gap-5 lg:grid-cols-[300px_minmax(0,1fr)]">
+      <div className="grid gap-4">
+        <GuidedSelector
+          label="Objetivo"
+          options={guidedObjectives}
+          value={objective}
+          onChange={setObjective}
+        />
+        <GuidedSelector
+          label="Audiencia"
+          options={guidedAudiences}
+          value={audience}
+          onChange={setAudience}
+        />
+        <div className="rounded-2xl bg-[var(--surface-2)] p-4">
+          <Label>Límites del caso</Label>
+          <div className="mt-3 grid gap-2">
+            {guidedGuardrails.map((guardrail) => (
+              <ChoiceButton
+                key={guardrail}
+                selected={guardrails.includes(guardrail)}
+                onClick={() => toggleGuardrail(guardrail)}
+              >
+                {guardrail}
+              </ChoiceButton>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-2xl bg-[var(--surface-2)] p-4">
+          <Label>Tradeoffs</Label>
+          <Range10 label="autonomía" value={autonomy} onChange={setAutonomy} />
+          <Range10 label="seguridad" value={security} onChange={setSecurity} />
+          <Range10 label="costo" value={cost} onChange={setCost} />
+        </div>
+        <button
+          type="button"
+          onClick={createPrompt}
+          className="min-h-12 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90 active:scale-[0.99] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+        >
+          Crear prompt
+        </button>
+      </div>
+
       <div>
         <AIPromptComposer
           value={prompt}
@@ -560,33 +715,37 @@ function PromptExercise({
           voiceNotes={voiceNotes}
           onVoiceNote={(note) => setVoiceNotes([...voiceNotes, note])}
         />
-        <div className="mt-3 flex flex-wrap gap-2">
-          {[
-            "agrega audiencia",
-            "agrega límites",
-            "pide fuentes",
-          ].map((text) => (
-            <ActionButton key={text} onClick={() => setPrompt(`${prompt}\n\n${text}.`)}>
-              {text}
-            </ActionButton>
-          ))}
-        </div>
-      </div>
-      <div className="mt-5 grid gap-4 md:grid-cols-[1fr_1fr_260px] md:items-start">
-        <div className="rounded-2xl bg-[var(--surface-2)] p-4">
-          <Label>Seguridad</Label>
-          <Range10 label="control" value={security} onChange={setSecurity} />
-        </div>
-        <div className="rounded-2xl bg-[var(--surface-2)] p-4">
-          <Label>Calidad</Label>
-          <Range10 label="criterio" value={quality} onChange={setQuality} />
-        </div>
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
-          <div className="text-[13px] font-medium text-[var(--text-primary)]">preview</div>
-          <p className="mt-2 line-clamp-6 text-[13px] leading-5 text-[var(--text-secondary)]">
+        <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
+          <div className="text-[13px] font-medium text-[var(--text-primary)]">preview evaluable</div>
+          <p className="mt-2 line-clamp-7 text-[13px] leading-5 text-[var(--text-secondary)]">
             {promptPreview}
           </p>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function GuidedSelector({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: string[];
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <div className="rounded-2xl bg-[var(--surface-2)] p-4">
+      <Label>{label}</Label>
+      <div className="mt-3 grid gap-2">
+        {options.map((option) => (
+          <ChoiceButton key={option} selected={value === option} onClick={() => onChange(option)}>
+            {option}
+          </ChoiceButton>
+        ))}
       </div>
     </div>
   );
