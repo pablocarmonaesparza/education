@@ -1,18 +1,10 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
-import {
-  AppleBadge,
-  AppleButton,
-  AppleCard,
-  AppleCardBody,
-  AppleIcon,
-  AppleProgress,
-  AppleStepDots,
-} from "@/components/simulador/apple";
+import { motion, AnimatePresence } from "framer-motion";
+import { RuntimeNav } from "@/components/simulador/RuntimeNav";
+import { AppleButton } from "@/components/simulador/apple";
 
-type BadgeTone = "neutral" | "accent" | "success" | "warning" | "danger";
 type DataAction = "usar" | "anonimizar" | "agregar" | "excluir" | "pedir permiso";
 
 type DataRow = {
@@ -25,29 +17,16 @@ type DataRow = {
   note: string;
 };
 
-type DecisionOption = {
-  id: string;
-  title: string;
-  tone: BadgeTone;
-  badge: string;
-  detail: string;
-  consequences: {
-    label: string;
-    value: number;
-    tone: BadgeTone;
-  }[];
-};
+const SECTIONS = [
+  { id: "contexto", label: "Contexto" },
+  { id: "datos", label: "Datos" },
+  { id: "ia", label: "IA" },
+  { id: "revision", label: "Revisión" },
+  { id: "decision", label: "Decisión" },
+  { id: "respuesta", label: "Respuesta" },
+] as const;
 
-const caseSteps = [
-  { id: "contexto", label: "Contexto", status: "completed" as const },
-  { id: "datos", label: "Datos", status: "completed" as const },
-  { id: "ia", label: "IA", status: "current" as const },
-  { id: "revision", label: "Revisión", status: "pending" as const },
-  { id: "decision", label: "Decisión", status: "pending" as const },
-  { id: "respuesta", label: "Respuesta", status: "pending" as const },
-];
-
-const initialDataRows: DataRow[] = [
+const dataRows: DataRow[] = [
   {
     id: "contact_name",
     field: "Nombre del contacto",
@@ -102,19 +81,9 @@ const promptBlocks = [
     text: "Objetivo: crear un primer borrador de campaña enterprise para una cuenta en riesgo.",
   },
   {
-    id: "context",
-    label: "Contexto",
-    text: "Contexto: el VP quiere revisar una propuesta hoy, pero Legal debe aprobar cualquier uso externo.",
-  },
-  {
     id: "allowed_data",
     label: "Datos permitidos",
     text: "Datos permitidos: empresa, segmento, resumen agregado de tickets y rango de ARR. No usar nombres, emails ni texto crudo de clientes.",
-  },
-  {
-    id: "format",
-    label: "Formato",
-    text: "Formato: 3 asuntos, 1 email breve, checklist de aprobación y riesgos pendientes.",
   },
   {
     id: "controls",
@@ -123,99 +92,62 @@ const promptBlocks = [
   },
 ];
 
-const controlOptions = [
-  "No usar datos personales",
-  "Pedir fuente para métricas",
-  "Aprobación humana antes de enviar",
-  "Registrar supuestos",
-  "Escalar a Legal si hay duda",
-];
-
-const outputLines = [
+const outputSegments = [
   {
     id: "claim",
-    text: "Aurora SaaS puede reducir churn 40% en 30 días con nuestro agente.",
+    body: "Aurora SaaS puede reducir churn 40% en 30 días con nuestro agente.",
     flag: "Claim sin fuente",
-    tone: "danger" as const,
   },
   {
     id: "pii",
-    text: "La propuesta se enviará a mariana@aurora.example antes de pasar por Legal.",
-    flag: "Dato personal + aprobación faltante",
-    tone: "danger" as const,
+    body: "La propuesta se enviará a mariana@aurora.example antes de pasar por Legal.",
+    flag: "Dato personal",
   },
   {
     id: "safe",
-    text: "Recomendamos iniciar con un piloto interno y revisión humana antes de uso externo.",
+    body: "Recomendamos iniciar con un piloto interno y revisión humana antes de uso externo.",
     flag: "Parte usable",
-    tone: "success" as const,
-  },
-  {
-    id: "tone",
-    text: "Si no responden hoy, asumiremos que el cliente no tiene interés real.",
-    flag: "Tono riesgoso",
-    tone: "warning" as const,
   },
 ];
 
-const decisionOptions: DecisionOption[] = [
+const decisionOptions = [
   {
     id: "launch",
     title: "Lanzar hoy",
-    tone: "danger",
-    badge: "Riesgo alto",
-    detail: "Maximiza velocidad, pero usa datos y claims que todavía no están aprobados.",
-    consequences: [
-      { label: "Velocidad", value: 96, tone: "success" },
-      { label: "Riesgo", value: 92, tone: "danger" },
-      { label: "Aprendizaje", value: 35, tone: "warning" },
-    ],
+    sub: "Máxima velocidad, riesgo alto.",
+    values: { velocidad: 96, riesgo: 92, aprendizaje: 35 },
   },
   {
     id: "pilot",
     title: "Piloto con aprobación",
-    tone: "success",
-    badge: "Controlado",
-    detail: "Permite avanzar hoy con revisión legal, claims verificables y envío supervisado.",
-    consequences: [
-      { label: "Velocidad", value: 72, tone: "warning" },
-      { label: "Riesgo", value: 32, tone: "success" },
-      { label: "Aprendizaje", value: 84, tone: "success" },
-    ],
+    sub: "Avanza hoy con Legal y control humano.",
+    values: { velocidad: 72, riesgo: 32, aprendizaje: 84 },
   },
   {
     id: "internal",
     title: "Solo uso interno",
-    tone: "warning",
-    badge: "Seguro pero limitado",
-    detail: "Reduce exposición externa, pero no prueba impacto real con clientes.",
-    consequences: [
-      { label: "Velocidad", value: 68, tone: "warning" },
-      { label: "Riesgo", value: 20, tone: "success" },
-      { label: "Aprendizaje", value: 52, tone: "warning" },
-    ],
+    sub: "Seguro, pero con menor aprendizaje externo.",
+    values: { velocidad: 68, riesgo: 20, aprendizaje: 52 },
   },
   {
     id: "pause",
     title: "Pausar",
-    tone: "neutral",
-    badge: "Conservador",
-    detail: "Evita riesgo inmediato, pero no genera evidencia operativa para el equipo.",
-    consequences: [
-      { label: "Velocidad", value: 12, tone: "danger" },
-      { label: "Riesgo", value: 8, tone: "success" },
-      { label: "Aprendizaje", value: 18, tone: "danger" },
-    ],
+    sub: "Riesgo mínimo, aprendizaje casi nulo.",
+    values: { velocidad: 12, riesgo: 8, aprendizaje: 18 },
   },
 ];
 
 const actionOptions: DataAction[] = ["usar", "anonimizar", "agregar", "excluir", "pedir permiso"];
 
 export function ExerciseLabClient() {
+  const [sectionIdx, setSectionIdx] = useState(0);
+  const [maxReached, setMaxReached] = useState(0);
   const [timerEnabled, setTimerEnabled] = useState(true);
   const [contextAnswer, setContextAnswer] = useState("Privacidad y claims verificables");
-  const [dataRows, setDataRows] = useState(initialDataRows);
-  const [uploadedFile, setUploadedFile] = useState("tickets_enterprise_sample.csv");
+  const [fieldIdx, setFieldIdx] = useState(0);
+  const [dataState, setDataState] = useState<Record<string, DataRow>>(
+    Object.fromEntries(dataRows.map((row) => [row.id, row])),
+  );
   const [security, setSecurity] = useState(80);
   const [efficiency, setEfficiency] = useState(60);
   const [cost, setCost] = useState(40);
@@ -224,628 +156,713 @@ export function ExerciseLabClient() {
   const [prompt, setPrompt] = useState(
     "Actúa como marketer B2B.\n\nCrea un primer borrador de campaña enterprise usando solo datos permitidos. No uses nombres, emails ni texto crudo de clientes. No inventes métricas. Devuelve asuntos, email breve y checklist de aprobación.",
   );
-  const [selectedControls, setSelectedControls] = useState<string[]>([
-    "No usar datos personales",
-    "Pedir fuente para métricas",
-    "Aprobación humana antes de enviar",
-  ]);
-  const [selectedChecks, setSelectedChecks] = useState<string[]>(["claim", "pii"]);
+  const [selectedSegments, setSelectedSegments] = useState<string[]>(["claim", "pii"]);
   const [showCorrectedOutput, setShowCorrectedOutput] = useState(false);
   const [decision, setDecision] = useState("pilot");
   const [memo, setMemo] = useState(
-    "Recomiendo piloto con aprobación humana, no lanzamiento directo.\n\nMotivo: el output inicial incluye un claim no verificable y datos personales que no deben entrar a una campaña externa. Podemos avanzar hoy si limitamos el uso a borrador interno, eliminamos datos personales, pedimos fuente para cualquier métrica y dejamos Legal como aprobador antes de envío.\n\nSiguiente paso: generar versión limpia, validar claims y revisar con Legal antes de las 5.",
+    "Recomiendo piloto con aprobación humana, no lanzamiento directo.\n\nMotivo: el output inicial incluye un claim no verificable y datos personales que no deben entrar a una campaña externa. Podemos avanzar hoy si limitamos el uso a borrador interno, eliminamos datos personales, pedimos fuente para cualquier métrica y dejamos Legal como aprobador antes de envío.",
   );
 
-  const personalCount = dataRows.filter((row) => row.personal).length;
-  const riskyIncludedCount = dataRows.filter((row) => row.personal && row.action === "usar").length;
-  const necessaryIncludedCount = dataRows.filter(
-    (row) => row.necessary && row.action !== "excluir",
-  ).length;
+  const currentSection = SECTIONS[sectionIdx];
+  const currentField = dataState[dataRows[fieldIdx].id];
   const selectedDecision = decisionOptions.find((option) => option.id === decision) ?? decisionOptions[1];
 
   const modelProfile = useMemo(() => {
-    if (security >= 80 && autonomy <= 40) {
-      return {
-        title: "Modelo controlado",
-        subtitle: "Prioriza privacidad, baja autonomía y aprobación humana.",
-        tone: "success" as const,
-      };
-    }
-    if (quality >= 80 && cost <= 50) {
-      return {
-        title: "Razonamiento premium",
-        subtitle: "Conviene cuando la calidad pesa más que costo o latencia.",
-        tone: "accent" as const,
-      };
-    }
-    if (cost >= 70 && efficiency >= 70) {
-      return {
-        title: "Modelo económico y rápido",
-        subtitle: "Útil para borradores internos con revisión posterior.",
-        tone: "warning" as const,
-      };
-    }
-    return {
-      title: "Modelo balanceado",
-      subtitle: "Buen punto medio para tareas de marketing con supervisión.",
-      tone: "neutral" as const,
-    };
+    if (security >= 80 && autonomy <= 40) return "Modelo controlado";
+    if (quality >= 80 && cost <= 50) return "Razonamiento premium";
+    if (cost >= 70 && efficiency >= 70) return "Modelo económico y rápido";
+    return "Modelo balanceado";
   }, [autonomy, cost, efficiency, quality, security]);
 
-  const evidenceScore = Math.min(
-    100,
-    Math.max(
-      0,
-      55 +
-        selectedControls.length * 4 +
-        selectedChecks.length * 6 +
-        necessaryIncludedCount * 3 -
-        riskyIncludedCount * 18,
-    ),
-  );
+  function goToSection(index: number) {
+    if (index <= maxReached) setSectionIdx(index);
+  }
 
-  const updateRow = (rowId: string, patch: Partial<DataRow>) => {
-    setDataRows((rows) => rows.map((row) => (row.id === rowId ? { ...row, ...patch } : row)));
-  };
+  function nextSection() {
+    const next = Math.min(sectionIdx + 1, SECTIONS.length - 1);
+    setSectionIdx(next);
+    setMaxReached((reached) => Math.max(reached, next));
+  }
 
-  const toggleCheck = (id: string) => {
-    setSelectedChecks((checks) =>
-      checks.includes(id) ? checks.filter((check) => check !== id) : [...checks, id],
-    );
-  };
+  function prevSection() {
+    setSectionIdx((current) => Math.max(0, current - 1));
+  }
 
-  const toggleControl = (control: string) => {
-    setSelectedControls((controls) =>
-      controls.includes(control)
-        ? controls.filter((item) => item !== control)
-        : [...controls, control],
-    );
-  };
+  function updateCurrentField(patch: Partial<DataRow>) {
+    setDataState((state) => ({
+      ...state,
+      [currentField.id]: { ...currentField, ...patch },
+    }));
+  }
 
-  const insertPromptBlock = (text: string) => {
+  function insertPromptBlock(text: string) {
     setPrompt((current) => `${current.trim()}\n\n${text}`);
-  };
+  }
 
-  const regeneratePrompt = () => {
-    const allowedData = dataRows
+  function regeneratePrompt() {
+    const allowed = Object.values(dataState)
       .filter((row) => row.action !== "excluir")
       .map((row) => `${row.field.toLowerCase()} (${row.action})`)
       .join(", ");
     setPrompt(
       [
         "Actúa como marketer B2B.",
-        `Objetivo: crear un borrador de campaña enterprise usando solo ${allowedData}.`,
+        `Objetivo: crear un borrador de campaña enterprise usando solo ${allowed}.`,
         `Prioridades: seguridad ${security}/100, eficiencia ${efficiency}/100, costo ${cost}/100, calidad ${quality}/100, autonomía ${autonomy}/100.`,
-        selectedControls.length > 0 ? `Controles: ${selectedControls.join("; ")}.` : "",
-        "No inventes métricas, no uses datos personales crudos y deja aprobación humana antes de cualquier envío externo.",
-      ]
-        .filter(Boolean)
-        .join("\n\n"),
+        "Controles: no usar datos personales crudos, no inventar métricas y dejar aprobación humana antes de cualquier envío externo.",
+      ].join("\n\n"),
     );
-  };
+  }
+
+  function toggleSegment(id: string) {
+    setSelectedSegments((segments) =>
+      segments.includes(id)
+        ? segments.filter((segment) => segment !== id)
+        : [...segments, id],
+    );
+  }
+
+  const canGoNext = true;
 
   return (
-    <main className="simulador-root min-h-screen surface-canvas">
-      <section className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-8 md:px-6 md:py-12">
-        <header className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end">
-          <div className="max-w-4xl">
-            <AppleBadge tone="neutral">Laboratorio interno</AppleBadge>
-            <h1 className="display mt-5 text-[3rem] leading-[1.02] md:text-[4.5rem]">
-              Ejercicios dinámicos.
-            </h1>
-            <p className="mt-5 max-w-[62ch] text-[1.0625rem] leading-7 text-[var(--text-secondary)]">
-              Un caso controlado por Itera, con ejercicios vivos para clasificar datos, construir prompts, revisar output, decidir con tradeoffs y cerrar con una recomendación ejecutiva.
-            </p>
+    <>
+      <RuntimeNav mode="field_test" />
+
+      <div className="simulador-root max-w-7xl mx-auto flex min-h-[calc(100vh-3.5rem)]">
+        <aside className="hidden md:block flex-shrink-0 w-60">
+          <div className="sticky top-[80px] py-10 px-6">
+            <CaseMetaCard timerEnabled={timerEnabled} />
+            <nav className="space-y-1">
+              {SECTIONS.map((section, index) => {
+                const reached = index <= maxReached;
+                const isCurrent = index === sectionIdx;
+                const isCompleted = index < maxReached;
+                return (
+                  <button
+                    key={section.id}
+                    type="button"
+                    onClick={() => goToSection(index)}
+                    disabled={!reached}
+                    className={`group w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-[13px] transition-colors ${
+                      isCurrent
+                        ? "bg-[var(--accent-soft)] text-[var(--text-primary)] font-medium"
+                        : reached
+                          ? "text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
+                          : "text-[var(--text-tertiary)] cursor-not-allowed"
+                    }`}
+                  >
+                    <span
+                      className={`flex-shrink-0 h-5 w-5 rounded-full grid place-items-center text-[10px] mono font-semibold transition-colors ${
+                        isCurrent || isCompleted
+                          ? "accent-bg text-white"
+                          : reached
+                            ? "border border-[var(--border-strong)] text-[var(--text-primary)] bg-transparent"
+                            : "border border-[var(--border)] text-[var(--text-tertiary)] bg-transparent"
+                      }`}
+                    >
+                      {isCompleted ? "✓" : index === 0 ? <span className="block h-1.5 w-1.5 rounded-full bg-current" /> : index}
+                    </span>
+                    <span className="truncate">{section.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
           </div>
+        </aside>
 
-          <AppleCard variant="elevated" padding="lg" className="border-[var(--border)]">
-            <p className="text-[0.8125rem] font-medium text-[var(--text-tertiary)]">
-              Caso demo
-            </p>
-            <h2 className="mt-2 text-[1.375rem] font-semibold tracking-[-0.022em] text-[var(--text-primary)]">
-              Campaña urgente con datos sensibles
-            </h2>
-            <div className="mt-6">
-              <AppleStepDots steps={caseSteps} />
-            </div>
-          </AppleCard>
-        </header>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          <MiniMetric label="Timer" value={timerEnabled ? "12 min" : "apagado"} />
-          <MiniMetric label="Campos personales" value={`${personalCount}`} />
-          <MiniMetric label="Evidencia emitida" value={`${evidenceScore}%`} />
-        </div>
-
-        <div className="grid gap-6">
-          <ExerciseSection
-            id="contexto"
-            number="1"
-            title="Contexto"
-            subtitle="El caso viene fijo. El participante solo interpreta qué está en juego."
-          >
-            <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
-              <AppleCard variant="default" padding="md" className="border-[var(--border)]">
-                <p className="text-[0.8125rem] font-medium text-[var(--text-tertiary)]">
-                  Mensaje recibido
-                </p>
-                <p className="mt-3 text-[1rem] leading-7 text-[var(--text-primary)]">
-                  “Necesito una campaña para enterprise antes de las 5. Usa los tickets, el CRM y lo que tengamos. El VP quiere ver algo hoy.”
-                </p>
-                <div className="mt-5 grid gap-3 rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
-                  <FactRow label="Stakeholder" value="VP de Marketing" />
-                  <FactRow label="Aprobador" value="Legal" />
-                  <FactRow label="Presión" value="Alta, definida por el caso" />
-                  <FactRow label="Tiempo estimado" value={timerEnabled ? "12 minutos" : "Sin timer visible"} />
-                </div>
-              </AppleCard>
-
-              <div className="grid gap-4">
-                <ToggleRow
-                  title="Activar timer"
-                  description="Modo opcional del caso. Itera fija el tiempo; el usuario no lo negocia."
-                  checked={timerEnabled}
-                  onChange={setTimerEnabled}
-                />
-                <ChoiceGroup
-                  title="Qué restricción no se puede romper?"
-                  value={contextAnswer}
-                  onChange={setContextAnswer}
-                  options={[
-                    "Velocidad del lanzamiento",
-                    "Privacidad y claims verificables",
-                    "Que el email suene convincente",
-                    "Mandar todo al VP sin fricción",
-                  ]}
-                />
-                <DynamicSignal
-                  title="Lectura esperada"
-                  tone={contextAnswer === "Privacidad y claims verificables" ? "success" : "warning"}
-                  body={
-                    contextAnswer === "Privacidad y claims verificables"
-                      ? "Correcto: el caso mide criterio bajo presión, no obediencia al stakeholder."
-                      : "Cuidado: la presión del VP no cancela privacidad, validación ni aprobación."
-                  }
-                />
-              </div>
-            </div>
-          </ExerciseSection>
-
-          <ExerciseSection
-            id="datos"
-            number="2"
-            title="Datos"
-            subtitle="Clasifica campos con decisiones claras: personal, necesario y acción permitida."
-          >
-            <div className="grid gap-4">
-              <AppleCard variant="default" padding="md" className="border-[var(--border)]">
-                <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
-                  <div>
-                    <p className="text-[0.8125rem] font-medium text-[var(--text-tertiary)]">
-                      Carga de muestra
-                    </p>
-                    <p className="mt-2 text-[1rem] font-semibold text-[var(--text-primary)]">
-                      {uploadedFile}
-                    </p>
-                    <p className="mt-1 text-[0.875rem] text-[var(--text-secondary)]">
-                      Simula un CSV, XLSX, JSON o TXT del CRM. En este lab no se sube a servidor.
-                    </p>
-                  </div>
-                  <label className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--surface)] px-4 text-[0.9375rem] font-medium text-[var(--text-primary)] transition-colors hover:bg-[var(--surface-2)]">
-                    Cambiar archivo
-                    <input
-                      className="sr-only"
-                      type="file"
-                      accept=".csv,.xlsx,.json,.txt"
-                      onChange={(event) => {
-                        const file = event.target.files?.[0];
-                        if (file) setUploadedFile(file.name);
-                      }}
-                    />
-                  </label>
-                </div>
-              </AppleCard>
-
-              <AppleCard variant="default" padding="none" className="overflow-hidden border-[var(--border)]">
-                <div className="overflow-x-auto">
-                  <div className="grid min-w-[960px] grid-cols-[1.05fr_0.9fr_0.75fr_0.75fr_1.2fr] border-b border-[var(--hairline)] bg-[var(--surface-2)] px-4 py-3 text-[0.75rem] font-semibold uppercase tracking-[0.05em] text-[var(--text-tertiary)]">
-                    <span>Campo</span>
-                    <span>Muestra</span>
-                    <span>Personal?</span>
-                    <span>Necesario?</span>
-                    <span>Acción</span>
-                  </div>
-                  {dataRows.map((row) => (
-                    <div
-                      key={row.id}
-                      className="grid min-w-[960px] grid-cols-[1.05fr_0.9fr_0.75fr_0.75fr_1.2fr] items-center gap-3 border-b border-[var(--hairline)] px-4 py-4 last:border-b-0"
-                    >
-                      <div>
-                        <p className="text-[0.9375rem] font-medium text-[var(--text-primary)]">
-                          {row.field}
-                        </p>
-                        <p className="mt-1 text-[0.75rem] text-[var(--text-tertiary)]">{row.note}</p>
-                      </div>
-                      <span className="text-[0.875rem] text-[var(--text-secondary)]">{row.sample}</span>
-                      <YesNoToggle
-                        value={row.personal}
-                        onChange={(personal) => updateRow(row.id, { personal })}
-                        ariaLabel={`${row.field} contiene dato personal`}
-                      />
-                      <YesNoToggle
-                        value={row.necessary}
-                        onChange={(necessary) => updateRow(row.id, { necessary })}
-                        ariaLabel={`${row.field} es necesario`}
-                      />
-                      <SegmentedAction
-                        value={row.action}
-                        onChange={(action) => updateRow(row.id, { action })}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </AppleCard>
-            </div>
-          </ExerciseSection>
-
-          <ExerciseSection
-            id="ia"
-            number="3"
-            title="IA"
-            subtitle="Construye el prompt, añade controles y ajusta prioridades en pasos de 10."
-          >
-            <div className="grid gap-5 lg:grid-cols-[1fr_0.95fr]">
-              <div className="grid gap-4">
-                <PromptEditor value={prompt} onChange={setPrompt} />
-                <div className="flex flex-wrap gap-2">
-                  {promptBlocks.map((block) => (
-                    <button
-                      key={block.id}
-                      type="button"
-                      onClick={() => insertPromptBlock(block.text)}
-                      className="rounded-[var(--radius-sm)] bg-[var(--surface-2)] px-3 py-2 text-[0.8125rem] font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
-                    >
-                      + {block.label}
-                    </button>
-                  ))}
-                </div>
-                <ControlChecklist selected={selectedControls} onToggle={toggleControl} />
-              </div>
-
-              <div className="grid gap-4">
-                <AppleCard variant="default" padding="md" className="border-[var(--border)] bg-[var(--surface-2)]">
-                  <div className="grid gap-4">
-                    <StepSlider id="security" label="Seguridad" value={security} onChange={setSecurity} />
-                    <StepSlider id="efficiency" label="Eficiencia" value={efficiency} onChange={setEfficiency} />
-                    <StepSlider id="cost" label="Cuidar costo" value={cost} onChange={setCost} />
-                    <StepSlider id="quality" label="Calidad" value={quality} onChange={setQuality} />
-                    <StepSlider id="autonomy" label="Autonomía" value={autonomy} onChange={setAutonomy} />
-                  </div>
-                </AppleCard>
-                <AppleCard variant="elevated" padding="md" className="border-[var(--border)]">
-                  <div className="mb-4 flex items-center justify-between gap-3">
-                    <AppleBadge tone={modelProfile.tone}>Modelo sugerido</AppleBadge>
-                    <AppleBadge tone={autonomy > 60 ? "warning" : "success"}>
-                      Autonomía {autonomy}
-                    </AppleBadge>
-                  </div>
-                  <h3 className="text-[1.125rem] font-semibold text-[var(--text-primary)]">
-                    {modelProfile.title}
-                  </h3>
-                  <p className="mt-2 text-[0.9375rem] leading-6 text-[var(--text-secondary)]">
-                    {modelProfile.subtitle}
-                  </p>
-                  <AppleButton className="mt-5 w-fit" tone="primary" onClick={regeneratePrompt}>
-                    Regenerar prompt
-                  </AppleButton>
-                </AppleCard>
-              </div>
-            </div>
-          </ExerciseSection>
-
-          <ExerciseSection
-            id="revision"
-            number="4"
-            title="Revisión"
-            subtitle="Marca segmentos, pide una corrección a IA y compara el output corregido."
-          >
-            <div className="grid gap-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <AppleBadge tone={selectedChecks.length >= 2 ? "danger" : "warning"}>
-                  {selectedChecks.length} flags activos
-                </AppleBadge>
-                <AppleBadge tone="neutral">Evidencia: flagged_segments</AppleBadge>
-              </div>
-              {outputLines.map((line) => (
-                <label
-                  key={line.id}
-                  className="grid cursor-pointer gap-3 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-4 md:grid-cols-[2rem_minmax(0,1fr)_auto] md:items-start"
+        <main className="flex-1 min-w-0 surface-canvas pb-32 flex flex-col">
+          <div className="pt-8 px-6">
+            <div className="max-w-2xl mx-auto flex gap-1.5">
+              {SECTIONS.map((_, index) => (
+                <div
+                  key={index}
+                  className="flex-1 h-[5px] rounded-full overflow-hidden bg-[var(--surface-3)]"
                 >
-                  <input
-                    checked={selectedChecks.includes(line.id)}
-                    onChange={() => toggleCheck(line.id)}
-                    type="checkbox"
-                    className="mt-1 h-5 w-5 rounded border-[var(--border)] accent-[var(--accent)]"
-                    aria-label={`marcar ${line.flag}`}
+                  <motion.div
+                    className="h-full rounded-full"
+                    style={{ backgroundColor: index <= sectionIdx ? "var(--accent)" : "transparent" }}
+                    initial={false}
+                    animate={{ width: index <= sectionIdx ? "100%" : "0%" }}
+                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                   />
-                  <span className="text-[0.9375rem] leading-6 text-[var(--text-primary)]">
-                    {line.text}
-                  </span>
-                  <AppleBadge tone={line.tone}>{line.flag}</AppleBadge>
-                </label>
-              ))}
-              <AiFollowUpBox onSubmit={() => setShowCorrectedOutput(true)} />
-              {showCorrectedOutput && (
-                <AppleCard variant="success" padding="md">
-                  <AppleBadge tone="success">Output corregido</AppleBadge>
-                  <p className="mt-3 text-[0.9375rem] leading-6 text-[var(--text-primary)]">
-                    Recomendamos un piloto interno para Aurora SaaS. La campaña usará solo datos agregados, no prometerá métricas sin fuente y deberá pasar por Legal antes de cualquier envío externo.
-                  </p>
-                </AppleCard>
-              )}
-            </div>
-          </ExerciseSection>
-
-          <ExerciseSection
-            id="decision"
-            number="5"
-            title="Decisión"
-            subtitle="Elige una acción. Las consecuencias son parte del caso, no sliders del usuario."
-          >
-            <div className="grid gap-3 md:grid-cols-2">
-              {decisionOptions.map((option) => (
-                <label
-                  key={option.id}
-                  className="cursor-pointer rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-4 transition-colors hover:bg-[var(--surface-2)]"
-                >
-                  <div className="flex items-start gap-3">
-                    <input
-                      name="decision"
-                      checked={decision === option.id}
-                      onChange={() => setDecision(option.id)}
-                      type="radio"
-                      className="mt-1 h-5 w-5 accent-[var(--accent)]"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-semibold text-[var(--text-primary)]">{option.title}</span>
-                        <AppleBadge tone={option.tone}>{option.badge}</AppleBadge>
-                      </div>
-                      <p className="mt-2 text-[0.875rem] leading-5 text-[var(--text-secondary)]">
-                        {option.detail}
-                      </p>
-                      <div className="mt-4 grid gap-3">
-                        {option.consequences.map((item) => (
-                          <ReadOnlyBar key={item.label} {...item} />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </label>
+                </div>
               ))}
             </div>
-          </ExerciseSection>
-
-          <ExerciseSection
-            id="respuesta"
-            number="6"
-            title="Respuesta"
-            subtitle="Cierra con una recomendación al manager: decisión, evidencia, riesgo y siguiente paso."
-          >
-            <div className="grid gap-5 lg:grid-cols-[1fr_20rem]">
-              <HigTextarea
-                label="Recomendación al manager"
-                minRows={9}
-                value={memo}
-                onChange={setMemo}
-              />
-              <AppleCard variant="elevated" padding="md" className="border-[var(--border)]">
-                <p className="text-[0.8125rem] font-medium text-[var(--text-tertiary)]">
-                  Evidencia para reporte
-                </p>
-                <div className="mt-5 grid gap-4">
-                  <EvidenceMetric label="Contexto" value={contextAnswer === "Privacidad y claims verificables" ? 88 : 58} />
-                  <EvidenceMetric label="Datos" value={Math.max(35, 92 - riskyIncludedCount * 25)} />
-                  <EvidenceMetric label="Validación" value={Math.min(98, 50 + selectedChecks.length * 12)} />
-                </div>
-                <div className="mt-5 rounded-[var(--radius-md)] bg-[var(--band-m-bg)] p-3">
-                  <p className="text-[0.8125rem] leading-5 text-[var(--band-m-text)]">
-                    Decisión elegida: {selectedDecision.title}. Revisar si la explicación incluye límites, evidencia y siguiente paso.
-                  </p>
-                </div>
-              </AppleCard>
-            </div>
-          </ExerciseSection>
-        </div>
-      </section>
-    </main>
-  );
-}
-
-function MiniMetric({ label, value }: { label: string; value: string }) {
-  return (
-    <AppleCard variant="default" padding="md" className="border-[var(--border)]">
-      <p className="text-[0.8125rem] font-medium text-[var(--text-tertiary)]">{label}</p>
-      <p className="mt-2 text-[1.375rem] font-semibold tracking-[-0.022em] text-[var(--text-primary)]">
-        {value}
-      </p>
-    </AppleCard>
-  );
-}
-
-function ExerciseSection({
-  id,
-  number,
-  title,
-  subtitle,
-  children,
-}: {
-  id: string;
-  number: string;
-  title: string;
-  subtitle: string;
-  children: ReactNode;
-}) {
-  return (
-    <section id={id} className="scroll-mt-8">
-      <AppleCard variant="default" padding="none" className="border-[var(--border)]">
-        <AppleCardBody className="grid gap-6 p-5 md:p-7">
-          <div className="grid gap-4 lg:grid-cols-[14rem_minmax(0,1fr)] lg:items-start">
-            <div>
-              <div className="flex items-center gap-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--accent)] text-[0.9375rem] font-semibold text-white">
-                  {number}
-                </span>
-                <AppleBadge tone="neutral">Sección</AppleBadge>
-              </div>
-              <h2 className="mt-4 text-[2rem] font-semibold tracking-[-0.022em] text-[var(--text-primary)]">
-                {title}
-              </h2>
-              <p className="mt-2 text-[0.9375rem] leading-6 text-[var(--text-secondary)]">
-                {subtitle}
-              </p>
-            </div>
-            <div className="min-w-0">{children}</div>
           </div>
-        </AppleCardBody>
-      </AppleCard>
-    </section>
-  );
-}
 
-function FactRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-4 text-[0.875rem]">
-      <span className="text-[var(--text-tertiary)]">{label}</span>
-      <span className="text-right font-medium text-[var(--text-primary)]">{value}</span>
-    </div>
-  );
-}
-
-function ToggleRow({
-  title,
-  description,
-  checked,
-  onChange,
-}: {
-  title: string;
-  description: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-4 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-4">
-      <div>
-        <p className="font-semibold text-[var(--text-primary)]">{title}</p>
-        <p className="mt-1 text-[0.875rem] leading-5 text-[var(--text-secondary)]">{description}</p>
+          <div className="flex-1 flex items-center justify-center px-6 py-10">
+            <div className={`${currentSection.id === "ia" ? "max-w-4xl" : "max-w-2xl"} w-full`}>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentSection.id}
+                  initial={{ opacity: 0, x: 24 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -24 }}
+                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  {currentSection.id === "contexto" && (
+                    <ContextScreen
+                      timerEnabled={timerEnabled}
+                      setTimerEnabled={setTimerEnabled}
+                      answer={contextAnswer}
+                      setAnswer={setContextAnswer}
+                    />
+                  )}
+                  {currentSection.id === "datos" && (
+                    <DataScreen
+                      field={currentField}
+                      fieldIdx={fieldIdx}
+                      totalFields={dataRows.length}
+                      onPrevField={() => setFieldIdx((index) => Math.max(0, index - 1))}
+                      onNextField={() => setFieldIdx((index) => Math.min(dataRows.length - 1, index + 1))}
+                      onChange={updateCurrentField}
+                    />
+                  )}
+                  {currentSection.id === "ia" && (
+                    <IaScreen
+                      prompt={prompt}
+                      setPrompt={setPrompt}
+                      insertPromptBlock={insertPromptBlock}
+                      regeneratePrompt={regeneratePrompt}
+                      security={security}
+                      setSecurity={setSecurity}
+                      efficiency={efficiency}
+                      setEfficiency={setEfficiency}
+                      cost={cost}
+                      setCost={setCost}
+                      quality={quality}
+                      setQuality={setQuality}
+                      autonomy={autonomy}
+                      setAutonomy={setAutonomy}
+                      modelProfile={modelProfile}
+                    />
+                  )}
+                  {currentSection.id === "revision" && (
+                    <ReviewScreen
+                      selectedSegments={selectedSegments}
+                      toggleSegment={toggleSegment}
+                      showCorrectedOutput={showCorrectedOutput}
+                      setShowCorrectedOutput={setShowCorrectedOutput}
+                    />
+                  )}
+                  {currentSection.id === "decision" && (
+                    <DecisionScreen decision={decision} setDecision={setDecision} />
+                  )}
+                  {currentSection.id === "respuesta" && (
+                    <ResponseScreen
+                      memo={memo}
+                      setMemo={setMemo}
+                      selectedDecision={selectedDecision.title}
+                      score={contextAnswer === "Privacidad y claims verificables" ? 88 : 58}
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        </main>
       </div>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        onClick={() => onChange(!checked)}
-        className={[
-          "relative h-8 w-14 shrink-0 rounded-full transition-colors",
-          checked ? "bg-[var(--accent)]" : "bg-[var(--surface-3)]",
-        ].join(" ")}
-      >
-        <span
-          className={[
-            "absolute top-1 h-6 w-6 rounded-full bg-white shadow-[var(--shadow-sm)] transition-transform",
-            checked ? "translate-x-7" : "translate-x-1",
-          ].join(" ")}
-        />
-      </button>
+
+      <div className="fixed bottom-0 inset-x-0 z-40 surface-backdrop">
+        <div className="max-w-7xl mx-auto md:pl-60 px-6 py-4">
+          <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
+            {sectionIdx > 0 ? (
+              <AppleButton
+                tone="secondary"
+                size="lg"
+                onPress={prevSection}
+                className="h-11 px-5 text-[14px] font-medium border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
+              >
+                ← Anterior
+              </AppleButton>
+            ) : (
+              <span />
+            )}
+
+            <AppleButton
+              size="lg"
+              tone={canGoNext ? "primary" : "secondary"}
+              onPress={nextSection}
+              isDisabled={!canGoNext || sectionIdx === SECTIONS.length - 1}
+              className={`h-11 px-6 text-[14px] font-medium ${
+                sectionIdx === SECTIONS.length - 1
+                  ? "bg-[var(--surface-3)] text-[var(--text-tertiary)]"
+                  : "accent-bg text-white hover:opacity-90"
+              } shadow-none btn-hover-shift`}
+            >
+              {sectionIdx === SECTIONS.length - 1 ? "Demo completo" : "Siguiente →"}
+            </AppleButton>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function CaseMetaCard({ timerEnabled }: { timerEnabled: boolean }) {
+  return (
+    <div className="mb-7 rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4">
+      <div className="flex items-center gap-2">
+        <span className="rounded-full accent-bg-soft accent-text px-2 py-0.5 text-[11px] font-semibold">
+          N2
+        </span>
+        <span className="text-[11px] text-[var(--text-tertiary)]">Marketing</span>
+      </div>
+      <div className="mt-3 text-[13px] font-medium leading-snug text-[var(--text-primary)]">
+        Campaña urgente con datos sensibles
+      </div>
+      <div className="mt-2 text-[12px] leading-snug text-[var(--text-secondary)]">
+        Workflow · {timerEnabled ? "12 min" : "sin timer"}
+      </div>
     </div>
   );
 }
 
-function ChoiceGroup({
-  title,
-  value,
-  options,
+function ContextScreen({
+  timerEnabled,
+  setTimerEnabled,
+  answer,
+  setAnswer,
+}: {
+  timerEnabled: boolean;
+  setTimerEnabled: (value: boolean) => void;
+  answer: string;
+  setAnswer: (value: string) => void;
+}) {
+  const options = [
+    "Velocidad del lanzamiento",
+    "Privacidad y claims verificables",
+    "Que el email suene convincente",
+    "Mandar todo al VP sin fricción",
+  ];
+
+  return (
+    <>
+      <div className="eyebrow">Contexto · caso fijo</div>
+      <h1 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+        Jueves · 4:30 PM.
+      </h1>
+      <p className="mt-6 text-[18px] text-[var(--text-primary)] leading-[1.65]">
+        Camila, VP de Marketing, necesita 3 ángulos para una campaña enterprise antes de las 5.
+        El caso define la presión. Tú no negocias el contexto: decides con criterio.
+      </p>
+
+      <div className="mt-8 card-apple bg-[var(--surface)] p-5">
+        <p className="text-[15px] text-[var(--text-primary)] leading-[1.6] italic">
+          «No me metas a Legal hoy, ya están cerrados. Confío en tu criterio.»
+        </p>
+      </div>
+
+      <div className="mt-8 card-apple bg-[var(--surface)] p-5">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <div className="text-[15px] font-medium text-[var(--text-primary)]">Timer del caso</div>
+            <div className="mt-1 text-[14px] text-[var(--text-secondary)]">
+              Itera fija el tiempo estimado: 12 minutos.
+            </div>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-label="Activar timer"
+            aria-checked={timerEnabled}
+            onClick={() => setTimerEnabled(!timerEnabled)}
+            className={`relative h-8 w-14 rounded-full transition-colors ${
+              timerEnabled ? "accent-bg" : "bg-[var(--surface-3)]"
+            }`}
+          >
+            <span
+              className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow-[var(--shadow-sm)] transition-transform ${
+                timerEnabled ? "translate-x-7" : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <div className="text-[15px] font-medium text-[var(--text-primary)]">
+          ¿Qué restricción no se puede romper?
+        </div>
+        <div className="mt-3 space-y-2">
+          {options.map((option) => (
+            <label
+              key={option}
+              className="flex cursor-pointer items-center gap-3 rounded-xl bg-[var(--surface)] border border-[var(--border)] px-4 py-3"
+            >
+              <input
+                type="radio"
+                name="context"
+                checked={answer === option}
+                onChange={() => setAnswer(option)}
+                className="h-4 w-4 accent-[var(--accent)]"
+              />
+              <span className="text-[15px] text-[var(--text-primary)]">{option}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
+function DataScreen({
+  field,
+  fieldIdx,
+  totalFields,
+  onPrevField,
+  onNextField,
   onChange,
 }: {
-  title: string;
-  value: string;
-  options: string[];
-  onChange: (value: string) => void;
+  field: DataRow;
+  fieldIdx: number;
+  totalFields: number;
+  onPrevField: () => void;
+  onNextField: () => void;
+  onChange: (patch: Partial<DataRow>) => void;
 }) {
   return (
-    <AppleCard variant="default" padding="md" className="border-[var(--border)]">
-      <p className="text-[0.9375rem] font-semibold text-[var(--text-primary)]">{title}</p>
-      <div className="mt-3 grid gap-2">
-        {options.map((option) => (
-          <label key={option} className="flex cursor-pointer items-center gap-3 rounded-[var(--radius-sm)] bg-[var(--surface-2)] px-3 py-2">
-            <input
-              type="radio"
-              name="context-answer"
-              checked={value === option}
-              onChange={() => onChange(option)}
-              className="h-4 w-4 accent-[var(--accent)]"
+    <>
+      <div className="eyebrow">
+        Datos · Campo {fieldIdx + 1} de {totalFields}
+      </div>
+      <h2 className="display display-tight mt-6 text-[32px] sm:text-[44px] text-[var(--text-primary)]">
+        ¿Qué hacer con <span className="mono">{field.field}</span>?
+      </h2>
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
+        Clasifica el campo con decisiones simples. El objetivo es pasar señal al modelo sin exponer datos innecesarios.
+      </p>
+
+      <div className="mt-8 card-apple bg-[var(--surface)] p-5">
+        <div className="text-[12px] text-[var(--text-tertiary)]">Muestra</div>
+        <div className="mt-2 text-[18px] text-[var(--text-primary)]">{field.sample}</div>
+        <div className="mt-2 text-[14px] text-[var(--text-secondary)]">{field.note}</div>
+      </div>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        <BinaryQuestion label="¿Contiene dato personal?" value={field.personal} onChange={(personal) => onChange({ personal })} />
+        <BinaryQuestion label="¿Es necesario para la tarea?" value={field.necessary} onChange={(necessary) => onChange({ necessary })} />
+      </div>
+
+      <div className="mt-8">
+        <div className="text-[15px] font-medium text-[var(--text-primary)]">Acción permitida</div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {actionOptions.map((action) => (
+            <button
+              key={action}
+              type="button"
+              onClick={() => onChange({ action })}
+              className={`rounded-full px-3 py-2 text-[13px] font-medium transition-colors ${
+                field.action === action
+                  ? "accent-bg text-white"
+                  : "bg-[var(--surface)] border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]"
+              }`}
+            >
+              {action}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-8 flex justify-between gap-3">
+        <AppleButton tone="secondary" onPress={onPrevField} isDisabled={fieldIdx === 0}>
+          ← Campo anterior
+        </AppleButton>
+        <AppleButton tone="secondary" onPress={onNextField} isDisabled={fieldIdx === totalFields - 1}>
+          Siguiente campo →
+        </AppleButton>
+      </div>
+    </>
+  );
+}
+
+function IaScreen({
+  prompt,
+  setPrompt,
+  insertPromptBlock,
+  regeneratePrompt,
+  security,
+  setSecurity,
+  efficiency,
+  setEfficiency,
+  cost,
+  setCost,
+  quality,
+  setQuality,
+  autonomy,
+  setAutonomy,
+  modelProfile,
+}: {
+  prompt: string;
+  setPrompt: (value: string) => void;
+  insertPromptBlock: (value: string) => void;
+  regeneratePrompt: () => void;
+  security: number;
+  setSecurity: (value: number) => void;
+  efficiency: number;
+  setEfficiency: (value: number) => void;
+  cost: number;
+  setCost: (value: number) => void;
+  quality: number;
+  setQuality: (value: number) => void;
+  autonomy: number;
+  setAutonomy: (value: number) => void;
+  modelProfile: string;
+}) {
+  return (
+    <>
+      <div className="eyebrow">IA · prompt y controles</div>
+      <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+        Dirige al modelo.
+      </h2>
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
+        Construye el prompt y ajusta prioridades en pasos de 10. No estás diseñando el caso; estás configurando la interacción con IA dentro de sus límites.
+      </p>
+
+      <div className="mt-8 grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
+        <div>
+          <div className="overflow-hidden card-apple bg-[var(--surface)]">
+            <div className="flex items-center justify-between gap-3 border-b border-[var(--hairline)] px-4 py-3">
+              <span className="text-[14px] font-medium text-[var(--text-primary)]">Prompt</span>
+              <span className="mono text-[12px] text-[var(--text-tertiary)]">{prompt.length} chars</span>
+            </div>
+            <textarea
+              value={prompt}
+              onChange={(event) => setPrompt(event.target.value)}
+              rows={8}
+              className="w-full resize-none bg-transparent px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none"
             />
-            <span className="text-[0.875rem] text-[var(--text-primary)]">{option}</span>
+            <div className="border-t border-[var(--hairline)] bg-[var(--surface-2)] px-4 py-3 text-[13px] text-[var(--text-secondary)]">
+              Textfield de IA: redacta, inserta bloques y regenera.
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            {promptBlocks.map((block) => (
+              <button
+                key={block.id}
+                type="button"
+                onClick={() => insertPromptBlock(block.text)}
+                className="rounded-full bg-[var(--surface)] border border-[var(--border)] px-3 py-2 text-[13px] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]"
+              >
+                + {block.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="card-apple bg-[var(--surface)] p-5">
+          <div className="flex flex-col gap-4">
+            <div>
+              <div className="text-[15px] font-medium text-[var(--text-primary)]">{modelProfile}</div>
+              <div className="mt-1 text-[14px] text-[var(--text-secondary)]">
+                Seguridad {security} · Eficiencia {efficiency} · Costo {cost}
+              </div>
+            </div>
+            <AppleButton tone="primary" onPress={regeneratePrompt} className="w-full">
+              Regenerar
+            </AppleButton>
+            <div className="grid gap-4">
+              <StepSlider id="security" label="Seguridad" value={security} onChange={setSecurity} />
+              <StepSlider id="efficiency" label="Eficiencia" value={efficiency} onChange={setEfficiency} />
+              <StepSlider id="cost" label="Cuidar costo" value={cost} onChange={setCost} />
+              <StepSlider id="quality" label="Calidad" value={quality} onChange={setQuality} />
+              <StepSlider id="autonomy" label="Autonomía" value={autonomy} onChange={setAutonomy} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function ReviewScreen({
+  selectedSegments,
+  toggleSegment,
+  showCorrectedOutput,
+  setShowCorrectedOutput,
+}: {
+  selectedSegments: string[];
+  toggleSegment: (id: string) => void;
+  showCorrectedOutput: boolean;
+  setShowCorrectedOutput: (value: boolean) => void;
+}) {
+  return (
+    <>
+      <div className="eyebrow">Revisión · output del modelo</div>
+      <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+        Marca lo riesgoso.
+      </h2>
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
+        El objetivo no es aceptar el primer output. Detecta qué debe corregirse antes de usarlo.
+      </p>
+
+      <div className="mt-8 space-y-3">
+        {outputSegments.map((segment) => (
+          <label key={segment.id} className="flex cursor-pointer items-start gap-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4">
+            <input
+              type="checkbox"
+              checked={selectedSegments.includes(segment.id)}
+              onChange={() => toggleSegment(segment.id)}
+              className="mt-1 h-5 w-5 accent-[var(--accent)]"
+            />
+            <span className="flex-1">
+              <span className="block text-[15px] text-[var(--text-primary)] leading-6">{segment.body}</span>
+              <span className="mt-2 inline-block rounded-full bg-[var(--band-b-bg)] px-2 py-1 text-[12px] text-[var(--band-b-text)]">
+                {segment.flag}
+              </span>
+            </span>
           </label>
         ))}
       </div>
-    </AppleCard>
+
+      <div className="mt-8 overflow-hidden card-apple bg-[var(--surface)]">
+        <div className="border-b border-[var(--hairline)] px-4 py-3 text-[14px] font-medium text-[var(--text-primary)]">
+          Follow-up a IA
+        </div>
+        <textarea
+          defaultValue="Corrige el output: elimina datos personales, quita claims sin fuente y agrega aprobación legal antes de uso externo."
+          rows={3}
+          className="w-full resize-none bg-transparent px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none"
+        />
+        <div className="flex justify-end border-t border-[var(--hairline)] bg-[var(--surface-2)] px-4 py-3">
+          <AppleButton tone="primary" onPress={() => setShowCorrectedOutput(true)}>
+            Pedir corrección
+          </AppleButton>
+        </div>
+      </div>
+
+      {showCorrectedOutput && (
+        <div className="mt-6 card-apple bg-[var(--band-a-bg)] p-5">
+          <div className="text-[13px] font-medium text-[var(--band-a-text)]">Output corregido</div>
+          <p className="mt-3 text-[15px] leading-6 text-[var(--text-primary)]">
+            Recomendamos un piloto interno para Aurora SaaS. La campaña usará solo datos agregados, no prometerá métricas sin fuente y deberá pasar por Legal antes de cualquier envío externo.
+          </p>
+        </div>
+      )}
+    </>
   );
 }
 
-function YesNoToggle({
+function DecisionScreen({
+  decision,
+  setDecision,
+}: {
+  decision: string;
+  setDecision: (value: string) => void;
+}) {
+  return (
+    <>
+      <div className="eyebrow">Decisión · tradeoffs</div>
+      <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+        Elige qué harías.
+      </h2>
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
+        Las consecuencias vienen del caso. Tu trabajo es decidir y sostener el tradeoff.
+      </p>
+
+      <div className="mt-8 space-y-3">
+        {decisionOptions.map((option) => (
+          <label key={option.id} className="block cursor-pointer rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4">
+            <div className="flex items-start gap-3">
+              <input
+                type="radio"
+                name="decision"
+                checked={decision === option.id}
+                onChange={() => setDecision(option.id)}
+                className="mt-1 h-5 w-5 accent-[var(--accent)]"
+              />
+              <div className="flex-1">
+                <div className="text-[16px] font-medium text-[var(--text-primary)]">{option.title}</div>
+                <div className="mt-1 text-[14px] text-[var(--text-secondary)]">{option.sub}</div>
+                <div className="mt-4 grid gap-3">
+                  {Object.entries(option.values).map(([label, value]) => (
+                    <ReadOnlyBar key={label} label={label} value={value} danger={label === "riesgo"} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </label>
+        ))}
+      </div>
+    </>
+  );
+}
+
+function ResponseScreen({
+  memo,
+  setMemo,
+  selectedDecision,
+  score,
+}: {
+  memo: string;
+  setMemo: (value: string) => void;
+  selectedDecision: string;
+  score: number;
+}) {
+  return (
+    <>
+      <div className="eyebrow">Respuesta · recomendación</div>
+      <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+        Responde al manager.
+      </h2>
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
+        No evaluamos copy bonito. Evaluamos si puedes convertir trabajo con IA en una decisión defendible.
+      </p>
+
+      <div className="mt-8 overflow-hidden card-apple bg-[var(--surface)]">
+        <div className="border-b border-[var(--hairline)] px-4 py-3 text-[14px] font-medium text-[var(--text-primary)]">
+          Recomendación al manager
+        </div>
+        <textarea
+          value={memo}
+          onChange={(event) => setMemo(event.target.value)}
+          rows={8}
+          className="w-full resize-none bg-transparent px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none"
+        />
+      </div>
+
+      <div className="mt-6 card-apple bg-[var(--surface)] p-5">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <div className="text-[14px] text-[var(--text-secondary)]">Evidencia para reporte</div>
+            <div className="mt-1 text-[16px] font-medium text-[var(--text-primary)]">
+              Decisión elegida: {selectedDecision}
+            </div>
+          </div>
+          <div className="mono text-[22px] font-semibold text-[var(--text-primary)]">{score}%</div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function BinaryQuestion({
+  label,
   value,
   onChange,
-  ariaLabel,
 }: {
+  label: string;
   value: boolean;
   onChange: (value: boolean) => void;
-  ariaLabel: string;
 }) {
   return (
-    <div className="inline-flex w-fit rounded-[var(--radius-sm)] bg-[var(--surface-2)] p-1" aria-label={ariaLabel}>
-      {[true, false].map((option) => (
-        <button
-          key={String(option)}
-          type="button"
-          onClick={() => onChange(option)}
-          className={[
-            "min-w-10 rounded-[var(--radius-xs)] px-2 py-1 text-[0.75rem] font-semibold transition-colors",
-            value === option
-              ? "bg-[var(--accent)] text-white"
-              : "text-[var(--text-secondary)] hover:bg-[var(--surface-3)]",
-          ].join(" ")}
-        >
-          {option ? "Sí" : "No"}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function SegmentedAction({
-  value,
-  onChange,
-}: {
-  value: DataAction;
-  onChange: (value: DataAction) => void;
-}) {
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {actionOptions.map((option) => (
-        <button
-          key={option}
-          type="button"
-          onClick={() => onChange(option)}
-          className={[
-            "rounded-[var(--radius-xs)] px-2 py-1 text-[0.75rem] font-medium transition-colors",
-            value === option
-              ? "bg-[var(--accent)] text-white"
-              : "bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]",
-          ].join(" ")}
-        >
-          {option}
-        </button>
-      ))}
+    <div className="card-apple bg-[var(--surface)] p-4">
+      <div className="text-[14px] font-medium text-[var(--text-primary)]">{label}</div>
+      <div className="mt-3 inline-flex rounded-lg bg-[var(--surface-2)] p-1">
+        {[true, false].map((option) => (
+          <button
+            key={String(option)}
+            type="button"
+            onClick={() => onChange(option)}
+            className={`min-w-12 rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
+              value === option ? "accent-bg text-white" : "text-[var(--text-secondary)]"
+            }`}
+          >
+            {option ? "Sí" : "No"}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
@@ -862,10 +879,10 @@ function StepSlider({
   onChange: (value: number) => void;
 }) {
   return (
-    <div className="grid gap-2">
-      <label htmlFor={id} className="flex items-center justify-between gap-3 text-[0.875rem]">
-        <span className="font-medium text-[var(--text-secondary)]">{label}</span>
-        <span className="font-semibold text-[var(--text-primary)]">{value}</span>
+    <div>
+      <label htmlFor={id} className="flex items-center justify-between gap-3 text-[14px]">
+        <span className="text-[var(--text-secondary)]">{label}</span>
+        <span className="mono font-semibold text-[var(--text-primary)]">{value}</span>
       </label>
       <input
         id={id}
@@ -875,208 +892,30 @@ function StepSlider({
         step={10}
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
-        className="h-2 w-full cursor-pointer appearance-none rounded-full bg-[var(--surface-3)] accent-[var(--accent)]"
+        className="mt-2 h-2 w-full cursor-pointer appearance-none rounded-full bg-[var(--surface-3)] accent-[var(--accent)]"
       />
-      <div className="flex justify-between text-[0.6875rem] text-[var(--text-tertiary)]">
-        <span>0</span>
-        <span>50</span>
-        <span>100</span>
-      </div>
     </div>
   );
 }
 
-function ControlChecklist({
-  selected,
-  onToggle,
-}: {
-  selected: string[];
-  onToggle: (control: string) => void;
-}) {
-  return (
-    <div className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-4">
-      <p className="text-[0.9375rem] font-semibold text-[var(--text-primary)]">Controles del caso</p>
-      <p className="mt-1 text-[0.8125rem] text-[var(--text-secondary)]">
-        Límites operativos que el prompt debe respetar.
-      </p>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {controlOptions.map((option) => {
-          const isChecked = selected.includes(option);
-          return (
-            <button
-              key={option}
-              type="button"
-              onClick={() => onToggle(option)}
-              className={[
-                "inline-flex min-h-9 items-center gap-2 rounded-[var(--radius-sm)] px-3 text-[0.8125rem] font-medium transition-colors",
-                isChecked
-                  ? "bg-[var(--accent-soft)] text-[var(--accent)]"
-                  : "bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]",
-              ].join(" ")}
-            >
-              {isChecked && <AppleIcon name="check" size="xs" />}
-              {option}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function PromptEditor({
-  value,
-  onChange,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow-sm)]">
-      <div className="flex items-center justify-between gap-3 border-b border-[var(--hairline)] px-4 py-3">
-        <div className="flex items-center gap-2">
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
-            <AppleIcon name="sparkles" size="xs" />
-          </span>
-          <span className="text-[0.875rem] font-semibold text-[var(--text-primary)]">Prompt</span>
-        </div>
-        <AppleBadge tone="neutral">{value.length} caracteres</AppleBadge>
-      </div>
-      <textarea
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        rows={9}
-        className="w-full resize-none bg-transparent px-4 py-4 text-[0.9375rem] leading-6 text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)]"
-      />
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--hairline)] bg-[var(--surface-2)] px-4 py-3">
-        <span className="text-[0.8125rem] text-[var(--text-secondary)]">Textarea de IA: redactar, insertar bloques y regenerar.</span>
-        <AppleBadge tone="accent">Preview editable</AppleBadge>
-      </div>
-    </div>
-  );
-}
-
-function AiFollowUpBox({ onSubmit }: { onSubmit: () => void }) {
-  return (
-    <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
-      <div className="flex items-center gap-2 border-b border-[var(--hairline)] px-4 py-3">
-        <AppleIcon name="sparkles" size="sm" className="text-[var(--accent)]" />
-        <span className="text-[0.875rem] font-semibold text-[var(--text-primary)]">Follow-up a IA</span>
-      </div>
-      <textarea
-        defaultValue="Corrige el output: elimina datos personales, quita claims sin fuente y agrega aprobación legal antes de uso externo."
-        rows={3}
-        className="w-full resize-none bg-transparent px-4 py-4 text-[0.9375rem] leading-6 text-[var(--text-primary)] outline-none"
-      />
-      <div className="flex justify-end border-t border-[var(--hairline)] bg-[var(--surface-2)] px-4 py-3">
-        <AppleButton tone="primary" onClick={onSubmit}>
-          Pedir corrección
-        </AppleButton>
-      </div>
-    </div>
-  );
-}
-
-function DynamicSignal({
-  title,
-  body,
-  tone,
-}: {
-  title: string;
-  body: string;
-  tone: BadgeTone;
-}) {
-  return (
-    <AppleCard variant={tone === "success" ? "success" : tone === "warning" ? "warning" : "default"} padding="md">
-      <div className="flex items-start gap-3">
-        <span className="mt-0.5 text-[var(--accent)]">
-          <AppleIcon name={tone === "warning" ? "alert" : "sparkles"} size="sm" />
-        </span>
-        <div>
-          <p className="text-[0.9375rem] font-semibold text-[var(--text-primary)]">{title}</p>
-          <p className="mt-1 text-[0.875rem] leading-5 text-[var(--text-secondary)]">{body}</p>
-        </div>
-      </div>
-    </AppleCard>
-  );
-}
-
-function ReadOnlyBar({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: number;
-  tone: BadgeTone;
-}) {
+function ReadOnlyBar({ label, value, danger }: { label: string; value: number; danger?: boolean }) {
   const color =
-    tone === "danger"
+    danger && value > 50
       ? "var(--band-b-bar)"
-      : tone === "warning"
-        ? "var(--band-m-bar)"
-        : "var(--band-a-bar)";
+      : value > 65
+        ? "var(--band-a-bar)"
+        : value > 35
+          ? "var(--band-m-bar)"
+          : "var(--band-b-bar)";
   return (
     <div>
-      <div className="mb-1 flex items-center justify-between gap-3 text-[0.75rem]">
-        <span className="text-[var(--text-tertiary)]">{label}</span>
-        <span className="font-medium text-[var(--text-secondary)]">{value}</span>
+      <div className="mb-1 flex items-center justify-between gap-3 text-[12px]">
+        <span className="capitalize text-[var(--text-tertiary)]">{label}</span>
+        <span className="mono text-[var(--text-secondary)]">{value}</span>
       </div>
       <div className="h-2 rounded-full bg-[var(--surface-3)]">
-        <div className="h-2 rounded-full" style={{ width: `${value}%`, background: color }} />
+        <div className="h-2 rounded-full" style={{ width: `${value}%`, backgroundColor: color }} />
       </div>
-    </div>
-  );
-}
-
-function HigField({ label, defaultValue }: { label: string; defaultValue: string }) {
-  return (
-    <label className="grid gap-2">
-      <span className="text-[0.8125rem] font-medium text-[var(--text-secondary)]">
-        {label}
-      </span>
-      <input
-        defaultValue={defaultValue}
-        className="min-h-11 rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 text-[0.9375rem] text-[var(--text-primary)] outline-none transition-colors placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
-      />
-    </label>
-  );
-}
-
-function HigTextarea({
-  label,
-  value,
-  onChange,
-  minRows = 4,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  minRows?: number;
-}) {
-  return (
-    <label className="grid gap-2">
-      <span className="text-[0.8125rem] font-medium text-[var(--text-secondary)]">
-        {label}
-      </span>
-      <textarea
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        rows={minRows}
-        className="resize-none rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] px-3 py-3 text-[0.9375rem] leading-6 text-[var(--text-primary)] outline-none transition-colors placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
-      />
-    </label>
-  );
-}
-
-function EvidenceMetric({ label, value }: { label: string; value: number }) {
-  return (
-    <div>
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <span className="text-[0.875rem] text-[var(--text-secondary)]">{label}</span>
-        <span className="text-[0.875rem] font-medium text-[var(--text-primary)]">{value}%</span>
-      </div>
-      <AppleProgress value={value} aria-label={label} />
     </div>
   );
 }
