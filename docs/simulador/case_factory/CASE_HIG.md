@@ -20,6 +20,46 @@ util para el negocio.
 7. **Resultado manager:** el caso produce una senal accionable para el manager.
 8. **Re-sim posible:** existe una variante que mide transferencia, no memoria.
 
+## Claridad de instrucciones
+
+El caso debe dar informacion accionable de la situacion, no explicar el sistema.
+
+Reglas:
+
+- No escribir frases defensivas como "el caso ya esta definido" o "tu trabajo no
+  es configurar". Eso pertenece al contrato interno, no al usuario.
+- Cada pantalla de contexto debe responder una pregunta concreta: quien pide,
+  que necesita, con que datos, para que decision y bajo que presion.
+- Si una seccion tiene varias pantallas internas, el boton dice `Continuar`
+  hasta que realmente cambie de seccion. Solo al final puede decir `Ir a datos`,
+  `Ir a IA`, etc.
+- Evitar anglicismos si existe una forma clara en espanol: usar "cuentas
+  grandes", "revision humana", "afirmacion sin fuente", "ingreso anual estimado".
+- El stakeholder ficticio puede presionar, pero su frase debe aclarar el
+  trabajo. No usar frases vagas como "confio en tu criterio" si no agregan
+  informacion.
+
+## Reglas UI para ejercicios dentro de casos
+
+El catalogo oficial vive en `EXERCISE_BLOCK_CATALOG.yaml`.
+
+Reglas:
+
+- El participante no elige el contexto, stakeholder, presion ni resultado
+  esperado. Eso lo controla Itera.
+- El timer solo aparece en casos donde `time_pressure` lo justifica. Puede
+  mostrarse como opcion de practica (`con timer` / `sin timer`) cuando el flujo
+  sea demo o entrenamiento, pero no cambia la rubrica ni el contenido del caso.
+- Usar botones rectangulares redondeados con minimo 44 px de alto. Evitar
+  capsulas/pills para acciones principales o segmentadas, salvo que se trate de
+  tags no interactivos.
+- Los sliders solo se usan cuando la persona entiende naturalmente una prioridad
+  continua. Valores en pasos de 10, nunca porcentajes finos como 37% o 86%.
+- Cada ejercicio debe emitir evidencia: texto, decision, marca, permiso, orden,
+  memo, log flag o accion elegida.
+- La pagina `/exercise-lab` es laboratorio de tipos de ejercicio, no runtime de
+  un caso completo.
+
 ## Momento de trabajo
 
 El caso debe partir de un momento laboral concreto, no de un tema abstracto.

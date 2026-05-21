@@ -3,7 +3,7 @@ import { ExerciseLabClient } from "./ExerciseLabClient";
 
 export const metadata: Metadata = {
   title: "exercise lab | Itera",
-  description: "Demo interno de ejercicios por seccion para simulaciones Itera.",
+  description: "Catalogo interno de tipos de ejercicio para casos Itera.",
   robots: {
     index: false,
     follow: false,

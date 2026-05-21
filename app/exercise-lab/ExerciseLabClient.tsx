@@ -1,1020 +1,799 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { RuntimeNav } from "@/components/simulador/RuntimeNav";
-import { AppleButton } from "@/components/simulador/apple";
 
-type DataAction = "usar" | "anonimizar" | "agregar" | "excluir" | "pedir permiso";
+type DataAction = "usar" | "anonimizar" | "agregar" | "excluir";
+type Permission = "permitir" | "revisar" | "bloquear";
 
-type DataRow = {
-  id: string;
-  field: string;
-  sample: string;
-  personal: boolean;
-  necessary: boolean;
-  action: DataAction;
-  note: string;
-};
-
-const SECTIONS = [
-  { id: "contexto", label: "Contexto" },
-  { id: "datos", label: "Datos" },
-  { id: "ia", label: "IA" },
-  { id: "revision", label: "Revisión" },
-  { id: "decision", label: "Decisión" },
-  { id: "respuesta", label: "Respuesta" },
+const exerciseList = [
+  {
+    id: "textfield-ia",
+    eyebrow: "01 · textfield de IA",
+    title: "Pedirle trabajo útil a la IA.",
+    description:
+      "El participante redacta una petición completa usando objetivo, datos permitidos y límites. Mide si sabe convertir una necesidad laboral en una instrucción clara.",
+    signals: ["contexto", "ejecución IA", "impacto"],
+  },
+  {
+    id: "tabla-datos",
+    eyebrow: "02 · tabla editable",
+    title: "Decidir qué datos entran.",
+    description:
+      "El participante clasifica campos reales antes de usarlos. Mide minimización, privacidad y calidad de datos sin pedir teoría.",
+    signals: ["datos", "juicio"],
+  },
+  {
+    id: "matriz-permisos",
+    eyebrow: "03 · matriz de permisos",
+    title: "Poner límites a una automatización.",
+    description:
+      "El participante define qué puede hacer el sistema solo, qué requiere revisión y qué debe bloquearse. Útil para workflows y agentes.",
+    signals: ["datos", "juicio", "ejecución IA"],
+  },
+  {
+    id: "revision-output",
+    eyebrow: "04 · revisión de output",
+    title: "Marcar errores antes de usar.",
+    description:
+      "El participante revisa una salida de IA con errores realistas. Mide validación, lectura de riesgo y capacidad de corregir sin aceptar todo.",
+    signals: ["validación", "juicio"],
+  },
+  {
+    id: "comparacion-ia",
+    eyebrow: "05 · comparación de respuestas",
+    title: "Elegir el mejor output.",
+    description:
+      "El participante compara dos respuestas de IA y justifica cuál usaría. Sirve para medir criterio de calidad, no sólo preferencia estética.",
+    signals: ["validación", "impacto"],
+  },
+  {
+    id: "workflow-builder",
+    eyebrow: "06 · workflow builder",
+    title: "Armar un flujo con control humano.",
+    description:
+      "El participante configura pasos de trabajo con IA, revisión y entrega. Mide si entiende handoffs, checkpoints y responsabilidad.",
+    signals: ["ejecución IA", "validación", "impacto"],
+  },
+  {
+    id: "agent-brief",
+    eyebrow: "07 · brief para agente",
+    title: "Delegar sin perder control.",
+    description:
+      "El participante define objetivo, permisos, límites y fallback para un agente. Es central para nivel 3: agentes en producción.",
+    signals: ["ejecución IA", "juicio", "datos"],
+  },
+  {
+    id: "logs",
+    eyebrow: "08 · revisión de logs",
+    title: "Detectar fallas en una corrida.",
+    description:
+      "El participante lee eventos de una automatización y marca dónde se rompió el control. Mide supervisión, no memoria.",
+    signals: ["validación", "juicio"],
+  },
+  {
+    id: "dashboard-pivot",
+    eyebrow: "09 · dashboard / pivot",
+    title: "Leer señales de negocio.",
+    description:
+      "El participante filtra una tabla y elige qué señal llevar al manager. Mide si conecta IA con impacto operativo.",
+    signals: ["impacto", "contexto"],
+  },
+  {
+    id: "decision-memo",
+    eyebrow: "10 · decisión + memo",
+    title: "Cerrar con una recomendación.",
+    description:
+      "El participante elige una acción con ventajas y costos, luego escribe una explicación corta. Mide responsabilidad ejecutiva.",
+    signals: ["juicio", "impacto", "contexto"],
+  },
 ] as const;
 
-const CONTEXT_SCREEN_COUNT = 3;
+const initialDataRows: Array<{
+  id: string;
+  field: string;
+  example: string;
+  action: DataAction;
+}> = [
+  { id: "contact", field: "nombre del contacto", example: "Mariana Robles", action: "anonimizar" },
+  { id: "company", field: "empresa", example: "Aurora Retail", action: "usar" },
+  { id: "email", field: "correo", example: "mariana@aurora.example", action: "excluir" },
+  { id: "tickets", field: "tickets recientes", example: "12 conversaciones", action: "agregar" as DataAction },
+].map((row) => ({
+  ...row,
+  action: row.action === "agregar" ? "usar" : row.action,
+}));
 
-const dataRows: DataRow[] = [
-  {
-    id: "contact_name",
-    field: "Nombre del contacto",
-    sample: "Mariana Robles",
-    personal: true,
-    necessary: false,
-    action: "anonimizar",
-    note: "Identificador directo.",
-  },
-  {
-    id: "company",
-    field: "Empresa",
-    sample: "Aurora Retail",
-    personal: false,
-    necessary: true,
-    action: "usar",
-    note: "Contexto comercial.",
-  },
-  {
-    id: "email",
-    field: "Email",
-    sample: "mariana@aurora.example",
-    personal: true,
-    necessary: false,
-    action: "excluir",
-    note: "No aporta señal para la campaña.",
-  },
-  {
-    id: "tickets",
-    field: "Tickets recientes",
-    sample: "12 conversaciones",
-    personal: true,
-    necessary: true,
-    action: "agregar",
-    note: "Usar patrones, no texto crudo.",
-  },
-  {
-    id: "arr",
-    field: "Ingreso anual estimado",
-    sample: "$84,000 USD",
-    personal: false,
-    necessary: true,
-    action: "usar",
-    note: "Dato comercial útil si se presenta como rango, no como promesa.",
-  },
+const permissionRows = [
+  "leer CRM",
+  "crear borrador",
+  "enviar a cliente",
+  "actualizar pipeline",
+  "usar conversaciones crudas",
 ];
 
-const promptBlocks = [
+const outputLines = [
   {
-    id: "objective",
-    label: "Objetivo",
-    text: "Objetivo: proponer tres ángulos para reactivar cuentas grandes que bajaron su uso del producto.",
-  },
-  {
-    id: "allowed_data",
-    label: "Datos permitidos",
-    text: "Datos permitidos: empresa, segmento, resumen agregado de tickets e ingreso anual estimado. No usar nombres, correos ni texto crudo de clientes.",
-  },
-  {
-    id: "controls",
-    label: "Controles",
-    text: "Controles: no inventar métricas, marcar cualquier afirmación que requiera fuente y dejar revisión humana antes del envío.",
-  },
-];
-
-const outputSegments = [
-  {
-    id: "claim",
-    body: "Aurora puede recuperar 40% de cuentas inactivas en 30 días con nuestra plataforma.",
-    flag: "Claim sin fuente",
+    id: "metric",
+    text: "Podemos recuperar 40% de cuentas inactivas en 30 días.",
+    issue: "afirmación sin fuente",
   },
   {
     id: "pii",
-    body: "La propuesta se enviará a mariana@aurora.example sin revisión previa.",
-    flag: "Dato personal",
+    text: "El mensaje se enviará a mariana@aurora.example con tono urgente.",
+    issue: "dato personal",
   },
   {
     id: "safe",
-    body: "Recomendamos iniciar con un piloto interno y revisión humana antes de uso externo.",
-    flag: "Parte usable",
+    text: "Propongo usar datos agregados y validar cualquier promesa antes de enviar.",
+    issue: "usable",
   },
 ];
 
-const decisionOptions = [
-  {
-    id: "launch",
-    title: "Lanzar hoy",
-    sub: "Máxima velocidad, riesgo alto.",
-    values: { velocidad: 96, riesgo: 92, aprendizaje: 35 },
-  },
-  {
-    id: "pilot",
-    title: "Piloto con aprobación",
-    sub: "Avanza hoy con revisión humana y límites claros.",
-    values: { velocidad: 72, riesgo: 32, aprendizaje: 84 },
-  },
-  {
-    id: "internal",
-    title: "Solo uso interno",
-    sub: "Seguro, pero con menor aprendizaje externo.",
-    values: { velocidad: 68, riesgo: 20, aprendizaje: 52 },
-  },
-  {
-    id: "pause",
-    title: "Pausar",
-    sub: "Riesgo mínimo, aprendizaje casi nulo.",
-    values: { velocidad: 12, riesgo: 8, aprendizaje: 18 },
-  },
+const workflowSteps = [
+  "resumir tickets agregados",
+  "generar tres ángulos",
+  "marcar afirmaciones sin fuente",
+  "revisión humana",
+  "entrega a ventas",
 ];
 
-const actionOptions: DataAction[] = ["usar", "anonimizar", "agregar", "excluir", "pedir permiso"];
+const runLogs = [
+  { id: "l1", text: "09:02 · agente leyó cuentas asignadas", severity: "ok" },
+  { id: "l2", text: "09:03 · incluyó correo personal en borrador", severity: "high" },
+  { id: "l3", text: "09:04 · generó métrica sin fuente externa", severity: "high" },
+  { id: "l4", text: "09:05 · dejó envío en borrador pendiente de aprobación", severity: "ok" },
+];
 
 export function ExerciseLabClient() {
-  const [sectionIdx, setSectionIdx] = useState(0);
-  const [contextScreenIdx, setContextScreenIdx] = useState(0);
-  const [maxReached, setMaxReached] = useState(0);
-  const [timerEnabled, setTimerEnabled] = useState(true);
-  const [fieldIdx, setFieldIdx] = useState(0);
-  const [dataState, setDataState] = useState<Record<string, DataRow>>(
-    Object.fromEntries(dataRows.map((row) => [row.id, row])),
+  const [prompt, setPrompt] = useState(
+    "Crea tres ángulos para reactivar cuentas grandes que bajaron su uso del producto. Usa sólo empresa, segmento y resumen agregado de tickets. No uses nombres ni correos. Marca cualquier afirmación que necesite fuente.",
   );
   const [security, setSecurity] = useState(80);
-  const [efficiency, setEfficiency] = useState(60);
-  const [cost, setCost] = useState(40);
-  const [quality, setQuality] = useState(80);
-  const [autonomy, setAutonomy] = useState(30);
-  const [prompt, setPrompt] = useState(
-    "Actúa como especialista de marketing para empresas.\n\nCrea tres ángulos para reactivar cuentas grandes usando solo datos permitidos. No uses nombres, correos ni texto crudo de clientes. No inventes métricas. Devuelve asunto, promesa principal y una nota de revisión.",
-  );
-  const [selectedSegments, setSelectedSegments] = useState<string[]>(["claim", "pii"]);
-  const [showCorrectedOutput, setShowCorrectedOutput] = useState(false);
+  const [quality, setQuality] = useState(70);
+  const [dataRows, setDataRows] = useState(initialDataRows);
+  const [permissions, setPermissions] = useState<Record<string, Permission>>({
+    "leer CRM": "revisar",
+    "crear borrador": "permitir",
+    "enviar a cliente": "bloquear",
+    "actualizar pipeline": "revisar",
+    "usar conversaciones crudas": "bloquear",
+  });
+  const [flags, setFlags] = useState<string[]>(["metric", "pii"]);
+  const [comparison, setComparison] = useState("b");
+  const [enabledSteps, setEnabledSteps] = useState<string[]>([
+    "resumir tickets agregados",
+    "generar tres ángulos",
+    "marcar afirmaciones sin fuente",
+    "revisión humana",
+  ]);
+  const [agentFallback, setAgentFallback] = useState("pausar y pedir revisión humana");
+  const [logFlags, setLogFlags] = useState<string[]>(["l2", "l3"]);
+  const [pivotFilter, setPivotFilter] = useState("riesgo");
   const [decision, setDecision] = useState("pilot");
   const [memo, setMemo] = useState(
-    "Recomiendo piloto con aprobación humana, no lanzamiento directo.\n\nMotivo: el output inicial incluye una promesa no verificable y datos personales que no deben entrar a una campaña externa. Podemos avanzar hoy si limitamos el uso a borrador interno, eliminamos datos personales, pedimos fuente para cualquier métrica y dejamos una revisión explícita antes del envío.",
+    "Recomiendo piloto interno antes de envío externo. Hay señales útiles, pero dos afirmaciones requieren fuente y los datos personales deben salir del borrador.",
   );
 
-  const currentSection = SECTIONS[sectionIdx];
-  const currentField = dataState[dataRows[fieldIdx].id];
-  const selectedDecision = decisionOptions.find((option) => option.id === decision) ?? decisionOptions[1];
-  const capsuleCount = currentSection.id === "contexto" ? CONTEXT_SCREEN_COUNT : 1;
-  const activeCapsule = currentSection.id === "contexto" ? contextScreenIdx : 0;
-  const canGoBack = sectionIdx > 0 || contextScreenIdx > 0;
-  const nextLabel =
-    currentSection.id === "contexto" && contextScreenIdx < CONTEXT_SCREEN_COUNT - 1
-      ? "Continuar"
-      : currentSection.id === "contexto"
-        ? "Ir a datos"
-        : sectionIdx === SECTIONS.length - 1
-          ? "Demo completo"
-          : "Siguiente";
-
-  const modelProfile = useMemo(() => {
-    if (security >= 80 && autonomy <= 40) return "Modelo controlado";
-    if (quality >= 80 && cost <= 50) return "Razonamiento premium";
-    if (cost >= 70 && efficiency >= 70) return "Modelo económico y rápido";
-    return "Modelo balanceado";
-  }, [autonomy, cost, efficiency, quality, security]);
-
-  function goToSection(index: number) {
-    if (index <= maxReached) setSectionIdx(index);
-  }
-
-  function nextStep() {
-    if (currentSection.id === "contexto" && contextScreenIdx < CONTEXT_SCREEN_COUNT - 1) {
-      setContextScreenIdx((screen) => Math.min(CONTEXT_SCREEN_COUNT - 1, screen + 1));
-      return;
-    }
-
-    nextSection();
-  }
-
-  function prevStep() {
-    if (currentSection.id === "contexto" && contextScreenIdx > 0) {
-      setContextScreenIdx((screen) => Math.max(0, screen - 1));
-      return;
-    }
-
-    if (sectionIdx === 1) {
-      setSectionIdx(0);
-      setContextScreenIdx(CONTEXT_SCREEN_COUNT - 1);
-      return;
-    }
-
-    prevSection();
-  }
-
-  function nextSection() {
-    const next = Math.min(sectionIdx + 1, SECTIONS.length - 1);
-    setSectionIdx(next);
-    setMaxReached((reached) => Math.max(reached, next));
-  }
-
-  function prevSection() {
-    setSectionIdx((current) => Math.max(0, current - 1));
-  }
-
-  function updateCurrentField(patch: Partial<DataRow>) {
-    setDataState((state) => ({
-      ...state,
-      [currentField.id]: { ...currentField, ...patch },
-    }));
-  }
-
-  function insertPromptBlock(text: string) {
-    setPrompt((current) => `${current.trim()}\n\n${text}`);
-  }
-
-  function regeneratePrompt() {
-    const allowed = Object.values(dataState)
-      .filter((row) => row.action !== "excluir")
-      .map((row) => `${row.field.toLowerCase()} (${row.action})`)
-      .join(", ");
-    setPrompt(
-      [
-        "Actúa como especialista de marketing para empresas.",
-        `Objetivo: crear tres ángulos de campaña usando solo ${allowed}.`,
-        `Prioridades: seguridad ${security}/100, eficiencia ${efficiency}/100, costo ${cost}/100, calidad ${quality}/100, autonomía ${autonomy}/100.`,
-        "Controles: no usar datos personales crudos, no inventar métricas y pedir revisión humana antes de cualquier envío externo.",
-      ].join("\n\n"),
-    );
-  }
-
-  function toggleSegment(id: string) {
-    setSelectedSegments((segments) =>
-      segments.includes(id)
-        ? segments.filter((segment) => segment !== id)
-        : [...segments, id],
-    );
-  }
-
-  const canGoNext = true;
+  const promptPreview = useMemo(
+    () =>
+      `${prompt}\n\nPrioridades: seguridad ${security}/100 · calidad ${quality}/100 · revisión humana obligatoria.`,
+    [prompt, quality, security],
+  );
 
   return (
     <>
       <RuntimeNav mode="field_test" />
+      <main className="simulador-root surface-canvas snap-y snap-mandatory overflow-x-hidden">
+        <IntroSection />
+        {exerciseList.map((exercise, index) => (
+          <ExerciseSection key={exercise.id} exercise={exercise} index={index}>
+            {exercise.id === "textfield-ia" && (
+              <PromptExercise
+                prompt={prompt}
+                setPrompt={setPrompt}
+                promptPreview={promptPreview}
+                security={security}
+                setSecurity={setSecurity}
+                quality={quality}
+                setQuality={setQuality}
+              />
+            )}
+            {exercise.id === "tabla-datos" && (
+              <DataTableExercise rows={dataRows} setRows={setDataRows} />
+            )}
+            {exercise.id === "matriz-permisos" && (
+              <PermissionMatrix permissions={permissions} setPermissions={setPermissions} />
+            )}
+            {exercise.id === "revision-output" && (
+              <OutputReview flags={flags} setFlags={setFlags} />
+            )}
+            {exercise.id === "comparacion-ia" && (
+              <ComparisonExercise comparison={comparison} setComparison={setComparison} />
+            )}
+            {exercise.id === "workflow-builder" && (
+              <WorkflowBuilder enabledSteps={enabledSteps} setEnabledSteps={setEnabledSteps} />
+            )}
+            {exercise.id === "agent-brief" && (
+              <AgentBrief fallback={agentFallback} setFallback={setAgentFallback} />
+            )}
+            {exercise.id === "logs" && (
+              <LogReview flags={logFlags} setFlags={setLogFlags} />
+            )}
+            {exercise.id === "dashboard-pivot" && (
+              <PivotExercise filter={pivotFilter} setFilter={setPivotFilter} />
+            )}
+            {exercise.id === "decision-memo" && (
+              <DecisionMemo
+                decision={decision}
+                setDecision={setDecision}
+                memo={memo}
+                setMemo={setMemo}
+              />
+            )}
+          </ExerciseSection>
+        ))}
+      </main>
+    </>
+  );
+}
 
-      <div className="simulador-root max-w-7xl mx-auto flex min-h-[calc(100vh-3.5rem)]">
-        <aside className="hidden md:block flex-shrink-0 w-60">
-          <div className="sticky top-[80px] py-10 px-6">
-            <CaseMetaCard timerEnabled={timerEnabled} />
-            <nav className="space-y-1">
-              {SECTIONS.map((section, index) => {
-                const reached = index <= maxReached;
-                const isCurrent = index === sectionIdx;
-                const isCompleted = index < maxReached;
-                return (
-                  <button
-                    key={section.id}
-                    type="button"
-                    onClick={() => goToSection(index)}
-                    disabled={!reached}
-                    className={`group w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-[13px] transition-colors ${
-                      isCurrent
-                        ? "bg-[var(--accent-soft)] text-[var(--text-primary)] font-medium"
-                        : reached
-                          ? "text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
-                          : "text-[var(--text-tertiary)] cursor-not-allowed"
-                    }`}
-                  >
-                    <span
-                      className={`flex-shrink-0 h-5 w-5 rounded-full grid place-items-center text-[10px] mono font-semibold transition-colors ${
-                        isCurrent || isCompleted
-                          ? "accent-bg text-white"
-                          : reached
-                            ? "border border-[var(--border-strong)] text-[var(--text-primary)] bg-transparent"
-                            : "border border-[var(--border)] text-[var(--text-tertiary)] bg-transparent"
-                      }`}
-                    >
-                      {isCompleted ? "✓" : index === 0 ? <span className="block h-1.5 w-1.5 rounded-full bg-current" /> : index}
-                    </span>
-                    <span className="truncate">{section.label}</span>
-                  </button>
-                );
-              })}
-            </nav>
+function IntroSection() {
+  return (
+    <section className="min-h-[calc(100vh-3.5rem)] snap-start px-6 py-20 grid place-items-center">
+      <div className="max-w-3xl">
+        <div className="eyebrow">exercise lab · catálogo de bloques</div>
+        <h1 className="display display-tight mt-6 text-[40px] sm:text-[56px] text-[var(--text-primary)]">
+          Diez ejercicios para construir casos.
+        </h1>
+        <p className="mt-6 text-[18px] leading-[1.65] text-[var(--text-secondary)]">
+          Esta página no presenta un caso completo. Presenta los tipos de interacción
+          que podremos combinar al crear casos: IA primero, ejercicios tradicionales
+          como soporte y evidencia clara para el manager.
+        </p>
+        <div className="mt-8 grid gap-3 sm:grid-cols-3">
+          <Fact label="regla" value="una tarea principal por pantalla" />
+          <Fact label="sesgo" value="60-70% nativos de IA" />
+          <Fact label="salida" value="evidencia evaluable" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ExerciseSection({
+  exercise,
+  index,
+  children,
+}: {
+  exercise: (typeof exerciseList)[number];
+  index: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      id={exercise.id}
+      className="min-h-[calc(100vh-3.5rem)] snap-start px-6 py-16 flex items-center"
+    >
+      <div className="mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:items-center">
+        <aside>
+          <div className="eyebrow">{exercise.eyebrow}</div>
+          <h2 className="display display-tight mt-5 text-[34px] sm:text-[46px] text-[var(--text-primary)]">
+            {exercise.title}
+          </h2>
+          <p className="mt-5 text-[16px] leading-[1.65] text-[var(--text-secondary)]">
+            {exercise.description}
+          </p>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {exercise.signals.map((signal) => (
+              <span
+                key={signal}
+                className="rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-[13px] text-[var(--text-secondary)]"
+              >
+                {signal}
+              </span>
+            ))}
+          </div>
+          <div className="mt-8 text-[13px] text-[var(--text-tertiary)]">
+            bloque {String(index + 1).padStart(2, "0")} / {exerciseList.length}
           </div>
         </aside>
 
-        <main className="flex-1 min-w-0 surface-canvas pb-32 flex flex-col">
-          <div className="pt-8 px-6">
-            <div className="max-w-2xl mx-auto flex gap-1.5">
-              {Array.from({ length: capsuleCount }).map((_, index) => (
-                <div
-                  key={index}
-                  className="flex-1 h-[5px] rounded-full overflow-hidden bg-[var(--surface-3)]"
-                >
-                  <motion.div
-                    className="h-full rounded-full"
-                    style={{ backgroundColor: index <= activeCapsule ? "var(--accent)" : "transparent" }}
-                    initial={false}
-                    animate={{ width: index <= activeCapsule ? "100%" : "0%" }}
-                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex-1 flex items-center justify-center px-6 py-10">
-            <div className={`${currentSection.id === "ia" ? "max-w-4xl" : "max-w-2xl"} w-full`}>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`${currentSection.id}-${currentSection.id === "contexto" ? contextScreenIdx : 0}`}
-                  initial={{ opacity: 0, x: 24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -24 }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  {currentSection.id === "contexto" && (
-                    <ContextScreen
-                      timerEnabled={timerEnabled}
-                      setTimerEnabled={setTimerEnabled}
-                      screenIdx={contextScreenIdx}
-                    />
-                  )}
-                  {currentSection.id === "datos" && (
-                    <DataScreen
-                      field={currentField}
-                      fieldIdx={fieldIdx}
-                      totalFields={dataRows.length}
-                      onPrevField={() => setFieldIdx((index) => Math.max(0, index - 1))}
-                      onNextField={() => setFieldIdx((index) => Math.min(dataRows.length - 1, index + 1))}
-                      onChange={updateCurrentField}
-                    />
-                  )}
-                  {currentSection.id === "ia" && (
-                    <IaScreen
-                      prompt={prompt}
-                      setPrompt={setPrompt}
-                      insertPromptBlock={insertPromptBlock}
-                      regeneratePrompt={regeneratePrompt}
-                      security={security}
-                      setSecurity={setSecurity}
-                      efficiency={efficiency}
-                      setEfficiency={setEfficiency}
-                      cost={cost}
-                      setCost={setCost}
-                      quality={quality}
-                      setQuality={setQuality}
-                      autonomy={autonomy}
-                      setAutonomy={setAutonomy}
-                      modelProfile={modelProfile}
-                    />
-                  )}
-                  {currentSection.id === "revision" && (
-                    <ReviewScreen
-                      selectedSegments={selectedSegments}
-                      toggleSegment={toggleSegment}
-                      showCorrectedOutput={showCorrectedOutput}
-                      setShowCorrectedOutput={setShowCorrectedOutput}
-                    />
-                  )}
-                  {currentSection.id === "decision" && (
-                    <DecisionScreen decision={decision} setDecision={setDecision} />
-                  )}
-                  {currentSection.id === "respuesta" && (
-                    <ResponseScreen
-                      memo={memo}
-                      setMemo={setMemo}
-                      selectedDecision={selectedDecision.title}
-                      score={88}
-                    />
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-        </main>
-      </div>
-
-      <div className="simulador-root fixed bottom-0 inset-x-0 z-40 surface-backdrop">
-        <div className="max-w-7xl mx-auto md:pl-60 px-6 py-4">
-          <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
-            {canGoBack ? (
-              <AppleButton
-                tone="secondary"
-                size="lg"
-                onPress={prevStep}
-                className="h-11 px-5 text-[14px] font-medium border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
-              >
-                ← Anterior
-              </AppleButton>
-            ) : (
-              <span />
-            )}
-
-            <AppleButton
-              size="lg"
-              tone={canGoNext ? "primary" : "secondary"}
-              onPress={nextStep}
-              isDisabled={!canGoNext || sectionIdx === SECTIONS.length - 1}
-              style={
-                sectionIdx === SECTIONS.length - 1
-                  ? undefined
-                  : { backgroundColor: "var(--accent)", color: "white" }
-              }
-              className={`h-11 px-6 text-[14px] font-medium ${
-                sectionIdx === SECTIONS.length - 1
-                  ? "bg-[var(--surface-3)] text-[var(--text-tertiary)]"
-                  : "!bg-[var(--accent)] !text-white hover:opacity-90"
-              } shadow-none btn-hover-shift`}
-            >
-              {nextLabel}
-            </AppleButton>
-          </div>
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6 shadow-[var(--shadow-sm)]">
+          {children}
         </div>
       </div>
-    </>
+    </section>
   );
 }
 
-function CaseMetaCard({ timerEnabled }: { timerEnabled: boolean }) {
-  return (
-    <div className="mb-7 rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4">
-      <div className="flex items-center gap-2">
-        <span className="rounded-full accent-bg-soft accent-text px-2 py-0.5 text-[11px] font-semibold">
-          N2
-        </span>
-        <span className="text-[11px] text-[var(--text-tertiary)]">Marketing</span>
-      </div>
-      <div className="mt-3 text-[13px] font-medium leading-snug text-[var(--text-primary)]">
-        Campaña urgente con datos sensibles
-      </div>
-      <div className="mt-2 text-[12px] leading-snug text-[var(--text-secondary)]">
-        Workflow · {timerEnabled ? "12 min" : "sin timer"}
-      </div>
-    </div>
-  );
-}
-
-function ContextScreen({
-  timerEnabled,
-  setTimerEnabled,
-  screenIdx,
-}: {
-  timerEnabled: boolean;
-  setTimerEnabled: (value: boolean) => void;
-  screenIdx: number;
-}) {
-  if (screenIdx === 1) {
-    return (
-      <>
-        <div className="eyebrow">Contexto · material disponible</div>
-        <h1 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
-          Recibes datos mezclados.
-        </h1>
-        <p className="mt-6 text-[18px] text-[var(--text-primary)] leading-[1.65]">
-          El equipo te comparte una lista de cuentas con nombre de contacto, empresa,
-          correo, tickets recientes e ingreso anual estimado. Algunos datos ayudan a
-          entender la oportunidad; otros pueden exponer información personal o llevar al
-          modelo a inventar promesas.
-        </p>
-
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          <ContextFact label="Útil para decidir" value="empresa, segmento, patrones de tickets" />
-          <ContextFact label="Hay que cuidar" value="nombres, correos y texto crudo de clientes" />
-          <ContextFact label="Riesgo principal" value="usar datos de más para ganar velocidad" />
-          <ContextFact label="Señal esperada" value="pasar contexto sin filtrar información sensible" />
-        </div>
-      </>
-    );
-  }
-
-  if (screenIdx === 2) {
-    return (
-      <>
-        <div className="eyebrow">Contexto · entrega esperada</div>
-        <h1 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
-          La entrega no es un anuncio final.
-        </h1>
-        <p className="mt-6 text-[18px] text-[var(--text-primary)] leading-[1.65]">
-          Camila necesita material para decidir rápido: tres ángulos de campaña,
-          una promesa principal por ángulo y una nota breve de qué debe revisarse antes
-          de enviarlo a clientes. La calidad está en saber qué pedirle a la IA, qué
-          datos dejar fuera y cuándo frenar una afirmación débil.
-        </p>
-
-        <div className="mt-8 card-apple bg-[var(--surface)] p-6">
-          <div className="text-[14px] font-medium text-[var(--text-primary)]">
-            Lo que harás en el caso
-          </div>
-          <div className="mt-5 grid gap-3">
-            {[
-              "clasificar datos antes de usarlos",
-              "construir un prompt con límites claros",
-              "revisar un output con errores realistas",
-              "tomar una decisión con tradeoffs",
-              "explicar tu decisión al manager",
-            ].map((item) => (
-              <div key={item} className="flex items-start gap-3 text-[15px] text-[var(--text-primary)]">
-                <span className="mt-2 h-1.5 w-1.5 rounded-full accent-bg" />
-                <span>{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  return (
-    <>
-      <div className="eyebrow">Contexto · caso fijo</div>
-      <h1 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
-        Jueves · 4:30 p.m.
-      </h1>
-      <p className="mt-6 text-[18px] text-[var(--text-primary)] leading-[1.65]">
-        Camila, VP de marketing en una plataforma de analítica para comercios,
-        necesita tres ángulos para una campaña de reactivación. El objetivo es
-        recuperar cuentas grandes que bajaron su uso del producto durante el último
-        mes. La reunión con ventas empieza a las 5.
-      </p>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
-        <ContextFact label="Responsable" value="Camila, VP de marketing" />
-        <ContextFact label="Campaña" value="reactivar cuentas grandes" />
-        <ContextFact label="Entrega" value="tres ángulos antes de las 5" />
-      </div>
-
-      <div className="mt-8 card-apple bg-[var(--surface)] p-5">
-        <p className="text-[15px] text-[var(--text-primary)] leading-[1.6] italic">
-          «Necesito opciones claras para ventas. Usa los datos del equipo, pero no
-          prometas algo que no podamos defender frente a un cliente.»
-        </p>
-      </div>
-
-      <div className="mt-8 card-apple bg-[var(--surface)] p-5">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="text-[16px] font-medium text-[var(--text-primary)]">Timer del caso</div>
-            <div className="mt-1 max-w-md text-[14px] leading-6 text-[var(--text-secondary)]">
-              Este caso está estimado para 12 minutos. Puedes practicar con reloj o
-              quitarlo si solo quieres explorar el flujo.
-            </div>
-          </div>
-          <div className="grid min-h-11 grid-cols-2 rounded-full bg-[var(--surface-2)] p-1 sm:min-w-[232px]">
-            <button
-              type="button"
-              onClick={() => setTimerEnabled(true)}
-              className={`rounded-full px-4 py-2.5 text-[14px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
-                timerEnabled
-                  ? "accent-bg text-white"
-                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-              }`}
-            >
-              Con timer
-            </button>
-            <button
-              type="button"
-              onClick={() => setTimerEnabled(false)}
-              className={`rounded-full px-4 py-2.5 text-[14px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
-                !timerEnabled
-                  ? "accent-bg text-white"
-                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-              }`}
-            >
-              Sin timer
-            </button>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function ContextFact({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
-      <div className="text-[12px] text-[var(--text-tertiary)]">{label}</div>
-      <div className="mt-2 text-[15px] font-medium leading-snug text-[var(--text-primary)]">
-        {value}
-      </div>
-    </div>
-  );
-}
-
-function DataScreen({
-  field,
-  fieldIdx,
-  totalFields,
-  onPrevField,
-  onNextField,
-  onChange,
-}: {
-  field: DataRow;
-  fieldIdx: number;
-  totalFields: number;
-  onPrevField: () => void;
-  onNextField: () => void;
-  onChange: (patch: Partial<DataRow>) => void;
-}) {
-  return (
-    <>
-      <div className="eyebrow">
-        Datos · Campo {fieldIdx + 1} de {totalFields}
-      </div>
-      <h2 className="display display-tight mt-6 text-[32px] sm:text-[44px] text-[var(--text-primary)]">
-        ¿Qué hacer con <span className="mono">{field.field}</span>?
-      </h2>
-      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
-        Clasifica el campo con decisiones simples. El objetivo es pasar señal al modelo sin exponer datos innecesarios.
-      </p>
-
-      <div className="mt-8 card-apple bg-[var(--surface)] p-5">
-        <div className="text-[12px] text-[var(--text-tertiary)]">Muestra</div>
-        <div className="mt-2 text-[18px] text-[var(--text-primary)]">{field.sample}</div>
-        <div className="mt-2 text-[14px] text-[var(--text-secondary)]">{field.note}</div>
-      </div>
-
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
-        <BinaryQuestion label="¿Contiene dato personal?" value={field.personal} onChange={(personal) => onChange({ personal })} />
-        <BinaryQuestion label="¿Es necesario para la tarea?" value={field.necessary} onChange={(necessary) => onChange({ necessary })} />
-      </div>
-
-      <div className="mt-8">
-        <div className="text-[15px] font-medium text-[var(--text-primary)]">Acción permitida</div>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {actionOptions.map((action) => (
-            <button
-              key={action}
-              type="button"
-              onClick={() => onChange({ action })}
-              className={`rounded-full px-3 py-2 text-[13px] font-medium transition-colors ${
-                field.action === action
-                  ? "accent-bg text-white"
-                  : "bg-[var(--surface)] border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]"
-              }`}
-            >
-              {action}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mt-8 flex justify-between gap-3">
-        <AppleButton tone="secondary" onPress={onPrevField} isDisabled={fieldIdx === 0}>
-          ← Campo anterior
-        </AppleButton>
-        <AppleButton tone="secondary" onPress={onNextField} isDisabled={fieldIdx === totalFields - 1}>
-          Siguiente campo →
-        </AppleButton>
-      </div>
-    </>
-  );
-}
-
-function IaScreen({
+function PromptExercise({
   prompt,
   setPrompt,
-  insertPromptBlock,
-  regeneratePrompt,
+  promptPreview,
   security,
   setSecurity,
-  efficiency,
-  setEfficiency,
-  cost,
-  setCost,
   quality,
   setQuality,
-  autonomy,
-  setAutonomy,
-  modelProfile,
 }: {
   prompt: string;
   setPrompt: (value: string) => void;
-  insertPromptBlock: (value: string) => void;
-  regeneratePrompt: () => void;
+  promptPreview: string;
   security: number;
   setSecurity: (value: number) => void;
-  efficiency: number;
-  setEfficiency: (value: number) => void;
-  cost: number;
-  setCost: (value: number) => void;
   quality: number;
   setQuality: (value: number) => void;
-  autonomy: number;
-  setAutonomy: (value: number) => void;
-  modelProfile: string;
 }) {
   return (
-    <>
-      <div className="eyebrow">IA · prompt y controles</div>
-      <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
-        Dirige al modelo.
-      </h2>
-      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
-        Construye el prompt y ajusta prioridades en pasos de 10. La meta es pedir ayuda a la IA sin perder control sobre datos, fuentes y revisión humana.
-      </p>
-
-      <div className="mt-8 grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
-        <div>
-          <div className="overflow-hidden card-apple bg-[var(--surface)]">
-            <div className="flex items-center justify-between gap-3 border-b border-[var(--hairline)] px-4 py-3">
-              <span className="text-[14px] font-medium text-[var(--text-primary)]">Prompt</span>
-              <span className="mono text-[12px] text-[var(--text-tertiary)]">{prompt.length} chars</span>
-            </div>
-            <textarea
-              value={prompt}
-              onChange={(event) => setPrompt(event.target.value)}
-              rows={8}
-              className="w-full resize-none bg-transparent px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none"
-            />
-            <div className="border-t border-[var(--hairline)] bg-[var(--surface-2)] px-4 py-3 text-[13px] text-[var(--text-secondary)]">
-              Textfield de IA: redacta, inserta bloques y regenera.
-            </div>
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            {promptBlocks.map((block) => (
-              <button
-                key={block.id}
-                type="button"
-                onClick={() => insertPromptBlock(block.text)}
-                className="rounded-full bg-[var(--surface)] border border-[var(--border)] px-3 py-2 text-[13px] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]"
-              >
-                + {block.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="card-apple bg-[var(--surface)] p-5">
-          <div className="flex flex-col gap-4">
-            <div>
-              <div className="text-[15px] font-medium text-[var(--text-primary)]">{modelProfile}</div>
-              <div className="mt-1 text-[14px] text-[var(--text-secondary)]">
-                Seguridad {security} · Eficiencia {efficiency} · Costo {cost}
-              </div>
-            </div>
-            <AppleButton tone="primary" onPress={regeneratePrompt} className="w-full">
-              Regenerar
-            </AppleButton>
-            <div className="grid gap-4">
-              <StepSlider id="security" label="Seguridad" value={security} onChange={setSecurity} />
-              <StepSlider id="efficiency" label="Eficiencia" value={efficiency} onChange={setEfficiency} />
-              <StepSlider id="cost" label="Cuidar costo" value={cost} onChange={setCost} />
-              <StepSlider id="quality" label="Calidad" value={quality} onChange={setQuality} />
-              <StepSlider id="autonomy" label="Autonomía" value={autonomy} onChange={setAutonomy} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function ReviewScreen({
-  selectedSegments,
-  toggleSegment,
-  showCorrectedOutput,
-  setShowCorrectedOutput,
-}: {
-  selectedSegments: string[];
-  toggleSegment: (id: string) => void;
-  showCorrectedOutput: boolean;
-  setShowCorrectedOutput: (value: boolean) => void;
-}) {
-  return (
-    <>
-      <div className="eyebrow">Revisión · output del modelo</div>
-      <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
-        Marca lo riesgoso.
-      </h2>
-      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
-        El objetivo no es aceptar el primer output. Detecta qué debe corregirse antes de usarlo.
-      </p>
-
-      <div className="mt-8 space-y-3">
-        {outputSegments.map((segment) => (
-          <label key={segment.id} className="flex cursor-pointer items-start gap-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4">
-            <input
-              type="checkbox"
-              checked={selectedSegments.includes(segment.id)}
-              onChange={() => toggleSegment(segment.id)}
-              className="mt-1 h-5 w-5 accent-[var(--accent)]"
-            />
-            <span className="flex-1">
-              <span className="block text-[15px] text-[var(--text-primary)] leading-6">{segment.body}</span>
-              <span className="mt-2 inline-block rounded-full bg-[var(--band-b-bg)] px-2 py-1 text-[12px] text-[var(--band-b-text)]">
-                {segment.flag}
-              </span>
-            </span>
-          </label>
-        ))}
-      </div>
-
-      <div className="mt-8 overflow-hidden card-apple bg-[var(--surface)]">
-        <div className="border-b border-[var(--hairline)] px-4 py-3 text-[14px] font-medium text-[var(--text-primary)]">
-          Follow-up a IA
-        </div>
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px]">
+      <div>
+        <Label>Petición al modelo</Label>
         <textarea
-          defaultValue="Corrige el output: elimina datos personales, quita afirmaciones sin fuente y agrega revisión humana antes de uso externo."
-          rows={3}
-          className="w-full resize-none bg-transparent px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none"
+          value={prompt}
+          onChange={(event) => setPrompt(event.target.value)}
+          rows={8}
+          className="mt-2 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
         />
-        <div className="flex justify-end border-t border-[var(--hairline)] bg-[var(--surface-2)] px-4 py-3">
-          <AppleButton tone="primary" onPress={() => setShowCorrectedOutput(true)}>
-            Pedir corrección
-          </AppleButton>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {[
+            "agrega audiencia",
+            "agrega límites",
+            "pide fuentes",
+          ].map((text) => (
+            <ActionButton key={text} onClick={() => setPrompt(`${prompt}\n\n${text}.`)}>
+              {text}
+            </ActionButton>
+          ))}
         </div>
       </div>
-
-      {showCorrectedOutput && (
-        <div className="mt-6 card-apple bg-[var(--band-a-bg)] p-5">
-          <div className="text-[13px] font-medium text-[var(--band-a-text)]">Output corregido</div>
-          <p className="mt-3 text-[15px] leading-6 text-[var(--text-primary)]">
-            Recomendamos un piloto interno para Aurora Retail. La campaña usará solo datos agregados, no prometerá métricas sin fuente y deberá pasar por revisión humana antes de cualquier envío externo.
+      <div className="rounded-2xl bg-[var(--surface-2)] p-4">
+        <Label>Controles</Label>
+        <Range10 label="seguridad" value={security} onChange={setSecurity} />
+        <Range10 label="calidad" value={quality} onChange={setQuality} />
+        <div className="mt-5 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
+          <div className="text-[13px] font-medium text-[var(--text-primary)]">preview</div>
+          <p className="mt-2 line-clamp-6 text-[13px] leading-5 text-[var(--text-secondary)]">
+            {promptPreview}
           </p>
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 }
 
-function DecisionScreen({
-  decision,
-  setDecision,
+function DataTableExercise({
+  rows,
+  setRows,
 }: {
-  decision: string;
-  setDecision: (value: string) => void;
+  rows: typeof initialDataRows;
+  setRows: (rows: typeof initialDataRows) => void;
 }) {
+  function updateAction(id: string, action: DataAction) {
+    setRows(rows.map((row) => (row.id === id ? { ...row, action } : row)));
+  }
+
   return (
-    <>
-      <div className="eyebrow">Decisión · tradeoffs</div>
-      <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
-        Elige qué harías.
-      </h2>
-      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
-        Las consecuencias vienen del caso. Tu trabajo es decidir y sostener el tradeoff.
-      </p>
-
-      <div className="mt-8 space-y-3">
-        {decisionOptions.map((option) => (
-          <label key={option.id} className="block cursor-pointer rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4">
-            <div className="flex items-start gap-3">
-              <input
-                type="radio"
-                name="decision"
-                checked={decision === option.id}
-                onChange={() => setDecision(option.id)}
-                className="mt-1 h-5 w-5 accent-[var(--accent)]"
-              />
-              <div className="flex-1">
-                <div className="text-[16px] font-medium text-[var(--text-primary)]">{option.title}</div>
-                <div className="mt-1 text-[14px] text-[var(--text-secondary)]">{option.sub}</div>
-                <div className="mt-4 grid gap-3">
-                  {Object.entries(option.values).map(([label, value]) => (
-                    <ReadOnlyBar key={label} label={label} value={value} danger={label === "riesgo"} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </label>
-        ))}
-      </div>
-    </>
-  );
-}
-
-function ResponseScreen({
-  memo,
-  setMemo,
-  selectedDecision,
-  score,
-}: {
-  memo: string;
-  setMemo: (value: string) => void;
-  selectedDecision: string;
-  score: number;
-}) {
-  return (
-    <>
-      <div className="eyebrow">Respuesta · recomendación</div>
-      <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
-        Responde al manager.
-      </h2>
-      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
-        No evaluamos copy bonito. Evaluamos si puedes convertir trabajo con IA en una decisión defendible.
-      </p>
-
-      <div className="mt-8 overflow-hidden card-apple bg-[var(--surface)]">
-        <div className="border-b border-[var(--hairline)] px-4 py-3 text-[14px] font-medium text-[var(--text-primary)]">
-          Recomendación al manager
-        </div>
-        <textarea
-          value={memo}
-          onChange={(event) => setMemo(event.target.value)}
-          rows={8}
-          className="w-full resize-none bg-transparent px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none"
-        />
-      </div>
-
-      <div className="mt-6 card-apple bg-[var(--surface)] p-5">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <div className="text-[14px] text-[var(--text-secondary)]">Evidencia para reporte</div>
-            <div className="mt-1 text-[16px] font-medium text-[var(--text-primary)]">
-              Decisión elegida: {selectedDecision}
-            </div>
-          </div>
-          <div className="mono text-[22px] font-semibold text-[var(--text-primary)]">{score}%</div>
-        </div>
-      </div>
-    </>
-  );
-}
-
-function BinaryQuestion({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: boolean;
-  onChange: (value: boolean) => void;
-}) {
-  return (
-    <div className="card-apple bg-[var(--surface)] p-4">
-      <div className="text-[14px] font-medium text-[var(--text-primary)]">{label}</div>
-      <div className="mt-3 inline-flex rounded-lg bg-[var(--surface-2)] p-1">
-        {[true, false].map((option) => (
-          <button
-            key={String(option)}
-            type="button"
-            onClick={() => onChange(option)}
-            className={`min-w-12 rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors ${
-              value === option ? "accent-bg text-white" : "text-[var(--text-secondary)]"
-            }`}
+    <div>
+      <Label>Clasifica cada campo antes de enviarlo al modelo</Label>
+      <div className="mt-4 overflow-hidden rounded-2xl border border-[var(--border)]">
+        {rows.map((row) => (
+          <div
+            key={row.id}
+            className="grid gap-3 border-b border-[var(--hairline)] px-4 py-4 last:border-b-0 sm:grid-cols-[1fr_1fr_170px] sm:items-center"
           >
-            {option ? "Sí" : "No"}
-          </button>
+            <div>
+              <div className="text-[15px] font-medium text-[var(--text-primary)]">{row.field}</div>
+              <div className="mt-1 text-[13px] text-[var(--text-secondary)]">{row.example}</div>
+            </div>
+            <div className="text-[13px] text-[var(--text-secondary)]">
+              decide si aporta señal o si expone información de más.
+            </div>
+            <select
+              value={row.action}
+              onChange={(event) => updateAction(row.id, event.target.value as DataAction)}
+              className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 text-[14px] text-[var(--text-primary)]"
+            >
+              <option value="usar">usar</option>
+              <option value="anonimizar">anonimizar</option>
+              <option value="agregar">agregar</option>
+              <option value="excluir">excluir</option>
+            </select>
+          </div>
         ))}
       </div>
     </div>
   );
 }
 
-function StepSlider({
-  id,
+function PermissionMatrix({
+  permissions,
+  setPermissions,
+}: {
+  permissions: Record<string, Permission>;
+  setPermissions: (permissions: Record<string, Permission>) => void;
+}) {
+  return (
+    <div>
+      <Label>Define permisos por acción</Label>
+      <div className="mt-4 grid gap-3">
+        {permissionRows.map((row) => (
+          <div
+            key={row}
+            className="grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4 sm:grid-cols-[1fr_330px] sm:items-center"
+          >
+            <div className="text-[15px] font-medium text-[var(--text-primary)]">{row}</div>
+            <div className="grid grid-cols-3 gap-2">
+              {(["permitir", "revisar", "bloquear"] as Permission[]).map((option) => (
+                <ChoiceButton
+                  key={option}
+                  selected={permissions[row] === option}
+                  onClick={() => setPermissions({ ...permissions, [row]: option })}
+                >
+                  {option}
+                </ChoiceButton>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function OutputReview({
+  flags,
+  setFlags,
+}: {
+  flags: string[];
+  setFlags: (flags: string[]) => void;
+}) {
+  return (
+    <div>
+      <Label>Marca lo que no se puede usar todavía</Label>
+      <div className="mt-4 grid gap-3">
+        {outputLines.map((line) => {
+          const selected = flags.includes(line.id);
+          return (
+            <button
+              key={line.id}
+              type="button"
+              onClick={() =>
+                setFlags(selected ? flags.filter((flag) => flag !== line.id) : [...flags, line.id])
+              }
+              className={`min-h-11 rounded-2xl border px-4 py-4 text-left transition-colors ${
+                selected
+                  ? "border-[var(--accent)] bg-[var(--accent-soft)]"
+                  : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"
+              }`}
+            >
+              <span className="block text-[15px] leading-6 text-[var(--text-primary)]">{line.text}</span>
+              <span className="mt-2 block text-[13px] text-[var(--text-secondary)]">{line.issue}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function ComparisonExercise({
+  comparison,
+  setComparison,
+}: {
+  comparison: string;
+  setComparison: (value: string) => void;
+}) {
+  return (
+    <div>
+      <Label>Elige cuál respuesta llevarías al manager</Label>
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
+        <CompareCard
+          id="a"
+          selected={comparison === "a"}
+          onClick={() => setComparison("a")}
+          title="Respuesta A"
+          body="Lanza la campaña hoy. El cliente necesita ver acción rápida y la IA ya preparó los mensajes."
+        />
+        <CompareCard
+          id="b"
+          selected={comparison === "b"}
+          onClick={() => setComparison("b")}
+          title="Respuesta B"
+          body="Usa el borrador como material interno. Quita datos personales, valida métricas y pide una revisión corta antes de enviar."
+        />
+      </div>
+    </div>
+  );
+}
+
+function WorkflowBuilder({
+  enabledSteps,
+  setEnabledSteps,
+}: {
+  enabledSteps: string[];
+  setEnabledSteps: (steps: string[]) => void;
+}) {
+  return (
+    <div>
+      <Label>Activa los pasos que debe tener el flujo</Label>
+      <div className="mt-4 grid gap-3">
+        {workflowSteps.map((step, index) => {
+          const enabled = enabledSteps.includes(step);
+          return (
+            <button
+              key={step}
+              type="button"
+              onClick={() =>
+                setEnabledSteps(enabled ? enabledSteps.filter((item) => item !== step) : [...enabledSteps, step])
+              }
+              className={`grid min-h-14 grid-cols-[36px_1fr] items-center gap-3 rounded-2xl border px-4 text-left ${
+                enabled
+                  ? "border-[var(--accent)] bg-[var(--accent-soft)]"
+                  : "border-[var(--border)] bg-[var(--surface-2)]"
+              }`}
+            >
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-[var(--surface)] text-[13px] font-medium text-[var(--text-primary)]">
+                {index + 1}
+              </span>
+              <span className="text-[15px] text-[var(--text-primary)]">{step}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function AgentBrief({
+  fallback,
+  setFallback,
+}: {
+  fallback: string;
+  setFallback: (value: string) => void;
+}) {
+  return (
+    <div className="grid gap-5 md:grid-cols-2">
+      <div>
+        <Label>Objetivo del agente</Label>
+        <div className="mt-2 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-[15px] leading-6 text-[var(--text-primary)]">
+          Preparar borradores de seguimiento para cuentas inactivas, sin enviar nada al cliente.
+        </div>
+      </div>
+      <div>
+        <Label>Fallback obligatorio</Label>
+        <textarea
+          value={fallback}
+          onChange={(event) => setFallback(event.target.value)}
+          rows={5}
+          className="mt-2 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+        />
+      </div>
+      <div className="md:col-span-2 grid gap-3 sm:grid-cols-3">
+        <Fact label="permiso" value="borradores internos" />
+        <Fact label="bloqueo" value="envío externo" />
+        <Fact label="monitoreo" value="logs y revisión" />
+      </div>
+    </div>
+  );
+}
+
+function LogReview({
+  flags,
+  setFlags,
+}: {
+  flags: string[];
+  setFlags: (flags: string[]) => void;
+}) {
+  return (
+    <div>
+      <Label>Marca eventos que requieren intervención</Label>
+      <div className="mt-4 grid gap-3">
+        {runLogs.map((log) => {
+          const selected = flags.includes(log.id);
+          return (
+            <button
+              key={log.id}
+              type="button"
+              onClick={() => setFlags(selected ? flags.filter((flag) => flag !== log.id) : [...flags, log.id])}
+              className={`rounded-2xl border px-4 py-4 text-left transition-colors ${
+                selected
+                  ? "border-[var(--band-b-bar)] bg-[var(--band-b-bg)]"
+                  : "border-[var(--border)] bg-[var(--surface-2)]"
+              }`}
+            >
+              <span className="text-[15px] text-[var(--text-primary)]">{log.text}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function PivotExercise({
+  filter,
+  setFilter,
+}: {
+  filter: string;
+  setFilter: (value: string) => void;
+}) {
+  const rows = [
+    { team: "ventas norte", time: "alto", risk: "medio", impact: "alto" },
+    { team: "ventas sur", time: "medio", risk: "alto", impact: "medio" },
+    { team: "alianzas", time: "bajo", risk: "bajo", impact: "medio" },
+  ];
+
+  return (
+    <div>
+      <Label>Elige la señal que llevarías al manager</Label>
+      <div className="mt-4 grid gap-2 sm:grid-cols-3">
+        {["tiempo", "riesgo", "impacto"].map((option) => (
+          <ChoiceButton key={option} selected={filter === option} onClick={() => setFilter(option)}>
+            {option}
+          </ChoiceButton>
+        ))}
+      </div>
+      <div className="mt-5 overflow-hidden rounded-2xl border border-[var(--border)]">
+        {rows.map((row) => (
+          <div
+            key={row.team}
+            className="grid grid-cols-4 gap-3 border-b border-[var(--hairline)] px-4 py-3 text-[14px] last:border-b-0"
+          >
+            <span className="font-medium text-[var(--text-primary)]">{row.team}</span>
+            <span className={filter === "tiempo" ? "text-[var(--accent)]" : "text-[var(--text-secondary)]"}>{row.time}</span>
+            <span className={filter === "riesgo" ? "text-[var(--accent)]" : "text-[var(--text-secondary)]"}>{row.risk}</span>
+            <span className={filter === "impacto" ? "text-[var(--accent)]" : "text-[var(--text-secondary)]"}>{row.impact}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DecisionMemo({
+  decision,
+  setDecision,
+  memo,
+  setMemo,
+}: {
+  decision: string;
+  setDecision: (value: string) => void;
+  memo: string;
+  setMemo: (value: string) => void;
+}) {
+  return (
+    <div className="grid gap-5 md:grid-cols-[280px_1fr]">
+      <div className="grid gap-3">
+        {[
+          ["launch", "lanzar hoy"],
+          ["pilot", "piloto interno"],
+          ["pause", "pausar"],
+        ].map(([id, label]) => (
+          <ChoiceButton key={id} selected={decision === id} onClick={() => setDecision(id)}>
+            {label}
+          </ChoiceButton>
+        ))}
+      </div>
+      <div>
+        <Label>Explica tu recomendación</Label>
+        <textarea
+          value={memo}
+          onChange={(event) => setMemo(event.target.value)}
+          rows={7}
+          className="mt-2 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+        />
+      </div>
+    </div>
+  );
+}
+
+function CompareCard({
+  selected,
+  onClick,
+  title,
+  body,
+}: {
+  id: string;
+  selected: boolean;
+  onClick: () => void;
+  title: string;
+  body: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`min-h-56 rounded-2xl border p-5 text-left transition-colors ${
+        selected
+          ? "border-[var(--accent)] bg-[var(--accent-soft)]"
+          : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"
+      }`}
+    >
+      <span className="block text-[15px] font-medium text-[var(--text-primary)]">{title}</span>
+      <span className="mt-4 block text-[15px] leading-6 text-[var(--text-secondary)]">{body}</span>
+    </button>
+  );
+}
+
+function Range10({
   label,
   value,
   onChange,
 }: {
-  id: string;
   label: string;
   value: number;
   onChange: (value: number) => void;
 }) {
   return (
-    <div>
-      <label htmlFor={id} className="flex items-center justify-between gap-3 text-[14px]">
+    <div className="mt-4">
+      <label className="flex items-center justify-between text-[14px]">
         <span className="text-[var(--text-secondary)]">{label}</span>
-        <span className="mono font-semibold text-[var(--text-primary)]">{value}</span>
+        <span className="mono text-[var(--text-primary)]">{value}</span>
       </label>
       <input
-        id={id}
         type="range"
         min={0}
         max={100}
         step={10}
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
-        className="mt-2 h-2 w-full cursor-pointer appearance-none rounded-full bg-[var(--surface-3)] accent-[var(--accent)]"
+        className="mt-2 h-2 w-full cursor-pointer appearance-none rounded-lg bg-[var(--surface-3)] accent-[var(--accent)]"
       />
     </div>
   );
 }
 
-function ReadOnlyBar({ label, value, danger }: { label: string; value: number; danger?: boolean }) {
-  const color =
-    danger && value > 50
-      ? "var(--band-b-bar)"
-      : value > 65
-        ? "var(--band-a-bar)"
-        : value > 35
-          ? "var(--band-m-bar)"
-          : "var(--band-b-bar)";
+function Label({ children }: { children: React.ReactNode }) {
+  return <div className="text-[14px] font-medium text-[var(--text-primary)]">{children}</div>;
+}
+
+function ActionButton({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
   return (
-    <div>
-      <div className="mb-1 flex items-center justify-between gap-3 text-[12px]">
-        <span className="capitalize text-[var(--text-tertiary)]">{label}</span>
-        <span className="mono text-[var(--text-secondary)]">{value}</span>
-      </div>
-      <div className="h-2 rounded-full bg-[var(--surface-3)]">
-        <div className="h-2 rounded-full" style={{ width: `${value}%`, backgroundColor: color }} />
-      </div>
+    <button
+      type="button"
+      onClick={onClick}
+      className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-[14px] text-[var(--text-primary)] transition-colors hover:bg-[var(--surface-3)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+    >
+      {children}
+    </button>
+  );
+}
+
+function ChoiceButton({
+  children,
+  selected,
+  onClick,
+}: {
+  children: React.ReactNode;
+  selected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`min-h-11 rounded-xl border px-3 text-[13px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+        selected
+          ? "border-[var(--accent)] bg-[var(--accent)] text-white"
+          : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+      }`}
+    >
+      {children}
+    </button>
+  );
+}
+
+function Fact({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
+      <div className="text-[12px] text-[var(--text-tertiary)]">{label}</div>
+      <div className="mt-2 text-[15px] font-medium leading-snug text-[var(--text-primary)]">{value}</div>
     </div>
   );
 }

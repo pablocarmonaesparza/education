@@ -7,10 +7,10 @@ siempre suman 100.
 
 | Criterio | Que mide | Evidencia |
 |---|---|---|
-| contexto | Encuadre de objetivo, audiencia, restricciones, tono y exito esperado. | Prompt/brief incluye situacion real y tradeoffs. |
+| contexto | Encuadre de objetivo, audiencia, restricciones, tono y exito esperado. | Prompt/brief incluye situacion real, ventajas y costos. |
 | datos | Calidad, minimizacion, privacidad, permisos y uso responsable de informacion. | Campos elegidos, anonimizacion, provenance y exclusiones. |
 | ejecucion_ia | Capacidad de elegir y operar prompt, workflow o agente segun el nivel. | Prompt, workflow plan, agent brief, automation spec. |
-| validacion | Revision de output, fuentes, claims, metricas y consistencia. | Checklist, marcas de riesgo, correcciones. |
+| validacion | Revision de output, fuentes, afirmaciones, metricas y consistencia. | Checklist, marcas de riesgo, correcciones. |
 | juicio | Lectura de riesgo, autoridad, escalamiento, reputacion y consecuencias. | Decide pausar/escalar/objetar cuando corresponde. |
 | impacto | Traduccion del trabajo con IA a resultado operativo o decision util. | Memo, accion, KPI, ahorro, decision manager-ready. |
 
@@ -42,4 +42,3 @@ siempre suman 100.
 
 El resultado debe explicar progreso y riesgo. Si solo explica "sabe/no sabe",
 la rubrica fracaso.
-

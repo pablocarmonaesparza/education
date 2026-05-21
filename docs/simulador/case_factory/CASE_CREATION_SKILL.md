@@ -92,36 +92,39 @@ riesgos, docs oficiales y reportes externos.
 
 No inventes interacciones desde cero por caso.
 
-Selecciona bloques del catalogo cerrado de `exercise_blocks`. Hasta que ese
-catalogo exista, usa los tipos acordados como draft:
+Selecciona bloques del catalogo cerrado en
+`docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml`.
 
-- prompt_builder_guiado;
-- ai_output_review;
-- model_followup;
-- agent_brief_builder;
-- permission_matrix;
-- workflow_builder;
-- run_log_review;
-- source_context_selection;
-- ai_comparison;
-- guardrail_builder;
-- escalation_triage;
-- ai_assisted_memo;
-- data_table_triage;
-- dashboard_pivot;
-- tradeoff_decision;
-- validation_checklist;
-- prioritization_ranking;
-- postmortem.
+Bloques activos v0.1:
+
+- `prompt_textfield`;
+- `data_table_triage`;
+- `permission_matrix`;
+- `ai_output_review`;
+- `ai_comparison`;
+- `workflow_builder`;
+- `agent_brief_builder`;
+- `run_log_review`;
+- `dashboard_pivot`;
+- `tradeoff_decision_memo`.
 
 Preferencia de producto:
 
-- 60/40 o 70/30 a favor de ejercicios AI-native;
+- 60/40 o 70/30 a favor de ejercicios nativos de IA;
 - ejercicios tradicionales como complemento, no columna vertebral;
 - cada bloque debe emitir evidencia medible.
 
 Un caso puede tener muchos micro-pasos o interacciones. Lo importante es que
 tenga momentos evaluativos claros y no sea ruido.
+
+Reglas de presentacion:
+
+- No convertir el caso en una configuracion editable por el participante.
+- Contexto, datos, presion, stakeholder y resultado esperado los define Itera.
+- Botones: rectangulos redondeados, labels claros y verbos accionables.
+- Sliders: solo si representan una prioridad continua entendible; pasos de 10.
+- Timer: solo si `time_pressure` lo justifica; no todos los casos llevan timer.
+- Copy: dar informacion laboral concreta antes de pedir respuesta.
 
 ### 4. Disenar el caso en 6 secciones
 
@@ -130,7 +133,7 @@ Estructura canonica:
 1. Contexto: que esta pasando y por que importa.
 2. Datos: que puede o no puede usar.
 3. IA: que le pide, configura o delega.
-4. Revision: detecta errores, riesgos, claims, drift o fallas.
+4. Revision: detecta errores, riesgos, afirmaciones sin fuente, drift o fallas.
 5. Decision: elige una accion con consecuencias.
 6. Respuesta: explica al manager que haria y por que.
 
@@ -278,7 +281,7 @@ bun run build
 
 ## Pendiente para version final
 
-Cerrar `EXERCISE_BLOCK_CATALOG.yaml` con:
+Revisar con Pablo `EXERCISE_BLOCK_CATALOG.yaml` y cerrar:
 
 - ids canonicos;
 - familias;
