@@ -235,6 +235,7 @@ function OnboardingBillingContent() {
                     isActive={isActive}
                     monthlyTotal={computed.monthlyTotalUsd}
                     pricePerSeat={computed.pricePerSeatUsd}
+                    onSelect={() => setSeatsInput(String(tier.minSeats))}
                   />
                 </motion.div>
               );
@@ -298,24 +299,40 @@ function TierCard({
   isActive,
   monthlyTotal,
   pricePerSeat,
+  onSelect,
 }: {
   tier: SimuladorTier;
   seats: number;
   isActive: boolean;
   monthlyTotal: number;
   pricePerSeat: number;
+  onSelect: () => void;
 }) {
   const range =
     tier.maxSeats === null
       ? `${tier.minSeats}+ personas`
       : `${tier.minSeats}–${tier.maxSeats} personas`;
+  // Enterprise no es self-serve: en lugar de "USD 89/persona" mostramos
+  // "Negociable / desde USD 89". El resto del layout (header, divider,
+  // features) es idéntico a los tiers self-serve para mantener simetría
+  // visual entre las 4 cards del carrusel.
+  const priceLabel = tier.selfServe
+    ? formatUsd(tier.pricePerSeatUsd)
+    : "Negociable";
+  const priceCaption = tier.selfServe
+    ? "por persona"
+    : `desde USD ${tier.pricePerSeatUsd} / persona`;
 
   return (
-    <div
-      className={`h-[280px] rounded-[var(--radius-lg)] border p-5 transition-all bg-[var(--surface)] flex flex-col ${
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-label={`Seleccionar tier ${tier.label}`}
+      aria-pressed={isActive}
+      className={`h-[280px] w-full text-left rounded-[var(--radius-lg)] border p-5 transition-all bg-[var(--surface)] flex flex-col cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] ${
         isActive
           ? "border-[var(--accent)] shadow-[0_8px_24px_var(--shadow)]"
-          : "border-[var(--hairline)]"
+          : "border-[var(--hairline)] hover:border-[var(--border-strong)]"
       }`}
     >
       <div className="flex items-center justify-between">
@@ -331,84 +348,61 @@ function TierCard({
         <span className="text-[11px] text-[var(--text-tertiary)]">{range}</span>
       </div>
 
-      {tier.selfServe ? (
-        <>
-          <div className="mt-4">
-            <div className="text-[30px] font-semibold tracking-tight text-[var(--text-primary)] leading-none tabular-nums">
-              {formatUsd(tier.pricePerSeatUsd)}
-            </div>
-            <div className="mt-1 text-[11px] text-[var(--text-tertiary)]">
-              por persona
-            </div>
+      <div className="mt-4">
+        <div
+          className={`font-semibold tracking-tight text-[var(--text-primary)] leading-none tabular-nums ${
+            tier.selfServe ? "text-[30px]" : "text-[24px]"
+          }`}
+        >
+          {priceLabel}
+        </div>
+        <div className="mt-1 text-[11px] text-[var(--text-tertiary)]">
+          {priceCaption}
+        </div>
+      </div>
+
+      {isActive && tier.selfServe ? (
+        <motion.div
+          key={`active-${seats}`}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="mt-4 border-t border-[var(--hairline)] pt-3"
+        >
+          <div className="flex items-baseline justify-between text-[11px] text-[var(--text-secondary)]">
+            <span>
+              {pricePerSeat} × {seats}
+            </span>
+            <span className="text-[15px] font-semibold tracking-tight text-[var(--text-primary)] tabular-nums">
+              {formatUsd(monthlyTotal)}
+            </span>
           </div>
-
-          {isActive ? (
-            <motion.div
-              key={`active-${seats}`}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.2 }}
-              className="mt-4 border-t border-[var(--hairline)] pt-3"
-            >
-              <div className="flex items-baseline justify-between text-[11px] text-[var(--text-secondary)]">
-                <span>
-                  {pricePerSeat} × {seats}
-                </span>
-                <span className="text-[15px] font-semibold tracking-tight text-[var(--text-primary)] tabular-nums">
-                  {formatUsd(monthlyTotal)}
-                </span>
-              </div>
-            </motion.div>
-          ) : (
-            <div className="mt-4 border-t border-[var(--hairline)] pt-3" />
-          )}
-
-          <ul className="mt-3 space-y-1.5 text-[11px] leading-[1.4] text-[var(--text-secondary)]">
-            {SIMULADOR_PRODUCT.features.map((f) => (
-              <li key={f} className="flex items-start gap-1.5">
-                <svg
-                  className={`mt-[3px] h-2.5 w-2.5 flex-none ${
-                    isActive ? "text-[var(--accent)]" : "text-[var(--text-tertiary)]"
-                  }`}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                <span>{f}</span>
-              </li>
-            ))}
-          </ul>
-        </>
+        </motion.div>
       ) : (
-        <>
-          <div className="mt-4">
-            <div className="text-[26px] font-semibold tracking-tight text-[var(--text-primary)] leading-tight">
-              Negociable
-            </div>
-            <div className="mt-1 text-[11px] text-[var(--text-tertiary)]">
-              desde USD {tier.pricePerSeatUsd} / persona
-            </div>
-          </div>
-          <p className="mt-4 border-t border-[var(--hairline)] pt-3 text-[12px] leading-[1.5] text-[var(--text-secondary)]">
-            Para equipos grandes ajustamos por volumen y término. Te
-            cotizamos según vertical y duración del contrato.
-          </p>
-          <ul className="mt-3 space-y-1.5 text-[11px] leading-[1.4] text-[var(--text-secondary)]">
-            {SIMULADOR_PRODUCT.features.map((f) => (
-              <li key={f} className="flex items-start gap-1.5">
-                <span className="mt-1 text-[var(--text-tertiary)]">·</span>
-                <span>{f}</span>
-              </li>
-            ))}
-          </ul>
-        </>
+        <div className="mt-4 border-t border-[var(--hairline)] pt-3" />
       )}
-    </div>
+
+      <ul className="mt-3 space-y-1.5 text-[11px] leading-[1.4] text-[var(--text-secondary)]">
+        {SIMULADOR_PRODUCT.features.map((f) => (
+          <li key={f} className="flex items-start gap-1.5">
+            <svg
+              className={`mt-[3px] h-2.5 w-2.5 flex-none ${
+                isActive ? "text-[var(--accent)]" : "text-[var(--text-tertiary)]"
+              }`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span>{f}</span>
+          </li>
+        ))}
+      </ul>
+    </button>
   );
 }
