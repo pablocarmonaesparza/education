@@ -12,14 +12,14 @@ export default async function AdminLayout({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const pathname = (await headers()).get("x-itera-pathname") ?? "/admin/review";
+  const pathname = (await headers()).get("x-itera-pathname") ?? "/staff/review";
 
   if (!user) {
     redirect(`/auth/login?next=${encodeURIComponent(pathname)}`);
   }
 
   if (!isStaffEmail(user.email)) {
-    redirect("/dashboard");
+    redirect("/equipo");
   }
 
   return children;

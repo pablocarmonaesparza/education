@@ -43,8 +43,10 @@ interface NavItem {
   Icon: ComponentType<{ size?: number; stroke?: number; className?: string }>;
 }
 
+// TODO: hacer estos items role-aware leyendo simulador.organization_memberships.
+// Por ahora layout buyer-first (manager): "Equipo" es la home + se agrega
+// /inicio cuando armemos la pantalla del employee.
 const PRIMARY: NavItem[] = [
-  { href: "/dashboard", label: "Inicio", Icon: IconHome },
   { href: "/equipo", label: "Equipo", Icon: IconUsers },
   { href: "/reportes", label: "Reportes", Icon: IconFileText },
   { href: "/casos", label: "Casos", Icon: IconBriefcase },
