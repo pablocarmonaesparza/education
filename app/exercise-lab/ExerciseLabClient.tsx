@@ -143,7 +143,6 @@ export function ExerciseLabClient() {
   const [sectionIdx, setSectionIdx] = useState(0);
   const [maxReached, setMaxReached] = useState(0);
   const [timerEnabled, setTimerEnabled] = useState(true);
-  const [contextAnswer, setContextAnswer] = useState("Privacidad y claims verificables");
   const [fieldIdx, setFieldIdx] = useState(0);
   const [dataState, setDataState] = useState<Record<string, DataRow>>(
     Object.fromEntries(dataRows.map((row) => [row.id, row])),
@@ -304,8 +303,7 @@ export function ExerciseLabClient() {
                     <ContextScreen
                       timerEnabled={timerEnabled}
                       setTimerEnabled={setTimerEnabled}
-                      answer={contextAnswer}
-                      setAnswer={setContextAnswer}
+                      onContinue={nextSection}
                     />
                   )}
                   {currentSection.id === "datos" && (
@@ -353,7 +351,7 @@ export function ExerciseLabClient() {
                       memo={memo}
                       setMemo={setMemo}
                       selectedDecision={selectedDecision.title}
-                      score={contextAnswer === "Privacidad y claims verificables" ? 88 : 58}
+                      score={88}
                     />
                   )}
                 </motion.div>
@@ -421,21 +419,12 @@ function CaseMetaCard({ timerEnabled }: { timerEnabled: boolean }) {
 function ContextScreen({
   timerEnabled,
   setTimerEnabled,
-  answer,
-  setAnswer,
+  onContinue,
 }: {
   timerEnabled: boolean;
   setTimerEnabled: (value: boolean) => void;
-  answer: string;
-  setAnswer: (value: string) => void;
+  onContinue: () => void;
 }) {
-  const options = [
-    "Velocidad del lanzamiento",
-    "Privacidad y claims verificables",
-    "Que el email suene convincente",
-    "Mandar todo al VP sin fricción",
-  ];
-
   return (
     <>
       <div className="eyebrow">Contexto · caso fijo</div>
@@ -444,8 +433,15 @@ function ContextScreen({
       </h1>
       <p className="mt-6 text-[18px] text-[var(--text-primary)] leading-[1.65]">
         Camila, VP de Marketing, necesita 3 ángulos para una campaña enterprise antes de las 5.
-        El caso define la presión. Tú no negocias el contexto: decides con criterio.
+        El escenario, la presión y los criterios de evaluación ya vienen definidos por Itera.
+        Tu trabajo no es configurar el caso: es resolverlo con criterio.
       </p>
+
+      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+        <ContextFact label="Stakeholder" value="VP de Marketing" />
+        <ContextFact label="Entrega" value="Hoy, antes de las 5" />
+        <ContextFact label="Cuidado" value="Datos sensibles y claims" />
+      </div>
 
       <div className="mt-8 card-apple bg-[var(--surface)] p-5">
         <p className="text-[15px] text-[var(--text-primary)] leading-[1.6] italic">
@@ -454,55 +450,63 @@ function ContextScreen({
       </div>
 
       <div className="mt-8 card-apple bg-[var(--surface)] p-5">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="text-[15px] font-medium text-[var(--text-primary)]">Timer del caso</div>
-            <div className="mt-1 text-[14px] text-[var(--text-secondary)]">
-              Itera fija el tiempo estimado: 12 minutos.
+            <div className="text-[16px] font-medium text-[var(--text-primary)]">Timer del caso</div>
+            <div className="mt-1 max-w-md text-[14px] leading-6 text-[var(--text-secondary)]">
+              Puedes practicar con reloj o sin reloj. El tiempo sugerido lo define Itera:
+              12 minutos para completar este caso.
             </div>
           </div>
-          <button
-            type="button"
-            role="switch"
-            aria-label="Activar timer"
-            aria-checked={timerEnabled}
-            onClick={() => setTimerEnabled(!timerEnabled)}
-            className={`relative h-8 w-14 rounded-full transition-colors ${
-              timerEnabled ? "accent-bg" : "bg-[var(--surface-3)]"
-            }`}
-          >
-            <span
-              className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow-[var(--shadow-sm)] transition-transform ${
-                timerEnabled ? "translate-x-7" : "translate-x-1"
+          <div className="grid grid-cols-2 rounded-2xl bg-[var(--surface-2)] p-1 sm:min-w-[240px]">
+            <button
+              type="button"
+              onClick={() => setTimerEnabled(true)}
+              className={`rounded-xl px-4 py-3 text-[14px] font-medium transition-colors ${
+                timerEnabled
+                  ? "accent-bg text-white"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
               }`}
-            />
-          </button>
+            >
+              Con timer
+            </button>
+            <button
+              type="button"
+              onClick={() => setTimerEnabled(false)}
+              className={`rounded-xl px-4 py-3 text-[14px] font-medium transition-colors ${
+                !timerEnabled
+                  ? "accent-bg text-white"
+                  : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              }`}
+            >
+              Sin timer
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="mt-8">
-        <div className="text-[15px] font-medium text-[var(--text-primary)]">
-          ¿Qué restricción no se puede romper?
-        </div>
-        <div className="mt-3 space-y-2">
-          {options.map((option) => (
-            <label
-              key={option}
-              className="flex cursor-pointer items-center gap-3 rounded-xl bg-[var(--surface)] border border-[var(--border)] px-4 py-3"
-            >
-              <input
-                type="radio"
-                name="context"
-                checked={answer === option}
-                onChange={() => setAnswer(option)}
-                className="h-4 w-4 accent-[var(--accent)]"
-              />
-              <span className="text-[15px] text-[var(--text-primary)]">{option}</span>
-            </label>
-          ))}
-        </div>
+      <div className="mt-8 flex justify-end">
+        <AppleButton
+          size="lg"
+          tone="primary"
+          onPress={onContinue}
+          className="h-12 px-6 text-[15px] font-medium accent-bg text-white shadow-none btn-hover-shift"
+        >
+          Siguiente: datos →
+        </AppleButton>
       </div>
     </>
+  );
+}
+
+function ContextFact({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
+      <div className="text-[12px] text-[var(--text-tertiary)]">{label}</div>
+      <div className="mt-2 text-[15px] font-medium leading-snug text-[var(--text-primary)]">
+        {value}
+      </div>
+    </div>
   );
 }
 
