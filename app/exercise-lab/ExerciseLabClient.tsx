@@ -11,6 +11,13 @@ type BrandKey = "internal" | "openai" | "anthropic" | "google" | "qwen" | "deeps
 type Level5 = 1 | 2 | 3 | 4 | 5;
 type VoiceRecState = "idle" | "recording" | "processing" | "error";
 
+type PromptAttachment = {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
+};
+
 type ModelOption = {
   id: string;
   label: string;
@@ -893,6 +900,8 @@ function AIPromptComposer({
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sent, setSent] = useState(false);
+  const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const currentModel = findModelById(selectedModel);
   const { recState, recError, onMicClick } = useDemoVoiceCapture({
     onVoiceNote,
@@ -901,12 +910,33 @@ function AIPromptComposer({
       onChange(`${value}${separator}${text}`);
     },
   });
-  const canSend = value.trim().length > 0 && recState !== "recording" && recState !== "processing";
+  const canSend =
+    (value.trim().length > 0 || attachments.length > 0) &&
+    recState !== "recording" &&
+    recState !== "processing";
   const textRows = value.trim()
     ? Math.min(12, Math.max(3, value.split("\n").length + Math.ceil(value.length / 70)))
     : 3;
   const textMinHeight = value.trim() ? Math.min(340, Math.max(92, textRows * 23 + 54)) : 92;
   const matched = layout === "matched";
+
+  function handleFiles(files: FileList | null) {
+    if (!files?.length) return;
+    const nextAttachments = Array.from(files).map((file) => ({
+      id: `${file.name}-${file.size}-${file.lastModified}`,
+      name: file.name,
+      size: file.size,
+      type: file.type,
+    }));
+    setSent(false);
+    setAttachments((current) => [...current, ...nextAttachments]);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
+  function removeAttachment(id: string) {
+    setSent(false);
+    setAttachments((current) => current.filter((attachment) => attachment.id !== id));
+  }
 
   return (
     <div className={matched ? "h-full min-h-[430px]" : "mt-3"}>
@@ -931,6 +961,10 @@ function AIPromptComposer({
 
         <RecordingBanner recState={recState} recError={recError} />
 
+        {attachments.length > 0 && (
+          <AttachmentTray attachments={attachments} onRemove={removeAttachment} />
+        )}
+
         {voiceNotes.length > 0 && (
           <div className="mx-3 mb-3 grid gap-2 rounded-2xl bg-[var(--surface-2)] p-3">
             {voiceNotes.map((note, index) => (
@@ -949,6 +983,27 @@ function AIPromptComposer({
 
         <div className="flex items-center justify-between gap-3 px-3 pb-3">
           <div className="relative flex items-center gap-1">
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept="image/*,.pdf,.csv,.xlsx,.xls,.doc,.docx,.txt,.md"
+              className="sr-only"
+              onChange={(event) => handleFiles(event.target.files)}
+              aria-label="Agregar archivo o foto"
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              aria-label="Agregar archivo o foto"
+              className={`grid h-9 w-9 place-items-center rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+                attachments.length > 0
+                  ? "bg-[var(--accent-soft)] text-[var(--accent)] hover:bg-[var(--surface-3)]"
+                  : "text-[var(--text-tertiary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+              }`}
+            >
+              <PlusGlyph />
+            </button>
             <button
               type="button"
               onClick={() => setDropdownOpen((open) => !open)}
@@ -1238,6 +1293,65 @@ function RecordingBanner({
   );
 }
 
+function AttachmentTray({
+  attachments,
+  onRemove,
+}: {
+  attachments: PromptAttachment[];
+  onRemove: (id: string) => void;
+}) {
+  return (
+    <div className="mx-3 mb-3 grid gap-2 rounded-2xl bg-[var(--surface-2)] p-3">
+      <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+        Adjuntos para analizar
+      </div>
+      <div className="grid gap-2">
+        {attachments.map((attachment) => (
+          <div
+            key={attachment.id}
+            className="grid min-h-10 grid-cols-[28px_1fr_28px] items-center gap-2 rounded-xl border border-[var(--hairline)] bg-[var(--surface)] px-2.5 py-2"
+          >
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--accent-soft)] text-[var(--accent)]">
+              <AttachmentGlyph type={attachment.type} />
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate text-[12px] font-medium text-[var(--text-primary)]">
+                {attachment.name}
+              </span>
+              <span className="block text-[11px] text-[var(--text-tertiary)]">
+                Simulado · {formatFileSize(attachment.size)}
+              </span>
+            </span>
+            <button
+              type="button"
+              onClick={() => onRemove(attachment.id)}
+              aria-label={`Quitar ${attachment.name}`}
+              className="grid h-7 w-7 place-items-center rounded-lg text-[var(--text-tertiary)] transition-colors hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+            >
+              <svg className="h-3.5 w-3.5" viewBox="0 0 14 14" fill="none">
+                <path
+                  d="M3.5 3.5L10.5 10.5M10.5 3.5L3.5 10.5"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeWidth="1.7"
+                />
+              </svg>
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function formatFileSize(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  const kilobytes = bytes / 1024;
+  if (kilobytes < 1024) return `${kilobytes.toFixed(kilobytes >= 100 ? 0 : 1)} KB`;
+  const megabytes = kilobytes / 1024;
+  return `${megabytes.toFixed(megabytes >= 10 ? 1 : 2)} MB`;
+}
+
 function BrandMark({ brand }: { brand: BrandKey }) {
   const logo = brandLogo[brand];
   if (!logo) {
@@ -1358,6 +1472,51 @@ function MicGlyph() {
         strokeLinecap="round"
         strokeWidth="1.4"
       />
+    </svg>
+  );
+}
+
+function PlusGlyph() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden>
+      <path
+        d="M8 3.5V12.5M3.5 8H12.5"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeWidth="1.8"
+      />
+    </svg>
+  );
+}
+
+function AttachmentGlyph({ type }: { type: string }) {
+  const isImage = type.startsWith("image/");
+
+  if (isImage) {
+    return (
+      <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden>
+        <rect x="2.5" y="3" width="11" height="10" rx="2" stroke="currentColor" strokeWidth="1.4" />
+        <path
+          d="M4.5 10.8L6.6 8.6L8.2 10.1L9.7 8.4L11.8 10.8"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.4"
+        />
+        <circle cx="10.8" cy="5.8" r="1" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" aria-hidden>
+      <path
+        d="M5 2.5H9.2L12 5.3V12.5C12 13.05 11.55 13.5 11 13.5H5C4.45 13.5 4 13.05 4 12.5V3.5C4 2.95 4.45 2.5 5 2.5Z"
+        stroke="currentColor"
+        strokeLinejoin="round"
+        strokeWidth="1.4"
+      />
+      <path d="M9.2 2.7V5.3H11.8" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.4" />
     </svg>
   );
 }
