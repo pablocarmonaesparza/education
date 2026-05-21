@@ -634,10 +634,10 @@ function AIPromptComposer({
             onChange(event.target.value);
           }}
           disabled={recState === "recording" || recState === "processing"}
-          rows={5}
+          rows={3}
           placeholder="Escribe el prompt que le mandarías al modelo..."
-          className="w-full resize-none rounded-3xl bg-transparent px-5 pb-2 pt-4 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed"
-          style={{ minHeight: 148, maxHeight: 260 }}
+          className="w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 text-[15px] leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed"
+          style={{ minHeight: 92, maxHeight: 180 }}
         />
 
         <RecordingBanner recState={recState} recError={recError} />
