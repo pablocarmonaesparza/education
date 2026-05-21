@@ -18,6 +18,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTheme } from "next-themes";
 import { useEffect, useMemo, useState } from "react";
 import "../(app)/simulador.css";
 
@@ -100,6 +101,7 @@ function writeReviewed(set: Set<string>) {
 }
 
 export default function DevMenuPage() {
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [bypassActive, setBypassActive] = useState(false);
   const [reviewed, setReviewed] = useState<Set<string>>(new Set());
   const [mounted, setMounted] = useState(false);
@@ -190,6 +192,43 @@ export default function DevMenuPage() {
           >
             {bypassActive ? "Desactivar" : "Activar"}
           </button>
+        </div>
+
+        <div className="mt-4 flex items-center gap-4 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface-2)] p-5">
+          <div className="flex-1">
+            <div className="text-[14px] font-semibold text-[var(--text-primary)]">
+              Theme · {theme === "system" ? `system (${resolvedTheme})` : theme}
+            </div>
+            <p className="mt-1 text-[13px] text-[var(--text-secondary)]">
+              Por default sigue `prefers-color-scheme` de tu sistema operativo.
+              Aquí puedes forzar manualmente para QA visual.
+            </p>
+          </div>
+          <div
+            role="radiogroup"
+            aria-label="Theme"
+            className="inline-flex rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] p-1"
+          >
+            {(["light", "system", "dark"] as const).map((t) => {
+              const isActive = theme === t;
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  role="radio"
+                  aria-checked={isActive}
+                  onClick={() => setTheme(t)}
+                  className={`rounded-[calc(var(--radius-md)-4px)] px-3 py-1.5 text-[13px] font-medium transition-colors capitalize ${
+                    isActive
+                      ? "accent-bg text-white"
+                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                  }`}
+                >
+                  {t === "system" ? "auto" : t}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="mt-12 space-y-10">
