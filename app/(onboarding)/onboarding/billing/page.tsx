@@ -127,21 +127,25 @@ function OnboardingBillingContent() {
     <>
       <OnboardingNav />
       <main className="surface-canvas h-[calc(100vh-3.5rem)] overflow-x-hidden overflow-y-hidden flex flex-col">
-        {/* ============ HEADER + STEPPER (max-w container) ============ */}
+        {/* ============ HEADER (top) ============ */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="mx-auto w-full max-w-[720px] px-6 pt-8 sm:pt-10"
         >
-          <div>
-            <div className="eyebrow mb-2">Paso 4 de 5</div>
-            <h1 className="display display-tight text-[var(--text-primary)] text-[28px] sm:text-[32px]">
-              {copy.headline}
-            </h1>
-          </div>
+          <div className="eyebrow mb-2">Paso 4 de 5</div>
+          <h1 className="display display-tight text-[var(--text-primary)] text-[28px] sm:text-[32px]">
+            {copy.headline}
+          </h1>
+        </motion.div>
 
-          <section className="mt-7 flex flex-col items-center text-center">
+        {/* ============ MIDDLE: stepper + carrusel CENTRADO VERTICALMENTE ============
+            flex-1 toma todo el espacio entre header y CTA. items-center +
+            justify-center centra el cluster vertical y horizontalmente.
+            El stepper queda dentro del max-w, el carrusel se sale a full width. */}
+        <div className="flex-1 flex flex-col items-center justify-center w-full">
+          <section className="flex flex-col items-center text-center w-full max-w-[720px] px-6">
             {/* ============ STEPPER + INPUT EDITABLE ============ */}
             <h2 className="text-[14px] font-medium text-[var(--text-primary)]">
               {copy.seats_question}
@@ -196,16 +200,15 @@ function OnboardingBillingContent() {
               {copy.seats_question_caption}
             </p>
           </section>
-        </motion.div>
 
-        {/* ============ CARRUSEL DE TIERS (full viewport width) ============
-            Sale del max-w-[720px] del header/footer. El único clip horizontal
-            es <main> con overflow-x-hidden (= ancho del viewport). Las cards
-            adjacent se ven enteras dentro de ese ancho. */}
-        <section
-          className="relative mt-5 flex-none w-full"
-          style={{ height: 300 }}
-        >
+          {/* ============ CARRUSEL DE TIERS (full viewport width) ============
+              Sale del max-w-[720px] del stepper/CTA. El único clip horizontal
+              es <main> con overflow-x-hidden (= ancho del viewport). Las
+              cards adjacent se ven enteras dentro de ese ancho. */}
+          <section
+            className="relative mt-6 flex-none w-full"
+            style={{ height: 300 }}
+          >
           <motion.div
             className="absolute top-0 bottom-0 flex items-center"
             animate={{ x: -activeTierIndex * CARD_STRIDE }}
@@ -237,10 +240,11 @@ function OnboardingBillingContent() {
               );
             })}
           </motion.div>
-        </section>
+          </section>
+        </div>
 
         {/* ============ ERROR + CTA + FOOTER (max-w container) ============ */}
-        <div className="mx-auto w-full max-w-[720px] px-6 pb-6 mt-auto">
+        <div className="mx-auto w-full max-w-[720px] px-6 pb-6">
           {error && (
             <div className="mb-4 rounded-[var(--radius-md)] bg-[var(--band-b-bg)] px-4 py-2.5 text-[12px] text-[var(--band-b-text)] text-center">
               {error}
