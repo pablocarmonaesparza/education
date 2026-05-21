@@ -334,11 +334,11 @@ function SignupContent() {
           >
             Al continuar aceptas nuestros{" "}
             <Link href="/terms" className="underline hover:opacity-70 transition-opacity">
-              términos
+              Términos
             </Link>{" "}
             y la{" "}
             <Link href="/privacy" className="underline hover:opacity-70 transition-opacity">
-              política de privacidad
+              Política de privacidad
             </Link>
             .
           </motion.p>

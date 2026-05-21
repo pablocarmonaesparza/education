@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input, Select, SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
-import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import { OnboardingNav } from "@/components/simulador/OnboardingNav";
 
 const INDUSTRIES = [
   { key: "saas_b2b", label: "SaaS B2B" },
@@ -82,7 +82,7 @@ export default function OnboardingOrgPage() {
 
   return (
     <>
-      <SurfaceNav />
+      <OnboardingNav />
       <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 12 }}

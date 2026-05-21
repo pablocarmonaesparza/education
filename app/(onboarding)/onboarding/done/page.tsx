@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import { OnboardingNav } from "@/components/simulador/OnboardingNav";
 import { onboardingCopy } from "@/lib/simulador/copy/onboarding";
 import {
   findSimuladorSubscriptionByCheckoutSession,
@@ -49,7 +49,7 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
 
   return (
     <>
-      <SurfaceNav />
+      <OnboardingNav />
       {isSynced && <ClearOnboardingStorage />}
       <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-12">
         <section className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[1fr_360px]">

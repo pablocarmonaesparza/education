@@ -19,7 +19,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import { OnboardingNav } from "@/components/simulador/OnboardingNav";
 import {
   computeSimuladorAmount,
   formatUsd,
@@ -125,7 +125,7 @@ function OnboardingBillingContent() {
 
   return (
     <>
-      <SurfaceNav />
+      <OnboardingNav />
       <main className="surface-canvas h-[calc(100vh-3.5rem)] overflow-x-hidden overflow-y-hidden flex flex-col">
         {/* ============ HEADER + STEPPER (max-w container) ============ */}
         <motion.div
@@ -204,7 +204,7 @@ function OnboardingBillingContent() {
             adjacent se ven enteras dentro de ese ancho. */}
         <section
           className="relative mt-5 flex-none w-full"
-          style={{ height: 336 }}
+          style={{ height: 300 }}
         >
           <motion.div
             className="absolute top-0 bottom-0 flex items-center"
@@ -214,35 +214,26 @@ function OnboardingBillingContent() {
           >
             {SIMULADOR_TIERS.map((tier, i) => {
               const isActive = i === activeTierIndex;
-              // Wrapper: layout box fijo 320px + gap fijo → spacing equidistante.
-              // El scale + opacity se aplica al hijo interno para que el footprint
-              // visual cambie SIN alterar el layout. Antes el scale iba en el
-              // wrapper → la card scaleada conservaba su layout box de 320px
-              // pero su visible footprint era 275px, creando "aire" desigual
-              // entre activa-inactiva (22.4px) vs inactiva-inactiva (44.8px).
+              // Sin scale → todas las cards tienen el mismo footprint visual.
+              // La distinción activa/inactiva la dan: border accent, shadow y
+              // opacity 1 vs 0.4. El spacing entre cards es perfectamente
+              // equidistante (gap 16) en cualquier configuración.
               return (
-                <div
+                <motion.div
                   key={tier.id}
+                  animate={{ opacity: isActive ? 1 : 0.4 }}
+                  transition={{ duration: 0.25 }}
                   style={{ width: CARD_WIDTH, marginLeft: 8, marginRight: 8 }}
-                  className="flex-none flex items-center justify-center"
+                  className="flex-none"
                 >
-                  <motion.div
-                    animate={{
-                      scale: isActive ? 1 : 0.86,
-                      opacity: isActive ? 1 : 0.4,
-                    }}
-                    transition={{ type: "spring", stiffness: 260, damping: 28 }}
-                    style={{ width: CARD_WIDTH }}
-                  >
-                    <TierCard
-                      tier={tier}
-                      seats={computed.seats}
-                      isActive={isActive}
-                      monthlyTotal={computed.monthlyTotalUsd}
-                      pricePerSeat={computed.pricePerSeatUsd}
-                    />
-                  </motion.div>
-                </div>
+                  <TierCard
+                    tier={tier}
+                    seats={computed.seats}
+                    isActive={isActive}
+                    monthlyTotal={computed.monthlyTotalUsd}
+                    pricePerSeat={computed.pricePerSeatUsd}
+                  />
+                </motion.div>
               );
             })}
           </motion.div>
@@ -277,11 +268,11 @@ function OnboardingBillingContent() {
           )}
           <div className="mt-2 flex items-center justify-center gap-3 text-[11px] text-[var(--text-tertiary)]">
             <Link href="/terms" className="underline hover:opacity-70 transition-opacity">
-              términos
+              Términos
             </Link>
             <span>·</span>
             <Link href="/privacy" className="underline hover:opacity-70 transition-opacity">
-              privacidad
+              Privacidad
             </Link>
           </div>
         </div>
@@ -317,7 +308,7 @@ function TierCard({
 
   return (
     <div
-      className={`h-[320px] rounded-[var(--radius-lg)] border p-5 transition-all bg-[var(--surface)] flex flex-col ${
+      className={`h-[280px] rounded-[var(--radius-lg)] border p-5 transition-all bg-[var(--surface)] flex flex-col ${
         isActive
           ? "border-[var(--accent)] shadow-[0_8px_24px_var(--shadow)]"
           : "border-[var(--hairline)]"
@@ -347,13 +338,13 @@ function TierCard({
             </div>
           </div>
 
-          {isActive && (
+          {isActive ? (
             <motion.div
               key={`active-${seats}`}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2 }}
-              className="mt-3 border-t border-[var(--hairline)] pt-3"
+              className="mt-4 border-t border-[var(--hairline)] pt-3"
             >
               <div className="flex items-baseline justify-between text-[11px] text-[var(--text-secondary)]">
                 <span>
@@ -364,9 +355,11 @@ function TierCard({
                 </span>
               </div>
             </motion.div>
+          ) : (
+            <div className="mt-4 border-t border-[var(--hairline)] pt-3" />
           )}
 
-          <ul className="mt-auto space-y-1.5 pt-3 text-[11px] leading-[1.4] text-[var(--text-secondary)]">
+          <ul className="mt-3 space-y-1.5 text-[11px] leading-[1.4] text-[var(--text-secondary)]">
             {SIMULADOR_PRODUCT.features.map((f) => (
               <li key={f} className="flex items-start gap-1.5">
                 <svg
@@ -402,7 +395,7 @@ function TierCard({
             Para equipos grandes ajustamos por volumen y término. Te
             cotizamos según vertical y duración del contrato.
           </p>
-          <ul className="mt-auto space-y-1.5 pt-3 text-[11px] leading-[1.4] text-[var(--text-secondary)]">
+          <ul className="mt-3 space-y-1.5 text-[11px] leading-[1.4] text-[var(--text-secondary)]">
             {SIMULADOR_PRODUCT.features.map((f) => (
               <li key={f} className="flex items-start gap-1.5">
                 <span className="mt-1 text-[var(--text-tertiary)]">·</span>
