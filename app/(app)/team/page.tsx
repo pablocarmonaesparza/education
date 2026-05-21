@@ -3,14 +3,15 @@
 /**
  * /team — dashboard del employee (catálogo de casos disponibles).
  *
- * Patrón HIG: H1 display + subtítulo + barra de filtros agrupada + grid
- * de cards con borde + hover lift. Apple HIG/Anthropic console style.
+ * Patrón HIG: H1 display + subtítulo + 4 selects HeroUI horizontales
+ * (estilo /onboarding/org) + grid de cards con borde + hover lift.
  *
  * Mock data por ahora hasta que cableemos con simulador.case_templates.
  */
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { Select, SelectItem } from "@heroui/react";
 
 type Level = "basico" | "intermedio" | "avanzado";
 type Perfil =
@@ -199,61 +200,35 @@ const PROGRAMA_LABEL: Record<Programa, string> = Object.fromEntries(
 // COMPONENT
 // ============================================================================
 
-function FilterChip<T extends string>({
-  label,
-  value,
-  active,
-  onToggle,
-}: {
-  label: string;
-  value: T;
-  active: boolean;
-  onToggle: (v: T) => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={() => onToggle(value)}
-      aria-pressed={active}
-      className={`rounded-full px-3.5 py-1.5 text-[13px] font-medium transition-all ${
-        active
-          ? "bg-[var(--text-primary)] text-[var(--surface)]"
-          : "bg-transparent text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
-      }`}
-    >
-      {label}
-    </button>
-  );
-}
-
-function FilterGroup<T extends string>({
-  label,
+function FilterSelect<T extends string>({
+  placeholder,
   options,
-  selected,
-  onToggle,
+  value,
+  onChange,
 }: {
-  label: string;
+  placeholder: string;
   options: { value: T; label: string }[];
-  selected: Set<T>;
-  onToggle: (v: T) => void;
+  value: T | "";
+  onChange: (v: T | "") => void;
 }) {
   return (
-    <div className="flex flex-col gap-2">
-      <span className="text-[12px] font-medium text-[var(--text-tertiary)]">
-        {label}
-      </span>
-      <div className="flex flex-wrap gap-1.5">
-        {options.map((opt) => (
-          <FilterChip
-            key={opt.value}
-            label={opt.label}
-            value={opt.value}
-            active={selected.has(opt.value)}
-            onToggle={onToggle}
-          />
-        ))}
-      </div>
-    </div>
+    <Select
+      placeholder={placeholder}
+      aria-label={placeholder}
+      selectedKeys={value ? [value] : []}
+      onSelectionChange={(keys) => {
+        const next = Array.from(keys)[0] as T | undefined;
+        onChange(next ?? "");
+      }}
+      variant="bordered"
+      radius="lg"
+      size="lg"
+      className="min-w-[180px] flex-1"
+    >
+      {options.map((opt) => (
+        <SelectItem key={opt.value}>{opt.label}</SelectItem>
+      ))}
+    </Select>
   );
 }
 
@@ -284,44 +259,32 @@ function CaseCard({ item }: { item: CaseItem }) {
 }
 
 export default function TeamPage() {
-  const [levels, setLevels] = useState<Set<Level>>(new Set());
-  const [perfiles, setPerfiles] = useState<Set<Perfil>>(new Set());
-  const [duraciones, setDuraciones] = useState<Set<DuracionBucket>>(new Set());
-  const [programas, setProgramas] = useState<Set<Programa>>(new Set());
-
-  function toggleSet<T>(set: Set<T>, value: T, setter: (s: Set<T>) => void) {
-    const next = new Set(set);
-    if (next.has(value)) next.delete(value);
-    else next.add(value);
-    setter(next);
-  }
+  const [level, setLevel] = useState<Level | "">("");
+  const [perfil, setPerfil] = useState<Perfil | "">("");
+  const [duracion, setDuracion] = useState<DuracionBucket | "">("");
+  const [programa, setPrograma] = useState<Programa | "">("");
 
   const filtered = useMemo(() => {
     return CASES.filter((c) => {
-      if (levels.size && !levels.has(c.level)) return false;
-      if (perfiles.size && !perfiles.has(c.perfil)) return false;
-      if (programas.size && !programas.has(c.programa)) return false;
-      if (duraciones.size) {
-        const matches = DURACIONES.some(
-          (d) => duraciones.has(d.value) && d.check(c.durationMin),
-        );
-        if (!matches) return false;
+      if (level && c.level !== level) return false;
+      if (perfil && c.perfil !== perfil) return false;
+      if (programa && c.programa !== programa) return false;
+      if (duracion) {
+        const d = DURACIONES.find((x) => x.value === duracion);
+        if (d && !d.check(c.durationMin)) return false;
       }
       return true;
     });
-  }, [levels, perfiles, duraciones, programas]);
+  }, [level, perfil, duracion, programa]);
 
   const anyFilterActive =
-    levels.size > 0 ||
-    perfiles.size > 0 ||
-    duraciones.size > 0 ||
-    programas.size > 0;
+    level !== "" || perfil !== "" || duracion !== "" || programa !== "";
 
   function clearAll() {
-    setLevels(new Set());
-    setPerfiles(new Set());
-    setDuraciones(new Set());
-    setProgramas(new Set());
+    setLevel("");
+    setPerfil("");
+    setDuracion("");
+    setPrograma("");
   }
 
   return (
@@ -338,34 +301,34 @@ export default function TeamPage() {
           </p>
         </header>
 
-        {/* ============ FILTROS ============ */}
+        {/* ============ FILTROS (selects horizontales estilo onboarding) ============ */}
         <section
           aria-label="Filtros"
-          className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
         >
-          <FilterGroup
-            label="Nivel"
+          <FilterSelect
+            placeholder="Nivel"
             options={LEVELS}
-            selected={levels}
-            onToggle={(v) => toggleSet(levels, v, setLevels)}
+            value={level}
+            onChange={setLevel}
           />
-          <FilterGroup
-            label="Perfil"
+          <FilterSelect
+            placeholder="Perfil"
             options={PERFILES}
-            selected={perfiles}
-            onToggle={(v) => toggleSet(perfiles, v, setPerfiles)}
+            value={perfil}
+            onChange={setPerfil}
           />
-          <FilterGroup
-            label="Duración"
+          <FilterSelect
+            placeholder="Duración"
             options={DURACIONES.map(({ value, label }) => ({ value, label }))}
-            selected={duraciones}
-            onToggle={(v) => toggleSet(duraciones, v, setDuraciones)}
+            value={duracion}
+            onChange={setDuracion}
           />
-          <FilterGroup
-            label="Programa"
+          <FilterSelect
+            placeholder="Programa"
             options={PROGRAMAS}
-            selected={programas}
-            onToggle={(v) => toggleSet(programas, v, setProgramas)}
+            value={programa}
+            onChange={setPrograma}
           />
         </section>
 
