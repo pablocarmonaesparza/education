@@ -672,33 +672,7 @@ function GuidedPromptExercise({
 
   return (
     <div className="grid gap-5">
-      <div className="grid gap-5 lg:grid-cols-[360px_minmax(0,1fr)]">
-        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
-          <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
-            Respuestas
-          </div>
-          <div className="mt-4 grid gap-3">
-            <ProcessAnswer index={1} label="Objetivo" value={objective || "Sin responder"} muted={!objective} />
-            <ProcessAnswer index={2} label="Audiencia" value={audience || "Sin responder"} muted={!audience} />
-            <ProcessAnswer
-              index={3}
-              label="Límites"
-              value={guardrails.length > 0 ? guardrailText : "Sin responder"}
-              muted={guardrails.length === 0}
-            />
-            <ProcessAnswer
-              index={4}
-              label="Modelo"
-              value={
-                modelTouched
-                  ? `${recommendedModel.label}${recommendedModel.badge ? ` · ${recommendedModel.badge}` : ""} · Inteligencia ${autonomy} · Seguridad ${security} · Costo ${cost}`
-                  : "Sin responder"
-              }
-              muted={!modelTouched}
-            />
-          </div>
-        </div>
-
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -727,65 +701,65 @@ function GuidedPromptExercise({
           <div className="mt-5">
             {activeInput === 0 && (
               <GuidedInputCard>
-              <GuidedSlideOptions
-                options={guidedObjectives}
-                value={objective}
-                onChange={setObjective}
-              />
+                <GuidedSlideOptions
+                  options={guidedObjectives}
+                  value={objective}
+                  onChange={setObjective}
+                />
               </GuidedInputCard>
             )}
             {activeInput === 1 && (
               <GuidedInputCard>
-              <GuidedSlideOptions
-                options={guidedAudiences}
-                value={audience}
-                onChange={setAudience}
-              />
+                <GuidedSlideOptions
+                  options={guidedAudiences}
+                  value={audience}
+                  onChange={setAudience}
+                />
               </GuidedInputCard>
             )}
             {activeInput === 2 && (
               <GuidedInputCard>
-              <div className="grid gap-2">
-                {guidedGuardrails.map((guardrail) => (
-                  <GuidedOption
-                    key={guardrail}
-                    selected={guardrails.includes(guardrail)}
-                    onClick={() => toggleGuardrail(guardrail)}
-                  >
-                    {guardrail}
-                  </GuidedOption>
-                ))}
-              </div>
+                <div className="grid gap-2">
+                  {guidedGuardrails.map((guardrail) => (
+                    <GuidedOption
+                      key={guardrail}
+                      selected={guardrails.includes(guardrail)}
+                      onClick={() => toggleGuardrail(guardrail)}
+                    >
+                      {guardrail}
+                    </GuidedOption>
+                  ))}
+                </div>
               </GuidedInputCard>
             )}
             {activeInput === 3 && (
               <GuidedInputCard>
-              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="text-[12px] text-[var(--text-tertiary)]">
-                      Modelo recomendado
+                <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-[12px] text-[var(--text-tertiary)]">
+                        Modelo recomendado
+                      </div>
+                      <div className="mt-1 flex min-w-0 items-center gap-2 text-[14px] font-semibold text-[var(--text-primary)]">
+                        <BrandMark brand={recommendedModel.brand} />
+                        <span className="truncate">
+                          {recommendedModel.label}
+                          {recommendedModel.badge && (
+                            <span className="font-medium text-[var(--text-tertiary)]"> · {recommendedModel.badge}</span>
+                          )}
+                        </span>
+                      </div>
                     </div>
-                    <div className="mt-1 flex min-w-0 items-center gap-2 text-[14px] font-semibold text-[var(--text-primary)]">
-                      <BrandMark brand={recommendedModel.brand} />
-                      <span className="truncate">
-                        {recommendedModel.label}
-                        {recommendedModel.badge && (
-                          <span className="font-medium text-[var(--text-tertiary)]"> · {recommendedModel.badge}</span>
-                        )}
-                      </span>
+                    <div className="rounded-xl bg-[var(--surface-2)] px-2.5 py-1.5 text-[11px] text-[var(--text-secondary)]">
+                      Automático
                     </div>
-                  </div>
-                  <div className="rounded-xl bg-[var(--surface)] px-2.5 py-1.5 text-[11px] text-[var(--text-secondary)]">
-                    Automático
                   </div>
                 </div>
-              </div>
-              <div className="mt-3 grid gap-2">
-                <Range10 label="Inteligencia" value={autonomy} onChange={(value) => updateModelMetric("intelligence", value)} />
-                <Range10 label="Seguridad" value={security} onChange={(value) => updateModelMetric("security", value)} />
-                <Range10 label="Costo" value={cost} onChange={(value) => updateModelMetric("cost", value)} />
-              </div>
+                <div className="mt-3 grid gap-2">
+                  <Range10 label="Inteligencia" value={autonomy} onChange={(value) => updateModelMetric("intelligence", value)} />
+                  <Range10 label="Seguridad" value={security} onChange={(value) => updateModelMetric("security", value)} />
+                  <Range10 label="Costo" value={cost} onChange={(value) => updateModelMetric("cost", value)} />
+                </div>
               </GuidedInputCard>
             )}
           </div>
@@ -813,6 +787,32 @@ function GuidedPromptExercise({
             >
               {activeInput === inputSteps.length - 1 ? "Crear prompt" : "Siguiente"}
             </button>
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
+          <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+            Respuestas
+          </div>
+          <div className="mt-4 grid gap-3">
+            <ProcessAnswer index={1} label="Objetivo" value={objective || "Sin responder"} muted={!objective} />
+            <ProcessAnswer index={2} label="Audiencia" value={audience || "Sin responder"} muted={!audience} />
+            <ProcessAnswer
+              index={3}
+              label="Límites"
+              value={guardrails.length > 0 ? guardrailText : "Sin responder"}
+              muted={guardrails.length === 0}
+            />
+            <ProcessAnswer
+              index={4}
+              label="Modelo"
+              value={
+                modelTouched
+                  ? `${recommendedModel.label}${recommendedModel.badge ? ` · ${recommendedModel.badge}` : ""} · Inteligencia ${autonomy} · Seguridad ${security} · Costo ${cost}`
+                  : "Sin responder"
+              }
+              muted={!modelTouched}
+            />
           </div>
         </div>
       </div>
@@ -965,7 +965,7 @@ function GuidedInputCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-[300px] rounded-2xl bg-[var(--surface-2)] p-4">
+    <div className="min-h-[210px] rounded-2xl bg-[var(--surface-2)] p-3">
       {children}
     </div>
   );
@@ -1095,7 +1095,9 @@ function AIPromptComposer({
   return (
     <div className={matched ? "h-full min-h-[430px]" : "mt-3"}>
       <div
-        className={`relative overflow-visible rounded-3xl border border-[var(--border)] bg-[var(--surface)] transition-colors focus-within:border-[var(--accent)] ${matched ? "flex h-full min-h-[430px] flex-col" : ""}`}
+        className={`relative overflow-visible rounded-3xl border border-[var(--border)] transition-colors ${
+          readOnly ? "bg-[var(--surface-2)]" : "bg-[var(--surface)] focus-within:border-[var(--accent)]"
+        } ${matched ? "flex h-full min-h-[430px] flex-col" : ""}`}
         style={{
           boxShadow: "0 1px 2px var(--shadow), 0 10px 32px -22px var(--shadow)",
         }}
