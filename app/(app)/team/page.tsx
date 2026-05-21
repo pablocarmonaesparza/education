@@ -44,6 +44,8 @@ type Industry =
 type Freshness = "evergreen" | "current" | "hybrid";
 type DuracionBucket = "corto" | "medio" | "largo";
 type SortKey = "recientes" | "abecedario";
+type UserCaseStatus = "available" | "in_progress" | "completed";
+type Band = "A" | "M" | "B";
 
 interface CaseItem {
   slug: string;
@@ -57,6 +59,11 @@ interface CaseItem {
   freshnessType: Freshness;
   lastVerifiedAt?: string; // ISO date — solo cuando current/hybrid
   toolsRequired: string[];
+  // Estado del user en este caso (mock). Cuando se cablee BD, se deriva de
+  // simulator_sessions JOIN case_templates por user_id.
+  userStatus: UserCaseStatus;
+  userCompletedAt?: string; // ISO date cuando userStatus === 'completed'
+  userBand?: Band; // banda final cuando userStatus === 'completed'
 }
 
 // ============================================================================
@@ -77,6 +84,7 @@ const CASES: CaseItem[] = [
     freshnessType: "current",
     lastVerifiedAt: "2026-05-20",
     toolsRequired: ["ChatGPT", "HubSpot", "Gmail"],
+    userStatus: "available",
   },
   {
     slug: "marketing_urgent_campaign_pii",
@@ -90,6 +98,9 @@ const CASES: CaseItem[] = [
     estimatedMinutes: 18,
     freshnessType: "evergreen",
     toolsRequired: ["ChatGPT"],
+    userStatus: "completed",
+    userCompletedAt: "2026-04-28",
+    userBand: "A",
   },
   {
     slug: "ops_invoice_reconciliation",
@@ -104,6 +115,9 @@ const CASES: CaseItem[] = [
     freshnessType: "hybrid",
     lastVerifiedAt: "2026-04-10",
     toolsRequired: ["Claude", "Excel"],
+    userStatus: "completed",
+    userCompletedAt: "2026-05-03",
+    userBand: "M",
   },
   {
     slug: "cs_churn_signal_review",
@@ -118,6 +132,7 @@ const CASES: CaseItem[] = [
     freshnessType: "current",
     lastVerifiedAt: "2026-05-12",
     toolsRequired: ["ChatGPT", "Salesforce", "Looker"],
+    userStatus: "in_progress",
   },
   {
     slug: "growth_attribution_anomaly",
@@ -132,6 +147,7 @@ const CASES: CaseItem[] = [
     freshnessType: "current",
     lastVerifiedAt: "2026-05-05",
     toolsRequired: ["ChatGPT", "Google Analytics", "Meta Ads"],
+    userStatus: "available",
   },
   {
     slug: "hr_candidate_screening_with_ai",
@@ -145,6 +161,9 @@ const CASES: CaseItem[] = [
     estimatedMinutes: 15,
     freshnessType: "evergreen",
     toolsRequired: ["ChatGPT"],
+    userStatus: "completed",
+    userCompletedAt: "2026-04-15",
+    userBand: "B",
   },
   {
     slug: "finance_board_memo_under_deadline",
@@ -158,6 +177,7 @@ const CASES: CaseItem[] = [
     estimatedMinutes: 18,
     freshnessType: "evergreen",
     toolsRequired: ["Claude"],
+    userStatus: "available",
   },
   {
     slug: "legal_contract_redline_assist",
@@ -172,6 +192,7 @@ const CASES: CaseItem[] = [
     freshnessType: "current",
     lastVerifiedAt: "2026-05-15",
     toolsRequired: ["ChatGPT", "Notion"],
+    userStatus: "in_progress",
   },
   {
     slug: "product_pricing_test_call",
@@ -186,6 +207,7 @@ const CASES: CaseItem[] = [
     freshnessType: "hybrid",
     lastVerifiedAt: "2026-04-22",
     toolsRequired: ["ChatGPT", "Mixpanel"],
+    userStatus: "available",
   },
   {
     slug: "marketing_competitor_response_agent",
@@ -200,6 +222,7 @@ const CASES: CaseItem[] = [
     freshnessType: "current",
     lastVerifiedAt: "2026-05-18",
     toolsRequired: ["Claude", "Zapier", "Slack"],
+    userStatus: "available",
   },
   {
     slug: "leadership_layoff_communication",
@@ -213,6 +236,9 @@ const CASES: CaseItem[] = [
     estimatedMinutes: 14,
     freshnessType: "evergreen",
     toolsRequired: ["Claude"],
+    userStatus: "completed",
+    userCompletedAt: "2026-05-08",
+    userBand: "A",
   },
   {
     slug: "engineering_pr_review_under_pressure",
@@ -227,6 +253,7 @@ const CASES: CaseItem[] = [
     freshnessType: "current",
     lastVerifiedAt: "2026-05-10",
     toolsRequired: ["Cursor", "GitHub Copilot"],
+    userStatus: "available",
   },
 ];
 
@@ -420,13 +447,62 @@ function FreshnessBadge({
   );
 }
 
+/**
+ * Status badge top-right. Prioridad:
+ *   userStatus === 'completed'  → check verde "Completado"
+ *   userStatus === 'in_progress' → dot accent "En progreso"
+ *   userStatus === 'available'  → badge de frescura
+ */
+function StatusBadge({ item }: { item: CaseItem }) {
+  if (item.userStatus === "completed") {
+    return (
+      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--band-a-text)]">
+        <svg
+          width="11"
+          height="11"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden
+        >
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+        Completado
+      </span>
+    );
+  }
+  if (item.userStatus === "in_progress") {
+    return (
+      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--accent)]">
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+        En progreso
+      </span>
+    );
+  }
+  return (
+    <FreshnessBadge
+      freshness={item.freshnessType}
+      lastVerifiedAt={item.lastVerifiedAt}
+    />
+  );
+}
+
+const BAND_LABEL: Record<Band, string> = {
+  A: "Alta",
+  M: "Media",
+  B: "Baja",
+};
+
 function CaseCard({ item }: { item: CaseItem }) {
   return (
     <Link
       href={`/case/${item.slug}`}
       className="group flex flex-col rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--border-strong)] hover:shadow-[0_4px_16px_var(--shadow)]"
     >
-      {/* TOP: nivel chip + duración + frescura */}
+      {/* TOP: nivel chip + duración + status (completado / en progreso / frescura) */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center rounded-md bg-[var(--accent-soft)] px-1.5 py-0.5 text-[11px] font-semibold text-[var(--accent)]">
@@ -436,10 +512,7 @@ function CaseCard({ item }: { item: CaseItem }) {
             {item.estimatedMinutes} min
           </span>
         </div>
-        <FreshnessBadge
-          freshness={item.freshnessType}
-          lastVerifiedAt={item.lastVerifiedAt}
-        />
+        <StatusBadge item={item} />
       </div>
 
       {/* TITLE */}
@@ -468,13 +541,28 @@ function CaseCard({ item }: { item: CaseItem }) {
         })}
       </div>
 
-      {/* FOOTER: depto · seniority · industria */}
-      <div className="mt-5 flex items-center gap-1.5 text-[11.5px] text-[var(--text-tertiary)]">
-        <span>{DEPARTMENT_LABEL[item.department]}</span>
-        <span aria-hidden>·</span>
-        <span>{SENIORITY_LABEL[item.seniority]}</span>
-        <span aria-hidden>·</span>
-        <span>{INDUSTRY_LABEL[item.industry]}</span>
+      {/* FOOTER: depto · seniority · industria + (si completed) banda obtenida */}
+      <div className="mt-5 flex items-center justify-between gap-2 text-[11.5px] text-[var(--text-tertiary)]">
+        <div className="flex items-center gap-1.5 truncate">
+          <span>{DEPARTMENT_LABEL[item.department]}</span>
+          <span aria-hidden>·</span>
+          <span>{SENIORITY_LABEL[item.seniority]}</span>
+          <span aria-hidden>·</span>
+          <span className="truncate">{INDUSTRY_LABEL[item.industry]}</span>
+        </div>
+        {item.userStatus === "completed" && item.userBand && (
+          <span
+            className={`inline-flex flex-none items-center rounded-md px-1.5 py-0.5 text-[10.5px] font-semibold ${
+              item.userBand === "A"
+                ? "bg-[var(--band-a-bg)] text-[var(--band-a-text)]"
+                : item.userBand === "M"
+                  ? "bg-[var(--band-m-bg)] text-[var(--band-m-text)]"
+                  : "bg-[var(--band-b-bg)] text-[var(--band-b-text)]"
+            }`}
+          >
+            {BAND_LABEL[item.userBand]}
+          </span>
+        )}
       </div>
     </Link>
   );
