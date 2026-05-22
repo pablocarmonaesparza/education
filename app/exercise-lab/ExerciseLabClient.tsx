@@ -1255,7 +1255,7 @@ function AIPromptComposer({
               onClick={() => {
                 if (!readOnly) setDropdownOpen((open) => !open);
               }}
-              className={`flex min-h-9 items-center gap-2 rounded-2xl px-2.5 py-1.5 text-[12px] text-[var(--text-secondary)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+              className={`flex min-h-9 max-w-[240px] items-center gap-2 rounded-2xl py-1.5 pl-2.5 pr-3.5 text-[12px] text-[var(--text-secondary)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
                 readOnly
                   ? "cursor-default"
                   : "hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
@@ -1264,7 +1264,7 @@ function AIPromptComposer({
               aria-expanded={readOnly ? undefined : dropdownOpen}
             >
               <BrandMark brand={currentModel.brand} />
-              <span>
+              <span className="min-w-0 truncate">
                 {currentModel.label}
                 {currentModel.badge && (
                   <span className="ml-1 text-[var(--text-tertiary)]">· {currentModel.badge}</span>
@@ -1272,7 +1272,7 @@ function AIPromptComposer({
               </span>
               {!readOnly && (
                 <svg
-                  className={`h-3 w-3 opacity-60 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
+                  className={`h-3 w-3 shrink-0 opacity-60 transition-transform ${dropdownOpen ? "rotate-180" : ""}`}
                   viewBox="0 0 12 12"
                   fill="none"
                 >
@@ -1834,17 +1834,33 @@ function DataTableExercise({
             <div className="text-[13px] text-[var(--text-secondary)]">
               Decide si aporta señal o si expone información de más.
             </div>
-            <select
-              value={row.action}
-              onChange={(event) => updateAction(row.id, event.target.value as DataAction)}
-              className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 text-[14px] text-[var(--text-primary)]"
-            >
-              {(["usar", "anonimizar", "agregar", "excluir"] as DataAction[]).map((action) => (
-                <option key={action} value={action}>
-                  {dataActionLabels[action]}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                value={row.action}
+                onChange={(event) => updateAction(row.id, event.target.value as DataAction)}
+                className="min-h-11 w-full appearance-none rounded-xl border border-[var(--border)] bg-[var(--surface-2)] py-2 pl-3 pr-10 text-[14px] text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+              >
+                {(["usar", "anonimizar", "agregar", "excluir"] as DataAction[]).map((action) => (
+                  <option key={action} value={action}>
+                    {dataActionLabels[action]}
+                  </option>
+                ))}
+              </select>
+              <svg
+                className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--text-tertiary)]"
+                viewBox="0 0 12 12"
+                fill="none"
+                aria-hidden
+              >
+                <path
+                  d="M3 4.5L6 7.5L9 4.5"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
+                />
+              </svg>
+            </div>
           </div>
         ))}
       </div>
