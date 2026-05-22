@@ -416,10 +416,8 @@ export function ExerciseLabClient() {
   });
   const [logFlags, setLogFlags] = useState<string[]>(["l2", "l3"]);
   const [pivotFilter, setPivotFilter] = useState("riesgo");
-  const [decision, setDecision] = useState("pilot");
-  const [memo, setMemo] = useState(
-    "Recomiendo piloto interno antes de envío externo. Hay señales útiles, pero dos afirmaciones requieren fuente y los datos personales deben salir del borrador.",
-  );
+  const [decision, setDecision] = useState("");
+  const [memo, setMemo] = useState("");
 
   useEffect(() => {
     setGuidedPrompt("");
@@ -432,6 +430,8 @@ export function ExerciseLabClient() {
     setGuidedSecurity(50);
     setGuidedCost(50);
     setGuidedResetKey((key) => key + 1);
+    setDecision("");
+    setMemo("");
   }, []);
 
   function handleScroll(event: React.UIEvent<HTMLElement>) {
@@ -2076,13 +2076,6 @@ function AgentBrief({
           <AgentBriefLine label="Puede hacer" value={value.action} />
           <AgentBriefLine label="Debe detenerse si" value={value.stop} />
         </div>
-
-        <div className="mt-auto rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3">
-          <div className="text-[12px] font-medium text-[var(--text-tertiary)]">Entrega esperada</div>
-          <p className="mt-2 text-[13px] leading-5 text-[var(--text-secondary)]">
-            Recomendación, borrador o cambio preparado para revisión humana.
-          </p>
-        </div>
       </div>
     </div>
   );
@@ -2188,26 +2181,58 @@ function DecisionMemo({
   memo: string;
   setMemo: (value: string) => void;
 }) {
+  const options = [
+    {
+      id: "launch",
+      title: "Lanzar ahora",
+      detail: "Úsalo si el beneficio es alto y los riesgos ya quedaron mitigados.",
+    },
+    {
+      id: "pilot",
+      title: "Piloto controlado",
+      detail: "Úsalo si hay señales prometedoras, pero todavía falta validar con un grupo pequeño.",
+    },
+    {
+      id: "pause",
+      title: "Pausar y escalar",
+      detail: "Úsalo si falta evidencia, hay datos sensibles o la decisión puede afectar a terceros.",
+    },
+  ];
+
   return (
-    <div className="grid gap-5 md:grid-cols-[280px_1fr]">
-      <div className="grid gap-3">
-        {[
-          ["launch", "Lanzar hoy"],
-          ["pilot", "Piloto interno"],
-          ["pause", "Pausar"],
-        ].map(([id, label]) => (
-          <ChoiceButton key={id} selected={decision === id} onClick={() => setDecision(id)}>
-            {label}
-          </ChoiceButton>
-        ))}
+    <div className="grid gap-5 md:grid-cols-[320px_1fr]">
+      <div>
+        <Label>Elige la recomendación</Label>
+        <div className="mt-3 grid gap-3">
+          {options.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => setDecision(option.id)}
+              className={`rounded-2xl border p-4 text-left transition-colors ${
+                decision === option.id
+                  ? "border-[var(--accent)] bg-[var(--accent-soft)]"
+                  : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"
+              }`}
+            >
+              <span className="block text-[15px] font-semibold text-[var(--text-primary)]">
+                {option.title}
+              </span>
+              <span className="mt-2 block text-[13px] leading-5 text-[var(--text-secondary)]">
+                {option.detail}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
       <div>
-        <Label>Explica tu recomendación</Label>
+        <Label>Escribe el memo para tu líder</Label>
         <textarea
           value={memo}
           onChange={(event) => setMemo(event.target.value)}
-          rows={7}
-          className="mt-2 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+          rows={10}
+          placeholder="Explica qué harías, por qué, qué riesgo estás aceptando y qué tendría que revisarse antes de avanzar."
+          className="mt-3 h-[calc(100%-2rem)] min-h-[260px] w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
         />
       </div>
     </div>
