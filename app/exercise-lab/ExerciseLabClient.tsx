@@ -594,6 +594,34 @@ function ExerciseSection({
     );
   }
 
+  if (exercise.id === "agent-brief") {
+    return (
+      <section
+        id={exercise.id}
+        data-exercise-section={index}
+        className="h-[calc(100vh-3.5rem)] snap-start snap-always px-6 py-10 flex items-center"
+      >
+        <div className="mx-auto w-full max-w-5xl">
+          <div className="mb-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(280px,360px)] md:items-end">
+            <div>
+              <div className="eyebrow">{exercise.eyebrow}</div>
+              <h2 className="display display-tight mt-3 text-[32px] sm:text-[40px] text-[var(--text-primary)]">
+                {exercise.title}
+              </h2>
+            </div>
+            <p className="text-[15px] leading-[1.5] text-[var(--text-secondary)]">
+              {exercise.description}
+            </p>
+          </div>
+
+          <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-sm)]">
+            {children}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section
       id={exercise.id}
@@ -1981,8 +2009,8 @@ function AgentBrief({
   }
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-stretch">
-      <div className="flex min-h-[460px] flex-col">
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-stretch">
+      <div className="flex min-h-[400px] flex-col">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
@@ -2038,7 +2066,7 @@ function AgentBrief({
         </div>
       </div>
 
-      <div className="flex min-h-[460px] flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
+      <div className="flex min-h-[400px] flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
         <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
           Brief del agente
         </div>
