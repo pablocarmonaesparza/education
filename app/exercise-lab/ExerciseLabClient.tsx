@@ -308,7 +308,7 @@ const agentBriefOptions: Record<AgentBriefField, { label: string; options: strin
     options: [
       "Ordenar insumos y detectar lo importante",
       "Preparar un borrador para revisión",
-      "Comparar opciones y mostrar tradeoffs",
+      "Comparar opciones y mostrar costos y beneficios",
       "Actualizar un registro con aprobación",
     ],
   },
@@ -559,9 +559,6 @@ function ScrollLines({
           </button>
         ))}
       </div>
-      <div className="mt-1 text-right text-[11px] text-[var(--text-tertiary)]">
-        {String(activeIndex + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-      </div>
     </div>
   );
 }
@@ -612,9 +609,6 @@ function ExerciseSection({
           <p className="mt-5 text-[16px] leading-[1.65] text-[var(--text-secondary)]">
             {exercise.description}
           </p>
-          <div className="mt-8 text-[13px] text-[var(--text-tertiary)]">
-            Bloque {String(index + 1).padStart(2, "0")} / {exerciseList.length}
-          </div>
         </aside>
 
         <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6 shadow-[var(--shadow-sm)]">
@@ -1977,6 +1971,9 @@ function AgentBrief({
   setValue: (value: AgentBriefState) => void;
 }) {
   const fields: AgentBriefField[] = ["task", "access", "action", "stop"];
+  const [activeField, setActiveField] = useState<AgentBriefField>("task");
+  const activeIndex = fields.indexOf(activeField);
+  const activeGroup = agentBriefOptions[activeField];
   const completed = fields.filter((field) => value[field]).length;
 
   function updateField(field: AgentBriefField, nextValue: string) {
@@ -1984,61 +1981,78 @@ function AgentBrief({
   }
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
-      <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
-        <div className="max-w-2xl">
-          <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
-            Encargo controlado
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-stretch">
+      <div className="flex min-h-[460px] flex-col">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+              Construye el brief
+            </div>
+            <p className="mt-2 max-w-xl text-[15px] leading-6 text-[var(--text-secondary)]">
+              Define una sola pieza a la vez. El caso controla la situación; el participante sólo decide cómo delegar sin abrir riesgos.
+            </p>
           </div>
-          <p className="mt-2 text-[15px] leading-6 text-[var(--text-secondary)]">
-            Un agente no recibe una instrucción abierta. Recibe una tarea, acceso limitado, una acción máxima y una regla clara para detenerse.
-          </p>
-        </div>
-
-        <div className="mt-5 grid gap-4 md:grid-cols-2">
-          {fields.map((field) => {
-            const group = agentBriefOptions[field];
-            return (
-              <div key={field} className="rounded-2xl bg-[var(--surface-2)] p-3">
-                <Label>{group.label}</Label>
-                <div className="mt-3 grid gap-2">
-                  {group.options.map((option) => (
-                    <GuidedOption
-                      key={option}
-                      selected={value[field] === option}
-                      onClick={() => updateField(field, option)}
-                    >
-                      {option}
-                    </GuidedOption>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
-        <div className="flex items-center justify-between gap-3">
-          <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
-            Brief generado
-          </div>
-          <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[12px] text-[var(--text-secondary)]">
+          <span className="shrink-0 rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[12px] text-[var(--text-secondary)]">
             {completed}/4
           </span>
         </div>
 
-        <div className="mt-4 grid gap-3">
+        <div className="mt-5 grid grid-cols-4 gap-2">
+          {fields.map((field, index) => (
+            <button
+              key={field}
+              type="button"
+              onClick={() => setActiveField(field)}
+              className={`min-h-10 rounded-xl border px-2 text-[12px] font-medium transition-colors ${
+                activeField === field
+                  ? "border-[var(--accent)] bg-[var(--accent)] text-white"
+                  : value[field]
+                    ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--text-primary)]"
+                    : "border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-secondary)]"
+              }`}
+            >
+              {index + 1}. {agentBriefOptions[field].label}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-5 rounded-3xl bg-[var(--surface-2)] p-4">
+          <div className="text-[15px] font-semibold text-[var(--text-primary)]">
+            {activeGroup.label}
+          </div>
+          <div className="mt-3 grid gap-2">
+            {activeGroup.options.map((option) => (
+              <GuidedOption
+                key={option}
+                selected={value[activeField] === option}
+                onClick={() => {
+                  updateField(activeField, option);
+                  const nextField = fields[Math.min(fields.length - 1, activeIndex + 1)];
+                  if (nextField !== activeField) setActiveField(nextField);
+                }}
+              >
+                {option}
+              </GuidedOption>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex min-h-[460px] flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
+        <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+          Brief del agente
+        </div>
+        <div className="mt-4 grid gap-2">
           <AgentBriefLine label="Tarea" value={value.task} />
           <AgentBriefLine label="Acceso permitido" value={value.access} />
           <AgentBriefLine label="Puede hacer" value={value.action} />
           <AgentBriefLine label="Debe detenerse si" value={value.stop} />
         </div>
 
-        <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
-          <div className="text-[12px] font-medium text-[var(--text-tertiary)]">Salida esperada</div>
-          <p className="mt-2 text-[14px] leading-6 text-[var(--text-secondary)]">
-            Entregar un borrador o recomendación con supuestos visibles, dudas abiertas y siguiente paso para revisión humana.
+        <div className="mt-auto rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3">
+          <div className="text-[12px] font-medium text-[var(--text-tertiary)]">Entrega esperada</div>
+          <p className="mt-2 text-[13px] leading-5 text-[var(--text-secondary)]">
+            Recomendación, borrador o cambio preparado para revisión humana.
           </p>
         </div>
       </div>
@@ -2048,7 +2062,7 @@ function AgentBrief({
 
 function AgentBriefLine({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3">
       <div className="text-[12px] text-[var(--text-tertiary)]">{label}</div>
       <div className={`mt-1 min-h-5 text-[14px] leading-snug ${value ? "text-[var(--text-primary)]" : "text-[var(--text-tertiary)]"}`}>
         {value || "\u00A0"}
