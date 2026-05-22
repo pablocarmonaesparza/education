@@ -50,17 +50,20 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
   {
     group: "cliente — manager (org_admin)",
     routes: [
-      { path: "/staff", label: "Staff (dashboard del manager)" },
-      { path: "/reportes", label: "Reportes", note: "pendiente de construir" },
-      { path: "/casos", label: "Casos", note: "pendiente de construir" },
-      { path: "/empresa", label: "Empresa (settings org)", note: "pendiente de construir" },
+      { path: "/staff", label: "Inicio del manager (sprint overview)" },
+      { path: "/staff/equipo", label: "Equipo (miembros + matriz)" },
+      { path: "/staff/reportes", label: "Reportes agregados del team" },
+      { path: "/staff/casos", label: "Casos del team (catálogo)" },
+      { path: "/empresa", label: "Empresa (settings org)" },
     ],
   },
   {
     group: "cliente — employee",
     routes: [
-      { path: "/team", label: "Team (dashboard del empleado)", note: "esqueleto" },
-      { path: "/perfil", label: "Perfil", note: "pendiente de construir" },
+      { path: "/team", label: "Inicio (bento: performance + leaderboard + recomendados)" },
+      { path: "/casos", label: "Catálogo de casos" },
+      { path: "/reportes", label: "Mis reportes" },
+      { path: "/perfil", label: "Perfil (settings personales)" },
     ],
   },
   {
