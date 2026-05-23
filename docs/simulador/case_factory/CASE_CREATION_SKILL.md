@@ -39,9 +39,10 @@ suposicion.
    - legal_compliance_privacy
 3. `moment_of_work`: momento laboral concreto.
 4. `manager_signal`: pregunta que el manager necesita contestar.
-5. `tools_and_data`: herramientas, datos y artefactos reales.
-6. `risks_and_controls`: riesgos posibles y controles esperados.
-7. `time_pressure`: opcional. Default `no_timer`.
+5. `manager_assignment_brief`: parrafo breve que explica cuando asignar el caso.
+6. `tools_and_data`: herramientas, datos y artefactos reales.
+7. `risks_and_controls`: riesgos posibles y controles esperados.
+8. `time_pressure`: opcional. Default `no_timer`.
 
 ## Proceso obligatorio
 
@@ -55,12 +56,13 @@ Debe incluir:
 - perfil;
 - momento de trabajo;
 - senal para el manager;
+- brief de asignacion para manager;
 - herramientas y datos;
 - riesgos y controles;
 - si aplica timer o no.
 
-Regla: si no puedes escribir el momento de trabajo en una escena concreta, el
-caso todavia no existe.
+Regla: si no puedes escribir el momento de trabajo en una escena concreta y un
+manager no podria entender cuando asignarlo, el caso todavia no existe.
 
 ### 2. Research dossier profundo
 
@@ -213,6 +215,7 @@ El Case Critic revisa:
 - si mide criterio o solo conocimiento;
 - si los ejercicios estan ligados a metricas;
 - si hay spoilers de rubrica;
+- si el brief de asignacion ayuda al manager a elegir la tarea correcta;
 - si el manager recibe senal accionable;
 - si los riesgos son observables;
 - si primary y resim miden transferencia;
@@ -245,6 +248,7 @@ Por cada caso nuevo:
 - evidence ledger;
 - scenario scoring;
 - selected scenario;
+- manager assignment brief;
 - primary case YAML;
 - primary variant YAML;
 - resim variant YAML;

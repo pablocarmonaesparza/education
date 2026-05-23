@@ -3,6 +3,27 @@
 El manager no necesita saber si el empleado "aprendio IA". Necesita saber si
 puede confiarle trabajo real con IA, en que nivel y bajo que controles.
 
+## Brief de asignacion
+
+Antes de correr un caso, el manager debe ver un parrafo que explique que tarea
+laboral representa y cuando conviene asignarlo.
+
+Debe responder:
+
+- que trabajo real simula;
+- para que roles o perfiles aplica;
+- que presion o artefacto laboral usa;
+- que decision manager ayudara a tomar;
+- que senal observable entregara el reporte.
+
+Ejemplo:
+
+`Asigna este caso cuando quieras saber si alguien de Sales Ops o RevOps puede
+delegar follow-up comercial a un agente sin perder control sobre datos,
+aprobaciones y confianza del cliente. El resultado te dira si esa persona puede
+pilotar automatizacion en pipeline, si necesita practica en limites de
+autonomia o si conviene pausar el uso de agentes hasta reforzar controles.`
+
 ## Resultado por persona
 
 Cada caso debe producir:

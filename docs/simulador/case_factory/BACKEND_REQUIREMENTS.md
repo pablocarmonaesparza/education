@@ -12,6 +12,8 @@
 - `last_verified_at`.
 - `refresh_due_at`.
 - `manager_outcome_json`.
+  - debe incluir `primary_question`, `assignment_brief`, `business_metric`,
+    `risk_metric` y `expected_signal`.
 - `output_spec_json`.
 - `failure_modes_json`.
 - `criteria_weights_json`.
@@ -41,4 +43,3 @@
 El schema actual ya tiene parte de esto: templates, variants, sessions, reports,
 risk events, practice beats, transfer delta, history y alerts. Esta capa agrega
 la metadata necesaria para fabricar y mantener 50+ casos sin perder calidad.
-

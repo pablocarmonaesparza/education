@@ -20,7 +20,7 @@
 1. Elegir nivel.
 2. Elegir departamento, rol, industria y seniority.
 3. Elegir herramienta actual y principio evergreen.
-4. Definir manager outcome.
+4. Definir manager outcome y brief de asignacion.
 5. Definir situacion y presion.
 6. Definir artefactos/datos.
 7. Definir output esperado.

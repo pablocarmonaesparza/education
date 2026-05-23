@@ -61,6 +61,7 @@ function validateCaseFile(filePath, variantsByTemplate) {
   check(Boolean(item.case_factory_meta?.level), scope, "case needs case_factory_meta.level");
   check(Boolean(item.case_factory_meta?.freshness?.refresh_due_at), scope, "case needs freshness.refresh_due_at");
   check(Boolean(item.case_factory_meta?.manager_outcome?.primary_question), scope, "case needs manager outcome");
+  check(Boolean(item.case_factory_meta?.manager_outcome?.assignment_brief), scope, "case needs manager assignment brief");
   const timePressure = item.case_factory_meta?.time_pressure ?? { mode: "no_timer" };
   check(
     TIME_PRESSURE_MODES.has(timePressure.mode),

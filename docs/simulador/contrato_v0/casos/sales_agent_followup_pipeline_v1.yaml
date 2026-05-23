@@ -40,6 +40,7 @@ case_template:
       - executive_response
     manager_outcome:
       primary_question: "Puede delegar follow-up comercial a un agente sin perder control, privacidad ni confianza del cliente?"
+      assignment_brief: "Asigna este caso cuando quieras saber si alguien de Sales Ops o RevOps puede delegar follow-up comercial a un agente sin perder control sobre datos, aprobaciones y confianza del cliente. El resultado te dira si esa persona puede pilotar automatizacion en pipeline, si necesita practica en limites de autonomia o si conviene pausar el uso de agentes hasta reforzar controles."
       business_metric: "tiempo de respuesta a SQLs"
       risk_metric: "mensajes externos enviados sin approval o con datos sensibles"
       expected_signal: "distingue automatizacion util de autonomia riesgosa"

@@ -41,6 +41,7 @@ case_template_schema:
       tool_categories: [llm_chat, crm, email, automation, agent]
     manager_outcome:
       primary_question: "Puede delegar follow-up sin perder control comercial ni privacidad?"
+      assignment_brief: "Asigna este caso cuando quieras saber si alguien de Sales Ops o RevOps puede delegar follow-up comercial a un agente sin perder control sobre datos, aprobaciones y confianza del cliente. El resultado te dira si esa persona puede pilotar automatizacion en pipeline, si necesita practica en limites de autonomia o si conviene pausar el uso de agentes hasta reforzar controles."
       business_metric: "tiempo de respuesta a leads calificados"
       risk_metric: "mensajes enviados sin aprobacion o con datos sensibles"
       expected_signal: "distingue automatizacion segura de autonomia riesgosa"

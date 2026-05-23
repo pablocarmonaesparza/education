@@ -64,6 +64,7 @@ if (schema) {
   const weights = example?.evaluation?.criteria_weights ?? {};
   const total = Object.values(weights).reduce((sum, value) => sum + Number(value), 0);
   check(total === 100, `example criteria weights must sum 100, got ${total}`);
+  check(Boolean(example?.manager_outcome?.assignment_brief), "example needs manager_outcome.assignment_brief");
   check(Boolean(example?.freshness?.refresh_due_at), "example needs refresh_due_at");
   check(Boolean(example?.judge?.prompt_ref), "example needs judge.prompt_ref");
   check(Boolean(example?.resimulation?.required), "example needs resimulation.required");

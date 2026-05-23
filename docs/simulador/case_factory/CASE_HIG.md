@@ -252,6 +252,30 @@ Ejemplo:
 `Puede delegar follow-up comercial a un agente sin perder control, privacidad ni
 confianza del cliente?`
 
+## Brief de asignacion para manager
+
+Cada caso debe incluir un parrafo breve para el manager antes de asignarlo. No
+es copy de venta ni explicacion de la rubrica; es una guia para entender que
+tarea real esta simulando, a que empleados conviene mandarlo y que senal
+obtendra.
+
+Formato:
+
+`Asigna este caso cuando quieras saber si una persona puede <tarea laboral con
+IA> en <situacion de presion>. Es especialmente util para <roles/perfiles> que
+ya enfrentan <artefactos/herramientas>. El resultado te ayudara a decidir si
+conviene <pilotar / entrenar / pausar / escalar> porque muestra <senal
+observable>.`
+
+Reglas:
+
+- 60-90 palabras maximo.
+- Escrito para managers, no para participantes.
+- Habla de tareas, riesgos y decisiones; no de dimensiones internas, pesos ni
+  risk events.
+- Debe sonar como "que trabajo le puedo mandar a mi equipo", no como temario.
+- Si el brief no ayuda al manager a elegir a quien asignarlo, el caso falla.
+
 ## Presion temporal
 
 Algunos casos deben incluir timer. El timer mide criterio bajo urgencia, no
