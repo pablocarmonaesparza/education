@@ -306,7 +306,7 @@ function ReportView({
         <section className="reading-col px-6 pt-14">
           <motion.div {...fadeUp}>
             <div className="eyebrow">Reporte ejecutivo · participante</div>
-            <h1 className="display display-tight mt-5 ts-display-lg sm:text-[52px] text-[var(--text-primary)]">
+            <h1 className="display display-tight mt-5 ts-display-lg sm:ts-display-xl text-[var(--text-primary)]">
               Diagnóstico operativo.
             </h1>
             <div className="mt-6 flex flex-wrap items-center gap-3 ts-subhead text-[var(--text-secondary)]">
@@ -334,7 +334,7 @@ function ReportView({
             <div className="flex flex-col sm:flex-row sm:items-start gap-8">
               <div className="flex-shrink-0">
                 <div className="eyebrow">Readiness general</div>
-                <div className="display mt-3 text-[64px] text-[var(--text-primary)] leading-none">
+                <div className="display mt-3 ts-display-4xl text-[var(--text-primary)] leading-none">
                   {overallScore}
                   <span className="text-[var(--text-tertiary)] ts-title-1 ml-1">
                     /100

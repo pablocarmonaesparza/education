@@ -33,7 +33,7 @@ export default function LandingPage() {
           <motion.h1
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.05 }}
-            className="display display-tight mt-6 text-[var(--text-primary)] ts-display-lg sm:text-[64px] md:text-[80px]"
+            className="display display-tight mt-6 text-[var(--text-primary)] ts-display-lg sm:ts-display-4xl md:ts-display-5xl"
           >
             ¿Tu equipo usa IA
             <br />
@@ -43,7 +43,7 @@ export default function LandingPage() {
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.1 }}
-            className="mt-8 text-[19px] sm:text-[21px] text-[var(--text-secondary)] max-w-2xl mx-auto leading-[1.5]"
+            className="mt-8 ts-body-lg sm:ts-body-xl text-[var(--text-secondary)] max-w-2xl mx-auto leading-[1.5]"
           >
             Mide y mejora cómo tu equipo decide cuando usa IA en flujos reales.
             <br className="hidden sm:block" />
@@ -101,7 +101,7 @@ export default function LandingPage() {
                 transition={{ ...fadeUp.transition, delay: i * 0.05 }}
                 className="bg-[var(--surface)] p-10 text-center"
               >
-                <div className="display ts-display-xl sm:ts-display-2xl text-[var(--text-primary)]">{s.stat}</div>
+                <div className="display ts-display-2xl sm:ts-display-4xl text-[var(--text-primary)]">{s.stat}</div>
                 <p className="mt-3 ts-body text-[var(--text-primary)] leading-snug">{s.label}</p>
                 <p className="mt-2 ts-footnote text-[var(--text-tertiary)]">{s.source}</p>
               </motion.div>
@@ -237,7 +237,7 @@ export default function LandingPage() {
               >
                 <Card className="card-apple bg-[var(--surface)] shadow-none">
                   <CardBody className="p-7">
-                    <h3 className="text-[19px] font-semibold text-[var(--text-primary)] capitalize">
+                    <h3 className="ts-body-lg font-semibold text-[var(--text-primary)] capitalize">
                       {a.label}.
                     </h3>
                     <p className="mt-2 ts-body text-[var(--text-secondary)] leading-[1.55]">

@@ -52,13 +52,18 @@
   --text-callout:     14px;    /* CTA pequeño, label de formulario */
   --text-body:        15px;    /* body principal, párrafos */
   --text-headline:    17px;    /* títulos de card, H3 */
+  --text-body-lg:     19px;    /* intro hero body, subtitle landing (sm:) */
+  --text-body-xl:     21px;    /* subtitle hero desktop (md:) */
   --text-title-3:     22px;    /* títulos de sección secundaria */
   --text-title-2:     24px;    /* H2 de hero card */
   --text-title-1:     28px;    /* H1 de surface */
   --text-display:     32px;    /* hero compacto */
-  --text-display-lg:  40px;    /* hero grande, landing */
-  --text-display-xl:  56px;    /* hero stat de landing (sm:) */
-  --text-display-2xl: 64px;    /* hero stat de landing (max) */
+  --text-display-lg:  40px;    /* hero default surface */
+  --text-display-xl:  52px;    /* report hero (sm:) */
+  --text-display-2xl: 56px;    /* runtime intro hero (sm:), stat landing */
+  --text-display-3xl: 60px;    /* runtime reporte hero (sm:) */
+  --text-display-4xl: 64px;    /* landing hero (sm:), readiness # */
+  --text-display-5xl: 80px;    /* landing hero (md:), max */
 
   /* Override HeroUI radius tokens para que TODO componente HeroUI
      (Button/Input/Select/Card/Modal/Badge/...) use exactamente los
@@ -387,10 +392,34 @@
 .simulador-root .ts-callout    { font-size: var(--text-callout); }
 .simulador-root .ts-body       { font-size: var(--text-body); }
 .simulador-root .ts-headline   { font-size: var(--text-headline); }
+.simulador-root .ts-body-lg    { font-size: var(--text-body-lg); }
+.simulador-root .ts-body-xl    { font-size: var(--text-body-xl); }
 .simulador-root .ts-title-3    { font-size: var(--text-title-3); }
 .simulador-root .ts-title-2    { font-size: var(--text-title-2); }
 .simulador-root .ts-title-1    { font-size: var(--text-title-1); }
-.simulador-root .ts-display    { font-size: var(--text-display); }
-.simulador-root .ts-display-lg { font-size: var(--text-display-lg); }
-.simulador-root .ts-display-xl { font-size: var(--text-display-xl); }
-.simulador-root .ts-display-2xl{ font-size: var(--text-display-2xl); }
+.simulador-root .ts-display     { font-size: var(--text-display); }
+.simulador-root .ts-display-lg  { font-size: var(--text-display-lg); }
+.simulador-root .ts-display-xl  { font-size: var(--text-display-xl); }
+.simulador-root .ts-display-2xl { font-size: var(--text-display-2xl); }
+.simulador-root .ts-display-3xl { font-size: var(--text-display-3xl); }
+.simulador-root .ts-display-4xl { font-size: var(--text-display-4xl); }
+.simulador-root .ts-display-5xl { font-size: var(--text-display-5xl); }
+/* Responsive prefix support for sm:/md:/lg: ts-* classes */
+@media (min-width: 640px) {
+  .simulador-root .sm\:ts-body-lg     { font-size: var(--text-body-lg); }
+  .simulador-root .sm\:ts-body-xl     { font-size: var(--text-body-xl); }
+  .simulador-root .sm\:ts-display-xl  { font-size: var(--text-display-xl); }
+  .simulador-root .sm\:ts-display-2xl { font-size: var(--text-display-2xl); }
+  .simulador-root .sm\:ts-display-3xl { font-size: var(--text-display-3xl); }
+  .simulador-root .sm\:ts-display-4xl { font-size: var(--text-display-4xl); }
+  .simulador-root .sm\:ts-display-5xl { font-size: var(--text-display-5xl); }
+  .simulador-root .sm\:ts-display     { font-size: var(--text-display); }
+  .simulador-root .sm\:ts-display-lg  { font-size: var(--text-display-lg); }
+  .simulador-root .sm\:ts-title-1     { font-size: var(--text-title-1); }
+  .simulador-root .sm\:ts-title-2     { font-size: var(--text-title-2); }
+  .simulador-root .sm\:ts-title-3     { font-size: var(--text-title-3); }
+}
+@media (min-width: 768px) {
+  .simulador-root .md\:ts-display-4xl { font-size: var(--text-display-4xl); }
+  .simulador-root .md\:ts-display-5xl { font-size: var(--text-display-5xl); }
+}

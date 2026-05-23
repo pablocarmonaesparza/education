@@ -1053,7 +1053,7 @@ function FieldTestReportInline({
       <div className="max-w-5xl mx-auto">
         <div className="max-w-3xl">
           <div className="eyebrow">Reporte preliminar</div>
-          <h1 className="display display-tight mt-5 ts-display-lg sm:ts-display-xl text-[var(--text-primary)]">
+          <h1 className="display display-tight mt-5 ts-display-lg sm:ts-display-2xl text-[var(--text-primary)]">
             Tu lectura del caso.
           </h1>
           <p className="mt-6 ts-headline text-[var(--text-secondary)] leading-[1.6]">
@@ -1466,10 +1466,10 @@ function IntroSlide({
             </span>
           </div>
         )}
-        <h1 className="display display-tight mt-6 ts-display-lg sm:text-[60px] text-[var(--text-primary)]">
+        <h1 className="display display-tight mt-6 ts-display-lg sm:ts-display-3xl text-[var(--text-primary)]">
           {title}.
         </h1>
-        <p className="mt-8 text-[19px] text-[var(--text-secondary)] leading-[1.55]">
+        <p className="mt-8 ts-body-lg text-[var(--text-secondary)] leading-[1.55]">
           Vas a interpretar el rol de un Marketing Manager bajo presión. No hay
           respuesta única correcta: evaluamos tu criterio.
         </p>
