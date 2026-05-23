@@ -28,32 +28,34 @@ const USER = {
   currentLevelLabel: "Automatización",
 };
 
+// Scores en escala 0-10 (decisión Pablo 2026-05-23 — consistente con /reportes).
 const PERFORMANCE = {
   averageBand: "M" as Band,
+  averageScore: 7.1,
   casesCompleted: 4,
   dimensions: [
-    { id: "contexto", label: "Contexto", score: 82 },
-    { id: "datos", label: "Datos", score: 65 },
-    { id: "ejecucion_ia", label: "Ejecución IA", score: 71 },
-    { id: "validacion", label: "Validación", score: 58 },
-    { id: "juicio", label: "Juicio", score: 79 },
-    { id: "impacto", label: "Impacto", score: 68 },
+    { id: "contexto", label: "Contexto", score: 8.2 },
+    { id: "datos", label: "Datos", score: 6.5 },
+    { id: "ejecucion_ia", label: "Ejecución IA", score: 7.1 },
+    { id: "validacion", label: "Validación", score: 5.8 },
+    { id: "juicio", label: "Juicio", score: 7.9 },
+    { id: "impacto", label: "Impacto", score: 6.8 },
   ],
 };
 
 interface LeaderboardEntry {
   name: string;
   initials: string;
-  score: number;
+  score: number; // 0-10 (1 decimal)
   isCurrentUser?: boolean;
 }
 
 const LEADERBOARD: LeaderboardEntry[] = [
-  { name: "Mariana Cortés", initials: "MC", score: 92 },
-  { name: "Juan Esparza", initials: "JE", score: 87 },
-  { name: "Ana López", initials: "AL", score: 78, isCurrentUser: true },
-  { name: "Pedro Ruiz", initials: "PR", score: 74 },
-  { name: "Sofía Martín", initials: "SM", score: 69 },
+  { name: "Mariana Cortés", initials: "MC", score: 9.2 },
+  { name: "Juan Esparza", initials: "JE", score: 8.7 },
+  { name: "Ana López", initials: "AL", score: 7.8, isCurrentUser: true },
+  { name: "Pedro Ruiz", initials: "PR", score: 7.4 },
+  { name: "Sofía Martín", initials: "SM", score: 6.9 },
 ];
 
 // Casos recomendados — solo no completados. in_progress primero (debe
@@ -209,11 +211,11 @@ export default function TeamHomePage() {
                   <div className="flex-1 h-[6px] rounded-full bg-[var(--surface-2)] overflow-hidden">
                     <div
                       className="h-full rounded-full bg-[var(--accent)]"
-                      style={{ width: `${d.score}%` }}
+                      style={{ width: `${(d.score / 10) * 100}%` }}
                     />
                   </div>
-                  <span className="w-[28px] flex-none text-right ts-caption-1 font-medium tabular-nums text-[var(--text-primary)]">
-                    {d.score}
+                  <span className="w-[32px] flex-none text-right ts-caption-1 font-medium tabular-nums text-[var(--text-primary)]">
+                    {d.score.toFixed(1)}
                   </span>
                 </div>
               ))}
@@ -257,7 +259,7 @@ export default function TeamHomePage() {
                     )}
                   </span>
                   <span className="ts-footnote font-semibold tabular-nums text-[var(--text-primary)]">
-                    {entry.score}
+                    {entry.score.toFixed(1)}
                   </span>
                 </li>
               ))}
