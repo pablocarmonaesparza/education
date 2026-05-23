@@ -85,7 +85,7 @@ export function PublicNav() {
               href={s.href}
               size="sm"
               color="foreground"
-              className="text-[13.5px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              className="ts-subhead font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             >
               {s.label}
             </Link>
@@ -102,7 +102,7 @@ export function PublicNav() {
             radius="md"
             size="sm"
             variant="light"
-            className="text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
+            className="ts-subhead font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
           >
             Iniciar sesión
           </Button>
@@ -113,7 +113,7 @@ export function PublicNav() {
             href="/auth/signup?next=%2Fonboarding%2Forg"
             radius="md"
             size="sm"
-            className="accent-bg text-white text-[13.5px] font-medium h-9 px-4 shadow-none"
+            className="accent-bg text-white ts-subhead font-medium h-9 px-4 shadow-none"
           >
             Agendar diagnóstico
           </Button>
@@ -143,7 +143,7 @@ export function PublicNav() {
             size="lg"
             variant="bordered"
             onPress={() => setIsMenuOpen(false)}
-            className="h-11 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[14px] font-medium"
+            className="h-11 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] ts-callout font-medium"
           >
             Iniciar sesión
           </Button>
@@ -153,7 +153,7 @@ export function PublicNav() {
             radius="md"
             size="lg"
             onPress={() => setIsMenuOpen(false)}
-            className="h-11 accent-bg text-white text-[14px] font-medium shadow-none"
+            className="h-11 accent-bg text-white ts-callout font-medium shadow-none"
           >
             Agendar diagnóstico
           </Button>

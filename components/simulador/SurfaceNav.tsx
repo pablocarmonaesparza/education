@@ -74,7 +74,7 @@ export function SurfaceNav() {
                 href={r.href}
                 size="sm"
                 color="foreground"
-                className={`text-[13px] font-medium transition-colors ${
+                className={`ts-subhead font-medium transition-colors ${
                   active
                     ? "text-[var(--text-primary)]"
                     : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"

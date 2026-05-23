@@ -40,6 +40,26 @@
   --motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --motion-linear: linear;
 
+  /* ============================================================
+     TYPOGRAPHY SCALE (Apple HIG-inspired)
+     Cambia el px aquí y se actualiza en TODO el sistema.
+     Uso: <p className="ts-body" /> en lugar de text-[15px].
+     ============================================================ */
+  --text-caption-2:   10.5px;  /* micro: timestamps, micro-meta */
+  --text-caption-1:   11.5px;  /* eyebrows, chip labels, footer micro */
+  --text-footnote:    12px;    /* nota auxiliar, labels secundarios */
+  --text-subhead:     13.5px;  /* body secundario, descripciones de card */
+  --text-callout:     14px;    /* CTA pequeño, label de formulario */
+  --text-body:        15px;    /* body principal, párrafos */
+  --text-headline:    17px;    /* títulos de card, H3 */
+  --text-title-3:     22px;    /* títulos de sección secundaria */
+  --text-title-2:     24px;    /* H2 de hero card */
+  --text-title-1:     28px;    /* H1 de surface */
+  --text-display:     32px;    /* hero compacto */
+  --text-display-lg:  40px;    /* hero grande, landing */
+  --text-display-xl:  56px;    /* hero stat de landing (sm:) */
+  --text-display-2xl: 64px;    /* hero stat de landing (max) */
+
   /* Override HeroUI radius tokens para que TODO componente HeroUI
      (Button/Input/Select/Card/Modal/Badge/...) use exactamente los
      mismos valores de radius que nuestros tokens semánticos.
@@ -350,3 +370,27 @@
   color: var(--text-tertiary) !important;
   opacity: 1;
 }
+
+/* ============================================================
+   TYPOGRAPHY UTILITY CLASSES — `ts-*` (text-size)
+   Mapean 1:1 con los tokens --text-*. Cambiar el px del token y
+   se refleja en TODA la app. Uso:
+     <p className="ts-body" />
+     <h1 className="ts-display-lg" />
+   Combinables con cualquier Tailwind class para color, weight, etc:
+     <span className="ts-headline font-semibold text-[var(--text-primary)]" />
+   ============================================================ */
+.simulador-root .ts-caption-2  { font-size: var(--text-caption-2); }
+.simulador-root .ts-caption-1  { font-size: var(--text-caption-1); }
+.simulador-root .ts-footnote   { font-size: var(--text-footnote); }
+.simulador-root .ts-subhead    { font-size: var(--text-subhead); }
+.simulador-root .ts-callout    { font-size: var(--text-callout); }
+.simulador-root .ts-body       { font-size: var(--text-body); }
+.simulador-root .ts-headline   { font-size: var(--text-headline); }
+.simulador-root .ts-title-3    { font-size: var(--text-title-3); }
+.simulador-root .ts-title-2    { font-size: var(--text-title-2); }
+.simulador-root .ts-title-1    { font-size: var(--text-title-1); }
+.simulador-root .ts-display    { font-size: var(--text-display); }
+.simulador-root .ts-display-lg { font-size: var(--text-display-lg); }
+.simulador-root .ts-display-xl { font-size: var(--text-display-xl); }
+.simulador-root .ts-display-2xl{ font-size: var(--text-display-2xl); }

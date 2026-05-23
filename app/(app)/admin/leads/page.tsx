@@ -174,10 +174,10 @@ export default function AdminLeadsPage() {
             transition={{ duration: 0.4 }}
           >
             <div className="eyebrow">Itera staff · adquisición</div>
-            <h1 className="display mt-4 text-[36px] text-[var(--text-primary)]">
+            <h1 className="display mt-4 ts-display text-[var(--text-primary)]">
               Leads del field-test
             </h1>
-            <p className="mt-4 max-w-2xl text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+            <p className="mt-4 max-w-2xl ts-body leading-[1.55] text-[var(--text-secondary)]">
               Personas que terminaron el diagnóstico público y pidieron contacto.
               Esta bandeja existe para que el aprendizaje de mercado no se quede
               escondido en la base de datos.
@@ -186,7 +186,7 @@ export default function AdminLeadsPage() {
           </motion.div>
 
           {error && (
-            <div className="mt-8 rounded-xl bg-[var(--band-b-bg)] p-4 text-[14px] text-[var(--band-b-text)]">
+            <div className="mt-8 rounded-xl bg-[var(--band-b-bg)] p-4 ts-callout text-[var(--band-b-text)]">
               {error}
             </div>
           )}
@@ -237,7 +237,7 @@ export default function AdminLeadsPage() {
                 }`}
               >
                 <div className="eyebrow">{item.label}</div>
-                <div className="mt-2 mono text-[22px] font-semibold text-[var(--text-primary)]">
+                <div className="mt-2 mono ts-title-3 font-semibold text-[var(--text-primary)]">
                   {item.count}
                 </div>
               </button>
@@ -268,13 +268,13 @@ export default function AdminLeadsPage() {
           </div>
 
           {data === null && !error && (
-            <div className="mt-12 text-[14px] text-[var(--text-secondary)]">
+            <div className="mt-12 ts-callout text-[var(--text-secondary)]">
               Cargando leads…
             </div>
           )}
 
           {data !== null && data.items.length === 0 && (
-            <div className="mt-12 rounded-2xl bg-[var(--surface)] p-8 text-[14px] text-[var(--text-secondary)]">
+            <div className="mt-12 rounded-2xl bg-[var(--surface)] p-8 ts-callout text-[var(--text-secondary)]">
               No hay leads en este estado.
             </div>
           )}
@@ -308,7 +308,7 @@ function AdminLinks() {
         <a
           key={href}
           href={href}
-          className="rounded-full bg-[var(--surface-2)] px-4 py-2 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
+          className="rounded-full bg-[var(--surface-2)] px-4 py-2 ts-subhead font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
         >
           {label}
         </a>
@@ -329,10 +329,10 @@ function FunnelStat({
   return (
     <div className="rounded-2xl border border-[var(--hairline)] bg-[var(--surface)] p-4">
       <div className="eyebrow">{label}</div>
-      <div className="mt-2 mono text-[22px] font-semibold text-[var(--text-primary)]">
+      <div className="mt-2 mono ts-title-3 font-semibold text-[var(--text-primary)]">
         {value}
       </div>
-      <div className="mt-1 text-[11px] text-[var(--text-tertiary)]">{sub}</div>
+      <div className="mt-1 ts-caption-1 text-[var(--text-tertiary)]">{sub}</div>
     </div>
   );
 }
@@ -369,23 +369,23 @@ function LeadCard({
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${statusTone(lead.status)}`}>
+            <span className={`rounded-full px-2.5 py-1 ts-caption-1 font-semibold ${statusTone(lead.status)}`}>
               {STATUS_COPY[lead.status]}
             </span>
-            <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-tertiary)]">
+            <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1 ts-caption-1 font-medium text-[var(--text-tertiary)]">
               {lead.source.replace(/_/g, " ")}
             </span>
             {reportStatus && (
-              <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[11px] font-medium text-[var(--text-tertiary)]">
+              <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1 ts-caption-1 font-medium text-[var(--text-tertiary)]">
                 reporte {reportStatus}
               </span>
             )}
           </div>
 
-          <h2 className="mt-4 text-[22px] font-semibold text-[var(--text-primary)]">
+          <h2 className="mt-4 ts-title-3 font-semibold text-[var(--text-primary)]">
             {lead.name ?? "Sin nombre"}
           </h2>
-          <div className="mt-2 text-[14px] text-[var(--text-secondary)]">
+          <div className="mt-2 ts-callout text-[var(--text-secondary)]">
             <a
               className="hover:text-[var(--text-primary)]"
               href={`mailto:${lead.email}`}
@@ -394,18 +394,18 @@ function LeadCard({
             </a>
             {lead.company ? ` · ${lead.company}` : ""}
           </div>
-          <div className="mt-2 text-[13px] text-[var(--text-tertiary)]">
+          <div className="mt-2 ts-subhead text-[var(--text-tertiary)]">
             {lead.role || "Rol no indicado"}
             {lead.team_size ? ` · equipo ${lead.team_size}` : ""}
           </div>
         </div>
 
         <div className="text-left lg:text-right">
-          <div className="text-[12px] mono text-[var(--text-tertiary)]">
+          <div className="ts-footnote mono text-[var(--text-tertiary)]">
             creado {formatDate(lead.created_at)}
           </div>
           {session && (
-            <div className="mt-2 text-[12px] mono text-[var(--text-tertiary)]">
+            <div className="mt-2 ts-footnote mono text-[var(--text-tertiary)]">
               {session.case_slug} · {session.status}
             </div>
           )}
@@ -417,7 +417,7 @@ function LeadCard({
           value={notes}
           onChange={(event) => setNotes(event.target.value)}
           placeholder="Notas internas para seguimiento comercial..."
-          className="min-h-[88px] w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3 text-[14px] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
+          className="min-h-[88px] w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3 ts-callout text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]"
         />
 
         <div className="flex flex-col gap-2">
@@ -428,7 +428,7 @@ function LeadCard({
               onPatch({ status: event.target.value as LeadStatus })
             }
             disabled={isSaving}
-            className="h-10 rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 text-[13px] text-[var(--text-primary)]"
+            className="h-10 rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 ts-subhead text-[var(--text-primary)]"
           >
             {STATUSES.map((item) => (
               <option key={item.id} value={item.id}>

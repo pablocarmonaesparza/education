@@ -91,7 +91,7 @@ function Card({
 
 function CardHeader({ eyebrow }: { eyebrow: string }) {
   return (
-    <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+    <span className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
       {eyebrow}
     </span>
   );
@@ -104,7 +104,7 @@ function BandPill({ band, size = "md" }: { band: Band; size?: "sm" | "md" }) {
       : band === "M"
         ? "bg-[var(--band-m-bg)] text-[var(--band-m-text)]"
         : "bg-[var(--band-b-bg)] text-[var(--band-b-text)]";
-  const sizeCls = size === "sm" ? "text-[10px] px-1.5 py-0" : "text-[11px] px-2 py-0.5";
+  const sizeCls = size === "sm" ? "ts-caption-2 px-1.5 py-0" : "ts-caption-1 px-2 py-0.5";
   return (
     <span
       className={`inline-flex items-center rounded-md font-semibold ${cls} ${sizeCls}`}
@@ -124,10 +124,10 @@ export default function ReportesPage() {
       <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-4">
         {/* ============ HEADER ============ */}
         <header>
-          <h1 className="display display-tight text-[var(--text-primary)] text-[28px] sm:text-[32px]">
+          <h1 className="display display-tight text-[var(--text-primary)] ts-title-1 sm:ts-display">
             Mis reportes
           </h1>
-          <p className="mt-2 text-[13.5px] text-[var(--text-secondary)] leading-[1.55]">
+          <p className="mt-2 ts-subhead text-[var(--text-secondary)] leading-[1.55]">
             Resumen de tu desempeño en{" "}
             <span className="font-medium text-[var(--text-primary)]">
               {GLOBAL.casesCount} casos
@@ -145,7 +145,7 @@ export default function ReportesPage() {
 
             <div className="mt-3 flex items-baseline gap-3">
               <BandPill band={GLOBAL.band} />
-              <span className="text-[11.5px] text-[var(--text-tertiary)]">
+              <span className="ts-caption-1 text-[var(--text-tertiary)]">
                 Banda global · promedio {GLOBAL.score}/100
               </span>
             </div>
@@ -153,7 +153,7 @@ export default function ReportesPage() {
             <div className="mt-4 flex flex-col gap-2.5">
               {DIMENSIONS_REPORT.map((d) => (
                 <div key={d.id} className="flex items-center gap-3">
-                  <span className="w-[110px] flex-none truncate text-[12.5px] text-[var(--text-secondary)]">
+                  <span className="w-[110px] flex-none truncate ts-footnote text-[var(--text-secondary)]">
                     {d.label}
                   </span>
                   <div className="flex-1 h-[6px] rounded-full bg-[var(--surface-2)] overflow-hidden">
@@ -162,7 +162,7 @@ export default function ReportesPage() {
                       style={{ width: `${d.score}%` }}
                     />
                   </div>
-                  <span className="w-[28px] flex-none text-right text-[12px] font-medium tabular-nums text-[var(--text-primary)]">
+                  <span className="w-[28px] flex-none text-right ts-footnote font-medium tabular-nums text-[var(--text-primary)]">
                     {d.score}
                   </span>
                   <BandPill band={d.band} size="sm" />
@@ -176,20 +176,20 @@ export default function ReportesPage() {
             <CardHeader eyebrow="Tu recomendación actual" />
 
             <div className="mt-3 flex items-center gap-2">
-              <span className="inline-flex items-center rounded-md bg-[var(--accent-soft)] px-2 py-0.5 text-[11px] font-semibold text-[var(--accent)]">
+              <span className="inline-flex items-center rounded-md bg-[var(--accent-soft)] px-2 py-0.5 ts-caption-1 font-semibold text-[var(--accent)]">
                 {RECOMMENDATION_LABEL[GLOBAL.recommendation]}
               </span>
-              <span className="text-[11.5px] text-[var(--text-tertiary)]">
+              <span className="ts-caption-1 text-[var(--text-tertiary)]">
                 Validación
               </span>
             </div>
 
-            <p className="mt-4 text-[13px] leading-[1.55] text-[var(--text-secondary)]">
+            <p className="mt-4 ts-subhead leading-[1.55] text-[var(--text-secondary)]">
               {GLOBAL.recommendationReason}
             </p>
 
             <div className="mt-5">
-              <span className="text-[10.5px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+              <span className="ts-caption-2 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
                 Practice beat sugerido
               </span>
               <Link
@@ -197,10 +197,10 @@ export default function ReportesPage() {
                 className="mt-2 group flex items-center justify-between gap-3 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 py-2.5 transition-colors hover:bg-[var(--surface-2)]"
               >
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-[13px] font-medium text-[var(--text-primary)]">
+                  <div className="truncate ts-subhead font-medium text-[var(--text-primary)]">
                     {GLOBAL.practiceBeat.title}
                   </div>
-                  <div className="text-[11px] text-[var(--text-tertiary)]">
+                  <div className="ts-caption-1 text-[var(--text-tertiary)]">
                     {GLOBAL.practiceBeat.estimatedMinutes} min
                   </div>
                 </div>
@@ -211,14 +211,14 @@ export default function ReportesPage() {
             </div>
 
             <div className="mt-4">
-              <span className="text-[10.5px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+              <span className="ts-caption-2 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
                 Tools con mayor riesgo
               </span>
               <div className="mt-2 flex flex-wrap gap-1">
                 {GLOBAL.toolsWithRisk.map((tool) => (
                   <span
                     key={tool}
-                    className="inline-flex items-center rounded-md bg-[var(--band-b-bg)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--band-b-text)]"
+                    className="inline-flex items-center rounded-md bg-[var(--band-b-bg)] px-1.5 py-0.5 ts-caption-1 font-medium text-[var(--band-b-text)]"
                   >
                     {tool}
                   </span>
@@ -231,10 +231,10 @@ export default function ReportesPage() {
         {/* ============ CASOS COMPLETADOS ============ */}
         <section>
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+            <span className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
               Casos completados
             </span>
-            <span className="text-[11.5px] text-[var(--text-tertiary)]">
+            <span className="ts-caption-1 text-[var(--text-tertiary)]">
               {COMPLETED_CASES.length}{" "}
               {COMPLETED_CASES.length === 1 ? "caso" : "casos"}
             </span>

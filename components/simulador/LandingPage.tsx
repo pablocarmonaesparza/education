@@ -33,7 +33,7 @@ export default function LandingPage() {
           <motion.h1
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.05 }}
-            className="display display-tight mt-6 text-[var(--text-primary)] text-[44px] sm:text-[64px] md:text-[80px]"
+            className="display display-tight mt-6 text-[var(--text-primary)] ts-display-lg sm:text-[64px] md:text-[80px]"
           >
             ¿Tu equipo usa IA
             <br />
@@ -60,7 +60,7 @@ export default function LandingPage() {
               href="/auth/signup?next=%2Fonboarding%2Forg"
               radius="md"
               size="lg"
-              className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
+              className="accent-bg text-white px-7 h-12 ts-body font-medium shadow-none hover:opacity-90"
             >
               Agendar diagnóstico para mi equipo
             </Button>
@@ -70,7 +70,7 @@ export default function LandingPage() {
               radius="md"
               size="lg"
               variant="bordered"
-              className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
+              className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 ts-body font-medium"
             >
               Probar 1 caso de muestra →
             </Button>
@@ -79,7 +79,7 @@ export default function LandingPage() {
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.2 }}
-            className="mt-10 text-[13px] text-[var(--text-tertiary)]"
+            className="mt-10 ts-subhead text-[var(--text-tertiary)]"
           >
             SaaS B2B mid-market · servicios profesionales · ecommerce · LATAM
           </motion.p>
@@ -101,9 +101,9 @@ export default function LandingPage() {
                 transition={{ ...fadeUp.transition, delay: i * 0.05 }}
                 className="bg-[var(--surface)] p-10 text-center"
               >
-                <div className="display text-[56px] sm:text-[64px] text-[var(--text-primary)]">{s.stat}</div>
-                <p className="mt-3 text-[15px] text-[var(--text-primary)] leading-snug">{s.label}</p>
-                <p className="mt-2 text-[12px] text-[var(--text-tertiary)]">{s.source}</p>
+                <div className="display ts-display-xl sm:ts-display-2xl text-[var(--text-primary)]">{s.stat}</div>
+                <p className="mt-3 ts-body text-[var(--text-primary)] leading-snug">{s.label}</p>
+                <p className="mt-2 ts-footnote text-[var(--text-tertiary)]">{s.source}</p>
               </motion.div>
             ))}
           </div>
@@ -115,7 +115,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-6">
           <motion.div {...fadeUp} className="text-center mb-16">
             <span className="eyebrow">Cómo funciona</span>
-            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+            <h2 className="display mt-4 ts-display sm:ts-display-lg text-[var(--text-primary)]">
               Tres pasos, treinta días
             </h2>
           </motion.div>
@@ -143,13 +143,13 @@ export default function LandingPage() {
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: 0.05 + i * 0.05 }}
               >
-                <div className="text-[var(--text-tertiary)] text-[13px] mono font-medium">
+                <div className="text-[var(--text-tertiary)] ts-subhead mono font-medium">
                   {step.n}
                 </div>
-                <h3 className="display mt-3 text-[24px] text-[var(--text-primary)]">
+                <h3 className="display mt-3 ts-title-2 text-[var(--text-primary)]">
                   {step.title}
                 </h3>
-                <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
+                <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.6]">
                   {step.body}
                 </p>
               </motion.div>
@@ -163,10 +163,10 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <motion.div {...fadeUp} className="text-center mb-16">
             <span className="eyebrow">Contenido del sprint</span>
-            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+            <h2 className="display mt-4 ts-display sm:ts-display-lg text-[var(--text-primary)]">
               Ocho casos, una tensión cada uno
             </h2>
-            <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-2xl mx-auto">
+            <p className="mt-5 ts-headline text-[var(--text-secondary)] max-w-2xl mx-auto">
               Cada caso es un escenario real: deadline, dataset con PII, presión
               de autoridad. El equipo decide; nosotros evaluamos.
             </p>
@@ -182,26 +182,26 @@ export default function LandingPage() {
                 <Card className="card-apple card-apple-interactive bg-[var(--surface)] shadow-none">
                   <CardBody className="p-7">
                     <div className="flex items-start gap-4">
-                      <div className="text-[13px] mono font-medium text-[var(--text-tertiary)] flex-shrink-0 mt-1">
+                      <div className="ts-subhead mono font-medium text-[var(--text-tertiary)] flex-shrink-0 mt-1">
                         {String(c.order).padStart(2, "0")}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-[17px] font-semibold text-[var(--text-primary)] tracking-tight leading-snug capitalize-first">
+                        <h3 className="ts-headline font-semibold text-[var(--text-primary)] tracking-tight leading-snug capitalize-first">
                           {c.title.charAt(0).toUpperCase() + c.title.slice(1)}.
                         </h3>
-                        <p className="mt-1.5 text-[14px] text-[var(--text-secondary)]">
+                        <p className="mt-1.5 ts-callout text-[var(--text-secondary)]">
                           Tensión: {c.tension}.
                         </p>
                         <div className="mt-4 flex flex-wrap gap-1.5">
                           {c.dimensions.map((d) => (
                             <span
                               key={d}
-                              className="text-[11px] text-[var(--text-secondary)] bg-[var(--surface-3)] px-2.5 py-1 rounded-full capitalize"
+                              className="ts-caption-1 text-[var(--text-secondary)] bg-[var(--surface-3)] px-2.5 py-1 rounded-full capitalize"
                             >
                               {d}
                             </span>
                           ))}
-                          <span className="text-[11px] accent-text accent-bg-soft px-2.5 py-1 rounded-full font-medium capitalize">
+                          <span className="ts-caption-1 accent-text accent-bg-soft px-2.5 py-1 rounded-full font-medium capitalize">
                             {c.difficulty}
                           </span>
                         </div>
@@ -220,10 +220,10 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-6">
           <motion.div {...fadeUp} className="text-center mb-16">
             <span className="eyebrow">Resultado para managers</span>
-            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+            <h2 className="display mt-4 ts-display sm:ts-display-lg text-[var(--text-primary)]">
               Cuatro acciones claras.
             </h2>
-            <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-2xl mx-auto">
+            <p className="mt-5 ts-headline text-[var(--text-secondary)] max-w-2xl mx-auto">
               Por persona y por equipo. Salida ejecutiva, no dashboard ornamental.
             </p>
           </motion.div>
@@ -240,7 +240,7 @@ export default function LandingPage() {
                     <h3 className="text-[19px] font-semibold text-[var(--text-primary)] capitalize">
                       {a.label}.
                     </h3>
-                    <p className="mt-2 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+                    <p className="mt-2 ts-body text-[var(--text-secondary)] leading-[1.55]">
                       {a.description.charAt(0).toUpperCase() +
                         a.description.slice(1)}
                       .
@@ -258,14 +258,14 @@ export default function LandingPage() {
         <div className="max-w-3xl mx-auto px-6 text-center">
           <motion.div {...fadeUp}>
             <span className="eyebrow">Precio</span>
-            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+            <h2 className="display mt-4 ts-display sm:ts-display-lg text-[var(--text-primary)]">
               Desde{" "}
               <span className="accent-text">
                 ${SPRINT_META.pricing.fase_1_min_usd.toLocaleString("en-US")}
               </span>{" "}
               por sprint.
             </h2>
-            <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-xl mx-auto">
+            <p className="mt-5 ts-headline text-[var(--text-secondary)] max-w-xl mx-auto">
               Fase 1 — diagnóstico operativo: $
               {SPRINT_META.pricing.fase_1_min_usd.toLocaleString("en-US")}–$
               {SPRINT_META.pricing.fase_1_max_usd.toLocaleString("en-US")} para
@@ -288,7 +288,7 @@ export default function LandingPage() {
               href="/auth/signup?next=%2Fonboarding%2Forg"
               radius="md"
               size="lg"
-              className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
+              className="accent-bg text-white px-7 h-12 ts-body font-medium shadow-none hover:opacity-90"
             >
               Agendar diagnóstico →
             </Button>
@@ -298,7 +298,7 @@ export default function LandingPage() {
               radius="md"
               size="lg"
               variant="bordered"
-              className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
+              className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 ts-body font-medium"
             >
               Probar 1 caso
             </Button>
@@ -309,8 +309,8 @@ export default function LandingPage() {
       {/* ============ FOOTER ============ */}
       <footer className="border-t border-[var(--hairline)] py-12 surface-canvas">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-[13px] text-[var(--text-tertiary)]">© 2026 Itera</p>
-          <div className="flex items-center gap-6 text-[13px] text-[var(--text-tertiary)]">
+          <p className="ts-subhead text-[var(--text-tertiary)]">© 2026 Itera</p>
+          <div className="flex items-center gap-6 ts-subhead text-[var(--text-tertiary)]">
             <span>{SPRINT_META.geoTarget.join(" · ")}</span>
           </div>
         </div>

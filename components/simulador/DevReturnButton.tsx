@@ -43,7 +43,7 @@ export function DevReturnButton() {
   return (
     <Link
       href="/dev"
-      className="fixed bottom-4 right-4 z-50 inline-flex items-center gap-1.5 rounded-[var(--radius-md,12px)] border border-[var(--hairline,rgba(0,0,0,0.06))] bg-[var(--surface,#fff)]/95 px-3 py-2 text-[12px] font-medium text-[var(--text-secondary,#6e6e73)] shadow-[0_4px_12px_rgba(0,0,0,0.08)] backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-[var(--surface-2,#fafafa)] hover:text-[var(--text-primary,#1d1d1f)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)]"
+      className="fixed bottom-4 right-4 z-50 inline-flex items-center gap-1.5 rounded-[var(--radius-md,12px)] border border-[var(--hairline,rgba(0,0,0,0.06))] bg-[var(--surface,#fff)]/95 px-3 py-2 ts-footnote font-medium text-[var(--text-secondary,#6e6e73)] shadow-[0_4px_12px_rgba(0,0,0,0.08)] backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-[var(--surface-2,#fafafa)] hover:text-[var(--text-primary,#1d1d1f)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)]"
       aria-label="Volver al hub /dev"
     >
       <span aria-hidden>←</span>

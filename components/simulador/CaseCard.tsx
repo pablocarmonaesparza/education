@@ -39,7 +39,7 @@ function FreshnessBadge({
       })
     : null;
   return (
-    <span className="inline-flex items-center gap-1 text-[11px] text-[var(--text-tertiary)]">
+    <span className="inline-flex items-center gap-1 ts-caption-1 text-[var(--text-tertiary)]">
       <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
       {dateLabel ? `act. ${dateLabel}` : "actualizado"}
     </span>
@@ -49,7 +49,7 @@ function FreshnessBadge({
 function StatusBadge({ item }: { item: CaseItem }) {
   if (item.userStatus === "completed") {
     return (
-      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--band-a-text)]">
+      <span className="inline-flex items-center gap-1 ts-caption-1 font-medium text-[var(--band-a-text)]">
         <svg
           width="11"
           height="11"
@@ -69,7 +69,7 @@ function StatusBadge({ item }: { item: CaseItem }) {
   }
   if (item.userStatus === "in_progress") {
     return (
-      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--accent)]">
+      <span className="inline-flex items-center gap-1 ts-caption-1 font-medium text-[var(--accent)]">
         <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
         En progreso
       </span>
@@ -92,10 +92,10 @@ export function CaseCard({ item }: { item: CaseItem }) {
       {/* TOP: nivel chip + duración + status */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center rounded-md bg-[var(--accent-soft)] px-1.5 py-0.5 text-[11px] font-semibold text-[var(--accent)]">
+          <span className="inline-flex items-center rounded-md bg-[var(--accent-soft)] px-1.5 py-0.5 ts-caption-1 font-semibold text-[var(--accent)]">
             {LEVEL_CARD_LABEL[item.level]}
           </span>
-          <span className="text-[11.5px] text-[var(--text-tertiary)]">
+          <span className="ts-caption-1 text-[var(--text-tertiary)]">
             {item.estimatedMinutes} min
           </span>
         </div>
@@ -103,12 +103,12 @@ export function CaseCard({ item }: { item: CaseItem }) {
       </div>
 
       {/* TITLE */}
-      <h3 className="mt-4 text-[17px] font-semibold leading-[1.3] tracking-tight text-[var(--text-primary)]">
+      <h3 className="mt-4 ts-headline font-semibold leading-[1.3] tracking-tight text-[var(--text-primary)]">
         {item.title}
       </h3>
 
       {/* PITCH = primary_question del manager_outcome */}
-      <p className="mt-2 text-[13px] leading-[1.5] text-[var(--text-secondary)] line-clamp-3">
+      <p className="mt-2 ts-subhead leading-[1.5] text-[var(--text-secondary)] line-clamp-3">
         {item.primaryQuestion}
       </p>
 
@@ -119,7 +119,7 @@ export function CaseCard({ item }: { item: CaseItem }) {
           return (
             <span
               key={tool}
-              className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] font-medium"
+              className="inline-flex items-center rounded-md px-1.5 py-0.5 ts-caption-1 font-medium"
               style={{ backgroundColor: brand.bg, color: brand.text }}
             >
               {tool}
@@ -129,7 +129,7 @@ export function CaseCard({ item }: { item: CaseItem }) {
       </div>
 
       {/* FOOTER: depto · seniority · industria + (si completed) banda */}
-      <div className="mt-5 flex items-center justify-between gap-2 text-[11.5px] text-[var(--text-tertiary)]">
+      <div className="mt-5 flex items-center justify-between gap-2 ts-caption-1 text-[var(--text-tertiary)]">
         <div className="flex items-center gap-1.5 truncate">
           <span>{DEPARTMENT_LABEL[item.department]}</span>
           <span aria-hidden>·</span>
@@ -139,7 +139,7 @@ export function CaseCard({ item }: { item: CaseItem }) {
         </div>
         {item.userStatus === "completed" && item.userBand && (
           <span
-            className={`inline-flex flex-none items-center rounded-md px-1.5 py-0.5 text-[10.5px] font-semibold ${
+            className={`inline-flex flex-none items-center rounded-md px-1.5 py-0.5 ts-caption-2 font-semibold ${
               item.userBand === "A"
                 ? "bg-[var(--band-a-bg)] text-[var(--band-a-text)]"
                 : item.userBand === "M"

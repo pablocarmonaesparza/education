@@ -41,7 +41,7 @@ export function AppleTabs({
             tone={selected ? "secondary" : "ghost"}
             size="sm"
             className={cn(
-              "h-9 min-h-9 whitespace-nowrap px-3 text-[13px]",
+              "h-9 min-h-9 whitespace-nowrap px-3 ts-subhead",
               selected
                 ? "border-[var(--border-strong)] bg-[var(--surface)] shadow-[var(--shadow-xs)]"
                 : "text-[var(--text-secondary)]",
@@ -50,7 +50,7 @@ export function AppleTabs({
           >
             {item.label}
             {item.badge !== undefined && (
-              <span className="ml-2 rounded-full bg-[var(--surface-3)] px-1.5 text-[11px] text-[var(--text-tertiary)]">
+              <span className="ml-2 rounded-full bg-[var(--surface-3)] px-1.5 ts-caption-1 text-[var(--text-tertiary)]">
                 {item.badge}
               </span>
             )}

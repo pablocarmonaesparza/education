@@ -42,7 +42,7 @@ export function RuntimeNav({ mode }: { mode: RuntimeSessionMode }) {
             href="/auth/signup?next=%2Fonboarding%2Forg"
             radius="md"
             size="sm"
-            className="accent-bg text-white text-[13.5px] font-medium h-9 px-4 shadow-none"
+            className="accent-bg text-white ts-subhead font-medium h-9 px-4 shadow-none"
           >
             Crear cuenta
           </Button>
@@ -53,7 +53,7 @@ export function RuntimeNav({ mode }: { mode: RuntimeSessionMode }) {
             radius="md"
             size="sm"
             variant="light"
-            className="text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
+            className="ts-subhead font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
           >
             Dashboard
           </Button>

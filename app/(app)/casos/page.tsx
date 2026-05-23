@@ -110,10 +110,10 @@ export default function CasosPage() {
       <div className="mx-auto w-full max-w-[1280px]">
         {/* ============ HEADER ============ */}
         <header>
-          <h1 className="display display-tight text-[var(--text-primary)] text-[32px] sm:text-[40px]">
+          <h1 className="display display-tight text-[var(--text-primary)] ts-display sm:ts-display-lg">
             Catálogo de casos
           </h1>
-          <p className="mt-3 text-[15px] text-[var(--text-secondary)] leading-[1.55] max-w-[640px]">
+          <p className="mt-3 ts-body text-[var(--text-secondary)] leading-[1.55] max-w-[640px]">
             Elige un caso para empezar tu diagnóstico. Cada caso mide tu
             criterio operativo bajo presión real con IA — no tu memoria.
           </p>
@@ -155,7 +155,7 @@ export default function CasosPage() {
 
         {/* ============ RESULTS META + SORT ============ */}
         <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
-          <span className="text-[13px] text-[var(--text-secondary)]">
+          <span className="ts-subhead text-[var(--text-secondary)]">
             <span className="font-semibold text-[var(--text-primary)]">
               {filteredSorted.length}
             </span>{" "}
@@ -169,7 +169,7 @@ export default function CasosPage() {
           </span>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="text-[12px] text-[var(--text-tertiary)]">
+              <span className="ts-footnote text-[var(--text-tertiary)]">
                 Ordenar
               </span>
               <Select
@@ -193,7 +193,7 @@ export default function CasosPage() {
               <button
                 type="button"
                 onClick={clearAll}
-                className="text-[13px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                className="ts-subhead text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
               >
                 Limpiar filtros
               </button>
@@ -210,10 +210,10 @@ export default function CasosPage() {
           </div>
         ) : (
           <div className="mt-16 flex flex-col items-center justify-center rounded-[var(--radius-lg)] border border-dashed border-[var(--hairline)] py-20 text-center">
-            <div className="text-[15px] font-medium text-[var(--text-primary)]">
+            <div className="ts-body font-medium text-[var(--text-primary)]">
               No hay casos con esos filtros
             </div>
-            <p className="mt-2 text-[13.5px] text-[var(--text-secondary)] max-w-[360px]">
+            <p className="mt-2 ts-subhead text-[var(--text-secondary)] max-w-[360px]">
               Prueba quitando alguno o limpia todos arriba.
             </p>
           </div>

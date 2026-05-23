@@ -22,11 +22,11 @@ export function AppleErrorState({
           <AppleIcon name="alert" size="md" />
         </div>
         <div>
-          <h2 className="text-[18px] font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
+          <h2 className="ts-headline font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
             {title}
           </h2>
           {body && (
-            <p className="mt-2 text-[14px] leading-[1.55] text-[var(--text-secondary)]">
+            <p className="mt-2 ts-callout leading-[1.55] text-[var(--text-secondary)]">
               {body}
             </p>
           )}

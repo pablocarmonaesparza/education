@@ -97,13 +97,13 @@ function CardHeader({
 }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+      <span className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
         {eyebrow}
       </span>
       {cta && (
         <Link
           href={cta.href}
-          className="text-[11.5px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+          className="ts-caption-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
         >
           {cta.label} →
         </Link>
@@ -123,10 +123,10 @@ function Avatar({
 }) {
   const dimensions =
     size === "lg"
-      ? "h-14 w-14 text-[16px]"
+      ? "h-14 w-14 ts-headline"
       : size === "md"
-        ? "h-9 w-9 text-[12.5px]"
-        : "h-7 w-7 text-[11px]";
+        ? "h-9 w-9 ts-footnote"
+        : "h-7 w-7 ts-caption-1";
   return (
     <div
       className={`${dimensions} flex items-center justify-center rounded-full bg-[var(--surface-2)] font-semibold text-[var(--text-primary)] tabular-nums ${
@@ -148,7 +148,7 @@ function BandPill({ band }: { band: Band }) {
         : "bg-[var(--band-b-bg)] text-[var(--band-b-text)]";
   return (
     <span
-      className={`inline-flex items-center rounded-md px-2 py-0.5 text-[11px] font-semibold ${cls}`}
+      className={`inline-flex items-center rounded-md px-2 py-0.5 ts-caption-1 font-semibold ${cls}`}
     >
       Banda {BAND_LABEL[band]}
     </span>
@@ -167,10 +167,10 @@ export default function TeamHomePage() {
         <header className="flex flex-none items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5">
           <Avatar initials={USER.initials} size="lg" ring />
           <div className="min-w-0 flex-1">
-            <h1 className="display display-tight text-[var(--text-primary)] text-[24px] sm:text-[28px] leading-tight">
+            <h1 className="display display-tight text-[var(--text-primary)] ts-title-2 sm:ts-title-1 leading-tight">
               Hola, {USER.fullName.split(" ")[0]}
             </h1>
-            <p className="mt-1 text-[13px] text-[var(--text-secondary)]">
+            <p className="mt-1 ts-subhead text-[var(--text-secondary)]">
               {USER.jobTitle} · {USER.orgName} · Nivel actual:{" "}
               <span className="text-[var(--text-primary)] font-medium">
                 {USER.currentLevelLabel}
@@ -179,7 +179,7 @@ export default function TeamHomePage() {
           </div>
           <Link
             href="/casos"
-            className="hidden sm:inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] accent-bg px-5 text-[13.5px] font-medium text-white hover:opacity-95 transition-opacity"
+            className="hidden sm:inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] accent-bg px-5 ts-subhead font-medium text-white hover:opacity-95 transition-opacity"
           >
             Ver catálogo
           </Link>
@@ -195,7 +195,7 @@ export default function TeamHomePage() {
             />
             <div className="mt-3 flex items-baseline gap-3">
               <BandPill band={PERFORMANCE.averageBand} />
-              <span className="text-[11px] text-[var(--text-tertiary)]">
+              <span className="ts-caption-1 text-[var(--text-tertiary)]">
                 promedio sobre {PERFORMANCE.casesCompleted} casos
               </span>
             </div>
@@ -203,7 +203,7 @@ export default function TeamHomePage() {
             <div className="mt-4 flex flex-col gap-2">
               {PERFORMANCE.dimensions.map((d) => (
                 <div key={d.id} className="flex items-center gap-3">
-                  <span className="w-[100px] flex-none truncate text-[12px] text-[var(--text-secondary)]">
+                  <span className="w-[100px] flex-none truncate ts-footnote text-[var(--text-secondary)]">
                     {d.label}
                   </span>
                   <div className="flex-1 h-[6px] rounded-full bg-[var(--surface-2)] overflow-hidden">
@@ -212,7 +212,7 @@ export default function TeamHomePage() {
                       style={{ width: `${d.score}%` }}
                     />
                   </div>
-                  <span className="w-[28px] flex-none text-right text-[11.5px] font-medium tabular-nums text-[var(--text-primary)]">
+                  <span className="w-[28px] flex-none text-right ts-caption-1 font-medium tabular-nums text-[var(--text-primary)]">
                     {d.score}
                   </span>
                 </div>
@@ -233,7 +233,7 @@ export default function TeamHomePage() {
                   }`}
                 >
                   <span
-                    className={`w-[16px] flex-none text-center text-[11px] font-semibold tabular-nums ${
+                    className={`w-[16px] flex-none text-center ts-caption-1 font-semibold tabular-nums ${
                       entry.isCurrentUser
                         ? "text-[var(--accent)]"
                         : "text-[var(--text-tertiary)]"
@@ -243,7 +243,7 @@ export default function TeamHomePage() {
                   </span>
                   <Avatar initials={entry.initials} size="sm" />
                   <span
-                    className={`flex-1 truncate text-[12.5px] ${
+                    className={`flex-1 truncate ts-footnote ${
                       entry.isCurrentUser
                         ? "font-semibold text-[var(--text-primary)]"
                         : "text-[var(--text-secondary)]"
@@ -251,12 +251,12 @@ export default function TeamHomePage() {
                   >
                     {entry.name}
                     {entry.isCurrentUser && (
-                      <span className="ml-1.5 text-[10px] text-[var(--accent)]">
+                      <span className="ml-1.5 ts-caption-2 text-[var(--accent)]">
                         Tú
                       </span>
                     )}
                   </span>
-                  <span className="text-[12px] font-semibold tabular-nums text-[var(--text-primary)]">
+                  <span className="ts-footnote font-semibold tabular-nums text-[var(--text-primary)]">
                     {entry.score}
                   </span>
                 </li>
@@ -268,12 +268,12 @@ export default function TeamHomePage() {
         {/* ============ BOTTOM: Casos para ti — 4 cols × 2 filas ============ */}
         <section>
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+            <span className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
               Casos para ti
             </span>
             <Link
               href="/casos"
-              className="text-[11.5px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              className="ts-caption-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             >
               Ver todos →
             </Link>

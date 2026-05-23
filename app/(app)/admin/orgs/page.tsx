@@ -79,10 +79,10 @@ export default function AdminOrgsPage() {
             transition={{ duration: 0.4 }}
           >
             <div className="eyebrow">Itera staff · clientes</div>
-            <h1 className="display mt-4 text-[36px] text-[var(--text-primary)]">
+            <h1 className="display mt-4 ts-display text-[var(--text-primary)]">
               Orgs y sprints
             </h1>
-            <p className="mt-4 max-w-2xl text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+            <p className="mt-4 max-w-2xl ts-body leading-[1.55] text-[var(--text-secondary)]">
               Estado operacional de cada organización: seats, billing, sesiones
               y reportes. Sirve para saber dónde intervenir antes de que el
               cliente pregunte.
@@ -139,10 +139,10 @@ function OrgCard({ org }: { org: OrgItem }) {
           <div className="eyebrow">
             {org.region ?? "sin región"} · {org.company_size_key ?? "sin tamaño"}
           </div>
-          <h2 className="mt-2 text-[20px] font-semibold text-[var(--text-primary)]">
+          <h2 className="mt-2 ts-title-3 font-semibold text-[var(--text-primary)]">
             {org.name}
           </h2>
-          <p className="mt-1 text-[13px] text-[var(--text-secondary)]">
+          <p className="mt-1 ts-subhead text-[var(--text-secondary)]">
             {org.industry ?? "industria no definida"} · creada{" "}
             {formatDate(org.created_at)}
           </p>
@@ -162,10 +162,10 @@ function OrgCard({ org }: { org: OrgItem }) {
       <div className="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-2">
         <div className="rounded-2xl bg-[var(--surface-2)] p-4">
           <div className="eyebrow">Último sprint</div>
-          <div className="mt-2 text-[14px] font-medium text-[var(--text-primary)]">
+          <div className="mt-2 ts-callout font-medium text-[var(--text-primary)]">
             {org.latest_sprint?.name ?? "Sin sprint"}
           </div>
-          <p className="mt-1 text-[12px] text-[var(--text-secondary)]">
+          <p className="mt-1 ts-footnote text-[var(--text-secondary)]">
             {org.latest_sprint
               ? `${org.latest_sprint.status} · ${org.latest_sprint.start_date ?? "sin fecha"}`
               : "Crea o asigna sprint antes de invitar equipo."}
@@ -173,10 +173,10 @@ function OrgCard({ org }: { org: OrgItem }) {
         </div>
         <div className="rounded-2xl bg-[var(--surface-2)] p-4">
           <div className="eyebrow">Billing</div>
-          <div className="mt-2 text-[14px] font-medium text-[var(--text-primary)]">
+          <div className="mt-2 ts-callout font-medium text-[var(--text-primary)]">
             {org.subscription?.tier ?? "Sin plan"}
           </div>
-          <p className="mt-1 text-[12px] text-[var(--text-secondary)]">
+          <p className="mt-1 ts-footnote text-[var(--text-secondary)]">
             {org.subscription
               ? `${org.subscription.seats} seats · ${formatMoney(org.subscription.price_usd_total)}`
               : "Pendiente de checkout o carga manual."}
@@ -199,7 +199,7 @@ function AdminLinks() {
         <a
           key={href}
           href={href}
-          className="rounded-full bg-[var(--surface-2)] px-4 py-2 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
+          className="rounded-full bg-[var(--surface-2)] px-4 py-2 ts-subhead font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
         >
           {label}
         </a>
@@ -220,7 +220,7 @@ function Metric({
   return (
     <div className={`rounded-2xl border border-[var(--hairline)] bg-[var(--surface)] ${compact ? "p-3" : "p-4"}`}>
       <div className="eyebrow">{label}</div>
-      <div className={`${compact ? "mt-1 text-[18px]" : "mt-2 text-[22px]"} mono font-semibold text-[var(--text-primary)]`}>
+      <div className={`${compact ? "mt-1 ts-headline" : "mt-2 ts-title-3"} mono font-semibold text-[var(--text-primary)]`}>
         {value}
       </div>
     </div>
@@ -231,7 +231,7 @@ function StatusPill({ status }: { status: string }) {
   const isHealthy = ["active", "trial"].includes(status);
   return (
     <span
-      className={`rounded-full px-3 py-1 text-[12px] font-semibold ${
+      className={`rounded-full px-3 py-1 ts-footnote font-semibold ${
         isHealthy
           ? "bg-[var(--band-a-bg)] text-[var(--band-a-text)]"
           : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
@@ -243,12 +243,12 @@ function StatusPill({ status }: { status: string }) {
 }
 
 function Loading({ label }: { label: string }) {
-  return <div className="mt-12 text-[14px] text-[var(--text-secondary)]">{label}</div>;
+  return <div className="mt-12 ts-callout text-[var(--text-secondary)]">{label}</div>;
 }
 
 function Empty({ label }: { label: string }) {
   return (
-    <div className="mt-12 rounded-2xl bg-[var(--surface)] p-8 text-[14px] text-[var(--text-secondary)]">
+    <div className="mt-12 rounded-2xl bg-[var(--surface)] p-8 ts-callout text-[var(--text-secondary)]">
       {label}
     </div>
   );
@@ -256,7 +256,7 @@ function Empty({ label }: { label: string }) {
 
 function ErrorBox({ message }: { message: string }) {
   return (
-    <div className="mt-8 rounded-xl bg-[var(--band-b-bg)] p-4 text-[14px] text-[var(--band-b-text)]">
+    <div className="mt-8 rounded-xl bg-[var(--band-b-bg)] p-4 ts-callout text-[var(--band-b-text)]">
       {message}
     </div>
   );

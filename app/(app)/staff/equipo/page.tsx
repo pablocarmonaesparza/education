@@ -193,7 +193,7 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
         <section className="border-b border-[var(--hairline)] surface-canvas">
           <div className="max-w-5xl mx-auto px-6 py-12">
             <motion.div {...fadeUp}>
-              <h1 className="display display-tight text-[36px] sm:text-[44px] text-[var(--text-primary)]">
+              <h1 className="display display-tight ts-display sm:ts-display-lg text-[var(--text-primary)]">
                 Casos disponibles
               </h1>
             </motion.div>
@@ -204,7 +204,7 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
           {availableCases.length === 0 ? (
             <motion.div
               {...fadeUp}
-              className="card-apple bg-[var(--surface)] p-8 text-[15px] text-[var(--text-secondary)]"
+              className="card-apple bg-[var(--surface)] p-8 ts-body text-[var(--text-secondary)]"
             >
               Todavía no tienes casos asignados.
             </motion.div>
@@ -229,17 +229,17 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
                                 ? ` · ${caseItem.difficulty}`
                                 : ""}
                             </div>
-                            <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
+                            <h2 className="display mt-3 ts-title-1 text-[var(--text-primary)]">
                               {caseItem.title}
                             </h2>
-                            <p className="mt-3 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+                            <p className="mt-3 ts-body text-[var(--text-secondary)] leading-[1.55]">
                               {caseItem.duration_estimate_min ?? 18} minutos ·
                               Contexto, Datos, IA, Revisión, Decisión y
                               Respuesta.
                             </p>
                             {currentStatus && (
                               <div
-                                className={`mt-4 text-[13px] ${currentStatus.classNames}`}
+                                className={`mt-4 ts-subhead ${currentStatus.classNames}`}
                               >
                                 {currentStatus.label}
                               </div>
@@ -254,7 +254,7 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
                                 radius="md"
                                 size="lg"
                                 variant="bordered"
-                                className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px] font-medium"
+                                className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] ts-body font-medium"
                               >
                                 Ver reporte
                               </Button>
@@ -264,7 +264,7 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
                               href={`/case/${caseItem.slug}`}
                               radius="md"
                               size="lg"
-                              className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
+                              className="accent-bg text-white h-12 px-7 ts-body font-medium shadow-none"
                             >
                               {currentStatus && hasStarted
                                 ? "Continuar caso"
@@ -318,7 +318,7 @@ export default function DashboardPage() {
         <main className="surface-canvas min-h-screen grid place-items-center px-6">
           <div className="max-w-md text-center">
             <div className="eyebrow mb-3">Error al cargar dashboard</div>
-            <p className="text-[15px] text-[var(--text-secondary)]">{error}</p>
+            <p className="ts-body text-[var(--text-secondary)]">{error}</p>
           </div>
         </main>
       </>
@@ -344,10 +344,10 @@ export default function DashboardPage() {
         <main className="surface-canvas min-h-screen grid place-items-center px-6 py-20">
           <motion.div {...fadeUp} className="max-w-md text-center">
             <div className="eyebrow mb-3">Dashboard del manager</div>
-            <h1 className="display text-[28px] text-[var(--text-primary)]">
+            <h1 className="display ts-title-1 text-[var(--text-primary)]">
               Aún no hay sprint activo.
             </h1>
-            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+            <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.55]">
               {data.team
                 ? "Tu team existe pero no tiene un sprint creado. Pide a tu admin iniciar uno."
                 : "No estás asignado a ningún team todavía. Pide a tu admin que te invite."}
@@ -358,7 +358,7 @@ export default function DashboardPage() {
                 href="/onboarding/org"
                 radius="md"
                 size="lg"
-                className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
+                className="accent-bg text-white h-12 px-7 ts-body font-medium shadow-none"
               >
                 Iniciar onboarding →
               </Button>
@@ -396,10 +396,10 @@ export default function DashboardPage() {
         <section className="border-b border-[var(--hairline)] surface-canvas">
           <div className="max-w-6xl mx-auto px-6 py-12">
             <motion.div {...fadeUp}>
-              <h1 className="display display-tight text-[36px] sm:text-[44px] text-[var(--text-primary)]">
+              <h1 className="display display-tight ts-display sm:ts-display-lg text-[var(--text-primary)]">
                 {data.sprint.name || SPRINT_META.publicName}
               </h1>
-              <div className="mt-4 flex flex-wrap items-center gap-3 text-[13px] text-[var(--text-secondary)]">
+              <div className="mt-4 flex flex-wrap items-center gap-3 ts-subhead text-[var(--text-secondary)]">
                 {data.sprint.start_date && (
                   <span>
                     <span className="mono text-[var(--text-primary)]">
@@ -441,7 +441,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--hairline)] rounded-2xl overflow-hidden border border-[var(--hairline)]">
             <motion.div {...fadeUp} className="bg-[var(--surface)] p-8">
               <div className="eyebrow">Progreso del sprint</div>
-              <div className="display mt-4 text-[48px] text-[var(--text-primary)] leading-none">
+              <div className="display mt-4 ts-display-lg text-[var(--text-primary)] leading-none">
                 {completionPct}%
               </div>
               <Progress
@@ -452,7 +452,7 @@ export default function DashboardPage() {
                   indicator: "accent-bg",
                 }}
               />
-              <div className="mt-4 text-[13px] text-[var(--text-secondary)]">
+              <div className="mt-4 ts-subhead text-[var(--text-secondary)]">
                 <span className="text-[var(--text-primary)] font-medium">
                   {agg.completed}
                 </span>{" "}
@@ -470,9 +470,9 @@ export default function DashboardPage() {
               className="bg-[var(--surface)] p-8"
             >
               <div className="eyebrow">Readiness promedio</div>
-              <div className="display mt-4 text-[48px] text-[var(--text-primary)] leading-none">
+              <div className="display mt-4 ts-display-lg text-[var(--text-primary)] leading-none">
                 {avgReadiness}
-                <span className="text-[var(--text-tertiary)] text-[28px] ml-1">
+                <span className="text-[var(--text-tertiary)] ts-title-1 ml-1">
                   /100
                 </span>
               </div>
@@ -484,7 +484,7 @@ export default function DashboardPage() {
                 <div className="h-[3px] flex-1 bg-[var(--surface-3)] rounded-full" />
                 <div className="h-[3px] flex-1 bg-[var(--surface-3)] rounded-full" />
               </div>
-              <div className="mt-4 text-[13px] text-[var(--text-secondary)]">
+              <div className="mt-4 ts-subhead text-[var(--text-secondary)]">
                 {agg.completed === 0
                   ? "Sin completados aún."
                   : `${agg.readiness_by_band.A} en banda alta · ${agg.readiness_by_band.M} media · ${agg.readiness_by_band.B} baja.`}
@@ -497,10 +497,10 @@ export default function DashboardPage() {
               className="bg-[var(--surface)] p-8"
             >
               <div className="eyebrow">Eventos de riesgo</div>
-              <div className="display mt-4 text-[48px] text-[var(--text-primary)] leading-none">
+              <div className="display mt-4 ts-display-lg text-[var(--text-primary)] leading-none">
                 {agg.risk_events_total}
               </div>
-              <div className="mt-5 text-[13px] text-[var(--text-secondary)]">
+              <div className="mt-5 ts-subhead text-[var(--text-secondary)]">
                 {agg.risk_events_total === 0
                   ? "Sin riesgos detectados en sesiones completadas."
                   : "Detectados en sesiones completadas."}
@@ -518,12 +518,12 @@ export default function DashboardPage() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="eyebrow">Atención operativa</div>
-                  <p className="mt-2 text-[15px] text-[var(--text-primary)] leading-[1.55]">
+                  <p className="mt-2 ts-body text-[var(--text-primary)] leading-[1.55]">
                     {agg.high_risk_events_total} eventos de riesgo alto ·{" "}
                     {agg.pending_review_count} reportes en review humano.
                   </p>
                 </div>
-                <span className="text-[12px] text-[var(--text-secondary)]">
+                <span className="ts-footnote text-[var(--text-secondary)]">
                   Revisa antes de expandir autonomía.
                 </span>
               </div>
@@ -539,14 +539,14 @@ export default function DashboardPage() {
           >
             <div>
               <div className="eyebrow">Equipo</div>
-              <h2 className="display mt-2 text-[28px] text-[var(--text-primary)]">
+              <h2 className="display mt-2 ts-title-1 text-[var(--text-primary)]">
                 {agg.total} miembros del sprint.
               </h2>
             </div>
           </motion.div>
 
           {data.members.length === 0 ? (
-            <p className="text-[15px] text-[var(--text-secondary)]">
+            <p className="ts-body text-[var(--text-secondary)]">
               Aún no hay miembros en el team.
             </p>
           ) : (
@@ -562,17 +562,17 @@ export default function DashboardPage() {
                     <CardBody className="p-5 flex flex-row items-center gap-5">
                       <Avatar
                         size="lg"
-                        className="bg-[var(--surface-3)] text-[var(--text-primary)] text-[14px] font-semibold flex-shrink-0"
+                        className="bg-[var(--surface-3)] text-[var(--text-primary)] ts-callout font-semibold flex-shrink-0"
                         name={initials}
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="text-[15px] font-semibold text-[var(--text-primary)] truncate">
+                          <span className="ts-body font-semibold text-[var(--text-primary)] truncate">
                             {displayName}
                           </span>
                         </div>
                         <div
-                          className={`mt-1 flex items-center gap-2 text-[12px] ${status.classNames}`}
+                          className={`mt-1 flex items-center gap-2 ts-footnote ${status.classNames}`}
                         >
                           {status.dot && (
                             <span
@@ -596,7 +596,7 @@ export default function DashboardPage() {
                               <span className="text-[var(--border-strong)]">
                                 ·
                               </span>
-                              <span className="text-[var(--band-m-text)] mono text-[11px]">
+                              <span className="text-[var(--band-m-text)] mono ts-caption-1">
                                 review pendiente
                               </span>
                             </>
@@ -606,12 +606,12 @@ export default function DashboardPage() {
                       {m.readiness_band && (
                         <div className="flex shrink-0 flex-col items-end gap-1">
                           <div
-                            className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${tone.bg} ${tone.text}`}
+                            className={`ts-caption-1 font-semibold px-2.5 py-1 rounded-full ${tone.bg} ${tone.text}`}
                           >
                             {BAND_DISPLAY[m.readiness_band]}
                           </div>
                           {m.high_risk_events_count > 0 && (
-                            <span className="text-[11px] text-[var(--band-b-text)]">
+                            <span className="ts-caption-1 text-[var(--band-b-text)]">
                               {m.high_risk_events_count} high risk
                             </span>
                           )}
@@ -651,16 +651,16 @@ export default function DashboardPage() {
           >
             <div>
               <div className="eyebrow">Reportes</div>
-              <h2 className="display mt-2 text-[28px] text-[var(--text-primary)]">
+              <h2 className="display mt-2 ts-title-1 text-[var(--text-primary)]">
                 Evidencia lista para revisar.
               </h2>
-              <p className="mt-3 text-[15px] text-[var(--text-secondary)] max-w-2xl">
+              <p className="mt-3 ts-body text-[var(--text-secondary)] max-w-2xl">
                 Abre los reportes individuales ya generados. El reporte agregado
                 del equipo se activa cuando existan suficientes sesiones
                 completadas.
               </p>
             </div>
-            <div className="text-[13px] text-[var(--text-secondary)]">
+            <div className="ts-subhead text-[var(--text-secondary)]">
               <span className="text-[var(--text-primary)] font-medium">
                 {reportsAvailable.length}
               </span>{" "}
@@ -670,7 +670,7 @@ export default function DashboardPage() {
 
           <div className="mt-8 card-apple bg-[var(--surface)] p-2 sm:p-5">
             {reportsAvailable.length === 0 ? (
-              <div className="px-3 py-8 text-[14px] text-[var(--text-secondary)]">
+              <div className="px-3 py-8 ts-callout text-[var(--text-secondary)]">
                 Todavía no hay reportes para extraer. Aparecerán aquí cuando los
                 empleados completen el caso y el reporte quede publicado.
               </div>
@@ -685,10 +685,10 @@ export default function DashboardPage() {
                       className="flex flex-col gap-3 px-3 py-4 sm:flex-row sm:items-center sm:justify-between"
                     >
                       <div className="min-w-0">
-                        <div className="text-[15px] font-semibold text-[var(--text-primary)] truncate">
+                        <div className="ts-body font-semibold text-[var(--text-primary)] truncate">
                           {displayName}
                         </div>
-                        <div className="mt-1 text-[12px] text-[var(--text-tertiary)] mono">
+                        <div className="mt-1 ts-footnote text-[var(--text-tertiary)] mono">
                           {member.report_status ?? "reporte generado"}
                         </div>
                       </div>
@@ -713,10 +713,10 @@ export default function DashboardPage() {
         <section className="max-w-6xl mx-auto px-6 mt-20">
           <motion.div {...fadeUp} className="mb-8">
             <div className="eyebrow">Resultado agregado</div>
-            <h2 className="display mt-2 text-[28px] text-[var(--text-primary)]">
+            <h2 className="display mt-2 ts-title-1 text-[var(--text-primary)]">
               Matriz dimensión × banda
             </h2>
-            <p className="mt-3 text-[15px] text-[var(--text-secondary)] max-w-2xl">
+            <p className="mt-3 ts-body text-[var(--text-secondary)] max-w-2xl">
               Cuenta cuántas personas cayeron en cada banda por dimensión. La
               matriz evita esconder un gap fuerte detrás del promedio general.
             </p>
@@ -724,13 +724,13 @@ export default function DashboardPage() {
 
           <div className="card-apple bg-[var(--surface)] overflow-hidden">
             <div className="hidden md:grid grid-cols-[180px_repeat(5,minmax(0,1fr))] border-b border-[var(--hairline)]">
-              <div className="p-4 text-[12px] text-[var(--text-tertiary)]">
+              <div className="p-4 ts-footnote text-[var(--text-tertiary)]">
                 Banda
               </div>
               {DIMENSIONS.map((dimension) => (
                 <div
                   key={dimension.id}
-                  className="p-4 text-[12px] font-medium text-[var(--text-secondary)]"
+                  className="p-4 ts-footnote font-medium text-[var(--text-secondary)]"
                 >
                   {dimension.label.charAt(0).toUpperCase() +
                     dimension.label.slice(1)}
@@ -749,11 +749,11 @@ export default function DashboardPage() {
                 >
                   <div className="p-4 md:p-5 bg-[var(--surface-2)]">
                     <span
-                      className={`inline-flex rounded-full px-2.5 py-1 text-[11px] font-semibold ${tone.bg} ${tone.text}`}
+                      className={`inline-flex rounded-full px-2.5 py-1 ts-caption-1 font-semibold ${tone.bg} ${tone.text}`}
                     >
                       {row.label}
                     </span>
-                    <p className="mt-2 text-[12px] leading-[1.45] text-[var(--text-secondary)]">
+                    <p className="mt-2 ts-footnote leading-[1.45] text-[var(--text-secondary)]">
                       {row.description}
                     </p>
                   </div>
@@ -766,14 +766,14 @@ export default function DashboardPage() {
                         key={`${row.band}-${dimension.id}`}
                         className="flex items-center justify-between gap-3 p-4 md:block md:p-5 border-t md:border-t-0 md:border-l border-[var(--hairline)]"
                       >
-                        <span className="md:hidden text-[13px] text-[var(--text-secondary)]">
+                        <span className="md:hidden ts-subhead text-[var(--text-secondary)]">
                           {dimension.label.charAt(0).toUpperCase() +
                             dimension.label.slice(1)}
                         </span>
-                        <span className="mono text-[24px] font-semibold text-[var(--text-primary)]">
+                        <span className="mono ts-title-2 font-semibold text-[var(--text-primary)]">
                           {count}
                         </span>
-                        <span className="ml-2 text-[12px] text-[var(--text-tertiary)]">
+                        <span className="ml-2 ts-footnote text-[var(--text-tertiary)]">
                           {count === 1 ? "persona" : "personas"}
                         </span>
                       </div>
@@ -783,7 +783,7 @@ export default function DashboardPage() {
               );
             })}
 
-            <div className="p-4 text-[12px] text-[var(--text-tertiary)]">
+            <div className="p-4 ts-footnote text-[var(--text-tertiary)]">
               Cuentas absolutas por sesiones completadas. Participantes en
               curso no se incluyen hasta publicar reporte.
             </div>
@@ -802,13 +802,13 @@ export default function DashboardPage() {
                   transition={{ ...fadeUp.transition, delay: index * 0.04 }}
                   className="card-apple bg-[var(--surface)] p-5"
                 >
-                  <div className="text-[13px] font-medium text-[var(--text-primary)]">
+                  <div className="ts-subhead font-medium text-[var(--text-primary)]">
                     {dimension.label.charAt(0).toUpperCase() +
                       dimension.label.slice(1)}
                   </div>
-                  <div className="mt-3 mono text-[24px] font-semibold text-[var(--text-primary)]">
+                  <div className="mt-3 mono ts-title-2 font-semibold text-[var(--text-primary)]">
                     {score}
-                    <span className="text-[14px] text-[var(--text-tertiary)]">
+                    <span className="ts-callout text-[var(--text-tertiary)]">
                       /100
                     </span>
                   </div>
@@ -830,7 +830,7 @@ export default function DashboardPage() {
         <section className="max-w-6xl mx-auto px-6 mt-20">
           <motion.div {...fadeUp} className="mb-8">
             <div className="eyebrow">Acciones recomendadas</div>
-            <h2 className="display mt-2 text-[28px] text-[var(--text-primary)]">
+            <h2 className="display mt-2 ts-title-1 text-[var(--text-primary)]">
               Cuatro caminos por persona
             </h2>
           </motion.div>
@@ -857,10 +857,10 @@ export default function DashboardPage() {
                         ] ?? 0}{" "}
                         personas
                       </div>
-                      <h3 className="text-[16px] font-semibold text-[var(--text-primary)]">
+                      <h3 className="ts-headline font-semibold text-[var(--text-primary)]">
                         {labelCapped}.
                       </h3>
-                      <p className="mt-1.5 text-[14px] text-[var(--text-secondary)] leading-[1.55]">
+                      <p className="mt-1.5 ts-callout text-[var(--text-secondary)] leading-[1.55]">
                         {descCapped}
                       </p>
                     </CardBody>

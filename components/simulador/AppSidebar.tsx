@@ -91,7 +91,7 @@ function NavLink({
   return (
     <Link
       href={item.href}
-      className={`group flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 text-[13.5px] font-medium transition-colors ${
+      className={`group flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 ts-subhead font-medium transition-colors ${
         active
           ? "bg-[var(--surface-2)] text-[var(--text-primary)]"
           : "text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"

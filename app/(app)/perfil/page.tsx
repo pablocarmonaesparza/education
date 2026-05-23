@@ -66,7 +66,7 @@ function Card({
 
 function SectionHeader({ children }: { children: React.ReactNode }) {
   return (
-    <span className="text-[11px] font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+    <span className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
       {children}
     </span>
   );
@@ -74,7 +74,7 @@ function SectionHeader({ children }: { children: React.ReactNode }) {
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return (
-    <label className="text-[11.5px] font-medium text-[var(--text-tertiary)]">
+    <label className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
       {children}
     </label>
   );
@@ -102,10 +102,10 @@ export default function PerfilPage() {
       <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-4">
         {/* ============ HEADER ============ */}
         <header>
-          <h1 className="display display-tight text-[var(--text-primary)] text-[28px] sm:text-[32px]">
+          <h1 className="display display-tight text-[var(--text-primary)] ts-title-1 sm:ts-display">
             Perfil
           </h1>
-          <p className="mt-2 text-[13.5px] text-[var(--text-secondary)] leading-[1.55]">
+          <p className="mt-2 ts-subhead text-[var(--text-secondary)] leading-[1.55]">
             Información que tu manager y tus reportes usan para
             personalizar tu experiencia.
           </p>
@@ -115,7 +115,7 @@ export default function PerfilPage() {
         <Card className="flex items-center gap-5">
           <div className="relative h-[80px] w-[80px] flex-none">
             <div
-              className="flex h-full w-full items-center justify-center rounded-full bg-[var(--surface-2)] text-[26px] font-semibold text-[var(--text-primary)] tabular-nums ring-2 ring-[var(--accent)]"
+              className="flex h-full w-full items-center justify-center rounded-full bg-[var(--surface-2)] ts-title-2 font-semibold text-[var(--text-primary)] tabular-nums ring-2 ring-[var(--accent)]"
               aria-hidden
             >
               {INITIAL.initials}
@@ -142,13 +142,13 @@ export default function PerfilPage() {
             </button>
           </div>
           <div className="min-w-0 flex-1">
-            <h2 className="text-[20px] font-semibold tracking-tight text-[var(--text-primary)]">
+            <h2 className="ts-title-3 font-semibold tracking-tight text-[var(--text-primary)]">
               {fullName}
             </h2>
-            <p className="mt-0.5 text-[13.5px] text-[var(--text-secondary)]">
+            <p className="mt-0.5 ts-subhead text-[var(--text-secondary)]">
               {jobTitle} · {INITIAL.email}
             </p>
-            <p className="mt-1 text-[12px] text-[var(--text-tertiary)]">
+            <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
               {INITIAL.org.name} · Equipo {INITIAL.org.teamName} · desde{" "}
               {memberSinceDate}
             </p>
@@ -172,7 +172,7 @@ export default function PerfilPage() {
                   size="md"
                   classNames={{
                     inputWrapper: "h-10",
-                    input: "text-[14px]",
+                    input: "ts-callout",
                   }}
                 />
               </div>
@@ -187,7 +187,7 @@ export default function PerfilPage() {
                   size="md"
                   classNames={{
                     inputWrapper: "h-10",
-                    input: "text-[14px]",
+                    input: "ts-callout",
                   }}
                 />
               </div>
@@ -218,7 +218,7 @@ export default function PerfilPage() {
                 <div className="flex flex-col gap-1.5">
                   <FieldLabel>Notificaciones por email</FieldLabel>
                   <div className="flex h-10 items-center justify-between rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3">
-                    <span className="text-[13.5px] text-[var(--text-secondary)]">
+                    <span className="ts-subhead text-[var(--text-secondary)]">
                       {notifications ? "Activadas" : "Desactivadas"}
                     </span>
                     <Switch
@@ -243,7 +243,7 @@ export default function PerfilPage() {
                 className="flex h-11 items-center justify-between rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 transition-colors hover:bg-[var(--surface-2)]"
               >
                 <div className="text-left">
-                  <div className="text-[13.5px] font-medium text-[var(--text-primary)]">
+                  <div className="ts-subhead font-medium text-[var(--text-primary)]">
                     Cambiar contraseña
                   </div>
                 </div>
@@ -257,10 +257,10 @@ export default function PerfilPage() {
                 className="flex h-11 items-center justify-between rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 transition-colors hover:bg-[var(--surface-2)]"
               >
                 <div className="text-left">
-                  <div className="text-[13.5px] font-medium text-[var(--text-primary)]">
+                  <div className="ts-subhead font-medium text-[var(--text-primary)]">
                     Métodos de autenticación
                   </div>
-                  <div className="text-[11.5px] text-[var(--text-tertiary)]">
+                  <div className="ts-caption-1 text-[var(--text-tertiary)]">
                     Email + Google
                   </div>
                 </div>
@@ -271,7 +271,7 @@ export default function PerfilPage() {
 
               <button
                 type="button"
-                className="mt-auto flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--band-b-bg)] px-3 text-[13.5px] font-medium text-[var(--band-b-text)] transition-opacity hover:opacity-90"
+                className="mt-auto flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--band-b-bg)] px-3 ts-subhead font-medium text-[var(--band-b-text)] transition-opacity hover:opacity-90"
               >
                 Cerrar sesión
               </button>
@@ -283,13 +283,13 @@ export default function PerfilPage() {
         <div className="flex items-center justify-end gap-3">
           <button
             type="button"
-            className="h-10 px-4 text-[13.5px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+            className="h-10 px-4 ts-subhead text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
           >
             Cancelar
           </button>
           <button
             type="button"
-            className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] accent-bg px-5 text-[13.5px] font-medium text-white hover:opacity-95 transition-opacity"
+            className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] accent-bg px-5 ts-subhead font-medium text-white hover:opacity-95 transition-opacity"
           >
             Guardar cambios
           </button>
