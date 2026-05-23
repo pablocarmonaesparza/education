@@ -13,6 +13,7 @@ si no pasa por este sistema.
 | `CASE_TAXONOMY.yaml` | Niveles, departamentos, roles, industrias, criterios, riesgos y herramientas. |
 | `CASE_SCHEMA.yaml` | Forma canonica que debe tener cada caso nuevo. |
 | `CASE_CREATION_SKILL.md` | Proceso operativo para crear un caso de principio a fin. |
+| `EXERCISE_BLOCK_CATALOG.yaml` | Catalogo canonico de ejercicios disponibles para construir casos. |
 | `CASE_RUBRIC_V1.md` | Criterios evaluables y bandas para manager. |
 | `CASE_QUALITY_CHECKLIST.md` | Gate manual y automatico antes de publicar. |
 | `TOOL_REGISTRY.yaml` | Registro de herramientas actuales, vigencia y frecuencia de revision. |
@@ -68,4 +69,5 @@ Ruta local/publica sin subscripcion:
 `/exercise-lab`
 
 Muestra el catalogo visual de bloques de ejercicio. Sirve para decidir que
-interacciones entran al contrato antes de escribir `EXERCISE_BLOCK_CATALOG.yaml`.
+interacciones entran al contrato. Cuando un patron queda aprobado ahi, debe
+existir tambien en `EXERCISE_BLOCK_CATALOG.yaml` y en `CASE_HIG.md`.

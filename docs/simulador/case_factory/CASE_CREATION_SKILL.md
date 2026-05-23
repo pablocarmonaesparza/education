@@ -1,8 +1,8 @@
 # Case Creation Skill — draft operativo
 
-> Estado: draft. Este skill ya captura el proceso acordado para fabricar casos
-> Itera. Debe reescribirse como version final cuando se cierre el catalogo
-> formal de `exercise_blocks`.
+> Estado: draft operativo v0.2. Este skill ya captura el proceso acordado para
+> fabricar casos Itera y debe ejecutarse contra el catalogo formal de
+> `exercise_blocks`.
 
 ## Cuando usar este skill
 
@@ -95,9 +95,10 @@ No inventes interacciones desde cero por caso.
 Selecciona bloques del catalogo cerrado en
 `docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml`.
 
-Bloques activos v0.1:
+Bloques activos v0.2:
 
-- `prompt_textfield`;
+- `ai_textfield_free`;
+- `ai_textfield_guided`;
 - `data_table_triage`;
 - `permission_matrix`;
 - `ai_output_review`;
@@ -125,6 +126,9 @@ Reglas de presentacion:
 - Sliders: solo si representan una prioridad continua entendible; pasos de 10.
 - Timer: solo si `time_pressure` lo justifica; no todos los casos llevan timer.
 - Copy: dar informacion laboral concreta antes de pedir respuesta.
+- Estados vacios: ningun brief, respuesta, memo, output, decision o prompt
+  generado puede venir prellenado antes de una accion explicita del
+  participante.
 
 ### 4. Disenar el caso en 6 secciones
 
@@ -279,9 +283,10 @@ Si se toca UI o Case Lab:
 bun run build
 ```
 
-## Pendiente para version final
+## Mantenimiento del catalogo
 
-Revisar con Pablo `EXERCISE_BLOCK_CATALOG.yaml` y cerrar:
+Antes de crear un bloque nuevo, actualizar con Pablo
+`EXERCISE_BLOCK_CATALOG.yaml` y revisar:
 
 - ids canonicos;
 - familias;
@@ -294,5 +299,6 @@ Revisar con Pablo `EXERCISE_BLOCK_CATALOG.yaml` y cerrar:
 - metodo de scoring;
 - criterios de completion.
 
-Cuando ese catalogo exista, este skill debe reescribirse para referenciar solo
-bloques oficiales.
+Si el bloque necesario no existe en el catalogo, no se inventa dentro del caso:
+se detiene, se disena el bloque en `/exercise-lab`, se documenta y entonces se
+usa.

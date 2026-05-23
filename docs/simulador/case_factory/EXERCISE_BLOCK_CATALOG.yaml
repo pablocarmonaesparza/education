@@ -1,127 +1,319 @@
 exercise_block_catalog:
-  version: 0.1.0
-  status: draft_for_pablo_review
+  version: 0.2.0
+  status: canonical_after_exercise_lab_review
+  source_route: /exercise-lab
   purpose: >
     Catalogo cerrado de interacciones para crear casos Itera sin reinventar
     ejercicios caso por caso. Cada bloque debe emitir evidencia medible para
-    una o mas dimensiones de la rubrica.
+    una o mas dimensiones de la rubrica y debe poder mapearse a una seccion del
+    runtime: Contexto, Datos, IA, Revision, Decision o Respuesta.
 
   product_rules:
     - "El caso controla escenario, presion, datos y resultado esperado; el usuario no configura el examen."
+    - "Ningun bloque puede iniciar con respuestas, briefs, decisiones, memos u outputs prellenados."
     - "Cada pantalla presenta una tarea principal, con instrucciones suficientes para actuar."
-    - "Los botones usan rectangulos redondeados, no capsulas, salvo componentes nativos donde el patron sea inevitable."
+    - "Los botones usan rectangulos redondeados, no capsulas, salvo tags no interactivos."
     - "Los sliders solo se usan cuando la persona ajusta una prioridad continua entendible; valores en pasos de 10."
     - "El timer existe solo en casos que lo justifican; no cambia el contenido ni la calidad esperada."
     - "Los ejercicios nativos de IA deben ser 60-70% del caso; los ejercicios tradicionales son soporte."
     - "Ningun bloque revela dimensiones, pesos, risk events internos ni respuesta correcta."
+    - "Cada bloque user-facing debe caber en viewport 1024x768 antes de marcarse listo."
+    - "Cuando una interaccion tenga muchas decisiones, usar disclosure progresivo tipo Typeform."
+
+  selection_recipes:
+    N1:
+      description: "Fundamentos / Prompt Engineering"
+      recommended_blocks: [ai_textfield_free, ai_textfield_guided, data_table_triage, ai_output_review, tradeoff_decision_memo]
+      avoid_blocks: [agent_brief_builder, run_log_review]
+    N2:
+      description: "Workflow / Automatiza tu trabajo"
+      recommended_blocks: [ai_textfield_guided, permission_matrix, workflow_builder, ai_output_review, dashboard_pivot, tradeoff_decision_memo]
+      avoid_blocks: []
+    N3:
+      description: "Agentes / Produccion y optimizacion"
+      recommended_blocks: [agent_brief_builder, permission_matrix, run_log_review, dashboard_pivot, tradeoff_decision_memo]
+      avoid_blocks: []
 
   blocks:
-    - id: prompt_textfield
-      public_name: Textfield de IA
+    - id: ai_textfield_free
+      lab_ref: "01A"
+      public_name: "Textfield de IA libre"
       family: ai_native
       levels: [N1, N2]
       profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
       primary_dimensions: [contexto, ejecucion_ia, impacto]
-      emits: [prompt_text, instruction_quality, constraint_coverage]
-      ui_pattern: "textarea amplio + botones de insercion + preview"
+      runtime_sections: [IA, Respuesta]
+      when_to_use:
+        - "Medir como estructura una peticion sin ayudas."
+        - "Evaluar claridad de objetivo, audiencia, tono, restricciones y output esperado."
+      avoid_when:
+        - "Necesitas medir decisiones granulares; usa ai_textfield_guided."
+        - "La persona no tiene informacion suficiente del caso."
+      personalization_knobs:
+        - "modelo disponible"
+        - "placeholder"
+        - "adjuntos permitidos"
+        - "voz"
+        - "artefacto de entrada"
+      emits: [prompt_text, instruction_quality, constraint_coverage, attachment_usage]
+      ui_pattern: "textfield de IA amplio con selector de modelo, voz y adjuntos opcionales"
+      default_empty_fields: [prompt_text, attachments, voice_notes]
       scoring_method: llm_judge_with_structured_rubric
-      completion: "prompt no vacio, objetivo declarado y al menos un limite de datos o validacion"
+      completion: "prompt no vacio con objetivo y al menos una restriccion o criterio de validacion"
+
+    - id: ai_textfield_guided
+      lab_ref: "01B"
+      public_name: "Textfield de IA guiado"
+      family: ai_native
+      levels: [N1, N2]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
+      primary_dimensions: [contexto, datos, ejecucion_ia, juicio]
+      runtime_sections: [Contexto, Datos, IA]
+      when_to_use:
+        - "Medir decisiones discretas que construyen un prompt o encargo."
+        - "Ensenar razonamiento sin permitir edicion libre del output final."
+      avoid_when:
+        - "Las opciones no tienen tradeoff real."
+        - "El caso requiere creatividad abierta sin andamiaje."
+      personalization_knobs:
+        - "objetivos"
+        - "audiencias"
+        - "limites del caso"
+        - "modelo recomendado"
+        - "prioridades de inteligencia, seguridad y costo"
+      emits: [selected_objective, selected_audience, selected_limits, selected_model, generated_prompt]
+      ui_pattern: "inputs y seleccion progresivos + respuestas vacias + textfield read-only generado"
+      default_empty_fields: [selected_objective, selected_audience, selected_limits, selected_model, generated_prompt]
+      scoring_method: deterministic_selection_plus_llm_judge
+      completion: "objetivo, audiencia, limites y modelo definidos; prompt generado"
 
     - id: data_table_triage
-      public_name: Tabla editable de datos
+      lab_ref: "02"
+      public_name: "Tabla editable de datos"
       family: traditional_plus_ai_context
       levels: [N1, N2]
       profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
       primary_dimensions: [datos, juicio]
+      runtime_sections: [Datos]
+      when_to_use:
+        - "El participante debe decidir que datos entran al modelo."
+        - "Hay riesgo de PII, datos sensibles, baja calidad o exceso de informacion."
+      avoid_when:
+        - "La decision de datos no afecta el resultado del caso."
+        - "Estas tentado a usar sliders de sensibilidad; usa acciones discretas."
+      personalization_knobs:
+        - "filas de datos"
+        - "ejemplos"
+        - "acciones: usar, anonimizar, agregar, excluir"
+        - "consecuencias por campo"
       emits: [field_actions, minimization_decisions, privacy_flags]
-      ui_pattern: "tabla por campo con accion usar/anonimizar/agregar/excluir"
+      ui_pattern: "tabla por campo con dropdown de accion y chevron con padding suficiente"
+      default_empty_fields: []
       scoring_method: deterministic_rules_plus_judge_notes
-      completion: "cada campo tiene accion elegida"
+      completion: "cada campo tiene accion elegida o confirmada"
 
     - id: permission_matrix
-      public_name: Matriz de permisos
+      lab_ref: "03"
+      public_name: "Matriz de permisos"
       family: ai_native
       levels: [N2, N3]
       profiles: [sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
       primary_dimensions: [datos, ejecucion_ia, juicio]
+      runtime_sections: [IA, Decision]
+      when_to_use:
+        - "Hay automatizacion o agente con acciones de distinto riesgo."
+        - "El participante debe decidir permitir, revisar o bloquear."
+      avoid_when:
+        - "Todas las acciones tienen el mismo nivel de riesgo."
+        - "Es una tarea N1 sin autonomia real."
+      personalization_knobs:
+        - "acciones"
+        - "niveles de permiso"
+        - "acciones high risk"
+        - "approval gates"
       emits: [permission_plan, blocked_actions, review_gates]
       ui_pattern: "filas de acciones x permitir/revisar/bloquear"
+      default_empty_fields: []
       scoring_method: deterministic_overrides_for_high_risk_actions
       completion: "todas las acciones tienen permiso declarado"
 
     - id: ai_output_review
-      public_name: Revision de output de IA
+      lab_ref: "04"
+      public_name: "Revision de output de IA"
       family: ai_native
       levels: [N1, N2, N3]
       profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
       primary_dimensions: [validacion, juicio]
+      runtime_sections: [Revision]
+      when_to_use:
+        - "La IA produjo algo plausible pero imperfecto."
+        - "El participante debe detectar errores antes de usar o enviar."
+      avoid_when:
+        - "El output es caricaturescamente malo."
+        - "No hay riesgos o claims verificables."
+      personalization_knobs:
+        - "segmentos marcables"
+        - "severidad"
+        - "correccion esperada"
+        - "follow-up con IA"
       emits: [flagged_segments, missed_risks, correction_request]
       ui_pattern: "segmentos seleccionables + follow-up opcional"
+      default_empty_fields: [flagged_segments, correction_request]
       scoring_method: risk_event_recall_precision
       completion: "al menos una decision de aceptar, marcar o corregir"
 
     - id: ai_comparison
-      public_name: Comparacion de respuestas
+      lab_ref: "05"
+      public_name: "Comparacion de respuestas"
       family: ai_native
       levels: [N1, N2]
       profiles: [marketing_growth, sales_revops, customer_success_support, finance_fpa, legal_compliance_privacy]
       primary_dimensions: [validacion, impacto]
+      runtime_sections: [Revision, Decision]
+      when_to_use:
+        - "Hay dos o tres outputs plausibles con tradeoffs reales."
+        - "Quieres medir criterio de calidad, no gusto estetico."
+      avoid_when:
+        - "Una opcion es obviamente correcta o absurda."
+        - "El participante no puede explicar por que eligio."
+      personalization_knobs:
+        - "numero de outputs"
+        - "criterios visibles"
+        - "tradeoffs"
+        - "justificacion corta"
       emits: [chosen_output, justification, quality_tradeoff]
       ui_pattern: "dos o tres respuestas comparables + justificacion"
+      default_empty_fields: [chosen_output, justification]
       scoring_method: llm_judge_with_expected_signals
       completion: "respuesta elegida y razon breve"
 
     - id: workflow_builder
-      public_name: Workflow builder
+      lab_ref: "06"
+      public_name: "Workflow builder"
       family: ai_native
       levels: [N2]
       profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa]
       primary_dimensions: [ejecucion_ia, validacion, impacto]
+      runtime_sections: [IA, Revision]
+      when_to_use:
+        - "El caso mide handoffs, checkpoints y responsabilidad dentro de un flujo."
+        - "La IA participa en un proceso, no en una tarea aislada."
+      avoid_when:
+        - "El flujo se reduce a escribir un prompt."
+        - "No hay revision humana o entrega definida."
+      personalization_knobs:
+        - "pasos"
+        - "orden"
+        - "herramientas"
+        - "checkpoints"
+        - "salida del flujo"
       emits: [workflow_steps, checkpoints, handoff_plan]
       ui_pattern: "pasos activables, ordenables o conectados"
+      default_empty_fields: []
       scoring_method: workflow_integrity_rules
       completion: "flujo tiene entrada, uso de IA, revision y salida"
 
     - id: agent_brief_builder
-      public_name: Brief para agente
+      lab_ref: "07"
+      public_name: "Brief para agente"
       family: ai_native
       levels: [N3]
-      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
       primary_dimensions: [ejecucion_ia, juicio, datos]
-      emits: [agent_goal, allowed_tools, blocked_actions, fallback_policy]
-      ui_pattern: "objetivo + permisos + limites + fallback"
+      runtime_sections: [IA, Decision]
+      when_to_use:
+        - "El participante debe delegar una tarea a un agente sin perder control."
+        - "El caso necesita medir autonomia, permisos, acceso y condicion de paro."
+      avoid_when:
+        - "No hay agente o autonomia real."
+        - "El brief queda demasiado especifico a un departamento."
+      personalization_knobs:
+        - "tarea"
+        - "acceso permitido"
+        - "accion maxima"
+        - "condicion de paro"
+        - "fallback"
+        - "logs o costo"
+      emits: [agent_task, allowed_access, max_action, stop_condition, fallback_policy]
+      ui_pattern: "flujo progresivo con una decision visible a la vez + brief preview vacio"
+      default_empty_fields: [agent_task, allowed_access, max_action, stop_condition]
       scoring_method: deterministic_overrides_plus_llm_judge
-      completion: "objetivo, permisos y fallback definidos"
+      completion: "tarea, acceso, accion maxima y condicion de paro definidos"
 
     - id: run_log_review
-      public_name: Revision de logs
+      lab_ref: "08"
+      public_name: "Revision de logs"
       family: ai_native
       levels: [N2, N3]
       profiles: [sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
       primary_dimensions: [validacion, juicio]
+      runtime_sections: [Revision]
+      when_to_use:
+        - "El participante supervisa una corrida de automatizacion o agente."
+        - "Quieres medir si detecta incidentes en evidencia operacional."
+      avoid_when:
+        - "Los logs son demasiado tecnicos para el perfil."
+        - "No hay eventos normales que sirvan de contraste."
+      personalization_knobs:
+        - "timeline"
+        - "eventos normales"
+        - "eventos de riesgo"
+        - "severidad"
+        - "escalamiento"
       emits: [flagged_log_events, incident_type, escalation_need]
       ui_pattern: "timeline de eventos con marcacion de incidentes"
+      default_empty_fields: [flagged_log_events]
       scoring_method: risk_event_recall_precision
       completion: "eventos relevantes marcados o descartados"
 
     - id: dashboard_pivot
-      public_name: Dashboard / pivot
+      lab_ref: "09"
+      public_name: "Dashboard / pivot"
       family: traditional_business_signal
       levels: [N2, N3]
       profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa]
       primary_dimensions: [impacto, contexto]
-      emits: [selected_signal, manager_takeaway, metric_caveats]
-      ui_pattern: "tabla o dashboard filtrable con senal para manager"
+      runtime_sections: [Decision, Respuesta]
+      when_to_use:
+        - "El participante debe leer una senal de negocio y decidir que llevar al lider."
+        - "Hay metricas con caveats, filtros o segmentacion."
+      avoid_when:
+        - "El dashboard no fuerza una decision."
+        - "Las metricas son decorativas o irrelevantes."
+      personalization_knobs:
+        - "metricas"
+        - "tablas"
+        - "filtros"
+        - "cohortes"
+        - "comparativos"
+        - "caveats"
+      emits: [selected_signal, leader_takeaway, metric_caveats]
+      ui_pattern: "tabla o dashboard filtrable con senal para lider"
+      default_empty_fields: [selected_signal, leader_takeaway]
       scoring_method: manager_signal_alignment
       completion: "senal elegida y takeaway declarado"
 
     - id: tradeoff_decision_memo
-      public_name: Decision con ventajas y costos + memo
+      lab_ref: "11"
+      public_name: "Decision con ventajas y costos + memo"
       family: traditional_closure
       levels: [N1, N2, N3]
       profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
       primary_dimensions: [juicio, impacto, contexto]
-      emits: [decision_choice, rationale_text, manager_action_signal]
+      runtime_sections: [Decision, Respuesta]
+      when_to_use:
+        - "Cerrar el caso con una recomendacion responsable."
+        - "Medir si la persona entiende consecuencias, riesgos aceptados y siguiente paso."
+      avoid_when:
+        - "Solo quieres medir redaccion."
+        - "Las opciones de decision no tienen costos reales."
+      personalization_knobs:
+        - "opciones de decision"
+        - "consecuencias"
+        - "longitud del memo"
+        - "audiencia del memo"
+      emits: [decision_choice, rationale_text, leader_action_signal]
       ui_pattern: "opciones con consecuencias + memo corto"
+      default_empty_fields: [decision_choice, rationale_text]
       scoring_method: llm_judge_with_override_matrix
       completion: "opcion elegida y memo no vacio"

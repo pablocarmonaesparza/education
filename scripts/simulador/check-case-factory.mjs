@@ -15,6 +15,7 @@ const requiredFiles = [
   "CASE_TAXONOMY.yaml",
   "CASE_SCHEMA.yaml",
   "CASE_CREATION_SKILL.md",
+  "EXERCISE_BLOCK_CATALOG.yaml",
   "CASE_RUBRIC_V1.md",
   "CASE_QUALITY_CHECKLIST.md",
   "TOOL_REGISTRY.yaml",
@@ -66,6 +67,25 @@ if (schema) {
   check(Boolean(example?.freshness?.refresh_due_at), "example needs refresh_due_at");
   check(Boolean(example?.judge?.prompt_ref), "example needs judge.prompt_ref");
   check(Boolean(example?.resimulation?.required), "example needs resimulation.required");
+}
+
+const exerciseCatalog = readYaml("EXERCISE_BLOCK_CATALOG.yaml")?.exercise_block_catalog;
+if (exerciseCatalog) {
+  const blocks = exerciseCatalog.blocks ?? [];
+  const blockIds = new Set(blocks.map((block) => block.id));
+  check(exerciseCatalog.version === "0.2.0", "exercise block catalog must be v0.2.0");
+  check(blocks.length >= 10, "exercise block catalog needs at least 10 blocks");
+  check(blockIds.has("ai_textfield_free"), "exercise catalog needs ai_textfield_free");
+  check(blockIds.has("ai_textfield_guided"), "exercise catalog needs ai_textfield_guided");
+  check(blockIds.has("tradeoff_decision_memo"), "exercise catalog needs tradeoff_decision_memo");
+  for (const block of blocks) {
+    check(Boolean(block.id), "exercise block missing id");
+    check(Boolean(block.public_name), `exercise block ${block.id} missing public_name`);
+    check(Boolean(block.ui_pattern), `exercise block ${block.id} missing ui_pattern`);
+    check(Array.isArray(block.default_empty_fields), `exercise block ${block.id} missing default_empty_fields`);
+    check(Boolean(block.scoring_method), `exercise block ${block.id} missing scoring_method`);
+    check(Boolean(block.completion), `exercise block ${block.id} missing completion`);
+  }
 }
 
 if (issues.length > 0) {

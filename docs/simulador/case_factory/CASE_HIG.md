@@ -47,6 +47,9 @@ Reglas:
 
 - El participante no elige el contexto, stakeholder, presion ni resultado
   esperado. Eso lo controla Itera.
+- Ningun panel de respuesta, brief, memo, output o recomendacion puede venir
+  prellenado. Las respuestas arrancan vacias y solo aparecen despues de una
+  accion explicita del participante.
 - El timer solo aparece en casos donde `time_pressure` lo justifica. Puede
   mostrarse como opcion de practica (`con timer` / `sin timer`) cuando el flujo
   sea demo o entrenamiento, pero no cambia la rubrica ni el contenido del caso.
@@ -59,6 +62,168 @@ Reglas:
   memo, log flag o accion elegida.
 - La pagina `/exercise-lab` es laboratorio de tipos de ejercicio, no runtime de
   un caso completo.
+- Cada patron debe caber en viewport de laptop (`1024x768`) antes de marcarlo
+  como listo. Si no cabe, se redisenia con disclosure progresivo.
+
+## Catalogo canonico de ejercicios
+
+Estos son los bloques que Codex puede usar al crear casos. No se inventan
+interacciones nuevas sin actualizar primero `EXERCISE_BLOCK_CATALOG.yaml`.
+
+### 01A — Textfield de IA libre
+
+**Uso:** cuando el caso quiere medir como la persona estructura una peticion sin
+andamiaje.
+
+**Mide:** contexto, ejecucion con IA, impacto.
+
+**Personalizar:** modelo disponible, adjuntos permitidos, voz, placeholder,
+artefactos que se pueden subir.
+
+**Evitar:** si el objetivo es medir criterio granular; para eso usar 01B.
+
+### 01B — Textfield de IA guiado
+
+**Uso:** cuando el caso quiere medir decisiones discretas que construyen un
+prompt o encargo: objetivo, audiencia, limites, modelo o prioridades.
+
+**Mide:** contexto, datos, ejecucion con IA, juicio.
+
+**Reglas:** inputs a la izquierda, respuestas a la derecha, textfield de IA
+read-only cuando el objetivo es ensenar razonamiento. El boton de crear prompt
+vive en Inputs y seleccion, no en Respuestas. Las respuestas arrancan vacias.
+
+**Personalizar:** opciones de objetivo, audiencia, limites, modelo, sliders en
+pasos de 10 para inteligencia/seguridad/costo.
+
+**Evitar:** si las opciones serian obvias o caricaturescas.
+
+### 02 — Tabla editable de datos
+
+**Uso:** cuando el participante debe decidir que datos entran, se anonimizan, se
+agregan o se excluyen antes de usar IA.
+
+**Mide:** datos, juicio.
+
+**Personalizar:** filas de datos, ejemplos, acciones permitidas, sensibilidad
+del campo, consecuencias.
+
+**Evitar:** sliders de sensibilidad. La decision debe ser concreta, no
+porcentual.
+
+### 03 — Matriz de permisos
+
+**Uso:** cuando el caso requiere definir que puede hacer el sistema solo, que
+requiere revision y que debe bloquearse.
+
+**Mide:** datos, ejecucion con IA, juicio.
+
+**Personalizar:** acciones del sistema, permisos, nivel de autonomia, severidad
+de riesgos.
+
+**Evitar:** tareas N1 simples donde no existe automatizacion real.
+
+### 04 — Revision de output
+
+**Uso:** cuando el participante debe leer una salida de IA y marcar errores,
+datos sensibles, claims sin fuente, drift o riesgos.
+
+**Mide:** validacion, juicio.
+
+**Personalizar:** lineas marcables, severidad, correccion esperada, follow-up
+con textfield de IA.
+
+**Evitar:** outputs artificialmente malos. Deben parecer plausibles.
+
+### 05 — Comparacion de respuestas
+
+**Uso:** cuando hay dos o tres salidas plausibles y el participante debe elegir
+la mejor para el negocio.
+
+**Mide:** validacion, impacto.
+
+**Personalizar:** numero de outputs, criterios visibles, tradeoffs, justificacion
+corta.
+
+**Evitar:** cuando una opcion es obviamente absurda.
+
+### 06 — Workflow builder
+
+**Uso:** cuando el caso mide si la persona entiende un flujo de trabajo con IA,
+handoffs, checkpoints y revision humana.
+
+**Mide:** ejecucion con IA, validacion, impacto.
+
+**Personalizar:** pasos activables, orden, herramientas, checkpoints, punto de
+entrega.
+
+**Evitar:** si el caso solo requiere redactar mejor un prompt.
+
+### 07 — Brief para agente
+
+**Uso:** cuando el caso N3 requiere delegar trabajo a un agente sin perder
+control.
+
+**Mide:** ejecucion con IA, juicio, datos.
+
+**Reglas:** flujo progresivo, una decision visible a la vez. Campos canonicos:
+Tarea, Acceso permitido, Puede hacer, Debe detenerse si. El brief arranca vacio
+y se llena solo con selecciones.
+
+**Personalizar:** tarea, acceso, accion maxima, condicion de paro, permisos,
+fallback, logs y costo.
+
+**Evitar:** hacerlo demasiado especifico a Marketing, Sales u otro perfil. Debe
+ser portable entre departamentos.
+
+### 08 — Revision de logs
+
+**Uso:** cuando el participante supervisa una corrida de automatizacion o agente
+y debe detectar donde se rompe el control.
+
+**Mide:** validacion, juicio.
+
+**Personalizar:** timeline, eventos normales, eventos de riesgo, escalamiento,
+severidad.
+
+**Evitar:** logs demasiado tecnicos si el perfil no es tecnico.
+
+### 09 — Dashboard / pivot
+
+**Uso:** cuando el participante debe leer senales de negocio, filtrar datos y
+llevar un takeaway al lider.
+
+**Mide:** impacto, contexto.
+
+**Personalizar:** metricas, tablas, filtros, cohortes, comparativos, caveats.
+
+**Evitar:** dashboards decorativos que no fuerzan decision.
+
+### 11 — Decision + memo
+
+**Uso:** cierre de caso. El participante elige una accion y explica por que.
+
+**Mide:** juicio, impacto, contexto.
+
+**Reglas:** ninguna decision preseleccionada y memo vacio por defecto. Las
+opciones deben tener ventajas y costos reales.
+
+**Personalizar:** opciones de decision, consecuencias, longitud del memo,
+audiencia del memo.
+
+**Evitar:** pedir comunicacion sin decision operativa. Si solo mide redaccion,
+no sirve como cierre de simulacion.
+
+## Como elegir ejercicios para un caso
+
+- N1 normalmente combina 01A o 01B + 02 o 04 + 11.
+- N2 normalmente combina 01B + 03 o 06 + 04 u 09 + 11.
+- N3 normalmente combina 07 + 03 + 08 + 09 + 11.
+- Un caso puede tener muchos micro-pasos, pero cada paso debe emitir evidencia
+  medible.
+- La mezcla recomendada sigue siendo 60/40 o 70/30 a favor de ejercicios
+  nativos de IA. Los ejercicios tradicionales apoyan, no reemplazan, el uso de
+  IA.
 
 ## Momento de trabajo
 
