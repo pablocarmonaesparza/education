@@ -11,13 +11,17 @@ const CASES_DIR = path.join(CONTRACT_DIR, "casos");
 const VARIANTS_DIR = path.join(CONTRACT_DIR, "variantes");
 const DIMENSIONS = new Set(["contexto", "datos", "ejecucion_ia", "validacion", "juicio", "impacto"]);
 const EXERCISE_TYPES = new Set([
+  "ai_textfield_free",
+  "ai_textfield_guided",
   "data_table_triage",
   "workflow_builder",
-  "agent_brief",
+  "agent_brief_builder",
   "permission_matrix",
-  "log_review",
-  "tradeoff_decision",
-  "executive_response",
+  "run_log_review",
+  "ai_output_review",
+  "ai_comparison",
+  "dashboard_pivot",
+  "tradeoff_decision_memo",
 ]);
 const TIME_PRESSURE_MODES = new Set(["no_timer", "soft_deadline", "fixed_timer", "step_timer"]);
 

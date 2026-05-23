@@ -13,6 +13,7 @@ si no pasa por este sistema.
 | `CASE_TAXONOMY.yaml` | Niveles, departamentos, roles, industrias, criterios, riesgos y herramientas. |
 | `CASE_SCHEMA.yaml` | Forma canonica que debe tener cada caso nuevo. |
 | `CASE_CREATION_SKILL.md` | Proceso operativo para crear un caso de principio a fin. |
+| `CASE_REVIEW_PROTOCOL.md` | Gate de revision con validadores, synthetic participants y Claude Case Critic. |
 | `EXERCISE_BLOCK_CATALOG.yaml` | Catalogo canonico de ejercicios disponibles para construir casos. |
 | `CASE_RUBRIC_V1.md` | Criterios evaluables y bandas para manager. |
 | `CASE_QUALITY_CHECKLIST.md` | Gate manual y automatico antes de publicar. |

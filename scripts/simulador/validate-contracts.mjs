@@ -11,13 +11,17 @@ const CONTRACT_DIR = path.join(ROOT, 'docs/simulador/contrato_v0');
 const DIMENSIONS = new Set(['contexto', 'datos', 'ejecucion_ia', 'validacion', 'juicio', 'impacto']);
 const STEP_TYPES = new Set(['data_scope', 'llm_beat', 'artifact_review', 'decision_select', 'decision_open_short']);
 const EXERCISE_TYPES = new Set([
+  'ai_textfield_free',
+  'ai_textfield_guided',
   'data_table_triage',
   'workflow_builder',
-  'agent_brief',
+  'agent_brief_builder',
   'permission_matrix',
-  'log_review',
-  'tradeoff_decision',
-  'executive_response',
+  'run_log_review',
+  'ai_output_review',
+  'ai_comparison',
+  'dashboard_pivot',
+  'tradeoff_decision_memo',
 ]);
 const EVIDENCE_KINDS = new Set([
   'readiness_dimension_scores',
