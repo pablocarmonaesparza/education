@@ -21,6 +21,7 @@
 import { HeroUIProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { useRouter } from "next/navigation";
+import { DesignOverridesInjector } from "@/components/simulador/DesignOverridesInjector";
 
 declare module "@react-types/shared" {
   interface RouterConfig {
@@ -42,6 +43,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         disableTransitionOnChange
         storageKey="itera-theme"
       >
+        {/* Aplica overrides de /design en TODAS las surfaces. */}
+        <DesignOverridesInjector />
         {children}
       </NextThemesProvider>
     </HeroUIProvider>

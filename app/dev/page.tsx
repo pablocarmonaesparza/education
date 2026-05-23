@@ -88,6 +88,7 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
   {
     group: "system",
     routes: [
+      { path: "/design", label: "Design system (editor de tokens en vivo)", note: "single source of truth" },
       { path: "/not-found-test-page", label: "404 (404 intencional)" },
       { path: "/maintenance", label: "Maintenance" },
     ],
