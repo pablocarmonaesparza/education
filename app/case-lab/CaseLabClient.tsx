@@ -41,9 +41,9 @@ export function CaseLabClient() {
             <Link
               key={demoCase.id}
               href={`/case-lab/${demoCase.id}`}
-              className="card-apple card-apple-interactive flex min-h-[240px] flex-col rounded-[22px] bg-[var(--surface-2)] p-5 text-left transition hover:bg-[var(--surface-3)]"
+              className="card-apple card-apple-interactive flex min-h-[330px] flex-col rounded-[22px] bg-[var(--surface-2)] p-5 text-left transition hover:bg-[var(--surface-3)]"
             >
-              <div className="mb-7 flex items-center justify-between gap-3">
+              <div className="mb-6 flex items-center justify-between gap-3">
                 <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-xs font-medium text-[var(--accent)]">
                   {demoCase.level}
                 </span>
@@ -54,8 +54,24 @@ export function CaseLabClient() {
               <h2 className="text-[17px] font-semibold leading-6 text-[var(--text-primary)]">
                 {demoCase.title}
               </h2>
+              <p className="mt-2 text-xs font-medium text-[var(--text-tertiary)]">
+                {demoCase.profile}
+              </p>
               <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">
                 {demoCase.summary}
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {demoCase.tools.slice(0, 3).map((tool) => (
+                  <span
+                    key={tool}
+                    className="rounded-[10px] border border-[var(--border)] bg-[var(--surface)] px-2.5 py-1 text-xs text-[var(--text-secondary)]"
+                  >
+                    {tool}
+                  </span>
+                ))}
+              </div>
+              <p className="mt-4 line-clamp-3 text-xs leading-5 text-[var(--text-tertiary)]">
+                {demoCase.freshness}
               </p>
               <p className="mt-auto pt-6 text-sm font-medium text-[var(--accent)]">
                 Abrir simulación
