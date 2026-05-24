@@ -37,6 +37,7 @@ export type DemoCase = {
   minutes: number;
   company: string;
   summary: string;
+  tools: string[];
   managerBrief: string;
   sections: DemoCaseSection[];
 };
@@ -50,6 +51,7 @@ export const demoCases: DemoCase[] = [
     minutes: 18,
     company: "Loop SaaS B2B",
     summary: "Tres ángulos de campaña para reactivar cuentas con bajo uso.",
+    tools: ["ChatGPT", "Claude", "Meta Ads", "Google Sheets"],
     managerBrief:
       "Úsalo para medir si el equipo puede preparar una campaña con IA sin usar datos sensibles, prometer de más o perder claridad comercial.",
     sections: [
@@ -58,7 +60,7 @@ export const demoCases: DemoCase[] = [
         reading("01.02", "Camila, la VP de Marketing, te pide ayuda.", "Necesita tres ángulos de campaña para reactivar esas cuentas. No quiere una campaña final; quiere opciones que pueda revisar hoy."),
         reading("01.03", "La entrega tiene una audiencia concreta.", "Tu respuesta es para Camila. Debe ser ejecutiva, útil y honesta sobre qué datos todavía necesitan validación."),
         reading("01.04", "El problema no es escribir bonito.", "El reto es usar IA sin mezclar datos personales, notas internas o promesas que no están comprobadas."),
-        reading("01.05", "Tu trabajo empieza antes del prompt.", "Primero vas a entender el caso. Después decidirás qué datos usar, cómo pedir ayuda a la IA y qué sí vale la pena compartir."),
+        reading("01.05", "Tu trabajo empieza antes del prompt.", "Primero vas a entender el caso. Después decidirás qué datos usar, cómo pedir ayuda a ChatGPT o Claude y qué sí vale la pena llevar a Meta Ads."),
       ]),
       section("Datos", [
         reading("02.01", "Ahora mira los datos disponibles.", "El equipo reunió señales de uso, comentarios de clientes y notas internas. Algunos datos ayudan; otros sólo agregan riesgo."),
@@ -79,7 +81,7 @@ export const demoCases: DemoCase[] = [
         reading("03.01", "Ahora sí puedes pedir ayuda a la IA.", "No le vas a pedir una campaña terminada. Le vas a pedir opciones de trabajo con límites claros."),
         guided("03.02", "Construye el prompt con opciones guiadas.", "Elige objetivo, audiencia, límites y modelo. La selección debe reflejar la presión real del caso."),
         reading("03.03", "El modelo también es una decisión.", "Para este caso importa equilibrar inteligencia, seguridad y costo. No todo requiere el modelo más caro ni el más autónomo."),
-        ai("03.04", "Revisa el prompt antes de enviarlo.", "El campo de IA debe sonar como una herramienta real de trabajo.", "Genera tres ángulos de campaña para reactivar cuentas con bajo uso usando sólo datos agregados. Marca supuestos y validaciones pendientes."),
+        ai("03.04", "Redacta el prompt final.", "Usa el campo de IA como lo harías en una herramienta real. Debe pedir tres ángulos, usar sólo datos permitidos y marcar supuestos.", "Ejemplo de intención: tres ángulos de campaña para reactivar cuentas con bajo uso, usando sólo datos agregados y señalando validaciones pendientes."),
         reading("03.05", "La IA devuelve borradores, no autoridad.", "Aunque la salida suene convincente, todavía tienes que revisar claims, tono y riesgos antes de compartir."),
       ]),
       section("Revisión", [
@@ -121,6 +123,7 @@ export const demoCases: DemoCase[] = [
     minutes: 30,
     company: "Aurora SaaS",
     summary: "Un agente prepara seguimiento comercial sin enviar solo.",
+    tools: ["Claude", "ChatGPT", "HubSpot", "Gmail", "Slack"],
     managerBrief:
       "Úsalo para saber si alguien puede delegar seguimiento a un agente sin filtrar datos sensibles, inventar señales de compra o perder control humano.",
     sections: [
@@ -184,6 +187,7 @@ export const demoCases: DemoCase[] = [
     minutes: 24,
     company: "Loop Retail",
     summary: "Un cliente amenaza con publicar capturas si no recibe respuesta clara.",
+    tools: ["ChatGPT", "Claude", "WhatsApp Business", "Zendesk"],
     managerBrief:
       "Úsalo para revisar si una persona puede resumir conversaciones reales, detectar riesgo reputacional y preparar una respuesta sin exponer datos personales.",
     sections: makeStandardCase({
@@ -203,6 +207,7 @@ export const demoCases: DemoCase[] = [
     minutes: 26,
     company: "Luma Payments",
     summary: "La dirección pide explicar una caída de margen antes del comité.",
+    tools: ["Claude", "ChatGPT", "Google Sheets", "Looker Studio"],
     managerBrief:
       "Úsalo para saber si una persona puede usar IA sobre tablas financieras sin confundir correlación, causa y narrativa ejecutiva.",
     sections: makeStandardCase({
@@ -222,6 +227,7 @@ export const demoCases: DemoCase[] = [
     minutes: 22,
     company: "Contrato de distribución",
     summary: "Un contrato debe priorizarse antes de una firma urgente.",
+    tools: ["Claude", "ChatGPT", "Microsoft Word", "Google Drive"],
     managerBrief:
       "Úsalo para medir si el equipo usa IA como apoyo de lectura, sin convertirla en autoridad legal ni compartir información fuera de límites.",
     sections: makeStandardCase({

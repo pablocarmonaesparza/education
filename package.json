@@ -24,6 +24,7 @@
     "typecheck:simulador": "node scripts/simulador/typecheck-scope.mjs",
     "check:simulador": "node scripts/simulador/check-scope.mjs",
     "simulador:case-factory": "node scripts/simulador/check-case-factory.mjs",
+    "simulador:check-case-lab-runtime": "node scripts/simulador/check-case-lab-runtime.mjs",
     "simulador:validate-case-yaml": "node scripts/simulador/validate-case-yaml.mjs",
     "simulador:review-case": "node scripts/simulador/review-case.mjs",
     "simulador:validate": "node scripts/simulador/validate-contracts.mjs",
