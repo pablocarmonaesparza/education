@@ -75,7 +75,37 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
           </Link>
         </header>
 
-        <div className="mx-auto grid min-h-0 w-full max-w-[1440px] flex-1 gap-8 px-6 pb-8 md:px-10 xl:grid-cols-[286px_1fr]">
+        <div className="mx-auto grid min-h-0 w-full max-w-[1440px] flex-1 gap-6 px-6 pb-8 md:px-10 lg:grid-cols-[72px_minmax(0,1fr)] xl:grid-cols-[286px_minmax(0,1fr)] xl:gap-8">
+          <aside className="hidden min-h-0 lg:block xl:hidden">
+            <div className="flex h-full flex-col items-center rounded-[24px] border border-[var(--border)] bg-[var(--surface-2)] px-3 py-5">
+              <div className="grid h-9 w-9 place-items-center rounded-full bg-[var(--accent-soft)] text-xs font-semibold text-[var(--accent)]">
+                {demoCase.level}
+              </div>
+              <nav className="mt-6 grid gap-3">
+                {demoCase.sections.map((section, index) => (
+                  <button
+                    key={section.name}
+                    type="button"
+                    onClick={() => goToSection(index)}
+                    aria-label={section.name}
+                    title={section.name}
+                    className={[
+                      "grid h-9 w-9 place-items-center rounded-full text-xs font-semibold transition",
+                      current.sectionIndex === index
+                        ? "bg-[var(--accent)] text-white"
+                        : "border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]",
+                    ].join(" ")}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+              </nav>
+              <p className="mt-auto [writing-mode:vertical-rl] rotate-180 text-[11px] font-medium uppercase tracking-[0.18em] text-[var(--text-tertiary)]">
+                {current.section.name}
+              </p>
+            </div>
+          </aside>
+
           <aside className="hidden min-h-0 xl:block">
             <div className="flex h-full flex-col rounded-[24px] border border-[var(--border)] bg-[var(--surface-2)] p-5">
               <div className="rounded-[18px] border border-[var(--border)] bg-[var(--surface)] p-5">
