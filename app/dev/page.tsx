@@ -86,6 +86,18 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
     ],
   },
   {
+    group: "labs internos (Codex / case design)",
+    routes: [
+      { path: "/case-lab", label: "Case lab — selector de 5 casos demo", note: "Codex domain" },
+      { path: "/case-lab/marketing-dirty-data-campaign", label: "└─ Caso: Campaña urgente con datos incompletos" },
+      { path: "/case-lab/sales-agent-followup", label: "└─ Caso: Seguimiento comercial con agente" },
+      { path: "/case-lab/support-whatsapp-escalation", label: "└─ Caso: Escalamiento de soporte WhatsApp" },
+      { path: "/case-lab/finance-variance-claim", label: "└─ Caso: Variación financiera con hojas" },
+      { path: "/case-lab/legal-contract-triage", label: "└─ Caso: Triage legal de contrato" },
+      { path: "/exercise-lab", label: "Exercise lab — catálogo de bloques de ejercicio", note: "Codex domain · grande (~1600 líneas)" },
+    ],
+  },
+  {
     group: "system",
     routes: [
       { path: "/design", label: "Design system (editor de tokens en vivo)", note: "single source of truth" },
