@@ -582,10 +582,10 @@ function ExerciseSection({
       >
         <div className={`mx-auto w-full ${isGuided ? "max-w-6xl" : "max-w-[880px]"}`}>
           <div className="eyebrow">{exercise.eyebrow}</div>
-          <h2 className={`display display-tight mt-4 text-[34px] text-[var(--text-primary)] ${isGuided ? "sm:text-[42px]" : "sm:text-[52px]"}`}>
+          <h2 className={`display display-tight mt-4 ts-display text-[var(--text-primary)] ${isGuided ? "sm:ts-display-lg" : "sm:ts-display-xl"}`}>
             {exercise.title}
           </h2>
-          <p className="mt-4 max-w-2xl text-[16px] leading-[1.55] text-[var(--text-secondary)]">
+          <p className="mt-4 max-w-2xl ts-headline leading-[1.55] text-[var(--text-secondary)]">
             {exercise.description}
           </p>
           <div className="mt-6">{children}</div>
@@ -605,11 +605,11 @@ function ExerciseSection({
           <div className="mb-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(280px,360px)] md:items-end">
             <div>
               <div className="eyebrow">{exercise.eyebrow}</div>
-              <h2 className="display display-tight mt-3 text-[32px] sm:text-[40px] text-[var(--text-primary)]">
+              <h2 className="display display-tight mt-3 ts-display sm:ts-display-lg text-[var(--text-primary)]">
                 {exercise.title}
               </h2>
             </div>
-            <p className="text-[15px] leading-[1.5] text-[var(--text-secondary)]">
+            <p className="ts-body leading-[1.5] text-[var(--text-secondary)]">
               {exercise.description}
             </p>
           </div>
@@ -631,10 +631,10 @@ function ExerciseSection({
       <div className="mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:items-center">
         <aside>
           <div className="eyebrow">{exercise.eyebrow}</div>
-          <h2 className="display display-tight mt-5 text-[34px] sm:text-[46px] text-[var(--text-primary)]">
+          <h2 className="display display-tight mt-5 ts-display sm:ts-display-xl text-[var(--text-primary)]">
             {exercise.title}
           </h2>
-          <p className="mt-5 text-[16px] leading-[1.65] text-[var(--text-secondary)]">
+          <p className="mt-5 ts-headline leading-[1.65] text-[var(--text-secondary)]">
             {exercise.description}
           </p>
         </aside>
@@ -760,10 +760,10 @@ function GuidedPromptExercise({
         <div className="flex h-full flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+              <div className="ts-footnote font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
                 Inputs y selección
               </div>
-              <div className="mt-1 text-[18px] font-semibold text-[var(--text-primary)]">
+              <div className="mt-1 ts-body-lg font-semibold text-[var(--text-primary)]">
                 {inputSteps[activeInput]}
               </div>
             </div>
@@ -821,10 +821,10 @@ function GuidedPromptExercise({
                 <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="text-[12px] text-[var(--text-tertiary)]">
+                      <div className="ts-footnote text-[var(--text-tertiary)]">
                         Modelo recomendado
                       </div>
-                      <div className="mt-1 flex min-w-0 items-center gap-2 text-[14px] font-semibold text-[var(--text-primary)]">
+                      <div className="mt-1 flex min-w-0 items-center gap-2 ts-callout font-semibold text-[var(--text-primary)]">
                         <BrandMark brand={recommendedModel.brand} />
                         <span className="truncate">
                           {recommendedModel.label}
@@ -834,7 +834,7 @@ function GuidedPromptExercise({
                         </span>
                       </div>
                     </div>
-                    <div className="rounded-xl bg-[var(--surface-2)] px-2.5 py-1.5 text-[11px] text-[var(--text-secondary)]">
+                    <div className="rounded-xl bg-[var(--surface-2)] px-2.5 py-1.5 ts-caption-1 text-[var(--text-secondary)]">
                       Automático
                     </div>
                   </div>
@@ -853,7 +853,7 @@ function GuidedPromptExercise({
               type="button"
               onClick={() => setActiveInput(Math.max(0, activeInput - 1))}
               disabled={activeInput === 0}
-              className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-[14px] font-medium text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-40"
+              className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 ts-callout font-medium text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-40"
             >
               Atrás
             </button>
@@ -867,7 +867,7 @@ function GuidedPromptExercise({
                 setActiveInput(Math.min(inputSteps.length - 1, activeInput + 1));
               }}
               disabled={activeInput === inputSteps.length - 1 && !canCreatePrompt}
-              className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)]"
+              className="min-h-11 rounded-xl bg-[var(--accent)] px-4 ts-callout font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)]"
             >
               {activeInput === inputSteps.length - 1 ? "Crear prompt" : "Siguiente"}
             </button>
@@ -875,7 +875,7 @@ function GuidedPromptExercise({
         </div>
 
         <div className="h-full rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
-          <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+          <div className="ts-footnote font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
             Respuestas
           </div>
           <div className="mt-4 grid gap-3">
@@ -1023,16 +1023,16 @@ function ProcessAnswer({
   return (
     <div className="grid grid-cols-[28px_1fr] gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
       <span
-        className={`grid h-7 w-7 place-items-center rounded-full text-[12px] font-semibold ${
+        className={`grid h-7 w-7 place-items-center rounded-full ts-footnote font-semibold ${
           muted ? "bg-[var(--surface)] text-[var(--text-tertiary)]" : "bg-[var(--accent)] text-white"
         }`}
       >
         {index}
       </span>
       <span className="min-w-0">
-        <span className="block text-[12px] font-medium text-[var(--text-tertiary)]">{label}</span>
+        <span className="block ts-footnote font-medium text-[var(--text-tertiary)]">{label}</span>
         <span
-          className={`mt-1 block text-[14px] leading-snug ${
+          className={`mt-1 block ts-callout leading-snug ${
             muted ? "text-[var(--text-tertiary)]" : "text-[var(--text-primary)]"
           }`}
         >
@@ -1088,7 +1088,7 @@ function GuidedOption({
     <button
       type="button"
       onClick={onClick}
-      className={`grid min-h-11 grid-cols-[20px_1fr] items-center gap-3 rounded-2xl border px-3 py-2 text-left text-[13px] transition-colors ${
+      className={`grid min-h-11 grid-cols-[20px_1fr] items-center gap-3 rounded-2xl border px-3 py-2 text-left ts-subhead transition-colors ${
         selected
           ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--text-primary)]"
           : "border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
@@ -1197,7 +1197,7 @@ function AIPromptComposer({
           readOnly={readOnly}
           rows={matched ? 10 : textRows}
           placeholder={readOnly ? "Crea el prompt desde Inputs y selección..." : "Escribe el prompt que le mandarías al modelo..."}
-          className={`w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 text-[15px] leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed ${matched ? "flex-1" : ""} ${readOnly ? "cursor-default" : ""}`}
+          className={`w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 ts-body leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed ${matched ? "flex-1" : ""} ${readOnly ? "cursor-default" : ""}`}
           style={matched ? { minHeight: 0, maxHeight: "none" } : { minHeight: textMinHeight, maxHeight: 240 }}
         />
 
@@ -1212,7 +1212,7 @@ function AIPromptComposer({
             {voiceNotes.map((note, index) => (
               <div
                 key={`${note}-${index}`}
-                className="flex items-center gap-2 text-[12px] text-[var(--text-secondary)]"
+                className="flex items-center gap-2 ts-footnote text-[var(--text-secondary)]"
               >
                 <span className="grid h-6 w-6 place-items-center rounded-lg bg-[var(--surface)] text-[var(--accent)]">
                   <MicGlyph />
@@ -1255,7 +1255,7 @@ function AIPromptComposer({
               onClick={() => {
                 if (!readOnly) setDropdownOpen((open) => !open);
               }}
-              className={`flex min-h-9 max-w-[240px] items-center gap-2 rounded-2xl py-1.5 pl-2.5 pr-3.5 text-[12px] text-[var(--text-secondary)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+              className={`flex min-h-9 max-w-[240px] items-center gap-2 rounded-2xl py-1.5 pl-2.5 pr-3.5 ts-footnote text-[var(--text-secondary)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
                 readOnly
                   ? "cursor-default"
                   : "hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
@@ -1302,7 +1302,7 @@ function AIPromptComposer({
                   {modelGroups.map((group, groupIndex) => (
                     <div key={group.title}>
                       {groupIndex > 0 && <div className="mx-3 my-1.5 h-px bg-[var(--hairline)]" />}
-                      <div className="px-3 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
+                      <div className="px-3 pb-1 pt-1.5 ts-caption-2 font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
                         {group.title}
                       </div>
                       {group.families.map((family, familyIndex) => (
@@ -1321,7 +1321,7 @@ function AIPromptComposer({
                                   setSent(false);
                                   setDropdownOpen(false);
                                 }}
-                                className={`flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] transition-colors ${
+                                className={`flex w-full items-center gap-2.5 px-3 py-2 text-left ts-subhead transition-colors ${
                                   isSelected
                                     ? "bg-[var(--accent-soft)] text-[var(--text-primary)]"
                                     : "text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
@@ -1331,14 +1331,14 @@ function AIPromptComposer({
                                 <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
                                   <span className="truncate">{model.label}</span>
                                   {model.badge && (
-                                    <span className="shrink-0 text-[11px] text-[var(--text-tertiary)]">
+                                    <span className="shrink-0 ts-caption-1 text-[var(--text-tertiary)]">
                                       · {model.badge}
                                     </span>
                                   )}
                                 </span>
                                 <span className="flex shrink-0 items-center gap-2 text-[var(--text-tertiary)]">
                                   <span className="flex items-center gap-1">
-                                    <span className="text-[9px] font-semibold tracking-wider">$</span>
+                                    <span className="ts-caption-2 font-semibold tracking-wider">$</span>
                                     <LevelMeter value={model.price} ariaLabel="precio" />
                                   </span>
                                   <span aria-hidden className="h-2 w-px bg-[var(--hairline)]" />
@@ -1385,7 +1385,7 @@ function AIPromptComposer({
           </div>
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-between gap-3 text-[12px] text-[var(--text-tertiary)]">
+      <div className="mt-3 flex items-center justify-between gap-3 ts-footnote text-[var(--text-tertiary)]">
         <span>⌘ + Enter para enviar en el runtime real.</span>
         {sent && <span className="text-[var(--band-a-text)]">Prompt enviado al preview</span>}
       </div>
@@ -1514,7 +1514,7 @@ function RecordingBanner({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -4 }}
           transition={{ duration: 0.18 }}
-          className="flex items-center gap-2.5 px-5 pb-2 text-[13px]"
+          className="flex items-center gap-2.5 px-5 pb-2 ts-subhead"
         >
           {recState === "recording" && (
             <>
@@ -1524,7 +1524,7 @@ function RecordingBanner({
               </span>
               <span className="font-medium text-[var(--text-secondary)]">Escuchando...</span>
               <WaveBars />
-              <span className="ml-auto text-[12px] text-[var(--text-tertiary)]">
+              <span className="ml-auto ts-footnote text-[var(--text-tertiary)]">
                 Pulsa el micrófono para parar
               </span>
             </>
@@ -1556,7 +1556,7 @@ function AttachmentTray({
 }) {
   return (
     <div className="mx-3 mb-3 grid gap-2 rounded-2xl bg-[var(--surface-2)] p-3">
-      <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+      <div className="ts-caption-1 font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
         Adjuntos para analizar
       </div>
       <div className="grid gap-2">
@@ -1569,10 +1569,10 @@ function AttachmentTray({
               <AttachmentGlyph type={attachment.type} />
             </span>
             <span className="min-w-0">
-              <span className="block truncate text-[12px] font-medium text-[var(--text-primary)]">
+              <span className="block truncate ts-footnote font-medium text-[var(--text-primary)]">
                 {attachment.name}
               </span>
-              <span className="block text-[11px] text-[var(--text-tertiary)]">
+              <span className="block ts-caption-1 text-[var(--text-tertiary)]">
                 Simulado · {formatFileSize(attachment.size)}
               </span>
             </span>
@@ -1828,17 +1828,17 @@ function DataTableExercise({
             className="grid gap-3 border-b border-[var(--hairline)] px-4 py-4 last:border-b-0 sm:grid-cols-[1fr_1fr_170px] sm:items-center"
           >
             <div>
-              <div className="text-[15px] font-medium text-[var(--text-primary)]">{row.field}</div>
-              <div className="mt-1 text-[13px] text-[var(--text-secondary)]">{row.example}</div>
+              <div className="ts-body font-medium text-[var(--text-primary)]">{row.field}</div>
+              <div className="mt-1 ts-subhead text-[var(--text-secondary)]">{row.example}</div>
             </div>
-            <div className="text-[13px] text-[var(--text-secondary)]">
+            <div className="ts-subhead text-[var(--text-secondary)]">
               Decide si aporta señal o si expone información de más.
             </div>
             <div className="relative">
               <select
                 value={row.action}
                 onChange={(event) => updateAction(row.id, event.target.value as DataAction)}
-                className="min-h-11 w-full appearance-none rounded-xl border border-[var(--border)] bg-[var(--surface-2)] py-2 pl-3 pr-10 text-[14px] text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+                className="min-h-11 w-full appearance-none rounded-xl border border-[var(--border)] bg-[var(--surface-2)] py-2 pl-3 pr-10 ts-callout text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
               >
                 {(["usar", "anonimizar", "agregar", "excluir"] as DataAction[]).map((action) => (
                   <option key={action} value={action}>
@@ -1884,7 +1884,7 @@ function PermissionMatrix({
             key={row}
             className="grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4 sm:grid-cols-[1fr_330px] sm:items-center"
           >
-            <div className="text-[15px] font-medium text-[var(--text-primary)]">{row}</div>
+            <div className="ts-body font-medium text-[var(--text-primary)]">{row}</div>
             <div className="grid grid-cols-3 gap-2">
               {(["permitir", "revisar", "bloquear"] as Permission[]).map((option) => (
                 <ChoiceButton
@@ -1929,8 +1929,8 @@ function OutputReview({
                   : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"
               }`}
             >
-              <span className="block text-[15px] leading-6 text-[var(--text-primary)]">{line.text}</span>
-              <span className="mt-2 block text-[13px] text-[var(--text-secondary)]">{line.issue}</span>
+              <span className="block ts-body leading-6 text-[var(--text-primary)]">{line.text}</span>
+              <span className="mt-2 block ts-subhead text-[var(--text-secondary)]">{line.issue}</span>
             </button>
           );
         })}
@@ -1995,10 +1995,10 @@ function WorkflowBuilder({
                   : "border-[var(--border)] bg-[var(--surface-2)]"
               }`}
             >
-              <span className="grid h-8 w-8 place-items-center rounded-xl bg-[var(--surface)] text-[13px] font-medium text-[var(--text-primary)]">
+              <span className="grid h-8 w-8 place-items-center rounded-xl bg-[var(--surface)] ts-subhead font-medium text-[var(--text-primary)]">
                 {index + 1}
               </span>
-              <span className="text-[15px] text-[var(--text-primary)]">{step}</span>
+              <span className="ts-body text-[var(--text-primary)]">{step}</span>
             </button>
           );
         })}
@@ -2029,14 +2029,14 @@ function AgentBrief({
       <div className="flex min-h-[400px] flex-col">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+            <div className="ts-footnote font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
               Construye el brief
             </div>
-            <p className="mt-2 max-w-xl text-[15px] leading-6 text-[var(--text-secondary)]">
+            <p className="mt-2 max-w-xl ts-body leading-6 text-[var(--text-secondary)]">
               Define una sola pieza a la vez. El caso controla la situación; el participante sólo decide cómo delegar sin abrir riesgos.
             </p>
           </div>
-          <span className="shrink-0 rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[12px] text-[var(--text-secondary)]">
+          <span className="shrink-0 rounded-full bg-[var(--surface-2)] px-2.5 py-1 ts-footnote text-[var(--text-secondary)]">
             {completed}/4
           </span>
         </div>
@@ -2047,7 +2047,7 @@ function AgentBrief({
               key={field}
               type="button"
               onClick={() => setActiveField(field)}
-              className={`min-h-10 rounded-xl border px-2 text-[12px] font-medium transition-colors ${
+              className={`min-h-10 rounded-xl border px-2 ts-footnote font-medium transition-colors ${
                 activeField === field
                   ? "border-[var(--accent)] bg-[var(--accent)] text-white"
                   : value[field]
@@ -2061,7 +2061,7 @@ function AgentBrief({
         </div>
 
         <div className="mt-5 rounded-3xl bg-[var(--surface-2)] p-4">
-          <div className="text-[15px] font-semibold text-[var(--text-primary)]">
+          <div className="ts-body font-semibold text-[var(--text-primary)]">
             {activeGroup.label}
           </div>
           <div className="mt-3 grid gap-2">
@@ -2083,7 +2083,7 @@ function AgentBrief({
       </div>
 
       <div className="flex min-h-[400px] flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
-        <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+        <div className="ts-footnote font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
           Brief del agente
         </div>
         <div className="mt-4 grid gap-2">
@@ -2100,8 +2100,8 @@ function AgentBrief({
 function AgentBriefLine({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3">
-      <div className="text-[12px] text-[var(--text-tertiary)]">{label}</div>
-      <div className={`mt-1 min-h-5 text-[14px] leading-snug ${value ? "text-[var(--text-primary)]" : "text-[var(--text-tertiary)]"}`}>
+      <div className="ts-footnote text-[var(--text-tertiary)]">{label}</div>
+      <div className={`mt-1 min-h-5 ts-callout leading-snug ${value ? "text-[var(--text-primary)]" : "text-[var(--text-tertiary)]"}`}>
         {value || "\u00A0"}
       </div>
     </div>
@@ -2132,7 +2132,7 @@ function LogReview({
                   : "border-[var(--border)] bg-[var(--surface-2)]"
               }`}
             >
-              <span className="text-[15px] text-[var(--text-primary)]">{log.text}</span>
+              <span className="ts-body text-[var(--text-primary)]">{log.text}</span>
             </button>
           );
         })}
@@ -2173,7 +2173,7 @@ function PivotExercise({
         {rows.map((row) => (
           <div
             key={row.team}
-            className="grid grid-cols-4 gap-3 border-b border-[var(--hairline)] px-4 py-3 text-[14px] last:border-b-0"
+            className="grid grid-cols-4 gap-3 border-b border-[var(--hairline)] px-4 py-3 ts-callout last:border-b-0"
           >
             <span className="font-medium text-[var(--text-primary)]">{row.team}</span>
             <span className={filter === "tiempo" ? "text-[var(--accent)]" : "text-[var(--text-secondary)]"}>{row.time}</span>
@@ -2231,10 +2231,10 @@ function DecisionMemo({
                   : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"
               }`}
             >
-              <span className="block text-[15px] font-semibold text-[var(--text-primary)]">
+              <span className="block ts-body font-semibold text-[var(--text-primary)]">
                 {option.title}
               </span>
-              <span className="mt-2 block text-[13px] leading-5 text-[var(--text-secondary)]">
+              <span className="mt-2 block ts-subhead leading-5 text-[var(--text-secondary)]">
                 {option.detail}
               </span>
             </button>
@@ -2248,7 +2248,7 @@ function DecisionMemo({
           onChange={(event) => setMemo(event.target.value)}
           rows={10}
           placeholder="Explica qué harías, por qué, qué riesgo estás aceptando y qué tendría que revisarse antes de avanzar."
-          className="mt-3 h-[calc(100%-2rem)] min-h-[260px] w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
+          className="mt-3 h-[calc(100%-2rem)] min-h-[260px] w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-4 ts-body leading-6 text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
         />
       </div>
     </div>
@@ -2277,8 +2277,8 @@ function CompareCard({
           : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"
       }`}
     >
-      <span className="block text-[15px] font-medium text-[var(--text-primary)]">{title}</span>
-      <span className="mt-4 block text-[15px] leading-6 text-[var(--text-secondary)]">{body}</span>
+      <span className="block ts-body font-medium text-[var(--text-primary)]">{title}</span>
+      <span className="mt-4 block ts-body leading-6 text-[var(--text-secondary)]">{body}</span>
     </button>
   );
 }
@@ -2294,7 +2294,7 @@ function Range10({
 }) {
   return (
     <div>
-      <label className="grid grid-cols-[72px_1fr_36px] items-center gap-3 text-[13px]">
+      <label className="grid grid-cols-[72px_1fr_36px] items-center gap-3 ts-subhead">
         <span className="text-[var(--text-secondary)]">{label}</span>
         <input
           type="range"
@@ -2312,7 +2312,7 @@ function Range10({
 }
 
 function Label({ children }: { children: React.ReactNode }) {
-  return <div className="text-[14px] font-medium text-[var(--text-primary)]">{children}</div>;
+  return <div className="ts-callout font-medium text-[var(--text-primary)]">{children}</div>;
 }
 
 function ActionButton({
@@ -2326,7 +2326,7 @@ function ActionButton({
     <button
       type="button"
       onClick={onClick}
-      className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-[14px] text-[var(--text-primary)] transition-colors hover:bg-[var(--surface-3)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+      className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 ts-callout text-[var(--text-primary)] transition-colors hover:bg-[var(--surface-3)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
     >
       {children}
     </button>
@@ -2346,7 +2346,7 @@ function ChoiceButton({
     <button
       type="button"
       onClick={onClick}
-      className={`min-h-11 rounded-xl border px-3 text-[13px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+      className={`min-h-11 rounded-xl border px-3 ts-subhead font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
         selected
           ? "border-[var(--accent)] bg-[var(--accent)] text-white"
           : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -2360,8 +2360,8 @@ function ChoiceButton({
 function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
-      <div className="text-[12px] text-[var(--text-tertiary)]">{label}</div>
-      <div className="mt-2 text-[15px] font-medium leading-snug text-[var(--text-primary)]">{value}</div>
+      <div className="ts-footnote text-[var(--text-tertiary)]">{label}</div>
+      <div className="mt-2 ts-body font-medium leading-snug text-[var(--text-primary)]">{value}</div>
     </div>
   );
 }
