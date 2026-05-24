@@ -75,8 +75,8 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
           </Link>
         </header>
 
-        <div className="mx-auto grid min-h-0 w-full max-w-[1440px] flex-1 gap-8 px-6 pb-8 md:px-10 lg:grid-cols-[286px_1fr]">
-          <aside className="hidden min-h-0 lg:block">
+        <div className="mx-auto grid min-h-0 w-full max-w-[1440px] flex-1 gap-8 px-6 pb-8 md:px-10 xl:grid-cols-[286px_1fr]">
+          <aside className="hidden min-h-0 xl:block">
             <div className="flex h-full flex-col rounded-[24px] border border-[var(--border)] bg-[var(--surface-2)] p-5">
               <div className="rounded-[18px] border border-[var(--border)] bg-[var(--surface)] p-5">
                 <div className="mb-4 flex items-center gap-2">
@@ -136,9 +136,9 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                className="grid h-full min-h-[680px] grid-rows-[1fr_auto]"
+                className="grid h-full grid-rows-[minmax(0,1fr)_auto]"
               >
-                <div className="grid min-h-0 gap-8 overflow-y-auto p-7 md:p-10 xl:grid-cols-[minmax(0,0.92fr)_minmax(360px,0.78fr)] xl:items-center">
+                <div className="grid min-h-0 gap-6 overflow-hidden p-6 md:p-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(340px,0.78fr)] lg:items-center">
                   <div className="mx-auto w-full max-w-[720px] xl:mx-0">
                     <div className="flex items-center justify-between gap-4">
                       <p className="eyebrow text-[var(--text-tertiary)]">
@@ -148,10 +148,10 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
                         {current.slideIndex + 1} / {current.section.slides.length}
                       </p>
                     </div>
-                    <h2 className="display mt-10 text-[42px] md:text-[56px]">
+                    <h2 className="display mt-8 text-[34px] leading-[1.04] md:text-[46px] xl:text-[52px]">
                       {current.slide.title}
                     </h2>
-                    <p className="mt-6 text-[20px] leading-9 text-[var(--text-secondary)]">
+                    <p className="mt-5 max-w-[680px] text-[17px] leading-8 text-[var(--text-secondary)] md:text-[19px]">
                       {current.slide.body}
                     </p>
                   </div>
@@ -165,7 +165,7 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
                   </div>
                 </div>
 
-                <footer className="flex shrink-0 items-center justify-between border-t border-[var(--hairline)] px-7 py-5 md:px-10">
+                <footer className="flex shrink-0 items-center justify-between border-t border-[var(--hairline)] px-6 py-4 md:px-8">
                   <button
                     type="button"
                     onClick={() => setCurrentIndex((index) => Math.max(0, index - 1))}
@@ -207,10 +207,10 @@ function ExercisePanel({
 }) {
   if (slide.type === "reading") {
     return (
-      <PanelShell title="Lectura">
+      <PanelShell title="Brief">
         <div className="rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-6">
           <p className="text-[17px] leading-8 text-[var(--text-secondary)]">
-            Esta pantalla no pide respuesta todavía. Ubica la situación, la presión y la decisión que viene.
+            Lee esto como el brief que acaba de llegar a tu mesa. La acción viene en la siguiente pantalla.
           </p>
         </div>
       </PanelShell>
