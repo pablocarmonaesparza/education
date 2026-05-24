@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 import { chromium } from "@playwright/test";
+import fs from "node:fs";
+import path from "node:path";
+import yaml from "js-yaml";
 
 const CASE_URL = process.env.CASE_LAB_URL ?? "http://localhost:4000/case-lab/marketing-dirty-data-campaign";
 const CASE_INDEX_URL = process.env.CASE_LAB_INDEX_URL ?? "http://localhost:4000/case-lab";
@@ -22,6 +25,77 @@ const CANONICAL_EXERCISE_LABELS = [
 const issues = [];
 function check(condition, message) {
   if (!condition) issues.push(message);
+}
+
+function runStaticRuntimeChecks() {
+  const root = process.cwd();
+  const catalogPath = path.join(root, "docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml");
+  const casesPath = path.join(root, "lib/simulador/case-lab-cases.ts");
+  const runtimePath = path.join(root, "app/case-lab/[caseId]/CaseLabRuntime.tsx");
+  const exerciseLabPath = path.join(root, "app/exercise-lab/ExerciseLabClient.tsx");
+  const rendererPath = path.join(root, "components/simulador/exercises/ExerciseBlockRenderer.tsx");
+
+  const catalog = yaml.load(fs.readFileSync(catalogPath, "utf8"));
+  const catalogIds = new Set(catalog.exercise_block_catalog.blocks.map((block) => block.id));
+  const casesSource = fs.readFileSync(casesPath, "utf8");
+  const runtimeSource = fs.readFileSync(runtimePath, "utf8");
+  const exerciseLabSource = fs.readFileSync(exerciseLabPath, "utf8");
+  const rendererSource = fs.readFileSync(rendererPath, "utf8");
+  const usedIds = Array.from(casesSource.matchAll(/exerciseBlockId:\s*"([^"]+)"/g)).map((match) => match[1]);
+  const uniqueUsedIds = new Set(usedIds);
+
+  const helperUsageCount = (casesSource.match(/\b(data|ai|guided|review|decision|memo|agent|permission|logs)\("/g) ?? []).length;
+  check(helperUsageCount >= 20, "case demos must declare canonical exercise helpers on real slides");
+  for (const id of uniqueUsedIds) {
+    check(catalogIds.has(id), `exerciseBlockId '${id}' must exist in EXERCISE_BLOCK_CATALOG.yaml`);
+  }
+  for (const required of ["data_table_triage", "ai_textfield_guided", "ai_output_review", "tradeoff_decision_memo"]) {
+    check(uniqueUsedIds.has(required), `case demos must include required canonical block: ${required}`);
+  }
+  check(!/DemoSlideType|slide\.type|type:\s*"(data_table|guided_prompt|ai_textfield|memo|decision|log_review)"/.test(casesSource), "case data must not use legacy slide.type widgets");
+  check(!/GuidedPromptBlock|CasePromptComposer|AgentBriefBlock|PermissionMatrixBlock|OutputReviewBlock|DecisionMemoBlock|PanelShell/.test(runtimeSource), "case runtime must not contain local simplified exercise widgets");
+  check(runtimeSource.includes("ExerciseBlockRenderer"), "case runtime must render through ExerciseBlockRenderer");
+  check(exerciseLabSource.includes("ExerciseBlockRenderer"), "exercise lab must consume the shared ExerciseBlockRenderer");
+  check(rendererSource.includes("export type ExerciseBlockId"), "shared renderer must expose central ExerciseBlockId");
+
+  const helperToBlock = {
+    data: "data_table_triage",
+    ai: "ai_textfield_free",
+    guided: "ai_textfield_guided",
+    review: "ai_output_review",
+    decision: "tradeoff_decision_memo",
+    memo: "tradeoff_decision_memo",
+    agent: "agent_brief_builder",
+    permission: "permission_matrix",
+    logs: "run_log_review",
+  };
+  const caseBlocks = casesSource
+    .split(/\n\s*\{\n\s*id:\s*"/)
+    .slice(1)
+    .map((chunk) => {
+      const id = chunk.slice(0, chunk.indexOf('"'));
+      const body = chunk;
+      return {
+        id,
+        blocks: Array.from(body.matchAll(/\b(data|ai|guided|review|decision|memo|agent|permission|logs)\("/g)).map((match) => helperToBlock[match[1]]),
+      };
+    })
+    .filter((item) => item.id.includes("-"));
+
+  for (const demoCase of caseBlocks) {
+    const blockSet = new Set(demoCase.blocks);
+    check(demoCase.blocks.length >= 4, `${demoCase.id} must use at least 4 canonical exercise blocks`);
+    check(blockSet.has("data_table_triage"), `${demoCase.id} must include a data exercise`);
+    check(
+      blockSet.has("ai_textfield_free") || blockSet.has("ai_textfield_guided") || blockSet.has("agent_brief_builder"),
+      `${demoCase.id} must include an AI-native exercise`,
+    );
+    check(
+      blockSet.has("ai_output_review") || blockSet.has("run_log_review"),
+      `${demoCase.id} must include a review exercise`,
+    );
+    check(blockSet.has("tradeoff_decision_memo"), `${demoCase.id} must include decision/response exercise`);
+  }
 }
 
 async function clickNext(page) {
@@ -80,8 +154,7 @@ async function runScenario(browser, viewport) {
     await clickNext(page);
     check(await page.getByText("01B · Textfield de IA guiado").count(), "IA guided prompt must use canonical 01B label");
     check(await page.getByText("Respuestas").count(), "guided prompt must show Respuestas pane");
-    check(await page.getByText("Crear prompt").count(), "guided prompt must expose Crear prompt action");
-    check(await page.getByText("El prompt aparecerá aquí cuando completes las selecciones").count(), "guided prompt must start empty");
+    check(await page.getByPlaceholder("El prompt aparecerá aquí cuando completes las selecciones").count(), "guided prompt must start empty");
     await assertCurrentSlideFits(page, `${label} guided prompt`);
 
     await clickNext(page);
@@ -158,6 +231,7 @@ async function runAllCasesSmoke(browser) {
 }
 
 async function main() {
+  runStaticRuntimeChecks();
   const browser = await chromium.launch({ headless: true });
   try {
     await runCaseIndexScenario(browser);

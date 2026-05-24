@@ -1,27 +1,20 @@
+import type {
+  ExerciseBlockId,
+  ExerciseBlockProps,
+} from "@/components/simulador/exercises/ExerciseBlockRenderer";
+
 export type DemoCaseLevel = "N1" | "N2" | "N3";
 
-export type DemoSlideType =
-  | "reading"
-  | "data_table"
-  | "ai_textfield"
-  | "guided_prompt"
-  | "output_review"
-  | "decision"
-  | "memo"
-  | "agent_brief"
-  | "permission_matrix"
-  | "log_review"
-  | "dashboard_pivot";
+export type DemoSlideKind = "reading" | "exercise";
 
 export type DemoSlide = {
   id: string;
-  type: DemoSlideType;
+  kind: DemoSlideKind;
   eyebrow: string;
   title: string;
   body: string;
-  prompt?: string;
-  rows?: Array<{ label: string; detail: string; recommended?: string }>;
-  options?: string[];
+  exerciseBlockId?: ExerciseBlockId;
+  exerciseProps?: ExerciseBlockProps;
 };
 
 export type DemoCaseSection = {
@@ -404,69 +397,160 @@ function section(name: DemoCaseSection["name"], slides: DemoSlide[]): DemoCaseSe
 }
 
 function reading(id: string, title: string, body: string): DemoSlide {
-  return { id, type: "reading", eyebrow: "Lectura", title, body };
+  return { id, kind: "reading", eyebrow: "Lectura", title, body };
 }
 
 function data(id: string, title: string, rows: Array<[string, string, string]>): DemoSlide {
   return {
     id,
-    type: "data_table",
+    kind: "exercise",
     eyebrow: "Ejercicio",
     title,
     body: "Clasifica cada dato según lo que harías antes de usar IA.",
-    rows: rows.map(([label, detail, recommended]) => ({ label, detail, recommended })),
+    exerciseBlockId: "data_table_triage",
+    exerciseProps: {
+      dataRows: rows.map(([field, detail], index) => ({
+        id: `${id}-${index}`,
+        field,
+        example: detail,
+        note: "Decide si aporta señal suficiente o si expone información de más.",
+      })),
+    },
   };
 }
 
 function ai(id: string, title: string, body: string, prompt: string): DemoSlide {
-  return { id, type: "ai_textfield", eyebrow: "Ejercicio", title, body, prompt };
+  return {
+    id,
+    kind: "exercise",
+    eyebrow: "Ejercicio",
+    title,
+    body,
+    exerciseBlockId: "ai_textfield_free",
+    exerciseProps: { promptPlaceholder: prompt },
+  };
 }
 
 function guided(id: string, title: string, body: string): DemoSlide {
-  return { id, type: "guided_prompt", eyebrow: "Ejercicio", title, body };
+  return {
+    id,
+    kind: "exercise",
+    eyebrow: "Ejercicio",
+    title,
+    body,
+    exerciseBlockId: "ai_textfield_guided",
+  };
 }
 
 function review(id: string, title: string, options: string[]): DemoSlide {
   return {
     id,
-    type: "output_review",
+    kind: "exercise",
     eyebrow: "Ejercicio",
     title,
     body: "Marca qué partes requieren corrección antes de usar la salida.",
-    options,
+    exerciseBlockId: "ai_output_review",
+    exerciseProps: {
+      outputLines: options.map((text, index) => ({
+        id: `${id}-${index}`,
+        text,
+        issue: inferReviewIssue(text),
+      })),
+    },
   };
 }
 
 function decision(id: string, title: string, body: string, options: string[]): DemoSlide {
-  return { id, type: "decision", eyebrow: "Decisión", title, body, options };
+  return {
+    id,
+    kind: "exercise",
+    eyebrow: "Decisión",
+    title,
+    body,
+    exerciseBlockId: "tradeoff_decision_memo",
+    exerciseProps: {
+      decisionOptions: options.map((option, index) => ({
+        id: `${id}-${index}`,
+        title: option,
+        detail: inferDecisionDetail(option),
+      })),
+      memoPlaceholder: "Explica la decisión, el riesgo que aceptas y qué validación debe ocurrir antes de avanzar.",
+    },
+  };
 }
 
 function memo(id: string, title: string, body: string): DemoSlide {
-  return { id, type: "memo", eyebrow: "Respuesta", title, body };
+  return {
+    id,
+    kind: "exercise",
+    eyebrow: "Respuesta",
+    title,
+    body,
+    exerciseBlockId: "tradeoff_decision_memo",
+    exerciseProps: {
+      memoPlaceholder: body,
+    },
+  };
 }
 
 function agent(id: string, title: string, body: string): DemoSlide {
-  return { id, type: "agent_brief", eyebrow: "Ejercicio", title, body };
+  return { id, kind: "exercise", eyebrow: "Ejercicio", title, body, exerciseBlockId: "agent_brief_builder" };
 }
 
 function permission(id: string, title: string, options: string[]): DemoSlide {
   return {
     id,
-    type: "permission_matrix",
+    kind: "exercise",
     eyebrow: "Ejercicio",
     title,
     body: "Define qué puede hacer solo, qué requiere revisión y qué debe bloquearse.",
-    options,
+    exerciseBlockId: "permission_matrix",
+    exerciseProps: { permissionRows: options },
   };
 }
 
 function logs(id: string, title: string, options: string[]): DemoSlide {
   return {
     id,
-    type: "log_review",
+    kind: "exercise",
     eyebrow: "Ejercicio",
     title,
     body: "Lee eventos de una corrida y marca dónde se rompió el control.",
-    options,
+    exerciseBlockId: "run_log_review",
+    exerciseProps: {
+      runLogs: options.map((text, index) => ({
+        id: `${id}-${index}`,
+        text,
+        severity: inferRisk(text),
+      })),
+    },
   };
+}
+
+function inferReviewIssue(text: string) {
+  const lower = text.toLowerCase();
+  if (lower.includes("correo") || lower.includes("tarjeta") || lower.includes("nombre")) return "Dato sensible";
+  if (lower.includes("fuente") || lower.includes("%") || lower.includes("causa") || lower.includes("aprobado")) return "Requiere verificación";
+  if (lower.includes("valid")) return "Usable con control";
+  return "Revisar antes de usar";
+}
+
+function inferDecisionDetail(option: string) {
+  const lower = option.toLowerCase();
+  if (lower.includes("humana") || lower.includes("validar") || lower.includes("triage") || lower.includes("riesgos")) {
+    return "Mantiene avance, pero deja controles explícitos antes de exponer el resultado.";
+  }
+  if (lower.includes("pausar") || lower.includes("escalar") || lower.includes("bloquear")) {
+    return "Reduce riesgo cuando faltan fuentes, permisos o responsabilidad clara.";
+  }
+  return "Acelera la acción, pero puede abrir riesgo si no hay evidencia suficiente.";
+}
+
+function inferRisk(text: string): "ok" | "medium" | "high" {
+  const lower = text.toLowerCase();
+  if (lower.includes("automáticamente") || lower.includes("sin fuente") || lower.includes("tarjeta") || lower.includes("prometió") || lower.includes("privada")) {
+    return "high";
+  }
+  if (lower.includes("pendiente") || lower.includes("aprobación") || lower.includes("resumen")) return "ok";
+  return "medium";
 }
