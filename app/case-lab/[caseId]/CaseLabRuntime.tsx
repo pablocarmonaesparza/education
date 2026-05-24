@@ -3,76 +3,81 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import type { DemoCase, DemoSlide } from "@/lib/simulador/case-lab-cases";
+import type { DemoCase, DemoCaseSection, DemoSlide } from "@/lib/simulador/case-lab-cases";
 
 type DataChoice = "Usar" | "Anonimizar" | "Excluir";
 
+type FlatSlide = {
+  section: DemoCaseSection;
+  sectionIndex: number;
+  slide: DemoSlide;
+  slideIndex: number;
+};
+
+const sectionNextLabel: Record<DemoCaseSection["name"], string> = {
+  Contexto: "Ir a Datos",
+  Datos: "Ir a IA",
+  IA: "Ir a Revisión",
+  Revisión: "Ir a Decisión",
+  Decisión: "Ir a Respuesta",
+  Respuesta: "Terminar",
+};
+
 export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
-  const [sectionIndex, setSectionIndex] = useState(0);
-  const [slideIndex, setSlideIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
-  const activeSection = demoCase.sections[sectionIndex];
-  const activeSlide = activeSection.slides[slideIndex];
-  const totalSlides = activeSection.slides.length;
-  const canGoBack = sectionIndex > 0 || slideIndex > 0;
-  const canGoNext =
-    sectionIndex < demoCase.sections.length - 1 || slideIndex < activeSection.slides.length - 1;
-
-  const progress = useMemo(
-    () => ((sectionIndex + slideIndex / Math.max(1, totalSlides)) / demoCase.sections.length) * 100,
-    [sectionIndex, slideIndex, totalSlides, demoCase.sections.length],
+  const slides = useMemo<FlatSlide[]>(
+    () =>
+      demoCase.sections.flatMap((section, sectionIndex) =>
+        section.slides.map((slide, slideIndex) => ({
+          section,
+          sectionIndex,
+          slide,
+          slideIndex,
+        })),
+      ),
+    [demoCase.sections],
   );
+  const current = slides[currentIndex] ?? slides[0];
+  const isFirst = currentIndex === 0;
+  const isLast = currentIndex === slides.length - 1;
+  const isLastSlideInSection = current.slideIndex === current.section.slides.length - 1;
+  const progress = ((currentIndex + 1) / slides.length) * 100;
+  const selected = selectedOptions[current.slide.id] ?? "";
 
-  function goToSection(nextSection: number) {
-    setSectionIndex(nextSection);
-    setSlideIndex(0);
-  }
-
-  function goBack() {
-    if (slideIndex > 0) {
-      setSlideIndex((current) => current - 1);
-      return;
-    }
-    if (sectionIndex > 0) {
-      const previous = sectionIndex - 1;
-      setSectionIndex(previous);
-      setSlideIndex(demoCase.sections[previous].slides.length - 1);
-    }
-  }
-
-  function goNext() {
-    if (slideIndex < activeSection.slides.length - 1) {
-      setSlideIndex((current) => current + 1);
-      return;
-    }
-    if (sectionIndex < demoCase.sections.length - 1) {
-      setSectionIndex((current) => current + 1);
-      setSlideIndex(0);
-    }
+  function goToSection(sectionIndex: number) {
+    const nextIndex = slides.findIndex((item) => item.sectionIndex === sectionIndex);
+    if (nextIndex >= 0) setCurrentIndex(nextIndex);
   }
 
   function setOption(slideId: string, value: string) {
-    setSelectedOptions((current) => ({ ...current, [slideId]: value }));
+    setSelectedOptions((currentOptions) => ({ ...currentOptions, [slideId]: value }));
   }
 
   return (
     <main className="simulador-root dark min-h-screen surface-canvas text-[var(--text-primary)]">
-      <div className="flex min-h-screen flex-col">
-        <header className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between gap-6 px-6 md:px-10">
-          <Link href="/case-lab" className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+      <div className="flex h-screen flex-col overflow-hidden">
+        <header className="mx-auto flex h-16 w-full max-w-[1440px] shrink-0 items-center justify-between gap-6 px-6 md:px-10">
+          <Link
+            href="/case-lab"
+            className="rounded-[10px] px-3 py-2 text-sm font-medium text-[var(--text-secondary)] transition hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+          >
             ← Casos
           </Link>
-          <div className="hidden h-1 w-[420px] overflow-hidden rounded-full bg-[var(--surface-3)] md:block">
+          <div className="h-1 w-[min(520px,42vw)] overflow-hidden rounded-full bg-[var(--surface-3)]">
             <div className="h-full rounded-full bg-[var(--accent)]" style={{ width: `${progress}%` }} />
           </div>
-          <Link href="/exercise-lab" className="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+          <Link
+            href="/exercise-lab"
+            className="rounded-[10px] px-3 py-2 text-sm font-medium text-[var(--text-secondary)] transition hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+          >
             Ejercicios
           </Link>
         </header>
 
-        <div className="mx-auto grid w-full max-w-[1440px] flex-1 gap-8 px-6 pb-8 md:px-10 lg:grid-cols-[300px_1fr]">
-          <aside className="hidden lg:block">
-            <div className="sticky top-8 rounded-[24px] border border-[var(--border)] bg-[var(--surface-2)] p-5">
+        <div className="mx-auto grid min-h-0 w-full max-w-[1440px] flex-1 gap-8 px-6 pb-8 md:px-10 lg:grid-cols-[286px_1fr]">
+          <aside className="hidden min-h-0 lg:block">
+            <div className="flex h-full flex-col rounded-[24px] border border-[var(--border)] bg-[var(--surface-2)] p-5">
               <div className="rounded-[18px] border border-[var(--border)] bg-[var(--surface)] p-5">
                 <div className="mb-4 flex items-center gap-2">
                   <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-xs font-medium text-[var(--accent)]">
@@ -94,7 +99,7 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
                     onClick={() => goToSection(index)}
                     className={[
                       "flex items-center gap-3 rounded-[14px] px-3 py-3 text-left transition",
-                      sectionIndex === index
+                      current.sectionIndex === index
                         ? "bg-[var(--accent-soft)] text-[var(--text-primary)]"
                         : "text-[var(--text-secondary)] hover:bg-[var(--surface-3)]",
                     ].join(" ")}
@@ -102,7 +107,7 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
                     <span
                       className={[
                         "grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-semibold",
-                        sectionIndex === index
+                        current.sectionIndex === index
                           ? "bg-[var(--accent)] text-white"
                           : "border border-[var(--border)] text-[var(--text-secondary)]",
                       ].join(" ")}
@@ -113,67 +118,77 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
                   </button>
                 ))}
               </nav>
+
+              <div className="mt-auto rounded-[18px] border border-[var(--border)] bg-[var(--surface)] p-4">
+                <p className="text-xs text-[var(--text-tertiary)]">Brief para manager</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+                  {demoCase.managerBrief}
+                </p>
+              </div>
             </div>
           </aside>
 
-          <section className="flex min-h-[calc(100vh-6rem)] items-center">
-            <div className="w-full overflow-hidden rounded-[28px] border border-[var(--border)] bg-[var(--surface-2)]">
-              <AnimatePresence mode="wait">
-                <motion.article
-                  key={`${activeSection.name}-${activeSlide.id}`}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-                  className="grid min-h-[680px] lg:grid-cols-[minmax(0,1fr)_420px]"
-                >
-                  <div className="flex flex-col p-7 md:p-10">
+          <section className="min-h-0 overflow-hidden rounded-[28px] border border-[var(--border)] bg-[var(--surface-2)]">
+            <AnimatePresence mode="wait">
+              <motion.article
+                key={current.slide.id}
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                className="grid h-full min-h-[680px] grid-rows-[1fr_auto]"
+              >
+                <div className="grid min-h-0 gap-8 overflow-y-auto p-7 md:p-10 xl:grid-cols-[minmax(0,0.92fr)_minmax(360px,0.78fr)] xl:items-center">
+                  <div className="mx-auto w-full max-w-[720px] xl:mx-0">
                     <div className="flex items-center justify-between gap-4">
                       <p className="eyebrow text-[var(--text-tertiary)]">
-                        {activeSection.name} · {activeSlide.eyebrow}
+                        {current.section.name} · {current.slide.eyebrow}
                       </p>
                       <p className="text-sm text-[var(--text-secondary)]">
-                        {slideIndex + 1} / {totalSlides}
+                        {current.slideIndex + 1} / {current.section.slides.length}
                       </p>
                     </div>
-
-                    <div className="mt-16 max-w-[780px]">
-                      <h2 className="display text-4xl md:text-5xl">{activeSlide.title}</h2>
-                      <p className="mt-6 text-xl leading-9 text-[var(--text-secondary)]">
-                        {activeSlide.body}
-                      </p>
-                    </div>
-
-                    <div className="mt-auto flex items-center justify-between gap-3 pt-10">
-                      <button
-                        type="button"
-                        onClick={goBack}
-                        disabled={!canGoBack}
-                        className="rounded-[12px] px-5 py-3 text-sm font-medium text-[var(--text-secondary)] transition hover:bg-[var(--surface-3)] disabled:cursor-not-allowed disabled:opacity-35"
-                      >
-                        Atrás
-                      </button>
-                      <button
-                        type="button"
-                        onClick={goNext}
-                        disabled={!canGoNext}
-                        className="rounded-[12px] bg-[var(--accent)] px-6 py-3 text-sm font-medium text-white transition active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)]"
-                      >
-                        Siguiente
-                      </button>
-                    </div>
+                    <h2 className="display mt-10 text-[42px] md:text-[56px]">
+                      {current.slide.title}
+                    </h2>
+                    <p className="mt-6 text-[20px] leading-9 text-[var(--text-secondary)]">
+                      {current.slide.body}
+                    </p>
                   </div>
 
-                  <div className="border-t border-[var(--hairline)] bg-[var(--surface)] p-6 lg:border-l lg:border-t-0">
+                  <div className="mx-auto w-full max-w-[560px]">
                     <ExercisePanel
-                      slide={activeSlide}
-                      selected={selectedOptions[activeSlide.id] ?? ""}
-                      setSelected={(value) => setOption(activeSlide.id, value)}
+                      slide={current.slide}
+                      selected={selected}
+                      setSelected={(value) => setOption(current.slide.id, value)}
                     />
                   </div>
-                </motion.article>
-              </AnimatePresence>
-            </div>
+                </div>
+
+                <footer className="flex shrink-0 items-center justify-between border-t border-[var(--hairline)] px-7 py-5 md:px-10">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentIndex((index) => Math.max(0, index - 1))}
+                    disabled={isFirst}
+                    className="rounded-[12px] px-5 py-3 text-sm font-medium text-[var(--text-secondary)] transition hover:bg-[var(--surface-3)] disabled:cursor-not-allowed disabled:opacity-35"
+                  >
+                    Atrás
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentIndex((index) => Math.min(slides.length - 1, index + 1))}
+                    disabled={isLast}
+                    className="rounded-[12px] bg-[var(--accent)] px-6 py-3 text-sm font-medium text-white transition active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)]"
+                  >
+                    {isLast
+                      ? "Listo"
+                      : isLastSlideInSection
+                        ? sectionNextLabel[current.section.name]
+                        : "Continuar"}
+                  </button>
+                </footer>
+              </motion.article>
+            </AnimatePresence>
           </section>
         </div>
       </div>
@@ -192,10 +207,12 @@ function ExercisePanel({
 }) {
   if (slide.type === "reading") {
     return (
-      <PanelShell title="Lectura del caso">
-        <p className="text-base leading-8 text-[var(--text-secondary)]">
-          Esta pantalla contextualiza la decisión. No pide respuesta todavía.
-        </p>
+      <PanelShell title="Lectura">
+        <div className="rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-6">
+          <p className="text-[17px] leading-8 text-[var(--text-secondary)]">
+            Esta pantalla no pide respuesta todavía. Ubica la situación, la presión y la decisión que viene.
+          </p>
+        </div>
       </PanelShell>
     );
   }
@@ -205,20 +222,20 @@ function ExercisePanel({
       <PanelShell title="Tabla de datos">
         <div className="grid gap-3">
           {slide.rows.map((row) => (
-            <div key={row.label} className="rounded-[16px] border border-[var(--border)] bg-[var(--surface-2)] p-4">
+            <div key={row.label} className="rounded-[18px] border border-[var(--border)] bg-[var(--surface)] p-4">
               <p className="font-medium">{row.label}</p>
-              <p className="mt-1 text-sm text-[var(--text-secondary)]">{row.detail}</p>
-              <div className="mt-3 grid grid-cols-3 gap-2">
+              <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">{row.detail}</p>
+              <div className="mt-4 grid grid-cols-3 gap-2">
                 {(["Usar", "Anonimizar", "Excluir"] as DataChoice[]).map((choice) => (
                   <button
                     key={choice}
                     type="button"
                     onClick={() => setSelected(`${row.label}:${choice}`)}
                     className={[
-                      "rounded-[10px] px-2 py-2 text-xs font-medium transition",
+                      "min-h-11 rounded-[12px] px-2 text-xs font-medium transition",
                       selected === `${row.label}:${choice}`
                         ? "bg-[var(--accent)] text-white"
-                        : "bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]",
+                        : "bg-[var(--surface-3)] text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] hover:text-[var(--text-primary)]",
                     ].join(" ")}
                   >
                     {choice}
@@ -235,13 +252,13 @@ function ExercisePanel({
   if (slide.type === "ai_textfield") {
     return (
       <PanelShell title="Textfield de IA">
-        <div className="rounded-[22px] border border-[var(--border)] bg-[var(--surface-2)] p-4">
-          <div className="min-h-[180px] text-base leading-8 text-[var(--text-secondary)]">
+        <div className="rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-5">
+          <div className="min-h-[190px] rounded-[18px] bg-[var(--surface-3)] p-5 text-[16px] leading-8 text-[var(--text-secondary)]">
             {slide.prompt}
           </div>
-          <div className="mt-4 flex items-center justify-between border-t border-[var(--hairline)] pt-4 text-sm text-[var(--text-tertiary)]">
-            <span>GPT Corporativo · IT</span>
-            <span>↑</span>
+          <div className="mt-4 flex items-center justify-between text-sm text-[var(--text-tertiary)]">
+            <span>+ archivo</span>
+            <span>GPT Corporativo · IT · voz</span>
           </div>
         </div>
       </PanelShell>
@@ -258,14 +275,16 @@ function ExercisePanel({
               type="button"
               onClick={() => setSelected(label)}
               className={[
-                "rounded-[16px] border p-4 text-left transition",
+                "min-h-[74px] rounded-[18px] border p-4 text-left transition",
                 selected === label
                   ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-                  : "border-[var(--border)] bg-[var(--surface-2)]",
+                  : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-3)]",
               ].join(" ")}
             >
               <p className="text-sm text-[var(--text-tertiary)]">{label}</p>
-              <p className="mt-1 font-medium">Seleccionar {label.toLowerCase()}</p>
+              <p className="mt-1 font-medium">
+                {selected === label ? "Seleccionado" : "Elegir opción"}
+              </p>
             </button>
           ))}
         </div>
@@ -277,20 +296,22 @@ function ExercisePanel({
     return (
       <PanelShell title="Brief para agente">
         <div className="grid gap-3">
-          {["Tarea", "Acceso", "Acción máxima", "Condición de paro"].map((label) => (
+          {["Tarea", "Acceso permitido", "Puede hacer", "Debe detenerse si"].map((label) => (
             <button
               key={label}
               type="button"
               onClick={() => setSelected(label)}
               className={[
-                "rounded-[16px] border p-4 text-left transition",
+                "min-h-[74px] rounded-[18px] border p-4 text-left transition",
                 selected === label
                   ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-                  : "border-[var(--border)] bg-[var(--surface-2)]",
+                  : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-3)]",
               ].join(" ")}
             >
               <p className="text-sm text-[var(--text-tertiary)]">{label}</p>
-              <p className="mt-1 font-medium">{selected === label ? "Seleccionado" : "Pendiente"}</p>
+              <p className="mt-1 font-medium">
+                {selected === label ? "Definido" : "Pendiente"}
+              </p>
             </button>
           ))}
         </div>
@@ -303,19 +324,19 @@ function ExercisePanel({
       <PanelShell title="Matriz de permisos">
         <div className="grid gap-3">
           {slide.options.map((option) => (
-            <div key={option} className="rounded-[16px] border border-[var(--border)] bg-[var(--surface-2)] p-4">
+            <div key={option} className="rounded-[18px] border border-[var(--border)] bg-[var(--surface)] p-4">
               <p className="font-medium">{option}</p>
-              <div className="mt-3 grid grid-cols-3 gap-2">
+              <div className="mt-4 grid grid-cols-3 gap-2">
                 {["Permitir", "Revisar", "Bloquear"].map((choice) => (
                   <button
                     key={choice}
                     type="button"
                     onClick={() => setSelected(`${option}:${choice}`)}
                     className={[
-                      "rounded-[10px] px-2 py-2 text-xs font-medium transition",
+                      "min-h-11 rounded-[12px] px-2 text-xs font-medium transition",
                       selected === `${option}:${choice}`
                         ? "bg-[var(--accent)] text-white"
-                        : "bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]",
+                        : "bg-[var(--surface-3)] text-[var(--text-secondary)] hover:bg-[var(--accent-soft)] hover:text-[var(--text-primary)]",
                     ].join(" ")}
                   >
                     {choice}
@@ -339,10 +360,10 @@ function ExercisePanel({
               type="button"
               onClick={() => setSelected(option)}
               className={[
-                "rounded-[16px] border p-4 text-left transition",
+                "min-h-[68px] rounded-[18px] border p-4 text-left text-[15px] leading-6 transition",
                 selected === option
-                  ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-                  : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]",
+                  ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--text-primary)]"
+                  : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]",
               ].join(" ")}
             >
               {option}
@@ -355,10 +376,10 @@ function ExercisePanel({
 
   if (slide.type === "memo") {
     return (
-      <PanelShell title="Respuesta">
+      <PanelShell title="Memo">
         <textarea
-          className="min-h-[240px] w-full resize-none rounded-[20px] border border-[var(--border)] bg-[var(--surface-2)] p-4 text-base leading-7 text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
-          placeholder="Escribe una recomendación breve para el manager..."
+          className="min-h-[280px] w-full resize-none rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-5 text-[16px] leading-8 text-[var(--text-primary)] outline-none transition placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
+          placeholder="Escribe qué harías, por qué y qué debe revisar tu líder..."
         />
       </PanelShell>
     );
