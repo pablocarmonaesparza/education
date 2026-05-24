@@ -1,0 +1,110 @@
+tool_registry:
+  version: 1.0.0
+  refresh_policy:
+    evergreen_tools_review_days: 180
+    current_tools_review_days: 90
+    agent_tools_review_days: 60
+  tools:
+    - id: chatgpt
+      name: ChatGPT
+      category: llm_chat
+      freshness_type: current
+      default_refresh_days: 90
+      risk_notes: "capacidades y planes cambian con frecuencia"
+    - id: claude
+      name: Claude
+      category: llm_chat
+      freshness_type: current
+      default_refresh_days: 90
+      risk_notes: "capacidades de artifacts, computer use y conectores pueden cambiar"
+    - id: gemini
+      name: Gemini
+      category: llm_chat
+      freshness_type: current
+      default_refresh_days: 90
+    - id: perplexity
+      name: Perplexity
+      category: research
+      freshness_type: current
+      default_refresh_days: 90
+    - id: microsoft_copilot
+      name: Microsoft Copilot
+      category: productivity_suite
+      freshness_type: current
+      default_refresh_days: 90
+    - id: google_workspace
+      name: Google Workspace
+      category: productivity_suite
+      freshness_type: hybrid
+      default_refresh_days: 120
+    - id: notion
+      name: Notion
+      category: workspace
+      freshness_type: hybrid
+      default_refresh_days: 120
+    - id: airtable
+      name: Airtable
+      category: database_workflow
+      freshness_type: hybrid
+      default_refresh_days: 120
+    - id: zapier
+      name: Zapier
+      category: automation
+      freshness_type: current
+      default_refresh_days: 90
+    - id: make
+      name: Make
+      category: automation
+      freshness_type: current
+      default_refresh_days: 90
+    - id: n8n
+      name: n8n
+      category: automation
+      freshness_type: current
+      default_refresh_days: 90
+    - id: hubspot
+      name: HubSpot
+      category: crm
+      freshness_type: hybrid
+      default_refresh_days: 120
+    - id: salesforce
+      name: Salesforce
+      category: crm
+      freshness_type: hybrid
+      default_refresh_days: 120
+    - id: slack
+      name: Slack
+      category: collaboration
+      freshness_type: hybrid
+      default_refresh_days: 120
+    - id: linear
+      name: Linear
+      category: project_management
+      freshness_type: hybrid
+      default_refresh_days: 120
+    - id: figma
+      name: Figma
+      category: design
+      freshness_type: hybrid
+      default_refresh_days: 120
+    - id: canva
+      name: Canva
+      category: design_content
+      freshness_type: current
+      default_refresh_days: 90
+    - id: metabase
+      name: Metabase
+      category: analytics
+      freshness_type: evergreen
+      default_refresh_days: 180
+    - id: looker_studio
+      name: Looker Studio
+      category: analytics
+      freshness_type: hybrid
+      default_refresh_days: 120
+    - id: agent_runtime_generic
+      name: Agente generico
+      category: agent
+      freshness_type: current
+      default_refresh_days: 60
+

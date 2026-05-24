@@ -11,9 +11,6 @@ import {
 import { useRouter } from "next/navigation";
 import {
   Avatar,
-  Button,
-  Card,
-  CardBody,
   Checkbox,
   CheckboxGroup,
   Radio,
@@ -21,6 +18,13 @@ import {
 } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RuntimeNav } from "@/components/simulador/RuntimeNav";
+import {
+  AppleButton,
+  AppleCard,
+  AppleCardBody,
+  AppleInput,
+  AppleTextarea,
+} from "@/components/simulador/apple";
 import { useSession } from "@/lib/simulador/use-session";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
 import type { RuntimeSessionMode } from "@/lib/simulador/use-session";
@@ -176,15 +180,15 @@ const ENTREGA_OPTIONS = [
 
 type SectionId = "intro" | "step1" | "step2" | "step3" | "step4" | "step5";
 
-// Each section declares how many slides it has.
-// Slide content is rendered by switch inside the page.
-const SECTIONS: { id: SectionId; label: string; slides: number }[] = [
-  { id: "intro", label: "Contexto", slides: 5 },
-  { id: "step1", label: "Datos", slides: 2 + FIELDS.length }, // intro + dataset preview + 6 fields = 8
-  { id: "step2", label: "IA", slides: 3 },
-  { id: "step3", label: "Revisión", slides: SEGMENTS.length }, // 3
-  { id: "step4", label: "Decisión", slides: 1 },
-  { id: "step5", label: "Respuesta", slides: 2 },
+// Each section declares how many screens it has.
+// Screen content is rendered by switch inside the page.
+const SECTIONS: { id: SectionId; label: string; screens: number }[] = [
+  { id: "intro", label: "Contexto", screens: 5 },
+  { id: "step1", label: "Datos", screens: 2 + FIELDS.length }, // intro + dataset preview + 6 fields = 8
+  { id: "step2", label: "IA", screens: 3 },
+  { id: "step3", label: "Revisión", screens: SEGMENTS.length }, // 3
+  { id: "step4", label: "Decisión", screens: 1 },
+  { id: "step5", label: "Respuesta", screens: 2 },
 ];
 
 // ============ RUNTIME ============
@@ -202,7 +206,7 @@ export function RuntimeExperience({
   const { patch, flush } = useStepPatch(session.sessionId, { mode });
 
   const [sectionIdx, setSectionIdx] = useState(0);
-  const [slideIdx, setSlideIdx] = useState(0);
+  const [screenIdx, setScreenIdx] = useState(0);
   const [maxReached, setMaxReached] = useState(0);
 
   const [fieldActions, setFieldActions] = useState<Record<string, string>>({});
@@ -343,7 +347,7 @@ export function RuntimeExperience({
   function goToSection(idx: number) {
     if (idx <= maxReached) {
       setSectionIdx(idx);
-      setSlideIdx(0);
+      setScreenIdx(0);
     }
   }
 
@@ -397,7 +401,7 @@ export function RuntimeExperience({
           payload: {
             section: currentSection.label,
             section_idx: sectionIdx,
-            slide_idx: slideIdx,
+            screen_idx: screenIdx,
           },
         }),
         keepalive: true,
@@ -422,7 +426,7 @@ export function RuntimeExperience({
     isFieldTest,
     sectionIdx,
     session.sessionId,
-    slideIdx,
+    screenIdx,
   ]);
 
   const pollFieldTestReport = useCallback(async (
@@ -465,7 +469,7 @@ export function RuntimeExperience({
         section_idx: sectionIdx,
       });
       setSectionIdx(nextIdx);
-      setSlideIdx(0);
+      setScreenIdx(0);
       setMaxReached((m) => Math.max(m, nextIdx));
       return;
     }
@@ -514,21 +518,21 @@ export function RuntimeExperience({
     pollFieldTestReport,
   ]);
 
-  function nextSlide() {
-    if (slideIdx < currentSection.slides - 1) {
-      setSlideIdx((s) => s + 1);
+  function nextScreen() {
+    if (screenIdx < currentSection.screens - 1) {
+      setScreenIdx((s) => s + 1);
     } else {
       advanceSection();
     }
   }
 
-  function prevSlide() {
-    if (slideIdx > 0) {
-      setSlideIdx((s) => s - 1);
+  function prevScreen() {
+    if (screenIdx > 0) {
+      setScreenIdx((s) => s - 1);
     } else if (sectionIdx > 0) {
       const prevSectionIdx = sectionIdx - 1;
       setSectionIdx(prevSectionIdx);
-      setSlideIdx(SECTIONS[prevSectionIdx].slides - 1);
+      setScreenIdx(SECTIONS[prevSectionIdx].screens - 1);
     }
   }
 
@@ -569,34 +573,34 @@ export function RuntimeExperience({
 
   // ============ CAN ADVANCE PER SLIDE ============
   const canAdvance = useMemo(() => {
-    if (currentSection.id === "intro") return true; // reading slides
+    if (currentSection.id === "intro") return true; // reading screens
     if (currentSection.id === "step1") {
-      if (slideIdx === 0) return true; // brief
-      if (slideIdx === 1) return true; // dataset preview
-      const field = FIELDS[slideIdx - 2];
+      if (screenIdx === 0) return true; // brief
+      if (screenIdx === 1) return true; // dataset preview
+      const field = FIELDS[screenIdx - 2];
       return field ? !!fieldActions[field.key] : false;
     }
     if (currentSection.id === "step2") {
-      if (slideIdx === 0)
+      if (screenIdx === 0)
         return userPrompt.trim().length > 5 && modelResponse !== null;
-      if (slideIdx === 1) return modelResponse !== null;
-      if (slideIdx === 2) return followupText.trim().length > 10;
+      if (screenIdx === 1) return modelResponse !== null;
+      if (screenIdx === 2) return followupText.trim().length > 10;
     }
     if (currentSection.id === "step3") {
-      const flags = segmentFlags[slideIdx];
+      const flags = segmentFlags[screenIdx];
       return Array.isArray(flags) && flags.length > 0;
     }
     if (currentSection.id === "step4") {
       return option4 !== "";
     }
     if (currentSection.id === "step5") {
-      if (slideIdx === 0) return true; // reading Camila's msg
-      if (slideIdx === 1) return step5Text.trim().length > 20;
+      if (screenIdx === 0) return true; // reading Camila's msg
+      if (screenIdx === 1) return step5Text.trim().length > 20;
     }
     return false;
   }, [
     currentSection,
-    slideIdx,
+    screenIdx,
     fieldActions,
     userPrompt,
     modelResponse,
@@ -636,13 +640,7 @@ export function RuntimeExperience({
   ]);
 
   // ============ SESSION LOADING ============
-  // En field-test la creación de sesión es instantánea (público, sin auth/
-  // billing checks) → no mostramos pantalla de loading, evita el flash de
-  // "Preparando tu sesión" que se siente como ruido en un flujo público.
-  // En modo autenticado sí lo dejamos porque la creación puede tardar
-  // (RLS, validación de entitlement, etc).
   if (session.status === "creating") {
-    if (isFieldTest) return null;
     return (
       <>
         <RuntimeNav mode={mode} />
@@ -653,7 +651,7 @@ export function RuntimeExperience({
             className="max-w-md text-center"
           >
             <div className="mx-auto h-9 w-9 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
-            <p className="mt-6 ts-callout text-[var(--text-secondary)]">
+            <p className="mt-6 text-[14px] text-[var(--text-secondary)]">
               Preparando tu sesión…
             </p>
           </motion.div>
@@ -674,19 +672,18 @@ export function RuntimeExperience({
             className="max-w-md text-center"
           >
             <div className="eyebrow mb-4">No se pudo iniciar el caso</div>
-            <p className="ts-body text-[var(--text-secondary)]">
+            <p className="text-[15px] text-[var(--text-secondary)]">
               {session.error ?? "Error inesperado al cargar la sesión."}
             </p>
             <div className="mt-8">
-              <Button
+              <AppleButton
                 onPress={() => router.push("/dashboard")}
-                radius="md"
+                tone="secondary"
                 size="lg"
-                variant="bordered"
                 className="h-12 px-6 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
               >
                 Volver al dashboard
-              </Button>
+              </AppleButton>
             </div>
           </motion.div>
         </main>
@@ -709,10 +706,10 @@ export function RuntimeExperience({
             className="max-w-md"
           >
             <div className="mx-auto h-10 w-10 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
-            <h2 className="display mt-8 ts-title-1 text-[var(--text-primary)] text-center">
+            <h2 className="display mt-8 text-[28px] text-[var(--text-primary)] text-center">
               Preparando tu reporte.
             </h2>
-            <p className="mt-3 ts-body text-[var(--text-secondary)] text-center">
+            <p className="mt-3 text-[15px] text-[var(--text-secondary)] text-center">
               Estamos revisando tus decisiones y armando una lectura preliminar.
             </p>
           </motion.div>
@@ -736,8 +733,8 @@ export function RuntimeExperience({
     );
   }
 
-  // ============ CAPSULES (one per slide of current section) ============
-  const capsuleCount = currentSection.slides;
+  // ============ CAPSULES (one per screen of current section) ============
+  const capsuleCount = currentSection.screens;
 
   return (
     <>
@@ -759,7 +756,7 @@ export function RuntimeExperience({
                     type="button"
                     onClick={() => goToSection(i)}
                     disabled={!reached}
-                    className={`group w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left ts-subhead transition-colors ${
+                    className={`group w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-[13px] transition-colors ${
                       isCurrent
                         ? "bg-[var(--accent-soft)] text-[var(--text-primary)] font-medium"
                         : reached
@@ -768,7 +765,7 @@ export function RuntimeExperience({
                     }`}
                   >
                     <span
-                      className={`flex-shrink-0 h-5 w-5 rounded-full grid place-items-center ts-caption-2 mono font-semibold transition-colors ${
+                      className={`flex-shrink-0 h-5 w-5 rounded-full grid place-items-center text-[10px] mono font-semibold transition-colors ${
                         isCurrent
                           ? "accent-bg text-white"
                           : isCompleted
@@ -808,8 +805,8 @@ export function RuntimeExperience({
           <div className="pt-8 px-6">
             <div className="max-w-2xl mx-auto flex gap-1.5">
               {Array.from({ length: capsuleCount }).map((_, i) => {
-                const filled = i < slideIdx || (i === slideIdx && canAdvance);
-                const active = i === slideIdx;
+                const filled = i < screenIdx || (i === screenIdx && canAdvance);
+                const active = i === screenIdx;
                 return (
                   <div
                     key={i}
@@ -836,15 +833,15 @@ export function RuntimeExperience({
             <div className="max-w-2xl w-full">
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={`${currentSection.id}-${slideIdx}`}
+                  key={`${currentSection.id}-${screenIdx}`}
                   initial={{ opacity: 0, x: 24 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -24 }}
                   transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  {renderSlide({
+                  {renderScreen({
                     sectionId: currentSection.id,
-                    slideIdx,
+                    screenIdx,
                     caseMeta: session.caseMeta,
                     state: {
                       fieldActions,
@@ -878,38 +875,37 @@ export function RuntimeExperience({
       <div className="fixed bottom-0 inset-x-0 z-40 surface-backdrop">
         <div className="max-w-7xl mx-auto md:pl-60 px-6 py-4">
           {submitError && (
-            <div className="max-w-2xl mx-auto mb-3 text-center ts-subhead text-[var(--band-b-text)]">
+            <div className="max-w-2xl mx-auto mb-3 text-center text-[13px] text-[var(--band-b-text)]">
               ⚠ {submitError}
             </div>
           )}
           <div className="max-w-2xl mx-auto flex items-center justify-between gap-3">
-            {slideIdx > 0 || sectionIdx > 0 ? (
-              <Button
-                radius="md"
+            {screenIdx > 0 || sectionIdx > 0 ? (
+              <AppleButton
+                tone="secondary"
                 size="lg"
-                variant="bordered"
-                onPress={prevSlide}
-                className="h-11 px-5 ts-callout font-medium border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
+                onPress={prevScreen}
+                className="h-11 px-5 text-[14px] font-medium border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
               >
                 ← Anterior
-              </Button>
+              </AppleButton>
             ) : (
               <span />
             )}
 
-            <Button
-              radius="md"
+            <AppleButton
               size="lg"
-              onPress={nextSlide}
+              tone={canAdvance ? "primary" : "secondary"}
+              onPress={nextScreen}
               isDisabled={!canAdvance}
-              className={`h-11 px-6 ts-callout font-medium ${
+              className={`h-11 px-6 text-[14px] font-medium ${
                 canAdvance
                   ? "accent-bg text-white hover:opacity-90"
                   : "bg-[var(--surface-3)] text-[var(--text-tertiary)]"
               } shadow-none btn-hover-shift`}
             >
-              {nextButtonLabel(sectionIdx, slideIdx, currentSection.slides)} →
-            </Button>
+              {nextButtonLabel(sectionIdx, screenIdx, currentSection.screens)} →
+            </AppleButton>
           </div>
         </div>
       </div>
@@ -927,17 +923,17 @@ function RuntimeCaseMetaCard({
   return (
     <div className="mb-7 rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4">
       <div className="flex items-center gap-2">
-        <span className="rounded-full accent-bg-soft accent-text px-2 py-0.5 ts-caption-1 font-semibold">
+        <span className="rounded-full accent-bg-soft accent-text px-2 py-0.5 text-[11px] font-semibold">
           {caseMeta.levelShortLabel}
         </span>
-        <span className="ts-caption-1 text-[var(--text-tertiary)]">
+        <span className="text-[11px] text-[var(--text-tertiary)]">
           {caseMeta.careerLabel}
         </span>
       </div>
-      <div className="mt-3 ts-subhead font-medium leading-snug text-[var(--text-primary)]">
+      <div className="mt-3 text-[13px] font-medium leading-snug text-[var(--text-primary)]">
         {caseMeta.title}
       </div>
-      <div className="mt-2 ts-footnote leading-snug text-[var(--text-secondary)]">
+      <div className="mt-2 text-[12px] leading-snug text-[var(--text-secondary)]">
         {caseMeta.levelLabel}
         {caseMeta.durationEstimateMin
           ? ` · ${caseMeta.durationEstimateMin} min`
@@ -950,13 +946,13 @@ function RuntimeCaseMetaCard({
 // ============ NEXT BUTTON LABEL ============
 function nextButtonLabel(
   sectionIdx: number,
-  slideIdx: number,
-  slidesInSection: number,
+  screenIdx: number,
+  screensInSection: number,
 ): string {
-  const lastSlideInSection = slideIdx === slidesInSection - 1;
+  const lastScreenInSection = screenIdx === screensInSection - 1;
   const lastSection = sectionIdx === SECTIONS.length - 1;
-  if (lastSlideInSection && lastSection) return "Terminar caso";
-  if (lastSlideInSection && sectionIdx === 0) return "Empezar caso";
+  if (lastScreenInSection && lastSection) return "Terminar caso";
+  if (lastScreenInSection && sectionIdx === 0) return "Empezar caso";
   return "Siguiente";
 }
 
@@ -1053,16 +1049,16 @@ function FieldTestReportInline({
       <div className="max-w-5xl mx-auto">
         <div className="max-w-3xl">
           <div className="eyebrow">Reporte preliminar</div>
-          <h1 className="display display-tight mt-5 ts-display-lg sm:ts-display-2xl text-[var(--text-primary)]">
+          <h1 className="display display-tight mt-5 text-[40px] sm:text-[56px] text-[var(--text-primary)]">
             Tu lectura del caso.
           </h1>
-          <p className="mt-6 ts-headline text-[var(--text-secondary)] leading-[1.6]">
+          <p className="mt-6 text-[17px] text-[var(--text-secondary)] leading-[1.6]">
             Esto no es un benchmark ni una certificación. Es una muestra de la
             evidencia que Itera genera para decidir si un equipo puede usar IA
             en flujos reales.
           </p>
           {payload.participant_note && (
-            <div className="mt-6 rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4 ts-subhead text-[var(--text-secondary)] leading-[1.55]">
+            <div className="mt-6 rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4 text-[13.5px] text-[var(--text-secondary)] leading-[1.55]">
               {payload.participant_note}
             </div>
           )}
@@ -1070,21 +1066,21 @@ function FieldTestReportInline({
 
         <section className="mt-12 grid grid-cols-1 lg:grid-cols-5 gap-4">
           <div className="lg:col-span-3 card-apple bg-[var(--surface)] p-6">
-            <h2 className="ts-headline font-semibold text-[var(--text-primary)]">
+            <h2 className="text-[18px] font-semibold text-[var(--text-primary)]">
               Bandas por criterio observado
             </h2>
             <div className="mt-6 space-y-4">
               {payload.dimensions.map((dimension) => (
                 <div key={dimension.id}>
                   <div className="flex items-center justify-between gap-4">
-                    <div className="ts-callout font-medium text-[var(--text-primary)] capitalize">
+                    <div className="text-[14px] font-medium text-[var(--text-primary)] capitalize">
                       {dimension.id}
                     </div>
-                    <div className="ts-footnote text-[var(--text-secondary)]">
+                    <div className="text-[12px] text-[var(--text-secondary)]">
                       {bandLabel(dimension.band)}
                     </div>
                   </div>
-                  <p className="mt-1 ts-subhead text-[var(--text-secondary)] leading-[1.45]">
+                  <p className="mt-1 text-[13px] text-[var(--text-secondary)] leading-[1.45]">
                     {dimension.rationale}
                   </p>
                 </div>
@@ -1093,20 +1089,20 @@ function FieldTestReportInline({
           </div>
 
           <div className="lg:col-span-2 card-apple bg-[var(--surface)] p-6">
-            <h2 className="ts-headline font-semibold text-[var(--text-primary)]">
+            <h2 className="text-[18px] font-semibold text-[var(--text-primary)]">
               Recomendación
             </h2>
-            <div className="mt-5 inline-flex rounded-full accent-bg-soft accent-text px-3 py-1 ts-subhead font-medium capitalize">
+            <div className="mt-5 inline-flex rounded-full accent-bg-soft accent-text px-3 py-1 text-[13px] font-medium capitalize">
               {payload.recommendation.action}
             </div>
-            <p className="mt-5 ts-callout text-[var(--text-primary)] leading-[1.55]">
+            <p className="mt-5 text-[14px] text-[var(--text-primary)] leading-[1.55]">
               {payload.recommendation.reason}
             </p>
             <ul className="mt-5 space-y-3">
               {payload.recommendation.next_week_actions.map((action) => (
                 <li
                   key={action}
-                  className="ts-subhead text-[var(--text-secondary)] leading-[1.45]"
+                  className="text-[13.5px] text-[var(--text-secondary)] leading-[1.45]"
                 >
                   {action}
                 </li>
@@ -1117,11 +1113,11 @@ function FieldTestReportInline({
 
         <section className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="card-apple bg-[var(--surface)] p-6">
-            <h2 className="ts-headline font-semibold text-[var(--text-primary)]">
+            <h2 className="text-[18px] font-semibold text-[var(--text-primary)]">
               Eventos de riesgo observados
             </h2>
             {payload.risk_events.length === 0 ? (
-              <p className="mt-5 ts-callout text-[var(--text-secondary)]">
+              <p className="mt-5 text-[14px] text-[var(--text-secondary)]">
                 No se detectaron eventos materiales en esta corrida.
               </p>
             ) : (
@@ -1129,14 +1125,14 @@ function FieldTestReportInline({
                 {payload.risk_events.map((event, index) => (
                   <div key={`${event.type}-${index}`}>
                     <div className="flex items-center justify-between gap-3">
-                      <div className="ts-callout font-medium text-[var(--text-primary)]">
+                      <div className="text-[14px] font-medium text-[var(--text-primary)]">
                         {humanizeKey(event.type)}
                       </div>
-                      <span className="ts-footnote text-[var(--text-secondary)]">
+                      <span className="text-[12px] text-[var(--text-secondary)]">
                         {severityLabel(event.severity)}
                       </span>
                     </div>
-                    <p className="mt-1 ts-subhead text-[var(--text-secondary)] leading-[1.45]">
+                    <p className="mt-1 text-[13px] text-[var(--text-secondary)] leading-[1.45]">
                       {event.evidence_text}
                     </p>
                   </div>
@@ -1149,16 +1145,16 @@ function FieldTestReportInline({
             onSubmit={submitSurvey}
             className="card-apple bg-[var(--surface)] p-6"
           >
-            <h2 className="ts-headline font-semibold text-[var(--text-primary)]">
+            <h2 className="text-[18px] font-semibold text-[var(--text-primary)]">
               ¿Qué tan útil fue?
             </h2>
-            <p className="mt-3 ts-callout text-[var(--text-secondary)] leading-[1.55]">
+            <p className="mt-3 text-[14px] text-[var(--text-secondary)] leading-[1.55]">
               Tres respuestas rápidas nos ayudan a calibrar el diagnóstico sin
               alargar la experiencia.
             </p>
 
             <div className="mt-6">
-              <div className="ts-subhead font-medium text-[var(--text-primary)]">
+              <div className="text-[13px] font-medium text-[var(--text-primary)]">
                 ¿Lo recomendarías a otro líder de equipo?
               </div>
               <div className="mt-3 grid grid-cols-6 gap-2">
@@ -1169,7 +1165,7 @@ function FieldTestReportInline({
                     onClick={() =>
                       setSurvey((current) => ({ ...current, nps: score }))
                     }
-                    className={`h-8 rounded-full ts-footnote font-medium transition ${
+                    className={`h-8 rounded-full text-[12px] font-medium transition ${
                       survey.nps === score
                         ? "accent-bg text-white"
                         : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
@@ -1182,7 +1178,7 @@ function FieldTestReportInline({
             </div>
 
             <div className="mt-6">
-              <div className="ts-subhead font-medium text-[var(--text-primary)]">
+              <div className="text-[13px] font-medium text-[var(--text-primary)]">
                 ¿Qué tan cercano se sintió a tu trabajo?
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -1196,7 +1192,7 @@ function FieldTestReportInline({
                         relevance_score: score,
                       }))
                     }
-                    className={`h-9 min-w-9 rounded-full px-3 ts-footnote font-medium transition ${
+                    className={`h-9 min-w-9 rounded-full px-3 text-[12px] font-medium transition ${
                       survey.relevance_score === score
                         ? "accent-bg text-white"
                         : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
@@ -1208,7 +1204,7 @@ function FieldTestReportInline({
               </div>
             </div>
 
-            <textarea
+            <AppleTextarea
               value={survey.open_response}
               onChange={(event) =>
                 setSurvey((current) => ({
@@ -1217,30 +1213,29 @@ function FieldTestReportInline({
                 }))
               }
               maxLength={900}
-              rows={4}
+              minRows={4}
               placeholder="¿Qué ajustarías para que se sintiera más real?"
-              className="mt-5 w-full resize-none rounded-2xl bg-[var(--surface-2)] border border-[var(--border)] p-4 ts-callout text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
+              className="mt-5"
             />
 
-            <Button
+            <AppleButton
               type="submit"
-              radius="md"
               isDisabled={
                 surveyStatus === "submitting" ||
                 surveyStatus === "sent" ||
                 survey.nps === null ||
                 survey.relevance_score === null
               }
-              className="mt-4 h-11 accent-bg text-white ts-callout font-medium shadow-none"
+              className="mt-4 h-11 accent-bg text-white text-[14px] font-medium shadow-none"
             >
               {surveyStatus === "sent"
                 ? "Gracias"
                 : surveyStatus === "submitting"
                   ? "Guardando…"
                   : "Enviar feedback"}
-            </Button>
+            </AppleButton>
             {surveyStatus === "error" && (
-              <p className="mt-3 ts-subhead text-[var(--band-b-text)]">
+              <p className="mt-3 text-[13px] text-[var(--band-b-text)]">
                 No se pudo guardar. Intenta otra vez.
               </p>
             )}
@@ -1250,10 +1245,10 @@ function FieldTestReportInline({
             onSubmit={submitLead}
             className="card-apple bg-[var(--surface)] p-6"
           >
-            <h2 className="ts-headline font-semibold text-[var(--text-primary)]">
+            <h2 className="text-[18px] font-semibold text-[var(--text-primary)]">
               ¿Quieres verlo con tu equipo?
             </h2>
-            <p className="mt-3 ts-callout text-[var(--text-secondary)] leading-[1.55]">
+            <p className="mt-3 text-[14px] text-[var(--text-secondary)] leading-[1.55]">
               Déjanos tus datos y te mandamos el reporte completo del caso de
               muestra con la forma de correrlo en un equipo real.
             </p>
@@ -1265,7 +1260,7 @@ function FieldTestReportInline({
                 ["role", "Rol"],
                 ["team_size", "Tamaño del equipo"],
               ].map(([key, placeholder]) => (
-                <input
+                <AppleInput
                   key={key}
                   required={key === "name" || key === "email" || key === "company"}
                   type={key === "email" ? "email" : "text"}
@@ -1277,24 +1272,22 @@ function FieldTestReportInline({
                       [key]: event.target.value,
                     }))
                   }
-                  className="h-11 rounded-xl bg-[var(--surface-2)] border border-[var(--border)] px-4 ts-callout text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
                 />
               ))}
             </div>
-            <Button
+            <AppleButton
               type="submit"
-              radius="md"
               isDisabled={leadStatus === "submitting" || leadStatus === "sent"}
-              className="mt-5 h-11 accent-bg text-white ts-callout font-medium shadow-none"
+              className="mt-5 h-11 accent-bg text-white text-[14px] font-medium shadow-none"
             >
               {leadStatus === "sent"
                 ? "Recibido"
                 : leadStatus === "submitting"
                   ? "Enviando…"
                   : "Enviar reporte completo"}
-            </Button>
+            </AppleButton>
             {leadStatus === "error" && (
-              <p className="mt-3 ts-subhead text-[var(--band-b-text)]">
+              <p className="mt-3 text-[13px] text-[var(--band-b-text)]">
                 No se pudo enviar. Intenta otra vez.
               </p>
             )}
@@ -1328,16 +1321,16 @@ type RuntimeSetters = {
   setStep5Text: (v: string) => void;
 };
 
-function renderSlide({
+function renderScreen({
   sectionId,
-  slideIdx,
+  screenIdx,
   caseMeta,
   state,
   setters,
   sendPrompt,
 }: {
   sectionId: SectionId;
-  slideIdx: number;
+  screenIdx: number;
   caseMeta: RuntimeCaseMeta | null;
   state: RuntimeState;
   setters: RuntimeSetters;
@@ -1345,19 +1338,19 @@ function renderSlide({
 }) {
   // ============ INTRO ============
   if (sectionId === "intro") {
-    return <IntroSlide slideIdx={slideIdx} caseMeta={caseMeta} />;
+    return <IntroScreen screenIdx={screenIdx} caseMeta={caseMeta} />;
   }
 
   // ============ STEP 1 ============
   if (sectionId === "step1") {
-    if (slideIdx === 0) return <Step1Brief />;
-    if (slideIdx === 1) return <Step1DatasetPreview />;
-    const field = FIELDS[slideIdx - 2];
+    if (screenIdx === 0) return <Step1Brief />;
+    if (screenIdx === 1) return <Step1DatasetPreview />;
+    const field = FIELDS[screenIdx - 2];
     if (field) {
       return (
         <Step1FieldDecision
           field={field}
-          fieldIdx={slideIdx - 1}
+          fieldIdx={screenIdx - 1}
           value={state.fieldActions[field.key] || ""}
           onChange={(v) =>
             setters.setFieldActions({ ...state.fieldActions, [field.key]: v })
@@ -1369,7 +1362,7 @@ function renderSlide({
 
   // ============ STEP 2 ============
   if (sectionId === "step2") {
-    if (slideIdx === 0) {
+    if (screenIdx === 0) {
       return (
         <Step2Prompt
           value={state.userPrompt}
@@ -1380,10 +1373,10 @@ function renderSlide({
         />
       );
     }
-    if (slideIdx === 1) {
+    if (screenIdx === 1) {
       return <Step2Response modelResponse={state.modelResponse} />;
     }
-    if (slideIdx === 2) {
+    if (screenIdx === 2) {
       return (
         <Step2Followup
           value={state.followupText}
@@ -1395,7 +1388,7 @@ function renderSlide({
 
   // ============ STEP 3 ============
   if (sectionId === "step3") {
-    const seg = SEGMENTS[slideIdx];
+    const seg = SEGMENTS[screenIdx];
     if (seg) {
       return (
         <Step3SegmentReview
@@ -1421,8 +1414,8 @@ function renderSlide({
 
   // ============ STEP 5 ============
   if (sectionId === "step5") {
-    if (slideIdx === 0) return <Step5CamilaMessage />;
-    if (slideIdx === 1) {
+    if (screenIdx === 0) return <Step5CamilaMessage />;
+    if (screenIdx === 1) {
       return (
         <Step5Response
           value={state.step5Text}
@@ -1437,14 +1430,14 @@ function renderSlide({
 
 // ============ INTRO ============
 
-function IntroSlide({
-  slideIdx,
+function IntroScreen({
+  screenIdx,
   caseMeta,
 }: {
-  slideIdx: number;
+  screenIdx: number;
   caseMeta: RuntimeCaseMeta | null;
 }) {
-  if (slideIdx === 0) {
+  if (screenIdx === 0) {
     const title = caseMeta?.title ?? "Campaña urgente con feedback de clientes";
     const durationLabel = caseMeta?.durationEstimateMin
       ? `${caseMeta.durationEstimateMin} min`
@@ -1458,43 +1451,43 @@ function IntroSlide({
         </div>
         {caseMeta && (
           <div className="mt-5 flex flex-wrap items-center gap-2">
-            <span className="rounded-full accent-bg-soft accent-text px-3 py-1 ts-footnote font-semibold">
+            <span className="rounded-full accent-bg-soft accent-text px-3 py-1 text-[12px] font-semibold">
               {caseMeta.levelShortLabel} · {caseMeta.levelLabel}
             </span>
-            <span className="rounded-full bg-[var(--surface)] border border-[var(--border)] px-3 py-1 ts-footnote text-[var(--text-secondary)]">
+            <span className="rounded-full bg-[var(--surface)] border border-[var(--border)] px-3 py-1 text-[12px] text-[var(--text-secondary)]">
               {humanizeKey(caseMeta.difficulty ?? "baseline")}
             </span>
           </div>
         )}
-        <h1 className="display display-tight mt-6 ts-display-lg sm:ts-display-3xl text-[var(--text-primary)]">
+        <h1 className="display display-tight mt-6 text-[44px] sm:text-[60px] text-[var(--text-primary)]">
           {title}.
         </h1>
-        <p className="mt-8 ts-body-lg text-[var(--text-secondary)] leading-[1.55]">
+        <p className="mt-8 text-[19px] text-[var(--text-secondary)] leading-[1.55]">
           Vas a interpretar el rol de un Marketing Manager bajo presión. No hay
           respuesta única correcta: evaluamos tu criterio.
         </p>
         {caseMeta && (
-          <p className="mt-4 ts-body text-[var(--text-tertiary)] leading-[1.55]">
+          <p className="mt-4 text-[15px] text-[var(--text-tertiary)] leading-[1.55]">
             {caseMeta.levelDescription}
           </p>
         )}
       </>
     );
   }
-  if (slideIdx === 1) {
+  if (screenIdx === 1) {
     return (
       <>
         <div className="eyebrow">Tu rol</div>
-        <h2 className="display display-tight mt-6 ts-display sm:ts-display-lg text-[var(--text-primary)]">
+        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
           Marketing Manager en Loop.
         </h2>
-        <p className="mt-8 ts-headline text-[var(--text-primary)] leading-[1.65]">
+        <p className="mt-8 text-[18px] text-[var(--text-primary)] leading-[1.65]">
           Eres <span className="font-medium">Marketing Manager</span> en{" "}
           <span className="font-medium">Loop</span>, una SaaS B2B mid-market
           (120 empleados) que vende plataforma de atención al cliente con IA en
           LATAM.
         </p>
-        <p className="mt-5 ts-headline text-[var(--text-secondary)] leading-[1.7]">
+        <p className="mt-5 text-[16px] text-[var(--text-secondary)] leading-[1.7]">
           Tu equipo de growth es de 6 personas. Reportas a{" "}
           <span className="text-[var(--text-primary)]">Camila, VP of Growth</span>. El
           gobierno de IA en tu empresa es informal: hay GPT corporativo
@@ -1503,17 +1496,17 @@ function IntroSlide({
       </>
     );
   }
-  if (slideIdx === 2) {
+  if (screenIdx === 2) {
     return (
       <>
         <div className="eyebrow">Qué está pasando</div>
-        <h2 className="display display-tight mt-6 ts-display sm:ts-display-lg text-[var(--text-primary)]">
+        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
           Jueves · 4:30 PM.
         </h2>
-        <p className="mt-3 ts-headline text-[var(--text-secondary)] leading-[1.55]">
+        <p className="mt-3 text-[18px] text-[var(--text-secondary)] leading-[1.55]">
           Quedan 16 horas hasta el deadline.
         </p>
-        <p className="mt-8 ts-headline text-[var(--text-primary)] leading-[1.7]">
+        <p className="mt-8 text-[17px] text-[var(--text-primary)] leading-[1.7]">
           Camila te escribe por Slack pidiéndote{" "}
           <span className="font-medium">
             3 ángulos para LinkedIn Ads + 1 email a prospects
@@ -1525,10 +1518,10 @@ function IntroSlide({
           <div className="flex items-start gap-4">
             <Avatar
               size="sm"
-              className="bg-[#ff5e62] text-white ts-subhead font-semibold flex-shrink-0"
+              className="bg-[var(--avatar-c-bg)] text-white text-[13px] font-semibold flex-shrink-0"
               name="C"
             />
-            <p className="ts-body text-[var(--text-primary)] leading-[1.6] italic">
+            <p className="text-[15px] text-[var(--text-primary)] leading-[1.6] italic">
               «No me metas a Legal hoy, ya están cerrados. Confío en tu
               criterio.»
             </p>
@@ -1537,7 +1530,7 @@ function IntroSlide({
       </>
     );
   }
-  if (slideIdx === 3) {
+  if (screenIdx === 3) {
     const steps = [
       { id: 1, label: "Datos", sub: "Decide qué pasa al modelo." },
       {
@@ -1556,20 +1549,20 @@ function IntroSlide({
     return (
       <>
         <div className="eyebrow">Cómo vas a avanzar</div>
-        <h2 className="display display-tight mt-6 ts-display sm:ts-display-lg text-[var(--text-primary)]">
+        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
           Cinco pasos.
         </h2>
         <ol className="mt-10 space-y-5">
           {steps.map((s) => (
             <li key={s.id} className="flex items-start gap-5">
-              <div className="flex-shrink-0 mt-1 mono ts-body text-[var(--text-tertiary)] font-medium w-8">
+              <div className="flex-shrink-0 mt-1 mono text-[15px] text-[var(--text-tertiary)] font-medium w-8">
                 {String(s.id).padStart(2, "0")}
               </div>
               <div>
-                <div className="ts-headline text-[var(--text-primary)] font-medium">
+                <div className="text-[17px] text-[var(--text-primary)] font-medium">
                   {s.label}
                 </div>
-                <div className="ts-body text-[var(--text-secondary)] mt-0.5">{s.sub}</div>
+                <div className="text-[15px] text-[var(--text-secondary)] mt-0.5">{s.sub}</div>
               </div>
             </li>
           ))}
@@ -1577,14 +1570,14 @@ function IntroSlide({
       </>
     );
   }
-  if (slideIdx === 4) {
+  if (screenIdx === 4) {
     return (
       <>
         <div className="eyebrow">Reglas</div>
-        <h2 className="display display-tight mt-6 ts-display sm:ts-display-lg text-[var(--text-primary)]">
+        <h2 className="display display-tight mt-6 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
           Antes de empezar.
         </h2>
-        <ul className="mt-10 space-y-5 ts-headline text-[var(--text-primary)] leading-[1.65]">
+        <ul className="mt-10 space-y-5 text-[17px] text-[var(--text-primary)] leading-[1.65]">
           <li className="flex items-start gap-4">
             <span
               className="flex-shrink-0 mt-2 h-1.5 w-1.5 rounded-full"
@@ -1633,10 +1626,10 @@ function Step1Brief() {
   return (
     <>
       <div className="eyebrow">Paso 01 · Datos</div>
-      <h2 className="display display-tight mt-6 ts-display sm:ts-display-lg text-[var(--text-primary)]">
+      <h2 className="display display-tight mt-6 text-[36px] sm:text-[44px] text-[var(--text-primary)]">
         Lee el brief de Camila.
       </h2>
-      <p className="mt-5 ts-headline text-[var(--text-secondary)] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         Antes de tocar el dataset, releélo. Lo que aceptes pasar al modelo
         define la calidad y el riesgo de la entrega.
       </p>
@@ -1644,22 +1637,22 @@ function Step1Brief() {
         <div className="flex items-start gap-4">
           <Avatar
             size="sm"
-            className="bg-[#ff5e62] text-white ts-subhead font-semibold flex-shrink-0"
+            className="bg-[var(--avatar-c-bg)] text-white text-[13px] font-semibold flex-shrink-0"
             name="C"
           />
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 ts-footnote text-[var(--text-tertiary)]">
+            <div className="flex items-center gap-2 text-[12px] text-[var(--text-tertiary)]">
               <span className="text-[var(--text-primary)] font-medium">
                 Camila · VP of Growth
               </span>
               <span>·</span>
               <span className="mono">Jue 4:30 PM</span>
             </div>
-            <p className="mt-2 ts-body text-[var(--text-primary)] leading-[1.55]">
+            <p className="mt-2 text-[15px] text-[var(--text-primary)] leading-[1.55]">
               «Hey, necesito 3 ángulos para LinkedIn Ads + 1 email a la lista
               de prospects para mañana 9 AM. Revisa el feedback que CS nos pasó
               hace 2 meses, ahí está todo.{" "}
-              <span className="text-[#ff5e62]">
+              <span className="text-[var(--avatar-c-bg)]">
                 No me metas a Legal hoy, ya están cerrados
               </span>
               . Confío en tu criterio.»
@@ -1698,16 +1691,16 @@ function Step1DatasetPreview() {
   return (
     <>
       <div className="eyebrow">Paso 01 · Dataset</div>
-      <h2 className="display display-tight mt-6 ts-display sm:ts-display-lg text-[var(--text-primary)]">
+      <h2 className="display display-tight mt-6 text-[36px] sm:text-[44px] text-[var(--text-primary)]">
         60 filas, 6 campos.
       </h2>
-      <p className="mt-5 ts-headline text-[var(--text-secondary)] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         Esto es lo que CS dejó hace 2 meses. Revisa los campos antes de
         pasar el dataset al modelo.
       </p>
       <div className="mt-8 card-apple bg-[var(--surface)] overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full ts-footnote">
+          <table className="w-full text-[12.5px]">
             <thead>
               <tr className="bg-[var(--surface-2)]">
                 <th className="text-left font-medium text-[var(--text-secondary)] px-3 py-2.5">
@@ -1732,7 +1725,7 @@ function Step1DatasetPreview() {
               <tr>
                 <td
                   colSpan={3}
-                  className="px-3 py-2 ts-footnote text-[var(--text-tertiary)] italic"
+                  className="px-3 py-2 text-[12px] text-[var(--text-tertiary)] italic"
                 >
                   …57 filas más.
                 </td>
@@ -1761,12 +1754,12 @@ function Step1FieldDecision({
       <div className="eyebrow">
         Paso 01 · Campo {fieldIdx} de {FIELDS.length}
       </div>
-      <h2 className="display display-tight mt-6 text-[var(--text-primary)] ts-display sm:ts-display-lg">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         ¿Qué hacer con{" "}
         <span className="mono text-[var(--text-primary)]">{field.label}</span>?
       </h2>
       <div className="mt-5">
-        <p className="ts-headline text-[var(--text-secondary)]">{field.desc}</p>
+        <p className="text-[17px] text-[var(--text-secondary)]">{field.desc}</p>
       </div>
       <RadioGroup
         aria-label={`Acción para ${field.key}`}
@@ -1777,7 +1770,7 @@ function Step1FieldDecision({
         {FIELD_OPTIONS.map((opt) => {
           const selected = value === opt;
           return (
-            <Card
+            <AppleCard
               key={opt}
               className="card-apple bg-[var(--surface)] cursor-pointer transition-all"
               style={
@@ -1788,22 +1781,21 @@ function Step1FieldDecision({
                     }
                   : undefined
               }
-              shadow="none"
             >
-              <CardBody className="p-4">
+              <AppleCardBody className="p-4">
                 <Radio
                   value={opt}
                   size="md"
                   classNames={{
                     wrapper: "border-[var(--border-strong)]",
                     labelWrapper: "ml-2",
-                    label: "ts-body font-medium text-[var(--text-primary)]",
+                    label: "text-[15px] font-medium text-[var(--text-primary)]",
                   }}
                 >
                   {opt}
                 </Radio>
-              </CardBody>
-            </Card>
+              </AppleCardBody>
+            </AppleCard>
           );
         })}
       </RadioGroup>
@@ -1829,10 +1821,10 @@ function Step2Prompt({
   return (
     <>
       <div className="eyebrow">Paso 02 · Tu prompt</div>
-      <h2 className="display display-tight mt-6 text-[var(--text-primary)] ts-display sm:ts-display-lg">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         Redacta tu prompt al modelo.
       </h2>
-      <p className="mt-5 ts-headline text-[var(--text-secondary)] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         La calidad del prompt define el output. Sé claro con audiencia,
         tono, longitud y restricciones del trabajo.
       </p>
@@ -1845,7 +1837,7 @@ function Step2Prompt({
           onSend={onSend}
         />
         {modelResponse && (
-          <div className="mt-5 flex items-center gap-2 ts-subhead text-[var(--band-a-text)]">
+          <div className="mt-5 flex items-center gap-2 text-[13px] text-[var(--band-a-text)]">
             <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none">
               <path
                 d="M3 8.5L6.5 12L13 4.5"
@@ -2106,7 +2098,7 @@ function LevelMeter({
       {[1, 2, 3, 4, 5].map((i) => (
         <span
           key={i}
-          className="block w-[2.5px] rounded-[1px] transition-colors"
+          className="block w-[2.5px] rounded-[var(--radius-xs)] transition-colors"
           style={{
             height: `${3 + i * 1.6}px`,
             backgroundColor:
@@ -2304,7 +2296,7 @@ function RecordingBanner({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -4 }}
           transition={{ duration: 0.18 }}
-          className="px-5 pb-2 flex items-center gap-2.5 ts-subhead"
+          className="px-5 pb-2 flex items-center gap-2.5 text-[13px]"
         >
           {recState === "recording" && (
             <>
@@ -2316,7 +2308,7 @@ function RecordingBanner({
                 Escuchando…
               </span>
               <WaveBars />
-              <span className="ml-auto ts-footnote text-[var(--text-tertiary)]">
+              <span className="ml-auto text-[12px] text-[var(--text-tertiary)]">
                 Pulsa el micrófono para parar.
               </span>
             </>
@@ -2404,7 +2396,7 @@ function ChatStyleTextarea({
         disabled={isLocked}
         rows={rows}
         placeholder={placeholder}
-        className="w-full bg-transparent resize-none outline-none px-5 pt-4 pb-2 ts-body leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
+        className="w-full bg-transparent resize-none px-5 pt-4 pb-2 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
         style={{ minHeight, maxHeight }}
       />
       {TRANSCRIBE_ENABLED && (
@@ -2493,7 +2485,7 @@ function AIPromptInput({
         disabled={disabled || recState === "recording" || recState === "processing"}
         rows={2}
         placeholder="Escribe el prompt que le mandarías al modelo…"
-        className="w-full bg-transparent resize-none outline-none px-5 pt-4 pb-2 ts-body leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
+        className="w-full bg-transparent resize-none px-5 pt-4 pb-2 text-[15px] leading-[1.55] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] rounded-3xl disabled:cursor-not-allowed"
         style={{ minHeight: 56, maxHeight: 220 }}
       />
 
@@ -2509,7 +2501,7 @@ function AIPromptInput({
             type="button"
             disabled={disabled}
             onClick={() => setDropdownOpen((v) => !v)}
-            className="flex items-center gap-2 ts-footnote text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:hover:text-[var(--text-secondary)] pr-2 pl-1 py-1 rounded-full hover:bg-[var(--surface-3)] disabled:hover:bg-transparent transition-colors"
+            className="flex items-center gap-2 text-[12px] text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:hover:text-[var(--text-secondary)] pr-2 pl-1 py-1 rounded-full hover:bg-[var(--surface-3)] disabled:hover:bg-transparent transition-colors"
             aria-label="Selector de modelo"
             aria-expanded={dropdownOpen}
           >
@@ -2559,7 +2551,7 @@ function AIPromptInput({
                     {gi > 0 && (
                       <div className="my-1.5 mx-3 h-px bg-[var(--hairline)]" />
                     )}
-                    <div className="px-3 pt-1.5 pb-1 ts-caption-2 font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
+                    <div className="px-3 pt-1.5 pb-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
                       {group.title}
                     </div>
                     {group.families.map((family, fi) => (
@@ -2577,7 +2569,7 @@ function AIPromptInput({
                                 setSelectedModel(m.id);
                                 setDropdownOpen(false);
                               }}
-                              className={`group/item w-full flex items-center gap-2.5 px-3 py-1.5 text-left ts-subhead transition-colors ${
+                              className={`group/item w-full flex items-center gap-2.5 px-3 py-1.5 text-left text-[13px] transition-colors ${
                                 isSelected
                                   ? "bg-[var(--accent-soft)] text-[var(--text-primary)]"
                                   : "text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
@@ -2587,14 +2579,14 @@ function AIPromptInput({
                               <span className="flex-1 flex items-baseline gap-1.5 min-w-0">
                                 <span className="truncate">{m.label}</span>
                                 {m.badge && (
-                                  <span className="ts-caption-1 text-[var(--text-tertiary)] flex-shrink-0">
+                                  <span className="text-[11px] text-[var(--text-tertiary)] flex-shrink-0">
                                     · {m.badge}
                                   </span>
                                 )}
                               </span>
                               <span className="flex items-center gap-2 text-[var(--text-tertiary)] flex-shrink-0">
                                 <span className="flex items-center gap-1">
-                                  <span className="ts-caption-2 font-semibold tracking-wider">
+                                  <span className="text-[9px] font-semibold tracking-wider">
                                     $
                                   </span>
                                   <LevelMeter
@@ -2753,7 +2745,7 @@ function MicButton({
         </svg>
       ) : isRecording ? (
         // Square stop glyph
-        <span className="relative h-2.5 w-2.5 rounded-[2px] bg-current" />
+        <span className="relative h-2.5 w-2.5 rounded-[var(--radius-xs)] bg-current" />
       ) : (
         <svg className="relative h-4 w-4" viewBox="0 0 16 16" fill="none">
           <rect
@@ -2784,7 +2776,7 @@ function WaveBars() {
       {[0, 1, 2, 3, 4].map((i) => (
         <span
           key={i}
-          className="block w-[2px] bg-red-500 rounded-[1px]"
+          className="block w-[2px] rounded-[var(--radius-xs)] bg-[var(--band-b-bar)]"
           style={{
             height: "100%",
             animation: `simulador-wave 0.9s ease-in-out ${i * 0.12}s infinite`,
@@ -2806,14 +2798,14 @@ function Step2Response({ modelResponse }: { modelResponse: string | null }) {
   return (
     <>
       <div className="eyebrow">Paso 02 · Respuesta del modelo</div>
-      <h2 className="display display-tight mt-6 text-[var(--text-primary)] ts-display sm:ts-display-lg">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         Esto te devolvió.
       </h2>
-      <p className="mt-5 ts-headline text-[var(--text-secondary)] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         Léelo entero antes de decidir qué harás con esta respuesta.
       </p>
       <div className="mt-8 card-apple bg-[var(--surface-2)] p-6 max-h-[42vh] overflow-y-auto">
-        <pre className="ts-subhead text-[var(--text-primary)] leading-[1.6] whitespace-pre-wrap font-sans">
+        <pre className="text-[13.5px] text-[var(--text-primary)] leading-[1.6] whitespace-pre-wrap font-sans">
           {modelResponse}
         </pre>
       </div>
@@ -2831,10 +2823,10 @@ function Step2Followup({
   return (
     <>
       <div className="eyebrow">Paso 02 · Tu siguiente paso</div>
-      <h2 className="display display-tight mt-6 text-[var(--text-primary)] ts-display sm:ts-display-lg">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         ¿Qué harás con esto?
       </h2>
-      <p className="mt-5 ts-headline text-[var(--text-secondary)] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         ¿Lo usas tal cual? ¿Validas algo primero? ¿Descartas? Explica por qué.
       </p>
       <div className="mt-8">
@@ -2864,10 +2856,10 @@ function Step3SegmentReview({
   return (
     <>
       <div className="eyebrow">Paso 03 · Ángulo {segment.id + 1} de 3</div>
-      <h2 className="display display-tight mt-6 text-[var(--text-primary)] ts-title-1 sm:ts-display">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[28px] sm:text-[34px]">
         {segment.title}
       </h2>
-      <p className="mt-5 ts-headline text-[var(--text-primary)] leading-[1.65]">
+      <p className="mt-5 text-[17px] text-[var(--text-primary)] leading-[1.65]">
         {segment.body}
       </p>
       <div className="mt-10">
@@ -2889,7 +2881,7 @@ function Step3SegmentReview({
               classNames={{
                 base: "m-0 max-w-fit cursor-pointer rounded-full border border-[var(--border)] data-[selected=true]:bg-[var(--accent-soft)] data-[selected=true]:border-[var(--accent)] px-3 py-1.5",
                 wrapper: "hidden",
-                label: "ts-subhead text-[var(--text-primary)] font-medium",
+                label: "text-[13px] text-[var(--text-primary)] font-medium",
               }}
             >
               {t.label}
@@ -2913,10 +2905,10 @@ function Step4Decision({
   return (
     <>
       <div className="eyebrow">Paso 04 · Decisión</div>
-      <h2 className="display display-tight mt-6 text-[var(--text-primary)] ts-display sm:ts-display-lg">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         ¿Cómo le entregas los ángulos a Camila?
       </h2>
-      <p className="mt-5 ts-headline text-[var(--text-secondary)] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         El formato cambia cómo se interpreta tu trabajo.
       </p>
       <RadioGroup
@@ -2928,7 +2920,7 @@ function Step4Decision({
         {ENTREGA_OPTIONS.map((opt) => {
           const selected = value === opt.id;
           return (
-            <Card
+            <AppleCard
               key={opt.id}
               className="card-apple bg-[var(--surface)] cursor-pointer transition-all"
               style={
@@ -2939,9 +2931,8 @@ function Step4Decision({
                     }
                   : undefined
               }
-              shadow="none"
             >
-              <CardBody className="p-4">
+              <AppleCardBody className="p-4">
                 <Radio
                   value={opt.id}
                   size="md"
@@ -2951,16 +2942,16 @@ function Step4Decision({
                   }}
                 >
                   <div>
-                    <div className="ts-body font-medium text-[var(--text-primary)]">
+                    <div className="text-[15px] font-medium text-[var(--text-primary)]">
                       {opt.label}
                     </div>
-                    <div className="ts-subhead text-[var(--text-secondary)] mt-0.5">
+                    <div className="text-[13px] text-[var(--text-secondary)] mt-0.5">
                       {opt.sub}
                     </div>
                   </div>
                 </Radio>
-              </CardBody>
-            </Card>
+              </AppleCardBody>
+            </AppleCard>
           );
         })}
       </RadioGroup>
@@ -2974,28 +2965,28 @@ function Step5CamilaMessage() {
   return (
     <>
       <div className="eyebrow">Paso 05 · Camila te escribe</div>
-      <h2 className="display display-tight mt-6 text-[var(--text-primary)] ts-display sm:ts-display-lg">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         Una más para mañana.
       </h2>
-      <p className="mt-5 ts-headline text-[var(--text-secondary)] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         Al día siguiente, antes del lanzamiento, te llega esto.
       </p>
       <div className="mt-8 card-apple bg-[var(--surface)] p-6">
         <div className="flex items-start gap-4">
           <Avatar
             size="sm"
-            className="bg-[#ff5e62] text-white ts-subhead font-semibold flex-shrink-0"
+            className="bg-[var(--avatar-c-bg)] text-white text-[13px] font-semibold flex-shrink-0"
             name="C"
           />
           <div className="flex-1">
-            <div className="ts-footnote text-[var(--text-tertiary)]">
+            <div className="text-[12px] text-[var(--text-tertiary)]">
               <span className="text-[var(--text-primary)] font-medium">
                 Camila · VP of Growth
               </span>
               <span className="mx-1.5">·</span>
               <span className="mono">Vie 8:12 AM</span>
             </div>
-            <p className="mt-2 ts-body text-[var(--text-primary)] leading-[1.6]">
+            <p className="mt-2 text-[15px] text-[var(--text-primary)] leading-[1.6]">
               «Perfectos los ángulos. Una más:{" "}
               <span className="font-medium">
                 segmentemos por revenue_potential
@@ -3020,10 +3011,10 @@ function Step5Response({
   return (
     <>
       <div className="eyebrow">Paso 05 · Tu respuesta</div>
-      <h2 className="display display-tight mt-6 text-[var(--text-primary)] ts-display sm:ts-display-lg">
+      <h2 className="display display-tight mt-6 text-[var(--text-primary)] text-[32px] sm:text-[40px]">
         ¿Cómo respondes?
       </h2>
-      <p className="mt-5 ts-headline text-[var(--text-secondary)] leading-[1.55]">
+      <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
         Camila quiere priorizar el envío con un dato comercial del dataset.
         Responde como lo harías por Slack ahora mismo.
       </p>

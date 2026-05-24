@@ -102,7 +102,7 @@ export interface SearchInputProps extends InputProps {
 }
 
 /**
- * Rounded search input seen in the courses page.
+ * Rounded search input for case and dashboard search surfaces.
  *
  * ```tsx
  * <SearchInput placeholder="Buscar..." />

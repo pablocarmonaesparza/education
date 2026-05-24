@@ -15,10 +15,10 @@
 
 import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Button, Input } from "@heroui/react";
-import Link from "next/link";
+import { Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import { AuthNav } from "@/components/simulador/AuthNav";
+import { AppleButton, AppleInput } from "@/components/simulador/apple";
 import { createClient } from "@/lib/supabase/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import "../../(app)/simulador.css";
@@ -158,12 +158,16 @@ function LoginContent() {
     <div className="simulador-root min-h-screen surface-canvas">
       <AuthNav mode="login" next={next} />
 
-      <main className="px-6 py-12 min-h-[calc(100vh-3.5rem)] flex items-center justify-center">
-        <div className="w-full max-w-[400px]">
+      <main className="px-6 py-10 min-h-[calc(100vh-3.5rem)] flex items-center justify-center">
+        <div className="max-w-[400px] w-full mx-auto">
           <motion.div {...fadeUp} className="text-center">
-            <h1 className="display display-tight text-[40px] sm:text-[48px] text-[var(--text-primary)]">
-              Inicia sesión
+            <div className="eyebrow">Cuenta</div>
+            <h1 className="display display-tight mt-4 text-[28px] sm:text-[32px] text-[var(--text-primary)] leading-[1.1]">
+              Inicia sesión.
             </h1>
+            <p className="mt-3 text-[14px] text-[var(--text-secondary)] leading-[1.5]">
+              Continúa donde lo dejaste — diagnóstico, reporte o dashboard.
+            </p>
           </motion.div>
 
           {error && (
@@ -180,49 +184,39 @@ function LoginContent() {
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.08 }}
             onSubmit={handleSubmit}
-            className="mt-8 space-y-2.5"
+            className="mt-8 space-y-5"
           >
-            <Input
+            <AppleInput
+              label="Email"
               type="email"
               placeholder="email@empresa.com"
               value={email}
               onValueChange={setEmail}
-              size="lg"
-              radius="lg"
-              variant="bordered"
+              isRequired
+              size="md"
               autoComplete="email"
-              classNames={{
-                inputWrapper:
-                  "h-12 bg-[var(--surface)] border-[var(--border)] data-[hover=true]:bg-[var(--surface)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-                input: "text-[15px] text-[var(--text-primary)]",
-              }}
             />
 
-            <Input
+            <AppleInput
+              label="Contraseña"
               type="password"
               placeholder="Contraseña"
               value={password}
               onValueChange={setPassword}
-              size="lg"
-              radius="lg"
-              variant="bordered"
+              isRequired
+              size="md"
               autoComplete="current-password"
-              classNames={{
-                inputWrapper:
-                  "h-12 bg-[var(--surface)] border-[var(--border)] data-[hover=true]:bg-[var(--surface)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-                input: "text-[15px] text-[var(--text-primary)]",
-              }}
             />
 
-            <Button
+            <AppleButton
               type="submit"
               isDisabled={loading || !email || !password}
-              radius="md"
+              radius="sm"
               size="lg"
               className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none mt-2"
             >
               {loading ? "Iniciando sesión…" : "Continuar"}
-            </Button>
+            </AppleButton>
           </motion.form>
 
           <motion.div
@@ -242,13 +236,13 @@ function LoginContent() {
             transition={{ ...fadeUp.transition, delay: 0.14 }}
             className="mt-4"
           >
-            <Button
+            <AppleButton
               type="button"
               onPress={handleGoogleLogin}
               isDisabled={loading}
-              radius="md"
+              tone="secondary"
+              radius="sm"
               size="lg"
-              variant="bordered"
               className="w-full h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium gap-3 shadow-none"
             >
               <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" aria-hidden>
@@ -272,18 +266,19 @@ function LoginContent() {
               <span>
                 {loading ? "Conectando…" : "Continuar con Google"}
               </span>
-            </Button>
+            </AppleButton>
           </motion.div>
 
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.18 }}
-            className="mt-7 text-center text-[14px] text-[var(--text-secondary)]"
+            className="mt-10 text-center text-[14px] text-[var(--text-secondary)]"
           >
             ¿Aún no tienes cuenta?{" "}
             <Link
               href={`/auth/signup${next !== "/dashboard" ? `?next=${encodeURIComponent(next)}` : ""}`}
               className="text-[var(--accent)] hover:underline font-medium"
+              color="foreground"
             >
               Crear cuenta
             </Link>

@@ -5,7 +5,7 @@ import React from 'react';
 /* ───────────────────────────────────────────────────────────
    Design-system Section Header
    Repeated pattern: page title (h1) + subtitle (p)
-   Seen in: retos, courses, perfil, progress pages
+   Seen in: casos, reportes, manager dashboards y admin surfaces
    ─────────────────────────────────────────────────────────── */
 
 export interface SectionHeaderProps {
@@ -22,10 +22,10 @@ export interface SectionHeaderProps {
  * Consistent page / section header.
  *
  * ```tsx
- * <SectionHeader title="retos" subtitle="Practica lo que aprendes" />
+ * <SectionHeader title="casos" subtitle="Practica decisiones con IA bajo presión" />
  * <SectionHeader
- *   title="todos los cursos"
- *   subtitle="Explora el catálogo completo"
+ *   title="casos asignados"
+ *   subtitle="Explora el trabajo pendiente del equipo"
  *   action={<Button variant="primary" size="sm">Nuevo</Button>}
  * />
  * ```

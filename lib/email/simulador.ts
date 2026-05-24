@@ -9,10 +9,10 @@ import {
   emailTemplates,
   type EmailTemplate,
 } from "@/lib/simulador/copy/emails";
-import type { SendResult } from "@/lib/email/send";
 
 type TemplateValue = string | number | boolean | null | undefined;
 type TemplateVars = Record<string, TemplateValue>;
+type SendResult = { ok: true; id: string } | { ok: false; reason: string };
 
 interface SendSimuladorTemplateArgs {
   to: string;

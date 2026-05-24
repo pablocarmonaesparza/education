@@ -1,6 +1,11 @@
 "use client";
 
-import { Button, Card, CardBody, Link } from "@heroui/react";
+import { Link } from "@heroui/react";
+import {
+  AppleButton,
+  AppleCard,
+  AppleCardBody,
+} from "@/components/simulador/apple";
 import { motion } from "framer-motion";
 import { PublicNav } from "@/components/simulador/PublicNav";
 import {
@@ -33,7 +38,7 @@ export default function LandingPage() {
           <motion.h1
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.05 }}
-            className="display display-tight mt-6 text-[var(--text-primary)] ts-display-lg sm:ts-display-4xl md:ts-display-5xl"
+            className="display display-tight mt-6 text-[var(--text-primary)] text-[44px] sm:text-[64px] md:text-[80px]"
           >
             ¿Tu equipo usa IA
             <br />
@@ -43,7 +48,7 @@ export default function LandingPage() {
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.1 }}
-            className="mt-8 ts-body-lg sm:ts-body-xl text-[var(--text-secondary)] max-w-2xl mx-auto leading-[1.5]"
+            className="mt-8 text-[19px] sm:text-[21px] text-[var(--text-secondary)] max-w-2xl mx-auto leading-[1.5]"
           >
             Mide y mejora cómo tu equipo decide cuando usa IA en flujos reales.
             <br className="hidden sm:block" />
@@ -55,31 +60,31 @@ export default function LandingPage() {
             transition={{ ...fadeUp.transition, delay: 0.15 }}
             className="mt-12 flex flex-wrap items-center justify-center gap-3"
           >
-            <Button
+            <AppleButton
               as={Link}
               href="/auth/signup?next=%2Fonboarding%2Forg"
-              radius="md"
+              radius="sm"
               size="lg"
-              className="accent-bg text-white px-7 h-12 ts-body font-medium shadow-none hover:opacity-90"
+              className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
             >
               Agendar diagnóstico para mi equipo
-            </Button>
-            <Button
+            </AppleButton>
+            <AppleButton
               as={Link}
               href="/field-test/marketing-urgent-campaign-pii"
-              radius="md"
+              tone="secondary"
+              radius="sm"
               size="lg"
-              variant="bordered"
-              className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 ts-body font-medium"
+              className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
             >
               Probar 1 caso de muestra →
-            </Button>
+            </AppleButton>
           </motion.div>
 
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.2 }}
-            className="mt-10 ts-subhead text-[var(--text-tertiary)]"
+            className="mt-10 text-[13px] text-[var(--text-tertiary)]"
           >
             SaaS B2B mid-market · servicios profesionales · ecommerce · LATAM
           </motion.p>
@@ -101,9 +106,9 @@ export default function LandingPage() {
                 transition={{ ...fadeUp.transition, delay: i * 0.05 }}
                 className="bg-[var(--surface)] p-10 text-center"
               >
-                <div className="display ts-display-2xl sm:ts-display-4xl text-[var(--text-primary)]">{s.stat}</div>
-                <p className="mt-3 ts-body text-[var(--text-primary)] leading-snug">{s.label}</p>
-                <p className="mt-2 ts-footnote text-[var(--text-tertiary)]">{s.source}</p>
+                <div className="display text-[56px] sm:text-[64px] text-[var(--text-primary)]">{s.stat}</div>
+                <p className="mt-3 text-[15px] text-[var(--text-primary)] leading-snug">{s.label}</p>
+                <p className="mt-2 text-[12px] text-[var(--text-tertiary)]">{s.source}</p>
               </motion.div>
             ))}
           </div>
@@ -115,8 +120,8 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-6">
           <motion.div {...fadeUp} className="text-center mb-16">
             <span className="eyebrow">Cómo funciona</span>
-            <h2 className="display mt-4 ts-display sm:ts-display-lg text-[var(--text-primary)]">
-              Tres pasos, treinta días
+            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+              Tres pasos. Treinta días.
             </h2>
           </motion.div>
 
@@ -143,13 +148,13 @@ export default function LandingPage() {
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: 0.05 + i * 0.05 }}
               >
-                <div className="text-[var(--text-tertiary)] ts-subhead mono font-medium">
+                <div className="text-[var(--text-tertiary)] text-[13px] mono font-medium">
                   {step.n}
                 </div>
-                <h3 className="display mt-3 ts-title-2 text-[var(--text-primary)]">
+                <h3 className="display mt-3 text-[24px] text-[var(--text-primary)]">
                   {step.title}
                 </h3>
-                <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.6]">
+                <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
                   {step.body}
                 </p>
               </motion.div>
@@ -163,10 +168,10 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <motion.div {...fadeUp} className="text-center mb-16">
             <span className="eyebrow">Contenido del sprint</span>
-            <h2 className="display mt-4 ts-display sm:ts-display-lg text-[var(--text-primary)]">
-              Ocho casos, una tensión cada uno
+            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+              Ocho casos. Una tensión cada uno.
             </h2>
-            <p className="mt-5 ts-headline text-[var(--text-secondary)] max-w-2xl mx-auto">
+            <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-2xl mx-auto">
               Cada caso es un escenario real: deadline, dataset con PII, presión
               de autoridad. El equipo decide; nosotros evaluamos.
             </p>
@@ -179,36 +184,36 @@ export default function LandingPage() {
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: 0.03 * i }}
               >
-                <Card className="card-apple card-apple-interactive bg-[var(--surface)] shadow-none">
-                  <CardBody className="p-7">
+                <AppleCard className="card-apple card-apple-interactive bg-[var(--surface)] shadow-none">
+                  <AppleCardBody className="p-7">
                     <div className="flex items-start gap-4">
-                      <div className="ts-subhead mono font-medium text-[var(--text-tertiary)] flex-shrink-0 mt-1">
+                      <div className="text-[13px] mono font-medium text-[var(--text-tertiary)] flex-shrink-0 mt-1">
                         {String(c.order).padStart(2, "0")}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="ts-headline font-semibold text-[var(--text-primary)] tracking-tight leading-snug capitalize-first">
+                        <h3 className="text-[17px] font-semibold text-[var(--text-primary)] tracking-tight leading-snug capitalize-first">
                           {c.title.charAt(0).toUpperCase() + c.title.slice(1)}.
                         </h3>
-                        <p className="mt-1.5 ts-callout text-[var(--text-secondary)]">
+                        <p className="mt-1.5 text-[14px] text-[var(--text-secondary)]">
                           Tensión: {c.tension}.
                         </p>
                         <div className="mt-4 flex flex-wrap gap-1.5">
                           {c.dimensions.map((d) => (
                             <span
                               key={d}
-                              className="ts-caption-1 text-[var(--text-secondary)] bg-[var(--surface-3)] px-2.5 py-1 rounded-full capitalize"
+                              className="text-[11px] text-[var(--text-secondary)] bg-[var(--surface-3)] px-2.5 py-1 rounded-full capitalize"
                             >
                               {d}
                             </span>
                           ))}
-                          <span className="ts-caption-1 accent-text accent-bg-soft px-2.5 py-1 rounded-full font-medium capitalize">
+                          <span className="text-[11px] accent-text accent-bg-soft px-2.5 py-1 rounded-full font-medium capitalize">
                             {c.difficulty}
                           </span>
                         </div>
                       </div>
                     </div>
-                  </CardBody>
-                </Card>
+                  </AppleCardBody>
+                </AppleCard>
               </motion.div>
             ))}
           </div>
@@ -220,10 +225,10 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-6">
           <motion.div {...fadeUp} className="text-center mb-16">
             <span className="eyebrow">Resultado para managers</span>
-            <h2 className="display mt-4 ts-display sm:ts-display-lg text-[var(--text-primary)]">
+            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
               Cuatro acciones claras.
             </h2>
-            <p className="mt-5 ts-headline text-[var(--text-secondary)] max-w-2xl mx-auto">
+            <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-2xl mx-auto">
               Por persona y por equipo. Salida ejecutiva, no dashboard ornamental.
             </p>
           </motion.div>
@@ -235,18 +240,18 @@ export default function LandingPage() {
                 {...fadeUp}
                 transition={{ ...fadeUp.transition, delay: 0.04 * i }}
               >
-                <Card className="card-apple bg-[var(--surface)] shadow-none">
-                  <CardBody className="p-7">
-                    <h3 className="ts-body-lg font-semibold text-[var(--text-primary)] capitalize">
+                <AppleCard className="card-apple bg-[var(--surface)] shadow-none">
+                  <AppleCardBody className="p-7">
+                    <h3 className="text-[19px] font-semibold text-[var(--text-primary)] capitalize">
                       {a.label}.
                     </h3>
-                    <p className="mt-2 ts-body text-[var(--text-secondary)] leading-[1.55]">
+                    <p className="mt-2 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
                       {a.description.charAt(0).toUpperCase() +
                         a.description.slice(1)}
                       .
                     </p>
-                  </CardBody>
-                </Card>
+                  </AppleCardBody>
+                </AppleCard>
               </motion.div>
             ))}
           </div>
@@ -258,14 +263,14 @@ export default function LandingPage() {
         <div className="max-w-3xl mx-auto px-6 text-center">
           <motion.div {...fadeUp}>
             <span className="eyebrow">Precio</span>
-            <h2 className="display mt-4 ts-display sm:ts-display-lg text-[var(--text-primary)]">
+            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
               Desde{" "}
               <span className="accent-text">
                 ${SPRINT_META.pricing.fase_1_min_usd.toLocaleString("en-US")}
               </span>{" "}
               por sprint.
             </h2>
-            <p className="mt-5 ts-headline text-[var(--text-secondary)] max-w-xl mx-auto">
+            <p className="mt-5 text-[17px] text-[var(--text-secondary)] max-w-xl mx-auto">
               Fase 1 — diagnóstico operativo: $
               {SPRINT_META.pricing.fase_1_min_usd.toLocaleString("en-US")}–$
               {SPRINT_META.pricing.fase_1_max_usd.toLocaleString("en-US")} para
@@ -283,35 +288,168 @@ export default function LandingPage() {
             transition={{ ...fadeUp.transition, delay: 0.1 }}
             className="mt-12 flex flex-wrap items-center justify-center gap-3"
           >
-            <Button
+            <AppleButton
               as={Link}
               href="/auth/signup?next=%2Fonboarding%2Forg"
-              radius="md"
+              radius="sm"
               size="lg"
-              className="accent-bg text-white px-7 h-12 ts-body font-medium shadow-none hover:opacity-90"
+              className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
             >
               Agendar diagnóstico →
-            </Button>
-            <Button
+            </AppleButton>
+            <AppleButton
               as={Link}
               href="/field-test/marketing-urgent-campaign-pii"
-              radius="md"
+              tone="secondary"
+              radius="sm"
               size="lg"
-              variant="bordered"
-              className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 ts-body font-medium"
+              className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
             >
               Probar 1 caso
-            </Button>
+            </AppleButton>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ============ FAQ ============ */}
+      <section id="faq" className="surface-canvas section-pad scroll-mt-20">
+        <div className="max-w-3xl mx-auto px-6">
+          <motion.div {...fadeUp} className="text-center mb-12">
+            <span className="eyebrow">Preguntas frecuentes</span>
+            <h2 className="display mt-4 text-[36px] sm:text-[48px] text-[var(--text-primary)]">
+              Lo que más nos preguntan.
+            </h2>
+          </motion.div>
+
+          <div className="divide-y divide-[var(--hairline)] border-y border-[var(--hairline)]">
+            {[
+              {
+                q: "¿Es certificación?",
+                a: "No. Es diagnóstico operativo de criterio en uso de IA. No acreditamos, medimos. El reporte se traduce en acciones concretas, no en un certificado de pared.",
+              },
+              {
+                q: "¿Qué LLM usan para evaluar?",
+                a: "Opus 4.5 con rúbrica versionada. Risk events high pasan por review de humano staff Itera antes de publicarse en el reporte. Cada evaluación queda auditable.",
+              },
+              {
+                q: "¿Procesan PII real de mis clientes?",
+                a: "No. Los casos usan datasets sintéticos. Tu equipo no introduce información personal de clientes reales en el simulador. Compliance LATAM (LFPDPPP MX 2025, Ley 1581 CO).",
+              },
+              {
+                q: "¿Pueden facturar en MX, CO o AR?",
+                a: "Sí. Comprador paga en USD vía Stripe. Para factura fiscal mexicana, colombiana o argentina, respondes al recibo con tu RFC/NIT/CUIT y emitimos en 1-2 días hábiles.",
+              },
+              {
+                q: "¿Política de refunds?",
+                a: "Reembolso completo dentro de 7 días post-cargo si nadie de tu equipo empezó el caso vivo. Pasado ese plazo, convertimos a crédito para tu próximo sprint.",
+              },
+            ].map((item, i) => (
+              <motion.details
+                key={item.q}
+                {...fadeUp}
+                transition={{ ...fadeUp.transition, delay: 0.03 * i }}
+                className="group py-5 [&_summary::-webkit-details-marker]:hidden"
+              >
+                <summary className="flex items-center justify-between cursor-pointer text-[17px] font-medium text-[var(--text-primary)]">
+                  <span>{item.q}</span>
+                  <span className="ml-4 text-[var(--text-tertiary)] transition-transform group-open:rotate-45 text-[20px] leading-none">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-3 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
+                  {item.a}
+                </p>
+              </motion.details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ FINAL CTA STRIP ============ */}
+      <section className="surface-tinted section-pad-sm">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <motion.div {...fadeUp}>
+            <h2 className="display text-[32px] sm:text-[40px] text-[var(--text-primary)]">
+              ¿Ya tienes un sprint en la mira?
+            </h2>
+            <p className="mt-4 text-[16px] text-[var(--text-secondary)] max-w-xl mx-auto">
+              Treinta días, cinco a cincuenta personas, un reporte ejecutivo accionable.
+            </p>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+              <AppleButton
+                as={Link}
+                href="/auth/signup?next=%2Fonboarding%2Forg"
+                radius="sm"
+                size="lg"
+                className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none hover:opacity-90"
+              >
+                Agendar diagnóstico
+              </AppleButton>
+              <AppleButton
+                as={Link}
+                href="mailto:hola@itera.la"
+                tone="ghost"
+                radius="sm"
+                size="lg"
+                className="text-[var(--text-secondary)] px-5 h-12 text-[15px] font-medium hover:text-[var(--text-primary)]"
+              >
+                Hablar con ventas →
+              </AppleButton>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* ============ FOOTER ============ */}
-      <footer className="border-t border-[var(--hairline)] py-12 surface-canvas">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="ts-subhead text-[var(--text-tertiary)]">© 2026 Itera</p>
-          <div className="flex items-center gap-6 ts-subhead text-[var(--text-tertiary)]">
-            <span>{SPRINT_META.geoTarget.join(" · ")}</span>
+      <footer className="border-t border-[var(--hairline)] py-16 surface-canvas">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+            <div>
+              <p className="text-[12px] mono uppercase tracking-widest text-[var(--text-tertiary)] mb-4">
+                Producto
+              </p>
+              <ul className="space-y-2 text-[14px] text-[var(--text-secondary)]">
+                <li><a href="#como-funciona" className="hover:text-[var(--text-primary)]">Cómo funciona</a></li>
+                <li><a href="#casos" className="hover:text-[var(--text-primary)]">Casos del sprint</a></li>
+                <li><a href="#precio" className="hover:text-[var(--text-primary)]">Precios</a></li>
+                <li><a href="/field-test/marketing-urgent-campaign-pii" className="hover:text-[var(--text-primary)]">Probar demo</a></li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-[12px] mono uppercase tracking-widest text-[var(--text-tertiary)] mb-4">
+                Empresa
+              </p>
+              <ul className="space-y-2 text-[14px] text-[var(--text-secondary)]">
+                <li><a href="#faq" className="hover:text-[var(--text-primary)]">FAQ</a></li>
+                <li><a href="mailto:hola@itera.la" className="hover:text-[var(--text-primary)]">Contacto comercial</a></li>
+                <li><a href="mailto:soporte@itera.la" className="hover:text-[var(--text-primary)]">Soporte</a></li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-[12px] mono uppercase tracking-widest text-[var(--text-tertiary)] mb-4">
+                Legal
+              </p>
+              <ul className="space-y-2 text-[14px] text-[var(--text-secondary)]">
+                <li><a href="/privacy" className="hover:text-[var(--text-primary)]">Privacidad</a></li>
+                <li><a href="/terms" className="hover:text-[var(--text-primary)]">Términos</a></li>
+                <li><a href="mailto:legal@itera.la" className="hover:text-[var(--text-primary)]">DPA enterprise</a></li>
+              </ul>
+            </div>
+            <div>
+              <p className="text-[12px] mono uppercase tracking-widest text-[var(--text-tertiary)] mb-4">
+                Acceso
+              </p>
+              <ul className="space-y-2 text-[14px] text-[var(--text-secondary)]">
+                <li><a href="/auth/login" className="hover:text-[var(--text-primary)]">Iniciar sesión</a></li>
+                <li><a href="/auth/signup" className="hover:text-[var(--text-primary)]">Crear cuenta</a></li>
+                <li><a href="/dashboard" className="hover:text-[var(--text-primary)]">Dashboard manager</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-12 pt-8 border-t border-[var(--hairline)] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-[13px] text-[var(--text-tertiary)]">© 2026 Itera. Diagnóstico operativo de criterio en IA.</p>
+            <p className="text-[13px] text-[var(--text-tertiary)]">{SPRINT_META.geoTarget.join(" · ")}</p>
           </div>
         </div>
       </footer>

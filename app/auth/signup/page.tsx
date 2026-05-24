@@ -15,10 +15,10 @@
 
 import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Button, Input } from "@heroui/react";
-import Link from "next/link";
+import { Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import { AuthNav } from "@/components/simulador/AuthNav";
+import { AppleButton, AppleInput } from "@/components/simulador/apple";
 import { createClient } from "@/lib/supabase/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import "../../(app)/simulador.css";
@@ -170,12 +170,16 @@ function SignupContent() {
     <div className="simulador-root min-h-screen surface-canvas">
       <AuthNav mode="signup" next={next} />
 
-      <main className="px-6 py-12 min-h-[calc(100vh-3.5rem)] flex items-center justify-center">
-        <div className="w-full max-w-[400px]">
+      <main className="px-6 py-10 min-h-[calc(100vh-3.5rem)] flex items-center justify-center">
+        <div className="max-w-[400px] w-full mx-auto">
           <motion.div {...fadeUp} className="text-center">
-            <h1 className="display display-tight text-[40px] sm:text-[48px] text-[var(--text-primary)]">
-              Empieza tu diagnóstico
+            <div className="eyebrow">Crear cuenta</div>
+            <h1 className="display display-tight mt-4 text-[28px] sm:text-[32px] text-[var(--text-primary)] leading-[1.1]">
+              Empieza tu diagnóstico.
             </h1>
+            <p className="mt-3 text-[14px] text-[var(--text-secondary)] leading-[1.5]">
+              30 segundos. Luego configuras tu organización e invitas a tu equipo.
+            </p>
           </motion.div>
 
           {error && (
@@ -202,65 +206,50 @@ function SignupContent() {
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.08 }}
             onSubmit={handleSubmit}
-            className="mt-8 space-y-2.5"
+            className="mt-8 space-y-5"
           >
-            <Input
+            <AppleInput
+              label="Nombre completo"
               type="text"
               placeholder="Tu nombre"
               value={name}
               onValueChange={setName}
-              size="lg"
-              radius="lg"
-              variant="bordered"
+              isRequired
+              size="md"
               autoComplete="name"
-              classNames={{
-                inputWrapper:
-                  "h-12 bg-[var(--surface)] border-[var(--border)] data-[hover=true]:bg-[var(--surface)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-                input: "text-[15px] text-[var(--text-primary)]",
-              }}
             />
 
-            <Input
+            <AppleInput
+              label="Email"
               type="email"
               placeholder="email@empresa.com"
               value={email}
               onValueChange={setEmail}
-              size="lg"
-              radius="lg"
-              variant="bordered"
+              isRequired
+              size="md"
               autoComplete="email"
-              classNames={{
-                inputWrapper:
-                  "h-12 bg-[var(--surface)] border-[var(--border)] data-[hover=true]:bg-[var(--surface)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-                input: "text-[15px] text-[var(--text-primary)]",
-              }}
             />
 
-            <Input
+            <AppleInput
+              label="Contraseña"
               type="password"
               placeholder="Mínimo 6 caracteres"
               value={password}
               onValueChange={setPassword}
-              size="lg"
-              radius="lg"
-              variant="bordered"
+              isRequired
+              size="md"
               autoComplete="new-password"
-              classNames={{
-                inputWrapper:
-                  "h-12 bg-[var(--surface)] border-[var(--border)] data-[hover=true]:bg-[var(--surface)] group-data-[focus=true]:border-[var(--accent)] shadow-none",
-                input: "text-[15px] text-[var(--text-primary)]",
-              }}
             />
 
-            <Button
+            <AppleButton
               type="submit"
               isDisabled={loading || !email || !password || !name}
-              radius="md"
+              radius="sm"
               size="lg"
               className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none mt-2"
             >
               {loading ? "Creando cuenta…" : "Crear cuenta"}
-            </Button>
+            </AppleButton>
           </motion.form>
 
           <motion.div
@@ -280,13 +269,13 @@ function SignupContent() {
             transition={{ ...fadeUp.transition, delay: 0.14 }}
             className="mt-4"
           >
-            <Button
+            <AppleButton
               type="button"
               onPress={handleGoogleSignup}
               isDisabled={loading}
-              radius="md"
+              tone="secondary"
+              radius="sm"
               size="lg"
-              variant="bordered"
               className="w-full h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium gap-3 shadow-none"
             >
               <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" aria-hidden>
@@ -310,18 +299,19 @@ function SignupContent() {
               <span>
                 {loading ? "Conectando…" : "Continuar con Google"}
               </span>
-            </Button>
+            </AppleButton>
           </motion.div>
 
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.18 }}
-            className="mt-7 text-center text-[14px] text-[var(--text-secondary)]"
+            className="mt-10 text-center text-[14px] text-[var(--text-secondary)]"
           >
             ¿Ya tienes cuenta?{" "}
             <Link
               href={`/auth/login${next !== "/onboarding/org" ? `?next=${encodeURIComponent(next)}` : ""}`}
               className="text-[var(--accent)] hover:underline font-medium"
+              color="foreground"
             >
               Inicia sesión
             </Link>
@@ -330,15 +320,23 @@ function SignupContent() {
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.22 }}
-            className="mt-5 text-center text-[12px] text-[var(--text-tertiary)] leading-[1.55]"
+            className="mt-12 text-center text-[12px] text-[var(--text-tertiary)] leading-[1.55]"
           >
             Al continuar aceptas nuestros{" "}
-            <Link href="/terms" className="underline hover:opacity-70 transition-opacity">
-              Términos
+            <Link
+              href="/terms"
+              className="underline"
+              color="foreground"
+            >
+              términos
             </Link>{" "}
             y la{" "}
-            <Link href="/privacy" className="underline hover:opacity-70 transition-opacity">
-              Política de privacidad
+            <Link
+              href="/privacy"
+              className="underline"
+              color="foreground"
+            >
+              política de privacidad
             </Link>
             .
           </motion.p>

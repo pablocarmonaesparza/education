@@ -9,30 +9,31 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Input, Select, SelectItem } from "@heroui/react";
+import { SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
-import { OnboardingNav } from "@/components/simulador/OnboardingNav";
+import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import {
+  AppleButton,
+  AppleInput,
+  AppleSelect,
+} from "@/components/simulador/apple";
 
 const DEPARTMENTS = [
   { key: "marketing", label: "Marketing / Growth" },
-  { key: "operations", label: "Operaciones" },
-  { key: "sales", label: "Ventas" },
+  { key: "operations", label: "Operations" },
+  { key: "sales", label: "Sales" },
   { key: "customer_success", label: "Customer Success" },
-  { key: "engineering", label: "Ingeniería" },
+  { key: "engineering", label: "Engineering" },
   { key: "people_hr", label: "People / HR" },
   { key: "otro", label: "Otro" },
 ];
-
-const DEPARTMENT_LABELS: Record<string, string> = Object.fromEntries(
-  DEPARTMENTS.map((d) => [d.key, d.label]),
-);
 
 export default function OnboardingTeamPage() {
   const router = useRouter();
   const [orgId, setOrgId] = useState<string | null>(null);
   const [orgName, setOrgName] = useState("");
-  const [name, setName] = useState("");
-  const [department, setDepartment] = useState("");
+  const [name, setName] = useState("Marketing");
+  const [department, setDepartment] = useState("marketing");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,17 +48,9 @@ export default function OnboardingTeamPage() {
     setOrgName(n ?? "");
   }, [router]);
 
-  // El nombre del team se deriva del Select salvo cuando es "otro",
-  // que pide nombre custom al user. Evita el doble-tipeo del patrón viejo
-  // (Input + Select que decían la misma info).
-  const computedTeamName =
-    department === "otro" ? name.trim() : DEPARTMENT_LABELS[department] ?? "";
-
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!orgId) return;
-    if (!department) return;
-    if (department === "otro" && !name.trim()) return;
     setError(null);
     setSubmitting(true);
     try {
@@ -65,7 +58,7 @@ export default function OnboardingTeamPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: computedTeamName,
+          name: name.trim(),
           department_key: department,
         }),
       });
@@ -85,7 +78,7 @@ export default function OnboardingTeamPage() {
 
   return (
     <>
-      <OnboardingNav />
+      <SurfaceNav />
       <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -93,40 +86,43 @@ export default function OnboardingTeamPage() {
           transition={{ duration: 0.4 }}
           className="max-w-xl w-full"
         >
-          <div className="eyebrow mb-4">Paso 2 de 5</div>
+          <div className="eyebrow mb-4">
+            Paso 2 de 5 · Equipo dentro de {orgName || "tu organización"}
+          </div>
           <h1 className="display display-tight text-[var(--text-primary)] text-[32px] sm:text-[40px]">
             ¿Qué equipo vas a diagnosticar primero?
           </h1>
+          <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
+            El caso 1 está calibrado para Marketing / Growth. Si tu equipo es
+            otro, sigamos — vamos a crear casos por industria/rol más
+            adelante.
+          </p>
 
-          <form onSubmit={onSubmit} className="mt-10 space-y-3">
-            <Select
-              placeholder="Función"
-              aria-label="Función del equipo"
-              selectedKeys={department ? [department] : []}
+          <form onSubmit={onSubmit} className="mt-10 space-y-5">
+            <AppleInput
+              label="Nombre del equipo"
+              value={name}
+              onValueChange={setName}
+              placeholder="Marketing"
+              isRequired
+              variant="bordered"
+              size="lg"
+              autoFocus
+            />
+
+            <AppleSelect
+              label="Función"
+              selectedKeys={[department]}
               onSelectionChange={(keys) =>
                 setDepartment(Array.from(keys)[0] as string)
               }
               variant="bordered"
-              radius="lg"
               size="lg"
-              autoFocus
             >
               {DEPARTMENTS.map((d) => (
                 <SelectItem key={d.key}>{d.label}</SelectItem>
               ))}
-            </Select>
-
-            {department === "otro" && (
-              <Input
-                value={name}
-                onValueChange={setName}
-                placeholder="Nombre del equipo"
-                variant="bordered"
-                radius="lg"
-                size="lg"
-                autoFocus
-              />
-            )}
+            </AppleSelect>
 
             {error && (
               <div className="text-[13px] text-[var(--band-b-text)] bg-[var(--band-b-bg)] px-3 py-2 rounded-lg">
@@ -135,29 +131,26 @@ export default function OnboardingTeamPage() {
             )}
 
             <div className="pt-4 flex gap-3">
-              <Button
+              <AppleButton
                 onPress={() => router.push("/onboarding/org")}
+                tone="secondary"
                 variant="bordered"
-                radius="md"
+                radius="sm"
                 size="lg"
                 className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
               >
                 ← Atrás
-              </Button>
-              <Button
+              </AppleButton>
+              <AppleButton
                 type="submit"
                 isLoading={submitting}
-                isDisabled={
-                  !department ||
-                  (department === "otro" && !name.trim()) ||
-                  submitting
-                }
-                radius="md"
+                isDisabled={!name.trim() || submitting}
+                radius="sm"
                 size="lg"
                 className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
               >
                 Continuar →
-              </Button>
+              </AppleButton>
             </div>
           </form>
         </motion.div>

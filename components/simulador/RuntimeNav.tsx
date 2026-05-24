@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { Button, Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
+import { Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 import type { RuntimeSessionMode } from "@/lib/simulador/use-session";
+import { AppleButton } from "@/components/simulador/apple";
 
 export function RuntimeNav({ mode }: { mode: RuntimeSessionMode }) {
   const isFieldTest = mode === "field_test";
@@ -37,26 +38,25 @@ export function RuntimeNav({ mode }: { mode: RuntimeSessionMode }) {
 
       <NavbarContent justify="end">
         {isFieldTest ? (
-          <Button
+          <AppleButton
             as={Link}
             href="/auth/signup?next=%2Fonboarding%2Forg"
-            radius="md"
             size="sm"
-            className="accent-bg text-white ts-subhead font-medium h-9 px-4 shadow-none"
+            tone="primary"
+            className="accent-bg text-white text-[13.5px] font-medium h-9 px-4 shadow-none"
           >
             Crear cuenta
-          </Button>
+          </AppleButton>
         ) : (
-          <Button
+          <AppleButton
             as={Link}
             href="/dashboard"
-            radius="md"
             size="sm"
-            variant="light"
-            className="ts-subhead font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
+            tone="ghost"
+            className="text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
           >
             Dashboard
-          </Button>
+          </AppleButton>
         )}
       </NavbarContent>
     </Navbar>

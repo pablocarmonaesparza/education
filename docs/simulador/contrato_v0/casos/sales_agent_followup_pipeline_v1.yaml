@@ -1,0 +1,329 @@
+case_template:
+  id: sales_agent_followup_pipeline
+  version: 1
+  status: ready
+  title: "agente de follow-up para pipeline comercial"
+  locale: es-MX
+  difficulty: advanced
+  level_primary: 3
+  level_advanced_variant: 3
+  career_key: sales
+  archetype_ref: speed-to-action-vs-validation
+  rubric_ref: rubric_case_factory_v1
+  rubric_version_used: 1.0.0
+  target_role: [sales_ops_manager, revenue_operations, sales_manager]
+  duration_estimate_min: 24
+
+  case_factory_meta:
+    level: N3
+    level_name: "Agentes / Produccion y optimizacion"
+    freshness:
+      type: current
+      evergreen_weight: 30
+      current_weight: 70
+      decay_signal: "Depende de capacidades actuales de agentes conectados a CRM y email."
+      last_verified_at: 2026-05-20
+      refresh_due_at: 2026-08-20
+    tags:
+      departments: [sales, operations]
+      industries: [saas_b2b, professional_services]
+      role_families: [manager, specialist]
+      seniority: [mid, senior, manager]
+      tools: [chatgpt, claude, hubspot, gmail, slack, zapier, n8n]
+    exercise_types:
+      - data_table_triage
+      - workflow_builder
+      - agent_brief_builder
+      - permission_matrix
+      - run_log_review
+      - tradeoff_decision_memo
+    manager_outcome:
+      primary_question: "Puede delegar follow-up comercial a un agente sin perder control, privacidad ni confianza del cliente?"
+      assignment_brief: "Asigna este caso cuando quieras saber si alguien de Sales Ops o RevOps puede delegar follow-up comercial a un agente sin perder control sobre datos, aprobaciones y confianza del cliente. El resultado te dira si esa persona puede pilotar automatizacion en pipeline, si necesita practica en limites de autonomia o si conviene pausar el uso de agentes hasta reforzar controles."
+      business_metric: "tiempo de respuesta a SQLs"
+      risk_metric: "mensajes externos enviados sin approval o con datos sensibles"
+      expected_signal: "distingue automatizacion util de autonomia riesgosa"
+    time_pressure:
+      mode: fixed_timer
+      total_seconds: 1440
+      visible_to_participant: true
+      timer_start: after_context_ack
+      overtime_policy: allow_submit_with_overtime_flag
+      manager_signal: "decide con urgencia real sin saltarse privacidad, validacion ni approval gates"
+      measured_metrics:
+        - total_elapsed_seconds
+        - step_elapsed_seconds
+        - time_to_first_action_seconds
+        - review_time_ratio
+        - overtime_seconds
+      scoring_rule: "la velocidad solo mejora la lectura de impacto si no hay risk_event high"
+
+  freshness:
+    type: current
+    evergreen_weight: 30
+    current_weight: 70
+    decay_signal: "Capacidades de agentes CRM/email cambian rapido."
+    last_verified_at: 2026-05-20
+    refresh_due_at: 2026-08-20
+
+  expected_manager_action:
+    primary: entrenar
+    alternatives: [pilotar, pausar, escalar]
+    manager_use: "identificar si el equipo puede operar agentes con gates humanos y monitoreo."
+
+  required_template_vars:
+    - company_name
+    - crm_name
+    - email_tool
+    - stakeholder_name
+
+  context_template:
+    role_play: >
+      Eres Sales Ops Manager en {{company_name}}, SaaS B2B LATAM. El VP de
+      Sales quiere que un agente responda SQLs en menos de dos horas usando
+      {{crm_name}} y {{email_tool}}.
+    scenario: >
+      El equipo perdio 18 oportunidades el mes pasado por follow-up lento. Hay
+      presion para automatizar hoy, pero el CRM tiene datos personales,
+      notas comerciales sensibles y oportunidades enterprise.
+    pressure:
+      - "demo con el VP en 90 minutos"
+      - "AEs quieren que el agente envie emails sin revisar"
+      - "Legal pidio no exponer datos innecesarios a modelos externos"
+      - "RevOps necesita medir impacto en tiempo de respuesta y conversion"
+    stakeholders:
+      - VP Sales
+      - Account Executives
+      - Legal Ops
+      - RevOps Analyst
+
+  data_policy:
+    pii_fields: [contact_name, email, phone]
+    confidential_fields: [deal_value_usd, internal_notes, competitor_mentioned]
+    allowed_transformations: [drop, bucketize, summarize, hash, keep]
+    must_not_send_to_model: [email, phone, internal_notes]
+
+  telemetry_required:
+    - case_started
+    - step_completed
+    - risk_event_detected
+    - report_viewed
+    - resim_assigned
+
+  inputs_spec:
+    - kind: crm_table
+      name: pipeline_sample
+      schema:
+        columns:
+          - contact_name
+          - email
+          - company
+          - deal_stage
+          - deal_value_usd
+          - last_touch_days
+          - internal_notes
+          - competitor_mentioned
+    - kind: policy_excerpt
+      name: ai_usage_policy
+      schema:
+        fields: [allowed_data, approval_required, external_send_policy]
+    - kind: agent_log
+      name: dry_run_log
+      schema:
+        fields: [lead_id, proposed_action, reason, confidence, error]
+
+  output_spec:
+    type: agent_launch_memo
+    required_sections:
+      - data_minimization_plan
+      - workflow_steps
+      - permission_matrix
+      - monitoring_and_rollback
+      - executive_recommendation
+
+  failure_modes:
+    - "Permite envio externo sin approval gate."
+    - "Incluye email, telefono o notas internas en el prompt."
+    - "No define logs, monitoreo, rollback ni owner."
+    - "Optimiza velocidad sin medir conversion o confianza."
+
+  evaluation_meta:
+    criteria_weights:
+      contexto: 10
+      datos: 20
+      ejecucion_ia: 22
+      validacion: 16
+      juicio: 20
+      impacto: 12
+    judge_prompt_ref: judge_prompt_sales_agent_followup_v1
+    confidence_threshold: 0.7
+
+  steps:
+    - id: 1
+      step_key: datos
+      type: data_scope
+      section_label: Datos
+      exercise_type: data_table_triage
+      target_seconds: 240
+      prompt: "Elige que campos del CRM puede usar el agente y que transformacion requiere cada uno."
+      expected_action: "minimizar datos antes de construir el agente"
+      evaluates: [datos, juicio]
+      fields:
+        contact_name: [drop, hash]
+        email: [drop, hash]
+        company: [keep, bucketize]
+        deal_stage: [keep]
+        deal_value_usd: [bucketize, drop]
+        last_touch_days: [keep]
+        internal_notes: [drop, summarize]
+        competitor_mentioned: [bucketize, drop]
+
+    - id: 2
+      step_key: ia
+      type: llm_beat
+      section_label: IA
+      exercise_type: agent_brief_builder
+      target_seconds: 420
+      max_turns: 2
+      prompt: "Redacta el brief del agente: objetivo, inputs permitidos, salida esperada y limites."
+      expected_action: "definir un agente con autonomia limitada"
+      evaluates_prompt: [contexto, ejecucion_ia, datos]
+      followup:
+        prompt: "El modelo propone enviar emails automaticos si confidence > 0.8. Que cambias?"
+        evaluates: [validacion, juicio]
+
+    - id: 3
+      step_key: revision
+      type: artifact_review
+      section_label: Revision
+      exercise_type: permission_matrix
+      target_seconds: 300
+      prompt: "Revisa esta matriz de permisos propuesta para el agente."
+      expected_action: "marcar permisos peligrosos y missing gates"
+      evaluates: [validacion, juicio, datos]
+      artifact_segments:
+        - id: read_crm
+          text: "Leer deal_stage, last_touch_days y company."
+        - id: read_sensitive_notes
+          text: "Leer internal_notes para personalizar objeciones."
+        - id: draft_email
+          text: "Crear borrador de email para AE."
+        - id: send_email
+          text: "Enviar email automaticamente si confidence > 0.8."
+        - id: update_crm
+          text: "Actualizar CRM con razon del siguiente paso."
+      target_flags:
+        - read_sensitive_notes
+        - send_email
+
+    - id: 4
+      step_key: decision
+      type: decision_select
+      section_label: Decision
+      exercise_type: tradeoff_decision_memo
+      target_seconds: 180
+      prompt: "El VP quiere maximizar velocidad. Elige una configuracion para piloto."
+      expected_action: "elegir tradeoff defendible"
+      evaluates: [juicio, impacto, ejecucion_ia]
+      options:
+        - id: full_auto
+          label: "Enviar automaticamente a todos los SQLs con confidence alto."
+          tradeoff: "maxima velocidad, alto riesgo de confianza y datos."
+        - id: draft_with_approval
+          label: "Crear borradores, requerir aprobacion humana para envio externo."
+          tradeoff: "reduce riesgo, mantiene ahorro operativo."
+        - id: internal_only
+          label: "Solo resumir leads internamente, sin crear emails."
+          tradeoff: "muy seguro, menor impacto comercial."
+        - id: pause_project
+          label: "Pausar todo hasta tener DPA y policy nueva."
+          tradeoff: "seguro, pero no resuelve follow-up lento."
+
+    - id: 5
+      step_key: revision_logs
+      type: artifact_review
+      section_label: Revision
+      exercise_type: run_log_review
+      target_seconds: 300
+      prompt: "Revisa logs del dry-run y marca que eventos bloquean el piloto."
+      expected_action: "detectar fallas de monitoreo y datos"
+      evaluates: [validacion, juicio, impacto]
+      artifact_segments:
+        - id: log_ok
+          text: "Lead L-204: draft creado, no enviado, owner AE asignado."
+        - id: log_sensitive
+          text: "Lead L-311: prompt incluyo email y notas internas para personalizacion."
+        - id: log_loop
+          text: "Lead L-419: agente reintento 6 veces por error de CRM."
+        - id: log_metric
+          text: "No se registro si el borrador redujo tiempo de respuesta."
+      target_flags:
+        - log_sensitive
+        - log_loop
+        - log_metric
+
+    - id: 6
+      step_key: respuesta
+      type: decision_open_short
+      section_label: Respuesta
+      exercise_type: tradeoff_decision_memo
+      target_seconds: 240
+      prompt: "Escribe un memo corto al VP: decision, controles, metrica y siguiente paso."
+      expected_action: "traducir criterio a accion manager-ready"
+      max_chars: 700
+      evaluates: [contexto, juicio, impacto]
+
+  evidence_emitted:
+    - kind: readiness_dimension_scores
+      shape: { contexto, datos, ejecucion_ia, validacion, juicio, impacto }
+      emitted_when: evaluation_completed
+    - kind: risk_events_detected
+      shape: { type, severity, dimension, evidence_text, step_key }
+      emitted_when: evaluation_completed
+    - kind: decision_replay
+      shape: { selected_options, annotated_artifacts, final_memo }
+      emitted_when: evaluation_completed
+    - kind: transfer_delta
+      shape: { primary_session_id, resim_session_id, delta_per_dimension, delta_global, narrative }
+      emitted_when: resim_completed_after_primary
+    - kind: manager_recommendation
+      shape: { action, rationale, controls, next_case }
+      emitted_when: report_generated
+    - kind: time_pressure_metrics
+      shape: { total_elapsed_seconds, step_elapsed_seconds, review_time_ratio, overtime_seconds }
+      emitted_when: evaluation_completed
+
+  gap_definitions:
+    privacy_exposure:
+      dimension: datos
+      severity: high
+      triggered_by:
+        - "keeps email or phone in model prompt"
+        - "allows agent to read internal_notes"
+    agent_overreach:
+      dimension: juicio
+      severity: high
+      triggered_by:
+        - "allows external send without human approval"
+    missing_agent_monitoring:
+      dimension: validacion
+      severity: medium
+      triggered_by:
+        - "does not flag retry loop"
+        - "does not define logs or rollback"
+    weak_impact_translation:
+      dimension: impacto
+      severity: medium
+      triggered_by:
+        - "final memo has no owner, metric, or next step"
+
+  practice_beats:
+    privacy_exposure: practice_agent_data_minimization_v1
+    agent_overreach: practice_agent_permission_boundaries_v1
+    missing_agent_monitoring: practice_agent_log_review_v1
+    weak_impact_translation: practice_executive_impact_memo_v1
+
+  resimulation_spec:
+    requires_variant_with_role: resimulation
+    transfer_principle: "mismo control de autonomia, distinto canal y stakeholder"
+    scoring_rule: "misma rubrica y mismos pesos entre primary y resim"

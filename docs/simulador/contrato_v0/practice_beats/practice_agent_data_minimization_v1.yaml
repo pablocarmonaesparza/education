@@ -1,0 +1,18 @@
+practice_beat:
+  id: practice_agent_data_minimization_v1
+  status: ready
+  dimension: datos
+  level: 3
+  career_key: sales
+  triggered_by_gap: [privacy_exposure]
+  duration_max_seconds: 240
+  principle_card:
+    headline: "minimiza datos antes de delegar"
+    body: "un agente no debe ver mas informacion de la necesaria para decidir su siguiente accion."
+  practice_exercise:
+    type: data_table_triage
+    prompt: "Clasifica 8 campos CRM en keep, bucketize, summarize o drop."
+  completion_criteria: "email, phone e internal_notes nunca quedan como keep."
+  exit:
+    contributes_to_resim_score: true
+

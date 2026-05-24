@@ -10,9 +10,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Input, Select, SelectItem } from "@heroui/react";
+import { SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
-import { OnboardingNav } from "@/components/simulador/OnboardingNav";
+import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import {
+  AppleButton,
+  AppleInput,
+  AppleSelect,
+} from "@/components/simulador/apple";
 
 const INDUSTRIES = [
   { key: "saas_b2b", label: "SaaS B2B" },
@@ -35,21 +40,19 @@ const REGIONS = [
 ];
 
 const SIZES = [
-  { key: "1-10", label: "1–10 empleados" },
-  { key: "11-50", label: "11–50 empleados" },
-  { key: "51-100", label: "51–100 empleados" },
-  { key: "101-300", label: "101–300 empleados" },
-  { key: "301-500", label: "301–500 empleados" },
-  { key: "501+", label: "501+ empleados" },
+  { key: "10-49", label: "10–49 empleados" },
+  { key: "50-100", label: "50–100 empleados" },
+  { key: "100-300", label: "100–300 empleados" },
+  { key: "300-500", label: "300–500 empleados" },
+  { key: "500+", label: "500+ empleados" },
 ];
 
 export default function OnboardingOrgPage() {
   const router = useRouter();
   const [name, setName] = useState("");
-  const [userJobTitle, setUserJobTitle] = useState("");
-  const [industry, setIndustry] = useState<string>("");
-  const [region, setRegion] = useState<string>("");
-  const [size, setSize] = useState<string>("");
+  const [industry, setIndustry] = useState<string>("saas_b2b");
+  const [region, setRegion] = useState<string>("MX");
+  const [size, setSize] = useState<string>("100-300");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,7 +69,6 @@ export default function OnboardingOrgPage() {
           industry,
           region,
           company_size_key: size,
-          user_job_title: userJobTitle.trim() || undefined,
         }),
       });
       const data = await res.json();
@@ -84,7 +86,7 @@ export default function OnboardingOrgPage() {
 
   return (
     <>
-      <OnboardingNav />
+      <SurfaceNav />
       <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -92,78 +94,68 @@ export default function OnboardingOrgPage() {
           transition={{ duration: 0.4 }}
           className="max-w-xl w-full"
         >
-          <div className="eyebrow mb-4">Paso 1 de 5</div>
+          <div className="eyebrow mb-4">Paso 1 de 5 · Tu organización</div>
           <h1 className="display display-tight text-[var(--text-primary)] text-[32px] sm:text-[40px]">
-            Cuéntanos sobre tu equipo
+            Cuéntanos sobre tu equipo.
           </h1>
+          <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.55]">
+            Usamos esto para calibrar el diagnóstico al contexto de tu
+            organización. Puedes ajustarlo después.
+          </p>
 
-          <form onSubmit={onSubmit} className="mt-10 space-y-3">
-            <Input
+          <form onSubmit={onSubmit} className="mt-10 space-y-5">
+            <AppleInput
+              label="Nombre de la organización"
               value={name}
               onValueChange={setName}
-              placeholder="Nombre de la organización"
+              placeholder="Acme LATAM"
+              isRequired
               variant="bordered"
-              radius="lg"
               size="lg"
               autoFocus
             />
 
-            <Input
-              value={userJobTitle}
-              onValueChange={setUserJobTitle}
-              placeholder="Tu puesto (ej. Head of Marketing)"
-              variant="bordered"
-              radius="lg"
-              size="lg"
-            />
-
-            <Select
-              placeholder="Industria"
-              aria-label="Industria"
-              selectedKeys={industry ? [industry] : []}
+            <AppleSelect
+              label="Industria"
+              selectedKeys={[industry]}
               onSelectionChange={(keys) =>
                 setIndustry(Array.from(keys)[0] as string)
               }
               variant="bordered"
-              radius="lg"
               size="lg"
             >
               {INDUSTRIES.map((i) => (
                 <SelectItem key={i.key}>{i.label}</SelectItem>
               ))}
-            </Select>
+            </AppleSelect>
 
-            <Select
-              placeholder="Región principal"
-              aria-label="Región principal"
-              selectedKeys={region ? [region] : []}
+            <AppleSelect
+              label="Región principal"
+              selectedKeys={[region]}
               onSelectionChange={(keys) =>
                 setRegion(Array.from(keys)[0] as string)
               }
               variant="bordered"
-              radius="lg"
               size="lg"
             >
               {REGIONS.map((r) => (
                 <SelectItem key={r.key}>{r.label}</SelectItem>
               ))}
-            </Select>
+            </AppleSelect>
 
-            <Select
-              placeholder="Tamaño del equipo"
-              aria-label="Tamaño del equipo"
-              selectedKeys={size ? [size] : []}
+            <AppleSelect
+              label="Tamaño del equipo"
+              selectedKeys={[size]}
               onSelectionChange={(keys) =>
                 setSize(Array.from(keys)[0] as string)
               }
               variant="bordered"
-              radius="lg"
               size="lg"
             >
               {SIZES.map((s) => (
                 <SelectItem key={s.key}>{s.label}</SelectItem>
               ))}
-            </Select>
+            </AppleSelect>
 
             {error && (
               <div className="text-[13px] text-[var(--band-b-text)] bg-[var(--band-b-bg)] px-3 py-2 rounded-lg">
@@ -172,23 +164,16 @@ export default function OnboardingOrgPage() {
             )}
 
             <div className="pt-4">
-              <Button
+              <AppleButton
                 type="submit"
                 isLoading={submitting}
-                isDisabled={
-                  !name.trim() ||
-                  !userJobTitle.trim() ||
-                  !industry ||
-                  !region ||
-                  !size ||
-                  submitting
-                }
-                radius="md"
+                isDisabled={!name.trim() || submitting}
+                radius="sm"
                 size="lg"
                 className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none w-full sm:w-auto"
               >
                 Continuar →
-              </Button>
+              </AppleButton>
             </div>
           </form>
         </motion.div>

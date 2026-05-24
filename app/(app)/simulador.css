@@ -423,3 +423,59 @@
   .simulador-root .md\:ts-display-4xl { font-size: var(--text-display-4xl); }
   .simulador-root .md\:ts-display-5xl { font-size: var(--text-display-5xl); }
 }
+
+/* ============================================================
+   ACCESSIBILITY — reduced-motion override (importado de Codex)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .simulador-root *,
+  .simulador-root *::before,
+  .simulador-root *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .simulador-root .card-apple-interactive:hover,
+  .simulador-root .btn-hover-shift:hover {
+    transform: none !important;
+  }
+}
+
+/* ============================================================
+   PRINT — fuerza light + esconde nav (para reportes imprimibles)
+   ============================================================ */
+@media print {
+  .simulador-root {
+    --surface: #ffffff;
+    --surface-2: #ffffff;
+    --surface-3: #ffffff;
+    --text-primary: #111827;
+    --text-secondary: #374151;
+    --text-tertiary: #6b7280;
+    --border: #d1d5db;
+    --hairline: #e5e7eb;
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  .simulador-root nav,
+  .simulador-root [data-no-print="true"] {
+    display: none !important;
+  }
+
+  .simulador-root .card-apple {
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  .simulador-root main {
+    padding: 0 !important;
+  }
+
+  .simulador-root a {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+}

@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { stripe, STRIPE_PRICES, type BillingPlan } from '@/lib/stripe/config';
+import { stripe } from '@/lib/stripe/config';
 import { enforceRateLimit, rateLimiters } from '@/lib/ratelimit';
 import {
-  computeSimuladorAmount,
-  isBillingInterval,
-  SIMULADOR_PRODUCT,
-  type BillingInterval,
+  computePlanAmountUsd,
+  isSimuladorBillingPlan,
+  type SimuladorBillingPlan,
 } from '@/lib/simulador/billing';
 
 export async function POST(req: NextRequest) {
@@ -22,77 +21,21 @@ export async function POST(req: NextRequest) {
     }
 
     const body = (await req.json()) as {
-      plan?: BillingPlan;
+      plan?: SimuladorBillingPlan;
       billing_product?: string;
       organization_id?: string;
       team_id?: string;
       seats?: number;
-      interval?: BillingInterval;
     };
 
-    if (body.billing_product === 'simulador_b2b') {
-      return createSimuladorCheckoutSession(req, user, body);
-    }
-
-    const { plan } = body as { plan?: BillingPlan };
-    if (plan !== 'monthly' && plan !== 'yearly') {
-      return NextResponse.json({ error: 'plan inválido' }, { status: 400 });
-    }
-
-    const priceId = STRIPE_PRICES[plan];
-    if (!priceId) {
-      return NextResponse.json({ error: 'price id no configurado' }, { status: 500 });
-    }
-
-    const { data: profile, error: profileError } = await supabase
-      .from('users')
-      .select('stripe_customer_id, subscription_active, subscription_status')
-      .eq('id', user.id)
-      .maybeSingle();
-
-    // Fail-closed: si Supabase falla (RLS, red, tabla), no creamos checkout.
-    // Prefiero error visible que crear un segundo customer a la chica.
-    if (profileError) {
-      console.error('[create-checkout] profile select failed:', profileError.message);
+    if (body.billing_product !== 'simulador_b2b') {
       return NextResponse.json(
-        { error: 'no pudimos validar tu cuenta — reintenta en unos segundos.' },
-        { status: 503 }
+        { error: 'billing legacy removido; usa billing_product=simulador_b2b' },
+        { status: 400 },
       );
     }
 
-    // Guard: si el user ya tiene una suscripción activa, no dejamos abrir
-    // un segundo checkout. Para cambiar plan (mensual ↔ anual) se usa el
-    // Customer Portal desde /dashboard/perfil. Esto también previene que
-    // dos tabs o un doble-click creen dos customers/suscripciones.
-    if (profile?.subscription_active) {
-      return NextResponse.json(
-        {
-          error: 'ya_tienes_suscripcion_activa',
-          message:
-            'ya tienes una suscripción activa — cambia de plan desde "mi suscripción" en tu perfil.',
-        },
-        { status: 409 }
-      );
-    }
-
-    const origin = req.nextUrl.origin;
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      line_items: [{ price: priceId, quantity: 1 }],
-      ...(profile?.stripe_customer_id
-        ? { customer: profile.stripe_customer_id }
-        : { customer_email: user.email ?? undefined }),
-      client_reference_id: user.id,
-      metadata: { user_id: user.id, plan },
-      subscription_data: {
-        metadata: { user_id: user.id, plan },
-      },
-      allow_promotion_codes: true,
-      success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/cancel`,
-    });
-
-    return NextResponse.json({ sessionUrl: session.url });
+    return createSimuladorCheckoutSession(req, user, body);
   } catch (error: any) {
     console.error('Error creating Stripe checkout session:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -103,14 +46,16 @@ async function createSimuladorCheckoutSession(
   req: NextRequest,
   user: { id: string; email?: string | null },
   body: {
-    plan?: BillingPlan;
+    plan?: SimuladorBillingPlan;
     organization_id?: string;
     team_id?: string;
     seats?: number;
-    interval?: BillingInterval;
   },
 ) {
   try {
+    if (!isSimuladorBillingPlan(body.plan)) {
+      return NextResponse.json({ error: 'plan de simulador inválido' }, { status: 400 });
+    }
     if (!body.organization_id || !body.team_id) {
       return NextResponse.json(
         { error: 'organization_id y team_id son requeridos' },
@@ -189,34 +134,15 @@ async function createSimuladorCheckoutSession(
       .eq('id', body.organization_id)
       .maybeSingle();
 
-    const computed = computeSimuladorAmount(body.seats, body.interval);
-    const { seats, amountCents, periodTotalUsd, tier, isEnterprise, interval } =
-      computed;
-
-    // Enterprise (100+ personas) no es self-serve — el flow se corta y se
-    // redirige a ventas para negociar volumen/término.
-    if (isEnterprise) {
-      return NextResponse.json(
-        {
-          error: 'enterprise_requires_sales',
-          message: `Para ${seats}+ personas el precio se negocia. Escríbenos a ${SIMULADOR_PRODUCT.salesEmail}.`,
-          sales_email: SIMULADOR_PRODUCT.salesEmail,
-        },
-        { status: 400 },
-      );
-    }
-
-    const stripeInterval: 'month' | 'year' =
-      interval === 'yearly' ? 'year' : 'month';
-    const productDescription =
-      interval === 'yearly'
-        ? `${seats} ${seats === 1 ? 'persona' : 'personas'} · ${org?.name ?? 'organización'} · ${team.name} · facturación anual (10 meses de cobro)`
-        : `${seats} ${seats === 1 ? 'persona' : 'personas'} · ${org?.name ?? 'organización'} · ${team.name} · facturación mensual`;
-
+    const { seats, amountCents, amountUsd, plan } = computePlanAmountUsd(
+      body.plan,
+      body.seats,
+    );
     const origin = req.nextUrl.origin;
     const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
+      mode: 'payment',
       customer_email: user.email ?? undefined,
+      customer_creation: 'always',
       client_reference_id: user.id,
       line_items: [
         {
@@ -224,10 +150,9 @@ async function createSimuladorCheckoutSession(
           price_data: {
             currency: 'usd',
             unit_amount: amountCents,
-            recurring: { interval: stripeInterval },
             product_data: {
-              name: `${SIMULADOR_PRODUCT.label} · ${tier.label}`,
-              description: productDescription,
+              name: `Itera · ${plan.label}`,
+              description: `${seats} asientos · ${org?.name ?? 'organización'} · ${team.name}`,
             },
           },
         },
@@ -241,34 +166,30 @@ async function createSimuladorCheckoutSession(
         organization_name: org?.name ?? '',
         team_id: body.team_id,
         team_name: team.name,
-        tier: tier.id,
+        plan: plan.id,
         seats: String(seats),
-        interval,
-        price_per_seat_usd_monthly: String(tier.pricePerSeatUsd),
-        period_total_usd: String(periodTotalUsd),
+        amount_usd_total: String(amountUsd),
       },
-      subscription_data: {
+      payment_intent_data: {
         metadata: {
           billing_product: 'simulador_b2b',
           user_id: user.id,
           simulador_user_id: String(bridgeId),
           organization_id: body.organization_id,
           team_id: body.team_id,
-          tier: tier.id,
+          plan: plan.id,
           seats: String(seats),
-          interval,
         },
       },
-      success_url: `${origin}/onboarding/done?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/onboarding/billing?canceled=1`,
+      success_url: `${origin}/dashboard?checkout=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/dashboard?checkout=canceled`,
     });
 
     return NextResponse.json({
       sessionUrl: session.url,
-      period_total_usd: periodTotalUsd,
+      amount_usd_total: amountUsd,
       seats,
-      tier: tier.id,
-      interval,
+      plan: plan.id,
     });
   } catch (err) {
     console.error('[create-checkout] simulador session failed:', err);

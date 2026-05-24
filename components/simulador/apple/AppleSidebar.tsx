@@ -36,11 +36,11 @@ export function AppleSidebar({
       )}
     >
       <div className="px-2 pb-5">
-        <div className="ts-headline font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
+        <div className="text-[16px] font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
           {title}
         </div>
         {subtitle && (
-          <p className="mt-1 ts-subhead leading-[1.4] text-[var(--text-tertiary)]">
+          <p className="mt-1 text-[13px] leading-[1.4] text-[var(--text-tertiary)]">
             {subtitle}
           </p>
         )}
@@ -58,7 +58,7 @@ export function AppleSidebar({
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex min-h-11 items-center gap-3 rounded-[var(--radius-sm)] px-3 ts-callout font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]",
+                "flex min-h-11 items-center gap-3 rounded-[var(--radius-sm)] px-3 text-[14px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]",
                 active
                   ? "bg-[var(--accent-soft)] text-[var(--accent)]"
                   : "text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]",
@@ -67,7 +67,7 @@ export function AppleSidebar({
               {item.icon && <AppleIcon name={item.icon} size="sm" />}
               <span className="min-w-0 flex-1 truncate">{item.label}</span>
               {item.badge !== undefined && (
-                <span className="rounded-full bg-[var(--surface-3)] px-2 py-0.5 ts-caption-1 text-[var(--text-tertiary)]">
+                <span className="rounded-full bg-[var(--surface-3)] px-2 py-0.5 text-[11px] text-[var(--text-tertiary)]">
                   {item.badge}
                 </span>
               )}

@@ -49,7 +49,7 @@ dept: [una o más de: automatizacion, datos, desarrollo, educacion, finanzas, fu
 ---
 ```
 
-`dept` es lista — un doc puede ser cross-dominio (ej. mailing es `[producto, desarrollo]`, gamification es `[producto, educacion]`, telegram es `[automatizacion, desarrollo]`).
+`dept` es lista — un doc puede ser cross-dominio (ej. reportes es `[producto, desarrollo]`, practice beats es `[producto, educacion]`, telemetría es `[datos, desarrollo]`).
 
 ### 3. correr el linter
 
@@ -68,7 +68,7 @@ futuro (fase 2): script que genera INDEX desde frontmatter automáticamente. por
 ## qué NO va en `docs/memory/`
 
 - código (vive en su carpeta normal).
-- documentación canónica de producto (eso vive en `docs/CONTEXT.md`, `METODOLOGIA.md`, `LESSONS_v1.md`, `SCHEMA_v1.md`).
+- documentación canónica de producto (eso vive en `docs/simulador/front/`, `docs/simulador/contrato_v0/` y `docs/coord/`).
 - secretos, tokens, credenciales (nunca, ni en frontmatter).
 - discusiones sin decisión cerrada (eso vive en handoffs `docs/handoff/`).
 

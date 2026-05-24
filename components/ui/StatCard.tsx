@@ -33,11 +33,11 @@ export interface StatCardProps {
 }
 
 /**
- * Activity / gamification stat tile.
+ * Activity / readiness stat tile.
  *
  * ```tsx
- * <StatCard icon="🔥" value={5} label="Racha Días" color="orange" />
- * <StatCard icon="⭐" value={3} label="Nivel" color="blue" />
+ * <StatCard icon="⚑" value={5} label="Casos completos" color="orange" />
+ * <StatCard icon="↑" value={3} label="Nivel" color="blue" />
  * ```
  */
 export default function StatCard({

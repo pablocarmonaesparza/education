@@ -7,7 +7,7 @@
  *   - B9-003-D1: anchor en 88% / 95% / 50% research-grade
  *   - B9-003-D6: 6% high performers como wedge "proceso, no prompts"
  *
- * Uso: imports desde slides decks (Marp/Slidev/Reveal o el que use sales),
+ * Uso: imports desde decks comerciales (Marp/Slidev/Reveal o el que use sales),
  * desde plantillas de propuestas (lib/proposals/), y desde scripts de
  * outreach (lib/outreach/templates/).
  */

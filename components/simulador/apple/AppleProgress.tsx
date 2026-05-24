@@ -13,8 +13,8 @@ export function AppleProgress({ classNames, ...props }: ProgressProps) {
         base: cn("max-w-full", classNames?.base),
         track: cn("bg-[var(--surface-3)]", classNames?.track),
         indicator: cn("accent-bg", classNames?.indicator),
-        label: cn("ts-subhead text-[var(--text-secondary)]", classNames?.label),
-        value: cn("ts-subhead text-[var(--text-secondary)]", classNames?.value),
+        label: cn("text-[13px] text-[var(--text-secondary)]", classNames?.label),
+        value: cn("text-[13px] text-[var(--text-secondary)]", classNames?.value),
       }}
     />
   );

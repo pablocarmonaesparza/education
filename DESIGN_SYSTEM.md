@@ -4,7 +4,7 @@ Documentación de los componentes reutilizables y tokens de diseño de Itera.
 
 Todos los componentes viven en `components/ui/` y se exportan desde `components/ui/index.ts`.
 
-La página canónica de referencia visual está en `/app/componentes/page.tsx`.
+La referencia visual activa vive en las superficies del simulador: landing, field-test, runtime, dashboard y reporte.
 
 ---
 
@@ -73,7 +73,7 @@ import { Button } from '@/components/ui';
 <Button variant="ghost">Cerrar</Button>
 <Button variant="completado">Completado</Button>
 <Button variant="nav-active">Inicio</Button>
-<Button variant="nav-inactive">Cursos</Button>
+<Button variant="nav-inactive">Casos</Button>
 <Button variant="danger">Eliminar</Button>
 
 // Como link
@@ -201,8 +201,8 @@ Texto con niveles tipográficos del design system.
 ```tsx
 import { Typography, Title, Subtitle, Headline, Body, Caption } from '@/components/ui';
 
-<Title>curso personalizado para tu proyecto</Title>
-<Subtitle>Videos a medida con IA</Subtitle>
+<Title>diagnóstico de criterio operativo</Title>
+<Subtitle>simulaciones para equipos que usan IA</Subtitle>
 <Headline>Sección</Headline>
 <Body>Texto de párrafo normal.</Body>
 <Caption>Texto secundario o pie.</Caption>
@@ -254,10 +254,10 @@ Tarjeta de estadística (emoji + valor + label).
 ```tsx
 import { StatCard } from '@/components/ui';
 
-<StatCard icon="🔥" value={5} label="Racha Días" color="orange" />
-<StatCard icon="🎯" value={3} label="Videos Sem." color="green" />
-<StatCard icon="⭐" value={1} label="Nivel" color="blue" />
-<StatCard icon="⚡" value={150} label="XP Total" color="blue" />
+<StatCard icon="⚑" value={5} label="Casos completos" color="orange" />
+<StatCard icon="✓" value={3} label="Prácticas hechas" color="green" />
+<StatCard icon="↑" value={1} label="Nivel" color="blue" />
+<StatCard icon="•" value={150} label="Evidencias" color="blue" />
 ```
 
 **Props:**
@@ -309,10 +309,10 @@ Encabezado de página/sección consistente.
 ```tsx
 import { SectionHeader } from '@/components/ui';
 
-<SectionHeader title="retos" subtitle="Practica lo que aprendes" />
+<SectionHeader title="casos" subtitle="Practica decisiones con IA bajo presión" />
 <SectionHeader
-  title="todos los cursos"
-  subtitle="Explora el catálogo completo"
+  title="casos asignados"
+  subtitle="Revisa el trabajo pendiente de tu equipo"
   action={<Button variant="primary" size="sm">Nuevo</Button>}
 />
 ```
@@ -328,9 +328,9 @@ import { EmptyState, Button } from '@/components/ui';
 
 <EmptyState
   icon={<LightningIcon className="w-10 h-10 text-white" />}
-  title="Aún no tienes retos"
-  description="Los retos se generan automáticamente al crear tu curso."
-  action={<Button variant="primary">Crear mi curso</Button>}
+  title="Aún no tienes casos"
+  description="Los casos aparecerán cuando tu manager active un sprint."
+  action={<Button variant="primary">Ver field-test</Button>}
 />
 ```
 

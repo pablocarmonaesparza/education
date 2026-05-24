@@ -17,7 +17,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import {
-  Button,
   Link,
   Navbar,
   NavbarBrand,
@@ -27,6 +26,7 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@heroui/react";
+import { AppleButton } from "@/components/simulador/apple";
 
 const SECTIONS = [
   { href: "#como-funciona", label: "Cómo funciona" },
@@ -85,7 +85,7 @@ export function PublicNav() {
               href={s.href}
               size="sm"
               color="foreground"
-              className="ts-subhead font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              className="text-[13.5px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             >
               {s.label}
             </Link>
@@ -96,27 +96,26 @@ export function PublicNav() {
       {/* Desktop CTAs derecha */}
       <NavbarContent justify="end" className="hidden md:flex gap-2">
         <NavbarItem>
-          <Button
+          <AppleButton
             as={Link}
             href="/auth/login"
-            radius="md"
             size="sm"
-            variant="light"
-            className="ts-subhead font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
+            tone="ghost"
+            className="text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
           >
             Iniciar sesión
-          </Button>
+          </AppleButton>
         </NavbarItem>
         <NavbarItem>
-          <Button
+          <AppleButton
             as={Link}
             href="/auth/signup?next=%2Fonboarding%2Forg"
-            radius="md"
             size="sm"
-            className="accent-bg text-white ts-subhead font-medium h-9 px-4 shadow-none"
+            tone="primary"
+            className="accent-bg text-white text-[13.5px] font-medium h-9 px-4 shadow-none"
           >
             Agendar diagnóstico
-          </Button>
+          </AppleButton>
         </NavbarItem>
       </NavbarContent>
 
@@ -136,27 +135,26 @@ export function PublicNav() {
           </NavbarMenuItem>
         ))}
         <div className="mt-6 flex flex-col gap-2">
-          <Button
+          <AppleButton
             as={Link}
             href="/auth/login"
-            radius="md"
             size="lg"
-            variant="bordered"
+            tone="secondary"
             onPress={() => setIsMenuOpen(false)}
-            className="h-11 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] ts-callout font-medium"
+            className="h-11 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[14px] font-medium"
           >
             Iniciar sesión
-          </Button>
-          <Button
+          </AppleButton>
+          <AppleButton
             as={Link}
             href="/auth/signup?next=%2Fonboarding%2Forg"
-            radius="md"
             size="lg"
+            tone="primary"
             onPress={() => setIsMenuOpen(false)}
-            className="h-11 accent-bg text-white ts-callout font-medium shadow-none"
+            className="h-11 accent-bg text-white text-[14px] font-medium shadow-none"
           >
             Agendar diagnóstico
-          </Button>
+          </AppleButton>
         </div>
       </NavbarMenu>
     </Navbar>

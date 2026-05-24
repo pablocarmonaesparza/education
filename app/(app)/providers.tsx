@@ -1,22 +1,30 @@
 "use client";
 
-/**
- * Passthrough — los providers reales viven en `app/providers.tsx` (root layout).
- *
- * Antes vivían acá con `forcedTheme="light"`, lo que impedía dark mode automático
- * y solo aplicaba al route group (app)/. Movidos a root para que TODAS las
- * surfaces (auth, public, onboarding, app, admin) compartan el mismo
- * NextThemesProvider con `defaultTheme="system"`.
- *
- * Este wrapper se mantiene para no romper imports existentes en
- * - app/page.tsx
- * - app/(app)/layout.tsx
- * - app/(onboarding)/layout.tsx
- * - app/field-test/layout.tsx
- *
- * Puede borrarse cuando se limpien esos imports.
- */
+import { HeroUIProvider } from "@heroui/react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { useRouter } from "next/navigation";
+
+declare module "@react-types/shared" {
+  interface RouterConfig {
+    routerOptions: NonNullable<
+      Parameters<ReturnType<typeof useRouter>["push"]>[1]
+    >;
+  }
+}
 
 export function SimuladorProviders({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  const router = useRouter();
+
+  return (
+    <HeroUIProvider navigate={router.push}>
+      <NextThemesProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        storageKey="simulador-theme"
+      >
+        {children}
+      </NextThemesProvider>
+    </HeroUIProvider>
+  );
 }

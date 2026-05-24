@@ -1,0 +1,181 @@
+case_taxonomy:
+  version: 1.0.0
+  levels:
+    - id: N1
+      name: Fundamentos / Prompt Engineering
+      short_name: fundamentos
+      manager_question: "Puede usar IA en una tarea individual sin crear riesgo?"
+      expected_output_types: [prompt, revised_prompt, ai_output_review, short_decision]
+    - id: N2
+      name: Workflow / Automatiza tu trabajo
+      short_name: workflow
+      manager_question: "Puede integrar IA en un proceso real con controles?"
+      expected_output_types: [workflow_plan, automation_spec, handoff_doc, qa_checklist]
+    - id: N3
+      name: Agentes / Produccion y optimizacion
+      short_name: agentes
+      manager_question: "Puede delegar trabajo a agentes con supervision y medicion?"
+      expected_output_types: [agent_brief, permission_plan, monitoring_plan, escalation_policy]
+
+  criteria:
+    - id: contexto
+      public_name: Contexto
+      manager_signal: "Entiende objetivo, audiencia, restricciones y exito esperado."
+    - id: datos
+      public_name: Datos
+      manager_signal: "Protege informacion sensible y usa datos con calidad suficiente."
+    - id: ejecucion_ia
+      public_name: Ejecucion con IA
+      manager_signal: "Elige prompt, workflow o agente adecuado para el trabajo."
+    - id: validacion
+      public_name: Validacion
+      manager_signal: "Verifica output, fuentes, consistencia y errores."
+    - id: juicio
+      public_name: Juicio
+      manager_signal: "Detecta riesgos, limites, autoridad y escalamiento."
+    - id: impacto
+      public_name: Impacto
+      manager_signal: "Convierte IA en resultado util para negocio."
+
+  departments:
+    - marketing
+    - growth
+    - sales
+    - customer_success
+    - operations
+    - finance
+    - hr
+    - legal
+    - product
+    - engineering_light
+    - leadership
+
+  active_profile_packs:
+    - id: marketing_growth
+      public_name: Marketing / Growth
+      buyer: head_of_marketing_or_growth
+      departments: [marketing, growth]
+      primary_roles: [growth_manager, marketing_manager, performance_marketer, content_lead]
+      levels: [N1, N2, N3]
+      manager_question: "Puede usar IA para crear, validar y optimizar campañas sin danar marca, datos ni performance?"
+      core_outcomes: [campaign_quality, speed_to_test, brand_safety, pipeline_contribution]
+      core_risks: [privacy_exposure, hallucinated_fact_or_metric, weak_validation, copyright_or_ip_risk, customer_trust_damage]
+    - id: sales_revops
+      public_name: Sales / RevOps
+      buyer: head_of_sales_or_revenue
+      departments: [sales, operations]
+      primary_roles: [sales_ops_manager, sdr_lead, account_executive, revenue_operations]
+      levels: [N1, N2, N3]
+      manager_question: "Puede usar IA para mejorar pipeline, follow-up y CRM sin perder control comercial ni confianza del cliente?"
+      core_outcomes: [pipeline_speed, followup_quality, crm_hygiene, conversion_signal]
+      core_risks: [privacy_exposure, hallucinated_fact_or_metric, automation_without_review, agent_overreach, customer_trust_damage]
+    - id: customer_success_support
+      public_name: Customer Success / Support
+      buyer: head_of_customer_success_or_support
+      departments: [customer_success]
+      primary_roles: [cs_manager, implementation_manager, support_lead, customer_ops]
+      levels: [N1, N2, N3]
+      manager_question: "Puede usar IA para responder, escalar y resumir clientes sin inventar soluciones ni romper confianza?"
+      core_outcomes: [response_quality, escalation_accuracy, time_to_resolution, retention_signal]
+      core_risks: [hallucinated_fact_or_metric, weak_validation, compliance_escalation_miss, customer_trust_damage, privacy_exposure]
+    - id: operations_automation
+      public_name: Operations / Automation
+      buyer: coo_or_operations_lead
+      departments: [operations]
+      primary_roles: [ops_manager, process_owner, automation_specialist, chief_of_staff]
+      levels: [N1, N2, N3]
+      manager_question: "Puede redisenar procesos con IA, automatizaciones y agentes sin romper handoffs ni controles?"
+      core_outcomes: [cycle_time_reduction, handoff_quality, automation_reliability, operational_visibility]
+      core_risks: [automation_without_review, agent_overreach, cost_or_quota_runaway, weak_validation, compliance_escalation_miss]
+    - id: finance_fpa
+      public_name: Finance / FP&A
+      buyer: finance_lead_or_coo
+      departments: [finance]
+      primary_roles: [finance_manager, fp_and_a_analyst, controller, revenue_accounting]
+      levels: [N1, N2]
+      manager_question: "Puede usar IA para analizar, explicar y presentar numeros sin inventar datos ni debilitar controles?"
+      core_outcomes: [forecast_quality, variance_explanation, board_readiness, control_integrity]
+      core_risks: [hallucinated_fact_or_metric, weak_validation, confidential_strategy_leak, compliance_escalation_miss, customer_trust_damage]
+    - id: legal_compliance_privacy
+      public_name: Legal / Compliance / Privacy
+      buyer: legal_or_compliance_lead
+      departments: [legal]
+      primary_roles: [legal_ops, compliance_manager, privacy_owner, contract_manager]
+      levels: [N1, N2]
+      manager_question: "Puede usar IA para revisar riesgos legales y de privacidad sin delegar autoridad ni exponer informacion sensible?"
+      core_outcomes: [risk_triage_quality, privacy_control, escalation_accuracy, contract_review_speed]
+      core_risks: [privacy_exposure, confidential_strategy_leak, compliance_escalation_miss, weak_validation, agent_overreach]
+
+  industries:
+    - saas_b2b
+    - ecommerce
+    - fintech
+    - education
+    - healthcare
+    - retail
+    - professional_services
+    - logistics
+    - manufacturing
+    - media
+
+  role_families:
+    - analyst
+    - individual_contributor
+    - specialist
+    - manager
+    - director
+    - vp_head
+    - founder_operator
+
+  seniority:
+    - junior
+    - mid
+    - senior
+    - manager
+    - director
+
+  freshness_types:
+    - evergreen
+    - current
+    - hybrid
+
+  time_pressure_modes:
+    - id: no_timer
+      public_name: Sin timer
+      use_when: "La tarea mide profundidad, criterio o redaccion sin urgencia operacional."
+    - id: soft_deadline
+      public_name: Deadline visible
+      use_when: "Hay una ventana de entrega, pero el participante puede pasarse sin bloquear submit."
+    - id: fixed_timer
+      public_name: Timer fijo
+      use_when: "La tarea simula una decision de trabajo con presion real de tiempo."
+    - id: step_timer
+      public_name: Timer por seccion
+      use_when: "Cada etapa tiene una ventana operativa distinta, como triage, revision y decision."
+
+  time_pressure_metrics:
+    - total_elapsed_seconds
+    - step_elapsed_seconds
+    - time_to_first_action_seconds
+    - review_time_ratio
+    - overtime_seconds
+    - submit_after_warning
+
+  risk_event_families:
+    - privacy_exposure
+    - confidential_strategy_leak
+    - hallucinated_fact_or_metric
+    - weak_validation
+    - automation_without_review
+    - agent_overreach
+    - copyright_or_ip_risk
+    - bias_or_unfair_targeting
+    - compliance_escalation_miss
+    - cost_or_quota_runaway
+    - customer_trust_damage
+
+  manager_actions:
+    - pilotar
+    - entrenar
+    - pausar
+    - escalar

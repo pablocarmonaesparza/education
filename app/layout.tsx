@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Darker_Grotesque } from "next/font/google";
 import "./globals.css";
-import HashScrollHandler from "@/components/shared/HashScrollHandler";
-import { DevReturnButton } from "@/components/simulador/DevReturnButton";
-import { Providers } from "./providers";
+import "./(app)/simulador.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -99,12 +97,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} ${darkerGrotesque.variable}`} suppressHydrationWarning>
-      <body className="antialiased bg-white dark:bg-black text-gray-900 dark:text-gray-100 min-h-screen overscroll-none">
-        <Providers>
-          <HashScrollHandler />
-          <DevReturnButton />
-          {children}
-        </Providers>
+      <body className={`antialiased bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 min-h-screen overscroll-none`}>
+        {children}
       </body>
     </html>
   );

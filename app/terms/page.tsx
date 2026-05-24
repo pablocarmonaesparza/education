@@ -1,20 +1,3 @@
-/**
- * /terms — términos y condiciones estilo Apple/HIG.
- *
- * Cero imports del DS legacy de Itera Courses. Surface canvas + AuthNav + columna
- * estrecha de lectura. Hermana visual de /privacy.
- */
-
-import type { Metadata } from "next";
-import { AuthNav } from "@/components/simulador/AuthNav";
-import "../(app)/simulador.css";
-
-export const metadata: Metadata = {
-  title: "Términos y condiciones · Itera",
-  description:
-    "Términos que rigen el uso del simulador de criterio de IA de Itera, sus diagnósticos, reportes y herramientas relacionadas.",
-};
-
 export default function TermsPage() {
   const currentDate = new Date().toLocaleDateString("es-ES", {
     year: "numeric",
@@ -23,104 +6,67 @@ export default function TermsPage() {
   });
 
   return (
-    <div className="simulador-root min-h-screen surface-canvas">
-      <AuthNav mode="login" next="/" />
+    <main className="min-h-screen flex flex-col bg-[var(--surface)] text-[var(--text-primary)]">
+      <section className="flex-grow container mx-auto px-6 py-12 max-w-4xl">
+        <div className="text-xs uppercase tracking-widest text-[var(--text-tertiary)] mb-3">términos del servicio</div>
+        <h1 className="display display-tight text-4xl font-extrabold tracking-tight text-[var(--text-primary)] mb-3">
+          contrato de uso de itera simulador.
+        </h1>
+        <p className="text-sm text-[var(--text-tertiary)] mb-8">última actualización: {currentDate}</p>
 
-      <main className="px-6 pb-24 pt-12 sm:pt-20">
-        <article className="max-w-[640px] mx-auto">
-          <h1 className="display display-tight text-[var(--text-primary)] text-[36px] sm:text-[44px] leading-[1.05]">
-            Términos y condiciones
-          </h1>
-          <p className="mt-4 text-[13px] text-[var(--text-tertiary)]">
-            Última actualización · {currentDate}
-          </p>
-
-          <p className="mt-12 text-[17px] text-[var(--text-secondary)] leading-[1.6]">
-            Estos términos rigen el uso del simulador de criterio de IA de
-            Itera, sus diagnósticos, reportes y herramientas relacionadas para
-            equipos. Al usar el servicio aceptas estos términos.
-          </p>
-
-          <section className="mt-16">
-            <h2 className="text-[20px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Uso del servicio
-            </h2>
-            <p className="mt-5 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
-              Itera permite a usuarios y organizaciones ejecutar casos
-              simulados, registrar respuestas, generar evidencia de desempeño y
-              revisar recomendaciones operativas. Debes usar el servicio con
-              información veraz y con autorización de tu organización cuando
-              participes como parte de un equipo.
+        <div className="rounded-[var(--radius-xl)] border border-[var(--hairline)] bg-[var(--surface-2)] p-6 space-y-6">
+          <section>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">naturaleza del servicio</h2>
+            <p className="text-base leading-7 text-[var(--text-secondary)]">
+              Itera Simulador es un servicio B2B de diagnóstico operativo de criterio en uso de IA. No es certificación, no es curso, no es asesoría psicométrica. Mide cómo decide tu equipo en flujos reales con IA generativa.
             </p>
           </section>
 
-          <section className="mt-12">
-            <h2 className="text-[20px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Cuentas y acceso
-            </h2>
-            <p className="mt-5 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
-              Eres responsable de mantener segura tu cuenta. Las rutas de
-              dashboard, casos, reportes y administración pueden requerir
-              autenticación y permisos de equipo. Podemos suspender accesos ante
-              uso indebido, abuso técnico o violación de estos términos.
+          <section>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">precios y facturación</h2>
+            <p className="text-base leading-7 text-[var(--text-secondary)]">
+              Precios listados en USD vía Stripe. Plan Diagnóstico desde $4,000 USD por sprint de 30 días, 5-50 participantes. Sprint Fase 2 y Track avanzado disponibles. La factura llega al email del comprador. Para factura fiscal MX/CO/AR, contesta al recibo con RFC/NIT/CUIT y se emite en 1-2 días business.
             </p>
           </section>
 
-          <section className="mt-12">
-            <h2 className="text-[20px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Datos y evaluaciones
-            </h2>
-            <p className="mt-5 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
-              Las respuestas dentro de los casos pueden ser usadas para generar
-              reportes, bandas de desempeño, eventos de riesgo y recomendaciones
-              para managers. Los reportes son señales de apoyo para decisión y
-              entrenamiento; no sustituyen criterio humano, políticas internas
-              ni revisión legal, de seguridad o compliance.
+          <hr className="border-[var(--hairline)]" />
+
+          <section>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">refunds</h2>
+            <p className="text-base leading-7 text-[var(--text-secondary)]">
+              Reembolso completo dentro de 7 días post-cargo si nadie de tu equipo ha empezado el caso vivo. Pasado ese plazo, convertimos a crédito para próximo sprint. Refunds extra-policy se evalúan caso-por-caso si el issue es bug nuestro.
             </p>
           </section>
 
-          <section className="mt-12">
-            <h2 className="text-[20px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Pagos
-            </h2>
-            <p className="mt-5 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
-              Los precios se muestran en USD y los pagos se procesan mediante
-              Stripe. No almacenamos información completa de tarjetas. Los
-              reembolsos se revisan caso por caso conforme al acuerdo comercial
-              aplicable.
+          <section>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">limitaciones de responsabilidad</h2>
+            <p className="text-base leading-7 text-[var(--text-secondary)]">
+              Liability cap: 12 meses de fees pagados por el customer. Excluida: indirect/consequential damages, lost profits. No exclusiones: gross negligence, willful misconduct, breach of confidentiality, data breach por Itera.
             </p>
           </section>
 
-          <section className="mt-12">
-            <h2 className="text-[20px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Propiedad intelectual
-            </h2>
-            <p className="mt-5 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
-              Itera conserva los derechos sobre la plataforma, casos, rúbricas,
-              reportes base, diseño, código y metodología. Tú conservas tus
-              derechos sobre la información que nos proporcionas, otorgándonos
-              una licencia limitada para operar, evaluar, mejorar y entregar el
-              servicio contratado.
+          <section>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">jurisdicción</h2>
+            <p className="text-base leading-7 text-[var(--text-secondary)]">
+              Customer MX: jurisdicción CDMX, legislación México. Customer CO: jurisdicción Bogotá, legislación Colombia. Disputes se intentan resolver amigablemente 30 días antes de litigio.
             </p>
           </section>
 
-          <section className="mt-20 pt-10 border-t border-[var(--hairline)]">
-            <h2 className="text-[20px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Contacto
-            </h2>
-            <p className="mt-5 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
-              ¿Dudas sobre los términos? Escríbenos a{" "}
-              <a
-                href="mailto:pablo@itera.la"
-                className="text-[var(--accent)] underline hover:opacity-70 transition-opacity"
-              >
-                pablo@itera.la
-              </a>
-              .
+          <hr className="border-[var(--hairline)]" />
+
+          <section>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">contacto</h2>
+            <p className="text-base leading-7 text-[var(--text-secondary)]">
+              <a href="mailto:soporte@itera.la" className="text-[var(--accent)] hover:underline">soporte@itera.la</a> para temas de servicio.
+              <br />
+              <a href="mailto:legal@itera.la" className="text-[var(--accent)] hover:underline">legal@itera.la</a> para términos y compliance.
             </p>
           </section>
-        </article>
-      </main>
-    </div>
+        </div>
+      </section>
+      <footer className="border-t border-[var(--hairline)] px-4 py-6 text-center text-sm text-[var(--text-tertiary)]">
+        © {new Date().getFullYear()} Itera
+      </footer>
+    </main>
   );
 }

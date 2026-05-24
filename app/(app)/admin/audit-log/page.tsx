@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Button } from "@heroui/react";
 import { motion } from "framer-motion";
+import { SurfaceNav } from "@/components/simulador/SurfaceNav";
+import { AppleButton } from "@/components/simulador/apple";
 
 type AuditItem = {
   id: string;
@@ -69,7 +70,7 @@ export default function AdminAuditLogPage() {
 
   return (
     <>
-      
+      <SurfaceNav />
       <main className="surface-canvas min-h-screen pb-24">
         <section className="reading-col px-6 pt-14">
           <motion.div
@@ -78,10 +79,10 @@ export default function AdminAuditLogPage() {
             transition={{ duration: 0.4 }}
           >
             <div className="eyebrow">Itera staff · auditoría</div>
-            <h1 className="display mt-4 ts-display text-[var(--text-primary)]">
-              Audit log
+            <h1 className="display mt-4 text-[36px] text-[var(--text-primary)]">
+              Audit log.
             </h1>
-            <p className="mt-4 max-w-2xl ts-body leading-[1.55] text-[var(--text-secondary)]">
+            <p className="mt-4 max-w-2xl text-[15px] leading-[1.55] text-[var(--text-secondary)]">
               Cambios privilegiados y eventos auditables del simulador. Úsalo
               para investigar quién tocó qué y cuándo.
             </p>
@@ -104,25 +105,25 @@ export default function AdminAuditLogPage() {
               onChange={setAction}
             />
             <div className="flex items-end">
-              <Button
-                radius="md"
+              <AppleButton
+                tone="secondary"
                 size="sm"
                 className="bg-[var(--surface-2)] text-[var(--text-primary)]"
                 onPress={load}
               >
                 Actualizar
-              </Button>
+              </AppleButton>
             </div>
           </div>
 
           {data === null && !error && (
-            <div className="mt-12 ts-callout text-[var(--text-secondary)]">
+            <div className="mt-12 text-[14px] text-[var(--text-secondary)]">
               Cargando audit log…
             </div>
           )}
 
           {data !== null && data.items.length === 0 && (
-            <div className="mt-12 rounded-2xl bg-[var(--surface)] p-8 ts-callout text-[var(--text-secondary)]">
+            <div className="mt-12 rounded-2xl bg-[var(--surface)] p-8 text-[14px] text-[var(--text-secondary)]">
               No hay eventos con esos filtros.
             </div>
           )}
@@ -148,18 +149,18 @@ function AuditCard({ item }: { item: AuditItem }) {
           <div className="eyebrow">
             {item.entity} · {item.action}
           </div>
-          <h2 className="mt-2 ts-headline font-semibold text-[var(--text-primary)]">
+          <h2 className="mt-2 text-[17px] font-semibold text-[var(--text-primary)]">
             {item.actor?.full_name ?? item.actor?.email ?? "system"}
           </h2>
-          <p className="mt-1 mono ts-caption-1 text-[var(--text-tertiary)]">
+          <p className="mt-1 mono text-[11px] text-[var(--text-tertiary)]">
             {item.entity_id ?? "sin entity_id"} · {formatDateTime(item.occurred_at)}
           </p>
         </div>
-        <span className="rounded-full bg-[var(--surface-2)] px-3 py-1 ts-footnote font-medium text-[var(--text-secondary)]">
+        <span className="rounded-full bg-[var(--surface-2)] px-3 py-1 text-[12px] font-medium text-[var(--text-secondary)]">
           {item.actor ? "staff/user" : "system"}
         </span>
       </div>
-      <pre className="mt-5 max-h-56 overflow-auto rounded-2xl bg-[var(--surface-2)] p-4 ts-footnote leading-[1.55] text-[var(--text-secondary)]">
+      <pre className="mt-5 max-h-56 overflow-auto rounded-2xl bg-[var(--surface-2)] p-4 text-[12px] leading-[1.55] text-[var(--text-secondary)]">
         {diffPreview}
       </pre>
     </div>
@@ -183,7 +184,7 @@ function SelectBox({
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 ts-callout text-[var(--text-primary)]"
+        className="h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-[14px] text-[var(--text-primary)]"
       >
         {options.map((option) => (
           <option key={option} value={option}>
@@ -207,7 +208,7 @@ function AdminLinks() {
         <a
           key={href}
           href={href}
-          className="rounded-full bg-[var(--surface-2)] px-4 py-2 ts-subhead font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
+          className="rounded-full bg-[var(--surface-2)] px-4 py-2 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
         >
           {label}
         </a>
@@ -218,7 +219,7 @@ function AdminLinks() {
 
 function ErrorBox({ message }: { message: string }) {
   return (
-    <div className="mt-8 rounded-xl bg-[var(--band-b-bg)] p-4 ts-callout text-[var(--band-b-text)]">
+    <div className="mt-8 rounded-xl bg-[var(--band-b-bg)] p-4 text-[14px] text-[var(--band-b-text)]">
       {message}
     </div>
   );

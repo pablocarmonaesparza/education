@@ -1,21 +1,3 @@
-/**
- * /privacy — política de privacidad estilo Apple/HIG.
- *
- * Cero imports del DS legacy de Itera Courses (Card, Typography, Footer, etc).
- * Layout: surface-canvas + AuthNav minimal + columna estrecha de lectura con
- * jerarquía tipográfica sutil. Mismo lenguaje visual que /auth/*.
- */
-
-import type { Metadata } from "next";
-import { AuthNav } from "@/components/simulador/AuthNav";
-import "../(app)/simulador.css";
-
-export const metadata: Metadata = {
-  title: "Política de privacidad · Itera",
-  description:
-    "Cómo Itera recopila, usa y protege la información de personas y equipos que usan el simulador.",
-};
-
 export default function PrivacyPage() {
   const currentDate = new Date().toLocaleDateString("es-ES", {
     year: "numeric",
@@ -24,135 +6,58 @@ export default function PrivacyPage() {
   });
 
   return (
-    <div className="simulador-root min-h-screen surface-canvas">
-      <AuthNav mode="login" next="/" />
+    <main className="min-h-screen flex flex-col bg-[var(--surface)] text-[var(--text-primary)]">
+      <section className="flex-grow container mx-auto px-6 py-12 max-w-4xl">
+        <div className="text-xs uppercase tracking-widest text-[var(--text-tertiary)] mb-3">política de privacidad</div>
+        <h1 className="display display-tight text-4xl font-extrabold tracking-tight text-[var(--text-primary)] mb-3">
+          tus datos en itera simulador.
+        </h1>
+        <p className="text-sm text-[var(--text-tertiary)] mb-8">última actualización: {currentDate}</p>
 
-      <main className="px-6 pb-24 pt-12 sm:pt-20">
-        <article className="max-w-[640px] mx-auto">
-          <h1 className="display display-tight text-[var(--text-primary)] text-[36px] sm:text-[44px] leading-[1.05]">
-            Política de privacidad
-          </h1>
-          <p className="mt-4 text-[13px] text-[var(--text-tertiary)]">
-            Última actualización · {currentDate}
-          </p>
-
-          <p className="mt-12 text-[17px] text-[var(--text-secondary)] leading-[1.6]">
-            Itera protege la información de las personas y los equipos que usan
-            nuestro simulador de criterio de IA. Esta política explica qué
-            recopilamos, para qué lo usamos y cómo puedes solicitar acceso,
-            corrección o eliminación.
-          </p>
-
-          <p className="mt-5 text-[17px] text-[var(--text-secondary)] leading-[1.6]">
-            El field-test público guarda respuestas por tiempo limitado para
-            analizar el diagnóstico. Los flujos autenticados pueden guardar
-            respuestas, eventos de sesión, reportes y datos de equipo necesarios
-            para operar el producto.
-          </p>
-
-          <section className="mt-16">
-            <h2 className="text-[20px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Información que recopilamos
-            </h2>
-            <ul className="mt-5 space-y-3 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
-              <li>
-                <span className="text-[var(--text-primary)] font-medium">
-                  Datos de cuenta
-                </span>{" "}
-                · nombre, correo, autenticación y organización.
-              </li>
-              <li>
-                <span className="text-[var(--text-primary)] font-medium">
-                  Datos de simulación
-                </span>{" "}
-                · respuestas, decisiones, tiempos, eventos y reportes.
-              </li>
-              <li>
-                <span className="text-[var(--text-primary)] font-medium">
-                  Datos técnicos
-                </span>{" "}
-                · IP, navegador, dispositivo, cookies esenciales y logs de
-                seguridad.
-              </li>
-              <li>
-                <span className="text-[var(--text-primary)] font-medium">
-                  Datos de pago
-                </span>{" "}
-                · procesados por Stripe. No almacenamos tarjetas completas.
-              </li>
-            </ul>
-          </section>
-
-          <section className="mt-12">
-            <h2 className="text-[20px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Cómo usamos la información
-            </h2>
-            <p className="mt-5 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
-              Usamos la información para ejecutar casos, generar reportes,
-              administrar equipos, mejorar rúbricas, prevenir abuso, dar soporte
-              y cumplir obligaciones legales. No vendemos datos personales.
+        <div className="rounded-[var(--radius-xl)] border border-[var(--hairline)] bg-[var(--surface-2)] p-6 space-y-6">
+          <section>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">qué procesamos</h2>
+            <p className="text-base leading-7 text-[var(--text-secondary)]">
+              Itera Simulador procesa datos personales de participantes empleados: identificación básica (nombre, email), datos de uso (respuestas del caso vivo, transcript de prompts), outputs de IA durante el runtime, y datos comerciales (nombre de organización, plan contratado).
             </p>
           </section>
 
-          <section className="mt-12">
-            <h2 className="text-[20px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Proveedores
-            </h2>
-            <p className="mt-5 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
-              Podemos usar proveedores como Supabase, Stripe, servicios de
-              email, hosting, analytics y modelos de IA para operar el servicio.
-              Estos proveedores reciben solo la información necesaria para
-              cumplir su función.
+          <section>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">marco legal</h2>
+            <p className="text-base leading-7 text-[var(--text-secondary)]">
+              México: LFPDPPP (Ley Federal de Protección de Datos Personales en Posesión de los Particulares, DOF 20/03/2025).
+              Colombia: Ley 1581 de 2012 + decretos reglamentarios.
+              Las transferencias a sub-procesadores en US (Supabase, Anthropic, Stripe, AgentMail, Vercel) se rigen por Standard Contractual Clauses.
             </p>
           </section>
 
-          <section className="mt-12">
-            <h2 className="text-[20px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Retención y eliminación
-            </h2>
-            <p className="mt-5 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
-              Conservamos datos mientras sea necesario para operar el servicio,
-              cumplir contratos, resolver soporte o cumplir obligaciones
-              legales. Puedes pedir eliminación o acceso escribiendo a{" "}
-              <a
-                href="mailto:pablo@itera.la"
-                className="text-[var(--accent)] underline hover:opacity-70 transition-opacity"
-              >
-                pablo@itera.la
-              </a>
-              .
+          <section>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">tus derechos</h2>
+            <p className="text-base leading-7 text-[var(--text-secondary)]">
+              Como titular de datos puedes solicitar: acceso, rectificación, eliminación, oposición y portabilidad. Envía tu solicitud a <a href="mailto:privacy@itera.la" className="text-[var(--accent)] hover:underline">privacy@itera.la</a> y respondemos dentro de 5 días business. Eliminación toma hasta 30 días.
             </p>
           </section>
 
-          <section className="mt-12">
-            <h2 className="text-[20px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Seguridad
-            </h2>
-            <p className="mt-5 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
-              Aplicamos controles técnicos y organizativos razonables:
-              autenticación, permisos por rol, cifrado en tránsito, controles de
-              acceso y monitoreo. Ningún sistema conectado a internet puede
-              garantizar seguridad absoluta.
+          <section>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">retención</h2>
+            <p className="text-base leading-7 text-[var(--text-secondary)]">
+              Sessions activas + 30 días post-cierre. Reportes ejecutivos 12 meses, luego anonimizados. Audit logs 24 meses (baseline regulatorio). Eliminación a solicitud dentro de 30 días.
             </p>
           </section>
 
-          <section className="mt-20 pt-10 border-t border-[var(--hairline)]">
-            <h2 className="text-[20px] font-semibold text-[var(--text-primary)] tracking-tight">
-              Contacto
-            </h2>
-            <p className="mt-5 text-[15px] text-[var(--text-secondary)] leading-[1.6]">
-              ¿Preguntas o solicitudes sobre tus datos? Escríbenos a{" "}
-              <a
-                href="mailto:pablo@itera.la"
-                className="text-[var(--accent)] underline hover:opacity-70 transition-opacity"
-              >
-                pablo@itera.la
-              </a>
-              .
+          <section>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">contacto</h2>
+            <p className="text-base leading-7 text-[var(--text-secondary)]">
+              <a href="mailto:privacy@itera.la" className="text-[var(--accent)] hover:underline">privacy@itera.la</a> para temas de datos personales.
+              <br />
+              <a href="mailto:legal@itera.la" className="text-[var(--accent)] hover:underline">legal@itera.la</a> para DPA enterprise y compliance.
             </p>
           </section>
-        </article>
-      </main>
-    </div>
+        </div>
+      </section>
+      <footer className="border-t border-[var(--hairline)] px-4 py-6 text-center text-sm text-[var(--text-tertiary)]">
+        © {new Date().getFullYear()} Itera
+      </footer>
+    </main>
   );
 }

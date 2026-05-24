@@ -2,7 +2,7 @@
  * PATCH /api/sessions/[session_id]/responses
  *
  * Persiste respuestas + eventos del runtime step-by-step. Llamado con
- * debounce desde el cliente al avanzar entre slides.
+ * debounce desde el cliente al avanzar entre pantallas del caso.
  *
  * Body: {
  *   step_key: string,          // 'data_scope' | 'llm_beat' | ...

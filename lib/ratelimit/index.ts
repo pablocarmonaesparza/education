@@ -222,7 +222,7 @@ async function limitWithSupabase(input: {
  */
 export const rateLimiters = {
   /**
-   * Generación con LLM (course-gen, tutor-chat). Costoso en tokens.
+   * Generación con LLM (judge, field-test, runtime). Costoso en tokens.
    * 5 requests / minuto / usuario.
    */
   ai: createLimiter({ max: 5, window: '1 m', prefix: 'ai' }),
@@ -234,7 +234,7 @@ export const rateLimiters = {
   checkout: createLimiter({ max: 10, window: '1 m', prefix: 'checkout' }),
 
   /**
-   * Default para reads y mutations baratas (user_progress write, perfil update).
+   * Default para reads y mutations baratas (runtime events, perfil update).
    * 30 requests / minuto / usuario.
    */
   standard: createLimiter({ max: 30, window: '1 m', prefix: 'standard' }),

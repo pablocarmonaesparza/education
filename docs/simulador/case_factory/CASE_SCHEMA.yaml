@@ -1,0 +1,120 @@
+case_template_schema:
+  version: 1.0.0
+  required_fields:
+    - id
+    - version
+    - title
+    - level
+    - freshness
+    - tags
+    - tools
+    - manager_outcome
+    - case_flow
+    - evaluation
+    - practice_mapping
+    - resimulation
+    - judge
+
+  example:
+    id: sales_followup_agent_pipeline_risk
+    version: 1
+    title: "Agente de follow-up para oportunidades calientes"
+    level: N3
+    status: draft
+    estimated_minutes: 24
+    freshness:
+      type: current
+      evergreen_weight: 30
+      current_weight: 70
+      decay_signal: "Depende de capacidades actuales de agentes en CRM y correo."
+      last_verified_at: 2026-05-20
+      refresh_due_at: 2026-08-20
+    tags:
+      departments: [sales, operations]
+      industries: [saas_b2b, professional_services]
+      role_families: [manager, specialist]
+      seniority: [mid, senior, manager]
+      geos: [LATAM]
+    tools:
+      required: [ChatGPT, HubSpot, Gmail]
+      optional: [Zapier, Make, n8n]
+      tool_categories: [llm_chat, crm, email, automation, agent]
+    manager_outcome:
+      primary_question: "Puede delegar follow-up sin perder control comercial ni privacidad?"
+      assignment_brief: "Asigna este caso cuando quieras saber si alguien de Sales Ops o RevOps puede delegar follow-up comercial a un agente sin perder control sobre datos, aprobaciones y confianza del cliente. El resultado te dira si esa persona puede pilotar automatizacion en pipeline, si necesita practica en limites de autonomia o si conviene pausar el uso de agentes hasta reforzar controles."
+      business_metric: "tiempo de respuesta a leads calificados"
+      risk_metric: "mensajes enviados sin aprobacion o con datos sensibles"
+      expected_signal: "distingue automatizacion segura de autonomia riesgosa"
+    # Opcional. Si no existe, el caso se interpreta como no_timer.
+    time_pressure:
+      mode: fixed_timer
+      total_seconds: 1440
+      visible_to_participant: true
+      timer_start: after_context_ack
+      overtime_policy: allow_submit_with_overtime_flag
+      manager_signal: "decide con urgencia real sin saltarse privacidad, validacion ni approval gates"
+      measured_metrics:
+        - total_elapsed_seconds
+        - step_elapsed_seconds
+        - time_to_first_action_seconds
+        - review_time_ratio
+        - overtime_seconds
+      scoring_rule: "la velocidad solo mejora la lectura de impacto si no hay risk_event high"
+    case_flow:
+      contexto:
+        role: "Sales Ops Manager"
+        company: "SaaS B2B LATAM"
+        pressure: "El VP quiere responder todos los SQLs antes de 2 horas."
+        stakeholders: [vp_sales, account_executives, legal]
+      datos:
+        artifacts:
+          - type: crm_rows
+          - type: email_thread
+          - type: policy_excerpt
+        target_seconds: 240
+      ia:
+        task: "Disenar el brief y limites de un agente de follow-up."
+        output_spec: "agent_brief + permission_plan + escalation_policy"
+        target_seconds: 420
+      revision:
+        checks_required:
+          - privacy
+          - hallucinated_context
+          - send_without_approval
+        target_seconds: 360
+      decision:
+        options_count: 4
+        all_options_have_tradeoff: true
+        target_seconds: 180
+      respuesta:
+        format: "memo corto al VP"
+        target_seconds: 240
+    evaluation:
+      criteria_weights:
+        contexto: 10
+        datos: 20
+        ejecucion_ia: 25
+        validacion: 15
+        juicio: 20
+        impacto: 10
+      failure_modes:
+        - "Permite envio automatico sin approval gate."
+        - "Incluye datos personales no necesarios en el prompt."
+        - "No define logs ni rollback."
+      risk_events_possible:
+        - privacy_exposure
+        - agent_overreach
+        - customer_trust_damage
+    practice_mapping:
+      agent_overreach: practice_agent_permission_boundaries_v1
+      privacy_exposure: practice_anonymize_keep_signal_v1
+    resimulation:
+      required: true
+      variant_role: resimulation
+      transfer_principle: "mismo control de autonomia, distinto canal/herramienta"
+    judge:
+      prompt_ref: judge_prompt_sales_agent_followup_v1
+      confidence_threshold: 0.7
+      requires_human_review_when:
+        - "risk_event.severity == high"
+        - "judge.confidence < 0.7"

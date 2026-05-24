@@ -8,21 +8,35 @@ import yaml from 'js-yaml';
 const ROOT = process.cwd();
 const CONTRACT_DIR = path.join(ROOT, 'docs/simulador/contrato_v0');
 
-const DIMENSIONS = new Set(['contexto', 'privacidad', 'validacion', 'juicio', 'decision']);
+const DIMENSIONS = new Set(['contexto', 'datos', 'ejecucion_ia', 'validacion', 'juicio', 'impacto']);
 const STEP_TYPES = new Set(['data_scope', 'llm_beat', 'artifact_review', 'decision_select', 'decision_open_short']);
+const EXERCISE_TYPES = new Set([
+  'ai_textfield_free',
+  'ai_textfield_guided',
+  'data_table_triage',
+  'workflow_builder',
+  'agent_brief_builder',
+  'permission_matrix',
+  'run_log_review',
+  'ai_output_review',
+  'ai_comparison',
+  'dashboard_pivot',
+  'tradeoff_decision_memo',
+]);
 const EVIDENCE_KINDS = new Set([
   'readiness_dimension_scores',
   'risk_events_detected',
   'decision_replay',
   'transfer_delta',
   'manager_recommendation',
+  'time_pressure_metrics',
 ]);
 
 const CASES_DIR = path.join(CONTRACT_DIR, 'casos');
 const VARIANTS_DIR = path.join(CONTRACT_DIR, 'variantes');
 const PRACTICE_DIR = path.join(CONTRACT_DIR, 'practice_beats');
-const SPRINT_PATH = path.join(CONTRACT_DIR, 'sprints/sprint_marketing_30d.yaml');
-const RUBRIC_PATH = path.join(CONTRACT_DIR, 'rubricas/rubric_marketing_v1.yaml');
+const SPRINT_PATH = path.join(CONTRACT_DIR, 'sprints/case_factory_demo.yaml');
+const RUBRIC_PATH = path.join(CONTRACT_DIR, 'rubricas/rubric_case_factory_v1.yaml');
 
 const issues = [];
 
@@ -30,7 +44,8 @@ function main() {
   const cases = readYamlFiles(CASES_DIR, 'case_template');
   const variants = readYamlFiles(VARIANTS_DIR, 'case_variant');
   const practiceBeats = readYamlFiles(PRACTICE_DIR, 'practice_beat');
-  const sprint = readYamlFile(SPRINT_PATH).sprint_package;
+  const sprintDoc = readYamlFile(SPRINT_PATH);
+  const sprint = sprintDoc.sprint_package ?? sprintDoc.case_package;
   const rubric = readYamlFile(RUBRIC_PATH).rubric;
 
   const variantsByTemplate = groupBy(variants, (variant) => variant.template_ref);
@@ -43,8 +58,9 @@ function main() {
   validateSprint(sprint, caseIds, variantsById, practiceIds, practiceIdsMappedByCases);
   validateRubric(rubric);
 
-  const readyCases = sprint.contents.cases_included.filter((item) => item.status === 'ready');
-  const plannedCases = sprint.contents.cases_included.filter((item) => item.status === 'planned');
+  const includedCases = sprint.contents?.cases_included ?? sprint.cases_included ?? [];
+  const readyCases = includedCases.filter((item) => item.status === 'ready');
+  const plannedCases = includedCases.filter((item) => item.status === 'planned');
 
   if (issues.length > 0) {
     for (const item of issues) {
@@ -88,6 +104,9 @@ function validateCase(item, variantsByTemplate, practiceIds, practiceIdsMappedBy
     dims.forEach((dimension) => {
       if (!DIMENSIONS.has(dimension)) addIssue('error', `case:${item.id}.steps[${index}]`, `invalid dimension ${dimension}`);
     });
+    if (step.exercise_type && !EXERCISE_TYPES.has(step.exercise_type)) {
+      addIssue('error', `case:${item.id}.steps[${index}]`, `invalid exercise_type ${step.exercise_type}`);
+    }
   });
 
   (item.evidence_emitted ?? []).forEach((evidence, index) => {
@@ -104,35 +123,35 @@ function validateCase(item, variantsByTemplate, practiceIds, practiceIdsMappedBy
 }
 
 function validateSprint(sprint, caseIds, variantsById, practiceIds, practiceIdsMappedByCases) {
-  const included = sprint.contents.cases_included;
-  if (included.length !== 8) addIssue('error', 'sprint:marketing_30d', `expected 8 cases, found ${included.length}`);
+  const included = sprint.contents?.cases_included ?? sprint.cases_included ?? [];
+  if (included.length !== 1) addIssue('error', `sprint:${sprint.id}`, `expected 1 active case, found ${included.length}`);
 
   included.forEach((item) => {
-    if (!caseIds.has(item.id)) addIssue('error', `sprint:marketing_30d.${item.id}`, 'case file missing');
-    (item.dimensions_emphasized ?? []).forEach((dimension) => {
-      if (!DIMENSIONS.has(dimension)) addIssue('error', `sprint:marketing_30d.${item.id}`, `invalid dimension ${dimension}`);
+    if (!caseIds.has(item.id)) addIssue('error', `sprint:${sprint.id}.${item.id}`, 'case file missing');
+    (item.dimensions_emphasized ?? item.criteria_emphasized ?? []).forEach((dimension) => {
+      if (!DIMENSIONS.has(dimension)) addIssue('error', `sprint:${sprint.id}.${item.id}`, `invalid dimension ${dimension}`);
     });
 
     if (item.status === 'ready' && (!item.primary_variant_ref || !item.resim_variant_ref)) {
-      addIssue('error', `sprint:marketing_30d.${item.id}`, 'ready case missing variant refs');
+      addIssue('error', `sprint:${sprint.id}.${item.id}`, 'ready case missing variant refs');
     }
 
-    if (item.status === 'ready' && (!item.dimensions_emphasized?.length || !item.difficulty || !item.tension)) {
-      addIssue('error', `sprint:marketing_30d.${item.id}`, 'ready case missing dimensions_emphasized, difficulty, or tension');
+    if (item.status === 'ready' && !(item.dimensions_emphasized?.length || item.criteria_emphasized?.length)) {
+      addIssue('error', `sprint:${sprint.id}.${item.id}`, 'ready case missing dimensions/criteria emphasized');
     }
 
     validateSprintVariantRef(item, variantsById, item.primary_variant_ref, 'primary');
     validateSprintVariantRef(item, variantsById, item.resim_variant_ref, 'resimulation');
   });
 
-  const catalog = new Set(sprint.contents.practice_beats_catalog ?? []);
+  const catalog = new Set(sprint.contents?.practice_beats_catalog ?? sprint.practice_beats_catalog ?? []);
   for (const id of practiceIdsMappedByCases) {
-    if (!catalog.has(id)) addIssue('error', 'sprint:marketing_30d.practice_beats_catalog', `case maps practice beat not in sprint catalog: ${id}`);
+    if (!catalog.has(id)) addIssue('error', `sprint:${sprint.id}.practice_beats_catalog`, `case maps practice beat not in sprint catalog: ${id}`);
   }
 
   for (const id of catalog) {
-    if (!practiceIds.has(id)) addIssue('error', 'sprint:marketing_30d.practice_beats_catalog', `catalog references missing practice beat file: ${id}`);
-    if (!practiceIdsMappedByCases.has(id)) addIssue('error', 'sprint:marketing_30d.practice_beats_catalog', `catalog practice beat is not mapped by any case: ${id}`);
+    if (!practiceIds.has(id)) addIssue('error', `sprint:${sprint.id}.practice_beats_catalog`, `catalog references missing practice beat file: ${id}`);
+    if (!practiceIdsMappedByCases.has(id)) addIssue('error', `sprint:${sprint.id}.practice_beats_catalog`, `catalog practice beat is not mapped by any case: ${id}`);
   }
 }
 
@@ -140,14 +159,14 @@ function validateSprintVariantRef(sprintCase, variantsById, variantRef, expected
   if (!variantRef) return;
   const variant = variantsById.get(variantRef);
   if (!variant) {
-    addIssue('error', `sprint:marketing_30d.${sprintCase.id}`, `variant ref missing file: ${variantRef}`);
+    addIssue('error', `sprint.${sprintCase.id}`, `variant ref missing file: ${variantRef}`);
     return;
   }
   if (variant.variant_role !== expectedRole) {
-    addIssue('error', `sprint:marketing_30d.${sprintCase.id}`, `variant ${variantRef} expected role ${expectedRole}, found ${variant.variant_role}`);
+    addIssue('error', `sprint.${sprintCase.id}`, `variant ${variantRef} expected role ${expectedRole}, found ${variant.variant_role}`);
   }
   if (variant.template_ref !== `${sprintCase.id}@v1`) {
-    addIssue('error', `sprint:marketing_30d.${sprintCase.id}`, `variant ${variantRef} points to ${variant.template_ref}`);
+    addIssue('error', `sprint.${sprintCase.id}`, `variant ${variantRef} points to ${variant.template_ref}`);
   }
 }
 

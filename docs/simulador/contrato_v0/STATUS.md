@@ -2,7 +2,21 @@
 
 > archivo en tiempo real. cada agente actualiza su columna después de cada commit. no editar la columna del otro.
 
-última sincronización: 2026-05-12 (codex actualizando)
+última sincronización: 2026-05-20 (codex actualizando)
+
+## reset de casos 2026-05-20
+
+Pablo decidio retirar los 8 casos antiguos. No se usaran como base del
+producto. El contrato activo queda reducido a un golden case nuevo para probar
+el Case Factory:
+
+- `sales_agent_followup_pipeline_v1`
+- primary: `sales_agent_followup_pipeline__aurora_primary_v1`
+- resim: `sales_agent_followup_pipeline__nova_resim_v1`
+- rubric: `rubric_case_factory_v1@1.0.0`
+- practice beats: 4
+
+La meta inmediata es validar la estructura, no producir volumen.
 
 > nota: codex mantiene `coordinacion/`, `runtime/`, `schema/`; claude mantiene casos, rubricas, variantes, practice beats, copy y sprint package.
 

@@ -1,0 +1,51 @@
+case_variant:
+  id: sales_agent_followup_pipeline__nova_resim_v1
+  template_ref: sales_agent_followup_pipeline@v1
+  variant_role: resimulation
+  status: ready
+  parent_variant_ref: sales_agent_followup_pipeline__aurora_primary_v1
+  delay_days_from_parent: 7
+  level: 3
+  career_key: sales
+  template_var_values:
+    company_name: NovaOps
+    crm_name: Salesforce
+    email_tool: Outlook
+    stakeholder_name: Tomas
+  inputs_resolved:
+    synthetic: true
+    items:
+      - kind: crm_row
+        lead_id: N-118
+        contact_name: Ana Beltran
+        email: ana@enterprise.example
+        company: Atlas Retail
+        deal_stage: Procurement
+        deal_value_usd: 210000
+        last_touch_days: 14
+        internal_notes: "legal revisa DPA; no prometer SOC2 antes de confirmacion"
+        competitor_mentioned: Salesforce Service Cloud
+      - kind: crm_row
+        lead_id: N-244
+        contact_name: Marco Vidal
+        email: marco@fintech.example
+        company: CrescoPay
+        deal_stage: Security Review
+        deal_value_usd: 160000
+        last_touch_days: 3
+        internal_notes: "pidio data residency; escalar a legal antes de enviar detalles"
+        competitor_mentioned: Intercom
+      - kind: policy_excerpt
+        allowed_data: "solo campos de oportunidad no personales y resumen seguro de notas"
+        approval_required: "legal approval para enterprise y security review"
+        external_send_policy: "agente puede crear task interna, no email externo"
+      - kind: agent_log
+        lead_id: N-244
+        proposed_action: "crear task legal y borrador interno para AE"
+        reason: "security review requiere precision"
+        confidence: 0.78
+        error: "none"
+  expected_behavior_shift: >
+    En resim el contexto cambia de velocidad comercial a enterprise/security.
+    La mejora debe verse en escalation, permisos y precision del impacto.
+

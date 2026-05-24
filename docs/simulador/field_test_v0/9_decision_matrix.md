@@ -252,7 +252,7 @@ opciones legítimas:
 
 - documentar el desacuerdo en bitácora de cambios
 - continuar con la decisión que dicta la matriz
-- escribir lecciones aprendidas para fase 0.5 / fase 1, NO modificar
+- escribir aprendizajes para fase 0.5 / fase 1, NO modificar
   retroactivamente la decisión actual
 
 ---

@@ -22,7 +22,7 @@ export function AppleStepDots({
         <li key={step.id} className="flex items-center gap-2">
           <span
             className={cn(
-              "flex h-7 w-7 items-center justify-center rounded-full border ts-footnote font-semibold",
+              "flex h-7 w-7 items-center justify-center rounded-full border text-[12px] font-semibold",
               step.status === "completed" &&
                 "border-[var(--band-a-text)] bg-[var(--band-a-bg)] text-[var(--band-a-text)]",
               step.status === "current" &&
