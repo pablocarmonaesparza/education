@@ -26,7 +26,7 @@ function check(condition, message) {
 
 async function clickNext(page) {
   await page.locator("footer button").last().click();
-  await page.waitForTimeout(420);
+  await page.waitForTimeout(600);
 }
 
 async function assertCurrentSlideFits(page, label) {
@@ -142,7 +142,13 @@ async function runAllCasesSmoke(browser) {
       }
       check(await page.getByRole("progressbar").getAttribute("aria-valuenow") === "0", `${path} intro progress must start at 0`);
       await clickNext(page);
-      check(await page.getByText("1 / 5").count(), `${path} first section must start at 1 / 5`);
+      try {
+        await page.waitForFunction(() => document.querySelector("section article")?.textContent?.includes("1 / 5"), null, { timeout: 2000 });
+      } catch {
+        // handled by the explicit assertion below
+      }
+      const articleText = await page.locator("section article").innerText();
+      check(articleText.includes("1 / 5"), `${path} first section must start at 1 / 5`);
       check(await page.getByText("Lee esto como el brief que acaba de llegar a tu mesa").count() === 0, `${path} must not show repeated legacy brief panel`);
       await assertCurrentSlideFits(page, `${path} first slide`);
     } finally {

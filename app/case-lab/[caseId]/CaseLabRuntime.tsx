@@ -94,7 +94,7 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
   }
 
   return (
-    <main className="simulador-root dark min-h-screen surface-canvas text-[var(--text-primary)]">
+    <main className="simulador-root light min-h-screen surface-canvas text-[var(--text-primary)]">
       <div className="flex h-screen flex-col overflow-hidden">
         <header className="mx-auto flex h-16 w-full max-w-[1440px] shrink-0 items-center justify-between gap-6 px-6 md:px-10">
           <Link
