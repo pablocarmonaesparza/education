@@ -1,389 +1,350 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  AppleButton,
-  AppleCard,
-  AppleCardBody,
-} from "@/components/simulador/apple";
 
 type CaseLevel = "N1" | "N2" | "N3";
-type ReviewState = "PASS" | "CONDICIONAL" | "PENDIENTE";
+
+type CaseSection = {
+  name: "Contexto" | "Datos" | "IA" | "Revisión" | "Decisión" | "Respuesta";
+  eyebrow: string;
+  title: string;
+  body: string;
+  artifact?: string;
+  prompt?: string;
+};
 
 type LaunchCase = {
   id: string;
   title: string;
-  shortTitle: string;
   level: CaseLevel;
   profile: string;
   estimatedMinutes: number;
-  freshness: "70% vigente" | "60% vigente" | "50% vigente";
-  state: ReviewState;
+  company: string;
+  summary: string;
   managerBrief: string;
-  managerQuestion: string;
-  moment: string;
-  businessSignal: string;
-  tools: string[];
-  exercises: string[];
-  dimensions: string[];
-  risks: string[];
-  primary: string;
-  resim: string;
-  sections: Array<{
-    name: string;
-    exercise: string;
-    evidence: string;
-  }>;
+  sections: CaseSection[];
 };
 
 const launchCases: LaunchCase[] = [
   {
     id: "sales-agent-followup",
     title: "Seguimiento comercial con agente de ventas",
-    shortTitle: "Agente de ventas",
     level: "N3",
     profile: "Ventas",
     estimatedMinutes: 30,
-    freshness: "70% vigente",
-    state: "CONDICIONAL",
+    company: "Aurora SaaS",
+    summary:
+      "Un equipo comercial quiere reactivar oportunidades frías con un agente, sin perder control humano.",
     managerBrief:
-      "Asigna este caso cuando quieras saber si el equipo puede delegar seguimiento comercial a un agente sin filtrar datos sensibles, inventar señales de compra o perder control humano.",
-    managerQuestion:
-      "Puede operar un agente de seguimiento sin comprometer privacidad ni calidad comercial?",
-    moment:
-      "Un equipo B2B necesita reactivar oportunidades frías antes del cierre mensual.",
-    businessSignal:
-      "Mide si la persona diseña límites, revisa logs y decide cuándo escalar a humano.",
-    tools: ["CRM", "Gmail", "Agente IA", "Modelo corporativo"],
-    exercises: [
-      "Tabla de datos",
-      "Brief para agente",
-      "Revisión de logs",
-      "Decisión con tradeoffs",
-    ],
-    dimensions: ["Datos", "Ejecución IA", "Validación", "Juicio", "Impacto"],
-    risks: [
-      "Uso de datos personales innecesarios",
-      "Automatización sin revisión",
-      "Follow-up con supuestos no validados",
-    ],
-    primary: "Aurora SaaS",
-    resim: "Nova Cloud",
+      "Úsalo cuando quieras saber si alguien puede delegar seguimiento comercial a un agente sin filtrar datos sensibles, inventar señales de compra o mandar mensajes fuera de contexto.",
     sections: [
       {
         name: "Contexto",
-        exercise: "Lectura de presión operativa",
-        evidence: "Entiende objetivo, audiencia y consecuencia comercial.",
+        eyebrow: "Paso 01",
+        title: "Aurora necesita reactivar cuentas antes del cierre mensual.",
+        body:
+          "Camila, VP de Ventas, pide preparar una corrida de seguimiento para 42 oportunidades sin actividad reciente. Hay presión por cerrar pipeline, pero algunas notas del CRM incluyen nombres, correos y comentarios internos del equipo.",
+        artifact: "Objetivo: recuperar conversaciones útiles sin comprometer confianza ni privacidad.",
       },
       {
         name: "Datos",
-        exercise: "Tabla de datos",
-        evidence: "Separa lo usable, lo anonimizables y lo que debe excluirse.",
+        eyebrow: "Paso 02",
+        title: "Decide qué información puede entrar al agente.",
+        body:
+          "Tienes campos de CRM, historial de correos, notas de llamadas y señales de producto. Algunas ayudan a personalizar; otras sólo aumentan riesgo. Elige qué usar, qué anonimizar y qué dejar fuera.",
+        artifact: "Campos visibles: industria, etapa, último contacto, objeción principal, correo, notas internas.",
       },
       {
         name: "IA",
-        exercise: "Brief para agente",
-        evidence: "Define tarea, acceso, acciones permitidas y condiciones de alto.",
+        eyebrow: "Paso 03",
+        title: "Escribe el brief del agente.",
+        body:
+          "El agente debe preparar borradores, no enviarlos solo. Define tarea, acceso permitido, acciones bloqueadas y cuándo debe detenerse para pedir revisión humana.",
+        prompt: "Redacta un brief operativo para un agente de seguimiento comercial con límites claros.",
       },
       {
         name: "Revisión",
-        exercise: "Revisión de logs",
-        evidence: "Detecta señales inventadas, riesgo de PII y exceso de autonomía.",
+        eyebrow: "Paso 04",
+        title: "Revisa una corrida con señales sospechosas.",
+        body:
+          "El agente marcó tres oportunidades como 'alta intención', pero dos señales vienen de notas ambiguas y una contiene un dato personal que no debía usarse. Decide qué corregir antes de continuar.",
       },
       {
         name: "Decisión",
-        exercise: "Decisión con tradeoffs",
-        evidence: "Elige lanzar, pausar o escalar con argumento de negocio.",
+        eyebrow: "Paso 05",
+        title: "Elige si lanzar, pausar o escalar.",
+        body:
+          "La campaña puede recuperar pipeline, pero enviar mensajes sin revisión puede dañar la relación con cuentas estratégicas. Toma una decisión con tradeoffs reales.",
       },
       {
         name: "Respuesta",
-        exercise: "Memo ejecutivo",
-        evidence: "Explica al manager qué haría, por qué y qué debe vigilar.",
+        eyebrow: "Paso 06",
+        title: "Explica tu decisión al manager.",
+        body:
+          "Redacta una respuesta breve para Camila: qué harías, qué revisarías primero y qué condición tendría que cumplirse para autorizar el envío.",
       },
     ],
   },
   {
     id: "support-whatsapp-escalation",
     title: "Escalamiento de soporte con conversaciones de WhatsApp",
-    shortTitle: "Soporte WhatsApp",
     level: "N2",
     profile: "Soporte",
     estimatedMinutes: 24,
-    freshness: "70% vigente",
-    state: "PENDIENTE",
+    company: "Loop Retail",
+    summary:
+      "Un cliente amenaza con publicar capturas si soporte no responde con claridad y cuidado.",
     managerBrief:
-      "Asigna este caso para revisar si el equipo puede resumir conversaciones reales, detectar riesgo reputacional y preparar una respuesta sin exponer datos personales.",
-    managerQuestion:
-      "Puede convertir conversaciones caóticas en una acción útil sin aumentar el riesgo?",
-    moment:
-      "Un cliente molesto amenaza con publicar capturas si no recibe respuesta en una hora.",
-    businessSignal:
-      "Mide priorización, privacidad, tono y criterio para escalar.",
-    tools: ["WhatsApp Business", "Zendesk", "Modelo multimodal", "Base de ayuda"],
-    exercises: [
-      "Textfield de IA",
-      "Revisión de output",
-      "Matriz de permisos",
-      "Memo ejecutivo",
-    ],
-    dimensions: ["Contexto", "Datos", "Validación", "Juicio", "Impacto"],
-    risks: [
-      "Respuesta defensiva o legalista",
-      "Exponer nombres, teléfonos o capturas",
-      "Aceptar el resumen de IA sin contrastarlo",
-    ],
-    primary: "Loop Retail",
-    resim: "NubeFresh",
+      "Úsalo para revisar si una persona puede resumir conversaciones reales, detectar riesgo reputacional y preparar una respuesta sin exponer datos personales.",
     sections: [
       {
         name: "Contexto",
-        exercise: "Brief de situación",
-        evidence: "Identifica urgencia, audiencia y límite de tono.",
+        eyebrow: "Paso 01",
+        title: "Un cliente molesto exige respuesta en menos de una hora.",
+        body:
+          "El equipo de soporte recibe una conversación larga por WhatsApp. El cliente dice que publicará capturas si no recibe una explicación concreta sobre un cobro duplicado.",
+        artifact: "Audiencia: cliente final. Tono esperado: claro, humano y sin ponerse defensivo.",
       },
       {
         name: "Datos",
-        exercise: "Clasificación de conversación",
-        evidence: "Decide qué fragmentos puede usar y qué debe anonimizar.",
+        eyebrow: "Paso 02",
+        title: "Separa hechos útiles de datos sensibles.",
+        body:
+          "La conversación contiene teléfono, capturas de pago, nombre completo y una queja legítima. Decide qué fragmentos puede leer el modelo y cuáles deben ocultarse.",
+        artifact: "Datos disponibles: transcripción, ticket Zendesk, captura de pago, historial de pedidos.",
       },
       {
         name: "IA",
-        exercise: "Textfield de IA",
-        evidence: "Pide resumen accionable con restricciones claras.",
+        eyebrow: "Paso 03",
+        title: "Pide a la IA un resumen accionable.",
+        body:
+          "El modelo debe ayudarte a ordenar el problema y preparar opciones de respuesta. No puede inventar políticas ni prometer devoluciones sin confirmación.",
+        prompt: "Resume el caso, separa hechos confirmados de supuestos y propón una respuesta segura.",
       },
       {
         name: "Revisión",
-        exercise: "Revisión de output",
-        evidence: "Marca claims no verificados y tono riesgoso.",
+        eyebrow: "Paso 04",
+        title: "Detecta riesgos en la respuesta sugerida.",
+        body:
+          "La IA propone disculparse, pero también promete un reembolso inmediato y menciona datos de la captura. Marca lo que no debe enviarse.",
       },
       {
         name: "Decisión",
-        exercise: "Matriz de permisos",
-        evidence: "Define qué puede mandar el agente y qué requiere humano.",
+        eyebrow: "Paso 05",
+        title: "Define qué puede enviar soporte y qué debe escalar.",
+        body:
+          "Puedes contestar rápido, pedir una revisión de pagos o escalar al líder de soporte. Decide cómo responder sin empeorar la situación.",
       },
       {
         name: "Respuesta",
-        exercise: "Memo al manager",
-        evidence: "Propone acción, canal y seguimiento.",
+        eyebrow: "Paso 06",
+        title: "Escribe la respuesta final para el cliente.",
+        body:
+          "Prepara un mensaje breve que reconozca el problema, explique el siguiente paso y evite usar información sensible.",
       },
     ],
   },
   {
     id: "finance-variance-claim",
     title: "Variación financiera explicada con hojas de cálculo",
-    shortTitle: "Finanzas",
     level: "N2",
     profile: "Finanzas",
     estimatedMinutes: 26,
-    freshness: "60% vigente",
-    state: "PENDIENTE",
-    managerBrief:
-      "Asigna este caso para saber si una persona puede usar IA sobre tablas y explicaciones financieras sin confundir correlación, causa y narrativa ejecutiva.",
-    managerQuestion:
-      "Puede explicar una variación de negocio sin inventar causalidad?",
-    moment:
+    company: "Luma Payments",
+    summary:
       "La dirección pide explicar una caída de margen antes del comité semanal.",
-    businessSignal:
-      "Mide validación numérica, lectura de supuestos y comunicación ejecutiva.",
-    tools: ["Excel", "Sheets", "ChatGPT", "NotebookLM"],
-    exercises: [
-      "Dashboard/pivot",
-      "Comparación de respuestas",
-      "Checklist de validación",
-      "Memo ejecutivo",
-    ],
-    dimensions: ["Datos", "Validación", "Juicio", "Impacto"],
-    risks: [
-      "Confundir correlación con causalidad",
-      "Ignorar outliers",
-      "Presentar una explicación sin fuente verificable",
-    ],
-    primary: "Aurora SaaS",
-    resim: "Luma Payments",
+    managerBrief:
+      "Úsalo para saber si una persona puede usar IA sobre tablas y explicaciones financieras sin confundir correlación, causa y narrativa ejecutiva.",
     sections: [
       {
         name: "Contexto",
-        exercise: "Lectura del comité",
-        evidence: "Distingue presión ejecutiva de certeza analítica.",
+        eyebrow: "Paso 01",
+        title: "El comité pide una explicación hoy.",
+        body:
+          "La CFO quiere saber por qué cayó el margen en una línea de producto. Hay presión por tener una narrativa, pero los datos todavía no prueban una causa única.",
+        artifact: "Objetivo: preparar una explicación defendible, no una historia conveniente.",
       },
       {
         name: "Datos",
-        exercise: "Dashboard/pivot",
-        evidence: "Ordena señales y detecta anomalías.",
+        eyebrow: "Paso 02",
+        title: "Revisa la tabla antes de pedir ayuda a la IA.",
+        body:
+          "Tienes ventas, descuentos, costo de adquisición y devoluciones. Algunas variaciones parecen coincidir, pero no necesariamente explican la caída.",
+        artifact: "Señales visibles: descuentos altos, CAC estable, devoluciones concentradas en dos cuentas.",
       },
       {
         name: "IA",
-        exercise: "Textfield de IA",
-        evidence: "Pide hipótesis con límites y evidencia requerida.",
+        eyebrow: "Paso 03",
+        title: "Pide hipótesis con límites claros.",
+        body:
+          "La IA puede ayudarte a encontrar patrones, pero debe separar hipótesis, evidencia y datos faltantes. No debe afirmar causalidad sin validación.",
+        prompt: "Analiza la variación de margen y separa explicación posible, evidencia y dudas abiertas.",
       },
       {
         name: "Revisión",
-        exercise: "Comparación de respuestas",
-        evidence: "Elige la explicación más defendible.",
+        eyebrow: "Paso 04",
+        title: "Compara dos explicaciones de IA.",
+        body:
+          "Una respuesta culpa a descuentos; otra señala devoluciones y mix de cuentas. Decide cuál es más defendible y qué falta confirmar.",
       },
       {
         name: "Decisión",
-        exercise: "Checklist de validación",
-        evidence: "Decide qué puede subir al comité y qué falta verificar.",
+        eyebrow: "Paso 05",
+        title: "Decide qué subir al comité.",
+        body:
+          "Elige entre presentar una hipótesis cautelosa, pedir más análisis o hacer una recomendación inmediata. Justifica el nivel de certeza.",
       },
       {
         name: "Respuesta",
-        exercise: "Memo ejecutivo",
-        evidence: "Comunica una recomendación sin sobreactuar la certeza.",
+        eyebrow: "Paso 06",
+        title: "Redacta el memo ejecutivo.",
+        body:
+          "Explica qué cambió, qué hipótesis es más probable, qué no está probado y qué acción recomiendas.",
       },
     ],
   },
   {
     id: "legal-contract-triage",
     title: "Triage legal de contrato con IA",
-    shortTitle: "Legal",
     level: "N1",
     profile: "Legal",
     estimatedMinutes: 22,
-    freshness: "50% vigente",
-    state: "PENDIENTE",
+    company: "Contrato de distribución",
+    summary:
+      "Un contrato comercial debe priorizarse antes de una firma urgente.",
     managerBrief:
-      "Asigna este caso para medir si el equipo usa IA como apoyo de lectura, sin convertirla en autoridad legal ni compartir información fuera de límites.",
-    managerQuestion:
-      "Puede usar IA para priorizar una revisión contractual sin delegar criterio legal?",
-    moment:
-      "Un contrato comercial debe revisarse antes de una firma urgente.",
-    businessSignal:
-      "Mide encuadre, privacidad, validación y claridad de escalamiento.",
-    tools: ["Modelo corporativo", "Doc viewer", "Base de cláusulas", "Drive"],
-    exercises: [
-      "Matriz de permisos",
-      "Revisión de output",
-      "Textfield de IA",
-      "Decisión con tradeoffs",
-    ],
-    dimensions: ["Contexto", "Datos", "Validación", "Juicio"],
-    risks: [
-      "Subir documento confidencial a modelo no aprobado",
-      "Aceptar interpretación legal sin abogado",
-      "Omitir cláusulas de alto impacto",
-    ],
-    primary: "Contrato de distribución",
-    resim: "Acuerdo de servicios",
+      "Úsalo para medir si el equipo usa IA como apoyo de lectura, sin convertirla en autoridad legal ni compartir información fuera de límites.",
     sections: [
       {
         name: "Contexto",
-        exercise: "Brief de urgencia",
-        evidence: "Ubica qué decisión sí puede tomar y cuál debe escalar.",
+        eyebrow: "Paso 01",
+        title: "El equipo comercial quiere firmar hoy.",
+        body:
+          "Recibes un contrato con cambios de última hora. Te piden usar IA para acelerar la revisión, pero el documento incluye términos confidenciales.",
+        artifact: "Objetivo: priorizar riesgos sin delegar juicio legal al modelo.",
       },
       {
         name: "Datos",
-        exercise: "Matriz de permisos",
-        evidence: "Define qué fragmentos entran a IA y qué queda fuera.",
+        eyebrow: "Paso 02",
+        title: "Decide qué fragmentos pueden revisarse con IA.",
+        body:
+          "No todo el contrato debe subirse. Identifica secciones que pueden resumirse, partes que requieren anonimización y cláusulas que deben quedarse fuera.",
+        artifact: "Secciones: indemnización, pagos, exclusividad, datos del cliente, penalizaciones.",
       },
       {
         name: "IA",
-        exercise: "Textfield de IA",
-        evidence: "Solicita extracción de riesgos, no dictamen legal.",
+        eyebrow: "Paso 03",
+        title: "Pide extracción de riesgos, no dictamen.",
+        body:
+          "El modelo debe ayudarte a listar cláusulas que requieren revisión humana. No debe decidir si el contrato es aceptable.",
+        prompt: "Extrae posibles riesgos contractuales y marca qué debe revisar legal interno.",
       },
       {
         name: "Revisión",
-        exercise: "Revisión de output",
-        evidence: "Detecta exceso de autoridad y omisiones.",
+        eyebrow: "Paso 04",
+        title: "Corrige una salida demasiado autoritaria.",
+        body:
+          "La IA afirma que una cláusula es 'aceptable' sin explicar supuestos. Detecta dónde se excede y qué evidencia falta.",
       },
       {
         name: "Decisión",
-        exercise: "Decisión con tradeoffs",
-        evidence: "Prioriza revisar, escalar o bloquear firma.",
+        eyebrow: "Paso 05",
+        title: "Prioriza revisar, escalar o bloquear firma.",
+        body:
+          "Elige si se puede avanzar con cambios menores, si legal debe revisar antes de firma o si conviene detener el proceso.",
       },
       {
         name: "Respuesta",
-        exercise: "Nota de escalamiento",
-        evidence: "Resume riesgos y siguiente acción para legal interno.",
+        eyebrow: "Paso 06",
+        title: "Escribe una nota de escalamiento.",
+        body:
+          "Resume los riesgos principales, qué decisión no debe automatizarse y qué necesita revisar una persona responsable.",
       },
     ],
   },
   {
     id: "marketing-dirty-data-campaign",
     title: "Campaña urgente con datos incompletos",
-    shortTitle: "Marketing",
     level: "N1",
     profile: "Marketing/Growth",
     estimatedMinutes: 18,
-    freshness: "70% vigente",
-    state: "PASS",
+    company: "Loop SaaS B2B",
+    summary:
+      "La VP de Marketing pide tres ángulos para reactivar cuentas con bajo uso.",
     managerBrief:
-      "Asigna este caso para medir si el equipo puede preparar una campaña con IA sin usar datos sensibles, prometer de más o perder claridad comercial.",
-    managerQuestion:
-      "Puede convertir señales incompletas en campaña usable sin contaminar la decisión?",
-    moment:
-      "La VP de Marketing pide tres ángulos de campaña para reactivar cuentas con bajo uso.",
-    businessSignal:
-      "Mide criterio de datos, prompt, validación de claims y respuesta al manager.",
-    tools: ["Modelo corporativo", "CRM", "Docs", "Ad manager"],
-    exercises: [
-      "Textfield de IA guiado",
-      "Tabla de datos",
-      "Revisión de output",
-      "Decisión con tradeoffs",
-    ],
-    dimensions: ["Contexto", "Datos", "Ejecución IA", "Validación", "Impacto"],
-    risks: [
-      "Usar nombres o correos en el prompt",
-      "Publicar claims sin fuente",
-      "Confundir audiencia interna con cliente final",
-    ],
-    primary: "Loop SaaS B2B",
-    resim: "Loop Enterprise US",
+      "Úsalo para medir si el equipo puede preparar una campaña con IA sin usar datos sensibles, prometer de más o perder claridad comercial.",
     sections: [
       {
         name: "Contexto",
-        exercise: "Brief de campaña",
-        evidence: "Entiende objetivo, audiencia y urgencia.",
+        eyebrow: "Paso 01",
+        title: "Camila necesita tres ángulos de campaña para hoy.",
+        body:
+          "Loop quiere reactivar cuentas con bajo uso del producto. Hay prisa por mandar ideas a la VP de Marketing, pero los datos vienen mezclados con feedback de clientes y notas internas.",
+        artifact: "Audiencia: VP de Marketing. Entrega esperada: tres ángulos con riesgos visibles.",
       },
       {
         name: "Datos",
-        exercise: "Tabla de datos",
-        evidence: "Decide qué usar, anonimizar o excluir.",
+        eyebrow: "Paso 02",
+        title: "Decide qué datos entran al prompt.",
+        body:
+          "Tienes uso de producto, segmento, comentarios de clientes, nombres, correos y notas internas del equipo. No todo debe entrar al modelo.",
+        artifact: "Regla del caso: usar señal comercial sin exponer nombres ni correos.",
       },
       {
         name: "IA",
-        exercise: "Textfield de IA guiado",
-        evidence: "Construye un prompt con objetivo, límites y modelo razonable.",
+        eyebrow: "Paso 03",
+        title: "Redacta el prompt al modelo.",
+        body:
+          "Pide tres ángulos de campaña con tono, audiencia, límites y validaciones pendientes. El modelo debe devolver opciones, no una decisión final.",
+        prompt: "Genera tres ángulos de campaña para reactivar cuentas con bajo uso, usando sólo datos agregados.",
       },
       {
         name: "Revisión",
-        exercise: "Revisión de output",
-        evidence: "Detecta claims sin fuente y tono incorrecto.",
+        eyebrow: "Paso 04",
+        title: "Marca claims y riesgos antes de compartir.",
+        body:
+          "La salida incluye frases fuertes sobre resultados esperados. Identifica qué afirmaciones necesitan fuente y qué tono podría sonar demasiado agresivo.",
       },
       {
         name: "Decisión",
-        exercise: "Decisión con tradeoffs",
-        evidence: "Elige acción defendible bajo presión.",
+        eyebrow: "Paso 05",
+        title: "Elige qué mandar a Camila.",
+        body:
+          "Puedes enviar los tres ángulos, pedir validación de datos o recomendar sólo uno como borrador. Decide con criterio.",
       },
       {
         name: "Respuesta",
-        exercise: "Memo al manager",
-        evidence: "Comunica recomendación y validaciones pendientes.",
+        eyebrow: "Paso 06",
+        title: "Explica tu recomendación.",
+        body:
+          "Escribe una respuesta breve para la VP: qué opción usarías, qué validarías y qué no publicarías todavía.",
       },
     ],
   },
 ];
 
-const stateTone: Record<ReviewState, string> = {
-  PASS: "text-[var(--band-a-text)] bg-[var(--band-a-bg)] border-[var(--band-a-text)]/20",
-  CONDICIONAL:
-    "text-[var(--band-m-text)] bg-[var(--band-m-bg)] border-[var(--band-m-text)]/20",
-  PENDIENTE:
-    "text-[var(--text-secondary)] bg-[var(--surface-3)] border-[var(--border)]",
-};
-
 export function CaseLabClient() {
-  const [selectedId, setSelectedId] = useState(launchCases[0].id);
-  const [variant, setVariant] = useState<"primary" | "resim">("primary");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [activeStep, setActiveStep] = useState(0);
+  const detailRef = useRef<HTMLElement | null>(null);
   const selectedCase = useMemo(
-    () => launchCases.find((launchCase) => launchCase.id === selectedId) ?? launchCases[0],
+    () => launchCases.find((launchCase) => launchCase.id === selectedId) ?? null,
     [selectedId],
   );
+  const activeSection = selectedCase?.sections[activeStep];
+
+  function openCase(caseId: string) {
+    setSelectedId(caseId);
+    setActiveStep(0);
+    window.requestAnimationFrame(() => {
+      detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
 
   return (
     <main className="simulador-root dark min-h-screen surface-canvas text-[var(--text-primary)]">
-      <div className="mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-6 py-8 md:px-10 lg:px-14">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1320px] flex-col px-6 py-8 md:px-10 lg:px-14">
         <header className="flex items-center justify-between gap-6 border-b border-[var(--hairline)] pb-6">
           <div className="flex items-center gap-3">
             <div className="grid h-9 w-9 place-items-center rounded-[10px] bg-[var(--accent)] text-[15px] font-semibold text-white">
@@ -394,239 +355,190 @@ export function CaseLabClient() {
               <p className="text-xs text-[var(--text-secondary)]">Case lab</p>
             </div>
           </div>
-          <div className="hidden items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2 text-xs text-[var(--text-secondary)] md:flex">
-            <span className="h-2 w-2 rounded-full bg-[var(--accent)]" />
-            5 casos funcionales
-          </div>
+          <p className="hidden text-sm text-[var(--text-secondary)] md:block">
+            Selecciona un caso para verlo aplicado.
+          </p>
         </header>
 
-        <section className="grid gap-8 py-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
-          <div>
-            <p className="eyebrow mb-4 text-[var(--text-tertiary)]">Laboratorio de casos</p>
-            <h1 className="display max-w-[760px] text-5xl md:text-6xl">
-              Selecciona un caso y revisa cómo vive en el simulador.
-            </h1>
-          </div>
-          <p className="max-w-[620px] text-lg leading-8 text-[var(--text-secondary)] lg:justify-self-end">
-            Esta pantalla sirve para inspeccionar el lote inicial antes de montarlo en el runtime:
-            nivel, perfil, señales para manager, ejercicios, riesgos, primary y resim.
-          </p>
+        <section className="py-10 md:py-14">
+          <p className="eyebrow mb-4 text-[var(--text-tertiary)]">Casos iniciales</p>
+          <h1 className="display max-w-[760px] text-5xl md:text-6xl">
+            Elige uno de los 5 casos.
+          </h1>
         </section>
 
-        <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           {launchCases.map((launchCase) => {
-            const active = launchCase.id === selectedCase.id;
+            const active = launchCase.id === selectedId;
             return (
               <button
                 key={launchCase.id}
                 type="button"
-                onClick={() => {
-                  setSelectedId(launchCase.id);
-                  setVariant("primary");
-                }}
+                onClick={() => openCase(launchCase.id)}
                 className={[
-                  "card-apple card-apple-interactive min-h-[188px] rounded-[20px] p-5 text-left transition",
+                  "card-apple card-apple-interactive min-h-[220px] rounded-[22px] p-5 text-left transition",
                   active
                     ? "border-[var(--accent)] bg-[var(--accent-soft)] shadow-[0_0_0_4px_var(--accent-ring)]"
                     : "bg-[var(--surface-2)] hover:bg-[var(--surface-3)]",
                 ].join(" ")}
               >
-                <div className="mb-5 flex items-center justify-between gap-3">
+                <div className="mb-7 flex items-center justify-between gap-3">
                   <span className="rounded-full bg-[var(--surface-3)] px-2.5 py-1 text-xs font-medium text-[var(--text-secondary)]">
                     {launchCase.level}
                   </span>
-                  <span className={`rounded-full border px-2.5 py-1 text-[11px] font-medium ${stateTone[launchCase.state]}`}>
-                    {launchCase.state}
+                  <span className="text-xs text-[var(--text-tertiary)]">
+                    {launchCase.estimatedMinutes} min
                   </span>
                 </div>
                 <h2 className="text-[17px] font-semibold leading-6 text-[var(--text-primary)]">
-                  {launchCase.shortTitle}
+                  {launchCase.title}
                 </h2>
-                <p className="mt-2 text-sm leading-5 text-[var(--text-secondary)]">
-                  {launchCase.profile} · {launchCase.estimatedMinutes} min
+                <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">
+                  {launchCase.summary}
                 </p>
-                <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-[var(--surface-3)]">
-                  <div
-                    className="h-full rounded-full bg-[var(--accent)]"
-                    style={{
-                      width:
-                        launchCase.state === "PASS"
-                          ? "100%"
-                          : launchCase.state === "CONDICIONAL"
-                            ? "72%"
-                            : "44%",
-                    }}
-                  />
-                </div>
+                <p className="mt-5 text-sm font-medium text-[var(--accent)]">
+                  Abrir caso
+                </p>
               </button>
             );
           })}
         </section>
 
-        <AnimatePresence mode="wait">
-          <motion.section
-            key={selectedCase.id}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
-            className="grid gap-5 py-8 lg:grid-cols-[0.92fr_1.08fr]"
-          >
-            <AppleCard className="bg-[var(--surface-2)]" padding="none">
-              <AppleCardBody className="p-6 md:p-8">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-sm font-medium text-[var(--accent)]">
-                    {selectedCase.level}
-                  </span>
-                  <span className="rounded-full bg-[var(--surface-3)] px-3 py-1 text-sm text-[var(--text-secondary)]">
-                    {selectedCase.profile}
-                  </span>
-                  <span className="rounded-full bg-[var(--surface-3)] px-3 py-1 text-sm text-[var(--text-secondary)]">
-                    {selectedCase.freshness}
-                  </span>
-                  <span className={`rounded-full border px-3 py-1 text-sm font-medium ${stateTone[selectedCase.state]}`}>
-                    {selectedCase.state}
-                  </span>
-                </div>
-
-                <h2 className="display mt-6 text-4xl">{selectedCase.title}</h2>
-                <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">
-                  {selectedCase.managerBrief}
+        <section ref={detailRef} className="py-10">
+          <AnimatePresence mode="wait">
+            {!selectedCase || !activeSection ? (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                className="rounded-[24px] border border-dashed border-[var(--border)] bg-[var(--surface-2)] p-10 text-center"
+              >
+                <p className="text-lg text-[var(--text-secondary)]">
+                  Haz click en un caso para ver su aplicación en formato simulador.
                 </p>
-
-                <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  <InfoTile label="Momento de trabajo" value={selectedCase.moment} />
-                  <InfoTile label="Señal para el manager" value={selectedCase.businessSignal} />
-                  <InfoTile label="Pregunta manager" value={selectedCase.managerQuestion} />
-                  <InfoTile label="Duración" value={`${selectedCase.estimatedMinutes} minutos`} />
-                </div>
-
-                <div className="mt-6 grid gap-4 md:grid-cols-2">
-                  <ListBlock title="Herramientas" items={selectedCase.tools} />
-                  <ListBlock title="Riesgos posibles" items={selectedCase.risks} />
-                </div>
-              </AppleCardBody>
-            </AppleCard>
-
-            <div className="grid gap-5">
-              <AppleCard className="bg-[var(--surface-2)]" padding="none">
-                <AppleCardBody className="p-6 md:p-8">
-                  <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
-                    <div>
-                      <p className="eyebrow text-[var(--text-tertiary)]">Variantes</p>
-                      <h3 className="mt-2 text-2xl font-semibold text-[var(--text-primary)]">
-                        {variant === "primary" ? selectedCase.primary : selectedCase.resim}
-                      </h3>
+              </motion.div>
+            ) : (
+              <motion.div
+                key={selectedCase.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                className="grid min-h-[680px] overflow-hidden rounded-[28px] border border-[var(--border)] bg-[var(--surface-2)] lg:grid-cols-[300px_1fr]"
+              >
+                <aside className="border-b border-[var(--hairline)] p-6 lg:border-b-0 lg:border-r">
+                  <div className="rounded-[20px] border border-[var(--border)] bg-[var(--surface)] p-5">
+                    <div className="mb-4 flex items-center gap-2">
+                      <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-xs font-medium text-[var(--accent)]">
+                        {selectedCase.level}
+                      </span>
+                      <span className="text-xs text-[var(--text-secondary)]">
+                        {selectedCase.profile}
+                      </span>
                     </div>
-                    <div className="grid grid-cols-2 rounded-[12px] border border-[var(--border)] bg-[var(--surface)] p-1">
-                      {(["primary", "resim"] as const).map((option) => (
-                        <button
-                          key={option}
-                          type="button"
-                          onClick={() => setVariant(option)}
+                    <h2 className="text-lg font-semibold leading-6 text-[var(--text-primary)]">
+                      {selectedCase.title}
+                    </h2>
+                    <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">
+                      {selectedCase.company} · {selectedCase.estimatedMinutes} min
+                    </p>
+                  </div>
+
+                  <nav className="mt-6 grid gap-2">
+                    {selectedCase.sections.map((section, index) => (
+                      <button
+                        key={section.name}
+                        type="button"
+                        onClick={() => setActiveStep(index)}
+                        className={[
+                          "flex items-center gap-3 rounded-[14px] px-3 py-3 text-left transition",
+                          activeStep === index
+                            ? "bg-[var(--accent-soft)] text-[var(--text-primary)]"
+                            : "text-[var(--text-secondary)] hover:bg-[var(--surface-3)]",
+                        ].join(" ")}
+                      >
+                        <span
                           className={[
-                            "rounded-[9px] px-4 py-2 text-sm font-medium transition",
-                            variant === option
+                            "grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-semibold",
+                            activeStep === index
                               ? "bg-[var(--accent)] text-white"
-                              : "text-[var(--text-secondary)] hover:bg-[var(--surface-3)]",
+                              : "border border-[var(--border)] text-[var(--text-secondary)]",
                           ].join(" ")}
                         >
-                          {option === "primary" ? "Primary" : "Resim"}
-                        </button>
-                      ))}
-                    </div>
+                          {index + 1}
+                        </span>
+                        <span className="text-sm font-medium">{section.name}</span>
+                      </button>
+                    ))}
+                  </nav>
+                </aside>
+
+                <article className="flex flex-col p-7 md:p-10">
+                  <div className="flex items-center justify-between gap-4">
+                    <p className="eyebrow text-[var(--text-tertiary)]">{activeSection.eyebrow}</p>
+                    <p className="text-sm text-[var(--text-secondary)]">
+                      {activeStep + 1} / {selectedCase.sections.length}
+                    </p>
                   </div>
 
-                  <div className="grid gap-3">
-                    {selectedCase.sections.map((section, index) => (
-                      <div
-                        key={section.name}
-                        className="grid gap-4 rounded-[16px] border border-[var(--border)] bg-[var(--surface)] p-4 md:grid-cols-[140px_1fr]"
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="grid h-8 w-8 place-items-center rounded-full bg-[var(--accent-soft)] text-sm font-semibold text-[var(--accent)]">
-                            {index + 1}
-                          </span>
-                          <span className="font-medium text-[var(--text-primary)]">{section.name}</span>
+                  <div className="mt-14 max-w-[820px]">
+                    <h3 className="display text-4xl md:text-5xl">{activeSection.title}</h3>
+                    <p className="mt-6 text-xl leading-9 text-[var(--text-secondary)]">
+                      {activeSection.body}
+                    </p>
+
+                    {activeSection.artifact && (
+                      <div className="mt-10 rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-6">
+                        <p className="text-sm text-[var(--text-tertiary)]">Información del caso</p>
+                        <p className="mt-3 text-lg leading-8 text-[var(--text-primary)]">
+                          {activeSection.artifact}
+                        </p>
+                      </div>
+                    )}
+
+                    {activeSection.prompt && (
+                      <div className="mt-10 rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-5">
+                        <p className="mb-4 text-sm text-[var(--text-tertiary)]">Campo de IA</p>
+                        <div className="min-h-[132px] rounded-[20px] border border-[var(--border)] bg-[var(--surface-3)] p-5 text-lg leading-8 text-[var(--text-secondary)]">
+                          {activeSection.prompt}
                         </div>
-                        <div>
-                          <p className="text-sm font-medium text-[var(--text-primary)]">{section.exercise}</p>
-                          <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">{section.evidence}</p>
+                        <div className="mt-4 flex items-center justify-between text-sm text-[var(--text-tertiary)]">
+                          <span>GPT Corporativo · IT</span>
+                          <span>Listo para enviar</span>
                         </div>
                       </div>
-                    ))}
+                    )}
                   </div>
-                </AppleCardBody>
-              </AppleCard>
 
-              <div className="grid gap-5 md:grid-cols-2">
-                <AppleCard className="bg-[var(--surface-2)]" padding="none">
-                  <AppleCardBody className="p-6">
-                    <p className="eyebrow text-[var(--text-tertiary)]">Ejercicios</p>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {selectedCase.exercises.map((exercise) => (
-                        <span
-                          key={exercise}
-                          className="rounded-full border border-[var(--border)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--text-secondary)]"
-                        >
-                          {exercise}
-                        </span>
-                      ))}
-                    </div>
-                  </AppleCardBody>
-                </AppleCard>
-
-                <AppleCard className="bg-[var(--surface-2)]" padding="none">
-                  <AppleCardBody className="p-6">
-                    <p className="eyebrow text-[var(--text-tertiary)]">Dimensiones</p>
-                    <div className="mt-4 grid gap-2">
-                      {selectedCase.dimensions.map((dimension) => (
-                        <div
-                          key={dimension}
-                          className="flex items-center justify-between rounded-[12px] bg-[var(--surface)] px-3 py-2"
-                        >
-                          <span className="text-sm text-[var(--text-primary)]">{dimension}</span>
-                          <span className="h-1.5 w-16 rounded-full bg-[var(--accent)]" />
-                        </div>
-                      ))}
-                    </div>
-                  </AppleCardBody>
-                </AppleCard>
-              </div>
-
-              <div className="flex flex-wrap justify-end gap-3">
-                <AppleButton tone="secondary">Ver YAML</AppleButton>
-                <AppleButton>Probar en runtime</AppleButton>
-              </div>
-            </div>
-          </motion.section>
-        </AnimatePresence>
+                  <div className="mt-auto flex items-center justify-between gap-3 pt-10">
+                    <button
+                      type="button"
+                      onClick={() => setActiveStep((current) => Math.max(0, current - 1))}
+                      disabled={activeStep === 0}
+                      className="rounded-[12px] px-5 py-3 text-sm font-medium text-[var(--text-secondary)] transition hover:bg-[var(--surface-3)] disabled:cursor-not-allowed disabled:opacity-35"
+                    >
+                      Atrás
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveStep((current) =>
+                          Math.min(selectedCase.sections.length - 1, current + 1),
+                        )
+                      }
+                      disabled={activeStep === selectedCase.sections.length - 1}
+                      className="rounded-[12px] bg-[var(--accent)] px-6 py-3 text-sm font-medium text-white transition active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)]"
+                    >
+                      Siguiente
+                    </button>
+                  </div>
+                </article>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </section>
       </div>
     </main>
-  );
-}
-
-function InfoTile({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-[16px] border border-[var(--border)] bg-[var(--surface)] p-4">
-      <p className="text-sm text-[var(--text-tertiary)]">{label}</p>
-      <p className="mt-2 text-[15px] leading-6 text-[var(--text-primary)]">{value}</p>
-    </div>
-  );
-}
-
-function ListBlock({ title, items }: { title: string; items: string[] }) {
-  return (
-    <div className="rounded-[16px] border border-[var(--border)] bg-[var(--surface)] p-4">
-      <p className="text-sm font-medium text-[var(--text-primary)]">{title}</p>
-      <ul className="mt-3 space-y-2">
-        {items.map((item) => (
-          <li key={item} className="flex gap-2 text-sm leading-6 text-[var(--text-secondary)]">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
