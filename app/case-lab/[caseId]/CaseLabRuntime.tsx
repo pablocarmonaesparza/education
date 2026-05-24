@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { DemoCase, DemoCaseSection, DemoSlide } from "@/lib/simulador/case-lab-cases";
+import { DataTableTriage } from "@/app/exercise-lab/blocks/DataTableTriage";
+import { emptyPayload } from "@/lib/simulador/exercise-registry";
+import type { ExerciseResponsePayload } from "@/lib/simulador/exercise-registry";
 
 type DataChoice = "Usar" | "Anonimizar" | "Excluir";
 
@@ -337,6 +340,16 @@ function ExercisePanel({
   selected: string;
   setSelected: (value: string) => void;
 }) {
+  // Día 5 — si el slide declara exerciseBlockId, delegar al renderer del
+  // registry canónico en lugar de usar la UI hardcoded de abajo.
+  if (slide.exerciseBlockId) {
+    return (
+      <PanelShell title="Ejercicio">
+        <RegistryRenderer slide={slide} />
+      </PanelShell>
+    );
+  }
+
   if (slide.type === "reading") {
     return (
       <PanelShell title="Brief">
@@ -521,6 +534,66 @@ function ExercisePanel({
     <PanelShell title="Ejercicio">
       <p className="text-[var(--text-secondary)]">Ejercicio aplicado al caso.</p>
     </PanelShell>
+  );
+}
+
+/**
+ * Día 5 — Bridge entre slide.exerciseBlockId y el componente del registry.
+ *
+ * Mantiene su propio estado local del payload (no se hidrata desde el caller)
+ * porque el lab interno todavía no tiene sessionId real para autosave.
+ * Cuando este patrón se promueva al runtime productivo (RuntimeExperience.tsx),
+ * el sessionId vendrá del SimulationSession + autosave se activará automático
+ * vía useStepPatch ya configurado en cada renderer.
+ *
+ * Switch limitado a los bloques extraídos en Día 3+4. Agregar nuevos cases
+ * conforme se extraigan más renderers a app/exercise-lab/blocks/.
+ */
+function RegistryRenderer({ slide }: { slide: DemoSlide }) {
+  switch (slide.exerciseBlockId) {
+    case "data_table_triage":
+      return <DataTableTriageBridge slide={slide} />;
+    default:
+      return (
+        <p className="text-[var(--text-secondary)]">
+          Bloque "{slide.exerciseBlockId}" aún no extraído al registry.
+          Pendiente en Día 3+ del plan de exercise-lab.
+        </p>
+      );
+  }
+}
+
+function DataTableTriageBridge({ slide }: { slide: DemoSlide }) {
+  const [payload, setPayload] = useState(
+    () =>
+      emptyPayload("data_table_triage") as Extract<
+        ExerciseResponsePayload,
+        { block_id: "data_table_triage" }
+      >,
+  );
+
+  // Mapear slide.rows (formato lab) → fields del bloque canónico.
+  const fields = useMemo(
+    () =>
+      (slide.rows ?? []).map((row, idx) => ({
+        id: `row-${idx}`,
+        field: row.label,
+        example: row.detail,
+        hint: row.recommended
+          ? `Recomendado: ${row.recommended}`
+          : undefined,
+      })),
+    [slide.rows],
+  );
+
+  return (
+    <DataTableTriage
+      payload={payload}
+      onChange={setPayload}
+      mode="lab_demo"
+      slideId={slide.id}
+      fields={fields}
+    />
   );
 }
 

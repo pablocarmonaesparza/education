@@ -22,6 +22,13 @@ export type DemoSlide = {
   prompt?: string;
   rows?: Array<{ label: string; detail: string; recommended?: string }>;
   options?: string[];
+  /**
+   * Día 5 del plan: si está presente, el slide deja de renderear la UI
+   * hardcoded del switch en CaseLabRuntime y delega al renderer del bloque
+   * canónico via exerciseRegistry. Permite caso productivo + lab compartir
+   * componentes. ID debe ser uno de los 11 canónicos del YAML.
+   */
+  exerciseBlockId?: import("./exercise-blocks.generated").ExerciseBlockId;
 };
 
 export type DemoCaseSection = {
@@ -255,6 +262,10 @@ function data(id: string, title: string, rows: Array<[string, string, string]>):
     title,
     body: "Clasifica cada dato según lo que harías antes de usar IA.",
     rows: rows.map(([label, detail, recommended]) => ({ label, detail, recommended })),
+    // Día 5: delega al renderer canónico data_table_triage del registry.
+    // CaseLabRuntime lee este campo y, si está presente, monta el bloque
+    // tipado en lugar de la UI hardcoded inline.
+    exerciseBlockId: "data_table_triage",
   };
 }
 
