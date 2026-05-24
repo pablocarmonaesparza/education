@@ -261,14 +261,14 @@ export interface ExerciseRendererEntry<
 /**
  * Mapping ID canónico → renderer + completion predicate.
  *
- * Se llena en Día 3 cuando los renderers se extraigan a archivos.
- * Por ahora es un placeholder vacío con cast — TypeScript fallaría si el
- * registry no tiene los 11 IDs, así que esto se irá completando ID por ID.
+ * El registry se construye lazy via getter para evitar import cycles entre
+ * el registry (lib/) y los renderers (app/). Los componentes que necesiten
+ * un renderer hacen:
  *
- * Uso esperado (post-Día 3):
- *   import { exerciseRegistry } from "@/lib/simulador/exercise-registry";
- *   const Renderer = exerciseRegistry["data_table_triage"].renderer;
- *   return <Renderer payload={...} onChange={...} />;
+ *   import { DataTableTriage } from "@/app/exercise-lab/blocks/DataTableTriage";
+ *
+ * Y el caller decide si usa el renderer directo o registra entries en
+ * runtime. Día 3 mantiene Partial<> hasta que los 11 estén extraídos.
  */
 export const exerciseRegistry: Partial<
   Record<ExerciseBlockId, ExerciseRendererEntry>

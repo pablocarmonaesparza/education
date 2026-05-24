@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { RuntimeNav } from "@/components/simulador/RuntimeNav";
+import { DataTableTriage } from "@/app/exercise-lab/blocks/DataTableTriage";
+import { emptyPayload } from "@/lib/simulador/exercise-registry";
+import type { ExerciseResponsePayload } from "@/lib/simulador/exercise-registry";
 
 type DataAction = "usar" | "anonimizar" | "agregar" | "excluir";
 type Permission = "permitir" | "revisar" | "bloquear";
@@ -393,6 +396,14 @@ export function ExerciseLabClient() {
   const [guidedCost, setGuidedCost] = useState(50);
   const [guidedResetKey, setGuidedResetKey] = useState(0);
   const [dataRows, setDataRows] = useState(initialDataRows);
+  // Día 3 — DataTableTriage extraído usa contrato canónico del registry.
+  // El payload arranca vacío (no-prefill), el componente lo llena via effect.
+  const [dataTablePayload, setDataTablePayload] = useState<
+    Extract<ExerciseResponsePayload, { block_id: "data_table_triage" }>
+  >(() => emptyPayload("data_table_triage") as Extract<
+    ExerciseResponsePayload,
+    { block_id: "data_table_triage" }
+  >);
   const [permissions, setPermissions] = useState<Record<string, Permission>>({
     "Leer CRM": "revisar",
     "Crear borrador": "permitir",
@@ -489,7 +500,11 @@ export function ExerciseLabClient() {
               />
             )}
             {exercise.id === "tabla-datos" && (
-              <DataTableExercise rows={dataRows} setRows={setDataRows} />
+              <DataTableTriage
+                payload={dataTablePayload}
+                onChange={setDataTablePayload}
+                mode="lab_demo"
+              />
             )}
             {exercise.id === "matriz-permisos" && (
               <PermissionMatrix permissions={permissions} setPermissions={setPermissions} />
