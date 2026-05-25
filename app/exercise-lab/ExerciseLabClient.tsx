@@ -156,9 +156,9 @@ const exerciseList = [
   {
     id: "case_cover",
     eyebrow: "Fundamentos: Marketing",
-    title: "Envío del lunes con datos sucios.",
+    title: "Título del caso.",
     description:
-      "Tu manager acaba de pasarte la **lista de 480 contactos** para la campaña del **lunes a las 8 de la mañana**. Hay registros **duplicados**, cargos **mal escritos** y tres filas **sin nombre**. Decides cómo limpiar la base, qué pedirle a la inteligencia artificial y qué entregar antes del cierre del viernes.",
+      "Aquí va el **brief del caso** · contexto, datos críticos, presión temporal y la decisión que el participante toma. Sin tutorial, sin spoilers. El **título** y el **brief** los aporta el caso que use este template en producción.",
     signals: [],
   },
   {

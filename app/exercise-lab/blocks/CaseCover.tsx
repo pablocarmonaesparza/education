@@ -140,20 +140,8 @@ export function CaseCover({
         </div>
       )}
 
-      {/* CTA principal + toggle inline del temporizador */}
-      <div className="flex flex-wrap items-center gap-4 pt-2">
-        <button
-          type="button"
-          onClick={start}
-          disabled={alreadyStarted}
-          className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
-            alreadyStarted
-              ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-              : "accent-bg hover:opacity-90"
-          }`}
-        >
-          {alreadyStarted ? "Caso iniciado" : `${ctaLabel} →`}
-        </button>
+      {/* Stack vertical · temporizador encima, CTA debajo */}
+      <div className="space-y-3 pt-2">
         {timerAvailable && (
           <button
             type="button"
@@ -162,7 +150,7 @@ export function CaseCover({
             aria-label={`Temporizador de ${timerMinutes} minutos`}
             onClick={() => setTimerOn(!timerOn)}
             disabled={alreadyStarted}
-            className={`group inline-flex items-center gap-3 ts-subhead text-[var(--text-secondary)] ${
+            className={`inline-flex items-center gap-3 ts-subhead text-[var(--text-secondary)] ${
               alreadyStarted ? "opacity-60 cursor-not-allowed" : "cursor-pointer hover:text-[var(--text-primary)]"
             }`}
           >
@@ -183,6 +171,20 @@ export function CaseCover({
             </span>
           </button>
         )}
+        <div>
+          <button
+            type="button"
+            onClick={start}
+            disabled={alreadyStarted}
+            className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
+              alreadyStarted
+                ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
+                : "accent-bg hover:opacity-90"
+            }`}
+          >
+            {alreadyStarted ? "Caso iniciado" : `${ctaLabel} →`}
+          </button>
+        </div>
       </div>
     </div>
   );
