@@ -69,15 +69,15 @@ export function ExerciseBlockRenderer({
     case "reading_attachment":
       return <ReadingAttachmentWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "categorize_rows":
-      return <CategorizeRowsWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return <CategorizeRowsWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
     case "ai_comparison":
-      return <AIComparisonWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return <AIComparisonWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
     case "workflow_builder":
       return <WorkflowBuilderWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "ai_output_review":
       return <AIOutputReviewWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "dashboard_pivot":
-      return <DashboardPivotWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return <DashboardPivotWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
     case "tradeoff_decision_memo":
       return <TradeoffDecisionMemoWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "ai_textfield_free":
@@ -148,7 +148,7 @@ function ReadingAttachmentWrapper({ sessionId, mode, slideId, caseContext }: Wra
   return <ReadingAttachment payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
 }
 
-function CategorizeRowsWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
+function CategorizeRowsWrapper({ sessionId, mode, slideId, caseContext, onShellContinue }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
     emptyPayload("categorize_rows") as Extract<ExerciseResponsePayload, { block_id: "categorize_rows" }>,
   );
@@ -160,15 +160,16 @@ function CategorizeRowsWrapper({ sessionId, mode, slideId, caseContext }: Wrappe
       mode={mode}
       slideId={slideId}
       caseContext={caseContext}
+      onShellContinue={onShellContinue}
     />
   );
 }
 
-function AIComparisonWrapper({ sessionId, mode, slideId }: WrapperProps) {
+function AIComparisonWrapper({ sessionId, mode, slideId, onShellContinue }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
     emptyPayload("ai_comparison") as Extract<ExerciseResponsePayload, { block_id: "ai_comparison" }>,
   );
-  return <AIComparison payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+  return <AIComparison payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} onShellContinue={onShellContinue} />;
 }
 
 function WorkflowBuilderWrapper({ sessionId, mode, slideId }: WrapperProps) {
@@ -185,11 +186,11 @@ function AIOutputReviewWrapper({ sessionId, mode, slideId }: WrapperProps) {
   return <AIOutputReview payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
 }
 
-function DashboardPivotWrapper({ sessionId, mode, slideId }: WrapperProps) {
+function DashboardPivotWrapper({ sessionId, mode, slideId, onShellContinue }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
     emptyPayload("dashboard_pivot") as Extract<ExerciseResponsePayload, { block_id: "dashboard_pivot" }>,
   );
-  return <DashboardPivot payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+  return <DashboardPivot payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} onShellContinue={onShellContinue} />;
 }
 
 function TradeoffDecisionMemoWrapper({ sessionId, mode, slideId }: WrapperProps) {

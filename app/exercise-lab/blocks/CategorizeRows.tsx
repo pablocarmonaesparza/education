@@ -71,6 +71,7 @@ export function CategorizeRows({
   mode = "lab_demo",
   sessionId = null,
   caseContext,
+  onShellContinue,
   rows: rowsProp,
   actions: actionsProp,
   actionStyle: styleProp,
@@ -123,6 +124,14 @@ export function CategorizeRows({
       });
     }
     onPatch?.(next);
+    // Auto-advance · cuando TODAS las filas tienen acción asignada,
+    // dispara onShellContinue (sin Continuar visible).
+    const allDone =
+      next.row_actions.length > 0 &&
+      next.row_actions.every((r) => r.action !== null);
+    if (allDone && onShellContinue) {
+      window.setTimeout(() => onShellContinue(), 500);
+    }
   }
 
   return (

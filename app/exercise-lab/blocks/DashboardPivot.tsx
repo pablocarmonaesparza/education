@@ -80,6 +80,7 @@ export function DashboardPivot({
   slideId = "dashboard_pivot",
   mode = "lab_demo",
   sessionId = null,
+  onShellContinue,
 }: Props) {
   const isProduction = mode === "authenticated" || mode === "field_test";
   const { patch } = useStepPatch(isProduction ? sessionId : null, {
@@ -103,10 +104,14 @@ export function DashboardPivot({
       });
     }
     onPatch?.(next);
+    // Auto-advance · la elección codifica el juicio.
+    if (onShellContinue) {
+      window.setTimeout(() => onShellContinue(), 360);
+    }
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
       {TEAMS.map((team, idx) => {
         const isSelected = payload.selected_filter === team.id;
         return (
@@ -122,7 +127,7 @@ export function DashboardPivot({
               ease: [0.16, 1, 0.3, 1],
             }}
             whileTap={{ scale: 0.99 }}
-            className={`flex flex-col gap-3 rounded-[var(--radius-lg)] border p-4 text-left transition-colors ${
+            className={`flex h-full flex-col gap-3 rounded-[var(--radius-lg)] border p-4 text-left transition-colors ${
               isSelected
                 ? "border-[var(--accent)] bg-[var(--accent-soft)]"
                 : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-2)]"

@@ -67,6 +67,7 @@ export function AIComparison({
   slideId = "ai_comparison",
   mode = "lab_demo",
   sessionId = null,
+  onShellContinue,
   options = DEFAULT_OPTIONS,
 }: Props) {
   const isProduction = mode === "authenticated" || mode === "field_test";
@@ -91,10 +92,15 @@ export function AIComparison({
       });
     }
     onPatch?.(next);
+    // Auto-advance al siguiente slide del lab (single-select · la
+    // elección codifica el criterio · sin Continuar visible).
+    if (onShellContinue) {
+      window.setTimeout(() => onShellContinue(), 360);
+    }
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
       {options.map((opt, idx) => {
         const isSelected = payload.selected_output === opt.id;
         return (
@@ -110,7 +116,7 @@ export function AIComparison({
               ease: [0.16, 1, 0.3, 1],
             }}
             whileTap={{ scale: 0.99 }}
-            className={`flex items-start gap-4 rounded-[var(--radius-lg)] border p-4 text-left transition-colors ${
+            className={`flex h-full flex-col gap-3 rounded-[var(--radius-lg)] border p-4 text-left transition-colors ${
               isSelected
                 ? "border-[var(--accent)] bg-[var(--accent-soft)]"
                 : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-2)]"
@@ -126,7 +132,7 @@ export function AIComparison({
             >
               {opt.id}
             </span>
-            <span className="ts-body leading-[1.55] text-[var(--text-primary)]">
+            <span className="ts-subhead leading-[1.5] text-[var(--text-primary)]">
               {opt.body}
             </span>
           </motion.button>

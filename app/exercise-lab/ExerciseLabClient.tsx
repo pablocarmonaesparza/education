@@ -516,10 +516,20 @@ export function ExerciseLabClient() {
             index < exerciseList.length - 1
               ? () => scrollToSection(index + 1)
               : () => scrollToSection(0);
-          // Bloques que manejan su propio botón Continuar internamente
-          // (subsección Revisar con composer + CTA). El shell no renderea
-          // su botón default; el bloque dispara continueCallback via prop.
-          const ownsContinue = exercise.id === "ai_textfield_guided";
+          // Bloques que manejan su propio botón Continuar internamente:
+          //  - ai_textfield_guided · subsección Revisar con CTA propio
+          //  - categorize_rows · auto-advance al completar todas las filas
+          //  - ai_output_review · sin Continuar visible (scroll-snap manual)
+          //  - ai_comparison · auto-advance al elegir opción (single-select)
+          //  - dashboard_pivot · auto-advance al elegir equipo (single-select)
+          const OWNS_CONTINUE = new Set([
+            "ai_textfield_guided",
+            "categorize_rows",
+            "ai_output_review",
+            "ai_comparison",
+            "dashboard_pivot",
+          ]);
+          const ownsContinue = OWNS_CONTINUE.has(exercise.id);
           return (
             <ExerciseSection
               key={exercise.id}
