@@ -62,11 +62,17 @@ export async function PATCH(
     );
   }
 
+  // Frente A — persistir payload PARSEADO cuando sea bloque canónico.
+  const responseToPersist =
+    exerciseValidation.kind === "valid"
+      ? exerciseValidation.data
+      : body.payload ?? {};
+
   await insertFieldTestEvent({
     sessionId: session_id,
     stepKey: body.step_key,
     eventType: "response_update",
-    payload: { response: body.payload ?? {} },
+    payload: { response: responseToPersist },
     metrics: body.metrics ?? {},
   });
 

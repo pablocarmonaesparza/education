@@ -1,15 +1,14 @@
 /**
  * exercise-block-data-table-triage.spec.ts
  *
- * E2E del bloque `data_table_triage` extraído al registry:
- *   1. UI inicia VACÍA (no-prefill — regla 2 del YAML canónico)
+ * E2E del bloque `data_table_triage` extraído al registry. Tests scope:
+ *   1. UI del lab arranca VACÍA (no-prefill — regla 2 del YAML canónico)
  *   2. Selección de acción muta el payload visualmente
- *   3. API route rechaza con 422 cualquier payload malformado (Frente A)
  *
- * No requiere Supabase admin — solo verifica el flujo HTTP + UI del lab
- * interno y del bridge en case-lab. La validación Zod se prueba via
- * POST directo a la API field-test sin needing una sesión real (sólo
- * importa que el handler valide shape antes de tocar BD).
+ * Validación Zod del Frente A se prueba via test unitario directo del
+ * parser (no E2E) — la ruta /api/.../responses tiene gates de auth/cookie
+ * antes del parser, así que un POST E2E sin sesión real devuelve 401/400
+ * antes de tocar el validador (Codex review P1 #4).
  */
 
 import { expect, test } from "@playwright/test";
@@ -20,95 +19,44 @@ test.describe("data_table_triage — bloque canónico", () => {
   test("UI del lab arranca SIN acción seleccionada (no-prefill)", async ({ page }) => {
     await page.goto(`${BASE_URL}/exercise-lab`);
 
-    // El bloque vive en una sección con scroll-snap. Lo localizamos por
-    // su data-attribute o por el título visible.
-    const dropdown = page
-      .locator("text=Clasifica cada campo antes de enviarlo al modelo")
-      .first()
-      .locator("..");
-    await expect(dropdown).toBeVisible();
+    // Bloque visible (scroll-snap puede requerir scroll, lo localizamos por
+    // título). El bloque vive dentro del scroll container del lab.
+    const blockHeading = page.locator(
+      "text=Clasifica cada campo antes de enviarlo al modelo",
+    );
+    await blockHeading.scrollIntoViewIfNeeded();
+    await expect(blockHeading).toBeVisible();
 
-    // Los selects del bloque deben mostrar "Elegir acción…" como default,
-    // NO una acción prellenada (anti-prefill enforcement).
+    // Los selects del bloque deben mostrar "" (sin selección) — la opción
+    // "Elegir acción…" es el placeholder con value="".
     const selects = page.locator("select[aria-label^='Acción para']");
     const count = await selects.count();
     expect(count).toBeGreaterThan(0);
 
     for (let i = 0; i < count; i++) {
-      const selected = await selects.nth(i).evaluate(
+      const value = await selects.nth(i).evaluate(
         (el) => (el as HTMLSelectElement).value,
       );
-      expect(selected).toBe("");
+      expect(value).toBe("");
     }
   });
 
-  test("API rechaza 422 cuando payload data_table_triage está malformado", async ({
-    page,
-  }) => {
-    // POST directo a la API field-test. No necesitamos sesión real porque
-    // la validación de shape ocurre ANTES de cualquier query a BD: si el
-    // shape no pasa el Zod schema, el handler responde 422 inmediato.
-    const response = await page.request.patch(
-      `${BASE_URL}/api/field-test/sessions/00000000-0000-0000-0000-000000000000/responses`,
-      {
-        data: {
-          step_key: "field_test_step_1",
-          payload: {
-            block_id: "data_table_triage",
-            // shape inválido: field_actions debería ser array, no string
-            field_actions: "wrong",
-          },
-        },
-      },
-    );
+  test("Seleccionar acción muta el dropdown visualmente", async ({ page }) => {
+    await page.goto(`${BASE_URL}/exercise-lab`);
 
-    expect(response.status()).toBe(422);
-    const body = await response.json();
-    expect(body.error).toContain("malformado");
-    expect(body.details).toBeDefined();
-  });
+    const firstSelect = page
+      .locator("select[aria-label^='Acción para']")
+      .first();
+    await firstSelect.scrollIntoViewIfNeeded();
 
-  test("API acepta payload data_table_triage bien formado (no 422)", async ({
-    page,
-  }) => {
-    // El shape es válido, así que NO debe ser 422.
-    // Puede ser 400 (step_key invalid, rate limit, etc) o 200 — lo que
-    // importa es que NO sea 422 (shape OK).
-    const response = await page.request.patch(
-      `${BASE_URL}/api/field-test/sessions/00000000-0000-0000-0000-000000000000/responses`,
-      {
-        data: {
-          step_key: "field_test_step_1",
-          payload: {
-            block_id: "data_table_triage",
-            field_actions: [
-              { field_id: "contact", action: "anonimizar" },
-              { field_id: "email", action: "excluir" },
-            ],
-          },
-        },
-      },
-    );
+    // Antes: ""
+    await expect(firstSelect).toHaveValue("");
 
-    expect(response.status()).not.toBe(422);
-  });
+    // Seleccionar "excluir" — la opción más estricta de privacidad
+    await firstSelect.selectOption("excluir");
 
-  test("API ignora validación cuando payload NO es bloque (legacy)", async ({
-    page,
-  }) => {
-    // Payload sin block_id — debe pasar la validación de shape (es legacy,
-    // no es un bloque del registry). Puede fallar por otras razones (step_key
-    // inválido, session no existe), pero NO con 422 de shape.
-    const response = await page.request.patch(
-      `${BASE_URL}/api/field-test/sessions/00000000-0000-0000-0000-000000000000/responses`,
-      {
-        data: {
-          step_key: "field_test_step_1",
-          payload: { legacy_field: "valor cualquiera", whatever: 42 },
-        },
-      },
-    );
-
-    expect(response.status()).not.toBe(422);
+    // Después: el select tiene el valor + el state local del componente
+    // se actualizó (verifica que el onChange disparó).
+    await expect(firstSelect).toHaveValue("excluir");
   });
 });

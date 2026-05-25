@@ -118,6 +118,14 @@ export async function PATCH(
     );
   }
 
+  // Frente A — persistir el payload PARSEADO cuando sea bloque canónico
+  // (Codex review P1 #3: no persistir body.payload crudo, eso permite
+  // extras no validados al judge).
+  const responseToPersist =
+    exerciseValidation.kind === "valid"
+      ? exerciseValidation.data
+      : body.payload ?? {};
+
   // Insertar evento.
   const { error: insErr } = await supabase
     .schema("simulador")
@@ -128,7 +136,7 @@ export async function PATCH(
       step_ordinal: step.ordinal,
       event_type: "response_update",
       payload_json: {
-        response: body.payload ?? {},
+        response: responseToPersist,
         metrics: body.metrics ?? {},
         timestamp: new Date().toISOString(),
       },

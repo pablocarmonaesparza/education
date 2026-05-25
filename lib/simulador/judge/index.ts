@@ -13,6 +13,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { applyOverrides } from "./apply-overrides";
 import { runJudge } from "./run";
 import type { JudgeInputContext, JudgeRunResult } from "./types";
+import { tryParseExercisePayload } from "../exercise-payload-schemas";
 
 interface CaseStepRow {
   ordinal: number;
@@ -57,7 +58,10 @@ interface RubricDimensionRow {
 
 interface StepEventRow {
   case_step_id: string;
-  payload_json: { response?: unknown };
+  // Frente A: payload_json puede traer también `metrics` cuando el step es
+  // un bloque canónico (useStepPatch persiste metrics como sibling de
+  // response). Sigue siendo unknown shape para steps legacy.
+  payload_json: { response?: unknown; metrics?: Record<string, unknown> };
   captured_at: string;
 }
 
@@ -165,20 +169,18 @@ export async function buildJudgeContext(
     const r = ev.payload_json?.response;
     if (r !== undefined) {
       responses[key] = r;
-      // Frente A — si el payload tiene block_id, construir EvidenceForJudge
-      // tipado para que el prompt-builder pueda emitir prompts deterministas.
-      if (typeof r === "object" && r !== null && "block_id" in r) {
-        const blockId = (r as { block_id: string }).block_id;
-        // Cast es seguro: la API route ya validó shape con Zod antes de
-        // persistir. Si llegó hasta aquí, el shape es válido.
+      // Frente A — re-parsear desde DB (Codex review P1 #3: no asumir que
+      // todo entró por la API; algo pudo entrar por backfill, migration,
+      // service-role, etc.). Si el shape no es un bloque canónico válido,
+      // NO se incluye en exerciseEvidence — el judge sigue leyendo crudo
+      // desde `responses` para steps legacy.
+      const parsed = tryParseExercisePayload(r);
+      if (parsed.kind === "valid") {
         exerciseEvidence[key] = {
-          block_id: blockId as import("../exercise-registry").EvidenceForJudge["block_id"],
-          payload: r as import("../exercise-registry").ExerciseResponsePayload,
-          metrics:
-            (ev.payload_json?.metrics as Record<string, unknown> | undefined) ??
-            {},
-          submitted_at:
-            (ev.created_at as string | undefined) ?? new Date().toISOString(),
+          block_id: parsed.data.block_id,
+          payload: parsed.data as import("../exercise-registry").ExerciseResponsePayload,
+          metrics: ev.payload_json?.metrics ?? {},
+          submitted_at: ev.captured_at,
         };
       }
     }

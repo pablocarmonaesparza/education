@@ -21,14 +21,14 @@ import { z } from "zod";
 // Value object schemas
 // ============================================================================
 
-const PromptAttachmentSchema = z.object({
+const PromptAttachmentSchema = z.strictObject({
   id: z.string(),
   name: z.string(),
   size: z.number(),
   type: z.string(),
 });
 
-const VoiceNoteSchema = z.object({
+const VoiceNoteSchema = z.strictObject({
   id: z.string(),
   text: z.string(),
   duration_ms: z.number(),
@@ -47,7 +47,9 @@ const ReviewFlagSchema = z.enum([
 // 11 schemas — uno por block_id canónico
 // ============================================================================
 
-const AITextfieldFreeSchema = z.object({
+// .strict() rechaza campos extras no declarados — anti-bypass:
+// el cliente no puede inyectar fields adicionales al judge.
+const AITextfieldFreeSchema = z.strictObject({
   block_id: z.literal("ai_textfield_free"),
   prompt_text: z.string(),
   model: z.string(),
@@ -55,7 +57,7 @@ const AITextfieldFreeSchema = z.object({
   voice_notes: z.array(VoiceNoteSchema),
 });
 
-const AITextfieldGuidedSchema = z.object({
+const AITextfieldGuidedSchema = z.strictObject({
   block_id: z.literal("ai_textfield_guided"),
   selected_objective: z.string().nullable(),
   selected_audience: z.string().nullable(),
@@ -67,7 +69,7 @@ const AITextfieldGuidedSchema = z.object({
   cost_priority: z.number().min(0).max(100),
 });
 
-const DataTableTriageSchema = z.object({
+const DataTableTriageSchema = z.strictObject({
   block_id: z.literal("data_table_triage"),
   field_actions: z.array(
     z.object({
@@ -77,7 +79,7 @@ const DataTableTriageSchema = z.object({
   ),
 });
 
-const PermissionMatrixSchema = z.object({
+const PermissionMatrixSchema = z.strictObject({
   block_id: z.literal("permission_matrix"),
   cells: z.array(
     z.object({
@@ -87,7 +89,7 @@ const PermissionMatrixSchema = z.object({
   ),
 });
 
-const AIOutputReviewSchema = z.object({
+const AIOutputReviewSchema = z.strictObject({
   block_id: z.literal("ai_output_review"),
   flagged_segments: z.array(
     z.object({
@@ -97,7 +99,7 @@ const AIOutputReviewSchema = z.object({
   ),
 });
 
-const AIComparisonSchema = z.object({
+const AIComparisonSchema = z.strictObject({
   block_id: z.literal("ai_comparison"),
   selected_output: z
     .enum(["A", "B", "fusionar", "rechazar"])
@@ -105,13 +107,13 @@ const AIComparisonSchema = z.object({
   tradeoff_reason: z.string(),
 });
 
-const WorkflowBuilderSchema = z.object({
+const WorkflowBuilderSchema = z.strictObject({
   block_id: z.literal("workflow_builder"),
   enabled_steps: z.array(z.string()),
   step_order: z.array(z.string()),
 });
 
-const AgentBriefBuilderSchema = z.object({
+const AgentBriefBuilderSchema = z.strictObject({
   block_id: z.literal("agent_brief_builder"),
   task: z.string(),
   access: z.string(),
@@ -119,7 +121,7 @@ const AgentBriefBuilderSchema = z.object({
   stop: z.string(),
 });
 
-const RunLogReviewSchema = z.object({
+const RunLogReviewSchema = z.strictObject({
   block_id: z.literal("run_log_review"),
   flagged_logs: z.array(
     z.object({
@@ -129,13 +131,13 @@ const RunLogReviewSchema = z.object({
   ),
 });
 
-const DashboardPivotSchema = z.object({
+const DashboardPivotSchema = z.strictObject({
   block_id: z.literal("dashboard_pivot"),
   selected_filter: z.string().nullable(),
   interpretation: z.string(),
 });
 
-const TradeoffDecisionMemoSchema = z.object({
+const TradeoffDecisionMemoSchema = z.strictObject({
   block_id: z.literal("tradeoff_decision_memo"),
   decision: z.string(),
   memo: z.string(),
