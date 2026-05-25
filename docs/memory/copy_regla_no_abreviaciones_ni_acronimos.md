@@ -1,8 +1,9 @@
 ---
 title: "Copy · jamás abreviaciones ni acrónimos en casos"
-type: regla
+type: copy
+date: 2026-05-25
+dept: producto
 ambito: producto, copy, casos, exercise-lab, simulador
-fecha: 2026-05-25
 contexto: feedback de Pablo en revisión del bloque 4 del exercise-lab
 prioridad: determinante
 ---

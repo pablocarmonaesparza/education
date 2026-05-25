@@ -1,8 +1,9 @@
 ---
 title: "Copy · jamás em dash + body siempre con markdown"
-type: regla
+type: copy
+date: 2026-05-25
+dept: producto
 ambito: producto, copy, diseño
-fecha: 2026-05-25
 contexto: validación del exercise-lab (sesión con Pablo, bloque #00 reading_passive)
 ---
 

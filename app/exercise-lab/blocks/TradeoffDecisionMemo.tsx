@@ -2,31 +2,24 @@
 
 /**
  * TradeoffDecisionMemo · renderer del bloque canónico `tradeoff_decision_memo`
- * (lab_ref 11).
+ * (lab_ref 10).
  *
- * Patrón rico (monolito Codex): grid md:[320px_1fr]
- *   ┌──────────────────────┬──────────────────────────┐
- *   │ Recomendación (3)    │ Memo para tu líder       │
- *   │  ▸ Lanzar ahora      │  textarea h-[260px]      │
- *   │  ▸ Piloto controlado │  placeholder largo       │
- *   │  ▸ Pausar y escalar  │                          │
- *   └──────────────────────┴──────────────────────────┘
+ * Vertical · 2 secciones apiladas:
+ *   1. Recomendación (3 cards horizontales · auto-elige)
+ *   2. Memo (textarea · aparece animada tras elegir recomendación)
  *
- * Cada opción es una tarjeta con title + detail (no chip). Selected = accent
- * border + accent-soft bg.
- *
- * Visual restaurado desde el monolito ExerciseLabClient.tsx (Codex). Sin
- * cambios estéticos respecto al original.
+ * Sin hint interno · el shell tiene eyebrow + title + body. Continuar
+ * del shell sigue al final cuando el memo es suficiente.
  */
 
 import { useRef } from "react";
+import { motion } from "framer-motion";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
 } from "@/lib/simulador/exercise-registry";
 import { emptyPayload } from "@/lib/simulador/exercise-registry";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
-import { Label } from "../_shared/ui-primitives";
 
 type TradeoffDecisionMemoPayload = Extract<
   ExerciseResponsePayload,
@@ -94,44 +87,68 @@ export function TradeoffDecisionMemo({
     onPatch?.(next);
   }
 
+  const hasDecision = payload.decision.trim().length > 0;
+
   return (
-    <div className="simulador-root">
-      <div className="grid gap-5 md:grid-cols-[320px_1fr]">
-        <div>
-          <Label>Elige la recomendación</Label>
-          <div className="mt-3 grid gap-3">
-            {decisions.map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                onClick={() => update({ ...payload, decision: option.id })}
-                className={`rounded-2xl border p-4 text-left transition-colors ${
-                  payload.decision === option.id
-                    ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-                    : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"
+    <div className="space-y-6">
+      {/* 1. Recomendación · 3 cards horizontales */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {decisions.map((option, idx) => {
+          const isSelected = payload.decision === option.id;
+          return (
+            <motion.button
+              key={option.id}
+              type="button"
+              onClick={() => update({ ...payload, decision: option.id })}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.28,
+                delay: idx * 0.06,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              whileTap={{ scale: 0.99 }}
+              className={`flex h-full flex-col gap-2 rounded-[var(--radius-lg)] border p-4 text-left transition-colors ${
+                isSelected
+                  ? "border-[var(--accent)] bg-[var(--accent-soft)]"
+                  : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-2)]"
+              }`}
+            >
+              <span
+                className={`ts-callout font-semibold ${
+                  isSelected
+                    ? "text-[var(--accent)]"
+                    : "text-[var(--text-primary)]"
                 }`}
               >
-                <span className="block text-[15px] font-semibold text-[var(--text-primary)]">
-                  {option.title}
-                </span>
-                <span className="mt-2 block text-[13px] leading-5 text-[var(--text-secondary)]">
-                  {option.detail}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-        <div>
-          <Label>Escribe el memo para tu líder</Label>
+                {option.title}
+              </span>
+              <span className="ts-subhead leading-[1.5] text-[var(--text-secondary)]">
+                {option.detail}
+              </span>
+            </motion.button>
+          );
+        })}
+      </div>
+
+      {/* 2. Memo · aparece animado tras elegir recomendación */}
+      {hasDecision && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+        >
           <textarea
             value={payload.memo}
-            onChange={(event) => update({ ...payload, memo: event.target.value })}
-            rows={10}
+            onChange={(event) =>
+              update({ ...payload, memo: event.target.value })
+            }
+            rows={6}
             placeholder="Explica qué harías, por qué, qué riesgo estás aceptando y qué tendría que revisarse antes de avanzar."
-            className="mt-3 h-[calc(100%-2rem)] min-h-[260px] w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-4 text-[15px] leading-6 text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
+            className="w-full resize-none rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] px-4 py-4 ts-body leading-[1.55] text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
           />
-        </div>
-      </div>
+        </motion.div>
+      )}
     </div>
   );
 }
