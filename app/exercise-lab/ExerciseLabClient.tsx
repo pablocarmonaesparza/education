@@ -139,8 +139,8 @@ export function ExerciseLabClient() {
   }
 
   return (
-    <>
-      <RuntimeNav mode="field_test" />
+    <div className="simulador-root dark min-h-screen surface-canvas text-[var(--text-primary)]">
+      <RuntimeNav mode="field_test" logoTone="dark" />
       <ScrollLines activeIndex={activeSection} onSelect={scrollToSection} />
       <main
         className="simulador-root surface-canvas h-[calc(100vh-3.5rem)] snap-y snap-mandatory overflow-y-auto overflow-x-hidden scroll-smooth"
@@ -156,7 +156,7 @@ export function ExerciseLabClient() {
           </ExerciseSection>
         ))}
       </main>
-    </>
+    </div>
   );
 }
 

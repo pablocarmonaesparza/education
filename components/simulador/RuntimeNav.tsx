@@ -5,8 +5,15 @@ import { Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
 import type { RuntimeSessionMode } from "@/lib/simulador/use-session";
 import { AppleButton } from "@/components/simulador/apple";
 
-export function RuntimeNav({ mode }: { mode: RuntimeSessionMode }) {
+export function RuntimeNav({
+  mode,
+  logoTone = "light",
+}: {
+  mode: RuntimeSessionMode;
+  logoTone?: "light" | "dark";
+}) {
   const isFieldTest = mode === "field_test";
+  const logoSrc = logoTone === "dark" ? "/images/itera-logo-dark.png" : "/images/itera-logo-light.png";
 
   return (
     <Navbar
@@ -25,7 +32,7 @@ export function RuntimeNav({ mode }: { mode: RuntimeSessionMode }) {
             className="flex items-center gap-2.5"
           >
             <Image
-              src="/images/itera-logo-light.png"
+              src={logoSrc}
               alt="Itera"
               width={64}
               height={32}
