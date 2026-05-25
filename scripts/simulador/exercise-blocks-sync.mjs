@@ -60,21 +60,9 @@ const LAB_CLIENT = resolve(
 );
 const CASE_LAB_TYPES = resolve(REPO_ROOT, "lib/simulador/case-lab-cases.ts");
 
-// Mapeo histórico kebab-español → ID canónico del YAML.
-// Día 3 del plan elimina este shim cuando los renderers se renombren.
-const SHIM_LAB_TO_CANONICAL = {
-  "textfield-ia-libre": "ai_textfield_free",
-  "textfield-ia-guiado": "ai_textfield_guided",
-  "tabla-datos": "data_table_triage",
-  "matriz-permisos": "permission_matrix",
-  "revision-output": "ai_output_review",
-  "comparacion-ia": "ai_comparison",
-  "workflow-builder": "workflow_builder",
-  "agent-brief": "agent_brief_builder",
-  logs: "run_log_review",
-  "dashboard-pivot": "dashboard_pivot",
-  "decision-memo": "tradeoff_decision_memo",
-};
+// Frente B — shim kebab-español eliminado. Lab UI ahora usa IDs canónicos
+// directamente. Si vuelven a aparecer IDs no-canónicos en el lab, este
+// validador los rechazará.
 
 // case-lab DemoSlideType → bloque canónico (null si no aplica).
 const TYPE_TO_CANONICAL = {
@@ -113,16 +101,15 @@ function loadGeneratedIds() {
   );
 }
 
-function loadLabIds() {
+function loadLabIds(yamlIds) {
   const src = readFileSync(LAB_CLIENT, "utf8");
-  // Captura todos los `id: "..."` dentro de objetos del exerciseList.
-  // El exerciseList es el bloque que enumera los ejercicios renderizados.
-  // Hacemos parsing por regex sobre los IDs conocidos en SHIM para
-  // evitar falsos positivos de otros `id:` del archivo (ej. modelGroups).
+  // Solo recoger IDs canónicos que aparezcan literalmente en el lab UI.
+  // Si aparece un ID que no está en el YAML canónico, falla la validación
+  // (checkLabVsYaml).
   const ids = new Set();
-  for (const labId of Object.keys(SHIM_LAB_TO_CANONICAL)) {
-    const re = new RegExp(`\\bid:\\s*["']${labId}["']`);
-    if (re.test(src)) ids.add(labId);
+  for (const canonicalId of yamlIds) {
+    const re = new RegExp(`\\bid:\\s*["']${canonicalId}["']`);
+    if (re.test(src)) ids.add(canonicalId);
   }
   return ids;
 }
@@ -165,16 +152,9 @@ function checkYamlVsGenerated(yamlIds, genIds) {
 function checkLabVsYaml(labIds, yamlIds) {
   const errors = [];
   for (const labId of labIds) {
-    const canonical = SHIM_LAB_TO_CANONICAL[labId];
-    if (!canonical) {
+    if (!yamlIds.has(labId)) {
       errors.push(
-        `Lab ID "${labId}" no tiene mapping a canónico. Agregar al SHIM o renombrar.`,
-      );
-      continue;
-    }
-    if (!yamlIds.has(canonical)) {
-      errors.push(
-        `Lab ID "${labId}" mapea a "${canonical}" pero ese ID no existe en YAML.`,
+        `Lab ID "${labId}" no existe en YAML canónico. Renombrar al canónico o agregar al YAML.`,
       );
     }
   }
@@ -209,12 +189,12 @@ function main() {
 
   const yamlIds = loadYamlIds();
   const genIds = loadGeneratedIds();
-  const labIds = loadLabIds();
+  const labIds = loadLabIds(yamlIds);
   const slideTypes = loadCaseLabSlideTypes();
 
   console.log(`  YAML canónico            : ${yamlIds.size} IDs`);
   console.log(`  Generated TS             : ${genIds.size} IDs`);
-  console.log(`  Lab UI (exerciseList)    : ${labIds.size} IDs (via shim)`);
+  console.log(`  Lab UI (exerciseList)    : ${labIds.size} IDs (canónicos)`);
   console.log(`  case-lab DemoSlideType   : ${slideTypes.size} types`);
   console.log("");
 

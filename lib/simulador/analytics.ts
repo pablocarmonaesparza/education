@@ -42,6 +42,15 @@ export const SIMULADOR_ANALYTICS_EVENTS = [
   "admin_review_signature_added",
   "admin_review_report_published",
   "admin_review_completed",
+  // Frente C — eventos por bloque canónico (exercise_block_id del YAML).
+  // Disparados por cada renderer extraído a app/exercise-lab/blocks/*
+  // cuando el usuario interactúa. Payload de cada evento:
+  //   { block_id: ExerciseBlockId, slide_id: string, session_id: string,
+  //     time_ms?: number, payload_bytes?: number, validation_error?: string }
+  "exercise_block_started",
+  "exercise_block_completed",
+  "exercise_block_validation_failed",
+  "exercise_block_abandoned",
 ] as const;
 
 export type SimuladorAnalyticsEvent =

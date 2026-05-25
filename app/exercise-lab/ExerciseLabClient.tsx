@@ -154,7 +154,7 @@ const brandLogo: Record<BrandKey, { light: string; dark?: string } | null> = {
 
 const exerciseList = [
   {
-    id: "textfield-ia-libre",
+    id: "ai_textfield_free",
     eyebrow: "01A · Textfield de IA",
     title: "Textfield de IA (A): libre.",
     description:
@@ -162,7 +162,7 @@ const exerciseList = [
     signals: ["contexto", "ejecución IA", "impacto"],
   },
   {
-    id: "textfield-ia-guiado",
+    id: "ai_textfield_guided",
     eyebrow: "01B · Prompt guiado",
     title: "Textfield de IA (B): guiado.",
     description:
@@ -170,7 +170,7 @@ const exerciseList = [
     signals: ["contexto", "datos", "ejecución IA", "juicio"],
   },
   {
-    id: "tabla-datos",
+    id: "data_table_triage",
     eyebrow: "02 · Tabla editable",
     title: "Decidir qué datos entran.",
     description:
@@ -178,7 +178,7 @@ const exerciseList = [
     signals: ["datos", "juicio"],
   },
   {
-    id: "matriz-permisos",
+    id: "permission_matrix",
     eyebrow: "03 · Matriz de permisos",
     title: "Poner límites a una automatización.",
     description:
@@ -186,7 +186,7 @@ const exerciseList = [
     signals: ["datos", "juicio", "ejecución IA"],
   },
   {
-    id: "revision-output",
+    id: "ai_output_review",
     eyebrow: "04 · Revisión de output",
     title: "Marcar errores antes de usar.",
     description:
@@ -194,7 +194,7 @@ const exerciseList = [
     signals: ["validación", "juicio"],
   },
   {
-    id: "comparacion-ia",
+    id: "ai_comparison",
     eyebrow: "05 · Comparación de respuestas",
     title: "Elegir el mejor output.",
     description:
@@ -202,7 +202,7 @@ const exerciseList = [
     signals: ["validación", "impacto"],
   },
   {
-    id: "workflow-builder",
+    id: "workflow_builder",
     eyebrow: "06 · Workflow builder",
     title: "Armar un flujo con control humano.",
     description:
@@ -210,7 +210,7 @@ const exerciseList = [
     signals: ["ejecución IA", "validación", "impacto"],
   },
   {
-    id: "agent-brief",
+    id: "agent_brief_builder",
     eyebrow: "07 · Brief para agente",
     title: "Delegar una tarea sin perder control.",
     description:
@@ -218,7 +218,7 @@ const exerciseList = [
     signals: ["ejecución IA", "juicio", "datos"],
   },
   {
-    id: "logs",
+    id: "run_log_review",
     eyebrow: "08 · Revisión de logs",
     title: "Detectar fallas en una corrida.",
     description:
@@ -226,7 +226,7 @@ const exerciseList = [
     signals: ["validación", "juicio"],
   },
   {
-    id: "dashboard-pivot",
+    id: "dashboard_pivot",
     eyebrow: "09 · Dashboard / pivot",
     title: "Leer señales de negocio.",
     description:
@@ -234,7 +234,7 @@ const exerciseList = [
     signals: ["impacto", "contexto"],
   },
   {
-    id: "decision-memo",
+    id: "tradeoff_decision_memo",
     eyebrow: "11 · Decisión + memo",
     title: "Cerrar con una recomendación.",
     description:
@@ -466,7 +466,7 @@ export function ExerciseLabClient() {
       >
         {exerciseList.map((exercise, index) => (
           <ExerciseSection key={exercise.id} exercise={exercise} index={index}>
-            {exercise.id === "textfield-ia-libre" && (
+            {exercise.id === "ai_textfield_free" && (
               <FreePromptExercise
                 prompt={freePrompt}
                 setPrompt={setFreePrompt}
@@ -476,7 +476,7 @@ export function ExerciseLabClient() {
                 setVoiceNotes={setFreeVoiceNotes}
               />
             )}
-            {exercise.id === "textfield-ia-guiado" && (
+            {exercise.id === "ai_textfield_guided" && (
               <GuidedPromptExercise
                 key={guidedResetKey}
                 prompt={guidedPrompt}
@@ -499,35 +499,35 @@ export function ExerciseLabClient() {
                 setCost={setGuidedCost}
               />
             )}
-            {exercise.id === "tabla-datos" && (
+            {exercise.id === "data_table_triage" && (
               <DataTableTriage
                 payload={dataTablePayload}
                 onChange={setDataTablePayload}
                 mode="lab_demo"
               />
             )}
-            {exercise.id === "matriz-permisos" && (
+            {exercise.id === "permission_matrix" && (
               <PermissionMatrix permissions={permissions} setPermissions={setPermissions} />
             )}
-            {exercise.id === "revision-output" && (
+            {exercise.id === "ai_output_review" && (
               <OutputReview flags={flags} setFlags={setFlags} />
             )}
-            {exercise.id === "comparacion-ia" && (
+            {exercise.id === "ai_comparison" && (
               <ComparisonExercise comparison={comparison} setComparison={setComparison} />
             )}
-            {exercise.id === "workflow-builder" && (
+            {exercise.id === "workflow_builder" && (
               <WorkflowBuilder enabledSteps={enabledSteps} setEnabledSteps={setEnabledSteps} />
             )}
-            {exercise.id === "agent-brief" && (
+            {exercise.id === "agent_brief_builder" && (
               <AgentBrief value={agentBrief} setValue={setAgentBrief} />
             )}
-            {exercise.id === "logs" && (
+            {exercise.id === "run_log_review" && (
               <LogReview flags={logFlags} setFlags={setLogFlags} />
             )}
-            {exercise.id === "dashboard-pivot" && (
+            {exercise.id === "dashboard_pivot" && (
               <PivotExercise filter={pivotFilter} setFilter={setPivotFilter} />
             )}
-            {exercise.id === "decision-memo" && (
+            {exercise.id === "tradeoff_decision_memo" && (
               <DecisionMemo
                 decision={decision}
                 setDecision={setDecision}
@@ -587,8 +587,8 @@ function ExerciseSection({
   index: number;
   children: React.ReactNode;
 }) {
-  if (exercise.id === "textfield-ia-libre" || exercise.id === "textfield-ia-guiado") {
-    const isGuided = exercise.id === "textfield-ia-guiado";
+  if (exercise.id === "ai_textfield_free" || exercise.id === "ai_textfield_guided") {
+    const isGuided = exercise.id === "ai_textfield_guided";
     return (
       <section
         id={exercise.id}
@@ -609,7 +609,7 @@ function ExerciseSection({
     );
   }
 
-  if (exercise.id === "agent-brief") {
+  if (exercise.id === "agent_brief_builder") {
     return (
       <section
         id={exercise.id}

@@ -114,6 +114,14 @@ export type CaseStepContract = {
     evaluates?: SimulatorDimension[];
     [key: string]: SimulatorJson | SimulatorDimension[] | undefined;
   };
+  /**
+   * Frente B — si está presente, el runtime productivo (`RuntimeExperience`)
+   * delega a `RegistryRenderer` en lugar de renderear UI hardcoded por type.
+   * El ID debe ser uno de los 11 canónicos del YAML
+   * (`EXERCISE_BLOCK_CATALOG.yaml`). El renderer activa autosave automático
+   * vía `useStepPatch` + emite payload tipado validado por Zod en la API.
+   */
+  exercise_block_id?: import("./exercise-blocks.generated").ExerciseBlockId;
   [key: string]: unknown;
 };
 
