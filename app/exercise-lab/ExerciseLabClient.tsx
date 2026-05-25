@@ -156,9 +156,9 @@ const exerciseList = [
   {
     id: "case_cover",
     eyebrow: "Fundamentos: Marketing",
-    title: "Iniciar el caso.",
+    title: "Envío del lunes con datos sucios.",
     description:
-      "Pantalla de bienvenida del caso. Muestra **perfil**, **dificultad**, **tiempo estimado**, las **herramientas** que vas a usar y un botón **Iniciar**. Si el caso ofrece **temporizador opcional**, el participante decide activarlo desde la portada antes de arrancar.",
+      "Tu manager acaba de pasarte la **lista de 480 contactos** para la campaña del **lunes a las 8 de la mañana**. Hay registros **duplicados**, cargos **mal escritos** y tres filas **sin nombre**. Decides cómo limpiar la base, qué pedirle a la inteligencia artificial y qué entregar antes del cierre del viernes.",
     signals: [],
   },
   {
