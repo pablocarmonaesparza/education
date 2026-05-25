@@ -4,18 +4,27 @@
  * AITextfieldGuided · renderer del bloque canónico `ai_textfield_guided`
  * (lab_ref 01B).
  *
- * Vertical stack · las 3 preguntas (Objetivo / Audiencia / Límites)
- * visibles a la vez en cards apiladas. Sin stepper · sin panel lateral
- * de respuestas · sin botón "Crear prompt".
+ * Stepper interno con 3 chips de subsecciones:
+ *   [Objetivo (activo)] [Audiencia (gris)] [Límites (gris)]
  *
- * El prompt resultante se genera automático cuando las 3 preguntas están
- * respondidas, y aparece abajo en el composer read-only. La elección de
- * modelo se hace en el dropdown del composer (default GPT Corporativo).
+ * Una subsección visible a la vez con transición slide (framer-motion):
+ *  - Objetivo · single-select · auto-advance al elegir
+ *  - Audiencia · single-select · auto-advance al elegir
+ *  - Límites · multi-select · NO auto-advance · composer read-only aparece
+ *    abajo cuando hay ≥1 límite seleccionado
+ *
+ * Estado de cada chip:
+ *  - Activo  · bg-accent + text-white (subsección actual)
+ *  - Hecho   · border-accent + text-accent + check (ya respondido,
+ *              clickeable para volver atrás)
+ *  - Pendiente · bg-surface-2 + text-tertiary (no clickeable hasta haber
+ *                completado la anterior)
  *
  * Sin hint interno · el shell ya tiene eyebrow + title + body.
  */
 
 import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -33,6 +42,14 @@ type AITextfieldGuidedPayload = Extract<
   ExerciseResponsePayload,
   { block_id: "ai_textfield_guided" }
 >;
+
+type Subsection = "objective" | "audience" | "limits";
+
+const SUBSECTIONS: Array<{ key: Subsection; label: string }> = [
+  { key: "objective", label: "Objetivo" },
+  { key: "audience", label: "Audiencia" },
+  { key: "limits", label: "Límites" },
+];
 
 const GUIDED_OBJECTIVES = [
   "Reactivar cuentas con bajo uso",
@@ -80,6 +97,10 @@ export function AITextfieldGuided({
   const totalChanges = useRef(0);
   const [voiceNotes, setVoiceNotes] = useState<string[]>([]);
 
+  // Subsección activa · inicia en objective y avanza con la selección.
+  const [activeSubsection, setActiveSubsection] =
+    useState<Subsection>("objective");
+
   const displayedModelId = payload.selected_model ?? defaultModelId;
   const displayedModel = findModelById(displayedModelId);
 
@@ -88,11 +109,24 @@ export function AITextfieldGuided({
       ? payload.selected_limits.join("; ")
       : "Sin restricciones adicionales";
 
-  const allAnswered = Boolean(
-    payload.selected_objective &&
-      payload.selected_audience &&
-      payload.selected_limits.length > 0,
-  );
+  const objectiveDone = Boolean(payload.selected_objective);
+  const audienceDone = Boolean(payload.selected_audience);
+  const limitsDone = payload.selected_limits.length > 0;
+  const allAnswered = objectiveDone && audienceDone && limitsDone;
+
+  function isReachable(sub: Subsection): boolean {
+    if (sub === "objective") return true;
+    if (sub === "audience") return objectiveDone;
+    if (sub === "limits") return objectiveDone && audienceDone;
+    return false;
+  }
+
+  function isDone(sub: Subsection): boolean {
+    if (sub === "objective") return objectiveDone;
+    if (sub === "audience") return audienceDone;
+    if (sub === "limits") return limitsDone;
+    return false;
+  }
 
   function persist(next: AITextfieldGuidedPayload) {
     if (firstActionAt.current === null) firstActionAt.current = Date.now();
@@ -109,21 +143,27 @@ export function AITextfieldGuided({
     onPatch?.(next);
   }
 
-  function updateField<K extends keyof AITextfieldGuidedPayload>(
-    key: K,
-    value: AITextfieldGuidedPayload[K],
-  ) {
-    persist({ ...payload, [key]: value });
+  function selectObjective(value: string) {
+    persist({ ...payload, selected_objective: value });
+    // Auto-advance a Audiencia
+    setActiveSubsection("audience");
+  }
+
+  function selectAudience(value: string) {
+    persist({ ...payload, selected_audience: value });
+    // Auto-advance a Límites
+    setActiveSubsection("limits");
   }
 
   function toggleGuardrail(value: string) {
     const next = payload.selected_limits.includes(value)
       ? payload.selected_limits.filter((g) => g !== value)
       : [...payload.selected_limits, value];
-    updateField("selected_limits", next);
+    persist({ ...payload, selected_limits: next });
+    // NO auto-advance · multi-select · el composer aparece debajo
   }
 
-  // Auto-genera el prompt cuando las 3 preguntas están respondidas.
+  // Auto-genera el prompt cuando las 3 subsecciones están listas.
   useEffect(() => {
     if (!allAnswered) return;
     const modelLabel = `${displayedModel.label}${displayedModel.badge ? ` · ${displayedModel.badge}` : ""}`;
@@ -140,62 +180,105 @@ export function AITextfieldGuided({
 
   return (
     <div className="space-y-6">
-      <section>
-        <div className="ts-callout font-semibold text-[var(--text-primary)]">
-          Objetivo
-        </div>
-        <div className="mt-3">
-          <GuidedSlideOptions
-            options={[...objectives]}
-            value={payload.selected_objective ?? ""}
-            onChange={(value) => updateField("selected_objective", value)}
-          />
-        </div>
-      </section>
-
-      <section>
-        <div className="ts-callout font-semibold text-[var(--text-primary)]">
-          Audiencia
-        </div>
-        <div className="mt-3">
-          <GuidedSlideOptions
-            options={[...audiences]}
-            value={payload.selected_audience ?? ""}
-            onChange={(value) => updateField("selected_audience", value)}
-          />
-        </div>
-      </section>
-
-      <section>
-        <div className="ts-callout font-semibold text-[var(--text-primary)]">
-          Límites
-        </div>
-        <div className="mt-3 grid gap-2">
-          {guardrails.map((guardrail) => (
-            <GuidedOption
-              key={guardrail}
-              selected={payload.selected_limits.includes(guardrail)}
-              onClick={() => toggleGuardrail(guardrail)}
+      {/* Stepper · 3 chips de subsecciones */}
+      <div className="flex items-center gap-2">
+        {SUBSECTIONS.map((sub) => {
+          const isActive = activeSubsection === sub.key;
+          const done = isDone(sub.key);
+          const reachable = isReachable(sub.key);
+          return (
+            <button
+              key={sub.key}
+              type="button"
+              disabled={!reachable}
+              onClick={() => {
+                if (reachable) setActiveSubsection(sub.key);
+              }}
+              className={`flex items-center gap-2 rounded-[var(--radius-md)] px-3 py-1.5 ts-caption-1 font-medium transition-colors ${
+                isActive
+                  ? "bg-[var(--accent)] text-white"
+                  : done
+                    ? "border border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)] hover:bg-[var(--accent-soft)]/80"
+                    : reachable
+                      ? "bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]"
+                      : "bg-[var(--surface-2)] text-[var(--text-tertiary)] cursor-not-allowed"
+              }`}
             >
-              {guardrail}
-            </GuidedOption>
-          ))}
-        </div>
-      </section>
+              {done && !isActive && (
+                <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" aria-hidden>
+                  <path
+                    d="M2.5 6L5 8.5L9.5 3.5"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.8"
+                  />
+                </svg>
+              )}
+              {sub.label}
+            </button>
+          );
+        })}
+      </div>
 
-      {/* Composer read-only · solo aparece cuando las 3 preguntas están listas */}
+      {/* Subsección activa · slide horizontal con AnimatePresence */}
+      <div className="relative overflow-hidden">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={activeSubsection}
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -24 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {activeSubsection === "objective" && (
+              <GuidedSlideOptions
+                options={[...objectives]}
+                value={payload.selected_objective ?? ""}
+                onChange={selectObjective}
+              />
+            )}
+            {activeSubsection === "audience" && (
+              <GuidedSlideOptions
+                options={[...audiences]}
+                value={payload.selected_audience ?? ""}
+                onChange={selectAudience}
+              />
+            )}
+            {activeSubsection === "limits" && (
+              <div className="grid gap-2">
+                {guardrails.map((guardrail) => (
+                  <GuidedOption
+                    key={guardrail}
+                    selected={payload.selected_limits.includes(guardrail)}
+                    onClick={() => toggleGuardrail(guardrail)}
+                  >
+                    {guardrail}
+                  </GuidedOption>
+                ))}
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      {/* Composer read-only · aparece cuando las 3 subsecciones están listas */}
       {allAnswered && (
-        <div className="animate-in fade-in slide-in-from-top-2 duration-200">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+        >
           <AIPromptComposer
             value={payload.generated_prompt}
-            onChange={(value) => updateField("generated_prompt", value)}
+            onChange={(value) => persist({ ...payload, generated_prompt: value })}
             selectedModel={displayedModelId}
-            onSelectModel={(value) => updateField("selected_model", value)}
+            onSelectModel={(value) => persist({ ...payload, selected_model: value })}
             voiceNotes={voiceNotes}
             onVoiceNote={(note) => setVoiceNotes([...voiceNotes, note])}
             readOnly
           />
-        </div>
+        </motion.div>
       )}
     </div>
   );
