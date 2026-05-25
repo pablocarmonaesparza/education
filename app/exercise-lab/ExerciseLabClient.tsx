@@ -156,9 +156,9 @@ const exerciseList = [
   {
     id: "case_cover",
     eyebrow: "00 · Portada del caso",
-    title: "Iniciar el caso (con timer opcional).",
+    title: "Iniciar el caso.",
     description:
-      "Pantalla de bienvenida del caso. Muestra **perfil**, **dificultad**, **tiempo estimado** y un botón **Iniciar**. Si el caso es cronometrado, el timer arranca al click en Iniciar.",
+      "Pantalla de bienvenida del caso. Muestra **perfil**, **dificultad**, **tiempo estimado**, las **herramientas** que vas a usar y un botón **Iniciar**. Si el caso ofrece **temporizador opcional**, el participante decide activarlo desde la portada antes de arrancar.",
     signals: [],
   },
   {

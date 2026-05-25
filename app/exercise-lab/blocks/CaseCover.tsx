@@ -101,9 +101,6 @@ export function CaseCover({
   const timerMinutes = timerAvailable
     ? Math.round((meta.timerSeconds as number) / 60)
     : null;
-  const timerMmSs = timerAvailable
-    ? formatMmSs(meta.timerSeconds as number)
-    : null;
 
   function start() {
     const now = new Date().toISOString();
@@ -147,61 +144,6 @@ export function CaseCover({
         )}
       </div>
 
-      {/* Timer card · solo si el caso ofrece cronómetro opcional */}
-      {timerAvailable && (
-        <div
-          className={`flex items-center justify-between gap-4 rounded-[var(--radius-lg)] border p-4 transition-colors ${
-            timerOn
-              ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-              : "border-[var(--border)] bg-[var(--surface)]"
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className={`grid h-12 w-12 flex-shrink-0 place-items-center rounded-full ${
-                timerOn ? "bg-[var(--accent)] text-white" : "bg-[var(--surface-2)] text-[var(--text-tertiary)]"
-              }`}
-              aria-hidden
-            >
-              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="13" r="8" stroke="currentColor" strokeWidth="1.6" />
-                <path d="M12 9V13L14.5 14.5" stroke="currentColor" strokeLinecap="round" strokeWidth="1.6" />
-                <path d="M9 3H15M12 3V5" stroke="currentColor" strokeLinecap="round" strokeWidth="1.6" />
-              </svg>
-            </div>
-            <div>
-              <div className="ts-callout font-semibold text-[var(--text-primary)] tabular-nums">
-                {timerMmSs}
-              </div>
-              <div className="mt-0.5 ts-footnote text-[var(--text-tertiary)]">
-                {timerOn
-                  ? `Cronómetro activado · ${timerMinutes} min al iniciar`
-                  : `Practica con ${timerMinutes} min de límite (opcional)`}
-              </div>
-            </div>
-          </div>
-          {/* Toggle switch · estilo iOS minimal */}
-          <button
-            type="button"
-            role="switch"
-            aria-checked={timerOn}
-            aria-label="Activar cronómetro"
-            onClick={() => setTimerOn(!timerOn)}
-            disabled={alreadyStarted}
-            className={`relative h-7 w-12 flex-shrink-0 rounded-full transition-colors ${
-              timerOn ? "bg-[var(--accent)]" : "bg-[var(--surface-3)]"
-            } ${alreadyStarted ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            <span
-              className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-transform ${
-                timerOn ? "translate-x-[22px]" : "translate-x-0.5"
-              }`}
-              aria-hidden
-            />
-          </button>
-        </div>
-      )}
-
       {/* Herramientas que se van a usar */}
       {tools.length > 0 && (
         <div>
@@ -222,8 +164,8 @@ export function CaseCover({
         </div>
       )}
 
-      {/* CTA principal · Iniciar */}
-      <div className="flex items-center gap-4 pt-2">
+      {/* CTA principal + toggle inline del temporizador */}
+      <div className="flex flex-wrap items-center gap-4 pt-2">
         <button
           type="button"
           onClick={start}
@@ -236,20 +178,41 @@ export function CaseCover({
         >
           {alreadyStarted ? "Caso iniciado" : `${ctaLabel} →`}
         </button>
-        {timerOn && !alreadyStarted && (
-          <span className="ts-footnote text-[var(--text-tertiary)]">
-            El cronómetro arranca al iniciar.
-          </span>
+        {timerAvailable && (
+          <button
+            type="button"
+            role="switch"
+            aria-checked={timerOn}
+            aria-label={`Temporizador de ${timerMinutes} minutos`}
+            onClick={() => setTimerOn(!timerOn)}
+            disabled={alreadyStarted}
+            className={`group inline-flex items-center gap-3 ts-subhead text-[var(--text-secondary)] ${
+              alreadyStarted ? "opacity-60 cursor-not-allowed" : "cursor-pointer hover:text-[var(--text-primary)]"
+            }`}
+          >
+            <span className="font-medium">
+              Temporizador: {timerMinutes} minutos
+            </span>
+            <span
+              className={`relative inline-block h-5 w-9 flex-shrink-0 rounded-full transition-colors ${
+                timerOn ? "bg-[var(--accent)]" : "bg-[var(--surface-3)]"
+              }`}
+              aria-hidden
+            >
+              <span
+                className={`absolute top-1/2 left-0.5 h-4 w-4 -translate-y-1/2 rounded-full bg-white shadow-sm transition-transform ${
+                  timerOn ? "translate-x-4" : "translate-x-0"
+                }`}
+              />
+            </span>
+            <span className="ts-footnote text-[var(--text-tertiary)]">
+              {timerOn ? "activado" : "desactivado"}
+            </span>
+          </button>
         )}
       </div>
     </div>
   );
-}
-
-function formatMmSs(seconds: number): string {
-  const mm = Math.floor(seconds / 60);
-  const ss = seconds % 60;
-  return `${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
 }
 
 function ToolIcon({ kind }: { kind: ToolKind }) {
