@@ -155,7 +155,7 @@ const brandLogo: Record<BrandKey, { light: string; dark?: string } | null> = {
 const exerciseList = [
   {
     id: "case_cover",
-    eyebrow: "00 · Portada del caso",
+    eyebrow: "Fundamentos: Marketing",
     title: "Iniciar el caso.",
     description:
       "Pantalla de bienvenida del caso. Muestra **perfil**, **dificultad**, **tiempo estimado**, las **herramientas** que vas a usar y un botón **Iniciar**. Si el caso ofrece **temporizador opcional**, el participante decide activarlo desde la portada antes de arrancar.",

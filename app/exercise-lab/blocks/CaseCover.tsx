@@ -125,25 +125,6 @@ export function CaseCover({
 
   return (
     <div className="space-y-6">
-      {/* Metadata · perfil, dificultad, tiempo estimado */}
-      <div className="flex flex-wrap items-center gap-2">
-        {meta.profile && (
-          <span className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 ts-caption-1 font-medium text-[var(--text-secondary)]">
-            {meta.profile}
-          </span>
-        )}
-        {meta.level && (
-          <span className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 ts-caption-1 font-medium text-[var(--text-secondary)]">
-            {meta.level}
-          </span>
-        )}
-        {meta.estimatedMinutes && (
-          <span className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 ts-caption-1 font-medium text-[var(--text-secondary)]">
-            ~{meta.estimatedMinutes} min
-          </span>
-        )}
-      </div>
-
       {/* Herramientas que se van a usar */}
       {tools.length > 0 && (
         <div>
@@ -204,9 +185,6 @@ export function CaseCover({
                   timerOn ? "translate-x-4" : "translate-x-0"
                 }`}
               />
-            </span>
-            <span className="ts-footnote text-[var(--text-tertiary)]">
-              {timerOn ? "activado" : "desactivado"}
             </span>
           </button>
         )}
