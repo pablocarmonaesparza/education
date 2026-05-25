@@ -116,9 +116,11 @@ export function CaseTemplateClient() {
             </div>
           </div>
 
-          {/* CONTENIDO — título + body */}
-          <section className="flex flex-1 flex-col px-10 py-14">
-            <div className="mx-auto w-full max-w-[680px]">
+          {/* CONTENIDO — patrón Typeform: bloque cohesivo (título + body + botón)
+              centrado vertical y horizontalmente en el viewport. El botón vive
+              justo debajo del body, no pegado al bottom. */}
+          <section className="flex flex-1 items-center justify-center px-10 py-14">
+            <div className="w-full max-w-[680px]">
               {/* Título — 1 renglón máximo */}
               <h1 className="display display-tight ts-display text-[var(--text-primary)] truncate">
                 Lorem ipsum dolor sit amet
@@ -134,16 +136,23 @@ export function CaseTemplateClient() {
                   consequat.
                 </p>
               </div>
-            </div>
 
-            {/* Spacer + Continuar centrado abajo */}
-            <div className="mt-auto flex justify-center pt-10">
-              <button
-                type="button"
-                className="rounded-[var(--radius-md)] accent-bg px-7 py-3 ts-callout font-medium text-white shadow-none transition-opacity hover:opacity-90"
-              >
-                Continuar →
-              </button>
+              {/* Continuar — left-aligned justo debajo del body (gap ~40px),
+                  con hint "Enter" estilo Typeform. */}
+              <div className="mt-10 flex items-center gap-4">
+                <button
+                  type="button"
+                  className="rounded-[var(--radius-md)] accent-bg px-7 py-3 ts-callout font-medium text-white shadow-none transition-opacity hover:opacity-90"
+                >
+                  Continuar →
+                </button>
+                <span className="ts-footnote text-[var(--text-tertiary)]">
+                  o pulsa{" "}
+                  <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
+                    Enter ↵
+                  </kbd>
+                </span>
+              </div>
             </div>
           </section>
         </div>
