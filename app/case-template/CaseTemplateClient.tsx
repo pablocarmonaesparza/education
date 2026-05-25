@@ -122,9 +122,9 @@ export function CaseTemplateClient() {
               Ancho del bloque reducido (560px) para más aire horizontal alrededor. */}
           <section className="flex flex-1 items-center justify-center px-16 py-14">
             <div className="w-full max-w-[560px]">
-              {/* Título — 2 renglones máximo */}
-              <h1 className="display display-tight ts-display line-clamp-2 text-[var(--text-primary)]">
-                Lorem ipsum dolor sit amet consectetur adipiscing elit sed
+              {/* Título — 3-4 palabras máximo (1 renglón) */}
+              <h1 className="display display-tight ts-display truncate text-[var(--text-primary)]">
+                Lorem ipsum dolor sit
               </h1>
 
               {/* Body markdown — 2 renglones */}
