@@ -1,12 +1,15 @@
 exercise_block_catalog:
-  version: 0.2.0
+  version: 0.3.0
   status: canonical_after_exercise_lab_review
   source_route: /exercise-lab
   purpose: >
     Catalogo cerrado de interacciones para crear casos Itera sin reinventar
-    ejercicios caso por caso. Cada bloque debe emitir evidencia medible para
-    una o mas dimensiones de la rubrica y debe poder mapearse a una seccion del
-    runtime: Contexto, Datos, IA, Revision, Decision o Respuesta.
+    ejercicios caso por caso. Cada bloque ACTIVO (family ai_native o
+    traditional) debe emitir evidencia medible para una o mas dimensiones de
+    la rubrica y debe poder mapearse a una seccion del runtime: Contexto,
+    Datos, IA, Revision, Decision o Respuesta. Los bloques PASIVOS (family
+    passive) no emiten evidencia — solo introducen, contextualizan o cierran
+    secciones del runtime con titulo + body + boton continuar.
 
   product_rules:
     - "El caso controla escenario, presion, datos y resultado esperado; el usuario no configura el examen."
@@ -35,6 +38,30 @@ exercise_block_catalog:
       avoid_blocks: []
 
   blocks:
+    - id: reading_passive
+      lab_ref: "00"
+      public_name: "Diapositiva informativa"
+      family: passive
+      levels: [N1, N2, N3]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
+      primary_dimensions: []
+      runtime_sections: [Contexto, Datos, IA, Revision, Decision, Respuesta]
+      when_to_use:
+        - "Introducir el caso, una seccion o una transicion sin interaccion."
+        - "Recap rapido o instrucciones previas al ejercicio activo siguiente."
+        - "Cerrar una seccion con un mensaje contextual antes de seguir."
+      avoid_when:
+        - "El caso necesita evidencia para evaluar — usa un bloque activo."
+        - "El body es muy largo y no cabe en viewport sin scroll."
+      personalization_knobs:
+        - "titulo (3-4 palabras)"
+        - "body markdown (1-3 renglones)"
+      emits: []
+      ui_pattern: "titulo + body markdown + boton continuar; sin interaccion"
+      default_empty_fields: []
+      scoring_method: passive
+      completion: "auto al clickear continuar"
+
     - id: ai_textfield_free
       lab_ref: "01A"
       public_name: "Textfield de IA libre"

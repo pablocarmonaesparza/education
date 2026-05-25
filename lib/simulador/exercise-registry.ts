@@ -53,6 +53,13 @@ export interface VoiceNote {
  */
 export type ExerciseResponsePayload =
   | {
+      // Bloque PASIVO — sin interacción, solo lectura.
+      // `acknowledged` se vuelve true cuando el participante hace click
+      // en Continuar (= leyó el slide). No emite evidencia al judge.
+      block_id: "reading_passive";
+      acknowledged: boolean;
+    }
+  | {
       block_id: "ai_textfield_free";
       prompt_text: string;
       model: string;
@@ -208,6 +215,8 @@ export type ExerciseRenderer<
  */
 export function emptyPayload(block_id: ExerciseBlockId): ExerciseResponsePayload {
   switch (block_id) {
+    case "reading_passive":
+      return { block_id, acknowledged: false };
     case "ai_textfield_free":
       return {
         block_id,

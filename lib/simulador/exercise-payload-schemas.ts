@@ -44,11 +44,16 @@ const ReviewFlagSchema = z.enum([
 ]);
 
 // ============================================================================
-// 11 schemas — uno por block_id canónico
+// 12 schemas — uno por block_id canónico
 // ============================================================================
 
 // .strict() rechaza campos extras no declarados — anti-bypass:
 // el cliente no puede inyectar fields adicionales al judge.
+const ReadingPassiveSchema = z.strictObject({
+  block_id: z.literal("reading_passive"),
+  acknowledged: z.boolean(),
+});
+
 const AITextfieldFreeSchema = z.strictObject({
   block_id: z.literal("ai_textfield_free"),
   prompt_text: z.string(),
@@ -149,6 +154,7 @@ const TradeoffDecisionMemoSchema = z.strictObject({
 // ============================================================================
 
 export const ExerciseResponsePayloadSchema = z.discriminatedUnion("block_id", [
+  ReadingPassiveSchema,
   AITextfieldFreeSchema,
   AITextfieldGuidedSchema,
   DataTableTriageSchema,

@@ -153,6 +153,14 @@ const brandLogo: Record<BrandKey, { light: string; dark?: string } | null> = {
 
 const exerciseList = [
   {
+    id: "reading_passive",
+    eyebrow: "00 · Diapositiva informativa",
+    title: "Lectura, sin interacción.",
+    description:
+      "Para introducir el caso, contextualizar una sección o cerrar con un mensaje. Solo título, body y botón Continuar — el participante lee y avanza.",
+    signals: [],
+  },
+  {
     id: "ai_textfield_free",
     eyebrow: "01A · Textfield de IA",
     title: "Textfield de IA (A): libre.",

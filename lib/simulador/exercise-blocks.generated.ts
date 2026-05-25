@@ -2,23 +2,23 @@
 /**
  * AUTO-GENERATED — NO EDITAR A MANO.
  *
- * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.2.0
+ * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.3.0
  * Generador: scripts/simulador/generate-exercise-blocks.mjs
  *
  * Para regenerar: `bun run simulador:gen-blocks`
  * Para validar sincronía con lab/runtime: `bun run simulador:check-blocks`
  *
  * Status del catálogo: canonical_after_exercise_lab_review
- * Total bloques: 11
+ * Total bloques: 12
  */
 
-export type ExerciseBlockId = "ai_textfield_free" | "ai_textfield_guided" | "data_table_triage" | "permission_matrix" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "agent_brief_builder" | "run_log_review" | "dashboard_pivot" | "tradeoff_decision_memo";
+export type ExerciseBlockId = "reading_passive" | "ai_textfield_free" | "ai_textfield_guided" | "data_table_triage" | "permission_matrix" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "agent_brief_builder" | "run_log_review" | "dashboard_pivot" | "tradeoff_decision_memo";
 
-export type ExerciseBlockFamily = "ai_native" | "traditional_plus_ai_context" | "traditional_business_signal" | "traditional_closure";
+export type ExerciseBlockFamily = "passive" | "ai_native" | "traditional_plus_ai_context" | "traditional_business_signal" | "traditional_closure";
 
 export type ExerciseBlockDimension = "contexto" | "ejecucion_ia" | "impacto" | "datos" | "juicio" | "validacion";
 
-export type ExerciseBlockRuntimeSection = "IA" | "Respuesta" | "Contexto" | "Datos" | "Decision" | "Revision";
+export type ExerciseBlockRuntimeSection = "Contexto" | "Datos" | "IA" | "Revision" | "Decision" | "Respuesta";
 
 export type ExerciseBlockLevel = "N1" | "N2" | "N3";
 
@@ -42,6 +42,41 @@ export interface ExerciseBlock {
 }
 
 export const exerciseBlocks: ExerciseBlock[] = [
+  {
+    id: "reading_passive",
+    labRef: "00",
+    publicName: "Diapositiva informativa",
+    family: "passive",
+    levels: ["N1", "N2", "N3"],
+    profiles: [
+      "marketing_growth",
+      "sales_revops",
+      "customer_success_support",
+      "operations_automation",
+      "finance_fpa",
+      "legal_compliance_privacy",
+    ],
+    primaryDimensions: [],
+    runtimeSections: ["Contexto", "Datos", "IA", "Revision", "Decision", "Respuesta"],
+    whenToUse: [
+      "Introducir el caso, una seccion o una transicion sin interaccion.",
+      "Recap rapido o instrucciones previas al ejercicio activo siguiente.",
+      "Cerrar una seccion con un mensaje contextual antes de seguir.",
+    ],
+    avoidWhen: [
+      "El caso necesita evidencia para evaluar — usa un bloque activo.",
+      "El body es muy largo y no cabe en viewport sin scroll.",
+    ],
+    personalizationKnobs: [
+      "titulo (3-4 palabras)",
+      "body markdown (1-3 renglones)",
+    ],
+    emits: [],
+    uiPattern: "titulo + body markdown + boton continuar; sin interaccion",
+    defaultEmptyFields: [],
+    scoringMethod: "passive",
+    completion: "auto al clickear continuar",
+  },
   {
     id: "ai_textfield_free",
     labRef: "01A",
@@ -444,6 +479,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
 ];
 
 export const exerciseBlockIds: ExerciseBlockId[] = [
+  "reading_passive",
   "ai_textfield_free",
   "ai_textfield_guided",
   "data_table_triage",
@@ -464,13 +500,14 @@ export const exerciseBlockById: Record<ExerciseBlockId, ExerciseBlock> =
   >;
 
 export const exerciseBlockStats = {
-  total: 11,
+  total: 12,
   families: {
+    "passive": 1,
     "ai_native": 8,
     "traditional_plus_ai_context": 1,
     "traditional_business_signal": 1,
     "traditional_closure": 1
   },
-  catalogVersion: "0.2.0",
+  catalogVersion: "0.3.0",
   catalogStatus: "canonical_after_exercise_lab_review",
 } as const;

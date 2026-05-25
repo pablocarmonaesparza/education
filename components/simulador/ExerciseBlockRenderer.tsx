@@ -10,6 +10,7 @@
  */
 
 import { useState } from "react";
+import { ReadingPassive } from "@/app/exercise-lab/blocks/ReadingPassive";
 import { DataTableTriage } from "@/app/exercise-lab/blocks/DataTableTriage";
 import { PermissionMatrix } from "@/app/exercise-lab/blocks/PermissionMatrix";
 import { AIComparison } from "@/app/exercise-lab/blocks/AIComparison";
@@ -44,6 +45,8 @@ export function ExerciseBlockRenderer({
   caseContext,
 }: ExerciseBlockRendererProps) {
   switch (blockId) {
+    case "reading_passive":
+      return <ReadingPassiveWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "data_table_triage":
       return <DataTableWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "permission_matrix":
@@ -74,6 +77,13 @@ export function ExerciseBlockRenderer({
 // específico del caso (filas, opciones), lo leen de caseContext.
 
 type WrapperProps = Omit<ExerciseBlockRendererProps, "blockId">;
+
+function ReadingPassiveWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("reading_passive") as Extract<ExerciseResponsePayload, { block_id: "reading_passive" }>,
+  );
+  return <ReadingPassive payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
 
 function DataTableWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
