@@ -1,5 +1,5 @@
 exercise_block_catalog:
-  version: 0.4.0
+  version: 0.5.0
   status: canonical_after_exercise_lab_review
   source_route: /exercise-lab
   purpose: >
@@ -26,15 +26,15 @@ exercise_block_catalog:
   selection_recipes:
     N1:
       description: "Fundamentos / Prompt Engineering"
-      recommended_blocks: [ai_textfield_free, ai_textfield_guided, data_table_triage, ai_output_review, tradeoff_decision_memo]
-      avoid_blocks: [agent_brief_builder, run_log_review]
+      recommended_blocks: [ai_textfield_free, ai_textfield_guided, data_action_table, ai_output_review, tradeoff_decision_memo]
+      avoid_blocks: [agent_brief_builder]
     N2:
       description: "Workflow / Automatiza tu trabajo"
-      recommended_blocks: [ai_textfield_guided, permission_matrix, workflow_builder, ai_output_review, dashboard_pivot, tradeoff_decision_memo]
+      recommended_blocks: [ai_textfield_guided, data_action_table, workflow_builder, ai_output_review, dashboard_pivot, tradeoff_decision_memo]
       avoid_blocks: []
     N3:
       description: "Agentes / Produccion y optimizacion"
-      recommended_blocks: [agent_brief_builder, permission_matrix, run_log_review, dashboard_pivot, tradeoff_decision_memo]
+      recommended_blocks: [agent_brief_builder, data_action_table, dashboard_pivot, tradeoff_decision_memo]
       avoid_blocks: []
 
   blocks:
@@ -252,55 +252,46 @@ exercise_block_catalog:
       scoring_method: deterministic_selection_plus_llm_judge
       completion: "objetivo, audiencia, limites y modelo definidos; prompt generado"
 
-    - id: data_table_triage
+    - id: data_action_table
       lab_ref: "02"
-      public_name: "Tabla editable de datos"
-      family: traditional_plus_ai_context
-      levels: [N1, N2]
-      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
-      primary_dimensions: [datos, juicio]
-      runtime_sections: [Datos]
-      when_to_use:
-        - "El participante debe decidir que datos entran al modelo."
-        - "Hay riesgo de PII, datos sensibles, baja calidad o exceso de informacion."
-      avoid_when:
-        - "La decision de datos no afecta el resultado del caso."
-        - "Estas tentado a usar sliders de sensibilidad; usa acciones discretas."
-      personalization_knobs:
-        - "filas de datos"
-        - "ejemplos"
-        - "acciones: usar, anonimizar, agregar, excluir"
-        - "consecuencias por campo"
-      emits: [field_actions, minimization_decisions, privacy_flags]
-      ui_pattern: "tabla por campo con dropdown de accion y chevron con padding suficiente"
-      default_empty_fields: []
-      scoring_method: deterministic_rules_plus_judge_notes
-      completion: "cada campo tiene accion elegida o confirmada"
-
-    - id: permission_matrix
-      lab_ref: "03"
-      public_name: "Matriz de permisos"
+      public_name: "Tabla con accion por fila"
       family: ai_native
-      levels: [N2, N3]
-      profiles: [sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
-      primary_dimensions: [datos, ejecucion_ia, juicio]
-      runtime_sections: [IA, Decision]
+      levels: [N1, N2, N3]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
+      primary_dimensions: [datos, juicio, validacion]
+      runtime_sections: [Datos, IA, Decision, Revision]
       when_to_use:
-        - "Hay automatizacion o agente con acciones de distinto riesgo."
-        - "El participante debe decidir permitir, revisar o bloquear."
+        - "El participante debe clasificar un set de items (campos, acciones, eventos) con accion discreta por item."
+        - "Hay riesgo discriminable item por item: PII, autonomia, calidad."
       avoid_when:
-        - "Todas las acciones tienen el mismo nivel de riesgo."
-        - "Es una tarea N1 sin autonomia real."
+        - "Solo hay 1-2 items; usa un toggle simple."
+        - "Las decisiones requieren un slider continuo; usa model_tradeoff_sliders."
+      action_kinds:
+        - kind: data
+          actions: [usar, anonimizar, agregar, excluir]
+          emits: [field_actions, minimization_decisions, privacy_flags]
+          scoring_method: deterministic_rules_plus_judge_notes
+          dimensions: [datos, juicio]
+        - kind: permission
+          actions: [permitir, revisar, bloquear]
+          emits: [permission_plan, blocked_actions, review_gates]
+          scoring_method: deterministic_overrides_for_high_risk_actions
+          dimensions: [datos, ejecucion_ia, juicio]
+        - kind: flag
+          actions: [marcar_riesgo, marcar_normal]
+          emits: [flagged_events, incident_type, escalation_need]
+          scoring_method: risk_event_recall_precision
+          dimensions: [validacion, juicio]
       personalization_knobs:
-        - "acciones"
-        - "niveles de permiso"
-        - "acciones high risk"
-        - "approval gates"
-      emits: [permission_plan, blocked_actions, review_gates]
-      ui_pattern: "filas de acciones x permitir/revisar/bloquear"
-      default_empty_fields: []
-      scoring_method: deterministic_overrides_for_high_risk_actions
-      completion: "todas las acciones tienen permiso declarado"
+        - "action_kind (data, permission, flag)"
+        - "filas (items a clasificar)"
+        - "ejemplos por fila"
+        - "consecuencias por accion"
+      emits: [row_actions, action_kind]
+      ui_pattern: "tabla por item con dropdown de accion segun action_kind"
+      default_empty_fields: [row_actions]
+      scoring_method: depends_on_action_kind
+      completion: "cada item tiene accion elegida"
 
     - id: ai_output_review
       lab_ref: "04"
@@ -405,31 +396,8 @@ exercise_block_catalog:
       scoring_method: deterministic_overrides_plus_llm_judge
       completion: "tarea, acceso, accion maxima y condicion de paro definidos"
 
-    - id: run_log_review
-      lab_ref: "08"
-      public_name: "Revision de logs"
-      family: ai_native
-      levels: [N2, N3]
-      profiles: [sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
-      primary_dimensions: [validacion, juicio]
-      runtime_sections: [Revision]
-      when_to_use:
-        - "El participante supervisa una corrida de automatizacion o agente."
-        - "Quieres medir si detecta incidentes en evidencia operacional."
-      avoid_when:
-        - "Los logs son demasiado tecnicos para el perfil."
-        - "No hay eventos normales que sirvan de contraste."
-      personalization_knobs:
-        - "timeline"
-        - "eventos normales"
-        - "eventos de riesgo"
-        - "severidad"
-        - "escalamiento"
-      emits: [flagged_log_events, incident_type, escalation_need]
-      ui_pattern: "timeline de eventos con marcacion de incidentes"
-      default_empty_fields: [flagged_log_events]
-      scoring_method: risk_event_recall_precision
-      completion: "eventos relevantes marcados o descartados"
+    # NOTA: run_log_review fue consolidado en data_action_table (action_kind: flag) en v0.5.0.
+    # Si necesitas el patron de marcar eventos en logs, usa data_action_table con caseContext.action_kind="flag".
 
     - id: dashboard_pivot
       lab_ref: "09"

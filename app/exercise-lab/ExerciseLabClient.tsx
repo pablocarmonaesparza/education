@@ -226,20 +226,12 @@ const exerciseList = [
     signals: ["contexto", "datos", "ejecución IA", "juicio"],
   },
   {
-    id: "data_table_triage",
-    eyebrow: "02 · Tabla editable",
-    title: "Decidir qué datos entran.",
+    id: "data_action_table",
+    eyebrow: "02 · Tabla con acción por fila",
+    title: "Clasificar con acción discreta.",
     description:
-      "El participante clasifica campos reales antes de usarlos. Mide minimización, privacidad y calidad de datos sin pedir teoría.",
-    signals: ["datos", "juicio"],
-  },
-  {
-    id: "permission_matrix",
-    eyebrow: "03 · Matriz de permisos",
-    title: "Poner límites a una automatización.",
-    description:
-      "El participante define qué puede hacer el sistema solo, qué requiere revisión y qué debe bloquearse. Útil para workflows y agentes.",
-    signals: ["datos", "juicio", "ejecución IA"],
+      "Una sola tabla con **3 variantes** según el caso: clasificar *datos* (usar/anonimizar/agregar/excluir), declarar *permisos* (permitir/revisar/bloquear) o marcar *eventos* (riesgo/normal). El segmented control de arriba te deja previsualizar las 3.",
+    signals: ["datos", "juicio", "validación"],
   },
   {
     id: "ai_output_review",
@@ -272,14 +264,6 @@ const exerciseList = [
     description:
       "El participante convierte una tarea de cualquier área en un encargo operable: qué debe lograr, qué puede usar, qué puede hacer y cuándo debe detenerse.",
     signals: ["ejecución IA", "juicio", "datos"],
-  },
-  {
-    id: "run_log_review",
-    eyebrow: "08 · Revisión de logs",
-    title: "Detectar fallas en una corrida.",
-    description:
-      "El participante lee eventos de una automatización y marca dónde se rompió el control. Mide supervisión, no memoria.",
-    signals: ["validación", "juicio"],
   },
   {
     id: "dashboard_pivot",

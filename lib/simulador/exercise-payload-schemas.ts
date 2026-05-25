@@ -105,22 +105,16 @@ const AITextfieldGuidedSchema = z.strictObject({
   cost_priority: z.number().min(0).max(100).nullable(),
 });
 
-const DataTableTriageSchema = z.strictObject({
-  block_id: z.literal("data_table_triage"),
-  field_actions: z.array(
+// Tabla con acción discreta por fila — consolida data_table_triage,
+// permission_matrix y run_log_review (v0.5.0). Discriminator interno
+// `action_kind` dice qué rúbrica aplicar.
+const DataActionTableSchema = z.strictObject({
+  block_id: z.literal("data_action_table"),
+  action_kind: z.enum(["data", "permission", "flag"]),
+  row_actions: z.array(
     z.object({
-      field_id: z.string(),
-      action: DataTableActionSchema.nullable(),
-    }),
-  ),
-});
-
-const PermissionMatrixSchema = z.strictObject({
-  block_id: z.literal("permission_matrix"),
-  cells: z.array(
-    z.object({
-      action_id: z.string(),
-      permission: PermissionSchema.nullable(),
+      row_id: z.string(),
+      action: z.string().nullable(),
     }),
   ),
 });
@@ -157,16 +151,6 @@ const AgentBriefBuilderSchema = z.strictObject({
   stop: z.string(),
 });
 
-const RunLogReviewSchema = z.strictObject({
-  block_id: z.literal("run_log_review"),
-  flagged_logs: z.array(
-    z.object({
-      log_id: z.string(),
-      flag: z.string().nullable(),
-    }),
-  ),
-});
-
 const DashboardPivotSchema = z.strictObject({
   block_id: z.literal("dashboard_pivot"),
   selected_filter: z.string().nullable(),
@@ -193,13 +177,11 @@ export const ExerciseResponsePayloadSchema = z.discriminatedUnion("block_id", [
   ReadingAttachmentSchema,
   AITextfieldFreeSchema,
   AITextfieldGuidedSchema,
-  DataTableTriageSchema,
-  PermissionMatrixSchema,
+  DataActionTableSchema,
   AIOutputReviewSchema,
   AIComparisonSchema,
   WorkflowBuilderSchema,
   AgentBriefBuilderSchema,
-  RunLogReviewSchema,
   DashboardPivotSchema,
   TradeoffDecisionMemoSchema,
 ]);

@@ -17,12 +17,10 @@ import { ReadingImage } from "@/app/exercise-lab/blocks/ReadingImage";
 import { ReadingKpiCards } from "@/app/exercise-lab/blocks/ReadingKpiCards";
 import { ReadingTimeline } from "@/app/exercise-lab/blocks/ReadingTimeline";
 import { ReadingAttachment } from "@/app/exercise-lab/blocks/ReadingAttachment";
-import { DataTableTriage } from "@/app/exercise-lab/blocks/DataTableTriage";
-import { PermissionMatrix } from "@/app/exercise-lab/blocks/PermissionMatrix";
+import { DataActionTable } from "@/app/exercise-lab/blocks/DataActionTable";
 import { AIComparison } from "@/app/exercise-lab/blocks/AIComparison";
 import { WorkflowBuilder } from "@/app/exercise-lab/blocks/WorkflowBuilder";
 import { AIOutputReview } from "@/app/exercise-lab/blocks/AIOutputReview";
-import { RunLogReview } from "@/app/exercise-lab/blocks/RunLogReview";
 import { DashboardPivot } from "@/app/exercise-lab/blocks/DashboardPivot";
 import { TradeoffDecisionMemo } from "@/app/exercise-lab/blocks/TradeoffDecisionMemo";
 import { AgentBriefBuilder } from "@/app/exercise-lab/blocks/AgentBriefBuilder";
@@ -65,18 +63,14 @@ export function ExerciseBlockRenderer({
       return <ReadingTimelineWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "reading_attachment":
       return <ReadingAttachmentWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-    case "data_table_triage":
-      return <DataTableWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-    case "permission_matrix":
-      return <PermissionMatrixWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "data_action_table":
+      return <DataActionTableWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "ai_comparison":
       return <AIComparisonWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "workflow_builder":
       return <WorkflowBuilderWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "ai_output_review":
       return <AIOutputReviewWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-    case "run_log_review":
-      return <RunLogReviewWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "dashboard_pivot":
       return <DashboardPivotWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "tradeoff_decision_memo":
@@ -145,27 +139,20 @@ function ReadingAttachmentWrapper({ sessionId, mode, slideId, caseContext }: Wra
   return <ReadingAttachment payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
 }
 
-function DataTableWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
+function DataActionTableWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
-    emptyPayload("data_table_triage") as Extract<ExerciseResponsePayload, { block_id: "data_table_triage" }>,
+    emptyPayload("data_action_table") as Extract<ExerciseResponsePayload, { block_id: "data_action_table" }>,
   );
   return (
-    <DataTableTriage
+    <DataActionTable
       payload={payload}
       onChange={setPayload}
       sessionId={sessionId}
       mode={mode}
       slideId={slideId}
-      fields={caseContext?.fields as undefined}
+      caseContext={caseContext}
     />
   );
-}
-
-function PermissionMatrixWrapper({ sessionId, mode, slideId }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("permission_matrix") as Extract<ExerciseResponsePayload, { block_id: "permission_matrix" }>,
-  );
-  return <PermissionMatrix payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
 }
 
 function AIComparisonWrapper({ sessionId, mode, slideId }: WrapperProps) {
@@ -187,13 +174,6 @@ function AIOutputReviewWrapper({ sessionId, mode, slideId }: WrapperProps) {
     emptyPayload("ai_output_review") as Extract<ExerciseResponsePayload, { block_id: "ai_output_review" }>,
   );
   return <AIOutputReview payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
-}
-
-function RunLogReviewWrapper({ sessionId, mode, slideId }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("run_log_review") as Extract<ExerciseResponsePayload, { block_id: "run_log_review" }>,
-  );
-  return <RunLogReview payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
 }
 
 function DashboardPivotWrapper({ sessionId, mode, slideId }: WrapperProps) {
