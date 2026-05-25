@@ -22,7 +22,7 @@
 
 "use client";
 
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { PromptAttachment } from "./types";
 import { findModelById, modelGroups } from "./models";
@@ -92,6 +92,20 @@ export function AIPromptComposer({
   );
   const matched = layout === "matched";
 
+  // En readOnly · auto-fit al scrollHeight real (no estimado por \n).
+  // Evita el espacio muerto cuando el cálculo por líneas sobreestima
+  // la altura (e.g. cuando hay wraps menos agresivos que lo previsto).
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  useLayoutEffect(() => {
+    if (!readOnly || matched) return;
+    const ta = textareaRef.current;
+    if (!ta) return;
+    // Reset height para que scrollHeight refleje el contenido real
+    ta.style.height = "auto";
+    const fit = Math.min(TEXT_MAX_HEIGHT, Math.max(TEXT_MIN_HEIGHT, ta.scrollHeight));
+    ta.style.height = `${fit}px`;
+  }, [value, readOnly, matched]);
+
   function commitAttachments(next: PromptAttachment[]) {
     if (onAttachmentsChange) {
       onAttachmentsChange(next);
@@ -129,6 +143,7 @@ export function AIPromptComposer({
         }}
       >
         <textarea
+          ref={textareaRef}
           value={value}
           onChange={(event) => {
             if (readOnly) return;
