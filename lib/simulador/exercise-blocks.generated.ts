@@ -2,17 +2,17 @@
 /**
  * AUTO-GENERATED — NO EDITAR A MANO.
  *
- * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.6.0
+ * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.7.0
  * Generador: scripts/simulador/generate-exercise-blocks.mjs
  *
  * Para regenerar: `bun run simulador:gen-blocks`
  * Para validar sincronía con lab/runtime: `bun run simulador:check-blocks`
  *
  * Status del catálogo: canonical_after_exercise_lab_review
- * Total bloques: 17
+ * Total bloques: 19
  */
 
-export type ExerciseBlockId = "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "ai_textfield_guided" | "model_tradeoff_sliders" | "data_action_table" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "agent_brief_builder" | "dashboard_pivot" | "tradeoff_decision_memo";
+export type ExerciseBlockId = "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "ai_textfield_guided" | "model_tradeoff_sliders" | "data_table_triage" | "permission_matrix" | "event_flag_review" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "agent_brief_builder" | "dashboard_pivot" | "tradeoff_decision_memo";
 
 export type ExerciseBlockFamily = "passive" | "ai_native" | "traditional_business_signal" | "traditional_closure";
 
@@ -394,11 +394,11 @@ export const exerciseBlocks: ExerciseBlock[] = [
     completion: "los 3 sliders movidos al menos una vez + modelo recomendado confirmado",
   },
   {
-    id: "data_action_table",
+    id: "data_table_triage",
     labRef: "02",
-    publicName: "Tabla con accion por fila",
+    publicName: "Tabla de triaje de datos",
     family: "ai_native",
-    levels: ["N1", "N2", "N3"],
+    levels: ["N1", "N2"],
     profiles: [
       "marketing_growth",
       "sales_revops",
@@ -407,27 +407,92 @@ export const exerciseBlocks: ExerciseBlock[] = [
       "finance_fpa",
       "legal_compliance_privacy",
     ],
-    primaryDimensions: ["datos", "juicio", "validacion"],
-    runtimeSections: ["Datos", "IA", "Decision", "Revision"],
+    primaryDimensions: ["datos", "juicio"],
+    runtimeSections: ["Datos"],
     whenToUse: [
-      "El participante debe clasificar un set de items (campos, acciones, eventos) con accion discreta por item.",
-      "Hay riesgo discriminable item por item: PII, autonomia, calidad.",
+      "El participante debe decidir que datos entran al modelo.",
+      "Hay riesgo de PII, datos sensibles o exceso de informacion.",
     ],
     avoidWhen: [
-      "Solo hay 1-2 items; usa un toggle simple.",
-      "Las decisiones requieren un slider continuo; usa model_tradeoff_sliders.",
+      "La decision no afecta el resultado.",
+      "Quieres declarar permisos; usa permission_matrix.",
     ],
     personalizationKnobs: [
-      "action_kind (data, permission, flag)",
-      "filas (items a clasificar)",
-      "ejemplos por fila",
+      "filas (campos)",
+      "ejemplos por campo",
       "consecuencias por accion",
     ],
-    emits: ["row_actions", "action_kind"],
-    uiPattern: "tabla por item con dropdown de accion segun action_kind",
-    defaultEmptyFields: ["row_actions"],
-    scoringMethod: "depends_on_action_kind",
-    completion: "cada item tiene accion elegida",
+    emits: ["field_actions", "minimization_decisions", "privacy_flags"],
+    uiPattern: "tabla por campo con dropdown usar/anonimizar/agregar/excluir",
+    defaultEmptyFields: ["field_actions"],
+    scoringMethod: "deterministic_rules_plus_judge_notes",
+    completion: "cada campo tiene accion elegida",
+  },
+  {
+    id: "permission_matrix",
+    labRef: "03",
+    publicName: "Matriz de permisos",
+    family: "ai_native",
+    levels: ["N2", "N3"],
+    profiles: [
+      "sales_revops",
+      "customer_success_support",
+      "operations_automation",
+      "finance_fpa",
+      "legal_compliance_privacy",
+    ],
+    primaryDimensions: ["datos", "ejecucion_ia", "juicio"],
+    runtimeSections: ["IA", "Decision"],
+    whenToUse: [
+      "Hay automatizacion o agente con acciones de distinto riesgo.",
+      "El participante debe decidir permitir, revisar o bloquear.",
+    ],
+    avoidWhen: [
+      "Todas las acciones tienen el mismo nivel de riesgo.",
+    ],
+    personalizationKnobs: [
+      "acciones disponibles",
+      "niveles de permiso",
+      "acciones high risk",
+    ],
+    emits: ["permission_plan", "blocked_actions", "review_gates"],
+    uiPattern: "tabla por accion con dropdown permitir/revisar/bloquear",
+    defaultEmptyFields: ["cells"],
+    scoringMethod: "deterministic_overrides_for_high_risk_actions",
+    completion: "todas las acciones tienen permiso declarado",
+  },
+  {
+    id: "event_flag_review",
+    labRef: "04A",
+    publicName: "Revision de eventos",
+    family: "ai_native",
+    levels: ["N2", "N3"],
+    profiles: [
+      "sales_revops",
+      "customer_success_support",
+      "operations_automation",
+      "finance_fpa",
+      "legal_compliance_privacy",
+    ],
+    primaryDimensions: ["validacion", "juicio"],
+    runtimeSections: ["Revision"],
+    whenToUse: [
+      "El participante supervisa una corrida o log de eventos.",
+      "Quieres medir si detecta incidentes en evidencia operacional.",
+    ],
+    avoidWhen: [
+      "Los logs son demasiado tecnicos para el perfil.",
+    ],
+    personalizationKnobs: [
+      "eventos del timeline",
+      "severidad",
+      "eventos normales como contraste",
+    ],
+    emits: ["flagged_events", "incident_type", "escalation_need"],
+    uiPattern: "tabla por evento con dropdown riesgo/normal/escalar",
+    defaultEmptyFields: ["event_actions"],
+    scoringMethod: "risk_event_recall_precision",
+    completion: "cada evento tiene clasificacion",
   },
   {
     id: "ai_output_review",
@@ -660,7 +725,9 @@ export const exerciseBlockIds: ExerciseBlockId[] = [
   "ai_textfield_free",
   "ai_textfield_guided",
   "model_tradeoff_sliders",
-  "data_action_table",
+  "data_table_triage",
+  "permission_matrix",
+  "event_flag_review",
   "ai_output_review",
   "ai_comparison",
   "workflow_builder",
@@ -676,13 +743,13 @@ export const exerciseBlockById: Record<ExerciseBlockId, ExerciseBlock> =
   >;
 
 export const exerciseBlockStats = {
-  total: 17,
+  total: 19,
   families: {
     "passive": 7,
-    "ai_native": 8,
+    "ai_native": 10,
     "traditional_business_signal": 1,
     "traditional_closure": 1
   },
-  catalogVersion: "0.6.0",
+  catalogVersion: "0.7.0",
   catalogStatus: "canonical_after_exercise_lab_review",
 } as const;

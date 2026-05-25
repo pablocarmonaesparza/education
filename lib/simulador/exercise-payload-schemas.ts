@@ -111,16 +111,33 @@ const ModelTradeoffSlidersSchema = z.strictObject({
   recommended_model_id: z.string().nullable(),
 });
 
-// Tabla con acción discreta por fila — consolida data_table_triage,
-// permission_matrix y run_log_review (v0.5.0). Discriminator interno
-// `action_kind` dice qué rúbrica aplicar.
-const DataActionTableSchema = z.strictObject({
-  block_id: z.literal("data_action_table"),
-  action_kind: z.enum(["data", "permission", "flag"]),
-  row_actions: z.array(
+// Split de v0.7.0 (revertido el consolidado de v0.5.0).
+const DataTableTriageSchema = z.strictObject({
+  block_id: z.literal("data_table_triage"),
+  field_actions: z.array(
     z.object({
-      row_id: z.string(),
-      action: z.string().nullable(),
+      field_id: z.string(),
+      action: DataTableActionSchema.nullable(),
+    }),
+  ),
+});
+
+const PermissionMatrixSchema = z.strictObject({
+  block_id: z.literal("permission_matrix"),
+  cells: z.array(
+    z.object({
+      action_id: z.string(),
+      permission: PermissionSchema.nullable(),
+    }),
+  ),
+});
+
+const EventFlagReviewSchema = z.strictObject({
+  block_id: z.literal("event_flag_review"),
+  event_actions: z.array(
+    z.object({
+      event_id: z.string(),
+      action: z.enum(["riesgo", "normal", "escalar"]).nullable(),
     }),
   ),
 });
@@ -184,7 +201,9 @@ export const ExerciseResponsePayloadSchema = z.discriminatedUnion("block_id", [
   AITextfieldFreeSchema,
   AITextfieldGuidedSchema,
   ModelTradeoffSlidersSchema,
-  DataActionTableSchema,
+  DataTableTriageSchema,
+  PermissionMatrixSchema,
+  EventFlagReviewSchema,
   AIOutputReviewSchema,
   AIComparisonSchema,
   WorkflowBuilderSchema,

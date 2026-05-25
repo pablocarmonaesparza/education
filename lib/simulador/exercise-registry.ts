@@ -95,19 +95,31 @@ export type ExerciseResponsePayload =
       recommended_model_id: string | null;
     }
   | {
-      // Tabla con acción discreta por fila. Reemplaza a data_table_triage,
-      // permission_matrix y run_log_review (consolidados en v0.5.0).
-      // El discriminator `action_kind` dice al judge qué dimensión medir:
-      //   - data: minimización + privacidad (acciones: usar/anonimizar/agregar/excluir)
-      //   - permission: autonomía + riesgo (acciones: permitir/revisar/bloquear)
-      //   - flag: validación + caza de errores (acciones: marcar_riesgo/marcar_normal)
-      // Las acciones del row son strings; la validación contra el set permitido
-      // se hace en runtime contra caseContext.allowed_actions.
-      block_id: "data_action_table";
-      action_kind: "data" | "permission" | "flag";
-      row_actions: Array<{
-        row_id: string;
-        action: string | null;
+      // Split de v0.7.0 (revertido el consolidado de v0.5.0).
+      // Cada bloque tiene su propio set de acciones y su rúbrica.
+      // El participante decide cómo entran los datos al modelo.
+      block_id: "data_table_triage";
+      field_actions: Array<{
+        field_id: string;
+        action: DataTableAction | null;
+      }>;
+    }
+  | {
+      // Matriz de permisos · qué puede hacer la automatización sola,
+      // qué necesita revisión, qué debe bloquearse.
+      block_id: "permission_matrix";
+      cells: Array<{
+        action_id: string;
+        permission: Permission | null;
+      }>;
+    }
+  | {
+      // Revisión de eventos de un log · marca cuáles requieren atención.
+      // Reemplaza al viejo run_log_review.
+      block_id: "event_flag_review";
+      event_actions: Array<{
+        event_id: string;
+        action: "riesgo" | "normal" | "escalar" | null;
       }>;
     }
   | {
@@ -258,10 +270,12 @@ export function emptyPayload(block_id: ExerciseBlockId): ExerciseResponsePayload
         cost_priority: null,
         recommended_model_id: null,
       };
-    case "data_action_table":
-      // action_kind por defecto "data" — el case productivo lo override
-      // via caseContext.action_kind. Para no-prefill, row_actions arranca vacío.
-      return { block_id, action_kind: "data", row_actions: [] };
+    case "data_table_triage":
+      return { block_id, field_actions: [] };
+    case "permission_matrix":
+      return { block_id, cells: [] };
+    case "event_flag_review":
+      return { block_id, event_actions: [] };
     case "ai_output_review":
       return { block_id, flagged_segments: [] };
     case "ai_comparison":
@@ -295,7 +309,7 @@ export interface ExerciseRendererEntry<
  * el registry (lib/) y los renderers (app/). Los componentes que necesiten
  * un renderer hacen:
  *
- *   import { DataActionTable } from "@/app/exercise-lab/blocks/DataActionTable";
+ *   import { DataTableTriage } from "@/app/exercise-lab/blocks/DataTableTriage";
  *
  * Y el caller decide si usa el renderer directo o registra entries en
  * runtime. Día 3 mantiene Partial<> hasta que los 11 estén extraídos.

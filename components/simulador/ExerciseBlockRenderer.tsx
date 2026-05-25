@@ -17,7 +17,9 @@ import { ReadingImage } from "@/app/exercise-lab/blocks/ReadingImage";
 import { ReadingKpiCards } from "@/app/exercise-lab/blocks/ReadingKpiCards";
 import { ReadingTimeline } from "@/app/exercise-lab/blocks/ReadingTimeline";
 import { ReadingAttachment } from "@/app/exercise-lab/blocks/ReadingAttachment";
-import { DataActionTable } from "@/app/exercise-lab/blocks/DataActionTable";
+import { DataTableTriage } from "@/app/exercise-lab/blocks/DataTableTriage";
+import { PermissionMatrix } from "@/app/exercise-lab/blocks/PermissionMatrix";
+import { EventFlagReview } from "@/app/exercise-lab/blocks/EventFlagReview";
 import { AIComparison } from "@/app/exercise-lab/blocks/AIComparison";
 import { WorkflowBuilder } from "@/app/exercise-lab/blocks/WorkflowBuilder";
 import { AIOutputReview } from "@/app/exercise-lab/blocks/AIOutputReview";
@@ -64,8 +66,12 @@ export function ExerciseBlockRenderer({
       return <ReadingTimelineWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "reading_attachment":
       return <ReadingAttachmentWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-    case "data_action_table":
-      return <DataActionTableWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "data_table_triage":
+      return <DataTableTriageWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "permission_matrix":
+      return <PermissionMatrixWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "event_flag_review":
+      return <EventFlagReviewWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "ai_comparison":
       return <AIComparisonWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "workflow_builder":
@@ -142,20 +148,25 @@ function ReadingAttachmentWrapper({ sessionId, mode, slideId, caseContext }: Wra
   return <ReadingAttachment payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
 }
 
-function DataActionTableWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
+function DataTableTriageWrapper({ sessionId, mode, slideId }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
-    emptyPayload("data_action_table") as Extract<ExerciseResponsePayload, { block_id: "data_action_table" }>,
+    emptyPayload("data_table_triage") as Extract<ExerciseResponsePayload, { block_id: "data_table_triage" }>,
   );
-  return (
-    <DataActionTable
-      payload={payload}
-      onChange={setPayload}
-      sessionId={sessionId}
-      mode={mode}
-      slideId={slideId}
-      caseContext={caseContext}
-    />
+  return <DataTableTriage payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function PermissionMatrixWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("permission_matrix") as Extract<ExerciseResponsePayload, { block_id: "permission_matrix" }>,
   );
+  return <PermissionMatrix payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function EventFlagReviewWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("event_flag_review") as Extract<ExerciseResponsePayload, { block_id: "event_flag_review" }>,
+  );
+  return <EventFlagReview payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
 }
 
 function AIComparisonWrapper({ sessionId, mode, slideId }: WrapperProps) {

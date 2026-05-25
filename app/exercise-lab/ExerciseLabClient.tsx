@@ -234,12 +234,28 @@ const exerciseList = [
     signals: ["juicio", "ejecución IA"],
   },
   {
-    id: "data_action_table",
-    eyebrow: "02 · Tabla con acción por fila",
-    title: "Clasificar con acción discreta.",
+    id: "data_table_triage",
+    eyebrow: "02 · Tabla de triaje",
+    title: "Decidir qué datos entran.",
     description:
-      "Una sola tabla con **3 variantes** según el caso: clasificar *datos* (usar/anonimizar/agregar/excluir), declarar *permisos* (permitir/revisar/bloquear) o marcar *eventos* (riesgo/normal). El segmented control de arriba te deja previsualizar las 3.",
-    signals: ["datos", "juicio", "validación"],
+      "El participante clasifica cada campo con una acción: **usar**, **anonimizar**, **agregar** o **excluir**. Mide minimización, privacidad y calidad de datos.",
+    signals: ["datos", "juicio"],
+  },
+  {
+    id: "permission_matrix",
+    eyebrow: "03 · Matriz de permisos",
+    title: "Permitir, revisar o bloquear.",
+    description:
+      "Para cada acción de la automatización el participante elige qué nivel de control aplicar. Mide ponderación de autonomía vs riesgo.",
+    signals: ["datos", "juicio", "ejecución IA"],
+  },
+  {
+    id: "event_flag_review",
+    eyebrow: "04A · Revisión de eventos",
+    title: "Detectar lo que requiere atención.",
+    description:
+      "El participante revisa los eventos de una corrida y los clasifica como *riesgo*, *normal* o *escalar*. Mide validación y caza de errores.",
+    signals: ["validación", "juicio"],
   },
   {
     id: "ai_output_review",
