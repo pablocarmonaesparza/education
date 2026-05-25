@@ -56,12 +56,14 @@ const GUIDED_OBJECTIVES = [
   "Reactivar cuentas con bajo uso",
   "Proponer tres ángulos de campaña",
   "Resumir feedback para Ventas",
+  "Generar un brief con riesgos claros",
 ];
 
 const GUIDED_AUDIENCES = [
   "VP de Marketing",
   "Equipo de Ventas Enterprise",
   "Cliente interno de Operaciones",
+  "Soporte de Customer Success",
 ];
 
 const GUIDED_GUARDRAILS = [
