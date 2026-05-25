@@ -1,19 +1,23 @@
 "use client";
 
 /**
- * WorkflowBuilder · renderer del bloque canónico `workflow_builder` (lab_ref 06).
+ * WorkflowBuilder · renderer del bloque canónico `workflow_builder` (lab_ref 09).
  *
- * 2 fases en la misma pantalla, sin hints internos:
- *  Fase 1 · checklist de pasos disponibles. El participante marca cuáles
- *    activar (click en check). Sin números aún.
- *  Fase 2 (aparece tras marcar ≥1) · los pasos activos se vuelven una
- *    lista ordenable con números 1, 2, 3… y drag handle.
+ * Simplificado per feedback Pablo: una sola lista ordenable de pasos,
+ * sin checkmarks, sin números, sin 2 fases.
  *
- * Sin estado "OFF/ACTIVO" repetido en cada fila. Sin numerar los pasos
- * no seleccionados.
+ *   ≡  Resumir tickets agregados
+ *   ≡  Generar tres ángulos
+ *   ≡  Marcar afirmaciones sin fuente
+ *   ≡  Revisión humana
+ *   ≡  Entrega a Ventas
  *
- * Evidencia para el judge: enabled_steps + step_order revelan qué eligió
- * y en qué orden · señal de comprensión de handoffs y checkpoints.
+ * Todos los pasos están activos implícitamente. El participante solo
+ * los reordena con drag handle. La evidencia es el orden final
+ * (`step_order`); `enabled_steps` mantiene siempre todos los ids para
+ * cumplir con el contrato del registry (sin breaking change).
+ *
+ * Sin hint interno · el shell tiene eyebrow + title + body.
  */
 
 import { useEffect, useMemo, useRef } from "react";
@@ -70,29 +74,24 @@ export function WorkflowBuilder({
     [stepsProp],
   );
 
-  // Inicializa step_order con orden default si vacío.
+  // Inicializa step_order + enabled_steps con todos los pasos.
+  // Modelo simplificado: todos los pasos siempre activos · solo reordena.
   useEffect(() => {
     if (payload.step_order.length === 0 && stepsProp.length > 0) {
       onChange({
         ...payload,
         step_order: stepsProp.map((s) => s.id),
+        enabled_steps: stepsProp.map((s) => s.id),
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Lista de pasos activos en orden actual · solo los ids que están en
-  // step_order Y enabled_steps.
-  const activeOrdered = useMemo(() => {
+  const orderedSteps = useMemo(() => {
     return payload.step_order
-      .filter((id) => payload.enabled_steps.includes(id))
       .map((id) => stepById[id])
       .filter((s): s is StepSpec => s !== undefined);
-  }, [payload.step_order, payload.enabled_steps, stepById]);
-
-  // Pasos disponibles (todos) en orden default (no se reordena hasta ser
-  // activado).
-  const allSteps = stepsProp;
+  }, [payload.step_order, stepById]);
 
   function persist(next: WorkflowBuilderPayload) {
     if (firstActionAt.current === null) firstActionAt.current = Date.now();
@@ -109,111 +108,36 @@ export function WorkflowBuilder({
     onPatch?.(next);
   }
 
-  function toggle(stepId: string) {
-    const enabled = payload.enabled_steps.includes(stepId);
-    persist({
-      ...payload,
-      enabled_steps: enabled
-        ? payload.enabled_steps.filter((id) => id !== stepId)
-        : [...payload.enabled_steps, stepId],
-    });
-  }
-
   function reorder(nextSteps: StepSpec[]) {
-    // Reordena solo dentro de los activos, manteniendo los inactivos al final.
-    const nextActiveIds = nextSteps.map((s) => s.id);
-    const inactiveIds = payload.step_order.filter(
-      (id) => !payload.enabled_steps.includes(id),
-    );
     persist({
       ...payload,
-      step_order: [...nextActiveIds, ...inactiveIds],
+      step_order: nextSteps.map((s) => s.id),
     });
   }
 
   return (
-    <div className="space-y-6">
-      {/* Fase 1 · checklist de pasos disponibles · sin números */}
-      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
-        {allSteps.map((step, idx) => {
-          const checked = payload.enabled_steps.includes(step.id);
-          const isLast = idx === allSteps.length - 1;
-          return (
-            <button
-              key={step.id}
-              type="button"
-              onClick={() => toggle(step.id)}
-              className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-[var(--surface-2)] ${
-                !isLast ? "border-b border-[var(--hairline)]" : ""
-              }`}
-            >
-              <span
-                className={`grid h-5 w-5 flex-shrink-0 place-items-center rounded-[var(--radius-sm)] border transition-colors ${
-                  checked
-                    ? "border-[var(--accent)] bg-[var(--accent)]"
-                    : "border-[var(--border)] bg-[var(--surface)]"
-                }`}
-                aria-hidden
-              >
-                {checked && (
-                  <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
-                    <path
-                      d="M2.5 6L5 8.5L9.5 3.5"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.8"
-                    />
-                  </svg>
-                )}
-              </span>
-              <span
-                className={`ts-body ${
-                  checked
-                    ? "text-[var(--text-primary)]"
-                    : "text-[var(--text-secondary)]"
-                }`}
-              >
-                {step.label}
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Fase 2 · solo aparece tras marcar ≥1 paso · lista ordenable
-          con números 1, 2, 3… y drag handle */}
-      {activeOrdered.length > 0 && (
-        <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-            Orden de ejecución · arrastra para reordenar
-          </div>
-          <SortableList
-            items={activeOrdered}
-            getItemKey={(s) => s.id}
-            onReorder={reorder}
-            renderItem={(step, index, dragHandle) => (
-              <div className="grid grid-cols-[24px_32px_1fr] items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--accent)] bg-[var(--accent-soft)] px-3 py-3">
-                {dragHandle}
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-[var(--accent)] text-white ts-callout font-semibold tabular-nums">
-                  {index + 1}
-                </span>
-                <span className="ts-body text-[var(--text-primary)]">
-                  {step.label}
-                </span>
-              </div>
-            )}
-          />
+    <SortableList
+      items={orderedSteps}
+      getItemKey={(s) => s.id}
+      onReorder={reorder}
+      renderItem={(step, _index, dragHandle) => (
+        <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
+          {dragHandle}
+          <span className="ts-body text-[var(--text-primary)]">
+            {step.label}
+          </span>
         </div>
       )}
-    </div>
+    />
   );
 }
 
 export function workflowBuilderCompletion(payload: WorkflowBuilderPayload) {
+  // Bloque completo siempre que el orden esté inicializado.
+  // El judge evalúa la calidad del orden, no si están todos activos.
   return {
-    complete: payload.enabled_steps.length > 0,
-    missing: payload.enabled_steps.length === 0 ? ["enabled_steps"] : [],
+    complete: payload.step_order.length > 0,
+    missing: payload.step_order.length === 0 ? ["step_order"] : [],
   };
 }
 

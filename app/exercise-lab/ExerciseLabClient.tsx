@@ -526,10 +526,12 @@ export function ExerciseLabClient() {
         onScroll={handleScroll}
       >
         {exerciseList.map((exercise, index) => {
+          // Continuar siempre disponible · en el último del catálogo,
+          // vuelve al inicio del lab (loop). Así nunca falta el botón.
           const continueCallback =
             index < exerciseList.length - 1
               ? () => scrollToSection(index + 1)
-              : undefined;
+              : () => scrollToSection(0);
           // Bloques que manejan su propio botón Continuar internamente
           // (subsección Revisar con composer + CTA). El shell no renderea
           // su botón default; el bloque dispara continueCallback via prop.

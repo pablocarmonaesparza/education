@@ -107,8 +107,8 @@ export function PermissionMatrix({
         action: payload.cells.find((c) => c.action_id === a.id)?.permission ?? null,
       }))}
       actions={PERMISSIONS.map((p) => ({ value: p, label: PERMISSION_LABELS[p] }))}
-      placeholder="Elegir permiso…"
       onSelect={(rowId, value) => update(rowId, value as Permission)}
+      actionStyle="permission"
     />
   );
 }

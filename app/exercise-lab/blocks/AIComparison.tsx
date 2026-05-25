@@ -94,7 +94,7 @@ export function AIComparison({
   }
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
+    <div className="flex flex-col gap-3">
       {options.map((opt) => {
         const isSelected = payload.selected_output === opt.id;
         return (
@@ -102,18 +102,21 @@ export function AIComparison({
             key={opt.id}
             type="button"
             onClick={() => update(opt.id)}
-            className={`flex min-h-[140px] flex-col gap-2 rounded-[var(--radius-lg)] border p-4 text-left transition-colors ${
+            className={`flex items-start gap-4 rounded-[var(--radius-lg)] border p-4 text-left transition-colors ${
               isSelected
                 ? "border-[var(--accent)] bg-[var(--accent-soft)]"
                 : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-2)]"
             }`}
           >
             <span
-              className={`ts-caption-1 font-semibold uppercase tracking-wider ${
-                isSelected ? "text-[var(--accent)]" : "text-[var(--text-tertiary)]"
+              className={`grid h-9 w-9 flex-shrink-0 place-items-center rounded-full ts-callout font-semibold ${
+                isSelected
+                  ? "bg-[var(--accent)] text-white"
+                  : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
               }`}
+              aria-hidden
             >
-              {opt.title}
+              {opt.id}
             </span>
             <span className="ts-body leading-[1.55] text-[var(--text-primary)]">
               {opt.body}

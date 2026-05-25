@@ -110,8 +110,8 @@ export function EventFlagReview({
         action: payload.event_actions.find((a) => a.event_id === e.id)?.action ?? null,
       }))}
       actions={ACTIONS.map((a) => ({ value: a, label: ACTION_LABELS[a] }))}
-      placeholder="Clasificar evento…"
       onSelect={(rowId, value) => update(rowId, value as EventAction)}
+      actionStyle="severity"
     />
   );
 }

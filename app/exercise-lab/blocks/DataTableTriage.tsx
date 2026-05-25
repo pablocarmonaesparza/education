@@ -110,27 +110,48 @@ export function DataTableTriage({
         action: payload.field_actions.find((r) => r.field_id === f.id)?.action ?? null,
       }))}
       actions={ACTIONS.map((a) => ({ value: a, label: ACTION_LABELS[a] }))}
-      placeholder="Elegir acción…"
       onSelect={(rowId, value) => update(rowId, value as DataTableAction)}
+      actionStyle="neutral"
     />
   );
 }
 
 /**
- * Primitive interno · tabla con dropdown por fila. Reutilizado por los 3
- * bloques de la familia data-action (data_table_triage, permission_matrix,
- * event_flag_review).
+ * Primitive interno · tabla con chips inline por fila (acciones discretas
+ * visibles, sin dropdown). Reutilizado por data_table_triage,
+ * permission_matrix y event_flag_review.
+ *
+ * actionStyle define el color de los chips seleccionados para diferenciar
+ * visualmente cada bloque:
+ *  - neutral · accent (data_table_triage)
+ *  - permission · verde/ámbar/rojo según value (permission_matrix)
+ *  - severity · matiz de gravedad (event_flag_review)
  */
+export type ActionStyle = "neutral" | "permission" | "severity";
+
+interface ActionOption {
+  value: string;
+  label: string;
+}
+
+interface ActionTableRow {
+  id: string;
+  label: string;
+  example?: string;
+  hint?: string;
+  action: string | null;
+}
+
 export function ActionTable({
   rows,
   actions,
-  placeholder,
   onSelect,
+  actionStyle = "neutral",
 }: {
-  rows: Array<{ id: string; label: string; example?: string; hint?: string; action: string | null }>;
-  actions: Array<{ value: string; label: string }>;
-  placeholder: string;
+  rows: ActionTableRow[];
+  actions: ActionOption[];
   onSelect: (rowId: string, value: string) => void;
+  actionStyle?: ActionStyle;
 }) {
   return (
     <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
@@ -139,51 +160,86 @@ export function ActionTable({
         return (
           <div
             key={row.id}
-            className={`grid gap-3 px-4 py-4 sm:grid-cols-[1fr_1fr_180px] sm:items-center ${
+            className={`flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:gap-6 ${
               !isLast ? "border-b border-[var(--hairline)]" : ""
             }`}
           >
-            <div>
-              <div className="ts-body font-medium text-[var(--text-primary)]">{row.label}</div>
+            <div className="min-w-0 flex-1">
+              <div className="ts-body font-medium text-[var(--text-primary)]">
+                {row.label}
+              </div>
               {row.example && (
-                <div className="mt-1 ts-subhead text-[var(--text-secondary)]">{row.example}</div>
+                <div className="mt-1 ts-subhead text-[var(--text-secondary)]">
+                  {row.example}
+                </div>
+              )}
+              {row.hint && (
+                <div className="mt-1 ts-footnote text-[var(--text-tertiary)]">
+                  {row.hint}
+                </div>
               )}
             </div>
-            <div className="ts-subhead text-[var(--text-secondary)]">
-              {row.hint ?? ""}
-            </div>
-            <div className="relative">
-              <select
-                value={row.action ?? ""}
-                onChange={(e) => onSelect(row.id, e.target.value)}
-                className={`min-h-11 w-full appearance-none rounded-[var(--radius-md)] border bg-[var(--surface-2)] py-2 pl-3 pr-10 ts-callout outline-none focus:border-[var(--accent)] ${
-                  row.action === null
-                    ? "border-[var(--border)] text-[var(--text-tertiary)]"
-                    : "border-[var(--border)] text-[var(--text-primary)]"
-                }`}
-                aria-label={row.label}
-              >
-                <option value="" disabled>{placeholder}</option>
-                {actions.map((a) => (
-                  <option key={a.value} value={a.value}>
+            <div
+              className="flex flex-wrap gap-1.5"
+              role="group"
+              aria-label={`Acción para ${row.label}`}
+            >
+              {actions.map((a) => {
+                const isSelected = row.action === a.value;
+                return (
+                  <button
+                    key={a.value}
+                    type="button"
+                    onClick={() => onSelect(row.id, a.value)}
+                    aria-pressed={isSelected}
+                    className={chipClass(isSelected, a.value, actionStyle)}
+                  >
                     {a.label}
-                  </option>
-                ))}
-              </select>
-              <svg
-                className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--text-tertiary)]"
-                viewBox="0 0 12 12"
-                fill="none"
-                aria-hidden
-              >
-                <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-              </svg>
+                  </button>
+                );
+              })}
             </div>
           </div>
         );
       })}
     </div>
   );
+}
+
+function chipClass(
+  isSelected: boolean,
+  value: string,
+  style: ActionStyle,
+): string {
+  const base =
+    "min-h-9 rounded-[var(--radius-md)] border px-3 py-1.5 ts-caption-1 font-medium transition-colors";
+  if (!isSelected) {
+    return `${base} border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]`;
+  }
+  if (style === "permission") {
+    if (value === "permitir") {
+      return `${base} border-[var(--band-a-text)] bg-[var(--band-a-bg)] text-[var(--band-a-text)]`;
+    }
+    if (value === "revisar") {
+      return `${base} border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]`;
+    }
+    if (value === "bloquear") {
+      return `${base} border-[var(--band-b-text)] bg-[var(--band-b-bg)] text-[var(--band-b-text)]`;
+    }
+  }
+  if (style === "severity") {
+    if (value === "riesgo") {
+      return `${base} border-[var(--band-b-text)] bg-[var(--band-b-bg)] text-[var(--band-b-text)]`;
+    }
+    if (value === "escalar") {
+      return `${base} border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]`;
+    }
+    if (value === "normal") {
+      return `${base} border-[var(--band-a-text)] bg-[var(--band-a-bg)] text-[var(--band-a-text)]`;
+    }
+  }
+  // neutral (default)
+  return `${base} border-[var(--accent)] bg-[var(--accent)] text-white`;
 }
 
 export function dataTableTriageCompletion(payload: DataTableTriagePayload) {

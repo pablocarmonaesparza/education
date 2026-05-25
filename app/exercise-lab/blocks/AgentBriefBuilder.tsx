@@ -1,19 +1,17 @@
 "use client";
 
 /**
- * AgentBriefBuilder · renderer del bloque canónico `agent_brief_builder` (lab_ref 07).
+ * AgentBriefBuilder · renderer del bloque canónico `agent_brief_builder` (lab_ref 10).
  *
- * Vertical stack · las 4 preguntas (Tarea / Acceso / Acción / Stop)
- * visibles a la vez en cards apiladas. Sin stepper · sin sub-secciones
- * que generen "más por venir" · sin panel lateral de preview.
+ * Stepper interno con 4 chips (Tarea / Acceso / Acción / Stop), una
+ * subsección visible a la vez con slide transition (mismo patrón que
+ * ai_textfield_guided). Auto-advance al elegir opción.
  *
- * Cada card es una pregunta cerrada con 4 opciones discretas
- * (GuidedOption). El participante puede llenar en cualquier orden.
- *
- * Sin hint interno · el shell ya tiene eyebrow + title + body.
+ * Sin hint interno · el shell tiene eyebrow + title + body.
  */
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -29,52 +27,39 @@ type AgentBriefPayload = Extract<
 
 type Field = "task" | "access" | "action" | "stop";
 
-const AGENT_BRIEF_GROUPS: Array<{
-  field: Field;
-  label: string;
-  options: string[];
-}> = [
-  {
-    field: "task",
-    label: "Tarea",
-    options: [
-      "Ordenar insumos y detectar lo importante",
-      "Preparar un borrador para revisión",
-      "Comparar opciones y mostrar costos y beneficios",
-      "Actualizar un registro con aprobación",
-    ],
-  },
-  {
-    field: "access",
-    label: "Acceso",
-    options: [
-      "Sólo documentos aprobados del caso",
-      "Datos agregados sin nombres ni correos",
-      "Notas internas marcadas como compartibles",
-      "Salida de otro sistema ya revisada",
-    ],
-  },
-  {
-    field: "action",
-    label: "Acción máxima",
-    options: [
-      "Sugerir, no ejecutar",
-      "Crear borrador interno",
-      "Clasificar y priorizar",
-      "Preparar cambio para aprobación",
-    ],
-  },
-  {
-    field: "stop",
-    label: "Condición de paro",
-    options: [
-      "Aparece dato sensible",
-      "Falta una fuente verificable",
-      "Hay impacto externo",
-      "La instrucción contradice una política",
-    ],
-  },
+const SUBSECTIONS: Array<{ key: Field; label: string }> = [
+  { key: "task", label: "Tarea" },
+  { key: "access", label: "Acceso" },
+  { key: "action", label: "Acción" },
+  { key: "stop", label: "Paro" },
 ];
+
+const AGENT_BRIEF_OPTIONS: Record<Field, string[]> = {
+  task: [
+    "Ordenar insumos y detectar lo importante",
+    "Preparar un borrador para revisión",
+    "Comparar opciones y mostrar costos y beneficios",
+    "Actualizar un registro con aprobación",
+  ],
+  access: [
+    "Sólo documentos aprobados del caso",
+    "Datos agregados sin nombres ni correos",
+    "Notas internas marcadas como compartibles",
+    "Salida de otro sistema ya revisada",
+  ],
+  action: [
+    "Sugerir, no ejecutar",
+    "Crear borrador interno",
+    "Clasificar y priorizar",
+    "Preparar cambio para aprobación",
+  ],
+  stop: [
+    "Aparece dato sensible",
+    "Falta una fuente verificable",
+    "Hay impacto externo",
+    "La instrucción contradice una política",
+  ],
+};
 
 interface Props extends ExerciseRendererProps<AgentBriefPayload> {
   sessionId?: string | null;
@@ -96,10 +81,23 @@ export function AgentBriefBuilder({
   const firstActionAt = useRef<number | null>(null);
   const totalChanges = useRef(0);
 
-  function updateField(field: Field, value: string) {
+  const [activeSubsection, setActiveSubsection] = useState<Field>("task");
+  const activeIndex = SUBSECTIONS.findIndex((s) => s.key === activeSubsection);
+
+  function isDone(field: Field): boolean {
+    return Boolean(payload[field]);
+  }
+
+  function isReachable(field: Field): boolean {
+    const idx = SUBSECTIONS.findIndex((s) => s.key === field);
+    if (idx === 0) return true;
+    const previous = SUBSECTIONS[idx - 1].key;
+    return isDone(previous);
+  }
+
+  function persist(next: AgentBriefPayload) {
     if (firstActionAt.current === null) firstActionAt.current = Date.now();
     totalChanges.current += 1;
-    const next: AgentBriefPayload = { ...payload, [field]: value };
     onChange(next);
     if (isProduction && sessionId) {
       patch(`block:agent_brief_builder:${slideId}`, next, {
@@ -112,26 +110,82 @@ export function AgentBriefBuilder({
     onPatch?.(next);
   }
 
+  function selectOption(value: string) {
+    persist({ ...payload, [activeSubsection]: value });
+    // Auto-advance al siguiente · si ya es el último, queda en su lugar.
+    const nextIdx = activeIndex + 1;
+    if (nextIdx < SUBSECTIONS.length) {
+      setActiveSubsection(SUBSECTIONS[nextIdx].key);
+    }
+  }
+
   return (
     <div className="space-y-6">
-      {AGENT_BRIEF_GROUPS.map((group) => (
-        <section key={group.field}>
-          <div className="ts-callout font-semibold text-[var(--text-primary)]">
-            {group.label}
-          </div>
-          <div className="mt-3 grid gap-2">
-            {group.options.map((option) => (
-              <GuidedOption
-                key={option}
-                selected={payload[group.field] === option}
-                onClick={() => updateField(group.field, option)}
-              >
-                {option}
-              </GuidedOption>
-            ))}
-          </div>
-        </section>
-      ))}
+      {/* Stepper de 4 chips */}
+      <div className="flex items-center gap-2">
+        {SUBSECTIONS.map((sub) => {
+          const isActive = activeSubsection === sub.key;
+          const done = isDone(sub.key);
+          const reachable = isReachable(sub.key);
+          return (
+            <button
+              key={sub.key}
+              type="button"
+              disabled={!reachable}
+              onClick={() => {
+                if (reachable) setActiveSubsection(sub.key);
+              }}
+              className={`flex items-center gap-2 rounded-[var(--radius-md)] px-3 py-1.5 ts-caption-1 font-medium transition-colors ${
+                isActive
+                  ? "bg-[var(--accent)] text-white"
+                  : done
+                    ? "border border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)] hover:bg-[var(--accent-soft)]/80"
+                    : reachable
+                      ? "bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]"
+                      : "bg-[var(--surface-2)] text-[var(--text-tertiary)] cursor-not-allowed"
+              }`}
+            >
+              {done && !isActive && (
+                <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" aria-hidden>
+                  <path
+                    d="M2.5 6L5 8.5L9.5 3.5"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.8"
+                  />
+                </svg>
+              )}
+              {sub.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Subsección activa · slide horizontal · altura estable */}
+      <div className="relative min-h-[260px] overflow-hidden">
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={activeSubsection}
+            initial={{ opacity: 0, x: 24 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -24 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className="grid gap-2">
+              {AGENT_BRIEF_OPTIONS[activeSubsection].map((option) => (
+                <GuidedOption
+                  key={option}
+                  selected={payload[activeSubsection] === option}
+                  onClick={() => selectOption(option)}
+                >
+                  {option}
+                </GuidedOption>
+              ))}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
