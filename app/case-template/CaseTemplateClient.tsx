@@ -41,7 +41,7 @@ export function CaseTemplateClient() {
     <main className="simulador-root min-h-screen surface-canvas text-[var(--text-primary)]">
       <div className="grid min-h-screen grid-cols-[240px_1fr]">
         {/* ============ SIDEBAR — 6 secciones ============ */}
-        <aside className="border-r border-[var(--hairline)] bg-[var(--surface)] px-5 py-8">
+        <aside className="bg-[var(--surface)] px-5 py-8">
           <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
             Sección
           </div>
@@ -81,8 +81,8 @@ export function CaseTemplateClient() {
 
         {/* ============ CENTRO ============ */}
         <div className="flex flex-col">
-          {/* TOP — progress 5 segmentos */}
-          <div className="border-b border-[var(--hairline)] px-10 pt-8 pb-6">
+          {/* TOP — progress 5 segmentos (sin label ni numerador, sin border) */}
+          <div className="px-10 pt-8 pb-6">
             <div
               role="progressbar"
               aria-label={`Diapositiva ${ACTIVE_SLIDE_INDEX + 1} de ${SLIDES_PER_SECTION}`}
@@ -107,12 +107,6 @@ export function CaseTemplateClient() {
                   />
                 );
               })}
-            </div>
-            <div className="mt-3 flex items-center justify-between ts-caption-1 text-[var(--text-tertiary)]">
-              <span>{SECTIONS[ACTIVE_SECTION_INDEX]}</span>
-              <span className="tabular-nums">
-                {ACTIVE_SLIDE_INDEX + 1} / {SLIDES_PER_SECTION}
-              </span>
             </div>
           </div>
 
