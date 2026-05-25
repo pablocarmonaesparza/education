@@ -34,8 +34,9 @@ const VoiceNoteSchema = z.strictObject({
   duration_ms: z.number(),
 });
 
-const DataTableActionSchema = z.enum(["usar", "anonimizar", "agregar", "excluir"]);
-const PermissionSchema = z.enum(["permitir", "revisar", "bloquear"]);
+// DataTableActionSchema y PermissionSchema fueron consolidados en
+// CategorizeRowsSchema (v0.10.0) · el set válido se valida en runtime
+// contra caseContext.actions, no como enum cerrado del schema base.
 const ReviewFlagSchema = z.enum([
   "claim_no_verificado",
   "tono_agresivo",
@@ -52,6 +53,7 @@ const ReviewFlagSchema = z.enum([
 const CaseCoverSchema = z.strictObject({
   block_id: z.literal("case_cover"),
   started_at: z.string().nullable(),
+  timer_enabled_at_start: z.boolean().nullable(),
 });
 
 const ReadingPassiveSchema = z.strictObject({

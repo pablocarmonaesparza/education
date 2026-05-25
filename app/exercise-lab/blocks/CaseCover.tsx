@@ -16,7 +16,7 @@
  * Sin hint interno · el shell tiene eyebrow + title + body.
  */
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -40,11 +40,12 @@ interface CoverMeta {
   profile?: string;
   level?: string;
   estimatedMinutes?: number;
-  /** True · caso cronometrado (debe acompañarse de timerSeconds).
-   *  False · caso sin límite de tiempo. Default: false. */
-  timerEnabled?: boolean;
-  /** Solo aplica si timerEnabled === true. */
+  /** Si está set y > 0, el caso OFRECE cronómetro · el usuario decide
+   *  on/off con el toggle de la portada. Si no está set, sin opción
+   *  de timer (chip "Sin límite"). */
   timerSeconds?: number;
+  /** Default del toggle al cargar la portada. Default: false. */
+  timerDefaultOn?: boolean;
   /** Herramientas que el participante va a usar en el caso. */
   tools?: ToolSpec[];
 }
@@ -59,7 +60,8 @@ const DEFAULT_META: CoverMeta = {
   profile: "Marketing",
   level: "N1 · Fundamentos",
   estimatedMinutes: 12,
-  timerEnabled: false,
+  timerSeconds: 600, // 10 min · ofrecemos timer opcional en el lab
+  timerDefaultOn: false,
   tools: [
     { kind: "ai", label: "Inteligencia artificial" },
     { kind: "data", label: "Tablas" },
@@ -88,14 +90,34 @@ export function CaseCover({
 
   const meta = metaProp ?? (caseContext?.meta as CoverMeta | undefined) ?? DEFAULT_META;
 
+  const timerAvailable =
+    typeof meta.timerSeconds === "number" && meta.timerSeconds > 0;
+  const [timerOn, setTimerOn] = useState<boolean>(
+    timerAvailable ? Boolean(meta.timerDefaultOn) : false,
+  );
+
+  const tools = meta.tools ?? [];
+  const alreadyStarted = payload.started_at !== null;
+  const timerMinutes = timerAvailable
+    ? Math.round((meta.timerSeconds as number) / 60)
+    : null;
+  const timerMmSs = timerAvailable
+    ? formatMmSs(meta.timerSeconds as number)
+    : null;
+
   function start() {
     const now = new Date().toISOString();
-    const next: CaseCoverPayload = { ...payload, started_at: now };
+    const next: CaseCoverPayload = {
+      ...payload,
+      started_at: now,
+      timer_enabled_at_start: timerAvailable ? timerOn : null,
+    };
     onChange(next);
     if (isProduction && sessionId) {
       patch(`block:case_cover:${slideId}`, next, {
         time_to_start_ms: Date.now() - mountedAt.current,
-        timer_seconds: meta.timerSeconds ?? null,
+        timer_seconds: timerOn ? (meta.timerSeconds ?? null) : null,
+        timer_enabled: timerOn,
       });
     }
     onPatch?.(next);
@@ -104,19 +126,9 @@ export function CaseCover({
     }
   }
 
-  const alreadyStarted = payload.started_at !== null;
-  const hasTimer =
-    meta.timerEnabled === true &&
-    typeof meta.timerSeconds === "number" &&
-    meta.timerSeconds > 0;
-  const timerMinutes = hasTimer
-    ? Math.round((meta.timerSeconds as number) / 60)
-    : null;
-  const tools = meta.tools ?? [];
-
   return (
     <div className="space-y-6">
-      {/* Metadata · perfil, dificultad, tiempo estimado, estado del timer */}
+      {/* Metadata · perfil, dificultad, tiempo estimado */}
       <div className="flex flex-wrap items-center gap-2">
         {meta.profile && (
           <span className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 ts-caption-1 font-medium text-[var(--text-secondary)]">
@@ -133,19 +145,62 @@ export function CaseCover({
             ~{meta.estimatedMinutes} min
           </span>
         )}
-        {/* Estado del timer · visible siempre · accent si on, neutro si off */}
-        {hasTimer ? (
-          <span className="flex items-center gap-1.5 rounded-full border border-[var(--accent)] bg-[var(--accent-soft)] px-3 py-1 ts-caption-1 font-semibold text-[var(--accent)]">
-            <ClockGlyph />
-            Cronometrado · {timerMinutes} min
-          </span>
-        ) : (
-          <span className="flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 ts-caption-1 font-medium text-[var(--text-tertiary)]">
-            <ClockGlyph />
-            Sin límite de tiempo
-          </span>
-        )}
       </div>
+
+      {/* Timer card · solo si el caso ofrece cronómetro opcional */}
+      {timerAvailable && (
+        <div
+          className={`flex items-center justify-between gap-4 rounded-[var(--radius-lg)] border p-4 transition-colors ${
+            timerOn
+              ? "border-[var(--accent)] bg-[var(--accent-soft)]"
+              : "border-[var(--border)] bg-[var(--surface)]"
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className={`grid h-12 w-12 flex-shrink-0 place-items-center rounded-full ${
+                timerOn ? "bg-[var(--accent)] text-white" : "bg-[var(--surface-2)] text-[var(--text-tertiary)]"
+              }`}
+              aria-hidden
+            >
+              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="13" r="8" stroke="currentColor" strokeWidth="1.6" />
+                <path d="M12 9V13L14.5 14.5" stroke="currentColor" strokeLinecap="round" strokeWidth="1.6" />
+                <path d="M9 3H15M12 3V5" stroke="currentColor" strokeLinecap="round" strokeWidth="1.6" />
+              </svg>
+            </div>
+            <div>
+              <div className="ts-callout font-semibold text-[var(--text-primary)] tabular-nums">
+                {timerMmSs}
+              </div>
+              <div className="mt-0.5 ts-footnote text-[var(--text-tertiary)]">
+                {timerOn
+                  ? `Cronómetro activado · ${timerMinutes} min al iniciar`
+                  : `Practica con ${timerMinutes} min de límite (opcional)`}
+              </div>
+            </div>
+          </div>
+          {/* Toggle switch · estilo iOS minimal */}
+          <button
+            type="button"
+            role="switch"
+            aria-checked={timerOn}
+            aria-label="Activar cronómetro"
+            onClick={() => setTimerOn(!timerOn)}
+            disabled={alreadyStarted}
+            className={`relative h-7 w-12 flex-shrink-0 rounded-full transition-colors ${
+              timerOn ? "bg-[var(--accent)]" : "bg-[var(--surface-3)]"
+            } ${alreadyStarted ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            <span
+              className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow-sm transition-transform ${
+                timerOn ? "translate-x-[22px]" : "translate-x-0.5"
+              }`}
+              aria-hidden
+            />
+          </button>
+        </div>
+      )}
 
       {/* Herramientas que se van a usar */}
       {tools.length > 0 && (
@@ -181,9 +236,9 @@ export function CaseCover({
         >
           {alreadyStarted ? "Caso iniciado" : `${ctaLabel} →`}
         </button>
-        {hasTimer && !alreadyStarted && (
+        {timerOn && !alreadyStarted && (
           <span className="ts-footnote text-[var(--text-tertiary)]">
-            El tiempo arranca al iniciar.
+            El cronómetro arranca al iniciar.
           </span>
         )}
       </div>
@@ -191,18 +246,10 @@ export function CaseCover({
   );
 }
 
-function ClockGlyph() {
-  return (
-    <svg className="h-3 w-3" viewBox="0 0 16 16" fill="none" aria-hidden>
-      <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="M8 4.5V8L10.5 9.5"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  );
+function formatMmSs(seconds: number): string {
+  const mm = Math.floor(seconds / 60);
+  const ss = seconds % 60;
+  return `${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
 }
 
 function ToolIcon({ kind }: { kind: ToolKind }) {
