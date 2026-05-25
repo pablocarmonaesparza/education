@@ -84,41 +84,48 @@ export function CaseTemplateClient() {
 
         {/* ============ CENTRO ============ */}
         <div className="flex flex-col">
-          {/* TOP — progress 5 segmentos (sin label ni numerador, sin border) */}
-          <div className="px-10 pt-8 pb-6">
-            <div
-              role="progressbar"
-              aria-label={`Diapositiva ${ACTIVE_SLIDE_INDEX + 1} de ${SLIDES_PER_SECTION}`}
-              aria-valuemin={1}
-              aria-valuemax={SLIDES_PER_SECTION}
-              aria-valuenow={ACTIVE_SLIDE_INDEX + 1}
-              className="flex w-full gap-2"
-            >
-              {Array.from({ length: SLIDES_PER_SECTION }).map((_, idx) => {
-                const isActive = idx === ACTIVE_SLIDE_INDEX;
-                const isPast = idx < ACTIVE_SLIDE_INDEX;
-                return (
-                  <div
-                    key={idx}
-                    className={`h-[3px] flex-1 rounded-full transition-colors ${
-                      isActive
-                        ? "bg-[var(--accent)] animate-pulse"
-                        : isPast
-                          ? "bg-[var(--text-secondary)]"
-                          : "bg-[var(--surface-3)]"
-                    }`}
-                  />
-                );
-              })}
+          {/* TOP — progress 5 segmentos (sin label ni numerador, sin border).
+              Mismo ancho que el contenido central: 80% del espacio disponible
+              (capped a 1200px en monitores muy anchos), centrado.
+              Sin padding lateral del wrapper para que 80% sea exacto. */}
+          <div className="pt-8 pb-6">
+            <div className="mx-auto w-[80%] max-w-[1200px]">
+              <div
+                role="progressbar"
+                aria-label={`Diapositiva ${ACTIVE_SLIDE_INDEX + 1} de ${SLIDES_PER_SECTION}`}
+                aria-valuemin={1}
+                aria-valuemax={SLIDES_PER_SECTION}
+                aria-valuenow={ACTIVE_SLIDE_INDEX + 1}
+                className="flex w-full gap-2"
+              >
+                {Array.from({ length: SLIDES_PER_SECTION }).map((_, idx) => {
+                  const isActive = idx === ACTIVE_SLIDE_INDEX;
+                  const isPast = idx < ACTIVE_SLIDE_INDEX;
+                  return (
+                    <div
+                      key={idx}
+                      className={`h-[3px] flex-1 rounded-full transition-colors ${
+                        isActive
+                          ? "bg-[var(--accent)] animate-pulse"
+                          : isPast
+                            ? "bg-[var(--text-secondary)]"
+                            : "bg-[var(--surface-3)]"
+                      }`}
+                    />
+                  );
+                })}
+              </div>
             </div>
           </div>
 
           {/* CONTENIDO — patrón Typeform: bloque cohesivo (título + body + botón)
               centrado vertical y horizontalmente en el viewport. El botón vive
               justo debajo del body, no pegado al bottom.
-              Ancho del bloque reducido (560px) para más aire horizontal alrededor. */}
-          <section className="flex flex-1 items-center justify-center px-16 py-14">
-            <div className="w-full max-w-[560px]">
+              Ancho del bloque: 80% del espacio disponible (capped 1200px),
+              alineado exactamente con la progress bar arriba. Sin padding
+              lateral del section para que 80% sea real. */}
+          <section className="flex flex-1 items-center justify-center py-14">
+            <div className="w-[80%] max-w-[1200px]">
               {/* Título — 3-4 palabras máximo (1 renglón) */}
               <h1 className="display display-tight ts-display truncate text-[var(--text-primary)]">
                 Lorem ipsum dolor sit
