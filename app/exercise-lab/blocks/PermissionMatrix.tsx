@@ -5,6 +5,10 @@
  *
  * Patrón: matriz acciones × {permitir, revisar, bloquear}. Cumple
  * ExerciseRendererProps<P>, no-prefill, autosave via useStepPatch.
+ *
+ * Visual restaurado desde el monolito ExerciseLabClient.tsx (Codex): tarjetas
+ * por acción con grid sm:[1fr_330px] + 3 ChoiceButton por permiso. Sin cambios
+ * estéticos respecto al original (Codex hand-crafted).
  */
 
 import { useEffect, useRef } from "react";
@@ -15,19 +19,23 @@ import type {
 } from "@/lib/simulador/exercise-registry";
 import { emptyPayload } from "@/lib/simulador/exercise-registry";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
+import { Label, ChoiceButton } from "../_shared/ui-primitives";
 
 type PermissionMatrixPayload = Extract<
   ExerciseResponsePayload,
   { block_id: "permission_matrix" }
 >;
 
-const DEFAULT_ACTIONS = [
+// Las filas del monolito eran strings ("Leer CRM", "Crear borrador"...) que
+// se usaban como key directo. Mapeamos al contrato del registry (action_id
+// estable) preservando el label original.
+const DEFAULT_ACTIONS: ReadonlyArray<{ id: string; label: string }> = [
   { id: "read_crm", label: "Leer CRM" },
   { id: "create_draft", label: "Crear borrador" },
   { id: "send_client", label: "Enviar a cliente" },
   { id: "update_pipeline", label: "Actualizar pipeline" },
   { id: "use_raw", label: "Usar conversaciones crudas" },
-] as const;
+];
 
 const PERMISSION_LABELS: Record<Permission, string> = {
   permitir: "Permitir",
@@ -85,6 +93,7 @@ export function PermissionMatrix({
         time_to_first_action_ms:
           (firstActionAt.current ?? Date.now()) - mountedAt.current,
         total_changes: totalChanges.current,
+        final_payload_bytes: JSON.stringify(next).length,
       });
     }
     onPatch?.(next);
@@ -92,40 +101,28 @@ export function PermissionMatrix({
 
   return (
     <div className="simulador-root">
-      <div className="ts-callout font-semibold text-[var(--text-primary)]">
-        Define permisos por acción
-      </div>
-      <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
-        El agente puede leer, escribir, enviar. Decide qué permitir, qué revisar y qué bloquear.
-      </p>
-
+      <Label>Define permisos por acción</Label>
       <div className="mt-4 grid gap-3">
         {actions.map((action) => {
           const cell = payload.cells.find((c) => c.action_id === action.id);
           return (
             <div
               key={action.id}
-              className="grid gap-3 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface-2)] p-4 sm:grid-cols-[1fr_330px] sm:items-center"
+              className="grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4 sm:grid-cols-[1fr_330px] sm:items-center"
             >
-              <div className="ts-body font-medium text-[var(--text-primary)]">{action.label}</div>
+              <div className="text-[15px] font-medium text-[var(--text-primary)]">
+                {action.label}
+              </div>
               <div className="grid grid-cols-3 gap-2">
-                {PERMISSIONS.map((p) => {
-                  const selected = cell?.permission === p;
-                  return (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => set(action.id, p)}
-                      className={`min-h-11 rounded-[var(--radius-md)] border ts-callout font-medium transition-colors ${
-                        selected
-                          ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
-                          : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)]"
-                      }`}
-                    >
-                      {PERMISSION_LABELS[p]}
-                    </button>
-                  );
-                })}
+                {PERMISSIONS.map((option) => (
+                  <ChoiceButton
+                    key={option}
+                    selected={cell?.permission === option}
+                    onClick={() => set(action.id, option)}
+                  >
+                    {PERMISSION_LABELS[option]}
+                  </ChoiceButton>
+                ))}
               </div>
             </div>
           );
