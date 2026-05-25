@@ -2,7 +2,15 @@
 
 /**
  * AIComparison — renderer del bloque canónico `ai_comparison` (lab_ref 05).
- * Patrón: A/B side-by-side + razón del tradeoff.
+ *
+ * Patrón: A vs B side-by-side con CompareCard rico (min-h-56 + accent-soft
+ * cuando seleccionado). El monolito original solo mostraba A/B; el registry
+ * añade fusionar/rechazar + tradeoff_reason (contrato del judge), que viven
+ * abajo en un row secundario para no romper la lectura de las cards.
+ *
+ * Visual restaurado desde el monolito ExerciseLabClient.tsx (Codex):
+ * `<CompareCard>` con grid md:grid-cols-2. Sin cambios estéticos respecto al
+ * original.
  */
 
 import { useRef } from "react";
@@ -12,6 +20,7 @@ import type {
 } from "@/lib/simulador/exercise-registry";
 import { emptyPayload } from "@/lib/simulador/exercise-registry";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
+import { Label, CompareCard, ChoiceButton } from "../_shared/ui-primitives";
 
 type AIComparisonPayload = Extract<
   ExerciseResponsePayload,
@@ -29,11 +38,9 @@ const DEFAULT_OPTIONS = {
   },
 };
 
-const SELECTIONS = [
-  { value: "A" as const, label: "Usar A" },
-  { value: "B" as const, label: "Usar B" },
-  { value: "fusionar" as const, label: "Fusionar" },
-  { value: "rechazar" as const, label: "Rechazar ambas" },
+const SECONDARY_CHOICES: Array<{ value: "fusionar" | "rechazar"; label: string }> = [
+  { value: "fusionar", label: "Fusionar A + B" },
+  { value: "rechazar", label: "Rechazar ambas" },
 ];
 
 interface Props extends ExerciseRendererProps<AIComparisonPayload> {
@@ -55,15 +62,19 @@ export function AIComparison({
     mode: mode === "field_test" ? "field_test" : "authenticated",
   });
   const mountedAt = useRef(Date.now());
+  const firstActionAt = useRef<number | null>(null);
   const totalChanges = useRef(0);
 
   function update(next: AIComparisonPayload) {
+    if (firstActionAt.current === null) firstActionAt.current = Date.now();
     totalChanges.current += 1;
     onChange(next);
     if (isProduction && sessionId) {
       patch(`block:ai_comparison:${slideId}`, next, {
-        time_to_first_action_ms: Date.now() - mountedAt.current,
+        time_to_first_action_ms:
+          (firstActionAt.current ?? Date.now()) - mountedAt.current,
         total_changes: totalChanges.current,
+        final_payload_bytes: JSON.stringify(next).length,
       });
     }
     onPatch?.(next);
@@ -71,58 +82,48 @@ export function AIComparison({
 
   return (
     <div className="simulador-root">
-      <div className="ts-callout font-semibold text-[var(--text-primary)]">
-        Elige cuál respuesta llevarías al manager
+      <Label>Elige cuál respuesta llevarías al manager</Label>
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
+        <CompareCard
+          id="A"
+          selected={payload.selected_output === "A"}
+          onClick={() => update({ ...payload, selected_output: "A" })}
+          title={options.A.title}
+          body={options.A.body}
+        />
+        <CompareCard
+          id="B"
+          selected={payload.selected_output === "B"}
+          onClick={() => update({ ...payload, selected_output: "B" })}
+          title={options.B.title}
+          body={options.B.body}
+        />
       </div>
 
-      <div className="mt-4 grid gap-3 md:grid-cols-2">
-        {(["A", "B"] as const).map((id) => {
-          const o = options[id];
-          const selected = payload.selected_output === id;
-          return (
-            <button
-              key={id}
-              type="button"
-              onClick={() => update({ ...payload, selected_output: id })}
-              className={`rounded-[var(--radius-lg)] border p-5 text-left transition-colors ${
-                selected
-                  ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-                  : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-2)]"
-              }`}
-            >
-              <div className="ts-headline font-semibold text-[var(--text-primary)]">{o.title}</div>
-              <p className="mt-2 ts-subhead text-[var(--text-secondary)] leading-[1.5]">{o.body}</p>
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="mt-3 flex flex-wrap gap-2">
-        {SELECTIONS.slice(2).map((s) => (
-          <button
-            key={s.value}
-            type="button"
-            onClick={() => update({ ...payload, selected_output: s.value })}
-            className={`rounded-[var(--radius-md)] border px-4 py-2 ts-callout font-medium transition-colors ${
-              payload.selected_output === s.value
-                ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
-                : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--surface-2)]"
-            }`}
+      <div className="mt-4 grid grid-cols-2 gap-2 sm:max-w-md">
+        {SECONDARY_CHOICES.map((choice) => (
+          <ChoiceButton
+            key={choice.value}
+            selected={payload.selected_output === choice.value}
+            onClick={() => update({ ...payload, selected_output: choice.value })}
           >
-            {s.label}
-          </button>
+            {choice.label}
+          </ChoiceButton>
         ))}
       </div>
 
-      <label className="mt-4 block">
-        <span className="ts-footnote font-medium text-[var(--text-secondary)]">
-          ¿Por qué? Explica el tradeoff
+      <label className="mt-5 block">
+        <span className="text-[13px] font-medium text-[var(--text-secondary)]">
+          ¿Por qué? Una línea sobre el tradeoff.
         </span>
         <textarea
           value={payload.tradeoff_reason}
-          onChange={(e) => update({ ...payload, tradeoff_reason: e.target.value })}
-          placeholder="Una línea es suficiente: qué ganas y qué pierdes."
-          className="mt-2 min-h-[80px] w-full resize-none rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-3 ts-subhead text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+          onChange={(event) =>
+            update({ ...payload, tradeoff_reason: event.target.value })
+          }
+          rows={3}
+          placeholder="Qué ganas y qué pierdes con esa elección."
+          className="mt-2 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-[14px] leading-6 text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
         />
       </label>
     </div>
