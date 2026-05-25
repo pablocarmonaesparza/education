@@ -66,9 +66,11 @@ export type ExerciseResponsePayload =
       selected_limits: string[];
       selected_model: string | null;
       generated_prompt: string;
-      autonomy_priority: number; // 0-100, slider pasos de 10
-      security_priority: number;
-      cost_priority: number;
+      // null = participante no ha movido el slider todavía.
+      // 50 sería respuesta implícita y viola no-prefill (Codex review P1 #3).
+      autonomy_priority: number | null;
+      security_priority: number | null;
+      cost_priority: number | null;
     }
   | {
       block_id: "data_table_triage";
@@ -222,9 +224,9 @@ export function emptyPayload(block_id: ExerciseBlockId): ExerciseResponsePayload
         selected_limits: [],
         selected_model: null,
         generated_prompt: "",
-        autonomy_priority: 50,
-        security_priority: 50,
-        cost_priority: 50,
+        autonomy_priority: null,
+        security_priority: null,
+        cost_priority: null,
       };
     case "data_table_triage":
       return { block_id, field_actions: [] };

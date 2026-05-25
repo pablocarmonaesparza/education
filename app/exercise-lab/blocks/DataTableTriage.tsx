@@ -216,6 +216,9 @@ export function DataTableTriage({
  * Bloque está completo si TODAS las filas tienen acción asignada.
  */
 export function dataTableTriageCompletion(payload: DataTableTriagePayload) {
+  if (payload.field_actions.length === 0) {
+    return { complete: false, missing: ["field_actions"] };
+  }
   const missing = payload.field_actions
     .filter((row) => row.action === null)
     .map((row) => row.field_id);

@@ -64,9 +64,10 @@ const AITextfieldGuidedSchema = z.strictObject({
   selected_limits: z.array(z.string()),
   selected_model: z.string().nullable(),
   generated_prompt: z.string(),
-  autonomy_priority: z.number().min(0).max(100),
-  security_priority: z.number().min(0).max(100),
-  cost_priority: z.number().min(0).max(100),
+  // null si el participante no movió el slider — no-prefill enforcement.
+  autonomy_priority: z.number().min(0).max(100).nullable(),
+  security_priority: z.number().min(0).max(100).nullable(),
+  cost_priority: z.number().min(0).max(100).nullable(),
 });
 
 const DataTableTriageSchema = z.strictObject({

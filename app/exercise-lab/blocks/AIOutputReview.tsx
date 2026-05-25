@@ -125,6 +125,9 @@ export function AIOutputReview({
 }
 
 export function aiOutputReviewCompletion(payload: AIOutputReviewPayload) {
+  if (payload.flagged_segments.length === 0) {
+    return { complete: false, missing: ["flagged_segments"] };
+  }
   const missing = payload.flagged_segments
     .filter((s) => s.flag === null)
     .map((s) => s.segment_id);

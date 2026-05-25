@@ -3,9 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { RuntimeNav } from "@/components/simulador/RuntimeNav";
-import { DataTableTriage } from "@/app/exercise-lab/blocks/DataTableTriage";
-import { emptyPayload } from "@/lib/simulador/exercise-registry";
-import type { ExerciseResponsePayload } from "@/lib/simulador/exercise-registry";
+import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
+import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
 
 type DataAction = "usar" | "anonimizar" | "agregar" | "excluir";
 type Permission = "permitir" | "revisar" | "bloquear";
@@ -396,14 +395,11 @@ export function ExerciseLabClient() {
   const [guidedCost, setGuidedCost] = useState(50);
   const [guidedResetKey, setGuidedResetKey] = useState(0);
   const [dataRows, setDataRows] = useState(initialDataRows);
-  // Día 3 — DataTableTriage extraído usa contrato canónico del registry.
-  // El payload arranca vacío (no-prefill), el componente lo llena via effect.
-  const [dataTablePayload, setDataTablePayload] = useState<
-    Extract<ExerciseResponsePayload, { block_id: "data_table_triage" }>
-  >(() => emptyPayload("data_table_triage") as Extract<
-    ExerciseResponsePayload,
-    { block_id: "data_table_triage" }
-  >);
+  // Codex review P1: el state legacy de bloques inline ya no se usa — los 11
+  // bloques ahora se renderizan via <ExerciseBlockRenderer> que gestiona
+  // su propio payload tipado con emptyPayload() (no-prefill enforcement).
+  // El state restante (dataRows, permissions, flags, etc.) se conserva por
+  // si alguna referencia interna del monolito lo lee — se limpia gradualmente.
   const [permissions, setPermissions] = useState<Record<string, Permission>>({
     "Leer CRM": "revisar",
     "Crear borrador": "permitir",
@@ -466,75 +462,12 @@ export function ExerciseLabClient() {
       >
         {exerciseList.map((exercise, index) => (
           <ExerciseSection key={exercise.id} exercise={exercise} index={index}>
-            {exercise.id === "ai_textfield_free" && (
-              <FreePromptExercise
-                prompt={freePrompt}
-                setPrompt={setFreePrompt}
-                model={freeModel}
-                setModel={setFreeModel}
-                voiceNotes={freeVoiceNotes}
-                setVoiceNotes={setFreeVoiceNotes}
-              />
-            )}
-            {exercise.id === "ai_textfield_guided" && (
-              <GuidedPromptExercise
-                key={guidedResetKey}
-                prompt={guidedPrompt}
-                setPrompt={setGuidedPrompt}
-                model={guidedModel}
-                setModel={setGuidedModel}
-                voiceNotes={guidedVoiceNotes}
-                setVoiceNotes={setGuidedVoiceNotes}
-                objective={guidedObjective}
-                setObjective={setGuidedObjective}
-                audience={guidedAudience}
-                setAudience={setGuidedAudience}
-                guardrails={guidedGuardrailsSelected}
-                setGuardrails={setGuidedGuardrailsSelected}
-                autonomy={guidedAutonomy}
-                setAutonomy={setGuidedAutonomy}
-                security={guidedSecurity}
-                setSecurity={setGuidedSecurity}
-                cost={guidedCost}
-                setCost={setGuidedCost}
-              />
-            )}
-            {exercise.id === "data_table_triage" && (
-              <DataTableTriage
-                payload={dataTablePayload}
-                onChange={setDataTablePayload}
-                mode="lab_demo"
-              />
-            )}
-            {exercise.id === "permission_matrix" && (
-              <PermissionMatrix permissions={permissions} setPermissions={setPermissions} />
-            )}
-            {exercise.id === "ai_output_review" && (
-              <OutputReview flags={flags} setFlags={setFlags} />
-            )}
-            {exercise.id === "ai_comparison" && (
-              <ComparisonExercise comparison={comparison} setComparison={setComparison} />
-            )}
-            {exercise.id === "workflow_builder" && (
-              <WorkflowBuilder enabledSteps={enabledSteps} setEnabledSteps={setEnabledSteps} />
-            )}
-            {exercise.id === "agent_brief_builder" && (
-              <AgentBrief value={agentBrief} setValue={setAgentBrief} />
-            )}
-            {exercise.id === "run_log_review" && (
-              <LogReview flags={logFlags} setFlags={setLogFlags} />
-            )}
-            {exercise.id === "dashboard_pivot" && (
-              <PivotExercise filter={pivotFilter} setFilter={setPivotFilter} />
-            )}
-            {exercise.id === "tradeoff_decision_memo" && (
-              <DecisionMemo
-                decision={decision}
-                setDecision={setDecision}
-                memo={memo}
-                setMemo={setMemo}
-              />
-            )}
+            <ExerciseBlockRenderer
+              blockId={exercise.id as ExerciseBlockId}
+              sessionId={null}
+              mode="lab_demo"
+              slideId={exercise.id}
+            />
           </ExerciseSection>
         ))}
       </main>

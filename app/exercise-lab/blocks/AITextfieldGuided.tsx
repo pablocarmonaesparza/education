@@ -11,7 +11,7 @@
  * a useState local. State per-bloque, no propagado al padre.
  */
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -76,34 +76,41 @@ export function AITextfieldGuided({
   const mountedAt = useRef(Date.now());
   const totalChanges = useRef(0);
 
-  // El prompt generado se sincroniza automáticamente cuando los inputs cambian.
-  useEffect(() => {
+  // Codex review P1 #2: generated_prompt incluye TODAS las decisiones del
+  // bloque (no solo objetivo/audiencia/límites). Se recomputa en cada
+  // update — sin useEffect que pueda dejar stale el autosave.
+  function buildGeneratedPrompt(p: AITextfieldGuidedPayload): string {
     const parts: string[] = [];
-    if (payload.selected_objective) parts.push(`Objetivo: ${payload.selected_objective}.`);
-    if (payload.selected_audience) parts.push(`Audiencia: ${payload.selected_audience}.`);
-    if (payload.selected_limits.length > 0)
-      parts.push(`Límites: ${payload.selected_limits.join("; ")}.`);
-    const generated = parts.join(" ");
-    if (generated !== payload.generated_prompt) {
-      onChange({ ...payload, generated_prompt: generated });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    payload.selected_objective,
-    payload.selected_audience,
-    payload.selected_limits.join("|"),
-  ]);
+    if (p.selected_objective) parts.push(`Objetivo: ${p.selected_objective}.`);
+    if (p.selected_audience) parts.push(`Audiencia: ${p.selected_audience}.`);
+    if (p.selected_limits.length > 0)
+      parts.push(`Límites: ${p.selected_limits.join("; ")}.`);
+    if (p.selected_model) parts.push(`Modelo: ${p.selected_model}.`);
+    const priorities: string[] = [];
+    if (p.autonomy_priority !== null)
+      priorities.push(`autonomía=${p.autonomy_priority}`);
+    if (p.security_priority !== null)
+      priorities.push(`seguridad=${p.security_priority}`);
+    if (p.cost_priority !== null) priorities.push(`costo=${p.cost_priority}`);
+    if (priorities.length > 0)
+      parts.push(`Prioridades: ${priorities.join(", ")}.`);
+    return parts.join(" ");
+  }
 
   function update(next: AITextfieldGuidedPayload) {
     totalChanges.current += 1;
-    onChange(next);
+    const nextWithPrompt: AITextfieldGuidedPayload = {
+      ...next,
+      generated_prompt: buildGeneratedPrompt(next),
+    };
+    onChange(nextWithPrompt);
     if (isProduction && sessionId) {
-      patch(`block:ai_textfield_guided:${slideId}`, next, {
+      patch(`block:ai_textfield_guided:${slideId}`, nextWithPrompt, {
         time_to_first_action_ms: Date.now() - mountedAt.current,
         total_changes: totalChanges.current,
       });
     }
-    onPatch?.(next);
+    onPatch?.(nextWithPrompt);
   }
 
   function toggleLimit(limit: string) {
@@ -262,23 +269,34 @@ function PrioritySlider({
   onChange,
 }: {
   label: string;
-  value: number;
+  value: number | null;
   onChange: (v: number) => void;
 }) {
+  // null = no movido todavía. El slider visualmente apunta a 50 pero el
+  // payload guarda null hasta que el usuario lo toque (no-prefill).
+  const displayValue = value ?? 50;
   return (
-    <label className="grid grid-cols-[100px_1fr_40px] items-center gap-3">
+    <label className="grid grid-cols-[100px_1fr_50px] items-center gap-3">
       <span className="ts-subhead text-[var(--text-secondary)]">{label}</span>
       <input
         type="range"
         min={0}
         max={100}
         step={10}
-        value={value}
+        value={displayValue}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="h-1.5 cursor-pointer appearance-none rounded-full bg-[var(--surface-2)]"
+        className={`h-1.5 cursor-pointer appearance-none rounded-full ${
+          value === null ? "bg-[var(--surface-3)]" : "bg-[var(--surface-2)]"
+        }`}
       />
-      <span className="text-right ts-caption-1 font-medium tabular-nums text-[var(--text-primary)]">
-        {value}
+      <span
+        className={`text-right ts-caption-1 font-medium tabular-nums ${
+          value === null
+            ? "text-[var(--text-tertiary)]"
+            : "text-[var(--text-primary)]"
+        }`}
+      >
+        {value === null ? "—" : value}
       </span>
     </label>
   );
@@ -292,6 +310,10 @@ export function aiTextfieldGuidedCompletion(
   if (!payload.selected_audience) missing.push("selected_audience");
   if (payload.selected_limits.length === 0) missing.push("selected_limits");
   if (!payload.selected_model) missing.push("selected_model");
+  // Sliders: nullable significa "no movido"; cuenta como missing.
+  if (payload.autonomy_priority === null) missing.push("autonomy_priority");
+  if (payload.security_priority === null) missing.push("security_priority");
+  if (payload.cost_priority === null) missing.push("cost_priority");
   return { complete: missing.length === 0, missing };
 }
 

@@ -122,6 +122,9 @@ export function RunLogReview({
 }
 
 export function runLogReviewCompletion(payload: RunLogReviewPayload) {
+  if (payload.flagged_logs.length === 0) {
+    return { complete: false, missing: ["flagged_logs"] };
+  }
   const missing = payload.flagged_logs
     .filter((l) => l.flag === null)
     .map((l) => l.log_id);

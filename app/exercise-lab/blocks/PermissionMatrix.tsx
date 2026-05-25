@@ -136,6 +136,9 @@ export function PermissionMatrix({
 }
 
 export function permissionMatrixCompletion(payload: PermissionMatrixPayload) {
+  if (payload.cells.length === 0) {
+    return { complete: false, missing: ["cells"] };
+  }
   const missing = payload.cells
     .filter((c) => c.permission === null)
     .map((c) => c.action_id);
