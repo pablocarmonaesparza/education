@@ -140,8 +140,20 @@ export function CaseCover({
         </div>
       )}
 
-      {/* Stack vertical · temporizador encima, CTA debajo */}
-      <div className="space-y-3 pt-2">
+      {/* CTA principal + toggle inline al lado del temporizador */}
+      <div className="flex flex-wrap items-center gap-4 pt-2">
+        <button
+          type="button"
+          onClick={start}
+          disabled={alreadyStarted}
+          className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
+            alreadyStarted
+              ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
+              : "accent-bg hover:opacity-90"
+          }`}
+        >
+          {alreadyStarted ? "Caso iniciado" : `${ctaLabel} →`}
+        </button>
         {timerAvailable && (
           <button
             type="button"
@@ -171,20 +183,6 @@ export function CaseCover({
             </span>
           </button>
         )}
-        <div>
-          <button
-            type="button"
-            onClick={start}
-            disabled={alreadyStarted}
-            className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
-              alreadyStarted
-                ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-                : "accent-bg hover:opacity-90"
-            }`}
-          >
-            {alreadyStarted ? "Caso iniciado" : `${ctaLabel} →`}
-          </button>
-        </div>
       </div>
     </div>
   );
