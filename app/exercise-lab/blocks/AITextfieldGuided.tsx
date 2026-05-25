@@ -43,12 +43,13 @@ type AITextfieldGuidedPayload = Extract<
   { block_id: "ai_textfield_guided" }
 >;
 
-type Subsection = "objective" | "audience" | "limits";
+type Subsection = "objective" | "audience" | "limits" | "review";
 
 const SUBSECTIONS: Array<{ key: Subsection; label: string }> = [
   { key: "objective", label: "Objetivo" },
   { key: "audience", label: "Audiencia" },
   { key: "limits", label: "Límites" },
+  { key: "review", label: "Revisar" },
 ];
 
 const GUIDED_OBJECTIVES = [
@@ -77,6 +78,11 @@ interface Props extends ExerciseRendererProps<AITextfieldGuidedPayload> {
   sessionId?: string | null;
 }
 
+// Helper · indica si una subsección es "Done" (puede mostrarse con check).
+// Para la 4ta sub Revisar, "Done" se considera al haber clickeado Continuar
+// (= disparado onShellContinue), pero no la marcamos persistente aquí
+// porque eso pertenece al estado del shell, no del bloque.
+
 export function AITextfieldGuided({
   payload,
   onChange,
@@ -84,6 +90,7 @@ export function AITextfieldGuided({
   slideId = "ai_textfield_guided",
   mode = "lab_demo",
   sessionId = null,
+  onShellContinue,
   objectives = GUIDED_OBJECTIVES,
   audiences = GUIDED_AUDIENCES,
   guardrails = GUIDED_GUARDRAILS,
@@ -118,6 +125,7 @@ export function AITextfieldGuided({
     if (sub === "objective") return true;
     if (sub === "audience") return objectiveDone;
     if (sub === "limits") return objectiveDone && audienceDone;
+    if (sub === "review") return allAnswered;
     return false;
   }
 
@@ -125,6 +133,8 @@ export function AITextfieldGuided({
     if (sub === "objective") return objectiveDone;
     if (sub === "audience") return audienceDone;
     if (sub === "limits") return limitsDone;
+    // Review nunca se marca como "done" desde el bloque · la navegación
+    // al siguiente slide la maneja el shell vía onShellContinue.
     return false;
   }
 
@@ -246,40 +256,69 @@ export function AITextfieldGuided({
               />
             )}
             {activeSubsection === "limits" && (
-              <div className="grid gap-2">
-                {guardrails.map((guardrail) => (
-                  <GuidedOption
-                    key={guardrail}
-                    selected={payload.selected_limits.includes(guardrail)}
-                    onClick={() => toggleGuardrail(guardrail)}
+              <div className="space-y-4">
+                <div className="grid gap-2">
+                  {guardrails.map((guardrail) => (
+                    <GuidedOption
+                      key={guardrail}
+                      selected={payload.selected_limits.includes(guardrail)}
+                      onClick={() => toggleGuardrail(guardrail)}
+                    >
+                      {guardrail}
+                    </GuidedOption>
+                  ))}
+                </div>
+                {/* CTA para pasar a Revisar · solo cuando ≥1 límite marcado */}
+                {limitsDone && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveSubsection("review")}
+                    className="rounded-[var(--radius-md)] border border-[var(--accent)] bg-[var(--accent-soft)] px-4 py-2 ts-callout font-medium text-[var(--accent)] transition-opacity hover:opacity-90"
                   >
-                    {guardrail}
-                  </GuidedOption>
-                ))}
+                    Revisar →
+                  </button>
+                )}
+              </div>
+            )}
+            {activeSubsection === "review" && allAnswered && (
+              <div className="space-y-5">
+                <AIPromptComposer
+                  value={payload.generated_prompt}
+                  onChange={(value) =>
+                    persist({ ...payload, generated_prompt: value })
+                  }
+                  selectedModel={displayedModelId}
+                  onSelectModel={(value) =>
+                    persist({ ...payload, selected_model: value })
+                  }
+                  voiceNotes={voiceNotes}
+                  onVoiceNote={(note) => setVoiceNotes([...voiceNotes, note])}
+                  readOnly
+                />
+                {/* Botón Continuar interno · solo aparece en Revisar. Dispara
+                    el callback del shell para navegar al siguiente slide. */}
+                {onShellContinue && (
+                  <div className="flex items-center gap-4">
+                    <button
+                      type="button"
+                      onClick={onShellContinue}
+                      className="rounded-[var(--radius-md)] accent-bg px-7 py-3 ts-callout font-medium text-white shadow-none transition-opacity hover:opacity-90"
+                    >
+                      Continuar →
+                    </button>
+                    <span className="ts-footnote text-[var(--text-tertiary)]">
+                      o pulsa{" "}
+                      <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
+                        Enter ↵
+                      </kbd>
+                    </span>
+                  </div>
+                )}
               </div>
             )}
           </motion.div>
         </AnimatePresence>
       </div>
-
-      {/* Composer read-only · aparece cuando las 3 subsecciones están listas */}
-      {allAnswered && (
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <AIPromptComposer
-            value={payload.generated_prompt}
-            onChange={(value) => persist({ ...payload, generated_prompt: value })}
-            selectedModel={displayedModelId}
-            onSelectModel={(value) => persist({ ...payload, selected_model: value })}
-            voiceNotes={voiceNotes}
-            onVoiceNote={(note) => setVoiceNotes([...voiceNotes, note])}
-            readOnly
-          />
-        </motion.div>
-      )}
     </div>
   );
 }

@@ -42,6 +42,9 @@ interface ExerciseBlockRendererProps {
   mode?: ExerciseSessionMode;
   slideId: string;
   caseContext?: Record<string, unknown>;
+  /** Callback opcional para que el bloque dispare la navegación al
+   *  siguiente slide cuando maneja su propio botón Continuar. */
+  onShellContinue?: () => void;
 }
 
 export function ExerciseBlockRenderer({
@@ -50,6 +53,7 @@ export function ExerciseBlockRenderer({
   mode = "authenticated",
   slideId,
   caseContext,
+  onShellContinue,
 }: ExerciseBlockRendererProps) {
   switch (blockId) {
     case "reading_passive":
@@ -87,7 +91,7 @@ export function ExerciseBlockRenderer({
     case "ai_textfield_free":
       return <AITextfieldFreeWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "ai_textfield_guided":
-      return <AITextfieldGuidedWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return <AITextfieldGuidedWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
     case "model_tradeoff_sliders":
       return <ModelTradeoffSlidersWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
   }
@@ -97,7 +101,9 @@ export function ExerciseBlockRenderer({
 // con emptyPayload() para cumplir no-prefill. Si necesitan content
 // específico del caso (filas, opciones), lo leen de caseContext.
 
-type WrapperProps = Omit<ExerciseBlockRendererProps, "blockId">;
+type WrapperProps = Omit<ExerciseBlockRendererProps, "blockId" | "onShellContinue"> & {
+  onShellContinue?: () => void;
+};
 
 function ReadingPassiveWrapper({ sessionId, mode, slideId }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
@@ -218,11 +224,20 @@ function AITextfieldFreeWrapper({ sessionId, mode, slideId }: WrapperProps) {
   return <AITextfieldFree payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
 }
 
-function AITextfieldGuidedWrapper({ sessionId, mode, slideId }: WrapperProps) {
+function AITextfieldGuidedWrapper({ sessionId, mode, slideId, onShellContinue }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
     emptyPayload("ai_textfield_guided") as Extract<ExerciseResponsePayload, { block_id: "ai_textfield_guided" }>,
   );
-  return <AITextfieldGuided payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+  return (
+    <AITextfieldGuided
+      payload={payload}
+      onChange={setPayload}
+      sessionId={sessionId}
+      mode={mode}
+      slideId={slideId}
+      onShellContinue={onShellContinue}
+    />
+  );
 }
 
 function ModelTradeoffSlidersWrapper({ sessionId, mode, slideId }: WrapperProps) {

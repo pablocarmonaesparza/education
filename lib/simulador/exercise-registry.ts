@@ -222,6 +222,11 @@ export interface ExerciseRendererProps<
   /** Si está disponible, el renderer puede consultar el contexto del caso
    *  para personalizar (ej. usar el nombre del cliente en el prompt). */
   caseContext?: Record<string, unknown>;
+  /** Callback opcional que el bloque puede invocar para disparar la
+   *  navegación al siguiente slide. Solo se usa cuando el bloque maneja
+   *  su propio botón Continuar (ej. ai_textfield_guided tiene subsección
+   *  "Revisar" con su Continuar interno). */
+  onShellContinue?: () => void;
 }
 
 /** Función render — un componente React que cumple el contrato. */

@@ -525,25 +525,32 @@ export function ExerciseLabClient() {
         className="simulador-root surface-canvas h-[calc(100vh-3.5rem)] overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth"
         onScroll={handleScroll}
       >
-        {exerciseList.map((exercise, index) => (
-          <ExerciseSection
-            key={exercise.id}
-            exercise={exercise}
-            index={index}
-            onContinue={
-              index < exerciseList.length - 1
-                ? () => scrollToSection(index + 1)
-                : undefined
-            }
-          >
-            <ExerciseBlockRenderer
-              blockId={exercise.id as ExerciseBlockId}
-              sessionId={null}
-              mode="lab_demo"
-              slideId={exercise.id}
-            />
-          </ExerciseSection>
-        ))}
+        {exerciseList.map((exercise, index) => {
+          const continueCallback =
+            index < exerciseList.length - 1
+              ? () => scrollToSection(index + 1)
+              : undefined;
+          // Bloques que manejan su propio botón Continuar internamente
+          // (subsección Revisar con composer + CTA). El shell no renderea
+          // su botón default; el bloque dispara continueCallback via prop.
+          const ownsContinue = exercise.id === "ai_textfield_guided";
+          return (
+            <ExerciseSection
+              key={exercise.id}
+              exercise={exercise}
+              index={index}
+              onContinue={ownsContinue ? undefined : continueCallback}
+            >
+              <ExerciseBlockRenderer
+                blockId={exercise.id as ExerciseBlockId}
+                sessionId={null}
+                mode="lab_demo"
+                slideId={exercise.id}
+                onShellContinue={continueCallback}
+              />
+            </ExerciseSection>
+          );
+        })}
       </main>
     </>
   );
