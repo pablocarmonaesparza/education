@@ -166,11 +166,17 @@ export function AITextfieldGuided({
   }
 
   function toggleGuardrail(value: string) {
+    const wasEmpty = payload.selected_limits.length === 0;
     const next = payload.selected_limits.includes(value)
       ? payload.selected_limits.filter((g) => g !== value)
       : [...payload.selected_limits, value];
     persist({ ...payload, selected_limits: next });
-    // NO auto-advance · multi-select · el composer aparece debajo
+    // Auto-advance a Revisar al marcar el PRIMER límite (de 0 a 1).
+    // Si el usuario vuelve a Límites después para toggle más, no
+    // re-dispara el advance.
+    if (wasEmpty && next.length > 0) {
+      setActiveSubsection("review");
+    }
   }
 
   // Auto-genera el prompt cuando las 3 subsecciones están listas.
@@ -256,28 +262,16 @@ export function AITextfieldGuided({
               />
             )}
             {activeSubsection === "limits" && (
-              <div className="space-y-4">
-                <div className="grid gap-2">
-                  {guardrails.map((guardrail) => (
-                    <GuidedOption
-                      key={guardrail}
-                      selected={payload.selected_limits.includes(guardrail)}
-                      onClick={() => toggleGuardrail(guardrail)}
-                    >
-                      {guardrail}
-                    </GuidedOption>
-                  ))}
-                </div>
-                {/* CTA para pasar a Revisar · solo cuando ≥1 límite marcado */}
-                {limitsDone && (
-                  <button
-                    type="button"
-                    onClick={() => setActiveSubsection("review")}
-                    className="rounded-[var(--radius-md)] border border-[var(--accent)] bg-[var(--accent-soft)] px-4 py-2 ts-callout font-medium text-[var(--accent)] transition-opacity hover:opacity-90"
+              <div className="grid gap-2">
+                {guardrails.map((guardrail) => (
+                  <GuidedOption
+                    key={guardrail}
+                    selected={payload.selected_limits.includes(guardrail)}
+                    onClick={() => toggleGuardrail(guardrail)}
                   >
-                    Revisar →
-                  </button>
-                )}
+                    {guardrail}
+                  </GuidedOption>
+                ))}
               </div>
             )}
             {activeSubsection === "review" && allAnswered && (

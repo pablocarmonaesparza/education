@@ -305,11 +305,13 @@ export function AIPromptComposer({
             {!readOnly && <MicButton recState={recState} disabled={false} onClick={onMicClick} />}
             <button
               type="button"
-              disabled={!canSend}
-              onClick={() => setSent(true)}
-              aria-label="Enviar al modelo"
+              disabled={!canSend || readOnly}
+              onClick={() => {
+                if (!readOnly) setSent(true);
+              }}
+              aria-label={readOnly ? "Enviar deshabilitado en preview" : "Enviar al modelo"}
               className={`grid h-9 w-9 place-items-center rounded-full transition-all ${
-                canSend
+                canSend && !readOnly
                   ? "accent-bg text-white hover:opacity-90 active:scale-95"
                   : "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
               }`}
