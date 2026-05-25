@@ -17,12 +17,20 @@ export function CaseLabClient() {
               <p className="text-xs text-[var(--text-secondary)]">Case lab</p>
             </div>
           </div>
-          <Link
-            href="/exercise-lab"
-            className="rounded-[12px] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
-          >
-            Ver ejercicios
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/case-lab/template"
+              className="rounded-[12px] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+            >
+              Template vacío
+            </Link>
+            <Link
+              href="/exercise-lab"
+              className="rounded-[12px] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+            >
+              Ver ejercicios
+            </Link>
+          </div>
         </header>
 
         <section className="py-10 md:py-14">
