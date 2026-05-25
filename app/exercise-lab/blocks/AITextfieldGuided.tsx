@@ -239,8 +239,13 @@ export function AITextfieldGuided({
         })}
       </div>
 
-      {/* Subsección activa · slide horizontal con AnimatePresence */}
-      <div className="relative overflow-hidden">
+      {/* Subsección activa · slide horizontal con AnimatePresence.
+          min-h fija (~ altura de Revisar) para que el shell mantenga
+          el título + body en posición estable cuando se cambia de
+          subsección. Si Revisar crece (prompt más largo), el contenedor
+          crece también; las subsecciones cortas dejan espacio abajo
+          (oculto por overflow-hidden). */}
+      <div className="relative min-h-[360px] overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             key={activeSubsection}
