@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { RuntimeNav } from "@/components/simulador/RuntimeNav";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
 import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
+import { SlideBody } from "./_shared/SlideBody";
 
 type DataAction = "usar" | "anonimizar" | "agregar" | "excluir";
 type Permission = "permitir" | "revisar" | "bloquear";
@@ -157,7 +158,7 @@ const exerciseList = [
     eyebrow: "00 · Diapositiva informativa",
     title: "Lectura, sin interacción.",
     description:
-      "Para introducir el caso, contextualizar una sección o cerrar con un mensaje. Solo título, body y botón Continuar — el participante lee y avanza.",
+      "Solo **título**, **body** y botón **Continuar**. Útil para *introducir* el caso, *contextualizar* una sección o *cerrar* con un mensaje antes del siguiente ejercicio.",
     signals: [],
   },
   {
@@ -403,11 +404,11 @@ export function ExerciseLabClient() {
   const [guidedCost, setGuidedCost] = useState(50);
   const [guidedResetKey, setGuidedResetKey] = useState(0);
   const [dataRows, setDataRows] = useState(initialDataRows);
-  // Codex review P1: el state legacy de bloques inline ya no se usa — los 11
+  // Codex review P1: el state legacy de bloques inline ya no se usa · los 11
   // bloques ahora se renderizan via <ExerciseBlockRenderer> que gestiona
   // su propio payload tipado con emptyPayload() (no-prefill enforcement).
   // El state restante (dataRows, permissions, flags, etc.) se conserva por
-  // si alguna referencia interna del monolito lo lee — se limpia gradualmente.
+  // si alguna referencia interna del monolito lo lee · se limpia gradualmente.
   const [permissions, setPermissions] = useState<Record<string, Permission>>({
     "Leer CRM": "revisar",
     "Crear borrador": "permitir",
@@ -501,7 +502,7 @@ function ScrollLines({
 }) {
   const total = exerciseList.length;
 
-  // Progress bar alineada con el contenido — mismo w-[65%] max-w-[1200px]
+  // Progress bar alineada con el contenido · mismo w-[65%] max-w-[1200px]
   // que cada ExerciseSection, centrada por left-1/2 + -translate-x-1/2.
   return (
     <div className="simulador-root fixed left-1/2 top-[68px] z-30 w-[65%] max-w-[1200px] -translate-x-1/2 px-0">
@@ -544,7 +545,7 @@ function ExerciseSection({
   // Layout unificado estilo Typeform (mismo principio que /case-template):
   //  - Bloque cohesivo (eyebrow → title → body → ejercicio → botón) centrado
   //    vertical + horizontal en el viewport.
-  //  - Ancho 65% con cap 1200px (mismo cálculo que la progress bar arriba —
+  //  - Ancho 65% con cap 1200px (mismo cálculo que la progress bar arriba -
   //    quedan perfectamente alineadas).
   //  - Botón "Continuar →" + hint "Enter ↵" debajo del ejercicio.
   //    Navega al siguiente bloque vía scrollToSection (smooth scroll-snap).
@@ -560,9 +561,7 @@ function ExerciseSection({
         <h2 className="display display-tight mt-3 ts-display text-[var(--text-primary)]">
           {exercise.title}
         </h2>
-        <p className="mt-4 ts-body-lg leading-[1.55] text-[var(--text-secondary)]">
-          {exercise.description}
-        </p>
+        <SlideBody className="mt-4">{exercise.description}</SlideBody>
 
         <div className="mt-8">{children}</div>
 

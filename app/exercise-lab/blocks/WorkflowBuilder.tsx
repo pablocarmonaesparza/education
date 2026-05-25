@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * WorkflowBuilder — renderer del bloque canónico `workflow_builder` (lab_ref 06).
+ * WorkflowBuilder · renderer del bloque canónico `workflow_builder` (lab_ref 06).
  *
  * Patrón: lista ordenada de pasos con toggle on/off. Cada paso es un botón
  * `grid grid-cols-[36px_1fr]` con un badge numerado + label del paso. Cuando

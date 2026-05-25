@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * TradeoffDecisionMemo — renderer del bloque canónico `tradeoff_decision_memo`
+ * TradeoffDecisionMemo · renderer del bloque canónico `tradeoff_decision_memo`
  * (lab_ref 11).
  *
  * Patrón rico (monolito Codex): grid md:[320px_1fr]

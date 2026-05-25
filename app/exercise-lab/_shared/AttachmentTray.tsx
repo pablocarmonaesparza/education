@@ -1,5 +1,5 @@
 /**
- * AttachmentTray — chips de adjuntos con botón de quitar.
+ * AttachmentTray · chips de adjuntos con botón de quitar.
  *
  * Extraído del monolito `ExerciseLabClient.tsx` (Codex). Sin cambios.
  */

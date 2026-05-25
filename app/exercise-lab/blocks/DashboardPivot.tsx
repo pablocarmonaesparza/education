@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * DashboardPivot — renderer del bloque canónico `dashboard_pivot` (lab_ref 09).
+ * DashboardPivot · renderer del bloque canónico `dashboard_pivot` (lab_ref 09).
  *
  * Patrón rico (monolito Codex): 3 filtros como ChoiceButton (Tiempo/Riesgo/
  * Impacto) + tabla pivote 3 columnas donde la columna activa se resalta con

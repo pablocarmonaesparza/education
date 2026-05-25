@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * RunLogReview — renderer del bloque canónico `run_log_review` (lab_ref 08).
+ * RunLogReview · renderer del bloque canónico `run_log_review` (lab_ref 08).
  *
  * Patrón rico (monolito Codex): lista de logs como tarjetas pelones, sin
  * chips. El usuario hace toggle por log; cuando está marcado, accent va a
@@ -9,7 +9,7 @@
  * que requiere atención.
  *
  * El monolito solo tenía un boolean per log; el contrato del registry exige
- * un `flag: string | null` — lo derivamos del log.expected cuando el usuario
+ * un `flag: string | null` · lo derivamos del log.expected cuando el usuario
  * marca (preserva la semántica del judge sin meter UI de chips extras).
  *
  * Visual restaurado desde el monolito ExerciseLabClient.tsx (Codex). Sin
@@ -33,7 +33,7 @@ type RunLogReviewPayload = Extract<
 interface RunLog {
   id: string;
   text: string;
-  /** Severidad visual (monolito original): "ok" o "high" — no se persiste
+  /** Severidad visual (monolito original): "ok" o "high" · no se persiste
    *  en el payload, solo informa qué flag se asigna si se marca. */
   severity: "ok" | "high";
   /** Flag canónico para el judge cuando se marca este log. */

@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * DataTableTriage — renderer del bloque canónico `data_table_triage`.
+ * DataTableTriage · renderer del bloque canónico `data_table_triage`.
  *
  * Lab ref: 02. Source: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml
  *
@@ -16,7 +16,7 @@
  * UI pattern (del YAML): "tabla por campo con dropdown de accion y
  * chevron con padding suficiente."
  *
- * Días 3+4 del plan combinados — extracción + integración E2E.
+ * Días 3+4 del plan combinados · extracción + integración E2E.
  */
 
 import { useEffect, useMemo, useRef } from "react";
@@ -73,7 +73,7 @@ export function DataTableTriage({
   sessionId = null,
   fields = labDataTableFields,
 }: DataTableTriageProps) {
-  // Inicializa field_actions[] vacío si está fresco — no-prefill.
+  // Inicializa field_actions[] vacío si está fresco · no-prefill.
   // Si payload.field_actions ya tiene entries (regresar a la pregunta),
   // las respeta sin sobreescribir.
   useEffect(() => {
@@ -87,7 +87,7 @@ export function DataTableTriage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Autosave con useStepPatch — solo si sessionId + mode productivo.
+  // Autosave con useStepPatch · solo si sessionId + mode productivo.
   const isProduction = mode === "authenticated" || mode === "field_test";
   const patchMode = mode === "field_test" ? "field_test" : "authenticated";
   const { patch } = useStepPatch(
@@ -222,7 +222,7 @@ export function DataTableTriage({
 }
 
 /**
- * Completion predicate canónico — exportado para que el registry lo use.
+ * Completion predicate canónico · exportado para que el registry lo use.
  * Bloque está completo si TODAS las filas tienen acción asignada.
  */
 export function dataTableTriageCompletion(payload: DataTableTriagePayload) {

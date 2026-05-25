@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * AITextfieldFree — renderer del bloque canónico `ai_textfield_free` (lab_ref 01A).
+ * AITextfieldFree · renderer del bloque canónico `ai_textfield_free` (lab_ref 01A).
  *
  * Patrón: textfield libre estilo ChatGPT (composer rico) con:
  *   - dropdown de modelos agrupados (interno / convencional / chinos) con
@@ -57,7 +57,7 @@ export function AITextfieldFree({
 
   // El composer puede arrancar con model="" del emptyPayload; le pasamos el
   // default cuando esté vacío para que el dropdown muestre algo coherente
-  // (sin tocar el payload — sólo presentación).
+  // (sin tocar el payload · sólo presentación).
   const displayedModel = payload.model || defaultModelId;
 
   function update(next: AITextfieldFreePayload) {

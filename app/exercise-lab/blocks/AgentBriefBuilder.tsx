@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * AgentBriefBuilder — renderer del bloque canónico `agent_brief_builder` (lab_ref 07).
+ * AgentBriefBuilder · renderer del bloque canónico `agent_brief_builder` (lab_ref 07).
  *
  * Patrón rico (monolito Codex): layout 2 columnas
  *   ┌──────────────────────────────┬──────────────────────┐

@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * PermissionMatrix — renderer del bloque canónico `permission_matrix` (lab_ref 03).
+ * PermissionMatrix · renderer del bloque canónico `permission_matrix` (lab_ref 03).
  *
  * Patrón: matriz acciones × {permitir, revisar, bloquear}. Cumple
  * ExerciseRendererProps<P>, no-prefill, autosave via useStepPatch.

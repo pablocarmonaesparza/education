@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * AITextfieldGuided — renderer del bloque canónico `ai_textfield_guided`
+ * AITextfieldGuided · renderer del bloque canónico `ai_textfield_guided`
  * (lab_ref 01B).
  *
  * Patrón rico (monolito Codex): el más complejo de los 11.
@@ -107,13 +107,13 @@ export function AITextfieldGuided({
   const totalChanges = useRef(0);
 
   const [activeInput, setActiveInput] = useState(0);
-  // Voice notes son state local del composer read-only — el contrato del
+  // Voice notes son state local del composer read-only · el contrato del
   // registry no las persiste para guided. Mantenemos array vacío.
   const [voiceNotes, setVoiceNotes] = useState<string[]>([]);
 
   // modelTouched se deriva de "al menos un slider tiene valor". El stub
   // anterior usaba useState, pero derivarlo del payload garantiza coherencia
-  // con no-prefill — y permite que la UI muestre — para el slider hasta que
+  // con no-prefill · y permite que la UI muestre · para el slider hasta que
   // el usuario lo toque.
   const modelTouched =
     payload.autonomy_priority !== null ||
@@ -147,7 +147,7 @@ export function AITextfieldGuided({
 
   // Sincroniza selected_model con la recomendación cuando el usuario haya
   // tocado los sliders. No-prefill: solo setea cuando modelTouched (ej.
-  // primer movimiento de slider) — antes queda null.
+  // primer movimiento de slider) · antes queda null.
   useEffect(() => {
     if (!modelTouched) return;
     if (payload.selected_model !== recommendedModelId) {

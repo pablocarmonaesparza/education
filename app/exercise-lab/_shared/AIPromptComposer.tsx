@@ -1,5 +1,5 @@
 /**
- * AIPromptComposer — el textfield rico estilo ChatGPT con:
+ * AIPromptComposer · el textfield rico estilo ChatGPT con:
  *   - dropdown de modelos agrupados (con badges, $ y meter de inteligencia)
  *   - botón de adjuntos (archivos/imágenes)
  *   - botón de mic con grabación en vivo + transcripción
@@ -11,13 +11,13 @@
  * Extraído del monolito `ExerciseLabClient.tsx` (Codex). Sin cambios visuales.
  *
  * Props:
- *   value / onChange       — texto del prompt
- *   selectedModel / onSelectModel — id de modelo (controlled)
- *   attachments / onAttachmentsChange — array de adjuntos (controlled)
- *   voiceNotes / onVoiceNote — array de notas de voz; on cada nueva
+ *   value / onChange       · texto del prompt
+ *   selectedModel / onSelectModel · id de modelo (controlled)
+ *   attachments / onAttachmentsChange · array de adjuntos (controlled)
+ *   voiceNotes / onVoiceNote · array de notas de voz; on cada nueva
  *                              transcripción se llama el callback
- *   layout                  — "default" (mt-3) o "matched" (h-full estirado)
- *   readOnly                — desactiva edición y oculta inputs interactivos
+ *   layout                  · "default" (mt-3) o "matched" (h-full estirado)
+ *   readOnly                · desactiva edición y oculta inputs interactivos
  */
 
 "use client";
@@ -78,7 +78,7 @@ export function AIPromptComposer({
   // Auto-grow estilo ChatGPT/Claude:
   //   - Base: 1 línea (~46px con padding pt-4 pb-1) cuando vacío
   //   - Crece línea por línea según contenido
-  //   - Cap superior: 320px — más texto = scroll interno
+  //   - Cap superior: 320px · más texto = scroll interno
   //   - Al borrar texto vuelve a 1 línea automáticamente
   // Override solo cuando layout="matched" (que estira flex-1).
   const TEXT_MIN_HEIGHT = 46; // 1 línea + padding vertical

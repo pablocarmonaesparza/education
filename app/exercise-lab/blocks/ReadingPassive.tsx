@@ -1,14 +1,14 @@
 "use client";
 
 /**
- * ReadingPassive — renderer del bloque canónico `reading_passive` (lab_ref 00).
+ * ReadingPassive · renderer del bloque canónico `reading_passive` (lab_ref 00).
  *
  * Bloque PASIVO: el participante lee título + body y avanza con el botón
  * Continuar. Sin interacción interna ni evidencia para el judge.
  *
  * El shell del runtime (ExerciseSection en /exercise-lab, CaseTemplateClient
  * en /case-template, RuntimeExperience en /case productivo) ya muestra
- * título + body + botón Continuar — este renderer no aporta UI propia,
+ * título + body + botón Continuar · este renderer no aporta UI propia,
  * solo existe en el catálogo para que el case-factory sepa que este step
  * es pasivo (no requiere respuesta).
  *
@@ -51,7 +51,7 @@ export function ReadingPassive({
   const mountedAt = useRef(Date.now());
   const acknowledgedAt = useRef<number | null>(null);
 
-  // Auto-acknowledge tras mount — el slide está completo desde que se ve.
+  // Auto-acknowledge tras mount · el slide está completo desde que se ve.
   // El shell decide cuándo se persiste (típicamente al avanzar via Continuar).
   useEffect(() => {
     if (!payload.acknowledged) {
@@ -70,12 +70,12 @@ export function ReadingPassive({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Renderer sin UI — el shell del runtime ya tiene título + body + botón.
+  // Renderer sin UI · el shell del runtime ya tiene título + body + botón.
   return null;
 }
 
 /**
- * Completion predicate canónico — el bloque pasivo está completo siempre
+ * Completion predicate canónico · el bloque pasivo está completo siempre
  * (no requiere respuesta del participante; solo lectura).
  */
 export function readingPassiveCompletion(_payload: ReadingPassivePayload) {

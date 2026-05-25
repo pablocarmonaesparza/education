@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * AIComparison — renderer del bloque canónico `ai_comparison` (lab_ref 05).
+ * AIComparison · renderer del bloque canónico `ai_comparison` (lab_ref 05).
  *
  * Patrón: A vs B side-by-side con CompareCard rico (min-h-56 + accent-soft
  * cuando seleccionado). El monolito original solo mostraba A/B; el registry

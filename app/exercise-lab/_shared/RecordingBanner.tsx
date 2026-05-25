@@ -1,5 +1,5 @@
 /**
- * RecordingBanner — banner contextual mientras se graba/procesa una nota de voz.
+ * RecordingBanner · banner contextual mientras se graba/procesa una nota de voz.
  *
  * Extraído del monolito `ExerciseLabClient.tsx` (Codex). Sin cambios.
  */

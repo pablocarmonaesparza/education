@@ -1,5 +1,5 @@
 /**
- * MicButton — botón de mic con estados (idle / recording / processing).
+ * MicButton · botón de mic con estados (idle / recording / processing).
  *
  * Extraído del monolito `ExerciseLabClient.tsx` (Codex). Sin cambios.
  */

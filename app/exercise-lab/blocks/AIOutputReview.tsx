@@ -1,11 +1,11 @@
 "use client";
 
 /**
- * AIOutputReview — renderer del bloque canónico `ai_output_review` (lab_ref 04).
+ * AIOutputReview · renderer del bloque canónico `ai_output_review` (lab_ref 04).
  *
  * Patrón: lista de líneas de output donde el usuario MARCA las que tienen
  * problema. Cada línea trae un hint del tipo de riesgo (claim sin fuente,
- * dato personal, etc) — el flag del payload se infiere por hint cuando el
+ * dato personal, etc) · el flag del payload se infiere por hint cuando el
  * usuario marca, manteniendo el contrato del registry (ReviewFlag).
  *
  * Visual restaurado desde el monolito ExerciseLabClient.tsx (Codex): toggle
@@ -28,13 +28,13 @@ type AIOutputReviewPayload = Extract<
   { block_id: "ai_output_review" }
 >;
 
-// Cada segmento tiene un flag canónico asociado — cuando el usuario lo marca,
+// Cada segmento tiene un flag canónico asociado · cuando el usuario lo marca,
 // se persiste ese flag; cuando lo desmarca, se persiste null (no-prefill).
 interface OutputSegment {
   id: string;
   text: string;
   issue: string;
-  /** Si está vacío, el segmento es "limpio" — marcarlo deja flag=null. */
+  /** Si está vacío, el segmento es "limpio" · marcarlo deja flag=null. */
   flagIfMarked: ReviewFlag | null;
 }
 
@@ -154,7 +154,7 @@ export function aiOutputReviewCompletion(payload: AIOutputReviewPayload) {
     return { complete: false, missing: ["flagged_segments"] };
   }
   // Bloque completo si al menos UN segmento fue marcado (no exige marcar
-  // todos — el ejercicio es de "qué requiere intervención", no de clasificar
+  // todos · el ejercicio es de "qué requiere intervención", no de clasificar
   // todo). El judge LLM evaluará si la selección coincide con el patrón
   // esperado (datos sensibles + claims sin fuente).
   const anyMarked = payload.flagged_segments.some((s) => s.flag !== null);

@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * /case-template — shell del runtime de un caso.
+ * /case-template · shell del runtime de un caso.
  *
  * Layout HIG (patrón Typeform "one question per page"):
  *
@@ -27,6 +27,7 @@
 
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
 import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
+import { SlideBody } from "../exercise-lab/_shared/SlideBody";
 
 const SECTIONS = [
   "Contexto",
@@ -47,7 +48,7 @@ export function CaseTemplateClient() {
   return (
     <main className="simulador-root min-h-screen surface-canvas text-[var(--text-primary)]">
       <div className="grid min-h-screen grid-cols-[240px_1fr]">
-        {/* ============ SIDEBAR — 6 secciones (estilo Linear: dot + label) ============ */}
+        {/* ============ SIDEBAR · 6 secciones (estilo Linear: dot + label) ============ */}
         <aside className="bg-[var(--surface)] px-6 py-12">
           <nav className="flex flex-col gap-1">
             {SECTIONS.map((section, idx) => {
@@ -65,7 +66,7 @@ export function CaseTemplateClient() {
                         : "text-[var(--text-tertiary)]"
                   }`}
                 >
-                  {/* Dot indicator — minimal, sin chips numerados pesados */}
+                  {/* Dot indicator · minimal, sin chips numerados pesados */}
                   <span
                     className={`h-1.5 w-1.5 flex-shrink-0 rounded-full transition-colors ${
                       isActive
@@ -84,7 +85,7 @@ export function CaseTemplateClient() {
 
         {/* ============ CENTRO ============ */}
         <div className="flex flex-col">
-          {/* TOP — progress 5 segmentos (sin label ni numerador, sin border).
+          {/* TOP · progress 5 segmentos (sin label ni numerador, sin border).
               Mismo ancho que el contenido central: 80% del espacio disponible
               (capped a 1200px en monitores muy anchos), centrado.
               Sin padding lateral del wrapper para que 80% sea exacto. */}
@@ -118,7 +119,7 @@ export function CaseTemplateClient() {
             </div>
           </div>
 
-          {/* CONTENIDO — patrón Typeform: bloque cohesivo (título + body + botón)
+          {/* CONTENIDO · patrón Typeform: bloque cohesivo (título + body + botón)
               centrado vertical y horizontalmente en el viewport. El botón vive
               justo debajo del body, no pegado al bottom.
               Ancho del bloque: 80% del espacio disponible (capped 1200px),
@@ -126,21 +127,18 @@ export function CaseTemplateClient() {
               lateral del section para que 80% sea real. */}
           <section className="flex flex-1 items-center justify-center py-14">
             <div className="w-[65%] max-w-[1200px]">
-              {/* Título — 3-4 palabras máximo (1 renglón) */}
+              {/* Título · 3-4 palabras máximo (1 renglón) */}
               <h1 className="display display-tight ts-display truncate text-[var(--text-primary)]">
                 Lorem ipsum dolor sit
               </h1>
 
-              {/* Body markdown — 2 renglones */}
-              <div className="mt-5 ts-body-lg leading-[1.55] text-[var(--text-secondary)]">
-                <p className="line-clamp-2">
-                  Lorem ipsum dolor sit amet, <strong>consectetur</strong>{" "}
-                  adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                  dolore magna aliqua.
-                </p>
-              </div>
+              {/* Body markdown render via SlideBody (regla del producto:
+                  body siempre con markdown para dinamismo). */}
+              <SlideBody className="mt-5">
+                {`Lorem ipsum dolor sit amet, **consectetur** adipiscing elit. *Sed do eiusmod tempor incididunt* ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud [exercitation](https://example.com).`}
+              </SlideBody>
 
-              {/* EJERCICIO — bloque canónico del registry, entre body y botón.
+              {/* EJERCICIO · bloque canónico del registry, entre body y botón.
                   Hereda el ancho del bloque (max-w-[560px]). Hoy seed con
                   ai_textfield_free; cuando haya navegación real, este blockId
                   vendrá del CaseStepContract. */}
@@ -153,7 +151,7 @@ export function CaseTemplateClient() {
                 />
               </div>
 
-              {/* Continuar — left-aligned justo debajo del ejercicio (gap ~40px),
+              {/* Continuar · left-aligned justo debajo del ejercicio (gap ~40px),
                   con hint "Enter" estilo Typeform. */}
               <div className="mt-10 flex items-center gap-4">
                 <button
