@@ -125,23 +125,18 @@ export function CaseCover({
 
   return (
     <div className="space-y-6">
-      {/* Herramientas que se van a usar */}
+      {/* Herramientas · chips sin mini-header (regla universal) */}
       {tools.length > 0 && (
-        <div>
-          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-            Herramientas que vas a usar
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {tools.map((tool) => (
-              <span
-                key={tool.kind}
-                className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 ts-subhead text-[var(--text-primary)]"
-              >
-                <ToolIcon kind={tool.kind} />
-                {tool.label}
-              </span>
-            ))}
-          </div>
+        <div className="flex flex-wrap gap-2">
+          {tools.map((tool) => (
+            <span
+              key={tool.kind}
+              className="flex items-center gap-2 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 ts-subhead text-[var(--text-primary)]"
+            >
+              <ToolIcon kind={tool.kind} />
+              {tool.label}
+            </span>
+          ))}
         </div>
       )}
 
