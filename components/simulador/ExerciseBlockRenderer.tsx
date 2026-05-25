@@ -4,19 +4,23 @@
  * ExerciseBlockRenderer — bridge productivo entre `CaseStepContract.exercise_block_id`
  * y los renderers canónicos del registry.
  *
- * Mismo patrón que `RegistryRenderer` interno de `CaseLabRuntime.tsx` pero
- * con `mode="authenticated"` y `sessionId` real para activar autosave
- * vía `useStepPatch` → `/api/sessions/[id]/responses` con validación Zod
- * (Frente A) → judge consume `EvidenceForJudge` tipado.
- *
- * Switch limitado a los bloques extraídos. Cuando se extraigan más a
- * `app/exercise-lab/blocks/`, agregar el case correspondiente aquí.
- *
- * Frente B del plan.
+ * Wire activado para los 11 bloques canónicos (Ralph Wiggum loop completado).
+ * Cada bloque vive en app/exercise-lab/blocks/* con su payload tipado +
+ * autosave via useStepPatch.
  */
 
 import { useState } from "react";
 import { DataTableTriage } from "@/app/exercise-lab/blocks/DataTableTriage";
+import { PermissionMatrix } from "@/app/exercise-lab/blocks/PermissionMatrix";
+import { AIComparison } from "@/app/exercise-lab/blocks/AIComparison";
+import { WorkflowBuilder } from "@/app/exercise-lab/blocks/WorkflowBuilder";
+import { AIOutputReview } from "@/app/exercise-lab/blocks/AIOutputReview";
+import { RunLogReview } from "@/app/exercise-lab/blocks/RunLogReview";
+import { DashboardPivot } from "@/app/exercise-lab/blocks/DashboardPivot";
+import { TradeoffDecisionMemo } from "@/app/exercise-lab/blocks/TradeoffDecisionMemo";
+import { AgentBriefBuilder } from "@/app/exercise-lab/blocks/AgentBriefBuilder";
+import { AITextfieldFree } from "@/app/exercise-lab/blocks/AITextfieldFree";
+import { AITextfieldGuided } from "@/app/exercise-lab/blocks/AITextfieldGuided";
 import {
   emptyPayload,
   type ExerciseResponsePayload,
@@ -28,10 +32,7 @@ interface ExerciseBlockRendererProps {
   blockId: ExerciseBlockId;
   sessionId: string | null;
   mode?: ExerciseSessionMode;
-  /** ID del slide/step dentro del caso (usado como step_key del autosave). */
   slideId: string;
-  /** Contenido específico del caso para personalizar el bloque
-   *  (ej. filas a triagear para data_table_triage). */
   caseContext?: Record<string, unknown>;
 }
 
@@ -44,61 +45,40 @@ export function ExerciseBlockRenderer({
 }: ExerciseBlockRendererProps) {
   switch (blockId) {
     case "data_table_triage":
-      return (
-        <DataTableTriageWrapper
-          sessionId={sessionId}
-          mode={mode}
-          slideId={slideId}
-          caseContext={caseContext}
-        />
-      );
-
-    // Bloques aún no extraídos. Fallback explícito durante migración.
-    case "ai_textfield_free":
-    case "ai_textfield_guided":
+      return <DataTableWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "permission_matrix":
-    case "ai_output_review":
+      return <PermissionMatrixWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "ai_comparison":
+      return <AIComparisonWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "workflow_builder":
-    case "agent_brief_builder":
+      return <WorkflowBuilderWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "ai_output_review":
+      return <AIOutputReviewWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "run_log_review":
+      return <RunLogReviewWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "dashboard_pivot":
+      return <DashboardPivotWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "tradeoff_decision_memo":
-      return (
-        <div className="rounded-[var(--radius-lg)] border border-dashed border-[var(--hairline)] bg-[var(--surface-2)] p-6">
-          <p className="ts-callout text-[var(--text-secondary)]">
-            Bloque <code className="font-mono ts-footnote">{blockId}</code> aún
-            no extraído al registry. Pendiente de Frente B del plan.
-          </p>
-        </div>
-      );
+      return <TradeoffDecisionMemoWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "agent_brief_builder":
+      return <AgentBriefBuilderWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "ai_textfield_free":
+      return <AITextfieldFreeWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "ai_textfield_guided":
+      return <AITextfieldGuidedWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
   }
 }
 
-function DataTableTriageWrapper({
-  sessionId,
-  mode,
-  slideId,
-  caseContext,
-}: Omit<ExerciseBlockRendererProps, "blockId">) {
-  const [payload, setPayload] = useState(
-    () =>
-      emptyPayload("data_table_triage") as Extract<
-        ExerciseResponsePayload,
-        { block_id: "data_table_triage" }
-      >,
+// Wrappers: cada uno gestiona su estado local (payload) e inicializa
+// con emptyPayload() para cumplir no-prefill. Si necesitan content
+// específico del caso (filas, opciones), lo leen de caseContext.
+
+type WrapperProps = Omit<ExerciseBlockRendererProps, "blockId">;
+
+function DataTableWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("data_table_triage") as Extract<ExerciseResponsePayload, { block_id: "data_table_triage" }>,
   );
-
-  // Si el caso aporta filas específicas, las usa; si no, default del lab.
-  const fields = Array.isArray(caseContext?.fields)
-    ? (caseContext.fields as Array<{
-        id: string;
-        field: string;
-        example: string;
-        hint?: string;
-      }>)
-    : undefined;
-
   return (
     <DataTableTriage
       payload={payload}
@@ -106,7 +86,77 @@ function DataTableTriageWrapper({
       sessionId={sessionId}
       mode={mode}
       slideId={slideId}
-      fields={fields}
+      fields={caseContext?.fields as undefined}
     />
   );
+}
+
+function PermissionMatrixWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("permission_matrix") as Extract<ExerciseResponsePayload, { block_id: "permission_matrix" }>,
+  );
+  return <PermissionMatrix payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function AIComparisonWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("ai_comparison") as Extract<ExerciseResponsePayload, { block_id: "ai_comparison" }>,
+  );
+  return <AIComparison payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function WorkflowBuilderWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("workflow_builder") as Extract<ExerciseResponsePayload, { block_id: "workflow_builder" }>,
+  );
+  return <WorkflowBuilder payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function AIOutputReviewWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("ai_output_review") as Extract<ExerciseResponsePayload, { block_id: "ai_output_review" }>,
+  );
+  return <AIOutputReview payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function RunLogReviewWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("run_log_review") as Extract<ExerciseResponsePayload, { block_id: "run_log_review" }>,
+  );
+  return <RunLogReview payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function DashboardPivotWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("dashboard_pivot") as Extract<ExerciseResponsePayload, { block_id: "dashboard_pivot" }>,
+  );
+  return <DashboardPivot payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function TradeoffDecisionMemoWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("tradeoff_decision_memo") as Extract<ExerciseResponsePayload, { block_id: "tradeoff_decision_memo" }>,
+  );
+  return <TradeoffDecisionMemo payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function AgentBriefBuilderWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("agent_brief_builder") as Extract<ExerciseResponsePayload, { block_id: "agent_brief_builder" }>,
+  );
+  return <AgentBriefBuilder payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function AITextfieldFreeWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("ai_textfield_free") as Extract<ExerciseResponsePayload, { block_id: "ai_textfield_free" }>,
+  );
+  return <AITextfieldFree payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function AITextfieldGuidedWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("ai_textfield_guided") as Extract<ExerciseResponsePayload, { block_id: "ai_textfield_guided" }>,
+  );
+  return <AITextfieldGuided payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
 }
