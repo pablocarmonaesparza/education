@@ -75,10 +75,11 @@ export function AIPromptComposer({
     (value.trim().length > 0 || attachments.length > 0) &&
     recState !== "recording" &&
     recState !== "processing";
-  const textRows = value.trim()
-    ? Math.min(7, Math.max(3, value.split("\n").length + Math.ceil(value.length / 160)))
-    : 3;
-  const textMinHeight = value.trim() ? Math.min(220, Math.max(92, textRows * 22 + 42)) : 92;
+  // Textarea de altura FIJA (no auto-grow) — evita que el bloque baile
+  // mientras se escribe. Si el contenido supera la altura, scroll interno.
+  // Override solo cuando layout="matched" (que estira flex-1).
+  const textRows = 6;
+  const textFixedHeight = 180;
   const matched = layout === "matched";
 
   function commitAttachments(next: PromptAttachment[]) {
@@ -129,7 +130,7 @@ export function AIPromptComposer({
           rows={matched ? 10 : textRows}
           placeholder={readOnly ? "Crea el prompt desde Inputs y selección..." : "Escribe el prompt que le mandarías al modelo..."}
           className={`w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 text-[15px] leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed ${matched ? "flex-1" : ""} ${readOnly ? "cursor-default" : ""}`}
-          style={matched ? { minHeight: 0, maxHeight: "none" } : { minHeight: textMinHeight, maxHeight: 240 }}
+          style={matched ? { minHeight: 0, maxHeight: "none" } : { height: textFixedHeight, minHeight: textFixedHeight, maxHeight: textFixedHeight }}
         />
 
         <RecordingBanner recState={recState} recError={recError} />
