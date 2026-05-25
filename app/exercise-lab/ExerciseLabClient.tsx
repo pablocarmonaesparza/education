@@ -517,16 +517,15 @@ export function ExerciseLabClient() {
               ? () => scrollToSection(index + 1)
               : () => scrollToSection(0);
           // Bloques que manejan su propio botón Continuar internamente:
+          //  - case_cover · botón "Iniciar caso" interno
           //  - ai_textfield_guided · subsección Revisar con CTA propio
           //  - categorize_rows · auto-advance al completar todas las filas
-          //  - ai_output_review · sin Continuar visible (scroll-snap manual)
           //  - ai_comparison · auto-advance al elegir opción (single-select)
           //  - dashboard_pivot · auto-advance al elegir equipo (single-select)
           const OWNS_CONTINUE = new Set([
-            "case_cover", // botón "Iniciar caso" interno
+            "case_cover",
             "ai_textfield_guided",
             "categorize_rows",
-            "ai_output_review",
             "ai_comparison",
             "dashboard_pivot",
           ]);
