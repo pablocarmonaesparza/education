@@ -89,7 +89,7 @@ export function CaseTemplateClient() {
               (capped a 1200px en monitores muy anchos), centrado.
               Sin padding lateral del wrapper para que 80% sea exacto. */}
           <div className="pt-8 pb-6">
-            <div className="mx-auto w-[80%] max-w-[1200px]">
+            <div className="mx-auto w-[65%] max-w-[1200px]">
               <div
                 role="progressbar"
                 aria-label={`Diapositiva ${ACTIVE_SLIDE_INDEX + 1} de ${SLIDES_PER_SECTION}`}
@@ -125,7 +125,7 @@ export function CaseTemplateClient() {
               alineado exactamente con la progress bar arriba. Sin padding
               lateral del section para que 80% sea real. */}
           <section className="flex flex-1 items-center justify-center py-14">
-            <div className="w-[80%] max-w-[1200px]">
+            <div className="w-[65%] max-w-[1200px]">
               {/* Título — 3-4 palabras máximo (1 renglón) */}
               <h1 className="display display-tight ts-display truncate text-[var(--text-primary)]">
                 Lorem ipsum dolor sit
