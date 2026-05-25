@@ -2,7 +2,14 @@
 
 /**
  * DashboardPivot — renderer del bloque canónico `dashboard_pivot` (lab_ref 09).
- * Patrón: filtro de segmento + textfield de interpretación.
+ *
+ * Patrón rico (monolito Codex): 3 filtros como ChoiceButton (Tiempo/Riesgo/
+ * Impacto) + tabla pivote 3 columnas donde la columna activa se resalta con
+ * accent. El monolito solo tenía el filtro + tabla; el registry exige también
+ * `interpretation` (texto), que vive como textarea minimal debajo.
+ *
+ * Visual restaurado desde el monolito ExerciseLabClient.tsx (Codex). Sin
+ * cambios estéticos respecto al original.
  */
 
 import { useRef } from "react";
@@ -12,26 +19,33 @@ import type {
 } from "@/lib/simulador/exercise-registry";
 import { emptyPayload } from "@/lib/simulador/exercise-registry";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
+import { Label, ChoiceButton } from "../_shared/ui-primitives";
 
 type DashboardPivotPayload = Extract<
   ExerciseResponsePayload,
   { block_id: "dashboard_pivot" }
 >;
 
-const DEFAULT_FILTERS = [
-  { id: "30d", label: "Últimos 30 días" },
-  { id: "90d", label: "Últimos 90 días" },
-  { id: "ytd", label: "Year-to-date" },
-];
+const FILTER_LABELS: Record<string, string> = {
+  tiempo: "Tiempo",
+  riesgo: "Riesgo",
+  impacto: "Impacto",
+};
 
-const DEFAULT_ROWS = [
-  { metric: "MQLs", v30d: "+22%", v90d: "+8%", ytd: "+5%" },
-  { metric: "SQLs", v30d: "-9%", v90d: "+2%", ytd: "+1%" },
-  { metric: "CAC", v30d: "no calculado", v90d: "no calculado", ytd: "no calculado" },
+const FILTERS = ["tiempo", "riesgo", "impacto"] as const;
+
+const ROWS: ReadonlyArray<{
+  team: string;
+  tiempo: string;
+  riesgo: string;
+  impacto: string;
+}> = [
+  { team: "Ventas Norte", tiempo: "Alto", riesgo: "Medio", impacto: "Alto" },
+  { team: "Ventas Sur", tiempo: "Medio", riesgo: "Alto", impacto: "Medio" },
+  { team: "Alianzas", tiempo: "Bajo", riesgo: "Bajo", impacto: "Medio" },
 ];
 
 interface Props extends ExerciseRendererProps<DashboardPivotPayload> {
-  filters?: ReadonlyArray<{ id: string; label: string }>;
   sessionId?: string | null;
 }
 
@@ -42,100 +56,96 @@ export function DashboardPivot({
   slideId = "dashboard_pivot",
   mode = "lab_demo",
   sessionId = null,
-  filters = DEFAULT_FILTERS,
 }: Props) {
   const isProduction = mode === "authenticated" || mode === "field_test";
   const { patch } = useStepPatch(isProduction ? sessionId : null, {
     mode: mode === "field_test" ? "field_test" : "authenticated",
   });
   const mountedAt = useRef(Date.now());
+  const firstActionAt = useRef<number | null>(null);
   const totalChanges = useRef(0);
 
   function update(next: DashboardPivotPayload) {
+    if (firstActionAt.current === null) firstActionAt.current = Date.now();
     totalChanges.current += 1;
     onChange(next);
     if (isProduction && sessionId) {
       patch(`block:dashboard_pivot:${slideId}`, next, {
-        time_to_first_action_ms: Date.now() - mountedAt.current,
+        time_to_first_action_ms:
+          (firstActionAt.current ?? Date.now()) - mountedAt.current,
         total_changes: totalChanges.current,
+        final_payload_bytes: JSON.stringify(next).length,
       });
     }
     onPatch?.(next);
   }
 
+  const filter = payload.selected_filter;
+
   return (
     <div className="simulador-root">
-      <div className="ts-callout font-semibold text-[var(--text-primary)]">
-        Interpreta el dashboard antes de recomendar
-      </div>
-      <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
-        Elige una ventana de tiempo y escribe qué conclusión defenderías ante el board.
-      </p>
-
-      <div className="mt-4 flex flex-wrap gap-2">
-        {filters.map((f) => (
-          <button
-            key={f.id}
-            type="button"
-            onClick={() => update({ ...payload, selected_filter: f.id })}
-            className={`min-h-9 rounded-[var(--radius-md)] border px-3 ts-caption-1 font-medium transition-colors ${
-              payload.selected_filter === f.id
-                ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
-                : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--surface-2)]"
-            }`}
+      <Label>Elige la señal que llevarías al manager</Label>
+      <div className="mt-4 grid gap-2 sm:grid-cols-3">
+        {FILTERS.map((option) => (
+          <ChoiceButton
+            key={option}
+            selected={filter === option}
+            onClick={() => update({ ...payload, selected_filter: option })}
           >
-            {f.label}
-          </button>
+            {FILTER_LABELS[option]}
+          </ChoiceButton>
+        ))}
+      </div>
+      <div className="mt-5 overflow-hidden rounded-2xl border border-[var(--border)]">
+        {ROWS.map((row) => (
+          <div
+            key={row.team}
+            className="grid grid-cols-4 gap-3 border-b border-[var(--hairline)] px-4 py-3 text-[14px] last:border-b-0"
+          >
+            <span className="font-medium text-[var(--text-primary)]">{row.team}</span>
+            <span
+              className={
+                filter === "tiempo"
+                  ? "text-[var(--accent)]"
+                  : "text-[var(--text-secondary)]"
+              }
+            >
+              {row.tiempo}
+            </span>
+            <span
+              className={
+                filter === "riesgo"
+                  ? "text-[var(--accent)]"
+                  : "text-[var(--text-secondary)]"
+              }
+            >
+              {row.riesgo}
+            </span>
+            <span
+              className={
+                filter === "impacto"
+                  ? "text-[var(--accent)]"
+                  : "text-[var(--text-secondary)]"
+              }
+            >
+              {row.impacto}
+            </span>
+          </div>
         ))}
       </div>
 
-      <div className="mt-4 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
-        <table className="w-full">
-          <thead className="bg-[var(--surface-2)]">
-            <tr>
-              <th className="px-4 py-2 text-left ts-caption-1 font-medium text-[var(--text-secondary)]">
-                Métrica
-              </th>
-              {filters.map((f) => (
-                <th
-                  key={f.id}
-                  className="px-4 py-2 text-right ts-caption-1 font-medium text-[var(--text-secondary)]"
-                >
-                  {f.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {DEFAULT_ROWS.map((row) => (
-              <tr key={row.metric} className="border-t border-[var(--hairline)]">
-                <td className="px-4 py-3 ts-subhead font-medium text-[var(--text-primary)]">
-                  {row.metric}
-                </td>
-                <td className="px-4 py-3 text-right ts-subhead tabular-nums text-[var(--text-secondary)]">
-                  {row.v30d}
-                </td>
-                <td className="px-4 py-3 text-right ts-subhead tabular-nums text-[var(--text-secondary)]">
-                  {row.v90d}
-                </td>
-                <td className="px-4 py-3 text-right ts-subhead tabular-nums text-[var(--text-secondary)]">
-                  {row.ytd}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <label className="mt-4 block">
-        <span className="ts-footnote font-medium text-[var(--text-secondary)]">
-          ¿Qué conclusión puedes defender?
+      <label className="mt-5 block">
+        <span className="text-[13px] font-medium text-[var(--text-secondary)]">
+          ¿Qué señal le dirías al manager?
         </span>
         <textarea
           value={payload.interpretation}
-          onChange={(e) => update({ ...payload, interpretation: e.target.value })}
-          placeholder="Describe la lectura del dashboard con foco en lo decidible."
-          className="mt-2 min-h-[100px] w-full resize-none rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-3 ts-subhead text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+          onChange={(event) =>
+            update({ ...payload, interpretation: event.target.value })
+          }
+          rows={3}
+          placeholder="Un párrafo: qué se ve, qué propones hacer."
+          className="mt-2 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-[14px] leading-6 text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
         />
       </label>
     </div>
