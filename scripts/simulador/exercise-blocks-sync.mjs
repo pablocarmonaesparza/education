@@ -4,12 +4,16 @@
  *
  * Valida que los IDs de bloques de ejercicio sean coherentes entre las capas:
  *
- *   1. YAML canónico        docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml
- *   2. Generated TS         lib/simulador/exercise-blocks.generated.ts
- *   3. UI lab               app/exercise-lab/ExerciseLabClient.tsx (exerciseList)
- *   4. case-lab slide types lib/simulador/case-lab-cases.ts (DemoSlideType enum)
+ *   1. YAML canónico    docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml
+ *   2. Generated TS     lib/simulador/exercise-blocks.generated.ts
+ *   3. UI lab           app/exercise-lab/ExerciseLabClient.tsx (exerciseList)
  *
  * Falla con exit 1 si encuentra drift. Diseñado para correr en pre-commit o CI.
+ *
+ * Nota: la 4ta capa anterior (case-lab DemoSlideType) fue eliminada cuando
+ * borramos app/case-lab/ porque /casos productivo ya cubre el rol de
+ * catálogo y el template vacío (/case-template) se diseña con bloques
+ * canónicos directos del registry.
  *
  * Uso:
  *   node scripts/simulador/exercise-blocks-sync.mjs        # validar
@@ -58,26 +62,10 @@ const LAB_CLIENT = resolve(
   REPO_ROOT,
   "app/exercise-lab/ExerciseLabClient.tsx",
 );
-const CASE_LAB_TYPES = resolve(REPO_ROOT, "lib/simulador/case-lab-cases.ts");
 
 // Frente B — shim kebab-español eliminado. Lab UI ahora usa IDs canónicos
 // directamente. Si vuelven a aparecer IDs no-canónicos en el lab, este
 // validador los rechazará.
-
-// case-lab DemoSlideType → bloque canónico (null si no aplica).
-const TYPE_TO_CANONICAL = {
-  reading: null,
-  ai_textfield: "ai_textfield_free",
-  guided_prompt: "ai_textfield_guided",
-  data_table: "data_table_triage",
-  output_review: "ai_output_review",
-  decision: null,
-  memo: "tradeoff_decision_memo",
-  agent_brief: "agent_brief_builder",
-  permission_matrix: "permission_matrix",
-  log_review: "run_log_review",
-  dashboard_pivot: "dashboard_pivot",
-};
 
 // --------------------------------------------------------------------------
 // Loaders
@@ -112,18 +100,6 @@ function loadLabIds(yamlIds) {
     if (re.test(src)) ids.add(canonicalId);
   }
   return ids;
-}
-
-function loadCaseLabSlideTypes() {
-  const src = readFileSync(CASE_LAB_TYPES, "utf8");
-  const match = src.match(/export type DemoSlideType =([\s\S]*?);/);
-  if (!match) throw new Error("No se pudo extraer DemoSlideType de case-lab-cases.ts");
-  return new Set(
-    match[1]
-      .split("|")
-      .map((s) => s.trim().replace(/['"]/g, ""))
-      .filter((s) => s.length > 0),
-  );
 }
 
 // --------------------------------------------------------------------------
@@ -161,25 +137,6 @@ function checkLabVsYaml(labIds, yamlIds) {
   return errors;
 }
 
-function checkCaseLabTypesVsYaml(types, yamlIds) {
-  const errors = [];
-  for (const type of types) {
-    if (!(type in TYPE_TO_CANONICAL)) {
-      errors.push(
-        `DemoSlideType "${type}" no tiene mapping. Agregar a TYPE_TO_CANONICAL o quitar del enum.`,
-      );
-      continue;
-    }
-    const canonical = TYPE_TO_CANONICAL[type];
-    if (canonical !== null && !yamlIds.has(canonical)) {
-      errors.push(
-        `DemoSlideType "${type}" mapea a "${canonical}" pero ese ID no existe en YAML.`,
-      );
-    }
-  }
-  return errors;
-}
-
 // --------------------------------------------------------------------------
 // Run
 // --------------------------------------------------------------------------
@@ -190,18 +147,15 @@ function main() {
   const yamlIds = loadYamlIds();
   const genIds = loadGeneratedIds();
   const labIds = loadLabIds(yamlIds);
-  const slideTypes = loadCaseLabSlideTypes();
 
-  console.log(`  YAML canónico            : ${yamlIds.size} IDs`);
-  console.log(`  Generated TS             : ${genIds.size} IDs`);
-  console.log(`  Lab UI (exerciseList)    : ${labIds.size} IDs (canónicos)`);
-  console.log(`  case-lab DemoSlideType   : ${slideTypes.size} types`);
+  console.log(`  YAML canónico         : ${yamlIds.size} IDs`);
+  console.log(`  Generated TS          : ${genIds.size} IDs`);
+  console.log(`  Lab UI (exerciseList) : ${labIds.size} IDs (canónicos)`);
   console.log("");
 
   const errors = [
     ...checkYamlVsGenerated(yamlIds, genIds),
     ...checkLabVsYaml(labIds, yamlIds),
-    ...checkCaseLabTypesVsYaml(slideTypes, yamlIds),
   ];
 
   if (errors.length === 0) {

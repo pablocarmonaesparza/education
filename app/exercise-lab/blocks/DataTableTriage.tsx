@@ -27,10 +27,20 @@ import type {
 } from "@/lib/simulador/exercise-registry";
 import { emptyPayload } from "@/lib/simulador/exercise-registry";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
-import {
-  labDataTableFields,
-  type DataTableFieldSpec,
-} from "@/lib/simulador/exercise-data/data-table-fields";
+// Seed inline para el lab. Casos productivos pasan sus propias filas via prop.
+export interface DataTableFieldSpec {
+  id: string;
+  field: string;
+  example: string;
+  hint?: string;
+}
+
+const labDataTableFields: DataTableFieldSpec[] = [
+  { id: "contact", field: "Nombre del contacto", example: "Mariana Robles", hint: "PII directa." },
+  { id: "company", field: "Empresa", example: "Aurora Retail", hint: "Contexto de cuenta." },
+  { id: "email", field: "Correo", example: "mariana@aurora.example", hint: "PII + canal sensible." },
+  { id: "tickets", field: "Tickets recientes", example: "12 conversaciones", hint: "PII embebida posible." },
+];
 
 type DataTableTriagePayload = Extract<
   ExerciseResponsePayload,

@@ -86,16 +86,10 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
     ],
   },
   {
-    group: "labs internos (Codex / case design)",
+    group: "labs internos (metodología de casos)",
     routes: [
-      { path: "/case-lab", label: "Case lab — selector de 5 casos demo", note: "público, sin auth" },
-      { path: "/case-lab/template", label: "└─ Case template — scaffold vacío con 11 bloques en secuencia", note: "para iterar metodología" },
-      { path: "/case-lab/marketing-dirty-data-campaign", label: "└─ Caso: Campaña urgente con datos incompletos" },
-      { path: "/case-lab/sales-agent-followup", label: "└─ Caso: Seguimiento comercial con agente" },
-      { path: "/case-lab/support-whatsapp-escalation", label: "└─ Caso: Escalamiento de soporte WhatsApp" },
-      { path: "/case-lab/finance-variance-claim", label: "└─ Caso: Variación financiera con hojas" },
-      { path: "/case-lab/legal-contract-triage", label: "└─ Caso: Triage legal de contrato" },
-      { path: "/exercise-lab", label: "Exercise lab — 11 bloques canónicos extraídos", note: "público, sin auth" },
+      { path: "/exercise-lab", label: "Exercise lab — 11 bloques canónicos", note: "público · catálogo de interacciones" },
+      { path: "/case-template", label: "Case template — plantilla vacía de un caso", note: "público · estructura fijo+variable" },
     ],
   },
   {
