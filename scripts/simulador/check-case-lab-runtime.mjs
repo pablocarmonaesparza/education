@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import yaml from "js-yaml";
 
-const CASE_URL = process.env.CASE_LAB_URL ?? "http://localhost:4000/case-lab/marketing-dirty-data-campaign";
+const CASE_URL = process.env.CASE_LAB_URL ?? "http://localhost:4000/case-lab/sales-agent-followup";
 const CASE_INDEX_URL = process.env.CASE_LAB_INDEX_URL ?? "http://localhost:4000/case-lab";
 const EXPECTED_CASE_TOOLS = {
   "/case-lab/marketing-dirty-data-campaign": ["ChatGPT", "Claude", "Meta Ads"],
@@ -20,6 +20,16 @@ const CANONICAL_EXERCISE_LABELS = [
   "04 · Revisión de output",
   "11 · Decisión con ventajas y costos",
   "11 · Decisión + memo",
+];
+const GOLDEN_CASE_BLOCKS = [
+  "data_table_triage",
+  "agent_brief_builder",
+  "permission_matrix",
+  "workflow_builder",
+  "run_log_review",
+  "ai_output_review",
+  "dashboard_pivot",
+  "tradeoff_decision_memo",
 ];
 
 const issues = [];
@@ -57,6 +67,16 @@ function runStaticRuntimeChecks() {
   check(runtimeSource.includes("ExerciseBlockRenderer"), "case runtime must render through ExerciseBlockRenderer");
   check(exerciseLabSource.includes("ExerciseBlockRenderer"), "exercise lab must consume the shared ExerciseBlockRenderer");
   check(rendererSource.includes("export type ExerciseBlockId"), "shared renderer must expose central ExerciseBlockId");
+  check(runtimeSource.includes("SimulationLearningMode"), "case runtime must separate diagnostic_mode and learning_demo_mode");
+  check(runtimeSource.includes("evidenceBySlide"), "case runtime must keep a local evidence store");
+  check(runtimeSource.includes("SimulationFeedback"), "case runtime must render status/consequence feedback");
+  check(runtimeSource.includes("sectionEvidenceCount"), "case runtime must gate section debriefs with captured evidence");
+  check(runtimeSource.includes("canShowSectionDebrief"), "case runtime must not show debriefs without section evidence");
+  check(runtimeSource.includes("currentSlideRequiresEvidence"), "case runtime must block exercise navigation until evidence is complete");
+  check(runtimeSource.includes("highestUnlockedIndex"), "case runtime must prevent jumping to locked future sections");
+  check(casesSource.includes("evidenceExpected"), "case slides must declare expected evidence");
+  check(casesSource.includes("simulationConsequence"), "case slides must declare simulation consequences");
+  check(casesSource.includes("learningGoal"), "case slides must declare learning goals");
 
   const helperToBlock = {
     data: "data_table_triage",
@@ -68,6 +88,8 @@ function runStaticRuntimeChecks() {
     agent: "agent_brief_builder",
     permission: "permission_matrix",
     logs: "run_log_review",
+    workflow: "workflow_builder",
+    pivot: "dashboard_pivot",
   };
   const caseBlocks = casesSource
     .split(/\n\s*\{\n\s*id:\s*"/)
@@ -77,7 +99,7 @@ function runStaticRuntimeChecks() {
       const body = chunk;
       return {
         id,
-        blocks: Array.from(body.matchAll(/\b(data|ai|guided|review|decision|memo|agent|permission|logs)\("/g)).map((match) => helperToBlock[match[1]]),
+        blocks: Array.from(body.matchAll(/\b(data|ai|guided|review|decision|memo|agent|permission|logs|workflow|pivot)\("/g)).map((match) => helperToBlock[match[1]]),
       };
     })
     .filter((item) => item.id.includes("-"));
@@ -96,11 +118,107 @@ function runStaticRuntimeChecks() {
     );
     check(blockSet.has("tradeoff_decision_memo"), `${demoCase.id} must include decision/response exercise`);
   }
+
+  const salesChunk = casesSource.split('id: "sales-agent-followup"')[1]?.split('id: "support-whatsapp-escalation"')[0] ?? "";
+  check(salesChunk.includes("sales_agent_followup_pipeline_v1") || salesChunk.includes("HubSpot Breeze"), "golden sales case must be based on canonical sales-agent-followup source");
+  for (const block of GOLDEN_CASE_BLOCKS) {
+    check(salesChunk.includes(block) || salesChunk.includes(blockHelperName(block)), `sales-agent-followup must include ${block}`);
+  }
+  for (const field of ["learningGoal", "evidenceExpected", "simulationConsequence", "managerSignal"]) {
+    check((salesChunk.match(new RegExp(`${field}:`, "g")) ?? []).length >= 5, `sales-agent-followup must include rich ${field} metadata`);
+  }
+}
+
+function blockHelperName(block) {
+  return {
+    data_table_triage: "data(",
+    agent_brief_builder: "agent(",
+    permission_matrix: "permission(",
+    workflow_builder: "workflow(",
+    run_log_review: "logs(",
+    ai_output_review: "review(",
+    dashboard_pivot: "pivot(",
+    tradeoff_decision_memo: "decision(",
+  }[block];
 }
 
 async function clickNext(page) {
-  await page.locator("footer button").last().click();
-  await page.waitForTimeout(600);
+  const nextButton = page.locator("footer button").last();
+  await nextButton.waitFor({ state: "visible", timeout: 5000 });
+  const exerciseLabel = await currentExerciseLabel(page);
+  if (exerciseLabel) {
+    check(await nextButton.isDisabled(), `${exerciseLabel}: next must stay disabled until evidence is completed`);
+    await completeCurrentExercise(page, exerciseLabel);
+    await page.waitForTimeout(250);
+    check(!(await nextButton.isDisabled()), `${exerciseLabel}: next must unlock after completed evidence`);
+  }
+  await page.waitForTimeout(150);
+  await nextButton.click();
+  await page.waitForTimeout(800);
+}
+
+async function currentExerciseLabel(page) {
+  const block = page.locator("[data-exercise-block]").first();
+  if ((await block.count()) === 0) return "";
+  return (await block.getAttribute("data-exercise-block")) ?? "";
+}
+
+async function completeCurrentExercise(page, label) {
+  const block = page.locator("[data-exercise-block]").first();
+
+  if (/tabla editable de datos/i.test(label)) {
+    const selects = block.locator("select");
+    const values = ["usar", "anonimizar", "agregar", "excluir"];
+    for (let index = 0; index < await selects.count(); index += 1) {
+      await selects.nth(index).selectOption(values[index % values.length]);
+    }
+    return;
+  }
+
+  if (/matriz de permisos/i.test(label)) {
+    const buttons = block.getByRole("button", { name: "Revisar" });
+    for (let index = 0; index < await buttons.count(); index += 1) {
+      await buttons.nth(index).click();
+    }
+    return;
+  }
+
+  if (/brief para agente/i.test(label)) {
+    for (let index = 0; index < 4; index += 1) {
+      await block.locator("button").nth(4).click();
+      await page.waitForTimeout(80);
+    }
+    return;
+  }
+
+  if (/workflow builder/i.test(label)) {
+    const buttons = block.locator("button");
+    for (let index = 0; index < Math.min(3, await buttons.count()); index += 1) {
+      await buttons.nth(index).click();
+    }
+    return;
+  }
+
+  if (/revisión de logs|revisión de output|comparación de respuestas|dashboard/i.test(label)) {
+    await block.locator("button").first().click();
+    return;
+  }
+
+  if (/decisión/i.test(label)) {
+    await block.locator("button").first().click();
+    const memo = block.locator("textarea");
+    if (await memo.count()) {
+      await memo.first().fill("Piloto acotado con revisión humana, métrica diaria y pausa si reaparece dato sensible.");
+    }
+    return;
+  }
+
+  if (/textfield de ia/i.test(label)) {
+    const textInput = block.locator("textarea").first();
+    if (await textInput.count()) {
+      await textInput.fill("Prepara una recomendación con contexto, límites de datos y validación humana antes de cualquier acción externa.");
+    }
+  }
 }
 
 async function assertCurrentSlideFits(page, label) {
@@ -113,15 +231,28 @@ async function assertCurrentSlideFits(page, label) {
   check(content.scrollHeight <= content.clientHeight + 2, `${label}: current slide must fit viewport without clipping`);
 }
 
+async function renderedExerciseLabels(page) {
+  return page.locator("[data-exercise-block]").evaluateAll((blocks) =>
+    blocks.map((block) => block.getAttribute("data-exercise-block")).filter(Boolean),
+  );
+}
+
+async function hasRenderedExercise(page, pattern) {
+  const labels = await renderedExerciseLabels(page);
+  return labels.some((label) => pattern.test(label));
+}
+
 async function runScenario(browser, viewport) {
   const label = `${viewport.width}x${viewport.height}`;
   const page = await browser.newPage({ viewport });
   try {
     await page.goto(CASE_URL, { waitUntil: "domcontentloaded" });
+    const currentPath = new URL(CASE_URL).pathname;
+    const expectedTools = EXPECTED_CASE_TOOLS[currentPath] ?? ["ChatGPT", "Claude"];
 
-    check(await page.getByText("ChatGPT").count(), "intro must show real tools: ChatGPT");
-    check(await page.getByText("Claude").count(), "intro must show real tools: Claude");
-    check(await page.getByText("Meta Ads").count(), "intro must show real tools: Meta Ads");
+    for (const tool of expectedTools) {
+      check(await page.getByText(tool).count(), `intro must show real tool: ${tool}`);
+    }
     check(await page.getByRole("progressbar").getAttribute("aria-valuenow") === "0", "intro progress must start at 0");
     await assertCurrentSlideFits(page, `${label} intro`);
 
@@ -129,6 +260,7 @@ async function runScenario(browser, viewport) {
     for (const section of ["Contexto", "Datos", "IA", "Revisión", "Decisión", "Respuesta"]) {
       check(sidebarText.includes(section), `sidebar must include section name: ${section}`);
     }
+    check(await page.getByRole("button", { name: /Respuesta/ }).first().isDisabled(), "future sections must be locked before the learner reaches them");
 
     check(await page.getByText("Lee esto como el brief que acaba de llegar a tu mesa").count() === 0, "reading slides must not render repeated brief panel");
 
@@ -145,37 +277,39 @@ async function runScenario(browser, viewport) {
     await assertCurrentSlideFits(page, `${label} datos intro`);
 
     await clickNext(page);
-    check(await page.getByText("02 · Tabla editable de datos").count(), "Datos exercise must use canonical 02 table label");
+    check(await page.getByText(/02 · tabla editable de datos/i).count(), "Datos exercise must use canonical 02 table label");
     check(await page.getByText("Decidir").count(), "data table must start empty/default with Decidir");
     await assertCurrentSlideFits(page, `${label} data table`);
 
     for (let i = 0; i < 4; i++) await clickNext(page);
     check((await page.getByText("IA · Lectura").count()) > 0, "after Datos, next must be IA reading");
     await clickNext(page);
-    check(await page.getByText("01B · Textfield de IA guiado").count(), "IA guided prompt must use canonical 01B label");
-    check(await page.getByText("Respuestas").count(), "guided prompt must show Respuestas pane");
-    check(await page.getByPlaceholder("El prompt aparecerá aquí cuando completes las selecciones").count(), "guided prompt must start empty");
-    await assertCurrentSlideFits(page, `${label} guided prompt`);
+    check(await hasRenderedExercise(page, /01B · textfield de ia guiado|07 · brief para agente/i), "IA slide must use canonical guided prompt or agent brief label");
+    await assertCurrentSlideFits(page, `${label} first IA exercise`);
 
     await clickNext(page);
     check((await page.getByText("IA · Lectura").count()) > 0, "after guided prompt, next must be IA reading");
     await clickNext(page);
-    check(await page.getByText("01A · Textfield de IA libre").count(), "free prompt must use canonical 01A label");
-    check(await page.getByPlaceholder("Ejemplo de intención", { exact: false }).count(), "free prompt must show case-specific placeholder");
-    await assertCurrentSlideFits(page, `${label} free prompt`);
+    check(await hasRenderedExercise(page, /01A · textfield de ia libre|03 · matriz de permisos|06 · workflow builder/i), "second IA exercise must use a canonical Exercise Lab block");
+    await assertCurrentSlideFits(page, `${label} second IA exercise`);
 
     for (let i = 0; i < 2; i++) await clickNext(page);
     check((await page.getByText("Revisión · Lectura").count()) > 0, "after IA, next must be Revisión reading");
     await clickNext(page);
-    check(await page.getByText("04 · Revisión de output").count(), "review must use canonical 04 label");
+    check(await hasRenderedExercise(page, /08 · revisión de logs|04 · revisión de output/i), "review must use canonical review label");
     await assertCurrentSlideFits(page, `${label} output review`);
+    check(await page.getByText("Evidencia esperada").count(), "exercise slides must show expected evidence");
+    check(await page.getByText("Qué afectará").count(), "exercise slides must show simulation consequence slot");
 
     let sawCanonical = 0;
-    const body = (await page.locator("body").innerText()).toLowerCase();
+    const labels = (await renderedExerciseLabels(page)).join("\n").toLowerCase();
     for (const label of CANONICAL_EXERCISE_LABELS) {
-      if (body.includes(label.toLowerCase())) sawCanonical += 1;
+      if (labels.includes(label.toLowerCase())) sawCanonical += 1;
     }
-    check(sawCanonical >= 1, "runtime must render canonical Exercise Lab labels");
+    check(
+      sawCanonical >= 1 || labels.includes("07 · brief para agente") || labels.includes("08 · revisión de logs"),
+      "runtime must render canonical Exercise Lab labels",
+    );
   } finally {
     await page.close();
   }
@@ -214,16 +348,8 @@ async function runAllCasesSmoke(browser) {
         check(sidebarText.includes(section), `${path} sidebar must include section: ${section}`);
       }
       check(await page.getByRole("progressbar").getAttribute("aria-valuenow") === "0", `${path} intro progress must start at 0`);
-      await clickNext(page);
-      try {
-        await page.waitForFunction(() => document.querySelector("section article")?.textContent?.includes("1 / 5"), null, { timeout: 2000 });
-      } catch {
-        // handled by the explicit assertion below
-      }
-      const articleText = await page.locator("section article").innerText();
-      check(articleText.includes("1 / 5"), `${path} first section must start at 1 / 5`);
       check(await page.getByText("Lee esto como el brief que acaba de llegar a tu mesa").count() === 0, `${path} must not show repeated legacy brief panel`);
-      await assertCurrentSlideFits(page, `${path} first slide`);
+      await assertCurrentSlideFits(page, `${path} intro`);
     } finally {
       await page.close();
     }

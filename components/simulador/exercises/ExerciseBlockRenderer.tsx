@@ -433,6 +433,7 @@ type EmitEvidence = (value: unknown, evidenceType: string, completed: boolean) =
 
 function DataTableBlock({ props, emit }: { props: ExerciseBlockProps; emit: EmitEvidence }) {
   const rows = (props.dataRows ?? defaultDataRows).map((row, index) => ({ ...row, id: row.id ?? `row-${index}` }));
+  const compact = Boolean(props.compact);
   const [actions, setActions] = useState<Record<string, DataAction | "">>({});
   useEffect(() => {
     emit(actions, "data_classification", Object.keys(actions).length === rows.length);
@@ -443,12 +444,12 @@ function DataTableBlock({ props, emit }: { props: ExerciseBlockProps; emit: Emit
       <Label>Clasifica cada campo antes de enviarlo al modelo</Label>
       <div className="mt-4 overflow-hidden rounded-2xl border border-[var(--border)]">
         {rows.map((row) => (
-          <div key={row.id} className="grid gap-3 border-b border-[var(--hairline)] px-4 py-4 last:border-b-0 sm:grid-cols-[1fr_1fr_170px] sm:items-center">
+          <div key={row.id} className={`grid gap-3 border-b border-[var(--hairline)] px-4 last:border-b-0 sm:grid-cols-[1fr_1fr_170px] sm:items-center ${compact ? "py-2.5" : "py-4"}`}>
             <div>
               <div className="text-[15px] font-medium text-[var(--text-primary)]">{row.field}</div>
-              <div className="mt-1 text-[13px] text-[var(--text-secondary)]">{row.example}</div>
+              <div className={`mt-1 text-[13px] text-[var(--text-secondary)] ${compact ? "line-clamp-1" : ""}`}>{row.example}</div>
             </div>
-            <div className="text-[13px] leading-5 text-[var(--text-secondary)]">{row.note ?? "Decide si aporta señal o expone información de más."}</div>
+            <div className={`text-[13px] leading-5 text-[var(--text-secondary)] ${compact ? "line-clamp-2" : ""}`}>{row.note ?? "Decide si aporta señal o expone información de más."}</div>
             <div className="relative">
               <select value={actions[row.id] ?? ""} onChange={(event) => setActions((current) => ({ ...current, [row.id]: event.target.value as DataAction }))} className="min-h-11 w-full appearance-none rounded-xl border border-[var(--border)] bg-[var(--surface-2)] py-2 pl-3 pr-10 text-[14px] text-[var(--text-primary)] outline-none focus:border-[var(--accent)]">
                 <option value="">Decidir</option>
@@ -467,6 +468,7 @@ function DataTableBlock({ props, emit }: { props: ExerciseBlockProps; emit: Emit
 
 function PermissionMatrixBlock({ props, emit }: { props: ExerciseBlockProps; emit: EmitEvidence }) {
   const rows = props.permissionRows ?? defaultPermissionRows;
+  const compact = Boolean(props.compact);
   const [permissions, setPermissions] = useState<Record<string, Permission | "">>({});
   useEffect(() => {
     emit(permissions, "permission_matrix", Object.keys(permissions).length === rows.length);
@@ -475,9 +477,9 @@ function PermissionMatrixBlock({ props, emit }: { props: ExerciseBlockProps; emi
   return (
     <Panel label={exerciseBlockLabels.permission_matrix}>
       <Label>Define permisos por acción</Label>
-      <div className="mt-4 grid gap-3">
+      <div className={`mt-4 grid ${compact ? "gap-2" : "gap-3"}`}>
         {rows.map((row) => (
-          <div key={row} className="grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-4 sm:grid-cols-[1fr_330px] sm:items-center">
+          <div key={row} className={`grid gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] sm:grid-cols-[1fr_330px] sm:items-center ${compact ? "p-3" : "p-4"}`}>
             <div className="text-[15px] font-medium text-[var(--text-primary)]">{row}</div>
             <div className="grid grid-cols-3 gap-2">
               {(["permitir", "revisar", "bloquear"] as Permission[]).map((option) => (
@@ -530,6 +532,7 @@ function ComparisonBlock({ props, emit }: { props: ExerciseBlockProps; emit: Emi
 
 function WorkflowBlock({ props, emit }: { props: ExerciseBlockProps; emit: EmitEvidence }) {
   const steps = props.workflowSteps ?? defaultWorkflowSteps;
+  const compact = Boolean(props.compact);
   const [enabledSteps, setEnabledSteps] = useState<string[]>([]);
   useEffect(() => {
     emit(enabledSteps, "workflow_steps", enabledSteps.length >= 3);
@@ -537,11 +540,11 @@ function WorkflowBlock({ props, emit }: { props: ExerciseBlockProps; emit: EmitE
   return (
     <Panel label={exerciseBlockLabels.workflow_builder}>
       <Label>Activa los pasos que debe tener el flujo</Label>
-      <div className="mt-4 grid gap-3">
+      <div className={`mt-4 grid ${compact ? "gap-2" : "gap-3"}`}>
         {steps.map((step, index) => {
           const enabled = enabledSteps.includes(step);
           return (
-            <button key={step} type="button" onClick={() => setEnabledSteps((current) => enabled ? current.filter((item) => item !== step) : [...current, step])} className={`grid min-h-14 grid-cols-[36px_1fr] items-center gap-3 rounded-2xl border px-4 text-left ${enabled ? "border-[var(--accent)] bg-[var(--accent-soft)]" : "border-[var(--border)] bg-[var(--surface-2)]"}`}>
+            <button key={step} type="button" onClick={() => setEnabledSteps((current) => enabled ? current.filter((item) => item !== step) : [...current, step])} className={`grid ${compact ? "min-h-11" : "min-h-14"} grid-cols-[36px_1fr] items-center gap-3 rounded-2xl border px-4 text-left ${enabled ? "border-[var(--accent)] bg-[var(--accent-soft)]" : "border-[var(--border)] bg-[var(--surface-2)]"}`}>
               <span className="grid h-8 w-8 place-items-center rounded-xl bg-[var(--surface)] text-[13px] font-medium text-[var(--text-primary)]">{index + 1}</span>
               <span className="text-[15px] text-[var(--text-primary)]">{step}</span>
             </button>
@@ -560,6 +563,7 @@ function AgentBriefBlock({ props, emit }: { props: ExerciseBlockProps; emit: Emi
   const fields: AgentBriefField[] = ["task", "access", "action", "stop"];
   const [value, setValue] = useState<AgentBriefState>({ task: "", access: "", action: "", stop: "" });
   const [activeField, setActiveField] = useState<AgentBriefField>("task");
+  const compact = Boolean(props.compact);
   const activeIndex = fields.indexOf(activeField);
   const activeGroup = optionGroups[activeField];
   const completed = fields.filter((field) => value[field]).length;
@@ -570,24 +574,24 @@ function AgentBriefBlock({ props, emit }: { props: ExerciseBlockProps; emit: Emi
   return (
     <Panel label={exerciseBlockLabels.agent_brief_builder} bare>
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-stretch">
-        <div className="flex min-h-[360px] flex-col">
+        <div className={`flex flex-col ${compact ? "min-h-[250px]" : "min-h-[360px]"}`}>
           <div className="flex items-start justify-between gap-4">
             <div>
               <Label>Construye el brief</Label>
-              <p className="mt-2 max-w-xl text-[15px] leading-6 text-[var(--text-secondary)]">
+              <p className={`${compact ? "hidden" : "mt-2"} max-w-xl text-[15px] leading-6 text-[var(--text-secondary)]`}>
                 Define una pieza a la vez. El caso controla la situación; el participante decide cómo delegar sin abrir riesgos.
               </p>
             </div>
             <span className="shrink-0 rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[12px] text-[var(--text-secondary)]">{completed}/4</span>
           </div>
-          <div className="mt-5 grid grid-cols-4 gap-2">
+          <div className={`${compact ? "mt-3" : "mt-5"} grid grid-cols-4 gap-2`}>
             {fields.map((field, index) => (
               <button key={field} type="button" onClick={() => setActiveField(field)} className={`min-h-10 rounded-xl border px-2 text-[12px] font-medium transition-colors ${activeField === field ? "border-[var(--accent)] bg-[var(--accent)] text-white" : value[field] ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--text-primary)]" : "border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-secondary)]"}`}>
                 {index + 1}. {optionGroups[field].label}
               </button>
             ))}
           </div>
-          <div className="mt-5 rounded-3xl bg-[var(--surface-2)] p-4">
+          <div className={`${compact ? "mt-3 p-3" : "mt-5 p-4"} rounded-3xl bg-[var(--surface-2)]`}>
             <div className="text-[15px] font-semibold text-[var(--text-primary)]">{activeGroup.label}</div>
             <div className="mt-3 grid gap-2">
               {activeGroup.options.map((option) => (
@@ -606,7 +610,7 @@ function AgentBriefBlock({ props, emit }: { props: ExerciseBlockProps; emit: Emi
             </div>
           </div>
         </div>
-        <div className="flex min-h-[360px] flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
+        <div className={`flex flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface-2)] p-4 ${compact ? "min-h-[250px]" : "min-h-[360px]"}`}>
           <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">Brief del agente</div>
           <div className="mt-4 grid gap-2">
             <AgentBriefLine label="Tarea" value={value.task} />
@@ -874,7 +878,7 @@ function SelectableLines({ lines, flags, setFlags, highMode = false }: { lines: 
       {lines.map((line) => {
         const selected = flags.includes(line.id);
         return (
-          <button key={line.id} type="button" onClick={() => setFlags(selected ? flags.filter((flag) => flag !== line.id) : [...flags, line.id])} className={`min-h-11 rounded-2xl border px-4 py-4 text-left transition-colors ${selected ? highMode ? "border-[var(--band-b-bar)] bg-[var(--band-b-bg)]" : "border-[var(--accent)] bg-[var(--accent-soft)]" : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"}`}>
+          <button key={line.id} type="button" onClick={() => setFlags(selected ? flags.filter((flag) => flag !== line.id) : [...flags, line.id])} className={`min-h-10 rounded-2xl border px-4 py-3 text-left transition-colors ${selected ? highMode ? "border-[var(--band-b-bar)] bg-[var(--band-b-bg)]" : "border-[var(--accent)] bg-[var(--accent-soft)]" : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"}`}>
             <span className="block text-[15px] leading-6 text-[var(--text-primary)]">{line.text}</span>
             {line.issue && <span className="mt-2 block text-[13px] text-[var(--text-secondary)]">{line.issue}</span>}
           </button>
@@ -1055,7 +1059,7 @@ function Panel({ label, children, bare = false }: { label: string; children: Rea
   if (bare) return <div data-exercise-block={label}>{children}</div>;
   return (
     <div data-exercise-block={label}>
-      <div className="mb-4 text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">{label}</div>
+      <div className="mb-2 text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">{label}</div>
       {children}
     </div>
   );
@@ -1105,7 +1109,7 @@ function Label({ children }: { children: React.ReactNode }) {
 
 function ChoiceButton({ children, selected, onClick }: { children: React.ReactNode; selected: boolean; onClick: () => void }) {
   return (
-    <button type="button" onClick={onClick} className={`min-h-11 rounded-xl border px-3 text-[13px] font-medium transition-colors ${selected ? "border-[var(--accent)] bg-[var(--accent)] text-white" : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"}`}>
+    <button type="button" onClick={onClick} className={`min-h-10 rounded-xl border px-3 text-[13px] font-medium transition-colors ${selected ? "border-[var(--accent)] bg-[var(--accent)] text-white" : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"}`}>
       {children}
     </button>
   );

@@ -13,6 +13,13 @@ export type DemoSlide = {
   eyebrow: string;
   title: string;
   body: string;
+  learningGoal?: string;
+  caseReveal?: string;
+  stakeholderPressure?: string;
+  artifact?: string;
+  evidenceExpected?: string;
+  simulationConsequence?: string;
+  managerSignal?: string;
   exerciseBlockId?: ExerciseBlockId;
   exerciseProps?: ExerciseBlockProps;
 };
@@ -20,6 +27,11 @@ export type DemoSlide = {
 export type DemoCaseSection = {
   name: "Contexto" | "Datos" | "IA" | "Revisión" | "Decisión" | "Respuesta";
   slides: DemoSlide[];
+  debrief: {
+    protect: string;
+    evidence: string;
+    next: string;
+  };
 };
 
 export type DemoCase = {
@@ -112,67 +124,272 @@ export const demoCases: DemoCase[] = [
   },
   {
     id: "sales-agent-followup",
-    title: "Agente de seguimiento en HubSpot",
+    title: "Agente de seguimiento comercial",
     level: "N3",
     profile: "Ventas / RevOps",
-    minutes: 30,
+    minutes: 24,
     company: "Aurora SaaS",
-    summary: "Un agente prepara follow-ups y actualiza CRM sin enviar mensajes por su cuenta.",
-    freshness: "Basado en HubSpot Breeze, Smart CRM, Smart Deal Progression y workspace agents.",
+    summary: "Diseña un piloto donde un agente acelera follow-up comercial sin tocar datos sensibles, enviar correos solo ni cambiar pipeline sin evidencia.",
+    freshness: "Basado en HubSpot Breeze, Smart CRM, agentes de workspace, Gmail, Slack y revisión humana de borradores.",
     tools: ["HubSpot Breeze", "ChatGPT", "Claude", "Gmail", "Slack"],
     managerBrief:
-      "Mándalo a reps, RevOps o managers que quieren automatizar seguimiento comercial. Mide si saben delegar preparación a un agente sin permitir envío autónomo, señales inventadas ni updates opacos en CRM.",
+      "Asigna este caso cuando quieras saber si alguien de Sales Ops o RevOps puede delegar seguimiento comercial a un agente sin perder control sobre datos, aprobaciones y confianza del cliente. El resultado te dirá si esa persona puede pilotar automatización en pipeline, si necesita práctica en límites de autonomía o si conviene pausar agentes hasta reforzar controles.",
     sections: [
       section("Contexto", [
-        reading("01.01", "Aurora tiene oportunidades estancadas.", "El equipo comercial llega al cierre mensual con 38 oportunidades sin respuesta. La VP de Ventas quiere recuperar conversaciones sin pedir horas extra al equipo."),
-        reading("01.02", "El equipo quiere usar un agente.", "HubSpot Breeze puede ayudar con contexto del CRM, progresión de deals y tareas de seguimiento. También quieren usar ChatGPT o Claude para mejorar borradores."),
-        reading("01.03", "El agente no debe vender solo.", "Tu objetivo es diseñar un flujo donde el agente prepare trabajo, pero no contacte clientes ni cambie el pipeline sin control."),
-        reading("01.04", "La presión es real.", "Si se automatiza demasiado, el cliente recibe un mensaje fuera de contexto. Si no se automatiza nada, el equipo pierde oportunidades."),
-        reading("01.05", "La señal para el manager.", "Este caso muestra si alguien entiende permisos, datos, logs y revisión humana en un flujo con agente."),
-      ]),
+        reading("01.01", "Aurora perdió velocidad comercial.", "El cierre mensual llega con 38 oportunidades calificadas sin respuesta reciente. La VP de Ventas quiere que un agente prepare seguimiento antes de la reunión de pipeline.", {
+          learningGoal: "Ubicar el problema operativo antes de tocar herramientas.",
+          caseReveal: "El cuello de botella no es escribir correos; es priorizar, preparar contexto y no enviar algo equivocado.",
+          stakeholderPressure: "La VP quiere ver un piloto hoy, no una investigación de tres semanas.",
+          managerSignal: "Detecta si la persona entiende el objetivo de negocio antes de automatizar.",
+        }),
+        reading("01.02", "El equipo quiere usar HubSpot Breeze.", "Breeze puede leer señales del CRM, sugerir próximos pasos y preparar tareas. ChatGPT o Claude pueden mejorar borradores, pero no conocen el contexto completo ni la política comercial.", {
+          learningGoal: "Separar capacidad técnica de permiso operativo.",
+          caseReveal: "Que una herramienta pueda leer o escribir no significa que deba hacerlo sin límites.",
+          artifact: "CRM con etapas, últimos contactos, notas internas y valor estimado.",
+          managerSignal: "Distingue herramienta útil de autonomía riesgosa.",
+        }),
+        reading("01.03", "El agente no debe vender solo.", "El piloto debe permitir que el agente prepare borradores y resúmenes. No puede contactar clientes, prometer descuentos ni mover etapas del pipeline por su cuenta.", {
+          learningGoal: "Fijar la frontera de autonomía desde el inicio.",
+          caseReveal: "El valor está en acelerar preparación, no en delegar responsabilidad comercial.",
+          stakeholderPressure: "Los account executives piden que el agente envíe correos si tiene confianza alta.",
+          managerSignal: "Reconoce qué acciones requieren aprobación humana.",
+        }),
+        reading("01.04", "La tensión es velocidad contra confianza.", "Si automatizas poco, el equipo seguirá lento. Si automatizas demasiado, un cliente enterprise puede recibir un mensaje fuera de contexto o con datos que no debían salir.", {
+          learningGoal: "Entender el tradeoff que sostiene todo el caso.",
+          caseReveal: "La decisión no es sí/no a agentes; es qué autonomía se puede permitir con evidencia.",
+          stakeholderPressure: "RevOps quiere medir respuesta en menos de dos horas; Legal pidió minimizar datos.",
+          managerSignal: "Mantiene presión comercial sin saltarse controles.",
+        }),
+        reading("01.05", "Tu entrega será una política de piloto.", "Al final tendrás que recomendar qué puede hacer el agente, qué queda bloqueado, qué se revisa por humano y qué señal medirá RevOps.", {
+          learningGoal: "Preparar una decisión ejecutable, no una opinión.",
+          caseReveal: "La salida útil es una regla operativa que Ventas pueda usar mañana.",
+          managerSignal: "Convierte criterio técnico en acción manager-ready.",
+        }),
+      ], {
+        protect: "El objetivo de negocio: recuperar seguimiento sin dañar confianza.",
+        evidence: "Si entendiste quién presiona, qué herramienta se usa y qué acciones quedan fuera.",
+        next: "Ahora decide qué datos puede ver el agente antes de escribir cualquier brief.",
+      }),
       section("Datos", [
-        reading("02.01", "El agente sólo debe ver lo necesario.", "Antes de escribir el brief, decide qué datos comerciales puede usar para preparar seguimiento."),
+        reading("02.01", "El agente sólo debe ver lo necesario.", "Antes de delegar, acota el material. El CRM contiene señal comercial, datos personales, notas internas y campos que pueden sesgar al agente.", {
+          learningGoal: "Aplicar minimización de datos al trabajo con agentes.",
+          artifact: "Muestra de CRM: etapa, valor, contacto, notas internas, última actividad y competidor mencionado.",
+          stakeholderPressure: "Ventas quiere personalización; Legal pidió no exponer datos innecesarios.",
+          managerSignal: "Protege datos sin quitarle al agente la señal útil.",
+        }),
         data("02.02", "Clasifica datos del CRM.", [
-          ["Etapa del deal", "Señal operativa necesaria para priorizar", "Usar"],
-          ["Correo personal del contacto", "Identificador que no debe aparecer en el prompt", "Excluir"],
-          ["Notas del account manager", "Útiles, pero pueden mezclar hecho y opinión", "Anonimizar"],
-        ]),
-        reading("02.03", "No confundas contexto con permiso.", "Que HubSpot tenga datos no significa que el agente deba usarlos todos ni que pueda actuar con ellos."),
+          ["Etapa del deal", "Señal operativa necesaria para priorizar seguimiento"],
+          ["Correo y teléfono", "Identificadores personales que no aportan al razonamiento"],
+          ["Valor estimado del deal", "Dato sensible; puede usarse en rangos para priorizar"],
+          ["Notas internas del account executive", "Mezclan hechos, opiniones y estrategia comercial"],
+        ], {
+          learningGoal: "Decidir qué entra, qué se transforma y qué queda fuera.",
+          evidenceExpected: "Acciones por campo: usar, anonimizar, agregar o excluir.",
+          simulationConsequence: "El agente tendrá contexto suficiente para priorizar sin copiar identificadores ni notas internas al modelo.",
+          managerSignal: "Muestra si puede conservar señal mientras reduce exposición.",
+        }),
+        reading("02.03", "Contexto no es permiso.", "HubSpot puede tener acceso a todo, pero el piloto no debe heredar todos los permisos del CRM. El agente sólo necesita señales para preparar, no datos para actuar externamente.", {
+          learningGoal: "Distinguir acceso del sistema de acceso permitido para el caso.",
+          caseReveal: "El error común es asumir que si el dato está en CRM, puede entrar al prompt.",
+          managerSignal: "Evita sobreexposición por comodidad operativa.",
+        }),
         data("02.04", "Clasifica señales de intención.", [
-          ["Fecha de última reunión", "Ayuda a ubicar el momento comercial", "Usar"],
-          ["Transcripción completa", "Puede incluir información sensible", "Anonimizar"],
-          ["Score automático sin explicación", "Puede orientar, pero requiere fuente", "Agregar"],
-        ]),
-        reading("02.05", "Ya tienes el perímetro.", "Ahora puedes crear un brief de agente con acceso limitado, acción máxima y condición de paro."),
-      ]),
+          ["Fecha de última reunión", "Ayuda a ubicar urgencia sin exponer contenido sensible"],
+          ["Transcripción completa de la llamada", "Puede incluir información personal o estrategia de negociación"],
+          ["Competidor mencionado", "Señal útil si se agrupa sin citar notas privadas"],
+          ["Motivo de siguiente paso", "Útil si se resume como categoría, no como cita literal"],
+        ], {
+          learningGoal: "Preparar un dataset seguro para delegación.",
+          evidenceExpected: "Decisiones de minimización sobre señales de intención.",
+          simulationConsequence: "El brief del agente se construirá con categorías y rangos, no con datos crudos de clientes.",
+          managerSignal: "Diferencia personalización legítima de exposición innecesaria.",
+        }),
+        reading("02.05", "Ya tienes un perímetro de trabajo.", "El agente puede usar etapa, última actividad y categorías agregadas. No debe usar correos, teléfonos, notas internas crudas ni transcripciones completas.", {
+          learningGoal: "Cerrar la sección con un perímetro operable.",
+          caseReveal: "La calidad del agente empieza antes del prompt: empieza en qué le permites ver.",
+          managerSignal: "Define controles de datos que alguien más podría aplicar.",
+        }),
+      ], {
+        protect: "La señal comercial útil sin exponer datos personales o estrategia interna.",
+        evidence: "Tus clasificaciones muestran si sabes minimizar datos antes de usar IA.",
+        next: "Ahora traduce ese perímetro en un brief de agente con autonomía limitada.",
+      }),
       section("IA", [
-        reading("03.01", "Define el trabajo del agente.", "Un agente necesita tarea, acceso, acción máxima y condición de paro. Sin eso, sólo estás automatizando ambigüedad."),
-        agent("03.02", "Escribe el brief del agente.", "Configura una decisión a la vez: tarea, acceso permitido, acción máxima y cuándo debe detenerse."),
-        reading("03.03", "Los permisos son la parte crítica.", "La diferencia entre ayuda y riesgo está en si el agente puede leer, redactar, enviar o actualizar sin revisión."),
-        permission("03.04", "Configura permisos.", ["Leer CRM", "Crear borrador", "Enviar correo", "Actualizar etapa del deal"]),
-        reading("03.05", "El flujo queda acotado.", "Si el agente prepara borradores y deja registro, acelera. Si envía o modifica pipeline sin revisión, rompe control."),
-      ]),
+        reading("03.01", "El brief define la autonomía.", "Un agente necesita tarea, acceso permitido, acción máxima y condición de paro. Si una de esas piezas falta, el sistema decidirá por defecto.", {
+          learningGoal: "Convertir el perímetro de datos en instrucciones de agente.",
+          caseReveal: "El brief es el contrato operativo del agente.",
+          stakeholderPressure: "La VP pregunta si el agente puede mandar emails si la confianza supera 80%.",
+          managerSignal: "Evita delegar ambigüedad.",
+        }),
+        agent("03.02", "Construye el brief del agente.", "Configura una decisión a la vez: tarea, acceso permitido, acción máxima y cuándo debe detenerse.", {
+          learningGoal: "Delegar preparación comercial sin delegar responsabilidad.",
+          evidenceExpected: "Tarea, acceso permitido, acción máxima y condición de paro.",
+          simulationConsequence: "El agente queda autorizado para preparar trabajo y obligado a detenerse ante datos sensibles, baja fuente o impacto externo.",
+          managerSignal: "Define límites de autonomía que el equipo puede auditar.",
+        }),
+        reading("03.03", "Los permisos son la parte crítica.", "La diferencia entre ayuda y riesgo está en si el agente puede leer, redactar, enviar o actualizar. Cada permiso debe tener una razón operativa.", {
+          learningGoal: "Pasar de brief a permisos concretos.",
+          caseReveal: "Enviar y actualizar pipeline son acciones externas: no son equivalentes a redactar un borrador.",
+          managerSignal: "Sabe dónde colocar approval gates.",
+        }),
+        permission("03.04", "Configura permisos del piloto.", [
+          "Leer etapa del deal y última actividad",
+          "Leer notas internas completas",
+          "Crear borrador de follow-up",
+          "Enviar correo al cliente",
+          "Actualizar etapa con registro",
+        ], {
+          learningGoal: "Asignar permitir, revisar o bloquear según riesgo.",
+          evidenceExpected: "Matriz de permisos por acción.",
+          simulationConsequence: "El piloto queda con borradores revisables, registro en CRM y bloqueo de acciones externas sin humano.",
+          managerSignal: "Distingue preparación segura de ejecución riesgosa.",
+        }),
+        workflow("03.05", "Arma el flujo mínimo del piloto.", [
+          "Seleccionar SQLs sin respuesta reciente",
+          "Minimizar datos del CRM",
+          "Generar borrador con IA",
+          "Revisión del account executive",
+          "Registrar resultado en HubSpot",
+        ], {
+          learningGoal: "Convertir permisos en flujo operable.",
+          evidenceExpected: "Pasos activos que incluyan entrada, IA, revisión humana y salida medible.",
+          simulationConsequence: "RevOps puede correr el piloto sin depender de memoria informal ni permiso tácito.",
+          managerSignal: "Diseña automatización parcial con handoffs claros.",
+        }),
+      ], {
+        protect: "La autonomía limitada: preparar sí, actuar externamente no.",
+        evidence: "Tu brief, permisos y flujo muestran si sabes gobernar agentes.",
+        next: "Ahora revisa una corrida realista del agente y detecta dónde se rompe el control.",
+      }),
       section("Revisión", [
-        reading("04.01", "El agente ya corrió una vez.", "Ahora revisa el log como si fueras responsable de autorizar el flujo para todo el equipo."),
-        logs("04.02", "Revisa la corrida del agente.", ["Marcó alta intención sin fuente", "Creó borrador pendiente de aprobación", "Actualizó etapa del deal automáticamente"]),
-        reading("04.03", "El log cuenta la verdad del sistema.", "Un buen operador detecta cuándo el agente inventó intención, se saltó aprobación o usó información que no debía."),
-        review("04.04", "Detecta errores antes de autorizar.", ["Follow-up menciona una objeción privada", "Borrador incluye pregunta útil y verificable", "CRM cambió sin nota de auditoría"]),
-        reading("04.05", "Ya sabes qué bloquear.", "La decisión final debe mantener velocidad comercial sin abrir un riesgo de contacto incorrecto."),
-      ]),
+        reading("04.01", "El agente ya corrió un dry-run.", "Antes de autorizar el piloto, revisa el log. La corrida parece útil, pero hay señales mezcladas: algunos pasos siguieron el flujo y otros cruzaron límites.", {
+          learningGoal: "Supervisar una automatización por evidencia, no por confianza.",
+          artifact: "Log de dry-run con acciones, razones, errores y cambios sugeridos.",
+          managerSignal: "Detecta fallas operativas antes de escalar.",
+        }),
+        logs("04.02", "Revisa la corrida del agente.", [
+          "09:02 · Lead L-204: borrador creado, no enviado, owner AE asignado",
+          "09:04 · Lead L-311: prompt incluyó correo y notas internas para personalización",
+          "09:06 · Lead L-419: agente reintentó 6 veces por error de CRM",
+          "09:10 · No se registró si el borrador redujo tiempo de respuesta",
+        ], {
+          learningGoal: "Marcar eventos que bloquearían el piloto.",
+          evidenceExpected: "Flags sobre datos sensibles, loops, señales sin fuente y falta de métrica.",
+          simulationConsequence: "El piloto no se autoriza completo; primero se corrigen logs, límites y medición.",
+          managerSignal: "No confunde actividad del agente con control del sistema.",
+        }),
+        reading("04.03", "El log cuenta la verdad del sistema.", "Un agente puede sonar correcto en el output final y aun así haber usado datos indebidos, reintentado sin límite o movido el CRM sin explicación.", {
+          learningGoal: "Entender por qué revisar logs importa más que leer sólo el borrador.",
+          caseReveal: "El riesgo aparece en el proceso, no únicamente en el texto final.",
+          managerSignal: "Supervisa sistemas agenticos, no sólo prompts.",
+        }),
+        review("04.04", "Revisa el borrador antes de autorizar.", [
+          "Vi que mencionaste a CompetidorX en la llamada; podemos responder con un descuento especial.",
+          "Te propongo tres horarios para retomar la conversación, sujeto a confirmación de tu AE.",
+          "Tu empresa parece lista para renovar si aceleramos la decisión esta semana.",
+          "Este borrador debe validarse por el account executive antes de enviarse.",
+        ], {
+          learningGoal: "Detectar información privada, inferencias y claims no verificados.",
+          evidenceExpected: "Segmentos marcados antes de que el borrador salga a Gmail.",
+          simulationConsequence: "El borrador queda como material interno; el AE revisa contexto y decide si se envía.",
+          managerSignal: "Valida outputs plausibles sin asumir que todo lo generado sirve.",
+        }),
+        pivot("04.05", "Elige la señal que llevarías a RevOps.", [
+          { métrica: "Tiempo a primer borrador", valor: "18 min", riesgo: "Bajo", uso: "Eficiencia" },
+          { métrica: "Emails enviados sin aprobación", valor: "0", riesgo: "Bajo", uso: "Control" },
+          { métrica: "Leads con datos sensibles en prompt", valor: "1 de 5", riesgo: "Alto", uso: "Bloqueo" },
+        ], {
+          learningGoal: "Separar actividad, riesgo e impacto.",
+          evidenceExpected: "Señal de negocio elegida para comunicar al manager.",
+          simulationConsequence: "La recomendación final deberá mencionar eficiencia potencial, bloqueo por datos y métrica faltante.",
+          managerSignal: "Traduce logs a decisión ejecutiva.",
+        }),
+      ], {
+        protect: "La evidencia operacional: logs, borradores y métricas.",
+        evidence: "Tus flags muestran si detectas fallas antes de escalar agentes.",
+        next: "Ahora decide qué piloto autorizarías y bajo qué controles.",
+      }),
       section("Decisión", [
-        reading("05.01", "La VP quiere una respuesta práctica.", "No basta decir que el agente tiene riesgos. Hay que decidir cómo usarlo mañana."),
-        decision("05.02", "Lanzar, pausar o escalar.", "El pipeline importa, pero el riesgo de enviar mal también.", ["Lanzar con revisión humana", "Pausar todo", "Permitir envío automático"]),
-        reading("05.03", "La opción responsable conserva avance.", "Premium no significa lento. Significa que la automatización tiene límites claros."),
-        decision("05.04", "Define el control mínimo.", "Antes de activar el flujo, ¿qué control debe quedar fijo?", ["Aprobación humana antes de envío", "Envío libre a cuentas frías", "Actualizar CRM sin registro"]),
-        reading("05.05", "La decisión ya tiene consecuencias.", "Ahora toca explicarla para que Ventas y RevOps la puedan operar sin dudas."),
-      ]),
+        reading("05.01", "La VP quiere una respuesta práctica.", "No basta decir que hay riesgos. Debes decidir qué parte se pilota, qué queda bloqueado y qué se mide desde el primer día.", {
+          learningGoal: "Convertir revisión en acción operativa.",
+          stakeholderPressure: "La VP acepta controles si puede recuperar velocidad esta semana.",
+          managerSignal: "Decide sin refugiarse en análisis infinito.",
+        }),
+        decision("05.02", "Elige la configuración del piloto.", "El pipeline importa, pero una automatización que contacta mal a clientes enterprise destruye confianza.", [
+          "Piloto con borradores y aprobación humana",
+          "Pausar todo hasta rediseñar política",
+          "Permitir envío automático con confianza alta",
+        ], {
+          learningGoal: "Elegir un tradeoff defendible.",
+          evidenceExpected: "Decisión y memo corto sobre velocidad, control y riesgo aceptado.",
+          simulationConsequence: "La opción con aprobación humana permite avanzar y reduce riesgo de contacto externo indebido.",
+          managerSignal: "Sabe pilotar sin abrir autonomía peligrosa.",
+        }),
+        reading("05.03", "Una buena decisión conserva avance.", "Premium no significa lento. Significa que la automatización tiene límites claros, métricas y dueños.", {
+          learningGoal: "Evitar el falso dilema entre bloquear todo o automatizar todo.",
+          caseReveal: "El piloto útil tiene una acción permitida, una bloqueada y una métrica clara.",
+          managerSignal: "Diseña control sin matar el caso de negocio.",
+        }),
+        permission("05.04", "Define los controles obligatorios.", [
+          "Aprobación humana antes de enviar Gmail",
+          "Registro de fuente para intención alta",
+          "Límite de reintentos por error de CRM",
+          "Cambio automático de etapa del deal",
+          "Medición de tiempo de respuesta",
+        ], {
+          learningGoal: "Fijar controles que sobreviven al primer piloto.",
+          evidenceExpected: "Permisos de control por acción crítica.",
+          simulationConsequence: "RevOps puede auditar el piloto y detenerlo si reaparecen datos sensibles o loops.",
+          managerSignal: "No deja governance como comentario decorativo.",
+        }),
+        decision("05.05", "Decide qué comunicarás mañana.", "La decisión final debe ser clara para Ventas, RevOps y Legal Ops.", [
+          "Piloto de 10 SQLs con borradores, aprobación AE y medición diaria",
+          "Agente libre para todas las cuentas medianas",
+          "Sólo análisis interno sin emails ni métrica comercial",
+        ], {
+          learningGoal: "Cerrar una recomendación aplicable.",
+          evidenceExpected: "Elección de alcance del piloto y justificación.",
+          simulationConsequence: "El piloto queda acotado a un grupo medible y reversible.",
+          managerSignal: "Pasa de criterio individual a regla de equipo.",
+        }),
+      ], {
+        protect: "El equilibrio entre velocidad comercial, confianza y control.",
+        evidence: "Tus decisiones muestran si puedes pilotar agentes sin sobredelegar.",
+        next: "Ahora escribe el memo que el VP podría usar para aprobar o ajustar el piloto.",
+      }),
       section("Respuesta", [
-        reading("06.01", "Cierra con una recomendación clara.", "La VP necesita saber qué autorizas, qué bloqueas y qué señal revisar después."),
-        memo("06.02", "Explica la recomendación a la VP.", "Qué autorizas, qué bloqueas y qué debe revisar una persona."),
-        reading("06.03", "No vendas el agente como magia.", "Describe la política operativa: preparación sí, envío automático no, cambio de etapa sólo con evidencia."),
-        memo("06.04", "Convierte la decisión en política breve.", "Escribe una regla de uso que el equipo pueda aplicar mañana."),
-        reading("06.05", "Caso terminado.", "La evidencia muestra si puedes trabajar con agentes sin perder responsabilidad comercial."),
-      ]),
+        reading("06.01", "Cierra como operador responsable.", "La VP necesita saber qué autorizas, qué bloqueas, quién revisa y qué métrica decidirá si el piloto escala.", {
+          learningGoal: "Preparar una respuesta ejecutiva basada en evidencia.",
+          caseReveal: "El memo no debe defender la IA; debe defender la decisión.",
+          managerSignal: "Comunica acción, controles y medición.",
+        }),
+        memo("06.02", "Escribe el memo para la VP.", "Incluye decisión, controles obligatorios, métrica de éxito y condición para pausar.", {
+          learningGoal: "Traducir criterio a recomendación manager-ready.",
+          evidenceExpected: "Memo con decisión, control, métrica y condición de paro.",
+          simulationConsequence: "El VP puede aprobar un piloto reversible en lugar de una automatización abierta.",
+          managerSignal: "Convierte IA en acción defendible.",
+        }),
+        reading("06.03", "No vendas el agente como magia.", "Una recomendación fuerte no promete autonomía total. Define preparación sí, envío automático no, cambio de etapa sólo con evidencia y registro.", {
+          learningGoal: "Evitar hype y dejar una política operativa.",
+          caseReveal: "El criterio premium se ve en límites claros, no en entusiasmo por la herramienta.",
+          managerSignal: "Mantiene responsabilidad humana en decisiones externas.",
+        }),
+        memo("06.04", "Convierte la decisión en regla de uso.", "Escribe una regla breve que cualquier AE pueda aplicar mañana sin preguntarte qué quiso decir el piloto.", {
+          learningGoal: "Hacer transferible la decisión.",
+          evidenceExpected: "Regla operativa breve y aplicable.",
+          simulationConsequence: "El equipo recibe un estándar: el agente prepara, el humano aprueba, RevOps mide y detiene si hay riesgo.",
+          managerSignal: "Produce una política que reduce ambigüedad del equipo.",
+        }),
+        reading("06.05", "Caso terminado.", "Tu evidencia muestra si puedes trabajar con agentes sin perder responsabilidad comercial: datos mínimos, permisos claros, logs revisados y decisión explicable.", {
+          learningGoal: "Cerrar el loop simulación → evidencia → acción.",
+          caseReveal: "La próxima re-simulación cambiará el canal y stakeholder para medir transferencia, no memoria.",
+          managerSignal: "Permite decidir entre pilotar, entrenar, pausar o escalar.",
+        }),
+      ], {
+        protect: "Una recomendación que el VP puede operar sin convertir al agente en vendedor autónomo.",
+        evidence: "El memo y la regla final muestran si el criterio se volvió acción.",
+        next: "El siguiente paso natural sería una re-simulación con otro canal y el mismo principio de control.",
+      }),
     ],
   },
   {
@@ -392,15 +609,48 @@ export function findDemoCase(id: string) {
   return demoCases.find((demoCase) => demoCase.id === id) ?? null;
 }
 
-function section(name: DemoCaseSection["name"], slides: DemoSlide[]): DemoCaseSection {
-  return { name, slides };
+type SlideLearningMeta = Pick<
+  DemoSlide,
+  "learningGoal" | "caseReveal" | "stakeholderPressure" | "artifact" | "evidenceExpected" | "simulationConsequence" | "managerSignal"
+>;
+
+function section(
+  name: DemoCaseSection["name"],
+  slides: DemoSlide[],
+  debrief?: DemoCaseSection["debrief"],
+): DemoCaseSection {
+  return {
+    name,
+    slides,
+    debrief: debrief ?? {
+      protect: `La decisión central de ${name.toLowerCase()}.`,
+      evidence: "La evidencia capturada en esta sección.",
+      next: "La siguiente sección aumenta la presión del caso.",
+    },
+  };
 }
 
-function reading(id: string, title: string, body: string): DemoSlide {
-  return { id, kind: "reading", eyebrow: "Lectura", title, body };
+function reading(id: string, title: string, body: string, meta: SlideLearningMeta = {}): DemoSlide {
+  return {
+    id,
+    kind: "reading",
+    eyebrow: "Lectura",
+    title,
+    body,
+    learningGoal: meta.learningGoal ?? "Entender la situación antes de decidir.",
+    caseReveal: meta.caseReveal,
+    stakeholderPressure: meta.stakeholderPressure,
+    artifact: meta.artifact,
+    managerSignal: meta.managerSignal,
+  };
 }
 
-function data(id: string, title: string, rows: Array<[string, string, string]>): DemoSlide {
+function data(
+  id: string,
+  title: string,
+  rows: Array<[string, string] | [string, string, string]>,
+  meta: SlideLearningMeta = {},
+): DemoSlide {
   return {
     id,
     kind: "exercise",
@@ -416,10 +666,14 @@ function data(id: string, title: string, rows: Array<[string, string, string]>):
         note: "Decide si aporta señal suficiente o si expone información de más.",
       })),
     },
+    learningGoal: meta.learningGoal ?? "Decidir qué datos puede usar la IA.",
+    evidenceExpected: meta.evidenceExpected ?? "Clasificación concreta de datos.",
+    simulationConsequence: meta.simulationConsequence ?? "El modelo sólo recibirá los datos que el participante deje pasar.",
+    managerSignal: meta.managerSignal ?? "Muestra criterio de datos y privacidad.",
   };
 }
 
-function ai(id: string, title: string, body: string, prompt: string): DemoSlide {
+function ai(id: string, title: string, body: string, prompt: string, meta: SlideLearningMeta = {}): DemoSlide {
   return {
     id,
     kind: "exercise",
@@ -428,10 +682,14 @@ function ai(id: string, title: string, body: string, prompt: string): DemoSlide 
     body,
     exerciseBlockId: "ai_textfield_free",
     exerciseProps: { promptPlaceholder: prompt },
+    learningGoal: meta.learningGoal ?? "Estructurar una petición abierta a un modelo.",
+    evidenceExpected: meta.evidenceExpected ?? "Prompt con objetivo, límites y validación.",
+    simulationConsequence: meta.simulationConsequence ?? "La calidad del output dependerá de la claridad del encargo.",
+    managerSignal: meta.managerSignal ?? "Muestra claridad de ejecución con IA.",
   };
 }
 
-function guided(id: string, title: string, body: string): DemoSlide {
+function guided(id: string, title: string, body: string, meta: SlideLearningMeta = {}): DemoSlide {
   return {
     id,
     kind: "exercise",
@@ -439,10 +697,14 @@ function guided(id: string, title: string, body: string): DemoSlide {
     title,
     body,
     exerciseBlockId: "ai_textfield_guided",
+    learningGoal: meta.learningGoal ?? "Construir un prompt a partir de decisiones discretas.",
+    evidenceExpected: meta.evidenceExpected ?? "Objetivo, audiencia, límites, modelo y prompt generado.",
+    simulationConsequence: meta.simulationConsequence ?? "El prompt reflejará las restricciones seleccionadas.",
+    managerSignal: meta.managerSignal ?? "Muestra criterio granular antes de usar IA.",
   };
 }
 
-function review(id: string, title: string, options: string[]): DemoSlide {
+function review(id: string, title: string, options: string[], meta: SlideLearningMeta = {}): DemoSlide {
   return {
     id,
     kind: "exercise",
@@ -457,10 +719,14 @@ function review(id: string, title: string, options: string[]): DemoSlide {
         issue: inferReviewIssue(text),
       })),
     },
+    learningGoal: meta.learningGoal ?? "Revisar una salida de IA antes de usarla.",
+    evidenceExpected: meta.evidenceExpected ?? "Segmentos marcados como riesgosos o pendientes.",
+    simulationConsequence: meta.simulationConsequence ?? "Los segmentos marcados se convierten en controles antes de avanzar.",
+    managerSignal: meta.managerSignal ?? "Muestra validación y juicio.",
   };
 }
 
-function decision(id: string, title: string, body: string, options: string[]): DemoSlide {
+function decision(id: string, title: string, body: string, options: string[], meta: SlideLearningMeta = {}): DemoSlide {
   return {
     id,
     kind: "exercise",
@@ -476,10 +742,14 @@ function decision(id: string, title: string, body: string, options: string[]): D
       })),
       memoPlaceholder: "Explica la decisión, el riesgo que aceptas y qué validación debe ocurrir antes de avanzar.",
     },
+    learningGoal: meta.learningGoal ?? "Elegir una acción con ventajas y costos reales.",
+    evidenceExpected: meta.evidenceExpected ?? "Decisión seleccionada y justificación breve.",
+    simulationConsequence: meta.simulationConsequence ?? "La decisión elegida define qué puede avanzar y qué queda bloqueado.",
+    managerSignal: meta.managerSignal ?? "Muestra juicio e impacto.",
   };
 }
 
-function memo(id: string, title: string, body: string): DemoSlide {
+function memo(id: string, title: string, body: string, meta: SlideLearningMeta = {}): DemoSlide {
   return {
     id,
     kind: "exercise",
@@ -490,14 +760,29 @@ function memo(id: string, title: string, body: string): DemoSlide {
     exerciseProps: {
       memoPlaceholder: body,
     },
+    learningGoal: meta.learningGoal ?? "Convertir la decisión en comunicación operable.",
+    evidenceExpected: meta.evidenceExpected ?? "Memo claro con acción, razón y control.",
+    simulationConsequence: meta.simulationConsequence ?? "El líder recibe una recomendación accionable.",
+    managerSignal: meta.managerSignal ?? "Muestra impacto y claridad ejecutiva.",
   };
 }
 
-function agent(id: string, title: string, body: string): DemoSlide {
-  return { id, kind: "exercise", eyebrow: "Ejercicio", title, body, exerciseBlockId: "agent_brief_builder" };
+function agent(id: string, title: string, body: string, meta: SlideLearningMeta = {}): DemoSlide {
+  return {
+    id,
+    kind: "exercise",
+    eyebrow: "Ejercicio",
+    title,
+    body,
+    exerciseBlockId: "agent_brief_builder",
+    learningGoal: meta.learningGoal ?? "Delegar una tarea a un agente sin perder control.",
+    evidenceExpected: meta.evidenceExpected ?? "Brief con tarea, acceso, acción máxima y condición de paro.",
+    simulationConsequence: meta.simulationConsequence ?? "El agente sólo podrá operar dentro del brief declarado.",
+    managerSignal: meta.managerSignal ?? "Muestra criterio de autonomía y límites.",
+  };
 }
 
-function permission(id: string, title: string, options: string[]): DemoSlide {
+function permission(id: string, title: string, options: string[], meta: SlideLearningMeta = {}): DemoSlide {
   return {
     id,
     kind: "exercise",
@@ -506,10 +791,14 @@ function permission(id: string, title: string, options: string[]): DemoSlide {
     body: "Define qué puede hacer solo, qué requiere revisión y qué debe bloquearse.",
     exerciseBlockId: "permission_matrix",
     exerciseProps: { permissionRows: options },
+    learningGoal: meta.learningGoal ?? "Definir permisos y gates de aprobación.",
+    evidenceExpected: meta.evidenceExpected ?? "Matriz de permitir, revisar o bloquear.",
+    simulationConsequence: meta.simulationConsequence ?? "Las acciones bloqueadas no se ejecutan automáticamente.",
+    managerSignal: meta.managerSignal ?? "Muestra governance operacional.",
   };
 }
 
-function logs(id: string, title: string, options: string[]): DemoSlide {
+function logs(id: string, title: string, options: string[], meta: SlideLearningMeta = {}): DemoSlide {
   return {
     id,
     kind: "exercise",
@@ -524,6 +813,54 @@ function logs(id: string, title: string, options: string[]): DemoSlide {
         severity: inferRisk(text),
       })),
     },
+    learningGoal: meta.learningGoal ?? "Supervisar evidencia de una corrida automatizada.",
+    evidenceExpected: meta.evidenceExpected ?? "Eventos marcados como riesgo o bloqueo.",
+    simulationConsequence: meta.simulationConsequence ?? "Los eventos marcados alimentan la decisión de autorizar o pausar.",
+    managerSignal: meta.managerSignal ?? "Muestra supervisión de agentes.",
+  };
+}
+
+function workflow(id: string, title: string, steps: string[], meta: SlideLearningMeta = {}): DemoSlide {
+  return {
+    id,
+    kind: "exercise",
+    eyebrow: "Ejercicio",
+    title,
+    body: "Activa los pasos que debe tener el flujo para que sea operable y auditable.",
+    exerciseBlockId: "workflow_builder",
+    exerciseProps: { workflowSteps: steps },
+    learningGoal: meta.learningGoal ?? "Armar un flujo de IA con revisión humana.",
+    evidenceExpected: meta.evidenceExpected ?? "Pasos seleccionados del workflow.",
+    simulationConsequence: meta.simulationConsequence ?? "El flujo elegido define dónde entra IA, dónde revisa humano y dónde se mide impacto.",
+    managerSignal: meta.managerSignal ?? "Muestra ejecución con IA en workflow real.",
+  };
+}
+
+function pivot(
+  id: string,
+  title: string,
+  rows: Array<Record<string, string>>,
+  meta: SlideLearningMeta = {},
+): DemoSlide {
+  return {
+    id,
+    kind: "exercise",
+    eyebrow: "Ejercicio",
+    title,
+    body: "Elige qué señal de negocio llevarías al manager antes de decidir.",
+    exerciseBlockId: "dashboard_pivot",
+    exerciseProps: {
+      pivotRows: rows,
+      pivotOptions: [
+        { id: "valor", label: "Valor" },
+        { id: "riesgo", label: "Riesgo" },
+        { id: "uso", label: "Uso" },
+      ],
+    },
+    learningGoal: meta.learningGoal ?? "Leer señales de negocio y riesgo.",
+    evidenceExpected: meta.evidenceExpected ?? "Señal priorizada para el manager.",
+    simulationConsequence: meta.simulationConsequence ?? "La señal elegida orienta la recomendación final.",
+    managerSignal: meta.managerSignal ?? "Muestra impacto y criterio ejecutivo.",
   };
 }
 
