@@ -80,6 +80,12 @@ export function AIComparison({
     onPatch?.(next);
   }
 
+  // Disclosure progresivo: muestra primero solo las 2 cards. Las opciones
+  // secundarias (fusionar/rechazar) y el textarea de razón aparecen sólo
+  // después de que el participante elige A o B. Reduce densidad inicial
+  // sin perder evidencia para el judge.
+  const hasInitialChoice = payload.selected_output !== null;
+
   return (
     <div className="simulador-root">
       <Label>Elige cuál respuesta llevarías al manager</Label>
@@ -100,32 +106,51 @@ export function AIComparison({
         />
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-2 sm:max-w-md">
-        {SECONDARY_CHOICES.map((choice) => (
-          <ChoiceButton
-            key={choice.value}
-            selected={payload.selected_output === choice.value}
-            onClick={() => update({ ...payload, selected_output: choice.value })}
-          >
-            {choice.label}
-          </ChoiceButton>
-        ))}
-      </div>
+      {/* Hint disclosure cuando aún no hay elección */}
+      {!hasInitialChoice && (
+        <p className="mt-3 ts-footnote text-[var(--text-tertiary)]">
+          Elige una de las dos respuestas para continuar.
+        </p>
+      )}
 
-      <label className="mt-5 block">
-        <span className="text-[13px] font-medium text-[var(--text-secondary)]">
-          ¿Por qué? Una línea sobre el tradeoff.
-        </span>
-        <textarea
-          value={payload.tradeoff_reason}
-          onChange={(event) =>
-            update({ ...payload, tradeoff_reason: event.target.value })
-          }
-          rows={3}
-          placeholder="Qué ganas y qué pierdes con esa elección."
-          className="mt-2 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-[14px] leading-6 text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
-        />
-      </label>
+      {/* Capa secundaria: aparece tras elegir A o B */}
+      {hasInitialChoice && (
+        <div className="mt-6 space-y-5 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div>
+            <span className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+              ¿Otra opción?
+            </span>
+            <div className="mt-2 grid grid-cols-2 gap-2 sm:max-w-md">
+              {SECONDARY_CHOICES.map((choice) => (
+                <ChoiceButton
+                  key={choice.value}
+                  selected={payload.selected_output === choice.value}
+                  onClick={() =>
+                    update({ ...payload, selected_output: choice.value })
+                  }
+                >
+                  {choice.label}
+                </ChoiceButton>
+              ))}
+            </div>
+          </div>
+
+          <label className="block">
+            <span className="ts-subhead font-medium text-[var(--text-secondary)]">
+              ¿Por qué? Una línea sobre el tradeoff.
+            </span>
+            <textarea
+              value={payload.tradeoff_reason}
+              onChange={(event) =>
+                update({ ...payload, tradeoff_reason: event.target.value })
+              }
+              rows={3}
+              placeholder="Qué ganas y qué pierdes con esa elección."
+              className="mt-2 w-full resize-none rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 ts-body text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
+            />
+          </label>
+        </div>
+      )}
     </div>
   );
 }

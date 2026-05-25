@@ -117,77 +117,91 @@ export function AgentBriefBuilder({
     onPatch?.(next);
   }
 
+  // Layout aligerado (Typeform-style):
+  //  - Stepper minimal: 4 dots numerados con label horizontal compacto
+  //  - Una pregunta a la vez en el centro, opciones GuidedOption
+  //  - Auto-advance al elegir
+  //  - Recap abajo en 4 líneas compactas (replaza el panel lateral cargado)
   return (
-    <div className="simulador-root">
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-stretch">
-        <div className="flex min-h-[400px] flex-col">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
-                Construye el brief
-              </div>
-              <p className="mt-2 max-w-xl text-[15px] leading-6 text-[var(--text-secondary)]">
-                Define una sola pieza a la vez. El caso controla la situación; el participante sólo decide cómo delegar sin abrir riesgos.
-              </p>
-            </div>
-            <span className="shrink-0 rounded-full bg-[var(--surface-2)] px-2.5 py-1 text-[12px] text-[var(--text-secondary)]">
-              {completed}/4
-            </span>
-          </div>
-
-          <div className="mt-5 grid grid-cols-4 gap-2">
-            {FIELDS.map((field, index) => (
+    <div className="simulador-root space-y-6">
+      {/* Stepper minimal · 4 dots con label */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3 overflow-x-auto">
+          {FIELDS.map((field, index) => {
+            const isActive = activeField === field;
+            const isDone = Boolean(payload[field]);
+            return (
               <button
                 key={field}
                 type="button"
                 onClick={() => setActiveField(field)}
-                className={`min-h-10 rounded-xl border px-2 text-[12px] font-medium transition-colors ${
-                  activeField === field
-                    ? "border-[var(--accent)] bg-[var(--accent)] text-white"
-                    : payload[field]
-                      ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--text-primary)]"
-                      : "border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-secondary)]"
+                className={`flex items-center gap-2 whitespace-nowrap transition-colors ${
+                  isActive
+                    ? "text-[var(--text-primary)] font-medium"
+                    : isDone
+                      ? "text-[var(--text-secondary)]"
+                      : "text-[var(--text-tertiary)]"
                 }`}
               >
-                {index + 1}. {AGENT_BRIEF_OPTIONS[field].label}
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-5 rounded-3xl bg-[var(--surface-2)] p-4">
-            <div className="text-[15px] font-semibold text-[var(--text-primary)]">
-              {activeGroup.label}
-            </div>
-            <div className="mt-3 grid gap-2">
-              {activeGroup.options.map((option) => (
-                <GuidedOption
-                  key={option}
-                  selected={payload[activeField] === option}
-                  onClick={() => {
-                    updateField(activeField, option);
-                    const nextField = FIELDS[Math.min(FIELDS.length - 1, activeIndex + 1)];
-                    if (nextField !== activeField) setActiveField(nextField);
-                  }}
+                <span
+                  className={`grid h-5 w-5 place-items-center rounded-full ts-caption-2 font-semibold tabular-nums transition-colors ${
+                    isActive
+                      ? "bg-[var(--accent)] text-white"
+                      : isDone
+                        ? "bg-[var(--surface-3)] text-[var(--text-secondary)]"
+                        : "border border-[var(--border)] text-[var(--text-tertiary)]"
+                  }`}
                 >
-                  {option}
-                </GuidedOption>
-              ))}
-            </div>
-          </div>
+                  {index + 1}
+                </span>
+                <span className="ts-subhead">{AGENT_BRIEF_OPTIONS[field].label}</span>
+              </button>
+            );
+          })}
         </div>
+        <span className="ts-caption-1 tabular-nums text-[var(--text-tertiary)]">
+          {completed}/4
+        </span>
+      </div>
 
-        <div className="flex min-h-[400px] flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
-          <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
-            Brief del agente
-          </div>
-          <div className="mt-4 grid gap-2">
-            <AgentBriefLine label="Tarea" value={payload.task} />
-            <AgentBriefLine label="Acceso permitido" value={payload.access} />
-            <AgentBriefLine label="Puede hacer" value={payload.action} />
-            <AgentBriefLine label="Debe detenerse si" value={payload.stop} />
-          </div>
+      {/* Pregunta activa · una a la vez */}
+      <div>
+        <div className="ts-callout font-semibold text-[var(--text-primary)]">
+          {activeGroup.label}
+        </div>
+        <div className="mt-4 grid gap-2">
+          {activeGroup.options.map((option) => (
+            <GuidedOption
+              key={option}
+              selected={payload[activeField] === option}
+              onClick={() => {
+                updateField(activeField, option);
+                const nextField =
+                  FIELDS[Math.min(FIELDS.length - 1, activeIndex + 1)];
+                if (nextField !== activeField) setActiveField(nextField);
+              }}
+            >
+              {option}
+            </GuidedOption>
+          ))}
         </div>
       </div>
+
+      {/* Recap compacto · solo se muestra cuando hay al menos 1 elegido */}
+      {completed > 0 && (
+        <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface-2)] p-4 space-y-1.5">
+          {payload.task && <AgentBriefLine label="Tarea" value={payload.task} />}
+          {payload.access && (
+            <AgentBriefLine label="Acceso permitido" value={payload.access} />
+          )}
+          {payload.action && (
+            <AgentBriefLine label="Puede hacer" value={payload.action} />
+          )}
+          {payload.stop && (
+            <AgentBriefLine label="Debe detenerse si" value={payload.stop} />
+          )}
+        </div>
+      )}
     </div>
   );
 }
