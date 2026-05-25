@@ -11,6 +11,12 @@
 
 import { useState } from "react";
 import { ReadingPassive } from "@/app/exercise-lab/blocks/ReadingPassive";
+import { ReadingMessage } from "@/app/exercise-lab/blocks/ReadingMessage";
+import { ReadingDataTable } from "@/app/exercise-lab/blocks/ReadingDataTable";
+import { ReadingImage } from "@/app/exercise-lab/blocks/ReadingImage";
+import { ReadingKpiCards } from "@/app/exercise-lab/blocks/ReadingKpiCards";
+import { ReadingTimeline } from "@/app/exercise-lab/blocks/ReadingTimeline";
+import { ReadingAttachment } from "@/app/exercise-lab/blocks/ReadingAttachment";
 import { DataTableTriage } from "@/app/exercise-lab/blocks/DataTableTriage";
 import { PermissionMatrix } from "@/app/exercise-lab/blocks/PermissionMatrix";
 import { AIComparison } from "@/app/exercise-lab/blocks/AIComparison";
@@ -47,6 +53,18 @@ export function ExerciseBlockRenderer({
   switch (blockId) {
     case "reading_passive":
       return <ReadingPassiveWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "reading_message":
+      return <ReadingMessageWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "reading_data_table":
+      return <ReadingDataTableWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "reading_image":
+      return <ReadingImageWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "reading_kpi_cards":
+      return <ReadingKpiCardsWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "reading_timeline":
+      return <ReadingTimelineWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "reading_attachment":
+      return <ReadingAttachmentWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "data_table_triage":
       return <DataTableWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "permission_matrix":
@@ -83,6 +101,48 @@ function ReadingPassiveWrapper({ sessionId, mode, slideId }: WrapperProps) {
     emptyPayload("reading_passive") as Extract<ExerciseResponsePayload, { block_id: "reading_passive" }>,
   );
   return <ReadingPassive payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function ReadingMessageWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("reading_message") as Extract<ExerciseResponsePayload, { block_id: "reading_message" }>,
+  );
+  return <ReadingMessage payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+}
+
+function ReadingDataTableWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("reading_data_table") as Extract<ExerciseResponsePayload, { block_id: "reading_data_table" }>,
+  );
+  return <ReadingDataTable payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+}
+
+function ReadingImageWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("reading_image") as Extract<ExerciseResponsePayload, { block_id: "reading_image" }>,
+  );
+  return <ReadingImage payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+}
+
+function ReadingKpiCardsWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("reading_kpi_cards") as Extract<ExerciseResponsePayload, { block_id: "reading_kpi_cards" }>,
+  );
+  return <ReadingKpiCards payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+}
+
+function ReadingTimelineWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("reading_timeline") as Extract<ExerciseResponsePayload, { block_id: "reading_timeline" }>,
+  );
+  return <ReadingTimeline payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+}
+
+function ReadingAttachmentWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("reading_attachment") as Extract<ExerciseResponsePayload, { block_id: "reading_attachment" }>,
+  );
+  return <ReadingAttachment payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
 }
 
 function DataTableWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {

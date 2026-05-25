@@ -54,6 +54,36 @@ const ReadingPassiveSchema = z.strictObject({
   acknowledged: z.boolean(),
 });
 
+const ReadingMessageSchema = z.strictObject({
+  block_id: z.literal("reading_message"),
+  acknowledged: z.boolean(),
+});
+
+const ReadingDataTableSchema = z.strictObject({
+  block_id: z.literal("reading_data_table"),
+  acknowledged: z.boolean(),
+});
+
+const ReadingImageSchema = z.strictObject({
+  block_id: z.literal("reading_image"),
+  acknowledged: z.boolean(),
+});
+
+const ReadingKpiCardsSchema = z.strictObject({
+  block_id: z.literal("reading_kpi_cards"),
+  acknowledged: z.boolean(),
+});
+
+const ReadingTimelineSchema = z.strictObject({
+  block_id: z.literal("reading_timeline"),
+  acknowledged: z.boolean(),
+});
+
+const ReadingAttachmentSchema = z.strictObject({
+  block_id: z.literal("reading_attachment"),
+  acknowledged: z.boolean(),
+});
+
 const AITextfieldFreeSchema = z.strictObject({
   block_id: z.literal("ai_textfield_free"),
   prompt_text: z.string(),
@@ -155,6 +185,12 @@ const TradeoffDecisionMemoSchema = z.strictObject({
 
 export const ExerciseResponsePayloadSchema = z.discriminatedUnion("block_id", [
   ReadingPassiveSchema,
+  ReadingMessageSchema,
+  ReadingDataTableSchema,
+  ReadingImageSchema,
+  ReadingKpiCardsSchema,
+  ReadingTimelineSchema,
+  ReadingAttachmentSchema,
   AITextfieldFreeSchema,
   AITextfieldGuidedSchema,
   DataTableTriageSchema,

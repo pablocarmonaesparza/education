@@ -53,12 +53,20 @@ export interface VoiceNote {
  */
 export type ExerciseResponsePayload =
   | {
-      // Bloque PASIVO — sin interacción, solo lectura.
+      // Bloques PASIVOS · sin interacción, solo lectura.
       // `acknowledged` se vuelve true cuando el participante hace click
-      // en Continuar (= leyó el slide). No emite evidencia al judge.
+      // en Continuar (= leyó el slide). No emiten evidencia al judge.
+      // El contenido (mensaje, tabla, kpis, etc.) vive en `caseContext`,
+      // no en el payload.
       block_id: "reading_passive";
       acknowledged: boolean;
     }
+  | { block_id: "reading_message"; acknowledged: boolean }
+  | { block_id: "reading_data_table"; acknowledged: boolean }
+  | { block_id: "reading_image"; acknowledged: boolean }
+  | { block_id: "reading_kpi_cards"; acknowledged: boolean }
+  | { block_id: "reading_timeline"; acknowledged: boolean }
+  | { block_id: "reading_attachment"; acknowledged: boolean }
   | {
       block_id: "ai_textfield_free";
       prompt_text: string;
@@ -216,6 +224,12 @@ export type ExerciseRenderer<
 export function emptyPayload(block_id: ExerciseBlockId): ExerciseResponsePayload {
   switch (block_id) {
     case "reading_passive":
+    case "reading_message":
+    case "reading_data_table":
+    case "reading_image":
+    case "reading_kpi_cards":
+    case "reading_timeline":
+    case "reading_attachment":
       return { block_id, acknowledged: false };
     case "ai_textfield_free":
       return {

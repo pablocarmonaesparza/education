@@ -2,17 +2,17 @@
 /**
  * AUTO-GENERATED — NO EDITAR A MANO.
  *
- * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.3.0
+ * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.4.0
  * Generador: scripts/simulador/generate-exercise-blocks.mjs
  *
  * Para regenerar: `bun run simulador:gen-blocks`
  * Para validar sincronía con lab/runtime: `bun run simulador:check-blocks`
  *
  * Status del catálogo: canonical_after_exercise_lab_review
- * Total bloques: 12
+ * Total bloques: 18
  */
 
-export type ExerciseBlockId = "reading_passive" | "ai_textfield_free" | "ai_textfield_guided" | "data_table_triage" | "permission_matrix" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "agent_brief_builder" | "run_log_review" | "dashboard_pivot" | "tradeoff_decision_memo";
+export type ExerciseBlockId = "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "ai_textfield_guided" | "data_table_triage" | "permission_matrix" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "agent_brief_builder" | "run_log_review" | "dashboard_pivot" | "tradeoff_decision_memo";
 
 export type ExerciseBlockFamily = "passive" | "ai_native" | "traditional_plus_ai_context" | "traditional_business_signal" | "traditional_closure";
 
@@ -44,8 +44,8 @@ export interface ExerciseBlock {
 export const exerciseBlocks: ExerciseBlock[] = [
   {
     id: "reading_passive",
-    labRef: "00",
-    publicName: "Diapositiva informativa",
+    labRef: "00A",
+    publicName: "Informativa basica",
     family: "passive",
     levels: ["N1", "N2", "N3"],
     profiles: [
@@ -59,20 +59,226 @@ export const exerciseBlocks: ExerciseBlock[] = [
     primaryDimensions: [],
     runtimeSections: ["Contexto", "Datos", "IA", "Revision", "Decision", "Respuesta"],
     whenToUse: [
-      "Introducir el caso, una seccion o una transicion sin interaccion.",
-      "Recap rapido o instrucciones previas al ejercicio activo siguiente.",
-      "Cerrar una seccion con un mensaje contextual antes de seguir.",
+      "Introducir el caso o una seccion sin interaccion.",
+      "Recap rapido o instrucciones previas al ejercicio activo.",
+      "Cerrar una seccion con un mensaje contextual.",
     ],
     avoidWhen: [
-      "El caso necesita evidencia para evaluar — usa un bloque activo.",
+      "El caso necesita evidencia para evaluar; usa un bloque activo.",
       "El body es muy largo y no cabe en viewport sin scroll.",
     ],
     personalizationKnobs: [
-      "titulo (3-4 palabras)",
-      "body markdown (1-3 renglones)",
+      "titulo",
+      "body markdown",
     ],
     emits: [],
     uiPattern: "titulo + body markdown + boton continuar; sin interaccion",
+    defaultEmptyFields: [],
+    scoringMethod: "passive",
+    completion: "auto al clickear continuar",
+  },
+  {
+    id: "reading_message",
+    labRef: "00B",
+    publicName: "Informativa mensaje",
+    family: "passive",
+    levels: ["N1", "N2", "N3"],
+    profiles: [
+      "marketing_growth",
+      "sales_revops",
+      "customer_success_support",
+      "operations_automation",
+      "finance_fpa",
+      "legal_compliance_privacy",
+    ],
+    primaryDimensions: [],
+    runtimeSections: ["Contexto", "Datos"],
+    whenToUse: [
+      "Mostrar email, chat o ticket que dispara el caso.",
+      "Reproducir conversacion de Slack o mensaje del cliente.",
+      "Citar comentario de stakeholder con avatar y timestamp.",
+    ],
+    avoidWhen: [
+      "El mensaje requiere respuesta activa; usa un bloque interactivo.",
+    ],
+    personalizationKnobs: [
+      "canal (email, chat, ticket)",
+      "remitente (nombre, rol, avatar)",
+      "destinatario",
+      "timestamp",
+      "subject (opcional)",
+      "body markdown",
+    ],
+    emits: [],
+    uiPattern: "titulo + body markdown + card de mensaje con avatar, from/to, timestamp, body",
+    defaultEmptyFields: [],
+    scoringMethod: "passive",
+    completion: "auto al clickear continuar",
+  },
+  {
+    id: "reading_data_table",
+    labRef: "00C",
+    publicName: "Informativa tabla",
+    family: "passive",
+    levels: ["N1", "N2", "N3"],
+    profiles: [
+      "marketing_growth",
+      "sales_revops",
+      "customer_success_support",
+      "operations_automation",
+      "finance_fpa",
+      "legal_compliance_privacy",
+    ],
+    primaryDimensions: [],
+    runtimeSections: ["Contexto", "Datos"],
+    whenToUse: [
+      "Mostrar filas de leads, tickets, transacciones o metricas tabulares.",
+      "Dar contexto de datos antes de pedir triage o decision.",
+    ],
+    avoidWhen: [
+      "Se necesita clasificar campos uno por uno; usa data_table_triage activo.",
+      "La tabla tiene 30+ filas; usa dashboard o segmentar.",
+    ],
+    personalizationKnobs: [
+      "columnas (key, label, width)",
+      "filas (data)",
+      "caption opcional",
+    ],
+    emits: [],
+    uiPattern: "titulo + body markdown + tabla con header sticky y filas",
+    defaultEmptyFields: [],
+    scoringMethod: "passive",
+    completion: "auto al clickear continuar",
+  },
+  {
+    id: "reading_image",
+    labRef: "00D",
+    publicName: "Informativa imagen",
+    family: "passive",
+    levels: ["N1", "N2", "N3"],
+    profiles: [
+      "marketing_growth",
+      "sales_revops",
+      "customer_success_support",
+      "operations_automation",
+      "finance_fpa",
+      "legal_compliance_privacy",
+    ],
+    primaryDimensions: [],
+    runtimeSections: ["Contexto", "Datos", "Revision"],
+    whenToUse: [
+      "Mostrar screenshot de dashboard, grafica o UI.",
+      "Captura de error o de un reporte estatico.",
+    ],
+    avoidWhen: [
+      "La imagen es decorativa sin aportar contexto.",
+      "El detalle es tan denso que necesita zoom interactivo.",
+    ],
+    personalizationKnobs: [
+      "src (url)",
+      "alt (accesibilidad)",
+      "caption (opcional)",
+    ],
+    emits: [],
+    uiPattern: "titulo + body markdown + imagen centrada con caption opcional",
+    defaultEmptyFields: [],
+    scoringMethod: "passive",
+    completion: "auto al clickear continuar",
+  },
+  {
+    id: "reading_kpi_cards",
+    labRef: "00E",
+    publicName: "Informativa KPIs",
+    family: "passive",
+    levels: ["N1", "N2", "N3"],
+    profiles: [
+      "marketing_growth",
+      "sales_revops",
+      "customer_success_support",
+      "operations_automation",
+      "finance_fpa",
+      "legal_compliance_privacy",
+    ],
+    primaryDimensions: [],
+    runtimeSections: ["Contexto", "Datos"],
+    whenToUse: [
+      "Situar contexto de negocio con 1-3 metricas grandes.",
+      "Mostrar MRR, conversion, churn, NPS antes de pedir analisis.",
+    ],
+    avoidWhen: [
+      "Hay 4+ metricas; usa tabla o dashboard.",
+      "Las metricas requieren interpretacion activa; usa dashboard_pivot.",
+    ],
+    personalizationKnobs: [
+      "kpis (value, label, delta opcional con direccion up/down/flat)",
+    ],
+    emits: [],
+    uiPattern: "titulo + body markdown + 1-3 cards de KPI con numero grande, label, delta",
+    defaultEmptyFields: [],
+    scoringMethod: "passive",
+    completion: "auto al clickear continuar",
+  },
+  {
+    id: "reading_timeline",
+    labRef: "00F",
+    publicName: "Informativa cronologia",
+    family: "passive",
+    levels: ["N1", "N2", "N3"],
+    profiles: [
+      "marketing_growth",
+      "sales_revops",
+      "customer_success_support",
+      "operations_automation",
+      "finance_fpa",
+      "legal_compliance_privacy",
+    ],
+    primaryDimensions: [],
+    runtimeSections: ["Contexto"],
+    whenToUse: [
+      "Mostrar secuencia de eventos del caso en orden cronologico.",
+      "Recap rapido de que paso antes de la decision actual.",
+    ],
+    avoidWhen: [
+      "Solo hay 1-2 eventos; usa body markdown plano.",
+      "El detalle de cada evento es muy largo; usa multiples slides.",
+    ],
+    personalizationKnobs: [
+      "events (when, what, who opcional)",
+    ],
+    emits: [],
+    uiPattern: "titulo + body markdown + linea vertical con dots y eventos cronologicos",
+    defaultEmptyFields: [],
+    scoringMethod: "passive",
+    completion: "auto al clickear continuar",
+  },
+  {
+    id: "reading_attachment",
+    labRef: "00G",
+    publicName: "Informativa adjunto",
+    family: "passive",
+    levels: ["N1", "N2", "N3"],
+    profiles: [
+      "marketing_growth",
+      "sales_revops",
+      "customer_success_support",
+      "operations_automation",
+      "finance_fpa",
+      "legal_compliance_privacy",
+    ],
+    primaryDimensions: [],
+    runtimeSections: ["Contexto", "Datos"],
+    whenToUse: [
+      "Adjuntar contrato, brief, presentacion o PDF al caso.",
+      "Simular email con archivo adjunto que debe revisarse.",
+    ],
+    avoidWhen: [
+      "El archivo debe abrirse y leerse completo; muestra contenido en otro bloque.",
+    ],
+    personalizationKnobs: [
+      "attachments (name, size, type, description opcional)",
+    ],
+    emits: [],
+    uiPattern: "titulo + body markdown + cards de archivo adjunto con icono, nombre, peso",
     defaultEmptyFields: [],
     scoringMethod: "passive",
     completion: "auto al clickear continuar",
@@ -480,6 +686,12 @@ export const exerciseBlocks: ExerciseBlock[] = [
 
 export const exerciseBlockIds: ExerciseBlockId[] = [
   "reading_passive",
+  "reading_message",
+  "reading_data_table",
+  "reading_image",
+  "reading_kpi_cards",
+  "reading_timeline",
+  "reading_attachment",
   "ai_textfield_free",
   "ai_textfield_guided",
   "data_table_triage",
@@ -500,14 +712,14 @@ export const exerciseBlockById: Record<ExerciseBlockId, ExerciseBlock> =
   >;
 
 export const exerciseBlockStats = {
-  total: 12,
+  total: 18,
   families: {
-    "passive": 1,
+    "passive": 7,
     "ai_native": 8,
     "traditional_plus_ai_context": 1,
     "traditional_business_signal": 1,
     "traditional_closure": 1
   },
-  catalogVersion: "0.3.0",
+  catalogVersion: "0.4.0",
   catalogStatus: "canonical_after_exercise_lab_review",
 } as const;

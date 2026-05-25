@@ -155,10 +155,58 @@ const brandLogo: Record<BrandKey, { light: string; dark?: string } | null> = {
 const exerciseList = [
   {
     id: "reading_passive",
-    eyebrow: "00 · Diapositiva informativa",
-    title: "Lectura, sin interacción.",
+    eyebrow: "00A · Informativa básica",
+    title: "Solo título y body.",
     description:
-      "Solo **título**, **body** y botón **Continuar**. Útil para *introducir* el caso, *contextualizar* una sección o *cerrar* con un mensaje antes del siguiente ejercicio.",
+      "Versión mínima de la diapositiva pasiva. Útil para *introducir* el caso, *contextualizar* una sección o *cerrar* con un mensaje antes del siguiente ejercicio activo.",
+    signals: [],
+  },
+  {
+    id: "reading_message",
+    eyebrow: "00B · Informativa mensaje",
+    title: "Email, chat o ticket.",
+    description:
+      "Renderea **una conversación** que dispara el caso. Útil cuando el contexto viene de un *cliente*, *manager* o *stakeholder* externo.",
+    signals: [],
+  },
+  {
+    id: "reading_data_table",
+    eyebrow: "00C · Informativa tabla",
+    title: "Datos del caso en tabla.",
+    description:
+      "Muestra **leads**, **tickets**, **transacciones** o **métricas** en formato tabular antes de pedir una decisión. Solo lectura, sin triage.",
+    signals: [],
+  },
+  {
+    id: "reading_image",
+    eyebrow: "00D · Informativa imagen",
+    title: "Captura o screenshot.",
+    description:
+      "Embebe una imagen estática: *screenshot de dashboard*, *gráfica*, *UI* o *captura de error*. Aporta contexto visual sin requerir interpretación activa.",
+    signals: [],
+  },
+  {
+    id: "reading_kpi_cards",
+    eyebrow: "00E · Informativa KPIs",
+    title: "1 a 3 métricas grandes.",
+    description:
+      "Sitúa contexto de negocio con **MRR**, **conversión**, **churn** o **NPS** en cards punchy antes de pedir análisis. Delta opcional con color por bandera.",
+    signals: [],
+  },
+  {
+    id: "reading_timeline",
+    eyebrow: "00F · Informativa cronología",
+    title: "Eventos en orden.",
+    description:
+      "Línea vertical con dots y eventos cronológicos. Recap rápido de *qué pasó antes* de la decisión actual. El último evento puede llevar énfasis accent.",
+    signals: [],
+  },
+  {
+    id: "reading_attachment",
+    eyebrow: "00G · Informativa adjunto",
+    title: "Documentos del caso.",
+    description:
+      "Cards de archivo adjunto estilo email: **PDF**, **DOCX**, **XLSX**. Para contratos, briefs, presentaciones que se entregan al participante sin abrir.",
     signals: [],
   },
   {

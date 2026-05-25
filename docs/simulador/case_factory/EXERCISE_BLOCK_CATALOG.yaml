@@ -1,5 +1,5 @@
 exercise_block_catalog:
-  version: 0.3.0
+  version: 0.4.0
   status: canonical_after_exercise_lab_review
   source_route: /exercise-lab
   purpose: >
@@ -39,25 +39,163 @@ exercise_block_catalog:
 
   blocks:
     - id: reading_passive
-      lab_ref: "00"
-      public_name: "Diapositiva informativa"
+      lab_ref: "00A"
+      public_name: "Informativa basica"
       family: passive
       levels: [N1, N2, N3]
       profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
       primary_dimensions: []
       runtime_sections: [Contexto, Datos, IA, Revision, Decision, Respuesta]
       when_to_use:
-        - "Introducir el caso, una seccion o una transicion sin interaccion."
-        - "Recap rapido o instrucciones previas al ejercicio activo siguiente."
-        - "Cerrar una seccion con un mensaje contextual antes de seguir."
+        - "Introducir el caso o una seccion sin interaccion."
+        - "Recap rapido o instrucciones previas al ejercicio activo."
+        - "Cerrar una seccion con un mensaje contextual."
       avoid_when:
-        - "El caso necesita evidencia para evaluar — usa un bloque activo."
+        - "El caso necesita evidencia para evaluar; usa un bloque activo."
         - "El body es muy largo y no cabe en viewport sin scroll."
-      personalization_knobs:
-        - "titulo (3-4 palabras)"
-        - "body markdown (1-3 renglones)"
+      personalization_knobs: ["titulo", "body markdown"]
       emits: []
       ui_pattern: "titulo + body markdown + boton continuar; sin interaccion"
+      default_empty_fields: []
+      scoring_method: passive
+      completion: "auto al clickear continuar"
+
+    - id: reading_message
+      lab_ref: "00B"
+      public_name: "Informativa mensaje"
+      family: passive
+      levels: [N1, N2, N3]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
+      primary_dimensions: []
+      runtime_sections: [Contexto, Datos]
+      when_to_use:
+        - "Mostrar email, chat o ticket que dispara el caso."
+        - "Reproducir conversacion de Slack o mensaje del cliente."
+        - "Citar comentario de stakeholder con avatar y timestamp."
+      avoid_when:
+        - "El mensaje requiere respuesta activa; usa un bloque interactivo."
+      personalization_knobs:
+        - "canal (email, chat, ticket)"
+        - "remitente (nombre, rol, avatar)"
+        - "destinatario"
+        - "timestamp"
+        - "subject (opcional)"
+        - "body markdown"
+      emits: []
+      ui_pattern: "titulo + body markdown + card de mensaje con avatar, from/to, timestamp, body"
+      default_empty_fields: []
+      scoring_method: passive
+      completion: "auto al clickear continuar"
+
+    - id: reading_data_table
+      lab_ref: "00C"
+      public_name: "Informativa tabla"
+      family: passive
+      levels: [N1, N2, N3]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
+      primary_dimensions: []
+      runtime_sections: [Contexto, Datos]
+      when_to_use:
+        - "Mostrar filas de leads, tickets, transacciones o metricas tabulares."
+        - "Dar contexto de datos antes de pedir triage o decision."
+      avoid_when:
+        - "Se necesita clasificar campos uno por uno; usa data_table_triage activo."
+        - "La tabla tiene 30+ filas; usa dashboard o segmentar."
+      personalization_knobs:
+        - "columnas (key, label, width)"
+        - "filas (data)"
+        - "caption opcional"
+      emits: []
+      ui_pattern: "titulo + body markdown + tabla con header sticky y filas"
+      default_empty_fields: []
+      scoring_method: passive
+      completion: "auto al clickear continuar"
+
+    - id: reading_image
+      lab_ref: "00D"
+      public_name: "Informativa imagen"
+      family: passive
+      levels: [N1, N2, N3]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
+      primary_dimensions: []
+      runtime_sections: [Contexto, Datos, Revision]
+      when_to_use:
+        - "Mostrar screenshot de dashboard, grafica o UI."
+        - "Captura de error o de un reporte estatico."
+      avoid_when:
+        - "La imagen es decorativa sin aportar contexto."
+        - "El detalle es tan denso que necesita zoom interactivo."
+      personalization_knobs:
+        - "src (url)"
+        - "alt (accesibilidad)"
+        - "caption (opcional)"
+      emits: []
+      ui_pattern: "titulo + body markdown + imagen centrada con caption opcional"
+      default_empty_fields: []
+      scoring_method: passive
+      completion: "auto al clickear continuar"
+
+    - id: reading_kpi_cards
+      lab_ref: "00E"
+      public_name: "Informativa KPIs"
+      family: passive
+      levels: [N1, N2, N3]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
+      primary_dimensions: []
+      runtime_sections: [Contexto, Datos]
+      when_to_use:
+        - "Situar contexto de negocio con 1-3 metricas grandes."
+        - "Mostrar MRR, conversion, churn, NPS antes de pedir analisis."
+      avoid_when:
+        - "Hay 4+ metricas; usa tabla o dashboard."
+        - "Las metricas requieren interpretacion activa; usa dashboard_pivot."
+      personalization_knobs:
+        - "kpis (value, label, delta opcional con direccion up/down/flat)"
+      emits: []
+      ui_pattern: "titulo + body markdown + 1-3 cards de KPI con numero grande, label, delta"
+      default_empty_fields: []
+      scoring_method: passive
+      completion: "auto al clickear continuar"
+
+    - id: reading_timeline
+      lab_ref: "00F"
+      public_name: "Informativa cronologia"
+      family: passive
+      levels: [N1, N2, N3]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
+      primary_dimensions: []
+      runtime_sections: [Contexto]
+      when_to_use:
+        - "Mostrar secuencia de eventos del caso en orden cronologico."
+        - "Recap rapido de que paso antes de la decision actual."
+      avoid_when:
+        - "Solo hay 1-2 eventos; usa body markdown plano."
+        - "El detalle de cada evento es muy largo; usa multiples slides."
+      personalization_knobs:
+        - "events (when, what, who opcional)"
+      emits: []
+      ui_pattern: "titulo + body markdown + linea vertical con dots y eventos cronologicos"
+      default_empty_fields: []
+      scoring_method: passive
+      completion: "auto al clickear continuar"
+
+    - id: reading_attachment
+      lab_ref: "00G"
+      public_name: "Informativa adjunto"
+      family: passive
+      levels: [N1, N2, N3]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
+      primary_dimensions: []
+      runtime_sections: [Contexto, Datos]
+      when_to_use:
+        - "Adjuntar contrato, brief, presentacion o PDF al caso."
+        - "Simular email con archivo adjunto que debe revisarse."
+      avoid_when:
+        - "El archivo debe abrirse y leerse completo; muestra contenido en otro bloque."
+      personalization_knobs:
+        - "attachments (name, size, type, description opcional)"
+      emits: []
+      ui_pattern: "titulo + body markdown + cards de archivo adjunto con icono, nombre, peso"
       default_empty_fields: []
       scoring_method: passive
       completion: "auto al clickear continuar"
