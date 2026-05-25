@@ -461,7 +461,16 @@ export function ExerciseLabClient() {
         onScroll={handleScroll}
       >
         {exerciseList.map((exercise, index) => (
-          <ExerciseSection key={exercise.id} exercise={exercise} index={index}>
+          <ExerciseSection
+            key={exercise.id}
+            exercise={exercise}
+            index={index}
+            onContinue={
+              index < exerciseList.length - 1
+                ? () => scrollToSection(index + 1)
+                : undefined
+            }
+          >
             <ExerciseBlockRenderer
               blockId={exercise.id as ExerciseBlockId}
               sessionId={null}
@@ -484,8 +493,10 @@ function ScrollLines({
 }) {
   const total = exerciseList.length;
 
+  // Progress bar alineada con el contenido — mismo w-[65%] max-w-[1200px]
+  // que cada ExerciseSection, centrada por left-1/2 + -translate-x-1/2.
   return (
-    <div className="simulador-root fixed left-4 right-4 top-[68px] z-30 md:left-1/2 md:right-auto md:w-[min(760px,calc(100vw-320px))] md:-translate-x-1/2">
+    <div className="simulador-root fixed left-1/2 top-[68px] z-30 w-[65%] max-w-[1200px] -translate-x-1/2 px-0">
       <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${total}, minmax(0, 1fr))` }}>
         {Array.from({ length: total }).map((_, index) => (
           <button
@@ -515,81 +526,55 @@ function ExerciseSection({
   exercise,
   index,
   children,
+  onContinue,
 }: {
   exercise: (typeof exerciseList)[number];
   index: number;
   children: React.ReactNode;
+  onContinue?: () => void;
 }) {
-  if (exercise.id === "ai_textfield_free" || exercise.id === "ai_textfield_guided") {
-    const isGuided = exercise.id === "ai_textfield_guided";
-    return (
-      <section
-        id={exercise.id}
-        data-exercise-section={index}
-        className="h-[calc(100vh-3.5rem)] snap-start snap-always px-6 py-14 flex items-center"
-      >
-        <div className={`mx-auto w-full ${isGuided ? "max-w-6xl" : "max-w-[880px]"}`}>
-          <div className="eyebrow">{exercise.eyebrow}</div>
-          <h2 className={`display display-tight mt-4 text-[34px] text-[var(--text-primary)] ${isGuided ? "sm:text-[42px]" : "sm:text-[52px]"}`}>
-            {exercise.title}
-          </h2>
-          <p className="mt-4 max-w-2xl text-[16px] leading-[1.55] text-[var(--text-secondary)]">
-            {exercise.description}
-          </p>
-          <div className="mt-6">{children}</div>
-        </div>
-      </section>
-    );
-  }
-
-  if (exercise.id === "agent_brief_builder") {
-    return (
-      <section
-        id={exercise.id}
-        data-exercise-section={index}
-        className="h-[calc(100vh-3.5rem)] snap-start snap-always px-6 py-10 flex items-center"
-      >
-        <div className="mx-auto w-full max-w-5xl">
-          <div className="mb-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(280px,360px)] md:items-end">
-            <div>
-              <div className="eyebrow">{exercise.eyebrow}</div>
-              <h2 className="display display-tight mt-3 text-[32px] sm:text-[40px] text-[var(--text-primary)]">
-                {exercise.title}
-              </h2>
-            </div>
-            <p className="text-[15px] leading-[1.5] text-[var(--text-secondary)]">
-              {exercise.description}
-            </p>
-          </div>
-
-          <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-sm)]">
-            {children}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
+  // Layout unificado estilo Typeform (mismo principio que /case-template):
+  //  - Bloque cohesivo (eyebrow → title → body → ejercicio → botón) centrado
+  //    vertical + horizontal en el viewport.
+  //  - Ancho 65% con cap 1200px (mismo cálculo que la progress bar arriba —
+  //    quedan perfectamente alineadas).
+  //  - Botón "Continuar →" + hint "Enter ↵" debajo del ejercicio.
+  //    Navega al siguiente bloque vía scrollToSection (smooth scroll-snap).
+  //    En el último bloque del catálogo el botón no se renderiza.
   return (
     <section
       id={exercise.id}
       data-exercise-section={index}
-      className="h-[calc(100vh-3.5rem)] snap-start snap-always px-6 py-16 flex items-center"
+      className="h-[calc(100vh-3.5rem)] snap-start snap-always flex items-center justify-center py-14"
     >
-      <div className="mx-auto grid w-full max-w-6xl gap-10 lg:grid-cols-[360px_minmax(0,1fr)] lg:items-center">
-        <aside>
-          <div className="eyebrow">{exercise.eyebrow}</div>
-          <h2 className="display display-tight mt-5 text-[34px] sm:text-[46px] text-[var(--text-primary)]">
-            {exercise.title}
-          </h2>
-          <p className="mt-5 text-[16px] leading-[1.65] text-[var(--text-secondary)]">
-            {exercise.description}
-          </p>
-        </aside>
+      <div className="w-[65%] max-w-[1200px]">
+        <div className="eyebrow">{exercise.eyebrow}</div>
+        <h2 className="display display-tight mt-3 ts-display text-[var(--text-primary)]">
+          {exercise.title}
+        </h2>
+        <p className="mt-4 ts-body-lg leading-[1.55] text-[var(--text-secondary)]">
+          {exercise.description}
+        </p>
 
-        <div className="rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 sm:p-6 shadow-[var(--shadow-sm)]">
-          {children}
-        </div>
+        <div className="mt-8">{children}</div>
+
+        {onContinue && (
+          <div className="mt-10 flex items-center gap-4">
+            <button
+              type="button"
+              onClick={onContinue}
+              className="rounded-[var(--radius-md)] accent-bg px-7 py-3 ts-callout font-medium text-white shadow-none transition-opacity hover:opacity-90"
+            >
+              Continuar →
+            </button>
+            <span className="ts-footnote text-[var(--text-tertiary)]">
+              o pulsa{" "}
+              <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
+                Enter ↵
+              </kbd>
+            </span>
+          </div>
+        )}
       </div>
     </section>
   );
