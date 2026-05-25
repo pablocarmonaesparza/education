@@ -118,22 +118,21 @@ export function CaseTemplateClient() {
 
           {/* CONTENIDO — patrón Typeform: bloque cohesivo (título + body + botón)
               centrado vertical y horizontalmente en el viewport. El botón vive
-              justo debajo del body, no pegado al bottom. */}
-          <section className="flex flex-1 items-center justify-center px-10 py-14">
-            <div className="w-full max-w-[680px]">
-              {/* Título — 1 renglón máximo */}
-              <h1 className="display display-tight ts-display text-[var(--text-primary)] truncate">
-                Lorem ipsum dolor sit amet
+              justo debajo del body, no pegado al bottom.
+              Ancho del bloque reducido (560px) para más aire horizontal alrededor. */}
+          <section className="flex flex-1 items-center justify-center px-16 py-14">
+            <div className="w-full max-w-[560px]">
+              {/* Título — 2 renglones máximo */}
+              <h1 className="display display-tight ts-display line-clamp-2 text-[var(--text-primary)]">
+                Lorem ipsum dolor sit amet consectetur adipiscing elit sed
               </h1>
 
-              {/* Body markdown — 3 renglones */}
+              {/* Body markdown — 2 renglones */}
               <div className="mt-5 ts-body-lg leading-[1.55] text-[var(--text-secondary)]">
-                <p>
+                <p className="line-clamp-2">
                   Lorem ipsum dolor sit amet, <strong>consectetur</strong>{" "}
                   adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                  dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                  exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                  consequat.
+                  dolore magna aliqua.
                 </p>
               </div>
 
