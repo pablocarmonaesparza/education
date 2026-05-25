@@ -75,21 +75,20 @@ export function AIPromptComposer({
     (value.trim().length > 0 || attachments.length > 0) &&
     recState !== "recording" &&
     recState !== "processing";
-  // Auto-grow CONTROLADO:
-  //   - Base estándar: 180px (vacío y con poco texto)
-  //   - Cap superior: 320px (~75% más que la base — no infinito)
-  //   - Cuando se borra el texto, vuelve a la base automáticamente
-  //   - Cuando se supera el cap, scroll interno
+  // Auto-grow estilo ChatGPT/Claude:
+  //   - Base: 1 línea (~46px con padding pt-4 pb-1) cuando vacío
+  //   - Crece línea por línea según contenido
+  //   - Cap superior: 320px — más texto = scroll interno
+  //   - Al borrar texto vuelve a 1 línea automáticamente
   // Override solo cuando layout="matched" (que estira flex-1).
-  const TEXT_MIN_HEIGHT = 180;
+  const TEXT_MIN_HEIGHT = 46; // 1 línea + padding vertical
   const TEXT_MAX_HEIGHT = 320;
-  const textRows = 6;
   const computedRows = value.trim()
-    ? Math.max(6, value.split("\n").length + Math.ceil(value.length / 140))
-    : 6;
+    ? Math.max(1, value.split("\n").length + Math.floor(value.length / 140))
+    : 1;
   const textComputedHeight = Math.min(
     TEXT_MAX_HEIGHT,
-    Math.max(TEXT_MIN_HEIGHT, computedRows * 22 + 42),
+    Math.max(TEXT_MIN_HEIGHT, computedRows * 22 + 24),
   );
   const matched = layout === "matched";
 
@@ -138,7 +137,7 @@ export function AIPromptComposer({
           }}
           disabled={recState === "recording" || recState === "processing"}
           readOnly={readOnly}
-          rows={matched ? 10 : textRows}
+          rows={matched ? 10 : 1}
           placeholder={readOnly ? "Crea el prompt desde Inputs y selección..." : "Escribe el prompt que le mandarías al modelo..."}
           className={`w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 text-[15px] leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed ${matched ? "flex-1" : ""} ${readOnly ? "cursor-default" : ""}`}
           style={matched ? { minHeight: 0, maxHeight: "none" } : { height: textComputedHeight, minHeight: TEXT_MIN_HEIGHT, maxHeight: TEXT_MAX_HEIGHT }}
