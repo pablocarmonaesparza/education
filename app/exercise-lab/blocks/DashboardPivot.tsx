@@ -14,9 +14,9 @@
  *    lectura sea inmediata.
  *  - Textarea aparece sólo tras elegir filtro (disclosure progresivo).
  *
- * Evidencia para el judge: selected_filter + interpretation. El judge
- * evalúa si la señal elegida es la más relevante para el caso (no la
- * más alta numéricamente, sino la más accionable).
+ * Evidencia para el judge: selected_filter. La elección codifica el
+ * criterio (no es la más alta numéricamente, sino la más accionable
+ * para el contexto del caso).
  */
 
 import { useRef } from "react";
@@ -26,7 +26,6 @@ import type {
 } from "@/lib/simulador/exercise-registry";
 import { emptyPayload } from "@/lib/simulador/exercise-registry";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
-import { Label } from "../_shared/ui-primitives";
 
 type DashboardPivotPayload = Extract<
   ExerciseResponsePayload,
@@ -136,17 +135,9 @@ export function DashboardPivot({
   }
 
   const filter = payload.selected_filter as FilterKey | null;
-  const activeFilterSpec = FILTERS.find((f) => f.key === filter);
 
   return (
     <div className="simulador-root space-y-5">
-      <div>
-        <Label>¿Qué señal llevarías al manager?</Label>
-        <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
-          Filtra por la dimensión que más importa para este caso y propón qué hacer.
-        </p>
-      </div>
-
       {/* Filtros con icono + descripción inline */}
       <div className="grid gap-2 sm:grid-cols-3">
         {FILTERS.map((f) => {
@@ -235,25 +226,6 @@ export function DashboardPivot({
         </table>
       </div>
 
-      {/* Disclosure: textarea solo tras elegir filtro */}
-      {filter && (
-        <div className="animate-in fade-in slide-in-from-top-2 duration-200">
-          <label className="block">
-            <span className="ts-subhead font-medium text-[var(--text-secondary)]">
-              ¿Qué le dirías al manager sobre <em className="text-[var(--accent)] not-italic font-semibold">{activeFilterSpec?.label.toLowerCase()}</em>?
-            </span>
-            <textarea
-              value={payload.interpretation}
-              onChange={(event) =>
-                update({ ...payload, interpretation: event.target.value })
-              }
-              rows={3}
-              placeholder="Qué se ve, qué propones hacer y por qué ahora."
-              className="mt-2 w-full resize-none rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 ts-body text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
-            />
-          </label>
-        </div>
-      )}
     </div>
   );
 }
@@ -289,10 +261,10 @@ function SeverityPill({
 }
 
 export function dashboardPivotCompletion(payload: DashboardPivotPayload) {
-  const missing: string[] = [];
-  if (payload.selected_filter === null) missing.push("selected_filter");
-  if (payload.interpretation.trim().length < 20) missing.push("interpretation");
-  return { complete: missing.length === 0, missing };
+  return {
+    complete: payload.selected_filter !== null,
+    missing: payload.selected_filter === null ? ["selected_filter"] : [],
+  };
 }
 
 export function emptyDashboardPivotPayload(): DashboardPivotPayload {

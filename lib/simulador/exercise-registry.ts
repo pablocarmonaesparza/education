@@ -130,9 +130,11 @@ export type ExerciseResponsePayload =
       }>;
     }
   | {
+      // 4 opciones discretas A/B/C/D. La elección entre alternativas codifica
+      // el criterio del participante sin pedir narrativa (regla del producto:
+      // eliminar textareas de justificación · generan fricción).
       block_id: "ai_comparison";
-      selected_output: "A" | "B" | "fusionar" | "rechazar" | null;
-      tradeoff_reason: string;
+      selected_output: "A" | "B" | "C" | "D" | null;
     }
   | {
       block_id: "workflow_builder";
@@ -147,9 +149,11 @@ export type ExerciseResponsePayload =
       stop: string;
     }
   | {
+      // La elección del filtro codifica el juicio del participante
+      // (qué dimensión considera más relevante para el caso). Sin textarea
+      // de justificación · regla del producto: eliminar fricción cualitativa.
       block_id: "dashboard_pivot";
       selected_filter: string | null;
-      interpretation: string;
     }
   | {
       block_id: "tradeoff_decision_memo";
@@ -279,13 +283,13 @@ export function emptyPayload(block_id: ExerciseBlockId): ExerciseResponsePayload
     case "ai_output_review":
       return { block_id, flagged_segments: [] };
     case "ai_comparison":
-      return { block_id, selected_output: null, tradeoff_reason: "" };
+      return { block_id, selected_output: null };
     case "workflow_builder":
       return { block_id, enabled_steps: [], step_order: [] };
     case "agent_brief_builder":
       return { block_id, task: "", access: "", action: "", stop: "" };
     case "dashboard_pivot":
-      return { block_id, selected_filter: null, interpretation: "" };
+      return { block_id, selected_filter: null };
     case "tradeoff_decision_memo":
       return { block_id, decision: "", memo: "" };
   }

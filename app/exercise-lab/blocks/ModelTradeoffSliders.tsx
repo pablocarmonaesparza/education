@@ -146,16 +146,6 @@ export function ModelTradeoffSliders({
 
   return (
     <div className="space-y-5">
-      <div>
-        <div className="ts-callout font-semibold text-[var(--text-primary)]">
-          ¿Cómo priorizas para este caso?
-        </div>
-        <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
-          Mueve los 3 sliders. El modelo recomendado se actualiza con tu
-          ponderación. Sin opinión: déjalos en —.
-        </p>
-      </div>
-
       <div className="space-y-4 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5">
         <Range10
           label="Inteligencia"

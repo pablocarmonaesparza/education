@@ -4,26 +4,18 @@
  * AITextfieldGuided · renderer del bloque canónico `ai_textfield_guided`
  * (lab_ref 01B).
  *
- * Patrón: el participante toma 3 decisiones discretas que arman un prompt
- * editable. NO incluye sliders — la ponderación de prioridades vive
- * standalone en `model_tradeoff_sliders` (lab_ref 01C) desde v0.6.0.
+ * Vertical stack · las 3 preguntas (Objetivo / Audiencia / Límites)
+ * visibles a la vez en cards apiladas. Sin stepper · sin panel lateral
+ * de respuestas · sin botón "Crear prompt".
  *
- *   ┌──────────────────────────────────┬──────────────────────────┐
- *   │ Inputs y selección (stepper)     │ Respuestas                │
- *   │  ▸ Objetivo  ▸ Audiencia         │  ProcessAnswer 1: Objetivo│
- *   │  ▸ Límites (multi)               │  ProcessAnswer 2: Audiencia│
- *   │  Atrás / Siguiente / Crear prompt│  ProcessAnswer 3: Límites │
- *   └──────────────────────────────────┴──────────────────────────┘
+ * El prompt resultante se genera automático cuando las 3 preguntas están
+ * respondidas, y aparece abajo en el composer read-only. La elección de
+ * modelo se hace en el dropdown del composer (default GPT Corporativo).
  *
- *   AIPromptComposer (read-only) ← prompt generado al hacer Crear prompt
- *
- * Modelo: el participante lo elige manualmente en el dropdown del
- * composer (default: GPT Corporativo). Si el caso quiere medir cómo
- * pondera autonomía/seguridad/costo, antecede con un slide de
- * model_tradeoff_sliders.
+ * Sin hint interno · el shell ya tiene eyebrow + title + body.
  */
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -31,10 +23,8 @@ import type {
 import { emptyPayload } from "@/lib/simulador/exercise-registry";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
 import {
-  GuidedInputCard,
-  GuidedSlideOptions,
   GuidedOption,
-  ProcessAnswer,
+  GuidedSlideOptions,
 } from "../_shared/ui-primitives";
 import { findModelById, defaultModelId } from "../_shared/models";
 import { AIPromptComposer } from "../_shared/AIPromptComposer";
@@ -63,8 +53,6 @@ const GUIDED_GUARDRAILS = [
   "Explicar supuestos y dudas",
 ];
 
-const INPUT_STEPS = ["Objetivo", "Audiencia", "Límites"];
-
 interface Props extends ExerciseRendererProps<AITextfieldGuidedPayload> {
   objectives?: ReadonlyArray<string>;
   audiences?: ReadonlyArray<string>;
@@ -90,10 +78,6 @@ export function AITextfieldGuided({
   const mountedAt = useRef(Date.now());
   const firstActionAt = useRef<number | null>(null);
   const totalChanges = useRef(0);
-
-  const [activeInput, setActiveInput] = useState(0);
-  // Voice notes son state local del composer read-only · el contrato del
-  // registry no las persiste para guided. Mantenemos array vacío.
   const [voiceNotes, setVoiceNotes] = useState<string[]>([]);
 
   const displayedModelId = payload.selected_model ?? defaultModelId;
@@ -104,13 +88,13 @@ export function AITextfieldGuided({
       ? payload.selected_limits.join("; ")
       : "Sin restricciones adicionales";
 
-  const canCreatePrompt = Boolean(
+  const allAnswered = Boolean(
     payload.selected_objective &&
       payload.selected_audience &&
       payload.selected_limits.length > 0,
   );
 
-  function updateInternal(next: AITextfieldGuidedPayload) {
+  function persist(next: AITextfieldGuidedPayload) {
     if (firstActionAt.current === null) firstActionAt.current = Date.now();
     totalChanges.current += 1;
     onChange(next);
@@ -129,7 +113,7 @@ export function AITextfieldGuided({
     key: K,
     value: AITextfieldGuidedPayload[K],
   ) {
-    updateInternal({ ...payload, [key]: value });
+    persist({ ...payload, [key]: value });
   }
 
   function toggleGuardrail(value: string) {
@@ -139,141 +123,69 @@ export function AITextfieldGuided({
     updateField("selected_limits", next);
   }
 
-  function createPrompt() {
+  // Auto-genera el prompt cuando las 3 preguntas están respondidas.
+  useEffect(() => {
+    if (!allAnswered) return;
     const modelLabel = `${displayedModel.label}${displayedModel.badge ? ` · ${displayedModel.badge}` : ""}`;
     const generated = `Objetivo: ${payload.selected_objective}.\nAudiencia: ${payload.selected_audience}.\nModelo elegido: ${modelLabel}.\n\nTrabaja sólo con información agregada del caso. Límites: ${guardrailText}.\n\nEntrega tres opciones accionables, riesgos visibles y validaciones humanas necesarias.`;
-    updateInternal({
-      ...payload,
-      generated_prompt: generated,
-      selected_model: displayedModelId,
-    });
-  }
+    if (generated !== payload.generated_prompt) {
+      persist({
+        ...payload,
+        generated_prompt: generated,
+        selected_model: displayedModelId,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allAnswered, payload.selected_objective, payload.selected_audience, payload.selected_limits, displayedModelId]);
 
   return (
-    <div className="simulador-root">
-      <div className="grid gap-5">
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-stretch">
-          <div className="flex h-full flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
-                  Inputs y selección
-                </div>
-                <div className="mt-1 text-[18px] font-semibold text-[var(--text-primary)]">
-                  {INPUT_STEPS[activeInput]}
-                </div>
-              </div>
-              <div className="flex gap-1.5" aria-label="Progreso de inputs">
-                {INPUT_STEPS.map((step, index) => (
-                  <button
-                    key={step}
-                    type="button"
-                    onClick={() => setActiveInput(index)}
-                    aria-label={`Ir a ${step}`}
-                    className={`h-2 rounded-full transition-all ${
-                      index === activeInput
-                        ? "w-8 bg-[var(--accent)]"
-                        : "w-2 bg-[var(--surface-3)]"
-                    }`}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-5">
-              {activeInput === 0 && (
-                <GuidedInputCard>
-                  <GuidedSlideOptions
-                    options={[...objectives]}
-                    value={payload.selected_objective ?? ""}
-                    onChange={(value) => updateField("selected_objective", value)}
-                  />
-                </GuidedInputCard>
-              )}
-              {activeInput === 1 && (
-                <GuidedInputCard>
-                  <GuidedSlideOptions
-                    options={[...audiences]}
-                    value={payload.selected_audience ?? ""}
-                    onChange={(value) => updateField("selected_audience", value)}
-                  />
-                </GuidedInputCard>
-              )}
-              {activeInput === 2 && (
-                <GuidedInputCard>
-                  <div className="grid gap-2">
-                    {guardrails.map((guardrail) => (
-                      <GuidedOption
-                        key={guardrail}
-                        selected={payload.selected_limits.includes(guardrail)}
-                        onClick={() => toggleGuardrail(guardrail)}
-                      >
-                        {guardrail}
-                      </GuidedOption>
-                    ))}
-                  </div>
-                </GuidedInputCard>
-              )}
-            </div>
-
-            <div className="mt-auto grid grid-cols-2 gap-2 pt-5">
-              <button
-                type="button"
-                onClick={() => setActiveInput(Math.max(0, activeInput - 1))}
-                disabled={activeInput === 0}
-                className="min-h-11 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 text-[14px] font-medium text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-40"
-              >
-                Atrás
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (activeInput === INPUT_STEPS.length - 1) {
-                    createPrompt();
-                    return;
-                  }
-                  setActiveInput(Math.min(INPUT_STEPS.length - 1, activeInput + 1));
-                }}
-                disabled={
-                  activeInput === INPUT_STEPS.length - 1 && !canCreatePrompt
-                }
-                className="min-h-11 rounded-xl bg-[var(--accent)] px-4 text-[14px] font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)]"
-              >
-                {activeInput === INPUT_STEPS.length - 1 ? "Crear prompt" : "Siguiente"}
-              </button>
-            </div>
-          </div>
-
-          <div className="h-full rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
-            <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
-              Respuestas
-            </div>
-            <div className="mt-4 grid gap-3">
-              <ProcessAnswer
-                index={1}
-                label="Objetivo"
-                value={payload.selected_objective ?? ""}
-                muted={!payload.selected_objective}
-              />
-              <ProcessAnswer
-                index={2}
-                label="Audiencia"
-                value={payload.selected_audience ?? ""}
-                muted={!payload.selected_audience}
-              />
-              <ProcessAnswer
-                index={3}
-                label="Límites"
-                value={
-                  payload.selected_limits.length > 0 ? guardrailText : ""
-                }
-                muted={payload.selected_limits.length === 0}
-              />
-            </div>
-          </div>
+    <div className="space-y-6">
+      <section>
+        <div className="ts-callout font-semibold text-[var(--text-primary)]">
+          Objetivo
         </div>
+        <div className="mt-3">
+          <GuidedSlideOptions
+            options={[...objectives]}
+            value={payload.selected_objective ?? ""}
+            onChange={(value) => updateField("selected_objective", value)}
+          />
+        </div>
+      </section>
 
-        <div>
+      <section>
+        <div className="ts-callout font-semibold text-[var(--text-primary)]">
+          Audiencia
+        </div>
+        <div className="mt-3">
+          <GuidedSlideOptions
+            options={[...audiences]}
+            value={payload.selected_audience ?? ""}
+            onChange={(value) => updateField("selected_audience", value)}
+          />
+        </div>
+      </section>
+
+      <section>
+        <div className="ts-callout font-semibold text-[var(--text-primary)]">
+          Límites
+        </div>
+        <div className="mt-3 grid gap-2">
+          {guardrails.map((guardrail) => (
+            <GuidedOption
+              key={guardrail}
+              selected={payload.selected_limits.includes(guardrail)}
+              onClick={() => toggleGuardrail(guardrail)}
+            >
+              {guardrail}
+            </GuidedOption>
+          ))}
+        </div>
+      </section>
+
+      {/* Composer read-only · solo aparece cuando las 3 preguntas están listas */}
+      {allAnswered && (
+        <div className="animate-in fade-in slide-in-from-top-2 duration-200">
           <AIPromptComposer
             value={payload.generated_prompt}
             onChange={(value) => updateField("generated_prompt", value)}
@@ -284,7 +196,7 @@ export function AITextfieldGuided({
             readOnly
           />
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -297,7 +209,8 @@ export function aiTextfieldGuidedCompletion(
   if (!payload.selected_audience) missing.push("selected_audience");
   if (payload.selected_limits.length === 0) missing.push("selected_limits");
   if (!payload.selected_model) missing.push("selected_model");
-  if (payload.generated_prompt.trim().length === 0) missing.push("generated_prompt");
+  if (payload.generated_prompt.trim().length === 0)
+    missing.push("generated_prompt");
   return { complete: missing.length === 0, missing };
 }
 

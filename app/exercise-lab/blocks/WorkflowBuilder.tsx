@@ -3,17 +3,17 @@
 /**
  * WorkflowBuilder · renderer del bloque canónico `workflow_builder` (lab_ref 06).
  *
- * Patrón: lista re-ordenable de pasos con drag handle + toggle on/off por
- * paso. El participante decide cuáles pasos del flujo deben estar activos
- * Y en qué orden ejecutarse.
+ * 2 fases en la misma pantalla, sin hints internos:
+ *  Fase 1 · checklist de pasos disponibles. El participante marca cuáles
+ *    activar (click en check). Sin números aún.
+ *  Fase 2 (aparece tras marcar ≥1) · los pasos activos se vuelven una
+ *    lista ordenable con números 1, 2, 3… y drag handle.
  *
- * Cambio v0.6.0: agregado drag/drop real con primitive `SortableList`
- * de `_shared/`. El orden persiste en `payload.step_order` (lista de ids
- * en el orden actual). `enabled_steps` mantiene solo los ids activos.
+ * Sin estado "OFF/ACTIVO" repetido en cada fila. Sin numerar los pasos
+ * no seleccionados.
  *
- * Evidencia para el judge: enabled_steps + step_order revelan no solo
- * qué pasos eligió sino cómo los secuencia · señal de comprensión
- * de handoffs y checkpoints.
+ * Evidencia para el judge: enabled_steps + step_order revelan qué eligió
+ * y en qué orden · señal de comprensión de handoffs y checkpoints.
  */
 
 import { useEffect, useMemo, useRef } from "react";
@@ -23,7 +23,6 @@ import type {
 } from "@/lib/simulador/exercise-registry";
 import { emptyPayload } from "@/lib/simulador/exercise-registry";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
-import { Label } from "../_shared/ui-primitives";
 import { SortableList } from "../_shared/SortableList";
 
 type WorkflowBuilderPayload = Extract<
@@ -66,15 +65,12 @@ export function WorkflowBuilder({
   const firstActionAt = useRef<number | null>(null);
   const totalChanges = useRef(0);
 
-  // Map id → spec para lookups O(1).
   const stepById = useMemo(
     () => Object.fromEntries(stepsProp.map((s) => [s.id, s])),
     [stepsProp],
   );
 
-  // Inicializa step_order vacío con el orden default. Si el caso lo override
-  // vía caseContext.step_order, lo respeta. Si el payload ya tiene order
-  // (regresar a la pregunta), lo mantiene.
+  // Inicializa step_order con orden default si vacío.
   useEffect(() => {
     if (payload.step_order.length === 0 && stepsProp.length > 0) {
       onChange({
@@ -85,17 +81,18 @@ export function WorkflowBuilder({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Lista ordenada actual = step_order mapeado a specs. Filtra ids que ya
-  // no existen en stepsProp (defensivo contra cambios de catálogo).
-  const orderedSteps = useMemo(() => {
-    const fromOrder = payload.step_order
+  // Lista de pasos activos en orden actual · solo los ids que están en
+  // step_order Y enabled_steps.
+  const activeOrdered = useMemo(() => {
+    return payload.step_order
+      .filter((id) => payload.enabled_steps.includes(id))
       .map((id) => stepById[id])
       .filter((s): s is StepSpec => s !== undefined);
-    // Si hay steps en stepsProp que no están en step_order, agrégalos al final.
-    const knownIds = new Set(fromOrder.map((s) => s.id));
-    const extras = stepsProp.filter((s) => !knownIds.has(s.id));
-    return [...fromOrder, ...extras];
-  }, [payload.step_order, stepsProp, stepById]);
+  }, [payload.step_order, payload.enabled_steps, stepById]);
+
+  // Pasos disponibles (todos) en orden default (no se reordena hasta ser
+  // activado).
+  const allSteps = stepsProp;
 
   function persist(next: WorkflowBuilderPayload) {
     if (firstActionAt.current === null) firstActionAt.current = Date.now();
@@ -123,61 +120,92 @@ export function WorkflowBuilder({
   }
 
   function reorder(nextSteps: StepSpec[]) {
-    persist({ ...payload, step_order: nextSteps.map((s) => s.id) });
+    // Reordena solo dentro de los activos, manteniendo los inactivos al final.
+    const nextActiveIds = nextSteps.map((s) => s.id);
+    const inactiveIds = payload.step_order.filter(
+      (id) => !payload.enabled_steps.includes(id),
+    );
+    persist({
+      ...payload,
+      step_order: [...nextActiveIds, ...inactiveIds],
+    });
   }
 
   return (
-    <div className="simulador-root">
-      <Label>Activa los pasos y arrástralos al orden correcto</Label>
-      <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
-        Usa el handle <span className="font-mono">≡</span> para reordenar. Click en el paso para activarlo o desactivarlo.
-      </p>
-      <div className="mt-4">
-        <SortableList
-          items={orderedSteps}
-          getItemKey={(s) => s.id}
-          onReorder={reorder}
-          renderItem={(step, index, dragHandle) => {
-            const enabled = payload.enabled_steps.includes(step.id);
-            return (
-              <div
-                className={`grid grid-cols-[24px_36px_1fr_56px] items-center gap-3 rounded-[var(--radius-lg)] border bg-[var(--surface)] px-3 py-3 transition-colors ${
-                  enabled
-                    ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-                    : "border-[var(--border)]"
+    <div className="space-y-6">
+      {/* Fase 1 · checklist de pasos disponibles · sin números */}
+      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
+        {allSteps.map((step, idx) => {
+          const checked = payload.enabled_steps.includes(step.id);
+          const isLast = idx === allSteps.length - 1;
+          return (
+            <button
+              key={step.id}
+              type="button"
+              onClick={() => toggle(step.id)}
+              className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-[var(--surface-2)] ${
+                !isLast ? "border-b border-[var(--hairline)]" : ""
+              }`}
+            >
+              <span
+                className={`grid h-5 w-5 flex-shrink-0 place-items-center rounded-[var(--radius-sm)] border transition-colors ${
+                  checked
+                    ? "border-[var(--accent)] bg-[var(--accent)]"
+                    : "border-[var(--border)] bg-[var(--surface)]"
+                }`}
+                aria-hidden
+              >
+                {checked && (
+                  <svg className="h-3 w-3 text-white" viewBox="0 0 12 12" fill="none">
+                    <path
+                      d="M2.5 6L5 8.5L9.5 3.5"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.8"
+                    />
+                  </svg>
+                )}
+              </span>
+              <span
+                className={`ts-body ${
+                  checked
+                    ? "text-[var(--text-primary)]"
+                    : "text-[var(--text-secondary)]"
                 }`}
               >
+                {step.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Fase 2 · solo aparece tras marcar ≥1 paso · lista ordenable
+          con números 1, 2, 3… y drag handle */}
+      {activeOrdered.length > 0 && (
+        <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+            Orden de ejecución · arrastra para reordenar
+          </div>
+          <SortableList
+            items={activeOrdered}
+            getItemKey={(s) => s.id}
+            onReorder={reorder}
+            renderItem={(step, index, dragHandle) => (
+              <div className="grid grid-cols-[24px_32px_1fr] items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--accent)] bg-[var(--accent-soft)] px-3 py-3">
                 {dragHandle}
-                <span
-                  className={`grid h-8 w-8 place-items-center rounded-[var(--radius-md)] ts-callout font-semibold tabular-nums ${
-                    enabled
-                      ? "bg-[var(--accent)] text-white"
-                      : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
-                  }`}
-                >
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-[var(--accent)] text-white ts-callout font-semibold tabular-nums">
                   {index + 1}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => toggle(step.id)}
-                  className="text-left ts-body text-[var(--text-primary)]"
-                >
+                <span className="ts-body text-[var(--text-primary)]">
                   {step.label}
-                </button>
-                <span
-                  className={`justify-self-end ts-caption-1 font-medium uppercase tracking-wider ${
-                    enabled
-                      ? "text-[var(--accent)]"
-                      : "text-[var(--text-tertiary)]"
-                  }`}
-                >
-                  {enabled ? "Activo" : "Off"}
                 </span>
               </div>
-            );
-          }}
-        />
-      </div>
+            )}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -21,7 +21,6 @@ import type {
 } from "@/lib/simulador/exercise-registry";
 import { emptyPayload } from "@/lib/simulador/exercise-registry";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
-import { Label } from "../_shared/ui-primitives";
 
 type AIOutputReviewPayload = Extract<
   ExerciseResponsePayload,
@@ -117,8 +116,7 @@ export function AIOutputReview({
 
   return (
     <div className="simulador-root">
-      <Label>Marca lo que no se puede usar todavía</Label>
-      <div className="mt-4 grid gap-3">
+      <div className="grid gap-3">
         {segments.map((line) => {
           const current = payload.flagged_segments.find(
             (s) => s.segment_id === line.id,

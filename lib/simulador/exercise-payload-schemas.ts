@@ -154,10 +154,7 @@ const AIOutputReviewSchema = z.strictObject({
 
 const AIComparisonSchema = z.strictObject({
   block_id: z.literal("ai_comparison"),
-  selected_output: z
-    .enum(["A", "B", "fusionar", "rechazar"])
-    .nullable(),
-  tradeoff_reason: z.string(),
+  selected_output: z.enum(["A", "B", "C", "D"]).nullable(),
 });
 
 const WorkflowBuilderSchema = z.strictObject({
@@ -177,7 +174,6 @@ const AgentBriefBuilderSchema = z.strictObject({
 const DashboardPivotSchema = z.strictObject({
   block_id: z.literal("dashboard_pivot"),
   selected_filter: z.string().nullable(),
-  interpretation: z.string(),
 });
 
 const TradeoffDecisionMemoSchema = z.strictObject({
