@@ -52,13 +52,15 @@ exercise_block_catalog:
       avoid_when:
         - "El caso no necesita pantalla de inicio (caso muy corto, demo embebida)."
       personalization_knobs:
-        - "titulo del caso"
-        - "descripcion ampliada"
-        - "metadata (perfil, dificultad, tiempo estimado)"
-        - "timer (opcional, en segundos)"
-        - "label del boton Iniciar"
+        - "meta.profile · perfil del caso"
+        - "meta.level · dificultad / nivel"
+        - "meta.estimatedMinutes · tiempo estimado de lectura/respuesta"
+        - "meta.timerEnabled · true/false para activar countdown"
+        - "meta.timerSeconds · duracion en segundos si timerEnabled=true"
+        - "meta.tools · array de herramientas (ai, data, messaging, documents, workflow)"
+        - "ctaLabel · label del boton Iniciar"
       emits: [started_at, timer_seconds]
-      ui_pattern: "hero centrado con titulo grande + descripcion + meta + boton Iniciar prominente"
+      ui_pattern: "metadata chips (perfil/nivel/tiempo/timer on-off) + seccion herramientas con iconos + boton Iniciar prominente"
       default_empty_fields: [started_at]
       scoring_method: passive
       completion: "auto al clickear Iniciar"
