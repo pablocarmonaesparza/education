@@ -75,6 +75,15 @@ export type ExerciseResponsePayload =
       voice_notes: VoiceNote[];
     }
   | {
+      // Respuesta a una conversación previa. El thread (email/chat/ticket)
+      // viene en caseContext.thread; el participante redacta el siguiente
+      // turno. El judge evalúa coherencia con el contexto visible.
+      block_id: "conversation_response";
+      response_text: string;
+      model: string;
+      attachments: PromptAttachment[];
+    }
+  | {
       block_id: "ai_textfield_guided";
       selected_objective: string | null;
       selected_audience: string | null;
@@ -261,6 +270,13 @@ export function emptyPayload(block_id: ExerciseBlockId): ExerciseResponsePayload
         model: "",
         attachments: [],
         voice_notes: [],
+      };
+    case "conversation_response":
+      return {
+        block_id,
+        response_text: "",
+        model: "",
+        attachments: [],
       };
     case "ai_textfield_guided":
       return {

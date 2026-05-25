@@ -1,5 +1,5 @@
 exercise_block_catalog:
-  version: 0.8.0
+  version: 0.9.0
   status: canonical_after_exercise_lab_review
   source_route: /exercise-lab
   purpose: >
@@ -226,8 +226,31 @@ exercise_block_catalog:
       scoring_method: llm_judge_with_structured_rubric
       completion: "prompt no vacio con objetivo y al menos una restriccion o criterio de validacion"
 
-    - id: ai_textfield_guided
+    - id: conversation_response
       lab_ref: "02"
+      public_name: "Respuesta a conversación"
+      family: ai_native
+      levels: [N1, N2, N3]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
+      primary_dimensions: [contexto, ejecucion_ia, juicio]
+      runtime_sections: [IA, Respuesta]
+      when_to_use:
+        - "Hay una conversacion previa (cliente, manager, soporte) y el participante debe redactar el siguiente mensaje."
+        - "Medir como ajusta su respuesta al contexto ya visible."
+      avoid_when:
+        - "No hay historia previa relevante; usa ai_textfield_free."
+      personalization_knobs:
+        - "thread (avatares, mensajes previos, canal email/chat/ticket)"
+        - "modelo disponible"
+        - "placeholder del prompt"
+      emits: [response_text, model, attachments]
+      ui_pattern: "thread scrollable de mensajes previos + composer al final para el siguiente turno"
+      default_empty_fields: [response_text, attachments]
+      scoring_method: llm_judge_with_context_alignment
+      completion: "respuesta no vacia con coherencia al thread"
+
+    - id: ai_textfield_guided
+      lab_ref: "03"
       public_name: "Textfield de IA guiado"
       family: ai_native
       levels: [N1, N2]
@@ -253,7 +276,7 @@ exercise_block_catalog:
       completion: "objetivo, audiencia, limites y modelo definidos; prompt generado"
 
     - id: model_tradeoff_sliders
-      lab_ref: "03"
+      lab_ref: "04"
       public_name: "Sliders de tradeoff de modelo"
       family: ai_native
       levels: [N1, N2, N3]
@@ -278,7 +301,7 @@ exercise_block_catalog:
       completion: "los 3 sliders movidos al menos una vez + modelo recomendado confirmado"
 
     - id: data_table_triage
-      lab_ref: "04"
+      lab_ref: "05"
       public_name: "Tabla de triaje de datos"
       family: ai_native
       levels: [N1, N2]
@@ -299,7 +322,7 @@ exercise_block_catalog:
       completion: "cada campo tiene accion elegida"
 
     - id: permission_matrix
-      lab_ref: "05"
+      lab_ref: "06"
       public_name: "Matriz de permisos"
       family: ai_native
       levels: [N2, N3]
@@ -319,7 +342,7 @@ exercise_block_catalog:
       completion: "todas las acciones tienen permiso declarado"
 
     - id: event_flag_review
-      lab_ref: "06"
+      lab_ref: "07"
       public_name: "Revision de eventos"
       family: ai_native
       levels: [N2, N3]
@@ -339,7 +362,7 @@ exercise_block_catalog:
       completion: "cada evento tiene clasificacion"
 
     - id: ai_output_review
-      lab_ref: "07"
+      lab_ref: "08"
       public_name: "Revision de output de IA"
       family: ai_native
       levels: [N1, N2, N3]
@@ -364,7 +387,7 @@ exercise_block_catalog:
       completion: "al menos una decision de aceptar, marcar o corregir"
 
     - id: ai_comparison
-      lab_ref: "08"
+      lab_ref: "09"
       public_name: "Comparacion de respuestas"
       family: ai_native
       levels: [N1, N2]
@@ -389,7 +412,7 @@ exercise_block_catalog:
       completion: "respuesta elegida y razon breve"
 
     - id: workflow_builder
-      lab_ref: "09"
+      lab_ref: "10"
       public_name: "Workflow builder"
       family: ai_native
       levels: [N2]
@@ -415,7 +438,7 @@ exercise_block_catalog:
       completion: "flujo tiene entrada, uso de IA, revision y salida"
 
     - id: agent_brief_builder
-      lab_ref: "10"
+      lab_ref: "11"
       public_name: "Brief para agente"
       family: ai_native
       levels: [N3]
@@ -445,7 +468,7 @@ exercise_block_catalog:
     # Si necesitas el patron de marcar eventos en logs, usa data_action_table con caseContext.action_kind="flag".
 
     - id: dashboard_pivot
-      lab_ref: "11"
+      lab_ref: "12"
       public_name: "Dashboard / pivot"
       family: traditional_business_signal
       levels: [N2, N3]
@@ -472,7 +495,7 @@ exercise_block_catalog:
       completion: "senal elegida y takeaway declarado"
 
     - id: tradeoff_decision_memo
-      lab_ref: "12"
+      lab_ref: "13"
       public_name: "Decision con ventajas y costos + memo"
       family: traditional_closure
       levels: [N1, N2, N3]

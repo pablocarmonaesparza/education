@@ -2,21 +2,21 @@
 /**
  * AUTO-GENERATED — NO EDITAR A MANO.
  *
- * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.8.0
+ * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.9.0
  * Generador: scripts/simulador/generate-exercise-blocks.mjs
  *
  * Para regenerar: `bun run simulador:gen-blocks`
  * Para validar sincronía con lab/runtime: `bun run simulador:check-blocks`
  *
  * Status del catálogo: canonical_after_exercise_lab_review
- * Total bloques: 19
+ * Total bloques: 20
  */
 
-export type ExerciseBlockId = "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "ai_textfield_guided" | "model_tradeoff_sliders" | "data_table_triage" | "permission_matrix" | "event_flag_review" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "agent_brief_builder" | "dashboard_pivot" | "tradeoff_decision_memo";
+export type ExerciseBlockId = "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "conversation_response" | "ai_textfield_guided" | "model_tradeoff_sliders" | "data_table_triage" | "permission_matrix" | "event_flag_review" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "agent_brief_builder" | "dashboard_pivot" | "tradeoff_decision_memo";
 
 export type ExerciseBlockFamily = "passive" | "ai_native" | "traditional_business_signal" | "traditional_closure";
 
-export type ExerciseBlockDimension = "contexto" | "ejecucion_ia" | "impacto" | "datos" | "juicio" | "validacion";
+export type ExerciseBlockDimension = "contexto" | "ejecucion_ia" | "impacto" | "juicio" | "datos" | "validacion";
 
 export type ExerciseBlockRuntimeSection = "Contexto" | "Datos" | "IA" | "Revision" | "Decision" | "Respuesta";
 
@@ -321,8 +321,42 @@ export const exerciseBlocks: ExerciseBlock[] = [
     completion: "prompt no vacio con objetivo y al menos una restriccion o criterio de validacion",
   },
   {
-    id: "ai_textfield_guided",
+    id: "conversation_response",
     labRef: "02",
+    publicName: "Respuesta a conversación",
+    family: "ai_native",
+    levels: ["N1", "N2", "N3"],
+    profiles: [
+      "marketing_growth",
+      "sales_revops",
+      "customer_success_support",
+      "operations_automation",
+      "finance_fpa",
+      "legal_compliance_privacy",
+    ],
+    primaryDimensions: ["contexto", "ejecucion_ia", "juicio"],
+    runtimeSections: ["IA", "Respuesta"],
+    whenToUse: [
+      "Hay una conversacion previa (cliente, manager, soporte) y el participante debe redactar el siguiente mensaje.",
+      "Medir como ajusta su respuesta al contexto ya visible.",
+    ],
+    avoidWhen: [
+      "No hay historia previa relevante; usa ai_textfield_free.",
+    ],
+    personalizationKnobs: [
+      "thread (avatares, mensajes previos, canal email/chat/ticket)",
+      "modelo disponible",
+      "placeholder del prompt",
+    ],
+    emits: ["response_text", "model", "attachments"],
+    uiPattern: "thread scrollable de mensajes previos + composer al final para el siguiente turno",
+    defaultEmptyFields: ["response_text", "attachments"],
+    scoringMethod: "llm_judge_with_context_alignment",
+    completion: "respuesta no vacia con coherencia al thread",
+  },
+  {
+    id: "ai_textfield_guided",
+    labRef: "03",
     publicName: "Textfield de IA guiado",
     family: "ai_native",
     levels: ["N1", "N2"],
@@ -359,7 +393,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "model_tradeoff_sliders",
-    labRef: "03",
+    labRef: "04",
     publicName: "Sliders de tradeoff de modelo",
     family: "ai_native",
     levels: ["N1", "N2", "N3"],
@@ -395,7 +429,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "data_table_triage",
-    labRef: "04",
+    labRef: "05",
     publicName: "Tabla de triaje de datos",
     family: "ai_native",
     levels: ["N1", "N2"],
@@ -430,7 +464,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "permission_matrix",
-    labRef: "05",
+    labRef: "06",
     publicName: "Matriz de permisos",
     family: "ai_native",
     levels: ["N2", "N3"],
@@ -463,7 +497,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "event_flag_review",
-    labRef: "06",
+    labRef: "07",
     publicName: "Revision de eventos",
     family: "ai_native",
     levels: ["N2", "N3"],
@@ -496,7 +530,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "ai_output_review",
-    labRef: "07",
+    labRef: "08",
     publicName: "Revision de output de IA",
     family: "ai_native",
     levels: ["N1", "N2", "N3"],
@@ -532,7 +566,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "ai_comparison",
-    labRef: "08",
+    labRef: "09",
     publicName: "Comparacion de respuestas",
     family: "ai_native",
     levels: ["N1", "N2"],
@@ -567,7 +601,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "workflow_builder",
-    labRef: "09",
+    labRef: "10",
     publicName: "Workflow builder",
     family: "ai_native",
     levels: ["N2"],
@@ -603,7 +637,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "agent_brief_builder",
-    labRef: "10",
+    labRef: "11",
     publicName: "Brief para agente",
     family: "ai_native",
     levels: ["N3"],
@@ -641,7 +675,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "dashboard_pivot",
-    labRef: "11",
+    labRef: "12",
     publicName: "Dashboard / pivot",
     family: "traditional_business_signal",
     levels: ["N2", "N3"],
@@ -678,7 +712,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "tradeoff_decision_memo",
-    labRef: "12",
+    labRef: "13",
     publicName: "Decision con ventajas y costos + memo",
     family: "traditional_closure",
     levels: ["N1", "N2", "N3"],
@@ -723,6 +757,7 @@ export const exerciseBlockIds: ExerciseBlockId[] = [
   "reading_timeline",
   "reading_attachment",
   "ai_textfield_free",
+  "conversation_response",
   "ai_textfield_guided",
   "model_tradeoff_sliders",
   "data_table_triage",
@@ -743,13 +778,13 @@ export const exerciseBlockById: Record<ExerciseBlockId, ExerciseBlock> =
   >;
 
 export const exerciseBlockStats = {
-  total: 19,
+  total: 20,
   families: {
     "passive": 7,
-    "ai_native": 10,
+    "ai_native": 11,
     "traditional_business_signal": 1,
     "traditional_closure": 1
   },
-  catalogVersion: "0.8.0",
+  catalogVersion: "0.9.0",
   catalogStatus: "canonical_after_exercise_lab_review",
 } as const;

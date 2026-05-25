@@ -218,8 +218,16 @@ const exerciseList = [
     signals: ["contexto", "ejecución IA", "impacto"],
   },
   {
+    id: "conversation_response",
+    eyebrow: "02 · Respuesta a conversación",
+    title: "Responder a un thread en curso.",
+    description:
+      "Hay una **conversación previa** con un cliente, manager o stakeholder. El participante redacta el *siguiente mensaje*. Mide cómo ajusta la respuesta al contexto ya visible.",
+    signals: ["contexto", "ejecución IA", "juicio"],
+  },
+  {
     id: "ai_textfield_guided",
-    eyebrow: "02 · Prompt guiado",
+    eyebrow: "03 · Prompt guiado",
     title: "Decisiones acotadas + prompt.",
     description:
       "El participante toma **3 decisiones discretas** (*objetivo, audiencia, límites*) y el bloque arma el prompt. Mide criterio granular sin abrir el caso a configuración libre.",
@@ -227,7 +235,7 @@ const exerciseList = [
   },
   {
     id: "model_tradeoff_sliders",
-    eyebrow: "03 · Sliders de tradeoff",
+    eyebrow: "04 · Sliders de tradeoff",
     title: "Ponderar para elegir modelo.",
     description:
       "3 sliders 0-100 (**autonomía**, **seguridad**, **costo**). La recomendación de modelo se actualiza en vivo con BrandMark. Mide *coherencia* entre la ponderación declarada y el modelo elegido.",
@@ -235,7 +243,7 @@ const exerciseList = [
   },
   {
     id: "data_table_triage",
-    eyebrow: "04 · Tabla de triaje",
+    eyebrow: "05 · Tabla de triaje",
     title: "Decidir qué datos entran.",
     description:
       "El participante clasifica cada campo con una acción: **usar**, **anonimizar**, **agregar** o **excluir**. Mide minimización, privacidad y calidad de datos.",
@@ -243,7 +251,7 @@ const exerciseList = [
   },
   {
     id: "permission_matrix",
-    eyebrow: "05 · Matriz de permisos",
+    eyebrow: "06 · Matriz de permisos",
     title: "Permitir, revisar o bloquear.",
     description:
       "Para cada acción de la automatización el participante elige qué nivel de control aplicar. Mide ponderación de autonomía vs riesgo.",
@@ -251,7 +259,7 @@ const exerciseList = [
   },
   {
     id: "event_flag_review",
-    eyebrow: "06 · Revisión de eventos",
+    eyebrow: "07 · Revisión de eventos",
     title: "Detectar lo que requiere atención.",
     description:
       "El participante revisa los eventos de una corrida y los clasifica como *riesgo*, *normal* o *escalar*. Mide validación y caza de errores.",
@@ -259,7 +267,7 @@ const exerciseList = [
   },
   {
     id: "ai_output_review",
-    eyebrow: "07 · Revisión de output",
+    eyebrow: "08 · Revisión de output",
     title: "Marcar errores antes de usar.",
     description:
       "El participante revisa una salida de IA con errores realistas. Mide validación, lectura de riesgo y capacidad de corregir sin aceptar todo.",
@@ -267,7 +275,7 @@ const exerciseList = [
   },
   {
     id: "ai_comparison",
-    eyebrow: "08 · Comparación de respuestas",
+    eyebrow: "09 · Comparación de respuestas",
     title: "Elegir el mejor output.",
     description:
       "El participante compara dos respuestas de IA y justifica cuál usaría. Sirve para medir criterio de calidad, no sólo preferencia estética.",
@@ -275,7 +283,7 @@ const exerciseList = [
   },
   {
     id: "workflow_builder",
-    eyebrow: "09 · Workflow builder",
+    eyebrow: "10 · Workflow builder",
     title: "Armar un flujo con control humano.",
     description:
       "El participante configura pasos de trabajo con IA, revisión y entrega. Mide si entiende handoffs, checkpoints y responsabilidad.",
@@ -283,7 +291,7 @@ const exerciseList = [
   },
   {
     id: "agent_brief_builder",
-    eyebrow: "10 · Brief para agente",
+    eyebrow: "11 · Brief para agente",
     title: "Delegar una tarea sin perder control.",
     description:
       "El participante convierte una tarea de cualquier área en un encargo operable: qué debe lograr, qué puede usar, qué puede hacer y cuándo debe detenerse.",
@@ -291,7 +299,7 @@ const exerciseList = [
   },
   {
     id: "dashboard_pivot",
-    eyebrow: "11 · Dashboard / pivot",
+    eyebrow: "12 · Dashboard / pivot",
     title: "Leer señales de negocio.",
     description:
       "El participante filtra una tabla y elige qué señal llevar al manager. Mide si conecta IA con impacto operativo.",
@@ -299,7 +307,7 @@ const exerciseList = [
   },
   {
     id: "tradeoff_decision_memo",
-    eyebrow: "12 · Decisión + memo",
+    eyebrow: "13 · Decisión + memo",
     title: "Cerrar con una recomendación.",
     description:
       "El participante elige una acción con ventajas y costos, luego escribe una explicación corta. Mide responsabilidad ejecutiva.",
