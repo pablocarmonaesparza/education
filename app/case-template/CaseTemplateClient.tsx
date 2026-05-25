@@ -3,24 +3,30 @@
 /**
  * /case-template — shell del runtime de un caso.
  *
- * Layout HIG:
+ * Layout HIG (patrón Typeform "one question per page"):
+ *
  *   ┌──────────┬──────────────────────────────────┐
- *   │          │ ▓▓▓ ░░░ ░░░ ░░░ ░░░  (1/5)       │
- *   │  SIDE    │                                  │
- *   │  6       │   Título (1 renglón)             │
- *   │  secs    │   Lorem ipsum 3 renglones        │
- *   │          │                                  │
- *   │          │          [Continuar]             │
+ *   │          │ ▓▓▓ ░░░ ░░░ ░░░ ░░░              │
+ *   │  • Sec1  │                                  │
+ *   │  • Sec2  │      Título (3-4 palabras)       │
+ *   │  • ...   │      Body 2 renglones            │
+ *   │          │      [ Ejercicio canónico ]      │
+ *   │          │      [Continuar] · Enter ↵       │
  *   └──────────┴──────────────────────────────────┘
  *
- * - Sidebar fija con las 6 secciones del runtime canónico
- * - Top: progress de 5 segmentos (cada sección = 5 diapositivas)
- *   Segmento actual pulsa (animate-pulse)
- * - Centro: título + body markdown
- * - Continuar centrado abajo
+ * - Sidebar minimal estilo Linear: dot + label, sin chips numerados.
+ * - Top: progress de 5 segmentos (cada sección = 5 diapositivas).
+ *   Segmento actual pulsa.
+ * - Centro: bloque cohesivo título → body → ejercicio → botón,
+ *   centrado vertical y horizontalmente, todo dentro de max-w-[560px].
+ * - Ejercicio del registry canónico (hoy: ai_textfield_free) inyectado
+ *   entre body y botón. Encuadra dentro del ancho del bloque.
  *
- * Sin lógica de navegación todavía. Estado hardcoded en Contexto · 1/5.
+ * Estado hardcoded en Contexto · 1/5. Sin navegación todavía.
  */
+
+import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
+import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
 
 const SECTIONS = [
   "Contexto",
@@ -35,17 +41,15 @@ const SLIDES_PER_SECTION = 5;
 
 const ACTIVE_SECTION_INDEX = 0; // Contexto
 const ACTIVE_SLIDE_INDEX = 0; // 1/5
+const ACTIVE_EXERCISE_BLOCK_ID: ExerciseBlockId = "ai_textfield_free";
 
 export function CaseTemplateClient() {
   return (
     <main className="simulador-root min-h-screen surface-canvas text-[var(--text-primary)]">
       <div className="grid min-h-screen grid-cols-[240px_1fr]">
-        {/* ============ SIDEBAR — 6 secciones ============ */}
-        <aside className="bg-[var(--surface)] px-5 py-8">
-          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-            Sección
-          </div>
-          <nav className="mt-4 flex flex-col gap-1">
+        {/* ============ SIDEBAR — 6 secciones (estilo Linear: dot + label) ============ */}
+        <aside className="bg-[var(--surface)] px-6 py-12">
+          <nav className="flex flex-col gap-1">
             {SECTIONS.map((section, idx) => {
               const isActive = idx === ACTIVE_SECTION_INDEX;
               const isPast = idx < ACTIVE_SECTION_INDEX;
@@ -53,26 +57,25 @@ export function CaseTemplateClient() {
                 <div
                   key={section}
                   aria-current={isActive ? "step" : undefined}
-                  className={`flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 transition-colors ${
+                  className={`group flex items-center gap-3 py-2 ts-subhead transition-colors ${
                     isActive
-                      ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                      ? "text-[var(--text-primary)] font-medium"
                       : isPast
                         ? "text-[var(--text-secondary)]"
                         : "text-[var(--text-tertiary)]"
                   }`}
                 >
+                  {/* Dot indicator — minimal, sin chips numerados pesados */}
                   <span
-                    className={`grid h-6 w-6 flex-shrink-0 place-items-center rounded-full ts-caption-1 font-semibold tabular-nums ${
+                    className={`h-1.5 w-1.5 flex-shrink-0 rounded-full transition-colors ${
                       isActive
-                        ? "bg-[var(--accent)] text-white"
+                        ? "bg-[var(--accent)]"
                         : isPast
-                          ? "bg-[var(--surface-3)] text-[var(--text-secondary)]"
-                          : "border border-[var(--border)] text-[var(--text-tertiary)]"
+                          ? "bg-[var(--text-tertiary)]"
+                          : "border border-[var(--border)] bg-transparent"
                     }`}
-                  >
-                    {idx + 1}
-                  </span>
-                  <span className="ts-subhead font-medium">{section}</span>
+                  />
+                  <span>{section}</span>
                 </div>
               );
             })}
@@ -130,7 +133,20 @@ export function CaseTemplateClient() {
                 </p>
               </div>
 
-              {/* Continuar — left-aligned justo debajo del body (gap ~40px),
+              {/* EJERCICIO — bloque canónico del registry, entre body y botón.
+                  Hereda el ancho del bloque (max-w-[560px]). Hoy seed con
+                  ai_textfield_free; cuando haya navegación real, este blockId
+                  vendrá del CaseStepContract. */}
+              <div className="mt-8">
+                <ExerciseBlockRenderer
+                  blockId={ACTIVE_EXERCISE_BLOCK_ID}
+                  sessionId={null}
+                  mode="lab_demo"
+                  slideId="case_template_demo"
+                />
+              </div>
+
+              {/* Continuar — left-aligned justo debajo del ejercicio (gap ~40px),
                   con hint "Enter" estilo Typeform. */}
               <div className="mt-10 flex items-center gap-4">
                 <button
