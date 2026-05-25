@@ -2,7 +2,7 @@
 /**
  * AUTO-GENERATED — NO EDITAR A MANO.
  *
- * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.7.0
+ * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.8.0
  * Generador: scripts/simulador/generate-exercise-blocks.mjs
  *
  * Para regenerar: `bun run simulador:gen-blocks`
@@ -285,7 +285,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "ai_textfield_free",
-    labRef: "01A",
+    labRef: "01",
     publicName: "Textfield de IA libre",
     family: "ai_native",
     levels: ["N1", "N2"],
@@ -322,7 +322,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "ai_textfield_guided",
-    labRef: "01B",
+    labRef: "02",
     publicName: "Textfield de IA guiado",
     family: "ai_native",
     levels: ["N1", "N2"],
@@ -359,7 +359,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "model_tradeoff_sliders",
-    labRef: "01C",
+    labRef: "03",
     publicName: "Sliders de tradeoff de modelo",
     family: "ai_native",
     levels: ["N1", "N2", "N3"],
@@ -395,7 +395,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "data_table_triage",
-    labRef: "02",
+    labRef: "04",
     publicName: "Tabla de triaje de datos",
     family: "ai_native",
     levels: ["N1", "N2"],
@@ -430,7 +430,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "permission_matrix",
-    labRef: "03",
+    labRef: "05",
     publicName: "Matriz de permisos",
     family: "ai_native",
     levels: ["N2", "N3"],
@@ -463,7 +463,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "event_flag_review",
-    labRef: "04A",
+    labRef: "06",
     publicName: "Revision de eventos",
     family: "ai_native",
     levels: ["N2", "N3"],
@@ -496,7 +496,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "ai_output_review",
-    labRef: "04",
+    labRef: "07",
     publicName: "Revision de output de IA",
     family: "ai_native",
     levels: ["N1", "N2", "N3"],
@@ -532,7 +532,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "ai_comparison",
-    labRef: "05",
+    labRef: "08",
     publicName: "Comparacion de respuestas",
     family: "ai_native",
     levels: ["N1", "N2"],
@@ -567,7 +567,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "workflow_builder",
-    labRef: "06",
+    labRef: "09",
     publicName: "Workflow builder",
     family: "ai_native",
     levels: ["N2"],
@@ -603,7 +603,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "agent_brief_builder",
-    labRef: "07",
+    labRef: "10",
     publicName: "Brief para agente",
     family: "ai_native",
     levels: ["N3"],
@@ -641,7 +641,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "dashboard_pivot",
-    labRef: "09",
+    labRef: "11",
     publicName: "Dashboard / pivot",
     family: "traditional_business_signal",
     levels: ["N2", "N3"],
@@ -678,7 +678,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "tradeoff_decision_memo",
-    labRef: "11",
+    labRef: "12",
     publicName: "Decision con ventajas y costos + memo",
     family: "traditional_closure",
     levels: ["N1", "N2", "N3"],
@@ -750,6 +750,6 @@ export const exerciseBlockStats = {
     "traditional_business_signal": 1,
     "traditional_closure": 1
   },
-  catalogVersion: "0.7.0",
+  catalogVersion: "0.8.0",
   catalogStatus: "canonical_after_exercise_lab_review",
 } as const;

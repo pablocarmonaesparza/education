@@ -1,5 +1,5 @@
 exercise_block_catalog:
-  version: 0.7.0
+  version: 0.8.0
   status: canonical_after_exercise_lab_review
   source_route: /exercise-lab
   purpose: >
@@ -201,7 +201,7 @@ exercise_block_catalog:
       completion: "auto al clickear continuar"
 
     - id: ai_textfield_free
-      lab_ref: "01A"
+      lab_ref: "01"
       public_name: "Textfield de IA libre"
       family: ai_native
       levels: [N1, N2]
@@ -227,7 +227,7 @@ exercise_block_catalog:
       completion: "prompt no vacio con objetivo y al menos una restriccion o criterio de validacion"
 
     - id: ai_textfield_guided
-      lab_ref: "01B"
+      lab_ref: "02"
       public_name: "Textfield de IA guiado"
       family: ai_native
       levels: [N1, N2]
@@ -253,7 +253,7 @@ exercise_block_catalog:
       completion: "objetivo, audiencia, limites y modelo definidos; prompt generado"
 
     - id: model_tradeoff_sliders
-      lab_ref: "01C"
+      lab_ref: "03"
       public_name: "Sliders de tradeoff de modelo"
       family: ai_native
       levels: [N1, N2, N3]
@@ -278,7 +278,7 @@ exercise_block_catalog:
       completion: "los 3 sliders movidos al menos una vez + modelo recomendado confirmado"
 
     - id: data_table_triage
-      lab_ref: "02"
+      lab_ref: "04"
       public_name: "Tabla de triaje de datos"
       family: ai_native
       levels: [N1, N2]
@@ -299,7 +299,7 @@ exercise_block_catalog:
       completion: "cada campo tiene accion elegida"
 
     - id: permission_matrix
-      lab_ref: "03"
+      lab_ref: "05"
       public_name: "Matriz de permisos"
       family: ai_native
       levels: [N2, N3]
@@ -319,7 +319,7 @@ exercise_block_catalog:
       completion: "todas las acciones tienen permiso declarado"
 
     - id: event_flag_review
-      lab_ref: "04A"
+      lab_ref: "06"
       public_name: "Revision de eventos"
       family: ai_native
       levels: [N2, N3]
@@ -339,7 +339,7 @@ exercise_block_catalog:
       completion: "cada evento tiene clasificacion"
 
     - id: ai_output_review
-      lab_ref: "04"
+      lab_ref: "07"
       public_name: "Revision de output de IA"
       family: ai_native
       levels: [N1, N2, N3]
@@ -364,7 +364,7 @@ exercise_block_catalog:
       completion: "al menos una decision de aceptar, marcar o corregir"
 
     - id: ai_comparison
-      lab_ref: "05"
+      lab_ref: "08"
       public_name: "Comparacion de respuestas"
       family: ai_native
       levels: [N1, N2]
@@ -389,7 +389,7 @@ exercise_block_catalog:
       completion: "respuesta elegida y razon breve"
 
     - id: workflow_builder
-      lab_ref: "06"
+      lab_ref: "09"
       public_name: "Workflow builder"
       family: ai_native
       levels: [N2]
@@ -415,7 +415,7 @@ exercise_block_catalog:
       completion: "flujo tiene entrada, uso de IA, revision y salida"
 
     - id: agent_brief_builder
-      lab_ref: "07"
+      lab_ref: "10"
       public_name: "Brief para agente"
       family: ai_native
       levels: [N3]
@@ -445,7 +445,7 @@ exercise_block_catalog:
     # Si necesitas el patron de marcar eventos en logs, usa data_action_table con caseContext.action_kind="flag".
 
     - id: dashboard_pivot
-      lab_ref: "09"
+      lab_ref: "11"
       public_name: "Dashboard / pivot"
       family: traditional_business_signal
       levels: [N2, N3]
@@ -472,7 +472,7 @@ exercise_block_catalog:
       completion: "senal elegida y takeaway declarado"
 
     - id: tradeoff_decision_memo
-      lab_ref: "11"
+      lab_ref: "12"
       public_name: "Decision con ventajas y costos + memo"
       family: traditional_closure
       levels: [N1, N2, N3]

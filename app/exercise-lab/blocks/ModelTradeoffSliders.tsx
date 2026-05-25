@@ -162,18 +162,6 @@ export function ModelTradeoffSliders({
           value={cost ?? 50}
           onChange={(v) => update("cost", v)}
         />
-
-        {/* Si alguno está null, mostrar — en vez del número */}
-        {(!allSet) && (
-          <div className="flex items-center gap-3 ts-footnote text-[var(--text-tertiary)]">
-            <span>Sin tocar:</span>
-            <span className="tabular-nums">
-              {autonomy === null && "Inteligencia — · "}
-              {security === null && "Seguridad — · "}
-              {cost === null && "Costo —"}
-            </span>
-          </div>
-        )}
       </div>
 
       {/* Recomendación dinámica */}
