@@ -1,5 +1,5 @@
 exercise_block_catalog:
-  version: 0.9.0
+  version: 0.10.0
   status: canonical_after_exercise_lab_review
   source_route: /exercise-lab
   purpose: >
@@ -26,15 +26,15 @@ exercise_block_catalog:
   selection_recipes:
     N1:
       description: "Fundamentos / Prompt Engineering"
-      recommended_blocks: [ai_textfield_free, ai_textfield_guided, data_table_triage, ai_output_review, tradeoff_decision_memo]
-      avoid_blocks: [agent_brief_builder, event_flag_review]
+      recommended_blocks: [ai_textfield_free, conversation_response, ai_textfield_guided, categorize_rows, ai_output_review, tradeoff_decision_memo]
+      avoid_blocks: []
     N2:
       description: "Workflow / Automatiza tu trabajo"
-      recommended_blocks: [ai_textfield_guided, data_table_triage, permission_matrix, workflow_builder, ai_output_review, dashboard_pivot, tradeoff_decision_memo]
+      recommended_blocks: [ai_textfield_guided, model_tradeoff_sliders, categorize_rows, workflow_builder, ai_output_review, dashboard_pivot, tradeoff_decision_memo]
       avoid_blocks: []
     N3:
       description: "Agentes / Produccion y optimizacion"
-      recommended_blocks: [agent_brief_builder, permission_matrix, event_flag_review, dashboard_pivot, tradeoff_decision_memo]
+      recommended_blocks: [ai_textfield_guided, categorize_rows, workflow_builder, dashboard_pivot, tradeoff_decision_memo]
       avoid_blocks: []
 
   blocks:
@@ -300,69 +300,37 @@ exercise_block_catalog:
       scoring_method: judge_with_priority_coherence_check
       completion: "los 3 sliders movidos al menos una vez + modelo recomendado confirmado"
 
-    - id: data_table_triage
+    - id: categorize_rows
       lab_ref: "05"
-      public_name: "Tabla de triaje de datos"
+      public_name: "Clasificar filas con acción"
       family: ai_native
-      levels: [N1, N2]
+      levels: [N1, N2, N3]
       profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
-      primary_dimensions: [datos, juicio]
-      runtime_sections: [Datos]
+      primary_dimensions: [datos, juicio, validacion]
+      runtime_sections: [Datos, IA, Decision, Revision]
       when_to_use:
-        - "El participante debe decidir que datos entran al modelo."
-        - "Hay riesgo de PII, datos sensibles o exceso de informacion."
+        - "El participante debe clasificar un set de items (campos, acciones, eventos, riesgos) con una accion discreta por item."
+        - "Hay riesgo o decision discriminable item por item."
       avoid_when:
-        - "La decision no afecta el resultado."
-        - "Quieres declarar permisos; usa permission_matrix."
-      personalization_knobs: ["filas (campos)", "ejemplos por campo", "consecuencias por accion"]
-      emits: [field_actions, minimization_decisions, privacy_flags]
-      ui_pattern: "tabla por campo con dropdown usar/anonimizar/agregar/excluir"
-      default_empty_fields: [field_actions]
-      scoring_method: deterministic_rules_plus_judge_notes
-      completion: "cada campo tiene accion elegida"
-
-    - id: permission_matrix
-      lab_ref: "06"
-      public_name: "Matriz de permisos"
-      family: ai_native
-      levels: [N2, N3]
-      profiles: [sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
-      primary_dimensions: [datos, ejecucion_ia, juicio]
-      runtime_sections: [IA, Decision]
-      when_to_use:
-        - "Hay automatizacion o agente con acciones de distinto riesgo."
-        - "El participante debe decidir permitir, revisar o bloquear."
-      avoid_when:
-        - "Todas las acciones tienen el mismo nivel de riesgo."
-      personalization_knobs: ["acciones disponibles", "niveles de permiso", "acciones high risk"]
-      emits: [permission_plan, blocked_actions, review_gates]
-      ui_pattern: "tabla por accion con dropdown permitir/revisar/bloquear"
-      default_empty_fields: [cells]
-      scoring_method: deterministic_overrides_for_high_risk_actions
-      completion: "todas las acciones tienen permiso declarado"
-
-    - id: event_flag_review
-      lab_ref: "07"
-      public_name: "Revision de eventos"
-      family: ai_native
-      levels: [N2, N3]
-      profiles: [sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
-      primary_dimensions: [validacion, juicio]
-      runtime_sections: [Revision]
-      when_to_use:
-        - "El participante supervisa una corrida o log de eventos."
-        - "Quieres medir si detecta incidentes en evidencia operacional."
-      avoid_when:
-        - "Los logs son demasiado tecnicos para el perfil."
-      personalization_knobs: ["eventos del timeline", "severidad", "eventos normales como contraste"]
-      emits: [flagged_events, incident_type, escalation_need]
-      ui_pattern: "tabla por evento con dropdown riesgo/normal/escalar"
-      default_empty_fields: [event_actions]
-      scoring_method: risk_event_recall_precision
-      completion: "cada evento tiene clasificacion"
+        - "Solo hay 1-2 items; usa un toggle simple."
+        - "La decision necesita un slider continuo; usa model_tradeoff_sliders."
+      personalization_knobs:
+        - "filas (items a clasificar)"
+        - "acciones disponibles (set de strings)"
+        - "actionStyle (neutral, permission, severity) para color de chips"
+        - "ejemplos y hints por fila"
+      emits: [row_actions]
+      ui_pattern: "tabla por item con chips inline de accion (sin dropdown)"
+      default_empty_fields: [row_actions]
+      scoring_method: depends_on_case_rubric
+      completion: "cada item tiene accion elegida"
+      # NOTA: reemplaza a data_table_triage, permission_matrix y
+      # event_flag_review en v0.10.0 · todos eran el mismo template
+      # visual con distinto set de acciones. El caso pasa actions +
+      # actionStyle via caseContext.
 
     - id: ai_output_review
-      lab_ref: "08"
+      lab_ref: "06"
       public_name: "Revision de output de IA"
       family: ai_native
       levels: [N1, N2, N3]
@@ -387,7 +355,7 @@ exercise_block_catalog:
       completion: "al menos una decision de aceptar, marcar o corregir"
 
     - id: ai_comparison
-      lab_ref: "09"
+      lab_ref: "07"
       public_name: "Comparacion de respuestas"
       family: ai_native
       levels: [N1, N2]
@@ -412,7 +380,7 @@ exercise_block_catalog:
       completion: "respuesta elegida y razon breve"
 
     - id: workflow_builder
-      lab_ref: "10"
+      lab_ref: "08"
       public_name: "Workflow builder"
       family: ai_native
       levels: [N2]
@@ -437,38 +405,15 @@ exercise_block_catalog:
       scoring_method: workflow_integrity_rules
       completion: "flujo tiene entrada, uso de IA, revision y salida"
 
-    - id: agent_brief_builder
-      lab_ref: "11"
-      public_name: "Brief para agente"
-      family: ai_native
-      levels: [N3]
-      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
-      primary_dimensions: [ejecucion_ia, juicio, datos]
-      runtime_sections: [IA, Decision]
-      when_to_use:
-        - "El participante debe delegar una tarea a un agente sin perder control."
-        - "El caso necesita medir autonomia, permisos, acceso y condicion de paro."
-      avoid_when:
-        - "No hay agente o autonomia real."
-        - "El brief queda demasiado especifico a un departamento."
-      personalization_knobs:
-        - "tarea"
-        - "acceso permitido"
-        - "accion maxima"
-        - "condicion de paro"
-        - "fallback"
-        - "logs o costo"
-      emits: [agent_task, allowed_access, max_action, stop_condition, fallback_policy]
-      ui_pattern: "flujo progresivo con una decision visible a la vez + brief preview vacio"
-      default_empty_fields: [agent_task, allowed_access, max_action, stop_condition]
-      scoring_method: deterministic_overrides_plus_llm_judge
-      completion: "tarea, acceso, accion maxima y condicion de paro definidos"
-
-    # NOTA: run_log_review fue consolidado en data_action_table (action_kind: flag) en v0.5.0.
-    # Si necesitas el patron de marcar eventos en logs, usa data_action_table con caseContext.action_kind="flag".
+    # NOTA: agent_brief_builder fue eliminado en v0.10.0 · era el mismo template
+    # que ai_textfield_guided (stepper con subsecciones de single-select).
+    # Si el caso necesita brief de agente con 4 preguntas (tarea/acceso/
+    # accion/paro), configura ai_textfield_guided con esas preguntas via
+    # caseContext.
+    # run_log_review fue consolidado en event_flag_review en v0.7.0.
 
     - id: dashboard_pivot
-      lab_ref: "12"
+      lab_ref: "09"
       public_name: "Dashboard / pivot"
       family: traditional_business_signal
       levels: [N2, N3]
@@ -495,7 +440,7 @@ exercise_block_catalog:
       completion: "senal elegida y takeaway declarado"
 
     - id: tradeoff_decision_memo
-      lab_ref: "13"
+      lab_ref: "10"
       public_name: "Decision con ventajas y costos + memo"
       family: traditional_closure
       levels: [N1, N2, N3]

@@ -1,17 +1,17 @@
 "use client";
 
 /**
- * AIComparison · renderer del bloque canónico `ai_comparison` (lab_ref 05).
+ * AIComparison · renderer del bloque canónico `ai_comparison` (lab_ref 07).
  *
- * 4 opciones discretas A/B/C/D. La elección entre alternativas codifica
- * el criterio del participante. Sin textarea de justificación (regla del
- * producto: eliminar fricción cualitativa).
+ * 4 opciones discretas A/B/C/D verticales con animación stagger de
+ * entrada (cada card aparece con 60ms de delay) para darle dinamismo.
  *
  * Sin hint interno · el shell del ExerciseSection ya tiene eyebrow +
  * title + body.
  */
 
 import { useRef } from "react";
+import { motion } from "framer-motion";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -95,13 +95,21 @@ export function AIComparison({
 
   return (
     <div className="flex flex-col gap-3">
-      {options.map((opt) => {
+      {options.map((opt, idx) => {
         const isSelected = payload.selected_output === opt.id;
         return (
-          <button
+          <motion.button
             key={opt.id}
             type="button"
             onClick={() => update(opt.id)}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.28,
+              delay: idx * 0.06,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            whileTap={{ scale: 0.99 }}
             className={`flex items-start gap-4 rounded-[var(--radius-lg)] border p-4 text-left transition-colors ${
               isSelected
                 ? "border-[var(--accent)] bg-[var(--accent-soft)]"
@@ -109,7 +117,7 @@ export function AIComparison({
             }`}
           >
             <span
-              className={`grid h-9 w-9 flex-shrink-0 place-items-center rounded-full ts-callout font-semibold ${
+              className={`grid h-9 w-9 flex-shrink-0 place-items-center rounded-full ts-callout font-semibold transition-colors ${
                 isSelected
                   ? "bg-[var(--accent)] text-white"
                   : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
@@ -121,7 +129,7 @@ export function AIComparison({
             <span className="ts-body leading-[1.55] text-[var(--text-primary)]">
               {opt.body}
             </span>
-          </button>
+          </motion.button>
         );
       })}
     </div>

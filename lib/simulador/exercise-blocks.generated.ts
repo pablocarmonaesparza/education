@@ -2,17 +2,17 @@
 /**
  * AUTO-GENERATED — NO EDITAR A MANO.
  *
- * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.9.0
+ * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.10.0
  * Generador: scripts/simulador/generate-exercise-blocks.mjs
  *
  * Para regenerar: `bun run simulador:gen-blocks`
  * Para validar sincronía con lab/runtime: `bun run simulador:check-blocks`
  *
  * Status del catálogo: canonical_after_exercise_lab_review
- * Total bloques: 20
+ * Total bloques: 17
  */
 
-export type ExerciseBlockId = "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "conversation_response" | "ai_textfield_guided" | "model_tradeoff_sliders" | "data_table_triage" | "permission_matrix" | "event_flag_review" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "agent_brief_builder" | "dashboard_pivot" | "tradeoff_decision_memo";
+export type ExerciseBlockId = "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "conversation_response" | "ai_textfield_guided" | "model_tradeoff_sliders" | "categorize_rows" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "dashboard_pivot" | "tradeoff_decision_memo";
 
 export type ExerciseBlockFamily = "passive" | "ai_native" | "traditional_business_signal" | "traditional_closure";
 
@@ -428,11 +428,11 @@ export const exerciseBlocks: ExerciseBlock[] = [
     completion: "los 3 sliders movidos al menos una vez + modelo recomendado confirmado",
   },
   {
-    id: "data_table_triage",
+    id: "categorize_rows",
     labRef: "05",
-    publicName: "Tabla de triaje de datos",
+    publicName: "Clasificar filas con acción",
     family: "ai_native",
-    levels: ["N1", "N2"],
+    levels: ["N1", "N2", "N3"],
     profiles: [
       "marketing_growth",
       "sales_revops",
@@ -441,96 +441,31 @@ export const exerciseBlocks: ExerciseBlock[] = [
       "finance_fpa",
       "legal_compliance_privacy",
     ],
-    primaryDimensions: ["datos", "juicio"],
-    runtimeSections: ["Datos"],
+    primaryDimensions: ["datos", "juicio", "validacion"],
+    runtimeSections: ["Datos", "IA", "Decision", "Revision"],
     whenToUse: [
-      "El participante debe decidir que datos entran al modelo.",
-      "Hay riesgo de PII, datos sensibles o exceso de informacion.",
+      "El participante debe clasificar un set de items (campos, acciones, eventos, riesgos) con una accion discreta por item.",
+      "Hay riesgo o decision discriminable item por item.",
     ],
     avoidWhen: [
-      "La decision no afecta el resultado.",
-      "Quieres declarar permisos; usa permission_matrix.",
+      "Solo hay 1-2 items; usa un toggle simple.",
+      "La decision necesita un slider continuo; usa model_tradeoff_sliders.",
     ],
     personalizationKnobs: [
-      "filas (campos)",
-      "ejemplos por campo",
-      "consecuencias por accion",
+      "filas (items a clasificar)",
+      "acciones disponibles (set de strings)",
+      "actionStyle (neutral, permission, severity) para color de chips",
+      "ejemplos y hints por fila",
     ],
-    emits: ["field_actions", "minimization_decisions", "privacy_flags"],
-    uiPattern: "tabla por campo con dropdown usar/anonimizar/agregar/excluir",
-    defaultEmptyFields: ["field_actions"],
-    scoringMethod: "deterministic_rules_plus_judge_notes",
-    completion: "cada campo tiene accion elegida",
-  },
-  {
-    id: "permission_matrix",
-    labRef: "06",
-    publicName: "Matriz de permisos",
-    family: "ai_native",
-    levels: ["N2", "N3"],
-    profiles: [
-      "sales_revops",
-      "customer_success_support",
-      "operations_automation",
-      "finance_fpa",
-      "legal_compliance_privacy",
-    ],
-    primaryDimensions: ["datos", "ejecucion_ia", "juicio"],
-    runtimeSections: ["IA", "Decision"],
-    whenToUse: [
-      "Hay automatizacion o agente con acciones de distinto riesgo.",
-      "El participante debe decidir permitir, revisar o bloquear.",
-    ],
-    avoidWhen: [
-      "Todas las acciones tienen el mismo nivel de riesgo.",
-    ],
-    personalizationKnobs: [
-      "acciones disponibles",
-      "niveles de permiso",
-      "acciones high risk",
-    ],
-    emits: ["permission_plan", "blocked_actions", "review_gates"],
-    uiPattern: "tabla por accion con dropdown permitir/revisar/bloquear",
-    defaultEmptyFields: ["cells"],
-    scoringMethod: "deterministic_overrides_for_high_risk_actions",
-    completion: "todas las acciones tienen permiso declarado",
-  },
-  {
-    id: "event_flag_review",
-    labRef: "07",
-    publicName: "Revision de eventos",
-    family: "ai_native",
-    levels: ["N2", "N3"],
-    profiles: [
-      "sales_revops",
-      "customer_success_support",
-      "operations_automation",
-      "finance_fpa",
-      "legal_compliance_privacy",
-    ],
-    primaryDimensions: ["validacion", "juicio"],
-    runtimeSections: ["Revision"],
-    whenToUse: [
-      "El participante supervisa una corrida o log de eventos.",
-      "Quieres medir si detecta incidentes en evidencia operacional.",
-    ],
-    avoidWhen: [
-      "Los logs son demasiado tecnicos para el perfil.",
-    ],
-    personalizationKnobs: [
-      "eventos del timeline",
-      "severidad",
-      "eventos normales como contraste",
-    ],
-    emits: ["flagged_events", "incident_type", "escalation_need"],
-    uiPattern: "tabla por evento con dropdown riesgo/normal/escalar",
-    defaultEmptyFields: ["event_actions"],
-    scoringMethod: "risk_event_recall_precision",
-    completion: "cada evento tiene clasificacion",
+    emits: ["row_actions"],
+    uiPattern: "tabla por item con chips inline de accion (sin dropdown)",
+    defaultEmptyFields: ["row_actions"],
+    scoringMethod: "depends_on_case_rubric",
+    completion: "cada item tiene accion elegida",
   },
   {
     id: "ai_output_review",
-    labRef: "08",
+    labRef: "06",
     publicName: "Revision de output de IA",
     family: "ai_native",
     levels: ["N1", "N2", "N3"],
@@ -566,7 +501,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "ai_comparison",
-    labRef: "09",
+    labRef: "07",
     publicName: "Comparacion de respuestas",
     family: "ai_native",
     levels: ["N1", "N2"],
@@ -601,7 +536,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "workflow_builder",
-    labRef: "10",
+    labRef: "08",
     publicName: "Workflow builder",
     family: "ai_native",
     levels: ["N2"],
@@ -636,46 +571,8 @@ export const exerciseBlocks: ExerciseBlock[] = [
     completion: "flujo tiene entrada, uso de IA, revision y salida",
   },
   {
-    id: "agent_brief_builder",
-    labRef: "11",
-    publicName: "Brief para agente",
-    family: "ai_native",
-    levels: ["N3"],
-    profiles: [
-      "marketing_growth",
-      "sales_revops",
-      "customer_success_support",
-      "operations_automation",
-      "finance_fpa",
-      "legal_compliance_privacy",
-    ],
-    primaryDimensions: ["ejecucion_ia", "juicio", "datos"],
-    runtimeSections: ["IA", "Decision"],
-    whenToUse: [
-      "El participante debe delegar una tarea a un agente sin perder control.",
-      "El caso necesita medir autonomia, permisos, acceso y condicion de paro.",
-    ],
-    avoidWhen: [
-      "No hay agente o autonomia real.",
-      "El brief queda demasiado especifico a un departamento.",
-    ],
-    personalizationKnobs: [
-      "tarea",
-      "acceso permitido",
-      "accion maxima",
-      "condicion de paro",
-      "fallback",
-      "logs o costo",
-    ],
-    emits: ["agent_task", "allowed_access", "max_action", "stop_condition", "fallback_policy"],
-    uiPattern: "flujo progresivo con una decision visible a la vez + brief preview vacio",
-    defaultEmptyFields: ["agent_task", "allowed_access", "max_action", "stop_condition"],
-    scoringMethod: "deterministic_overrides_plus_llm_judge",
-    completion: "tarea, acceso, accion maxima y condicion de paro definidos",
-  },
-  {
     id: "dashboard_pivot",
-    labRef: "12",
+    labRef: "09",
     publicName: "Dashboard / pivot",
     family: "traditional_business_signal",
     levels: ["N2", "N3"],
@@ -712,7 +609,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   },
   {
     id: "tradeoff_decision_memo",
-    labRef: "13",
+    labRef: "10",
     publicName: "Decision con ventajas y costos + memo",
     family: "traditional_closure",
     levels: ["N1", "N2", "N3"],
@@ -760,13 +657,10 @@ export const exerciseBlockIds: ExerciseBlockId[] = [
   "conversation_response",
   "ai_textfield_guided",
   "model_tradeoff_sliders",
-  "data_table_triage",
-  "permission_matrix",
-  "event_flag_review",
+  "categorize_rows",
   "ai_output_review",
   "ai_comparison",
   "workflow_builder",
-  "agent_brief_builder",
   "dashboard_pivot",
   "tradeoff_decision_memo",
 ];
@@ -778,13 +672,13 @@ export const exerciseBlockById: Record<ExerciseBlockId, ExerciseBlock> =
   >;
 
 export const exerciseBlockStats = {
-  total: 20,
+  total: 17,
   families: {
     "passive": 7,
-    "ai_native": 11,
+    "ai_native": 8,
     "traditional_business_signal": 1,
     "traditional_closure": 1
   },
-  catalogVersion: "0.9.0",
+  catalogVersion: "0.10.0",
   catalogStatus: "canonical_after_exercise_lab_review",
 } as const;

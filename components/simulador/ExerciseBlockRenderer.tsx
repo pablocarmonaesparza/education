@@ -17,15 +17,12 @@ import { ReadingImage } from "@/app/exercise-lab/blocks/ReadingImage";
 import { ReadingKpiCards } from "@/app/exercise-lab/blocks/ReadingKpiCards";
 import { ReadingTimeline } from "@/app/exercise-lab/blocks/ReadingTimeline";
 import { ReadingAttachment } from "@/app/exercise-lab/blocks/ReadingAttachment";
-import { DataTableTriage } from "@/app/exercise-lab/blocks/DataTableTriage";
-import { PermissionMatrix } from "@/app/exercise-lab/blocks/PermissionMatrix";
-import { EventFlagReview } from "@/app/exercise-lab/blocks/EventFlagReview";
+import { CategorizeRows } from "@/app/exercise-lab/blocks/CategorizeRows";
 import { AIComparison } from "@/app/exercise-lab/blocks/AIComparison";
 import { WorkflowBuilder } from "@/app/exercise-lab/blocks/WorkflowBuilder";
 import { AIOutputReview } from "@/app/exercise-lab/blocks/AIOutputReview";
 import { DashboardPivot } from "@/app/exercise-lab/blocks/DashboardPivot";
 import { TradeoffDecisionMemo } from "@/app/exercise-lab/blocks/TradeoffDecisionMemo";
-import { AgentBriefBuilder } from "@/app/exercise-lab/blocks/AgentBriefBuilder";
 import { AITextfieldFree } from "@/app/exercise-lab/blocks/AITextfieldFree";
 import { ConversationResponse } from "@/app/exercise-lab/blocks/ConversationResponse";
 import { AITextfieldGuided } from "@/app/exercise-lab/blocks/AITextfieldGuided";
@@ -71,12 +68,8 @@ export function ExerciseBlockRenderer({
       return <ReadingTimelineWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "reading_attachment":
       return <ReadingAttachmentWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-    case "data_table_triage":
-      return <DataTableTriageWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-    case "permission_matrix":
-      return <PermissionMatrixWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-    case "event_flag_review":
-      return <EventFlagReviewWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "categorize_rows":
+      return <CategorizeRowsWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "ai_comparison":
       return <AIComparisonWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "workflow_builder":
@@ -87,8 +80,6 @@ export function ExerciseBlockRenderer({
       return <DashboardPivotWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "tradeoff_decision_memo":
       return <TradeoffDecisionMemoWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-    case "agent_brief_builder":
-      return <AgentBriefBuilderWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "ai_textfield_free":
       return <AITextfieldFreeWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "conversation_response":
@@ -157,25 +148,20 @@ function ReadingAttachmentWrapper({ sessionId, mode, slideId, caseContext }: Wra
   return <ReadingAttachment payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
 }
 
-function DataTableTriageWrapper({ sessionId, mode, slideId }: WrapperProps) {
+function CategorizeRowsWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
-    emptyPayload("data_table_triage") as Extract<ExerciseResponsePayload, { block_id: "data_table_triage" }>,
+    emptyPayload("categorize_rows") as Extract<ExerciseResponsePayload, { block_id: "categorize_rows" }>,
   );
-  return <DataTableTriage payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
-}
-
-function PermissionMatrixWrapper({ sessionId, mode, slideId }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("permission_matrix") as Extract<ExerciseResponsePayload, { block_id: "permission_matrix" }>,
+  return (
+    <CategorizeRows
+      payload={payload}
+      onChange={setPayload}
+      sessionId={sessionId}
+      mode={mode}
+      slideId={slideId}
+      caseContext={caseContext}
+    />
   );
-  return <PermissionMatrix payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
-}
-
-function EventFlagReviewWrapper({ sessionId, mode, slideId }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("event_flag_review") as Extract<ExerciseResponsePayload, { block_id: "event_flag_review" }>,
-  );
-  return <EventFlagReview payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
 }
 
 function AIComparisonWrapper({ sessionId, mode, slideId }: WrapperProps) {
@@ -211,13 +197,6 @@ function TradeoffDecisionMemoWrapper({ sessionId, mode, slideId }: WrapperProps)
     emptyPayload("tradeoff_decision_memo") as Extract<ExerciseResponsePayload, { block_id: "tradeoff_decision_memo" }>,
   );
   return <TradeoffDecisionMemo payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
-}
-
-function AgentBriefBuilderWrapper({ sessionId, mode, slideId }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("agent_brief_builder") as Extract<ExerciseResponsePayload, { block_id: "agent_brief_builder" }>,
-  );
-  return <AgentBriefBuilder payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
 }
 
 function AITextfieldFreeWrapper({ sessionId, mode, slideId }: WrapperProps) {

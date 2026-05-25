@@ -104,31 +104,20 @@ export type ExerciseResponsePayload =
       recommended_model_id: string | null;
     }
   | {
-      // Split de v0.7.0 (revertido el consolidado de v0.5.0).
-      // Cada bloque tiene su propio set de acciones y su rúbrica.
-      // El participante decide cómo entran los datos al modelo.
-      block_id: "data_table_triage";
-      field_actions: Array<{
-        field_id: string;
-        action: DataTableAction | null;
-      }>;
-    }
-  | {
-      // Matriz de permisos · qué puede hacer la automatización sola,
-      // qué necesita revisión, qué debe bloquearse.
-      block_id: "permission_matrix";
-      cells: Array<{
-        action_id: string;
-        permission: Permission | null;
-      }>;
-    }
-  | {
-      // Revisión de eventos de un log · marca cuáles requieren atención.
-      // Reemplaza al viejo run_log_review.
-      block_id: "event_flag_review";
-      event_actions: Array<{
-        event_id: string;
-        action: "riesgo" | "normal" | "escalar" | null;
+      // Template genérico de clasificación · v0.10.0.
+      // Reemplaza a data_table_triage, permission_matrix y
+      // event_flag_review · todos eran el mismo template visual con
+      // distinto set de acciones. El caso productivo pasa:
+      //   - caseContext.rows · items a clasificar
+      //   - caseContext.actions · set de strings disponibles
+      //   - caseContext.actionStyle · "neutral" | "permission" | "severity"
+      // El payload solo persiste el id de fila + acción elegida (string
+      // genérico). La validación de que el string sea válido se hace en
+      // runtime contra caseContext.actions.
+      block_id: "categorize_rows";
+      row_actions: Array<{
+        row_id: string;
+        action: string | null;
       }>;
     }
   | {
@@ -149,13 +138,6 @@ export type ExerciseResponsePayload =
       block_id: "workflow_builder";
       enabled_steps: string[]; // ids de pasos activados (trigger, gate, action, ...)
       step_order: string[]; // si el usuario reordena
-    }
-  | {
-      block_id: "agent_brief_builder";
-      task: string;
-      access: string;
-      action: string;
-      stop: string;
     }
   | {
       // La elección del filtro codifica el juicio del participante
@@ -295,20 +277,14 @@ export function emptyPayload(block_id: ExerciseBlockId): ExerciseResponsePayload
         cost_priority: null,
         recommended_model_id: null,
       };
-    case "data_table_triage":
-      return { block_id, field_actions: [] };
-    case "permission_matrix":
-      return { block_id, cells: [] };
-    case "event_flag_review":
-      return { block_id, event_actions: [] };
+    case "categorize_rows":
+      return { block_id, row_actions: [] };
     case "ai_output_review":
       return { block_id, flagged_segments: [] };
     case "ai_comparison":
       return { block_id, selected_output: null };
     case "workflow_builder":
       return { block_id, enabled_steps: [], step_order: [] };
-    case "agent_brief_builder":
-      return { block_id, task: "", access: "", action: "", stop: "" };
     case "dashboard_pivot":
       return { block_id, selected_filter: null };
     case "tradeoff_decision_memo":
@@ -334,7 +310,7 @@ export interface ExerciseRendererEntry<
  * el registry (lib/) y los renderers (app/). Los componentes que necesiten
  * un renderer hacen:
  *
- *   import { DataTableTriage } from "@/app/exercise-lab/blocks/DataTableTriage";
+ *   import { CategorizeRows } from "@/app/exercise-lab/blocks/CategorizeRows";
  *
  * Y el caller decide si usa el renderer directo o registra entries en
  * runtime. Día 3 mantiene Partial<> hasta que los 11 estén extraídos.

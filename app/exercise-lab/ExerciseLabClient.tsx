@@ -242,32 +242,16 @@ const exerciseList = [
     signals: ["juicio", "ejecución IA"],
   },
   {
-    id: "data_table_triage",
-    eyebrow: "05 · Tabla de triaje",
-    title: "Decidir qué datos entran.",
+    id: "categorize_rows",
+    eyebrow: "05 · Clasificar filas con acción",
+    title: "Una acción discreta por fila.",
     description:
-      "El participante clasifica cada campo con una acción: **usar**, **anonimizar**, **agregar** o **excluir**. Mide minimización, privacidad y calidad de datos.",
-    signals: ["datos", "juicio"],
-  },
-  {
-    id: "permission_matrix",
-    eyebrow: "06 · Matriz de permisos",
-    title: "Permitir, revisar o bloquear.",
-    description:
-      "Para cada acción de la automatización el participante elige qué nivel de control aplicar. Mide ponderación de autonomía vs riesgo.",
-    signals: ["datos", "juicio", "ejecución IA"],
-  },
-  {
-    id: "event_flag_review",
-    eyebrow: "07 · Revisión de eventos",
-    title: "Detectar lo que requiere atención.",
-    description:
-      "El participante revisa los eventos de una corrida y los clasifica como *riesgo*, *normal* o *escalar*. Mide validación y caza de errores.",
-    signals: ["validación", "juicio"],
+      "Template para clasificar items con acción discreta (usar/anonimizar, permitir/revisar/bloquear, riesgo/escalar/normal, etc.). El caso pasa las **acciones disponibles** y el **estilo de chips** según el contexto. Reemplaza los antiguos triaje de datos, matriz de permisos y revisión de eventos · todos eran el mismo template.",
+    signals: ["datos", "juicio", "validación"],
   },
   {
     id: "ai_output_review",
-    eyebrow: "08 · Revisión de output",
+    eyebrow: "06 · Revisión de output",
     title: "Marcar errores antes de usar.",
     description:
       "El participante revisa una salida de IA con errores realistas. Mide validación, lectura de riesgo y capacidad de corregir sin aceptar todo.",
@@ -275,7 +259,7 @@ const exerciseList = [
   },
   {
     id: "ai_comparison",
-    eyebrow: "09 · Comparación de respuestas",
+    eyebrow: "07 · Comparación de respuestas",
     title: "Elegir el mejor output.",
     description:
       "El participante compara dos respuestas de IA y justifica cuál usaría. Sirve para medir criterio de calidad, no sólo preferencia estética.",
@@ -283,23 +267,15 @@ const exerciseList = [
   },
   {
     id: "workflow_builder",
-    eyebrow: "10 · Workflow builder",
+    eyebrow: "08 · Workflow builder",
     title: "Armar un flujo con control humano.",
     description:
       "El participante configura pasos de trabajo con IA, revisión y entrega. Mide si entiende handoffs, checkpoints y responsabilidad.",
     signals: ["ejecución IA", "validación", "impacto"],
   },
   {
-    id: "agent_brief_builder",
-    eyebrow: "11 · Brief para agente",
-    title: "Delegar una tarea sin perder control.",
-    description:
-      "El participante convierte una tarea de cualquier área en un encargo operable: qué debe lograr, qué puede usar, qué puede hacer y cuándo debe detenerse.",
-    signals: ["ejecución IA", "juicio", "datos"],
-  },
-  {
     id: "dashboard_pivot",
-    eyebrow: "12 · Dashboard / pivot",
+    eyebrow: "09 · Dashboard / pivot",
     title: "Leer señales de negocio.",
     description:
       "El participante filtra una tabla y elige qué señal llevar al manager. Mide si conecta IA con impacto operativo.",
@@ -307,7 +283,7 @@ const exerciseList = [
   },
   {
     id: "tradeoff_decision_memo",
-    eyebrow: "13 · Decisión + memo",
+    eyebrow: "10 · Decisión + memo",
     title: "Cerrar con una recomendación.",
     description:
       "El participante elige una acción con ventajas y costos, luego escribe una explicación corta. Mide responsabilidad ejecutiva.",

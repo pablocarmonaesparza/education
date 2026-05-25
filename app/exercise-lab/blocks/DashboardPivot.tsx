@@ -18,6 +18,7 @@
  */
 
 import { useRef } from "react";
+import { motion } from "framer-motion";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -106,14 +107,22 @@ export function DashboardPivot({
 
   return (
     <div className="flex flex-col gap-3">
-      {TEAMS.map((team) => {
+      {TEAMS.map((team, idx) => {
         const isSelected = payload.selected_filter === team.id;
         return (
-          <button
+          <motion.button
             key={team.id}
             type="button"
             onClick={() => update(team.id)}
-            className={`flex flex-col gap-3 rounded-[var(--radius-lg)] border p-4 text-left transition-colors sm:flex-row sm:items-center sm:gap-6 ${
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.28,
+              delay: idx * 0.06,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            whileTap={{ scale: 0.99 }}
+            className={`flex flex-col gap-3 rounded-[var(--radius-lg)] border p-4 text-left transition-colors ${
               isSelected
                 ? "border-[var(--accent)] bg-[var(--accent-soft)]"
                 : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-2)]"
@@ -128,17 +137,20 @@ export function DashboardPivot({
             >
               {team.name}
             </span>
-            <div className="flex flex-wrap gap-3 sm:ml-auto">
+            <div className="flex flex-col gap-1.5">
               {team.metrics.map((m) => (
-                <div key={m.label} className="flex items-center gap-1.5">
-                  <span className="ts-caption-2 uppercase tracking-wider text-[var(--text-tertiary)]">
+                <div
+                  key={m.label}
+                  className="flex items-center justify-between gap-3"
+                >
+                  <span className="ts-subhead text-[var(--text-secondary)]">
                     {m.label}
                   </span>
                   <SeverityPill value={m.value} muted={!isSelected} />
                 </div>
               ))}
             </div>
-          </button>
+          </motion.button>
         );
       })}
     </div>

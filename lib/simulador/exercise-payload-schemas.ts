@@ -118,33 +118,14 @@ const ModelTradeoffSlidersSchema = z.strictObject({
   recommended_model_id: z.string().nullable(),
 });
 
-// Split de v0.7.0 (revertido el consolidado de v0.5.0).
-const DataTableTriageSchema = z.strictObject({
-  block_id: z.literal("data_table_triage"),
-  field_actions: z.array(
+// Template genérico de clasificación (v0.10.0) · reemplaza a
+// data_table_triage, permission_matrix y event_flag_review.
+const CategorizeRowsSchema = z.strictObject({
+  block_id: z.literal("categorize_rows"),
+  row_actions: z.array(
     z.object({
-      field_id: z.string(),
-      action: DataTableActionSchema.nullable(),
-    }),
-  ),
-});
-
-const PermissionMatrixSchema = z.strictObject({
-  block_id: z.literal("permission_matrix"),
-  cells: z.array(
-    z.object({
-      action_id: z.string(),
-      permission: PermissionSchema.nullable(),
-    }),
-  ),
-});
-
-const EventFlagReviewSchema = z.strictObject({
-  block_id: z.literal("event_flag_review"),
-  event_actions: z.array(
-    z.object({
-      event_id: z.string(),
-      action: z.enum(["riesgo", "normal", "escalar"]).nullable(),
+      row_id: z.string(),
+      action: z.string().nullable(),
     }),
   ),
 });
@@ -168,14 +149,6 @@ const WorkflowBuilderSchema = z.strictObject({
   block_id: z.literal("workflow_builder"),
   enabled_steps: z.array(z.string()),
   step_order: z.array(z.string()),
-});
-
-const AgentBriefBuilderSchema = z.strictObject({
-  block_id: z.literal("agent_brief_builder"),
-  task: z.string(),
-  access: z.string(),
-  action: z.string(),
-  stop: z.string(),
 });
 
 const DashboardPivotSchema = z.strictObject({
@@ -205,13 +178,10 @@ export const ExerciseResponsePayloadSchema = z.discriminatedUnion("block_id", [
   ConversationResponseSchema,
   AITextfieldGuidedSchema,
   ModelTradeoffSlidersSchema,
-  DataTableTriageSchema,
-  PermissionMatrixSchema,
-  EventFlagReviewSchema,
+  CategorizeRowsSchema,
   AIOutputReviewSchema,
   AIComparisonSchema,
   WorkflowBuilderSchema,
-  AgentBriefBuilderSchema,
   DashboardPivotSchema,
   TradeoffDecisionMemoSchema,
 ]);
