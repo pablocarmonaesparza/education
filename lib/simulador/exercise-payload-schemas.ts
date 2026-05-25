@@ -49,6 +49,11 @@ const ReviewFlagSchema = z.enum([
 
 // .strict() rechaza campos extras no declarados — anti-bypass:
 // el cliente no puede inyectar fields adicionales al judge.
+const CaseCoverSchema = z.strictObject({
+  block_id: z.literal("case_cover"),
+  started_at: z.string().nullable(),
+});
+
 const ReadingPassiveSchema = z.strictObject({
   block_id: z.literal("reading_passive"),
   acknowledged: z.boolean(),
@@ -167,6 +172,7 @@ const TradeoffDecisionMemoSchema = z.strictObject({
 // ============================================================================
 
 export const ExerciseResponsePayloadSchema = z.discriminatedUnion("block_id", [
+  CaseCoverSchema,
   ReadingPassiveSchema,
   ReadingMessageSchema,
   ReadingDataTableSchema,

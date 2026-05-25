@@ -1,5 +1,5 @@
 exercise_block_catalog:
-  version: 0.10.0
+  version: 0.11.0
   status: canonical_after_exercise_lab_review
   source_route: /exercise-lab
   purpose: >
@@ -38,6 +38,31 @@ exercise_block_catalog:
       avoid_blocks: []
 
   blocks:
+    - id: case_cover
+      lab_ref: "00"
+      public_name: "Portada del caso"
+      family: passive
+      levels: [N1, N2, N3]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
+      primary_dimensions: []
+      runtime_sections: [Contexto]
+      when_to_use:
+        - "Inicio del caso · pantalla de bienvenida con titulo, contexto y boton Iniciar."
+        - "Si el caso usa timer global, este se activa al click en Iniciar (no antes)."
+      avoid_when:
+        - "El caso no necesita pantalla de inicio (caso muy corto, demo embebida)."
+      personalization_knobs:
+        - "titulo del caso"
+        - "descripcion ampliada"
+        - "metadata (perfil, dificultad, tiempo estimado)"
+        - "timer (opcional, en segundos)"
+        - "label del boton Iniciar"
+      emits: [started_at, timer_seconds]
+      ui_pattern: "hero centrado con titulo grande + descripcion + meta + boton Iniciar prominente"
+      default_empty_fields: [started_at]
+      scoring_method: passive
+      completion: "auto al clickear Iniciar"
+
     - id: reading_passive
       lab_ref: "00A"
       public_name: "Informativa basica"
@@ -228,26 +253,28 @@ exercise_block_catalog:
 
     - id: conversation_response
       lab_ref: "02"
-      public_name: "Respuesta a conversación"
+      public_name: "Siguiente turno con la IA"
       family: ai_native
       levels: [N1, N2, N3]
       profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
       primary_dimensions: [contexto, ejecucion_ia, juicio]
-      runtime_sections: [IA, Respuesta]
+      runtime_sections: [IA]
       when_to_use:
-        - "Hay una conversacion previa (cliente, manager, soporte) y el participante debe redactar el siguiente mensaje."
-        - "Medir como ajusta su respuesta al contexto ya visible."
+        - "Hay una conversacion previa entre el participante y un modelo de IA."
+        - "Medir como itera con la IA (corregir, profundizar, reformular) a partir del contexto ya visible."
       avoid_when:
-        - "No hay historia previa relevante; usa ai_textfield_free."
+        - "No hay turnos previos relevantes; usa ai_textfield_free."
+        - "El contexto es respuesta a un humano (cliente/manager); modela como reading_message + ai_textfield_free."
       personalization_knobs:
-        - "thread (avatares, mensajes previos, canal email/chat/ticket)"
-        - "modelo disponible"
-        - "placeholder del prompt"
+        - "thread (turnos user/assistant previos)"
+        - "modelo de la conversacion (BrandMark)"
+        - "modelo del siguiente turno (puede ser distinto al previo)"
+        - "placeholder del composer"
       emits: [response_text, model, attachments]
-      ui_pattern: "thread scrollable de mensajes previos + composer al final para el siguiente turno"
+      ui_pattern: "thread con burbujas user/assistant (avatar BrandMark del modelo) + composer al final"
       default_empty_fields: [response_text, attachments]
       scoring_method: llm_judge_with_context_alignment
-      completion: "respuesta no vacia con coherencia al thread"
+      completion: "siguiente prompt no vacio con coherencia al thread"
 
     - id: ai_textfield_guided
       lab_ref: "03"

@@ -53,6 +53,13 @@ export interface VoiceNote {
  */
 export type ExerciseResponsePayload =
   | {
+      // Portada del caso · pantalla de inicio con título, descripción
+      // y botón Iniciar. Si el caso usa timer global, started_at marca
+      // cuándo arrancar el countdown. Timer config viene en caseContext.
+      block_id: "case_cover";
+      started_at: string | null; // ISO timestamp del click en Iniciar
+    }
+  | {
       // Bloques PASIVOS · sin interacción, solo lectura.
       // `acknowledged` se vuelve true cuando el participante hace click
       // en Continuar (= leyó el slide). No emiten evidencia al judge.
@@ -237,6 +244,8 @@ export type ExerciseRenderer<
  */
 export function emptyPayload(block_id: ExerciseBlockId): ExerciseResponsePayload {
   switch (block_id) {
+    case "case_cover":
+      return { block_id, started_at: null };
     case "reading_passive":
     case "reading_message":
     case "reading_data_table":

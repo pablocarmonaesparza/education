@@ -10,6 +10,7 @@
  */
 
 import { useState } from "react";
+import { CaseCover } from "@/app/exercise-lab/blocks/CaseCover";
 import { ReadingPassive } from "@/app/exercise-lab/blocks/ReadingPassive";
 import { ReadingMessage } from "@/app/exercise-lab/blocks/ReadingMessage";
 import { ReadingDataTable } from "@/app/exercise-lab/blocks/ReadingDataTable";
@@ -54,6 +55,8 @@ export function ExerciseBlockRenderer({
   onShellContinue,
 }: ExerciseBlockRendererProps) {
   switch (blockId) {
+    case "case_cover":
+      return <CaseCoverWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
     case "reading_passive":
       return <ReadingPassiveWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "reading_message":
@@ -98,6 +101,23 @@ export function ExerciseBlockRenderer({
 type WrapperProps = Omit<ExerciseBlockRendererProps, "blockId" | "onShellContinue"> & {
   onShellContinue?: () => void;
 };
+
+function CaseCoverWrapper({ sessionId, mode, slideId, caseContext, onShellContinue }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("case_cover") as Extract<ExerciseResponsePayload, { block_id: "case_cover" }>,
+  );
+  return (
+    <CaseCover
+      payload={payload}
+      onChange={setPayload}
+      sessionId={sessionId}
+      mode={mode}
+      slideId={slideId}
+      caseContext={caseContext}
+      onShellContinue={onShellContinue}
+    />
+  );
+}
 
 function ReadingPassiveWrapper({ sessionId, mode, slideId }: WrapperProps) {
   const [payload, setPayload] = useState(() =>

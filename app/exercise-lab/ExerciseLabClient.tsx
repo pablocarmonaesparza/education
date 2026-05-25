@@ -154,6 +154,14 @@ const brandLogo: Record<BrandKey, { light: string; dark?: string } | null> = {
 
 const exerciseList = [
   {
+    id: "case_cover",
+    eyebrow: "00 · Portada del caso",
+    title: "Iniciar el caso (con timer opcional).",
+    description:
+      "Pantalla de bienvenida del caso. Muestra **perfil**, **dificultad**, **tiempo estimado** y un botón **Iniciar**. Si el caso es cronometrado, el timer arranca al click en Iniciar.",
+    signals: [],
+  },
+  {
     id: "reading_passive",
     eyebrow: "00A · Informativa básica",
     title: "Solo título y body.",
@@ -219,10 +227,10 @@ const exerciseList = [
   },
   {
     id: "conversation_response",
-    eyebrow: "02 · Respuesta a conversación",
-    title: "Responder a un thread en curso.",
+    eyebrow: "02 · Siguiente turno con la IA",
+    title: "Iterar con la IA en un thread.",
     description:
-      "Hay una **conversación previa** con un cliente, manager o stakeholder. El participante redacta el *siguiente mensaje*. Mide cómo ajusta la respuesta al contexto ya visible.",
+      "Hay una **conversación previa** con un modelo (tú ↔ IA). El participante escribe el *siguiente prompt* para corregir, profundizar o reformular. Mide cómo itera con la IA a partir del contexto ya visible.",
     signals: ["contexto", "ejecución IA", "juicio"],
   },
   {
@@ -523,6 +531,7 @@ export function ExerciseLabClient() {
           //  - ai_comparison · auto-advance al elegir opción (single-select)
           //  - dashboard_pivot · auto-advance al elegir equipo (single-select)
           const OWNS_CONTINUE = new Set([
+            "case_cover", // botón "Iniciar caso" interno
             "ai_textfield_guided",
             "categorize_rows",
             "ai_output_review",

@@ -4,11 +4,14 @@
  * ConversationResponse · renderer del bloque canónico `conversation_response`
  * (lab_ref 02).
  *
- * Thread de mensajes previos visible + composer al final para que el
- * participante redacte el siguiente turno. Mide cómo ajusta su respuesta
- * al contexto ya visible (cliente, manager, soporte).
+ * Thread de turnos previos con un modelo de IA + composer al final
+ * para que el participante escriba el SIGUIENTE prompt. Mide cómo
+ * itera con el modelo a partir del contexto ya visible (cómo
+ * reformula, qué falta pedir, qué corregir del output anterior).
  *
- * Variantes (caseContext.channel): email · chat · ticket.
+ * NO es respuesta a humano (cliente/manager) · ESO ya está cubierto
+ * implícitamente en otros bloques. Aquí lo que se mide es el
+ * "siguiente turno con la IA" en un contexto operativo real.
  *
  * Sin hint interno · el shell tiene eyebrow + title + body.
  */
@@ -22,52 +25,50 @@ import type {
 import { emptyPayload } from "@/lib/simulador/exercise-registry";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
 import { AIPromptComposer } from "../_shared/AIPromptComposer";
-import { defaultModelId } from "../_shared/models";
+import { BrandMark } from "../_shared/glyphs";
+import { defaultModelId, findModelById } from "../_shared/models";
+import type { BrandKey } from "../_shared/types";
 
 type ConversationResponsePayload = Extract<
   ExerciseResponsePayload,
   { block_id: "conversation_response" }
 >;
 
-type Channel = "email" | "chat" | "ticket";
+type Turn = "user" | "assistant";
 
 interface ThreadMessage {
   id: string;
-  from: { name: string; role?: string };
-  timestamp: string;
+  turn: Turn;
   body: string;
-  isCustomer?: boolean;
 }
 
 interface ThreadConfig {
-  channel: Channel;
-  subject?: string;
+  modelId: string;
   messages: ThreadMessage[];
 }
 
 const DEFAULT_THREAD: ThreadConfig = {
-  channel: "email",
-  subject: "Necesitamos relanzar la campaña antes del viernes",
+  modelId: "claude-sonnet-4.6",
   messages: [
     {
       id: "m1",
-      from: { name: "Mariana Robles", role: "Head of Growth · Aurora Retail" },
-      timestamp: "Lunes 09:42",
-      body: "Hola, el board pidió relanzar la campaña de retención antes del viernes. Presupuesto sin tocar. Mándame propuesta hoy con segmentos, mensaje base y métricas que vas a monitorear.\n\nGracias.",
-      isCustomer: true,
+      turn: "user",
+      body: "Necesito reactivar cuentas que llevan 60+ días sin uso. Ayúdame con tres ángulos de mensaje para campaña de email, sin tono agresivo.",
     },
     {
       id: "m2",
-      from: { name: "Tú", role: "Marketing Lead" },
-      timestamp: "Lunes 10:18",
-      body: "Hola Mariana, gracias por el detalle. ¿Puedes confirmar dos cosas antes de avanzar?\n\n1. ¿La campaña anterior se pausó por bajo desempeño o por timing?\n2. ¿Tenemos resultados de la prueba de retención del mes pasado?",
+      turn: "assistant",
+      body: "Tres ángulos posibles:\n\n1. **Recuperar tiempo perdido**: enfocado en lo que han dejado de aprovechar (módulos no usados, reportes pendientes).\n2. **Novedades desde tu última visita**: lista corta de mejoras del producto en los últimos 60 días.\n3. **Check-in personal**: pregunta abierta sobre qué los frenó, con CTA a una llamada de 15 min.\n\n¿Quieres que profundice en alguno o necesitas variaciones de tono?",
     },
     {
       id: "m3",
-      from: { name: "Mariana Robles", role: "Head of Growth · Aurora Retail" },
-      timestamp: "Lunes 11:05",
-      body: "La pausa fue por timing (cierre fiscal). La prueba del mes pasado dio 14% de reactivación en el segmento medio, pero el mensaje generaba quejas de tono. Necesitamos algo más suave esta vez.",
-      isCustomer: true,
+      turn: "user",
+      body: "El #1 me gusta pero suena culpabilizador. ¿Puedes reformularlo más neutral, enfocado en el valor que pueden recuperar?",
+    },
+    {
+      id: "m4",
+      turn: "assistant",
+      body: "Reformulado: **\"Recuperar el valor de tu cuenta\"**.\n\nEjemplo de asunto: *\"3 módulos que aún no has activado\"*.\n\nCuerpo corto centrado en oportunidad, no en pérdida. Cierro con un solo llamado a la acción: agendar una llamada o activar el módulo directamente desde el correo.",
     },
   ],
 };
@@ -98,6 +99,7 @@ export function ConversationResponse({
 
   const thread =
     threadProp ?? (caseContext?.thread as ThreadConfig | undefined) ?? DEFAULT_THREAD;
+  const threadModel = findModelById(thread.modelId);
 
   function persist(next: ConversationResponsePayload) {
     if (firstActionAt.current === null) firstActionAt.current = Date.now();
@@ -116,27 +118,37 @@ export function ConversationResponse({
 
   return (
     <div className="space-y-5">
-      {/* Thread · mensajes previos como burbujas en orden cronológico */}
+      {/* Thread · turnos previos con la IA */}
       <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
-        <div className="flex items-center justify-between border-b border-[var(--hairline)] px-4 py-2.5 ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-          <span>{channelLabel(thread.channel)}</span>
-          {thread.subject && (
-            <span className="ts-caption-1 text-[var(--text-secondary)] normal-case tracking-normal">
-              {thread.subject}
+        <div className="flex items-center gap-2 border-b border-[var(--hairline)] px-4 py-2.5 ts-caption-1 font-medium text-[var(--text-tertiary)]">
+          <BrandMark brand={threadModel.brand} />
+          <span className="text-[var(--text-secondary)]">
+            Conversación con{" "}
+            <span className="text-[var(--text-primary)]">
+              {threadModel.label}
             </span>
-          )}
+            {threadModel.badge && (
+              <span className="ml-1 text-[var(--text-tertiary)]">
+                · {threadModel.badge}
+              </span>
+            )}
+          </span>
         </div>
         <div className="space-y-3 p-4">
           {thread.messages.map((msg) => (
-            <Bubble key={msg.id} message={msg} />
+            <Bubble
+              key={msg.id}
+              message={msg}
+              modelBrand={threadModel.brand}
+            />
           ))}
         </div>
       </div>
 
-      {/* Composer al final · turno del participante */}
+      {/* Composer al final · siguiente turno del participante */}
       <div>
         <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-          Tu respuesta
+          Tu siguiente prompt
         </div>
         <div className="mt-2">
           <AIPromptComposer
@@ -159,67 +171,40 @@ export function ConversationResponse({
   );
 }
 
-function Bubble({ message }: { message: ThreadMessage }) {
-  const isCustomer = message.isCustomer ?? false;
+function Bubble({
+  message,
+  modelBrand,
+}: {
+  message: ThreadMessage;
+  modelBrand: BrandKey;
+}) {
+  const isAssistant = message.turn === "assistant";
   return (
-    <div className={`flex gap-3 ${isCustomer ? "" : "flex-row-reverse"}`}>
-      <div
-        className={`grid h-8 w-8 flex-shrink-0 place-items-center rounded-full ts-caption-1 font-semibold ${
-          isCustomer
-            ? "bg-[var(--surface-2)] text-[var(--text-secondary)]"
-            : "bg-[var(--accent)] text-white"
-        }`}
-        aria-hidden
-      >
-        {initials(message.from.name)}
-      </div>
+    <div className={`flex gap-3 ${isAssistant ? "" : "flex-row-reverse"}`}>
+      {isAssistant ? (
+        <BrandMark brand={modelBrand} />
+      ) : (
+        <div
+          className="grid h-[22px] w-[22px] flex-shrink-0 place-items-center rounded-md bg-[var(--accent)] ts-caption-2 font-semibold text-white"
+          aria-hidden
+        >
+          Tú
+        </div>
+      )}
       <div
         className={`max-w-[80%] rounded-[var(--radius-lg)] p-3 ${
-          isCustomer
-            ? "bg-[var(--surface-2)]"
-            : "bg-[var(--accent-soft)]"
+          isAssistant ? "bg-[var(--surface-2)]" : "bg-[var(--accent-soft)]"
         }`}
       >
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="ts-caption-1 font-medium text-[var(--text-primary)]">
-            {message.from.name}
-          </span>
-          <span className="ts-caption-2 text-[var(--text-tertiary)] tabular-nums">
-            {message.timestamp}
-          </span>
+        <div className="ts-caption-2 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+          {isAssistant ? "IA" : "Tú"}
         </div>
-        {message.from.role && (
-          <div className="ts-caption-2 text-[var(--text-tertiary)]">
-            {message.from.role}
-          </div>
-        )}
-        <div className="mt-2 ts-subhead leading-[1.55] text-[var(--text-primary)] whitespace-pre-wrap">
+        <div className="mt-1 ts-subhead leading-[1.55] text-[var(--text-primary)] whitespace-pre-wrap">
           {message.body}
         </div>
       </div>
     </div>
   );
-}
-
-function channelLabel(channel: Channel): string {
-  switch (channel) {
-    case "email":
-      return "Email";
-    case "chat":
-      return "Chat";
-    case "ticket":
-      return "Ticket";
-  }
-}
-
-function initials(name: string): string {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
 }
 
 export function conversationResponseCompletion(

@@ -2,17 +2,17 @@
 /**
  * AUTO-GENERATED — NO EDITAR A MANO.
  *
- * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.10.0
+ * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.11.0
  * Generador: scripts/simulador/generate-exercise-blocks.mjs
  *
  * Para regenerar: `bun run simulador:gen-blocks`
  * Para validar sincronía con lab/runtime: `bun run simulador:check-blocks`
  *
  * Status del catálogo: canonical_after_exercise_lab_review
- * Total bloques: 17
+ * Total bloques: 18
  */
 
-export type ExerciseBlockId = "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "conversation_response" | "ai_textfield_guided" | "model_tradeoff_sliders" | "categorize_rows" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "dashboard_pivot" | "tradeoff_decision_memo";
+export type ExerciseBlockId = "case_cover" | "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "conversation_response" | "ai_textfield_guided" | "model_tradeoff_sliders" | "categorize_rows" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "dashboard_pivot" | "tradeoff_decision_memo";
 
 export type ExerciseBlockFamily = "passive" | "ai_native" | "traditional_business_signal" | "traditional_closure";
 
@@ -42,6 +42,42 @@ export interface ExerciseBlock {
 }
 
 export const exerciseBlocks: ExerciseBlock[] = [
+  {
+    id: "case_cover",
+    labRef: "00",
+    publicName: "Portada del caso",
+    family: "passive",
+    levels: ["N1", "N2", "N3"],
+    profiles: [
+      "marketing_growth",
+      "sales_revops",
+      "customer_success_support",
+      "operations_automation",
+      "finance_fpa",
+      "legal_compliance_privacy",
+    ],
+    primaryDimensions: [],
+    runtimeSections: ["Contexto"],
+    whenToUse: [
+      "Inicio del caso · pantalla de bienvenida con titulo, contexto y boton Iniciar.",
+      "Si el caso usa timer global, este se activa al click en Iniciar (no antes).",
+    ],
+    avoidWhen: [
+      "El caso no necesita pantalla de inicio (caso muy corto, demo embebida).",
+    ],
+    personalizationKnobs: [
+      "titulo del caso",
+      "descripcion ampliada",
+      "metadata (perfil, dificultad, tiempo estimado)",
+      "timer (opcional, en segundos)",
+      "label del boton Iniciar",
+    ],
+    emits: ["started_at", "timer_seconds"],
+    uiPattern: "hero centrado con titulo grande + descripcion + meta + boton Iniciar prominente",
+    defaultEmptyFields: ["started_at"],
+    scoringMethod: "passive",
+    completion: "auto al clickear Iniciar",
+  },
   {
     id: "reading_passive",
     labRef: "00A",
@@ -323,7 +359,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
   {
     id: "conversation_response",
     labRef: "02",
-    publicName: "Respuesta a conversación",
+    publicName: "Siguiente turno con la IA",
     family: "ai_native",
     levels: ["N1", "N2", "N3"],
     profiles: [
@@ -335,24 +371,26 @@ export const exerciseBlocks: ExerciseBlock[] = [
       "legal_compliance_privacy",
     ],
     primaryDimensions: ["contexto", "ejecucion_ia", "juicio"],
-    runtimeSections: ["IA", "Respuesta"],
+    runtimeSections: ["IA"],
     whenToUse: [
-      "Hay una conversacion previa (cliente, manager, soporte) y el participante debe redactar el siguiente mensaje.",
-      "Medir como ajusta su respuesta al contexto ya visible.",
+      "Hay una conversacion previa entre el participante y un modelo de IA.",
+      "Medir como itera con la IA (corregir, profundizar, reformular) a partir del contexto ya visible.",
     ],
     avoidWhen: [
-      "No hay historia previa relevante; usa ai_textfield_free.",
+      "No hay turnos previos relevantes; usa ai_textfield_free.",
+      "El contexto es respuesta a un humano (cliente/manager); modela como reading_message + ai_textfield_free.",
     ],
     personalizationKnobs: [
-      "thread (avatares, mensajes previos, canal email/chat/ticket)",
-      "modelo disponible",
-      "placeholder del prompt",
+      "thread (turnos user/assistant previos)",
+      "modelo de la conversacion (BrandMark)",
+      "modelo del siguiente turno (puede ser distinto al previo)",
+      "placeholder del composer",
     ],
     emits: ["response_text", "model", "attachments"],
-    uiPattern: "thread scrollable de mensajes previos + composer al final para el siguiente turno",
+    uiPattern: "thread con burbujas user/assistant (avatar BrandMark del modelo) + composer al final",
     defaultEmptyFields: ["response_text", "attachments"],
     scoringMethod: "llm_judge_with_context_alignment",
-    completion: "respuesta no vacia con coherencia al thread",
+    completion: "siguiente prompt no vacio con coherencia al thread",
   },
   {
     id: "ai_textfield_guided",
@@ -646,6 +684,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
 ];
 
 export const exerciseBlockIds: ExerciseBlockId[] = [
+  "case_cover",
   "reading_passive",
   "reading_message",
   "reading_data_table",
@@ -672,13 +711,13 @@ export const exerciseBlockById: Record<ExerciseBlockId, ExerciseBlock> =
   >;
 
 export const exerciseBlockStats = {
-  total: 17,
+  total: 18,
   families: {
-    "passive": 7,
+    "passive": 8,
     "ai_native": 8,
     "traditional_business_signal": 1,
     "traditional_closure": 1
   },
-  catalogVersion: "0.10.0",
+  catalogVersion: "0.11.0",
   catalogStatus: "canonical_after_exercise_lab_review",
 } as const;
