@@ -3,13 +3,20 @@
 /**
  * DashboardPivot · renderer del bloque canónico `dashboard_pivot` (lab_ref 09).
  *
- * Patrón rico (monolito Codex): 3 filtros como ChoiceButton (Tiempo/Riesgo/
- * Impacto) + tabla pivote 3 columnas donde la columna activa se resalta con
- * accent. El monolito solo tenía el filtro + tabla; el registry exige también
- * `interpretation` (texto), que vive como textarea minimal debajo.
+ * Patrón: el participante filtra una tabla pivote por una dimensión
+ * (Tiempo / Riesgo / Impacto) y propone qué señal llevar al manager.
  *
- * Visual restaurado desde el monolito ExerciseLabClient.tsx (Codex). Sin
- * cambios estéticos respecto al original.
+ * Rediseño v0.6.0 (per Pablo "no se entiende muy bien"):
+ *  - Filtros con ícono visual + descripción inline de qué significan.
+ *  - Tabla con header explícito (Equipo · Tiempo · Riesgo · Impacto).
+ *  - Columna activa con bg-accent-soft completo (no solo texto).
+ *  - Pills Alto/Medio/Bajo con escala visual de 3 tonos para que la
+ *    lectura sea inmediata.
+ *  - Textarea aparece sólo tras elegir filtro (disclosure progresivo).
+ *
+ * Evidencia para el judge: selected_filter + interpretation. El judge
+ * evalúa si la señal elegida es la más relevante para el caso (no la
+ * más alta numéricamente, sino la más accionable).
  */
 
 import { useRef } from "react";
@@ -19,26 +26,74 @@ import type {
 } from "@/lib/simulador/exercise-registry";
 import { emptyPayload } from "@/lib/simulador/exercise-registry";
 import { useStepPatch } from "@/lib/simulador/use-step-patch";
-import { Label, ChoiceButton } from "../_shared/ui-primitives";
+import { Label } from "../_shared/ui-primitives";
 
 type DashboardPivotPayload = Extract<
   ExerciseResponsePayload,
   { block_id: "dashboard_pivot" }
 >;
 
-const FILTER_LABELS: Record<string, string> = {
-  tiempo: "Tiempo",
-  riesgo: "Riesgo",
-  impacto: "Impacto",
-};
+type FilterKey = "tiempo" | "riesgo" | "impacto";
+type Severity = "Alto" | "Medio" | "Bajo";
 
-const FILTERS = ["tiempo", "riesgo", "impacto"] as const;
+const FILTERS: Array<{
+  key: FilterKey;
+  label: string;
+  desc: string;
+  glyph: React.ReactNode;
+}> = [
+  {
+    key: "tiempo",
+    label: "Tiempo",
+    desc: "Cuánto esfuerzo está consumiendo cada equipo.",
+    glyph: (
+      <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4" aria-hidden>
+        <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M8 4.5V8L10.5 9.5" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" />
+      </svg>
+    ),
+  },
+  {
+    key: "riesgo",
+    label: "Riesgo",
+    desc: "Probabilidad de que algo se rompa esta semana.",
+    glyph: (
+      <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4" aria-hidden>
+        <path
+          d="M8 2L14 13H2L8 2Z"
+          stroke="currentColor"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+        />
+        <path d="M8 6V9" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" />
+        <circle cx="8" cy="11" r="0.7" fill="currentColor" />
+      </svg>
+    ),
+  },
+  {
+    key: "impacto",
+    label: "Impacto",
+    desc: "Cuánto mueve la aguja del negocio si se ejecuta bien.",
+    glyph: (
+      <svg viewBox="0 0 16 16" fill="none" className="h-4 w-4" aria-hidden>
+        <path
+          d="M3 13L7 9L9.5 11.5L13 6"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="1.5"
+        />
+        <path d="M10 6H13V9" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+      </svg>
+    ),
+  },
+];
 
 const ROWS: ReadonlyArray<{
   team: string;
-  tiempo: string;
-  riesgo: string;
-  impacto: string;
+  tiempo: Severity;
+  riesgo: Severity;
+  impacto: Severity;
 }> = [
   { team: "Ventas Norte", tiempo: "Alto", riesgo: "Medio", impacto: "Alto" },
   { team: "Ventas Sur", tiempo: "Medio", riesgo: "Alto", impacto: "Medio" },
@@ -80,75 +135,156 @@ export function DashboardPivot({
     onPatch?.(next);
   }
 
-  const filter = payload.selected_filter;
+  const filter = payload.selected_filter as FilterKey | null;
+  const activeFilterSpec = FILTERS.find((f) => f.key === filter);
 
   return (
-    <div className="simulador-root">
-      <Label>Elige la señal que llevarías al manager</Label>
-      <div className="mt-4 grid gap-2 sm:grid-cols-3">
-        {FILTERS.map((option) => (
-          <ChoiceButton
-            key={option}
-            selected={filter === option}
-            onClick={() => update({ ...payload, selected_filter: option })}
-          >
-            {FILTER_LABELS[option]}
-          </ChoiceButton>
-        ))}
-      </div>
-      <div className="mt-5 overflow-hidden rounded-2xl border border-[var(--border)]">
-        {ROWS.map((row) => (
-          <div
-            key={row.team}
-            className="grid grid-cols-4 gap-3 border-b border-[var(--hairline)] px-4 py-3 text-[14px] last:border-b-0"
-          >
-            <span className="font-medium text-[var(--text-primary)]">{row.team}</span>
-            <span
-              className={
-                filter === "tiempo"
-                  ? "text-[var(--accent)]"
-                  : "text-[var(--text-secondary)]"
-              }
-            >
-              {row.tiempo}
-            </span>
-            <span
-              className={
-                filter === "riesgo"
-                  ? "text-[var(--accent)]"
-                  : "text-[var(--text-secondary)]"
-              }
-            >
-              {row.riesgo}
-            </span>
-            <span
-              className={
-                filter === "impacto"
-                  ? "text-[var(--accent)]"
-                  : "text-[var(--text-secondary)]"
-              }
-            >
-              {row.impacto}
-            </span>
-          </div>
-        ))}
+    <div className="simulador-root space-y-5">
+      <div>
+        <Label>¿Qué señal llevarías al manager?</Label>
+        <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
+          Filtra por la dimensión que más importa para este caso y propón qué hacer.
+        </p>
       </div>
 
-      <label className="mt-5 block">
-        <span className="text-[13px] font-medium text-[var(--text-secondary)]">
-          ¿Qué señal le dirías al manager?
-        </span>
-        <textarea
-          value={payload.interpretation}
-          onChange={(event) =>
-            update({ ...payload, interpretation: event.target.value })
-          }
-          rows={3}
-          placeholder="Un párrafo: qué se ve, qué propones hacer."
-          className="mt-2 w-full resize-none rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-[14px] leading-6 text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
-        />
-      </label>
+      {/* Filtros con icono + descripción inline */}
+      <div className="grid gap-2 sm:grid-cols-3">
+        {FILTERS.map((f) => {
+          const isActive = filter === f.key;
+          return (
+            <button
+              key={f.key}
+              type="button"
+              onClick={() => update({ ...payload, selected_filter: f.key })}
+              className={`flex flex-col gap-1.5 rounded-[var(--radius-lg)] border p-3 text-left transition-colors ${
+                isActive
+                  ? "border-[var(--accent)] bg-[var(--accent-soft)]"
+                  : "border-[var(--border)] bg-[var(--surface)] hover:bg-[var(--surface-2)]"
+              }`}
+            >
+              <span
+                className={`flex items-center gap-2 ts-callout font-semibold ${
+                  isActive ? "text-[var(--accent)]" : "text-[var(--text-primary)]"
+                }`}
+              >
+                {f.glyph}
+                {f.label}
+              </span>
+              <span className="ts-footnote text-[var(--text-tertiary)]">
+                {f.desc}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Tabla pivote con header explícito + columna activa resaltada */}
+      <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
+        <table className="w-full ts-subhead">
+          <thead>
+            <tr className="bg-[var(--surface-2)]">
+              <th className="px-4 py-2.5 text-left ts-caption-1 font-medium text-[var(--text-tertiary)]">
+                Equipo
+              </th>
+              {FILTERS.map((f) => {
+                const isActive = filter === f.key;
+                return (
+                  <th
+                    key={f.key}
+                    className={`px-4 py-2.5 text-center ts-caption-1 font-medium ${
+                      isActive
+                        ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                        : "text-[var(--text-tertiary)]"
+                    }`}
+                  >
+                    {f.label}
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {ROWS.map((row, idx) => {
+              const isLast = idx === ROWS.length - 1;
+              return (
+                <tr
+                  key={row.team}
+                  className={!isLast ? "border-b border-[var(--hairline)]" : ""}
+                >
+                  <td className="px-4 py-3 ts-body font-medium text-[var(--text-primary)]">
+                    {row.team}
+                  </td>
+                  {FILTERS.map((f) => {
+                    const value = row[f.key];
+                    const isActive = filter === f.key;
+                    return (
+                      <td
+                        key={f.key}
+                        className={`px-4 py-3 text-center ${
+                          isActive ? "bg-[var(--accent-soft)]" : ""
+                        }`}
+                      >
+                        <SeverityPill value={value} muted={!isActive} />
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Disclosure: textarea solo tras elegir filtro */}
+      {filter && (
+        <div className="animate-in fade-in slide-in-from-top-2 duration-200">
+          <label className="block">
+            <span className="ts-subhead font-medium text-[var(--text-secondary)]">
+              ¿Qué le dirías al manager sobre <em className="text-[var(--accent)] not-italic font-semibold">{activeFilterSpec?.label.toLowerCase()}</em>?
+            </span>
+            <textarea
+              value={payload.interpretation}
+              onChange={(event) =>
+                update({ ...payload, interpretation: event.target.value })
+              }
+              rows={3}
+              placeholder="Qué se ve, qué propones hacer y por qué ahora."
+              className="mt-2 w-full resize-none rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 ts-body text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
+            />
+          </label>
+        </div>
+      )}
     </div>
+  );
+}
+
+/** Pill de severidad · 3 tonos de la escala accent para lectura inmediata. */
+function SeverityPill({
+  value,
+  muted,
+}: {
+  value: Severity;
+  muted?: boolean;
+}) {
+  const intensity =
+    value === "Alto" ? "strong" : value === "Medio" ? "medium" : "soft";
+
+  // Cuando muted (no es la columna activa) usamos escala neutral.
+  // En la columna activa, accent con intensidad por severidad.
+  const cls = muted
+    ? "border border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-tertiary)]"
+    : intensity === "strong"
+      ? "bg-[var(--accent)] text-white"
+      : intensity === "medium"
+        ? "bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]"
+        : "border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]";
+
+  return (
+    <span
+      className={`inline-flex min-w-14 items-center justify-center rounded-full px-2.5 py-0.5 ts-caption-1 font-medium ${cls}`}
+    >
+      {value}
+    </span>
   );
 }
 
