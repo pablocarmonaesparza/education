@@ -51,7 +51,7 @@ const DEFAULT_OPTIONS: OutputOption[] = [
   {
     id: "D",
     title: "Respuesta D",
-    body: "Combina los dos mejores ángulos del borrador en un solo mensaje y reduce a una sola CTA principal.",
+    body: "Combina los dos mejores ángulos del borrador en un solo mensaje y reduce a un solo llamado a la acción.",
   },
 ];
 

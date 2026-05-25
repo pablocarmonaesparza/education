@@ -32,10 +32,10 @@ interface FieldSpec {
 }
 
 const DEFAULT_FIELDS: FieldSpec[] = [
-  { id: "contact", field: "Nombre del contacto", example: "Mariana Robles", hint: "PII directa." },
+  { id: "contact", field: "Nombre del contacto", example: "Mariana Robles", hint: "Información personal directa." },
   { id: "company", field: "Empresa", example: "Aurora Retail", hint: "Contexto de cuenta." },
-  { id: "email", field: "Correo", example: "mariana@aurora.example", hint: "PII + canal sensible." },
-  { id: "tickets", field: "Tickets recientes", example: "12 conversaciones", hint: "PII embebida posible." },
+  { id: "email", field: "Correo", example: "mariana@aurora.example", hint: "Dato personal y canal sensible." },
+  { id: "tickets", field: "Tickets recientes", example: "12 conversaciones", hint: "Posible información personal embebida." },
 ];
 
 const ACTION_LABELS: Record<DataTableAction, string> = {

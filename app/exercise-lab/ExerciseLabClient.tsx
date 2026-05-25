@@ -187,10 +187,10 @@ const exerciseList = [
   },
   {
     id: "reading_kpi_cards",
-    eyebrow: "00E · Informativa KPIs",
+    eyebrow: "00E · Informativa métricas",
     title: "1 a 3 métricas grandes.",
     description:
-      "Sitúa contexto de negocio con **MRR**, **conversión**, **churn** o **NPS** en cards punchy antes de pedir análisis. Delta opcional con color por bandera.",
+      "Sitúa contexto de negocio con **ingresos**, **conversión**, **cancelación** o **satisfacción** en cards visibles antes de pedir análisis. Delta opcional con color por bandera.",
     signals: [],
   },
   {

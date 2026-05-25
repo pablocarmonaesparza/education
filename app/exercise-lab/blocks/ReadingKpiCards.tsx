@@ -32,7 +32,7 @@ interface Kpi {
 const DEFAULT_KPIS: Kpi[] = [
   {
     value: "$48.2K",
-    label: "MRR del segmento",
+    label: "Ingreso mensual del segmento",
     delta: { value: "+12%", direction: "up", goodWhen: "up" },
   },
   {
@@ -42,7 +42,7 @@ const DEFAULT_KPIS: Kpi[] = [
   },
   {
     value: "3.8%",
-    label: "Churn mensual",
+    label: "Cancelación mensual",
     delta: { value: "+0.6pp", direction: "up", goodWhen: "down" },
   },
 ];

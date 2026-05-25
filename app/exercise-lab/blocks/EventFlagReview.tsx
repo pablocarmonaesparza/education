@@ -34,7 +34,7 @@ interface EventSpec {
 const DEFAULT_EVENTS: EventSpec[] = [
   { id: "evt1", label: "09:42 · Login OK", detail: "user@aurora.example", hint: "Evento de rutina." },
   { id: "evt2", label: "09:45 · Retry loop x12 al endpoint /sync", detail: "duración 4.2s", hint: "Comportamiento anómalo." },
-  { id: "evt3", label: "09:47 · PII exportada a logs", detail: "email + teléfono", hint: "Riesgo de filtración." },
+  { id: "evt3", label: "09:47 · Información personal exportada a logs", detail: "email + teléfono", hint: "Riesgo de filtración." },
   { id: "evt4", label: "09:50 · Acción ejecutada sin métrica", detail: "send_email", hint: "Falta validación previa." },
   { id: "evt5", label: "09:53 · Health check OK", detail: "200 OK", hint: "Evento de rutina." },
 ];

@@ -30,11 +30,11 @@ interface ActionSpec {
 }
 
 const DEFAULT_ACTIONS: ActionSpec[] = [
-  { id: "read_crm", label: "Leer CRM", hint: "Acceso a información del cliente." },
+  { id: "read_crm", label: "Leer el sistema de clientes", hint: "Acceso a información del cliente." },
   { id: "draft_response", label: "Crear borrador de respuesta", hint: "Generación de texto." },
   { id: "send_to_customer", label: "Enviar a cliente", hint: "Acción externa con efecto irreversible." },
-  { id: "update_pipeline", label: "Actualizar pipeline", hint: "Modifica datos internos del CRM." },
-  { id: "raw_conversations", label: "Usar conversaciones crudas", hint: "Datos con PII embebida." },
+  { id: "update_pipeline", label: "Actualizar pipeline", hint: "Modifica datos internos del sistema." },
+  { id: "raw_conversations", label: "Usar conversaciones crudas", hint: "Información personal embebida." },
 ];
 
 const PERMISSION_LABELS: Record<Permission, string> = {

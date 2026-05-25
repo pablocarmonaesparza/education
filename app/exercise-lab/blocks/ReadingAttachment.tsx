@@ -35,7 +35,7 @@ const DEFAULT_ATTACHMENTS: AttachmentItem[] = [
     name: "Contrato_Aurora_2026.pdf",
     size: "1.2 MB",
     kind: "pdf",
-    description: "Versión firmada del MSA con cláusula de SLA actualizada.",
+    description: "Versión firmada del contrato con cláusula de nivel de servicio actualizada.",
   },
   {
     name: "Brief_Campaña_Q2.docx",

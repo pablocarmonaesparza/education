@@ -32,9 +32,9 @@ const DEFAULT_TABLE: TableContent = {
   columns: [
     { key: "id", label: "Ticket", align: "left" },
     { key: "cliente", label: "Cliente", align: "left" },
-    { key: "sla", label: "SLA restante", align: "right" },
+    { key: "sla", label: "Tiempo restante", align: "right" },
     { key: "prioridad", label: "Prioridad", align: "left" },
-    { key: "mrr", label: "MRR cuenta", align: "right" },
+    { key: "mrr", label: "Ingreso mensual", align: "right" },
   ],
   rows: [
     { id: "T-1042", cliente: "Aurora Retail", sla: "2h 14m", prioridad: "Alta", mrr: "$8,400" },
