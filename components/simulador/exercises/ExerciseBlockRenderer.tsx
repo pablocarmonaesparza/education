@@ -41,6 +41,7 @@ export type ExerciseBlockProps = {
   decisionOptions?: Array<{ id: string; title: string; detail: string }>;
   memoPlaceholder?: string;
   compact?: boolean;
+  hideInternalLabels?: boolean;
 };
 
 type DataAction = "usar" | "anonimizar" | "agregar" | "excluir";
@@ -256,7 +257,7 @@ function FreePromptBlock({ props, emit }: { props: ExerciseBlockProps; emit: Emi
   }, [prompt, model, voiceNotes]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Panel label={exerciseBlockLabels.ai_textfield_free}>
+    <Panel label={exerciseBlockLabels.ai_textfield_free} hideLabel={props.hideInternalLabels}>
       <AIPromptComposer
         value={prompt}
         onChange={setPrompt}
@@ -314,9 +315,11 @@ function GuidedPromptBlock({ props, emit }: { props: ExerciseBlockProps; emit: E
 
   return (
     <Panel label={exerciseBlockLabels.ai_textfield_guided} bare>
-      <div className="mb-4 text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
-        {exerciseBlockLabels.ai_textfield_guided}
-      </div>
+      {!props.hideInternalLabels ? (
+        <div className="mb-4 text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+          {exerciseBlockLabels.ai_textfield_guided}
+        </div>
+      ) : null}
       <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:items-stretch">
         <div className="flex min-h-[320px] flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[var(--shadow-sm)]">
           <div className="flex items-center justify-between gap-4">
@@ -440,7 +443,7 @@ function DataTableBlock({ props, emit }: { props: ExerciseBlockProps; emit: Emit
   }, [actions]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Panel label={exerciseBlockLabels.data_table_triage}>
+    <Panel label={exerciseBlockLabels.data_table_triage} hideLabel={props.hideInternalLabels}>
       <Label>Clasifica cada campo antes de enviarlo al modelo</Label>
       <div className="mt-4 overflow-hidden rounded-2xl border border-[var(--border)]">
         {rows.map((row) => (
@@ -475,7 +478,7 @@ function PermissionMatrixBlock({ props, emit }: { props: ExerciseBlockProps; emi
   }, [permissions]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <Panel label={exerciseBlockLabels.permission_matrix}>
+    <Panel label={exerciseBlockLabels.permission_matrix} hideLabel={props.hideInternalLabels}>
       <Label>Define permisos por acción</Label>
       <div className={`mt-4 grid ${compact ? "gap-2" : "gap-3"}`}>
         {rows.map((row) => (
@@ -502,7 +505,7 @@ function OutputReviewBlock({ props, emit }: { props: ExerciseBlockProps; emit: E
     emit(flags, "output_review_flags", flags.length > 0);
   }, [flags]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <Panel label={exerciseBlockLabels.ai_output_review}>
+    <Panel label={exerciseBlockLabels.ai_output_review} hideLabel={props.hideInternalLabels}>
       <Label>Marca lo que no se puede usar todavía</Label>
       <SelectableLines lines={lines} flags={flags} setFlags={setFlags} />
     </Panel>
@@ -519,7 +522,7 @@ function ComparisonBlock({ props, emit }: { props: ExerciseBlockProps; emit: Emi
     emit(selected, "ai_comparison_choice", Boolean(selected));
   }, [selected]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <Panel label={exerciseBlockLabels.ai_comparison}>
+    <Panel label={exerciseBlockLabels.ai_comparison} hideLabel={props.hideInternalLabels}>
       <Label>Elige cuál respuesta llevarías al manager</Label>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         {options.map((option) => (
@@ -538,7 +541,7 @@ function WorkflowBlock({ props, emit }: { props: ExerciseBlockProps; emit: EmitE
     emit(enabledSteps, "workflow_steps", enabledSteps.length >= 3);
   }, [enabledSteps]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <Panel label={exerciseBlockLabels.workflow_builder}>
+    <Panel label={exerciseBlockLabels.workflow_builder} hideLabel={props.hideInternalLabels}>
       <Label>Activa los pasos que debe tener el flujo</Label>
       <div className={`mt-4 grid ${compact ? "gap-2" : "gap-3"}`}>
         {steps.map((step, index) => {
@@ -631,7 +634,7 @@ function LogReviewBlock({ props, emit }: { props: ExerciseBlockProps; emit: Emit
     emit(flags, "run_log_flags", flags.length > 0);
   }, [flags]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <Panel label={exerciseBlockLabels.run_log_review}>
+    <Panel label={exerciseBlockLabels.run_log_review} hideLabel={props.hideInternalLabels}>
       <Label>Marca eventos que requieren intervención</Label>
       <SelectableLines lines={logs.map((log) => ({ id: log.id, text: log.text, issue: log.severity === "high" ? "Riesgo alto" : "Revisar contexto" }))} flags={flags} setFlags={setFlags} highMode />
     </Panel>
@@ -654,7 +657,7 @@ function PivotBlock({ props, emit }: { props: ExerciseBlockProps; emit: EmitEvid
     emit(filter, "business_signal", Boolean(filter));
   }, [filter]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <Panel label={exerciseBlockLabels.dashboard_pivot}>
+    <Panel label={exerciseBlockLabels.dashboard_pivot} hideLabel={props.hideInternalLabels}>
       <Label>Elige la señal que llevarías al manager</Label>
       <div className="mt-4 grid gap-2 sm:grid-cols-3">
         {options.map((option) => (
@@ -690,7 +693,7 @@ function DecisionMemoBlock({ props, emit }: { props: ExerciseBlockProps; emit: E
     emit({ decision, memo }, "decision_memo", Boolean(decision && memo.trim()));
   }, [decision, memo]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <Panel label={exerciseBlockLabels.tradeoff_decision_memo}>
+    <Panel label={exerciseBlockLabels.tradeoff_decision_memo} hideLabel={props.hideInternalLabels}>
       <div className="grid gap-5 md:grid-cols-[320px_1fr]">
         <div>
           <Label>Elige la recomendación</Label>
@@ -1055,11 +1058,23 @@ function ProcessAnswer({ index, label, value, muted }: { index: number; label: s
   );
 }
 
-function Panel({ label, children, bare = false }: { label: string; children: React.ReactNode; bare?: boolean }) {
+function Panel({
+  label,
+  children,
+  bare = false,
+  hideLabel = false,
+}: {
+  label: string;
+  children: React.ReactNode;
+  bare?: boolean;
+  hideLabel?: boolean;
+}) {
   if (bare) return <div data-exercise-block={label}>{children}</div>;
   return (
     <div data-exercise-block={label}>
-      <div className="mb-2 text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">{label}</div>
+      {!hideLabel ? (
+        <div className="mb-2 text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">{label}</div>
+      ) : null}
       {children}
     </div>
   );

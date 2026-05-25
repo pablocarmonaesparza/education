@@ -12,6 +12,7 @@ si no pasa por este sistema.
 | `CASE_HIG.md` | Guia estilo HIG: que esperamos de un caso Itera. |
 | `CASE_TAXONOMY.yaml` | Niveles, departamentos, roles, industrias, criterios, riesgos y herramientas. |
 | `CASE_SCHEMA.yaml` | Forma canonica que debe tener cada caso nuevo. |
+| `CASE_LIVE_FORMULA_V2.md` | Formula de comunicacion: caso vivo primero, ejercicios invisibles para participante. |
 | `CASE_CREATION_SKILL.md` | Proceso operativo para crear un caso de principio a fin. |
 | `CASE_REVIEW_PROTOCOL.md` | Gate de revision con validadores, synthetic participants y Claude Case Critic. |
 | `EXERCISE_BLOCK_CATALOG.yaml` | Catalogo canonico de ejercicios disponibles para construir casos. |
@@ -27,6 +28,10 @@ si no pasa por este sistema.
 
 No se crean los 50 casos todavia. Primero se cierra el framework, se validan 3
 golden cases (N1, N2, N3) y luego se dispara la fabrica.
+
+La experiencia participante abre como **caso vivo primero**. `/case-lab` usa por
+defecto la capa participante; la capa de autor/debug queda solo con un modo
+explicito para revisar bloques, evidencia esperada y senales manager.
 
 ## Perfiles activos
 

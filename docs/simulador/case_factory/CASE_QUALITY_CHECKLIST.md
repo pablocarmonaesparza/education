@@ -18,6 +18,10 @@ Un caso falla si:
 - no tiene resimulation;
 - no tiene judge prompt o `judge.prompt_ref`;
 - revela criterios internos/risk_event names en texto visible al participante.
+- muestra copy escolar en runtime participante (`evidencia esperada`, `debrief`,
+  `rubrica`, `manager signal`, `case reveal`, labels canonicos de bloques).
+- presenta el bloque de ejercicio como protagonista en vez de una accion de
+  trabajo dentro del caso.
 
 ## Gate humano
 
@@ -33,6 +37,10 @@ Un reviewer debe contestar si:
 8. El caso puede resolverse en el tiempo estimado.
 9. El judge puede evaluar evidencia textual, no inferencias invisibles.
 10. El caso ensena despues de medir, no antes.
+11. En los primeros 5 segundos de cada seccion se entiende que paso, que hacer,
+    que material hay delante y que esta en juego.
+12. Las consecuencias aparecen como estado del caso despues de responder, no
+    como explicacion pedagogica antes de actuar.
 
 ## Distribucion minima antes del lote 50
 

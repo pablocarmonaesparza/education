@@ -9,6 +9,7 @@ case_template_schema:
     - tags
     - tools
     - manager_outcome
+    - communication_contract
     - case_flow
     - evaluation
     - practice_mapping
@@ -45,6 +46,12 @@ case_template_schema:
       business_metric: "tiempo de respuesta a leads calificados"
       risk_metric: "mensajes enviados sin aprobacion o con datos sensibles"
       expected_signal: "distingue automatizacion segura de autonomia riesgosa"
+    communication_contract:
+      participant_surface: "caso vivo primero; no mostrar rubrica, manager signal, evidencia esperada ni labels canonicos de ejercicios"
+      manager_surface: "pregunta de negocio, senal observable, evidencia, riesgo y accion recomendada"
+      author_surface: "bloque canonico usado, learning intent, expected evidence y notas de auditoria"
+      slide_rule: "una situacion operativa + un artefacto + una accion clara por pantalla"
+      consequence_rule: "mostrar consecuencias como siguiente estado del caso despues de responder"
     # Opcional. Si no existe, el caso se interpreta como no_timer.
     time_pressure:
       mode: fixed_timer

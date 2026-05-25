@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import type { DemoCase, DemoCaseSection, DemoSlide } from "@/lib/simulador/case-lab-cases";
@@ -16,7 +17,7 @@ type FlatSlide = {
   slideIndex: number;
 };
 
-type SimulationLearningMode = "diagnostic_mode" | "learning_demo_mode";
+type SimulationRuntimeMode = "participant_mode" | "author_mode";
 
 const sectionNextLabel: Record<DemoCaseSection["name"], string> = {
   Contexto: "Ir a Datos",
@@ -28,12 +29,14 @@ const sectionNextLabel: Record<DemoCaseSection["name"], string> = {
 };
 
 export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
+  const searchParams = useSearchParams();
   const shellRef = useRef<HTMLDivElement | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [highestUnlockedIndex, setHighestUnlockedIndex] = useState(1);
   const [timerEnabled, setTimerEnabled] = useState(false);
   const [evidenceBySlide, setEvidenceBySlide] = useState<Record<string, ExerciseEvidence>>({});
-  const learningMode: SimulationLearningMode = "learning_demo_mode";
+  const runtimeMode: SimulationRuntimeMode = searchParams.get("mode") === "author" ? "author_mode" : "participant_mode";
+  const isAuthorMode = runtimeMode === "author_mode";
   const slides = useMemo<FlatSlide[]>(
     () =>
       demoCase.sections.flatMap((section, sectionIndex) =>
@@ -63,7 +66,7 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
   const canShowSectionDebrief =
     !isIntro &&
     isLastSlideInSection &&
-    learningMode === "learning_demo_mode" &&
+    isAuthorMode &&
     sectionHasExercises &&
     sectionEvidenceCount > 0 &&
     (current.slide.kind === "reading" || Boolean(currentEvidence?.completed));
@@ -131,15 +134,29 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
           >
             <div className="h-full rounded-full bg-[var(--accent)]" style={{ width: `${progress}%` }} />
           </div>
-          <Link
-            href="/exercise-lab"
-            className="rounded-[10px] px-3 py-2 text-sm font-medium text-[var(--text-secondary)] transition hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
-          >
-            Ejercicios
-          </Link>
+          {isAuthorMode ? (
+            <Link
+              href="/exercise-lab"
+              className="rounded-[10px] px-3 py-2 text-sm font-medium text-[var(--text-secondary)] transition hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
+            >
+              Ejercicios
+            </Link>
+          ) : (
+            <p className="min-w-[88px] text-right text-sm font-medium text-[var(--text-secondary)]">
+              {isIntro ? "Caso vivo" : `${current.section.name} · ${current.slideIndex + 1}/${current.section.slides.length}`}
+            </p>
+          )}
         </header>
 
-        <div className="mx-auto grid min-h-0 w-full max-w-[1440px] flex-1 gap-6 px-6 pb-4 md:px-10 lg:grid-cols-[172px_minmax(0,1fr)] xl:grid-cols-[286px_minmax(0,1fr)] xl:gap-8">
+        <div
+          className={[
+            "mx-auto grid min-h-0 w-full flex-1 gap-6 px-6 pb-4 md:px-10",
+            isAuthorMode
+              ? "max-w-[1440px] lg:grid-cols-[172px_minmax(0,1fr)] xl:grid-cols-[286px_minmax(0,1fr)] xl:gap-8"
+              : "max-w-[1120px] grid-cols-1",
+          ].join(" ")}
+        >
+          {isAuthorMode ? (
           <aside className="hidden min-h-0 lg:block xl:hidden">
             <div className="flex h-full flex-col rounded-[24px] border border-[var(--border)] bg-[var(--surface-2)] p-4">
               <div className="rounded-[16px] border border-[var(--border)] bg-[var(--surface)] p-3">
@@ -189,7 +206,9 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
               </p>
             </div>
           </aside>
+          ) : null}
 
+          {isAuthorMode ? (
           <aside className="hidden min-h-0 xl:block">
             <div className="flex h-full flex-col rounded-[24px] border border-[var(--border)] bg-[var(--surface-2)] p-5">
               <div className="rounded-[18px] border border-[var(--border)] bg-[var(--surface)] p-5">
@@ -246,6 +265,7 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
               </div>
             </div>
           </aside>
+          ) : null}
 
           <section className="min-h-0 overflow-hidden rounded-[28px] border border-[var(--border)] bg-[var(--surface-2)]">
             <AnimatePresence mode="wait">
@@ -275,7 +295,7 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
                     <div className={current.slide.kind === "reading" ? "mx-auto w-full max-w-[720px] xl:mx-0" : "mx-auto w-full max-w-[960px]"}>
                       <div className="flex items-center justify-between gap-4">
                         <p className="eyebrow text-[var(--text-tertiary)]">
-                          {current.section.name} · {current.slide.eyebrow}
+                          {current.section.name} · {isAuthorMode ? current.slide.eyebrow : participantEyebrow(current.slide)}
                         </p>
                         <p className="text-sm text-[var(--text-secondary)]">
                           {current.slideIndex + 1} / {current.section.slides.length}
@@ -301,9 +321,11 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
                       >
                         {current.slide.body}
                       </p>
-                      {current.slide.kind === "reading" ? <LearningSignals slide={current.slide} /> : null}
+                      {current.slide.kind === "reading" ? (
+                        isAuthorMode ? <LearningSignals slide={current.slide} /> : <ParticipantSignals slide={current.slide} />
+                      ) : null}
                       {current.slide.kind === "reading" && canShowSectionDebrief ? (
-                        <SectionDebrief section={current.section} mode={learningMode} compact />
+                        <SectionDebrief section={current.section} mode={runtimeMode} compact />
                       ) : null}
                     </div>
 
@@ -313,9 +335,9 @@ export function CaseLabRuntime({ demoCase }: { demoCase: DemoCase }) {
                           slide={current.slide}
                           evidence={currentEvidence}
                           onEvidence={handleEvidence}
-                          mode={learningMode}
+                          mode={runtimeMode}
                         />
-                        {canShowSectionDebrief ? <SectionDebrief section={current.section} mode={learningMode} compact /> : null}
+                        {canShowSectionDebrief ? <SectionDebrief section={current.section} mode={runtimeMode} compact /> : null}
                       </div>
                     ) : null}
                   </div>
@@ -374,8 +396,8 @@ function IntroPanel({
             {demoCase.title}
           </h2>
           <p className="mt-4 max-w-[740px] text-[16px] leading-7 text-[var(--text-secondary)] md:text-[18px]">
-            {demoCase.summary} Trabajarás con herramientas reales, datos sintéticos,
-            decisiones con consecuencias y una recomendación final para manager.
+            {demoCase.summary} Trabajarás como si esto acabara de llegar a tu mesa:
+            herramientas reales, datos sintéticos y una decisión que debe quedar lista para el equipo.
           </p>
         </div>
 
@@ -424,7 +446,7 @@ function ExercisePanel({
   slide: DemoSlide;
   evidence?: ExerciseEvidence;
   onEvidence: (evidence: ExerciseEvidence) => void;
-  mode: SimulationLearningMode;
+  mode: SimulationRuntimeMode;
 }) {
   if (!slide.exerciseBlockId) {
     return (
@@ -439,7 +461,7 @@ function ExercisePanel({
       <ExerciseBlockRenderer
         blockId={slide.exerciseBlockId}
         slideId={slide.id}
-        props={{ ...slide.exerciseProps, compact: true }}
+        props={{ ...slide.exerciseProps, compact: true, hideInternalLabels: mode === "participant_mode" }}
         onEvidence={onEvidence}
       />
       <SimulationFeedback slide={slide} evidence={evidence} mode={mode} />
@@ -468,6 +490,33 @@ function LearningSignals({ slide }: { slide: DemoSlide }) {
   );
 }
 
+function participantEyebrow(slide: DemoSlide) {
+  if (slide.kind === "reading") return "Situación";
+  if (slide.eyebrow === "Decisión") return "Decisión";
+  if (slide.eyebrow === "Respuesta") return "Respuesta";
+  return "Acción";
+}
+
+function ParticipantSignals({ slide }: { slide: DemoSlide }) {
+  const items = [
+    slide.stakeholderPressure ? ["presión", slide.stakeholderPressure] : null,
+    slide.artifact ? ["material", slide.artifact] : null,
+  ].filter(Boolean) as Array<[string, string]>;
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="mt-6 grid gap-2 sm:grid-cols-2">
+      {items.map(([label, value]) => (
+        <div key={label} className="rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
+          <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">{label}</p>
+          <p className="mt-1 line-clamp-2 text-[13px] leading-5 text-[var(--text-secondary)]">{value}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function SimulationFeedback({
   slide,
   evidence,
@@ -475,10 +524,25 @@ function SimulationFeedback({
 }: {
   slide: DemoSlide;
   evidence?: ExerciseEvidence;
-  mode: SimulationLearningMode;
+  mode: SimulationRuntimeMode;
 }) {
   const completed = Boolean(evidence?.completed);
-  const showDebrief = mode === "learning_demo_mode" && completed;
+  const showDebrief = mode === "author_mode" && completed;
+
+  if (mode === "participant_mode") {
+    return (
+      <div className="rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5">
+        <p className="text-[12px] leading-5 text-[var(--text-secondary)]">
+          <span className="font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+            {completed ? "Siguiente estado: " : "Estado: "}
+          </span>
+          {completed
+            ? slide.simulationConsequence ?? "la decisión queda registrada y el caso avanza."
+            : "registra una decisión para que el caso pueda avanzar."}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-[18px] border border-[var(--border)] bg-[var(--surface)] px-4 py-2.5">
@@ -508,10 +572,10 @@ function SectionDebrief({
   compact = false,
 }: {
   section: DemoCaseSection;
-  mode: SimulationLearningMode;
+  mode: SimulationRuntimeMode;
   compact?: boolean;
 }) {
-  if (mode !== "learning_demo_mode") return null;
+  if (mode !== "author_mode") return null;
 
   return (
     <div className={`${compact ? "mt-1" : "mt-6"} rounded-[20px] border border-[var(--border)] bg-[var(--accent-soft)] px-4 py-3`}>

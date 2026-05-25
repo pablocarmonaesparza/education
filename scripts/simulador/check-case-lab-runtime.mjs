@@ -21,6 +21,20 @@ const CANONICAL_EXERCISE_LABELS = [
   "11 · Decisión con ventajas y costos",
   "11 · Decisión + memo",
 ];
+const PARTICIPANT_FORBIDDEN_TEXT = [
+  /learning goal/i,
+  /evidencia esperada/i,
+  /qué afectará/i,
+  /que afectara/i,
+  /debrief/i,
+  /rúbrica/i,
+  /rubrica/i,
+  /manager signal/i,
+  /case reveal/i,
+  /respuesta correcta/i,
+  /risk event/i,
+  /ejercicio/i,
+];
 const GOLDEN_CASE_BLOCKS = [
   "data_table_triage",
   "agent_brief_builder",
@@ -44,6 +58,7 @@ function runStaticRuntimeChecks() {
   const runtimePath = path.join(root, "app/case-lab/[caseId]/CaseLabRuntime.tsx");
   const exerciseLabPath = path.join(root, "app/exercise-lab/ExerciseLabClient.tsx");
   const rendererPath = path.join(root, "components/simulador/exercises/ExerciseBlockRenderer.tsx");
+  const liveFormulaPath = path.join(root, "docs/simulador/case_factory/CASE_LIVE_FORMULA_V2.md");
 
   const catalog = yaml.load(fs.readFileSync(catalogPath, "utf8"));
   const catalogIds = new Set(catalog.exercise_block_catalog.blocks.map((block) => block.id));
@@ -51,6 +66,7 @@ function runStaticRuntimeChecks() {
   const runtimeSource = fs.readFileSync(runtimePath, "utf8");
   const exerciseLabSource = fs.readFileSync(exerciseLabPath, "utf8");
   const rendererSource = fs.readFileSync(rendererPath, "utf8");
+  const liveFormulaSource = fs.readFileSync(liveFormulaPath, "utf8");
   const usedIds = Array.from(casesSource.matchAll(/exerciseBlockId:\s*"([^"]+)"/g)).map((match) => match[1]);
   const uniqueUsedIds = new Set(usedIds);
 
@@ -67,13 +83,17 @@ function runStaticRuntimeChecks() {
   check(runtimeSource.includes("ExerciseBlockRenderer"), "case runtime must render through ExerciseBlockRenderer");
   check(exerciseLabSource.includes("ExerciseBlockRenderer"), "exercise lab must consume the shared ExerciseBlockRenderer");
   check(rendererSource.includes("export type ExerciseBlockId"), "shared renderer must expose central ExerciseBlockId");
-  check(runtimeSource.includes("SimulationLearningMode"), "case runtime must separate diagnostic_mode and learning_demo_mode");
+  check(runtimeSource.includes("participant_mode"), "case runtime must default to participant mode");
+  check(runtimeSource.includes("author_mode"), "case runtime must keep an explicit author/debug mode");
   check(runtimeSource.includes("evidenceBySlide"), "case runtime must keep a local evidence store");
   check(runtimeSource.includes("SimulationFeedback"), "case runtime must render status/consequence feedback");
   check(runtimeSource.includes("sectionEvidenceCount"), "case runtime must gate section debriefs with captured evidence");
   check(runtimeSource.includes("canShowSectionDebrief"), "case runtime must not show debriefs without section evidence");
   check(runtimeSource.includes("currentSlideRequiresEvidence"), "case runtime must block exercise navigation until evidence is complete");
   check(runtimeSource.includes("highestUnlockedIndex"), "case runtime must prevent jumping to locked future sections");
+  check(runtimeSource.includes("hideInternalLabels"), "case runtime must hide canonical exercise labels in participant mode");
+  check(liveFormulaSource.includes("caso vivo primero"), "case factory must document the live-case-first formula");
+  check(liveFormulaSource.includes("Separacion por audiencia"), "case factory must separate participant, manager and author surfaces");
   check(casesSource.includes("evidenceExpected"), "case slides must declare expected evidence");
   check(casesSource.includes("simulationConsequence"), "case slides must declare simulation consequences");
   check(casesSource.includes("learningGoal"), "case slides must declare learning goals");
@@ -231,6 +251,16 @@ async function assertCurrentSlideFits(page, label) {
   check(content.scrollHeight <= content.clientHeight + 2, `${label}: current slide must fit viewport without clipping`);
 }
 
+async function assertParticipantCopyClean(page, label) {
+  const bodyText = await page.locator("body").innerText();
+  for (const pattern of PARTICIPANT_FORBIDDEN_TEXT) {
+    check(!pattern.test(bodyText), `${label}: participant mode must not show '${pattern.source}'`);
+  }
+  for (const canonicalLabel of CANONICAL_EXERCISE_LABELS) {
+    check(!bodyText.toLowerCase().includes(canonicalLabel.toLowerCase()), `${label}: participant mode must not show canonical label '${canonicalLabel}'`);
+  }
+}
+
 async function renderedExerciseLabels(page) {
   return page.locator("[data-exercise-block]").evaluateAll((blocks) =>
     blocks.map((block) => block.getAttribute("data-exercise-block")).filter(Boolean),
@@ -255,51 +285,53 @@ async function runScenario(browser, viewport) {
     }
     check(await page.getByRole("progressbar").getAttribute("aria-valuenow") === "0", "intro progress must start at 0");
     await assertCurrentSlideFits(page, `${label} intro`);
-
-    const sidebarText = await page.locator("aside").last().innerText();
-    for (const section of ["Contexto", "Datos", "IA", "Revisión", "Decisión", "Respuesta"]) {
-      check(sidebarText.includes(section), `sidebar must include section name: ${section}`);
-    }
-    check(await page.getByRole("button", { name: /Respuesta/ }).first().isDisabled(), "future sections must be locked before the learner reaches them");
+    await assertParticipantCopyClean(page, `${label} intro`);
+    check((await page.locator("aside").count()) === 0, "participant mode must not render author sidebar");
+    check(await page.getByText("Ejercicios").count() === 0, "participant mode must not link to Exercise Lab chrome");
 
     check(await page.getByText("Lee esto como el brief que acaba de llegar a tu mesa").count() === 0, "reading slides must not render repeated brief panel");
 
     await clickNext(page);
-    check((await page.getByText("Contexto · Lectura").count()) > 0, "first slide must be Contexto reading");
+    check((await page.getByText("Contexto · Situación").count()) > 0, "first slide must be Contexto situation");
     check(await page.getByRole("progressbar").getAttribute("aria-valuenow") === "20", "Contexto 1 progress must be 20");
     check(await page.getByText("1 / 5").count(), "Contexto must show 1 / 5");
     check(await page.getByText("Lee esto como el brief que acaba de llegar a tu mesa").count() === 0, "Contexto must not show repeated brief panel");
     await assertCurrentSlideFits(page, `${label} contexto`);
+    await assertParticipantCopyClean(page, `${label} contexto`);
 
     for (let i = 0; i < 5; i++) await clickNext(page);
-    check((await page.getByText("Datos · Lectura").count()) > 0, "after Contexto 5, next must be Datos reading");
+    check((await page.getByText("Datos · Situación").count()) > 0, "after Contexto 5, next must be Datos situation");
     check(await page.getByRole("progressbar").getAttribute("aria-valuenow") === "20", "Datos 1 progress must reset to 20");
     await assertCurrentSlideFits(page, `${label} datos intro`);
+    await assertParticipantCopyClean(page, `${label} datos intro`);
 
     await clickNext(page);
-    check(await page.getByText(/02 · tabla editable de datos/i).count(), "Datos exercise must use canonical 02 table label");
+    check(await page.getByText(/02 · tabla editable de datos/i).count() === 0, "participant must not show canonical 02 table label");
+    check(await hasRenderedExercise(page, /02 · tabla editable de datos/i), "Datos exercise must still use canonical 02 table block");
     check(await page.getByText("Decidir").count(), "data table must start empty/default with Decidir");
     await assertCurrentSlideFits(page, `${label} data table`);
+    await assertParticipantCopyClean(page, `${label} data table`);
 
     for (let i = 0; i < 4; i++) await clickNext(page);
-    check((await page.getByText("IA · Lectura").count()) > 0, "after Datos, next must be IA reading");
+    check((await page.getByText("IA · Situación").count()) > 0, "after Datos, next must be IA situation");
     await clickNext(page);
     check(await hasRenderedExercise(page, /01B · textfield de ia guiado|07 · brief para agente/i), "IA slide must use canonical guided prompt or agent brief label");
     await assertCurrentSlideFits(page, `${label} first IA exercise`);
+    await assertParticipantCopyClean(page, `${label} first IA exercise`);
 
     await clickNext(page);
-    check((await page.getByText("IA · Lectura").count()) > 0, "after guided prompt, next must be IA reading");
+    check((await page.getByText("IA · Situación").count()) > 0, "after guided prompt, next must be IA situation");
     await clickNext(page);
     check(await hasRenderedExercise(page, /01A · textfield de ia libre|03 · matriz de permisos|06 · workflow builder/i), "second IA exercise must use a canonical Exercise Lab block");
     await assertCurrentSlideFits(page, `${label} second IA exercise`);
+    await assertParticipantCopyClean(page, `${label} second IA exercise`);
 
     for (let i = 0; i < 2; i++) await clickNext(page);
-    check((await page.getByText("Revisión · Lectura").count()) > 0, "after IA, next must be Revisión reading");
+    check((await page.getByText("Revisión · Situación").count()) > 0, "after IA, next must be Revisión situation");
     await clickNext(page);
     check(await hasRenderedExercise(page, /08 · revisión de logs|04 · revisión de output/i), "review must use canonical review label");
     await assertCurrentSlideFits(page, `${label} output review`);
-    check(await page.getByText("Evidencia esperada").count(), "exercise slides must show expected evidence");
-    check(await page.getByText("Qué afectará").count(), "exercise slides must show simulation consequence slot");
+    await assertParticipantCopyClean(page, `${label} output review`);
 
     let sawCanonical = 0;
     const labels = (await renderedExerciseLabels(page)).join("\n").toLowerCase();
@@ -343,16 +375,28 @@ async function runAllCasesSmoke(browser) {
       for (const tool of tools) {
         check(await page.getByText(tool).count(), `${path} intro must show tool: ${tool}`);
       }
-      const sidebarText = await page.locator("aside").last().innerText();
-      for (const section of ["Contexto", "Datos", "IA", "Revisión", "Decisión", "Respuesta"]) {
-        check(sidebarText.includes(section), `${path} sidebar must include section: ${section}`);
-      }
+      check((await page.locator("aside").count()) === 0, `${path} participant mode must not render author sidebar`);
       check(await page.getByRole("progressbar").getAttribute("aria-valuenow") === "0", `${path} intro progress must start at 0`);
       check(await page.getByText("Lee esto como el brief que acaba de llegar a tu mesa").count() === 0, `${path} must not show repeated legacy brief panel`);
       await assertCurrentSlideFits(page, `${path} intro`);
+      await assertParticipantCopyClean(page, `${path} intro`);
     } finally {
       await page.close();
     }
+  }
+}
+
+async function runAuthorModeSmoke(browser) {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  try {
+    await page.goto(`${CASE_URL}?mode=author`, { waitUntil: "domcontentloaded" });
+    check((await page.locator("aside").count()) > 0, "author mode must render review sidebar");
+    check(await page.getByText("Ejercicios").count(), "author mode must expose Exercise Lab link");
+    check(await page.getByRole("button", { name: /Respuesta/ }).first().isDisabled(), "author mode must keep locked future sections");
+    await clickNext(page);
+    check((await page.getByText("Objetivo").count()) > 0, "author mode must expose learning signals only after explicit mode");
+  } finally {
+    await page.close();
   }
 }
 
@@ -362,6 +406,7 @@ async function main() {
   try {
     await runCaseIndexScenario(browser);
     await runAllCasesSmoke(browser);
+    await runAuthorModeSmoke(browser);
     await runScenario(browser, { width: 1440, height: 900 });
     await runScenario(browser, { width: 1024, height: 768 });
   } finally {

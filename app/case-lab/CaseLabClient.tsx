@@ -31,8 +31,8 @@ export function CaseLabClient() {
             Elige uno de los 5 casos.
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-[var(--text-secondary)]">
-            Cada tarjeta abre una simulación completa en una página nueva, con secciones,
-            diapositivas y ejercicios aplicados.
+            Cada tarjeta abre una simulación viva: una situación de trabajo, artefactos concretos,
+            decisiones con presión y una respuesta que deja evidencia para el manager.
           </p>
         </section>
 
