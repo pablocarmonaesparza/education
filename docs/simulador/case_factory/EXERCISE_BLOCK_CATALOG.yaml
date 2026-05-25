@@ -1,5 +1,5 @@
 exercise_block_catalog:
-  version: 0.5.0
+  version: 0.6.0
   status: canonical_after_exercise_lab_review
   source_route: /exercise-lab
   purpose: >
@@ -240,17 +240,42 @@ exercise_block_catalog:
       avoid_when:
         - "Las opciones no tienen tradeoff real."
         - "El caso requiere creatividad abierta sin andamiaje."
+        - "Quieres medir ponderacion entre prioridades; usa model_tradeoff_sliders."
       personalization_knobs:
         - "objetivos"
         - "audiencias"
         - "limites del caso"
-        - "modelo recomendado"
-        - "prioridades de inteligencia, seguridad y costo"
+        - "modelo (manual o referencia desde model_tradeoff_sliders)"
       emits: [selected_objective, selected_audience, selected_limits, selected_model, generated_prompt]
-      ui_pattern: "inputs y seleccion progresivos + respuestas vacias + textfield read-only generado"
+      ui_pattern: "inputs y seleccion progresivos + textfield read-only generado"
       default_empty_fields: [selected_objective, selected_audience, selected_limits, selected_model, generated_prompt]
       scoring_method: deterministic_selection_plus_llm_judge
       completion: "objetivo, audiencia, limites y modelo definidos; prompt generado"
+
+    - id: model_tradeoff_sliders
+      lab_ref: "01C"
+      public_name: "Sliders de tradeoff de modelo"
+      family: ai_native
+      levels: [N1, N2, N3]
+      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
+      primary_dimensions: [juicio, ejecucion_ia]
+      runtime_sections: [IA]
+      when_to_use:
+        - "Medir como el participante pondera autonomia, seguridad y costo para elegir modelo."
+        - "Validar criterio de seleccion de modelo bajo restricciones reales."
+        - "Anteceder ai_textfield_guided cuando el caso necesita justificar la eleccion."
+      avoid_when:
+        - "El caso fija el modelo por contrato; no hay decision real."
+        - "La eleccion es binaria; usa un toggle simple."
+      personalization_knobs:
+        - "etiquetas y descripciones de cada slider"
+        - "modelos disponibles (catalogo restringido por caso)"
+        - "set de modelos recomendados por combinacion"
+      emits: [autonomy_priority, security_priority, cost_priority, recommended_model_id]
+      ui_pattern: "3 sliders 0-100 en pasos de 10 + modelo recomendado dinamico con BrandMark"
+      default_empty_fields: [autonomy_priority, security_priority, cost_priority, recommended_model_id]
+      scoring_method: judge_with_priority_coherence_check
+      completion: "los 3 sliders movidos al menos una vez + modelo recomendado confirmado"
 
     - id: data_action_table
       lab_ref: "02"

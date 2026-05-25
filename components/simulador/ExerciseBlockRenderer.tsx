@@ -26,6 +26,7 @@ import { TradeoffDecisionMemo } from "@/app/exercise-lab/blocks/TradeoffDecision
 import { AgentBriefBuilder } from "@/app/exercise-lab/blocks/AgentBriefBuilder";
 import { AITextfieldFree } from "@/app/exercise-lab/blocks/AITextfieldFree";
 import { AITextfieldGuided } from "@/app/exercise-lab/blocks/AITextfieldGuided";
+import { ModelTradeoffSliders } from "@/app/exercise-lab/blocks/ModelTradeoffSliders";
 import {
   emptyPayload,
   type ExerciseResponsePayload,
@@ -81,6 +82,8 @@ export function ExerciseBlockRenderer({
       return <AITextfieldFreeWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "ai_textfield_guided":
       return <AITextfieldGuidedWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+    case "model_tradeoff_sliders":
+      return <ModelTradeoffSlidersWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
   }
 }
 
@@ -209,4 +212,11 @@ function AITextfieldGuidedWrapper({ sessionId, mode, slideId }: WrapperProps) {
     emptyPayload("ai_textfield_guided") as Extract<ExerciseResponsePayload, { block_id: "ai_textfield_guided" }>,
   );
   return <AITextfieldGuided payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+}
+
+function ModelTradeoffSlidersWrapper({ sessionId, mode, slideId }: WrapperProps) {
+  const [payload, setPayload] = useState(() =>
+    emptyPayload("model_tradeoff_sliders") as Extract<ExerciseResponsePayload, { block_id: "model_tradeoff_sliders" }>,
+  );
+  return <ModelTradeoffSliders payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
 }

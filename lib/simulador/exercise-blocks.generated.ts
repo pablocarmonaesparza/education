@@ -2,17 +2,17 @@
 /**
  * AUTO-GENERATED — NO EDITAR A MANO.
  *
- * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.5.0
+ * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.6.0
  * Generador: scripts/simulador/generate-exercise-blocks.mjs
  *
  * Para regenerar: `bun run simulador:gen-blocks`
  * Para validar sincronía con lab/runtime: `bun run simulador:check-blocks`
  *
  * Status del catálogo: canonical_after_exercise_lab_review
- * Total bloques: 16
+ * Total bloques: 17
  */
 
-export type ExerciseBlockId = "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "ai_textfield_guided" | "data_action_table" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "agent_brief_builder" | "dashboard_pivot" | "tradeoff_decision_memo";
+export type ExerciseBlockId = "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "ai_textfield_guided" | "model_tradeoff_sliders" | "data_action_table" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "agent_brief_builder" | "dashboard_pivot" | "tradeoff_decision_memo";
 
 export type ExerciseBlockFamily = "passive" | "ai_native" | "traditional_business_signal" | "traditional_closure";
 
@@ -343,19 +343,55 @@ export const exerciseBlocks: ExerciseBlock[] = [
     avoidWhen: [
       "Las opciones no tienen tradeoff real.",
       "El caso requiere creatividad abierta sin andamiaje.",
+      "Quieres medir ponderacion entre prioridades; usa model_tradeoff_sliders.",
     ],
     personalizationKnobs: [
       "objetivos",
       "audiencias",
       "limites del caso",
-      "modelo recomendado",
-      "prioridades de inteligencia, seguridad y costo",
+      "modelo (manual o referencia desde model_tradeoff_sliders)",
     ],
     emits: ["selected_objective", "selected_audience", "selected_limits", "selected_model", "generated_prompt"],
-    uiPattern: "inputs y seleccion progresivos + respuestas vacias + textfield read-only generado",
+    uiPattern: "inputs y seleccion progresivos + textfield read-only generado",
     defaultEmptyFields: ["selected_objective", "selected_audience", "selected_limits", "selected_model", "generated_prompt"],
     scoringMethod: "deterministic_selection_plus_llm_judge",
     completion: "objetivo, audiencia, limites y modelo definidos; prompt generado",
+  },
+  {
+    id: "model_tradeoff_sliders",
+    labRef: "01C",
+    publicName: "Sliders de tradeoff de modelo",
+    family: "ai_native",
+    levels: ["N1", "N2", "N3"],
+    profiles: [
+      "marketing_growth",
+      "sales_revops",
+      "customer_success_support",
+      "operations_automation",
+      "finance_fpa",
+      "legal_compliance_privacy",
+    ],
+    primaryDimensions: ["juicio", "ejecucion_ia"],
+    runtimeSections: ["IA"],
+    whenToUse: [
+      "Medir como el participante pondera autonomia, seguridad y costo para elegir modelo.",
+      "Validar criterio de seleccion de modelo bajo restricciones reales.",
+      "Anteceder ai_textfield_guided cuando el caso necesita justificar la eleccion.",
+    ],
+    avoidWhen: [
+      "El caso fija el modelo por contrato; no hay decision real.",
+      "La eleccion es binaria; usa un toggle simple.",
+    ],
+    personalizationKnobs: [
+      "etiquetas y descripciones de cada slider",
+      "modelos disponibles (catalogo restringido por caso)",
+      "set de modelos recomendados por combinacion",
+    ],
+    emits: ["autonomy_priority", "security_priority", "cost_priority", "recommended_model_id"],
+    uiPattern: "3 sliders 0-100 en pasos de 10 + modelo recomendado dinamico con BrandMark",
+    defaultEmptyFields: ["autonomy_priority", "security_priority", "cost_priority", "recommended_model_id"],
+    scoringMethod: "judge_with_priority_coherence_check",
+    completion: "los 3 sliders movidos al menos una vez + modelo recomendado confirmado",
   },
   {
     id: "data_action_table",
@@ -623,6 +659,7 @@ export const exerciseBlockIds: ExerciseBlockId[] = [
   "reading_attachment",
   "ai_textfield_free",
   "ai_textfield_guided",
+  "model_tradeoff_sliders",
   "data_action_table",
   "ai_output_review",
   "ai_comparison",
@@ -639,13 +676,13 @@ export const exerciseBlockById: Record<ExerciseBlockId, ExerciseBlock> =
   >;
 
 export const exerciseBlockStats = {
-  total: 16,
+  total: 17,
   families: {
     "passive": 7,
-    "ai_native": 7,
+    "ai_native": 8,
     "traditional_business_signal": 1,
     "traditional_closure": 1
   },
-  catalogVersion: "0.5.0",
+  catalogVersion: "0.6.0",
   catalogStatus: "canonical_after_exercise_lab_review",
 } as const;

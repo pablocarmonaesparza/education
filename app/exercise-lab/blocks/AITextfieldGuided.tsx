@@ -4,32 +4,26 @@
  * AITextfieldGuided · renderer del bloque canónico `ai_textfield_guided`
  * (lab_ref 01B).
  *
- * Patrón rico (monolito Codex): el más complejo de los 11.
+ * Patrón: el participante toma 3 decisiones discretas que arman un prompt
+ * editable. NO incluye sliders — la ponderación de prioridades vive
+ * standalone en `model_tradeoff_sliders` (lab_ref 01C) desde v0.6.0.
  *
  *   ┌──────────────────────────────────┬──────────────────────────┐
- *   │ Inputs y selección (stepper)     │ Respuestas               │
+ *   │ Inputs y selección (stepper)     │ Respuestas                │
  *   │  ▸ Objetivo  ▸ Audiencia         │  ProcessAnswer 1: Objetivo│
- *   │  ▸ Límites (multi) ▸ Modelo      │  ProcessAnswer 2: Audiencia│
- *   │  con 3 sliders + recommended     │  ProcessAnswer 3: Límites │
- *   │  Atrás / Siguiente / Crear prompt│  ProcessAnswer 4: Modelo  │
+ *   │  ▸ Límites (multi)               │  ProcessAnswer 2: Audiencia│
+ *   │  Atrás / Siguiente / Crear prompt│  ProcessAnswer 3: Límites │
  *   └──────────────────────────────────┴──────────────────────────┘
  *
  *   AIPromptComposer (read-only) ← prompt generado al hacer Crear prompt
  *
- * Selección del modelo: `chooseGuidedModelId` decide automático basado en
- * (autonomía, seguridad, costo); `rebalanceModelTradeoffs` mantiene la
- * presión <= cap cuando el usuario sube un slider.
- *
- * Contrato del registry: no-prefill exige nulls en los sliders hasta que el
- * usuario los toque. `modelTouched` se deriva de "al menos un slider != null".
- * `selected_model` solo se setea cuando el usuario llega al paso 4 (no-prefill
- * estricto en TypeScript pero presentation-wise mostramos el recomendado).
- *
- * Visual restaurado desde el monolito ExerciseLabClient.tsx (Codex). Sin
- * cambios estéticos respecto al original.
+ * Modelo: el participante lo elige manualmente en el dropdown del
+ * composer (default: GPT Corporativo). Si el caso quiere medir cómo
+ * pondera autonomía/seguridad/costo, antecede con un slide de
+ * model_tradeoff_sliders.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -40,18 +34,9 @@ import {
   GuidedInputCard,
   GuidedSlideOptions,
   GuidedOption,
-  Range10,
   ProcessAnswer,
 } from "../_shared/ui-primitives";
-import { BrandMark } from "../_shared/glyphs";
-import { findModelById } from "../_shared/models";
-import {
-  chooseGuidedModelId,
-  rebalanceModelTradeoffs,
-  priorityLabel,
-  budgetLabel,
-} from "../_shared/model-tradeoffs";
-import type { ModelMetric } from "../_shared/types";
+import { findModelById, defaultModelId } from "../_shared/models";
 import { AIPromptComposer } from "../_shared/AIPromptComposer";
 
 type AITextfieldGuidedPayload = Extract<
@@ -78,7 +63,7 @@ const GUIDED_GUARDRAILS = [
   "Explicar supuestos y dudas",
 ];
 
-const INPUT_STEPS = ["Objetivo", "Audiencia", "Límites", "Modelo"];
+const INPUT_STEPS = ["Objetivo", "Audiencia", "Límites"];
 
 interface Props extends ExerciseRendererProps<AITextfieldGuidedPayload> {
   objectives?: ReadonlyArray<string>;
@@ -111,27 +96,8 @@ export function AITextfieldGuided({
   // registry no las persiste para guided. Mantenemos array vacío.
   const [voiceNotes, setVoiceNotes] = useState<string[]>([]);
 
-  // modelTouched se deriva de "al menos un slider tiene valor". El stub
-  // anterior usaba useState, pero derivarlo del payload garantiza coherencia
-  // con no-prefill · y permite que la UI muestre · para el slider hasta que
-  // el usuario lo toque.
-  const modelTouched =
-    payload.autonomy_priority !== null ||
-    payload.security_priority !== null ||
-    payload.cost_priority !== null;
-
-  // Para la lógica de recomendación, usamos 50 como neutral cuando el slider
-  // todavía es null (el monolito original arrancaba en 50).
-  const autonomyVal = payload.autonomy_priority ?? 50;
-  const securityVal = payload.security_priority ?? 50;
-  const costVal = payload.cost_priority ?? 50;
-
-  const recommendedModelId = chooseGuidedModelId({
-    autonomy: autonomyVal,
-    security: securityVal,
-    cost: costVal,
-  });
-  const recommendedModel = findModelById(recommendedModelId);
+  const displayedModelId = payload.selected_model ?? defaultModelId;
+  const displayedModel = findModelById(displayedModelId);
 
   const guardrailText =
     payload.selected_limits.length > 0
@@ -141,20 +107,8 @@ export function AITextfieldGuided({
   const canCreatePrompt = Boolean(
     payload.selected_objective &&
       payload.selected_audience &&
-      payload.selected_limits.length > 0 &&
-      modelTouched,
+      payload.selected_limits.length > 0,
   );
-
-  // Sincroniza selected_model con la recomendación cuando el usuario haya
-  // tocado los sliders. No-prefill: solo setea cuando modelTouched (ej.
-  // primer movimiento de slider) · antes queda null.
-  useEffect(() => {
-    if (!modelTouched) return;
-    if (payload.selected_model !== recommendedModelId) {
-      updateInternal({ ...payload, selected_model: recommendedModelId });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [recommendedModelId, modelTouched]);
 
   function updateInternal(next: AITextfieldGuidedPayload) {
     if (firstActionAt.current === null) firstActionAt.current = Date.now();
@@ -185,27 +139,13 @@ export function AITextfieldGuided({
     updateField("selected_limits", next);
   }
 
-  function updateModelMetric(metric: ModelMetric, value: number) {
-    const next = rebalanceModelTradeoffs(
-      { autonomy: autonomyVal, security: securityVal, cost: costVal },
-      metric,
-      value,
-    );
-    updateInternal({
-      ...payload,
-      autonomy_priority: next.autonomy,
-      security_priority: next.security,
-      cost_priority: next.cost,
-    });
-  }
-
   function createPrompt() {
-    const selected = findModelById(recommendedModelId);
-    const generated = `Objetivo: ${payload.selected_objective}.\nAudiencia: ${payload.selected_audience}.\nModelo sugerido: ${selected.label}${selected.badge ? ` · ${selected.badge}` : ""}.\n\nTrabaja sólo con información agregada del caso. Límites: ${guardrailText}.\n\nPrioridades: inteligencia ${priorityLabel(autonomyVal)}, seguridad ${priorityLabel(securityVal)} y costo permitido ${budgetLabel(costVal)}.\n\nEntrega tres opciones accionables, riesgos visibles y validaciones humanas necesarias.`;
+    const modelLabel = `${displayedModel.label}${displayedModel.badge ? ` · ${displayedModel.badge}` : ""}`;
+    const generated = `Objetivo: ${payload.selected_objective}.\nAudiencia: ${payload.selected_audience}.\nModelo elegido: ${modelLabel}.\n\nTrabaja sólo con información agregada del caso. Límites: ${guardrailText}.\n\nEntrega tres opciones accionables, riesgos visibles y validaciones humanas necesarias.`;
     updateInternal({
       ...payload,
       generated_prompt: generated,
-      selected_model: recommendedModelId,
+      selected_model: displayedModelId,
     });
   }
 
@@ -274,51 +214,6 @@ export function AITextfieldGuided({
                   </div>
                 </GuidedInputCard>
               )}
-              {activeInput === 3 && (
-                <GuidedInputCard>
-                  <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3">
-                    <div className="flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="text-[12px] text-[var(--text-tertiary)]">
-                          Modelo recomendado
-                        </div>
-                        <div className="mt-1 flex min-w-0 items-center gap-2 text-[14px] font-semibold text-[var(--text-primary)]">
-                          <BrandMark brand={recommendedModel.brand} />
-                          <span className="truncate">
-                            {recommendedModel.label}
-                            {recommendedModel.badge && (
-                              <span className="font-medium text-[var(--text-tertiary)]">
-                                {" · "}
-                                {recommendedModel.badge}
-                              </span>
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="rounded-xl bg-[var(--surface-2)] px-2.5 py-1.5 text-[11px] text-[var(--text-secondary)]">
-                        Automático
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-3 grid gap-2">
-                    <Range10
-                      label="Inteligencia"
-                      value={autonomyVal}
-                      onChange={(value) => updateModelMetric("intelligence", value)}
-                    />
-                    <Range10
-                      label="Seguridad"
-                      value={securityVal}
-                      onChange={(value) => updateModelMetric("security", value)}
-                    />
-                    <Range10
-                      label="Costo"
-                      value={costVal}
-                      onChange={(value) => updateModelMetric("cost", value)}
-                    />
-                  </div>
-                </GuidedInputCard>
-              )}
             </div>
 
             <div className="mt-auto grid grid-cols-2 gap-2 pt-5">
@@ -374,16 +269,6 @@ export function AITextfieldGuided({
                 }
                 muted={payload.selected_limits.length === 0}
               />
-              <ProcessAnswer
-                index={4}
-                label="Modelo"
-                value={
-                  modelTouched
-                    ? `${recommendedModel.label}${recommendedModel.badge ? ` · ${recommendedModel.badge}` : ""} · Inteligencia ${autonomyVal} · Seguridad ${securityVal} · Costo ${costVal}`
-                    : ""
-                }
-                muted={!modelTouched}
-              />
             </div>
           </div>
         </div>
@@ -392,7 +277,7 @@ export function AITextfieldGuided({
           <AIPromptComposer
             value={payload.generated_prompt}
             onChange={(value) => updateField("generated_prompt", value)}
-            selectedModel={payload.selected_model ?? recommendedModelId}
+            selectedModel={displayedModelId}
             onSelectModel={(value) => updateField("selected_model", value)}
             voiceNotes={voiceNotes}
             onVoiceNote={(note) => setVoiceNotes([...voiceNotes, note])}
@@ -412,9 +297,6 @@ export function aiTextfieldGuidedCompletion(
   if (!payload.selected_audience) missing.push("selected_audience");
   if (payload.selected_limits.length === 0) missing.push("selected_limits");
   if (!payload.selected_model) missing.push("selected_model");
-  if (payload.autonomy_priority === null) missing.push("autonomy_priority");
-  if (payload.security_priority === null) missing.push("security_priority");
-  if (payload.cost_priority === null) missing.push("cost_priority");
   if (payload.generated_prompt.trim().length === 0) missing.push("generated_prompt");
   return { complete: missing.length === 0, missing };
 }

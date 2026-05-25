@@ -81,11 +81,18 @@ export type ExerciseResponsePayload =
       selected_limits: string[];
       selected_model: string | null;
       generated_prompt: string;
-      // null = participante no ha movido el slider todavía.
-      // 50 sería respuesta implícita y viola no-prefill (Codex review P1 #3).
+    }
+  | {
+      // Bloque standalone para que el participante pondere
+      // autonomía / seguridad / costo con sliders 0-100 (pasos de 10) y
+      // reciba una recomendación de modelo dinámica. Discriminado para
+      // que el judge mida coherencia entre la ponderación declarada y
+      // el modelo elegido. null = slider no movido (no-prefill).
+      block_id: "model_tradeoff_sliders";
       autonomy_priority: number | null;
       security_priority: number | null;
       cost_priority: number | null;
+      recommended_model_id: string | null;
     }
   | {
       // Tabla con acción discreta por fila. Reemplaza a data_table_triage,
@@ -242,9 +249,14 @@ export function emptyPayload(block_id: ExerciseBlockId): ExerciseResponsePayload
         selected_limits: [],
         selected_model: null,
         generated_prompt: "",
+      };
+    case "model_tradeoff_sliders":
+      return {
+        block_id,
         autonomy_priority: null,
         security_priority: null,
         cost_priority: null,
+        recommended_model_id: null,
       };
     case "data_action_table":
       // action_kind por defecto "data" — el case productivo lo override

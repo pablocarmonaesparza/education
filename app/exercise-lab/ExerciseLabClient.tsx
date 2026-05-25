@@ -220,10 +220,18 @@ const exerciseList = [
   {
     id: "ai_textfield_guided",
     eyebrow: "01B · Prompt guiado",
-    title: "Textfield de IA (B): guiado.",
+    title: "Decisiones acotadas + prompt.",
     description:
-      "El participante toma decisiones acotadas por el caso y luego genera un prompt editable. Mide criterio granular sin abrir el caso a configuración libre.",
+      "El participante toma **3 decisiones discretas** (*objetivo, audiencia, límites*) y el bloque arma el prompt. Mide criterio granular sin abrir el caso a configuración libre.",
     signals: ["contexto", "datos", "ejecución IA", "juicio"],
+  },
+  {
+    id: "model_tradeoff_sliders",
+    eyebrow: "01C · Sliders de tradeoff",
+    title: "Ponderar para elegir modelo.",
+    description:
+      "3 sliders 0-100 (**autonomía**, **seguridad**, **costo**). La recomendación de modelo se actualiza en vivo con BrandMark. Mide *coherencia* entre la ponderación declarada y el modelo elegido.",
+    signals: ["juicio", "ejecución IA"],
   },
   {
     id: "data_action_table",

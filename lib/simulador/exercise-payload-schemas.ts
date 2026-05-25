@@ -99,10 +99,16 @@ const AITextfieldGuidedSchema = z.strictObject({
   selected_limits: z.array(z.string()),
   selected_model: z.string().nullable(),
   generated_prompt: z.string(),
-  // null si el participante no movió el slider — no-prefill enforcement.
+});
+
+// Sliders de tradeoff standalone (split del guided en v0.6.0).
+// null = slider no movido — no-prefill enforcement.
+const ModelTradeoffSlidersSchema = z.strictObject({
+  block_id: z.literal("model_tradeoff_sliders"),
   autonomy_priority: z.number().min(0).max(100).nullable(),
   security_priority: z.number().min(0).max(100).nullable(),
   cost_priority: z.number().min(0).max(100).nullable(),
+  recommended_model_id: z.string().nullable(),
 });
 
 // Tabla con acción discreta por fila — consolida data_table_triage,
@@ -177,6 +183,7 @@ export const ExerciseResponsePayloadSchema = z.discriminatedUnion("block_id", [
   ReadingAttachmentSchema,
   AITextfieldFreeSchema,
   AITextfieldGuidedSchema,
+  ModelTradeoffSlidersSchema,
   DataActionTableSchema,
   AIOutputReviewSchema,
   AIComparisonSchema,
