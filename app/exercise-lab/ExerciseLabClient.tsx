@@ -220,7 +220,7 @@ const exerciseList = [
   {
     id: "ai_textfield_free",
     eyebrow: "01 · Textfield de IA libre",
-    title: "Textfield de IA (A): libre.",
+    title: "Textfield de IA libre.",
     description:
       "El participante recibe un campo de IA sin ayudas adicionales. Mide cómo estructura una petición cuando opera con criterio propio.",
     signals: ["contexto", "ejecución IA", "impacto"],

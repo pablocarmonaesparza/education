@@ -148,7 +148,7 @@ export function ModelTradeoffSliders({
     <div className="space-y-5">
       <div className="space-y-4 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5">
         <Range10
-          label="Inteligencia"
+          label="Autonomía"
           value={autonomy ?? 50}
           onChange={(v) => update("intelligence", v)}
         />
