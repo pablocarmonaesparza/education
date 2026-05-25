@@ -99,13 +99,6 @@ const AITextfieldFreeSchema = z.strictObject({
   voice_notes: z.array(VoiceNoteSchema),
 });
 
-const ConversationResponseSchema = z.strictObject({
-  block_id: z.literal("conversation_response"),
-  response_text: z.string(),
-  model: z.string(),
-  attachments: z.array(PromptAttachmentSchema),
-});
-
 const AITextfieldGuidedSchema = z.strictObject({
   block_id: z.literal("ai_textfield_guided"),
   selected_objective: z.string().nullable(),
@@ -183,7 +176,6 @@ export const ExerciseResponsePayloadSchema = z.discriminatedUnion("block_id", [
   ReadingTimelineSchema,
   ReadingAttachmentSchema,
   AITextfieldFreeSchema,
-  ConversationResponseSchema,
   AITextfieldGuidedSchema,
   ModelTradeoffSlidersSchema,
   CategorizeRowsSchema,

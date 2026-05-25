@@ -25,7 +25,6 @@ import { AIOutputReview } from "@/app/exercise-lab/blocks/AIOutputReview";
 import { DashboardPivot } from "@/app/exercise-lab/blocks/DashboardPivot";
 import { TradeoffDecisionMemo } from "@/app/exercise-lab/blocks/TradeoffDecisionMemo";
 import { AITextfieldFree } from "@/app/exercise-lab/blocks/AITextfieldFree";
-import { ConversationResponse } from "@/app/exercise-lab/blocks/ConversationResponse";
 import { AITextfieldGuided } from "@/app/exercise-lab/blocks/AITextfieldGuided";
 import { ModelTradeoffSliders } from "@/app/exercise-lab/blocks/ModelTradeoffSliders";
 import {
@@ -85,8 +84,6 @@ export function ExerciseBlockRenderer({
       return <TradeoffDecisionMemoWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "ai_textfield_free":
       return <AITextfieldFreeWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-    case "conversation_response":
-      return <ConversationResponseWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
     case "ai_textfield_guided":
       return <AITextfieldGuidedWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
     case "model_tradeoff_sliders":
@@ -225,22 +222,6 @@ function AITextfieldFreeWrapper({ sessionId, mode, slideId }: WrapperProps) {
     emptyPayload("ai_textfield_free") as Extract<ExerciseResponsePayload, { block_id: "ai_textfield_free" }>,
   );
   return <AITextfieldFree payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
-}
-
-function ConversationResponseWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("conversation_response") as Extract<ExerciseResponsePayload, { block_id: "conversation_response" }>,
-  );
-  return (
-    <ConversationResponse
-      payload={payload}
-      onChange={setPayload}
-      sessionId={sessionId}
-      mode={mode}
-      slideId={slideId}
-      caseContext={caseContext}
-    />
-  );
 }
 
 function AITextfieldGuidedWrapper({ sessionId, mode, slideId, onShellContinue }: WrapperProps) {

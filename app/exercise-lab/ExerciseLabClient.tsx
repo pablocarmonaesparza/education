@@ -226,14 +226,6 @@ const exerciseList = [
     signals: ["contexto", "ejecución IA", "impacto"],
   },
   {
-    id: "conversation_response",
-    eyebrow: "02 · Siguiente turno con la IA",
-    title: "Iterar con la IA en un thread.",
-    description:
-      "Hay una **conversación previa** con un modelo (tú ↔ IA). El participante escribe el *siguiente prompt* para corregir, profundizar o reformular. Mide cómo itera con la IA a partir del contexto ya visible.",
-    signals: ["contexto", "ejecución IA", "juicio"],
-  },
-  {
     id: "ai_textfield_guided",
     eyebrow: "03 · Prompt guiado",
     title: "Decisiones acotadas + prompt.",

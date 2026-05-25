@@ -9,14 +9,14 @@
  * Para validar sincronía con lab/runtime: `bun run simulador:check-blocks`
  *
  * Status del catálogo: canonical_after_exercise_lab_review
- * Total bloques: 18
+ * Total bloques: 17
  */
 
-export type ExerciseBlockId = "case_cover" | "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "conversation_response" | "ai_textfield_guided" | "model_tradeoff_sliders" | "categorize_rows" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "dashboard_pivot" | "tradeoff_decision_memo";
+export type ExerciseBlockId = "case_cover" | "reading_passive" | "reading_message" | "reading_data_table" | "reading_image" | "reading_kpi_cards" | "reading_timeline" | "reading_attachment" | "ai_textfield_free" | "ai_textfield_guided" | "model_tradeoff_sliders" | "categorize_rows" | "ai_output_review" | "ai_comparison" | "workflow_builder" | "dashboard_pivot" | "tradeoff_decision_memo";
 
 export type ExerciseBlockFamily = "passive" | "ai_native" | "traditional_business_signal" | "traditional_closure";
 
-export type ExerciseBlockDimension = "contexto" | "ejecucion_ia" | "impacto" | "juicio" | "datos" | "validacion";
+export type ExerciseBlockDimension = "contexto" | "ejecucion_ia" | "impacto" | "datos" | "juicio" | "validacion";
 
 export type ExerciseBlockRuntimeSection = "Contexto" | "Datos" | "IA" | "Revision" | "Decision" | "Respuesta";
 
@@ -66,14 +66,16 @@ export const exerciseBlocks: ExerciseBlock[] = [
       "El caso no necesita pantalla de inicio (caso muy corto, demo embebida).",
     ],
     personalizationKnobs: [
-      "titulo del caso",
-      "descripcion ampliada",
-      "metadata (perfil, dificultad, tiempo estimado)",
-      "timer (opcional, en segundos)",
-      "label del boton Iniciar",
+      "meta.profile · perfil del caso",
+      "meta.level · dificultad / nivel",
+      "meta.estimatedMinutes · tiempo estimado de lectura/respuesta",
+      "meta.timerEnabled · true/false para activar countdown",
+      "meta.timerSeconds · duracion en segundos si timerEnabled=true",
+      "meta.tools · array de herramientas (ai, data, messaging, documents, workflow)",
+      "ctaLabel · label del boton Iniciar",
     ],
     emits: ["started_at", "timer_seconds"],
-    uiPattern: "hero centrado con titulo grande + descripcion + meta + boton Iniciar prominente",
+    uiPattern: "metadata chips (perfil/nivel/tiempo/timer on-off) + seccion herramientas con iconos + boton Iniciar prominente",
     defaultEmptyFields: ["started_at"],
     scoringMethod: "passive",
     completion: "auto al clickear Iniciar",
@@ -355,42 +357,6 @@ export const exerciseBlocks: ExerciseBlock[] = [
     defaultEmptyFields: ["prompt_text", "attachments", "voice_notes"],
     scoringMethod: "llm_judge_with_structured_rubric",
     completion: "prompt no vacio con objetivo y al menos una restriccion o criterio de validacion",
-  },
-  {
-    id: "conversation_response",
-    labRef: "02",
-    publicName: "Siguiente turno con la IA",
-    family: "ai_native",
-    levels: ["N1", "N2", "N3"],
-    profiles: [
-      "marketing_growth",
-      "sales_revops",
-      "customer_success_support",
-      "operations_automation",
-      "finance_fpa",
-      "legal_compliance_privacy",
-    ],
-    primaryDimensions: ["contexto", "ejecucion_ia", "juicio"],
-    runtimeSections: ["IA"],
-    whenToUse: [
-      "Hay una conversacion previa entre el participante y un modelo de IA.",
-      "Medir como itera con la IA (corregir, profundizar, reformular) a partir del contexto ya visible.",
-    ],
-    avoidWhen: [
-      "No hay turnos previos relevantes; usa ai_textfield_free.",
-      "El contexto es respuesta a un humano (cliente/manager); modela como reading_message + ai_textfield_free.",
-    ],
-    personalizationKnobs: [
-      "thread (turnos user/assistant previos)",
-      "modelo de la conversacion (BrandMark)",
-      "modelo del siguiente turno (puede ser distinto al previo)",
-      "placeholder del composer",
-    ],
-    emits: ["response_text", "model", "attachments"],
-    uiPattern: "thread con burbujas user/assistant (avatar BrandMark del modelo) + composer al final",
-    defaultEmptyFields: ["response_text", "attachments"],
-    scoringMethod: "llm_judge_with_context_alignment",
-    completion: "siguiente prompt no vacio con coherencia al thread",
   },
   {
     id: "ai_textfield_guided",
@@ -693,7 +659,6 @@ export const exerciseBlockIds: ExerciseBlockId[] = [
   "reading_timeline",
   "reading_attachment",
   "ai_textfield_free",
-  "conversation_response",
   "ai_textfield_guided",
   "model_tradeoff_sliders",
   "categorize_rows",
@@ -711,10 +676,10 @@ export const exerciseBlockById: Record<ExerciseBlockId, ExerciseBlock> =
   >;
 
 export const exerciseBlockStats = {
-  total: 18,
+  total: 17,
   families: {
     "passive": 8,
-    "ai_native": 8,
+    "ai_native": 7,
     "traditional_business_signal": 1,
     "traditional_closure": 1
   },

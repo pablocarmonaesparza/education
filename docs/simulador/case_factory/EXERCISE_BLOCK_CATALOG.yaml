@@ -26,7 +26,7 @@ exercise_block_catalog:
   selection_recipes:
     N1:
       description: "Fundamentos / Prompt Engineering"
-      recommended_blocks: [ai_textfield_free, conversation_response, ai_textfield_guided, categorize_rows, ai_output_review, tradeoff_decision_memo]
+      recommended_blocks: [ai_textfield_free, ai_textfield_guided, categorize_rows, ai_output_review, tradeoff_decision_memo]
       avoid_blocks: []
     N2:
       description: "Workflow / Automatiza tu trabajo"
@@ -252,31 +252,6 @@ exercise_block_catalog:
       default_empty_fields: [prompt_text, attachments, voice_notes]
       scoring_method: llm_judge_with_structured_rubric
       completion: "prompt no vacio con objetivo y al menos una restriccion o criterio de validacion"
-
-    - id: conversation_response
-      lab_ref: "02"
-      public_name: "Siguiente turno con la IA"
-      family: ai_native
-      levels: [N1, N2, N3]
-      profiles: [marketing_growth, sales_revops, customer_success_support, operations_automation, finance_fpa, legal_compliance_privacy]
-      primary_dimensions: [contexto, ejecucion_ia, juicio]
-      runtime_sections: [IA]
-      when_to_use:
-        - "Hay una conversacion previa entre el participante y un modelo de IA."
-        - "Medir como itera con la IA (corregir, profundizar, reformular) a partir del contexto ya visible."
-      avoid_when:
-        - "No hay turnos previos relevantes; usa ai_textfield_free."
-        - "El contexto es respuesta a un humano (cliente/manager); modela como reading_message + ai_textfield_free."
-      personalization_knobs:
-        - "thread (turnos user/assistant previos)"
-        - "modelo de la conversacion (BrandMark)"
-        - "modelo del siguiente turno (puede ser distinto al previo)"
-        - "placeholder del composer"
-      emits: [response_text, model, attachments]
-      ui_pattern: "thread con burbujas user/assistant (avatar BrandMark del modelo) + composer al final"
-      default_empty_fields: [response_text, attachments]
-      scoring_method: llm_judge_with_context_alignment
-      completion: "siguiente prompt no vacio con coherencia al thread"
 
     - id: ai_textfield_guided
       lab_ref: "03"
