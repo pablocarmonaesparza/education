@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { enforceRateLimit, rateLimiters } from "@/lib/ratelimit";
 import { getFieldTestToken } from "@/lib/simulador/field-test/security";
+import { tryParseExercisePayload } from "@/lib/simulador/exercise-payload-schemas";
 import {
   getFieldTestSession,
   insertFieldTestEvent,
@@ -46,6 +47,19 @@ export async function PATCH(
 
   if (!body.step_key || !isFieldTestStepKey(body.step_key)) {
     return NextResponse.json({ error: "step_key inválido." }, { status: 400 });
+  }
+
+  // Frente A — validación tipada para payloads de bloques canónicos.
+  // Legacy field-test steps (sin block_id) pasan sin validar.
+  const exerciseValidation = tryParseExercisePayload(body.payload);
+  if (exerciseValidation.kind === "invalid") {
+    return NextResponse.json(
+      {
+        error: "Payload de bloque malformado.",
+        details: exerciseValidation.error.format(),
+      },
+      { status: 422 },
+    );
   }
 
   await insertFieldTestEvent({

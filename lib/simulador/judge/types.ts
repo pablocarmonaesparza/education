@@ -87,6 +87,14 @@ export interface JudgeInputContext {
   }>;
   /** Respuestas del participante reducidas a último payload por step_key. */
   responses: Record<string, unknown>;
+  /**
+   * Frente A — payloads de bloques canónicos validados con Zod, indexados
+   * por step_key. Solo presentes para steps cuyo payload tenía `block_id`
+   * y pasó `tryParseExercisePayload`. El judge debería preferir este shape
+   * tipado para construir prompts deterministas; `responses` se mantiene
+   * para retrocompat con steps legacy.
+   */
+  exerciseEvidence?: Record<string, import("../exercise-registry").EvidenceForJudge>;
   rubric: {
     slug: string;
     version: string;

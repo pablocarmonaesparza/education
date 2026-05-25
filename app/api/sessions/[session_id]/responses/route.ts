@@ -17,6 +17,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { tryParseExercisePayload } from "@/lib/simulador/exercise-payload-schemas";
 
 export const runtime = "nodejs";
 
@@ -46,6 +47,21 @@ export async function PATCH(
 
   if (!body.step_key) {
     return NextResponse.json({ error: "Falta step_key." }, { status: 400 });
+  }
+
+  // Frente A — validación tipada de payloads que sean bloques canónicos.
+  // Si el payload trae `block_id`, valida shape con Zod; rechaza 422 si
+  // malformado. Legacy steps (sin block_id) pasan sin validar — la
+  // retrocompat con sesiones viejas se mantiene forward-only.
+  const exerciseValidation = tryParseExercisePayload(body.payload);
+  if (exerciseValidation.kind === "invalid") {
+    return NextResponse.json(
+      {
+        error: "Payload de bloque malformado.",
+        details: exerciseValidation.error.format(),
+      },
+      { status: 422 },
+    );
   }
 
   // Verificar que la session es del user actual (RLS también lo bloquea

@@ -155,11 +155,33 @@ export async function buildJudgeContext(
   }
 
   const responses: Record<string, unknown> = {};
+  const exerciseEvidence: Record<
+    string,
+    import("../exercise-registry").EvidenceForJudge
+  > = {};
   for (const ev of (events ?? []) as StepEventRow[]) {
     const key = stepKeyById[ev.case_step_id];
     if (!key) continue;
     const r = ev.payload_json?.response;
-    if (r !== undefined) responses[key] = r;
+    if (r !== undefined) {
+      responses[key] = r;
+      // Frente A — si el payload tiene block_id, construir EvidenceForJudge
+      // tipado para que el prompt-builder pueda emitir prompts deterministas.
+      if (typeof r === "object" && r !== null && "block_id" in r) {
+        const blockId = (r as { block_id: string }).block_id;
+        // Cast es seguro: la API route ya validó shape con Zod antes de
+        // persistir. Si llegó hasta aquí, el shape es válido.
+        exerciseEvidence[key] = {
+          block_id: blockId as import("../exercise-registry").EvidenceForJudge["block_id"],
+          payload: r as import("../exercise-registry").ExerciseResponsePayload,
+          metrics:
+            (ev.payload_json?.metrics as Record<string, unknown> | undefined) ??
+            {},
+          submitted_at:
+            (ev.created_at as string | undefined) ?? new Date().toISOString(),
+        };
+      }
+    }
   }
 
   return {
@@ -170,6 +192,8 @@ export async function buildJudgeContext(
     variantInputs: variant.inputs_resolved_json ?? {},
     steps,
     responses,
+    exerciseEvidence:
+      Object.keys(exerciseEvidence).length > 0 ? exerciseEvidence : undefined,
     rubric: {
       slug: rubric.slug,
       version: rubric.version,
