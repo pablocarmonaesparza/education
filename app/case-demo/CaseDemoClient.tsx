@@ -486,6 +486,17 @@ export function CaseDemoClient() {
     // (idealmente mostraría una pantalla de "completado" · out of scope)
   }, [sectionIdx, slideIdx]);
 
+  const goPrev = useCallback(() => {
+    if (slideIdx > 0) {
+      setSlideIdx(slideIdx - 1);
+    } else if (sectionIdx > 0) {
+      setSectionIdx(sectionIdx - 1);
+      setSlideIdx(SLIDES_PER_SECTION - 1);
+    }
+  }, [sectionIdx, slideIdx]);
+
+  const isFirstSlide = sectionIdx === 0 && slideIdx === 0;
+
   // Scroll al top al cambiar de slide
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -576,31 +587,46 @@ export function CaseDemoClient() {
               />
             </div>
 
-            {/* Continuar · solo si el bloque no maneja su propio CTA */}
-            {!ownsContinue && (
-              <div className="mt-10 flex items-center gap-4">
-                <button
-                  type="button"
-                  onClick={goNext}
-                  disabled={isLastSlide}
-                  className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
-                    isLastSlide
-                      ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-                      : "accent-bg hover:opacity-90"
-                  }`}
-                >
-                  {isLastSlide ? "Caso completado" : "Continuar →"}
-                </button>
-                {!isLastSlide && (
-                  <span className="ts-footnote text-[var(--text-tertiary)]">
-                    o pulsa{" "}
-                    <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
-                      Enter ↵
-                    </kbd>
-                  </span>
-                )}
-              </div>
-            )}
+            {/* Atrás + Continuar · Atrás siempre presente (disabled en slide 1),
+                Continuar solo si el bloque no maneja su propio CTA. */}
+            <div className="mt-10 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={goPrev}
+                disabled={isFirstSlide}
+                className={`rounded-[var(--radius-md)] border px-7 py-3 ts-callout font-medium transition-colors ${
+                  isFirstSlide
+                    ? "border-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
+                    : "border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                ← Atrás
+              </button>
+              {!ownsContinue && (
+                <>
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    disabled={isLastSlide}
+                    className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
+                      isLastSlide
+                        ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
+                        : "accent-bg hover:opacity-90"
+                    }`}
+                  >
+                    {isLastSlide ? "Caso completado" : "Continuar →"}
+                  </button>
+                  {!isLastSlide && (
+                    <span className="ts-footnote text-[var(--text-tertiary)]">
+                      o pulsa{" "}
+                      <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
+                        Enter ↵
+                      </kbd>
+                    </span>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </section>
       </div>
