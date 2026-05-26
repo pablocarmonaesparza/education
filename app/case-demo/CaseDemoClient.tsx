@@ -129,16 +129,22 @@ const SLIDES: Slide[][] = [
         },
       },
     },
-    // Slot 4: reading_kpi_cards · métricas de la última campaña
+    // Slot 4: categorize_rows · clasificar métricas de la última campaña
     {
-      blockId: "reading_kpi_cards",
-      title: "Cómo va la cuenta hasta hoy.",
-      body: "Métricas de la **última campaña** que enviaste hace un mes.",
+      blockId: "categorize_rows",
+      title: "Clasifica las métricas del último envío.",
+      body: "Tres métricas de la **campaña anterior**. Decide cuáles son aceptables, cuáles te preocupan y cuáles son críticas antes de planear esta.",
       caseContext: {
-        kpis: [
-          { value: "23.4%", label: "Tasa de apertura", delta: { value: "-4.2 puntos", direction: "down" } },
-          { value: "3.1%", label: "Conversión a demo", delta: { value: "+0.6 puntos", direction: "up" } },
-          { value: "12", label: "Quejas por privacidad", delta: { value: "+8", direction: "down" } },
+        actionStyle: "severity",
+        actions: [
+          { value: "aceptable", label: "Aceptable" },
+          { value: "preocupante", label: "Preocupante" },
+          { value: "critica", label: "Crítica" },
+        ],
+        rows: [
+          { id: "metric-1", label: "Tasa de apertura: 23.4%", example: "Bajó 4.2 puntos respecto al envío anterior", hint: "Benchmark interno es 27% mínimo" },
+          { id: "metric-2", label: "Conversión a demo: 3.1%", example: "Subió 0.6 puntos respecto al envío anterior", hint: "Benchmark interno es 2.5% mínimo" },
+          { id: "metric-3", label: "Quejas por privacidad: 12", example: "Subió 8 respecto al envío anterior", hint: "Cualquier número arriba de 5 dispara alerta de Legal" },
         ],
       },
     },
@@ -428,20 +434,18 @@ const SLIDES: Slide[][] = [
         ],
       },
     },
-    // Slot 4: reading_message · vista previa del email
+    // Slot 4: ai_output_review · última revisión del email antes de enviar
     {
-      blockId: "reading_message",
-      title: "Vista previa del email final.",
-      body: "Así se vería en la bandeja del contacto. **Última oportunidad** para detectar algo antes del envío real.",
+      blockId: "ai_output_review",
+      title: "Última revisión antes del envío.",
+      body: "Así se vería en la bandeja del contacto. **Marca cualquier cosa** que te detendría justo antes de mandar el lunes a las 8.",
       caseContext: {
-        message: {
-          channel: "email",
-          from: { name: "Aurora Retail · Marketing", role: "marketing@aurora.example" },
-          to: { name: "Lista del segmento elegido" },
-          timestamp: "Lunes, 08:00",
-          subject: "Una idea concreta para tu equipo este trimestre",
-          body: "Mariana, vi que **Aurora Retail abrió oficina en Monterrey**. Trabajamos con equipos de Marketing en empresas medianas de retail. Si quieres ver cómo lo aplicaríamos a tu caso, agendamos una llamada cuando te acomode. Te dejo **dos horarios la próxima semana**, dime cuál te sirve.",
-        },
+        segments: [
+          { id: "final-1", text: "Asunto: Una idea concreta para tu equipo este trimestre.", issue: "Asunto operativo", flagIfMarked: "frase_reutilizable" },
+          { id: "final-2", text: "Mariana, vi que Aurora Retail abrió oficina en Monterrey la semana pasada.", issue: "Información personalizada de fuente externa", flagIfMarked: "dato_sensible" },
+          { id: "final-3", text: "Trabajamos con equipos de Marketing en empresas medianas de retail.", issue: "Afirmación interna verificable", flagIfMarked: "frase_reutilizable" },
+          { id: "final-4", text: "Te dejo dos horarios la próxima semana, dime cuál te sirve.", issue: "Cierre directo y opcional", flagIfMarked: "frase_reutilizable" },
+        ],
       },
     },
     // Slot 5: tradeoff_decision_memo · memo final corto
