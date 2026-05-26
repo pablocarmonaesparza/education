@@ -514,132 +514,95 @@ export function CaseDemoClient() {
 
   return (
     <main className="simulador-root min-h-screen surface-canvas text-[var(--text-primary)]">
-      <div className="grid min-h-screen grid-cols-[240px_1fr]">
-        {/* SIDEBAR · 5 secciones */}
-        <aside className="bg-[var(--surface)] px-6 py-12">
-          <nav className="flex flex-col gap-1">
-            {SECTIONS.map((section, idx) => {
-              const isActive = idx === sectionIdx;
-              const isPast = idx < sectionIdx;
-              return (
-                <div
-                  key={section.id}
-                  aria-current={isActive ? "step" : undefined}
-                  className={`group flex items-center gap-3 py-2 ts-subhead transition-colors ${
-                    isActive
-                      ? "text-[var(--text-primary)] font-medium"
-                      : isPast
-                        ? "text-[var(--text-secondary)]"
-                        : "text-[var(--text-tertiary)]"
-                  }`}
-                >
-                  <span
-                    className={`h-1.5 w-1.5 flex-shrink-0 rounded-full transition-colors ${
+      <div className="flex min-h-screen flex-col">
+        {/* TOP · progress 5 segmentos (full-width, sin sidebar) */}
+        <div className="pt-8 pb-6">
+          <div className="mx-auto w-[65%] max-w-[1200px]">
+            <div
+              role="progressbar"
+              aria-label={`Diapositiva ${slideIdx + 1} de ${SLIDES_PER_SECTION}`}
+              aria-valuemin={1}
+              aria-valuemax={SLIDES_PER_SECTION}
+              aria-valuenow={slideIdx + 1}
+              className="flex w-full gap-2"
+            >
+              {Array.from({ length: SLIDES_PER_SECTION }).map((_, idx) => {
+                const isActive = idx === slideIdx;
+                const isPast = idx < slideIdx;
+                return (
+                  <div
+                    key={idx}
+                    className={`h-[3px] flex-1 rounded-full transition-colors ${
                       isActive
-                        ? "bg-[var(--accent)]"
+                        ? "bg-[var(--accent)] animate-pulse"
                         : isPast
-                          ? "bg-[var(--text-tertiary)]"
-                          : "border border-[var(--border)] bg-transparent"
+                          ? "bg-[var(--text-secondary)]"
+                          : "bg-[var(--surface-3)]"
                     }`}
                   />
-                  <span>{section.name}</span>
-                </div>
-              );
-            })}
-          </nav>
-        </aside>
-
-        {/* CENTRO */}
-        <div className="flex flex-col">
-          {/* TOP · progress 5 segmentos */}
-          <div className="pt-8 pb-6">
-            <div className="mx-auto w-[65%] max-w-[1200px]">
-              <div
-                role="progressbar"
-                aria-label={`Diapositiva ${slideIdx + 1} de ${SLIDES_PER_SECTION}`}
-                aria-valuemin={1}
-                aria-valuemax={SLIDES_PER_SECTION}
-                aria-valuenow={slideIdx + 1}
-                className="flex w-full gap-2"
-              >
-                {Array.from({ length: SLIDES_PER_SECTION }).map((_, idx) => {
-                  const isActive = idx === slideIdx;
-                  const isPast = idx < slideIdx;
-                  return (
-                    <div
-                      key={idx}
-                      className={`h-[3px] flex-1 rounded-full transition-colors ${
-                        isActive
-                          ? "bg-[var(--accent)] animate-pulse"
-                          : isPast
-                            ? "bg-[var(--text-secondary)]"
-                            : "bg-[var(--surface-3)]"
-                      }`}
-                    />
-                  );
-                })}
-              </div>
+                );
+              })}
             </div>
           </div>
-
-          {/* CONTENIDO · título + body + ejercicio + continuar */}
-          <section className="flex flex-1 items-start justify-center py-10">
-            <div className="w-[65%] max-w-[1200px]">
-              {/* Eyebrow · sección + slide */}
-              <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-                {SECTIONS[sectionIdx].name} · {slideIdx + 1} de {SLIDES_PER_SECTION}
-              </div>
-
-              {/* Título */}
-              <h1 className="mt-3 display display-tight ts-display text-[var(--text-primary)]">
-                {slide.title}
-              </h1>
-
-              {/* Body markdown */}
-              <SlideBody className="mt-4">{slide.body}</SlideBody>
-
-              {/* Ejercicio · key fuerza re-mount al cambiar de slide para
-                  resetear payload del bloque (regla no-prefill cross-slide). */}
-              <div className="mt-8">
-                <ExerciseBlockRenderer
-                  key={`${SECTIONS[sectionIdx].id}-${slideIdx + 1}`}
-                  blockId={slide.blockId}
-                  sessionId={null}
-                  mode="lab_demo"
-                  slideId={`${SECTIONS[sectionIdx].id}-${slideIdx + 1}`}
-                  caseContext={slide.caseContext}
-                  onShellContinue={goNext}
-                />
-              </div>
-
-              {/* Continuar · solo si el bloque no maneja su propio CTA */}
-              {!ownsContinue && (
-                <div className="mt-10 flex items-center gap-4">
-                  <button
-                    type="button"
-                    onClick={goNext}
-                    disabled={isLastSlide}
-                    className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
-                      isLastSlide
-                        ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-                        : "accent-bg hover:opacity-90"
-                    }`}
-                  >
-                    {isLastSlide ? "Caso completado" : "Continuar →"}
-                  </button>
-                  {!isLastSlide && (
-                    <span className="ts-footnote text-[var(--text-tertiary)]">
-                      o pulsa{" "}
-                      <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
-                        Enter ↵
-                      </kbd>
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-          </section>
         </div>
+
+        {/* CONTENIDO · centrado vertical y horizontal */}
+        <section className="flex flex-1 items-center justify-center py-10">
+          <div className="w-[65%] max-w-[1200px]">
+            {/* Eyebrow · solo el nombre de la sección */}
+            <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+              {SECTIONS[sectionIdx].name}
+            </div>
+
+            {/* Título */}
+            <h1 className="mt-3 display display-tight ts-display text-[var(--text-primary)]">
+              {slide.title}
+            </h1>
+
+            {/* Body markdown */}
+            <SlideBody className="mt-4">{slide.body}</SlideBody>
+
+            {/* Ejercicio · key fuerza re-mount al cambiar de slide para
+                resetear payload del bloque (regla no-prefill cross-slide). */}
+            <div className="mt-8">
+              <ExerciseBlockRenderer
+                key={`${SECTIONS[sectionIdx].id}-${slideIdx + 1}`}
+                blockId={slide.blockId}
+                sessionId={null}
+                mode="lab_demo"
+                slideId={`${SECTIONS[sectionIdx].id}-${slideIdx + 1}`}
+                caseContext={slide.caseContext}
+                onShellContinue={goNext}
+              />
+            </div>
+
+            {/* Continuar · solo si el bloque no maneja su propio CTA */}
+            {!ownsContinue && (
+              <div className="mt-10 flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={goNext}
+                  disabled={isLastSlide}
+                  className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
+                    isLastSlide
+                      ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
+                      : "accent-bg hover:opacity-90"
+                  }`}
+                >
+                  {isLastSlide ? "Caso completado" : "Continuar →"}
+                </button>
+                {!isLastSlide && (
+                  <span className="ts-footnote text-[var(--text-tertiary)]">
+                    o pulsa{" "}
+                    <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
+                      Enter ↵
+                    </kbd>
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
       </div>
     </main>
   );
