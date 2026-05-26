@@ -1,0 +1,254 @@
+# Schema de ensamble de casos · v1.0.0
+#
+# Define el formato canonico para ensamblar un caso Itera como Lego:
+# 5 secciones × 5 diapositivas = 25 slides por caso. Cada slide referencia
+# un block_id del catalogo (EXERCISE_BLOCK_CATALOG.yaml v0.11.0) y trae el
+# content especifico del caso.
+#
+# Usar junto con:
+#   - TEMPLATES_CATALOG.md (referencia legible de los 17 templates)
+#   - EXERCISE_BLOCK_CATALOG.yaml (fuente canonica de templates + knobs)
+#   - CASE_HIG.md (niveles N1/N2/N3, anti-patrones)
+#   - CASE_RUBRIC_V1.md (pesos de dimensiones por nivel)
+#
+# Este schema reemplaza el campo steps[] del CASE_SCHEMA viejo cuando
+# se autora con el formato ensamblado. Casos viejos siguen siendo validos
+# en su formato hasta que se migren.
+
+case_assembly_schema:
+  version: 1.0.0
+  status: canonical
+  source_route: /case/[case_id]
+
+  # ============================================================
+  # REGLAS DURAS
+  # Si una regla se rompe, el caso no entra a produccion.
+  # ============================================================
+
+  rules:
+    sections_required: 5
+    section_names:
+      - contexto
+      - datos
+      - ia
+      - revision
+      - cierre
+    slides_per_section: 5
+    total_slides: 25
+
+    first_slide:
+      section: contexto
+      slot: 1
+      block_id: case_cover
+
+    last_section_must_close_with:
+      block_ids: [tradeoff_decision_memo, dashboard_pivot, workflow_builder]
+      slot: 5
+
+    ai_native_ratio_min: 0.60   # 60% de los 25 slides minimo
+    passive_ratio_max: 0.40     # 40% maximo
+
+    at_least_one_active_per_section_except: [contexto]
+    # contexto puede ser 100% pasivos (onboarding al caso)
+
+    no_prefill:
+      enforced_per_block: true
+      # cada bloque arranca con emptyPayload() del registry. El content
+      # del caso no puede traer respuestas, decisiones, memos u outputs
+      # pre-rellenados.
+
+  # ============================================================
+  # CONVENCIONES DE COPY (aplican a todos los strings de content)
+  # Fuentes: docs/memory/copy_*.md
+  # ============================================================
+
+  copy_rules:
+    - "Cero acronimos en prosa (escribir 'inteligencia artificial' no 'IA' en cuerpo de texto)"
+    - "IA en mayusculas SOLO cuando es label corto o chip (ej. boton 'Pedirle a la IA')"
+    - "Cero em dash; usar punto, coma o parentesis"
+    - "Singulares: API, MCP; con s solo Skills (nombre propio de Anthropic)"
+    - "Body markdown con bold en datos criticos (fechas, numeros, decisiones)"
+    - "Lowercase en prosa salvo nombres propios, inicios despues de punto"
+    - "Nada de gamificacion, felicitacion o emojis durante el caso"
+
+  # ============================================================
+  # ESTRUCTURA DE UN CASO ENSAMBLADO
+  # ============================================================
+
+  case_structure:
+    required_top_level_fields:
+      - case_id           # slug unico · ej. marketing_dirty_data_relaunch
+      - version           # entero · 1, 2, 3...
+      - status            # draft | ready | retired
+      - meta              # nivel, perfil, timer, herramientas
+      - manager_outcome   # pregunta del manager + brief de asignacion + metricas
+      - sections          # array de 5 secciones · cada una con 5 slides
+
+    optional_top_level_fields:
+      - rubric_ref        # ej. rubric_case_factory_v1
+      - judge_prompt_ref  # judge prompt especifico del caso
+      - practice_mapping  # gap → practice_beat
+      - resimulation_ref  # apunta a la variante resim del caso
+
+  # ============================================================
+  # SHAPE DE meta
+  # Lo que case_cover y el shell del runtime leen.
+  # ============================================================
+
+  meta_shape:
+    level:                # string · "N1 · Fundamentos" | "N2 · Workflow" | "N3 · Agentes"
+    profile:              # string · "Marketing" | "Sales" | "Customer Success" | etc.
+    profile_pack:         # slug · marketing_growth | sales_revops | customer_success_support | operations_automation | finance_fpa | legal_compliance_privacy
+    estimated_minutes:    # number · 12 (N1) | 18 (N2) | 24 (N3)
+    timer_seconds:        # number opcional · si esta set, ofrece countdown opcional
+    timer_default_on:     # boolean · default false
+    tools:                # array · subset de [ai, data, messaging, documents, workflow]
+
+  # ============================================================
+  # SHAPE DE manager_outcome
+  # ============================================================
+
+  manager_outcome_shape:
+    primary_question:     # ej. "Puede esta persona limpiar datos sucios antes de un envio sin perder confianza del cliente?"
+    assignment_brief:     # parrafo que dice al manager cuando asignar el caso
+    business_metric:      # ej. "tiempo de respuesta a la campana"
+    risk_metric:          # ej. "envios con datos personales no autorizados"
+    expected_signal:      # ej. "distingue limpieza util de limpieza superficial"
+    expected_action:      # primary · entrenar | pilotar | pausar | escalar
+    alternatives:         # array · acciones alternativas con criterios
+
+  # ============================================================
+  # SHAPE DE sections[]
+  # Una entrada por seccion · 5 totales · cada una con 5 slides.
+  # ============================================================
+
+  section_shape:
+    id:                   # contexto | datos | ia | revision | cierre
+    name:                 # nombre humano · "Contexto" | "Datos" | "IA" | "Revisión" | "Cierre"
+    slides:               # array de 5 slides exactos
+
+  slide_shape:
+    slot:                 # number · 1..5 (posicion dentro de la seccion)
+    block_id:             # string · uno de los 17 ids del EXERCISE_BLOCK_CATALOG
+    content:              # objeto · debe cumplir los personalization_knobs del block_id
+
+  # ============================================================
+  # EJEMPLO ESQUELETO (rellenado en el caso ejemplo)
+  # Ver: docs/simulador/contrato_v0/casos/marketing_dirty_data_relaunch_v1.yaml
+  # ============================================================
+
+  example_skeleton:
+    case_id: marketing_dirty_data_relaunch
+    version: 1
+    status: draft
+
+    meta:
+      level: "N1 · Fundamentos"
+      profile: "Marketing"
+      profile_pack: marketing_growth
+      estimated_minutes: 12
+      timer_seconds: 600
+      timer_default_on: false
+      tools: [ai, data, messaging, documents]
+
+    manager_outcome:
+      primary_question: "Puede esta persona limpiar datos sucios y armar un envio responsable antes del lunes?"
+      assignment_brief: "Asigna este caso cuando quieras saber si alguien de Marketing operativo puede limpiar una base de contactos, escribir un prompt util a la inteligencia artificial y decidir si lanzar, pilotar o pausar bajo presion de fecha."
+      business_metric: "tiempo de respuesta a la campana del lunes"
+      risk_metric: "envios con datos personales no autorizados o contactos duplicados"
+      expected_signal: "distingue limpieza util de atajo riesgoso"
+      expected_action: entrenar
+      alternatives: [pilotar, pausar]
+
+    sections:
+      - id: contexto
+        name: "Contexto"
+        slides:
+          - { slot: 1, block_id: case_cover,         content: {...} }
+          - { slot: 2, block_id: reading_message,    content: {...} }
+          - { slot: 3, block_id: reading_data_table, content: {...} }
+          - { slot: 4, block_id: reading_kpi_cards,  content: {...} }
+          - { slot: 5, block_id: reading_message,    content: {...} }
+
+      - id: datos
+        name: "Datos"
+        slides:
+          - { slot: 1, block_id: reading_data_table, content: {...} }
+          - { slot: 2, block_id: categorize_rows,    content: {...} }
+          - { slot: 3, block_id: categorize_rows,    content: {...} }
+          - { slot: 4, block_id: reading_attachment, content: {...} }
+          - { slot: 5, block_id: categorize_rows,    content: {...} }
+
+      - id: ia
+        name: "IA"
+        slides:
+          - { slot: 1, block_id: ai_textfield_guided,    content: {...} }
+          - { slot: 2, block_id: ai_textfield_free,      content: {...} }
+          - { slot: 3, block_id: model_tradeoff_sliders, content: {...} }
+          - { slot: 4, block_id: ai_textfield_free,      content: {...} }
+          - { slot: 5, block_id: ai_output_review,       content: {...} }
+
+      - id: revision
+        name: "Revisión"
+        slides:
+          - { slot: 1, block_id: ai_output_review, content: {...} }
+          - { slot: 2, block_id: ai_comparison,    content: {...} }
+          - { slot: 3, block_id: ai_output_review, content: {...} }
+          - { slot: 4, block_id: reading_message,  content: {...} }
+          - { slot: 5, block_id: ai_output_review, content: {...} }
+
+      - id: cierre
+        name: "Cierre"
+        slides:
+          - { slot: 1, block_id: dashboard_pivot,         content: {...} }
+          - { slot: 2, block_id: workflow_builder,        content: {...} }
+          - { slot: 3, block_id: tradeoff_decision_memo,  content: {...} }
+          - { slot: 4, block_id: reading_message,         content: {...} }
+          - { slot: 5, block_id: tradeoff_decision_memo,  content: {...} }
+
+  # ============================================================
+  # VALIDACION (manual hoy · sync test automatizado a futuro)
+  # ============================================================
+
+  validation_checklist:
+    structural:
+      - "sections.length === 5"
+      - "sections[*].slides.length === 5"
+      - "sections[*].slides[*].slot in [1,2,3,4,5]"
+      - "sections[*].id in [contexto, datos, ia, revision, cierre]"
+      - "sections[0].id === 'contexto' && sections[0].slides[0].block_id === 'case_cover'"
+      - "sections[4].id === 'cierre' && sections[4].slides[4].block_id in [tradeoff_decision_memo, dashboard_pivot, workflow_builder]"
+
+    catalog_alignment:
+      - "cada block_id existe en lib/simulador/exercise-blocks.generated.ts"
+      - "cada content.* cumple los personalization_knobs del template"
+      - "cada section solo usa block_ids cuyo runtime_sections incluya esa seccion (consultar EXERCISE_BLOCK_CATALOG.yaml)"
+
+    ratios:
+      - "count(ai_native) / 25 >= 0.60"
+      - "count(passive) / 25 <= 0.40"
+      - "cada seccion no-contexto tiene >= 1 slide activo"
+
+    copy:
+      - "cero acronimos en prosa de content.body, content.prompt, content.title"
+      - "cero em dash en strings de content"
+      - "IA en mayusculas en labels cortos · 'inteligencia artificial' en prosa"
+      - "singulares API, MCP; Skills permitido con s"
+      - "body markdown con bold en datos criticos"
+
+  # ============================================================
+  # MIGRATION PATH (out of scope para v1.0.0)
+  # ============================================================
+
+  migration_notes:
+    from_old_format: |
+      Casos viejos como sales_agent_followup_pipeline_v1.yaml usan
+      steps[] con exercise_type por step (uno por seccion). El runtime
+      expande cada step a multiples slides hardcodeadas. Cuando se
+      migre al nuevo formato, cada step se descompone en 5 slides
+      explicitos por seccion.
+    runtime_bridge: |
+      RuntimeExperience.tsx hoy hardcodea slides. El loader del nuevo
+      formato (eng task futuro) debe leer sections[].slides[] y emitir
+      SimulationStep[] con block_id por step para que el registry
+      renderice cada template.
