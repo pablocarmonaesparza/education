@@ -21,6 +21,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
 import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
+import type { ExerciseResponsePayload } from "@/lib/simulador/exercise-registry";
 import { SlideBody } from "../exercise-lab/_shared/SlideBody";
 
 // ============================================================
@@ -222,7 +223,29 @@ const SLIDES: Slide[][] = [
         ],
       },
     },
-    // Slot 3: categorize_rows · clasificar campos
+    // Slot 3: reading_attachment · política de datos (contexto regulatorio)
+    {
+      blockId: "reading_attachment",
+      title: "Política de datos vigente.",
+      body: "Lee antes de seguir. El documento define **qué se puede usar** con modelos externos y **qué requiere aprobación** legal antes del envío.",
+      caseContext: {
+        attachments: [
+          {
+            name: "Politica_Datos_Aurora_Retail_v2.pdf",
+            size: "184 KB",
+            kind: "pdf",
+            description: "Política interna · datos permitidos para uso con inteligencia artificial externa.",
+          },
+        ],
+      },
+    },
+    // Slot 4: ai_textfield_free · pídele a la IA que audite tu plan de datos
+    {
+      blockId: "ai_textfield_free",
+      title: "Pídele a la IA que audite tu plan.",
+      body: "Antes de llevar este plan al modelo final, **pídele a una IA auditora** que revise si tu selección de datos respeta la política y si dejaste algún hueco. Sé específico.",
+    },
+    // Slot 5: categorize_rows · qué campos pasas al modelo (decisión final de privacidad)
     {
       blockId: "categorize_rows",
       title: "Decide qué campos van al modelo.",
@@ -245,84 +268,55 @@ const SLIDES: Slide[][] = [
         ],
       },
     },
-    // Slot 4: reading_attachment · política de datos
-    {
-      blockId: "reading_attachment",
-      title: "Política de datos vigente.",
-      body: "Lee antes de seguir. El documento define **qué se puede usar** con modelos externos y **qué requiere aprobación** legal.",
-      caseContext: {
-        attachments: [
-          {
-            name: "Politica_Datos_Aurora_Retail_v2.pdf",
-            size: "184 KB",
-            kind: "pdf",
-            description: "Política interna · datos permitidos para uso con inteligencia artificial externa.",
-          },
-        ],
-      },
-    },
-    // Slot 5: categorize_rows · clasificar segmentos
-    {
-      blockId: "categorize_rows",
-      title: "Decide qué segmentos incluyes en el envío.",
-      body: "Cuatro segmentos posibles para el lunes. Cada uno tiene un **tradeoff entre alcance y calidad de respuesta**.",
-      caseContext: {
-        actionStyle: "neutral",
-        actions: [
-          { value: "enviar", label: "Enviar" },
-          { value: "validar", label: "Validar" },
-          { value: "excluir", label: "Excluir" },
-          { value: "posponer", label: "Posponer" },
-        ],
-        rows: [
-          { id: "seg-1", label: "Activos recientes", example: "Abrieron en los últimos 14 días", hint: "Mayor probabilidad de conversión" },
-          { id: "seg-2", label: "Dormidos", example: "Sin apertura entre 30 y 90 días", hint: "Necesitan mensaje de re-enganche" },
-          { id: "seg-3", label: "Inactivos", example: "Sin apertura hace más de 90 días", hint: "Riesgo de quejas por privacidad" },
-          { id: "seg-4", label: "Nuevos sin engagement", example: "Suscritos hace menos de 30 días, sin apertura", hint: "Pueden marcar como spam" },
-        ],
-      },
-    },
   ],
 
   // ============================================================
-  // SECCIÓN 3 · IA (5 activos)
+  // SECCIÓN 3 · IA (5 slides · narrativa de iteración con IA)
   // ============================================================
   [
-    // Slot 1: ai_textfield_guided · construir el prompt principal
-    {
-      blockId: "ai_textfield_guided",
-      title: "Construye el prompt principal.",
-      body: "Vas a generar el **mensaje base** del envío con un modelo. Elige objetivo, audiencia y límites antes de revisar el prompt construido.",
-    },
-    // Slot 2: ai_textfield_free · versión alterna libre
-    {
-      blockId: "ai_textfield_free",
-      title: "Versión alterna · prompt libre.",
-      body: "Escribe una **segunda versión** del prompt para comparar. Aquí no hay andamiaje. La IA va a recibir lo que escribas tal cual.",
-    },
-    // Slot 3: model_tradeoff_sliders · ponderar modelo
+    // Slot 1: model_tradeoff_sliders · elegir el modelo ANTES de pedir nada
     {
       blockId: "model_tradeoff_sliders",
-      title: "Pondera para elegir el modelo del envío.",
-      body: "Tres prioridades del caso. Mueve los sliders y revisa el **modelo recomendado**. La elección impacta autonomía, seguridad de datos y costo por envío.",
+      title: "¿Qué modelo vas a usar?",
+      body: "Antes de pedir nada, decide. El caso tiene **datos personales** y un deadline duro. Mueve los sliders según tu prioridad real y revisa el modelo recomendado.",
     },
-    // Slot 4: ai_textfield_free · validar segmentación
+    // Slot 2: ai_textfield_guided · construir el prompt principal
     {
-      blockId: "ai_textfield_free",
-      title: "Pide validación de segmentación al modelo.",
-      body: "Antes de generar el mensaje, **pídele al modelo** que valide tu plan de segmentos. Escribe un prompt corto para que te diga si tu plan tiene huecos.",
+      blockId: "ai_textfield_guided",
+      title: "Construye el prompt para el modelo.",
+      body: "Vas a generar el **mensaje base** del envío. Define objetivo, audiencia y límites en pasos. Sin estas decisiones, el modelo va a improvisar.",
     },
-    // Slot 5: ai_output_review · primer borrador
+    // Slot 3: ai_output_review · revisa el primer output de la IA
     {
       blockId: "ai_output_review",
-      title: "Revisa el primer borrador del mensaje.",
-      body: "El modelo generó esta primera versión. **Marca lo que no usarías tal cual** antes de continuar a la revisión profunda.",
+      title: "La IA generó esto. ¿Qué te detiene?",
+      body: "Primer borrador del mensaje. **Marca lo que no usarías** antes de pedirle al modelo que corrija.",
       caseContext: {
         segments: [
           { id: "s1", text: "Hola Mariana, vimos que tu equipo abre nuestros correos desde hace meses.", issue: "Afirmación sin verificar", flagIfMarked: "claim_no_verificado" },
           { id: "s2", text: "Aurora Retail está creciendo 40% mes a mes, lo que nos motiva a contactarte.", issue: "Cifra sin fuente", flagIfMarked: "claim_no_verificado" },
           { id: "s3", text: "Nuestro producto ayudó a empresas similares a duplicar conversión en 2 semanas.", issue: "Promesa sin respaldo", flagIfMarked: "claim_no_verificado" },
           { id: "s4", text: "Agenda 15 minutos esta semana para ver cómo aplicaría a tu caso.", issue: "Llamado de acción aceptable", flagIfMarked: "frase_reutilizable" },
+        ],
+      },
+    },
+    // Slot 4: ai_textfield_free · escribir follow-up para que la IA corrija
+    {
+      blockId: "ai_textfield_free",
+      title: "Pídele a la IA que corrija.",
+      body: "Escribe el **siguiente prompt** que mandarías. Sé específico: qué quitar, qué cambiar, qué mantener. La iteración es donde se gana o se pierde el envío.",
+    },
+    // Slot 5: ai_output_review · versión corregida
+    {
+      blockId: "ai_output_review",
+      title: "Versión corregida. ¿Algo todavía te detiene?",
+      body: "El modelo aplicó tu corrección. **Última pasada** antes de mandar a revisión completa de tono y cierre.",
+      caseContext: {
+        segments: [
+          { id: "v1", text: "Hola Mariana, vi en LinkedIn que Aurora Retail abrió oficina en Monterrey la semana pasada.", issue: "Dato personalizado de fuente externa", flagIfMarked: "dato_sensible" },
+          { id: "v2", text: "Trabajamos con equipos de Marketing en empresas medianas de retail en LATAM.", issue: "Afirmación interna verificable", flagIfMarked: "frase_reutilizable" },
+          { id: "v3", text: "Si te interesa explorar cómo aplicaría a tu caso, te dejo dos horarios la próxima semana.", issue: "Cierre directo y opcional", flagIfMarked: "frase_reutilizable" },
+          { id: "v4", text: "Si prefieres que mande la propuesta por escrito antes de cualquier llamada, también funciona.", issue: "Opción alterna educada", flagIfMarked: "frase_reutilizable" },
         ],
       },
     },
@@ -475,11 +469,17 @@ export function CaseDemoClient() {
    *  "Adelante" solo cuando el usuario está revisitando un slide anterior
    *  (es decir, ya pasó por slides más adelante y regresó). */
   const [maxLinearVisited, setMaxLinearVisited] = useState(0);
+  /** Store de payloads por slideId · permite preservar respuestas cuando
+   *  el usuario navega atrás y adelante sin perder lo que ya respondió.
+   *  El ExerciseBlockRenderer hidrata su useState inicial con esto al
+   *  remontar y notifica vía onPayloadChange en cada cambio. */
+  const [payloads, setPayloads] = useState<Record<string, ExerciseResponsePayload>>({});
 
   const slide = SLIDES[sectionIdx]?.[slideIdx];
   const ownsContinue = slide ? OWNS_CONTINUE.has(slide.blockId) : false;
   const linearIdx = sectionIdx * SLIDES_PER_SECTION + slideIdx;
   const canGoForward = linearIdx < maxLinearVisited;
+  const currentSlideId = `${SECTIONS[sectionIdx].id}-${slideIdx + 1}`;
 
   const goNext = useCallback(() => {
     const nextLinear = linearIdx + 1;
@@ -673,16 +673,22 @@ export function CaseDemoClient() {
             <SlideBody className="mt-4">{slide.body}</SlideBody>
 
             {/* Ejercicio · key fuerza re-mount al cambiar de slide para
-                resetear payload del bloque (regla no-prefill cross-slide). */}
+                que cada bloque reciba caseContext fresco. initialPayload
+                hidrata el state del bloque con la respuesta previa del
+                store si el usuario está revisitando este slide. */}
             <div className="mt-8">
               <ExerciseBlockRenderer
-                key={`${SECTIONS[sectionIdx].id}-${slideIdx + 1}`}
+                key={currentSlideId}
                 blockId={slide.blockId}
                 sessionId={null}
                 mode="lab_demo"
-                slideId={`${SECTIONS[sectionIdx].id}-${slideIdx + 1}`}
+                slideId={currentSlideId}
                 caseContext={slide.caseContext}
                 onShellContinue={goNext}
+                initialPayload={payloads[currentSlideId]}
+                onPayloadChange={(p) =>
+                  setPayloads((prev) => ({ ...prev, [currentSlideId]: p }))
+                }
               />
             </div>
 

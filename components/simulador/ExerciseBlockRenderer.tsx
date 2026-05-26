@@ -4,12 +4,16 @@
  * ExerciseBlockRenderer — bridge productivo entre `CaseStepContract.exercise_block_id`
  * y los renderers canónicos del registry.
  *
- * Wire activado para los 11 bloques canónicos (Ralph Wiggum loop completado).
- * Cada bloque vive en app/exercise-lab/blocks/* con su payload tipado +
- * autosave via useStepPatch.
+ * Refactor v2: state lifteado al renderer (un solo useState para todos los
+ * bloques). Acepta `initialPayload` para hidratar el state al montar (caso
+ * navega adelante/atrás y necesita preservar respuestas previas) y
+ * `onPayloadChange` para que el shell del caso guarde el state externo.
+ *
+ * Wire activado para los 17 bloques canónicos. Cada bloque vive en
+ * app/exercise-lab/blocks/* con su payload tipado + autosave via useStepPatch.
  */
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { CaseCover } from "@/app/exercise-lab/blocks/CaseCover";
 import { ReadingPassive } from "@/app/exercise-lab/blocks/ReadingPassive";
 import { ReadingMessage } from "@/app/exercise-lab/blocks/ReadingMessage";
@@ -43,6 +47,13 @@ interface ExerciseBlockRendererProps {
   /** Callback opcional para que el bloque dispare la navegación al
    *  siguiente slide cuando maneja su propio botón Continuar. */
   onShellContinue?: () => void;
+  /** Payload inicial · cuando se monta, el state se hidrata con esto
+   *  en vez de `emptyPayload(blockId)`. Permite que el caso preserve
+   *  respuestas al navegar atrás y adelante entre slides. */
+  initialPayload?: ExerciseResponsePayload;
+  /** Notifica al caso cuando el payload cambia · el caso lo guarda
+   *  en su store por slideId para hidratar la próxima vez. */
+  onPayloadChange?: (payload: ExerciseResponsePayload) => void;
 }
 
 export function ExerciseBlockRenderer({
@@ -52,198 +63,164 @@ export function ExerciseBlockRenderer({
   slideId,
   caseContext,
   onShellContinue,
+  initialPayload,
+  onPayloadChange,
 }: ExerciseBlockRendererProps) {
+  const [payload, setPayload] = useState<ExerciseResponsePayload>(
+    () => initialPayload ?? emptyPayload(blockId),
+  );
+
+  const handleChange = useCallback(
+    (next: ExerciseResponsePayload) => {
+      setPayload(next);
+      onPayloadChange?.(next);
+    },
+    [onPayloadChange],
+  );
+
+  const common = { sessionId, mode, slideId, caseContext };
+
   switch (blockId) {
     case "case_cover":
-      return <CaseCoverWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
+      return (
+        <CaseCover
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "case_cover" }>}
+          onChange={handleChange}
+          {...common}
+          onShellContinue={onShellContinue}
+        />
+      );
     case "reading_passive":
-      return <ReadingPassiveWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return (
+        <ReadingPassive
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "reading_passive" }>}
+          onChange={handleChange}
+          {...common}
+        />
+      );
     case "reading_message":
-      return <ReadingMessageWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return (
+        <ReadingMessage
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "reading_message" }>}
+          onChange={handleChange}
+          {...common}
+        />
+      );
     case "reading_data_table":
-      return <ReadingDataTableWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return (
+        <ReadingDataTable
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "reading_data_table" }>}
+          onChange={handleChange}
+          {...common}
+        />
+      );
     case "reading_image":
-      return <ReadingImageWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return (
+        <ReadingImage
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "reading_image" }>}
+          onChange={handleChange}
+          {...common}
+        />
+      );
     case "reading_kpi_cards":
-      return <ReadingKpiCardsWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return (
+        <ReadingKpiCards
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "reading_kpi_cards" }>}
+          onChange={handleChange}
+          {...common}
+        />
+      );
     case "reading_timeline":
-      return <ReadingTimelineWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return (
+        <ReadingTimeline
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "reading_timeline" }>}
+          onChange={handleChange}
+          {...common}
+        />
+      );
     case "reading_attachment":
-      return <ReadingAttachmentWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return (
+        <ReadingAttachment
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "reading_attachment" }>}
+          onChange={handleChange}
+          {...common}
+        />
+      );
     case "categorize_rows":
-      return <CategorizeRowsWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
+      return (
+        <CategorizeRows
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "categorize_rows" }>}
+          onChange={handleChange}
+          {...common}
+          onShellContinue={onShellContinue}
+        />
+      );
     case "ai_comparison":
-      return <AIComparisonWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
+      return (
+        <AIComparison
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "ai_comparison" }>}
+          onChange={handleChange}
+          {...common}
+          onShellContinue={onShellContinue}
+        />
+      );
     case "workflow_builder":
-      return <WorkflowBuilderWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return (
+        <WorkflowBuilder
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "workflow_builder" }>}
+          onChange={handleChange}
+          {...common}
+        />
+      );
     case "ai_output_review":
-      return <AIOutputReviewWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return (
+        <AIOutputReview
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "ai_output_review" }>}
+          onChange={handleChange}
+          {...common}
+        />
+      );
     case "dashboard_pivot":
-      return <DashboardPivotWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
+      return (
+        <DashboardPivot
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "dashboard_pivot" }>}
+          onChange={handleChange}
+          {...common}
+          onShellContinue={onShellContinue}
+        />
+      );
     case "tradeoff_decision_memo":
-      return <TradeoffDecisionMemoWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return (
+        <TradeoffDecisionMemo
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "tradeoff_decision_memo" }>}
+          onChange={handleChange}
+          {...common}
+        />
+      );
     case "ai_textfield_free":
-      return <AITextfieldFreeWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return (
+        <AITextfieldFree
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "ai_textfield_free" }>}
+          onChange={handleChange}
+          {...common}
+        />
+      );
     case "ai_textfield_guided":
-      return <AITextfieldGuidedWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
+      return (
+        <AITextfieldGuided
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "ai_textfield_guided" }>}
+          onChange={handleChange}
+          {...common}
+          onShellContinue={onShellContinue}
+        />
+      );
     case "model_tradeoff_sliders":
-      return <ModelTradeoffSlidersWrapper sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
+      return (
+        <ModelTradeoffSliders
+          payload={payload as Extract<ExerciseResponsePayload, { block_id: "model_tradeoff_sliders" }>}
+          onChange={handleChange}
+          {...common}
+        />
+      );
   }
-}
-
-// Wrappers: cada uno gestiona su estado local (payload) e inicializa
-// con emptyPayload() para cumplir no-prefill. Si necesitan content
-// específico del caso (filas, opciones), lo leen de caseContext.
-
-type WrapperProps = Omit<ExerciseBlockRendererProps, "blockId" | "onShellContinue"> & {
-  onShellContinue?: () => void;
-};
-
-function CaseCoverWrapper({ sessionId, mode, slideId, caseContext, onShellContinue }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("case_cover") as Extract<ExerciseResponsePayload, { block_id: "case_cover" }>,
-  );
-  return (
-    <CaseCover
-      payload={payload}
-      onChange={setPayload}
-      sessionId={sessionId}
-      mode={mode}
-      slideId={slideId}
-      caseContext={caseContext}
-      onShellContinue={onShellContinue}
-    />
-  );
-}
-
-function ReadingPassiveWrapper({ sessionId, mode, slideId }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("reading_passive") as Extract<ExerciseResponsePayload, { block_id: "reading_passive" }>,
-  );
-  return <ReadingPassive payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
-}
-
-function ReadingMessageWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("reading_message") as Extract<ExerciseResponsePayload, { block_id: "reading_message" }>,
-  );
-  return <ReadingMessage payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-}
-
-function ReadingDataTableWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("reading_data_table") as Extract<ExerciseResponsePayload, { block_id: "reading_data_table" }>,
-  );
-  return <ReadingDataTable payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-}
-
-function ReadingImageWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("reading_image") as Extract<ExerciseResponsePayload, { block_id: "reading_image" }>,
-  );
-  return <ReadingImage payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-}
-
-function ReadingKpiCardsWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("reading_kpi_cards") as Extract<ExerciseResponsePayload, { block_id: "reading_kpi_cards" }>,
-  );
-  return <ReadingKpiCards payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-}
-
-function ReadingTimelineWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("reading_timeline") as Extract<ExerciseResponsePayload, { block_id: "reading_timeline" }>,
-  );
-  return <ReadingTimeline payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-}
-
-function ReadingAttachmentWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("reading_attachment") as Extract<ExerciseResponsePayload, { block_id: "reading_attachment" }>,
-  );
-  return <ReadingAttachment payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-}
-
-function CategorizeRowsWrapper({ sessionId, mode, slideId, caseContext, onShellContinue }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("categorize_rows") as Extract<ExerciseResponsePayload, { block_id: "categorize_rows" }>,
-  );
-  return (
-    <CategorizeRows
-      payload={payload}
-      onChange={setPayload}
-      sessionId={sessionId}
-      mode={mode}
-      slideId={slideId}
-      caseContext={caseContext}
-      onShellContinue={onShellContinue}
-    />
-  );
-}
-
-function AIComparisonWrapper({ sessionId, mode, slideId, caseContext, onShellContinue }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("ai_comparison") as Extract<ExerciseResponsePayload, { block_id: "ai_comparison" }>,
-  );
-  return <AIComparison payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
-}
-
-function WorkflowBuilderWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("workflow_builder") as Extract<ExerciseResponsePayload, { block_id: "workflow_builder" }>,
-  );
-  return <WorkflowBuilder payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-}
-
-function AIOutputReviewWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("ai_output_review") as Extract<ExerciseResponsePayload, { block_id: "ai_output_review" }>,
-  );
-  return <AIOutputReview payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-}
-
-function DashboardPivotWrapper({ sessionId, mode, slideId, caseContext, onShellContinue }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("dashboard_pivot") as Extract<ExerciseResponsePayload, { block_id: "dashboard_pivot" }>,
-  );
-  return <DashboardPivot payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
-}
-
-function TradeoffDecisionMemoWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("tradeoff_decision_memo") as Extract<ExerciseResponsePayload, { block_id: "tradeoff_decision_memo" }>,
-  );
-  return <TradeoffDecisionMemo payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-}
-
-function AITextfieldFreeWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("ai_textfield_free") as Extract<ExerciseResponsePayload, { block_id: "ai_textfield_free" }>,
-  );
-  return <AITextfieldFree payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
-}
-
-function AITextfieldGuidedWrapper({ sessionId, mode, slideId, caseContext, onShellContinue }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("ai_textfield_guided") as Extract<ExerciseResponsePayload, { block_id: "ai_textfield_guided" }>,
-  );
-  return (
-    <AITextfieldGuided
-      payload={payload}
-      onChange={setPayload}
-      sessionId={sessionId}
-      mode={mode}
-      slideId={slideId}
-      caseContext={caseContext}
-      onShellContinue={onShellContinue}
-    />
-  );
-}
-
-function ModelTradeoffSlidersWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
-  const [payload, setPayload] = useState(() =>
-    emptyPayload("model_tradeoff_sliders") as Extract<ExerciseResponsePayload, { block_id: "model_tradeoff_sliders" }>,
-  );
-  return <ModelTradeoffSliders payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
 }
