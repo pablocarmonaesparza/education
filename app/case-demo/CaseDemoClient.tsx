@@ -123,7 +123,7 @@ const SLIDES: Slide[][] = [
             { contacto: "Mariana Robles", empresa: "Aurora Retail", cargo: "Head of Growth", ultima_apertura: "Hace 3 días", estatus: "Activa" },
             { contacto: "mariana robles", empresa: "Aurora Retail", cargo: "head of growth", ultima_apertura: "Hace 21 días", estatus: "Activa" },
             { contacto: "(vacío)", empresa: "Bosa Industrial", cargo: "Director", ultima_apertura: "Hace 7 días", estatus: "Activa" },
-            { contacto: "Carlos Méndez", empresa: "Cresta Software", cargo: "DIR MKT", ultima_apertura: "Hace 60 días", estatus: "Inactiva" },
+            { contacto: "Carlos Méndez", empresa: "Cresta Software", cargo: "DIRECTOR MARKETING", ultima_apertura: "Hace 60 días", estatus: "Inactiva" },
             { contacto: "Lucía Soto", empresa: "Delta Logistics", cargo: "Gerente comercial", ultima_apertura: "Hace 5 días", estatus: "Activa" },
           ],
         },
@@ -136,8 +136,8 @@ const SLIDES: Slide[][] = [
       body: "Métricas de la **última campaña** que enviaste hace un mes.",
       caseContext: {
         kpis: [
-          { value: "23.4%", label: "Tasa de apertura", delta: { value: "-4.2 pp", direction: "down" } },
-          { value: "3.1%", label: "Conversión a demo", delta: { value: "+0.6 pp", direction: "up" } },
+          { value: "23.4%", label: "Tasa de apertura", delta: { value: "-4.2 puntos", direction: "down" } },
+          { value: "3.1%", label: "Conversión a demo", delta: { value: "+0.6 puntos", direction: "up" } },
           { value: "12", label: "Quejas por privacidad", delta: { value: "+8", direction: "down" } },
         ],
       },
@@ -182,7 +182,7 @@ const SLIDES: Slide[][] = [
             { contacto: "Mariana Robles", empresa: "Aurora Retail", problema: "Duplicado de fila 2", consentimiento: "Vigente" },
             { contacto: "mariana robles", empresa: "Aurora Retail", problema: "Duplicado de fila 1", consentimiento: "Vigente" },
             { contacto: "(vacío)", empresa: "Bosa Industrial", problema: "Sin nombre", consentimiento: "Vigente" },
-            { contacto: "Carlos Méndez", empresa: "Cresta Software", problema: "Cargo raro: DIR MKT", consentimiento: "Vigente" },
+            { contacto: "Carlos Méndez", empresa: "Cresta Software", problema: "Cargo escrito en mayúsculas raras", consentimiento: "Vigente" },
             { contacto: "Ana Pérez", empresa: "Eclipse Health", problema: "Pidió baja hace 2 meses", consentimiento: "Revocado" },
             { contacto: "Pedro Castillo", empresa: "Foro Studio", problema: "Email rebota hace 4 envíos", consentimiento: "Vigente" },
             { contacto: "(vacío)", empresa: "Gama Capital", problema: "Sin nombre", consentimiento: "Vigente" },
@@ -208,7 +208,7 @@ const SLIDES: Slide[][] = [
           { id: "row-1", label: "Mariana Robles · Aurora Retail", example: "Duplicado de fila 2", hint: "Misma persona, capitalización distinta" },
           { id: "row-2", label: "mariana robles · Aurora Retail", example: "Duplicado de fila 1", hint: "Misma persona, capitalización distinta" },
           { id: "row-3", label: "(sin nombre) · Bosa Industrial", example: "Sin nombre", hint: "Email genérico info@bosa.example" },
-          { id: "row-4", label: "Carlos Méndez · Cresta Software", example: "Cargo raro DIR MKT", hint: "Necesita normalización a Director de Marketing" },
+          { id: "row-4", label: "Carlos Méndez · Cresta Software", example: "Cargo raro DIRECTOR MARKETING", hint: "Necesita normalización a Director de Marketing" },
           { id: "row-5", label: "Ana Pérez · Eclipse Health", example: "Pidió baja hace 2 meses", hint: "Consentimiento revocado · regla dura" },
           { id: "row-6", label: "Pedro Castillo · Foro Studio", example: "Email rebota desde hace 4 envíos", hint: "Hard bounce repetido" },
           { id: "row-7", label: "(sin nombre) · Gama Capital", example: "Sin nombre", hint: "Email personal sofia.lara@gmail.example" },
@@ -311,6 +311,14 @@ const SLIDES: Slide[][] = [
       blockId: "ai_output_review",
       title: "Revisa el primer borrador del mensaje.",
       body: "El modelo generó esta primera versión. **Marca lo que no usarías tal cual** antes de continuar a la revisión profunda.",
+      caseContext: {
+        segments: [
+          { id: "s1", text: "Hola Mariana, vimos que tu equipo abre nuestros correos desde hace meses.", issue: "Afirmación sin verificar", flagIfMarked: "claim_no_verificado" },
+          { id: "s2", text: "Aurora Retail está creciendo 40% mes a mes, lo que nos motiva a contactarte.", issue: "Cifra sin fuente", flagIfMarked: "claim_no_verificado" },
+          { id: "s3", text: "Nuestro producto ayudó a empresas similares a duplicar conversión en 2 semanas.", issue: "Promesa sin respaldo", flagIfMarked: "claim_no_verificado" },
+          { id: "s4", text: "Agenda 15 minutos esta semana para ver cómo aplicaría a tu caso.", issue: "Llamado de acción aceptable", flagIfMarked: "frase_reutilizable" },
+        ],
+      },
     },
   ],
 
@@ -323,18 +331,42 @@ const SLIDES: Slide[][] = [
       blockId: "ai_output_review",
       title: "Revisión profunda del mensaje.",
       body: "Versión más larga del mensaje. **Marca cada segmento** con la bandera que aplique. Puede no aplicar bandera si está bien.",
+      caseContext: {
+        segments: [
+          { id: "r1", text: "Mariana, vi en LinkedIn que Aurora Retail abrió oficina en Monterrey la semana pasada.", issue: "Información personal de fuente externa", flagIfMarked: "dato_sensible" },
+          { id: "r2", text: "El 87% de empresas como la tuya reducen costo operativo con nuestro producto.", issue: "Cifra sin respaldo", flagIfMarked: "claim_no_verificado" },
+          { id: "r3", text: "Adjunto te dejo el reporte interno de Cresta Software, que tiene un caso muy similar.", issue: "Datos de otro cliente", flagIfMarked: "dato_sensible" },
+          { id: "r4", text: "Si te interesa, agendamos cuando te acomode.", issue: "Cierre limpio y aceptable", flagIfMarked: "frase_reutilizable" },
+        ],
+      },
     },
     // Slot 2: ai_comparison · elegir cierre del mensaje
     {
       blockId: "ai_comparison",
       title: "Elige el llamado a la acción.",
       body: "Cuatro versiones del **cierre del mensaje**. Cada una tiene un tradeoff entre directness y permission.",
+      caseContext: {
+        options: [
+          { id: "A", title: "Versión A", body: "Agenda 15 minutos esta semana en este enlace. Es la forma más rápida de avanzar." },
+          { id: "B", title: "Versión B", body: "¿Tienes 15 minutos esta semana para una llamada corta? Si no, mándame fecha que te acomode." },
+          { id: "C", title: "Versión C", body: "Si te interesa, mándame un mensaje y coordinamos. Sin presión." },
+          { id: "D", title: "Versión D", body: "Te dejamos la información por aquí. Cuando puedas, agendamos una llamada para hablar de tu caso." },
+        ],
+      },
     },
     // Slot 3: ai_output_review · cifras sin fuente
     {
       blockId: "ai_output_review",
       title: "Datos que el modelo afirmó sin fuente.",
       body: "El modelo metió **cifras** en el borrador. Marca las que no podrías sostener si te las cuestionan.",
+      caseContext: {
+        segments: [
+          { id: "c1", text: "Nuestros clientes duplican conversión en 2 semanas.", issue: "Promesa cuantitativa sin respaldo", flagIfMarked: "claim_no_verificado" },
+          { id: "c2", text: "Aurora Retail está creciendo 40% mes a mes.", issue: "Cifra de tu cliente sin fuente verificable", flagIfMarked: "claim_no_verificado" },
+          { id: "c3", text: "El 87% de empresas similares reduce costo operativo con nuestro producto.", issue: "Estadística sin estudio que la respalde", flagIfMarked: "claim_no_verificado" },
+          { id: "c4", text: "Trabajamos con equipos de Marketing en empresas medianas de retail en LATAM.", issue: "Afirmación verificable internamente", flagIfMarked: "frase_reutilizable" },
+        ],
+      },
     },
     // Slot 4: reading_message · feedback del manager
     {
@@ -356,6 +388,14 @@ const SLIDES: Slide[][] = [
       blockId: "ai_output_review",
       title: "Última pasada · versión post-feedback.",
       body: "Marca lo que todavía te genera dudas o lo que dejarías ir.",
+      caseContext: {
+        segments: [
+          { id: "f1", text: "Mariana, vi que Aurora Retail abrió oficina en Monterrey.", issue: "Información pública aceptable", flagIfMarked: "frase_reutilizable" },
+          { id: "f2", text: "Trabajamos con equipos de Marketing en empresas medianas de retail.", issue: "Verificable internamente", flagIfMarked: "frase_reutilizable" },
+          { id: "f3", text: "Si quieres ver cómo lo aplicaríamos a tu caso, agendamos una llamada cuando te acomode.", issue: "Llamado limpio", flagIfMarked: "frase_reutilizable" },
+          { id: "f4", text: "Te dejo dos horarios la próxima semana, dime cuál te sirve.", issue: "Cierre operativo", flagIfMarked: "frase_reutilizable" },
+        ],
+      },
     },
   ],
 
@@ -380,6 +420,13 @@ const SLIDES: Slide[][] = [
       blockId: "tradeoff_decision_memo",
       title: "Decide qué le recomiendas a Mariana.",
       body: "Llegó el momento. Tres opciones con tradeoffs reales. Elige la que **defenderías frente al board**.",
+      caseContext: {
+        decisions: [
+          { id: "lanzar_lunes", title: "Lanzar el lunes", detail: "Úsalo si el beneficio supera el riesgo y los huecos de privacidad ya quedaron mitigados." },
+          { id: "piloto_controlado", title: "Piloto controlado", detail: "Úsalo si hay señales prometedoras pero el riesgo de quejas o datos requiere validar con un subset primero." },
+          { id: "pausar_y_escalar", title: "Pausar y escalar", detail: "Úsalo si la base no está lista, hay datos sensibles sin consentimiento o el modelo afirma cosas que no se pueden sostener." },
+        ],
+      },
     },
     // Slot 4: reading_message · vista previa del email
     {
@@ -402,6 +449,13 @@ const SLIDES: Slide[][] = [
       blockId: "tradeoff_decision_memo",
       title: "Memo final · resumen para Mariana.",
       body: "Cierre del caso. **Tres líneas máximo** para que Mariana entienda tu decisión en 30 segundos.",
+      caseContext: {
+        decisions: [
+          { id: "ejecutar_lunes", title: "Ejecutar el lunes", detail: "Plan completo, sin cambios mayores. Asumes el riesgo restante." },
+          { id: "ejecutar_subset", title: "Ejecutar con subset", detail: "Validamos con menos contactos el lunes y escalamos si funciona." },
+          { id: "posponer_una_semana", title: "Posponer una semana", detail: "Necesitamos cerrar pendientes con Legal antes de enviar." },
+        ],
+      },
     },
   ],
 ];
@@ -540,9 +594,11 @@ export function CaseDemoClient() {
               {/* Body markdown */}
               <SlideBody className="mt-4">{slide.body}</SlideBody>
 
-              {/* Ejercicio */}
+              {/* Ejercicio · key fuerza re-mount al cambiar de slide para
+                  resetear payload del bloque (regla no-prefill cross-slide). */}
               <div className="mt-8">
                 <ExerciseBlockRenderer
+                  key={`${SECTIONS[sectionIdx].id}-${slideIdx + 1}`}
                   blockId={slide.blockId}
                   sessionId={null}
                   mode="lab_demo"

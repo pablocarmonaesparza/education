@@ -70,8 +70,13 @@ export function AIOutputReview({
   slideId = "ai_output_review",
   mode = "lab_demo",
   sessionId = null,
-  segments = DEFAULT_SEGMENTS,
+  caseContext,
+  segments: segmentsProp,
 }: Props) {
+  const segments =
+    segmentsProp ??
+    (caseContext?.segments as ReadonlyArray<OutputSegment> | undefined) ??
+    DEFAULT_SEGMENTS;
   useEffect(() => {
     if (payload.flagged_segments.length === 0 && segments.length > 0) {
       onChange({

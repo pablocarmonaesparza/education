@@ -68,8 +68,13 @@ export function AIComparison({
   mode = "lab_demo",
   sessionId = null,
   onShellContinue,
-  options = DEFAULT_OPTIONS,
+  caseContext,
+  options: optionsProp,
 }: Props) {
+  const options =
+    optionsProp ??
+    (caseContext?.options as OutputOption[] | undefined) ??
+    DEFAULT_OPTIONS;
   const isProduction = mode === "authenticated" || mode === "field_test";
   const { patch } = useStepPatch(isProduction ? sessionId : null, {
     mode: mode === "field_test" ? "field_test" : "authenticated",

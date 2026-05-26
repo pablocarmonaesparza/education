@@ -62,8 +62,13 @@ export function TradeoffDecisionMemo({
   slideId = "tradeoff_decision_memo",
   mode = "lab_demo",
   sessionId = null,
-  decisions = DEFAULT_DECISIONS,
+  caseContext,
+  decisions: decisionsProp,
 }: Props) {
+  const decisions =
+    decisionsProp ??
+    (caseContext?.decisions as ReadonlyArray<{ id: string; title: string; detail: string }> | undefined) ??
+    DEFAULT_DECISIONS;
   const isProduction = mode === "authenticated" || mode === "field_test";
   const { patch } = useStepPatch(isProduction ? sessionId : null, {
     mode: mode === "field_test" ? "field_test" : "authenticated",
