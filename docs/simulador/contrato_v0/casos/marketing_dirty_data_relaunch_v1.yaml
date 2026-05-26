@@ -1,0 +1,524 @@
+# Caso ejemplo · marketing_dirty_data_relaunch v1
+#
+# Primer caso ensamblado con el nuevo formato CASE_ASSEMBLY_SCHEMA v1.0.0.
+# 5 secciones × 5 diapositivas = 25 slides totales.
+#
+# Nivel: N1 (Fundamentos)
+# Perfil: Marketing operativo
+# Duracion: ~12 minutos
+#
+# Manager outcome: ¿puede esta persona limpiar datos sucios y armar un
+# envio responsable antes del lunes?
+#
+# Ratio: 15 activos (60%) + 10 pasivos (40%). Cumple AI-native >= 60%.
+
+case_assembly:
+  case_id: marketing_dirty_data_relaunch
+  version: 1
+  status: draft
+  schema_version: 1.0.0
+
+  meta:
+    level: "N1 · Fundamentos"
+    profile: "Marketing"
+    profile_pack: marketing_growth
+    estimated_minutes: 12
+    timer_seconds: 600
+    timer_default_on: false
+    tools: [ai, data, messaging, documents]
+
+  manager_outcome:
+    primary_question: "Puede esta persona limpiar datos sucios y armar un envio responsable antes del lunes?"
+    assignment_brief: "Asigna este caso cuando quieras saber si alguien de Marketing operativo puede limpiar una base de contactos con problemas reales, escribir un prompt util a la inteligencia artificial y decidir si lanzar, pilotar o pausar bajo presion de fecha. El resultado te dira si esa persona puede operar campanas con criterio de datos o necesita practica antes de tocar bases reales."
+    business_metric: "tiempo de respuesta a la campana del lunes"
+    risk_metric: "envios con datos personales no autorizados o contactos duplicados"
+    expected_signal: "distingue limpieza util de atajo riesgoso"
+    expected_action: entrenar
+    alternatives: [pilotar, pausar]
+
+  sections:
+    # ============================================================
+    # SECCION 1 · CONTEXTO
+    # Objetivo: entender la situacion, el deadline, los stakeholders.
+    # Mix: 5 pasivos (onboarding completo al caso · OK por regla).
+    # ============================================================
+
+    - id: contexto
+      name: "Contexto"
+      slides:
+
+        - slot: 1
+          block_id: case_cover
+          content:
+            title: "Envío del lunes con datos sucios."
+            body: "Tu manager acaba de pasarte la **lista de 480 contactos** para la campaña del **lunes a las 8 de la mañana**. Hay registros **duplicados**, cargos **mal escritos** y tres filas **sin nombre**. Decides cómo limpiar la base, qué pedirle a la inteligencia artificial y qué entregar antes del cierre del viernes."
+            cta_label: "Iniciar caso"
+
+        - slot: 2
+          block_id: reading_message
+          content:
+            title: "Email de Mariana, tu jefa."
+            body: "Lo que llega antes de empezar."
+            channel: email
+            from:
+              name: "Mariana Robles"
+              role: "Head of Growth · Aurora Retail"
+            to: "Tú · Marketing Lead"
+            timestamp: "Hoy, 09:42"
+            subject: "Necesitamos relanzar la campaña antes del viernes"
+            body_message: "Hola, el board pidió relanzar la campaña de retención antes del viernes. Presupuesto sin tocar. Mándame propuesta hoy mismo con segmentos, mensaje base y métricas que vas a monitorear. Gracias."
+
+        - slot: 3
+          block_id: reading_data_table
+          content:
+            title: "Preview de la base que te pasaron."
+            body: "Vista rápida de los primeros 5 contactos. **Hay problemas evidentes** desde la primera mirada."
+            caption: "Contactos pendientes para el envío del lunes"
+            columns:
+              - { key: contacto, label: "Contacto" }
+              - { key: empresa, label: "Empresa" }
+              - { key: cargo, label: "Cargo" }
+              - { key: ultima_apertura, label: "Última apertura" }
+              - { key: estatus, label: "Estatus" }
+            rows:
+              - { contacto: "Mariana Robles", empresa: "Aurora Retail", cargo: "Head of Growth", ultima_apertura: "Hace 3 días", estatus: "Activa" }
+              - { contacto: "mariana robles", empresa: "Aurora Retail", cargo: "head of growth", ultima_apertura: "Hace 21 días", estatus: "Activa" }
+              - { contacto: "", empresa: "Bosa Industrial", cargo: "Director", ultima_apertura: "Hace 7 días", estatus: "Activa" }
+              - { contacto: "Carlos Méndez", empresa: "Cresta Software", cargo: "DIR MKT", ultima_apertura: "Hace 60 días", estatus: "Inactiva" }
+              - { contacto: "Lucía Soto", empresa: "Delta Logistics", cargo: "Gerente comercial", ultima_apertura: "Hace 5 días", estatus: "Activa" }
+
+        - slot: 4
+          block_id: reading_kpi_cards
+          content:
+            title: "Cómo va la cuenta hasta hoy."
+            body: "Métricas de la **última campaña** que enviaste hace un mes. Te dan el punto de partida para esta."
+            kpis:
+              - { value: "23.4%", label: "Tasa de apertura", delta: { value: "-4.2 pp", direction: down } }
+              - { value: "3.1%", label: "Conversión a demo", delta: { value: "+0.6 pp", direction: up } }
+              - { value: "12", label: "Quejas por privacidad", delta: { value: "+8", direction: down } }
+
+        - slot: 5
+          block_id: reading_message
+          content:
+            title: "Ticket de Legal sobre la base anterior."
+            body: "Lo que dejó la última campaña antes de empezar esta."
+            channel: ticket
+            from:
+              name: "Daniela Ruiz"
+              role: "Legal · Aurora Retail"
+            to: "Marketing"
+            timestamp: "Hace 6 días"
+            subject: "Quejas por uso de datos personales"
+            body_message: "Llegaron 3 quejas por correos enviados a personas que pidieron baja hace meses. Antes del próximo envío necesitamos confirmar que la base está limpia y que tenemos consentimiento vigente. Cualquier duda, marcar para revisión."
+
+    # ============================================================
+    # SECCION 2 · DATOS
+    # Objetivo: decidir que datos usar, transformar o excluir.
+    # Mix: 4 activos (categorize_rows × 3 + reading_attachment) + 1 pasivo.
+    # ============================================================
+
+    - id: datos
+      name: "Datos"
+      slides:
+
+        - slot: 1
+          block_id: reading_data_table
+          content:
+            title: "La base completa con todos los flags."
+            body: "Aquí están los **8 contactos** problemáticos extraídos de los 480. Cada fila tiene una bandera del sistema. Lee bien antes de clasificar en la siguiente diapositiva."
+            caption: "Contactos con problemas detectados"
+            columns:
+              - { key: contacto, label: "Contacto" }
+              - { key: empresa, label: "Empresa" }
+              - { key: problema, label: "Problema detectado" }
+              - { key: consentimiento, label: "Consentimiento" }
+            rows:
+              - { contacto: "Mariana Robles", empresa: "Aurora Retail", problema: "Duplicado de fila 2", consentimiento: "Vigente" }
+              - { contacto: "mariana robles", empresa: "Aurora Retail", problema: "Duplicado de fila 1 · capitalización distinta", consentimiento: "Vigente" }
+              - { contacto: "", empresa: "Bosa Industrial", problema: "Sin nombre", consentimiento: "Vigente" }
+              - { contacto: "Carlos Méndez", empresa: "Cresta Software", problema: "Cargo en mayúsculas raras (DIR MKT)", consentimiento: "Vigente" }
+              - { contacto: "Ana Pérez", empresa: "Eclipse Health", problema: "Pidió baja hace 2 meses", consentimiento: "Revocado" }
+              - { contacto: "Pedro Castillo", empresa: "Foro Studio", problema: "Email rebota desde hace 4 envíos", consentimiento: "Vigente" }
+              - { contacto: "", empresa: "Gama Capital", problema: "Sin nombre", consentimiento: "Vigente" }
+              - { contacto: "Sofía Lara", empresa: "Helix Bio", problema: "Cargo vacío", consentimiento: "Vigente" }
+
+        - slot: 2
+          block_id: categorize_rows
+          content:
+            title: "Decide qué hacer con cada contacto."
+            body: "Por cada fila elige una acción. **No hay opción correcta evidente** en todos los casos. Justifica con criterio operativo."
+            prompt: "¿Qué haces con este contacto antes del envío?"
+            action_style: permission
+            actions: [usar, anonimizar, agregar, excluir]
+            rows:
+              - { id: 1, title: "Mariana Robles · Aurora Retail", subtitle: "Duplicado de fila 2", hint: "Capitalización distinta, mismo contacto" }
+              - { id: 2, title: "mariana robles · Aurora Retail", subtitle: "Duplicado de fila 1", hint: "Capitalización distinta, mismo contacto" }
+              - { id: 3, title: "(sin nombre) · Bosa Industrial", subtitle: "Sin nombre", hint: "Email genérico info@bosa.example" }
+              - { id: 4, title: "Carlos Méndez · Cresta Software", subtitle: "Cargo en mayúsculas raras", hint: "DIR MKT vs Director de Marketing" }
+              - { id: 5, title: "Ana Pérez · Eclipse Health", subtitle: "Pidió baja hace 2 meses", hint: "Consentimiento revocado" }
+              - { id: 6, title: "Pedro Castillo · Foro Studio", subtitle: "Email rebota desde hace 4 envíos", hint: "Hard bounce repetido" }
+              - { id: 7, title: "(sin nombre) · Gama Capital", subtitle: "Sin nombre", hint: "Email personal sofia.lara@gmail.example" }
+              - { id: 8, title: "Sofía Lara · Helix Bio", subtitle: "Cargo vacío", hint: "Solo nombre y empresa" }
+
+        - slot: 3
+          block_id: categorize_rows
+          content:
+            title: "Decide qué campos van al modelo."
+            body: "El **mensaje personalizado** lo va a generar la inteligencia artificial. Decide qué columnas le pasas y cuáles transformas antes para proteger los datos personales."
+            prompt: "¿Qué hacemos con este campo antes de pasarlo a la IA?"
+            action_style: permission
+            actions: [usar, anonimizar, agregar, excluir]
+            rows:
+              - { id: contacto, title: "Contacto", subtitle: "Nombre completo", hint: "Dato personal directo" }
+              - { id: email, title: "Email", subtitle: "Correo del contacto", hint: "Identificador único de la persona" }
+              - { id: empresa, title: "Empresa", subtitle: "Razón social", hint: "Contexto de la cuenta" }
+              - { id: cargo, title: "Cargo", subtitle: "Rol del contacto", hint: "Útil para personalizar tono" }
+              - { id: ultima_apertura, title: "Última apertura", subtitle: "Engagement reciente", hint: "Señal de interés" }
+              - { id: notas_internas, title: "Notas internas", subtitle: "Comentarios del equipo de ventas", hint: "Pueden contener info sensible" }
+
+        - slot: 4
+          block_id: reading_attachment
+          content:
+            title: "Política de datos vigente."
+            body: "Lee antes de seguir. El documento define **qué se puede usar** con modelos externos y **qué requiere aprobación** legal."
+            attachments:
+              - name: "Politica_Datos_Aurora_Retail_v2.pdf"
+                size: "184 KB"
+                type: "pdf"
+                description: "Política interna · datos permitidos para uso con inteligencia artificial externa"
+
+        - slot: 5
+          block_id: categorize_rows
+          content:
+            title: "Decide qué segmentos vas a incluir en el envío."
+            body: "Tres segmentos posibles para el lunes. Cada uno tiene un tradeoff entre **alcance** y **calidad de respuesta**."
+            prompt: "¿Cómo manejas este segmento?"
+            action_style: neutral
+            actions: [enviar, validar, excluir, posponer]
+            rows:
+              - { id: activos_recientes, title: "Activos recientes", subtitle: "Abrieron en los últimos 14 días", hint: "Mayor probabilidad de conversión" }
+              - { id: dormidos, title: "Dormidos", subtitle: "Sin apertura entre 30 y 90 días", hint: "Necesitan mensaje de re-enganche" }
+              - { id: inactivos, title: "Inactivos", subtitle: "Sin apertura hace más de 90 días", hint: "Riesgo de quejas por privacidad" }
+              - { id: nuevos, title: "Nuevos sin engagement", subtitle: "Suscritos hace menos de 30 días, sin apertura", hint: "Pueden marcar como spam" }
+
+    # ============================================================
+    # SECCION 3 · IA
+    # Objetivo: formular la peticion al modelo.
+    # Mix: 4 activos + 1 pasivo (ai_output_review como cierre de iteracion).
+    # ============================================================
+
+    - id: ia
+      name: "IA"
+      slides:
+
+        - slot: 1
+          block_id: ai_textfield_guided
+          content:
+            title: "Construye el prompt principal."
+            body: "Vas a generar el **mensaje base** del envío con un modelo. Elige objetivo, audiencia y límites antes de revisar el prompt construido."
+            objectives:
+              - { id: convertir, label: "Convertir a demo" }
+              - { id: reenganchar, label: "Reenganchar dormidos" }
+              - { id: notificar, label: "Notificar feature nueva" }
+              - { id: educar, label: "Educar sobre uso" }
+            audiences:
+              - { id: head_of_growth, label: "Head of Growth de empresa mediana" }
+              - { id: director_marketing, label: "Director de marketing" }
+              - { id: gerente_ops, label: "Gerente de operaciones" }
+              - { id: founder, label: "Founder o CEO" }
+            limits:
+              - { id: sin_pii, label: "Sin datos personales en el prompt" }
+              - { id: sin_promesas, label: "Sin promesas de resultados específicos" }
+              - { id: tono_directo, label: "Tono directo, sin adjetivos vacíos" }
+              - { id: max_120_palabras, label: "Máximo 120 palabras" }
+            models:
+              - { id: gpt_corp, label: "GPT Corporativo" }
+              - { id: claude_sonnet, label: "Claude Sonnet" }
+              - { id: gemini_pro, label: "Gemini Pro" }
+              - { id: modelo_local, label: "Modelo local de la empresa" }
+
+        - slot: 2
+          block_id: ai_textfield_free
+          content:
+            title: "Versión alterna · prompt libre."
+            body: "Escribe una **segunda versión** del prompt para comparar. Aquí no hay andamiaje. La IA va a recibir lo que escribas tal cual."
+            model: "GPT Corporativo"
+            placeholder: "Escribe el prompt que le mandarías al modelo para generar la versión alterna del mensaje..."
+            attachments_allowed: false
+            voice_allowed: false
+
+        - slot: 3
+          block_id: model_tradeoff_sliders
+          content:
+            title: "Pondera para elegir el modelo del envío."
+            body: "Tres prioridades reales del caso. Mueve los sliders y revisa el **modelo recomendado** según tu ponderación. La elección impacta autonomía, seguridad de datos y costo por envío."
+            slider_labels:
+              autonomy: "Autonomía"
+              security: "Seguridad"
+              cost: "Costo"
+            slider_descriptions:
+              autonomy: "Cuánto puede decidir el modelo sin revisión humana"
+              security: "Cuánto importa proteger datos personales de la base"
+              cost: "Cuánto pesa el costo por envío en la decisión"
+            available_models:
+              - { id: gpt_corp, label: "GPT Corporativo · TI", autonomy: 60, security: 80, cost: 40 }
+              - { id: claude_sonnet, label: "Claude Sonnet", autonomy: 70, security: 85, cost: 35 }
+              - { id: modelo_local, label: "Modelo local Aurora", autonomy: 50, security: 95, cost: 70 }
+              - { id: gemini_pro, label: "Gemini Pro", autonomy: 75, security: 70, cost: 50 }
+
+        - slot: 4
+          block_id: ai_textfield_free
+          content:
+            title: "Pide validación de segmentación al modelo."
+            body: "Antes de generar el mensaje, **pídele al modelo** que valide tu plan de segmentos. Escribe el prompt corto que le mandarías para que te diga si tu plan tiene huecos."
+            model: "Claude Sonnet"
+            placeholder: "Escribe el prompt de validación..."
+            attachments_allowed: true
+            voice_allowed: false
+
+        - slot: 5
+          block_id: ai_output_review
+          content:
+            title: "Revisa el primer borrador del mensaje."
+            body: "El modelo generó esta primera versión del **mensaje del envío**. Marca lo que no usarías tal cual antes de continuar a la revisión profunda."
+            prompt: "¿Qué problemas detectas en este borrador?"
+            segments:
+              - { id: s1, text: "Hola Mariana, vimos que tu equipo abre nuestros emails desde hace meses." }
+              - { id: s2, text: "Aurora Retail está creciendo 40% mes a mes, lo que nos motiva a contactarte." }
+              - { id: s3, text: "Nuestro producto ayudó a empresas similares a duplicar conversión en 2 semanas." }
+              - { id: s4, text: "Agenda 15 minutos esta semana para ver cómo aplicaría a tu caso." }
+            flag_options:
+              - claim_no_verificado
+              - tono_agresivo
+              - dato_sensible
+              - frase_reutilizable
+
+    # ============================================================
+    # SECCION 4 · REVISION
+    # Objetivo: detectar errores antes de usar el output.
+    # Mix: 4 activos (ai_output_review × 3 + ai_comparison) + 1 pasivo.
+    # ============================================================
+
+    - id: revision
+      name: "Revisión"
+      slides:
+
+        - slot: 1
+          block_id: ai_output_review
+          content:
+            title: "Revisión profunda del mensaje completo."
+            body: "Versión más larga del mensaje. **Marca cada segmento** con la bandera que aplique. Puede no aplicar bandera si está bien."
+            prompt: "¿Qué marcarías para corregir antes de enviar?"
+            segments:
+              - { id: r1, text: "Mariana, vi en LinkedIn que Aurora Retail abrió oficina en Monterrey la semana pasada." }
+              - { id: r2, text: "El 87% de empresas como la tuya reducen costo operativo con nuestro producto." }
+              - { id: r3, text: "Adjunto te dejo el reporte interno de Cresta Software, que tiene un caso muy similar al tuyo." }
+              - { id: r4, text: "¿Puedo agendar 20 minutos contigo el jueves a las 10?" }
+            flag_options:
+              - claim_no_verificado
+              - tono_agresivo
+              - dato_sensible
+              - frase_reutilizable
+
+        - slot: 2
+          block_id: ai_comparison
+          content:
+            title: "Elige el llamado a la acción para el envío."
+            body: "Cuatro versiones del **cierre del mensaje**. Cada una tiene un tradeoff entre directness y permission. Elige la que enviarías el lunes."
+            prompt: "¿Cuál versión usarías como cierre del email?"
+            options:
+              - { id: A, text: "Agenda 15 min esta semana en este link." }
+              - { id: B, text: "¿Tienes 15 minutos esta semana para una llamada corta?" }
+              - { id: C, text: "Si te interesa, mándame un mensaje y coordinamos." }
+              - { id: D, text: "Te dejamos la info por aquí; cuando puedas, agendamos." }
+
+        - slot: 3
+          block_id: ai_output_review
+          content:
+            title: "Datos que el modelo afirmó sin fuente."
+            body: "El modelo metió **cifras** en el borrador. Marca las que no podrías sostener si te las cuestionan."
+            prompt: "¿Qué afirmaciones no tienen respaldo verificable?"
+            segments:
+              - { id: c1, text: "Nuestros clientes duplican conversión en 2 semanas." }
+              - { id: c2, text: "Aurora Retail está creciendo 40% mes a mes." }
+              - { id: c3, text: "El 87% de empresas como la tuya reduce costo operativo." }
+              - { id: c4, text: "Tenemos integraciones con HubSpot, Salesforce y Pipedrive." }
+            flag_options:
+              - claim_no_verificado
+              - tono_agresivo
+              - dato_sensible
+              - frase_reutilizable
+
+        - slot: 4
+          block_id: reading_message
+          content:
+            title: "Feedback de Mariana sobre el primer borrador."
+            body: "Tu jefa ya leyó la primera versión. Lee qué te respondió antes del último ajuste."
+            channel: chat
+            from:
+              name: "Mariana Robles"
+              role: "Head of Growth · Aurora Retail"
+            to: "Tú"
+            timestamp: "Hace 12 minutos"
+            body_message: "Está bien la dirección, pero el cierre está muy agresivo y la cifra del 87% no sé de dónde sale. Si nos preguntan en el comité de privacidad, no la podemos sostener. Ajusta esos dos puntos y mándalo de nuevo."
+
+        - slot: 5
+          block_id: ai_output_review
+          content:
+            title: "Última pasada sobre la versión final."
+            body: "Versión **post-feedback** de Mariana. Marca lo que todavía te genera dudas o lo que dejarías ir."
+            prompt: "¿Qué dejarías como está y qué marcarías para una última corrección?"
+            segments:
+              - { id: f1, text: "Mariana, vi que Aurora Retail abrió oficina en Monterrey." }
+              - { id: f2, text: "Trabajamos con equipos de Marketing en empresas medianas de retail." }
+              - { id: f3, text: "Si quieres ver cómo lo aplicaríamos a tu caso, agendamos una llamada cuando te acomode." }
+              - { id: f4, text: "Te dejo dos horarios la próxima semana, dime cuál te sirve." }
+            flag_options:
+              - claim_no_verificado
+              - tono_agresivo
+              - dato_sensible
+              - frase_reutilizable
+
+    # ============================================================
+    # SECCION 5 · CIERRE
+    # Objetivo: decidir y comunicar al manager.
+    # Mix: 4 activos (dashboard, workflow, memo × 2) + 1 pasivo.
+    # ============================================================
+
+    - id: cierre
+      name: "Cierre"
+      slides:
+
+        - slot: 1
+          block_id: dashboard_pivot
+          content:
+            title: "Elige el segmento que vas a llevar al manager."
+            body: "Tres segmentos con métricas reales. Cada uno tiene **caveats**. Elige cuál llevas a la reunión del lunes con Mariana."
+            prompt: "¿Qué segmento prioriza esta campaña?"
+            filters:
+              - id: activos_recientes
+                label: "Activos recientes"
+                metrics:
+                  - { label: "Tamaño del segmento", value: "82 contactos", band: medio }
+                  - { label: "Conversión esperada", value: "4.1%", band: alto }
+                  - { label: "Riesgo de queja", value: "Bajo", band: bajo }
+              - id: dormidos
+                label: "Dormidos"
+                metrics:
+                  - { label: "Tamaño del segmento", value: "164 contactos", band: alto }
+                  - { label: "Conversión esperada", value: "1.8%", band: bajo }
+                  - { label: "Riesgo de queja", value: "Medio", band: medio }
+              - id: mixto
+                label: "Mixto activos + dormidos"
+                metrics:
+                  - { label: "Tamaño del segmento", value: "246 contactos", band: alto }
+                  - { label: "Conversión esperada", value: "2.6%", band: medio }
+                  - { label: "Riesgo de queja", value: "Medio", band: medio }
+
+        - slot: 2
+          block_id: workflow_builder
+          content:
+            title: "Define el flujo del envío con revisión humana."
+            body: "Ordena los pasos del envío. Decide **dónde entra revisión humana** y dónde el modelo opera solo. Puedes reordenar arrastrando."
+            prompt: "¿Cómo queda el flujo del envío?"
+            steps:
+              - { id: limpiar_base, label: "Limpiar base de contactos" }
+              - { id: generar_borrador, label: "Generar borrador con la IA" }
+              - { id: revision_legal, label: "Revisión rápida de Legal" }
+              - { id: ajustar_segmento, label: "Ajustar segmentos por consentimiento" }
+              - { id: enviar, label: "Programar envío" }
+              - { id: monitorear, label: "Monitorear quejas y bajas" }
+
+        - slot: 3
+          block_id: tradeoff_decision_memo
+          content:
+            title: "Decide qué le recomiendas a Mariana."
+            body: "Llegó el momento. Tres opciones con tradeoffs reales. Elige la que defenderías frente al board."
+            prompt: "¿Qué recomendación le llevas a Mariana?"
+            options:
+              - id: lanzar_ahora
+                label: "Lanzar el lunes"
+                hint: "Úsalo si el beneficio supera el riesgo y los huecos están mitigados."
+              - id: piloto_controlado
+                label: "Piloto controlado"
+                hint: "Úsalo si hay señales prometedoras, pero el riesgo de quejas o datos requiere validar primero con un subset."
+              - id: pausar_y_escalar
+                label: "Pausar y escalar"
+                hint: "Úsalo si la base no está lista, hay datos sensibles sin consentimiento o el modelo afirma cosas que no se pueden sostener."
+            memo_placeholder: "Explica qué harías, por qué, qué riesgo aceptas y qué tendrías que revisar antes de avanzar."
+            memo_max_chars: 700
+            memo_audience: "Mariana Robles · Head of Growth"
+
+        - slot: 4
+          block_id: reading_message
+          content:
+            title: "Vista previa del email que se enviaría."
+            body: "Así se vería en la bandeja del contacto. **Última oportunidad** para detectar algo antes del envío real."
+            channel: email
+            from:
+              name: "Aurora Retail · Marketing"
+              role: "marketing@aurora.example"
+            to: "Lista del segmento elegido (preview con 1 contacto)"
+            timestamp: "Lunes, 08:00"
+            subject: "Una idea concreta para tu equipo este trimestre"
+            body_message: "Mariana, vi que Aurora Retail abrió oficina en Monterrey. Trabajamos con equipos de Marketing en empresas medianas de retail. Si quieres ver cómo lo aplicaríamos a tu caso, agendamos una llamada cuando te acomode. Te dejo dos horarios la próxima semana, dime cuál te sirve."
+
+        - slot: 5
+          block_id: tradeoff_decision_memo
+          content:
+            title: "Memo final · resumen para Mariana."
+            body: "Cierre del caso. **Tres líneas máximo** para que Mariana entienda tu decisión en 30 segundos."
+            prompt: "Resume tu posición y el siguiente paso."
+            options:
+              - id: ejecutar_lunes
+                label: "Ejecutar el lunes según el plan"
+                hint: "Plan completo · sin cambios mayores."
+              - id: ejecutar_con_subset
+                label: "Ejecutar con subset reducido el lunes"
+                hint: "Validamos con menos contactos · escalamos si funciona."
+              - id: posponer_una_semana
+                label: "Posponer una semana"
+                hint: "Necesitamos cerrar pendientes con Legal antes."
+            memo_placeholder: "Resume en 3 líneas qué decisión recomiendas, qué riesgo aceptas y qué revisión queda pendiente."
+            memo_max_chars: 350
+            memo_audience: "Mariana Robles · Head of Growth"
+
+  # ============================================================
+  # METADATA PARA RUBRICA Y JUDGE
+  # (referencia · no parte del schema 5×5 pero indispensable para evaluacion)
+  # ============================================================
+
+  rubric_ref: rubric_case_factory_v1
+  rubric_version_used: 1.0.0
+
+  evaluation_meta:
+    criteria_weights:
+      contexto: 20
+      datos: 18
+      ejecucion_ia: 22
+      validacion: 18
+      juicio: 12
+      impacto: 10
+
+  risk_events_possible:
+    - exposed_pii_to_model
+    - accepted_unverified_claim
+    - accepted_hallucinated_figures
+    - sent_without_consent_check
+
+  practice_mapping:
+    exposed_pii_to_model: practice_anonymize_keep_signal_v1
+    accepted_hallucinated_figures: practice_verify_before_send_v1
+
+  resimulation_ref: marketing_dirty_data_relaunch__variant_resim_v1   # TODO: crear variante resim en sesion futura
+
+  # ============================================================
+  # NOTAS PARA EL EJECUTOR DEL BRIDGE RUNTIME (out of scope hoy)
+  # ============================================================
+  # - RuntimeExperience.tsx hoy hardcodea slides. Cuando el bridge
+  #   este listo, debe leer este YAML y emitir SimulationStep[] por
+  #   cada slide con block_id + content para que ExerciseBlockRenderer
+  #   resuelva el template desde el registry.
+  # - El timer del caso (timer_seconds en meta) arranca al click en
+  #   case_cover si timer_default_on es true o si el usuario activo
+  #   el toggle de la portada (case_cover persiste timer_enabled_at_start).
