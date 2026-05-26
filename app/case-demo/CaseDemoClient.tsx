@@ -526,16 +526,56 @@ export function CaseDemoClient() {
   return (
     <main className="simulador-root min-h-screen surface-canvas text-[var(--text-primary)]">
       <div className="flex min-h-screen flex-col">
-        {/* TOP · progress 5 segmentos (full-width, sin sidebar) */}
-        <div className="pt-8 pb-6">
-          <div className="mx-auto w-[65%] max-w-[1200px]">
+        {/* HEADER · 2 botones cuadrados arriba a la izquierda (Cerrar + Atrás)
+            + progress bar centrado al lado. */}
+        <div className="pt-6 pb-6">
+          <div className="mx-auto flex w-[65%] max-w-[1200px] items-center gap-4">
+            <div className="flex items-center gap-2">
+              {/* Cerrar · regresa al lab de ejercicios */}
+              <a
+                href="/exercise-lab"
+                aria-label="Cerrar caso"
+                className="grid h-12 w-12 place-items-center rounded-[var(--radius-md)] border border-[var(--border)] text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              >
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M6 6L18 18M18 6L6 18"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </a>
+              {/* Atrás · slide anterior */}
+              <button
+                type="button"
+                onClick={goPrev}
+                disabled={isFirstSlide}
+                aria-label="Diapositiva anterior"
+                className={`grid h-12 w-12 place-items-center rounded-[var(--radius-md)] border transition-colors ${
+                  isFirstSlide
+                    ? "border-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
+                    : "border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M15 6L9 12L15 18"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
             <div
               role="progressbar"
               aria-label={`Diapositiva ${slideIdx + 1} de ${SLIDES_PER_SECTION}`}
               aria-valuemin={1}
               aria-valuemax={SLIDES_PER_SECTION}
               aria-valuenow={slideIdx + 1}
-              className="flex w-full gap-2"
+              className="flex flex-1 gap-2"
             >
               {Array.from({ length: SLIDES_PER_SECTION }).map((_, idx) => {
                 const isActive = idx === slideIdx;
@@ -587,46 +627,32 @@ export function CaseDemoClient() {
               />
             </div>
 
-            {/* Atrás + Continuar · Atrás siempre presente (disabled en slide 1),
-                Continuar solo si el bloque no maneja su propio CTA. */}
-            <div className="mt-10 flex items-center gap-3">
-              <button
-                type="button"
-                onClick={goPrev}
-                disabled={isFirstSlide}
-                className={`rounded-[var(--radius-md)] border px-7 py-3 ts-callout font-medium transition-colors ${
-                  isFirstSlide
-                    ? "border-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-                    : "border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                }`}
-              >
-                ← Atrás
-              </button>
-              {!ownsContinue && (
-                <>
-                  <button
-                    type="button"
-                    onClick={goNext}
-                    disabled={isLastSlide}
-                    className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
-                      isLastSlide
-                        ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-                        : "accent-bg hover:opacity-90"
-                    }`}
-                  >
-                    {isLastSlide ? "Caso completado" : "Continuar →"}
-                  </button>
-                  {!isLastSlide && (
-                    <span className="ts-footnote text-[var(--text-tertiary)]">
-                      o pulsa{" "}
-                      <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
-                        Enter ↵
-                      </kbd>
-                    </span>
-                  )}
-                </>
-              )}
-            </div>
+            {/* Continuar · solo si el bloque no maneja su propio CTA.
+                Atrás vive en el header arriba (cuadrado con ícono). */}
+            {!ownsContinue && (
+              <div className="mt-10 flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={goNext}
+                  disabled={isLastSlide}
+                  className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
+                    isLastSlide
+                      ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
+                      : "accent-bg hover:opacity-90"
+                  }`}
+                >
+                  {isLastSlide ? "Caso completado" : "Continuar →"}
+                </button>
+                {!isLastSlide && (
+                  <span className="ts-footnote text-[var(--text-tertiary)]">
+                    o pulsa{" "}
+                    <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
+                      Enter ↵
+                    </kbd>
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </section>
       </div>
