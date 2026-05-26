@@ -182,49 +182,49 @@ function CategorizeRowsWrapper({ sessionId, mode, slideId, caseContext, onShellC
   );
 }
 
-function AIComparisonWrapper({ sessionId, mode, slideId, onShellContinue }: WrapperProps) {
+function AIComparisonWrapper({ sessionId, mode, slideId, caseContext, onShellContinue }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
     emptyPayload("ai_comparison") as Extract<ExerciseResponsePayload, { block_id: "ai_comparison" }>,
   );
-  return <AIComparison payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} onShellContinue={onShellContinue} />;
+  return <AIComparison payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
 }
 
-function WorkflowBuilderWrapper({ sessionId, mode, slideId }: WrapperProps) {
+function WorkflowBuilderWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
     emptyPayload("workflow_builder") as Extract<ExerciseResponsePayload, { block_id: "workflow_builder" }>,
   );
-  return <WorkflowBuilder payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+  return <WorkflowBuilder payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
 }
 
-function AIOutputReviewWrapper({ sessionId, mode, slideId }: WrapperProps) {
+function AIOutputReviewWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
     emptyPayload("ai_output_review") as Extract<ExerciseResponsePayload, { block_id: "ai_output_review" }>,
   );
-  return <AIOutputReview payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+  return <AIOutputReview payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
 }
 
-function DashboardPivotWrapper({ sessionId, mode, slideId, onShellContinue }: WrapperProps) {
+function DashboardPivotWrapper({ sessionId, mode, slideId, caseContext, onShellContinue }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
     emptyPayload("dashboard_pivot") as Extract<ExerciseResponsePayload, { block_id: "dashboard_pivot" }>,
   );
-  return <DashboardPivot payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} onShellContinue={onShellContinue} />;
+  return <DashboardPivot payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} onShellContinue={onShellContinue} />;
 }
 
-function TradeoffDecisionMemoWrapper({ sessionId, mode, slideId }: WrapperProps) {
+function TradeoffDecisionMemoWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
     emptyPayload("tradeoff_decision_memo") as Extract<ExerciseResponsePayload, { block_id: "tradeoff_decision_memo" }>,
   );
-  return <TradeoffDecisionMemo payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+  return <TradeoffDecisionMemo payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
 }
 
-function AITextfieldFreeWrapper({ sessionId, mode, slideId }: WrapperProps) {
+function AITextfieldFreeWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
     emptyPayload("ai_textfield_free") as Extract<ExerciseResponsePayload, { block_id: "ai_textfield_free" }>,
   );
-  return <AITextfieldFree payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+  return <AITextfieldFree payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
 }
 
-function AITextfieldGuidedWrapper({ sessionId, mode, slideId, onShellContinue }: WrapperProps) {
+function AITextfieldGuidedWrapper({ sessionId, mode, slideId, caseContext, onShellContinue }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
     emptyPayload("ai_textfield_guided") as Extract<ExerciseResponsePayload, { block_id: "ai_textfield_guided" }>,
   );
@@ -235,14 +235,15 @@ function AITextfieldGuidedWrapper({ sessionId, mode, slideId, onShellContinue }:
       sessionId={sessionId}
       mode={mode}
       slideId={slideId}
+      caseContext={caseContext}
       onShellContinue={onShellContinue}
     />
   );
 }
 
-function ModelTradeoffSlidersWrapper({ sessionId, mode, slideId }: WrapperProps) {
+function ModelTradeoffSlidersWrapper({ sessionId, mode, slideId, caseContext }: WrapperProps) {
   const [payload, setPayload] = useState(() =>
     emptyPayload("model_tradeoff_sliders") as Extract<ExerciseResponsePayload, { block_id: "model_tradeoff_sliders" }>,
   );
-  return <ModelTradeoffSliders payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} />;
+  return <ModelTradeoffSliders payload={payload} onChange={setPayload} sessionId={sessionId} mode={mode} slideId={slideId} caseContext={caseContext} />;
 }
