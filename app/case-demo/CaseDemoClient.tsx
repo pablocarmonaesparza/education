@@ -471,20 +471,28 @@ const SLIDES: Slide[][] = [
 export function CaseDemoClient() {
   const [sectionIdx, setSectionIdx] = useState(0);
   const [slideIdx, setSlideIdx] = useState(0);
+  /** Slide linear más avanzado al que llegó el usuario. Permite la flecha
+   *  "Adelante" solo cuando el usuario está revisitando un slide anterior
+   *  (es decir, ya pasó por slides más adelante y regresó). */
+  const [maxLinearVisited, setMaxLinearVisited] = useState(0);
 
   const slide = SLIDES[sectionIdx]?.[slideIdx];
   const ownsContinue = slide ? OWNS_CONTINUE.has(slide.blockId) : false;
+  const linearIdx = sectionIdx * SLIDES_PER_SECTION + slideIdx;
+  const canGoForward = linearIdx < maxLinearVisited;
 
   const goNext = useCallback(() => {
+    const nextLinear = linearIdx + 1;
     if (slideIdx < SLIDES_PER_SECTION - 1) {
       setSlideIdx(slideIdx + 1);
     } else if (sectionIdx < SECTIONS.length - 1) {
       setSectionIdx(sectionIdx + 1);
       setSlideIdx(0);
+    } else {
+      return;
     }
-    // Si está en la última slide de la última sección, no hace nada
-    // (idealmente mostraría una pantalla de "completado" · out of scope)
-  }, [sectionIdx, slideIdx]);
+    setMaxLinearVisited((m) => (nextLinear > m ? nextLinear : m));
+  }, [sectionIdx, slideIdx, linearIdx]);
 
   const goPrev = useCallback(() => {
     if (slideIdx > 0) {
@@ -496,6 +504,15 @@ export function CaseDemoClient() {
   }, [sectionIdx, slideIdx]);
 
   const isFirstSlide = sectionIdx === 0 && slideIdx === 0;
+
+  const handleFeedback = useCallback(() => {
+    const slideRef = `${SECTIONS[sectionIdx].id}-${slideIdx + 1}`;
+    const subject = encodeURIComponent(`Sugerencia · caso demo · slide ${slideRef}`);
+    const body = encodeURIComponent(
+      `Slide: ${slideRef}\nTemplate: ${slide?.blockId}\n\nDescribe la sugerencia o corrección:\n`,
+    );
+    window.location.href = `mailto:feedback@itera.example?subject=${subject}&body=${body}`;
+  }, [sectionIdx, slideIdx, slide?.blockId]);
 
   // Scroll al top al cambiar de slide
   useEffect(() => {
@@ -593,6 +610,48 @@ export function CaseDemoClient() {
                   />
                 );
               })}
+            </div>
+            <div className="flex items-center gap-2">
+              {/* Adelante · solo desbloqueado si el usuario regresó · permite
+                  re-avanzar sin perder respuesta. */}
+              <button
+                type="button"
+                onClick={goNext}
+                disabled={!canGoForward}
+                aria-label="Avanzar a la siguiente diapositiva"
+                className={`grid h-12 w-12 place-items-center rounded-[var(--radius-md)] border transition-colors ${
+                  !canGoForward
+                    ? "border-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
+                    : "border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                }`}
+              >
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M9 6L15 12L9 18"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+              {/* Sugerencia o corrección · abre mailto con el slide actual */}
+              <button
+                type="button"
+                onClick={handleFeedback}
+                aria-label="Mandar sugerencia o corrección"
+                className="grid h-12 w-12 place-items-center rounded-[var(--radius-md)] border border-[var(--border)] text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              >
+                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M21 11.5a8.4 8.4 0 0 1-0.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-0.9L3 21l1.9-5.7a8.4 8.4 0 0 1-0.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-0.9h0.5a8.5 8.5 0 0 1 8 8v0.5z"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
