@@ -19,6 +19,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
 import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
 import type { ExerciseResponsePayload } from "@/lib/simulador/exercise-registry";
@@ -46,6 +47,24 @@ const OWNS_CONTINUE = new Set<ExerciseBlockId>([
   "ai_comparison",
   "dashboard_pivot",
 ]);
+
+// Variants de la transición entre slides · efecto scroll vertical.
+// direction=1 · avanza · slide nueva entra desde abajo, vieja se va arriba
+// direction=-1 · regresa · slide nueva entra desde arriba, vieja se va abajo
+const SLIDE_VARIANTS = {
+  enter: (dir: 1 | -1) => ({
+    y: dir > 0 ? "100vh" : "-100vh",
+    opacity: 0,
+  }),
+  center: {
+    y: 0,
+    opacity: 1,
+  },
+  exit: (dir: 1 | -1) => ({
+    y: dir > 0 ? "-100vh" : "100vh",
+    opacity: 0,
+  }),
+};
 
 // ============================================================
 // TIPO Slide
@@ -474,6 +493,9 @@ export function CaseDemoClient() {
    *  El ExerciseBlockRenderer hidrata su useState inicial con esto al
    *  remontar y notifica vía onPayloadChange en cada cambio. */
   const [payloads, setPayloads] = useState<Record<string, ExerciseResponsePayload>>({});
+  /** Dirección de la transición · 1 = avanza (slide nueva entra desde abajo),
+   *  -1 = regresa (slide nueva entra desde arriba). */
+  const [direction, setDirection] = useState<1 | -1>(1);
 
   const slide = SLIDES[sectionIdx]?.[slideIdx];
   const ownsContinue = slide ? OWNS_CONTINUE.has(slide.blockId) : false;
@@ -484,8 +506,10 @@ export function CaseDemoClient() {
   const goNext = useCallback(() => {
     const nextLinear = linearIdx + 1;
     if (slideIdx < SLIDES_PER_SECTION - 1) {
+      setDirection(1);
       setSlideIdx(slideIdx + 1);
     } else if (sectionIdx < SECTIONS.length - 1) {
+      setDirection(1);
       setSectionIdx(sectionIdx + 1);
       setSlideIdx(0);
     } else {
@@ -496,8 +520,10 @@ export function CaseDemoClient() {
 
   const goPrev = useCallback(() => {
     if (slideIdx > 0) {
+      setDirection(-1);
       setSlideIdx(slideIdx - 1);
     } else if (sectionIdx > 0) {
+      setDirection(-1);
       setSectionIdx(sectionIdx - 1);
       setSlideIdx(SLIDES_PER_SECTION - 1);
     }
@@ -656,69 +682,85 @@ export function CaseDemoClient() {
           </div>
         </div>
 
-        {/* CONTENIDO · centrado vertical y horizontal */}
-        <section className="flex flex-1 items-center justify-center py-10">
-          <div className="w-[65%] max-w-[1200px]">
-            {/* Eyebrow · solo el nombre de la sección */}
-            <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-              {SECTIONS[sectionIdx].name}
-            </div>
-
-            {/* Título */}
-            <h1 className="mt-3 display display-tight ts-display text-[var(--text-primary)]">
-              {slide.title}
-            </h1>
-
-            {/* Body markdown */}
-            <SlideBody className="mt-4">{slide.body}</SlideBody>
-
-            {/* Ejercicio · key fuerza re-mount al cambiar de slide para
-                que cada bloque reciba caseContext fresco. initialPayload
-                hidrata el state del bloque con la respuesta previa del
-                store si el usuario está revisitando este slide. */}
-            <div className="mt-8">
-              <ExerciseBlockRenderer
-                key={currentSlideId}
-                blockId={slide.blockId}
-                sessionId={null}
-                mode="lab_demo"
-                slideId={currentSlideId}
-                caseContext={slide.caseContext}
-                onShellContinue={goNext}
-                initialPayload={payloads[currentSlideId]}
-                onPayloadChange={(p) =>
-                  setPayloads((prev) => ({ ...prev, [currentSlideId]: p }))
-                }
-              />
-            </div>
-
-            {/* Continuar · solo si el bloque no maneja su propio CTA.
-                Atrás vive en el header arriba (cuadrado con ícono). */}
-            {!ownsContinue && (
-              <div className="mt-10 flex items-center gap-4">
-                <button
-                  type="button"
-                  onClick={goNext}
-                  disabled={isLastSlide}
-                  className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
-                    isLastSlide
-                      ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-                      : "accent-bg hover:opacity-90"
-                  }`}
-                >
-                  {isLastSlide ? "Caso completado" : "Continuar →"}
-                </button>
-                {!isLastSlide && (
-                  <span className="ts-footnote text-[var(--text-tertiary)]">
-                    o pulsa{" "}
-                    <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
-                      Enter ↵
-                    </kbd>
-                  </span>
-                )}
+        {/* CONTENIDO · transición vertical estilo scroll (slide sale arriba,
+            nueva entra desde abajo · invertido al regresar). Overflow hidden
+            evita scrollbar durante la animación. */}
+        <section className="relative flex flex-1 items-center justify-center overflow-hidden py-10">
+          <AnimatePresence mode="popLayout" custom={direction} initial={false}>
+            <motion.div
+              key={currentSlideId}
+              custom={direction}
+              variants={SLIDE_VARIANTS}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                duration: 0.5,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="w-[65%] max-w-[1200px]"
+            >
+              {/* Eyebrow · solo el nombre de la sección */}
+              <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+                {SECTIONS[sectionIdx].name}
               </div>
-            )}
-          </div>
+
+              {/* Título */}
+              <h1 className="mt-3 display display-tight ts-display text-[var(--text-primary)]">
+                {slide.title}
+              </h1>
+
+              {/* Body markdown */}
+              <SlideBody className="mt-4">{slide.body}</SlideBody>
+
+              {/* Ejercicio · key fuerza re-mount al cambiar de slide para
+                  que cada bloque reciba caseContext fresco. initialPayload
+                  hidrata el state del bloque con la respuesta previa del
+                  store si el usuario está revisitando este slide. */}
+              <div className="mt-8">
+                <ExerciseBlockRenderer
+                  key={currentSlideId}
+                  blockId={slide.blockId}
+                  sessionId={null}
+                  mode="lab_demo"
+                  slideId={currentSlideId}
+                  caseContext={slide.caseContext}
+                  onShellContinue={goNext}
+                  initialPayload={payloads[currentSlideId]}
+                  onPayloadChange={(p) =>
+                    setPayloads((prev) => ({ ...prev, [currentSlideId]: p }))
+                  }
+                />
+              </div>
+
+              {/* Continuar · solo si el bloque no maneja su propio CTA.
+                  Atrás vive en el header arriba (cuadrado con ícono). */}
+              {!ownsContinue && (
+                <div className="mt-10 flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    disabled={isLastSlide}
+                    className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
+                      isLastSlide
+                        ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
+                        : "accent-bg hover:opacity-90"
+                    }`}
+                  >
+                    {isLastSlide ? "Caso completado" : "Continuar →"}
+                  </button>
+                  {!isLastSlide && (
+                    <span className="ts-footnote text-[var(--text-tertiary)]">
+                      o pulsa{" "}
+                      <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
+                        Enter ↵
+                      </kbd>
+                    </span>
+                  )}
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
         </section>
       </div>
     </main>
