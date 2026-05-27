@@ -141,9 +141,9 @@ export function AIOutputReview({
               <span className="block text-[15px] leading-6 text-[var(--text-primary)]">
                 {line.text}
               </span>
-              <span className="mt-2 block text-[13px] text-[var(--text-secondary)]">
-                {line.issue}
-              </span>
+              {/* `line.issue` y `line.flagIfMarked` son metadata interna del
+                  judge · NO se renderizan al usuario · cumple regla
+                  "no enseñar antes de medir" (DIAGNOSTICO_1_CASO_V0). */}
             </button>
           );
         })}

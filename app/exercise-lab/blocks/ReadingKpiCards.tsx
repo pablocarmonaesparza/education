@@ -103,24 +103,20 @@ export function ReadingKpiCards({
             {kpi.value}
           </div>
           {kpi.delta && (
-            <div
-              className={`mt-2 inline-flex items-center gap-1 ts-footnote font-medium tabular-nums ${deltaColorClass(kpi.delta)}`}
-            >
+            <div className="mt-2 inline-flex items-center gap-1 ts-footnote font-medium tabular-nums text-[var(--text-tertiary)]">
               <DeltaGlyph direction={kpi.delta.direction} />
               {kpi.delta.value}
             </div>
           )}
+          {/* `kpi.delta.goodWhen` es metadata interna del judge ·
+              NO se usa para colorear el delta · cumple regla
+              "no enseñar antes de medir" (DIAGNOSTICO_1_CASO_V0).
+              El juicio sobre si el delta es bueno/malo lo hace el
+              participante en slides posteriores, no el bloque. */}
         </div>
       ))}
     </div>
   );
-}
-
-function deltaColorClass(delta: { direction: Direction; goodWhen?: Direction }): string {
-  const goodWhen = delta.goodWhen ?? "up";
-  if (delta.direction === "flat") return "text-[var(--text-tertiary)]";
-  const isGood = delta.direction === goodWhen;
-  return isGood ? "text-[var(--band-a-text)]" : "text-[var(--band-b-text)]";
 }
 
 function DeltaGlyph({ direction }: { direction: Direction }) {

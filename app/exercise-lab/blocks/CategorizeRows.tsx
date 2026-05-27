@@ -151,16 +151,11 @@ export function CategorizeRows({
               <div className="ts-body font-medium text-[var(--text-primary)]">
                 {row.label}
               </div>
-              {row.example && (
-                <div className="mt-1 ts-subhead text-[var(--text-secondary)]">
-                  {row.example}
-                </div>
-              )}
-              {row.hint && (
-                <div className="mt-1 ts-footnote text-[var(--text-tertiary)]">
-                  {row.hint}
-                </div>
-              )}
+              {/* `row.example` y `row.hint` son metadata interna del judge ·
+                  NO se renderizan al usuario · cumple regla "no marcar PII
+                  como obvio antes de capturar decisión" (DIAGNOSTICO_1_CASO_V0
+                  sección Datos). Si el caso necesita dar contexto, usar
+                  reading_data_table o reading_message antes del bloque. */}
             </div>
             <div
               className="flex flex-wrap gap-1.5"
