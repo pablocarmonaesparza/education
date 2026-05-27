@@ -834,37 +834,37 @@ const RECOMMENDATION = {
   },
 };
 
-const BAND_DOT: Record<Band, string> = {
-  alto: "bg-emerald-400",
-  medio: "bg-amber-400",
-  bajo: "bg-rose-400",
-};
-
-const BAND_BAR: Record<Band, string> = {
-  alto: "bg-emerald-400",
-  medio: "bg-amber-400",
-  bajo: "bg-rose-400",
-};
+/** Banda visual · usa dots filled del accent · 10 dots representan
+ *  el score en escala 0-100. Sin colores semánticos · la banda se
+ *  comunica con la cantidad de dots llenos (sutil, HIG-aligned). */
+function ScoreDots({ score }: { score: number }) {
+  const filled = Math.round(score / 10);
+  return (
+    <div className="flex items-center gap-1">
+      {Array.from({ length: 10 }).map((_, i) => (
+        <span
+          key={i}
+          className={`h-1.5 w-1.5 rounded-full ${
+            i < filled ? "bg-[var(--text-primary)]" : "bg-[var(--surface-3)]"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
 
 function CaseCompletedScreen({ durationMinutes }: CaseCompletedScreenProps) {
   const highRisks = RISK_EVENTS.filter((r) => r.severity === "alto").length;
 
   return (
     <main className="simulador-root flex min-h-screen items-center justify-center surface-canvas text-[var(--text-primary)]">
-      <div className="mx-auto w-full max-w-[1200px] px-6 py-8">
-        {/* HEADER · una línea con marca + cerrar */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3 ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-            <span>Fundamentos: Marketing</span>
-            <span className="h-3 w-px bg-[var(--border)]" />
-            <span>Reporte para tu manager</span>
-            <span className="h-3 w-px bg-[var(--border)]" />
-            <span className="tabular-nums">{durationMinutes} min · 25 decisiones · {RISK_EVENTS.length} riesgos{highRisks > 0 ? ` · ${highRisks} alto` : ""}</span>
-          </div>
+      <div className="mx-auto w-full max-w-[680px] px-6 py-6">
+        {/* HEADER · botón cerrar arriba a la derecha · estilo runtime */}
+        <div className="flex justify-end">
           <a
             href="/exercise-lab"
             aria-label="Cerrar"
-            className="grid h-8 w-8 place-items-center rounded-[var(--radius-md)] border border-[var(--border)] text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            className="grid h-9 w-9 place-items-center rounded-[var(--radius-md)] border border-[var(--border)] text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
               <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
@@ -872,131 +872,89 @@ function CaseCompletedScreen({ durationMinutes }: CaseCompletedScreenProps) {
           </a>
         </div>
 
-        {/* RECOMENDACIÓN · banner accent compacto */}
-        <section className="mt-5 rounded-[var(--radius-lg)] border border-[var(--accent)] bg-[var(--accent-soft)] px-6 py-4">
-          <div className="flex items-baseline justify-between gap-6">
-            <div className="min-w-0">
-              <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--accent)]">
-                Acción para el manager
-              </div>
-              <div className="mt-1 ts-title-2 font-semibold text-[var(--text-primary)]">
-                {RECOMMENDATION.title}
-              </div>
-            </div>
-            <p className="hidden flex-1 ts-callout leading-[1.45] text-[var(--text-secondary)] lg:block">
-              {RECOMMENDATION.oneLiner}
-            </p>
-          </div>
-        </section>
+        {/* EYEBROW + TÍTULO · estilo runtime · la recomendación ES el título */}
+        <div className="mt-3 ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+          Reporte para tu manager
+        </div>
+        <h1 className="mt-2 display display-tight ts-display text-[var(--text-primary)]">
+          {RECOMMENDATION.title}.
+        </h1>
+        <p className="mt-3 ts-body leading-[1.5] text-[var(--text-secondary)]">
+          {RECOMMENDATION.oneLiner}
+        </p>
 
-        {/* BENTO · dimensiones (3 cols) + riesgos+práctica (2 cols) */}
-        <div className="mt-4 grid gap-4 lg:grid-cols-5">
-          {/* Dimensiones · tabla compacta */}
-          <section className="lg:col-span-3 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
-            <div className="flex items-center justify-between border-b border-[var(--hairline)] px-5 py-2.5">
-              <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-                Cinco dimensiones
-              </div>
-              <div className="ts-caption-1 text-[var(--text-tertiary)]">
-                Score 0-100
-              </div>
-            </div>
-            <div className="divide-y divide-[var(--hairline)]">
-              {DIMENSIONS.map((d) => (
-                <div key={d.id} className="grid grid-cols-12 items-center gap-3 px-5 py-2.5">
-                  <div className="col-span-3 flex items-center gap-2">
-                    <span className={`h-1.5 w-1.5 rounded-full ${BAND_DOT[d.band]}`} />
-                    <span className="ts-footnote font-medium text-[var(--text-primary)]">{d.label}</span>
-                  </div>
-                  <div className="col-span-5">
-                    <div className="h-1.5 w-full rounded-full bg-[var(--surface-3)]">
-                      <div
-                        className={`h-full rounded-full ${BAND_BAR[d.band]}`}
-                        style={{ width: `${d.score}%` }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-span-1 ts-footnote tabular-nums text-[var(--text-primary)] text-right font-medium">
-                    {d.score}
-                  </div>
-                  <div className="col-span-3 ts-caption-1 text-[var(--text-tertiary)] text-right">
-                    {d.metric}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+        {/* Stats inline · separados con · igual que el resto del runtime */}
+        <div className="mt-2 ts-footnote text-[var(--text-tertiary)] tabular-nums">
+          {durationMinutes} min · 25 decisiones · {RISK_EVENTS.length} riesgos
+          {highRisks > 0 ? ` · ${highRisks} alto` : ""}
+        </div>
 
-          {/* Riesgos + Práctica · stack vertical en la columna derecha */}
-          <div className="lg:col-span-2 flex flex-col gap-4">
-            {/* Riesgos · tabla compacta */}
-            <section className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
-              <div className="flex items-center justify-between border-b border-[var(--hairline)] px-5 py-2.5">
-                <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-                  Riesgos detectados
-                </div>
-                <span className="ts-caption-1 text-[var(--text-tertiary)] tabular-nums">{RISK_EVENTS.length}</span>
-              </div>
-              <div className="divide-y divide-[var(--hairline)]">
-                {RISK_EVENTS.map((r) => (
-                  <div key={r.id} className="flex items-start gap-3 px-5 py-3">
-                    <span
-                      className={`mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full ${
-                        r.severity === "alto" ? "bg-rose-400" : "bg-amber-400"
-                      }`}
-                    />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-baseline justify-between gap-2">
-                        <span className="ts-footnote font-medium text-[var(--text-primary)] truncate">
-                          {r.type}
-                        </span>
-                        <span className="ts-caption-1 capitalize text-[var(--text-tertiary)] tabular-nums whitespace-nowrap">
-                          {r.severity}
-                        </span>
-                      </div>
-                      <div className="mt-0.5 ts-caption-1 text-[var(--text-tertiary)] line-clamp-2">
-                        {r.evidence}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Práctica sugerida · compacta */}
-            <section className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] px-5 py-3">
-              <div className="flex items-baseline justify-between gap-2">
-                <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-                  Práctica sugerida
-                </div>
-                <span className="ts-caption-1 text-[var(--text-tertiary)] tabular-nums">
-                  {RECOMMENDATION.practice.duration}
+        {/* DIMENSIONES · lista plana con divisores hairline */}
+        <div className="mt-6 border-t border-[var(--hairline)]">
+          {DIMENSIONS.map((d) => (
+            <div
+              key={d.id}
+              className="flex items-center justify-between gap-4 border-b border-[var(--hairline)] py-2"
+            >
+              <span className="ts-callout text-[var(--text-primary)]">
+                {d.label}
+              </span>
+              <div className="flex items-center gap-4">
+                <ScoreDots score={d.score} />
+                <span className="ts-callout font-medium tabular-nums text-[var(--text-primary)] w-7 text-right">
+                  {d.score}
                 </span>
               </div>
-              <div className="mt-1 ts-callout font-semibold text-[var(--text-primary)]">
-                {RECOMMENDATION.practice.title}
+            </div>
+          ))}
+        </div>
+
+        {/* RIESGOS · lista compacta con divisores */}
+        <div className="mt-5">
+          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+            Riesgos detectados
+          </div>
+          <div className="mt-2 border-t border-[var(--hairline)]">
+            {RISK_EVENTS.map((r) => (
+              <div
+                key={r.id}
+                className="flex items-baseline justify-between gap-4 border-b border-[var(--hairline)] py-2"
+              >
+                <span className="ts-callout text-[var(--text-primary)]">
+                  {r.type}
+                </span>
+                <span className="ts-footnote capitalize text-[var(--text-tertiary)] tabular-nums whitespace-nowrap">
+                  {r.severity} · {r.slideRef}
+                </span>
               </div>
-            </section>
+            ))}
           </div>
         </div>
 
-        {/* CTAs · footer fijo abajo */}
-        <div className="mt-4 flex items-center gap-3">
+        {/* PRÁCTICA · inline simple */}
+        <div className="mt-5">
+          <span className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+            Práctica sugerida
+          </span>
+          <div className="mt-1 ts-callout text-[var(--text-primary)]">
+            {RECOMMENDATION.practice.title} · {RECOMMENDATION.practice.duration}
+          </div>
+        </div>
+
+        {/* CTAs · mismo lenguaje que el botón Continuar del runtime */}
+        <div className="mt-7 flex items-center gap-4">
           <a
             href="/exercise-lab"
-            className="rounded-[var(--radius-md)] accent-bg px-6 py-2.5 ts-callout font-medium text-white transition-opacity hover:opacity-90"
+            className="rounded-[var(--radius-md)] accent-bg px-7 py-3 ts-callout font-medium text-white transition-opacity hover:opacity-90"
           >
-            Volver al lab
+            Volver al lab →
           </a>
           <a
             href="/case-demo"
-            className="rounded-[var(--radius-md)] border border-[var(--border)] px-6 py-2.5 ts-callout font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            className="ts-footnote text-[var(--text-secondary)] underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
           >
             Repetir el caso
           </a>
-          <span className="ml-auto ts-caption-1 text-[var(--text-tertiary)]">
-            Sesión #sim_9f3a2c1
-          </span>
         </div>
       </div>
     </main>
