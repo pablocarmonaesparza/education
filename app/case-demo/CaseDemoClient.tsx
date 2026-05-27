@@ -594,7 +594,12 @@ export function CaseDemoClient() {
   if (isCompleted) {
     const durationMs = Date.now() - startedAt;
     const durationMinutes = Math.max(1, Math.round(durationMs / 60_000));
-    return <CaseCompletedScreen durationMinutes={durationMinutes} />;
+    return (
+      <CaseCompletedScreen
+        durationMinutes={durationMinutes}
+        payloads={payloads}
+      />
+    );
   }
 
   return (
@@ -805,11 +810,16 @@ export function CaseDemoClient() {
 
 // ============================================================
 // PANTALLA DE CIERRE · simulación del reporte ejecutivo
-// Bento layout estilo Linear / Vercel / Anthropic console.
+// Lenguaje Typeform · single column · sin score numérico público
+// (cumple contrato v0: "la banda es la unidad narrativa").
+// Consume el store de payloads del shell · P0.2.
 // ============================================================
 
 interface CaseCompletedScreenProps {
   durationMinutes: number;
+  /** Store de payloads del shell · permite computar bandas y citas
+   *  textuales reales en vez de hardcoded. P0.2. */
+  payloads: Record<string, ExerciseResponsePayload>;
 }
 
 type Band = "alto" | "medio" | "bajo";
@@ -818,66 +828,265 @@ interface DimensionScore {
   id: string;
   label: string;
   band: Band;
-  /** Score 0-100 · banda derivada de threshold. */
-  score: number;
-  /** Métrica observable contable. */
+  /** Métrica observable contable derivada del payload. */
   metric: string;
-  insight: string;
 }
 
 interface RiskEvent {
   id: string;
   severity: "alto" | "medio";
   type: string;
+  /** Cita textual o referencia al payload del usuario donde aparece el
+   *  risk. Cumple DIAGNOSTICO_1_CASO_V0 línea 239: "Cada uno debe tener
+   *  evidencia textual citable del transcript". */
   evidence: string;
   slideRef: string;
 }
 
-// Datos sintéticos · operador medio que necesita entrenamiento puntual.
-const DIMENSIONS: DimensionScore[] = [
-  { id: "contexto",   label: "Contexto",   band: "alto",  score: 85, metric: "2 / 2 señales leídas", insight: "Leyó la presión del lunes y la restricción de Legal antes de actuar." },
-  { id: "privacidad", label: "Privacidad", band: "medio", score: 62, metric: "4 / 6 datos filtrados", insight: "Excluyó datos personales en su mayoría. Dejó pasar una nota interna." },
-  { id: "validacion", label: "Validación", band: "medio", score: 55, metric: "2 / 3 cifras marcadas", insight: "Marcó dos cifras inventadas. Aceptó el dato del 87% sin pedir fuente." },
-  { id: "juicio",     label: "Juicio",     band: "alto",  score: 82, metric: "3 / 3 decisiones OK",  insight: "Eligió piloto controlado en vez de lanzar el lunes. Razón sólida." },
-  { id: "decision",   label: "Decisión",   band: "medio", score: 60, metric: "memo sin métrica",     insight: "Memo final claro pero no acordó métrica de éxito con Mariana." },
-];
+// Reporte sintético v0 · las bandas y risk events se derivan de los
+// payloads reales del store usando heurísticas simples · cumple
+// contrato v0 (sin score numérico público · banda como unidad narrativa
+// · evidencia textual citable del transcript).
+//
+// NOTA: este scoring es un PLACEHOLDER hasta que el judge LLM esté
+// conectado al runtime productivo. Los thresholds y heurísticas viven
+// aquí solo para que la pantalla de cierre responda al comportamiento
+// del usuario · no como rúbrica final.
 
-const RISK_EVENTS: RiskEvent[] = [
-  { id: "r1", severity: "alto",  type: "Cifra sin verificar",  evidence: "Mantuvo el dato del 87% en el borrador hasta que el manager lo cuestionó.", slideRef: "Revisión · 3 / 5" },
-  { id: "r2", severity: "medio", type: "Dato sensible al modelo", evidence: "Marcó el campo notas internas como Usar en vez de Excluir o Anonimizar.",     slideRef: "Datos · 5 / 5" },
-];
-
-const RECOMMENDATION = {
-  action: "entrenar",
-  title: "Entrenar antes de pilotar",
-  oneLiner: "Criterio sólido en juicio y contexto. Gap específico en validación cuantitativa.",
+const RECOMMENDATION_DEFAULTS = {
   practice: {
     title: "Verifica antes de enviar",
     duration: "5 minutos",
   },
 };
 
-/** Banda visual · usa dots filled del accent · 10 dots representan
- *  el score en escala 0-100. Sin colores semánticos · la banda se
- *  comunica con la cantidad de dots llenos (sutil, HIG-aligned). */
-function ScoreDots({ score }: { score: number }) {
-  const filled = Math.round(score / 10);
+interface ReportSnapshot {
+  recommendation: {
+    action: "pilotar" | "entrenar" | "pausar" | "escalar";
+    title: string;
+    oneLiner: string;
+  };
+  dimensions: DimensionScore[];
+  riskEvents: RiskEvent[];
+}
+
+/**
+ * Computa el reporte del cierre a partir de los payloads del store.
+ *
+ * Lógica v0 (placeholder hasta que el judge LLM esté wired):
+ * - Por cada dimensión, evalúa una o dos slides clave del caso.
+ * - Risk events se extraen del payload con cita textual cuando es texto
+ *   libre (rationale_text, leader_takeaway, memo), o referencia al
+ *   slide cuando es selección.
+ */
+function buildReportSnapshot(
+  payloads: Record<string, ExerciseResponsePayload>,
+): ReportSnapshot {
+  const dimensions: DimensionScore[] = [];
+  const riskEvents: RiskEvent[] = [];
+
+  // ===== CONTEXTO · evalúa si reconoció la presión y la restricción Legal =====
+  const acknowledgedLegal = Boolean(
+    (payloads["contexto-5"] as Extract<ExerciseResponsePayload, { block_id: "reading_message" }> | undefined)?.acknowledged,
+  );
+  dimensions.push({
+    id: "contexto",
+    label: "Contexto",
+    band: acknowledgedLegal ? "alto" : "medio",
+    metric: acknowledgedLegal
+      ? "Leyó el email del manager y el ticket de Legal."
+      : "No completó la lectura del contexto.",
+  });
+
+  // ===== PRIVACIDAD · evalúa si excluyó/anonimizó contactos sin consentimiento + campos PII =====
+  const dataContactsPayload = payloads["datos-2"] as
+    | Extract<ExerciseResponsePayload, { block_id: "categorize_rows" }>
+    | undefined;
+  const dataFieldsPayload = payloads["datos-5"] as
+    | Extract<ExerciseResponsePayload, { block_id: "categorize_rows" }>
+    | undefined;
+  const excludedRevoked = dataContactsPayload?.row_actions.find(
+    (r) => r.row_id === "row-5",
+  );
+  const handledInternalNotes = dataFieldsPayload?.row_actions.find(
+    (r) => r.row_id === "campo-6",
+  );
+  const privacyBand: Band =
+    excludedRevoked?.action === "excluir" &&
+    (handledInternalNotes?.action === "excluir" ||
+      handledInternalNotes?.action === "anonimizar")
+      ? "alto"
+      : excludedRevoked?.action === "excluir"
+        ? "medio"
+        : "bajo";
+  dimensions.push({
+    id: "privacidad",
+    label: "Privacidad",
+    band: privacyBand,
+    metric:
+      privacyBand === "alto"
+        ? "Excluyó el contacto sin consentimiento y protegió notas internas."
+        : privacyBand === "medio"
+          ? "Manejo parcial de datos sensibles."
+          : "Permitió uso de datos sensibles al modelo.",
+  });
+  if (handledInternalNotes?.action === "usar") {
+    riskEvents.push({
+      id: "risk-internal-notes",
+      severity: "alto",
+      type: "Dato sensible al modelo",
+      evidence:
+        "Marcó el campo Notas internas como Usar · debió excluir o anonimizar.",
+      slideRef: "Datos · 5 / 5",
+    });
+  }
+
+  // ===== VALIDACIÓN · evalúa si marcó cifras sin fuente en ai_output_review =====
+  const reviewCifras = payloads["revision-3"] as
+    | Extract<ExerciseResponsePayload, { block_id: "ai_output_review" }>
+    | undefined;
+  const flaggedCount =
+    reviewCifras?.flagged_segments.filter((s) => s.flag !== null).length ?? 0;
+  const validacionBand: Band =
+    flaggedCount >= 3 ? "alto" : flaggedCount >= 2 ? "medio" : "bajo";
+  dimensions.push({
+    id: "validacion",
+    label: "Validación",
+    band: validacionBand,
+    metric: `${flaggedCount} de 3 cifras sin fuente marcadas`,
+  });
+  if (flaggedCount < 3) {
+    riskEvents.push({
+      id: "risk-unverified-claim",
+      severity: flaggedCount === 0 ? "alto" : "medio",
+      type: "Cifra sin verificar",
+      evidence:
+        "Aceptó al menos una cifra cuantitativa del modelo sin pedir respaldo.",
+      slideRef: "Revisión · 3 / 5",
+    });
+  }
+
+  // ===== JUICIO · evalúa la decisión principal del cierre =====
+  const decisionPayload = payloads["cierre-3"] as
+    | Extract<ExerciseResponsePayload, { block_id: "tradeoff_decision_memo" }>
+    | undefined;
+  const juicioBand: Band =
+    decisionPayload?.decision === "piloto_controlado"
+      ? "alto"
+      : decisionPayload?.decision === "pausar_y_escalar"
+        ? "medio"
+        : decisionPayload?.decision === "lanzar_lunes"
+          ? "bajo"
+          : "bajo";
+  dimensions.push({
+    id: "juicio",
+    label: "Juicio",
+    band: juicioBand,
+    metric:
+      decisionPayload?.decision === "piloto_controlado"
+        ? "Eligió piloto controlado · proporcional al riesgo."
+        : decisionPayload?.decision === "pausar_y_escalar"
+          ? "Eligió pausar · postura conservadora defendible."
+          : decisionPayload?.decision === "lanzar_lunes"
+            ? "Eligió lanzar el lunes · subestima riesgo."
+            : "Decisión no registrada.",
+  });
+
+  // ===== DECISIÓN · evalúa claridad del memo final =====
+  const memoFinal = payloads["cierre-5"] as
+    | Extract<ExerciseResponsePayload, { block_id: "tradeoff_decision_memo" }>
+    | undefined;
+  const memoLength = memoFinal?.memo.trim().length ?? 0;
+  const decisionBand: Band =
+    memoLength >= 200 ? "alto" : memoLength >= 80 ? "medio" : "bajo";
+  dimensions.push({
+    id: "decision",
+    label: "Decisión",
+    band: decisionBand,
+    metric:
+      memoLength >= 200
+        ? "Memo final con contexto y siguiente paso."
+        : memoLength >= 80
+          ? "Memo corto · falta métrica o siguiente paso."
+          : "Memo final vacío o sin justificación.",
+  });
+
+  // ===== RECOMENDACIÓN AGREGADA =====
+  const recommendation = buildRecommendation(dimensions, riskEvents);
+
+  return { recommendation, dimensions, riskEvents };
+}
+
+function buildRecommendation(
+  dimensions: DimensionScore[],
+  riskEvents: RiskEvent[],
+): ReportSnapshot["recommendation"] {
+  const altos = dimensions.filter((d) => d.band === "alto").length;
+  const bajos = dimensions.filter((d) => d.band === "bajo").length;
+  const highRisk = riskEvents.some((r) => r.severity === "alto");
+
+  if (bajos >= 2 || highRisk) {
+    return {
+      action: "pausar",
+      title: "Pausar antes de pilotar",
+      oneLiner:
+        "Una o varias dimensiones críticas están débiles. Reforzar antes de operar con datos reales.",
+    };
+  }
+  if (altos >= 4) {
+    return {
+      action: "pilotar",
+      title: "Listo para pilotar",
+      oneLiner:
+        "Criterio sólido en las dimensiones clave. Puede operar con supervisión ligera.",
+    };
+  }
+  return {
+    action: "entrenar",
+    title: "Entrenar gap específico",
+    oneLiner:
+      "Criterio sólido en la mayoría, pero hay un patrón a corregir antes de pilotar.",
+  };
+}
+
+/** Etiqueta de banda · única representación pública del juicio. Cumple
+ *  DIAGNOSTICO_1_CASO_V0 línea 233: "Sin score numérico público en v0.
+ *  La banda es la unidad narrativa." Sin colores semánticos · la banda
+ *  se comunica con un dot intensidad-graduada y la palabra. */
+function BandLabel({ band }: { band: Band }) {
+  const dots = band === "alto" ? 3 : band === "medio" ? 2 : 1;
   return (
-    <div className="flex items-center gap-1">
-      {Array.from({ length: 10 }).map((_, i) => (
-        <span
-          key={i}
-          className={`h-1.5 w-1.5 rounded-full ${
-            i < filled ? "bg-[var(--text-primary)]" : "bg-[var(--surface-3)]"
-          }`}
-        />
-      ))}
+    <div className="flex items-center gap-2">
+      <div className="flex items-center gap-0.5">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <span
+            key={i}
+            className={`h-1.5 w-1.5 rounded-full ${
+              i < dots ? "bg-[var(--text-primary)]" : "bg-[var(--surface-3)]"
+            }`}
+          />
+        ))}
+      </div>
+      <span className="ts-callout font-medium capitalize text-[var(--text-primary)] w-14 text-right">
+        {band}
+      </span>
     </div>
   );
 }
 
-function CaseCompletedScreen({ durationMinutes }: CaseCompletedScreenProps) {
-  const highRisks = RISK_EVENTS.filter((r) => r.severity === "alto").length;
+function CaseCompletedScreen({ durationMinutes, payloads }: CaseCompletedScreenProps) {
+  const snapshot = buildReportSnapshot(payloads);
+  const { recommendation, dimensions, riskEvents } = snapshot;
+  const highRisks = riskEvents.filter((r) => r.severity === "alto").length;
+  // Contar activos completados · más honesto que "25 decisiones".
+  const activeCount = Object.values(payloads).filter((p) => {
+    if (
+      p.block_id === "case_cover" ||
+      p.block_id.startsWith("reading_")
+    )
+      return false;
+    return true;
+  }).length;
 
   return (
     <main className="simulador-root flex min-h-screen items-center justify-center surface-canvas text-[var(--text-primary)]">
@@ -900,59 +1109,70 @@ function CaseCompletedScreen({ durationMinutes }: CaseCompletedScreenProps) {
           Reporte para tu manager
         </div>
         <h1 className="mt-2 display display-tight ts-display text-[var(--text-primary)]">
-          {RECOMMENDATION.title}.
+          {recommendation.title}.
         </h1>
         <p className="mt-3 ts-body leading-[1.5] text-[var(--text-secondary)]">
-          {RECOMMENDATION.oneLiner}
+          {recommendation.oneLiner}
         </p>
 
-        {/* Stats inline · separados con · igual que el resto del runtime */}
+        {/* Stats inline · separados con · igual que el resto del runtime.
+            activeCount refleja slides realmente respondidos (sin contar
+            pasivos) en vez de inflar a "25 decisiones". */}
         <div className="mt-2 ts-footnote text-[var(--text-tertiary)] tabular-nums">
-          {durationMinutes} min · 25 decisiones · {RISK_EVENTS.length} riesgos
-          {highRisks > 0 ? ` · ${highRisks} alto` : ""}
+          {durationMinutes} min · {activeCount} respuestas · {riskEvents.length}{" "}
+          riesgos{highRisks > 0 ? ` · ${highRisks} alto` : ""}
         </div>
 
-        {/* DIMENSIONES · lista plana con divisores hairline */}
+        {/* DIMENSIONES · banda como única señal pública (sin score numérico).
+            Métrica observable derivada del payload en una línea de contexto. */}
         <div className="mt-6 border-t border-[var(--hairline)]">
-          {DIMENSIONS.map((d) => (
+          {dimensions.map((d) => (
             <div
               key={d.id}
-              className="flex items-center justify-between gap-4 border-b border-[var(--hairline)] py-2"
+              className="flex items-center justify-between gap-4 border-b border-[var(--hairline)] py-2.5"
             >
-              <span className="ts-callout text-[var(--text-primary)]">
-                {d.label}
-              </span>
-              <div className="flex items-center gap-4">
-                <ScoreDots score={d.score} />
-                <span className="ts-callout font-medium tabular-nums text-[var(--text-primary)] w-7 text-right">
-                  {d.score}
-                </span>
+              <div className="min-w-0 flex-1">
+                <div className="ts-callout text-[var(--text-primary)]">
+                  {d.label}
+                </div>
+                <div className="mt-0.5 ts-footnote text-[var(--text-tertiary)]">
+                  {d.metric}
+                </div>
               </div>
+              <BandLabel band={d.band} />
             </div>
           ))}
         </div>
 
-        {/* RIESGOS · lista compacta con divisores */}
-        <div className="mt-5">
-          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-            Riesgos detectados
+        {/* RIESGOS · solo aparece la sección si hay riesgos detectados.
+            Cada riesgo trae evidencia derivada del payload del usuario. */}
+        {riskEvents.length > 0 && (
+          <div className="mt-5">
+            <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+              Riesgos detectados
+            </div>
+            <div className="mt-2 border-t border-[var(--hairline)]">
+              {riskEvents.map((r) => (
+                <div
+                  key={r.id}
+                  className="flex items-start justify-between gap-4 border-b border-[var(--hairline)] py-2.5"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="ts-callout text-[var(--text-primary)]">
+                      {r.type}
+                    </div>
+                    <div className="mt-0.5 ts-footnote text-[var(--text-tertiary)]">
+                      {r.evidence}
+                    </div>
+                  </div>
+                  <span className="ts-footnote capitalize text-[var(--text-tertiary)] tabular-nums whitespace-nowrap">
+                    {r.severity} · {r.slideRef}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="mt-2 border-t border-[var(--hairline)]">
-            {RISK_EVENTS.map((r) => (
-              <div
-                key={r.id}
-                className="flex items-baseline justify-between gap-4 border-b border-[var(--hairline)] py-2"
-              >
-                <span className="ts-callout text-[var(--text-primary)]">
-                  {r.type}
-                </span>
-                <span className="ts-footnote capitalize text-[var(--text-tertiary)] tabular-nums whitespace-nowrap">
-                  {r.severity} · {r.slideRef}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+        )}
 
         {/* PRÁCTICA · inline simple */}
         <div className="mt-5">
@@ -960,7 +1180,8 @@ function CaseCompletedScreen({ durationMinutes }: CaseCompletedScreenProps) {
             Práctica sugerida
           </span>
           <div className="mt-1 ts-callout text-[var(--text-primary)]">
-            {RECOMMENDATION.practice.title} · {RECOMMENDATION.practice.duration}
+            {RECOMMENDATION_DEFAULTS.practice.title} ·{" "}
+            {RECOMMENDATION_DEFAULTS.practice.duration}
           </div>
         </div>
 
