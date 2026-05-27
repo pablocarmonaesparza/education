@@ -46,7 +46,16 @@ export function AITextfieldFree({
   slideId = "ai_textfield_free",
   mode = "lab_demo",
   sessionId = null,
+  caseContext,
 }: Props) {
+  // P3 · personalization knobs · el caso puede pasar model + placeholder
+  // por caseContext en vez de quedarse con defaults del bloque.
+  const contextModel =
+    typeof caseContext?.model === "string" ? caseContext.model : undefined;
+  const contextPlaceholder =
+    typeof caseContext?.placeholder === "string"
+      ? caseContext.placeholder
+      : undefined;
   const isProduction = mode === "authenticated" || mode === "field_test";
   const { patch } = useStepPatch(isProduction ? sessionId : null, {
     mode: mode === "field_test" ? "field_test" : "authenticated",
@@ -55,10 +64,10 @@ export function AITextfieldFree({
   const firstActionAt = useRef<number | null>(null);
   const totalChanges = useRef(0);
 
-  // El composer puede arrancar con model="" del emptyPayload; le pasamos el
-  // default cuando esté vacío para que el dropdown muestre algo coherente
-  // (sin tocar el payload · sólo presentación).
-  const displayedModel = payload.model || defaultModelId;
+  // El composer puede arrancar con model="" del emptyPayload; le pasamos
+  // primero el modelo del caso (si lo pasó), luego el del payload, luego
+  // el default global · sin tocar el payload · sólo presentación.
+  const displayedModel = payload.model || contextModel || defaultModelId;
 
   function update(next: AITextfieldFreePayload) {
     if (firstActionAt.current === null) firstActionAt.current = Date.now();
@@ -110,6 +119,7 @@ export function AITextfieldFree({
         onVoiceNote={addVoiceNote}
         attachments={payload.attachments}
         onAttachmentsChange={setAttachments}
+        placeholder={contextPlaceholder}
       />
     </div>
   );

@@ -43,6 +43,8 @@ interface AIPromptComposerProps {
   onAttachmentsChange?: (next: PromptAttachment[]) => void;
   layout?: "default" | "matched";
   readOnly?: boolean;
+  /** P3 · placeholder custom desde el caso · override del default. */
+  placeholder?: string;
 }
 
 export function AIPromptComposer({
@@ -56,6 +58,7 @@ export function AIPromptComposer({
   onAttachmentsChange,
   layout = "default",
   readOnly = false,
+  placeholder: placeholderProp,
 }: AIPromptComposerProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [sent, setSent] = useState(false);
@@ -153,7 +156,12 @@ export function AIPromptComposer({
           disabled={recState === "recording" || recState === "processing"}
           readOnly={readOnly}
           rows={matched ? 10 : 1}
-          placeholder={readOnly ? "Crea el prompt desde Inputs y selección..." : "Escribe el prompt que le mandarías al modelo..."}
+          placeholder={
+            placeholderProp ??
+            (readOnly
+              ? "Crea el prompt desde Inputs y selección..."
+              : "Escribe el prompt que le mandarías al modelo...")
+          }
           className={`w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 text-[15px] leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed ${matched ? "flex-1" : ""} ${readOnly ? "cursor-default" : ""}`}
           style={matched ? { minHeight: 0, maxHeight: "none" } : { height: textComputedHeight, minHeight: TEXT_MIN_HEIGHT, maxHeight: TEXT_MAX_HEIGHT }}
         />

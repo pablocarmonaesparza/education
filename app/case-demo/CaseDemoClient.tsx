@@ -504,9 +504,11 @@ export function CaseDemoClient() {
   /** Cuando el participante termina el caso (último slide + Continuar),
    *  reemplazamos el runtime por la pantalla de cierre · simulación del
    *  reporte que el manager recibe. Permite `?completed=1` en la URL
-   *  para saltar directo (preview, demos, screenshots). */
+   *  para saltar directo (preview, demos, screenshots). P3 · guard:
+   *  solo válido en desarrollo · en producción el skip se ignora. */
   const [isCompleted, setIsCompleted] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
+    if (process.env.NODE_ENV === "production") return false;
     return new URLSearchParams(window.location.search).get("completed") === "1";
   });
   /** Timestamp de inicio del caso · para calcular duración total al cierre. */
@@ -556,11 +558,17 @@ export function CaseDemoClient() {
 
   const handleFeedback = useCallback(() => {
     const slideRef = `${SECTIONS[sectionIdx].id}-${slideIdx + 1}`;
-    const subject = encodeURIComponent(`Sugerencia · caso demo · slide ${slideRef}`);
+    const subject = encodeURIComponent(
+      `Sugerencia · caso demo · slide ${slideRef}`,
+    );
     const body = encodeURIComponent(
       `Slide: ${slideRef}\nTemplate: ${slide?.blockId}\n\nDescribe la sugerencia o corrección:\n`,
     );
-    window.location.href = `mailto:feedback@itera.example?subject=${subject}&body=${body}`;
+    // P3 · destinatario configurable vía env var · fallback al placeholder
+    // de desarrollo. En producción debe estar definido NEXT_PUBLIC_FEEDBACK_EMAIL.
+    const to =
+      process.env.NEXT_PUBLIC_FEEDBACK_EMAIL ?? "feedback@itera.example";
+    window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
   }, [sectionIdx, slideIdx, slide?.blockId]);
 
   // Scroll al top al cambiar de slide
