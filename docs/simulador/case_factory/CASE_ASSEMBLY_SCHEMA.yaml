@@ -57,6 +57,93 @@ case_assembly_schema:
       # del caso no puede traer respuestas, decisiones, memos u outputs
       # pre-rellenados.
 
+    # P0 · CEREBRO · no enseñar antes de medir (DIAGNOSTICO_1_CASO_V0 §7)
+    # Cualquier elemento UI que revele la respuesta correcta antes de la
+    # captura debe eliminarse. Estos campos del block_content NO se
+    # renderizan al usuario · solo el judge LLM los lee.
+    judge_internal_fields:
+      categorize_rows: [hint, example]      # rows[].hint, rows[].example
+      ai_output_review: [issue, flagIfMarked] # segments[].issue
+      reading_kpi_cards: [goodWhen]         # kpis[].delta.goodWhen
+
+    # P2.1 · Niveles permitidos por bloque (derivado de EXERCISE_BLOCK_CATALOG.yaml).
+    # El validador rechaza el caso si un block_id se usa fuera de su nivel.
+    block_level_constraints:
+      case_cover:               [N1, N2, N3]
+      reading_passive:          [N1, N2, N3]
+      reading_message:          [N1, N2, N3]
+      reading_data_table:       [N1, N2, N3]
+      reading_image:            [N1, N2, N3]
+      reading_kpi_cards:        [N1, N2, N3]
+      reading_timeline:         [N1, N2, N3]
+      reading_attachment:       [N1, N2, N3]
+      ai_textfield_free:        [N1, N2]
+      ai_textfield_guided:      [N1, N2]
+      model_tradeoff_sliders:   [N1, N2, N3]
+      categorize_rows:          [N1, N2, N3]
+      ai_output_review:         [N1, N2, N3]
+      ai_comparison:            [N1, N2]
+      workflow_builder:         [N2]
+      dashboard_pivot:          [N2, N3]
+      tradeoff_decision_memo:   [N1, N2, N3]
+
+    # P2.2 · Secciones permitidas por bloque (derivado del runtime_sections
+    # del catalogo). El validador rechaza el caso si un block_id se usa en
+    # una seccion no permitida.
+    block_section_constraints:
+      case_cover:               [contexto]
+      reading_passive:          [contexto, datos, ia, revision, cierre]
+      reading_message:          [contexto, datos, revision]
+      reading_data_table:       [contexto, datos]
+      reading_image:            [contexto, datos, revision]
+      reading_kpi_cards:        [contexto, datos]
+      reading_timeline:         [contexto]
+      reading_attachment:       [contexto, datos]
+      ai_textfield_free:        [ia, cierre]
+      ai_textfield_guided:      [ia]
+      # model_tradeoff_sliders · DIAGNOSTICO_1_CASO_V0 línea 186:
+      # "No es selector de modelos. El modelo es instrumento."
+      # Por eso NO se permite en seccion ia · solo como ejercicio
+      # standalone fuera del beat IA principal.
+      model_tradeoff_sliders:   [datos]
+      categorize_rows:          [datos, ia, revision, cierre]
+      ai_output_review:         [revision, cierre]
+      ai_comparison:            [revision, cierre]
+      workflow_builder:         [ia, cierre]
+      dashboard_pivot:          [cierre]
+      tradeoff_decision_memo:   [cierre]
+
+    # P1.1 · Completion criteria · el shell bloquea Continuar hasta que
+    # el payload del slide satisface su predicate. Implementacion en
+    # lib/simulador/exercise-completion.ts.
+    completion_criteria:
+      case_cover:               "started_at !== null"
+      reading_passive:          "acknowledged === true (auto al montar)"
+      reading_message:          "acknowledged === true"
+      reading_data_table:       "acknowledged === true"
+      reading_image:            "acknowledged === true"
+      reading_kpi_cards:        "acknowledged === true"
+      reading_timeline:         "acknowledged === true"
+      reading_attachment:       "acknowledged === true"
+      ai_textfield_free:        "prompt_text.trim().length > 0"
+      ai_textfield_guided:      "objetivo + audiencia + limites + modelo + generated_prompt"
+      model_tradeoff_sliders:   "3 sliders movidos + recomendado + rationale_text no vacio"
+      categorize_rows:          "todas las row_actions con action !== null"
+      ai_output_review:         "al menos un segmento con flag !== null"
+      ai_comparison:            "selected_output !== null"
+      workflow_builder:         "step_order.length > 0 + rationale_text no vacio"
+      dashboard_pivot:          "selected_filter !== null + leader_takeaway no vacio"
+      tradeoff_decision_memo:   "decision no vacia + memo no vacio"
+
+    # P0.2 · Pantalla de cierre · la unidad publica es la BANDA
+    # alto/medio/bajo. Score numerico solo existe internamente para
+    # calibracion · NUNCA se renderiza al usuario o al manager.
+    closing_screen:
+      public_unit: band         # alto | medio | bajo
+      public_score: false       # numerico nunca se publica (DIAGNOSTICO_1_CASO_V0 §8)
+      risk_events_require_evidence: true  # cita textual del payload del usuario
+      recommendation_actions: [pilotar, entrenar, pausar, escalar]
+
   # ============================================================
   # CONVENCIONES DE COPY (aplican a todos los strings de content)
   # Fuentes: docs/memory/copy_*.md

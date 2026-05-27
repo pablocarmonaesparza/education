@@ -5,6 +5,18 @@
 > **Fuente de verdad**: `docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml` (v0.11.0). Este archivo es **derivado** para que un autor lo lea sin abrir YAML.
 >
 > **Cómo usar**: cuando ensambles un caso (siguiendo `CASE_ASSEMBLY_SCHEMA.yaml`), abre este archivo para elegir qué template va en cada diapositiva y qué `content` necesitas escribir.
+
+## Regla transversal · campos internos del judge
+
+Algunos templates aceptan campos en `caseContext` que **NO se renderizan al usuario** · solo el judge LLM los lee para evaluar. Cumple `DIAGNOSTICO_1_CASO_V0` §7 transversal: "No enseñar antes de medir."
+
+| Template | Campos internos al judge |
+|---|---|
+| `categorize_rows` | `rows[].hint`, `rows[].example` |
+| `ai_output_review` | `segments[].issue`, `segments[].flagIfMarked` |
+| `reading_kpi_cards` | `kpis[].delta.goodWhen` |
+
+Si necesitas dar contexto visual al usuario, **NO uses estos campos** · usa un `reading_message` o `reading_data_table` separado antes del bloque activo.
 >
 > **Reglas de copy para el contenido de los slides**:
 > - Cero acrónimos (escribe "inteligencia artificial" no "IA" en prosa; "IA" sí en labels cortos)
@@ -102,8 +114,10 @@ Bloques que solo presentan contenido. No emiten evidencia al judge. Cierran con 
 
 - **Tipo**: pasivo
 - **Sección habitual**: Contexto, Datos
-- **Knobs**:
+- **Knobs visibles al usuario**:
   - `kpis[]` (`value`, `label`, opcional `delta` con `direction` `up`/`down`/`flat`)
+- **Knobs internos al judge** (NO renderizados al usuario):
+  - `kpis[].delta.goodWhen` · si declaras esto, el judge puede correlacionar el delta con la respuesta del participante en slides posteriores. El bloque NO colorea verde/rojo según `goodWhen`.
 - **Cuándo usar**: situar contexto de negocio con 1 a 3 métricas grandes. Mostrar ingresos, conversión, cancelación, satisfacción antes de pedir análisis.
 - **Evitar cuando**: tienes 4 o más métricas (usa tabla o dashboard). Métricas que requieren interpretación activa (usa `dashboard_pivot`).
 - **Evidencia**: ninguna.
@@ -168,27 +182,31 @@ Bloques que capturan respuesta del participante y emiten evidencia al judge. La 
 ### model_tradeoff_sliders · Sliders de tradeoff de modelo (lab_ref 04)
 
 - **Tipo**: activo · AI-native
-- **Sección habitual**: IA (precede a `ai_textfield_guided`)
+- **Sección habitual**: Datos (como ejercicio standalone, NO en sección IA · ver regla canónica abajo)
 - **Niveles**: N1, N2, N3
 - **Knobs**:
   - `sliderLabels` (`autonomy`, `security`, `cost` por default · pueden customizarse)
   - `sliderDescriptions` (string corto por slider)
   - `availableModels[]` (catálogo restringido por caso)
   - `recommendationMatrix` (combinación de prioridades → modelo recomendado)
-- **Cuándo usar**: medir cómo el participante pondera autonomía, seguridad y costo para elegir modelo. Anteceder a `ai_textfield_guided` cuando el caso necesita justificar la elección.
+- **Cuándo usar**: medir cómo el participante pondera autonomía, seguridad y costo para elegir modelo · como ejercicio que precede al beat IA, NO dentro de él.
+- **Regla canónica**: `DIAGNOSTICO_1_CASO_V0` línea 186: *"No es selector de modelos. El modelo es instrumento."* Por eso el assembly schema lo prohíbe en sección IA · solo se permite en Datos.
 - **Evitar cuando**: el caso fija el modelo por contrato (no hay decisión real). La elección es binaria (usa un toggle simple).
-- **Evidencia**: `autonomy_priority`, `security_priority`, `cost_priority`, `recommended_model_id`
+- **Evidencia**: `autonomy_priority`, `security_priority`, `cost_priority`, `recommended_model_id`, **`rationale_text`** (textarea "¿Por qué priorizaste así?" · aparece cuando hay recomendación · obligatorio para Continuar)
 
 ### categorize_rows · Clasificar filas con acción (lab_ref 05)
 
 - **Tipo**: activo · AI-native
 - **Sección habitual**: Datos, IA, Revisión, Cierre
 - **Niveles**: N1, N2, N3
-- **Knobs**:
-  - `rows[]` (`id`, `title`, `subtitle`, opcional `hint`)
+- **Knobs visibles al usuario**:
+  - `rows[]` (`id`, `label`)
   - `actions[]` (set de strings · ej. `[usar, anonimizar, agregar, excluir]` o `[permitir, revisar, bloquear]` o `[bajo, medio, alto]`)
   - `actionStyle` (`neutral`, `permission`, `severity` · controla color de chips)
   - `prompt` (string · pregunta del slide · ej. "Decide qué hacer con cada contacto antes del envío.")
+- **Knobs internos al judge** (NO renderizados al usuario):
+  - `rows[].hint` · criterio que el judge usa para evaluar (ej. "Consentimiento revocado · regla dura")
+  - `rows[].example` · contexto que el judge usa para evaluar (ej. "Dato personal directo")
 - **Cuándo usar**: el participante debe clasificar un set de items (campos, contactos, eventos, riesgos) con una acción discreta por item. Reemplaza a los antiguos `data_table_triage`, `permission_matrix`, `event_flag_review`.
 - **Evitar cuando**: solo hay 1 o 2 items (usa un toggle simple). La decisión necesita un slider continuo (usa `model_tradeoff_sliders`).
 - **Evidencia**: `row_actions` (array `{row_id, action}`)
@@ -197,16 +215,17 @@ Bloques que capturan respuesta del participante y emiten evidencia al judge. La 
 ### ai_output_review · Revisión de output de IA (lab_ref 06)
 
 - **Tipo**: activo · AI-native
-- **Sección habitual**: Revisión
+- **Sección habitual**: Revisión, Cierre
 - **Niveles**: N1, N2, N3
-- **Knobs**:
-  - `segments[]` (`id`, `text`, opcional `flagOptions` overrideando los defaults)
-  - `flagOptions[]` (default · `claim_no_verificado`, `tono_agresivo`, `dato_sensible`, `frase_reutilizable`)
+- **Knobs visibles al usuario**:
+  - `segments[]` (`id`, `text` · solo el texto del segmento es visible)
   - `prompt` (string · ej. "Marca los problemas antes de enviar este mensaje.")
-  - `followupPrompt` (opcional · pregunta a la IA después del flagging)
+- **Knobs internos al judge** (NO renderizados al usuario):
+  - `segments[].issue` · etiqueta del tipo de riesgo que el judge espera detectar
+  - `segments[].flagIfMarked` · qué flag asignar si el usuario marca el segmento
 - **Cuándo usar**: la IA produjo algo plausible pero imperfecto. El participante debe detectar errores antes de usar o enviar.
 - **Evitar cuando**: el output es caricaturescamente malo. No hay riesgos o claims verificables.
-- **Evidencia**: `flagged_segments`, `missed_risks`, `correction_request`
+- **Evidencia**: `flagged_segments` (array `{segment_id, flag}`)
 
 ### ai_comparison · Comparación de respuestas (lab_ref 07)
 
@@ -225,26 +244,26 @@ Bloques que capturan respuesta del participante y emiten evidencia al judge. La 
 
 - **Tipo**: activo · AI-native
 - **Sección habitual**: IA, Cierre
-- **Niveles**: N2
+- **Niveles**: N2 (no permitido en N1)
 - **Knobs**:
   - `steps[]` (`id`, `label`, opcional `description` y `tool`)
   - `prompt` (string · ej. "Ordena los pasos del flujo de envío con revisión humana.")
 - **Cuándo usar**: el caso mide handoffs, checkpoints y responsabilidad dentro de un flujo. La IA participa en un proceso, no en una tarea aislada.
 - **Evitar cuando**: el flujo se reduce a escribir un prompt. No hay revisión humana o entrega definida.
-- **Evidencia**: `enabled_steps`, `step_order`
+- **Evidencia**: `enabled_steps`, `step_order`, **`rationale_text`** (textarea "¿Por qué este orden?" al final · obligatorio para Continuar)
 
 ### dashboard_pivot · Dashboard / pivot (lab_ref 09)
 
 - **Tipo**: activo · traditional business signal
 - **Sección habitual**: Cierre
-- **Niveles**: N2, N3
+- **Niveles**: N2, N3 (no permitido en N1)
 - **Knobs**:
   - `filters[]` (cada uno con `id`, `label`, `metrics` array con `label` + `value` + opcional `band` `alto`/`medio`/`bajo`)
   - `prompt` (string · ej. "Elige el segmento que vas a llevar al manager esta semana.")
 - **Cuándo usar**: el participante debe leer una señal de negocio y decidir qué llevar al líder. Hay métricas con caveats, filtros o segmentación.
 - **Evitar cuando**: el dashboard no fuerza una decisión. Las métricas son decorativas o irrelevantes.
-- **Evidencia**: `selected_filter`
-- **Maneja Continuar interno**: sí (auto-advance al elegir).
+- **Evidencia**: `selected_filter`, **`leader_takeaway`** (textarea "¿Qué le llevarías al manager?" tras seleccionar · obligatorio para Continuar)
+- **Maneja Continuar interno**: NO · el shell muestra Continuar después de que el participante escriba el takeaway.
 
 ### tradeoff_decision_memo · Decisión con ventajas y costos + memo (lab_ref 10)
 
@@ -265,9 +284,11 @@ Bloques que capturan respuesta del participante y emiten evidencia al judge. La 
 
 ## Notas finales
 
-- **OWNS_CONTINUE** (bloques que manejan su propio botón Continuar · no usan el del shell): `case_cover`, `ai_textfield_guided`, `categorize_rows`, `ai_comparison`, `dashboard_pivot`. El resto usa el Continuar default del shell.
+- **OWNS_CONTINUE** (bloques que manejan su propio botón Continuar · no usan el del shell): `case_cover`, `ai_textfield_guided`, `categorize_rows`, `ai_comparison`. El resto usa el Continuar default del shell.
+- **Bloqueo de Continuar** (P1.1): el shell deshabilita el botón Continuar hasta que el bloque emita evidencia suficiente · ver `completion_criteria` en `CASE_ASSEMBLY_SCHEMA.yaml`.
 - **Ratio AI-native mínimo**: 60% del caso (ver `EXERCISE_BLOCK_CATALOG.yaml` regla 21 de `product_rules`). Pasivos máximo 40% del caso.
 - **Selection recipes por nivel**:
-  - N1 (Fundamentos): `ai_textfield_free`, `ai_textfield_guided`, `categorize_rows`, `ai_output_review`, `tradeoff_decision_memo`
-  - N2 (Workflow): añade `model_tradeoff_sliders`, `workflow_builder`, `dashboard_pivot`
-  - N3 (Agentes): foco en `ai_textfield_guided`, `categorize_rows`, `workflow_builder`, `dashboard_pivot`, `tradeoff_decision_memo`
+  - N1 (Fundamentos): `ai_textfield_free`, `ai_textfield_guided`, `categorize_rows`, `ai_output_review`, `tradeoff_decision_memo`. `model_tradeoff_sliders` permitido si va en sección Datos (no en IA).
+  - N2 (Workflow): añade `workflow_builder`, `dashboard_pivot`.
+  - N3 (Agentes): foco en `ai_textfield_guided`, `categorize_rows`, `workflow_builder`, `dashboard_pivot`, `tradeoff_decision_memo`. No usar `ai_textfield_free` ni `ai_comparison` (catálogo limita a N1-N2).
+- **Pantalla de cierre** (P0.2): banda alto/medio/bajo como única unidad pública. Cero score numérico visible. Risk events con cita textual del payload del usuario. Recomendación derivada del patrón de bandas (`pilotar` / `entrenar` / `pausar` / `escalar`).

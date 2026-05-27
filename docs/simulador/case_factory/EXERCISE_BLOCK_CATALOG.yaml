@@ -1,6 +1,6 @@
 exercise_block_catalog:
-  version: 0.11.0
-  status: canonical_after_exercise_lab_review
+  version: 0.12.0
+  status: canonical_after_p0_p3_refactor
   source_route: /exercise-lab
   purpose: >
     Catalogo cerrado de interacciones para crear casos Itera sin reinventar
@@ -178,8 +178,12 @@ exercise_block_catalog:
         - "Las metricas requieren interpretacion activa; usa dashboard_pivot."
       personalization_knobs:
         - "kpis (value, label, delta opcional con direccion up/down/flat)"
+      judge_internal_fields:
+        # P0 · kpis[].delta.goodWhen NO se usa para colorear · cumple
+        # "no enseñar antes de medir" · el bloque deja el delta neutral.
+        - "kpis[].delta.goodWhen · usado solo por el judge para correlacionar"
       emits: []
-      ui_pattern: "titulo + body markdown + 1-3 cards de KPI con numero grande, label, delta"
+      ui_pattern: "titulo + body markdown + 1-3 cards de KPI con numero grande, label, delta neutral"
       default_empty_fields: []
       scoring_method: passive
       completion: "auto al clickear continuar"
@@ -298,11 +302,11 @@ exercise_block_catalog:
         - "etiquetas y descripciones de cada slider"
         - "modelos disponibles (catalogo restringido por caso)"
         - "set de modelos recomendados por combinacion"
-      emits: [autonomy_priority, security_priority, cost_priority, recommended_model_id]
-      ui_pattern: "3 sliders 0-100 en pasos de 10 + modelo recomendado dinamico con BrandMark"
-      default_empty_fields: [autonomy_priority, security_priority, cost_priority, recommended_model_id]
+      emits: [autonomy_priority, security_priority, cost_priority, recommended_model_id, rationale_text]
+      ui_pattern: "3 sliders 0-100 en pasos de 10 + modelo recomendado dinamico con BrandMark + textarea ¿por que priorizaste asi?"
+      default_empty_fields: [autonomy_priority, security_priority, cost_priority, recommended_model_id, rationale_text]
       scoring_method: judge_with_priority_coherence_check
-      completion: "los 3 sliders movidos al menos una vez + modelo recomendado confirmado"
+      completion: "los 3 sliders movidos + modelo recomendado + rationale_text no vacio (P1.2)"
 
     - id: categorize_rows
       lab_ref: "05"
@@ -319,10 +323,13 @@ exercise_block_catalog:
         - "Solo hay 1-2 items; usa un toggle simple."
         - "La decision necesita un slider continuo; usa model_tradeoff_sliders."
       personalization_knobs:
-        - "filas (items a clasificar)"
+        - "filas (items a clasificar) · solo label visible al usuario"
         - "acciones disponibles (set de strings)"
         - "actionStyle (neutral, permission, severity) para color de chips"
-        - "ejemplos y hints por fila"
+      judge_internal_fields:
+        # P0 · campos NO renderizados al usuario · cumple "no enseñar antes de medir"
+        - "rows[].hint · criterio que el judge usa para evaluar"
+        - "rows[].example · contexto que el judge usa para evaluar"
       emits: [row_actions]
       ui_pattern: "tabla por item con chips inline de accion (sin dropdown)"
       default_empty_fields: [row_actions]
@@ -348,11 +355,13 @@ exercise_block_catalog:
         - "El output es caricaturescamente malo."
         - "No hay riesgos o claims verificables."
       personalization_knobs:
-        - "segmentos marcables"
-        - "severidad"
-        - "correccion esperada"
-        - "follow-up con IA"
-      emits: [flagged_segments, missed_risks, correction_request]
+        - "segments[] · solo id y text visibles al usuario"
+        - "flagOptions[] · banderas disponibles para marcar"
+      judge_internal_fields:
+        # P0 · campos NO renderizados al usuario · cumple "no enseñar antes de medir"
+        - "segments[].issue · etiqueta del tipo de riesgo que el judge espera detectar"
+        - "segments[].flagIfMarked · qué flag asignar si el usuario marca el segmento"
+      emits: [flagged_segments]
       ui_pattern: "segmentos seleccionables + follow-up opcional"
       default_empty_fields: [flagged_segments, correction_request]
       scoring_method: risk_event_recall_precision
@@ -403,11 +412,11 @@ exercise_block_catalog:
         - "herramientas"
         - "checkpoints"
         - "salida del flujo"
-      emits: [workflow_steps, checkpoints, handoff_plan]
-      ui_pattern: "pasos activables, ordenables o conectados"
-      default_empty_fields: []
+      emits: [enabled_steps, step_order, rationale_text]
+      ui_pattern: "pasos activables, ordenables o conectados + textarea ¿por que este orden?"
+      default_empty_fields: [enabled_steps, step_order, rationale_text]
       scoring_method: workflow_integrity_rules
-      completion: "flujo tiene entrada, uso de IA, revision y salida"
+      completion: "step_order no vacio + rationale_text no vacio (P1.2)"
 
     # NOTA: agent_brief_builder fue eliminado en v0.10.0 · era el mismo template
     # que ai_textfield_guided (stepper con subsecciones de single-select).
@@ -437,11 +446,11 @@ exercise_block_catalog:
         - "cohortes"
         - "comparativos"
         - "caveats"
-      emits: [selected_signal, leader_takeaway, metric_caveats]
-      ui_pattern: "tabla o dashboard filtrable con senal para lider"
-      default_empty_fields: [selected_signal, leader_takeaway]
+      emits: [selected_filter, leader_takeaway]
+      ui_pattern: "tabla o dashboard filtrable con senal para lider + textarea ¿que le llevarias al manager?"
+      default_empty_fields: [selected_filter, leader_takeaway]
       scoring_method: manager_signal_alignment
-      completion: "senal elegida y takeaway declarado"
+      completion: "selected_filter no nulo + leader_takeaway no vacio (P1.2 · ya no auto-advance)"
 
     - id: tradeoff_decision_memo
       lab_ref: "10"
