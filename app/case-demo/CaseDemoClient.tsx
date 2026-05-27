@@ -496,6 +496,16 @@ export function CaseDemoClient() {
   /** Dirección de la transición · 1 = avanza (slide nueva entra desde abajo),
    *  -1 = regresa (slide nueva entra desde arriba). */
   const [direction, setDirection] = useState<1 | -1>(1);
+  /** Cuando el participante termina el caso (último slide + Continuar),
+   *  reemplazamos el runtime por la pantalla de cierre · simulación del
+   *  reporte que el manager recibe. Permite `?completed=1` en la URL
+   *  para saltar directo (preview, demos, screenshots). */
+  const [isCompleted, setIsCompleted] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return new URLSearchParams(window.location.search).get("completed") === "1";
+  });
+  /** Timestamp de inicio del caso · para calcular duración total al cierre. */
+  const [startedAt] = useState(() => Date.now());
 
   const slide = SLIDES[sectionIdx]?.[slideIdx];
   const ownsContinue = slide ? OWNS_CONTINUE.has(slide.blockId) : false;
@@ -513,6 +523,8 @@ export function CaseDemoClient() {
       setSectionIdx(sectionIdx + 1);
       setSlideIdx(0);
     } else {
+      // Última slide · ir a pantalla de cierre
+      setIsCompleted(true);
       return;
     }
     setMaxLinearVisited((m) => (nextLinear > m ? nextLinear : m));
@@ -565,6 +577,13 @@ export function CaseDemoClient() {
 
   const isLastSlide =
     sectionIdx === SECTIONS.length - 1 && slideIdx === SLIDES_PER_SECTION - 1;
+
+  // Pantalla de cierre · simulación del reporte que el manager recibe.
+  if (isCompleted) {
+    const durationMs = Date.now() - startedAt;
+    const durationMinutes = Math.max(1, Math.round(durationMs / 60_000));
+    return <CaseCompletedScreen durationMinutes={durationMinutes} />;
+  }
 
   return (
     <main className="simulador-root min-h-screen surface-canvas text-[var(--text-primary)]">
@@ -734,34 +753,243 @@ export function CaseDemoClient() {
               </div>
 
               {/* Continuar · solo si el bloque no maneja su propio CTA.
-                  Atrás vive en el header arriba (cuadrado con ícono). */}
+                  Atrás vive en el header arriba (cuadrado con ícono).
+                  En la última slide, "Continuar" → pantalla de cierre. */}
               {!ownsContinue && (
                 <div className="mt-10 flex items-center gap-4">
                   <button
                     type="button"
                     onClick={goNext}
-                    disabled={isLastSlide}
-                    className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
-                      isLastSlide
-                        ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-                        : "accent-bg hover:opacity-90"
-                    }`}
+                    className="rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity accent-bg hover:opacity-90"
                   >
-                    {isLastSlide ? "Caso completado" : "Continuar →"}
+                    {isLastSlide ? "Ver resumen →" : "Continuar →"}
                   </button>
-                  {!isLastSlide && (
-                    <span className="ts-footnote text-[var(--text-tertiary)]">
-                      o pulsa{" "}
-                      <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
-                        Enter ↵
-                      </kbd>
-                    </span>
-                  )}
+                  <span className="ts-footnote text-[var(--text-tertiary)]">
+                    o pulsa{" "}
+                    <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
+                      Enter ↵
+                    </kbd>
+                  </span>
                 </div>
               )}
             </motion.div>
           </AnimatePresence>
         </section>
+      </div>
+    </main>
+  );
+}
+
+// ============================================================
+// PANTALLA DE CIERRE · simulación del reporte que recibe el manager
+// ============================================================
+
+interface CaseCompletedScreenProps {
+  durationMinutes: number;
+}
+
+type Band = "alto" | "medio" | "bajo";
+
+interface DimensionScore {
+  id: string;
+  label: string;
+  band: Band;
+  insight: string;
+}
+
+interface RiskEvent {
+  id: string;
+  severity: "alto" | "medio";
+  text: string;
+  evidence: string;
+}
+
+// Datos sintéticos · representan la salida de un judge real para una persona
+// que terminó el caso con perfil "operador medio que necesita entrenamiento".
+const DIMENSIONS: DimensionScore[] = [
+  { id: "contexto", label: "Contexto", band: "alto", insight: "Leyó la presión del lunes y la restricción de Legal antes de actuar." },
+  { id: "privacidad", label: "Privacidad", band: "medio", insight: "Excluyó datos personales en su mayoría · dejó pasar una nota interna." },
+  { id: "validacion", label: "Validación", band: "medio", insight: "Marcó dos de tres cifras inventadas · aceptó el dato del 87% sin pedir fuente." },
+  { id: "juicio", label: "Juicio", band: "alto", insight: "Eligió piloto controlado en vez de lanzar el lunes · razón sólida." },
+  { id: "decision", label: "Decisión", band: "medio", insight: "Memo final claro pero sin métrica de éxito acordada." },
+];
+
+const RISK_EVENTS: RiskEvent[] = [
+  {
+    id: "claim_no_verificado",
+    severity: "alto",
+    text: "Aceptó cifra cuantitativa generada por la inteligencia artificial sin pedir fuente.",
+    evidence: "Mantuvo el dato del 87% en el borrador hasta que el manager lo cuestionó.",
+  },
+  {
+    id: "dato_sensible",
+    severity: "medio",
+    text: "Mantuvo una nota interna del equipo comercial en el prompt al modelo.",
+    evidence: "Marcó el campo notas internas como Usar en vez de Excluir o Anonimizar.",
+  },
+];
+
+const RECOMMENDATION = {
+  action: "entrenar",
+  title: "Entrenar antes de pilotar",
+  detail:
+    "Esta persona muestra criterio sólido para limpiar datos sucios y elegir entre opciones bajo presión. El gap está en validación cuantitativa: tiende a aceptar cifras de la inteligencia artificial sin pedir respaldo. Una práctica corta de verificación antes de enviar resuelve el patrón sin frenar el flujo.",
+  next_practice: {
+    title: "Verifica antes de enviar",
+    duration: "5 minutos",
+    description: "Mini-ejercicio sobre cómo pedir respaldo a una cifra antes de incluirla en un envío externo.",
+  },
+};
+
+function BandPill({ band }: { band: Band }) {
+  const colors: Record<Band, string> = {
+    alto: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
+    medio: "border-amber-500/40 bg-amber-500/10 text-amber-300",
+    bajo: "border-rose-500/40 bg-rose-500/10 text-rose-300",
+  };
+  return (
+    <span
+      className={`inline-flex items-center rounded-full border px-3 py-0.5 ts-caption-1 font-medium capitalize ${colors[band]}`}
+    >
+      {band}
+    </span>
+  );
+}
+
+function SeverityPill({ severity }: { severity: "alto" | "medio" }) {
+  const colors = {
+    alto: "border-rose-500/40 bg-rose-500/10 text-rose-300",
+    medio: "border-amber-500/40 bg-amber-500/10 text-amber-300",
+  };
+  return (
+    <span
+      className={`inline-flex items-center rounded-full border px-3 py-0.5 ts-caption-1 font-medium capitalize ${colors[severity]}`}
+    >
+      riesgo {severity}
+    </span>
+  );
+}
+
+function CaseCompletedScreen({ durationMinutes }: CaseCompletedScreenProps) {
+  return (
+    <main className="simulador-root min-h-screen surface-canvas text-[var(--text-primary)]">
+      <div className="mx-auto w-[72%] max-w-[1100px] px-4 py-12">
+        {/* HEADER · marca y acción rápida para volver al lab */}
+        <div className="flex items-center justify-between">
+          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+            Caso completado · Fundamentos: Marketing
+          </div>
+          <a
+            href="/exercise-lab"
+            className="ts-footnote text-[var(--text-secondary)] underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
+          >
+            Volver al lab →
+          </a>
+        </div>
+
+        {/* HERO · título + duración */}
+        <h1 className="mt-6 display display-tight ts-display text-[var(--text-primary)]">
+          Esto es lo que tu manager va a ver.
+        </h1>
+        <p className="mt-3 ts-body text-[var(--text-secondary)]">
+          Terminaste el caso en <strong className="text-[var(--text-primary)]">{durationMinutes} minutos</strong>. El reporte abajo simula la señal que tu manager recibe para decidir el siguiente paso contigo.
+        </p>
+
+        {/* RECOMENDACIÓN · card principal */}
+        <section className="mt-10 rounded-[var(--radius-lg)] border border-[var(--accent)] bg-[var(--accent-soft)] p-6">
+          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--accent)]">
+            Acción sugerida para el manager
+          </div>
+          <div className="mt-2 ts-title-2 font-semibold text-[var(--text-primary)]">
+            {RECOMMENDATION.title}
+          </div>
+          <p className="mt-3 ts-body leading-[1.55] text-[var(--text-secondary)]">
+            {RECOMMENDATION.detail}
+          </p>
+        </section>
+
+        {/* DIMENSIONES · 5 bandas */}
+        <section className="mt-8">
+          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+            Cinco dimensiones evaluadas
+          </div>
+          <div className="mt-4 divide-y divide-[var(--hairline)] rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
+            {DIMENSIONS.map((d) => (
+              <div key={d.id} className="flex items-start gap-4 p-4">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-3">
+                    <span className="ts-callout font-medium text-[var(--text-primary)]">
+                      {d.label}
+                    </span>
+                    <BandPill band={d.band} />
+                  </div>
+                  <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
+                    {d.insight}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* RIESGOS DETECTADOS · eventos observables */}
+        <section className="mt-8">
+          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+            Riesgos detectados
+          </div>
+          <div className="mt-4 space-y-3">
+            {RISK_EVENTS.map((r) => (
+              <div
+                key={r.id}
+                className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-4"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <p className="ts-callout font-medium text-[var(--text-primary)]">
+                    {r.text}
+                  </p>
+                  <SeverityPill severity={r.severity} />
+                </div>
+                <p className="mt-2 ts-footnote text-[var(--text-tertiary)]">
+                  Evidencia: {r.evidence}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* PRÁCTICA SUGERIDA · cierre con acción concreta */}
+        <section className="mt-8 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-6">
+          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+            Práctica sugerida
+          </div>
+          <div className="mt-2 flex items-baseline gap-3">
+            <div className="ts-title-3 font-semibold text-[var(--text-primary)]">
+              {RECOMMENDATION.next_practice.title}
+            </div>
+            <span className="ts-footnote text-[var(--text-tertiary)]">
+              · {RECOMMENDATION.next_practice.duration}
+            </span>
+          </div>
+          <p className="mt-2 ts-body text-[var(--text-secondary)]">
+            {RECOMMENDATION.next_practice.description}
+          </p>
+        </section>
+
+        {/* CTAs */}
+        <div className="mt-10 flex items-center gap-3">
+          <a
+            href="/exercise-lab"
+            className="rounded-[var(--radius-md)] accent-bg px-7 py-3 ts-callout font-medium text-white transition-opacity hover:opacity-90"
+          >
+            Volver al lab de ejercicios
+          </a>
+          <a
+            href="/case-demo"
+            className="rounded-[var(--radius-md)] border border-[var(--border)] px-7 py-3 ts-callout font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          >
+            Repetir el caso
+          </a>
+        </div>
       </div>
     </main>
   );
