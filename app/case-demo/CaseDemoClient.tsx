@@ -23,6 +23,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
 import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
 import type { ExerciseResponsePayload } from "@/lib/simulador/exercise-registry";
+import { isBlockComplete } from "@/lib/simulador/exercise-completion";
 import { SlideBody } from "../exercise-lab/_shared/SlideBody";
 
 // ============================================================
@@ -516,6 +517,12 @@ export function CaseDemoClient() {
   const linearIdx = sectionIdx * SLIDES_PER_SECTION + slideIdx;
   const canGoForward = linearIdx < maxLinearVisited;
   const currentSlideId = `${SECTIONS[sectionIdx].id}-${slideIdx + 1}`;
+  /** P1.1 · Continuar se deshabilita si el bloque actual no emitió
+   *  evidencia suficiente. El predicate vive en exercise-completion.ts. */
+  const currentPayload = payloads[currentSlideId];
+  const blockComplete = slide
+    ? isBlockComplete(slide.blockId, currentPayload).complete
+    : false;
 
   const goNext = useCallback(() => {
     const nextLinear = linearIdx + 1;
@@ -561,21 +568,22 @@ export function CaseDemoClient() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [sectionIdx, slideIdx]);
 
-  // Enter para continuar (solo si no es un bloque que owns continue)
+  // Enter para continuar (solo si no es un bloque que owns continue y
+  // sólo si el bloque ya emitió evidencia suficiente · P1.1).
   useEffect(() => {
     if (ownsContinue) return;
     function handleKey(e: KeyboardEvent) {
       if (e.key === "Enter" && !e.shiftKey && !e.metaKey && !e.ctrlKey) {
         const target = e.target as HTMLElement;
-        // No interferir si está escribiendo en textarea o input
         if (target.tagName === "TEXTAREA" || target.tagName === "INPUT") return;
+        if (!blockComplete) return;
         e.preventDefault();
         goNext();
       }
     }
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [goNext, ownsContinue]);
+  }, [goNext, ownsContinue, blockComplete]);
 
   if (!slide) return null;
 
@@ -764,16 +772,27 @@ export function CaseDemoClient() {
                   <button
                     type="button"
                     onClick={goNext}
-                    className="rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity accent-bg hover:opacity-90"
+                    disabled={!blockComplete}
+                    className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium transition-opacity ${
+                      blockComplete
+                        ? "accent-bg text-white hover:opacity-90"
+                        : "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
+                    }`}
                   >
                     {isLastSlide ? "Ver resumen →" : "Continuar →"}
                   </button>
-                  <span className="ts-footnote text-[var(--text-tertiary)]">
-                    o pulsa{" "}
-                    <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
-                      Enter ↵
-                    </kbd>
-                  </span>
+                  {blockComplete ? (
+                    <span className="ts-footnote text-[var(--text-tertiary)]">
+                      o pulsa{" "}
+                      <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
+                        Enter ↵
+                      </kbd>
+                    </span>
+                  ) : (
+                    <span className="ts-footnote text-[var(--text-tertiary)]">
+                      Completa el ejercicio para continuar.
+                    </span>
+                  )}
                 </div>
               )}
             </motion.div>
