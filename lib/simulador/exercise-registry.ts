@@ -102,6 +102,9 @@ export type ExerciseResponsePayload =
       security_priority: number | null;
       cost_priority: number | null;
       recommended_model_id: string | null;
+      /** Justificación del usuario sobre por qué priorizó así. P1 ·
+       *  permite al judge construir narrativa, no solo evaluar números. */
+      rationale_text: string;
     }
   | {
       // Template genérico de clasificación · v0.10.0.
@@ -138,6 +141,9 @@ export type ExerciseResponsePayload =
       block_id: "workflow_builder";
       enabled_steps: string[]; // ids de pasos activados (trigger, gate, action, ...)
       step_order: string[]; // si el usuario reordena
+      /** Justificación del usuario sobre por qué ese orden + qué pasos
+       *  decidió activar. P1 · permite al judge construir narrativa. */
+      rationale_text: string;
     }
   | {
       // La elección del filtro codifica el juicio del participante
@@ -145,6 +151,10 @@ export type ExerciseResponsePayload =
       // de justificación · regla del producto: eliminar fricción cualitativa.
       block_id: "dashboard_pivot";
       selected_filter: string | null;
+      /** Takeaway que el participante llevaría al manager · campo
+       *  declarado en EXERCISE_BLOCK_CATALOG.yaml `emits:
+       *  [leader_takeaway]` pero faltaba implementar. P1. */
+      leader_takeaway: string;
     }
   | {
       block_id: "tradeoff_decision_memo";
@@ -271,6 +281,7 @@ export function emptyPayload(block_id: ExerciseBlockId): ExerciseResponsePayload
         security_priority: null,
         cost_priority: null,
         recommended_model_id: null,
+        rationale_text: "",
       };
     case "categorize_rows":
       return { block_id, row_actions: [] };
@@ -279,9 +290,9 @@ export function emptyPayload(block_id: ExerciseBlockId): ExerciseResponsePayload
     case "ai_comparison":
       return { block_id, selected_output: null };
     case "workflow_builder":
-      return { block_id, enabled_steps: [], step_order: [] };
+      return { block_id, enabled_steps: [], step_order: [], rationale_text: "" };
     case "dashboard_pivot":
-      return { block_id, selected_filter: null };
+      return { block_id, selected_filter: null, leader_takeaway: "" };
     case "tradeoff_decision_memo":
       return { block_id, decision: "", memo: "" };
   }

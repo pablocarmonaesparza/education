@@ -199,6 +199,34 @@ export function ModelTradeoffSliders({
           </div>
         )}
       </div>
+
+      {/* Justificación · aparece cuando ya hay recomendación · el juez
+          construye narrativa con el porqué, no solo con los números. */}
+      {recommendedModel && (
+        <div className="space-y-2">
+          <label
+            htmlFor={`${slideId}-rationale`}
+            className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]"
+          >
+            ¿Por qué priorizaste así?
+          </label>
+          <textarea
+            id={`${slideId}-rationale`}
+            value={payload.rationale_text}
+            onChange={(e) => {
+              const next: ModelTradeoffSlidersPayload = {
+                ...payload,
+                rationale_text: e.target.value,
+              };
+              onChange(next);
+              onPatch?.(next);
+            }}
+            placeholder="En una o dos líneas, explica qué te llevó a esa ponderación."
+            rows={2}
+            className="w-full resize-none rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 ts-body text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
+          />
+        </div>
+      )}
     </div>
   );
 }

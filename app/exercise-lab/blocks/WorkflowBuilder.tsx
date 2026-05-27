@@ -116,19 +116,42 @@ export function WorkflowBuilder({
   }
 
   return (
-    <SortableList
-      items={orderedSteps}
-      getItemKey={(s) => s.id}
-      onReorder={reorder}
-      renderItem={(step, _index, dragHandle) => (
-        <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
-          {dragHandle}
-          <span className="ts-body text-[var(--text-primary)]">
-            {step.label}
-          </span>
-        </div>
-      )}
-    />
+    <div className="space-y-5">
+      <SortableList
+        items={orderedSteps}
+        getItemKey={(s) => s.id}
+        onReorder={reorder}
+        renderItem={(step, _index, dragHandle) => (
+          <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] px-4 py-3">
+            {dragHandle}
+            <span className="ts-body text-[var(--text-primary)]">
+              {step.label}
+            </span>
+          </div>
+        )}
+      />
+
+      {/* Justificación · el judge necesita el porqué del orden, no solo
+          el orden mismo · cumple "evidencia narrativa" del cierre. */}
+      <div className="space-y-2">
+        <label
+          htmlFor={`${slideId}-rationale`}
+          className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]"
+        >
+          ¿Por qué este orden?
+        </label>
+        <textarea
+          id={`${slideId}-rationale`}
+          value={payload.rationale_text}
+          onChange={(e) => {
+            persist({ ...payload, rationale_text: e.target.value });
+          }}
+          placeholder="En una línea, explica qué decidió el orden y dónde entra revisión humana."
+          rows={2}
+          className="w-full resize-none rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 ts-body text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
+        />
+      </div>
+    </div>
   );
 }
 

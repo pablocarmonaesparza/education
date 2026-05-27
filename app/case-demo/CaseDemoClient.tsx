@@ -39,13 +39,17 @@ const SECTIONS = [
 
 const SLIDES_PER_SECTION = 5;
 
-// Bloques que manejan su propio botón Continuar internamente.
+// Bloques que manejan su propio botón Continuar internamente (auto-advance
+// o subsección de revisión con CTA propio). El resto usa el Continuar del
+// shell · el shell consultará completionPredicate del registry para
+// bloquear avance si el payload aún no satisface la regla del bloque.
 const OWNS_CONTINUE = new Set<ExerciseBlockId>([
   "case_cover",
   "ai_textfield_guided",
   "categorize_rows",
   "ai_comparison",
-  "dashboard_pivot",
+  // dashboard_pivot · removido en P1.2 · ahora pide leader_takeaway,
+  // ya no auto-avanza.
 ]);
 
 // Variants de la transición entre slides · efecto scroll vertical.

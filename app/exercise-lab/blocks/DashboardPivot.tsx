@@ -104,13 +104,12 @@ export function DashboardPivot({
       });
     }
     onPatch?.(next);
-    // Auto-advance · la elección codifica el juicio.
-    if (onShellContinue) {
-      window.setTimeout(() => onShellContinue(), 360);
-    }
+    // El bloque NO auto-avanza · ahora pide un takeaway escrito antes
+    // de continuar · cumple "evidencia narrativa" (P1.2).
   }
 
   return (
+    <div className="space-y-5">
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
       {TEAMS.map((team, idx) => {
         const isSelected = payload.selected_filter === team.id;
@@ -158,6 +157,35 @@ export function DashboardPivot({
           </motion.button>
         );
       })}
+    </div>
+
+    {/* Takeaway · aparece cuando se eligió un segmento · campo declarado
+        en EXERCISE_BLOCK_CATALOG.yaml como emit, ahora implementado (P1.2). */}
+    {payload.selected_filter && (
+      <div className="space-y-2">
+        <label
+          htmlFor={`${slideId}-takeaway`}
+          className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]"
+        >
+          ¿Qué le llevarías al manager?
+        </label>
+        <textarea
+          id={`${slideId}-takeaway`}
+          value={payload.leader_takeaway}
+          onChange={(e) => {
+            const next: DashboardPivotPayload = {
+              ...payload,
+              leader_takeaway: e.target.value,
+            };
+            onChange(next);
+            onPatch?.(next);
+          }}
+          placeholder="En una o dos líneas, qué señal de este segmento llevarías a la reunión."
+          rows={2}
+          className="w-full resize-none rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 ts-body text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
+        />
+      </div>
+    )}
     </div>
   );
 }

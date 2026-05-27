@@ -116,6 +116,7 @@ const ModelTradeoffSlidersSchema = z.strictObject({
   security_priority: z.number().min(0).max(100).nullable(),
   cost_priority: z.number().min(0).max(100).nullable(),
   recommended_model_id: z.string().nullable(),
+  rationale_text: z.string(),
 });
 
 // Template genérico de clasificación (v0.10.0) · reemplaza a
@@ -149,11 +150,13 @@ const WorkflowBuilderSchema = z.strictObject({
   block_id: z.literal("workflow_builder"),
   enabled_steps: z.array(z.string()),
   step_order: z.array(z.string()),
+  rationale_text: z.string(),
 });
 
 const DashboardPivotSchema = z.strictObject({
   block_id: z.literal("dashboard_pivot"),
   selected_filter: z.string().nullable(),
+  leader_takeaway: z.string(),
 });
 
 const TradeoffDecisionMemoSchema = z.strictObject({
