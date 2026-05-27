@@ -79,7 +79,40 @@ interface Slide {
   blockId: ExerciseBlockId;
   title: string;
   body: string;
+  /** Contenido visible al usuario · pasa al renderer del bloque. */
   caseContext?: Record<string, unknown>;
+  /** Metadata interna del judge · NO pasa al cliente del bloque. Vive
+   *  solo en el caso (server-side cuando esté wired). El shell la
+   *  ignora completamente al renderizar. P0.1 real (vs visual). */
+  judgeMeta?: Record<string, unknown>;
+}
+
+/** Strip de campos sensibles del caseContext antes de pasar al renderer.
+ *  Garantiza que aunque un autor olvide separar judgeMeta, los campos
+ *  prohibidos (hint, example, issue, flagIfMarked, goodWhen) jamás
+ *  lleguen al cliente del bloque. P0.1 real · cumple regla transversal
+ *  "no enseñar antes de medir" a nivel estructural. */
+function stripJudgeFields(
+  ctx: Record<string, unknown> | undefined,
+): Record<string, unknown> | undefined {
+  if (!ctx) return ctx;
+  const clean = JSON.parse(JSON.stringify(ctx));
+  function walk(node: unknown): void {
+    if (!node || typeof node !== "object") return;
+    if (Array.isArray(node)) {
+      node.forEach(walk);
+      return;
+    }
+    const obj = node as Record<string, unknown>;
+    delete obj.hint;
+    delete obj.example;
+    delete obj.issue;
+    delete obj.flagIfMarked;
+    delete obj.goodWhen;
+    Object.values(obj).forEach(walk);
+  }
+  walk(clean);
+  return clean;
 }
 
 // ============================================================
@@ -298,11 +331,16 @@ const SLIDES: Slide[][] = [
   // SECCIÓN 3 · IA (5 slides · narrativa de iteración con IA)
   // ============================================================
   [
-    // Slot 1: model_tradeoff_sliders · elegir el modelo ANTES de pedir nada
+    // Slot 1: reading_passive · contexto operativo antes del beat IA.
+    // El bloque model_tradeoff_sliders está prohibido en sección IA
+    // (DIAGNOSTICO_1_CASO_V0 §7: "No es selector de modelos"). El caso
+    // real presenta el modelo como instrumento dado, no como decisión
+    // del participante dentro del beat IA. reading_passive es el único
+    // pasivo permitido en sección IA (block_section_constraints).
     {
-      blockId: "model_tradeoff_sliders",
-      title: "¿Qué modelo vas a usar?",
-      body: "Antes de pedir nada, decide. El caso tiene **datos personales** y un deadline duro. Mueve los sliders según tu prioridad real y revisa el modelo recomendado.",
+      blockId: "reading_passive",
+      title: "Modelo aprobado para este envío.",
+      body: "Para campañas con datos personales, el equipo de plataforma aprobó el **modelo corporativo interno**. Si necesitas otro modelo para algo específico, abres ticket. Para este envío usas el corporativo.",
     },
     // Slot 2: ai_textfield_guided · construir el prompt principal
     {
@@ -466,17 +504,17 @@ const SLIDES: Slide[][] = [
         ],
       },
     },
-    // Slot 5: tradeoff_decision_memo · memo final corto
+    // Slot 5: ai_textfield_free · escribe el mensaje del envío del lunes.
+    // Reemplazó al segundo tradeoff_decision_memo (era redundante con
+    // slot 3). Cierra el caso con un artefacto entregable real · permite
+    // al judge comparar el texto del usuario contra el borrador post-IA.
+    // P0.2 · recupera ratio AI-native 60% tras mover model_tradeoff_sliders.
     {
-      blockId: "tradeoff_decision_memo",
-      title: "Memo final · resumen para Mariana.",
-      body: "Cierre del caso. **Tres líneas máximo** para que Mariana entienda tu decisión en 30 segundos.",
+      blockId: "ai_textfield_free",
+      title: "Escribe el mensaje del envío.",
+      body: "Cierre del caso. **Una línea o dos** con el texto que mandarías el lunes a las 8. Esto es lo que Mariana va a poder validar.",
       caseContext: {
-        decisions: [
-          { id: "ejecutar_lunes", title: "Ejecutar el lunes", detail: "Plan completo, sin cambios mayores. Asumes el riesgo restante." },
-          { id: "ejecutar_subset", title: "Ejecutar con subset", detail: "Validamos con menos contactos el lunes y escalamos si funciona." },
-          { id: "posponer_una_semana", title: "Posponer una semana", detail: "Necesitamos cerrar pendientes con Legal antes de enviar." },
-        ],
+        placeholder: "Escribe el mensaje exacto que enviarías al primer contacto del segmento elegido...",
       },
     },
   ],
@@ -768,7 +806,7 @@ export function CaseDemoClient() {
                   sessionId={null}
                   mode="lab_demo"
                   slideId={currentSlideId}
-                  caseContext={slide.caseContext}
+                  caseContext={stripJudgeFields(slide.caseContext)}
                   onShellContinue={goNext}
                   initialPayload={payloads[currentSlideId]}
                   onPayloadChange={(p) =>
@@ -943,8 +981,9 @@ function buildReportSnapshot(
       id: "risk-internal-notes",
       severity: "alto",
       type: "Dato sensible al modelo",
-      evidence:
-        "Marcó el campo Notas internas como Usar · debió excluir o anonimizar.",
+      // Cita textual del payload del usuario · cumple regla v0:
+      // "risk_event debe tener evidencia textual citable del transcript".
+      evidence: `Marcó "Notas internas" con la acción "${handledInternalNotes.action}" cuando debió excluir o anonimizar.`,
       slideRef: "Datos · 5 / 5",
     });
   }
@@ -964,12 +1003,17 @@ function buildReportSnapshot(
     metric: `${flaggedCount} de 3 cifras sin fuente marcadas`,
   });
   if (flaggedCount < 3) {
+    // Cuenta cuáles segmentos quedaron sin flag (los que el usuario
+    // aceptó) · cita los específicos no marcados.
+    const missed = reviewCifras?.flagged_segments
+      .filter((s) => s.flag === null)
+      .map((s) => s.segment_id)
+      .join(", ");
     riskEvents.push({
       id: "risk-unverified-claim",
       severity: flaggedCount === 0 ? "alto" : "medio",
       type: "Cifra sin verificar",
-      evidence:
-        "Aceptó al menos una cifra cuantitativa del modelo sin pedir respaldo.",
+      evidence: `Dejó sin marcar ${3 - flaggedCount} de 3 segmentos con cifras sin respaldo (${missed ?? "ninguno marcado"}).`,
       slideRef: "Revisión · 3 / 5",
     });
   }
@@ -1031,9 +1075,21 @@ function buildRecommendation(
 ): ReportSnapshot["recommendation"] {
   const altos = dimensions.filter((d) => d.band === "alto").length;
   const bajos = dimensions.filter((d) => d.band === "bajo").length;
-  const highRisk = riskEvents.some((r) => r.severity === "alto");
+  const highRisks = riskEvents.filter((r) => r.severity === "alto").length;
 
-  if (bajos >= 2 || highRisk) {
+  // Escalar · 2+ risk events alto · el problema no es individual,
+  // requiere intervención de Legal/Compliance/Process.
+  if (highRisks >= 2) {
+    return {
+      action: "escalar",
+      title: "Escalar a Legal y proceso",
+      oneLiner:
+        "Múltiples eventos de riesgo alto. El gap no se resuelve con práctica individual · requiere ajuste de proceso.",
+    };
+  }
+
+  // Pausar · 1 risk alto o muchas dimensiones bajas.
+  if (highRisks >= 1 || bajos >= 2) {
     return {
       action: "pausar",
       title: "Pausar antes de pilotar",
@@ -1041,6 +1097,8 @@ function buildRecommendation(
         "Una o varias dimensiones críticas están débiles. Reforzar antes de operar con datos reales.",
     };
   }
+
+  // Pilotar · todas o casi todas las dimensiones en alto.
   if (altos >= 4) {
     return {
       action: "pilotar",
@@ -1049,6 +1107,8 @@ function buildRecommendation(
         "Criterio sólido en las dimensiones clave. Puede operar con supervisión ligera.",
     };
   }
+
+  // Entrenar · default · gap puntual corregible con práctica.
   return {
     action: "entrenar",
     title: "Entrenar gap específico",

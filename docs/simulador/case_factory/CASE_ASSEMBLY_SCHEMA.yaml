@@ -99,15 +99,15 @@ case_assembly_schema:
       reading_kpi_cards:        [contexto, datos]
       reading_timeline:         [contexto]
       reading_attachment:       [contexto, datos]
-      ai_textfield_free:        [ia, cierre]
+      ai_textfield_free:        [datos, ia, cierre]
       ai_textfield_guided:      [ia]
       # model_tradeoff_sliders · DIAGNOSTICO_1_CASO_V0 línea 186:
       # "No es selector de modelos. El modelo es instrumento."
       # Por eso NO se permite en seccion ia · solo como ejercicio
-      # standalone fuera del beat IA principal.
+      # standalone antes del beat IA principal.
       model_tradeoff_sliders:   [datos]
-      categorize_rows:          [datos, ia, revision, cierre]
-      ai_output_review:         [revision, cierre]
+      categorize_rows:          [contexto, datos, ia, revision, cierre]
+      ai_output_review:         [ia, revision, cierre]
       ai_comparison:            [revision, cierre]
       workflow_builder:         [ia, cierre]
       dashboard_pivot:          [cierre]

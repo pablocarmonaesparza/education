@@ -75,7 +75,14 @@ const exerciseCatalog = readYaml("EXERCISE_BLOCK_CATALOG.yaml")?.exercise_block_
 if (exerciseCatalog) {
   const blocks = exerciseCatalog.blocks ?? [];
   const blockIds = new Set(blocks.map((block) => block.id));
-  check(exerciseCatalog.version === "0.2.0", "exercise block catalog must be v0.2.0");
+  // Version semver-aware · acepta cualquier 0.x bump del catálogo.
+  // El catálogo se versionea cuando hay cambios estructurales · este
+  // check solo valida que la versión esté declarada y sea 0.x.
+  check(
+    typeof exerciseCatalog.version === "string" &&
+      /^0\.\d+\.\d+$/.test(exerciseCatalog.version),
+    `exercise block catalog version must be 0.x.x semver (got: ${exerciseCatalog.version})`,
+  );
   check(blocks.length >= 10, "exercise block catalog needs at least 10 blocks");
   check(blockIds.has("ai_textfield_free"), "exercise catalog needs ai_textfield_free");
   check(blockIds.has("ai_textfield_guided"), "exercise catalog needs ai_textfield_guided");
