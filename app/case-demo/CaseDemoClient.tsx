@@ -781,7 +781,8 @@ export function CaseDemoClient() {
 }
 
 // ============================================================
-// PANTALLA DE CIERRE · simulación del reporte que recibe el manager
+// PANTALLA DE CIERRE · simulación del reporte ejecutivo
+// Bento layout estilo Linear / Vercel / Anthropic console.
 // ============================================================
 
 interface CaseCompletedScreenProps {
@@ -794,203 +795,417 @@ interface DimensionScore {
   id: string;
   label: string;
   band: Band;
+  /** Score 0-100 · banda derivada de threshold. */
+  score: number;
+  /** Métrica observable contable. */
+  metric: string;
   insight: string;
 }
 
 interface RiskEvent {
   id: string;
   severity: "alto" | "medio";
-  text: string;
+  type: string;
   evidence: string;
+  slideRef: string;
 }
 
-// Datos sintéticos · representan la salida de un judge real para una persona
-// que terminó el caso con perfil "operador medio que necesita entrenamiento".
+interface SectionTime {
+  id: string;
+  label: string;
+  seconds: number;
+}
+
+interface Artifact {
+  id: string;
+  kind: "prompt" | "borrador" | "memo" | "decision";
+  label: string;
+  meta: string;
+}
+
+// Datos sintéticos · operador medio que necesita entrenamiento puntual.
 const DIMENSIONS: DimensionScore[] = [
-  { id: "contexto", label: "Contexto", band: "alto", insight: "Leyó la presión del lunes y la restricción de Legal antes de actuar." },
-  { id: "privacidad", label: "Privacidad", band: "medio", insight: "Excluyó datos personales en su mayoría · dejó pasar una nota interna." },
-  { id: "validacion", label: "Validación", band: "medio", insight: "Marcó dos de tres cifras inventadas · aceptó el dato del 87% sin pedir fuente." },
-  { id: "juicio", label: "Juicio", band: "alto", insight: "Eligió piloto controlado en vez de lanzar el lunes · razón sólida." },
-  { id: "decision", label: "Decisión", band: "medio", insight: "Memo final claro pero sin métrica de éxito acordada." },
+  { id: "contexto",   label: "Contexto",   band: "alto",  score: 85, metric: "2 / 2 señales leídas", insight: "Leyó la presión del lunes y la restricción de Legal antes de actuar." },
+  { id: "privacidad", label: "Privacidad", band: "medio", score: 62, metric: "4 / 6 datos filtrados", insight: "Excluyó datos personales en su mayoría. Dejó pasar una nota interna." },
+  { id: "validacion", label: "Validación", band: "medio", score: 55, metric: "2 / 3 cifras marcadas", insight: "Marcó dos cifras inventadas. Aceptó el dato del 87% sin pedir fuente." },
+  { id: "juicio",     label: "Juicio",     band: "alto",  score: 82, metric: "3 / 3 decisiones OK",  insight: "Eligió piloto controlado en vez de lanzar el lunes. Razón sólida." },
+  { id: "decision",   label: "Decisión",   band: "medio", score: 60, metric: "memo sin métrica",     insight: "Memo final claro pero no acordó métrica de éxito con Mariana." },
 ];
 
 const RISK_EVENTS: RiskEvent[] = [
-  {
-    id: "claim_no_verificado",
-    severity: "alto",
-    text: "Aceptó cifra cuantitativa generada por la inteligencia artificial sin pedir fuente.",
-    evidence: "Mantuvo el dato del 87% en el borrador hasta que el manager lo cuestionó.",
-  },
-  {
-    id: "dato_sensible",
-    severity: "medio",
-    text: "Mantuvo una nota interna del equipo comercial en el prompt al modelo.",
-    evidence: "Marcó el campo notas internas como Usar en vez de Excluir o Anonimizar.",
-  },
+  { id: "r1", severity: "alto",  type: "Cifra sin verificar",  evidence: "Mantuvo el dato del 87% en el borrador hasta que el manager lo cuestionó.", slideRef: "Revisión · 3 / 5" },
+  { id: "r2", severity: "medio", type: "Dato sensible al modelo", evidence: "Marcó el campo notas internas como Usar en vez de Excluir o Anonimizar.",     slideRef: "Datos · 5 / 5" },
+];
+
+const SECTION_TIMES: SectionTime[] = [
+  { id: "contexto", label: "Contexto", seconds: 134 },
+  { id: "datos",    label: "Datos",    seconds: 201 },
+  { id: "ia",       label: "IA",       seconds: 188 },
+  { id: "revision", label: "Revisión", seconds: 114 },
+  { id: "cierre",   label: "Cierre",   seconds: 83 },
+];
+
+const ARTIFACTS: Artifact[] = [
+  { id: "a1", kind: "prompt",   label: "Prompt principal del envío", meta: "Construido con objetivo, audiencia y límites." },
+  { id: "a2", kind: "borrador", label: "Borrador inicial del modelo", meta: "Marcaste 3 problemas de 4 segmentos." },
+  { id: "a3", kind: "borrador", label: "Versión post-corrección",    meta: "El modelo aplicó tu follow-up." },
+  { id: "a4", kind: "decision", label: "Decisión: piloto controlado", meta: "Elegida sobre lanzar el lunes." },
+  { id: "a5", kind: "memo",     label: "Memo final para Mariana",    meta: "342 caracteres entregados." },
 ];
 
 const RECOMMENDATION = {
   action: "entrenar",
   title: "Entrenar antes de pilotar",
-  detail:
-    "Esta persona muestra criterio sólido para limpiar datos sucios y elegir entre opciones bajo presión. El gap está en validación cuantitativa: tiende a aceptar cifras de la inteligencia artificial sin pedir respaldo. Una práctica corta de verificación antes de enviar resuelve el patrón sin frenar el flujo.",
-  next_practice: {
+  oneLiner: "Criterio sólido en juicio y contexto. Gap específico en validación cuantitativa.",
+  detail: "Esta persona puede operar limpiezas de datos y elegir entre opciones bajo presión. Tiende a aceptar cifras de la inteligencia artificial sin pedir respaldo. Una práctica corta resuelve el patrón sin frenar el flujo.",
+  practice: {
     title: "Verifica antes de enviar",
     duration: "5 minutos",
     description: "Mini-ejercicio sobre cómo pedir respaldo a una cifra antes de incluirla en un envío externo.",
   },
 };
 
-function BandPill({ band }: { band: Band }) {
-  const colors: Record<Band, string> = {
-    alto: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
-    medio: "border-amber-500/40 bg-amber-500/10 text-amber-300",
-    bajo: "border-rose-500/40 bg-rose-500/10 text-rose-300",
-  };
-  return (
-    <span
-      className={`inline-flex items-center rounded-full border px-3 py-0.5 ts-caption-1 font-medium capitalize ${colors[band]}`}
-    >
-      {band}
-    </span>
-  );
-}
+const BAND_DOT: Record<Band, string> = {
+  alto: "bg-emerald-400",
+  medio: "bg-amber-400",
+  bajo: "bg-rose-400",
+};
 
-function SeverityPill({ severity }: { severity: "alto" | "medio" }) {
-  const colors = {
-    alto: "border-rose-500/40 bg-rose-500/10 text-rose-300",
-    medio: "border-amber-500/40 bg-amber-500/10 text-amber-300",
-  };
-  return (
-    <span
-      className={`inline-flex items-center rounded-full border px-3 py-0.5 ts-caption-1 font-medium capitalize ${colors[severity]}`}
-    >
-      riesgo {severity}
-    </span>
-  );
+const BAND_BAR: Record<Band, string> = {
+  alto: "bg-emerald-400",
+  medio: "bg-amber-400",
+  bajo: "bg-rose-400",
+};
+
+function formatMmSs(seconds: number): string {
+  const mm = Math.floor(seconds / 60);
+  const ss = seconds % 60;
+  return `${mm}:${String(ss).padStart(2, "0")}`;
 }
 
 function CaseCompletedScreen({ durationMinutes }: CaseCompletedScreenProps) {
+  const maxTime = Math.max(...SECTION_TIMES.map((s) => s.seconds));
+  const highRisks = RISK_EVENTS.filter((r) => r.severity === "alto").length;
+  const altoCount = DIMENSIONS.filter((d) => d.band === "alto").length;
+  const medioCount = DIMENSIONS.filter((d) => d.band === "medio").length;
+  const bajoCount = DIMENSIONS.filter((d) => d.band === "bajo").length;
+
   return (
     <main className="simulador-root min-h-screen surface-canvas text-[var(--text-primary)]">
-      <div className="mx-auto w-[72%] max-w-[1100px] px-4 py-12">
-        {/* HEADER · marca y acción rápida para volver al lab */}
+      <div className="mx-auto w-[88%] max-w-[1180px] px-4 py-10">
+        {/* HEADER */}
         <div className="flex items-center justify-between">
-          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-            Caso completado · Fundamentos: Marketing
+          <div className="flex items-center gap-3 ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+            <span>Fundamentos: Marketing</span>
+            <span className="h-3 w-px bg-[var(--border)]" />
+            <span>Reporte para tu manager</span>
           </div>
           <a
             href="/exercise-lab"
-            className="ts-footnote text-[var(--text-secondary)] underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
+            aria-label="Cerrar"
+            className="grid h-9 w-9 place-items-center rounded-[var(--radius-md)] border border-[var(--border)] text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           >
-            Volver al lab →
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
+              <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
           </a>
         </div>
 
-        {/* HERO · título + duración */}
-        <h1 className="mt-6 display display-tight ts-display text-[var(--text-primary)]">
-          Esto es lo que tu manager va a ver.
+        {/* HERO con stats inline */}
+        <h1 className="mt-5 display display-tight ts-display text-[var(--text-primary)]">
+          Esto es lo que recibe Mariana.
         </h1>
-        <p className="mt-3 ts-body text-[var(--text-secondary)]">
-          Terminaste el caso en <strong className="text-[var(--text-primary)]">{durationMinutes} minutos</strong>. El reporte abajo simula la señal que tu manager recibe para decidir el siguiente paso contigo.
-        </p>
+        <div className="mt-4 flex flex-wrap items-center gap-5 ts-footnote text-[var(--text-secondary)]">
+          <span className="flex items-center gap-2">
+            <span className="ts-callout font-semibold text-[var(--text-primary)] tabular-nums">{durationMinutes}</span> min totales
+          </span>
+          <span className="h-3 w-px bg-[var(--border)]" />
+          <span className="flex items-center gap-2">
+            <span className="ts-callout font-semibold text-[var(--text-primary)] tabular-nums">25</span> decisiones registradas
+          </span>
+          <span className="h-3 w-px bg-[var(--border)]" />
+          <span className="flex items-center gap-2">
+            <span className="ts-callout font-semibold text-[var(--text-primary)] tabular-nums">{RISK_EVENTS.length}</span> riesgos detectados
+            {highRisks > 0 && (
+              <span className="inline-flex items-center gap-1 ts-caption-1 text-rose-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-rose-400" />
+                {highRisks} alto
+              </span>
+            )}
+          </span>
+        </div>
 
-        {/* RECOMENDACIÓN · card principal */}
-        <section className="mt-10 rounded-[var(--radius-lg)] border border-[var(--accent)] bg-[var(--accent-soft)] p-6">
-          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--accent)]">
-            Acción sugerida para el manager
-          </div>
-          <div className="mt-2 ts-title-2 font-semibold text-[var(--text-primary)]">
-            {RECOMMENDATION.title}
-          </div>
-          <p className="mt-3 ts-body leading-[1.55] text-[var(--text-secondary)]">
-            {RECOMMENDATION.detail}
-          </p>
-        </section>
-
-        {/* DIMENSIONES · 5 bandas */}
-        <section className="mt-8">
-          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-            Cinco dimensiones evaluadas
-          </div>
-          <div className="mt-4 divide-y divide-[var(--hairline)] rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
-            {DIMENSIONS.map((d) => (
-              <div key={d.id} className="flex items-start gap-4 p-4">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-3">
-                    <span className="ts-callout font-medium text-[var(--text-primary)]">
-                      {d.label}
-                    </span>
-                    <BandPill band={d.band} />
-                  </div>
-                  <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
-                    {d.insight}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* RIESGOS DETECTADOS · eventos observables */}
-        <section className="mt-8">
-          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-            Riesgos detectados
-          </div>
-          <div className="mt-4 space-y-3">
-            {RISK_EVENTS.map((r) => (
-              <div
-                key={r.id}
-                className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-4"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <p className="ts-callout font-medium text-[var(--text-primary)]">
-                    {r.text}
-                  </p>
-                  <SeverityPill severity={r.severity} />
-                </div>
-                <p className="mt-2 ts-footnote text-[var(--text-tertiary)]">
-                  Evidencia: {r.evidence}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* PRÁCTICA SUGERIDA · cierre con acción concreta */}
-        <section className="mt-8 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-6">
-          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-            Práctica sugerida
-          </div>
-          <div className="mt-2 flex items-baseline gap-3">
-            <div className="ts-title-3 font-semibold text-[var(--text-primary)]">
-              {RECOMMENDATION.next_practice.title}
+        {/* BENTO ROW 1 · Recomendación (2 cols) + Distribución (1 col) */}
+        <div className="mt-8 grid gap-4 lg:grid-cols-3">
+          {/* Recomendación · accent */}
+          <section className="lg:col-span-2 rounded-[var(--radius-lg)] border border-[var(--accent)] bg-[var(--accent-soft)] p-6">
+            <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--accent)]">
+              Acción para el manager
             </div>
-            <span className="ts-footnote text-[var(--text-tertiary)]">
-              · {RECOMMENDATION.next_practice.duration}
-            </span>
+            <div className="mt-2 ts-title-2 font-semibold text-[var(--text-primary)]">
+              {RECOMMENDATION.title}
+            </div>
+            <p className="mt-1 ts-callout text-[var(--text-secondary)]">
+              {RECOMMENDATION.oneLiner}
+            </p>
+            <p className="mt-4 ts-body leading-[1.55] text-[var(--text-secondary)]">
+              {RECOMMENDATION.detail}
+            </p>
+          </section>
+
+          {/* Distribución por banda · mini bar chart */}
+          <section className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5">
+            <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+              Distribución
+            </div>
+            <div className="mt-4 space-y-3">
+              <div>
+                <div className="flex items-baseline justify-between">
+                  <span className="ts-footnote text-[var(--text-secondary)]">Banda alta</span>
+                  <span className="ts-callout font-semibold text-[var(--text-primary)] tabular-nums">{altoCount}/5</span>
+                </div>
+                <div className="mt-1 h-1.5 w-full rounded-full bg-[var(--surface-3)]">
+                  <div className="h-full rounded-full bg-emerald-400" style={{ width: `${(altoCount / 5) * 100}%` }} />
+                </div>
+              </div>
+              <div>
+                <div className="flex items-baseline justify-between">
+                  <span className="ts-footnote text-[var(--text-secondary)]">Banda media</span>
+                  <span className="ts-callout font-semibold text-[var(--text-primary)] tabular-nums">{medioCount}/5</span>
+                </div>
+                <div className="mt-1 h-1.5 w-full rounded-full bg-[var(--surface-3)]">
+                  <div className="h-full rounded-full bg-amber-400" style={{ width: `${(medioCount / 5) * 100}%` }} />
+                </div>
+              </div>
+              <div>
+                <div className="flex items-baseline justify-between">
+                  <span className="ts-footnote text-[var(--text-secondary)]">Banda baja</span>
+                  <span className="ts-callout font-semibold text-[var(--text-primary)] tabular-nums">{bajoCount}/5</span>
+                </div>
+                <div className="mt-1 h-1.5 w-full rounded-full bg-[var(--surface-3)]">
+                  <div className="h-full rounded-full bg-rose-400" style={{ width: `${(bajoCount / 5) * 100}%` }} />
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* BENTO ROW 2 · Dimensiones (tabla con barras) */}
+        <section className="mt-4 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
+          <div className="flex items-center justify-between border-b border-[var(--hairline)] px-5 py-3">
+            <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+              Cinco dimensiones evaluadas
+            </div>
+            <div className="ts-caption-1 text-[var(--text-tertiary)]">
+              Score 0-100 · banda derivada
+            </div>
           </div>
-          <p className="mt-2 ts-body text-[var(--text-secondary)]">
-            {RECOMMENDATION.next_practice.description}
-          </p>
+          <div className="divide-y divide-[var(--hairline)]">
+            {DIMENSIONS.map((d) => (
+              <div key={d.id} className="grid grid-cols-12 items-center gap-4 px-5 py-4">
+                <div className="col-span-3 flex items-center gap-2">
+                  <span className={`h-1.5 w-1.5 rounded-full ${BAND_DOT[d.band]}`} />
+                  <span className="ts-callout font-medium text-[var(--text-primary)]">{d.label}</span>
+                </div>
+                <div className="col-span-5">
+                  <div className="h-1.5 w-full rounded-full bg-[var(--surface-3)]">
+                    <div
+                      className={`h-full rounded-full ${BAND_BAR[d.band]}`}
+                      style={{ width: `${d.score}%` }}
+                    />
+                  </div>
+                </div>
+                <div className="col-span-1 ts-footnote tabular-nums text-[var(--text-tertiary)] text-right">
+                  {d.score}
+                </div>
+                <div className="col-span-3 ts-footnote text-[var(--text-tertiary)] text-right">
+                  {d.metric}
+                </div>
+                <div className="col-span-12 -mt-1 ts-footnote text-[var(--text-tertiary)] pl-[18px]">
+                  {d.insight}
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
+
+        {/* BENTO ROW 3 · Riesgos (tabla) + Tiempo por sección (gráfico) */}
+        <div className="mt-4 grid gap-4 lg:grid-cols-5">
+          {/* Riesgos · tabla compacta */}
+          <section className="lg:col-span-3 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
+            <div className="flex items-center justify-between border-b border-[var(--hairline)] px-5 py-3">
+              <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+                Riesgos detectados
+              </div>
+              <span className="ts-caption-1 text-[var(--text-tertiary)] tabular-nums">{RISK_EVENTS.length}</span>
+            </div>
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[var(--hairline)]">
+                  <th className="px-5 py-2 text-left ts-caption-1 font-medium text-[var(--text-tertiary)]">Tipo</th>
+                  <th className="px-5 py-2 text-left ts-caption-1 font-medium text-[var(--text-tertiary)]">Severidad</th>
+                  <th className="px-5 py-2 text-left ts-caption-1 font-medium text-[var(--text-tertiary)]">Origen</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[var(--hairline)]">
+                {RISK_EVENTS.map((r) => (
+                  <tr key={r.id} className="align-top">
+                    <td className="px-5 py-3">
+                      <div className="ts-footnote font-medium text-[var(--text-primary)]">{r.type}</div>
+                      <div className="mt-1 ts-caption-1 text-[var(--text-tertiary)]">
+                        Evidencia: {r.evidence}
+                      </div>
+                    </td>
+                    <td className="px-5 py-3 whitespace-nowrap">
+                      <span className="inline-flex items-center gap-1.5 ts-footnote font-medium capitalize text-[var(--text-primary)]">
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${r.severity === "alto" ? "bg-rose-400" : "bg-amber-400"}`}
+                        />
+                        {r.severity}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3 whitespace-nowrap ts-caption-1 text-[var(--text-tertiary)]">
+                      {r.slideRef}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+
+          {/* Tiempo por sección · barras */}
+          <section className="lg:col-span-2 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5">
+            <div className="flex items-center justify-between">
+              <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+                Tiempo por sección
+              </div>
+              <span className="ts-caption-1 text-[var(--text-tertiary)] tabular-nums">
+                {formatMmSs(SECTION_TIMES.reduce((a, b) => a + b.seconds, 0))}
+              </span>
+            </div>
+            <div className="mt-4 space-y-3">
+              {SECTION_TIMES.map((s) => (
+                <div key={s.id}>
+                  <div className="flex items-baseline justify-between">
+                    <span className="ts-footnote text-[var(--text-secondary)]">{s.label}</span>
+                    <span className="ts-footnote font-medium tabular-nums text-[var(--text-primary)]">
+                      {formatMmSs(s.seconds)}
+                    </span>
+                  </div>
+                  <div className="mt-1 h-1 w-full rounded-full bg-[var(--surface-3)]">
+                    <div
+                      className="h-full rounded-full bg-[var(--accent)]"
+                      style={{ width: `${(s.seconds / maxTime) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        {/* BENTO ROW 4 · Práctica (1 col) + Artefactos (2 cols) */}
+        <div className="mt-4 grid gap-4 lg:grid-cols-3">
+          {/* Práctica sugerida */}
+          <section className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5">
+            <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+              Práctica sugerida
+            </div>
+            <div className="mt-2 ts-title-3 font-semibold text-[var(--text-primary)]">
+              {RECOMMENDATION.practice.title}
+            </div>
+            <div className="mt-1 flex items-center gap-2 ts-footnote text-[var(--text-tertiary)]">
+              <svg className="h-3 w-3" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M8 5V8L10 9.5" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" />
+              </svg>
+              {RECOMMENDATION.practice.duration}
+            </div>
+            <p className="mt-3 ts-footnote leading-[1.5] text-[var(--text-secondary)]">
+              {RECOMMENDATION.practice.description}
+            </p>
+          </section>
+
+          {/* Artefactos · lista compacta */}
+          <section className="lg:col-span-2 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
+            <div className="flex items-center justify-between border-b border-[var(--hairline)] px-5 py-3">
+              <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+                Artefactos de la sesión
+              </div>
+              <span className="ts-caption-1 text-[var(--text-tertiary)] tabular-nums">{ARTIFACTS.length}</span>
+            </div>
+            <div className="divide-y divide-[var(--hairline)]">
+              {ARTIFACTS.map((a) => (
+                <div key={a.id} className="flex items-center gap-3 px-5 py-3">
+                  <div className="grid h-7 w-7 place-items-center rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface-2)]">
+                    <ArtifactIcon kind={a.kind} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="ts-footnote font-medium text-[var(--text-primary)]">
+                      {a.label}
+                    </div>
+                    <div className="ts-caption-1 text-[var(--text-tertiary)]">
+                      {a.meta}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
 
         {/* CTAs */}
-        <div className="mt-10 flex items-center gap-3">
+        <div className="mt-8 flex items-center gap-3">
           <a
             href="/exercise-lab"
-            className="rounded-[var(--radius-md)] accent-bg px-7 py-3 ts-callout font-medium text-white transition-opacity hover:opacity-90"
+            className="rounded-[var(--radius-md)] accent-bg px-6 py-2.5 ts-callout font-medium text-white transition-opacity hover:opacity-90"
           >
-            Volver al lab de ejercicios
+            Volver al lab
           </a>
           <a
             href="/case-demo"
-            className="rounded-[var(--radius-md)] border border-[var(--border)] px-7 py-3 ts-callout font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            className="rounded-[var(--radius-md)] border border-[var(--border)] px-6 py-2.5 ts-callout font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           >
             Repetir el caso
           </a>
+          <span className="ml-auto ts-footnote text-[var(--text-tertiary)]">
+            Sesión guardada · ID #sim_9f3a2c1
+          </span>
         </div>
       </div>
     </main>
   );
+}
+
+function ArtifactIcon({ kind }: { kind: Artifact["kind"] }) {
+  const cls = "h-3.5 w-3.5 text-[var(--text-secondary)]";
+  switch (kind) {
+    case "prompt":
+      return (
+        <svg className={cls} viewBox="0 0 16 16" fill="none">
+          <path d="M3 11.5L8 6.5L13 11.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M3 4.5H13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      );
+    case "borrador":
+      return (
+        <svg className={cls} viewBox="0 0 16 16" fill="none">
+          <path d="M4 2.5H9.5L12 5V13C12 13.55 11.55 14 11 14H4C3.45 14 3 13.55 3 13V3.5C3 2.95 3.45 2.5 4 2.5Z" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.5" />
+          <path d="M9 2.5V5.5H12" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.5" />
+        </svg>
+      );
+    case "memo":
+      return (
+        <svg className={cls} viewBox="0 0 16 16" fill="none">
+          <rect x="3" y="3" width="10" height="10" rx="1" stroke="currentColor" strokeWidth="1.5" />
+          <path d="M5.5 6.5H10.5M5.5 8.5H10.5M5.5 10.5H8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
+      );
+    case "decision":
+      return (
+        <svg className={cls} viewBox="0 0 16 16" fill="none">
+          <path d="M4 8L7 11L12 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+  }
 }
