@@ -160,9 +160,11 @@ Jueves 4:30 PM. Camila te escribe por Slack pidiéndote 3 ángulos para LinkedIn
 
 ---
 
-## 7. Metodología del caso (6 secciones como método de evaluación)
+## 7. Metodología del caso (secciones como método de evaluación)
 
-El runtime tiene 6 secciones que **no son navegación** sino **método de evaluación**. Cada sección existe para observar una habilidad distinta. La estructura sigue Harvard Business School Case Method adaptada a uso de IA:
+> **Actualización 2026-05-27 · consolidación 6 → 5 secciones.** El formato de ensamble (`CASE_ASSEMBLY_SCHEMA.yaml`) usa **5 secciones**: Contexto · Datos · IA · Revisión · **Cierre**. Las secciones 5 (Decisión) y 6 (Respuesta) descritas abajo se fusionan en **Cierre** porque en la práctica son un solo momento de criterio encadenado (decidir una acción → comunicarla al manager), y el bloque `tradeoff_decision_memo` ya combina ambas (elección de opción + memo al manager en una sola interacción). **Las 5 dimensiones de evaluación (§8) se mantienen sin cambio** · la consolidación es de secciones de runtime, no de dimensiones. Las descripciones de "Decisión" y "Respuesta" abajo siguen siendo el rationale de qué se observa dentro de Cierre.
+
+El runtime tiene 5 secciones que **no son navegación** sino **método de evaluación**. Cada sección existe para observar una habilidad distinta. La estructura sigue Harvard Business School Case Method adaptada a uso de IA:
 
 ### Sección 1 · Contexto
 

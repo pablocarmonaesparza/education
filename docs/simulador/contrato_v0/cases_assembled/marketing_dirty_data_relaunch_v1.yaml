@@ -57,21 +57,21 @@ case_assembly:
         - slot: 2
           block_id: reading_message
           content:
-            title: "Email de Mariana, tu jefa."
+            title: "Correo de Mariana, tu jefa."
             body: "Lo que llega antes de empezar."
             channel: email
             from:
               name: "Mariana Robles"
-              role: "Head of Growth · Aurora Retail"
-            to: "Tú · Marketing Lead"
+              role: "Líder de Crecimiento · Aurora Retail"
+            to: "Tú · Líder de Marketing"
             timestamp: "Hoy, 09:42"
             subject: "Necesitamos relanzar la campaña antes del viernes"
-            body_message: "Hola, el board pidió relanzar la campaña de retención antes del viernes. Presupuesto sin tocar. Mándame propuesta hoy mismo con segmentos, mensaje base y métricas que vas a monitorear. Gracias."
+            body_message: "Hola, el comité directivo pidió relanzar la campaña de retención antes del viernes. Presupuesto sin tocar. Mándame propuesta hoy mismo con segmentos, mensaje base y métricas que vas a monitorear. Gracias."
 
         - slot: 3
           block_id: reading_data_table
           content:
-            title: "Preview de la base que te pasaron."
+            title: "Vista previa de la base que te pasaron."
             body: "Vista rápida de los primeros 5 contactos. **Hay problemas evidentes** desde la primera mirada."
             caption: "Contactos pendientes para el envío del lunes"
             columns:
@@ -81,7 +81,7 @@ case_assembly:
               - { key: ultima_apertura, label: "Última apertura" }
               - { key: estatus, label: "Estatus" }
             rows:
-              - { contacto: "Mariana Robles", empresa: "Aurora Retail", cargo: "Head of Growth", ultima_apertura: "Hace 3 días", estatus: "Activa" }
+              - { contacto: "Mariana Robles", empresa: "Aurora Retail", cargo: "Líder de Crecimiento", ultima_apertura: "Hace 3 días", estatus: "Activa" }
               - { contacto: "mariana robles", empresa: "Aurora Retail", cargo: "head of growth", ultima_apertura: "Hace 21 días", estatus: "Activa" }
               - { contacto: "", empresa: "Bosa Industrial", cargo: "Director", ultima_apertura: "Hace 7 días", estatus: "Activa" }
               - { contacto: "Carlos Méndez", empresa: "Cresta Software", cargo: "DIR MKT", ultima_apertura: "Hace 60 días", estatus: "Inactiva" }
@@ -138,7 +138,7 @@ case_assembly:
               - { contacto: "", empresa: "Bosa Industrial", problema: "Sin nombre", consentimiento: "Vigente" }
               - { contacto: "Carlos Méndez", empresa: "Cresta Software", problema: "Cargo en mayúsculas raras (DIR MKT)", consentimiento: "Vigente" }
               - { contacto: "Ana Pérez", empresa: "Eclipse Health", problema: "Pidió baja hace 2 meses", consentimiento: "Revocado" }
-              - { contacto: "Pedro Castillo", empresa: "Foro Studio", problema: "Email rebota desde hace 4 envíos", consentimiento: "Vigente" }
+              - { contacto: "Pedro Castillo", empresa: "Foro Studio", problema: "Correo rebota desde hace 4 envíos", consentimiento: "Vigente" }
               - { contacto: "", empresa: "Gama Capital", problema: "Sin nombre", consentimiento: "Vigente" }
               - { contacto: "Sofía Lara", empresa: "Helix Bio", problema: "Cargo vacío", consentimiento: "Vigente" }
 
@@ -153,11 +153,11 @@ case_assembly:
             rows:
               - { id: 1, title: "Mariana Robles · Aurora Retail", subtitle: "Duplicado de fila 2", hint: "Capitalización distinta, mismo contacto" }
               - { id: 2, title: "mariana robles · Aurora Retail", subtitle: "Duplicado de fila 1", hint: "Capitalización distinta, mismo contacto" }
-              - { id: 3, title: "(sin nombre) · Bosa Industrial", subtitle: "Sin nombre", hint: "Email genérico info@bosa.example" }
+              - { id: 3, title: "(sin nombre) · Bosa Industrial", subtitle: "Sin nombre", hint: "Correo genérico info@bosa.example" }
               - { id: 4, title: "Carlos Méndez · Cresta Software", subtitle: "Cargo en mayúsculas raras", hint: "DIR MKT vs Director de Marketing" }
               - { id: 5, title: "Ana Pérez · Eclipse Health", subtitle: "Pidió baja hace 2 meses", hint: "Consentimiento revocado" }
-              - { id: 6, title: "Pedro Castillo · Foro Studio", subtitle: "Email rebota desde hace 4 envíos", hint: "Hard bounce repetido" }
-              - { id: 7, title: "(sin nombre) · Gama Capital", subtitle: "Sin nombre", hint: "Email personal sofia.lara@gmail.example" }
+              - { id: 6, title: "Pedro Castillo · Foro Studio", subtitle: "Correo rebota desde hace 4 envíos", hint: "Rebote permanente repetido" }
+              - { id: 7, title: "(sin nombre) · Gama Capital", subtitle: "Sin nombre", hint: "Correo personal sofia.lara@gmail.example" }
               - { id: 8, title: "Sofía Lara · Helix Bio", subtitle: "Cargo vacío", hint: "Solo nombre y empresa" }
 
         - slot: 3
@@ -209,89 +209,76 @@ case_assembly:
 
     - id: ia
       name: "IA"
+      # NOTA · model_tradeoff_sliders NO se usa en esta sección porque
+      # DIAGNOSTICO_1_CASO_V0 §7 prohíbe selectores de modelo en el beat
+      # IA ("el modelo es instrumento, no decisión del participante"). El
+      # modelo se presenta como dado vía reading_passive en slot 1.
       slides:
 
         - slot: 1
+          block_id: reading_passive
+          content:
+            title: "Modelo aprobado para este envío."
+            body: "Para campañas con datos personales, el equipo de plataforma aprobó el **modelo corporativo interno**. Si necesitas otro modelo para algo específico, abres ticket. Para este envío usas el corporativo."
+
+        - slot: 2
           block_id: ai_textfield_guided
           content:
-            title: "Construye el prompt principal."
-            body: "Vas a generar el **mensaje base** del envío con un modelo. Elige objetivo, audiencia y límites antes de revisar el prompt construido."
+            title: "Construye el prompt para el modelo."
+            body: "Vas a generar el **mensaje base** del envío. Define objetivo, audiencia y límites en pasos. Sin estas decisiones, el modelo va a improvisar."
             objectives:
               - { id: convertir, label: "Convertir a demo" }
               - { id: reenganchar, label: "Reenganchar dormidos" }
-              - { id: notificar, label: "Notificar feature nueva" }
+              - { id: notificar, label: "Notificar mejora nueva" }
               - { id: educar, label: "Educar sobre uso" }
             audiences:
-              - { id: head_of_growth, label: "Head of Growth de empresa mediana" }
+              - { id: head_growth, label: "Responsable de crecimiento de empresa mediana" }
               - { id: director_marketing, label: "Director de marketing" }
               - { id: gerente_ops, label: "Gerente de operaciones" }
-              - { id: founder, label: "Founder o CEO" }
+              - { id: fundador, label: "Fundador o director general" }
             limits:
-              - { id: sin_pii, label: "Sin datos personales en el prompt" }
+              - { id: sin_datos_personales, label: "Sin datos personales en el prompt" }
               - { id: sin_promesas, label: "Sin promesas de resultados específicos" }
               - { id: tono_directo, label: "Tono directo, sin adjetivos vacíos" }
               - { id: max_120_palabras, label: "Máximo 120 palabras" }
-            models:
-              - { id: gpt_corp, label: "GPT Corporativo" }
-              - { id: claude_sonnet, label: "Claude Sonnet" }
-              - { id: gemini_pro, label: "Gemini Pro" }
-              - { id: modelo_local, label: "Modelo local de la empresa" }
-
-        - slot: 2
-          block_id: ai_textfield_free
-          content:
-            title: "Versión alterna · prompt libre."
-            body: "Escribe una **segunda versión** del prompt para comparar. Aquí no hay andamiaje. La IA va a recibir lo que escribas tal cual."
-            model: "GPT Corporativo"
-            placeholder: "Escribe el prompt que le mandarías al modelo para generar la versión alterna del mensaje..."
-            attachments_allowed: false
-            voice_allowed: false
 
         - slot: 3
-          block_id: model_tradeoff_sliders
+          block_id: ai_output_review
           content:
-            title: "Pondera para elegir el modelo del envío."
-            body: "Tres prioridades reales del caso. Mueve los sliders y revisa el **modelo recomendado** según tu ponderación. La elección impacta autonomía, seguridad de datos y costo por envío."
-            slider_labels:
-              autonomy: "Autonomía"
-              security: "Seguridad"
-              cost: "Costo"
-            slider_descriptions:
-              autonomy: "Cuánto puede decidir el modelo sin revisión humana"
-              security: "Cuánto importa proteger datos personales de la base"
-              cost: "Cuánto pesa el costo por envío en la decisión"
-            available_models:
-              - { id: gpt_corp, label: "GPT Corporativo · TI", autonomy: 60, security: 80, cost: 40 }
-              - { id: claude_sonnet, label: "Claude Sonnet", autonomy: 70, security: 85, cost: 35 }
-              - { id: modelo_local, label: "Modelo local Aurora", autonomy: 50, security: 95, cost: 70 }
-              - { id: gemini_pro, label: "Gemini Pro", autonomy: 75, security: 70, cost: 50 }
+            title: "La inteligencia artificial generó esto. ¿Qué te detiene?"
+            body: "Primer borrador del mensaje. **Marca lo que no usarías** antes de pedirle al modelo que corrija."
+            prompt: "¿Qué problemas detectas en este borrador?"
+            segments:
+              # judge_internal: issue + flagIfMarked viven aquí · el shell
+              # remueve issue antes de render · flagIfMarked es funcional.
+              - { id: s1, text: "Hola Mariana, vimos que tu equipo abre nuestros correos desde hace meses.", issue: "Afirmación sin verificar", flagIfMarked: claim_no_verificado }
+              - { id: s2, text: "Aurora Retail está creciendo 40% mes a mes, lo que nos motiva a contactarte.", issue: "Cifra sin fuente", flagIfMarked: claim_no_verificado }
+              - { id: s3, text: "Nuestro producto ayudó a empresas similares a duplicar conversión en 2 semanas.", issue: "Promesa sin respaldo", flagIfMarked: claim_no_verificado }
+              - { id: s4, text: "Agenda 15 minutos esta semana para ver cómo aplicaría a tu caso.", issue: "Llamado de acción aceptable", flagIfMarked: frase_reutilizable }
+            flag_options: [claim_no_verificado, tono_agresivo, dato_sensible, frase_reutilizable]
 
         - slot: 4
           block_id: ai_textfield_free
           content:
-            title: "Pide validación de segmentación al modelo."
-            body: "Antes de generar el mensaje, **pídele al modelo** que valide tu plan de segmentos. Escribe el prompt corto que le mandarías para que te diga si tu plan tiene huecos."
-            model: "Claude Sonnet"
-            placeholder: "Escribe el prompt de validación..."
-            attachments_allowed: true
+            title: "Pídele a la inteligencia artificial que corrija."
+            body: "Escribe el **siguiente prompt** que mandarías. Sé específico: qué quitar, qué cambiar, qué mantener. La iteración es donde se gana o se pierde el envío."
+            model: "Modelo corporativo interno"
+            placeholder: "Escribe el prompt de corrección..."
+            attachments_allowed: false
             voice_allowed: false
 
         - slot: 5
           block_id: ai_output_review
           content:
-            title: "Revisa el primer borrador del mensaje."
-            body: "El modelo generó esta primera versión del **mensaje del envío**. Marca lo que no usarías tal cual antes de continuar a la revisión profunda."
-            prompt: "¿Qué problemas detectas en este borrador?"
+            title: "Versión corregida. ¿Algo todavía te detiene?"
+            body: "El modelo aplicó tu corrección. **Última pasada** antes de mandar a revisión completa de tono y cierre."
+            prompt: "¿Qué marcarías todavía?"
             segments:
-              - { id: s1, text: "Hola Mariana, vimos que tu equipo abre nuestros emails desde hace meses." }
-              - { id: s2, text: "Aurora Retail está creciendo 40% mes a mes, lo que nos motiva a contactarte." }
-              - { id: s3, text: "Nuestro producto ayudó a empresas similares a duplicar conversión en 2 semanas." }
-              - { id: s4, text: "Agenda 15 minutos esta semana para ver cómo aplicaría a tu caso." }
-            flag_options:
-              - claim_no_verificado
-              - tono_agresivo
-              - dato_sensible
-              - frase_reutilizable
+              - { id: v1, text: "Hola Mariana, vi en una nota pública que Aurora Retail abrió oficina en Monterrey la semana pasada.", issue: "Dato personalizado de fuente externa", flagIfMarked: dato_sensible }
+              - { id: v2, text: "Trabajamos con equipos de Marketing en empresas medianas de retail en la región.", issue: "Afirmación interna verificable", flagIfMarked: frase_reutilizable }
+              - { id: v3, text: "Si te interesa explorar cómo aplicaría a tu caso, te dejo dos horarios la próxima semana.", issue: "Cierre directo y opcional", flagIfMarked: frase_reutilizable }
+              - { id: v4, text: "Si prefieres que mande la propuesta por escrito antes de cualquier llamada, también funciona.", issue: "Opción alterna educada", flagIfMarked: frase_reutilizable }
+            flag_options: [claim_no_verificado, tono_agresivo, dato_sensible, frase_reutilizable]
 
     # ============================================================
     # SECCION 4 · REVISION
@@ -324,7 +311,7 @@ case_assembly:
           block_id: ai_comparison
           content:
             title: "Elige el llamado a la acción para el envío."
-            body: "Cuatro versiones del **cierre del mensaje**. Cada una tiene un tradeoff entre directness y permission. Elige la que enviarías el lunes."
+            body: "Cuatro versiones del **cierre del mensaje**. Cada una tiene un equilibrio entre ser directo y dar espacio. Elige la que enviarías el lunes."
             prompt: "¿Cuál versión usarías como cierre del email?"
             options:
               - { id: A, text: "Agenda 15 min esta semana en este link." }
@@ -357,7 +344,7 @@ case_assembly:
             channel: chat
             from:
               name: "Mariana Robles"
-              role: "Head of Growth · Aurora Retail"
+              role: "Líder de Crecimiento · Aurora Retail"
             to: "Tú"
             timestamp: "Hace 12 minutos"
             body_message: "Está bien la dirección, pero el cierre está muy agresivo y la cifra del 87% no sé de dónde sale. Si nos preguntan en el comité de privacidad, no la podemos sostener. Ajusta esos dos puntos y mándalo de nuevo."
@@ -433,7 +420,7 @@ case_assembly:
           block_id: tradeoff_decision_memo
           content:
             title: "Decide qué le recomiendas a Mariana."
-            body: "Llegó el momento. Tres opciones con tradeoffs reales. Elige la que defenderías frente al board."
+            body: "Llegó el momento. Tres opciones con ventajas y costos reales. Elige la que defenderías ante el comité directivo."
             prompt: "¿Qué recomendación le llevas a Mariana?"
             options:
               - id: lanzar_ahora
@@ -441,13 +428,13 @@ case_assembly:
                 hint: "Úsalo si el beneficio supera el riesgo y los huecos están mitigados."
               - id: piloto_controlado
                 label: "Piloto controlado"
-                hint: "Úsalo si hay señales prometedoras, pero el riesgo de quejas o datos requiere validar primero con un subset."
+                hint: "Úsalo si hay señales prometedoras, pero el riesgo de quejas o datos requiere validar primero con un grupo reducido."
               - id: pausar_y_escalar
                 label: "Pausar y escalar"
                 hint: "Úsalo si la base no está lista, hay datos sensibles sin consentimiento o el modelo afirma cosas que no se pueden sostener."
             memo_placeholder: "Explica qué harías, por qué, qué riesgo aceptas y qué tendrías que revisar antes de avanzar."
             memo_max_chars: 700
-            memo_audience: "Mariana Robles · Head of Growth"
+            memo_audience: "Mariana Robles · Líder de Crecimiento"
 
         - slot: 4
           block_id: reading_message
@@ -464,24 +451,19 @@ case_assembly:
             body_message: "Mariana, vi que Aurora Retail abrió oficina en Monterrey. Trabajamos con equipos de Marketing en empresas medianas de retail. Si quieres ver cómo lo aplicaríamos a tu caso, agendamos una llamada cuando te acomode. Te dejo dos horarios la próxima semana, dime cuál te sirve."
 
         - slot: 5
-          block_id: tradeoff_decision_memo
+          # ai_textfield_free (no un segundo tradeoff_decision_memo) · el
+          # caso cierra con un artefacto entregable real: el mensaje del
+          # envío. Permite al judge comparar el texto del participante
+          # contra el borrador post-revisión. También mantiene el ratio
+          # AI-native en 60% (15/25 activos).
+          block_id: ai_textfield_free
           content:
-            title: "Memo final · resumen para Mariana."
-            body: "Cierre del caso. **Tres líneas máximo** para que Mariana entienda tu decisión en 30 segundos."
-            prompt: "Resume tu posición y el siguiente paso."
-            options:
-              - id: ejecutar_lunes
-                label: "Ejecutar el lunes según el plan"
-                hint: "Plan completo · sin cambios mayores."
-              - id: ejecutar_con_subset
-                label: "Ejecutar con subset reducido el lunes"
-                hint: "Validamos con menos contactos · escalamos si funciona."
-              - id: posponer_una_semana
-                label: "Posponer una semana"
-                hint: "Necesitamos cerrar pendientes con Legal antes."
-            memo_placeholder: "Resume en 3 líneas qué decisión recomiendas, qué riesgo aceptas y qué revisión queda pendiente."
-            memo_max_chars: 350
-            memo_audience: "Mariana Robles · Head of Growth"
+            title: "Escribe el mensaje del envío."
+            body: "Cierre del caso. **Una línea o dos** con el texto que mandarías el lunes a las 8 de la mañana. Esto es lo que tu manager va a poder validar."
+            model: "Modelo corporativo interno"
+            placeholder: "Escribe el mensaje exacto que enviarías al primer contacto del segmento elegido..."
+            attachments_allowed: false
+            voice_allowed: false
 
   # ============================================================
   # METADATA PARA RUBRICA Y JUDGE

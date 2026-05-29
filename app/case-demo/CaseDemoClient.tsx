@@ -79,19 +79,40 @@ interface Slide {
   blockId: ExerciseBlockId;
   title: string;
   body: string;
-  /** Contenido visible al usuario · pasa al renderer del bloque. */
+  /** Contenido del caso. Puede incluir `judge_internal_fields` (hint,
+   *  example, issue, flagIfMarked, goodWhen · ver CASE_ASSEMBLY_SCHEMA)
+   *  co-localizados con el contenido visible por ergonomía de autoría.
+   *  El shell los remueve con `stripJudgeFields` antes de pasar al
+   *  renderer · cumple "no enseñar antes de medir". */
   caseContext?: Record<string, unknown>;
-  /** Metadata interna del judge · NO pasa al cliente del bloque. Vive
-   *  solo en el caso (server-side cuando esté wired). El shell la
-   *  ignora completamente al renderizar. P0.1 real (vs visual). */
-  judgeMeta?: Record<string, unknown>;
 }
 
-/** Strip de campos sensibles del caseContext antes de pasar al renderer.
- *  Garantiza que aunque un autor olvide separar judgeMeta, los campos
- *  prohibidos (hint, example, issue, flagIfMarked, goodWhen) jamás
- *  lleguen al cliente del bloque. P0.1 real · cumple regla transversal
- *  "no enseñar antes de medir" a nivel estructural. */
+/** Campos que se MUESTRAN al usuario y revelarían la respuesta · el shell
+ *  los remueve antes de pasar el caseContext al renderer. Coincide con
+ *  CASE_ASSEMBLY_SCHEMA.yaml > rules.judge_internal_fields.
+ *
+ *  IMPORTANTE · `flagIfMarked` NO va aquí: aunque es metadata del judge,
+ *  el bloque ai_output_review lo necesita en runtime para saber qué flag
+ *  asignar cuando el usuario marca un segmento (lógica funcional, no
+ *  pista visual · nunca se renderiza). Borrarlo rompería el bloque. */
+const JUDGE_INTERNAL_FIELDS = [
+  "hint",
+  "example",
+  "issue",
+  "goodWhen",
+] as const;
+
+/** Strip de los `judge_internal_fields` del caseContext antes de pasar al
+ *  renderer. Implementa el contrato de CASE_ASSEMBLY_SCHEMA: los campos
+ *  evaluativos se co-localizan en el caso (ergonomía de autoría) pero
+ *  NUNCA llegan al cliente del bloque. Cumple la regla transversal
+ *  "no enseñar antes de medir".
+ *
+ *  LIMITACIÓN client-side: en esta vitrina demo el array SLIDES completo
+ *  se serializa al bundle, así que los campos internos están técnicamente
+ *  en el JavaScript del cliente (no visibles en pantalla, sí en devtools).
+ *  El runtime productivo (/case/[case_id]) los mantiene server-side y solo
+ *  envía el caseContext ya limpio · ver migration_notes del schema. */
 function stripJudgeFields(
   ctx: Record<string, unknown> | undefined,
 ): Record<string, unknown> | undefined {
@@ -104,11 +125,9 @@ function stripJudgeFields(
       return;
     }
     const obj = node as Record<string, unknown>;
-    delete obj.hint;
-    delete obj.example;
-    delete obj.issue;
-    delete obj.flagIfMarked;
-    delete obj.goodWhen;
+    for (const field of JUDGE_INTERNAL_FIELDS) {
+      delete obj[field];
+    }
     Object.values(obj).forEach(walk);
   }
   walk(clean);
@@ -149,23 +168,23 @@ const SLIDES: Slide[][] = [
     // Slot 2: reading_message · email de la jefa
     {
       blockId: "reading_message",
-      title: "Email de Mariana, tu jefa.",
+      title: "Correo de Mariana, tu jefa.",
       body: "Lo que llega antes de empezar.",
       caseContext: {
         message: {
           channel: "email",
-          from: { name: "Mariana Robles", role: "Head of Growth · Aurora Retail" },
-          to: { name: "Tú", role: "Marketing Lead" },
+          from: { name: "Mariana Robles", role: "Líder de Crecimiento · Aurora Retail" },
+          to: { name: "Tú", role: "Líder de Marketing" },
           timestamp: "Hoy, 09:42",
           subject: "Necesitamos relanzar la campaña antes del viernes",
-          body: "Hola, el board pidió relanzar la campaña de retención antes del viernes. **Presupuesto sin tocar.** Mándame propuesta hoy mismo con segmentos, mensaje base y métricas que vas a monitorear. Gracias.",
+          body: "Hola, el comité directivo pidió relanzar la campaña de retención antes del viernes. **Presupuesto sin tocar.** Mándame propuesta hoy mismo con segmentos, mensaje base y métricas que vas a monitorear. Gracias.",
         },
       },
     },
     // Slot 3: reading_data_table · preview de los problemas
     {
       blockId: "reading_data_table",
-      title: "Preview de la base que te pasaron.",
+      title: "Vista previa de la base que te pasaron.",
       body: "Primeros 5 contactos de la lista. **Hay problemas evidentes** desde la primera mirada.",
       caseContext: {
         table: {
@@ -178,7 +197,7 @@ const SLIDES: Slide[][] = [
             { key: "estatus", label: "Estatus" },
           ],
           rows: [
-            { contacto: "Mariana Robles", empresa: "Aurora Retail", cargo: "Head of Growth", ultima_apertura: "Hace 3 días", estatus: "Activa" },
+            { contacto: "Mariana Robles", empresa: "Aurora Retail", cargo: "Líder de Crecimiento", ultima_apertura: "Hace 3 días", estatus: "Activa" },
             { contacto: "mariana robles", empresa: "Aurora Retail", cargo: "head of growth", ultima_apertura: "Hace 21 días", estatus: "Activa" },
             { contacto: "(vacío)", empresa: "Bosa Industrial", cargo: "Director", ultima_apertura: "Hace 7 días", estatus: "Activa" },
             { contacto: "Carlos Méndez", empresa: "Cresta Software", cargo: "DIRECTOR MARKETING", ultima_apertura: "Hace 60 días", estatus: "Inactiva" },
@@ -200,8 +219,8 @@ const SLIDES: Slide[][] = [
           { value: "critica", label: "Crítica" },
         ],
         rows: [
-          { id: "metric-1", label: "Tasa de apertura: 23.4%", example: "Bajó 4.2 puntos respecto al envío anterior", hint: "Benchmark interno es 27% mínimo" },
-          { id: "metric-2", label: "Conversión a demo: 3.1%", example: "Subió 0.6 puntos respecto al envío anterior", hint: "Benchmark interno es 2.5% mínimo" },
+          { id: "metric-1", label: "Tasa de apertura: 23.4%", example: "Bajó 4.2 puntos respecto al envío anterior", hint: "Referencia interna es 27% mínimo" },
+          { id: "metric-2", label: "Conversión a demo: 3.1%", example: "Subió 0.6 puntos respecto al envío anterior", hint: "Referencia interna es 2.5% mínimo" },
           { id: "metric-3", label: "Quejas por privacidad: 12", example: "Subió 8 respecto al envío anterior", hint: "Cualquier número arriba de 5 dispara alerta de Legal" },
         ],
       },
@@ -274,7 +293,7 @@ const SLIDES: Slide[][] = [
           { id: "row-3", label: "(sin nombre) · Bosa Industrial", example: "Sin nombre", hint: "Email genérico info@bosa.example" },
           { id: "row-4", label: "Carlos Méndez · Cresta Software", example: "Cargo raro DIRECTOR MARKETING", hint: "Necesita normalización a Director de Marketing" },
           { id: "row-5", label: "Ana Pérez · Eclipse Health", example: "Pidió baja hace 2 meses", hint: "Consentimiento revocado · regla dura" },
-          { id: "row-6", label: "Pedro Castillo · Foro Studio", example: "Email rebota desde hace 4 envíos", hint: "Hard bounce repetido" },
+          { id: "row-6", label: "Pedro Castillo · Foro Studio", example: "Email rebota desde hace 4 envíos", hint: "Rebote permanente repetido" },
           { id: "row-7", label: "(sin nombre) · Gama Capital", example: "Sin nombre", hint: "Email personal sofia.lara@gmail.example" },
           { id: "row-8", label: "Sofía Lara · Helix Bio", example: "Cargo vacío", hint: "Solo nombre y empresa" },
         ],
@@ -406,7 +425,7 @@ const SLIDES: Slide[][] = [
     {
       blockId: "ai_comparison",
       title: "Elige el llamado a la acción.",
-      body: "Cuatro versiones del **cierre del mensaje**. Cada una tiene un tradeoff entre directness y permission.",
+      body: "Cuatro versiones del **cierre del mensaje**. Cada una tiene un equilibrio entre ser directo y dar espacio.",
       caseContext: {
         options: [
           { id: "A", title: "Versión A", body: "Agenda 15 minutos esta semana en este enlace. Es la forma más rápida de avanzar." },
@@ -438,7 +457,7 @@ const SLIDES: Slide[][] = [
       caseContext: {
         message: {
           channel: "chat",
-          from: { name: "Mariana Robles", role: "Head of Growth · Aurora Retail" },
+          from: { name: "Mariana Robles", role: "Líder de Crecimiento · Aurora Retail" },
           to: { name: "Tú" },
           timestamp: "Hace 12 minutos",
           body: "Está bien la dirección, pero **el cierre está muy agresivo** y la cifra del **87%** no sé de dónde sale. Si nos preguntan en el comité de privacidad, no la podemos sostener. Ajusta esos dos puntos y mándalo de nuevo.",
@@ -481,11 +500,11 @@ const SLIDES: Slide[][] = [
     {
       blockId: "tradeoff_decision_memo",
       title: "Decide qué le recomiendas a Mariana.",
-      body: "Llegó el momento. Tres opciones con tradeoffs reales. Elige la que **defenderías frente al board**.",
+      body: "Llegó el momento. Tres opciones con ventajas y costos reales. Elige la que **defenderías ante el comité directivo**.",
       caseContext: {
         decisions: [
           { id: "lanzar_lunes", title: "Lanzar el lunes", detail: "Úsalo si el beneficio supera el riesgo y los huecos de privacidad ya quedaron mitigados." },
-          { id: "piloto_controlado", title: "Piloto controlado", detail: "Úsalo si hay señales prometedoras pero el riesgo de quejas o datos requiere validar con un subset primero." },
+          { id: "piloto_controlado", title: "Piloto controlado", detail: "Úsalo si hay señales prometedoras pero el riesgo de quejas o datos requiere validar con un grupo reducido primero." },
           { id: "pausar_y_escalar", title: "Pausar y escalar", detail: "Úsalo si la base no está lista, hay datos sensibles sin consentimiento o el modelo afirma cosas que no se pueden sostener." },
         ],
       },
@@ -1044,23 +1063,34 @@ function buildReportSnapshot(
             : "Decisión no registrada.",
   });
 
-  // ===== DECISIÓN · evalúa claridad del memo final =====
-  const memoFinal = payloads["cierre-5"] as
-    | Extract<ExerciseResponsePayload, { block_id: "tradeoff_decision_memo" }>
+  // ===== DECISIÓN · evalúa claridad del memo que justifica la decisión.
+  // El memo vive en el mismo tradeoff_decision_memo del slot 3 (cierre-3),
+  // junto a la decision. El mensaje del envío (cierre-5, ai_textfield_free)
+  // es un artefacto distinto · se usa como señal de ejecución abajo. =====
+  const memoText = decisionPayload?.memo.trim() ?? "";
+  const memoLength = memoText.length;
+  const sendMessage = payloads["cierre-5"] as
+    | Extract<ExerciseResponsePayload, { block_id: "ai_textfield_free" }>
     | undefined;
-  const memoLength = memoFinal?.memo.trim().length ?? 0;
+  const wroteMessage = (sendMessage?.prompt_text.trim().length ?? 0) >= 20;
+  // Banda alta requiere memo sustancial Y mensaje escrito; media si solo uno.
   const decisionBand: Band =
-    memoLength >= 200 ? "alto" : memoLength >= 80 ? "medio" : "bajo";
+    memoLength >= 120 && wroteMessage
+      ? "alto"
+      : memoLength >= 40 || wroteMessage
+        ? "medio"
+        : "bajo";
+  // Cita textual del memo del usuario (no resumen) · cumple regla v0 de
+  // evidencia citable. Si no escribió memo, lo dice explícito.
+  const memoQuote =
+    memoLength > 0
+      ? `"${memoText.length > 90 ? memoText.slice(0, 90).trimEnd() + "…" : memoText}"`
+      : "No escribió memo de justificación.";
   dimensions.push({
     id: "decision",
     label: "Decisión",
     band: decisionBand,
-    metric:
-      memoLength >= 200
-        ? "Memo final con contexto y siguiente paso."
-        : memoLength >= 80
-          ? "Memo corto · falta métrica o siguiente paso."
-          : "Memo final vacío o sin justificación.",
+    metric: memoQuote,
   });
 
   // ===== RECOMENDACIÓN AGREGADA =====

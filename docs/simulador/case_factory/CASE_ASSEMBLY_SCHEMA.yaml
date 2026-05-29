@@ -60,11 +60,29 @@ case_assembly_schema:
     # P0 · CEREBRO · no enseñar antes de medir (DIAGNOSTICO_1_CASO_V0 §7)
     # Cualquier elemento UI que revele la respuesta correcta antes de la
     # captura debe eliminarse. Estos campos del block_content NO se
-    # renderizan al usuario · solo el judge LLM los lee.
+    # renderizan al usuario · el shell los remueve (stripJudgeFields)
+    # antes de pasar el caseContext al renderer.
     judge_internal_fields:
       categorize_rows: [hint, example]      # rows[].hint, rows[].example
-      ai_output_review: [issue, flagIfMarked] # segments[].issue
+      ai_output_review: [issue]             # segments[].issue
       reading_kpi_cards: [goodWhen]         # kpis[].delta.goodWhen
+
+    # CAMPOS FUNCIONALES · metadata del judge que el BLOQUE necesita en
+    # runtime (no se renderizan al usuario, pero NO se remueven · borrarlos
+    # rompe la lógica del bloque). Distinto de judge_internal_fields.
+    block_functional_fields:
+      ai_output_review: [flagIfMarked]      # segments[].flagIfMarked · qué
+        # flag asigna el bloque cuando el usuario marca el segmento.
+    # NOTA cerebro: el diseño actual de ai_output_review predefine el flag
+    # por segmento (mide IDENTIFICACIÓN del segmento problemático). Una
+    # mejora futura haría que el participante ELIJA el tipo de flag (mide
+    # identificación + clasificación) · eliminaría este campo del cliente.
+
+    # LIMITACIÓN client-side conocida · en la vitrina /case-demo el array
+    # SLIDES completo se serializa al bundle, así que judge_internal_fields
+    # están en el JavaScript (no en pantalla, sí en devtools). El runtime
+    # productivo (/case/[case_id]) los mantiene server-side · ver
+    # migration_notes.runtime_bridge al final de este schema.
 
     # P2.1 · Niveles permitidos por bloque (derivado de EXERCISE_BLOCK_CATALOG.yaml).
     # El validador rechaza el caso si un block_id se usa fuera de su nivel.

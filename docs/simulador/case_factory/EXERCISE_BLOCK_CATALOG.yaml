@@ -359,8 +359,11 @@ exercise_block_catalog:
         - "flagOptions[] · banderas disponibles para marcar"
       judge_internal_fields:
         # P0 · campos NO renderizados al usuario · cumple "no enseñar antes de medir"
-        - "segments[].issue · etiqueta del tipo de riesgo que el judge espera detectar"
-        - "segments[].flagIfMarked · qué flag asignar si el usuario marca el segmento"
+        - "segments[].issue · etiqueta del tipo de riesgo que el judge espera detectar · se REMUEVE del cliente"
+      block_functional_fields:
+        # metadata que el bloque NECESITA en runtime · no se renderiza
+        # pero NO se remueve (borrarla rompe el toggle del segmento)
+        - "segments[].flagIfMarked · qué flag asigna el bloque cuando el usuario marca el segmento"
       emits: [flagged_segments]
       ui_pattern: "segmentos seleccionables + follow-up opcional"
       default_empty_fields: [flagged_segments, correction_request]
