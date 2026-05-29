@@ -88,14 +88,21 @@ case_assembly:
               - { contacto: "Lucía Soto", empresa: "Delta Logistics", cargo: "Gerente comercial", ultima_apertura: "Hace 5 días", estatus: "Activa" }
 
         - slot: 4
-          block_id: reading_kpi_cards
+          # categorize_rows (no reading_kpi_cards) · clasificar las métricas
+          # del envío anterior es una decisión activa que emite evidencia
+          # de juicio · mantiene el ratio AI-native en 60% (15/25).
+          block_id: categorize_rows
           content:
-            title: "Cómo va la cuenta hasta hoy."
-            body: "Métricas de la **última campaña** que enviaste hace un mes. Te dan el punto de partida para esta."
-            kpis:
-              - { value: "23.4%", label: "Tasa de apertura", delta: { value: "-4.2 pp", direction: down } }
-              - { value: "3.1%", label: "Conversión a demo", delta: { value: "+0.6 pp", direction: up } }
-              - { value: "12", label: "Quejas por privacidad", delta: { value: "+8", direction: down } }
+            title: "Clasifica las métricas del último envío."
+            body: "Tres métricas de la **campaña anterior**. Decide cuáles son aceptables, cuáles te preocupan y cuáles son críticas antes de planear esta."
+            prompt: "¿Cómo clasificas esta métrica?"
+            action_style: severity
+            actions: [aceptable, preocupante, critica]
+            rows:
+              # judge_internal: example + hint se remueven antes de render
+              - { id: metric-1, label: "Tasa de apertura: 23.4%", example: "Bajó 4.2 puntos respecto al envío anterior", hint: "Referencia interna es 27% mínimo" }
+              - { id: metric-2, label: "Conversión a demo: 3.1%", example: "Subió 0.6 puntos respecto al envío anterior", hint: "Referencia interna es 2.5% mínimo" }
+              - { id: metric-3, label: "Quejas por privacidad: 12", example: "Subió 8 respecto al envío anterior", hint: "Cualquier número arriba de 5 dispara alerta de Legal" }
 
         - slot: 5
           block_id: reading_message
@@ -161,45 +168,45 @@ case_assembly:
               - { id: 8, title: "Sofía Lara · Helix Bio", subtitle: "Cargo vacío", hint: "Solo nombre y empresa" }
 
         - slot: 3
-          block_id: categorize_rows
-          content:
-            title: "Decide qué campos van al modelo."
-            body: "El **mensaje personalizado** lo va a generar la inteligencia artificial. Decide qué columnas le pasas y cuáles transformas antes para proteger los datos personales."
-            prompt: "¿Qué hacemos con este campo antes de pasarlo a la IA?"
-            action_style: permission
-            actions: [usar, anonimizar, agregar, excluir]
-            rows:
-              - { id: contacto, title: "Contacto", subtitle: "Nombre completo", hint: "Dato personal directo" }
-              - { id: email, title: "Email", subtitle: "Correo del contacto", hint: "Identificador único de la persona" }
-              - { id: empresa, title: "Empresa", subtitle: "Razón social", hint: "Contexto de la cuenta" }
-              - { id: cargo, title: "Cargo", subtitle: "Rol del contacto", hint: "Útil para personalizar tono" }
-              - { id: ultima_apertura, title: "Última apertura", subtitle: "Engagement reciente", hint: "Señal de interés" }
-              - { id: notas_internas, title: "Notas internas", subtitle: "Comentarios del equipo de ventas", hint: "Pueden contener info sensible" }
-
-        - slot: 4
           block_id: reading_attachment
           content:
             title: "Política de datos vigente."
-            body: "Lee antes de seguir. El documento define **qué se puede usar** con modelos externos y **qué requiere aprobación** legal."
+            body: "Lee antes de seguir. El documento define **qué se puede usar** con modelos externos y **qué requiere aprobación** legal antes del envío."
             attachments:
               - name: "Politica_Datos_Aurora_Retail_v2.pdf"
                 size: "184 KB"
                 type: "pdf"
-                description: "Política interna · datos permitidos para uso con inteligencia artificial externa"
+                description: "Política interna · datos permitidos para uso con inteligencia artificial externa."
+
+        - slot: 4
+          # ai_textfield_free · pedirle a una IA auditora que revise el plan
+          # de datos antes de generar el mensaje. Sube el ratio AI-native y
+          # mide si el participante usa la IA para validar, no solo producir.
+          block_id: ai_textfield_free
+          content:
+            title: "Pídele a la inteligencia artificial que audite tu plan."
+            body: "Antes de llevar este plan al modelo final, **pídele a una inteligencia artificial auditora** que revise si tu selección de datos respeta la política y si dejaste algún hueco. Sé específico."
+            model: "Modelo corporativo interno"
+            placeholder: "Escribe el prompt de auditoría que le mandarías..."
+            attachments_allowed: false
+            voice_allowed: false
 
         - slot: 5
           block_id: categorize_rows
           content:
-            title: "Decide qué segmentos vas a incluir en el envío."
-            body: "Tres segmentos posibles para el lunes. Cada uno equilibra distinto **alcance** y **calidad de respuesta**."
-            prompt: "¿Cómo manejas este segmento?"
-            action_style: neutral
-            actions: [enviar, validar, excluir, posponer]
+            title: "Decide qué campos van al modelo."
+            body: "El **mensaje personalizado** lo va a generar la inteligencia artificial. Decide qué columnas le pasas y cuáles transformas antes para proteger los datos personales."
+            prompt: "¿Qué hacemos con este campo antes de pasarlo a la inteligencia artificial?"
+            action_style: permission
+            actions: [usar, anonimizar, agregar, excluir]
             rows:
-              - { id: activos_recientes, title: "Activos recientes", subtitle: "Abrieron en los últimos 14 días", hint: "Mayor probabilidad de conversión" }
-              - { id: dormidos, title: "Dormidos", subtitle: "Sin apertura entre 30 y 90 días", hint: "Necesitan mensaje de re-enganche" }
-              - { id: inactivos, title: "Inactivos", subtitle: "Sin apertura hace más de 90 días", hint: "Riesgo de quejas por privacidad" }
-              - { id: nuevos, title: "Nuevos sin engagement", subtitle: "Suscritos hace menos de 30 días, sin apertura", hint: "Pueden marcar como spam" }
+              # judge_internal: example + hint se remueven antes de render
+              - { id: contacto, label: "Contacto", example: "Nombre completo", hint: "Dato personal directo" }
+              - { id: email, label: "Correo", example: "Correo del contacto", hint: "Identificador único de la persona" }
+              - { id: empresa, label: "Empresa", example: "Razón social", hint: "Contexto de la cuenta" }
+              - { id: cargo, label: "Cargo", example: "Rol del contacto", hint: "Útil para personalizar tono" }
+              - { id: ultima_apertura, label: "Última apertura", example: "Interés reciente", hint: "Señal de interés" }
+              - { id: notas_internas, label: "Notas internas", example: "Comentarios del equipo de ventas", hint: "Pueden contener información sensible" }
 
     # ============================================================
     # SECCION 3 · IA
