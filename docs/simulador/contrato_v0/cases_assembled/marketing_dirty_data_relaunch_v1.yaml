@@ -191,7 +191,7 @@ case_assembly:
           block_id: categorize_rows
           content:
             title: "Decide qué segmentos vas a incluir en el envío."
-            body: "Tres segmentos posibles para el lunes. Cada uno tiene un tradeoff entre **alcance** y **calidad de respuesta**."
+            body: "Tres segmentos posibles para el lunes. Cada uno equilibra distinto **alcance** y **calidad de respuesta**."
             prompt: "¿Cómo manejas este segmento?"
             action_style: neutral
             actions: [enviar, validar, excluir, posponer]
@@ -353,7 +353,7 @@ case_assembly:
           block_id: ai_output_review
           content:
             title: "Última pasada sobre la versión final."
-            body: "Versión **post-feedback** de Mariana. Marca lo que todavía te genera dudas o lo que dejarías ir."
+            body: "Versión corregida tras el comentario de Mariana. Marca lo que todavía te genera dudas o lo que dejarías ir."
             prompt: "¿Qué dejarías como está y qué marcarías para una última corrección?"
             segments:
               - { id: f1, text: "Mariana, vi que Aurora Retail abrió oficina en Monterrey." }
@@ -377,6 +377,25 @@ case_assembly:
       slides:
 
         - slot: 1
+          # ai_output_review · última revisión del email antes de decidir.
+          # Reemplaza al reading_message "vista previa" del orden anterior:
+          # reading_message no se permite en sección cierre
+          # (block_section_constraints) y un bloque pasivo no aporta
+          # evidencia en el momento de cierre · este lo convierte en
+          # decisión activa (marcar lo que detiene el envío).
+          block_id: ai_output_review
+          content:
+            title: "Última revisión antes del envío."
+            body: "Así se vería en la bandeja del contacto. **Marca cualquier cosa** que te detendría justo antes de mandar el lunes a las 8 de la mañana."
+            prompt: "¿Qué te detiene antes de enviar?"
+            segments:
+              - { id: final-1, text: "Asunto: Una idea concreta para tu equipo este trimestre.", issue: "Asunto operativo", flagIfMarked: frase_reutilizable }
+              - { id: final-2, text: "Mariana, vi que Aurora Retail abrió oficina en Monterrey la semana pasada.", issue: "Información personalizada de fuente externa", flagIfMarked: dato_sensible }
+              - { id: final-3, text: "Trabajamos con equipos de Marketing en empresas medianas de retail.", issue: "Afirmación interna verificable", flagIfMarked: frase_reutilizable }
+              - { id: final-4, text: "Te dejo dos horarios la próxima semana, dime cuál te sirve.", issue: "Cierre directo y opcional", flagIfMarked: frase_reutilizable }
+            flag_options: [claim_no_verificado, tono_agresivo, dato_sensible, frase_reutilizable]
+
+        - slot: 2
           block_id: dashboard_pivot
           content:
             title: "Elige el segmento que vas a llevar al manager."
@@ -402,7 +421,7 @@ case_assembly:
                   - { label: "Conversión esperada", value: "2.6%", band: medio }
                   - { label: "Riesgo de queja", value: "Medio", band: medio }
 
-        - slot: 2
+        - slot: 3
           block_id: workflow_builder
           content:
             title: "Define el flujo del envío con revisión humana."
@@ -410,17 +429,34 @@ case_assembly:
             prompt: "¿Cómo queda el flujo del envío?"
             steps:
               - { id: limpiar_base, label: "Limpiar base de contactos" }
-              - { id: generar_borrador, label: "Generar borrador con la IA" }
+              - { id: generar_borrador, label: "Generar borrador con la inteligencia artificial" }
               - { id: revision_legal, label: "Revisión rápida de Legal" }
               - { id: ajustar_segmento, label: "Ajustar segmentos por consentimiento" }
               - { id: enviar, label: "Programar envío" }
               - { id: monitorear, label: "Monitorear quejas y bajas" }
 
-        - slot: 3
+        - slot: 4
+          # ai_textfield_free · el artefacto entregable (el mensaje del
+          # envío). Va antes del memo final para que el participante
+          # tenga el texto listo cuando recomiende al manager.
+          block_id: ai_textfield_free
+          content:
+            title: "Escribe el mensaje del envío."
+            body: "**Una línea o dos** con el texto que mandarías el lunes a las 8 de la mañana. Es el entregable que vas a defender en tu recomendación."
+            model: "Modelo corporativo interno"
+            placeholder: "Escribe el mensaje exacto que enviarías al primer contacto del segmento elegido..."
+            attachments_allowed: false
+            voice_allowed: false
+
+        - slot: 5
+          # tradeoff_decision_memo · CIERRE canónico del caso. Decision
+          # point del método Harvard: el participante elige una acción y
+          # escribe el memo que recibe su manager. Cumple
+          # last_section_must_close_with del CASE_ASSEMBLY_SCHEMA.
           block_id: tradeoff_decision_memo
           content:
-            title: "Decide qué le recomiendas a Mariana."
-            body: "Llegó el momento. Tres opciones con ventajas y costos reales. Elige la que defenderías ante el comité directivo."
+            title: "Cierra con tu recomendación para Mariana."
+            body: "Elige la opción que defenderías ante el comité directivo y escribe el memo que recibe tu manager."
             prompt: "¿Qué recomendación le llevas a Mariana?"
             options:
               - id: lanzar_ahora
@@ -435,35 +471,6 @@ case_assembly:
             memo_placeholder: "Explica qué harías, por qué, qué riesgo aceptas y qué tendrías que revisar antes de avanzar."
             memo_max_chars: 700
             memo_audience: "Mariana Robles · Líder de Crecimiento"
-
-        - slot: 4
-          block_id: reading_message
-          content:
-            title: "Vista previa del email que se enviaría."
-            body: "Así se vería en la bandeja del contacto. **Última oportunidad** para detectar algo antes del envío real."
-            channel: email
-            from:
-              name: "Aurora Retail · Marketing"
-              role: "marketing@aurora.example"
-            to: "Lista del segmento elegido (preview con 1 contacto)"
-            timestamp: "Lunes, 08:00"
-            subject: "Una idea concreta para tu equipo este trimestre"
-            body_message: "Mariana, vi que Aurora Retail abrió oficina en Monterrey. Trabajamos con equipos de Marketing en empresas medianas de retail. Si quieres ver cómo lo aplicaríamos a tu caso, agendamos una llamada cuando te acomode. Te dejo dos horarios la próxima semana, dime cuál te sirve."
-
-        - slot: 5
-          # ai_textfield_free (no un segundo tradeoff_decision_memo) · el
-          # caso cierra con un artefacto entregable real: el mensaje del
-          # envío. Permite al judge comparar el texto del participante
-          # contra el borrador post-revisión. También mantiene el ratio
-          # AI-native en 60% (15/25 activos).
-          block_id: ai_textfield_free
-          content:
-            title: "Escribe el mensaje del envío."
-            body: "Cierre del caso. **Una línea o dos** con el texto que mandarías el lunes a las 8 de la mañana. Esto es lo que tu manager va a poder validar."
-            model: "Modelo corporativo interno"
-            placeholder: "Escribe el mensaje exacto que enviarías al primer contacto del segmento elegido..."
-            attachments_allowed: false
-            voice_allowed: false
 
   # ============================================================
   # METADATA PARA RUBRICA Y JUDGE

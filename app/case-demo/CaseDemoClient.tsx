@@ -13,9 +13,10 @@
  * block_id del registry y pasa caseContext con su content específico.
  *
  * Bloques que tienen OWNS_CONTINUE (case_cover, ai_textfield_guided,
- * categorize_rows, ai_comparison, dashboard_pivot) manejan su propio
- * botón Continuar via onShellContinue. El shell no muestra su CTA
- * cuando el bloque maneja el suyo.
+ * categorize_rows, ai_comparison) manejan su propio botón Continuar via
+ * onShellContinue. El shell no muestra su CTA cuando el bloque maneja el
+ * suyo · para el resto, el shell bloquea Continuar hasta que el bloque
+ * emite evidencia (isBlockComplete · P1.1).
  */
 
 import { useCallback, useEffect, useState } from "react";
@@ -467,7 +468,7 @@ const SLIDES: Slide[][] = [
     // Slot 5: ai_output_review · última pasada
     {
       blockId: "ai_output_review",
-      title: "Última pasada · versión post-feedback.",
+      title: "Última pasada tras el comentario de Mariana.",
       body: "Marca lo que todavía te genera dudas o lo que dejarías ir.",
       caseContext: {
         segments: [
@@ -484,32 +485,7 @@ const SLIDES: Slide[][] = [
   // SECCIÓN 5 · CIERRE (4 activos + 1 pasivo)
   // ============================================================
   [
-    // Slot 1: dashboard_pivot · elegir segmento
-    {
-      blockId: "dashboard_pivot",
-      title: "Elige qué segmento llevar al manager.",
-      body: "Tres segmentos con métricas reales. Cada uno tiene **caveats**. Elige cuál llevas a la reunión del lunes.",
-    },
-    // Slot 2: workflow_builder · definir el flujo
-    {
-      blockId: "workflow_builder",
-      title: "Define el flujo del envío.",
-      body: "Ordena los pasos. Decide **dónde entra revisión humana** y dónde el modelo opera solo. Puedes reordenar arrastrando.",
-    },
-    // Slot 3: tradeoff_decision_memo · decisión principal
-    {
-      blockId: "tradeoff_decision_memo",
-      title: "Decide qué le recomiendas a Mariana.",
-      body: "Llegó el momento. Tres opciones con ventajas y costos reales. Elige la que **defenderías ante el comité directivo**.",
-      caseContext: {
-        decisions: [
-          { id: "lanzar_lunes", title: "Lanzar el lunes", detail: "Úsalo si el beneficio supera el riesgo y los huecos de privacidad ya quedaron mitigados." },
-          { id: "piloto_controlado", title: "Piloto controlado", detail: "Úsalo si hay señales prometedoras pero el riesgo de quejas o datos requiere validar con un grupo reducido primero." },
-          { id: "pausar_y_escalar", title: "Pausar y escalar", detail: "Úsalo si la base no está lista, hay datos sensibles sin consentimiento o el modelo afirma cosas que no se pueden sostener." },
-        ],
-      },
-    },
-    // Slot 4: ai_output_review · última revisión del email antes de enviar
+    // Slot 1: ai_output_review · última revisión del email antes de decidir.
     {
       blockId: "ai_output_review",
       title: "Última revisión antes del envío.",
@@ -523,17 +499,40 @@ const SLIDES: Slide[][] = [
         ],
       },
     },
-    // Slot 5: ai_textfield_free · escribe el mensaje del envío del lunes.
-    // Reemplazó al segundo tradeoff_decision_memo (era redundante con
-    // slot 3). Cierra el caso con un artefacto entregable real · permite
-    // al judge comparar el texto del usuario contra el borrador post-IA.
-    // P0.2 · recupera ratio AI-native 60% tras mover model_tradeoff_sliders.
+    // Slot 2: dashboard_pivot · elegir segmento
+    {
+      blockId: "dashboard_pivot",
+      title: "Elige qué segmento llevar al manager.",
+      body: "Tres segmentos con métricas reales. Cada uno tiene **caveats**. Elige cuál llevas a la reunión del lunes.",
+    },
+    // Slot 3: workflow_builder · definir el flujo
+    {
+      blockId: "workflow_builder",
+      title: "Define el flujo del envío.",
+      body: "Ordena los pasos. Decide **dónde entra revisión humana** y dónde el modelo opera solo. Puedes reordenar arrastrando.",
+    },
+    // Slot 4: ai_textfield_free · escribe el mensaje del envío (artefacto).
     {
       blockId: "ai_textfield_free",
       title: "Escribe el mensaje del envío.",
-      body: "Cierre del caso. **Una línea o dos** con el texto que mandarías el lunes a las 8. Esto es lo que Mariana va a poder validar.",
+      body: "**Una línea o dos** con el texto que mandarías el lunes a las 8. Es el entregable que vas a defender en tu recomendación.",
       caseContext: {
         placeholder: "Escribe el mensaje exacto que enviarías al primer contacto del segmento elegido...",
+      },
+    },
+    // Slot 5: tradeoff_decision_memo · decisión + memo al manager. CIERRE
+    // canónico del caso (decision point Harvard · cumple
+    // last_section_must_close_with del CASE_ASSEMBLY_SCHEMA).
+    {
+      blockId: "tradeoff_decision_memo",
+      title: "Cierra con tu recomendación para Mariana.",
+      body: "Llegó el momento. Elige la opción que **defenderías ante el comité directivo** y escribe el memo que recibe tu manager.",
+      caseContext: {
+        decisions: [
+          { id: "lanzar_lunes", title: "Lanzar el lunes", detail: "Úsalo si el beneficio supera el riesgo y los huecos de privacidad ya quedaron mitigados." },
+          { id: "piloto_controlado", title: "Piloto controlado", detail: "Úsalo si hay señales prometedoras pero el riesgo de quejas o datos requiere validar con un grupo reducido primero." },
+          { id: "pausar_y_escalar", title: "Pausar y escalar", detail: "Úsalo si la base no está lista, hay datos sensibles sin consentimiento o el modelo afirma cosas que no se pueden sostener." },
+        ],
       },
     },
   ],
@@ -1037,8 +1036,8 @@ function buildReportSnapshot(
     });
   }
 
-  // ===== JUICIO · evalúa la decisión principal del cierre =====
-  const decisionPayload = payloads["cierre-3"] as
+  // ===== JUICIO · evalúa la decisión principal del cierre (slot 5) =====
+  const decisionPayload = payloads["cierre-5"] as
     | Extract<ExerciseResponsePayload, { block_id: "tradeoff_decision_memo" }>
     | undefined;
   const juicioBand: Band =
@@ -1064,12 +1063,12 @@ function buildReportSnapshot(
   });
 
   // ===== DECISIÓN · evalúa claridad del memo que justifica la decisión.
-  // El memo vive en el mismo tradeoff_decision_memo del slot 3 (cierre-3),
-  // junto a la decision. El mensaje del envío (cierre-5, ai_textfield_free)
+  // El memo vive en el tradeoff_decision_memo del slot 5 (cierre-5),
+  // junto a la decision. El mensaje del envío (cierre-4, ai_textfield_free)
   // es un artefacto distinto · se usa como señal de ejecución abajo. =====
   const memoText = decisionPayload?.memo.trim() ?? "";
   const memoLength = memoText.length;
-  const sendMessage = payloads["cierre-5"] as
+  const sendMessage = payloads["cierre-4"] as
     | Extract<ExerciseResponsePayload, { block_id: "ai_textfield_free" }>
     | undefined;
   const wroteMessage = (sendMessage?.prompt_text.trim().length ?? 0) >= 20;
