@@ -11,6 +11,18 @@ exercise_block_catalog:
     passive) no emiten evidencia — solo introducen, contextualizan o cierran
     secciones del runtime con titulo + body + boton continuar.
 
+  # AUTORIDAD DE SECCIONES (importante, evita el doble-vocabulario):
+  # El campo `runtime_sections` de cada bloque describe el runtime PRODUCTIVO
+  # LEGACY de 6 secciones (Contexto, Datos, IA, Revision, Decision, Respuesta).
+  # Para CASOS ENSAMBLADOS con el modelo nuevo de 5 secciones (contexto, datos,
+  # ia, revision, cierre), la AUTORIDAD de que bloque va en que seccion es
+  # `block_section_constraints` en CASE_ASSEMBLY_SCHEMA.yaml; eso es lo que
+  # valida scripts/simulador/check-assembled-case.mjs. No usar `runtime_sections`
+  # para validar casos ensamblados. La migracion del runtime productivo a 5
+  # secciones (consolidar Decision + Respuesta en Cierre aqui y en
+  # components/simulador/RuntimeExperience.tsx, mas el tipo generado) queda
+  # pendiente y es lane de Codex (runtime).
+
   product_rules:
     - "El caso controla escenario, presion, datos y resultado esperado; el usuario no configura el examen."
     - "Ningun bloque puede iniciar con respuestas, briefs, decisiones, memos u outputs prellenados."

@@ -105,9 +105,14 @@ case_assembly_schema:
       dashboard_pivot:          [N2, N3]
       tradeoff_decision_memo:   [N1, N2, N3]
 
-    # P2.2 · Secciones permitidas por bloque (derivado del runtime_sections
-    # del catalogo). El validador rechaza el caso si un block_id se usa en
-    # una seccion no permitida.
+    # P2.2 · Secciones permitidas por bloque. ESTA es la AUTORIDAD para casos
+    # ensamblados (modelo de 5 secciones). Se derivo del runtime_sections del
+    # catalogo remapeando las 6 secciones viejas a 5 (Decision + Respuesta ->
+    # cierre). Si difiere del runtime_sections del EXERCISE_BLOCK_CATALOG, manda
+    # esta lista, no el catalogo (el catalogo describe el runtime productivo
+    # legacy de 6 secciones, todavia sin migrar). El validador
+    # check-assembled-case.mjs rechaza el caso si un block_id se usa en una
+    # seccion no permitida por esta lista.
     block_section_constraints:
       case_cover:               [contexto]
       reading_passive:          [contexto, datos, ia, revision, cierre]
@@ -265,6 +270,10 @@ case_assembly_schema:
       expected_action: entrenar
       alternatives: [pilotar, pausar]
 
+    # Beat de referencia (N1). Cada block_id va en una seccion permitida por
+    # block_section_constraints y por block_level_constraints. Ratio ai_native:
+    # 15/25 = 60% (los pasivos reading_* y el tradeoff_decision_memo traditional
+    # no cuentan como ai_native).
     sections:
       - id: contexto
         name: "Contexto"
@@ -278,38 +287,38 @@ case_assembly_schema:
       - id: datos
         name: "Datos"
         slides:
-          - { slot: 1, block_id: reading_data_table, content: {...} }
-          - { slot: 2, block_id: categorize_rows,    content: {...} }
-          - { slot: 3, block_id: categorize_rows,    content: {...} }
-          - { slot: 4, block_id: reading_attachment, content: {...} }
-          - { slot: 5, block_id: categorize_rows,    content: {...} }
+          - { slot: 1, block_id: categorize_rows,        content: {...} }
+          - { slot: 2, block_id: categorize_rows,        content: {...} }
+          - { slot: 3, block_id: model_tradeoff_sliders, content: {...} }
+          - { slot: 4, block_id: ai_textfield_free,      content: {...} }
+          - { slot: 5, block_id: reading_attachment,     content: {...} }
 
       - id: ia
         name: "IA"
         slides:
-          - { slot: 1, block_id: ai_textfield_guided,    content: {...} }
-          - { slot: 2, block_id: ai_textfield_free,      content: {...} }
-          - { slot: 3, block_id: model_tradeoff_sliders, content: {...} }
-          - { slot: 4, block_id: ai_textfield_free,      content: {...} }
-          - { slot: 5, block_id: ai_output_review,       content: {...} }
+          - { slot: 1, block_id: reading_passive,     content: {...} }
+          - { slot: 2, block_id: ai_textfield_guided, content: {...} }
+          - { slot: 3, block_id: ai_output_review,    content: {...} }
+          - { slot: 4, block_id: ai_textfield_free,   content: {...} }
+          - { slot: 5, block_id: ai_output_review,    content: {...} }
 
       - id: revision
         name: "Revisión"
         slides:
           - { slot: 1, block_id: ai_output_review, content: {...} }
           - { slot: 2, block_id: ai_comparison,    content: {...} }
-          - { slot: 3, block_id: ai_output_review, content: {...} }
-          - { slot: 4, block_id: reading_message,  content: {...} }
-          - { slot: 5, block_id: ai_output_review, content: {...} }
+          - { slot: 3, block_id: reading_message,  content: {...} }
+          - { slot: 4, block_id: categorize_rows,  content: {...} }
+          - { slot: 5, block_id: ai_comparison,    content: {...} }
 
       - id: cierre
         name: "Cierre"
         slides:
-          - { slot: 1, block_id: dashboard_pivot,         content: {...} }
-          - { slot: 2, block_id: workflow_builder,        content: {...} }
-          - { slot: 3, block_id: tradeoff_decision_memo,  content: {...} }
-          - { slot: 4, block_id: reading_message,         content: {...} }
-          - { slot: 5, block_id: tradeoff_decision_memo,  content: {...} }
+          - { slot: 1, block_id: ai_comparison,          content: {...} }
+          - { slot: 2, block_id: ai_textfield_free,      content: {...} }
+          - { slot: 3, block_id: categorize_rows,        content: {...} }
+          - { slot: 4, block_id: reading_passive,        content: {...} }
+          - { slot: 5, block_id: tradeoff_decision_memo, content: {...} }
 
   # ============================================================
   # VALIDACION (manual hoy · sync test automatizado a futuro)
