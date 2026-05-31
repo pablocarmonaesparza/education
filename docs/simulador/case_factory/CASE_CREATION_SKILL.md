@@ -132,16 +132,19 @@ Reglas de presentacion:
   generado puede venir prellenado antes de una accion explicita del
   participante.
 
-### 4. Disenar el caso en 6 secciones
+### 4. Disenar el caso en 5 secciones
 
-Estructura canonica:
+Estructura canonica (las secciones antes llamadas Decision y Respuesta se
+consolidaron en Cierre; el modelo vigente es de 5 secciones, ver
+CASE_ASSEMBLY_SCHEMA.yaml). No confundir con las 5 dimensiones de evaluacion,
+que son otra cosa y no cambian:
 
 1. Contexto: que esta pasando y por que importa.
 2. Datos: que puede o no puede usar.
 3. IA: que le pide, configura o delega.
 4. Revision: detecta errores, riesgos, afirmaciones sin fuente, drift o fallas.
-5. Decision: elige una accion con consecuencias.
-6. Respuesta: explica al manager que haria y por que.
+5. Cierre: elige una accion con consecuencias y la explica al manager (que haria
+   y por que).
 
 Las secciones pueden contener mas de una interaccion si el caso lo amerita.
 
@@ -226,7 +229,40 @@ El Case Critic revisa:
 
 IA propone cambios. Itera controla contrato, rubrica y publicacion.
 
-### 9. Manager test
+### 9. Lectura corrida final y autocorreccion de consistencia
+
+Este es el paso que faltaba en el proceso. El caso se construye slide por slide
+y optimizando cada slide para pasar reglas estructurales. Sin una lectura de
+conjunto, las rupturas de historia no se ven: cada pieza parece correcta por
+separado, pero juntas cuentan dos historias que se contradicen, dejan promesas
+sin cumplir o suenan a telegrama. Este paso es obligatorio antes de marcar
+cualquier caso como listo.
+
+Procedimiento:
+
+1. Lee el caso completo de principio a fin, como lo vive el empleado, de un
+   tiron y sin pausas tecnicas. No lo leas como autor que revisa campos; leelo
+   como la persona que recibe el brief y avanza slide por slide.
+2. Mientras lees, anota toda ruptura, usando el Gate narrativo de
+   CASE_QUALITY_CHECKLIST.md como guia. Anota tres tipos de ruptura:
+   - ruptura de historia: el escenario, el tipo de trabajo, el emisor o el
+     receptor cambian a mitad de caso;
+   - ruptura de voz: frases de relleno, coach o telegrama, jerga, o redaccion
+     que no suena a persona real;
+   - promesa no cumplida: algo que el manager pide al inicio y el caso no
+     entrega, o algo que el caso entrega sin haberlo anunciado.
+3. Corrige todo lo anotado y vuelve a leer el caso completo otra vez. Haz
+   multiples pasadas. Cada correccion puede introducir una ruptura nueva, asi
+   que no basta una sola revision.
+4. Verifica la consistencia entre el contenido del archivo TSX (la vitrina) y
+   el YAML del caso, campo por campo. Ambos deben estar 1:1: mismo texto, mismos
+   nombres, mismos numeros, mismos slides.
+5. Repite el ciclo de leer, anotar y corregir hasta que el caso fluya como una
+   sola historia coherente, sin ninguna ruptura pendiente.
+6. Solo despues de que la lectura corrida fluya sin rupturas, marca el caso como
+   listo y pasa al Manager test.
+
+### 10. Manager test
 
 Antes de entrar al catalogo, generar reporte sintetico con 2-3 perfiles:
 

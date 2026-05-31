@@ -39,6 +39,59 @@ Reglas:
   trabajo. No usar frases vagas como "confio en tu criterio" si no agregan
   informacion.
 
+## Voz y consistencia del caso como un todo
+
+La seccion anterior opera a nivel de un slide. Esta opera a nivel del caso
+completo. Un caso puede tener cada slide claro por separado y aun asi estar roto
+como conjunto. Estas reglas existen para que el caso se lea como una sola
+historia coherente.
+
+Reglas:
+
+- Consistencia del escenario de principio a fin. El rol del participante, la
+  empresa y la situacion del primer slide deben sostenerse identicos hasta el
+  ultimo slide.
+- Coherencia de emisor y receptor en cada mensaje. Define desde el inicio quien
+  le escribe a quien y mantenlo. El participante no se escribe a si mismo.
+  Mal: en la portada Mariana es la jefa del participante, y en los ejercicios el
+  participante le vende a Mariana como si fuera un prospecto. Bien: Mariana es la
+  jefa en todo el caso, y el mensaje que el participante construye va dirigido a
+  los clientes, no a Mariana.
+- Unidad del tipo de trabajo. El trabajo es el mismo de principio a fin.
+  Mal: el caso arranca como campana de retencion de clientes propios y a mitad
+  se vuelve adquisicion de leads nuevos. Bien: si es retencion, todo el caso es
+  retencion.
+- Cumplimiento de las promesas del manager. Todo lo que el manager pide al
+  inicio se entrega dentro del caso, y todo lo que el caso entrega se anuncio
+  antes.
+  Mal: el correo pide "segmentos, mensaje base y metricas que vas a monitorear",
+  pero el caso nunca pide definir las metricas. Bien: el caso incluye un momento
+  donde el participante define las metricas que va a monitorear.
+- Consistencia de nombres, numeros, empresas y fechas entre todos los slides. Un
+  contacto, una cifra o una fecha no cambian de un slide a otro.
+- Cero contradicciones de datos internas. Ningun dato del caso desmiente a otro.
+  Mal: el borrador afirma "tus clientes abren nuestros correos desde hace meses"
+  mientras la metrica del caso muestra apertura por debajo del minimo. Bien: el
+  borrador es consistente con las metricas que el propio caso presenta.
+- Calidad y naturalidad de la redaccion. Frases completas, como las escribiria
+  una persona real, sin telegrama, sin jerga y sin relleno.
+  Mal: "Presupuesto sin tocar." Bien: "El presupuesto es el mismo de la campana
+  anterior, no hay extra."
+  Mal: "La iteracion es donde se gana o se pierde el envio." Bien: "Ajusta el
+  borrador hasta que el mensaje sea claro y respete los limites de datos."
+- Toda entidad mencionada se usa. Cada persona, documento, comite o herramienta
+  que el caso nombra cumple una funcion despues. Si una entidad se menciona una
+  vez y nunca regresa, se elimina o se conecta.
+  Mal: nombrar un "comite de privacidad" y un "comite directivo" sin aclarar
+  nunca a quien se le presenta al final. Bien: un solo destinatario claro de la
+  entrega final, y cada comite mencionado tiene un rol concreto en el caso.
+- La herramienta de inteligencia artificial tiene identidad y limites claros.
+  El caso deja claro que hace la herramienta, que puede y que no puede el
+  participante, y no se contradice sobre sus propias reglas.
+  Mal: un slide dice "usa el modelo corporativo, no elijas", y el siguiente
+  ofrece elegir entre varios modelos. Bien: o el participante elige modelo de
+  forma consistente, o no elige y no aparece ningun selector.
+
 ## Reglas UI para ejercicios dentro de casos
 
 El catalogo oficial vive en `EXERCISE_BLOCK_CATALOG.yaml`.
