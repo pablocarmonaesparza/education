@@ -126,16 +126,45 @@ function validateContent(loc, bid, content, blockSchema) {
       }
     }
   }
-  // Campos requeridos por elemento de cada array (id, label, flagIfMarked...).
+  // Cada elemento de los arrays declarados DEBE ser objeto, con sus campos.
   for (const [arrayKey, fields] of Object.entries(blockSchema.element_required ?? {})) {
     if (Array.isArray(c[arrayKey])) {
       c[arrayKey].forEach((el, i) => {
-        for (const f of fields) {
-          check(
-            el && typeof el === "object" && nonEmpty(el[f]),
-            `${loc}: "${bid}" content.${arrayKey}[${i}] sin "${f}"`,
-          );
+        if (!el || typeof el !== "object" || Array.isArray(el)) {
+          check(false, `${loc}: "${bid}" content.${arrayKey}[${i}] debe ser un objeto`);
+          return;
         }
+        for (const f of fields) {
+          check(nonEmpty(el[f]), `${loc}: "${bid}" content.${arrayKey}[${i}] sin "${f}"`);
+        }
+      });
+    }
+  }
+  // Enums por campo de elemento (ej. options[].id en A|B|C|D).
+  for (const [arrayKey, fieldEnums] of Object.entries(blockSchema.element_enum ?? {})) {
+    if (Array.isArray(c[arrayKey])) {
+      c[arrayKey].forEach((el, i) => {
+        if (el && typeof el === "object") {
+          for (const [f, allowed] of Object.entries(fieldEnums)) {
+            if (el[f] !== undefined) {
+              check(
+                allowed.includes(el[f]),
+                `${loc}: "${bid}" content.${arrayKey}[${i}].${f} = "${el[f]}" no permitido (debe ser ${allowed.join("|")})`,
+              );
+            }
+          }
+        }
+      });
+    }
+  }
+  // Arrays que deben ser de strings no vacíos (ej. guided.objetivos).
+  for (const key of blockSchema.string_array_keys ?? []) {
+    if (Array.isArray(c[key])) {
+      c[key].forEach((el, i) => {
+        check(
+          typeof el === "string" && el.trim() !== "",
+          `${loc}: "${bid}" content.${key}[${i}] debe ser un string no vacío`,
+        );
       });
     }
   }
@@ -259,6 +288,12 @@ for (const fullPath of targets) {
         check(
           typeof slide.content === "object" && !Array.isArray(slide.content),
           `${loc}: "${bid}" content debe ser un objeto`,
+        );
+      }
+      if (CONTENT_SCHEMAS[bid]?.not_data_driven) {
+        check(
+          false,
+          `${loc}: "${bid}" no es data-driven todavía (renderiza defaults hardcodeados); no usar en casos hasta wirearlo a caseContext`,
         );
       }
       validateContent(loc, bid, cobj, CONTENT_SCHEMAS[bid]);

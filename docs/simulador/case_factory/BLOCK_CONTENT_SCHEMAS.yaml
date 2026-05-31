@@ -37,7 +37,7 @@ block_content_schemas:
       required_keys: [message]
       nested:
         message:
-          required_keys: [from, body]
+          required_keys: [channel, from, body, timestamp]
           nested:
             from:
               required_keys: [name]
@@ -50,9 +50,10 @@ block_content_schemas:
           min_array: { columns: 1, rows: 1 }
           element_required:
             columns: [key, label]
+            rows: [] # cada row debe ser un objeto (celdas)
 
     reading_image:
-      required_keys: [src]
+      required_keys: [src, alt]
 
     reading_kpi_cards:
       required_keys: [kpis]
@@ -71,7 +72,7 @@ block_content_schemas:
       required_keys: [attachments]
       min_array: { attachments: 1 }
       element_required:
-        attachments: [name]
+        attachments: [name, kind]
 
     # ---- AI-native ----
     # forbidden_keys: nombres REALES del payload del participante (no confiar
@@ -88,6 +89,7 @@ block_content_schemas:
         guided:
           required_keys: [objetivos, audiencias, limites]
           min_array: { objetivos: 2, audiencias: 2, limites: 2 }
+          string_array_keys: [objetivos, audiencias, limites]
 
     model_tradeoff_sliders:
       # modelTradeoff opcional (el bloque tiene fallback al lab).
@@ -118,6 +120,8 @@ block_content_schemas:
       forbidden_keys: [selected_output, chosen_output, justification]
       element_required:
         options: [id, body]
+      element_enum:
+        options: { id: [A, B, C, D] } # el payload espera A|B|C|D
 
     tradeoff_decision_memo:
       required_keys: [decisions]

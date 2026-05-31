@@ -70,6 +70,18 @@ const FIXTURES = [
     mutate: (ca) => { delete slide(ca, "ia", 3).content.segments[0].flagIfMarked; } },
   { name: "content_prefill_cost", expect: "assembled", cat: "contenido",
     mutate: (ca) => { slide(ca, "datos", 3).content.cost_priority = 100; } },
+  { name: "content_message_no_channel", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { delete slide(ca, "contexto", 2).content.message.channel; } },
+  { name: "content_comparison_bad_id", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "revision", 2).content.options[0].id = "Z"; } },
+  { name: "content_guided_non_string", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "ia", 2).content.guided.objetivos[0] = 123; } },
+  { name: "content_table_row_not_obj", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "contexto", 3).content.table.rows[0] = "no soy objeto"; } },
+  { name: "content_attachment_no_kind", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { delete slide(ca, "datos", 5).content.attachments[0].kind; } },
+  { name: "content_not_data_driven", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { ca.case_assembly.meta.level = "N2 · Intermedio"; slide(ca, "cierre", 1).block_id = "dashboard_pivot"; } },
 
   // ---- Copy (los caza lint-case-copy) ----
   { name: "copy_emdash", expect: "copy", cat: "copy",
