@@ -635,6 +635,9 @@ function buildReportSnapshot(
     | Extract<ExerciseResponsePayload, { block_id: "tradeoff_decision_memo" }>
     | undefined;
   const didCleanup = excludedNoConsent && correctFlags >= 2;
+  const isPausar =
+    decisionPayload?.decision === "pausar_y_limpiar" ||
+    decisionPayload?.decision === "pausar_y_escalar";
   const juicioBand: Band =
     decisionPayload?.decision === "piloto_controlado"
       ? "alto"
@@ -642,7 +645,7 @@ function buildReportSnapshot(
         ? didCleanup
           ? "alto"
           : "bajo"
-        : decisionPayload?.decision === "pausar_y_escalar"
+        : isPausar
           ? "medio"
           : "bajo";
   dimensions.push({
@@ -656,9 +659,11 @@ function buildReportSnapshot(
           ? didCleanup
             ? "Eligió lanzar tras limpiar la base y quitar las cifras · defendible."
             : "Eligió lanzar sin terminar de limpiar · subestima el riesgo."
-          : decisionPayload?.decision === "pausar_y_escalar"
-            ? "Eligió pausar · postura conservadora defendible."
-            : "Decisión no registrada.",
+          : decisionPayload?.decision === "pausar_y_limpiar"
+            ? "Eligió pausar para limpiar · cauto y operativo."
+            : decisionPayload?.decision === "pausar_y_escalar"
+              ? "Eligió pausar y escalar · postura conservadora defendible."
+              : "Decisión no registrada.",
   });
 
   // ===== DECISIÓN · evalúa claridad del memo que justifica la decisión.

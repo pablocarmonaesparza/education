@@ -77,26 +77,18 @@ export const SLIDES: Slide[][] = [
     {
       "blockId": "reading_data_table",
       "title": "Así llegó la base de clientes.",
-      "body": "Estos son **8 clientes** de la base que te pasaron. Míralos con calma. En la sección siguiente decides qué hacer con cada uno.",
+      "body": "Una muestra de la base, con los problemas típicos. En la sección siguiente decides qué hacer con cada cliente.",
       "caseContext": {
         "table": {
-          "caption": "Base de clientes para el relanzamiento (8 de 480)",
+          "caption": "Muestra de la base de clientes (de 480)",
           "columns": [
             {
               "key": "nombre",
               "label": "Cliente"
             },
             {
-              "key": "email",
-              "label": "Correo"
-            },
-            {
               "key": "ultima_compra",
               "label": "Última compra"
-            },
-            {
-              "key": "ultima_apertura",
-              "label": "Última apertura"
             },
             {
               "key": "consentimiento",
@@ -114,75 +106,31 @@ export const SLIDES: Slide[][] = [
           "rows": [
             {
               "nombre": "Paola Restrepo",
-              "email": "paola.restrepo@correo.co",
               "ultima_compra": "22 abr 2026",
-              "ultima_apertura": "20 may 2026",
               "consentimiento": "Activo",
               "entrega": "Ok",
               "valor": "$8,400"
             },
             {
-              "nombre": "Tomás Iglesias",
-              "email": "tomas.iglesias@correo.mx",
-              "ultima_compra": "03 nov 2025",
-              "ultima_apertura": "18 may 2026",
-              "consentimiento": "Activo",
-              "entrega": "Ok",
-              "valor": "$1,600"
-            },
-            {
               "nombre": "Renata Gómez",
-              "email": "renata.gomez@correo.cl",
               "ultima_compra": "10 may 2026",
-              "ultima_apertura": "22 may 2026",
               "consentimiento": "Revocado",
               "entrega": "Ok",
               "valor": "$12,900"
             },
             {
               "nombre": "Bruno Salas",
-              "email": "bruno.salas@correo.mx",
               "ultima_compra": "15 mar 2026",
-              "ultima_apertura": "—",
               "consentimiento": "Activo",
               "entrega": "Rebota",
               "valor": "$3,200"
             },
             {
               "nombre": "Lía Fonseca",
-              "email": "lia.fonseca@correo.co",
               "ultima_compra": "01 feb 2026",
-              "ultima_apertura": "19 may 2026",
               "consentimiento": "Pidió baja",
               "entrega": "Ok",
               "valor": "$5,100"
-            },
-            {
-              "nombre": "Iván Duarte",
-              "email": "ivan.duarte@correo.cl",
-              "ultima_compra": "30 abr 2026",
-              "ultima_apertura": "21 may 2026",
-              "consentimiento": "Activo",
-              "entrega": "Ok",
-              "valor": "$9,700"
-            },
-            {
-              "nombre": "Paola Restrepo",
-              "email": "p.restrepo@correo.co",
-              "ultima_compra": "22 abr 2026",
-              "ultima_apertura": "20 may 2026",
-              "consentimiento": "Activo",
-              "entrega": "Ok",
-              "valor": "$8,400"
-            },
-            {
-              "nombre": "Marcos Villalba",
-              "email": "marcos.villalba@correo.mx",
-              "ultima_compra": "12 ago 2025",
-              "ultima_apertura": "01 sep 2025",
-              "consentimiento": "Sin confirmar",
-              "entrega": "Ok",
-              "valor": "$900"
             }
           ]
         }
@@ -299,24 +247,6 @@ export const SLIDES: Slide[][] = [
             "label": "Lía Fonseca · pidió darse de baja",
             "example": "Pidió baja, origen del ticket de Daniela",
             "hint": "Excluir"
-          },
-          {
-            "id": "c6",
-            "label": "Iván Duarte · compró hace 4 semanas · alto valor",
-            "example": "Cliente activo de alto valor",
-            "hint": "Usar"
-          },
-          {
-            "id": "c7",
-            "label": "Paola Restrepo · aparece otra vez con otro correo",
-            "example": "Duplicado de la primera fila",
-            "hint": "Anonimizar o escalar para deduplicar"
-          },
-          {
-            "id": "c8",
-            "label": "Marcos Villalba · nunca confirmó su correo · sin compras recientes",
-            "example": "Sin confirmar, máximo un correo de re-permiso",
-            "hint": "Escalar"
           }
         ]
       }
@@ -361,12 +291,6 @@ export const SLIDES: Slide[][] = [
             "hint": "Va"
           },
           {
-            "id": "f4",
-            "label": "Última apertura (fecha)",
-            "example": "Señal de interés",
-            "hint": "Va"
-          },
-          {
             "id": "f5",
             "label": "Consentimiento",
             "example": "Ya se usó para filtrar, no va al texto",
@@ -384,7 +308,7 @@ export const SLIDES: Slide[][] = [
     {
       "blockId": "model_tradeoff_sliders",
       "title": "Pondera qué pesa más al usar IA con datos de clientes.",
-      "body": "Antes de pedirle el mensaje a Aurora Copiloto, piensa el criterio. En un envío con datos de clientes hay un equilibrio entre qué tan autónomo dejas al modelo, qué tan seguro es con los datos y cuánto cuesta. Mueve los tres controles según lo que más pesa para este caso.",
+      "body": "Para datos de clientes, ¿cuánto pesa la autonomía del modelo, la seguridad y el costo? Mueve los tres controles según tu criterio.",
       "caseContext": {
         "modelTradeoff": {
           "prompt": "Para datos de clientes, ¿qué pesa más?",
@@ -685,6 +609,11 @@ export const SLIDES: Slide[][] = [
             "id": "C",
             "title": "Versión C",
             "body": "En Aurora Retail pensamos en ti: una selección y un beneficio esta semana. Si prefieres no recibir más correos, te das de baja aquí."
+          },
+          {
+            "id": "D",
+            "title": "Versión D",
+            "body": "Tu beneficio de cliente te espera esta semana en Aurora Retail. Pásate a ver la selección que armamos. Si ya no quieres estos correos, te das de baja en este enlace."
           }
         ]
       }
@@ -694,23 +623,28 @@ export const SLIDES: Slide[][] = [
     {
       "blockId": "ai_comparison",
       "title": "Elige a qué segmento le mandas primero.",
-      "body": "Tres segmentos armados con los clientes que decidiste usar. Cada uno tiene un pero. Elige cuál llevas a Mariana como la propuesta de esta semana. Es el primer entregable: los **segmentos**.",
+      "body": "Cuatro formas de armar el segmento con los clientes que decidiste usar. Cada una tiene un pero. Elige cuál llevas a Mariana. Es el primer entregable: los **segmentos**.",
       "caseContext": {
         "options": [
           {
             "id": "A",
             "title": "Clientes activos de alto valor",
-            "body": "Paola e Iván: compran seguido y gastan más. El pero: ya están comprando, el riesgo es cansarlos con otro correo."
+            "body": "Los que compran seguido y gastan más. El pero: ya están comprando, el riesgo es cansarlos con otro correo."
           },
           {
             "id": "B",
             "title": "Clientes por reactivar",
-            "body": "Tomás: abre los correos pero no compra hace meses. El reto es darle una razón concreta para volver, no solo decir que lo extrañas."
+            "body": "Los que abren los correos pero no compran hace meses. El reto es darles una razón concreta para volver, no solo decir que los extrañas."
           },
           {
             "id": "C",
-            "title": "Pendientes de limpieza",
-            "body": "Los casos dudosos: el duplicado y quien nunca confirmó. Todavía no son un segmento para enviar, primero hay que limpiarlos."
+            "title": "Toda la base limpia, sin segmentar",
+            "body": "Mandarle a todos los clientes usables. Es lo más rápido, pero el mismo mensaje no le habla igual a cada grupo."
+          },
+          {
+            "id": "D",
+            "title": "Solo quienes compraron el último mes",
+            "body": "Los más recientes. Llegas seguro, pero te dejas fuera justo a los que querías reactivar."
           }
         ]
       }
@@ -795,9 +729,14 @@ export const SLIDES: Slide[][] = [
             "detail": "Si quieres bajar el riesgo, manda solo al segmento más seguro esta semana y mide antes de ampliar."
           },
           {
+            "id": "pausar_y_limpiar",
+            "title": "Pausar para terminar de limpiar",
+            "detail": "Si a la base le falta poco, pausa, termina de limpiarla y manda más tarde esta semana."
+          },
+          {
             "id": "pausar_y_escalar",
-            "title": "Pausar y avisar a Mariana y Legal",
-            "detail": "Si todavía hay clientes que pidieron baja en la lista, o el mensaje afirma algo que no puedes sostener, no mandes y escala."
+            "title": "Pausar y escalar a Legal",
+            "detail": "Si todavía hay clientes que pidieron baja, o el mensaje afirma algo que no puedes sostener, no mandes y avisa a Mariana y Legal."
           }
         ],
         "memoPlaceholder": "Escribe a Mariana: qué decidiste, por qué, y qué cuidaste de la base y de los datos...",
