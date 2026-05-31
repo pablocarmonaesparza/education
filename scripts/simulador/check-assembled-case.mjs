@@ -64,23 +64,95 @@ const catalogBlocks =
 const familyById = {};
 for (const block of catalogBlocks) familyById[block.id] = block.family;
 
+// ---- Schemas de contenido por bloque ----
+const CONTENT_SCHEMAS =
+  loadYaml(path.join(FACTORY_DIR, "BLOCK_CONTENT_SCHEMAS.yaml"))
+    ?.block_content_schemas?.blocks ?? {};
+
+// Valida slide.content contra el contrato del bloque: required/forbidden
+// (prefill), conteos de arrays, sub-objetos (nested) y campos visibles.
+function validateContent(loc, bid, content, blockSchema) {
+  if (!blockSchema) return;
+  const c = content ?? {};
+  const nonEmpty = (v) =>
+    v !== undefined &&
+    v !== null &&
+    !(typeof v === "string" && v.trim() === "") &&
+    !(Array.isArray(v) && v.length === 0);
+  for (const key of blockSchema.required_keys ?? []) {
+    check(nonEmpty(c[key]), `${loc}: "${bid}" content requiere "${key}"`);
+  }
+  for (const key of blockSchema.forbidden_keys ?? []) {
+    check(
+      c[key] === undefined,
+      `${loc}: "${bid}" content trae "${key}" (prefill de respuesta, prohibido)`,
+    );
+  }
+  for (const [key, n] of Object.entries(blockSchema.min_array ?? {})) {
+    if (Array.isArray(c[key])) {
+      check(
+        c[key].length >= n,
+        `${loc}: "${bid}" content.${key} tiene ${c[key].length}, mínimo ${n}`,
+      );
+    }
+  }
+  for (const [key, n] of Object.entries(blockSchema.exact_array ?? {})) {
+    if (Array.isArray(c[key])) {
+      check(
+        c[key].length === n,
+        `${loc}: "${bid}" content.${key} tiene ${c[key].length}, deben ser exactamente ${n}`,
+      );
+    }
+  }
+  for (const [key, subSchema] of Object.entries(blockSchema.nested ?? {})) {
+    if (c[key] && typeof c[key] === "object") {
+      validateContent(loc, `${bid}.${key}`, c[key], subSchema);
+    }
+  }
+  if (blockSchema.row_visible_field && Array.isArray(c.rows)) {
+    for (const row of c.rows) {
+      check(
+        nonEmpty(row?.[blockSchema.row_visible_field]),
+        `${loc}: "${bid}" una row sin campo visible "${blockSchema.row_visible_field}"`,
+      );
+    }
+  }
+  if (blockSchema.segment_visible_field && Array.isArray(c.segments)) {
+    for (const seg of c.segments) {
+      check(
+        nonEmpty(seg?.[blockSchema.segment_visible_field]),
+        `${loc}: "${bid}" un segment sin campo visible "${blockSchema.segment_visible_field}"`,
+      );
+    }
+  }
+}
+
 function levelToken(metaLevel) {
   const match = String(metaLevel ?? "").match(/N[123]/);
   return match ? match[0] : null;
 }
 
 // ---- Casos ensamblados ----
-if (!fs.existsSync(CASES_DIR)) {
+// Sin argumento: valida todos los de cases_assembled/. Con argumento (ruta a un
+// .yaml): valida solo ese archivo · lo usa el test de fixtures rotos.
+const argPath = process.argv[2];
+const targets = argPath
+  ? [argPath]
+  : fs.existsSync(CASES_DIR)
+    ? fs
+        .readdirSync(CASES_DIR)
+        .filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"))
+        .map((f) => path.join(CASES_DIR, f))
+    : [];
+
+if (targets.length === 0) {
   console.log("assembled cases OK (0 · sin carpeta cases_assembled)");
   process.exit(0);
 }
 
-const files = fs
-  .readdirSync(CASES_DIR)
-  .filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"));
-
-for (const file of files) {
-  const ca = loadYaml(path.join(CASES_DIR, file))?.case_assembly;
+for (const fullPath of targets) {
+  const file = path.basename(fullPath);
+  const ca = loadYaml(fullPath)?.case_assembly;
   const id = ca?.case_id ?? file;
 
   if (!ca) {
@@ -159,13 +231,17 @@ for (const file of files) {
         );
       }
 
-      // content es opcional (reading_passive y ai_textfield_free pueden
-      // renderizar solo de title/body). Si viene, debe ser un objeto.
+      // content: si viene debe ser objeto; y se valida contra el schema del
+      // bloque (required/forbidden/conteos). Si no viene, igual se valida el
+      // schema con {} para cazar un bloque que SÍ requería content.
+      const loc = `${id}/${sec.id}/slot${slide.slot}`;
       if (slide.content !== undefined && slide.content !== null) {
-        check(
-          typeof slide.content === "object" && !Array.isArray(slide.content),
-          `${id}/${sec.id}/slot${slide.slot}: "${bid}" content debe ser un objeto`,
-        );
+        const isObj =
+          typeof slide.content === "object" && !Array.isArray(slide.content);
+        check(isObj, `${loc}: "${bid}" content debe ser un objeto`);
+        if (isObj) validateContent(loc, bid, slide.content, CONTENT_SCHEMAS[bid]);
+      } else {
+        validateContent(loc, bid, {}, CONTENT_SCHEMAS[bid]);
       }
     }
 
@@ -217,4 +293,4 @@ if (issues.length > 0) {
   process.exit(1);
 }
 
-console.log(`assembled cases OK (${files.length})`);
+console.log(`assembled cases OK (${targets.length})`);

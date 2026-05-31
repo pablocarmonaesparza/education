@@ -1,0 +1,127 @@
+# Schemas de contenido por bloque (F0 del motor de generación).
+#
+# El validador estructural (check-assembled-case.mjs) prueba la FORMA MACRO:
+# 5x5, ratio, secciones, niveles, primer/último slide. Esto valida el CONTENIDO
+# de cada slide contra el contrato de su block_id: campos requeridos, conteos,
+# campos prohibidos (prefill de respuestas) y campos judge_internal que deben
+# co-localizarse pero NUNCA renderizarse al participante.
+#
+# Lo consume scripts/simulador/check-assembled-case.mjs.
+#
+# Semántica de cada entrada:
+#   required_keys:        claves que content DEBE tener (no vacías).
+#   optional_keys:        claves permitidas (documentación; no se enforce).
+#   nested:               sub-contrato para una clave-objeto (required_keys, etc.).
+#   min_array:            { clave: n } · el array en content[clave] debe tener >= n.
+#   exact_array:          { clave: n } · el array debe tener EXACTAMENTE n.
+#   forbidden_keys:       claves que NO pueden estar en content (serían prefill de
+#                         respuesta o payload del participante · viola no-prefill).
+#   row_judge_internal:   campos por elemento de `rows` que son del judge (se
+#                         remueven antes de renderizar). Informativo + el validador
+#                         confirma que existe un campo visible.
+#   segment_judge_internal: idem para `segments`.
+#   row_visible_field / segment_visible_field: el campo que SÍ ve el participante.
+
+block_content_schemas:
+  version: 1.0.0
+
+  blocks:
+
+    # ---- Pasivos ----
+    case_cover:
+      required_keys: [meta]
+      nested:
+        meta:
+          required_keys: [profile, level]
+      forbidden_keys: [started_at, response, answer, selected]
+
+    reading_passive:
+      # title + body viven en el slide; content es opcional.
+      required_keys: []
+
+    reading_message:
+      required_keys: [message]
+      nested:
+        message:
+          required_keys: [from, body]
+          nested:
+            from:
+              required_keys: [name]
+
+    reading_data_table:
+      required_keys: [table]
+      nested:
+        table:
+          required_keys: [columns, rows]
+          min_array: { columns: 1, rows: 1 }
+
+    reading_image:
+      required_keys: [src]
+
+    reading_kpi_cards:
+      required_keys: [kpis]
+      min_array: { kpis: 1 }
+      # delta.goodWhen es judge_internal (se remueve).
+
+    reading_timeline:
+      required_keys: [events]
+      min_array: { events: 1 }
+
+    reading_attachment:
+      required_keys: [attachments]
+      min_array: { attachments: 1 }
+
+    # ---- AI-native ----
+    ai_textfield_free:
+      # placeholder opcional; el participante escribe.
+      required_keys: []
+      forbidden_keys: [prompt_text, response, answer, generated_prompt]
+
+    ai_textfield_guided:
+      required_keys: [guided]
+      nested:
+        guided:
+          required_keys: [objetivos, audiencias, limites]
+          min_array: { objetivos: 2, audiencias: 2, limites: 2 }
+      forbidden_keys: [selected_objective, selected_audience, generated_prompt]
+
+    model_tradeoff_sliders:
+      # modelTradeoff opcional (el bloque tiene fallback al lab).
+      required_keys: []
+      forbidden_keys: [autonomy_priority, security_priority, recommended_model_id, rationale_text]
+
+    categorize_rows:
+      required_keys: [actions, rows]
+      min_array: { actions: 2, rows: 1 }
+      row_visible_field: label
+      row_judge_internal: [hint, example]
+      forbidden_keys: [row_actions, selected]
+
+    ai_output_review:
+      required_keys: [segments]
+      min_array: { segments: 2 }
+      segment_visible_field: text
+      segment_judge_internal: [issue]
+      # flagIfMarked es funcional (NO judge_internal) · el bloque lo necesita.
+      forbidden_keys: [flagged_segments, selected]
+
+    ai_comparison:
+      required_keys: [options]
+      # Regla de producto (Pablo): opción múltiple SIEMPRE 4, nunca 3.
+      exact_array: { options: 4 }
+      forbidden_keys: [selected_output, selected]
+
+    workflow_builder:
+      required_keys: [steps]
+      min_array: { steps: 2 }
+      forbidden_keys: [step_order, rationale_text]
+
+    dashboard_pivot:
+      required_keys: [filters]
+      min_array: { filters: 1 }
+      forbidden_keys: [selected_filter, leader_takeaway]
+
+    tradeoff_decision_memo:
+      required_keys: [decisions]
+      min_array: { decisions: 2 }
+      forbidden_keys: [decision, memo]
