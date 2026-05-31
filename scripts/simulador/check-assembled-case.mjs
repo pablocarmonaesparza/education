@@ -62,7 +62,11 @@ const catalogBlocks =
   loadYaml(path.join(FACTORY_DIR, "EXERCISE_BLOCK_CATALOG.yaml"))
     ?.exercise_block_catalog?.blocks ?? [];
 const familyById = {};
-for (const block of catalogBlocks) familyById[block.id] = block.family;
+const emptyFieldsById = {}; // payload del participante · prohibido en content
+for (const block of catalogBlocks) {
+  familyById[block.id] = block.family;
+  emptyFieldsById[block.id] = block.default_empty_fields ?? [];
+}
 
 // ---- Schemas de contenido por bloque ----
 const CONTENT_SCHEMAS =
@@ -71,14 +75,18 @@ const CONTENT_SCHEMAS =
 
 // Valida slide.content contra el contrato del bloque: required/forbidden
 // (prefill), conteos de arrays, sub-objetos (nested) y campos visibles.
-function validateContent(loc, bid, content, blockSchema) {
-  if (!blockSchema) return;
-  const c = content ?? {};
-  const nonEmpty = (v) =>
+function nonEmpty(v) {
+  return (
     v !== undefined &&
     v !== null &&
     !(typeof v === "string" && v.trim() === "") &&
-    !(Array.isArray(v) && v.length === 0);
+    !(Array.isArray(v) && v.length === 0)
+  );
+}
+
+function validateContent(loc, bid, content, blockSchema) {
+  if (!blockSchema) return;
+  const c = content ?? {};
   for (const key of blockSchema.required_keys ?? []) {
     check(nonEmpty(c[key]), `${loc}: "${bid}" content requiere "${key}"`);
   }
@@ -88,41 +96,47 @@ function validateContent(loc, bid, content, blockSchema) {
       `${loc}: "${bid}" content trae "${key}" (prefill de respuesta, prohibido)`,
     );
   }
+  // Arrays: si la clave viene, DEBE ser array (cierra el falso pass de tipo) y
+  // cumplir el conteo.
   for (const [key, n] of Object.entries(blockSchema.min_array ?? {})) {
-    if (Array.isArray(c[key])) {
-      check(
-        c[key].length >= n,
-        `${loc}: "${bid}" content.${key} tiene ${c[key].length}, mínimo ${n}`,
-      );
+    if (c[key] !== undefined) {
+      if (!Array.isArray(c[key])) {
+        check(false, `${loc}: "${bid}" content.${key} debe ser un array`);
+      } else {
+        check(c[key].length >= n, `${loc}: "${bid}" content.${key} tiene ${c[key].length}, mínimo ${n}`);
+      }
     }
   }
   for (const [key, n] of Object.entries(blockSchema.exact_array ?? {})) {
-    if (Array.isArray(c[key])) {
-      check(
-        c[key].length === n,
-        `${loc}: "${bid}" content.${key} tiene ${c[key].length}, deben ser exactamente ${n}`,
-      );
+    if (c[key] !== undefined) {
+      if (!Array.isArray(c[key])) {
+        check(false, `${loc}: "${bid}" content.${key} debe ser un array`);
+      } else {
+        check(c[key].length === n, `${loc}: "${bid}" content.${key} tiene ${c[key].length}, deben ser exactamente ${n}`);
+      }
     }
   }
+  // Sub-objetos: si la clave viene, DEBE ser objeto.
   for (const [key, subSchema] of Object.entries(blockSchema.nested ?? {})) {
-    if (c[key] && typeof c[key] === "object") {
-      validateContent(loc, `${bid}.${key}`, c[key], subSchema);
+    if (c[key] !== undefined) {
+      if (typeof c[key] !== "object" || Array.isArray(c[key])) {
+        check(false, `${loc}: "${bid}" content.${key} debe ser un objeto`);
+      } else {
+        validateContent(loc, `${bid}.${key}`, c[key], subSchema);
+      }
     }
   }
-  if (blockSchema.row_visible_field && Array.isArray(c.rows)) {
-    for (const row of c.rows) {
-      check(
-        nonEmpty(row?.[blockSchema.row_visible_field]),
-        `${loc}: "${bid}" una row sin campo visible "${blockSchema.row_visible_field}"`,
-      );
-    }
-  }
-  if (blockSchema.segment_visible_field && Array.isArray(c.segments)) {
-    for (const seg of c.segments) {
-      check(
-        nonEmpty(seg?.[blockSchema.segment_visible_field]),
-        `${loc}: "${bid}" un segment sin campo visible "${blockSchema.segment_visible_field}"`,
-      );
+  // Campos requeridos por elemento de cada array (id, label, flagIfMarked...).
+  for (const [arrayKey, fields] of Object.entries(blockSchema.element_required ?? {})) {
+    if (Array.isArray(c[arrayKey])) {
+      c[arrayKey].forEach((el, i) => {
+        for (const f of fields) {
+          check(
+            el && typeof el === "object" && nonEmpty(el[f]),
+            `${loc}: "${bid}" content.${arrayKey}[${i}] sin "${f}"`,
+          );
+        }
+      });
     }
   }
 }
@@ -231,17 +245,28 @@ for (const fullPath of targets) {
         );
       }
 
-      // content: si viene debe ser objeto; y se valida contra el schema del
-      // bloque (required/forbidden/conteos). Si no viene, igual se valida el
-      // schema con {} para cazar un bloque que SÍ requería content.
+      // content: si viene debe ser objeto. Se valida contra el schema del
+      // bloque (required/forbidden/conteos/tipos/elementos) y se prohíben los
+      // campos de payload del participante (prefill).
       const loc = `${id}/${sec.id}/slot${slide.slot}`;
+      const cobj =
+        slide.content &&
+        typeof slide.content === "object" &&
+        !Array.isArray(slide.content)
+          ? slide.content
+          : {};
       if (slide.content !== undefined && slide.content !== null) {
-        const isObj =
-          typeof slide.content === "object" && !Array.isArray(slide.content);
-        check(isObj, `${loc}: "${bid}" content debe ser un objeto`);
-        if (isObj) validateContent(loc, bid, slide.content, CONTENT_SCHEMAS[bid]);
-      } else {
-        validateContent(loc, bid, {}, CONTENT_SCHEMAS[bid]);
+        check(
+          typeof slide.content === "object" && !Array.isArray(slide.content),
+          `${loc}: "${bid}" content debe ser un objeto`,
+        );
+      }
+      validateContent(loc, bid, cobj, CONTENT_SCHEMAS[bid]);
+      for (const f of emptyFieldsById[bid] ?? []) {
+        check(
+          cobj[f] === undefined,
+          `${loc}: "${bid}" content trae "${f}" (campo de respuesta del participante, prefill)`,
+        );
       }
     }
 

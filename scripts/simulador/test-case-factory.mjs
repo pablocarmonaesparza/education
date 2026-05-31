@@ -58,6 +58,18 @@ const FIXTURES = [
     mutate: (ca) => { slide(ca, "cierre", 5).content.decision = "lanzar_lunes"; } },
   { name: "content_missing_required", expect: "assembled", cat: "contenido",
     mutate: (ca) => { delete slide(ca, "revision", 5).content.options; } },
+  { name: "content_options_string", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "revision", 2).content.options = "no soy un array"; } },
+  { name: "content_guided_not_object", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "ia", 2).content.guided = "no soy un objeto"; } },
+  { name: "content_table_cols_string", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "contexto", 3).content.table.columns = "no soy un array"; } },
+  { name: "content_row_missing_id", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { delete slide(ca, "datos", 1).content.rows[0].id; } },
+  { name: "content_segment_no_flag", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { delete slide(ca, "ia", 3).content.segments[0].flagIfMarked; } },
+  { name: "content_prefill_cost", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "datos", 3).content.cost_priority = 100; } },
 
   // ---- Copy (los caza lint-case-copy) ----
   { name: "copy_emdash", expect: "copy", cat: "copy",

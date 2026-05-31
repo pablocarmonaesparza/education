@@ -2,28 +2,24 @@
 #
 # El validador estructural (check-assembled-case.mjs) prueba la FORMA MACRO:
 # 5x5, ratio, secciones, niveles, primer/último slide. Esto valida el CONTENIDO
-# de cada slide contra el contrato de su block_id: campos requeridos, conteos,
-# campos prohibidos (prefill de respuestas) y campos judge_internal que deben
-# co-localizarse pero NUNCA renderizarse al participante.
+# de cada slide contra el contrato de su block_id.
 #
-# Lo consume scripts/simulador/check-assembled-case.mjs.
+# El PREFILL (campos de respuesta del participante) NO se lista aquí: el
+# validador prohíbe automáticamente los `default_empty_fields` de cada bloque
+# (del EXERCISE_BLOCK_CATALOG), así que cubre todos los campos de payload sin
+# listarlos a mano.
 #
-# Semántica de cada entrada:
-#   required_keys:        claves que content DEBE tener (no vacías).
-#   optional_keys:        claves permitidas (documentación; no se enforce).
-#   nested:               sub-contrato para una clave-objeto (required_keys, etc.).
-#   min_array:            { clave: n } · el array en content[clave] debe tener >= n.
-#   exact_array:          { clave: n } · el array debe tener EXACTAMENTE n.
-#   forbidden_keys:       claves que NO pueden estar en content (serían prefill de
-#                         respuesta o payload del participante · viola no-prefill).
-#   row_judge_internal:   campos por elemento de `rows` que son del judge (se
-#                         remueven antes de renderizar). Informativo + el validador
-#                         confirma que existe un campo visible.
-#   segment_judge_internal: idem para `segments`.
-#   row_visible_field / segment_visible_field: el campo que SÍ ve el participante.
+# Semántica:
+#   required_keys:    claves que content DEBE tener (no vacías).
+#   min_array:        { clave: n } · si viene, DEBE ser array con >= n elementos.
+#   exact_array:      { clave: n } · si viene, DEBE ser array con exactamente n.
+#   nested:           sub-contrato para una clave-objeto (si viene, DEBE ser objeto).
+#   element_required: { arrayKey: [campos] } · cada elemento del array DEBE
+#                     tener esos campos (los que el renderer necesita: id, label,
+#                     flagIfMarked, etc.).
 
 block_content_schemas:
-  version: 1.0.0
+  version: 1.1.0
 
   blocks:
 
@@ -33,11 +29,9 @@ block_content_schemas:
       nested:
         meta:
           required_keys: [profile, level]
-      forbidden_keys: [started_at, response, answer, selected]
 
     reading_passive:
-      # title + body viven en el slide; content es opcional.
-      required_keys: []
+      required_keys: [] # title + body en el slide; content opcional.
 
     reading_message:
       required_keys: [message]
@@ -54,6 +48,8 @@ block_content_schemas:
         table:
           required_keys: [columns, rows]
           min_array: { columns: 1, rows: 1 }
+          element_required:
+            columns: [key, label]
 
     reading_image:
       required_keys: [src]
@@ -61,67 +57,86 @@ block_content_schemas:
     reading_kpi_cards:
       required_keys: [kpis]
       min_array: { kpis: 1 }
+      element_required:
+        kpis: [label, value]
       # delta.goodWhen es judge_internal (se remueve).
 
     reading_timeline:
       required_keys: [events]
       min_array: { events: 1 }
+      element_required:
+        events: [when, what]
 
     reading_attachment:
       required_keys: [attachments]
       min_array: { attachments: 1 }
+      element_required:
+        attachments: [name]
 
     # ---- AI-native ----
+    # forbidden_keys: nombres REALES del payload del participante (no confiar
+    # solo en el auto-forbid de default_empty_fields del catálogo, que tiene
+    # drift: ej. dice decision_choice pero el payload real es decision/memo).
     ai_textfield_free:
-      # placeholder opcional; el participante escribe.
-      required_keys: []
-      forbidden_keys: [prompt_text, response, answer, generated_prompt]
+      required_keys: [] # placeholder opcional; el participante escribe.
+      forbidden_keys: [prompt_text, response]
 
     ai_textfield_guided:
       required_keys: [guided]
+      forbidden_keys: [selected_objective, selected_audience, selected_limits, selected_model, generated_prompt]
       nested:
         guided:
           required_keys: [objetivos, audiencias, limites]
           min_array: { objetivos: 2, audiencias: 2, limites: 2 }
-      forbidden_keys: [selected_objective, selected_audience, generated_prompt]
 
     model_tradeoff_sliders:
       # modelTradeoff opcional (el bloque tiene fallback al lab).
       required_keys: []
-      forbidden_keys: [autonomy_priority, security_priority, recommended_model_id, rationale_text]
+      forbidden_keys: [autonomy_priority, security_priority, cost_priority, recommended_model_id, rationale_text]
 
     categorize_rows:
       required_keys: [actions, rows]
       min_array: { actions: 2, rows: 1 }
-      row_visible_field: label
-      row_judge_internal: [hint, example]
-      forbidden_keys: [row_actions, selected]
+      forbidden_keys: [row_actions]
+      element_required:
+        rows: [id, label] # hint/example son judge_internal (se remueven)
+        actions: [value, label]
 
     ai_output_review:
       required_keys: [segments]
       min_array: { segments: 2 }
-      segment_visible_field: text
-      segment_judge_internal: [issue]
-      # flagIfMarked es funcional (NO judge_internal) · el bloque lo necesita.
-      forbidden_keys: [flagged_segments, selected]
+      forbidden_keys: [flagged_segments, correction_request]
+      element_required:
+        # flagIfMarked es funcional (el bloque lo necesita en runtime · NO se
+        # remueve). issue sí es judge_internal.
+        segments: [id, text, flagIfMarked]
 
     ai_comparison:
       required_keys: [options]
       # Regla de producto (Pablo): opción múltiple SIEMPRE 4, nunca 3.
       exact_array: { options: 4 }
-      forbidden_keys: [selected_output, selected]
-
-    workflow_builder:
-      required_keys: [steps]
-      min_array: { steps: 2 }
-      forbidden_keys: [step_order, rationale_text]
-
-    dashboard_pivot:
-      required_keys: [filters]
-      min_array: { filters: 1 }
-      forbidden_keys: [selected_filter, leader_takeaway]
+      forbidden_keys: [selected_output, chosen_output, justification]
+      element_required:
+        options: [id, body]
 
     tradeoff_decision_memo:
       required_keys: [decisions]
       min_array: { decisions: 2 }
-      forbidden_keys: [decision, memo]
+      forbidden_keys: [decision, memo, decision_choice, rationale_text]
+      element_required:
+        decisions: [id, title, detail]
+
+    # ---- Bloques que NO consumen content todavía ----
+    # workflow_builder y dashboard_pivot no leen caseContext (renderean defaults
+    # hardcodeados). No se les exige content para no dar falsa confianza: un
+    # caso que los use renderará contenido demo. Wirearlos a caseContext es
+    # trabajo de F1+ (igual que se hizo con ai_textfield_guided y
+    # model_tradeoff_sliders). Hasta entonces, evitar estos bloques en casos
+    # generados, o aceptarlos como placeholders.
+    workflow_builder:
+      required_keys: []
+      not_data_driven: true
+
+    dashboard_pivot:
+      required_keys: []
+      not_data_driven: true

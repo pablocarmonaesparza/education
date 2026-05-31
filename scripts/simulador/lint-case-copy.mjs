@@ -20,7 +20,16 @@ import yaml from "js-yaml";
 const ROOT = process.cwd();
 const CASES_DIR = path.join(ROOT, "docs/simulador/contrato_v0/cases_assembled");
 
-const JUDGE_INTERNAL = new Set(["hint", "example", "issue", "goodWhen"]);
+// Claves que NO se renderizan como prosa al participante: judge_internal +
+// estructurales (ids, urls, tipos, canales). No se revisan para evitar falsos
+// positivos (ej. un acrónimo en una URL o en un id).
+const SKIP_KEYS = new Set([
+  // judge_internal
+  "hint", "example", "issue", "goodWhen",
+  // estructurales / no-prosa
+  "id", "src", "kind", "channel", "block_id", "slot", "direction",
+  "actionStyle", "key", "timestamp", "avatar",
+]);
 
 // Acrónimos prohibidos en prosa de casos. NO incluye IA (permitido), ni API/MCP
 // en singular. Incluye los plurales prohibidos (APIs, MCPs).
@@ -39,13 +48,16 @@ function snippet(s) {
   return one.length > 70 ? one.slice(0, 70) + "…" : one;
 }
 
+const ACRONYM_RE_G = new RegExp(`\\b(${FORBIDDEN_ACRONYMS.join("|")})\\b`, "g");
+
 function checkString(str, where) {
   if (/[—–]/.test(str)) {
     issues.push(`${where}: em dash prohibido · "${snippet(str)}"`);
   }
-  const m = str.match(ACRONYM_RE);
-  if (m) {
-    issues.push(`${where}: acrónimo prohibido "${m[1]}" · "${snippet(str)}"`);
+  const found = new Set();
+  for (const m of str.matchAll(ACRONYM_RE_G)) found.add(m[1]);
+  for (const a of found) {
+    issues.push(`${where}: acrónimo prohibido "${a}" · "${snippet(str)}"`);
   }
 }
 
@@ -60,7 +72,7 @@ function walk(node, where) {
   }
   if (node && typeof node === "object") {
     for (const [key, value] of Object.entries(node)) {
-      if (JUDGE_INTERNAL.has(key)) continue; // no se renderiza
+      if (SKIP_KEYS.has(key)) continue; // judge_internal o estructural no visible
       walk(value, where ? `${where}.${key}` : key);
     }
   }
