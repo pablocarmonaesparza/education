@@ -70,7 +70,7 @@ export const SLIDES: Slide[][] = [
           },
           "timestamp": "Hoy, 9:40",
           "subject": "Relanzamos la campaña de retención esta semana",
-          "body": "Hola. Vamos a **relanzar la campaña de retención** a nuestros clientes antes del **viernes**. La base que te paso viene con problemas, así que el primer trabajo es dejarla limpia. Cuando la tengas, mándame una propuesta con tres cosas: los **segmentos** a los que les vas a escribir, el **mensaje base** que les llega, y las **métricas que vas a monitorear** para saber si funcionó. Cualquier duda me dices."
+          "body": "Hola. Esta semana **relanzamos la campaña de retención** a nuestros clientes de siempre, y cierra el **viernes**. La base que te paso viene con problemas, así que el primer trabajo es dejarla limpia. Cuando la tengas, mándame una propuesta con tres cosas: los **segmentos** a los que les vas a escribir, el **mensaje base** que les llega, y las **métricas que vas a monitorear** para saber si funcionó. Cualquier duda me dices."
         }
       }
     },
@@ -383,8 +383,8 @@ export const SLIDES: Slide[][] = [
     },
     {
       "blockId": "model_tradeoff_sliders",
-      "title": "Pondera con qué criterio se elige el modelo para datos personales.",
-      "body": "Para un envío con datos de clientes hay un equilibrio entre qué tan autónomo es el modelo, qué tan seguro es con los datos y cuánto cuesta. Mueve los tres controles según lo que más pesa aquí. No estás eligiendo el modelo de la empresa, estás razonando el criterio.",
+      "title": "Pondera qué pesa más al usar IA con datos de clientes.",
+      "body": "Antes de pedirle el mensaje a Aurora Copiloto, piensa el criterio. En un envío con datos de clientes hay un equilibrio entre qué tan autónomo dejas al modelo, qué tan seguro es con los datos y cuánto cuesta. Mueve los tres controles según lo que más pesa para este caso.",
       "caseContext": {
         "modelTradeoff": {
           "prompt": "Para datos de clientes, ¿qué pesa más?",
@@ -432,6 +432,7 @@ export const SLIDES: Slide[][] = [
       "body": "Vas a generar el **mensaje base** de la campaña. Define el objetivo, a quién le hablas y los límites. Sin esas tres decisiones, el asistente improvisa.",
       "caseContext": {
         "guided": {
+          "entrega": "Redacta el mensaje base de la campaña de retención, sin cifras inventadas y sin datos personales del cliente.",
           "objetivos": [
             "Recuperar a clientes que dejaron de comprar",
             "Reforzar a los clientes que siguen comprando",
@@ -520,8 +521,8 @@ export const SLIDES: Slide[][] = [
           },
           {
             "id": "v4",
-            "text": "Además, mejoramos un 35% la entrega este mes.",
-            "issue": "El modelo metió OTRA cifra inventada al corregir",
+            "text": "Además, ahora el 92% de los pedidos llega en menos de 48 horas.",
+            "issue": "El modelo metió una cifra nueva e inventada al corregir",
             "flagIfMarked": "claim_no_verificado"
           }
         ]
@@ -775,7 +776,7 @@ export const SLIDES: Slide[][] = [
     {
       "blockId": "reading_passive",
       "title": "Así llega el correo al cliente.",
-      "body": "Vista previa del correo final, como lo recibiría el segmento que elegiste.\n\n**Asunto:** Algo nuevo para ti en Aurora Retail\n\nHola, en Aurora Retail preparamos una selección para ti y un beneficio si vuelves esta semana.\n\n**[ Ver la selección ]**\n\n*Si ya no quieres recibir estos correos, puedes darte de baja aquí.*\n\nNota: en este envío quedaron fuera los clientes que pidieron baja, como pidió Legal."
+      "body": "Vista previa del correo final, como lo recibiría el segmento que elegiste. El sistema ya dejó fuera a los clientes que pidieron baja, como pidió Legal.\n\n---\n\n**Asunto:** Algo nuevo para ti en Aurora Retail\n\nHola, en Aurora Retail preparamos una selección para ti y un beneficio si vuelves esta semana.\n\n**[ Ver la selección ]**\n\n*Si ya no quieres recibir estos correos, puedes darte de baja aquí.*"
     },
     {
       "blockId": "tradeoff_decision_memo",

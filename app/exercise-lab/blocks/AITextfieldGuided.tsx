@@ -223,7 +223,13 @@ export function AITextfieldGuided({
   useEffect(() => {
     if (!allAnswered) return;
     const modelLabel = `${displayedModel.label}${displayedModel.badge ? ` · ${displayedModel.badge}` : ""}`;
-    const generated = `Objetivo: ${payload.selected_objective}.\nAudiencia: ${payload.selected_audience}.\nModelo elegido: ${modelLabel}.\n\nTrabaja sólo con información agregada del caso. Límites: ${guardrailText}.\n\nEntrega tres opciones accionables, riesgos visibles y validaciones humanas necesarias.`;
+    // El cierre del prompt se puede personalizar por caso vía
+    // caseContext.guided.entrega; si no viene, usa el genérico del lab.
+    const guidedCfg = (caseContext?.guided ?? {}) as { entrega?: string };
+    const closing =
+      guidedCfg.entrega?.trim() ||
+      "Entrega tres opciones accionables, riesgos visibles y validaciones humanas necesarias.";
+    const generated = `Objetivo: ${payload.selected_objective}.\nAudiencia: ${payload.selected_audience}.\nModelo elegido: ${modelLabel}.\n\nTrabaja sólo con información agregada del caso. Límites: ${guardrailText}.\n\n${closing}`;
     if (generated !== payload.generated_prompt) {
       persist({
         ...payload,

@@ -627,17 +627,23 @@ function buildReportSnapshot(
     });
   }
 
-  // ===== JUICIO · evalúa la decisión principal del cierre (slot 5) =====
+  // ===== JUICIO · evalúa la decisión principal del cierre (slot 5). lanzar_lunes
+  // es defendible SOLO si limpió la base (excluyó a los sin consentimiento) y
+  // cazó las cifras inventadas · si no, lanzar subestima el riesgo. Esto alinea
+  // el scoring con el copy de la opción ("lánzalo si la base quedó limpia"). =====
   const decisionPayload = payloads["cierre-5"] as
     | Extract<ExerciseResponsePayload, { block_id: "tradeoff_decision_memo" }>
     | undefined;
+  const didCleanup = excludedNoConsent && correctFlags >= 2;
   const juicioBand: Band =
     decisionPayload?.decision === "piloto_controlado"
       ? "alto"
-      : decisionPayload?.decision === "pausar_y_escalar"
-        ? "medio"
-        : decisionPayload?.decision === "lanzar_lunes"
-          ? "bajo"
+      : decisionPayload?.decision === "lanzar_lunes"
+        ? didCleanup
+          ? "alto"
+          : "bajo"
+        : decisionPayload?.decision === "pausar_y_escalar"
+          ? "medio"
           : "bajo";
   dimensions.push({
     id: "juicio",
@@ -646,10 +652,12 @@ function buildReportSnapshot(
     metric:
       decisionPayload?.decision === "piloto_controlado"
         ? "Eligió piloto controlado · proporcional al riesgo."
-        : decisionPayload?.decision === "pausar_y_escalar"
-          ? "Eligió pausar · postura conservadora defendible."
-          : decisionPayload?.decision === "lanzar_lunes"
-            ? "Eligió lanzar el lunes · subestima riesgo."
+        : decisionPayload?.decision === "lanzar_lunes"
+          ? didCleanup
+            ? "Eligió lanzar tras limpiar la base y quitar las cifras · defendible."
+            : "Eligió lanzar sin terminar de limpiar · subestima el riesgo."
+          : decisionPayload?.decision === "pausar_y_escalar"
+            ? "Eligió pausar · postura conservadora defendible."
             : "Decisión no registrada.",
   });
 
