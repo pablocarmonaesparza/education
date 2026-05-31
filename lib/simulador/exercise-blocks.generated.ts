@@ -2,13 +2,13 @@
 /**
  * AUTO-GENERATED — NO EDITAR A MANO.
  *
- * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.11.0
+ * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.12.0
  * Generador: scripts/simulador/generate-exercise-blocks.mjs
  *
  * Para regenerar: `bun run simulador:gen-blocks`
  * Para validar sincronía con lab/runtime: `bun run simulador:check-blocks`
  *
- * Status del catálogo: canonical_after_exercise_lab_review
+ * Status del catálogo: canonical_after_p0_p3_refactor
  * Total bloques: 17
  */
 
@@ -251,7 +251,7 @@ export const exerciseBlocks: ExerciseBlock[] = [
       "kpis (value, label, delta opcional con direccion up/down/flat)",
     ],
     emits: [],
-    uiPattern: "titulo + body markdown + 1-3 cards de KPI con numero grande, label, delta",
+    uiPattern: "titulo + body markdown + 1-3 cards de KPI con numero grande, label, delta neutral",
     defaultEmptyFields: [],
     scoringMethod: "passive",
     completion: "auto al clickear continuar",
@@ -425,11 +425,11 @@ export const exerciseBlocks: ExerciseBlock[] = [
       "modelos disponibles (catalogo restringido por caso)",
       "set de modelos recomendados por combinacion",
     ],
-    emits: ["autonomy_priority", "security_priority", "cost_priority", "recommended_model_id"],
-    uiPattern: "3 sliders 0-100 en pasos de 10 + modelo recomendado dinamico con BrandMark",
-    defaultEmptyFields: ["autonomy_priority", "security_priority", "cost_priority", "recommended_model_id"],
+    emits: ["autonomy_priority", "security_priority", "cost_priority", "recommended_model_id", "rationale_text"],
+    uiPattern: "3 sliders 0-100 en pasos de 10 + modelo recomendado dinamico con BrandMark + textarea ¿por que priorizaste asi?",
+    defaultEmptyFields: ["autonomy_priority", "security_priority", "cost_priority", "recommended_model_id", "rationale_text"],
     scoringMethod: "judge_with_priority_coherence_check",
-    completion: "los 3 sliders movidos al menos una vez + modelo recomendado confirmado",
+    completion: "los 3 sliders movidos + modelo recomendado + rationale_text no vacio (P1.2)",
   },
   {
     id: "categorize_rows",
@@ -456,10 +456,9 @@ export const exerciseBlocks: ExerciseBlock[] = [
       "La decision necesita un slider continuo; usa model_tradeoff_sliders.",
     ],
     personalizationKnobs: [
-      "filas (items a clasificar)",
+      "filas (items a clasificar) · solo label visible al usuario",
       "acciones disponibles (set de strings)",
       "actionStyle (neutral, permission, severity) para color de chips",
-      "ejemplos y hints por fila",
     ],
     emits: ["row_actions"],
     uiPattern: "tabla por item con chips inline de accion (sin dropdown)",
@@ -492,12 +491,10 @@ export const exerciseBlocks: ExerciseBlock[] = [
       "No hay riesgos o claims verificables.",
     ],
     personalizationKnobs: [
-      "segmentos marcables",
-      "severidad",
-      "correccion esperada",
-      "follow-up con IA",
+      "segments[] · solo id y text visibles al usuario",
+      "flagOptions[] · banderas disponibles para marcar",
     ],
-    emits: ["flagged_segments", "missed_risks", "correction_request"],
+    emits: ["flagged_segments"],
     uiPattern: "segmentos seleccionables + follow-up opcional",
     defaultEmptyFields: ["flagged_segments", "correction_request"],
     scoringMethod: "risk_event_recall_precision",
@@ -568,11 +565,11 @@ export const exerciseBlocks: ExerciseBlock[] = [
       "checkpoints",
       "salida del flujo",
     ],
-    emits: ["workflow_steps", "checkpoints", "handoff_plan"],
-    uiPattern: "pasos activables, ordenables o conectados",
-    defaultEmptyFields: [],
+    emits: ["enabled_steps", "step_order", "rationale_text"],
+    uiPattern: "pasos activables, ordenables o conectados + textarea ¿por que este orden?",
+    defaultEmptyFields: ["enabled_steps", "step_order", "rationale_text"],
     scoringMethod: "workflow_integrity_rules",
-    completion: "flujo tiene entrada, uso de IA, revision y salida",
+    completion: "step_order no vacio + rationale_text no vacio (P1.2)",
   },
   {
     id: "dashboard_pivot",
@@ -605,11 +602,11 @@ export const exerciseBlocks: ExerciseBlock[] = [
       "comparativos",
       "caveats",
     ],
-    emits: ["selected_signal", "leader_takeaway", "metric_caveats"],
-    uiPattern: "tabla o dashboard filtrable con senal para lider",
-    defaultEmptyFields: ["selected_signal", "leader_takeaway"],
+    emits: ["selected_filter", "leader_takeaway"],
+    uiPattern: "tabla o dashboard filtrable con senal para lider + textarea ¿que le llevarias al manager?",
+    defaultEmptyFields: ["selected_filter", "leader_takeaway"],
     scoringMethod: "manager_signal_alignment",
-    completion: "senal elegida y takeaway declarado",
+    completion: "selected_filter no nulo + leader_takeaway no vacio (P1.2 · ya no auto-advance)",
   },
   {
     id: "tradeoff_decision_memo",
@@ -683,6 +680,6 @@ export const exerciseBlockStats = {
     "traditional_business_signal": 1,
     "traditional_closure": 1
   },
-  catalogVersion: "0.11.0",
-  catalogStatus: "canonical_after_exercise_lab_review",
+  catalogVersion: "0.12.0",
+  catalogStatus: "canonical_after_p0_p3_refactor",
 } as const;
