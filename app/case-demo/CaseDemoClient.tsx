@@ -26,6 +26,7 @@ import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated"
 import type { ExerciseResponsePayload } from "@/lib/simulador/exercise-registry";
 import { isBlockComplete } from "@/lib/simulador/exercise-completion";
 import { SlideBody } from "../exercise-lab/_shared/SlideBody";
+import { SLIDES, type Slide } from "./case-data.generated";
 
 // ============================================================
 // SECCIONES (5 obligatorias)
@@ -74,19 +75,6 @@ const SLIDE_VARIANTS = {
 
 // ============================================================
 // TIPO Slide
-// ============================================================
-
-interface Slide {
-  blockId: ExerciseBlockId;
-  title: string;
-  body: string;
-  /** Contenido del caso. Puede incluir `judge_internal_fields` (hint,
-   *  example, issue, flagIfMarked, goodWhen · ver CASE_ASSEMBLY_SCHEMA)
-   *  co-localizados con el contenido visible por ergonomía de autoría.
-   *  El shell los remueve con `stripJudgeFields` antes de pasar al
-   *  renderer · cumple "no enseñar antes de medir". */
-  caseContext?: Record<string, unknown>;
-}
 
 /** Campos que se MUESTRAN al usuario y revelarían la respuesta · el shell
  *  los remueve antes de pasar el caseContext al renderer. Coincide con
@@ -138,406 +126,6 @@ function stripJudgeFields(
 // ============================================================
 // 25 SLIDES DEL CASO
 // Caso: Envío del lunes con datos sucios · Marketing N1
-// ============================================================
-
-const SLIDES: Slide[][] = [
-  // ============================================================
-  // SECCIÓN 1 · CONTEXTO (5 pasivos · onboarding)
-  // ============================================================
-  [
-    // Slot 1: case_cover · portada del caso
-    {
-      blockId: "case_cover",
-      title: "Envío del lunes con datos sucios.",
-      body: "Tu manager acaba de pasarte la **lista de 480 contactos** para la campaña del **lunes a las 8 de la mañana**. Hay registros **duplicados**, cargos **mal escritos** y tres filas **sin nombre**. Decides cómo limpiar la base, qué pedirle a la inteligencia artificial y qué entregar antes del cierre del viernes.",
-      caseContext: {
-        meta: {
-          profile: "Marketing",
-          level: "N1 · Fundamentos",
-          estimatedMinutes: 12,
-          timerSeconds: 600,
-          timerDefaultOn: false,
-          tools: [
-            { kind: "ai", label: "Inteligencia artificial" },
-            { kind: "data", label: "Tablas" },
-            { kind: "messaging", label: "Mensajería" },
-            { kind: "documents", label: "Documentos" },
-          ],
-        },
-      },
-    },
-    // Slot 2: reading_message · email de la jefa
-    {
-      blockId: "reading_message",
-      title: "Correo de Mariana, tu jefa.",
-      body: "Lo que llega antes de empezar.",
-      caseContext: {
-        message: {
-          channel: "email",
-          from: { name: "Mariana Robles", role: "Líder de Crecimiento · Aurora Retail" },
-          to: { name: "Tú", role: "Líder de Marketing" },
-          timestamp: "Hoy, 09:42",
-          subject: "Necesitamos relanzar la campaña antes del viernes",
-          body: "Hola, el comité directivo pidió relanzar la campaña de retención antes del viernes. **Presupuesto sin tocar.** Mándame propuesta hoy mismo con segmentos, mensaje base y métricas que vas a monitorear. Gracias.",
-        },
-      },
-    },
-    // Slot 3: reading_data_table · preview de los problemas
-    {
-      blockId: "reading_data_table",
-      title: "Vista previa de la base que te pasaron.",
-      body: "Primeros 5 contactos de la lista. **Hay problemas evidentes** desde la primera mirada.",
-      caseContext: {
-        table: {
-          caption: "Contactos pendientes para el envío del lunes",
-          columns: [
-            { key: "contacto", label: "Contacto" },
-            { key: "empresa", label: "Empresa" },
-            { key: "cargo", label: "Cargo" },
-            { key: "ultima_apertura", label: "Última apertura" },
-            { key: "estatus", label: "Estatus" },
-          ],
-          rows: [
-            { contacto: "Mariana Robles", empresa: "Aurora Retail", cargo: "Líder de Crecimiento", ultima_apertura: "Hace 3 días", estatus: "Activa" },
-            { contacto: "mariana robles", empresa: "Aurora Retail", cargo: "head of growth", ultima_apertura: "Hace 21 días", estatus: "Activa" },
-            { contacto: "(vacío)", empresa: "Bosa Industrial", cargo: "Director", ultima_apertura: "Hace 7 días", estatus: "Activa" },
-            { contacto: "Carlos Méndez", empresa: "Cresta Software", cargo: "DIRECTOR MARKETING", ultima_apertura: "Hace 60 días", estatus: "Inactiva" },
-            { contacto: "Lucía Soto", empresa: "Delta Logistics", cargo: "Gerente comercial", ultima_apertura: "Hace 5 días", estatus: "Activa" },
-          ],
-        },
-      },
-    },
-    // Slot 4: categorize_rows · clasificar métricas de la última campaña
-    {
-      blockId: "categorize_rows",
-      title: "Clasifica las métricas del último envío.",
-      body: "Tres métricas de la **campaña anterior**. Decide cuáles son aceptables, cuáles te preocupan y cuáles son críticas antes de planear esta.",
-      caseContext: {
-        actionStyle: "severity",
-        actions: [
-          { value: "aceptable", label: "Aceptable" },
-          { value: "preocupante", label: "Preocupante" },
-          { value: "critica", label: "Crítica" },
-        ],
-        rows: [
-          { id: "metric-1", label: "Tasa de apertura: 23.4%", example: "Bajó 4.2 puntos respecto al envío anterior", hint: "Referencia interna es 27% mínimo" },
-          { id: "metric-2", label: "Conversión a demo: 3.1%", example: "Subió 0.6 puntos respecto al envío anterior", hint: "Referencia interna es 2.5% mínimo" },
-          { id: "metric-3", label: "Quejas por privacidad: 12", example: "Subió 8 respecto al envío anterior", hint: "Cualquier número arriba de 5 dispara alerta de Legal" },
-        ],
-      },
-    },
-    // Slot 5: reading_message · ticket de Legal
-    {
-      blockId: "reading_message",
-      title: "Ticket de Legal sobre la última campaña.",
-      body: "Lo que dejó la campaña anterior antes de empezar esta.",
-      caseContext: {
-        message: {
-          channel: "ticket",
-          from: { name: "Daniela Ruiz", role: "Legal · Aurora Retail" },
-          to: { name: "Marketing" },
-          timestamp: "Hace 6 días",
-          subject: "Quejas por uso de datos personales",
-          body: "Llegaron 3 quejas por correos enviados a personas que pidieron baja hace meses. Antes del próximo envío necesitamos **confirmar que la base está limpia** y que tenemos **consentimiento vigente**. Cualquier duda, marcar para revisión.",
-        },
-      },
-    },
-  ],
-
-  // ============================================================
-  // SECCIÓN 2 · DATOS (4 activos + 1 pasivo)
-  // ============================================================
-  [
-    // Slot 1: reading_data_table · base completa con flags
-    {
-      blockId: "reading_data_table",
-      title: "La base completa con todos los flags.",
-      body: "Aquí están los **8 contactos problemáticos** extraídos de los 480. Cada fila tiene una bandera del sistema. Lee bien antes de clasificar en la siguiente diapositiva.",
-      caseContext: {
-        table: {
-          caption: "Contactos con problemas detectados",
-          columns: [
-            { key: "contacto", label: "Contacto" },
-            { key: "empresa", label: "Empresa" },
-            { key: "problema", label: "Problema detectado" },
-            { key: "consentimiento", label: "Consentimiento" },
-          ],
-          rows: [
-            { contacto: "Mariana Robles", empresa: "Aurora Retail", problema: "Duplicado de fila 2", consentimiento: "Vigente" },
-            { contacto: "mariana robles", empresa: "Aurora Retail", problema: "Duplicado de fila 1", consentimiento: "Vigente" },
-            { contacto: "(vacío)", empresa: "Bosa Industrial", problema: "Sin nombre", consentimiento: "Vigente" },
-            { contacto: "Carlos Méndez", empresa: "Cresta Software", problema: "Cargo escrito en mayúsculas raras", consentimiento: "Vigente" },
-            { contacto: "Ana Pérez", empresa: "Eclipse Health", problema: "Pidió baja hace 2 meses", consentimiento: "Revocado" },
-            { contacto: "Pedro Castillo", empresa: "Foro Studio", problema: "Email rebota hace 4 envíos", consentimiento: "Vigente" },
-            { contacto: "(vacío)", empresa: "Gama Capital", problema: "Sin nombre", consentimiento: "Vigente" },
-            { contacto: "Sofía Lara", empresa: "Helix Bio", problema: "Cargo vacío", consentimiento: "Vigente" },
-          ],
-        },
-      },
-    },
-    // Slot 2: categorize_rows · clasificar contactos
-    {
-      blockId: "categorize_rows",
-      title: "Decide qué hacer con cada contacto.",
-      body: "Por cada fila elige una acción. **No hay opción correcta evidente** en todos los casos. Decide con criterio operativo.",
-      caseContext: {
-        actionStyle: "permission",
-        actions: [
-          { value: "usar", label: "Usar" },
-          { value: "anonimizar", label: "Anonimizar" },
-          { value: "agregar", label: "Agregar" },
-          { value: "excluir", label: "Excluir" },
-        ],
-        rows: [
-          { id: "row-1", label: "Mariana Robles · Aurora Retail", example: "Duplicado de fila 2", hint: "Misma persona, capitalización distinta" },
-          { id: "row-2", label: "mariana robles · Aurora Retail", example: "Duplicado de fila 1", hint: "Misma persona, capitalización distinta" },
-          { id: "row-3", label: "(sin nombre) · Bosa Industrial", example: "Sin nombre", hint: "Email genérico info@bosa.example" },
-          { id: "row-4", label: "Carlos Méndez · Cresta Software", example: "Cargo raro DIRECTOR MARKETING", hint: "Necesita normalización a Director de Marketing" },
-          { id: "row-5", label: "Ana Pérez · Eclipse Health", example: "Pidió baja hace 2 meses", hint: "Consentimiento revocado · regla dura" },
-          { id: "row-6", label: "Pedro Castillo · Foro Studio", example: "Email rebota desde hace 4 envíos", hint: "Rebote permanente repetido" },
-          { id: "row-7", label: "(sin nombre) · Gama Capital", example: "Sin nombre", hint: "Email personal sofia.lara@gmail.example" },
-          { id: "row-8", label: "Sofía Lara · Helix Bio", example: "Cargo vacío", hint: "Solo nombre y empresa" },
-        ],
-      },
-    },
-    // Slot 3: reading_attachment · política de datos (contexto regulatorio)
-    {
-      blockId: "reading_attachment",
-      title: "Política de datos vigente.",
-      body: "Lee antes de seguir. El documento define **qué se puede usar** con modelos externos y **qué requiere aprobación** legal antes del envío.",
-      caseContext: {
-        attachments: [
-          {
-            name: "Politica_Datos_Aurora_Retail_v2.pdf",
-            size: "184 KB",
-            kind: "pdf",
-            description: "Política interna · datos permitidos para uso con inteligencia artificial externa.",
-          },
-        ],
-      },
-    },
-    // Slot 4: ai_textfield_free · pídele a la IA que audite tu plan de datos
-    {
-      blockId: "ai_textfield_free",
-      title: "Pídele a la IA que audite tu plan.",
-      body: "Antes de llevar este plan al modelo final, **pídele a una IA auditora** que revise si tu selección de datos respeta la política y si dejaste algún hueco. Sé específico.",
-    },
-    // Slot 5: categorize_rows · qué campos pasas al modelo (decisión final de privacidad)
-    {
-      blockId: "categorize_rows",
-      title: "Decide qué campos van al modelo.",
-      body: "El **mensaje personalizado** lo va a generar la inteligencia artificial. Decide qué columnas le pasas y cuáles transformas antes para proteger los datos personales.",
-      caseContext: {
-        actionStyle: "permission",
-        actions: [
-          { value: "usar", label: "Usar" },
-          { value: "anonimizar", label: "Anonimizar" },
-          { value: "agregar", label: "Agregar" },
-          { value: "excluir", label: "Excluir" },
-        ],
-        rows: [
-          { id: "campo-1", label: "Contacto", example: "Nombre completo", hint: "Dato personal directo" },
-          { id: "campo-2", label: "Email", example: "Correo del contacto", hint: "Identificador único de la persona" },
-          { id: "campo-3", label: "Empresa", example: "Razón social", hint: "Contexto de la cuenta" },
-          { id: "campo-4", label: "Cargo", example: "Rol del contacto", hint: "Útil para personalizar tono" },
-          { id: "campo-5", label: "Última apertura", example: "Engagement reciente", hint: "Señal de interés" },
-          { id: "campo-6", label: "Notas internas", example: "Comentarios del equipo de ventas", hint: "Pueden contener info sensible" },
-        ],
-      },
-    },
-  ],
-
-  // ============================================================
-  // SECCIÓN 3 · IA (5 slides · narrativa de iteración con IA)
-  // ============================================================
-  [
-    // Slot 1: reading_passive · contexto operativo antes del beat IA.
-    // El bloque model_tradeoff_sliders está prohibido en sección IA
-    // (DIAGNOSTICO_1_CASO_V0 §7: "No es selector de modelos"). El caso
-    // real presenta el modelo como instrumento dado, no como decisión
-    // del participante dentro del beat IA. reading_passive es el único
-    // pasivo permitido en sección IA (block_section_constraints).
-    {
-      blockId: "reading_passive",
-      title: "Modelo aprobado para este envío.",
-      body: "Para campañas con datos personales, el equipo de plataforma aprobó el **modelo corporativo interno**. Si necesitas otro modelo para algo específico, abres ticket. Para este envío usas el corporativo.",
-    },
-    // Slot 2: ai_textfield_guided · construir el prompt principal
-    {
-      blockId: "ai_textfield_guided",
-      title: "Construye el prompt para el modelo.",
-      body: "Vas a generar el **mensaje base** del envío. Define objetivo, audiencia y límites en pasos. Sin estas decisiones, el modelo va a improvisar.",
-    },
-    // Slot 3: ai_output_review · revisa el primer output de la IA
-    {
-      blockId: "ai_output_review",
-      title: "La IA generó esto. ¿Qué te detiene?",
-      body: "Primer borrador del mensaje. **Marca lo que no usarías** antes de pedirle al modelo que corrija.",
-      caseContext: {
-        segments: [
-          { id: "s1", text: "Hola Mariana, vimos que tu equipo abre nuestros correos desde hace meses.", issue: "Afirmación sin verificar", flagIfMarked: "claim_no_verificado" },
-          { id: "s2", text: "Aurora Retail está creciendo 40% mes a mes, lo que nos motiva a contactarte.", issue: "Cifra sin fuente", flagIfMarked: "claim_no_verificado" },
-          { id: "s3", text: "Nuestro producto ayudó a empresas similares a duplicar conversión en 2 semanas.", issue: "Promesa sin respaldo", flagIfMarked: "claim_no_verificado" },
-          { id: "s4", text: "Agenda 15 minutos esta semana para ver cómo aplicaría a tu caso.", issue: "Llamado de acción aceptable", flagIfMarked: "frase_reutilizable" },
-        ],
-      },
-    },
-    // Slot 4: ai_textfield_free · escribir follow-up para que la IA corrija
-    {
-      blockId: "ai_textfield_free",
-      title: "Pídele a la IA que corrija.",
-      body: "Escribe el **siguiente prompt** que mandarías. Sé específico: qué quitar, qué cambiar, qué mantener. La iteración es donde se gana o se pierde el envío.",
-    },
-    // Slot 5: ai_output_review · versión corregida
-    {
-      blockId: "ai_output_review",
-      title: "Versión corregida. ¿Algo todavía te detiene?",
-      body: "El modelo aplicó tu corrección. **Última pasada** antes de mandar a revisión completa de tono y cierre.",
-      caseContext: {
-        segments: [
-          { id: "v1", text: "Hola Mariana, vi en LinkedIn que Aurora Retail abrió oficina en Monterrey la semana pasada.", issue: "Dato personalizado de fuente externa", flagIfMarked: "dato_sensible" },
-          { id: "v2", text: "Trabajamos con equipos de Marketing en empresas medianas de retail en LATAM.", issue: "Afirmación interna verificable", flagIfMarked: "frase_reutilizable" },
-          { id: "v3", text: "Si te interesa explorar cómo aplicaría a tu caso, te dejo dos horarios la próxima semana.", issue: "Cierre directo y opcional", flagIfMarked: "frase_reutilizable" },
-          { id: "v4", text: "Si prefieres que mande la propuesta por escrito antes de cualquier llamada, también funciona.", issue: "Opción alterna educada", flagIfMarked: "frase_reutilizable" },
-        ],
-      },
-    },
-  ],
-
-  // ============================================================
-  // SECCIÓN 4 · REVISIÓN (4 activos + 1 pasivo)
-  // ============================================================
-  [
-    // Slot 1: ai_output_review · revisión profunda
-    {
-      blockId: "ai_output_review",
-      title: "Revisión profunda del mensaje.",
-      body: "Versión más larga del mensaje. **Marca cada segmento** con la bandera que aplique. Puede no aplicar bandera si está bien.",
-      caseContext: {
-        segments: [
-          { id: "r1", text: "Mariana, vi en LinkedIn que Aurora Retail abrió oficina en Monterrey la semana pasada.", issue: "Información personal de fuente externa", flagIfMarked: "dato_sensible" },
-          { id: "r2", text: "El 87% de empresas como la tuya reducen costo operativo con nuestro producto.", issue: "Cifra sin respaldo", flagIfMarked: "claim_no_verificado" },
-          { id: "r3", text: "Adjunto te dejo el reporte interno de Cresta Software, que tiene un caso muy similar.", issue: "Datos de otro cliente", flagIfMarked: "dato_sensible" },
-          { id: "r4", text: "Si te interesa, agendamos cuando te acomode.", issue: "Cierre limpio y aceptable", flagIfMarked: "frase_reutilizable" },
-        ],
-      },
-    },
-    // Slot 2: ai_comparison · elegir cierre del mensaje
-    {
-      blockId: "ai_comparison",
-      title: "Elige el llamado a la acción.",
-      body: "Cuatro versiones del **cierre del mensaje**. Cada una tiene un equilibrio entre ser directo y dar espacio.",
-      caseContext: {
-        options: [
-          { id: "A", title: "Versión A", body: "Agenda 15 minutos esta semana en este enlace. Es la forma más rápida de avanzar." },
-          { id: "B", title: "Versión B", body: "¿Tienes 15 minutos esta semana para una llamada corta? Si no, mándame fecha que te acomode." },
-          { id: "C", title: "Versión C", body: "Si te interesa, mándame un mensaje y coordinamos. Sin presión." },
-          { id: "D", title: "Versión D", body: "Te dejamos la información por aquí. Cuando puedas, agendamos una llamada para hablar de tu caso." },
-        ],
-      },
-    },
-    // Slot 3: ai_output_review · cifras sin fuente
-    {
-      blockId: "ai_output_review",
-      title: "Datos que el modelo afirmó sin fuente.",
-      body: "El modelo metió **cifras** en el borrador. Marca las que no podrías sostener si te las cuestionan.",
-      caseContext: {
-        segments: [
-          { id: "c1", text: "Nuestros clientes duplican conversión en 2 semanas.", issue: "Promesa cuantitativa sin respaldo", flagIfMarked: "claim_no_verificado" },
-          { id: "c2", text: "Aurora Retail está creciendo 40% mes a mes.", issue: "Cifra de tu cliente sin fuente verificable", flagIfMarked: "claim_no_verificado" },
-          { id: "c3", text: "El 87% de empresas similares reduce costo operativo con nuestro producto.", issue: "Estadística sin estudio que la respalde", flagIfMarked: "claim_no_verificado" },
-          { id: "c4", text: "Trabajamos con equipos de Marketing en empresas medianas de retail en LATAM.", issue: "Afirmación verificable internamente", flagIfMarked: "frase_reutilizable" },
-        ],
-      },
-    },
-    // Slot 4: reading_message · feedback del manager
-    {
-      blockId: "reading_message",
-      title: "Feedback de Mariana sobre el borrador.",
-      body: "Tu jefa ya leyó la primera versión.",
-      caseContext: {
-        message: {
-          channel: "chat",
-          from: { name: "Mariana Robles", role: "Líder de Crecimiento · Aurora Retail" },
-          to: { name: "Tú" },
-          timestamp: "Hace 12 minutos",
-          body: "Está bien la dirección, pero **el cierre está muy agresivo** y la cifra del **87%** no sé de dónde sale. Si nos preguntan en el comité de privacidad, no la podemos sostener. Ajusta esos dos puntos y mándalo de nuevo.",
-        },
-      },
-    },
-    // Slot 5: ai_output_review · última pasada
-    {
-      blockId: "ai_output_review",
-      title: "Última pasada tras el comentario de Mariana.",
-      body: "Marca lo que todavía te genera dudas o lo que dejarías ir.",
-      caseContext: {
-        segments: [
-          { id: "f1", text: "Mariana, vi que Aurora Retail abrió oficina en Monterrey.", issue: "Información pública aceptable", flagIfMarked: "frase_reutilizable" },
-          { id: "f2", text: "Trabajamos con equipos de Marketing en empresas medianas de retail.", issue: "Verificable internamente", flagIfMarked: "frase_reutilizable" },
-          { id: "f3", text: "Si quieres ver cómo lo aplicaríamos a tu caso, agendamos una llamada cuando te acomode.", issue: "Llamado limpio", flagIfMarked: "frase_reutilizable" },
-          { id: "f4", text: "Te dejo dos horarios la próxima semana, dime cuál te sirve.", issue: "Cierre operativo", flagIfMarked: "frase_reutilizable" },
-        ],
-      },
-    },
-  ],
-
-  // ============================================================
-  // SECCIÓN 5 · CIERRE (4 activos + 1 pasivo)
-  // ============================================================
-  [
-    // Slot 1: ai_output_review · última revisión del email antes de decidir.
-    {
-      blockId: "ai_output_review",
-      title: "Última revisión antes del envío.",
-      body: "Así se vería en la bandeja del contacto. **Marca cualquier cosa** que te detendría justo antes de mandar el lunes a las 8.",
-      caseContext: {
-        segments: [
-          { id: "final-1", text: "Asunto: Una idea concreta para tu equipo este trimestre.", issue: "Asunto operativo", flagIfMarked: "frase_reutilizable" },
-          { id: "final-2", text: "Mariana, vi que Aurora Retail abrió oficina en Monterrey la semana pasada.", issue: "Información personalizada de fuente externa", flagIfMarked: "dato_sensible" },
-          { id: "final-3", text: "Trabajamos con equipos de Marketing en empresas medianas de retail.", issue: "Afirmación interna verificable", flagIfMarked: "frase_reutilizable" },
-          { id: "final-4", text: "Te dejo dos horarios la próxima semana, dime cuál te sirve.", issue: "Cierre directo y opcional", flagIfMarked: "frase_reutilizable" },
-        ],
-      },
-    },
-    // Slot 2: dashboard_pivot · elegir segmento
-    {
-      blockId: "dashboard_pivot",
-      title: "Elige qué segmento llevar al manager.",
-      body: "Tres segmentos con métricas reales. Cada uno tiene **caveats**. Elige cuál llevas a la reunión del lunes.",
-    },
-    // Slot 3: workflow_builder · definir el flujo
-    {
-      blockId: "workflow_builder",
-      title: "Define el flujo del envío.",
-      body: "Ordena los pasos. Decide **dónde entra revisión humana** y dónde el modelo opera solo. Puedes reordenar arrastrando.",
-    },
-    // Slot 4: ai_textfield_free · escribe el mensaje del envío (artefacto).
-    {
-      blockId: "ai_textfield_free",
-      title: "Escribe el mensaje del envío.",
-      body: "**Una línea o dos** con el texto que mandarías el lunes a las 8. Es el entregable que vas a defender en tu recomendación.",
-      caseContext: {
-        placeholder: "Escribe el mensaje exacto que enviarías al primer contacto del segmento elegido...",
-      },
-    },
-    // Slot 5: tradeoff_decision_memo · decisión + memo al manager. CIERRE
-    // canónico del caso (decision point Harvard · cumple
-    // last_section_must_close_with del CASE_ASSEMBLY_SCHEMA).
-    {
-      blockId: "tradeoff_decision_memo",
-      title: "Cierra con tu recomendación para Mariana.",
-      body: "Llegó el momento. Elige la opción que **defenderías ante el comité directivo** y escribe el memo que recibe tu manager.",
-      caseContext: {
-        decisions: [
-          { id: "lanzar_lunes", title: "Lanzar el lunes", detail: "Úsalo si el beneficio supera el riesgo y los huecos de privacidad ya quedaron mitigados." },
-          { id: "piloto_controlado", title: "Piloto controlado", detail: "Úsalo si hay señales prometedoras pero el riesgo de quejas o datos requiere validar con un grupo reducido primero." },
-          { id: "pausar_y_escalar", title: "Pausar y escalar", detail: "Úsalo si la base no está lista, hay datos sensibles sin consentimiento o el modelo afirma cosas que no se pueden sostener." },
-        ],
-      },
-    },
-  ],
-];
-
 // ============================================================
 // COMPONENTE
 // ============================================================
@@ -963,24 +551,31 @@ function buildReportSnapshot(
   });
 
   // ===== PRIVACIDAD · evalúa si excluyó/anonimizó contactos sin consentimiento + campos PII =====
-  const dataContactsPayload = payloads["datos-2"] as
+  const dataContactsPayload = payloads["datos-1"] as
     | Extract<ExerciseResponsePayload, { block_id: "categorize_rows" }>
     | undefined;
-  const dataFieldsPayload = payloads["datos-5"] as
+  const dataFieldsPayload = payloads["datos-2"] as
     | Extract<ExerciseResponsePayload, { block_id: "categorize_rows" }>
     | undefined;
+  // c3 = Renata (consentimiento revocado) · c5 = Lía (pidió baja). Ambos se
+  // deben excluir (regla dura de la política). f2 = correo, no debe ir al modelo.
   const excludedRevoked = dataContactsPayload?.row_actions.find(
-    (r) => r.row_id === "row-5",
+    (r) => r.row_id === "c3",
   );
-  const handledInternalNotes = dataFieldsPayload?.row_actions.find(
-    (r) => r.row_id === "campo-6",
+  const excludedBaja = dataContactsPayload?.row_actions.find(
+    (r) => r.row_id === "c5",
   );
+  const emailToModel = dataFieldsPayload?.row_actions.find(
+    (r) => r.row_id === "f2",
+  );
+  const excludedNoConsent =
+    excludedRevoked?.action === "excluir" && excludedBaja?.action === "excluir";
+  const protectedEmail =
+    emailToModel?.action === "no_va" || emailToModel?.action === "transformada";
   const privacyBand: Band =
-    excludedRevoked?.action === "excluir" &&
-    (handledInternalNotes?.action === "excluir" ||
-      handledInternalNotes?.action === "anonimizar")
+    excludedNoConsent && protectedEmail
       ? "alto"
-      : excludedRevoked?.action === "excluir"
+      : excludedNoConsent
         ? "medio"
         : "bajo";
   dimensions.push({
@@ -989,50 +584,46 @@ function buildReportSnapshot(
     band: privacyBand,
     metric:
       privacyBand === "alto"
-        ? "Excluyó el contacto sin consentimiento y protegió notas internas."
+        ? "Excluyó a quien revocó y a quien pidió baja, y no mandó el correo al modelo."
         : privacyBand === "medio"
-          ? "Manejo parcial de datos sensibles."
-          : "Permitió uso de datos sensibles al modelo.",
+          ? "Excluyó a los de sin consentimiento, pero dejó pasar datos personales al modelo."
+          : "No excluyó a quien revocó o pidió baja.",
   });
-  if (handledInternalNotes?.action === "usar") {
+  if (emailToModel?.action === "va") {
     riskEvents.push({
-      id: "risk-internal-notes",
+      id: "risk-email-to-model",
       severity: "alto",
-      type: "Dato sensible al modelo",
+      type: "Dato personal al modelo",
       // Cita textual del payload del usuario · cumple regla v0:
       // "risk_event debe tener evidencia textual citable del transcript".
-      evidence: `Marcó "Notas internas" con la acción "${handledInternalNotes.action}" cuando debió excluir o anonimizar.`,
-      slideRef: "Datos · 5 / 5",
+      evidence: `Marcó "Correo" con la acción "va al modelo" cuando es un identificador personal que no debía pasar.`,
+      slideRef: "Datos · 2 / 5",
     });
   }
 
-  // ===== VALIDACIÓN · evalúa si marcó cifras sin fuente en ai_output_review =====
-  const reviewCifras = payloads["revision-3"] as
+  // ===== VALIDACIÓN · evalúa si marcó las 2 cifras inventadas (r1, r2) en el
+  // ai_output_review de Revisión slot 1. r3 y r4 son frases correctas. =====
+  const reviewCifras = payloads["revision-1"] as
     | Extract<ExerciseResponsePayload, { block_id: "ai_output_review" }>
     | undefined;
-  const flaggedCount =
-    reviewCifras?.flagged_segments.filter((s) => s.flag !== null).length ?? 0;
+  const correctFlags = (reviewCifras?.flagged_segments ?? []).filter(
+    (s) => (s.segment_id === "r1" || s.segment_id === "r2") && s.flag !== null,
+  ).length;
   const validacionBand: Band =
-    flaggedCount >= 3 ? "alto" : flaggedCount >= 2 ? "medio" : "bajo";
+    correctFlags >= 2 ? "alto" : correctFlags >= 1 ? "medio" : "bajo";
   dimensions.push({
     id: "validacion",
     label: "Validación",
     band: validacionBand,
-    metric: `${flaggedCount} de 3 cifras sin fuente marcadas`,
+    metric: `${correctFlags} de 2 cifras inventadas marcadas`,
   });
-  if (flaggedCount < 3) {
-    // Cuenta cuáles segmentos quedaron sin flag (los que el usuario
-    // aceptó) · cita los específicos no marcados.
-    const missed = reviewCifras?.flagged_segments
-      .filter((s) => s.flag === null)
-      .map((s) => s.segment_id)
-      .join(", ");
+  if (correctFlags < 2) {
     riskEvents.push({
       id: "risk-unverified-claim",
-      severity: flaggedCount === 0 ? "alto" : "medio",
+      severity: correctFlags === 0 ? "alto" : "medio",
       type: "Cifra sin verificar",
-      evidence: `Dejó sin marcar ${3 - flaggedCount} de 3 segmentos con cifras sin respaldo (${missed ?? "ninguno marcado"}).`,
-      slideRef: "Revisión · 3 / 5",
+      evidence: `Dejó pasar ${2 - correctFlags} de 2 cifras sin respaldo que el modelo afirmó.`,
+      slideRef: "Revisión · 1 / 5",
     });
   }
 
@@ -1064,11 +655,11 @@ function buildReportSnapshot(
 
   // ===== DECISIÓN · evalúa claridad del memo que justifica la decisión.
   // El memo vive en el tradeoff_decision_memo del slot 5 (cierre-5),
-  // junto a la decision. El mensaje del envío (cierre-4, ai_textfield_free)
+  // junto a la decision. El mensaje base del envío (cierre-2, ai_textfield_free)
   // es un artefacto distinto · se usa como señal de ejecución abajo. =====
   const memoText = decisionPayload?.memo.trim() ?? "";
   const memoLength = memoText.length;
-  const sendMessage = payloads["cierre-4"] as
+  const sendMessage = payloads["cierre-2"] as
     | Extract<ExerciseResponsePayload, { block_id: "ai_textfield_free" }>
     | undefined;
   const wroteMessage = (sendMessage?.prompt_text.trim().length ?? 0) >= 20;

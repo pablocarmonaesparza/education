@@ -159,10 +159,14 @@ for (const file of files) {
         );
       }
 
-      check(
-        slide.content && typeof slide.content === "object",
-        `${id}/${sec.id}/slot${slide.slot}: "${bid}" sin content`,
-      );
+      // content es opcional (reading_passive y ai_textfield_free pueden
+      // renderizar solo de title/body). Si viene, debe ser un objeto.
+      if (slide.content !== undefined && slide.content !== null) {
+        check(
+          typeof slide.content === "object" && !Array.isArray(slide.content),
+          `${id}/${sec.id}/slot${slide.slot}: "${bid}" content debe ser un objeto`,
+        );
+      }
     }
 
     if (!ACTIVE_EXCEPT.includes(sec.id)) {

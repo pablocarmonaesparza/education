@@ -64,6 +64,14 @@ if (caseFactory.status !== 0) {
   process.exit(caseFactory.status ?? 1);
 }
 
+const assembled = run("node", ["scripts/simulador/check-assembled-case.mjs"]);
+print(assembled.stdout);
+print(assembled.stderr);
+
+if (assembled.status !== 0) {
+  process.exit(assembled.status ?? 1);
+}
+
 const typecheck = run("node", ["scripts/simulador/typecheck-scope.mjs"]);
 print(typecheck.stdout);
 print(typecheck.stderr);

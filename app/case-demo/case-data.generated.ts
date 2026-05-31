@@ -1,0 +1,807 @@
+// AUTO-GENERADO por scripts/simulador/generate-case-demo.mjs
+// Fuente: docs/simulador/contrato_v0/cases_assembled/marketing_dirty_data_relaunch_v1.yaml
+// NO editar a mano. Editar el YAML y correr: node scripts/simulador/generate-case-demo.mjs
+//
+// El demo /case-demo proviene de este archivo, que proviene del YAML ensamblado.
+
+import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
+
+export interface Slide {
+  blockId: ExerciseBlockId;
+  title: string;
+  body: string;
+  /** Contenido del caso (caseContext del bloque). Puede incluir campos
+   *  judge_internal (hint, example, issue, goodWhen) co-localizados; el shell
+   *  los remueve con stripJudgeFields antes de pasarlos al renderer. */
+  caseContext?: Record<string, unknown>;
+}
+
+export const CASE_ID = "marketing_dirty_data_relaunch";
+export const CASE_VERSION = 2;
+
+export const SLIDES: Slide[][] = [
+  [
+    {
+      "blockId": "case_cover",
+      "title": "Relanzar la retención, con la base como llegó.",
+      "body": "Trabajas en **Aurora Retail**. Tu jefa te pidió **relanzar la campaña de retención** a los clientes de siempre antes del **viernes**. La base llegó con duplicados, gente que pidió darse de baja y correos que ya rebotan. Tú decides qué se limpia, qué le pides a la inteligencia artificial y qué le entregas a tu jefa.",
+      "caseContext": {
+        "meta": {
+          "profile": "Marketing",
+          "level": "N1 · Fundamentos",
+          "estimatedMinutes": 12,
+          "timerSeconds": 600,
+          "timerDefaultOn": false,
+          "tools": [
+            {
+              "kind": "ai",
+              "label": "Inteligencia artificial"
+            },
+            {
+              "kind": "data",
+              "label": "Tablas"
+            },
+            {
+              "kind": "messaging",
+              "label": "Mensajería"
+            },
+            {
+              "kind": "documents",
+              "label": "Documentos"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "blockId": "reading_message",
+      "title": "Mariana te asigna el relanzamiento.",
+      "body": "Léelo completo. Lo que pide aquí es lo que vas a entregar al final.",
+      "caseContext": {
+        "message": {
+          "channel": "email",
+          "from": {
+            "name": "Mariana Robles",
+            "role": "Líder de Crecimiento · Aurora Retail"
+          },
+          "to": {
+            "name": "Tú",
+            "role": "Analista de Crecimiento"
+          },
+          "timestamp": "Hoy, 9:40",
+          "subject": "Relanzamos la campaña de retención esta semana",
+          "body": "Hola. Vamos a **relanzar la campaña de retención** a nuestros clientes antes del **viernes**. La base que te paso viene con problemas, así que el primer trabajo es dejarla limpia. Cuando la tengas, mándame una propuesta con tres cosas: los **segmentos** a los que les vas a escribir, el **mensaje base** que les llega, y las **métricas que vas a monitorear** para saber si funcionó. Cualquier duda me dices."
+        }
+      }
+    },
+    {
+      "blockId": "reading_data_table",
+      "title": "Así llegó la base de clientes.",
+      "body": "Estos son **8 clientes** de la base que te pasaron. Míralos con calma. En la sección siguiente decides qué hacer con cada uno.",
+      "caseContext": {
+        "table": {
+          "caption": "Base de clientes para el relanzamiento (8 de 480)",
+          "columns": [
+            {
+              "key": "nombre",
+              "label": "Cliente"
+            },
+            {
+              "key": "email",
+              "label": "Correo"
+            },
+            {
+              "key": "ultima_compra",
+              "label": "Última compra"
+            },
+            {
+              "key": "ultima_apertura",
+              "label": "Última apertura"
+            },
+            {
+              "key": "consentimiento",
+              "label": "Consentimiento"
+            },
+            {
+              "key": "entrega",
+              "label": "Entrega"
+            },
+            {
+              "key": "valor",
+              "label": "Compras 12 meses"
+            }
+          ],
+          "rows": [
+            {
+              "nombre": "Paola Restrepo",
+              "email": "paola.restrepo@correo.co",
+              "ultima_compra": "22 abr 2026",
+              "ultima_apertura": "20 may 2026",
+              "consentimiento": "Activo",
+              "entrega": "Ok",
+              "valor": "$8,400"
+            },
+            {
+              "nombre": "Tomás Iglesias",
+              "email": "tomas.iglesias@correo.mx",
+              "ultima_compra": "03 nov 2025",
+              "ultima_apertura": "18 may 2026",
+              "consentimiento": "Activo",
+              "entrega": "Ok",
+              "valor": "$1,600"
+            },
+            {
+              "nombre": "Renata Gómez",
+              "email": "renata.gomez@correo.cl",
+              "ultima_compra": "10 may 2026",
+              "ultima_apertura": "22 may 2026",
+              "consentimiento": "Revocado",
+              "entrega": "Ok",
+              "valor": "$12,900"
+            },
+            {
+              "nombre": "Bruno Salas",
+              "email": "bruno.salas@correo.mx",
+              "ultima_compra": "15 mar 2026",
+              "ultima_apertura": "—",
+              "consentimiento": "Activo",
+              "entrega": "Rebota",
+              "valor": "$3,200"
+            },
+            {
+              "nombre": "Lía Fonseca",
+              "email": "lia.fonseca@correo.co",
+              "ultima_compra": "01 feb 2026",
+              "ultima_apertura": "19 may 2026",
+              "consentimiento": "Pidió baja",
+              "entrega": "Ok",
+              "valor": "$5,100"
+            },
+            {
+              "nombre": "Iván Duarte",
+              "email": "ivan.duarte@correo.cl",
+              "ultima_compra": "30 abr 2026",
+              "ultima_apertura": "21 may 2026",
+              "consentimiento": "Activo",
+              "entrega": "Ok",
+              "valor": "$9,700"
+            },
+            {
+              "nombre": "Paola Restrepo",
+              "email": "p.restrepo@correo.co",
+              "ultima_compra": "22 abr 2026",
+              "ultima_apertura": "20 may 2026",
+              "consentimiento": "Activo",
+              "entrega": "Ok",
+              "valor": "$8,400"
+            },
+            {
+              "nombre": "Marcos Villalba",
+              "email": "marcos.villalba@correo.mx",
+              "ultima_compra": "12 ago 2025",
+              "ultima_apertura": "01 sep 2025",
+              "consentimiento": "Sin confirmar",
+              "entrega": "Ok",
+              "valor": "$900"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "blockId": "reading_kpi_cards",
+      "title": "Cómo le fue a la campaña de abril.",
+      "body": "Los números del último envío de retención, el del **18 de abril**. Son tu referencia para lo que vas a proponer.",
+      "caseContext": {
+        "kpis": [
+          {
+            "label": "Tasa de apertura",
+            "value": "22%",
+            "delta": {
+              "direction": "flat",
+              "label": "estable desde el último envío"
+            }
+          },
+          {
+            "label": "Recompra a 30 días",
+            "value": "3.4%",
+            "delta": {
+              "direction": "flat",
+              "label": "el número a superar",
+              "goodWhen": "más alto"
+            }
+          },
+          {
+            "label": "Quejas y bajas",
+            "value": "1.8%",
+            "delta": {
+              "direction": "flat",
+              "label": "el número a cuidar",
+              "goodWhen": "más bajo"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "blockId": "reading_message",
+      "title": "Daniela, de Legal, ya levantó una alerta.",
+      "body": "Antes de tocar nada, lee lo que pasó con el envío anterior.",
+      "caseContext": {
+        "message": {
+          "channel": "ticket",
+          "from": {
+            "name": "Daniela Ruiz",
+            "role": "Coordinadora Legal · Aurora Retail"
+          },
+          "to": {
+            "name": "Marketing"
+          },
+          "timestamp": "Hace 6 días",
+          "subject": "Quejas por correos a clientes que pidieron baja",
+          "body": "En el envío de abril llegaron quejas de **clientes que ya habían pedido darse de baja** y aun así recibieron el correo. Antes del próximo envío necesito que confirmes dos cosas: que **excluiste a todos los que pidieron baja** y que el correo lleva **un enlace visible para darse de baja**. Si algo no queda claro, escríbeme."
+        }
+      }
+    }
+  ],
+  [
+    {
+      "blockId": "categorize_rows",
+      "title": "Decide qué haces con cada cliente.",
+      "body": "Por cada cliente elige una acción. Algunas son claras por la política de datos; otras piden tu criterio. Regla dura: **quien pidió baja o revocó el consentimiento se excluye siempre**.",
+      "caseContext": {
+        "actionStyle": "permission",
+        "actions": [
+          {
+            "value": "usar",
+            "label": "Usar"
+          },
+          {
+            "value": "anonimizar",
+            "label": "Anonimizar"
+          },
+          {
+            "value": "excluir",
+            "label": "Excluir"
+          },
+          {
+            "value": "escalar",
+            "label": "Escalar"
+          }
+        ],
+        "rows": [
+          {
+            "id": "c1",
+            "label": "Paola Restrepo · compró hace 5 semanas · abre seguido",
+            "example": "Cliente activa, sin problemas",
+            "hint": "Usar"
+          },
+          {
+            "id": "c2",
+            "label": "Tomás Iglesias · no compra hace 6 meses · sigue abriendo",
+            "example": "Candidato a reactivación",
+            "hint": "Usar"
+          },
+          {
+            "id": "c3",
+            "label": "Renata Gómez · consentimiento revocado",
+            "example": "Revocado, regla dura",
+            "hint": "Excluir"
+          },
+          {
+            "id": "c4",
+            "label": "Bruno Salas · su correo rebota",
+            "example": "Rebota, correo inválido",
+            "hint": "Excluir"
+          },
+          {
+            "id": "c5",
+            "label": "Lía Fonseca · pidió darse de baja",
+            "example": "Pidió baja, origen del ticket de Daniela",
+            "hint": "Excluir"
+          },
+          {
+            "id": "c6",
+            "label": "Iván Duarte · compró hace 4 semanas · alto valor",
+            "example": "Cliente activo de alto valor",
+            "hint": "Usar"
+          },
+          {
+            "id": "c7",
+            "label": "Paola Restrepo · aparece otra vez con otro correo",
+            "example": "Duplicado de la primera fila",
+            "hint": "Anonimizar o escalar para deduplicar"
+          },
+          {
+            "id": "c8",
+            "label": "Marcos Villalba · nunca confirmó su correo · sin compras recientes",
+            "example": "Sin confirmar, máximo un correo de re-permiso",
+            "hint": "Escalar"
+          }
+        ]
+      }
+    },
+    {
+      "blockId": "categorize_rows",
+      "title": "Decide qué columnas le pasas a la inteligencia artificial.",
+      "body": "El mensaje lo va a redactar **Aurora Copiloto**, el asistente de la empresa. Por cada columna decide si se la pasas tal cual, transformada, o no se la pasas. Lo que escribas en el asistente sale de la base protegida.",
+      "caseContext": {
+        "actionStyle": "neutral",
+        "actions": [
+          {
+            "value": "va",
+            "label": "Va al modelo"
+          },
+          {
+            "value": "transformada",
+            "label": "Va transformada"
+          },
+          {
+            "value": "no_va",
+            "label": "No va"
+          }
+        ],
+        "rows": [
+          {
+            "id": "f1",
+            "label": "Nombre del cliente",
+            "example": "Dato personal directo",
+            "hint": "No va o anonimizar"
+          },
+          {
+            "id": "f2",
+            "label": "Correo",
+            "example": "Identificador personal",
+            "hint": "No va"
+          },
+          {
+            "id": "f3",
+            "label": "Última compra (fecha)",
+            "example": "Señal útil, no identifica",
+            "hint": "Va"
+          },
+          {
+            "id": "f4",
+            "label": "Última apertura (fecha)",
+            "example": "Señal de interés",
+            "hint": "Va"
+          },
+          {
+            "id": "f5",
+            "label": "Consentimiento",
+            "example": "Ya se usó para filtrar, no va al texto",
+            "hint": "No va"
+          },
+          {
+            "id": "f6",
+            "label": "Compras de los últimos 12 meses",
+            "example": "Mejor como rango que como monto exacto",
+            "hint": "Va transformada"
+          }
+        ]
+      }
+    },
+    {
+      "blockId": "model_tradeoff_sliders",
+      "title": "Pondera con qué criterio se elige el modelo para datos personales.",
+      "body": "Para un envío con datos de clientes hay un equilibrio entre qué tan autónomo es el modelo, qué tan seguro es con los datos y cuánto cuesta. Mueve los tres controles según lo que más pesa aquí. No estás eligiendo el modelo de la empresa, estás razonando el criterio.",
+      "caseContext": {
+        "modelTradeoff": {
+          "prompt": "Para datos de clientes, ¿qué pesa más?",
+          "sliderLabels": {
+            "autonomy": "Autonomía del modelo",
+            "security": "Seguridad de los datos",
+            "cost": "Costo"
+          }
+        }
+      }
+    },
+    {
+      "blockId": "ai_textfield_free",
+      "title": "Escríbele a Aurora Copiloto qué datos NO puede usar.",
+      "body": "Antes de pedirle el mensaje, déjale claro el límite. En una o dos frases, dile qué columnas no debe usar y cómo tratar lo personal. Esto es lo que revisarás después, cuando veas si lo respetó.",
+      "caseContext": {
+        "placeholder": "Dile al asistente qué datos no debe usar y cómo tratar lo personal..."
+      }
+    },
+    {
+      "blockId": "reading_attachment",
+      "title": "La política de datos de Aurora, en tres reglas.",
+      "body": "Es corta. Estas tres reglas aplican a este envío. Vas a tener que sostenerlas si Legal pregunta.",
+      "caseContext": {
+        "attachments": [
+          {
+            "name": "Politica_de_datos_Aurora_Retail.pdf",
+            "size": "2 páginas",
+            "kind": "pdf",
+            "description": "Regla 1: si un correo rebota dos veces, se excluye. Regla 2: quien revocó el consentimiento o pidió baja se excluye siempre. Regla 3: a quien nunca confirmó su correo, máximo se le manda un correo para pedir permiso otra vez."
+          }
+        ]
+      }
+    }
+  ],
+  [
+    {
+      "blockId": "reading_passive",
+      "title": "Qué es Aurora Copiloto y qué no.",
+      "body": "**Aurora Copiloto** es el asistente de lenguaje aprobado de la empresa. Corre en la infraestructura de Aurora.\n\n**Lo que puede:** redactar, resumir y ajustar el tono de lo que le pegas.\n\n**Lo que no puede:** entrar a la base de clientes por su cuenta ni mandar correos. Solo ve lo que tú escribes en el prompt.\n\nUna cosa importante: a veces **inventa cifras** o mete datos que parecen del cliente aunque tú no se los diste. Por eso todo lo que devuelve hay que revisarlo."
+    },
+    {
+      "blockId": "ai_textfield_guided",
+      "title": "Arma el encargo para Aurora Copiloto.",
+      "body": "Vas a generar el **mensaje base** de la campaña. Define el objetivo, a quién le hablas y los límites. Sin esas tres decisiones, el asistente improvisa.",
+      "caseContext": {
+        "guided": {
+          "objetivos": [
+            "Recuperar a clientes que dejaron de comprar",
+            "Reforzar a los clientes que siguen comprando",
+            "Reactivar a quienes abren pero no compran",
+            "Avisar de un beneficio para clientes actuales"
+          ],
+          "audiencias": [
+            "Clientes activos de alto valor",
+            "Clientes que no compran hace meses",
+            "Clientes que abren pero no compran",
+            "Toda la base junta"
+          ],
+          "limites": [
+            "No usar nombres ni correos en el texto",
+            "No inventar cifras ni resultados",
+            "Dejarlo como borrador para revisar",
+            "Incluir el enlace para darse de baja"
+          ]
+        }
+      }
+    },
+    {
+      "blockId": "ai_output_review",
+      "title": "Aurora Copiloto devolvió este borrador.",
+      "body": "Es el primer intento. **Marca lo que no dejarías pasar** antes de pedir una corrección. Fíjate en cifras que no puedes sostener, en datos personales que no debían aparecer y en el tono.",
+      "caseContext": {
+        "segments": [
+          {
+            "id": "s1",
+            "text": "Hola, te extrañamos en Aurora Retail. Sabemos que tu última compra fue hace exactamente 47 días.",
+            "issue": "Dato personal exacto que no debía ir al modelo",
+            "flagIfMarked": "dato_sensible"
+          },
+          {
+            "id": "s2",
+            "text": "Los clientes que vuelven gastan un 35% más en promedio.",
+            "issue": "Cifra inventada sin fuente",
+            "flagIfMarked": "claim_no_verificado"
+          },
+          {
+            "id": "s3",
+            "text": "Preparamos una selección pensada para ti y un beneficio si vuelves esta semana.",
+            "issue": "Oferta concreta y aceptable",
+            "flagIfMarked": "frase_reutilizable"
+          },
+          {
+            "id": "s4",
+            "text": "Si ya no quieres recibir estos correos, puedes darte de baja aquí.",
+            "issue": "Incluye el enlace de baja, correcto",
+            "flagIfMarked": "frase_reutilizable"
+          }
+        ]
+      }
+    },
+    {
+      "blockId": "ai_textfield_free",
+      "title": "Pídele la corrección.",
+      "body": "Escribe el siguiente encargo para Aurora Copiloto. Sé concreto: qué quita, qué cambia, qué deja. Aquí es donde el borrador se vuelve enviable.",
+      "caseContext": {
+        "placeholder": "Dile qué corregir del borrador anterior..."
+      }
+    },
+    {
+      "blockId": "ai_output_review",
+      "title": "Esta es la versión corregida.",
+      "body": "Aurora Copiloto aplicó tu encargo. **Revisa que de verdad arregló lo que pediste** y marca lo que aún no te convence. Ojo: al corregir, a veces vuelve a meter algo nuevo.",
+      "caseContext": {
+        "segments": [
+          {
+            "id": "v1",
+            "text": "Hola, en Aurora Retail preparamos algo para clientes como tú.",
+            "issue": "Quitó la fecha exacta, ahora habla en general",
+            "flagIfMarked": "frase_reutilizable"
+          },
+          {
+            "id": "v2",
+            "text": "Muchos clientes vuelven por nuestras temporadas nuevas.",
+            "issue": "Quitó el 35% inventado, ahora es una frase sin cifra",
+            "flagIfMarked": "frase_reutilizable"
+          },
+          {
+            "id": "v3",
+            "text": "Tenemos una selección para ti y un beneficio si vuelves esta semana.",
+            "issue": "Se mantuvo, está bien",
+            "flagIfMarked": "frase_reutilizable"
+          },
+          {
+            "id": "v4",
+            "text": "Además, mejoramos un 35% la entrega este mes.",
+            "issue": "El modelo metió OTRA cifra inventada al corregir",
+            "flagIfMarked": "claim_no_verificado"
+          }
+        ]
+      }
+    }
+  ],
+  [
+    {
+      "blockId": "ai_output_review",
+      "title": "Caza las cifras que no puedes sostener.",
+      "body": "El mensaje ya está más limpio, pero quedan **números**. Marca cada cifra que no podrías defender si Mariana o Legal te la cuestionan.",
+      "caseContext": {
+        "segments": [
+          {
+            "id": "r1",
+            "text": "Más del 80% de nuestros clientes vuelve a comprar en tres meses.",
+            "issue": "Estadística sin fuente",
+            "flagIfMarked": "claim_no_verificado"
+          },
+          {
+            "id": "r2",
+            "text": "Tu categoría favorita tiene 200 productos nuevos esta temporada.",
+            "issue": "Cifra de catálogo inventada",
+            "flagIfMarked": "claim_no_verificado"
+          },
+          {
+            "id": "r3",
+            "text": "Tenemos una selección para ti y un beneficio si vuelves esta semana.",
+            "issue": "Frase sin cifra, aceptable",
+            "flagIfMarked": "frase_reutilizable"
+          },
+          {
+            "id": "r4",
+            "text": "Si ya no quieres recibir estos correos, puedes darte de baja aquí.",
+            "issue": "Enlace de baja, correcto",
+            "flagIfMarked": "frase_reutilizable"
+          }
+        ]
+      }
+    },
+    {
+      "blockId": "ai_comparison",
+      "title": "Elige cómo cierra el mensaje.",
+      "body": "Cuatro formas de cerrar, de la más directa a la más suave. Elige la que le hablaría mejor a un cliente que ya te conoce.",
+      "caseContext": {
+        "options": [
+          {
+            "id": "A",
+            "title": "Directo",
+            "body": "Vuelve esta semana y aprovecha el beneficio. Compra aquí."
+          },
+          {
+            "id": "B",
+            "title": "Cercano",
+            "body": "Si quieres pasar a ver lo nuevo, aquí está tu beneficio. Cuando gustes."
+          },
+          {
+            "id": "C",
+            "title": "Suave",
+            "body": "Te dejamos la selección por aquí. Si te late, el beneficio te espera."
+          },
+          {
+            "id": "D",
+            "title": "Sobrio",
+            "body": "Gracias por seguir con nosotros. Aquí tienes una selección y un beneficio si decides volver."
+          }
+        ]
+      }
+    },
+    {
+      "blockId": "reading_message",
+      "title": "Mariana revisó tu borrador.",
+      "body": "Te responde por chat.",
+      "caseContext": {
+        "message": {
+          "channel": "chat",
+          "from": {
+            "name": "Mariana Robles",
+            "role": "Líder de Crecimiento"
+          },
+          "to": {
+            "name": "Tú"
+          },
+          "timestamp": "Hace 10 minutos",
+          "body": "Va quedando bien. Dos cosas antes de que sigas: confirma que **sacaste a la gente que pidió baja** (es lo que pidió Daniela, la regla 2 de la política) y revisa que el correo deje **el enlace para darse de baja** bien visible. Si esas dos están, por mí avanza."
+        }
+      }
+    },
+    {
+      "blockId": "categorize_rows",
+      "title": "Última revisión del mensaje, línea por línea.",
+      "body": "Por cada parte del correo, decide si la dejas, la corriges o la quitas antes de mandar.",
+      "caseContext": {
+        "actionStyle": "neutral",
+        "actions": [
+          {
+            "value": "dejar",
+            "label": "Dejar"
+          },
+          {
+            "value": "corregir",
+            "label": "Corregir"
+          },
+          {
+            "value": "quitar",
+            "label": "Quitar"
+          }
+        ],
+        "rows": [
+          {
+            "id": "m1",
+            "label": "Asunto: Algo nuevo para ti en Aurora Retail",
+            "example": "Asunto claro, sin promesa falsa",
+            "hint": "Dejar"
+          },
+          {
+            "id": "m2",
+            "label": "Más del 80% de los clientes vuelve en tres meses",
+            "example": "Cifra inventada que ya marcaste",
+            "hint": "Quitar"
+          },
+          {
+            "id": "m3",
+            "label": "Tenemos una selección para ti y un beneficio esta semana",
+            "example": "Oferta concreta y honesta",
+            "hint": "Dejar"
+          },
+          {
+            "id": "m4",
+            "label": "Saludo con el nombre completo del cliente",
+            "example": "Mejor un saludo general, sin el dato exacto",
+            "hint": "Corregir"
+          },
+          {
+            "id": "m5",
+            "label": "Enlace para darse de baja",
+            "example": "Lo pidió Legal, tiene que estar",
+            "hint": "Dejar"
+          }
+        ]
+      }
+    },
+    {
+      "blockId": "ai_comparison",
+      "title": "Elige la versión final.",
+      "body": "Tres versiones del mensaje completo, ya con tus correcciones. Elige la que mandarías el lunes.",
+      "caseContext": {
+        "options": [
+          {
+            "id": "A",
+            "title": "Versión A",
+            "body": "Hola, en Aurora Retail preparamos una selección para ti y un beneficio si vuelves esta semana. Si ya no quieres estos correos, puedes darte de baja aquí."
+          },
+          {
+            "id": "B",
+            "title": "Versión B",
+            "body": "Gracias por seguir con nosotros en Aurora Retail. Tenemos algo nuevo y un beneficio si decides pasar. Puedes darte de baja en este enlace cuando quieras."
+          },
+          {
+            "id": "C",
+            "title": "Versión C",
+            "body": "En Aurora Retail pensamos en ti: una selección y un beneficio esta semana. Si prefieres no recibir más correos, te das de baja aquí."
+          }
+        ]
+      }
+    }
+  ],
+  [
+    {
+      "blockId": "ai_comparison",
+      "title": "Elige a qué segmento le mandas primero.",
+      "body": "Tres segmentos armados con los clientes que decidiste usar. Cada uno tiene un pero. Elige cuál llevas a Mariana como la propuesta de esta semana. Es el primer entregable: los **segmentos**.",
+      "caseContext": {
+        "options": [
+          {
+            "id": "A",
+            "title": "Clientes activos de alto valor",
+            "body": "Paola e Iván: compran seguido y gastan más. El pero: ya están comprando, el riesgo es cansarlos con otro correo."
+          },
+          {
+            "id": "B",
+            "title": "Clientes por reactivar",
+            "body": "Tomás: abre los correos pero no compra hace meses. El reto es darle una razón concreta para volver, no solo decir que lo extrañas."
+          },
+          {
+            "id": "C",
+            "title": "Pendientes de limpieza",
+            "body": "Los casos dudosos: el duplicado y quien nunca confirmó. Todavía no son un segmento para enviar, primero hay que limpiarlos."
+          }
+        ]
+      }
+    },
+    {
+      "blockId": "ai_textfield_free",
+      "title": "Escribe el mensaje base que entregas.",
+      "body": "Es el segundo entregable: el **mensaje base** que pide Mariana, el texto completo que recibiría el segmento que elegiste. Escríbelo como lo mandarías, con el beneficio y el enlace de baja.",
+      "caseContext": {
+        "placeholder": "Escribe el mensaje completo para el segmento elegido..."
+      }
+    },
+    {
+      "blockId": "categorize_rows",
+      "title": "Define qué métricas vas a monitorear.",
+      "body": "El tercer entregable. De esta lista, marca cuáles vas a vigilar después del envío y cuáles no te dicen nada para este caso.",
+      "caseContext": {
+        "actionStyle": "neutral",
+        "actions": [
+          {
+            "value": "monitorear",
+            "label": "Monitorear"
+          },
+          {
+            "value": "ignorar",
+            "label": "Ignorar"
+          }
+        ],
+        "rows": [
+          {
+            "id": "met1",
+            "label": "Recompra a 30 días",
+            "example": "El objetivo del envío, hay que superar 3.4%",
+            "hint": "Monitorear"
+          },
+          {
+            "id": "met2",
+            "label": "Quejas y bajas",
+            "example": "La alarma de Legal, no debe pasar de 1.8%",
+            "hint": "Monitorear"
+          },
+          {
+            "id": "met3",
+            "label": "Tasa de rebote",
+            "example": "Dice si la base quedó limpia",
+            "hint": "Monitorear"
+          },
+          {
+            "id": "met4",
+            "label": "Seguidores en redes sociales",
+            "example": "No tiene que ver con este envío",
+            "hint": "Ignorar"
+          },
+          {
+            "id": "met5",
+            "label": "Clics totales del sitio",
+            "example": "Muy general, no mide retención",
+            "hint": "Ignorar"
+          }
+        ]
+      }
+    },
+    {
+      "blockId": "reading_passive",
+      "title": "Así llega el correo al cliente.",
+      "body": "Vista previa del correo final, como lo recibiría el segmento que elegiste.\n\n**Asunto:** Algo nuevo para ti en Aurora Retail\n\nHola, en Aurora Retail preparamos una selección para ti y un beneficio si vuelves esta semana.\n\n**[ Ver la selección ]**\n\n*Si ya no quieres recibir estos correos, puedes darte de baja aquí.*\n\nNota: en este envío quedaron fuera los clientes que pidieron baja, como pidió Legal."
+    },
+    {
+      "blockId": "tradeoff_decision_memo",
+      "title": "Cierra con tu recomendación para Mariana.",
+      "body": "Elige qué haces con el envío y escríbele el memo a Mariana. Es lo último: la decisión que vas a defender.",
+      "caseContext": {
+        "decisions": [
+          {
+            "id": "lanzar_lunes",
+            "title": "Lanzar el lunes",
+            "detail": "Si la base quedó limpia, las cifras inventadas se fueron y el correo lleva el enlace de baja, mándalo según el plan."
+          },
+          {
+            "id": "piloto_controlado",
+            "title": "Piloto con un segmento",
+            "detail": "Si quieres bajar el riesgo, manda solo al segmento más seguro esta semana y mide antes de ampliar."
+          },
+          {
+            "id": "pausar_y_escalar",
+            "title": "Pausar y avisar a Mariana y Legal",
+            "detail": "Si todavía hay clientes que pidieron baja en la lista, o el mensaje afirma algo que no puedes sostener, no mandes y escala."
+          }
+        ],
+        "memoPlaceholder": "Escribe a Mariana: qué decidiste, por qué, y qué cuidaste de la base y de los datos...",
+        "memoAudience": "Mariana Robles · Líder de Crecimiento"
+      }
+    }
+  ]
+];
