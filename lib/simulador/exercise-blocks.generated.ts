@@ -2,7 +2,7 @@
 /**
  * AUTO-GENERATED — NO EDITAR A MANO.
  *
- * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.12.0
+ * Fuente: docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml v0.13.0
  * Generador: scripts/simulador/generate-exercise-blocks.mjs
  *
  * Para regenerar: `bun run simulador:gen-blocks`
@@ -384,10 +384,11 @@ export const exerciseBlocks: ExerciseBlock[] = [
       "Quieres medir ponderacion entre prioridades; usa model_tradeoff_sliders.",
     ],
     personalizationKnobs: [
-      "objetivos",
-      "audiencias",
-      "limites del caso",
-      "modelo (manual o referencia desde model_tradeoff_sliders)",
+      "caseContext.guided.objetivos: string[] (opciones de objetivo)",
+      "caseContext.guided.audiencias: string[] (opciones de audiencia)",
+      "caseContext.guided.limites: string[] (opciones de limites)",
+      "caseContext.guided.entrega: string (instruccion de cierre del prompt generado)",
+      "modelo: NO data-driven aun; el bloque usa el set por defecto del lab",
     ],
     emits: ["selected_objective", "selected_audience", "selected_limits", "selected_model", "generated_prompt"],
     uiPattern: "inputs y seleccion progresivos + textfield read-only generado",
@@ -421,9 +422,9 @@ export const exerciseBlocks: ExerciseBlock[] = [
       "La eleccion es binaria; usa un toggle simple.",
     ],
     personalizationKnobs: [
-      "etiquetas y descripciones de cada slider",
-      "modelos disponibles (catalogo restringido por caso)",
-      "set de modelos recomendados por combinacion",
+      "caseContext.modelTradeoff.sliderLabels.{autonomy,security,cost}: string (etiquetas de los 3 sliders)",
+      "caseContext.modelTradeoff.prompt: string (framing opcional arriba de los sliders)",
+      "modelos disponibles y matriz de recomendacion: NO data-driven aun (requiere tocar _shared)",
     ],
     emits: ["autonomy_priority", "security_priority", "cost_priority", "recommended_model_id", "rationale_text"],
     uiPattern: "3 sliders 0-100 en pasos de 10 + modelo recomendado dinamico con BrandMark + textarea ¿por que priorizaste asi?",
@@ -680,6 +681,6 @@ export const exerciseBlockStats = {
     "traditional_business_signal": 1,
     "traditional_closure": 1
   },
-  catalogVersion: "0.12.0",
+  catalogVersion: "0.13.0",
   catalogStatus: "canonical_after_p0_p3_refactor",
 } as const;

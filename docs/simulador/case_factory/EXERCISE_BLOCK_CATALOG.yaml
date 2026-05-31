@@ -1,5 +1,5 @@
 exercise_block_catalog:
-  version: 0.12.0
+  version: 0.13.0
   status: canonical_after_p0_p3_refactor
   source_route: /exercise-lab
   purpose: >
@@ -285,10 +285,13 @@ exercise_block_catalog:
         - "El caso requiere creatividad abierta sin andamiaje."
         - "Quieres medir ponderacion entre prioridades; usa model_tradeoff_sliders."
       personalization_knobs:
-        - "objetivos"
-        - "audiencias"
-        - "limites del caso"
-        - "modelo (manual o referencia desde model_tradeoff_sliders)"
+        # Campos que el bloque lee de caseContext.guided (con fallback al lab si
+        # el caso no los trae). Ver app/exercise-lab/blocks/AITextfieldGuided.tsx.
+        - "caseContext.guided.objetivos: string[] (opciones de objetivo)"
+        - "caseContext.guided.audiencias: string[] (opciones de audiencia)"
+        - "caseContext.guided.limites: string[] (opciones de limites)"
+        - "caseContext.guided.entrega: string (instruccion de cierre del prompt generado)"
+        - "modelo: NO data-driven aun; el bloque usa el set por defecto del lab"
       emits: [selected_objective, selected_audience, selected_limits, selected_model, generated_prompt]
       ui_pattern: "inputs y seleccion progresivos + textfield read-only generado"
       default_empty_fields: [selected_objective, selected_audience, selected_limits, selected_model, generated_prompt]
@@ -311,9 +314,11 @@ exercise_block_catalog:
         - "El caso fija el modelo por contrato; no hay decision real."
         - "La eleccion es binaria; usa un toggle simple."
       personalization_knobs:
-        - "etiquetas y descripciones de cada slider"
-        - "modelos disponibles (catalogo restringido por caso)"
-        - "set de modelos recomendados por combinacion"
+        # Campos que el bloque lee de caseContext.modelTradeoff (con fallback).
+        # Ver app/exercise-lab/blocks/ModelTradeoffSliders.tsx.
+        - "caseContext.modelTradeoff.sliderLabels.{autonomy,security,cost}: string (etiquetas de los 3 sliders)"
+        - "caseContext.modelTradeoff.prompt: string (framing opcional arriba de los sliders)"
+        - "modelos disponibles y matriz de recomendacion: NO data-driven aun (requiere tocar _shared)"
       emits: [autonomy_priority, security_priority, cost_priority, recommended_model_id, rationale_text]
       ui_pattern: "3 sliders 0-100 en pasos de 10 + modelo recomendado dinamico con BrandMark + textarea ¿por que priorizaste asi?"
       default_empty_fields: [autonomy_priority, security_priority, cost_priority, recommended_model_id, rationale_text]

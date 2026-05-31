@@ -20,6 +20,15 @@ case_assembly_schema:
   status: canonical
   source_route: /case/[case_id]
 
+  # PROCEDENCIA · el caso ensamblado (cases_assembled/*.yaml) es la FUENTE DE
+  # VERDAD. El demo /case-demo se GENERA de este YAML
+  # (scripts/simulador/generate-case-demo.mjs emite app/case-demo/case-data.generated.ts,
+  # wireado a predev/prebuild). No editar los artefactos generados a mano: se
+  # edita el YAML y se regenera. Asi la generacion automatica de casos (formulario
+  # de la empresa -> research del agente -> caso) produce el mismo formato que el
+  # demo. El validador check-assembled-case.mjs rechaza el caso si rompe las
+  # reglas duras de abajo.
+
   # ============================================================
   # REGLAS DURAS
   # Si una regla se rompe, el caso no entra a produccion.

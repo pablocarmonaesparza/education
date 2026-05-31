@@ -134,6 +134,27 @@ Reglas de presentacion:
 
 ### 4. Disenar el caso en 5 secciones
 
+Antes de escribir un solo slide, fija la BIBLIA DE CONTINUIDAD: una lista corta
+de hechos canonicos que TODOS los slides van a respetar. Sin ella el caso se
+construye por partes y se cuelan dos historias o datos que se contradicen (es la
+causa raiz documentada en DIAGNOSTICO_COMUNICACION_v1.md). La biblia incluye, como
+minimo:
+
+- Empresa (una sola) y el rol del participante.
+- Personas con su rol exacto y su funcion (quien asigna, quien revisa, quien
+  recibe). Define desde aqui quien le escribe a quien; el participante nunca se
+  escribe a si mismo ni le vende a su jefa.
+- El destinatario del mensaje que el participante construye (siempre el mismo).
+- La base de datos: sus campos y un set consistente de filas, con fechas
+  ABSOLUTAS (nunca "hace X dias", que termina contradiciendose entre slides).
+- Las promesas que el manager hace al inicio, para cerrarlas TODAS en el caso.
+- La identidad de la herramienta de inteligencia artificial (que hace, que no,
+  si se elige o es instrumento dado) y mantenerla coherente.
+
+Ningun slide inventa un hecho fuera de la biblia. Esto es el lado PROACTIVO de
+lo que el Gate narrativo (paso 9 y CASE_QUALITY_CHECKLIST) verifica de forma
+reactiva: la biblia evita la ruptura, el gate la caza si se coló.
+
 Estructura canonica (las secciones antes llamadas Decision y Respuesta se
 consolidaron en Cierre; el modelo vigente es de 5 secciones, ver
 CASE_ASSEMBLY_SCHEMA.yaml). No confundir con las 5 dimensiones de evaluacion,
