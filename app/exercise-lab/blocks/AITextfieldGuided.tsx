@@ -73,6 +73,32 @@ const GUIDED_GUARDRAILS = [
   "Explicar supuestos y dudas",
 ];
 
+// Forma esperada del bloque dentro de caseContext (para el autor del caso):
+//   caseContext.guided?: {
+//     objetivos?: string[];   // reemplaza GUIDED_OBJECTIVES
+//     audiencias?: string[];  // reemplaza GUIDED_AUDIENCES
+//     limites?: string[];     // reemplaza GUIDED_GUARDRAILS
+//   }
+// Si falta el sub-objeto o algún array está ausente/vacío, se usa la
+// constante de módulo correspondiente como fallback.
+//
+// Lee un array de strings de caseContext[section][field]. Devuelve undefined
+// si caseContext falta, la sección no existe, el campo no es un array de
+// strings, o el array está vacío · así el ?? del caller cae al fallback.
+function readStringArray(
+  caseContext: Record<string, unknown> | undefined,
+  section: string,
+  field: string,
+): string[] | undefined {
+  if (!caseContext) return undefined;
+  const sectionValue = caseContext[section];
+  if (!sectionValue || typeof sectionValue !== "object") return undefined;
+  const fieldValue = (sectionValue as Record<string, unknown>)[field];
+  if (!Array.isArray(fieldValue) || fieldValue.length === 0) return undefined;
+  if (!fieldValue.every((item) => typeof item === "string")) return undefined;
+  return fieldValue as string[];
+}
+
 interface Props extends ExerciseRendererProps<AITextfieldGuidedPayload> {
   objectives?: ReadonlyArray<string>;
   audiences?: ReadonlyArray<string>;
@@ -96,7 +122,19 @@ export function AITextfieldGuided({
   objectives = GUIDED_OBJECTIVES,
   audiences = GUIDED_AUDIENCES,
   guardrails = GUIDED_GUARDRAILS,
+  caseContext,
 }: Props) {
+  // Arrays efectivos · el caso puede pasar su propio contenido por
+  // caseContext.guided; si falta (o un array viene vacío/ausente), cae al
+  // prop correspondiente, que a su vez defaultea a la constante de módulo.
+  // Esto mantiene el exercise-lab standalone idéntico (sin caseContext).
+  const effectiveObjectives =
+    readStringArray(caseContext, "guided", "objetivos") ?? objectives;
+  const effectiveAudiences =
+    readStringArray(caseContext, "guided", "audiencias") ?? audiences;
+  const effectiveGuardrails =
+    readStringArray(caseContext, "guided", "limites") ?? guardrails;
+
   const isProduction = mode === "authenticated" || mode === "field_test";
   const { patch } = useStepPatch(isProduction ? sessionId : null, {
     mode: mode === "field_test" ? "field_test" : "authenticated",
@@ -256,21 +294,21 @@ export function AITextfieldGuided({
           >
             {activeSubsection === "objective" && (
               <GuidedSlideOptions
-                options={[...objectives]}
+                options={[...effectiveObjectives]}
                 value={payload.selected_objective ?? ""}
                 onChange={selectObjective}
               />
             )}
             {activeSubsection === "audience" && (
               <GuidedSlideOptions
-                options={[...audiences]}
+                options={[...effectiveAudiences]}
                 value={payload.selected_audience ?? ""}
                 onChange={selectAudience}
               />
             )}
             {activeSubsection === "limits" && (
               <div className="grid gap-2">
-                {guardrails.map((guardrail) => (
+                {effectiveGuardrails.map((guardrail) => (
                   <GuidedOption
                     key={guardrail}
                     selected={payload.selected_limits.includes(guardrail)}

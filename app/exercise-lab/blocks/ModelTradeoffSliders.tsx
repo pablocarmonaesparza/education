@@ -45,6 +45,42 @@ interface Props extends ExerciseRendererProps<ModelTradeoffSlidersPayload> {
   sessionId?: string | null;
 }
 
+// Etiquetas por defecto de los 3 sliders. Sirven de fallback cuando el caso
+// no pasa caseContext.modelTradeoff.sliderLabels.
+const DEFAULT_AUTONOMY_LABEL = "Autonomía";
+const DEFAULT_SECURITY_LABEL = "Seguridad";
+const DEFAULT_COST_LABEL = "Costo";
+
+// Lee un string no vacío de un objeto plano · devuelve undefined si falta o
+// no es string, para que el ?? del caller caiga al fallback.
+function readString(
+  source: Record<string, unknown> | undefined,
+  field: string,
+): string | undefined {
+  if (!source) return undefined;
+  const value = source[field];
+  return typeof value === "string" && value.length > 0 ? value : undefined;
+}
+
+// Extrae el sub-objeto modelTradeoff de caseContext de forma segura.
+function readModelTradeoff(
+  caseContext: Record<string, unknown> | undefined,
+): {
+  sliderLabels?: Record<string, unknown>;
+  prompt?: string;
+} {
+  if (!caseContext) return {};
+  const value = caseContext.modelTradeoff;
+  if (!value || typeof value !== "object") return {};
+  const mt = value as Record<string, unknown>;
+  const sliderLabels =
+    mt.sliderLabels && typeof mt.sliderLabels === "object"
+      ? (mt.sliderLabels as Record<string, unknown>)
+      : undefined;
+  const prompt = typeof mt.prompt === "string" ? mt.prompt : undefined;
+  return { sliderLabels, prompt };
+}
+
 export function ModelTradeoffSliders({
   payload,
   onChange,
@@ -52,7 +88,19 @@ export function ModelTradeoffSliders({
   slideId = "model_tradeoff_sliders",
   mode = "lab_demo",
   sessionId = null,
+  caseContext,
 }: Props) {
+  // Textos data-driven · el caso puede pasar caseContext.modelTradeoff con
+  // etiquetas de slider y un framing/prompt propios. Todo cae a los valores
+  // por defecto cuando no viene, así el exercise-lab standalone no cambia.
+  const { sliderLabels, prompt: framingPrompt } =
+    readModelTradeoff(caseContext);
+  const autonomyLabel =
+    readString(sliderLabels, "autonomy") ?? DEFAULT_AUTONOMY_LABEL;
+  const securityLabel =
+    readString(sliderLabels, "security") ?? DEFAULT_SECURITY_LABEL;
+  const costLabel = readString(sliderLabels, "cost") ?? DEFAULT_COST_LABEL;
+
   const isProduction = mode === "authenticated" || mode === "field_test";
   const { patch } = useStepPatch(isProduction ? sessionId : null, {
     mode: mode === "field_test" ? "field_test" : "authenticated",
@@ -146,19 +194,26 @@ export function ModelTradeoffSliders({
 
   return (
     <div className="space-y-5">
+      {/* Framing opcional del caso · solo se renderiza si caseContext lo trae.
+          Sin él, el layout queda idéntico al standalone (el shell ya pone
+          eyebrow + title + body). */}
+      {framingPrompt && (
+        <p className="ts-body text-[var(--text-secondary)]">{framingPrompt}</p>
+      )}
+
       <div className="space-y-4 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5">
         <Range10
-          label="Autonomía"
+          label={autonomyLabel}
           value={autonomy ?? 50}
           onChange={(v) => update("intelligence", v)}
         />
         <Range10
-          label="Seguridad"
+          label={securityLabel}
           value={security ?? 50}
           onChange={(v) => update("security", v)}
         />
         <Range10
-          label="Costo"
+          label={costLabel}
           value={cost ?? 50}
           onChange={(v) => update("cost", v)}
         />
