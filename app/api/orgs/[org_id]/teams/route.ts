@@ -9,6 +9,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { seedOrgWithLibrary } from "@/lib/simulador/generated-cases";
 
 export const runtime = "nodejs";
 
@@ -158,10 +159,26 @@ export async function POST(
     );
   }
 
+  // Hook de onboarding: siembra la biblioteca de casos ricos para esta empresa,
+  // para que su equipo tenga casos jugables desde el día uno. No bloquea el
+  // onboarding si falla. La generación bespoke por empresa (en vivo) es el paso
+  // siguiente; esto entrega la biblioteca curada por el motor.
+  let casesSeeded = 0;
+  try {
+    const results = await seedOrgWithLibrary(org_id, team.id, bridgeId);
+    casesSeeded = results.filter((r) => r.id).length;
+  } catch (e) {
+    console.error(
+      "[api/teams] seedOrgWithLibrary falló (no bloquea onboarding):",
+      e,
+    );
+  }
+
   return NextResponse.json({
     id: team.id,
     name: team.name,
     sprint_id: sprint.id,
     sprint_name: sprint.name,
+    cases_seeded: casesSeeded,
   });
 }
