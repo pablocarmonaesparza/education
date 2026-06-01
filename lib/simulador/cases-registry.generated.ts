@@ -1512,5 +1512,744 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
       }
     ],
     "totalSlides": 25
+  },
+  "vertiz_backlog_entregas": {
+    "caseId": "vertiz_backlog_entregas",
+    "version": 1,
+    "meta": {
+      "level": "N1 · Fundamentos",
+      "profile": "Operaciones",
+      "profile_pack": "operations_last_mile",
+      "estimated_minutes": 12,
+      "timer_seconds": 600,
+      "timer_default_on": false,
+      "tools": [
+        "ai",
+        "data",
+        "messaging",
+        "documents"
+      ]
+    },
+    "managerOutcome": {
+      "primary_question": "¿Puede esta persona vaciar un backlog de entregas con excepción usando la inteligencia artificial con criterio, sin auto-reembolsar sin evidencia ni exponer datos del cliente?",
+      "assignment_brief": "Asigna este caso cuando quieras saber si alguien de Operaciones puede ordenar una cola de entregas fallidas (reembolsos, fraude, duplicados, datos del cliente), pedirle a la inteligencia artificial un aviso útil sin filtrar información sensible ni inventar montos, revisar lo que devuelve y decidir si resuelve, pilotea o escala. El resultado te dice si puede cerrar excepciones con criterio o necesita práctica antes de tocar reembolsos reales.",
+      "business_metric": "resolución de excepciones en plazo a 72 horas",
+      "risk_metric": "reembolsos pagados sin evidencia o datos de clientes enviados a la inteligencia artificial",
+      "expected_signal": "distingue cerrar con criterio de vaciar la cola por velocidad",
+      "expected_action": "entrenar",
+      "alternatives": [
+        "pilotar",
+        "pausar"
+      ]
+    },
+    "sections": [
+      {
+        "id": "contexto",
+        "name": "Contexto",
+        "slides": [
+          {
+            "slideId": "contexto-1",
+            "blockId": "case_cover",
+            "title": "Vacía el backlog de entregas, con los casos como llegaron.",
+            "body": "Trabajas en **Vértiz Logística**. Tu jefa te pidió **cerrar las entregas con excepción** de la semana antes del **viernes 5 de junio**. La cola llegó con reclamos sin evidencia, un duplicado, un paquete aún en tránsito y, en varios registros, **datos del cliente** mezclados. Tú decides qué se resuelve, qué le pides a la inteligencia artificial y qué le entregas a tu jefa.",
+            "caseContext": {
+              "meta": {
+                "profile": "Operaciones",
+                "level": "N1 · Fundamentos",
+                "estimatedMinutes": 12,
+                "timerSeconds": 600,
+                "timerDefaultOn": false,
+                "tools": [
+                  {
+                    "kind": "ai",
+                    "label": "Inteligencia artificial"
+                  },
+                  {
+                    "kind": "data",
+                    "label": "Tablas"
+                  },
+                  {
+                    "kind": "messaging",
+                    "label": "Mensajería"
+                  },
+                  {
+                    "kind": "documents",
+                    "label": "Documentos"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "slideId": "contexto-2",
+            "blockId": "reading_message",
+            "title": "Daniela te asigna el cierre del backlog.",
+            "body": "Léelo completo. Lo que pide aquí es lo que vas a entregar al final.",
+            "caseContext": {
+              "message": {
+                "channel": "email",
+                "from": {
+                  "name": "Daniela Quiroga",
+                  "role": "Directora de Operaciones · Vértiz Logística"
+                },
+                "to": {
+                  "name": "Tú",
+                  "role": "Analista de Operaciones"
+                },
+                "timestamp": "Hoy, 9:15",
+                "subject": "Cerramos las excepciones esta semana",
+                "body": "Hola. Esta semana **cerramos las entregas con excepción** y vence el **viernes 5 de junio**. La cola que te paso viene con casos dudosos, así que el primer trabajo es ordenarla y no pagar reembolsos sin sustento. Cuando la tengas, mándame una propuesta con tres cosas: los **casos** que vas a resolver y cómo, el **aviso base** que les llega a los clientes, y las **métricas que vas a monitorear** para saber si lo hicimos bien."
+              }
+            }
+          },
+          {
+            "slideId": "contexto-3",
+            "blockId": "reading_data_table",
+            "title": "La cola de excepciones, como llegó.",
+            "body": "Ocho casos. Mira el **tipo de excepción**, si hay **evidencia** y el **valor del envío** (los montos altos sin prueba son los que duelen).",
+            "caseContext": {
+              "table": {
+                "caption": "Cola de excepciones · 1 de junio de 2026",
+                "columns": [
+                  {
+                    "key": "guia",
+                    "label": "Guía"
+                  },
+                  {
+                    "key": "excepcion",
+                    "label": "Excepción"
+                  },
+                  {
+                    "key": "antiguedad",
+                    "label": "Antigüedad"
+                  },
+                  {
+                    "key": "valor",
+                    "label": "Valor del envío"
+                  },
+                  {
+                    "key": "evidencia",
+                    "label": "Evidencia"
+                  }
+                ],
+                "rows": [
+                  {
+                    "guia": "V-1001",
+                    "excepcion": "Dirección incompleta",
+                    "antiguedad": "1 día",
+                    "valor": "$420",
+                    "evidencia": "foto en sitio"
+                  },
+                  {
+                    "guia": "V-1002",
+                    "excepcion": "Cliente ausente (3 intentos)",
+                    "antiguedad": "4 días",
+                    "valor": "$190",
+                    "evidencia": "registro de intentos"
+                  },
+                  {
+                    "guia": "V-1003",
+                    "excepcion": "Paquete dañado",
+                    "antiguedad": "2 días",
+                    "valor": "$1,250",
+                    "evidencia": "foto del daño"
+                  },
+                  {
+                    "guia": "V-1004",
+                    "excepcion": "Reclamo de robo",
+                    "antiguedad": "5 días",
+                    "valor": "$3,400",
+                    "evidencia": "ninguna"
+                  },
+                  {
+                    "guia": "V-1005",
+                    "excepcion": "Cliente dice no recibido",
+                    "antiguedad": "3 días",
+                    "valor": "$260",
+                    "evidencia": "firma digital en entrega"
+                  },
+                  {
+                    "guia": "V-1006",
+                    "excepcion": "Dirección incompleta",
+                    "antiguedad": "1 día",
+                    "valor": "$420",
+                    "evidencia": "foto en sitio"
+                  },
+                  {
+                    "guia": "V-1007",
+                    "excepcion": "Zona de riesgo, sin intento",
+                    "antiguedad": "6 días",
+                    "valor": "$510",
+                    "evidencia": "alerta de ruta"
+                  },
+                  {
+                    "guia": "V-1008",
+                    "excepcion": "Cliente pide reembolso",
+                    "antiguedad": "1 día",
+                    "valor": "$330",
+                    "evidencia": "paquete en tránsito"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "slideId": "contexto-4",
+            "blockId": "reading_kpi_cards",
+            "title": "Cómo venía la operación el mes pasado.",
+            "body": "Estos son los números base. El de la izquierda es **el que hay que superar**.",
+            "caseContext": {
+              "kpis": [
+                {
+                  "label": "Resolución en plazo (72 h)",
+                  "value": "62%",
+                  "delta": {
+                    "direction": "flat",
+                    "label": "el número a superar"
+                  }
+                },
+                {
+                  "label": "Costo de reembolsos",
+                  "value": "3.1%",
+                  "delta": {
+                    "direction": "flat",
+                    "label": "el número a cuidar"
+                  }
+                },
+                {
+                  "label": "Quejas repetidas",
+                  "value": "2.4%",
+                  "delta": {
+                    "direction": "flat",
+                    "label": "el número a cuidar"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "slideId": "contexto-5",
+            "blockId": "reading_message",
+            "title": "Hugo, de Reembolsos, fija una regla.",
+            "body": "Léelo. Esto pone un límite que no se negocia.",
+            "caseContext": {
+              "message": {
+                "channel": "email",
+                "from": {
+                  "name": "Hugo Reyes",
+                  "role": "Analista de Control de Reembolsos · Vértiz Logística"
+                },
+                "to": {
+                  "name": "Tú",
+                  "role": "Analista de Operaciones"
+                },
+                "timestamp": "Hoy, 9:40",
+                "subject": "Cuidado con los reembolsos de esta cola",
+                "body": "Vi que vas a cerrar las excepciones. Dos cosas que reviso siempre: un reembolso **sin evidencia** no se paga, se escala, sobre todo si el monto es alto. Y la **dirección y el teléfono** del cliente jamás se le pasan a la inteligencia artificial para redactar; con el tipo de caso alcanza. Si algo de eso se va, es un problema serio."
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "datos",
+        "name": "Datos",
+        "slides": [
+          {
+            "slideId": "datos-1",
+            "blockId": "categorize_rows",
+            "title": "Decide qué haces con cada caso.",
+            "body": "Por cada uno: **resolver**, **escalar** si hay duda o monto alto sin prueba, o **rechazar** si todavía no aplica. Recuerda la regla de Hugo.",
+            "caseContext": {
+              "actions": [
+                {
+                  "value": "resolver",
+                  "label": "Resolver"
+                },
+                {
+                  "value": "escalar",
+                  "label": "Escalar"
+                },
+                {
+                  "value": "rechazar",
+                  "label": "Rechazar"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "g3",
+                  "label": "V-1003 · paquete dañado · foto del daño"
+                },
+                {
+                  "id": "g4",
+                  "label": "V-1004 · reclamo de robo $3,400 · sin evidencia"
+                },
+                {
+                  "id": "g6",
+                  "label": "V-1006 · idéntico a V-1001"
+                },
+                {
+                  "id": "g8",
+                  "label": "V-1008 · paquete aún en tránsito"
+                },
+                {
+                  "id": "g2",
+                  "label": "V-1002 · ausente tras 3 intentos · registro"
+                }
+              ]
+            }
+          },
+          {
+            "slideId": "datos-2",
+            "blockId": "categorize_rows",
+            "title": "¿Qué campos puede ver la inteligencia artificial?",
+            "body": "Para cada campo decide: **va al modelo**, **va transformado** o **no va**. La dirección y el monto no se negocian.",
+            "caseContext": {
+              "actions": [
+                {
+                  "value": "va",
+                  "label": "Va al modelo"
+                },
+                {
+                  "value": "transformado",
+                  "label": "Va transformado"
+                },
+                {
+                  "value": "no_va",
+                  "label": "No va"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "c_tipo",
+                  "label": "Tipo de excepción"
+                },
+                {
+                  "id": "c_direccion",
+                  "label": "Dirección del cliente"
+                },
+                {
+                  "id": "c_monto",
+                  "label": "Monto del reembolso"
+                },
+                {
+                  "id": "c_nombre",
+                  "label": "Nombre del cliente"
+                }
+              ]
+            }
+          },
+          {
+            "slideId": "datos-3",
+            "blockId": "model_tradeoff_sliders",
+            "title": "Ajusta el modelo para datos de clientes y dinero.",
+            "body": "Mueve **autonomía**, **seguridad** y **costo** pensando en que hay datos del cliente y reembolsos de por medio. No hay respuesta única, hay criterio.",
+            "caseContext": {
+              "modelTradeoff": {
+                "prompt": "Para una cola con datos de clientes y montos de reembolso, ¿cuánta autonomía le das a la inteligencia artificial, cuánta seguridad exiges y cuánto costo aceptas?",
+                "sliderLabels": {
+                  "autonomy": "Autonomía",
+                  "security": "Seguridad",
+                  "cost": "Costo"
+                }
+              }
+            }
+          },
+          {
+            "slideId": "datos-4",
+            "blockId": "ai_textfield_free",
+            "title": "Escribe el límite de uso de datos.",
+            "body": "En una o dos líneas, dile al **Asistente Vértiz** qué **no** puede usar de esta cola. Esto va a guiar lo que le pidas después.",
+            "caseContext": {
+              "placeholder": "Por ejemplo: no uses la dirección ni el monto del reembolso; trata el nombre de forma genérica."
+            }
+          },
+          {
+            "slideId": "datos-5",
+            "blockId": "reading_attachment",
+            "title": "La política de reembolsos y datos.",
+            "body": "Tres reglas. Las vas a citar más adelante.",
+            "caseContext": {
+              "attachments": [
+                {
+                  "name": "Política de reembolsos y datos · Vértiz Logística",
+                  "kind": "pdf",
+                  "description": "1) Un reembolso sin evidencia se escala, no se paga. 2) Un duplicado se cierra como uno solo. 3) La dirección, el teléfono y el monto nunca van a la inteligencia artificial."
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "ia",
+        "name": "IA",
+        "slides": [
+          {
+            "slideId": "ia-1",
+            "blockId": "reading_passive",
+            "title": "Qué es y qué no es el Asistente Vértiz.",
+            "body": "El **Asistente Vértiz** es la inteligencia artificial aprobada de la empresa. **Redacta** y **ajusta el tono** con lo que le pegas. **No** consulta el sistema de rastreo y **no** envía nada. Puede **inventar números de guía, montos o fechas**, así que todo lo que devuelve hay que validarlo."
+          },
+          {
+            "slideId": "ia-2",
+            "blockId": "ai_textfield_guided",
+            "title": "Arma el pedido al Asistente Vértiz.",
+            "body": "Define **objetivo**, **audiencia** y **límites** del aviso que quieres. Sé claro con lo que no puede usar.",
+            "caseContext": {
+              "guided": {
+                "objetivos": [
+                  "Avisar al cliente que su caso está en revisión, con tono claro y respetuoso.",
+                  "Explicar el siguiente paso sin prometer un reembolso que no está confirmado."
+                ],
+                "audiencias": [
+                  "Clientes con una entrega fallida en revisión.",
+                  "Clientes que esperan respuesta de un reclamo abierto."
+                ],
+                "limites": [
+                  "No menciones ningún monto de reembolso.",
+                  "No incluyas la dirección ni el teléfono del cliente."
+                ]
+              }
+            }
+          },
+          {
+            "slideId": "ia-3",
+            "blockId": "ai_output_review",
+            "title": "Primer borrador del Asistente Vértiz.",
+            "body": "Léelo con cuidado y marca lo que esté mal. Fíjate en **datos sensibles**, **montos inventados** y **tono**.",
+            "caseContext": {
+              "segments": [
+                {
+                  "id": "r1",
+                  "text": "Hola Bruno, vemos que tu paquete a Calle 14 #220 sigue pendiente.",
+                  "flagIfMarked": "dato_sensible"
+                },
+                {
+                  "id": "r2",
+                  "text": "Te confirmamos un reembolso de $3,400 que verás en 24 horas.",
+                  "flagIfMarked": "claim_no_verificado"
+                },
+                {
+                  "id": "r3",
+                  "text": "Resuelve ahora o tu reclamo se cierra para siempre.",
+                  "flagIfMarked": "tono_agresivo"
+                },
+                {
+                  "id": "r4",
+                  "text": "Estamos para ayudarte en lo que necesites.",
+                  "flagIfMarked": "frase_reutilizable"
+                }
+              ]
+            }
+          },
+          {
+            "slideId": "ia-4",
+            "blockId": "ai_textfield_free",
+            "title": "Dile qué corregir.",
+            "body": "Escríbele al **Asistente Vértiz** qué cambiar del borrador anterior. Apunta a lo que marcaste.",
+            "caseContext": {
+              "placeholder": "Por ejemplo: quita la dirección, no confirmes ningún monto y baja el tono de urgencia."
+            }
+          },
+          {
+            "slideId": "ia-5",
+            "blockId": "ai_output_review",
+            "title": "Borrador revisado.",
+            "body": "Revisa de nuevo. Aquí lo importante es que el cambio **refleje tu instrucción** y que ya no haya datos sensibles ni montos.",
+            "caseContext": {
+              "segments": [
+                {
+                  "id": "r5",
+                  "text": "Hola, queríamos avisarte que tu caso de entrega está en revisión.",
+                  "flagIfMarked": "frase_reutilizable"
+                },
+                {
+                  "id": "r6",
+                  "text": "Te contactaremos con el siguiente paso en un máximo de 72 horas.",
+                  "flagIfMarked": "claim_no_verificado"
+                },
+                {
+                  "id": "r7",
+                  "text": "Tu reembolso de $260 ya fue aprobado por el sistema.",
+                  "flagIfMarked": "claim_no_verificado"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "revision",
+        "name": "Revisión",
+        "slides": [
+          {
+            "slideId": "revision-1",
+            "blockId": "ai_output_review",
+            "title": "Caza los montos y cifras que no puedes probar.",
+            "body": "Última pasada de revisión. Marca cualquier **monto** o **número** que no salga de los datos del caso.",
+            "caseContext": {
+              "segments": [
+                {
+                  "id": "v1",
+                  "text": "El 95% de los reclamos se resuelven el mismo día.",
+                  "flagIfMarked": "claim_no_verificado"
+                },
+                {
+                  "id": "v2",
+                  "text": "Tu caso quedó registrado con un número de seguimiento.",
+                  "flagIfMarked": "frase_reutilizable"
+                },
+                {
+                  "id": "v3",
+                  "text": "Somos la transportadora más rápida del país.",
+                  "flagIfMarked": "claim_no_verificado"
+                }
+              ]
+            }
+          },
+          {
+            "slideId": "revision-2",
+            "blockId": "ai_comparison",
+            "title": "Elige el cierre del aviso.",
+            "body": "Cuatro versiones del cierre. Elige la que informa sin prometer de más y justifica en una línea.",
+            "caseContext": {
+              "options": [
+                {
+                  "id": "A",
+                  "title": "Informativo",
+                  "body": "Te contactaremos con el resultado de tu caso en un máximo de 72 horas."
+                },
+                {
+                  "id": "B",
+                  "title": "Resolutivo",
+                  "body": "Tu reembolso será depositado en las próximas 24 horas."
+                },
+                {
+                  "id": "C",
+                  "title": "Formal",
+                  "body": "Su caso fue registrado. Espere respuesta."
+                },
+                {
+                  "id": "D",
+                  "title": "Inmediato",
+                  "body": "Responde hoy o tu reclamo será cancelado."
+                }
+              ]
+            }
+          },
+          {
+            "slideId": "revision-3",
+            "blockId": "reading_message",
+            "title": "Daniela responde con una condición.",
+            "body": "Te escribe por chat antes de cerrar.",
+            "caseContext": {
+              "message": {
+                "channel": "chat",
+                "from": {
+                  "name": "Daniela Quiroga",
+                  "role": "Directora de Operaciones"
+                },
+                "to": {
+                  "name": "Tú",
+                  "role": "Analista de Operaciones"
+                },
+                "timestamp": "Hoy, 11:05",
+                "subject": "Antes de cerrar",
+                "body": "Bien. Antes de cerrar confírmame que escalaste los reclamos sin evidencia, como pidió **Hugo**, y que el aviso al cliente **no promete ningún monto** todavía."
+              }
+            }
+          },
+          {
+            "slideId": "revision-4",
+            "blockId": "categorize_rows",
+            "title": "Checklist del aviso final.",
+            "body": "Por cada parte del aviso: **dejar**, **corregir** o **quitar**.",
+            "caseContext": {
+              "actions": [
+                {
+                  "value": "dejar",
+                  "label": "Dejar"
+                },
+                {
+                  "value": "corregir",
+                  "label": "Corregir"
+                },
+                {
+                  "value": "quitar",
+                  "label": "Quitar"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "k_asunto",
+                  "label": "Asunto: tu caso de entrega está en revisión"
+                },
+                {
+                  "id": "k_saludo",
+                  "label": "Saludo genérico, sin nombre completo"
+                },
+                {
+                  "id": "k_monto",
+                  "label": "Mención de un monto de reembolso"
+                },
+                {
+                  "id": "k_plazo",
+                  "label": "Plazo de respuesta de 72 horas"
+                }
+              ]
+            }
+          },
+          {
+            "slideId": "revision-5",
+            "blockId": "ai_comparison",
+            "title": "Elige la versión final.",
+            "body": "Con el feedback de Daniela, elige el aviso que entregarías. Justifica en una línea.",
+            "caseContext": {
+              "options": [
+                {
+                  "id": "A",
+                  "title": "Cordial",
+                  "body": "Hola, tu caso de entrega está en revisión. Te contactaremos con el resultado en un máximo de 72 horas. Gracias por tu paciencia."
+                },
+                {
+                  "id": "B",
+                  "title": "Resolutivo",
+                  "body": "Hola, tu reembolso ya fue aprobado y llega en 24 horas."
+                },
+                {
+                  "id": "C",
+                  "title": "Personalizado",
+                  "body": "Hola, tu paquete a tu dirección registrada sigue en revisión; te escribimos."
+                },
+                {
+                  "id": "D",
+                  "title": "Insistente",
+                  "body": "Hola, responde hoy o tu reclamo se cierra; es importante."
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "cierre",
+        "name": "Cierre",
+        "slides": [
+          {
+            "slideId": "cierre-1",
+            "blockId": "ai_comparison",
+            "title": "Elige el lote que resuelves primero.",
+            "body": "Cuatro lotes posibles (y uno que no se debe tocar aún). Elige y di en una línea por qué.",
+            "caseContext": {
+              "options": [
+                {
+                  "id": "A",
+                  "title": "Con evidencia",
+                  "body": "Casos con foto o registro como V-1003 y V-1002, agrupados por evidencia adjunta."
+                },
+                {
+                  "id": "B",
+                  "title": "Monto alto en disputa",
+                  "body": "El reclamo de robo de $3,400 que todavía no tiene evidencia adjunta."
+                },
+                {
+                  "id": "C",
+                  "title": "Registro repetido",
+                  "body": "V-1006 entra con la misma guía y el mismo valor que V-1001."
+                },
+                {
+                  "id": "D",
+                  "title": "La cola completa",
+                  "body": "Los ocho casos juntos en un solo envío, sin separarlos por tipo."
+                }
+              ]
+            }
+          },
+          {
+            "slideId": "cierre-2",
+            "blockId": "ai_textfield_free",
+            "title": "Escribe el aviso base.",
+            "body": "Escribe el **aviso base completo** para el lote que elegiste. Sin dirección, sin montos inventados, con el plazo real de 72 horas.",
+            "caseContext": {
+              "placeholder": "Escribe aquí el aviso que recibiría el cliente."
+            }
+          },
+          {
+            "slideId": "cierre-3",
+            "blockId": "categorize_rows",
+            "title": "Define qué métricas vas a monitorear.",
+            "body": "Por cada métrica: **monitorear** o **ignorar**. Estas cierran la promesa a Daniela.",
+            "caseContext": {
+              "actions": [
+                {
+                  "value": "monitorear",
+                  "label": "Monitorear"
+                },
+                {
+                  "value": "ignorar",
+                  "label": "Ignorar"
+                }
+              ],
+              "rows": [
+                {
+                  "id": "m_sla",
+                  "label": "Resolución en plazo a 72 h (superar 62%)"
+                },
+                {
+                  "id": "m_reemb",
+                  "label": "Costo de reembolsos (alarma sobre 3.1%)"
+                },
+                {
+                  "id": "m_quejas",
+                  "label": "Quejas repetidas (cuidar sobre 2.4%)"
+                },
+                {
+                  "id": "m_color",
+                  "label": "Color del botón del aviso"
+                }
+              ]
+            }
+          },
+          {
+            "slideId": "cierre-4",
+            "blockId": "reading_passive",
+            "title": "Vista previa del aviso final.",
+            "body": "Así quedaría el aviso al lote que elegiste, con el **plazo de 72 horas** y sin promesa de monto. Si escalaste bien, aquí no aparece ningún reclamo sin evidencia."
+          },
+          {
+            "slideId": "cierre-5",
+            "blockId": "tradeoff_decision_memo",
+            "title": "Tu decisión, y por qué.",
+            "body": "Es lo último: la decisión que vas a defender ante Daniela, con su costo y su beneficio.",
+            "caseContext": {
+              "decisions": [
+                {
+                  "id": "resolver_todo_hoy",
+                  "title": "Resolver todo hoy",
+                  "detail": "Cerrar los ocho casos hoy. Beneficio: cierras el máximo de casos en plazo. Costo: si pagaste el robo sin prueba o el duplicado, gastas de más y das pie a fraude."
+                },
+                {
+                  "id": "pilotar_lote_claro",
+                  "title": "Resolver el lote claro y escalar el resto",
+                  "detail": "Cerrar los casos con evidencia hoy y escalar los dudosos a Hugo. Beneficio: cierras lo seguro sin pagar de más. Costo: un día más en los dudosos."
+                },
+                {
+                  "id": "pausar_y_evidencia",
+                  "title": "Pausar y pedir evidencia",
+                  "detail": "Detener los reembolsos hasta tener prueba de cada uno. Beneficio: cero pago indebido. Costo: pierdes la ventana de la semana."
+                },
+                {
+                  "id": "escalar_a_finanzas",
+                  "title": "Escalar los montos altos a Reembolsos",
+                  "detail": "Subir el robo y los casos altos a Hugo antes de pagar. Beneficio: respaldo formal. Costo: depende de su tiempo."
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "totalSlides": 25
   }
 };
