@@ -22,7 +22,9 @@ import process from "node:process";
 import yaml from "js-yaml";
 import { callTool } from "./gen/llm/client.mjs";
 
-const JUDGE_INTERNAL = new Set(["hint", "example", "issue", "goodWhen"]);
+// Los campos judge_internal (hint, example, issue, goodWhen) SI los ve el juez
+// (son parte del caso autorado; ahi viven hechos canonicos). Solo se saltan las
+// claves estructurales de abajo.
 const STRUCTURAL = new Set([
   "block_id",
   "slot",

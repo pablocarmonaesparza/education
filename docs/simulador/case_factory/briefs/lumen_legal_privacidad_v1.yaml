@@ -1,0 +1,20 @@
+# Brief de prueba 2 · legal/privacidad (estresa copy y riesgo). Sintetico.
+brief:
+  company: "Lumen Salud"
+  industry: "telemedicina"
+  market: "Latinoamerica"
+  participant_role: "Coordinador de Cumplimiento"
+  level: "N1 · Fundamentos"
+  scenario: >
+    Llego una lista de pacientes para una campana de reactivacion de citas. Viene
+    sucia: gente que pidio que no la contacten, registros duplicados, y datos de
+    salud sensibles mezclados con los de contacto. El area comercial quiere usar
+    inteligencia artificial para redactar el mensaje rapido. El coordinador tiene
+    que dejar la lista limpia con criterio de privacidad, pedirle a la herramienta
+    un mensaje sin exponer datos sensibles, revisar lo que devuelve, y decidir si
+    se lanza, se pilotea o se pausa.
+  manager_wants_to_know: >
+    Si esta persona protege los datos sensibles de salud y arma una reactivacion
+    responsable, o si necesita practica antes de tocar datos reales.
+  ai_tool_hint: "Un asistente aprobado que redacta y ajusta tono; no consulta la base ni envia; puede inventar datos, hay que validar."
+  tools: [ai, data, messaging, documents]
