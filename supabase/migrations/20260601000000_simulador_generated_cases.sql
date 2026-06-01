@@ -40,11 +40,15 @@ alter table simulador.generated_cases enable row level security;
 
 -- Miembros de la org leen SOLO los casos activos (no drafts/archived, que pueden
 -- tener contenido a medio generar o metadata del brief).
+-- drop-if-exists hace la migración idempotente (re-aplicable sin error por
+-- "policy already exists", p. ej. si db push la corre tras un apply manual).
+drop policy if exists "org_members_read_active_generated_cases" on simulador.generated_cases;
 create policy "org_members_read_active_generated_cases" on simulador.generated_cases
   for select using (status = 'active' and simulador.user_in_org(organization_id));
 
 -- El org_admin ve todo (incluidos drafts/archived) y administra. El motor escribe
 -- via service_role, que bypassa RLS.
+drop policy if exists "org_admin_all_generated_cases" on simulador.generated_cases;
 create policy "org_admin_all_generated_cases" on simulador.generated_cases
   for all using (simulador.is_org_admin(organization_id))
             with check (simulador.is_org_admin(organization_id));

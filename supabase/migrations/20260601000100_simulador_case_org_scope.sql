@@ -20,7 +20,10 @@ create index if not exists case_variants_org on simulador.case_variants (organiz
 
 -- Lectura org-aware (denormalizada para evitar subconsultas RLS recursivas):
 -- global (NULL) para cualquier autenticado; bespoke solo para su org.
+-- Se dropea tanto la policy vieja (authenticated_read_*) como la nueva
+-- (read_*_org_aware) antes de crearla: idempotente, re-aplicable sin error.
 drop policy if exists "authenticated_read_case_templates" on simulador.case_templates;
+drop policy if exists "read_case_templates_org_aware" on simulador.case_templates;
 create policy "read_case_templates_org_aware" on simulador.case_templates
   for select using (
     auth.uid() is not null
@@ -28,6 +31,7 @@ create policy "read_case_templates_org_aware" on simulador.case_templates
   );
 
 drop policy if exists "authenticated_read_case_steps" on simulador.case_steps;
+drop policy if exists "read_case_steps_org_aware" on simulador.case_steps;
 create policy "read_case_steps_org_aware" on simulador.case_steps
   for select using (
     auth.uid() is not null
@@ -35,6 +39,7 @@ create policy "read_case_steps_org_aware" on simulador.case_steps
   );
 
 drop policy if exists "authenticated_read_case_variants" on simulador.case_variants;
+drop policy if exists "read_case_variants_org_aware" on simulador.case_variants;
 create policy "read_case_variants_org_aware" on simulador.case_variants
   for select using (
     auth.uid() is not null
