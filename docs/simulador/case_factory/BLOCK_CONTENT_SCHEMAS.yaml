@@ -29,6 +29,11 @@ block_content_schemas:
       nested:
         meta:
           required_keys: [profile, level]
+          # tools es opcional; si viene, DEBE ser lista de {kind,label}. Si es
+          # un string, CaseCover hace tools.map() y crashea la portada.
+          min_array: { tools: 1 }
+          element_required:
+            tools: [kind, label]
 
     reading_passive:
       required_keys: [] # title + body en el slide; content opcional.
@@ -107,6 +112,8 @@ block_content_schemas:
       element_required:
         rows: [id, label] # hint/example son judge_internal (se remueven)
         actions: [value, label]
+      element_unique:
+        rows: [id] # ids únicos · si no, key duplicada + toggle compartido
 
     ai_output_review:
       required_keys: [segments]
@@ -120,6 +127,8 @@ block_content_schemas:
         # flagIfMarked debe ser un flag válido del payload (ReviewFlag en
         # lib/simulador/exercise-registry); un flag inventado da 422 en runtime.
         segments: { flagIfMarked: [claim_no_verificado, tono_agresivo, dato_sensible, frase_reutilizable] }
+      element_unique:
+        segments: [id] # ids únicos
 
     ai_comparison:
       required_keys: [options]

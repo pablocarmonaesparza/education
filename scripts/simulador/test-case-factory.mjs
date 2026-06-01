@@ -92,6 +92,12 @@ const FIXTURES = [
     mutate: (ca) => { slide(ca, "contexto", 2).content.message.from.name = {}; } },
   { name: "content_label_not_string", expect: "assembled", cat: "contenido",
     mutate: (ca) => { slide(ca, "datos", 1).content.rows[0].label = 123; } },
+  { name: "content_tools_string", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "contexto", 1).content.meta.tools = "ai, data, mensajería"; } },
+  { name: "content_dup_row_id", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { const r = slide(ca, "datos", 1).content.rows; r[1].id = r[0].id; } },
+  { name: "content_body_not_string", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "contexto", 2).body = 123; } },
 
   // ---- Copy (los caza lint-case-copy) ----
   { name: "copy_emdash", expect: "copy", cat: "copy",

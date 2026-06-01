@@ -311,6 +311,14 @@ for (const fullPath of targets) {
       // bloque (required/forbidden/conteos/tipos/elementos) y se prohíben los
       // campos de payload del participante (prefill).
       const loc = `${id}/${sec.id}/slot${slide.slot}`;
+      check(
+        slide.title === undefined || typeof slide.title === "string",
+        `${loc}: title debe ser un string`,
+      );
+      check(
+        slide.body === undefined || typeof slide.body === "string",
+        `${loc}: body debe ser un string`,
+      );
       const cobj =
         slide.content &&
         typeof slide.content === "object" &&
