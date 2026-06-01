@@ -101,4 +101,29 @@ modelo, decisión humana) para auditar y medir drift.
 - `docs/simulador/case_factory/CASE_NARRATIVE_JUDGE.md`
 - `scripts/simulador/check-assembled-case.mjs` (+ validación de contenido, acepta ruta)
 - `scripts/simulador/lint-case-copy.mjs`
-- `scripts/simulador/test-case-factory.mjs`
+- `scripts/simulador/test-case-factory.mjs` (34 fixtures rotos)
+
+## Endurecimiento del validador (lo que costó que fuera confiable)
+
+El validador pasó por 4 rondas de Codex CLI + 1 pase adversarial con subagente
+(el fallback de Ralph Wiggum, porque la auth de Codex CLI se degradó a mitad y
+empezó a colgarse). Cada ronda cazó falsos PASS materiales (un caso que pasaba
+el gate pero rompía en runtime). Todos cerrados, cada uno con su fixture:
+tipos forzados, campos por elemento, enums (flagIfMarked daba 422), prefill
+completo, not_data_driven, required escalares como string (name.split crasheaba),
+meta.tools como lista (tools.map crasheaba la portada), ids únicos. La lección:
+el gate no vale si da falsa confianza; hay que probarlo contra casos rotos hasta
+que de verdad falle donde debe.
+
+## Backlog para Codex (de las reviews de F0)
+
+- **Drift del catálogo**: `default_empty_fields` en EXERCISE_BLOCK_CATALOG no
+  coincide con los nombres reales del payload (dice `decision_choice`, el payload
+  es `decision`; `chosen_output` vs `selected_output`). El validador lo compensa
+  con `forbidden_keys` explícitos, pero el catálogo debería corregirse (regenera
+  exercise-blocks).
+- **Wirear workflow_builder y dashboard_pivot** a `caseContext` (hoy
+  `not_data_driven`, el validador los rechaza en casos). Igual que se hizo con
+  ai_textfield_guided y model_tradeoff_sliders.
+- **Hardening teórico de bajo impacto** (no rompen runtime, los toleró el render):
+  enum de `kpi.delta.direction`, validación de tipo de celdas de tabla. Para F1.
