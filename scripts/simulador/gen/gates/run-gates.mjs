@@ -1,6 +1,6 @@
-// Corre los gates deterministas sobre un YAML de caso ensamblado y devuelve un
-// resultado estructurado. Bloque A: por exit code. Bloque B agrega parsing de
-// findings (--json) para la reparacion por slide.
+// Corre los gates sobre un YAML de caso y devuelve findings ESTRUCTURADOS para
+// la reparacion por slide. Orden barato -> caro: deterministas primero; el juez
+// narrativo (LLM) solo se corre sobre un caso ya estructuralmente valido.
 
 import { execFileSync } from "node:child_process";
 import path from "node:path";
@@ -8,42 +8,106 @@ import process from "node:process";
 
 const ROOT = process.cwd();
 
-function runOne(script, file, extraArgs = []) {
+function runJsonGate(script, file, extraArgs = []) {
   try {
     const stdout = execFileSync(
       "node",
-      [path.join("scripts/simulador", script), file, ...extraArgs],
-      { cwd: ROOT, stdio: ["ignore", "pipe", "pipe"], encoding: "utf8" },
+      [path.join("scripts/simulador", script), file, "--json", ...extraArgs],
+      { cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
     );
-    return { pass: true, stdout, stderr: "" };
+    return { pass: true, findings: safeParse(stdout) };
   } catch (err) {
-    return {
-      pass: false,
-      stdout: err.stdout?.toString?.() ?? "",
-      stderr: err.stderr?.toString?.() ?? String(err.message ?? err),
-    };
+    return { pass: false, findings: safeParse(err.stdout?.toString?.() ?? "") };
   }
 }
 
-/**
- * @param {string} yamlPath
- * @param {{structureOnly?:boolean}} [opts]
- */
+function safeParse(s) {
+  try {
+    return JSON.parse(s || "[]");
+  } catch {
+    return [];
+  }
+}
+
 export function runDeterministicGates(yamlPath, opts = {}) {
-  const assembledArgs = opts.structureOnly ? ["--structure-only"] : [];
-  const assembled = runOne("check-assembled-case.mjs", yamlPath, assembledArgs);
-  const copy = runOne("lint-case-copy.mjs", yamlPath);
+  const assembled = runJsonGate(
+    "check-assembled-case.mjs",
+    yamlPath,
+    opts.structureOnly ? ["--structure-only"] : [],
+  );
+  const copy = runJsonGate("lint-case-copy.mjs", yamlPath);
   return {
     pass: assembled.pass && copy.pass,
+    findings: [...assembled.findings, ...copy.findings],
     assembled,
     copy,
   };
 }
 
-export function summarizeGates(result) {
-  const parts = [
-    `assembled=${result.assembled.pass ? "PASS" : "FAIL"}`,
-    `copy=${result.copy.pass ? "PASS" : "FAIL"}`,
+function parseSlideRef(ref) {
+  const m = String(ref ?? "").match(/([a-z]+)\/slot\s*(\d+)/i);
+  return m ? { section: m[1], slot: Number(m[2]) } : { section: null, slot: null };
+}
+
+export function runNarrativeJudge(yamlPath, biblePath, opts = {}) {
+  const args = [
+    path.join("scripts/simulador", "judge-narrative.mjs"),
+    yamlPath,
+    "--json",
+    "--runs",
+    String(opts.runs ?? 2),
   ];
-  return parts.join(" · ");
+  if (biblePath) args.push("--bible", biblePath);
+  let stdout;
+  let pass;
+  try {
+    stdout = execFileSync("node", args, {
+      cwd: ROOT,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+      maxBuffer: 16 * 1024 * 1024,
+    });
+    pass = true;
+  } catch (err) {
+    stdout = err.stdout?.toString?.() ?? "";
+    pass = false;
+  }
+  const results = safeParse(stdout);
+  const findings = [];
+  for (const r of results) {
+    for (const f of r.grounded ?? []) {
+      const { section, slot } = parseSlideRef(f.slide);
+      findings.push({
+        gate: "narrative",
+        judge: r.judge,
+        type: f.type,
+        section,
+        slot,
+        evidence: f.evidence,
+        fix: f.fix,
+        message: `${f.type} @ ${f.slide}: ${f.evidence ?? ""}`,
+      });
+    }
+  }
+  return { pass, findings };
+}
+
+// Agrupa findings por "<section>/<slot>" para reparar slide por slide. Los que no
+// apuntan a un slide concreto van bajo "_global".
+export function groupFindingsBySlide(findings) {
+  const groups = {};
+  for (const f of findings) {
+    const key = f.section && f.slot ? `${f.section}/${f.slot}` : "_global";
+    (groups[key] ??= []).push(f);
+  }
+  return groups;
+}
+
+export function summarizeFindings(findings) {
+  if (findings.length === 0) return "sin findings";
+  const byGate = {};
+  for (const f of findings) byGate[f.gate] = (byGate[f.gate] ?? 0) + 1;
+  return Object.entries(byGate)
+    .map(([g, n]) => `${g}:${n}`)
+    .join(" · ");
 }

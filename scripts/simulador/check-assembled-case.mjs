@@ -211,7 +211,12 @@ function levelToken(metaLevel) {
 // ---- Casos ensamblados ----
 // Sin argumento: valida todos los de cases_assembled/. Con argumento (ruta a un
 // .yaml): valida solo ese archivo · lo usa el test de fixtures rotos.
-const argPath = process.argv[2];
+// Flags (aditivos, no cambian exit codes): --json emite findings estructurados a
+// stdout; --structure-only salta la validacion de content (dry-run del blueprint).
+const rawArgs = process.argv.slice(2);
+const jsonMode = rawArgs.includes("--json");
+const structureOnly = rawArgs.includes("--structure-only");
+const argPath = rawArgs.find((a) => !a.startsWith("--"));
 const targets = argPath
   ? [argPath]
   : fs.existsSync(CASES_DIR)
@@ -331,18 +336,20 @@ for (const fullPath of targets) {
           `${loc}: "${bid}" content debe ser un objeto`,
         );
       }
-      if (CONTENT_SCHEMAS[bid]?.not_data_driven) {
-        check(
-          false,
-          `${loc}: "${bid}" no es data-driven todavía (renderiza defaults hardcodeados); no usar en casos hasta wirearlo a caseContext`,
-        );
-      }
-      validateContent(loc, bid, cobj, CONTENT_SCHEMAS[bid]);
-      for (const f of emptyFieldsById[bid] ?? []) {
-        check(
-          cobj[f] === undefined,
-          `${loc}: "${bid}" content trae "${f}" (campo de respuesta del participante, prefill)`,
-        );
+      if (!structureOnly) {
+        if (CONTENT_SCHEMAS[bid]?.not_data_driven) {
+          check(
+            false,
+            `${loc}: "${bid}" no es data-driven todavía (renderiza defaults hardcodeados); no usar en casos hasta wirearlo a caseContext`,
+          );
+        }
+        validateContent(loc, bid, cobj, CONTENT_SCHEMAS[bid]);
+        for (const f of emptyFieldsById[bid] ?? []) {
+          check(
+            cobj[f] === undefined,
+            `${loc}: "${bid}" content trae "${f}" (campo de respuesta del participante, prefill)`,
+          );
+        }
       }
     }
 
@@ -387,6 +394,28 @@ for (const fullPath of targets) {
       `${id}: ratio pasivos ${(passiveRatio * 100).toFixed(0)}% (${passive}/${TOTAL_SLIDES}) por encima del maximo ${(PASSIVE_MAX * 100).toFixed(0)}%`,
     );
   }
+}
+
+// Parsea un mensaje "<id>/<seccion>/slot<N>: "<bid>" <criterio>" a finding.
+function parseIssue(msg) {
+  const m = String(msg).match(
+    /^([a-z0-9_]+)(?:\/([a-z]+)(?:\/slot(\d+))?)?:\s*(?:"([^"]+)"\s*)?(.*)$/i,
+  );
+  if (!m) return { gate: "assembled", section: null, slot: null, block_id: null, message: msg };
+  return {
+    gate: "assembled",
+    case_id: m[1],
+    section: m[2] ?? null,
+    slot: m[3] ? Number(m[3]) : null,
+    block_id: m[4] ?? null,
+    criterion: (m[5] ?? "").trim(),
+    message: msg,
+  };
+}
+
+if (jsonMode) {
+  console.log(JSON.stringify(issues.map(parseIssue)));
+  process.exit(issues.length > 0 ? 1 : 0);
 }
 
 if (issues.length > 0) {

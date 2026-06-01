@@ -78,7 +78,9 @@ function walk(node, where) {
   }
 }
 
-const argPath = process.argv[2];
+const rawArgs = process.argv.slice(2);
+const jsonMode = rawArgs.includes("--json");
+const argPath = rawArgs.find((a) => !a.startsWith("--"));
 const targets = argPath
   ? [argPath]
   : fs.existsSync(CASES_DIR)
@@ -107,6 +109,21 @@ for (const fullPath of targets) {
   if (ca.manager_outcome?.assignment_brief) {
     checkString(String(ca.manager_outcome.assignment_brief), `${id}/assignment_brief`);
   }
+}
+
+function parseIssue(msg) {
+  const m = String(msg).match(/^([a-z0-9_]+)\/([a-z]+)\/slot(\d+)/i);
+  return {
+    gate: "copy",
+    section: m?.[2] ?? null,
+    slot: m?.[3] ? Number(m[3]) : null,
+    message: String(msg),
+  };
+}
+
+if (jsonMode) {
+  console.log(JSON.stringify(issues.map(parseIssue)));
+  process.exit(issues.length > 0 ? 1 : 0);
 }
 
 if (issues.length > 0) {
