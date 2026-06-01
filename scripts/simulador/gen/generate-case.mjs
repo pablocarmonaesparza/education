@@ -18,6 +18,7 @@ import {
   summarizeFindings,
 } from "./gates/run-gates.mjs";
 import { repairSlide, autofixCopy } from "./steps/repair-slide.mjs";
+import { toPlayable } from "./playable.mjs";
 import yaml from "js-yaml";
 
 const ROOT = process.cwd();
@@ -98,6 +99,11 @@ for (let attempt = 1; ; attempt++) {
 
   if (passed) {
     fs.writeFileSync(path.join(runDir, "final.yaml"), toYaml({ case_assembly: ca }));
+    // PlayableCase en JSON, para que el servidor lo lea sin parsear YAML.
+    fs.writeFileSync(
+      path.join(runDir, "final.playable.json"),
+      JSON.stringify(toPlayable(ca), null, 2),
+    );
     break;
   }
   if (attempt >= maxAttempts) {
