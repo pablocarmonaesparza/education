@@ -88,6 +88,10 @@ const FIXTURES = [
     mutate: (ca) => { slide(ca, "revision", 2).content.options[1].id = "A"; } },
   { name: "content_image_wrong_shape", expect: "assembled", cat: "contenido",
     mutate: (ca) => { const s = slide(ca, "contexto", 3); s.block_id = "reading_image"; s.content = { src: "/x.png", alt: "x" }; } },
+  { name: "content_name_not_string", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "contexto", 2).content.message.from.name = {}; } },
+  { name: "content_label_not_string", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "datos", 1).content.rows[0].label = 123; } },
 
   // ---- Copy (los caza lint-case-copy) ----
   { name: "copy_emdash", expect: "copy", cat: "copy",

@@ -87,8 +87,21 @@ function nonEmpty(v) {
 function validateContent(loc, bid, content, blockSchema) {
   if (!blockSchema) return;
   const c = content ?? {};
+  const objectKeys = new Set(Object.keys(blockSchema.nested ?? {}));
+  const arrayKeys = new Set([
+    ...Object.keys(blockSchema.min_array ?? {}),
+    ...Object.keys(blockSchema.exact_array ?? {}),
+  ]);
   for (const key of blockSchema.required_keys ?? []) {
     check(nonEmpty(c[key]), `${loc}: "${bid}" content requiere "${key}"`);
+    // Un required que no es objeto (nested) ni array debe ser string escalar ·
+    // el renderer lo usa como string (ej. name.split() crashea con un objeto).
+    if (c[key] !== undefined && !objectKeys.has(key) && !arrayKeys.has(key)) {
+      check(
+        typeof c[key] === "string",
+        `${loc}: "${bid}" content.${key} debe ser un string`,
+      );
+    }
   }
   for (const key of blockSchema.forbidden_keys ?? []) {
     check(
@@ -136,6 +149,12 @@ function validateContent(loc, bid, content, blockSchema) {
         }
         for (const f of fields) {
           check(nonEmpty(el[f]), `${loc}: "${bid}" content.${arrayKey}[${i}] sin "${f}"`);
+          if (el[f] !== undefined) {
+            check(
+              typeof el[f] === "string",
+              `${loc}: "${bid}" content.${arrayKey}[${i}].${f} debe ser un string`,
+            );
+          }
         }
       });
     }
