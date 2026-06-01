@@ -70,15 +70,36 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Resolver case_template (version activa más alta) + primary variant.
-  const { data: caseTemplate } = await admin
+  // Orgs del viewer. Las resolvemos ANTES de elegir el template para scopearlo
+  // (globales + sus orgs) en la misma query: así un slug bespoke de OTRA org no
+  // se encuentra (404) en vez de filtrar su existencia con un 403, y nunca gana
+  // por versión más alta sobre un global/propio accesible. El admin client
+  // bypassa RLS, por eso el scope es explícito.
+  const { data: viewerOrgs } = await admin
+    .schema("simulador")
+    .from("organization_memberships")
+    .select("organization_id")
+    .eq("user_id", simUser.id);
+  const viewerOrgIds = (viewerOrgs ?? [])
+    .map((r) => r.organization_id as string)
+    .filter(Boolean);
+
+  // Resolver case_template accesible (global o de una org del viewer), versión
+  // activa más alta, + primary variant.
+  let templateQuery = admin
     .schema("simulador")
     .from("case_templates")
     .select(
       "id, slug, version, title, difficulty, duration_estimate_min, rubric_id, level_primary, career_key, organization_id",
     )
     .eq("slug", caseSlug)
-    .eq("status", "active")
+    .eq("status", "active");
+  templateQuery = viewerOrgIds.length
+    ? templateQuery.or(
+        `organization_id.is.null,organization_id.in.(${viewerOrgIds.join(",")})`,
+      )
+    : templateQuery.is("organization_id", null);
+  const { data: caseTemplate } = await templateQuery
     .order("version", { ascending: false })
     .limit(1)
     .maybeSingle();
@@ -90,24 +111,10 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Aislamiento por empresa: un caso bespoke (organization_id set) solo lo puede
-  // iniciar un miembro de esa org. Los casos globales (null) son para todos. El
-  // admin client bypassa RLS, así que el check es explícito aquí.
-  if (caseTemplate.organization_id) {
-    const { data: orgMember } = await admin
-      .schema("simulador")
-      .from("organization_memberships")
-      .select("user_id")
-      .eq("organization_id", caseTemplate.organization_id)
-      .eq("user_id", simUser.id)
-      .maybeSingle();
-    if (!orgMember) {
-      return NextResponse.json(
-        { error: "No tienes acceso a este caso." },
-        { status: 403 },
-      );
-    }
-  }
+  // Aislamiento por empresa: ya garantizado arriba. El template resuelto es
+  // global (organization_id null) o de una org del viewer, porque la query lo
+  // scopeó a `viewerOrgIds`. Un caso bespoke de otra empresa simplemente no se
+  // encuentra (404), sin oráculo de existencia.
 
   const { data: variant } = await admin
     .schema("simulador")
@@ -157,30 +164,37 @@ export async function POST(req: NextRequest) {
   // ============================================================================
   // Resolver team del user (RLS-safe: solo lee su propia membership).
   // ============================================================================
-  const { data: teamMembership } = await admin
+  // Si el caso es bespoke (org-scoped), el sprint/assignment/session deben colgar
+  // de un team de ESA empresa, no del primer team del user (que podría ser de otra
+  // org si es multi-org). Filtramos la membership por la org del caso vía join
+  // inner a teams. Para casos globales (null) se conserva el comportamiento previo.
+  const orgScope = (caseTemplate.organization_id as string | null) ?? null;
+
+  let membershipQuery = admin
     .schema("simulador")
     .from("team_memberships")
-    .select("team_id")
-    .eq("user_id", simUser.id)
-    .limit(1)
-    .maybeSingle();
+    .select("team_id, teams!inner(id, organization_id)")
+    .eq("user_id", simUser.id);
+  if (orgScope) {
+    membershipQuery = membershipQuery.eq("teams.organization_id", orgScope);
+  }
+  const { data: membershipRow } = await membershipQuery.limit(1).maybeSingle();
 
-  if (!teamMembership) {
+  if (!membershipRow) {
     return NextResponse.json(
       {
-        error:
-          "No estás asignado a ningún equipo. Pide a tu admin que te invite a un team.",
+        error: orgScope
+          ? "No perteneces a un equipo de la empresa de este caso. Pide a tu admin que te invite."
+          : "No estás asignado a ningún equipo. Pide a tu admin que te invite a un team.",
       },
       { status: 400 },
     );
   }
 
-  const { data: team } = await admin
-    .schema("simulador")
-    .from("teams")
-    .select("id, organization_id")
-    .eq("id", teamMembership.team_id)
-    .single();
+  const teamRel = (membershipRow as { teams: unknown }).teams;
+  const team = (Array.isArray(teamRel) ? teamRel[0] : teamRel) as
+    | { id: string; organization_id: string }
+    | undefined;
 
   if (!team) {
     return NextResponse.json({ error: "Team no encontrado." }, { status: 500 });

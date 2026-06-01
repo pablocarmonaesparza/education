@@ -171,6 +171,7 @@ export async function GET() {
   const availableCases = await loadAvailableCases(
     admin,
     (sprint.sprint_package_id as string | null) ?? null,
+    (team.organization_id as string | null) ?? null,
   );
 
   // Members del team que aparecen en el dashboard.
@@ -444,13 +445,14 @@ function emptyAggregate() {
 async function loadAvailableCases(
   admin: ReturnType<typeof createAdminClient>,
   sprintPackageId: string | null,
+  orgId: string | null,
 ): Promise<AvailableCase[]> {
   if (sprintPackageId) {
     const { data: packageRows } = await admin
       .schema("simulador")
       .from("sprint_package_cases")
       .select(
-        "display_order, status, case_template:case_templates(slug, title, difficulty, duration_estimate_min, status)",
+        "display_order, status, case_template:case_templates(slug, title, difficulty, duration_estimate_min, status, organization_id)",
       )
       .eq("sprint_package_id", sprintPackageId)
       .eq("status", "ready")
@@ -462,6 +464,11 @@ async function loadAvailableCases(
           ? row.case_template[0]
           : row.case_template;
         if (!template || template.status !== "active") return null;
+        // Defensa en profundidad: el admin client bypassa RLS. Si un
+        // sprint_package_cases apuntara a un template bespoke de OTRA org, no
+        // filtramos su metadata: solo globales (null) o de la org del viewer.
+        if (template.organization_id && template.organization_id !== orgId)
+          return null;
         return {
           slug: String(template.slug),
           title: String(template.title),
@@ -475,12 +482,19 @@ async function loadAvailableCases(
     if (cases.length > 0) return cases;
   }
 
-  const { data: templates } = await admin
+  // Scope por org: casos globales (organization_id null) + los bespoke de ESTA
+  // empresa. Nunca los bespoke de otra (el admin client bypassa RLS).
+  let templatesQuery = admin
     .schema("simulador")
     .from("case_templates")
-    .select("slug, title, difficulty, duration_estimate_min")
-    .eq("status", "active")
-    .order("updated_at", { ascending: false });
+    .select("slug, title, difficulty, duration_estimate_min, organization_id")
+    .eq("status", "active");
+  templatesQuery = orgId
+    ? templatesQuery.or(`organization_id.is.null,organization_id.eq.${orgId}`)
+    : templatesQuery.is("organization_id", null);
+  const { data: templates } = await templatesQuery.order("updated_at", {
+    ascending: false,
+  });
 
   return (templates ?? []).map((template) => ({
     slug: String(template.slug),
