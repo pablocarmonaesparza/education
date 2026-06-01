@@ -17,7 +17,7 @@
  * caso se siembre (Fase 2), la misma pantalla persiste y evalúa.
  */
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
 import { isBlockComplete } from "@/lib/simulador/exercise-completion";
@@ -97,6 +97,23 @@ export function RuntimeExperienceV2({
   const [idx, setIdx] = useState(0);
   const [payloads, setPayloads] = useState<Record<string, ExerciseResponsePayload>>({});
   const [completing, setCompleting] = useState(false);
+
+  // Al reanudar una sesión existente, hidrata las respuestas previas (indexadas
+  // por step_key = slideId) para no reentrar en blanco. Solo si aún no hay
+  // respuestas locales.
+  useEffect(() => {
+    if (
+      session.status === "ready" &&
+      session.responses &&
+      Object.keys(session.responses).length > 0
+    ) {
+      setPayloads((prev) =>
+        Object.keys(prev).length > 0
+          ? prev
+          : (session.responses as Record<string, ExerciseResponsePayload>),
+      );
+    }
+  }, [session.status, session.responses]);
 
   const slide = flat[idx];
   const currentPayload = payloads[slide?.slideId ?? ""];
