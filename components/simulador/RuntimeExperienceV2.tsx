@@ -17,7 +17,7 @@
  * caso se siembre (Fase 2), la misma pantalla persiste y evalúa.
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
 import { isBlockComplete } from "@/lib/simulador/exercise-completion";
@@ -66,16 +66,24 @@ function renderBody(body: string) {
 export function RuntimeExperienceV2({
   playableCase,
   sessionSlug,
+  previewOnly = false,
   mode = "authenticated",
 }: {
   playableCase: PlayableCase;
   /** Slug org-scoped del case_template sembrado; con él la sesión persiste y
    *  evalúa. Sin él, useSession no resuelve y corre en modo preview. */
   sessionSlug?: string;
+  /** Si true, NO abre sesión productiva: corre puramente en preview (local). Es
+   *  el contrato explícito para casos bespoke aún no integrados al modelo de
+   *  sesión org-scoped (evita el intento fallido a /api/sessions). */
+  previewOnly?: boolean;
   mode?: "authenticated" | "field_test";
 }) {
   const router = useRouter();
-  const session = useSession(sessionSlug ?? playableCase.caseId, { mode });
+  const session = useSession(
+    previewOnly ? null : (sessionSlug ?? playableCase.caseId),
+    { mode },
+  );
   const { patch, flush } = useStepPatch(session.sessionId, { mode });
 
   const flat = useMemo<FlatSlide[]>(
@@ -97,23 +105,6 @@ export function RuntimeExperienceV2({
   const [idx, setIdx] = useState(0);
   const [payloads, setPayloads] = useState<Record<string, ExerciseResponsePayload>>({});
   const [completing, setCompleting] = useState(false);
-
-  // Al reanudar una sesión existente, hidrata las respuestas previas (indexadas
-  // por step_key = slideId) para no reentrar en blanco. Solo si aún no hay
-  // respuestas locales.
-  useEffect(() => {
-    if (
-      session.status === "ready" &&
-      session.responses &&
-      Object.keys(session.responses).length > 0
-    ) {
-      setPayloads((prev) =>
-        Object.keys(prev).length > 0
-          ? prev
-          : (session.responses as Record<string, ExerciseResponsePayload>),
-      );
-    }
-  }, [session.status, session.responses]);
 
   const slide = flat[idx];
   const currentPayload = payloads[slide?.slideId ?? ""];

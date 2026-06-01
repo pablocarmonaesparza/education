@@ -27,6 +27,12 @@ export default async function PlayCasePage({
   if (!playableCase) notFound();
   // Se juega en modo preview seguro (el caso bespoke vive aislado en
   // generated_cases por empresa). La evaluación productiva (sesión org-scoped)
-  // es el cambio deliberado siguiente.
-  return <RuntimeExperienceV2 playableCase={playableCase} mode="authenticated" />;
+  // es el cambio deliberado siguiente; hasta entonces, previewOnly explícito.
+  return (
+    <RuntimeExperienceV2
+      playableCase={playableCase}
+      previewOnly
+      mode="authenticated"
+    />
+  );
 }
