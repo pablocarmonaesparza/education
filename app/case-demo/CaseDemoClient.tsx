@@ -26,7 +26,7 @@ import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated"
 import type { ExerciseResponsePayload } from "@/lib/simulador/exercise-registry";
 import { isBlockComplete } from "@/lib/simulador/exercise-completion";
 import { SlideBody } from "../exercise-lab/_shared/SlideBody";
-import { SLIDES, type Slide } from "./case-data.generated";
+import { SLIDES, CASE_ID, type Slide } from "./case-data.generated";
 
 // ============================================================
 // SECCIONES (5 obligatorias)
@@ -531,9 +531,50 @@ interface ReportSnapshot {
  *   libre (rationale_text, leader_takeaway, memo), o referencia al
  *   slide cuando es selección.
  */
+// El scoring detallado de abajo está calibrado SOLO para el caso de referencia
+// (Aurora Retail). Un caso GENERADO por el motor tiene otros ids de slide/fila,
+// así que ese scoring no aplica. En vez de mostrar bandas falsas (que dirían "no
+// completó X" sobre cosas que no existen), un caso generado recibe un reporte
+// honesto y genérico. La evaluación real por dimensión la hace el juez en
+// producción (lib/simulador/judge). Hacer este reporte data-driven es F1.5.
+const GOLDEN_CASE_ID = "marketing_dirty_data_relaunch";
+
+function genericSnapshot(
+  payloads: Record<string, ExerciseResponsePayload>,
+): ReportSnapshot {
+  const answered = Object.keys(payloads).length;
+  const LABELS: Record<string, string> = {
+    contexto: "Contexto",
+    privacidad: "Privacidad",
+    validacion: "Validación",
+    juicio: "Juicio",
+    decision: "Decisión",
+  };
+  const dimensions: DimensionScore[] = Object.entries(LABELS).map(
+    ([id, label]) => ({
+      id,
+      label,
+      band: "medio" as Band,
+      metric: "La evaluación por dimensión la realiza el juez en producción.",
+    }),
+  );
+  return {
+    recommendation: {
+      action: "pilotar",
+      title: "Caso generado automáticamente",
+      oneLiner: `Recorriste ${answered} ejercicios. El reporte detallado solo está calibrado para el caso de referencia; en producción la evaluación la hace el juez.`,
+    },
+    dimensions,
+    riskEvents: [],
+  };
+}
+
 function buildReportSnapshot(
   payloads: Record<string, ExerciseResponsePayload>,
 ): ReportSnapshot {
+  // Caso generado (no es el golden): reporte honesto, sin bandas inventadas.
+  if (CASE_ID !== GOLDEN_CASE_ID) return genericSnapshot(payloads);
+
   const dimensions: DimensionScore[] = [];
   const riskEvents: RiskEvent[] = [];
 

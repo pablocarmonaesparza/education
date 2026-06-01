@@ -19,10 +19,13 @@ import process from "node:process";
 import yaml from "js-yaml";
 
 const ROOT = process.cwd();
-const SOURCE = path.join(
+const DEFAULT_SOURCE = path.join(
   ROOT,
   "docs/simulador/contrato_v0/cases_assembled/marketing_dirty_data_relaunch_v1.yaml",
 );
+// argv[2] opcional: ruta a otro YAML a renderizar (ej. un caso generado). Sin
+// argumento usa el golden, para que predev/prebuild sigan igual.
+const SOURCE = process.argv[2] ? path.resolve(process.argv[2]) : DEFAULT_SOURCE;
 const OUTPUT = path.join(ROOT, "app/case-demo/case-data.generated.ts");
 
 const ca = yaml.load(fs.readFileSync(SOURCE, "utf8"))?.case_assembly;
