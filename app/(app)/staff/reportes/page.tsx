@@ -62,7 +62,9 @@ const GLOBAL = {
   toolsWithRisk: ["ChatGPT", "Looker", "Meta Ads"],
 };
 
-const RECOMMENDATION_LABEL: Record<typeof GLOBAL.recommendation, string> = {
+type RecommendationAction = "pilotar" | "entrenar" | "pausar" | "escalar";
+
+const RECOMMENDATION_LABEL: Record<RecommendationAction, string> = {
   pilotar: "Pilotar",
   entrenar: "Entrenar",
   pausar: "Pausar",

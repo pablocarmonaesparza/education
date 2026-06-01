@@ -225,7 +225,9 @@ const TOOLS_PERFORMANCE: ToolPerformance[] = [
   { name: "Looker",       uses: 1, avgBand: "M", avgScore: 6.8 },
 ];
 
-const RECOMMENDATION_LABEL: Record<typeof GLOBAL.recommendation, string> = {
+type RecommendationAction = "pilotar" | "entrenar" | "pausar" | "escalar";
+
+const RECOMMENDATION_LABEL: Record<RecommendationAction, string> = {
   pilotar: "Pilotar",
   entrenar: "Entrenar",
   pausar: "Pausar",
@@ -233,7 +235,7 @@ const RECOMMENDATION_LABEL: Record<typeof GLOBAL.recommendation, string> = {
 };
 
 const RECOMMENDATION_TONE: Record<
-  typeof GLOBAL.recommendation,
+  RecommendationAction,
   { bg: string; text: string }
 > = {
   pilotar: { bg: "var(--band-a-bg)", text: "var(--band-a-text)" },
