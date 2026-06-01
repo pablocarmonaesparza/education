@@ -53,7 +53,11 @@ block_content_schemas:
             rows: [] # cada row debe ser un objeto (celdas)
 
     reading_image:
-      required_keys: [src, alt]
+      # el renderer lee caseContext.image.{src,alt} (no content.src directo).
+      required_keys: [image]
+      nested:
+        image:
+          required_keys: [src, alt]
 
     reading_kpi_cards:
       required_keys: [kpis]
@@ -112,6 +116,10 @@ block_content_schemas:
         # flagIfMarked es funcional (el bloque lo necesita en runtime · NO se
         # remueve). issue sí es judge_internal.
         segments: [id, text, flagIfMarked]
+      element_enum:
+        # flagIfMarked debe ser un flag válido del payload (ReviewFlag en
+        # lib/simulador/exercise-registry); un flag inventado da 422 en runtime.
+        segments: { flagIfMarked: [claim_no_verificado, tono_agresivo, dato_sensible, frase_reutilizable] }
 
     ai_comparison:
       required_keys: [options]
@@ -122,6 +130,8 @@ block_content_schemas:
         options: [id, body]
       element_enum:
         options: { id: [A, B, C, D] } # el payload espera A|B|C|D
+      element_unique:
+        options: [id] # A,B,C,D distintos, sin duplicados
 
     tradeoff_decision_memo:
       required_keys: [decisions]

@@ -168,6 +168,20 @@ function validateContent(loc, bid, content, blockSchema) {
       });
     }
   }
+  // Unicidad de un campo entre elementos (ej. options[].id distintos: A,B,C,D).
+  for (const [arrayKey, fields] of Object.entries(blockSchema.element_unique ?? {})) {
+    if (Array.isArray(c[arrayKey])) {
+      for (const f of fields) {
+        const vals = c[arrayKey]
+          .map((el) => el?.[f])
+          .filter((v) => v !== undefined);
+        check(
+          new Set(vals).size === vals.length,
+          `${loc}: "${bid}" content.${arrayKey}[].${f} tiene valores duplicados`,
+        );
+      }
+    }
+  }
 }
 
 function levelToken(metaLevel) {

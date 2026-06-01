@@ -82,6 +82,12 @@ const FIXTURES = [
     mutate: (ca) => { delete slide(ca, "datos", 5).content.attachments[0].kind; } },
   { name: "content_not_data_driven", expect: "assembled", cat: "contenido",
     mutate: (ca) => { ca.case_assembly.meta.level = "N2 · Intermedio"; slide(ca, "cierre", 1).block_id = "dashboard_pivot"; } },
+  { name: "content_bad_flag", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "ia", 3).content.segments[0].flagIfMarked = "pii"; } },
+  { name: "content_dup_option_id", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { slide(ca, "revision", 2).content.options[1].id = "A"; } },
+  { name: "content_image_wrong_shape", expect: "assembled", cat: "contenido",
+    mutate: (ca) => { const s = slide(ca, "contexto", 3); s.block_id = "reading_image"; s.content = { src: "/x.png", alt: "x" }; } },
 
   // ---- Copy (los caza lint-case-copy) ----
   { name: "copy_emdash", expect: "copy", cat: "copy",
