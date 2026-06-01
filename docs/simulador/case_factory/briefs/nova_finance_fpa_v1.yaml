@@ -1,0 +1,20 @@
+# Brief de entrada (crudo) para el generador. Informal a proposito: el paso de
+# normalizacion (P1) rellena y limpia. Empresa sintetica, industria != retail.
+brief:
+  company: "Nova Pagos"
+  industry: "fintech de pagos"
+  market: "Latinoamerica"
+  participant_role: "Analista de Cobranza"
+  level: "N1 · Fundamentos"
+  scenario: >
+    La base de clientes con pagos atrasados llego sucia: duplicados, gente que
+    pidio cancelar su cuenta, correos que ya rebotan. El jefe quiere relanzar la
+    campana de recuperacion de pagos esta semana, pero responsablemente. El
+    analista tiene que dejar la base limpia, pedirle a la inteligencia artificial
+    un mensaje util sin filtrar datos personales, revisar lo que devuelve y
+    decidir si lanzar, pilotar o pausar.
+  manager_wants_to_know: >
+    Si esta persona puede limpiar una base de clientes con criterio de privacidad
+    y armar un envio de recuperacion responsable.
+  ai_tool_hint: "Un copiloto interno de la empresa que redacta y reescribe tono, no consulta la base ni envia."
+  tools: [ai, data, messaging, documents]

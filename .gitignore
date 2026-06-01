@@ -44,3 +44,4 @@ next-env.d.ts
 /legacy/*
 !/legacy/archive-20260518/
 !/legacy/archive-20260518/**
+docs/simulador/case_factory/runs/
