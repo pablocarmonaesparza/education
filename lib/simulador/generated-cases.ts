@@ -54,28 +54,51 @@ function difficultyForLevel(level?: string): string {
   return "baseline";
 }
 
+// Slug ORG-SCOPED para aislar el case_template/variant/steps de cada empresa (dos
+// empresas con el mismo caso no colisionan, y /api/sessions resuelve el de su org).
+export function orgScopedSlug(
+  orgId: string,
+  caseId: string,
+  version: number,
+): string {
+  return `${orgId}__${caseId}__v${version}`;
+}
+
 // Siembra las tablas productivas (case_templates + case_variants primary +
 // case_steps con step_key=slideId) para que POST /api/sessions resuelva el caso,
 // PATCH /responses valide el step_key, y el juez (que lee case_steps dinámicamente)
-// lo evalúe. Re-siembra de forma idempotente.
+// lo evalúe. Idempotente: upsert por step_key (no borra, así no orfana respuestas).
 async function seedProductiveCaseTables(
   admin: ReturnType<typeof createAdminClient>,
   pc: PlayableCase,
+  orgId: string,
 ): Promise<void> {
   const difficulty = difficultyForLevel(pc.meta?.level as string | undefined);
   const title = pc.sections[0]?.slides[0]?.title ?? pc.caseId;
+  const slug = orgScopedSlug(orgId, pc.caseId, pc.version);
+
+  // El juez exige template.rubric_id; usamos la rúbrica del case factory.
+  const { data: rubric } = await admin
+    .schema("simulador")
+    .from("rubrics")
+    .select("id")
+    .eq("slug", "rubric_case_factory_v1")
+    .order("version", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
   const { data: tpl, error: tErr } = await admin
     .schema("simulador")
     .from("case_templates")
     .upsert(
       {
-        slug: pc.caseId,
+        slug,
         version: pc.version,
         status: "active",
         difficulty,
         locale: "es-MX",
         title,
+        rubric_id: (rubric?.id as string | undefined) ?? null,
         expected_manager_action_json: pc.managerOutcome ?? {},
       },
       { onConflict: "slug,version" },
@@ -90,7 +113,7 @@ async function seedProductiveCaseTables(
     .from("case_variants")
     .upsert(
       {
-        slug: `${pc.caseId}_v${pc.version}_primary`,
+        slug: `${slug}_primary`,
         case_template_id: templateId,
         variant_role: "primary",
         status: "active",
@@ -99,13 +122,6 @@ async function seedProductiveCaseTables(
       { onConflict: "slug" },
     );
   if (vErr) throw new Error(`seed case_variants: ${vErr.message}`);
-
-  // Re-siembra los steps (borrar + insertar) para reflejar la última versión.
-  await admin
-    .schema("simulador")
-    .from("case_steps")
-    .delete()
-    .eq("case_template_id", templateId);
 
   const rows: Array<Record<string, unknown>> = [];
   let ordinal = 0;
@@ -124,10 +140,12 @@ async function seedProductiveCaseTables(
     }
   }
   if (rows.length) {
+    // Upsert por step_key: preserva los ids de los steps existentes (las
+    // respuestas en simulation_step_events los referencian), no los orfana.
     const { error: sErr } = await admin
       .schema("simulador")
       .from("case_steps")
-      .insert(rows);
+      .upsert(rows, { onConflict: "case_template_id,step_key" });
     if (sErr) throw new Error(`seed case_steps: ${sErr.message}`);
   }
 }
@@ -164,7 +182,7 @@ export async function persistGeneratedCase(
   if (error) throw new Error(`persistGeneratedCase: ${error.message}`);
   // Siembra las tablas productivas (template + variant + steps) para que el caso
   // sea jugable y evaluable con la infra de sesiones/juez existente.
-  await seedProductiveCaseTables(admin, pc);
+  await seedProductiveCaseTables(admin, pc, input.organizationId);
   return data as { id: string };
 }
 
@@ -234,11 +252,15 @@ export async function resolveCurrentOrgId(): Promise<string | null> {
     .schema("simulador")
     .rpc("current_simulador_user_id");
   if (!simUserId) return null;
+  // Orden determinista (la membresía más antigua) para que un usuario multi-org
+  // caiga siempre en la misma org. La selección explícita de org por URL es una
+  // mejora futura (/jugar no lleva org_id hoy).
   const { data: membership } = await supabase
     .schema("simulador")
     .from("organization_memberships")
     .select("organization_id")
     .eq("user_id", simUserId)
+    .order("created_at", { ascending: true })
     .limit(1)
     .maybeSingle();
   return (membership?.organization_id as string | undefined) ?? null;

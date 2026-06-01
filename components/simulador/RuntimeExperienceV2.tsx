@@ -65,13 +65,17 @@ function renderBody(body: string) {
 
 export function RuntimeExperienceV2({
   playableCase,
+  sessionSlug,
   mode = "authenticated",
 }: {
   playableCase: PlayableCase;
+  /** Slug org-scoped del case_template sembrado; con él la sesión persiste y
+   *  evalúa. Sin él, useSession no resuelve y corre en modo preview. */
+  sessionSlug?: string;
   mode?: "authenticated" | "field_test";
 }) {
   const router = useRouter();
-  const session = useSession(playableCase.caseId, { mode });
+  const session = useSession(sessionSlug ?? playableCase.caseId, { mode });
   const { patch, flush } = useStepPatch(session.sessionId, { mode });
 
   const flat = useMemo<FlatSlide[]>(

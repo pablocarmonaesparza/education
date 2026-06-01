@@ -11,6 +11,7 @@ import { loadAssembledCase } from "@/lib/simulador/load-assembled-case";
 import {
   loadPlayableCaseForOrg,
   resolveCurrentOrgId,
+  orgScopedSlug,
 } from "@/lib/simulador/generated-cases";
 import { RuntimeExperienceV2 } from "@/components/simulador/RuntimeExperienceV2";
 
@@ -25,5 +26,16 @@ export default async function PlayCasePage({
     ? await loadPlayableCaseForOrg(orgId, case_id)
     : loadAssembledCase(case_id);
   if (!playableCase) notFound();
-  return <RuntimeExperienceV2 playableCase={playableCase} mode="authenticated" />;
+  // El slug de sesión es org-scoped: resuelve el case_template de ESTA empresa.
+  // Sin org (o caso solo en el registro estático), no hay sesión: modo preview.
+  const sessionSlug = orgId
+    ? orgScopedSlug(orgId, playableCase.caseId, playableCase.version)
+    : undefined;
+  return (
+    <RuntimeExperienceV2
+      playableCase={playableCase}
+      sessionSlug={sessionSlug}
+      mode="authenticated"
+    />
+  );
 }
