@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
     .schema("simulador")
     .from("case_templates")
     .select(
-      "id, slug, version, title, difficulty, duration_estimate_min, rubric_id, level_primary, career_key",
+      "id, slug, version, title, difficulty, duration_estimate_min, rubric_id, level_primary, career_key, organization_id",
     )
     .eq("slug", caseSlug)
     .eq("status", "active")
@@ -88,6 +88,25 @@ export async function POST(req: NextRequest) {
       { error: `Caso "${caseSlug}" no encontrado o no activo.` },
       { status: 404 },
     );
+  }
+
+  // Aislamiento por empresa: un caso bespoke (organization_id set) solo lo puede
+  // iniciar un miembro de esa org. Los casos globales (null) son para todos. El
+  // admin client bypassa RLS, así que el check es explícito aquí.
+  if (caseTemplate.organization_id) {
+    const { data: orgMember } = await admin
+      .schema("simulador")
+      .from("organization_memberships")
+      .select("user_id")
+      .eq("organization_id", caseTemplate.organization_id)
+      .eq("user_id", simUser.id)
+      .maybeSingle();
+    if (!orgMember) {
+      return NextResponse.json(
+        { error: "No tienes acceso a este caso." },
+        { status: 403 },
+      );
+    }
   }
 
   const { data: variant } = await admin

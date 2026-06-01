@@ -21,6 +21,127 @@ export interface PersistGeneratedCaseInput {
   status?: "draft" | "active" | "archived";
 }
 
+// Mapea los 17 bloques ricos a los 5 step_types canónicos que el check de
+// case_steps permite (el contenido rico real vive en config_json/playable_json).
+const STEP_TYPE_BY_BLOCK: Record<string, string> = {
+  case_cover: "data_scope",
+  reading_passive: "data_scope",
+  reading_message: "data_scope",
+  reading_data_table: "data_scope",
+  reading_image: "data_scope",
+  reading_kpi_cards: "data_scope",
+  reading_timeline: "data_scope",
+  reading_attachment: "data_scope",
+  ai_textfield_free: "llm_beat",
+  ai_textfield_guided: "llm_beat",
+  ai_output_review: "artifact_review",
+  categorize_rows: "decision_select",
+  ai_comparison: "decision_select",
+  model_tradeoff_sliders: "decision_select",
+  workflow_builder: "decision_select",
+  dashboard_pivot: "decision_select",
+  tradeoff_decision_memo: "decision_open_short",
+};
+const SIM_DIMENSIONS = ["contexto", "privacidad", "validacion", "juicio", "decision"];
+
+function difficultyForLevel(level?: string): string {
+  if (!level) return "baseline";
+  if (level.includes("N3")) return "advanced";
+  if (level.includes("N2")) return "intermediate";
+  return "baseline";
+}
+
+/** Slug org-scoped para aislar el case_template/variant/steps de cada empresa. */
+export function orgScopedSlug(orgId: string, caseId: string, version: number): string {
+  return `${orgId}__${caseId}__v${version}`;
+}
+
+// Siembra las tablas productivas (case_templates + variant primary + case_steps)
+// con organization_id = la empresa, para que el caso bespoke sea jugable Y
+// EVALUABLE con la infra de sesiones/juez existente, AISLADO por la RLS org-aware
+// (migración 20260601000100). step_key = slideId. Idempotente (upsert).
+async function seedProductiveCaseTables(
+  admin: ReturnType<typeof createAdminClient>,
+  pc: PlayableCase,
+  orgId: string,
+): Promise<void> {
+  const difficulty = difficultyForLevel(pc.meta?.level as string | undefined);
+  const title = pc.sections[0]?.slides[0]?.title ?? pc.caseId;
+  const slug = orgScopedSlug(orgId, pc.caseId, pc.version);
+
+  const { data: rubric } = await admin
+    .schema("simulador")
+    .from("rubrics")
+    .select("id")
+    .eq("slug", "rubric_case_factory_v1")
+    .order("version", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const { data: tpl, error: tErr } = await admin
+    .schema("simulador")
+    .from("case_templates")
+    .upsert(
+      {
+        slug,
+        version: pc.version,
+        status: "active",
+        difficulty,
+        locale: "es-MX",
+        title,
+        organization_id: orgId,
+        rubric_id: (rubric?.id as string | undefined) ?? null,
+        expected_manager_action_json: pc.managerOutcome ?? {},
+      },
+      { onConflict: "slug,version" },
+    )
+    .select("id")
+    .single();
+  if (tErr) throw new Error(`seed case_templates: ${tErr.message}`);
+  const templateId = (tpl as { id: string }).id;
+
+  const { error: vErr } = await admin
+    .schema("simulador")
+    .from("case_variants")
+    .upsert(
+      {
+        slug: `${slug}_primary`,
+        case_template_id: templateId,
+        organization_id: orgId,
+        variant_role: "primary",
+        status: "active",
+        synthetic_data: true,
+      },
+      { onConflict: "slug" },
+    );
+  if (vErr) throw new Error(`seed case_variants: ${vErr.message}`);
+
+  const rows: Array<Record<string, unknown>> = [];
+  let ordinal = 0;
+  for (const sec of pc.sections) {
+    for (const sl of sec.slides) {
+      ordinal++;
+      rows.push({
+        case_template_id: templateId,
+        organization_id: orgId,
+        step_key: sl.slideId,
+        ordinal,
+        step_type: STEP_TYPE_BY_BLOCK[sl.blockId] ?? "data_scope",
+        prompt_template: `${sl.title}\n\n${sl.body}`.slice(0, 4000),
+        config_json: sl.caseContext ?? {},
+        evaluates_dimensions: SIM_DIMENSIONS,
+      });
+    }
+  }
+  if (rows.length) {
+    const { error: sErr } = await admin
+      .schema("simulador")
+      .from("case_steps")
+      .upsert(rows, { onConflict: "case_template_id,step_key" });
+    if (sErr) throw new Error(`seed case_steps: ${sErr.message}`);
+  }
+}
+
 /** Persiste (upsert) un caso generado para una organización. Service role. */
 export async function persistGeneratedCase(
   input: PersistGeneratedCaseInput,
@@ -51,13 +172,10 @@ export async function persistGeneratedCase(
     .select("id")
     .single();
   if (error) throw new Error(`persistGeneratedCase: ${error.message}`);
-  // NO se siembra en case_templates/case_steps: esas tablas son GLOBALES (RLS
-  // authenticated_read), así que poner contenido bespoke por empresa ahí lo
-  // filtraría entre tenants. El caso bespoke vive aislado en generated_cases
-  // (RLS por empresa) y se juega vía RuntimeExperienceV2. La EVALUACIÓN
-  // productiva (sesión + juez) requiere un modelo de sesión org-scoped (org_id +
-  // RLS en case_templates + org-auth en /api/sessions); es el cambio deliberado
-  // siguiente, fuera de esta operación por tocar el path de seguridad productivo.
+  // Siembra las tablas productivas con organization_id de la empresa: el caso
+  // queda jugable Y evaluable, aislado por la RLS org-aware (no se filtra entre
+  // tenants). La RLS de la migración 20260601000100 lo garantiza.
+  await seedProductiveCaseTables(admin, pc, input.organizationId);
   return data as { id: string };
 }
 
