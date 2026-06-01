@@ -64,15 +64,23 @@ queda probada antes de conectarla a nada.
 - **F0 · Harness de fábrica · HECHO.** Schemas por bloque, validador de
   contenido, copy lint, fixtures rotos, test de gates, rúbrica del juez, de-risk
   del juez con Codex. Todo en verde.
-- **F1 · Generador core offline.** Brief manual -> biblia -> blueprint -> YAML,
-  con los gates deterministas + el juez en loop acotado. Meta: que de un brief a
-  mano salga un caso que pase TODOS los gates con <= 3 intentos. CLI interna, sin
-  API por usuario.
-- **F2 · Conectar el juez al loop** y calibrarlo contra un set ampliado
-  (golden N1/N2/N3 + ~20 fixtures rotos cubriendo cada tipo de ruptura).
-- **F3 · Bridge/migración del runtime productivo a 5 secciones**
-  (`components/simulador/RuntimeExperience.tsx` aún usa el modelo viejo de 6).
-  Sin esto, la fábrica vive en el demo, no en el producto.
+- **F1 · Generador core offline · HECHO** (rama `claude/case-engine`). Brief ->
+  normaliza -> biblia -> blueprint por receta -> autor por sección -> gates +
+  juez en loop acotado (<=3, reparación por slide, luego HUMAN_REVIEW). CLI:
+  `scripts/simulador/gen/generate-case.mjs <brief.yaml>`. Un brief no-retail
+  (Nova Pagos, cobranza) pasó los 3 gates al primer intento y **se juega en
+  /case-demo** (render parametrizado a argv[2], reporte degrada con honestidad).
+- **F2 · Juez conectado al loop · HECHO.** `judge-narrative.mjs` (3 jueces:
+  continuidad, señal, adversarial) corre como 3er gate. De-risk **4/4** (golden
+  PASS estable, 3 fixtures narrativos FAIL con cita). Falta el set ampliado
+  (N2/N3 + más fixtures) = endurecimiento.
+- **F3 · Bridge/migración del runtime productivo · PENDIENTE.** Nota corregida:
+  el runtime productivo (`components/simulador/RuntimeExperience.tsx`) NO usa "6
+  secciones" sino **5 step_types rígidos** hardcodeados (data_scope, llm_beat,
+  artifact_review, decision_select, decision_open_short) con componentes inline,
+  leyendo de la base. El motor produce el formato RICO de 17 bloques. El puente
+  es: (A) adaptador caso 5x5 -> case_templates + case_steps por empresa, o (B)
+  generalizar el runtime a los 17 bloques. Sin esto la fábrica vive en el demo.
 - **F4 · Research + intake** estructurado. Intake con enums + preview editable,
   no formulario libre. El research se trata como DATOS no confiables: se
   sanitiza a dossier (`claim, fuente, confianza, uso permitido`); cualquier
@@ -127,3 +135,36 @@ que de verdad falle donde debe.
   ai_textfield_guided y model_tradeoff_sliders.
 - **Hardening teórico de bajo impacto** (no rompen runtime, los toleró el render):
   enum de `kpi.delta.direction`, validación de tipo de celdas de tabla. Para F1.
+
+## F1 implementado: aprendizajes y realidad de proveedores
+
+**Arquitectura del motor** (`scripts/simulador/gen/`):
+- `llm/client.mjs`: cliente dual-proveedor (OpenAI por function calling, Anthropic
+  por tool_use). Interfaz neutral `callTool(system, user, {name, description,
+  schema})`. La validación fuerte la hacen los gates; el schema solo fuerza forma.
+- `steps/`: normalize-brief, build-bible, build-blueprint (receta + intents),
+  author-yaml (por sección), repair-slide (reparación puntual).
+- `artifacts/`: recipe-presets (N1 sembrada del golden), block-schemas (deriva el
+  contrato de content por bloque de BLOCK_CONTENT_SCHEMAS, palanca de calidad).
+- `gates/run-gates.mjs`: corre los 3 gates con `--json`, agrupa findings por slide.
+- `judge-narrative.mjs`: 3 jueces, ensemble 2x, evidence-gating.
+
+**Aprendizajes de calibración del juez (de-risk, no a la primera):**
+- El juez de COPY (LLM) se quitó: alucinaba guiones largos (reprobaba el golden);
+  el linter determinista cubre guion y siglas de forma fiable. Copy objetivo =
+  determinista, no LLM.
+- Los jueces confundían el contenido PLANTADO a proposito (borradores de IA con
+  cifras inventadas / datos personales en slides ai_output_review) con defectos.
+  Se anota cada bloque con su naturaleza para que el juez no lo cuente.
+- Contradicciones numéricas: el LLM compara mal. Patrón que funcionó: el LLM
+  EXTRAE cada (métrica, valor) y el CÓDIGO compara; anclado a métricas canónicas
+  (tarjetas de KPI) para no falsear con valores por fila de las tablas.
+- Varianza del LLM aun a temperatura 0: ensemble (correr cada juez 2x y unir
+  findings fundamentados) la cierra sin subir falsos positivos.
+
+**Realidad de proveedores (importante):** la llave de Anthropic en `.env.local`
+está inválida; el motor corrió sobre **OpenAI (gpt-4o)**. El juez productivo
+(`lib/simulador/judge`) apunta a Anthropic con fallback a DeepSeek/Gemini, todos
+caídos o sin saldo, así que la evaluación en producción probablemente está
+degradada. El generador es dual-proveedor: cuando se refresque la llave de
+Anthropic, basta `SIMULADOR_LLM_PROVIDER=anthropic` para volver a Claude.
