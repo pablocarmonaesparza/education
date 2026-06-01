@@ -67,10 +67,12 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
     ],
   },
   {
-    group: "app — flow del caso",
+    group: "motor de casos · runtime",
     routes: [
+      { path: "/case-demo", label: "Demo jugable del caso (sin login)", note: "salida del motor · hoy: vértiz, 25 ejercicios" },
+      { path: "/jugar/vertiz_backlog_entregas", label: "Runtime productivo config-driven (RuntimeExperienceV2)", note: "bypass · juega cualquier caso generado" },
+      { path: "/case/marketing_urgent_campaign_pii", label: "Runtime hardcoded (solo Camila, modelo viejo de 5 pasos)", note: "legacy · no lee config_json" },
       { path: "/dashboard", label: "Dashboard router → /staff" },
-      { path: "/case/marketing_urgent_campaign_pii", label: "Caso runtime" },
       { path: "/report/demo-session-id", label: "Reporte (session demo)", note: "404 si session no existe" },
     ],
   },
