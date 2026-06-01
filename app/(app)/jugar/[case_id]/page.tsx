@@ -2,11 +2,16 @@
 // rico). Aditiva: no toca /(app)/case/[case_id] (el runtime hardcodeado de
 // Camila). Hereda el guard de auth del layout (app).
 //
-// Server component: carga el caso (fuente dev = YAML ensamblado; producción =
-// base por empresa) y lo pasa al runtime cliente.
+// Server component: resuelve la organización del usuario y carga su caso
+// generado (de la base), con fallback al registro estático (casos sembrados o
+// globales). Lo pasa al runtime cliente.
 
 import { notFound } from "next/navigation";
 import { loadAssembledCase } from "@/lib/simulador/load-assembled-case";
+import {
+  loadPlayableCaseForOrg,
+  resolveCurrentOrgId,
+} from "@/lib/simulador/generated-cases";
 import { RuntimeExperienceV2 } from "@/components/simulador/RuntimeExperienceV2";
 
 export default async function PlayCasePage({
@@ -15,7 +20,10 @@ export default async function PlayCasePage({
   params: Promise<{ case_id: string }>;
 }) {
   const { case_id } = await params;
-  const playableCase = loadAssembledCase(case_id);
+  const orgId = await resolveCurrentOrgId();
+  const playableCase = orgId
+    ? await loadPlayableCaseForOrg(orgId, case_id)
+    : loadAssembledCase(case_id);
   if (!playableCase) notFound();
   return <RuntimeExperienceV2 playableCase={playableCase} mode="authenticated" />;
 }

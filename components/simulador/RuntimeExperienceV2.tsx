@@ -106,8 +106,9 @@ export function RuntimeExperienceV2({
     (p: ExerciseResponsePayload) => {
       if (!slide) return;
       setPayloads((prev) => ({ ...prev, [slide.slideId]: p }));
-      // step_key = slideId (estable y único por slide). Las APIs aceptan
-      // cualquier step_key; no-op si no hay sesión (modo preview).
+      // step_key = slideId. Coincide con los case_steps que siembra
+      // persistGeneratedCase, así PATCH /responses lo valida y persiste. Sin
+      // sesión (caso aún no sembrado en la base) es no-op: modo preview.
       patch(slide.slideId, p as unknown as Record<string, unknown>);
     },
     [slide, patch],

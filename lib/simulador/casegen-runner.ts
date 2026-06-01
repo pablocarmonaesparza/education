@@ -51,51 +51,67 @@ export async function generateCaseFromBrief(
   // El motor lee el brief con yaml.load; JSON es YAML válido, así evitamos
   // escapes. La forma es { brief: {...} } (igual que los briefs de prueba).
   const briefPath = path.join(runDir, "brief.json");
-  fs.writeFileSync(briefPath, JSON.stringify({ brief }, null, 2));
 
   try {
-    await execFileAsync(
-      "node",
-      [
-        "scripts/simulador/gen/generate-case.mjs",
-        briefPath,
-        `--out=${runDir}`,
-        `--max-attempts=${opts.maxAttempts ?? 3}`,
-      ],
-      {
-        cwd: root,
-        timeout: opts.timeoutMs ?? 1000 * 60 * 8,
-        maxBuffer: 32 * 1024 * 1024,
-      },
-    );
-  } catch {
-    // exit != 0 = HUMAN_REVIEW (no pasó en los intentos) o error. Aún así
-    // intentamos leer los artefactos para devolver diagnóstico.
-  }
+    fs.writeFileSync(briefPath, JSON.stringify({ brief }, null, 2));
 
-  const playablePath = path.join(runDir, "final.playable.json");
-  if (fs.existsSync(playablePath)) {
+    // timeout del runner DEBE quedar bajo el maxDuration de la ruta (300s); por
+    // defecto 270s. A escala esto va a un worker/cola.
+    let execError: (Error & { code?: number; killed?: boolean; stderr?: string }) | null = null;
     try {
-      const pc = JSON.parse(fs.readFileSync(playablePath, "utf8")) as PlayableCase;
-      cleanup(runDir);
-      return { ok: true, result: "PASS", playableCase: pc };
-    } catch {
-      /* cae al diagnóstico */
+      await execFileAsync(
+        "node",
+        [
+          "scripts/simulador/gen/generate-case.mjs",
+          briefPath,
+          `--out=${runDir}`,
+          `--max-attempts=${opts.maxAttempts ?? 3}`,
+        ],
+        {
+          cwd: root,
+          timeout: opts.timeoutMs ?? 1000 * 270,
+          maxBuffer: 32 * 1024 * 1024,
+        },
+      );
+    } catch (e) {
+      execError = e as Error & { code?: number; killed?: boolean; stderr?: string };
     }
-  }
 
-  // Sin final: HUMAN_REVIEW. Lee el run-record para un diagnóstico legible.
-  let diagnostics = "El motor no produjo un caso que pasara todos los gates.";
-  try {
-    const rec = JSON.parse(
-      fs.readFileSync(path.join(runDir, "run-record.json"), "utf8"),
-    );
-    diagnostics = JSON.stringify(rec.unresolved ?? rec, null, 2).slice(0, 4000);
-  } catch {
-    /* sin run-record */
+    // 1) Éxito: hay final.playable.json.
+    const playablePath = path.join(runDir, "final.playable.json");
+    if (fs.existsSync(playablePath)) {
+      const pc = JSON.parse(fs.readFileSync(playablePath, "utf8")) as PlayableCase;
+      return { ok: true, result: "PASS", playableCase: pc };
+    }
+
+    // 2) El motor corrió pero no pasó los gates: hay run-record -> HUMAN_REVIEW.
+    const recPath = path.join(runDir, "run-record.json");
+    if (fs.existsSync(recPath)) {
+      let diagnostics = "El motor no produjo un caso que pasara todos los gates.";
+      try {
+        const rec = JSON.parse(fs.readFileSync(recPath, "utf8"));
+        diagnostics = JSON.stringify(rec.unresolved ?? rec, null, 2).slice(0, 4000);
+      } catch {
+        /* run-record ilegible */
+      }
+      return { ok: false, result: "HUMAN_REVIEW", diagnostics };
+    }
+
+    // 3) Sin run-record: fallo de infraestructura (timeout, ENOENT, maxBuffer,
+    //    crash del proceso). Es ERROR, no HUMAN_REVIEW.
+    const detail = execError
+      ? `${execError.killed ? "timeout/killed" : `exit ${execError.code ?? "?"}`}: ${(execError.stderr ?? execError.message ?? "").slice(0, 1500)}`
+      : "el motor no escribió artefactos";
+    return { ok: false, result: "ERROR", diagnostics: detail };
+  } catch (e) {
+    return {
+      ok: false,
+      result: "ERROR",
+      diagnostics: e instanceof Error ? e.message : String(e),
+    };
+  } finally {
+    cleanup(runDir);
   }
-  cleanup(runDir);
-  return { ok: false, result: "HUMAN_REVIEW", diagnostics };
 }
 
 function cleanup(dir: string) {

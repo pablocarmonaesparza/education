@@ -21,6 +21,117 @@ export interface PersistGeneratedCaseInput {
   status?: "draft" | "active" | "archived";
 }
 
+// Mapea cada uno de los 17 bloques ricos a uno de los 5 step_types canónicos que
+// el check de case_steps permite. Esto deja al caso generado JUGABLE y EVALUABLE
+// con la infra de sesiones/juez existente, sin alterar el constraint productivo.
+// El contenido rico real vive en config_json (caseContext) y en playable_json.
+const STEP_TYPE_BY_BLOCK: Record<string, string> = {
+  case_cover: "data_scope",
+  reading_passive: "data_scope",
+  reading_message: "data_scope",
+  reading_data_table: "data_scope",
+  reading_image: "data_scope",
+  reading_kpi_cards: "data_scope",
+  reading_timeline: "data_scope",
+  reading_attachment: "data_scope",
+  ai_textfield_free: "llm_beat",
+  ai_textfield_guided: "llm_beat",
+  ai_output_review: "artifact_review",
+  categorize_rows: "decision_select",
+  ai_comparison: "decision_select",
+  model_tradeoff_sliders: "decision_select",
+  workflow_builder: "decision_select",
+  dashboard_pivot: "decision_select",
+  tradeoff_decision_memo: "decision_open_short",
+};
+
+const SIM_DIMENSIONS = ["contexto", "privacidad", "validacion", "juicio", "decision"];
+
+function difficultyForLevel(level?: string): string {
+  if (!level) return "baseline";
+  if (level.includes("N3")) return "advanced";
+  if (level.includes("N2")) return "intermediate";
+  return "baseline";
+}
+
+// Siembra las tablas productivas (case_templates + case_variants primary +
+// case_steps con step_key=slideId) para que POST /api/sessions resuelva el caso,
+// PATCH /responses valide el step_key, y el juez (que lee case_steps dinámicamente)
+// lo evalúe. Re-siembra de forma idempotente.
+async function seedProductiveCaseTables(
+  admin: ReturnType<typeof createAdminClient>,
+  pc: PlayableCase,
+): Promise<void> {
+  const difficulty = difficultyForLevel(pc.meta?.level as string | undefined);
+  const title = pc.sections[0]?.slides[0]?.title ?? pc.caseId;
+
+  const { data: tpl, error: tErr } = await admin
+    .schema("simulador")
+    .from("case_templates")
+    .upsert(
+      {
+        slug: pc.caseId,
+        version: pc.version,
+        status: "active",
+        difficulty,
+        locale: "es-MX",
+        title,
+        expected_manager_action_json: pc.managerOutcome ?? {},
+      },
+      { onConflict: "slug,version" },
+    )
+    .select("id")
+    .single();
+  if (tErr) throw new Error(`seed case_templates: ${tErr.message}`);
+  const templateId = (tpl as { id: string }).id;
+
+  const { error: vErr } = await admin
+    .schema("simulador")
+    .from("case_variants")
+    .upsert(
+      {
+        slug: `${pc.caseId}_v${pc.version}_primary`,
+        case_template_id: templateId,
+        variant_role: "primary",
+        status: "active",
+        synthetic_data: true,
+      },
+      { onConflict: "slug" },
+    );
+  if (vErr) throw new Error(`seed case_variants: ${vErr.message}`);
+
+  // Re-siembra los steps (borrar + insertar) para reflejar la última versión.
+  await admin
+    .schema("simulador")
+    .from("case_steps")
+    .delete()
+    .eq("case_template_id", templateId);
+
+  const rows: Array<Record<string, unknown>> = [];
+  let ordinal = 0;
+  for (const sec of pc.sections) {
+    for (const sl of sec.slides) {
+      ordinal++;
+      rows.push({
+        case_template_id: templateId,
+        step_key: sl.slideId,
+        ordinal,
+        step_type: STEP_TYPE_BY_BLOCK[sl.blockId] ?? "data_scope",
+        prompt_template: `${sl.title}\n\n${sl.body}`.slice(0, 4000),
+        config_json: sl.caseContext ?? {},
+        evaluates_dimensions: SIM_DIMENSIONS,
+      });
+    }
+  }
+  if (rows.length) {
+    const { error: sErr } = await admin
+      .schema("simulador")
+      .from("case_steps")
+      .insert(rows);
+    if (sErr) throw new Error(`seed case_steps: ${sErr.message}`);
+  }
+}
+
 /** Persiste (upsert) un caso generado para una organización. Service role. */
 export async function persistGeneratedCase(
   input: PersistGeneratedCaseInput,
@@ -51,6 +162,9 @@ export async function persistGeneratedCase(
     .select("id")
     .single();
   if (error) throw new Error(`persistGeneratedCase: ${error.message}`);
+  // Siembra las tablas productivas (template + variant + steps) para que el caso
+  // sea jugable y evaluable con la infra de sesiones/juez existente.
+  await seedProductiveCaseTables(admin, pc);
   return data as { id: string };
 }
 
@@ -107,6 +221,27 @@ export async function seedOrgWithLibrary(
     }
   }
   return results;
+}
+
+/** Resuelve la organización del usuario autenticado (la primera membresía). */
+export async function resolveCurrentOrgId(): Promise<string | null> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+  const { data: simUserId } = await supabase
+    .schema("simulador")
+    .rpc("current_simulador_user_id");
+  if (!simUserId) return null;
+  const { data: membership } = await supabase
+    .schema("simulador")
+    .from("organization_memberships")
+    .select("organization_id")
+    .eq("user_id", simUserId)
+    .limit(1)
+    .maybeSingle();
+  return (membership?.organization_id as string | undefined) ?? null;
 }
 
 /** Lista los casos generados de una organización (para el índice de casos). */

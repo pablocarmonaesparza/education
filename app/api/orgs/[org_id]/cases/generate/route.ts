@@ -75,6 +75,23 @@ export async function POST(
     /* sin body, se deriva del contexto */
   }
 
+  // Integridad de tenant: el team_id (si viene) debe ser de esta org.
+  if (body.team_id) {
+    const { data: team } = await admin
+      .schema("simulador")
+      .from("teams")
+      .select("id")
+      .eq("id", body.team_id)
+      .eq("organization_id", org_id)
+      .maybeSingle();
+    if (!team) {
+      return NextResponse.json(
+        { error: "El equipo no pertenece a esta organización." },
+        { status: 400 },
+      );
+    }
+  }
+
   const { data: org } = await admin
     .schema("simulador")
     .from("organizations")

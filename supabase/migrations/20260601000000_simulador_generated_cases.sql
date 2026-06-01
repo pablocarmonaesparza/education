@@ -38,13 +38,14 @@ comment on table simulador.generated_cases is
 -- ---- RLS ----
 alter table simulador.generated_cases enable row level security;
 
--- Miembros de la org leen los casos activos de su org.
-create policy "org_members_read_generated_cases" on simulador.generated_cases
-  for select using (simulador.user_in_org(organization_id));
+-- Miembros de la org leen SOLO los casos activos (no drafts/archived, que pueden
+-- tener contenido a medio generar o metadata del brief).
+create policy "org_members_read_active_generated_cases" on simulador.generated_cases
+  for select using (status = 'active' and simulador.user_in_org(organization_id));
 
--- El org_admin administra (insert/update/archive). El motor escribe via
--- service_role, que bypassa RLS.
-create policy "org_admin_write_generated_cases" on simulador.generated_cases
+-- El org_admin ve todo (incluidos drafts/archived) y administra. El motor escribe
+-- via service_role, que bypassa RLS.
+create policy "org_admin_all_generated_cases" on simulador.generated_cases
   for all using (simulador.is_org_admin(organization_id))
             with check (simulador.is_org_admin(organization_id));
 
