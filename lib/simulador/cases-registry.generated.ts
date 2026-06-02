@@ -530,22 +530,22 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
               "options": [
                 {
                   "id": "A",
-                  "title": "Cálido",
+                  "title": "Cierre 1",
                   "body": "Cuando quieras retomar tu consulta, aquí estamos para ayudarte a agendar."
                 },
                 {
                   "id": "B",
-                  "title": "Urgente",
+                  "title": "Cierre 2",
                   "body": "Agenda hoy mismo, los lugares se acaban rápido."
                 },
                 {
                   "id": "C",
-                  "title": "Seco",
+                  "title": "Cierre 3",
                   "body": "Ingrese al portal para reservar una cita."
                 },
                 {
                   "id": "D",
-                  "title": "Culposo",
+                  "title": "Cierre 4",
                   "body": "No dejes tu salud para después, ya pasó demasiado tiempo."
                 }
               ]
@@ -622,22 +622,22 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
               "options": [
                 {
                   "id": "A",
-                  "title": "Cumple todo",
+                  "title": "Versión 1",
                   "body": "Hola, tu consulta sigue disponible cuando quieras retomarla. Agendar toma un minuto. Si prefieres no recibir estos correos, puedes darte de baja aquí."
                 },
                 {
                   "id": "B",
-                  "title": "Sin enlace de baja",
+                  "title": "Versión 2",
                   "body": "Hola, tu consulta sigue disponible. Agenda cuando quieras."
                 },
                 {
                   "id": "C",
-                  "title": "Con dato de salud",
+                  "title": "Versión 3",
                   "body": "Hola, retomemos el seguimiento de tu condición; agenda tu cita."
                 },
                 {
                   "id": "D",
-                  "title": "Con presión",
+                  "title": "Versión 4",
                   "body": "Hola, agenda ya antes de perder tu lugar; es importante."
                 }
               ]
@@ -653,28 +653,28 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
             "slideId": "cierre-1",
             "blockId": "ai_comparison",
             "title": "Elige el segmento al que le escribes.",
-            "body": "Tres segmentos posibles (y uno que no es de envío). Elige y di en una línea por qué.",
+            "body": "Cuatro segmentos posibles. Elige al que le escribirías y di en una línea por qué.",
             "caseContext": {
               "options": [
                 {
                   "id": "A",
                   "title": "Inactivos recientes",
-                  "body": "Pacientes con consentimiento activo y entrega correcta. Caveat: cuida la frecuencia de correos."
+                  "body": "Pacientes con consentimiento activo y entrega correcta; conviene cuidar la frecuencia de correos."
                 },
                 {
                   "id": "B",
                   "title": "Cita vencida hace meses",
-                  "body": "Reactivables claros. Caveat: que abran no significa que agenden."
+                  "body": "Pacientes reactivables; que abran no significa que agenden."
                 },
                 {
                   "id": "C",
                   "title": "Sin confirmar",
-                  "body": "Nunca confirmaron consentimiento. No es segmento de envío: elegirlo es el error."
+                  "body": "Pacientes que nunca confirmaron su consentimiento."
                 },
                 {
                   "id": "D",
                   "title": "Todos juntos",
-                  "body": "Mezclar incluye a quienes pidieron baja. No se debe."
+                  "body": "Todos los de la lista juntos, incluidos quienes pidieron baja."
                 }
               ]
             }
@@ -2017,22 +2017,22 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
               "options": [
                 {
                   "id": "A",
-                  "title": "Informativo",
+                  "title": "Cierre 1",
                   "body": "Te contactaremos con el resultado de tu caso en un máximo de 72 horas."
                 },
                 {
                   "id": "B",
-                  "title": "Resolutivo",
+                  "title": "Cierre 2",
                   "body": "Tu reembolso será depositado en las próximas 24 horas."
                 },
                 {
                   "id": "C",
-                  "title": "Formal",
+                  "title": "Cierre 3",
                   "body": "Su caso fue registrado. Espere respuesta."
                 },
                 {
                   "id": "D",
-                  "title": "Inmediato",
+                  "title": "Cierre 4",
                   "body": "Responde hoy o tu reclamo será cancelado."
                 }
               ]
@@ -2109,22 +2109,22 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
               "options": [
                 {
                   "id": "A",
-                  "title": "Cordial",
+                  "title": "Versión 1",
                   "body": "Hola, tu caso de entrega está en revisión. Te contactaremos con el resultado en un máximo de 72 horas. Gracias por tu paciencia."
                 },
                 {
                   "id": "B",
-                  "title": "Resolutivo",
+                  "title": "Versión 2",
                   "body": "Hola, tu reembolso ya fue aprobado y llega en 24 horas."
                 },
                 {
                   "id": "C",
-                  "title": "Personalizado",
+                  "title": "Versión 3",
                   "body": "Hola, tu paquete a tu dirección registrada sigue en revisión; te escribimos."
                 },
                 {
                   "id": "D",
-                  "title": "Insistente",
+                  "title": "Versión 4",
                   "body": "Hola, responde hoy o tu reclamo se cierra; es importante."
                 }
               ]

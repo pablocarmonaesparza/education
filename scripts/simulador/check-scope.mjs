@@ -72,6 +72,17 @@ if (assembled.status !== 0) {
   process.exit(assembled.status ?? 1);
 }
 
+// Copy lint (em dash, acrónimos, anti-spoiler) sobre TODOS los casos ensamblados.
+// Corre aquí además de en el loop del motor, para que un caso editado a mano
+// también pase el gate de copy en el check principal.
+const copyLint = run("node", ["scripts/simulador/lint-case-copy.mjs"]);
+print(copyLint.stdout);
+print(copyLint.stderr);
+
+if (copyLint.status !== 0) {
+  process.exit(copyLint.status ?? 1);
+}
+
 const typecheck = run("node", ["scripts/simulador/typecheck-scope.mjs"]);
 print(typecheck.stdout);
 print(typecheck.stderr);

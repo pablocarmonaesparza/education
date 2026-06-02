@@ -247,10 +247,10 @@ case_assembly:
           body: "Cuatro versiones del cierre. Elige la que informa sin prometer de más y justifica en una línea."
           content:
             options:
-              - { id: A, title: "Informativo", body: "Te contactaremos con el resultado de tu caso en un máximo de 72 horas." }
-              - { id: B, title: "Resolutivo", body: "Tu reembolso será depositado en las próximas 24 horas." }
-              - { id: C, title: "Formal", body: "Su caso fue registrado. Espere respuesta." }
-              - { id: D, title: "Inmediato", body: "Responde hoy o tu reclamo será cancelado." }
+              - { id: A, title: "Cierre 1", body: "Te contactaremos con el resultado de tu caso en un máximo de 72 horas." }
+              - { id: B, title: "Cierre 2", body: "Tu reembolso será depositado en las próximas 24 horas." }
+              - { id: C, title: "Cierre 3", body: "Su caso fue registrado. Espere respuesta." }
+              - { id: D, title: "Cierre 4", body: "Responde hoy o tu reclamo será cancelado." }
 
         - slot: 3
           block_id: reading_message
@@ -286,10 +286,10 @@ case_assembly:
           body: "Con el feedback de Daniela, elige el aviso que entregarías. Justifica en una línea."
           content:
             options:
-              - { id: A, title: "Cordial", body: "Hola, tu caso de entrega está en revisión. Te contactaremos con el resultado en un máximo de 72 horas. Gracias por tu paciencia." }
-              - { id: B, title: "Resolutivo", body: "Hola, tu reembolso ya fue aprobado y llega en 24 horas." }
-              - { id: C, title: "Personalizado", body: "Hola, tu paquete a tu dirección registrada sigue en revisión; te escribimos." }
-              - { id: D, title: "Insistente", body: "Hola, responde hoy o tu reclamo se cierra; es importante." }
+              - { id: A, title: "Versión 1", body: "Hola, tu caso de entrega está en revisión. Te contactaremos con el resultado en un máximo de 72 horas. Gracias por tu paciencia." }
+              - { id: B, title: "Versión 2", body: "Hola, tu reembolso ya fue aprobado y llega en 24 horas." }
+              - { id: C, title: "Versión 3", body: "Hola, tu paquete a tu dirección registrada sigue en revisión; te escribimos." }
+              - { id: D, title: "Versión 4", body: "Hola, responde hoy o tu reclamo se cierra; es importante." }
 
     - id: cierre
       name: "Cierre"

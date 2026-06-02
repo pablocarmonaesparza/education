@@ -247,10 +247,10 @@ case_assembly:
           body: "Cuatro versiones del cierre. Elige la que invita sin presionar y justifica en una línea."
           content:
             options:
-              - { id: A, title: "Cálido", body: "Cuando quieras retomar tu consulta, aquí estamos para ayudarte a agendar." }
-              - { id: B, title: "Urgente", body: "Agenda hoy mismo, los lugares se acaban rápido." }
-              - { id: C, title: "Seco", body: "Ingrese al portal para reservar una cita." }
-              - { id: D, title: "Culposo", body: "No dejes tu salud para después, ya pasó demasiado tiempo." }
+              - { id: A, title: "Cierre 1", body: "Cuando quieras retomar tu consulta, aquí estamos para ayudarte a agendar." }
+              - { id: B, title: "Cierre 2", body: "Agenda hoy mismo, los lugares se acaban rápido." }
+              - { id: C, title: "Cierre 3", body: "Ingrese al portal para reservar una cita." }
+              - { id: D, title: "Cierre 4", body: "No dejes tu salud para después, ya pasó demasiado tiempo." }
 
         - slot: 3
           block_id: reading_message
@@ -286,10 +286,10 @@ case_assembly:
           body: "Con el feedback de Renata, elige el mensaje que entregarías. Justifica en una línea."
           content:
             options:
-              - { id: A, title: "Cumple todo", body: "Hola, tu consulta sigue disponible cuando quieras retomarla. Agendar toma un minuto. Si prefieres no recibir estos correos, puedes darte de baja aquí." }
-              - { id: B, title: "Sin enlace de baja", body: "Hola, tu consulta sigue disponible. Agenda cuando quieras." }
-              - { id: C, title: "Con dato de salud", body: "Hola, retomemos el seguimiento de tu condición; agenda tu cita." }
-              - { id: D, title: "Con presión", body: "Hola, agenda ya antes de perder tu lugar; es importante." }
+              - { id: A, title: "Versión 1", body: "Hola, tu consulta sigue disponible cuando quieras retomarla. Agendar toma un minuto. Si prefieres no recibir estos correos, puedes darte de baja aquí." }
+              - { id: B, title: "Versión 2", body: "Hola, tu consulta sigue disponible. Agenda cuando quieras." }
+              - { id: C, title: "Versión 3", body: "Hola, retomemos el seguimiento de tu condición; agenda tu cita." }
+              - { id: D, title: "Versión 4", body: "Hola, agenda ya antes de perder tu lugar; es importante." }
 
     - id: cierre
       name: "Cierre"
@@ -297,13 +297,13 @@ case_assembly:
         - slot: 1
           block_id: ai_comparison
           title: "Elige el segmento al que le escribes."
-          body: "Tres segmentos posibles (y uno que no es de envío). Elige y di en una línea por qué."
+          body: "Cuatro segmentos posibles. Elige al que le escribirías y di en una línea por qué."
           content:
             options:
-              - { id: A, title: "Inactivos recientes", body: "Pacientes con consentimiento activo y entrega correcta. Caveat: cuida la frecuencia de correos." }
-              - { id: B, title: "Cita vencida hace meses", body: "Reactivables claros. Caveat: que abran no significa que agenden." }
-              - { id: C, title: "Sin confirmar", body: "Nunca confirmaron consentimiento. No es segmento de envío: elegirlo es el error." }
-              - { id: D, title: "Todos juntos", body: "Mezclar incluye a quienes pidieron baja. No se debe." }
+              - { id: A, title: "Inactivos recientes", body: "Pacientes con consentimiento activo y entrega correcta; conviene cuidar la frecuencia de correos." }
+              - { id: B, title: "Cita vencida hace meses", body: "Pacientes reactivables; que abran no significa que agenden." }
+              - { id: C, title: "Sin confirmar", body: "Pacientes que nunca confirmaron su consentimiento." }
+              - { id: D, title: "Todos juntos", body: "Todos los de la lista juntos, incluidos quienes pidieron baja." }
 
         - slot: 2
           block_id: ai_textfield_free
