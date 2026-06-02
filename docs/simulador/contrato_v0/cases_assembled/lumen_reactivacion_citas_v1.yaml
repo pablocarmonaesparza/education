@@ -137,7 +137,7 @@ case_assembly:
         - slot: 2
           block_id: categorize_rows
           title: "¿Qué campos puede ver la inteligencia artificial?"
-          body: "Para cada campo decide: **va al modelo**, **va transformado** o **no va**. La condición de salud no se negocia."
+          body: "Para cada campo decide: **va al modelo**, **va transformado** o **no va**. Aplica la política de datos del caso."
           content:
             actions:
               - { value: va, label: "Va al modelo" }
@@ -263,7 +263,7 @@ case_assembly:
               to: { name: "Tú", role: "Coordinador de Cumplimiento" }
               timestamp: "Hoy, 11:20"
               subject: "Antes de lanzar"
-              body: "Bien. Antes de lanzar confírmame que excluiste a quien pidió baja, como marcó **Óscar** en su regla, y que el correo lleva un **enlace para darse de baja** visible."
+              body: "Bien. Antes de lanzar, dime cómo dejaste la lista y qué correo le llega al paciente. Quiero ver tu criterio antes de que salga."
 
         - slot: 4
           block_id: categorize_rows

@@ -316,7 +316,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
             "slideId": "datos-2",
             "blockId": "categorize_rows",
             "title": "¿Qué campos puede ver la inteligencia artificial?",
-            "body": "Para cada campo decide: **va al modelo**, **va transformado** o **no va**. La condición de salud no se negocia.",
+            "body": "Para cada campo decide: **va al modelo**, **va transformado** o **no va**. Aplica la política de datos del caso.",
             "caseContext": {
               "actions": [
                 {
@@ -569,7 +569,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
                 },
                 "timestamp": "Hoy, 11:20",
                 "subject": "Antes de lanzar",
-                "body": "Bien. Antes de lanzar confírmame que excluiste a quien pidió baja, como marcó **Óscar** en su regla, y que el correo lleva un **enlace para darse de baja** visible."
+                "body": "Bien. Antes de lanzar, dime cómo dejaste la lista y qué correo le llega al paciente. Quiero ver tu criterio antes de que salga."
               }
             }
           },
@@ -1803,7 +1803,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
             "slideId": "datos-2",
             "blockId": "categorize_rows",
             "title": "¿Qué campos puede ver la inteligencia artificial?",
-            "body": "Para cada campo decide: **va al modelo**, **va transformado** o **no va**. La dirección y el monto no se negocian.",
+            "body": "Para cada campo decide: **va al modelo**, **va transformado** o **no va**. Aplica la política de datos del caso.",
             "caseContext": {
               "actions": [
                 {
@@ -2056,7 +2056,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
                 },
                 "timestamp": "Hoy, 11:05",
                 "subject": "Antes de cerrar",
-                "body": "Bien. Antes de cerrar confírmame que escalaste los reclamos sin evidencia, como pidió **Hugo**, y que el aviso al cliente **no promete ningún monto** todavía."
+                "body": "Bien. Antes de cerrar, dime cómo dejaste la cola y qué aviso le llega al cliente. Quiero ver tu criterio antes de que salga."
               }
             }
           },
