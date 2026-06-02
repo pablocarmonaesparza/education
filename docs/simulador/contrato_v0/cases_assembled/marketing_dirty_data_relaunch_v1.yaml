@@ -377,7 +377,7 @@ case_assembly:
         - slot: 4
           block_id: reading_passive
           title: "Así llega el correo al cliente."
-          body: "Vista previa del correo final, como lo recibiría el segmento que elegiste. El sistema ya dejó fuera a los clientes que pidieron baja, como pidió Legal.\n\n---\n\n**Asunto:** Algo nuevo para ti en Aurora Retail\n\nHola, en Aurora Retail preparamos una selección para ti y un beneficio si vuelves esta semana.\n\n**[ Ver la selección ]**\n\n*Si ya no quieres recibir estos correos, puedes darte de baja aquí.*"
+          body: "Vista previa del correo final, como lo recibiría el segmento que elegiste.\n\n---\n\n**Asunto:** Algo nuevo para ti en Aurora Retail\n\nHola, en Aurora Retail preparamos una selección para ti y un beneficio si vuelves esta semana.\n\n**[ Ver la selección ]**\n\n*Si ya no quieres recibir estos correos, puedes darte de baja aquí.*"
 
         - slot: 5
           block_id: tradeoff_decision_memo
@@ -385,9 +385,9 @@ case_assembly:
           body: "Elige qué haces con el envío y escríbele el memo a Mariana. Es lo último: la decisión que vas a defender."
           content:
             decisions:
-              - { id: lanzar_lunes, title: "Lanzar el lunes", detail: "Si la base quedó limpia, las cifras inventadas se fueron y el correo lleva el enlace de baja, mándalo según el plan." }
-              - { id: piloto_controlado, title: "Piloto con un segmento", detail: "Si quieres bajar el riesgo, manda solo al segmento más seguro esta semana y mide antes de ampliar." }
-              - { id: pausar_y_limpiar, title: "Pausar para terminar de limpiar", detail: "Si a la base le falta poco, pausa, termina de limpiarla y manda más tarde esta semana." }
-              - { id: pausar_y_escalar, title: "Pausar y escalar a Legal", detail: "Si todavía hay clientes que pidieron baja, o el mensaje afirma algo que no puedes sostener, no mandes y avisa a Mariana y Legal." }
+              - { id: lanzar_lunes, title: "Lanzar el lunes", detail: "Enviar la campaña a todo el segmento el lunes, según el plan. Beneficio: cumples la fecha que pidió Mariana. Costo: si algo quedó sin limpiar, el error llega a toda la base." }
+              - { id: piloto_controlado, title: "Piloto con un segmento", detail: "Enviar solo a una parte esta semana y medir antes de ampliar. Beneficio: cazas problemas en chico. Costo: llegas a menos clientes de entrada." }
+              - { id: pausar_y_limpiar, title: "Pausar para terminar de limpiar", detail: "Detener el envío para cerrar la limpieza de la base. Beneficio: bajas el riesgo de datos. Costo: pierdes parte de la ventana de la semana." }
+              - { id: pausar_y_escalar, title: "Pausar y escalar a Legal", detail: "Subir las dudas a Mariana y Legal antes de enviar. Beneficio: respaldo formal. Costo: depende de su tiempo de respuesta." }
             memoPlaceholder: "Escribe a Mariana: qué decidiste, por qué, y qué cuidaste de la base y de los datos..."
             memoAudience: "Mariana Robles · Líder de Crecimiento"
