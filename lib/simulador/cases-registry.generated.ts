@@ -210,7 +210,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
             "slideId": "contexto-4",
             "blockId": "reading_kpi_cards",
             "title": "Cómo venía la reactivación en abril.",
-            "body": "Estos son los números base. El de en medio es **el que hay que superar**.",
+            "body": "Estos son los números base. El primero es **el que hay que superar**.",
             "caseContext": {
               "kpis": [
                 {
@@ -374,7 +374,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
             "title": "Escribe el límite de uso de datos.",
             "body": "En una o dos líneas, dile al **Asistente Lumen** qué **no** puede usar de esta lista. Esto va a guiar lo que le pidas después.",
             "caseContext": {
-              "placeholder": "Por ejemplo: no uses la condición de salud ni el correo; trata el nombre de forma genérica."
+              "placeholder": "Escribe aquí el límite de uso de datos, en una o dos líneas."
             }
           },
           {
@@ -462,7 +462,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
             "title": "Dile qué corregir.",
             "body": "Escríbele al **Asistente Lumen** qué cambiar del borrador anterior. Apunta a lo que marcaste.",
             "caseContext": {
-              "placeholder": "Por ejemplo: quita cualquier dato de salud, no inventes cifras y baja el tono de urgencia."
+              "placeholder": "Escribe aquí qué cambiar del borrador."
             }
           },
           {
@@ -674,7 +674,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
                 {
                   "id": "D",
                   "title": "Todos juntos",
-                  "body": "Todos los de la lista juntos, incluidos quienes pidieron baja."
+                  "body": "Todos los registros recibidos en la lista original, sin filtrar."
                 }
               ]
             }
@@ -728,7 +728,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
             "slideId": "cierre-4",
             "blockId": "reading_passive",
             "title": "Vista previa del correo final.",
-            "body": "Así quedaría el correo al segmento que elegiste, con el **enlace de baja** visible. Si excluiste bien, aquí no aparece nadie que pidió baja."
+            "body": "Así quedaría el correo al segmento que elegiste, con el **enlace de baja** visible."
           },
           {
             "slideId": "cierre-5",
@@ -1263,27 +1263,27 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
             "slideId": "revision-2",
             "blockId": "ai_comparison",
             "title": "Elige cómo cierra el mensaje.",
-            "body": "Cuatro formas de cerrar, de la más directa a la más suave. Elige la que le hablaría mejor a un cliente que ya te conoce.",
+            "body": "Cuatro formas de cerrar. Elige la que le hablaría mejor a un cliente que ya te conoce.",
             "caseContext": {
               "options": [
                 {
                   "id": "A",
-                  "title": "Directo",
+                  "title": "Cierre 1",
                   "body": "Vuelve esta semana y aprovecha el beneficio. Compra aquí."
                 },
                 {
                   "id": "B",
-                  "title": "Cercano",
+                  "title": "Cierre 2",
                   "body": "Si quieres pasar a ver lo nuevo, aquí está tu beneficio. Cuando gustes."
                 },
                 {
                   "id": "C",
-                  "title": "Suave",
+                  "title": "Cierre 3",
                   "body": "Te dejamos la selección por aquí. Si te late, el beneficio te espera."
                 },
                 {
                   "id": "D",
-                  "title": "Sobrio",
+                  "title": "Cierre 4",
                   "body": "Gracias por seguir con nosotros. Aquí tienes una selección y un beneficio si decides volver."
                 }
               ]
@@ -1861,7 +1861,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
             "title": "Escribe el límite de uso de datos.",
             "body": "En una o dos líneas, dile al **Asistente Vértiz** qué **no** puede usar de esta cola. Esto va a guiar lo que le pidas después.",
             "caseContext": {
-              "placeholder": "Por ejemplo: no uses la dirección ni el monto del reembolso; trata el nombre de forma genérica."
+              "placeholder": "Escribe aquí el límite de uso de datos, en una o dos líneas."
             }
           },
           {
@@ -1949,7 +1949,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
             "title": "Dile qué corregir.",
             "body": "Escríbele al **Asistente Vértiz** qué cambiar del borrador anterior. Apunta a lo que marcaste.",
             "caseContext": {
-              "placeholder": "Por ejemplo: quita la dirección, no confirmes ningún monto y baja el tono de urgencia."
+              "placeholder": "Escribe aquí qué cambiar del borrador."
             }
           },
           {
@@ -2140,7 +2140,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
             "slideId": "cierre-1",
             "blockId": "ai_comparison",
             "title": "Elige el lote que resuelves primero.",
-            "body": "Cuatro lotes posibles (y uno que no se debe tocar aún). Elige y di en una línea por qué.",
+            "body": "Cuatro lotes posibles. Elige cuál resuelves primero y di en una línea por qué.",
             "caseContext": {
               "options": [
                 {
@@ -2215,7 +2215,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
             "slideId": "cierre-4",
             "blockId": "reading_passive",
             "title": "Vista previa del aviso final.",
-            "body": "Así quedaría el aviso al lote que elegiste, con el **plazo de 72 horas** y sin promesa de monto. Si escalaste bien, aquí no aparece ningún reclamo sin evidencia."
+            "body": "Así quedaría el aviso al lote que elegiste, con el **plazo de 72 horas** y sin promesa de monto."
           },
           {
             "slideId": "cierre-5",
@@ -2232,7 +2232,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
                 {
                   "id": "pilotar_lote_claro",
                   "title": "Resolver el lote claro y escalar el resto",
-                  "detail": "Cerrar los casos con evidencia hoy y escalar los dudosos a Hugo. Beneficio: cierras lo seguro sin pagar de más. Costo: un día más en los dudosos."
+                  "detail": "Cerrar los casos con evidencia hoy y escalar los dudosos a Hugo. Beneficio: avanzas con lo que tiene prueba. Costo: el backlog no queda cerrado hoy y los dudosos siguen abiertos."
                 },
                 {
                   "id": "pausar_y_evidencia",

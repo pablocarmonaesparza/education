@@ -166,7 +166,7 @@ case_assembly:
           title: "Escribe el límite de uso de datos."
           body: "En una o dos líneas, dile al **Asistente Vértiz** qué **no** puede usar de esta cola. Esto va a guiar lo que le pidas después."
           content:
-            placeholder: "Por ejemplo: no uses la dirección ni el monto del reembolso; trata el nombre de forma genérica."
+            placeholder: "Escribe aquí el límite de uso de datos, en una o dos líneas."
 
         - slot: 5
           block_id: reading_attachment
@@ -216,7 +216,7 @@ case_assembly:
           title: "Dile qué corregir."
           body: "Escríbele al **Asistente Vértiz** qué cambiar del borrador anterior. Apunta a lo que marcaste."
           content:
-            placeholder: "Por ejemplo: quita la dirección, no confirmes ningún monto y baja el tono de urgencia."
+            placeholder: "Escribe aquí qué cambiar del borrador."
 
         - slot: 5
           block_id: ai_output_review
@@ -297,7 +297,7 @@ case_assembly:
         - slot: 1
           block_id: ai_comparison
           title: "Elige el lote que resuelves primero."
-          body: "Cuatro lotes posibles (y uno que no se debe tocar aún). Elige y di en una línea por qué."
+          body: "Cuatro lotes posibles. Elige cuál resuelves primero y di en una línea por qué."
           content:
             options:
               - { id: A, title: "Con evidencia", body: "Casos con foto o registro como V-1003 y V-1002, agrupados por evidencia adjunta." }
@@ -329,7 +329,7 @@ case_assembly:
         - slot: 4
           block_id: reading_passive
           title: "Vista previa del aviso final."
-          body: "Así quedaría el aviso al lote que elegiste, con el **plazo de 72 horas** y sin promesa de monto. Si escalaste bien, aquí no aparece ningún reclamo sin evidencia."
+          body: "Así quedaría el aviso al lote que elegiste, con el **plazo de 72 horas** y sin promesa de monto."
 
         - slot: 5
           block_id: tradeoff_decision_memo
@@ -338,6 +338,6 @@ case_assembly:
           content:
             decisions:
               - { id: resolver_todo_hoy, title: "Resolver todo hoy", detail: "Cerrar los ocho casos hoy. Beneficio: cierras el máximo de casos en plazo. Costo: si pagaste el robo sin prueba o el duplicado, gastas de más y das pie a fraude." }
-              - { id: pilotar_lote_claro, title: "Resolver el lote claro y escalar el resto", detail: "Cerrar los casos con evidencia hoy y escalar los dudosos a Hugo. Beneficio: cierras lo seguro sin pagar de más. Costo: un día más en los dudosos." }
+              - { id: pilotar_lote_claro, title: "Resolver el lote claro y escalar el resto", detail: "Cerrar los casos con evidencia hoy y escalar los dudosos a Hugo. Beneficio: avanzas con lo que tiene prueba. Costo: el backlog no queda cerrado hoy y los dudosos siguen abiertos." }
               - { id: pausar_y_evidencia, title: "Pausar y pedir evidencia", detail: "Detener los reembolsos hasta tener prueba de cada uno. Beneficio: cero pago indebido. Costo: pierdes la ventana de la semana." }
               - { id: escalar_a_finanzas, title: "Escalar los montos altos a Reembolsos", detail: "Subir el robo y los casos altos a Hugo antes de pagar. Beneficio: respaldo formal. Costo: depende de su tiempo." }

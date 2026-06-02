@@ -285,13 +285,13 @@ case_assembly:
         - slot: 2
           block_id: ai_comparison
           title: "Elige cómo cierra el mensaje."
-          body: "Cuatro formas de cerrar, de la más directa a la más suave. Elige la que le hablaría mejor a un cliente que ya te conoce."
+          body: "Cuatro formas de cerrar. Elige la que le hablaría mejor a un cliente que ya te conoce."
           content:
             options:
-              - { id: A, title: "Directo", body: "Vuelve esta semana y aprovecha el beneficio. Compra aquí." }
-              - { id: B, title: "Cercano", body: "Si quieres pasar a ver lo nuevo, aquí está tu beneficio. Cuando gustes." }
-              - { id: C, title: "Suave", body: "Te dejamos la selección por aquí. Si te late, el beneficio te espera." }
-              - { id: D, title: "Sobrio", body: "Gracias por seguir con nosotros. Aquí tienes una selección y un beneficio si decides volver." }
+              - { id: A, title: "Cierre 1", body: "Vuelve esta semana y aprovecha el beneficio. Compra aquí." }
+              - { id: B, title: "Cierre 2", body: "Si quieres pasar a ver lo nuevo, aquí está tu beneficio. Cuando gustes." }
+              - { id: C, title: "Cierre 3", body: "Te dejamos la selección por aquí. Si te late, el beneficio te espera." }
+              - { id: D, title: "Cierre 4", body: "Gracias por seguir con nosotros. Aquí tienes una selección y un beneficio si decides volver." }
 
         - slot: 3
           block_id: reading_message

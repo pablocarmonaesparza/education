@@ -95,7 +95,7 @@ case_assembly:
         - slot: 4
           block_id: reading_kpi_cards
           title: "Cómo venía la reactivación en abril."
-          body: "Estos son los números base. El de en medio es **el que hay que superar**."
+          body: "Estos son los números base. El primero es **el que hay que superar**."
           content:
             kpis:
               - { label: "Reactivación de citas a 30 días", value: "4.2%", delta: { direction: flat, label: "el número a superar", goodWhen: "más alto" } }
@@ -166,7 +166,7 @@ case_assembly:
           title: "Escribe el límite de uso de datos."
           body: "En una o dos líneas, dile al **Asistente Lumen** qué **no** puede usar de esta lista. Esto va a guiar lo que le pidas después."
           content:
-            placeholder: "Por ejemplo: no uses la condición de salud ni el correo; trata el nombre de forma genérica."
+            placeholder: "Escribe aquí el límite de uso de datos, en una o dos líneas."
 
         - slot: 5
           block_id: reading_attachment
@@ -216,7 +216,7 @@ case_assembly:
           title: "Dile qué corregir."
           body: "Escríbele al **Asistente Lumen** qué cambiar del borrador anterior. Apunta a lo que marcaste."
           content:
-            placeholder: "Por ejemplo: quita cualquier dato de salud, no inventes cifras y baja el tono de urgencia."
+            placeholder: "Escribe aquí qué cambiar del borrador."
 
         - slot: 5
           block_id: ai_output_review
@@ -303,7 +303,7 @@ case_assembly:
               - { id: A, title: "Inactivos recientes", body: "Pacientes con consentimiento activo y entrega correcta; conviene cuidar la frecuencia de correos." }
               - { id: B, title: "Cita vencida hace meses", body: "Pacientes reactivables; que abran no significa que agenden." }
               - { id: C, title: "Sin confirmar", body: "Pacientes que nunca confirmaron su consentimiento." }
-              - { id: D, title: "Todos juntos", body: "Todos los de la lista juntos, incluidos quienes pidieron baja." }
+              - { id: D, title: "Todos juntos", body: "Todos los registros recibidos en la lista original, sin filtrar." }
 
         - slot: 2
           block_id: ai_textfield_free
@@ -329,7 +329,7 @@ case_assembly:
         - slot: 4
           block_id: reading_passive
           title: "Vista previa del correo final."
-          body: "Así quedaría el correo al segmento que elegiste, con el **enlace de baja** visible. Si excluiste bien, aquí no aparece nadie que pidió baja."
+          body: "Así quedaría el correo al segmento que elegiste, con el **enlace de baja** visible."
 
         - slot: 5
           block_id: tradeoff_decision_memo

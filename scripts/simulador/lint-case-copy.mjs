@@ -81,6 +81,11 @@ const SPOILER_PATTERNS = [
   /\bno es de env[íi]o\b/i,
   /\belegir(lo|la) (es|ser[íi]a)\b/i,
   /\b(viola|incumple|rompe) (la )?(regla|pol[íi]tica)\b/i,
+  // Reveladores en narrativa/prompt: telegrafían la acción correcta o delatan un
+  // distractor antes de decidir (van también sobre slide.body, no solo opciones).
+  /\bsi (lo |la )?(hiciste|escalaste|exclu[íi]ste|limpiaste|validaste|filtraste|elegiste|clasificaste|marcaste|segmentaste|separaste)\w* (bien|correctamente|como debe)/i,
+  /\b(y )?(uno|una|el|la|los|las)\s+\w*\s*que no (se debe|debes|hay que|deber[íi]as?) (tocar|elegir|usar|enviar|incluir|mandar)/i,
+  /\baqu[íi] no (aparece|aparecen|sale|salen|debe aparecer|hay) (ning[úu]n|ninguna|nadie|nada)/i,
 ];
 
 // Títulos que NOMBRAN la falla del distractor (telegrafían sin decir "error").
@@ -98,6 +103,26 @@ const TITLE_SPOILER_PATTERNS = [
   // "directo", "formal", "breve", "sobrio" NO entran: describen forma, no calidad.)
   /^\s*(tono )?(agresivo|culposo|amenazante|insistente|cordial|c[áa]lido|urgente|apremiante|hostil|brusco)\s*$/i,
 ];
+
+// Placeholders de campos de texto: son la PISTA de formato del input, no la
+// respuesta. Un placeholder que da la instrucción/respuesta ("no uses la
+// dirección", "quita el monto") spoilea lo que el participante debe escribir.
+const PLACEHOLDER_SPOILER_PATTERNS = [
+  /\bno (uses|incluyas|menciones|confirmes|inventes|pongas|env[íi]es|des|pases)\b/i,
+  /\b(quita|elimina|borra|excluye) (la|el|los|las|cualquier|todo|tu)\b/i,
+  /\btrata el nombre\b/i,
+  /\busa un saludo gen[ée]rico\b/i,
+  /\bbaja (el|la) (tono|urgencia)\b/i,
+];
+
+function checkPlaceholder(str, where) {
+  for (const re of PLACEHOLDER_SPOILER_PATTERNS) {
+    if (re.test(str)) {
+      issues.push(`${where}: spoiler · el placeholder da la respuesta/instrucción · "${snippet(str)}"`);
+      return;
+    }
+  }
+}
 
 function checkSpoiler(str, where, isTitle = false) {
   for (const re of SPOILER_PATTERNS) {
@@ -134,6 +159,10 @@ function runSpoilerSelfTest() {
     ["Montos inventados", true, true],
     ["Insistente", true, true],
     ["Cordial", true, true],
+    // reveladores en narrativa/prompt
+    ["Si escalaste bien, aquí no aparece ningún reclamo sin evidencia.", false, true],
+    ["Cuatro lotes posibles (y uno que no se debe tocar aún).", false, true],
+    ["Si excluiste bien, aquí no aparece nadie que pidió baja.", false, true],
     // limpios (NO deben marcar)
     ["Te contactaremos con el resultado en un máximo de 72 horas.", false, false],
     ["Disponibilidad", true, false],
@@ -203,6 +232,9 @@ for (const fullPath of targets) {
       const where = `${id}/${sec.id}/slot${slide.slot}`;
       checkString(String(slide.title ?? ""), `${where}.title`);
       checkString(String(slide.body ?? ""), `${where}.body`);
+      // El título y el cuerpo (prompt/narrativa) tampoco deben revelar la respuesta.
+      checkSpoiler(String(slide.title ?? ""), `${where}.title`);
+      checkSpoiler(String(slide.body ?? ""), `${where}.body`);
       if (slide.content) walk(slide.content, `${where}.content`);
       // Anti-spoiler: bloques donde el participante ELIGE entre opciones. El
       // texto visible de cada opción no debe revelar ni evaluar cuál es correcta.
@@ -217,6 +249,9 @@ for (const fullPath of targets) {
           checkSpoiler(String(d.title ?? ""), `${where}.decisions[${i}].title`, true);
           checkSpoiler(String(d.detail ?? ""), `${where}.decisions[${i}].detail`);
         });
+      }
+      if (slide.content?.placeholder) {
+        checkPlaceholder(String(slide.content.placeholder), `${where}.placeholder`);
       }
     });
   });
