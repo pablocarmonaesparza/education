@@ -1,63 +1,82 @@
+import type { ReactNode } from "react";
+import { legalCopy } from "@/lib/simulador/copy/legal";
+import { AppleLink } from "@/components/simulador/apple";
+import "../(app)/simulador.css";
+
+/**
+ * /privacy — Aviso de privacidad.
+ *
+ * El contenido NO vive aquí: se renderiza desde la fuente canónica
+ * `lib/simulador/copy/legal.ts` (legalCopy.privacy_policy, versión por
+ * jurisdicción MX + CO). Editar el texto legal se hace en ese archivo.
+ */
+
+const { privacy_policy: pp, footer_disclaimer } = legalCopy;
+
+const JURISDICTIONS = [
+  { label: "México", policy: pp.MX },
+  { label: "Colombia", policy: pp.CO },
+];
+
+const isEmail = (s: string) =>
+  /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(s);
+
+/** Convierte los emails dentro de un texto en AppleLink mailto. */
+function withEmails(text: string): ReactNode[] {
+  return text
+    .split(/([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/g)
+    .map((part, i) =>
+      isEmail(part) ? (
+        <AppleLink key={i} href={`mailto:${part}`}>
+          {part}
+        </AppleLink>
+      ) : (
+        part
+      ),
+    );
+}
+
 export default function PrivacyPage() {
-  const currentDate = new Date().toLocaleDateString("es-ES", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
   return (
-    <main className="min-h-screen flex flex-col bg-[var(--surface)] text-[var(--text-primary)]">
-      <section className="flex-grow container mx-auto px-6 py-12 max-w-4xl">
-        <div className="text-xs uppercase tracking-widest text-[var(--text-tertiary)] mb-3">política de privacidad</div>
-        <h1 className="display display-tight text-4xl font-extrabold tracking-tight text-[var(--text-primary)] mb-3">
-          tus datos en itera simulador.
+    <div className="simulador-root min-h-screen bg-[var(--surface)] text-[var(--text-primary)]">
+      <main className="mx-auto max-w-[720px] px-6 py-16 sm:py-20">
+        <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
+          Aviso de privacidad.
         </h1>
-        <p className="text-sm text-[var(--text-tertiary)] mb-8">última actualización: {currentDate}</p>
+        <p className="mt-3 ts-footnote text-[var(--text-tertiary)]">
+          Última actualización: {pp.MX.last_updated}
+        </p>
 
-        <div className="rounded-[var(--radius-xl)] border border-[var(--hairline)] bg-[var(--surface-2)] p-6 space-y-6">
-          <section>
-            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">qué procesamos</h2>
-            <p className="text-base leading-7 text-[var(--text-secondary)]">
-              Itera Simulador procesa datos personales de participantes empleados: identificación básica (nombre, email), datos de uso (respuestas del caso vivo, transcript de prompts), outputs de IA durante el runtime, y datos comerciales (nombre de organización, plan contratado).
-            </p>
-          </section>
+        {JURISDICTIONS.map(({ label, policy }) => (
+          <section key={label} className="mt-14">
+            <div className="border-b border-[var(--hairline)] pb-3">
+              <h2 className="ts-body-lg font-semibold text-[var(--text-primary)]">
+                {label}
+              </h2>
+              <p className="mt-1.5 ts-subhead leading-[1.5] text-[var(--text-tertiary)]">
+                {policy.framework_citation}
+              </p>
+            </div>
 
-          <section>
-            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">marco legal</h2>
-            <p className="text-base leading-7 text-[var(--text-secondary)]">
-              México: LFPDPPP (Ley Federal de Protección de Datos Personales en Posesión de los Particulares, DOF 20/03/2025).
-              Colombia: Ley 1581 de 2012 + decretos reglamentarios.
-              Las transferencias a sub-procesadores en US (Supabase, Anthropic, Stripe, AgentMail, Vercel) se rigen por Standard Contractual Clauses.
-            </p>
+            <div className="mt-6 space-y-6">
+              {policy.sections.map((s) => (
+                <div key={s.title}>
+                  <h3 className="ts-headline font-semibold text-[var(--text-primary)]">
+                    {s.title}
+                  </h3>
+                  <p className="mt-1.5 ts-body leading-[1.6] text-[var(--text-secondary)]">
+                    {withEmails(s.body)}
+                  </p>
+                </div>
+              ))}
+            </div>
           </section>
+        ))}
 
-          <section>
-            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">tus derechos</h2>
-            <p className="text-base leading-7 text-[var(--text-secondary)]">
-              Como titular de datos puedes solicitar: acceso, rectificación, eliminación, oposición y portabilidad. Envía tu solicitud a <a href="mailto:privacy@itera.la" className="text-[var(--accent)] hover:underline">privacy@itera.la</a> y respondemos dentro de 5 días business. Eliminación toma hasta 30 días.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">retención</h2>
-            <p className="text-base leading-7 text-[var(--text-secondary)]">
-              Sessions activas + 30 días post-cierre. Reportes ejecutivos 12 meses, luego anonimizados. Audit logs 24 meses (baseline regulatorio). Eliminación a solicitud dentro de 30 días.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-[var(--text-primary)] mb-3">contacto</h2>
-            <p className="text-base leading-7 text-[var(--text-secondary)]">
-              <a href="mailto:privacy@itera.la" className="text-[var(--accent)] hover:underline">privacy@itera.la</a> para temas de datos personales.
-              <br />
-              <a href="mailto:legal@itera.la" className="text-[var(--accent)] hover:underline">legal@itera.la</a> para DPA enterprise y compliance.
-            </p>
-          </section>
-        </div>
-      </section>
-      <footer className="border-t border-[var(--hairline)] px-4 py-6 text-center text-sm text-[var(--text-tertiary)]">
-        © {new Date().getFullYear()} Itera
-      </footer>
-    </main>
+        <p className="mt-14 border-t border-[var(--hairline)] pt-6 ts-footnote leading-[1.6] text-[var(--text-tertiary)]">
+          {footer_disclaimer}
+        </p>
+      </main>
+    </div>
   );
 }
