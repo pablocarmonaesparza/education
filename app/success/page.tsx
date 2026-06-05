@@ -1,13 +1,17 @@
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import {
   isTerminalSimuladorPaymentSyncReason,
   syncSimuladorPaymentFromSession,
 } from "@/lib/stripe/simuladorBilling";
+import { AppleButtonLink, AppleIcon, AppleLink } from "@/components/simulador/apple";
+import "../(app)/simulador.css";
 
 interface SuccessPageProps {
   searchParams: Promise<{ session_id?: string }>;
 }
+
+const PRIMARY_BTN =
+  "w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none";
 
 /**
  * Server component — cierra el race con el webhook de Stripe.
@@ -26,30 +30,34 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
 
   if (!sync.ok && sync.reason === "payment_pending") {
     return (
-      <main className="min-h-screen flex flex-col bg-white dark:bg-gray-800">
-        <section className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center text-center">
-          <div className="w-24 h-24 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center mb-6">
-            <svg className="w-12 h-12 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 2m6-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
+      <div className="simulador-root min-h-screen surface-canvas">
+        <main className="px-6 py-16 min-h-screen flex items-center justify-center">
+          <div className="max-w-[400px] w-full mx-auto text-center flex flex-col items-center gap-6">
+            <div className="h-14 w-14 rounded-full grid place-items-center bg-[var(--band-m-bg)]">
+              <AppleIcon
+                name="clock"
+                size="lg"
+                className="text-[var(--band-m-text)]"
+              />
+            </div>
+            <div className="flex flex-col gap-3">
+              <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
+                Verificando tu pago.
+              </h1>
+              <p className="text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+                Stripe aún no confirma el pago. Esto toma unos segundos. Vuelve a
+                verificar si no avanza solo.
+              </p>
+            </div>
+            <AppleButtonLink
+              href={`/success?session_id=${sessionId}`}
+              className={PRIMARY_BTN}
+            >
+              Volver a verificar
+            </AppleButtonLink>
           </div>
-          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">
-            verificando tu pago
-          </h1>
-          <p className="text-lg text-gray-700 dark:text-gray-400 mb-8 max-w-md">
-            stripe aún no confirma el pago. esto toma unos segundos. recarga esta página si no avanza sola.
-          </p>
-          <Link
-            href={`/success?session_id=${sessionId}`}
-            className="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-          >
-            volver a verificar
-          </Link>
-        </section>
-        <footer className="border-t border-gray-200 dark:border-gray-700 px-4 py-6 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} Itera
-        </footer>
-      </main>
+        </main>
+      </div>
     );
   }
 
@@ -57,48 +65,60 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
     console.error("[/success] sync failed:", sync.reason);
     if (isTerminalSimuladorPaymentSyncReason(sync.reason)) {
       return (
-        <main className="min-h-screen flex flex-col bg-white dark:bg-gray-800">
-          <section className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center text-center">
-            <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">
-              no pudimos asociar el pago
-            </h1>
-            <p className="text-lg text-gray-700 dark:text-gray-400 mb-8 max-w-md">
-              tu pago se procesó pero no pudimos asociarlo a tu organización. escríbenos a hola@itera.la con tu email y te ayudamos en el momento.
-            </p>
-          </section>
-          <footer className="border-t border-gray-200 dark:border-gray-700 px-4 py-6 text-center text-sm text-gray-500">
-            © {new Date().getFullYear()} Itera
-          </footer>
-        </main>
+        <div className="simulador-root min-h-screen surface-canvas">
+          <main className="px-6 py-16 min-h-screen flex items-center justify-center">
+            <div className="max-w-[400px] w-full mx-auto text-center flex flex-col items-center gap-6">
+              <div className="h-14 w-14 rounded-full grid place-items-center bg-[var(--band-b-bg)]">
+                <AppleIcon
+                  name="alert"
+                  size="lg"
+                  className="text-[var(--band-b-text)]"
+                />
+              </div>
+              <div className="flex flex-col gap-3">
+                <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
+                  No pudimos asociar el pago.
+                </h1>
+                <p className="text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+                  Tu pago se procesó pero no pudimos asociarlo a tu organización.
+                  Escríbenos a{" "}
+                  <AppleLink href="mailto:hola@itera.la">hola@itera.la</AppleLink>{" "}
+                  con tu email y te ayudamos en el momento.
+                </p>
+              </div>
+            </div>
+          </main>
+        </div>
       );
     }
     redirect("/auth/signup?next=%2Fonboarding%2Forg");
   }
 
   return (
-    <main className="min-h-screen flex flex-col bg-white dark:bg-gray-800">
-      <section className="flex-grow container mx-auto px-4 py-8 flex flex-col items-center justify-center text-center">
-        <div className="w-24 h-24 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mb-6">
-          <svg className="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-          </svg>
+    <div className="simulador-root min-h-screen surface-canvas">
+      <main className="px-6 py-16 min-h-screen flex items-center justify-center">
+        <div className="max-w-[400px] w-full mx-auto text-center flex flex-col items-center gap-6">
+          <div className="h-14 w-14 rounded-full grid place-items-center bg-[var(--band-a-bg)]">
+            <AppleIcon
+              name="check"
+              size="lg"
+              className="text-[var(--band-a-text)]"
+            />
+          </div>
+          <div className="flex flex-col gap-3">
+            <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
+              Pago exitoso.
+            </h1>
+            <p className="text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+              Tu suscripción está activa. Ya puedes entrar al dashboard del
+              simulador.
+            </p>
+          </div>
+          <AppleButtonLink href="/dashboard" className={PRIMARY_BTN}>
+            Ir al dashboard
+          </AppleButtonLink>
         </div>
-        <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">
-          pago exitoso
-        </h1>
-        <p className="text-lg text-gray-700 dark:text-gray-400 mb-8">
-          tu suscripción está activa. puedes entrar al dashboard del simulador.
-        </p>
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-        >
-          ir al dashboard
-        </Link>
-      </section>
-      <footer className="border-t border-gray-200 dark:border-gray-700 px-4 py-6 text-center text-sm text-gray-500">
-        © {new Date().getFullYear()} Itera
-      </footer>
-    </main>
+      </main>
+    </div>
   );
 }
