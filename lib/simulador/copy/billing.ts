@@ -189,7 +189,7 @@ export const billingCopy = {
     },
     {
       q: "¿Tienen plan free o trial?",
-      a: "Sí, el field-test público en /field-test/marketing-urgent-campaign-pii. Es 1 caso individual sin login, con mini-reporte preliminar. No reemplaza el diagnóstico pago — sirve para que decidas si el método encaja con tu equipo.",
+      a: "Por ahora no hay trial público. El diagnóstico es pago; si quieres evaluar el método antes de contratar, escríbenos a ventas@itera.la y te mostramos un caso.",
     },
     {
       q: "¿Compliance y privacidad de datos?",

@@ -69,16 +69,6 @@ export default function LandingPage() {
             >
               Agendar diagnóstico para mi equipo
             </AppleButton>
-            <AppleButton
-              as={Link}
-              href="/field-test/marketing-urgent-campaign-pii"
-              tone="secondary"
-              radius="sm"
-              size="lg"
-              className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
-            >
-              Probar 1 caso de muestra →
-            </AppleButton>
           </motion.div>
 
           <motion.p
@@ -297,16 +287,6 @@ export default function LandingPage() {
             >
               Agendar diagnóstico →
             </AppleButton>
-            <AppleButton
-              as={Link}
-              href="/field-test/marketing-urgent-campaign-pii"
-              tone="secondary"
-              radius="sm"
-              size="lg"
-              className="border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] px-7 h-12 text-[15px] font-medium"
-            >
-              Probar 1 caso
-            </AppleButton>
           </motion.div>
         </div>
       </section>
@@ -412,7 +392,6 @@ export default function LandingPage() {
                 <li><a href="#como-funciona" className="hover:text-[var(--text-primary)]">Cómo funciona</a></li>
                 <li><a href="#casos" className="hover:text-[var(--text-primary)]">Casos del sprint</a></li>
                 <li><a href="#precio" className="hover:text-[var(--text-primary)]">Precios</a></li>
-                <li><a href="/field-test/marketing-urgent-campaign-pii" className="hover:text-[var(--text-primary)]">Probar demo</a></li>
               </ul>
             </div>
             <div>
