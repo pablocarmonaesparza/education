@@ -63,23 +63,23 @@ export function DesignOverridesInjector() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    const refresh = () => setCss(buildCss(readOverrides()));
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === OVERRIDES_STORAGE_KEY) refresh();
+    };
+
+    // Lecturas client-only al montar (localStorage no existe en SSR); el doble
+    // render inicial es intencional y aislado a este componente de tooling.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     setCss(buildCss(readOverrides()));
 
-    function refresh() {
-      setCss(buildCss(readOverrides()));
-    }
-
-    // Sync entre pestañas
-    window.addEventListener("storage", (e) => {
-      if (e.key === OVERRIDES_STORAGE_KEY) refresh();
-    });
-
-    // Sync intra-pestaña (la /design page emite este evento al editar)
+    // Sync entre pestañas + intra-pestaña (la /design page emite el custom event)
+    window.addEventListener("storage", onStorage);
     window.addEventListener("itera:design-overrides:update", refresh);
 
     return () => {
-      window.removeEventListener("storage", refresh);
+      window.removeEventListener("storage", onStorage);
       window.removeEventListener("itera:design-overrides:update", refresh);
     };
   }, []);

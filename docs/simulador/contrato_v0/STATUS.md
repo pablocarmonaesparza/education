@@ -18,6 +18,21 @@ el Case Factory:
 
 La meta inmediata es validar la estructura, no producir volumen.
 
+## catálogo assembled (validado + deployado)
+
+Aparte del golden de contrato, el track **assembled** (formato 5×5, 17 bloques de
+ejercicio) está validado con gates deterministas + juez adversarial calibrado y
+deployado en `origin/main`. Son los casos vivos en
+`lib/simulador/cases-registry.generated.ts`, sembrados por organización en runtime:
+
+- `vertiz_backlog_entregas_v1`
+- `lumen_reactivacion_citas_v1`
+- `marketing_dirty_data_relaunch_v1`
+
+Reconciliación de catálogos (assembled vs contrato/leveled): decisión de producto
+pendiente — cuál es el caso comercial V1. Ambos coexisten sin contradicción: el golden
+de contrato prueba el Case Factory; los assembled son los casos jugables/deployados.
+
 > nota: codex mantiene `coordinacion/`, `runtime/`, `schema/`; claude mantiene casos, rubricas, variantes, practice beats, copy y sprint package.
 
 ## estado por artefacto
@@ -33,7 +48,7 @@ La meta inmediata es validar la estructura, no producir volumen.
 | practice_beats catálogo | `practice_beats/*.yaml` | claude | ✅ done v1 | – | 4 stubs poblados: anonymize_keep_signal, validate_llm_output, objection_to_authority, spot_unverifiable_claims |
 | copy manager | `copy/manager_recommendation_templates.md` | claude | ✅ done v1 | – | 4 acciones con reglas de selección, slots, posfacio, tonos a evitar |
 | copy empleado | `copy/employee_runtime_strings.md` | claude | ✅ done v1 | – | onboarding sprint, strings por step type, errores, prueba de cordura |
-| sprint marketing_30d | `sprints/sprint_marketing_30d.yaml` | claude | ✅ done v1 | – | SKU vendible: 8 casos ready + 20 practice beats; pricing tentativo $79-199, deliverables manager+empleado |
+| sprint marketing_30d | `sprints/sprint_marketing_30d.yaml` | claude | 🗄️ retirado 2026-05-20 | – | HISTÓRICO — retirado del contrato activo (ver «reset de casos» arriba). NO es SKU vendible; se conserva la fila como registro del trabajo previo |
 | case_template marketing #2 | `casos/marketing_copy_with_brand_voice_v1.yaml` | claude | ✅ done v1 | – | tensión velocidad-vs-voz-de-marca; 5 steps incluyendo data_scope para contexto y artifact_review del output IA |
 | variant primary #2 | `variantes/marketing_copy_with_brand_voice__loop_b2b_v1.yaml` | claude | ✅ done v1 | – | Loop B2B SaaS corporate-cálido, 5 ejemplos históricos sintéticos LATAM |
 | variant resim #2 | `variantes/marketing_copy_with_brand_voice__nubefresh_b2c_resim_v1.yaml` | claude | ✅ done v1 | – | NubeFresh D2C tono irreverente gen z — contraste extremo para probar transferencia del PRINCIPIO de anclar tono |
@@ -122,7 +137,7 @@ claude completó pase 8 del contrato:
 - 1 rúbrica versionada con LLM-judge specs
 - 20 practice_beats poblados
 - 2 archivos de copy (manager + empleado)
-- 1 sprint package vendible (marketing_30d) con 8 casos ready + 0 planned
+- 1 sprint package marketing_30d con 8 casos ready (🗄️ RETIRADO 2026-05-20 del contrato activo — histórico, NO vendible; el contrato activo es el golden `sales_agent_followup_pipeline_v1` + el track assembled)
 - 7 memorias en docs/memory/ indexadas: arquitectura + primeros 3 casos + casos 4-7 + caso 8 + runtime Codex
 
 codex completó:

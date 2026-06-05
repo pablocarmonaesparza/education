@@ -33,6 +33,8 @@ export function DevReturnButton() {
     const interval = setInterval(() => {
       setVisible(readCookie("itera_dev_bypass") === "1");
     }, 500); // refresh state in case cookie was toggled in another tab
+    // Lectura inicial client-only de cookie al montar (no existe en SSR).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setVisible(readCookie("itera_dev_bypass") === "1");
     return () => clearInterval(interval);
   }, []);
