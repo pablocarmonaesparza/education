@@ -1,6 +1,7 @@
 export { AppleBadge } from "./AppleBadge";
 export { AppleButton } from "./AppleButton";
 export { AppleCard, AppleCardBody, AppleCardFooter, AppleCardHeader } from "./AppleCard";
+export { AppleCheckbox } from "./AppleCheckbox";
 export { AppleEmptyState } from "./AppleEmptyState";
 export { AppleErrorState } from "./AppleErrorState";
 export { AppleIcon } from "./AppleIcon";

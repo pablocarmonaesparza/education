@@ -16,18 +16,27 @@ import { cn } from "./utils";
  *
  *   <AppleLink href="/terms">términos</AppleLink>               // hereda 12px
  *   <AppleLink href="/x" className="font-medium">CTA</AppleLink> // 14px + 500
+ *
+ * Variante `muted`: gris + subrayado SIEMPRE, sin acento. Es para fine-print
+ * legal (términos, privacidad) que no debe competir con el botón azul primario
+ * de la pantalla. El subrayado mantiene la afordancia de link sin gritar color.
+ *
+ *   <AppleLink muted href="/terms">términos</AppleLink>         // gris subrayado
  */
 export function AppleLink({
   className,
   style,
+  muted,
   ...props
-}: LinkProps & { style?: CSSProperties }) {
+}: LinkProps & { style?: CSSProperties; muted?: boolean }) {
   return (
     <Link
       {...props}
       style={{ fontSize: "inherit", ...style }}
       className={cn(
-        "text-[var(--accent)] underline-offset-2 hover:underline",
+        muted
+          ? "text-[var(--text-primary)] underline underline-offset-2 decoration-[var(--border-strong)] hover:decoration-[var(--text-primary)]"
+          : "text-[var(--accent)] underline-offset-2 hover:underline",
         className,
       )}
     />
