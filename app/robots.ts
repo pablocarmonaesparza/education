@@ -25,7 +25,6 @@ export default function robots(): MetadataRoute.Robots {
           '/report',
           '/admin',
           '/onboarding',
-          '/field-test',
           '/success',
           '/cancel',
         ],

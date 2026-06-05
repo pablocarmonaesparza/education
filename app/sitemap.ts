@@ -6,7 +6,7 @@ const BASE_URL = 'https://itera.la';
  * Sitemap de Itera.
  *
  * Incluye solo rutas públicas cara-al-mundo. El runtime de casos, reportes,
- * dashboard y field-test no se indexan: son producto/app, no contenido SEO.
+ * dashboard y app autenticada no se indexan: son producto/app, no contenido SEO.
  *
  * Cuando se agreguen páginas estáticas nuevas (ej. case studies o contenido
  * editorial), añadirlas acá. No incluir rutas de diagnóstico o app privada.
