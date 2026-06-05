@@ -13,8 +13,15 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { AuthNav } from "@/components/simulador/AuthNav";
-import { AppleButton, AppleIcon } from "@/components/simulador/apple";
+import { AppleButton, AppleErrorState, AppleIcon } from "@/components/simulador/apple";
 import { createClient } from "@/lib/supabase/client";
+import "../../../(app)/simulador.css";
+
+const fadeUp = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const },
+};
 
 export default function InvitationLandingPage() {
   const router = useRouter();
@@ -68,97 +75,81 @@ export default function InvitationLandingPage() {
   }, [token, router]);
 
   return (
-    <>
-      <AuthNav mode="signup" next={`/auth/invitation/${token ?? ""}`} />
-      <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
+    <div className="simulador-root min-h-screen surface-canvas relative">
+      <div className="absolute inset-x-0 top-0 z-20">
+        <AuthNav />
+      </div>
+
+      <main className="px-6 py-16 min-h-screen flex items-center justify-center">
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="max-w-md w-full text-center"
+          {...fadeUp}
+          className="max-w-[400px] w-full mx-auto text-center"
         >
-          {status === "checking" && (
-            <p className="text-[15px] text-[var(--text-secondary)]">
-              Verificando invitación…
-            </p>
+          {(status === "checking" || status === "accepting") && (
+            <div className="flex flex-col items-center gap-5">
+              <div className="h-9 w-9 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
+              <p className="text-[15px] text-[var(--text-secondary)]">
+                {status === "checking"
+                  ? "Verificando invitación…"
+                  : "Aceptando invitación…"}
+              </p>
+            </div>
           )}
 
           {status === "needs_auth" && (
-            <>
-              <div className="eyebrow mb-4">Invitación al Simulador</div>
-              <h1 className="display display-tight text-[var(--text-primary)] text-[28px] sm:text-[36px]">
+            <div className="flex flex-col gap-6">
+              <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
                 Te invitaron a un diagnóstico.
               </h1>
-              <p className="mt-5 text-[16px] text-[var(--text-secondary)] leading-[1.55]">
-                Inicia sesión o regístrate con el email al que te enviaron
-                esta invitación. Después de autenticarte, la invitación se
-                aceptará automáticamente.
+              <p className="text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+                Inicia sesión o regístrate con el email al que te enviaron esta
+                invitación. Al autenticarte, se acepta automáticamente.
               </p>
-              <div className="mt-8 flex flex-col gap-3">
+              <div className="flex flex-col gap-3">
                 <AppleButton
                   onPress={() =>
-                    router.push(
-                      `/auth/signup?next=/auth/invitation/${token}`,
-                    )
+                    router.push(`/auth/signup?next=/auth/invitation/${token}`)
                   }
-                  radius="sm"
                   size="lg"
-                  className="accent-bg text-white h-12 text-[15px] font-medium shadow-none"
+                  className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none"
                 >
                   Crear cuenta
                 </AppleButton>
                 <AppleButton
                   onPress={() =>
-                    router.push(
-                      `/auth/login?next=/auth/invitation/${token}`,
-                    )
+                    router.push(`/auth/login?next=/auth/invitation/${token}`)
                   }
-                  variant="bordered"
                   tone="secondary"
-                  radius="sm"
                   size="lg"
-                  className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
+                  className="w-full h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium shadow-none"
                 >
                   Ya tengo cuenta
                 </AppleButton>
               </div>
-            </>
-          )}
-
-          {status === "accepting" && (
-            <p className="text-[15px] text-[var(--text-secondary)]">
-              Aceptando invitación…
-            </p>
+            </div>
           )}
 
           {status === "done" && (
-            <>
-              <div className="mx-auto h-12 w-12 rounded-full accent-bg-soft grid place-items-center mb-6">
+            <div className="flex flex-col items-center gap-6">
+              <div className="h-12 w-12 rounded-full accent-bg-soft grid place-items-center">
                 <AppleIcon name="check" className="text-[var(--accent)]" />
               </div>
-              <h1 className="display text-[24px] text-[var(--text-primary)]">
+              <h1 className="display display-tight text-[24px] leading-[1.15] text-[var(--text-primary)]">
                 Listo. Redirigiendo al dashboard…
               </h1>
-            </>
+            </div>
           )}
 
           {status === "error" && (
-            <>
-              <div className="text-[var(--band-b-text)] text-[16px] mb-4">
-                ⚠ {errorMsg ?? "Algo salió mal."}
-              </div>
-              <AppleButton
-                onPress={() => router.push("/")}
-                radius="sm"
-                size="lg"
-                className="accent-bg text-white h-12 px-6 text-[15px] font-medium shadow-none"
-              >
-                Ir al inicio
-              </AppleButton>
-            </>
+            <AppleErrorState
+              title="No pudimos aceptar la invitación."
+              body={errorMsg ?? "Algo salió mal. Intenta de nuevo."}
+              actionLabel="Ir al inicio"
+              onAction={() => router.push("/")}
+            />
           )}
         </motion.div>
       </main>
-    </>
+    </div>
   );
 }
