@@ -15,16 +15,20 @@ const fieldClassNames = {
   input:
     "text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]",
   inputWrapper:
-    "min-h-11 rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] shadow-none data-[hover=true]:bg-[var(--surface-2)] group-data-[focus=true]:border-[var(--accent)]",
+    "min-h-11 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] shadow-none data-[hover=true]:bg-[var(--surface-2)] group-data-[focus=true]:border-[var(--accent)]",
   errorMessage: "text-[13px] text-[var(--band-b-text)]",
   description: "text-[13px] text-[var(--text-tertiary)]",
 };
 
-export function AppleInput({ classNames, ...props }: InputProps) {
+export function AppleInput({ classNames, label, ...props }: InputProps) {
+  // Sistema: los textfields muestran SOLO placeholder, sin label arriba.
+  // El texto del label se preserva como aria-label (accesibilidad).
+  const a11yLabel = typeof label === "string" ? label : undefined;
   return (
     <Input
       labelPlacement="outside"
       variant="bordered"
+      aria-label={a11yLabel}
       {...props}
       classNames={{
         ...fieldClassNames,
@@ -35,12 +39,15 @@ export function AppleInput({ classNames, ...props }: InputProps) {
   );
 }
 
-export function AppleTextarea({ classNames, minRows = 4, ...props }: TextAreaProps) {
+export function AppleTextarea({ classNames, label, minRows = 4, ...props }: TextAreaProps) {
+  // Sistema: sin label arriba — solo placeholder. Label preservado como aria-label.
+  const a11yLabel = typeof label === "string" ? label : undefined;
   return (
     <Textarea
       labelPlacement="outside"
       variant="bordered"
       minRows={minRows}
+      aria-label={a11yLabel}
       {...props}
       classNames={{
         ...fieldClassNames,
@@ -60,7 +67,7 @@ export function AppleSelect({ classNames, ...props }: SelectProps) {
       classNames={{
         label: fieldClassNames.label,
         trigger:
-          "min-h-11 rounded-[var(--radius-sm)] border border-[var(--border)] bg-[var(--surface)] shadow-none data-[hover=true]:bg-[var(--surface-2)] data-[focus=true]:border-[var(--accent)]",
+          "min-h-11 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] shadow-none data-[hover=true]:bg-[var(--surface-2)] data-[focus=true]:border-[var(--accent)]",
         value: "text-[15px] text-[var(--text-primary)]",
         errorMessage: fieldClassNames.errorMessage,
         description: fieldClassNames.description,

@@ -26,15 +26,17 @@ const toneClass: Record<AppleButtonTone, string> = {
 export function AppleButton({
   className,
   tone = "primary",
-  radius = "sm",
   size = "md",
   ...props
 }: ButtonProps & { tone?: AppleButtonTone }) {
+  // Sistema (DEC-005): TODO control redondeado usa el mismo radio que los
+  // textfields (--radius-md). Se fuerza después de {...props} para que ningún
+  // uso pueda romper la consistencia con un radius distinto.
   return (
     <Button
-      radius={radius}
       size={size}
       {...props}
+      radius="md"
       className={cn(
         "min-h-11 px-4 text-[15px] font-medium shadow-none transition-[transform,opacity,background-color,border-color] duration-[var(--motion-fast)] ease-[var(--motion-ease)] active:scale-[0.98] active:opacity-95 disabled:scale-100",
         toneClass[tone],

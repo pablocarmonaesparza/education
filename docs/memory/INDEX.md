@@ -22,6 +22,7 @@ Fuentes canónicas actuales:
 ## operación
 
 - [las claves de api son de los clientes, no de Claude para construir](aprendizaje_claves_api_son_de_clientes.md) — 2026-06-01 — `[desarrollo, producto]` — Claude ES el modelo: genera, juzga y evalúa él mismo; la llave es del cliente en producción
+- [verificar opiniones de diseño de Pablo contra el HIG](metodologia_verificar_opiniones_diseno_con_hig.md) — 2026-06-05 — `[producto]` — toda opinión visual de Pablo se complementa, mide y valida contra el HIG antes de aplicar
 - [protocolo claude+codex](metodologia_protocolo_claude_codex.md)
 - [estructura de dominios](metodologia_estructura_dominios.md)
 - [ritual de cierre por dominio](metodologia_ritual_cierre_dominio.md)

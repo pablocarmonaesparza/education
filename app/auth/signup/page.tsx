@@ -15,10 +15,9 @@
 
 import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Link } from "@heroui/react";
 import { motion } from "framer-motion";
 import { AuthNav } from "@/components/simulador/AuthNav";
-import { AppleButton, AppleInput } from "@/components/simulador/apple";
+import { AppleButton, AppleInput, AppleLink } from "@/components/simulador/apple";
 import { createClient } from "@/lib/supabase/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import "../../(app)/simulador.css";
@@ -167,26 +166,24 @@ function SignupContent() {
   }
 
   return (
-    <div className="simulador-root min-h-screen surface-canvas">
-      <AuthNav mode="signup" next={next} />
+    <div className="simulador-root min-h-screen surface-canvas relative">
+      <div className="absolute inset-x-0 top-0 z-20">
+        <AuthNav />
+      </div>
 
-      <main className="px-6 py-10 min-h-[calc(100vh-3.5rem)] flex items-center justify-center">
-        <div className="max-w-[400px] w-full mx-auto">
+      <main className="px-6 py-16 min-h-screen flex items-center justify-center">
+        <div className="max-w-[400px] w-full mx-auto flex flex-col gap-6">
           <motion.div {...fadeUp} className="text-center">
-            <div className="eyebrow">Crear cuenta</div>
-            <h1 className="display display-tight mt-4 text-[28px] sm:text-[32px] text-[var(--text-primary)] leading-[1.1]">
+            <h1 className="display display-tight text-[28px] sm:text-[32px] text-[var(--text-primary)] leading-[1.1]">
               Empieza tu diagnóstico.
             </h1>
-            <p className="mt-3 text-[14px] text-[var(--text-secondary)] leading-[1.5]">
-              30 segundos. Luego configuras tu organización e invitas a tu equipo.
-            </p>
           </motion.div>
 
           {error && (
             <motion.div
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.05 }}
-              className="mt-8 p-4 rounded-2xl bg-[var(--band-b-bg)] text-[var(--band-b-text)] text-[13.5px] text-center leading-[1.5]"
+              className="p-4 rounded-2xl bg-[var(--band-b-bg)] text-[var(--band-b-text)] text-[13.5px] text-center leading-[1.5]"
             >
               {error}
             </motion.div>
@@ -196,7 +193,7 @@ function SignupContent() {
             <motion.div
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.05 }}
-              className="mt-8 p-4 rounded-2xl bg-[var(--band-a-bg)] text-[var(--band-a-text)] text-[13.5px] text-center leading-[1.5]"
+              className="p-4 rounded-2xl bg-[var(--band-a-bg)] text-[var(--band-a-text)] text-[13.5px] text-center leading-[1.5]"
             >
               {success}
             </motion.div>
@@ -206,7 +203,7 @@ function SignupContent() {
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.08 }}
             onSubmit={handleSubmit}
-            className="mt-8 space-y-5"
+            className="space-y-6"
           >
             <AppleInput
               label="Nombre completo"
@@ -246,7 +243,7 @@ function SignupContent() {
               isDisabled={loading || !email || !password || !name}
               radius="sm"
               size="lg"
-              className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none mt-2"
+              className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none"
             >
               {loading ? "Creando cuenta…" : "Crear cuenta"}
             </AppleButton>
@@ -255,7 +252,7 @@ function SignupContent() {
           <motion.div
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.12 }}
-            className="mt-6 flex items-center gap-4"
+            className="flex items-center gap-4"
           >
             <div className="flex-1 h-px bg-[var(--hairline)]" />
             <span className="text-[12px] text-[var(--text-tertiary)] tracking-wide">
@@ -267,7 +264,6 @@ function SignupContent() {
           <motion.div
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.14 }}
-            className="mt-4"
           >
             <AppleButton
               type="button"
@@ -305,39 +301,26 @@ function SignupContent() {
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.18 }}
-            className="mt-10 text-center text-[14px] text-[var(--text-secondary)]"
+            className="text-center text-[14px] text-[var(--text-secondary)]"
           >
             ¿Ya tienes cuenta?{" "}
-            <Link
+            <AppleLink
               href={`/auth/login${next !== "/onboarding/org" ? `?next=${encodeURIComponent(next)}` : ""}`}
-              className="text-[var(--accent)] hover:underline font-medium"
-              color="foreground"
+              className="font-medium"
             >
               Inicia sesión
-            </Link>
+            </AppleLink>
           </motion.p>
 
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.22 }}
-            className="mt-12 text-center text-[12px] text-[var(--text-tertiary)] leading-[1.55]"
+            className="text-center text-[12px] text-[var(--text-tertiary)] leading-[1.55]"
           >
             Al continuar aceptas nuestros{" "}
-            <Link
-              href="/terms"
-              className="underline"
-              color="foreground"
-            >
-              términos
-            </Link>{" "}
+            <AppleLink href="/terms">términos</AppleLink>{" "}
             y la{" "}
-            <Link
-              href="/privacy"
-              className="underline"
-              color="foreground"
-            >
-              política de privacidad
-            </Link>
+            <AppleLink href="/privacy">política de privacidad</AppleLink>
             .
           </motion.p>
         </div>

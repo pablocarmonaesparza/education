@@ -2,23 +2,13 @@
 
 import Image from "next/image";
 import { Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
-import { AppleButton } from "@/components/simulador/apple";
 
-export function AuthNav({
-  mode,
-  next,
-}: {
-  mode: "login" | "signup";
-  next: string;
-}) {
-  const isLogin = mode === "login";
-  const target = isLogin ? "/auth/signup" : "/auth/login";
-  const defaultNext = isLogin ? "/dashboard" : "/onboarding/org";
-  const href =
-    next && next !== defaultNext
-      ? `${target}?next=${encodeURIComponent(next)}`
-      : target;
-
+/**
+ * Nav de las pantallas de auth: solo el logo (vuelve al landing).
+ * El CTA a la pantalla hermana (crear cuenta / iniciar sesión) vive dentro
+ * del propio formulario, así que el nav se mantiene limpio.
+ */
+export function AuthNav() {
   return (
     <Navbar
       maxWidth="full"
@@ -41,18 +31,6 @@ export function AuthNav({
             />
           </Link>
         </NavbarBrand>
-      </NavbarContent>
-
-      <NavbarContent justify="end">
-        <AppleButton
-          as={Link}
-          href={href}
-          size="sm"
-          tone="ghost"
-          className="text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
-        >
-          {isLogin ? "Crear cuenta" : "Iniciar sesión"}
-        </AppleButton>
       </NavbarContent>
     </Navbar>
   );

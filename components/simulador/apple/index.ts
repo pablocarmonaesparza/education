@@ -6,6 +6,7 @@ export { AppleErrorState } from "./AppleErrorState";
 export { AppleIcon } from "./AppleIcon";
 export type { AppleIconName, AppleIconSize } from "./AppleIcon";
 export { AppleInput, AppleSelect, AppleTextarea } from "./AppleInput";
+export { AppleLink } from "./AppleLink";
 export {
   AppleModal,
   AppleModalBody,
