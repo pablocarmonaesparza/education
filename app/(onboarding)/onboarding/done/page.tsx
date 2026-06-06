@@ -107,8 +107,11 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
               ))}
             </ul>
 
-            <div className="mt-8">
-              <Cta href="/dashboard">{copy.dashboard_cta}</Cta>
+            <div className="mt-8 flex flex-col gap-3">
+              <Cta href="/onboarding/context">Personalizar mis casos →</Cta>
+              <Cta href="/dashboard" variant="secondary">
+                {copy.dashboard_cta}
+              </Cta>
             </div>
           </div>
         </main>

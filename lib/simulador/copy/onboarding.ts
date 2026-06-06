@@ -245,6 +245,44 @@ export const onboardingCopy = {
   },
 
   // ============================================================================
+  // Paso extra (post-pago) — /onboarding/context
+  // El brief que personaliza los casos al trabajo real del team (motor bespoke).
+  // El static library ya sembró casos base al crear el team; esto los afina async.
+  // Decisión (research): brief DESPUÉS del pago, 3-4 preguntas, valor instantáneo
+  // con los casos base + bespoke async sin bloquear.
+  // ============================================================================
+  step_context: {
+    eyebrow_context: "Afina tus casos",
+    headline: "¿Cómo usa IA tu team en el día a día?",
+    body:
+      "Con esto generamos casos a la medida del trabajo real de tu team. Tu equipo ya puede empezar con los casos base mientras los personalizamos.",
+    fields: {
+      role_label: "¿Qué rol tienen los participantes?",
+      role_placeholder: "ej. Analistas de Marketing",
+      level_label: "¿Qué tan avanzado está el team con IA?",
+      level_options: [
+        { key: "N1", label: "Fundamentos — apenas empiezan" },
+        { key: "N2", label: "Intermedio — uso regular" },
+        { key: "N3", label: "Avanzado — IA en flujos clave" },
+      ],
+      scenario_label: "Describe un flujo real donde usan IA",
+      scenario_placeholder:
+        "ej. redactan campañas con datos de clientes y la IA propone el copy; el dataset trae datos personales",
+      manager_label: "¿Qué te gustaría saber de tu team?",
+      manager_placeholder: "ej. si pueden usar IA sin exponer datos sensibles",
+      tools_label: "¿Qué herramientas de IA usan? (opcional)",
+      tools_placeholder: "ChatGPT, Copilot, asistente interno…",
+    },
+    submit_cta: "Generar mis casos →",
+    skip_cta: "Usar los casos base por ahora",
+    generating_headline: "Preparando tus casos a la medida…",
+    generating_body:
+      "Esto toma un par de minutos. Tu team ya puede empezar con los casos base en el dashboard; los a la medida aparecen en cuanto estén listos.",
+    error_generate:
+      "No pudimos arrancar la generación. Tus casos base siguen disponibles; puedes reintentar desde el dashboard.",
+  },
+
+  // ============================================================================
   // Estado intermedio — Stripe checkout return URL
   // (Pre-confirmación pago, antes de marcar org.subscribed)
   // ============================================================================
