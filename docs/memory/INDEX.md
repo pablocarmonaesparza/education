@@ -23,6 +23,10 @@ Fuentes canónicas actuales:
 
 - [las claves de api son de los clientes, no de Claude para construir](aprendizaje_claves_api_son_de_clientes.md) — 2026-06-01 — `[desarrollo, producto]` — Claude ES el modelo: genera, juzga y evalúa él mismo; la llave es del cliente en producción
 - [verificar opiniones de diseño de Pablo contra el HIG](metodologia_verificar_opiniones_diseno_con_hig.md) — 2026-06-05 — `[producto]` — toda opinión visual de Pablo se complementa, mide y valida contra el HIG antes de aplicar
+- [textfields sin label arriba, solo placeholder](decision_textfields_placeholder_only.md) — 2026-06-05 — `[producto]` — la instrucción va en el placeholder; nunca labels visibles arriba (regla de Pablo, system-wide)
+- [pantallas limpias para review — sin overlays de dev](decision_pantallas_review_sin_dev_overlays.md) — 2026-06-05 — `[producto]` — devIndicators:false; nada de badges/botones de dev encima de las superficies de producto
+- [indicador de pasos = AppleStepBar, no texto "Paso N de 5"](decision_indicador_pasos_stepbar.md) — 2026-06-06 — `[producto]` — barra segmentada consistente con la página de ejercicio; single source en components/simulador/apple/AppleStepBar.tsx
+- [el design system es el espejo de todo — promover, no duplicar](metodologia_design_system_fuente_unica.md) — 2026-06-06 — `[producto]` — diseñas en el lab → promueves al design system → el lab consume; nunca dos copias divergentes
 - [protocolo claude+codex](metodologia_protocolo_claude_codex.md)
 - [estructura de dominios](metodologia_estructura_dominios.md)
 - [ritual de cierre por dominio](metodologia_ritual_cierre_dominio.md)
