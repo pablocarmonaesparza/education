@@ -8,13 +8,17 @@
  * y disparamos la generación bespoke ASYNC (no bloquea): el motor corre en el
  * servidor y los casos a la medida aparecen en el dashboard al terminar.
  *
+ * Regla del sistema: sin labels arriba de los textfields; la instrucción (la
+ * pregunta) vive en el placeholder. AppleInput/AppleTextarea convierten `label`
+ * en `aria-label` (a11y) sin renderizar label visible.
+ *
  * NOTA (adelanto): la generación se dispara fire-and-forget (keepalive) contra
  * /api/orgs/[org_id]/cases/generate. Ese endpoint hoy corre inline (hasta 300s);
  * a escala va a una cola/worker. El brief rico (manager_wants_to_know, tools)
  * requiere extender el endpoint + buildBriefFromContext — pendiente.
  */
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
@@ -28,18 +32,6 @@ import {
 import { onboardingCopy } from "@/lib/simulador/copy/onboarding";
 
 const copy = onboardingCopy.step_context;
-
-/** Pregunta visible + campo (patrón de cuestionario: el label no es placeholder). */
-function Field({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div>
-      <label className="mb-1.5 block text-[14px] font-medium text-[var(--text-primary)]">
-        {label}
-      </label>
-      {children}
-    </div>
-  );
-}
 
 export default function OnboardingContextPage() {
   const router = useRouter();
@@ -59,11 +51,12 @@ export default function OnboardingContextPage() {
       router.push("/onboarding/org");
       return;
     }
-    // Patrón legítimo: hidratar IDs desde sessionStorage (client-only) en mount.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // Hidratar IDs desde sessionStorage (client-only) en mount — patrón legítimo;
+    // el rule set-state-in-effect es estricto aquí (igual que en org/team/invite).
+    /* eslint-disable react-hooks/set-state-in-effect */
     setOrgId(oid);
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTeamId(tid);
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [router]);
 
   function fireGeneration() {
@@ -141,63 +134,53 @@ export default function OnboardingContextPage() {
             {copy.body}
           </p>
 
-          <form onSubmit={onSubmit} className="mt-8 space-y-5">
-            <Field label={copy.fields.role_label}>
-              <AppleInput
-                placeholder={copy.fields.role_placeholder}
-                value={role}
-                onValueChange={setRole}
-                aria-label={copy.fields.role_label}
-                size="md"
-                autoFocus
-              />
-            </Field>
+          <form onSubmit={onSubmit} className="mt-8 space-y-4">
+            <AppleInput
+              label={copy.fields.role_label}
+              placeholder={copy.fields.role_placeholder}
+              value={role}
+              onValueChange={setRole}
+              size="md"
+              autoFocus
+            />
 
-            <Field label={copy.fields.level_label}>
-              <AppleSelect
-                placeholder="Selecciona el nivel"
-                aria-label={copy.fields.level_label}
-                selectedKeys={level ? [level] : []}
-                onSelectionChange={(keys) =>
-                  setLevel(Array.from(keys)[0] as string)
-                }
-                size="md"
-              >
-                {copy.fields.level_options.map((o) => (
-                  <SelectItem key={o.key}>{o.label}</SelectItem>
-                ))}
-              </AppleSelect>
-            </Field>
+            <AppleSelect
+              aria-label={copy.fields.level_label}
+              placeholder={copy.fields.level_label}
+              selectedKeys={level ? [level] : []}
+              onSelectionChange={(keys) =>
+                setLevel(Array.from(keys)[0] as string)
+              }
+              size="md"
+            >
+              {copy.fields.level_options.map((o) => (
+                <SelectItem key={o.key}>{o.label}</SelectItem>
+              ))}
+            </AppleSelect>
 
-            <Field label={copy.fields.scenario_label}>
-              <AppleTextarea
-                placeholder={copy.fields.scenario_placeholder}
-                value={scenario}
-                onValueChange={setScenario}
-                aria-label={copy.fields.scenario_label}
-                minRows={3}
-              />
-            </Field>
+            <AppleTextarea
+              label={copy.fields.scenario_label}
+              placeholder={copy.fields.scenario_placeholder}
+              value={scenario}
+              onValueChange={setScenario}
+              minRows={3}
+            />
 
-            <Field label={copy.fields.manager_label}>
-              <AppleTextarea
-                placeholder={copy.fields.manager_placeholder}
-                value={manager}
-                onValueChange={setManager}
-                aria-label={copy.fields.manager_label}
-                minRows={2}
-              />
-            </Field>
+            <AppleTextarea
+              label={copy.fields.manager_label}
+              placeholder={copy.fields.manager_placeholder}
+              value={manager}
+              onValueChange={setManager}
+              minRows={2}
+            />
 
-            <Field label={copy.fields.tools_label}>
-              <AppleInput
-                placeholder={copy.fields.tools_placeholder}
-                value={tools}
-                onValueChange={setTools}
-                aria-label={copy.fields.tools_label}
-                size="md"
-              />
-            </Field>
+            <AppleInput
+              label={copy.fields.tools_label}
+              placeholder={copy.fields.tools_placeholder}
+              value={tools}
+              onValueChange={setTools}
+              size="md"
+            />
 
             <div className="flex flex-col items-center gap-3 pt-2">
               <AppleButton

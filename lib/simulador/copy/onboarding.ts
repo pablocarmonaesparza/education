@@ -257,8 +257,10 @@ export const onboardingCopy = {
     body:
       "Con esto generamos casos a la medida del trabajo real de tu team. Tu equipo ya puede empezar con los casos base mientras los personalizamos.",
     fields: {
+      // Regla del sistema: cero labels arriba; la instrucción (la pregunta) vive
+      // en el placeholder. El _label solo alimenta el aria-label (a11y).
       role_label: "¿Qué rol tienen los participantes?",
-      role_placeholder: "ej. Analistas de Marketing",
+      role_placeholder: "¿Qué rol tienen los participantes?",
       level_label: "¿Qué tan avanzado está el team con IA?",
       level_options: [
         { key: "N1", label: "Fundamentos — apenas empiezan" },
@@ -267,11 +269,12 @@ export const onboardingCopy = {
       ],
       scenario_label: "Describe un flujo real donde usan IA",
       scenario_placeholder:
-        "ej. redactan campañas con datos de clientes y la IA propone el copy; el dataset trae datos personales",
+        "Describe un flujo real donde usan IA (ej. redactan campañas con datos de clientes; el dataset trae datos personales)",
       manager_label: "¿Qué te gustaría saber de tu team?",
-      manager_placeholder: "ej. si pueden usar IA sin exponer datos sensibles",
-      tools_label: "¿Qué herramientas de IA usan? (opcional)",
-      tools_placeholder: "ChatGPT, Copilot, asistente interno…",
+      manager_placeholder:
+        "¿Qué te gustaría saber de tu team? (ej. si pueden usar IA sin exponer datos sensibles)",
+      tools_label: "¿Qué herramientas de IA usan?",
+      tools_placeholder: "¿Qué herramientas de IA usan? (opcional)",
     },
     submit_cta: "Generar mis casos →",
     skip_cta: "Usar los casos base por ahora",
