@@ -16,10 +16,10 @@
 
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
+import { AppleButton } from "@/components/simulador/apple";
 import {
   computeSimuladorAmount,
   formatUsd,
@@ -260,16 +260,15 @@ function OnboardingBillingContent() {
               {copy.submit_enterprise_cta}
             </a>
           ) : (
-            <Button
+            <AppleButton
               onPress={onCheckout}
               isLoading={submitting}
               isDisabled={submitting}
-              radius="md"
               size="lg"
               className="accent-bg h-12 w-full text-[15px] font-medium text-white shadow-none"
             >
               {copy.submit_cta}
-            </Button>
+            </AppleButton>
           )}
           <div className="mt-2 flex items-center justify-center gap-3 text-[11px] text-[var(--text-tertiary)]">
             <Link href="/terms" className="underline hover:opacity-70 transition-opacity">

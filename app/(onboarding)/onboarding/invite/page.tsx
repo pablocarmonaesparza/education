@@ -19,9 +19,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Input } from "@heroui/react";
 import { motion } from "framer-motion";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
+import { AppleButton, AppleInput } from "@/components/simulador/apple";
 
 interface InviteRow {
   email: string;
@@ -163,27 +163,25 @@ export default function OnboardingInvitePage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="max-w-xl w-full"
+          className="max-w-[440px] w-full"
         >
-          <div className="eyebrow mb-4">Paso 3 de 5</div>
-          <h1 className="display display-tight text-[var(--text-primary)] text-[32px] sm:text-[40px]">
+          <div className="eyebrow mb-3">Paso 3 de 5</div>
+          <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
             ¿Quiénes van a hacer el diagnóstico?
           </h1>
 
           {!result ? (
-            <form onSubmit={onSubmit} className="mt-10">
+            <form onSubmit={onSubmit} className="mt-8">
               <div className="space-y-2">
                 {rows.map((row, index) => (
                   <div key={index} className="flex items-center gap-2">
                     <div className="flex-1">
-                      <Input
+                      <AppleInput
                         type="email"
                         placeholder="email@empresa.com"
                         value={row.email}
                         onValueChange={(v) => updateRow(index, { email: v })}
-                        variant="bordered"
-                        radius="lg"
-                        size="lg"
+                        size="md"
                         autoFocus={index === 0}
                         autoComplete="off"
                         aria-label={`Email del miembro ${index + 1}`}
@@ -227,7 +225,7 @@ export default function OnboardingInvitePage() {
                 <button
                   type="button"
                   onClick={addRow}
-                  className="inline-flex h-10 items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors"
+                  className="inline-flex h-10 items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden>
                     <line x1="12" y1="5" x2="12" y2="19" />
@@ -238,7 +236,7 @@ export default function OnboardingInvitePage() {
                 <button
                   type="button"
                   onClick={copyInviteLink}
-                  className="inline-flex h-10 items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors"
+                  className="inline-flex h-10 items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors"
                 >
                   {copied ? (
                     <>
@@ -264,36 +262,34 @@ export default function OnboardingInvitePage() {
               </p>
 
               {error && (
-                <div className="mt-4 rounded-[var(--radius-md)] bg-[var(--band-b-bg)] px-3 py-2 text-[13px] text-[var(--band-b-text)]">
+                <div className="mt-4 rounded-[var(--radius-md)] bg-[var(--band-b-bg)] px-3 py-2 text-[13.5px] text-[var(--band-b-text)]">
                   {error}
                 </div>
               )}
 
               <div className="mt-8 flex gap-3">
-                <Button
+                <AppleButton
                   onPress={() => router.push("/onboarding/team")}
-                  variant="bordered"
-                  radius="md"
+                  tone="secondary"
                   size="lg"
-                  className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
+                  className="h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium shadow-none"
                 >
                   ← Atrás
-                </Button>
-                <Button
+                </AppleButton>
+                <AppleButton
                   type="submit"
                   isLoading={submitting}
                   isDisabled={validCount === 0 || submitting}
-                  radius="md"
                   size="lg"
                   className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
                 >
                   Enviar {validCount || ""} invitación
                   {validCount === 1 ? "" : "es"}
-                </Button>
+                </AppleButton>
               </div>
             </form>
           ) : (
-            <div className="mt-10 space-y-5">
+            <div className="mt-8 space-y-5">
               <div className="rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-6">
                 <div className="flex items-center gap-3 mb-3">
                   <span className="h-2 w-2 rounded-full bg-[var(--band-a-bar)]" />
@@ -310,7 +306,7 @@ export default function OnboardingInvitePage() {
                 {result.skipped.length > 0 && (
                   <div className="mt-4 pt-4 border-t border-[var(--hairline)]">
                     <div className="eyebrow mb-2">No enviadas</div>
-                    <ul className="text-[13px] text-[var(--text-secondary)] space-y-1">
+                    <ul className="text-[13.5px] text-[var(--text-secondary)] space-y-1">
                       {result.skipped.map((s, i) => (
                         <li key={i}>
                           · {s.email} — {s.reason}
@@ -322,26 +318,24 @@ export default function OnboardingInvitePage() {
               </div>
 
               <div className="flex gap-3">
-                <Button
+                <AppleButton
                   onPress={() => {
                     setResult(null);
                     setRows([{ email: "", isAdmin: false }]);
                   }}
-                  variant="bordered"
-                  radius="md"
+                  tone="secondary"
                   size="lg"
-                  className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)]"
+                  className="h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium shadow-none"
                 >
                   Invitar más
-                </Button>
-                <Button
+                </AppleButton>
+                <AppleButton
                   onPress={onContinueToBilling}
-                  radius="md"
                   size="lg"
                   className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
                 >
                   Continuar a pago →
-                </Button>
+                </AppleButton>
               </div>
             </div>
           )}

@@ -135,7 +135,7 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
             <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
               {returnCopy.success_body}
             </p>
-            <p className="mt-2 text-[13px] text-[var(--text-tertiary)]">
+            <p className="mt-2 text-[13.5px] text-[var(--text-tertiary)]">
               {returnCopy.success_polling_note}
             </p>
             {sessionId && (
