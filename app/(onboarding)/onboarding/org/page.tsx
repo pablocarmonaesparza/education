@@ -10,9 +10,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Input, Select, SelectItem } from "@heroui/react";
+import { SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
+import { AppleButton, AppleInput, AppleSelect } from "@/components/simulador/apple";
 
 const INDUSTRIES = [
   { key: "saas_b2b", label: "SaaS B2B" },
@@ -90,106 +91,93 @@ export default function OnboardingOrgPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="max-w-xl w-full"
+          className="max-w-[440px] w-full"
         >
-          <div className="eyebrow mb-4">Paso 1 de 5</div>
-          <h1 className="display display-tight text-[var(--text-primary)] text-[32px] sm:text-[40px]">
+          <div className="eyebrow mb-3">Paso 1 de 5</div>
+          <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
             Cuéntanos sobre tu equipo
           </h1>
 
-          <form onSubmit={onSubmit} className="mt-10 space-y-3">
-            <Input
+          <form onSubmit={onSubmit} className="mt-8 space-y-4">
+            <AppleInput
               value={name}
               onValueChange={setName}
               placeholder="Nombre de la organización"
-              variant="bordered"
-              radius="lg"
-              size="lg"
+              size="md"
               autoFocus
             />
 
-            <Input
+            <AppleInput
               value={userJobTitle}
               onValueChange={setUserJobTitle}
               placeholder="Tu puesto (ej. Head of Marketing)"
-              variant="bordered"
-              radius="lg"
-              size="lg"
+              size="md"
             />
 
-            <Select
+            <AppleSelect
               placeholder="Industria"
               aria-label="Industria"
               selectedKeys={industry ? [industry] : []}
               onSelectionChange={(keys) =>
                 setIndustry(Array.from(keys)[0] as string)
               }
-              variant="bordered"
-              radius="lg"
-              size="lg"
+              size="md"
             >
               {INDUSTRIES.map((i) => (
                 <SelectItem key={i.key}>{i.label}</SelectItem>
               ))}
-            </Select>
+            </AppleSelect>
 
-            <Select
+            <AppleSelect
               placeholder="Región principal"
               aria-label="Región principal"
               selectedKeys={region ? [region] : []}
               onSelectionChange={(keys) =>
                 setRegion(Array.from(keys)[0] as string)
               }
-              variant="bordered"
-              radius="lg"
-              size="lg"
+              size="md"
             >
               {REGIONS.map((r) => (
                 <SelectItem key={r.key}>{r.label}</SelectItem>
               ))}
-            </Select>
+            </AppleSelect>
 
-            <Select
+            <AppleSelect
               placeholder="Tamaño del equipo"
               aria-label="Tamaño del equipo"
               selectedKeys={size ? [size] : []}
               onSelectionChange={(keys) =>
                 setSize(Array.from(keys)[0] as string)
               }
-              variant="bordered"
-              radius="lg"
-              size="lg"
+              size="md"
             >
               {SIZES.map((s) => (
                 <SelectItem key={s.key}>{s.label}</SelectItem>
               ))}
-            </Select>
+            </AppleSelect>
 
             {error && (
-              <div className="text-[13px] text-[var(--band-b-text)] bg-[var(--band-b-bg)] px-3 py-2 rounded-lg">
+              <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--band-b-bg)] text-[var(--band-b-text)] text-[13.5px] text-center leading-[1.5]">
                 {error}
               </div>
             )}
 
-            <div className="pt-4">
-              <Button
-                type="submit"
-                isLoading={submitting}
-                isDisabled={
-                  !name.trim() ||
-                  !userJobTitle.trim() ||
-                  !industry ||
-                  !region ||
-                  !size ||
-                  submitting
-                }
-                radius="md"
-                size="lg"
-                className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none w-full sm:w-auto"
-              >
-                Continuar →
-              </Button>
-            </div>
+            <AppleButton
+              type="submit"
+              isLoading={submitting}
+              isDisabled={
+                !name.trim() ||
+                !userJobTitle.trim() ||
+                !industry ||
+                !region ||
+                !size ||
+                submitting
+              }
+              size="lg"
+              className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none"
+            >
+              Continuar →
+            </AppleButton>
           </form>
         </motion.div>
       </main>
