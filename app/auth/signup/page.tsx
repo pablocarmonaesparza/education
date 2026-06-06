@@ -190,7 +190,7 @@ function SignupContent() {
             <motion.div
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.05 }}
-              className="p-4 rounded-2xl bg-[var(--band-b-bg)] text-[var(--band-b-text)] text-[13.5px] text-center leading-[1.5]"
+              className="p-4 rounded-[var(--radius-lg)] bg-[var(--band-b-bg)] text-[var(--band-b-text)] text-[13.5px] text-center leading-[1.5]"
             >
               {error}
             </motion.div>
@@ -200,7 +200,7 @@ function SignupContent() {
             <motion.div
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.05 }}
-              className="p-4 rounded-2xl bg-[var(--band-a-bg)] text-[var(--band-a-text)] text-[13.5px] text-center leading-[1.5]"
+              className="p-4 rounded-[var(--radius-lg)] bg-[var(--band-a-bg)] text-[var(--band-a-text)] text-[13.5px] text-center leading-[1.5]"
             >
               {success}
             </motion.div>

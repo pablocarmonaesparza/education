@@ -40,7 +40,7 @@ export function AppleSidebar({
           {title}
         </div>
         {subtitle && (
-          <p className="mt-1 text-[13px] leading-[1.4] text-[var(--text-tertiary)]">
+          <p className="mt-1 text-[13.5px] leading-[1.4] text-[var(--text-tertiary)]">
             {subtitle}
           </p>
         )}

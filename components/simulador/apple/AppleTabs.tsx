@@ -41,7 +41,7 @@ export function AppleTabs({
             tone={selected ? "secondary" : "ghost"}
             size="sm"
             className={cn(
-              "h-9 min-h-9 whitespace-nowrap px-3 text-[13px]",
+              "h-9 min-h-9 whitespace-nowrap px-3 text-[13.5px]",
               selected
                 ? "border-[var(--border-strong)] bg-[var(--surface)] shadow-[var(--shadow-xs)]"
                 : "text-[var(--text-secondary)]",

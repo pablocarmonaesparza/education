@@ -11,13 +11,13 @@ import {
 import { cn } from "./utils";
 
 const fieldClassNames = {
-  label: "text-[13px] font-medium text-[var(--text-secondary)]",
+  label: "text-[13.5px] font-medium text-[var(--text-secondary)]",
   input:
     "text-[15px] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)]",
   inputWrapper:
     "min-h-11 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] shadow-none data-[hover=true]:bg-[var(--surface-2)] group-data-[focus=true]:border-[var(--accent)]",
-  errorMessage: "text-[13px] text-[var(--band-b-text)]",
-  description: "text-[13px] text-[var(--text-tertiary)]",
+  errorMessage: "text-[13.5px] text-[var(--band-b-text)]",
+  description: "text-[13.5px] text-[var(--text-tertiary)]",
 };
 
 export function AppleInput({ classNames, label, ...props }: InputProps) {

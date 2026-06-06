@@ -23,6 +23,7 @@ import "../../(app)/simulador.css";
 import {
   AppleBadge,
   AppleButton,
+  AppleButtonLink,
   AppleCard,
   AppleCardBody,
   AppleCardFooter,
@@ -406,6 +407,14 @@ export default function ComponentsGalleryPage() {
               <AppleIcon name="check" size="sm" />
               Con icono
             </AppleButton>
+          </Spec>
+          <Spec label="como link (AppleButtonLink)">
+            <AppleButtonLink
+              href="#"
+              className="h-12 px-6 accent-bg text-white text-[15px] font-medium shadow-none"
+            >
+              Navega como link
+            </AppleButtonLink>
           </Spec>
         </Section>
 
