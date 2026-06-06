@@ -37,13 +37,14 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
     ],
   },
   {
-    group: "onboarding (5 steps)",
+    group: "onboarding (6 steps)",
     routes: [
       { path: "/onboarding/org", label: "1. Organización" },
       { path: "/onboarding/team", label: "2. Equipo" },
       { path: "/onboarding/invite", label: "3. Invitar" },
       { path: "/onboarding/billing", label: "4. Plan + pago" },
-      { path: "/onboarding/done", label: "5. Listo" },
+      { path: "/onboarding/done", label: "5. Listo (pago confirmado)", note: "sin session_id muestra el estado de pago no procesado" },
+      { path: "/onboarding/context", label: "6. Contexto (brief → motor)", note: "post-pago · genera casos a la medida" },
     ],
   },
   {
@@ -111,6 +112,34 @@ function readCookie(name: string): string | null {
   return match ? match[2] : null;
 }
 
+// Estado de flujo placeholder: con el bypass activo, sembramos sessionStorage
+// para que los pasos de onboarding (team/invite/billing/context) no reboten a
+// /onboarding/org por falta de flow-state. Las APIs fallan con estos IDs, pero
+// la UI se renderiza completa para QA visual.
+const ONBOARDING_PREVIEW: Record<string, string> = {
+  onboarding_org_id: "dev-preview-org",
+  onboarding_org_name: "Organización de prueba",
+  onboarding_team_id: "dev-preview-team",
+  onboarding_team_name: "Marketing",
+};
+
+function seedOnboardingPreview() {
+  if (typeof sessionStorage === "undefined") return;
+  for (const [k, v] of Object.entries(ONBOARDING_PREVIEW)) {
+    if (!sessionStorage.getItem(k)) sessionStorage.setItem(k, v);
+  }
+}
+
+function clearOnboardingPreview() {
+  if (typeof sessionStorage === "undefined") return;
+  for (const k of Object.keys(ONBOARDING_PREVIEW)) {
+    // Solo limpia el placeholder, no un flujo real en curso.
+    if (sessionStorage.getItem(k) === ONBOARDING_PREVIEW[k]) {
+      sessionStorage.removeItem(k);
+    }
+  }
+}
+
 function readReviewed(): Set<string> {
   if (typeof localStorage === "undefined") return new Set();
   try {
@@ -136,7 +165,9 @@ export default function DevMenuPage() {
 
   useEffect(() => {
     setMounted(true);
-    setBypassActive(readCookie("itera_dev_bypass") === "1");
+    const active = readCookie("itera_dev_bypass") === "1";
+    setBypassActive(active);
+    if (active) seedOnboardingPreview();
     setReviewed(readReviewed());
   }, []);
 
@@ -149,8 +180,10 @@ export default function DevMenuPage() {
     const newValue = !bypassActive;
     if (newValue) {
       document.cookie = `itera_dev_bypass=1; path=/; max-age=${7 * 24 * 60 * 60}`;
+      seedOnboardingPreview();
     } else {
       document.cookie = "itera_dev_bypass=; path=/; max-age=0";
+      clearOnboardingPreview();
     }
     setBypassActive(newValue);
   }

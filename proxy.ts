@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
+import { isDevBypassEnabled } from '@/lib/dev/devBypass'
 
 const protectedRoutes = [
   '/dashboard',
@@ -76,8 +77,16 @@ export async function proxy(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     // ── Auth layer: rutas activas del Simulador que requieren sesión ─────
+    // Dev bypass: la cookie itera_dev_bypass=1 (seteada desde /dev) salta el
+    // guard, igual que los layouts (app)/(onboarding). El proxy corre ANTES
+    // que los layouts, así que sin esto el bypass nunca funcionaba end-to-end.
+    // En prod se apaga con NEXT_PUBLIC_DEV_BYPASS_DISABLED=1 (lib/dev/devBypass).
+    const devBypass =
+      isDevBypassEnabled() &&
+      request.cookies.get('itera_dev_bypass')?.value === '1'
+
     // If the user is not authenticated and trying to access a protected route, redirect to login
-    if (!user && isProtected) {
+    if (!user && isProtected && !devBypass) {
       const loginUrl = new URL('/auth/login', request.url)
       loginUrl.searchParams.set('next', pathname)
       return NextResponse.redirect(loginUrl)
