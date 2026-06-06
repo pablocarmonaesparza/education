@@ -9,6 +9,7 @@
  */
 
 import { useEffect, useRef } from "react";
+import { AppleKpiCard } from "@/components/simulador/apple";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -92,52 +93,14 @@ export function ReadingKpiCards({
   return (
     <div className={`grid gap-4 ${gridCols}`}>
       {kpis.map((kpi, idx) => (
-        <div
+        <AppleKpiCard
           key={idx}
-          className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5"
-        >
-          <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-            {kpi.label}
-          </div>
-          <div className="mt-2 display display-tight ts-title-1 text-[var(--text-primary)] tabular-nums">
-            {kpi.value}
-          </div>
-          {kpi.delta && (
-            <div className="mt-2 inline-flex items-center gap-1 ts-footnote font-medium tabular-nums text-[var(--text-tertiary)]">
-              <DeltaGlyph direction={kpi.delta.direction} />
-              {kpi.delta.value}
-            </div>
-          )}
-          {/* `kpi.delta.goodWhen` es metadata interna del judge ·
-              NO se usa para colorear el delta · cumple regla
-              "no enseñar antes de medir" (DIAGNOSTICO_1_CASO_V0).
-              El juicio sobre si el delta es bueno/malo lo hace el
-              participante en slides posteriores, no el bloque. */}
-        </div>
+          label={kpi.label}
+          value={kpi.value}
+          delta={kpi.delta}
+        />
       ))}
     </div>
-  );
-}
-
-function DeltaGlyph({ direction }: { direction: Direction }) {
-  if (direction === "flat") {
-    return (
-      <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" aria-hidden>
-        <path d="M2 6H10" stroke="currentColor" strokeLinecap="round" strokeWidth="1.6" />
-      </svg>
-    );
-  }
-  const isUp = direction === "up";
-  return (
-    <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" aria-hidden>
-      <path
-        d={isUp ? "M6 9V3M6 3L3 6M6 3L9 6" : "M6 3V9M6 9L3 6M6 9L9 6"}
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="1.6"
-      />
-    </svg>
   );
 }
 

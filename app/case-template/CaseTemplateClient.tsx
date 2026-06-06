@@ -26,6 +26,7 @@
  */
 
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
+import { AppleSlideButton, AppleStepBar } from "@/components/simulador/apple";
 import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
 import { SlideBody } from "../exercise-lab/_shared/SlideBody";
 
@@ -91,31 +92,12 @@ export function CaseTemplateClient() {
               Sin padding lateral del wrapper para que 80% sea exacto. */}
           <div className="pt-8 pb-6">
             <div className="mx-auto w-[65%] max-w-[1200px]">
-              <div
-                role="progressbar"
-                aria-label={`Diapositiva ${ACTIVE_SLIDE_INDEX + 1} de ${SLIDES_PER_SECTION}`}
-                aria-valuemin={1}
-                aria-valuemax={SLIDES_PER_SECTION}
-                aria-valuenow={ACTIVE_SLIDE_INDEX + 1}
-                className="flex w-full gap-2"
-              >
-                {Array.from({ length: SLIDES_PER_SECTION }).map((_, idx) => {
-                  const isActive = idx === ACTIVE_SLIDE_INDEX;
-                  const isPast = idx < ACTIVE_SLIDE_INDEX;
-                  return (
-                    <div
-                      key={idx}
-                      className={`h-[3px] flex-1 rounded-full transition-colors ${
-                        isActive
-                          ? "bg-[var(--accent)] animate-pulse"
-                          : isPast
-                            ? "bg-[var(--text-secondary)]"
-                            : "bg-[var(--surface-3)]"
-                      }`}
-                    />
-                  );
-                })}
-              </div>
+              <AppleStepBar
+                total={SLIDES_PER_SECTION}
+                current={ACTIVE_SLIDE_INDEX}
+                className="w-full"
+                ariaLabel={`Diapositiva ${ACTIVE_SLIDE_INDEX + 1} de ${SLIDES_PER_SECTION}`}
+              />
             </div>
           </div>
 
@@ -153,19 +135,8 @@ export function CaseTemplateClient() {
 
               {/* Continuar · left-aligned justo debajo del ejercicio (gap ~40px),
                   con hint "Enter" estilo Typeform. */}
-              <div className="mt-10 flex items-center gap-4">
-                <button
-                  type="button"
-                  className="rounded-[var(--radius-md)] accent-bg px-7 py-3 ts-callout font-medium text-white shadow-none transition-opacity hover:opacity-90"
-                >
-                  Continuar →
-                </button>
-                <span className="ts-footnote text-[var(--text-tertiary)]">
-                  o pulsa{" "}
-                  <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
-                    Enter ↵
-                  </kbd>
-                </span>
+              <div className="mt-10">
+                <AppleSlideButton hint>Continuar →</AppleSlideButton>
               </div>
             </div>
           </section>

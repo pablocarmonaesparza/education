@@ -24,9 +24,9 @@ import { SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
 import {
-  AppleButton,
   AppleInput,
   AppleSelect,
+  AppleSlideButton,
   AppleTextarea,
 } from "@/components/simulador/apple";
 import { onboardingCopy } from "@/lib/simulador/copy/onboarding";
@@ -182,22 +182,23 @@ export default function OnboardingContextPage() {
               size="md"
             />
 
-            <div className="flex flex-col items-center gap-3 pt-2">
-              <AppleButton
+            <div className="pt-2">
+              <AppleSlideButton
                 type="submit"
                 isDisabled={!role.trim() || !level || !scenario.trim()}
-                size="lg"
-                className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none"
+                hint
               >
                 {copy.submit_cta}
-              </AppleButton>
-              <button
-                type="button"
-                onClick={() => router.push("/dashboard")}
-                className="text-[13.5px] text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-secondary)]"
-              >
-                {copy.skip_cta}
-              </button>
+              </AppleSlideButton>
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => router.push("/dashboard")}
+                  className="text-[13.5px] text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-secondary)]"
+                >
+                  {copy.skip_cta}
+                </button>
+              </div>
             </div>
           </form>
         </motion.div>

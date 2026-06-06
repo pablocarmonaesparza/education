@@ -10,6 +10,7 @@
  */
 
 import { useEffect, useRef } from "react";
+import { AppleMessageCard } from "@/components/simulador/apple";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -82,99 +83,15 @@ export function ReadingMessage({
   }, []);
 
   return (
-    <div className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
-      {/* Header del mensaje · canal + timestamp */}
-      <div className="flex items-center justify-between border-b border-[var(--hairline)] pb-3">
-        <span className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-          {channelLabel(message.channel)}
-        </span>
-        <span className="ts-caption-1 text-[var(--text-tertiary)] tabular-nums">
-          {message.timestamp}
-        </span>
-      </div>
-
-      {/* From / To · avatar + nombres */}
-      <div className="mt-4 flex items-start gap-3">
-        <div
-          className="grid h-10 w-10 flex-shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] ts-callout font-semibold text-[var(--accent)]"
-          aria-hidden
-        >
-          {initials(message.from.name)}
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className="flex items-baseline gap-2">
-            <span className="ts-body font-medium text-[var(--text-primary)]">
-              {message.from.name}
-            </span>
-            {message.from.role && (
-              <span className="ts-caption-1 text-[var(--text-tertiary)]">
-                · {message.from.role}
-              </span>
-            )}
-          </div>
-          {message.to && (
-            <div className="mt-0.5 ts-caption-1 text-[var(--text-tertiary)]">
-              Para: {message.to.name}
-              {message.to.role && ` · ${message.to.role}`}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Subject (opcional, solo email/ticket) */}
-      {message.subject && (
-        <div className="mt-4 ts-callout font-semibold text-[var(--text-primary)]">
-          {message.subject}
-        </div>
-      )}
-
-      {/* Body del mensaje */}
-      <div className="mt-3 ts-body leading-[1.6] text-[var(--text-secondary)] whitespace-pre-wrap">
-        {renderInlineBold(message.body)}
-      </div>
-    </div>
+    <AppleMessageCard
+      channel={message.channel}
+      from={message.from}
+      to={message.to}
+      timestamp={message.timestamp}
+      subject={message.subject}
+      body={message.body}
+    />
   );
-}
-
-function channelLabel(channel: Channel): string {
-  switch (channel) {
-    case "email":
-      return "Email";
-    case "chat":
-      return "Chat";
-    case "ticket":
-      return "Ticket";
-  }
-}
-
-function initials(name: string): string {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .filter(Boolean)
-    .slice(0, 2)
-    .join("")
-    .toUpperCase();
-}
-
-// Render mini-markdown inline: solo soporta **bold** dentro del whitespace-pre-wrap.
-// Para markdown completo del body usar <SlideBody>; aquí queremos preservar saltos
-// de línea originales del mensaje.
-function renderInlineBold(text: string): React.ReactNode {
-  const parts = text.split(/(\*\*[^*]+\*\*)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith("**") && part.endsWith("**")) {
-      return (
-        <strong
-          key={i}
-          className="font-semibold text-[var(--text-primary)]"
-        >
-          {part.slice(2, -2)}
-        </strong>
-      );
-    }
-    return part;
-  });
 }
 
 export function readingMessageCompletion(_payload: ReadingMessagePayload) {

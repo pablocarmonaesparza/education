@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
-import { AppleButton, AppleInput, AppleSelect } from "@/components/simulador/apple";
+import { AppleButton, AppleInput, AppleSelect, AppleSlideButton, AppleStepBar } from "@/components/simulador/apple";
 
 const DEPARTMENTS = [
   { key: "marketing", label: "Marketing / Growth" },
@@ -94,7 +94,7 @@ export default function OnboardingTeamPage() {
           transition={{ duration: 0.4 }}
           className="max-w-[440px] w-full"
         >
-          <div className="eyebrow mb-3">Paso 2 de 5</div>
+          <AppleStepBar total={5} current={1} ariaLabel="Paso 2 de 5" className="mb-6" />
           <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
             ¿Qué equipo vas a diagnosticar primero?
           </h1>
@@ -131,7 +131,7 @@ export default function OnboardingTeamPage() {
               </div>
             )}
 
-            <div className="flex gap-3 pt-2">
+            <div className="flex items-center gap-3 pt-2">
               <AppleButton
                 onPress={() => router.push("/onboarding/org")}
                 tone="secondary"
@@ -140,7 +140,7 @@ export default function OnboardingTeamPage() {
               >
                 ← Atrás
               </AppleButton>
-              <AppleButton
+              <AppleSlideButton
                 type="submit"
                 isLoading={submitting}
                 isDisabled={
@@ -148,11 +148,9 @@ export default function OnboardingTeamPage() {
                   (department === "otro" && !name.trim()) ||
                   submitting
                 }
-                size="lg"
-                className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
               >
                 Continuar →
-              </AppleButton>
+              </AppleSlideButton>
             </div>
           </form>
         </motion.div>

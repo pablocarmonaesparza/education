@@ -231,7 +231,7 @@ export function ModelTradeoffSliders({
           <>
             <BrandMark brand={recommendedModel.brand} />
             <div className="min-w-0 flex-1">
-              <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+              <div className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
                 Modelo recomendado
               </div>
               <div className="mt-0.5 ts-body font-semibold text-[var(--text-primary)]">
@@ -258,15 +258,10 @@ export function ModelTradeoffSliders({
       {/* Justificación · aparece cuando ya hay recomendación · el juez
           construye narrativa con el porqué, no solo con los números. */}
       {recommendedModel && (
-        <div className="space-y-2">
-          <label
-            htmlFor={`${slideId}-rationale`}
-            className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]"
-          >
-            ¿Por qué priorizaste así?
-          </label>
+        <div>
           <textarea
             id={`${slideId}-rationale`}
+            aria-label="¿Por qué priorizaste así?"
             value={payload.rationale_text}
             onChange={(e) => {
               const next: ModelTradeoffSlidersPayload = {

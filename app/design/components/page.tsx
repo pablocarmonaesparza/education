@@ -42,13 +42,24 @@ import {
   AppleProgress,
   AppleSelect,
   AppleSkeleton,
+  AppleSlideButton,
+  AppleSortableList,
+  AppleStepBar,
   AppleStepDots,
   AppleTabs,
   AppleTextarea,
   AppleToast,
+  ChoiceButton,
+  CompareCard,
+  GuidedSlideOptions,
+  Range10,
   type AppleStepDot,
   type AppleTabItem,
 } from "@/components/simulador/apple";
+import { exerciseBlocks } from "@/lib/simulador/exercise-blocks.generated";
+import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
+import { DesignHubNav } from "../DesignHubNav";
+import { BlockBoundary } from "./BlockBoundary";
 
 // ============================================================================
 // Layout helpers — la galería usa los mismos tokens que muestra
@@ -94,7 +105,7 @@ function Spec({
 }) {
   return (
     <div className={wide ? "w-full max-w-[360px]" : ""}>
-      <div className="ts-caption-1 mb-2 font-medium uppercase tracking-wide text-[var(--text-tertiary)]">
+      <div className="ts-caption-1 mb-2 font-medium text-[var(--text-tertiary)]">
         {label}
       </div>
       <div className="flex flex-wrap items-center gap-3">{children}</div>
@@ -214,6 +225,85 @@ function SelectDemo() {
   );
 }
 
+function ExercisePrimitivesDemo() {
+  const [choice, setChoice] = useState("a");
+  const [guided, setGuided] = useState("Resumir el hilo");
+  const [weight, setWeight] = useState(50);
+  const [variant, setVariant] = useState<"a" | "b">("a");
+  return (
+    <>
+      <Spec label="ChoiceButton (selección simple)" wide>
+        {["a", "b", "c"].map((k) => (
+          <ChoiceButton
+            key={k}
+            selected={choice === k}
+            onClick={() => setChoice(k)}
+          >
+            Opción {k.toUpperCase()}
+          </ChoiceButton>
+        ))}
+      </Spec>
+      <Spec label="GuidedSlideOptions (radio guiado)" wide>
+        <GuidedSlideOptions
+          options={["Resumir el hilo", "Extraer pendientes", "Redactar respuesta"]}
+          value={guided}
+          onChange={setGuided}
+        />
+      </Spec>
+      <Spec label="Range10 (slider 0–100)" wide>
+        <Range10 label="Calidad" value={weight} onChange={setWeight} />
+      </Spec>
+      <Spec label="CompareCard (comparación A/B)" wide>
+        <div className="grid w-full grid-cols-2 gap-3">
+          <CompareCard
+            selected={variant === "a"}
+            onClick={() => setVariant("a")}
+            title="Versión A"
+            body="Tono directo, una sola pregunta de cierre."
+          />
+          <CompareCard
+            selected={variant === "b"}
+            onClick={() => setVariant("b")}
+            title="Versión B"
+            body="Tono cálido, dos opciones de seguimiento."
+          />
+        </div>
+      </Spec>
+    </>
+  );
+}
+
+function SortableListDemo() {
+  const [items, setItems] = useState([
+    { id: "1", label: "Leer el correo del cliente" },
+    { id: "2", label: "Resumir el problema" },
+    { id: "3", label: "Proponer una solución" },
+    { id: "4", label: "Pedir aprobación" },
+  ]);
+  return (
+    <Spec label="arrastra el handle ≡ para reordenar" wide>
+      <div className="w-full">
+        <AppleSortableList
+          items={items}
+          getItemKey={(it) => it.id}
+          onReorder={setItems}
+          renderItem={(it, idx, handle) => (
+            <div className="flex items-center gap-2 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5">
+              {handle}
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-[var(--surface-3)] ts-caption-2 font-semibold text-[var(--text-secondary)]">
+                {idx + 1}
+              </span>
+              <span className="ts-subhead text-[var(--text-primary)]">
+                {it.label}
+              </span>
+            </div>
+          )}
+        />
+      </div>
+    </Spec>
+  );
+}
+
 function TabsDemo() {
   const [tab, setTab] = useState("desc");
   const items: AppleTabItem[] = [
@@ -284,6 +374,7 @@ export default function ComponentsGalleryPage() {
 
   return (
     <div className="simulador-root min-h-screen bg-[var(--surface-2)] text-[var(--text-primary)]">
+      <DesignHubNav />
       {/* Header */}
       <header className="sticky top-0 z-10 border-b border-[var(--hairline)] bg-[var(--surface)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-[1000px] items-center justify-between gap-4 px-6 py-4">
@@ -419,6 +510,62 @@ export default function ComponentsGalleryPage() {
         </Section>
 
         <Section
+          name="Botón de slide (Typeform)"
+          importName="AppleSlideButton"
+          purpose="El CTA 'Continuar →' estilo Typeform de los casos. El mismo botón en case-lab, runtime de casos y el onboarding. Acento sólido, hint Enter opcional, disabled en gris, loading con spinner."
+        >
+          <Spec label="con hint Enter" wide>
+            <AppleSlideButton hint>Continuar →</AppleSlideButton>
+          </Spec>
+          <Spec label="estados">
+            <AppleSlideButton>Activo</AppleSlideButton>
+            <AppleSlideButton isDisabled>Deshabilitado</AppleSlideButton>
+            <AppleSlideButton isLoading>Cargando</AppleSlideButton>
+          </Spec>
+        </Section>
+
+        {/* ---- Bloques de ejercicio (case-lab / exercise-lab) ---- */}
+        <Section
+          name="Bloques de ejercicio"
+          importName="17 bloques · app/exercise-lab/blocks/"
+          purpose="Los 17 bloques canónicos del registry, montados vía ExerciseBlockRenderer. Viven en el case-lab/exercise-lab y se prueban vivos ahí; este es su índice en el design system."
+        >
+          <div className="w-full space-y-6">
+            <div className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
+              render vivo · ancho del runtime · contenido demo por default
+            </div>
+            {exerciseBlocks.map((b) => (
+                <div
+                  key={b.id}
+                  className="rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5"
+                >
+                  <div className="mb-4 flex flex-wrap items-center gap-2">
+                    {b.labRef && (
+                      <span className="rounded bg-[var(--surface-3)] px-1.5 py-0.5 ts-caption-2 font-mono text-[var(--text-tertiary)]">
+                        {b.labRef}
+                      </span>
+                    )}
+                    <span className="ts-subhead font-medium text-[var(--text-primary)]">
+                      {b.publicName}
+                    </span>
+                    <code className="ts-caption-2 font-mono text-[var(--text-tertiary)]">
+                      {b.id}
+                    </code>
+                  </div>
+                  <BlockBoundary>
+                    <ExerciseBlockRenderer
+                      blockId={b.id}
+                      sessionId={null}
+                      mode="lab_demo"
+                      slideId={`ds-${b.id}`}
+                    />
+                  </BlockBoundary>
+                </div>
+              ))}
+            </div>
+        </Section>
+
+        <Section
           name="Input / Textarea"
           importName="AppleInput · AppleTextarea"
           purpose="Campos sin label arriba (solo placeholder + aria-label). Estados: default, requerido, error, disabled."
@@ -440,6 +587,22 @@ export default function ComponentsGalleryPage() {
           purpose="Caja 20px, radius proporcional, relleno acento. El texto va como label real; los links legales no togglean."
         >
           <CheckboxDemo />
+        </Section>
+
+        <Section
+          name="Primitivos de ejercicio"
+          importName="ChoiceButton · GuidedOption · Range10 · CompareCard"
+          purpose="Controles de selección y comparación de los bloques ricos del exercise lab. Promovidos al design system (AppleExercisePrimitives); los bloques los consumen vía shim. Conservan su nombre sin prefijo Apple para no romper su API."
+        >
+          <ExercisePrimitivesDemo />
+        </Section>
+
+        <Section
+          name="Lista reordenable"
+          importName="AppleSortableList"
+          purpose="Lista re-ordenable por arrastre (HTML5 DnD nativo, sin deps). Solo el handle ≡ arrastra; el resto de la fila queda clickeable. La usa WorkflowBuilder."
+        >
+          <SortableListDemo />
         </Section>
 
         {/* ---- Containers ---- */}
@@ -609,6 +772,18 @@ export default function ComponentsGalleryPage() {
         >
           <Spec label="pasos" wide>
             <AppleStepDots steps={STEP_DOTS} />
+          </Spec>
+        </Section>
+
+        <Section
+          name="Step bar"
+          importName="AppleStepBar"
+          purpose="Barra segmentada de progreso por pasos. La misma del onboarding y el runtime de ejercicios. Acepta onSelect para hacer los segmentos navegables."
+        >
+          <Spec label="pasos" wide>
+            <div className="w-full max-w-[440px]">
+              <AppleStepBar total={5} current={2} />
+            </div>
           </Spec>
         </Section>
 

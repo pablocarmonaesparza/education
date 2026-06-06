@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { RuntimeNav } from "@/components/simulador/RuntimeNav";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
+import { AppleSlideButton, AppleStepBar } from "@/components/simulador/apple";
 import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
 import { SlideBody } from "./_shared/SlideBody";
 
@@ -565,27 +566,12 @@ function ScrollLines({
   // que cada ExerciseSection, centrada por left-1/2 + -translate-x-1/2.
   return (
     <div className="simulador-root fixed left-1/2 top-[68px] z-30 w-[65%] max-w-[1200px] -translate-x-1/2 px-0">
-      <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${total}, minmax(0, 1fr))` }}>
-        {Array.from({ length: total }).map((_, index) => (
-          <button
-            key={index}
-            type="button"
-            aria-label={`Ir a sección ${index + 1}`}
-            onClick={() => onSelect(index)}
-            className="group h-7 min-w-0 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-          >
-            <span
-              className={`block h-[3px] rounded-sm transition-colors ${
-                index === activeIndex
-                  ? "bg-[var(--accent)]"
-                  : index < activeIndex
-                    ? "bg-[var(--text-secondary)]"
-                    : "bg-[var(--surface-3)]"
-              }`}
-            />
-          </button>
-        ))}
-      </div>
+      <AppleStepBar
+        total={total}
+        current={activeIndex}
+        onSelect={onSelect}
+        ariaLabel="Secciones del laboratorio"
+      />
     </div>
   );
 }
@@ -625,20 +611,10 @@ function ExerciseSection({
         <div className="mt-8">{children}</div>
 
         {onContinue && (
-          <div className="mt-10 flex items-center gap-4">
-            <button
-              type="button"
-              onClick={onContinue}
-              className="rounded-[var(--radius-md)] accent-bg px-7 py-3 ts-callout font-medium text-white shadow-none transition-opacity hover:opacity-90"
-            >
+          <div className="mt-10">
+            <AppleSlideButton onClick={onContinue} hint>
               Continuar →
-            </button>
-            <span className="ts-footnote text-[var(--text-tertiary)]">
-              o pulsa{" "}
-              <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
-                Enter ↵
-              </kbd>
-            </span>
+            </AppleSlideButton>
           </div>
         )}
       </div>
@@ -759,7 +735,7 @@ function GuidedPromptExercise({
         <div className="flex h-full flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+              <div className="text-[12px] font-medium text-[var(--text-tertiary)]">
                 Inputs y selección
               </div>
               <div className="mt-1 text-[18px] font-semibold text-[var(--text-primary)]">
@@ -874,7 +850,7 @@ function GuidedPromptExercise({
         </div>
 
         <div className="h-full rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
-          <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+          <div className="text-[12px] font-medium text-[var(--text-tertiary)]">
             Respuestas
           </div>
           <div className="mt-4 grid gap-3">
@@ -1301,7 +1277,7 @@ function AIPromptComposer({
                   {modelGroups.map((group, groupIndex) => (
                     <div key={group.title}>
                       {groupIndex > 0 && <div className="mx-3 my-1.5 h-px bg-[var(--hairline)]" />}
-                      <div className="px-3 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
+                      <div className="px-3 pb-1 pt-1.5 text-[10px] font-semibold text-[var(--text-tertiary)]">
                         {group.title}
                       </div>
                       {group.families.map((family, familyIndex) => (
@@ -1555,7 +1531,7 @@ function AttachmentTray({
 }) {
   return (
     <div className="mx-3 mb-3 grid gap-2 rounded-2xl bg-[var(--surface-2)] p-3">
-      <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+      <div className="text-[11px] font-medium text-[var(--text-tertiary)]">
         Adjuntos para analizar
       </div>
       <div className="grid gap-2">
@@ -2028,7 +2004,7 @@ function AgentBrief({
       <div className="flex min-h-[400px] flex-col">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+            <div className="text-[12px] font-medium text-[var(--text-tertiary)]">
               Construye el brief
             </div>
             <p className="mt-2 max-w-xl text-[15px] leading-6 text-[var(--text-secondary)]">
@@ -2082,7 +2058,7 @@ function AgentBrief({
       </div>
 
       <div className="flex min-h-[400px] flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface-2)] p-4">
-        <div className="text-[12px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+        <div className="text-[12px] font-medium text-[var(--text-tertiary)]">
           Brief del agente
         </div>
         <div className="mt-4 grid gap-2">

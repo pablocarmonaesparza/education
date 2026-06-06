@@ -267,7 +267,7 @@ export function AIPromptComposer({
                   {modelGroups.map((group, groupIndex) => (
                     <div key={group.title}>
                       {groupIndex > 0 && <div className="mx-3 my-1.5 h-px bg-[var(--hairline)]" />}
-                      <div className="px-3 pb-1 pt-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
+                      <div className="px-3 pb-1 pt-1.5 text-[10px] font-semibold text-[var(--text-tertiary)]">
                         {group.title}
                       </div>
                       {group.families.map((family, familyIndex) => (

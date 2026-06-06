@@ -16,6 +16,7 @@
  */
 
 import { useEffect, useRef } from "react";
+import { AppleActionChip } from "@/components/simulador/apple";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -162,49 +163,22 @@ export function CategorizeRows({
               role="group"
               aria-label={`Acción para ${row.label}`}
             >
-              {actions.map((a) => {
-                const isSelected = rowAction === a.value;
-                return (
-                  <button
-                    key={a.value}
-                    type="button"
-                    onClick={() => update(row.id, a.value)}
-                    aria-pressed={isSelected}
-                    className={chipClass(isSelected, a.value, actionStyle)}
-                  >
-                    {a.label}
-                  </button>
-                );
-              })}
+              {actions.map((a) => (
+                <AppleActionChip
+                  key={a.value}
+                  label={a.label}
+                  value={a.value}
+                  selected={rowAction === a.value}
+                  style={actionStyle}
+                  onClick={() => update(row.id, a.value)}
+                />
+              ))}
             </div>
           </div>
         );
       })}
     </div>
   );
-}
-
-function chipClass(
-  isSelected: boolean,
-  value: string,
-  style: ActionStyle,
-): string {
-  const base =
-    "min-h-9 rounded-[var(--radius-md)] border px-3 py-1.5 ts-caption-1 font-medium transition-colors";
-  if (!isSelected) {
-    return `${base} border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]`;
-  }
-  if (style === "permission") {
-    if (value === "permitir") return `${base} border-[var(--band-a-text)] bg-[var(--band-a-bg)] text-[var(--band-a-text)]`;
-    if (value === "revisar") return `${base} border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]`;
-    if (value === "bloquear") return `${base} border-[var(--band-b-text)] bg-[var(--band-b-bg)] text-[var(--band-b-text)]`;
-  }
-  if (style === "severity") {
-    if (value === "riesgo") return `${base} border-[var(--band-b-text)] bg-[var(--band-b-bg)] text-[var(--band-b-text)]`;
-    if (value === "escalar") return `${base} border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]`;
-    if (value === "normal") return `${base} border-[var(--band-a-text)] bg-[var(--band-a-bg)] text-[var(--band-a-text)]`;
-  }
-  return `${base} border-[var(--accent)] bg-[var(--accent)] text-white`;
 }
 
 export function categorizeRowsCompletion(payload: CategorizeRowsPayload) {

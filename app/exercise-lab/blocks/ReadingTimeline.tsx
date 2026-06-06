@@ -9,6 +9,7 @@
  */
 
 import { useEffect, useRef } from "react";
+import { AppleTimeline } from "@/components/simulador/apple";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -87,64 +88,7 @@ export function ReadingTimeline({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <ol className="relative">
-      {events.map((event, idx) => {
-        const isLast = idx === events.length - 1;
-        return (
-          <li key={idx} className="relative grid grid-cols-[64px_1fr] gap-4">
-            {/* Columna izquierda · when + dot + línea vertical */}
-            <div className="relative flex flex-col items-end pt-1">
-              <span
-                className={`ts-caption-1 font-medium tabular-nums ${
-                  event.emphasis
-                    ? "text-[var(--accent)]"
-                    : "text-[var(--text-tertiary)]"
-                }`}
-              >
-                {event.when}
-              </span>
-            </div>
-            {/* Columna derecha · dot inline + texto */}
-            <div className={`relative pb-6 ${isLast ? "pb-0" : ""}`}>
-              {/* Línea vertical (excepto último) */}
-              {!isLast && (
-                <span
-                  aria-hidden
-                  className="absolute left-[5px] top-3 bottom-0 w-px bg-[var(--hairline)]"
-                />
-              )}
-              {/* Dot */}
-              <span
-                aria-hidden
-                className={`absolute left-0 top-2 grid h-[11px] w-[11px] place-items-center rounded-full border-2 ${
-                  event.emphasis
-                    ? "border-[var(--accent)] bg-[var(--accent)]"
-                    : "border-[var(--text-tertiary)] bg-[var(--surface)]"
-                }`}
-              />
-              <div className="pl-5">
-                <div
-                  className={`ts-body ${
-                    event.emphasis
-                      ? "font-semibold text-[var(--text-primary)]"
-                      : "text-[var(--text-primary)]"
-                  }`}
-                >
-                  {event.what}
-                </div>
-                {event.who && (
-                  <div className="mt-0.5 ts-footnote text-[var(--text-tertiary)]">
-                    {event.who}
-                  </div>
-                )}
-              </div>
-            </div>
-          </li>
-        );
-      })}
-    </ol>
-  );
+  return <AppleTimeline events={events} />;
 }
 
 export function readingTimelineCompletion(_payload: ReadingTimelinePayload) {

@@ -133,15 +133,10 @@ export function WorkflowBuilder({
 
       {/* Justificación · el judge necesita el porqué del orden, no solo
           el orden mismo · cumple "evidencia narrativa" del cierre. */}
-      <div className="space-y-2">
-        <label
-          htmlFor={`${slideId}-rationale`}
-          className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]"
-        >
-          ¿Por qué este orden?
-        </label>
+      <div>
         <textarea
           id={`${slideId}-rationale`}
+          aria-label="¿Por qué este orden?"
           value={payload.rationale_text}
           onChange={(e) => {
             persist({ ...payload, rationale_text: e.target.value });

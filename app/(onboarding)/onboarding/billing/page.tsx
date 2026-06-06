@@ -19,7 +19,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
-import { AppleButton } from "@/components/simulador/apple";
+import { AppleButton, AppleStepBar } from "@/components/simulador/apple";
 import {
   computeSimuladorAmount,
   formatUsd,
@@ -134,7 +134,7 @@ function OnboardingBillingContent() {
           transition={{ duration: 0.4 }}
           className="mx-auto w-full max-w-[720px] px-6 pt-8 sm:pt-10"
         >
-          <div className="eyebrow mb-2">Paso 4 de 5</div>
+          <AppleStepBar total={5} current={3} ariaLabel="Paso 4 de 5" className="mb-5" />
           <h1 className="display display-tight text-[var(--text-primary)] text-[28px] sm:text-[32px]">
             {copy.headline}
           </h1>

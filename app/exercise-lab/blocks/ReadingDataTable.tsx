@@ -9,6 +9,7 @@
  */
 
 import { useEffect, useRef } from "react";
+import { AppleDataTable } from "@/components/simulador/apple";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -81,54 +82,12 @@ export function ReadingDataTable({
   }, []);
 
   return (
-    <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)]">
-      {table.caption && (
-        <div className="border-b border-[var(--hairline)] px-4 py-3 ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-          {table.caption}
-        </div>
-      )}
-      <div className="overflow-x-auto">
-        <table className="w-full ts-subhead">
-          <thead>
-            <tr className="bg-[var(--surface-2)]">
-              {table.columns.map((col) => (
-                <th
-                  key={col.key}
-                  scope="col"
-                  className={`px-4 py-2.5 ts-caption-1 font-medium text-[var(--text-tertiary)] ${alignClass(col.align)}`}
-                >
-                  {col.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {table.rows.map((row, idx) => (
-              <tr
-                key={idx}
-                className={idx < table.rows.length - 1 ? "border-b border-[var(--hairline)]" : ""}
-              >
-                {table.columns.map((col) => (
-                  <td
-                    key={col.key}
-                    className={`px-4 py-3 text-[var(--text-primary)] ${alignClass(col.align)} ${col.align === "right" ? "tabular-nums" : ""}`}
-                  >
-                    {row[col.key] ?? "·"}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <AppleDataTable
+      caption={table.caption}
+      columns={table.columns}
+      rows={table.rows}
+    />
   );
-}
-
-function alignClass(align?: "left" | "right" | "center"): string {
-  if (align === "right") return "text-right";
-  if (align === "center") return "text-center";
-  return "text-left";
 }
 
 export function readingDataTableCompletion(_payload: ReadingDataTablePayload) {

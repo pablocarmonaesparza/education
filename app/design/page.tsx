@@ -23,6 +23,7 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import "../(app)/simulador.css";
+import { DesignHubNav } from "./DesignHubNav";
 import {
   ALL_TOKENS,
   OVERRIDES_STORAGE_KEY,
@@ -363,7 +364,7 @@ function Catalog() {
             <div className="ts-headline font-semibold text-[var(--text-primary)]">Headline 17</div>
             <p className="ts-body text-[var(--text-secondary)]">Body 15 — párrafo principal con el tono general de descripción.</p>
             <p className="ts-subhead text-[var(--text-secondary)]">Subhead 13.5 — texto secundario que aparece dentro de cards.</p>
-            <p className="ts-caption-1 text-[var(--text-tertiary)] uppercase tracking-wider">caption · meta</p>
+            <p className="ts-caption-1 text-[var(--text-tertiary)]">caption · meta</p>
           </div>
         </div>
 
@@ -542,6 +543,7 @@ export default function DesignSystemPage() {
 
   return (
     <main className="simulador-root min-h-screen surface-canvas">
+      <DesignHubNav />
       <div className="mx-auto flex max-w-[1280px] flex-col gap-8 px-6 py-10 lg:flex-row lg:gap-10 lg:px-10 lg:py-14">
         {/* ============== SIDEBAR / TOC ============== */}
         <aside className="lg:sticky lg:top-10 lg:h-[calc(100vh-5rem)] lg:w-[220px] flex-none">

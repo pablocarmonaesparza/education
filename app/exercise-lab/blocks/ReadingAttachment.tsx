@@ -9,6 +9,7 @@
  */
 
 import { useEffect, useRef } from "react";
+import { AppleAttachmentCard } from "@/components/simulador/apple";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -91,78 +92,16 @@ export function ReadingAttachment({
   return (
     <div className="flex flex-col gap-2">
       {attachments.map((att, idx) => (
-        <div
+        <AppleAttachmentCard
           key={idx}
-          className="grid grid-cols-[44px_1fr_auto] items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-3"
-        >
-          <div
-            className="grid h-11 w-11 place-items-center rounded-[var(--radius-md)] bg-[var(--accent-soft)] text-[var(--accent)]"
-            aria-hidden
-          >
-            <FileGlyph kind={att.kind} />
-          </div>
-          <div className="min-w-0">
-            <div className="ts-body font-medium text-[var(--text-primary)] truncate">
-              {att.name}
-            </div>
-            {att.description && (
-              <div className="mt-0.5 ts-footnote text-[var(--text-tertiary)] line-clamp-1">
-                {att.description}
-              </div>
-            )}
-          </div>
-          <div className="ts-caption-1 tabular-nums text-[var(--text-tertiary)]">
-            {att.size}
-          </div>
-        </div>
+          name={att.name}
+          size={att.size}
+          kind={att.kind}
+          description={att.description}
+        />
       ))}
     </div>
   );
-}
-
-function FileGlyph({ kind }: { kind: FileKind }) {
-  // SVG simple de documento con badge de extensión
-  const label = labelFor(kind);
-  return (
-    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path
-        d="M7 3H14L19 8V20C19 20.55 18.55 21 18 21H7C6.45 21 6 20.55 6 20V4C6 3.45 6.45 3 7 3Z"
-        stroke="currentColor"
-        strokeLinejoin="round"
-        strokeWidth="1.6"
-      />
-      <path d="M14 3V8H19" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.6" />
-      <text
-        x="12.5"
-        y="17.5"
-        textAnchor="middle"
-        className="font-semibold"
-        style={{ fontSize: 5.2, fill: "currentColor" }}
-      >
-        {label}
-      </text>
-    </svg>
-  );
-}
-
-function labelFor(kind: FileKind): string {
-  switch (kind) {
-    case "pdf":
-      return "PDF";
-    case "docx":
-      return "DOC";
-    case "xlsx":
-      return "XLS";
-    case "csv":
-      return "CSV";
-    case "image":
-      return "IMG";
-    case "presentation":
-      return "PPT";
-    case "other":
-    default:
-      return "FILE";
-  }
 }
 
 export function readingAttachmentCompletion(_payload: ReadingAttachmentPayload) {

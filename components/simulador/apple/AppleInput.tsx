@@ -58,11 +58,15 @@ export function AppleTextarea({ classNames, label, minRows = 4, ...props }: Text
   );
 }
 
-export function AppleSelect({ classNames, ...props }: SelectProps) {
+export function AppleSelect({ classNames, label, ...props }: SelectProps) {
+  // Sistema: los selects muestran SOLO placeholder, sin label arriba (igual que
+  // AppleInput). El texto del label se preserva como aria-label (accesibilidad).
+  const a11yLabel = typeof label === "string" ? label : undefined;
   return (
     <Select
       labelPlacement="outside"
       variant="bordered"
+      aria-label={a11yLabel}
       {...props}
       classNames={{
         label: fieldClassNames.label,

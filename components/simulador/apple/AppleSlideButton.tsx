@@ -1,0 +1,103 @@
+"use client";
+
+import type { ReactNode } from "react";
+import { cn } from "./utils";
+
+/**
+ * AppleSlideButton — el CTA primario "Continuar →" estilo Typeform de los casos.
+ *
+ * Botón canónico de avance en flujos paso-a-paso (one-thing-per-page): el
+ * runtime de casos (case-demo / case-template), el exercise-lab y el onboarding
+ * lo usan. Acento sólido, padding generoso (px-7 py-3), tipografía `ts-callout`,
+ * hover por opacidad, sin sombra. Deshabilitado va en gris (`surface-3` +
+ * `text-disabled`), el tono que Pablo usó en los casos. `isLoading` conserva el
+ * acento + spinner (botón "ocupado", para los submits async del onboarding).
+ *
+ * `hint`:
+ *   - `true`  → muestra al lado "o pulsa Enter ↵" (flujo que avanza con Enter).
+ *   - nodo    → se renderiza ese nodo como hint (p.ej. "Completa el ejercicio…").
+ *   - vacío   → solo el botón.
+ *
+ * `href` lo convierte en `<a>` (para CTAs de navegación tipo "Volver al lab →").
+ * Pareja de `AppleStepBar`: juntos son el lenguaje del flujo Typeform. Hereda
+ * los tokens de color del ancestro `.simulador-root`.
+ */
+export function AppleSlideButton({
+  children,
+  onClick,
+  href,
+  type = "button",
+  isDisabled = false,
+  isLoading = false,
+  hint,
+  className,
+}: {
+  children: ReactNode;
+  onClick?: () => void;
+  href?: string;
+  type?: "button" | "submit";
+  isDisabled?: boolean;
+  isLoading?: boolean;
+  hint?: ReactNode;
+  className?: string;
+}) {
+  // Loading conserva el tono acento (botón "ocupado"); disabled-sin-loading va gris.
+  const grayed = isDisabled && !isLoading;
+  const tone = grayed
+    ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
+    : "accent-bg text-white hover:opacity-90";
+  const cls = cn(
+    "inline-block rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium shadow-none transition-opacity",
+    tone,
+    isLoading && "cursor-wait",
+    className,
+  );
+
+  const inner = (
+    <span className="inline-flex items-center gap-2">
+      {isLoading && (
+        <span
+          aria-hidden
+          className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white"
+        />
+      )}
+      {children}
+    </span>
+  );
+
+  const control = href ? (
+    <a href={href} className={cls}>
+      {inner}
+    </a>
+  ) : (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={isDisabled || isLoading}
+      className={cls}
+    >
+      {inner}
+    </button>
+  );
+
+  if (!hint) return control;
+
+  const hintNode =
+    hint === true ? (
+      <span className="ts-footnote text-[var(--text-tertiary)]">
+        o pulsa{" "}
+        <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
+          Enter ↵
+        </kbd>
+      </span>
+    ) : (
+      hint
+    );
+
+  return (
+    <div className="flex items-center gap-4">
+      {control}
+      {hintNode}
+    </div>
+  );
+}

@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
-import { AppleButton, AppleInput } from "@/components/simulador/apple";
+import { AppleButton, AppleInput, AppleSlideButton, AppleStepBar } from "@/components/simulador/apple";
 
 interface InviteRow {
   email: string;
@@ -165,7 +165,7 @@ export default function OnboardingInvitePage() {
           transition={{ duration: 0.4 }}
           className="max-w-[440px] w-full"
         >
-          <div className="eyebrow mb-3">Paso 3 de 5</div>
+          <AppleStepBar total={5} current={2} ariaLabel="Paso 3 de 5" className="mb-6" />
           <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
             ¿Quiénes van a hacer el diagnóstico?
           </h1>
@@ -267,7 +267,7 @@ export default function OnboardingInvitePage() {
                 </div>
               )}
 
-              <div className="mt-8 flex gap-3">
+              <div className="mt-8 flex items-center gap-3">
                 <AppleButton
                   onPress={() => router.push("/onboarding/team")}
                   tone="secondary"
@@ -276,16 +276,14 @@ export default function OnboardingInvitePage() {
                 >
                   ← Atrás
                 </AppleButton>
-                <AppleButton
+                <AppleSlideButton
                   type="submit"
                   isLoading={submitting}
                   isDisabled={validCount === 0 || submitting}
-                  size="lg"
-                  className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
                 >
                   Enviar {validCount || ""} invitación
                   {validCount === 1 ? "" : "es"}
-                </AppleButton>
+                </AppleSlideButton>
               </div>
             </form>
           ) : (
@@ -317,7 +315,7 @@ export default function OnboardingInvitePage() {
                 )}
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex items-center gap-3">
                 <AppleButton
                   onPress={() => {
                     setResult(null);
@@ -329,13 +327,9 @@ export default function OnboardingInvitePage() {
                 >
                   Invitar más
                 </AppleButton>
-                <AppleButton
-                  onPress={onContinueToBilling}
-                  size="lg"
-                  className="accent-bg text-white px-7 h-12 text-[15px] font-medium shadow-none flex-1 sm:flex-none"
-                >
+                <AppleSlideButton onClick={onContinueToBilling}>
                   Continuar a pago →
-                </AppleButton>
+                </AppleSlideButton>
               </div>
             </div>
           )}

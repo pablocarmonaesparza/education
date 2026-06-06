@@ -16,6 +16,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
+import { AppleStepBar } from "@/components/simulador/apple";
 import { onboardingCopy } from "@/lib/simulador/copy/onboarding";
 import {
   findSimuladorSubscriptionByCheckoutSession,
@@ -70,6 +71,7 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
       {isSynced && (
         <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
           <div className="max-w-[560px] w-full text-center">
+            <AppleStepBar total={5} current={4} ariaLabel="Paso 5 de 5" className="mb-10" />
             <div className="mx-auto h-16 w-16 rounded-full bg-[var(--band-a-bg)] grid place-items-center">
               <svg
                 className="h-7 w-7 text-[var(--band-a-text)]"

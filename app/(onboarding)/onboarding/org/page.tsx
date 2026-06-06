@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 import { SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
-import { AppleButton, AppleInput, AppleSelect } from "@/components/simulador/apple";
+import { AppleInput, AppleSelect, AppleSlideButton, AppleStepBar } from "@/components/simulador/apple";
 
 const INDUSTRIES = [
   { key: "saas_b2b", label: "SaaS B2B" },
@@ -93,7 +93,7 @@ export default function OnboardingOrgPage() {
           transition={{ duration: 0.4 }}
           className="max-w-[440px] w-full"
         >
-          <div className="eyebrow mb-3">Paso 1 de 5</div>
+          <AppleStepBar total={5} current={0} ariaLabel="Paso 1 de 5" className="mb-6" />
           <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
             Cuéntanos sobre tu equipo
           </h1>
@@ -162,7 +162,7 @@ export default function OnboardingOrgPage() {
               </div>
             )}
 
-            <AppleButton
+            <AppleSlideButton
               type="submit"
               isLoading={submitting}
               isDisabled={
@@ -173,11 +173,10 @@ export default function OnboardingOrgPage() {
                 !size ||
                 submitting
               }
-              size="lg"
-              className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none"
+              hint
             >
               Continuar →
-            </AppleButton>
+            </AppleSlideButton>
           </form>
         </motion.div>
       </main>

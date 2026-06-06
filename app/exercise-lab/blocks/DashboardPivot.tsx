@@ -162,15 +162,10 @@ export function DashboardPivot({
     {/* Takeaway · aparece cuando se eligió un segmento · campo declarado
         en EXERCISE_BLOCK_CATALOG.yaml como emit, ahora implementado (P1.2). */}
     {payload.selected_filter && (
-      <div className="space-y-2">
-        <label
-          htmlFor={`${slideId}-takeaway`}
-          className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]"
-        >
-          ¿Qué le llevarías al manager?
-        </label>
+      <div>
         <textarea
           id={`${slideId}-takeaway`}
+          aria-label="¿Qué le llevarías al manager?"
           value={payload.leader_takeaway}
           onChange={(e) => {
             const next: DashboardPivotPayload = {

@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactCompiler: false,
+  // Sin overlays de dev encima de las pantallas: apaga el badge/indicador de
+  // Next.js Dev Tools (el "N" flotante) para que las superficies de producto se
+  // revisen limpias. Ver docs/memory/decision_pantallas_review_sin_dev_overlays.
+  devIndicators: false,
   allowedDevOrigins: ['host.docker.internal'],
   // El endpoint de generación bespoke corre el motor (.mjs) vía child_process;
   // incluimos los scripts + los YAML que el motor lee (schemas, golden) en el

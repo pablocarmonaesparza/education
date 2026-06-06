@@ -18,7 +18,7 @@ export function AttachmentTray({
 }) {
   return (
     <div className="mx-3 mb-3 grid gap-2 rounded-2xl bg-[var(--surface-2)] p-3">
-      <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-[var(--text-tertiary)]">
+      <div className="text-[11px] font-medium text-[var(--text-tertiary)]">
         Adjuntos para analizar
       </div>
       <div className="grid gap-2">

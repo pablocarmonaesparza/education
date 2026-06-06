@@ -22,6 +22,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
+import { AppleCaseHeader, AppleSlideButton } from "@/components/simulador/apple";
 import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
 import type { ExerciseResponsePayload } from "@/lib/simulador/exercise-registry";
 import { isBlockComplete } from "@/lib/simulador/exercise-completion";
@@ -257,118 +258,17 @@ export function CaseDemoClient() {
   return (
     <main className="simulador-root min-h-screen surface-canvas text-[var(--text-primary)]">
       <div className="flex min-h-screen flex-col">
-        {/* HEADER · 2 botones cuadrados arriba a la izquierda (Cerrar + Atrás)
-            + progress bar centrado al lado. */}
-        <div className="pt-6 pb-6">
-          <div className="mx-auto flex w-[65%] max-w-[1200px] items-center gap-4">
-            <div className="flex items-center gap-2">
-              {/* Cerrar · regresa al lab de ejercicios */}
-              <a
-                href="/exercise-lab"
-                aria-label="Cerrar caso"
-                className="grid h-12 w-12 place-items-center rounded-[var(--radius-md)] border border-[var(--border)] text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-              >
-                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M6 6L18 18M18 6L6 18"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </a>
-              {/* Atrás · slide anterior */}
-              <button
-                type="button"
-                onClick={goPrev}
-                disabled={isFirstSlide}
-                aria-label="Diapositiva anterior"
-                className={`grid h-12 w-12 place-items-center rounded-[var(--radius-md)] border transition-colors ${
-                  isFirstSlide
-                    ? "border-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-                    : "border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                }`}
-              >
-                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M15 6L9 12L15 18"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
-            <div
-              role="progressbar"
-              aria-label={`Diapositiva ${slideIdx + 1} de ${SLIDES_PER_SECTION}`}
-              aria-valuemin={1}
-              aria-valuemax={SLIDES_PER_SECTION}
-              aria-valuenow={slideIdx + 1}
-              className="flex flex-1 gap-2"
-            >
-              {Array.from({ length: SLIDES_PER_SECTION }).map((_, idx) => {
-                const isActive = idx === slideIdx;
-                const isPast = idx < slideIdx;
-                return (
-                  <div
-                    key={idx}
-                    className={`h-[3px] flex-1 rounded-full transition-colors ${
-                      isActive
-                        ? "bg-[var(--accent)] animate-pulse"
-                        : isPast
-                          ? "bg-[var(--text-secondary)]"
-                          : "bg-[var(--surface-3)]"
-                    }`}
-                  />
-                );
-              })}
-            </div>
-            <div className="flex items-center gap-2">
-              {/* Adelante · solo desbloqueado si el usuario regresó · permite
-                  re-avanzar sin perder respuesta. */}
-              <button
-                type="button"
-                onClick={goNext}
-                disabled={!canGoForward}
-                aria-label="Avanzar a la siguiente diapositiva"
-                className={`grid h-12 w-12 place-items-center rounded-[var(--radius-md)] border transition-colors ${
-                  !canGoForward
-                    ? "border-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-                    : "border-[var(--border)] text-[var(--text-secondary)] hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                }`}
-              >
-                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M9 6L15 12L9 18"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              {/* Sugerencia o corrección · abre mailto con el slide actual */}
-              <button
-                type="button"
-                onClick={handleFeedback}
-                aria-label="Mandar sugerencia o corrección"
-                className="grid h-12 w-12 place-items-center rounded-[var(--radius-md)] border border-[var(--border)] text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-              >
-                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M21 11.5a8.4 8.4 0 0 1-0.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-0.9L3 21l1.9-5.7a8.4 8.4 0 0 1-0.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-0.9h0.5a8.5 8.5 0 0 1 8 8v0.5z"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
+        <AppleCaseHeader
+          total={SLIDES_PER_SECTION}
+          current={slideIdx}
+          closeHref="/exercise-lab"
+          onPrev={goPrev}
+          prevDisabled={isFirstSlide}
+          onNext={goNext}
+          nextDisabled={!canGoForward}
+          onFeedback={handleFeedback}
+          ariaLabel={`Diapositiva ${slideIdx + 1} de ${SLIDES_PER_SECTION}`}
+        />
 
         {/* CONTENIDO · transición vertical estilo scroll (slide sale arriba,
             nueva entra desde abajo · invertido al regresar). Overflow hidden
@@ -389,7 +289,7 @@ export function CaseDemoClient() {
               className="w-[65%] max-w-[1200px]"
             >
               {/* Eyebrow · solo el nombre de la sección */}
-              <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+              <div className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
                 {SECTIONS[sectionIdx].name}
               </div>
 
@@ -425,31 +325,22 @@ export function CaseDemoClient() {
                   Atrás vive en el header arriba (cuadrado con ícono).
                   En la última slide, "Continuar" → pantalla de cierre. */}
               {!ownsContinue && (
-                <div className="mt-10 flex items-center gap-4">
-                  <button
-                    type="button"
+                <div className="mt-10">
+                  <AppleSlideButton
                     onClick={goNext}
-                    disabled={!blockComplete}
-                    className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium transition-opacity ${
-                      blockComplete
-                        ? "accent-bg text-white hover:opacity-90"
-                        : "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-                    }`}
+                    isDisabled={!blockComplete}
+                    hint={
+                      blockComplete ? (
+                        true
+                      ) : (
+                        <span className="ts-footnote text-[var(--text-tertiary)]">
+                          Completa el ejercicio para continuar.
+                        </span>
+                      )
+                    }
                   >
                     {isLastSlide ? "Ver resumen →" : "Continuar →"}
-                  </button>
-                  {blockComplete ? (
-                    <span className="ts-footnote text-[var(--text-tertiary)]">
-                      o pulsa{" "}
-                      <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
-                        Enter ↵
-                      </kbd>
-                    </span>
-                  ) : (
-                    <span className="ts-footnote text-[var(--text-tertiary)]">
-                      Completa el ejercicio para continuar.
-                    </span>
-                  )}
+                  </AppleSlideButton>
                 </div>
               )}
             </motion.div>
@@ -847,7 +738,7 @@ function CaseCompletedScreen({ durationMinutes, payloads }: CaseCompletedScreenP
         </div>
 
         {/* EYEBROW + TÍTULO · estilo runtime · la recomendación ES el título */}
-        <div className="mt-3 ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+        <div className="mt-3 ts-caption-1 font-medium text-[var(--text-tertiary)]">
           Reporte para tu manager
         </div>
         <h1 className="mt-2 display display-tight ts-display text-[var(--text-primary)]">
@@ -890,7 +781,7 @@ function CaseCompletedScreen({ durationMinutes, payloads }: CaseCompletedScreenP
             Cada riesgo trae evidencia derivada del payload del usuario. */}
         {riskEvents.length > 0 && (
           <div className="mt-5">
-            <div className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+            <div className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
               Riesgos detectados
             </div>
             <div className="mt-2 border-t border-[var(--hairline)]">
@@ -918,7 +809,7 @@ function CaseCompletedScreen({ durationMinutes, payloads }: CaseCompletedScreenP
 
         {/* PRÁCTICA · inline simple */}
         <div className="mt-5">
-          <span className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+          <span className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
             Práctica sugerida
           </span>
           <div className="mt-1 ts-callout text-[var(--text-primary)]">
@@ -929,12 +820,7 @@ function CaseCompletedScreen({ durationMinutes, payloads }: CaseCompletedScreenP
 
         {/* CTAs · mismo lenguaje que el botón Continuar del runtime */}
         <div className="mt-7 flex items-center gap-4">
-          <a
-            href="/exercise-lab"
-            className="rounded-[var(--radius-md)] accent-bg px-7 py-3 ts-callout font-medium text-white transition-opacity hover:opacity-90"
-          >
-            Volver al lab →
-          </a>
+          <AppleSlideButton href="/exercise-lab">Volver al lab →</AppleSlideButton>
           <a
             href="/case-demo"
             className="ts-footnote text-[var(--text-secondary)] underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
