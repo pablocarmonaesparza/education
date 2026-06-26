@@ -21,26 +21,18 @@
  * - Desktop: 224px fijo
  * - Mobile/tablet: off-canvas drawer via NavbarMenu de HeroUI (futuro)
  * - Active state por pathname (matchea prefix)
- * - Iconos Tabler stroke 1.5 (estilo Apple HIG)
+ * - Iconos vía AppleIcon (Tabler stroke 1.5, estilo Apple HIG)
  */
 
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  IconBriefcase,
-  IconBuilding,
-  IconFileText,
-  IconHome,
-  IconUserCircle,
-  IconUsers,
-} from "@tabler/icons-react";
-import type { ComponentType } from "react";
+import { AppleIcon, type AppleIconName } from "./apple";
 
 interface NavItem {
   href: string;
   label: string;
-  Icon: ComponentType<{ size?: number; stroke?: number; className?: string }>;
+  icon: AppleIconName;
 }
 
 // Route-aware sidebar:
@@ -54,29 +46,50 @@ interface NavItem {
 // simulador.organization_memberships del user logueado.
 
 const EMPLOYEE_PRIMARY: NavItem[] = [
-  { href: "/team", label: "Inicio", Icon: IconHome },
-  { href: "/reportes", label: "Reportes", Icon: IconFileText },
-  { href: "/casos", label: "Casos", Icon: IconBriefcase },
+  { href: "/team", label: "Inicio", icon: "home" },
+  { href: "/reportes", label: "Reportes", icon: "fileText" },
+  { href: "/casos", label: "Casos", icon: "briefcase" },
 ];
 
 const EMPLOYEE_SECONDARY: NavItem[] = [
-  { href: "/perfil", label: "Perfil", Icon: IconUserCircle },
+  { href: "/perfil", label: "Perfil", icon: "userCircle" },
 ];
 
 const MANAGER_PRIMARY: NavItem[] = [
-  { href: "/staff", label: "Inicio", Icon: IconHome },
-  { href: "/staff/equipo", label: "Equipo", Icon: IconUsers },
-  { href: "/staff/reportes", label: "Reportes", Icon: IconFileText },
-  { href: "/staff/casos", label: "Casos", Icon: IconBriefcase },
+  { href: "/staff", label: "Inicio", icon: "home" },
+  { href: "/staff/equipo", label: "Equipo", icon: "users" },
+  { href: "/staff/matriz", label: "Matriz", icon: "chart" },
+  { href: "/staff/recomendaciones", label: "Acciones", icon: "sparkles" },
+  { href: "/staff/reportes", label: "Reportes", icon: "fileText" },
+  { href: "/staff/casos", label: "Casos", icon: "briefcase" },
 ];
 
 const MANAGER_SECONDARY: NavItem[] = [
-  { href: "/perfil", label: "Perfil", Icon: IconUserCircle },
-  { href: "/empresa", label: "Empresa", Icon: IconBuilding },
+  { href: "/perfil", label: "Perfil", icon: "userCircle" },
+  { href: "/empresa", label: "Empresa", icon: "building" },
+];
+
+// Admin (staff Itera): backoffice. Los 8 destinos viven en el sidebar — no como
+// grid de cards en el índice ni como SurfaceNav arriba (eso era el doble logo).
+const ADMIN_PRIMARY: NavItem[] = [
+  { href: "/admin", label: "Resumen", icon: "home" },
+  { href: "/admin/leads", label: "Leads", icon: "mail" },
+  { href: "/admin/review", label: "Review", icon: "shield" },
+  { href: "/admin/orgs", label: "Clientes", icon: "building" },
+  { href: "/admin/captacion", label: "Captación", icon: "search" },
+  { href: "/admin/cases", label: "Casos", icon: "briefcase" },
+  { href: "/admin/lecciones", label: "Lecciones", icon: "sparkles" },
+  { href: "/admin/judge-health", label: "Judge", icon: "brain" },
+  { href: "/admin/audit-log", label: "Audit", icon: "fileText" },
+];
+
+const ADMIN_SECONDARY: NavItem[] = [
+  { href: "/perfil", label: "Perfil", icon: "userCircle" },
 ];
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/dashboard") return pathname === "/dashboard";
+  if (href === "/admin") return pathname === "/admin";
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
@@ -87,7 +100,6 @@ function NavLink({
   item: NavItem;
   active: boolean;
 }) {
-  const { Icon } = item;
   return (
     <Link
       href={item.href}
@@ -97,14 +109,14 @@ function NavLink({
           : "text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
       }`}
     >
-      <Icon
-        size={18}
-        stroke={1.5}
-        className={
+      {/* h-[18px]/w-[18px] replica el size={18} del import directo previo */}
+      <AppleIcon
+        name={item.icon}
+        className={`h-[18px] w-[18px] ${
           active
             ? "text-[var(--text-primary)]"
             : "text-[var(--text-tertiary)] group-hover:text-[var(--text-primary)]"
-        }
+        }`}
       />
       <span>{item.label}</span>
     </Link>
@@ -115,15 +127,28 @@ function isManagerView(pathname: string): boolean {
   return pathname === "/staff" || pathname.startsWith("/staff/");
 }
 
+function isAdminView(pathname: string): boolean {
+  return pathname === "/admin" || pathname.startsWith("/admin/");
+}
+
 export function AppSidebar() {
   const pathname = usePathname() ?? "";
+  const isAdmin = isAdminView(pathname);
   const isManager = isManagerView(pathname);
 
-  const primaryItems = isManager ? MANAGER_PRIMARY : EMPLOYEE_PRIMARY;
-  const secondaryItems = isManager ? MANAGER_SECONDARY : EMPLOYEE_SECONDARY;
-  // El logo del brand también lleva al "home" del rol activo: manager → /staff,
-  // employee → /team.
-  const brandHref = isManager ? "/staff" : "/team";
+  const primaryItems = isAdmin
+    ? ADMIN_PRIMARY
+    : isManager
+      ? MANAGER_PRIMARY
+      : EMPLOYEE_PRIMARY;
+  const secondaryItems = isAdmin
+    ? ADMIN_SECONDARY
+    : isManager
+      ? MANAGER_SECONDARY
+      : EMPLOYEE_SECONDARY;
+  // El logo del brand lleva al "home" del rol activo: admin → /admin,
+  // manager → /staff, employee → /team.
+  const brandHref = isAdmin ? "/admin" : isManager ? "/staff" : "/team";
 
   return (
     <aside

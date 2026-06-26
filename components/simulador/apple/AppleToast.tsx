@@ -42,8 +42,8 @@ export function AppleToast({
     >
       <AppleIcon name={iconName[tone]} size="sm" className="mt-0.5" />
       <div>
-        <div className="text-[14px] font-semibold">{title}</div>
-        {body && <p className="mt-1 text-[13.5px] leading-[1.45] opacity-85">{body}</p>}
+        <div className="ts-callout font-semibold">{title}</div>
+        {body && <p className="mt-1 ts-subhead leading-[1.45] opacity-85">{body}</p>}
       </div>
     </div>
   );

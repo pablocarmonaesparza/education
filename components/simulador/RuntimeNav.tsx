@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import { Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
-import type { RuntimeSessionMode } from "@/lib/simulador/use-session";
 import { AppleButton } from "@/components/simulador/apple";
 
-export function RuntimeNav({ mode }: { mode: RuntimeSessionMode }) {
+// "field_test" aquí es solo variante visual (logo → landing + CTA de signup);
+// la consume el exercise-lab. No implica el modo de sesión field-test (borrado).
+export function RuntimeNav({ mode }: { mode: "authenticated" | "field_test" }) {
   const isFieldTest = mode === "field_test";
 
   return (
@@ -43,7 +44,7 @@ export function RuntimeNav({ mode }: { mode: RuntimeSessionMode }) {
             href="/auth/signup?next=%2Fonboarding%2Forg"
             size="sm"
             tone="primary"
-            className="accent-bg text-white text-[13.5px] font-medium h-9 px-4 shadow-none"
+            className="accent-bg text-white ts-subhead font-medium h-9 px-4 shadow-none"
           >
             Crear cuenta
           </AppleButton>
@@ -53,7 +54,7 @@ export function RuntimeNav({ mode }: { mode: RuntimeSessionMode }) {
             href="/dashboard"
             size="sm"
             tone="ghost"
-            className="text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
+            className="ts-subhead font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
           >
             Dashboard
           </AppleButton>

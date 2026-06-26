@@ -18,17 +18,17 @@ export default function CancelPage() {
             />
           </div>
           <div className="flex flex-col gap-3">
-            <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
-              Pago cancelado.
+            <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
+              Pago cancelado
             </h1>
-            <p className="text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+            <p className="ts-body leading-[1.55] text-[var(--text-secondary)]">
               No se cobró nada. Puedes volver al diagnóstico y retomarlo cuando
               estés listo.
             </p>
           </div>
           <AppleButtonLink
             href="/auth/signup?next=%2Fonboarding%2Forg"
-            className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none"
+            className="w-full h-12 accent-bg text-white ts-body font-medium shadow-none"
           >
             Volver al diagnóstico
           </AppleButtonLink>

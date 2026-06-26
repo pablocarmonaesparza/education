@@ -30,6 +30,7 @@ export function AppleSlideButton({
   isDisabled = false,
   isLoading = false,
   hint,
+  fullWidth = false,
   className,
 }: {
   children: ReactNode;
@@ -39,6 +40,8 @@ export function AppleSlideButton({
   isDisabled?: boolean;
   isLoading?: boolean;
   hint?: ReactNode;
+  /** Ocupa todo el ancho del contenedor y centra el contenido (auth stacked). */
+  fullWidth?: boolean;
   className?: string;
 }) {
   // Loading conserva el tono acento (botón "ocupado"); disabled-sin-loading va gris.
@@ -47,7 +50,9 @@ export function AppleSlideButton({
     ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
     : "accent-bg text-white hover:opacity-90";
   const cls = cn(
-    "inline-block rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium shadow-none transition-opacity",
+    "rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium shadow-none transition-opacity",
+    "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]",
+    fullWidth ? "flex w-full items-center justify-center" : "inline-block",
     tone,
     isLoading && "cursor-wait",
     className,

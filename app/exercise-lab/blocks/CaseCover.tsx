@@ -83,9 +83,7 @@ export function CaseCover({
   ctaLabel = "Iniciar caso",
 }: Props) {
   const isProduction = mode === "authenticated" || mode === "field_test";
-  const { patch } = useStepPatch(isProduction ? sessionId : null, {
-    mode: mode === "field_test" ? "field_test" : "authenticated",
-  });
+  const { patch } = useStepPatch(isProduction ? sessionId : null);
   const mountedAt = useRef(Date.now());
 
   const meta = metaProp ?? (caseContext?.meta as CoverMeta | undefined) ?? DEFAULT_META;

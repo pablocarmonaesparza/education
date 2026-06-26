@@ -25,7 +25,7 @@ export function RecordingBanner({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -4 }}
           transition={{ duration: 0.18 }}
-          className="flex items-center gap-2.5 px-5 pb-2 text-[13px]"
+          className="flex items-center gap-2.5 px-5 pb-2 ts-subhead"
         >
           {recState === "recording" && (
             <>
@@ -35,7 +35,7 @@ export function RecordingBanner({
               </span>
               <span className="font-medium text-[var(--text-secondary)]">Escuchando...</span>
               <WaveBars />
-              <span className="ml-auto text-[12px] text-[var(--text-tertiary)]">
+              <span className="ml-auto ts-footnote text-[var(--text-tertiary)]">
                 Pulsa el micrófono para parar
               </span>
             </>

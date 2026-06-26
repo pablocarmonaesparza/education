@@ -155,8 +155,13 @@ function TokenInput({
   fallback: string;
   onChange: (value: string) => void;
 }) {
-  // PX o RADIUS o MS: número + unidad fija
-  if (token.kind === "px" || token.kind === "radius" || token.kind === "ms") {
+  // PX o RADIUS o MS o SPACE: número + unidad fija
+  if (
+    token.kind === "px" ||
+    token.kind === "radius" ||
+    token.kind === "ms" ||
+    token.kind === "space"
+  ) {
     const unit = token.kind === "ms" ? "ms" : "px";
     const numericPart = value.replace(/[^\d.]/g, "");
     return (
@@ -230,6 +235,16 @@ function TokenPreview({ token, value }: { token: DesignToken; value: string }) {
       >
         Aa
       </span>
+    );
+  }
+  if (token.kind === "space") {
+    // barra horizontal proporcional al valor, capada para no romper la fila
+    return (
+      <span
+        className="h-2.5 rounded-full bg-[var(--accent)] flex-none"
+        style={{ width: value, maxWidth: 96, minWidth: 4 }}
+        aria-hidden
+      />
     );
   }
   if (token.kind === "color") {

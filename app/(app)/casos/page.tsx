@@ -9,7 +9,8 @@
  */
 
 import { useMemo, useState } from "react";
-import { Select, SelectItem } from "@heroui/react";
+import { SelectItem } from "@heroui/react";
+import { AppleButton, AppleSelect } from "@/components/simulador/apple";
 import { CaseCard } from "@/components/simulador/CaseCard";
 import {
   CASES,
@@ -40,7 +41,7 @@ function FilterSelect<T extends string>({
   onChange: (v: T | "") => void;
 }) {
   return (
-    <Select
+    <AppleSelect
       placeholder={placeholder}
       aria-label={placeholder}
       selectedKeys={value ? [value] : []}
@@ -50,15 +51,13 @@ function FilterSelect<T extends string>({
       }}
       isClearable={!!value}
       onClear={() => onChange("")}
-      variant="bordered"
-      radius="lg"
       size="lg"
       className={`min-w-[180px] flex-1 ${value ? "is-filter-active" : ""}`}
     >
       {options.map((opt) => (
         <SelectItem key={opt.value}>{opt.label}</SelectItem>
       ))}
-    </Select>
+    </AppleSelect>
   );
 }
 
@@ -172,31 +171,30 @@ export default function CasosPage() {
               <span className="ts-footnote text-[var(--text-tertiary)]">
                 Ordenar
               </span>
-              <Select
+              <AppleSelect
                 aria-label="Ordenar"
                 selectedKeys={[sortBy]}
                 onSelectionChange={(keys) => {
                   const next = Array.from(keys)[0] as SortKey | undefined;
                   if (next) setSortBy(next);
                 }}
-                variant="bordered"
-                radius="md"
                 size="sm"
                 className="w-[180px]"
               >
                 {SORT_OPTIONS.map((opt) => (
                   <SelectItem key={opt.value}>{opt.label}</SelectItem>
                 ))}
-              </Select>
+              </AppleSelect>
             </div>
             {anyFilterActive && (
-              <button
-                type="button"
-                onClick={clearAll}
-                className="ts-subhead text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              <AppleButton
+                size="inline"
+                tone="secondary"
+                onPress={clearAll}
+                className="ts-subhead"
               >
                 Limpiar filtros
-              </button>
+              </AppleButton>
             )}
           </div>
         </div>

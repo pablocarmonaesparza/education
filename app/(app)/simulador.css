@@ -14,6 +14,7 @@
   /* Accent (azul Itera, ambos modos) */
   --accent: #1472ff;
   --accent-hover: #0e5fcc;
+  --accent-strong: #0e5fcc; /* fondo sólido bajo texto blanco — AA 5:1 (DEC-009); la marca sigue siendo --accent */
   --accent-soft: rgba(20, 114, 255, 0.08);
   --accent-ring: rgba(20, 114, 255, 0.24);
 
@@ -39,6 +40,16 @@
   --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --motion-linear: linear;
+
+  /* ============================================================
+     SPACING (semantic) — ritmo vertical de sección + lectura.
+     Cambia el px aquí y se actualiza en TODO el sistema. El
+     micro-spacing (gaps/paddings de componente) usa la escala de
+     Tailwind; estos son los valores de layout de nivel sistema.
+     ============================================================ */
+  --space-section: 96px;     /* padding vertical de sección (desktop) */
+  --space-section-sm: 64px;  /* sección compacta (desktop) */
+  --reading-max: 720px;      /* ancho máx de columna de lectura */
 
   /* ============================================================
      TYPOGRAPHY SCALE (Apple HIG-inspired)
@@ -141,9 +152,6 @@
 .simulador-root .surface-tinted {
   background-color: var(--surface-2);
 }
-.simulador-root .surface-elevated {
-  background-color: var(--surface-3);
-}
 
 /* Display typography */
 .simulador-root .display {
@@ -165,13 +173,12 @@
   color: var(--accent);
 }
 .simulador-root .accent-bg {
-  background-color: var(--accent);
+  /* DEC-009: fondo sólido bajo texto blanco usa accent-strong (AA). Links,
+     bordes y focus rings siguen con --accent (#1472ff, umbral 3:1). */
+  background-color: var(--accent-strong);
 }
 .simulador-root .accent-bg-soft {
   background-color: var(--accent-soft);
-}
-.simulador-root .accent-border {
-  border-color: var(--accent);
 }
 .simulador-root .accent-ring {
   box-shadow: 0 0 0 4px var(--accent-ring);
@@ -181,7 +188,7 @@
 .simulador-root .card-apple {
   background-color: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 1px 2px var(--shadow);
   transition:
     box-shadow 0.2s ease,
@@ -218,13 +225,6 @@
 .simulador-root .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: var(--text-tertiary);
 }
-.simulador-root .scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.simulador-root .scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
 
 /* Pulse for status */
 @keyframes pulse-soft {
@@ -250,29 +250,26 @@
 
 /* Reading column */
 .simulador-root .reading-col {
-  max-width: 720px;
+  max-width: var(--reading-max);
   margin-left: auto;
   margin-right: auto;
 }
 
-/* Spacing helpers */
+/* Spacing helpers — consumen tokens --space-* (editables desde /design).
+   En mobile se reduce el ritmo overrideando el token, no la clase. */
 .simulador-root .section-pad {
-  padding-top: 96px;
-  padding-bottom: 96px;
+  padding-top: var(--space-section);
+  padding-bottom: var(--space-section);
 }
 .simulador-root .section-pad-sm {
-  padding-top: 64px;
-  padding-bottom: 64px;
+  padding-top: var(--space-section-sm);
+  padding-bottom: var(--space-section-sm);
 }
 
 @media (max-width: 768px) {
-  .simulador-root .section-pad {
-    padding-top: 64px;
-    padding-bottom: 64px;
-  }
-  .simulador-root .section-pad-sm {
-    padding-top: 48px;
-    padding-bottom: 48px;
+  .simulador-root {
+    --space-section: 64px;
+    --space-section-sm: 48px;
   }
 }
 
@@ -298,7 +295,7 @@
 
 /* Eyebrow (small label · sentence case — sin mayúsculas, regla de Pablo) */
 .simulador-root .eyebrow {
-  font-size: 11px;
+  font-size: var(--text-caption-1);
   font-weight: 600;
   letter-spacing: 0.01em;
   color: var(--text-tertiary);
@@ -403,24 +400,71 @@
 .simulador-root .ts-display-3xl { font-size: var(--text-display-3xl); }
 .simulador-root .ts-display-4xl { font-size: var(--text-display-4xl); }
 .simulador-root .ts-display-5xl { font-size: var(--text-display-5xl); }
-/* Responsive prefix support for sm:/md:/lg: ts-* classes */
+/* Responsive prefix support for sm:/md:/lg: ts-* classes — set completo,
+   1 variante por tamaño y breakpoint, para que cualquier par responsive
+   (ej. `ts-title-1 sm:ts-display`) funcione sin huecos. */
 @media (min-width: 640px) {
-  .simulador-root .sm\:ts-body-lg     { font-size: var(--text-body-lg); }
-  .simulador-root .sm\:ts-body-xl     { font-size: var(--text-body-xl); }
+  .simulador-root .sm\:ts-caption-2  { font-size: var(--text-caption-2); }
+  .simulador-root .sm\:ts-caption-1  { font-size: var(--text-caption-1); }
+  .simulador-root .sm\:ts-footnote   { font-size: var(--text-footnote); }
+  .simulador-root .sm\:ts-subhead    { font-size: var(--text-subhead); }
+  .simulador-root .sm\:ts-callout    { font-size: var(--text-callout); }
+  .simulador-root .sm\:ts-body       { font-size: var(--text-body); }
+  .simulador-root .sm\:ts-headline   { font-size: var(--text-headline); }
+  .simulador-root .sm\:ts-body-lg    { font-size: var(--text-body-lg); }
+  .simulador-root .sm\:ts-body-xl    { font-size: var(--text-body-xl); }
+  .simulador-root .sm\:ts-title-3    { font-size: var(--text-title-3); }
+  .simulador-root .sm\:ts-title-2    { font-size: var(--text-title-2); }
+  .simulador-root .sm\:ts-title-1    { font-size: var(--text-title-1); }
+  .simulador-root .sm\:ts-display     { font-size: var(--text-display); }
+  .simulador-root .sm\:ts-display-lg  { font-size: var(--text-display-lg); }
   .simulador-root .sm\:ts-display-xl  { font-size: var(--text-display-xl); }
   .simulador-root .sm\:ts-display-2xl { font-size: var(--text-display-2xl); }
   .simulador-root .sm\:ts-display-3xl { font-size: var(--text-display-3xl); }
   .simulador-root .sm\:ts-display-4xl { font-size: var(--text-display-4xl); }
   .simulador-root .sm\:ts-display-5xl { font-size: var(--text-display-5xl); }
-  .simulador-root .sm\:ts-display     { font-size: var(--text-display); }
-  .simulador-root .sm\:ts-display-lg  { font-size: var(--text-display-lg); }
-  .simulador-root .sm\:ts-title-1     { font-size: var(--text-title-1); }
-  .simulador-root .sm\:ts-title-2     { font-size: var(--text-title-2); }
-  .simulador-root .sm\:ts-title-3     { font-size: var(--text-title-3); }
 }
 @media (min-width: 768px) {
+  .simulador-root .md\:ts-caption-2  { font-size: var(--text-caption-2); }
+  .simulador-root .md\:ts-caption-1  { font-size: var(--text-caption-1); }
+  .simulador-root .md\:ts-footnote   { font-size: var(--text-footnote); }
+  .simulador-root .md\:ts-subhead    { font-size: var(--text-subhead); }
+  .simulador-root .md\:ts-callout    { font-size: var(--text-callout); }
+  .simulador-root .md\:ts-body       { font-size: var(--text-body); }
+  .simulador-root .md\:ts-headline   { font-size: var(--text-headline); }
+  .simulador-root .md\:ts-body-lg    { font-size: var(--text-body-lg); }
+  .simulador-root .md\:ts-body-xl    { font-size: var(--text-body-xl); }
+  .simulador-root .md\:ts-title-3    { font-size: var(--text-title-3); }
+  .simulador-root .md\:ts-title-2    { font-size: var(--text-title-2); }
+  .simulador-root .md\:ts-title-1    { font-size: var(--text-title-1); }
+  .simulador-root .md\:ts-display     { font-size: var(--text-display); }
+  .simulador-root .md\:ts-display-lg  { font-size: var(--text-display-lg); }
+  .simulador-root .md\:ts-display-xl  { font-size: var(--text-display-xl); }
+  .simulador-root .md\:ts-display-2xl { font-size: var(--text-display-2xl); }
+  .simulador-root .md\:ts-display-3xl { font-size: var(--text-display-3xl); }
   .simulador-root .md\:ts-display-4xl { font-size: var(--text-display-4xl); }
   .simulador-root .md\:ts-display-5xl { font-size: var(--text-display-5xl); }
+}
+@media (min-width: 1024px) {
+  .simulador-root .lg\:ts-caption-2  { font-size: var(--text-caption-2); }
+  .simulador-root .lg\:ts-caption-1  { font-size: var(--text-caption-1); }
+  .simulador-root .lg\:ts-footnote   { font-size: var(--text-footnote); }
+  .simulador-root .lg\:ts-subhead    { font-size: var(--text-subhead); }
+  .simulador-root .lg\:ts-callout    { font-size: var(--text-callout); }
+  .simulador-root .lg\:ts-body       { font-size: var(--text-body); }
+  .simulador-root .lg\:ts-headline   { font-size: var(--text-headline); }
+  .simulador-root .lg\:ts-body-lg    { font-size: var(--text-body-lg); }
+  .simulador-root .lg\:ts-body-xl    { font-size: var(--text-body-xl); }
+  .simulador-root .lg\:ts-title-3    { font-size: var(--text-title-3); }
+  .simulador-root .lg\:ts-title-2    { font-size: var(--text-title-2); }
+  .simulador-root .lg\:ts-title-1    { font-size: var(--text-title-1); }
+  .simulador-root .lg\:ts-display     { font-size: var(--text-display); }
+  .simulador-root .lg\:ts-display-lg  { font-size: var(--text-display-lg); }
+  .simulador-root .lg\:ts-display-xl  { font-size: var(--text-display-xl); }
+  .simulador-root .lg\:ts-display-2xl { font-size: var(--text-display-2xl); }
+  .simulador-root .lg\:ts-display-3xl { font-size: var(--text-display-3xl); }
+  .simulador-root .lg\:ts-display-4xl { font-size: var(--text-display-4xl); }
+  .simulador-root .lg\:ts-display-5xl { font-size: var(--text-display-5xl); }
 }
 
 /* ============================================================

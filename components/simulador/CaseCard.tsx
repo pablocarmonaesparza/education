@@ -12,6 +12,8 @@
  */
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback, useRef, useState } from "react";
 import {
   BAND_LABEL,
   DEPARTMENT_LABEL,
@@ -23,6 +25,22 @@ import {
   type CaseItem,
   type Freshness,
 } from "@/lib/simulador/cases";
+
+// Resuelve a dónde lleva un click en el caso: si ya lo completó y tiene
+// reporte → /report/{session}; si no → runtime. La decisión vive en el
+// backend (GET /api/cases/[slug]/destination) para no duplicar reglas de
+// estado en la UI. Devuelve el href de fallback (/case/{slug}) si falla.
+async function fetchCaseDestination(slug: string): Promise<string> {
+  const fallback = `/case/${slug}`;
+  try {
+    const res = await fetch(`/api/cases/${encodeURIComponent(slug)}/destination`);
+    if (!res.ok) return fallback;
+    const data = (await res.json()) as { href?: string };
+    return typeof data.href === "string" && data.href ? data.href : fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 function FreshnessBadge({
   freshness,
@@ -84,11 +102,49 @@ function StatusBadge({ item }: { item: CaseItem }) {
 }
 
 export function CaseCard({ item }: { item: CaseItem }) {
+  const router = useRouter();
+  const [navigating, setNavigating] = useState(false);
+  // Prefetch del destino al hacer hover/focus: cuando el usuario hace click
+  // el push es instantáneo. Se cachea por tarjeta para no repetir la llamada.
+  const destinationRef = useRef<Promise<string> | null>(null);
+
+  const prefetchDestination = useCallback(() => {
+    if (!destinationRef.current) {
+      destinationRef.current = fetchCaseDestination(item.slug);
+    }
+  }, [item.slug]);
+
+  const handleClick = useCallback(
+    async (e: React.MouseEvent<HTMLAnchorElement>) => {
+      // Respetar modificadores (abrir en pestaña nueva, etc.).
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
+        return;
+      }
+      e.preventDefault();
+      if (navigating) return;
+      setNavigating(true);
+      prefetchDestination();
+      const href = await destinationRef.current!;
+      router.push(href);
+    },
+    [navigating, prefetchDestination, router],
+  );
+
   return (
     <Link
       href={`/case/${item.slug}`}
-      className="group flex flex-col rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--border-strong)] hover:shadow-[0_4px_16px_var(--shadow)]"
+      onClick={handleClick}
+      onMouseEnter={prefetchDestination}
+      onFocus={prefetchDestination}
+      aria-busy={navigating}
+      className="group relative flex flex-col rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--border-strong)] hover:shadow-[0_4px_16px_var(--shadow)]"
     >
+      {navigating && (
+        <span
+          aria-hidden
+          className="absolute right-3 top-3 h-4 w-4 animate-spin rounded-full border-2 border-[var(--hairline)] border-t-[var(--accent)]"
+        />
+      )}
       {/* TOP: nivel chip + duración + status */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">

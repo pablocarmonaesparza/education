@@ -57,9 +57,7 @@ export function AITextfieldFree({
       ? caseContext.placeholder
       : undefined;
   const isProduction = mode === "authenticated" || mode === "field_test";
-  const { patch } = useStepPatch(isProduction ? sessionId : null, {
-    mode: mode === "field_test" ? "field_test" : "authenticated",
-  });
+  const { patch } = useStepPatch(isProduction ? sessionId : null);
   const mountedAt = useRef(Date.now());
   const firstActionAt = useRef<number | null>(null);
   const totalChanges = useRef(0);

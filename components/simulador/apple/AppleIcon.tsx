@@ -7,6 +7,7 @@ import {
   IconArrowRight,
   IconBell,
   IconBrain,
+  IconBriefcase,
   IconBuilding,
   IconChartBar,
   IconCheck,
@@ -29,6 +30,7 @@ import {
   IconShieldCheck,
   IconSparkles,
   IconUser,
+  IconUserCircle,
   IconUsers,
   IconX,
 } from "@tabler/icons-react";
@@ -46,6 +48,7 @@ const icons = {
   arrowRight: IconArrowRight,
   bell: IconBell,
   brain: IconBrain,
+  briefcase: IconBriefcase,
   building: IconBuilding,
   chart: IconChartBar,
   check: IconCheck,
@@ -68,6 +71,7 @@ const icons = {
   shield: IconShieldCheck,
   sparkles: IconSparkles,
   user: IconUser,
+  userCircle: IconUserCircle,
   users: IconUsers,
   x: IconX,
 } satisfies Record<string, IconComponent>;

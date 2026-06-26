@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Avatar, Link } from "@heroui/react";
-import { AppleButton } from "@/components/simulador/apple";
+import { AppleButton, AppleBadge } from "@/components/simulador/apple";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
 import { DIMENSIONS } from "@/lib/simulador/config";
@@ -15,6 +15,7 @@ import {
   computeOverall,
   dimensionsById,
   humanRiskType,
+  normalizeReportDimensions,
   redactSensitiveEvidence,
   type ReportEnvelope,
   type ReportPayload,
@@ -44,6 +45,16 @@ function bandTone(b: BandKey) {
     text: "text-[var(--band-b-text)]",
     bar: "var(--band-b-bar)",
   };
+}
+
+function bandBadgeTone(b: BandKey): "success" | "warning" | "danger" {
+  return b === "A" ? "success" : b === "M" ? "warning" : "danger";
+}
+
+function severityBadgeTone(
+  s: "high" | "medium" | "low",
+): "danger" | "warning" | "neutral" {
+  return s === "high" ? "danger" : s === "medium" ? "warning" : "neutral";
 }
 
 function severityTone(s: "high" | "medium" | "low") {
@@ -152,7 +163,7 @@ export default function ReportePage() {
         title="Estamos evaluando tu sesión."
         body={
           envelope.message ??
-          "El judge LLM compara tus 5 decisiones contra la rúbrica. Esto suele tardar ~30 segundos."
+          "El judge LLM compara tus respuestas contra la rúbrica. Esto suele tardar ~30 segundos."
         }
         spinner
       />
@@ -203,11 +214,11 @@ function ShellMessage({
             <div className="mx-auto h-10 w-10 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
           )}
           <div className={`eyebrow ${spinner ? "mt-8" : ""}`}>{eyebrow}</div>
-          <h1 className="display mt-3 text-[28px] text-[var(--text-primary)]">
+          <h1 className="display mt-3 ts-title-1 text-[var(--text-primary)]">
             {title}
           </h1>
           {body && (
-            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+            <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.55]">
               {body}
             </p>
           )}
@@ -239,6 +250,7 @@ function ReportView({
   const [shareError, setShareError] = useState<string | null>(null);
 
   const bands = dimensionsById(payload);
+  const normalizedDimensions = normalizeReportDimensions(payload);
   const { score: overallScore, band: overallBand } = computeOverall(payload);
 
   const generatedDate = generatedAt ? new Date(generatedAt) : null;
@@ -282,7 +294,7 @@ function ReportView({
       <main className="surface-canvas min-h-screen pb-24">
         {/* Disclaimer */}
         <div className="border-b border-[var(--hairline)] bg-[var(--surface-2)]">
-          <div className="reading-col px-6 py-3 flex items-center gap-2 text-[12px] text-[var(--text-secondary)]">
+          <div className="reading-col px-6 py-3 flex items-center gap-2 ts-footnote text-[var(--text-secondary)]">
             <span
               className="inline-block h-1.5 w-1.5 rounded-full"
               style={{
@@ -308,13 +320,13 @@ function ReportView({
         <section className="reading-col px-6 pt-14">
           <motion.div {...fadeUp}>
             <div className="eyebrow">Reporte ejecutivo · participante</div>
-            <h1 className="display display-tight mt-5 text-[40px] sm:text-[52px] text-[var(--text-primary)]">
-              Diagnóstico operativo.
+            <h1 className="display display-tight mt-5 ts-display-lg sm:ts-display-xl text-[var(--text-primary)]">
+              Diagnóstico operativo
             </h1>
-            <div className="mt-6 flex flex-wrap items-center gap-3 text-[13px] text-[var(--text-secondary)]">
+            <div className="mt-6 flex flex-wrap items-center gap-3 ts-subhead text-[var(--text-secondary)]">
               <Avatar
                 size="sm"
-                className="bg-[var(--surface-3)] text-[var(--text-primary)] text-[12px] font-semibold"
+                className="bg-[var(--surface-3)] text-[var(--text-primary)] ts-footnote font-semibold"
                 name=" "
               />
               <span className="mono">
@@ -336,22 +348,20 @@ function ReportView({
             <div className="flex flex-col sm:flex-row sm:items-start gap-8">
               <div className="flex-shrink-0">
                 <div className="eyebrow">Readiness general</div>
-                <div className="display mt-3 text-[64px] text-[var(--text-primary)] leading-none">
+                <div className="display mt-3 ts-display-4xl text-[var(--text-primary)] leading-none">
                   {overallScore}
-                  <span className="text-[var(--text-tertiary)] text-[28px] ml-1">
+                  <span className="text-[var(--text-tertiary)] ts-title-1 ml-1">
                     /100
                   </span>
                 </div>
                 <div className="mt-3">
-                  <span
-                    className={`text-[12px] font-semibold px-2.5 py-1 rounded-full ${bandTone(overallBand).bg} ${bandTone(overallBand).text}`}
-                  >
+                  <AppleBadge tone={bandBadgeTone(overallBand)} radius="full">
                     Banda {BAND_DISPLAY[overallBand]}
-                  </span>
+                  </AppleBadge>
                 </div>
               </div>
               <div className="flex-1 pt-1">
-                <p className="text-[16px] text-[var(--text-primary)] leading-[1.65]">
+                <p className="ts-body text-[var(--text-primary)] leading-[1.65]">
                   {capFirst(payload.recommendation.reason)}
                 </p>
               </div>
@@ -363,8 +373,8 @@ function ReportView({
         <section className="reading-col px-6 mt-20">
           <motion.div {...fadeUp}>
             <div className="eyebrow">Desempeño por dimensión</div>
-            <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
-              Las cinco dimensiones.
+            <h2 className="display mt-3 ts-title-1 text-[var(--text-primary)]">
+              Las seis dimensiones.
             </h2>
           </motion.div>
 
@@ -373,7 +383,7 @@ function ReportView({
               const band = (bands[d.id] ?? "M") as BandKey;
               const score = bandScore(band);
               const tone = bandTone(band);
-              const dimRationale = payload.dimensions.find(
+              const dimRationale = normalizedDimensions.find(
                 (x) => x.id === d.id,
               )?.rationale;
               return (
@@ -386,20 +396,18 @@ function ReportView({
                   <div className="flex items-baseline justify-between gap-4">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3">
-                        <span className="text-[17px] font-semibold text-[var(--text-primary)]">
+                        <span className="ts-headline font-semibold text-[var(--text-primary)]">
                           {capFirst(d.label)}
                         </span>
-                        <span
-                          className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tone.bg} ${tone.text}`}
-                        >
+                        <AppleBadge tone={bandBadgeTone(band)} radius="full">
                           Banda {BAND_DISPLAY[band]}
-                        </span>
+                        </AppleBadge>
                       </div>
-                      <p className="mt-2 text-[14px] text-[var(--text-secondary)] leading-[1.6]">
+                      <p className="mt-2 ts-callout text-[var(--text-secondary)] leading-[1.6]">
                         {capFirst(dimRationale ?? d.description)}
                       </p>
                     </div>
-                    <span className="text-[20px] mono font-semibold text-[var(--text-primary)] flex-shrink-0">
+                    <span className="ts-body-xl mono font-semibold text-[var(--text-primary)] flex-shrink-0">
                       {score}
                     </span>
                   </div>
@@ -427,7 +435,7 @@ function ReportView({
           <section className="reading-col px-6 mt-20">
             <motion.div {...fadeUp}>
               <div className="eyebrow">Gaps identificados</div>
-              <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
+              <h2 className="display mt-3 ts-title-1 text-[var(--text-primary)]">
                 Dónde se torció.
               </h2>
             </motion.div>
@@ -443,18 +451,20 @@ function ReportView({
                     className="card-apple bg-[var(--surface)] p-6"
                   >
                     <div className="flex items-start gap-4">
-                      <span
-                        className={`text-[11px] font-semibold px-2 py-0.5 rounded-full flex-shrink-0 mt-1 ${tone.bg} ${tone.text}`}
+                      <AppleBadge
+                        tone={severityBadgeTone(g.severity)}
+                        radius="full"
+                        className="flex-shrink-0 mt-1"
                       >
                         Severidad {tone.label}
-                      </span>
+                      </AppleBadge>
                       <div className="flex-1 min-w-0">
                         <div className="eyebrow">Qué observamos</div>
-                        <p className="mt-2 text-[15px] text-[var(--text-primary)] leading-[1.65]">
+                        <p className="mt-2 ts-body text-[var(--text-primary)] leading-[1.65]">
                           {capFirst(g.observed)}
                         </p>
                         <div className="eyebrow mt-5">Por qué importa</div>
-                        <p className="mt-2 text-[14px] text-[var(--text-secondary)] leading-[1.65]">
+                        <p className="mt-2 ts-callout text-[var(--text-secondary)] leading-[1.65]">
                           {capFirst(g.why_matters)}
                         </p>
                       </div>
@@ -471,7 +481,7 @@ function ReportView({
           <section className="reading-col px-6 mt-20">
             <motion.div {...fadeUp}>
               <div className="eyebrow">Eventos de riesgo</div>
-              <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
+              <h2 className="display mt-3 ts-title-1 text-[var(--text-primary)]">
                 Momentos críticos en la sesión.
               </h2>
             </motion.div>
@@ -488,20 +498,18 @@ function ReportView({
                   >
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3 min-w-0">
-                        <span className="mono text-[12px] text-[var(--text-tertiary)] flex-shrink-0">
+                        <span className="mono ts-footnote text-[var(--text-tertiary)] flex-shrink-0">
                           Paso {e.step_ordinal}
                         </span>
-                        <span
-                          className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${tone.bg} ${tone.text}`}
-                        >
+                        <AppleBadge tone={severityBadgeTone(e.severity)} radius="full">
                           {tone.label}
-                        </span>
-                        <span className="text-[14px] text-[var(--text-primary)] truncate">
+                        </AppleBadge>
+                        <span className="ts-callout text-[var(--text-primary)] truncate">
                           {humanRiskType(e.type)}
                         </span>
                       </div>
                     </div>
-                    <blockquote className="mt-4 pl-4 border-l-2 border-[var(--border)] text-[14px] text-[var(--text-secondary)] italic leading-[1.65]">
+                    <blockquote className="mt-4 pl-4 border-l-2 border-[var(--border)] ts-callout text-[var(--text-secondary)] italic leading-[1.65]">
                       «
                       {capFirst(
                         redactSensitiveEvidence(e.evidence_text, e.severity),
@@ -520,7 +528,7 @@ function ReportView({
           <section className="reading-col px-6 mt-20">
             <motion.div {...fadeUp}>
               <div className="eyebrow">Fortalezas</div>
-              <h2 className="display mt-3 text-[28px] text-[var(--text-primary)]">
+              <h2 className="display mt-3 ts-title-1 text-[var(--text-primary)]">
                 Qué hizo bien.
               </h2>
             </motion.div>
@@ -537,7 +545,7 @@ function ReportView({
                     className="flex-shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full"
                     style={{ backgroundColor: "var(--accent)" }}
                   />
-                  <p className="text-[15px] text-[var(--text-primary)] leading-[1.65]">
+                  <p className="ts-body text-[var(--text-primary)] leading-[1.65]">
                     {capFirst(s)}
                   </p>
                 </motion.li>
@@ -558,10 +566,10 @@ function ReportView({
             }}
           >
             <div className="eyebrow accent-text">Recomendación</div>
-            <h2 className="display mt-3 text-[34px] text-[var(--text-primary)]">
+            <h2 className="display mt-3 ts-display text-[var(--text-primary)]">
               {capFirst(payload.recommendation.action)}.
             </h2>
-            <p className="mt-3 text-[15px] text-[var(--text-secondary)]">
+            <p className="mt-3 ts-body text-[var(--text-secondary)]">
               {capFirst(payload.recommendation.applies_to)}
             </p>
 
@@ -570,10 +578,10 @@ function ReportView({
               <ol className="mt-4 space-y-3">
                 {payload.recommendation.next_week_actions.map((a, i) => (
                   <li key={i} className="flex items-start gap-4">
-                    <span className="mono text-[13px] text-[var(--text-tertiary)] flex-shrink-0 mt-0.5 w-5">
+                    <span className="mono ts-subhead text-[var(--text-tertiary)] flex-shrink-0 mt-0.5 w-5">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <p className="text-[15px] text-[var(--text-primary)] leading-[1.6]">
+                    <p className="ts-body text-[var(--text-primary)] leading-[1.6]">
                       {capFirst(a)}
                     </p>
                   </li>
@@ -590,20 +598,18 @@ function ReportView({
             <AppleButton
               as={Link}
               href={`/api/sessions/${sessionId}/report/pdf`}
-              radius="sm"
-              variant="bordered"
+              tone="secondary"
               size="lg"
-              className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"
+              className="h-12 px-7"
             >
               Descargar PDF
             </AppleButton>
             <AppleButton
-              radius="sm"
-              variant="bordered"
+              tone="secondary"
               size="lg"
               isLoading={shareStatus === "creating"}
               onPress={shareUrl ? copyShareLink : createShareLink}
-              className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"
+              className="h-12 px-7"
             >
               {shareStatus === "copied"
                 ? "Link copiado"
@@ -613,20 +619,19 @@ function ReportView({
             </AppleButton>
             <AppleButton
               as={Link}
-              href="/dashboard"
-              radius="sm"
+              href="/staff"
+              tone="primary"
               size="lg"
-              className="accent-bg text-white h-12 px-7 text-[15px] font-medium shadow-none"
+              className="h-12 px-7"
             >
               Vista del manager →
             </AppleButton>
             <AppleButton
               as={Link}
               href="/"
-              radius="sm"
-              variant="bordered"
+              tone="secondary"
               size="lg"
-              className="h-12 px-7 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[15px]"
+              className="h-12 px-7"
             >
               Volver a landing
             </AppleButton>
@@ -641,16 +646,16 @@ function ReportView({
               {shareUrl ? (
                 <>
                   <div className="eyebrow">Link compartible</div>
-                  <p className="mt-2 break-all text-[13px] text-[var(--text-primary)] mono">
+                  <p className="mt-2 break-all ts-subhead text-[var(--text-primary)] mono">
                     {shareUrl}
                   </p>
-                  <p className="mt-2 text-[12px] text-[var(--text-secondary)]">
+                  <p className="mt-2 ts-footnote text-[var(--text-secondary)]">
                     Válido por 30 días. Los eventos de riesgo alto se muestran
                     con datos sensibles anonimizados.
                   </p>
                 </>
               ) : (
-                <p className="text-[13px] text-[var(--band-b-text)]">
+                <p className="ts-subhead text-[var(--band-b-text)]">
                   {shareError}
                 </p>
               )}
@@ -660,7 +665,7 @@ function ReportView({
 
         {/* Meta footer */}
         <section className="reading-col px-6 mt-20">
-          <div className="border-t border-[var(--hairline)] pt-6 flex flex-wrap gap-x-6 gap-y-2 text-[12px] text-[var(--text-tertiary)] mono">
+          <div className="border-t border-[var(--hairline)] pt-6 flex flex-wrap gap-x-6 gap-y-2 ts-footnote text-[var(--text-tertiary)] mono">
             <span>Judge {payload.judge_model}</span>
             <span>·</span>
             <span>Rúbrica {payload.rubric_version}</span>

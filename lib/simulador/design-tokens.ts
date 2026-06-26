@@ -1,16 +1,18 @@
 /**
- * design-tokens — catálogo único de TODOS los design tokens del sistema.
+ * design-tokens — catálogo de los design tokens EDITABLES del sistema.
  *
  * Single source of truth para:
  *   - `/design` page (renderiza controles de edición)
  *   - DesignOverridesInjector (sabe qué tokens son válidos)
  *
- * Si agregas/quitas un token en `app/(app)/simulador.css`, también edítalo aquí.
+ * Excepción: tokens internos NO editables (`--heroui-radius-*`, `--avatar-*-bg`)
+ * viven solo en `app/(app)/simulador.css` y no se exponen aquí.
+ * Si agregas/quitas un token editable en `app/(app)/simulador.css`, también edítalo aquí.
  * El default DEBE coincidir con el valor en simulador.css (light mode) — esto
  * permite que /design muestre "Default" cuando el override matches el valor
  * canónico.
  */
-export type TokenKind = "px" | "color" | "ms" | "ease" | "radius" | "shadow" | "letter";
+export type TokenKind = "px" | "color" | "ms" | "ease" | "radius" | "shadow" | "letter" | "space";
 
 export interface DesignToken {
   /** CSS custom property sin el prefijo `--`. Ej: "text-body". */
@@ -93,6 +95,7 @@ const BORDERS: DesignToken[] = [
 const ACCENT: DesignToken[] = [
   { name: "accent",       defaultLight: "#1472ff", defaultDark: null, kind: "color", description: "azul Itera, CTAs y links" },
   { name: "accent-hover", defaultLight: "#0e5fcc", defaultDark: null, kind: "color", description: "accent en hover/pressed" },
+  { name: "accent-strong", defaultLight: "#0e5fcc", defaultDark: null, kind: "color", description: "fondo sólido bajo texto blanco (AA 5:1) — botones/badges primary, DEC-009" },
   { name: "accent-soft",  defaultLight: "rgba(20, 114, 255, 0.08)", defaultDark: "rgba(20, 114, 255, 0.14)", kind: "color", description: "fondo de chip accent" },
   { name: "accent-ring",  defaultLight: "rgba(20, 114, 255, 0.24)", defaultDark: "rgba(20, 114, 255, 0.32)", kind: "color", description: "focus ring" },
 ];
@@ -146,13 +149,23 @@ const MOTION: DesignToken[] = [
   { name: "motion-page",   defaultLight: "600ms", defaultDark: null, kind: "ms",   description: "entrada de pantalla" },
   { name: "motion-ease",   defaultLight: "cubic-bezier(0.16, 1, 0.3, 1)",   defaultDark: null, kind: "ease", description: "easing default (out-expo)" },
   { name: "motion-spring", defaultLight: "cubic-bezier(0.34, 1.56, 0.64, 1)", defaultDark: null, kind: "ease", description: "spring (bouncy)" },
+  { name: "motion-linear", defaultLight: "linear", defaultDark: null, kind: "ease", description: "solo progress bars determinate" },
+];
+
+// ============================================================================
+// SPACING (semantic) — ritmo de sección + ancho de lectura
+// ============================================================================
+const SPACING: DesignToken[] = [
+  { name: "space-section",    defaultLight: "96px",  defaultDark: null, kind: "space", description: "padding vertical de sección (desktop; 64px en mobile)" },
+  { name: "space-section-sm", defaultLight: "64px",  defaultDark: null, kind: "space", description: "sección compacta (desktop; 48px en mobile)" },
+  { name: "reading-max",      defaultLight: "720px", defaultDark: null, kind: "space", description: "ancho máx de columna de lectura (.reading-col)" },
 ];
 
 // ============================================================================
 // EXPORT
 // ============================================================================
 export const TOKEN_SECTIONS: TokenSection[] = [
-  { id: "typography", title: "Tipografía",  blurb: "16 tamaños — escala Apple HIG-inspired. Cambias un token, cambia toda la app.", tokens: TYPOGRAPHY },
+  { id: "typography", title: "Tipografía",  blurb: "19 tamaños — escala Apple HIG-inspired. Cambias un token, cambia toda la app.", tokens: TYPOGRAPHY },
   { id: "surfaces",   title: "Surfaces",    blurb: "Fondos. surface es el principal; surface-2/3 son elevaciones progresivas.",      tokens: SURFACES },
   { id: "text",       title: "Texto",       blurb: "4 niveles de contraste sobre surface. text-primary para headings; text-tertiary para captions.", tokens: TEXT },
   { id: "borders",    title: "Borders & hairlines", blurb: "Líneas sutiles entre superficies. hairline es el divider más sutil.",     tokens: BORDERS },
@@ -161,6 +174,7 @@ export const TOKEN_SECTIONS: TokenSection[] = [
   { id: "radius",     title: "Border radius", blurb: "Todos los componentes redondeados usan estos 7 tokens. DEC-005: inputs y botones = radius-md (12px).", tokens: RADIUS },
   { id: "shadow",     title: "Shadow (elevation)", blurb: "5 niveles de elevación. xs=subtle, xl=modal.", tokens: SHADOW },
   { id: "motion",     title: "Motion (duraciones + easings)", blurb: "Cambiar motion-base afecta todas las transiciones estándar.", tokens: MOTION },
+  { id: "spacing",    title: "Spacing (ritmo)", blurb: "Ritmo vertical de sección y ancho de lectura. El micro-spacing (gaps/paddings) usa la escala de Tailwind.", tokens: SPACING },
 ];
 
 /** Lista plana de todos los tokens (útil para validación). */

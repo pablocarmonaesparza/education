@@ -265,7 +265,7 @@ function Card({
 }) {
   return (
     <div
-      className={`rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5 ${className}`}
+      className={`rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-5 ${className}`}
     >
       {children}
     </div>

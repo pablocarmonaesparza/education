@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { AuthNav } from "@/components/simulador/AuthNav";
-import { AppleButton, AppleErrorState, AppleIcon } from "@/components/simulador/apple";
+import { AppleButton, AppleIcon, AppleLink } from "@/components/simulador/apple";
 import { createClient } from "@/lib/supabase/client";
 import "../../../(app)/simulador.css";
 
@@ -88,7 +88,7 @@ export default function InvitationLandingPage() {
           {(status === "checking" || status === "accepting") && (
             <div className="flex flex-col items-center gap-5">
               <div className="h-9 w-9 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
-              <p className="text-[15px] text-[var(--text-secondary)]">
+              <p className="ts-body text-[var(--text-secondary)]">
                 {status === "checking"
                   ? "Verificando invitación…"
                   : "Aceptando invitación…"}
@@ -98,10 +98,10 @@ export default function InvitationLandingPage() {
 
           {status === "needs_auth" && (
             <div className="flex flex-col gap-6">
-              <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
-                Te invitaron a un diagnóstico.
+              <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
+                Te invitaron a un diagnóstico
               </h1>
-              <p className="text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+              <p className="ts-body leading-[1.55] text-[var(--text-secondary)]">
                 Inicia sesión o regístrate con el email al que te enviaron esta
                 invitación. Al autenticarte, se acepta automáticamente.
               </p>
@@ -111,7 +111,7 @@ export default function InvitationLandingPage() {
                     router.push(`/auth/signup?next=/auth/invitation/${token}`)
                   }
                   size="lg"
-                  className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none"
+                  className="w-full h-12 accent-bg text-white ts-body font-medium shadow-none"
                 >
                   Crear cuenta
                 </AppleButton>
@@ -121,7 +121,7 @@ export default function InvitationLandingPage() {
                   }
                   tone="secondary"
                   size="lg"
-                  className="w-full h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium shadow-none"
+                  className="w-full h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] ts-body font-medium shadow-none"
                 >
                   Ya tengo cuenta
                 </AppleButton>
@@ -131,22 +131,58 @@ export default function InvitationLandingPage() {
 
           {status === "done" && (
             <div className="flex flex-col items-center gap-6">
-              <div className="h-12 w-12 rounded-full accent-bg-soft grid place-items-center">
-                <AppleIcon name="check" className="text-[var(--accent)]" />
+              <div className="h-14 w-14 rounded-full grid place-items-center bg-[var(--band-a-bg)]">
+                <AppleIcon
+                  name="check"
+                  size="lg"
+                  className="text-[var(--band-a-text)]"
+                />
               </div>
-              <h1 className="display display-tight text-[24px] leading-[1.15] text-[var(--text-primary)]">
-                Listo. Redirigiendo al dashboard…
-              </h1>
+              <div className="flex flex-col gap-3">
+                <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
+                  Invitación aceptada
+                </h1>
+                <p className="ts-body leading-[1.55] text-[var(--text-secondary)]">
+                  Te llevamos a tu dashboard…
+                </p>
+              </div>
             </div>
           )}
 
           {status === "error" && (
-            <AppleErrorState
-              title="No pudimos aceptar la invitación."
-              body={errorMsg ?? "Algo salió mal. Intenta de nuevo."}
-              actionLabel="Ir al inicio"
-              onAction={() => router.push("/")}
-            />
+            <div className="flex flex-col items-center gap-6">
+              <div className="h-14 w-14 rounded-full grid place-items-center bg-[var(--band-b-bg)]">
+                <AppleIcon
+                  name="alert"
+                  size="lg"
+                  className="text-[var(--band-b-text)]"
+                />
+              </div>
+              <div className="flex flex-col gap-3">
+                <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
+                  No pudimos abrir esta invitación
+                </h1>
+                <p className="ts-body leading-[1.55] text-[var(--text-secondary)]">
+                  {errorMsg
+                    ? `${errorMsg} `
+                    : "Puede haber expirado o ya haberse usado. "}
+                  Pídele a quien te invitó que te reenvíe el acceso, o escríbenos
+                  a{" "}
+                  <AppleLink href="mailto:ayuda@itera.la">
+                    ayuda@itera.la
+                  </AppleLink>{" "}
+                  y te ayudamos.
+                </p>
+              </div>
+              <AppleButton
+                onPress={() => router.push("/")}
+                tone="secondary"
+                size="lg"
+                className="w-full"
+              >
+                Ir al inicio
+              </AppleButton>
+            </div>
           )}
         </motion.div>
       </main>

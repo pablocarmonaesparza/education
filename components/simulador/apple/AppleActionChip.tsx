@@ -56,5 +56,5 @@ function chipClass(isSelected: boolean, value: string, style: AppleChipStyle): s
     if (value === "escalar") return `${base} border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]`;
     if (value === "normal") return `${base} border-[var(--band-a-text)] bg-[var(--band-a-bg)] text-[var(--band-a-text)]`;
   }
-  return `${base} border-[var(--accent)] bg-[var(--accent)] text-white`;
+  return `${base} border-[var(--accent)] bg-[var(--accent-strong)] text-white`;
 }

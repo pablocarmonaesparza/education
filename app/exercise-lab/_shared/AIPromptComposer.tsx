@@ -162,7 +162,7 @@ export function AIPromptComposer({
               ? "Crea el prompt desde Inputs y selección..."
               : "Escribe el prompt que le mandarías al modelo...")
           }
-          className={`w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 text-[15px] leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed ${matched ? "flex-1" : ""} ${readOnly ? "cursor-default" : ""}`}
+          className={`w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 ts-body leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed ${matched ? "flex-1" : ""} ${readOnly ? "cursor-default" : ""}`}
           style={matched ? { minHeight: 0, maxHeight: "none" } : { height: textComputedHeight, minHeight: TEXT_MIN_HEIGHT, maxHeight: TEXT_MAX_HEIGHT }}
         />
 
@@ -177,7 +177,7 @@ export function AIPromptComposer({
             {voiceNotes.map((note, index) => (
               <div
                 key={`${note}-${index}`}
-                className="flex items-center gap-2 text-[12px] text-[var(--text-secondary)]"
+                className="flex items-center gap-2 ts-footnote text-[var(--text-secondary)]"
               >
                 <span className="grid h-6 w-6 place-items-center rounded-lg bg-[var(--surface)] text-[var(--accent)]">
                   <MicGlyph />
@@ -220,7 +220,7 @@ export function AIPromptComposer({
               onClick={() => {
                 if (!readOnly) setDropdownOpen((open) => !open);
               }}
-              className={`flex min-h-9 max-w-[240px] items-center gap-2 rounded-2xl py-1.5 pl-2.5 pr-3.5 text-[12px] text-[var(--text-secondary)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+              className={`flex min-h-9 max-w-[240px] items-center gap-2 rounded-2xl py-1.5 pl-2.5 pr-3.5 ts-footnote text-[var(--text-secondary)] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
                 readOnly
                   ? "cursor-default"
                   : "hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
@@ -267,7 +267,7 @@ export function AIPromptComposer({
                   {modelGroups.map((group, groupIndex) => (
                     <div key={group.title}>
                       {groupIndex > 0 && <div className="mx-3 my-1.5 h-px bg-[var(--hairline)]" />}
-                      <div className="px-3 pb-1 pt-1.5 text-[10px] font-semibold text-[var(--text-tertiary)]">
+                      <div className="px-3 pb-1 pt-1.5 ts-caption-2 font-semibold text-[var(--text-tertiary)]">
                         {group.title}
                       </div>
                       {group.families.map((family, familyIndex) => (
@@ -286,7 +286,7 @@ export function AIPromptComposer({
                                   setSent(false);
                                   setDropdownOpen(false);
                                 }}
-                                className={`flex w-full items-center gap-2.5 px-3 py-2 text-left text-[13px] transition-colors ${
+                                className={`flex w-full items-center gap-2.5 px-3 py-2 text-left ts-subhead transition-colors ${
                                   isSelected
                                     ? "bg-[var(--accent-soft)] text-[var(--text-primary)]"
                                     : "text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
@@ -296,14 +296,14 @@ export function AIPromptComposer({
                                 <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
                                   <span className="truncate">{model.label}</span>
                                   {model.badge && (
-                                    <span className="shrink-0 text-[11px] text-[var(--text-tertiary)]">
+                                    <span className="shrink-0 ts-caption-1 text-[var(--text-tertiary)]">
                                       · {model.badge}
                                     </span>
                                   )}
                                 </span>
                                 <span className="flex shrink-0 items-center gap-2 text-[var(--text-tertiary)]">
                                   <span className="flex items-center gap-1">
-                                    <span className="text-[9px] font-semibold tracking-wider">$</span>
+                                    <span className="ts-caption-2 font-semibold tracking-wider">$</span>
                                     <LevelMeter value={model.price} ariaLabel="precio" />
                                   </span>
                                   <span aria-hidden className="h-2 w-px bg-[var(--hairline)]" />
@@ -352,7 +352,7 @@ export function AIPromptComposer({
           </div>
         </div>
       </div>
-      <div className="mt-3 flex items-center justify-between gap-3 text-[12px] text-[var(--text-tertiary)]">
+      <div className="mt-3 flex items-center justify-between gap-3 ts-footnote text-[var(--text-tertiary)]">
         <span>⌘ + Enter para enviar en el runtime real.</span>
         {sent && <span className="text-[var(--band-a-text)]">Prompt enviado al preview</span>}
       </div>

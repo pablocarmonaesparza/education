@@ -21,6 +21,7 @@
 import { HeroUIProvider } from "@heroui/react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { useRouter } from "next/navigation";
+import { DevReturnButton } from "@/components/simulador/DevReturnButton";
 import { DesignOverridesInjector } from "@/components/simulador/DesignOverridesInjector";
 
 declare module "@react-types/shared" {
@@ -46,6 +47,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         {/* Aplica overrides de /design en TODAS las surfaces. */}
         <DesignOverridesInjector />
         {children}
+        <DevReturnButton />
       </NextThemesProvider>
     </HeroUIProvider>
   );

@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { SurfaceNav } from "@/components/simulador/SurfaceNav";
 import { AppleButton } from "@/components/simulador/apple";
+import { AdminMetric, ErrorBox, formatDateTime } from "../shared";
 
 type JudgeHealthResponse = {
   window_days: number;
@@ -72,7 +72,6 @@ export default function AdminJudgeHealthPage() {
 
   return (
     <>
-      <SurfaceNav />
       <main className="surface-canvas min-h-screen pb-24">
         <section className="reading-col px-6 pt-14">
           <motion.div
@@ -81,31 +80,33 @@ export default function AdminJudgeHealthPage() {
             transition={{ duration: 0.4 }}
           >
             <div className="eyebrow">Itera staff · evaluación</div>
-            <h1 className="display mt-4 text-[36px] text-[var(--text-primary)]">
-              Judge health.
+            <h1 className="display mt-4 ts-display text-[var(--text-primary)]">
+              Judge health
             </h1>
-            <p className="mt-4 max-w-2xl text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+            <p className="mt-4 max-w-2xl ts-body leading-[1.55] text-[var(--text-secondary)]">
               Lectura operacional del judge y la cola humana. El objetivo es
               detectar drift, overload o riesgos altos sin revisar tablas.
             </p>
-            <AdminLinks />
           </motion.div>
 
           {error && <ErrorBox message={error} />}
 
           <div className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-5">
-            <Metric label="Runs" value={data?.summary.evaluation_runs ?? 0} />
-            <Metric
+            <AdminMetric label="Runs" value={data?.summary.evaluation_runs ?? 0} />
+            <AdminMetric
               label="Review req."
               value={data?.summary.review_required ?? 0}
             />
-            <Metric label="Open review" value={data?.summary.open_review ?? 0} />
-            <Metric
+            <AdminMetric
+              label="Open review"
+              value={data?.summary.open_review ?? 0}
+            />
+            <AdminMetric
               label="Overdue"
               value={data?.summary.overdue_review ?? 0}
               danger={(data?.summary.overdue_review ?? 0) > 0}
             />
-            <Metric
+            <AdminMetric
               label="Risk high"
               value={data?.summary.risk_events.high ?? 0}
               danger={(data?.summary.risk_events.high ?? 0) > 0}
@@ -124,7 +125,7 @@ export default function AdminJudgeHealthPage() {
           </div>
 
           {data === null && !error && (
-            <div className="mt-12 text-[14px] text-[var(--text-secondary)]">
+            <div className="mt-12 ts-callout text-[var(--text-secondary)]">
               Cargando health…
             </div>
           )}
@@ -140,11 +141,11 @@ export default function AdminJudgeHealthPage() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="eyebrow">Runs recientes</div>
-                    <h2 className="mt-2 text-[18px] font-semibold text-[var(--text-primary)]">
+                    <h2 className="mt-2 ts-headline font-semibold text-[var(--text-primary)]">
                       Últimas evaluaciones
                     </h2>
                   </div>
-                  <span className="text-[12px] text-[var(--text-tertiary)]">
+                  <span className="ts-footnote text-[var(--text-tertiary)]">
                     ventana {data.window_days} días
                   </span>
                 </div>
@@ -152,13 +153,13 @@ export default function AdminJudgeHealthPage() {
                   {data.recent_runs.map((run) => (
                     <div
                       key={run.id}
-                      className="grid grid-cols-1 gap-2 py-4 text-[13px] lg:grid-cols-[1.5fr_1fr_1fr_1fr]"
+                      className="grid grid-cols-1 gap-2 py-4 ts-subhead lg:grid-cols-[1.5fr_1fr_1fr_1fr]"
                     >
                       <div>
                         <div className="font-medium text-[var(--text-primary)]">
                           {run.judge_model}
                         </div>
-                        <div className="mono text-[11px] text-[var(--text-tertiary)]">
+                        <div className="mono ts-caption-1 text-[var(--text-tertiary)]">
                           {run.id.slice(0, 8)} · sesión{" "}
                           {run.session_id.slice(0, 8)}
                         </div>
@@ -181,7 +182,7 @@ export default function AdminJudgeHealthPage() {
                 <div className="eyebrow">Cola humana abierta</div>
                 <div className="mt-5 space-y-3">
                   {data.review_queue.length === 0 ? (
-                    <p className="text-[14px] text-[var(--text-secondary)]">
+                    <p className="ts-callout text-[var(--text-secondary)]">
                       No hay items abiertos.
                     </p>
                   ) : (
@@ -192,14 +193,14 @@ export default function AdminJudgeHealthPage() {
                       >
                         <div className="flex flex-wrap items-center justify-between gap-3">
                           <div>
-                            <div className="text-[14px] font-medium text-[var(--text-primary)]">
+                            <div className="ts-callout font-medium text-[var(--text-primary)]">
                               {item.triggered_by}
                             </div>
-                            <div className="mono mt-1 text-[11px] text-[var(--text-tertiary)]">
+                            <div className="mono mt-1 ts-caption-1 text-[var(--text-tertiary)]">
                               {item.id.slice(0, 8)}
                             </div>
                           </div>
-                          <div className="text-right text-[12px] text-[var(--text-secondary)]">
+                          <div className="text-right ts-footnote text-[var(--text-secondary)]">
                             {item.completed_review_count}/
                             {item.required_review_count} firmas ·{" "}
                             {item.due_at ? formatDateTime(item.due_at) : "sin SLA"}
@@ -218,52 +219,6 @@ export default function AdminJudgeHealthPage() {
   );
 }
 
-function AdminLinks() {
-  return (
-    <div className="mt-5 flex flex-wrap gap-2">
-      {[
-        ["/admin/review", "Review"],
-        ["/admin/leads", "Leads"],
-        ["/admin/orgs", "Orgs"],
-        ["/admin/audit-log", "Audit log"],
-      ].map(([href, label]) => (
-        <a
-          key={href}
-          href={href}
-          className="rounded-full bg-[var(--surface-2)] px-4 py-2 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
-        >
-          {label}
-        </a>
-      ))}
-    </div>
-  );
-}
-
-function Metric({
-  label,
-  value,
-  danger = false,
-}: {
-  label: string;
-  value: number | string;
-  danger?: boolean;
-}) {
-  return (
-    <div
-      className={`rounded-2xl border p-4 ${
-        danger
-          ? "border-[var(--band-b-text)]/20 bg-[var(--band-b-bg)]"
-          : "border-[var(--hairline)] bg-[var(--surface)]"
-      }`}
-    >
-      <div className="eyebrow">{label}</div>
-      <div className="mt-2 mono text-[22px] font-semibold text-[var(--text-primary)]">
-        {value}
-      </div>
-    </div>
-  );
-}
-
 function Breakdown({
   title,
   rows,
@@ -276,14 +231,14 @@ function Breakdown({
       <div className="eyebrow">{title}</div>
       <div className="mt-5 space-y-3">
         {rows.length === 0 ? (
-          <p className="text-[14px] text-[var(--text-secondary)]">Sin datos.</p>
+          <p className="ts-callout text-[var(--text-secondary)]">Sin datos.</p>
         ) : (
           rows.map(([label, count]) => (
             <div key={label} className="flex items-center justify-between gap-3">
-              <span className="text-[14px] text-[var(--text-primary)]">
+              <span className="ts-callout text-[var(--text-primary)]">
                 {label}
               </span>
-              <span className="mono text-[14px] text-[var(--text-secondary)]">
+              <span className="mono ts-callout text-[var(--text-secondary)]">
                 {count}
               </span>
             </div>
@@ -294,19 +249,3 @@ function Breakdown({
   );
 }
 
-function ErrorBox({ message }: { message: string }) {
-  return (
-    <div className="mt-8 rounded-xl bg-[var(--band-b-bg)] p-4 text-[14px] text-[var(--band-b-text)]">
-      {message}
-    </div>
-  );
-}
-
-function formatDateTime(value: string) {
-  return new Date(value).toLocaleString("es-MX", {
-    day: "2-digit",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}

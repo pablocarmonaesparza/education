@@ -2,8 +2,17 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { SurfaceNav } from "@/components/simulador/SurfaceNav";
 import { AppleButton } from "@/components/simulador/apple";
+import {
+  AdminEmpty,
+  AdminLoading,
+  AdminMetric,
+  BillingPill,
+  ErrorBox,
+  formatDate,
+  formatMoney,
+  rate,
+} from "../shared";
 
 type OrgItem = {
   id: string;
@@ -71,7 +80,6 @@ export default function AdminOrgsPage() {
 
   return (
     <>
-      <SurfaceNav />
       <main className="surface-canvas min-h-screen pb-24">
         <section className="reading-col px-6 pt-14">
           <motion.div
@@ -80,27 +88,26 @@ export default function AdminOrgsPage() {
             transition={{ duration: 0.4 }}
           >
             <div className="eyebrow">Itera staff · clientes</div>
-            <h1 className="display mt-4 text-[36px] text-[var(--text-primary)]">
-              Orgs y sprints.
+            <h1 className="display mt-4 ts-display text-[var(--text-primary)]">
+              Orgs y sprints
             </h1>
-            <p className="mt-4 max-w-2xl text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+            <p className="mt-4 max-w-2xl ts-body leading-[1.55] text-[var(--text-secondary)]">
               Estado operacional de cada organización: seats, billing, sesiones
               y reportes. Sirve para saber dónde intervenir antes de que el
               cliente pregunte.
             </p>
-            <AdminLinks />
           </motion.div>
 
           {error && <ErrorBox message={error} />}
 
           <div className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <Metric label="Orgs" value={data?.summary.organizations ?? 0} />
-            <Metric
+            <AdminMetric label="Orgs" value={data?.summary.organizations ?? 0} />
+            <AdminMetric
               label="Sprints activos"
               value={data?.summary.active_sprints ?? 0}
             />
-            <Metric label="Seats" value={data?.summary.seats ?? 0} />
-            <Metric label="Reportes" value={data?.summary.reports ?? 0} />
+            <AdminMetric label="Seats" value={data?.summary.seats ?? 0} />
+            <AdminMetric label="Reportes" value={data?.summary.reports ?? 0} />
           </div>
 
           <div className="mt-5">
@@ -114,9 +121,9 @@ export default function AdminOrgsPage() {
             </AppleButton>
           </div>
 
-          {data === null && !error && <Loading label="Cargando orgs…" />}
+          {data === null && !error && <AdminLoading label="Cargando orgs…" />}
           {data !== null && data.items.length === 0 && (
-            <Empty label="No hay organizaciones todavía." />
+            <AdminEmpty label="No hay organizaciones todavía." />
           )}
 
           <div className="mt-8 space-y-4">
@@ -140,33 +147,33 @@ function OrgCard({ org }: { org: OrgItem }) {
           <div className="eyebrow">
             {org.region ?? "sin región"} · {org.company_size_key ?? "sin tamaño"}
           </div>
-          <h2 className="mt-2 text-[20px] font-semibold text-[var(--text-primary)]">
+          <h2 className="mt-2 ts-body-lg font-semibold text-[var(--text-primary)]">
             {org.name}
           </h2>
-          <p className="mt-1 text-[13px] text-[var(--text-secondary)]">
+          <p className="mt-1 ts-subhead text-[var(--text-secondary)]">
             {org.industry ?? "industria no definida"} · creada{" "}
             {formatDate(org.created_at)}
           </p>
         </div>
-        <StatusPill status={org.subscription?.status ?? "sin billing"} />
+        <BillingPill status={org.subscription?.status ?? "sin billing"} />
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-6">
-        <Metric label="Teams" value={org.counts.teams} compact />
-        <Metric label="Miembros" value={org.counts.members} compact />
-        <Metric label="Sprints" value={org.counts.sprints} compact />
-        <Metric label="Sesiones" value={org.counts.sessions} compact />
-        <Metric label="Completion" value={`${completionRate}%`} compact />
-        <Metric label="Reportes" value={org.counts.reports} compact />
+        <AdminMetric label="Teams" value={org.counts.teams} compact />
+        <AdminMetric label="Miembros" value={org.counts.members} compact />
+        <AdminMetric label="Sprints" value={org.counts.sprints} compact />
+        <AdminMetric label="Sesiones" value={org.counts.sessions} compact />
+        <AdminMetric label="Completion" value={`${completionRate}%`} compact />
+        <AdminMetric label="Reportes" value={org.counts.reports} compact />
       </div>
 
       <div className="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-2">
         <div className="rounded-2xl bg-[var(--surface-2)] p-4">
           <div className="eyebrow">Último sprint</div>
-          <div className="mt-2 text-[14px] font-medium text-[var(--text-primary)]">
+          <div className="mt-2 ts-callout font-medium text-[var(--text-primary)]">
             {org.latest_sprint?.name ?? "Sin sprint"}
           </div>
-          <p className="mt-1 text-[12px] text-[var(--text-secondary)]">
+          <p className="mt-1 ts-footnote text-[var(--text-secondary)]">
             {org.latest_sprint
               ? `${org.latest_sprint.status} · ${org.latest_sprint.start_date ?? "sin fecha"}`
               : "Crea o asigna sprint antes de invitar equipo."}
@@ -174,10 +181,10 @@ function OrgCard({ org }: { org: OrgItem }) {
         </div>
         <div className="rounded-2xl bg-[var(--surface-2)] p-4">
           <div className="eyebrow">Billing</div>
-          <div className="mt-2 text-[14px] font-medium text-[var(--text-primary)]">
+          <div className="mt-2 ts-callout font-medium text-[var(--text-primary)]">
             {org.subscription?.tier ?? "Sin plan"}
           </div>
-          <p className="mt-1 text-[12px] text-[var(--text-secondary)]">
+          <p className="mt-1 ts-footnote text-[var(--text-secondary)]">
             {org.subscription
               ? `${org.subscription.seats} seats · ${formatMoney(org.subscription.price_usd_total)}`
               : "Pendiente de checkout o carga manual."}
@@ -186,96 +193,4 @@ function OrgCard({ org }: { org: OrgItem }) {
       </div>
     </div>
   );
-}
-
-function AdminLinks() {
-  return (
-    <div className="mt-5 flex flex-wrap gap-2">
-      {[
-        ["/admin/review", "Review"],
-        ["/admin/leads", "Leads"],
-        ["/admin/judge-health", "Judge health"],
-        ["/admin/audit-log", "Audit log"],
-      ].map(([href, label]) => (
-        <a
-          key={href}
-          href={href}
-          className="rounded-full bg-[var(--surface-2)] px-4 py-2 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
-        >
-          {label}
-        </a>
-      ))}
-    </div>
-  );
-}
-
-function Metric({
-  label,
-  value,
-  compact = false,
-}: {
-  label: string;
-  value: number | string;
-  compact?: boolean;
-}) {
-  return (
-    <div className={`rounded-2xl border border-[var(--hairline)] bg-[var(--surface)] ${compact ? "p-3" : "p-4"}`}>
-      <div className="eyebrow">{label}</div>
-      <div className={`${compact ? "mt-1 text-[18px]" : "mt-2 text-[22px]"} mono font-semibold text-[var(--text-primary)]`}>
-        {value}
-      </div>
-    </div>
-  );
-}
-
-function StatusPill({ status }: { status: string }) {
-  const isHealthy = ["active", "trial"].includes(status);
-  return (
-    <span
-      className={`rounded-full px-3 py-1 text-[12px] font-semibold ${
-        isHealthy
-          ? "bg-[var(--band-a-bg)] text-[var(--band-a-text)]"
-          : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
-      }`}
-    >
-      {status}
-    </span>
-  );
-}
-
-function Loading({ label }: { label: string }) {
-  return <div className="mt-12 text-[14px] text-[var(--text-secondary)]">{label}</div>;
-}
-
-function Empty({ label }: { label: string }) {
-  return (
-    <div className="mt-12 rounded-2xl bg-[var(--surface)] p-8 text-[14px] text-[var(--text-secondary)]">
-      {label}
-    </div>
-  );
-}
-
-function ErrorBox({ message }: { message: string }) {
-  return (
-    <div className="mt-8 rounded-xl bg-[var(--band-b-bg)] p-4 text-[14px] text-[var(--band-b-text)]">
-      {message}
-    </div>
-  );
-}
-
-function rate(numerator: number, denominator: number) {
-  if (denominator <= 0) return 0;
-  return Math.round((numerator / denominator) * 1000) / 10;
-}
-
-function formatDate(value: string) {
-  return new Date(value).toLocaleDateString("es-MX", {
-    day: "2-digit",
-    month: "short",
-  });
-}
-
-function formatMoney(value: number | null) {
-  if (value === null) return "sin precio";
-  return `$${value.toLocaleString("en-US")} USD`;
 }

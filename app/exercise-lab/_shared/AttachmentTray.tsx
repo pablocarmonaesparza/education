@@ -18,7 +18,7 @@ export function AttachmentTray({
 }) {
   return (
     <div className="mx-3 mb-3 grid gap-2 rounded-2xl bg-[var(--surface-2)] p-3">
-      <div className="text-[11px] font-medium text-[var(--text-tertiary)]">
+      <div className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
         Adjuntos para analizar
       </div>
       <div className="grid gap-2">
@@ -31,10 +31,10 @@ export function AttachmentTray({
               <AttachmentGlyph type={attachment.type} />
             </span>
             <span className="min-w-0">
-              <span className="block truncate text-[12px] font-medium text-[var(--text-primary)]">
+              <span className="block truncate ts-footnote font-medium text-[var(--text-primary)]">
                 {attachment.name}
               </span>
-              <span className="block text-[11px] text-[var(--text-tertiary)]">
+              <span className="block ts-caption-1 text-[var(--text-tertiary)]">
                 Simulado · {formatFileSize(attachment.size)}
               </span>
             </span>

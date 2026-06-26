@@ -15,41 +15,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { isDevBypassEnabled } from "@/lib/dev/devBypass";
-
-function readCookie(name: string): string | null {
-  if (typeof document === "undefined") return null;
-  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-  return match ? match[2] : null;
-}
 
 export function DevReturnButton() {
   const pathname = usePathname();
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    if (!isDevBypassEnabled()) return;
-    const interval = setInterval(() => {
-      setVisible(readCookie("itera_dev_bypass") === "1");
-    }, 500); // refresh state in case cookie was toggled in another tab
-    // Lectura inicial client-only de cookie al montar (no existe en SSR).
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setVisible(readCookie("itera_dev_bypass") === "1");
-    return () => clearInterval(interval);
-  }, []);
 
   // Hide on /dev itself (we're already there)
-  if (!visible || pathname === "/dev") return null;
+  if (!isDevBypassEnabled() || pathname === "/dev") return null;
 
   return (
     <Link
       href="/dev"
-      className="fixed bottom-4 right-4 z-50 inline-flex items-center gap-1.5 rounded-[var(--radius-md,12px)] border border-[var(--hairline,rgba(0,0,0,0.06))] bg-[var(--surface,#fff)]/95 px-3 py-2 ts-footnote font-medium text-[var(--text-secondary,#6e6e73)] shadow-[0_4px_12px_rgba(0,0,0,0.08)] backdrop-blur-sm transition-all hover:-translate-y-0.5 hover:bg-[var(--surface-2,#fafafa)] hover:text-[var(--text-primary,#1d1d1f)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.1)]"
-      aria-label="Volver al hub /dev"
+      className="simulador-root fixed bottom-4 right-4 z-50 inline-flex min-h-11 items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)]/95 px-3 py-2 text-[length:var(--text-footnote)] font-medium text-[var(--text-secondary)] shadow-[var(--shadow-md)] backdrop-blur-sm transition-[transform,background-color,color,box-shadow] duration-[var(--motion-fast)] ease-[var(--motion-ease)] hover:-translate-y-0.5 hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] hover:shadow-[var(--shadow-lg)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] active:scale-[0.98]"
+      aria-label="Regresar a dev"
     >
       <span aria-hidden>←</span>
-      <span>dev</span>
+      <span>Regresar a dev</span>
     </Link>
   );
 }

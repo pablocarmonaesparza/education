@@ -26,7 +26,7 @@ export function AppleBadge({
       size={size}
       variant="flat"
       {...props}
-      className={cn("px-2 text-[12px] font-medium", toneClass[tone], className)}
+      className={cn("px-2 ts-footnote font-medium", toneClass[tone], className)}
     />
   );
 }

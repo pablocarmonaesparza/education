@@ -17,7 +17,8 @@
  */
 
 import { useState } from "react";
-import { Input, Select, SelectItem, Switch } from "@heroui/react";
+import { SelectItem, Switch } from "@heroui/react";
+import { AppleButton, AppleInput, AppleSelect } from "@/components/simulador/apple";
 
 // ============================================================================
 // MOCK USER DATA
@@ -57,7 +58,7 @@ function Card({
 }) {
   return (
     <div
-      className={`rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5 ${className}`}
+      className={`rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-5 ${className}`}
     >
       {children}
     </div>
@@ -164,60 +165,43 @@ export default function PerfilPage() {
             <div className="mt-4 flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <FieldLabel>Nombre completo</FieldLabel>
-                <Input
+                <AppleInput
                   value={fullName}
                   onValueChange={setFullName}
-                  variant="bordered"
-                  radius="lg"
                   size="md"
-                  classNames={{
-                    inputWrapper: "h-10",
-                    input: "ts-callout",
-                  }}
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
                 <FieldLabel>Puesto</FieldLabel>
-                <Input
+                <AppleInput
                   value={jobTitle}
                   onValueChange={setJobTitle}
-                  variant="bordered"
-                  radius="lg"
                   size="md"
-                  classNames={{
-                    inputWrapper: "h-10",
-                    input: "ts-callout",
-                  }}
                 />
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex flex-col gap-1.5">
                   <FieldLabel>Idioma</FieldLabel>
-                  <Select
+                  <AppleSelect
                     aria-label="Idioma"
                     selectedKeys={[locale]}
                     onSelectionChange={(keys) => {
                       const next = Array.from(keys)[0] as string | undefined;
                       if (next) setLocale(next);
                     }}
-                    variant="bordered"
-                    radius="lg"
                     size="md"
-                    classNames={{
-                      trigger: "h-10",
-                    }}
                   >
                     {LOCALE_OPTIONS.map((opt) => (
                       <SelectItem key={opt.value}>{opt.label}</SelectItem>
                     ))}
-                  </Select>
+                  </AppleSelect>
                 </div>
 
                 <div className="flex flex-col gap-1.5">
                   <FieldLabel>Notificaciones por email</FieldLabel>
-                  <div className="flex h-10 items-center justify-between rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3">
+                  <div className="flex h-10 items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface)] px-3">
                     <span className="ts-subhead text-[var(--text-secondary)]">
                       {notifications ? "Activadas" : "Desactivadas"}
                     </span>
@@ -226,6 +210,10 @@ export default function PerfilPage() {
                       onValueChange={setNotifications}
                       size="sm"
                       aria-label="Notificaciones por email"
+                      classNames={{
+                        wrapper:
+                          "bg-[var(--surface-3)] group-data-[selected=true]:bg-[var(--accent)]",
+                      }}
                     />
                   </div>
                 </div>
@@ -240,7 +228,7 @@ export default function PerfilPage() {
             <div className="mt-4 flex flex-1 flex-col gap-2">
               <button
                 type="button"
-                className="flex h-11 items-center justify-between rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 transition-colors hover:bg-[var(--surface-2)]"
+                className="flex h-11 items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface)] px-3 transition-colors hover:bg-[var(--surface-3)]"
               >
                 <div className="text-left">
                   <div className="ts-subhead font-medium text-[var(--text-primary)]">
@@ -254,7 +242,7 @@ export default function PerfilPage() {
 
               <button
                 type="button"
-                className="flex h-11 items-center justify-between rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 transition-colors hover:bg-[var(--surface-2)]"
+                className="flex h-11 items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface)] px-3 transition-colors hover:bg-[var(--surface-3)]"
               >
                 <div className="text-left">
                   <div className="ts-subhead font-medium text-[var(--text-primary)]">
@@ -269,31 +257,18 @@ export default function PerfilPage() {
                 </span>
               </button>
 
-              <button
+              <AppleButton
                 type="button"
-                className="mt-auto flex h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--band-b-bg)] px-3 ts-subhead font-medium text-[var(--band-b-text)] transition-opacity hover:opacity-90"
+                tone="secondary"
+                size="lg"
+                className="mt-auto w-full justify-center"
               >
                 Cerrar sesión
-              </button>
+              </AppleButton>
             </div>
           </Card>
         </section>
 
-        {/* ============ Save bar (sticky bottom feel) ============ */}
-        <div className="flex items-center justify-end gap-3">
-          <button
-            type="button"
-            className="h-10 px-4 ts-subhead text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-          >
-            Cancelar
-          </button>
-          <button
-            type="button"
-            className="inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] accent-bg px-5 ts-subhead font-medium text-white hover:opacity-95 transition-opacity"
-          >
-            Guardar cambios
-          </button>
-        </div>
       </div>
     </main>
   );

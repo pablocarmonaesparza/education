@@ -88,9 +88,7 @@ export function AIOutputReview({
   }, []);
 
   const isProduction = mode === "authenticated" || mode === "field_test";
-  const { patch } = useStepPatch(isProduction ? sessionId : null, {
-    mode: mode === "field_test" ? "field_test" : "authenticated",
-  });
+  const { patch } = useStepPatch(isProduction ? sessionId : null);
   const mountedAt = useRef(Date.now());
   const firstActionAt = useRef<number | null>(null);
   const totalChanges = useRef(0);
@@ -138,7 +136,7 @@ export function AIOutputReview({
                   : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"
               }`}
             >
-              <span className="block text-[15px] leading-6 text-[var(--text-primary)]">
+              <span className="block ts-body leading-6 text-[var(--text-primary)]">
                 {line.text}
               </span>
               {/* `line.issue` y `line.flagIfMarked` son metadata interna del

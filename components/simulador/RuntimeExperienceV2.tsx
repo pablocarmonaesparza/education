@@ -54,7 +54,7 @@ function renderBody(body: string) {
   const parts = body.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((p, i) =>
     p.startsWith("**") && p.endsWith("**") ? (
-      <strong key={i} className="font-semibold text-[var(--text-primary,#fff)]">
+      <strong key={i} className="font-semibold text-[var(--text-primary)]">
         {p.slice(2, -2)}
       </strong>
     ) : (
@@ -77,14 +77,13 @@ export function RuntimeExperienceV2({
    *  el contrato explícito para casos bespoke aún no integrados al modelo de
    *  sesión org-scoped (evita el intento fallido a /api/sessions). */
   previewOnly?: boolean;
-  mode?: "authenticated" | "field_test";
+  mode?: "authenticated";
 }) {
   const router = useRouter();
   const session = useSession(
     previewOnly ? null : (sessionSlug ?? playableCase.caseId),
-    { mode },
   );
-  const { patch, flush } = useStepPatch(session.sessionId, { mode });
+  const { patch, flush } = useStepPatch(session.sessionId);
 
   const flat = useMemo<FlatSlide[]>(
     () =>
@@ -156,10 +155,10 @@ export function RuntimeExperienceV2({
   if (idx >= flat.length) {
     const answered = Object.keys(payloads).length;
     return (
-      <main className="mx-auto max-w-2xl px-6 py-16 text-[var(--text-primary,#e7e7e7)]">
+      <main className="mx-auto max-w-2xl px-6 py-16 text-[var(--text-primary)]">
         <p className="text-xs uppercase tracking-widest text-[var(--text-tertiary,#888)]">Cierre</p>
         <h1 className="mt-2 text-2xl font-semibold">Recorriste el caso.</h1>
-        <p className="mt-3 text-[var(--text-secondary,#aaa)]">
+        <p className="mt-3 text-[var(--text-secondary)]">
           {session.sessionId
             ? "Tu sesión se está evaluando."
             : `Modo preview: respondiste ${answered} de ${flat.length} ejercicios. Este caso aún no está sembrado en la base, así que no se evaluó (eso llega cuando el caso vive en producción).`}
@@ -170,7 +169,7 @@ export function RuntimeExperienceV2({
 
   if (!slide) {
     return (
-      <main className="mx-auto max-w-2xl px-6 py-16 text-[var(--text-primary,#e7e7e7)]">
+      <main className="mx-auto max-w-2xl px-6 py-16 text-[var(--text-primary)]">
         <p>Caso sin slides.</p>
       </main>
     );
@@ -179,14 +178,14 @@ export function RuntimeExperienceV2({
   const progress = ((idx + 1) / flat.length) * 100;
 
   return (
-    <div className="min-h-screen bg-[var(--bg,#0a0a0b)]">
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col px-6 py-8 text-[var(--text-primary,#e7e7e7)]">
+    <div className="min-h-screen bg-[var(--surface)]">
+    <main className="mx-auto flex min-h-screen max-w-3xl flex-col px-6 py-8 text-[var(--text-primary)]">
       {/* barra de progreso + estado de sesión */}
       <div className="mb-8">
         <div className="h-1 w-full overflow-hidden rounded bg-[var(--surface-2,#222)]">
-          <div className="h-full bg-[var(--accent,#6366f1)] transition-all" style={{ width: `${progress}%` }} />
+          <div className="h-full bg-[var(--accent)] transition-all" style={{ width: `${progress}%` }} />
         </div>
-        <div className="mt-2 flex justify-between text-[11px] text-[var(--text-tertiary,#777)]">
+        <div className="mt-2 flex justify-between ts-caption-1 text-[var(--text-tertiary,#777)]">
           <span>{slide.sectionName} · slide {idx + 1} de {flat.length}</span>
           <span>
             {session.status === "ready" && session.sessionId
@@ -204,7 +203,7 @@ export function RuntimeExperienceV2({
       </p>
       <h2 className="mt-1 text-2xl font-semibold tracking-tight">{slide.title}</h2>
       {slide.body && (
-        <p className="mt-3 leading-relaxed text-[var(--text-secondary,#b5b5b5)]">
+        <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">
           {renderBody(slide.body)}
         </p>
       )}
@@ -225,7 +224,7 @@ export function RuntimeExperienceV2({
       </div>
 
       {/* navegación (los bloques OWNS_CONTINUE traen su propio botón) */}
-      <div className="mt-8 flex items-center justify-between border-t border-[var(--border,#2a2a2a)] pt-4">
+      <div className="mt-8 flex items-center justify-between border-t border-[var(--border)] pt-4">
         <button
           onClick={goPrev}
           disabled={idx === 0}
@@ -237,7 +236,7 @@ export function RuntimeExperienceV2({
           <button
             onClick={goNext}
             disabled={!blockComplete || completing}
-            className="rounded-lg bg-[var(--accent,#6366f1)] px-5 py-2 text-sm font-medium text-white disabled:opacity-40"
+            className="rounded-lg bg-[var(--accent)] px-5 py-2 text-sm font-medium text-white disabled:opacity-40"
           >
             {isLast ? (completing ? "Cerrando…" : "Terminar") : "Continuar"}
           </button>

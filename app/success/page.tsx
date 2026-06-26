@@ -11,7 +11,7 @@ interface SuccessPageProps {
 }
 
 const PRIMARY_BTN =
-  "w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none";
+  "w-full h-12 accent-bg text-white ts-body font-medium shadow-none";
 
 /**
  * Server component — cierra el race con el webhook de Stripe.
@@ -41,10 +41,10 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
               />
             </div>
             <div className="flex flex-col gap-3">
-              <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
-                Verificando tu pago.
+              <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
+                Verificando tu pago
               </h1>
-              <p className="text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+              <p className="ts-body leading-[1.55] text-[var(--text-secondary)]">
                 Stripe aún no confirma el pago. Esto toma unos segundos. Vuelve a
                 verificar si no avanza solo.
               </p>
@@ -76,10 +76,10 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
                 />
               </div>
               <div className="flex flex-col gap-3">
-                <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
-                  No pudimos asociar el pago.
+                <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
+                  No pudimos asociar el pago
                 </h1>
-                <p className="text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+                <p className="ts-body leading-[1.55] text-[var(--text-secondary)]">
                   Tu pago se procesó pero no pudimos asociarlo a tu organización.
                   Escríbenos a{" "}
                   <AppleLink href="mailto:hola@itera.la">hola@itera.la</AppleLink>{" "}
@@ -106,10 +106,10 @@ export default async function SuccessPage({ searchParams }: SuccessPageProps) {
             />
           </div>
           <div className="flex flex-col gap-3">
-            <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
-              Pago exitoso.
+            <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
+              Pago exitoso
             </h1>
-            <p className="text-[15px] leading-[1.55] text-[var(--text-secondary)]">
+            <p className="ts-body leading-[1.55] text-[var(--text-secondary)]">
               Tu suscripción está activa. Ya puedes entrar al dashboard del
               simulador.
             </p>

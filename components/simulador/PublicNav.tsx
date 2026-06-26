@@ -85,7 +85,7 @@ export function PublicNav() {
               href={s.href}
               size="sm"
               color="foreground"
-              className="text-[13.5px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              className="ts-subhead font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             >
               {s.label}
             </Link>
@@ -101,7 +101,7 @@ export function PublicNav() {
             href="/auth/login"
             size="sm"
             tone="ghost"
-            className="text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
+            className="ts-subhead font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
           >
             Iniciar sesión
           </AppleButton>
@@ -112,7 +112,7 @@ export function PublicNav() {
             href="/auth/signup?next=%2Fonboarding%2Forg"
             size="sm"
             tone="primary"
-            className="accent-bg text-white text-[13.5px] font-medium h-9 px-4 shadow-none"
+            className="accent-bg text-white ts-subhead font-medium h-9 px-4 shadow-none"
           >
             Agendar diagnóstico
           </AppleButton>
@@ -141,7 +141,7 @@ export function PublicNav() {
             size="lg"
             tone="secondary"
             onPress={() => setIsMenuOpen(false)}
-            className="h-11 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] text-[14px] font-medium"
+            className="h-11 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] ts-callout font-medium"
           >
             Iniciar sesión
           </AppleButton>
@@ -151,7 +151,7 @@ export function PublicNav() {
             size="lg"
             tone="primary"
             onPress={() => setIsMenuOpen(false)}
-            className="h-11 accent-bg text-white text-[14px] font-medium shadow-none"
+            className="h-11 accent-bg text-white ts-callout font-medium shadow-none"
           >
             Agendar diagnóstico
           </AppleButton>

@@ -11,6 +11,7 @@
 import { useMemo, useState } from "react";
 import { Select, SelectItem } from "@heroui/react";
 import { CaseCard } from "@/components/simulador/CaseCard";
+import { AppleButton } from "@/components/simulador/apple";
 import {
   CASES,
   DEPARTMENT_OPTIONS,
@@ -190,13 +191,14 @@ export default function StaffCasosPage() {
               </Select>
             </div>
             {anyFilterActive && (
-              <button
-                type="button"
-                onClick={clearAll}
-                className="ts-subhead text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              <AppleButton
+                size="inline"
+                tone="secondary"
+                onPress={clearAll}
+                className="ts-subhead"
               >
                 Limpiar filtros
-              </button>
+              </AppleButton>
             )}
           </div>
         </div>

@@ -17,7 +17,12 @@ import { useState, useEffect, FormEvent, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { AuthNav } from "@/components/simulador/AuthNav";
-import { AppleButton, AppleInput, AppleLink } from "@/components/simulador/apple";
+import {
+  AppleButton,
+  AppleInput,
+  AppleLink,
+  AppleSlideButton,
+} from "@/components/simulador/apple";
 import { createClient } from "@/lib/supabase/client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import "../../(app)/simulador.css";
@@ -145,7 +150,7 @@ function LoginContent() {
       <div className="simulador-root min-h-screen surface-canvas grid place-items-center px-6">
         <div className="text-center">
           <div className="mx-auto h-9 w-9 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
-          <p className="mt-6 text-[14px] text-[var(--text-secondary)]">
+          <p className="mt-6 ts-callout text-[var(--text-secondary)]">
             Redirigiendo a Google…
           </p>
         </div>
@@ -162,8 +167,8 @@ function LoginContent() {
       <main className="px-6 py-16 min-h-screen flex items-center justify-center">
         <div className="max-w-[400px] w-full mx-auto flex flex-col gap-6">
           <motion.div {...fadeUp} className="text-center">
-            <h1 className="display display-tight text-[28px] sm:text-[32px] text-[var(--text-primary)] leading-[1.1]">
-              Inicia sesión.
+            <h1 className="display display-tight ts-title-1 sm:ts-display text-[var(--text-primary)] leading-[1.1]">
+              Inicia sesión
             </h1>
           </motion.div>
 
@@ -171,7 +176,7 @@ function LoginContent() {
             <motion.div
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.05 }}
-              className="p-4 rounded-[var(--radius-lg)] bg-[var(--band-b-bg)] text-[var(--band-b-text)] text-[13.5px] text-center leading-[1.5]"
+              className="p-4 rounded-[var(--radius-lg)] bg-[var(--band-b-bg)] text-[var(--band-b-text)] ts-subhead text-center leading-[1.5]"
             >
               {error}
             </motion.div>
@@ -205,15 +210,14 @@ function LoginContent() {
               autoComplete="current-password"
             />
 
-            <AppleButton
+            <AppleSlideButton
               type="submit"
-              isDisabled={loading || !email || !password}
-              radius="sm"
-              size="lg"
-              className="w-full h-12 accent-bg text-white text-[15px] font-medium shadow-none"
+              fullWidth
+              isLoading={loading}
+              isDisabled={!email || !password}
             >
-              {loading ? "Iniciando sesión…" : "Continuar"}
-            </AppleButton>
+              {loading ? "Iniciando sesión…" : "Continuar →"}
+            </AppleSlideButton>
           </motion.form>
 
           <motion.div
@@ -222,7 +226,7 @@ function LoginContent() {
             className="flex items-center gap-4"
           >
             <div className="flex-1 h-px bg-[var(--hairline)]" />
-            <span className="text-[12px] text-[var(--text-tertiary)] tracking-wide">
+            <span className="ts-footnote text-[var(--text-tertiary)] tracking-wide">
               o
             </span>
             <div className="flex-1 h-px bg-[var(--hairline)]" />
@@ -237,9 +241,8 @@ function LoginContent() {
               onPress={handleGoogleLogin}
               isDisabled={loading}
               tone="secondary"
-              radius="sm"
               size="lg"
-              className="w-full h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium gap-3 shadow-none"
+              className="w-full h-12 rounded-[var(--radius-md)] border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] ts-callout font-medium gap-3 shadow-none"
             >
               <svg className="w-[18px] h-[18px]" viewBox="0 0 24 24" aria-hidden>
                 <path
@@ -268,7 +271,7 @@ function LoginContent() {
           <motion.p
             {...fadeUp}
             transition={{ ...fadeUp.transition, delay: 0.18 }}
-            className="text-center text-[14px] text-[var(--text-secondary)]"
+            className="text-center ts-callout text-[var(--text-secondary)]"
           >
             ¿Aún no tienes cuenta?{" "}
             <AppleLink

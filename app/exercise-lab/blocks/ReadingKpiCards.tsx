@@ -62,9 +62,7 @@ export function ReadingKpiCards({
   caseContext,
 }: Props) {
   const isProduction = mode === "authenticated" || mode === "field_test";
-  const { patch } = useStepPatch(isProduction ? sessionId : null, {
-    mode: mode === "field_test" ? "field_test" : "authenticated",
-  });
+  const { patch } = useStepPatch(isProduction ? sessionId : null);
   const mountedAt = useRef(Date.now());
 
   const kpis = (caseContext?.kpis as Kpi[] | undefined) ?? DEFAULT_KPIS;

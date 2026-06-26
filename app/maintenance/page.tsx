@@ -2,39 +2,31 @@
 
 import Link from "next/link";
 import { SimuladorProviders } from "../(app)/providers";
-import {
-  AppleButton,
-  AppleCard,
-  AppleCardBody,
-  AppleIcon,
-} from "@/components/simulador/apple";
+import { AppleButton, AppleIcon } from "@/components/simulador/apple";
 import "../(app)/simulador.css";
 
 export default function MaintenancePage() {
   return (
     <div className="simulador-root min-h-screen surface-canvas">
       <SimuladorProviders>
-        <main className="grid min-h-screen place-items-center px-6">
-          <AppleCard className="w-full max-w-xl">
-            <AppleCardBody className="p-8 text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[var(--accent)]">
-                <AppleIcon name="settings" size="lg" />
-              </div>
-              <div className="eyebrow mt-6">Mantenimiento</div>
-              <h1 className="display display-tight mt-3 text-[34px] text-[var(--text-primary)]">
-                Estamos ajustando el simulador.
+        <main className="px-6 py-16 min-h-screen flex items-center justify-center">
+          <div className="max-w-[400px] w-full mx-auto text-center flex flex-col items-center gap-6">
+            <div className="h-14 w-14 rounded-full grid place-items-center bg-[var(--accent-soft)] text-[var(--accent)]">
+              <AppleIcon name="settings" size="lg" />
+            </div>
+            <div className="flex flex-col gap-3">
+              <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
+                Estamos ajustando el simulador
               </h1>
-              <p className="mx-auto mt-4 max-w-md text-[15px] leading-[1.6] text-[var(--text-secondary)]">
+              <p className="ts-body leading-[1.55] text-[var(--text-secondary)]">
                 Volvemos en unos minutos. Si ya estabas completando un caso, tu
                 progreso se guarda automáticamente.
               </p>
-              <div className="mt-8">
-                <AppleButton as={Link} href="/" tone="secondary">
-                  Volver al inicio
-                </AppleButton>
-              </div>
-            </AppleCardBody>
-          </AppleCard>
+            </div>
+            <AppleButton as={Link} href="/" tone="secondary" className="w-full">
+              Volver al inicio
+            </AppleButton>
+          </div>
         </main>
       </SimuladorProviders>
     </div>

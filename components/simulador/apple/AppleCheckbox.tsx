@@ -1,49 +1,159 @@
 "use client";
 
-import { Checkbox, type CheckboxProps } from "@heroui/react";
+import { useId, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { cn } from "./utils";
+
+export interface AppleCheckboxProps {
+  id?: string;
+  name?: string;
+  value?: string;
+  children?: ReactNode;
+  isSelected?: boolean;
+  defaultSelected?: boolean;
+  isDisabled?: boolean;
+  isRequired?: boolean;
+  onValueChange?: (isSelected: boolean) => void;
+  className?: string;
+  classNames?: {
+    base?: string;
+    input?: string;
+    control?: string;
+    label?: string;
+    icon?: string;
+  };
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+}
 
 /**
  * Checkbox del sistema.
  *
- * HeroUI por defecto deja la caja en 16px con radius ~6px (ratio 0.38, más
- * redonda que los inputs del sistema, que van a ratio 0.27). Y si el texto se
- * pone como hermano FUERA del componente, el <label> vacío de HeroUI reserva
- * espacio y el gap caja↔texto se vuelve impredecible (se ve "muy separado").
+ * Evita el wrapper de HeroUI porque su input invisible puede ocupar toda la
+ * línea del label; en textos legales con links, eso deja cajas de foco
+ * superpuestas al copy. Este componente separa el input real, el control
+ * visible y el texto, manteniendo una sola fuente en el design system.
  *
- * AppleCheckbox lo fija de una vez para todo el sistema:
- *   - caja 20px, equilibrada con el texto de 14px (la de 16px se veía chica)
- *   - radius 6px → respeta DEC-005 en PROPORCIÓN, no en píxeles absolutos:
- *     12px en una caja de 20px se vería como radio button. 6px/20px = 0.30,
- *     a la par del 0.27 de los textfields.
- *   - relleno seleccionado = --accent explícito (HeroUI no mapea su primary
- *     a nuestro acento)
- *   - el texto va como children → es el label real de HeroUI, gap consistente
+ * - caja 20px, equilibrada con texto de 14px
+ * - radius proporcional: calc(var(--radius-md) / 2) = 6px / 20px = 0.30
+ * - seleccionado usa --accent; el primary sólido sigue reservado al submit
+ * - links dentro del texto legal no togglean el checkbox
  *
  *   <AppleCheckbox isSelected={x} onValueChange={setX}>
  *     Acepto los <AppleLink muted href="/terms">términos</AppleLink>.
  *   </AppleCheckbox>
  */
-export function AppleCheckbox({ classNames, ...props }: CheckboxProps) {
+export function AppleCheckbox({
+  id,
+  name,
+  value,
+  children,
+  isSelected,
+  defaultSelected = false,
+  isDisabled = false,
+  isRequired = false,
+  onValueChange,
+  className,
+  classNames,
+  "aria-label": ariaLabel,
+  "aria-describedby": ariaDescribedBy,
+}: AppleCheckboxProps) {
+  const generatedId = useId();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [internalSelected, setInternalSelected] = useState(defaultSelected);
+  const selected = isSelected ?? internalSelected;
+  const inputId = id ?? `apple-checkbox-${generatedId}`;
+  const labelId = `${inputId}-label`;
+
+  function setSelected(next: boolean) {
+    if (isSelected === undefined) setInternalSelected(next);
+    onValueChange?.(next);
+  }
+
+  function handleTextClick(event: MouseEvent<HTMLSpanElement>) {
+    if (isDisabled) return;
+    const target = event.target as HTMLElement;
+    if (target.closest("a, button")) return;
+    inputRef.current?.click();
+  }
+
   return (
-    <Checkbox
-      size="md"
-      {...props}
-      classNames={{
-        ...classNames,
-        base: cn("items-start gap-2 max-w-full m-0 p-0", classNames?.base),
-        wrapper: cn(
-          "w-5 h-5 me-0 mt-0.5 rounded-[6px]",
-          "before:rounded-[6px] before:border-[var(--border-strong)]",
-          "after:rounded-[6px] after:bg-[var(--accent)]",
-          classNames?.wrapper,
-        ),
-        icon: cn("text-white", classNames?.icon),
-        label: cn(
-          "ms-0 text-[14px] leading-[1.45] text-[var(--text-secondary)]",
-          classNames?.label,
-        ),
-      }}
-    />
+    <div
+      className={cn(
+        "group/apple-checkbox flex max-w-full items-start gap-2",
+        isDisabled && "opacity-60",
+        className,
+        classNames?.base,
+      )}
+    >
+      <input
+        ref={inputRef}
+        id={inputId}
+        type="checkbox"
+        name={name}
+        value={value}
+        checked={selected}
+        disabled={isDisabled}
+        required={isRequired}
+        aria-label={children ? undefined : ariaLabel}
+        aria-labelledby={children ? labelId : undefined}
+        aria-describedby={ariaDescribedBy}
+        onChange={(event) => setSelected(event.currentTarget.checked)}
+        className={cn("peer sr-only", classNames?.input)}
+      />
+
+      <label
+        htmlFor={inputId}
+        aria-hidden="true"
+        className={cn(
+          "grid h-6 w-5 shrink-0 cursor-pointer place-items-start pt-0.5",
+          "peer-focus:[&>span]:ring-2 peer-focus:[&>span]:ring-[var(--accent)] peer-focus:[&>span]:ring-offset-2 peer-focus:[&>span]:ring-offset-[var(--surface)]",
+          "peer-active:[&>span]:scale-[0.96]",
+          isDisabled && "cursor-default",
+        )}
+      >
+        <span
+          className={cn(
+            "grid size-5 place-items-center border bg-[var(--surface)] text-white transition-[background-color,border-color,box-shadow,transform] duration-[var(--motion-fast)] ease-[var(--motion-ease)]",
+            "rounded-[calc(var(--radius-md)/2)] border-[var(--border-strong)]",
+            selected && "border-[var(--accent)] bg-[var(--accent)]",
+            isDisabled && "border-[var(--border)] bg-[var(--surface-2)]",
+            classNames?.control,
+          )}
+        >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 16 12"
+            fill="none"
+            className={cn(
+              "h-3 w-3 transition-opacity duration-[var(--motion-fast)]",
+              selected ? "opacity-100" : "opacity-0",
+              classNames?.icon,
+            )}
+          >
+            <path
+              d="M1.5 6.2 5.6 10 14.5 1"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+      </label>
+
+      {children ? (
+        <span
+          id={labelId}
+          onClick={handleTextClick}
+          className={cn(
+            "min-w-0 pt-0.5 ts-callout leading-[1.45] text-[var(--text-primary)]",
+            isDisabled ? "cursor-default" : "cursor-pointer",
+            classNames?.label,
+          )}
+        >
+          {children}
+        </span>
+      ) : null}
+    </div>
   );
 }

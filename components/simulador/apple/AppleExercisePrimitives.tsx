@@ -19,7 +19,7 @@ import type React from "react";
 
 export function Label({ children }: { children: React.ReactNode }) {
   return (
-    <div className="text-[14px] font-medium text-[var(--text-primary)]">
+    <div className="ts-callout font-medium text-[var(--text-primary)]">
       {children}
     </div>
   );
@@ -38,9 +38,9 @@ export function ChoiceButton({
     <button
       type="button"
       onClick={onClick}
-      className={`min-h-11 rounded-xl border px-3 text-[13px] font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
+      className={`min-h-11 rounded-xl border px-3 ts-subhead font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
         selected
-          ? "border-[var(--accent)] bg-[var(--accent)] text-white"
+          ? "border-[var(--accent)] bg-[var(--accent-strong)] text-white"
           : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
       }`}
     >
@@ -62,7 +62,7 @@ export function GuidedOption({
     <button
       type="button"
       onClick={onClick}
-      className={`grid min-h-11 grid-cols-[20px_1fr] items-center gap-3 rounded-2xl border px-3 py-2 text-left text-[13px] transition-colors ${
+      className={`grid min-h-11 grid-cols-[20px_1fr] items-center gap-3 rounded-2xl border px-3 py-2 text-left ts-subhead transition-colors ${
         selected
           ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--text-primary)]"
           : "border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
@@ -70,7 +70,7 @@ export function GuidedOption({
     >
       <span
         className={`grid h-5 w-5 place-items-center rounded-full border ${
-          selected ? "border-[var(--accent)] bg-[var(--accent)] text-white" : "border-[var(--border-strong)]"
+          selected ? "border-[var(--accent)] bg-[var(--accent-strong)] text-white" : "border-[var(--border-strong)]"
         }`}
         aria-hidden
       >
@@ -130,7 +130,7 @@ export function Range10({
 }) {
   return (
     <div>
-      <label className="grid grid-cols-[72px_1fr_36px] items-center gap-3 text-[13px]">
+      <label className="grid grid-cols-[72px_1fr_36px] items-center gap-3 ts-subhead">
         <span className="text-[var(--text-secondary)]">{label}</span>
         <input
           type="range"
@@ -161,16 +161,16 @@ export function ProcessAnswer({
   return (
     <div className="grid grid-cols-[28px_1fr] gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
       <span
-        className={`grid h-7 w-7 place-items-center rounded-full text-[12px] font-semibold ${
-          muted ? "bg-[var(--surface)] text-[var(--text-tertiary)]" : "bg-[var(--accent)] text-white"
+        className={`grid h-7 w-7 place-items-center rounded-full ts-footnote font-semibold ${
+          muted ? "bg-[var(--surface)] text-[var(--text-tertiary)]" : "bg-[var(--accent-strong)] text-white"
         }`}
       >
         {index}
       </span>
       <span className="min-w-0">
-        <span className="block text-[12px] font-medium text-[var(--text-tertiary)]">{label}</span>
+        <span className="block ts-footnote font-medium text-[var(--text-tertiary)]">{label}</span>
         <span
-          className={`mt-1 block text-[14px] leading-snug ${
+          className={`mt-1 block ts-callout leading-snug ${
             muted ? "text-[var(--text-tertiary)]" : "text-[var(--text-primary)]"
           }`}
         >
@@ -203,8 +203,8 @@ export function CompareCard({
           : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"
       }`}
     >
-      <span className="block text-[15px] font-medium text-[var(--text-primary)]">{title}</span>
-      <span className="mt-4 block text-[15px] leading-6 text-[var(--text-secondary)]">{body}</span>
+      <span className="block ts-body font-medium text-[var(--text-primary)]">{title}</span>
+      <span className="mt-4 block ts-body leading-6 text-[var(--text-secondary)]">{body}</span>
     </button>
   );
 }
@@ -212,9 +212,9 @@ export function CompareCard({
 export function AgentBriefLine({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3">
-      <div className="text-[12px] text-[var(--text-tertiary)]">{label}</div>
+      <div className="ts-footnote text-[var(--text-tertiary)]">{label}</div>
       <div
-        className={`mt-1 min-h-5 text-[14px] leading-snug ${
+        className={`mt-1 min-h-5 ts-callout leading-snug ${
           value ? "text-[var(--text-primary)]" : "text-[var(--text-tertiary)]"
         }`}
       >

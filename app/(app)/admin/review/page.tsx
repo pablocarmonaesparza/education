@@ -16,7 +16,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { SurfaceNav } from "@/components/simulador/SurfaceNav";
 import { AppleButton, AppleTextarea } from "@/components/simulador/apple";
 
 interface DimensionScore {
@@ -132,7 +131,6 @@ export default function AdminReviewPage() {
 
   return (
     <>
-      <SurfaceNav />
       <main className="surface-canvas min-h-screen pb-24">
         <section className="reading-col px-6 pt-14">
           <motion.div
@@ -141,31 +139,30 @@ export default function AdminReviewPage() {
             transition={{ duration: 0.4 }}
           >
             <div className="eyebrow">Itera staff · cola interna</div>
-            <h1 className="display mt-4 text-[36px] text-[var(--text-primary)]">
-              Review humano de reports.
+            <h1 className="display mt-4 ts-display text-[var(--text-primary)]">
+              Review humano de reports
             </h1>
-            <p className="mt-4 text-[15px] text-[var(--text-secondary)] max-w-2xl leading-[1.55]">
+            <p className="mt-4 ts-body text-[var(--text-secondary)] max-w-2xl leading-[1.55]">
               Reports con risk events de severidad alta. Requieren doble firma
               humana antes de publicarse al manager; la primera firma retiene el
               reporte, la segunda lo libera.
             </p>
-            <AdminLinks />
           </motion.div>
 
           {error && (
-            <div className="mt-8 p-4 rounded-xl bg-[var(--band-b-bg)] text-[var(--band-b-text)] text-[14px]">
+            <div className="mt-8 p-4 rounded-xl bg-[var(--band-b-bg)] text-[var(--band-b-text)] ts-callout">
               ⚠ {error}
             </div>
           )}
 
           {items === null && !error && (
-            <div className="mt-12 text-[14px] text-[var(--text-secondary)]">
+            <div className="mt-12 ts-callout text-[var(--text-secondary)]">
               Cargando cola…
             </div>
           )}
 
           {items !== null && items.length === 0 && (
-            <div className="mt-12 text-[14px] text-[var(--text-secondary)]">
+            <div className="mt-12 ts-callout text-[var(--text-secondary)]">
               No hay items pendientes.
             </div>
           )}
@@ -184,27 +181,6 @@ export default function AdminReviewPage() {
         </section>
       </main>
     </>
-  );
-}
-
-function AdminLinks() {
-  return (
-    <div className="mt-5 flex flex-wrap gap-2">
-      {[
-        ["/admin/leads", "Leads"],
-        ["/admin/orgs", "Orgs"],
-        ["/admin/judge-health", "Judge health"],
-        ["/admin/audit-log", "Audit log"],
-      ].map(([href, label]) => (
-        <a
-          key={href}
-          href={href}
-          className="rounded-full bg-[var(--surface-2)] px-4 py-2 text-[13px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
-        >
-          {label}
-        </a>
-      ))}
-    </div>
   );
 }
 
@@ -248,24 +224,24 @@ function QueueCard({
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="eyebrow">Sesión {item.session_id?.slice(0, 8)}…</div>
-          <h3 className="text-[18px] font-semibold mt-2 text-[var(--text-primary)]">
+          <h3 className="ts-headline font-semibold mt-2 text-[var(--text-primary)]">
             Judge recomienda:{" "}
             <span className="capitalize">
               {item.evaluation_run?.computed_recommendation}
             </span>
           </h3>
-          <p className="mt-1 text-[12px] mono text-[var(--text-tertiary)]">
+          <p className="mt-1 ts-footnote mono text-[var(--text-tertiary)]">
             {item.evaluation_run?.judge_model} · rúbrica{" "}
             {item.evaluation_run?.rubric_version} · creado{" "}
             {new Date(item.created_at).toLocaleString("es-MX")}
           </p>
         </div>
         <div className="flex flex-col items-end gap-2">
-          <span className="text-[11px] font-semibold px-2 py-1 rounded-full bg-[var(--band-b-bg)] text-[var(--band-b-text)]">
+          <span className="ts-caption-1 font-semibold px-2 py-1 rounded-full bg-[var(--band-b-bg)] text-[var(--band-b-text)]">
             {highRisks.length} risk high
           </span>
           <span
-            className={`text-[11px] font-semibold px-2 py-1 rounded-full ${
+            className={`ts-caption-1 font-semibold px-2 py-1 rounded-full ${
               sla.isOverdue
                 ? "bg-[var(--band-b-bg)] text-[var(--band-b-text)]"
                 : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
@@ -279,7 +255,7 @@ function QueueCard({
       <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="rounded-xl bg-[var(--surface-2)] p-4">
           <div className="eyebrow">política</div>
-          <div className="mt-1 text-[14px] font-semibold text-[var(--text-primary)]">
+          <div className="mt-1 ts-callout font-semibold text-[var(--text-primary)]">
             {item.review_policy === "double_high_risk"
               ? "doble firma"
               : "firma simple"}
@@ -287,13 +263,13 @@ function QueueCard({
         </div>
         <div className="rounded-xl bg-[var(--surface-2)] p-4">
           <div className="eyebrow">firmas</div>
-          <div className="mt-1 text-[14px] font-semibold text-[var(--text-primary)] mono">
+          <div className="mt-1 ts-callout font-semibold text-[var(--text-primary)] mono">
             {item.completed_review_count}/{item.required_review_count}
           </div>
         </div>
         <div className="rounded-xl bg-[var(--surface-2)] p-4">
           <div className="eyebrow">vencimiento</div>
-          <div className="mt-1 text-[14px] font-semibold text-[var(--text-primary)]">
+          <div className="mt-1 ts-callout font-semibold text-[var(--text-primary)]">
             {item.due_at ? new Date(item.due_at).toLocaleString("es-MX") : "sin SLA"}
           </div>
         </div>
@@ -306,7 +282,7 @@ function QueueCard({
             {item.review_decisions.map((decision, index) => (
               <div
                 key={decision.id}
-                className="flex flex-wrap items-center justify-between gap-2 text-[12px] text-[var(--text-secondary)]"
+                className="flex flex-wrap items-center justify-between gap-2 ts-footnote text-[var(--text-secondary)]"
               >
                 <span>
                   firma {index + 1}:{" "}
@@ -325,17 +301,17 @@ function QueueCard({
       )}
 
       {/* Dimensions */}
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-5 gap-2">
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2">
         {dims.map((d) => (
           <div
             key={d.id}
             className="rounded-lg bg-[var(--surface-2)] p-3 text-center"
           >
             <div className="eyebrow">{d.id}</div>
-            <div className="mt-1 text-[20px] font-semibold text-[var(--text-primary)] mono">
+            <div className="mt-1 ts-body-lg font-semibold text-[var(--text-primary)] mono">
               {d.band}
             </div>
-            <div className="text-[10px] mono text-[var(--text-tertiary)]">
+            <div className="ts-caption-2 mono text-[var(--text-tertiary)]">
               {(d.confidence * 100).toFixed(0)}%
             </div>
           </div>
@@ -351,13 +327,13 @@ function QueueCard({
               key={i}
               className="p-4 rounded-xl bg-[var(--band-b-bg)] border border-[var(--band-b-text)]/20"
             >
-              <div className="flex items-center gap-2 text-[12px]">
+              <div className="flex items-center gap-2 ts-footnote">
                 <span className="font-mono">step {r.step_ordinal}</span>
                 <span className="capitalize font-semibold">
                   {r.type.replace(/_/g, " ")}
                 </span>
               </div>
-              <p className="mt-2 text-[13px] text-[var(--band-b-text)] italic leading-[1.5]">
+              <p className="mt-2 ts-subhead text-[var(--band-b-text)] italic leading-[1.5]">
                 «{r.evidence_text}»
               </p>
             </div>
@@ -374,7 +350,7 @@ function QueueCard({
               key={rec}
               type="button"
               onClick={() => setOverrideRec(rec)}
-              className={`px-3 py-1.5 rounded-full text-[13px] font-medium capitalize transition-colors ${
+              className={`px-3 py-1.5 rounded-full ts-subhead font-medium capitalize transition-colors ${
                 overrideRec === rec
                   ? "accent-bg text-white"
                   : "bg-[var(--surface-2)] text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
@@ -403,7 +379,7 @@ function QueueCard({
             }
             isDisabled={isResolving || hasCurrentStaffSigned}
             size="md"
-            className="accent-bg text-white h-10 px-5 text-[14px] font-medium"
+            className="accent-bg text-white h-10 px-5 ts-callout font-medium"
           >
             {hasCurrentStaffSigned
               ? "Esperando otro revisor"
@@ -420,18 +396,18 @@ function QueueCard({
             isDisabled={isResolving || hasCurrentStaffSigned}
             size="md"
             tone="secondary"
-            className="h-10 px-5 text-[14px] font-medium"
+            className="h-10 px-5 ts-callout font-medium"
           >
             Escalar sin publicar
           </AppleButton>
         </div>
         {hasCurrentStaffSigned ? (
-          <p className="mt-3 text-[12px] text-[var(--text-tertiary)]">
+          <p className="mt-3 ts-footnote text-[var(--text-tertiary)]">
             Tu firma ya quedó guardada. La publicación queda bloqueada hasta
             que otra persona de staff firme la revisión.
           </p>
         ) : !isFinalSignature && (
-          <p className="mt-3 text-[12px] text-[var(--text-tertiary)]">
+          <p className="mt-3 ts-footnote text-[var(--text-tertiary)]">
             Esta firma deja el reporte en revisión. Hace falta otra persona de
             staff para publicarlo.
           </p>

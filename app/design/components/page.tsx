@@ -21,6 +21,8 @@ import Link from "next/link";
 import { SelectItem } from "@heroui/react";
 import "../../(app)/simulador.css";
 import {
+  AppleActionChip,
+  AppleAttachmentCard,
   AppleBadge,
   AppleButton,
   AppleButtonLink,
@@ -28,12 +30,16 @@ import {
   AppleCardBody,
   AppleCardFooter,
   AppleCardHeader,
+  AppleCaseHeader,
   AppleCheckbox,
+  AppleDataTable,
   AppleEmptyState,
   AppleErrorState,
   AppleIcon,
   AppleInput,
+  AppleKpiCard,
   AppleLink,
+  AppleMessageCard,
   AppleModal,
   AppleModalBody,
   AppleModalContent,
@@ -41,6 +47,7 @@ import {
   AppleModalHeader,
   AppleProgress,
   AppleSelect,
+  AppleSidebar,
   AppleSkeleton,
   AppleSlideButton,
   AppleSortableList,
@@ -48,13 +55,18 @@ import {
   AppleStepDots,
   AppleTabs,
   AppleTextarea,
+  AppleTimeline,
   AppleToast,
   ChoiceButton,
   CompareCard,
   GuidedSlideOptions,
   Range10,
+  type AppleDataTableColumn,
+  type AppleKpiCardProps,
+  type AppleSidebarItem,
   type AppleStepDot,
   type AppleTabItem,
+  type AppleTimelineEvent,
 } from "@/components/simulador/apple";
 import { exerciseBlocks } from "@/lib/simulador/exercise-blocks.generated";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
@@ -357,9 +369,128 @@ function ModalDemo() {
   );
 }
 
+function ActionChipDemo() {
+  const [neutral, setNeutral] = useState("resumir");
+  const [permission, setPermission] = useState("revisar");
+  const [severity, setSeverity] = useState("escalar");
+  return (
+    <>
+      <Spec label="neutral (acento)" wide>
+        {[
+          { value: "resumir", label: "Resumir" },
+          { value: "extraer", label: "Extraer datos" },
+          { value: "responder", label: "Responder" },
+        ].map((c) => (
+          <AppleActionChip
+            key={c.value}
+            label={c.label}
+            value={c.value}
+            selected={neutral === c.value}
+            onClick={() => setNeutral(c.value)}
+          />
+        ))}
+      </Spec>
+      <Spec label="permission (verde / acento / rojo)" wide>
+        {[
+          { value: "permitir", label: "Permitir" },
+          { value: "revisar", label: "Revisar" },
+          { value: "bloquear", label: "Bloquear" },
+        ].map((c) => (
+          <AppleActionChip
+            key={c.value}
+            label={c.label}
+            value={c.value}
+            style="permission"
+            selected={permission === c.value}
+            onClick={() => setPermission(c.value)}
+          />
+        ))}
+      </Spec>
+      <Spec label="severity (rojo / acento / verde)" wide>
+        {[
+          { value: "riesgo", label: "Riesgo" },
+          { value: "escalar", label: "Escalar" },
+          { value: "normal", label: "Normal" },
+        ].map((c) => (
+          <AppleActionChip
+            key={c.value}
+            label={c.label}
+            value={c.value}
+            style="severity"
+            selected={severity === c.value}
+            onClick={() => setSeverity(c.value)}
+          />
+        ))}
+      </Spec>
+    </>
+  );
+}
+
+function CaseHeaderDemo() {
+  const total = 6;
+  const [current, setCurrent] = useState(2);
+  return (
+    <Spec label="chrome del player (Cerrar · Atrás · barra · Adelante · feedback)" wide>
+      <div className="w-full overflow-hidden rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)]">
+        <AppleCaseHeader
+          total={total}
+          current={current}
+          ariaLabel="Progreso del caso"
+          onClose={() => undefined}
+          onPrev={() => setCurrent((c) => Math.max(0, c - 1))}
+          prevDisabled={current === 0}
+          onNext={() => setCurrent((c) => Math.min(total - 1, c + 1))}
+          nextDisabled={current === total - 1}
+          onFeedback={() => undefined}
+        />
+      </div>
+    </Spec>
+  );
+}
+
 // ============================================================================
 // Página
 // ============================================================================
+
+const KPI_DATA: { label: string; value: string; delta?: AppleKpiCardProps["delta"] }[] = [
+  { label: "MRR", value: "$48.2K", delta: { value: "+12.4% vs. mes anterior", direction: "up" } },
+  { label: "Churn mensual", value: "3.1%", delta: { value: "−0.6 pts", direction: "down" } },
+  { label: "Cuentas activas", value: "1,284", delta: { value: "sin cambio", direction: "flat" } },
+];
+
+const TABLE_COLUMNS: AppleDataTableColumn[] = [
+  { key: "region", label: "Región" },
+  { key: "cuentas", label: "Cuentas", align: "right" },
+  { key: "ingreso", label: "Ingreso", align: "right" },
+  { key: "churn", label: "Churn", align: "right" },
+];
+
+const TABLE_ROWS: Array<Record<string, string | number>> = [
+  { region: "México", cuentas: 512, ingreso: "$21.4K", churn: "2.8%" },
+  { region: "Colombia", cuentas: 318, ingreso: "$12.1K", churn: "3.4%" },
+  { region: "Chile", cuentas: 244, ingreso: "$9.7K", churn: "2.1%" },
+  { region: "Perú", cuentas: 210, ingreso: "$5.0K", churn: "4.0%" },
+];
+
+const TIMELINE_EVENTS: AppleTimelineEvent[] = [
+  { when: "09:12", what: "El cliente abre un ticket por cargos duplicados.", who: "Soporte N1" },
+  { when: "09:40", what: "Se confirma el doble cobro en el log de pagos.", who: "Finanzas" },
+  { when: "10:05", what: "Se emite el reembolso y se notifica al cliente.", who: "Soporte N2" },
+  {
+    when: "10:30",
+    what: "El cliente confirma la resolución y cierra el ticket.",
+    who: "Cliente",
+    emphasis: true,
+  },
+];
+
+const SIDEBAR_ITEMS: AppleSidebarItem[] = [
+  { href: "/dashboard", label: "Panel", icon: "home" },
+  { href: "/casos", label: "Casos", icon: "briefcase", badge: 3 },
+  { href: "/reportes", label: "Reportes", icon: "chart" },
+  { href: "/equipo", label: "Equipo", icon: "users" },
+  { href: "/perfil", label: "Perfil", icon: "user" },
+];
 
 const STEP_DOTS: AppleStepDot[] = [
   { id: "1", label: "Información", status: "completed" },
@@ -502,10 +633,24 @@ export default function ComponentsGalleryPage() {
           <Spec label="como link (AppleButtonLink)">
             <AppleButtonLink
               href="#"
-              className="h-12 px-6 accent-bg text-white text-[15px] font-medium shadow-none"
+              className="h-12 px-6 accent-bg text-white ts-body font-medium shadow-none"
             >
               Navega como link
             </AppleButtonLink>
+          </Spec>
+          <Spec label="inline (text-link de acción, sin chrome)" wide>
+            <p className="ts-subhead text-[var(--text-secondary)]">
+              3 filtros activos ·{" "}
+              <AppleButton tone="secondary" size="inline" className="ts-subhead">
+                Limpiar filtros
+              </AppleButton>
+            </p>
+            <span className="ts-caption-1 text-[var(--text-secondary)]">
+              documento.pdf{" "}
+              <AppleButton tone="danger" size="inline" className="ts-caption-1">
+                Quitar
+              </AppleButton>
+            </span>
           </Spec>
         </Section>
 
@@ -702,6 +847,118 @@ export default function ComponentsGalleryPage() {
           </Spec>
         </Section>
 
+        {/* ---- Datos / lectura (contexto de caso) ---- */}
+        <Section
+          name="KPI card"
+          importName="AppleKpiCard"
+          purpose="Tarjeta de métrica: label + número grande + delta opcional (up/down/flat). Sitúa contexto de negocio (MRR, churn, conversión) antes de pedir análisis."
+        >
+          <Spec label="con delta" wide>
+            <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-3">
+              {KPI_DATA.map((kpi) => (
+                <AppleKpiCard
+                  key={kpi.label}
+                  label={kpi.label}
+                  value={kpi.value}
+                  delta={kpi.delta}
+                />
+              ))}
+            </div>
+          </Spec>
+          <Spec label="sin delta">
+            <AppleKpiCard label="NPS" value="62" className="w-[180px]" />
+          </Spec>
+        </Section>
+
+        <Section
+          name="Data table"
+          importName="AppleDataTable"
+          purpose="Tabla informativa de solo lectura: caption + columnas (con alineación) + filas. Para presentar datos antes de pedir una decisión."
+        >
+          <Spec label="caption + columnas alineadas" wide>
+            <div className="w-full max-w-[520px]">
+              <AppleDataTable
+                caption="Desempeño por región · Q2"
+                columns={TABLE_COLUMNS}
+                rows={TABLE_ROWS}
+              />
+            </div>
+          </Spec>
+        </Section>
+
+        <Section
+          name="Message card"
+          importName="AppleMessageCard"
+          purpose="Tarjeta de email/chat/ticket: header de canal + from/to con avatar de iniciales + subject + body con **negritas** inline. El artefacto base de los casos de bandeja."
+        >
+          <Spec label="email (from + to + subject)" wide>
+            <div className="w-full max-w-[480px]">
+              <AppleMessageCard
+                channel="email"
+                from={{ name: "Marina López", role: "Cuenta clave" }}
+                to={{ name: "Tú", role: "Soporte" }}
+                timestamp="Hoy · 09:12"
+                subject="Cargo duplicado en la factura de junio"
+                body="Hola, detecté **dos cargos** por el mismo monto este mes. Necesito el reembolso antes del cierre contable del **viernes**. ¿Pueden confirmar el ajuste?"
+              />
+            </div>
+          </Spec>
+          <Spec label="ticket (sin to)" wide>
+            <div className="w-full max-w-[480px]">
+              <AppleMessageCard
+                channel="ticket"
+                from={{ name: "Sistema de pagos" }}
+                timestamp="10:05"
+                body="Reembolso **emitido** por $1,240 MXN. Conciliación pendiente de confirmación."
+              />
+            </div>
+          </Spec>
+        </Section>
+
+        <Section
+          name="Attachment card"
+          importName="AppleAttachmentCard"
+          purpose="Tarjeta de archivo adjunto estilo email: icono por tipo (pdf/docx/xlsx/csv/image/presentation/other) + nombre + descripción + peso."
+        >
+          <Spec label="tipos de archivo" wide>
+            <div className="grid w-full max-w-[440px] gap-3">
+              <AppleAttachmentCard
+                name="factura-junio.pdf"
+                size="248 KB"
+                kind="pdf"
+                description="Factura con el doble cargo señalado"
+              />
+              <AppleAttachmentCard
+                name="conciliacion-q2.xlsx"
+                size="1.2 MB"
+                kind="xlsx"
+                description="Hoja de cálculo de pagos del trimestre"
+              />
+              <AppleAttachmentCard name="contrato.docx" size="86 KB" kind="docx" />
+            </div>
+          </Spec>
+        </Section>
+
+        <Section
+          name="Timeline"
+          importName="AppleTimeline"
+          purpose="Línea de tiempo vertical: dots + eventos cronológicos (when / what / who). El último evento (o cualquiera con emphasis) va en acento."
+        >
+          <Spec label="eventos (último en acento)" wide>
+            <div className="w-full max-w-[440px] rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5">
+              <AppleTimeline events={TIMELINE_EVENTS} />
+            </div>
+          </Spec>
+        </Section>
+
+        <Section
+          name="Action chip"
+          importName="AppleActionChip"
+          purpose="Chip de acción discreta para clasificar filas (permisos, severidad). El style colorea el seleccionado: neutral=acento, permission (verde/acento/rojo), severity (rojo/acento/verde)."
+        >
+          <ActionChipDemo />
+        </Section>
+
         {/* ---- Feedback ---- */}
         <Section
           name="Progress"
@@ -788,24 +1045,41 @@ export default function ComponentsGalleryPage() {
         </Section>
 
         <Section
+          name="Header de caso"
+          importName="AppleCaseHeader"
+          purpose="Chrome del player de casos: Cerrar (X) + Atrás (‹) a la izquierda, AppleStepBar al centro, Adelante (›) + feedback a la derecha. Cada control es opcional; usa los botones para avanzar la barra."
+        >
+          <CaseHeaderDemo />
+        </Section>
+
+        <Section
           name="Sidebar"
           importName="AppleSidebar"
-          purpose="Navegación lateral fija (lg+). Se monta a nivel de layout; aquí va solo la nota."
+          purpose="Navegación lateral (lg+) con título, subtítulo, items con icono/badge, item activo en acento y footer. Se monta a nivel de layout; aquí va un render acotado."
         >
+          <Spec label="render acotado (alto recortado · activo según ruta)" wide>
+            <div className="relative h-[420px] w-[280px] overflow-hidden rounded-[var(--radius-lg)] border border-[var(--hairline)]">
+              <AppleSidebar
+                title="Itera"
+                subtitle="Simulador corporativo"
+                items={SIDEBAR_ITEMS}
+                footer={
+                  <div className="flex items-center gap-2 px-1 ts-caption-1 text-[var(--text-tertiary)]">
+                    <AppleIcon name="userCircle" size="sm" />
+                    <span>Tu cuenta</span>
+                  </div>
+                }
+                className="!flex !min-h-0 !h-[420px] !w-[280px] !border-r-0"
+              />
+            </div>
+          </Spec>
           <Spec label="nota" wide>
             <div className="w-full rounded-[var(--radius-lg)] border border-dashed border-[var(--border-strong)] bg-[var(--surface)] p-4 ts-subhead text-[var(--text-secondary)]">
-              <code className="font-mono text-[var(--text-tertiary)]">
-                AppleSidebar
-              </code>{" "}
-              se posiciona <code className="font-mono">fixed</code> en el layout
-              real. Para revisarla en contexto, mídela en{" "}
+              En el layout real se monta a ancho completo y alto de pantalla.
+              Para revisarla en contexto, mídela en{" "}
               <Link href="/dashboard" className="text-[var(--accent)]">
                 /dashboard
               </Link>
-              . Toma{" "}
-              <code className="font-mono text-[var(--text-tertiary)]">
-                title, subtitle, items[], footer
-              </code>
               .
             </div>
           </Spec>

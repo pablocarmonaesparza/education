@@ -13,8 +13,8 @@
 import { redirect } from "next/navigation";
 import { headers, cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
-import { isDevBypassEnabled } from "@/lib/dev/devBypass";
-import { AppSidebar } from "@/components/simulador/AppSidebar";
+import { isDevBypassActive } from "@/lib/dev/devBypass";
+import { AppShell } from "./AppShell";
 import { SimuladorProviders } from "./providers";
 import "./simulador.css";
 
@@ -28,28 +28,24 @@ export default async function AppLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Dev bypass: en development o Vercel preview, con cookie
-  // `itera_dev_bypass=1` activa, skip el auth guard para revisar todas las
-  // pantallas sin login. Activable desde /dev. NUNCA funciona en producción
-  // real (Vercel production deploy o standalone production).
+  // Dev bypass: en dev local está ON por default (cualquier browser entra sin
+  // togglear); en Vercel preview es opt-in con cookie `itera_dev_bypass=1`.
+  // NUNCA funciona en producción real. Opt-out local con cookie `=0` desde /dev.
   const cookieStore = await cookies();
-  const devBypass =
-    isDevBypassEnabled() &&
-    cookieStore.get("itera_dev_bypass")?.value === "1";
+  const devBypass = isDevBypassActive(
+    cookieStore.get("itera_dev_bypass")?.value,
+  );
+
+  const pathname = (await headers()).get("x-itera-pathname") ?? "";
 
   if (!user && !devBypass) {
-    const pathname = (await headers()).get("x-itera-pathname") ?? "/dashboard";
-    redirect(`/auth/login?next=${encodeURIComponent(pathname)}`);
+    redirect(`/auth/login?next=${encodeURIComponent(pathname || "/dashboard")}`);
   }
 
   return (
     <div className="simulador-root min-h-screen surface-canvas">
       <SimuladorProviders>
-        <AppSidebar />
-        {/* Offset del contenido para no quedar debajo del sidebar fijo
-            (224px). En mobile/tablet (md:) el sidebar está hidden y el
-            contenido vuelve a full-width. */}
-        <div className="md:pl-[224px]">{children}</div>
+        <AppShell>{children}</AppShell>
       </SimuladorProviders>
     </div>
   );
