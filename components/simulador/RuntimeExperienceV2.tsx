@@ -156,8 +156,8 @@ export function RuntimeExperienceV2({
     const answered = Object.keys(payloads).length;
     return (
       <main className="mx-auto max-w-2xl px-6 py-16 text-[var(--text-primary)]">
-        <p className="text-xs uppercase tracking-widest text-[var(--text-tertiary,#888)]">Cierre</p>
-        <h1 className="mt-2 text-2xl font-semibold">Recorriste el caso.</h1>
+        <p className="ts-footnote uppercase tracking-widest text-[var(--text-tertiary)]">Cierre</p>
+        <h1 className="mt-2 ts-title-2 font-semibold">Recorriste el caso.</h1>
         <p className="mt-3 text-[var(--text-secondary)]">
           {session.sessionId
             ? "Tu sesión se está evaluando."
@@ -182,10 +182,10 @@ export function RuntimeExperienceV2({
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col px-6 py-8 text-[var(--text-primary)]">
       {/* barra de progreso + estado de sesión */}
       <div className="mb-8">
-        <div className="h-1 w-full overflow-hidden rounded bg-[var(--surface-2,#222)]">
+        <div className="h-1 w-full overflow-hidden rounded bg-[var(--surface-2)]">
           <div className="h-full bg-[var(--accent)] transition-all" style={{ width: `${progress}%` }} />
         </div>
-        <div className="mt-2 flex justify-between ts-caption-1 text-[var(--text-tertiary,#777)]">
+        <div className="mt-2 flex justify-between ts-caption-1 text-[var(--text-tertiary)]">
           <span>{slide.sectionName} · slide {idx + 1} de {flat.length}</span>
           <span>
             {session.status === "ready" && session.sessionId
@@ -198,10 +198,10 @@ export function RuntimeExperienceV2({
       </div>
 
       {/* encuadre de la slide */}
-      <p className="text-xs uppercase tracking-widest text-[var(--text-tertiary,#888)]">
+      <p className="ts-footnote uppercase tracking-widest text-[var(--text-tertiary)]">
         {slide.sectionName}
       </p>
-      <h2 className="mt-1 text-2xl font-semibold tracking-tight">{slide.title}</h2>
+      <h2 className="mt-1 ts-title-2 font-semibold tracking-tight">{slide.title}</h2>
       {slide.body && (
         <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">
           {renderBody(slide.body)}
@@ -228,7 +228,7 @@ export function RuntimeExperienceV2({
         <button
           onClick={goPrev}
           disabled={idx === 0}
-          className="text-sm text-[var(--text-tertiary,#888)] disabled:opacity-30"
+          className="ts-callout text-[var(--text-tertiary)] disabled:opacity-30"
         >
           Atrás
         </button>
@@ -236,7 +236,7 @@ export function RuntimeExperienceV2({
           <button
             onClick={goNext}
             disabled={!blockComplete || completing}
-            className="rounded-lg bg-[var(--accent)] px-5 py-2 text-sm font-medium text-white disabled:opacity-40"
+            className="rounded-lg bg-[var(--accent)] px-5 py-2 ts-callout font-medium text-white disabled:opacity-40"
           >
             {isLast ? (completing ? "Cerrando…" : "Terminar") : "Continuar"}
           </button>
