@@ -26,6 +26,7 @@ import {
   AppleInput,
   AppleSelect,
 } from "@/components/simulador/apple";
+import { CancelSubscriptionFlow } from "./CancelSubscriptionFlow";
 
 const INDUSTRY_OPTIONS = [
   { value: "saas_b2b", label: "SaaS B2B" },
@@ -523,17 +524,20 @@ export default function EmpresaPage() {
                   </div>
                 )}
               </div>
-              <AppleButton
-                type="button"
-                tone="primary"
-                size="lg"
-                onPress={openPortal}
-                isLoading={portalLoading}
-                isDisabled={!settings.billing.can_open_portal}
-                className="h-11 justify-center px-5"
-              >
-                Gestionar o cancelar billing
-              </AppleButton>
+              <div className="flex flex-col items-start gap-2 sm:items-end">
+                <AppleButton
+                  type="button"
+                  tone="primary"
+                  size="lg"
+                  onPress={openPortal}
+                  isLoading={portalLoading}
+                  isDisabled={!settings.billing.can_open_portal}
+                  className="h-11 justify-center px-5"
+                >
+                  Gestionar facturación
+                </AppleButton>
+                <CancelSubscriptionFlow renewsLabel={renewsLabel} />
+              </div>
             </div>
           ) : (
             <p className="ts-subhead text-[var(--text-secondary)]">
