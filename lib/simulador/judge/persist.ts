@@ -9,10 +9,12 @@
  *   5. practice_unlocks (gap → beat vía case_practice_beats; fallback por
  *      dimensión en banda B/M contra el catálogo activo de beats)
  *
- * Idempotencia: si ya existe un evaluation_run para la sesión + rubric_version,
- * la función devuelve `{ skipped: true, reason }` sin tocar nada. Para
- * forzar re-evaluación, pasar `force: true` y la función inserta un nuevo
- * run + actualiza el report existente.
+ * Idempotencia: si ya existe un evaluation_run para la SESIÓN, la función
+ * devuelve `{ skipped: true, reason }` sin tocar nada. Con `force: true` se
+ * inserta un run nuevo y se actualiza el report existente; si la rúbrica
+ * vigente difiere de la del run original, el re-run queda marcado en
+ * input_snapshot_json.re_evaluation (R-14 — nunca re-evaluación silenciosa
+ * de históricos con rúbrica nueva).
  *
  * Toda la persistencia usa admin client (corre desde `after()` sin auth ctx).
  */
@@ -44,25 +46,43 @@ export async function evaluateAndPersist(
   const admin = createAdminClient();
 
   // ── Idempotency check ────────────────────────────────────────────────────
-  if (!options.force) {
-    const { data: existing } = await admin
-      .schema("simulador")
-      .from("evaluation_runs")
-      .select("id")
-      .eq("simulation_session_id", simulationSessionId)
-      .limit(1)
-      .maybeSingle();
-    if (existing) {
-      return {
-        skipped: true,
-        reason: "evaluation_run ya existe para esta sesión",
-        evaluation_run_id: existing.id,
-      };
-    }
+  // Siempre leemos el run previo (si existe): sin force es el corte de
+  // idempotencia; con force sirve para detectar re-evaluación con rúbrica
+  // distinta (R-14 — la política dice "no re-evaluamos históricos": si la
+  // rúbrica cambió, el re-run queda marcado como auditable, nunca silencioso).
+  const { data: previousRun } = await admin
+    .schema("simulador")
+    .from("evaluation_runs")
+    .select("id, rubric_version")
+    .eq("simulation_session_id", simulationSessionId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (!options.force && previousRun) {
+    return {
+      skipped: true,
+      reason: "evaluation_run ya existe para esta sesión",
+      evaluation_run_id: previousRun.id,
+    };
   }
 
   // ── Run judge ────────────────────────────────────────────────────────────
   const result = await evaluate(simulationSessionId);
+
+  // R-14: re-evaluación forzada con una rúbrica distinta a la del run original.
+  const rubricChangedOnForce = Boolean(
+    options.force &&
+      previousRun &&
+      previousRun.rubric_version !== result.meta.rubricVersion,
+  );
+  if (rubricChangedOnForce) {
+    console.warn(
+      `[judge/persist] force re-eval de ${simulationSessionId} con rúbrica ` +
+        `${result.meta.rubricVersion} (original: ${previousRun?.rubric_version}). ` +
+        `Queda marcado en input_snapshot_json.re_evaluation.`,
+    );
+  }
 
   // ── Resolver session + template/rubric ids ──────────────────────────────
   const { data: session } = await admin
@@ -115,6 +135,17 @@ export async function evaluateAndPersist(
         system_prompt: result.context.rubric.title,
         steps: result.context.steps,
         responses: result.context.responses,
+        // R-14: auditoría de re-evaluación — solo presente cuando un force
+        // re-corrió el judge con una rúbrica distinta a la del run original.
+        ...(rubricChangedOnForce
+          ? {
+              re_evaluation: {
+                previous_run_id: previousRun?.id ?? null,
+                previous_rubric_version: previousRun?.rubric_version ?? null,
+                forced_at: new Date().toISOString(),
+              },
+            }
+          : {}),
       },
       dimension_scores_json: result.final.dimensions,
       gap_tags_json: result.final.gaps,

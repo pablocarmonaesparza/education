@@ -117,11 +117,12 @@ export interface JudgeRunResult {
   raw: JudgeOutput;
   /** Output final después de aplicar override matrix. */
   final: JudgeOutput;
-  /** Lista de overrides que se aplicaron (para audit_log). */
+  /** Lista de overrides que se aplicaron (para audit_log). `before`/`after`
+   * son Recommendation en reglas de recomendación y Band en band-caps (R-11). */
   overridesApplied: Array<{
     rule: string;
-    before: Recommendation;
-    after: Recommendation;
+    before: Recommendation | Band;
+    after: Recommendation | Band;
     reason: string;
   }>;
   /** Metadata de la llamada al modelo. */

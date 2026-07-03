@@ -3,8 +3,11 @@
  *
  * Marca la sesión como submitted y corre el judge antes de responder.
  *
- * Pre: el user ya guardó respuestas en todos los step_keys del caso
- * (validación liviana — el judge maneja sessions parciales también).
+ * R-15 (RULES_LEDGER): la completitud se valida SERVER-SIDE — una sesión sin
+ * ninguna respuesta no se puede cerrar (400). El gate por-bloque de la UI es
+ * UX, no seguridad: un cliente modificado no debe poder generar un reporte al
+ * manager sobre evidencia vacía. Sesiones parciales (≥1 respuesta) sí cierran:
+ * el judge las maneja y la cobertura queda logueada.
  *
  * Respuesta:
  *   200 { session_id, status, evaluation_started: true }
@@ -58,6 +61,30 @@ export async function POST(
       message: "Sesión ya estaba cerrada.",
     });
   }
+
+  // R-15: completitud server-side — contar respuestas reales antes de cerrar.
+  const { data: responseEvents } = await supabase
+    .schema("simulador")
+    .from("simulation_step_events")
+    .select("step_key")
+    .eq("simulation_session_id", session_id)
+    .eq("event_type", "response_update");
+
+  const answeredSteps = new Set(
+    (responseEvents ?? []).map((e) => e.step_key as string),
+  );
+  if (answeredSteps.size === 0) {
+    return NextResponse.json(
+      {
+        error:
+          "La sesión no tiene ninguna respuesta guardada — no se puede cerrar ni evaluar.",
+      },
+      { status: 400 },
+    );
+  }
+  console.log(
+    `[session/complete] ${session_id}: ${answeredSteps.size} steps con respuesta`,
+  );
 
   // Update a submitted.
   const { error: updateErr } = await supabase
