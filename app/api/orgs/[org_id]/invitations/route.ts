@@ -148,6 +148,54 @@ export async function POST(
     );
   }
 
+  // R-03 (pablo-005): gate de seats. La suma de miembros actuales + invitaciones
+  // pendientes + este lote no puede exceder los asientos pagados. Nunca corta
+  // sesiones en curso: solo bloquea nuevas invitaciones. Sin suscripción activa
+  // no hay asientos que gastar. El manager compra más asientos o espera a que
+  // alguien libere el suyo.
+  const { data: activeSub } = await admin
+    .schema("simulador")
+    .from("subscriptions")
+    .select("seats, status")
+    .eq("organization_id", org_id)
+    .in("status", ["active", "trial"])
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  const seats = typeof activeSub?.seats === "number" ? activeSub.seats : null;
+  if (seats !== null) {
+    const [{ count: memberCount }, { count: pendingCount }] = await Promise.all([
+      admin
+        .schema("simulador")
+        .from("organization_memberships")
+        .select("user_id", { count: "exact", head: true })
+        .eq("organization_id", org_id),
+      admin
+        .schema("simulador")
+        .from("invitations")
+        .select("id", { count: "exact", head: true })
+        .eq("organization_id", org_id)
+        .eq("status", "pending"),
+    ]);
+    const used = (memberCount ?? 0) + (pendingCount ?? 0);
+    const available = seats - used;
+    if (invitationsClean.length > available) {
+      return NextResponse.json(
+        {
+          error:
+            available <= 0
+              ? `No te quedan asientos disponibles (${used} de ${seats} ocupados entre miembros e invitaciones pendientes). Amplía tu plan para invitar a más personas.`
+              : `Solo te quedan ${available} asiento(s) disponibles y estás invitando a ${invitationsClean.length}. Ajusta la lista o amplía tu plan.`,
+          seats,
+          used,
+          available: Math.max(0, available),
+        },
+        { status: 409 },
+      );
+    }
+  }
+
   const { data: org } = await admin
     .schema("simulador")
     .from("organizations")

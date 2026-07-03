@@ -1,11 +1,12 @@
 /**
  * Pricing model B2B del Simulador.
  *
- * Modelo aprobado por Pablo el 2026-05-18 (ver
- * docs/memory/decision_pricing_sprint_marketing_v1.md):
+ * Modelo per-seat vigente (ver docs/memory/decision_pricing_per_seat_v1.md;
+ * decisión de Pablo 2026-07-02 que reemplaza el paquete de fases del 2026-05-18):
  *
- *   1 producto único (Sprint de 30 días).
+ *   Facturación por asiento (persona), mensual/anual.
  *   Tier automático según número de seats. Sin selección manual de plan.
+ *   ESTA es la fuente única del pricing — landing, checkout y legal importan de aquí.
  *
  *   | Tier         | Personas | Precio/persona |
  *   | ------------ | -------- | -------------- |

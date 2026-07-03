@@ -6,6 +6,8 @@ import {
   isTerminalSimuladorPaymentSyncReason,
   isSimuladorCheckoutSession,
   upsertSimuladorSubscriptionFromCheckout,
+  mapStripeSubscriptionStatus,
+  syncSimuladorSubscriptionStatus,
 } from "@/lib/stripe/simuladorBilling";
 
 export const runtime = "nodejs";
@@ -96,6 +98,53 @@ export async function POST(req: NextRequest) {
         organizationId: result.organizationId,
         subscriptionId: result.subscriptionId,
       });
+    }
+
+    // R-02: eventos negativos de suscripción. Stripe es la fuente de verdad;
+    // aquí sincronizamos status/period_end para que el guard de acceso (409 al
+    // asignar sin sub activa) y el banner de vencida respeten el estado real.
+    if (
+      event.type === "customer.subscription.updated" ||
+      event.type === "customer.subscription.deleted"
+    ) {
+      const sub = event.data.object as Stripe.Subscription;
+      const status =
+        event.type === "customer.subscription.deleted"
+          ? "cancelled"
+          : mapStripeSubscriptionStatus(sub.status);
+      const periodEnd =
+        "current_period_end" in sub && typeof sub.current_period_end === "number"
+          ? new Date(sub.current_period_end * 1000).toISOString()
+          : null;
+      const result = await syncSimuladorSubscriptionStatus(supabase, sub.id, {
+        status,
+        currentPeriodEnd: periodEnd,
+        cancelAtPeriodEnd: sub.cancel_at_period_end ?? null,
+      });
+      if (!result.ok && result.reason !== "subscription_not_found") {
+        throw new Error(`subscription sync failed: ${result.reason}`);
+      }
+      return NextResponse.json({ received: true, synced: result.ok });
+    }
+
+    if (event.type === "invoice.payment_failed") {
+      const invoice = event.data.object as Stripe.Invoice;
+      const rawSub = (invoice as unknown as { subscription?: unknown }).subscription;
+      const subId =
+        typeof rawSub === "string"
+          ? rawSub
+          : rawSub && typeof rawSub === "object" && "id" in rawSub
+            ? String((rawSub as { id: unknown }).id)
+            : null;
+      if (subId) {
+        const result = await syncSimuladorSubscriptionStatus(supabase, subId, {
+          status: "past_due",
+        });
+        if (!result.ok && result.reason !== "subscription_not_found") {
+          throw new Error(`invoice sync failed: ${result.reason}`);
+        }
+        return NextResponse.json({ received: true, synced: result.ok });
+      }
     }
 
     return NextResponse.json({ received: true, ignored: true });

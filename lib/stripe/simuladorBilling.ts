@@ -195,3 +195,78 @@ export async function upsertSimuladorSubscriptionFromCheckout(
 
   return { ok: true, organizationId, subscriptionId: created.id };
 }
+
+// ============================================================================
+// R-02 — sincronización de eventos negativos de suscripción (F5).
+// El checkout inicial lo maneja upsertSimuladorSubscriptionFromCheckout; estos
+// eventos posteriores (renovación, cancelación, pago fallido) mantienen el
+// estado local en sync con Stripe, que es la fuente de verdad del billing.
+// ============================================================================
+
+/** Mapea el status de Stripe al CHECK de simulador.subscriptions.status
+ *  (trial|active|past_due|cancelled|paused). Nota: 'cancelled' con doble L. */
+export function mapStripeSubscriptionStatus(stripeStatus: string): string {
+  switch (stripeStatus) {
+    case "active":
+      return "active";
+    case "trialing":
+      return "trial";
+    case "past_due":
+    case "unpaid":
+    case "incomplete":
+      return "past_due";
+    case "canceled":
+    case "incomplete_expired":
+      return "cancelled";
+    case "paused":
+      return "paused";
+    default:
+      return "past_due";
+  }
+}
+
+interface SubscriptionStatusSync {
+  status: string;
+  currentPeriodEnd?: string | null;
+  cancelAtPeriodEnd?: boolean | null;
+}
+
+/**
+ * Actualiza la suscripción local resuelta por stripe_subscription_id. Devuelve
+ * false si no existe una suscripción local con ese id (evento de una suscripción
+ * que no gestionamos, o llegó antes que el checkout — el retry de Stripe la
+ * reconcilia). No lanza: el webhook decide si reintentar.
+ */
+export async function syncSimuladorSubscriptionStatus(
+  admin: ReturnType<typeof createAdminClient>,
+  stripeSubscriptionId: string,
+  sync: SubscriptionStatusSync,
+): Promise<{ ok: boolean; organizationId?: string; reason?: string }> {
+  const { data: existing, error: findErr } = await admin
+    .schema("simulador")
+    .from("subscriptions")
+    .select("id, organization_id, metadata")
+    .eq("stripe_subscription_id", stripeSubscriptionId)
+    .maybeSingle();
+
+  if (findErr) return { ok: false, reason: `find_failed:${findErr.message}` };
+  if (!existing?.id) return { ok: false, reason: "subscription_not_found" };
+
+  const update: Record<string, unknown> = { status: sync.status };
+  if (sync.currentPeriodEnd) update.current_period_end = sync.currentPeriodEnd;
+  if (typeof sync.cancelAtPeriodEnd === "boolean") {
+    update.metadata = {
+      ...((existing.metadata as Record<string, unknown>) ?? {}),
+      cancel_at_period_end: sync.cancelAtPeriodEnd,
+    };
+  }
+
+  const { error: updErr } = await admin
+    .schema("simulador")
+    .from("subscriptions")
+    .update(update)
+    .eq("id", existing.id);
+
+  if (updErr) return { ok: false, reason: `update_failed:${updErr.message}` };
+  return { ok: true, organizationId: existing.organization_id as string };
+}

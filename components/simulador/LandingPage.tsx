@@ -13,6 +13,7 @@ import {
   SPRINT_META,
   MANAGER_ACTIONS,
 } from "@/lib/simulador/config";
+import { SIMULADOR_TIERS } from "@/lib/simulador/billing";
 
 // Secciones below-the-fold: revela al entrar al viewport por scroll real.
 // `amount` (fracción visible) dispara más confiable que `margin` negativo.
@@ -261,21 +262,44 @@ export default function LandingPage() {
             <h2 className="display mt-4 ts-display sm:ts-display-xl text-[var(--text-primary)]">
               Desde{" "}
               <span className="accent-text">
-                ${SPRINT_META.pricing.fase_1_min_usd.toLocaleString("en-US")}
+                ${SIMULADOR_TIERS[SIMULADOR_TIERS.length - 2].pricePerSeatUsd}
               </span>{" "}
-              por sprint.
+              por persona al mes.
             </h2>
             <p className="mt-5 ts-headline text-[var(--text-secondary)] max-w-xl mx-auto">
-              Fase 1, diagnóstico operativo: $
-              {SPRINT_META.pricing.fase_1_min_usd.toLocaleString("en-US")}–$
-              {SPRINT_META.pricing.fase_1_max_usd.toLocaleString("en-US")} para
-              cohortes de {SPRINT_META.pricing.minSeats}–
-              {SPRINT_META.pricing.maxSeats} personas. USD vía Stripe.
-              <br className="hidden sm:block" />
-              Fase 2, práctica + re-diagnóstico: $
-              {SPRINT_META.pricing.fase_2_min_usd.toLocaleString("en-US")}–$
-              {SPRINT_META.pricing.fase_2_max_usd.toLocaleString("en-US")}.
+              Por asiento, mensual o anual. El precio por persona baja cuando
+              crece tu equipo. USD vía Stripe.
             </p>
+          </m.div>
+
+          <m.div
+            {...fadeUp}
+            transition={{ ...fadeUp.transition, delay: 0.06 }}
+            className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4"
+          >
+            {SIMULADOR_TIERS.map((tier) => (
+              <div
+                key={tier.id}
+                className="rounded-[var(--radius-lg)] bg-[var(--surface)] p-5 text-left"
+              >
+                <div className="ts-callout font-semibold text-[var(--text-primary)]">
+                  {tier.label}
+                </div>
+                <div className="mt-2 ts-title-2 font-semibold tabular-nums text-[var(--text-primary)]">
+                  ${tier.pricePerSeatUsd}
+                  <span className="ts-footnote font-medium text-[var(--text-tertiary)]">
+                    {" "}
+                    /persona/mes
+                  </span>
+                </div>
+                <div className="mt-2 ts-caption-1 text-[var(--text-tertiary)]">
+                  {tier.maxSeats
+                    ? `${tier.minSeats}–${tier.maxSeats} personas`
+                    : `${tier.minSeats}+ personas`}
+                  {!tier.selfServe && " · contacto"}
+                </div>
+              </div>
+            ))}
           </m.div>
 
           <m.div
@@ -326,7 +350,7 @@ export default function LandingPage() {
               },
               {
                 q: "¿Política de refunds?",
-                a: "Reembolso completo dentro de 7 días post-cargo si nadie de tu equipo empezó el caso vivo. Pasado ese plazo, convertimos a crédito para tu próximo sprint.",
+                a: "Reembolso completo dentro de los primeros 7 días del primer cobro. Después de ese plazo puedes cancelar cuando quieras: conservas acceso hasta el final del período ya pagado y no se hacen cobros nuevos.",
               },
             ].map((item, i) => (
               <m.details

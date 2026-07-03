@@ -227,15 +227,9 @@ export const SPRINT_META = {
   publicName: "AI Readiness Sprint — Marketing 30 días",
   oneLiner:
     "Mide y mejora el criterio de tu equipo de marketing para usar IA en flujos reales. Baseline, práctica, re-simulación y reporte ejecutivo accionable.",
-  pricing: {
-    // Fase 1 paid diagnostic — alineado al contrato §12
-    fase_1_min_usd: 4000,
-    fase_1_max_usd: 8000,
-    fase_2_min_usd: 8000,
-    fase_2_max_usd: 15000,
-    minSeats: 5,
-    maxSeats: 50,
-  },
+  // El pricing vive SOLO en lib/simulador/billing.ts (SIMULADOR_TIERS,
+  // per-seat). El bloque fase_1/fase_2 $4-8K se retiró (F5): describía el
+  // modelo viejo y contradecía el precio real. No re-agregar aquí.
   primaryAudience: ["Head of Marketing", "VP of Growth", "Head of Operations"],
   geoTarget: ["MX", "CO", "AR", "CL"],
   industries: [

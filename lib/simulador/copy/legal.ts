@@ -94,7 +94,7 @@ export const legalCopy = {
       },
       {
         title: "2. Quién puede usar Itera",
-        body: "Empleados, managers y administradores de organizaciones que contraten un Sprint Fase 1 o Fase 2. El acceso individual al field-test público es gratuito y no requiere contratación.",
+        body: "Empleados, managers y administradores de organizaciones con una suscripción activa a Itera. La demo pública es de acceso libre, no requiere contratación y no genera evaluación ni reporte.",
       },
       {
         title: "3. Limitaciones de Itera v1",
@@ -102,7 +102,7 @@ export const legalCopy = {
       },
       {
         title: "4. Propiedad intelectual",
-        body: "Los casos, rúbricas, practice beats y reportes generados por Itera son propiedad de Itera. La organización contratante recibe licencia de uso para los reportes de sus empleados durante el período del Sprint. La propiedad de los datos personales y comerciales que ingreses sigue siendo tuya/de tu organización.",
+        body: "Los casos, rúbricas, practice beats y reportes generados por Itera son propiedad de Itera. La organización con suscripción activa recibe licencia de uso para los reportes de sus empleados mientras la suscripción esté vigente. La propiedad de los datos personales y comerciales que ingreses sigue siendo tuya/de tu organización.",
       },
       {
         title: "5. Confidencialidad",
@@ -110,7 +110,7 @@ export const legalCopy = {
       },
       {
         title: "6. Tarifa y facturación",
-        body: "Sprints se facturan en USD vía Stripe. Fase 1 (diagnóstico): $4,000-$8,000 según cohorte 5-50 personas. Fase 2 (práctica + re-diagnóstico): $8,000-$15,000. Cobro al inicio del Sprint. Cancelación post-cobro reembolsable solo si el Sprint no comenzó.",
+        body: "Itera se factura por asiento (persona) en USD vía Stripe, mensual o anual. El precio por persona baja por volumen; el detalle vigente aparece en el checkout y en la página de precios. La suscripción se renueva automáticamente hasta que la canceles. La cancelación toma efecto al final del período ya pagado: conservas acceso hasta esa fecha y no se hacen cobros nuevos. Reembolsos dentro de los primeros 7 días del primer cobro.",
       },
       {
         title: "7. Cambios a los términos",
