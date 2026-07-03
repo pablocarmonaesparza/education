@@ -35,6 +35,16 @@ const FALLBACK_MODEL =
 const MAX_TOKENS = 4096;
 const MOCK_MODEL_TAG = "mock_judge_dev";
 
+// R-18 (RULES_LEDGER) + pablo-006: el proveedor primario del judge es una
+// DECISIÓN explícita, no un efecto de qué env key exista. Default: Anthropic
+// primario (calidad de evaluación), DeepSeek/Gemini como fallback vía
+// runOpenAiCompatibleJudge. Cambiar de proveedor = cambiar esta env, y obliga
+// a re-correr la calibración antes de evaluar sesiones reales (ver
+// docs/simulador/judge_calibration_spec.md).
+const JUDGE_PROVIDER = (
+  process.env.SIMULADOR_JUDGE_PROVIDER ?? "anthropic"
+).toLowerCase();
+
 export interface RunJudgeResult {
   output: JudgeOutput;
   model: string;
@@ -49,6 +59,17 @@ export async function runJudge(
   const apiKey = process.env.ANTHROPIC_API_KEY;
   const systemPrompt = buildSystemPrompt();
   const userPrompt = buildUserPrompt(ctx);
+
+  // Proveedor explícito ≠ anthropic → directo al judge OpenAI-compatible,
+  // sin importar qué keys existan (la política es la env, no el entorno).
+  if (JUDGE_PROVIDER !== "anthropic") {
+    return runOpenAiCompatibleJudge({
+      ctx,
+      systemPrompt,
+      userPrompt,
+      reason: `SIMULADOR_JUDGE_PROVIDER=${JUDGE_PROVIDER}`,
+    });
+  }
 
   // ── Fallback dev: sin API key + NODE_ENV ≠ production → mock ─────────────
   // Permite testar el flow E2E (submit → report) sin gastar tokens ni

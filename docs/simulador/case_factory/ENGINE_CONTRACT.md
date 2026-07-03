@@ -83,14 +83,14 @@ El juez (`lib/simulador/judge/`) emite **exactamente las 6 dimensiones canónica
   determinista por dimensión es mejora pendiente** (`[pendiente]`, ver §7).
 - El reporte al manager muestra las 6 dimensiones; la UI mapea **por `id`**, no por
   índice (reports viejos de 5 dims no deben crashear).
-- **Proveedor LLM (v0 · decisión de Pablo 2026-06-08):** el juez de runtime corre con
-  **DeepSeek** (primario) + Gemini (fallback) vía `lib/llm/client.ts` /
-  `runOpenAiCompatibleJudge`. **No usa Anthropic en v0**; la validación de las 6 dims se
-  hace en código (`run.ts`, `dimensions.length === 6`), no por el tool_use server-side.
-  Modelo sugerido para evaluación: `deepseek-reasoner`. Política v0: runtime (fuera del
-  local server) = DeepSeek con saldo mínimo; desarrollo/autoría (Claude Code / Codex) = la
-  suscripción; el resto de keys del sistema se suben al primer usuario pagado. Anthropic +
-  `JUDGE_TOOL_SCHEMA` (validación server-side) quedan como opción para entonces.
+- **Proveedor LLM (v1 · pablo-006 resuelto 2026-07-02, deroga la decisión 2026-06-08):**
+  la política es **explícita por env**, no un efecto de qué key exista:
+  `SIMULADOR_JUDGE_PROVIDER` (default `anthropic`). Con `anthropic`: Claude primario
+  (`SIMULADOR_JUDGE_MODEL`, tool_use forzado + `JUDGE_TOOL_SCHEMA` server-side) y
+  DeepSeek/Gemini de fallback vía `runOpenAiCompatibleJudge` si falta la key en prod.
+  Con `deepseek` (u otro valor): directo al judge OpenAI-compatible sin importar keys.
+  Regla dura: **cambiar de proveedor o de prompt obliga a re-correr la calibración**
+  (docs/simulador/judge_calibration_spec.md) antes de evaluar sesiones reales.
 
 ## 5. Orden de deploy: Expand → Migrate → Contract
 
