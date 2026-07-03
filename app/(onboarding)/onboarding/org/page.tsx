@@ -13,7 +13,12 @@ import { useRouter } from "next/navigation";
 import { SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
-import { AppleInput, AppleSelect, AppleSlideButton, AppleStepBar } from "@/components/simulador/apple";
+import { AppleInput, AppleSelect, AppleSlideButton } from "@/components/simulador/apple";
+import {
+  markOnboardingStepUnlocked,
+  ONBOARDING_ORG_ID_KEY,
+  ONBOARDING_ORG_NAME_KEY,
+} from "@/lib/simulador/onboarding-progress";
 
 const INDUSTRIES = [
   { key: "saas_b2b", label: "SaaS B2B" },
@@ -73,8 +78,9 @@ export default function OnboardingOrgPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error al crear organización.");
       // Guardar org_id en sessionStorage para los siguientes steps del onboarding.
-      sessionStorage.setItem("onboarding_org_id", data.id);
-      sessionStorage.setItem("onboarding_org_name", data.name);
+      sessionStorage.setItem(ONBOARDING_ORG_ID_KEY, data.id);
+      sessionStorage.setItem(ONBOARDING_ORG_NAME_KEY, data.name);
+      markOnboardingStepUnlocked(1);
       router.push("/onboarding/team");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado.");
@@ -85,16 +91,15 @@ export default function OnboardingOrgPage() {
 
   return (
     <>
-      <OnboardingNav />
-      <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
+      <OnboardingNav progress={{ total: 6, current: 0, ariaLabel: "Paso 1 de 6" }} />
+      <main className="surface-canvas min-h-[calc(100vh-5rem)] flex items-center justify-center px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="max-w-[440px] w-full"
         >
-          <AppleStepBar total={5} current={0} ariaLabel="Paso 1 de 5" className="mb-6" />
-          <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
+          <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
             Cuéntanos sobre tu equipo
           </h1>
 
@@ -157,7 +162,7 @@ export default function OnboardingOrgPage() {
             </AppleSelect>
 
             {error && (
-              <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--band-b-bg)] text-[var(--band-b-text)] text-[13.5px] text-center leading-[1.5]">
+              <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--band-b-bg)] text-[var(--band-b-text)] ts-subhead text-center leading-[1.5]">
                 {error}
               </div>
             )}

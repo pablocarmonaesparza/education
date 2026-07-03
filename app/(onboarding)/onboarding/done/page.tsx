@@ -1,5 +1,5 @@
 /**
- * /onboarding/done — paso 5 del flow buyer B2B.
+ * /onboarding/done — paso 6 del flow buyer B2B.
  *
  * Landing post-Stripe Checkout. Server component que verifica el
  * session_id contra Stripe y resuelve uno de 3 estados:
@@ -13,10 +13,9 @@
  * Sin sidebar derecha (era legacy del DS Itera Courses).
  */
 
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
-import { AppleStepBar } from "@/components/simulador/apple";
+import { AppleButtonLink, AppleSlideButton } from "@/components/simulador/apple";
 import { onboardingCopy } from "@/lib/simulador/copy/onboarding";
 import {
   findSimuladorSubscriptionByCheckoutSession,
@@ -37,14 +36,17 @@ function Cta({
   children: ReactNode;
   variant?: "primary" | "secondary";
 }) {
-  const className =
-    variant === "primary"
-      ? "inline-flex h-12 w-full items-center justify-center rounded-[var(--radius-md)] accent-bg px-6 text-[15px] font-medium text-white hover:opacity-95 transition-opacity"
-      : "inline-flex h-12 w-full items-center justify-center rounded-[var(--radius-md)] border border-[var(--border-strong)] bg-[var(--surface)] px-6 text-[15px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors";
+  if (variant === "secondary") {
+    return (
+      <AppleButtonLink href={href} tone="secondary" className="w-full px-6">
+        {children}
+      </AppleButtonLink>
+    );
+  }
   return (
-    <Link href={href} className={className}>
+    <AppleSlideButton href={href} fullWidth>
       {children}
-    </Link>
+    </AppleSlideButton>
   );
 }
 
@@ -64,14 +66,19 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
 
   return (
     <>
-      <OnboardingNav />
+      <OnboardingNav
+        progress={{
+          total: 6,
+          current: 5,
+          ariaLabel: "Paso 6 de 6",
+        }}
+      />
       {isSynced && <ClearOnboardingStorage />}
 
       {/* ============ PAGO CONFIRMADO ============ */}
       {isSynced && (
-        <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
+        <main className="surface-canvas min-h-[calc(100vh-5rem)] flex items-center justify-center px-6 py-12">
           <div className="max-w-[560px] w-full text-center">
-            <AppleStepBar total={5} current={4} ariaLabel="Paso 5 de 5" className="mb-10" />
             <div className="mx-auto h-16 w-16 rounded-full bg-[var(--band-a-bg)] grid place-items-center">
               <svg
                 className="h-7 w-7 text-[var(--band-a-text)]"
@@ -86,10 +93,10 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
                 <polyline points="20 6 9 17 4 12" />
               </svg>
             </div>
-            <h1 className="display display-tight mt-7 text-[var(--text-primary)] text-[28px] sm:text-[32px]">
+            <h1 className="display display-tight mt-7 text-[var(--text-primary)] ts-title-1 sm:ts-display">
               Sprint activado
             </h1>
-            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+            <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.55]">
               {copy.body}
             </p>
 
@@ -99,10 +106,10 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
                   key={step}
                   className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-4 py-3"
                 >
-                  <span className="mt-0.5 inline-flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[var(--accent-soft)] text-[12px] font-semibold text-[var(--accent)]">
+                  <span className="mt-0.5 inline-flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[var(--accent-soft)] ts-footnote font-semibold text-[var(--accent)]">
                     {index + 1}
                   </span>
-                  <p className="text-[13.5px] leading-[1.55] text-[var(--text-secondary)]">
+                  <p className="ts-subhead leading-[1.55] text-[var(--text-secondary)]">
                     {step}
                   </p>
                 </li>
@@ -110,10 +117,7 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
             </ul>
 
             <div className="mt-8 flex flex-col gap-3">
-              <Cta href="/onboarding/context">Personalizar mis casos →</Cta>
-              <Cta href="/dashboard" variant="secondary">
-                {copy.dashboard_cta}
-              </Cta>
+              <Cta href="/dashboard">{copy.dashboard_cta}</Cta>
             </div>
           </div>
         </main>
@@ -121,7 +125,7 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
 
       {/* ============ PAYMENT PENDING ============ */}
       {!isSynced && isPaymentPending && (
-        <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
+        <main className="surface-canvas min-h-[calc(100vh-5rem)] flex items-center justify-center px-6 py-12">
           <div className="max-w-[440px] w-full text-center">
             <div className="mx-auto h-16 w-16 rounded-full bg-[var(--accent-soft)] grid place-items-center">
               <svg
@@ -134,13 +138,13 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
                 <path d="M12 3a9 9 0 0 1 9 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
             </div>
-            <h1 className="display display-tight mt-7 text-[var(--text-primary)] text-[28px] sm:text-[32px]">
+            <h1 className="display display-tight mt-7 text-[var(--text-primary)] ts-title-1 sm:ts-display">
               {returnCopy.success_headline.replace(/\.$/, "")}
             </h1>
-            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+            <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.55]">
               {returnCopy.success_body}
             </p>
-            <p className="mt-2 text-[13.5px] text-[var(--text-tertiary)]">
+            <p className="mt-2 ts-subhead text-[var(--text-tertiary)]">
               {returnCopy.success_polling_note}
             </p>
             {sessionId && (
@@ -156,7 +160,7 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
 
       {/* ============ FAILED / CANCELED ============ */}
       {!isSynced && !isPaymentPending && (
-        <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
+        <main className="surface-canvas min-h-[calc(100vh-5rem)] flex items-center justify-center px-6 py-12">
           <div className="max-w-[440px] w-full text-center">
             <div className="mx-auto h-16 w-16 rounded-full bg-[var(--surface-2)] border border-[var(--hairline)] grid place-items-center">
               <svg
@@ -174,10 +178,10 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
                 <line x1="9" y1="9" x2="15" y2="15" />
               </svg>
             </div>
-            <h1 className="display display-tight mt-7 text-[var(--text-primary)] text-[28px] sm:text-[32px]">
+            <h1 className="display display-tight mt-7 text-[var(--text-primary)] ts-title-1 sm:ts-display">
               Pago no procesado
             </h1>
-            <p className="mt-4 text-[15px] text-[var(--text-secondary)] leading-[1.55]">
+            <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.55]">
               Stripe canceló o rechazó el cobro. No se generó ningún cargo. Puedes reintentar con otro método.
             </p>
             <div className="mt-8 flex flex-col gap-3">

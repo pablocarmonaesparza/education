@@ -12,7 +12,14 @@ import { useRouter } from "next/navigation";
 import { SelectItem } from "@heroui/react";
 import { motion } from "framer-motion";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
-import { AppleButton, AppleInput, AppleSelect, AppleSlideButton, AppleStepBar } from "@/components/simulador/apple";
+import { AppleInput, AppleSelect, AppleSlideButton } from "@/components/simulador/apple";
+import {
+  markOnboardingStepUnlocked,
+  ONBOARDING_ORG_ID_KEY,
+  ONBOARDING_ORG_NAME_KEY,
+  ONBOARDING_TEAM_ID_KEY,
+  ONBOARDING_TEAM_NAME_KEY,
+} from "@/lib/simulador/onboarding-progress";
 
 const DEPARTMENTS = [
   { key: "marketing", label: "Marketing / Growth" },
@@ -38,8 +45,8 @@ export default function OnboardingTeamPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const id = sessionStorage.getItem("onboarding_org_id");
-    const n = sessionStorage.getItem("onboarding_org_name");
+    const id = sessionStorage.getItem(ONBOARDING_ORG_ID_KEY);
+    const n = sessionStorage.getItem(ONBOARDING_ORG_NAME_KEY);
     if (!id) {
       router.push("/onboarding/org");
       return;
@@ -72,8 +79,9 @@ export default function OnboardingTeamPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Error al crear equipo.");
-      sessionStorage.setItem("onboarding_team_id", data.id);
-      sessionStorage.setItem("onboarding_team_name", data.name);
+      sessionStorage.setItem(ONBOARDING_TEAM_ID_KEY, data.id);
+      sessionStorage.setItem(ONBOARDING_TEAM_NAME_KEY, data.name);
+      markOnboardingStepUnlocked(2);
       router.push("/onboarding/invite");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado.");
@@ -86,16 +94,15 @@ export default function OnboardingTeamPage() {
 
   return (
     <>
-      <OnboardingNav />
-      <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
+      <OnboardingNav progress={{ total: 6, current: 1, ariaLabel: "Paso 2 de 6" }} />
+      <main className="surface-canvas min-h-[calc(100vh-5rem)] flex items-center justify-center px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="max-w-[440px] w-full"
         >
-          <AppleStepBar total={5} current={1} ariaLabel="Paso 2 de 5" className="mb-6" />
-          <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
+          <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
             ¿Qué equipo vas a diagnosticar primero?
           </h1>
 
@@ -126,32 +133,23 @@ export default function OnboardingTeamPage() {
             )}
 
             {error && (
-              <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--band-b-bg)] text-[var(--band-b-text)] text-[13.5px] text-center leading-[1.5]">
+              <div className="p-4 rounded-[var(--radius-lg)] bg-[var(--band-b-bg)] text-[var(--band-b-text)] ts-subhead text-center leading-[1.5]">
                 {error}
               </div>
             )}
 
-            <div className="flex items-center gap-3 pt-2">
-              <AppleButton
-                onPress={() => router.push("/onboarding/org")}
-                tone="secondary"
-                size="lg"
-                className="h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium shadow-none"
-              >
-                ← Atrás
-              </AppleButton>
-              <AppleSlideButton
-                type="submit"
-                isLoading={submitting}
-                isDisabled={
-                  !department ||
-                  (department === "otro" && !name.trim()) ||
-                  submitting
-                }
-              >
-                Continuar →
-              </AppleSlideButton>
-            </div>
+            <AppleSlideButton
+              type="submit"
+              isLoading={submitting}
+              isDisabled={
+                !department ||
+                (department === "otro" && !name.trim()) ||
+                submitting
+              }
+              hint
+            >
+              Continuar →
+            </AppleSlideButton>
           </form>
         </motion.div>
       </main>

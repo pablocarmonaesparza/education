@@ -21,14 +21,27 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
-import { AppleButton, AppleInput, AppleSlideButton, AppleStepBar } from "@/components/simulador/apple";
+import {
+  AppleButton,
+  AppleIcon,
+  AppleInput,
+  AppleSlideButton,
+} from "@/components/simulador/apple";
+import {
+  markInviteCompleted,
+  ONBOARDING_ORG_ID_KEY,
+  ONBOARDING_TEAM_ID_KEY,
+  ONBOARDING_TEAM_NAME_KEY,
+} from "@/lib/simulador/onboarding-progress";
+import { validateOnboardingInvites } from "@/lib/simulador/onboarding-invitations";
 
 interface InviteRow {
   email: string;
   isAdmin: boolean;
 }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const SECONDARY_BUTTON_CLASS =
+  "h-12 w-full justify-center border-[var(--border-strong)] bg-[var(--surface)] px-6 ts-body font-medium shadow-none";
 
 export default function OnboardingInvitePage() {
   const router = useRouter();
@@ -45,9 +58,9 @@ export default function OnboardingInvitePage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const oid = sessionStorage.getItem("onboarding_org_id");
-    const tid = sessionStorage.getItem("onboarding_team_id");
-    const tn = sessionStorage.getItem("onboarding_team_name");
+    const oid = sessionStorage.getItem(ONBOARDING_ORG_ID_KEY);
+    const tid = sessionStorage.getItem(ONBOARDING_TEAM_ID_KEY);
+    const tn = sessionStorage.getItem(ONBOARDING_TEAM_NAME_KEY);
     if (!oid || !tid) {
       router.push("/onboarding/org");
       return;
@@ -57,8 +70,12 @@ export default function OnboardingInvitePage() {
     setTeamName(tn ?? "");
   }, [router]);
 
-  const validRows = rows.filter((r) => EMAIL_RE.test(r.email.trim()));
-  const validCount = validRows.length;
+  const validation = validateOnboardingInvites(rows);
+  const { canSubmit, validCount } = validation;
+  const submitLabel =
+    validCount === 0
+      ? "Enviar invitaciones"
+      : `Enviar ${validCount} invitación${validCount === 1 ? "" : "es"}`;
 
   function updateRow(index: number, patch: Partial<InviteRow>) {
     setRows((prev) =>
@@ -120,14 +137,11 @@ export default function OnboardingInvitePage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!orgId || validCount === 0) return;
+    if (!orgId || !canSubmit) return;
     setError(null);
     setSubmitting(true);
     try {
-      const invitations = validRows.map((r) => ({
-        email: r.email.trim().toLowerCase(),
-        intended_role: r.isAdmin ? "manager" : "employee",
-      }));
+      const invitations = validation.validRows;
       const res = await fetch(`/api/orgs/${orgId}/invitations`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -142,6 +156,7 @@ export default function OnboardingInvitePage() {
         sent: data.invitations?.length ?? 0,
         skipped: data.skipped ?? [],
       });
+      markInviteCompleted();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado.");
     } finally {
@@ -149,24 +164,24 @@ export default function OnboardingInvitePage() {
     }
   }
 
-  function onContinueToBilling() {
-    router.push("/onboarding/billing");
+  function onContinueToContext() {
+    markInviteCompleted();
+    router.push("/onboarding/context");
   }
 
   if (!orgId || !teamId) return null;
 
   return (
     <>
-      <OnboardingNav />
-      <main className="surface-canvas min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-6 py-12">
+      <OnboardingNav progress={{ total: 6, current: 2, ariaLabel: "Paso 3 de 6" }} />
+      <main className="surface-canvas min-h-[calc(100vh-5rem)] flex items-center justify-center px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
           className="max-w-[440px] w-full"
         >
-          <AppleStepBar total={5} current={2} ariaLabel="Paso 3 de 5" className="mb-6" />
-          <h1 className="display display-tight text-[28px] sm:text-[32px] leading-[1.1] text-[var(--text-primary)]">
+          <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
             ¿Quiénes van a hacer el diagnóstico?
           </h1>
 
@@ -174,8 +189,15 @@ export default function OnboardingInvitePage() {
             <form onSubmit={onSubmit} className="mt-8">
               <div className="space-y-2">
                 {rows.map((row, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="flex-1">
+                  <div
+                    key={index}
+                    className={`grid items-center gap-3 ${
+                      rows.length > 1
+                        ? "grid-cols-[minmax(0,1fr)_7.5rem_2.75rem]"
+                        : "grid-cols-[minmax(0,1fr)_7.5rem]"
+                    }`}
+                  >
+                    <div className="min-w-0">
                       <AppleInput
                         type="email"
                         placeholder="email@empresa.com"
@@ -188,7 +210,7 @@ export default function OnboardingInvitePage() {
                       />
                     </div>
                     <label
-                      className={`flex h-12 flex-none cursor-pointer items-center gap-2 rounded-[var(--radius-md)] border px-3 text-[12px] font-medium transition-colors ${
+                      className={`flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-[var(--radius-md)] border px-3 ts-body font-medium transition-colors ${
                         row.isAdmin
                           ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
                           : "border-[var(--hairline)] bg-[var(--surface)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]"
@@ -210,7 +232,7 @@ export default function OnboardingInvitePage() {
                         type="button"
                         onClick={() => removeRow(index)}
                         aria-label={`Quitar miembro ${index + 1}`}
-                        className="flex h-12 w-10 flex-none items-center justify-center rounded-[var(--radius-md)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors"
+                        className="flex h-12 w-11 items-center justify-center rounded-[var(--radius-md)] text-[var(--text-tertiary)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
                       >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
                           <line x1="5" y1="12" x2="19" y2="12" />
@@ -221,68 +243,62 @@ export default function OnboardingInvitePage() {
                 ))}
               </div>
 
-              <div className="mt-4 flex flex-wrap gap-2">
-                <button
+              <div aria-hidden className="my-4 border-t border-[var(--hairline)]" />
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <AppleButton
                   type="button"
-                  onClick={addRow}
-                  className="inline-flex h-10 items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors"
+                  onPress={addRow}
+                  aria-label="Agregar otro miembro"
+                  tone="secondary"
+                  size="lg"
+                  className={SECONDARY_BUTTON_CLASS}
                 >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden>
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                  Agregar otro miembro
-                </button>
-                <button
+                  <span className="inline-flex items-center gap-2.5 whitespace-nowrap">
+                    <AppleIcon name="users" size="sm" />
+                    Agregar miembro
+                  </span>
+                </AppleButton>
+                <AppleButton
                   type="button"
-                  onClick={copyInviteLink}
-                  className="inline-flex h-10 items-center gap-1.5 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 text-[13.5px] font-medium text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors"
+                  onPress={copyInviteLink}
+                  aria-label="Copiar enlace de invitación"
+                  tone="secondary"
+                  size="lg"
+                  className={SECONDARY_BUTTON_CLASS}
                 >
                   {copied ? (
-                    <>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
+                    <span className="inline-flex items-center gap-2.5 whitespace-nowrap">
+                      <AppleIcon name="check" size="sm" />
                       Enlace copiado
-                    </>
+                    </span>
                   ) : (
-                    <>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                      </svg>
-                      Copiar enlace de invitación
-                    </>
+                    <span className="inline-flex items-center gap-2.5 whitespace-nowrap">
+                      <AppleIcon name="share" size="sm" />
+                      Copiar enlace
+                    </span>
                   )}
-                </button>
+                </AppleButton>
               </div>
 
-              <p className="mt-3 text-[12px] text-[var(--text-tertiary)]">
+              <p className="mt-3 ts-footnote text-[var(--text-tertiary)]">
                 Es posible terminar las invitaciones más tarde desde el dashboard.
               </p>
 
               {error && (
-                <div className="mt-4 rounded-[var(--radius-md)] bg-[var(--band-b-bg)] px-3 py-2 text-[13.5px] text-[var(--band-b-text)]">
+                <div className="mt-4 rounded-[var(--radius-md)] bg-[var(--band-b-bg)] px-3 py-2 ts-subhead text-[var(--band-b-text)]">
                   {error}
                 </div>
               )}
 
-              <div className="mt-8 flex items-center gap-3">
-                <AppleButton
-                  onPress={() => router.push("/onboarding/team")}
-                  tone="secondary"
-                  size="lg"
-                  className="h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium shadow-none"
-                >
-                  ← Atrás
-                </AppleButton>
+              <div className="mt-8">
                 <AppleSlideButton
                   type="submit"
                   isLoading={submitting}
-                  isDisabled={validCount === 0 || submitting}
+                  isDisabled={!canSubmit || submitting}
+                  hint
                 >
-                  Enviar {validCount || ""} invitación
-                  {validCount === 1 ? "" : "es"}
+                  {submitLabel}
                 </AppleSlideButton>
               </div>
             </form>
@@ -291,12 +307,12 @@ export default function OnboardingInvitePage() {
               <div className="rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-6">
                 <div className="flex items-center gap-3 mb-3">
                   <span className="h-2 w-2 rounded-full bg-[var(--band-a-bar)]" />
-                  <h2 className="text-[17px] font-semibold text-[var(--text-primary)]">
+                  <h2 className="ts-headline font-semibold text-[var(--text-primary)]">
                     {result.sent} invitación{result.sent === 1 ? "" : "es"}{" "}
                     enviada{result.sent === 1 ? "" : "s"}
                   </h2>
                 </div>
-                <p className="text-[14px] text-[var(--text-secondary)] leading-[1.55]">
+                <p className="ts-callout text-[var(--text-secondary)] leading-[1.55]">
                   Cada participante recibirá un email con su link único. El
                   diagnóstico aparecerá en tu dashboard cuando completen el
                   caso.
@@ -304,7 +320,7 @@ export default function OnboardingInvitePage() {
                 {result.skipped.length > 0 && (
                   <div className="mt-4 pt-4 border-t border-[var(--hairline)]">
                     <div className="eyebrow mb-2">No enviadas</div>
-                    <ul className="text-[13.5px] text-[var(--text-secondary)] space-y-1">
+                    <ul className="ts-subhead text-[var(--text-secondary)] space-y-1">
                       {result.skipped.map((s, i) => (
                         <li key={i}>
                           · {s.email} — {s.reason}
@@ -323,12 +339,12 @@ export default function OnboardingInvitePage() {
                   }}
                   tone="secondary"
                   size="lg"
-                  className="h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] text-[15px] font-medium shadow-none"
+                  className="h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] ts-body font-medium shadow-none"
                 >
                   Invitar más
                 </AppleButton>
-                <AppleSlideButton onClick={onContinueToBilling}>
-                  Continuar a pago →
+                <AppleSlideButton onClick={onContinueToContext}>
+                  Continuar →
                 </AppleSlideButton>
               </div>
             </div>

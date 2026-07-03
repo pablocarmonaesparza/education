@@ -192,14 +192,11 @@ export const onboardingCopy = {
   },
 
   // ============================================================================
-  // Paso 4 — /onboarding/billing (pendiente codex B7-001)
+  // Paso 5 — /onboarding/billing
   // Stripe Checkout B2B con seats configurables
   // ============================================================================
   step4_billing: {
-    headline: "Configura tu Sprint",
-    seats_question: "¿Cuántas personas van a participar?",
-    seats_question_caption: "Desde 1 hasta 99 · escribe el número o usa los botones",
-    seats_help: "Desde 1 hasta 99 personas. Para 100+ negociamos por volumen.",
+    headline: "¿Cuántas personas van a participar?",
     tier_label_template: (label: string, range: string) =>
       `Tier ${label} · ${range}`,
     pricing_breakdown_template: (perSeat: number, seats: number, total: number) =>
@@ -217,14 +214,14 @@ export const onboardingCopy = {
   },
 
   // ============================================================================
-  // Paso 5 — /onboarding/done
+  // Paso 6 — /onboarding/done
   // Confirmación post-pago + handoff al dashboard
   // ============================================================================
   step5_done: {
     eyebrow_context: "Listo",
     headline: "Sprint activado.",
     body:
-      "Tu equipo ya puede empezar el diagnóstico. Los participantes invitados reciben su link por email. Verás cada sesión completada en tu dashboard.",
+      "Los participantes ya reciben su link por email para empezar el diagnóstico. En paralelo, estamos creando los ejercicios a la medida de tu equipo con tu sitio y los archivos que compartiste. Verás cada sesión completada en tu dashboard.",
     next_steps_eyebrow: "Qué sigue",
     next_steps: [
       "Avisa a tu equipo que llega un email de Itera con su link único.",
@@ -245,44 +242,24 @@ export const onboardingCopy = {
   },
 
   // ============================================================================
-  // Paso extra (post-pago) — /onboarding/context
-  // El brief que personaliza los casos al trabajo real del team (motor bespoke).
-  // El static library ya sembró casos base al crear el team; esto los afina async.
-  // Decisión (research): brief DESPUÉS del pago, 3-4 preguntas, valor instantáneo
-  // con los casos base + bespoke async sin bloquear.
+  // Paso 4 — /onboarding/context
+  // Perfil de empresa antes de elegir plan/pagar. Captura señales mínimas para
+  // orientar el sprint sin convertir el onboarding en un cuestionario pesado.
   // ============================================================================
   step_context: {
-    eyebrow_context: "Afina tus casos",
-    headline: "¿Cómo usa IA tu team en el día a día?",
+    headline: "Configura el perfil de tu empresa",
     body:
-      "Con esto generamos casos a la medida del trabajo real de tu team. Tu equipo ya puede empezar con los casos base mientras los personalizamos.",
+      "Ingresa tu sitio web y archivos PDF. Esto nos ayudará a investigar, entender y crear los ejercicios correspondientes para tu equipo. Esto puede modificarse más adelante.",
     fields: {
-      // Regla del sistema: cero labels arriba; la instrucción (la pregunta) vive
-      // en el placeholder. El _label solo alimenta el aria-label (a11y).
-      role_label: "¿Qué rol tienen los participantes?",
-      role_placeholder: "¿Qué rol tienen los participantes?",
-      level_label: "¿Qué tan avanzado está el team con IA?",
-      level_options: [
-        { key: "N1", label: "Fundamentos — apenas empiezan" },
-        { key: "N2", label: "Intermedio — uso regular" },
-        { key: "N3", label: "Avanzado — IA en flujos clave" },
-      ],
-      scenario_label: "Describe un flujo real donde usan IA",
-      scenario_placeholder:
-        "Describe un flujo real donde usan IA (ej. redactan campañas con datos de clientes; el dataset trae datos personales)",
-      manager_label: "¿Qué te gustaría saber de tu team?",
-      manager_placeholder:
-        "¿Qué te gustaría saber de tu team? (ej. si pueden usar IA sin exponer datos sensibles)",
-      tools_label: "¿Qué herramientas de IA usan?",
-      tools_placeholder: "¿Qué herramientas de IA usan? (opcional)",
+      website_label: "Sitio web de la empresa",
+      website_placeholder: "Sitio web",
+      files_placeholder: "Adjuntar archivos (PDF)",
+      files_add_more: "Adjuntar más archivos (PDF)",
     },
-    submit_cta: "Generar mis casos →",
-    skip_cta: "Usar los casos base por ahora",
-    generating_headline: "Preparando tus casos a la medida…",
-    generating_body:
-      "Esto toma un par de minutos. Tu team ya puede empezar con los casos base en el dashboard; los a la medida aparecen en cuanto estén listos.",
-    error_generate:
-      "No pudimos arrancar la generación. Tus casos base siguen disponibles; puedes reintentar desde el dashboard.",
+    submit_cta: "Continuar a plan →",
+    errors: {
+      website_required: "Agrega un sitio web válido para continuar.",
+    },
   },
 
   // ============================================================================

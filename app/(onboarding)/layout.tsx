@@ -8,7 +8,7 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
-import { isDevBypassEnabled } from "@/lib/dev/devBypass";
+import { isDevBypassActive } from "@/lib/dev/devBypass";
 import { SimuladorProviders } from "../(app)/providers";
 import "../(app)/simulador.css";
 
@@ -22,11 +22,11 @@ export default async function OnboardingLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Dev bypass: ver app/(app)/layout.tsx — activable desde /dev.
+  // Dev bypass: ver app/(app)/layout.tsx — ON por default en dev local.
   const cookieStore = await cookies();
-  const devBypass =
-    isDevBypassEnabled() &&
-    cookieStore.get("itera_dev_bypass")?.value === "1";
+  const devBypass = isDevBypassActive(
+    cookieStore.get("itera_dev_bypass")?.value,
+  );
 
   if (!user && !devBypass) {
     redirect("/auth/login?next=/onboarding/org");
