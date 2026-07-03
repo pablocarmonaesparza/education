@@ -1,6 +1,5 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
+import { createRouteClient } from '@/lib/supabase/route-client'
 
 function safeNext(value: string | null): string | null {
   if (!value) return null
@@ -43,38 +42,13 @@ export async function GET(request: Request) {
   }
 
   try {
-    const cookieStore = await cookies()
+    const { supabase, cookiesToSet, cookieStore } = await createRouteClient()
 
     // Log available cookies for debugging PKCE issues
     const allCookies = cookieStore.getAll()
     const codeVerifierCookie = allCookies.find(c => c.name.includes('code_verifier'))
     console.log('[auth/callback] Code verifier cookie present:', !!codeVerifierCookie)
     console.log('[auth/callback] Total cookies:', allCookies.length)
-
-    // Accumulate cookies that Supabase wants to set so we can apply them to the response
-    const cookiesToSet: { name: string; value: string; options: CookieOptions }[] = []
-
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          getAll() {
-            return cookieStore.getAll()
-          },
-          setAll(cookies) {
-            cookies.forEach((cookie) => {
-              cookiesToSet.push(cookie)
-              try {
-                cookieStore.set(cookie.name, cookie.value, cookie.options)
-              } catch {
-                // Ignore errors in case this runs in a read-only context
-              }
-            })
-          },
-        },
-      }
-    )
 
     const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
 
