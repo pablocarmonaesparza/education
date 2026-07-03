@@ -31,46 +31,38 @@ import {
 } from "@/lib/simulador/case-catalog";
 
 // ============================================================================
-// MOCK USER + PERFORMANCE + LEADERBOARD
+// Datos reales — /api/me/{profile,report-summary,team-leaderboard} (F4)
 // ============================================================================
 
-const USER = {
-  fullName: "Ana López",
-  initials: "AL",
-  jobTitle: "Growth Manager",
-  orgName: "Acme LATAM",
-  currentLevelLabel: "Automatización",
+const DIMENSION_LABEL: Record<string, string> = {
+  contexto: "Contexto",
+  datos: "Datos",
+  ejecucion_ia: "Ejecución IA",
+  validacion: "Validación",
+  juicio: "Juicio",
+  impacto: "Impacto",
 };
 
-// Scores en escala 0-10 (decisión Pablo 2026-05-23 — consistente con /reportes).
-const PERFORMANCE = {
-  averageBand: "M" as Band,
-  averageScore: 7.1,
-  casesCompleted: 4,
-  dimensions: [
-    { id: "contexto", label: "Contexto", score: 8.2 },
-    { id: "datos", label: "Datos", score: 6.5 },
-    { id: "ejecucion_ia", label: "Ejecución IA", score: 7.1 },
-    { id: "validacion", label: "Validación", score: 5.8 },
-    { id: "juicio", label: "Juicio", score: 7.9 },
-    { id: "impacto", label: "Impacto", score: 6.8 },
-  ],
-};
+interface Hero {
+  first_name: string;
+  initials: string;
+  job_title: string;
+  org_name: string | null;
+}
+
+interface Performance {
+  band: Band | null;
+  casesCompleted: number;
+  dimensions: Array<{ id: string; label: string; score: number }>; // score 0-10
+}
 
 interface LeaderboardEntry {
   name: string;
   initials: string;
   score: number; // 0-10 (1 decimal)
-  isCurrentUser?: boolean;
+  has_reports: boolean;
+  is_current_user: boolean;
 }
-
-const LEADERBOARD: LeaderboardEntry[] = [
-  { name: "Mariana Cortés", initials: "MC", score: 9.2 },
-  { name: "Juan Esparza", initials: "JE", score: 8.7 },
-  { name: "Ana López", initials: "AL", score: 7.8, isCurrentUser: true },
-  { name: "Pedro Ruiz", initials: "PR", score: 7.4 },
-  { name: "Sofía Martín", initials: "SM", score: 6.9 },
-];
 
 // ============================================================================
 // Local components
@@ -166,6 +158,9 @@ function BandPill({ band }: { band: Band }) {
 export default function TeamHomePage() {
   const [cases, setCases] = useState<CaseCatalogItem[] | null>(null);
   const [casesError, setCasesError] = useState<string | null>(null);
+  const [hero, setHero] = useState<Hero | null>(null);
+  const [perf, setPerf] = useState<Performance | null>(null);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
   const loadCases = useCallback(async () => {
     setCasesError(null);
@@ -182,9 +177,47 @@ export default function TeamHomePage() {
     }
   }, []);
 
+  // Hero + performance + leaderboard reales (degradan a null/[] sin datos).
+  const loadMe = useCallback(async () => {
+    try {
+      const [pRes, rRes, lRes] = await Promise.all([
+        fetch("/api/me/profile"),
+        fetch("/api/me/report-summary"),
+        fetch("/api/me/team-leaderboard"),
+      ]);
+      if (pRes.ok) {
+        const p = (await pRes.json()).profile;
+        setHero({
+          first_name: (p.full_name as string).split(" ")[0] || "",
+          initials: p.initials,
+          job_title: p.job_title,
+          org_name: p.org_name,
+        });
+      }
+      if (rRes.ok) {
+        const s = await rRes.json();
+        setPerf({
+          band: s.global?.band ?? null,
+          casesCompleted: s.global?.casesCompleted ?? 0,
+          dimensions: (s.dimensions ?? []).map((d: { id: string; score: number }) => ({
+            id: d.id,
+            label: DIMENSION_LABEL[d.id] ?? d.id,
+            score: Math.round((d.score / 10) * 10) / 10,
+          })),
+        });
+      }
+      if (lRes.ok) {
+        setLeaderboard((await lRes.json()).leaderboard ?? []);
+      }
+    } catch {
+      // Silencioso: las secciones tienen su propio fallback vacío.
+    }
+  }, []);
+
   useEffect(() => {
     loadCases();
-  }, [loadCases]);
+    loadMe();
+  }, [loadCases, loadMe]);
 
   // Casos recomendados: solo no completados. in_progress primero (debe
   // terminar lo que empezó), después not_started. GET /api/cases ya ordena
@@ -207,16 +240,13 @@ export default function TeamHomePage() {
       <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6">
         {/* ============ HERO ============ */}
         <AppleReveal as="header" className="flex flex-none items-center gap-4">
-          <Avatar initials={USER.initials} size="lg" ring />
+          <Avatar initials={hero?.initials ?? "··"} size="lg" ring />
           <div className="min-w-0 flex-1">
             <h1 className="display display-tight text-[var(--text-primary)] ts-title-2 sm:ts-title-1 leading-tight">
-              Hola, {USER.fullName.split(" ")[0]}
+              {hero?.first_name ? `Hola, ${hero.first_name}` : "Hola"}
             </h1>
             <p className="mt-1 ts-subhead text-[var(--text-secondary)]">
-              {USER.jobTitle} · {USER.orgName} · Nivel actual:{" "}
-              <span className="text-[var(--text-primary)] font-medium">
-                {USER.currentLevelLabel}
-              </span>
+              {[hero?.job_title, hero?.org_name].filter(Boolean).join(" · ")}
             </p>
           </div>
           <AppleButtonLink
@@ -242,15 +272,22 @@ export default function TeamHomePage() {
               eyebrow="Mi performance"
               cta={{ label: "Ver reporte", href: "/reportes" }}
             />
-            <div className="mt-3 flex items-baseline gap-3">
-              <BandPill band={PERFORMANCE.averageBand} />
-              <span className="ts-caption-1 text-[var(--text-tertiary)]">
-                promedio sobre {PERFORMANCE.casesCompleted} casos
-              </span>
-            </div>
+            {perf && perf.casesCompleted > 0 && perf.band ? (
+              <div className="mt-3 flex items-baseline gap-3">
+                <BandPill band={perf.band} />
+                <span className="ts-caption-1 text-[var(--text-tertiary)]">
+                  promedio sobre {perf.casesCompleted}{" "}
+                  {perf.casesCompleted === 1 ? "caso" : "casos"}
+                </span>
+              </div>
+            ) : (
+              <p className="mt-3 ts-subhead text-[var(--text-secondary)]">
+                Juega tu primer caso para ver tu desempeño aquí.
+              </p>
+            )}
 
             <div className="mt-4 flex flex-col gap-2">
-              {PERFORMANCE.dimensions.map((d) => (
+              {(perf?.dimensions ?? []).map((d) => (
                 <div key={d.id} className="flex items-center gap-3">
                   <span className="w-[100px] flex-none truncate ts-footnote text-[var(--text-secondary)]">
                     {d.label}
@@ -273,44 +310,50 @@ export default function TeamHomePage() {
           <Card>
             <CardHeader eyebrow="Leaderboard del equipo" />
 
-            <ul className="mt-3 flex flex-col gap-1">
-              {LEADERBOARD.map((entry, i) => (
-                <li
-                  key={entry.name}
-                  className={`flex items-center gap-3 rounded-[var(--radius-md)] px-2 py-1.5 ${
-                    entry.isCurrentUser ? "bg-[var(--accent-soft)]" : ""
-                  }`}
-                >
-                  <span
-                    className={`w-[16px] flex-none text-center ts-caption-1 font-semibold tabular-nums ${
-                      entry.isCurrentUser
-                        ? "text-[var(--accent)]"
-                        : "text-[var(--text-tertiary)]"
+            {leaderboard.length === 0 ? (
+              <p className="mt-3 ts-subhead text-[var(--text-secondary)]">
+                Aún no hay resultados del equipo.
+              </p>
+            ) : (
+              <ul className="mt-3 flex flex-col gap-1">
+                {leaderboard.map((entry, i) => (
+                  <li
+                    key={entry.name}
+                    className={`flex items-center gap-3 rounded-[var(--radius-md)] px-2 py-1.5 ${
+                      entry.is_current_user ? "bg-[var(--accent-soft)]" : ""
                     }`}
                   >
-                    {i + 1}
-                  </span>
-                  <Avatar initials={entry.initials} size="sm" />
-                  <span
-                    className={`flex-1 truncate ts-footnote ${
-                      entry.isCurrentUser
-                        ? "font-semibold text-[var(--text-primary)]"
-                        : "text-[var(--text-secondary)]"
-                    }`}
-                  >
-                    {entry.name}
-                    {entry.isCurrentUser && (
-                      <span className="ml-1.5 ts-caption-2 text-[var(--accent)]">
-                        Tú
-                      </span>
-                    )}
-                  </span>
-                  <span className="ts-footnote font-semibold tabular-nums text-[var(--text-primary)]">
-                    {entry.score.toFixed(1)}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                    <span
+                      className={`w-[16px] flex-none text-center ts-caption-1 font-semibold tabular-nums ${
+                        entry.is_current_user
+                          ? "text-[var(--accent)]"
+                          : "text-[var(--text-tertiary)]"
+                      }`}
+                    >
+                      {i + 1}
+                    </span>
+                    <Avatar initials={entry.initials} size="sm" />
+                    <span
+                      className={`flex-1 truncate ts-footnote ${
+                        entry.is_current_user
+                          ? "font-semibold text-[var(--text-primary)]"
+                          : "text-[var(--text-secondary)]"
+                      }`}
+                    >
+                      {entry.name}
+                      {entry.is_current_user && (
+                        <span className="ml-1.5 ts-caption-2 text-[var(--accent)]">
+                          Tú
+                        </span>
+                      )}
+                    </span>
+                    <span className="ts-footnote font-semibold tabular-nums text-[var(--text-primary)]">
+                      {entry.has_reports ? entry.score.toFixed(1) : "—"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </Card>
         </AppleReveal>
 
