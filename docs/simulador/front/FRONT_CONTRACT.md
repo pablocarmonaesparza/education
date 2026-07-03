@@ -104,7 +104,7 @@ Mecanismo: las rutas dev-only viven en `internalReviewRoutes` de `proxy.ts` — 
 | `/case-demo` | caso jugable público sin login (demo / QA) | dev-only |
 | `/case-template` | estructura de caso (referencia de diseño) | dev-only |
 | `/aprender-demo` | módulo educativo jugable (demo del segundo motor, modo formativo) | dev-only |
-| `/motores` | consola de lectura: cómo está organizado cada motor (educativo + operativo) | dev-only (PENDIENTE: falta en `internalReviewRoutes` de `proxy.ts` — hoy se sirve en prod; fix de Codex, ledger R-21) |
+| `/motores` | consola de lectura: cómo está organizado cada motor (educativo + operativo) | dev-only (en `internalReviewRoutes` de `proxy.ts` desde 2026-07-02 — 404 en prod) |
 
 ### Duplicados / ambigüedades a resolver (decisión de Codex + producto, **NO borrado mecánico**)
 

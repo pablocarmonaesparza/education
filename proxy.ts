@@ -17,6 +17,7 @@ const internalReviewRoutes = [
   '/design',
   '/dev',
   '/exercise-lab',
+  '/motores',
 ]
 
 function matchesRoute(pathname: string, routes: string[]) {
