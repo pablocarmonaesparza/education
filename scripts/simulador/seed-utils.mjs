@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
@@ -112,4 +113,20 @@ export function asArray(value) {
 export function jsonObject(value) {
   if (!value || typeof value !== "object" || Array.isArray(value)) return {};
   return value;
+}
+
+/**
+ * Candado del quality bar (R-10 del RULES_LEDGER): ningún seed escribe a BD sin
+ * pasar antes por su validador. Si el gate falla, el seed aborta con exit 1 —
+ * "un caso no entra a BD si no pasa" deja de ser aspiracional.
+ */
+export function runSeedGate(label, scriptRelPath, args = []) {
+  const result = spawnSync(process.execPath, [scriptRelPath, ...args], {
+    stdio: "inherit",
+  });
+  if (result.status !== 0) {
+    console.error(`\n✗ Seed abortado: el gate "${label}" falló (${scriptRelPath}).`);
+    process.exit(1);
+  }
+  console.log(`✓ Gate "${label}" OK`);
 }

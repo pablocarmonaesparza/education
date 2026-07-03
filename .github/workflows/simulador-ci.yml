@@ -26,6 +26,12 @@ jobs:
       - name: Validate simulator contracts
         run: npm run simulador:validate
 
+      # R-10 (RULES_LEDGER): el arsenal completo de gates deterministas — contratos,
+      # anti-spoiler, casos ensamblados 5×5, catálogo de bloques, copy lint, set de
+      # calibración (estructural). Sin esto el quality bar era opcional en la práctica.
+      - name: Quality gates (check:simulador)
+        run: npm run check:simulador
+
       - name: Typecheck simulator scope
         run: npm run typecheck:simulador
 

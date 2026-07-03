@@ -11,6 +11,7 @@ import {
   mustSingle,
   readYamlFile,
   readYamlFiles,
+  runSeedGate,
   templateRefToSlugVersion,
   toStepKey,
   upsertSingle,
@@ -368,6 +369,9 @@ async function main() {
     );
     return;
   }
+
+  // R-10: candado del quality bar — validar contratos antes de escribir a BD.
+  runSeedGate("contratos v0", "scripts/simulador/validate-contracts.mjs");
 
   const db = createServiceClient();
   const casesByRef = new Map(cases.map((item) => [`${item.id}@v${item.version}`, item]));

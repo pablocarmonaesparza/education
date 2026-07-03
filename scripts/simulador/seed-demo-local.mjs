@@ -551,6 +551,18 @@ function reportPayload({ bandPattern, durationMs, recommendation, highRisk = fal
 }
 
 async function main() {
+  // R-10 (RULES_LEDGER): candado del quality bar — los casos ensamblados se
+  // validan con check-assembled-case ANTES de escribir a BD; si falla, abort.
+  try {
+    execFileSync(process.execPath, ["scripts/simulador/check-assembled-case.mjs"], {
+      cwd: ROOT,
+      stdio: "inherit",
+    });
+  } catch {
+    console.error("\n✗ Seed abortado: check-assembled-case falló.");
+    process.exit(1);
+  }
+
   const { url, serviceKey, studioUrl } = parseLocalSupabaseStatus();
   const rootClient = createClient(url, serviceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
@@ -677,7 +689,7 @@ async function main() {
       stripe_customer_id: "cus_demo_aurora_local",
       stripe_subscription_id: "sub_demo_aurora_active",
       status: "active",
-      tier: "fase_2_sprint",
+      tier: "business", // per-seat $129 × 5 = $645 (R-01: tiers vigentes)
       seats: 5,
       price_usd_total: 645,
       current_period_start: "2026-06-01T00:00:00.000Z",

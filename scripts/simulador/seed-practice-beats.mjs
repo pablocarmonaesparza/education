@@ -7,6 +7,7 @@ import {
   createServiceClient,
   jsonObject,
   readYamlFiles,
+  runSeedGate,
   upsertSingle,
 } from "./seed-utils.mjs";
 
@@ -55,6 +56,9 @@ async function main() {
     );
     return;
   }
+
+  // R-10: candado del quality bar — validar contratos (incluye practice beats).
+  runSeedGate("practice beats", "scripts/simulador/validate-contracts.mjs");
 
   const db = createServiceClient();
   for (const row of rows) {

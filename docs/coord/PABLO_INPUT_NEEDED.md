@@ -218,7 +218,11 @@ items:
     recommendation: Opción 1. Default si no hay respuesta en 24h.
     owner: claude
     created_at: '2026-07-01T12:00:00-06:00'
-    status: open
+    status: resolved
+    resolution: >-
+      Default ejecutado 2026-07-02 (24h sin respuesta): se deroga public_score:false —
+      el score numérico se muestra en reporte/PDF; los cortes de banda se alinean al
+      YAML canónico (R-13). Se aplica en F2.
   - id: pablo-004
     topic: Pricing público único — landing por fases vs checkout per-seat (R-04)
     question: >-
@@ -234,7 +238,11 @@ items:
     recommendation: 'Per-seat. Sin default: esperamos tu respuesta.'
     owner: pablo
     created_at: '2026-07-01T12:00:00-06:00'
-    status: open
+    status: resolved
+    resolution: >-
+      Pablo decidió en persona (2026-07-02, plan de lanzamiento): per-seat $109-149/mes
+      gana; SPRINT_META se retira de la landing y billing.ts queda como fuente única.
+      Se implementa en F5.
   - id: pablo-005
     topic: ¿Usar el producto requiere suscripción activa? — seats sin gate (R-03)
     question: >-
@@ -254,7 +262,11 @@ items:
     recommendation: Opción 1. Default si no hay respuesta en 24h.
     owner: claude
     created_at: '2026-07-01T12:00:00-06:00'
-    status: open
+    status: resolved
+    resolution: >-
+      Default ejecutado 2026-07-02: gate de seats en invitaciones (miembros+pendientes
+      vs subscription.seats, excedente rechazado con copy de waitlist); nunca bloquear
+      sesiones en curso; banner si suscripción vencida. Se implementa en F5.
   - id: pablo-006
     topic: Proveedor del judge — contrato dice DeepSeek, el código usa Anthropic (R-18)
     question: >-
@@ -271,8 +283,12 @@ items:
     recommendation: >-
       Opción 1 con Anthropic primario (mejor calidad de evaluación; DeepSeek queda de
       fallback). Default si no hay respuesta en 24h.
-    owner: codex
+    owner: claude
     created_at: '2026-07-01T12:00:00-06:00'
-    status: open
+    status: resolved
+    resolution: >-
+      Default ejecutado 2026-07-02: env SIMULADOR_JUDGE_PROVIDER explícita con Anthropic
+      primario y DeepSeek fallback; ENGINE_CONTRACT se actualiza a la realidad elegida.
+      Se implementa en F2 antes de calibrar.
 ```
 <!-- pablo:data:end -->
