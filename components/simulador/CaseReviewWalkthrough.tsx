@@ -19,7 +19,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
-import { AppleIcon } from "@/components/simulador/apple";
+import { AppleBadge, AppleIcon } from "@/components/simulador/apple";
 import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
 import type { PlayableCase } from "@/lib/simulador/load-assembled-case";
 
@@ -108,10 +108,12 @@ export function CaseReviewWalkthrough({
     <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-5 sm:p-6">
       {/* barra de modo revisión */}
       <div className="flex items-center justify-between gap-3">
-        <span className="inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--accent-soft)] px-2 py-0.5 ts-caption-1 font-semibold text-[var(--accent)]">
-          <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-          Modo revisión
-        </span>
+        <AppleBadge tone="accent">
+          <span className="inline-flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
+            Modo revisión
+          </span>
+        </AppleBadge>
         <button
           type="button"
           onClick={() => setPlaying((p) => !p)}

@@ -14,15 +14,18 @@
  * el futuro, se puede router-split.
  */
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import {
-  Avatar,
-  Card,
-  CardBody,
-  Link,
-  Progress,
-} from "@heroui/react";
-import { AppleButton } from "@/components/simulador/apple";
+  AppleButton,
+  AppleButtonLink,
+  AppleCard,
+  AppleCardBody,
+  AppleEmptyState,
+  AppleErrorState,
+  AppleProgress,
+  AppleSkeleton,
+} from "@/components/simulador/apple";
 import { motion } from "framer-motion";
 import {
   DIMENSIONS,
@@ -224,8 +227,8 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
                     {...fadeUp}
                     transition={{ ...fadeUp.transition, delay: index * 0.04 }}
                   >
-                    <Card className="card-apple bg-[var(--surface)] shadow-none">
-                      <CardBody className="p-7 sm:p-8">
+                    <AppleCard>
+                      <AppleCardBody className="p-7 sm:p-8">
                         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
                           <div className="min-w-0">
                             <div className="eyebrow">
@@ -253,30 +256,27 @@ function EmployeeDashboard({ data }: { data: DashboardData }) {
 
                           <div className="flex flex-col sm:flex-row gap-2 md:flex-shrink-0">
                             {showReport && (
-                              <AppleButton
-                                as={Link}
+                              <AppleButtonLink
                                 href={`/report/${member.session_id}`}
-                                size="lg"
-                                variant="bordered"
-                                className="h-12 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] ts-body font-medium"
+                                tone="secondary"
+                                className="h-12"
                               >
                                 Ver reporte
-                              </AppleButton>
+                              </AppleButtonLink>
                             )}
-                            <AppleButton
-                              as={Link}
+                            <AppleButtonLink
                               href={`/case/${caseItem.slug}`}
-                              size="lg"
-                              className="accent-bg text-white h-12 px-7 ts-body font-medium shadow-none"
+                              tone="primary"
+                              className="h-12 px-7"
                             >
                               {currentStatus && hasStarted
                                 ? "Continuar caso"
                                 : "Empezar caso"}
-                            </AppleButton>
+                            </AppleButtonLink>
                           </div>
                         </div>
-                      </CardBody>
-                    </Card>
+                      </AppleCardBody>
+                    </AppleCard>
                   </motion.div>
                 );
               })}
@@ -296,36 +296,37 @@ export default function StaffDashboard({
   const [data, setData] = useState<DashboardData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        const res = await fetch("/api/dashboard", { cache: "no-store" });
-        if (!res.ok) {
-          const d = await res.json().catch(() => null);
-          throw new Error(d?.error ?? `Error ${res.status}`);
-        }
-        const d = (await res.json()) as DashboardData;
-        if (!cancelled) setData(d);
-      } catch (err) {
-        if (!cancelled)
-          setError(err instanceof Error ? err.message : "Error inesperado.");
+  const load = useCallback(async () => {
+    setError(null);
+    setData(null);
+    try {
+      const res = await fetch("/api/dashboard", { cache: "no-store" });
+      if (!res.ok) {
+        const d = await res.json().catch(() => null);
+        throw new Error(d?.error ?? `Error ${res.status}`);
       }
+      const d = (await res.json()) as DashboardData;
+      setData(d);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error inesperado.");
     }
-    load();
-    return () => {
-      cancelled = true;
-    };
   }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
 
   if (error) {
     return (
       <>
         
         <main className="surface-canvas min-h-screen grid place-items-center px-6">
-          <div className="max-w-md text-center">
-            <div className="eyebrow mb-3">Error al cargar dashboard</div>
-            <p className="ts-body text-[var(--text-secondary)]">{error}</p>
+          <div className="w-full max-w-md">
+            <AppleErrorState
+              title="No pudimos cargar el dashboard"
+              body={error}
+              onAction={load}
+            />
           </div>
         </main>
       </>
@@ -336,8 +337,42 @@ export default function StaffDashboard({
     return (
       <>
         
-        <main className="surface-canvas min-h-screen grid place-items-center px-6">
-          <div className="mx-auto h-9 w-9 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
+        <main className="surface-canvas min-h-screen pb-24">
+          <section className="max-w-6xl mx-auto px-6 py-12">
+            <AppleSkeleton className="h-10 w-72" />
+            <AppleSkeleton className="mt-4 h-4 w-96" />
+          </section>
+          <section className="max-w-6xl mx-auto px-6 mt-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              {Array.from({ length: 3 }, (_, i) => (
+                <div
+                  key={i}
+                  className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-8"
+                >
+                  <AppleSkeleton className="h-3 w-28" />
+                  <AppleSkeleton className="mt-4 h-9 w-24" />
+                  <AppleSkeleton className="mt-4 h-1 w-full" />
+                  <AppleSkeleton className="mt-4 h-3 w-40" />
+                </div>
+              ))}
+            </div>
+          </section>
+          <section className="max-w-6xl mx-auto px-6 mt-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {Array.from({ length: 4 }, (_, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-5 rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-5"
+                >
+                  <AppleSkeleton className="h-12 w-12 rounded-full" />
+                  <div className="flex-1">
+                    <AppleSkeleton className="h-4 w-40" />
+                    <AppleSkeleton className="mt-2 h-3 w-24" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         </main>
       </>
     );
@@ -349,25 +384,20 @@ export default function StaffDashboard({
       <>
         
         <main className="surface-canvas min-h-screen grid place-items-center px-6 py-20">
-          <motion.div {...fadeUp} className="max-w-md text-center">
-            <h1 className="display ts-title-1 text-[var(--text-primary)]">
-              Aún no hay sprint activo
-            </h1>
-            <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.55]">
-              {data.team
-                ? "Tu team existe pero no tiene un sprint creado. Pide a tu admin iniciar uno."
-                : "No estás asignado a ningún team todavía. Pide a tu admin que te invite."}
-            </p>
-            <div className="mt-8">
-              <AppleButton
-                as={Link}
-                href="/onboarding/org"
-                size="lg"
-                className="accent-bg text-white h-12 px-7 ts-body font-medium shadow-none"
-              >
-                Iniciar onboarding →
-              </AppleButton>
-            </div>
+          <motion.div {...fadeUp} className="w-full max-w-md">
+            <AppleEmptyState
+              title="Aún no hay sprint activo"
+              description={
+                data.team
+                  ? "Tu team existe pero no tiene un sprint creado. Pide a tu admin iniciar uno."
+                  : "No estás asignado a ningún team todavía. Pide a tu admin que te invite."
+              }
+              action={
+                <AppleButtonLink href="/onboarding/org" tone="primary">
+                  Iniciar onboarding →
+                </AppleButtonLink>
+              }
+            />
           </motion.div>
         </main>
       </>
@@ -445,73 +475,77 @@ export default function StaffDashboard({
         <>
         {/* KPI Hero Strip */}
         <section className="max-w-6xl mx-auto px-6 mt-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--hairline)] rounded-2xl overflow-hidden border border-[var(--hairline)]">
-            <motion.div {...fadeUp} className="bg-[var(--surface)] p-8">
-              <div className="eyebrow">Progreso del sprint</div>
-              <div className="display mt-4 ts-display-lg text-[var(--text-primary)] leading-none">
-                {completionPct}%
-              </div>
-              <Progress
-                aria-label="Progreso"
-                value={completionPct}
-                classNames={{
-                  track: "h-[3px] bg-[var(--surface-3)] mt-4",
-                  indicator: "accent-bg",
-                }}
-              />
-              <div className="mt-4 ts-subhead text-[var(--text-secondary)]">
-                <span className="text-[var(--text-primary)] font-medium">
-                  {agg.completed}
-                </span>{" "}
-                completados ·{" "}
-                <span className="text-[var(--text-primary)] font-medium">
-                  {agg.in_progress}
-                </span>{" "}
-                en curso
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <motion.div {...fadeUp}>
+              <AppleCard className="h-full">
+                <AppleCardBody className="p-8">
+                  <div className="eyebrow">Progreso del sprint</div>
+                  <div className="display mt-4 ts-display-lg text-[var(--text-primary)] leading-none">
+                    {completionPct}%
+                  </div>
+                  <AppleProgress
+                    aria-label="Progreso"
+                    value={completionPct}
+                    className="mt-4"
+                  />
+                  <div className="mt-4 ts-subhead text-[var(--text-secondary)]">
+                    <span className="text-[var(--text-primary)] font-medium">
+                      {agg.completed}
+                    </span>{" "}
+                    completados ·{" "}
+                    <span className="text-[var(--text-primary)] font-medium">
+                      {agg.in_progress}
+                    </span>{" "}
+                    en curso
+                  </div>
+                </AppleCardBody>
+              </AppleCard>
             </motion.div>
 
             <motion.div
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.05 }}
-              className="bg-[var(--surface)] p-8"
             >
-              <div className="eyebrow">Readiness promedio</div>
-              <div className="display mt-4 ts-display-lg text-[var(--text-primary)] leading-none">
-                {avgReadiness}
-                <span className="text-[var(--text-tertiary)] ts-title-1 ml-1">
-                  /100
-                </span>
-              </div>
-              <div className="mt-4 flex gap-1">
-                <div
-                  className="h-[3px] flex-1 rounded-full"
-                  style={{ backgroundColor: "var(--accent)" }}
-                />
-                <div className="h-[3px] flex-1 bg-[var(--surface-3)] rounded-full" />
-                <div className="h-[3px] flex-1 bg-[var(--surface-3)] rounded-full" />
-              </div>
-              <div className="mt-4 ts-subhead text-[var(--text-secondary)]">
-                {agg.completed === 0
-                  ? "Sin completados aún."
-                  : `${agg.readiness_by_band.A} en banda alta · ${agg.readiness_by_band.M} media · ${agg.readiness_by_band.B} baja.`}
-              </div>
+              <AppleCard className="h-full">
+                <AppleCardBody className="p-8">
+                  <div className="eyebrow">Readiness promedio</div>
+                  <div className="display mt-4 ts-display-lg text-[var(--text-primary)] leading-none">
+                    {avgReadiness}
+                    <span className="text-[var(--text-tertiary)] ts-title-1 ml-1">
+                      /100
+                    </span>
+                  </div>
+                  <AppleProgress
+                    aria-label="Readiness promedio"
+                    value={avgReadiness}
+                    className="mt-4"
+                  />
+                  <div className="mt-4 ts-subhead text-[var(--text-secondary)]">
+                    {agg.completed === 0
+                      ? "Sin completados aún."
+                      : `${agg.readiness_by_band.A} en banda alta · ${agg.readiness_by_band.M} media · ${agg.readiness_by_band.B} baja.`}
+                  </div>
+                </AppleCardBody>
+              </AppleCard>
             </motion.div>
 
             <motion.div
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.1 }}
-              className="bg-[var(--surface)] p-8"
             >
-              <div className="eyebrow">Eventos de riesgo</div>
-              <div className="display mt-4 ts-display-lg text-[var(--text-primary)] leading-none">
-                {agg.risk_events_total}
-              </div>
-              <div className="mt-5 ts-subhead text-[var(--text-secondary)]">
-                {agg.risk_events_total === 0
-                  ? "Sin riesgos detectados en sesiones completadas."
-                  : "Detectados en sesiones completadas."}
-              </div>
+              <AppleCard className="h-full">
+                <AppleCardBody className="p-8">
+                  <div className="eyebrow">Eventos de riesgo</div>
+                  <div className="display mt-4 ts-display-lg text-[var(--text-primary)] leading-none">
+                    {agg.risk_events_total}
+                  </div>
+                  <div className="mt-5 ts-subhead text-[var(--text-secondary)]">
+                    {agg.risk_events_total === 0
+                      ? "Sin riesgos detectados en sesiones completadas."
+                      : "Detectados en sesiones completadas."}
+                  </div>
+                </AppleCardBody>
+              </AppleCard>
             </motion.div>
           </div>
         </section>
@@ -547,13 +581,14 @@ export default function StaffDashboard({
                 const displayName =
                   m.full_name ?? m.email.split("@")[0];
                 const card = (
-                  <Card className="card-apple card-apple-interactive bg-[var(--surface)] shadow-none">
-                    <CardBody className="p-5 flex flex-row items-center gap-5">
-                      <Avatar
-                        size="lg"
-                        className="bg-[var(--surface-3)] text-[var(--text-primary)] ts-callout font-semibold flex-shrink-0"
-                        name={initials}
-                      />
+                  <AppleCard variant="interactive">
+                    <AppleCardBody className="p-5 flex flex-row items-center gap-5">
+                      <div
+                        aria-hidden
+                        className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[var(--surface-3)] text-[var(--text-primary)] ts-callout font-semibold"
+                      >
+                        {initials}
+                      </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <span className="ts-body font-semibold text-[var(--text-primary)] truncate">
@@ -606,8 +641,8 @@ export default function StaffDashboard({
                           )}
                         </div>
                       )}
-                    </CardBody>
-                  </Card>
+                    </AppleCardBody>
+                  </AppleCard>
                 );
                 return (
                   <motion.div
@@ -688,8 +723,9 @@ export default function StaffDashboard({
                       <AppleButton
                         as={Link}
                         href={`/report/${member.session_id}`}
+                        tone="primary"
                         size="sm"
-                        className="accent-bg text-white shrink-0 px-5 font-medium shadow-none"
+                        className="shrink-0 px-5"
                       >
                         Abrir reporte
                       </AppleButton>
@@ -849,8 +885,8 @@ export default function StaffDashboard({
                   {...fadeUp}
                   transition={{ ...fadeUp.transition, delay: i * 0.04 }}
                 >
-                  <Card className="card-apple bg-[var(--surface)] shadow-none">
-                    <CardBody className="p-5">
+                  <AppleCard>
+                    <AppleCardBody className="p-5">
                       <div className="eyebrow mb-3">
                         {agg.recommendation_counts?.[
                           a.id as keyof typeof agg.recommendation_counts
@@ -863,8 +899,8 @@ export default function StaffDashboard({
                       <p className="mt-1.5 ts-callout text-[var(--text-secondary)] leading-[1.55]">
                         {descCapped}
                       </p>
-                    </CardBody>
-                  </Card>
+                    </AppleCardBody>
+                  </AppleCard>
                 </motion.div>
               );
             })}

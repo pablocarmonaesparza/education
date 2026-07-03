@@ -1,6 +1,6 @@
 "use client";
 
-import { Link } from "@heroui/react";
+import Link from "next/link";
 import {
   AppleButton,
   AppleCard,
@@ -69,8 +69,9 @@ export default function LandingPage() {
             <AppleButton
               as={Link}
               href="/auth/signup?next=%2Fonboarding%2Forg"
+              tone="primary"
               size="lg"
-              className="accent-bg text-white px-7 h-12 ts-body font-medium shadow-none hover:opacity-90"
+              className="px-7 h-12"
             >
               Agendar diagnóstico para mi equipo
             </AppleButton>
@@ -88,7 +89,7 @@ export default function LandingPage() {
       {/* ============ STATS ============ */}
       <section className="surface-tinted section-pad-sm">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--hairline)] rounded-2xl overflow-hidden border border-[var(--hairline)]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[var(--hairline)] rounded-[var(--radius-lg)] overflow-hidden">
             {[
               { stat: "88%", label: "De empleados ya usan IA en su día a día.", source: "BCG · 2025" },
               { stat: "1/3", label: "Puede escalarla con criterio claro.", source: "BCG · 2025" },
@@ -265,13 +266,13 @@ export default function LandingPage() {
               por sprint.
             </h2>
             <p className="mt-5 ts-headline text-[var(--text-secondary)] max-w-xl mx-auto">
-              Fase 1 — diagnóstico operativo: $
+              Fase 1, diagnóstico operativo: $
               {SPRINT_META.pricing.fase_1_min_usd.toLocaleString("en-US")}–$
               {SPRINT_META.pricing.fase_1_max_usd.toLocaleString("en-US")} para
               cohortes de {SPRINT_META.pricing.minSeats}–
               {SPRINT_META.pricing.maxSeats} personas. USD vía Stripe.
               <br className="hidden sm:block" />
-              Fase 2 — práctica + re-diagnóstico: $
+              Fase 2, práctica + re-diagnóstico: $
               {SPRINT_META.pricing.fase_2_min_usd.toLocaleString("en-US")}–$
               {SPRINT_META.pricing.fase_2_max_usd.toLocaleString("en-US")}.
             </p>
@@ -285,8 +286,9 @@ export default function LandingPage() {
             <AppleButton
               as={Link}
               href="/auth/signup?next=%2Fonboarding%2Forg"
+              tone="primary"
               size="lg"
-              className="accent-bg text-white px-7 h-12 ts-body font-medium shadow-none hover:opacity-90"
+              className="px-7 h-12"
             >
               Agendar diagnóstico →
             </AppleButton>
@@ -362,8 +364,9 @@ export default function LandingPage() {
               <AppleButton
                 as={Link}
                 href="/auth/signup?next=%2Fonboarding%2Forg"
+                tone="primary"
                 size="lg"
-                className="accent-bg text-white px-7 h-12 ts-body font-medium shadow-none hover:opacity-90"
+                className="px-7 h-12"
               >
                 Agendar diagnóstico
               </AppleButton>
@@ -410,8 +413,8 @@ export default function LandingPage() {
                 Legal
               </p>
               <ul className="space-y-2 ts-callout text-[var(--text-secondary)]">
-                <li><a href="/privacy" className="hover:text-[var(--text-primary)]">Privacidad</a></li>
-                <li><a href="/terms" className="hover:text-[var(--text-primary)]">Términos</a></li>
+                <li><Link href="/privacy" className="hover:text-[var(--text-primary)]">Privacidad</Link></li>
+                <li><Link href="/terms" className="hover:text-[var(--text-primary)]">Términos</Link></li>
                 <li><a href="mailto:legal@itera.la" className="hover:text-[var(--text-primary)]">DPA enterprise</a></li>
               </ul>
             </div>
@@ -420,9 +423,9 @@ export default function LandingPage() {
                 Acceso
               </p>
               <ul className="space-y-2 ts-callout text-[var(--text-secondary)]">
-                <li><a href="/auth/login" className="hover:text-[var(--text-primary)]">Iniciar sesión</a></li>
-                <li><a href="/auth/signup" className="hover:text-[var(--text-primary)]">Crear cuenta</a></li>
-                <li><a href="/dashboard" className="hover:text-[var(--text-primary)]">Dashboard manager</a></li>
+                <li><Link href="/auth/login" className="hover:text-[var(--text-primary)]">Iniciar sesión</Link></li>
+                <li><Link href="/auth/signup" className="hover:text-[var(--text-primary)]">Crear cuenta</Link></li>
+                <li><Link href="/dashboard" className="hover:text-[var(--text-primary)]">Dashboard manager</Link></li>
               </ul>
             </div>
           </div>

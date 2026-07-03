@@ -304,34 +304,34 @@ export default function OnboardingInvitePage() {
             </form>
           ) : (
             <div className="mt-8 space-y-5">
-              <div className="rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="h-2 w-2 rounded-full bg-[var(--band-a-bar)]" />
-                  <h2 className="ts-headline font-semibold text-[var(--text-primary)]">
-                    {result.sent} invitación{result.sent === 1 ? "" : "es"}{" "}
-                    enviada{result.sent === 1 ? "" : "s"}
-                  </h2>
+              <div className="text-center">
+                <div className="mx-auto h-16 w-16 rounded-full bg-[var(--band-a-bg)] grid place-items-center">
+                  <AppleIcon name="check" size="lg" className="text-[var(--band-a-text)]" />
                 </div>
-                <p className="ts-callout text-[var(--text-secondary)] leading-[1.55]">
+                <h2 className="display display-tight mt-7 ts-title-1 text-[var(--text-primary)]">
+                  {result.sent} invitación{result.sent === 1 ? "" : "es"}{" "}
+                  enviada{result.sent === 1 ? "" : "s"}
+                </h2>
+                <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.55]">
                   Cada participante recibirá un email con su link único. El
                   diagnóstico aparecerá en tu dashboard cuando completen el
                   caso.
                 </p>
-                {result.skipped.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-[var(--hairline)]">
-                    <div className="eyebrow mb-2">No enviadas</div>
-                    <ul className="ts-subhead text-[var(--text-secondary)] space-y-1">
-                      {result.skipped.map((s, i) => (
-                        <li key={i}>
-                          · {s.email} — {s.reason}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
               </div>
+              {result.skipped.length > 0 && (
+                <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-4 text-left">
+                  <div className="eyebrow mb-2">No enviadas</div>
+                  <ul className="ts-subhead text-[var(--text-secondary)] space-y-1">
+                    {result.skipped.map((s, i) => (
+                      <li key={i}>
+                        · {s.email}: {s.reason}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center gap-3">
                 <AppleButton
                   onPress={() => {
                     setResult(null);
@@ -339,7 +339,7 @@ export default function OnboardingInvitePage() {
                   }}
                   tone="secondary"
                   size="lg"
-                  className="h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] ts-body font-medium shadow-none"
+                  className="h-12"
                 >
                   Invitar más
                 </AppleButton>

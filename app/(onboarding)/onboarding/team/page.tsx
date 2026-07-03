@@ -115,7 +115,6 @@ export default function OnboardingTeamPage() {
                 setDepartment(Array.from(keys)[0] as string)
               }
               size="md"
-              autoFocus
             >
               {DEPARTMENTS.map((d) => (
                 <SelectItem key={d.key}>{d.label}</SelectItem>

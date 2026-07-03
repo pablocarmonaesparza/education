@@ -21,6 +21,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
+import { AppleButton } from "@/components/simulador/apple/AppleButton";
+import { AppleProgress } from "@/components/simulador/apple/AppleProgress";
 import { isBlockComplete } from "@/lib/simulador/exercise-completion";
 import {
   emptyPayload,
@@ -183,9 +185,7 @@ export function RuntimeExperienceV2({
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col px-6 py-8 text-[var(--text-primary)]">
       {/* barra de progreso + estado de sesión */}
       <div className="mb-8">
-        <div className="h-1 w-full overflow-hidden rounded bg-[var(--surface-2)]">
-          <div className="h-full bg-[var(--accent)] transition-all" style={{ width: `${progress}%` }} />
-        </div>
+        <AppleProgress value={progress} aria-label="Progreso del caso" />
         <div className="mt-2 ts-caption-1 text-[var(--text-tertiary)]">
           {slide.sectionName} · pantalla {idx + 1} de {flat.length}
         </div>
@@ -219,21 +219,22 @@ export function RuntimeExperienceV2({
 
       {/* navegación (los bloques OWNS_CONTINUE traen su propio botón) */}
       <div className="mt-8 flex items-center justify-between border-t border-[var(--border)] pt-4">
-        <button
-          onClick={goPrev}
-          disabled={idx === 0}
-          className="ts-callout text-[var(--text-tertiary)] disabled:opacity-30"
+        <AppleButton
+          tone="ghost"
+          onPress={goPrev}
+          isDisabled={idx === 0}
         >
           Atrás
-        </button>
+        </AppleButton>
         {!ownsContinue && (
-          <button
-            onClick={goNext}
-            disabled={!blockComplete || completing}
-            className="rounded-lg bg-[var(--accent)] px-5 py-2 ts-callout font-medium text-white disabled:opacity-40"
+          <AppleButton
+            tone="primary"
+            onPress={goNext}
+            isDisabled={!blockComplete || completing}
+            isLoading={completing}
           >
             {isLast ? (completing ? "Cerrando…" : "Terminar") : "Continuar"}
-          </button>
+          </AppleButton>
         )}
       </div>
     </main>

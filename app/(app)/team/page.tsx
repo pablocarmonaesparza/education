@@ -152,7 +152,7 @@ function BandPill({ band }: { band: Band }) {
         : "bg-[var(--band-b-bg)] text-[var(--band-b-text)]";
   return (
     <span
-      className={`inline-flex items-center rounded-md px-2 py-0.5 ts-caption-1 font-semibold ${cls}`}
+      className={`inline-flex items-center rounded-[var(--radius-sm)] px-2 py-0.5 ts-caption-1 font-semibold ${cls}`}
     >
       Banda {BAND_LABEL[band]}
     </span>
@@ -219,12 +219,13 @@ export default function TeamHomePage() {
               </span>
             </p>
           </div>
-          <Link
+          <AppleButtonLink
             href="/casos"
-            className="hidden sm:inline-flex h-10 items-center justify-center rounded-[var(--radius-md)] accent-bg px-5 ts-subhead font-medium text-white hover:opacity-95 transition-opacity"
+            tone="primary"
+            className="hidden h-10 justify-center px-5 sm:inline-flex"
           >
             Ver catálogo
-          </Link>
+          </AppleButtonLink>
         </AppleReveal>
 
         <AppleDivider />

@@ -184,20 +184,21 @@
   box-shadow: 0 0 0 4px var(--accent-ring);
 }
 
-/* Card — themed surface w/ themed border */
+/* Card — superficie ELEVADA + sombra, SIN contorno (regla dura de Pablo: las
+   cards se agrupan por superficie y espacio, no por border; excepción única =
+   CaseCard, que lleva su borde inline). Usa --surface-2 (no --surface) para
+   contrastar contra el canvas: en dark el canvas es #000 y --surface-2 (#0a0a0c)
+   da la elevación que antes daba el border. La sombra refuerza. */
 .simulador-root .card-apple {
-  background-color: var(--surface);
-  border: 1px solid var(--border);
+  background-color: var(--surface-2);
   border-radius: var(--radius-lg);
   box-shadow: 0 1px 2px var(--shadow);
   transition:
     box-shadow 0.2s ease,
-    border-color 0.2s ease,
     transform 0.2s ease;
 }
 
 .simulador-root .card-apple:hover {
-  border-color: var(--border-strong);
   box-shadow: 0 4px 16px var(--shadow);
 }
 

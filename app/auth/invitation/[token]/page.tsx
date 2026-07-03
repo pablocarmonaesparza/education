@@ -110,8 +110,9 @@ export default function InvitationLandingPage() {
                   onPress={() =>
                     router.push(`/auth/signup?next=/auth/invitation/${token}`)
                   }
+                  tone="primary"
                   size="lg"
-                  className="w-full h-12 accent-bg text-white ts-body font-medium shadow-none"
+                  className="w-full h-12"
                 >
                   Crear cuenta
                 </AppleButton>
@@ -121,7 +122,7 @@ export default function InvitationLandingPage() {
                   }
                   tone="secondary"
                   size="lg"
-                  className="w-full h-12 border-[var(--border-strong)] bg-[var(--surface)] text-[var(--text-primary)] ts-body font-medium shadow-none"
+                  className="w-full h-12"
                 >
                   Ya tengo cuenta
                 </AppleButton>

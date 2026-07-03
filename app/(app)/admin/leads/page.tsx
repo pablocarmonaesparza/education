@@ -18,6 +18,7 @@ import {
   AppleTextarea,
   type AppleTabItem,
 } from "@/components/simulador/apple";
+import { ErrorBox, LeadStatusPill } from "../shared";
 
 type LeadStatus =
   | "new"
@@ -81,25 +82,6 @@ const STATUSES: Array<{ id: LeadStatus; label: string }> = [
   { id: "lost", label: "Perdido" },
   { id: "archived", label: "Archivado" },
 ];
-
-const STATUS_COPY: Record<LeadStatus, string> = {
-  new: "Nuevo",
-  qualified: "Calificado",
-  contacted: "Contactado",
-  converted: "Convertido",
-  lost: "Perdido",
-  archived: "Archivado",
-};
-
-function statusTone(status: LeadStatus) {
-  if (status === "converted")
-    return "bg-[var(--band-a-bg)] text-[var(--band-a-text)]";
-  if (status === "lost" || status === "archived")
-    return "bg-[var(--surface-2)] text-[var(--text-tertiary)]";
-  if (status === "contacted")
-    return "bg-[var(--band-m-bg)] text-[var(--band-m-text)]";
-  return "bg-[var(--accent-soft)] text-[var(--accent)]";
-}
 
 function formatDate(value: string | null | undefined) {
   if (!value) return "Sin fecha";
@@ -194,11 +176,7 @@ export default function AdminLeadsPage() {
             </p>
           </motion.div>
 
-          {error && (
-            <div className="mt-8 rounded-xl bg-[var(--band-b-bg)] p-4 ts-callout text-[var(--band-b-text)]">
-              {error}
-            </div>
-          )}
+          {error && <ErrorBox message={error} />}
 
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             <AppleKpiCard label="Inicios" value={String(funnel?.started ?? 0)} />
@@ -233,7 +211,7 @@ export default function AdminLeadsPage() {
           )}
 
           {data !== null && data.items.length === 0 && (
-            <div className="mt-12 rounded-2xl bg-[var(--surface)] p-8 ts-callout text-[var(--text-secondary)]">
+            <div className="mt-12 rounded-[var(--radius-2xl)] bg-[var(--surface)] p-8 ts-callout text-[var(--text-secondary)]">
               No hay leads en este estado.
             </div>
           )}
@@ -287,9 +265,7 @@ function LeadCard({
       <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className={`rounded-full px-2.5 py-1 ts-caption-1 font-semibold ${statusTone(lead.status)}`}>
-              {STATUS_COPY[lead.status]}
-            </span>
+            <LeadStatusPill status={lead.status} />
             <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-1 ts-caption-1 font-medium text-[var(--text-tertiary)]">
               {lead.source.replace(/_/g, " ")}
             </span>
@@ -358,7 +334,6 @@ function LeadCard({
           <AppleButton
             size="sm"
             isDisabled={isSaving}
-            className="accent-bg text-white"
             onPress={() => onPatch({ notes, assign_to_me: true })}
           >
             {isSaving ? "Guardando…" : "Guardar y tomar"}

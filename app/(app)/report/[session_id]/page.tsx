@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Avatar, Link } from "@heroui/react";
+import Link from "next/link";
 import { AppleButton, AppleBadge } from "@/components/simulador/apple";
 import { motion } from "framer-motion";
 import { SurfaceNav } from "@/components/simulador/SurfaceNav";
@@ -298,11 +298,6 @@ function ReportView({
               Diagnóstico operativo
             </h1>
             <div className="mt-6 flex flex-wrap items-center gap-3 ts-subhead text-[var(--text-secondary)]">
-              <Avatar
-                size="sm"
-                className="bg-[var(--surface-3)] text-[var(--text-primary)] ts-footnote font-semibold"
-                name=" "
-              />
               <span className="mono">
                 {sessionId.slice(0, 8).toUpperCase()}
               </span>
@@ -576,8 +571,9 @@ function ReportView({
                         <AppleButton
                           as={Link}
                           href={`/practica/${p.slug}`}
+                          tone="primary"
                           size="sm"
-                          className="accent-bg text-white shrink-0 px-5 font-medium shadow-none"
+                          className="shrink-0 px-5"
                         >
                           Empezar práctica
                         </AppleButton>
@@ -643,11 +639,11 @@ function ReportView({
             <AppleButton
               as={Link}
               href="/staff"
-              tone="primary"
+              tone="secondary"
               size="lg"
               className="h-12 px-7"
             >
-              Vista del manager →
+              Vista del manager
             </AppleButton>
             <AppleButton
               as={Link}

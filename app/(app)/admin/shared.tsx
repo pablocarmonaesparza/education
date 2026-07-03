@@ -7,7 +7,7 @@ import { AppleBadge } from "@/components/simulador/apple";
 
 export function ErrorBox({ message }: { message: string }) {
   return (
-    <div className="mt-8 rounded-xl bg-[var(--band-b-bg)] p-4 ts-callout text-[var(--band-b-text)]">
+    <div className="mt-8 rounded-[var(--radius-lg)] bg-[var(--band-b-bg)] p-4 ts-callout text-[var(--band-b-text)]">
       {message}
     </div>
   );
@@ -31,10 +31,10 @@ export function AdminMetric({
 }) {
   return (
     <div
-      className={`rounded-2xl border ${
+      className={`rounded-[var(--radius-2xl)] ${
         danger
-          ? "border-[var(--band-b-text)]/20 bg-[var(--band-b-bg)]"
-          : "border-[var(--hairline)] bg-[var(--surface)]"
+          ? "bg-[var(--band-b-bg)]"
+          : "bg-[var(--surface-2)]"
       } ${compact ? "p-3" : "p-4"}`}
     >
       <div className="eyebrow">{label}</div>
@@ -87,6 +87,39 @@ export function QualifyPill({
   return <AppleBadge tone="neutral">descartado</AppleBadge>;
 }
 
+/** Pill de estado de un lead comercial del field-test. */
+type LeadStatusValue =
+  | "new"
+  | "qualified"
+  | "contacted"
+  | "converted"
+  | "lost"
+  | "archived";
+
+const LEAD_STATUS_LABEL: Record<LeadStatusValue, string> = {
+  new: "Nuevo",
+  qualified: "Calificado",
+  contacted: "Contactado",
+  converted: "Convertido",
+  lost: "Perdido",
+  archived: "Archivado",
+};
+
+function leadStatusTone(status: LeadStatusValue): BadgeTone {
+  if (status === "converted") return "success";
+  if (status === "lost" || status === "archived") return "neutral";
+  if (status === "contacted") return "warning";
+  return "accent";
+}
+
+export function LeadStatusPill({ status }: { status: LeadStatusValue }) {
+  return (
+    <AppleBadge tone={leadStatusTone(status)}>
+      {LEAD_STATUS_LABEL[status]}
+    </AppleBadge>
+  );
+}
+
 // ----------------------------------------------------------------------------
 // Estados de carga / vacío del surface admin.
 // ----------------------------------------------------------------------------
@@ -104,7 +137,7 @@ export function AdminEmpty({
   hint?: ReactNode;
 }) {
   return (
-    <div className="mt-12 rounded-2xl border border-[var(--hairline)] bg-[var(--surface)] p-8 ts-callout text-[var(--text-secondary)]">
+    <div className="mt-12 rounded-[var(--radius-2xl)] bg-[var(--surface-2)] p-8 ts-callout text-[var(--text-secondary)]">
       <div className="font-medium text-[var(--text-primary)]">{label}</div>
       {hint ? <div className="mt-1">{hint}</div> : null}
     </div>

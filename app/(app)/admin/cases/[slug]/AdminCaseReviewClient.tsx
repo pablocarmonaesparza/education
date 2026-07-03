@@ -39,10 +39,10 @@ interface CaseMeta {
   variants_count: number;
 }
 
-const BAND_TONE: Record<Band, { bg: string; text: string }> = {
-  A: { bg: "var(--band-a-bg)", text: "var(--band-a-text)" },
-  M: { bg: "var(--band-m-bg)", text: "var(--band-m-text)" },
-  B: { bg: "var(--band-b-bg)", text: "var(--band-b-text)" },
+const BAND_TONE: Record<Band, { bg: string; text: string; bar: string }> = {
+  A: { bg: "var(--band-a-bg)", text: "var(--band-a-text)", bar: "var(--band-a-bar)" },
+  M: { bg: "var(--band-m-bg)", text: "var(--band-m-text)", bar: "var(--band-m-bar)" },
+  B: { bg: "var(--band-b-bg)", text: "var(--band-b-text)", bar: "var(--band-b-bar)" },
 };
 
 function Stat({ label, value }: { label: string; value: string | number }) {
@@ -169,7 +169,7 @@ export function AdminCaseReviewClient({
                             key={b}
                             style={{
                               width: `${(eff.band_distribution[b] / bandTotal) * 100}%`,
-                              backgroundColor: BAND_TONE[b].bg,
+                              backgroundColor: BAND_TONE[b].bar,
                             }}
                           />
                         ) : null,
@@ -184,7 +184,7 @@ export function AdminCaseReviewClient({
                         >
                           <span
                             className="h-2 w-2 rounded-full"
-                            style={{ backgroundColor: BAND_TONE[b].bg }}
+                            style={{ backgroundColor: BAND_TONE[b].bar }}
                           />
                           {BAND_LABEL[b]}: {eff.band_distribution[b]}
                         </span>

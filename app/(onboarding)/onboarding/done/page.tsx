@@ -104,7 +104,7 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
               {copy.next_steps.map((step, index) => (
                 <li
                   key={step}
-                  className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-4 py-3"
+                  className="flex items-start gap-3 rounded-[var(--radius-md)] bg-[var(--surface-2)] px-4 py-3"
                 >
                   <span className="mt-0.5 inline-flex h-6 w-6 flex-none items-center justify-center rounded-full bg-[var(--accent-soft)] ts-footnote font-semibold text-[var(--accent)]">
                     {index + 1}

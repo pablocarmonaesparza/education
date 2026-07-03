@@ -17,6 +17,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { AppleBadge, AppleButton, AppleTextarea } from "@/components/simulador/apple";
+import { ErrorBox } from "../shared";
 
 interface DimensionScore {
   id: string;
@@ -148,11 +149,7 @@ export default function AdminReviewPage() {
             </p>
           </motion.div>
 
-          {error && (
-            <div className="mt-8 p-4 rounded-xl bg-[var(--band-b-bg)] text-[var(--band-b-text)] ts-callout">
-              ⚠ {error}
-            </div>
-          )}
+          {error && <ErrorBox message={error} />}
 
           {items === null && !error && (
             <div className="mt-12 ts-callout text-[var(--text-secondary)]">
@@ -244,7 +241,7 @@ function QueueCard({
       </div>
 
       <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="rounded-xl bg-[var(--surface-2)] p-4">
+        <div className="rounded-[var(--radius-xl)] bg-[var(--surface-2)] p-4">
           <div className="eyebrow">política</div>
           <div className="mt-1 ts-callout font-semibold text-[var(--text-primary)]">
             {item.review_policy === "double_high_risk"
@@ -252,13 +249,13 @@ function QueueCard({
               : "firma simple"}
           </div>
         </div>
-        <div className="rounded-xl bg-[var(--surface-2)] p-4">
+        <div className="rounded-[var(--radius-xl)] bg-[var(--surface-2)] p-4">
           <div className="eyebrow">firmas</div>
           <div className="mt-1 ts-callout font-semibold text-[var(--text-primary)] mono">
             {item.completed_review_count}/{item.required_review_count}
           </div>
         </div>
-        <div className="rounded-xl bg-[var(--surface-2)] p-4">
+        <div className="rounded-[var(--radius-xl)] bg-[var(--surface-2)] p-4">
           <div className="eyebrow">vencimiento</div>
           <div className="mt-1 ts-callout font-semibold text-[var(--text-primary)]">
             {item.due_at ? new Date(item.due_at).toLocaleString("es-MX") : "sin SLA"}
@@ -267,7 +264,7 @@ function QueueCard({
       </div>
 
       {item.review_decisions.length > 0 && (
-        <div className="mt-5 rounded-xl bg-[var(--surface-2)] p-4">
+        <div className="mt-5 rounded-[var(--radius-xl)] bg-[var(--surface-2)] p-4">
           <div className="eyebrow">firmas registradas</div>
           <div className="mt-3 space-y-2">
             {item.review_decisions.map((decision, index) => (
@@ -296,7 +293,7 @@ function QueueCard({
         {dims.map((d) => (
           <div
             key={d.id}
-            className={`rounded-lg p-3 text-center ${bandSurfaceClass(d.band)}`}
+            className={`rounded-[var(--radius-lg)] p-3 text-center ${bandSurfaceClass(d.band)}`}
           >
             <div className="ts-caption-1 font-medium opacity-80">{d.id}</div>
             <div className="mt-1 ts-body-lg font-semibold mono">{d.band}</div>
@@ -314,7 +311,7 @@ function QueueCard({
           {highRisks.map((r, i) => (
             <div
               key={i}
-              className="p-4 rounded-xl bg-[var(--band-b-bg)] border border-[var(--band-b-text)]/20"
+              className="p-4 rounded-[var(--radius-xl)] bg-[var(--band-b-bg)]"
             >
               <div className="flex items-center gap-2 ts-footnote">
                 <span className="font-mono">step {r.step_ordinal}</span>
@@ -335,18 +332,15 @@ function QueueCard({
         <div className="eyebrow">Override recomendación</div>
         <div className="mt-3 flex flex-wrap gap-2">
           {RECOMMENDATIONS.map((rec) => (
-            <button
+            <AppleButton
               key={rec}
-              type="button"
-              onClick={() => setOverrideRec(rec)}
-              className={`px-3 py-1.5 rounded-full ts-subhead font-medium capitalize transition-colors ${
-                overrideRec === rec
-                  ? "accent-bg text-white"
-                  : "bg-[var(--surface-2)] text-[var(--text-primary)] hover:bg-[var(--surface-3)]"
-              }`}
+              size="sm"
+              tone={overrideRec === rec ? "primary" : "secondary"}
+              onPress={() => setOverrideRec(rec)}
+              className="capitalize"
             >
               {rec}
-            </button>
+            </AppleButton>
           ))}
         </div>
         <AppleTextarea
@@ -368,7 +362,6 @@ function QueueCard({
             }
             isDisabled={isResolving || hasCurrentStaffSigned}
             size="md"
-            className="accent-bg text-white h-10 px-5 ts-callout font-medium"
           >
             {hasCurrentStaffSigned
               ? "Esperando otro revisor"
@@ -385,7 +378,6 @@ function QueueCard({
             isDisabled={isResolving || hasCurrentStaffSigned}
             size="md"
             tone="secondary"
-            className="h-10 px-5 ts-callout font-medium"
           >
             Escalar sin publicar
           </AppleButton>

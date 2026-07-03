@@ -16,34 +16,34 @@
  * organization_memberships + team_memberships del user logueado.
  */
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { SelectItem } from "@heroui/react";
 import {
   AppleButton,
   AppleDivider,
+  AppleErrorState,
   AppleInput,
   AppleReveal,
   AppleSelect,
+  AppleSkeleton,
   AppleSwitch,
 } from "@/components/simulador/apple";
 
 // ============================================================================
-// MOCK USER DATA
+// Perfil real — GET/PATCH /api/me/profile (F4, el mock murió)
 // ============================================================================
 
-const INITIAL = {
-  fullName: "Ana López",
-  initials: "AL",
-  jobTitle: "Growth Manager",
-  email: "ana.lopez@acme.com",
-  locale: "es-MX",
-  notificationsEnabled: true,
-  org: {
-    name: "Acme LATAM",
-    teamName: "Growth",
-    memberSince: "2026-04-12",
-  },
-};
+interface Profile {
+  full_name: string;
+  email: string;
+  initials: string;
+  job_title: string;
+  locale: string;
+  notifications_enabled: boolean;
+  org_name: string | null;
+  team_name: string | null;
+  member_since: string;
+}
 
 const LOCALE_OPTIONS = [
   { value: "es-MX", label: "Español (México)" },
@@ -93,17 +93,86 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
 // ============================================================================
 
 export default function PerfilPage() {
-  const [fullName, setFullName] = useState(INITIAL.fullName);
-  const [jobTitle, setJobTitle] = useState(INITIAL.jobTitle);
-  const [locale, setLocale] = useState(INITIAL.locale);
-  const [notifications, setNotifications] = useState(
-    INITIAL.notificationsEnabled,
-  );
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  const memberSinceDate = new Date(INITIAL.org.memberSince).toLocaleDateString(
-    "es-ES",
-    { month: "long", year: "numeric" },
-  );
+  // Campos editables (espejo local para input responsivo + autosave).
+  const [fullName, setFullName] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [locale, setLocale] = useState("es-419");
+  const [notifications, setNotifications] = useState(true);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setLoadError(null);
+    try {
+      const res = await fetch("/api/me/profile");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error ?? `Error ${res.status}`);
+      const p = data.profile as Profile;
+      setProfile(p);
+      setFullName(p.full_name);
+      setJobTitle(p.job_title);
+      setLocale(p.locale);
+      setNotifications(p.notifications_enabled);
+    } catch (e) {
+      setLoadError(e instanceof Error ? e.message : "Error inesperado.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  // Autosave debounced (patrón /empresa): cada cambio agenda un PATCH.
+  const scheduleSave = useCallback((patch: Record<string, unknown>) => {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      void fetch("/api/me/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(patch),
+      });
+    }, 600);
+  }, []);
+
+  const memberSinceDate = profile
+    ? new Date(profile.member_since).toLocaleDateString("es-MX", {
+        month: "long",
+        year: "numeric",
+      })
+    : "";
+
+  if (loading) {
+    return (
+      <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-6 sm:px-10 sm:py-8">
+        <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-4">
+          <AppleSkeleton className="h-10 w-40" />
+          <AppleSkeleton className="h-24 w-full" />
+          <AppleSkeleton className="h-64 w-full" />
+        </div>
+      </main>
+    );
+  }
+
+  if (loadError || !profile) {
+    return (
+      <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-6 sm:px-10 sm:py-8">
+        <div className="mx-auto w-full max-w-[1100px]">
+          <AppleErrorState
+            title="No pudimos cargar tu perfil"
+            body={loadError ?? "Intenta de nuevo."}
+            actionLabel="Reintentar"
+            onAction={load}
+          />
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-6 sm:px-10 sm:py-8">
@@ -127,7 +196,7 @@ export default function PerfilPage() {
               className="flex h-full w-full items-center justify-center rounded-full bg-[var(--surface-2)] ts-title-2 font-semibold text-[var(--text-primary)] tabular-nums ring-2 ring-[var(--accent)]"
               aria-hidden
             >
-              {INITIAL.initials}
+              {profile.initials}
             </div>
             <button
               type="button"
@@ -155,11 +224,16 @@ export default function PerfilPage() {
               {fullName}
             </h2>
             <p className="mt-0.5 ts-subhead text-[var(--text-secondary)]">
-              {jobTitle} · {INITIAL.email}
+              {[jobTitle, profile.email].filter(Boolean).join(" · ")}
             </p>
             <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
-              {INITIAL.org.name} · Equipo {INITIAL.org.teamName} · desde{" "}
-              {memberSinceDate}
+              {[
+                profile.org_name,
+                profile.team_name ? `Equipo ${profile.team_name}` : null,
+                memberSinceDate ? `desde ${memberSinceDate}` : null,
+              ]
+                .filter(Boolean)
+                .join(" · ")}
             </p>
           </div>
           </Card>
@@ -180,7 +254,10 @@ export default function PerfilPage() {
                 <FieldLabel>Nombre completo</FieldLabel>
                 <AppleInput
                   value={fullName}
-                  onValueChange={setFullName}
+                  onValueChange={(v) => {
+                    setFullName(v);
+                    scheduleSave({ full_name: v });
+                  }}
                   size="md"
                 />
               </div>
@@ -189,7 +266,10 @@ export default function PerfilPage() {
                 <FieldLabel>Puesto</FieldLabel>
                 <AppleInput
                   value={jobTitle}
-                  onValueChange={setJobTitle}
+                  onValueChange={(v) => {
+                    setJobTitle(v);
+                    scheduleSave({ job_title: v });
+                  }}
                   size="md"
                 />
               </div>
@@ -202,7 +282,10 @@ export default function PerfilPage() {
                     selectedKeys={[locale]}
                     onSelectionChange={(keys) => {
                       const next = Array.from(keys)[0] as string | undefined;
-                      if (next) setLocale(next);
+                      if (next) {
+                        setLocale(next);
+                        scheduleSave({ locale: next });
+                      }
                     }}
                     size="md"
                   >
@@ -220,7 +303,10 @@ export default function PerfilPage() {
                     </span>
                     <AppleSwitch
                       isSelected={notifications}
-                      onValueChange={setNotifications}
+                      onValueChange={(v) => {
+                        setNotifications(v);
+                        scheduleSave({ notifications_enabled: v });
+                      }}
                       aria-label="Notificaciones por email"
                     />
                   </div>

@@ -21,10 +21,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { SelectItem } from "@heroui/react";
 import {
+  AppleBadge,
   AppleButton,
+  AppleErrorState,
   AppleIcon,
   AppleInput,
   AppleSelect,
+  AppleSkeleton,
 } from "@/components/simulador/apple";
 import { CancelSubscriptionFlow } from "./CancelSubscriptionFlow";
 
@@ -121,24 +124,23 @@ export default function EmpresaPage() {
   const nameTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    let active = true;
-    (async () => {
-      try {
-        const res = await fetch("/api/orgs/current/settings");
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? "No pudimos cargar la empresa.");
-        if (!active) return;
-        setSettings(data as Settings);
-        setWebsiteDraft((data as Settings).organization.company_profile.website_url ?? "");
-      } catch (err) {
-        if (active) setLoadError(err instanceof Error ? err.message : "Error inesperado.");
-      }
-    })();
-    return () => {
-      active = false;
-    };
+  const reload = useCallback(async () => {
+    setLoadError(null);
+    setSettings(null);
+    try {
+      const res = await fetch("/api/orgs/current/settings");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "No pudimos cargar la empresa.");
+      setSettings(data as Settings);
+      setWebsiteDraft((data as Settings).organization.company_profile.website_url ?? "");
+    } catch (err) {
+      setLoadError(err instanceof Error ? err.message : "Error inesperado.");
+    }
   }, []);
+
+  useEffect(() => {
+    reload();
+  }, [reload]);
 
   const patch = useCallback(async (body: Record<string, unknown>) => {
     setSaveState("saving");
@@ -241,11 +243,13 @@ export default function EmpresaPage() {
   if (loadError) {
     return (
       <main className="surface-canvas min-h-[calc(100vh-3.5rem)] grid place-items-center px-6">
-        <div className="max-w-[420px] text-center">
-          <h1 className="display display-tight ts-title-2 text-[var(--text-primary)]">
-            No pudimos cargar la empresa
-          </h1>
-          <p className="mt-2 ts-subhead text-[var(--text-secondary)]">{loadError}</p>
+        <div className="w-full max-w-[420px]">
+          <AppleErrorState
+            title="No pudimos cargar la empresa"
+            body={loadError}
+            actionLabel="Reintentar"
+            onAction={reload}
+          />
         </div>
       </main>
     );
@@ -254,10 +258,10 @@ export default function EmpresaPage() {
   if (!settings) {
     return (
       <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-8 sm:px-10">
-        <div className="mx-auto w-full max-w-[760px] animate-pulse space-y-4">
-          <div className="h-9 w-40 rounded-[var(--radius-md)] bg-[var(--surface-2)]" />
-          <div className="h-32 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
-          <div className="h-40 rounded-[var(--radius-lg)] bg-[var(--surface-2)]" />
+        <div className="mx-auto w-full max-w-[760px] space-y-4">
+          <AppleSkeleton className="h-9 w-40" />
+          <AppleSkeleton className="h-32 w-full rounded-[var(--radius-lg)]" />
+          <AppleSkeleton className="h-40 w-full rounded-[var(--radius-lg)]" />
         </div>
       </main>
     );
@@ -504,9 +508,7 @@ export default function EmpresaPage() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <div className="flex items-baseline gap-2">
-                  <span className="inline-flex items-center rounded-md bg-[var(--accent-soft)] px-2 py-0.5 ts-footnote font-semibold text-[var(--accent)]">
-                    {sub.tier ?? "Plan"}
-                  </span>
+                  <AppleBadge tone="accent">{sub.tier ?? "Plan"}</AppleBadge>
                   {typeof sub.seats === "number" && (
                     <span className="ts-caption-1 text-[var(--text-tertiary)]">
                       {sub.seats} personas
