@@ -20,6 +20,12 @@
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { useEffect, useMemo, useState } from "react";
+import {
+  ONBOARDING_ORG_ID_KEY,
+  ONBOARDING_ORG_NAME_KEY,
+  ONBOARDING_TEAM_ID_KEY,
+  ONBOARDING_TEAM_NAME_KEY,
+} from "@/lib/simulador/onboarding-progress";
 import "../(app)/simulador.css";
 
 const SURFACES: { group: string; routes: { path: string; label: string; note?: string }[] }[] = [
@@ -42,9 +48,9 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
       { path: "/onboarding/org", label: "1. Organización" },
       { path: "/onboarding/team", label: "2. Equipo" },
       { path: "/onboarding/invite", label: "3. Invitar" },
-      { path: "/onboarding/billing", label: "4. Plan + pago" },
-      { path: "/onboarding/done", label: "5. Listo (pago confirmado)", note: "sin session_id muestra el estado de pago no procesado" },
-      { path: "/onboarding/context", label: "6. Contexto (brief → motor)", note: "post-pago · genera casos a la medida" },
+      { path: "/onboarding/context", label: "4. Perfil de empresa", note: "pre-pago · orienta ejercicios y objetivos" },
+      { path: "/onboarding/billing", label: "5. Plan + pago" },
+      { path: "/onboarding/done", label: "6. Listo (pago confirmado)", note: "sin session_id muestra el estado de pago no procesado" },
     ],
   },
   {
@@ -54,6 +60,8 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
       { path: "/staff/equipo", label: "Equipo (miembros + matriz)" },
       { path: "/staff/reportes", label: "Reportes agregados del team" },
       { path: "/staff/casos", label: "Casos del team (catálogo)" },
+      { path: "/staff/matriz", label: "Matriz dimensión × banda del equipo" },
+      { path: "/staff/recomendaciones", label: "Recomendaciones por persona" },
       { path: "/empresa", label: "Empresa (settings org)" },
     ],
   },
@@ -70,8 +78,8 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
     group: "motor de casos · runtime",
     routes: [
       { path: "/case-demo", label: "Demo jugable del caso (sin login)", note: "salida del motor · hoy: vértiz, 25 ejercicios" },
-      { path: "/jugar/vertiz_backlog_entregas", label: "Runtime productivo config-driven (RuntimeExperienceV2)", note: "bypass · juega cualquier caso generado" },
-      { path: "/case/marketing_urgent_campaign_pii", label: "Runtime hardcoded (solo Camila, modelo viejo de 5 pasos)", note: "legacy · no lee config_json" },
+      { path: "/case/vertiz_backlog_entregas", label: "Runtime productivo (RuntimeExperienceV2)", note: "bypass · único motor del simulador, juega cualquier caso generado" },
+      { path: "/case/no-existe-este-caso", label: "Caso inexistente", note: "404 diseñado (app/not-found.tsx) · no fallback roto" },
       { path: "/dashboard", label: "Dashboard router → /staff" },
       { path: "/report/demo-session-id", label: "Reporte (session demo)", note: "404 si session no existe" },
     ],
@@ -79,10 +87,13 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
   {
     group: "interno — Itera staff",
     routes: [
-      { path: "/admin", label: "Admin index" },
+      { path: "/admin", label: "Admin index", note: "pulso + submenu" },
       { path: "/admin/review", label: "Review queue" },
       { path: "/admin/leads", label: "Leads" },
-      { path: "/admin/orgs", label: "Orgs" },
+      { path: "/admin/orgs", label: "Orgs (clientes)" },
+      { path: "/admin/captacion", label: "Captación", note: "prospectos DuckDB + score IA" },
+      { path: "/admin/cases", label: "Casos", note: "bespoke + biblioteca global" },
+      { path: "/admin/lecciones", label: "Lecciones", note: "practice beats + completion" },
       { path: "/admin/judge-health", label: "Judge health" },
       { path: "/admin/audit-log", label: "Audit log" },
     ],
@@ -92,12 +103,14 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
     routes: [
       { path: "/exercise-lab", label: "Exercise lab — 11 bloques canónicos", note: "público · catálogo de interacciones" },
       { path: "/case-template", label: "Case template — plantilla vacía de un caso", note: "público · estructura fijo+variable" },
+      { path: "/aprender-demo", label: "Aprender demo — motor educativo (segundo motor)", note: "dev-only · no indexa" },
     ],
   },
   {
     group: "system",
     routes: [
       { path: "/design", label: "Design system (editor de tokens en vivo)", note: "single source of truth" },
+      { path: "/design/components", label: "Catálogo de componentes Apple", note: "todas las variantes/estados" },
       { path: "/not-found-test-page", label: "404 (404 intencional)" },
       { path: "/maintenance", label: "Maintenance" },
     ],
@@ -106,38 +119,74 @@ const SURFACES: { group: string; routes: { path: string; label: string; note?: s
 
 const REVIEWED_KEY = "itera_dev_reviewed_routes";
 
+// En production el bypass es opt-in con cookie `=1` (ver lib/dev/devBypass).
+// Esta flag NEXT_PUBLIC es visible en cliente y está ON solo si el proyecto la
+// habilitó en Vercel (NEXT_PUBLIC_DEV_BYPASS_ENABLED=1). Cuando lo está, /dev
+// arma la cookie automáticamente al entrar, para que el tour de /admin/* y
+// demás rutas protegidas funcione igual que en localhost — sin el dance manual
+// de Desactivar→Activar.
+const PROD_REVIEW_ENABLED =
+  process.env.NEXT_PUBLIC_DEV_BYPASS_ENABLED === "1";
+
 function readCookie(name: string): string | null {
   if (typeof document === "undefined") return null;
   const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
   return match ? match[2] : null;
 }
 
-// Estado de flujo placeholder: con el bypass activo, sembramos sessionStorage
-// para que los pasos de onboarding (team/invite/billing/context) no reboten a
-// /onboarding/org por falta de flow-state. Las APIs fallan con estos IDs, pero
-// la UI se renderiza completa para QA visual.
-const ONBOARDING_PREVIEW: Record<string, string> = {
-  onboarding_org_id: "dev-preview-org",
-  onboarding_org_name: "Organización de prueba",
-  onboarding_team_id: "dev-preview-team",
-  onboarding_team_name: "Marketing",
+// Todos los keys de flow-state del onboarding que el preview puede tocar.
+const ONBOARDING_FLOW_KEYS = [
+  ONBOARDING_ORG_ID_KEY,
+  ONBOARDING_ORG_NAME_KEY,
+  ONBOARDING_TEAM_ID_KEY,
+  ONBOARDING_TEAM_NAME_KEY,
+  "onboarding_invite_completed",
+  "onboarding_context_completed",
+  "onboarding_unlocked_step",
+  "onboarding_company_profile",
+];
+
+const ORG_SEED: Record<string, string> = {
+  [ONBOARDING_ORG_ID_KEY]: "dev-preview-org",
+  [ONBOARDING_ORG_NAME_KEY]: "Organización de prueba",
+};
+const TEAM_SEED: Record<string, string> = {
+  [ONBOARDING_TEAM_ID_KEY]: "dev-preview-team",
+  [ONBOARDING_TEAM_NAME_KEY]: "Marketing",
+};
+const CONTEXT_SEED: Record<string, string> = {
+  onboarding_context_completed: "true",
 };
 
-function seedOnboardingPreview() {
+// Flow-state que se siembra al SALTAR a cada paso desde /dev. Cada paso siembra
+// SOLO los pasos previos como completados, nunca el actual — así el gate de
+// avance (chevron "siguiente" de OnboardingNav, que deriva de
+// getOnboardingUnlockedStep) se respeta en QA igual que en producción: no
+// avanzas hasta contestar el paso, y al regresar a un paso ya completado el
+// avance se reactiva. Las APIs fallan con estos IDs, pero la UI se renderiza
+// completa para revisar la pantalla sin rebotar a /onboarding/org.
+const ONBOARDING_FLOW_STATE: Record<string, Record<string, string>> = {
+  "/onboarding/org": {},
+  "/onboarding/team": { ...ORG_SEED },
+  "/onboarding/invite": { ...ORG_SEED, ...TEAM_SEED },
+  "/onboarding/context": { ...ORG_SEED, ...TEAM_SEED },
+  "/onboarding/billing": { ...ORG_SEED, ...TEAM_SEED, ...CONTEXT_SEED },
+  "/onboarding/done": { ...ORG_SEED, ...TEAM_SEED, ...CONTEXT_SEED },
+};
+
+function seedOnboardingForPath(path: string) {
   if (typeof sessionStorage === "undefined") return;
-  for (const [k, v] of Object.entries(ONBOARDING_PREVIEW)) {
-    if (!sessionStorage.getItem(k)) sessionStorage.setItem(k, v);
-  }
+  const state = ONBOARDING_FLOW_STATE[path];
+  if (!state) return; // no es un paso de onboarding — no tocar nada
+  // Parte del prefijo exacto de este paso: limpia el flow-state previo
+  // (incluido cualquier unlocked_step heredado) y siembra solo lo anterior.
+  for (const k of ONBOARDING_FLOW_KEYS) sessionStorage.removeItem(k);
+  for (const [k, v] of Object.entries(state)) sessionStorage.setItem(k, v);
 }
 
 function clearOnboardingPreview() {
   if (typeof sessionStorage === "undefined") return;
-  for (const k of Object.keys(ONBOARDING_PREVIEW)) {
-    // Solo limpia el placeholder, no un flujo real en curso.
-    if (sessionStorage.getItem(k) === ONBOARDING_PREVIEW[k]) {
-      sessionStorage.removeItem(k);
-    }
-  }
+  for (const k of ONBOARDING_FLOW_KEYS) sessionStorage.removeItem(k);
 }
 
 function readReviewed(): Set<string> {
@@ -165,9 +214,15 @@ export default function DevMenuPage() {
 
   useEffect(() => {
     setMounted(true);
-    const active = readCookie("itera_dev_bypass") === "1";
-    setBypassActive(active);
-    if (active) seedOnboardingPreview();
+    let cookie = readCookie("itera_dev_bypass");
+    // Production con review habilitado: si no hay cookie, la armamos a "1" para
+    // que el bypass quede activo de una (igual que el default-on de localhost).
+    // Si ya hay cookie (el usuario optó por 0 o 1), la respetamos.
+    if (PROD_REVIEW_ENABLED && cookie === null) {
+      document.cookie = `itera_dev_bypass=1; path=/; max-age=${7 * 24 * 60 * 60}`;
+      cookie = "1";
+    }
+    setBypassActive(cookie !== "0");
     setReviewed(readReviewed());
   }, []);
 
@@ -180,9 +235,13 @@ export default function DevMenuPage() {
     const newValue = !bypassActive;
     if (newValue) {
       document.cookie = `itera_dev_bypass=1; path=/; max-age=${7 * 24 * 60 * 60}`;
-      seedOnboardingPreview();
+      // El flow-state se siembra por-paso al hacer click en su link (abajo),
+      // no global — así el gate de avance del onboarding se respeta en QA.
     } else {
-      document.cookie = "itera_dev_bypass=; path=/; max-age=0";
+      // Opt-out como cookie de SESIÓN (sin max-age): se borra al cerrar el
+      // browser, así un "Desactivar" accidental no te atrapa en login durante
+      // días — al reabrir vuelve el default-on de dev.
+      document.cookie = "itera_dev_bypass=0; path=/";
       clearOnboardingPreview();
     }
     setBypassActive(newValue);
@@ -208,11 +267,11 @@ export default function DevMenuPage() {
   return (
     <main className="simulador-root min-h-screen surface-canvas px-6 py-12">
       <div className="mx-auto max-w-3xl">
-        <h1 className="display display-tight text-[var(--text-primary)] text-[32px]">
+        <h1 className="display display-tight text-[var(--text-primary)] ts-display">
           Acceso a todas las pantallas
         </h1>
 
-        <div className="mt-6 flex items-center gap-3 text-[13px] text-[var(--text-secondary)]">
+        <div className="mt-6 flex items-center gap-3 ts-subhead text-[var(--text-secondary)]">
           <span>
             <span className="font-semibold text-[var(--text-primary)]">{reviewed.size}</span>
             <span> / {totalRoutes} revisadas</span>
@@ -223,7 +282,7 @@ export default function DevMenuPage() {
               <button
                 type="button"
                 onClick={resetReviewed}
-                className="text-[13px] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors underline underline-offset-2"
+                className="ts-subhead text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-colors underline underline-offset-2"
               >
                 Reset
               </button>
@@ -233,10 +292,10 @@ export default function DevMenuPage() {
 
         <div className="mt-8 flex items-center gap-4 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface-2)] p-5">
           <div className="flex-1">
-            <div className="text-[14px] font-semibold text-[var(--text-primary)]">
+            <div className="ts-callout font-semibold text-[var(--text-primary)]">
               Auth bypass {bypassActive ? "activo" : "inactivo"}
             </div>
-            <p className="mt-1 text-[13px] text-[var(--text-secondary)]">
+            <p className="mt-1 ts-subhead text-[var(--text-secondary)]">
               {bypassActive
                 ? "Puedes navegar a /dashboard, /case/*, /report/*, /onboarding/*, /admin/* sin login."
                 : "Las rutas protegidas redirigen a /auth/login. Activa el bypass para revisar libre."}
@@ -245,7 +304,7 @@ export default function DevMenuPage() {
           <button
             type="button"
             onClick={toggleBypass}
-            className={`rounded-[var(--radius-md)] px-5 py-2 text-[14px] font-medium transition-colors ${
+            className={`rounded-[var(--radius-md)] px-5 py-2 ts-callout font-medium transition-colors ${
               bypassActive
                 ? "bg-[var(--band-b-bar)] text-white hover:opacity-95"
                 : "accent-bg text-white hover:opacity-95"
@@ -257,10 +316,10 @@ export default function DevMenuPage() {
 
         <div className="mt-4 flex items-center gap-4 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface-2)] p-5">
           <div className="flex-1">
-            <div className="text-[14px] font-semibold text-[var(--text-primary)]">
+            <div className="ts-callout font-semibold text-[var(--text-primary)]">
               Theme · {theme === "system" ? `system (${resolvedTheme})` : theme}
             </div>
-            <p className="mt-1 text-[13px] text-[var(--text-secondary)]">
+            <p className="mt-1 ts-subhead text-[var(--text-secondary)]">
               Por default sigue `prefers-color-scheme` de tu sistema operativo.
               Aquí puedes forzar manualmente para QA visual.
             </p>
@@ -279,7 +338,7 @@ export default function DevMenuPage() {
                   role="radio"
                   aria-checked={isActive}
                   onClick={() => setTheme(t)}
-                  className={`rounded-[calc(var(--radius-md)-4px)] px-3 py-1.5 text-[13px] font-medium transition-colors capitalize ${
+                  className={`rounded-[calc(var(--radius-md)-4px)] px-3 py-1.5 ts-subhead font-medium transition-colors capitalize ${
                     isActive
                       ? "accent-bg text-white"
                       : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
@@ -299,7 +358,7 @@ export default function DevMenuPage() {
               <section key={group.group}>
                 <div className="flex items-center gap-2">
                   <div className="eyebrow">{group.group}</div>
-                  <span className="text-[11px] text-[var(--text-tertiary)] tabular-nums">
+                  <span className="ts-caption-1 text-[var(--text-tertiary)] tabular-nums">
                     {groupReviewed}/{group.routes.length}
                   </span>
                 </div>
@@ -309,27 +368,28 @@ export default function DevMenuPage() {
                     return (
                       <li
                         key={r.path}
-                        className={`flex items-stretch gap-0 rounded-[var(--radius-md)] border transition-colors ${
+                        className={`flex items-stretch gap-0 overflow-hidden rounded-[var(--radius-md)] border transition-colors ${
                           isReviewed
-                            ? "border-[#16a34a]/30 bg-[#22c55e]/5"
+                            ? "border-[var(--band-a-bar)] bg-[var(--band-a-bg)]"
                             : "border-[var(--hairline)] bg-[var(--surface)] hover:bg-[var(--surface-2)]"
                         }`}
                       >
                         <Link
                           href={r.path}
+                          onClick={() => seedOnboardingForPath(r.path)}
                           className="flex flex-1 items-center justify-between px-4 py-3"
                         >
                           <div>
-                            <div className="text-[14px] font-medium text-[var(--text-primary)]">
+                            <div className="ts-callout font-medium text-[var(--text-primary)]">
                               {r.label}
                             </div>
-                            <div className="mt-0.5 text-[12px] text-[var(--text-tertiary)] font-mono">
+                            <div className="mt-0.5 ts-footnote text-[var(--text-tertiary)] font-mono">
                               {r.path}
                             </div>
                           </div>
                           <div className="flex items-center gap-3">
                             {r.note && (
-                              <span className="text-[11px] text-[var(--text-tertiary)]">
+                              <span className="ts-caption-1 text-[var(--text-tertiary)]">
                                 {r.note}
                               </span>
                             )}
@@ -342,9 +402,9 @@ export default function DevMenuPage() {
                           aria-label={isReviewed ? "Marcar como pendiente" : "Marcar como revisada"}
                           aria-pressed={isReviewed}
                           title={isReviewed ? "Revisada — click para desmarcar" : "Marcar como revisada"}
-                          className={`flex w-12 items-center justify-center border-l transition-colors ${
+                          className={`flex w-12 items-center justify-center rounded-r-[calc(var(--radius-md)-1px)] border-l transition-colors ${
                             isReviewed
-                              ? "border-[#16a34a]/30 bg-[#22c55e] text-white hover:bg-[#16a34a]"
+                              ? "border-[var(--band-a-bar)] bg-[var(--band-a-bar)] text-white hover:opacity-90"
                               : "border-[var(--hairline)] bg-transparent text-[var(--text-tertiary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
                           }`}
                         >
@@ -388,10 +448,10 @@ export default function DevMenuPage() {
         </div>
 
         <div className="mt-16 rounded-[var(--radius-md)] border border-dashed border-[var(--hairline)] p-5">
-          <div className="text-[13px] font-semibold text-[var(--text-primary)]">
+          <div className="ts-subhead font-semibold text-[var(--text-primary)]">
             ¿Cómo funciona?
           </div>
-          <p className="mt-2 text-[12px] text-[var(--text-secondary)] leading-[1.55]">
+          <p className="mt-2 ts-footnote text-[var(--text-secondary)] leading-[1.55]">
             El bypass setea cookie <code className="font-mono">itera_dev_bypass=1</code> (7 días).
             Los layouts (app) y (onboarding) la leen en server-side y skip el redirect a /auth/login
             si <code className="font-mono">NODE_ENV !== &quot;production&quot;</code>. En prod la cookie no tiene

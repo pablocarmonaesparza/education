@@ -27,6 +27,14 @@ export default function robots(): MetadataRoute.Robots {
           '/onboarding',
           '/success',
           '/cancel',
+          // Rutas internas de review (QA). Normalmente 404 en prod, pero quedan
+          // accesibles cuando NEXT_PUBLIC_DEV_BYPASS_ENABLED está activo: nunca
+          // deben indexarse ni catalogar el mapa del backoffice.
+          '/dev',
+          '/design',
+          '/exercise-lab',
+          '/case-demo',
+          '/case-template',
         ],
       },
     ],

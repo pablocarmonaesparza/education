@@ -25,6 +25,13 @@ const db = createClient(url, key, { db: { schema: "simulador" }, auth: { persist
 const caseFile = process.argv[2];
 const ca = yaml.load(fs.readFileSync(caseFile, "utf8")).case_assembly;
 const pc = toPlayable(ca);
+const catalogFile = path.join(
+  process.cwd(),
+  "docs/simulador/case_factory/EXERCISE_BLOCK_CATALOG.yaml",
+);
+const blockCatalog =
+  yaml.load(fs.readFileSync(catalogFile, "utf8"))?.exercise_block_catalog
+    ?.blocks ?? [];
 
 const STEP_TYPE_BY_BLOCK = {
   case_cover: "data_scope", reading_passive: "data_scope", reading_message: "data_scope",
@@ -36,8 +43,175 @@ const STEP_TYPE_BY_BLOCK = {
   workflow_builder: "decision_select", dashboard_pivot: "decision_select",
   tradeoff_decision_memo: "decision_open_short",
 };
-const DIMS = ["contexto", "privacidad", "validacion", "juicio", "decision"];
+const DIMENSIONS_BY_BLOCK = Object.fromEntries(
+  blockCatalog.map((block) => [block.id, block.primary_dimensions ?? []]),
+);
 const orgSlug = (orgId, caseId, v) => `${orgId}__${caseId}__v${v}`;
+
+function dimensionsForBlock(blockId) {
+  return [...(DIMENSIONS_BY_BLOCK[blockId] ?? [])];
+}
+
+function toPriority(value, fallback) {
+  if (typeof value !== "number" || Number.isNaN(value)) return fallback;
+  if (value >= 0 && value <= 1) return Math.round(value * 100);
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+function toChoice(value) {
+  const choice = String(value ?? "").trim().toUpperCase();
+  return ["A", "B", "C", "D"].includes(choice) ? choice : null;
+}
+
+function defaultResponseInput(blockId) {
+  switch (blockId) {
+    case "ai_textfield_free":
+      return { kind: "text", text: "Usa solo datos necesarios, valida claims y escala cualquier riesgo sensible." };
+    case "ai_textfield_guided":
+      return {
+        kind: "guided",
+        objetivo: "Resolver el caso con evidencia disponible.",
+        audiencia: "Manager responsable del flujo.",
+        limites: "No inventes datos ni uses informacion sensible innecesaria.",
+      };
+    case "model_tradeoff_sliders":
+      return { kind: "sliders", autonomy: 0.35, security: 0.85, cost: 0.5 };
+    case "categorize_rows":
+      return { kind: "categorize", assignments: { item_1: "revisar", item_2: "escalar" } };
+    case "ai_output_review":
+      return { kind: "review", flags: { segment_1: "claim_no_verificado" } };
+    case "ai_comparison":
+      return { kind: "comparison", choiceId: "A", rationale: "Elijo la opcion con mejor evidencia disponible." };
+    case "workflow_builder":
+      return {
+        kind: "workflow",
+        enabled_steps: ["triage", "validacion", "escalamiento"],
+        step_order: ["triage", "validacion", "escalamiento"],
+        rationale: "Mantengo control humano antes de publicar o ejecutar.",
+      };
+    case "dashboard_pivot":
+      return {
+        kind: "dashboard",
+        selected_filter: "riesgo_alto",
+        leader_takeaway: "Priorizar casos con riesgo alto y evidencia incompleta.",
+      };
+    case "tradeoff_decision_memo":
+      return {
+        kind: "decision",
+        decisionId: "pilotar_controlado",
+        rationale: "Avanzo solo con casos de evidencia clara y escalo los inciertos.",
+      };
+    default:
+      return null;
+  }
+}
+
+function responsePayload(blockId, resp, capturedAt) {
+  switch (blockId) {
+    case "case_cover":
+      return { block_id: blockId, started_at: capturedAt, timer_enabled_at_start: false };
+    case "reading_passive":
+    case "reading_message":
+    case "reading_data_table":
+    case "reading_image":
+    case "reading_kpi_cards":
+    case "reading_timeline":
+    case "reading_attachment":
+      return { block_id: blockId, acknowledged: true };
+    case "ai_textfield_free":
+      return {
+        block_id: blockId,
+        prompt_text: String(resp?.text ?? resp?.prompt_text ?? ""),
+        model: String(resp?.model ?? "claude-sonnet"),
+        attachments: [],
+        voice_notes: [],
+      };
+    case "ai_textfield_guided": {
+      const objective = resp?.objetivo ?? resp?.selected_objective ?? null;
+      const audience = resp?.audiencia ?? resp?.selected_audience ?? null;
+      const rawLimits = resp?.limites ?? resp?.selected_limits ?? [];
+      const limits = Array.isArray(rawLimits)
+        ? rawLimits.map(String)
+        : String(rawLimits)
+            .split(/[.;]/)
+            .map((item) => item.trim())
+            .filter(Boolean);
+      return {
+        block_id: blockId,
+        selected_objective: objective === null ? null : String(objective),
+        selected_audience: audience === null ? null : String(audience),
+        selected_limits: limits,
+        selected_model: resp?.selected_model ? String(resp.selected_model) : "claude-sonnet",
+        generated_prompt:
+          resp?.generated_prompt ??
+          [objective, audience, limits.join("; ")].filter(Boolean).join(" | "),
+      };
+    }
+    case "model_tradeoff_sliders":
+      return {
+        block_id: blockId,
+        autonomy_priority: toPriority(resp?.autonomy ?? resp?.autonomy_priority, 35),
+        security_priority: toPriority(resp?.security ?? resp?.security_priority, 85),
+        cost_priority: toPriority(resp?.cost ?? resp?.cost_priority, 50),
+        recommended_model_id: resp?.recommended_model_id ? String(resp.recommended_model_id) : "balanced_secure",
+        rationale_text:
+          resp?.rationale ??
+          resp?.rationale_text ??
+          "Priorizo seguridad y trazabilidad sobre velocidad pura.",
+      };
+    case "categorize_rows":
+      return {
+        block_id: blockId,
+        row_actions: Object.entries(resp?.assignments ?? resp?.row_actions ?? {}).map(
+          ([row_id, action]) => ({
+            row_id,
+            action: action === null || action === undefined ? null : String(action),
+          }),
+        ),
+      };
+    case "ai_output_review":
+      return {
+        block_id: blockId,
+        flagged_segments: Object.entries(resp?.flags ?? resp?.flagged_segments ?? {}).map(
+          ([segment_id, flag]) => ({
+            segment_id,
+            flag: flag === null || flag === undefined ? null : String(flag),
+          }),
+        ),
+      };
+    case "ai_comparison":
+      return {
+        block_id: blockId,
+        selected_output: toChoice(resp?.choiceId ?? resp?.selected_output),
+      };
+    case "workflow_builder":
+      return {
+        block_id: blockId,
+        enabled_steps: (resp?.enabled_steps ?? ["triage", "validacion", "escalamiento"]).map(String),
+        step_order: (resp?.step_order ?? ["triage", "validacion", "escalamiento"]).map(String),
+        rationale_text:
+          resp?.rationale ??
+          resp?.rationale_text ??
+          "Mantengo control humano antes de ejecutar cambios sensibles.",
+      };
+    case "dashboard_pivot":
+      return {
+        block_id: blockId,
+        selected_filter: resp?.selected_filter ? String(resp.selected_filter) : "riesgo_alto",
+        leader_takeaway:
+          resp?.leader_takeaway ??
+          "Priorizar casos con riesgo alto y evidencia incompleta.",
+      };
+    case "tradeoff_decision_memo":
+      return {
+        block_id: blockId,
+        decision: String(resp?.decisionId ?? resp?.decision ?? ""),
+        memo: String(resp?.rationale ?? resp?.memo ?? ""),
+      };
+    default:
+      return null;
+  }
+}
 
 async function one(q, label) {
   const { data, error } = await q;
@@ -87,13 +261,29 @@ async function main() {
       variant_role: "primary", status: "active", synthetic_data: true },
     { onConflict: "slug" }).select("id").single(), "case_variants");
   const stepRows = [];
+  const slideById = Object.fromEntries(
+    pc.sections.flatMap((sec) => sec.slides.map((sl) => [sl.slideId, sl])),
+  );
   let ordinal = 0;
   for (const sec of pc.sections) for (const sl of sec.slides) {
     ordinal++;
     stepRows.push({ case_template_id: tpl.id, organization_id: org.id, step_key: sl.slideId, ordinal,
       step_type: STEP_TYPE_BY_BLOCK[sl.blockId] ?? "data_scope",
       prompt_template: `${sl.title}\n\n${sl.body}`.slice(0, 4000),
-      config_json: sl.caseContext ?? {}, evaluates_dimensions: DIMS });
+      config_json: sl.caseContext ?? {}, evaluates_dimensions: dimensionsForBlock(sl.blockId) });
+  }
+  const legacyDimensions = stepRows.flatMap((row) => row.evaluates_dimensions)
+    .filter((dimension) => ["privacidad", "decision"].includes(dimension));
+  if (legacyDimensions.length > 0) {
+    console.error("ERROR case_steps: dimensiones legacy detectadas", legacyDimensions);
+    process.exit(1);
+  }
+  const dimensionSignatures = new Set(
+    stepRows.map((row) => JSON.stringify(row.evaluates_dimensions ?? [])),
+  );
+  if (dimensionSignatures.size < 2) {
+    console.error("ERROR case_steps: evaluates_dimensions uniforme; debe derivar por bloque");
+    process.exit(1);
   }
   await one(db.from("case_steps").upsert(stepRows, { onConflict: "case_template_id,step_key" }), "case_steps");
   const steps = await one(db.from("case_steps").select("id, step_key, ordinal").eq("case_template_id", tpl.id), "steps_read");
@@ -133,12 +323,34 @@ async function main() {
     "cierre-5": { kind: "decision", decisionId: "pilotar_lote_claro", rationale: "Resuelvo hoy los casos con evidencia y escalo el robo de $3,400 y el duplicado a Hugo. Cierro lo seguro sin pagar de más." },
   };
   const events = steps.sort((a, b) => a.ordinal - b.ordinal).map((s) => {
-    const resp = R[s.step_key];
+    const slide = slideById[s.step_key];
+    if (!slide) {
+      console.error(`ERROR step_events: no hay slide para step_key ${s.step_key}`);
+      process.exit(1);
+    }
+    const capturedAt = new Date(now.getTime() + s.ordinal * 60000).toISOString();
+    const rawResp =
+      R[s.step_key] ??
+      (dimensionsForBlock(slide.blockId).length > 0
+        ? defaultResponseInput(slide.blockId)
+        : null);
+    const response = rawResp ? responsePayload(slide.blockId, rawResp, capturedAt) : null;
     return { simulation_session_id: session.id, case_step_id: s.id, step_ordinal: s.ordinal,
-      event_type: resp ? "response_saved" : "step_viewed",
-      payload_json: resp ?? { kind: "viewed" },
-      captured_at: new Date(now.getTime() + s.ordinal * 60000).toISOString() };
+      event_type: response ? "response_update" : "step_viewed",
+      payload_json: response
+        ? { response, metrics: { acceptance_run: true, step_key: s.step_key }, timestamp: capturedAt }
+        : { kind: "viewed", block_id: slide.blockId },
+      captured_at: capturedAt };
   });
+  const responseEvents = events.filter((event) => event.event_type === "response_update");
+  if (responseEvents.length === 0) {
+    console.error("ERROR step_events: ninguna respuesta alimenta al judge");
+    process.exit(1);
+  }
+  if (responseEvents.some((event) => !event.payload_json?.response?.block_id)) {
+    console.error("ERROR step_events: payload_json.response.block_id faltante");
+    process.exit(1);
+  }
   await one(db.from("simulation_step_events").insert(events), "step_events");
   await one(db.from("simulation_sessions").update(
     { status: "completed", completed_at: new Date(now.getTime() + 26 * 60000).toISOString(),

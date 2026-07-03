@@ -107,10 +107,11 @@ export async function createOrgBundle({
     start_date: new Date().toISOString().slice(0, 10),
     target_dimensions: [
       "contexto",
-      "privacidad",
+      "datos",
+      "ejecucion_ia",
       "validacion",
       "juicio",
-      "decision",
+      "impacto",
     ],
     metadata: { e2e_run: runId, label },
   });

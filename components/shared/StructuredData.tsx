@@ -52,7 +52,7 @@ export default function StructuredData() {
         '@id': `${SITE_URL}#ai-readiness-diagnostic`,
         name: 'Diagnostico operativo de criterio de IA',
         description:
-          'Simulador de casos vivos para evaluar contexto, privacidad, validacion, juicio y decision cuando equipos usan IA bajo presion operativa.',
+          'Simulador de casos vivos para evaluar contexto, datos, ejecucion con IA, validacion, juicio e impacto cuando equipos usan IA bajo presion operativa.',
         provider: { '@id': ORG_ID },
         areaServed: [
           'MX', 'AR', 'CO', 'CL', 'PE', 'UY', 'PY', 'BO', 'EC', 'VE',

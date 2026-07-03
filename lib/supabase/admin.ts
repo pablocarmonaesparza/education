@@ -3,7 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 
 /**
  * Service-role Supabase client. Bypassa RLS — úsalo SOLO en server code,
- * después de validar que el caller es admin (`lib/auth/isAdmin.ts`).
+ * después de validar que el caller es staff (`lib/simulador/is-staff.ts`).
  *
  * Usado por dashboards internos que necesitan agregar across users (funnel,
  * flags, completion rates, etc.). El cliente normal de `lib/supabase/server`

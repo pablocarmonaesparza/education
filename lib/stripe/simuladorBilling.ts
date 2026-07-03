@@ -1,10 +1,7 @@
 import Stripe from "stripe";
-import { createClient as createAdminClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { stripe } from "@/lib/stripe/config";
-import {
-  computeSimuladorAmount,
-  SIMULADOR_PRODUCT,
-} from "@/lib/simulador/billing";
+import { computeSimuladorAmount } from "@/lib/simulador/billing";
 
 export type SimuladorPaymentSyncResult =
   | { ok: true; organizationId: string; subscriptionId: string }
@@ -16,18 +13,6 @@ const TERMINAL_SYNC_REASONS = new Set([
   "invalid_seats_metadata",
   "payment_pending",
 ]);
-
-function adminClient() {
-  return createAdminClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false, autoRefreshToken: false } },
-  );
-}
-
-function endDate(durationDays: number): string {
-  return new Date(Date.now() + durationDays * 24 * 60 * 60 * 1000).toISOString();
-}
 
 function metadataValue(session: Stripe.Checkout.Session, key: string) {
   return session.metadata?.[key] ?? null;
@@ -50,7 +35,7 @@ export function isSimuladorCheckoutSession(
 export async function findSimuladorSubscriptionByCheckoutSession(
   sessionId: string,
 ): Promise<SimuladorPaymentSyncResult> {
-  const admin = adminClient();
+  const admin = createAdminClient();
   const { data, error } = await admin
     .schema("simulador")
     .from("subscriptions")
@@ -128,7 +113,7 @@ export async function upsertSimuladorSubscriptionFromCheckout(
   ) {
     return { ok: false, reason: "amount_mismatch" };
   }
-  const admin = adminClient();
+  const admin = createAdminClient();
   const customerId =
     typeof session.customer === "string"
       ? session.customer

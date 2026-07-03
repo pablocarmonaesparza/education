@@ -40,7 +40,7 @@ function parseArgs(argv) {
           "actual.yaml shape:",
           "  cases:",
           "    - id: pii_exposed_directly",
-          "      dimensions: [{ id: privacidad, band: B }]",
+          "      dimensions: [{ id: datos, band: B }]",
           "      risk_events: [{ type: exposed_pii_to_model, severity: high }]",
         ].join("\n"),
       );

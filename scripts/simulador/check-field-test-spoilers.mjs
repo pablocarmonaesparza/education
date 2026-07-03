@@ -43,8 +43,8 @@ const forbiddenApiTokens = [
 ];
 
 const forbiddenRuntimeSnippets = [
-  "Evaluamos en 5 dimensiones",
-  "contexto, privacidad, validación",
+  "Evaluamos en 6 dimensiones",
+  "contexto, datos, ejecución",
   "badge \"PII\"",
   "output del LLM tal cual",
   "Usar revenue para targeting sin consentimiento",

@@ -3,9 +3,15 @@ import {
   sendReportReadyEmployeeEmail,
   sendReportReadyManagerEmail,
 } from "@/lib/email/simulador";
+import { normalizeReportDimensions } from "@/lib/simulador/reports/model";
 
 interface ReportPayload {
-  dimensions?: Array<{ band?: string }>;
+  dimensions?: Array<{
+    id?: string;
+    band?: string;
+    rationale?: string;
+    confidence?: number;
+  }>;
   risk_events?: Array<{ severity?: string }>;
   recommendation?: {
     action?: string;
@@ -38,8 +44,13 @@ function asPayload(value: unknown): ReportPayload {
   return value as ReportPayload;
 }
 
-function overallBand(dimensions: ReportPayload["dimensions"]): string {
-  const bands = (dimensions ?? []).map((dimension) => dimension.band);
+function overallBand(payload: ReportPayload): string {
+  if (!payload.dimensions?.some((dimension) => dimension.band)) {
+    return "sin banda";
+  }
+  const bands = normalizeReportDimensions(payload).map(
+    (dimension) => dimension.band,
+  );
   if (bands.includes("B")) return "B";
   if (bands.includes("M")) return "M";
   if (bands.includes("A")) return "A";
@@ -127,7 +138,7 @@ export async function sendReportReadyEmailsForSession({
 
     const reportUrl = `${appUrl}/report/${simulationSessionId}`;
     const dashboardUrl = `${appUrl}/dashboard`;
-    const band = overallBand(payload.dimensions);
+    const band = overallBand(payload);
     const recommendationAction =
       payload.recommendation?.action ?? "entrenar";
     const riskEvents = payload.risk_events ?? [];

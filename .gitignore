@@ -41,7 +41,12 @@ next-env.d.ts
 /supabase/config.toml
 .gstack/
 .claude/worktrees/
-/legacy/*
-!/legacy/archive-20260518/
-!/legacy/archive-20260518/**
 docs/simulador/case_factory/runs/
+
+# captación (DuckDB local)
+captacion/*.duckdb
+captacion/*.duckdb.wal
+captacion/.scores.json
+
+# playwright MCP local
+.playwright-mcp/

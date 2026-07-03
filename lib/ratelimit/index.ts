@@ -195,11 +195,20 @@ async function limitWithSupabase(input: {
       };
     }
 
+    // El RPC vive en el schema `simulador`, fuera de los tipos generados de
+    // Supabase, así que el shape de la fila se declara aquí.
+    const row = data as {
+      success?: boolean;
+      remaining?: number;
+      reset_ms?: number;
+      limit_value?: number;
+    };
+
     return {
-      success: Boolean(data.success),
-      remaining: Number(data.remaining ?? 0),
-      reset: Number(data.reset_ms ?? Date.now() + input.windowSeconds * 1000),
-      limit: Number(data.limit_value ?? input.max),
+      success: Boolean(row.success),
+      remaining: Number(row.remaining ?? 0),
+      reset: Number(row.reset_ms ?? Date.now() + input.windowSeconds * 1000),
+      limit: Number(row.limit_value ?? input.max),
     };
   } catch (err) {
     console.error('[ratelimit] supabase fallback exception — fail-open', err);
