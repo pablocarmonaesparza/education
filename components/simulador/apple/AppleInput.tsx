@@ -75,18 +75,33 @@ export function AppleSelect({
       aria-label={a11yLabel}
       {...props}
       popoverProps={{
+        placement: "bottom-start",
+        offset: 6,
         ...popoverProps,
-        // El popover usa el portal default de HeroUI (<body>) — NO un contenedor
-        // resuelto en runtime. Antes se porteaba a `.simulador-root` vía un lookup
-        // (useEffect/lazy): ese contenedor async dejaba el dropdown SIN ABRIR hasta
-        // que un re-render (p.ej. llenar un textfield) lo forzaba — el bug que
-        // reportó Pablo. Para conservar los tokens de diseño fuera de
-        // `.simulador-root`, le damos esa clase al popover: los tokens se definen
-        // por clase y el dark resuelve igual porque `html.dark` (next-themes) sigue
-        // siendo ancestro. El z-50 lo mantiene sobre los controles del form.
+        // El popover se portea al <body> (fuera de `.simulador-root`), así que los
+        // tokens de diseño (--surface, --border, --shadow-lg, --radius-md…) no
+        // resolverían: viven scopeados a `.simulador-root`. Por eso le damos esa
+        // clase al popover Y al content. El dark resuelve igual porque `html.dark`
+        // (next-themes) sigue siendo ancestro del portal.
+        //
+        // Clave HeroUI v2: el slot que de verdad pinta la tarjeta es
+        // `popoverProps.classNames.content` — el `classNames.popoverContent` del
+        // Select es un slot muerto (se ignora). Sin esto el dropdown salía
+        // transparente, sin borde/sombra y encogido (truncaba las opciones).
+        // `w-full` hace que el content llene el positioner (que ya recibe el ancho
+        // del trigger), evitando el truncado.
         classNames: {
           ...popoverProps?.classNames,
-          base: cn("simulador-root z-50", popoverProps?.classNames?.base),
+          base: cn("simulador-root z-50 w-full", popoverProps?.classNames?.base),
+          content: cn(
+            // `!flex !items-stretch` revierte el `inline-flex items-center
+            // justify-center` default de HeroUI (que encogía y centraba el card);
+            // `w-full` lo hace llenar el positioner (que ya recibe el ancho del
+            // trigger). El `min-w` con fallback evita que opciones largas se
+            // trunquen cuando el trigger es angosto (p.ej. el "Ordenar").
+            "simulador-root !flex !items-stretch w-full min-w-[var(--trigger-width,16rem)] flex-col rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-1 text-[var(--text-primary)] [box-shadow:var(--shadow-lg)]",
+            popoverProps?.classNames?.content,
+          ),
         },
       }}
       listboxProps={{
@@ -137,10 +152,6 @@ export function AppleSelect({
         selectorIcon: cn(
           "pointer-events-none !left-auto !right-3 text-[var(--text-tertiary)]",
           classNames?.selectorIcon,
-        ),
-        popoverContent: cn(
-          "rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] p-1 text-[var(--text-primary)] [box-shadow:var(--shadow-lg)]",
-          classNames?.popoverContent,
         ),
         listboxWrapper: cn(
           "max-h-64 w-full overflow-y-auto bg-[var(--surface)] p-0",

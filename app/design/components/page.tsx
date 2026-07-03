@@ -33,6 +33,7 @@ import {
   AppleCaseHeader,
   AppleCheckbox,
   AppleDataTable,
+  AppleDivider,
   AppleEmptyState,
   AppleErrorState,
   AppleIcon,
@@ -46,6 +47,7 @@ import {
   AppleModalFooter,
   AppleModalHeader,
   AppleProgress,
+  AppleReveal,
   AppleSelect,
   AppleSidebar,
   AppleSkeleton,
@@ -53,6 +55,7 @@ import {
   AppleSortableList,
   AppleStepBar,
   AppleStepDots,
+  AppleSwitch,
   AppleTabs,
   AppleTextarea,
   AppleTimeline,
@@ -232,6 +235,41 @@ function SelectDemo() {
           <SelectItem key="admin">Administrador</SelectItem>
           <SelectItem key="user">Usuario</SelectItem>
         </AppleSelect>
+      </Spec>
+    </>
+  );
+}
+
+function SwitchDemo() {
+  const [on, setOn] = useState(true);
+  const [off, setOff] = useState(false);
+  return (
+    <>
+      <Spec label="estados">
+        <AppleSwitch
+          isSelected={on}
+          onValueChange={setOn}
+          aria-label="Activado"
+        />
+        <AppleSwitch
+          isSelected={off}
+          onValueChange={setOff}
+          aria-label="Desactivado"
+        />
+        <AppleSwitch isSelected isDisabled aria-label="Deshabilitado activo" />
+        <AppleSwitch isDisabled aria-label="Deshabilitado" />
+      </Spec>
+      <Spec label="en fila de ajuste" wide>
+        <div className="flex w-full items-center justify-between">
+          <span className="ts-subhead text-[var(--text-primary)]">
+            Notificaciones por email
+          </span>
+          <AppleSwitch
+            isSelected={on}
+            onValueChange={setOn}
+            aria-label="Notificaciones por email"
+          />
+        </div>
       </Spec>
     </>
   );
@@ -597,6 +635,41 @@ export default function ComponentsGalleryPage() {
           </Spec>
         </Section>
 
+        <Section
+          name="Divider"
+          importName="AppleDivider"
+          purpose="Separador hairline de 1px (token --hairline). Agrupa con whitespace primero; el divider es la línea sutil cuando de verdad hace falta — nunca un contorno por sección."
+        >
+          <Spec label="horizontal" wide>
+            <div className="w-full">
+              <p className="ts-subhead text-[var(--text-secondary)]">Sección A</p>
+              <AppleDivider className="my-3" />
+              <p className="ts-subhead text-[var(--text-secondary)]">Sección B</p>
+            </div>
+          </Spec>
+          <Spec label="vertical">
+            <div className="flex h-6 items-center gap-3">
+              <span className="ts-subhead text-[var(--text-secondary)]">Uno</span>
+              <AppleDivider orientation="vertical" />
+              <span className="ts-subhead text-[var(--text-secondary)]">Dos</span>
+            </div>
+          </Spec>
+        </Section>
+
+        <Section
+          name="Reveal (entrada)"
+          importName="AppleReveal"
+          purpose="Animación de entrada del sistema (fade + subida ~450ms, easing Apple). Solo aparición, respeta prefers-reduced-motion. Envuelve secciones de las páginas del empleado."
+        >
+          <Spec label="ejemplo" wide>
+            <AppleReveal className="w-full rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4">
+              <p className="ts-subhead text-[var(--text-secondary)]">
+                Este bloque aparece con fade + subida al montar.
+              </p>
+            </AppleReveal>
+          </Spec>
+        </Section>
+
         {/* ---- Forms ---- */}
         <Section
           name="Button"
@@ -732,6 +805,14 @@ export default function ComponentsGalleryPage() {
           purpose="Caja 20px, radius proporcional, relleno acento. El texto va como label real; los links legales no togglean."
         >
           <CheckboxDemo />
+        </Section>
+
+        <Section
+          name="Switch"
+          importName="AppleSwitch"
+          purpose="Toggle on/off tokenizado. Estado activo en --accent; la posición del thumb comunica el estado (no solo color). role=switch, operable con teclado y foco visible."
+        >
+          <SwitchDemo />
         </Section>
 
         <Section
