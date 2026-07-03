@@ -197,9 +197,13 @@ function ClosingScreen({
 export function PracticeBeatClient({
   beat,
   previewOnly,
+  closeHref = "/team",
 }: {
   beat: PlayablePracticeBeat;
   previewOnly: boolean;
+  /** A dónde va el botón cerrar. Default /team (empleado autenticado);
+   *  el demo público lo apunta a la landing. */
+  closeHref?: string;
 }) {
   const slides = beat.slides;
   const router = useRouter();
@@ -288,7 +292,7 @@ export function PracticeBeatClient({
           <AppleCaseHeader
             total={slides.length}
             current={idx}
-            closeHref="/team"
+            closeHref={closeHref}
             onPrev={goPrev}
             prevDisabled={idx === 0}
           />
@@ -331,7 +335,7 @@ export function PracticeBeatClient({
         <AppleCaseHeader
           total={slides.length}
           current={idx}
-          closeHref="/team"
+          closeHref={closeHref}
           onPrev={goPrev}
           prevDisabled={idx === 0}
           ariaLabel={`Pantalla ${idx + 1} de ${slides.length}`}
