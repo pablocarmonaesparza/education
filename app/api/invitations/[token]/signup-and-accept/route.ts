@@ -22,6 +22,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { enforceRateLimit, rateLimiters } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 
@@ -35,6 +36,11 @@ export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ token: string }> },
 ) {
+  // Endpoint público que CREA cuentas: rate limit para frenar abuso de tokens
+  // filtrados / bots. checkout = 10 req/min por identidad (IP para anónimos).
+  const limited = await enforceRateLimit(req, rateLimiters.checkout);
+  if (limited) return limited;
+
   const { token } = await params;
   let body: Body;
   try {

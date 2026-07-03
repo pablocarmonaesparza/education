@@ -21,6 +21,30 @@ const nextConfig = {
       './docs/simulador/contrato_v0/cases_assembled/**',
     ],
   },
+  // Headers de seguridad básicos (F5). No incluimos Content-Security-Policy:
+  // Next.js + HeroUI inyectan estilos/scripts inline y una CSP estricta
+  // rompería el render; se deja como deuda consciente para endurecer después
+  // con nonces. Estos headers son seguros y no rompen nada.
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+        ],
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
