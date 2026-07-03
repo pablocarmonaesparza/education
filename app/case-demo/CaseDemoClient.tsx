@@ -261,7 +261,7 @@ export function CaseDemoClient() {
         <AppleCaseHeader
           total={SLIDES_PER_SECTION}
           current={slideIdx}
-          closeHref="/exercise-lab"
+          closeHref="/"
           onPrev={goPrev}
           prevDisabled={isFirstSlide}
           onNext={goNext}
@@ -727,7 +727,7 @@ function CaseCompletedScreen({ durationMinutes, payloads }: CaseCompletedScreenP
         {/* HEADER · botón cerrar arriba a la derecha · estilo runtime */}
         <div className="flex justify-end">
           <a
-            href="/exercise-lab"
+            href="/"
             aria-label="Cerrar"
             className="grid h-9 w-9 place-items-center rounded-[var(--radius-md)] border border-[var(--border)] text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           >
@@ -818,9 +818,11 @@ function CaseCompletedScreen({ durationMinutes, payloads }: CaseCompletedScreenP
           </div>
         </div>
 
-        {/* CTAs · mismo lenguaje que el botón Continuar del runtime */}
+        {/* CTAs · el demo cierra invitando a llevar esto al equipo real */}
         <div className="mt-7 flex items-center gap-4">
-          <AppleSlideButton href="/exercise-lab">Volver al lab →</AppleSlideButton>
+          <AppleSlideButton href="/auth/signup?next=%2Fonboarding%2Forg">
+            Empezar con tu equipo →
+          </AppleSlideButton>
           <a
             href="/case-demo"
             className="ts-footnote text-[var(--text-secondary)] underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"

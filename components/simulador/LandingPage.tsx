@@ -76,6 +76,15 @@ export default function LandingPage() {
             >
               Agendar diagnóstico para mi equipo
             </AppleButton>
+            <AppleButton
+              as={Link}
+              href="/case-demo"
+              tone="secondary"
+              size="lg"
+              className="px-7 h-12"
+            >
+              Ver el demo
+            </AppleButton>
           </div>
 
           <p

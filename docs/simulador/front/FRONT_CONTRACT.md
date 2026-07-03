@@ -103,7 +103,7 @@ Mecanismo: las rutas dev-only viven en `internalReviewRoutes` de `proxy.ts` — 
 | `/design/components` | **galería = espejo del design system** (fuente única de componentes) | dev-only |
 | `/dev` | hub interno de QA (lista rutas, bypass de auth, override de tema) | dev-only |
 | `/exercise-lab` | catálogo de bloques de ejercicio | dev-only |
-| `/case-demo` | caso jugable público sin login (demo / QA) | dev-only |
+| `/case-demo` | **demo público del sistema**: caso jugable sin login que termina con el reporte de cierre. Reachable en prod, noindex (robots). Entrada desde la landing ("Ver el demo"). | demo-público |
 | `/case-template` | estructura de caso (referencia de diseño) | dev-only |
 | `/aprender-demo` | módulo educativo jugable (demo del segundo motor, modo formativo) | dev-only |
 | `/motores` | consola de lectura: cómo está organizado cada motor (educativo + operativo) | dev-only (en `internalReviewRoutes` de `proxy.ts` desde 2026-07-02 — 404 en prod) |
