@@ -1,9 +1,14 @@
 # EDUCATIVE_ENGINE_SPEC — el segundo motor, desde el contenido
 
-Spec del motor educativo desde la óptica de contenido y pedagogía (la cancha de
-Claude). El plan completo y la parte técnica viven en el plan aprobado y se
-implementan por Codex. Este doc define **qué es un módulo educativo, cómo se
-escribe y cómo enseña**, para que el contenido sea coherente caso a caso.
+> **ROADMAP POST-V1 — no implementar en v1.** Decisión Pablo 2026-07-02 (plan de
+> lanzamiento): el v1 sale con diagnóstico completo + práctica asignada manual
+> (practice beats vía `/practica`, unlocks del judge). El pipeline E1/E2/E3 y el
+> motor de módulos descritos aquí se retoman después del primer cliente.
+
+Spec del motor educativo desde la óptica de contenido y pedagogía. Este doc define
+**qué es un módulo educativo, cómo se escribe y cómo enseña**, para que el contenido
+sea coherente caso a caso. (Desde 2026-07-02 el repo opera en modo ejecutor único:
+Claude Code ejecuta también la parte técnica cuando esto se retome.)
 
 Lectura obligatoria antes: el plan del motor educativo y
 `docs/simulador/case_factory/ENGINE_CONTRACT.md`.

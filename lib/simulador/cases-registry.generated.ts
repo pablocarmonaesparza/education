@@ -1519,7 +1519,7 @@ export const PLAYABLE_CASES: Record<string, PlayableCase> = {
     "meta": {
       "level": "N1 · Fundamentos",
       "profile": "Operaciones",
-      "profile_pack": "operations_last_mile",
+      "profile_pack": "operations_automation",
       "estimated_minutes": 12,
       "timer_seconds": 600,
       "timer_default_on": false,

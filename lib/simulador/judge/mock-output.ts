@@ -7,8 +7,9 @@
  * que el flow E2E (submit → report) funcione localmente sin gastar
  * tokens de Anthropic ni configurar la key.
  *
- * En producción (NODE_ENV='production') runJudge sigue exigiendo la
- * key real y lanza error si falta.
+ * En producción runJudge NO usa este mock: sin ANTHROPIC_API_KEY cae al
+ * proveedor OpenAI-compatible (DeepSeek/Gemini) — ver run.ts:56-63. El mock
+ * solo aplica en dev local sin keys.
  */
 
 import type { JudgeInputContext, JudgeOutput } from "./types";
