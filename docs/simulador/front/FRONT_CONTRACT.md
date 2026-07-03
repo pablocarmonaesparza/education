@@ -12,7 +12,7 @@ scope: define qué surfaces existen, qué rutas son activas, qué ve cada rol, q
 
 ## TL;DR
 
-Producto v2 tiene **35 rutas productivas**, **3 utilitarias**, **8 dev-only** (no indexan, fuera de nav), **1 ambigua** (`/dashboard`) y **8 shells**. La tabla de abajo se **deriva del código real** (`app/`, 47 `page.tsx` + 2 route handlers de auth) y es la fuente única: si una pantalla no está aquí, no existe; si está, su columna **estado** dice qué es. Última sync con código: 2026-07-01.
+Producto v2 tiene **35 rutas productivas**, **4 utilitarias** (incluye `/dashboard`, ahora redirect por rol), **8 dev-only** (no indexan, fuera de nav) y **8 shells**. La tabla de abajo se **deriva del código real** (`app/`, 47 `page.tsx` + 2 route handlers de auth) y es la fuente única: si una pantalla no está aquí, no existe; si está, su columna **estado** dice qué es. Última sync con código: 2026-07-01.
 
 ## Tabla única de rutas (derivada de `app/`)
 
@@ -44,7 +44,7 @@ Estados: **productiva** (user-facing viva) · **utilitaria** (operación/funnel)
 
 | Ruta | Uso | Layout | Auth | Estado |
 |---|---|---|---|---|
-| `/dashboard` | destino post-login role-aware (todos los redirects de auth/error/success van ahí); renderiza casos según `viewer_role` | EmployeeShell / ManagerShell (role-aware) | ✓ | ambigua |
+| `/dashboard` | destino post-login; **redirect server-side por rol** → `/staff` (manager) o `/team` (empleado); sin membership → `/onboarding/org` | — (redirect) | ✓ | utilitaria |
 
 ### Empleado (participante)
 
@@ -113,7 +113,7 @@ Verificado con grep de referencias el 2026-06-07 — cada candidato a "borrar" e
 | Caso | Realidad (links reales) | Pendiente |
 |---|---|---|
 | `/case/[case_id]` vs `/jugar/[case_id]` | **Resuelto 2026-06-30 (F6).** Ganó el motor config-driven (`RuntimeExperienceV2`); se sirve bajo `/case/[case_id]` (la URL ya conectada — no se repuntaron los catálogos, se movió el motor). El componente legacy de 5 pasos y la ruta `/jugar` se eliminaron del repo. | cerrado. |
-| `/dashboard` vs `/team` + `/staff` | `/dashboard` es el **destino post-login** (todos los redirects de auth/error/success van ahí) y renderiza casos. `/team` (empleado) y `/staff` (manager) son las vistas por rol, también vivas. | clarificar si `/dashboard` debe redirigir por rol a `/team` / `/staff`, o si es una tercera vista redundante a consolidar. |
+| `/dashboard` vs `/team` + `/staff` | **Resuelto 2026-07-02 (F3).** `/dashboard` deja de renderizar una tercera vista (era un fork duplicado del dashboard del manager). Ahora es un **redirect server-side por rol**: manager/org_admin/billing_admin → `/staff`, empleado → `/team`, sin membership → `/onboarding/org`. Sigue siendo el destino post-login. | cerrado. |
 | `/field-test/marketing-urgent-campaign-pii` | **no existe** en `app/`; el demo público hoy vive en `/case-demo`. | decisión de producto: implementar un field-test con lead capture propio, o dejarlo en `/case-demo` y quitar la ruta del lenguaje del producto. |
 
 > **Autoridad:** esta tabla es la fuente única de rutas. Las secciones siguientes (roles, datos por pantalla, navegación) describen comportamiento y a veces citan nombres previos; cuando lo hagan, la ruta canónica es la de esta tabla — entrada de empleado `/team`, de manager `/staff`, runtime único `/case/[case_id]`.
@@ -131,10 +131,10 @@ Verificado con grep de referencias el 2026-06-07 — cada candidato a "borrar" e
 
 ### Decisión de implementación — dashboard por rol
 
-- Fecha: 2026-05-20
-- Decisión: `/dashboard` permanece como **una sola ruta role-aware**. El API entrega `viewer_role` y la pantalla renderiza la vista de empleado o manager según permisos.
-- Razón: mantiene una entrada simple post-login, evita duplicar navegación y respeta RLS/server-side filtering. `EmployeeShell` y `ManagerShell` son shells conceptuales de experiencia, no URLs separadas.
-- Implicación: si en v2 se separan rutas (`/me`, `/team`, etc.), debe hacerse con migración explícita de navegación y redirects; no por proliferación ad-hoc.
+- Fecha: 2026-07-02 (revisa la decisión previa del 2026-05-20).
+- Decisión: `/dashboard` es un **redirect server-side por rol**, no una vista. La superficie real por rol ya existe y es canónica: empleado → `/team`, manager → `/staff`. `/dashboard` resuelve el rol (`team_memberships.role`; fallback a `organization_memberships.role`) y hace `redirect()`.
+- Razón: la vista role-aware original terminó siendo un fork duplicado de `/staff` (mismo dashboard de manager, 875 líneas espejo). Mantener una tercera vista era deuda; el redirect mantiene la entrada única post-login sin duplicar UI ni navegación.
+- Implicación: los links a `/dashboard` (auth/error/success) siguen funcionando — aterrizan en la superficie correcta por rol. `EmployeeShell`/`ManagerShell` siguen siendo shells conceptuales realizados en `/team` y `/staff`.
 
 ## Rutas prohibidas (NO aparecen en navegación, NO se linkean, NO se mantienen)
 
