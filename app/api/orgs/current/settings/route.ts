@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
+import { isDevBypassActive } from "@/lib/dev/devBypass";
 
 export const runtime = "nodejs";
 
@@ -202,6 +204,24 @@ async function resolveCurrentOrgAdmin() {
   } = await supabase.auth.getUser();
 
   if (!user) {
+    // Dev-only: con el bypass activo resolvemos la org demo REAL (no un mock)
+    // para que /empresa cargue y el autosave (PATCH) también sea probable en
+    // QA local. Mismo patrón que /api/dashboard; isDevBypassActive es false
+    // incondicional en producción (R-06).
+    const cookieStore = await cookies();
+    if (isDevBypassActive(cookieStore.get("itera_dev_bypass")?.value)) {
+      const admin = createAdminClient();
+      const { data: demoOrg } = await admin
+        .schema("simulador")
+        .from("organizations")
+        .select("id")
+        .order("created_at", { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      if (demoOrg?.id) {
+        return { admin, organizationId: demoOrg.id as string };
+      }
+    }
     return {
       response: NextResponse.json({ error: "No autenticado." }, { status: 401 }),
     };

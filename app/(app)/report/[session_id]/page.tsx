@@ -247,12 +247,6 @@ function ReportView({
   sessionId: string;
   practice: ReportPracticeEntry[];
 }) {
-  const [shareUrl, setShareUrl] = useState<string | null>(null);
-  const [shareStatus, setShareStatus] = useState<
-    "idle" | "creating" | "ready" | "copied" | "error"
-  >("idle");
-  const [shareError, setShareError] = useState<string | null>(null);
-
   const bands = dimensionsById(payload);
   const normalizedDimensions = normalizeReportDimensions(payload);
   const { score: overallScore, band: overallBand } = computeOverall(payload);
@@ -264,33 +258,9 @@ function ReportView({
 
   const isPending = status === "pending_review";
 
-  async function createShareLink() {
-    setShareStatus("creating");
-    setShareError(null);
-    try {
-      const res = await fetch(`/api/sessions/${sessionId}/report/share`, {
-        method: "POST",
-      });
-      const data = await res.json().catch(() => null);
-      if (!res.ok) {
-        throw new Error(
-          data?.error ?? `No pudimos generar el link (${res.status}).`,
-        );
-      }
-      setShareUrl(data.share_url);
-      setShareStatus("ready");
-    } catch (err) {
-      setShareStatus("error");
-      setShareError(err instanceof Error ? err.message : "Error inesperado.");
-    }
-  }
-
-  async function copyShareLink() {
-    if (!shareUrl) return;
-    await navigator.clipboard?.writeText(shareUrl);
-    setShareStatus("copied");
-    window.setTimeout(() => setShareStatus("ready"), 1800);
-  }
+  // R-09 (RULES_LEDGER): el share-link se retiró en v1 — la página pública
+  // /shared/report/[token] no existe y FRONT_CONTRACT la declara fuera de esta
+  // versión. Si el manager quiere compartir, descarga el PDF.
 
   return (
     <>
@@ -671,19 +641,6 @@ function ReportView({
               Descargar PDF
             </AppleButton>
             <AppleButton
-              tone="secondary"
-              size="lg"
-              isLoading={shareStatus === "creating"}
-              onPress={shareUrl ? copyShareLink : createShareLink}
-              className="h-12 px-7"
-            >
-              {shareStatus === "copied"
-                ? "Link copiado"
-                : shareUrl
-                  ? "Copiar link"
-                  : "Generar link compartible"}
-            </AppleButton>
-            <AppleButton
               as={Link}
               href="/staff"
               tone="primary"
@@ -703,30 +660,6 @@ function ReportView({
             </AppleButton>
           </motion.div>
 
-          {(shareUrl || shareError) && (
-            <motion.div
-              {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.16 }}
-              className="mt-5 card-apple bg-[var(--surface)] p-4"
-            >
-              {shareUrl ? (
-                <>
-                  <div className="eyebrow">Link compartible</div>
-                  <p className="mt-2 break-all ts-subhead text-[var(--text-primary)] mono">
-                    {shareUrl}
-                  </p>
-                  <p className="mt-2 ts-footnote text-[var(--text-secondary)]">
-                    Válido por 30 días. Los eventos de riesgo alto se muestran
-                    con datos sensibles anonimizados.
-                  </p>
-                </>
-              ) : (
-                <p className="ts-subhead text-[var(--band-b-text)]">
-                  {shareError}
-                </p>
-              )}
-            </motion.div>
-          )}
         </section>
 
         {/* Meta footer */}

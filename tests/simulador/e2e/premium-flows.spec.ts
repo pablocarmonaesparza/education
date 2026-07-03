@@ -308,18 +308,8 @@ test("reporte publicado puede exportar PDF y generar link compartible", async ({
   expect(pdfMeta.prefix).toBe("%PDF");
   expect(pdfMeta.size).toBeGreaterThan(1000);
 
-  const share = await page.evaluate(async (sessionId) => {
-    const res = await fetch(`/api/sessions/${sessionId}/report/share`, {
-      method: "POST",
-    });
-    return { status: res.status, body: await res.json() };
-  }, session.id);
-  expect(share.status, JSON.stringify(share.body)).toBe(200);
-  expect(share.body.share_url).toContain("/shared/report/");
-
-  await page.goto(share.body.share_url);
-  await expect(page.getByText("Reporte ejecutivo compartido")).toBeVisible();
-  await expect(page.getByText("[email]")).toBeVisible();
+  // R-09: share-links retirado en v1 (la página pública /shared/report nunca
+  // existió — este paso probaba un flujo roto como feature). Compartir = PDF.
 });
 
 test("empleado entra a su dashboard y abre el caso asignable", async ({ page }) => {
