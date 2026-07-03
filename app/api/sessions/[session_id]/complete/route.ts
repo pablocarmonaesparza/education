@@ -63,15 +63,22 @@ export async function POST(
   }
 
   // R-15: completitud server-side — contar respuestas reales antes de cerrar.
-  const { data: responseEvents } = await supabase
+  const { data: responseEvents, error: eventsErr } = await supabase
     .schema("simulador")
     .from("simulation_step_events")
-    .select("step_key")
+    .select("case_step_id")
     .eq("simulation_session_id", session_id)
     .eq("event_type", "response_update");
 
+  if (eventsErr) {
+    return NextResponse.json(
+      { error: "No se pudieron verificar las respuestas de la sesión." },
+      { status: 500 },
+    );
+  }
+
   const answeredSteps = new Set(
-    (responseEvents ?? []).map((e) => e.step_key as string),
+    (responseEvents ?? []).map((e) => e.case_step_id as string),
   );
   if (answeredSteps.size === 0) {
     return NextResponse.json(

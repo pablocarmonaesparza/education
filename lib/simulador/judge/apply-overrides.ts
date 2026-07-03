@@ -41,18 +41,44 @@ interface AppliedOverride {
 // puntuado alto. Nunca sube una banda — solo la limita.
 const BAND_RANK: Record<Band, number> = { A: 2, M: 1, B: 0 };
 
+// Cada cap escucha una FAMILIA de triggers: el tag aspiracional de la rúbrica
+// (por si el LLM lo usa como gap id) + los RiskEventType reales del catálogo
+// cerrado (types.ts) que implementan esa condición. Verificado contra una
+// corrida real: el judge emite p.ej. "exposed_pii_to_model", no
+// "privacy_exposure" (2026-07-02).
 const DIMENSION_BAND_CAPS: Array<{
-  trigger: string;
+  triggers: string[];
   dimension: string;
   ceiling: Band;
   rule: string;
 }> = [
   // crm_fields_include_email_or_phone_in_model_prompt_without_need
-  { trigger: "privacy_exposure", dimension: "datos", ceiling: "B", rule: "band_cap_privacy_exposure" },
+  {
+    triggers: [
+      "privacy_exposure",
+      "exposed_pii_to_model",
+      "hidden_pii_usage_from_authority",
+      "used_sensitive_commercial_data",
+      "shared_third_party_confidential",
+    ],
+    dimension: "datos",
+    ceiling: "B",
+    rule: "band_cap_privacy_exposure",
+  },
   // no_monitoring_or_rollback_defined_for_agent
-  { trigger: "missing_agent_monitoring", dimension: "juicio", ceiling: "B", rule: "band_cap_missing_monitoring" },
+  {
+    triggers: ["missing_agent_monitoring", "ignored_escalation_path"],
+    dimension: "juicio",
+    ceiling: "B",
+    rule: "band_cap_missing_monitoring",
+  },
   // final_response_has_no_business_metric_or_owner
-  { trigger: "weak_impact_translation", dimension: "impacto", ceiling: "M", rule: "band_cap_weak_impact" },
+  {
+    triggers: ["weak_impact_translation"],
+    dimension: "impacto",
+    ceiling: "M",
+    rule: "band_cap_weak_impact",
+  },
 ];
 
 const ACTION_RANK: Record<Recommendation, number> = {
@@ -102,14 +128,14 @@ export function applyOverrides(raw: JudgeOutput): ApplyOverridesResult {
   ]);
   const dimensions = raw.dimensions.map((d) => {
     const capRule = DIMENSION_BAND_CAPS.find(
-      (c) => c.dimension === d.id && triggers.has(c.trigger),
+      (c) => c.dimension === d.id && c.triggers.some((t) => triggers.has(t)),
     );
     if (!capRule || BAND_RANK[d.band] <= BAND_RANK[capRule.ceiling]) return d;
     applied.push({
       rule: capRule.rule,
       before: d.band,
       after: capRule.ceiling,
-      reason: `Override determinista de la rúbrica: gap/risk "${capRule.trigger}" fuerza ${d.id} a banda máxima ${capRule.ceiling}.`,
+      reason: `Override determinista de la rúbrica: ${capRule.triggers.filter((t) => triggers.has(t)).join("/")} fuerza ${d.id} a banda máxima ${capRule.ceiling}.`,
     });
     return { ...d, band: capRule.ceiling };
   });
