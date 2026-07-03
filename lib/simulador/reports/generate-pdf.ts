@@ -6,6 +6,7 @@ import {
   capFirst,
   computeOverall,
   humanRiskType,
+  normalizeReportDimensions,
   redactSensitiveEvidence,
   severityLabel,
   type ReportPayload,
@@ -229,9 +230,15 @@ export async function generateReportPdf(
     .text(`Banda ${BAND_DISPLAY[overall.band]}`, PAGE_MARGIN + 112, heroY + 81);
   doc.y = heroY + 142;
 
-  sectionTitle(doc, "Dimensiones", "Las cinco dimensiones");
+  sectionTitle(doc, "Dimensiones", "Las seis dimensiones");
+  const normalizedDimensions = new Map(
+    normalizeReportDimensions(payload).map((dimension) => [
+      dimension.id,
+      dimension,
+    ]),
+  );
   for (const dimension of DIMENSIONS) {
-    const result = payload.dimensions.find((item) => item.id === dimension.id);
+    const result = normalizedDimensions.get(dimension.id);
     const band = result?.band ?? "M";
     ensureSpace(doc, 72);
     const rowY = doc.y;

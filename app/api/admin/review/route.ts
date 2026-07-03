@@ -11,38 +11,52 @@
  */
 
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isStaffEmail } from "@/lib/simulador/is-staff";
+import { requireSimuladorStaff } from "@/lib/simulador/admin-auth";
 
 export const runtime = "nodejs";
 
+type RiskEvent = {
+  type?: string;
+  severity?: "low" | "medium" | "high";
+  step_ordinal?: number;
+  evidence_text?: string;
+};
+
+type EvaluationRunRow = {
+  id: string;
+  simulation_session_id: string | null;
+  rubric_version: string;
+  judge_model: string;
+  computed_recommendation: string;
+  dimension_scores_json: unknown;
+  risk_summary_json: unknown;
+  raw_judge_output_json: unknown;
+  override_applied_json: unknown;
+  created_at: string;
+};
+
 export async function GET() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
-  }
-  if (!isStaffEmail(user.email)) {
-    return NextResponse.json(
-      { error: "Acceso restringido a staff de Itera." },
-      { status: 403 },
-    );
-  }
+  const staff = await requireSimuladorStaff();
+  if (!staff.ok) return staff.response;
 
   const admin = createAdminClient();
-  const { data: staffBridgeUserId, error: staffErr } = await admin
-    .schema("simulador")
-    .rpc("ensure_bridge_user", { p_auth_user_id: user.id });
+  let staffBridgeUserId: string | null = null;
 
-  if (staffErr || !staffBridgeUserId) {
-    console.error("[admin/review] staff bridge failed", staffErr);
-    return NextResponse.json(
-      { error: "No se pudo inicializar el usuario staff." },
-      { status: 500 },
-    );
+  if (staff.user) {
+    const { data: bridgeUserId, error: staffErr } = await admin
+      .schema("simulador")
+      .rpc("ensure_bridge_user", { p_auth_user_id: staff.user.id });
+
+    if (staffErr || !bridgeUserId) {
+      console.error("[admin/review] staff bridge failed", staffErr);
+      return NextResponse.json(
+        { error: "No se pudo inicializar el usuario staff." },
+        { status: 500 },
+      );
+    }
+
+    staffBridgeUserId = bridgeUserId;
   }
 
   const { data: items, error } = await admin
@@ -76,12 +90,14 @@ export async function GET() {
 
     let report = null;
     let decisions = null;
-    if (evalRun?.simulation_session_id) {
+    const evalRunRow = evalRun as EvaluationRunRow | null;
+
+    if (evalRunRow?.simulation_session_id) {
       const { data: r } = await admin
         .schema("simulador")
         .from("reports")
         .select("id, status, payload_json, generated_at")
-        .eq("simulation_session_id", evalRun.simulation_session_id)
+        .eq("simulation_session_id", evalRunRow.simulation_session_id)
         .eq("report_type", "participant_mirror")
         .maybeSingle();
       report = r ?? null;
@@ -108,12 +124,35 @@ export async function GET() {
       completed_review_count: it.completed_review_count,
       last_reviewed_at: it.last_reviewed_at,
       published_at: it.published_at,
-      session_id: evalRun?.simulation_session_id ?? null,
-      evaluation_run: evalRun,
+      session_id: evalRunRow?.simulation_session_id ?? null,
+      evaluation_run: evalRunRow
+        ? {
+            ...evalRunRow,
+            dimension_scores_json: Array.isArray(evalRunRow.dimension_scores_json)
+              ? evalRunRow.dimension_scores_json
+              : [],
+            risk_summary_json: normalizeRiskEvents(
+              evalRunRow.risk_summary_json,
+              evalRunRow.raw_judge_output_json,
+            ),
+          }
+        : null,
       report,
       review_decisions: decisions,
     });
   }
 
   return NextResponse.json({ items: enriched, current_staff_user_id: staffBridgeUserId });
+}
+
+function normalizeRiskEvents(summary: unknown, rawOutput: unknown): RiskEvent[] {
+  if (Array.isArray(summary)) return summary as RiskEvent[];
+  if (
+    rawOutput &&
+    typeof rawOutput === "object" &&
+    Array.isArray((rawOutput as { risk_events?: unknown }).risk_events)
+  ) {
+    return (rawOutput as { risk_events: RiskEvent[] }).risk_events;
+  }
+  return [];
 }

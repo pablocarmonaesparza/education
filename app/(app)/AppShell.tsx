@@ -7,7 +7,7 @@ import { AppSidebar } from "@/components/simulador/AppSidebar";
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? "";
   const isRuntime =
-    pathname.startsWith("/case/") || pathname.startsWith("/jugar/");
+    pathname.startsWith("/case/") || pathname.startsWith("/practica/");
   // El runtime y el reporte son surfaces autónomas (sin sidebar ni padding).
   // /admin SÍ usa el AppSidebar (con su nav admin), así que ya NO es surface-owned:
   // el sidebar es la navegación del backoffice y las páginas admin dejan de traer

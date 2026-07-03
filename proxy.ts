@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
-import { isDevBypassEnabled } from '@/lib/dev/devBypass'
+import { isDevBypassEnabled, isDevBypassActive } from '@/lib/dev/devBypass'
 
 const protectedRoutes = [
   '/dashboard',
@@ -10,6 +10,15 @@ const protectedRoutes = [
   '/onboarding',
 ]
 
+const internalReviewRoutes = [
+  '/aprender-demo',
+  '/case-demo',
+  '/case-template',
+  '/design',
+  '/dev',
+  '/exercise-lab',
+]
+
 function matchesRoute(pathname: string, routes: string[]) {
   return routes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
 }
@@ -17,8 +26,13 @@ function matchesRoute(pathname: string, routes: string[]) {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   const isProtected = matchesRoute(pathname, protectedRoutes)
+  const isInternalReviewRoute = matchesRoute(pathname, internalReviewRoutes)
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-itera-pathname', pathname)
+
+  if (isInternalReviewRoute && !isDevBypassEnabled()) {
+    return new NextResponse('Not found', { status: 404 })
+  }
 
   try {
     // Validate environment variables
@@ -77,13 +91,14 @@ export async function proxy(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     // ── Auth layer: rutas activas del Simulador que requieren sesión ─────
-    // Dev bypass: la cookie itera_dev_bypass=1 (seteada desde /dev) salta el
-    // guard, igual que los layouts (app)/(onboarding). El proxy corre ANTES
-    // que los layouts, así que sin esto el bypass nunca funcionaba end-to-end.
-    // En prod se apaga con NEXT_PUBLIC_DEV_BYPASS_DISABLED=1 (lib/dev/devBypass).
-    const devBypass =
-      isDevBypassEnabled() &&
-      request.cookies.get('itera_dev_bypass')?.value === '1'
+    // Dev bypass: en dev local está ON por default (cualquier browser entra sin
+    // togglear); en preview es opt-in con cookie `itera_dev_bypass=1`; opt-out
+    // local con `=0` desde /dev. Mismo helper que los layouts (app)/(onboarding)
+    // y las APIs, así que el bypass es consistente end-to-end. El proxy corre
+    // ANTES que los layouts. En prod nunca aplica (lib/dev/devBypass).
+    const devBypass = isDevBypassActive(
+      request.cookies.get('itera_dev_bypass')?.value,
+    )
 
     // If the user is not authenticated and trying to access a protected route, redirect to login
     if (!user && isProtected && !devBypass) {

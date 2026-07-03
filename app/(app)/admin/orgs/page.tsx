@@ -87,8 +87,7 @@ export default function AdminOrgsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <div className="eyebrow">Itera staff · clientes</div>
-            <h1 className="display mt-4 ts-display text-[var(--text-primary)]">
+            <h1 className="display ts-display text-[var(--text-primary)]">
               Orgs y sprints
             </h1>
             <p className="mt-4 max-w-2xl ts-body leading-[1.55] text-[var(--text-secondary)]">

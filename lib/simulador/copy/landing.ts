@@ -112,8 +112,8 @@ export const landingCopy = {
       },
       {
         ordinal: "02",
-        title: "Evaluación · 5 dimensiones",
-        body: "Contexto, privacidad, validación, juicio y decisión. Bandas Alto/Medio/Bajo por dimensión. Sin score público — la banda es la unidad narrativa.",
+        title: "Evaluación · 6 dimensiones",
+        body: "Contexto, datos, ejecución con IA, validación, juicio e impacto. Bandas Alto/Medio/Bajo por dimensión. Sin score público — la banda es la unidad narrativa.",
       },
       {
         ordinal: "03",
@@ -131,7 +131,7 @@ export const landingCopy = {
   },
 
   // ============================================================================
-  // DIMENSIONES (5)
+  // DIMENSIONES (6)
   // ============================================================================
   dimensions: {
     eyebrow: "Qué medimos",
@@ -145,9 +145,14 @@ export const landingCopy = {
         body: "Encuadre de situación, audiencia, tono y restricciones.",
       },
       {
-        id: "privacidad",
-        label: "Privacidad",
-        body: "Protección de datos personales, comerciales y de terceros.",
+        id: "datos",
+        label: "Datos",
+        body: "Información suficiente, minimizada, con permisos y calidad.",
+      },
+      {
+        id: "ejecucion_ia",
+        label: "Ejecución con IA",
+        body: "Prompt, workflow o agente configurado según el nivel del trabajo.",
       },
       {
         id: "validacion",
@@ -160,9 +165,9 @@ export const landingCopy = {
         body: "Lectura de riesgo, autoridad y consecuencias.",
       },
       {
-        id: "decision",
-        label: "Decisión",
-        body: "Claridad de acción y comunicación responsable al manager.",
+        id: "impacto",
+        label: "Impacto",
+        body: "Traducción del trabajo con IA a acción, ahorro o resultado visible.",
       },
     ],
     footnote: "NIST AI 600-1 · Harvard Case Method · ISO/IEC 42001",

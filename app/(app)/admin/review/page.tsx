@@ -16,7 +16,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { AppleButton, AppleTextarea } from "@/components/simulador/apple";
+import { AppleBadge, AppleButton, AppleTextarea } from "@/components/simulador/apple";
 
 interface DimensionScore {
   id: string;
@@ -138,8 +138,7 @@ export default function AdminReviewPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <div className="eyebrow">Itera staff · cola interna</div>
-            <h1 className="display mt-4 ts-display text-[var(--text-primary)]">
+            <h1 className="display ts-display text-[var(--text-primary)]">
               Review humano de reports
             </h1>
             <p className="mt-4 ts-body text-[var(--text-secondary)] max-w-2xl leading-[1.55]">
@@ -237,18 +236,10 @@ function QueueCard({
           </p>
         </div>
         <div className="flex flex-col items-end gap-2">
-          <span className="ts-caption-1 font-semibold px-2 py-1 rounded-full bg-[var(--band-b-bg)] text-[var(--band-b-text)]">
-            {highRisks.length} risk high
-          </span>
-          <span
-            className={`ts-caption-1 font-semibold px-2 py-1 rounded-full ${
-              sla.isOverdue
-                ? "bg-[var(--band-b-bg)] text-[var(--band-b-text)]"
-                : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
-            }`}
-          >
+          <AppleBadge tone="danger">{highRisks.length} risk high</AppleBadge>
+          <AppleBadge tone={sla.isOverdue ? "danger" : "neutral"}>
             SLA {sla.label}
-          </span>
+          </AppleBadge>
         </div>
       </div>
 
@@ -300,18 +291,16 @@ function QueueCard({
         </div>
       )}
 
-      {/* Dimensions */}
+      {/* Dimensions — color por banda: rojo (B) salta a la vista primero. */}
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-2">
         {dims.map((d) => (
           <div
             key={d.id}
-            className="rounded-lg bg-[var(--surface-2)] p-3 text-center"
+            className={`rounded-lg p-3 text-center ${bandSurfaceClass(d.band)}`}
           >
-            <div className="eyebrow">{d.id}</div>
-            <div className="mt-1 ts-body-lg font-semibold text-[var(--text-primary)] mono">
-              {d.band}
-            </div>
-            <div className="ts-caption-2 mono text-[var(--text-tertiary)]">
+            <div className="ts-caption-1 font-medium opacity-80">{d.id}</div>
+            <div className="mt-1 ts-body-lg font-semibold mono">{d.band}</div>
+            <div className="ts-caption-2 mono opacity-70">
               {(d.confidence * 100).toFixed(0)}%
             </div>
           </div>
@@ -415,6 +404,12 @@ function QueueCard({
       </div>
     </motion.div>
   );
+}
+
+function bandSurfaceClass(band: "A" | "M" | "B") {
+  if (band === "A") return "bg-[var(--band-a-bg)] text-[var(--band-a-text)]";
+  if (band === "M") return "bg-[var(--band-m-bg)] text-[var(--band-m-text)]";
+  return "bg-[var(--band-b-bg)] text-[var(--band-b-text)]";
 }
 
 function getSlaState(dueAt: string | null) {

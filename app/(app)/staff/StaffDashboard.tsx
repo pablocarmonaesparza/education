@@ -528,9 +528,8 @@ export default function StaffDashboard({
             className="flex items-end justify-between mb-8"
           >
             <div>
-              <div className="eyebrow">Equipo</div>
-              <h2 className="display mt-2 ts-title-1 text-[var(--text-primary)]">
-                {agg.total} miembros del sprint.
+              <h2 className="display ts-title-1 text-[var(--text-primary)]">
+                {agg.total} miembros del sprint
               </h2>
             </div>
           </motion.div>
@@ -645,9 +644,8 @@ export default function StaffDashboard({
             className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between"
           >
             <div>
-              <div className="eyebrow">Reportes</div>
-              <h2 className="display mt-2 ts-title-1 text-[var(--text-primary)]">
-                Evidencia lista para revisar.
+              <h2 className="display ts-title-1 text-[var(--text-primary)]">
+                Evidencia lista para revisar
               </h2>
               <p className="mt-3 ts-body text-[var(--text-secondary)] max-w-2xl">
                 Abre los reportes individuales ya generados. El reporte agregado
@@ -711,8 +709,7 @@ export default function StaffDashboard({
         {/* Matriz agregada */}
         <section className="max-w-6xl mx-auto px-6 mt-8">
           <motion.div {...fadeUp} className="mb-8">
-            <div className="eyebrow">Resultado agregado</div>
-            <h2 className="display mt-2 ts-title-1 text-[var(--text-primary)]">
+            <h2 className="display ts-title-1 text-[var(--text-primary)]">
               Matriz dimensión × banda
             </h2>
             <p className="mt-3 ts-body text-[var(--text-secondary)] max-w-2xl">
@@ -833,8 +830,7 @@ export default function StaffDashboard({
         {/* Acciones recomendadas */}
         <section className="max-w-6xl mx-auto px-6 mt-8">
           <motion.div {...fadeUp} className="mb-8">
-            <div className="eyebrow">Acciones recomendadas</div>
-            <h2 className="display mt-2 ts-title-1 text-[var(--text-primary)]">
+            <h2 className="display ts-title-1 text-[var(--text-primary)]">
               Cuatro caminos por persona
             </h2>
           </motion.div>

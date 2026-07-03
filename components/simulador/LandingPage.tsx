@@ -14,10 +14,13 @@ import {
   MANAGER_ACTIONS,
 } from "@/lib/simulador/config";
 
+// Secciones below-the-fold: revela al entrar al viewport por scroll real.
+// `amount` (fracción visible) dispara más confiable que `margin` negativo.
+// (El hero NO usa esto: anima por CSS para no depender de JS — ver .hero-rise.)
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-80px" },
+  viewport: { once: true, amount: 0.15 },
   transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
 };
 
@@ -29,39 +32,39 @@ export default function LandingPage() {
     <LazyMotion features={domAnimation} strict>
       <PublicNav />
 
-      {/* ============ HERO ============ */}
+      {/* ============ HERO ============
+          Animación de entrada por CSS (.hero-rise en globals.css), NO por
+          framer-motion: el contenido above-the-fold nunca debe depender de JS
+          ni de un IntersectionObserver para ser visible. */}
       <section className="surface-canvas section-pad">
         <div className="max-w-5xl mx-auto px-6 text-center">
-          <m.div {...fadeUp}>
+          <div className="hero-rise">
             <span className="eyebrow">
               Para Head/VP de Marketing, Growth y Operations · LATAM
             </span>
-          </m.div>
+          </div>
 
-          <m.h1
-            {...fadeUp}
-            transition={{ ...fadeUp.transition, delay: 0.05 }}
-            className="display display-tight mt-6 text-[var(--text-primary)] ts-display-lg sm:ts-display-4xl md:ts-display-5xl"
+          <h1
+            className="hero-rise display display-tight mt-6 text-[var(--text-primary)] ts-display-lg sm:ts-display-4xl md:ts-display-5xl"
+            style={{ animationDelay: "0.05s" }}
           >
             ¿Tu equipo usa IA
             <br />
             <span className="accent-text">con criterio?</span>
-          </m.h1>
+          </h1>
 
-          <m.p
-            {...fadeUp}
-            transition={{ ...fadeUp.transition, delay: 0.1 }}
-            className="mt-8 ts-body-lg sm:ts-body-xl text-[var(--text-secondary)] max-w-2xl mx-auto leading-[1.5]"
+          <p
+            className="hero-rise mt-8 ts-body-lg sm:ts-body-xl text-[var(--text-secondary)] max-w-2xl mx-auto leading-[1.5]"
+            style={{ animationDelay: "0.1s" }}
           >
             Mide y mejora cómo tu equipo decide cuando usa IA en flujos reales.
             <br className="hidden sm:block" />
             Diagnóstico operativo de 30 días. Reporte ejecutivo por persona.
-          </m.p>
+          </p>
 
-          <m.div
-            {...fadeUp}
-            transition={{ ...fadeUp.transition, delay: 0.15 }}
-            className="mt-12 flex flex-wrap items-center justify-center gap-3"
+          <div
+            className="hero-rise mt-12 flex flex-wrap items-center justify-center gap-3"
+            style={{ animationDelay: "0.15s" }}
           >
             <AppleButton
               as={Link}
@@ -71,15 +74,14 @@ export default function LandingPage() {
             >
               Agendar diagnóstico para mi equipo
             </AppleButton>
-          </m.div>
+          </div>
 
-          <m.p
-            {...fadeUp}
-            transition={{ ...fadeUp.transition, delay: 0.2 }}
-            className="mt-10 ts-subhead text-[var(--text-tertiary)]"
+          <p
+            className="hero-rise mt-10 ts-subhead text-[var(--text-tertiary)]"
+            style={{ animationDelay: "0.2s" }}
           >
             SaaS B2B mid-market · servicios profesionales · ecommerce · LATAM
-          </m.p>
+          </p>
         </div>
       </section>
 

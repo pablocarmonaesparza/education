@@ -12,7 +12,7 @@
 
 import type { JudgeInputContext } from "./types";
 
-export const JUDGE_PROMPT_VERSION = "v1";
+export const JUDGE_PROMPT_VERSION = "v2";
 
 export function buildSystemPrompt(): string {
   return [
@@ -73,9 +73,23 @@ export function buildUserPrompt(ctx: JudgeInputContext): string {
   const transcript = ctx.steps
     .sort((a, b) => a.ordinal - b.ordinal)
     .map((s) => {
+      // Frente A: si el step trae evidencia validada por bloque (payload tipado
+      // por Zod + metrics), esa es la fuente PRIMARIA. Las respuestas crudas de
+      // `responses` quedan solo como fallback para steps legacy sin block_id.
+      const ev = ctx.exerciseEvidence?.[s.step_key];
+      if (ev) {
+        const metrics =
+          ev.metrics && Object.keys(ev.metrics).length
+            ? `\nmetrics: ${JSON.stringify(ev.metrics)}`
+            : "";
+        return (
+          `─── Step ${s.ordinal} (${s.step_key}) · bloque ${ev.block_id} · evidencia validada ───\n` +
+          `${JSON.stringify(ev.payload, null, 2)}${metrics}`
+        );
+      }
       const resp = ctx.responses[s.step_key];
       const respJson = resp === undefined ? "(sin respuesta)" : JSON.stringify(resp, null, 2);
-      return `─── Step ${s.ordinal} (${s.step_key}) ───\n${respJson}`;
+      return `─── Step ${s.ordinal} (${s.step_key}) · legacy ───\n${respJson}`;
     })
     .join("\n\n");
 
@@ -97,11 +111,12 @@ export function buildUserPrompt(ctx: JudgeInputContext): string {
     `# Steps del caso`,
     steps,
     ``,
-    `# Transcript del participante (respuestas por step)`,
+    `# Transcript del participante (evidencia validada por bloque cuando existe; cruda en steps legacy)`,
     transcript,
     ``,
     `# Instrucción`,
-    `Evalúa cada dimensión de la rúbrica (5 bandas A/M/B con rationale + confidence).`,
+    `Evalúa las 6 dimensiones de la rúbrica (banda A/M/B con rationale + confidence).`,
+    `Prioriza la evidencia validada por bloque sobre las respuestas crudas.`,
     `Identifica risk_events del transcript (sólo con evidencia textual).`,
     `Lista gaps (issues operativos accionables) + strengths (lo que hizo bien).`,
     `Emite recommendation final con action + applies_to + 2-3 next_week_actions concretos.`,
@@ -122,15 +137,15 @@ export const JUDGE_TOOL_SCHEMA = {
     properties: {
       dimensions: {
         type: "array",
-        minItems: 5,
-        maxItems: 5,
+        minItems: 6,
+        maxItems: 6,
         items: {
           type: "object",
           required: ["id", "band", "rationale", "confidence"],
           properties: {
             id: {
               type: "string",
-              enum: ["contexto", "privacidad", "validacion", "juicio", "decision"],
+              enum: ["contexto", "datos", "ejecucion_ia", "validacion", "juicio", "impacto"],
             },
             band: { type: "string", enum: ["A", "M", "B"] },
             rationale: { type: "string", minLength: 10 },

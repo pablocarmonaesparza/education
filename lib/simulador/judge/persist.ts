@@ -6,6 +6,8 @@
  *   2. risk_events (uno por entry, con session_id + step_id resuelto desde ordinal)
  *   3. reports (status='pending_review' si hay risk high, sino 'published')
  *   4. human_review_queue (si pending_review)
+ *   5. practice_unlocks (gap → beat vía case_practice_beats; fallback por
+ *      dimensión en banda B/M contra el catálogo activo de beats)
  *
  * Idempotencia: si ya existe un evaluation_run para la sesión + rubric_version,
  * la función devuelve `{ skipped: true, reason }` sin tocar nada. Para
@@ -259,6 +261,120 @@ export async function evaluateAndPersist(
     if (hqErr) {
       console.warn("[judge/persist] human_review_queue insert warn", hqErr);
     }
+  }
+
+  // ── 5. Practice unlocks: gap → beat, fallback por dimensión débil ────────
+  // Cierra el eslabón evaluación → remediación: cada gap con mapping en
+  // case_practice_beats desbloquea su beat; las dimensiones en banda B/M sin
+  // gap mapeado caen al catálogo activo por dimension_key. Nunca debe romper
+  // la persistencia del reporte — solo warns.
+  try {
+    const { data: gapDefs } = await admin
+      .schema("simulador")
+      .from("gap_definitions")
+      .select("id, gap_key, dimension_key")
+      .eq("case_template_id", tmpl.id);
+    const gapDefByKey = new Map(
+      (gapDefs ?? []).map((g) => [g.gap_key as string, g]),
+    );
+
+    const { data: beatMappings } = await admin
+      .schema("simulador")
+      .from("case_practice_beats")
+      .select("gap_definition_id, practice_beat_id")
+      .eq("case_template_id", tmpl.id);
+    const beatByGapDefId = new Map(
+      (beatMappings ?? []).map((m) => [
+        m.gap_definition_id as string,
+        m.practice_beat_id as string,
+      ]),
+    );
+
+    const dueAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const unlockRows: Array<{
+      user_id: string;
+      sprint_id: string | null;
+      practice_beat_id: string;
+      source_session_id: string;
+      gap_key: string | null;
+      dimension_key: string | null;
+      unlock_reason: string;
+      due_at: string;
+    }> = [];
+    const coveredDimensions = new Set<string>();
+
+    for (const gap of result.final.gaps) {
+      const def = gapDefByKey.get(gap.id);
+      const beatId = def ? beatByGapDefId.get(def.id as string) : undefined;
+      if (!def || !beatId) continue;
+      unlockRows.push({
+        user_id: session.user_id,
+        sprint_id: session.sprint_id ?? null,
+        practice_beat_id: beatId,
+        source_session_id: simulationSessionId,
+        gap_key: def.gap_key as string,
+        dimension_key: def.dimension_key as string,
+        unlock_reason: `gap:${def.gap_key}`,
+        due_at: dueAt,
+      });
+      coveredDimensions.add(def.dimension_key as string);
+    }
+
+    const weakDims = result.final.dimensions
+      .filter((d) => d.band === "B" || d.band === "M")
+      .map((d) => d.id)
+      .filter((d) => !coveredDimensions.has(d));
+    if (weakDims.length > 0) {
+      const { data: fallbackBeats } = await admin
+        .schema("simulador")
+        .from("practice_beats")
+        .select("id, dimension_key, level")
+        .eq("status", "active")
+        .in("dimension_key", weakDims)
+        .order("level", { ascending: true });
+      const beatByDim = new Map<string, string>();
+      for (const b of fallbackBeats ?? []) {
+        const dim = b.dimension_key as string;
+        if (!beatByDim.has(dim)) beatByDim.set(dim, b.id as string);
+      }
+      for (const dim of weakDims) {
+        const beatId = beatByDim.get(dim);
+        if (!beatId) continue;
+        unlockRows.push({
+          user_id: session.user_id,
+          sprint_id: session.sprint_id ?? null,
+          practice_beat_id: beatId,
+          source_session_id: simulationSessionId,
+          gap_key: null,
+          dimension_key: dim,
+          unlock_reason: `weak_dimension:${dim}`,
+          due_at: dueAt,
+        });
+      }
+    }
+
+    // Dos gaps pueden mapear al mismo beat — un unlock por beat y sesión.
+    const seenBeats = new Set<string>();
+    const dedupedUnlocks = unlockRows.filter((row) => {
+      if (seenBeats.has(row.practice_beat_id)) return false;
+      seenBeats.add(row.practice_beat_id);
+      return true;
+    });
+
+    if (dedupedUnlocks.length > 0) {
+      const { error: puErr } = await admin
+        .schema("simulador")
+        .from("practice_unlocks")
+        .upsert(dedupedUnlocks, {
+          onConflict: "user_id,practice_beat_id,source_session_id",
+          ignoreDuplicates: true,
+        });
+      if (puErr) {
+        console.warn("[judge/persist] practice_unlocks upsert warn", puErr);
+      }
+    }
+  } catch (puEx) {
+    console.warn("[judge/persist] practice_unlocks step failed", puEx);
   }
 
   if (reportStatus === "published" && isNewReport) {

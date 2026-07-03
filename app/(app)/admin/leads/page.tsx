@@ -9,7 +9,15 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { AppleButton, AppleTextarea } from "@/components/simulador/apple";
+import { SelectItem } from "@heroui/react";
+import {
+  AppleButton,
+  AppleKpiCard,
+  AppleSelect,
+  AppleTabs,
+  AppleTextarea,
+  type AppleTabItem,
+} from "@/components/simulador/apple";
 
 type LeadStatus =
   | "new"
@@ -154,12 +162,16 @@ export default function AdminLeadsPage() {
     }
   }
 
-  const summaryItems = useMemo(() => {
+  const tabItems: AppleTabItem[] = useMemo(() => {
     const counts = data?.summary.by_status;
-    return STATUSES.map((item) => ({
-      ...item,
-      count: counts?.[item.id] ?? 0,
-    }));
+    return [
+      { id: "all", label: "Todos", badge: data?.summary.total ?? 0 },
+      ...STATUSES.map((item) => ({
+        id: item.id,
+        label: item.label,
+        badge: counts?.[item.id] ?? 0,
+      })),
+    ];
   }, [data]);
   const funnel = data?.summary.funnel;
 
@@ -172,8 +184,7 @@ export default function AdminLeadsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <div className="eyebrow">Itera staff · adquisición</div>
-            <h1 className="display mt-4 ts-display text-[var(--text-primary)]">
+            <h1 className="display ts-display text-[var(--text-primary)]">
               Leads del field-test
             </h1>
             <p className="mt-4 max-w-2xl ts-body leading-[1.55] text-[var(--text-secondary)]">
@@ -190,71 +201,21 @@ export default function AdminLeadsPage() {
           )}
 
           <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            <FunnelStat
-              label="Inicios"
-              value={funnel?.started ?? 0}
-              sub={`${funnel?.window_days ?? 30} días`}
-            />
-            <FunnelStat
-              label="Enviados"
-              value={funnel?.submitted ?? 0}
-              sub={`${funnel?.submit_rate ?? 0}% submit`}
-            />
-            <FunnelStat
-              label="Report vistos"
-              value={funnel?.report_viewed ?? 0}
-              sub="post-valor"
-            />
-            <FunnelStat
-              label="Leads"
-              value={funnel?.lead_captured ?? 0}
-              sub={`${funnel?.start_to_lead_rate ?? 0}% total`}
-            />
-            <FunnelStat
-              label="Report → lead"
-              value={`${funnel?.report_to_lead_rate ?? 0}%`}
-              sub="conversión"
-            />
-            <FunnelStat
-              label="Abandono"
-              value={funnel?.abandoned ?? 0}
-              sub="explícito/inferido"
-            />
+            <AppleKpiCard label="Inicios" value={String(funnel?.started ?? 0)} />
+            <AppleKpiCard label="Enviados" value={String(funnel?.submitted ?? 0)} />
+            <AppleKpiCard label="Report vistos" value={String(funnel?.report_viewed ?? 0)} />
+            <AppleKpiCard label="Leads" value={String(funnel?.lead_captured ?? 0)} />
+            <AppleKpiCard label="Report → lead" value={`${funnel?.report_to_lead_rate ?? 0}%`} />
+            <AppleKpiCard label="Abandono" value={String(funnel?.abandoned ?? 0)} />
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {summaryItems.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setStatus(item.id)}
-                className={`rounded-2xl border p-4 text-left transition-colors ${
-                  status === item.id
-                    ? "border-[var(--accent)] bg-[var(--accent-soft)]"
-                    : "border-[var(--hairline)] bg-[var(--surface)] hover:bg-[var(--surface-2)]"
-                }`}
-              >
-                <div className="eyebrow">{item.label}</div>
-                <div className="mt-2 mono ts-title-3 font-semibold text-[var(--text-primary)]">
-                  {item.count}
-                </div>
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-5 flex flex-wrap gap-2">
-            <AppleButton
-              size="sm"
-              tone={status === "all" ? "primary" : "secondary"}
-              className={
-                status === "all"
-                  ? "accent-bg text-white"
-                  : "bg-[var(--surface-2)] text-[var(--text-primary)]"
-              }
-              onPress={() => setStatus("all")}
-            >
-              Todos
-            </AppleButton>
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+            <AppleTabs
+              ariaLabel="Filtrar leads por status"
+              items={tabItems}
+              value={status}
+              onChange={(value) => setStatus(value as LeadStatus | "all")}
+            />
             <AppleButton
               tone="secondary"
               size="sm"
@@ -291,26 +252,6 @@ export default function AdminLeadsPage() {
         </section>
       </main>
     </>
-  );
-}
-
-function FunnelStat({
-  label,
-  value,
-  sub,
-}: {
-  label: string;
-  value: number | string;
-  sub: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-[var(--hairline)] bg-[var(--surface)] p-4">
-      <div className="eyebrow">{label}</div>
-      <div className="mt-2 mono ts-title-3 font-semibold text-[var(--text-primary)]">
-        {value}
-      </div>
-      <div className="mt-1 ts-caption-1 text-[var(--text-tertiary)]">{sub}</div>
-    </div>
   );
 }
 
@@ -399,21 +340,20 @@ function LeadCard({
         />
 
         <div className="flex flex-col gap-2">
-          <select
+          <AppleSelect
             aria-label="Cambiar status del lead"
-            value={lead.status}
-            onChange={(event) =>
-              onPatch({ status: event.target.value as LeadStatus })
-            }
-            disabled={isSaving}
-            className="h-10 rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 ts-subhead text-[var(--text-primary)]"
+            selectedKeys={[lead.status]}
+            onSelectionChange={(keys) => {
+              const next = Array.from(keys)[0] as LeadStatus | undefined;
+              if (next) onPatch({ status: next });
+            }}
+            isDisabled={isSaving}
+            size="sm"
           >
             {STATUSES.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.label}
-              </option>
+              <SelectItem key={item.id}>{item.label}</SelectItem>
             ))}
-          </select>
+          </AppleSelect>
 
           <AppleButton
             size="sm"

@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import type { RuntimeCaseMeta } from "@/lib/simulador/runtime-case-meta";
 
 export type SessionStatus = "creating" | "ready" | "error";
-export type RuntimeSessionMode = "authenticated" | "field_test";
+export type RuntimeSessionMode = "authenticated";
 
 export interface UseSessionState {
   status: SessionStatus;
@@ -43,9 +43,7 @@ export interface UseSessionState {
 
 export function useSession(
   caseSlug: string | null | undefined,
-  options: { mode?: RuntimeSessionMode } = {},
 ): UseSessionState {
-  const mode = options.mode ?? "authenticated";
   const [state, setState] = useState<UseSessionState>({
     status: "creating",
     sessionId: null,
@@ -65,9 +63,7 @@ export function useSession(
 
     async function init() {
       try {
-        const basePath =
-          mode === "field_test" ? "/api/field-test/sessions" : "/api/sessions";
-        const res = await fetch(basePath, {
+        const res = await fetch("/api/sessions", {
           method: "POST",
           headers: { "content-type": "application/json" },
           body: JSON.stringify({ case_slug: caseSlug }),
@@ -82,14 +78,13 @@ export function useSession(
           );
         }
 
-        // Resume → traer respuestas previas. Field-test create can return
-        // responses directly because it is token-scoped, not auth-scoped.
+        // Resume → traer respuestas previas.
         let responses: Record<string, unknown> =
           data?.responses && typeof data.responses === "object"
             ? (data.responses as Record<string, unknown>)
             : {};
         if (data.resumed) {
-          const r = await fetch(`${basePath}/${data.session_id}`, {
+          const r = await fetch(`/api/sessions/${data.session_id}`, {
             cache: "no-store",
           });
           if (cancelled) return;
@@ -143,7 +138,7 @@ export function useSession(
     return () => {
       cancelled = true;
     };
-  }, [caseSlug, mode]);
+  }, [caseSlug]);
 
   return state;
 }

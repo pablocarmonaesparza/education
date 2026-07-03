@@ -10,7 +10,7 @@
 
 import { useMemo, useState } from "react";
 import { SelectItem } from "@heroui/react";
-import { AppleButton, AppleSelect } from "@/components/simulador/apple";
+import { AppleButton, AppleReveal, AppleSelect } from "@/components/simulador/apple";
 import { CaseCard } from "@/components/simulador/CaseCard";
 import {
   CASES,
@@ -26,7 +26,7 @@ import {
 } from "@/lib/simulador/cases";
 
 // ============================================================================
-// FilterSelect — wrapper de HeroUI Select con los defaults de filtros.
+// FilterSelect — wrapper de AppleSelect (design system) con los defaults de filtros.
 // ============================================================================
 
 function FilterSelect<T extends string>({
@@ -108,7 +108,7 @@ export default function CasosPage() {
     <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-8 py-12 sm:px-12 lg:px-16">
       <div className="mx-auto w-full max-w-[1280px]">
         {/* ============ HEADER ============ */}
-        <header>
+        <AppleReveal as="header">
           <h1 className="display display-tight text-[var(--text-primary)] ts-display sm:ts-display-lg">
             Catálogo de casos
           </h1>
@@ -116,13 +116,14 @@ export default function CasosPage() {
             Elige un caso para empezar tu diagnóstico. Cada caso mide tu
             criterio operativo bajo presión real con IA — no tu memoria.
           </p>
-        </header>
+        </AppleReveal>
 
         {/* ============ FILTROS ============ */}
-        <section
-          aria-label="Filtros"
-          className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
-        >
+        <AppleReveal delay={0.04} className="mt-10">
+          <section
+            aria-label="Filtros"
+            className="flex flex-col gap-3 sm:flex-row sm:flex-wrap"
+          >
           <FilterSelect
             placeholder="Nivel"
             options={LEVEL_OPTIONS}
@@ -150,10 +151,12 @@ export default function CasosPage() {
             value={tool}
             onChange={setTool}
           />
-        </section>
+          </section>
+        </AppleReveal>
 
         {/* ============ RESULTS META + SORT ============ */}
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
+        <AppleReveal delay={0.08} className="mt-10">
+          <div className="flex flex-wrap items-center justify-between gap-3">
           <span className="ts-subhead text-[var(--text-secondary)]">
             <span className="font-semibold text-[var(--text-primary)]">
               {filteredSorted.length}
@@ -207,7 +210,7 @@ export default function CasosPage() {
             ))}
           </div>
         ) : (
-          <div className="mt-16 flex flex-col items-center justify-center rounded-[var(--radius-lg)] border border-dashed border-[var(--hairline)] py-20 text-center">
+          <div className="mt-16 flex flex-col items-center justify-center rounded-[var(--radius-lg)] bg-[var(--surface-2)] py-20 text-center">
             <div className="ts-body font-medium text-[var(--text-primary)]">
               No hay casos con esos filtros
             </div>
@@ -216,6 +219,7 @@ export default function CasosPage() {
             </p>
           </div>
         )}
+        </AppleReveal>
       </div>
     </main>
   );

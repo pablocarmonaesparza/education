@@ -1,7 +1,7 @@
 /**
  * Mock output del judge para development sin ANTHROPIC_API_KEY.
  *
- * Devuelve un payload con shape válido (5 dimensions, 1-2 risk events,
+ * Devuelve un payload con shape válido (6 dimensions, 1-2 risk events,
  * gaps + strengths + recommendation) basado heurísticamente en lo que
  * el participante escribió. No es un evaluador real — sirve solo para
  * que el flow E2E (submit → report) funcione localmente sin gastar
@@ -28,7 +28,7 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
     | string
     | undefined;
 
-  // Heurística simple: si dejó PII sin transformar → privacidad B + risk high.
+  // Heurística simple: si dejó PII sin transformar → datos B + risk high.
   const piiFields = ["name", "email", "company"];
   const keptPii = piiFields.some(
     (f) => dataScope?.[f] === "Usar tal cual",
@@ -47,12 +47,23 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
       confidence: 0.75,
     },
     {
-      id: "privacidad",
+      id: "datos",
       band: keptPii ? "B" : "A",
       rationale: keptPii
         ? "Mantuvo campos name/email/company sin transformación al pasarlos al modelo."
         : "Anonimizó o descartó los campos sensibles antes de la llamada.",
       confidence: 0.85,
+    },
+    {
+      id: "ejecucion_ia",
+      band: promptOk && followupOk ? "A" : promptOk ? "M" : "B",
+      rationale:
+        promptOk && followupOk
+          ? "Formuló el prompt con contexto e iteró con un follow-up útil."
+          : promptOk
+            ? "Formuló un prompt razonable pero no iteró ni acotó el output."
+            : "Ejecución con IA débil: prompt corto y sin iteración.",
+      confidence: 0.7,
     },
     {
       id: "validacion",
@@ -77,14 +88,15 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
       confidence: 0.65,
     },
     {
-      id: "decision",
+      id: "impacto",
       band:
         decisionSelect === "option_b" ||
         decisionSelect === "option_c" ||
         /supuestos|pendientes|revisi[oó]n|control/i.test(decisionLabel ?? "")
           ? "A"
           : "M",
-      rationale: "La decisión final fue clara pero podría haber incluido más contexto.",
+      rationale:
+        "La decisión final se tradujo en una acción para la stakeholder, aunque podría cerrar con métrica y owner explícitos.",
       confidence: 0.7,
     },
   ];
@@ -158,12 +170,12 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
         applies_to:
           "Al participante; revisar si el equipo comparte flujos similares con datos de clientes.",
         next_week_actions: [
-          "Revisar política PII para LLM corporativo + checklist de privacidad de 1 página.",
+          "Revisar política PII para LLM corporativo + checklist de minimización de datos.",
           "Coordinar con IT/Legal clarificación antes de usar IA en flujos con datos sensibles.",
           "Re-simular el caso con la rúbrica visible para identificar el gap específico.",
         ],
         reason:
-          "Gap material en privacidad: PII pasado al modelo sin transformación. Requiere remediación antes de operar autónomo en flujos sensibles.",
+          "Gap material en datos: PII pasado al modelo sin transformación. Requiere remediación antes de operar autónomo en flujos sensibles.",
       }
     : {
         action: "entrenar",
@@ -175,7 +187,7 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
           "Repetir el diagnóstico en 4 semanas para medir progreso.",
         ],
         reason:
-          "Criterio sólido en contexto y privacidad. Gap principal en validación de outputs y escalamiento responsable.",
+          "Criterio sólido en contexto y manejo de datos. Gap principal en validación de outputs y escalamiento responsable.",
       };
 
   return {

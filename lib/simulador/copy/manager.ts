@@ -7,7 +7,7 @@
  * en la sección `employee_view`.
  *
  * Decisiones producto consolidadas:
- *   - B5-002 (en flight con codex): matriz 3×5 dimensiones × bandas como
+ *   - B5-002 (en flight con codex): matriz 3×6 dimensiones × bandas como
  *     vista principal del manager. Los labels matriciales viven aquí para
  *     que codex los importe sin reinventar.
  *   - B9-002-D5 (blocked, deps B5-002): override matrix mantiene rama Escalar.
@@ -85,7 +85,7 @@ export const managerCopy = {
       breakdown_template: (a: number, m: number, b: number) =>
         `${a} en banda alta · ${m} media · ${b} baja.`,
       help_text:
-        "Promedio simple de las 5 dimensiones de los participantes con sesión completada.",
+        "Promedio simple de las 6 dimensiones de los participantes con sesión completada.",
     },
     risk: {
       eyebrow: "Eventos de riesgo",
@@ -138,8 +138,8 @@ export const managerCopy = {
   },
 
   // ============================================================================
-  // Matriz 3×5 — bandas × dimensiones (B5-002)
-  // Layout: filas = bandas (A/M/B), columnas = 5 dimensiones.
+  // Matriz 3×6 — bandas × dimensiones (B5-002)
+  // Layout: filas = bandas (A/M/B), columnas = 6 dimensiones.
   // Cada celda muestra la cuenta de participantes que cayeron en esa
   // intersección. Click → drill-down con esa cohorte.
   // ============================================================================
@@ -147,7 +147,7 @@ export const managerCopy = {
     eyebrow: "Resultado agregado",
     headline: "Dimensiones del equipo.",
     body:
-      "Promedio de las 5 dimensiones que medimos en cada caso. Click en una celda para ver quiénes están en esa intersección.",
+      "Promedio de las 6 dimensiones que medimos en cada caso. Click en una celda para ver quiénes están en esa intersección.",
     row_labels: {
       A: "Banda alta",
       M: "Banda media",
@@ -175,7 +175,7 @@ export const managerCopy = {
     eyebrow: "Promedios por dimensión",
     headline: "Cómo decidió tu equipo, dimensión por dimensión.",
     body:
-      "Promedio de las 5 dimensiones que medimos en cada caso. Click para ver qué participantes están abajo del promedio.",
+      "Promedio de las 6 dimensiones que medimos en cada caso. Click para ver qué participantes están abajo del promedio.",
     score_suffix: "/100",
     empty_label: "Sin promedios todavía.",
     below_average_cta: (dimensionLabel: string) =>

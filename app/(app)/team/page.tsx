@@ -13,6 +13,7 @@
  */
 
 import Link from "next/link";
+import { AppleDivider, AppleReveal } from "@/components/simulador/apple";
 import { CaseCard } from "@/components/simulador/CaseCard";
 import { CASES, type Band, BAND_LABEL } from "@/lib/simulador/cases";
 
@@ -83,7 +84,7 @@ function Card({
 }) {
   return (
     <div
-      className={`rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5 ${className}`}
+      className={`rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-5 ${className}`}
     >
       {children}
     </div>
@@ -164,9 +165,9 @@ function BandPill({ band }: { band: Band }) {
 export default function TeamHomePage() {
   return (
     <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-6 sm:px-10 sm:py-8">
-      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-4">
+      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6">
         {/* ============ HERO ============ */}
-        <header className="flex flex-none items-center gap-4 rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5">
+        <AppleReveal as="header" className="flex flex-none items-center gap-4">
           <Avatar initials={USER.initials} size="lg" ring />
           <div className="min-w-0 flex-1">
             <h1 className="display display-tight text-[var(--text-primary)] ts-title-2 sm:ts-title-1 leading-tight">
@@ -185,10 +186,16 @@ export default function TeamHomePage() {
           >
             Ver catálogo
           </Link>
-        </header>
+        </AppleReveal>
+
+        <AppleDivider />
 
         {/* ============ TOP 2 cols: Performance + Leaderboard ============ */}
-        <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <AppleReveal
+          as="section"
+          delay={0.06}
+          className="grid grid-cols-1 gap-4 lg:grid-cols-2"
+        >
           {/* ---- Mi performance ---- */}
           <Card>
             <CardHeader
@@ -265,10 +272,12 @@ export default function TeamHomePage() {
               ))}
             </ul>
           </Card>
-        </section>
+        </AppleReveal>
+
+        <AppleDivider />
 
         {/* ============ BOTTOM: Casos para ti — 4 cols × 2 filas ============ */}
-        <section>
+        <AppleReveal as="section" delay={0.12}>
           <div className="flex items-center justify-between">
             <span className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
               Casos para ti
@@ -286,7 +295,7 @@ export default function TeamHomePage() {
               <CaseCard key={item.slug} item={item} />
             ))}
           </div>
-        </section>
+        </AppleReveal>
       </div>
     </main>
   );

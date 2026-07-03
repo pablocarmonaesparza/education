@@ -44,7 +44,7 @@ export const salesCopy = {
         level: "L2",
         name: "Aprendizaje",
         what_itera:
-          "Bandas A/M/B por dimensión (contexto, privacidad, validación, juicio, decisión). Override matrix determinístico. Risk events extractivos con cita textual.",
+          "Bandas A/M/B por dimensión (contexto, datos, ejecución con IA, validación, juicio, impacto). Override matrix determinístico. Risk events extractivos con cita textual.",
         when: "Post-evaluación judge LLM (~15-30s post-submit).",
         kpi_visible: "Readiness por dimensión + risk events + recomendación.",
       },

@@ -15,13 +15,12 @@
  *
  * Si no se mandan overrides → firma con el output del judge tal cual.
  *
- * Acceso: solo staff de Itera (isStaffEmail).
+ * Acceso: solo staff de Itera (requireSimuladorStaff).
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isStaffEmail } from "@/lib/simulador/is-staff";
+import { requireSimuladorStaff } from "@/lib/simulador/admin-auth";
 import { sendReportReadyEmailsForSession } from "@/lib/email/simulador-notifications";
 
 export const runtime = "nodejs";
@@ -55,17 +54,12 @@ export async function POST(
   { params }: { params: Promise<{ queue_id: string }> },
 ) {
   const { queue_id } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
-  }
-  if (!isStaffEmail(user.email)) {
+  const staff = await requireSimuladorStaff();
+  if (!staff.ok) return staff.response;
+  if (!staff.user) {
     return NextResponse.json(
-      { error: "Acceso restringido a staff de Itera." },
-      { status: 403 },
+      { error: "Acción requiere sesión real de staff." },
+      { status: 401 },
     );
   }
 
@@ -79,7 +73,7 @@ export async function POST(
   const admin = createAdminClient();
   const { data: staffBridgeUserId, error: staffErr } = await admin
     .schema("simulador")
-    .rpc("ensure_bridge_user", { p_auth_user_id: user.id });
+    .rpc("ensure_bridge_user", { p_auth_user_id: staff.user.id });
 
   if (staffErr || !staffBridgeUserId) {
     console.error("[admin/review/resolve] staff bridge failed", staffErr);

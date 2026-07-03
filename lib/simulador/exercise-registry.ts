@@ -10,14 +10,16 @@
  * respuesta del usuario, cuándo está completa, qué metadata se persiste.
  *
  * Estructura:
- *   1. ExerciseResponsePayload — unión discriminada por block_id (11 variantes)
+ *   1. ExerciseResponsePayload — unión discriminada por block_id
  *   2. ExerciseCompletionPredicate — función que dice si payload está completo
  *   3. EvidenceForJudge — payload + metrics que se manda al judge
  *   4. ExerciseRendererProps — props comunes a todos los renderers
- *   5. exerciseRegistry — Record<ExerciseBlockId, ...> (placeholder; los
- *      renderers se atan en Día 3)
+ *   5. emptyPayload — payload vacío por bloque (no-prefill)
  *
- * Día 2 del plan. Próximo: Día 3 extrae renderers a app/exercise-lab/blocks/.
+ * El dispatch canónico block_id → renderer NO vive aquí: es
+ * `components/simulador/ExerciseBlockRenderer.tsx` (switch estático sobre los
+ * 17 bloques de app/exercise-lab/blocks/*). El dispatch de completion es
+ * `lib/simulador/exercise-completion.ts`.
  */
 
 import type { ExerciseBlockId } from "./exercise-blocks.generated";
@@ -170,8 +172,8 @@ export type ExerciseResponsePayload =
  * Devuelve si el payload está lo suficientemente completo para considerar el
  * bloque "respondido" + qué campos faltan si no.
  *
- * Implementado por bloque en `app/exercise-lab/blocks/*` o `lib/simulador/
- * exercise-completion.ts` (TBD Día 3-4).
+ * Implementado por bloque en `app/exercise-lab/blocks/*`; el dispatch central
+ * es `lib/simulador/exercise-completion.ts` (isPayloadComplete).
  */
 export type ExerciseCompletionPredicate<
   P extends ExerciseResponsePayload = ExerciseResponsePayload,
@@ -297,30 +299,3 @@ export function emptyPayload(block_id: ExerciseBlockId): ExerciseResponsePayload
       return { block_id, decision: "", memo: "" };
   }
 }
-
-// ============================================================================
-// 6. REGISTRY — Record<ExerciseBlockId, ExerciseRendererEntry>
-// ============================================================================
-
-export interface ExerciseRendererEntry<
-  P extends ExerciseResponsePayload = ExerciseResponsePayload,
-> {
-  renderer: ExerciseRenderer<P>;
-  completion: ExerciseCompletionPredicate<P>;
-}
-
-/**
- * Mapping ID canónico → renderer + completion predicate.
- *
- * El registry se construye lazy via getter para evitar import cycles entre
- * el registry (lib/) y los renderers (app/). Los componentes que necesiten
- * un renderer hacen:
- *
- *   import { CategorizeRows } from "@/app/exercise-lab/blocks/CategorizeRows";
- *
- * Y el caller decide si usa el renderer directo o registra entries en
- * runtime. Día 3 mantiene Partial<> hasta que los 11 estén extraídos.
- */
-export const exerciseRegistry: Partial<
-  Record<ExerciseBlockId, ExerciseRendererEntry>
-> = {};

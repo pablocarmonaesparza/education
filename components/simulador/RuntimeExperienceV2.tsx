@@ -1,16 +1,17 @@
 "use client";
 
 /**
- * RuntimeExperienceV2 — runtime productivo CONFIG-DRIVEN.
+ * RuntimeExperienceV2 — runtime productivo CONFIG-DRIVEN, único motor del
+ * simulador.
  *
- * A diferencia de RuntimeExperience (hardcodeado a 5 step_types y al caso de
- * Camila), este juega CUALQUIER caso 5x5 generado: itera las slides del caso,
- * renderiza cada bloque con ExerciseBlockRenderer (los 17 bloques canónicos) y
- * persiste las respuestas vía las APIs de sesión (que ya son agnósticas al
- * número de pasos y al shape del payload; el juez también lee los pasos
- * dinámicamente).
+ * Juega CUALQUIER caso 5x5 generado: itera las slides del caso, renderiza
+ * cada bloque con ExerciseBlockRenderer (los 17 bloques canónicos) y persiste
+ * las respuestas vía las APIs de sesión (que ya son agnósticas al número de
+ * pasos y al shape del payload; el juez también lee los pasos dinámicamente).
  *
- * Aditivo: NO toca RuntimeExperience. Montado en /(app)/jugar/[case_id].
+ * Montado en /(app)/case/[case_id]. El motor legacy hardcodeado a 5 step_types
+ * (RuntimeExperience) y la ruta separada /jugar se retiraron — había dos
+ * rutas para lo mismo, ahora hay una sola.
  *
  * Degradación: si el caso aún no está sembrado en la base (case_templates), la
  * sesión no se crea y corre en modo PREVIEW (jugable, sin persistir). Cuando el
@@ -156,8 +157,8 @@ export function RuntimeExperienceV2({
     const answered = Object.keys(payloads).length;
     return (
       <main className="mx-auto max-w-2xl px-6 py-16 text-[var(--text-primary)]">
-        <p className="ts-footnote uppercase tracking-widest text-[var(--text-tertiary)]">Cierre</p>
-        <h1 className="mt-2 ts-title-2 font-semibold">Recorriste el caso.</h1>
+        <p className="ts-caption-1 font-medium text-[var(--text-tertiary)]">Cierre</p>
+        <h1 className="mt-2 ts-title-2 font-semibold">Recorriste el caso</h1>
         <p className="mt-3 text-[var(--text-secondary)]">
           {session.sessionId
             ? "Tu sesión se está evaluando."
@@ -185,20 +186,13 @@ export function RuntimeExperienceV2({
         <div className="h-1 w-full overflow-hidden rounded bg-[var(--surface-2)]">
           <div className="h-full bg-[var(--accent)] transition-all" style={{ width: `${progress}%` }} />
         </div>
-        <div className="mt-2 flex justify-between ts-caption-1 text-[var(--text-tertiary)]">
-          <span>{slide.sectionName} · slide {idx + 1} de {flat.length}</span>
-          <span>
-            {session.status === "ready" && session.sessionId
-              ? "sesión activa"
-              : session.status === "creating"
-                ? "abriendo sesión…"
-                : "modo preview"}
-          </span>
+        <div className="mt-2 ts-caption-1 text-[var(--text-tertiary)]">
+          {slide.sectionName} · pantalla {idx + 1} de {flat.length}
         </div>
       </div>
 
       {/* encuadre de la slide */}
-      <p className="ts-footnote uppercase tracking-widest text-[var(--text-tertiary)]">
+      <p className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
         {slide.sectionName}
       </p>
       <h2 className="mt-1 ts-title-2 font-semibold tracking-tight">{slide.title}</h2>

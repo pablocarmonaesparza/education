@@ -19,7 +19,7 @@
  *     aggregate: {
  *       total, completed, in_progress, not_started,
  *       readiness_by_band: {A, M, B},
- *       dimensions_avg: {contexto, privacidad, validacion, juicio, decision},
+ *       dimensions_avg: {contexto, datos, ejecucion_ia, validacion, juicio, impacto},
  *       risk_events_total, days_left, completion_pct
  *     }
  *   }
@@ -27,8 +27,13 @@
  */
 
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { DIMENSIONS } from "@/lib/simulador/config";
+import { normalizeReportDimensions } from "@/lib/simulador/reports/model";
+import { isDevBypassActive } from "@/lib/dev/devBypass";
+import { getMockDashboard } from "@/lib/simulador/dashboard/mock";
 
 export const runtime = "nodejs";
 
@@ -65,12 +70,37 @@ function bandToScore(b: "A" | "M" | "B" | null | undefined): number | null {
   return null;
 }
 
+function emptyDimensionTotals(): Record<string, { sum: number; count: number }> {
+  return Object.fromEntries(
+    DIMENSIONS.map((dimension) => [dimension.id, { sum: 0, count: 0 }]),
+  );
+}
+
+function emptyDimensionAverages(): Record<string, number> {
+  return Object.fromEntries(DIMENSIONS.map((dimension) => [dimension.id, 0]));
+}
+
+function emptyDimensionBandMatrix(): Record<
+  string,
+  Record<"A" | "M" | "B", number>
+> {
+  return Object.fromEntries(
+    DIMENSIONS.map((dimension) => [dimension.id, { A: 0, M: 0, B: 0 }]),
+  );
+}
+
 export async function GET() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
+    // Dev-only: con el bypass activo servimos data mock para QA visual del
+    // dashboard manager. `isDevBypassActive` es false en producción.
+    const cookieStore = await cookies();
+    if (isDevBypassActive(cookieStore.get("itera_dev_bypass")?.value)) {
+      return NextResponse.json(getMockDashboard());
+    }
     return NextResponse.json({ error: "No autenticado." }, { status: 401 });
   }
 
@@ -138,15 +168,36 @@ export async function GET() {
     });
   }
 
-  // Sprint más reciente del team
-  const { data: sprint } = await adminForUser
+  // Sprint para dashboard manager.
+  //
+  // El runtime productivo (/case) puede crear un sprint standalone ad-hoc sin
+  // sprint_package_id para que arranque rápido. Ese sprint no debe ocultar el sprint de
+  // equipo con paquete/casos/reportes, porque el dashboard agrega evidencia de
+  // sprint operativo. Preferimos sprints empaquetados y usamos standalone sólo
+  // como fallback.
+  const sprintSelect = "id, name, status, start_date, end_date, sprint_package_id";
+  const { data: packagedSprint } = await adminForUser
     .schema("simulador")
     .from("sprints")
-    .select("id, name, status, start_date, end_date, sprint_package_id")
+    .select(sprintSelect)
     .eq("team_id", team.id)
+    .not("sprint_package_id", "is", null)
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
+
+  let sprint = packagedSprint ?? null;
+  if (!sprint) {
+    const { data: fallbackSprint } = await adminForUser
+      .schema("simulador")
+      .from("sprints")
+      .select(sprintSelect)
+      .eq("team_id", team.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    sprint = fallbackSprint ?? null;
+  }
 
   if (!sprint) {
     return NextResponse.json({
@@ -254,13 +305,7 @@ export async function GET() {
   }
 
   // Build members list + aggregate
-  const dimensionTotals: Record<string, { sum: number; count: number }> = {
-    contexto: { sum: 0, count: 0 },
-    privacidad: { sum: 0, count: 0 },
-    validacion: { sum: 0, count: 0 },
-    juicio: { sum: 0, count: 0 },
-    decision: { sum: 0, count: 0 },
-  };
+  const dimensionTotals = emptyDimensionTotals();
   let riskEventsTotal = 0;
   let highRiskEventsTotal = 0;
   let pendingReviewCount = 0;
@@ -271,16 +316,7 @@ export async function GET() {
     pausar: 0,
     escalar: 0,
   };
-  const dimensionBandMatrix: Record<
-    string,
-    Record<"A" | "M" | "B", number>
-  > = {
-    contexto: { A: 0, M: 0, B: 0 },
-    privacidad: { A: 0, M: 0, B: 0 },
-    validacion: { A: 0, M: 0, B: 0 },
-    juicio: { A: 0, M: 0, B: 0 },
-    decision: { A: 0, M: 0, B: 0 },
-  };
+  const dimensionBandMatrix = emptyDimensionBandMatrix();
 
   const memberRows = (users ?? []).map((u) => {
     const sess = sessionByUser[u.id as string] ?? null;
@@ -293,8 +329,9 @@ export async function GET() {
     let highRiskEventsCount = 0;
     if (report?.payload?.dimensions && report.payload.dimensions.length > 0) {
       dimensionBands = {};
+      const normalizedDimensions = normalizeReportDimensions(report.payload);
       // Computar banda promedio rápida
-      const scores = report.payload.dimensions
+      const scores = normalizedDimensions
         .map((d) => bandToScore(d.band))
         .filter((s): s is number => s !== null);
       const avg = scores.length
@@ -304,7 +341,7 @@ export async function GET() {
       readinessByBand[readinessBand]++;
 
       // Acumular por dimensión
-      for (const d of report.payload.dimensions) {
+      for (const d of normalizedDimensions) {
         const dt = dimensionTotals[d.id];
         const sc = bandToScore(d.band);
         if (dt && sc !== null) {
@@ -420,20 +457,8 @@ function emptyAggregate() {
     not_started: 0,
     completion_pct: 0,
     readiness_by_band: { A: 0, M: 0, B: 0 },
-    dimensions_avg: {
-      contexto: 0,
-      privacidad: 0,
-      validacion: 0,
-      juicio: 0,
-      decision: 0,
-    },
-    dimension_band_matrix: {
-      contexto: { A: 0, M: 0, B: 0 },
-      privacidad: { A: 0, M: 0, B: 0 },
-      validacion: { A: 0, M: 0, B: 0 },
-      juicio: { A: 0, M: 0, B: 0 },
-      decision: { A: 0, M: 0, B: 0 },
-    },
+    dimensions_avg: emptyDimensionAverages(),
+    dimension_band_matrix: emptyDimensionBandMatrix(),
     risk_events_total: 0,
     high_risk_events_total: 0,
     pending_review_count: 0,

@@ -24,6 +24,7 @@
  */
 
 import Link from "next/link";
+import { AppleReveal } from "@/components/simulador/apple";
 import { CaseCard } from "@/components/simulador/CaseCard";
 import {
   BAND_LABEL,
@@ -165,9 +166,9 @@ const GLOBAL = {
   recommendationReason:
     "Tu criterio en contexto y juicio es sólido (8+), pero validación cayó en 2 de 4 casos. Antes de ampliar uso de IA en producción, refuerza la verificación de outputs.",
   practiceBeat: {
-    slug: "practice_validate_before_publish_v1",
-    title: "Práctica: validar antes de publicar",
-    estimatedMinutes: 10,
+    slug: "practice_validacion_cifras_evidencia_v1",
+    title: "Práctica: validar cifras y evidencia",
+    estimatedMinutes: 6,
   },
 };
 
@@ -399,7 +400,7 @@ function CaseChip({ slug, prefix }: { slug?: string; prefix: string }) {
   return (
     <Link
       href={`/case/${c.slug}`}
-      className="group inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--hairline)] bg-[var(--surface)] px-2 py-1 ts-caption-1 text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)]"
+      className="group inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--surface)] px-2 py-1 ts-caption-1 text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
     >
       <span className="text-[var(--text-tertiary)]">{prefix}</span>
       <span className="truncate max-w-[180px]">{c.title}</span>
@@ -516,8 +517,8 @@ function RecommendationSection() {
         <div>
           <Eyebrow>Practice beat sugerido</Eyebrow>
           <Link
-            href={`/case/${GLOBAL.practiceBeat.slug}`}
-            className="mt-2 group flex items-center justify-between gap-3 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 py-2.5 transition-colors hover:bg-[var(--surface-2)] hover:border-[var(--border-strong)]"
+            href={`/practica/${GLOBAL.practiceBeat.slug}`}
+            className="mt-2 group flex items-center justify-between gap-3 rounded-[var(--radius-md)] bg-[var(--surface)] px-3 py-2.5 transition-colors hover:bg-[var(--surface-3)]"
           >
             <div className="min-w-0 flex-1">
               <div className="truncate ts-subhead font-medium text-[var(--text-primary)]">
@@ -608,11 +609,11 @@ function RiskEventsSection() {
         </span>
       </div>
 
-      <div className="mt-4 flex flex-col gap-2.5">
+      <div className="mt-4 flex flex-col divide-y divide-[var(--hairline)]">
         {RISK_EVENTS.map((e) => (
           <div
             key={e.type}
-            className="flex items-start gap-3 rounded-[var(--radius-md)] border border-[var(--hairline)] bg-[var(--surface)] px-3 py-2.5"
+            className="flex items-start gap-3 py-3 first:pt-0 last:pb-0"
           >
             <div className="flex-none mt-1">
               <SeverityDot severity={e.severity} />
@@ -729,7 +730,7 @@ export default function ReportesPage() {
     <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-6 sm:px-10 sm:py-8">
       <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-5">
         {/* ============ HEADER ============ */}
-        <header>
+        <AppleReveal as="header">
           <h1 className="display display-tight text-[var(--text-primary)] ts-title-1 sm:ts-display">
             Mis reportes
           </h1>
@@ -741,16 +742,20 @@ export default function ReportesPage() {
             completados. Cada criterio evalúa 3 sub-habilidades específicas, y cada caso
             dispara una recomendación operativa.
           </p>
-        </header>
+        </AppleReveal>
 
         {/* ============ GLANCE ============ */}
-        <GlanceSection />
+        <AppleReveal delay={0.04}>
+          <GlanceSection />
+        </AppleReveal>
 
         {/* ============ RECOMENDACIÓN ============ */}
-        <RecommendationSection />
+        <AppleReveal delay={0.08}>
+          <RecommendationSection />
+        </AppleReveal>
 
         {/* ============ DESGLOSE POR CRITERIO ============ */}
-        <section>
+        <AppleReveal as="section" delay={0.12}>
           <div className="flex items-baseline justify-between">
             <h2 className="ts-headline font-semibold text-[var(--text-primary)] tracking-tight">
               Desglose por criterio
@@ -764,19 +769,27 @@ export default function ReportesPage() {
               <DimensionCard key={d.id} d={d} />
             ))}
           </div>
-        </section>
+        </AppleReveal>
 
         {/* ============ RISK EVENTS + TOOLS (2 cols) ============ */}
-        <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1.2fr_1fr]">
+        <AppleReveal
+          as="section"
+          delay={0.16}
+          className="grid grid-cols-1 gap-4 lg:grid-cols-[1.2fr_1fr]"
+        >
           <RiskEventsSection />
           <ToolsSection />
-        </section>
+        </AppleReveal>
 
         {/* ============ CASOS COMPLETADOS ============ */}
-        <CompletedCasesSection />
+        <AppleReveal delay={0.2}>
+          <CompletedCasesSection />
+        </AppleReveal>
 
         {/* ============ NEXT STEP ============ */}
-        <NextStepSection items={RECOMMENDED_NEXT} />
+        <AppleReveal delay={0.24}>
+          <NextStepSection items={RECOMMENDED_NEXT} />
+        </AppleReveal>
       </div>
     </main>
   );

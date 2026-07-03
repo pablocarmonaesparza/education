@@ -151,7 +151,7 @@ Itera midió tu criterio operativo al usar IA (no tu conocimiento de IA). El rep
 
 Resumen ejecutivo:
 - Banda general: {overall_band}
-- Dimensiones evaluadas: contexto, privacidad, validación, juicio, decisión
+- Dimensiones evaluadas: contexto, datos, ejecución con IA, validación, juicio, impacto
 - Recomendación: {recommendation_action}
 
 Importante: el diagnóstico midió tu criterio sin enseñar respuestas. Lo que sigue son las prácticas correctivas (practice beats) — vienen después, no durante. Cada práctica toma ~2 minutos y corrige un gap específico.
@@ -168,7 +168,7 @@ Tu reporte es confidencial entre tú y tu manager autorizado.
 <p><strong>Resumen ejecutivo:</strong></p>
 <ul>
   <li><strong>Banda general:</strong> {overall_band}</li>
-  <li><strong>Dimensiones evaluadas:</strong> contexto, privacidad, validación, juicio, decisión</li>
+  <li><strong>Dimensiones evaluadas:</strong> contexto, datos, ejecución con IA, validación, juicio, impacto</li>
   <li><strong>Recomendación:</strong> {recommendation_action}</li>
 </ul>
 <p><strong>Importante:</strong> el diagnóstico midió tu criterio sin enseñar respuestas. Lo que sigue son las prácticas correctivas (practice beats) — vienen después, no durante. Cada práctica toma ~2 minutos y corrige un gap específico.</p>

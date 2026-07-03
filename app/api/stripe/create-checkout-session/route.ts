@@ -9,6 +9,8 @@ import {
   SIMULADOR_PRODUCT,
   type BillingInterval,
 } from '@/lib/simulador/billing';
+import type { OnboardingCompanyProfile } from '@/lib/simulador/onboarding-company-profile';
+import type Stripe from 'stripe';
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,6 +30,7 @@ export async function POST(req: NextRequest) {
       team_id?: string;
       seats?: number;
       interval?: BillingInterval;
+      company_profile?: OnboardingCompanyProfile;
     };
 
     if (body.billing_product === 'simulador_b2b') {
@@ -108,6 +111,7 @@ async function createSimuladorCheckoutSession(
     team_id?: string;
     seats?: number;
     interval?: BillingInterval;
+    company_profile?: OnboardingCompanyProfile;
   },
 ) {
   try {
@@ -212,9 +216,10 @@ async function createSimuladorCheckoutSession(
       interval === 'yearly'
         ? `${seats} ${seats === 1 ? 'persona' : 'personas'} · ${org?.name ?? 'organización'} · ${team.name} · facturación anual (10 meses de cobro)`
         : `${seats} ${seats === 1 ? 'persona' : 'personas'} · ${org?.name ?? 'organización'} · ${team.name} · facturación mensual`;
+    const companyProfileMetadata = buildCompanyProfileMetadata(body.company_profile);
 
     const origin = req.nextUrl.origin;
-    const session = await stripe.checkout.sessions.create({
+    const checkoutParams: Stripe.Checkout.SessionCreateParams = {
       mode: 'subscription',
       customer_email: user.email ?? undefined,
       client_reference_id: user.id,
@@ -246,6 +251,7 @@ async function createSimuladorCheckoutSession(
         interval,
         price_per_seat_usd_monthly: String(tier.pricePerSeatUsd),
         period_total_usd: String(periodTotalUsd),
+        ...companyProfileMetadata,
       },
       subscription_data: {
         metadata: {
@@ -257,11 +263,13 @@ async function createSimuladorCheckoutSession(
           tier: tier.id,
           seats: String(seats),
           interval,
+          ...companyProfileMetadata,
         },
       },
       success_url: `${origin}/onboarding/done?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/onboarding/billing?canceled=1`,
-    });
+    };
+    const session = await stripe.checkout.sessions.create(checkoutParams);
 
     return NextResponse.json({
       sessionUrl: session.url,
@@ -277,4 +285,27 @@ async function createSimuladorCheckoutSession(
       { status: 500 },
     );
   }
+}
+
+function buildCompanyProfileMetadata(
+  profile?: Partial<OnboardingCompanyProfile>,
+): Record<string, string> {
+  if (!profile?.websiteUrl) return {};
+
+  const files = Array.isArray(profile.files)
+    ? profile.files.filter(
+        (file): file is NonNullable<OnboardingCompanyProfile["files"]>[number] =>
+          typeof file?.name === "string",
+      )
+    : [];
+
+  return {
+    company_profile_website: stripeMetaValue(profile.websiteUrl),
+    company_profile_file_count: String(files.length),
+    company_profile_file_names: stripeMetaValue(files.map((file) => file.name).join(', ')),
+  };
+}
+
+function stripeMetaValue(value: string) {
+  return value.slice(0, 490);
 }

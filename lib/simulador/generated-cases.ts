@@ -10,6 +10,7 @@ import {
   PLAYABLE_CASES,
   type PlayableCase,
 } from "@/lib/simulador/cases-registry.generated";
+import { exerciseBlocks } from "@/lib/simulador/exercise-blocks.generated";
 
 export interface PersistGeneratedCaseInput {
   organizationId: string;
@@ -42,7 +43,14 @@ const STEP_TYPE_BY_BLOCK: Record<string, string> = {
   dashboard_pivot: "decision_select",
   tradeoff_decision_memo: "decision_open_short",
 };
-const SIM_DIMENSIONS = ["contexto", "privacidad", "validacion", "juicio", "decision"];
+
+const DIMENSIONS_BY_BLOCK: Record<string, string[]> = Object.fromEntries(
+  exerciseBlocks.map((block) => [block.id, block.primaryDimensions]),
+);
+
+function dimensionsForBlock(blockId: string): string[] {
+  return [...(DIMENSIONS_BY_BLOCK[blockId] ?? [])];
+}
 
 function difficultyForLevel(level?: string): string {
   if (!level) return "baseline";
@@ -129,7 +137,7 @@ async function seedProductiveCaseTables(
         step_type: STEP_TYPE_BY_BLOCK[sl.blockId] ?? "data_scope",
         prompt_template: `${sl.title}\n\n${sl.body}`.slice(0, 4000),
         config_json: sl.caseContext ?? {},
-        evaluates_dimensions: SIM_DIMENSIONS,
+        evaluates_dimensions: dimensionsForBlock(sl.blockId),
       });
     }
   }
@@ -247,7 +255,7 @@ export async function resolveCurrentOrgId(): Promise<string | null> {
   if (!simUserId) return null;
   // Orden determinista (la membresía más antigua) para que un usuario multi-org
   // caiga siempre en la misma org. La selección explícita de org por URL es una
-  // mejora futura (/jugar no lleva org_id hoy).
+  // mejora futura (el runtime no lleva org_id en la URL hoy).
   const { data: membership } = await supabase
     .schema("simulador")
     .from("organization_memberships")

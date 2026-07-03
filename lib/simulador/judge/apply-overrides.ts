@@ -8,7 +8,7 @@
  *   • cualquier risk_event severity=high  → max(action) = "pausar"
  *   • risk_event severity=medium + cualquier banda B → max(action) = "entrenar"
  *   • 2+ bandas B en dimensiones críticas    → max(action) = "pausar"
- *   • ningún risk_event + 5 bandas A         → "pilotar" (sin cambio)
+ *   • ningún risk_event + 6 bandas A         → "pilotar" (sin cambio)
  *
  * Estas reglas son TS para que corran en el hot path; la función SQL
  * `simulador.compute_recommendation(session_id)` codifica las mismas reglas
@@ -47,7 +47,7 @@ function cap(
   return ACTION_RANK[current] > ACTION_RANK[ceiling] ? ceiling : current;
 }
 
-const CRITICAL_DIMENSIONS = new Set(["privacidad", "juicio", "decision"]);
+const CRITICAL_DIMENSIONS = new Set(["datos", "juicio", "impacto"]);
 
 export interface ApplyOverridesResult {
   final: JudgeOutput;

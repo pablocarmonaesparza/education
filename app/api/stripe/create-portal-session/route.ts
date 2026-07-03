@@ -72,10 +72,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const body = await req.json().catch(() => ({} as { return_path?: unknown }));
     const origin = req.nextUrl.origin;
     const session = await stripe.billingPortal.sessions.create({
       customer: subscription.stripe_customer_id,
-      return_url: `${origin}/dashboard`,
+      return_url: `${origin}${safeReturnPath(body.return_path)}`,
     });
 
     return NextResponse.json({ sessionUrl: session.url });
@@ -83,4 +84,14 @@ export async function POST(req: NextRequest) {
     console.error('Error creating Stripe portal session:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+}
+
+function safeReturnPath(value: unknown) {
+  if (typeof value !== 'string') return '/empresa';
+  if (!value.startsWith('/')) return '/empresa';
+  if (value.startsWith('//')) return '/empresa';
+
+  const [path] = value.split('?');
+  const allowed = new Set(['/empresa', '/dashboard', '/perfil', '/onboarding/billing']);
+  return allowed.has(path) ? value : '/empresa';
 }

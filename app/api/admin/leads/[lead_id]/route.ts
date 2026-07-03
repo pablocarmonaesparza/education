@@ -5,9 +5,8 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isStaffEmail } from "@/lib/simulador/is-staff";
+import { requireSimuladorStaff } from "@/lib/simulador/admin-auth";
 
 export const runtime = "nodejs";
 
@@ -43,38 +42,19 @@ function cleanNotes(value: unknown): string | null | undefined {
   return trimmed.slice(0, 4000);
 }
 
-async function requireStaff() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return {
-      ok: false as const,
-      response: NextResponse.json({ error: "No autenticado." }, { status: 401 }),
-    };
-  }
-  if (!isStaffEmail(user.email)) {
-    return {
-      ok: false as const,
-      response: NextResponse.json(
-        { error: "Acceso restringido a staff de Itera." },
-        { status: 403 },
-      ),
-    };
-  }
-
-  return { ok: true as const, user };
-}
-
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ lead_id: string }> },
 ) {
   const { lead_id } = await params;
-  const staff = await requireStaff();
+  const staff = await requireSimuladorStaff();
   if (!staff.ok) return staff.response;
+  if (!staff.user) {
+    return NextResponse.json(
+      { error: "Acción requiere sesión real de staff." },
+      { status: 401 },
+    );
+  }
 
   let body: PatchBody;
   try {

@@ -1,6 +1,34 @@
-import { DIMENSIONS } from "@/lib/simulador/config";
-import type { BandKey, DimensionId } from "@/lib/simulador/config";
+import {
+  DIMENSIONS,
+  canonicalDimensionId,
+} from "@/lib/simulador/config";
+import type {
+  BandKey,
+  DimensionId,
+  ReportDimensionId,
+} from "@/lib/simulador/config";
 import { reportCopy } from "@/lib/simulador/copy/report";
+
+type DimensionSource = "direct" | "legacy_alias" | "derived";
+
+interface ReportDimensionInput {
+  id?: unknown;
+  band?: unknown;
+  rationale?: unknown;
+  confidence?: unknown;
+}
+
+interface ReportDimensionsSource {
+  dimensions?: ReportDimensionInput[] | null;
+}
+
+export interface NormalizedReportDimension {
+  id: DimensionId;
+  band: BandKey;
+  rationale: string;
+  confidence: number;
+  source: DimensionSource;
+}
 
 export interface ReportPayload {
   rubric_version: string;
@@ -9,7 +37,7 @@ export interface ReportPayload {
   judge_model: string;
   duration_ms: number;
   dimensions: Array<{
-    id: DimensionId;
+    id: ReportDimensionId;
     band: BandKey;
     rationale: string;
     confidence: number;
@@ -35,6 +63,16 @@ export interface ReportPayload {
   };
 }
 
+export interface ReportPracticeEntry {
+  slug: string;
+  title: string;
+  duration_min: number;
+  status: string;
+  dimension_key: string | null;
+  gap_key: string | null;
+  completed_at: string | null;
+}
+
 export interface ReportEnvelope {
   status: "none" | "pending_review" | "published" | "shared";
   session_status?: string | null;
@@ -43,6 +81,8 @@ export interface ReportEnvelope {
   shared_at?: string | null;
   payload?: ReportPayload;
   message?: string;
+  /** Práctica desbloqueada por esta sesión (gap → practice beat). */
+  practice?: ReportPracticeEntry[];
 }
 
 export const BAND_DISPLAY: Record<BandKey, string> = {
@@ -55,6 +95,16 @@ export function bandScore(band: BandKey) {
   if (band === "A") return 85;
   if (band === "M") return 60;
   return 35;
+}
+
+function isBandKey(value: unknown): value is BandKey {
+  return value === "A" || value === "M" || value === "B";
+}
+
+function bandFromScore(score: number): BandKey {
+  if (score > 75) return "A";
+  if (score > 50) return "M";
+  return "B";
 }
 
 export function severityLabel(severity: "low" | "medium" | "high") {
@@ -74,24 +124,95 @@ export function humanRiskType(type: string) {
   );
 }
 
-export function dimensionsById(payload: ReportPayload): Record<string, BandKey> {
+export function normalizeReportDimensions(
+  payload: ReportDimensionsSource,
+): NormalizedReportDimension[] {
+  const byId = new Map<DimensionId, NormalizedReportDimension>();
+  const usableBands: BandKey[] = [];
+
+  for (const raw of payload.dimensions ?? []) {
+    if (typeof raw.id !== "string") continue;
+    if (!isBandKey(raw.band)) continue;
+    const id = canonicalDimensionId(raw.id);
+    if (!id) continue;
+
+    usableBands.push(raw.band);
+    const source: DimensionSource = raw.id === id ? "direct" : "legacy_alias";
+    const current = byId.get(id);
+    if (current?.source === "direct" && source === "legacy_alias") continue;
+
+    byId.set(id, {
+      id,
+      band: raw.band,
+      rationale:
+        typeof raw.rationale === "string" && raw.rationale.trim()
+          ? raw.rationale
+          : DIMENSIONS.find((dimension) => dimension.id === id)?.description ??
+            "",
+      confidence:
+        typeof raw.confidence === "number" && Number.isFinite(raw.confidence)
+          ? raw.confidence
+          : 0.5,
+      source,
+    });
+  }
+
+  const derivedScore =
+    usableBands.length > 0
+      ? usableBands.reduce((sum, band) => sum + bandScore(band), 0) /
+        usableBands.length
+      : 60;
+  const derivedBand = bandFromScore(derivedScore);
+
+  return DIMENSIONS.map((dimension) => {
+    const existing = byId.get(dimension.id);
+    if (existing) return existing;
+
+    if (dimension.id === "ejecucion_ia") {
+      return {
+        id: dimension.id,
+        band: derivedBand,
+        rationale:
+          "Reporte generado con rúbrica legacy; esta banda se deriva del promedio disponible hasta re-evaluar con la rúbrica de seis dimensiones.",
+        confidence: 0.35,
+        source: "derived",
+      };
+    }
+
+    return {
+      id: dimension.id,
+      band: "M",
+      rationale: dimension.description,
+      confidence: 0.35,
+      source: "derived",
+    };
+  });
+}
+
+export function dimensionResult(
+  payload: ReportDimensionsSource,
+  id: DimensionId,
+): NormalizedReportDimension {
+  return normalizeReportDimensions(payload).find((dimension) => dimension.id === id)!;
+}
+
+export function dimensionsById(
+  payload: ReportDimensionsSource,
+): Record<string, BandKey> {
   const bands: Record<string, BandKey> = {};
-  for (const dimension of payload.dimensions) {
+  for (const dimension of normalizeReportDimensions(payload)) {
     bands[dimension.id] = dimension.band;
   }
   return bands;
 }
 
-export function computeOverall(payload: ReportPayload) {
-  const bands = dimensionsById(payload);
+export function computeOverall(payload: ReportDimensionsSource) {
+  const normalized = normalizeReportDimensions(payload);
   const score = Math.round(
-    DIMENSIONS.reduce(
-      (acc, dimension) =>
-        acc + bandScore((bands[dimension.id] ?? "M") as BandKey),
-      0,
-    ) / DIMENSIONS.length,
+    normalized.reduce((acc, dimension) => acc + bandScore(dimension.band), 0) /
+      normalized.length,
   );
-  const band: BandKey = score > 75 ? "A" : score > 50 ? "M" : "B";
+  const band = bandFromScore(score);
   return { score, band };
 }
 

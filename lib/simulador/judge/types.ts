@@ -2,8 +2,11 @@
  * Tipos canónicos del Judge LLM del Simulador.
  *
  * Los strings literales aquí (banda, severidad, recomendación, risk type)
- * deben matchear los CHECK constraints en la BD (ver supabase/migrations/017).
- * Si cambias estas literales, actualiza también la migración y los seeds.
+ * deben matchear los CHECK constraints en la BD. Las 6 dimensiones canónicas
+ * (contexto, datos, ejecucion_ia, validacion, juicio, impacto) son la fuente
+ * única: viven en la rúbrica (rubric_case_factory_v1.yaml) y en
+ * docs/simulador/case_factory/ENGINE_CONTRACT.md. Si cambias estas literales,
+ * actualiza la migración additiva de dimension_key y los seeds (ENGINE_CONTRACT §6).
  */
 
 export type Band = "A" | "M" | "B";
@@ -11,10 +14,11 @@ export type Severity = "low" | "medium" | "high";
 export type Recommendation = "pilotar" | "entrenar" | "pausar" | "escalar";
 export type DimensionKey =
   | "contexto"
-  | "privacidad"
+  | "datos"
+  | "ejecucion_ia"
   | "validacion"
   | "juicio"
-  | "decision";
+  | "impacto";
 
 /** 11 risk events del contrato §9. CHECK constraint en risk_events.event_type. */
 export type RiskEventType =

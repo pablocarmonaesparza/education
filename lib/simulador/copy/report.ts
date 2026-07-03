@@ -67,7 +67,7 @@ export const reportCopy = {
   // Sección 3 — Dimensiones drill-down
   // ============================================================================
   dimensions: {
-    eyebrow: "Las 5 dimensiones",
+    eyebrow: "Las 6 dimensiones",
     practice_cta_template: (beat_title: string) =>
       `Práctica sugerida: ${beat_title}`,
     rationale_label: "Por qué esta banda",

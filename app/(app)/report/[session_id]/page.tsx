@@ -19,6 +19,7 @@ import {
   redactSensitiveEvidence,
   type ReportEnvelope,
   type ReportPayload,
+  type ReportPracticeEntry,
 } from "@/lib/simulador/reports/model";
 
 const fadeUp = {
@@ -186,6 +187,7 @@ export default function ReportePage() {
       status={envelope.status}
       generatedAt={envelope.generated_at}
       sessionId={sessionId ?? ""}
+      practice={envelope.practice ?? []}
     />
   );
 }
@@ -237,11 +239,13 @@ function ReportView({
   status,
   generatedAt,
   sessionId,
+  practice,
 }: {
   payload: ReportPayload;
   status: "pending_review" | "published" | "shared";
   generatedAt?: string;
   sessionId: string;
+  practice: ReportPracticeEntry[];
 }) {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [shareStatus, setShareStatus] = useState<
@@ -551,6 +555,68 @@ function ReportView({
                 </motion.li>
               ))}
             </ul>
+          </section>
+        )}
+
+        {/* Práctica sugerida — beats desbloqueados por los gaps de esta sesión */}
+        {practice.length > 0 && (
+          <section className="reading-col px-6 mt-20">
+            <motion.div {...fadeUp}>
+              <div className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
+                Práctica sugerida
+              </div>
+              <h2 className="display mt-3 ts-title-1 text-[var(--text-primary)]">
+                Corrige lo que apareció
+              </h2>
+              <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.65] max-w-2xl">
+                El diagnóstico midió tu criterio sin enseñar respuestas. Estas
+                prácticas vienen después — corrigen específicamente los gaps
+                que aparecieron en tu sesión.
+              </p>
+            </motion.div>
+
+            <div className="mt-8 space-y-3">
+              {practice.map((p, i) => {
+                const dimensionLabel = p.dimension_key
+                  ? DIMENSIONS.find((d) => d.id === p.dimension_key)?.label
+                  : null;
+                const isCompleted = p.status === "completed";
+                return (
+                  <motion.div
+                    key={p.slug}
+                    {...fadeUp}
+                    transition={{ ...fadeUp.transition, delay: i * 0.04 }}
+                    className="card-apple bg-[var(--surface)] p-6"
+                  >
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="min-w-0">
+                        <div className="ts-body font-semibold text-[var(--text-primary)]">
+                          {p.title}
+                        </div>
+                        <div className="mt-1 ts-footnote text-[var(--text-tertiary)]">
+                          {p.duration_min} min
+                          {dimensionLabel ? ` · ${capFirst(dimensionLabel)}` : ""}
+                        </div>
+                      </div>
+                      {isCompleted ? (
+                        <span className="inline-flex shrink-0 items-center rounded-full bg-[var(--band-a-bg)] px-3 py-1 ts-caption-1 font-semibold text-[var(--band-a-text)]">
+                          Completada
+                        </span>
+                      ) : (
+                        <AppleButton
+                          as={Link}
+                          href={`/practica/${p.slug}`}
+                          size="sm"
+                          className="accent-bg text-white shrink-0 px-5 font-medium shadow-none"
+                        >
+                          Empezar práctica
+                        </AppleButton>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
           </section>
         )}
 

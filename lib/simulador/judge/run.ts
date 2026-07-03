@@ -133,9 +133,9 @@ export async function runJudge(
 
   const output = toolBlock.input as JudgeOutput;
   // Sanity check minimal — el SDK ya valida contra el schema.
-  if (!output?.dimensions || output.dimensions.length !== 5) {
+  if (!output?.dimensions || output.dimensions.length !== 6) {
     throw new Error(
-      "Judge output incompleto: dimensions debe tener exactamente 5 entries.",
+      "Judge output incompleto: dimensions debe tener exactamente 6 entries.",
     );
   }
 
@@ -197,9 +197,9 @@ async function runOpenAiCompatibleJudge(input: {
   }
 
   const output = parseJudgeJson(content);
-  if (!output?.dimensions || output.dimensions.length !== 5) {
+  if (!output?.dimensions || output.dimensions.length !== 6) {
     throw new Error(
-      "Judge fallback output incompleto: dimensions debe tener exactamente 5 entries.",
+      "Judge fallback output incompleto: dimensions debe tener exactamente 6 entries.",
     );
   }
 

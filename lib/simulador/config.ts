@@ -21,13 +21,19 @@ export const DIMENSIONS = [
     id: "contexto",
     label: "Contexto",
     description:
-      "Encuadre de situación, audiencia, tono y restricciones al usar IA.",
+      "Entiende objetivo, audiencia, restricciones, stakeholder y éxito esperado.",
   },
   {
-    id: "privacidad",
-    label: "Privacidad",
+    id: "datos",
+    label: "Datos",
     description:
-      "Protección de datos personales, comerciales y de terceros antes de pasarlos al modelo.",
+      "Usa información suficiente, minimizada, con permisos y calidad adecuada.",
+  },
+  {
+    id: "ejecucion_ia",
+    label: "Ejecución con IA",
+    description:
+      "Elige y configura prompt, workflow o agente según el nivel del trabajo.",
   },
   {
     id: "validacion",
@@ -42,15 +48,34 @@ export const DIMENSIONS = [
       "Lectura de riesgos, autoridad y consecuencias. Saber cuándo escalar.",
   },
   {
-    id: "decision",
-    label: "Decisión",
+    id: "impacto",
+    label: "Impacto",
     description:
-      "Claridad de la acción final + comunicación responsable al manager.",
+      "Convierte el uso de IA en una decisión, ahorro, acción o resultado visible.",
   },
 ] as const;
 
 export type BandKey = "A" | "M" | "B";
 export type DimensionId = (typeof DIMENSIONS)[number]["id"];
+export type LegacyDimensionId = "privacidad" | "decision";
+export type ReportDimensionId = DimensionId | LegacyDimensionId;
+
+export const LEGACY_DIMENSION_ALIASES: Record<
+  LegacyDimensionId,
+  DimensionId
+> = {
+  privacidad: "datos",
+  decision: "impacto",
+};
+
+const CANONICAL_DIMENSION_IDS = new Set<string>(
+  DIMENSIONS.map((dimension) => dimension.id),
+);
+
+export function canonicalDimensionId(id: string): DimensionId | null {
+  if (CANONICAL_DIMENSION_IDS.has(id)) return id as DimensionId;
+  return LEGACY_DIMENSION_ALIASES[id as LegacyDimensionId] ?? null;
+}
 
 export const BAND_LABELS: Record<BandKey, string> = {
   A: "Alto",
@@ -78,7 +103,7 @@ export const SPRINT_CASES = [
     title: "Campaña urgente con feedback de clientes",
     tension: "Velocidad vs privacidad",
     difficulty: "baseline" as const,
-    dimensions: ["privacidad", "validacion", "juicio"] as DimensionId[],
+    dimensions: ["datos", "validacion", "juicio"] as DimensionId[],
   },
   {
     id: "marketing_copy_with_brand_voice",
@@ -86,7 +111,7 @@ export const SPRINT_CASES = [
     title: "Redacción de copy con voz de marca",
     tension: "Velocidad vs voz de marca",
     difficulty: "baseline" as const,
-    dimensions: ["contexto", "validacion", "decision"] as DimensionId[],
+    dimensions: ["contexto", "validacion", "impacto"] as DimensionId[],
   },
   {
     id: "marketing_segment_with_sensitive_data",
@@ -94,7 +119,7 @@ export const SPRINT_CASES = [
     title: "Segmentación con datos sensibles del CRM",
     tension: "Bias predictivo + privacidad behavioral",
     difficulty: "intermediate" as const,
-    dimensions: ["privacidad", "juicio", "decision"] as DimensionId[],
+    dimensions: ["datos", "juicio", "impacto"] as DimensionId[],
   },
   {
     id: "marketing_brief_to_agency_via_ia",
@@ -102,7 +127,7 @@ export const SPRINT_CASES = [
     title: "Brief a agencia externa con IA",
     tension: "Leak de estrategia a vendor",
     difficulty: "baseline" as const,
-    dimensions: ["contexto", "decision", "juicio"] as DimensionId[],
+    dimensions: ["contexto", "impacto", "juicio"] as DimensionId[],
   },
   {
     id: "marketing_ad_creative_with_competitor_research",
@@ -110,7 +135,7 @@ export const SPRINT_CASES = [
     title: "Research competitivo + ad creative",
     tension: "Plagio inadvertido",
     difficulty: "intermediate" as const,
-    dimensions: ["validacion", "juicio", "decision"] as DimensionId[],
+    dimensions: ["validacion", "juicio", "impacto"] as DimensionId[],
   },
   {
     id: "marketing_attribution_reporting_to_cmo",
@@ -118,7 +143,7 @@ export const SPRINT_CASES = [
     title: "Attribution reporting al CMO",
     tension: "Datos parcialmente alucinados",
     difficulty: "intermediate" as const,
-    dimensions: ["validacion", "contexto", "decision"] as DimensionId[],
+    dimensions: ["validacion", "contexto", "impacto"] as DimensionId[],
   },
   {
     id: "marketing_content_calendar_under_pressure",
@@ -126,7 +151,7 @@ export const SPRINT_CASES = [
     title: "Calendario de contenido 30 días",
     tension: "Velocidad vs curaduría",
     difficulty: "baseline" as const,
-    dimensions: ["contexto", "juicio", "decision"] as DimensionId[],
+    dimensions: ["contexto", "juicio", "impacto"] as DimensionId[],
   },
   {
     id: "marketing_crisis_response_with_ia",
@@ -134,7 +159,7 @@ export const SPRINT_CASES = [
     title: "Respuesta a crisis pública con IA",
     tension: "Velocidad vs approval chain",
     difficulty: "advanced" as const,
-    dimensions: ["juicio", "privacidad", "decision"] as DimensionId[],
+    dimensions: ["juicio", "datos", "impacto"] as DimensionId[],
   },
 ];
 

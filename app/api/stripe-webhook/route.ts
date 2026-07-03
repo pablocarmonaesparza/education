@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { stripe } from "@/lib/stripe/config";
 import {
   isTerminalSimuladorPaymentSyncReason,
@@ -10,16 +10,8 @@ import {
 
 export const runtime = "nodejs";
 
-function adminClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false, autoRefreshToken: false } },
-  );
-}
-
 async function markEventProcessed(
-  supabase: ReturnType<typeof adminClient>,
+  supabase: ReturnType<typeof createAdminClient>,
   event: Stripe.Event,
 ): Promise<boolean> {
   const { error } = await supabase.schema("simulador").from("stripe_webhook_events").insert({
@@ -34,7 +26,7 @@ async function markEventProcessed(
 }
 
 async function releaseDedup(
-  supabase: ReturnType<typeof adminClient>,
+  supabase: ReturnType<typeof createAdminClient>,
   event: Stripe.Event,
 ) {
   const { error } = await supabase
@@ -67,7 +59,7 @@ export async function POST(req: NextRequest) {
     return new NextResponse(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
-  const supabase = adminClient();
+  const supabase = createAdminClient();
 
   const isNew = await markEventProcessed(supabase, event);
   if (!isNew) {

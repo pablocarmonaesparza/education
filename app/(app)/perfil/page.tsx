@@ -17,8 +17,15 @@
  */
 
 import { useState } from "react";
-import { SelectItem, Switch } from "@heroui/react";
-import { AppleButton, AppleInput, AppleSelect } from "@/components/simulador/apple";
+import { SelectItem } from "@heroui/react";
+import {
+  AppleButton,
+  AppleDivider,
+  AppleInput,
+  AppleReveal,
+  AppleSelect,
+  AppleSwitch,
+} from "@/components/simulador/apple";
 
 // ============================================================================
 // MOCK USER DATA
@@ -102,7 +109,7 @@ export default function PerfilPage() {
     <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-6 sm:px-10 sm:py-8">
       <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-4">
         {/* ============ HEADER ============ */}
-        <header>
+        <AppleReveal as="header">
           <h1 className="display display-tight text-[var(--text-primary)] ts-title-1 sm:ts-display">
             Perfil
           </h1>
@@ -110,10 +117,11 @@ export default function PerfilPage() {
             Información que tu manager y tus reportes usan para
             personalizar tu experiencia.
           </p>
-        </header>
+        </AppleReveal>
 
         {/* ============ HERO: avatar + identidad ============ */}
-        <Card className="flex items-center gap-5">
+        <AppleReveal delay={0.04}>
+          <Card className="flex items-center gap-5">
           <div className="relative h-[80px] w-[80px] flex-none">
             <div
               className="flex h-full w-full items-center justify-center rounded-full bg-[var(--surface-2)] ts-title-2 font-semibold text-[var(--text-primary)] tabular-nums ring-2 ring-[var(--accent)]"
@@ -154,10 +162,15 @@ export default function PerfilPage() {
               {memberSinceDate}
             </p>
           </div>
-        </Card>
+          </Card>
+        </AppleReveal>
 
         {/* ============ 2 cols: Info personal + Cuenta ============ */}
-        <section className="grid grid-cols-1 gap-4 lg:grid-cols-[1.4fr_1fr]">
+        <AppleReveal
+          as="section"
+          delay={0.08}
+          className="grid grid-cols-1 gap-4 lg:grid-cols-[1.4fr_1fr]"
+        >
           {/* ---- Información personal ---- */}
           <Card>
             <SectionHeader>Información personal</SectionHeader>
@@ -201,19 +214,14 @@ export default function PerfilPage() {
 
                 <div className="flex flex-col gap-1.5">
                   <FieldLabel>Notificaciones por email</FieldLabel>
-                  <div className="flex h-10 items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface)] px-3">
+                  <div className="flex h-11 items-center justify-between">
                     <span className="ts-subhead text-[var(--text-secondary)]">
                       {notifications ? "Activadas" : "Desactivadas"}
                     </span>
-                    <Switch
+                    <AppleSwitch
                       isSelected={notifications}
                       onValueChange={setNotifications}
-                      size="sm"
                       aria-label="Notificaciones por email"
-                      classNames={{
-                        wrapper:
-                          "bg-[var(--surface-3)] group-data-[selected=true]:bg-[var(--accent)]",
-                      }}
                     />
                   </div>
                 </div>
@@ -225,26 +233,26 @@ export default function PerfilPage() {
           <Card className="flex flex-col">
             <SectionHeader>Cuenta</SectionHeader>
 
-            <div className="mt-4 flex flex-1 flex-col gap-2">
+            <div className="mt-4 flex flex-1 flex-col">
               <button
                 type="button"
-                className="flex h-11 items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface)] px-3 transition-colors hover:bg-[var(--surface-3)]"
+                className="flex items-center justify-between rounded-[var(--radius-md)] px-3 py-2.5 text-left transition-colors hover:bg-[var(--surface-3)]"
               >
-                <div className="text-left">
-                  <div className="ts-subhead font-medium text-[var(--text-primary)]">
-                    Cambiar contraseña
-                  </div>
+                <div className="ts-subhead font-medium text-[var(--text-primary)]">
+                  Cambiar contraseña
                 </div>
                 <span className="text-[var(--text-tertiary)]" aria-hidden>
                   →
                 </span>
               </button>
 
+              <AppleDivider className="my-1" />
+
               <button
                 type="button"
-                className="flex h-11 items-center justify-between rounded-[var(--radius-md)] bg-[var(--surface)] px-3 transition-colors hover:bg-[var(--surface-3)]"
+                className="flex items-center justify-between rounded-[var(--radius-md)] px-3 py-2.5 text-left transition-colors hover:bg-[var(--surface-3)]"
               >
-                <div className="text-left">
+                <div>
                   <div className="ts-subhead font-medium text-[var(--text-primary)]">
                     Métodos de autenticación
                   </div>
@@ -267,7 +275,7 @@ export default function PerfilPage() {
               </AppleButton>
             </div>
           </Card>
-        </section>
+        </AppleReveal>
 
       </div>
     </main>

@@ -1,3 +1,6 @@
+// Fuente de verdad del catálogo de eventos: scripts/simulador/check-analytics-catalog.mjs
+// (encadenado en `npm run check:simulador`) compara este archivo contra el doc del catálogo.
+// Ningún código de runtime lo importa — no borrar por "unused".
 export const SIMULADOR_ANALYTICS_EVENTS = [
   "public_landing_viewed",
   "public_cta_clicked",

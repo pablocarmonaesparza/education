@@ -135,10 +135,11 @@ export async function POST(
       end_date: endDate.toISOString().slice(0, 10),
       target_dimensions: [
         "contexto",
-        "privacidad",
+        "datos",
+        "ejecucion_ia",
         "validacion",
         "juicio",
-        "decision",
+        "impacto",
       ],
     })
     .select("id, name, status")

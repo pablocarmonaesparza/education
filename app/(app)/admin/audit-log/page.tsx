@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { AppleButton } from "@/components/simulador/apple";
+import { SelectItem } from "@heroui/react";
+import { AppleButton, AppleSelect } from "@/components/simulador/apple";
 import { ErrorBox, formatDateTime } from "../shared";
 
 type AuditItem = {
@@ -77,8 +78,7 @@ export default function AdminAuditLogPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <div className="eyebrow">Itera staff · auditoría</div>
-            <h1 className="display mt-4 ts-display text-[var(--text-primary)]">
+            <h1 className="display ts-display text-[var(--text-primary)]">
               Audit log
             </h1>
             <p className="mt-4 max-w-2xl ts-body leading-[1.55] text-[var(--text-secondary)]">
@@ -179,17 +179,18 @@ function SelectBox({
   return (
     <label className="block">
       <div className="eyebrow mb-2">{label}</div>
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 ts-callout text-[var(--text-primary)]"
+      <AppleSelect
+        aria-label={label}
+        selectedKeys={[value]}
+        onSelectionChange={(keys) => {
+          const next = Array.from(keys)[0] as string | undefined;
+          if (next) onChange(next);
+        }}
       >
         {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
+          <SelectItem key={option}>{option}</SelectItem>
         ))}
-      </select>
+      </AppleSelect>
     </label>
   );
 }
