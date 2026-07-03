@@ -1,10 +1,10 @@
 "use client";
 
 /**
- * /admin/cases — consola staff de los casos del simulador.
+ * /admin/cases — consola staff de los casos del simulador (R-29).
  *
- * Une casos bespoke (generated_cases) + biblioteca global (case_templates)
- * con su lifecycle, dueño y uso. Lee /api/admin/cases.
+ * Inventario completo de case_templates en cualquier estado (biblioteca
+ * global + casos por organización) con su uso real. Lee /api/admin/cases.
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -16,60 +16,67 @@ import {
   AppleButton,
   AppleCard,
   AppleCardBody,
+  AppleEmptyState,
+  AppleErrorState,
   AppleInput,
   AppleSelect,
+  AppleSkeleton,
   AppleSlider,
   AppleTabs,
   AppleTextarea,
 } from "@/components/simulador/apple";
-import { DEPARTMENT_OPTIONS } from "@/lib/simulador/cases";
-import {
-  AdminEmpty,
-  AdminLoading,
-  AdminMetric,
-  ErrorBox,
-  LifecyclePill,
-  formatDate,
-} from "../shared";
+import { departmentLabel } from "@/lib/simulador/case-catalog";
+import { LifecyclePill } from "../shared";
 
-type CaseItem = {
-  kind: "bespoke" | "global";
+type AdminCaseItem = {
   id: string;
-  case_id: string;
+  slug: string;
   title: string;
-  level: string | null;
   status: string;
   version: number;
-  owner: { id: string; name: string } | null;
-  generation_method: string | null;
-  sessions: number;
-  completed_sessions: number;
-  updated_at: string;
+  level_primary: string | null;
+  career_key: string | null;
+  duration_estimate_min: number | null;
+  organization_id: string | null;
+  organization_name: string | null;
+  sessions_total: number;
+  sessions_completed: number;
 };
 
-type CasesResponse = {
-  items: CaseItem[];
-  summary: {
-    total: number;
-    active: number;
-    draft: number;
-    archived: number;
-    bespoke: number;
-    global: number;
-    sessions: number;
-  };
-};
+type CasesResponse = { cases: AdminCaseItem[] };
 
 type StatusFilter = "all" | "active" | "draft" | "archived";
 
-type OrgOption = { id: string; name: string; industry: string | null; teams: Array<{ id: string; name: string }> };
+type OrgOption = {
+  id: string;
+  name: string;
+  industry: string | null;
+  teams: Array<{ id: string; name: string }>;
+};
 
 type GenerateResult =
   | { ok: true; case_id: string; title: string; total_slides: number }
   | { ok: false; result: "HUMAN_REVIEW" | "ERROR"; diagnostics?: string };
 
 const ROW_GRID =
-  "md:grid md:grid-cols-[2.4fr_1.1fr_0.9fr_1.3fr_0.8fr] md:items-center md:gap-3";
+  "md:grid md:grid-cols-[2.2fr_1.8fr_0.9fr_0.6fr_1.2fr_0.7fr_0.9fr] md:items-center md:gap-3";
+
+// Opciones del panel de generación (brief del motor). Antes vivían en el mock
+// lib/simulador/cases.ts; el catálogo real ya no las expone, así que son
+// locales a esta consola.
+const DEPARTMENT_OPTIONS: { value: string; label: string }[] = [
+  { value: "marketing", label: "Marketing" },
+  { value: "growth", label: "Growth" },
+  { value: "sales", label: "Ventas" },
+  { value: "customer_success", label: "Customer Success" },
+  { value: "operations", label: "Operaciones" },
+  { value: "finance", label: "Finanzas" },
+  { value: "hr", label: "HR" },
+  { value: "legal", label: "Legal" },
+  { value: "product", label: "Producto" },
+  { value: "engineering_light", label: "Ingeniería" },
+  { value: "leadership", label: "Liderazgo" },
+];
 
 const LEVEL_MARKS = [
   { value: 0, label: "Fundamentos" },
@@ -77,6 +84,13 @@ const LEVEL_MARKS = [
   { value: 2, label: "Agentes" },
 ];
 const LEVEL_VALUE_LABEL = ["N1 · Fundamentos", "N2 · Automatización", "N3 · Agentes"];
+
+/** level_primary crudo (1, "2", "N3 · …") → etiqueta corta N1/N2/N3. */
+function levelShort(raw: string | null): string | null {
+  if (!raw) return null;
+  const digit = raw.match(/[123]/)?.[0];
+  return digit ? `N${digit}` : raw;
+}
 
 export default function AdminCasesPage() {
   const [data, setData] = useState<CasesResponse | null>(null);
@@ -135,13 +149,25 @@ export default function AdminCasesPage() {
     };
   }, []);
 
+  const counts = useMemo(() => {
+    const cases = data?.cases ?? [];
+    const byStatus = (status: string) =>
+      cases.filter((c) => c.status === status).length;
+    return {
+      total: cases.length,
+      active: byStatus("active"),
+      draft: byStatus("draft"),
+      archived: byStatus("archived"),
+    };
+  }, [data]);
+
   const visible = useMemo(() => {
-    const items = data?.items ?? [];
-    if (filter === "all") return items;
-    return items.filter((i) => i.status === filter);
+    const cases = data?.cases ?? [];
+    if (filter === "all") return cases;
+    return cases.filter((c) => c.status === filter);
   }, [data, filter]);
 
-  const s = data?.summary;
+  const loading = data === null && error === null;
 
   return (
     <>
@@ -156,13 +182,11 @@ export default function AdminCasesPage() {
               Casos del simulador
             </h1>
             <p className="mt-4 max-w-2xl ts-body leading-[1.55] text-[var(--text-secondary)]">
-              Todo lo que existe en la base: casos bespoke por empresa y la
-              biblioteca global. Sirve para ver qué está activo, qué sigue en
-              borrador y cuánto se ha jugado.
+              Todos los casos que existen en la base, en cualquier estado: la
+              biblioteca global y los casos por organización, con cuánto se ha
+              jugado cada uno.
             </p>
           </motion.div>
-
-          {error && <ErrorBox message={error} />}
 
           <div className="mt-8">
             <GeneratePanel orgs={orgs} onGenerated={load} />
@@ -171,25 +195,17 @@ export default function AdminCasesPage() {
           <div className="mt-10 ts-caption-1 font-medium text-[var(--text-tertiary)]">
             Casos existentes
           </div>
-          <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
-            <AdminMetric label="Total" value={s?.total ?? 0} compact />
-            <AdminMetric label="Activos" value={s?.active ?? 0} compact />
-            <AdminMetric label="Borradores" value={s?.draft ?? 0} compact />
-            <AdminMetric label="Bespoke" value={s?.bespoke ?? 0} compact />
-            <AdminMetric label="Global" value={s?.global ?? 0} compact />
-            <AdminMetric label="Sesiones" value={s?.sessions ?? 0} compact />
-          </div>
 
-          <div className="mt-5 flex flex-wrap items-center gap-3">
+          <div className="mt-3 flex flex-wrap items-center gap-3">
             <AppleTabs
               ariaLabel="Filtrar casos por estado"
               value={filter}
               onChange={(v) => setFilter(v as StatusFilter)}
               items={[
-                { id: "all", label: "Todos", badge: s?.total ?? 0 },
-                { id: "active", label: "Activos", badge: s?.active ?? 0 },
-                { id: "draft", label: "Borradores", badge: s?.draft ?? 0 },
-                { id: "archived", label: "Archivados", badge: s?.archived ?? 0 },
+                { id: "all", label: "Todos", badge: counts.total },
+                { id: "active", label: "Activos", badge: counts.active },
+                { id: "draft", label: "Borradores", badge: counts.draft },
+                { id: "archived", label: "Archivados", badge: counts.archived },
               ]}
             />
             <AppleButton
@@ -202,29 +218,53 @@ export default function AdminCasesPage() {
             </AppleButton>
           </div>
 
-          {data === null && !error && <AdminLoading label="Cargando casos…" />}
-          {data !== null && data.items.length === 0 && (
-            <AdminEmpty
-              label="No hay casos en la base todavía."
-              hint="Genera un caso bespoke desde una org o seedea la biblioteca global."
-            />
+          {loading && <CasesTableSkeleton />}
+
+          {error !== null && (
+            <div className="mt-8">
+              <AppleErrorState
+                title="No pudimos cargar los casos"
+                body={error}
+                actionLabel="Reintentar"
+                onAction={load}
+              />
+            </div>
           )}
-          {data !== null && data.items.length > 0 && visible.length === 0 && (
-            <AdminLoading label="Ningún caso en este estado." />
+
+          {data !== null && data.cases.length === 0 && (
+            <div className="mt-8">
+              <AppleEmptyState
+                title="No hay casos en la base"
+                description="Genera un caso para una organización con el panel de arriba, o corre el pipeline de seed de la biblioteca global."
+                action={
+                  <AppleButton tone="secondary" size="sm" onPress={load}>
+                    Actualizar
+                  </AppleButton>
+                }
+              />
+            </div>
+          )}
+
+          {data !== null && data.cases.length > 0 && visible.length === 0 && (
+            <div className="mt-12 ts-callout text-[var(--text-secondary)]">
+              Ningún caso en este estado.
+            </div>
           )}
 
           {visible.length > 0 && (
             <div className="mt-8 card-apple bg-[var(--surface)] p-2">
               <div className={`hidden px-4 py-3 ${ROW_GRID}`}>
-                <ColLabel>Caso</ColLabel>
-                <ColLabel>Dueño</ColLabel>
+                <ColLabel>Título</ColLabel>
+                <ColLabel>Slug</ColLabel>
                 <ColLabel>Estado</ColLabel>
-                <ColLabel>Uso</ColLabel>
-                <ColLabel align="right">Actualizado</ColLabel>
+                <ColLabel>Nivel</ColLabel>
+                <ColLabel>Org</ColLabel>
+                <ColLabel align="right">Sesiones</ColLabel>
+                <ColLabel align="right">Completadas</ColLabel>
               </div>
               <div className="divide-y divide-[var(--hairline)]">
                 {visible.map((c) => (
-                  <CaseRow key={`${c.kind}-${c.id}`} item={c} />
+                  <CaseRow key={c.id} item={c} />
                 ))}
               </div>
             </div>
@@ -232,6 +272,29 @@ export default function AdminCasesPage() {
         </section>
       </main>
     </>
+  );
+}
+
+function CasesTableSkeleton() {
+  return (
+    <div className="mt-8 card-apple bg-[var(--surface)] p-2">
+      <div className="divide-y divide-[var(--hairline)]">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className={`gap-2 px-4 py-4 ${ROW_GRID}`}>
+            <div className="min-w-0">
+              <AppleSkeleton className="h-5 w-3/5" />
+              <AppleSkeleton className="mt-2 h-4 w-2/5" />
+            </div>
+            <AppleSkeleton className="mt-3 h-4 w-4/5 md:mt-0" />
+            <AppleSkeleton className="mt-3 h-5 w-16 md:mt-0" />
+            <AppleSkeleton className="hidden h-4 w-8 md:block" />
+            <AppleSkeleton className="hidden h-4 w-24 md:block" />
+            <AppleSkeleton className="hidden h-4 w-8 md:block md:justify-self-end" />
+            <AppleSkeleton className="hidden h-4 w-10 md:block md:justify-self-end" />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -275,7 +338,7 @@ function GeneratePanel({
 
   const selectedOrg = orgs?.find((o) => o.id === organizationId) ?? null;
   const level = LEVEL_VALUE_LABEL[levelStep] ?? LEVEL_VALUE_LABEL[0];
-  const departmentLabel =
+  const departmentText =
     DEPARTMENT_OPTIONS.find((d) => d.value === department)?.label ?? "";
 
   async function generate() {
@@ -291,7 +354,7 @@ function GeneratePanel({
           organization_id: organizationId,
           team_id: teamId || undefined,
           level,
-          department: departmentLabel || undefined,
+          department: departmentText || undefined,
           industry: industry || undefined,
           role: role || undefined,
           scenario: scenario || undefined,
@@ -521,12 +584,14 @@ function ColLabel({
   );
 }
 
-function CaseRow({ item }: { item: CaseItem }) {
+function CaseRow({ item }: { item: AdminCaseItem }) {
+  const level = levelShort(item.level_primary);
   const meta = [
-    item.case_id,
     `v${item.version}`,
-    item.level ?? null,
-    item.generation_method ?? null,
+    item.career_key ? departmentLabel(item.career_key) : null,
+    item.duration_estimate_min !== null
+      ? `${item.duration_estimate_min} min`
+      : null,
   ]
     .filter(Boolean)
     .join(" · ");
@@ -534,22 +599,17 @@ function CaseRow({ item }: { item: CaseItem }) {
   return (
     <div className={`gap-2 px-4 py-4 ${ROW_GRID}`}>
       <div className="min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="truncate ts-callout font-medium text-[var(--text-primary)]">
-            {item.title}
-          </span>
-          <AppleBadge tone={item.kind === "bespoke" ? "accent" : "neutral"}>
-            {item.kind === "bespoke" ? "bespoke" : "global"}
-          </AppleBadge>
+        <div className="truncate ts-callout font-medium text-[var(--text-primary)]">
+          {item.title}
         </div>
-        <div className="mono mt-1 truncate ts-caption-1 text-[var(--text-tertiary)]">
+        <div className="mt-1 truncate ts-caption-1 text-[var(--text-tertiary)]">
           {meta}
         </div>
       </div>
 
-      <div className="mt-2 ts-subhead text-[var(--text-secondary)] md:mt-0">
-        <span className="eyebrow mr-2 md:hidden">Dueño</span>
-        {item.owner ? item.owner.name : "Global"}
+      <div className="mono mt-2 truncate ts-caption-1 text-[var(--text-secondary)] md:mt-0">
+        <span className="eyebrow mr-2 md:hidden">Slug</span>
+        {item.slug}
       </div>
 
       <div className="mt-2 md:mt-0">
@@ -558,19 +618,35 @@ function CaseRow({ item }: { item: CaseItem }) {
       </div>
 
       <div className="mt-2 ts-subhead text-[var(--text-secondary)] md:mt-0">
-        <span className="eyebrow mr-2 md:hidden">Uso</span>
-        {item.sessions === 0 ? (
-          <span className="text-[var(--text-tertiary)]">sin jugar</span>
+        <span className="eyebrow mr-2 md:hidden">Nivel</span>
+        {level ?? <span className="text-[var(--text-tertiary)]">sin nivel</span>}
+      </div>
+
+      <div className="mt-2 truncate ts-subhead text-[var(--text-secondary)] md:mt-0">
+        <span className="eyebrow mr-2 md:hidden">Org</span>
+        {item.organization_id === null ? (
+          <span className="text-[var(--text-tertiary)]">global</span>
         ) : (
-          <>
-            {item.sessions} jugadas · {item.completed_sessions} compl.
-          </>
+          item.organization_name ?? "org sin nombre"
         )}
       </div>
 
-      <div className="mt-2 ts-footnote text-[var(--text-tertiary)] md:mt-0 md:text-right">
-        <span className="eyebrow mr-2 md:hidden">Actualizado</span>
-        {formatDate(item.updated_at)}
+      <div className="mono mt-2 ts-subhead text-[var(--text-secondary)] md:mt-0 md:text-right">
+        <span className="eyebrow mr-2 md:hidden">Sesiones</span>
+        {item.sessions_total === 0 ? (
+          <span className="text-[var(--text-tertiary)]">sin jugar</span>
+        ) : (
+          item.sessions_total
+        )}
+      </div>
+
+      <div className="mono mt-2 ts-subhead text-[var(--text-secondary)] md:mt-0 md:text-right">
+        <span className="eyebrow mr-2 md:hidden">Completadas</span>
+        {item.sessions_completed === 0 ? (
+          <span className="text-[var(--text-tertiary)]">0</span>
+        ) : (
+          item.sessions_completed
+        )}
       </div>
     </div>
   );

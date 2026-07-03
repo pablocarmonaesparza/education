@@ -1,15 +1,15 @@
 /**
- * GET /api/admin/cases
+ * GET /api/admin/cases — inventario staff de case_templates (R-29).
  *
- * Consola staff de los casos del simulador. Une los dos modelos vivos:
- *   - generated_cases  → casos bespoke por empresa (5x5 rico, los juega el runtime)
- *   - case_templates   → biblioteca global (organization_id NULL)
+ * Lista TODOS los case_templates (cualquier status: active, draft, archived)
+ * con su uso real: sesiones totales y completadas resueltas vía
+ * case_variants → simulation_sessions, y el nombre de la org dueña cuando el
+ * template es org-scoped (organization_id != null; null = biblioteca global).
  *
- * Los case_templates org-scoped son espejos seedeados de los generated_cases
- * para que el judge evalúe consistente; NO se listan aparte (evita doble conteo).
+ * Solo staff Itera (requireSimuladorStaff honra el dev bypass de solo
+ * lectura). Usa service role porque agrega across users/orgs.
  *
- * "Uso" (sesiones jugadas) se resuelve best-effort por slug a través de
- * case_variants → simulation_sessions, y degrada a 0 si el join falla.
+ * Respuesta: 200 { cases: AdminCaseItem[] } ordenado por título.
  */
 
 import { NextResponse } from "next/server";
@@ -18,53 +18,38 @@ import { requireSimuladorStaff } from "@/lib/simulador/admin-auth";
 
 export const runtime = "nodejs";
 
-const PLAYED_STATUSES = [
+const COMPLETED_STATUSES = new Set([
   "completed",
   "submitted",
   "evaluated",
   "evidence_emitted",
-];
-
-type GeneratedRow = {
-  id: string;
-  organization_id: string | null;
-  team_id: string | null;
-  case_id: string;
-  version: number;
-  title: string;
-  level: string | null;
-  status: string;
-  generation_method: string | null;
-  created_at: string;
-  updated_at: string;
-};
+]);
 
 type TemplateRow = {
   id: string;
   slug: string;
-  version: number;
-  status: string;
-  difficulty: string | null;
   title: string;
-  organization_id: string | null;
+  status: string;
+  version: number;
+  level_primary: string | number | null;
+  career_key: string | null;
   duration_estimate_min: number | null;
-  created_at: string;
-  updated_at: string;
+  organization_id: string | null;
 };
 
-type CaseItem = {
-  kind: "bespoke" | "global";
+export type AdminCaseItem = {
   id: string;
-  case_id: string;
+  slug: string;
   title: string;
-  level: string | null;
   status: string;
   version: number;
-  owner: { id: string; name: string } | null;
-  generation_method: string | null;
-  sessions: number;
-  completed_sessions: number;
-  updated_at: string;
+  level_primary: string | null;
+  career_key: string | null;
+  duration_estimate_min: number | null;
+  organization_id: string | null;
+  organization_name: string | null;
+  sessions_total: number;
+  sessions_completed: number;
 };
 
 export async function GET() {
@@ -73,149 +58,135 @@ export async function GET() {
 
   const admin = createAdminClient();
 
-  const [{ data: generated, error: genErr }, { data: templates, error: tplErr }] =
-    await Promise.all([
-      admin
-        .schema("simulador")
-        .from("generated_cases")
-        .select(
-          "id, organization_id, team_id, case_id, version, title, level, status, generation_method, created_at, updated_at",
-        )
-        .order("updated_at", { ascending: false })
-        .limit(500),
-      admin
-        .schema("simulador")
-        .from("case_templates")
-        .select(
-          "id, slug, version, status, difficulty, title, organization_id, duration_estimate_min, created_at, updated_at",
-        )
-        .order("updated_at", { ascending: false })
-        .limit(500),
-    ]);
+  const { data: templates, error: tplError } = await admin
+    .schema("simulador")
+    .from("case_templates")
+    .select(
+      "id, slug, title, status, version, level_primary, career_key, duration_estimate_min, organization_id",
+    )
+    .order("title", { ascending: true })
+    .limit(1000);
 
-  if (genErr || tplErr) {
-    console.error("[admin/cases] list failed", genErr ?? tplErr);
-    return NextResponse.json({ error: "Error listando casos." }, { status: 500 });
+  if (tplError) {
+    console.error("[admin/cases] list failed", tplError);
+    return NextResponse.json(
+      { error: "Error listando casos." },
+      { status: 500 },
+    );
   }
 
-  const generatedRows = (generated ?? []) as GeneratedRow[];
   const templateRows = (templates ?? []) as TemplateRow[];
+  if (templateRows.length === 0) {
+    return NextResponse.json({ cases: [] });
+  }
 
-  // Nombres de las orgs dueñas (bespoke).
-  const ownerIds = Array.from(
+  const templateIds = templateRows.map((t) => t.id);
+  const orgIds = Array.from(
     new Set(
-      generatedRows
-        .map((g) => g.organization_id)
+      templateRows
+        .map((t) => t.organization_id)
         .filter((id): id is string => Boolean(id)),
     ),
   );
-  const orgNameById = new Map<string, string>();
-  if (ownerIds.length > 0) {
-    const { data: orgs } = await admin
-      .schema("simulador")
-      .from("organizations")
-      .select("id, name")
-      .in("id", ownerIds);
-    for (const org of (orgs ?? []) as Array<{ id: string; name: string }>) {
-      orgNameById.set(org.id, org.name);
-    }
-  }
 
-  // Uso por slug (best-effort, degrada a 0 si el join falla).
-  const sessionsBySlug = new Map<string, { total: number; completed: number }>();
-  let totalSessions = 0;
-  try {
-    const { data: variants } = await admin
+  const [variantsRes, orgsRes] = await Promise.all([
+    admin
       .schema("simulador")
       .from("case_variants")
-      .select("id, case_template_id");
-    const templateIdToSlug = new Map(templateRows.map((t) => [t.id, t.slug]));
-    const variantToSlug = new Map<string, string>();
-    for (const v of (variants ?? []) as Array<{
-      id: string;
-      case_template_id: string;
-    }>) {
-      const slug = templateIdToSlug.get(v.case_template_id);
-      if (slug) variantToSlug.set(v.id, slug);
-    }
-    const { data: sessions } = await admin
+      .select("id, case_template_id")
+      .in("case_template_id", templateIds),
+    orgIds.length > 0
+      ? admin
+          .schema("simulador")
+          .from("organizations")
+          .select("id, name")
+          .in("id", orgIds)
+      : Promise.resolve({ data: [], error: null }),
+  ]);
+
+  if (variantsRes.error) {
+    console.error("[admin/cases] variants join failed", variantsRes.error);
+    return NextResponse.json(
+      { error: "Error resolviendo el uso de los casos." },
+      { status: 500 },
+    );
+  }
+  if (orgsRes.error) {
+    console.error("[admin/cases] orgs join failed", orgsRes.error);
+    return NextResponse.json(
+      { error: "Error resolviendo las organizaciones." },
+      { status: 500 },
+    );
+  }
+
+  const orgNameById = new Map<string, string>(
+    ((orgsRes.data ?? []) as Array<{ id: string; name: string }>).map((o) => [
+      o.id,
+      o.name,
+    ]),
+  );
+
+  const templateByVariant = new Map<string, string>(
+    (
+      (variantsRes.data ?? []) as Array<{ id: string; case_template_id: string }>
+    ).map((v) => [v.id, v.case_template_id]),
+  );
+
+  const usageByTemplate = new Map<
+    string,
+    { total: number; completed: number }
+  >();
+
+  if (templateByVariant.size > 0) {
+    const { data: sessions, error: sessError } = await admin
       .schema("simulador")
       .from("simulation_sessions")
-      .select("case_variant_id, status");
+      .select("case_variant_id, status")
+      .in("case_variant_id", [...templateByVariant.keys()]);
+
+    if (sessError) {
+      console.error("[admin/cases] sessions join failed", sessError);
+      return NextResponse.json(
+        { error: "Error resolviendo las sesiones." },
+        { status: 500 },
+      );
+    }
+
     for (const s of (sessions ?? []) as Array<{
       case_variant_id: string;
       status: string;
     }>) {
-      totalSessions += 1;
-      const slug = variantToSlug.get(s.case_variant_id);
-      if (!slug) continue;
-      const cur = sessionsBySlug.get(slug) ?? { total: 0, completed: 0 };
-      cur.total += 1;
-      if (PLAYED_STATUSES.includes(s.status)) cur.completed += 1;
-      sessionsBySlug.set(slug, cur);
+      const templateId = templateByVariant.get(s.case_variant_id);
+      if (!templateId) continue;
+      const usage = usageByTemplate.get(templateId) ?? {
+        total: 0,
+        completed: 0,
+      };
+      usage.total += 1;
+      if (COMPLETED_STATUSES.has(s.status)) usage.completed += 1;
+      usageByTemplate.set(templateId, usage);
     }
-  } catch (err) {
-    console.error("[admin/cases] usage join degraded", err);
   }
 
-  const bespokeItems: CaseItem[] = generatedRows.map((g) => {
-    const usage = sessionsBySlug.get(g.case_id);
+  const cases: AdminCaseItem[] = templateRows.map((t) => {
+    const usage = usageByTemplate.get(t.id);
     return {
-      kind: "bespoke",
-      id: g.id,
-      case_id: g.case_id,
-      title: g.title,
-      level: g.level,
-      status: g.status,
-      version: g.version,
-      owner: g.organization_id
-        ? { id: g.organization_id, name: orgNameById.get(g.organization_id) ?? "—" }
+      id: t.id,
+      slug: t.slug,
+      title: t.title,
+      status: t.status,
+      version: t.version,
+      level_primary: t.level_primary === null ? null : String(t.level_primary),
+      career_key: t.career_key,
+      duration_estimate_min: t.duration_estimate_min,
+      organization_id: t.organization_id,
+      organization_name: t.organization_id
+        ? orgNameById.get(t.organization_id) ?? null
         : null,
-      generation_method: g.generation_method,
-      sessions: usage?.total ?? 0,
-      completed_sessions: usage?.completed ?? 0,
-      updated_at: g.updated_at,
+      sessions_total: usage?.total ?? 0,
+      sessions_completed: usage?.completed ?? 0,
     };
   });
 
-  // Solo biblioteca global (org NULL); los org-scoped son espejos de eval.
-  const globalItems: CaseItem[] = templateRows
-    .filter((t) => t.organization_id === null)
-    .map((t) => {
-      const usage = sessionsBySlug.get(t.slug);
-      return {
-        kind: "global",
-        id: t.id,
-        case_id: t.slug,
-        title: t.title,
-        level: t.difficulty,
-        status: t.status,
-        version: t.version,
-        owner: null,
-        generation_method: null,
-        sessions: usage?.total ?? 0,
-        completed_sessions: usage?.completed ?? 0,
-        updated_at: t.updated_at,
-      };
-    });
-
-  const items = [...bespokeItems, ...globalItems].sort((a, b) =>
-    b.updated_at.localeCompare(a.updated_at),
-  );
-
-  const byStatus = (status: string) =>
-    items.filter((i) => i.status === status).length;
-
-  return NextResponse.json({
-    items,
-    summary: {
-      total: items.length,
-      active: byStatus("active"),
-      draft: byStatus("draft"),
-      archived: byStatus("archived"),
-      bespoke: bespokeItems.length,
-      global: globalItems.length,
-      sessions: totalSessions,
-    },
-  });
+  return NextResponse.json({ cases });
 }

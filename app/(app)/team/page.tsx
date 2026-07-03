@@ -9,13 +9,26 @@
  *   [Casos para ti — 4 cols × 2 filas usando la misma CaseCard del catálogo]
  *
  * Las cards de "Casos para ti" son IDÉNTICAS a las del catálogo (/casos)
- * porque comparten components/simulador/CaseCard.tsx + lib/simulador/cases.ts.
+ * porque comparten components/simulador/CaseCard.tsx y el contrato real
+ * (lib/simulador/case-catalog + GET /api/cases — R-29, el mock murió).
  */
 
 import Link from "next/link";
-import { AppleDivider, AppleReveal } from "@/components/simulador/apple";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  AppleButtonLink,
+  AppleDivider,
+  AppleEmptyState,
+  AppleErrorState,
+  AppleReveal,
+} from "@/components/simulador/apple";
 import { CaseCard } from "@/components/simulador/CaseCard";
-import { CASES, type Band, BAND_LABEL } from "@/lib/simulador/cases";
+import { CaseCardSkeleton } from "@/components/simulador/CaseCardSkeleton";
+import {
+  BAND_LABEL,
+  type Band,
+  type CaseCatalogItem,
+} from "@/lib/simulador/case-catalog";
 
 // ============================================================================
 // MOCK USER + PERFORMANCE + LEADERBOARD
@@ -58,18 +71,6 @@ const LEADERBOARD: LeaderboardEntry[] = [
   { name: "Pedro Ruiz", initials: "PR", score: 7.4 },
   { name: "Sofía Martín", initials: "SM", score: 6.9 },
 ];
-
-// Casos recomendados — solo no completados. in_progress primero (debe
-// terminar lo que empezó), después available. Cuando se cablee BD, esto
-// viene del algoritmo de recomendación con priorización real (match por
-// nivel, dimensiones débiles, sprint del team, etc).
-const RECOMMENDED = CASES.filter((c) => c.userStatus !== "completed")
-  .sort((a, b) => {
-    if (a.userStatus === "in_progress" && b.userStatus !== "in_progress") return -1;
-    if (b.userStatus === "in_progress" && a.userStatus !== "in_progress") return 1;
-    return 0;
-  })
-  .slice(0, 8);
 
 // ============================================================================
 // Local components
@@ -163,6 +164,44 @@ function BandPill({ band }: { band: Band }) {
 // ============================================================================
 
 export default function TeamHomePage() {
+  const [cases, setCases] = useState<CaseCatalogItem[] | null>(null);
+  const [casesError, setCasesError] = useState<string | null>(null);
+
+  const loadCases = useCallback(async () => {
+    setCasesError(null);
+    try {
+      const res = await fetch("/api/cases", { cache: "no-store" });
+      if (!res.ok) {
+        const d = await res.json().catch(() => null);
+        throw new Error(d?.error ?? `Error ${res.status}.`);
+      }
+      const data = (await res.json()) as { cases: CaseCatalogItem[] };
+      setCases(data.cases ?? []);
+    } catch (err) {
+      setCasesError(err instanceof Error ? err.message : "Error inesperado.");
+    }
+  }, []);
+
+  useEffect(() => {
+    loadCases();
+  }, [loadCases]);
+
+  // Casos recomendados: solo no completados. in_progress primero (debe
+  // terminar lo que empezó), después not_started. GET /api/cases ya ordena
+  // así, pero lo reafirmamos aquí para no depender del orden del wire.
+  // TODO: algoritmo de recomendación real (match por nivel, dimensiones
+  // débiles, sprint del team, etc).
+  const recommended = useMemo(() => {
+    return (cases ?? [])
+      .filter((c) => c.userStatus !== "completed")
+      .sort((a, b) => {
+        if (a.userStatus === "in_progress" && b.userStatus !== "in_progress") return -1;
+        if (b.userStatus === "in_progress" && a.userStatus !== "in_progress") return 1;
+        return 0;
+      })
+      .slice(0, 8);
+  }, [cases]);
+
   return (
     <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-6 sm:px-10 sm:py-8">
       <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6">
@@ -290,11 +329,46 @@ export default function TeamHomePage() {
             </Link>
           </div>
 
-          <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {RECOMMENDED.slice(0, 8).map((item) => (
-              <CaseCard key={item.slug} item={item} />
-            ))}
-          </div>
+          {casesError ? (
+            <div className="mt-3">
+              <AppleErrorState
+                title="No pudimos cargar tus casos"
+                body={casesError}
+                onAction={loadCases}
+              />
+            </div>
+          ) : cases === null ? (
+            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 8 }, (_, i) => (
+                <CaseCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : recommended.length === 0 ? (
+            <div className="mt-3">
+              {cases.length === 0 ? (
+                <AppleEmptyState
+                  title="Aún no hay casos disponibles"
+                  description="Tu organización todavía no tiene casos activos. En cuanto se publique el primero lo verás aquí."
+                />
+              ) : (
+                <AppleEmptyState
+                  title="Estás al día"
+                  description="Completaste todos los casos disponibles. Revisa tus resultados en el catálogo mientras llegan casos nuevos."
+                  action={
+                    <AppleButtonLink href="/casos" tone="secondary">
+                      Ver catálogo
+                    </AppleButtonLink>
+                  }
+                />
+              )}
+            </div>
+          ) : (
+            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {recommended.map((item) => (
+                <CaseCard key={item.slug} item={item} />
+              ))}
+            </div>
+          )}
         </AppleReveal>
       </div>
     </main>

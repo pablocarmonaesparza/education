@@ -4,29 +4,40 @@
  * /staff/casos — catálogo de casos del team (vista manager).
  *
  * Mismo grid que /casos employee pero con contexto manager: "estos son
- * los casos que tu equipo puede tomar". TODO: filtrar por sprint activo
- * del team cuando cableemos BD. Por ahora muestra los 12 mock.
+ * los casos que tu equipo puede tomar". Datos reales de GET /api/cases
+ * (contrato R-29: lib/simulador/case-catalog — el mock murió). Filtros
+ * solo sobre campos que el contrato real soporta: estado, nivel y
+ * departamento. TODO: filtrar por sprint activo del team cuando la API
+ * exponga assignments.
  */
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { SelectItem } from "@heroui/react";
 import { CaseCard } from "@/components/simulador/CaseCard";
-import { AppleButton, AppleSelect } from "@/components/simulador/apple";
+import { CaseCardSkeleton } from "@/components/simulador/CaseCardSkeleton";
 import {
-  CASES,
-  DEPARTMENT_OPTIONS,
-  DURACION_OPTIONS,
-  LEVEL_OPTIONS,
-  SORT_OPTIONS,
-  TOOL_OPTIONS,
-  type Department,
-  type DuracionBucket,
-  type Level,
-  type SortKey,
-} from "@/lib/simulador/cases";
+  AppleButton,
+  AppleEmptyState,
+  AppleErrorState,
+  AppleSelect,
+  AppleTabs,
+} from "@/components/simulador/apple";
+import {
+  LEVEL_LABEL,
+  departmentLabel,
+  type CaseCatalogItem,
+  type CatalogLevel,
+  type UserCaseStatus,
+} from "@/lib/simulador/case-catalog";
+
+type StatusFilter = "all" | UserCaseStatus;
+
+const LEVEL_OPTIONS = (Object.keys(LEVEL_LABEL) as CatalogLevel[]).map(
+  (value) => ({ value, label: LEVEL_LABEL[value] }),
+);
 
 // ============================================================================
-// FilterSelect — wrapper de HeroUI Select con los defaults de filtros.
+// FilterSelect — wrapper de AppleSelect (design system) con los defaults de filtros.
 // ============================================================================
 
 function FilterSelect<T extends string>({
@@ -50,7 +61,7 @@ function FilterSelect<T extends string>({
         onChange(next ?? "");
       }}
       size="md"
-      className={`min-w-[180px] flex-1 ${value ? "is-filter-active" : ""}`}
+      className={`min-w-[180px] flex-1 sm:max-w-[240px] ${value ? "is-filter-active" : ""}`}
     >
       {options.map((opt) => (
         <SelectItem key={opt.value}>{opt.label}</SelectItem>
@@ -64,42 +75,69 @@ function FilterSelect<T extends string>({
 // ============================================================================
 
 export default function StaffCasosPage() {
-  const [level, setLevel] = useState<Level | "">("");
-  const [department, setDepartment] = useState<Department | "">("");
-  const [duracion, setDuracion] = useState<DuracionBucket | "">("");
-  const [tool, setTool] = useState<string>("");
-  const [sortBy, setSortBy] = useState<SortKey>("recientes");
+  const [cases, setCases] = useState<CaseCatalogItem[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredSorted = useMemo(() => {
-    const filtered = CASES.filter((c) => {
+  const [status, setStatus] = useState<StatusFilter>("all");
+  const [level, setLevel] = useState<CatalogLevel | "">("");
+  const [department, setDepartment] = useState<string>("");
+
+  const load = useCallback(async () => {
+    setError(null);
+    try {
+      const res = await fetch("/api/cases", { cache: "no-store" });
+      if (!res.ok) {
+        const d = await res.json().catch(() => null);
+        throw new Error(d?.error ?? `Error ${res.status}.`);
+      }
+      const data = (await res.json()) as { cases: CaseCatalogItem[] };
+      setCases(data.cases ?? []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error inesperado.");
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  // Departamentos presentes en el catálogo real (no lista fija: cada org
+  // puede tener careers distintos).
+  const departmentOptions = useMemo(() => {
+    const keys = new Set<string>();
+    for (const c of cases ?? []) if (c.department) keys.add(c.department);
+    return [...keys]
+      .sort((a, b) => departmentLabel(a).localeCompare(departmentLabel(b), "es"))
+      .map((value) => ({ value, label: departmentLabel(value) }));
+  }, [cases]);
+
+  const statusCounts = useMemo(() => {
+    const all = cases ?? [];
+    const count = (s: UserCaseStatus) =>
+      all.filter((c) => c.userStatus === s).length;
+    return {
+      all: all.length,
+      not_started: count("not_started"),
+      in_progress: count("in_progress"),
+      completed: count("completed"),
+    };
+  }, [cases]);
+
+  const filtered = useMemo(() => {
+    return (cases ?? []).filter((c) => {
+      if (status !== "all" && c.userStatus !== status) return false;
       if (level && c.level !== level) return false;
       if (department && c.department !== department) return false;
-      if (tool && !c.toolsRequired.includes(tool)) return false;
-      if (duracion) {
-        const d = DURACION_OPTIONS.find((x) => x.value === duracion);
-        if (d && !d.check(c.estimatedMinutes)) return false;
-      }
       return true;
     });
+  }, [cases, status, level, department]);
 
-    return [...filtered].sort((a, b) => {
-      if (sortBy === "abecedario") {
-        return a.title.localeCompare(b.title, "es");
-      }
-      const aDate = a.lastVerifiedAt ?? "0000-00-00";
-      const bDate = b.lastVerifiedAt ?? "0000-00-00";
-      return bDate.localeCompare(aDate);
-    });
-  }, [level, department, duracion, tool, sortBy]);
-
-  const anyFilterActive =
-    level !== "" || department !== "" || duracion !== "" || tool !== "";
+  const anyFilterActive = status !== "all" || level !== "" || department !== "";
 
   function clearAll() {
+    setStatus("all");
     setLevel("");
     setDepartment("");
-    setDuracion("");
-    setTool("");
   }
 
   return (
@@ -119,8 +157,35 @@ export default function StaffCasosPage() {
         {/* ============ FILTROS ============ */}
         <section
           aria-label="Filtros"
-          className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap"
+          className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
         >
+          <AppleTabs
+            ariaLabel="Filtrar por estado"
+            value={status}
+            onChange={(v) => setStatus(v as StatusFilter)}
+            items={[
+              {
+                id: "all",
+                label: "Todos",
+                badge: cases ? statusCounts.all : undefined,
+              },
+              {
+                id: "not_started",
+                label: "Por iniciar",
+                badge: cases ? statusCounts.not_started : undefined,
+              },
+              {
+                id: "in_progress",
+                label: "En curso",
+                badge: cases ? statusCounts.in_progress : undefined,
+              },
+              {
+                id: "completed",
+                label: "Completados",
+                badge: cases ? statusCounts.completed : undefined,
+              },
+            ]}
+          />
           <FilterSelect
             placeholder="Nivel"
             options={LEVEL_OPTIONS}
@@ -129,61 +194,27 @@ export default function StaffCasosPage() {
           />
           <FilterSelect
             placeholder="Departamento"
-            options={DEPARTMENT_OPTIONS}
+            options={departmentOptions}
             value={department}
             onChange={setDepartment}
           />
-          <FilterSelect
-            placeholder="Duración"
-            options={DURACION_OPTIONS.map(({ value, label }) => ({
-              value,
-              label,
-            }))}
-            value={duracion}
-            onChange={setDuracion}
-          />
-          <FilterSelect
-            placeholder="Herramientas"
-            options={TOOL_OPTIONS}
-            value={tool}
-            onChange={setTool}
-          />
         </section>
 
-        {/* ============ RESULTS META + SORT ============ */}
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
-          <span className="ts-subhead text-[var(--text-secondary)]">
-            <span className="font-semibold text-[var(--text-primary)]">
-              {filteredSorted.length}
-            </span>{" "}
-            {filteredSorted.length === 1 ? "caso" : "casos"}
-            {anyFilterActive && (
-              <span className="text-[var(--text-tertiary)]">
-                {" "}
-                de {CASES.length}
-              </span>
-            )}
-          </span>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="ts-footnote text-[var(--text-tertiary)]">
-                Ordenar
-              </span>
-              <AppleSelect
-                aria-label="Ordenar"
-                selectedKeys={[sortBy]}
-                onSelectionChange={(keys) => {
-                  const next = Array.from(keys)[0] as SortKey | undefined;
-                  if (next) setSortBy(next);
-                }}
-                size="sm"
-                className="w-[180px]"
-              >
-                {SORT_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value}>{opt.label}</SelectItem>
-                ))}
-              </AppleSelect>
-            </div>
+        {/* ============ RESULTS META ============ */}
+        {cases !== null && !error && (
+          <div className="mt-10 flex flex-wrap items-center justify-between gap-3">
+            <span className="ts-subhead text-[var(--text-secondary)]">
+              <span className="font-semibold text-[var(--text-primary)]">
+                {filtered.length}
+              </span>{" "}
+              {filtered.length === 1 ? "caso" : "casos"}
+              {anyFilterActive && (
+                <span className="text-[var(--text-tertiary)]">
+                  {" "}
+                  de {cases.length}
+                </span>
+              )}
+            </span>
             {anyFilterActive && (
               <AppleButton
                 size="inline"
@@ -195,23 +226,47 @@ export default function StaffCasosPage() {
               </AppleButton>
             )}
           </div>
-        </div>
+        )}
 
-        {/* ============ GRID ============ */}
-        {filteredSorted.length > 0 ? (
-          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredSorted.map((item) => (
-              <CaseCard key={item.slug} item={item} />
+        {/* ============ ESTADOS + GRID ============ */}
+        {error ? (
+          <div className="mt-10">
+            <AppleErrorState
+              title="No pudimos cargar el catálogo"
+              body={error}
+              onAction={load}
+            />
+          </div>
+        ) : cases === null ? (
+          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {Array.from({ length: 8 }, (_, i) => (
+              <CaseCardSkeleton key={i} />
             ))}
           </div>
+        ) : cases.length === 0 ? (
+          <div className="mt-10">
+            <AppleEmptyState
+              title="Aún no hay casos para tu equipo"
+              description="Cuando tu organización active casos aparecerán aquí, listos para que tu equipo los tome."
+            />
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="mt-5">
+            <AppleEmptyState
+              title="No hay casos con esos filtros"
+              description="Prueba quitando alguno o limpia todos para ver el catálogo completo."
+              action={
+                <AppleButton tone="secondary" onPress={clearAll}>
+                  Limpiar filtros
+                </AppleButton>
+              }
+            />
+          </div>
         ) : (
-          <div className="mt-16 flex flex-col items-center justify-center rounded-[var(--radius-lg)] border border-dashed border-[var(--hairline)] py-20 text-center">
-            <div className="ts-body font-medium text-[var(--text-primary)]">
-              No hay casos con esos filtros
-            </div>
-            <p className="mt-2 ts-subhead text-[var(--text-secondary)] max-w-[360px]">
-              Prueba quitando alguno o limpia todos arriba.
-            </p>
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filtered.map((item) => (
+              <CaseCard key={item.slug} item={item} />
+            ))}
           </div>
         )}
       </div>

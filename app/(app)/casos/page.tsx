@@ -3,27 +3,36 @@
 /**
  * /casos — catálogo de casos disponibles.
  *
- * Modelo + mock data + CaseCard viven en lib/simulador/cases.ts y
- * components/simulador/CaseCard.tsx para que /team y otras surfaces
- * usen exactamente la misma card sin duplicar código.
+ * Consume el contrato REAL del catálogo (R-29): tipos de
+ * lib/simulador/case-catalog + datos de GET /api/cases. El mock
+ * lib/simulador/cases.ts murió. La card compartida vive en
+ * components/simulador/CaseCard.tsx (misma en /team y /staff/casos).
  */
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { SelectItem } from "@heroui/react";
-import { AppleButton, AppleReveal, AppleSelect } from "@/components/simulador/apple";
+import {
+  AppleButton,
+  AppleEmptyState,
+  AppleErrorState,
+  AppleReveal,
+  AppleSelect,
+  AppleSkeleton,
+} from "@/components/simulador/apple";
 import { CaseCard } from "@/components/simulador/CaseCard";
 import {
-  CASES,
-  DEPARTMENT_OPTIONS,
-  DURACION_OPTIONS,
-  LEVEL_OPTIONS,
-  SORT_OPTIONS,
-  TOOL_OPTIONS,
-  type Department,
-  type DuracionBucket,
-  type Level,
-  type SortKey,
-} from "@/lib/simulador/cases";
+  LEVEL_LABEL,
+  departmentLabel,
+  type CaseCatalogItem,
+  type CatalogLevel,
+} from "@/lib/simulador/case-catalog";
+
+// Sentinel para casos sin career_key: departmentLabel(undefined) → "General".
+const GENERAL_DEPARTMENT = "general";
+
+const LEVEL_OPTIONS = (Object.keys(LEVEL_LABEL) as CatalogLevel[]).map(
+  (value) => ({ value, label: LEVEL_LABEL[value] }),
+);
 
 // ============================================================================
 // FilterSelect — wrapper de AppleSelect (design system) con los defaults de filtros.
@@ -62,46 +71,85 @@ function FilterSelect<T extends string>({
 }
 
 // ============================================================================
+// CaseCardSkeleton — placeholder de carga con la misma silueta que CaseCard.
+// (El borde replica el de CaseCard, regla explícita: las cards sí llevan borde.)
+// ============================================================================
+
+function CaseCardSkeleton() {
+  return (
+    <div
+      aria-hidden
+      className="flex flex-col rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5"
+    >
+      <div className="flex items-center gap-2">
+        <AppleSkeleton className="h-5 w-24" />
+        <AppleSkeleton className="h-4 w-12" />
+      </div>
+      <AppleSkeleton className="mt-4 h-5 w-4/5" />
+      <AppleSkeleton className="mt-3 h-4 w-full" />
+      <AppleSkeleton className="mt-1.5 h-4 w-2/3" />
+      <AppleSkeleton className="mt-5 h-4 w-28" />
+    </div>
+  );
+}
+
+// ============================================================================
 // PAGE
 // ============================================================================
 
 export default function CasosPage() {
-  const [level, setLevel] = useState<Level | "">("");
-  const [department, setDepartment] = useState<Department | "">("");
-  const [duracion, setDuracion] = useState<DuracionBucket | "">("");
-  const [tool, setTool] = useState<string>("");
-  const [sortBy, setSortBy] = useState<SortKey>("recientes");
+  const [cases, setCases] = useState<CaseCatalogItem[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [level, setLevel] = useState<CatalogLevel | "">("");
+  const [department, setDepartment] = useState<string>("");
 
-  const filteredSorted = useMemo(() => {
-    const filtered = CASES.filter((c) => {
+  const load = useCallback(async () => {
+    setError(null);
+    try {
+      const res = await fetch("/api/cases", { cache: "no-store" });
+      if (!res.ok) {
+        const d = await res.json().catch(() => null);
+        throw new Error(d?.error ?? `Error ${res.status}.`);
+      }
+      const data = (await res.json()) as { cases: CaseCatalogItem[] };
+      setCases(data.cases);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error inesperado.");
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  // Departamentos derivados de los datos reales presentes en el catálogo.
+  const departmentOptions = useMemo(() => {
+    const seen = new Map<string, string>();
+    for (const c of cases ?? []) {
+      const key = c.department ?? GENERAL_DEPARTMENT;
+      if (!seen.has(key)) seen.set(key, departmentLabel(c.department));
+    }
+    return Array.from(seen, ([value, label]) => ({ value, label })).sort(
+      (a, b) => a.label.localeCompare(b.label, "es"),
+    );
+  }, [cases]);
+
+  const filtered = useMemo(() => {
+    return (cases ?? []).filter((c) => {
       if (level && c.level !== level) return false;
-      if (department && c.department !== department) return false;
-      if (tool && !c.toolsRequired.includes(tool)) return false;
-      if (duracion) {
-        const d = DURACION_OPTIONS.find((x) => x.value === duracion);
-        if (d && !d.check(c.estimatedMinutes)) return false;
+      if (department && (c.department ?? GENERAL_DEPARTMENT) !== department) {
+        return false;
       }
       return true;
     });
+  }, [cases, level, department]);
 
-    return [...filtered].sort((a, b) => {
-      if (sortBy === "abecedario") {
-        return a.title.localeCompare(b.title, "es");
-      }
-      const aDate = a.lastVerifiedAt ?? "0000-00-00";
-      const bDate = b.lastVerifiedAt ?? "0000-00-00";
-      return bDate.localeCompare(aDate);
-    });
-  }, [level, department, duracion, tool, sortBy]);
-
-  const anyFilterActive =
-    level !== "" || department !== "" || duracion !== "" || tool !== "";
+  const anyFilterActive = level !== "" || department !== "";
+  const loading = cases === null && !error;
 
   function clearAll() {
     setLevel("");
     setDepartment("");
-    setDuracion("");
-    setTool("");
   }
 
   return (
@@ -114,7 +162,7 @@ export default function CasosPage() {
           </h1>
           <p className="mt-3 ts-body text-[var(--text-secondary)] leading-[1.55] max-w-[640px]">
             Elige un caso para empezar tu diagnóstico. Cada caso mide tu
-            criterio operativo bajo presión real con IA — no tu memoria.
+            criterio operativo bajo presión real con IA, no tu memoria.
           </p>
         </AppleReveal>
 
@@ -124,101 +172,99 @@ export default function CasosPage() {
             aria-label="Filtros"
             className="flex flex-col gap-3 sm:flex-row sm:flex-wrap"
           >
-          <FilterSelect
-            placeholder="Nivel"
-            options={LEVEL_OPTIONS}
-            value={level}
-            onChange={setLevel}
-          />
-          <FilterSelect
-            placeholder="Departamento"
-            options={DEPARTMENT_OPTIONS}
-            value={department}
-            onChange={setDepartment}
-          />
-          <FilterSelect
-            placeholder="Duración"
-            options={DURACION_OPTIONS.map(({ value, label }) => ({
-              value,
-              label,
-            }))}
-            value={duracion}
-            onChange={setDuracion}
-          />
-          <FilterSelect
-            placeholder="Herramientas"
-            options={TOOL_OPTIONS}
-            value={tool}
-            onChange={setTool}
-          />
+            <FilterSelect
+              placeholder="Nivel"
+              options={LEVEL_OPTIONS}
+              value={level}
+              onChange={setLevel}
+            />
+            <FilterSelect
+              placeholder="Departamento"
+              options={departmentOptions}
+              value={department}
+              onChange={setDepartment}
+            />
           </section>
         </AppleReveal>
 
-        {/* ============ RESULTS META + SORT ============ */}
+        {/* ============ RESULTADOS ============ */}
         <AppleReveal delay={0.08} className="mt-10">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-          <span className="ts-subhead text-[var(--text-secondary)]">
-            <span className="font-semibold text-[var(--text-primary)]">
-              {filteredSorted.length}
-            </span>{" "}
-            {filteredSorted.length === 1 ? "caso" : "casos"}
-            {anyFilterActive && (
-              <span className="text-[var(--text-tertiary)]">
-                {" "}
-                de {CASES.length}
-              </span>
-            )}
-          </span>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="ts-footnote text-[var(--text-tertiary)]">
-                Ordenar
-              </span>
-              <AppleSelect
-                aria-label="Ordenar"
-                selectedKeys={[sortBy]}
-                onSelectionChange={(keys) => {
-                  const next = Array.from(keys)[0] as SortKey | undefined;
-                  if (next) setSortBy(next);
-                }}
-                size="sm"
-                className="w-[180px]"
-              >
-                {SORT_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value}>{opt.label}</SelectItem>
+          {error ? (
+            <AppleErrorState
+              title="No pudimos cargar el catálogo"
+              body={error}
+              actionLabel="Intentar de nuevo"
+              onAction={load}
+            />
+          ) : loading ? (
+            <div role="status" aria-label="Cargando casos">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {Array.from({ length: 8 }, (_, i) => (
+                  <CaseCardSkeleton key={i} />
                 ))}
-              </AppleSelect>
+              </div>
+              <span className="sr-only">Cargando casos…</span>
             </div>
-            {anyFilterActive && (
-              <AppleButton
-                size="inline"
-                tone="secondary"
-                onPress={clearAll}
-                className="ts-subhead"
-              >
-                Limpiar filtros
-              </AppleButton>
-            )}
-          </div>
-        </div>
+          ) : cases !== null && cases.length === 0 ? (
+            <AppleEmptyState
+              title="Aún no hay casos disponibles"
+              description="Tu organización todavía no tiene casos activos. Cuando se publique el primero, va a aparecer aquí."
+              action={
+                <AppleButton tone="secondary" size="sm" onPress={load}>
+                  Actualizar
+                </AppleButton>
+              }
+            />
+          ) : (
+            <>
+              {/* Contador derivado de los datos reales */}
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className="ts-subhead text-[var(--text-secondary)]">
+                  <span className="font-semibold text-[var(--text-primary)]">
+                    {filtered.length}
+                  </span>{" "}
+                  {filtered.length === 1 ? "caso" : "casos"}
+                  {anyFilterActive && (
+                    <span className="text-[var(--text-tertiary)]">
+                      {" "}
+                      de {cases?.length ?? 0}
+                    </span>
+                  )}
+                </span>
+                {anyFilterActive && (
+                  <AppleButton
+                    size="inline"
+                    tone="secondary"
+                    onPress={clearAll}
+                    className="ts-subhead"
+                  >
+                    Limpiar filtros
+                  </AppleButton>
+                )}
+              </div>
 
-        {/* ============ GRID ============ */}
-        {filteredSorted.length > 0 ? (
-          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredSorted.map((item) => (
-              <CaseCard key={item.slug} item={item} />
-            ))}
-          </div>
-        ) : (
-          <div className="mt-16 flex flex-col items-center justify-center rounded-[var(--radius-lg)] bg-[var(--surface-2)] py-20 text-center">
-            <div className="ts-body font-medium text-[var(--text-primary)]">
-              No hay casos con esos filtros
-            </div>
-            <p className="mt-2 ts-subhead text-[var(--text-secondary)] max-w-[360px]">
-              Prueba quitando alguno o limpia todos arriba.
-            </p>
-          </div>
-        )}
+              {/* ============ GRID ============ */}
+              {filtered.length > 0 ? (
+                <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {filtered.map((item) => (
+                    <CaseCard key={item.slug} item={item} />
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-5">
+                  <AppleEmptyState
+                    title="No hay casos con esos filtros"
+                    description="Prueba quitando alguno o limpia todos para ver el catálogo completo."
+                    action={
+                      <AppleButton tone="secondary" size="sm" onPress={clearAll}>
+                        Limpiar filtros
+                      </AppleButton>
+                    }
+                  />
+                </div>
+              )}
+            </>
+          )}
         </AppleReveal>
       </div>
     </main>
