@@ -30,7 +30,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { DIMENSIONS } from "@/lib/simulador/config";
+import { BAND_REPRESENTATIVE_SCORE, DIMENSIONS, bandFromScore100 } from "@/lib/simulador/config";
 import { normalizeReportDimensions } from "@/lib/simulador/reports/model";
 import { isDevBypassActive } from "@/lib/dev/devBypass";
 import { getMockDashboard } from "@/lib/simulador/dashboard/mock";
@@ -63,10 +63,9 @@ interface AvailableCase {
   duration_estimate_min: number | null;
 }
 
+// R-13: representativos canónicos de config.ts — nada de cortes locales.
 function bandToScore(b: "A" | "M" | "B" | null | undefined): number | null {
-  if (b === "A") return 85;
-  if (b === "M") return 60;
-  if (b === "B") return 35;
+  if (b === "A" || b === "M" || b === "B") return BAND_REPRESENTATIVE_SCORE[b];
   return null;
 }
 
@@ -337,7 +336,7 @@ export async function GET() {
       const avg = scores.length
         ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
         : 0;
-      readinessBand = avg > 75 ? "A" : avg > 50 ? "M" : "B";
+      readinessBand = bandFromScore100(avg);
       readinessByBand[readinessBand]++;
 
       // Acumular por dimensión

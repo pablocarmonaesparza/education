@@ -167,12 +167,17 @@ case_assembly_schema:
       dashboard_pivot:          "selected_filter !== null + leader_takeaway no vacio"
       tradeoff_decision_memo:   "decision no vacia + memo no vacio"
 
-    # P0.2 · Pantalla de cierre · la unidad publica es la BANDA
-    # alto/medio/bajo. Score numerico solo existe internamente para
-    # calibracion · NUNCA se renderiza al usuario o al manager.
+    # P0.2 (v2 · pablo-003 resuelto 2026-07-02, deroga DIAGNOSTICO_1_CASO_V0 §8):
+    # la banda alto/medio/bajo sigue siendo la unidad principal, y el score
+    # numerico SI se muestra en reporte/PDF como detalle (el diseño del reporte
+    # con score paso revision de Pablo). El anti-spoiler real se protege no
+    # exponiendo criterios/pesos internos de la rubrica (RLS is_public, R-07),
+    # no escondiendo el resultado. Los cortes de banda son los del YAML
+    # canonico de la rubrica (B 0-64 / M 65-84 / A 85-100) via constante
+    # compartida (R-13) — un solo mapeo score→banda en todo el sistema.
     closing_screen:
-      public_unit: band         # alto | medio | bajo
-      public_score: false       # numerico nunca se publica (DIAGNOSTICO_1_CASO_V0 §8)
+      public_unit: band         # alto | medio | bajo (principal)
+      public_score: true        # numerico visible como detalle (pablo-003)
       risk_events_require_evidence: true  # cita textual del payload del usuario
       recommendation_actions: [pilotar, entrenar, pausar, escalar]
 

@@ -90,6 +90,30 @@ export const BAND_COLORS: Record<BandKey, string> = {
 };
 
 /**
+ * R-13 (RULES_LEDGER): cortes de banda canónicos — ÚNICA fuente del mapeo
+ * score↔banda en todo el sistema. Espejo exacto de la rúbrica congelada
+ * (docs/simulador/contrato_v0/rubricas/rubric_case_factory_v1.yaml):
+ *   B [0, 64] · M [65, 84] · A [85, 100]
+ * Nadie define otros cortes: reportes, PDF y cualquier agregado importan esto.
+ * Cambiar los cortes = nueva versión de rúbrica (rubric_semver_policy.md).
+ */
+export const BAND_CUTOFFS = { A_MIN: 85, M_MIN: 65 } as const;
+
+export function bandFromScore100(score: number): BandKey {
+  if (score >= BAND_CUTOFFS.A_MIN) return "A";
+  if (score >= BAND_CUTOFFS.M_MIN) return "M";
+  return "B";
+}
+
+/** Score representativo (punto medio del rango canónico) para derivar
+ * agregados cuando solo hay bandas. */
+export const BAND_REPRESENTATIVE_SCORE: Record<BandKey, number> = {
+  A: 92,
+  M: 75,
+  B: 32,
+};
+
+/**
  * Catálogo de casos del Sprint marketing_30d. Cada slug aparece en BD
  * (simulador.case_templates) cuando el seed correspondiente corre.
  *

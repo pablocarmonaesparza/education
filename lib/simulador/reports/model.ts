@@ -1,5 +1,7 @@
 import {
+  BAND_REPRESENTATIVE_SCORE,
   DIMENSIONS,
+  bandFromScore100,
   canonicalDimensionId,
 } from "@/lib/simulador/config";
 import type {
@@ -91,21 +93,18 @@ export const BAND_DISPLAY: Record<BandKey, string> = {
   B: "Bajo",
 };
 
+// R-13: el mapeo score↔banda vive en lib/simulador/config.ts (espejo del YAML
+// canónico de la rúbrica). Aquí solo se re-exporta el representativo para no
+// romper imports existentes.
 export function bandScore(band: BandKey) {
-  if (band === "A") return 85;
-  if (band === "M") return 60;
-  return 35;
+  return BAND_REPRESENTATIVE_SCORE[band];
 }
 
 function isBandKey(value: unknown): value is BandKey {
   return value === "A" || value === "M" || value === "B";
 }
 
-function bandFromScore(score: number): BandKey {
-  if (score > 75) return "A";
-  if (score > 50) return "M";
-  return "B";
-}
+const bandFromScore = bandFromScore100;
 
 export function severityLabel(severity: "low" | "medium" | "high") {
   return reportCopy.risk_events.severity_labels[severity];

@@ -10,9 +10,10 @@
  *   • 2+ bandas B en dimensiones críticas    → max(action) = "pausar"
  *   • ningún risk_event + 6 bandas A         → "pilotar" (sin cambio)
  *
- * Estas reglas son TS para que corran en el hot path; la función SQL
- * `simulador.compute_recommendation(session_id)` codifica las mismas reglas
- * para auditoría/reporting offline (W1).
+ * Estas reglas viven SOLO aquí (fuente única). El "espejo SQL"
+ * simulador.compute_recommendation se retiró en la migración 20260702130000
+ * (R-17 del RULES_LEDGER): había divergido y no tenía callers — un espejo
+ * con reglas distintas es peor que ninguno.
  *
  * El judge LLM nunca produce "escalar" — esa acción es manual desde el
  * admin queue cuando se detecta patrón cross-equipo. Si el LLM la propone,
