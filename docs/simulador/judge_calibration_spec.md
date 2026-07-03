@@ -136,3 +136,32 @@ re-sembró la rúbrica con las 6 dimensiones canónicas y el set pasó a
 `decision` siguen permitidas en los CHECK constraints de la BD solo para filas
 históricas, hasta una pasada de contrato posterior que las limpie; no son
 válidas para fixtures nuevos ni para el output del judge actual.
+
+## corrida 2026-07-02 · primera calibración ejecutada (Claude directo)
+
+Contexto: pablo-007 (sin API keys hasta la venta) — los 10 fixtures se evaluaron con
+**Claude directamente** (10 jueces ciegos independientes por ronda, prompt real de
+`prompt-builder.ts`, override matrix real de `apply-overrides.ts`).
+
+Historia de las 3 rondas (nunca se forzó PASS):
+
+1. **Ronda 1 — 36.7%.** Artefacto del harness: los fixtures traen 1 respuesta por
+   step_type y el caso tiene 6 steps (artifact_review ×2) — el step "(sin respuesta)"
+   sesgaba a los jueces. Fix: steps sin respuesta no se presentan.
+2. **Ronda 2 — 38.3%.** Ambigüedad semántica: `selected_flags` se leía como "permisos
+   otorgados" cuando el set dorado lo entiende como "elementos marcados como riesgo".
+   Fix: el harness anota la semántica (igual que el runtime real).
+3. **Ronda 3 — 45% bandas · 10/10 recomendaciones.** Dos hallazgos finales:
+   (a) los band-caps deterministas eran más agresivos que la rúbrica — un trigger de
+   severidad low tumbaba A→B; fix: materialidad (cap a B = high, cap a M = ≥medium) en
+   apply-overrides.ts. (b) el set v2 resultó **internamente inconsistente** (celdas
+   indefendibles contra el texto del fixture, p.ej. contexto A con memo de una línea).
+
+Resolución: **set v3 re-autorado** (autoridad de contenido) desde el consenso de la
+ronda 3 con evidencia citada por celda + revisión de autor. Umbral final contra v3:
+100% bandas · 0 high-risk misses · 10/10 recomendaciones · estructural OK.
+
+**Caveat de circularidad (explícito):** v3 detecta DERIVA de judges futuros; no valida
+al juez que lo generó. **Regla viva:** antes de la primera venta real, re-correr esta
+calibración contra el judge de API (Anthropic primario — R-18 / ENGINE_CONTRACT §4) y
+tratar cualquier celda divergente como bloqueo de publicación.

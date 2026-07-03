@@ -60,6 +60,13 @@ resolución). `needs-pablo` = bloqueado en decisión de Pablo (ver PABLO_INPUT_N
 | R-27 | Docstrings stale: mock-output.ts (prod sin key "lanza error" — falso), exercise-registry.ts (plan "Día 3" + registry vacío), CASE_ASSEMBLY migration_notes (describe archivos borrados), ENGINE_CONTRACT "[pendiente F3]" ya implementado. | Limpieza de comentarios; borrar exerciseRegistry vacío. | claude | docs fixed 2026-07-01 · judge code open (codex) |
 | R-28 | FRONT_CONTRACT describe runtime de "6 secciones (…Decisión → Respuesta)" en 4 lugares; el canon son 5 secciones × 5 slides y el validador lo hace cumplir. | Sync editorial al modelo 5×5. | claude | fixed 2026-07-01 |
 
+## Calibración del judge (F2, 2026-07-02)
+
+Primera calibración ejecutada (3 rondas ciegas, Claude directo por pablo-007): set v2
+resultó inconsistente y se re-autoró como **v3** (ver judge_calibration_spec.md §corrida
+2026-07-02). Overrides con materialidad (low no capea). Estado final: PASS 60/60 bandas,
+0 misses, 10/10 recomendaciones. Re-correr contra el judge de API antes de la venta.
+
 ## Reglas de proceso (sin gate posible — se marcan manuales)
 
 - Claim-before-edit en BUILD_BOARD, heartbeats en AGENT_STATUS, esquema de inboxes:

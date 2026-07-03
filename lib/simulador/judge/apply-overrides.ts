@@ -122,14 +122,26 @@ export function applyOverrides(raw: JudgeOutput): ApplyOverridesResult {
 
   // ── Regla 0 (R-11): band-caps por dimensión ANTES de las reglas de
   // recomendación, para que éstas operen sobre las bandas ya capeadas.
-  const triggers = new Set<string>([
-    ...raw.gaps.map((g) => g.id),
-    ...raw.risk_events.map((e) => e.type),
-  ]);
+  // Materialidad (calibración 2026-07-02, ronda 3): un cap a banda B exige
+  // severidad HIGH del trigger; un cap a M exige ≥ MEDIUM. Sin este umbral,
+  // una nota de severidad low tumbaba una dimensión A a B — más agresivo que
+  // la intención de la rúbrica ("low: señal de mejora, no bloquea").
+  const SEV_RANK: Record<string, number> = { low: 0, medium: 1, high: 2 };
+  const triggerSeverity = new Map<string, number>();
+  const bump = (id: string, sev: string) => {
+    const rank = SEV_RANK[sev] ?? 0;
+    if ((triggerSeverity.get(id) ?? -1) < rank) triggerSeverity.set(id, rank);
+  };
+  for (const g of raw.gaps) bump(g.id, g.severity);
+  for (const e of raw.risk_events) bump(e.type, e.severity);
+  const triggers = new Set<string>(triggerSeverity.keys());
+
   const dimensions = raw.dimensions.map((d) => {
-    const capRule = DIMENSION_BAND_CAPS.find(
-      (c) => c.dimension === d.id && c.triggers.some((t) => triggers.has(t)),
-    );
+    const capRule = DIMENSION_BAND_CAPS.find((c) => {
+      if (c.dimension !== d.id) return false;
+      const needed = c.ceiling === "B" ? SEV_RANK.high : SEV_RANK.medium;
+      return c.triggers.some((t) => (triggerSeverity.get(t) ?? -1) >= needed);
+    });
     if (!capRule || BAND_RANK[d.band] <= BAND_RANK[capRule.ceiling]) return d;
     applied.push({
       rule: capRule.rule,

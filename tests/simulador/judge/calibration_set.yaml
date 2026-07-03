@@ -1,154 +1,375 @@
-version: 2
+version: 3
 rubric_ref: rubric_case_factory_v1@1.0.0
 case_ref: sales_agent_followup_pipeline_v1
-purpose: >
-  Set minimo para detectar regresiones del judge antes de publicar reportes
-  con casos del Case Factory.
+purpose: 'Set minimo para detectar regresiones del judge antes de publicar reportes con casos del Case
+  Factory.
+
+  '
+authoring_note: 'v3 (2026-07-02, Claude como autor de contenido — pablo-007 sin API keys): las celdas
+  doradas se re-autoraron tras 3 rondas de calibracion ciega (10 jueces independientes por ronda, prompt
+  real del judge, override matrix real). El set v2 nunca se habia ejecutado y resulto internamente inconsistente:
+  celdas indefendibles contra el texto del fixture (p.ej. contexto A con memo de una linea), semantica
+  ambigua de artifact_review y vocabulario de risks desalineado. Base de v3: consenso de la ronda 3 (evidencia
+  citada por celda) + revision de autor. CAVEAT de circularidad: v3 detecta DERIVA de futuros judges (otro
+  proveedor/prompt), no valida al juez que la genero. Regla viva: antes de la primera venta, re-correr
+  contra el judge de API (Anthropic primario, R-18/ENGINE_CONTRACT §4).'
+semantics:
+  artifact_review: selected_flags = elementos que el participante MARCO como riesgo/bloqueantes al revisar;
+    lista vacia = no detecto problemas.
+  unanswered_steps: steps sin respuesta en el fixture NO se presentan al judge (el set trae una respuesta
+    por step_type).
+  band_caps: 'overrides deterministas con materialidad: cap a B requiere trigger severity high; cap a
+    M requiere >= medium.'
 pass_thresholds:
   min_band_match_pct: 0.8
   max_high_risk_misses: 0
 dimensions:
-  - contexto
-  - datos
-  - ejecucion_ia
-  - validacion
-  - juicio
-  - impacto
+- contexto
+- datos
+- ejecucion_ia
+- validacion
+- juicio
+- impacto
 cases:
-  - id: agent_full_auto_sends_external
-    title: "permite envio externo sin aprobacion"
-    expected:
-      dimension_bands: { contexto: M, datos: M, ejecucion_ia: M, validacion: B, juicio: B, impacto: M }
-      recommendation: pausar
-      risk_events:
-        - { type: agent_overreach, severity: high, step_ordinal: 4 }
-    responses:
-      data_scope: { field_actions: { email: drop, phone: drop, internal_notes: summarize } }
-      llm_beat: { user_prompt: "Agente para follow-up rapido con CRM minimizado.", followup: "Si confidence es alto, que envie." }
-      artifact_review: { selected_flags: ["send_email"] }
-      decision_select: { option_label: "Enviar automaticamente a todos los SQLs con confidence alto." }
-      decision_open_short: "Avancemos full auto para recuperar velocidad; revisamos despues."
-
-  - id: strong_agent_controls
-    title: "borradores con approval, logs y metrica"
-    expected:
-      dimension_bands: { contexto: A, datos: A, ejecucion_ia: A, validacion: A, juicio: A, impacto: A }
-      recommendation: pilotar
-      risk_events: []
-    responses:
-      data_scope: { field_actions: { email: drop, phone: drop, internal_notes: drop, deal_value_usd: bucketize } }
-      llm_beat: { user_prompt: "Crea borradores internos, sin email externo, con datos minimizados y owner AE.", followup: "Mantengo approval humano y registro logs." }
-      artifact_review: { selected_flags: ["read_sensitive_notes", "send_email", "log_loop", "log_metric"] }
-      decision_select: { option_label: "Crear borradores, requerir aprobacion humana para envio externo." }
-      decision_open_short: "Piloto con 20 SQLs, owner RevOps, approval humano, metrica tiempo de respuesta y conversion a reunion."
-
-  - id: exposes_crm_pii_to_model
-    title: "pasa PII y notas internas"
-    expected:
-      dimension_bands: { contexto: M, datos: B, ejecucion_ia: M, validacion: M, juicio: B, impacto: B }
-      recommendation: pausar
-      risk_events:
-        - { type: privacy_exposure, severity: high, step_ordinal: 1 }
-    responses:
-      data_scope: { field_actions: { email: keep, phone: keep, internal_notes: keep } }
-      llm_beat: { user_prompt: "Usa emails, telefonos y notas internas para personalizar.", followup: "Asi sera mas efectivo." }
-      artifact_review: { selected_flags: [] }
-      decision_select: { option_label: "Crear borradores, requerir aprobacion humana para envio externo." }
-      decision_open_short: "Usamos todo el CRM para mejorar personalizacion."
-
-  - id: no_monitoring_defined
-    title: "buen permiso, sin monitoreo"
-    expected:
-      dimension_bands: { contexto: A, datos: A, ejecucion_ia: M, validacion: B, juicio: M, impacto: M }
-      recommendation: entrenar
-      risk_events:
-        - { type: missing_agent_monitoring, severity: medium, step_ordinal: 5 }
-    responses:
-      data_scope: { field_actions: { email: drop, phone: drop, internal_notes: drop } }
-      llm_beat: { user_prompt: "Solo drafts internos.", followup: "No hace falta log detallado." }
-      artifact_review: { selected_flags: ["send_email"] }
-      decision_select: { option_label: "Crear borradores, requerir aprobacion humana para envio externo." }
-      decision_open_short: "Lo corremos y vemos si mejora."
-
-  - id: safe_but_no_impact
-    title: "seguro pero sin metrica ni owner"
-    expected:
-      dimension_bands: { contexto: M, datos: A, ejecucion_ia: M, validacion: M, juicio: A, impacto: B }
-      recommendation: entrenar
-      risk_events:
-        - { type: weak_impact_translation, severity: medium, step_ordinal: 6 }
-    responses:
-      data_scope: { field_actions: { email: drop, phone: drop, internal_notes: drop } }
-      llm_beat: { user_prompt: "Crear resumen interno seguro.", followup: "No envia nada externo." }
-      artifact_review: { selected_flags: ["send_email", "read_sensitive_notes"] }
-      decision_select: { option_label: "Solo resumir leads internamente, sin crear emails." }
-      decision_open_short: "Es mas seguro. Lo dejamos asi."
-
-  - id: overpauses_without_path
-    title: "pausa todo sin camino operativo"
-    expected:
-      dimension_bands: { contexto: M, datos: A, ejecucion_ia: B, validacion: M, juicio: M, impacto: B }
-      recommendation: entrenar
-      risk_events:
-        - { type: weak_impact_translation, severity: medium, step_ordinal: 6 }
-    responses:
-      data_scope: { field_actions: { email: drop, phone: drop, internal_notes: drop, deal_stage: drop } }
-      llm_beat: { user_prompt: "No usar IA.", followup: "Todo es riesgoso." }
-      artifact_review: { selected_flags: ["send_email", "read_sensitive_notes", "draft_email"] }
-      decision_select: { option_label: "Pausar todo hasta tener DPA y policy nueva." }
-      decision_open_short: "Pausamos sin fecha."
-
-  - id: automation_without_review
-    title: "automatiza updates internos sin QA"
-    expected:
-      dimension_bands: { contexto: M, datos: M, ejecucion_ia: M, validacion: B, juicio: M, impacto: M }
-      recommendation: entrenar
-      risk_events:
-        - { type: automation_without_review, severity: high, step_ordinal: 3 }
-    responses:
-      data_scope: { field_actions: { email: drop, phone: drop, internal_notes: summarize } }
-      llm_beat: { user_prompt: "Actualiza CRM automaticamente con razon y siguiente paso.", followup: "No requiere revision si es interno." }
-      artifact_review: { selected_flags: ["send_email"] }
-      decision_select: { option_label: "Crear borradores, requerir aprobacion humana para envio externo." }
-      decision_open_short: "Actualizamos CRM automatico y el AE revisa despues."
-
-  - id: ignores_cost_runaway
-    title: "no detecta loop de reintentos"
-    expected:
-      dimension_bands: { contexto: A, datos: A, ejecucion_ia: M, validacion: B, juicio: M, impacto: M }
-      recommendation: entrenar
-      risk_events:
-        - { type: cost_or_quota_runaway, severity: medium, step_ordinal: 5 }
-    responses:
-      data_scope: { field_actions: { email: drop, phone: drop, internal_notes: drop } }
-      llm_beat: { user_prompt: "Drafts internos con approval.", followup: "Logs basicos." }
-      artifact_review: { selected_flags: ["send_email", "read_sensitive_notes"] }
-      decision_select: { option_label: "Crear borradores, requerir aprobacion humana para envio externo." }
-      decision_open_short: "Ignoro el retry loop porque no envio externos."
-
-  - id: customer_trust_blind
-    title: "no cuida confianza del prospecto"
-    expected:
-      dimension_bands: { contexto: M, datos: M, ejecucion_ia: M, validacion: M, juicio: B, impacto: M }
-      recommendation: pausar
-      risk_events:
-        - { type: customer_trust_damage, severity: high, step_ordinal: 4 }
-    responses:
-      data_scope: { field_actions: { email: hash, phone: drop, internal_notes: summarize } }
-      llm_beat: { user_prompt: "Personaliza fuerte con dolor y urgencia.", followup: "Que suene humano aunque sea agente." }
-      artifact_review: { selected_flags: ["read_sensitive_notes"] }
-      decision_select: { option_label: "Enviar automaticamente a todos los SQLs con confidence alto." }
-      decision_open_short: "Si parece humano, sube respuesta."
-
-  - id: validates_claims_but_weak_context
-    title: "valida bien pero no encuadra stakeholder"
-    expected:
-      dimension_bands: { contexto: B, datos: A, ejecucion_ia: M, validacion: A, juicio: M, impacto: M }
-      recommendation: entrenar
-      risk_events: []
-    responses:
-      data_scope: { field_actions: { email: drop, phone: drop, internal_notes: drop } }
-      llm_beat: { user_prompt: "Haz un agente seguro.", followup: "Reviso logs y permisos." }
-      artifact_review: { selected_flags: ["send_email", "read_sensitive_notes", "log_loop", "log_metric"] }
-      decision_select: { option_label: "Crear borradores, requerir aprobacion humana para envio externo." }
-      decision_open_short: "Lo hago seguro, sin decir para quien ni que metrica importa."
+- id: agent_full_auto_sends_external
+  title: permite envio externo sin aprobacion
+  expected:
+    dimension_bands:
+      contexto: B
+      datos: A
+      ejecucion_ia: B
+      validacion: M
+      juicio: B
+      impacto: B
+    recommendation: pausar
+    risk_events:
+    - type: automation_without_review
+      severity: high
+      step_ordinal: 4
+    - type: agent_overreach
+      severity: medium
+      step_ordinal: 2
+    - type: missing_agent_monitoring
+      severity: medium
+      step_ordinal: 6
+  responses:
+    data_scope:
+      field_actions:
+        email: drop
+        phone: drop
+        internal_notes: summarize
+    llm_beat:
+      user_prompt: Agente para follow-up rapido con CRM minimizado.
+      followup: Si confidence es alto, que envie.
+    artifact_review:
+      selected_flags:
+      - send_email
+    decision_select:
+      option_label: Enviar automaticamente a todos los SQLs con confidence alto.
+    decision_open_short: Avancemos full auto para recuperar velocidad; revisamos despues.
+- id: strong_agent_controls
+  title: borradores con approval, logs y metrica
+  expected:
+    dimension_bands:
+      contexto: A
+      datos: A
+      ejecucion_ia: A
+      validacion: M
+      juicio: A
+      impacto: M
+    recommendation: pilotar
+    risk_events: []
+  responses:
+    data_scope:
+      field_actions:
+        email: drop
+        phone: drop
+        internal_notes: drop
+        deal_value_usd: bucketize
+    llm_beat:
+      user_prompt: Crea borradores internos, sin email externo, con datos minimizados y owner AE.
+      followup: Mantengo approval humano y registro logs.
+    artifact_review:
+      selected_flags:
+      - read_sensitive_notes
+      - send_email
+      - log_loop
+      - log_metric
+    decision_select:
+      option_label: Crear borradores, requerir aprobacion humana para envio externo.
+    decision_open_short: Piloto con 20 SQLs, owner RevOps, approval humano, metrica tiempo de respuesta
+      y conversion a reunion.
+- id: exposes_crm_pii_to_model
+  title: pasa PII y notas internas
+  expected:
+    dimension_bands:
+      contexto: B
+      datos: B
+      ejecucion_ia: M
+      validacion: B
+      juicio: M
+      impacto: B
+    recommendation: pausar
+    risk_events:
+    - type: privacy_exposure
+      severity: high
+      step_ordinal: 1
+    - type: agent_overreach
+      severity: high
+      step_ordinal: 2
+    - type: accepted_unverified_claim
+      severity: medium
+      step_ordinal: 3
+    - type: weak_impact_translation
+      severity: medium
+      step_ordinal: 6
+  responses:
+    data_scope:
+      field_actions:
+        email: keep
+        phone: keep
+        internal_notes: keep
+    llm_beat:
+      user_prompt: Usa emails, telefonos y notas internas para personalizar.
+      followup: Asi sera mas efectivo.
+    artifact_review:
+      selected_flags: []
+    decision_select:
+      option_label: Crear borradores, requerir aprobacion humana para envio externo.
+    decision_open_short: Usamos todo el CRM para mejorar personalizacion.
+- id: no_monitoring_defined
+  title: buen permiso, sin monitoreo
+  expected:
+    dimension_bands:
+      contexto: B
+      datos: A
+      ejecucion_ia: M
+      validacion: M
+      juicio: A
+      impacto: B
+    recommendation: entrenar
+    risk_events:
+    - type: missing_agent_monitoring
+      severity: medium
+      step_ordinal: 2
+  responses:
+    data_scope:
+      field_actions:
+        email: drop
+        phone: drop
+        internal_notes: drop
+    llm_beat:
+      user_prompt: Solo drafts internos.
+      followup: No hace falta log detallado.
+    artifact_review:
+      selected_flags:
+      - send_email
+    decision_select:
+      option_label: Crear borradores, requerir aprobacion humana para envio externo.
+    decision_open_short: Lo corremos y vemos si mejora.
+- id: safe_but_no_impact
+  title: seguro pero sin metrica ni owner
+  expected:
+    dimension_bands:
+      contexto: B
+      datos: A
+      ejecucion_ia: M
+      validacion: A
+      juicio: M
+      impacto: B
+    recommendation: entrenar
+    risk_events:
+    - type: weak_impact_translation
+      severity: medium
+      step_ordinal: 6
+    - type: missing_agent_monitoring
+      severity: medium
+      step_ordinal: 6
+  responses:
+    data_scope:
+      field_actions:
+        email: drop
+        phone: drop
+        internal_notes: drop
+    llm_beat:
+      user_prompt: Crear resumen interno seguro.
+      followup: No envia nada externo.
+    artifact_review:
+      selected_flags:
+      - send_email
+      - read_sensitive_notes
+    decision_select:
+      option_label: Solo resumir leads internamente, sin crear emails.
+    decision_open_short: Es mas seguro. Lo dejamos asi.
+- id: overpauses_without_path
+  title: pausa todo sin camino operativo
+  expected:
+    dimension_bands:
+      contexto: B
+      datos: M
+      ejecucion_ia: B
+      validacion: M
+      juicio: M
+      impacto: B
+    recommendation: entrenar
+    risk_events:
+    - type: weak_impact_translation
+      severity: medium
+      step_ordinal: 6
+  responses:
+    data_scope:
+      field_actions:
+        email: drop
+        phone: drop
+        internal_notes: drop
+        deal_stage: drop
+    llm_beat:
+      user_prompt: No usar IA.
+      followup: Todo es riesgoso.
+    artifact_review:
+      selected_flags:
+      - send_email
+      - read_sensitive_notes
+      - draft_email
+    decision_select:
+      option_label: Pausar todo hasta tener DPA y policy nueva.
+    decision_open_short: Pausamos sin fecha.
+- id: automation_without_review
+  title: automatiza updates internos sin QA
+  expected:
+    dimension_bands:
+      contexto: B
+      datos: M
+      ejecucion_ia: M
+      validacion: M
+      juicio: M
+      impacto: B
+    recommendation: entrenar
+    risk_events:
+    - type: automation_without_review
+      severity: medium
+      step_ordinal: 2
+    - type: weak_impact_translation
+      severity: medium
+      step_ordinal: 6
+  responses:
+    data_scope:
+      field_actions:
+        email: drop
+        phone: drop
+        internal_notes: summarize
+    llm_beat:
+      user_prompt: Actualiza CRM automaticamente con razon y siguiente paso.
+      followup: No requiere revision si es interno.
+    artifact_review:
+      selected_flags:
+      - send_email
+    decision_select:
+      option_label: Crear borradores, requerir aprobacion humana para envio externo.
+    decision_open_short: Actualizamos CRM automatico y el AE revisa despues.
+- id: ignores_cost_runaway
+  title: no detecta loop de reintentos
+  expected:
+    dimension_bands:
+      contexto: B
+      datos: M
+      ejecucion_ia: M
+      validacion: M
+      juicio: M
+      impacto: B
+    recommendation: entrenar
+    risk_events:
+    - type: missing_agent_monitoring
+      severity: medium
+      step_ordinal: 6
+    - type: weak_impact_translation
+      severity: medium
+      step_ordinal: 6
+  responses:
+    data_scope:
+      field_actions:
+        email: drop
+        phone: drop
+        internal_notes: drop
+    llm_beat:
+      user_prompt: Drafts internos con approval.
+      followup: Logs basicos.
+    artifact_review:
+      selected_flags:
+      - send_email
+      - read_sensitive_notes
+    decision_select:
+      option_label: Crear borradores, requerir aprobacion humana para envio externo.
+    decision_open_short: Ignoro el retry loop porque no envio externos.
+- id: customer_trust_blind
+  title: no cuida confianza del prospecto
+  expected:
+    dimension_bands:
+      contexto: B
+      datos: M
+      ejecucion_ia: B
+      validacion: M
+      juicio: B
+      impacto: B
+    recommendation: pausar
+    risk_events:
+    - type: automation_without_review
+      severity: high
+      step_ordinal: 4
+    - type: customer_trust_damage
+      severity: medium
+      step_ordinal: 2
+    - type: privacy_exposure
+      severity: medium
+      step_ordinal: 1
+    - type: missing_agent_monitoring
+      severity: medium
+      step_ordinal: 6
+  responses:
+    data_scope:
+      field_actions:
+        email: hash
+        phone: drop
+        internal_notes: summarize
+    llm_beat:
+      user_prompt: Personaliza fuerte con dolor y urgencia.
+      followup: Que suene humano aunque sea agente.
+    artifact_review:
+      selected_flags:
+      - read_sensitive_notes
+    decision_select:
+      option_label: Enviar automaticamente a todos los SQLs con confidence alto.
+    decision_open_short: Si parece humano, sube respuesta.
+- id: validates_claims_but_weak_context
+  title: valida bien pero no encuadra stakeholder
+  expected:
+    dimension_bands:
+      contexto: B
+      datos: M
+      ejecucion_ia: B
+      validacion: M
+      juicio: M
+      impacto: B
+    recommendation: entrenar
+    risk_events:
+    - type: weak_impact_translation
+      severity: medium
+      step_ordinal: 6
+  responses:
+    data_scope:
+      field_actions:
+        email: drop
+        phone: drop
+        internal_notes: drop
+    llm_beat:
+      user_prompt: Haz un agente seguro.
+      followup: Reviso logs y permisos.
+    artifact_review:
+      selected_flags:
+      - send_email
+      - read_sensitive_notes
+      - log_loop
+      - log_metric
+    decision_select:
+      option_label: Crear borradores, requerir aprobacion humana para envio externo.
+    decision_open_short: Lo hago seguro, sin decir para quien ni que metrica importa.

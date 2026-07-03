@@ -290,5 +290,21 @@ items:
       Default ejecutado 2026-07-02: env SIMULADOR_JUDGE_PROVIDER explícita con Anthropic
       primario y DeepSeek fallback; ENGINE_CONTRACT se actualiza a la realidad elegida.
       Se implementa en F2 antes de calibrar.
+  - id: pablo-007
+    topic: Sin API keys hasta la venta — evaluación directa por Claude
+    question: >-
+      Registrado de decisión verbal de Pablo (2026-07-02): no usar/pagar API keys
+      (Anthropic/DeepSeek) durante la preparación del lanzamiento. Todo el trabajo de
+      evaluación/calibración lo hace Claude Code directamente (suscripción existente).
+    options: []
+    recommendation: >-
+      Interim: calibración del judge corrida por Claude directamente contra el set v2;
+      el judge del producto en runtime queda con su cadena de fallbacks. Antes de la
+      primera venta real: activar ANTHROPIC_API_KEY (primario per pablo-006) y
+      RE-CORRER la calibración vía API (regla ya escrita en ENGINE_CONTRACT §4).
+    owner: claude
+    created_at: '2026-07-02T22:30:00-06:00'
+    status: resolved
+    resolution: Decisión de Pablo en persona. Aplicada en F2.
 ```
 <!-- pablo:data:end -->
