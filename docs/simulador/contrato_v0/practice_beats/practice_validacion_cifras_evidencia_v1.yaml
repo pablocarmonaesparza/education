@@ -1,0 +1,84 @@
+practice_beat:
+  id: practice_validacion_cifras_evidencia_v1
+  status: active
+  dimension: validacion
+  level: 1
+  career_key: ops
+  triggered_by_gap: [unverified_claims]
+  duration_max_seconds: 420
+  principle_card:
+    headline: "Toda cifra tiene fuente o no sale del borrador"
+    body: "La IA redacta con la misma seguridad cuando acierta y cuando inventa. La diferencia la pone quien revisa antes de enviar."
+  practice_exercise:
+    type: formative_slides
+    blocks: [ai_output_review, categorize_rows]
+    prompt: "La IA redactó el borrador del reporte mensual de ventas de una distribuidora: cazas las cifras sin fuente y las causas que nadie midió, y luego decides afirmación por afirmación qué se usa, qué se verifica y qué se quita."
+  completion_criteria: "Completar los 2 ejercicios (todos los segmentos y todas las filas con respuesta) y revisar la retroalimentación de cada uno."
+  exit:
+    contributes_to_resim_score: true
+  slides:
+    - id: portada
+      kind: cover
+      title: "La IA escribe igual de segura cuando acierta y cuando inventa"
+      body: "Un borrador generado se lee impecable: cifras exactas, comparaciones, causas. El problema es que algunas salieron de tus datos y otras de la nada — y se ven idénticas. Aquí practicas distinguirlas antes de que lleguen a tu jefe."
+      chips: ["N1 · Fundamentos", "Operaciones", "7 min"]
+    - id: principio
+      kind: reading
+      title: "Cómo se caza una cifra inventada"
+      body: |-
+        **El problema.** La inteligencia artificial no avisa cuándo está rellenando huecos. Una cifra correcta y una inventada llegan con la misma redacción segura, el mismo formato y el mismo tono. Si el reporte sale con una cifra falsa, el que queda mal no es el modelo: eres tú.
+
+        **La regla.** Para cada cifra y cada afirmación del borrador, pregunta una sola cosa: ¿puedo rastrearla a una fuente — mi archivo, el sistema, el tablero oficial? Si sí, pasa. Si no, se verifica o se quita. No hay tercera opción.
+
+        **Las tres señales de alerta.** Primera: comparaciones con datos que tú no le diste — si solo le compartiste junio, ¿de dónde sacó "12% más que el año pasado"? Segunda: causas que suenan lógicas pero nadie midió — "la caída se debe a la competencia" es una opinión disfrazada de dato. Tercera: proyecciones presentadas como hechos — "julio superará los 5 millones" es una apuesta, no un resultado.
+
+        **El ejemplo.** "El producto más vendido fue el aceite de 900 ml, con 1,240 unidades" se rastrea a tu archivo en diez segundos: pasa. "Las ventas cayeron por los precios de la competencia" no se rastrea a nada: fuera, o se convierte en pregunta para investigar.
+    - id: ejercicio_borrador
+      kind: exercise
+      blockId: ai_output_review
+      title: "La IA redactó el reporte mensual con tu archivo de ventas de junio"
+      body: "Solo le diste el archivo de junio. Marca lo que no dejarías pasar sin verificar. Toca para marcar."
+      caseContext:
+        segments:
+          - { id: s1, text: "Las ventas de junio fueron 12% mayores que las de junio del año pasado.", flagIfMarked: "claim_no_verificado" }
+          - { id: s2, text: "El producto más vendido fue el aceite de 900 ml, con 1,240 unidades.", flagIfMarked: "frase_reutilizable" }
+          - { id: s3, text: "La caída en la zona sur se debe a que la competencia bajó precios.", flagIfMarked: "claim_no_verificado" }
+          - { id: s4, text: "Con este ritmo, julio cerrará arriba de los 5 millones.", flagIfMarked: "claim_no_verificado" }
+          - { id: s5, text: "La zona centro concentró la mitad de las unidades vendidas del mes.", flagIfMarked: "frase_reutilizable" }
+      feedback:
+        kind: segments
+        segments:
+          - { id: s1, shouldFlag: true, why: "Solo le diste el archivo de junio de este año. La comparación con el año pasado salió de la nada — primera señal de alerta." }
+          - { id: s2, shouldFlag: false, why: "Rastreable a tu archivo en un vistazo: producto y unidades están ahí. Tiene fuente, pasa." }
+          - { id: s3, shouldFlag: true, why: "Una causa que suena lógica pero nadie midió. Se quita, o se convierte en pregunta para investigar — no en conclusión del reporte." }
+          - { id: s4, shouldFlag: true, why: "Proyección presentada como hecho. Si tu jefe planifica con esa cifra y no llega, el reporte falló." }
+          - { id: s5, shouldFlag: false, why: "Se calcula directo de tu archivo con un filtro. Verificable en segundos: pasa." }
+    - id: ejercicio_afirmaciones
+      kind: exercise
+      blockId: categorize_rows
+      title: "Últimas afirmaciones del borrador. Decide qué haces con cada una"
+      body: "Antes de que el reporte salga, cada afirmación se usa, se verifica o se quita."
+      caseContext:
+        actionStyle: permission
+        actions:
+          - { value: permitir, label: "Usar tal cual" }
+          - { value: revisar, label: "Verificar contra la fuente" }
+          - { value: bloquear, label: "Quitar del borrador" }
+        rows:
+          - { id: v1, label: "\"Las devoluciones bajaron a 2.1% en junio\" — el tablero oficial muestra devoluciones por mes" }
+          - { id: v2, label: "\"Somos el distribuidor mejor evaluado de la región\" — no existe ninguna medición de eso" }
+          - { id: v3, label: "\"El archivo registra 18,430 unidades vendidas en junio\" — tú mismo lo cotejaste contra el sistema hoy" }
+          - { id: v4, label: "\"Los clientes están más satisfechos este mes\" — no hay encuesta ni dato que lo respalde" }
+          - { id: v5, label: "\"El ticket promedio subió respecto a mayo\" — tienes los archivos de mayo y junio a la mano" }
+      feedback:
+        kind: rows
+        rows:
+          - { id: v1, correct: revisar, why: "Hay fuente disponible: el tablero. Dos minutos de cotejo y la cifra queda respaldada — no la uses antes de ese cotejo." }
+          - { id: v2, correct: bloquear, why: "No hay medición: es un halago inventado. Ninguna verificación posible, así que no sale en el reporte." }
+          - { id: v3, correct: permitir, why: "Ya la verificaste tú contra el sistema hoy. Fuente confirmada, pasa tal cual." }
+          - { id: v4, correct: bloquear, why: "Sin encuesta ni dato, \"más satisfechos\" es una sensación. Se quita, o se propone medirlo el mes que entra." }
+          - { id: v5, correct: revisar, why: "Es verificable y tienes ambos archivos. Un cálculo rápido la confirma o la tumba — hazlo antes de enviar." }
+    - id: cierre
+      kind: closing
+      title: "Mañana, antes de reenviar cualquier texto generado"
+      body: "Subraya cada cifra y cada \"porque\". Si en diez segundos no puedes decir de qué fuente salió, no pasa: se verifica o se quita. Tu firma va en el reporte, no la del modelo."

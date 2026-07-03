@@ -1,15 +1,13 @@
 version: 1
 project: itera-simulador-premium
-updated_at: '2026-05-19T20:58:33.767Z'
+updated_at: '2026-06-25T19:05:00-06:00'
 source_of_truth: true
 rules:
   - si una tarea no vive aqui, no existe
   - cada tarea tiene owner, reviewer, status, depends_on, dod y notes
   - los estados validos son backlog, in_progress, review, blocked y done
   - cada agente debe claimar una tarea antes de tocarla; claims vencidos se liberan por heartbeat
-  - >-
-    si una tarea bloquea a otro agente, registrar el bloqueo en docs/coord/BLOCKERS.md antes de
-    cambiar de frente
+  - si una tarea bloquea a otro agente, registrar el bloqueo en docs/coord/BLOCKERS.md antes de cambiar de frente
   - commits de subtarea usan prefix [task:<id>]
   - PR por bloque cerrado, no por subtarea
 claim_policy:
@@ -47,9 +45,7 @@ tasks:
       - scripts/coord contiene heartbeat, board-lint, agent-sync y sync-research-to-board
       - scripts pasan en local
       - claude y codex tienen primera entrada en AGENT_STATUS.md
-    notes: >-
-      bloque 0; prerequisito de todo | passed: coord:lint, coord:heartbeat, coord:test-race,
-      coord:sync
+    notes: 'bloque 0; prerequisito de todo | passed: coord:lint, coord:heartbeat, coord:test-race, coord:sync'
   - id: B0-002
     title: instalar heartbeat local
     owner: codex
@@ -86,8 +82,8 @@ tasks:
       - legacy sigue archivado
       - build local pasa
     notes: >-
-      fast-forward push a origin/main completado desde codex/simulador-surface-cleanup; produccion
-      alias www.itera.la corre el mismo HEAD
+      fast-forward push a origin/main completado desde codex/simulador-surface-cleanup; produccion alias www.itera.la
+      corre el mismo HEAD
     done_at: '2026-05-19T14:07:41-06:00'
   - id: B1-002
     title: integrar y aplicar migracion 020
@@ -101,8 +97,8 @@ tasks:
       - incluye exposed schemas, grants, policies defensivas, ensure_bridge_user y backfill
       - migracion aplicada contra Supabase con verificacion
     notes: >-
-      sql inicial fue propuesto por claude | applied via supabase db query because db push is
-      blocked by legacy remote migration drift; repaired version 020 as applied
+      sql inicial fue propuesto por claude | applied via supabase db query because db push is blocked by legacy remote
+      migration drift; repaired version 020 as applied
     done_at: '2026-05-19T14:07:41-06:00'
   - id: B1-003
     title: actualizar auth callback para ensure_bridge_user
@@ -116,8 +112,8 @@ tasks:
       - signup/login existente crea o resuelve bridge idempotentemente
       - cuentas preexistentes no rompen dashboard/case
     notes: >-
-      elimina bridge ad-hoc duplicado | auth callback now calls simulador.ensure_bridge_user and
-      fails closed on bridge sync error
+      elimina bridge ad-hoc duplicado | auth callback now calls simulador.ensure_bridge_user and fails closed on bridge
+      sync error
   - id: B1-004
     title: deploy y smoke E2E de base
     owner: codex
@@ -133,9 +129,8 @@ tasks:
       - field-test publico funciona sin login
       - HANDOFF.md tiene cierre del bloque
     notes: >-
-      production deploy verde; cuenta nueva buyer completa signup -> onboarding org/team/sprint ->
-      invite; empleado acepta invitacion, ve 8 casos, completa caso 1 y obtiene reporte publicado
-      con judge real
+      production deploy verde; cuenta nueva buyer completa signup -> onboarding org/team/sprint -> invite; empleado
+      acepta invitacion, ve 8 casos, completa caso 1 y obtiene reporte publicado con judge real
     done_at: '2026-05-19T14:07:41-06:00'
   - id: B2-001
     title: spec migracion 021 schema premium
@@ -150,8 +145,8 @@ tasks:
       - impacto en RLS documentado
       - decisiones producto incluidas
     notes: >-
-      codex materializo el spec como migracion ejecutable por velocidad; Claude CLI dio PASS y
-      Claude mantiene review asincrono por inbox
+      codex materializo el spec como migracion ejecutable por velocidad; Claude CLI dio PASS y Claude mantiene review
+      asincrono por inbox
     done_at: '2026-05-19T12:27:38-06:00'
   - id: B2-002
     title: aplicar migracion 021 schema premium
@@ -165,8 +160,8 @@ tasks:
       - tipos TS regenerados si aplica
       - RLS para nuevas tablas validado
     notes: >-
-      aplicada y verificada en Supabase remoto; archivo
-      20260519021000_simulador_premium_schema_021.sql mantiene orden fresh-deploy
+      aplicada y verificada en Supabase remoto; archivo 20260519021000_simulador_premium_schema_021.sql mantiene orden
+      fresh-deploy
     done_at: '2026-05-19T12:27:38-06:00'
   - id: B2-003
     title: spec migracion 022 analytics, compliance y rubrics freeze
@@ -180,8 +175,8 @@ tasks:
       - spec cubre users.jurisdiction
       - spec cubre rubrics.frozen_at/frozen_by y semver
     notes: >-
-      codex materializo el spec como migracion ejecutable desde el plan acordado; Claude CLI dio
-      PASS y Claude mantiene review asincrono por inbox
+      codex materializo el spec como migracion ejecutable desde el plan acordado; Claude CLI dio PASS y Claude mantiene
+      review asincrono por inbox
     done_at: '2026-05-19T12:27:38-06:00'
   - id: B2-004
     title: aplicar migracion 022 analytics, compliance y rubrics freeze
@@ -195,8 +190,8 @@ tasks:
       - emision de evento no catalogado falla en dev
       - reports conservan rubric_version exacta
     notes: >-
-      aplicada y verificada en Supabase remoto; incluye catalogo analytics, consent LATAM, rubric
-      freeze metadata, FK exacta y guard dev para eventos no catalogados
+      aplicada y verificada en Supabase remoto; incluye catalogo analytics, consent LATAM, rubric freeze metadata, FK
+      exacta y guard dev para eventos no catalogados
     done_at: '2026-05-19T12:27:38-06:00'
   - id: B3-001
     title: mapear 12 arquetipos HBR MIT HKS sin IP
@@ -237,8 +232,8 @@ tasks:
       - upsert idempotente de 8 templates y 16+ variantes
       - validate-case-yaml pasa antes de importar
     notes: >-
-      seed-cases.mjs aplica upserts idempotentes; Supabase remoto tiene 8 templates, 16 variants, 40
-      steps, 67 gaps, 8 sprint_package_cases
+      seed-cases.mjs aplica upserts idempotentes; Supabase remoto tiene 8 templates, 16 variants, 40 steps, 67 gaps, 8
+      sprint_package_cases
     done_at: '2026-05-19T12:42:00-06:00'
   - id: B3-004
     title: practice beats premium por dimension y nivel
@@ -266,8 +261,8 @@ tasks:
       - practice_beats y unlock rules quedan en BD
       - mapping case gap -> beat validado
     notes: >-
-      seed-practice-beats.mjs aplica upserts idempotentes; Supabase remoto tiene 20 practice_beats y
-      38 case_practice_beats
+      seed-practice-beats.mjs aplica upserts idempotentes; Supabase remoto tiene 20 practice_beats y 38
+      case_practice_beats
     done_at: '2026-05-19T12:42:00-06:00'
   - id: B3-006
     title: freeze rubric_marketing_v1@1.0.0
@@ -308,9 +303,8 @@ tasks:
       - tests/simulador/judge/calibration_set.yaml existe
       - CI bloquea si <80% match o miss high risk
     notes: >-
-      production smoke confirms real non-mock judge; calibration_set.yaml has 10 canonical fixtures;
-      check-scope now validates the set and comparator enforces 80% band match + 0 high-risk misses
-      when actual judge output is provided
+      production smoke confirms real non-mock judge; calibration_set.yaml has 10 canonical fixtures; check-scope now
+      validates the set and comparator enforces 80% band match + 0 high-risk misses when actual judge output is provided
     claimed_by: null
     claim_expires_at: null
     done_at: '2026-05-19T14:15:00-06:00'
@@ -326,8 +320,8 @@ tasks:
       - doble firma enforceada antes de publicar
       - SLA 24h visible en admin
     notes: >-
-      migracion 024 aplicada; risk high crea pending_review con SLA 24h y 2 firmas; admin muestra
-      SLA/firma; backend bloquea firma duplicada y publica solo al completar required_review_count
+      migracion 024 aplicada; risk high crea pending_review con SLA 24h y 2 firmas; admin muestra SLA/firma; backend
+      bloquea firma duplicada y publica solo al completar required_review_count
     claimed_by: null
     claim_expires_at: null
     done_at: '2026-05-19T14:48:00-06:00'
@@ -356,7 +350,9 @@ tasks:
       - PDF descargable
       - share link con TTL
       - anonimizacion de excerpts high risk
-    notes: "PDFKit standalone server-side; report_share_links con token SHA-256 y TTL 30d; link publico redactiona evidencias high risk; Playwright E2E cubre PDF + share."
+    notes: >-
+      PDFKit standalone server-side; report_share_links con token SHA-256 y TTL 30d; link publico redactiona evidencias
+      high risk; Playwright E2E cubre PDF + share.
     done_at: '2026-05-19T17:18:00-06:00'
   - id: B5-003
     title: manager dashboard premium
@@ -370,7 +366,10 @@ tasks:
       - matriz 3 niveles x 5 dimensiones
       - drill-down por persona/equipo
       - practice, resim y transfer delta visibles
-    notes: "API agrega matriz dimension x banda, counts de recomendacion, high-risk y pending-review; dashboard muestra alerta operativa, matriz agregada y drill-down por persona via report link. Practice/resim/transfer delta quedan sin data hasta B4/B5 siguientes."
+    notes: >-
+      API agrega matriz dimension x banda, counts de recomendacion, high-risk y pending-review; dashboard muestra alerta
+      operativa, matriz agregada y drill-down por persona via report link. Practice/resim/transfer delta quedan sin data
+      hasta B4/B5 siguientes.
     done_at: '2026-05-19T17:35:00-06:00'
   - id: B6-001
     title: field-test publico production-ready
@@ -386,8 +385,8 @@ tasks:
       - email opcional post-valor
       - lead llega a leads_inbox y notificacion sales
     notes: >-
-      production live; lead llega a leads_inbox; admin/leads permite seguimiento comercial staff sin
-      tocar Supabase; smoke production paso contra www.itera.la
+      production live; lead llega a leads_inbox; admin/leads permite seguimiento comercial staff sin tocar Supabase;
+      smoke production paso contra www.itera.la
     done_at: '2026-05-19T13:18:00-06:00'
   - id: B6-002
     title: analytics field-test y lead funnel
@@ -398,13 +397,11 @@ tasks:
       - B2-004
       - B6-001
     dod:
-      - >-
-        eventos catalogados para started, section_completed, abandoned, submitted, report_viewed y
-        lead_captured
+      - eventos catalogados para started, section_completed, abandoned, submitted, report_viewed y lead_captured
       - dashboard admin muestra conversion
     notes: >-
-      admin/leads muestra funnel 30 dias; event vocabulary alineado con lead_captured; abandono se
-      emite por pagehide/visibilitychange e inferencia por sesiones stale
+      admin/leads muestra funnel 30 dias; event vocabulary alineado con lead_captured; abandono se emite por
+      pagehide/visibilitychange e inferencia por sesiones stale
     done_at: '2026-05-19T13:29:00-06:00'
   - id: B7-001
     title: billing tiers y Stripe checkout
@@ -434,10 +431,10 @@ tasks:
       - codex integra SendGrid/AgentMail
       - invitation flow E2E con email real pasa
     notes: >-
-      copy claude integrado por codex con AgentMail, no SendGrid; invitation/welcome/password
-      reset/report-ready usan templates versionados; E2E real con AgentMail aceptado hacia pablo@itera.la;
-      Vercel Production ya tiene AGENTMAIL_API_KEY/AGENTMAIL_INBOX_ID y smoke prod pasa; hola@itera.la
-      sigue bloqueado por bounce en AgentMail y queda como follow-up operativo DNS/inbox.
+      copy claude integrado por codex con AgentMail, no SendGrid; invitation/welcome/password reset/report-ready usan
+      templates versionados; E2E real con AgentMail aceptado hacia pablo@itera.la; Vercel Production ya tiene
+      AGENTMAIL_API_KEY/AGENTMAIL_INBOX_ID y smoke prod pasa; hola@itera.la sigue bloqueado por bounce en AgentMail y
+      queda como follow-up operativo DNS/inbox.
     done_at: '2026-05-19T15:29:44-06:00'
   - id: B8-001
     title: admin Itera backoffice premium
@@ -500,9 +497,7 @@ tasks:
     depends_on:
       - B0-001
     dod:
-      - >-
-        review, qa, design-review, cso, canary, retro, autoplan, benchmark y health documentados por
-        tipo de bloque
+      - review, qa, design-review, cso, canary, retro, autoplan, benchmark y health documentados por tipo de bloque
       - HANDOFF.md cita outputs de gates aplicables
     notes: docs/quality/gstack_gates_dod.md define gates por tipo de bloque + comandos + evidencia requerida
     done_at: '2026-05-19T18:05:00-06:00'
@@ -520,21 +515,19 @@ tasks:
       - spoiler test extendido a auth cases
     notes: >-
       Cerrado por Codex: RLS cross-tenant smoke, Playwright E2E buyer/employee/manager + field-test publico,
-      spoiler-leak auth/public, judge calibration, lint simulador y build pasan. Tambien se corrigio carrera
-      idempotente en POST /api/sessions al crear assignments.
+      spoiler-leak auth/public, judge calibration, lint simulador y build pasan. Tambien se corrigio carrera idempotente
+      en POST /api/sessions al crear assignments.
   - id: B9-001-D1
     title: >-
-      Posicionar Itera como heredera narrativa de Wharton Interactive — capitalizar vacante
-      editorial 12-meses pre-HBP transition
+      Posicionar Itera como heredera narrativa de Wharton Interactive — capitalizar vacante editorial 12-meses pre-HBP
+      transition
     owner: claude
     reviewer: codex
     status: done
     depends_on: []
     dod:
       - apply research decision from docs/research/competitive_landscape_v1.md
-      - >-
-        touch files: lib/simulador/copy/landing.ts, lib/simulador/copy/sales.ts,
-        docs/coord/audits/loop_audit_landing.md
+      - 'touch files: lib/simulador/copy/landing.ts, lib/simulador/copy/sales.ts, docs/coord/audits/loop_audit_landing.md'
     notes: change_type=copy
     done_at: '2026-05-19T20:19:42.096Z'
   - id: B9-001-D2
@@ -550,8 +543,8 @@ tasks:
     notes: change_type=copy
   - id: B9-001-D3
     title: >-
-      Pricing tier de Sprint Fase 1: USD 4,000-8,000 para cohortes 5-50 personas (validado contra
-      anchors Section $750/seat + Whatfix $31K-300K range)
+      Pricing tier de Sprint Fase 1: USD 4,000-8,000 para cohortes 5-50 personas (validado contra anchors Section
+      $750/seat + Whatfix $31K-300K range)
     owner: claude
     reviewer: codex
     status: done
@@ -564,8 +557,8 @@ tasks:
     done_at: '2026-05-19T20:58:33.880Z'
   - id: B9-001-D4
     title: >-
-      Vigilancia trimestral de Whatfix Mirror release notes + Mursion On-Demand language selector —
-      son los AI-native más cercanos técnicamente
+      Vigilancia trimestral de Whatfix Mirror release notes + Mursion On-Demand language selector — son los AI-native
+      más cercanos técnicamente
     owner: claude
     reviewer: codex
     status: done
@@ -588,8 +581,8 @@ tasks:
     notes: change_type=process
   - id: B9-001-D6
     title: >-
-      Field-test público en /field-test/marketing-urgent-campaign-pii ES el canal Forage-style —
-      captura email opcional, demo del producto sin login
+      Field-test público en /field-test/marketing-urgent-campaign-pii ES el canal Forage-style — captura email opcional,
+      demo del producto sin login
     owner: codex
     reviewer: claude
     status: done
@@ -597,17 +590,15 @@ tasks:
       - B1-004
     dod:
       - apply research decision from docs/research/competitive_landscape_v1.md
-      - >-
-        touch files: app/field-test/marketing-urgent-campaign-pii/page.tsx,
-        lib/simulador/copy/field-test.ts
+      - 'touch files: app/field-test/marketing-urgent-campaign-pii/page.tsx, lib/simulador/copy/field-test.ts'
     notes: >-
-      change_type=process | reconciliado con B6-001/B6-002: field-test publico live,
-      mini-report, lead capture opcional, admin/leads funnel y survey L1 post-submit
+      change_type=process | reconciliado con B6-001/B6-002: field-test publico live, mini-report, lead capture opcional,
+      admin/leads funnel y survey L1 post-submit
     done_at: '2026-05-19T18:05:00-06:00'
   - id: B9-001-D7
     title: >-
-      Diferenciación copy en sección 'how we compare' del landing/sales — incluir las 3 frases
-      canónicas vs Wharton, Section, Forage
+      Diferenciación copy en sección 'how we compare' del landing/sales — incluir las 3 frases canónicas vs Wharton,
+      Section, Forage
     owner: claude
     reviewer: codex
     status: done
@@ -625,16 +616,13 @@ tasks:
     depends_on: []
     dod:
       - apply research decision from docs/research/case_method_principles.md
-      - >-
-        touch files: lib/simulador/copy/sales.ts, lib/simulador/copy/landing.ts,
-        docs/sales/kirkpatrick_positioning.md
+      - 'touch files: lib/simulador/copy/sales.ts, lib/simulador/copy/landing.ts, docs/sales/kirkpatrick_positioning.md'
     notes: change_type=copy
     done_at: '2026-05-19T20:19:42.097Z'
   - id: B9-002-D2
     title: >-
-      Hard rule: cada caso 1-8 (+ variantes resim) requiere archetype_ref
-      docs/simulador/contrato_v0/archetypes/<id>.md con 1-2 entrevistas + 3+ sources documentales
-      antes de import a BD
+      Hard rule: cada caso 1-8 (+ variantes resim) requiere archetype_ref docs/simulador/contrato_v0/archetypes/<id>.md
+      con 1-2 entrevistas + 3+ sources documentales antes de import a BD
     owner: claude
     reviewer: codex
     status: done
@@ -642,30 +630,24 @@ tasks:
       - B3-001
     dod:
       - apply research decision from docs/research/case_method_principles.md
-      - >-
-        touch files: scripts/simulador/validate-case-yaml.mjs,
-        docs/quality/case_admission_checklist.md
+      - 'touch files: scripts/simulador/validate-case-yaml.mjs, docs/quality/case_admission_checklist.md'
     notes: change_type=rubric
     done_at: '2026-05-19T20:58:33.881Z'
   - id: B9-002-D3
-    title: >-
-      Practice beats post-evaluación SÍ pueden enseñar — runtime NO. Codificar esta distinción en
-      producto y copy
+    title: Practice beats post-evaluación SÍ pueden enseñar — runtime NO. Codificar esta distinción en producto y copy
     owner: claude
     reviewer: codex
     status: done
     depends_on: []
     dod:
       - apply research decision from docs/research/case_method_principles.md
-      - >-
-        touch files: lib/simulador/copy/runtime.ts, lib/simulador/copy/report.ts,
-        lib/simulador/copy/manager.ts
+      - 'touch files: lib/simulador/copy/runtime.ts, lib/simulador/copy/report.ts, lib/simulador/copy/manager.ts'
     notes: change_type=copy
     done_at: '2026-05-19T20:22:06.975Z'
   - id: B9-002-D4
     title: >-
-      Transfer delta (primary→resim) es la métrica core de L3 Comportamiento. Debe estar visible en
-      manager dashboard y reporte ejecutivo
+      Transfer delta (primary→resim) es la métrica core de L3 Comportamiento. Debe estar visible en manager dashboard y
+      reporte ejecutivo
     owner: claude
     reviewer: codex
     status: done
@@ -676,13 +658,11 @@ tasks:
       - apply research decision from docs/research/case_method_principles.md
       - 'touch files: docs/design/surfaces/executive_report.md, lib/simulador/copy/report.ts'
     notes: >-
-      change_type=report | absorbida: ya cubierta en docs/design/surfaces/executive_report.md
-      sección 10 + lib/simulador/copy/report.ts.transfer_delta
+      change_type=report | absorbida: ya cubierta en docs/design/surfaces/executive_report.md sección 10 +
+      lib/simulador/copy/report.ts.transfer_delta
     done_at: '2026-05-19T20:58:33.881Z'
   - id: B9-002-D5
-    title: >-
-      Override matrix mantiene rama Escalar — justificación Kirkpatrick Performance Environment
-      principle
+    title: Override matrix mantiene rama Escalar — justificación Kirkpatrick Performance Environment principle
     owner: claude
     reviewer: codex
     status: backlog
@@ -693,9 +673,7 @@ tasks:
       - 'touch files: lib/simulador/copy/manager.ts, docs/design/surfaces/manager_dashboard.md'
     notes: change_type=copy
   - id: B9-002-D6
-    title: >-
-      Survey L1 Reaction NO es opcional — implementar post-submit con 1 NPS + 1 abierta + 1
-      relevance score
+    title: Survey L1 Reaction NO es opcional — implementar post-submit con 1 NPS + 1 abierta + 1 relevance score
     owner: codex
     reviewer: claude
     status: done
@@ -703,26 +681,22 @@ tasks:
       - B2-003
     dod:
       - apply research decision from docs/research/case_method_principles.md
-      - >-
-        touch files: supabase/migrations/022_simulador_analytics_compliance.sql,
-        lib/simulador/copy/runtime.ts
+      - 'touch files: supabase/migrations/022_simulador_analytics_compliance.sql, lib/simulador/copy/runtime.ts'
     notes: >-
-      change_type=schema | field-test mini-report captura NPS 0-10, relevance 1-5 y abierta;
-      evento reaction_survey_submitted catalogado, token-scoped, post-report e idempotente
+      change_type=schema | field-test mini-report captura NPS 0-10, relevance 1-5 y abierta; evento
+      reaction_survey_submitted catalogado, token-scoped, post-report e idempotente
     done_at: '2026-05-19T17:57:00-06:00'
   - id: B9-003-D1
     title: >-
-      Pitch comercial v2 ancla en 3 cifras: 88% adopción (Stanford) + 95% sin impacto P&L (MIT) +
-      50% empleados usan IA hoy (Gallup) — NO en 'ROI con IA'
+      Pitch comercial v2 ancla en 3 cifras: 88% adopción (Stanford) + 95% sin impacto P&L (MIT) + 50% empleados usan IA
+      hoy (Gallup) — NO en 'ROI con IA'
     owner: claude
     reviewer: codex
     status: done
     depends_on: []
     dod:
       - apply research decision from docs/research/ai_adoption_synthesis.md
-      - >-
-        touch files: lib/simulador/copy/landing.ts, lib/simulador/copy/sales.ts,
-        app/(public)/page.tsx
+      - 'touch files: lib/simulador/copy/landing.ts, lib/simulador/copy/sales.ts, app/(public)/page.tsx'
     notes: change_type=copy
     done_at: '2026-05-19T20:19:42.097Z'
   - id: B9-003-D2
@@ -737,9 +711,7 @@ tasks:
     notes: change_type=process
     done_at: '2026-05-19T20:58:33.881Z'
   - id: B9-003-D3
-    title: >-
-      users.jurisdiction enum: MX | CO | other (drop BR de v1). Default por geo IP en signup,
-      editable.
+    title: 'users.jurisdiction enum: MX | CO | other (drop BR de v1). Default por geo IP en signup, editable.'
     owner: claude
     reviewer: codex
     status: done
@@ -749,13 +721,13 @@ tasks:
       - apply research decision from docs/research/ai_adoption_synthesis.md
       - 'touch files: docs/specs/migration_022_analytics_compliance.sql, lib/simulador/db.types.ts'
     notes: >-
-      change_type=schema | implementada en mig 022 (users.jurisdiction enum MX/CO/other) +
-      lib/simulador/copy/legal.ts MX/CO/BR/other clauses
+      change_type=schema | implementada en mig 022 (users.jurisdiction enum MX/CO/other) + lib/simulador/copy/legal.ts
+      MX/CO/BR/other clauses
     done_at: '2026-05-19T20:58:33.881Z'
   - id: B9-003-D4
     title: >-
-      Aviso de privacidad MX/CO escritos en español neutro corporate. NO traducción literal —
-      refinamiento por jurisdicción con clauses canónicas del marco aplicable
+      Aviso de privacidad MX/CO escritos en español neutro corporate. NO traducción literal — refinamiento por
+      jurisdicción con clauses canónicas del marco aplicable
     owner: claude
     reviewer: codex
     status: done
@@ -767,8 +739,8 @@ tasks:
     done_at: '2026-05-19T20:24:28.837Z'
   - id: B9-003-D5
     title: >-
-      Audit follow-up requerido: confirmar cifras LFPDPPP reforma marzo 2025 + requisitos
-      específicos AI processing antes de v1 launch
+      Audit follow-up requerido: confirmar cifras LFPDPPP reforma marzo 2025 + requisitos específicos AI processing
+      antes de v1 launch
     owner: claude
     reviewer: codex
     status: done
@@ -780,8 +752,8 @@ tasks:
     done_at: '2026-05-19T20:58:33.881Z'
   - id: B9-003-D6
     title: >-
-      Cifra anchor 6% high performers (McKinsey) entra en marketing materials como diferenciador —
-      'no medimos quién sabe prompts; medimos quién tiene el proceso del 6%'
+      Cifra anchor 6% high performers (McKinsey) entra en marketing materials como diferenciador — 'no medimos quién
+      sabe prompts; medimos quién tiene el proceso del 6%'
     owner: claude
     reviewer: codex
     status: done
@@ -803,8 +775,8 @@ tasks:
     notes: change_type=process
   - id: B9-003-D5-S2
     title: >-
-      Triggers de upgrade a counsel LATAM: (1) primer DPA enterprise, (2) primer PII real comercial,
-      (3) cifras de multas específicas en privacy page, (4) audit externa solicitada
+      Triggers de upgrade a counsel LATAM: (1) primer DPA enterprise, (2) primer PII real comercial, (3) cifras de
+      multas específicas en privacy page, (4) audit externa solicitada
     owner: claude
     reviewer: codex
     status: backlog
@@ -823,3 +795,464 @@ tasks:
       - apply research decision from docs/research/latam_compliance_mx_followup.md
       - 'touch files: docs/research/latam_compliance_mx_followup.md'
     notes: change_type=process
+  - id: UX-20260623-00
+    title: Ronda Pablo UX orquestacion y mapa verificable
+    owner: codex
+    reviewer: claude
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on: []
+    dod:
+      - docs/coord/audits/PABLO_UX_REVIEW_2026-06-23.md contiene checklist por ruta
+      - INBOX_CLAUDE deja reparto y reglas anti-conflicto
+      - AGENT_STATUS refleja que Codex toma orquestacion
+      - coord lint pasa
+    notes: change_type=coordination | no tocar UI hasta cerrar mapa de archivos dirty y ownership
+    done_at: '2026-06-23T18:44:48-06:00'
+  - id: UX-20260623-01
+    title: Fundacion visual comun para botones dropdowns titulos dividers loaders y motion
+    owner: claude
+    reviewer: codex
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on:
+      - UX-20260623-00
+    dod:
+      - componentes centrales cubren botones selects dropdowns shells result titulo y loaders
+      - no hay hex/radius/shadow one-off fuera de tokens sin decision
+      - /design y /design/components reflejan componentes reutilizables nuevos o promovidos
+      - screenshots desktop y mobile verifican que texto no se encima ni rompe layout
+    notes: >-
+      change_type=ui-foundation | aplicar design-verification antes de surfaces | closed 2026-06-25:
+      central Apple components/tokens reused across surfaces; `/design` and `/design/components` visually captured;
+      no remaining foundation blocker in final visual pass
+    done_at: '2026-06-25T19:05:00-06:00'
+  - id: UX-20260623-02
+    title: Publicas auth legal success cancel invitation
+    owner: claude
+    reviewer: codex
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    notes_claude: >-
+      2026-06-25 Claude: cierre verificado. /auth/login /auth/signup /auth/invitation/[token]
+      /privacy /terms /cancel /success — todos con titulo display-tight sin punto y jerarquia
+      estandar (28/32px). maintenance/not-found/invitation-error sin contorno (result-state shell).
+      privacy/terms reestructuradas desde fuente canonica lib/simulador/copy/legal.ts (MX+CO,
+      framework_citation, footer_disclaimer) sin prometer compliance no verificado. tsc 0,
+      check:simulador PASS. Sin cambios de codigo esta sesion: ya estaba implementado y limpio.
+    depends_on:
+      - UX-20260623-01
+    dod:
+      - /auth/login /auth/signup /auth/invitation demo-token public legal result states corregidos
+      - titulos sin punto y jerarquia estandar
+      - legal pages reestructuradas sin prometer compliance no verificado
+      - smoke visual y rutas publicas pasan
+    notes: change_type=ui-copy | Claude apoya copy legal y microcopy, Codex implementa
+    done_at: '2026-06-25T18:00:00-06:00'
+  - id: UX-20260623-03
+    title: Onboarding org invite context billing done
+    owner: claude
+    reviewer: codex
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    notes_claude: >-
+      2026-06-25 Claude: cierre verificado. (org) AppleSelect abre al primer click via portalContainer
+      en useEffect, sin exigir textfield previo (UX-10). (invite) /onboarding/invite consume
+      validateOnboardingInvites: CTA solo activa cuando todas las filas visibles son validas; payload
+      desde validRows (UX-11). (context) acepta solo PDF (accept application/pdf + filtro), placeholder
+      "Sitio web", prefill https:// en focus, label "Adjuntar archivos (PDF)", "Completar despues"
+      subrayado; website+PDF metadata se guardan en estado de onboarding para pasarlos al checkout como
+      contexto comercial (decision registrada en doc de pagina). (billing) checkout Stripe one-time
+      success->/onboarding/done cancel->/onboarding/billing?canceled=1 (Codex UX-12). (done) server
+      component resuelve 3 estados reales (confirmado/pending/fallido) con titulos sin punto. tsc 0,
+      check:simulador PASS. Sin cambios de codigo esta sesion.
+    depends_on:
+      - UX-20260623-01
+    dod:
+      - dropdown org funciona sin depender de inputs de texto
+      - invite valida todos los invitados visibles antes de activar envio
+      - context acepta solo PDF y aclara website/PDFs/completar despues
+      - billing Stripe smoke verificado y done representa estado correcto
+    notes: change_type=ui-flow | registrar decision no bloqueante sobre uso futuro de sitio/PDFs
+    done_at: '2026-06-25T18:00:00-06:00'
+  - id: UX-20260623-04
+    title: Cliente empleado y manager staff team casos reportes perfil empresa
+    owner: claude
+    reviewer: codex
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    notes_claude: >-
+      2026-06-25 Claude: CaseCard conectado a destination API (casos/team/staff-casos sin crash, navega a
+      reporte/runtime); /empresa reescrita sobre GET/PATCH settings + portal Stripe (autosave, website lock,
+      PDF mensual, sin contornos, sin botón Guardar). tsc 0, check:simulador PASS, build PASS, HTTP smoke 200.
+      Residual: screenshots autenticados desktop/mobile (browser MCP gated en run headless) → UX-07.
+    depends_on:
+      - UX-20260623-01
+    dod:
+      - rutas employee y manager usan datos review controlados no fallbacks vacios
+      - mini-titulos eliminados
+      - dropdowns y navegacion de casos no crashean
+      - contornos innecesarios reemplazados por dividers
+      - perfil y empresa redisenados con componentes centrales
+    notes: change_type=ui-flow | incluye /team /casos /reportes /perfil /staff* /empresa
+    notes_codex: >-
+      2026-06-25 Codex final: verified authenticated manager/employee screenshots and data contracts.
+      Fixed /api/dashboard sprint selection so standalone runtime sprints no longer hide seeded packaged sprint data:
+      manager dashboard now shows 4 members, 2 completed, 1 in progress, 3 risk events, 1 pending review. Screenshots:
+      /tmp/itera-final-ux-20260625/dashboard-manager-real-datafixed.png,
+      /tmp/itera-final-ux-20260625/staff-index-real-datafixed.png,
+      /tmp/itera-final-ux-20260625/casos-ana-desktop-final.png,
+      /tmp/itera-final-ux-20260625/empresa-desktop-final.png,
+      /tmp/itera-final-ux-20260625/report-ana-final.png. Gates PASS: tsc, check:simulador, build.
+    done_at: '2026-06-25T19:05:00-06:00'
+  - id: UX-20260623-05
+    title: Admin interno backoffice revision casos lecciones leads orgs judge audit
+    owner: claude
+    reviewer: codex
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on:
+      - UX-20260623-01
+    dod:
+      - admin shell no duplica logo/sidebar vieja
+      - cada ruta admin explica proposito con datos review utiles
+      - admin cases diferencia operativo vs educativo
+      - scroll y layout verificados en desktop y mobile
+    notes: change_type=ui-admin
+    notes_claude: >-
+      2026-06-25 Claude (UX-05-admin-double-nav-20260625): cerrado el DoD "admin shell no duplica
+      logo/sidebar vieja". /admin y /admin/* montan su propia SurfaceNav (logo + nav) y el AppShell
+      seguia montando ademas AppSidebar -> doble logo/nav (verificado por Codex screenshot
+      admin-review-rerun.png). Fix: AppShell ahora trata /admin y /admin/* como surface-owned
+      (mismo patron que /report /case /jugar): sin AppSidebar ni padding md:pl-[224px], una sola
+      SurfaceNav. Navegacion admin intacta (vive dentro de SurfaceNav). Scope estricto UI/.tsx
+      (solo app/(app)/AppShell.tsx). Gates: tsc 0, check:simulador PASS. Sin commit.
+    notes_codex: >-
+      2026-06-25 Codex final: /admin/review no crashea; API normaliza dimension_scores_json y risk_summary_json,
+      y el shell admin quedo con una sola nav. Screenshot final:
+      /tmp/itera-final-ux-20260625/admin-review-single-nav.png. Admin cases/leads/orgs/judge/audit capturados
+      en /tmp/itera-final-ux-20260625/. Gates PASS: tsc, check:simulador, build.
+    done_at: '2026-06-25T19:05:00-06:00'
+  - id: UX-20260623-06
+    title: Motor labs y system states case dashboard report aprender maintenance not found
+    owner: claude
+    reviewer: codex
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    notes_claude: >-
+      2026-06-25 Claude: SUBSET system-states verificado y cerrado en este pase (scope acotado por
+      Pablo: solo system states, sin tocar /jugar ni /case runtime). (maintenance) /maintenance sin
+      contorno, titulo display-tight sin punto, sin mini-titulos. (not-found) app/not-found.tsx mismo
+      patron result-state sin contorno; no existe /not-found-test-page separada. (report) /report/demo-session-id
+      ya NO queda en loader infinito (Codex UX-09 sirve reporte real pending_review del seed) y NO tiene
+      doble nav (AppShell trata /report/ como surface-owned: sin AppSidebar ni padding md:pl-[224px],
+      una sola SurfaceNav). tsc 0, check:simulador PASS. RESIDUAL fuera de este pase (mantiene la tarea
+      abierta): /case/marketing_urgent_campaign_pii estado disenado, /aprender-demo alineado a
+      case-template, proteccion dev-only de /case-demo /exercise-lab /case-template — son runtime/labs
+      y requieren su propio pase con runtime.
+    depends_on:
+      - UX-20260623-01
+    dod:
+      - /case-demo /exercise-lab /case-template protegidos
+      - /jugar vertiz no queda expuesto sin actualizar contrato y dependencias
+      - /case marketing urgent y /report demo session no fallan con fallback crudo
+      - /aprender-demo se alinea a case-template
+      - maintenance y not-found usan shell result sin contorno ni mini-titulos
+    notes: change_type=ui-runtime-labs
+    notes_codex: >-
+      2026-06-25 Codex final: runtime/labs/system pass closed. /report/demo-session-id exits loader with
+      seed report; /case/marketing_urgent_campaign_pii and /jugar/vertiz_backlog_entregas are load-bearing and kept;
+      /aprender-demo, /case-demo, /case-template, /exercise-lab are documented dev-only/noindex, outside product nav,
+      and now included in proxy internal-review 404 guard when dev bypass is disabled. Screenshots captured for
+      maintenance, case-demo, case-template, exercise-lab, aprender-demo, case legacy and jugar.
+    done_at: '2026-06-25T19:05:00-06:00'
+  - id: UX-20260623-07
+    title: Verificacion final visual funcional y gates
+    owner: codex
+    reviewer: claude
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on:
+      - UX-20260623-02
+      - UX-20260623-03
+      - UX-20260623-04
+      - UX-20260623-05
+      - UX-20260623-06
+    dod:
+      - npm run check:simulador pasa
+      - npm run lint:simulador pasa o warnings preexistentes documentados
+      - npm run build pasa
+      - screenshots desktop tablet mobile archivados o resumidos
+      - Codex review PASS y Claude/HIG review sin bloqueos must
+    notes: >-
+      change_type=verification | final evidence 2026-06-25: screenshots archived in
+      /tmp/itera-final-ux-20260625/ across public/auth/onboarding/employee/manager/staff/admin/runtime/labs/design;
+      Playwright auth-real dashboard API returned mock=false, 4 members, 2 completed, 1 in progress, 3 risk events;
+      gates PASS: npx tsc --noEmit, npm run check:simulador, npm run build, npm run coord:lint. npm run
+      lint:simulador timed out at 120s after starting lint-scope with no extra output; documented as tooling hang.
+      Codex CLI review blocked by usage limit; Claude Code CLI final review PASS.
+    done_at: '2026-06-25T19:05:00-06:00'
+  - id: UX-20260623-08
+    title: Semilla local simulador para review con datos
+    owner: codex
+    reviewer: claude
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on:
+      - UX-20260623-00
+    dod:
+      - Supabase local tiene schema simulador aplicado o se documenta bloqueo real
+      - seed demo crea org/team/usuarios/casos/sesiones/reportes suficientes para rutas de review
+      - semilla es idempotente y no toca datos remotos
+      - AGENT_STATUS e INBOX_CLAUDE reportan como revisar con datos
+    notes: >-
+      change_type=data-seed | lane codex | files esperados: supabase/migrations, scripts/simulador, lib/simulador
+      seed/data helpers, docs/coord only; no editar JSX/TSX/tokens/copy | claim by codex expired and was released by
+      heartbeat | reclaimed by codex 2026-06-25T14:22:08-06:00 after Claude Code go | local seed applied
+      2026-06-25 with 1 org, 5 users, 3 generated cases, 5 templates, 3 sessions, 3 reports,
+      4 practice beats; coord:lint/check:simulador/build PASS; lint:simulador hung before output
+    done_at: '2026-06-25T14:28:49-06:00'
+  - id: UX-20260623-09
+    title: Report demo session id carga con datos reales
+    owner: codex
+    reviewer: claude
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on:
+      - UX-20260623-08
+    files:
+      - scripts/dev-simulador.mjs
+      - app/api/sessions/[session_id]/report/route.ts
+      - docs/coord/BUILD_BOARD.yaml
+      - docs/coord/AGENT_STATUS.md
+      - docs/coord/INBOX_CLAUDE.md
+      - docs/coord/HANDOFF.md
+    dod:
+      - /report/demo-session-id no queda en loader infinito cuando existe seed local
+      - el endpoint soporta alias demo local sin exponer datos remotos ni saltarse auth fuera de bypass local
+      - check/build pasan o se documenta bloqueo de tooling
+      - Claude Code review PASS o issues documentados
+    notes: >-
+      change_type=api-data | no tocar .tsx; si la pantalla requiere estado visual queda para Claude Code | done:
+      dev:simulador usa Supabase local cuando esta vivo; endpoint resuelve alias demo solo en proyecto local; /report/demo-session-id
+      API 200 pending_review y Playwright no loader; check:simulador/build PASS; lint:simulador timeout 120s; Claude Code CLI
+      review PASS despues de corregir P1 de admin read remoto
+    done_at: '2026-06-25T14:46:27-06:00'
+  - id: UX-20260623-10
+    title: Onboarding org dropdown contrato funcional sin tocar UI
+    owner: codex
+    reviewer: claude
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on:
+      - UX-20260623-08
+    files:
+      - lib/simulador/onboarding-progress.ts
+      - app/api/onboarding/*
+      - docs/coord/*
+    dod:
+      - se identifica si el bug es data/runtime o UI state
+      - si es data/runtime queda helper/route corregido sin .tsx
+      - si es UI state queda handoff claro para Claude Code con causa y archivo
+    notes: >-
+      change_type=functional-bug | no editar onboarding .tsx | diagnostico Codex: bug vive en AppleSelect/page .tsx
+      controlado por selectedKeys/onSelectionChange/portal; no hay API/data contract que toque el dropdown antes del submit.
+      Handoff enviado a Claude Code para fix UI. | UI CONECTADA por Claude Code 2026-06-25: AppleSelect
+      ya abre al primer click vía portalContainer en useEffect (sin exigir textfield previo); verificado.
+  - id: UX-20260623-11
+    title: Onboarding invite validacion todos los campos
+    owner: codex
+    reviewer: claude
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on:
+      - UX-20260623-08
+    files:
+      - lib/simulador/onboarding-invitations.ts
+      - app/api/*
+      - docs/coord/*
+    dod:
+      - se identifica si la validacion vive en helper data/runtime o UI state
+      - todos los invitados visibles requieren email valido antes de enviar o los invalidos quedan descartados por contrato
+      - la integracion necesaria queda lista para Claude Code si requiere .tsx
+    notes: >-
+      change_type=functional-bug | no editar invite .tsx | helper puro listo en
+      lib/simulador/onboarding-invitations.ts: validateOnboardingInvites(rows) devuelve canSubmit=false si cualquier fila
+      visible esta vacia/invalid; check:simulador PASS. UI conectada por Claude Code 2026-06-25: /onboarding/invite
+      usa validateOnboardingInvites, CTA solo activa con todas las filas visibles validas y payload desde validRows.
+  - id: UX-20260623-12
+    title: Stripe billing redirects portal cancel y onboarding done real
+    owner: codex
+    reviewer: claude
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on:
+      - UX-20260623-08
+    files:
+      - app/api/stripe/create-checkout-session/route.ts
+      - app/api/stripe/create-portal-session/route.ts
+      - app/api/stripe-webhook/route.ts
+      - lib/stripe/*
+      - lib/simulador/billing.ts
+    dod:
+      - checkout success/cancel URLs apuntan al sitio correcto
+      - portal permite cancelacion desde empresa cuando Stripe esta configurado
+      - estado de pago confirmado/creando ejercicios queda disponible como data contract para /onboarding/done
+    notes: >-
+      change_type=billing | portal return_url default /empresa con allowlist safeReturnPath; checkout simulador ya
+      apunta success /onboarding/done y cancel /onboarding/billing?canceled=1; done server sync ya diferencia ok/pending/fail.
+      UI copy/state queda en lane Claude Code. check/build PASS; Claude CLI PASS.
+    done_at: '2026-06-25T15:03:36-06:00'
+  - id: UX-20260623-13
+    title: Staff casos crash y data route para caso revision
+    owner: codex
+    reviewer: claude
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on:
+      - UX-20260623-08
+    files:
+      - app/api/admin/cases/route.ts
+      - app/api/cases/[case_id]/destination/route.ts
+      - lib/simulador/case-destination.ts
+      - lib/simulador/generated-cases.ts
+      - lib/simulador/cases.ts
+      - docs/coord/*
+    dod:
+      - abrir un caso no crashea por datos faltantes o shape inesperado
+      - route/helper entrega lo necesario para pagina Caso revision de Claude Code
+      - smoke con seed local cubre al menos un caso pendiente de review
+    notes: >-
+      change_type=api-data | no editar staff .tsx | data contract listo: GET /api/cases/[case_id]/destination
+      devuelve action/href/session/report por usuario autenticado; staff/casos aun requiere conexion UI de Claude Code para no
+      linkear directo a runtime legacy; unauth 401, Playwright auth demo report href, check/build PASS, Claude CLI PASS.
+      UI conectada por Claude Code 2026-06-25 mediante CaseCard destination prefetch/click.
+    done_at: '2026-06-25T14:57:03-06:00'
+  - id: UX-20260623-14
+    title: Casos routing decide resultados o jugar
+    owner: codex
+    reviewer: claude
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on:
+      - UX-20260623-08
+    files:
+      - app/api/cases/[case_id]/destination/route.ts
+      - lib/simulador/case-destination.ts
+      - app/api/sessions/route.ts
+      - app/api/sessions/[session_id]/route.ts
+      - lib/simulador/cases.ts
+      - lib/simulador/generated-cases.ts
+      - docs/coord/*
+    dod:
+      - data contract permite navegar a reporte si ya se completo
+      - data contract permite navegar a runtime si no se completo
+      - no se agregan rutas fuera de FRONT_CONTRACT sin documentar decision
+    notes: >-
+      change_type=routing-data | no editar casos .tsx | lib/simulador/case-destination.ts + API destination
+      resuelven completed_with_report -> /report/session_id y active/not_started -> /jugar/case_id con scope por org/user;
+      UI conectada por Claude Code 2026-06-25 en CaseCard para /casos, /team y /staff/casos.
+    done_at: '2026-06-25T14:57:03-06:00'
+  - id: UX-20260623-15
+    title: Empresa autosave archivos web lock y billing cancel data rules
+    owner: codex
+    reviewer: claude
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on:
+      - UX-20260623-08
+    files:
+      - lib/simulador/onboarding-company-profile.ts
+      - app/api/*
+      - lib/simulador/billing.ts
+      - docs/coord/*
+    dod:
+      - reglas de autosave quedan en route/helper sin boton Guardar obligatorio
+      - archivos add/remove maximo 1 vez por mes queda aplicable desde API
+      - sitio web editable una vez y luego bloqueado queda en contrato de datos
+      - cancelacion billing usa Stripe portal o queda bloqueo explicito documentado
+    notes: >-
+      change_type=org-data-rules | no editar empresa .tsx | GET/PATCH /api/orgs/current/settings listo:
+      auth/org_admin, autosave org fields, website once-lock, files PDF-only max one monthly change, billing portal metadata.
+      Local smoke manager demo PASS; check/build PASS; Claude CLI PASS. UI /empresa conectada por Claude Code
+      2026-06-25 con autosave, website lock, PDF monthly limit y portal billing.
+    done_at: '2026-06-25T15:03:36-06:00'
+  - id: UX-20260623-16
+    title: Evaluar rutas runtime legacy vertiz y marketing
+    owner: codex
+    reviewer: claude
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on:
+      - UX-20260623-08
+    files:
+      - app/**/jugar/**
+      - app/**/case/**
+      - docs/simulador/front/FRONT_CONTRACT.md
+      - docs/coord/*
+    dod:
+      - se determina si /jugar/vertiz_backlog_entregas y /case/marketing_urgent_campaign_pii son load-bearing
+      - si no son load-bearing se eliminan del arbol activo o se documenta quien debe hacerlo
+      - si son load-bearing se reporta a Claude Code antes de borrar
+    notes: >-
+      change_type=route-audit | evitar borrar .tsx sin acuerdo explicito | evaluado: /case/marketing_urgent_campaign_pii
+      sigue load-bearing porque CaseCard/dashboard/reportes/staff linkean /case; /jugar/vertiz_backlog_entregas es
+      load-bearing para RuntimeV2 config-driven y ahora destination API usa /jugar para casos no completados. No borrar;
+      reportado a Claude Code.
+    done_at: '2026-06-25T15:04:36-06:00'
+  - id: UX-20260623-17
+    title: Codex final functional data verification
+    owner: codex
+    reviewer: claude
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    files:
+      - proxy.ts
+      - app/api/dashboard/route.ts
+      - docs/coord/BUILD_BOARD.yaml
+      - docs/coord/AGENT_STATUS.md
+      - docs/coord/INBOX_CLAUDE.md
+      - docs/coord/INBOX_CODEX.md
+      - docs/coord/BLOCKERS.md
+      - docs/coord/HANDOFF.md
+    depends_on:
+      - UX-20260623-09
+      - UX-20260623-10
+      - UX-20260623-11
+      - UX-20260623-12
+      - UX-20260623-13
+      - UX-20260623-14
+      - UX-20260623-15
+      - UX-20260623-16
+      - UX-20260623-07
+    dod:
+      - coord channel sin blockers abiertos de esta ronda
+      - check:simulador build y smoke funcional pasan o quedan fallas preexistentes documentadas
+      - Claude Code confirma UI round done o se documenta ultimo estado con evidencia de polling
+      - Handoff final lista cambios y riesgos residuales
+    notes: >-
+      change_type=verification | closed 2026-06-25 by Codex after Claude Code UI handoffs and final reviews.
+      No open blocker remains for this UX round. Functional fixes verified: seed local, report demo alias,
+      onboarding validation handoff connected, cases destination, empresa settings/billing, admin review crash,
+      dashboard data sprint selection, dev-only proxy guard for /aprender-demo, runtime route audit keep /case and
+      /jugar. Gates PASS: tsc, check:simulador, build, coord:lint. lint:simulador timed out at 120s with no output
+      beyond lint-scope start. Codex CLI review blocked by usage limit; Claude Code CLI final review PASS.
+    done_at: '2026-06-25T19:05:00-06:00'

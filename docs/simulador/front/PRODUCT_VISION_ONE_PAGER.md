@@ -59,7 +59,7 @@ scope: define VOICE + TONO + POSICIONAMIENTO de Itera Simulador. Decisiones est�
 | "Earn your certificate!" badges | rompe frame diagnóstico ≠ cert |
 | Sidebars con 30 items navegación | sin scope claro, no es app productividad |
 | Skeleton loaders Notion-style | no necesario — diagnóstico es evento, no consulta diaria |
-| Color semáforo (verde/amarillo/rojo) para bandas | rompe frame "criterio no es juicio moral" — usar accent indigo + grays |
+| Bandas con SOLO color, sin la letra A/M/B | rompe A11Y-03 (color como único portador) | color semántico verde/ámbar/rojo SIEMPRE con letra A/M/B (`DEC-008`) |
 | Marketing copy AI-slop ("revoluciona", "transforma") | brand voice exige honestidad |
 | Carousels en landing | clase de 2010, B2B serio LATAM 2026 NO |
 | Chatbot widget en esquina | no somos support tool |
@@ -67,7 +67,7 @@ scope: define VOICE + TONO + POSICIONAMIENTO de Itera Simulador. Decisiones est�
 
 ## 5. Principios de interacción
 
-1. **Cada acción es decisión, no clic casual.** Botones primary son indigo accent, descansados pero no neon.
+1. **Cada acción es decisión, no clic casual.** Botones primary usan el azul accent (fondo `accent-strong` #0e5fcc, ver `DEC-009`), descansados pero no neon.
 2. **Estados visibles inmediatamente.** Manager VE banda + risk events sin click. Participante VE su progreso sin doble click.
 3. **Errores empáticos sin zalamería.** `errors.ts` ya tiene el tono — implementar consistent.
 4. **Latency tolerable + estados de loading honestos.** Judge LLM toma 15-30s → mostrar "Evaluando tus decisiones contra la rúbrica. ~15-30 segundos" no spinners genéricos.
@@ -109,7 +109,7 @@ scope: define VOICE + TONO + POSICIONAMIENTO de Itera Simulador. Decisiones est�
 **Documento ejecutivo serio + scannable + shareable.**
 
 - Eyebrow "Reporte ejecutivo" + headline grande con nombre del participante
-- Sección bandas: 5 dimensiones con barra horizontal + número (no semáforo)
+- Sección bandas: 5 dimensiones con barra horizontal + número + letra A/M/B (color semántico verde/ámbar/rojo OK con la letra, `DEC-008`)
 - Sección recomendación: 1 chip prominent (Pilotar/Entrenar/Pausar/Escalar) + body 2-3 frases
 - Sección risk events: lista con severity + evidence_text en quote
 - Sección next 7-day actions: 3-4 bullets accionables

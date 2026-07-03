@@ -1,6 +1,6 @@
 practice_beat:
   id: practice_agent_data_minimization_v1
-  status: ready
+  status: draft
   dimension: datos
   level: 3
   career_key: sales

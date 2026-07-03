@@ -360,18 +360,20 @@ case_assembly_schema:
       - "body markdown con bold en datos criticos"
 
   # ============================================================
-  # MIGRATION PATH (out of scope para v1.0.0)
+  # MIGRATION PATH (cerrado en F6 · nota historica)
   # ============================================================
 
   migration_notes:
+    status: |
+      Migracion completada en F6 (2026-06-30). Esta seccion queda como
+      registro historico; no describe trabajo pendiente.
     from_old_format: |
-      Casos viejos como sales_agent_followup_pipeline_v1.yaml usan
-      steps[] con exercise_type por step (uno por seccion). El runtime
-      expande cada step a multiples slides hardcodeadas. Cuando se
-      migre al nuevo formato, cada step se descompone en 5 slides
-      explicitos por seccion.
+      Casos viejos como sales_agent_followup_pipeline_v1.yaml usaban
+      steps[] con exercise_type por step (uno por seccion) y el runtime
+      legacy (RuntimeExperience.tsx) expandia cada step a multiples
+      slides hardcodeadas. Ese runtime se elimino del repo en F6.
     runtime_bridge: |
-      RuntimeExperience.tsx hoy hardcodea slides. El loader del nuevo
-      formato (eng task futuro) debe leer sections[].slides[] y emitir
-      SimulationStep[] con block_id por step para que el registry
-      renderice cada template.
+      El loader ya existe: lib/simulador/load-assembled-case.ts lee el
+      caso ensamblado (sections[].slides[]) y el runtime actual
+      (RuntimeExperienceV2 + ExerciseBlockRenderer) renderiza cada
+      bloque por block_id. No queda puente pendiente.

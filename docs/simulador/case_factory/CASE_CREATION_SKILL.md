@@ -157,8 +157,8 @@ reactiva: la biblia evita la ruptura, el gate la caza si se coló.
 
 Estructura canonica (las secciones antes llamadas Decision y Respuesta se
 consolidaron en Cierre; el modelo vigente es de 5 secciones, ver
-CASE_ASSEMBLY_SCHEMA.yaml). No confundir con las 5 dimensiones de evaluacion,
-que son otra cosa y no cambian:
+CASE_ASSEMBLY_SCHEMA.yaml). No confundir con las 6 dimensiones de evaluacion,
+que son otra cosa: contexto, datos, ejecucion_ia, validacion, juicio e impacto.
 
 1. Contexto: que esta pasando y por que importa.
 2. Datos: que puede o no puede usar.

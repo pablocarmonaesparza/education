@@ -1,0 +1,80 @@
+practice_beat:
+  id: practice_datos_minimizacion_pii_v1
+  status: active
+  dimension: datos
+  level: 1
+  career_key: ops
+  triggered_by_gap: [pii_exposure]
+  duration_max_seconds: 360
+  principle_card:
+    headline: "Decide qué datos ve el modelo: tal cual, transformados o nada"
+    body: "El modelo no distingue lo sensible de lo inofensivo: usa todo lo que le des. Cada campo se decide antes de subir el archivo, no después de la fuga."
+  practice_exercise:
+    type: formative_slides
+    blocks: [categorize_rows, ai_output_review]
+    prompt: "Vas a analizar devoluciones de una tienda en línea con IA: decides columna por columna qué compartes, y luego revisas un resumen generado que arrastró datos personales."
+  completion_criteria: "Completar los 2 ejercicios (todas las filas y todos los segmentos con respuesta) y revisar la retroalimentación de cada uno."
+  exit:
+    contributes_to_resim_score: true
+  slides:
+    - id: portada
+      kind: cover
+      title: "No todo el archivo tiene que entrar al modelo"
+      body: "Cuando le pasas una tabla de clientes a la inteligencia artificial, le pasas todo lo que la tabla trae: nombres, teléfonos, direcciones. Aquí practicas decidir campo por campo qué entra tal cual, qué entra transformado y qué se queda fuera."
+      chips: ["N1 · Fundamentos", "Operaciones", "6 min"]
+    - id: principio
+      kind: reading
+      title: "El filtro de tres puertas"
+      body: |-
+        **El problema.** La inteligencia artificial no sabe qué es un dato personal y qué no. Si el archivo trae el teléfono de una clienta, el modelo lo lee, lo puede repetir en un resumen y ese resumen puede terminar reenviado a medio equipo. La fuga no la comete la herramienta: la comete quien subió el archivo completo sin mirarlo.
+
+        **La regla.** Antes de subir cualquier tabla, cada columna pasa por tres puertas. Primera: ¿la tarea la necesita? Si no aporta a lo que pediste, fuera — menos datos, menos riesgo. Segunda: ¿identifica a una persona? Nombres, teléfonos, correos y direcciones exactas no entran tal cual; si el análisis los necesita, se transforman — la dirección se vuelve zona, el nombre se vuelve un número de cliente. Tercera: ¿es un dato del negocio que la tarea sí requiere? Montos, fechas y motivos entran tal cual.
+
+        **El ejemplo.** Quieres saber por qué los clientes devuelven productos. Para eso el modelo necesita el motivo, el monto y la zona. No necesita saber que la devolución fue de Laura, ni su teléfono, ni la calle donde vive. El patrón se encuentra igual — sin exponer a nadie.
+    - id: ejercicio_columnas
+      kind: exercise
+      blockId: categorize_rows
+      title: "Vas a pedirle a la IA que encuentre patrones en las devoluciones del mes"
+      body: "El archivo trae estas columnas. Decide qué pasa con cada una antes de subirlo."
+      caseContext:
+        actionStyle: permission
+        actions:
+          - { value: permitir, label: "Va tal cual" }
+          - { value: revisar, label: "Va transformada" }
+          - { value: bloquear, label: "No va" }
+        rows:
+          - { id: d1, label: "Motivo de la devolución (talla, defecto, no era lo esperado)" }
+          - { id: d2, label: "Nombre completo, teléfono y correo del cliente" }
+          - { id: d3, label: "Dirección exacta de entrega" }
+          - { id: d4, label: "Monto de la devolución" }
+          - { id: d5, label: "Comentario libre del cliente al devolver" }
+      feedback:
+        kind: rows
+        rows:
+          - { id: d1, correct: permitir, why: "Es el corazón del análisis y no identifica a nadie. Sin esta columna no hay patrón que encontrar." }
+          - { id: d2, correct: bloquear, why: "Identifica a personas y el patrón no lo necesita. Si te hiciera falta contar clientes que repiten, pide un número de cliente anónimo — nunca el nombre ni el contacto." }
+          - { id: d3, correct: revisar, why: "El patrón geográfico sí sirve, la calle y el número no. Transfórmala a ciudad o zona antes de subirla." }
+          - { id: d4, correct: permitir, why: "Dimensiona el problema y no identifica a nadie. Un dato de negocio que la tarea sí requiere." }
+          - { id: d5, correct: revisar, why: "El texto libre es útil para el motivo, pero a veces trae teléfonos o nombres escritos por el cliente. Se revisa o se limpia de datos de contacto antes de entrar." }
+    - id: ejercicio_resumen
+      kind: exercise
+      blockId: ai_output_review
+      title: "La IA armó este resumen de devoluciones para compartir con el equipo"
+      body: "Marca lo que no dejarías pasar antes de reenviarlo. Toca para marcar."
+      caseContext:
+        segments:
+          - { id: s1, text: "La talla incorrecta explica 4 de cada 10 devoluciones del mes.", flagIfMarked: "frase_reutilizable" }
+          - { id: s2, text: "La clienta Laura Mendívil, teléfono 55 1234 5678, devolvió tres pedidos seguidos.", flagIfMarked: "dato_sensible" }
+          - { id: s3, text: "Las devoluciones se concentran en la zona norte de la ciudad.", flagIfMarked: "frase_reutilizable" }
+          - { id: s4, text: "El correo laura.mendivil@correo.com aparece en tres tickets; conviene escribirle directo.", flagIfMarked: "dato_sensible" }
+      feedback:
+        kind: segments
+        segments:
+          - { id: s1, shouldFlag: false, why: "Dato agregado, sin personas identificables. Exactamente el tipo de hallazgo que buscabas." }
+          - { id: s2, shouldFlag: true, why: "Nombre y teléfono de una clienta en un documento que va a circular. Ese dato no debía entrar al modelo — y menos salir en el resumen." }
+          - { id: s3, shouldFlag: false, why: "Patrón por zona, sin dirección exacta. Así se ve una columna bien transformada." }
+          - { id: s4, shouldFlag: true, why: "Un correo personal más una recomendación de contactarla. El resumen era sobre patrones, no sobre personas: quítalo antes de reenviar." }
+    - id: cierre
+      kind: closing
+      title: "Mañana, antes de subir un archivo"
+      body: "Recorre las columnas diez segundos: ¿la tarea necesita esta columna?, ¿identifica a alguien? Lo que no aporta se queda fuera y lo que identifica se transforma. Se decide antes de subir — después ya circuló."

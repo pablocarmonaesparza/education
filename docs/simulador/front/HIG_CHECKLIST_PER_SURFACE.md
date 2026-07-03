@@ -3,6 +3,8 @@
 > Compañion de `HIG_SURFACE_REVIEW_FORM.md`.
 > Para CADA surface, las reglas HIG-RULES que codex debe verificar antes de cerrar audit.
 > Cada surface lleva su form individual + este checklist como referencia rápida.
+>
+> **Las reglas viven en `APPLE_HIG_RULES_FOR_ITERA.md` (fuente única).** Este doc solo lista CUÁLES aplican por surface; no las redefine. Si una regla aquí contradice el HIG, gana el HIG.
 
 ## PublicShell — `/`, `/privacy`, `/terms`, `/cancel`, `/success`
 
@@ -39,7 +41,7 @@
 
 **Quick rules:**
 - ICON-01 (stroke 1.5)
-- ICON-02 (una librería: Lucide)
+- ICON-02 (una librería: AppleIcon → Tabler, ver `DEC-001`)
 
 **Performance:**
 - LCP <2.5s
@@ -176,11 +178,11 @@
 - TF-01..03 (textarea h ≥ 32, autofocus)
 - BTN-01..07 (Continuar primary, Atrás ghost)
 - A11Y-04 (motion respeta reduced)
-- A11Y-06 (keyboard handlers: Enter/Esc/Cmd+K/Cmd+S/Cmd+M)
+- A11Y-06 (keyboard: Enter/Esc/Cmd+Enter — sin Cmd+K/S/M ni palette, ver `DEC-007`)
 - MOTION-01..06 (step transitions slide-x + tap feedback)
 - LOAD-01..03 (evaluating state polling)
 - PROG-01 (progress dots top)
-- SIDE-01..03 (sidebar collapsible mobile drawer)
+- SIN sidebar en runtime — solo chrome + stepbar (ver `DEC-007`; SIDE-* aplica solo a Dashboard/Admin)
 
 **Anti-patterns runtime (MUST verify):**
 - NO mostrar dimensiones evaluadas en cada step

@@ -12,45 +12,111 @@ scope: define qué surfaces existen, qué rutas son activas, qué ve cada rol, q
 
 ## TL;DR
 
-Producto v2 tiene **20 rutas productivas allowlist**, **4 rutas utilitarias permitidas** y **8 shells**. Este contrato es la cerca: si una pantalla no está aquí, no existe.
+Producto v2 tiene **35 rutas productivas**, **3 utilitarias**, **8 dev-only** (no indexan, fuera de nav), **1 ambigua** (`/dashboard`) y **8 shells**. La tabla de abajo se **deriva del código real** (`app/`, 47 `page.tsx` + 2 route handlers de auth) y es la fuente única: si una pantalla no está aquí, no existe; si está, su columna **estado** dice qué es. Última sync con código: 2026-07-01.
 
-## Rutas activas productivas (allowlist)
+## Tabla única de rutas (derivada de `app/`)
 
-| Ruta | Rol que la ve | Layout | Auth required |
-|---|---|---|---|
-| `/` | visitante | PublicNav | ❌ |
-| `/auth/login` | visitante | AuthLayout | ❌ |
-| `/auth/signup` | visitante | AuthLayout | ❌ |
-| `/auth/invitation` | empleado invitado | AuthLayout | ❌ / token |
-| `/onboarding/org` | manager | OnboardingShell | ✓ |
-| `/onboarding/team` | manager | OnboardingShell | ✓ |
-| `/onboarding/invite` | manager | OnboardingShell | ✓ |
-| `/onboarding/billing` | manager | OnboardingShell | ✓ |
-| `/onboarding/done` | manager | OnboardingShell | ✓ |
-| `/field-test/marketing-urgent-campaign-pii` | visitante | RuntimeLayout (no-auth variant) | ❌ |
-| `/dashboard` | empleado / manager | AppShell + RoleNav | ✓ |
-| `/case/[case_id]` | empleado | RuntimeLayout | ✓ |
-| `/report/[session_id]` | empleado (su propio) / manager (su team) | ReportLayout | ✓ |
-| `/admin/leads` | admin Itera staff | AdminShell | ✓ admin role |
-| `/admin/review` | admin Itera staff | AdminShell | ✓ admin role |
-| `/admin/orgs` | admin Itera staff | AdminShell | ✓ admin role |
-| `/admin/judge-health` | admin Itera staff | AdminShell | ✓ admin role |
-| `/admin/audit-log` | admin Itera staff | AdminShell | ✓ admin role |
-| `/privacy` | visitante / usuario | PublicShell legal | ❌ |
-| `/terms` | visitante / usuario | PublicShell legal | ❌ |
+Estados: **productiva** (user-facing viva) · **utilitaria** (operación/funnel) · **dev-only** (lab/demo, no indexa, fuera de nav) · **ambigua** (existe y funciona, pero hay decisión de producto pendiente — ver "Duplicados / ambigüedades") · **legacy-resolver** (duplicado a archivar, ver más abajo) · **fantasma** (la nombraba el contrato viejo pero no existe en el árbol).
 
-**Total: 20 rutas productivas.** Cualquier otra ruta queda fuera del producto activo salvo las rutas utilitarias explícitas abajo.
+### Público / Auth / Legal
 
-## Rutas utilitarias permitidas
+| Ruta | Rol / uso | Layout | Auth | Estado |
+|---|---|---|---|---|
+| `/` | visitante — landing | PublicNav | ❌ | productiva |
+| `/auth/login` | visitante | AuthShell | ❌ | productiva |
+| `/auth/signup` | visitante | AuthShell | ❌ | productiva |
+| `/auth/invitation/[token]` | empleado invitado | AuthShell | ❌ / token | productiva |
+| `/auth/callback`, `/auth/confirm` | OAuth / magic link (route handlers) | — | ❌ | productiva |
+| `/privacy`, `/terms` | visitante / usuario | PublicShell legal | ❌ | productiva |
 
-| Ruta | Uso | Layout | Auth required |
-|---|---|---|---|
-| `/success` | retorno Stripe / estado de compra | PublicShell result | ❌ |
-| `/cancel` | retorno Stripe cancelado | PublicShell result | ❌ |
-| `/admin` | entrada staff; puede redirigir a `/admin/review` | AdminShell | ✓ admin role |
-| `/maintenance` | ventana controlada de deploy/mantenimiento | PublicShell result | ❌ |
+### Onboarding (manager, post-signup)
 
-Estas rutas existen por operación/funnel, no cuentan como surfaces principales de producto.
+| Ruta | Uso | Layout | Auth | Estado |
+|---|---|---|---|---|
+| `/onboarding/org` | identidad de la org | OnboardingShell | ✓ | productiva |
+| `/onboarding/team` | crear equipo | OnboardingShell | ✓ | productiva |
+| `/onboarding/invite` | invitar miembros | OnboardingShell | ✓ | productiva |
+| `/onboarding/context` | perfil de empresa pre-pago | OnboardingShell | ✓ | productiva |
+| `/onboarding/billing` | pago Stripe | OnboardingShell | ✓ | productiva |
+| `/onboarding/done` | confirmación | OnboardingShell | ✓ | productiva |
+
+### Post-login (role-aware)
+
+| Ruta | Uso | Layout | Auth | Estado |
+|---|---|---|---|---|
+| `/dashboard` | destino post-login role-aware (todos los redirects de auth/error/success van ahí); renderiza casos según `viewer_role` | EmployeeShell / ManagerShell (role-aware) | ✓ | ambigua |
+
+### Empleado (participante)
+
+| Ruta | Uso | Layout | Auth | Estado |
+|---|---|---|---|---|
+| `/team` | home empleado (hero + glance + leaderboard + casos recomendados) | EmployeeShell | ✓ | productiva |
+| `/casos` | catálogo de casos con filtros | EmployeeShell | ✓ | productiva |
+| `/case/[case_id]` | **runtime único** (config-driven, 5 secciones × 5 slides, `RuntimeExperienceV2`). Lo linkean `CaseCard`, `/dashboard`, `/staff`. `/jugar` se eliminó (F6, 2026-06-30): era la misma cosa bajo otra URL. | RuntimeShell | ✓ | productiva |
+| `/practica/[beat_slug]` | player de practice beats — runtime **educativo** productivo (carga el beat activo de `simulador.practice_beats`; mismo shape formativo que validó `/aprender-demo`) | RuntimeShell | ✓ | productiva |
+| `/reportes` | reporte personal glance (score/banda/dimensiones) | EmployeeShell | ✓ | productiva |
+| `/report/[session_id]` | reporte ejecutivo de una sesión (propio / del team) | ReportShell | ✓ | productiva |
+| `/perfil` | cuenta: perfil, org/team, idioma, notificaciones, logout | EmployeeShell | ✓ | productiva |
+
+### Manager
+
+| Ruta | Uso | Layout | Auth | Estado |
+|---|---|---|---|---|
+| `/staff` | dashboard equipo (KPI strip, grid, matriz, recomendaciones) | ManagerShell | ✓ | productiva |
+| `/staff/casos` | catálogo de casos del sprint (contexto manager) | ManagerShell | ✓ | productiva |
+| `/staff/equipo` | miembros del equipo + settings | ManagerShell | ✓ | productiva |
+| `/staff/matriz` | matriz dimensión × banda del equipo (cuántas personas cayeron en cada banda por dimensión) | ManagerShell | ✓ | productiva |
+| `/staff/recomendaciones` | acciones recomendadas por persona: los cuatro caminos (pilotar/entrenar/pausar/escalar) con counts | ManagerShell | ✓ | productiva |
+| `/staff/reportes` | reportes agregados del equipo | ManagerShell | ✓ | productiva |
+| `/empresa` | settings de org (identidad, plan/billing, miembros) | ManagerShell | ✓ | productiva |
+
+### Admin Itera staff
+
+| Ruta | Uso | Layout | Auth | Estado |
+|---|---|---|---|---|
+| `/admin` | entrada staff (submenu) | AdminShell | ✓ staff | productiva |
+| `/admin/leads` | leads de field-test / comercial | AdminShell | ✓ staff | productiva |
+| `/admin/review` | cola de human review (risk events) | AdminShell | ✓ staff | productiva |
+| `/admin/orgs` | orgs activas + métricas | AdminShell | ✓ staff | productiva |
+| `/admin/captacion` | pipeline propio de captación (DuckDB): prospectos públicos + score IA | AdminShell | ✓ staff | productiva |
+| `/admin/cases` | casos del simulador (bespoke + global): lifecycle, dueño, uso | AdminShell | ✓ staff | productiva |
+| `/admin/lecciones` | lecciones educativas (practice beats): estado + completion | AdminShell | ✓ staff | productiva |
+| `/admin/judge-health` | calibración del judge | AdminShell | ✓ staff | productiva |
+| `/admin/audit-log` | log de acciones staff | AdminShell | ✓ staff | productiva |
+
+### Utilitarias (operación / funnel)
+
+| Ruta | Uso | Layout | Auth | Estado |
+|---|---|---|---|---|
+| `/success`, `/cancel` | retorno Stripe | PublicShell result | ❌ | utilitaria |
+| `/maintenance` | ventana de deploy/mantenimiento | PublicShell result | ❌ | utilitaria |
+
+### Dev-only (no indexan, no van en nav productiva, se conservan)
+
+Mecanismo: las rutas dev-only viven en `internalReviewRoutes` de `proxy.ts` — en prod responden 404 salvo con dev bypass activo.
+
+| Ruta | Uso | Estado |
+|---|---|---|
+| `/design` | editor de tokens en vivo | dev-only |
+| `/design/components` | **galería = espejo del design system** (fuente única de componentes) | dev-only |
+| `/dev` | hub interno de QA (lista rutas, bypass de auth, override de tema) | dev-only |
+| `/exercise-lab` | catálogo de bloques de ejercicio | dev-only |
+| `/case-demo` | caso jugable público sin login (demo / QA) | dev-only |
+| `/case-template` | estructura de caso (referencia de diseño) | dev-only |
+| `/aprender-demo` | módulo educativo jugable (demo del segundo motor, modo formativo) | dev-only |
+| `/motores` | consola de lectura: cómo está organizado cada motor (educativo + operativo) | dev-only (PENDIENTE: falta en `internalReviewRoutes` de `proxy.ts` — hoy se sirve en prod; fix de Codex, ledger R-21) |
+
+### Duplicados / ambigüedades a resolver (decisión de Codex + producto, **NO borrado mecánico**)
+
+Verificado con grep de referencias el 2026-06-07 — cada candidato a "borrar" está conectado o es ambiguo:
+
+| Caso | Realidad (links reales) | Pendiente |
+|---|---|---|
+| `/case/[case_id]` vs `/jugar/[case_id]` | **Resuelto 2026-06-30 (F6).** Ganó el motor config-driven (`RuntimeExperienceV2`); se sirve bajo `/case/[case_id]` (la URL ya conectada — no se repuntaron los catálogos, se movió el motor). El componente legacy de 5 pasos y la ruta `/jugar` se eliminaron del repo. | cerrado. |
+| `/dashboard` vs `/team` + `/staff` | `/dashboard` es el **destino post-login** (todos los redirects de auth/error/success van ahí) y renderiza casos. `/team` (empleado) y `/staff` (manager) son las vistas por rol, también vivas. | clarificar si `/dashboard` debe redirigir por rol a `/team` / `/staff`, o si es una tercera vista redundante a consolidar. |
+| `/field-test/marketing-urgent-campaign-pii` | **no existe** en `app/`; el demo público hoy vive en `/case-demo`. | decisión de producto: implementar un field-test con lead capture propio, o dejarlo en `/case-demo` y quitar la ruta del lenguaje del producto. |
+
+> **Autoridad:** esta tabla es la fuente única de rutas. Las secciones siguientes (roles, datos por pantalla, navegación) describen comportamiento y a veces citan nombres previos; cuando lo hagan, la ruta canónica es la de esta tabla — entrada de empleado `/team`, de manager `/staff`, runtime único `/case/[case_id]`.
 
 ## Shells activos
 
@@ -110,12 +176,12 @@ Estas rutas existen por operación/funnel, no cuentan como surfaces principales 
 
 **Qué ve:**
 - `/dashboard` — lista de casos asignados, estado de cada uno (no iniciado / en progreso / completado), CTA a reporte si existe
-- `/case/[case_id]` — runtime del caso vivo (6 secciones)
+- `/case/[case_id]` — runtime del caso vivo (5 secciones × 5 slides)
 - `/report/[session_id]` — su propio reporte ejecutivo
 
 **Qué puede hacer:**
 - Empezar o continuar un caso vivo asignado
-- Completar las 6 secciones del runtime: Contexto → Datos → IA → Revisión → Decisión → Respuesta
+- Completar las 5 secciones del runtime (5 slides cada una): contexto → datos → ia → revision → cierre (autoridad: `docs/simulador/case_factory/CASE_ASSEMBLY_SCHEMA.yaml`)
 - Pausar y retomar
 - Ver su reporte una vez completado
 - Logout
@@ -206,7 +272,7 @@ Datos: ninguno hardcoded. Forms vacíos.
 
 Datos:
 - Case YAML completo (desde `docs/simulador/contrato_v0/casos/marketing_urgent_campaign_pii_v1.yaml`)
-- 6 secciones del runtime
+- 5 secciones × 5 slides del runtime
 - Mini-reporte template post-completion
 
 **Backend connection (no se congela):**
@@ -215,7 +281,7 @@ Datos:
 - POST lead a `/api/field-test/sessions/[sessionId]/lead`
 - GET reporte preliminar al terminar
 
-### `/dashboard` (empleado)
+### `/team` (empleado — dashboard)
 
 Datos hardcoded durante fase visual:
 - Mock user: nombre, email, avatar
@@ -229,7 +295,7 @@ Datos hardcoded durante fase visual:
 - GET `/api/sessions?user_id=X` → casos asignados + statuses
 - GET `/api/sessions/[id]/last_step` → para resume
 
-### `/dashboard` (manager)
+### `/staff` (manager — dashboard)
 
 Datos hardcoded durante fase visual:
 - Mock team: nombre, 10-15 participantes con nombres + bandas + estados
@@ -243,7 +309,7 @@ Datos hardcoded durante fase visual:
 ### `/case/[case_id]` (runtime empleado)
 
 Datos hardcoded durante fase visual:
-- Case content: brief, dataset, 6 secciones
+- Case content: brief, dataset, 5 secciones × 5 slides
 - Mock LLM responses (no Anthropic call yet — usar respuestas pre-generadas)
 - Estado local: respuestas del usuario por step
 
@@ -304,7 +370,7 @@ NO global navbar. NO link a "/simulator-design" desde ninguna parte. NO links cr
 ## Reglas de "está / no está en v2"
 
 ✅ Está en v2 si:
-- Una de las 20 rutas productivas o 3 utilitarias permitidas lo necesita
+- Una de las 35 rutas productivas o 3 utilitarias permitidas lo necesita
 - Es navegación de uno de los 4 roles definidos
 - Es dato consumido por surface activa
 

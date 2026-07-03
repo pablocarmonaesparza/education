@@ -54,7 +54,7 @@ Si persiste, escríbenos a soporte@itera.la con el código `{errorDigest}` y te 
 
 **Layout:** standalone full-screen.
 
-**Icon:** AppleIcon `Wrench` (Lucide stroke 1.5) o `Tool`.
+**Icon:** `AppleIcon name="settings"` (o agregar `IconTool` al wrapper si se prefiere una llave).
 
 **Eyebrow:** EN MANTENIMIENTO
 

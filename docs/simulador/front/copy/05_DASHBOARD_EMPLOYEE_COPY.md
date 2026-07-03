@@ -97,7 +97,7 @@ EmployeeShell: sidebar simple + main.
 
 ### Empty state
 
-**Icon:** clock outline (Lucide stroke 1.5)
+**Icon:** `AppleIcon name="clock"`
 
 **H2:** Aún no tienes caso asignado.
 

@@ -1,0 +1,84 @@
+practice_beat:
+  id: practice_contexto_encuadre_pedido_v1
+  status: active
+  dimension: contexto
+  level: 1
+  career_key: ops
+  triggered_by_gap: [missing_task_framing]
+  duration_max_seconds: 360
+  principle_card:
+    headline: "Encuadra el pedido antes de pedirle nada a la IA"
+    body: "Un pedido ambiguo produce un resultado ambiguo. Objetivo, audiencia y restricciones se aclaran antes de escribir, no después de recibir algo inservible."
+  practice_exercise:
+    type: formative_slides
+    blocks: [categorize_rows, ai_output_review]
+    prompt: "Recibes un pedido ambiguo de tu jefe y decides qué aclarar antes de trabajar con la IA; luego revisas el pedido que un compañero le escribió a la IA y marcas lo que la deja adivinando."
+  completion_criteria: "Completar los 2 ejercicios (todas las filas y todos los segmentos con respuesta) y revisar la retroalimentación de cada uno."
+  exit:
+    contributes_to_resim_score: true
+  slides:
+    - id: portada
+      kind: cover
+      title: "Un pedido ambiguo produce un resultado ambiguo"
+      body: "Tu jefe te pide algo a medias, tú se lo pasas a la inteligencia artificial a medias, y el resultado no le sirve a nadie. Aquí practicas qué aclarar antes de empezar: para qué es, para quién es y qué límites tiene."
+      chips: ["N1 · Fundamentos", "Operaciones", "6 min"]
+    - id: principio
+      kind: reading
+      title: "Tres preguntas antes de escribirle a la IA"
+      body: |-
+        **El problema.** La inteligencia artificial no adivina lo que el pedido no dice. Si le escribes "hazme un reporte de entregas", va a producir algo — y ese algo casi nunca es lo que tu jefe tenía en la cabeza. El retrabajo no lo paga la herramienta: lo pagas tú.
+
+        **La regla.** Antes de escribir el pedido, responde tres preguntas. Objetivo: ¿qué decisión se va a tomar con esto? No es lo mismo un documento para decidir si se cambia de transportista que uno para informar cómo cerró la semana. Audiencia: ¿quién lo va a leer? La gerencia quiere tres conclusiones; el equipo de bodega quiere la lista de pendientes. Restricciones: ¿qué formato, qué extensión, para cuándo, y qué no debe incluir?
+
+        **El ejemplo.** Te escriben por chat: "Mándame algo del tema de las entregas para mañana". Con eso puedes producir diez documentos distintos. Una pregunta de treinta segundos — "¿es para la reunión de gerencia o para coordinar a bodega?" — vale más que una hora de trabajo sobre la suposición equivocada.
+
+        **Lo que sigue.** Si el pedido que recibiste no responde las tres preguntas, tu primer paso no es abrir la inteligencia artificial: es preguntar.
+    - id: ejercicio_aclarar
+      kind: exercise
+      blockId: categorize_rows
+      title: "Te llega este pedido: \"Arma algo del tema de las entregas para mañana\""
+      body: "Antes de pedirle nada a la inteligencia artificial, decide qué haces con cada pieza de contexto."
+      caseContext:
+        actionStyle: neutral
+        actions:
+          - { value: preguntar, label: "Preguntar antes" }
+          - { value: asumir, label: "Asumir con seguridad" }
+          - { value: fuera, label: "No hace falta" }
+        rows:
+          - { id: c1, label: "Para quién es el documento: la gerencia o el equipo de bodega" }
+          - { id: c2, label: "Qué periodo cubre: la última semana o todo el mes" }
+          - { id: c3, label: "El idioma del documento (todos los reportes internos van en español)" }
+          - { id: c4, label: "Si tu jefe prefiere las gráficas de barras o de líneas" }
+          - { id: c5, label: "Qué decisión se va a tomar en la reunión con ese documento" }
+      feedback:
+        kind: rows
+        rows:
+          - { id: c1, correct: preguntar, why: "La audiencia cambia todo: nivel de detalle, tono y qué datos importan. Es la primera pregunta, no la última." }
+          - { id: c2, correct: preguntar, why: "El periodo define qué datos usas. Asumirlo mal significa rehacer el documento completo." }
+          - { id: c3, correct: asumir, why: "Hay una convención clara y sin riesgo: todos los reportes internos van en español. Preguntar esto hace ruido sin aportar." }
+          - { id: c4, correct: fuera, why: "Es un detalle de forma que puedes decidir tú y ajustar en un minuto si a tu jefe no le gusta. No frena el trabajo." }
+          - { id: c5, correct: preguntar, why: "El objetivo real define qué es relevante. Un documento para decidir un cambio de transportista no se parece a uno para informar la semana." }
+    - id: ejercicio_revisar_pedido
+      kind: exercise
+      blockId: ai_output_review
+      title: "Tu compañero le escribió este pedido a la IA. Revísalo"
+      body: "Marca las frases que dejan a la inteligencia artificial adivinando. Toca para marcar."
+      caseContext:
+        segments:
+          - { id: s1, text: "Necesito un resumen de las entregas de la semana del 8 al 14 de junio.", flagIfMarked: "frase_reutilizable" }
+          - { id: s2, text: "Es para la reunión de gerencia del martes.", flagIfMarked: "frase_reutilizable" }
+          - { id: s3, text: "Ponle todo lo que creas importante.", flagIfMarked: "frase_reutilizable" }
+          - { id: s4, text: "Que se vea profesional.", flagIfMarked: "frase_reutilizable" }
+          - { id: s5, text: "Máximo una página, con una tabla de entregas a tiempo por zona.", flagIfMarked: "frase_reutilizable" }
+      feedback:
+        kind: segments
+        segments:
+          - { id: s1, shouldFlag: false, why: "Objetivo y periodo concretos. La inteligencia artificial sabe exactamente qué datos usar." }
+          - { id: s2, shouldFlag: false, why: "Audiencia y fecha claras. Eso orienta el nivel de detalle y el tono." }
+          - { id: s3, shouldFlag: true, why: "Le traslada tu criterio a la herramienta. Di tú qué debe incluir: la máquina no sabe qué le importa a tu gerencia." }
+          - { id: s4, shouldFlag: true, why: "\"Profesional\" no es una instrucción. Formato, extensión y estructura sí lo son." }
+          - { id: s5, shouldFlag: false, why: "Restricciones operativas: extensión y estructura definidas. Así se pide." }
+    - id: cierre
+      kind: closing
+      title: "Mañana, antes de escribirle a la IA"
+      body: "Revisa el pedido que recibiste: ¿dice para qué es, para quién es y qué límites tiene? Si falta una de las tres, tu primer movimiento es una pregunta de treinta segundos, no una hora de trabajo sobre una suposición."

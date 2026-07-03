@@ -15,6 +15,19 @@ begin;
 
 create schema if not exists extensions;
 
-alter extension vector set schema extensions;
+create extension if not exists vector with schema extensions;
+
+do $$
+begin
+  if exists (
+    select 1
+      from pg_extension
+     where extname = 'vector'
+       and extnamespace <> 'extensions'::regnamespace
+  ) then
+    alter extension vector set schema extensions;
+  end if;
+end;
+$$;
 
 commit;

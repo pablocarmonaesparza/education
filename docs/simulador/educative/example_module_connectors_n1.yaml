@@ -1,0 +1,154 @@
+# Módulo educativo de ejemplo · primer corte del motor educativo (broadcast).
+#
+# Tema: conectar la inteligencia artificial a tus herramientas sin exponer lo
+# que no debes. Nivel N1. Universal (sirve a cualquier rol). Formato corto tipo
+# Duolingo: 6 pantallas, ENSEÑA con feedback inmediato, no mide bajo presión.
+#
+# Reusa bloques del catálogo operativo (mismo estilo y UI). Mueve las 6
+# dimensiones en modo FORMATIVO + el sello educativo (ver EDUCATIVE_ENGINE_SPEC).
+#
+# CONVENCIÓN DE FEEDBACK: el campo `feedback` de cada ejercicio NO se muestra
+# antes de responder. Aparece después, como retroalimentación (la respuesta de
+# referencia + el porqué). Es lo que distingue el modo formativo del sumativo.
+# Comentarios en ASCII; el copy al usuario en español acentuado.
+
+educative_module:
+  module_id: connectors_basico
+  version: 1
+  kind: educational
+  schema_version: 1.0.0
+  source_brief: example_brief_connectors_n1.yaml
+  audience_scope: broadcast   # sin organization_id; va para todas las empresas
+  feedback_mode: formative
+
+  meta:
+    level: "N1 · Fundamentos"
+    topic: "Conectar la inteligencia artificial a tus herramientas"
+    tool_name: "Conectores de inteligencia artificial"
+    estimated_minutes: 8
+    tools: [ai, data, documents]
+
+  source_update:
+    what_changed: "La inteligencia artificial ya se conecta directo a tu correo, tu Drive y tu base de clientes para trabajar con tus documentos reales, no solo con lo que pegas en el chat."
+    why_matters: "Conectar ahorra horas, pero le das acceso a información real de la empresa. El criterio de qué conectas y qué revisas es lo que separa ahorrar tiempo de filtrar datos."
+    market_date: "2026-06"
+
+  exercises:
+
+    # ---------------------------------------------------------------
+    - slot: 1
+      block_id: case_cover
+      title: "Conecta la inteligencia artificial a tu trabajo, sin filtrar lo que no debes."
+      body: "Las herramientas de inteligencia artificial ya se conectan a tu correo, tu Drive y tu base de clientes. Eso te ahorra horas, pero también les das acceso a información real. Aquí practicas qué conectas, qué revisas y qué dejas fuera."
+      content:
+        meta:
+          profile: "Para cualquier equipo"
+          level: "N1 · Fundamentos"
+          estimatedMinutes: 8
+          timerEnabled: false
+          tools:
+            - { kind: ai, label: "Inteligencia artificial" }
+            - { kind: data, label: "Tablas" }
+            - { kind: documents, label: "Documentos" }
+        ctaLabel: "Empezar"
+
+    # ---------------------------------------------------------------
+    - slot: 2
+      block_id: reading_passive
+      title: "Qué son los conectores y por qué cambian tu trabajo."
+      body: "**Qué son.** Un conector le da a la inteligencia artificial acceso directo a una de tus herramientas: tu correo, tu Drive, tu calendario o tu base de clientes. En vez de copiar y pegar, le pides que trabaje con tus documentos reales.\n\n**Qué cambió.** Antes la inteligencia artificial solo veía lo que escribías en el chat. Ahora, con un conector, puede leer una carpeta entera, buscar en tus correos o sacar datos de tu base de clientes en segundos.\n\n**Qué puede.** Resumir documentos largos, buscar entre muchos archivos, preparar un borrador con tus datos reales, cruzar información de varias fuentes.\n\n**Qué no puede.** No sabe qué es sensible y qué no. Conecta lo que tú le conectas y usa todo lo que encuentra. Y al resumir a veces inventa cifras o trae datos que no necesitabas.\n\n**Por qué importa.** El conector no decide por ti. Tú decides qué fuente conectas, qué parte le dejas ver y qué revisas antes de usar lo que devuelve. Eso es lo que practicas en las siguientes pantallas."
+
+    # ---------------------------------------------------------------
+    - slot: 3
+      block_id: categorize_rows
+      title: "Decide qué le conectas a la inteligencia artificial."
+      body: "Quieres que la inteligencia artificial te ayude a preparar un resumen de cuentas para tu reunión. Por cada fuente, decide si la conectas, la conectas filtrada (sin datos de contacto) o la dejas fuera."
+      evaluates_dimensions: [datos, juicio, validacion]
+      content:
+        actionStyle: permission
+        actions:
+          - { value: conectar, label: "Conectar" }
+          - { value: filtrada, label: "Conectar filtrada" }
+          - { value: fuera, label: "Dejar fuera" }
+        rows:
+          - { id: f1, label: "La carpeta del proyecto en Drive (notas y propuestas)" }
+          - { id: f2, label: "Tu base de clientes con montos, fechas, correos y teléfonos" }
+          - { id: f3, label: "La carpeta de Recursos Humanos con los sueldos del equipo" }
+          - { id: f4, label: "Una carpeta compartida con un proveedor externo" }
+      feedback:
+        rows:
+          - { id: f1, correct_action: conectar, why: "Es lo que necesitas para el resumen y no tiene datos personales sensibles." }
+          - { id: f2, correct_action: filtrada, why: "La inteligencia artificial necesita los montos y las fechas, no los correos ni los teléfonos. Conéctala como una vista sin datos de contacto." }
+          - { id: f3, correct_action: fuera, why: "No tiene nada que ver con la reunión de cuentas y expone sueldos del equipo. Para esta tarea, nunca la conectes." }
+          - { id: f4, correct_action: fuera, why: "Puede tener información confidencial de un tercero. Déjala fuera salvo que confirmes que tienes permiso para usarla." }
+
+    # ---------------------------------------------------------------
+    - slot: 4
+      block_id: ai_output_review
+      title: "La inteligencia artificial conectada armó este resumen. Revísalo."
+      body: "Le pediste que resumiera las cuentas del trimestre con tus fuentes conectadas. Marca lo que no dejarías pasar antes de llevarlo a la reunión."
+      evaluates_dimensions: [validacion, juicio]
+      content:
+        segments:
+          - { id: s1, text: "Las tres cuentas grandes crecieron este trimestre.", flagIfMarked: frase_reutilizable }
+          - { id: s2, text: "La cuenta Robles cerró en 1.2 millones, un 40% más que el periodo pasado.", flagIfMarked: claim_no_verificado }
+          - { id: s3, text: "El correo de contacto de Renata es renata.gomez@correo.com y su teléfono está en la ficha.", flagIfMarked: dato_sensible }
+          - { id: s4, text: "Conviene enfocar el siguiente trimestre en las cuentas medianas.", flagIfMarked: frase_reutilizable }
+      feedback:
+        segments:
+          - { id: s1, should_flag: false, why: "Es una afirmación general y sostenible. Déjala." }
+          - { id: s2, should_flag: true, why: "Es una cifra exacta que tú no calculaste. El conector pudo leerla mal o mezclar cuentas. Confírmala contra la fuente antes de usarla." }
+          - { id: s3, should_flag: true, why: "El conector trajo datos de contacto que no pediste ni necesitas para el resumen. No deben aparecer en lo que llevas a la reunión." }
+          - { id: s4, should_flag: false, why: "Es una recomendación general, no un dato que haya que verificar. Puedes dejarla." }
+
+    # ---------------------------------------------------------------
+    - slot: 5
+      block_id: ai_textfield_guided
+      title: "Arma el encargo para la inteligencia artificial conectada."
+      body: "Vas a pedirle el resumen de cuentas. Define qué le pides, para qué es y los límites. Sin esas tres decisiones, usa todo lo que encuentra."
+      evaluates_dimensions: [contexto, ejecucion_ia, juicio]
+      content:
+        guided:
+          entrega: "Genera el encargo para el resumen de cuentas, sin sacar datos de contacto de las fuentes conectadas."
+          objetivos:
+            - "Resumir las cuentas del trimestre con montos y fechas"
+            - "Sacar la lista de contactos de todos los clientes"
+            - "Redactar un correo de seguimiento por cada cliente"
+            - "Copiar todo lo que haya en las fuentes conectadas"
+          audiencias:
+            - "Tu reunión de cuentas de esta semana"
+            - "Un reporte público para toda la empresa"
+            - "Un correo masivo a los clientes"
+            - "Una copia para guardar en tu carpeta personal"
+          limites:
+            - "No incluir correos ni teléfonos"
+            - "Marcar cualquier cifra que no esté en las fuentes"
+            - "Usar también la carpeta de Recursos Humanos"
+            - "Confiar en lo que traiga sin revisar"
+      feedback:
+        objetivo_correcto: "Resumir las cuentas del trimestre con montos y fechas"
+        audiencia_correcta: "Tu reunión de cuentas de esta semana"
+        limites_correctos:
+          - "No incluir correos ni teléfonos"
+          - "Marcar cualquier cifra que no esté en las fuentes"
+        why: "Un buen encargo acota qué hace (resumir cuentas con montos y fechas), para qué es (tu reunión) y pone los límites que cuidan los datos y la validación (sin contacto, marcar cifras sin fuente). Pedir contactos, copiar todo o conectar Recursos Humanos saca datos que esta tarea no necesita."
+
+    # ---------------------------------------------------------------
+    - slot: 6
+      block_id: tradeoff_decision_memo
+      title: "Decide cómo dejas la conexión para tu equipo."
+      body: "Vas a dejar la inteligencia artificial conectada para que tu equipo la use en el día a día. Elige cómo la dejas y escribe una nota corta explicando por qué."
+      evaluates_dimensions: [juicio, impacto, contexto]
+      content:
+        decisions:
+          - { id: acceso_completo, title: "Conectar todo con acceso completo", detail: "El equipo conecta cualquier fuente sin restricción. Beneficio: máxima rapidez. Costo: cualquiera puede exponer datos sensibles sin darse cuenta." }
+          - { id: vistas_filtradas, title: "Conectar vistas filtradas por tarea", detail: "Cada fuente se conecta sin los campos sensibles que esa tarea no necesita. Beneficio: aprovechas la conexión cuidando los datos. Costo: hay que configurar las vistas una vez." }
+          - { id: solo_publico, title: "Conectar solo lo público y pedir el resto caso por caso", detail: "Solo fuentes sin datos personales quedan conectadas. Beneficio: control alto. Costo: más lento para el equipo." }
+          - { id: pedir_guia, title: "No conectar nada todavía y pedir guía a tu líder", detail: "Frenas hasta tener una regla clara. Beneficio: respaldo formal. Costo: pierdes el ahorro de tiempo mientras tanto." }
+        memoPlaceholder: "Escribe a tu equipo: cómo dejaste la conexión, por qué, y qué tienen que cuidar al usarla..."
+        memoAudience: "Tu equipo"
+      feedback:
+        recommended: vistas_filtradas
+        why: "Es la que aprovecha la conexión sin renunciar al control: cada fuente entra sin los datos que esa tarea no necesita. Un buen memo nombra qué quedó conectado, qué se filtró y la regla simple de qué revisar antes de usar lo que devuelve la inteligencia artificial."
+        also_valid:
+          - { id: solo_publico, when: "Si tu equipo maneja datos muy sensibles y prefieres ir lento al principio, también es defendible." }

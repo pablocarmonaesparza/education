@@ -232,7 +232,7 @@ Surfaces premium B2B 2026 usan generous spacing (lg+ default). NO usar 8px margi
 
 ### Iconography
 
-- Lucide icons (open source, MIT) — usar consistentemente
+- AppleIcon (wrapper sobre Tabler, ver `DEC-001`) — usar consistentemente; no importar Lucide ni Tabler sueltos en surfaces
 - 16px o 20px standard size en context inline
 - 24px+ en empty states o icon-driven cards
 - Stroke width 1.5-2 (NO thinner, NO thicker)

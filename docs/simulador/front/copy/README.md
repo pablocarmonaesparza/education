@@ -14,7 +14,7 @@
 7. **`06_DASHBOARD_MANAGER_COPY.md`** — `/dashboard` (ManagerShell) — wow moment #1
 8. **`07_REPORT_COPY.md`** — `/report/[session_id]` — wow moment #2
 9. **`08_ADMIN_COPY.md`** — `/admin/*` (review queue, orgs, leads, judge health, audit log)
-10. **`09_FIELD_TEST_COPY.md`** — `/field-test/marketing-urgent-campaign-pii` (público + lead capture + mini-reporte)
+10. **`09_FIELD_TEST_COPY.md`** — histórico: surface `/field-test/...` retirada (el demo público vive en `/case-demo`, hoy sin lead capture ni mini-reporte)
 11. **`10_i18n_LATAM.md`** — format helpers + marcos legales por jurisdicción + vocabulario LATAM
 12. **`11_SYSTEM_STATES.md`** — 404, 500, loading, empty, maintenance, toasts, modals
 13. **`12_SEO_METADATA.md`** — titles, descriptions, OG, sitemap, robots, brand assets
@@ -45,7 +45,7 @@ Cuando implementes una surface:
 | `/auth/callback` | ✓ 02 |
 | `/auth/confirm` | ✓ 02 |
 | `/auth/invitation/[token]` | ✓ 02 |
-| `/field-test/marketing-urgent-campaign-pii` | ✓ 09 |
+| `/case-demo` (demo público) | histórico — 09 cubría `/field-test/...`, surface retirada |
 | `/onboarding/org` | ✓ 03 |
 | `/onboarding/team` | ✓ 03 |
 | `/onboarding/billing` | ✓ 03 |

@@ -1,5 +1,7 @@
 # MASTER PLAN — UI/UX polish completo Itera Simulador v2 (hoy)
 
+> ⚠️ **HISTÓRICO — no vigente (2026-05-20).** Plan de ejecución de un día concreto; se conserva como registro. Las reglas vigentes viven en `APPLE_HIG_RULES_FOR_ITERA.md`, las rutas en `FRONT_CONTRACT.md`, y el comando de verificación es `npm run check:simulador` (no `bun`). No tomar este doc como fuente de reglas ni de rutas.
+
 > **Objetivo:** las 20 surfaces v2 pulidas a nivel Apple HIG + Typeform UX, en un solo día.
 > **Fecha de ejecución:** 2026-05-20
 > **Branch:** `codex/simulator-front-cleanroom` (única)

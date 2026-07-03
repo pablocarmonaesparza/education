@@ -4,9 +4,9 @@
     {
       "name": "simulator-design",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": ["run", "dev:simulador"],
       "port": 3000,
-      "autoPort": false
+      "autoPort": true
     }
   ]
 }

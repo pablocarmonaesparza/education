@@ -27,6 +27,8 @@ Fuentes canónicas actuales:
 - [pantallas limpias para review — sin overlays de dev](decision_pantallas_review_sin_dev_overlays.md) — 2026-06-05 — `[producto]` — devIndicators:false; nada de badges/botones de dev encima de las superficies de producto
 - [indicador de pasos = AppleStepBar, no texto "Paso N de 5"](decision_indicador_pasos_stepbar.md) — 2026-06-06 — `[producto]` — barra segmentada consistente con la página de ejercicio; single source en components/simulador/apple/AppleStepBar.tsx
 - [el design system es el espejo de todo — promover, no duplicar](metodologia_design_system_fuente_unica.md) — 2026-06-06 — `[producto]` — diseñas en el lab → promueves al design system → el lab consume; nunca dos copias divergentes
+- [consolidación agent-safe del design system (DEC-005..011)](decision_consolidacion_design_system_agent_safe.md) — 2026-06-07 — `[producto]` — HIG/contrato/tokens alineados con el código; fuente única + punteros; accent-strong #0e5fcc para AA; rutas /case conectada vs /jugar huérfana
+- [dark mode por clase .dark y heroui en azul itera](decision_darkmode_class_heroui_azul_itera.md) — 2026-06-12 — `[producto, desarrollo]` — tailwind darkMode:class alineado a next-themes; heroui primary #1472FF, secondary eliminado
 - [protocolo claude+codex](metodologia_protocolo_claude_codex.md)
 - [estructura de dominios](metodologia_estructura_dominios.md)
 - [ritual de cierre por dominio](metodologia_ritual_cierre_dominio.md)
@@ -37,6 +39,7 @@ Fuentes canónicas actuales:
 - [supabase session pooler — usar aws-1-us-east-1](gotcha_supabase_pooler_aws1_us_east_1.md)
 - [oauth de supabase: allow_list con patterns /** es obligatorio](gotcha_supabase_oauth_allow_list.md)
 - [extraer pat de supabase cli desde macos keychain](gotcha_supabase_pat_desde_keychain.md)
+- [codigo "sin imports" que sí está vivo — falsos positivos de knip/grep](gotcha_codigo_sin_imports_que_vive.md) — 2026-06-12 — `[desarrollo]` — analytics.ts leído como texto, gen/* vía child_process, copy modules canónicos, @x402/fetch lo necesita agentmail
 
 ## regla
 

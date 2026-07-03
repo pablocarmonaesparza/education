@@ -1,0 +1,34 @@
+# Brief educativo de ejemplo · primer módulo del motor educativo.
+#
+# Contraste con el brief operativo (CaseGenBrief, ~25 campos, exige empresa +
+# escenario): el educativo es broadcast, su input es una herramienta/update del
+# mercado, no una empresa. ~8 campos.
+#
+# Lo consume el pipeline educativo (E1 explicación -> E2 ejercicios -> E3 empacar).
+# Comentarios en ASCII; los strings de contenido al usuario van en español acentuado.
+
+educative_brief:
+  tool_name: "Conectores de inteligencia artificial"
+  tool_version: "estado a junio 2026"
+  what_changed: >-
+    Las herramientas de inteligencia artificial ya se conectan directo a tu
+    correo, tu Drive y tu base de clientes para trabajar con tus documentos
+    reales, no solo con lo que pegas en el chat.
+  why_matters: >-
+    Conectar tus herramientas ahorra horas, pero le das a la inteligencia
+    artificial acceso a información real de la empresa. El criterio de qué
+    conectas, qué revisas y qué dejas fuera es lo que separa ahorrar tiempo de
+    filtrar datos.
+  level: N1
+  # Bloques elegidos del catálogo (de los 15 aptos para educativo; se excluyen
+  # workflow_builder y dashboard_pivot porque piden datos bespoke de empresa).
+  selected_blocks:
+    - reading_passive
+    - categorize_rows
+    - ai_output_review
+    - ai_textfield_guided
+    - tradeoff_decision_memo
+  voice_style: "claro y cercano, español neutro LATAM, corporate sin jerga"
+  business_context: "equipos no técnicos (marketing, ventas, operaciones)"
+  # broadcast: sin organization_id; el módulo va para todas las empresas.
+  audience_scope: broadcast

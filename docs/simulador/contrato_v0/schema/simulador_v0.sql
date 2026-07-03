@@ -1,5 +1,10 @@
 -- El Simulador v0 schema draft
--- Estado: contrato tecnico, NO correr como migracion sin revision cruzada.
+-- Estado: SNAPSHOT HISTORICO (2026-05). La verdad del schema vive en
+-- supabase/migrations/ — este archivo YA DIVERGIO (ej.: falta 'submitted' en
+-- simulation_sessions.status; risk_events conserva las 5 dimensiones legacy,
+-- retiradas por las 6 canonicas de la migracion 20260608000000). Ver
+-- docs/coord/RULES_LEDGER.md R-24. NO correr como migracion, NO citar como
+-- autoridad de schema.
 
 create extension if not exists pgcrypto;
 

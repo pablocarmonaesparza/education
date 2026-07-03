@@ -4,26 +4,30 @@ Leer primero `AGENTS.md`. Este repo está en modo **simulador corporativo cleanr
 
 ## Rol de Claude Code
 
-Claude Code es autor y auditor en:
+División vigente: **opción A** (decisión Pablo 2026-06-25, registrada en
+`docs/coord/INBOX_CODEX.md` item `in-codex-ux-pablo-claude-leads-ui`).
 
-- casos canónicos
-- rúbricas
-- practice beats
-- copy de manager/empleado
+Claude Code lidera:
+
+- **todo el UI**: .tsx, componentes, tokens, diseño (con gate `/verification-design`)
+- copy de producto (manager/empleado/onboarding/legal)
+- casos canónicos, rúbricas, practice beats
 - research y decisiones producto documentadas
-- audits de loop pedagógico
+- audits (loop pedagógico, sistema de reglas — ver `docs/coord/RULES_LEDGER.md`)
 
-Codex es lead técnico en:
+Codex lidera:
 
-- rutas
-- runtime
-- APIs
-- Supabase
-- migraciones
+- datos y seed
+- Supabase, migraciones, RLS
+- APIs y rutas de servidor
 - auth
-- billing
+- billing/Stripe
 - deploy
 - tests
+- bugs de runtime
+
+Jerarquía de reglas y fuentes canónicas por dominio: `AGENTS.md` §Jerarquía de reglas.
+Contradicciones abiertas regla-vs-código: `docs/coord/RULES_LEDGER.md`.
 
 ## Regla anti-regresión
 

@@ -67,7 +67,7 @@ Regla operativa: cuando Apple no aplica, documenta la decisión como `DEC-*` en 
 
 ### HIG-RULES-A11Y-05 · Texto escalable hasta 200%
 - **MUST**: todo tamaño de texto debe escalar al 200% sin romper layout (Apple: 200% en iOS, 140% en watchOS)
-- **MUST**: usar `rem`/`em` para font-size, no `px` fijos en body/headings
+- **MUST**: el texto escala con browser-zoom y pasa test 200% sin romper layout. Los tokens de tipografía viven en `px` (escala única editable en `/design`); no se exige `rem`/`em` (ver `DEC-011`)
 - **Screen**: TODAS
 - **Source**: Apple HIG / Foundations / Accessibility — Vision (Support larger text sizes)
 - **Consequence**: usuarios con baja visión no pueden leer
@@ -75,7 +75,7 @@ Regla operativa: cuando Apple no aplica, documenta la decisión como `DEC-*` en 
 ### HIG-RULES-A11Y-06 · Keyboard nav completa
 - **MUST**: toda funcionalidad accesible vía teclado (Tab/Shift+Tab para focus, Enter para activar, Esc para cerrar, arrows para listas/radios)
 - **MUST**: focus visible en TODOS los elementos focusables (no `outline: none` sin reemplazo equivalente)
-- **MUST**: no anular shortcuts del sistema (Cmd+R, Cmd+W, Cmd+T, Cmd+F)
+- **MUST**: no anular shortcuts del sistema (Cmd+R, Cmd+W, Cmd+T, Cmd+F, Cmd+S). Runtime usa solo `Enter`/`Esc`/`Cmd+Enter`, sin `Cmd+K/S/M` ni command palette (ver `DEC-007`)
 - **Screen**: TODAS, crítico en Runtime (caso vivo) y Forms (Auth/Onboarding)
 - **Source**: Apple HIG / Foundations / Accessibility — Speech (Full Keyboard Access) + Mobility
 - **Consequence**: usuarios keyboard-only no pueden completar tareas
@@ -386,13 +386,13 @@ Regla operativa: cuando Apple no aplica, documenta la decisión como `DEC-*` en 
 - **Source**: Apple HIG / Foundations / Writing — Provide clear next steps on any blank screens
 - **Consequence**: usuario confundido, no avanza
 
-### HIG-RULES-WRITE-05 · Placeholder text útil
-- **MUST**: placeholder muestra formato esperado ("nombre@empresa.com", "+52 55 1234 5678", "Acme LATAM")
-- **AVOID**: placeholder genérico ("Email", "Teléfono") — usar label arriba mejor
-- **MUST**: label arriba del input siempre, placeholder es hint adicional
+### HIG-RULES-WRITE-05 · Placeholder como instrucción (DEC-006)
+- **MUST**: el placeholder ES la instrucción/pregunta del campo, en formato esperado cuando aplica ("nombre@empresa.com", "+52 55 1234 5678", "Acme LATAM")
+- **MUST**: NO label visible arriba del input — el texto del prop `label` se preserva como `aria-label` (a11y). Aplica a TODO el sistema, incluidos cuestionarios. Ver `DEC-006`.
+- **AVOID**: placeholder de una sola palabra sin contexto ("Email", "Teléfono") cuando el campo necesita más guía
 - **Screen**: Auth signup, Onboarding wizard, todos los Forms
-- **Source**: Apple HIG / Foundations / Writing — Show hints in text fields
-- **Consequence**: usuario duda formato; submission errors
+- **Source**: decisión Itera (Pablo, `DEC-006`) — override consciente del patrón Apple "label arriba"
+- **Consequence**: inconsistencia con el resto del sistema si se mete un `<label>` visible
 
 ### HIG-RULES-WRITE-06 · Vocabulario consistente en flows
 - **MUST**: en flows multi-step usar exactamente las mismas palabras:
@@ -608,7 +608,7 @@ Regla operativa: cuando Apple no aplica, documenta la decisión como `DEC-*` en 
 ## 14. Components específicos — quick rules
 
 ### Text Fields (TF)
-- **HIG-RULES-TF-01**: label visible arriba del input siempre (no solo placeholder)
+- **HIG-RULES-TF-01**: SIN label visible arriba — solo placeholder; el prop `label` se preserva como `aria-label` (ver `DEC-006`)
 - **HIG-RULES-TF-02**: error message debajo del input en color destructive
 - **HIG-RULES-TF-03**: focus state con outline accent visible (no `outline: none` sin reemplazo)
 
@@ -638,14 +638,15 @@ Regla operativa: cuando Apple no aplica, documenta la decisión como `DEC-*` en 
 - **HIG-RULES-ICON-03**: icon sin texto = aria-label obligatorio
 
 ### Iconos significados consistentes
-- **HIG-RULES-ICON-04**:
-  - Compartir: `<Share />` (no `<ExternalLink />`)
-  - Descargar: `<Download />`
-  - Más opciones: `<MoreHorizontal />` o `<MoreVertical />` (no `<Settings />`)
-  - Cerrar: `<X />` (no `<Trash />` ni `<ChevronLeft />`)
-  - Confirmar: `<Check />`
-  - Error: `<AlertCircle />` (no `<XCircle />` rojo agresivo)
-  - Info: `<Info />` (azul accent)
+- **HIG-RULES-ICON-04** (convención real `AppleIcon name="..."`, ver `components/simulador/apple/AppleIcon.tsx`):
+  - Compartir: `name="share"` (no `name="external"`)
+  - Descargar: `name="download"`
+  - Más opciones: `name="more"` (pendiente: agregar `IconDots` al wrapper; nunca `name="settings"`)
+  - Cerrar: `name="x"` (no un chevron ni un icono de basura)
+  - Confirmar: `name="check"`
+  - Error/atención: `name="alert"` (`IconAlertTriangle` — sin círculo rojo agresivo)
+  - Info: `name="info"` (pendiente: agregar `IconInfoCircle` al wrapper)
+  - Nota: los nombres son las keys del mapa en `AppleIcon.tsx`; si falta uno, se agrega al wrapper (no se importa Tabler suelto en la surface)
 
 ---
 
@@ -726,7 +727,7 @@ Regla operativa: cuando Apple no aplica, documenta la decisión como `DEC-*` en 
 5. **Cuando no hay regla clara**: leer `APPLE_HIG_REFERENCE.md` para el contexto Apple original; si sigue ambiguo, escalar a Pablo
 6. **Cuando hay decisión nueva no cubierta**: agregar al final de este doc bajo "Decisiones Itera (living section)" con fecha + razón + screen afectada
 7. **Cuando Apple actualiza HIG**: re-scrape via scripts en `Apéndice B` del reference doc → identificar diffs → actualizar reglas si afectan
-8. **Build verify**: cada commit pasa `bun run build` PASS antes de push
+8. **Build verify**: cada commit pasa `npm run check:simulador` + `npm run lint:simulador` + `npm run build` PASS antes de push (ver `DEC-010`)
 9. **Visual review**: cada surface tier 1 pasa screenshot diff vs baseline antes de merge
 10. **Audit periódico**: claude o codex audita 1 surface por semana contra estas reglas + reporte de violations en `INBOX_CODEX.md`/`INBOX_CLAUDE.md`
 
@@ -754,15 +755,72 @@ Regla operativa: cuando Apple no aplica, documenta la decisión como `DEC-*` en 
 - Regla relacionada: `HIG-RULES-ICON-01`, `HIG-RULES-ICON-02`, `HIG-RULES-WRITE-01`
 - Override: donde el doc anterior decía "Lucide React canónica", queda reemplazado por "Tabler React canónica en el cleanroom". Si una futura surface necesita otra familia, debe abrir nueva `DEC-*` antes de implementarla.
 
-### DEC-004 · Buttons usan `radius="sm"` (8px), NO pill
+### DEC-004 · Buttons usan `radius="sm"` (8px), NO pill — ⚠️ SUPERSEDED por DEC-005
+- ⚠️ **Estado**: SUPERSEDED el 2026-06-07. `DEC-005` unificó todo lo redondeado a `radius-md` (12px), incluidos botones. Lo único vigente de DEC-004 es "botones NO pill"; el valor `sm` quedó reemplazado por `md`.
 - Fecha: 2026-05-20
 - Quién decidió: Pablo (CPO) + claude implementó
 - Razón: investigación research-backed. Apple HIG distingue iOS native (pill) de web/macOS (rounded moderate 8-12px). Las referencias inspiracionales de Itera son web B2B SaaS (Linear, Vercel, Anthropic Console, Stripe Dashboard, Notion, Figma, GitHub) — TODAS usan rounded-md 6-8px, NUNCA pill. Pills se reservan para chips/badges/dots/avatares/progress bars. Buttons pill desalinean con la familia de containers radius-md/lg y rompen el ritmo visual del cleanroom.
 - Pantalla: TODAS las surfaces con AppleButton
 - Regla relacionada: `HIG-RULES-MAT-03` (border radius scale)
 - Aplicación: refactor 28 usages de `radius="full"` → `radius="sm"` en Landing/Auth/Onboarding/Dashboard/Report. Exclusiones: `AppleProgress` (sí mantiene `radius="full"` — progress bars son pill correcto), `AppleBadge` pill cuando aplica, dots/avatares circulares.
-- Override: donde un button específico requiera pill por razón documentada, abrir DEC nueva. Default es `radius="sm"`.
+- Override: donde un button específico requiera pill por razón documentada, abrir DEC nueva. Default es `radius="md"` (ver `DEC-005`).
 - Verificación: `grep -rn 'radius="full"' app/ components/simulador/LandingPage.tsx` → 0 matches después del refactor.
+
+### DEC-005 · `radius-md` (12px) universal en todo lo redondeado
+- Fecha: 2026-05-20 (formalizado en HIG el 2026-06-07)
+- Quién decidió: Pablo (CPO)
+- Razón: consistencia total — inputs, selects, botones y cards chicas comparten el mismo radio, alineado al de los textfields. Ya vive en `app/(app)/simulador.css` (override de los tokens HeroUI) y en `lib/simulador/design-tokens.ts`.
+- Pantalla: TODAS las surfaces con AppleButton / AppleInput / AppleSelect
+- Regla relacionada: `HIG-RULES-MAT-03`; supersede el `sm` de `DEC-004`
+- Override: el radio de botones e inputs es `radius-md` (12px), no `sm` (8px)
+
+### DEC-006 · Textfields solo placeholder, sin label visible
+- Fecha: 2026-06-05
+- Quién decidió: Pablo (CPO)
+- Razón: regla firme desde el rediseño de auth. Todos los textfields (AppleInput, AppleTextarea, AppleSelect) van SIN label arriba; la instrucción vive en el `placeholder` y el texto del `label` se preserva como `aria-label` (a11y). Aplica a TODO el sistema, incluidos cuestionarios. La preferencia de Pablo manda sobre el argumento HIG de que el placeholder se pierde al teclear.
+- Pantalla: Auth, Onboarding, Runtime, todos los Forms
+- Regla relacionada: override de `HIG-RULES-TF-01` y `HIG-RULES-WRITE-05`
+- Override: nunca `<label>` visible arriba; instrucción en `placeholder`, pregunta en `label`→`aria-label`
+
+### DEC-007 · Runtime sin sidebar + shortcuts mínimos
+- Fecha: 2026-06-07
+- Quién decidió: Pablo (CPO) + claude
+- Razón: el caso vivo es foco profundo sin distracción (Product Vision §7). El runtime NO lleva sidebar — solo chrome + stepbar. Teclado: `Enter` avanza, `Esc` vuelve, `Cmd+Enter` newline en textarea. NADA de `Cmd+K/S/M` ni command palette (rompen textareas, accesibilidad y shortcuts del navegador como Cmd+S).
+- Pantalla: RuntimeShell (`/case/[case_id]`, único runtime desde F6 2026-06-30; antes vivía en `/jugar`)
+- Regla relacionada: override de `HIG-RULES-SIDE-01..03` en runtime; matiza `HIG-RULES-A11Y-06` y `HIG-RULES-FORM-06`
+- Override: SIDE-* aplica solo a Dashboard/Admin, no al runtime
+
+### DEC-008 · Bandas con color semántico (verde/ámbar/rojo) + letra A/M/B
+- Fecha: 2026-06-07
+- Quién decidió: Pablo (CPO)
+- Razón: las bandas de readiness usan verde (A/alto), ámbar (M/medio), rojo (B/bajo) SIEMPRE acompañadas de la letra A/M/B (cumple `A11Y-03`: el color no es único portador). Es convención universal de salud/readiness y ya vive en los tokens `band-a/m/b`. El miedo a "parecer juicio moral" se cubre con tono sobrio + la narrativa del reporte, no evitando el color.
+- Pantalla: Dashboard manager, Report, matriz dim×banda
+- Regla relacionada: `HIG-RULES-A11Y-03`, `HIG-RULES-COLOR-01`
+- Override: revierte el anti-pattern "no semáforo / usar indigo+grays" del `PRODUCT_VISION_ONE_PAGER` (texto viejo, de cuando el accent era indigo)
+
+### DEC-009 · `accent-strong` (#0e5fcc) para fondos con texto blanco
+- Fecha: 2026-06-07
+- Quién decidió: Pablo (CTO/CPO)
+- Razón: `#1472ff` da 4.30:1 con texto blanco — falla el 4.5:1 que pide `HIG-RULES-A11Y-01` (MUST) para texto normal. Se deriva `--accent-strong: #0e5fcc` (ya existía como `accent-hover`, pasa AA) para usarse como FONDO de botones/badges con texto blanco. `#1472ff` se mantiene para links, focus rings, bordes y acentos sobre fondo claro (ahí el umbral es 3:1 y pasa). El color de marca NO cambia.
+- Pantalla: TODAS las surfaces con AppleButton primary / badges accent
+- Regla relacionada: `HIG-RULES-A11Y-01`, `HIG-RULES-COLOR-01`
+- Override: el fondo de superficies con texto blanco es `accent-strong`, no `accent`
+
+### DEC-010 · Verificación con npm, no bun
+- Fecha: 2026-06-07
+- Quién decidió: codex (lead técnico) + claude
+- Razón: el repo usa npm (package-lock, `npm ci` en deploy). El comando de verificación canónico es `npm run check:simulador` + `npm run lint:simulador` + `npm run build`. Las menciones a `bun run build` en docs son históricas.
+- Pantalla: N/A (operación)
+- Regla relacionada: punto 8 de §18
+- Override: ningún doc vigente usa `bun`
+
+### DEC-011 · Tokens de tipografía en `px` (escala única editable)
+- Fecha: 2026-06-07
+- Quién decidió: Pablo (CTO) + claude
+- Razón: la escala tipográfica vive en `px` como token único editable en `/design` (un cambio propaga a toda la app). Esto NO rompe accesibilidad: el texto escala con browser-zoom y se verifica al 200%. Se relaja la exigencia de `rem`/`em`.
+- Pantalla: TODAS
+- Regla relacionada: matiza `HIG-RULES-A11Y-05`
+- Override: A11Y-05 se cumple con "escala con zoom + test 200%", no exigiendo `rem`
 
 ---
 
@@ -792,4 +850,4 @@ Regla operativa: cuando Apple no aplica, documenta la decisión como `DEC-*` en 
 
 **Total**: 90+ reglas (se agregaron i18n, performance y responsive como gates ejecutables).
 
-— claude + codex · 2026-05-20 · APPLE_HIG_RULES_FOR_ITERA.md v1.1
+— claude + codex · 2026-06-07 · APPLE_HIG_RULES_FOR_ITERA.md v1.2 (DEC-005..011, DEC-004 superseded)

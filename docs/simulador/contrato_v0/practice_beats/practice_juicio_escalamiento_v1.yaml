@@ -1,0 +1,80 @@
+practice_beat:
+  id: practice_juicio_escalamiento_v1
+  status: active
+  dimension: juicio
+  level: 1
+  career_key: ops
+  triggered_by_gap: [missed_escalation]
+  duration_max_seconds: 420
+  principle_card:
+    headline: "Resolver, consultar o escalar: el monto y la evidencia deciden"
+    body: "Dentro de tu autoridad y con evidencia, resuelves. Sin evidencia, consultas. Fuera de tu autoridad o con un tema legal, escalas con contexto — y escalar a tiempo no es fallar."
+  practice_exercise:
+    type: formative_slides
+    blocks: [categorize_rows, ai_output_review]
+    prompt: "Atiendes casos de reembolso en una tienda en línea: clasificas qué resuelves, qué consultas y qué escalas; luego revisas una respuesta redactada por IA que compromete montos fuera de tu autoridad."
+  completion_criteria: "Completar los 2 ejercicios (todas las filas y todos los segmentos con respuesta) y revisar la retroalimentación de cada uno."
+  exit:
+    contributes_to_resim_score: true
+  slides:
+    - id: portada
+      kind: cover
+      title: "Saber cuándo no decidir tú también es criterio"
+      body: "La inteligencia artificial te propone respuestas para todo — incluso para casos que no te tocan a ti. Aquí practicas la línea entre lo que resuelves, lo que consultas y lo que escalas de inmediato."
+      chips: ["N1 · Fundamentos", "Operaciones", "7 min"]
+    - id: principio
+      kind: reading
+      title: "La regla de los dos ejes"
+      body: |-
+        **El problema.** Con una herramienta que redacta respuestas en segundos, la tentación es responder todo al momento. Pero la velocidad no cambia tu límite de autoridad: si autorizas un reembolso que no te toca, el problema ya no es del cliente — es tuyo.
+
+        **La regla.** Cada caso se mide en dos ejes. Autoridad: ¿el monto y el tipo de decisión están dentro de tu puesto? En este equipo, hasta 1,000 pesos por reembolso. Evidencia: ¿los datos respaldan la decisión — rastreo, fotos, historial? De ahí salen tres caminos. Dentro de autoridad y con evidencia: resuelves y registras. Dentro de autoridad pero con evidencia floja o un patrón raro: consultas antes. Fuera de autoridad, evidencia contradictoria o cualquier tema legal: escalas de inmediato, con contexto — qué pasó, qué evidencia hay y qué recomiendas.
+
+        **El ejemplo.** Reembolso de 320 pesos con el rastreo confirmando paquete dañado: lo resuelves tú, hoy. Reembolso de 8,500 pesos donde el cliente dice que nada llegó pero el rastreo marca entregado: monto fuera de tu límite y evidencia contradictoria — eso se escala en el primer minuto, no después de tres correos.
+    - id: ejercicio_casos
+      kind: exercise
+      blockId: categorize_rows
+      title: "Turno de la mañana: te llegan estos cinco casos"
+      body: "Tu límite de autorización es de 1,000 pesos por reembolso. Decide el camino de cada caso."
+      caseContext:
+        actionStyle: severity
+        actions:
+          - { value: normal, label: "Resuélvelo tú" }
+          - { value: escalar, label: "Consulta antes" }
+          - { value: riesgo, label: "Escala ya" }
+        rows:
+          - { id: j1, label: "Reembolso de 320 pesos; el rastreo confirma que el paquete llegó dañado" }
+          - { id: j2, label: "Reembolso de 8,500 pesos; el cliente dice que nunca llegó, pero el rastreo marca entregado" }
+          - { id: j3, label: "Cliente pide cambiar la dirección de un pedido que aún no sale de bodega" }
+          - { id: j4, label: "Un cliente menciona que su abogado se pondrá en contacto por un cargo duplicado" }
+          - { id: j5, label: "Reembolso de 900 pesos con evidencia clara; es la cuarta devolución del mismo cliente en el mes" }
+      feedback:
+        kind: rows
+        rows:
+          - { id: j1, correct: normal, why: "Monto dentro de tu límite y evidencia que respalda. Resolver rápido aquí es exactamente tu trabajo." }
+          - { id: j2, correct: riesgo, why: "Ocho veces tu límite y la evidencia contradice al cliente. Los dos ejes en rojo: se escala en el primer minuto, con el rastreo adjunto." }
+          - { id: j3, correct: normal, why: "Operación de rutina, sin dinero de por medio y reversible. No consume el tiempo de tu supervisor con esto." }
+          - { id: j4, correct: riesgo, why: "La palabra \"abogado\" saca el caso de tu cancha sin importar el monto. Los temas legales se escalan siempre, sin responder por tu cuenta." }
+          - { id: j5, correct: escalar, why: "El monto está dentro de tu límite, pero cuatro devoluciones en un mes es un patrón. Una consulta corta protege a la empresa sin maltratar a un cliente que quizá solo tuvo mala suerte." }
+    - id: ejercicio_respuesta
+      kind: exercise
+      blockId: ai_output_review
+      title: "La IA redactó esta respuesta para el caso de 8,500 pesos"
+      body: "Marca lo que no puedes enviar sin autorización. Toca para marcar."
+      caseContext:
+        segments:
+          - { id: s1, text: "Hola, lamentamos lo ocurrido con tu pedido y ya estamos revisando tu caso.", flagIfMarked: "frase_reutilizable" }
+          - { id: s2, text: "Ya autorizamos el reembolso completo de 8,500 pesos a tu tarjeta.", flagIfMarked: "claim_no_verificado" }
+          - { id: s3, text: "Además, te regalamos un cupón del 25% para tu siguiente compra.", flagIfMarked: "frase_reutilizable" }
+          - { id: s4, text: "Tu caso quedó registrado con el folio 48213; te contactamos en menos de 24 horas.", flagIfMarked: "frase_reutilizable" }
+      feedback:
+        kind: segments
+        segments:
+          - { id: s1, shouldFlag: false, why: "Empatía y estado del caso, sin comprometer nada. Se puede enviar tal cual." }
+          - { id: s2, shouldFlag: true, why: "Compromete 8,500 pesos que nadie autorizó — ocho veces tu límite, con evidencia en contra. Una vez enviado, la empresa queda amarrada a esa promesa." }
+          - { id: s3, shouldFlag: true, why: "Una compensación extra que ninguna política respalda. El modelo la agregó para sonar amable; amable también es no prometer lo que no existe." }
+          - { id: s4, shouldFlag: false, why: "Folio real y un plazo de contacto razonable. Da certeza sin comprometer decisiones ajenas." }
+    - id: cierre
+      kind: closing
+      title: "Mañana, cuando la IA te sugiera una respuesta"
+      body: "Antes de enviar, dos preguntas: ¿esto compromete dinero o decisiones por encima de mi puesto?, ¿la evidencia respalda lo que dice? Si algo falla, escala con contexto: qué pasó, qué evidencia hay y qué recomiendas. Eso no es tardarte — es hacer bien tu parte."

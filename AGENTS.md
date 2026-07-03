@@ -20,20 +20,45 @@ Fuentes de verdad actuales:
 
 No reactivar rutas, APIs, tablas, docs, scripts ni copy del producto anterior sin owner + razón documentada en `docs/coord/PABLO_INPUT_NEEDED.md`.
 
+## Jerarquía de reglas
+
+Las reglas del sistema viven en muchos archivos. Cuando dos fuentes chocan, este es el
+orden de autoridad de **intención** (qué regla es la que queremos):
+
+1. **Decisión viva de Pablo** — `docs/memory/decision_*.md` y resoluciones en
+   `docs/coord/PABLO_INPUT_NEEDED.md`. La más reciente gana.
+2. **Contrato canónico del dominio** — un archivo por dominio (tabla abajo).
+3. **Docs guía** — specs, notas, planes.
+4. **Comentarios de código** — descripción, nunca autoridad.
+
+El código y la BD son **el estado, no la regla**: si el código contradice la regla
+vigente, es un hallazgo — o se arregla el código, o se deroga la regla con una decisión
+nueva. Nunca se dejan las dos versiones vivas. El registro de contradicciones abiertas y
+su resolución vive en `docs/coord/RULES_LEDGER.md`.
+
+**Regla madre de enforcement:** una regla sin gate (código, CI, constraint de BD) y sin
+dueño es una aspiración, no una regla — no puede usarse para bloquear trabajo ni para
+prometer nada a clientes. Al escribir una regla nueva, se declara su gate o se marca
+`aspiracional` explícitamente.
+
+Fuente canónica por dominio:
+
+| Dominio | Fuente canónica |
+|---|---|
+| Motor de casos (estructura, bloques, anti-spoiler, no-prefill) | `docs/simulador/case_factory/CASE_ASSEMBLY_SCHEMA.yaml` + `ENGINE_CONTRACT.md` |
+| Judge y rúbricas | `docs/simulador/contrato_v0/rubricas/*.yaml` + `docs/simulador/rubric_semver_policy.md` |
+| Quality bar de contenido | `docs/quality/case_admission_checklist.md` + quality bar de `CLAUDE.md` |
+| Rutas, roles y exposición | `docs/simulador/front/FRONT_CONTRACT.md` |
+| Schema y seguridad de datos | `supabase/migrations/` (los docs de schema son snapshots, no autoridad) |
+| Billing y asientos | `lib/simulador/billing.ts` + decisión de pricing vigente en `docs/memory/` |
+| Diseño | `/design` + `/design/components` + `APPLE_HIG_RULES_FOR_ITERA.md` §19 (`DEC-*`) |
+| Proceso entre agentes | este archivo + `docs/coord/INBOX_SCHEMA.md` |
+
 ## Superficie activa
 
-Rutas permitidas:
+Las rutas activas viven en `docs/simulador/front/FRONT_CONTRACT.md` (fuente única, derivada del código). Esa tabla manda: si una ruta no está ahí, no existe; su columna **estado** dice si es productiva, utilitaria, dev-only o ambigua (duplicado a resolver).
 
-- `/`
-- `/auth/login`
-- `/auth/signup`
-- `/field-test/marketing-urgent-campaign-pii`
-- `/dashboard`
-- `/case/[case_id]`
-- `/report/[session_id]`
-- `/admin`
-
-Todo lo demás debe estar fuera del árbol activo del repo.
+No crear rutas nuevas sin actualizar `FRONT_CONTRACT.md`. Todo lo que no esté en esa tabla queda fuera del árbol activo del repo.
 
 ## Operación compartida
 
@@ -73,11 +98,17 @@ npm run build
 
 ## Design system
 
-- Usar componentes existentes de `components/ui/` y `components/simulador/`.
-- Mantener el accent color `#1472FF`.
-- No meter hex inline nuevos.
-- No reimplementar buttons/cards/inputs si ya existe componente.
-- La UI nueva debe seguir el contrato visual actual del simulador, no el estilo de cursos heredado.
+- Usar componentes existentes de `components/simulador/apple/` (barrel `index.ts`,
+  espejo completo en `/design/components`).
+- Tokens de `app/(app)/simulador.css` vía `var(--…)` y clases `ts-*`. No meter hex
+  inline nuevos ni tamaños tipográficos sueltos.
+- Accent de marca `#1472FF` (`--accent`); fondos sólidos bajo texto blanco usan
+  `--accent-strong` (DEC-009).
+- No reimplementar buttons/cards/inputs si ya existe componente central; UI reusable
+  nueva se promueve a `components/simulador/apple/` y se registra en `/design/components`.
+- Todo el diseño debe quedar referenciado a `/design`: un cambio de token ahí propaga a
+  todo el sistema (vía `DesignOverridesInjector` + tokens canónicos).
+- La UI nueva sigue el contrato visual del simulador, no el estilo de cursos heredado.
 
 ## Comunicación con Pablo
 

@@ -121,7 +121,7 @@ Columnas:
 
 ### Voice input button (al lado de textarea principal)
 
-- Icon: microphone (Lucide stroke 1.5)
+- Icon: `AppleIcon name="mic"` (pendiente: agregar `IconMicrophone` al wrapper)
 - Estados: idle (gray) / recording (pulse fucsia) / processing (spinner) / error (red)
 - Caption: `o graba audio si prefieres hablar`
 
@@ -242,7 +242,7 @@ Columnas:
 
 | Estado | Visible |
 |---|---|
-| Idle | Tooltip on hover: "Grabar audio (Cmd+M)" |
+| Idle | Tooltip on hover: "Grabar audio" |
 | Recording | Pulse animation + "Grabando… toca de nuevo para detener" |
 | Processing | Spinner + "Transcribiendo…" |
 | Done | Transcript aparece en textarea con caption muted: "Transcrito por Whisper" |
@@ -266,16 +266,8 @@ Columnas:
 | Enter (sin modifier, fuera de textarea) | Continuar al siguiente step si válido |
 | Cmd+Enter (dentro de textarea) | Continuar al siguiente step (Enter solo = newline) |
 | Esc | Volver al step anterior (con confirm si dirty) |
-| Cmd+K | Toggle sidebar |
-| Cmd+S | Forzar save (muestra save indicator) |
-| Cmd+M | Toggle voice input (donde aplique) |
 
-**Tooltip command palette (Cmd+/ muestra todos):**
-- Continuar: ↵
-- Atrás: esc
-- Sidebar: ⌘K
-- Guardar: ⌘S
-- Audio: ⌘M
+**Sin `Cmd+K/S/M` ni command palette** (ver `DEC-007`): el save es automático (debounce, ver "Save indicator" arriba); el runtime no lleva sidebar; el voice input se activa con el botón, no con shortcut. Solo `Enter` / `Cmd+Enter` / `Esc`.
 
 ---
 

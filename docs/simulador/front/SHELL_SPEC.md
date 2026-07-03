@@ -48,7 +48,7 @@
    - Eyebrow: `diagnóstico operativo de criterio en IA` (xs, uppercase tracking-widest, muted)
    - H1 (text-5xl/6xl extrabold tracking-tight): `mide cómo decide tu equipo cuando usa IA en flujos reales.`
    - Sub (text-lg muted, max-w-2xl): `sprint de 30 días. caso vivo con presión real. judge LLM + review humano. reporte ejecutivo accionable. desde $4,000 USD para 5-50 personas.`
-   - CTAs (2): `agendar diagnóstico` (primary, lg, arrow icon) + `ver caso demo` (ghost, lg) — el demo abre `/field-test/marketing-urgent-campaign-pii`
+   - CTAs (2): `agendar diagnóstico` (primary, lg, arrow icon) + `ver caso demo` (ghost, lg) — el demo abre `/case-demo` (la ruta `/field-test/...` fue retirada)
    - Visual atrás: gradient mesh sutil indigo→violet en bottom-right, no center
 
 3. **Bento "qué mide"** (3 columns desiguales, gap 6):
@@ -236,7 +236,7 @@
 
 ---
 
-## Tier 2 — auth + field-test + onboarding wizard
+## Tier 2 — auth + demo público (`/case-demo`) + onboarding wizard
 
 ### 5. `/auth/login` y `/auth/signup`
 
@@ -297,29 +297,27 @@
 
 ---
 
-### 8. `/field-test/marketing-urgent-campaign-pii` (caso público demo)
+### 8. `/case-demo` (caso público demo)
+
+> La ruta `/field-test/marketing-urgent-campaign-pii` fue retirada (`app/field-test` borrado 2026-06-06). El demo público vive en `/case-demo`.
 
 **Audiencia:** prospect visitante que quiere "probar el simulador sin pagar".
 
-**Layout:** topbar minimal (sin sidebar — no es sesión de empleado real), main central max-w-3xl.
+**Surface actual:** caso ensamblado formato 5×5 — "Envío del lunes con datos sucios" (Marketing N1, 5 secciones × 5 slides, ~12 min). Navegable sin login. Vitrina client-side: sin sesión de backend y sin judge; los campos internos del judge se strippean del contexto antes de llegar a los bloques.
 
-**Topbar (h-12):**
-- Izquierda: logo `itera` + breadcrumb `demo público › caso 1`
-- Derecha: link sutil ghost `agendar diagnóstico para mi equipo` → CTA conversión
+**Layout:** shell de caso heredado de `/case-template` — sidebar con las 5 secciones + progress de 5 segmentos, main central con título/body/ejercicio/continuar.
 
-**Main content:**
+**Intención vigente de la surface:**
+- Probar el simulador con un caso real sin pagar ni crear cuenta
+- CTA de conversión hacia diagnóstico de equipo
+- Nunca exponer la evaluación real
 
-1. **Banner inicial** (border-l-4 indigo, p-4):
-   - "esto es un demo público. tus respuestas se anonimizan y nos sirven para mejorar el simulador. si quieres correrlo con tu equipo real, agenda diagnóstico."
-
-2. **Mismo runtime que `/case/[case_id]`** pero con 2 diferencias:
-   - Pide email + nombre + cargo + empresa antes de empezar (lead capture)
-   - Al terminar muestra reporte simplificado SIN risk events detallados — solo bandas + CTA "para reporte completo, agenda diagnóstico"
-
-**Anti-patrones:**
+**Anti-patrones (vigentes):**
 - NO mostrar judge real (LLM público gratis se abusa)
-- NO permitir descargar PDF del reporte demo
-- NO compartir link público del reporte demo
+- NO permitir descargar PDF de reporte demo
+- NO compartir link público de reporte demo
+
+> **Histórico — surface retirada, ver `/case-demo`.** La spec original del field-test incluía piezas sin equivalente en `/case-demo` hoy: lead capture (email + nombre + cargo + empresa) antes de empezar, banner "demo público / tus respuestas se anonimizan", breadcrumb `demo público › caso 1` con CTA `agendar diagnóstico para mi equipo` en topbar, y mini-reporte final (bandas sin risk events + CTA a diagnóstico). El copy de esas piezas quedó en `copy/09_FIELD_TEST_COPY.md` (histórico). Portarlas a `/case-demo` es decisión de producto pendiente, no sync.
 
 ---
 
@@ -327,11 +325,11 @@
 
 **Audiencia:** buyer (Head/VP Marketing/Growth) que viene de pagar checkout o de signup.
 
-**Layout común a los 5 pasos:**
+**Layout común a los 6 pasos:**
 
 1. **Topbar** (h-14):
    - Izquierda: logo `itera`
-   - Centro: progress stepper visual — 5 dots `org → team → billing → invite → done`
+   - Centro: progress stepper visual — 6 segmentos `org → team → invite → context → billing → done`
    - Derecha: link ghost `salir y guardar` (con confirm modal)
 
 2. **Main** centered max-w-2xl, padding generoso
@@ -352,14 +350,7 @@
 - Form: nombre team, función (dropdown: marketing/growth/sales/cs/ops/finance/legal/hr/product/eng), # personas esperado
 - CTA: `continuar →`
 
-#### `/onboarding/billing` (paso 3)
-- H1: `elige tu sprint diagnóstico`
-- Tabla horizontal con 3 tiers (igual que landing /, pero con CTA "seleccionar" en cada)
-- Seleccionado: highlighted indigo
-- Caption: `pago vía stripe en USD. factura mx/co/ar disponible respondiendo al recibo.`
-- CTA: `ir a checkout →` (abre Stripe Checkout en nueva pestaña)
-
-#### `/onboarding/invite` (paso 4)
+#### `/onboarding/invite` (paso 3)
 - H1: `invita a tu equipo`
 - Sub: `agrega los emails de las 5-50 personas que correrán el caso vivo.`
 - Textarea grande (paste emails comma/newline separated)
@@ -367,12 +358,25 @@
 - Counter: "12 emails detectados (de 50 max en tu plan)"
 - CTA: `enviar invitaciones →`
 
-#### `/onboarding/done` (paso 5)
+#### `/onboarding/context` (paso 4)
+- H1: `Configura el perfil de tu empresa`
+- Body: explica que el sitio y los archivos orientan el diagnóstico al contexto real de la empresa.
+- Preguntas clave:
+  - Sitio web de la empresa
+  - Archivos de contexto opcionales
+- CTA: `Continuar a plan →`
+
+#### `/onboarding/billing` (paso 5)
+- H1: `¿Cuántas personas van a participar?`
+- Selector de asientos + carrusel de tiers
+- CTA: `Continuar a Stripe`
+
+#### `/onboarding/done` (paso 6)
 - H1 (text-3xl, success green): `¡todo listo, <nombre>!`
 - Sub: `tu equipo recibió las invitaciones. cuando empiecen a completar el caso, verás resultados en tu dashboard.`
 - 3 next-steps cards:
   - "ver dashboard manager" → primary → /dashboard
-  - "previa del caso (sin gastar seat)" → ghost → /field-test/...
+  - "previa del caso (sin gastar seat)" → ghost → /case-demo
   - "agenda live debrief con itera (opcional)" → ghost → mailto
 - Caption: `recibirás email cuando el primer reporte esté listo (24-48h post-completion).`
 
@@ -393,7 +397,7 @@
 
 ## Acuerdos de protocolo
 
-- **Build PASS no negociable**: cada surface tier 1 cierra cuando `bun build` pasa limpio.
+- **Build PASS no negociable**: cada surface tier 1 cierra cuando `npm run check:simulador` + `npm run lint:simulador` + `npm run build` pasan limpios (npm canónico, ver `DEC-010` en `APPLE_HIG_RULES_FOR_ITERA.md`).
 - **HTTP smoke**: `curl -I http://localhost:3000/<surface>` retorna 200 (público) o 307 → login (protegido) con shell visible.
 - **Mobile 375px**: surfaces deben verse pulidas en 375px. No mobile-broken aceptado en tier 1.
 - **Sin imports legacy**: `grep -r '@/components/ui\|@/components/shared\|HashScrollHandler' app/` retorna 0.

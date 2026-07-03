@@ -1,5 +1,7 @@
 # División de tareas claude ↔ codex — polish Apple HIG + Typeform UX
 
+> ⚠️ **HISTÓRICO — no vigente (2026-05-20).** Reparto de tareas de un sprint concreto; se conserva como registro. Reglas vigentes: `APPLE_HIG_RULES_FOR_ITERA.md`. Rutas: `FRONT_CONTRACT.md`. Verificación: `npm run check:simulador` (no `bun`). Iconos: AppleIcon → Tabler (`DEC-001`), no Lucide.
+
 > Fuente de verdad de diseño: `APPLE_HIG_REFERENCE.md` (en la misma carpeta).
 > Stack confirmado: Tailwind + HeroUI v2 + framer-motion + 21st.dev (referencia, no copy-paste wholesale).
 > Filosofía Itera: "Apple HIG a rajatabla + simplicidad UX Typeform" — todo lo que construyamos cumple las dos.

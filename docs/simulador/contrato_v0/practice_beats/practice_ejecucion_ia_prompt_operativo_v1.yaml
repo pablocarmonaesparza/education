@@ -1,0 +1,80 @@
+practice_beat:
+  id: practice_ejecucion_ia_prompt_operativo_v1
+  status: active
+  dimension: ejecucion_ia
+  level: 1
+  career_key: ops
+  triggered_by_gap: [vague_ai_instruction]
+  duration_max_seconds: 360
+  principle_card:
+    headline: "Un pedido operativo dice qué quieres, con qué datos y hasta dónde"
+    body: "La diferencia entre un resultado útil y una tarde de retrabajo casi siempre está en el pedido, no en el modelo."
+  practice_exercise:
+    type: formative_slides
+    blocks: [categorize_rows, ai_output_review]
+    prompt: "Armas el pedido para el reporte semanal de incidencias de una empresa de mantenimiento: decides qué instrucciones entran, cuáles se precisan y cuáles sobran; luego revisas un pedido ajeno y marcas las instrucciones vagas o peligrosas."
+  completion_criteria: "Completar los 2 ejercicios (todas las filas y todos los segmentos con respuesta) y revisar la retroalimentación de cada uno."
+  exit:
+    contributes_to_resim_score: true
+  slides:
+    - id: portada
+      kind: cover
+      title: "La diferencia entre \"ayúdame con esto\" y un pedido que funciona"
+      body: "Dos personas le piden lo mismo a la misma herramienta: una recibe un reporte usable y la otra, tres párrafos genéricos. Aquí practicas armar pedidos con objetivo claro, fuente definida y límites explícitos."
+      chips: ["N1 · Fundamentos", "Operaciones", "6 min"]
+    - id: principio
+      kind: reading
+      title: "Las tres piezas de un pedido operativo"
+      body: |-
+        **El problema.** "Ayúdame con el reporte de incidencias" es una esperanza, no una instrucción. La inteligencia artificial va a llenar cada hueco del pedido con una suposición — y cuando falte un dato, es capaz de inventarlo con toda naturalidad.
+
+        **La regla.** Un pedido operativo tiene tres piezas. Objetivo verificable: qué quieres exactamente, en términos que permitan revisar si se cumplió ("una tabla de incidencias por tipo" se verifica; "algo completo" no). Fuente: con qué datos debe trabajar — qué archivo, qué periodo — y la instrucción de no salirse de ahí. Límites: formato, extensión y, la más importante, qué hacer cuando falte información: marcarla como pendiente, nunca rellenarla.
+
+        **El ejemplo.** Vago: "Hazme el reporte de incidencias de la semana, que quede completo". Operativo: "Con el archivo incidencias_semana_26.csv, arma una tabla con tipo de incidencia, cuántas veces ocurrió y tiempo promedio de atención. Máximo una página. Si a alguna incidencia le falta el tiempo de atención, márcala como pendiente — no estimes". Mismo esfuerzo de tu parte: treinta segundos más de escritura, una tarde menos de correcciones.
+    - id: ejercicio_armar
+      kind: exercise
+      blockId: categorize_rows
+      title: "Estás armando el pedido para el reporte semanal de incidencias"
+      body: "Estas son las líneas candidatas. Decide qué haces con cada una."
+      caseContext:
+        actionStyle: neutral
+        actions:
+          - { value: entra, label: "Entra al pedido" }
+          - { value: precisar, label: "Precísala primero" }
+          - { value: fuera, label: "Fuera" }
+        rows:
+          - { id: e1, label: "\"Resume las incidencias de esta semana\"" }
+          - { id: e2, label: "\"Usa solo el archivo incidencias_semana_26.csv que te comparto\"" }
+          - { id: e3, label: "\"Entrega una tabla con tipo de incidencia, veces que ocurrió y tiempo promedio de atención\"" }
+          - { id: e4, label: "\"Hazlo con buena onda para que el equipo no se desanime\"" }
+          - { id: e5, label: "\"Si falta el tiempo de atención de alguna incidencia, ponle un valor típico\"" }
+      feedback:
+        kind: rows
+        rows:
+          - { id: e1, correct: precisar, why: "\"Esta semana\" y \"resume\" son ambiguos: ¿qué fechas exactas?, ¿resumidas cómo? La versión precisa ya existe en otra línea: la tabla con columnas definidas." }
+          - { id: e2, correct: entra, why: "Fuente única y explícita. Evita que el modelo mezcle datos de otro periodo o complete con conocimiento general." }
+          - { id: e3, correct: entra, why: "Objetivo verificable: puedes revisar en diez segundos si la tabla trae exactamente esas columnas." }
+          - { id: e4, correct: precisar, why: "\"Buena onda\" cada quien lo entiende distinto — el modelo también. Si el tono importa, pídelo en términos operativos: \"tono directo y neutro, sin señalar personas\"." }
+          - { id: e5, correct: fuera, why: "Es una instrucción para inventar datos. Lo correcto es lo contrario: \"si falta el dato, márcalo como pendiente\". Un valor inventado en un reporte operativo es una decisión mal tomada después." }
+    - id: ejercicio_revisar
+      kind: exercise
+      blockId: ai_output_review
+      title: "Tu compañero va a enviar este pedido. Revísalo antes"
+      body: "Marca las frases que le dan a la inteligencia artificial una instrucción vaga o peligrosa. Toca para marcar."
+      caseContext:
+        segments:
+          - { id: s1, text: "Analiza las incidencias del archivo que te pego abajo, solo la semana del 22 al 28 de junio.", flagIfMarked: "frase_reutilizable" }
+          - { id: s2, text: "Escribe algo completo sobre cómo vamos.", flagIfMarked: "frase_reutilizable" }
+          - { id: s3, text: "Si un dato no aparece, complétalo con tu mejor estimación.", flagIfMarked: "claim_no_verificado" }
+          - { id: s4, text: "Entrega máximo una página: tabla de incidencias por tipo y tres pendientes con responsable.", flagIfMarked: "frase_reutilizable" }
+      feedback:
+        kind: segments
+        segments:
+          - { id: s1, shouldFlag: false, why: "Fuente y periodo definidos. El modelo sabe con qué trabajar y con qué no." }
+          - { id: s2, shouldFlag: true, why: "\"Algo completo\" y \"cómo vamos\" no se pueden verificar. El modelo decidirá por ti qué significa \"completo\" — y no coincidirá con tu jefe." }
+          - { id: s3, shouldFlag: true, why: "Es un permiso explícito para inventar. Las estimaciones del modelo se leen igual de seguras que los datos reales; nadie las distinguirá después." }
+          - { id: s4, shouldFlag: false, why: "Límites operativos claros: extensión, estructura y contenido. Esta frase hace el pedido verificable." }
+    - id: cierre
+      kind: closing
+      title: "Mañana, tu primer pedido del día"
+      body: "Antes de enviarlo, revísalo contra las tres piezas: ¿dice qué quiero en términos verificables?, ¿dice con qué datos?, ¿dice qué hacer si falta algo? Si una falta, el retrabajo de la tarde ya está agendado."

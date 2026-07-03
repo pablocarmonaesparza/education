@@ -1,0 +1,251 @@
+# Capa case_template (contrato de evaluación) del caso vertiz_backlog_entregas.
+# Las 25 slides jugables (formato 5x5) viven en
+# cases_assembled/vertiz_backlog_entregas_v1.yaml. Este archivo define cómo se
+# evalúa el caso: pesos, política de datos, gaps, practice beats y evidencia.
+# Los dos formatos se reconcilian en un paso posterior; este contrato es el paso 1.
+case_template:
+  id: vertiz_backlog_entregas
+  version: 1
+  status: ready
+  title: "backlog de entregas con excepción"
+  locale: es-MX
+  difficulty: basic
+  level_primary: 1
+  level_advanced_variant: 1
+  career_key: operations
+  archetype_ref: speed-to-action-vs-validation
+  rubric_ref: rubric_case_factory_v1
+  rubric_version_used: 1.0.0
+  target_role: [operations_analyst, ops_coordinator, process_owner]
+  duration_estimate_min: 12
+
+  case_factory_meta:
+    level: N1
+    level_name: "Fundamentos / Prompt Engineering"
+    profile_pack: operations_automation
+    buyer: coo_or_operations_lead
+    freshness:
+      # Evergreen: el principio medido (triage con evidencia, protección de
+      # datos del cliente y validación de cifras antes de pagar) no depende de
+      # capacidades puntuales de ninguna herramienta. El peso current cubre la
+      # interfaz genérica del asistente corporativo.
+      type: evergreen
+      evergreen_weight: 80
+      current_weight: 20
+      decay_signal: "El principio de triage con evidencia es estable; solo envejece la interfaz del asistente corporativo."
+      last_verified_at: 2026-07-01
+      refresh_due_at: 2026-12-28
+    tags:
+      departments: [operations]
+      industries: [logistics]
+      role_families: [analyst, individual_contributor]
+      seniority: [junior, mid]
+      # El Asistente Vértiz representa a cualquier asistente corporativo
+      # aprobado de esta familia; la habilidad transfiere entre ellos.
+      tools: [chatgpt, claude, microsoft_copilot, google_workspace]
+    exercise_types:
+      - categorize_rows
+      - model_tradeoff_sliders
+      - ai_textfield_guided
+      - ai_textfield_free
+      - ai_output_review
+      - ai_comparison
+      - tradeoff_decision_memo
+    manager_outcome:
+      primary_question: "¿Puede esta persona vaciar un backlog de entregas con excepción usando la inteligencia artificial con criterio, sin auto-reembolsar sin evidencia ni exponer datos del cliente?"
+      assignment_brief: "Asigna este caso cuando quieras saber si alguien de Operaciones puede ordenar una cola de entregas fallidas (reembolsos, fraude, duplicados, datos del cliente), pedirle a la inteligencia artificial un aviso útil sin filtrar información sensible ni inventar montos, revisar lo que devuelve y decidir si resuelve, pilotea o escala. El resultado te dice si puede cerrar excepciones con criterio o necesita práctica antes de tocar reembolsos reales."
+      business_metric: "resolución de excepciones en plazo a 72 horas"
+      risk_metric: "reembolsos pagados sin evidencia o datos de clientes enviados a la inteligencia artificial"
+      expected_signal: "distingue cerrar con criterio de vaciar la cola por velocidad"
+    time_pressure:
+      mode: soft_deadline
+      total_seconds: 600
+      visible_to_participant: true
+      timer_start: after_context_ack
+      overtime_policy: allow_submit_with_overtime_flag
+      manager_signal: "cierra la cola dentro de la ventana sin pagar sin evidencia ni exponer datos del cliente"
+      measured_metrics:
+        - total_elapsed_seconds
+        - step_elapsed_seconds
+        - time_to_first_action_seconds
+        - review_time_ratio
+        - overtime_seconds
+      scoring_rule: "la velocidad solo mejora la lectura de impacto si no hay risk_event high"
+
+  freshness:
+    type: evergreen
+    evergreen_weight: 80
+    current_weight: 20
+    decay_signal: "El principio de triage con evidencia es estable; solo envejece la interfaz del asistente corporativo."
+    last_verified_at: 2026-07-01
+    refresh_due_at: 2026-12-28
+
+  expected_manager_action:
+    primary: entrenar
+    alternatives: [pilotar, pausar]
+    manager_use: "identificar si la persona puede cerrar excepciones con criterio o necesita práctica antes de tocar reembolsos reales."
+
+  required_template_vars:
+    - company_name
+    - manager_name
+    - refunds_controller_name
+    - assistant_name
+    - deadline_date
+
+  context_template:
+    role_play: >
+      Eres Analista de Operaciones en {{company_name}}, logística de última
+      milla en LATAM. {{manager_name}}, Directora de Operaciones, te pidió
+      cerrar las entregas con excepción de la semana antes del {{deadline_date}}.
+    scenario: >
+      La cola llegó con ocho casos: reclamos con y sin evidencia, un reclamo de
+      robo de monto alto sin prueba, un registro duplicado, un paquete aún en
+      tránsito y datos del cliente mezclados en varios registros.
+      {{assistant_name}} es la inteligencia artificial aprobada: redacta y
+      ajusta tono, no consulta el sistema de rastreo, no envía nada y puede
+      inventar números de guía, montos y fechas.
+    pressure:
+      - "el cierre vence el viernes y la resolución en plazo viene en 62%"
+      - "el reclamo de robo de $3,400 no tiene evidencia y presiona el costo de reembolsos (3.1%)"
+      - "{{refunds_controller_name}}, de Control de Reembolsos, exige escalar todo reembolso sin evidencia"
+      - "la dirección, el teléfono y el monto del cliente no pueden pasar a la inteligencia artificial"
+      - "{{manager_name}} quiere ver el criterio antes de que el aviso salga al cliente"
+    stakeholders:
+      - Directora de Operaciones
+      - Analista de Control de Reembolsos
+      - Clientes con entrega fallida
+
+  data_policy:
+    pii_fields: [direccion_cliente, telefono_cliente, nombre_cliente]
+    confidential_fields: [monto_reembolso, valor_envio]
+    allowed_transformations: [drop, generalize, summarize, keep]
+    # Regla de Hugo + política interna: dirección, teléfono y monto jamás
+    # entran al prompt del asistente; el monto lo pone el sistema.
+    must_not_send_to_model: [direccion_cliente, telefono_cliente, monto_reembolso]
+
+  telemetry_required:
+    - case_started
+    - step_completed
+    - risk_event_detected
+    - report_viewed
+    - resim_assigned
+
+  inputs_spec:
+    - kind: exceptions_table
+      name: cola_excepciones
+      schema:
+        columns:
+          - guia
+          - excepcion
+          - antiguedad
+          - valor_envio
+          - evidencia
+    - kind: kpi_snapshot
+      name: metricas_base
+      schema:
+        fields: [resolucion_en_plazo_72h, costo_reembolsos_pct, quejas_repetidas_pct]
+    - kind: policy_excerpt
+      name: politica_reembolsos_datos
+      schema:
+        fields: [regla_evidencia, regla_duplicados, datos_prohibidos_al_modelo]
+    - kind: ai_draft
+      name: borradores_asistente
+      schema:
+        fields: [segment_id, text]
+
+  output_spec:
+    type: propuesta_cierre_backlog
+    required_sections:
+      - triage_de_cola
+      - aviso_base_cliente
+      - metricas_a_monitorear
+
+  failure_modes:
+    - "Paga el reclamo de robo de $3,400 sin evidencia en vez de escalarlo."
+    - "Pasa la dirección, el teléfono o el monto del cliente al asistente."
+    - "Acepta montos o cifras inventadas del borrador sin marcarlas."
+    - "Cierra el duplicado dos veces y paga doble."
+    - "Reembolsa el paquete que sigue en tránsito."
+
+  evaluation_meta:
+    # Pesos N1 copiados tal cual de rubric_case_factory_v1
+    # (internal.level_weights.N1). Suman 100.
+    criteria_weights:
+      contexto: 20
+      datos: 18
+      ejecucion_ia: 22
+      validacion: 18
+      juicio: 12
+      impacto: 10
+    judge_prompt_ref: judge_prompt_vertiz_backlog_entregas_v1
+    confidence_threshold: 0.7
+
+  # Las slides jugables NO se duplican aquí: viven en el assembly (25 slides,
+  # 5 secciones x 5 slots). Este archivo es solo la capa de evaluación.
+  steps_ref:
+    source: cases_assembled/vertiz_backlog_entregas_v1.yaml
+    format: case_assembly_5x5
+
+  evidence_emitted:
+    - kind: readiness_dimension_scores
+      shape: { contexto, datos, ejecucion_ia, validacion, juicio, impacto }
+      emitted_when: evaluation_completed
+    - kind: risk_events_detected
+      shape: { type, severity, dimension, evidence_text, step_key }
+      emitted_when: evaluation_completed
+    - kind: decision_replay
+      shape: { selected_options, annotated_artifacts, final_memo }
+      emitted_when: evaluation_completed
+    - kind: transfer_delta
+      shape: { primary_session_id, resim_session_id, delta_per_dimension, delta_global, narrative }
+      emitted_when: resim_completed_after_primary
+    - kind: manager_recommendation
+      shape: { action, rationale, controls, next_case }
+      emitted_when: report_generated
+    - kind: time_pressure_metrics
+      shape: { total_elapsed_seconds, step_elapsed_seconds, review_time_ratio, overtime_seconds }
+      emitted_when: evaluation_completed
+
+  # Los triggers referencian artefactos ya incrustados en las slides del
+  # assembly (guías V-100x, segmentos r1-r7 y v1-v3). No se inventan nuevos.
+  gap_definitions:
+    refund_without_evidence:
+      dimension: juicio
+      severity: high
+      triggered_by:
+        - "resuelve V-1004 (reclamo de robo de $3,400 sin evidencia) en vez de escalarlo"
+    pii_to_model:
+      dimension: datos
+      severity: high
+      triggered_by:
+        - "no marca el segmento r1 del borrador (dirección y nombre del cliente expuestos)"
+        - "manda dirección, teléfono o nombre del cliente al asistente"
+    hallucinated_amount_accepted:
+      dimension: validacion
+      severity: medium
+      triggered_by:
+        - "no marca r2, r7, v1 o v3 (montos o afirmaciones inventadas por el asistente)"
+    duplicate_not_detected:
+      dimension: datos
+      severity: medium
+      triggered_by:
+        - "resuelve V-1006 en vez de escalarlo como duplicado de V-1001"
+    weak_manager_handoff:
+      dimension: impacto
+      severity: medium
+      triggered_by:
+        - "la propuesta final no dice qué lote resuelve, qué métrica monitorea o cuál es el siguiente paso"
+
+  practice_beats:
+    refund_without_evidence: practice_juicio_escalamiento_v1
+    pii_to_model: practice_datos_minimizacion_pii_v1
+    hallucinated_amount_accepted: practice_validacion_cifras_evidencia_v1
+    duplicate_not_detected: practice_datos_minimizacion_pii_v1
+    weak_manager_handoff: practice_impacto_memo_manager_v1
+
+  resimulation_spec:
+    requires_variant_with_role: resimulation
+    # Ejemplo de resim: cola de devoluciones de e-commerce con aviso por
+    # WhatsApp en vez de email; mismos principios, distinta superficie.
+    transfer_principle: "mismo triage con evidencia y protección de datos, distinta cola y distinto canal"
+    scoring_rule: "misma rubrica y mismos pesos entre primary y resim"
