@@ -1,0 +1,77 @@
+practice_beat:
+  id: practice_ejecucion_pedido_claro_v1
+  status: active
+  dimension: ejecucion_ia
+  level: 1
+  career_key: marketing
+  triggered_by_gap: [vague_ai_instruction]
+  duration_max_seconds: 300
+  # Regla 4 del motor: activo, no pasivo. No hay slide de lectura larga; la
+  # principle_card es el único texto de "principio" y son dos líneas. El
+  # aprendizaje sale de HACER (ver el output malo → arreglar el pedido) + el
+  # feedback, no de leer.
+  principle_card:
+    headline: "Un buen pedido dice qué quieres, con qué datos, y qué hacer si falta algo"
+    body: "El modelo llena cada hueco de tu pedido con una suposición. Si no lo dices tú, lo decide él, y no coincide contigo."
+  practice_exercise:
+    type: formative_slides
+    blocks: [ai_output_review, categorize_rows]
+    prompt: "Primero ves lo que la inteligencia artificial devolvió con un pedido de una línea y marcas lo que no dejarías pasar; luego armas el pedido bien decidiendo qué instrucción entra, cuál se precisa y cuál sobra."
+  completion_criteria: "Completar los 2 ejercicios (todos los segmentos y todas las filas con respuesta) y revisar la retroalimentación de cada uno."
+  exit:
+    contributes_to_resim_score: true
+  slides:
+    - id: portada
+      kind: cover
+      title: "Le pediste a la IA en una línea. Mira lo que te devolvió"
+      body: "Sofía tiene que mandarle hoy a su jefa un resumen de las quejas de clientes de Aurora Retail. Le escribió a la inteligencia artificial: \"resúmeme estas quejas\". Vas a ver qué devolvió, y a arreglar el pedido para que sirva."
+      chips: ["N1 · Fundamentos", "Marketing", "5 min"]
+    - id: ejercicio_revisar
+      kind: exercise
+      blockId: ai_output_review
+      title: "Esto devolvió la IA con el pedido de una línea. Antes de reenviarlo, marca lo que no dejarías pasar"
+      body: "Toca para marcar las frases con problema."
+      caseContext:
+        segments:
+          - { id: s1, text: "Este mes recibimos 47 quejas, un 30% más que el mes pasado.", flagIfMarked: "claim_no_verificado" }
+          - { id: s2, text: "La clienta Laura Méndez (laura.mendez@gmail.com) se quejó tres veces por el retraso de su pedido.", flagIfMarked: "dato_sensible" }
+          - { id: s3, text: "Los motivos más frecuentes fueron retrasos en la entrega y errores de cobro.", flagIfMarked: "frase_reutilizable" }
+          - { id: s4, text: "En general el equipo va muy bien y los clientes están contentos con el servicio.", flagIfMarked: "claim_no_verificado" }
+      feedback:
+        kind: segments
+        segments:
+          - { id: s1, shouldFlag: true, why: "Tú nunca le pasaste la cifra del mes pasado. El modelo la inventó, y un número inventado en un resumen se lee igual de seguro que uno real. Nadie lo va a distinguir después." }
+          - { id: s2, shouldFlag: true, why: "Nombre y correo de una clienta real en un resumen que se va a reenviar. El pedido nunca le dijo que anonimizara, así que no lo hizo. La fuga no la comete la IA: la comete el pedido incompleto." }
+          - { id: s3, shouldFlag: false, why: "Es un resumen fiel de lo que había en el archivo. Sin cifras inventadas ni datos personales. Esto sí lo dejas pasar." }
+          - { id: s4, shouldFlag: true, why: "Son QUEJAS y el modelo cerró con \"clientes contentos\". Le pediste \"resúmeme\" sin decir el objetivo ni el tono, así que rellenó el hueco con optimismo genérico." }
+    - id: ejercicio_armar
+      kind: exercise
+      blockId: categorize_rows
+      title: "Ahora arma el pedido bien. Decide qué haces con cada línea"
+      body: "Estas son las líneas candidatas para el pedido. Decide cuál entra tal cual, cuál hay que precisar y cuál sobra."
+      caseContext:
+        actionStyle: neutral
+        actions:
+          - { value: entra, label: "Entra al pedido" }
+          - { value: precisar, label: "Precísala primero" }
+          - { value: fuera, label: "Fuera" }
+        rows:
+          - { id: r1, label: "\"Resume estas quejas\"" }
+          - { id: r2, label: "\"Usa solo el archivo quejas_junio.csv que te paso, nada más\"" }
+          - { id: r3, label: "\"Devuélveme una tabla: motivo de la queja, cuántas veces apareció y si sigue abierta\"" }
+          - { id: r4, label: "\"No uses nombres ni correos de clientes; si aparecen, cámbialos por número de cliente\"" }
+          - { id: r5, label: "\"Si te falta un dato, invéntalo para que el resumen quede completo\"" }
+          - { id: r6, label: "\"Ponle buena onda para que mi jefa no se preocupe\"" }
+      feedback:
+        kind: rows
+        rows:
+          - { id: r1, correct: precisar, why: "\"Resume\" es una esperanza, no una instrucción: ¿resumir cómo?, ¿para qué? La versión útil ya existe en otra línea: la tabla con columnas definidas." }
+          - { id: r2, correct: entra, why: "Fuente única y explícita. Evita que el modelo mezcle datos de otro periodo o complete con conocimiento general de internet." }
+          - { id: r3, correct: entra, why: "Objetivo verificable: en diez segundos revisas si la tabla trae exactamente esas tres columnas. Eso es un buen pedido." }
+          - { id: r4, correct: entra, why: "El límite de datos que le faltó al pedido original: por eso la IA soltó el nombre y el correo de Laura. Aquí lo cierras." }
+          - { id: r5, correct: fuera, why: "Es un permiso explícito para inventar, la causa exacta de la cifra falsa que marcaste antes. Lo correcto es lo contrario: \"si falta un dato, márcalo como pendiente\"." }
+          - { id: r6, correct: precisar, why: "\"Buena onda\" cada quien lo entiende distinto, y el modelo también, por eso endulzó las quejas. Si el tono importa, pídelo operativo: \"tono neutro y directo, sin endulzar\"." }
+    - id: cierre
+      kind: closing
+      title: "Tu próximo pedido a la IA"
+      body: "Antes de darle enter, míralo contra tres piezas: ¿dice qué quiero, en términos que pueda verificar?, ¿dice con qué datos y con cuáles no?, ¿dice qué hacer si falta algo? Las tres cosas que la IA te inventó hoy salieron de un pedido que no las decía."
