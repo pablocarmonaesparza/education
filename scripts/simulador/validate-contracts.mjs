@@ -80,15 +80,39 @@ function main() {
 function validateCase(item, variantsByTemplate, practiceIds, practiceIdsMappedByCases) {
   required(item.id, `case:${item.id}`, 'id');
   required(item.rubric_ref, `case:${item.id}`, 'rubric_ref');
-  required(Array.isArray(item.steps) && item.steps.length > 0, `case:${item.id}`, 'steps');
+
+  // Dos formatos válidos de contenido:
+  //   (a) `steps` inline (contrato v0 clásico) — se validan aquí abajo.
+  //   (b) `steps_ref` al caso ensamblado 5×5 (case_assembly) — aquí solo se
+  //       verifica que el archivo referenciado exista; la validación profunda
+  //       del 5×5 vive en check-assembled-case.mjs.
+  const hasInlineSteps = Array.isArray(item.steps) && item.steps.length > 0;
+  const hasStepsRef = Boolean(item.steps_ref?.source);
+  required(hasInlineSteps || hasStepsRef, `case:${item.id}`, 'steps o steps_ref');
+
+  if (hasStepsRef) {
+    const refPath = path.join(CONTRACT_DIR, item.steps_ref.source);
+    if (!fs.existsSync(refPath)) {
+      addIssue('error', `case:${item.id}.steps_ref`, `archivo referenciado no existe: ${item.steps_ref.source}`);
+    }
+  }
 
   const templateRef = `${item.id}@v${item.version}`;
   const variants = variantsByTemplate.get(templateRef) ?? [];
   const primary = variants.filter((variant) => variant.variant_role === 'primary');
   const resim = variants.filter((variant) => variant.variant_role === 'resimulation');
 
-  if (primary.length !== 1) addIssue('error', `case:${item.id}`, `expected 1 primary variant, found ${primary.length}`);
-  if (resim.length !== 1) addIssue('error', `case:${item.id}`, `expected 1 resimulation variant, found ${resim.length}`);
+  // Variantes autoradas solo se exigen al formato clásico (steps inline). Los
+  // casos ensamblados (steps_ref) generan su variante primaria al sembrar
+  // (lib/simulador/generated-cases.ts crea `<slug>_primary`); la variante de
+  // re-simulación quedó post-v1 (decisión Pablo 2026-07-02, alcance v1 =
+  // diagnóstico + práctica manual).
+  if (hasInlineSteps) {
+    if (primary.length !== 1) addIssue('error', `case:${item.id}`, `expected 1 primary variant, found ${primary.length}`);
+    if (resim.length !== 1) addIssue('error', `case:${item.id}`, `expected 1 resimulation variant, found ${resim.length}`);
+  }
+
+  if (!hasInlineSteps) return;
 
   item.steps.forEach((step, index) => {
     if (!STEP_TYPES.has(step.type)) addIssue('error', `case:${item.id}.steps[${index}]`, `invalid step type ${step.type}`);
