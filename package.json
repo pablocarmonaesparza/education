@@ -34,6 +34,7 @@
     "simulador:check-blocks": "node scripts/simulador/exercise-blocks-sync.mjs",
     "simulador:gen-case-demo": "node scripts/simulador/generate-case-demo.mjs",
     "simulador:check-assembled": "node scripts/simulador/check-assembled-case.mjs",
+    "simulador:check-routes": "node scripts/simulador/check-routes.mjs",
     "simulador:e2e": "playwright test tests/simulador/e2e",
     "simulador:seed-practice-beats": "node scripts/simulador/seed-practice-beats.mjs",
     "simulador:seed-cases": "node scripts/simulador/seed-cases.mjs",

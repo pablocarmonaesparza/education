@@ -83,6 +83,15 @@ if (copyLint.status !== 0) {
   process.exit(copyLint.status ?? 1);
 }
 
+// Drift de rutas: cada page.tsx real debe estar en FRONT_CONTRACT (R-21).
+const routes = run("node", ["scripts/simulador/check-routes.mjs"]);
+print(routes.stdout);
+print(routes.stderr);
+
+if (routes.status !== 0) {
+  process.exit(routes.status ?? 1);
+}
+
 const typecheck = run("node", ["scripts/simulador/typecheck-scope.mjs"]);
 print(typecheck.stdout);
 print(typecheck.stderr);
