@@ -64,6 +64,7 @@ Estados: **productiva** (user-facing viva) · **utilitaria** (operación/funnel)
 |---|---|---|---|---|
 | `/staff` | dashboard equipo (KPI strip, grid, matriz, recomendaciones) | ManagerShell | ✓ | productiva |
 | `/staff/casos` | catálogo de casos del sprint (contexto manager) | ManagerShell | ✓ | productiva |
+| `/staff/casos/[slug]` | **caso revisión (manager)**: quién de su equipo lo completó (banda + link al reporte), fortalezas observadas, y recorrido read-only de las slides (`CaseReviewWalkthrough`) | ManagerShell | ✓ | productiva |
 | `/staff/equipo` | miembros del equipo + settings | ManagerShell | ✓ | productiva |
 | `/staff/matriz` | matriz dimensión × banda del equipo (cuántas personas cayeron en cada banda por dimensión) | ManagerShell | ✓ | productiva |
 | `/staff/recomendaciones` | acciones recomendadas por persona: los cuatro caminos (pilotar/entrenar/pausar/escalar) con counts | ManagerShell | ✓ | productiva |
@@ -80,6 +81,7 @@ Estados: **productiva** (user-facing viva) · **utilitaria** (operación/funnel)
 | `/admin/orgs` | orgs activas + métricas | AdminShell | ✓ staff | productiva |
 | `/admin/captacion` | pipeline propio de captación (DuckDB): prospectos públicos + score IA | AdminShell | ✓ staff | productiva |
 | `/admin/cases` | casos del simulador (bespoke + global): lifecycle, dueño, uso | AdminShell | ✓ staff | productiva |
+| `/admin/cases/[slug]` | **caso revisión (staff/admin)**: efectividad across orgs (orgs que lo usan, completions, distribución de bandas) + recorrido read-only de las slides (`CaseReviewWalkthrough`) | AdminShell | ✓ staff | productiva |
 | `/admin/lecciones` | lecciones educativas (practice beats): estado + completion | AdminShell | ✓ staff | productiva |
 | `/admin/judge-health` | calibración del judge | AdminShell | ✓ staff | productiva |
 | `/admin/audit-log` | log de acciones staff | AdminShell | ✓ staff | productiva |

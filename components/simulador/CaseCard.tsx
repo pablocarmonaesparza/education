@@ -73,7 +73,16 @@ function StatusBadge({ item }: { item: CaseCatalogItem }) {
   return null;
 }
 
-export function CaseCard({ item }: { item: CaseCatalogItem }) {
+export function CaseCard({
+  item,
+  reviewBasePath,
+}: {
+  item: CaseCatalogItem;
+  /** Si se pasa (ej. "/staff/casos"), la card enlaza a
+   *  `${reviewBasePath}/${slug}` (revisión del manager) en vez de resolver el
+   *  destino del runtime. El manager revisa el caso, no lo juega. */
+  reviewBasePath?: string;
+}) {
   const router = useRouter();
   const [navigating, setNavigating] = useState(false);
   // Prefetch del destino al hacer hover/focus: cuando el usuario hace click
@@ -88,6 +97,8 @@ export function CaseCard({ item }: { item: CaseCatalogItem }) {
 
   const handleClick = useCallback(
     async (e: React.MouseEvent<HTMLAnchorElement>) => {
+      // Modo revisión: navegación plana, sin resolver destino del runtime.
+      if (reviewBasePath) return;
       // Respetar modificadores (abrir en pestaña nueva, etc.).
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) {
         return;
@@ -99,15 +110,19 @@ export function CaseCard({ item }: { item: CaseCatalogItem }) {
       const href = await destinationRef.current!;
       router.push(href);
     },
-    [navigating, prefetchDestination, router],
+    [navigating, prefetchDestination, router, reviewBasePath],
   );
+
+  const href = reviewBasePath
+    ? `${reviewBasePath}/${encodeURIComponent(item.slug)}`
+    : `/case/${item.slug}`;
 
   return (
     <Link
-      href={`/case/${item.slug}`}
+      href={href}
       onClick={handleClick}
-      onMouseEnter={prefetchDestination}
-      onFocus={prefetchDestination}
+      onMouseEnter={reviewBasePath ? undefined : prefetchDestination}
+      onFocus={reviewBasePath ? undefined : prefetchDestination}
       aria-busy={navigating}
       className="group relative flex flex-col rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5 transition-all hover:-translate-y-0.5 hover:border-[var(--border-strong)] hover:shadow-[0_4px_16px_var(--shadow)]"
     >

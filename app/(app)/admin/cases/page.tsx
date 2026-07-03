@@ -597,7 +597,10 @@ function CaseRow({ item }: { item: AdminCaseItem }) {
     .join(" · ");
 
   return (
-    <div className={`gap-2 px-4 py-4 ${ROW_GRID}`}>
+    <Link
+      href={`/admin/cases/${encodeURIComponent(item.slug)}`}
+      className={`gap-2 px-4 py-4 transition-colors hover:bg-[var(--surface-2)] ${ROW_GRID}`}
+    >
       <div className="min-w-0">
         <div className="truncate ts-callout font-medium text-[var(--text-primary)]">
           {item.title}
@@ -648,6 +651,6 @@ function CaseRow({ item }: { item: AdminCaseItem }) {
           item.sessions_completed
         )}
       </div>
-    </div>
+    </Link>
   );
 }
