@@ -807,16 +807,24 @@ function CaseCompletedScreen({ durationMinutes, payloads }: CaseCompletedScreenP
           </div>
         )}
 
-        {/* PRÁCTICA · inline simple */}
-        <div className="mt-5">
+        {/* PRÁCTICA · enlaza al motor educativo (medir → gap → practicar) */}
+        <a
+          href="/aprender-demo"
+          className="mt-5 block rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4 transition-colors hover:bg-[var(--surface-3)]"
+        >
           <span className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
             Práctica sugerida
           </span>
-          <div className="mt-1 ts-callout text-[var(--text-primary)]">
-            {RECOMMENDATION_DEFAULTS.practice.title} ·{" "}
-            {RECOMMENDATION_DEFAULTS.practice.duration}
+          <div className="mt-1 flex items-center justify-between gap-3">
+            <span className="ts-callout text-[var(--text-primary)]">
+              {RECOMMENDATION_DEFAULTS.practice.title} ·{" "}
+              {RECOMMENDATION_DEFAULTS.practice.duration}
+            </span>
+            <span className="ts-footnote font-medium text-[var(--accent)]">
+              Ver el motor educativo →
+            </span>
           </div>
-        </div>
+        </a>
 
         {/* CTAs · el demo cierra invitando a llevar esto al equipo real */}
         <div className="mt-7 flex items-center gap-4">

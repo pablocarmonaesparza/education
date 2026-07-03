@@ -237,8 +237,17 @@ function ClosingScreen({ onRestart }: { onRestart: () => void }) {
         </p>
       </div>
 
-      <div className="mt-8 flex justify-center">
-        <AppleSlideButton onClick={onRestart}>Reiniciar la demo →</AppleSlideButton>
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <AppleSlideButton href="/auth/signup?next=%2Fonboarding%2Forg">
+          Empezar con tu equipo →
+        </AppleSlideButton>
+        <button
+          type="button"
+          onClick={onRestart}
+          className="ts-footnote text-[var(--text-secondary)] underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
+        >
+          Reiniciar la demo
+        </button>
       </div>
     </div>
   );
@@ -281,7 +290,7 @@ export function AprenderDemoClient() {
           <AppleCaseHeader
             total={slides.length}
             current={idx}
-            closeHref="/dev"
+            closeHref="/"
             onPrev={goPrev}
             prevDisabled={idx === 0}
           />
@@ -312,7 +321,7 @@ export function AprenderDemoClient() {
         <AppleCaseHeader
           total={slides.length}
           current={idx}
-          closeHref="/dev"
+          closeHref="/"
           onPrev={goPrev}
           prevDisabled={idx === 0}
           ariaLabel={`Pantalla ${idx + 1} de ${slides.length}`}

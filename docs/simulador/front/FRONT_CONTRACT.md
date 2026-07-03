@@ -105,7 +105,7 @@ Mecanismo: las rutas dev-only viven en `internalReviewRoutes` de `proxy.ts` — 
 | `/exercise-lab` | catálogo de bloques de ejercicio | dev-only |
 | `/case-demo` | **demo público del sistema**: caso jugable sin login que termina con el reporte de cierre. Reachable en prod, noindex (robots). Entrada desde la landing ("Ver el demo"). | demo-público |
 | `/case-template` | estructura de caso (referencia de diseño) | dev-only |
-| `/aprender-demo` | módulo educativo jugable (demo del segundo motor, modo formativo) | dev-only |
+| `/aprender-demo` | **demo público del motor educativo**: módulo formativo jugable sin login (responde → Revisar → feedback). Reachable en prod, noindex (robots). Enlazado desde el cierre del demo operativo. | demo-público |
 | `/motores` | consola de lectura: cómo está organizado cada motor (educativo + operativo) | dev-only (en `internalReviewRoutes` de `proxy.ts` desde 2026-07-02 — 404 en prod) |
 
 ### Duplicados / ambigüedades a resolver (decisión de Codex + producto, **NO borrado mecánico**)

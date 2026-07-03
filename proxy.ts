@@ -11,7 +11,6 @@ const protectedRoutes = [
 ]
 
 const internalReviewRoutes = [
-  '/aprender-demo',
   '/case-template',
   '/design',
   '/dev',
@@ -19,10 +18,11 @@ const internalReviewRoutes = [
   '/motores',
 ]
 
-// `/case-demo` es el DEMO PÚBLICO del sistema (caso jugable sin login que
-// termina con el reporte). Es reachable en prod (no 404) pero noindex vía
-// robots.ts para no competir con la landing en SERPs. Se salió de
-// internalReviewRoutes a propósito.
+// `/case-demo` (motor operativo) y `/aprender-demo` (motor educativo) son los
+// DEMOS PÚBLICOS del sistema: jugables sin login, terminan mostrando el valor
+// (reporte / feedback formativo). Reachable en prod (no 404) pero noindex vía
+// robots.ts para no competir con la landing. Salieron de internalReviewRoutes
+// a propósito.
 
 function matchesRoute(pathname: string, routes: string[]) {
   return routes.some((route) => pathname === route || pathname.startsWith(`${route}/`))
