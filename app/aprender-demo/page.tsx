@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-const FEATURED_BEAT = "practice_ejecucion_pedido_claro_v1";
+const FEATURED_BEAT = "module_claude5_fable_n1";
 
 export default async function AprenderDemoPage() {
   const admin = createAdminClient();

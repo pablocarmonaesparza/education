@@ -1,0 +1,203 @@
+practice_beat:
+  id: module_claude5_fable_n1
+  status: active
+  dimension: validacion
+  level: 1
+  career_key: general
+  triggered_by_gap: []
+  duration_max_seconds: 360
+  module_kind: topic
+  topic: Claude Fable 5 (la familia Claude 5)
+  principle_card:
+    headline: Con Fable 5 cambia cuánto le delegas por tramo, no si lo revisas.
+    body: >-
+      Un modelo más capaz comete menos errores, pero los que comete suenan igual de seguros que el
+      resto del texto, así que tu revisión vale más que antes, no menos.
+  practice_exercise:
+    type: formative_slides
+    blocks:
+      - ai_output_review
+      - categorize_rows
+    prompt: >-
+      Módulo de actualización: Claude Fable 5 (la familia Claude 5). Es lunes y tu empresa acaba de
+      activar Fable 5, el modelo más capaz de la familia Claude 5. Rodrigo, de ventas, ya le pidió
+      un correo completo para un prospecto y te dice: 'quedó tan bien que casi lo mando sin leer'.
+      Ese 'casi' es justo lo que vas a practicar.
+  completion_criteria: >-
+    Completar todos los ejercicios (cada fila y cada segmento con respuesta) y revisar la
+    retroalimentación de cada uno.
+  exit:
+    contributes_to_resim_score: false
+  slides:
+    - id: portada
+      kind: cover
+      title: Un modelo más capaz en tu equipo
+      body: >-
+        Es lunes y tu empresa acaba de activar Fable 5, el modelo más capaz de la familia Claude 5.
+        Rodrigo, de ventas, ya le pidió un correo completo para un prospecto y te dice: 'quedó tan
+        bien que casi lo mando sin leer'. Ese 'casi' es justo lo que vas a practicar.
+      chips:
+        - N1 · Fundamentos
+        - Actualización de IA
+        - 6 min
+    - id: contexto
+      kind: reading
+      title: "Claude Fable 5: qué cambia y qué no"
+      body: >-
+        **Qué es.** Fable 5 es el modelo más capaz de la nueva familia Claude 5, de Anthropic. Es el
+        que puedes usar hoy. (Mythos 5 existe, pero solo para organizaciones aprobadas.)
+
+
+        **Qué cambió.** Razona mejor en tareas largas. Sostiene trabajo de varios pasos seguidos sin
+        que lo lleves de la mano. Comete menos errores evidentes que los modelos anteriores.
+
+
+        **Qué puede.** Tomar encargos más grandes por tramo. Por ejemplo: analizar información,
+        redactar y proponer siguientes pasos en una sola pasada, con menos correcciones tuyas en el
+        camino.
+
+
+        **Qué no puede.** No adivina el contexto que no le diste. No garantiza que cada dato sea
+        correcto. Y ojo: sus errores son menos frecuentes, pero más difíciles de detectar, porque
+        todo suena más seguro.
+
+
+        **Por qué importa.** Un modelo mejor tienta a delegar más y revisar menos. Lo que cambia es
+        cuánto le delegas por tramo, no si lo revisas. Eso es justo lo que vas a practicar ahora.
+    - id: ejercicio_1
+      kind: exercise
+      blockId: ai_output_review
+      title: Revisa el borrador antes de que salga
+      body: >-
+        Rodrigo pegó sus notas de una reunión con un prospecto y le pidió a Fable 5 un correo de
+        seguimiento. Este es el borrador. Marca las frases que necesitan atención antes de enviar y
+        las que vale la pena guardar.
+      caseContext:
+        segments:
+          - id: s1
+            text: >-
+              En la reunión del martes nos comentaste que tu prioridad este trimestre es reducir el
+              tiempo de cierre mensual.
+            flagIfMarked: claim_no_verificado
+          - id: s2
+            text: >-
+              Según análisis del sector, las empresas de logística reducen sus costos operativos un
+              27% al automatizar sus reportes.
+            flagIfMarked: claim_no_verificado
+          - id: s3
+            text: >-
+              Como referencia, nuestro cliente Transportes Del Valle obtuvo un 18% de descuento en
+              su contrato anual.
+            flagIfMarked: dato_sensible
+          - id: s4
+            text: >-
+              Si te parece, agendamos veinte minutos esta semana para revisar los números juntos y
+              decidir si tiene sentido avanzar.
+            flagIfMarked: frase_reutilizable
+      feedback:
+        kind: segments
+        segments:
+          - id: s1
+            shouldFlag: false
+            why: >-
+              Esta frase sale de las notas que Rodrigo le dio al modelo. Cuando el dato viene de tu
+              propio material, el riesgo baja mucho. Por eso importa tanto qué contexto le das: lo
+              que tú aportas, el modelo lo usa bien.
+          - id: s2
+            shouldFlag: true
+            why: >-
+              Ese 27% no estaba en las notas de Rodrigo. Fable 5 redacta con mucha seguridad, pero
+              no garantiza que cada cifra sea real. Un número inventado que suena creíble es el
+              error más difícil de detectar con esta generación de modelos. Regla simple: si no
+              sabes de dónde salió la cifra, no sale en el correo.
+          - id: s3
+            shouldFlag: true
+            why: >-
+              El descuento de otro cliente es información confidencial, y aquí iría directo a un
+              prospecto externo. El modelo la incluyó porque estaba en el material que recibió; no
+              distingue solo qué se puede compartir fuera. Ese filtro es tuyo, siempre.
+          - id: s4
+            shouldFlag: true
+            why: >-
+              Este cierre es concreto, propone un paso pequeño y deja la decisión del lado del
+              prospecto. Cuando el modelo produce una frase así de útil, guárdala: construir tu
+              propio banco de frases probadas es parte de trabajar bien con IA.
+    - id: ejercicio_2
+      kind: exercise
+      blockId: categorize_rows
+      title: Seis pendientes, un modelo nuevo
+      body: >-
+        Valeria, de marketing, quiere apoyarse en Fable 5 para avanzar su lista del día. Para cada
+        pendiente, decide cuál es la mejor forma de encargarlo.
+      caseContext:
+        actions:
+          - value: encargar_completo
+            label: Encargar completo y revisar al final
+          - value: dar_contexto
+            label: Darle contexto antes de pedir
+          - value: verificar_fuente
+            label: Verificar cada dato contra la fuente
+        rows:
+          - id: r1
+            label: Resumir las 40 respuestas de la encuesta de clientes y proponer tres acciones
+          - id: r2
+            label: Pasar sus notas de la reunión de equipo a una minuta con acuerdos y responsables
+          - id: r3
+            label: Redactar el anuncio interno sobre el nuevo esquema de horarios
+          - id: r4
+            label: Escribir la primera propuesta para un cliente del que solo tiene el nombre
+          - id: r5
+            label: Incluir cifras de crecimiento de la industria en la presentación para dirección
+          - id: r6
+            label: Comparar los precios de tres competidores para la propuesta comercial
+      feedback:
+        kind: rows
+        rows:
+          - id: r1
+            correct: encargar_completo
+            why: >-
+              Aquí el modelo trabaja sobre datos que Valeria le entrega, y la tarea tiene varios
+              pasos seguidos: leer, resumir, proponer. Ese es justo el tipo de encargo grande que
+              Fable 5 sostiene bien en una sola pasada. Tu trabajo queda al final: revisar el
+              resultado completo.
+          - id: r2
+            correct: encargar_completo
+            why: >-
+              Las notas ya existen y son la fuente. Convertirlas en minuta es transformar
+              información que el modelo tiene enfrente, no inventarla. Encárgalo entero y revisa que
+              no falte ningún acuerdo.
+          - id: r3
+            correct: dar_contexto
+            why: >-
+              El modelo no sabe cuál es el nuevo esquema de horarios, desde cuándo aplica ni a quién
+              afecta. Si Valeria pide el anuncio sin dar eso, Fable 5 va a llenar los huecos con
+              algo plausible. No adivina lo que no le diste: primero el contexto, después el
+              encargo.
+          - id: r4
+            correct: dar_contexto
+            why: >-
+              Con solo un nombre, todo lo demás saldría inventado: el giro del cliente, sus
+              problemas, sus prioridades. Antes de pedir la propuesta conviene reunir lo que se sabe
+              del cliente y dárselo al modelo. La calidad del resultado depende de lo que entra, no
+              solo del modelo.
+          - id: r5
+            correct: verificar_fuente
+            why: >-
+              Cifras de la industria que van a dirección son el caso clásico donde un modelo seguro
+              de sí mismo puede fallar sin que se note. Fable 5 puede proponerlas, pero cada número
+              necesita una fuente que Valeria pueda abrir y comprobar antes de presentarlo.
+          - id: r6
+            correct: verificar_fuente
+            why: >-
+              Los precios de la competencia cambian y el modelo no garantiza tenerlos correctos ni
+              actualizados. Puede ayudar a estructurar la comparación, pero cada precio se confirma
+              en la fuente original. Un precio equivocado en una propuesta comercial cuesta
+              credibilidad.
+    - id: cierre
+      kind: closing
+      title: Delegar más no es revisar menos
+      body: >-
+        Practicaste dos cosas: detectar lo que un borrador seguro y bien escrito puede esconder, y
+        decidir cómo encargar cada tarea según el contexto y los datos que tiene el modelo. Mañana,
+        antes de usar un texto de Fable 5, hazte una sola pregunta: ¿de dónde salió cada dato que
+        afirma? Si la respuesta es 'del modelo', verifica antes de enviar.

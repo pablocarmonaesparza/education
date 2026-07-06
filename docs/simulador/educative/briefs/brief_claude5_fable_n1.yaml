@@ -1,0 +1,33 @@
+# Brief educativo · módulo de TEMA: la familia Claude 5 (Fable 5).
+#
+# Primer módulo generado por el motor educativo (workflow educative-module,
+# pipeline E1/E2 del spec). Pedido por Pablo 2026-07-03: "que enseñe temas,
+# por ejemplo Fable 5 o herramientas de IA" — módulos por update del mercado,
+# no práctica remedial por gap.
+#
+# Nota de precisión: el módulo enseña el CRITERIO de uso con el modelo nuevo
+# (qué delegarle, qué datos darle, qué revisar), no specs volátiles. Lo que
+# afirma de la familia Claude 5 es lo público y estable.
+
+educative_brief:
+  tool_name: "Claude Fable 5 (la familia Claude 5)"
+  tool_version: "lanzamiento 2026"
+  what_changed: >-
+    Anthropic lanzó la familia Claude 5. Fable 5 es el modelo más capaz
+    disponible para el público: razona mejor en tareas largas, sostiene
+    trabajo de agente (varios pasos seguidos sin que lo lleves de la mano) y
+    comete menos errores evidentes que los modelos anteriores. La versión
+    Mythos 5 existe solo para organizaciones aprobadas.
+  why_matters: >-
+    Un modelo más capaz tienta a delegarle más y revisarle menos. Pero el
+    criterio no caduca con cada lanzamiento: sigue necesitando un buen pedido,
+    los datos mínimos y tu verificación. Lo que cambia es CUÁNTO puedes
+    delegarle por tramo, no si lo revisas. Los errores de un modelo mejor son
+    menos frecuentes y más difíciles de detectar, porque todo suena más seguro.
+  level: N1
+  selected_blocks:
+    - ai_output_review
+    - categorize_rows
+  voice_style: "claro y cercano, español neutro LATAM, corporate sin jerga"
+  business_context: "equipos no técnicos (marketing, ventas, operaciones) que ya usan IA a diario"
+  audience_scope: broadcast
