@@ -53,6 +53,7 @@ Estados: **productiva** (user-facing viva) · **utilitaria** (operación/funnel)
 | `/team` | home empleado (hero + glance + leaderboard + casos recomendados) | EmployeeShell | ✓ | productiva |
 | `/casos` | catálogo de casos con filtros | EmployeeShell | ✓ | productiva |
 | `/case/[case_id]` | **runtime único** (config-driven, 5 secciones × 5 slides, `RuntimeExperienceV2`). Lo linkean `CaseCard`, `/dashboard`, `/staff`. `/jugar` se eliminó (F6, 2026-06-30): era la misma cosa bajo otra URL. | RuntimeShell | ✓ | productiva |
+| `/aprender` | **capacitación del empleado** (pilar de retención, decisión Pablo 2026-07-06): módulos de actualización de IA generados por el motor educativo + práctica dirigida desbloqueada por el diagnóstico. En el nav del empleado. | EmployeeShell | ✓ | productiva |
 | `/practica/[beat_slug]` | player de practice beats — runtime **educativo** productivo (carga el beat activo de `simulador.practice_beats`; mismo shape formativo que validó `/aprender-demo`) | RuntimeShell | ✓ | productiva |
 | `/reportes` | reporte personal glance (score/banda/dimensiones) | EmployeeShell | ✓ | productiva |
 | `/report/[session_id]` | reporte ejecutivo de una sesión (propio / del team) | ReportShell | ✓ | productiva |

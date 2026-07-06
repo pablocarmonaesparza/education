@@ -60,7 +60,8 @@ export default function LandingPage() {
           >
             Mide y mejora cómo tu equipo decide cuando usa IA en flujos reales.
             <br className="hidden sm:block" />
-            Diagnóstico operativo de 30 días. Reporte ejecutivo por persona.
+            Diagnóstico operativo + capacitación continua: cada update relevante
+            de IA se vuelve práctica para tu equipo, dentro de la suscripción.
           </p>
 
           <div

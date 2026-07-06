@@ -306,5 +306,22 @@ items:
     created_at: '2026-07-02T22:30:00-06:00'
     status: resolved
     resolution: Decisión de Pablo en persona. Aplicada en F2.
+  - id: pablo-008
+    topic: Capacitación continua = pilar del negocio (no post-v1)
+    question: >-
+      Registrado de decisión verbal de Pablo (2026-07-06): la capacitación continua
+      (motor educativo, módulos por update de IA) es estructura fundamental del negocio,
+      NO algo para vender después. "Vender solo exámenes sin cursos no tiene sentido."
+      La retención de la suscripción depende de que salga contenido nuevo constantemente.
+    options: []
+    recommendation: >-
+      Aplicado: /aprender en el producto (nav del empleado), catálogo con módulos de tema
+      + práctica dirigida, motor generador operable con cadencia semanal (MOTOR_RUNBOOK),
+      2 módulos generados (Fable 5, Conectores), pitch actualizado (landing + one-pager +
+      guion de demo). Revisa la decisión de scope del 2026-07-02.
+    owner: claude
+    created_at: '2026-07-06T00:00:00-06:00'
+    status: resolved
+    resolution: Decisión de Pablo en persona. Aplicada el mismo día.
 ```
 <!-- pablo:data:end -->

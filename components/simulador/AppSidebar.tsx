@@ -47,8 +47,11 @@ interface NavItem {
 
 const EMPLOYEE_PRIMARY: NavItem[] = [
   { href: "/team", label: "Inicio", icon: "home" },
-  { href: "/reportes", label: "Reportes", icon: "fileText" },
+  // Capacitación continua = pilar del negocio (decisión Pablo 2026-07-06):
+  // módulos de actualización de IA + práctica dirigida viven en /aprender.
+  { href: "/aprender", label: "Aprender", icon: "brain" },
   { href: "/casos", label: "Casos", icon: "briefcase" },
+  { href: "/reportes", label: "Reportes", icon: "fileText" },
 ];
 
 const EMPLOYEE_SECONDARY: NavItem[] = [

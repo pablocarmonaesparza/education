@@ -1,9 +1,11 @@
 # EDUCATIVE_ENGINE_SPEC — el segundo motor, desde el contenido
 
-> **ROADMAP POST-V1 — no implementar en v1.** Decisión Pablo 2026-07-02 (plan de
-> lanzamiento): el v1 sale con diagnóstico completo + práctica asignada manual
-> (practice beats vía `/practica`, unlocks del judge). El pipeline E1/E2/E3 y el
-> motor de módulos descritos aquí se retoman después del primer cliente.
+> **PILAR DEL NEGOCIO — vigente en v1.** Decisión Pablo 2026-07-06 (revisa la del
+> 2026-07-02): la capacitación continua ES la retención de la suscripción — "vender
+> solo exámenes sin cursos no tiene sentido". El pipeline E1/E2/E3 está OPERABLE
+> (workflow `educative-module` + `pack-module.mjs` + MOTOR_RUNBOOK.md; interim
+> pablo-007 con Claude como LLM). Superficie del producto: `/aprender`. Cadencia:
+> un módulo de tema por semana mínimo.
 
 Spec del motor educativo desde la óptica de contenido y pedagogía. Este doc define
 **qué es un módulo educativo, cómo se escribe y cómo enseña**, para que el contenido

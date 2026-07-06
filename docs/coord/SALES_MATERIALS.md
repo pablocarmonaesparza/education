@@ -13,13 +13,17 @@ La mayoría de los equipos ya usa IA en flujos reales. Nadie sabe quién tiene e
 para hacerlo bien: qué datos expone, cuándo escala, cuándo NO confía en el output. Itera lo
 mide con un caso de trabajo real, no con un quiz.
 
-**Cómo funciona**
-1. Cada persona entra a un caso de campo de ~15 minutos: una situación real de su rol, con
-   datos, presión y decisiones de IA.
-2. Un evaluador mide 6 dimensiones de criterio: contexto, datos, ejecución con IA,
-   validación, juicio e impacto. En banda Alto / Medio / Bajo, con evidencia citada.
-3. El manager recibe un reporte por persona + una matriz del equipo: quién puede pilotar
-   solo, quién necesita práctica, quién debe pausar el uso de IA en flujos sensibles.
+**Cómo funciona (los dos motores)**
+1. **Diagnóstico** — cada persona entra a un caso de campo de ~15 minutos: una situación
+   real de su rol, con datos, presión y decisiones de IA. Un evaluador mide 6 dimensiones
+   de criterio en banda Alto / Medio / Bajo, con evidencia citada.
+2. **Reporte** — el manager recibe un reporte por persona + una matriz del equipo: quién
+   puede pilotar solo, quién necesita práctica, quién debe pausar IA en flujos sensibles.
+3. **Capacitación continua** — la IA cambia todas las semanas; Itera convierte cada update
+   relevante (un modelo nuevo, los conectores, los agentes) en un módulo de práctica de
+   ~6 minutos para todo el equipo, dentro de la suscripción. Además, el diagnóstico
+   desbloquea práctica dirigida a los gaps de cada persona. El examen encuentra el gap;
+   el curso lo cierra; el siguiente diagnóstico lo comprueba.
 
 **Qué recibe el manager**
 - Reporte ejecutivo por persona con la recomendación operativa (pilotar / entrenar / pausar).
@@ -27,8 +31,9 @@ mide con un caso de trabajo real, no con un quiz.
 - Práctica dirigida que se desbloquea según los gaps reales de cada quien.
 
 **Qué NO es**
-- No es un curso ni un LMS. No hay videos ni certificados.
-- No mide conocimiento declarativo. Mide criterio bajo presión.
+- No es un LMS de videos y certificados. La capacitación es práctica activa corta con
+  feedback, siempre sobre decisiones reales.
+- No mide conocimiento declarativo. Mide criterio bajo presión, y lo entrena.
 
 **Precio** — por asiento, desde $109 USD/persona/mes (baja por volumen). Mensual o anual
 (2 meses gratis al año). USD vía Stripe. Cancelas cuando quieras.
@@ -54,7 +59,12 @@ jugados). Mostrar: banda por dimensión con evidencia citada, los risk events (e
 teléfono de cliente al modelo en el step 4"), y la recomendación operativa. "El manager no
 adivina. Ve exactamente dónde está el criterio y dónde el riesgo."
 
-**Minuto 11-14 · La matriz del equipo.** Abrir `/staff/matriz`. "Con 20 personas, esto te
+**Minuto 11-13 · La capacitación continua.** Abrir `/aprender-demo` (módulo "Fable 5" o
+"Conectores"). "Cada vez que sale algo relevante en IA, tu equipo lo practica aquí esa
+misma semana: 6 minutos, con feedback. Esto es lo que mantiene el criterio al día — y lo
+que hace que la suscripción se pague sola."
+
+**Minuto 13-14 · La matriz del equipo.** Abrir `/staff/matriz`. "Con 20 personas, esto te
 dice a quién le das autonomía y a quién acompañas. Es una decisión de management, con datos."
 
 **Minuto 14-15 · Cierre.** "Es por asiento, desde $109 al mes. Puedes empezar con tu equipo

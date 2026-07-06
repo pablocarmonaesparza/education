@@ -1,0 +1,188 @@
+practice_beat:
+  id: module_conectores_ia_n1
+  status: active
+  dimension: datos
+  level: 1
+  career_key: general
+  triggered_by_gap: []
+  duration_max_seconds: 360
+  module_kind: topic
+  topic: Conectores de inteligencia artificial
+  principle_card:
+    headline: Conecta poco, revisa todo lo que sale.
+    body: >-
+      Un conector le da a la IA acceso real a tus archivos, pero no le da criterio: tú decides qué
+      fuentes entran y qué texto sale sin verificar.
+  practice_exercise:
+    type: formative_slides
+    blocks:
+      - ai_output_review
+      - categorize_rows
+    prompt: >-
+      Módulo de actualización: Conectores de inteligencia artificial. Sofía coordina marketing en
+      una agencia y acaba de recibir acceso a un conector de IA para su Drive y su correo. Hoy tiene
+      dos tareas: decidir qué fuentes conecta y revisar el primer borrador que la IA escribió usando
+      esos archivos. Vas a tomar esas dos decisiones con ella.
+  completion_criteria: >-
+    Completar todos los ejercicios (cada fila y cada segmento con respuesta) y revisar la
+    retroalimentación de cada uno.
+  exit:
+    contributes_to_resim_score: false
+  slides:
+    - id: portada
+      kind: cover
+      title: El primer conector de Sofía
+      body: >-
+        Sofía coordina marketing en una agencia y acaba de recibir acceso a un conector de IA para
+        su Drive y su correo. Hoy tiene dos tareas: decidir qué fuentes conecta y revisar el primer
+        borrador que la IA escribió usando esos archivos. Vas a tomar esas dos decisiones con ella.
+      chips:
+        - N1 · Fundamentos
+        - Actualización de IA
+        - 6 min
+    - id: contexto
+      kind: reading
+      title: Conectores de inteligencia artificial
+      body: >-
+        **Qué es.** Un conector es un permiso que le das a una herramienta de IA para leer tus
+        fuentes reales: tu correo, tu Drive, tu base de clientes.
+
+
+        **Qué cambió.** Antes la IA solo veía lo que pegabas en el chat. Ahora trabaja directo sobre
+        tus documentos, sin copiar y pegar.
+
+
+        **Qué puede.** Buscar en cientos de archivos, resumir hilos de correo, cruzar datos de
+        clientes con tus reportes. Te ahorra las horas de juntar contexto a mano.
+
+
+        **Qué no puede.** No distingue qué información es confidencial. No pide permiso antes de
+        leer algo delicado. Todo lo que conectas queda a su alcance. Y puede citar el documento
+        equivocado.
+
+
+        **Por qué importa.** El valor no está en conectar todo. Está en decidir qué conectas, qué
+        revisas antes de compartir y qué dejas fuera. Ese criterio es justo lo que vas a practicar a
+        continuación.
+    - id: ejercicio_1
+      kind: exercise
+      blockId: ai_output_review
+      title: Revisa el borrador antes de enviarlo
+      body: >-
+        La IA, conectada al Drive y al correo de Sofía, redactó este resumen para un cliente. Marca
+        las frases que no enviarías tal cual y también las que guardarías para reutilizar.
+      caseContext:
+        segments:
+          - id: s1
+            text: >-
+              En el trimestre entregamos las tres campañas acordadas y compartimos los resultados
+              cada semana.
+            flagIfMarked: frase_reutilizable
+          - id: s2
+            text: >-
+              Con esta cuenta manejamos un margen interno de 34 por ciento, lo que nos da espacio
+              para mejorar la tarifa.
+            flagIfMarked: dato_sensible
+          - id: s3
+            text: >-
+              Su contrato vigente vence en diciembre de este año, por lo que conviene iniciar la
+              renovación pronto.
+            flagIfMarked: claim_no_verificado
+          - id: s4
+            text: >-
+              Quedamos atentos a sus comentarios y con gusto agendamos una llamada la próxima
+              semana.
+            flagIfMarked: claim_no_verificado
+      feedback:
+        kind: segments
+        segments:
+          - id: s1
+            shouldFlag: true
+            why: >-
+              Esta frase vale la pena guardarla. Describe trabajo que Sofía conoce de primera mano y
+              que consta en los correos enviados. Es clara, verificable y sirve de base para futuros
+              resúmenes de cuenta.
+          - id: s2
+            shouldFlag: true
+            why: >-
+              El margen es información interna de precios que la IA tomó de un archivo conectado. El
+              conector le dio acceso, pero no le dio el criterio para saber que eso nunca va en un
+              correo al cliente. Ese filtro es tuyo.
+          - id: s3
+            shouldFlag: true
+            why: >-
+              Una fecha de vencimiento tiene consecuencias si está mal. La IA pudo tomarla de una
+              propuesta vieja en la carpeta, no del contrato firmado. Regla útil: toda fecha o cifra
+              que la IA cita de tus documentos se verifica contra la fuente original antes de
+              enviarse.
+          - id: s4
+            shouldFlag: false
+            why: >-
+              Es un cierre neutral: no cita datos, no afirma nada verificable ni expone información
+              interna. Puede salir tal cual. Aprender a dejar pasar lo que está bien también es
+              parte de revisar rápido.
+    - id: ejercicio_2
+      kind: exercise
+      blockId: categorize_rows
+      title: Decide qué conectas
+      body: >-
+        Sofía va a activar el conector de la IA con las carpetas de su equipo. Clasifica cada fuente
+        según lo que harías tú hoy.
+      caseContext:
+        actions:
+          - value: conectar
+            label: Conectar
+          - value: consultar
+            label: Consultar antes
+          - value: dejar_fuera
+            label: Dejar fuera
+        rows:
+          - id: r1
+            label: "Carpeta de materiales de marca aprobados: logos, guías y plantillas"
+          - id: r2
+            label: Hoja de cálculo con sueldos y evaluaciones del equipo
+          - id: r3
+            label: Carpeta compartida con los contratos firmados de clientes
+          - id: r4
+            label: Notas de las reuniones semanales del equipo de marketing
+          - id: r5
+            label: La bandeja de correo completa, incluyendo hilos con recursos humanos
+      feedback:
+        kind: rows
+        rows:
+          - id: r1
+            correct: conectar
+            why: >-
+              Son materiales ya aprobados para circular. Riesgo bajo y ahorro real: la IA encuentra
+              la plantilla o el logo correcto en segundos, sin que nadie escarbe carpetas.
+          - id: r2
+            correct: dejar_fuera
+            why: >-
+              Sueldos y evaluaciones son datos de personas. La IA no distingue qué es confidencial
+              ni pide permiso antes de leerlo, así que la decisión de dejarlo fuera tiene que
+              tomarse antes de conectar, no después.
+          - id: r3
+            correct: consultar
+            why: >-
+              Los contratos son útiles para el trabajo, pero contienen datos de terceros y pueden
+              tener compromisos de confidencialidad. Preguntar a quien administra esa carpeta cuesta
+              un mensaje. Conectar de más puede costar la confianza de un cliente.
+          - id: r4
+            correct: conectar
+            why: >-
+              Las notas ya circulan dentro del equipo y no exponen datos delicados. Conectarlas
+              permite preguntarle a la IA qué se acordó hace tres semanas sin buscar a mano.
+          - id: r5
+            correct: dejar_fuera
+            why: >-
+              Una bandeja completa mezcla de todo: temas de recursos humanos, negociaciones, asuntos
+              personales. Todo lo que conectas queda al alcance de la IA. Si necesitas el correo,
+              empieza por algo más acotado, como una carpeta o etiqueta de proyecto.
+    - id: cierre
+      kind: closing
+      title: Lo que te llevas
+      body: >-
+        Practicaste las dos decisiones que definen el uso de conectores: qué fuentes entran y qué
+        revisas antes de que algo salga. Mañana, antes de activar un conector en tu herramienta,
+        pregúntate qué hay en esa carpeta que no le mostrarías a alguien de fuera. Y antes de enviar
+        un texto generado con tus datos, verifica cada fecha y cada cifra contra la fuente original.
