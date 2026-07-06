@@ -34,6 +34,7 @@ export default function robots(): MetadataRoute.Robots {
           '/design',
           '/exercise-lab',
           '/case-demo',
+          '/demo',
           '/case-template',
         ],
       },
