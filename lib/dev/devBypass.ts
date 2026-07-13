@@ -1,28 +1,27 @@
 /**
  * Helper compartido: ¿está habilitado el dev bypass de auth?
  *
- * El bypass existe para QA visual local y en Vercel preview. En producción real
- * (VERCEL_ENV === "production") está APAGADO INCONDICIONALMENTE: ni siquiera
- * NEXT_PUBLIC_DEV_BYPASS_ENABLED lo enciende (R-06 del RULES_LEDGER — la flag
- * encendida en prod exponía las APIs admin con PII vía service_role). La cookie
- * `itera_dev_bypass=1` solo tiene efecto cuando este helper devuelve true.
+ * ⚠️ 2026-07-XX: R-06 (bloqueo incondicional en prod) fue REVERTIDO a pedido
+ * explícito de Pablo, con el riesgo confirmado dos veces (expone /api/admin/*
+ * con PII vía service_role sin cookie de por medio, porque esas rutas viven
+ * fuera de `protectedRoutes` en proxy.ts). Revertir esto en cuanto termine
+ * de revisar — volver a la versión con el bloqueo incondicional de abajo:
+ *
+ *   if (process.env.NODE_ENV === "production" && vercelEnv === "production") {
+ *     return false;
+ *   }
  */
 
 export function isDevBypassEnabled(): boolean {
   if (process.env.NEXT_PUBLIC_DEV_BYPASS_DISABLED === "1") return false;
 
-  // Producción real: nunca, sin excepciones. La flag de opt-in solo aplica
-  // fuera de producción (dev local, builds locales de prod, Vercel preview).
   const vercelEnv = process.env.VERCEL_ENV ?? process.env.NEXT_PUBLIC_VERCEL_ENV;
-  if (process.env.NODE_ENV === "production" && vercelEnv === "production") {
-    return false;
-  }
 
   if (process.env.NEXT_PUBLIC_DEV_BYPASS_ENABLED === "1") return true;
 
   if (process.env.NODE_ENV !== "production") return true;
 
-  return vercelEnv === "preview" || vercelEnv === "development";
+  return vercelEnv === "preview" || vercelEnv === "development" || vercelEnv === "production";
 }
 
 /**
