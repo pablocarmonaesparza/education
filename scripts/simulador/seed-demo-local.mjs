@@ -121,6 +121,26 @@ const DIMENSIONS_BY_BLOCK = {
 };
 
 function parseLocalSupabaseStatus() {
+  // Override explícito para sembrar el demo en un Supabase REMOTO (prod), p.ej.
+  // para provisionar el login de demo que YC va a usar. Requiere pasar el
+  // target A CONCIENCIA por env (la service key remota vive en Vercel, no en el
+  // repo). Sin el override, se mantiene el candado localhost-only intacto.
+  //   SEED_TARGET_URL=https://<ref>.supabase.co \
+  //   SEED_TARGET_SERVICE_KEY=<service role key remota> \
+  //   node scripts/simulador/seed-demo-local.mjs
+  const overrideUrl = process.env.SEED_TARGET_URL;
+  const overrideKey = process.env.SEED_TARGET_SERVICE_KEY;
+  if (overrideUrl && overrideKey) {
+    if (!/^https?:\/\//u.test(overrideUrl)) {
+      throw new Error(`SEED_TARGET_URL inválida: ${overrideUrl}`);
+    }
+    const remote = !/^https?:\/\/(127\.0\.0\.1|localhost):/u.test(overrideUrl);
+    console.warn(
+      `[seed-demo] usando target por OVERRIDE${remote ? " (REMOTO — sembrando datos demo en prod a conciencia)" : ""}: ${overrideUrl}`,
+    );
+    return { url: overrideUrl, serviceKey: overrideKey, studioUrl: null };
+  }
+
   const out = execFileSync("supabase", ["status", "-o", "json"], {
     cwd: ROOT,
     encoding: "utf8",

@@ -991,3 +991,24 @@ npm run simulador:seed-practice-beats -- --apply   # 21 practice beats (10 de te
 npm run simulador:seed-cases -- --apply            # casos operativos
 ```
 Yo (Claude) NO tengo la llave remota en .env.local (solo la local). Seed remoto = tu carril.
+
+## in-codex-provisionar-login-demo-yc-prod (2026-07-23, Claude — pedido de Pablo)
+
+**Qué:** Pablo quiere un usuario/password para que YC entre al producto LOGUEADO en itera.la
+(dashboard del manager con reportes, catálogo de 12 casos, /aprender con 10 módulos).
+
+**Estado:** `scripts/simulador/seed-demo-local.mjs` ya crea todo (org + manager
+`manager.demo@itera.local` / password `IteraDemo2026!` + empleados + sesiones + reportes por
+banda), PERO tiene guard localhost-only (línea ~140: rechaza si la URL no es 127.0.0.1/localhost).
+
+**Para provisionarlo en PROD (tu carril — datos/seed/auth):**
+1. Sembrar primero el contenido remoto (ver in-codex-seed-prod-contenido-10x10): 21 practice
+   beats + los casos, para que el dashboard y /aprender no salgan vacíos.
+2. Hacer una variante prod-safe del seeder (o correrlo con el guard relajado a conciencia)
+   contra Supabase remoto (ref mteicafdzilhxkawyvxw) con la service key de Vercel. Idealmente:
+   - email más presentable para YC (ej. `yc.reviewer@itera.la`) y un password nuevo.
+   - marcar el org demo para poder purgarlo después con purge-demo-data.mjs.
+3. Verificar el login en itera.la sin dev-bypass (que está apagado en prod): entra, ve el
+   dashboard poblado, el catálogo y /aprender.
+**Nota:** el dev-bypass ya NO es puerta trasera en prod (R-06 restaurado), así que el login
+tiene que ser un usuario auth real. Claude no tiene la service key remota, por eso es tu carril.
