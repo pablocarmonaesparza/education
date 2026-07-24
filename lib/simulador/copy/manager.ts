@@ -1,4 +1,21 @@
 /**
+ * ⚠️ CÓDIGO MUERTO — NO TRADUCIDO AL INGLÉS (pivote EEUU, 2026-07-16).
+ *
+ * `managerCopy` tiene CERO importadores en el repo (verificado por grep sobre
+ * import/require/import() en *.ts, *.tsx, *.js, *.mjs). La superficie viva del
+ * manager (/staff, /staff/equipo, /staff/matriz, /staff/recomendaciones,
+ * /staff/reportes) renderiza strings inline en
+ * app/(app)/staff/StaffDashboard.tsx — ésas SÍ están en inglés.
+ *
+ * Se deja en español a propósito: traducir código muerto crea la ilusión de
+ * que es la fuente canónica y multiplica el trabajo de mantenimiento. Antes de
+ * revivirlo hay que reconciliarlo con el glosario
+ * (docs/simulador/front/copy/00_EN_GLOSSARY.md) — este archivo usa vocabulario
+ * ya obsoleto: "criterio" (→ judgment), "banda" (→ band), "empleado"
+ * (→ participant). Decisión pendiente de Pablo: revivir o borrar.
+ *
+ * ---
+ *
  * Copy versionado del manager dashboard.
  *
  * Cubre la superficie /(app)/dashboard cuando viewer_role ∈

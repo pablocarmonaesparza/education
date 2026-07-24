@@ -35,23 +35,23 @@ interface OutputOption {
 const DEFAULT_OPTIONS: OutputOption[] = [
   {
     id: "A",
-    title: "Respuesta A",
-    body: "Lanza la campaña hoy. El cliente necesita ver acción rápida y la IA ya preparó los mensajes.",
+    title: "Response A",
+    body: "Launch the campaign today. The customer needs to see fast action and AI already drafted the messages.",
   },
   {
     id: "B",
-    title: "Respuesta B",
-    body: "Usa el borrador como material interno. Quita datos personales, valida métricas y pide una revisión corta antes de enviar.",
+    title: "Response B",
+    body: "Use the draft as internal material. Strip personal data, verify the metrics, and ask for a short review before sending.",
   },
   {
     id: "C",
-    title: "Respuesta C",
-    body: "Pide al cliente más contexto antes de generar nada: qué segmento exacto, qué métrica le preocupa, qué probó antes.",
+    title: "Response C",
+    body: "Ask the customer for more context before generating anything: which exact segment, which metric worries them, what they already tried.",
   },
   {
     id: "D",
-    title: "Respuesta D",
-    body: "Combina los dos mejores ángulos del borrador en un solo mensaje y reduce a un solo llamado a la acción.",
+    title: "Response D",
+    body: "Combine the two best angles from the draft into one message and cut it to a single call to action.",
   },
 ];
 
@@ -126,9 +126,9 @@ export function AIComparison({
             }`}
           >
             <span
-              className={`grid h-9 w-9 flex-shrink-0 place-items-center rounded-full ts-callout font-semibold transition-colors ${
+              className={`grid h-9 w-9 flex-shrink-0 place-items-center rounded-full ts-callout font-bold transition-colors ${
                 isSelected
-                  ? "bg-[var(--accent)] text-white"
+                  ? "accent-bg text-white"
                   : "bg-[var(--surface-2)] text-[var(--text-secondary)]"
               }`}
               aria-hidden

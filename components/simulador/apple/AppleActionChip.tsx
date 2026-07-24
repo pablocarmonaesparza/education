@@ -41,8 +41,9 @@ export function AppleActionChip({
 }
 
 function chipClass(isSelected: boolean, value: string, style: AppleChipStyle): string {
+  // v2: label de chip en bold (jerarquía con peso)
   const base =
-    "min-h-9 rounded-[var(--radius-md)] border px-3 py-1.5 ts-caption-1 font-medium transition-colors";
+    "min-h-9 rounded-[var(--radius-md)] border px-3 py-1.5 ts-caption-1 font-bold transition-colors";
   if (!isSelected) {
     return `${base} border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]`;
   }
@@ -56,5 +57,7 @@ function chipClass(isSelected: boolean, value: string, style: AppleChipStyle): s
     if (value === "escalar") return `${base} border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]`;
     if (value === "normal") return `${base} border-[var(--band-a-text)] bg-[var(--band-a-bg)] text-[var(--band-a-text)]`;
   }
-  return `${base} border-[var(--accent)] bg-[var(--accent-strong)] text-white`;
+  // v2: seleccionado neutral con accent-border + accent-soft (antes acento
+  // sólido — desviación del patrón canónico de selección)
+  return `${base} border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]`;
 }

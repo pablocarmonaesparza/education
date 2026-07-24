@@ -21,7 +21,7 @@ export function AppleSlider({ classNames, ...props }: SliderProps) {
         track: cn("border-[var(--border)] bg-[var(--surface-2)]", classNames?.track),
         filler: cn("bg-[var(--accent)]", classNames?.filler),
         thumb: cn(
-          "border-2 border-[var(--accent)] bg-[var(--surface)] shadow-[var(--shadow-sm)] after:hidden",
+          "border-2 border-[var(--accent)] bg-[var(--surface)] shadow-sm after:hidden",
           classNames?.thumb,
         ),
         step: cn(

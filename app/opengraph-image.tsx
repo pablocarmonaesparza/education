@@ -11,7 +11,8 @@ import { ImageResponse } from 'next/og';
  * fonts externos (peor cold-start), se usa `system sans-serif` que mantiene
  * un look limpio.
  *
- * Colores tomados de `CLAUDE.md` (primary `#1472FF`, text main `#4b4b4b`).
+ * Colores del rediseño v2 (Claude Design, 2026-07-16): accent #003AFF,
+ * tinta ink #171d33. Antes: #1472FF/#4b4b4b (git history).
  */
 
 export const runtime = 'edge';
@@ -38,7 +39,7 @@ export default async function Image() {
           style={{
             display: 'flex',
             fontSize: 44,
-            color: '#1472FF',
+            color: '#003AFF',
             fontWeight: 800,
             letterSpacing: '-1px',
           }}
@@ -64,7 +65,7 @@ export default async function Image() {
           style={{
             display: 'flex',
             fontSize: 30,
-            color: '#4b4b4b',
+            color: '#171d33',
             marginTop: 36,
             fontWeight: 500,
           }}
@@ -77,7 +78,7 @@ export default async function Image() {
             display: 'flex',
             height: '8px',
             width: '120px',
-            background: '#1472FF',
+            background: '#003AFF',
             marginTop: 48,
             borderRadius: '999px',
           }}

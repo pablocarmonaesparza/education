@@ -3,7 +3,12 @@ import {
   sendReportReadyEmployeeEmail,
   sendReportReadyManagerEmail,
 } from "@/lib/email/simulador";
-import { normalizeReportDimensions } from "@/lib/simulador/reports/model";
+import {
+  ACTION_DISPLAY,
+  BAND_DISPLAY,
+  isRecommendationAction,
+  normalizeReportDimensions,
+} from "@/lib/simulador/reports/model";
 
 interface ReportPayload {
   dimensions?: Array<{
@@ -44,29 +49,31 @@ function asPayload(value: unknown): ReportPayload {
   return value as ReportPayload;
 }
 
+// Devuelve el label ya traducido (High/Medium/Low): el email nunca imprime el
+// valor de BD crudo ("A"/"M"/"B").
 function overallBand(payload: ReportPayload): string {
   if (!payload.dimensions?.some((dimension) => dimension.band)) {
-    return "sin banda";
+    return "not scored";
   }
   const bands = normalizeReportDimensions(payload).map(
     (dimension) => dimension.band,
   );
-  if (bands.includes("B")) return "B";
-  if (bands.includes("M")) return "M";
-  if (bands.includes("A")) return "A";
-  return "sin banda";
+  if (bands.includes("B")) return BAND_DISPLAY.B;
+  if (bands.includes("M")) return BAND_DISPLAY.M;
+  if (bands.includes("A")) return BAND_DISPLAY.A;
+  return "not scored";
 }
 
 function formatNextActions(actions: string[] | undefined): string {
   const usable = (actions ?? []).filter(Boolean).slice(0, 3);
   if (usable.length === 0) {
-    return "Revisar el reporte completo y decidir el siguiente caso del sprint.";
+    return "Review the full report and decide the next case in the sprint.";
   }
   return usable.map((action, index) => `${index + 1}. ${action}`).join("\n");
 }
 
 function displayName(user: Pick<SimUser, "email" | "full_name">): string {
-  return user.full_name ?? user.email?.split("@")[0] ?? "participante";
+  return user.full_name ?? user.email?.split("@")[0] ?? "participant";
 }
 
 async function getUsersByIds(ids: string[]): Promise<SimUser[]> {
@@ -139,8 +146,14 @@ export async function sendReportReadyEmailsForSession({
     const reportUrl = `${appUrl}/report/${simulationSessionId}`;
     const dashboardUrl = `${appUrl}/dashboard`;
     const band = overallBand(payload);
+    // `action` viene del judge como valor de BD: se traduce en la capa de
+    // display antes de entrar al template. El default sigue siendo 'entrenar'.
     const recommendationAction =
-      payload.recommendation?.action ?? "entrenar";
+      ACTION_DISPLAY[
+        isRecommendationAction(payload.recommendation?.action)
+          ? payload.recommendation.action
+          : "entrenar"
+      ];
     const riskEvents = payload.risk_events ?? [];
     const riskHighCount = riskEvents.filter(
       (event) => event.severity === "high",
@@ -148,7 +161,7 @@ export async function sendReportReadyEmailsForSession({
     const nextActionsPreview = formatNextActions(
       payload.recommendation?.next_week_actions,
     );
-    const caseTitle = template?.title ?? "diagnóstico de criterio operativo";
+    const caseTitle = template?.title ?? "AI judgment assessment";
     const durationMin = template?.duration_estimate_min ?? 20;
 
     if (employee?.email) {
@@ -202,11 +215,11 @@ export async function sendReportReadyEmailsForSession({
 
     managerIds.delete(session.user_id);
     const managers = await getUsersByIds([...managerIds]);
-    const employeeName = employee ? displayName(employee) : "participante";
+    const employeeName = employee ? displayName(employee) : "participant";
     const pendingReviewDisclaimerIfHigh =
       riskHighCount > 0
-        ? "Este reporte incluye eventos de alta severidad y fue publicado después de revisión humana de Itera."
-        : "No se detectaron eventos de alta severidad.";
+        ? "This report includes high severity events and was published after human review by Itera."
+        : "No high severity events were detected.";
 
     for (const manager of managers) {
       if (!manager.email) continue;

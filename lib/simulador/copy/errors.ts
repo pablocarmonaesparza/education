@@ -1,4 +1,10 @@
 /**
+ * MUERTO: cero importadores al 2026-07-15 (verificado). El copy de errores que sí
+ * se renderiza vive hardcodeado en los .tsx y en los route handlers. NO traducido
+ * en el pivot a EEUU — sigue en español porque nadie lo muestra. Borrar o cablear;
+ * mientras tanto, no confiar en este archivo como fuente de nada.
+ * (Mismo estado que auth.ts, billing.ts, landing.ts, manager.ts y sales.ts.)
+ *
  * Copy versionado de error states cross-surface.
  *
  * Cubre los error states que aparecen en múltiples surfaces:

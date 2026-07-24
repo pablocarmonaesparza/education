@@ -25,7 +25,7 @@ export async function PATCH(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   const body = (await req.json().catch(() => null)) as {
@@ -41,7 +41,7 @@ export async function PATCH(
     .maybeSingle();
   if (!simUser) {
     return NextResponse.json(
-      { error: "Bridge user no inicializado." },
+      { error: "Bridge user not initialized." },
       { status: 500 },
     );
   }
@@ -53,10 +53,10 @@ export async function PATCH(
     .eq("id", attempt_id)
     .maybeSingle();
   if (!attempt) {
-    return NextResponse.json({ error: "Intento no encontrado." }, { status: 404 });
+    return NextResponse.json({ error: "Attempt not found." }, { status: 404 });
   }
   if (attempt.user_id !== simUser.id) {
-    return NextResponse.json({ error: "No es tu intento." }, { status: 403 });
+    return NextResponse.json({ error: "This is not your attempt." }, { status: 403 });
   }
 
   const now = new Date().toISOString();
@@ -73,7 +73,7 @@ export async function PATCH(
   if (updErr) {
     console.error("[practica/attempts] complete failed", updErr);
     return NextResponse.json(
-      { error: "No se pudo completar el intento." },
+      { error: "Could not complete the attempt." },
       { status: 500 },
     );
   }

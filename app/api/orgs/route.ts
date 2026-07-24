@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   const admin = createAdminClient();
@@ -40,13 +40,13 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Body inválido." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
   const name = body.name?.trim();
   if (!name || name.length < 2) {
     return NextResponse.json(
-      { error: "El nombre de la organización debe tener al menos 2 caracteres." },
+      { error: "The organization name must be at least 2 characters." },
       { status: 400 },
     );
   }
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error:
-          "No se pudo sincronizar tu cuenta. Reintenta iniciar sesión.",
+          "We could not sync your account. Try signing in again.",
       },
       { status: 500 },
     );
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error:
-          "Bridge user no inicializado. Re-loguéate para sincronizar tu cuenta.",
+          "Bridge user not initialized. Sign in again to sync your account.",
       },
       { status: 500 },
     );
@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
   if (orgError || !org) {
     console.error("[api/orgs] organizations.insert failed:", orgError);
     return NextResponse.json(
-      { error: "No se pudo crear la organización." },
+      { error: "Could not create the organization." },
       { status: 500 },
     );
   }
@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
       .delete()
       .eq("id", org.id);
     return NextResponse.json(
-      { error: "No se pudo asignar admin a la organización." },
+      { error: "Could not assign an admin to the organization." },
       { status: 500 },
     );
   }

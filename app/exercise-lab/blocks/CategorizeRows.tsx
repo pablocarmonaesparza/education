@@ -44,17 +44,19 @@ export interface CategorizeActionOption {
 }
 
 const DEFAULT_ROWS: CategorizeRowSpec[] = [
-  { id: "contact", label: "Nombre del contacto", example: "Mariana Robles", hint: "Información personal directa." },
-  { id: "company", label: "Empresa", example: "Aurora Retail", hint: "Contexto de cuenta." },
-  { id: "email", label: "Correo", example: "mariana@aurora.example", hint: "Dato personal y canal sensible." },
-  { id: "tickets", label: "Tickets recientes", example: "12 conversaciones", hint: "Posible información personal embebida." },
+  { id: "contact", label: "Contact name", example: "Dana Whitfield", hint: "Direct personal information." },
+  { id: "company", label: "Company", example: "Aurora Retail", hint: "Account context." },
+  { id: "email", label: "Email", example: "dana@aurora.example", hint: "Personal data and a sensitive channel." },
+  { id: "tickets", label: "Recent tickets", example: "12 conversations", hint: "Possible personal information embedded." },
 ];
 
+// `value` es el identificador que se persiste en el payload y del que
+// AppleActionChip deriva su color · sólo `label` se traduce.
 const DEFAULT_ACTIONS: CategorizeActionOption[] = [
-  { value: "usar", label: "Usar" },
-  { value: "anonimizar", label: "Anonimizar" },
-  { value: "agregar", label: "Agregar" },
-  { value: "excluir", label: "Excluir" },
+  { value: "usar", label: "Use" },
+  { value: "anonimizar", label: "Anonymize" },
+  { value: "agregar", label: "Aggregate" },
+  { value: "excluir", label: "Exclude" },
 ];
 
 interface Props extends ExerciseRendererProps<CategorizeRowsPayload> {
@@ -147,7 +149,8 @@ export function CategorizeRows({
             }`}
           >
             <div className="min-w-0 flex-1">
-              <div className="ts-body font-medium text-[var(--text-primary)]">
+              {/* v2: label de fila en bold */}
+              <div className="ts-body font-bold text-[var(--text-primary)]">
                 {row.label}
               </div>
               {/* `row.example` y `row.hint` son metadata interna del judge ·
@@ -159,7 +162,7 @@ export function CategorizeRows({
             <div
               className="flex flex-wrap gap-1.5"
               role="group"
-              aria-label={`Acción para ${row.label}`}
+              aria-label={`Action for ${row.label}`}
             >
               {actions.map((a) => (
                 <AppleActionChip

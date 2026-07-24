@@ -1,0 +1,200 @@
+practice_beat:
+  id: module_gpt56_structured_outputs_n1
+  status: active
+  dimension: validacion
+  level: 1
+  career_key: general
+  triggered_by_gap: []
+  duration_max_seconds: 360
+  module_kind: topic
+  topic: GPT-5.6 structured outputs
+  principle_card:
+    headline: Structured output guarantees the shape, not the truth
+    body: >-
+      A clean table reads as computed even though every cell is generated, so the tighter the
+      format, the easier it is for a wrong value to travel somewhere that matters.
+  practice_exercise:
+    type: formative_slides
+    blocks:
+      - ai_output_review
+      - categorize_rows
+    prompt: >-
+      AI update practice: GPT-5.6 structured outputs. It is Friday and the ops report is due at 2
+      pm. Alex just watched GPT-5.6 turn a messy ticket export into a clean five-column table on the
+      first try, and his manager already asked him to paste it into the leadership dashboard since
+      it is ready. Whether it is ready is what you are about to practice.
+  completion_criteria: >-
+    Complete every exercise (each row and each segment answered) and review the feedback for each
+    one.
+  exit:
+    contributes_to_resim_score: false
+  slides:
+    - id: portada
+      kind: cover
+      title: The table looks perfect
+      body: >-
+        It is Friday and the ops report is due at 2 pm. Alex just watched GPT-5.6 turn a messy
+        ticket export into a clean five-column table on the first try, and his manager already asked
+        him to paste it into the leadership dashboard since it is ready. Whether it is ready is what
+        you are about to practice.
+      chips:
+        - N1 · Fundamentals
+        - AI update
+        - 6 min
+    - id: contexto
+      kind: reading
+      title: "GPT-5.6 structured outputs: what changes and what does not"
+      body: >-
+        **What it is.** GPT-5.6 can return its answer in a structure you define: the exact columns,
+        fields, and categories, the same every time.
+
+
+        **What changed.** Before, you asked for a summary and got prose to reshape by hand. Now you
+        can ask for vendor, amount, due date, and status, and get exactly that, ready to paste.
+
+
+        **What it can do.** Turn 80 support tickets into a tagged table. Pull totals, dates, and
+        owners out of invoices into a spreadsheet. Fill the same weekly report template every
+        Friday.
+
+
+        **What it cannot do.** It guarantees the shape, not the truth. If a field's data is not in
+        the source, the model fills the cell with something plausible instead of leaving it blank,
+        unless you say blanks are allowed.
+
+
+        **Why it matters.** A clean table looks computed, so people stop checking. That is exactly
+        what you are about to practice.
+    - id: ejercicio_1
+      kind: exercise
+      blockId: ai_output_review
+      title: Check the table before it reaches the dashboard
+      body: >-
+        Alex asked GPT-5.6 to extract vendor, amount, due date, and status from 30 invoice files
+        into one table. These are four lines from what came back, with the model's notes. Mark the
+        ones that need attention before the table ships, and the ones worth keeping.
+      caseContext:
+        segments:
+          - id: s1
+            text: >-
+              Row 4: Harbor Supply, $2,310.00 USD, due Jul 30, status unpaid, taken from the totals
+              box of the invoice file.
+            flagIfMarked: claim_no_verificado
+          - id: s2
+            text: >-
+              Row 9: Meridian Cleaning's invoice says due approximately mid-August, so I
+              standardized it to Aug 15 to keep the column consistent.
+            flagIfMarked: claim_no_verificado
+          - id: s3
+            text: >-
+              I added a column with each vendor's bank account number from the payment section, in
+              case finance needs it later.
+            flagIfMarked: dato_sensible
+          - id: s4
+            text: >-
+              Two invoices were scanned images I could not read reliably, so I left those rows blank
+              and listed the file names at the bottom for manual entry.
+            flagIfMarked: frase_reutilizable
+      feedback:
+        kind: segments
+        segments:
+          - id: s1
+            shouldFlag: false
+            why: >-
+              The values trace to a specific place in the source file and the model says where it
+              got them. Extracting data that exists is the job structured outputs do well.
+              Spot-check a sample of rows rather than re-reading all 30.
+          - id: s2
+            shouldFlag: true
+            why: >-
+              The source said approximately; the table says Aug 15. The model invented precision to
+              satisfy the format, and a due date is something someone will pay against. Ambiguity
+              should survive into the output as a blank or a question, never as a tidy value.
+          - id: s3
+            shouldFlag: true
+            why: >-
+              Nobody asked for bank account numbers. Structure invites over-collection: once a
+              sensitive value has its own column, the spreadsheet gets pasted, shared, and filtered
+              like any other. A report carries the fields it needs and nothing else.
+          - id: s4
+            shouldFlag: true
+            why: >-
+              This is the behavior you want: when the source is unreadable, blanks plus a list for
+              manual entry beats plausible guesses. Telling the model that blanks are allowed is the
+              single best defense against invented cells. Keep that instruction in every extraction
+              prompt.
+    - id: ejercicio_2
+      kind: exercise
+      blockId: categorize_rows
+      title: "Design the template: who fills each column"
+      body: >-
+        Alex is turning this into a recurring Friday report that GPT-5.6 fills from the ticket
+        export and the finance sheet. For each proposed column, decide how it gets filled.
+      caseContext:
+        actions:
+          - value: model_fills
+            label: Let the model fill it straight from the source files
+          - value: blanks_allowed
+            label: Model fills it, with 'leave it blank if it is not in the source' as the rule
+          - value: outside_the_model
+            label: Compute it in the spreadsheet or write it yourself
+        rows:
+          - id: r1
+            label: Ticket number and the date each ticket was opened
+          - id: r2
+            label: A one-line summary of each ticket
+          - id: r3
+            label: The root cause behind each ticket
+          - id: r4
+            label: The refund amount promised to the customer in the thread
+          - id: r5
+            label: The week-over-week percent change in ticket volume
+          - id: r6
+            label: The action items the team commits to for next week
+      feedback:
+        kind: rows
+        rows:
+          - id: r1
+            correct: model_fills
+            why: >-
+              Both values sit in the export, unambiguous, in one place. Direct extraction of data
+              that exists is exactly what structured outputs are for. Verify by sampling, not by
+              re-reading everything.
+          - id: r2
+            correct: model_fills
+            why: >-
+              Summarizing text that is in front of it is the model's home turf, and a weak summary
+              is annoying, not dangerous. Fill it straight from the ticket and skim a few each week.
+          - id: r3
+            correct: blanks_allowed
+            why: >-
+              Plenty of tickets never state a root cause. Without the blanks rule, the model will
+              produce a plausible cause for every row, and the team will chase causes nobody
+              reported. A blank cell that says not stated is information; a guessed cause is noise
+              dressed as data.
+          - id: r4
+            correct: blanks_allowed
+            why: >-
+              Most threads promise nothing, and a promised dollar amount is exactly the kind of
+              value that must never be invented. Require the blank rule, and for any row that does
+              show an amount, open the thread and confirm it before the number travels.
+          - id: r5
+            correct: outside_the_model
+            why: >-
+              This is arithmetic across two datasets, and the spreadsheet computes it exactly. Model
+              math over many rows is where confident wrong numbers live. Let the model fill the raw
+              counts if you want; the percent belongs to a formula.
+          - id: r6
+            correct: outside_the_model
+            why: >-
+              Action items are a commitment, not data sitting in a source. The model can propose
+              candidates, but a column that reads as the team decided has to come from the team.
+              Decisions get written by the people who own them.
+    - id: cierre
+      kind: closing
+      title: A tidy table is a draft, not a fact
+      body: >-
+        You practiced spotting invented precision inside clean structure, and deciding which fields
+        the model fills, which need a blanks-allowed rule, and which stay human. Next report you
+        build: add 'leave it blank if it is not in the source' to the instructions, and check any
+        cell that is a total, a date, or a promise before it reaches a dashboard.

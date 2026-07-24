@@ -57,7 +57,7 @@ export async function GET(req: NextRequest) {
   if (error) {
     console.error("[admin/audit-log] list failed", error);
     return NextResponse.json(
-      { error: "Error leyendo audit log." },
+      { error: "Could not read the audit log." },
       { status: 500 },
     );
   }

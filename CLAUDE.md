@@ -65,4 +65,17 @@ Un caso o practice beat no entra a BD si no pasa:
 - permite risk events sin revelar spoilers
 - tiene variante resim cuando aplica
 - conecta con práctica remedial
-- conserva español neutro LATAM y tono corporate claro
+- está en **inglés de negocios de EEUU** y sigue el glosario canónico
+  `docs/simulador/front/copy/00_EN_GLOSSARY.md` (decisión Pablo 2026-07-15: pivot de
+  mercado MX/CO → EEUU). El glosario manda sobre vocabulario, voz, y qué se elimina en
+  vez de traducirse. La regla anterior era "español neutro LATAM" — vive en git history
+  por si Pablo reabre LATAM.
+- **relocalizado, no traducido**: moneda USD explícita (el símbolo `$` pelado cambia la
+  respuesta correcta de la rúbrica: $3,400 MXN ≈ $190 USD no escala, $3,400 USD sí),
+  cast y direcciones US, y una operación de negocio que un ops lead de EEUU reconozca.
+
+## Idioma
+
+El producto es **inglés de EEUU**. Los comentarios de código y los docs de `docs/coord/`
+siguen en español (son para Pablo y para mí, no para el cliente). No hay capa i18n:
+el inglés está hardcodeado donde vive el copy — igual que estaba el español.

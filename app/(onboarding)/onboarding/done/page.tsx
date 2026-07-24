@@ -1,12 +1,15 @@
 /**
- * /onboarding/done — paso 6 del flow buyer B2B.
+ * /onboarding/done — paso 5 del flow buyer B2B (5 pasos).
  *
  * Landing post-Stripe Checkout. Server component que verifica el
  * session_id contra Stripe y resuelve uno de 3 estados:
  *
- *   1. OK confirmado    → "Sprint activado" + next_steps + dashboard
+ *   1. OK confirmado    → "assessment listo" + next_steps + dashboard
  *   2. Payment pending  → spinner + "estamos procesando"
  *   3. Falló/canceló    → ícono error + "reintenta o escríbenos"
+ *
+ * Copy honesto (W2-A): sin "Sprint activated" ni promesas de research —
+ * solo lo que pasa de verdad (emails con el primer caso + reportes).
  *
  * Layout estilo Apple/HIG: 1 columna centrada, icon circle 64px con
  * color del estado, H1 display-tight sin punto, CTAs con --radius-md.
@@ -68,9 +71,9 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
     <>
       <OnboardingNav
         progress={{
-          total: 6,
-          current: 5,
-          ariaLabel: "Paso 6 de 6",
+          total: 5,
+          current: 4,
+          ariaLabel: "Step 5 of 5",
         }}
       />
       {isSynced && <ClearOnboardingStorage />}
@@ -94,7 +97,7 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
               </svg>
             </div>
             <h1 className="display display-tight mt-7 text-[var(--text-primary)] ts-title-1 sm:ts-display">
-              Sprint activado
+              {copy.headline}
             </h1>
             <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.55]">
               {copy.body}
@@ -150,7 +153,7 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
             {sessionId && (
               <div className="mt-8">
                 <Cta href={`/onboarding/done?session_id=${sessionId}`}>
-                  Volver a verificar
+                  Check again
                 </Cta>
               </div>
             )}
@@ -179,15 +182,15 @@ export default async function OnboardingDonePage({ searchParams }: DonePageProps
               </svg>
             </div>
             <h1 className="display display-tight mt-7 text-[var(--text-primary)] ts-title-1 sm:ts-display">
-              Pago no procesado
+              Payment not processed
             </h1>
             <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.55]">
-              Stripe canceló o rechazó el cobro. No se generó ningún cargo. Puedes reintentar con otro método.
+              Stripe canceled or declined the charge. Nothing was billed. You can try again with another method.
             </p>
             <div className="mt-8 flex flex-col gap-3">
               <Cta href="/onboarding/billing">{returnCopy.failed_retry_cta}</Cta>
-              <Cta href="mailto:ventas@itera.la" variant="secondary">
-                Escribir a ventas
+              <Cta href="mailto:hello@itera.la" variant="secondary">
+                Write to sales
               </Cta>
             </div>
           </div>

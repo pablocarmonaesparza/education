@@ -20,7 +20,7 @@ export function AppleModal({ classNames, ...props }: ModalProps) {
       classNames={{
         backdrop: cn("bg-black/35", classNames?.backdrop),
         base: cn(
-          "rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] text-[var(--text-primary)] shadow-[var(--shadow-xl)]",
+          "rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] text-[var(--text-primary)] shadow-float",
           classNames?.base,
         ),
         header: cn("px-6 pt-6 pb-3", classNames?.header),

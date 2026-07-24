@@ -66,7 +66,7 @@ export async function resolveCaseDestination(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { status: 401, error: "No autenticado." };
+    return { status: 401, error: "Not signed in." };
   }
 
   const admin = createAdminClient();
@@ -78,7 +78,7 @@ export async function resolveCaseDestination(
     .maybeSingle();
 
   if (!simUser) {
-    return { status: 500, error: "Bridge user no inicializado." };
+    return { status: 500, error: "Bridge user not initialized." };
   }
 
   const { data: viewerOrgs } = await admin

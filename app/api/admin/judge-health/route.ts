@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
   if (runsError || queueError) {
     console.error("[admin/judge-health] list failed", { runsError, queueError });
     return NextResponse.json(
-      { error: "Error leyendo health del judge." },
+      { error: "Could not read judge health." },
       { status: 500 },
     );
   }

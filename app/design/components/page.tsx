@@ -24,6 +24,7 @@ import {
   AppleActionChip,
   AppleAttachmentCard,
   AppleBadge,
+  AppleBrowserFrame,
   AppleButton,
   AppleButtonLink,
   AppleCard,
@@ -32,14 +33,17 @@ import {
   AppleCardHeader,
   AppleCaseHeader,
   AppleCheckbox,
+  AppleCheckRow,
   AppleDataTable,
   AppleDivider,
   AppleEmptyState,
   AppleErrorState,
+  AppleEyebrowChip,
   AppleIcon,
   AppleInput,
   AppleKpiCard,
   AppleLink,
+  AppleLogoMark,
   AppleMessageCard,
   AppleModal,
   AppleModalBody,
@@ -53,6 +57,7 @@ import {
   AppleSkeleton,
   AppleSlideButton,
   AppleSortableList,
+  AppleStatTile,
   AppleStepBar,
   AppleStepDots,
   AppleSwitch,
@@ -73,6 +78,7 @@ import {
 } from "@/components/simulador/apple";
 import { exerciseBlocks } from "@/lib/simulador/exercise-blocks.generated";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
+import { InviteTeamModal } from "@/components/simulador/InviteTeamModal";
 import { DesignHubNav } from "../DesignHubNav";
 import { BlockBoundary } from "./BlockBoundary";
 
@@ -407,6 +413,24 @@ function ModalDemo() {
   );
 }
 
+function InviteTeamModalDemo() {
+  const [open, setOpen] = useState(false);
+  // orgId de demo: el POST fallará con 401/403 aquí (galería sin auth) — lo
+  // que se revisa en el espejo es el flujo visual, no el envío real.
+  return (
+    <Spec label="flujo completo (trigger)">
+      <AppleButton tone="secondary" onPress={() => setOpen(true)}>
+        Invite people
+      </AppleButton>
+      <InviteTeamModal
+        isOpen={open}
+        onOpenChange={setOpen}
+        orgId="00000000-0000-0000-0000-000000000000"
+      />
+    </Spec>
+  );
+}
+
 function ActionChipDemo() {
   const [neutral, setNeutral] = useState("resumir");
   const [permission, setPermission] = useState("revisar");
@@ -670,13 +694,125 @@ export default function ComponentsGalleryPage() {
           </Spec>
         </Section>
 
+        {/* ---- Marca / marketing (promovidos de la landing v2) ---- */}
+        <Section
+          name="Logo mark"
+          importName="AppleLogoMark"
+          purpose="El isotipo de itera: tile accent con labio 3D (--shadow-lip) y glyph de nodos en blanco. Prop size en px del tile (default 38); el glyph escala al 53%. Lo consumen nav, footer y cualquier superficie de marca."
+        >
+          <Spec label="tamaños (size)">
+            <AppleLogoMark size={28} />
+            <AppleLogoMark />
+            <AppleLogoMark size={56} />
+          </Spec>
+          <Spec label="con wordmark">
+            <div className="flex items-center gap-2.5">
+              <AppleLogoMark size={34} />
+              <span className="ts-headline font-extrabold text-[var(--text-primary)]">
+                itera
+              </span>
+            </div>
+          </Spec>
+        </Section>
+
+        <Section
+          name="Eyebrow chip"
+          importName="AppleEyebrowChip"
+          purpose="Pill de eyebrow sobre un hero/sección: borde --accent-border, fondo --accent-soft, extrabold con tracking y dot de status verde opcional (default true). Es inline-flex: en un contenedor flex-col pásale self-start."
+        >
+          <Spec label="con dot (default)">
+            <AppleEyebrowChip>AI FLUENCY FOR OPS TEAMS</AppleEyebrowChip>
+          </Spec>
+          <Spec label="sin dot">
+            <AppleEyebrowChip dot={false}>MANAGER VIEW</AppleEyebrowChip>
+          </Spec>
+        </Section>
+
+        <Section
+          name="Check row"
+          importName="AppleCheckRow"
+          purpose="Fila de checklist de marketing: tile accent de 24px con palomita gruesa (stroke 4) + texto callout bold. El texto hereda el color del contenedor — funciona sobre surface y sobre bandas oscuras sin props extra."
+        >
+          <Spec label="sobre surface" wide>
+            <div className="flex w-full flex-col gap-3">
+              <AppleCheckRow>Real cases, not quizzes</AppleCheckRow>
+              <AppleCheckRow>Scored against a rubric</AppleCheckRow>
+              <AppleCheckRow>Managers see the gaps</AppleCheckRow>
+            </div>
+          </Spec>
+          <Spec label="sobre banda ink (hereda el blanco)" wide>
+            <div className="flex w-full flex-col gap-3 rounded-[var(--radius-lg)] bg-[var(--ink-band)] p-5 text-white">
+              <AppleCheckRow>Works on dark bands</AppleCheckRow>
+              <AppleCheckRow>No extra props needed</AppleCheckRow>
+            </div>
+          </Spec>
+        </Section>
+
+        <Section
+          name="Stat tile"
+          importName="AppleStatTile"
+          purpose="Stat de marketing: valor display extrabold + label bold. tone on-surface (default) o on-accent (blanco + label al 80%, para bandas accent/ink). Hermano de marketing de AppleKpiCard (tarjeta de dashboard con delta) — NO lo reemplaza."
+        >
+          <Spec label="on-surface (default)" wide>
+            <div className="grid w-full grid-cols-1 gap-6 sm:grid-cols-3">
+              <AppleStatTile value="15 min" label="per case, not hours" />
+              <AppleStatTile value="6" label="skill areas measured" />
+              <AppleStatTile value="1" label="score per person" />
+            </div>
+          </Spec>
+          <Spec label="on-accent (stats band)" wide>
+            <div className="grid w-full grid-cols-1 gap-6 rounded-[var(--radius-xl)] bg-[var(--accent-strong)] p-6 sm:grid-cols-3">
+              <AppleStatTile tone="on-accent" value="15 min" label="per case" />
+              <AppleStatTile tone="on-accent" value="6" label="skill areas" />
+              <AppleStatTile tone="on-accent" value="1" label="score per person" />
+            </div>
+          </Spec>
+        </Section>
+
+        <Section
+          name="Browser frame"
+          importName="AppleBrowserFrame"
+          purpose="Frame de ventana de browser: barra con 3 traffic lights + slot label (string = estilo default atenuado; nodo = tal cual, para chips custom o spans con ml-auto) + children. Sombra default --shadow-float; el hero la sube con className shadow-float-lg."
+        >
+          <Spec label="label string (estilo default)" wide>
+            <AppleBrowserFrame label="app.itera.la/dashboard" className="w-full max-w-[440px]">
+              <div className="p-5">
+                <p className="ts-subhead text-[var(--text-secondary)]">
+                  Contenido del mock — cualquier children.
+                </p>
+              </div>
+            </AppleBrowserFrame>
+          </Spec>
+          <Spec label="label nodo (chip custom + ml-auto)" wide>
+            <AppleBrowserFrame
+              className="w-full max-w-[440px]"
+              label={
+                <>
+                  <span className="ml-2 rounded-full bg-[var(--accent-soft)] px-2.5 py-0.5 ts-caption-1 font-extrabold tracking-[0.3px] text-[var(--accent)]">
+                    MANAGER VIEW
+                  </span>
+                  <span className="ml-auto ts-caption-1 font-bold text-[var(--text-disabled)]">
+                    Sample data
+                  </span>
+                </>
+              }
+            >
+              <div className="grid grid-cols-3 gap-4 p-5">
+                <AppleStatTile value="82" label="team readiness" />
+                <AppleStatTile value="14" label="cases this week" />
+                <AppleStatTile value="3" label="gaps flagged" />
+              </div>
+            </AppleBrowserFrame>
+          </Spec>
+        </Section>
+
         {/* ---- Forms ---- */}
         <Section
           name="Button"
           importName="AppleButton"
-          purpose="Botón. Tonos primary/secondary/ghost/danger/destructive. El acento se reserva para primary."
+          purpose="Botón v2 (Duolingo-craft). primary/danger llevan labio 3D (--shadow-lip / --shadow-lip-danger) con hover:brightness y press hundido: el labio desaparece y el botón baja la altura del labio (a ras). secondary es border-2 sin labio; ghost solo texto bold. El acento se reserva para primary."
         >
-          <Spec label="tonos">
+          <Spec label="tonos (presiona primary/danger: el labio se hunde)">
             <AppleButton tone="primary">Primary</AppleButton>
             <AppleButton tone="secondary">Secondary</AppleButton>
             <AppleButton tone="ghost">Ghost</AppleButton>
@@ -694,21 +830,27 @@ export default function ComponentsGalleryPage() {
               Large
             </AppleButton>
           </Spec>
-          <Spec label="estados">
+          <Spec label="disabled (gris, sin labio ni press)">
             <AppleButton tone="primary" isDisabled>
-              Disabled
+              Primary
             </AppleButton>
+            <AppleButton tone="danger" isDisabled>
+              Danger
+            </AppleButton>
+            <AppleButton tone="secondary" isDisabled>
+              Secondary
+            </AppleButton>
+          </Spec>
+          <Spec label="con icono">
             <AppleButton tone="primary">
               <AppleIcon name="check" size="sm" />
               Con icono
             </AppleButton>
           </Spec>
-          <Spec label="como link (AppleButtonLink)">
-            <AppleButtonLink
-              href="#"
-              className="h-12 px-6 accent-bg text-white ts-body font-medium shadow-none"
-            >
-              Navega como link
+          <Spec label="como link (AppleButtonLink — hereda la receta v2 por tone)">
+            <AppleButtonLink href="#">Navega como link</AppleButtonLink>
+            <AppleButtonLink href="#" tone="secondary">
+              Link secundario
             </AppleButtonLink>
           </Spec>
           <Spec label="inline (text-link de acción, sin chrome)" wide>
@@ -730,12 +872,12 @@ export default function ComponentsGalleryPage() {
         <Section
           name="Botón de slide (Typeform)"
           importName="AppleSlideButton"
-          purpose="El CTA 'Continuar →' estilo Typeform de los casos. El mismo botón en case-lab, runtime de casos y el onboarding. Acento sólido, hint Enter opcional, disabled en gris, loading con spinner."
+          purpose="El CTA 'Continuar →' estilo Typeform de los casos. El mismo botón en case-lab, runtime de casos y el onboarding. Acento sólido con labio 3D grande (--shadow-lip-lg) y press hundido; hint Enter opcional; disabled en gris SIN labio; loading conserva el acento + spinner."
         >
           <Spec label="con hint Enter" wide>
             <AppleSlideButton hint>Continuar →</AppleSlideButton>
           </Spec>
-          <Spec label="estados">
+          <Spec label="estados (presiona el activo: el labio se hunde)">
             <AppleSlideButton>Activo</AppleSlideButton>
             <AppleSlideButton isDisabled>Deshabilitado</AppleSlideButton>
             <AppleSlideButton isLoading>Cargando</AppleSlideButton>
@@ -1092,6 +1234,14 @@ export default function ComponentsGalleryPage() {
           purpose="Overlay con backdrop blur. Se controla con estado."
         >
           <ModalDemo />
+        </Section>
+
+        <Section
+          name="Invite team modal"
+          importName="InviteTeamModal"
+          purpose="Flujo de invitación del manager en /staff: filas de email (agregar/quitar) → POST /api/orgs/[org_id]/invitations → resultado por email_status real, con invite links manuales cuando el email falla."
+        >
+          <InviteTeamModalDemo />
         </Section>
 
         {/* ---- Navigation ---- */}

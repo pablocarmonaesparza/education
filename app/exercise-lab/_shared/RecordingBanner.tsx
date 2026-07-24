@@ -33,10 +33,10 @@ export function RecordingBanner({
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-50" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
               </span>
-              <span className="font-medium text-[var(--text-secondary)]">Escuchando...</span>
+              <span className="font-medium text-[var(--text-secondary)]">Listening...</span>
               <WaveBars />
               <span className="ml-auto ts-footnote text-[var(--text-tertiary)]">
-                Pulsa el micrófono para parar
+                Press the mic to stop
               </span>
             </>
           )}
@@ -46,7 +46,7 @@ export function RecordingBanner({
                 <circle cx="8" cy="8" r="6" stroke="currentColor" strokeOpacity="0.25" strokeWidth="2" />
                 <path d="M14 8C14 4.69 11.31 2 8 2" stroke="currentColor" strokeLinecap="round" strokeWidth="2" />
               </svg>
-              <span className="font-medium text-[var(--text-secondary)]">Procesando nota...</span>
+              <span className="font-medium text-[var(--text-secondary)]">Processing note...</span>
             </>
           )}
           {recState === "error" && recError && (

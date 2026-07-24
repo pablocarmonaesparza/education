@@ -44,7 +44,7 @@ const N1_RETENTION = [
 ];
 
 export const RECIPES = {
-  N1: [{ id: "n1_retention", level: "N1 · Fundamentos", slots: N1_RETENTION }],
+  N1: [{ id: "n1_retention", level: "N1 · Foundations", slots: N1_RETENTION }],
 };
 
 export function pickRecipe(level) {
@@ -53,4 +53,15 @@ export function pickRecipe(level) {
   return list[0];
 }
 
+// Los IDs de seccion son IDENTIFICADORES (CASE_ASSEMBLY_SCHEMA los fuerza; no
+// cambian con el pivot a EEUU). El display en ingles vive en SECTION_DISPLAY,
+// igual que en los casos golden relocalizados a mano.
 export const SECTION_NAMES = ["contexto", "datos", "ia", "revision", "cierre"];
+
+export const SECTION_DISPLAY = {
+  contexto: "Context",
+  datos: "Data",
+  ia: "AI",
+  revision: "Verification",
+  cierre: "Close",
+};

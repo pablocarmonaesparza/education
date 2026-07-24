@@ -32,7 +32,7 @@ export async function POST(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   const { data: session } = await supabase
@@ -44,7 +44,7 @@ export async function POST(
 
   if (!session) {
     return NextResponse.json(
-      { error: "Sesión no encontrada." },
+      { error: "Session not found." },
       { status: 404 },
     );
   }
@@ -58,7 +58,7 @@ export async function POST(
       session_id,
       status: session.status,
       evaluation_started: false,
-      message: "Sesión ya estaba cerrada.",
+      message: "Session was already closed.",
     });
   }
 
@@ -72,7 +72,7 @@ export async function POST(
 
   if (eventsErr) {
     return NextResponse.json(
-      { error: "No se pudieron verificar las respuestas de la sesión." },
+      { error: "Could not verify the session responses." },
       { status: 500 },
     );
   }
@@ -84,7 +84,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "La sesión no tiene ninguna respuesta guardada — no se puede cerrar ni evaluar.",
+          "This session has no saved responses, so it cannot be closed or scored.",
       },
       { status: 400 },
     );
@@ -105,7 +105,7 @@ export async function POST(
 
   if (updateErr) {
     return NextResponse.json(
-      { error: "No se pudo cerrar la sesión." },
+      { error: "Could not close the session." },
       { status: 500 },
     );
   }
@@ -138,7 +138,7 @@ export async function POST(
         error:
           err instanceof Error
             ? err.message
-            : "No se pudo generar el reporte.",
+            : "Could not generate the report.",
       },
       { status: 500 },
     );

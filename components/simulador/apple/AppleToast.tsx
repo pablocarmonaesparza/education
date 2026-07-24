@@ -35,7 +35,7 @@ export function AppleToast({
       role="status"
       aria-live="polite"
       className={cn(
-        "flex max-w-sm items-start gap-3 rounded-[var(--radius-lg)] border p-4 shadow-[var(--shadow-lg)]",
+        "flex max-w-sm items-start gap-3 rounded-[var(--radius-lg)] border p-4 shadow-lg",
         toneClass[tone],
         className,
       )}

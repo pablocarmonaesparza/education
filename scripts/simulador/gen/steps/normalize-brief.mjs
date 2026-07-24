@@ -5,13 +5,13 @@ import { BRIEF_SCHEMA } from "../artifacts/schemas.mjs";
 
 export async function normalizeBrief(rawBrief) {
   const sys = systemPrompt(
-    "normalizar el brief de entrada de una empresa en un brief limpio y completo",
+    "normalize a company's raw intake brief into a clean, complete brief",
   );
-  const user = `Brief crudo de la empresa (puede venir incompleto o informal):
+  const user = `Raw brief from the company (it may be incomplete or informal, and may arrive in another language; the normalized brief is always in US English for a US operation):
 
 ${JSON.stringify(rawBrief, null, 2)}
 
-Normalizalo al esquema. Rellena los huecos de forma conservadora y realista para esa empresa, industria y rol, y anota cada supuesto en "assumptions". El "case_id" es un slug corto en minusculas con guiones bajos. "expected_action" y "alternatives" salen del conjunto [pilotar, entrenar, pausar, escalar]. La herramienta de inteligencia artificial ("ai_tool") tiene un nombre propio y limites claros de lo que puede y no puede hacer. Todos los datos son sinteticos: pon synthetic en true.`;
+Normalize it to the schema. Fill the gaps conservatively and realistically for that company, industry, and role, and record every assumption in "assumptions". "case_id" is a short lowercase slug with underscores. "expected_action" and "alternatives" come from the fixed identifier set [pilotar, entrenar, pausar, escalar]; these are internal codes (pilotar = pilot, entrenar = coach, pausar = pause, escalar = escalate), keep them verbatim as identifiers. The AI tool ("ai_tool") has a proper name and clear limits on what it can and cannot do. All data is synthetic: set synthetic to true.`;
   const { value, provider, model } = await callTool(sys, user, BRIEF_SCHEMA, {
     temperature: 0.2,
   });

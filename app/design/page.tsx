@@ -383,32 +383,38 @@ function Catalog() {
           </div>
         </div>
 
-        {/* Buttons */}
+        {/* Buttons — lenguaje v2: labio 3D en primary/danger, press hundido */}
         <div className="rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5">
-          <div className="eyebrow">botones</div>
+          <div className="eyebrow">botones (labio v2)</div>
           <div className="mt-3 flex flex-wrap gap-2">
             <button
               type="button"
-              className="rounded-[var(--radius-md)] accent-bg text-white px-4 py-2 ts-callout font-medium"
+              className="rounded-[var(--radius-md)] bg-[var(--accent-strong)] text-white px-4 py-2 ts-callout font-extrabold tracking-[0.3px] shadow-lip transition-[transform,box-shadow,filter] duration-[var(--motion-fast)] ease-[var(--motion-ease)] hover:brightness-110 active:translate-y-[4px] active:shadow-none"
             >
               Primary
             </button>
             <button
               type="button"
-              className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] text-[var(--text-primary)] px-4 py-2 ts-callout font-medium hover:border-[var(--border-strong)]"
+              className="rounded-[var(--radius-md)] border-2 border-[var(--border)] bg-[var(--surface)] text-[var(--text-primary)] px-4 py-2 ts-callout font-extrabold transition-colors hover:border-[var(--border-strong)]"
             >
               Secundario
             </button>
             <button
               type="button"
-              className="rounded-[var(--radius-md)] text-[var(--accent)] px-4 py-2 ts-callout font-medium hover:bg-[var(--accent-soft)]"
+              className="rounded-[var(--radius-md)] text-[var(--text-primary)] px-4 py-2 ts-callout font-bold transition-colors hover:bg-[var(--surface-3)]"
             >
               Ghost
             </button>
             <button
               type="button"
+              className="rounded-[var(--radius-md)] bg-[var(--v2-red-strong)] text-white px-4 py-2 ts-callout font-extrabold tracking-[0.3px] shadow-lip-danger transition-[transform,box-shadow,filter] duration-[var(--motion-fast)] ease-[var(--motion-ease)] hover:brightness-110 active:translate-y-[4px] active:shadow-none"
+            >
+              Danger
+            </button>
+            <button
+              type="button"
               disabled
-              className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-disabled)] px-4 py-2 ts-callout font-medium cursor-not-allowed"
+              className="rounded-[var(--radius-md)] bg-[var(--surface-3)] text-[var(--text-disabled)] px-4 py-2 ts-callout font-extrabold cursor-not-allowed"
             >
               Disabled
             </button>
@@ -466,7 +472,7 @@ function Catalog() {
         {/* Card mockup */}
         <div className="lg:col-span-2 rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5">
           <div className="eyebrow">card de caso</div>
-          <div className="mt-3 rounded-[var(--radius-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-5 transition-all hover:border-[var(--border-strong)] hover:shadow-[var(--shadow-md)]">
+          <div className="mt-3 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] shadow-card p-5 transition-all hover:border-[var(--border-strong)]">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center rounded-[var(--radius-sm)] accent-bg-soft accent-text px-1.5 py-0.5 ts-caption-1 font-semibold">

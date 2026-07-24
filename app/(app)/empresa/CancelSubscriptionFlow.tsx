@@ -19,10 +19,10 @@ import {
 } from "@/components/simulador/apple";
 
 function fmtDate(iso: string | null): string {
-  if (!iso) return "el fin de tu periodo actual";
-  return new Date(iso).toLocaleDateString("es-MX", {
+  if (!iso) return "the end of your current period";
+  return new Date(iso).toLocaleDateString("en-US", {
+    month: "short",
     day: "numeric",
-    month: "long",
     year: "numeric",
   });
 }
@@ -58,13 +58,13 @@ export function CancelSubscriptionFlow({
       });
       const data = await res.json().catch(() => null);
       if (!res.ok) {
-        throw new Error(data?.error ?? `No pudimos cancelar (${res.status}).`);
+        throw new Error(data?.error ?? `We couldn't cancel (${res.status}).`);
       }
       setAccessUntil(data?.access_until ?? null);
       setStatus("done");
     } catch (e) {
       setStatus("error");
-      setError(e instanceof Error ? e.message : "Error inesperado.");
+      setError(e instanceof Error ? e.message : "Something went wrong.");
     }
   }
 
@@ -78,7 +78,7 @@ export function CancelSubscriptionFlow({
         }}
         className="self-start ts-caption-1 text-[var(--text-tertiary)] underline-offset-2 transition-colors hover:text-[var(--band-b-text)] hover:underline"
       >
-        Cancelar suscripción
+        Cancel subscription
       </button>
 
       <AppleModal isOpen={open} onOpenChange={setOpen}>
@@ -86,16 +86,16 @@ export function CancelSubscriptionFlow({
           {status === "done" ? (
             <>
               <AppleModalHeader className="flex flex-col gap-1">
-                Suscripción cancelada
+                Subscription canceled
               </AppleModalHeader>
               <AppleModalBody>
                 <p className="ts-subhead leading-relaxed text-[var(--text-secondary)]">
-                  Listo. Tu equipo conserva acceso completo hasta{" "}
+                  Done. Your team keeps full access until{" "}
                   <span className="font-medium text-[var(--text-primary)]">
                     {fmtDate(accessUntil)}
                   </span>
-                  . No se hará ningún cobro nuevo. Puedes reactivar antes de esa
-                  fecha desde el portal de facturación.
+                  . You won&apos;t be charged again. You can reactivate before
+                  that date from the billing portal.
                 </p>
               </AppleModalBody>
               <AppleModalFooter>
@@ -104,32 +104,33 @@ export function CancelSubscriptionFlow({
                   onPress={() => setOpen(false)}
                   className="px-5"
                 >
-                  Entendido
+                  Got it
                 </AppleButton>
               </AppleModalFooter>
             </>
           ) : (
             <>
               <AppleModalHeader className="flex flex-col gap-1">
-                ¿Cancelar tu suscripción?
+                Cancel your subscription?
               </AppleModalHeader>
               <AppleModalBody>
                 <p className="ts-subhead leading-relaxed text-[var(--text-secondary)]">
-                  Tu equipo mantiene acceso completo hasta{" "}
+                  Your team keeps full access until{" "}
                   <span className="font-medium text-[var(--text-primary)]">
-                    {renewsLabel ?? "el fin del periodo ya pagado"}
+                    {renewsLabel ?? "the end of the period you already paid for"}
                   </span>
-                  . No se cortará ninguna sesión en curso ni habrá cobros nuevos.
+                  . No session in progress gets cut off, and you won&apos;t be
+                  charged again.
                 </p>
                 <div className="mt-4">
                   <label className="ts-caption-1 text-[var(--text-tertiary)]">
-                    ¿Qué nos faltó? (opcional)
+                    What did we miss? (optional)
                   </label>
                   <div className="mt-1.5">
                     <AppleTextarea
                       value={reason}
                       onValueChange={setReason}
-                      placeholder="Nos ayuda a mejorar. Cuéntanos en una línea."
+                      placeholder="This helps us improve. Tell us in one line."
                       minRows={2}
                       maxRows={4}
                     />
@@ -147,7 +148,7 @@ export function CancelSubscriptionFlow({
                   onPress={() => setOpen(false)}
                   className="px-5"
                 >
-                  Mantener plan
+                  Keep plan
                 </AppleButton>
                 <AppleButton
                   tone="primary"
@@ -155,7 +156,7 @@ export function CancelSubscriptionFlow({
                   isLoading={status === "submitting"}
                   className="px-5"
                 >
-                  Sí, cancelar
+                  Yes, cancel
                 </AppleButton>
               </AppleModalFooter>
             </>

@@ -1,33 +1,21 @@
 /**
  * Copy versionado del onboarding buyer B2B.
  *
- * Cubre el flow /(onboarding)/onboarding/{org,team,invite,billing,done}.
+ * Cubre el flow /(onboarding)/onboarding/{org,team,invite,billing,done} — 5 pasos.
  *
- * Hoy en producción están org/team/invite (codex cerró en B7-002 + B1-004
- * cuando aplicó migraciones premium). billing/done quedan pendientes —
- * Codex los ata en B7-001 cuando llegue. La copy aquí está lista para
- * importarse sin esperar el cableado.
+ * Cirugía W2-A (2026-07-23):
+ *   - El paso "context" (perfil de empresa: website + PDFs) SE ELIMINÓ. Los
+ *     archivos ni se subían (solo metadata a Stripe) y el motor ya no
+ *     investiga empresas en onboarding — los tracks son por área (decisión
+ *     "cursos al mayoreo por área"). No prometer research que no ocurre.
+ *   - "Sprint activated" murió como framing en done: se dice lo que SÍ pasa
+ *     (assessment listo, cada invitado recibe email con su primer caso).
+ *   - Regiones US-first e industry keys en inglés (pivot de mercado EEUU).
+ *   - Email visible de contacto: hello@itera.la.
  *
- * Decisiones producto consolidadas:
- *   - B7-001 (en flight): flow buyer end-to-end org → team → invite →
- *     billing → done. Stripe Checkout B2B con seats configurables.
- *   - B9-001-D3 (done): pricing Fase 1 $4-8K (5-50 ppl), Fase 2 $8-15K,
- *     bundle 10% off. Per-seat derivado.
- *   - B9-003-D2 (done): v1 launch geos = MX + CO. AR/CL/PE permitidos en
- *     dropdown pero con disclaimer "fuera de scope v1".
- *   - B9-003-D5 (done): postura legal conservadora v1. El flow recolecta
- *     industria/región para data residency hints pero NO promete
- *     compliance-grade hasta primer DPA enterprise.
- *
- * Vocabulario canónico estricto (contrato §7):
- *   - "organización" / "team" — NO "empresa" / "equipo" inconsistente
- *   - "diagnóstico" — NO "assessment"
- *   - "participante" — NO "estudiante", "alumno", "user"
- *   - "manager" — NO "líder", "jefe"
- *   - "caso vivo" — NO "test", "examen"
- *
- * Voz: español neutro LATAM corporate. Lowercase en titulares y bodies
- * gramaticales salvo nombres propios y comienzo de frase. Cero AI slop.
+ * Vocabulario canónico: glosario docs/simulador/front/copy/00_EN_GLOSSARY.md
+ * (assessment / practice / judgment — nunca "training"/"courses" como
+ * propuesta). Voz: inglés de negocios de EEUU. Títulos sin punto final.
  *
  * Importa desde app/(onboarding)/onboarding/{paso}/page.tsx via
  * `import { onboardingCopy } from "@/lib/simulador/copy/onboarding";`.
@@ -39,16 +27,16 @@ export const onboardingCopy = {
   // ============================================================================
   wizard: {
     eyebrow_template: (step: number, total: number, context: string) =>
-      `Paso ${step} de ${total} · ${context}`,
-    back_cta: "← Atrás",
-    continue_cta: "Continuar →",
-    skip_cta: "Saltar este paso",
-    cancel_cta: "Cancelar onboarding",
-    cancel_confirm_title: "¿Salir del onboarding?",
+      `Step ${step} of ${total} · ${context}`,
+    back_cta: "← Back",
+    continue_cta: "Continue →",
+    skip_cta: "Skip this step",
+    cancel_cta: "Cancel onboarding",
+    cancel_confirm_title: "Leave onboarding?",
     cancel_confirm_body:
-      "Lo que ya guardaste (organización, team) se mantiene. Puedes retomar el flow desde el dashboard.",
-    cancel_confirm_yes: "Sí, salir",
-    cancel_confirm_no: "Seguir aquí",
+      "What you already saved (organization, team) stays. You can pick this up again from the dashboard.",
+    cancel_confirm_yes: "Yes, leave",
+    cancel_confirm_no: "Stay here",
   },
 
   // ============================================================================
@@ -56,56 +44,63 @@ export const onboardingCopy = {
   // Captura: nombre, industria, región, tamaño
   // ============================================================================
   step1_org: {
-    eyebrow_context: "Tu organización",
-    headline: "Cuéntanos sobre tu equipo.",
-    body:
-      "Usamos esto para calibrar el diagnóstico al contexto de tu organización. Puedes ajustarlo después.",
+    eyebrow_context: "Your organization",
+    headline: "Tell us about your team",
+    // El body va en dos partes: lead + stat. La stat (MARKET_STATS.MCKINSEY_3X)
+    // se renderiza con tooltip `title=` de su fuente — nunca sin atribución.
+    body_lead: "We calibrate the assessment to your context.",
+    body_stat:
+      "Most leaders underestimate their team's AI use by about 3x — this is where you find out.",
     fields: {
-      name_label: "Nombre de la organización",
-      name_placeholder: "Acme LATAM",
-      industry_label: "Industria",
-      region_label: "Región principal",
-      size_label: "Tamaño del equipo",
+      name_label: "Organization name",
+      name_placeholder: "Acme Inc.",
+      job_title_placeholder: "Your role (e.g. Head of Marketing)",
+      industry_label: "Industry",
+      region_label: "Primary region",
+      size_label: "Team size",
     },
+    // Keys en inglés (pivot EEUU). Los keys se persisten en
+    // organizations.industry — las orgs viejas guardaron keys en español
+    // (servicios_profesionales, otro); los selects que las relean deben
+    // tolerar ambos hasta que Codex migre los datos.
     industry_options: [
       { key: "saas_b2b", label: "SaaS B2B" },
       { key: "ecommerce", label: "Ecommerce" },
-      { key: "servicios_profesionales", label: "Servicios profesionales" },
+      { key: "professional_services", label: "Professional services" },
       { key: "fintech", label: "Fintech" },
       { key: "retail", label: "Retail" },
-      { key: "manufactura", label: "Manufactura" },
-      { key: "salud", label: "Salud" },
-      { key: "educacion", label: "Educación" },
-      { key: "otro", label: "Otro" },
+      { key: "manufacturing", label: "Manufacturing" },
+      { key: "healthcare", label: "Healthcare" },
+      { key: "education", label: "Education" },
+      { key: "other", label: "Other" },
     ],
+    // US-first (pivot EEUU). Keys persistidos en organizations.region — los
+    // ids existentes (MX, CO, …) no cambian, solo el orden y el catch-all.
     region_options: [
-      { key: "MX", label: "México" },
+      { key: "us", label: "United States" },
+      { key: "MX", label: "Mexico" },
       { key: "CO", label: "Colombia" },
       { key: "AR", label: "Argentina" },
       { key: "CL", label: "Chile" },
-      { key: "PE", label: "Perú" },
-      { key: "BR", label: "Brasil" },
-      { key: "other_latam", label: "Otro LATAM" },
-      { key: "us", label: "EE.UU." },
+      { key: "BR", label: "Brazil" },
+      { key: "PE", label: "Peru" },
+      { key: "other_latam", label: "Other LATAM" },
+      { key: "other", label: "Other" },
     ],
-    region_disclaimer_v1_geos:
-      "Lanzamiento v1: MX + CO. Para otras regiones LATAM, el diagnóstico funciona pero las plantillas legales (privacy, consent) aún están en preparación.",
-    region_disclaimer_br:
-      "Brasil entra en v2 (LGPD requiere plantillas dedicadas). Te avisamos cuando esté listo — escríbenos para ir a la waitlist.",
     size_options: [
-      { key: "1-10", label: "1–10 empleados" },
-      { key: "11-50", label: "11–50 empleados" },
-      { key: "51-100", label: "51–100 empleados" },
-      { key: "101-300", label: "101–300 empleados" },
-      { key: "301-500", label: "301–500 empleados" },
-      { key: "501+", label: "501+ empleados" },
+      { key: "1-10", label: "1–10 employees" },
+      { key: "11-50", label: "11–50 employees" },
+      { key: "51-100", label: "51–100 employees" },
+      { key: "101-300", label: "101–300 employees" },
+      { key: "301-500", label: "301–500 employees" },
+      { key: "501+", label: "501+ employees" },
     ],
     size_help:
-      "El diagnóstico opera con hasta 50 asientos por org. Para organizaciones más grandes lo cotizamos en escalones — escríbenos.",
-    submit_cta: "Continuar →",
-    error_create: "Error al crear organización. Reintenta.",
+      "The assessment runs with up to 50 seats per organization. For larger organizations we quote in tiers. Write to us.",
+    submit_cta: "Continue →",
+    error_create: "Could not create the organization. Try again.",
     error_duplicate:
-      "Ya existe una organización con ese nombre dentro de tu cuenta. Cambia el nombre o continúa con la existente desde el dashboard.",
+      "An organization with that name already exists in your account. Change the name, or continue with the existing one from the dashboard.",
   },
 
   // ============================================================================
@@ -114,14 +109,14 @@ export const onboardingCopy = {
   // ============================================================================
   step2_team: {
     eyebrow_template: (orgName: string) =>
-      `Equipo dentro de ${orgName || "tu organización"}`,
-    headline: "¿Qué equipo vas a diagnosticar primero?",
+      `Team inside ${orgName || "your organization"}`,
+    headline: "Which team do you want to assess first?",
     body:
-      "El caso 1 está calibrado para Marketing / Growth. Si tu equipo es otro, sigamos — vamos a abrir más carreras pronto.",
+      "Case 1 is calibrated for Marketing / Growth. If your team is a different function, keep going. We're opening more tracks soon.",
     fields: {
-      name_label: "Nombre del equipo",
+      name_label: "Team name",
       name_placeholder: "Marketing",
-      department_label: "Función",
+      department_label: "Function",
     },
     department_options: [
       { key: "marketing", label: "Marketing / Growth" },
@@ -133,133 +128,121 @@ export const onboardingCopy = {
       { key: "people_hr", label: "People / HR" },
       { key: "product", label: "Product" },
       { key: "engineering", label: "Engineering" },
-      { key: "otro", label: "Otro" },
+      { key: "otro", label: "Other" },
     ],
     department_help_marketing:
-      "Sprint v1 está calibrado para Marketing/Growth. Otras carreras llegan en próximas releases — el diagnóstico funciona, pero los casos pueden no reflejar tu flujo exacto todavía.",
+      "The v1 assessment is calibrated for Marketing/Growth. Other tracks arrive in upcoming releases. The assessment works, but the cases may not reflect your exact workflow yet.",
     department_help_other:
-      "Esta carrera aún no tiene casos calibrados v1. Puedes hacer el diagnóstico con el caso Marketing como muestra — la rúbrica de criterio aplica cross-carrera. Te avisamos cuando tu carrera tenga sprint dedicado.",
-    submit_cta: "Continuar →",
-    error_create: "Error al crear equipo. Reintenta.",
+      "This track doesn't have calibrated v1 cases yet. You can run the assessment with the Marketing case as a sample, since the judgment rubric applies across tracks. We'll let you know when your track has dedicated cases.",
+    submit_cta: "Continue →",
+    error_create: "Could not create the team. Try again.",
   },
 
   // ============================================================================
   // Paso 3 — /onboarding/invite
-  // Captura: bulk emails de participantes
+  // Captura: emails de participantes + resultado de envío (email_status real)
   // ============================================================================
   step3_invite: {
-    eyebrow_context: "Invita a tu equipo",
-    headline: "¿Quiénes van a hacer el diagnóstico?",
+    eyebrow_context: "Invite your team",
+    headline: "Who's taking the assessment?",
+    // Línea de apoyo bajo el H1. La stat (MARKET_STATS.KPMG_HIDE) se renderiza
+    // con tooltip `title=` de su fuente.
+    support_stat:
+      "Invite everyone who touches AI in their work — 57% of employees never tell their employer they use it.",
     body_template: (teamName: string) =>
-      `Cada participante recibe un email con su link único. El caso toma ~20 minutos y se puede hacer cuando quieran — sin coordinación síncrona. Equipo: ${teamName}.`,
+      `Each participant gets an email with their own link. The case takes about 20 minutes and they can do it whenever they want, with no scheduling. Team: ${teamName}.`,
     fields: {
-      emails_label: "Emails de los participantes",
+      emails_label: "Participant emails",
       emails_placeholder:
-        "ana@empresa.com\njuan@empresa.com\nmaria@empresa.com",
+        "sarah@company.com\nmike@company.com\njen@company.com",
       emails_description_template: (n: number) =>
         n === 1
-          ? "Separa por comas, espacios o saltos de línea. 1 email válido detectado."
-          : `Separa por comas, espacios o saltos de línea. ${n} emails válidos detectados.`,
+          ? "Separate with commas, spaces, or line breaks. 1 valid email found."
+          : `Separate with commas, spaces, or line breaks. ${n} valid emails found.`,
     },
     submit_cta_template: (n: number) =>
       n === 0
-        ? "Enviar invitaciones"
+        ? "Send invitations"
         : n === 1
-          ? "Enviar 1 invitación"
-          : `Enviar ${n} invitaciones`,
+          ? "Send 1 invitation"
+          : `Send ${n} invitations`,
     over_seats_warning_template: (n: number, max: number) =>
-      `Estás invitando ${n} participantes pero tu plan tiene ${max} asientos. Los excedentes quedan en lista de espera hasta que liberes asientos o amplíes el plan.`,
+      `You're inviting ${n} participants but your plan has ${max} seats. The extras go on a waitlist until you free up seats or add more.`,
     domain_mismatch_warning:
-      "Detectamos emails con dominios distintos al tuyo. Confirma que son del mismo equipo antes de continuar.",
-    sent_headline_template: (n: number) =>
-      n === 1
-        ? "1 invitación enviada"
-        : `${n} invitaciones enviadas`,
+      "Some emails use domains other than yours. Confirm they're on the same team before you continue.",
+    // Headline del resultado: refleja el email_status REAL que devuelve
+    // POST /api/orgs/[org_id]/invitations, no un "N sent" optimista.
+    sent_headline_template: (sent: number, failed: number) =>
+      failed === 0
+        ? `${sent} invitation${sent === 1 ? "" : "s"} sent`
+        : `${sent} sent, ${failed} failed`,
     sent_body:
-      "Cada participante recibirá un email con su link único. El diagnóstico aparecerá en tu dashboard cuando completen el caso.",
-    skipped_eyebrow: "No enviadas",
+      "Each participant will get an email with their own link. The assessment shows up in your dashboard when they finish the case.",
+    manual_share_note:
+      "Share their invite links manually — the links below work even though the email didn't go out.",
+    skipped_eyebrow: "Not sent",
     skipped_reasons: {
-      invalid_email: "formato de email inválido",
-      duplicate: "ya invitada previamente",
-      already_member: "ya es miembro de la organización",
-      no_seats: "no quedan asientos disponibles",
-      rate_limited: "demasiados envíos seguidos — reintenta en unos minutos",
-      unknown: "error al enviar",
+      invalid_email: "invalid email format",
+      duplicate: "already invited",
+      already_member: "already a member of the organization",
+      no_seats: "no seats available",
+      rate_limited: "too many sends in a row, try again in a few minutes",
+      unknown: "send failed",
     },
-    invite_more_cta: "Invitar más",
-    finish_cta: "Ir al dashboard →",
-    error_send: "Error al enviar invitaciones. Reintenta.",
+    invite_later_note: "You can finish the invitations later from the dashboard.",
+    invite_more_cta: "Invite more",
+    finish_cta: "Continue →",
+    error_send: "Could not send invitations. Try again.",
   },
 
   // ============================================================================
-  // Paso 5 — /onboarding/billing
+  // Paso 4 — /onboarding/billing
   // Stripe Checkout B2B con seats configurables
   // ============================================================================
   step4_billing: {
-    headline: "¿Cuántas personas van a participar?",
+    headline: "How many people will take part?",
     tier_label_template: (label: string, range: string) =>
       `Tier ${label} · ${range}`,
     pricing_breakdown_template: (perSeat: number, seats: number, total: number) =>
-      `USD ${perSeat} × ${seats} ${seats === 1 ? "persona" : "personas"} = USD ${total.toLocaleString("en-US")}`,
-    enterprise_headline: "Más de 99 personas",
+      `USD ${perSeat} × ${seats} ${seats === 1 ? "person" : "people"} = USD ${total.toLocaleString("en-US")}`,
+    enterprise_headline: "More than 99 people",
     enterprise_body:
-      "Para equipos grandes el precio se negocia por volumen y término. Cuéntanos cuántas personas son y armamos una propuesta.",
-    submit_cta: "Continuar a Stripe",
-    submit_enterprise_cta: "Hablar con ventas",
+      "For large teams, pricing is negotiated by volume and contract term. Tell us how many people and we'll put together a proposal.",
+    submit_cta: "Continue to Stripe",
+    submit_enterprise_cta: "Talk to sales",
     terms_required:
-      "Al continuar aceptas los Términos y la Política de privacidad. Pago seguro con Stripe.",
-    error_create_session: "Error al crear sesión de pago. Reintenta.",
+      "By continuing you accept the Terms and the Privacy Policy. Secure payment with Stripe.",
+    error_create_session: "Could not start the payment session. Try again.",
     error_stripe_redirect:
-      "No pudimos abrir Stripe. Reintenta o escríbenos a ventas@itera.la.",
+      "We couldn't open Stripe. Try again or write to hello@itera.la.",
   },
 
   // ============================================================================
-  // Paso 6 — /onboarding/done
-  // Confirmación post-pago + handoff al dashboard
+  // Paso 5 — /onboarding/done
+  // Confirmación post-pago + handoff al dashboard. Solo promesas que el
+  // producto cumple HOY: emails con el primer caso + reportes en el dashboard.
   // ============================================================================
   step5_done: {
-    eyebrow_context: "Listo",
-    headline: "Sprint activado.",
+    eyebrow_context: "Done",
+    headline: "Your team's assessment is ready",
     body:
-      "Los participantes ya reciben su link por email para empezar el diagnóstico. En paralelo, estamos creando los ejercicios a la medida de tu equipo con tu sitio y los archivos que compartiste. Verás cada sesión completada en tu dashboard.",
-    next_steps_eyebrow: "Qué sigue",
+      "Each person you invited gets an email with their first case. Completed sessions show up as reports in your dashboard.",
+    next_steps_eyebrow: "What's next",
     next_steps: [
-      "Avisa a tu equipo que llega un email de Itera con su link único.",
-      "Cada persona hace el caso cuando pueda (~20 minutos). No requiere coordinación síncrona.",
-      "Cuando 1 sesión se completa, su reporte ejecutivo se publica en tu dashboard.",
-      "Cuando todas se completan, generamos la matriz agregada del equipo + recomendaciones por persona.",
+      "Tell your team it's coming — each person gets an email from Itera with their own link.",
+      "Watch who accepts. Each case takes about 20 minutes, whenever they want — no scheduling.",
+      "First reports land in your dashboard as soon as sessions are completed.",
     ],
-    timing_eyebrow: "Tiempos típicos",
+    timing_eyebrow: "Typical timing",
     timing_body:
-      "Equipos de 10 personas completan el diagnóstico en 3-7 días desde la invitación. El reporte agregado se activa al cierre del sprint.",
-    receipt_cta: "Ver recibo de Stripe",
+      "Teams of 10 usually finish within 3–7 days of the invitation. The team view fills in as reports come in.",
+    receipt_cta: "View Stripe receipt",
     receipt_note:
-      "El recibo llegó al email del comprador. Si tu organización pide factura fiscal, contesta a ese correo y la emitimos.",
-    dashboard_cta: "Ir al dashboard →",
-    contact_help_eyebrow: "¿Necesitas ayuda?",
+      "The receipt went to the buyer's email. If your organization needs a W-9, reply to that email and we'll send it.",
+    dashboard_cta: "Go to dashboard →",
+    contact_help_eyebrow: "Need help?",
     contact_help_body:
-      "Escríbenos a soporte@itera.la y respondemos en horario LATAM business hours.",
-  },
-
-  // ============================================================================
-  // Paso 4 — /onboarding/context
-  // Perfil de empresa antes de elegir plan/pagar. Captura señales mínimas para
-  // orientar el sprint sin convertir el onboarding en un cuestionario pesado.
-  // ============================================================================
-  step_context: {
-    headline: "Configura el perfil de tu empresa",
-    body:
-      "Ingresa tu sitio web y archivos PDF. Esto nos ayudará a investigar, entender y crear los ejercicios correspondientes para tu equipo. Esto puede modificarse más adelante.",
-    fields: {
-      website_label: "Sitio web de la empresa",
-      website_placeholder: "Sitio web",
-      files_placeholder: "Adjuntar archivos (PDF)",
-      files_add_more: "Adjuntar más archivos (PDF)",
-    },
-    submit_cta: "Continuar a plan →",
-    errors: {
-      website_required: "Agrega un sitio web válido para continuar.",
-    },
+      "Write to hello@itera.la and we'll reply during US business hours.",
   },
 
   // ============================================================================
@@ -267,34 +250,34 @@ export const onboardingCopy = {
   // (Pre-confirmación pago, antes de marcar org.subscribed)
   // ============================================================================
   return_from_stripe: {
-    success_eyebrow: "Pago recibido",
-    success_headline: "Procesando tu sprint…",
+    success_eyebrow: "Payment received",
+    success_headline: "Setting up your team's assessment…",
     success_body:
-      "Stripe nos confirmó el pago. Estamos activando tu sprint y los asientos. Esto suele tomar menos de 1 minuto.",
-    success_polling_note: "No cierres esta pestaña.",
-    success_continue_cta: "Continuar al dashboard",
-    failed_eyebrow: "Pago no completado",
-    failed_headline: "El pago no se procesó.",
+      "Stripe confirmed the payment. We're activating your seats. This usually takes less than a minute.",
+    success_polling_note: "Don't close this tab.",
+    success_continue_cta: "Continue to dashboard",
+    failed_eyebrow: "Payment not completed",
+    failed_headline: "The payment didn't go through",
     failed_body:
-      "Stripe canceló o rechazó el cobro. No se generó ningún cargo. Puedes reintentar con otro método.",
-    failed_retry_cta: "Reintentar pago",
-    failed_contact_cta: "Escribir a ventas →",
+      "Stripe canceled or declined the charge. Nothing was billed. You can try again with another method.",
+    failed_retry_cta: "Retry payment",
+    failed_contact_cta: "Write to sales →",
   },
 
   // ============================================================================
   // Empty/error states genéricos del flow
   // ============================================================================
   states: {
-    loading_label: "Cargando…",
-    redirecting_label: "Redirigiendo…",
+    loading_label: "Loading…",
+    redirecting_label: "Redirecting…",
     no_org_yet_redirect_note:
-      "Necesitas crear tu organización primero. Te redirigimos.",
+      "You need to create your organization first. Redirecting you.",
     no_team_yet_redirect_note:
-      "Necesitas crear un equipo antes de invitar. Te redirigimos.",
-    session_expired_headline: "Tu sesión expiró.",
+      "You need to create a team before inviting. Redirecting you.",
+    session_expired_headline: "Your session expired",
     session_expired_body:
-      "Re-loguéate para retomar el onboarding. Lo que ya guardaste se mantiene.",
-    session_expired_cta: "Iniciar sesión",
+      "Sign in again to pick up onboarding. What you already saved stays.",
+    session_expired_cta: "Sign in",
   },
 
   // ============================================================================
@@ -302,11 +285,11 @@ export const onboardingCopy = {
   // ============================================================================
   microcopy: {
     progress_template: (current: number, total: number) =>
-      `Paso ${current} de ${total}`,
+      `Step ${current} of ${total}`,
     privacy_footer:
-      "Tus datos quedan en la organización que estás creando. No vendemos datos a terceros.",
-    support_footer: "¿Atorado? Escríbenos a soporte@itera.la.",
-    help_link_label: "¿Cómo funciona el diagnóstico?",
+      "Your data stays in the organization you're creating. We don't sell data to third parties.",
+    support_footer: "Stuck? Write to hello@itera.la.",
+    help_link_label: "How does the assessment work?",
     help_link_href: "/como-funciona",
   },
 } as const;

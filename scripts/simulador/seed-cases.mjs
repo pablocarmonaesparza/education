@@ -77,7 +77,10 @@ function caseTemplateRow(template, resolvedRubricId) {
   return {
     slug: template.id,
     version: Number(template.version),
-    status: template.status ?? "draft",
+    // El contrato usa "ready" para casos listos; el CHECK de BD solo acepta
+    // draft/active/archived — "ready" mapea a "active" (2026-07-16; antes
+    // esto tronaba el seed completo con violation del constraint).
+    status: template.status === "ready" ? "active" : (template.status ?? "draft"),
     difficulty: template.difficulty,
     locale: template.locale ?? "es-MX",
     title: template.title ?? template.id,
@@ -99,6 +102,16 @@ function caseTemplateRow(template, resolvedRubricId) {
 }
 
 function caseStepRows(template, caseTemplateIdValue) {
+  // Los contratos formato Case Factory (p.ej. vertiz_backlog_entregas_v1) no
+  // traen `steps` a nivel fuente — sus slides viven en cases_assembled/ y se
+  // siembran vía la librería org (generated_cases). Sin esto, el seed completo
+  // tronaba con "Cannot read properties of undefined (reading 'map')".
+  if (!Array.isArray(template.steps)) {
+    console.warn(
+      `case_steps:${template.id}: sin steps a nivel fuente (formato Case Factory) — omitido; sus slides se siembran por la librería org.`,
+    );
+    return [];
+  }
   return template.steps.map((step, index) => ({
     case_template_id: caseTemplateIdValue,
     step_key: step.step_key ?? step.type ?? toStepKey(step.id),
@@ -148,7 +161,8 @@ function variantRow(variant, template, caseTemplateIdValue, parentVariantId) {
     case_template_id: caseTemplateIdValue,
     parent_variant_id: parentVariantId,
     variant_role: role,
-    status: variant.status ?? "draft",
+    // Mismo mapeo ready→active que en templates (CHECK draft/active/archived).
+    status: variant.status === "ready" ? "active" : (variant.status ?? "draft"),
     delay_days_from_parent: variant.delay_days_from_parent ?? null,
     template_var_values_json: jsonObject(variant.template_var_values),
     inputs_resolved_json: jsonObject(variant.inputs_resolved),
@@ -359,13 +373,21 @@ async function main() {
     path.join(CONTRACT_DIR, "variantes"),
     "case_variant",
   ).map(({ value }) => value);
-  const sprint = readYamlFile(
-    path.join(CONTRACT_DIR, "sprints/sprint_marketing_30d.yaml"),
-  ).sprint_package;
+  // sprint_marketing_30d fue RETIRADO el 2026-05-20 (el archivo es un legacy
+  // pointer que parsea a null desde cc6c5d33). El seed del sprint es opcional:
+  // si no hay sprint_package, se siembran casos/variantes y se omite el sprint.
+  // Antes esto tronaba con "Cannot read properties of null" y bloqueaba TODO
+  // el re-seed (descubierto al re-sembrar el contenido en inglés, 2026-07-16).
+  const sprint =
+    readYamlFile(path.join(CONTRACT_DIR, "sprints/sprint_marketing_30d.yaml"))
+      ?.sprint_package ?? null;
 
   if (!APPLY) {
+    const sprintNote = sprint
+      ? `${sprint.contents.cases_included.length} sprint case refs`
+      : "sprint retirado (omitido)";
     console.log(
-      `Dry run: ${cases.length} cases, ${variants.length} variants, ${sprint.contents.cases_included.length} sprint case refs ready. Re-run with --apply to seed Supabase.`,
+      `Dry run: ${cases.length} cases, ${variants.length} variants, ${sprintNote}. Re-run with --apply to seed Supabase.`,
     );
     return;
   }
@@ -379,10 +401,12 @@ async function main() {
   const templateIds = await seedTemplates(db, cases);
   const linkedPracticeBeats = await seedPracticeLinks(db, cases, templateIds);
   const variantIds = await seedVariants(db, casesByRef, variants, templateIds);
-  await seedSprint(db, sprint, templateIds, variantIds);
+  if (sprint) {
+    await seedSprint(db, sprint, templateIds, variantIds);
+  }
 
   console.log(
-    `Seeded ${cases.length} cases, ${variants.length} variants, ${linkedPracticeBeats} case-practice links, and sprint ${sprint.id}.`,
+    `Seeded ${cases.length} cases, ${variants.length} variants, ${linkedPracticeBeats} case-practice links${sprint ? `, and sprint ${sprint.id}` : " (sprint retirado, omitido)"}.`,
   );
 }
 

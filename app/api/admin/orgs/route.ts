@@ -92,7 +92,7 @@ export async function GET(req: NextRequest) {
   if (orgError) {
     console.error("[admin/orgs] org list failed", orgError);
     return NextResponse.json(
-      { error: "Error listando organizaciones." },
+      { error: "Could not list organizations." },
       { status: 500 },
     );
   }

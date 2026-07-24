@@ -24,7 +24,7 @@ export default async function ManagerCaseReviewPage({
   const playableCase = loadAssembledCase(baseCaseId(slug));
   const fallbackTitle =
     (playableCase?.managerOutcome?.primary_question as string) ??
-    "Caso del equipo";
+    "Team case";
   return (
     <ManagerCaseReviewClient
       slug={slug}

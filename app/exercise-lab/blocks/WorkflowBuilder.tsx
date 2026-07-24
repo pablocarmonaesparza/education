@@ -40,11 +40,11 @@ interface StepSpec {
 }
 
 const DEFAULT_STEPS: ReadonlyArray<StepSpec> = [
-  { id: "summarize", label: "Resumir tickets agregados" },
-  { id: "generate", label: "Generar tres ángulos" },
-  { id: "flag", label: "Marcar afirmaciones sin fuente" },
-  { id: "human", label: "Revisión humana" },
-  { id: "deliver", label: "Entrega a Ventas" },
+  { id: "summarize", label: "Summarize aggregated tickets" },
+  { id: "generate", label: "Generate three angles" },
+  { id: "flag", label: "Flag claims without a source" },
+  { id: "human", label: "Human review" },
+  { id: "deliver", label: "Hand off to Sales" },
 ];
 
 interface Props extends ExerciseRendererProps<WorkflowBuilderPayload> {
@@ -134,12 +134,12 @@ export function WorkflowBuilder({
       <div>
         <textarea
           id={`${slideId}-rationale`}
-          aria-label="¿Por qué este orden?"
+          aria-label="Why this order?"
           value={payload.rationale_text}
           onChange={(e) => {
             persist({ ...payload, rationale_text: e.target.value });
           }}
-          placeholder="En una línea, explica qué decidió el orden y dónde entra revisión humana."
+          placeholder="In one line, explain what decided the order and where human review comes in."
           rows={2}
           className="w-full resize-none rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 ts-body text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
         />

@@ -11,41 +11,41 @@ case_variant:
     company_name: NovaOps
     crm_name: Salesforce
     email_tool: Outlook
-    stakeholder_name: Tomas
+    stakeholder_name: Thomas
   inputs_resolved:
     synthetic: true
     items:
       - kind: crm_row
         lead_id: N-118
-        contact_name: Ana Beltran
-        email: ana@enterprise.example
+        contact_name: Erin Walsh
+        email: erin.walsh@atlasretail.example
         company: Atlas Retail
         deal_stage: Procurement
         deal_value_usd: 210000
         last_touch_days: 14
-        internal_notes: "legal revisa DPA; no prometer SOC2 antes de confirmacion"
+        internal_notes: "legal is reviewing the DPA; do not promise SOC 2 before confirmation"
         competitor_mentioned: Salesforce Service Cloud
       - kind: crm_row
         lead_id: N-244
-        contact_name: Marco Vidal
-        email: marco@fintech.example
+        contact_name: Mark Delaney
+        email: mark.delaney@crescopay.example
         company: CrescoPay
         deal_stage: Security Review
         deal_value_usd: 160000
         last_touch_days: 3
-        internal_notes: "pidio data residency; escalar a legal antes de enviar detalles"
+        internal_notes: "asked about data residency; escalate to legal before sending details"
         competitor_mentioned: Intercom
       - kind: policy_excerpt
-        allowed_data: "solo campos de oportunidad no personales y resumen seguro de notas"
-        approval_required: "legal approval para enterprise y security review"
-        external_send_policy: "agente puede crear task interna, no email externo"
+        allowed_data: "only non-personal opportunity fields and a safe summary of the notes"
+        approval_required: "legal approval for enterprise and security review"
+        external_send_policy: "the agent can create an internal task, not an external email"
       - kind: agent_log
         lead_id: N-244
-        proposed_action: "crear task legal y borrador interno para AE"
-        reason: "security review requiere precision"
+        proposed_action: "create a legal task and an internal draft for the AE"
+        reason: "security review requires precision"
         confidence: 0.78
         error: "none"
   expected_behavior_shift: >
-    En resim el contexto cambia de velocidad comercial a enterprise/security.
-    La mejora debe verse en escalation, permisos y precision del impacto.
+    In resim the context shifts from sales velocity to enterprise/security.
+    The improvement must show up in escalation, permissions, and impact precision.
 

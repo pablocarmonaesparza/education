@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { clearOnboardingCompanyProfile } from "@/lib/simulador/onboarding-company-profile";
 import {
   clearOnboardingProgress,
   ONBOARDING_ORG_ID_KEY,
@@ -16,7 +15,8 @@ export function ClearOnboardingStorage() {
     sessionStorage.removeItem(ONBOARDING_ORG_NAME_KEY);
     sessionStorage.removeItem(ONBOARDING_TEAM_ID_KEY);
     sessionStorage.removeItem(ONBOARDING_TEAM_NAME_KEY);
-    clearOnboardingCompanyProfile();
+    // clearOnboardingProgress también limpia las keys legacy del paso
+    // context eliminado (onboarding_context_completed / _company_profile).
     clearOnboardingProgress();
   }, []);
 

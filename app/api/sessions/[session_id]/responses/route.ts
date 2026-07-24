@@ -31,7 +31,7 @@ export async function PATCH(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   let body: {
@@ -42,11 +42,11 @@ export async function PATCH(
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Body inválido." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
   if (!body.step_key) {
-    return NextResponse.json({ error: "Falta step_key." }, { status: 400 });
+    return NextResponse.json({ error: "Missing step_key." }, { status: 400 });
   }
 
   // Frente A — validación tipada de payloads que sean bloques canónicos.
@@ -57,7 +57,7 @@ export async function PATCH(
   if (exerciseValidation.kind === "invalid") {
     return NextResponse.json(
       {
-        error: "Payload de bloque malformado.",
+        error: "Malformed block payload.",
         details: exerciseValidation.error.format(),
       },
       { status: 422 },
@@ -74,7 +74,7 @@ export async function PATCH(
     .maybeSingle();
 
   if (!session) {
-    return NextResponse.json({ error: "Sesión no encontrada." }, { status: 404 });
+    return NextResponse.json({ error: "Session not found." }, { status: 404 });
   }
 
   if (
@@ -83,7 +83,7 @@ export async function PATCH(
     session.status === "evaluated"
   ) {
     return NextResponse.json(
-      { error: "Sesión ya cerrada. No se pueden modificar respuestas." },
+      { error: "This session is closed. Responses can no longer be changed." },
       { status: 400 },
     );
   }
@@ -98,7 +98,7 @@ export async function PATCH(
 
   if (!caseVariant) {
     return NextResponse.json(
-      { error: "Case variant no encontrado." },
+      { error: "Case variant not found." },
       { status: 500 },
     );
   }
@@ -113,7 +113,7 @@ export async function PATCH(
 
   if (!step) {
     return NextResponse.json(
-      { error: `step_key "${body.step_key}" no encontrado en este caso.` },
+      { error: `step_key "${body.step_key}" not found in this case.` },
       { status: 400 },
     );
   }
@@ -145,7 +145,7 @@ export async function PATCH(
   if (insErr) {
     console.error("[api/sessions/responses] insert failed:", insErr);
     return NextResponse.json(
-      { error: "No se pudo guardar la respuesta." },
+      { error: "Could not save the response." },
       { status: 500 },
     );
   }

@@ -37,7 +37,7 @@ export function DemoScreensGallery({ slides }: { slides: GallerySlide[] }) {
         <button
           type="button"
           onClick={() => scrollBy(-1)}
-          aria-label="Anterior"
+          aria-label="Previous"
           className="grid h-9 w-9 place-items-center rounded-full bg-[var(--surface-2)] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
         >
           <AppleIcon name="chevronLeft" className="h-4 w-4" />
@@ -45,7 +45,7 @@ export function DemoScreensGallery({ slides }: { slides: GallerySlide[] }) {
         <button
           type="button"
           onClick={() => scrollBy(1)}
-          aria-label="Siguiente"
+          aria-label="Next"
           className="grid h-9 w-9 place-items-center rounded-full bg-[var(--surface-2)] text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
         >
           <AppleIcon name="chevronRight" className="h-4 w-4" />
@@ -70,7 +70,7 @@ export function DemoScreensGallery({ slides }: { slides: GallerySlide[] }) {
                 <span className="h-2.5 w-2.5 rounded-full bg-[var(--surface-3)]" />
               </span>
               <span className="ml-1 ts-caption-1 text-[var(--text-tertiary)]">
-                {s.section} · pantalla {i + 1} de {slides.length}
+                {s.section} · screen {i + 1} of {slides.length}
               </span>
             </div>
 

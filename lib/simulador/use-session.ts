@@ -74,7 +74,7 @@ export function useSession(
           throw new Error(
             typeof data?.error === "string"
               ? data.error
-              : "No se pudo iniciar la sesión.",
+              : "We could not start the session.",
           );
         }
 

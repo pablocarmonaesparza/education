@@ -30,8 +30,8 @@ interface ImageContent {
 
 const DEFAULT_IMAGE: ImageContent = {
   src: "",
-  alt: "Captura del dashboard de retención",
-  caption: "Dashboard de retención · semana 18 · caída del 12% en cohort de marzo.",
+  alt: "Retention dashboard screenshot",
+  caption: "Retention dashboard · week 18 · 12% drop in the March cohort.",
   aspectRatio: "16/9",
 };
 

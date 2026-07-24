@@ -57,7 +57,7 @@ export function BrandMark({ brand }: { brand: BrandKey }) {
 
 export function LevelMeter({ value, ariaLabel }: { value: Level5; ariaLabel: string }) {
   return (
-    <span className="inline-flex items-end gap-[2px]" aria-label={`${ariaLabel} ${value} de 5`}>
+    <span className="inline-flex items-end gap-[2px]" aria-label={`${ariaLabel} ${value} of 5`}>
       {[1, 2, 3, 4, 5].map((level) => (
         <span
           key={level}

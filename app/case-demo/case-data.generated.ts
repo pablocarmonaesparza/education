@@ -23,31 +23,31 @@ export const SLIDES: Slide[][] = [
   [
     {
       "blockId": "case_cover",
-      "title": "Relanzar la retención, con la base como llegó.",
-      "body": "Trabajas en **Aurora Retail**. Tu jefa te pidió **relanzar la campaña de retención** a los clientes de siempre antes del **viernes**. La base llegó con duplicados, gente que pidió darse de baja y correos que ya rebotan. Tú decides qué se limpia, qué le pides a la inteligencia artificial y qué le entregas a tu jefa.",
+      "title": "Relaunch retention with the list as it came in",
+      "body": "You work at **Aurora Retail**. Your manager asked you to **relaunch the retention campaign** to your regular customers before **Friday**. The list arrived with duplicates, people who unsubscribed, and emails that already bounce. You decide what gets cleaned, what you ask AI for, and what you hand your manager.",
       "caseContext": {
         "meta": {
           "profile": "Marketing",
-          "level": "N1 · Fundamentos",
+          "level": "N1 · Fundamentals",
           "estimatedMinutes": 12,
           "timerSeconds": 600,
           "timerDefaultOn": false,
           "tools": [
             {
               "kind": "ai",
-              "label": "Inteligencia artificial"
+              "label": "AI"
             },
             {
               "kind": "data",
-              "label": "Tablas"
+              "label": "Tables"
             },
             {
               "kind": "messaging",
-              "label": "Mensajería"
+              "label": "Messaging"
             },
             {
               "kind": "documents",
-              "label": "Documentos"
+              "label": "Documents"
             }
           ]
         }
@@ -55,81 +55,81 @@ export const SLIDES: Slide[][] = [
     },
     {
       "blockId": "reading_message",
-      "title": "Mariana te asigna el relanzamiento.",
-      "body": "Léelo completo. Lo que pide aquí es lo que vas a entregar al final.",
+      "title": "Megan assigns you the relaunch",
+      "body": "Read it all the way through. What she asks for here is what you deliver at the end.",
       "caseContext": {
         "message": {
           "channel": "email",
           "from": {
-            "name": "Mariana Robles",
-            "role": "Líder de Crecimiento · Aurora Retail"
+            "name": "Megan Rowe",
+            "role": "Growth Lead · Aurora Retail"
           },
           "to": {
-            "name": "Tú",
-            "role": "Analista de Crecimiento"
+            "name": "You",
+            "role": "Growth Analyst"
           },
-          "timestamp": "Hoy, 9:40",
-          "subject": "Relanzamos la campaña de retención esta semana",
-          "body": "Hola. Esta semana **relanzamos la campaña de retención** a nuestros clientes de siempre, y cierra el **viernes**. La base que te paso viene con problemas, así que el primer trabajo es dejarla limpia. Cuando la tengas, mándame una propuesta con tres cosas: los **segmentos** a los que les vas a escribir, el **mensaje base** que les llega, y las **métricas que vas a monitorear** para saber si funcionó. Cualquier duda me dices."
+          "timestamp": "Today, 9:40 AM",
+          "subject": "We relaunch the retention campaign this week",
+          "body": "Hi. This week we **relaunch the retention campaign** to our regular customers, and it closes **Friday**. The list I am sending you has problems, so the first job is to get it clean. Once you have it, send me a proposal with three things: the **segments** you will write to, the **base message** they receive, and the **metrics you will track** to know whether it worked. Any questions, let me know."
         }
       }
     },
     {
       "blockId": "reading_data_table",
-      "title": "Así llegó la base de clientes.",
-      "body": "Una muestra de la base, con los problemas típicos. En la sección siguiente decides qué hacer con cada cliente.",
+      "title": "This is how the customer list arrived",
+      "body": "A sample of the list, with the usual problems. In the next section you decide what to do with each customer.",
       "caseContext": {
         "table": {
-          "caption": "Muestra de la base de clientes (de 480)",
+          "caption": "Sample of the customer list (of 480)",
           "columns": [
             {
               "key": "nombre",
-              "label": "Cliente"
+              "label": "Customer"
             },
             {
               "key": "ultima_compra",
-              "label": "Última compra"
+              "label": "Last purchase"
             },
             {
               "key": "consentimiento",
-              "label": "Consentimiento"
+              "label": "Consent status"
             },
             {
               "key": "entrega",
-              "label": "Entrega"
+              "label": "Deliverability"
             },
             {
               "key": "valor",
-              "label": "Compras 12 meses"
+              "label": "12-month spend (USD)"
             }
           ],
           "rows": [
             {
-              "nombre": "Paola Restrepo",
-              "ultima_compra": "22 abr 2026",
-              "consentimiento": "Activo",
-              "entrega": "Ok",
+              "nombre": "Paula Reed",
+              "ultima_compra": "Apr 22, 2026",
+              "consentimiento": "Subscribed",
+              "entrega": "OK",
               "valor": "$8,400"
             },
             {
-              "nombre": "Renata Gómez",
-              "ultima_compra": "10 may 2026",
-              "consentimiento": "Revocado",
-              "entrega": "Ok",
-              "valor": "$12,900"
+              "nombre": "Renee Grant",
+              "ultima_compra": "May 10, 2026",
+              "consentimiento": "Privacy opt-out",
+              "entrega": "OK",
+              "valor": "$14,200"
             },
             {
-              "nombre": "Bruno Salas",
-              "ultima_compra": "15 mar 2026",
-              "consentimiento": "Activo",
-              "entrega": "Rebota",
+              "nombre": "Brian Sloan",
+              "ultima_compra": "Mar 15, 2026",
+              "consentimiento": "Subscribed",
+              "entrega": "Bounces",
               "valor": "$3,200"
             },
             {
-              "nombre": "Lía Fonseca",
-              "ultima_compra": "01 feb 2026",
-              "consentimiento": "Pidió baja",
-              "entrega": "Ok",
+              "nombre": "Lily Foster",
+              "ultima_compra": "Feb 1, 2026",
+              "consentimiento": "Unsubscribed",
+              "entrega": "OK",
               "valor": "$5,100"
             }
           ]
@@ -138,34 +138,34 @@ export const SLIDES: Slide[][] = [
     },
     {
       "blockId": "reading_kpi_cards",
-      "title": "Cómo le fue a la campaña de abril.",
-      "body": "Los números del último envío de retención, el del **18 de abril**. Son tu referencia para lo que vas a proponer.",
+      "title": "How the April campaign did",
+      "body": "The numbers from the last retention send, the one on **Apr 18**. They are your baseline for what you propose.",
       "caseContext": {
         "kpis": [
           {
-            "label": "Tasa de apertura",
+            "label": "Open rate",
             "value": "22%",
             "delta": {
               "direction": "flat",
-              "label": "estable desde el último envío"
+              "label": "flat since the last send"
             }
           },
           {
-            "label": "Recompra a 30 días",
+            "label": "30-day repeat purchase",
             "value": "3.4%",
             "delta": {
               "direction": "flat",
-              "label": "el número a superar",
-              "goodWhen": "más alto"
+              "label": "the number to beat",
+              "goodWhen": "higher"
             }
           },
           {
-            "label": "Quejas y bajas",
+            "label": "Complaints and unsubscribes",
             "value": "1.8%",
             "delta": {
               "direction": "flat",
-              "label": "el número a cuidar",
-              "goodWhen": "más bajo"
+              "label": "the number to protect",
+              "goodWhen": "lower"
             }
           }
         ]
@@ -173,21 +173,21 @@ export const SLIDES: Slide[][] = [
     },
     {
       "blockId": "reading_message",
-      "title": "Daniela, de Legal, ya levantó una alerta.",
-      "body": "Antes de tocar nada, lee lo que pasó con el envío anterior.",
+      "title": "Nicole, from Legal, already raised a flag",
+      "body": "Before you touch anything, read what happened with the last send.",
       "caseContext": {
         "message": {
           "channel": "ticket",
           "from": {
-            "name": "Daniela Ruiz",
-            "role": "Coordinadora Legal · Aurora Retail"
+            "name": "Nicole Barrett",
+            "role": "Privacy Counsel · Aurora Retail"
           },
           "to": {
             "name": "Marketing"
           },
-          "timestamp": "Hace 6 días",
-          "subject": "Quejas por correos a clientes que pidieron baja",
-          "body": "En el envío de abril llegaron quejas de **clientes que ya habían pedido darse de baja** y aun así recibieron el correo. Antes del próximo envío necesito que confirmes dos cosas: que **excluiste a todos los que pidieron baja** y que el correo lleva **un enlace visible para darse de baja**. Si algo no queda claro, escríbeme."
+          "timestamp": "6 days ago",
+          "subject": "Complaints from customers who had unsubscribed",
+          "body": "The April send drew complaints from **customers who had already unsubscribed** and got the email anyway. Before the next send I need you to confirm two things: that you **excluded everyone who unsubscribed or has a privacy opt-out on file**, and that the email carries **a visible unsubscribe link**, which commercial email rules require. If anything is unclear, write to me."
         }
       }
     }
@@ -195,150 +195,150 @@ export const SLIDES: Slide[][] = [
   [
     {
       "blockId": "categorize_rows",
-      "title": "Decide qué haces con cada cliente.",
-      "body": "Por cada cliente elige una acción. Algunas son claras por la política de datos; otras piden tu criterio. Regla dura: **quien pidió baja o revocó el consentimiento se excluye siempre**.",
+      "title": "Decide what you do with each customer",
+      "body": "Pick one action per customer. Some are clear from the data policy; others take your judgment. Hard rule: **anyone who unsubscribed or has a privacy opt-out on file is always excluded**.",
       "caseContext": {
         "actionStyle": "permission",
         "actions": [
           {
             "value": "usar",
-            "label": "Usar"
+            "label": "Use"
           },
           {
             "value": "anonimizar",
-            "label": "Anonimizar"
+            "label": "Anonymize"
           },
           {
             "value": "excluir",
-            "label": "Excluir"
+            "label": "Exclude"
           },
           {
             "value": "escalar",
-            "label": "Escalar"
+            "label": "Escalate"
           }
         ],
         "rows": [
           {
             "id": "c1",
-            "label": "Paola Restrepo · compró hace 5 semanas · abre seguido",
-            "example": "Cliente activa, sin problemas",
-            "hint": "Usar"
+            "label": "Paula Reed · bought 5 weeks ago · opens often",
+            "example": "Active customer, no issues",
+            "hint": "Use"
           },
           {
             "id": "c2",
-            "label": "Tomás Iglesias · no compra hace 6 meses · sigue abriendo",
-            "example": "Candidato a reactivación",
-            "hint": "Usar"
+            "label": "Tom Ingram · no purchase in 6 months · still opens",
+            "example": "Reactivation candidate",
+            "hint": "Use"
           },
           {
             "id": "c3",
-            "label": "Renata Gómez · consentimiento revocado",
-            "example": "Revocado, regla dura",
-            "hint": "Excluir"
+            "label": "Renee Grant · privacy opt-out on file · $14,200 USD over 12 months",
+            "example": "Top spender on the list, and the opt-out still wins. The money is the pull; the hard rule is the answer.",
+            "hint": "Exclude"
           },
           {
             "id": "c4",
-            "label": "Bruno Salas · su correo rebota",
-            "example": "Rebota, correo inválido",
-            "hint": "Excluir"
+            "label": "Brian Sloan · his email bounces",
+            "example": "Bounces, invalid address",
+            "hint": "Exclude"
           },
           {
             "id": "c5",
-            "label": "Lía Fonseca · pidió darse de baja",
-            "example": "Pidió baja, origen del ticket de Daniela",
-            "hint": "Excluir"
+            "label": "Lily Foster · unsubscribed",
+            "example": "Unsubscribed, source of Nicole's ticket",
+            "hint": "Exclude"
           }
         ]
       }
     },
     {
       "blockId": "categorize_rows",
-      "title": "Decide qué columnas le pasas a la inteligencia artificial.",
-      "body": "El mensaje lo va a redactar **Aurora Copiloto**, el asistente de la empresa. Por cada columna decide si se la pasas tal cual, transformada, o no se la pasas. Lo que escribas en el asistente sale de la base protegida.",
+      "title": "Decide which columns you pass to AI",
+      "body": "**Aurora Copilot**, the company assistant, will write the message. For each column, decide whether you pass it as is, transformed, or not at all. Whatever you type into the assistant leaves the protected list.",
       "caseContext": {
         "actionStyle": "neutral",
         "actions": [
           {
             "value": "va",
-            "label": "Va al modelo"
+            "label": "Goes to the model"
           },
           {
             "value": "transformada",
-            "label": "Va transformada"
+            "label": "Goes transformed"
           },
           {
             "value": "no_va",
-            "label": "No va"
+            "label": "Does not go"
           }
         ],
         "rows": [
           {
             "id": "f1",
-            "label": "Nombre del cliente",
-            "example": "Dato personal directo",
-            "hint": "No va o anonimizar"
+            "label": "Customer name",
+            "example": "Personal information, direct identifier",
+            "hint": "Does not go, or anonymize"
           },
           {
             "id": "f2",
-            "label": "Correo",
-            "example": "Identificador personal",
-            "hint": "No va"
+            "label": "Email",
+            "example": "Personal identifier under state privacy law",
+            "hint": "Does not go"
           },
           {
             "id": "f3",
-            "label": "Última compra (fecha)",
-            "example": "Señal útil, no identifica",
-            "hint": "Va"
+            "label": "Last purchase (date)",
+            "example": "Useful signal, does not identify anyone",
+            "hint": "Goes"
           },
           {
             "id": "f5",
-            "label": "Consentimiento",
-            "example": "Ya se usó para filtrar, no va al texto",
-            "hint": "No va"
+            "label": "Consent status",
+            "example": "Already used to filter, does not belong in the copy",
+            "hint": "Does not go"
           },
           {
             "id": "f6",
-            "label": "Compras de los últimos 12 meses",
-            "example": "Mejor como rango que como monto exacto",
-            "hint": "Va transformada"
+            "label": "12-month spend (USD)",
+            "example": "Better as a range than as an exact amount",
+            "hint": "Goes transformed"
           }
         ]
       }
     },
     {
       "blockId": "model_tradeoff_sliders",
-      "title": "Pondera qué pesa más al usar IA con datos de clientes.",
-      "body": "Para datos de clientes, ¿cuánto pesa la autonomía del modelo, la seguridad y el costo? Mueve los tres controles según tu criterio.",
+      "title": "Weigh what matters most when you use AI with customer data",
+      "body": "For customer data, how much weight goes to model autonomy, security, and cost? Move the three controls to match your judgment.",
       "caseContext": {
         "modelTradeoff": {
-          "prompt": "Para datos de clientes, ¿qué pesa más?",
+          "prompt": "For customer data, what matters most?",
           "sliderLabels": {
-            "autonomy": "Autonomía del modelo",
-            "security": "Seguridad de los datos",
-            "cost": "Costo"
+            "autonomy": "Model autonomy",
+            "security": "Data security",
+            "cost": "Cost"
           }
         }
       }
     },
     {
       "blockId": "ai_textfield_free",
-      "title": "Escríbele a Aurora Copiloto qué datos NO puede usar.",
-      "body": "Antes de pedirle el mensaje, déjale claro el límite. En una o dos frases, dile qué columnas no debe usar y cómo tratar lo personal. Esto es lo que revisarás después, cuando veas si lo respetó.",
+      "title": "Tell Aurora Copilot which data it cannot use",
+      "body": "Before you ask for the message, set the limit. In one or two sentences, tell it which columns it must not use and how to handle personal information. This is what you will review later, when you check whether it held the line.",
       "caseContext": {
-        "placeholder": "Dile al asistente qué datos no debe usar y cómo tratar lo personal..."
+        "placeholder": "Tell the assistant which data it must not use and how to handle personal information..."
       }
     },
     {
       "blockId": "reading_attachment",
-      "title": "La política de datos de Aurora, en tres reglas.",
-      "body": "Es corta. Estas tres reglas aplican a este envío. Vas a tener que sostenerlas si Legal pregunta.",
+      "title": "Aurora's data policy, in three rules",
+      "body": "It is short. These three rules apply to this send. You will have to stand behind them if Legal asks.",
       "caseContext": {
         "attachments": [
           {
-            "name": "Politica_de_datos_Aurora_Retail.pdf",
-            "size": "2 páginas",
+            "name": "Aurora_Retail_Data_Policy.pdf",
+            "size": "2 pages",
             "kind": "pdf",
-            "description": "Regla 1: si un correo rebota dos veces, se excluye. Regla 2: quien revocó el consentimiento o pidió baja se excluye siempre. Regla 3: a quien nunca confirmó su correo, máximo se le manda un correo para pedir permiso otra vez."
+            "description": "Rule 1: if an email bounces twice, it is excluded. Rule 2: anyone with a privacy opt-out on file, or who unsubscribed, is always excluded. Rule 3: anyone who never confirmed their email gets at most one re-permission email."
           }
         ]
       }
@@ -347,65 +347,65 @@ export const SLIDES: Slide[][] = [
   [
     {
       "blockId": "reading_passive",
-      "title": "Qué es Aurora Copiloto y qué no.",
-      "body": "**Aurora Copiloto** es el asistente de lenguaje aprobado de la empresa. Corre en la infraestructura de Aurora.\n\n**Lo que puede:** redactar, resumir y ajustar el tono de lo que le pegas.\n\n**Lo que no puede:** entrar a la base de clientes por su cuenta ni mandar correos. Solo ve lo que tú escribes en el prompt.\n\nUna cosa importante: a veces **inventa cifras** o mete datos que parecen del cliente aunque tú no se los diste. Por eso todo lo que devuelve hay que revisarlo."
+      "title": "What Aurora Copilot is and what it is not",
+      "body": "**Aurora Copilot** is the company's approved language assistant. It runs on Aurora's infrastructure.\n\n**What it can do:** draft, summarize, and adjust the tone of whatever you paste in.\n\n**What it cannot do:** reach into the customer list on its own, or send email. It only sees what you type into the prompt.\n\nOne thing to know: it sometimes **invents figures** or adds details that look like customer data even though you never gave them to it. That is why everything it returns has to be checked."
     },
     {
       "blockId": "ai_textfield_guided",
-      "title": "Arma el encargo para Aurora Copiloto.",
-      "body": "Vas a generar el **mensaje base** de la campaña. Define el objetivo, a quién le hablas y los límites. Sin esas tres decisiones, el asistente improvisa.",
+      "title": "Set up the request for Aurora Copilot",
+      "body": "You are going to generate the campaign's **base message**. Define the goal, who you are talking to, and the limits. Without those three decisions, the assistant improvises.",
       "caseContext": {
         "guided": {
-          "entrega": "Redacta el mensaje base de la campaña de retención, sin cifras inventadas y sin datos personales del cliente.",
+          "entrega": "Write the base message for the retention campaign, with no invented figures and no personal customer data.",
           "objetivos": [
-            "Recuperar a clientes que dejaron de comprar",
-            "Reforzar a los clientes que siguen comprando",
-            "Reactivar a quienes abren pero no compran",
-            "Avisar de un beneficio para clientes actuales"
+            "Win back customers who stopped buying",
+            "Reinforce customers who keep buying",
+            "Reactivate people who open but do not buy",
+            "Announce a benefit for current customers"
           ],
           "audiencias": [
-            "Clientes activos de alto valor",
-            "Clientes que no compran hace meses",
-            "Clientes que abren pero no compran",
-            "Toda la base junta"
+            "High-value active customers",
+            "Customers who have not bought in months",
+            "Customers who open but do not buy",
+            "The whole list at once"
           ],
           "limites": [
-            "No usar nombres ni correos en el texto",
-            "No inventar cifras ni resultados",
-            "Dejarlo como borrador para revisar",
-            "Incluir el enlace para darse de baja"
+            "Do not use names or emails in the copy",
+            "Do not invent figures or results",
+            "Leave it as a draft to review",
+            "Include the unsubscribe link"
           ]
         }
       }
     },
     {
       "blockId": "ai_output_review",
-      "title": "Aurora Copiloto devolvió este borrador.",
-      "body": "Es el primer intento. **Marca lo que no dejarías pasar** antes de pedir una corrección. Fíjate en cifras que no puedes sostener, en datos personales que no debían aparecer y en el tono.",
+      "title": "Aurora Copilot returned this draft",
+      "body": "It is the first attempt. **Flag what you would not let through** before you ask for a fix. Look for figures you cannot stand behind, personal data that should not be there, and tone.",
       "caseContext": {
         "segments": [
           {
             "id": "s1",
-            "text": "Hola, te extrañamos en Aurora Retail. Sabemos que tu última compra fue hace exactamente 47 días.",
-            "issue": "Dato personal exacto que no debía ir al modelo",
+            "text": "Hi, we have missed you at Aurora Retail. We know your last purchase was exactly 47 days ago.",
+            "issue": "Exact personal detail that should never have gone to the model",
             "flagIfMarked": "dato_sensible"
           },
           {
             "id": "s2",
-            "text": "Los clientes que vuelven gastan un 35% más en promedio.",
-            "issue": "Cifra inventada sin fuente",
+            "text": "Customers who come back spend 35% more on average.",
+            "issue": "Invented figure with no source",
             "flagIfMarked": "claim_no_verificado"
           },
           {
             "id": "s3",
-            "text": "Preparamos una selección pensada para ti y un beneficio si vuelves esta semana.",
-            "issue": "Oferta concreta y aceptable",
+            "text": "We put together a selection for you and a benefit if you come back this week.",
+            "issue": "Concrete offer, acceptable",
             "flagIfMarked": "frase_reutilizable"
           },
           {
             "id": "s4",
-            "text": "Si ya no quieres recibir estos correos, puedes darte de baja aquí.",
-            "issue": "Incluye el enlace de baja, correcto",
+            "text": "If you no longer want these emails, you can unsubscribe here.",
+            "issue": "Includes the unsubscribe link, correct",
             "flagIfMarked": "frase_reutilizable"
           }
         ]
@@ -413,40 +413,40 @@ export const SLIDES: Slide[][] = [
     },
     {
       "blockId": "ai_textfield_free",
-      "title": "Pídele la corrección.",
-      "body": "Escribe el siguiente encargo para Aurora Copiloto. Sé concreto: qué quita, qué cambia, qué deja. Aquí es donde el borrador se vuelve enviable.",
+      "title": "Ask for the fix",
+      "body": "Write the next request for Aurora Copilot. Be specific: what comes out, what changes, what stays. This is where the draft becomes sendable.",
       "caseContext": {
-        "placeholder": "Dile qué corregir del borrador anterior..."
+        "placeholder": "Tell it what to fix in the previous draft..."
       }
     },
     {
       "blockId": "ai_output_review",
-      "title": "Esta es la versión corregida.",
-      "body": "Aurora Copiloto aplicó tu encargo. **Revisa que de verdad arregló lo que pediste** y marca lo que aún no te convence. Ojo: al corregir, a veces vuelve a meter algo nuevo.",
+      "title": "This is the corrected version",
+      "body": "Aurora Copilot applied your request. **Check that it actually fixed what you asked for** and flag whatever still does not convince you. Watch out: when it fixes things, it sometimes slips in something new.",
       "caseContext": {
         "segments": [
           {
             "id": "v1",
-            "text": "Hola, en Aurora Retail preparamos algo para clientes como tú.",
-            "issue": "Quitó la fecha exacta, ahora habla en general",
+            "text": "Hi, at Aurora Retail we put something together for customers like you.",
+            "issue": "Dropped the exact date, now speaks in general terms",
             "flagIfMarked": "frase_reutilizable"
           },
           {
             "id": "v2",
-            "text": "Muchos clientes vuelven por nuestras temporadas nuevas.",
-            "issue": "Quitó el 35% inventado, ahora es una frase sin cifra",
+            "text": "A lot of customers come back for our new seasons.",
+            "issue": "Dropped the invented 35%, now it is a line with no figure",
             "flagIfMarked": "frase_reutilizable"
           },
           {
             "id": "v3",
-            "text": "Tenemos una selección para ti y un beneficio si vuelves esta semana.",
-            "issue": "Se mantuvo, está bien",
+            "text": "We have a selection for you and a benefit if you come back this week.",
+            "issue": "Kept, it is fine",
             "flagIfMarked": "frase_reutilizable"
           },
           {
             "id": "v4",
-            "text": "Además, ahora el 92% de los pedidos llega en menos de 48 horas.",
-            "issue": "El modelo metió una cifra nueva e inventada al corregir",
+            "text": "Also, 92% of orders now arrive in under 48 hours.",
+            "issue": "The model slipped in a new invented figure while fixing the old one",
             "flagIfMarked": "claim_no_verificado"
           }
         ]
@@ -456,32 +456,32 @@ export const SLIDES: Slide[][] = [
   [
     {
       "blockId": "ai_output_review",
-      "title": "Caza las cifras que no puedes sostener.",
-      "body": "El mensaje ya está más limpio, pero quedan **números**. Marca cada cifra que no podrías defender si Mariana o Legal te la cuestionan.",
+      "title": "Hunt the figures you cannot stand behind",
+      "body": "The message is cleaner now, but **numbers** are still in there. Flag every figure you could not defend if Megan or Legal pushed back.",
       "caseContext": {
         "segments": [
           {
             "id": "r1",
-            "text": "Más del 80% de nuestros clientes vuelve a comprar en tres meses.",
-            "issue": "Estadística sin fuente",
+            "text": "More than 80% of our customers buy again within three months.",
+            "issue": "Statistic with no source",
             "flagIfMarked": "claim_no_verificado"
           },
           {
             "id": "r2",
-            "text": "Tu categoría favorita tiene 200 productos nuevos esta temporada.",
-            "issue": "Cifra de catálogo inventada",
+            "text": "Your favorite category has 200 new products this season.",
+            "issue": "Invented catalog figure",
             "flagIfMarked": "claim_no_verificado"
           },
           {
             "id": "r3",
-            "text": "Tenemos una selección para ti y un beneficio si vuelves esta semana.",
-            "issue": "Frase sin cifra, aceptable",
+            "text": "We have a selection for you and a benefit if you come back this week.",
+            "issue": "Line with no figure, acceptable",
             "flagIfMarked": "frase_reutilizable"
           },
           {
             "id": "r4",
-            "text": "Si ya no quieres recibir estos correos, puedes darte de baja aquí.",
-            "issue": "Enlace de baja, correcto",
+            "text": "If you no longer want these emails, you can unsubscribe here.",
+            "issue": "Unsubscribe link, correct",
             "flagIfMarked": "frase_reutilizable"
           }
         ]
@@ -489,131 +489,131 @@ export const SLIDES: Slide[][] = [
     },
     {
       "blockId": "ai_comparison",
-      "title": "Elige cómo cierra el mensaje.",
-      "body": "Cuatro formas de cerrar. Elige la que le hablaría mejor a un cliente que ya te conoce.",
+      "title": "Pick how the message closes",
+      "body": "Four ways to close. Pick the one that would speak best to a customer who already knows you.",
       "caseContext": {
         "options": [
           {
             "id": "A",
-            "title": "Cierre 1",
-            "body": "Vuelve esta semana y aprovecha el beneficio. Compra aquí."
+            "title": "Closing 1",
+            "body": "Come back this week and take the benefit. Shop here."
           },
           {
             "id": "B",
-            "title": "Cierre 2",
-            "body": "Si quieres pasar a ver lo nuevo, aquí está tu beneficio. Cuando gustes."
+            "title": "Closing 2",
+            "body": "If you want to see what is new, your benefit is here. Whenever you like."
           },
           {
             "id": "C",
-            "title": "Cierre 3",
-            "body": "Te dejamos la selección por aquí. Si te late, el beneficio te espera."
+            "title": "Closing 3",
+            "body": "We are leaving the selection right here. If you like it, the benefit is waiting."
           },
           {
             "id": "D",
-            "title": "Cierre 4",
-            "body": "Gracias por seguir con nosotros. Aquí tienes una selección y un beneficio si decides volver."
+            "title": "Closing 4",
+            "body": "Thanks for staying with us. Here is a selection and a benefit if you decide to come back."
           }
         ]
       }
     },
     {
       "blockId": "reading_message",
-      "title": "Mariana revisó tu borrador.",
-      "body": "Te responde por chat.",
+      "title": "Megan reviewed your draft",
+      "body": "She replies over chat.",
       "caseContext": {
         "message": {
           "channel": "chat",
           "from": {
-            "name": "Mariana Robles",
-            "role": "Líder de Crecimiento"
+            "name": "Megan Rowe",
+            "role": "Growth Lead"
           },
           "to": {
-            "name": "Tú"
+            "name": "You"
           },
-          "timestamp": "Hace 10 minutos",
-          "body": "Va quedando bien. Dos cosas antes de que sigas: confirma que **sacaste a la gente que pidió baja** (es lo que pidió Daniela, la regla 2 de la política) y revisa que el correo deje **el enlace para darse de baja** bien visible. Si esas dos están, por mí avanza."
+          "timestamp": "10 minutes ago",
+          "body": "This is coming along. Two things before you go further: confirm you **took out the people who unsubscribed** (that is what Nicole asked for, rule 2 of the policy) and check that the email keeps **the unsubscribe link** clearly visible. If those two are in, go ahead as far as I am concerned."
         }
       }
     },
     {
       "blockId": "categorize_rows",
-      "title": "Última revisión del mensaje, línea por línea.",
-      "body": "Por cada parte del correo, decide si la dejas, la corriges o la quitas antes de mandar.",
+      "title": "Last pass on the message, line by line",
+      "body": "For each part of the email, decide whether you keep it, fix it, or cut it before sending.",
       "caseContext": {
         "actionStyle": "neutral",
         "actions": [
           {
             "value": "dejar",
-            "label": "Dejar"
+            "label": "Keep"
           },
           {
             "value": "corregir",
-            "label": "Corregir"
+            "label": "Fix"
           },
           {
             "value": "quitar",
-            "label": "Quitar"
+            "label": "Cut"
           }
         ],
         "rows": [
           {
             "id": "m1",
-            "label": "Asunto: Algo nuevo para ti en Aurora Retail",
-            "example": "Asunto claro, sin promesa falsa",
-            "hint": "Dejar"
+            "label": "Subject: Something new for you at Aurora Retail",
+            "example": "Clear subject, no false promise",
+            "hint": "Keep"
           },
           {
             "id": "m2",
-            "label": "Más del 80% de los clientes vuelve en tres meses",
-            "example": "Cifra inventada que ya marcaste",
-            "hint": "Quitar"
+            "label": "More than 80% of customers buy again within three months",
+            "example": "Invented figure you already flagged",
+            "hint": "Cut"
           },
           {
             "id": "m3",
-            "label": "Tenemos una selección para ti y un beneficio esta semana",
-            "example": "Oferta concreta y honesta",
-            "hint": "Dejar"
+            "label": "We have a selection for you and a benefit this week",
+            "example": "Concrete, honest offer",
+            "hint": "Keep"
           },
           {
             "id": "m4",
-            "label": "Saludo con el nombre completo del cliente",
-            "example": "Mejor un saludo general, sin el dato exacto",
-            "hint": "Corregir"
+            "label": "Greeting with the customer's full name",
+            "example": "Better a general greeting, without the exact detail",
+            "hint": "Fix"
           },
           {
             "id": "m5",
-            "label": "Enlace para darse de baja",
-            "example": "Lo pidió Legal, tiene que estar",
-            "hint": "Dejar"
+            "label": "Unsubscribe link",
+            "example": "Legal asked for it, it has to be there",
+            "hint": "Keep"
           }
         ]
       }
     },
     {
       "blockId": "ai_comparison",
-      "title": "Elige la versión final.",
-      "body": "Tres versiones del mensaje completo, ya con tus correcciones. Elige la que mandarías el lunes.",
+      "title": "Pick the final version",
+      "body": "Four versions of the full message, with your fixes in. Pick the one you would send Monday.",
       "caseContext": {
         "options": [
           {
             "id": "A",
-            "title": "Versión A",
-            "body": "Hola, en Aurora Retail preparamos una selección para ti y un beneficio si vuelves esta semana. Si ya no quieres estos correos, puedes darte de baja aquí."
+            "title": "Version A",
+            "body": "Hi, at Aurora Retail we put together a selection for you and a benefit if you come back this week. If you no longer want these emails, you can unsubscribe here."
           },
           {
             "id": "B",
-            "title": "Versión B",
-            "body": "Gracias por seguir con nosotros en Aurora Retail. Tenemos algo nuevo y un beneficio si decides pasar. Puedes darte de baja en este enlace cuando quieras."
+            "title": "Version B",
+            "body": "Thanks for staying with us at Aurora Retail. We have something new and a benefit if you decide to stop by. You can unsubscribe at this link whenever you want."
           },
           {
             "id": "C",
-            "title": "Versión C",
-            "body": "En Aurora Retail pensamos en ti: una selección y un beneficio esta semana. Si prefieres no recibir más correos, te das de baja aquí."
+            "title": "Version C",
+            "body": "At Aurora Retail we had you in mind: a selection and a benefit this week. If you would rather not get more emails, unsubscribe here."
           },
           {
             "id": "D",
-            "title": "Versión D",
-            "body": "Tu beneficio de cliente te espera esta semana en Aurora Retail. Pásate a ver la selección que armamos. Si ya no quieres estos correos, te das de baja en este enlace."
+            "title": "Version D",
+            "body": "Your customer benefit is waiting this week at Aurora Retail. Come see the selection we put together. If you no longer want these emails, unsubscribe at this link."
           }
         ]
       }
@@ -622,125 +622,125 @@ export const SLIDES: Slide[][] = [
   [
     {
       "blockId": "ai_comparison",
-      "title": "Elige a qué segmento le mandas primero.",
-      "body": "Cuatro formas de armar el segmento con los clientes que decidiste usar. Cada una tiene un pero. Elige cuál llevas a Mariana. Es el primer entregable: los **segmentos**.",
+      "title": "Pick which segment you send to first",
+      "body": "Four ways to build the segment out of the customers you decided to use. Each one has a catch. Pick the one you take to Megan. It is the first deliverable: the **segments**.",
       "caseContext": {
         "options": [
           {
             "id": "A",
-            "title": "Clientes activos de alto valor",
-            "body": "Los que compran seguido y gastan más. El pero: ya están comprando, el riesgo es cansarlos con otro correo."
+            "title": "High-value active customers",
+            "body": "The ones who buy often and spend the most. The catch: they are already buying, so the risk is wearing them out with another email."
           },
           {
             "id": "B",
-            "title": "Clientes por reactivar",
-            "body": "Los que abren los correos pero no compran hace meses. El reto es darles una razón concreta para volver, no solo decir que los extrañas."
+            "title": "Customers to reactivate",
+            "body": "They open the emails but have not bought in months. The challenge is giving them a concrete reason to come back, not just saying you miss them."
           },
           {
             "id": "C",
-            "title": "Toda la base limpia, sin segmentar",
-            "body": "Mandarle a todos los clientes usables. Es lo más rápido, pero el mismo mensaje no le habla igual a cada grupo."
+            "title": "The whole clean list, no segmentation",
+            "body": "Send to every usable customer. It is the fastest, but the same message does not speak to every group the same way."
           },
           {
             "id": "D",
-            "title": "Solo quienes compraron el último mes",
-            "body": "Los más recientes. Llegas seguro, pero te dejas fuera justo a los que querías reactivar."
+            "title": "Only people who bought in the last month",
+            "body": "The most recent ones. You will land for sure, but you leave out exactly the people you wanted to reactivate."
           }
         ]
       }
     },
     {
       "blockId": "ai_textfield_free",
-      "title": "Escribe el mensaje base que entregas.",
-      "body": "Es el segundo entregable: el **mensaje base** que pide Mariana, el texto completo que recibiría el segmento que elegiste. Escríbelo como lo mandarías, con el beneficio y el enlace de baja.",
+      "title": "Write the base message you deliver",
+      "body": "It is the second deliverable: the **base message** Megan asked for, the full text the segment you picked would receive. Write it the way you would send it, with the benefit and the unsubscribe link.",
       "caseContext": {
-        "placeholder": "Escribe el mensaje completo para el segmento elegido..."
+        "placeholder": "Write the full message for the segment you picked..."
       }
     },
     {
       "blockId": "categorize_rows",
-      "title": "Define qué métricas vas a monitorear.",
-      "body": "El tercer entregable. De esta lista, marca cuáles vas a vigilar después del envío y cuáles no te dicen nada para este caso.",
+      "title": "Define which metrics you will track",
+      "body": "The third deliverable. From this list, mark which ones you will watch after the send and which tell you nothing for this case.",
       "caseContext": {
         "actionStyle": "neutral",
         "actions": [
           {
             "value": "monitorear",
-            "label": "Monitorear"
+            "label": "Track"
           },
           {
             "value": "ignorar",
-            "label": "Ignorar"
+            "label": "Ignore"
           }
         ],
         "rows": [
           {
             "id": "met1",
-            "label": "Recompra a 30 días",
-            "example": "El objetivo del envío, hay que superar 3.4%",
-            "hint": "Monitorear"
+            "label": "30-day repeat purchase",
+            "example": "The goal of the send, it has to beat 3.4%",
+            "hint": "Track"
           },
           {
             "id": "met2",
-            "label": "Quejas y bajas",
-            "example": "La alarma de Legal, no debe pasar de 1.8%",
-            "hint": "Monitorear"
+            "label": "Complaints and unsubscribes",
+            "example": "Legal's alarm, it must not go above 1.8%",
+            "hint": "Track"
           },
           {
             "id": "met3",
-            "label": "Tasa de rebote",
-            "example": "Dice si la base quedó limpia",
-            "hint": "Monitorear"
+            "label": "Bounce rate",
+            "example": "Tells you whether the list came out clean",
+            "hint": "Track"
           },
           {
             "id": "met4",
-            "label": "Seguidores en redes sociales",
-            "example": "No tiene que ver con este envío",
-            "hint": "Ignorar"
+            "label": "Social media followers",
+            "example": "Nothing to do with this send",
+            "hint": "Ignore"
           },
           {
             "id": "met5",
-            "label": "Clics totales del sitio",
-            "example": "Muy general, no mide retención",
-            "hint": "Ignorar"
+            "label": "Total site clicks",
+            "example": "Too general, does not measure retention",
+            "hint": "Ignore"
           }
         ]
       }
     },
     {
       "blockId": "reading_passive",
-      "title": "Así llega el correo al cliente.",
-      "body": "Vista previa del correo final, como lo recibiría el segmento que elegiste.\n\n---\n\n**Asunto:** Algo nuevo para ti en Aurora Retail\n\nHola, en Aurora Retail preparamos una selección para ti y un beneficio si vuelves esta semana.\n\n**[ Ver la selección ]**\n\n*Si ya no quieres recibir estos correos, puedes darte de baja aquí.*"
+      "title": "This is how the email lands for the customer",
+      "body": "Preview of the final email, the way the segment you picked would receive it.\n\n---\n\n**Subject:** Something new for you at Aurora Retail\n\nHi, at Aurora Retail we put together a selection for you and a benefit if you come back this week.\n\n**[ See the selection ]**\n\n*If you no longer want these emails, you can unsubscribe here.*"
     },
     {
       "blockId": "tradeoff_decision_memo",
-      "title": "Cierra con tu recomendación para Mariana.",
-      "body": "Elige qué haces con el envío y escríbele el memo a Mariana. Es lo último: la decisión que vas a defender.",
+      "title": "Close with your recommendation for Megan",
+      "body": "Pick what you do with the send and write the memo to Megan. This is the last one: the decision you will have to defend.",
       "caseContext": {
         "decisions": [
           {
             "id": "lanzar_lunes",
-            "title": "Lanzar el lunes",
-            "detail": "Enviar la campaña a todo el segmento el lunes, según el plan. Beneficio: cumples la fecha que pidió Mariana. Costo: si algo quedó sin limpiar, el error llega a toda la base."
+            "title": "Launch Monday",
+            "detail": "Send the campaign to the whole segment on Monday, per the plan. Benefit: you hit the date Megan asked for. Cost: if anything was left unclean, the error reaches the whole list."
           },
           {
             "id": "piloto_controlado",
-            "title": "Piloto con un segmento",
-            "detail": "Enviar solo a una parte esta semana y medir antes de ampliar. Beneficio: cazas problemas en chico. Costo: llegas a menos clientes de entrada."
+            "title": "Pilot with one segment",
+            "detail": "Send to only part of the list this week and measure before expanding. Benefit: you catch problems small. Cost: you reach fewer customers up front."
           },
           {
             "id": "pausar_y_limpiar",
-            "title": "Pausar para terminar de limpiar",
-            "detail": "Detener el envío para cerrar la limpieza de la base. Beneficio: bajas el riesgo de datos. Costo: pierdes parte de la ventana de la semana."
+            "title": "Pause to finish cleaning",
+            "detail": "Stop the send to close out the list cleanup. Benefit: you lower the data risk. Cost: you lose part of the week's window."
           },
           {
             "id": "pausar_y_escalar",
-            "title": "Pausar y escalar a Legal",
-            "detail": "Subir las dudas a Mariana y Legal antes de enviar. Beneficio: respaldo formal. Costo: depende de su tiempo de respuesta."
+            "title": "Pause and escalate to Legal",
+            "detail": "Take the open questions to Megan and Legal before sending. Benefit: formal cover. Cost: it depends on their response time."
           }
         ],
-        "memoPlaceholder": "Escribe a Mariana: qué decidiste, por qué, y qué cuidaste de la base y de los datos...",
-        "memoAudience": "Mariana Robles · Líder de Crecimiento"
+        "memoPlaceholder": "Write to Megan: what you decided, why, and what you protected in the list and in the data...",
+        "memoAudience": "Megan Rowe · Growth Lead"
       }
     }
   ]

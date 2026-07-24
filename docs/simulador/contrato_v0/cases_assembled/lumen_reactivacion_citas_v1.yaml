@@ -1,14 +1,22 @@
 # Caso ensamblado · lumen_reactivacion_citas (autorado por Claude como el motor,
 # siguiendo el pipeline: biblia -> blueprint por receta N1 -> 25 slides).
+# Contenido relocalizado a EEUU (2026-07-16). Los identificadores NO cambian:
+# case_id, section id, slot, block_id, ids de fila/opcion/decision, flagIfMarked,
+# actions[].value, claves de columna y enums de BD siguen igual.
 # Biblia (hechos canonicos):
-#   Empresa: Lumen Salud (telemedicina, LATAM). Rol: Coordinador de Cumplimiento.
-#   Renata Solis: Directora de Operaciones Clinicas. Asigna y recibe. Nunca destinataria.
-#   Oscar Levano: Asesor de Privacidad. Levanta el ticket; su queja se cierra.
-#   Asistente Lumen: la IA. Redacta y ajusta tono; no consulta la base ni envia;
+#   Empresa: Lumen Health (telemedicina, EEUU). Rol: Compliance Coordinator.
+#   Rachel Sloan: Director of Clinical Operations. Asigna y recibe. Nunca destinataria.
+#   Owen Lane: Privacy Advisor. Levanta el ticket; su queja se cierra.
+#   Lumen Assistant: la IA. Redacta y ajusta tono; no consulta la base ni envia;
 #     puede inventar datos, hay que validar. Instrumento dado, no se elige.
-#   Destinatario del mensaje: SIEMPRE un segmento de pacientes. Nunca Renata.
+#   Destinatario del mensaje: SIEMPRE un segmento de pacientes. Nunca Rachel.
 #   Hoy lunes 1 de junio de 2026. Ultima campana 15 de abril. Deadline viernes 5 de junio.
 #   Metricas base: reactivacion de citas 4.2%, quejas/bajas 1.5%, rebote 2%.
+# Ancla regulatoria EEUU: HIPAA (PHI) para la regla dura de condicion de salud, y
+#   CAN-SPAM para el enlace de baja. NO CCPA/CPRA: el glosario §8.4 pide CCPA/CPRA,
+#   pero CCPA exime la PHI que maneja un covered entity (Cal. Civ. Code 1798.145(c)),
+#   y Lumen es telemedicina. Anclar esto en CCPA seria un error legal que justo el
+#   Compliance Coordinator que el caso mide deberia detectar. Desviacion reportada.
 
 case_assembly:
   case_id: lumen_reactivacion_citas
@@ -17,8 +25,8 @@ case_assembly:
   schema_version: 1.0.0
 
   meta:
-    level: "N1 · Fundamentos"
-    profile: "Cumplimiento"
+    level: "N1 · Foundations"
+    profile: "Compliance"
     profile_pack: legal_compliance_privacy
     estimated_minutes: 12
     timer_seconds: 600
@@ -26,318 +34,318 @@ case_assembly:
     tools: [ai, data, messaging, documents]
 
   manager_outcome:
-    primary_question: "¿Puede esta persona limpiar una lista de pacientes con criterio de privacidad y armar una reactivación de citas responsable, sin exponer datos de salud?"
-    assignment_brief: "Asigna este caso cuando quieras saber si alguien de Cumplimiento puede dejar limpia una lista de pacientes (consentimiento, rebotes, duplicados, datos de salud), pedirle a la inteligencia artificial un mensaje útil sin filtrar información sensible, revisar lo que devuelve y decidir si lanzar, pilotar o pausar. El resultado te dice si puede operar campañas con criterio o necesita práctica antes de tocar datos reales de pacientes."
-    business_metric: "reactivación de citas a 30 días"
-    risk_metric: "correos a pacientes que pidieron baja o uso de datos de salud sin transformar"
-    expected_signal: "distingue limpieza con criterio de atajo riesgoso"
+    primary_question: "Can this person clean a patient list with privacy judgment and build a responsible appointment reactivation, without exposing health data?"
+    assignment_brief: "Assign this case when you want to know whether someone in Compliance can clean up a patient list (consent, bounces, duplicates, health data), ask AI for a useful message without leaking sensitive information, review what comes back, and decide whether to launch, pilot, or pause. The result tells you whether they can run campaigns with judgment or need practice before touching real patient data."
+    business_metric: "30-day appointment reactivation"
+    risk_metric: "emails to patients who opted out, or health data used without transforming it"
+    expected_signal: "tells careful cleanup apart from a risky shortcut"
     expected_action: entrenar
     alternatives: [pilotar, pausar]
 
   sections:
 
     - id: contexto
-      name: "Contexto"
+      name: "Context"
       slides:
         - slot: 1
           block_id: case_cover
-          title: "Reactivar citas, con la lista como llegó."
-          body: "Trabajas en **Lumen Salud**. Tu jefa te pidió **reactivar las citas** de pacientes inactivos antes del **viernes 5 de junio**. La lista llegó con duplicados, gente que pidió darse de baja, correos que ya rebotan y, en algunos registros, **datos de salud** mezclados. Tú decides qué se limpia, qué le pides a la inteligencia artificial y qué le entregas a tu jefa."
+          title: "Reactivate appointments, with the list as it arrived"
+          body: "You work at **Lumen Health**. Your manager asked you to **reactivate appointments** for inactive patients before **Friday, June 5**. The list arrived with duplicates, people who asked to opt out, emails that already bounce and, in some records, **health data** mixed in. You decide what gets cleaned, what you ask AI for, and what you hand your manager."
           content:
             meta:
-              profile: "Cumplimiento"
-              level: "N1 · Fundamentos"
+              profile: "Compliance"
+              level: "N1 · Foundations"
               estimatedMinutes: 12
               timerSeconds: 600
               timerDefaultOn: false
               tools:
-                - { kind: ai, label: "Inteligencia artificial" }
-                - { kind: data, label: "Tablas" }
-                - { kind: messaging, label: "Mensajería" }
-                - { kind: documents, label: "Documentos" }
+                - { kind: ai, label: "AI" }
+                - { kind: data, label: "Tables" }
+                - { kind: messaging, label: "Messaging" }
+                - { kind: documents, label: "Documents" }
 
         - slot: 2
           block_id: reading_message
-          title: "Renata te asigna la reactivación."
-          body: "Léelo completo. Lo que pide aquí es lo que vas a entregar al final."
+          title: "Rachel assigns you the reactivation"
+          body: "Read it all the way through. What she asks for here is what you deliver at the end."
           content:
             message:
               channel: email
-              from: { name: "Renata Solís", role: "Directora de Operaciones Clínicas · Lumen Salud" }
-              to: { name: "Tú", role: "Coordinador de Cumplimiento" }
-              timestamp: "Hoy, 9:30"
-              subject: "Reactivamos citas esta semana"
-              body: "Hola. Esta semana **reactivamos las citas** de pacientes inactivos, y cierra el **viernes 5 de junio**. La lista que te paso viene con problemas, así que el primer trabajo es dejarla limpia y sin exponer datos de salud. Cuando la tengas, mándame una propuesta con tres cosas: los **segmentos** a los que les vas a escribir, el **mensaje base** que les llega, y las **métricas que vas a monitorear** para saber si funcionó."
+              from: { name: "Rachel Sloan", role: "Director of Clinical Operations · Lumen Health" }
+              to: { name: "You", role: "Compliance Coordinator" }
+              timestamp: "Today, 9:30 AM"
+              subject: "We reactivate appointments this week"
+              body: "Hi. This week we **reactivate appointments** for inactive patients, and it closes **Friday, June 5**. The list I am sending you has problems, so the first job is to get it clean, with no health data exposed. Once you have it, send me a proposal with three things: the **segments** you will write to, the **base message** they receive, and the **metrics you will monitor** to know if it worked."
 
         - slot: 3
           block_id: reading_data_table
-          title: "La lista de pacientes, como llegó."
-          body: "Ocho registros. Mira el **consentimiento**, la **entregabilidad** y si hay **condición de salud** anotada (ese dato no puede salir de aquí)."
+          title: "The patient list, as it arrived"
+          body: "Eight records. Look at **consent**, **deliverability**, and whether there is a **health condition** noted (that data does not leave this table)."
           content:
             table:
-              caption: "Lista de reactivación · 1 de junio de 2026"
+              caption: "Reactivation list · Jun 1, 2026"
               columns:
-                - { key: nombre, label: "Nombre" }
-                - { key: ultima_cita, label: "Última cita" }
-                - { key: consentimiento, label: "Consentimiento" }
-                - { key: entregabilidad, label: "Entregabilidad" }
-                - { key: condicion, label: "Condición anotada" }
+                - { key: nombre, label: "Name" }
+                - { key: ultima_cita, label: "Last appointment" }
+                - { key: consentimiento, label: "Consent" }
+                - { key: entregabilidad, label: "Deliverability" }
+                - { key: condicion, label: "Condition noted" }
               rows:
-                - { nombre: "Paula Restrepo", ultima_cita: "2026-03-10", consentimiento: "activo", entregabilidad: "ok", condicion: "ninguna" }
-                - { nombre: "Tomás Iglesias", ultima_cita: "2025-12-02", consentimiento: "activo", entregabilidad: "ok", condicion: "diabetes" }
-                - { nombre: "Lucía Fonseca", ultima_cita: "2026-04-01", consentimiento: "revocado", entregabilidad: "ok", condicion: "ninguna" }
-                - { nombre: "Bruno Salas", ultima_cita: "2026-02-18", consentimiento: "activo", entregabilidad: "rebota", condicion: "ninguna" }
-                - { nombre: "Mariela Cano", ultima_cita: "2026-01-20", consentimiento: "baja_solicitada", entregabilidad: "ok", condicion: "ninguna" }
-                - { nombre: "Iván Duarte", ultima_cita: "2026-03-22", consentimiento: "activo", entregabilidad: "ok", condicion: "ninguna" }
-                - { nombre: "Paula Restrepo", ultima_cita: "2026-03-10", consentimiento: "activo", entregabilidad: "ok", condicion: "ninguna" }
-                - { nombre: "Marcos Villa", ultima_cita: "2025-08-05", consentimiento: "nunca_confirmado", entregabilidad: "ok", condicion: "ninguna" }
+                - { nombre: "Paula Bennett", ultima_cita: "Mar 10, 2026", consentimiento: "active", entregabilidad: "ok", condicion: "none" }
+                - { nombre: "Thomas Ingram", ultima_cita: "Dec 2, 2025", consentimiento: "active", entregabilidad: "ok", condicion: "diabetes" }
+                - { nombre: "Laura Fowler", ultima_cita: "Apr 1, 2026", consentimiento: "revoked", entregabilidad: "ok", condicion: "none" }
+                - { nombre: "Brian Salter", ultima_cita: "Feb 18, 2026", consentimiento: "active", entregabilidad: "bounces", condicion: "none" }
+                - { nombre: "Maria Cannon", ultima_cita: "Jan 20, 2026", consentimiento: "opt-out requested", entregabilidad: "ok", condicion: "none" }
+                - { nombre: "Ian Doyle", ultima_cita: "Mar 22, 2026", consentimiento: "active", entregabilidad: "ok", condicion: "none" }
+                - { nombre: "Paula Bennett", ultima_cita: "Mar 10, 2026", consentimiento: "active", entregabilidad: "ok", condicion: "none" }
+                - { nombre: "Mark Vance", ultima_cita: "Aug 5, 2025", consentimiento: "never confirmed", entregabilidad: "ok", condicion: "none" }
 
         - slot: 4
           block_id: reading_kpi_cards
-          title: "Cómo venía la reactivación en abril."
-          body: "Estos son los números base. El primero es **el que hay que superar**."
+          title: "How reactivation ran in April"
+          body: "These are the baseline numbers. The first one is **the one to beat**."
           content:
             kpis:
-              - { label: "Reactivación de citas a 30 días", value: "4.2%", delta: { direction: flat, label: "el número a superar", goodWhen: "más alto" } }
-              - { label: "Quejas y bajas", value: "1.5%", delta: { direction: flat, label: "el número a cuidar", goodWhen: "más bajo" } }
-              - { label: "Rebote de correos", value: "2%", delta: { direction: flat, label: "higiene de la lista", goodWhen: "más bajo" } }
+              - { label: "30-day appointment reactivation", value: "4.2%", delta: { direction: flat, label: "the number to beat", goodWhen: "higher" } }
+              - { label: "Complaints and opt-outs", value: "1.5%", delta: { direction: flat, label: "the number to protect", goodWhen: "lower" } }
+              - { label: "Email bounce rate", value: "2%", delta: { direction: flat, label: "list hygiene", goodWhen: "lower" } }
 
         - slot: 5
           block_id: reading_message
-          title: "Óscar, de Privacidad, levanta una queja."
-          body: "Léelo. Esto fija una regla que no se negocia."
+          title: "Owen, from Privacy, raises a flag"
+          body: "Read it. This sets a rule that is not up for negotiation."
           content:
             message:
               channel: email
-              from: { name: "Óscar Lévano", role: "Asesor de Privacidad · Lumen Salud" }
-              to: { name: "Tú", role: "Coordinador de Cumplimiento" }
-              timestamp: "Hoy, 9:50"
-              subject: "Cuidado con la lista de pacientes"
-              body: "Vi que vas a reactivar citas. Dos cosas que reviso siempre: quien **revocó** o pidió **baja** se excluye, sin excepción. Y la **condición de salud** de un paciente jamás sale en un correo ni se le pasa a la inteligencia artificial. Si algo de eso se va, es un problema serio."
+              from: { name: "Owen Lane", role: "Privacy Advisor · Lumen Health" }
+              to: { name: "You", role: "Compliance Coordinator" }
+              timestamp: "Today, 9:50 AM"
+              subject: "Careful with the patient list"
+              body: "I saw you are reactivating appointments. Two things I always check: anyone who **revoked** consent or asked to **opt out** is excluded, no exceptions. And a patient's **health condition** never goes into an email and never goes to AI. That is protected health information under federal privacy rules. If any of that gets out, it is a serious problem."
 
     - id: datos
-      name: "Datos"
+      name: "Data"
       slides:
         - slot: 1
           block_id: categorize_rows
-          title: "Decide qué haces con cada paciente."
-          body: "Por cada uno: **usar**, **excluir** o **escalar** si tienes duda. Recuerda la regla de Óscar."
+          title: "Decide what you do with each patient"
+          body: "For each one: **use**, **exclude**, or **escalate** if you are unsure. Remember Owen's rule."
           content:
             actions:
-              - { value: usar, label: "Usar" }
-              - { value: excluir, label: "Excluir" }
-              - { value: escalar, label: "Escalar" }
+              - { value: usar, label: "Use" }
+              - { value: excluir, label: "Exclude" }
+              - { value: escalar, label: "Escalate" }
             rows:
-              - { id: p1, label: "Paula Restrepo · activo · entrega ok", hint: "Caso claro de usar.", example: "Activa, sin condición anotada." }
-              - { id: p3, label: "Lucía Fonseca · consentimiento revocado", hint: "Excluir siempre (regla de Óscar).", example: "Revocó el consentimiento." }
-              - { id: p4, label: "Bruno Salas · el correo rebota", hint: "Excluir por entregabilidad.", example: "Rebota, no llega." }
-              - { id: p5, label: "Mariela Cano · pidió baja", hint: "Excluir siempre.", example: "Baja solicitada." }
-              - { id: p7, label: "Paula Restrepo · segundo registro igual", hint: "Escalar: es duplicado.", example: "Aparece dos veces." }
+              - { id: p1, label: "Paula Bennett · active · delivers ok", hint: "Clear case to use.", example: "Active, no condition noted." }
+              - { id: p3, label: "Laura Fowler · consent revoked", hint: "Always exclude (Owen's rule).", example: "Revoked consent." }
+              - { id: p4, label: "Brian Salter · the email bounces", hint: "Exclude for deliverability.", example: "Bounces, does not arrive." }
+              - { id: p5, label: "Maria Cannon · asked to opt out", hint: "Always exclude.", example: "Opt-out requested." }
+              - { id: p7, label: "Paula Bennett · same record, second time", hint: "Escalate: it is a duplicate.", example: "Appears twice." }
 
         - slot: 2
           block_id: categorize_rows
-          title: "¿Qué campos puede ver la inteligencia artificial?"
-          body: "Para cada campo decide: **va al modelo**, **va transformado** o **no va**. Aplica la política de datos del caso."
+          title: "What fields can AI see?"
+          body: "For each field decide: **goes to the model**, **goes transformed**, or **does not go**. Apply the data policy for this case."
           content:
             actions:
-              - { value: va, label: "Va al modelo" }
-              - { value: transformado, label: "Va transformado" }
-              - { value: no_va, label: "No va" }
+              - { value: va, label: "Goes to the model" }
+              - { value: transformado, label: "Goes transformed" }
+              - { value: no_va, label: "Does not go" }
             rows:
-              - { id: c_nombre, label: "Nombre del paciente", hint: "Transformado: usa un saludo genérico.", example: "Mejor 'Hola' que el nombre completo." }
-              - { id: c_correo, label: "Correo electrónico", hint: "No va: el modelo no necesita el correo.", example: "El envío es aparte." }
-              - { id: c_condicion, label: "Condición de salud anotada", hint: "No va, nunca.", example: "Dato sensible, regla dura." }
-              - { id: c_ultima_cita, label: "Fecha de última cita", hint: "Va: ayuda a personalizar sin exponer.", example: "Sirve para el tono." }
+              - { id: c_nombre, label: "Patient name", hint: "Transformed: use a generic greeting.", example: "'Hi' is better than the full name." }
+              - { id: c_correo, label: "Email address", hint: "Does not go: the model does not need the email.", example: "Sending happens separately." }
+              - { id: c_condicion, label: "Health condition noted", hint: "Never goes. It is PHI.", example: "Sensitive data, hard rule." }
+              - { id: c_ultima_cita, label: "Last appointment date", hint: "Goes: helps personalize without exposing.", example: "Useful for tone." }
 
         - slot: 3
           block_id: model_tradeoff_sliders
-          title: "Ajusta el modelo para datos de pacientes."
-          body: "Mueve **autonomía**, **seguridad** y **costo** pensando en que son datos sensibles. No hay respuesta única, hay criterio."
+          title: "Tune the model for patient data"
+          body: "Move **autonomy**, **security**, and **cost** knowing this is sensitive data. There is no single answer, there is judgment."
           content:
             modelTradeoff:
-              prompt: "Para una lista de pacientes con datos de salud, ¿cuánta autonomía le das a la inteligencia artificial, cuánta seguridad exiges y cuánto costo aceptas?"
+              prompt: "For a patient list with health data, how much autonomy do you give AI, how much security do you require, and how much cost do you accept?"
               sliderLabels:
-                autonomy: "Autonomía"
-                security: "Seguridad"
-                cost: "Costo"
+                autonomy: "Autonomy"
+                security: "Security"
+                cost: "Cost"
 
         - slot: 4
           block_id: ai_textfield_free
-          title: "Escribe el límite de uso de datos."
-          body: "En una o dos líneas, dile al **Asistente Lumen** qué **no** puede usar de esta lista. Esto va a guiar lo que le pidas después."
+          title: "Write the data use limit"
+          body: "In one or two lines, tell **Lumen Assistant** what it **cannot** use from this list. This guides what you ask it for next."
           content:
-            placeholder: "Escribe aquí el límite de uso de datos, en una o dos líneas."
+            placeholder: "Write the data use limit here, in one or two lines."
 
         - slot: 5
           block_id: reading_attachment
-          title: "La política de datos de pacientes."
-          body: "Tres reglas. Las vas a citar más adelante."
+          title: "The patient data policy"
+          body: "Three rules. You will cite them later."
           content:
             attachments:
-              - { name: "Política de datos de pacientes · Lumen Salud", kind: pdf, description: "1) Quien revocó o pidió baja se excluye siempre. 2) Dos rebotes y se excluye. 3) La condición de salud nunca va al modelo ni al mensaje." }
+              - { name: "Patient data policy · Lumen Health", kind: pdf, description: "1) Anyone who revoked consent or asked to opt out is always excluded. 2) Two bounces and the record is excluded. 3) A health condition never goes to the model or into the message." }
 
     - id: ia
-      name: "IA"
+      name: "AI"
       slides:
         - slot: 1
           block_id: reading_passive
-          title: "Qué es y qué no es el Asistente Lumen."
-          body: "El **Asistente Lumen** es la inteligencia artificial aprobada de la empresa. **Redacta** y **ajusta el tono** con lo que le pegas. **No** consulta la lista de pacientes y **no** envía nada. Puede **inventar cifras** o **reintroducir datos** que quitaste, así que todo lo que devuelve hay que validarlo."
+          title: "What Lumen Assistant is and is not"
+          body: "**Lumen Assistant** is the company's approved AI. It **drafts** and **adjusts tone** with whatever you paste in. It does **not** query the patient list and does **not** send anything. It can **make up numbers** or **put back data** you removed, so everything it returns has to be verified."
 
         - slot: 2
           block_id: ai_textfield_guided
-          title: "Arma el pedido al Asistente Lumen."
-          body: "Define **objetivo**, **audiencia** y **límites** del mensaje que quieres. Sé claro con lo que no puede usar."
+          title: "Build your request to Lumen Assistant"
+          body: "Define the **goal**, **audience**, and **limits** of the message you want. Be clear about what it cannot use."
           content:
             guided:
               objetivos:
-                - "Invitar a reactivar una cita médica, con tono cálido y respetuoso."
-                - "Recordar que la consulta sigue disponible, sin presionar."
+                - "Invite them to reactivate a medical appointment, in a warm and respectful tone."
+                - "Remind them the visit is still available, without pressure."
               audiencias:
-                - "Pacientes inactivos con consentimiento activo."
-                - "Pacientes con cita vencida hace pocos meses."
+                - "Inactive patients with active consent."
+                - "Patients whose appointment lapsed a few months ago."
               limites:
-                - "No menciones ninguna condición de salud."
-                - "No incluyas el correo ni el nombre completo del paciente."
+                - "Do not mention any health condition."
+                - "Do not include the patient's email or full name."
 
         - slot: 3
           block_id: ai_output_review
-          title: "Primer borrador del Asistente Lumen."
-          body: "Léelo con cuidado y marca lo que esté mal. Fíjate en **datos sensibles**, **cifras inventadas** y **tono**."
+          title: "First draft from Lumen Assistant"
+          body: "Read it carefully and mark what is wrong. Watch for **sensitive data**, **made-up numbers**, and **tone**."
           content:
             segments:
-              - { id: r1, text: "Hola Tomás, vimos que tu control de diabetes quedó pendiente desde diciembre.", flagIfMarked: dato_sensible, issue: "Expone la condición de salud y el nombre." }
-              - { id: r2, text: "El 90% de nuestros pacientes ya volvió a agendar este mes.", flagIfMarked: claim_no_verificado, issue: "Cifra inventada, no está en los datos." }
-              - { id: r3, text: "Agenda ya o perderás tu lugar para siempre.", flagIfMarked: tono_agresivo, issue: "Tono de presión, inadecuado en salud." }
-              - { id: r4, text: "Estamos para acompañarte cuando lo necesites.", flagIfMarked: frase_reutilizable, issue: "Frase de relleno, no aporta." }
+              - { id: r1, text: "Hi Thomas, we saw that your diabetes check-in has been pending since December.", flagIfMarked: dato_sensible, issue: "Exposes the health condition and the name." }
+              - { id: r2, text: "90% of our patients have already rebooked this month.", flagIfMarked: claim_no_verificado, issue: "Made-up number, it is not in the data." }
+              - { id: r3, text: "Book now or you lose your spot for good.", flagIfMarked: tono_agresivo, issue: "Pressure tone, not appropriate in healthcare." }
+              - { id: r4, text: "We are here for you whenever you need us.", flagIfMarked: frase_reutilizable, issue: "Filler line, adds nothing." }
 
         - slot: 4
           block_id: ai_textfield_free
-          title: "Dile qué corregir."
-          body: "Escríbele al **Asistente Lumen** qué cambiar del borrador anterior. Apunta a lo que marcaste."
+          title: "Tell it what to fix"
+          body: "Write to **Lumen Assistant** with what to change in the draft above. Aim at what you marked."
           content:
-            placeholder: "Escribe aquí qué cambiar del borrador."
+            placeholder: "Write what to change in the draft here."
 
         - slot: 5
           block_id: ai_output_review
-          title: "Borrador revisado."
-          body: "Revisa de nuevo. Aquí lo importante es que el cambio **refleje tu instrucción** y que ya no haya datos sensibles."
+          title: "Revised draft"
+          body: "Review it again. What matters here is that the change **reflects your instruction** and that the sensitive data is gone."
           content:
             segments:
-              - { id: r5, text: "Hola, queríamos recordarte que tu consulta sigue disponible cuando quieras retomarla.", flagIfMarked: frase_reutilizable, issue: "Está bien; corregido respecto al anterior." }
-              - { id: r6, text: "Tu última cita fue hace unos meses; agendar de nuevo toma un minuto.", flagIfMarked: claim_no_verificado, issue: "Usa la fecha de cita, sin exponer salud." }
-              - { id: r7, text: "Sabemos que el 100% de los pacientes prefiere este horario.", flagIfMarked: claim_no_verificado, issue: "Otra cifra inventada que se coló." }
+              - { id: r5, text: "Hi, we wanted to remind you that your visit is still available whenever you want to pick it back up.", flagIfMarked: frase_reutilizable, issue: "This one is fine; corrected from the previous draft." }
+              - { id: r6, text: "Your last appointment was a few months ago; rebooking takes a minute.", flagIfMarked: claim_no_verificado, issue: "Uses the appointment date, without exposing health data." }
+              - { id: r7, text: "We know 100% of patients prefer this time slot.", flagIfMarked: claim_no_verificado, issue: "Another made-up number that slipped through." }
 
     - id: revision
-      name: "Revisión"
+      name: "Verification"
       slides:
         - slot: 1
           block_id: ai_output_review
-          title: "Caza las cifras que no puedes probar."
-          body: "Última pasada de revisión. Marca cualquier **número** que no salga de los datos del caso."
+          title: "Hunt the numbers you cannot prove"
+          body: "Last review pass. Mark any **number** that does not come from the case data."
           content:
             segments:
-              - { id: v1, text: "Nueve de cada diez pacientes vuelven en menos de una semana.", flagIfMarked: claim_no_verificado, issue: "No hay dato que lo respalde." }
-              - { id: v2, text: "Tu cita anterior fue en una fecha que tenemos registrada.", flagIfMarked: frase_reutilizable, issue: "Vago, pero no es una cifra falsa." }
-              - { id: v3, text: "Somos la clínica número uno del país.", flagIfMarked: claim_no_verificado, issue: "Afirmación sin sustento." }
+              - { id: v1, text: "Nine out of ten patients come back in less than a week.", flagIfMarked: claim_no_verificado, issue: "No data backs it up." }
+              - { id: v2, text: "Your previous appointment was on a date we have on record.", flagIfMarked: frase_reutilizable, issue: "Vague, but not a false number." }
+              - { id: v3, text: "We are the number one clinic in the country.", flagIfMarked: claim_no_verificado, issue: "Claim with nothing behind it." }
 
         - slot: 2
           block_id: ai_comparison
-          title: "Elige el cierre del mensaje."
-          body: "Cuatro versiones del cierre. Elige la que invita sin presionar y justifica en una línea."
+          title: "Choose the closing line"
+          body: "Four versions of the closing. Choose the one that invites without pressuring and justify it in one line."
           content:
             options:
-              - { id: A, title: "Cierre 1", body: "Cuando quieras retomar tu consulta, aquí estamos para ayudarte a agendar." }
-              - { id: B, title: "Cierre 2", body: "Agenda hoy mismo, los lugares se acaban rápido." }
-              - { id: C, title: "Cierre 3", body: "Ingrese al portal para reservar una cita." }
-              - { id: D, title: "Cierre 4", body: "No dejes tu salud para después, ya pasó demasiado tiempo." }
+              - { id: A, title: "Closing 1", body: "Whenever you want to pick your visit back up, we are here to help you book." }
+              - { id: B, title: "Closing 2", body: "Book today, spots fill up fast." }
+              - { id: C, title: "Closing 3", body: "Kindly access the patient portal to reserve an appointment." }
+              - { id: D, title: "Closing 4", body: "Do not put your health off any longer, too much time has passed already." }
 
         - slot: 3
           block_id: reading_message
-          title: "Renata responde con una condición."
-          body: "Te escribe por chat antes de cerrar."
+          title: "Rachel replies with one condition"
+          body: "She messages you on chat before you close."
           content:
             message:
               channel: chat
-              from: { name: "Renata Solís", role: "Directora de Operaciones Clínicas" }
-              to: { name: "Tú", role: "Coordinador de Cumplimiento" }
-              timestamp: "Hoy, 11:20"
-              subject: "Antes de lanzar"
-              body: "Bien. Antes de lanzar, dime cómo dejaste la lista y qué correo le llega al paciente. Quiero ver tu criterio antes de que salga."
+              from: { name: "Rachel Sloan", role: "Director of Clinical Operations" }
+              to: { name: "You", role: "Compliance Coordinator" }
+              timestamp: "Today, 11:20 AM"
+              subject: "Before we launch"
+              body: "Good. Before we launch, tell me how you left the list and what email the patient gets. I want to see your judgment before it goes out."
 
         - slot: 4
           block_id: categorize_rows
-          title: "Checklist del mensaje final."
-          body: "Por cada parte del correo: **dejar**, **corregir** o **quitar**."
+          title: "Final message checklist"
+          body: "For each part of the email: **keep**, **fix**, or **remove**."
           content:
             actions:
-              - { value: dejar, label: "Dejar" }
-              - { value: corregir, label: "Corregir" }
-              - { value: quitar, label: "Quitar" }
+              - { value: dejar, label: "Keep" }
+              - { value: corregir, label: "Fix" }
+              - { value: quitar, label: "Remove" }
             rows:
-              - { id: k_asunto, label: "Asunto: retomar tu consulta", hint: "Dejar: claro y sin presión." }
-              - { id: k_saludo, label: "Saludo genérico, sin nombre completo", hint: "Dejar." }
-              - { id: k_condicion, label: "Mención de la condición de salud", hint: "Quitar siempre." }
-              - { id: k_baja, label: "Enlace para darse de baja", hint: "Dejar: lo pidió Renata." }
+              - { id: k_asunto, label: "Subject: pick your visit back up", hint: "Keep: clear and no pressure." }
+              - { id: k_saludo, label: "Generic greeting, no full name", hint: "Keep." }
+              - { id: k_condicion, label: "Mention of the health condition", hint: "Always remove." }
+              - { id: k_baja, label: "Unsubscribe link", hint: "Keep: Rachel asked for it, and CAN-SPAM requires it." }
 
         - slot: 5
           block_id: ai_comparison
-          title: "Elige la versión final."
-          body: "Con el feedback de Renata, elige el mensaje que entregarías. Justifica en una línea."
+          title: "Choose the final version"
+          body: "With Rachel's feedback, choose the message you would deliver. Justify it in one line."
           content:
             options:
-              - { id: A, title: "Versión 1", body: "Hola, tu consulta sigue disponible cuando quieras retomarla. Agendar toma un minuto. Si prefieres no recibir estos correos, puedes darte de baja aquí." }
-              - { id: B, title: "Versión 2", body: "Hola, tu consulta sigue disponible. Agenda cuando quieras." }
-              - { id: C, title: "Versión 3", body: "Hola, retomemos el seguimiento de tu condición; agenda tu cita." }
-              - { id: D, title: "Versión 4", body: "Hola, agenda ya antes de perder tu lugar; es importante." }
+              - { id: A, title: "Version 1", body: "Hi, your visit is still available whenever you want to pick it back up. Booking takes a minute. If you would rather not get these emails, you can unsubscribe here." }
+              - { id: B, title: "Version 2", body: "Hi, your visit is still available. Book whenever you want." }
+              - { id: C, title: "Version 3", body: "Hi, let's pick your condition follow-up back up; book your appointment." }
+              - { id: D, title: "Version 4", body: "Hi, book now before you lose your spot; this matters." }
 
     - id: cierre
-      name: "Cierre"
+      name: "Close"
       slides:
         - slot: 1
           block_id: ai_comparison
-          title: "Elige el segmento al que le escribes."
-          body: "Cuatro segmentos posibles. Elige al que le escribirías y di en una línea por qué."
+          title: "Choose the segment you write to"
+          body: "Four possible segments. Choose the one you would write to and say why in one line."
           content:
             options:
-              - { id: A, title: "Inactivos recientes", body: "Pacientes con consentimiento activo y entrega correcta; conviene cuidar la frecuencia de correos." }
-              - { id: B, title: "Cita vencida hace meses", body: "Pacientes reactivables; que abran no significa que agenden." }
-              - { id: C, title: "Sin confirmar", body: "Pacientes que nunca confirmaron su consentimiento." }
-              - { id: D, title: "Todos juntos", body: "Todos los registros recibidos en la lista original, sin filtrar." }
+              - { id: A, title: "Recently inactive", body: "Patients with active consent and good deliverability; worth watching how often they get emails." }
+              - { id: B, title: "Appointment lapsed months ago", body: "Reactivatable patients; opening does not mean booking." }
+              - { id: C, title: "Never confirmed", body: "Patients who never confirmed their consent." }
+              - { id: D, title: "All together", body: "Every record received in the original list, unfiltered." }
 
         - slot: 2
           block_id: ai_textfield_free
-          title: "Escribe el mensaje base."
-          body: "Escribe el **mensaje base completo** para el segmento que elegiste. Sin datos de salud, sin cifras inventadas, con enlace de baja."
+          title: "Write the base message"
+          body: "Write the **full base message** for the segment you chose. No health data, no made-up numbers, with an unsubscribe link."
           content:
-            placeholder: "Escribe aquí el mensaje que recibiría el paciente."
+            placeholder: "Write the message the patient would receive here."
 
         - slot: 3
           block_id: categorize_rows
-          title: "Define qué métricas vas a monitorear."
-          body: "Por cada métrica: **monitorear** o **ignorar**. Estas cierran la promesa a Renata."
+          title: "Define the metrics you will monitor"
+          body: "For each metric: **monitor** or **ignore**. These close the promise you made to Rachel."
           content:
             actions:
-              - { value: monitorear, label: "Monitorear" }
-              - { value: ignorar, label: "Ignorar" }
+              - { value: monitorear, label: "Monitor" }
+              - { value: ignorar, label: "Ignore" }
             rows:
-              - { id: m_react, label: "Reactivación de citas a 30 días (superar 4.2%)", hint: "Monitorear: es el objetivo." }
-              - { id: m_baja, label: "Quejas y bajas (alarma sobre 1.5%)", hint: "Monitorear: es el riesgo." }
-              - { id: m_rebote, label: "Rebote de correos (higiene sobre 2%)", hint: "Monitorear." }
-              - { id: m_clicks, label: "Color del botón del correo", hint: "Ignorar: no es señal." }
+              - { id: m_react, label: "30-day appointment reactivation (beat 4.2%)", hint: "Monitor: it is the goal." }
+              - { id: m_baja, label: "Complaints and opt-outs (alarm above 1.5%)", hint: "Monitor: it is the risk." }
+              - { id: m_rebote, label: "Email bounce rate (hygiene above 2%)", hint: "Monitor." }
+              - { id: m_clicks, label: "Color of the button in the email", hint: "Ignore: it is not a signal." }
 
         - slot: 4
           block_id: reading_passive
-          title: "Vista previa del correo final."
-          body: "Así quedaría el correo al segmento que elegiste, con el **enlace de baja** visible."
+          title: "Final email preview"
+          body: "This is how the email to the segment you chose would look, with the **unsubscribe link** visible."
 
         - slot: 5
           block_id: tradeoff_decision_memo
-          title: "Tu decisión, y por qué."
-          body: "Es lo último: la decisión que vas a defender ante Renata, con su costo y su beneficio."
+          title: "Your decision, and why"
+          body: "This is the last one: the decision you will defend to Rachel, with its cost and its benefit."
           content:
             decisions:
-              - { id: lanzar_lunes, title: "Lanzar ya", detail: "Enviar a todo el segmento hoy. Beneficio: rapidez. Costo: si la limpieza falló, expones datos o escribes a quien pidió baja." }
-              - { id: piloto_controlado, title: "Pilotar primero", detail: "Enviar a una parte y medir 24 horas. Beneficio: cazas problemas a tiempo. Costo: un día más." }
-              - { id: pausar_y_limpiar, title: "Pausar y limpiar", detail: "Detener hasta cerrar la lista. Beneficio: cero riesgo. Costo: pierdes la ventana de la semana." }
-              - { id: pausar_y_escalar, title: "Pausar y escalar a Óscar", detail: "Subir las dudas a Privacidad antes de enviar. Beneficio: respaldo formal. Costo: depende de su tiempo." }
+              - { id: lanzar_lunes, title: "Launch now", detail: "Send to the whole segment today. Benefit: speed. Cost: if the cleanup failed, you expose data or write to someone who opted out." }
+              - { id: piloto_controlado, title: "Pilot first", detail: "Send to a slice and measure for 24 hours. Benefit: you catch problems in time. Cost: one more day." }
+              - { id: pausar_y_limpiar, title: "Pause and clean", detail: "Stop until the list is closed out. Benefit: zero risk. Cost: you lose this week's window." }
+              - { id: pausar_y_escalar, title: "Pause and escalate to Owen", detail: "Take the open questions to Privacy before sending. Benefit: formal backing. Cost: depends on his availability." }

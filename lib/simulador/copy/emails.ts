@@ -1,12 +1,17 @@
 /**
- * Email templates transaccionales — 8 templates para v1.
+ * Email templates transaccionales — 9 templates para v1.
  *
  * Implementa B7-002 (claude entrega 8 templates; codex integra con SendGrid).
  *
- * Voz: español neutro LATAM corporate. Lowercase en subjects y bodies salvo
- * nombres propios y comienzo de frase. Cero AI slop. Cita siempre fuente
- * para datos. Cero "Hola {first_name}!" con exclamación — frío profesional
+ * Voz: inglés de negocios de EEUU (glosario 00_EN_GLOSSARY.md). Sentence case
+ * en subjects y CTAs. Sin em-dash en body. Cero AI slop. Cita siempre fuente
+ * para datos. Cero "Hi {first_name}!" con exclamación — frío profesional
  * sin ser corporativo aburrido.
+ *
+ * Vocabulario canónico: assessment (no "diagnostic"), judgment (no "criteria"),
+ * participant (no "student"), practice (no "lesson"/"course"). Los valores de
+ * BD (pilotar/entrenar/pausar/escalar, A/M/B) se muestran vía capa de display:
+ * Pilot / Coach / Pause / Escalate · High / Medium / Low.
  *
  * Cada template tiene:
  *   - subject (≤60 chars)
@@ -22,268 +27,298 @@ export const emailTemplates = {
   // 1. SIGNUP WELCOME — primer signin post-signup
   // ============================================================================
   signup_welcome: {
-    subject: "Empezaste tu cuenta en Itera",
-    preheader: "Próximo paso: configura tu organización en 30 segundos.",
-    body_text: `Hola {full_name},
+    subject: "Your Itera account is active",
+    preheader: "Next step: set up your organization in 30 seconds.",
+    body_text: `Hi {full_name},
 
-Listo, tu cuenta en Itera está activa.
+Your Itera account is active.
 
-El siguiente paso es configurar tu organización: nombre, equipo y los emails de las personas a quienes vas a invitar al diagnóstico.
+Next, set up your organization: the name, the team, and the email addresses of the people you want to invite to the assessment.
 
-Empezar onboarding: {onboarding_url}
+Start onboarding: {onboarding_url}
 
-Si tienes preguntas, responde este email — llega directo al equipo.
+If you have questions, reply to this email. It goes straight to the team.
 
 — Itera`,
-    body_html: `<p>Hola <strong>{full_name}</strong>,</p>
-<p>Listo, tu cuenta en Itera está activa.</p>
-<p>El siguiente paso es configurar tu organización: nombre, equipo y los emails de las personas a quienes vas a invitar al diagnóstico.</p>
-<p><a href="{onboarding_url}" class="cta">Empezar onboarding</a></p>
-<p style="color:#777">Si tienes preguntas, responde este email — llega directo al equipo.</p>`,
+    body_html: `<p>Hi <strong>{full_name}</strong>,</p>
+<p>Your Itera account is active.</p>
+<p>Next, set up your organization: the name, the team, and the email addresses of the people you want to invite to the assessment.</p>
+<p><a href="{onboarding_url}" class="cta">Start onboarding</a></p>
+<p style="color:#777">If you have questions, reply to this email. It goes straight to the team.</p>`,
   },
 
   // ============================================================================
   // 2. INVITATION — buyer invita a empleado/colega
   // ============================================================================
   invitation: {
-    subject: "{inviter_name} te invitó al diagnóstico de IA de {org_name}",
+    subject: "{inviter_name} invited you to the {org_name} AI assessment",
     preheader:
-      "Una sesión de ~20 minutos. Mide tu criterio operativo al usar IA en trabajo real.",
-    body_text: `Hola,
+      "A 20 minute session. It measures your judgment when you use AI on real work.",
+    body_text: `Hi,
 
-{inviter_name} ({inviter_role}) te invitó al diagnóstico operativo de Itera para el equipo de {team_name} en {org_name}.
+{inviter_name} ({inviter_role}) invited you to the Itera assessment for the {team_name} team at {org_name}.
 
-Qué es: una sesión de ~20 minutos donde enfrentas un caso real de trabajo y demuestras cómo decides cuando usas IA bajo presión.
+What it is: a 20 minute session where you work a real case and show how you decide when you use AI under pressure.
 
-Qué NO es: un examen de conocimiento. No medimos si "sabes IA". Medimos qué hace tu equipo cuando importa.
+What it is not: a knowledge test. We do not measure whether you "know AI". We measure what your team does when it counts.
 
-Aceptar invitación: {accept_url}
+Accept invitation: {accept_url}
 
-Tu sesión es individual y confidencial — el reporte va a tu manager, pero las decisiones específicas que tomes solo las ves tú y el sistema de evaluación de Itera.
+Your session is individual and confidential. The report goes to your manager, but the specific decisions you make are seen only by you and the Itera assessment system.
 
-Cualquier duda, responde este email.
+If you have questions, reply to this email.
 
 — Itera`,
-    body_html: `<p>Hola,</p>
-<p><strong>{inviter_name}</strong> ({inviter_role}) te invitó al diagnóstico operativo de Itera para el equipo de <strong>{team_name}</strong> en <strong>{org_name}</strong>.</p>
-<p><strong>Qué es:</strong> una sesión de ~20 minutos donde enfrentas un caso real de trabajo y demuestras cómo decides cuando usas IA bajo presión.</p>
-<p><strong>Qué NO es:</strong> un examen de conocimiento. No medimos si "sabes IA". Medimos qué hace tu equipo cuando importa.</p>
-<p><a href="{accept_url}" class="cta">Aceptar invitación</a></p>
-<p style="color:#777">Tu sesión es individual y confidencial — el reporte va a tu manager, pero las decisiones específicas que tomes solo las ves tú y el sistema de evaluación de Itera.</p>
-<p style="color:#777">Cualquier duda, responde este email.</p>`,
+    body_html: `<p>Hi,</p>
+<p><strong>{inviter_name}</strong> ({inviter_role}) invited you to the Itera assessment for the <strong>{team_name}</strong> team at <strong>{org_name}</strong>.</p>
+<p><strong>What it is:</strong> a 20 minute session where you work a real case and show how you decide when you use AI under pressure.</p>
+<p><strong>What it is not:</strong> a knowledge test. We do not measure whether you "know AI". We measure what your team does when it counts.</p>
+<p><a href="{accept_url}" class="cta">Accept invitation</a></p>
+<p style="color:#777">Your session is individual and confidential. The report goes to your manager, but the specific decisions you make are seen only by you and the Itera assessment system.</p>
+<p style="color:#777">If you have questions, reply to this email.</p>`,
   },
 
   // ============================================================================
   // 3. INVITATION ACCEPTED — al inviter cuando alguien acepta
   // ============================================================================
   invitation_accepted: {
-    subject: "{invitee_name} aceptó tu invitación a Itera",
-    preheader: "{accepted_count}/{total_invited} aceptaron. Te avisamos cuando completen.",
-    body_text: `Hola {inviter_name},
+    subject: "{invitee_name} accepted your Itera invitation",
+    preheader: "{accepted_count}/{total_invited} accepted. We'll tell you when they finish.",
+    body_text: `Hi {inviter_name},
 
-{invitee_name} ({invitee_email}) aceptó la invitación al diagnóstico de Itera.
+{invitee_name} ({invitee_email}) accepted the invitation to the Itera assessment.
 
-Progreso del cohorte:
-- Invitados: {total_invited}
-- Aceptados: {accepted_count}
-- Pendientes: {pending_count}
+Cohort progress:
+- Invited: {total_invited}
+- Accepted: {accepted_count}
+- Pending: {pending_count}
 
-Cuando completen sus sesiones, recibirás un email por persona con su reporte ejecutivo. El dashboard agregado del equipo está disponible aquí: {dashboard_url}
+When they finish their sessions, you'll get one email per person with their executive report. The team dashboard is here: {dashboard_url}
 
 — Itera`,
-    body_html: `<p>Hola <strong>{inviter_name}</strong>,</p>
-<p><strong>{invitee_name}</strong> ({invitee_email}) aceptó la invitación al diagnóstico de Itera.</p>
-<p><strong>Progreso del cohorte:</strong></p>
+    body_html: `<p>Hi <strong>{inviter_name}</strong>,</p>
+<p><strong>{invitee_name}</strong> ({invitee_email}) accepted the invitation to the Itera assessment.</p>
+<p><strong>Cohort progress:</strong></p>
 <ul>
-  <li>Invitados: {total_invited}</li>
-  <li>Aceptados: {accepted_count}</li>
-  <li>Pendientes: {pending_count}</li>
+  <li>Invited: {total_invited}</li>
+  <li>Accepted: {accepted_count}</li>
+  <li>Pending: {pending_count}</li>
 </ul>
-<p>Cuando completen sus sesiones, recibirás un email por persona con su reporte ejecutivo.</p>
-<p><a href="{dashboard_url}" class="cta">Ver dashboard del equipo</a></p>`,
+<p>When they finish their sessions, you'll get one email per person with their executive report.</p>
+<p><a href="{dashboard_url}" class="cta">View team dashboard</a></p>`,
   },
 
   // ============================================================================
   // 4. CASE ASSIGNED — empleado recibe asignación nueva
   // ============================================================================
   case_assigned: {
-    subject: "Tienes un caso asignado en Itera — {case_title}",
-    preheader: "~{duration_min} minutos. Cuando tengas un bloque tranquilo.",
-    body_text: `Hola {full_name},
+    // Subject corto a propósito: {case_title} puede ser largo y el límite es 60.
+    subject: "Your Itera case: {case_title}",
+    preheader: "About {duration_min} minutes. Do it when you have a quiet block.",
+    body_text: `Hi {full_name},
 
-{manager_name} te asignó un caso para el diagnóstico de IA del equipo:
+{manager_name} assigned you a case for the team's AI assessment:
 
-Caso: {case_title}
-Duración estimada: ~{duration_min} minutos
-Sin interrupciones recomendado
+Case: {case_title}
+Estimated time: about {duration_min} minutes
+Best done without interruptions
 
-Recomendamos hacerlo cuando tengas un bloque tranquilo. Una vez empezado, lo ideal es completarlo sin pausas largas — el sistema mide cómo decides bajo presión real, así que las interrupciones distorsionan.
+Do it when you have a quiet block. Once you start, finish it without long breaks. The system measures how you decide under real pressure, so interruptions distort the result.
 
-Empezar caso: {case_url}
+Start case: {case_url}
 
-Si necesitas más tiempo o tienes preguntas, responde a {manager_email}.
+If you need more time or have questions, reply to {manager_email}.
 
 — Itera`,
-    body_html: `<p>Hola <strong>{full_name}</strong>,</p>
-<p><strong>{manager_name}</strong> te asignó un caso para el diagnóstico de IA del equipo:</p>
+    body_html: `<p>Hi <strong>{full_name}</strong>,</p>
+<p><strong>{manager_name}</strong> assigned you a case for the team's AI assessment:</p>
 <ul>
-  <li><strong>Caso:</strong> {case_title}</li>
-  <li><strong>Duración estimada:</strong> ~{duration_min} minutos</li>
-  <li>Sin interrupciones recomendado</li>
+  <li><strong>Case:</strong> {case_title}</li>
+  <li><strong>Estimated time:</strong> about {duration_min} minutes</li>
+  <li>Best done without interruptions</li>
 </ul>
-<p>Recomendamos hacerlo cuando tengas un bloque tranquilo. Una vez empezado, lo ideal es completarlo sin pausas largas — el sistema mide cómo decides bajo presión real, así que las interrupciones distorsionan.</p>
-<p><a href="{case_url}" class="cta">Empezar caso</a></p>
-<p style="color:#777">Si necesitas más tiempo o tienes preguntas, responde a {manager_email}.</p>`,
+<p>Do it when you have a quiet block. Once you start, finish it without long breaks. The system measures how you decide under real pressure, so interruptions distort the result.</p>
+<p><a href="{case_url}" class="cta">Start case</a></p>
+<p style="color:#777">If you need more time or have questions, reply to {manager_email}.</p>`,
   },
 
   // ============================================================================
   // 5. REPORT READY EMPLOYEE — tu reporte está listo
   // ============================================================================
   report_ready_employee: {
-    subject: "Tu reporte de Itera está listo",
+    subject: "Your Itera report is ready",
     preheader:
-      "Banda {overall_band}. Práctica sugerida según los gaps identificados.",
-    body_text: `Hola {full_name},
+      "Overall band {overall_band}. Suggested practice based on the gaps we found.",
+    body_text: `Hi {full_name},
 
-Listo el reporte de tu sesión en Itera.
+Your Itera session report is ready.
 
-Itera midió tu criterio operativo al usar IA (no tu conocimiento de IA). El reporte traduce esa medición a bandas por dimensión + recomendación accionable para tu manager.
+Itera measured your judgment when you use AI, not your knowledge of AI. The report turns that measurement into a band per dimension plus a recommendation your manager can act on.
 
-Resumen ejecutivo:
-- Banda general: {overall_band}
-- Dimensiones evaluadas: contexto, datos, ejecución con IA, validación, juicio, impacto
-- Recomendación: {recommendation_action}
+Executive summary:
+- Overall band: {overall_band}
+- Dimensions assessed: context, data handling, AI execution, verification, judgment, impact
+- Recommendation: {recommendation_action}
 
-Importante: el diagnóstico midió tu criterio sin enseñar respuestas. Lo que sigue son las prácticas correctivas (practice beats) — vienen después, no durante. Cada práctica toma ~2 minutos y corrige un gap específico.
+One thing worth knowing: the assessment measured your judgment without teaching you the answers. The targeted practice comes after, not during. Each practice takes about 2 minutes and closes one specific gap.
 
-Ver reporte completo: {report_url}
-Empezar práctica sugerida: {practice_url}
+View full report: {report_url}
+Start suggested practice: {practice_url}
 
-Tu reporte es confidencial entre tú y tu manager autorizado.
+Your report is confidential between you and your authorized manager.
 
 — Itera`,
-    body_html: `<p>Hola <strong>{full_name}</strong>,</p>
-<p>Listo el reporte de tu sesión en Itera.</p>
-<p>Itera midió tu <strong>criterio operativo</strong> al usar IA (no tu conocimiento de IA). El reporte traduce esa medición a bandas por dimensión + recomendación accionable para tu manager.</p>
-<p><strong>Resumen ejecutivo:</strong></p>
+    body_html: `<p>Hi <strong>{full_name}</strong>,</p>
+<p>Your Itera session report is ready.</p>
+<p>Itera measured your <strong>judgment</strong> when you use AI, not your knowledge of AI. The report turns that measurement into a band per dimension plus a recommendation your manager can act on.</p>
+<p><strong>Executive summary:</strong></p>
 <ul>
-  <li><strong>Banda general:</strong> {overall_band}</li>
-  <li><strong>Dimensiones evaluadas:</strong> contexto, datos, ejecución con IA, validación, juicio, impacto</li>
-  <li><strong>Recomendación:</strong> {recommendation_action}</li>
+  <li><strong>Overall band:</strong> {overall_band}</li>
+  <li><strong>Dimensions assessed:</strong> context, data handling, AI execution, verification, judgment, impact</li>
+  <li><strong>Recommendation:</strong> {recommendation_action}</li>
 </ul>
-<p><strong>Importante:</strong> el diagnóstico midió tu criterio sin enseñar respuestas. Lo que sigue son las prácticas correctivas (practice beats) — vienen después, no durante. Cada práctica toma ~2 minutos y corrige un gap específico.</p>
-<p><a href="{report_url}" class="cta">Ver reporte completo</a></p>
-<p><a href="{practice_url}" class="cta-secondary">Empezar práctica sugerida</a></p>
-<p style="color:#777">Tu reporte es confidencial entre tú y tu manager autorizado.</p>`,
+<p><strong>One thing worth knowing:</strong> the assessment measured your judgment without teaching you the answers. The targeted practice comes after, not during. Each practice takes about 2 minutes and closes one specific gap.</p>
+<p><a href="{report_url}" class="cta">View full report</a></p>
+<p><a href="{practice_url}" class="cta-secondary">Start suggested practice</a></p>
+<p style="color:#777">Your report is confidential between you and your authorized manager.</p>`,
   },
 
   // ============================================================================
   // 6. REPORT READY MANAGER — reporte de un empleado listo
   // ============================================================================
   report_ready_manager: {
-    subject: "Reporte de {employee_name} listo — recomienda: {recommendation_action}",
-    preheader: "Banda {overall_band}. Acción sugerida para los próximos 7 días.",
-    body_text: `Hola {manager_name},
+    subject: "{employee_name}'s report is ready: {recommendation_action}",
+    preheader: "Overall band {overall_band}. Suggested action for the next 7 days.",
+    body_text: `Hi {manager_name},
 
-{employee_name} completó su sesión del caso "{case_title}" en {duration_min} minutos.
+{employee_name} finished the "{case_title}" case in {duration_min} minutes.
 
-Resumen ejecutivo:
-- Banda general: {overall_band}
-- Risk events detectados: {risk_event_count} ({risk_high_count} de alta severidad)
-- Recomendación: {recommendation_action}
+Executive summary:
+- Overall band: {overall_band}
+- Risk events: {risk_event_count} ({risk_high_count} high severity)
+- Recommendation: {recommendation_action}
 
 {pending_review_disclaimer_if_high}
 
-Próximos pasos sugeridos por el judge (visibles en el reporte completo):
+Next steps suggested by the judge (visible in the full report):
 {next_actions_preview}
 
-Ver reporte completo: {report_url}
-Dashboard del equipo: {dashboard_url}
+View full report: {report_url}
+Team dashboard: {dashboard_url}
 
-El reporte tiene PDF descargable + link compartible (TTL 30 días) si necesitas compartir internamente con CEO/CHRO.
+The report includes a downloadable PDF and a shareable link (valid 30 days) if you need to share it internally with your CEO or CHRO.
 
 — Itera`,
-    body_html: `<p>Hola <strong>{manager_name}</strong>,</p>
-<p><strong>{employee_name}</strong> completó su sesión del caso "<em>{case_title}</em>" en {duration_min} minutos.</p>
-<p><strong>Resumen ejecutivo:</strong></p>
+    body_html: `<p>Hi <strong>{manager_name}</strong>,</p>
+<p><strong>{employee_name}</strong> finished the "<em>{case_title}</em>" case in {duration_min} minutes.</p>
+<p><strong>Executive summary:</strong></p>
 <ul>
-  <li><strong>Banda general:</strong> {overall_band}</li>
-  <li><strong>Risk events:</strong> {risk_event_count} ({risk_high_count} de alta severidad)</li>
-  <li><strong>Recomendación:</strong> {recommendation_action}</li>
+  <li><strong>Overall band:</strong> {overall_band}</li>
+  <li><strong>Risk events:</strong> {risk_event_count} ({risk_high_count} high severity)</li>
+  <li><strong>Recommendation:</strong> {recommendation_action}</li>
 </ul>
 <p>{pending_review_disclaimer_if_high}</p>
-<p><strong>Próximos pasos sugeridos por el judge:</strong></p>
+<p><strong>Next steps suggested by the judge:</strong></p>
 <p>{next_actions_preview}</p>
-<p><a href="{report_url}" class="cta">Ver reporte completo</a></p>
-<p><a href="{dashboard_url}" class="cta-secondary">Dashboard del equipo</a></p>
-<p style="color:#777">El reporte tiene PDF descargable + link compartible (TTL 30 días) si necesitas compartir internamente con CEO/CHRO.</p>`,
+<p><a href="{report_url}" class="cta">View full report</a></p>
+<p><a href="{dashboard_url}" class="cta-secondary">Team dashboard</a></p>
+<p style="color:#777">The report includes a downloadable PDF and a shareable link (valid 30 days) if you need to share it internally with your CEO or CHRO.</p>`,
   },
 
   // ============================================================================
   // 7. SPRINT CLOSING — el sprint termina en X días
   // ============================================================================
   sprint_closing: {
-    subject: "Sprint de Itera cierra en {days_left} días",
-    preheader: "{completed_count}/{total_count} completaron. {pending_count} pendientes.",
-    body_text: `Hola {manager_name},
+    subject: "Your Itera sprint closes in {days_left} days",
+    preheader: "{completed_count}/{total_count} finished. {pending_count} still pending.",
+    body_text: `Hi {manager_name},
 
-El sprint de diagnóstico de {team_name} termina en {days_left} días ({end_date}).
+The {team_name} assessment sprint ends in {days_left} days ({end_date}).
 
-Estado actual:
-- Completados: {completed_count}/{total_count}
-- En curso: {in_progress_count}
-- Pendientes: {pending_count}
+Current status:
+- Completed: {completed_count}/{total_count}
+- In progress: {in_progress_count}
+- Pending: {pending_count}
 
 {pending_employees_list_if_any}
 
-Una vez cerrado el sprint, recibirás:
-1. Dashboard agregado del equipo
-2. Recomendaciones específicas por persona (pilotar / entrenar / pausar / escalar)
-3. Plan de Sprint Fase 2 si decides continuar con práctica + re-simulación
+Once the sprint closes, you'll get:
+1. The team dashboard
+2. A specific recommendation per person (Pilot / Coach / Pause / Escalate)
+3. A Phase 2 sprint plan if you decide to continue with practice and re-simulation
 
-Dashboard actual: {dashboard_url}
+Current dashboard: {dashboard_url}
 
-Si necesitas extender el sprint o tienes preguntas, responde este email.
+If you need to extend the sprint or have questions, reply to this email.
 
 — Itera`,
-    body_html: `<p>Hola <strong>{manager_name}</strong>,</p>
-<p>El sprint de diagnóstico de <strong>{team_name}</strong> termina en <strong>{days_left} días</strong> ({end_date}).</p>
-<p><strong>Estado actual:</strong></p>
+    body_html: `<p>Hi <strong>{manager_name}</strong>,</p>
+<p>The <strong>{team_name}</strong> assessment sprint ends in <strong>{days_left} days</strong> ({end_date}).</p>
+<p><strong>Current status:</strong></p>
 <ul>
-  <li>Completados: {completed_count}/{total_count}</li>
-  <li>En curso: {in_progress_count}</li>
-  <li>Pendientes: {pending_count}</li>
+  <li>Completed: {completed_count}/{total_count}</li>
+  <li>In progress: {in_progress_count}</li>
+  <li>Pending: {pending_count}</li>
 </ul>
 <p>{pending_employees_list_if_any}</p>
-<p><strong>Una vez cerrado el sprint, recibirás:</strong></p>
+<p><strong>Once the sprint closes, you'll get:</strong></p>
 <ol>
-  <li>Dashboard agregado del equipo</li>
-  <li>Recomendaciones específicas por persona (pilotar / entrenar / pausar / escalar)</li>
-  <li>Plan de Sprint Fase 2 si decides continuar con práctica + re-simulación</li>
+  <li>The team dashboard</li>
+  <li>A specific recommendation per person (Pilot / Coach / Pause / Escalate)</li>
+  <li>A Phase 2 sprint plan if you decide to continue with practice and re-simulation</li>
 </ol>
-<p><a href="{dashboard_url}" class="cta">Dashboard actual</a></p>`,
+<p><a href="{dashboard_url}" class="cta">Current dashboard</a></p>`,
   },
 
   // ============================================================================
-  // 8. PASSWORD RESET — flujo standard Supabase
+  // 8. ASSESSMENT REMINDER — el manager empuja a quien no ha empezado o está
+  // estancado (botón "Remind" del dashboard /staff → POST /api/notifications/remind)
   // ============================================================================
-  password_reset: {
-    subject: "Restablece tu contraseña de Itera",
-    preheader: "Link válido por 1 hora. Si no fuiste tú, ignora este email.",
-    body_text: `Hola,
+  assessment_reminder: {
+    subject: "Your Itera assessment is waiting",
+    preheader:
+      "{manager_name} asked for an update. The session takes about 20 minutes.",
+    body_text: `Hi {full_name},
 
-Recibimos una solicitud para restablecer la contraseña de tu cuenta de Itera ({email}).
+Quick reminder: your Itera assessment for the {team_name} team is still waiting.
 
-Si fuiste tú, restablece aquí: {reset_url}
+{manager_name} is tracking completion and your session is one of the missing ones.
 
-El link es válido por 1 hora. Si no fuiste tú, ignora este email — tu contraseña sigue siendo la misma.
+What it is: a 20 minute session where you work a real case and show how you decide when you use AI under pressure. Do it when you have a quiet block. Once you start, finish it without long breaks.
+
+Start your assessment: {dashboard_url}
+
+If something is blocking you, reply to this email.
 
 — Itera`,
-    body_html: `<p>Hola,</p>
-<p>Recibimos una solicitud para restablecer la contraseña de tu cuenta de Itera (<strong>{email}</strong>).</p>
-<p>Si fuiste tú, restablece aquí:</p>
-<p><a href="{reset_url}" class="cta">Restablecer contraseña</a></p>
-<p style="color:#777">El link es válido por <strong>1 hora</strong>. Si no fuiste tú, ignora este email — tu contraseña sigue siendo la misma.</p>`,
+    body_html: `<p>Hi <strong>{full_name}</strong>,</p>
+<p>Quick reminder: your Itera assessment for the <strong>{team_name}</strong> team is still waiting.</p>
+<p><strong>{manager_name}</strong> is tracking completion and your session is one of the missing ones.</p>
+<p><strong>What it is:</strong> a 20 minute session where you work a real case and show how you decide when you use AI under pressure. Do it when you have a quiet block. Once you start, finish it without long breaks.</p>
+<p><a href="{dashboard_url}" class="cta">Start your assessment</a></p>
+<p style="color:#777">If something is blocking you, reply to this email.</p>`,
+  },
+
+  // ============================================================================
+  // 9. PASSWORD RESET — flujo standard Supabase
+  // ============================================================================
+  password_reset: {
+    subject: "Reset your Itera password",
+    preheader: "The link is valid for 1 hour. If this wasn't you, ignore this email.",
+    body_text: `Hi,
+
+We received a request to reset the password for your Itera account ({email}).
+
+If this was you, reset it here: {reset_url}
+
+The link is valid for 1 hour. If this wasn't you, ignore this email. Your password stays the same.
+
+— Itera`,
+    body_html: `<p>Hi,</p>
+<p>We received a request to reset the password for your Itera account (<strong>{email}</strong>).</p>
+<p>If this was you, reset it here:</p>
+<p><a href="{reset_url}" class="cta">Reset password</a></p>
+<p style="color:#777">The link is valid for <strong>1 hour</strong>. If this wasn't you, ignore this email. Your password stays the same.</p>`,
   },
 } as const;
 
@@ -346,17 +381,25 @@ export const emailTemplateVars = {
     "pending_employees_list_if_any",
     "dashboard_url",
   ],
+  assessment_reminder: [
+    "full_name",
+    "manager_name",
+    "team_name",
+    "dashboard_url",
+  ],
   password_reset: ["email", "reset_url"],
 } as const;
 
 // ============================================================================
 // Footer común a todos los emails
 // ============================================================================
+// Las direcciones @itera.la son buzones reales: no renombrar a support@/privacy@
+// sin confirmar que existen. Migración de buzones = decisión de infra.
 export const emailCommonFooter = {
-  signature: "Itera · El Simulador",
+  signature: "Itera · The Simulator",
   contact_line: "soporte@itera.la · privacidad@itera.la",
   jurisdiction_disclaimer:
-    "Recibiste este email porque tu organización contrató un Sprint con Itera o porque te suscribiste al field-test público. No enviamos marketing third-party. Gestionar preferencias: {preferences_url}",
-  legal_link_label: "Política de privacidad",
-  unsubscribe_label: "Darte de baja (solo emails no transaccionales)",
+    "You received this email because your organization purchased a Sprint with Itera or because you signed up for the public field test. We don't send third-party marketing. Manage preferences: {preferences_url}",
+  legal_link_label: "Privacy policy",
+  unsubscribe_label: "Unsubscribe (non-transactional emails only)",
 };

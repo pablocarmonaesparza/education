@@ -41,9 +41,13 @@ export function AppleTabs({
             tone={selected ? "secondary" : "ghost"}
             size="sm"
             className={cn(
-              "h-9 min-h-9 whitespace-nowrap px-3 ts-subhead",
+              // Los tabs son labels, no CTAs: peso 700 uniforme (el tone
+              // secondary v2 traería extrabold y border-2 — aquí se pinnea
+              // border 1px para que el pill seleccionado no sea 2px más ancho
+              // que sus hermanos ghost). Sin labio: secondary/ghost no lo llevan.
+              "h-9 min-h-9 whitespace-nowrap px-3 ts-subhead font-bold",
               selected
-                ? "border-[var(--border-strong)] bg-[var(--surface)] shadow-[var(--shadow-xs)]"
+                ? "border border-[var(--border-strong)] bg-[var(--surface)] shadow-xs"
                 : "text-[var(--text-secondary)]",
             )}
             onPress={() => onChange(item.id)}

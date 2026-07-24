@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
-      return NextResponse.json({ error: 'no autenticado' }, { status: 401 });
+      return NextResponse.json({ error: 'Not signed in.' }, { status: 401 });
     }
 
     const admin = createAdminClient();
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     if (bridgeError || !bridgeId) {
       console.error('[create-portal] ensure_bridge_user failed:', bridgeError);
       return NextResponse.json(
-        { error: 'No pudimos sincronizar tu cuenta.' },
+        { error: 'We could not sync your account.' },
         { status: 500 },
       );
     }
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
 
     if (!membership?.organization_id) {
       return NextResponse.json(
-        { error: 'Solo un org_admin puede administrar la suscripción.' },
+        { error: 'Only an org_admin can manage the subscription.' },
         { status: 403 },
       );
     }
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
 
     if (!subscription?.stripe_customer_id) {
       return NextResponse.json(
-        { error: 'sin suscripción activa' },
+        { error: 'No active subscription.' },
         { status: 400 },
       );
     }

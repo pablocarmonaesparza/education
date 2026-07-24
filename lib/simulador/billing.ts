@@ -81,20 +81,22 @@ export const YEARLY_DISCOUNT_PCT = Math.round(
 export type BillingInterval = "monthly" | "yearly";
 
 export const SIMULADOR_PRODUCT = {
-  label: "Sprint Itera",
+  label: "Itera Sprint",
   shortLabel: "Sprint",
   description:
-    "Diagnóstico operativo de criterio de IA. Caso vivo, reporte ejecutivo por persona y matriz agregada para manager.",
+    "An assessment of judgment when your team uses AI. A live case, an executive report per person, and a team matrix for the manager.",
   durationDays: 30,
   minSeats: 1,
   maxSeatsSelfServe: 99,
   enterpriseThreshold: 100,
+  // NO renombrar a sales@ sin confirmar que el buzón existe: ventas@itera.la es
+  // la dirección viva (8 call sites). Migración de buzones = decisión de infra.
   salesEmail: "ventas@itera.la",
   features: [
-    "Caso vivo de 30 días",
-    "Reporte ejecutivo por participante",
-    "Dashboard manager + risk events",
-    "Cancela cuando quieras",
+    "30-day live case",
+    "Executive report per participant",
+    "Manager dashboard + risk events",
+    "Cancel anytime",
   ],
 };
 
@@ -168,8 +170,10 @@ export function computeSimuladorAmount(
   };
 }
 
+// Glosario §5 (Numbers/Currency): formato US con símbolo adelante y USD
+// explícito → "$3,400 USD". "USD 3,400" es convención LATAM.
 export function formatUsd(amount: number): string {
-  return `USD ${amount.toLocaleString("en-US")}`;
+  return `$${amount.toLocaleString("en-US")} USD`;
 }
 
 // ============================================================================

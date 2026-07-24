@@ -17,30 +17,31 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AppleButtonLink,
-  AppleDivider,
   AppleEmptyState,
   AppleErrorState,
+  AppleEyebrowChip,
   AppleReveal,
 } from "@/components/simulador/apple";
 import { CaseCard } from "@/components/simulador/CaseCard";
 import { CaseCardSkeleton } from "@/components/simulador/CaseCardSkeleton";
 import {
-  BAND_LABEL,
   type Band,
   type CaseCatalogItem,
 } from "@/lib/simulador/case-catalog";
+import { bandFromScore100 } from "@/lib/simulador/config";
+import { BAND_DISPLAY } from "@/lib/simulador/reports/model";
 
 // ============================================================================
 // Datos reales — /api/me/{profile,report-summary,team-leaderboard} (F4)
 // ============================================================================
 
 const DIMENSION_LABEL: Record<string, string> = {
-  contexto: "Contexto",
-  datos: "Datos",
-  ejecucion_ia: "Ejecución IA",
-  validacion: "Validación",
-  juicio: "Juicio",
-  impacto: "Impacto",
+  contexto: "Context",
+  datos: "Data handling",
+  ejecucion_ia: "AI execution",
+  validacion: "Verification",
+  juicio: "Judgment",
+  impacto: "Impact",
 };
 
 interface Hero {
@@ -68,6 +69,14 @@ interface LeaderboardEntry {
 // Local components
 // ============================================================================
 
+/** Color de barra por banda (tokens --band-*-bar; mismo mapeo canónico R-13). */
+const BAND_BAR: Record<Band, string> = {
+  A: "var(--band-a-bar)",
+  M: "var(--band-m-bar)",
+  B: "var(--band-b-bar)",
+};
+
+/** Card v2: borde + flotación suave (--shadow-card) vía .card-apple. */
 function Card({
   children,
   className = "",
@@ -75,15 +84,10 @@ function Card({
   children: React.ReactNode;
   className?: string;
 }) {
-  return (
-    <div
-      className={`rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-5 ${className}`}
-    >
-      {children}
-    </div>
-  );
+  return <div className={`card-apple p-6 ${className}`}>{children}</div>;
 }
 
+/** Eyebrow de sección v2: extrabold + tracking + accent (patrón landing). */
 function CardHeader({
   eyebrow,
   cta,
@@ -92,14 +96,14 @@ function CardHeader({
   cta?: { label: string; href: string };
 }) {
   return (
-    <div className="flex items-center justify-between">
-      <span className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
+    <div className="flex items-center justify-between gap-3">
+      <span className="ts-footnote font-extrabold uppercase tracking-[0.8px] text-[var(--accent)]">
         {eyebrow}
       </span>
       {cta && (
         <Link
           href={cta.href}
-          className="ts-caption-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+          className="ts-footnote font-bold text-[var(--accent)] transition-opacity hover:opacity-70"
         >
           {cta.label} →
         </Link>
@@ -111,11 +115,12 @@ function CardHeader({
 function Avatar({
   initials,
   size = "md",
-  ring = false,
+  tone = "neutral",
 }: {
   initials: string;
   size?: "sm" | "md" | "lg";
-  ring?: boolean;
+  /** "accent" para el hero (sólido accent-strong + blanco, DEC-009 AA). */
+  tone?: "neutral" | "accent";
 }) {
   const dimensions =
     size === "lg"
@@ -123,11 +128,13 @@ function Avatar({
       : size === "md"
         ? "h-9 w-9 ts-footnote"
         : "h-7 w-7 ts-caption-1";
+  const tones =
+    tone === "accent"
+      ? "accent-bg text-white"
+      : "bg-[var(--surface-3)] text-[var(--text-primary)]";
   return (
     <div
-      className={`${dimensions} flex items-center justify-center rounded-full bg-[var(--surface-2)] font-semibold text-[var(--text-primary)] tabular-nums ${
-        ring ? "ring-2 ring-[var(--accent)]" : ""
-      }`}
+      className={`${dimensions} ${tones} flex flex-none items-center justify-center rounded-full font-extrabold tabular-nums`}
       aria-hidden
     >
       {initials}
@@ -144,9 +151,9 @@ function BandPill({ band }: { band: Band }) {
         : "bg-[var(--band-b-bg)] text-[var(--band-b-text)]";
   return (
     <span
-      className={`inline-flex items-center rounded-[var(--radius-sm)] px-2 py-0.5 ts-caption-1 font-semibold ${cls}`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 ts-caption-1 font-extrabold ${cls}`}
     >
-      Banda {BAND_LABEL[band]}
+      {BAND_DISPLAY[band]} band
     </span>
   );
 }
@@ -173,7 +180,7 @@ export default function TeamHomePage() {
       const data = (await res.json()) as { cases: CaseCatalogItem[] };
       setCases(data.cases ?? []);
     } catch (err) {
-      setCasesError(err instanceof Error ? err.message : "Error inesperado.");
+      setCasesError(err instanceof Error ? err.message : "Unexpected error.");
     }
   }, []);
 
@@ -237,28 +244,32 @@ export default function TeamHomePage() {
 
   return (
     <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-6 sm:px-10 sm:py-8">
-      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-[1280px] flex-col gap-8">
         {/* ============ HERO ============ */}
-        <AppleReveal as="header" className="flex flex-none items-center gap-4">
-          <Avatar initials={hero?.initials ?? "··"} size="lg" ring />
+        {/* Jerarquía v2: eyebrow chip (org real) + display extrabold. */}
+        <AppleReveal as="header" className="flex flex-none items-center gap-4 sm:gap-5">
+          <Avatar initials={hero?.initials ?? "··"} size="lg" tone="accent" />
           <div className="min-w-0 flex-1">
-            <h1 className="display display-tight text-[var(--text-primary)] ts-title-2 sm:ts-title-1 leading-tight">
-              {hero?.first_name ? `Hola, ${hero.first_name}` : "Hola"}
+            {hero?.org_name && (
+              <AppleEyebrowChip className="mb-2">{hero.org_name}</AppleEyebrowChip>
+            )}
+            <h1 className="display display-tight m-0 ts-title-1 sm:ts-display text-[var(--text-primary)]">
+              {hero?.first_name ? `Hi, ${hero.first_name}` : "Hi"}
             </h1>
-            <p className="mt-1 ts-subhead text-[var(--text-secondary)]">
-              {[hero?.job_title, hero?.org_name].filter(Boolean).join(" · ")}
-            </p>
+            {hero?.job_title && (
+              <p className="m-0 mt-1 ts-subhead font-medium text-[var(--text-secondary)]">
+                {hero.job_title}
+              </p>
+            )}
           </div>
           <AppleButtonLink
             href="/casos"
             tone="primary"
             className="hidden h-10 justify-center px-5 sm:inline-flex"
           >
-            Ver catálogo
+            View catalog
           </AppleButtonLink>
         </AppleReveal>
-
-        <AppleDivider />
 
         {/* ============ TOP 2 cols: Performance + Leaderboard ============ */}
         <AppleReveal
@@ -269,36 +280,37 @@ export default function TeamHomePage() {
           {/* ---- Mi performance ---- */}
           <Card>
             <CardHeader
-              eyebrow="Mi performance"
-              cta={{ label: "Ver reporte", href: "/reportes" }}
+              eyebrow="My performance"
+              cta={{ label: "View report", href: "/reportes" }}
             />
             {perf && perf.casesCompleted > 0 && perf.band ? (
-              <div className="mt-3 flex items-baseline gap-3">
+              <div className="mt-4 flex items-center gap-3">
                 <BandPill band={perf.band} />
-                <span className="ts-caption-1 text-[var(--text-tertiary)]">
-                  promedio sobre {perf.casesCompleted}{" "}
-                  {perf.casesCompleted === 1 ? "caso" : "casos"}
+                <span className="ts-footnote font-medium text-[var(--text-tertiary)]">
+                  average across {perf.casesCompleted}{" "}
+                  {perf.casesCompleted === 1 ? "case" : "cases"}
                 </span>
               </div>
             ) : (
-              <p className="mt-3 ts-subhead text-[var(--text-secondary)]">
-                Juega tu primer caso para ver tu desempeño aquí.
+              <p className="mt-4 ts-subhead font-medium text-[var(--text-secondary)]">
+                Complete your first case to see your performance here.
               </p>
             )}
 
-            <div className="mt-4 flex flex-col gap-2">
+            {/* Barras chunky v2: h-2 redondeadas, track surface-3, fill accent. */}
+            <div className="mt-5 flex flex-col gap-2.5">
               {(perf?.dimensions ?? []).map((d) => (
                 <div key={d.id} className="flex items-center gap-3">
-                  <span className="w-[100px] flex-none truncate ts-footnote text-[var(--text-secondary)]">
+                  <span className="w-28 flex-none truncate ts-footnote font-bold text-[var(--text-secondary)]">
                     {d.label}
                   </span>
-                  <div className="flex-1 h-[6px] rounded-full bg-[var(--surface-2)] overflow-hidden">
+                  <div className="h-2 flex-1 overflow-hidden rounded-full bg-[var(--surface-3)]">
                     <div
-                      className="h-full rounded-full bg-[var(--accent)]"
+                      className="accent-bg h-full rounded-full"
                       style={{ width: `${(d.score / 10) * 100}%` }}
                     />
                   </div>
-                  <span className="w-[32px] flex-none text-right ts-caption-1 font-medium tabular-nums text-[var(--text-primary)]">
+                  <span className="w-8 flex-none text-right ts-caption-1 font-bold tabular-nums text-[var(--text-primary)]">
                     {d.score.toFixed(1)}
                   </span>
                 </div>
@@ -308,23 +320,25 @@ export default function TeamHomePage() {
 
           {/* ---- Leaderboard ---- */}
           <Card>
-            <CardHeader eyebrow="Leaderboard del equipo" />
+            <CardHeader eyebrow="Team leaderboard" />
 
             {leaderboard.length === 0 ? (
-              <p className="mt-3 ts-subhead text-[var(--text-secondary)]">
-                Aún no hay resultados del equipo.
+              <p className="mt-4 ts-subhead font-medium text-[var(--text-secondary)]">
+                No team results yet.
               </p>
             ) : (
-              <ul className="mt-3 flex flex-col gap-1">
+              <ul className="mt-4 flex flex-col gap-1.5">
+                {/* Barras chunky por banda (tokens --band-*-bar, mapeo canónico
+                    score→banda de config.ts). Sin reports = track vacío + "—". */}
                 {leaderboard.map((entry, i) => (
                   <li
                     key={entry.name}
-                    className={`flex items-center gap-3 rounded-[var(--radius-md)] px-2 py-1.5 ${
+                    className={`flex items-center gap-3 rounded-[var(--radius-md)] px-2.5 py-2 ${
                       entry.is_current_user ? "bg-[var(--accent-soft)]" : ""
                     }`}
                   >
                     <span
-                      className={`w-[16px] flex-none text-center ts-caption-1 font-semibold tabular-nums ${
+                      className={`w-4 flex-none text-center ts-caption-1 font-extrabold tabular-nums ${
                         entry.is_current_user
                           ? "text-[var(--accent)]"
                           : "text-[var(--text-tertiary)]"
@@ -334,20 +348,31 @@ export default function TeamHomePage() {
                     </span>
                     <Avatar initials={entry.initials} size="sm" />
                     <span
-                      className={`flex-1 truncate ts-footnote ${
+                      className={`min-w-0 flex-1 truncate ts-footnote ${
                         entry.is_current_user
-                          ? "font-semibold text-[var(--text-primary)]"
-                          : "text-[var(--text-secondary)]"
+                          ? "font-extrabold text-[var(--text-primary)]"
+                          : "font-semibold text-[var(--text-secondary)]"
                       }`}
                     >
                       {entry.name}
                       {entry.is_current_user && (
-                        <span className="ml-1.5 ts-caption-2 text-[var(--accent)]">
-                          Tú
+                        <span className="accent-bg ml-1.5 inline-flex items-center rounded-full px-1.5 py-0.5 align-middle ts-caption-2 font-extrabold text-white">
+                          You
                         </span>
                       )}
                     </span>
-                    <span className="ts-footnote font-semibold tabular-nums text-[var(--text-primary)]">
+                    <div className="h-2 w-16 flex-none overflow-hidden rounded-full bg-[var(--surface-3)] sm:w-32">
+                      {entry.has_reports && (
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${(entry.score / 10) * 100}%`,
+                            background: BAND_BAR[bandFromScore100(entry.score * 10)],
+                          }}
+                        />
+                      )}
+                    </div>
+                    <span className="w-8 flex-none text-right ts-footnote font-extrabold tabular-nums text-[var(--text-primary)]">
                       {entry.has_reports ? entry.score.toFixed(1) : "—"}
                     </span>
                   </li>
@@ -357,57 +382,48 @@ export default function TeamHomePage() {
           </Card>
         </AppleReveal>
 
-        <AppleDivider />
-
         {/* ============ BOTTOM: Casos para ti — 4 cols × 2 filas ============ */}
         <AppleReveal as="section" delay={0.12}>
-          <div className="flex items-center justify-between">
-            <span className="ts-caption-1 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-              Casos para ti
-            </span>
-            <Link
-              href="/casos"
-              className="ts-caption-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-            >
-              Ver todos →
-            </Link>
-          </div>
+          <CardHeader
+            eyebrow="Cases for you"
+            cta={{ label: "View all", href: "/casos" }}
+          />
 
           {casesError ? (
-            <div className="mt-3">
+            <div className="mt-4">
               <AppleErrorState
-                title="No pudimos cargar tus casos"
+                title="We could not load your cases"
                 body={casesError}
                 onAction={loadCases}
               />
             </div>
           ) : cases === null ? (
-            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 8 }, (_, i) => (
                 <CaseCardSkeleton key={i} />
               ))}
             </div>
           ) : recommended.length === 0 ? (
-            <div className="mt-3">
+            <div className="mt-4">
               {cases.length === 0 ? (
                 <AppleEmptyState
-                  title="Aún no hay casos disponibles"
-                  description="Tu organización todavía no tiene casos activos. En cuanto se publique el primero lo verás aquí."
+                  title="No cases available yet"
+                  description="Your organization has no active cases yet. The first one will show up here as soon as it publishes."
                 />
               ) : (
                 <AppleEmptyState
-                  title="Estás al día"
-                  description="Completaste todos los casos disponibles. Revisa tus resultados en el catálogo mientras llegan casos nuevos."
+                  title="You are all caught up"
+                  description="You completed every available case. Review your results in the catalog while new cases arrive."
                   action={
                     <AppleButtonLink href="/casos" tone="secondary">
-                      Ver catálogo
+                      View catalog
                     </AppleButtonLink>
                   }
                 />
               )}
             </div>
           ) : (
-            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {recommended.map((item) => (
                 <CaseCard key={item.slug} item={item} />
               ))}

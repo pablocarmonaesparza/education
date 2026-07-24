@@ -7,76 +7,76 @@ practice_beat:
   triggered_by_gap: [weak_impact_translation]
   duration_max_seconds: 360
   principle_card:
-    headline: "Un memo útil cabe en tres líneas: decisión, métrica y siguiente paso"
-    body: "Tu jefe no necesita el viaje del análisis: necesita el destino, cuánto cuesta y qué pasa el lunes."
+    headline: "A useful memo fits in three lines: decision, metric, next step"
+    body: "Your manager does not need the trip through the analysis. They need the destination, what it costs, and what happens Monday."
   practice_exercise:
     type: formative_slides
     blocks: [categorize_rows, ai_output_review]
-    prompt: "La IA te dio un análisis largo sobre retrasos de entrega: decides qué entra al memo para tu jefe, qué va al anexo y qué sobra; luego revisas un borrador de memo y marcas lo que no ayuda a decidir."
-  completion_criteria: "Completar los 2 ejercicios (todas las filas y todos los segmentos con respuesta) y revisar la retroalimentación de cada uno."
+    prompt: "AI handed you a long analysis on delivery delays: you decide what goes in the memo for your manager, what goes in the appendix, and what does not belong; then you review a draft memo and mark what does not help anyone decide."
+  completion_criteria: "Complete both exercises (every row and every segment answered) and review the feedback for each."
   exit:
     contributes_to_resim_score: true
   slides:
     - id: portada
       kind: cover
-      title: "El análisis no es el entregable; la decisión sí"
-      body: "La inteligencia artificial te entrega tres páginas de hallazgos y tu jefe tiene un minuto para leerte. Aquí practicas convertir un output largo en un memo con el que alguien puede decidir hoy."
-      chips: ["N1 · Fundamentos", "Operaciones", "6 min"]
+      title: "The analysis is not the deliverable; the decision is"
+      body: "AI hands you three pages of findings and your manager has one minute for you. Here you practice turning a long output into a memo someone can decide on today."
+      chips: ["N1 · Fundamentals", "Operations", "6 min"]
     - id: principio
       kind: reading
-      title: "De análisis a memo en tres bloques"
+      title: "From analysis to memo in three blocks"
       body: |-
-        **El problema.** Reenviar el análisis completo de la inteligencia artificial se siente productivo, pero traslada el trabajo a tu jefe: ahora él tiene que leer tres páginas para encontrar la decisión que tú ya conoces. Un memo que no propone nada no es información — es tarea pendiente para otro.
+        **The problem.** Forwarding the full AI analysis feels productive, but it moves the work to your manager. Now they have to read three pages to find the decision you already know. A memo that proposes nothing is not information. It is someone else's to-do.
 
-        **La regla.** Un memo accionable tiene tres bloques y poco más. Decisión propuesta: qué recomiendas hacer, en una frase, con su costo si lo tiene. Métrica: qué número se va a mover, desde dónde y hasta dónde — "entregas a tiempo, de 78% a 90%" le da a tu jefe una forma de saber después si funcionó. Siguiente paso: qué pasa, cuándo y quién lo opera. Las tablas completas y el detalle del cálculo van en un anexo para quien quiera profundizar. Cómo usaste la herramienta no le importa a nadie más que a ti.
+        **The rule.** An actionable memo has three blocks and little else. Proposed decision: what you recommend doing, in one sentence, with its cost if it has one. Metric: which number moves, from where to where. "On-time delivery, from 78% to 90%" gives your manager a way to know later whether it worked. Next step: what happens, when, and who runs it. The full tables and the detail of the math go in an appendix for anyone who wants to dig. How you used the tool matters to nobody but you.
 
-        **El ejemplo.** Tres páginas sobre retrasos se convierten en: "Propongo cambiar de transportista en la zona norte, donde se concentra el retraso. Métrica: entregas a tiempo de 78% a 90% en un mes. Siguiente paso: piloto de dos semanas desde el lunes, lo coordino yo. Datos completos en el anexo". Eso se decide en un minuto — que era el objetivo.
+        **The example.** Three pages on delays turn into: "I propose switching carriers in the North region, where the delay concentrates. Metric: on-time delivery from 78% to 90% in one month. Next step: two-week pilot starting Monday, I coordinate it. Full data in the appendix." That gets decided in a minute, which was the point.
     - id: ejercicio_memo
       kind: exercise
       blockId: categorize_rows
-      title: "La IA te dio tres páginas sobre los retrasos de entrega"
-      body: "Tu jefe tiene un minuto. Decide dónde queda cada elemento."
+      title: "AI gave you three pages on the delivery delays"
+      body: "Your manager has one minute. Decide where each element belongs."
       caseContext:
         actionStyle: neutral
         actions:
-          - { value: entra, label: "Entra al memo" }
-          - { value: anexo, label: "Va al anexo" }
-          - { value: fuera, label: "Fuera" }
+          - { value: entra, label: "Goes in the memo" }
+          - { value: anexo, label: "Goes in the appendix" }
+          - { value: fuera, label: "Cut it" }
         rows:
-          - { id: i1, label: "Propuesta: cambiar de transportista en la zona norte, donde se concentra el retraso" }
-          - { id: i2, label: "La tabla completa con las 340 entregas de la quincena" }
-          - { id: i3, label: "Métrica: entregas a tiempo en zona norte, de 78% a 90% en un mes" }
-          - { id: i4, label: "Explicación de qué herramienta de IA usaste y cómo armaste el pedido" }
-          - { id: i5, label: "Siguiente paso: piloto de dos semanas desde el lunes 6, coordinado por ti" }
+          - { id: i1, label: "Proposal: switch carriers in the North region, where the delay concentrates" }
+          - { id: i2, label: "The full table with all 340 deliveries from the past two weeks" }
+          - { id: i3, label: "Metric: on-time delivery in the North region, from 78% to 90% in one month" }
+          - { id: i4, label: "An explanation of which AI tool you used and how you built the request" }
+          - { id: i5, label: "Next step: two-week pilot starting Monday the 6th, coordinated by you" }
       feedback:
         kind: rows
         rows:
-          - { id: i1, correct: entra, why: "Es la decisión propuesta — la razón de que el memo exista. Va primero y en una frase." }
-          - { id: i2, correct: anexo, why: "El respaldo importa, pero no en el cuerpo. Quien quiera auditar el detalle lo encuentra en el anexo; tu jefe no necesita 340 filas para decidir." }
-          - { id: i3, correct: entra, why: "La métrica con punto de partida y meta. Sin ella, nadie podrá decir en un mes si la decisión funcionó." }
-          - { id: i4, correct: fuera, why: "El proceso interno de tu herramienta no alimenta la decisión. Contarlo solo agrega texto entre tu jefe y la respuesta." }
-          - { id: i5, correct: entra, why: "Fecha y responsable convierten la propuesta en plan. Es la diferencia entre \"deberíamos\" y \"empieza el lunes\"." }
+          - { id: i1, correct: entra, why: "It is the proposed decision, the reason the memo exists. It goes first and in one sentence." }
+          - { id: i2, correct: anexo, why: "The backup matters, but not in the body. Anyone who wants to audit the detail finds it in the appendix. Your manager does not need 340 rows to decide." }
+          - { id: i3, correct: entra, why: "The metric with a starting point and a target. Without it, nobody can say in a month whether the decision worked." }
+          - { id: i4, correct: fuera, why: "Your tool's internal process does not feed the decision. Telling it only adds text between your manager and the answer." }
+          - { id: i5, correct: entra, why: "A date and an owner turn the proposal into a plan. That is the difference between \"we should\" and \"it starts Monday\"." }
     - id: ejercicio_borrador
       kind: exercise
       blockId: ai_output_review
-      title: "Este es el borrador de memo que armó la IA"
-      body: "Marca lo que no ayuda a tu jefe a decidir. Toca para marcar."
+      title: "This is the draft memo AI put together"
+      body: "Mark what does not help your manager decide. Tap to mark."
       caseContext:
         segments:
-          - { id: s1, text: "Propongo cambiar de transportista en la zona norte a partir de la próxima semana.", flagIfMarked: "frase_reutilizable" }
-          - { id: s2, text: "Se realizó un análisis exhaustivo integrando múltiples dimensiones de datos para maximizar sinergias operativas.", flagIfMarked: "frase_reutilizable" }
-          - { id: s3, text: "Entregas a tiempo en zona norte: hoy 78%, meta 90% al cierre del piloto.", flagIfMarked: "frase_reutilizable" }
-          - { id: s4, text: "Existen además muchas oportunidades interesantes de mejora en varias áreas que podríamos explorar.", flagIfMarked: "frase_reutilizable" }
-          - { id: s5, text: "Costo del cambio: 4% más por envío; se recupera evitando una de cada diez reentregas.", flagIfMarked: "frase_reutilizable" }
+          - { id: s1, text: "I propose switching carriers in the North region starting next week.", flagIfMarked: "frase_reutilizable" }
+          - { id: s2, text: "A comprehensive analysis was conducted integrating multiple data dimensions to maximize operational synergies.", flagIfMarked: "frase_reutilizable" }
+          - { id: s3, text: "On-time delivery in the North region: 78% today, 90% target at the end of the pilot.", flagIfMarked: "frase_reutilizable" }
+          - { id: s4, text: "There are also many interesting improvement opportunities across several areas we could explore.", flagIfMarked: "frase_reutilizable" }
+          - { id: s5, text: "Cost of the switch: 4% more per shipment; it pays back by avoiding one in ten redeliveries.", flagIfMarked: "frase_reutilizable" }
       feedback:
         kind: segments
         segments:
-          - { id: s1, shouldFlag: false, why: "Decisión concreta con fecha. Es el corazón del memo." }
-          - { id: s2, shouldFlag: true, why: "Relleno que suena importante y no dice nada. Bórralo: no hay decisión, número ni fecha ahí adentro." }
-          - { id: s3, shouldFlag: false, why: "Métrica con punto de partida y meta. Así se mide si la decisión funcionó." }
-          - { id: s4, shouldFlag: true, why: "\"Muchas oportunidades en varias áreas\" no se puede decidir ni medir. O se convierte en una propuesta concreta o no va." }
-          - { id: s5, shouldFlag: false, why: "El costo de la decisión y cuándo se recupera. Exactamente lo que un jefe pregunta antes de decir que sí." }
+          - { id: s1, shouldFlag: false, why: "A concrete decision with a date. It is the heart of the memo." }
+          - { id: s2, shouldFlag: true, why: "Filler that sounds important and says nothing. Delete it: there is no decision, no number, and no date inside it." }
+          - { id: s3, shouldFlag: false, why: "A metric with a starting point and a target. This is how you measure whether the decision worked." }
+          - { id: s4, shouldFlag: true, why: "\"Many opportunities across several areas\" cannot be decided or measured. Either it becomes a concrete proposal or it does not go in." }
+          - { id: s5, shouldFlag: false, why: "The cost of the decision and when it pays back. Exactly what a manager asks before saying yes." }
     - id: cierre
       kind: closing
-      title: "Mañana, antes de mandar tu próximo reporte"
-      body: "Bórralo todo menos tres líneas: qué propones, qué número se mueve y qué pasa el lunes. Si esas tres líneas no están, el memo no está listo — lo demás es anexo."
+      title: "Tomorrow, before you send your next report"
+      body: "Delete everything except three lines: what you propose, which number moves, and what happens Monday. If those three lines are not there, the memo is not ready. The rest is appendix."

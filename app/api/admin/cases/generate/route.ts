@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
   if (!staff.ok) return staff.response;
   if (!staff.user) {
     return NextResponse.json(
-      { error: "Generar un caso requiere sesión real (no dev bypass)." },
+      { error: "Generating a case requires a real session (not dev bypass)." },
       { status: 401 },
     );
   }
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     .rpc("ensure_bridge_user", { p_auth_user_id: staff.user.id });
   if (bridgeError || !staffBridgeUserId) {
     return NextResponse.json(
-      { error: "No se pudo inicializar el usuario staff." },
+      { error: "Could not initialize the staff user." },
       { status: 500 },
     );
   }
@@ -55,12 +55,12 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Body inválido." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
   if (!body.organization_id) {
     return NextResponse.json(
-      { error: "organization_id es obligatorio." },
+      { error: "organization_id is required." },
       { status: 400 },
     );
   }
@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     .maybeSingle();
   if (!org) {
     return NextResponse.json(
-      { error: "Organización no encontrada." },
+      { error: "Organization not found." },
       { status: 404 },
     );
   }
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
       .maybeSingle();
     if (!team) {
       return NextResponse.json(
-        { error: "El equipo no pertenece a esta organización." },
+        { error: "That team does not belong to this organization." },
         { status: 400 },
       );
     }

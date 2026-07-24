@@ -104,7 +104,7 @@ export function groupFindingsBySlide(findings) {
 }
 
 export function summarizeFindings(findings) {
-  if (findings.length === 0) return "sin findings";
+  if (findings.length === 0) return "no findings";
   const byGate = {};
   for (const f of findings) byGate[f.gate] = (byGate[f.gate] ?? 0) + 1;
   return Object.entries(byGate)

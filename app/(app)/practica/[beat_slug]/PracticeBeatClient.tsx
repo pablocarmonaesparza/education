@@ -56,18 +56,15 @@ function segmentMarked(
 }
 
 function FeedbackChip({ hit }: { hit: boolean }) {
+  // Chip pill v2 con band tokens (acierto = banda A, casi = banda M).
+  const tone = hit
+    ? "bg-[var(--band-a-bg)] text-[var(--band-a-text)]"
+    : "bg-[var(--band-m-bg)] text-[var(--band-m-text)]";
   return (
     <span
-      className="ts-caption-1 font-medium"
-      style={{
-        background: hit ? "var(--band-a-bg)" : "var(--band-m-bg)",
-        color: hit ? "var(--band-a-text)" : "var(--band-m-text)",
-        padding: "2px 10px",
-        borderRadius: "var(--radius-full)",
-        whiteSpace: "nowrap",
-      }}
+      className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-0.5 ts-caption-1 font-bold ${tone}`}
     >
-      {hit ? "Lo tienes" : "Casi"}
+      {hit ? "You got it" : "Close"}
     </span>
   );
 }
@@ -103,30 +100,21 @@ function FormativeFeedback({
         });
 
   return (
-    <div
-      className="mt-6"
-      style={{
-        borderRadius: "var(--radius-lg)",
-        background: "var(--surface-2)",
-        padding: "1rem 1.25rem",
-      }}
-    >
-      <p
-        className="ts-caption-1 font-medium text-[var(--text-tertiary)]"
-        style={{ marginBottom: "0.75rem" }}
-      >
-        Retroalimentación
+    // Panel de feedback v2: tinte accent (surface-tint) + eyebrow extrabold.
+    <div className="mt-6 rounded-[var(--radius-lg)] bg-[var(--surface-tint)] px-5 py-4">
+      <p className="mb-3 ts-footnote font-extrabold uppercase tracking-[0.8px] text-[var(--accent)]">
+        Feedback
       </p>
       <div className="flex flex-col gap-3">
         {items.map((it) => (
           <div key={it.key}>
             <div className="flex items-start justify-between gap-3">
-              <span className="ts-subhead text-[var(--text-primary)]">
+              <span className="ts-subhead font-semibold text-[var(--text-primary)]">
                 {it.label}
               </span>
               <FeedbackChip hit={it.hit} />
             </div>
-            <p className="ts-footnote mt-1 text-[var(--text-secondary)]">
+            <p className="ts-footnote mt-1 leading-[1.5] text-[var(--text-secondary)]">
               {it.why}
             </p>
           </div>
@@ -148,30 +136,23 @@ function ClosingScreen({
   onRestart: () => void;
 }) {
   return (
-    <div className="mx-auto w-[65%] max-w-[680px] py-4 text-center">
+    <div className="mx-auto w-[86%] max-w-[680px] py-4 text-center sm:w-[65%]">
+      {/* Sello de cierre v2: círculo de banda A con check grueso. */}
       <div
         aria-hidden
-        className="mx-auto flex items-center justify-center"
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: "var(--radius-full)",
-          background: "var(--band-a-bg)",
-          color: "var(--band-a-text)",
-          marginBottom: 16,
-        }}
+        className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--band-a-bg)] text-[var(--band-a-text)]"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path
             d="M5 13l4 4L19 7"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>
       </div>
-      <h1 className="display display-tight ts-title-1 text-[var(--text-primary)]">
+      <h1 className="display display-tight ts-title-1 text-[var(--text-primary)] sm:ts-display">
         {slide.title}
       </h1>
       <div className="mt-3">
@@ -180,14 +161,14 @@ function ClosingScreen({
 
       <div className="mt-8 flex flex-col items-center gap-3">
         <AppleSlideButton onClick={onDone} isDisabled={completing}>
-          {completing ? "Guardando…" : "Volver a mi inicio →"}
+          {completing ? "Saving…" : "Back to home →"}
         </AppleSlideButton>
         <button
           type="button"
           onClick={onRestart}
-          className="ts-subhead text-[var(--text-tertiary)] underline underline-offset-2 transition-colors hover:text-[var(--text-primary)]"
+          className="ts-subhead font-semibold text-[var(--text-tertiary)] underline underline-offset-2 transition-colors hover:text-[var(--text-primary)]"
         >
-          Repetir la práctica
+          Redo this practice
         </button>
       </div>
     </div>
@@ -311,10 +292,10 @@ export function PracticeBeatClient({
 
   const ctaLabel =
     slide.kind === "cover"
-      ? "Empezar →"
+      ? "Start →"
       : isRevealed || !isExercise
-        ? "Continuar →"
-        : "Revisar respuestas";
+        ? "Continue →"
+        : "Check my answers";
 
   const onCta = () => {
     if (slide.kind === "cover") {
@@ -338,7 +319,7 @@ export function PracticeBeatClient({
           closeHref={closeHref}
           onPrev={goPrev}
           prevDisabled={idx === 0}
-          ariaLabel={`Pantalla ${idx + 1} de ${slides.length}`}
+          ariaLabel={`Screen ${idx + 1} of ${slides.length}`}
         />
 
         <section className="relative flex flex-1 items-center justify-center overflow-hidden py-10">
@@ -353,19 +334,15 @@ export function PracticeBeatClient({
                 duration: reduceMotion ? 0.12 : 0.32,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="w-[65%] max-w-[680px]"
+              className="w-[86%] max-w-[680px] sm:w-[65%]"
             >
               {slide.chips && (
                 <div className="mb-4 flex flex-wrap gap-2">
+                  {/* Chips de contexto v2: pill chunky, bold. */}
                   {slide.chips.map((c) => (
                     <span
                       key={c}
-                      className="ts-caption-1 font-medium text-[var(--text-secondary)]"
-                      style={{
-                        background: "var(--surface-3)",
-                        padding: "3px 10px",
-                        borderRadius: "var(--radius-full)",
-                      }}
+                      className="rounded-full bg-[var(--surface-3)] px-2.5 py-1 ts-caption-1 font-bold text-[var(--text-secondary)]"
                     >
                       {c}
                     </span>
@@ -373,7 +350,12 @@ export function PracticeBeatClient({
                 </div>
               )}
 
-              <h1 className="display display-tight ts-display text-[var(--text-primary)]">
+              {/* El cover abre el módulo: jerarquía display extrabold más alta. */}
+              <h1
+                className={`display display-tight text-[var(--text-primary)] ${
+                  slide.kind === "cover" ? "ts-display sm:ts-display-lg" : "ts-display"
+                }`}
+              >
                 {slide.title}
               </h1>
 
@@ -407,7 +389,7 @@ export function PracticeBeatClient({
                   hint={
                     ctaDisabled ? (
                       <span className="ts-footnote text-[var(--text-tertiary)]">
-                        Responde el ejercicio para revisar.
+                        Answer the exercise to check it.
                       </span>
                     ) : undefined
                   }

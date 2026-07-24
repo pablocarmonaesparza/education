@@ -37,13 +37,13 @@ interface MessageContent {
 const DEFAULT_MESSAGE: MessageContent = {
   channel: "email",
   from: {
-    name: "Mariana Robles",
+    name: "Dana Whitfield",
     role: "Head of Growth · Aurora Retail",
   },
-  to: { name: "Tú", role: "Marketing Lead" },
-  timestamp: "Hoy, 09:42",
-  subject: "Necesitamos relanzar la campaña antes del viernes",
-  body: "Hola, el board pidió relanzar la campaña de retención antes del viernes. **Presupuesto sin tocar**. Mándame propuesta hoy mismo con segmentos, mensaje base y métricas que vas a monitorear.\n\nGracias.",
+  to: { name: "You", role: "Marketing Lead" },
+  timestamp: "Today, 9:42 AM",
+  subject: "We need to relaunch the campaign before Friday",
+  body: "Hi, the board asked us to relaunch the retention campaign before Friday. **No extra budget**. Send me a proposal today with segments, core message, and the metrics you will track.\n\nThanks.",
 };
 
 interface Props extends ExerciseRendererProps<ReadingMessagePayload> {

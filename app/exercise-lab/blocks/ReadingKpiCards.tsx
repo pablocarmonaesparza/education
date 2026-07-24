@@ -33,17 +33,17 @@ interface Kpi {
 const DEFAULT_KPIS: Kpi[] = [
   {
     value: "$48.2K",
-    label: "Ingreso mensual del segmento",
+    label: "Segment monthly revenue (USD)",
     delta: { value: "+12%", direction: "up", goodWhen: "up" },
   },
   {
     value: "11.4%",
-    label: "Conversión última semana",
+    label: "Conversion last week",
     delta: { value: "-2.1pp", direction: "down", goodWhen: "up" },
   },
   {
     value: "3.8%",
-    label: "Cancelación mensual",
+    label: "Monthly churn",
     delta: { value: "+0.6pp", direction: "up", goodWhen: "down" },
   },
 ];

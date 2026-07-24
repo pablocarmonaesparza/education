@@ -7,74 +7,74 @@ practice_beat:
   triggered_by_gap: [vague_ai_instruction]
   duration_max_seconds: 360
   principle_card:
-    headline: "Un pedido operativo dice qué quieres, con qué datos y hasta dónde"
-    body: "La diferencia entre un resultado útil y una tarde de retrabajo casi siempre está en el pedido, no en el modelo."
+    headline: "A working request says what you want, from which data, and how far to go"
+    body: "The difference between a usable result and an afternoon of rework is almost always in the request, not in the model."
   practice_exercise:
     type: formative_slides
     blocks: [categorize_rows, ai_output_review]
-    prompt: "Armas el pedido para el reporte semanal de incidencias de una empresa de mantenimiento: decides qué instrucciones entran, cuáles se precisan y cuáles sobran; luego revisas un pedido ajeno y marcas las instrucciones vagas o peligrosas."
-  completion_criteria: "Completar los 2 ejercicios (todas las filas y todos los segmentos con respuesta) y revisar la retroalimentación de cada uno."
+    prompt: "You build the request for the weekly incident report at a facilities maintenance company: you decide which instructions go in, which need sharpening, and which do not belong; then you review someone else's request and mark the vague or dangerous instructions."
+  completion_criteria: "Complete both exercises (every row and every segment answered) and review the feedback for each."
   exit:
     contributes_to_resim_score: true
   slides:
     - id: portada
       kind: cover
-      title: "La diferencia entre \"ayúdame con esto\" y un pedido que funciona"
-      body: "Dos personas le piden lo mismo a la misma herramienta: una recibe un reporte usable y la otra, tres párrafos genéricos. Aquí practicas armar pedidos con objetivo claro, fuente definida y límites explícitos."
-      chips: ["N1 · Fundamentos", "Operaciones", "6 min"]
+      title: "The difference between \"help me with this\" and a request that works"
+      body: "Two people ask the same tool for the same thing: one gets a usable report, the other gets three generic paragraphs. Here you practice building requests with a clear goal, a defined source, and explicit limits."
+      chips: ["N1 · Fundamentals", "Operations", "6 min"]
     - id: principio
       kind: reading
-      title: "Las tres piezas de un pedido operativo"
+      title: "The three pieces of a working request"
       body: |-
-        **El problema.** "Ayúdame con el reporte de incidencias" es una esperanza, no una instrucción. La inteligencia artificial va a llenar cada hueco del pedido con una suposición — y cuando falte un dato, es capaz de inventarlo con toda naturalidad.
+        **The problem.** "Help me with the incident report" is a hope, not an instruction. AI will fill every gap in the request with an assumption, and when a data point is missing, it is perfectly capable of inventing one without blinking.
 
-        **La regla.** Un pedido operativo tiene tres piezas. Objetivo verificable: qué quieres exactamente, en términos que permitan revisar si se cumplió ("una tabla de incidencias por tipo" se verifica; "algo completo" no). Fuente: con qué datos debe trabajar — qué archivo, qué periodo — y la instrucción de no salirse de ahí. Límites: formato, extensión y, la más importante, qué hacer cuando falte información: marcarla como pendiente, nunca rellenarla.
+        **The rule.** A working request has three pieces. A verifiable goal: exactly what you want, in terms that let you check whether it was delivered. "A table of incidents by type" can be checked. "Something complete" cannot. A source: which data it works from, which file, which period, plus the instruction not to go outside it. Limits: format, length, and the most important one, what to do when information is missing. Flag it as pending, never fill it in.
 
-        **El ejemplo.** Vago: "Hazme el reporte de incidencias de la semana, que quede completo". Operativo: "Con el archivo incidencias_semana_26.csv, arma una tabla con tipo de incidencia, cuántas veces ocurrió y tiempo promedio de atención. Máximo una página. Si a alguna incidencia le falta el tiempo de atención, márcala como pendiente — no estimes". Mismo esfuerzo de tu parte: treinta segundos más de escritura, una tarde menos de correcciones.
+        **The example.** Vague: "Do the incident report for the week, make it complete." Working: "Using incidents_week_26.csv, build a table with incident type, how many times it occurred, and average response time. One page max. If any incident is missing its response time, flag it as pending, do not estimate." Same effort on your side: thirty seconds more of typing, one afternoon less of corrections.
     - id: ejercicio_armar
       kind: exercise
       blockId: categorize_rows
-      title: "Estás armando el pedido para el reporte semanal de incidencias"
-      body: "Estas son las líneas candidatas. Decide qué haces con cada una."
+      title: "You are building the request for the weekly incident report"
+      body: "These are the candidate lines. Decide what you do with each one."
       caseContext:
         actionStyle: neutral
         actions:
-          - { value: entra, label: "Entra al pedido" }
-          - { value: precisar, label: "Precísala primero" }
-          - { value: fuera, label: "Fuera" }
+          - { value: entra, label: "Goes in" }
+          - { value: precisar, label: "Sharpen it first" }
+          - { value: fuera, label: "Cut it" }
         rows:
-          - { id: e1, label: "\"Resume las incidencias de esta semana\"" }
-          - { id: e2, label: "\"Usa solo el archivo incidencias_semana_26.csv que te comparto\"" }
-          - { id: e3, label: "\"Entrega una tabla con tipo de incidencia, veces que ocurrió y tiempo promedio de atención\"" }
-          - { id: e4, label: "\"Hazlo con buena onda para que el equipo no se desanime\"" }
-          - { id: e5, label: "\"Si falta el tiempo de atención de alguna incidencia, ponle un valor típico\"" }
+          - { id: e1, label: "\"Summarize this week's incidents\"" }
+          - { id: e2, label: "\"Use only the file incidents_week_26.csv that I'm sharing with you\"" }
+          - { id: e3, label: "\"Deliver a table with incident type, times it occurred, and average response time\"" }
+          - { id: e4, label: "\"Keep it upbeat so the team doesn't get discouraged\"" }
+          - { id: e5, label: "\"If an incident is missing its response time, put in a typical value\"" }
       feedback:
         kind: rows
         rows:
-          - { id: e1, correct: precisar, why: "\"Esta semana\" y \"resume\" son ambiguos: ¿qué fechas exactas?, ¿resumidas cómo? La versión precisa ya existe en otra línea: la tabla con columnas definidas." }
-          - { id: e2, correct: entra, why: "Fuente única y explícita. Evita que el modelo mezcle datos de otro periodo o complete con conocimiento general." }
-          - { id: e3, correct: entra, why: "Objetivo verificable: puedes revisar en diez segundos si la tabla trae exactamente esas columnas." }
-          - { id: e4, correct: precisar, why: "\"Buena onda\" cada quien lo entiende distinto — el modelo también. Si el tono importa, pídelo en términos operativos: \"tono directo y neutro, sin señalar personas\"." }
-          - { id: e5, correct: fuera, why: "Es una instrucción para inventar datos. Lo correcto es lo contrario: \"si falta el dato, márcalo como pendiente\". Un valor inventado en un reporte operativo es una decisión mal tomada después." }
+          - { id: e1, correct: precisar, why: "\"This week\" and \"summarize\" are ambiguous: which exact dates? Summarized how? The sharp version already exists in another line: the table with defined columns." }
+          - { id: e2, correct: entra, why: "A single, explicit source. It keeps the model from mixing in another period's data or filling gaps with general knowledge." }
+          - { id: e3, correct: entra, why: "A verifiable goal: you can check in ten seconds whether the table has exactly those columns." }
+          - { id: e4, correct: precisar, why: "Everyone reads \"upbeat\" differently, and so does the model. If tone matters, ask for it in operating terms: \"direct, neutral tone, no naming individuals\"." }
+          - { id: e5, correct: fuera, why: "It is an instruction to invent data. The right version is the opposite: \"if the data is missing, flag it as pending\". An invented value in an operating report is a bad decision waiting to happen." }
     - id: ejercicio_revisar
       kind: exercise
       blockId: ai_output_review
-      title: "Tu compañero va a enviar este pedido. Revísalo antes"
-      body: "Marca las frases que le dan a la inteligencia artificial una instrucción vaga o peligrosa. Toca para marcar."
+      title: "Your coworker is about to send this request. Review it first"
+      body: "Mark the lines that give AI a vague or dangerous instruction. Tap to mark."
       caseContext:
         segments:
-          - { id: s1, text: "Analiza las incidencias del archivo que te pego abajo, solo la semana del 22 al 28 de junio.", flagIfMarked: "frase_reutilizable" }
-          - { id: s2, text: "Escribe algo completo sobre cómo vamos.", flagIfMarked: "frase_reutilizable" }
-          - { id: s3, text: "Si un dato no aparece, complétalo con tu mejor estimación.", flagIfMarked: "claim_no_verificado" }
-          - { id: s4, text: "Entrega máximo una página: tabla de incidencias por tipo y tres pendientes con responsable.", flagIfMarked: "frase_reutilizable" }
+          - { id: s1, text: "Analyze the incidents in the file I'm pasting below, only the week of June 22-28.", flagIfMarked: "frase_reutilizable" }
+          - { id: s2, text: "Write something complete about how we're doing.", flagIfMarked: "frase_reutilizable" }
+          - { id: s3, text: "If a data point is missing, fill it in with your best estimate.", flagIfMarked: "claim_no_verificado" }
+          - { id: s4, text: "One page max: table of incidents by type and three open items with an owner.", flagIfMarked: "frase_reutilizable" }
       feedback:
         kind: segments
         segments:
-          - { id: s1, shouldFlag: false, why: "Fuente y periodo definidos. El modelo sabe con qué trabajar y con qué no." }
-          - { id: s2, shouldFlag: true, why: "\"Algo completo\" y \"cómo vamos\" no se pueden verificar. El modelo decidirá por ti qué significa \"completo\" — y no coincidirá con tu jefe." }
-          - { id: s3, shouldFlag: true, why: "Es un permiso explícito para inventar. Las estimaciones del modelo se leen igual de seguras que los datos reales; nadie las distinguirá después." }
-          - { id: s4, shouldFlag: false, why: "Límites operativos claros: extensión, estructura y contenido. Esta frase hace el pedido verificable." }
+          - { id: s1, shouldFlag: false, why: "Source and period defined. The model knows what to work from and what not to." }
+          - { id: s2, shouldFlag: true, why: "\"Something complete\" and \"how we're doing\" cannot be checked. The model will decide for you what \"complete\" means, and it will not match your manager." }
+          - { id: s3, shouldFlag: true, why: "It is explicit permission to invent. The model's estimates read exactly as confident as real data, and nobody will tell them apart later." }
+          - { id: s4, shouldFlag: false, why: "Clear operating limits: length, structure, and content. This line is what makes the request verifiable." }
     - id: cierre
       kind: closing
-      title: "Mañana, tu primer pedido del día"
-      body: "Antes de enviarlo, revísalo contra las tres piezas: ¿dice qué quiero en términos verificables?, ¿dice con qué datos?, ¿dice qué hacer si falta algo? Si una falta, el retrabajo de la tarde ya está agendado."
+      title: "Tomorrow, your first request of the day"
+      body: "Before you send it, check it against the three pieces: does it say what I want in verifiable terms? Does it say from which data? Does it say what to do if something is missing? If one is missing, the afternoon of rework is already on your calendar."

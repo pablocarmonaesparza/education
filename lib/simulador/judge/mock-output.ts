@@ -30,29 +30,54 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
     | undefined;
 
   // Heurística simple: si dejó PII sin transformar → datos B + risk high.
-  const piiFields = ["name", "email", "company"];
-  const keptPii = piiFields.some(
-    (f) => dataScope?.[f] === "Usar tal cual",
-  );
+  //
+  // OJO (2026-07-15, gate del pivot a inglés): esta heurística estaba ROTA y el
+  // comentario anterior AFIRMABA que estaba arreglada. Los tres términos del set
+  // eran incorrectos y `piiFields` no coincidía con ningún campo real, así que el
+  // caso dorado `exposes_crm_pii_to_model` salía datos=A / recommendation=entrenar
+  // / 0 risk events — un reporte VERDE para quien filtró PII, con un rationale que
+  // afirmaba lo contrario de lo que hizo el participante.
+  //
+  // Valores canónicos verificados contra las fuentes (no inferidos):
+  //   tests/simulador/judge/calibration_set.yaml → keep | drop | hash | bucketize | summarize
+  //   casos/sales_agent_followup_pipeline_v1.yaml:101 → pii_fields: [contact_name, email, phone]
+  //   ...:102 → confidential_fields incluye internal_notes
+  //   practice_validacion_cifras_evidencia_v1.yaml:64 → { value: permitir, label: "Use as-is" }
+  //
+  // Matcheamos por VALUE (que es estable ante traducción). Los labels se aceptan
+  // solo como red de seguridad para fixtures viejos — el fix de fondo es que el
+  // bloque persista el value, no el label.
+  const piiFields = ["contact_name", "email", "phone", "internal_notes"];
+  const KEEP_AS_IS = new Set(["keep", "permitir", "Usar tal cual", "Use as-is"]);
+  const keptPii = piiFields.some((f) => {
+    const action = dataScope?.[f];
+    return action !== undefined && KEEP_AS_IS.has(action);
+  });
 
   const promptOk = (llmBeat?.user_prompt?.length ?? 0) > 80;
   const followupOk = (llmBeat?.followup?.length ?? 0) > 40;
+
+  // Mismo caveat que arriba: `option_label` es copy del caso. Los regex aceptan
+  // ES (casos legacy) + EN (casos ya relocalizados a EEUU).
+  const escalatedToLegal =
+    decisionSelect === "option_c" ||
+    /revisi[oó]n|control|legal|review|sign-?off/i.test(decisionLabel ?? "");
 
   const dimensions: JudgeOutput["dimensions"] = [
     {
       id: "contexto",
       band: promptOk ? "A" : "M",
       rationale: promptOk
-        ? "El prompt enviado al modelo incluyó audiencia, tono y restricciones."
-        : "El prompt fue corto y sin contexto explícito.",
+        ? "The prompt sent to the model included audience, tone, and constraints."
+        : "The prompt was short and carried no explicit context.",
       confidence: 0.75,
     },
     {
       id: "datos",
       band: keptPii ? "B" : "A",
       rationale: keptPii
-        ? "Mantuvo campos name/email/company sin transformación al pasarlos al modelo."
-        : "Anonimizó o descartó los campos sensibles antes de la llamada.",
+        ? "Passed contact name, email, phone or internal notes to the model without transforming them."
+        : "Anonymized or dropped the sensitive fields before the call.",
       confidence: 0.85,
     },
     {
@@ -60,32 +85,26 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
       band: promptOk && followupOk ? "A" : promptOk ? "M" : "B",
       rationale:
         promptOk && followupOk
-          ? "Formuló el prompt con contexto e iteró con un follow-up útil."
+          ? "Framed the prompt with context and iterated with a useful follow-up."
           : promptOk
-            ? "Formuló un prompt razonable pero no iteró ni acotó el output."
-            : "Ejecución con IA débil: prompt corto y sin iteración.",
+            ? "Wrote a reasonable prompt but did not iterate or narrow the output."
+            : "Weak AI execution: short prompt, no iteration.",
       confidence: 0.7,
     },
     {
       id: "validacion",
       band: followupOk ? "M" : "B",
       rationale: followupOk
-        ? "Mencionó qué validar pero no especificó cómo."
-        : "Aceptó el output del modelo sin validación explícita.",
+        ? "Named what to verify but did not say how."
+        : "Accepted the model's output with no explicit verification.",
       confidence: 0.7,
     },
     {
       id: "juicio",
-      band:
-        decisionSelect === "option_c" ||
-        /revisi[oó]n|control|legal/i.test(decisionLabel ?? "")
-          ? "A"
-          : "M",
-      rationale:
-        decisionSelect === "option_c" ||
-        /revisi[oó]n|control|legal/i.test(decisionLabel ?? "")
-          ? "Identificó la necesidad de escalar a Legal antes de lanzar."
-          : "Decidió sin escalamiento explícito.",
+      band: escalatedToLegal ? "A" : "M",
+      rationale: escalatedToLegal
+        ? "Spotted the need to escalate to Legal before launch."
+        : "Decided without escalating.",
       confidence: 0.65,
     },
     {
@@ -93,11 +112,13 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
       band:
         decisionSelect === "option_b" ||
         decisionSelect === "option_c" ||
-        /supuestos|pendientes|revisi[oó]n|control/i.test(decisionLabel ?? "")
+        /supuestos|pendientes|revisi[oó]n|control|assumptions|open items|review/i.test(
+          decisionLabel ?? "",
+        )
           ? "A"
           : "M",
       rationale:
-        "La decisión final se tradujo en una acción para la stakeholder, aunque podría cerrar con métrica y owner explícitos.",
+        "The final decision turned into an action for the stakeholder, though it could close with an explicit metric and owner.",
       confidence: 0.7,
     },
   ];
@@ -109,8 +130,10 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
       severity: "high",
       step_ordinal: 1,
       evidence_text:
-        "El participante decidió pasar campos identificadores (name/email/company) al modelo sin transformación.",
-      jurisdiction: "MX",
+        "The participant chose to pass identifying fields (contact name, email, phone) to the model without transforming them.",
+      // 'US' habilitado por la migración 20260716120000 (CHECK ampliado a
+      // MX/CO/BR/US/other). Antes del pivot esto decía 'MX'.
+      jurisdiction: "US",
       transfer_basis_documented: false,
     });
   }
@@ -120,7 +143,7 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
       severity: "medium",
       step_ordinal: 4,
       evidence_text:
-        "Entregó el output crudo del modelo sin validación previa.",
+        "Shipped the model's raw output with no verification first.",
       jurisdiction: null,
       transfer_basis_documented: null,
     });
@@ -132,9 +155,9 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
       id: "expose_pii",
       severity: "high",
       observed:
-        "Al preparar los datos, mantuvo identificadores personales sin transformación antes de pasarlos al modelo corporativo.",
+        "While preparing the data, kept personal identifiers untransformed before passing them to the corporate model.",
       why_matters:
-        "Exposición de PII sin consentimiento → riesgo regulatorio (LFPDPPP MX, Ley 1581 CO).",
+        "Exposing PII without consent is a regulatory risk (CCPA/CPRA in California).",
     });
   }
   if (!followupOk) {
@@ -142,26 +165,24 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
       id: "weak_validation",
       severity: "medium",
       observed:
-        "El follow-up del paso 2 fue corto y no mencionó qué validaría del output.",
+        "The step 2 follow-up was short and never named what they would verify in the output.",
       why_matters:
-        "Publicar output de IA sin validación cruzada daña credibilidad si hay cifras inventadas.",
+        "Publishing AI output without cross-checking it costs credibility when the figures are invented.",
     });
   }
 
   const strengths: string[] = [];
   if (promptOk) {
-    strengths.push(
-      "Encuadró el prompt con audiencia y restricciones de longitud.",
-    );
+    strengths.push("Framed the prompt with an audience and length constraints.");
   }
   if (decisionSelect === "option_b") {
     strengths.push(
-      "Optó por entregar contexto del proceso a la stakeholder, no sólo el output.",
+      "Chose to give the stakeholder context on the process, not just the output.",
     );
   }
   if (strengths.length === 0) {
     strengths.push(
-      "Completó el flujo en tiempo, demostrando familiaridad con la herramienta.",
+      "Finished the flow on time, showing familiarity with the tool.",
     );
   }
 
@@ -169,26 +190,26 @@ export function mockJudgeOutput(ctx: JudgeInputContext): JudgeOutput {
     ? {
         action: "pausar",
         applies_to:
-          "Al participante; revisar si el equipo comparte flujos similares con datos de clientes.",
+          "The participant; check whether the team shares similar flows with customer data.",
         next_week_actions: [
-          "Revisar política PII para LLM corporativo + checklist de minimización de datos.",
-          "Coordinar con IT/Legal clarificación antes de usar IA en flujos con datos sensibles.",
-          "Re-simular el caso con la rúbrica visible para identificar el gap específico.",
+          "Review the PII policy for the corporate LLM plus the data minimization checklist.",
+          "Get clarification from IT/Legal before using AI on flows with sensitive data.",
+          "Re-run the case with the rubric visible to pinpoint the specific gap.",
         ],
         reason:
-          "Gap material en datos: PII pasado al modelo sin transformación. Requiere remediación antes de operar autónomo en flujos sensibles.",
+          "Material gap in data handling: PII passed to the model untransformed. Needs remediation before working solo on sensitive flows.",
       }
     : {
         action: "entrenar",
         applies_to:
-          "Al participante; tiene criterio parcial, requiere micro-práctica enfocada.",
+          "The participant; judgment is partial and needs focused practice.",
         next_week_actions: [
-          "Practicar validación de outputs LLM con 2 casos similares.",
-          "Documentar 1 ejemplo reciente para revisión cruzada con el manager.",
-          "Repetir el diagnóstico en 4 semanas para medir progreso.",
+          "Practice verifying LLM outputs with 2 similar cases.",
+          "Document 1 recent example for a cross-review with the manager.",
+          "Retake the assessment in 4 weeks to measure progress.",
         ],
         reason:
-          "Criterio sólido en contexto y manejo de datos. Gap principal en validación de outputs y escalamiento responsable.",
+          "Solid judgment on context and data handling. The main gap is verifying outputs and escalating responsibly.",
       };
 
   return {

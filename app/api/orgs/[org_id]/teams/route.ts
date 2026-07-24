@@ -24,20 +24,20 @@ export async function POST(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   let body: { name?: string; department_key?: string };
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Body inválido." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
   const name = body.name?.trim();
   if (!name || name.length < 2) {
     return NextResponse.json(
-      { error: "El nombre del equipo debe tener al menos 2 caracteres." },
+      { error: "The team name must be at least 2 characters." },
       { status: 400 },
     );
   }
@@ -51,7 +51,7 @@ export async function POST(
   if (bridgeError || !bridgeId) {
     console.error("[api/teams] ensure_bridge_user failed:", bridgeError);
     return NextResponse.json(
-      { error: "No se pudo sincronizar tu cuenta." },
+      { error: "We could not sync your account." },
       { status: 500 },
     );
   }
@@ -67,7 +67,7 @@ export async function POST(
 
   if (!membership) {
     return NextResponse.json(
-      { error: "No tienes permisos de admin en esta organización." },
+      { error: "You do not have admin permissions in this organization." },
       { status: 403 },
     );
   }
@@ -86,7 +86,7 @@ export async function POST(
   if (teamError || !team) {
     console.error("[api/teams] teams.insert failed:", teamError);
     return NextResponse.json(
-      { error: "No se pudo crear el equipo." },
+      { error: "Could not create the team." },
       { status: 500 },
     );
   }
@@ -104,7 +104,7 @@ export async function POST(
     console.error("[api/teams] team_memberships.insert failed:", teamMemberError);
     await admin.schema("simulador").from("teams").delete().eq("id", team.id);
     return NextResponse.json(
-      { error: "No se pudo asignar el manager al equipo." },
+      { error: "Could not assign the manager to the team." },
       { status: 500 },
     );
   }
@@ -129,7 +129,7 @@ export async function POST(
       sprint_package_id: sprintPackage?.id ?? null,
       organization_id: org_id,
       team_id: team.id,
-      name: "Sprint Marketing/Growth 30d",
+      name: "Marketing/Growth sprint 30d",
       status: "active",
       start_date: startDate.toISOString().slice(0, 10),
       end_date: endDate.toISOString().slice(0, 10),
@@ -155,7 +155,7 @@ export async function POST(
       .eq("user_id", bridgeId);
     await admin.schema("simulador").from("teams").delete().eq("id", team.id);
     return NextResponse.json(
-      { error: "No se pudo crear el sprint inicial." },
+      { error: "Could not create the initial sprint." },
       { status: 500 },
     );
   }

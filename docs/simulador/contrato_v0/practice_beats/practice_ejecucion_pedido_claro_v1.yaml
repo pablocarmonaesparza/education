@@ -11,67 +11,67 @@ practice_beat:
   # aprendizaje sale de HACER (ver el output malo → arreglar el pedido) + el
   # feedback, no de leer.
   principle_card:
-    headline: "Un buen pedido dice qué quieres, con qué datos, y qué hacer si falta algo"
-    body: "El modelo llena cada hueco de tu pedido con una suposición. Si no lo dices tú, lo decide él, y no coincide contigo."
+    headline: "A good request says what you want, from which data, and what to do if something is missing"
+    body: "The model fills every gap in your request with an assumption. If you do not decide it, it does, and it will not match you."
   practice_exercise:
     type: formative_slides
     blocks: [ai_output_review, categorize_rows]
-    prompt: "Primero ves lo que la inteligencia artificial devolvió con un pedido de una línea y marcas lo que no dejarías pasar; luego armas el pedido bien decidiendo qué instrucción entra, cuál se precisa y cuál sobra."
-  completion_criteria: "Completar los 2 ejercicios (todos los segmentos y todas las filas con respuesta) y revisar la retroalimentación de cada uno."
+    prompt: "First you see what AI returned from a one-line request and mark what you would not let through; then you build the request properly, deciding which instruction goes in, which needs sharpening, and which does not belong."
+  completion_criteria: "Complete both exercises (every segment and every row answered) and review the feedback for each."
   exit:
     contributes_to_resim_score: true
   slides:
     - id: portada
       kind: cover
-      title: "Le pediste a la IA en una línea. Mira lo que te devolvió"
-      body: "Sofía tiene que mandarle hoy a su jefa un resumen de las quejas de clientes de Aurora Retail. Le escribió a la inteligencia artificial: \"resúmeme estas quejas\". Vas a ver qué devolvió, y a arreglar el pedido para que sirva."
-      chips: ["N1 · Fundamentos", "Marketing", "5 min"]
+      title: "You asked AI in one line. Look what came back"
+      body: "Sofia has to send her manager a summary of Aurora Retail's customer complaints today. She wrote to AI: \"summarize these complaints\". You are going to see what came back, and fix the request so it works."
+      chips: ["N1 · Fundamentals", "Marketing", "5 min"]
     - id: ejercicio_revisar
       kind: exercise
       blockId: ai_output_review
-      title: "Esto devolvió la IA con el pedido de una línea. Antes de reenviarlo, marca lo que no dejarías pasar"
-      body: "Toca para marcar las frases con problema."
+      title: "This is what AI returned from the one-line request. Before forwarding it, mark what you would not let through"
+      body: "Tap to mark the lines with a problem."
       caseContext:
         segments:
-          - { id: s1, text: "Este mes recibimos 47 quejas, un 30% más que el mes pasado.", flagIfMarked: "claim_no_verificado" }
-          - { id: s2, text: "La clienta Laura Méndez (laura.mendez@gmail.com) se quejó tres veces por el retraso de su pedido.", flagIfMarked: "dato_sensible" }
-          - { id: s3, text: "Los motivos más frecuentes fueron retrasos en la entrega y errores de cobro.", flagIfMarked: "frase_reutilizable" }
-          - { id: s4, text: "En general el equipo va muy bien y los clientes están contentos con el servicio.", flagIfMarked: "claim_no_verificado" }
+          - { id: s1, text: "This month we received 47 complaints, 30% more than last month.", flagIfMarked: "claim_no_verificado" }
+          - { id: s2, text: "Customer Laura Bennett (laura.bennett@gmail.com) complained three times about her order being late.", flagIfMarked: "dato_sensible" }
+          - { id: s3, text: "The most frequent reasons were delivery delays and billing errors.", flagIfMarked: "frase_reutilizable" }
+          - { id: s4, text: "Overall the team is doing great and customers are happy with the service.", flagIfMarked: "claim_no_verificado" }
       feedback:
         kind: segments
         segments:
-          - { id: s1, shouldFlag: true, why: "Tú nunca le pasaste la cifra del mes pasado. El modelo la inventó, y un número inventado en un resumen se lee igual de seguro que uno real. Nadie lo va a distinguir después." }
-          - { id: s2, shouldFlag: true, why: "Nombre y correo de una clienta real en un resumen que se va a reenviar. El pedido nunca le dijo que anonimizara, así que no lo hizo. La fuga no la comete la IA: la comete el pedido incompleto." }
-          - { id: s3, shouldFlag: false, why: "Es un resumen fiel de lo que había en el archivo. Sin cifras inventadas ni datos personales. Esto sí lo dejas pasar." }
-          - { id: s4, shouldFlag: true, why: "Son QUEJAS y el modelo cerró con \"clientes contentos\". Le pediste \"resúmeme\" sin decir el objetivo ni el tono, así que rellenó el hueco con optimismo genérico." }
+          - { id: s1, shouldFlag: true, why: "You never gave it last month's number. The model invented it, and an invented number in a summary reads exactly as confident as a real one. Nobody will tell them apart later." }
+          - { id: s2, shouldFlag: true, why: "A real customer's name and email in a summary that is about to be forwarded. The request never told it to anonymize, so it did not. AI does not cause the leak: the incomplete request does." }
+          - { id: s3, shouldFlag: false, why: "A faithful summary of what was in the file. No invented numbers, no personal data. This one you let through." }
+          - { id: s4, shouldFlag: true, why: "These are COMPLAINTS and the model closed with \"customers are happy\". You asked it to \"summarize\" without saying the goal or the tone, so it filled the gap with generic optimism." }
     - id: ejercicio_armar
       kind: exercise
       blockId: categorize_rows
-      title: "Ahora arma el pedido bien. Decide qué haces con cada línea"
-      body: "Estas son las líneas candidatas para el pedido. Decide cuál entra tal cual, cuál hay que precisar y cuál sobra."
+      title: "Now build the request properly. Decide what you do with each line"
+      body: "These are the candidate lines for the request. Decide which goes in as-is, which needs sharpening, and which does not belong."
       caseContext:
         actionStyle: neutral
         actions:
-          - { value: entra, label: "Entra al pedido" }
-          - { value: precisar, label: "Precísala primero" }
-          - { value: fuera, label: "Fuera" }
+          - { value: entra, label: "Goes in" }
+          - { value: precisar, label: "Sharpen it first" }
+          - { value: fuera, label: "Cut it" }
         rows:
-          - { id: r1, label: "\"Resume estas quejas\"" }
-          - { id: r2, label: "\"Usa solo el archivo quejas_junio.csv que te paso, nada más\"" }
-          - { id: r3, label: "\"Devuélveme una tabla: motivo de la queja, cuántas veces apareció y si sigue abierta\"" }
-          - { id: r4, label: "\"No uses nombres ni correos de clientes; si aparecen, cámbialos por número de cliente\"" }
-          - { id: r5, label: "\"Si te falta un dato, invéntalo para que el resumen quede completo\"" }
-          - { id: r6, label: "\"Ponle buena onda para que mi jefa no se preocupe\"" }
+          - { id: r1, label: "\"Summarize these complaints\"" }
+          - { id: r2, label: "\"Use only the file complaints_june.csv that I'm giving you, nothing else\"" }
+          - { id: r3, label: "\"Give me back a table: complaint reason, how many times it came up, and whether it's still open\"" }
+          - { id: r4, label: "\"Don't use customer names or emails; if they show up, replace them with a customer number\"" }
+          - { id: r5, label: "\"If you're missing a data point, make it up so the summary comes out complete\"" }
+          - { id: r6, label: "\"Give it a positive spin so my manager doesn't worry\"" }
       feedback:
         kind: rows
         rows:
-          - { id: r1, correct: precisar, why: "\"Resume\" es una esperanza, no una instrucción: ¿resumir cómo?, ¿para qué? La versión útil ya existe en otra línea: la tabla con columnas definidas." }
-          - { id: r2, correct: entra, why: "Fuente única y explícita. Evita que el modelo mezcle datos de otro periodo o complete con conocimiento general de internet." }
-          - { id: r3, correct: entra, why: "Objetivo verificable: en diez segundos revisas si la tabla trae exactamente esas tres columnas. Eso es un buen pedido." }
-          - { id: r4, correct: entra, why: "El límite de datos que le faltó al pedido original: por eso la IA soltó el nombre y el correo de Laura. Aquí lo cierras." }
-          - { id: r5, correct: fuera, why: "Es un permiso explícito para inventar, la causa exacta de la cifra falsa que marcaste antes. Lo correcto es lo contrario: \"si falta un dato, márcalo como pendiente\"." }
-          - { id: r6, correct: precisar, why: "\"Buena onda\" cada quien lo entiende distinto, y el modelo también, por eso endulzó las quejas. Si el tono importa, pídelo operativo: \"tono neutro y directo, sin endulzar\"." }
+          - { id: r1, correct: precisar, why: "\"Summarize\" is a hope, not an instruction: summarize how? For what? The useful version already exists in another line: the table with defined columns." }
+          - { id: r2, correct: entra, why: "A single, explicit source. It keeps the model from mixing in another period's data or filling gaps with general knowledge off the internet." }
+          - { id: r3, correct: entra, why: "A verifiable goal: in ten seconds you can check whether the table has exactly those three columns. That is a good request." }
+          - { id: r4, correct: entra, why: "The data limit the original request was missing, which is why AI dropped Laura's name and email into the summary. This line closes it." }
+          - { id: r5, correct: fuera, why: "Explicit permission to invent, the exact cause of the false number you flagged earlier. The right version is the opposite: \"if a data point is missing, flag it as pending\"." }
+          - { id: r6, correct: precisar, why: "Everyone reads \"positive spin\" differently, and so does the model, which is why it sweetened the complaints. If tone matters, ask for it in operating terms: \"neutral, direct tone, no sugarcoating\"." }
     - id: cierre
       kind: closing
-      title: "Tu próximo pedido a la IA"
-      body: "Antes de darle enter, míralo contra tres piezas: ¿dice qué quiero, en términos que pueda verificar?, ¿dice con qué datos y con cuáles no?, ¿dice qué hacer si falta algo? Las tres cosas que la IA te inventó hoy salieron de un pedido que no las decía."
+      title: "Your next request to AI"
+      body: "Before you hit enter, check it against three pieces: does it say what I want, in terms I can verify? Does it say which data to use and which not to? Does it say what to do if something is missing? The three things AI invented for you today all came out of a request that did not say them."

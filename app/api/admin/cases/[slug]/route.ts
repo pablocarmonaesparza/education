@@ -72,12 +72,12 @@ export async function GET(
 
   if (tplErr) {
     console.error("[admin/cases/:slug] template query failed", tplErr);
-    return NextResponse.json({ error: "Error cargando el caso." }, { status: 500 });
+    return NextResponse.json({ error: "Could not load the case." }, { status: 500 });
   }
 
   const rows = (templates ?? []) as TemplateRow[];
   if (rows.length === 0) {
-    return NextResponse.json({ error: "Caso no encontrado." }, { status: 404 });
+    return NextResponse.json({ error: "Case not found." }, { status: 404 });
   }
 
   // Template canónico para meta: preferimos el global; si no, la versión más alta.
@@ -175,7 +175,7 @@ export async function GET(
 
   const orgsUsing = allOrgIds.map((id) => ({
     id,
-    name: orgNameById.get(id) ?? "Organización",
+    name: orgNameById.get(id) ?? "Organization",
     bespoke: orgIds.includes(id),
   }));
 

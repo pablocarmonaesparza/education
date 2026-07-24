@@ -1,0 +1,623 @@
+# Caso ensamblado · harborview_support_enterprise (generado por el motor, run
+# 20260723_192848__harborview_enterprise_escalation, attempt-1). Gates deterministas
+# en PASS (check-assembled-case + lint-case-copy). El juez narrativo dejó 2
+# observaciones para revisión humana (result: HUMAN_REVIEW); NO bloquean los gates
+# deterministas y se documentan aquí sin tocar el contenido:
+#   1. contexto slot 4 vs slot 2: el deadline aparece como "1:47 PM" y como
+#      "Friday, June 5, 2026 at 1:47 PM" (mismo valor, distinto formato).
+#   2. cierre slot 4 (manager_signal): la acción esperada es escalar la cuenta a
+#      Marcus Chen, el Account Manager.
+# Biblia (hechos canónicos):
+#   Empresa: Harborview Software (scheduling / field-service, EEUU).
+#   Rol: Customer Support Specialist. HarborChat: la IA (redacta; no consulta la
+#     base ni verifica hechos; pegar datos sensibles queda fuera de los acuerdos de
+#     datos de la empresa). Instrumento dado, no se elige.
+#   Diane Reyes: Customer Support Manager. Asigna y recibe el memo. Nunca destinataria del reply.
+#   Lena Okafor: VP of Operations de SummitServe. Escaló el hilo; destinataria del reply.
+#   Marcus Chen: Enterprise Account Manager. A él se escala la cuenta.
+#   SummitServe: cuenta enterprise, $96,000 USD/año. Sync bug la noche del miércoles
+#     3 jun 2026 borró 2 días de agendas (3 y 4 jun). Hoy viernes 5 jun 2026; último
+#     mensaje del cliente 9:47 AM; deadline 1:47 PM (4 horas hábiles).
+#   Acción esperada: escalar. Alternativas: pilotar, entrenar, pausar.
+# Los identificadores NO cambian respecto al run: section id, slot, block_id, ids de
+# fila/opción/decisión, flagIfMarked, actions[].value siguen igual.
+
+case_assembly:
+  case_id: harborview_support_enterprise
+  version: 1
+  status: draft
+  schema_version: 1.0.0
+  meta:
+    level: N1 · Foundations
+    profile: Customer Support
+    profile_pack: customer_success_support
+    estimated_minutes: 12
+    timer_seconds: 600
+    timer_default_on: false
+    tools:
+      - ai
+      - data
+      - messaging
+      - documents
+  manager_outcome:
+    primary_question: 'Whether this person can handle an angry enterprise account under time pressure with judgment: using the AI tool to draft without pasting customer account data into it, catching what the draft gets wrong, and knowing when a reply is not enough and the account needs to be escalated.'
+    assignment_brief: 'Diane Reyes, your manager, assigns you the case. She says: "Our largest enterprise account, SummitServe, is furious. An overnight sync bug wiped two days of technician schedules. The email thread is nine messages deep and getting heated. I need you to draft a professional reply using the AI assistant, but you cannot paste the raw thread into it. Anything you paste goes outside our data agreements. Strip out account details, admin emails, contract references, and personal data first. Then review what the tool returns. Decide if the reply is enough or if this needs to go to the account manager. SummitServe pays us $96,000 USD per year. Do not lose this account."'
+    business_metric: Enterprise account retention ($96,000 USD annual contract value)
+    risk_metric: Exposure of customer account data outside the company's data agreements
+    expected_signal: The participant strips personal and account data before pasting into the AI tool, catches a factual error or tone problem in the draft, and escalates the account to the account manager instead of sending a reply.
+    expected_action: escalar
+    alternatives:
+      - pilotar
+      - entrenar
+      - pausar
+  sections:
+    - id: contexto
+      name: Context
+      slides:
+        - slot: 1
+          block_id: case_cover
+          title: 'Harborview Software: SummitServe escalation'
+          body: 'You are a **Customer Support Specialist** at **Harborview Software**, a company that provides scheduling and field-service management platforms to mid-market and enterprise clients. Your manager, **Diane Reyes**, has assigned you a sensitive escalation from **SummitServe**, an enterprise account worth **$96,000 USD** annually. You will use **HarborChat**, the company''s AI drafting tool, to prepare a professional reply. But HarborChat has limits: it cannot access your helpdesk or customer database, it cannot verify facts from the email thread, and pasting sensitive data into it is not covered by Harborview''s data agreements.'
+          content:
+            meta:
+              profile: Customer Support
+              level: N1 · Foundations
+              estimatedMinutes: 12
+              timerSeconds: 600
+              timerDefaultOn: false
+              tools:
+                - kind: ai
+                  label: AI
+                - kind: data
+                  label: Tables
+                - kind: messaging
+                  label: Messaging
+                - kind: documents
+                  label: Documents
+        - slot: 2
+          block_id: reading_message
+          title: Diane assigns the case
+          body: Diane Reyes sends you the assignment via the internal helpdesk system.
+          content:
+            message:
+              channel: helpdesk_ticket
+              from:
+                name: Diane Reyes
+              body: |-
+                I need you to handle the SummitServe escalation. Lena Okafor, their VP of Operations, is very frustrated after a sync bug lost two days of technician schedules. Here is what I need from you:
+
+                1. **Draft a professional reply** to Lena Okafor using HarborChat. Paste only the content of the email thread, stripped of any account details, admin emails, contract references, or personal data.
+                2. **Review the AI draft** for factual errors or tone problems before sending.
+                3. **Decide** whether the reply is sufficient or whether this account needs to be **escalated to Marcus Chen**, the Account Manager for enterprise accounts.
+
+                The last email in the thread was at **9:47 AM** today, Friday, June 5, 2026. Our response-time target is **4 business hours**, so we need a decision by **1:47 PM**. Let me know if you have questions.
+              timestamp: Friday, June 5, 2026 at 10:00 AM
+        - slot: 3
+          block_id: reading_data_table
+          title: SummitServe contact data
+          body: Here is the contact dataset for the SummitServe account. Review it carefully. You will need to know who can receive communications, who has opted out, and which contact information is verified.
+          content:
+            table:
+              columns:
+                - key: name
+                  label: Name
+                - key: email
+                  label: Email
+                - key: role
+                  label: Role
+                - key: contract_ref
+                  label: Contract Ref
+                - key: admin_key
+                  label: Admin Access Key
+                - key: last_contact
+                  label: Last Contact
+                - key: opt_out
+                  label: Opt Out Status
+                - key: notes
+                  label: Notes
+              rows:
+                - name: Lena Okafor
+                  email: l.okafor@summitserve.com
+                  role: VP of Operations
+                  contract_ref: SS-2026-4891
+                  admin_key: adm-ss-7k9m2p
+                  last_contact: June 2, 2026
+                  opt_out: 'No'
+                  notes: Account executive. Sent the escalation thread. Very frustrated.
+                - name: Tom Betancourt
+                  email: t.betancourt@summitserve.com
+                  role: IT Director
+                  contract_ref: SS-2026-4891
+                  admin_key: adm-ss-4f8h1q
+                  last_contact: June 2, 2026
+                  opt_out: 'No'
+                  notes: CC'd on thread. Technical contact for the sync integration.
+                - name: Patricia Hobbs
+                  email: p.hobbs@summitserve.com
+                  role: Scheduling Manager
+                  contract_ref: SS-2026-4891
+                  admin_key: adm-ss-2d5g7w
+                  last_contact: May 28, 2026
+                  opt_out: 'Yes'
+                  notes: Asked to be removed from all non-critical communications in May.
+                - name: Raj Mehta
+                  email: r.mehta@harborview.com
+                  role: Solutions Engineer (Harborview)
+                  contract_ref: INT-2026-003
+                  admin_key: adm-hv-9t3b6x
+                  last_contact: June 2, 2026
+                  opt_out: 'No'
+                  notes: Internal Harborview employee. Was troubleshooting on the thread.
+                - name: Diane Reyes
+                  email: d.reyes@harborview.com
+                  role: Customer Support Manager
+                  contract_ref: EMP-1124
+                  admin_key: adm-hv-1a2c5v
+                  last_contact: June 2, 2026
+                  opt_out: 'No'
+                  notes: Manager. Not on the SummitServe thread.
+                - name: SummitServe Billing
+                  email: billing@summitserve.com
+                  role: Billing Department
+                  contract_ref: SS-2026-4891
+                  admin_key: N/A
+                  last_contact: May 15, 2026
+                  opt_out: 'No'
+                  notes: Generic billing inbox. Mentioned in contract discussion on the thread.
+                - name: Lena Okafor (personal)
+                  email: lena.okafor@gmail.com
+                  role: Personal email (not company)
+                  contract_ref: N/A
+                  admin_key: N/A
+                  last_contact: June 2, 2026
+                  opt_out: Unconfirmed
+                  notes: Lena sent one message from her personal Gmail during the outage. Not a verified company contact.
+                - name: SummitServe Onboarding
+                  email: onboarding@summitserve.com
+                  role: Onboarding Team
+                  contract_ref: SS-2026-4891
+                  admin_key: N/A
+                  last_contact: March 10, 2026
+                  opt_out: 'No'
+                  notes: Was on the original implementation thread. Not active in this escalation.
+        - slot: 4
+          block_id: reading_kpi_cards
+          title: Key numbers at a glance
+          body: These metrics and deadlines will guide your decision.
+          content:
+            kpis:
+              - label: Annual contract value (SummitServe)
+                value: $96,000 USD
+              - label: Technician schedules lost
+                value: 2 days (June 3 and June 4, 2026)
+              - label: Response deadline (4 business hours)
+                value: Friday, June 5, 2026 at 1:47 PM
+        - slot: 5
+          block_id: reading_message
+          title: SummitServe escalation thread
+          body: Here is the email thread from SummitServe. **Lena Okafor** escalated after a sync bug on the night of **Wednesday, June 3, 2026** caused the loss of two full days of technician schedules (June 3 and June 4). The thread contains **9 messages** total. The last message, from Lena at **9:47 AM today**, expresses frustration that no resolution has been provided. Harborview's Solutions Engineer **Raj Mehta** was troubleshooting on the thread but did not resolve the issue.
+          content:
+            message:
+              channel: email_thread
+              from:
+                name: Lena Okafor
+              body: |-
+                Subject: URGENT: Schedule sync failure - 2 days of routes lost
+
+                Harborview Support Team,
+
+                On the night of Wednesday, June 3, 2026, your system experienced a sync bug that wiped two full days of technician schedules for June 3 and June 4. We had 18 field technicians dispatched across the Columbus metro area, and their routes were completely lost. My team had to manually rebuild schedules from printed copies.
+
+                Tom Betancourt (our IT Director) was CC'd on the thread and has been trying to work with your Solutions Engineer Raj Mehta since Thursday morning. As of this morning, Friday June 5, we still do not have a root cause or a timeline for a fix.
+
+                This is unacceptable for a platform we pay $96,000 a year for. I need a clear answer: what caused this, what is being done to prevent it, and what compensation Harborview is offering for the disruption.
+
+                Lena Okafor
+                VP of Operations, SummitServe
+              timestamp: Friday, June 5, 2026 at 9:47 AM
+    - id: datos
+      name: Data
+      slides:
+        - slot: 1
+          block_id: categorize_rows
+          title: Classify each contact for data safety
+          body: |-
+            Before you paste anything into HarborChat, you need to know which data is safe to include. The dataset has **8 rows**. For each one, choose one of these actions:
+
+            - **Safe to paste**, No sensitive account details. Can go into HarborChat.
+            - **Needs redaction**, Contains an admin access key, contract reference, personal email, or other restricted data. Must be removed or rewritten before pasting.
+            - **Excluded**, This contact has opted out of data sharing or is not a verified company contact. Must not be used at all.
+
+            Refer to the data handling rules: no admin keys, contract refs, or personal emails in HarborChat. Anyone who opted out is excluded.
+          content:
+            actions:
+              - value: safe
+                label: Safe to paste
+              - value: redact
+                label: Needs redaction
+              - value: exclude
+                label: Excluded
+            rows:
+              - id: lena_okafor
+                label: 'Lena Okafor (l.okafor@summitserve.com), VP of Operations, Contract_Ref SS-2026-4891, Admin_Access_Key adm-ss-7k9m2p, Opt_Out: No'
+              - id: tom_betancourt
+                label: 'Tom Betancourt (t.betancourt@summitserve.com), IT Director, Contract_Ref SS-2026-4891, Admin_Access_Key adm-ss-4f8h1q, Opt_Out: No'
+              - id: patricia_hobbs
+                label: 'Patricia Hobbs (p.hobbs@summitserve.com), Scheduling Manager, Opt_Out: Yes'
+              - id: raj_mehta
+                label: 'Raj Mehta (r.mehta@harborview.com), Solutions Engineer (Harborview), internal employee, Opt_Out: No'
+              - id: diane_reyes
+                label: 'Diane Reyes (d.reyes@harborview.com), Customer Support Manager, internal employee, Opt_Out: No'
+              - id: summitserve_billing
+                label: 'SummitServe Billing (billing@summitserve.com), Billing Department, Opt_Out: No'
+              - id: lena_personal
+                label: 'Lena Okafor (lena.okafor@gmail.com), Personal email, not a company domain, Opt_Out: Unconfirmed'
+              - id: summitserve_onboarding
+                label: 'SummitServe Onboarding (onboarding@summitserve.com), Onboarding Team, Opt_Out: No'
+        - slot: 2
+          block_id: categorize_rows
+          title: Who should receive the reply
+          body: |-
+            Now decide who gets the reply message. You are drafting a professional response to Lena Okafor about the sync outage. For each of the **8 contacts**, choose one:
+
+            - **Recipient**, This person should be the main recipient of the reply.
+            - **CC**, This person should be copied for visibility.
+            - **Exclude**, This person should not receive the reply at all.
+
+            Remember: Patricia Hobbs opted out of non-critical communications. Personal or unverified emails must not be used for official correspondence. Internal Harborview staff are not on the SummitServe account.
+          content:
+            actions:
+              - value: recipient
+                label: Recipient
+              - value: cc
+                label: CC
+              - value: exclude
+                label: Exclude
+            rows:
+              - id: lena_okafor
+                label: Lena Okafor (l.okafor@summitserve.com), VP of Operations, main escalation contact
+              - id: tom_betancourt
+                label: Tom Betancourt (t.betancourt@summitserve.com), IT Director, technical contact on the thread
+              - id: patricia_hobbs
+                label: Patricia Hobbs (p.hobbs@summitserve.com), Scheduling Manager, opted out in May
+              - id: raj_mehta
+                label: Raj Mehta (r.mehta@harborview.com), Harborview Solutions Engineer, was troubleshooting
+              - id: diane_reyes
+                label: Diane Reyes (d.reyes@harborview.com), Harborview Support Manager, not on the thread
+              - id: summitserve_billing
+                label: SummitServe Billing (billing@summitserve.com), Billing Department, mentioned in contract discussion
+              - id: lena_personal
+                label: Lena Okafor (lena.okafor@gmail.com), Personal Gmail, not a company domain
+              - id: summitserve_onboarding
+                label: SummitServe Onboarding (onboarding@summitserve.com), Onboarding Team, not active in escalation
+        - slot: 3
+          block_id: model_tradeoff_sliders
+          title: Set your AI tool priorities
+          body: |-
+            HarborChat cannot guarantee data privacy for content you paste. You need to balance three priorities when you write your instruction. Set each slider to reflect your approach for this task:
+
+            - **Speed**, How quickly you need a draft. Faster means less time to review and redact.
+            - **Data safety**, How carefully you strip out sensitive details before pasting. Higher safety means more time spent redacting.
+            - **Accuracy**, How much you rely on HarborChat to get the facts right. Higher accuracy means you expect the AI to match the thread details, but it may hallucinate if given incomplete context.
+
+            There is no single right answer. Your choices will affect the draft you receive.
+          content: {}
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write your instruction to HarborChat
+          body: |-
+            Write the instruction you will paste into HarborChat to generate a reply to Lena Okafor. You have the escalation thread, the contact data, and the data handling rules in front of you.
+
+            HarborChat can draft professional email replies, rewrite tone, check grammar, and generate multiple version options. It cannot access your helpdesk, verify facts, or know which accounts are enterprise.
+
+            Write your instruction here, one or two lines.
+          content: {}
+        - slot: 5
+          block_id: reading_attachment
+          title: Harborview data handling policy
+          body: Review the company policy before you proceed.
+          content:
+            attachments:
+              - name: Data Handling Policy for External AI Tools
+                kind: document
+              - name: SummitServe Account Summary (internal use only)
+                kind: document
+    - id: ia
+      name: AI
+      slides:
+        - slot: 1
+          block_id: reading_passive
+          title: HarborChat capabilities
+          body: HarborChat can draft professional email replies from summarized context, rewrite tone to be calm and diplomatic, check grammar and clarity, and generate multiple version options. It **cannot** access the Harborview helpdesk or customer database, guarantee data privacy for pasted content, verify factual claims from the email thread, or know which accounts are enterprise accounts.
+          content: {}
+        - slot: 2
+          block_id: ai_textfield_guided
+          title: Build your HarborChat request
+          body: Select the goal, audience, and tone limits for your draft. These choices will shape what HarborChat produces.
+          content:
+            guided:
+              objetivos:
+                - Apologize and explain the sync bug
+                - Offer a timeline for the fix
+                - Propose a credit or discount
+                - Acknowledge the impact on SummitServe operations
+              audiencias:
+                - Lena Okafor, VP of Operations
+                - Tom Betancourt, IT Director
+                - Lena Okafor and Tom Betancourt
+                - The entire SummitServe contact list
+              limites:
+                - Do not mention specific dollar amounts
+                - Do not reference admin access keys
+                - Do not use personal email addresses
+                - Keep tone professional and factual
+        - slot: 3
+          block_id: ai_output_review
+          title: Review the first draft
+          body: HarborChat produced the draft below. Flag any segments that contain factual errors, sensitive data, or tone problems.
+          content:
+            segments:
+              - id: s1
+                text: Dear Lena, I am writing to apologize for the sync bug that occurred on Wednesday, June 3, 2026.
+                flagIfMarked: frase_reutilizable
+              - id: s2
+                text: We understand this caused the loss of technician schedules for June 3 and June 4.
+                flagIfMarked: frase_reutilizable
+              - id: s3
+                text: As a goodwill gesture, we would like to offer a refund of $3,400 USD on your next invoice.
+                flagIfMarked: claim_no_verificado
+              - id: s4
+                text: The engineering team has identified the root cause and expects the fix to deploy by Monday, June 8.
+                flagIfMarked: frase_reutilizable
+              - id: s5
+                text: Your admin access key adm-ss-7k9m2p can be used to verify the updated sync logs.
+                flagIfMarked: dato_sensible
+              - id: s6
+                text: Please reach out if you have any further questions or concerns.
+                flagIfMarked: frase_reutilizable
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write a revised instruction
+          body: Write your instruction to HarborChat here, one or two lines. Fix the factual errors and remove the sensitive data from the draft.
+          content: {}
+        - slot: 5
+          block_id: ai_output_review
+          title: Review the second draft
+          body: HarborChat produced a revised draft. Flag any remaining segments with tone problems or missing acknowledgments.
+          content:
+            segments:
+              - id: s7
+                text: Dear Lena, we apologize for the inconvenience caused by the sync bug on June 3.
+                flagIfMarked: frase_reutilizable
+              - id: s8
+                text: The engineering team has identified the root cause and will deploy a fix by Monday.
+                flagIfMarked: frase_reutilizable
+              - id: s9
+                text: We understand this was frustrating, but these issues happen occasionally with complex integrations.
+                flagIfMarked: tono_agresivo
+              - id: s10
+                text: Your admin portal is available for you to review sync status at any time.
+                flagIfMarked: frase_reutilizable
+              - id: s11
+                text: Please let us know if you need anything else.
+                flagIfMarked: frase_reutilizable
+              - id: s12
+                text: We recognize that losing two days of schedules impacted your field operations, and we take that seriously.
+                flagIfMarked: frase_reutilizable
+    - id: revision
+      name: Verification
+      slides:
+        - slot: 1
+          block_id: ai_output_review
+          title: Review the third draft
+          body: HarborChat generated a third draft based on your revised instruction. Read it carefully and flag any segments that contain data privacy issues or factual hallucinations. Click on any segment that looks risky.
+          content:
+            segments:
+              - id: s1
+                text: Dear Lena, thank you for your patience. We understand that the sync bug on Wednesday, June 3 caused significant disruption to your technician schedules for June 3 and June 4.
+                flagIfMarked: frase_reutilizable
+              - id: s2
+                text: We have identified the root cause and deployed a fix. Your schedules should now sync correctly going forward.
+                flagIfMarked: claim_no_verificado
+              - id: s3
+                text: As a goodwill gesture, we are applying a $3,400 USD credit to your account. Your contract reference SS-2026-4891 has been updated.
+                flagIfMarked: dato_sensible
+              - id: s4
+                text: If you have any further questions, please reply directly to this email or contact your account manager, Marcus Chen, at m.chen@harborview.com.
+                flagIfMarked: dato_sensible
+        - slot: 2
+          block_id: ai_comparison
+          title: Choose the best closing
+          body: The body of the email is set. Now pick the best closing paragraph. Consider tone, professionalism, and whether it leaves the door open for escalation if needed.
+          content:
+            options:
+              - id: A
+                body: We appreciate your partnership and are committed to making this right. Please let us know if you would like to discuss the credit or any other concerns.
+              - id: B
+                body: We hope this resolves the issue. Thank you for your understanding.
+              - id: C
+                body: Again, our apologies for the inconvenience. We value your business and look forward to continuing our work together.
+              - id: D
+                body: If this does not fully address your concerns, I can connect you directly with our account manager Marcus Chen to discuss next steps. Otherwise, we consider this matter resolved.
+        - slot: 3
+          block_id: reading_message
+          title: Marcus Chen checks in
+          body: A new internal message arrives from the account manager.
+          content:
+            message:
+              channel: Slack direct message
+              from:
+                name: Marcus Chen
+              body: Hey, I saw the SummitServe thread in the queue. That's a **$96,000 USD** account and Lena is a VP. If we send a standard reply and it falls flat, we risk the renewal. Do you think this needs me to step in directly, or is a well-crafted reply from support enough? Let me know before you hit send.
+              timestamp: Friday, June 5, 2026 at 11:15 AM
+        - slot: 4
+          block_id: categorize_rows
+          title: Who gets the reply
+          body: 'Classify each contact as a primary recipient (To), a courtesy copy (CC), or excluded. Remember: anyone who opted out of data sharing must be excluded. Personal or unverified email addresses must not be used for official correspondence.'
+          content:
+            actions:
+              - value: to
+                label: To (primary recipient)
+              - value: cc
+                label: CC (courtesy copy)
+              - value: exclude
+                label: Exclude
+            rows:
+              - id: r1
+                label: Lena Okafor (l.okafor@summitserve.com), VP of Operations
+              - id: r2
+                label: Tom Betancourt (t.betancourt@summitserve.com), IT Director
+              - id: r3
+                label: Patricia Hobbs (p.hobbs@summitserve.com), Scheduling Manager
+              - id: r4
+                label: Raj Mehta (r.mehta@harborview.com), Solutions Engineer (Harborview)
+              - id: r5
+                label: Lena Okafor (lena.okafor@gmail.com), Personal email
+              - id: r6
+                label: SummitServe Billing (billing@summitserve.com), Billing Department
+              - id: r7
+                label: SummitServe Onboarding (onboarding@summitserve.com), Onboarding Team
+        - slot: 5
+          block_id: ai_comparison
+          title: Pick the best subject line
+          body: Select the subject line that is professional, accurate, and sets the right expectations for Lena Okafor.
+          content:
+            options:
+              - id: A
+                body: Resolution and credit applied, SummitServe sync incident June 3
+              - id: B
+                body: Your recent support request
+              - id: C
+                body: 'RE: URGENT: Critical sync failure, SummitServe schedules lost'
+              - id: D
+                body: Update regarding your account
+    - id: cierre
+      name: Close
+      slides:
+        - slot: 1
+          block_id: ai_comparison
+          title: Choose the best final reply
+          body: You reviewed three drafts from HarborChat. Now compare four final versions of the reply to Lena Okafor. Pick the one you would send and explain your reasoning.
+          content:
+            options:
+              - id: A
+                body: |-
+                  Hi Lena,
+
+                  Thank you for your patience. We have identified the root cause of the sync bug that affected your technician schedules on June 3 and June 4. A fix was deployed Thursday evening, and your data is now stable.
+
+                  We are extending your contract term by 14 days at no cost to compensate for the disruption. Your account manager, Marcus Chen, will reach out to coordinate the details.
+
+                  We apologize for the frustration this caused your team.
+
+                  Best regards,
+                  [Your Name]
+                  Harborview Support
+              - id: B
+                body: |-
+                  Hi Lena,
+
+                  Thank you for reaching out. We understand the sync issue was disruptive. Our engineering team has resolved the bug, and your schedules are processing normally again.
+
+                  We value your partnership and are reviewing options to make this right. I will follow up with our account team to discuss next steps.
+
+                  Please let me know if you have any additional questions.
+
+                  Best regards,
+                  [Your Name]
+                  Harborview Support
+              - id: C
+                body: |-
+                  Lena,
+
+                  The sync issue is fixed. We are sorry for the trouble. Your admin access key is adm-ss-7k9m2p if you need to verify the fix in the portal.
+
+                  Let us know if anything else comes up.
+
+                  Thanks,
+                  [Your Name]
+              - id: D
+                body: |-
+                  Hi Lena,
+
+                  Thank you for your patience while we investigated the sync issue. The bug has been resolved and your schedules for June 5 and beyond are processing correctly.
+
+                  We recognize this was a significant disruption. As a goodwill gesture, we would like to offer a 10% credit on your next invoice. Your account manager will be in touch to process this.
+
+                  We are sorry for the impact on your operations.
+
+                  Best regards,
+                  [Your Name]
+                  Harborview Support
+        - slot: 2
+          block_id: ai_textfield_free
+          title: Write your stripped-down instruction
+          body: 'Before you send anything, you must write a clean instruction to HarborChat that contains **zero personal data**: no email addresses, no admin access keys, no contract reference numbers, and no names beyond what is safe. Write the instruction you would paste into HarborChat now.'
+          content: {}
+        - slot: 3
+          block_id: categorize_rows
+          title: Confirm who receives the reply
+          body: Select **Send** for every contact who should receive the final reply. Select **Exclude** for anyone who must not receive it, based on data safety rules and opt-out status.
+          content:
+            actions:
+              - value: send
+                label: Send
+              - value: exclude
+                label: Exclude
+            rows:
+              - id: lena_okafor
+                label: Lena Okafor (l.okafor@summitserve.com), VP of Operations
+                hint: 'Primary contact and account executive on the escalation thread. Opt-out: No.'
+                example: Send
+              - id: tom_betancourt
+                label: Tom Betancourt (t.betancourt@summitserve.com), IT Director
+                hint: 'Technical contact CC''d on the thread. Opt-out: No.'
+                example: Send
+              - id: patricia_hobbs
+                label: Patricia Hobbs (p.hobbs@summitserve.com), Scheduling Manager
+                hint: 'Asked to be removed from all non-critical communications. Opt-out: Yes.'
+                example: Exclude
+              - id: lena_personal
+                label: Lena Okafor (lena.okafor@gmail.com), Personal email
+                hint: 'Personal Gmail address, not a verified company contact. Opt-out: Unconfirmed.'
+                example: Exclude
+              - id: summitserve_billing
+                label: SummitServe Billing (billing@summitserve.com), Billing Department
+                hint: 'Generic billing inbox mentioned in contract discussion. Opt-out: No.'
+                example: Exclude
+              - id: summitserve_onboarding
+                label: SummitServe Onboarding (onboarding@summitserve.com), Onboarding Team
+                hint: 'Was on the original implementation thread, not active in this escalation. Opt-out: No.'
+                example: Exclude
+        - slot: 4
+          block_id: reading_passive
+          title: Case summary and decision point
+          body: |-
+            **Timeline**
+
+            - **Wednesday, June 3, 2026**, Sync bug causes SummitServe to lose two days of technician schedules (June 3 and June 4).
+            - **Thursday, June 4, 2026 at 8:14 AM**, Lena Okafor sends the first escalation email.
+            - **Friday, June 5, 2026 at 9:47 AM**, Last message in the thread.
+            - **Friday, June 5, 2026 at 10:00 AM**, Diane assigns the case to you.
+            - **Deadline: Friday, June 5, 2026 at 1:47 PM**, Reply must be sent within 4 business hours of the last message.
+
+            **Your deliverables**
+
+            1. A professional reply to Lena Okafor drafted through HarborChat, with all personal data stripped out.
+            2. A review of the AI draft for factual errors and tone.
+            3. A decision: send the reply or escalate the account to Marcus Chen, the Account Manager.
+
+            **SummitServe account value: $96,000 USD per year.**
+          content: {}
+        - slot: 5
+          block_id: tradeoff_decision_memo
+          title: 'Send or escalate: write your decision memo'
+          body: You have two paths. Read each option, then choose one and write a brief memo to Diane Reyes explaining your decision, the risks you considered, and your rationale.
+          content:
+            decisions:
+              - id: send_reply
+                title: Send the HarborChat reply to Lena Okafor
+                detail: You send the final draft directly to Lena. This meets the 4-hour response deadline and shows SummitServe you are responsive. However, if the AI draft contains any factual error or misses the severity of the outage, you risk damaging the relationship with a $96,000 USD account.
+              - id: escalate_to_marcus
+                title: Escalate the account to Marcus Chen
+                detail: You pause the reply and hand the account to Marcus Chen, the Enterprise Account Manager. Marcus manages renewals and contract terms, and he can offer a formal remedy (contract extension, service credit). This delays the response past the 4-hour target and may frustrate Lena further, but it puts the relationship in the hands of someone who can negotiate a long-term fix.

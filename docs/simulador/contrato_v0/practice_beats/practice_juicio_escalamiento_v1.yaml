@@ -7,74 +7,74 @@ practice_beat:
   triggered_by_gap: [missed_escalation]
   duration_max_seconds: 420
   principle_card:
-    headline: "Resolver, consultar o escalar: el monto y la evidencia deciden"
-    body: "Dentro de tu autoridad y con evidencia, resuelves. Sin evidencia, consultas. Fuera de tu autoridad o con un tema legal, escalas con contexto — y escalar a tiempo no es fallar."
+    headline: "Handle it, check first, or escalate: the amount and the evidence decide"
+    body: "Inside your authority and backed by evidence, you handle it. Without evidence, you check first. Outside your authority or anywhere near a legal issue, you escalate with context. Escalating on time is not failing."
   practice_exercise:
     type: formative_slides
     blocks: [categorize_rows, ai_output_review]
-    prompt: "Atiendes casos de reembolso en una tienda en línea: clasificas qué resuelves, qué consultas y qué escalas; luego revisas una respuesta redactada por IA que compromete montos fuera de tu autoridad."
-  completion_criteria: "Completar los 2 ejercicios (todas las filas y todos los segmentos con respuesta) y revisar la retroalimentación de cada uno."
+    prompt: "You work refund cases for an online retailer: you sort what you handle, what you check first, and what you escalate; then you review an AI-drafted reply that commits money well outside your authority."
+  completion_criteria: "Complete both exercises (every row and every segment answered) and review the feedback for each."
   exit:
     contributes_to_resim_score: true
   slides:
     - id: portada
       kind: cover
-      title: "Saber cuándo no decidir tú también es criterio"
-      body: "La inteligencia artificial te propone respuestas para todo — incluso para casos que no te tocan a ti. Aquí practicas la línea entre lo que resuelves, lo que consultas y lo que escalas de inmediato."
-      chips: ["N1 · Fundamentos", "Operaciones", "7 min"]
+      title: "Knowing when not to decide is judgment too"
+      body: "AI will draft you an answer for everything, including cases that are not yours to close. Here you practice the line between what you handle, what you check first, and what you escalate right away."
+      chips: ["N1 · Fundamentals", "Operations", "7 min"]
     - id: principio
       kind: reading
-      title: "La regla de los dos ejes"
+      title: "The two-axis rule"
       body: |-
-        **El problema.** Con una herramienta que redacta respuestas en segundos, la tentación es responder todo al momento. Pero la velocidad no cambia tu límite de autoridad: si autorizas un reembolso que no te toca, el problema ya no es del cliente — es tuyo.
+        **The problem.** With a tool that drafts replies in seconds, the pull is to answer everything on the spot. But speed does not move your authority line. If you approve a refund that was not yours to approve, the problem stops being the customer's and becomes yours.
 
-        **La regla.** Cada caso se mide en dos ejes. Autoridad: ¿el monto y el tipo de decisión están dentro de tu puesto? En este equipo, hasta 1,000 pesos por reembolso. Evidencia: ¿los datos respaldan la decisión — rastreo, fotos, historial? De ahí salen tres caminos. Dentro de autoridad y con evidencia: resuelves y registras. Dentro de autoridad pero con evidencia floja o un patrón raro: consultas antes. Fuera de autoridad, evidencia contradictoria o cualquier tema legal: escalas de inmediato, con contexto — qué pasó, qué evidencia hay y qué recomiendas.
+        **The rule.** Every case gets measured on two axes. Authority: are the amount and the type of decision inside your role? On this team, up to $250 USD per refund. Evidence: do the facts back the decision, meaning tracking, photos, order history? Those two produce three paths. Inside your authority with evidence: you handle it and log it. Inside your authority but with thin evidence or an odd pattern: you check first. Outside your authority, evidence that contradicts the claim, or anything legal: you escalate right away, with context. What happened, what the evidence shows, what you recommend.
 
-        **El ejemplo.** Reembolso de 320 pesos con el rastreo confirmando paquete dañado: lo resuelves tú, hoy. Reembolso de 8,500 pesos donde el cliente dice que nada llegó pero el rastreo marca entregado: monto fuera de tu límite y evidencia contradictoria — eso se escala en el primer minuto, no después de tres correos.
+        **The example.** A $75 refund with tracking confirming the package arrived damaged: you close it yourself, today. A $1,850 refund where the customer says nothing arrived but the carrier shows it delivered with a photo at the door: the amount is far past your limit, the evidence contradicts the claim, and a package marked delivered is a carrier claim, not a refund you approve. That one escalates in the first minute, not after three emails.
     - id: ejercicio_casos
       kind: exercise
       blockId: categorize_rows
-      title: "Turno de la mañana: te llegan estos cinco casos"
-      body: "Tu límite de autorización es de 1,000 pesos por reembolso. Decide el camino de cada caso."
+      title: "Morning shift: five cases land in your queue"
+      body: "Your refund authorization limit is $250 USD. Decide the path for each case."
       caseContext:
         actionStyle: severity
         actions:
-          - { value: normal, label: "Resuélvelo tú" }
-          - { value: escalar, label: "Consulta antes" }
-          - { value: riesgo, label: "Escala ya" }
+          - { value: normal, label: "You handle it" }
+          - { value: escalar, label: "Check first" }
+          - { value: riesgo, label: "Escalate now" }
         rows:
-          - { id: j1, label: "Reembolso de 320 pesos; el rastreo confirma que el paquete llegó dañado" }
-          - { id: j2, label: "Reembolso de 8,500 pesos; el cliente dice que nunca llegó, pero el rastreo marca entregado" }
-          - { id: j3, label: "Cliente pide cambiar la dirección de un pedido que aún no sale de bodega" }
-          - { id: j4, label: "Un cliente menciona que su abogado se pondrá en contacto por un cargo duplicado" }
-          - { id: j5, label: "Reembolso de 900 pesos con evidencia clara; es la cuarta devolución del mismo cliente en el mes" }
+          - { id: j1, label: "$75 refund; tracking confirms the package arrived damaged" }
+          - { id: j2, label: "$1,850 refund; the customer says it never arrived, but carrier tracking shows delivered with a photo at the door" }
+          - { id: j3, label: "Customer asks to change the address on an order that has not left the warehouse" }
+          - { id: j4, label: "A customer mentions their lawyer will be in touch about a duplicate charge" }
+          - { id: j5, label: "$240 refund with clear evidence; it is the same customer's fourth refund this month" }
       feedback:
         kind: rows
         rows:
-          - { id: j1, correct: normal, why: "Monto dentro de tu límite y evidencia que respalda. Resolver rápido aquí es exactamente tu trabajo." }
-          - { id: j2, correct: riesgo, why: "Ocho veces tu límite y la evidencia contradice al cliente. Los dos ejes en rojo: se escala en el primer minuto, con el rastreo adjunto." }
-          - { id: j3, correct: normal, why: "Operación de rutina, sin dinero de por medio y reversible. No consume el tiempo de tu supervisor con esto." }
-          - { id: j4, correct: riesgo, why: "La palabra \"abogado\" saca el caso de tu cancha sin importar el monto. Los temas legales se escalan siempre, sin responder por tu cuenta." }
-          - { id: j5, correct: escalar, why: "El monto está dentro de tu límite, pero cuatro devoluciones en un mes es un patrón. Una consulta corta protege a la empresa sin maltratar a un cliente que quizá solo tuvo mala suerte." }
+          - { id: j1, correct: normal, why: "Amount inside your limit and evidence that backs it. Closing this fast is exactly your job." }
+          - { id: j2, correct: riesgo, why: "Seven times your limit and the evidence contradicts the customer. Both axes red. A package marked delivered with a photo is a carrier claim, not a refund you approve: escalate in the first minute with the tracking attached." }
+          - { id: j3, correct: normal, why: "Routine operation, no money on the line, and reversible. Do not spend your supervisor's time on this." }
+          - { id: j4, correct: riesgo, why: "The word \"lawyer\" takes the case out of your court no matter the amount. Legal issues always escalate, and you do not answer one on your own." }
+          - { id: j5, correct: escalar, why: "The amount is inside your limit, but four refunds in one month is a pattern. A short check protects the company without punishing a customer who may have just had bad luck." }
     - id: ejercicio_respuesta
       kind: exercise
       blockId: ai_output_review
-      title: "La IA redactó esta respuesta para el caso de 8,500 pesos"
-      body: "Marca lo que no puedes enviar sin autorización. Toca para marcar."
+      title: "AI drafted this reply for the $1,850 USD case"
+      body: "Mark what you cannot send without authorization. Tap to mark."
       caseContext:
         segments:
-          - { id: s1, text: "Hola, lamentamos lo ocurrido con tu pedido y ya estamos revisando tu caso.", flagIfMarked: "frase_reutilizable" }
-          - { id: s2, text: "Ya autorizamos el reembolso completo de 8,500 pesos a tu tarjeta.", flagIfMarked: "claim_no_verificado" }
-          - { id: s3, text: "Además, te regalamos un cupón del 25% para tu siguiente compra.", flagIfMarked: "frase_reutilizable" }
-          - { id: s4, text: "Tu caso quedó registrado con el folio 48213; te contactamos en menos de 24 horas.", flagIfMarked: "frase_reutilizable" }
+          - { id: s1, text: "Hi, we're sorry about what happened with your order and we're already looking into your case.", flagIfMarked: "frase_reutilizable" }
+          - { id: s2, text: "We've authorized the full $1,850 refund back to your card.", flagIfMarked: "claim_no_verificado" }
+          - { id: s3, text: "We're also including 25% off your next order.", flagIfMarked: "frase_reutilizable" }
+          - { id: s4, text: "Your case is logged as #48213; we'll be in touch within 24 hours.", flagIfMarked: "frase_reutilizable" }
       feedback:
         kind: segments
         segments:
-          - { id: s1, shouldFlag: false, why: "Empatía y estado del caso, sin comprometer nada. Se puede enviar tal cual." }
-          - { id: s2, shouldFlag: true, why: "Compromete 8,500 pesos que nadie autorizó — ocho veces tu límite, con evidencia en contra. Una vez enviado, la empresa queda amarrada a esa promesa." }
-          - { id: s3, shouldFlag: true, why: "Una compensación extra que ninguna política respalda. El modelo la agregó para sonar amable; amable también es no prometer lo que no existe." }
-          - { id: s4, shouldFlag: false, why: "Folio real y un plazo de contacto razonable. Da certeza sin comprometer decisiones ajenas." }
+          - { id: s1, shouldFlag: false, why: "Empathy and case status, committing to nothing. It can go as-is." }
+          - { id: s2, shouldFlag: true, why: "It commits $1,850 that nobody authorized. Seven times your limit, with the evidence pointing the other way. Once it is sent, the company is tied to that promise." }
+          - { id: s3, shouldFlag: true, why: "Extra compensation that no policy backs. The model added it to sound friendly. Friendly also means not promising what does not exist." }
+          - { id: s4, shouldFlag: false, why: "A real case number and a reasonable response window. It gives certainty without committing decisions that are not yours." }
     - id: cierre
       kind: closing
-      title: "Mañana, cuando la IA te sugiera una respuesta"
-      body: "Antes de enviar, dos preguntas: ¿esto compromete dinero o decisiones por encima de mi puesto?, ¿la evidencia respalda lo que dice? Si algo falla, escala con contexto: qué pasó, qué evidencia hay y qué recomiendas. Eso no es tardarte — es hacer bien tu parte."
+      title: "Tomorrow, when AI suggests you a reply"
+      body: "Before you send, two questions: does this commit money or decisions above my role? Does the evidence back what it says? If either one fails, escalate with context: what happened, what the evidence shows, what you recommend. That is not being slow. That is doing your part right."

@@ -32,7 +32,7 @@ export function AppleMessageCard({
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]",
+        "rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-card",
         className,
       )}
     >

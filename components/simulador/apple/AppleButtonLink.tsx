@@ -12,6 +12,11 @@ import { AppleButton } from "./AppleButton";
  * Components", porque Link es una función). Este wrapper cruza la frontera
  * cliente él mismo y recibe solo props serializables (href + className strings),
  * así que se puede usar desde server components (ej. /success, /cancel).
+ *
+ * NO duplica estilos: delega todo en AppleButton, así que hereda la receta v2
+ * por tone (labio + press hundido en primary/danger, border-2 en secondary,
+ * bold en ghost) exactamente igual. El press hundido funciona también sobre el
+ * `<a>` porque HeroUI marca data-pressed al presionar (además de :active).
  */
 export function AppleButtonLink({
   href,

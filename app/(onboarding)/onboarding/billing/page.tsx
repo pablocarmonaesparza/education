@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * /onboarding/billing — paso 5 del flow buyer B2B.
+ * /onboarding/billing — paso 4 del flow buyer B2B (5 pasos).
  *
  * Layout 1-columna compacto:
  *   - Stepper + input editable de seats (acepta tipeo directo)
@@ -20,9 +20,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { OnboardingNav } from "@/components/simulador/OnboardingNav";
 import { AppleSlideButton } from "@/components/simulador/apple";
-import { readOnboardingCompanyProfile } from "@/lib/simulador/onboarding-company-profile";
 import {
-  hasOnboardingContextCompleted,
   ONBOARDING_ORG_ID_KEY,
   ONBOARDING_TEAM_ID_KEY,
 } from "@/lib/simulador/onboarding-progress";
@@ -60,7 +58,7 @@ function OnboardingBillingContent() {
   const [seatsInput, setSeatsInput] = useState<string>("20");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(
-    searchParams.get("canceled") ? "Checkout cancelado. No se cobró nada." : null,
+    searchParams.get("canceled") ? "Checkout canceled. You weren't charged." : null,
   );
 
   useEffect(() => {
@@ -68,10 +66,6 @@ function OnboardingBillingContent() {
     const tid = sessionStorage.getItem(ONBOARDING_TEAM_ID_KEY);
     if (!oid || !tid) {
       router.push("/onboarding/org");
-      return;
-    }
-    if (!hasOnboardingContextCompleted()) {
-      router.push("/onboarding/context");
       return;
     }
     setOrgId(oid);
@@ -115,7 +109,6 @@ function OnboardingBillingContent() {
           organization_id: orgId,
           team_id: teamId,
           seats: computed.seats,
-          company_profile: readOnboardingCompanyProfile() ?? undefined,
         }),
       });
       const data = await res.json();
@@ -135,9 +128,9 @@ function OnboardingBillingContent() {
     <>
       <OnboardingNav
         progress={{
-          total: 6,
-          current: 4,
-          ariaLabel: "Paso 5 de 6",
+          total: 5,
+          current: 3,
+          ariaLabel: "Step 4 of 5",
         }}
       />
       <main className="surface-canvas h-[calc(100vh-5rem)] overflow-x-hidden overflow-y-auto flex flex-col">
@@ -158,7 +151,7 @@ function OnboardingBillingContent() {
                 type="button"
                 onClick={() => adjustSeats(-1)}
                 disabled={seats <= SIMULADOR_PRODUCT.minSeats}
-                aria-label="Quitar una persona"
+                aria-label="Remove one person"
                 className="flex h-12 w-12 items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:opacity-30 transition-colors"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden>
@@ -183,13 +176,13 @@ function OnboardingBillingContent() {
                     setSeatsInput("150");
                   }
                 }}
-                aria-label="Número de personas"
+                aria-label="Number of people"
                 className="h-12 w-16 border-x border-[var(--hairline)] bg-transparent text-center ts-headline font-semibold tabular-nums tracking-tight text-[var(--text-primary)] focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               />
               <button
                 type="button"
                 onClick={() => adjustSeats(1)}
-                aria-label="Añadir una persona"
+                aria-label="Add one person"
                 className="flex h-12 w-12 items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden>
@@ -252,7 +245,7 @@ function OnboardingBillingContent() {
 
             {computed.isEnterprise ? (
               <AppleSlideButton
-                href={`mailto:${SIMULADOR_PRODUCT.salesEmail}?subject=Itera%20%C2%B7%20${computed.seats}%20personas`}
+                href={`mailto:${SIMULADOR_PRODUCT.salesEmail}?subject=Itera%20%C2%B7%20${computed.seats}%20people`}
                 className="min-w-[220px] text-center"
               >
                 {copy.submit_enterprise_cta}
@@ -269,11 +262,11 @@ function OnboardingBillingContent() {
             )}
             <div className="mt-4 flex items-center justify-center gap-3 ts-caption-1 text-[var(--text-tertiary)]">
               <Link href="/terms" className="underline hover:opacity-70 transition-opacity">
-                Términos
+                Terms
               </Link>
               <span>·</span>
               <Link href="/privacy" className="underline hover:opacity-70 transition-opacity">
-                Privacidad
+                Privacy
               </Link>
             </div>
           </div>
@@ -307,24 +300,24 @@ function TierCard({
 }) {
   const range =
     tier.maxSeats === null
-      ? `${tier.minSeats}+ personas`
-      : `${tier.minSeats}–${tier.maxSeats} personas`;
+      ? `${tier.minSeats}+ people`
+      : `${tier.minSeats}–${tier.maxSeats} people`;
   // Enterprise no es self-serve: en lugar de "USD 89/persona" mostramos
   // "Negociable / desde USD 89". El resto del layout (header, divider,
   // features) es idéntico a los tiers self-serve para mantener simetría
   // visual entre las 4 cards del carrusel.
   const priceLabel = tier.selfServe
     ? formatUsd(tier.pricePerSeatUsd)
-    : "Negociable";
+    : "Negotiable";
   const priceCaption = tier.selfServe
-    ? "por persona"
-    : `desde USD ${tier.pricePerSeatUsd} / persona`;
+    ? "per person"
+    : `from $${tier.pricePerSeatUsd} USD / person`;
 
   return (
     <button
       type="button"
       onClick={onSelect}
-      aria-label={`Seleccionar tier ${tier.label}`}
+      aria-label={`Select ${tier.label} tier`}
       aria-pressed={isActive}
       className={`h-[280px] w-full text-left rounded-[var(--radius-lg)] border p-5 transition-all bg-[var(--surface)] flex flex-col cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] ${
         isActive

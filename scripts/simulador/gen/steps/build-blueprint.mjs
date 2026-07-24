@@ -12,17 +12,17 @@ export async function buildBlueprint(brief, bible) {
     .join("\n");
 
   const sys = systemPrompt(
-    "asignar la intencion narrativa de cada slide sobre una estructura fija",
+    "assign each slide's narrative intent over a fixed structure",
   );
-  const user = `Biblia del caso:
+  const user = `Case bible:
 
 ${JSON.stringify(bible, null, 2)}
 
-Estructura FIJA del caso (no la cambies, son 25 slides; respeta section, slot y block_id tal cual):
+FIXED structure of the case (do not change it; 25 slides; keep section, slot, and block_id exactly as given):
 
 ${structureLines}
 
-Para CADA uno de los 25 slides da una intencion de una sola linea: que hace ese slide en la historia, anclado a la biblia (que dato muestra, que decision pide, que promesa del jefe entrega). Las tres promesas del jefe deben quedar entregadas en la seccion de cierre. Devuelve los 25 en el mismo orden.`;
+For EACH of the 25 slides give a one-line intent: what that slide does in the story, anchored to the bible (which fact it shows, which decision it asks for, which manager promise it delivers). The manager's three promises must be delivered in the closing section ("cierre"). Return all 25 in the same order.`;
 
   const { value, provider, model } = await callTool(
     sys,

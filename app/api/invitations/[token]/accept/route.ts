@@ -33,7 +33,7 @@ export async function POST(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   const admin = createAdminClient();
@@ -50,21 +50,21 @@ export async function POST(
 
   if (invError || !inv) {
     return NextResponse.json(
-      { error: "Invitación no encontrada." },
+      { error: "Invitation not found." },
       { status: 404 },
     );
   }
 
   if (inv.status !== "pending") {
     return NextResponse.json(
-      { error: `Invitación ya ${inv.status}.` },
+      { error: `Invitation already ${inv.status}.` },
       { status: 400 },
     );
   }
 
   if (new Date(inv.expires_at) < new Date()) {
     return NextResponse.json(
-      { error: "Invitación expirada. Pide otra al admin de tu organización." },
+      { error: "This invitation expired. Ask your organization admin for a new one." },
       { status: 400 },
     );
   }
@@ -77,7 +77,7 @@ export async function POST(
   ) {
     return NextResponse.json(
       {
-        error: `Esta invitación es para ${inv.email}. Loguéate con esa cuenta.`,
+        error: `This invitation is for ${inv.email}. Sign in with that account.`,
       },
       { status: 400 },
     );
@@ -93,7 +93,7 @@ export async function POST(
   if (bridgeError || !bridgeId) {
     console.error("[api/invitations/accept] ensure_bridge_user failed:", bridgeError);
     return NextResponse.json(
-      { error: "Bridge user no inicializado. Refresca y vuelve a intentar." },
+      { error: "Bridge user not initialized. Refresh and try again." },
       { status: 500 },
     );
   }
@@ -107,7 +107,7 @@ export async function POST(
 
   if (!simUser) {
     return NextResponse.json(
-      { error: "Bridge user no inicializado. Refresca y vuelve a intentar." },
+      { error: "Bridge user not initialized. Refresh and try again." },
       { status: 500 },
     );
   }
@@ -130,7 +130,7 @@ export async function POST(
   if (orgMemberErr && orgMemberErr.code !== "23505") {
     console.error("[api/invitations/accept] org_membership failed:", orgMemberErr);
     return NextResponse.json(
-      { error: "No se pudo crear membresía de organización." },
+      { error: "Could not create the organization membership." },
       { status: 500 },
     );
   }
@@ -168,7 +168,7 @@ export async function POST(
       inviteUpdateErr,
     );
     return NextResponse.json(
-      { error: "No se pudo marcar la invitación como aceptada." },
+      { error: "Could not mark the invitation as accepted." },
       { status: 500 },
     );
   }
@@ -207,7 +207,7 @@ export async function POST(
         inviterName:
           inviter.full_name ?? inviter.email.split("@")[0] ?? "manager",
         inviteeName:
-          simUser.full_name ?? user.email?.split("@")[0] ?? "participante",
+          simUser.full_name ?? user.email?.split("@")[0] ?? "participant",
         inviteeEmail: simUser.email ?? user.email ?? inv.email,
         totalInvited: statuses.length,
         acceptedCount,

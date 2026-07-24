@@ -31,14 +31,18 @@ import {
   AppleSkeleton,
 } from "@/components/simulador/apple";
 import { CaseCard } from "@/components/simulador/CaseCard";
-import { BAND_LABEL, type CaseCatalogItem } from "@/lib/simulador/case-catalog";
+import { type CaseCatalogItem } from "@/lib/simulador/case-catalog";
 import {
   BAND_REPRESENTATIVE_SCORE,
   DIMENSIONS,
   MANAGER_ACTIONS,
   type BandKey,
 } from "@/lib/simulador/config";
-import { humanRiskType, severityLabel } from "@/lib/simulador/reports/model";
+import {
+  BAND_DISPLAY,
+  humanRiskType,
+  severityLabel,
+} from "@/lib/simulador/reports/model";
 import type {
   RecommendationAction,
   ReportSummary,
@@ -76,15 +80,15 @@ function bandToTen(band: BandKey): number {
 }
 
 function relativeLabel(iso: string | null): string {
-  if (!iso) return "sin actividad";
+  if (!iso) return "no activity";
   const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
-  if (mins < 60) return "hace minutos";
+  if (mins < 60) return "minutes ago";
   const hours = Math.round(mins / 60);
-  if (hours < 24) return hours === 1 ? "hace 1 hora" : `hace ${hours} horas`;
+  if (hours < 24) return hours === 1 ? "1 hour ago" : `${hours} hours ago`;
   const days = Math.round(hours / 24);
-  if (days < 30) return days === 1 ? "hace 1 día" : `hace ${days} días`;
+  if (days < 30) return days === 1 ? "1 day ago" : `${days} days ago`;
   const months = Math.round(days / 30);
-  return months === 1 ? "hace 1 mes" : `hace ${months} meses`;
+  return months === 1 ? "1 month ago" : `${months} months ago`;
 }
 
 // ============================================================================
@@ -125,7 +129,7 @@ function BandPill({ band, size = "md" }: { band: BandKey; size?: "sm" | "md" }) 
   const sizeCls = size === "sm" ? "ts-caption-2 px-1.5 py-0" : "ts-caption-1 px-2 py-0.5";
   return (
     <span className={`inline-flex items-center rounded-[var(--radius-sm)] font-semibold ${cls} ${sizeCls}`}>
-      {BAND_LABEL[band]}
+      {BAND_DISPLAY[band]}
     </span>
   );
 }
@@ -143,7 +147,7 @@ function DeltaPill({ delta }: { delta: number }) {
   return (
     <span
       className={`inline-flex items-center gap-0.5 ts-caption-1 font-semibold tabular-nums ${color}`}
-      aria-label={up ? `Sube ${delta.toFixed(1)}` : `Baja ${Math.abs(delta).toFixed(1)}`}
+      aria-label={up ? `Up ${delta.toFixed(1)}` : `Down ${Math.abs(delta).toFixed(1)}`}
     >
       {up ? "↑" : "↓"} {Math.abs(delta).toFixed(1)}
     </span>
@@ -189,7 +193,7 @@ function Sparkline({ values }: { values: number[] }) {
       width={w}
       height={h}
       role="img"
-      aria-label={`Tendencia: ${values.map((v) => v.toFixed(1)).join(" → ")}`}
+      aria-label={`Trend: ${values.map((v) => v.toFixed(1)).join(" → ")}`}
       className="flex-none"
     >
       <polyline
@@ -254,63 +258,63 @@ function GlanceSection({ summary }: { summary: ReportSummary }) {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-[1.1fr_1fr_1fr] md:items-center">
         {/* Score + banda + delta */}
         <div>
-          <Eyebrow>Tu desempeño global</Eyebrow>
+          <Eyebrow>Your overall performance</Eyebrow>
           <div className="mt-2 flex items-baseline gap-3">
             {global.score !== null && <Score value={toTen(global.score)} big />}
             {global.band && <BandPill band={global.band} />}
             {delta !== null && <DeltaPill delta={delta} />}
           </div>
           <p className="mt-1 ts-caption-1 text-[var(--text-tertiary)]">
-            promedio en {global.casesCompleted}{" "}
-            {global.casesCompleted === 1 ? "caso" : "casos"}
-            {delta !== null && " · vs. tu primer caso"}
+            average across {global.casesCompleted}{" "}
+            {global.casesCompleted === 1 ? "case" : "cases"}
+            {delta !== null && " · vs. your first case"}
           </p>
         </div>
 
         {/* Distribución por banda */}
         <div>
-          <Eyebrow>Distribución de bandas</Eyebrow>
+          <Eyebrow>Band distribution</Eyebrow>
           <div className="mt-3 flex h-[8px] w-full overflow-hidden rounded-full">
             <div
               className="bg-[var(--band-a-bar)]"
               style={{ width: `${(dist.A / total) * 100}%` }}
-              title={`${dist.A} Alto`}
+              title={`${dist.A} ${BAND_DISPLAY.A}`}
             />
             <div
               className="bg-[var(--band-m-bar)]"
               style={{ width: `${(dist.M / total) * 100}%` }}
-              title={`${dist.M} Medio`}
+              title={`${dist.M} ${BAND_DISPLAY.M}`}
             />
             <div
               className="bg-[var(--band-b-bar)]"
               style={{ width: `${(dist.B / total) * 100}%` }}
-              title={`${dist.B} Bajo`}
+              title={`${dist.B} ${BAND_DISPLAY.B}`}
             />
           </div>
           <div className="mt-2.5 flex items-center gap-4 ts-caption-1 text-[var(--text-secondary)]">
             <span className="inline-flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-[var(--band-a-bar)]" />
-              {dist.A} Alto
+              {dist.A} {BAND_DISPLAY.A}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-[var(--band-m-bar)]" />
-              {dist.M} Medio
+              {dist.M} {BAND_DISPLAY.M}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-[var(--band-b-bar)]" />
-              {dist.B} Bajo
+              {dist.B} {BAND_DISPLAY.B}
             </span>
           </div>
         </div>
 
         {/* Meta */}
         <div>
-          <Eyebrow>Última actividad</Eyebrow>
+          <Eyebrow>Last activity</Eyebrow>
           <div className="mt-2 ts-headline font-medium text-[var(--text-primary)]">
             {relativeLabel(global.lastActivityAt)}
           </div>
           <p className="mt-1 ts-caption-1 text-[var(--text-tertiary)]">
-            reporte refresca al cerrar cada caso
+            this report refreshes when you close a case
           </p>
         </div>
       </div>
@@ -329,7 +333,7 @@ function RecommendationSection({ summary }: { summary: ReportSummary }) {
     <Card>
       <div className="grid grid-cols-1 gap-5 md:grid-cols-[1.5fr_1fr] md:items-start">
         <div>
-          <Eyebrow>Recomendación operativa</Eyebrow>
+          <Eyebrow>Recommendation</Eyebrow>
           <div className="mt-2 flex items-center gap-2">
             <span
               className="inline-flex items-center rounded-[var(--radius-sm)] px-2 py-0.5 ts-callout font-semibold"
@@ -338,7 +342,7 @@ function RecommendationSection({ summary }: { summary: ReportSummary }) {
               {recommendationLabel(recommendation.action)}
             </span>
             <span className="ts-caption-1 text-[var(--text-tertiary)]">
-              de tu reporte más reciente
+              from your most recent report
             </span>
           </div>
           {recommendation.reason && (
@@ -350,7 +354,7 @@ function RecommendationSection({ summary }: { summary: ReportSummary }) {
 
         {suggestedBeat && (
           <div>
-            <Eyebrow>Practice beat sugerido</Eyebrow>
+            <Eyebrow>Suggested practice</Eyebrow>
             <Link
               href={`/practica/${suggestedBeat.slug}`}
               className="mt-2 group flex items-center justify-between gap-3 rounded-[var(--radius-md)] bg-[var(--surface)] px-3 py-2.5 transition-colors hover:bg-[var(--surface-3)]"
@@ -360,7 +364,7 @@ function RecommendationSection({ summary }: { summary: ReportSummary }) {
                   {suggestedBeat.title}
                 </div>
                 <div className="ts-caption-1 text-[var(--text-tertiary)]">
-                  {suggestedBeat.durationMin} min · desbloqueado por tus casos
+                  {suggestedBeat.durationMin} min · unlocked by your cases
                 </div>
               </div>
               <span className="text-[var(--text-tertiary)] group-hover:text-[var(--text-primary)] transition-colors">
@@ -406,8 +410,8 @@ function DimensionCard({ d }: { d: ReportSummaryDimension }) {
       <div className="mt-4 flex items-center gap-3">
         <Eyebrow>
           {d.trend.length === 1
-            ? "1 caso evaluado"
-            : `Últimos ${d.trend.length} casos`}
+            ? "1 case scored"
+            : `Last ${d.trend.length} cases`}
         </Eyebrow>
         <div className="flex-1 h-[1px] bg-[var(--hairline)]" />
         <Sparkline values={trendScores} />
@@ -417,7 +421,7 @@ function DimensionCard({ d }: { d: ReportSummaryDimension }) {
       {d.latestRationale && (
         <p className="mt-4 ts-footnote leading-snug text-[var(--text-secondary)]">
           <span className="font-medium text-[var(--text-primary)]">
-            Última lectura:
+            Latest read:
           </span>{" "}
           {d.latestRationale}
         </p>
@@ -426,8 +430,8 @@ function DimensionCard({ d }: { d: ReportSummaryDimension }) {
       {/* Mejor / peor caso */}
       {(d.bestCase || d.worstCase) && (
         <div className="mt-4 pt-4 border-t border-[var(--hairline)] flex flex-wrap items-center gap-2">
-          <CaseChip caseRef={d.bestCase} prefix="Mejor" />
-          <CaseChip caseRef={d.worstCase} prefix="Peor" />
+          <CaseChip caseRef={d.bestCase} prefix="Best" />
+          <CaseChip caseRef={d.worstCase} prefix="Worst" />
         </div>
       )}
     </Card>
@@ -446,20 +450,20 @@ function RiskEventsSection({
     <Card>
       <div className="flex items-baseline justify-between gap-3">
         <div>
-          <Eyebrow>Risk events detectados</Eyebrow>
+          <Eyebrow>Risk events flagged</Eyebrow>
           <h2 className="mt-1 ts-headline font-semibold text-[var(--text-primary)]">
-            {totalEvents} {totalEvents === 1 ? "evento" : "eventos"} en{" "}
-            {casesCompleted} {casesCompleted === 1 ? "caso" : "casos"}
+            {totalEvents} {totalEvents === 1 ? "event" : "events"} across{" "}
+            {casesCompleted} {casesCompleted === 1 ? "case" : "cases"}
           </h2>
         </div>
         <span className="ts-caption-1 text-[var(--text-tertiary)]">
-          severity alta = bloqueante para producción
+          high severity blocks production use
         </span>
       </div>
 
       {events.length === 0 ? (
         <p className="mt-4 ts-subhead text-[var(--text-secondary)]">
-          Sin eventos de riesgo en tus casos. Mantén la validación activa.
+          No risk events in your cases. Keep verifying what AI gives you.
         </p>
       ) : (
         <div className="mt-4 flex flex-col divide-y divide-[var(--hairline)]">
@@ -481,8 +485,8 @@ function RiskEventsSection({
                   </div>
                 </div>
                 <p className="mt-0.5 ts-caption-1 text-[var(--text-secondary)] leading-snug">
-                  Severidad {severityLabel(e.maxSeverity).toLowerCase()} ·
-                  detectado en {e.count} {e.count === 1 ? "ocasión" : "ocasiones"}
+                  {severityLabel(e.maxSeverity)} severity ·
+                  flagged {e.count} {e.count === 1 ? "time" : "times"}
                 </p>
               </div>
             </div>
@@ -499,13 +503,13 @@ function CompletedCasesSection({ items }: { items: CaseCatalogItem[] }) {
     <section>
       <div className="flex items-baseline justify-between">
         <h2 className="ts-headline font-semibold text-[var(--text-primary)] tracking-tight">
-          Casos completados
+          Completed cases
         </h2>
         <Link
           href="/casos"
           className="ts-caption-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
         >
-          ver catálogo →
+          view catalog →
         </Link>
       </div>
       <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -523,10 +527,10 @@ function NextStepSection({ items }: { items: CaseCatalogItem[] }) {
     <section>
       <div className="flex items-baseline justify-between">
         <h2 className="ts-headline font-semibold text-[var(--text-primary)] tracking-tight">
-          Próximos casos para ti
+          Next cases for you
         </h2>
         <span className="ts-caption-1 text-[var(--text-tertiary)]">
-          alineados a tus puntos débiles
+          matched to your weakest dimensions
         </span>
       </div>
       <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -544,7 +548,7 @@ function NextStepSection({ items }: { items: CaseCatalogItem[] }) {
 
 function LoadingSkeleton() {
   return (
-    <div className="flex flex-col gap-5" aria-busy aria-label="Cargando reportes">
+    <div className="flex flex-col gap-5" aria-busy aria-label="Loading reports">
       <div>
         <AppleSkeleton className="h-10 w-[280px]" />
         <AppleSkeleton className="mt-3 h-5 w-full max-w-[560px]" />
@@ -567,9 +571,9 @@ function EmptyHero() {
   return (
     <AppleEmptyState
       icon={<AppleIcon name="chart" size="lg" />}
-      title="Aún no tienes reportes"
-      description="Tu diagnóstico aparece aquí cuando completes tu primer caso: banda por criterio, eventos de riesgo y una recomendación operativa para tu manager."
-      action={<AppleButtonLink href="/casos">Jugar mi primer caso</AppleButtonLink>}
+      title="No reports yet"
+      description="Your assessment shows up here once you complete your first case: a band per dimension, risk events, and a recommendation for your manager."
+      action={<AppleButtonLink href="/casos">Start my first case</AppleButtonLink>}
     />
   );
 }
@@ -602,7 +606,7 @@ export default function ReportesPage() {
         setCatalog(d.cases ?? []);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error inesperado.");
+      setError(err instanceof Error ? err.message : "Unexpected error.");
     }
   }, []);
 
@@ -626,11 +630,11 @@ export default function ReportesPage() {
           <>
             <header>
               <h1 className="display display-tight text-[var(--text-primary)] ts-title-1 sm:ts-display">
-                Mis reportes
+                My reports
               </h1>
             </header>
             <AppleErrorState
-              title="No pudimos cargar tus reportes."
+              title="We could not load your reports."
               body={error}
               onAction={load}
             />
@@ -641,12 +645,12 @@ export default function ReportesPage() {
           <>
             <AppleReveal as="header">
               <h1 className="display display-tight text-[var(--text-primary)] ts-title-1 sm:ts-display">
-                Mis reportes
+                My reports
               </h1>
               <p className="mt-2 ts-subhead text-[var(--text-secondary)] leading-[1.55] max-w-[640px]">
-                Aquí vive el desglose de tu desempeño: cada caso completado
-                dispara un reporte con bandas por criterio y una recomendación
-                operativa.
+                This is where your performance breakdown lives. Every case you
+                complete triggers a report with a band per dimension and a
+                recommendation.
               </p>
             </AppleReveal>
             <AppleReveal delay={0.04}>
@@ -660,19 +664,17 @@ export default function ReportesPage() {
             {/* ============ HEADER ============ */}
             <AppleReveal as="header">
               <h1 className="display display-tight text-[var(--text-primary)] ts-title-1 sm:ts-display">
-                Mis reportes
+                My reports
               </h1>
               <p className="mt-2 ts-subhead text-[var(--text-secondary)] leading-[1.55] max-w-[640px]">
-                Desglose detallado de tu desempeño en{" "}
+                A detailed breakdown of your performance across{" "}
                 <span className="font-medium text-[var(--text-primary)]">
                   {summary.global.casesCompleted}{" "}
-                  {summary.global.casesCompleted === 1 ? "caso" : "casos"}
-                </span>{" "}
-                {summary.global.casesCompleted === 1
-                  ? "completado"
-                  : "completados"}
-                . Cada caso evalúa 6 criterios y dispara una recomendación
-                operativa.
+                  {summary.global.casesCompleted === 1
+                    ? "completed case"
+                    : "completed cases"}
+                </span>
+                . Each case scores 6 dimensions and triggers a recommendation.
               </p>
             </AppleReveal>
 
@@ -690,10 +692,10 @@ export default function ReportesPage() {
             <AppleReveal as="section" delay={0.12}>
               <div className="flex items-baseline justify-between">
                 <h2 className="ts-headline font-semibold text-[var(--text-primary)] tracking-tight">
-                  Desglose por criterio
+                  Breakdown by dimension
                 </h2>
                 <span className="ts-caption-1 text-[var(--text-tertiary)]">
-                  {summary.dimensions.length} dimensiones · escala 0–10
+                  {summary.dimensions.length} dimensions · 0–10 scale
                 </span>
               </div>
               <div className="mt-3 grid grid-cols-1 gap-4 lg:grid-cols-2">

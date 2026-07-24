@@ -1,11 +1,12 @@
 "use client";
 
 /**
- * /onboarding/org — paso 1 del flow buyer B2B.
+ * /onboarding/org — paso 1 del flow buyer B2B (5 pasos).
  *
  * Captura nombre de la organización, industria, región y tamaño. Crea la
  * row en simulador.organizations + asigna al user actual como org_admin
- * via POST /api/orgs.
+ * via POST /api/orgs. Las opciones de los selects viven en el copy versionado
+ * (lib/simulador/copy/onboarding.ts) — keys en inglés, regiones US-first.
  */
 
 import { useState } from "react";
@@ -19,35 +20,10 @@ import {
   ONBOARDING_ORG_ID_KEY,
   ONBOARDING_ORG_NAME_KEY,
 } from "@/lib/simulador/onboarding-progress";
+import { onboardingCopy } from "@/lib/simulador/copy/onboarding";
+import { MARKET_STATS } from "@/lib/simulador/copy/market-stats";
 
-const INDUSTRIES = [
-  { key: "saas_b2b", label: "SaaS B2B" },
-  { key: "ecommerce", label: "Ecommerce" },
-  { key: "servicios_profesionales", label: "Servicios profesionales" },
-  { key: "fintech", label: "Fintech" },
-  { key: "retail", label: "Retail" },
-  { key: "otro", label: "Otro" },
-];
-
-const REGIONS = [
-  { key: "MX", label: "México" },
-  { key: "CO", label: "Colombia" },
-  { key: "AR", label: "Argentina" },
-  { key: "CL", label: "Chile" },
-  { key: "BR", label: "Brasil" },
-  { key: "PE", label: "Perú" },
-  { key: "other_latam", label: "Otro LATAM" },
-  { key: "us", label: "EE.UU." },
-];
-
-const SIZES = [
-  { key: "1-10", label: "1–10 empleados" },
-  { key: "11-50", label: "11–50 empleados" },
-  { key: "51-100", label: "51–100 empleados" },
-  { key: "101-300", label: "101–300 empleados" },
-  { key: "301-500", label: "301–500 empleados" },
-  { key: "501+", label: "501+ empleados" },
-];
+const copy = onboardingCopy.step1_org;
 
 export default function OnboardingOrgPage() {
   const router = useRouter();
@@ -76,14 +52,14 @@ export default function OnboardingOrgPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Error al crear organización.");
+      if (!res.ok) throw new Error(data.error ?? copy.error_create);
       // Guardar org_id en sessionStorage para los siguientes steps del onboarding.
       sessionStorage.setItem(ONBOARDING_ORG_ID_KEY, data.id);
       sessionStorage.setItem(ONBOARDING_ORG_NAME_KEY, data.name);
       markOnboardingStepUnlocked(1);
       router.push("/onboarding/team");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error inesperado.");
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setSubmitting(false);
     }
@@ -91,7 +67,7 @@ export default function OnboardingOrgPage() {
 
   return (
     <>
-      <OnboardingNav progress={{ total: 6, current: 0, ariaLabel: "Paso 1 de 6" }} />
+      <OnboardingNav progress={{ total: 5, current: 0, ariaLabel: "Step 1 of 5" }} />
       <main className="surface-canvas min-h-[calc(100vh-5rem)] flex items-center justify-center px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -100,14 +76,24 @@ export default function OnboardingOrgPage() {
           className="max-w-[440px] w-full"
         >
           <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
-            Cuéntanos sobre tu equipo
+            {copy.headline}
           </h1>
+          <p className="mt-3 ts-body leading-[1.5] text-[var(--text-secondary)]">
+            {copy.body_lead}{" "}
+            {/* La stat viaja con su fuente como tooltip — regla de market-stats. */}
+            <span
+              title={MARKET_STATS.MCKINSEY_3X.source}
+              className="cursor-help underline decoration-dotted underline-offset-2"
+            >
+              {copy.body_stat}
+            </span>
+          </p>
 
           <form onSubmit={onSubmit} className="mt-8 space-y-4">
             <AppleInput
               value={name}
               onValueChange={setName}
-              placeholder="Nombre de la organización"
+              placeholder={copy.fields.name_label}
               size="md"
               autoFocus
             />
@@ -115,48 +101,48 @@ export default function OnboardingOrgPage() {
             <AppleInput
               value={userJobTitle}
               onValueChange={setUserJobTitle}
-              placeholder="Tu puesto (ej. Head of Marketing)"
+              placeholder={copy.fields.job_title_placeholder}
               size="md"
             />
 
             <AppleSelect
-              placeholder="Industria"
-              aria-label="Industria"
+              placeholder={copy.fields.industry_label}
+              aria-label={copy.fields.industry_label}
               selectedKeys={industry ? [industry] : []}
               onSelectionChange={(keys) =>
                 setIndustry(Array.from(keys)[0] as string)
               }
               size="md"
             >
-              {INDUSTRIES.map((i) => (
+              {copy.industry_options.map((i) => (
                 <SelectItem key={i.key}>{i.label}</SelectItem>
               ))}
             </AppleSelect>
 
             <AppleSelect
-              placeholder="Región principal"
-              aria-label="Región principal"
+              placeholder={copy.fields.region_label}
+              aria-label={copy.fields.region_label}
               selectedKeys={region ? [region] : []}
               onSelectionChange={(keys) =>
                 setRegion(Array.from(keys)[0] as string)
               }
               size="md"
             >
-              {REGIONS.map((r) => (
+              {copy.region_options.map((r) => (
                 <SelectItem key={r.key}>{r.label}</SelectItem>
               ))}
             </AppleSelect>
 
             <AppleSelect
-              placeholder="Tamaño del equipo"
-              aria-label="Tamaño del equipo"
+              placeholder={copy.fields.size_label}
+              aria-label={copy.fields.size_label}
               selectedKeys={size ? [size] : []}
               onSelectionChange={(keys) =>
                 setSize(Array.from(keys)[0] as string)
               }
               size="md"
             >
-              {SIZES.map((s) => (
+              {copy.size_options.map((s) => (
                 <SelectItem key={s.key}>{s.label}</SelectItem>
               ))}
             </AppleSelect>
@@ -180,7 +166,7 @@ export default function OnboardingOrgPage() {
               }
               hint
             >
-              Continuar →
+              {copy.submit_cta}
             </AppleSlideButton>
           </form>
         </motion.div>

@@ -2,6 +2,7 @@ import PDFDocument from "pdfkit/js/pdfkit.standalone.js";
 import { DIMENSIONS } from "@/lib/simulador/config";
 import { reportCopy } from "@/lib/simulador/copy/report";
 import {
+  ACTION_DISPLAY,
   BAND_DISPLAY,
   capFirst,
   computeOverall,
@@ -50,7 +51,7 @@ function addHeader(doc: PDFKit.PDFDocument) {
     .text("itera", PAGE_MARGIN, 28, { continued: true })
     .font("Helvetica")
     .fillColor(COLORS.muted)
-    .text("  reporte ejecutivo", { continued: false });
+    .text("  executive report", { continued: false });
   doc
     .moveTo(PAGE_MARGIN, 48)
     .lineTo(PAGE_MARGIN + CONTENT_WIDTH, 48)
@@ -69,7 +70,7 @@ function addPageNumbers(doc: PDFKit.PDFDocument) {
       .fontSize(8)
       .fillColor(COLORS.muted)
       .text(
-        `pagina ${index + 1} de ${range.count}`,
+        `page ${index + 1} of ${range.count}`,
         PAGE_MARGIN,
         doc.page.height - 38,
         {
@@ -165,7 +166,7 @@ export async function generateReportPdf(
     margin: PAGE_MARGIN,
     bufferPages: true,
     info: {
-      Title: "Itera reporte ejecutivo",
+      Title: "Itera executive report",
       Author: "Itera",
       Subject: `Session ${options.sessionId}`,
     },
@@ -182,7 +183,7 @@ export async function generateReportPdf(
     .font("Helvetica-Bold")
     .fontSize(28)
     .fillColor(COLORS.ink)
-    .text("Diagnostico operativo", { width: CONTENT_WIDTH });
+    .text("Judgment assessment", { width: CONTENT_WIDTH });
   doc
     .moveDown(0.4)
     .font("Helvetica")
@@ -202,14 +203,19 @@ export async function generateReportPdf(
     .font("Helvetica-Bold")
     .fontSize(8)
     .fillColor(COLORS.accent)
-    .text("RECOMENDACION", PAGE_MARGIN + 22, heroY + 18);
+    .text("RECOMMENDATION", PAGE_MARGIN + 22, heroY + 18);
   doc
     .font("Helvetica-Bold")
     .fontSize(28)
     .fillColor(COLORS.ink)
-    .text(capFirst(payload.recommendation.action), PAGE_MARGIN + 22, heroY + 34, {
-      width: 170,
-    });
+    // `action` es un valor de BD (pilotar/entrenar/pausar/escalar): se traduce
+    // en la capa de display, nunca imprimiendo el enum crudo.
+    .text(
+      ACTION_DISPLAY[payload.recommendation.action],
+      PAGE_MARGIN + 22,
+      heroY + 34,
+      { width: 170 },
+    );
   doc
     .font("Helvetica")
     .fontSize(10.5)
@@ -227,10 +233,10 @@ export async function generateReportPdf(
     .font("Helvetica")
     .fontSize(10)
     .fillColor(COLORS.muted)
-    .text(`Banda ${BAND_DISPLAY[overall.band]}`, PAGE_MARGIN + 112, heroY + 81);
+    .text(`${BAND_DISPLAY[overall.band]} band`, PAGE_MARGIN + 112, heroY + 81);
   doc.y = heroY + 142;
 
-  sectionTitle(doc, "Dimensiones", "Las seis dimensiones");
+  sectionTitle(doc, "Dimensions", "The six dimensions");
   const normalizedDimensions = new Map(
     normalizeReportDimensions(payload).map((dimension) => [
       dimension.id,
@@ -249,7 +255,7 @@ export async function generateReportPdf(
       .text(capFirst(dimension.label), PAGE_MARGIN, rowY, { width: 145 });
     doc.x = PAGE_MARGIN + 155;
     doc.y = rowY;
-    pill(doc, `Banda ${BAND_DISPLAY[band]}`, bandColor(band));
+    pill(doc, `${BAND_DISPLAY[band]} band`, bandColor(band));
     doc
       .font("Helvetica")
       .fontSize(9.5)
@@ -261,7 +267,7 @@ export async function generateReportPdf(
     doc.y = Math.max(doc.y, rowY + 54);
   }
 
-  sectionTitle(doc, reportCopy.risk_events.eyebrow, "Eventos de riesgo");
+  sectionTitle(doc, reportCopy.risk_events.eyebrow, "Risk events");
   if (payload.risk_events.length === 0) {
     doc.font("Helvetica").fontSize(10).fillColor(COLORS.muted).text(reportCopy.risk_events.empty_state);
     doc.moveDown(1);
@@ -279,7 +285,7 @@ export async function generateReportPdf(
         .fontSize(9)
         .fillColor(severityColor(event.severity))
         .text(
-          `${severityLabel(event.severity)} · paso ${event.step_ordinal}`,
+          `${severityLabel(event.severity)} · step ${event.step_ordinal}`,
           PAGE_MARGIN + 16,
           boxY + 14,
         );
@@ -295,7 +301,7 @@ export async function generateReportPdf(
         .fontSize(9.5)
         .fillColor(COLORS.muted)
         .text(
-          `«${capFirst(redactSensitiveEvidence(event.evidence_text, event.severity))}»`,
+          `"${capFirst(redactSensitiveEvidence(event.evidence_text, event.severity))}"`,
           PAGE_MARGIN + 16,
           boxY + 52,
           { width: CONTENT_WIDTH - 32, lineGap: 2 },
@@ -304,7 +310,7 @@ export async function generateReportPdf(
     }
   }
 
-  sectionTitle(doc, reportCopy.gaps.eyebrow, "Gaps identificados");
+  sectionTitle(doc, reportCopy.gaps.eyebrow, "Gaps identified");
   if (payload.gaps.length === 0) {
     doc.font("Helvetica").fontSize(10).fillColor(COLORS.muted).text(reportCopy.gaps.empty_state);
     doc.moveDown(1);
@@ -315,7 +321,7 @@ export async function generateReportPdf(
         .font("Helvetica-Bold")
         .fontSize(10)
         .fillColor(severityColor(gap.severity))
-        .text(`Severidad ${severityLabel(gap.severity)}`);
+        .text(`${severityLabel(gap.severity)} severity`);
       doc
         .moveDown(0.25)
         .font("Helvetica")
@@ -332,7 +338,7 @@ export async function generateReportPdf(
     }
   }
 
-  sectionTitle(doc, reportCopy.strengths.eyebrow, "Fortalezas");
+  sectionTitle(doc, reportCopy.strengths.eyebrow, "Strengths");
   if (payload.strengths.length === 0) {
     doc.font("Helvetica").fontSize(10).fillColor(COLORS.muted).text(reportCopy.strengths.empty_state);
     doc.moveDown(1);
@@ -340,12 +346,12 @@ export async function generateReportPdf(
     payload.strengths.forEach((strength) => bullet(doc, strength));
   }
 
-  sectionTitle(doc, reportCopy.next_actions.eyebrow, "Proximos 7 dias");
+  sectionTitle(doc, reportCopy.next_actions.eyebrow, "Next 7 days");
   payload.recommendation.next_week_actions.forEach((action, index) =>
     bullet(doc, action, index + 1),
   );
 
-  sectionTitle(doc, reportCopy.audit_metadata.eyebrow, "Auditoria tecnica");
+  sectionTitle(doc, reportCopy.audit_metadata.eyebrow, "Technical audit");
   doc
     .font("Helvetica")
     .fontSize(9)
@@ -353,11 +359,11 @@ export async function generateReportPdf(
     .text(
       [
         `Judge: ${payload.judge_model}`,
-        `Rubrica: ${payload.rubric_version}`,
-        `Caso: ${payload.case_version}`,
-        `Variante: ${payload.variant}`,
-        `Duracion judge: ${(payload.duration_ms / 1000).toFixed(1)}s`,
-        options.shared ? "Render: link compartible con evidencias anonimizadas" : "Render: PDF ejecutivo",
+        `Rubric: ${payload.rubric_version}`,
+        `Case: ${payload.case_version}`,
+        `Variant: ${payload.variant}`,
+        `Judge duration: ${(payload.duration_ms / 1000).toFixed(1)}s`,
+        options.shared ? "Render: shareable link with anonymized evidence" : "Render: executive PDF",
       ].join(" · "),
       { width: CONTENT_WIDTH, lineGap: 2 },
     );

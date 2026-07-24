@@ -48,7 +48,7 @@ export async function GET() {
 
   if (!organization) {
     return NextResponse.json(
-      { error: "Organización no encontrada." },
+      { error: "Organization not found." },
       { status: 404 },
     );
   }
@@ -72,7 +72,7 @@ export async function PATCH(req: NextRequest) {
 
   if (!organization) {
     return NextResponse.json(
-      { error: "Organización no encontrada." },
+      { error: "Organization not found." },
       { status: 404 },
     );
   }
@@ -81,7 +81,7 @@ export async function PATCH(req: NextRequest) {
   try {
     body = (await req.json()) as JsonRecord;
   } catch {
-    return NextResponse.json({ error: "Body inválido." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
   const update: JsonRecord = {};
@@ -90,7 +90,7 @@ export async function PATCH(req: NextRequest) {
     const value = normalizeText(body[field]);
     if (field === "name" && !value) {
       return NextResponse.json(
-        { error: "El nombre de la organización es requerido." },
+        { error: "The organization name is required." },
         { status: 400 },
       );
     }
@@ -105,7 +105,7 @@ export async function PATCH(req: NextRequest) {
     const nextWebsite = normalizeWebsite(body.website_url);
     if (!nextWebsite) {
       return NextResponse.json(
-        { error: "Sitio web inválido." },
+        { error: "Invalid website." },
         { status: 400 },
       );
     }
@@ -115,7 +115,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json(
         {
           error: "website_locked",
-          message: "El sitio web de la organización ya fue confirmado.",
+          message: "The organization website is already confirmed.",
           website_url: currentWebsite,
         },
         { status: 409 },
@@ -130,7 +130,7 @@ export async function PATCH(req: NextRequest) {
   if ("files" in body) {
     if (!Array.isArray(body.files)) {
       return NextResponse.json(
-        { error: "files debe ser un arreglo." },
+        { error: "files must be an array." },
         { status: 400 },
       );
     }
@@ -147,7 +147,7 @@ export async function PATCH(req: NextRequest) {
           {
             error: "files_monthly_limit",
             message:
-              "Los archivos de contexto solo pueden cambiar una vez por mes.",
+              "Context files can only change once per month.",
             files_last_changed_at: companyProfile.files_last_changed_at ?? null,
           },
           { status: 409 },
@@ -176,7 +176,7 @@ export async function PATCH(req: NextRequest) {
   if (error || !saved) {
     console.error("[org-settings] update failed", error);
     return NextResponse.json(
-      { error: "No pudimos guardar los cambios." },
+      { error: "We could not save your changes." },
       { status: 500 },
     );
   }
@@ -223,7 +223,7 @@ async function resolveCurrentOrgAdmin() {
       }
     }
     return {
-      response: NextResponse.json({ error: "No autenticado." }, { status: 401 }),
+      response: NextResponse.json({ error: "Not signed in." }, { status: 401 }),
     };
   }
 
@@ -236,7 +236,7 @@ async function resolveCurrentOrgAdmin() {
     console.error("[org-settings] ensure_bridge_user failed", bridgeError);
     return {
       response: NextResponse.json(
-        { error: "No pudimos sincronizar tu cuenta." },
+        { error: "We could not sync your account." },
         { status: 500 },
       ),
     };
@@ -254,7 +254,7 @@ async function resolveCurrentOrgAdmin() {
   if (!membership?.organization_id) {
     return {
       response: NextResponse.json(
-        { error: "Solo un org_admin puede editar la empresa." },
+        { error: "Only an org_admin can edit the organization." },
         { status: 403 },
       ),
     };
@@ -327,7 +327,7 @@ function normalizeWebsite(value: unknown) {
 function normalizeCompanyFiles(files: CompanyFileInput[]) {
   if (files.length > 10) {
     return NextResponse.json(
-      { error: "Máximo 10 archivos de contexto." },
+      { error: "10 context files maximum." },
       { status: 400 },
     );
   }
@@ -338,11 +338,11 @@ function normalizeCompanyFiles(files: CompanyFileInput[]) {
     const type = normalizeText(file.type);
     const size = Number(file.size);
     if (!name || !Number.isFinite(size) || size < 0) {
-      return NextResponse.json({ error: "Archivo inválido." }, { status: 400 });
+      return NextResponse.json({ error: "Invalid file." }, { status: 400 });
     }
     if (type !== "application/pdf" && !name.toLowerCase().endsWith(".pdf")) {
       return NextResponse.json(
-        { error: "Solo se aceptan archivos PDF." },
+        { error: "Only PDF files are accepted." },
         { status: 400 },
       );
     }

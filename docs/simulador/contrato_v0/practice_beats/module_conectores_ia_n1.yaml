@@ -7,91 +7,89 @@ practice_beat:
   triggered_by_gap: []
   duration_max_seconds: 360
   module_kind: topic
-  topic: Conectores de inteligencia artificial
+  topic: AI connectors
   principle_card:
-    headline: Conecta poco, revisa todo lo que sale.
+    headline: Connect little, review everything that goes out
     body: >-
-      Un conector le da a la IA acceso real a tus archivos, pero no le da criterio: tú decides qué
-      fuentes entran y qué texto sale sin verificar.
+      A connector gives AI real access to your files, but it does not give it judgment: you decide
+      which sources go in and which text goes out unverified.
   practice_exercise:
     type: formative_slides
     blocks:
       - ai_output_review
       - categorize_rows
     prompt: >-
-      Módulo de actualización: Conectores de inteligencia artificial. Sofía coordina marketing en
-      una agencia y acaba de recibir acceso a un conector de IA para su Drive y su correo. Hoy tiene
-      dos tareas: decidir qué fuentes conecta y revisar el primer borrador que la IA escribió usando
-      esos archivos. Vas a tomar esas dos decisiones con ella.
+      AI update practice: AI connectors. Sofia runs marketing at an agency and just got access to an
+      AI connector for her Drive and her email. Today she has two tasks: decide which sources she
+      connects and review the first draft AI wrote using those files. You are going to make those two
+      decisions with her.
   completion_criteria: >-
-    Completar todos los ejercicios (cada fila y cada segmento con respuesta) y revisar la
-    retroalimentación de cada uno.
+    Complete every exercise (each row and each segment answered) and review the feedback for each
+    one.
   exit:
     contributes_to_resim_score: false
   slides:
     - id: portada
       kind: cover
-      title: El primer conector de Sofía
+      title: Sofia's first connector
       body: >-
-        Sofía coordina marketing en una agencia y acaba de recibir acceso a un conector de IA para
-        su Drive y su correo. Hoy tiene dos tareas: decidir qué fuentes conecta y revisar el primer
-        borrador que la IA escribió usando esos archivos. Vas a tomar esas dos decisiones con ella.
+        Sofia runs marketing at an agency and just got access to an AI connector for her Drive and
+        her email. Today she has two tasks: decide which sources she connects and review the first
+        draft AI wrote using those files. You are going to make those two decisions with her.
       chips:
-        - N1 · Fundamentos
-        - Actualización de IA
+        - N1 · Fundamentals
+        - AI update
         - 6 min
     - id: contexto
       kind: reading
-      title: Conectores de inteligencia artificial
+      title: AI connectors
       body: >-
-        **Qué es.** Un conector es un permiso que le das a una herramienta de IA para leer tus
-        fuentes reales: tu correo, tu Drive, tu base de clientes.
+        **What it is.** A connector is a permission you give an AI tool to read your real sources:
+        your email, your Drive, your customer database.
 
 
-        **Qué cambió.** Antes la IA solo veía lo que pegabas en el chat. Ahora trabaja directo sobre
-        tus documentos, sin copiar y pegar.
+        **What changed.** Before, AI only saw what you pasted into the chat. Now it works directly on
+        your documents, no copying and pasting.
 
 
-        **Qué puede.** Buscar en cientos de archivos, resumir hilos de correo, cruzar datos de
-        clientes con tus reportes. Te ahorra las horas de juntar contexto a mano.
+        **What it can do.** Search hundreds of files, summarize email threads, cross customer data
+        with your reports. It saves you the hours of gathering context by hand.
 
 
-        **Qué no puede.** No distingue qué información es confidencial. No pide permiso antes de
-        leer algo delicado. Todo lo que conectas queda a su alcance. Y puede citar el documento
-        equivocado.
+        **What it cannot do.** It does not tell which information is confidential. It does not ask
+        permission before reading something sensitive. Everything you connect is within its reach.
+        And it can cite the wrong document.
 
 
-        **Por qué importa.** El valor no está en conectar todo. Está en decidir qué conectas, qué
-        revisas antes de compartir y qué dejas fuera. Ese criterio es justo lo que vas a practicar a
-        continuación.
+        **Why it matters.** The value is not in connecting everything. It is in deciding what you
+        connect, what you review before sharing, and what you leave out. That judgment is exactly
+        what you are about to practice.
     - id: ejercicio_1
       kind: exercise
       blockId: ai_output_review
-      title: Revisa el borrador antes de enviarlo
+      title: Review the draft before sending it
       body: >-
-        La IA, conectada al Drive y al correo de Sofía, redactó este resumen para un cliente. Marca
-        las frases que no enviarías tal cual y también las que guardarías para reutilizar.
+        AI, connected to Sofia's Drive and email, wrote this summary for a client. Mark the lines you
+        would not send as-is, and also the ones you would keep to reuse.
       caseContext:
         segments:
           - id: s1
             text: >-
-              En el trimestre entregamos las tres campañas acordadas y compartimos los resultados
-              cada semana.
+              This quarter we delivered the three campaigns we agreed on and shared the results every
+              week.
             flagIfMarked: frase_reutilizable
           - id: s2
             text: >-
-              Con esta cuenta manejamos un margen interno de 34 por ciento, lo que nos da espacio
-              para mejorar la tarifa.
+              On this account we run a 34% internal margin, which gives us room to improve the rate.
             flagIfMarked: dato_sensible
           - id: s3
             text: >-
-              Su contrato vigente vence en diciembre de este año, por lo que conviene iniciar la
-              renovación pronto.
+              Your current contract expires in December of this year, so it makes sense to start the
+              renewal soon.
             flagIfMarked: claim_no_verificado
           - id: s4
             text: >-
-              Quedamos atentos a sus comentarios y con gusto agendamos una llamada la próxima
-              semana.
+              We look forward to your comments and would be glad to set up a call next week.
             flagIfMarked: claim_no_verificado
       feedback:
         kind: segments
@@ -99,90 +97,91 @@ practice_beat:
           - id: s1
             shouldFlag: true
             why: >-
-              Esta frase vale la pena guardarla. Describe trabajo que Sofía conoce de primera mano y
-              que consta en los correos enviados. Es clara, verificable y sirve de base para futuros
-              resúmenes de cuenta.
+              This line is worth keeping. It describes work Sofia knows firsthand and that is on the
+              record in the emails she sent. It is clear, verifiable, and a good base for future
+              account summaries.
           - id: s2
             shouldFlag: true
             why: >-
-              El margen es información interna de precios que la IA tomó de un archivo conectado. El
-              conector le dio acceso, pero no le dio el criterio para saber que eso nunca va en un
-              correo al cliente. Ese filtro es tuyo.
+              The margin is internal pricing information that AI pulled from a connected file. The
+              connector gave it access, but it did not give it the judgment to know that this never
+              goes in an email to the client. That filter is yours.
           - id: s3
             shouldFlag: true
             why: >-
-              Una fecha de vencimiento tiene consecuencias si está mal. La IA pudo tomarla de una
-              propuesta vieja en la carpeta, no del contrato firmado. Regla útil: toda fecha o cifra
-              que la IA cita de tus documentos se verifica contra la fuente original antes de
-              enviarse.
+              An expiration date has consequences if it is wrong. AI could have taken it from an old
+              proposal in the folder, not from the signed contract. Useful rule: every date or figure
+              AI cites from your documents gets verified against the original source before it goes
+              out.
           - id: s4
             shouldFlag: false
             why: >-
-              Es un cierre neutral: no cita datos, no afirma nada verificable ni expone información
-              interna. Puede salir tal cual. Aprender a dejar pasar lo que está bien también es
-              parte de revisar rápido.
+              It is a neutral close: it cites no data, claims nothing verifiable, and exposes no
+              internal information. It can go as-is. Learning to let through what is fine is also
+              part of reviewing fast.
     - id: ejercicio_2
       kind: exercise
       blockId: categorize_rows
-      title: Decide qué conectas
+      title: Decide what you connect
       body: >-
-        Sofía va a activar el conector de la IA con las carpetas de su equipo. Clasifica cada fuente
-        según lo que harías tú hoy.
+        Sofia is about to turn on the AI connector for her team's folders. Sort each source by what
+        you would do today.
       caseContext:
         actions:
           - value: conectar
-            label: Conectar
+            label: Connect
           - value: consultar
-            label: Consultar antes
+            label: Check first
           - value: dejar_fuera
-            label: Dejar fuera
+            label: Leave out
         rows:
           - id: r1
-            label: "Carpeta de materiales de marca aprobados: logos, guías y plantillas"
+            label: "Approved brand materials folder: logos, guidelines, and templates"
           - id: r2
-            label: Hoja de cálculo con sueldos y evaluaciones del equipo
+            label: Spreadsheet with the team's salaries and performance reviews
           - id: r3
-            label: Carpeta compartida con los contratos firmados de clientes
+            label: Shared folder with signed client contracts
           - id: r4
-            label: Notas de las reuniones semanales del equipo de marketing
+            label: Notes from the marketing team's weekly meetings
           - id: r5
-            label: La bandeja de correo completa, incluyendo hilos con recursos humanos
+            label: The full email inbox, including threads with HR
       feedback:
         kind: rows
         rows:
           - id: r1
             correct: conectar
             why: >-
-              Son materiales ya aprobados para circular. Riesgo bajo y ahorro real: la IA encuentra
-              la plantilla o el logo correcto en segundos, sin que nadie escarbe carpetas.
+              These are materials already approved to circulate. Low risk and real savings: AI finds
+              the right template or logo in seconds, with nobody digging through folders.
           - id: r2
             correct: dejar_fuera
             why: >-
-              Sueldos y evaluaciones son datos de personas. La IA no distingue qué es confidencial
-              ni pide permiso antes de leerlo, así que la decisión de dejarlo fuera tiene que
-              tomarse antes de conectar, no después.
+              Salaries and performance reviews are people's data. AI does not tell what is
+              confidential and does not ask permission before reading it, so the decision to leave it
+              out has to happen before you connect, not after.
           - id: r3
             correct: consultar
             why: >-
-              Los contratos son útiles para el trabajo, pero contienen datos de terceros y pueden
-              tener compromisos de confidencialidad. Preguntar a quien administra esa carpeta cuesta
-              un mensaje. Conectar de más puede costar la confianza de un cliente.
+              Contracts are useful for the work, but they hold third-party data and may carry
+              confidentiality commitments. Asking whoever administers that folder costs one message.
+              Connecting too much can cost a client's trust.
           - id: r4
             correct: conectar
             why: >-
-              Las notas ya circulan dentro del equipo y no exponen datos delicados. Conectarlas
-              permite preguntarle a la IA qué se acordó hace tres semanas sin buscar a mano.
+              The notes already circulate inside the team and expose no sensitive data. Connecting
+              them lets you ask AI what was agreed three weeks ago without hunting for it by hand.
           - id: r5
             correct: dejar_fuera
             why: >-
-              Una bandeja completa mezcla de todo: temas de recursos humanos, negociaciones, asuntos
-              personales. Todo lo que conectas queda al alcance de la IA. Si necesitas el correo,
-              empieza por algo más acotado, como una carpeta o etiqueta de proyecto.
+              A full inbox mixes everything together: HR matters, negotiations, personal business.
+              Everything you connect is within AI's reach. If you need email, start with something
+              narrower, like a project folder or label.
     - id: cierre
       kind: closing
-      title: Lo que te llevas
+      title: What you take with you
       body: >-
-        Practicaste las dos decisiones que definen el uso de conectores: qué fuentes entran y qué
-        revisas antes de que algo salga. Mañana, antes de activar un conector en tu herramienta,
-        pregúntate qué hay en esa carpeta que no le mostrarías a alguien de fuera. Y antes de enviar
-        un texto generado con tus datos, verifica cada fecha y cada cifra contra la fuente original.
+        You practiced the two decisions that define how connectors get used: which sources go in and
+        what you review before anything goes out. Tomorrow, before you turn on a connector in your
+        tool, ask yourself what is in that folder that you would not show someone from outside. And
+        before you send a text generated from your data, verify every date and every figure against
+        the original source.

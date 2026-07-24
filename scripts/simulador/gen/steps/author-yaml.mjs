@@ -4,12 +4,12 @@
 import { callTool } from "../llm/client.mjs";
 import { systemPrompt } from "../prompts.mjs";
 import { describeBlock } from "../artifacts/block-schemas.mjs";
-import { SECTION_NAMES } from "../artifacts/recipe-presets.mjs";
+import { SECTION_NAMES, SECTION_DISPLAY } from "../artifacts/recipe-presets.mjs";
 
 function sectionSchema(sectionId) {
   return {
     name: "submit_section",
-    description: `Las 5 slides de la seccion "${sectionId}" con title, body y content.`,
+    description: `The 5 slides of section "${sectionId}" with title, body, and content.`,
     schema: {
       type: "object",
       properties: {
@@ -20,14 +20,14 @@ function sectionSchema(sectionId) {
             properties: {
               slot: { type: "integer" },
               block_id: { type: "string" },
-              title: { type: "string", description: "encabezado corto del slide" },
+              title: { type: "string", description: "short slide heading, sentence case, no trailing period" },
               body: {
                 type: "string",
-                description: "instruccion o contexto en markdown, con negritas en datos clave",
+                description: "instruction or context in markdown, with key data in bold",
               },
               content: {
                 type: "object",
-                description: "el contenido del bloque, segun el contrato de su block_id",
+                description: "the block's content, per its block_id contract",
                 additionalProperties: true,
               },
             },
@@ -41,7 +41,7 @@ function sectionSchema(sectionId) {
 }
 
 function storySoFar(doneSections) {
-  if (doneSections.length === 0) return "(esta es la primera seccion)";
+  if (doneSections.length === 0) return "(this is the first section)";
   return doneSections
     .map(
       (s) =>
@@ -65,23 +65,23 @@ export async function authorSections(brief, bible, blueprint) {
       .join("\n");
 
     const sys = systemPrompt(
-      `escribir las 5 slides de la seccion "${sectionId}" de un caso`,
+      `write the 5 slides of section "${sectionId}" of a case`,
     );
-    const user = `Biblia del caso (verdad canonica, no inventes fuera de esto):
+    const user = `Case bible (canonical truth, do not invent outside of it):
 
 ${JSON.stringify(bible, null, 2)}
 
-Historia hasta ahora (secciones ya escritas):
+Story so far (sections already written):
 ${storySoFar(sections)}
 
-Ahora escribe la seccion "${sectionId}". Sus 5 slides, con su block_id e intencion:
+Now write section "${sectionId}". Its 5 slides, each with its block_id and intent:
 ${plan}
 
-Contratos de content de los bloques de esta seccion (respetalos EXACTO):
+Content contracts for this section's blocks (follow them EXACTLY):
 
 ${contracts}
 
-Para cada slide entrega slot, block_id (igual al del plan), title, body (markdown con negritas en datos clave) y content (objeto que cumple el contrato del bloque). El content NUNCA trae los campos prohibidos (esos los responde el participante). Manten continuidad con la biblia y con lo ya escrito: mismos nombres, fechas y numeros.`;
+For each slide deliver slot, block_id (same as the plan), title, body (markdown with key data in bold), and content (an object that satisfies the block's contract). The content NEVER includes the forbidden fields (the participant answers those). Keep continuity with the bible and with what is already written: same names, dates, and numbers.`;
 
     const { value } = await callTool(sys, user, sectionSchema(sectionId), {
       temperature: 0.5,
@@ -90,7 +90,8 @@ Para cada slide entrega slot, block_id (igual al del plan), title, body (markdow
 
     sections.push({
       id: sectionId,
-      name: sectionId.charAt(0).toUpperCase() + sectionId.slice(1),
+      // id = identificador estable (contexto/datos/...); name = display EN US.
+      name: SECTION_DISPLAY[sectionId] ?? sectionId,
       slides: (value.slides ?? []).map((sl) => ({
         slot: sl.slot,
         block_id: sl.block_id,

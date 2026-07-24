@@ -9,7 +9,6 @@ import {
   SIMULADOR_PRODUCT,
   type BillingInterval,
 } from '@/lib/simulador/billing';
-import type { OnboardingCompanyProfile } from '@/lib/simulador/onboarding-company-profile';
 import type Stripe from 'stripe';
 
 export async function POST(req: NextRequest) {
@@ -20,7 +19,7 @@ export async function POST(req: NextRequest) {
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
-      return NextResponse.json({ error: 'no autenticado' }, { status: 401 });
+      return NextResponse.json({ error: 'Not signed in.' }, { status: 401 });
     }
 
     const body = (await req.json()) as {
@@ -30,7 +29,6 @@ export async function POST(req: NextRequest) {
       team_id?: string;
       seats?: number;
       interval?: BillingInterval;
-      company_profile?: OnboardingCompanyProfile;
     };
 
     if (body.billing_product === 'simulador_b2b') {
@@ -39,12 +37,12 @@ export async function POST(req: NextRequest) {
 
     const { plan } = body as { plan?: BillingPlan };
     if (plan !== 'monthly' && plan !== 'yearly') {
-      return NextResponse.json({ error: 'plan inválido' }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid plan.' }, { status: 400 });
     }
 
     const priceId = STRIPE_PRICES[plan];
     if (!priceId) {
-      return NextResponse.json({ error: 'price id no configurado' }, { status: 500 });
+      return NextResponse.json({ error: 'Price ID not configured.' }, { status: 500 });
     }
 
     const { data: profile, error: profileError } = await supabase
@@ -58,7 +56,7 @@ export async function POST(req: NextRequest) {
     if (profileError) {
       console.error('[create-checkout] profile select failed:', profileError.message);
       return NextResponse.json(
-        { error: 'no pudimos validar tu cuenta — reintenta en unos segundos.' },
+        { error: 'We could not verify your account. Try again in a few seconds.' },
         { status: 503 }
       );
     }
@@ -72,7 +70,7 @@ export async function POST(req: NextRequest) {
         {
           error: 'ya_tienes_suscripcion_activa',
           message:
-            'ya tienes una suscripción activa — cambia de plan desde "mi suscripción" en tu perfil.',
+            'You already have an active subscription. Change plans from "My subscription" in your profile.',
         },
         { status: 409 }
       );
@@ -111,13 +109,12 @@ async function createSimuladorCheckoutSession(
     team_id?: string;
     seats?: number;
     interval?: BillingInterval;
-    company_profile?: OnboardingCompanyProfile;
   },
 ) {
   try {
     if (!body.organization_id || !body.team_id) {
       return NextResponse.json(
-        { error: 'organization_id y team_id son requeridos' },
+        { error: 'organization_id and team_id are required.' },
         { status: 400 },
       );
     }
@@ -130,7 +127,7 @@ async function createSimuladorCheckoutSession(
     if (bridgeError || !bridgeId) {
       console.error('[create-checkout] ensure_bridge_user failed:', bridgeError);
       return NextResponse.json(
-        { error: 'No pudimos sincronizar tu cuenta.' },
+        { error: 'We could not sync your account.' },
         { status: 500 },
       );
     }
@@ -146,7 +143,7 @@ async function createSimuladorCheckoutSession(
 
     if (!membership) {
       return NextResponse.json(
-        { error: 'Solo un org_admin puede iniciar checkout.' },
+        { error: 'Only an org_admin can start checkout.' },
         { status: 403 },
       );
     }
@@ -166,7 +163,7 @@ async function createSimuladorCheckoutSession(
         {
           error: 'ya_tienes_plan_activo',
           message:
-            'Tu organización ya tiene un plan activo. Escríbenos a ventas@itera.la para ampliar o cambiar de tier.',
+            'Your organization already has an active plan. Write to ventas@itera.la to add seats or change tier.',
         },
         { status: 409 },
       );
@@ -181,7 +178,7 @@ async function createSimuladorCheckoutSession(
 
     if (!team || team.organization_id !== body.organization_id) {
       return NextResponse.json(
-        { error: 'El equipo no pertenece a esta organización.' },
+        { error: 'That team does not belong to this organization.' },
         { status: 400 },
       );
     }
@@ -203,7 +200,7 @@ async function createSimuladorCheckoutSession(
       return NextResponse.json(
         {
           error: 'enterprise_requires_sales',
-          message: `Para ${seats}+ personas el precio se negocia. Escríbenos a ${SIMULADOR_PRODUCT.salesEmail}.`,
+          message: `For ${seats}+ people, pricing is negotiated. Write to ${SIMULADOR_PRODUCT.salesEmail}.`,
           sales_email: SIMULADOR_PRODUCT.salesEmail,
         },
         { status: 400 },
@@ -214,9 +211,8 @@ async function createSimuladorCheckoutSession(
       interval === 'yearly' ? 'year' : 'month';
     const productDescription =
       interval === 'yearly'
-        ? `${seats} ${seats === 1 ? 'persona' : 'personas'} · ${org?.name ?? 'organización'} · ${team.name} · facturación anual (10 meses de cobro)`
-        : `${seats} ${seats === 1 ? 'persona' : 'personas'} · ${org?.name ?? 'organización'} · ${team.name} · facturación mensual`;
-    const companyProfileMetadata = buildCompanyProfileMetadata(body.company_profile);
+        ? `${seats} ${seats === 1 ? 'person' : 'people'} · ${org?.name ?? 'organization'} · ${team.name} · annual billing (10 months charged)`
+        : `${seats} ${seats === 1 ? 'person' : 'people'} · ${org?.name ?? 'organization'} · ${team.name} · monthly billing`;
 
     const origin = req.nextUrl.origin;
     const checkoutParams: Stripe.Checkout.SessionCreateParams = {
@@ -251,7 +247,6 @@ async function createSimuladorCheckoutSession(
         interval,
         price_per_seat_usd_monthly: String(tier.pricePerSeatUsd),
         period_total_usd: String(periodTotalUsd),
-        ...companyProfileMetadata,
       },
       subscription_data: {
         metadata: {
@@ -263,7 +258,6 @@ async function createSimuladorCheckoutSession(
           tier: tier.id,
           seats: String(seats),
           interval,
-          ...companyProfileMetadata,
         },
       },
       success_url: `${origin}/onboarding/done?session_id={CHECKOUT_SESSION_ID}`,
@@ -281,31 +275,12 @@ async function createSimuladorCheckoutSession(
   } catch (err) {
     console.error('[create-checkout] simulador session failed:', err);
     return NextResponse.json(
-      { error: 'No pudimos crear la sesión de pago. Reintenta en unos segundos.' },
+      { error: 'We could not start checkout. Try again in a few seconds.' },
       { status: 500 },
     );
   }
 }
 
-function buildCompanyProfileMetadata(
-  profile?: Partial<OnboardingCompanyProfile>,
-): Record<string, string> {
-  if (!profile?.websiteUrl) return {};
-
-  const files = Array.isArray(profile.files)
-    ? profile.files.filter(
-        (file): file is NonNullable<OnboardingCompanyProfile["files"]>[number] =>
-          typeof file?.name === "string",
-      )
-    : [];
-
-  return {
-    company_profile_website: stripeMetaValue(profile.websiteUrl),
-    company_profile_file_count: String(files.length),
-    company_profile_file_names: stripeMetaValue(files.map((file) => file.name).join(', ')),
-  };
-}
-
-function stripeMetaValue(value: string) {
-  return value.slice(0, 490);
-}
+// El metadata company_profile_* a Stripe se eliminó junto con el paso
+// /onboarding/context (W2-A, 2026-07-23): nadie lo leía downstream y el motor
+// ya no investiga empresas en onboarding.

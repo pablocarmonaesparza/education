@@ -192,9 +192,8 @@ async function runOpenAiCompatibleJudge(input: {
         content: [
           input.systemPrompt,
           "",
-          "No tienes tool_use disponible. Devuelve exclusivamente un objeto JSON",
-          "válido que cumpla este JSON Schema. No uses markdown ni texto fuera",
-          "del JSON.",
+          "You have no tool_use available. Return exclusively a valid JSON object",
+          "that satisfies this JSON Schema. No markdown, no text outside the JSON.",
           JSON.stringify(JUDGE_TOOL_SCHEMA.input_schema),
         ].join("\n"),
       },
@@ -203,7 +202,7 @@ async function runOpenAiCompatibleJudge(input: {
         content: [
           input.userPrompt,
           "",
-          "Devuelve sólo el JSON de submit_evaluation.",
+          "Return only the submit_evaluation JSON.",
         ].join("\n"),
       },
     ],

@@ -48,9 +48,12 @@ const ACTIVE_EXERCISE_BLOCK_ID: ExerciseBlockId = "ai_textfield_free";
 export function CaseTemplateClient() {
   return (
     <main className="simulador-root min-h-screen surface-canvas text-[var(--text-primary)]">
-      <div className="grid min-h-screen grid-cols-[240px_1fr]">
+      {/* Responsive: en móvil (< lg) el grid colapsa a 1 columna y el sidebar
+          se oculta · una columna fija de 240px dejaría ~135px de contenido
+          en 375px. El progreso de sección sigue visible en la step bar. */}
+      <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[240px_1fr]">
         {/* ============ SIDEBAR · 6 secciones (estilo Linear: dot + label) ============ */}
-        <aside className="bg-[var(--surface)] px-6 py-12">
+        <aside className="hidden bg-[var(--surface)] px-6 py-12 lg:block">
           <nav className="flex flex-col gap-1">
             {SECTIONS.map((section, idx) => {
               const isActive = idx === ACTIVE_SECTION_INDEX;
@@ -87,11 +90,11 @@ export function CaseTemplateClient() {
         {/* ============ CENTRO ============ */}
         <div className="flex flex-col">
           {/* TOP · progress 5 segmentos (sin label ni numerador, sin border).
-              Mismo ancho que el contenido central: 80% del espacio disponible
-              (capped a 1200px en monitores muy anchos), centrado.
-              Sin padding lateral del wrapper para que 80% sea exacto. */}
+              Mismo ancho que el contenido central: escala responsive
+              92% → 80% → 65% (capped a 1200px en monitores muy anchos),
+              centrado. Sin padding lateral del wrapper para que el % sea exacto. */}
           <div className="pt-8 pb-6">
-            <div className="mx-auto w-[65%] max-w-[1200px]">
+            <div className="mx-auto w-[92%] max-w-[1200px] sm:w-[80%] lg:w-[65%]">
               <AppleStepBar
                 total={SLIDES_PER_SECTION}
                 current={ACTIVE_SLIDE_INDEX}
@@ -104,11 +107,11 @@ export function CaseTemplateClient() {
           {/* CONTENIDO · patrón Typeform: bloque cohesivo (título + body + botón)
               centrado vertical y horizontalmente en el viewport. El botón vive
               justo debajo del body, no pegado al bottom.
-              Ancho del bloque: 80% del espacio disponible (capped 1200px),
-              alineado exactamente con la progress bar arriba. Sin padding
-              lateral del section para que 80% sea real. */}
+              Ancho del bloque: escala responsive 92% → 80% → 65% (capped
+              1200px), alineado exactamente con la progress bar arriba. Sin
+              padding lateral del section para que el % sea real. */}
           <section className="flex flex-1 items-center justify-center py-14">
-            <div className="w-[65%] max-w-[1200px]">
+            <div className="w-[92%] max-w-[1200px] sm:w-[80%] lg:w-[65%]">
               {/* Título · 3-4 palabras máximo (1 renglón) */}
               <h1 className="display display-tight ts-display truncate text-[var(--text-primary)]">
                 Lorem ipsum dolor sit

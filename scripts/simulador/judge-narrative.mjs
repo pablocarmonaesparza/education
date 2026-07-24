@@ -42,27 +42,29 @@ const STRUCTURAL = new Set([
   "profile_pack",
 ]);
 
-// Contexto del simulador para los jueces: algunos slides traen fallas PLANTADAS
-// a proposito (es el ejercicio). El juez no debe confundirlas con defectos.
-const SIMULATOR_CONTEXT = `CONTEXTO DEL SIMULADOR (leelo antes de juzgar):
-Esto es un caso de practica. El participante aprende a trabajar con inteligencia artificial bajo presion. Por diseño, algunos slides traen contenido IMPERFECTO A PROPOSITO para que el participante lo cace:
-- Los slides de tipo ai_output_review muestran un BORRADOR de la herramienta de IA que puede traer, plantados a proposito: datos personales reintroducidos, cifras inventadas o no verificables, tono agresivo, o frases vacias reutilizables. ESO NO ES UN DEFECTO DEL CASO; es lo que el participante debe marcar.
-- Los slides de tipo ai_comparison muestran 4 opciones de calidad VARIABLE a proposito; el participante elige la mejor.
-- Los slides de tipo ai_textfield_free / ai_textfield_guided / categorize_rows / model_tradeoff_sliders / tradeoff_decision_memo son ESPACIOS DE RESPUESTA del participante; su "incompletitud" es normal.
-Las fallas plantadas son de CALIDAD (cifras inventadas, tono, datos personales). NO son de identidad: TODOS los mensajes, borradores y opciones de mensaje (incluidas las opciones de un ai_comparison) van dirigidos al MISMO destinatario de la historia, que es un segmento de clientes o usuarios. Si un borrador o una opcion se dirige por su nombre al jefe o al propio participante, ESO SI es una ruptura de historia (recipient_self) aunque este en un borrador o en una opcion: repruebalo.
+// Contexto del simulador para los jueces (en ingles US: el caso se autora y se
+// evalua en ingles; pivot EEUU 2026-07-15): algunos slides traen fallas
+// PLANTADAS a proposito (es el ejercicio). El juez no debe confundirlas con
+// defectos.
+const SIMULATOR_CONTEXT = `SIMULATOR CONTEXT (read this before judging):
+This is a practice case. The participant learns to work with AI under pressure. By design, some slides contain content that is IMPERFECT ON PURPOSE so the participant can catch it:
+- Slides of type ai_output_review show a DRAFT produced by the AI tool that may contain, planted on purpose: reintroduced personal data, invented or unverifiable figures, aggressive tone, or reusable filler phrases. THAT IS NOT A DEFECT OF THE CASE; it is what the participant must flag.
+- Slides of type ai_comparison show 4 options of VARIABLE quality on purpose; the participant picks the best one.
+- Slides of type ai_textfield_free / ai_textfield_guided / categorize_rows / model_tradeoff_sliders / tradeoff_decision_memo are the participant's ANSWER SPACES; their "incompleteness" is normal.
+Planted flaws are QUALITY flaws (invented figures, tone, personal data). They are NOT identity flaws: ALL messages, drafts, and message options (including the options of an ai_comparison) address the SAME recipient of the story, which is a segment of customers or users. If a draft or an option addresses the manager or the participant by name, THAT IS a story break (recipient_self) even inside a draft or an option: fail it.
 
-NO repruebes el caso por el contenido plantado en esos slides. Juzga la COHERENCIA DE LA HISTORIA: rol/empresa/trabajo estables, jefe que asigna y recibe, destinatario del mensaje siempre un segmento (nunca el jefe ni el participante), datos canonicos (base, fechas, metricas) consistentes entre si, y promesas del jefe entregadas.`;
+Do NOT fail the case for the planted content on those slides. Judge the COHERENCE OF THE STORY: stable role/company/job, a manager who assigns and receives, a message recipient that is always a segment (never the manager nor the participant), canonical data (baselines, dates, metrics) consistent with each other, and manager promises delivered.`;
 
 const BLOCK_NOTE = {
   ai_output_review:
-    " (BORRADOR de la IA con posibles fallas plantadas a proposito: datos personales, cifras inventadas, tono agresivo. El participante debe cazarlas. NO es defecto del caso.)",
+    " (AI DRAFT with flaws possibly planted on purpose: personal data, invented figures, aggressive tone. The participant must catch them. NOT a defect of the case.)",
   ai_comparison:
-    " (4 opciones de calidad variable a proposito; el participante elige.)",
-  ai_textfield_free: " (espacio de respuesta del participante.)",
-  ai_textfield_guided: " (el participante arma su pedido.)",
-  categorize_rows: " (ejercicio: el participante clasifica filas.)",
-  model_tradeoff_sliders: " (ejercicio: el participante razona tradeoffs.)",
-  tradeoff_decision_memo: " (el participante decide y escribe el memo.)",
+    " (4 options of variable quality on purpose; the participant picks one.)",
+  ai_textfield_free: " (the participant's answer space.)",
+  ai_textfield_guided: " (the participant builds their request.)",
+  categorize_rows: " (exercise: the participant classifies rows.)",
+  model_tradeoff_sliders: " (exercise: the participant reasons through tradeoffs.)",
+  tradeoff_decision_memo: " (the participant decides and writes the memo.)",
 };
 
 // ---- Render legible del caso (lo que ve el participante) + strings visibles ----
@@ -90,16 +92,16 @@ function walkStrings(node, key, out) {
 function renderCase(ca) {
   const lines = [];
   const mo = ca.manager_outcome ?? {};
-  lines.push(`# Caso: ${ca.case_id} (${ca.meta?.level ?? ""})`);
-  lines.push(`Pregunta del jefe: ${mo.primary_question ?? ""}`);
-  lines.push(`Asignacion: ${mo.assignment_brief ?? ""}`);
+  lines.push(`# Case: ${ca.case_id} (${ca.meta?.level ?? ""})`);
+  lines.push(`Manager's question: ${mo.primary_question ?? ""}`);
+  lines.push(`Assignment: ${mo.assignment_brief ?? ""}`);
   lines.push(
-    `Metrica de negocio: ${mo.business_metric ?? ""} · Metrica de riesgo: ${mo.risk_metric ?? ""}`,
+    `Business metric: ${mo.business_metric ?? ""} · Risk metric: ${mo.risk_metric ?? ""}`,
   );
-  lines.push(`Accion esperada: ${mo.expected_action ?? ""}`);
+  lines.push(`Expected action: ${mo.expected_action ?? ""}`);
   lines.push("");
   for (const sec of ca.sections ?? []) {
-    lines.push(`## Seccion ${sec.id}`);
+    lines.push(`## Section ${sec.id}`);
     for (const sl of sec.slides ?? []) {
       lines.push(
         `### ${sec.id}/slot ${sl.slot} [${sl.block_id}]${BLOCK_NOTE[sl.block_id] ?? ""}: ${sl.title ?? ""}`,
@@ -108,7 +110,7 @@ function renderCase(ca) {
       const contentStrings = [];
       walkStrings(sl.content, "content", contentStrings);
       if (contentStrings.length)
-        lines.push("contenido: " + contentStrings.join(" | "));
+        lines.push("content: " + contentStrings.join(" | "));
       lines.push("");
     }
   }
@@ -137,42 +139,42 @@ function normalize(s) {
     .trim();
 }
 
-// ---- Definicion de los 4 jueces ----
-const TEN_QUESTIONS = `Responde, como fact table, estas 10 preguntas de coherencia (cada una SI/NO con evidencia):
-1. El escenario del primer slide (rol, empresa, trabajo) se sostiene identico hasta el ultimo.
-2. Emisor y receptor de cada mensaje son coherentes con el rol del participante.
-3. Es el mismo tipo de trabajo de principio a fin.
-4. Todo lo que el jefe pide al inicio se entrega dentro del caso, y todo lo que se entrega se anuncio.
-5. Nombres, numeros, empresas y fechas son consistentes entre todos los slides.
-6. Ningun dato del caso contradice a otro.
-7. Cada instruccion aporta informacion operativa real (cero relleno).
-8. Cada personaje, documento o entidad mencionado se vuelve a usar.
-9. El destinatario del mensaje que construye el participante es siempre el mismo (un segmento, no una persona del equipo).
-10. La identidad de la herramienta de inteligencia artificial esta clara: que hace, que puede, que no puede.`;
+// ---- Definicion de los jueces (prompts en ingles US) ----
+const TEN_QUESTIONS = `Answer, as a fact table, these 10 coherence questions (each YES/NO with evidence):
+1. The scenario of the first slide (role, company, job) holds identical through the last one.
+2. Sender and recipient of every message are coherent with the participant's role.
+3. It is the same kind of work from start to finish.
+4. Everything the manager asks for at the start is delivered inside the case, and everything delivered was announced.
+5. Names, numbers, companies, and dates are consistent across all slides.
+6. No fact in the case contradicts another.
+7. Every instruction carries real operational information (zero filler).
+8. Every character, document, or entity mentioned gets used again.
+9. The recipient of the message the participant builds is always the same (a segment, not a member of the team).
+10. The identity of the AI tool is clear: what it does, what it can do, what it cannot do.`;
 
 const JUDGES = {
   continuity: {
     needsFactTable: true,
-    role: "juez de continuidad narrativa",
-    instr: `Eres el juez de CONTINUIDAD. Primero extrae la fact_table (rol del participante, empresa, jefe, herramienta de IA, destinatario del mensaje, fechas clave, promesas del jefe, y las respuestas a las 10 preguntas). DESPUES busca rupturas: recipient_self (un mensaje, borrador u opcion se dirige por su nombre a una persona del equipo o al propio participante en vez de a un segmento), promise_unfulfilled (algo que el jefe pidio al inicio no se entrega en el caso), data_contradiction (un dato contradice a otro), job_switch (cambia el tipo de trabajo), tool_inconsistency (la herramienta hace algo que se dijo que no podia), ghost_entity (se menciona algo y nunca se vuelve a usar).
+    role: "narrative continuity judge",
+    instr: `You are the CONTINUITY judge. First extract the fact_table (participant role, company, manager, AI tool, message recipient, key dates, manager promises, and the answers to the 10 questions). THEN hunt for breaks: recipient_self (a message, draft, or option addresses a team member or the participant by name instead of a segment), promise_unfulfilled (something the manager asked for at the start is not delivered inside the case), data_contradiction (one fact contradicts another), job_switch (the kind of work changes), tool_inconsistency (the tool does something it was said it could not do), ghost_entity (something is mentioned and never used again).
 
-CRUZA LOS NUMEROS Y LAS FECHAS: por cada metrica base (apertura, recompra, quejas, rebote y similares) verifica que el MISMO valor aparezca en todos los slides que la mencionan; si un slide dice un valor para una metrica y otro slide dice un valor distinto para esa misma metrica, es data_contradiction (cita ambos: el primero en evidence, el segundo en evidence2). Igual con las fechas y los nombres.
+CROSS-CHECK THE NUMBERS AND THE DATES: for every baseline metric (open rate, repeat purchase, complaints, bounce, and similar) verify that the SAME value appears on every slide that mentions it; if one slide states a value for a metric and another slide states a different value for that same metric, it is a data_contradiction (quote both: the first in evidence, the second in evidence2). Same with dates and names.
 
 ${TEN_QUESTIONS}
 
-Reglas para no reprobar de mas: para reportar una contradiccion de datos, DEBES citar los dos textos que chocan (pon el primero en "evidence" y el segundo en "evidence2"); si no puedes citar dos valores reales que de verdad se contradigan, NO es un finding. No reportes consejos genericos tipo "asegura la consistencia". Recuerda que el contenido plantado en los slides ai_output_review (cifras inventadas, datos personales, tono) NO es una contradiccion del caso. Verdict PASS si la historia es coherente; FAIL solo con rupturas citadas de verdad.`,
+Rules to avoid over-failing: to report a data contradiction you MUST quote the two texts that clash (put the first in "evidence" and the second in "evidence2"); if you cannot quote two real values that genuinely contradict each other, it is NOT a finding. Do not report generic advice like "ensure consistency". Remember that the planted content on ai_output_review slides (invented figures, personal data, tone) is NOT a contradiction of the case. Verdict PASS if the story is coherent; FAIL only with genuinely quoted breaks.`,
   },
   // El juez de COPY (LLM) se quito a proposito: el linter determinista
   // (lint-case-copy.mjs) ya verifica guion largo y siglas de forma fiable, y el
   // LLM los alucinaba (reprobaba hasta el golden). El copy objetivo es trabajo
   // determinista, no de juez LLM. El panel narrativo cuida la HISTORIA.
   manager_signal: {
-    role: "juez de señal para el jefe",
-    instr: `Eres el juez de SEÑAL PARA EL JEFE. Verifica que el caso de verdad mide lo que el jefe necesita saber (manager_signal), que termina en una accion observable, y que el resultado distinguiria a alguien con criterio de alguien sin el. Verdict FAIL si el caso no produce una señal accionable para el jefe.`,
+    role: "manager-signal judge",
+    instr: `You are the MANAGER-SIGNAL judge. Verify that the case truly measures what the manager needs to know (manager_signal), that it ends in an observable action, and that the outcome would distinguish someone with judgment from someone without it. Verdict FAIL if the case does not produce an actionable signal for the manager.`,
   },
   adversarial: {
-    role: "juez adversarial",
-    instr: `Eres el juez ADVERSARIAL. Tu unico mandato: encontrar UNA razon concreta y citable para REPROBAR este caso a nivel de HISTORIA (no de contenido plantado). Razones validas: el destinatario del mensaje es una persona del equipo o el participante (no un segmento), una promesa del jefe que no se entrega, un dato canonico que contradice a otro (nombres, fechas, empresa, metricas base), un cambio de tipo de trabajo, o la herramienta de IA descrita de forma inconsistente. NO cuentan como razon: las cifras inventadas, los datos personales o el tono agresivo que aparecen DENTRO de un borrador de la IA (slides ai_output_review) ni las opciones flojas de un ai_comparison: eso es contenido plantado a proposito. Para una contradiccion de datos cita los DOS textos que chocan (evidence y evidence2). Si encuentras una razon de historia, verdict FAIL con su cita. Si no hay ninguna, PASS.`,
+    role: "adversarial judge",
+    instr: `You are the ADVERSARIAL judge. Your single mandate: find ONE concrete, quotable reason to FAIL this case at the STORY level (not the planted content). Valid reasons: the message recipient is a team member or the participant (not a segment), a manager promise that is not delivered, a canonical fact that contradicts another (names, dates, company, baseline metrics), a switch in the kind of work, or the AI tool described inconsistently. These do NOT count as reasons: the invented figures, personal data, or aggressive tone that appear INSIDE an AI draft (ai_output_review slides), nor the weak options of an ai_comparison: that is content planted on purpose. For a data contradiction quote the TWO texts that clash (evidence and evidence2). If you find a story-level reason, verdict FAIL with its quote. If there is none, PASS.`,
   },
 };
 
@@ -185,18 +187,18 @@ function verdictSchema(name, needsFactTable) {
       items: {
         type: "object",
         properties: {
-          type: { type: "string", description: "tipo de ruptura" },
-          slide: { type: "string", description: "seccion/slot N donde ocurre" },
+          type: { type: "string", description: "kind of break" },
+          slide: { type: "string", description: "section/slot N where it happens" },
           evidence: {
             type: "string",
-            description: "CITA TEXTUAL exacta tomada del caso (copiala literal)",
+            description: "EXACT VERBATIM QUOTE taken from the case (copy it literally)",
           },
           evidence2: {
             type: "string",
             description:
-              "segunda cita textual exacta; OBLIGATORIA para contradicciones (el texto que choca con evidence)",
+              "second exact verbatim quote; REQUIRED for contradictions (the text that clashes with evidence)",
           },
-          fix: { type: "string", description: "como corregirlo" },
+          fix: { type: "string", description: "how to fix it" },
         },
         required: ["type", "slide", "evidence", "fix"],
       },
@@ -206,25 +208,25 @@ function verdictSchema(name, needsFactTable) {
   if (needsFactTable) {
     props.fact_table = {
       type: "object",
-      description: "hechos canonicos extraidos del caso",
+      description: "canonical facts extracted from the case",
       properties: {
         numbers: {
           type: "array",
           description:
-            "CADA par (metrica, valor) que aparezca en CUALQUIER slide o nota, con su ubicacion. Incluye todo porcentaje y todo monto. Si la misma metrica aparece en varios slides, lista cada aparicion.",
+            "EVERY (metric, value) pair that appears on ANY slide or note, with its location. Include every percentage and every amount. If the same metric appears on several slides, list every occurrence.",
           items: {
             type: "object",
             properties: {
-              metric: { type: "string", description: "que mide, normalizado (ej. recompra a 30 dias)" },
-              value: { type: "string", description: "el valor tal cual aparece (ej. 3.4%)" },
-              slide: { type: "string", description: "seccion/slot N" },
+              metric: { type: "string", description: "what it measures, normalized (e.g. 30-day repeat purchase)" },
+              value: { type: "string", description: "the value exactly as it appears (e.g. 3.4%)" },
+              slide: { type: "string", description: "section/slot N" },
             },
             required: ["metric", "value", "slide"],
           },
         },
         notes: {
           type: "string",
-          description: "rol, empresa, jefe, herramienta de IA, destinatario del mensaje, promesas del jefe",
+          description: "role, company, manager, AI tool, message recipient, manager promises",
         },
       },
       required: ["numbers"],
@@ -233,19 +235,19 @@ function verdictSchema(name, needsFactTable) {
   }
   return {
     name: "submit_verdict",
-    description: "Veredicto del juez con evidencia citada.",
+    description: "The judge's verdict with quoted evidence.",
     schema: { type: "object", properties: props, required },
   };
 }
 
 async function runJudge(name, caseText, bibleText) {
   const def = JUDGES[name];
-  const system = `Eres un ${def.role} de casos de un simulador corporativo. Trabajas en español neutro de Latinoamerica. Toda afirmacion que hagas debe venir con una CITA TEXTUAL exacta del caso (copiada literal), o no cuenta. No confundas el contenido plantado a proposito (ver contexto) con un defecto.
+  const system = `You are a ${def.role} for cases in a workplace simulator used by teams at US companies. You work in US business English. Every claim you make must come with an EXACT VERBATIM QUOTE from the case (copied literally), or it does not count. Do not mistake content planted on purpose (see context) for a defect.
 
 ${SIMULATOR_CONTEXT}
 
 ${def.instr}`;
-  const user = `${bibleText ? `BIBLIA (verdad canonica del caso):\n${bibleText}\n\n` : ""}CASO A EVALUAR:\n\n${caseText}\n\nEmite tu veredicto. Cada finding DEBE incluir una cita textual exacta ("evidence") copiada del caso.`;
+  const user = `${bibleText ? `BIBLE (canonical truth of the case):\n${bibleText}\n\n` : ""}CASE UNDER REVIEW:\n\n${caseText}\n\nDeliver your verdict. Every finding MUST include an exact verbatim quote ("evidence") copied from the case.`;
 
   let out;
   try {
@@ -259,7 +261,7 @@ ${def.instr}`;
     return {
       judge: name,
       verdict: "FAIL",
-      reason: `el juez no devolvio veredicto valido: ${String(err.message ?? err).slice(0, 100)}`,
+      reason: `the judge returned no valid verdict: ${String(err.message ?? err).slice(0, 100)}`,
       findings: [],
       grounded: [],
     };
@@ -267,9 +269,9 @@ ${def.instr}`;
 
   // default FAIL si falta verdict o (continuity) fact_table.
   if (out.verdict !== "PASS" && out.verdict !== "FAIL")
-    return { judge: name, verdict: "FAIL", reason: "verdict ausente", findings: out.findings ?? [], grounded: [] };
+    return { judge: name, verdict: "FAIL", reason: "missing verdict", findings: out.findings ?? [], grounded: [] };
   if (def.needsFactTable && (!out.fact_table || Object.keys(out.fact_table).length === 0))
-    return { judge: name, verdict: "FAIL", reason: "fact_table vacia", findings: out.findings ?? [], grounded: [] };
+    return { judge: name, verdict: "FAIL", reason: "empty fact_table", findings: out.findings ?? [], grounded: [] };
 
   return { judge: name, ...out };
 }
@@ -283,17 +285,20 @@ for (let i = 0; i < args.length; i++) {
   if (a === "--json") flags.json = true;
   else if (a === "--judge") flags.judge = args[++i];
   else if (a === "--bible") flags.bible = args[++i];
+  // --runs se aceptaba desde run-gates pero el parser lo tiraba (y su valor
+  // caia a positional); ahora se parsea de verdad.
+  else if (a === "--runs") flags.runs = args[++i];
   else if (!a.startsWith("--")) positional.push(a);
 }
 const casePath = positional[0];
 if (!casePath) {
-  console.error("uso: node scripts/simulador/judge-narrative.mjs <case.yaml> [--bible b.json] [--judge all|...] [--json]");
+  console.error("usage: node scripts/simulador/judge-narrative.mjs <case.yaml> [--bible b.json] [--judge all|...] [--runs N] [--json]");
   process.exit(2);
 }
 
 const ca = yaml.load(fs.readFileSync(casePath, "utf8"))?.case_assembly;
 if (!ca) {
-  console.error("el archivo no tiene case_assembly");
+  console.error("the file has no case_assembly");
   process.exit(2);
 }
 const caseText = renderCase(ca);
@@ -365,7 +370,7 @@ function numberContradictions(numbers) {
         slide: `${e[0][1]} vs ${e[1][1]}`,
         evidence: e[0][0],
         evidence2: e[1][0],
-        fix: `la metrica "${m}" aparece con valores distintos (${e.map((x) => x[0]).join(", ")}); unifica el valor en todos los slides`,
+        fix: `metric "${m}" appears with different values (${e.map((x) => x[0]).join(", ")}); unify the value across all slides`,
       });
     }
   }
@@ -422,8 +427,8 @@ if (flags.json) {
   console.log("");
   console.log(
     failed.length === 0
-      ? `JUEZ NARRATIVO: PASS (${results.length} jueces)`
-      : `JUEZ NARRATIVO: FAIL (${failed.map((r) => r.judge).join(", ")})`,
+      ? `NARRATIVE JUDGE: PASS (${results.length} judges)`
+      : `NARRATIVE JUDGE: FAIL (${failed.map((r) => r.judge).join(", ")})`,
   );
 }
 

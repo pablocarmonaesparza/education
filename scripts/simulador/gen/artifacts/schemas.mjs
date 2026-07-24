@@ -2,8 +2,10 @@
 // La validacion fuerte de reglas la hacen los gates; estos schemas FUERZAN la
 // forma para que cada paso reciba algo bien estructurado.
 
+// EXPECTED_ACTIONS son IDENTIFICADORES de BD (glosario §3: no se renombran; el
+// display en ingles es Pilot/Coach/Pause/Escalate y vive en la capa de UI).
 export const EXPECTED_ACTIONS = ["pilotar", "entrenar", "pausar", "escalar"];
-export const LEVELS = ["N1 · Fundamentos", "N2 · Workflow", "N3 · Agentes"];
+export const LEVELS = ["N1 · Foundations", "N2 · Workflow", "N3 · Agents"];
 export const PROFILE_PACKS = [
   "marketing_growth",
   "sales_revops",
@@ -17,30 +19,30 @@ export const PROFILE_PACKS = [
 export const BRIEF_SCHEMA = {
   name: "submit_normalized_brief",
   description:
-    "Brief normalizado del caso: campos limpios y completos a partir del brief crudo.",
+    "Normalized case brief: clean, complete fields derived from the raw brief.",
   schema: {
     type: "object",
     properties: {
       case_id: {
         type: "string",
-        description: "slug en minusculas con guiones bajos, por ejemplo nova_finance_cobranza",
+        description: "lowercase slug with underscores, e.g. harbor_finance_collections",
       },
       level: { type: "string", enum: LEVELS },
-      profile: { type: "string", description: "etiqueta corta del area, por ejemplo Finanzas" },
+      profile: { type: "string", description: "short label for the area, e.g. Finance" },
       profile_pack: { type: "string", enum: PROFILE_PACKS },
       company: {
         type: "object",
         properties: {
           name: { type: "string" },
           industry: { type: "string" },
-          market: { type: "string", description: "mercado o region, por ejemplo Latinoamerica" },
+          market: { type: "string", description: "market or region, e.g. United States" },
         },
         required: ["name", "industry", "market"],
       },
-      participant_role: { type: "string", description: "puesto del participante" },
+      participant_role: { type: "string", description: "the participant's job title" },
       moment_of_work: {
         type: "string",
-        description: "la escena laboral concreta que detona el caso",
+        description: "the concrete work scene that triggers the case",
       },
       manager: {
         type: "object",
@@ -52,11 +54,11 @@ export const BRIEF_SCHEMA = {
       },
       manager_signal: {
         type: "string",
-        description: "la pregunta que el jefe necesita responder con este caso",
+        description: "the question the manager needs this case to answer",
       },
       assignment_brief: {
         type: "string",
-        description: "parrafo de 60 a 90 palabras que el jefe usa para asignar el caso",
+        description: "60-90 word paragraph the manager uses to assign the case",
       },
       business_metric: { type: "string" },
       risk_metric: { type: "string" },
@@ -73,10 +75,10 @@ export const BRIEF_SCHEMA = {
       ai_tool: {
         type: "object",
         properties: {
-          name: { type: "string", description: "nombre de la herramienta de inteligencia artificial del caso" },
+          name: { type: "string", description: "proper name of the case's AI tool" },
           can: { type: "array", items: { type: "string" } },
           cannot: { type: "array", items: { type: "string" } },
-          is_chosen: { type: "boolean", description: "false si es instrumento dado, no elegible" },
+          is_chosen: { type: "boolean", description: "false if the tool is a given instrument, not a choice" },
         },
         required: ["name", "can", "cannot", "is_chosen"],
       },
@@ -84,7 +86,7 @@ export const BRIEF_SCHEMA = {
       assumptions: {
         type: "array",
         items: { type: "string" },
-        description: "supuestos que rellenaste de forma conservadora",
+        description: "assumptions you filled in conservatively",
       },
       synthetic: { type: "boolean" },
     },
@@ -115,7 +117,7 @@ export const BRIEF_SCHEMA = {
 export const BIBLE_SCHEMA = {
   name: "submit_bible",
   description:
-    "Biblia de continuidad: los hechos canonicos del caso. Ningun slide puede inventar fuera de esto.",
+    "Continuity bible: the canonical facts of the case. No slide may invent outside of this.",
   schema: {
     type: "object",
     properties: {
@@ -123,12 +125,14 @@ export const BIBLE_SCHEMA = {
       participant_role: { type: "string" },
       people: {
         type: "array",
-        description: "cada persona una vez; ninguna se llama igual que otra",
+        description: "each person appears once; no two people share a name",
         items: {
           type: "object",
           properties: {
             name: { type: "string" },
             role: { type: "string" },
+            // identificadores internos: asigna=assigns, revisa=reviews,
+            // recibe=receives, asigna_y_recibe=assigns_and_receives
             function: { type: "string", enum: ["asigna", "revisa", "recibe", "asigna_y_recibe"] },
           },
           required: ["name", "role", "function"],
@@ -136,7 +140,7 @@ export const BIBLE_SCHEMA = {
       },
       message_recipient: {
         type: "string",
-        description: "el destinatario del mensaje que arma el participante: SIEMPRE un segmento de clientes o usuarios, nunca una persona del equipo",
+        description: "the recipient of the message the participant builds: ALWAYS a segment of customers or users, never a member of the team",
       },
       ai_tool: {
         type: "object",
@@ -150,7 +154,7 @@ export const BIBLE_SCHEMA = {
       },
       dataset: {
         type: "object",
-        description: "la base de datos sucia del caso (sintetica)",
+        description: "the case's dirty dataset (synthetic)",
         properties: {
           fields: {
             type: "array",
@@ -165,13 +169,13 @@ export const BIBLE_SCHEMA = {
           },
           rows: {
             type: "array",
-            description: "8 a 12 filas; mezcla de claras para usar, claras para excluir, y grises",
+            description: "8 to 12 rows; a mix of clearly usable, clearly excluded, and gray-area records",
             items: { type: "object", additionalProperties: true },
           },
           rules: {
             type: "array",
             items: { type: "string" },
-            description: "reglas de la politica de datos, visibles y citables",
+            description: "data policy rules, visible and quotable",
           },
         },
         required: ["fields", "rows", "rules"],
@@ -179,21 +183,21 @@ export const BIBLE_SCHEMA = {
       manager_promises: {
         type: "array",
         items: { type: "string" },
-        description: "lo que el jefe pide al inicio; TODO debe cerrarse en el caso",
+        description: "what the manager asks for at the start; ALL of it must be closed inside the case",
       },
       key_dates: {
         type: "array",
         items: { type: "string" },
-        description: "fechas absolutas (hoy, ultima campana, deadline)",
+        description: "absolute dates (today, last campaign, deadline)",
       },
       key_numbers: {
         type: "array",
         items: { type: "string" },
-        description: "metricas base y umbrales canonicos",
+        description: "canonical baseline metrics and thresholds",
       },
       segments: {
         type: "array",
-        description: "segmentos candidatos para el envio, con su caveat",
+        description: "candidate segments for the send, each with its caveat",
         items: {
           type: "object",
           properties: {
@@ -222,7 +226,7 @@ export const BIBLE_SCHEMA = {
 // ---- P3: intents del blueprint (1 linea por slide) ----
 export const BLUEPRINT_INTENTS_SCHEMA = {
   name: "submit_blueprint_intents",
-  description: "Una intencion de una linea por cada slide (que mide o muestra).",
+  description: "A one-line intent for every slide (what it measures or shows).",
   schema: {
     type: "object",
     properties: {
@@ -234,7 +238,7 @@ export const BLUEPRINT_INTENTS_SCHEMA = {
             section: { type: "string" },
             slot: { type: "integer" },
             block_id: { type: "string" },
-            intent: { type: "string", description: "una linea: que hace este slide en la historia" },
+            intent: { type: "string", description: "one line: what this slide does in the story" },
           },
           required: ["section", "slot", "block_id", "intent"],
         },

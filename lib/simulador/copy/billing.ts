@@ -1,4 +1,25 @@
 /**
+ * ⚠️ CÓDIGO MUERTO — NO TRADUCIDO AL INGLÉS (pivote EEUU, 2026-07-16).
+ *
+ * `billingCopy` tiene CERO importadores en el repo (verificado por grep sobre
+ * import/require/import() en *.ts, *.tsx, *.js, *.mjs). Las superficies vivas
+ * de billing son app/(onboarding)/onboarding/billing/page.tsx (que lee
+ * onboardingCopy.step4_billing + lib/simulador/billing.ts) y
+ * app/(app)/empresa/** — ésas SÍ están en inglés.
+ *
+ * ⛔ BLOQUEADOR SI SE REVIVE — `invoice` (abajo) promete factura fiscal
+ * CFDI/RFC/NIT/CUIT emitida en "LATAM business hours". Para un comprador de
+ * EEUU eso es una PROMESA FALSA y debe ELIMINARSE, no traducirse
+ * (§6 del glosario). El equivalente correcto en EEUU es: recibo de Stripe +
+ * W-9 on request. Se deja intacto aquí solo porque el archivo está muerto y
+ * no llega a ningún usuario; si alguien lo importa, borra ese bloque primero.
+ *
+ * Mismo criterio que copy/manager.ts: no se traduce código muerto. Decisión
+ * pendiente de Pablo: revivir (reconciliando con
+ * docs/simulador/front/copy/00_EN_GLOSSARY.md) o borrar.
+ *
+ * ---
+ *
  * Copy versionado de billing público + customer portal.
  *
  * NO confundir con lib/simulador/copy/onboarding.ts step4_billing:

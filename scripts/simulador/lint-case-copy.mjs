@@ -1,10 +1,14 @@
 #!/usr/bin/env node
 
 // Lint determinista de copy sobre el copy VISIBLE de un caso ensamblado.
+// El copy visible es INGLÉS DE NEGOCIOS DE EEUU (pivot 2026-07-15); los
+// patrones anti-spoiler espejan las frases prohibidas de COPY_RULES
+// (scripts/simulador/gen/prompts.mjs) y el glosario 00_EN_GLOSSARY.md.
 // Reglas (de docs/memory/copy_*.md y CASE_ASSEMBLY_SCHEMA.copy_rules):
 //   - Cero em dash (— o –). Usar punto, coma o paréntesis.
 //   - Cero acrónimos corporativos/técnicos en prosa (PII, KPI, CRM, ...).
-//     "IA" SÍ se permite (es la excepción). "APIs/MCPs" en plural se prohíbe.
+//     "AI" SÍ se permite (es la excepción). "APIs/MCPs" en plural se prohíbe.
+//     Leyes US nunca por sigla (CCPA, CPRA, HIPAA, TCPA, CAN-SPAM).
 // Salta los campos judge_internal (hint, example, issue, goodWhen) porque no se
 // renderizan al participante.
 //
@@ -31,13 +35,16 @@ const SKIP_KEYS = new Set([
   "actionStyle", "key", "timestamp", "avatar",
 ]);
 
-// Acrónimos prohibidos en prosa de casos. NO incluye IA (permitido), ni API/MCP
-// en singular. Incluye los plurales prohibidos (APIs, MCPs).
+// Acrónimos prohibidos en prosa de casos. NO incluye AI (la única sigla
+// permitida por COPY_RULES), ni API/MCP en singular. Incluye los plurales
+// prohibidos (APIs, MCPs) y las leyes US que nunca se nombran por sigla en
+// texto visible (pivot EEUU: CCPA/CPRA/HIPAA/TCPA/CAN-SPAM se parafrasean
+// como política de la empresa).
 const FORBIDDEN_ACRONYMS = [
   "PII", "KPI", "KPIs", "CRM", "ERP", "ROI", "CTA", "B2B", "B2C", "SaaS",
   "MVP", "NPS", "SLA", "ARR", "MRR", "ICP", "FAQ", "UX", "UI", "CEO", "CFO",
   "CTO", "CMO", "SEO", "SEM", "LTV", "CAC", "OKR", "OKRs", "RFP", "SOP",
-  "KYC", "GDPR", "CCPA", "APIs", "MCPs",
+  "KYC", "GDPR", "CCPA", "CPRA", "HIPAA", "PHI", "TCPA", "CAN-SPAM", "APIs", "MCPs",
 ];
 const ACRONYM_RE = new RegExp(`\\b(${FORBIDDEN_ACRONYMS.join("|")})\\b`);
 
@@ -61,58 +68,62 @@ function checkString(str, where) {
   }
 }
 
-// Anti-spoiler determinista. El texto VISIBLE de una opción debe describir o
-// encarnar la elección, nunca EVALUARLA ni revelar cuál es la correcta. Estas
-// frases (veredicto, meta-comentario, "la correcta") son lo que el juez narrativo
-// cazaba a mano; aquí cerramos el hueco para la clase clara, barato y siempre.
+// Anti-spoiler determinista, en INGLÉS US (el copy visible de los casos es
+// inglés desde el pivot EEUU 2026-07-15; estos patrones espejan las frases
+// prohibidas de COPY_RULES en scripts/simulador/gen/prompts.mjs).
+// El texto VISIBLE de una opción debe describir o encarnar la elección, nunca
+// EVALUARLA ni revelar cuál es la correcta. Estas frases (veredicto,
+// meta-comentario, "the correct one") son lo que el juez narrativo cazaba a
+// mano; aquí cerramos el hueco para la clase clara, barato y siempre.
 // Principio de diseño de evaluación: la clave no se telegrafía en las opciones.
 // Veredicto/meta-comentario que evalúa la opción (aplica a título y cuerpo).
 const SPOILER_PATTERNS = [
-  /cumple (con )?(todo|lo pedido|la regla|los requisitos|las reglas)/i,
-  /\bno cumple\b/i,
-  /\bes (un|el) error\b/i,
-  /\bno se debe/i,
-  /\bes (lo|la) correct[oa]\b/i,
-  /\bes (correcto|incorrect[oa])\b/i,
-  /\b(la|una|el|lo) (mejor|peor) (opci[óo]n|versi[óo]n|respuesta|elecci[óo]n)\b/i,
-  /\b(opci[óo]n|respuesta) (correcta|esperada|recomendada)\b/i,
-  /\bno es (el |un )?(segmento|lote)\b/i,
-  /\b(no )?(es )?(apta|apto) para env[íi]o\b/i,
-  /\bno es de env[íi]o\b/i,
-  /\belegir(lo|la) (es|ser[íi]a)\b/i,
-  /\b(viola|incumple|rompe) (la )?(regla|pol[íi]tica)\b/i,
+  /\bmeets (all )?(the )?(requirements?|rules?|policy|the ask)\b/i,
+  /\bdoes not (meet|comply|follow the (rule|policy))\b/i,
+  /\bis (the|a) mistake\b/i,
+  /\bshould not be (chosen|picked|selected|sent|used)\b/i,
+  /\bis (the )?correct\b/i,
+  // "what/which is wrong" es instrucción legítima de un slide de review
+  // ("mark what is wrong"); lo evaluativo es "Option B is wrong".
+  /\b(?<!what )(?<!which )is (incorrect|wrong)\b/i,
+  /\bthe (best|worst|right|wrong) (option|version|answer|choice|response|pick)\b/i,
+  /\b(correct|expected|recommended) (option|answer|version|response|choice)\b/i,
+  /\bnot the (segment|batch) to (send|use|pick|choose)\b/i,
+  /\b(is|are)( not)? (fit|safe|cleared|approved) (for|to) send(ing)?\b/i,
+  /\bchoosing (it|this one|that one) (is|would be)\b/i,
+  /\b(violates|breaks|breaches) (the )?(rule|policy)\b/i,
   // Reveladores en narrativa/prompt: telegrafían la acción correcta o delatan un
   // distractor antes de decidir (van también sobre slide.body, no solo opciones).
-  /\bsi (lo |la )?(hiciste|escalaste|exclu[íi]ste|limpiaste|validaste|filtraste|elegiste|clasificaste|marcaste|segmentaste|separaste)\w* (bien|correctamente|como debe)/i,
-  /\b(y )?(uno|una|el|la|los|las)\s+\w*\s*que no (se debe|debes|hay que|deber[íi]as?) (tocar|elegir|usar|enviar|incluir|mandar)/i,
-  /\baqu[íi] no (aparece|aparecen|sale|salen|debe aparecer|hay) (ning[úu]n|ninguna|nadie|nada)/i,
+  /\bif you \w+(ed)? (it |them |this |everything )?(right|correctly|properly|as you should)\b/i,
+  /\bone (that|you) (must|should) not (touch|be touched|choose|be chosen|use|be used|send|be sent|include|be included)\b/i,
+  /\b(nothing|no one|nobody|none of (them|those))[^.]{0,50}\b(appears?|shows? up) here\b/i,
 ];
 
 // Títulos que NOMBRAN la falla del distractor (telegrafían sin decir "error").
 // Solo se aplican a títulos de opción, no a cuerpos (un cuerpo puede describir
 // contenido sensible legítimamente; un título que lo etiqueta es spoiler).
 const TITLE_SPOILER_PATTERNS = [
-  /\b(con|tono de) presi[oó]n\b/i,
-  /\bsin enlace (de baja|para darse de baja)\b/i,
-  /\bcon dato(s)? (de salud|sensible(s)?|personal(es)?)\b/i,
-  /\bsin consentimiento\b/i,
-  /\bpromete (monto|reembolso|resultado|plazo|descuento|fecha)\b/i,
-  /\b(cifra|dato|monto|n[úu]mero)s? inventad[oa]s?\b/i,
+  /\b(with|under) pressure\b/i,
+  /\bwithout (an? )?(unsubscribe|opt[- ]out) (link|option)\b/i,
+  /\bwith (health|sensitive|personal|medical) (data|info|information|details?)\b/i,
+  /\bwithout consent\b/i,
+  /\bpromises (a |an |the )?(amount|refund|result|deadline|discount|date|timeline)\b/i,
+  /\b(made[- ]up|invented|fabricated|unverified) (figure|number|amount|stat|data)s?\b/i,
   // Adjetivos de tono con valencia: como TÍTULO de una opción telegrafían cuál
   // "suena bien/mal" cuando el tono es parte de lo evaluado. (Neutros como
-  // "directo", "formal", "breve", "sobrio" NO entran: describen forma, no calidad.)
-  /^\s*(tono )?(agresivo|culposo|amenazante|insistente|cordial|c[áa]lido|urgente|apremiante|hostil|brusco)\s*$/i,
+  // "direct", "formal", "brief", "measured" NO entran: describen forma, no calidad.)
+  /^\s*(tone[:\s]+)?(aggressive|guilt[- ]tripp(y|ing)|threatening|pushy|insistent|cordial|warm|urgent|hostile|harsh|nagging)( tone)?\s*$/i,
 ];
 
 // Placeholders de campos de texto: son la PISTA de formato del input, no la
-// respuesta. Un placeholder que da la instrucción/respuesta ("no uses la
-// dirección", "quita el monto") spoilea lo que el participante debe escribir.
+// respuesta. Un placeholder que da la instrucción/respuesta ("do not use the
+// address", "remove the amount") spoilea lo que el participante debe escribir.
 const PLACEHOLDER_SPOILER_PATTERNS = [
-  /\bno (uses|incluyas|menciones|confirmes|inventes|pongas|env[íi]es|des|pases)\b/i,
-  /\b(quita|elimina|borra|excluye) (la|el|los|las|cualquier|todo|tu)\b/i,
-  /\btrata el nombre\b/i,
-  /\busa un saludo gen[ée]rico\b/i,
-  /\bbaja (el|la) (tono|urgencia)\b/i,
+  /\b(do not|don't|never) (use|include|mention|confirm|invent|add|send|give|share|promise)\b/i,
+  /\b(remove|delete|drop|exclude|strip|leave out) (the|any|all|your|their)\b/i,
+  /\btreat the name\b/i,
+  /\buse a generic greeting\b/i,
+  /\b(lower|soften|tone down|dial back) the (tone|urgency|pressure)\b/i,
 ];
 
 function checkPlaceholder(str, where) {
@@ -145,31 +156,31 @@ function checkSpoiler(str, where, isTitle = false) {
 // patrones reales (deben marcar los spoilers y dejar pasar el copy limpio).
 function runSpoilerSelfTest() {
   const fixtures = [
-    // [texto, esTitulo, debeMarcar]
-    ["Cumple todo", false, true],
-    ["No es segmento de envío: elegirlo es el error", false, true],
-    ["No se debe", false, true],
-    ["Respuesta esperada", false, true],
-    ["Respuesta recomendada", false, true],
-    ["Opción recomendada", false, true],
-    ["Con presión", true, true],
-    ["Tono de presión", true, true],
-    ["Con dato de salud", true, true],
-    ["Promete monto", true, true],
-    ["Montos inventados", true, true],
-    ["Insistente", true, true],
+    // [texto, esTitulo, debeMarcar] · en inglés US, espejo de los originales
+    ["Meets all the requirements", false, true],
+    ["Not the segment to send: choosing it is the mistake", false, true],
+    ["Should not be chosen", false, true],
+    ["Expected answer", false, true],
+    ["Recommended answer", false, true],
+    ["Recommended option", false, true],
+    ["With pressure", true, true],
+    ["Under pressure", true, true],
+    ["With health data", true, true],
+    ["Promises a refund", true, true],
+    ["Invented figures", true, true],
+    ["Insistent", true, true],
     ["Cordial", true, true],
     // reveladores en narrativa/prompt
-    ["Si escalaste bien, aquí no aparece ningún reclamo sin evidencia.", false, true],
-    ["Cuatro lotes posibles (y uno que no se debe tocar aún).", false, true],
-    ["Si excluiste bien, aquí no aparece nadie que pidió baja.", false, true],
+    ["If you escalated correctly, no claim without evidence appears here.", false, true],
+    ["Four possible batches (and one that should not be touched yet).", false, true],
+    ["If you excluded the opt-outs, no one who asked to leave shows up here.", false, true],
     // limpios (NO deben marcar)
-    ["Te contactaremos con el resultado en un máximo de 72 horas.", false, false],
-    ["Disponibilidad", true, false],
-    ["Versión 1", true, false],
-    ["Con evidencia", true, false],
+    ["We will get back to you with the outcome within 72 hours.", false, false],
+    ["Availability", true, false],
+    ["Version 1", true, false],
+    ["With evidence", true, false],
     ["Formal", true, false],
-    ["El reclamo de robo de $3,400 que todavía no tiene evidencia adjunta.", false, false],
+    ["The $3,400 USD theft claim that still has no evidence attached.", false, false],
   ];
   let fail = 0;
   for (const [str, isTitle, expect] of fixtures) {

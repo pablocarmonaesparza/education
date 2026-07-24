@@ -31,23 +31,23 @@ interface TimelineEvent {
 
 const DEFAULT_EVENTS: TimelineEvent[] = [
   {
-    when: "L-3",
-    what: "Cliente reportó caída de conversión vía email",
-    who: "Mariana Robles · Aurora Retail",
+    when: "D-3",
+    what: "Customer reported a conversion drop by email",
+    who: "Dana Whitfield · Aurora Retail",
   },
   {
-    when: "L-2",
-    what: "Equipo de soporte escaló al área de marketing",
-    who: "Tier 2 · Soporte",
+    when: "D-2",
+    what: "Support escalated to marketing",
+    who: "Tier 2 · Support",
   },
   {
-    when: "L-1",
-    what: "Manager pidió análisis con datos del último trimestre",
-    who: "Lucía Beltrán · Head of Marketing",
+    when: "D-1",
+    what: "Manager asked for analysis using last quarter's data",
+    who: "Laura Bennett · Head of Marketing",
   },
   {
-    when: "Hoy",
-    what: "Tienes que decidir cómo responder al cliente antes de las 18:00",
+    when: "Today",
+    what: "You have to decide how to answer the customer before 6:00 PM",
     emphasis: true,
   },
 ];

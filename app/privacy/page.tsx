@@ -4,24 +4,25 @@ import { AppleLink } from "@/components/simulador/apple";
 import "../(app)/simulador.css";
 
 /**
- * /privacy — Aviso de privacidad.
+ * /privacy — Privacy notice.
  *
  * El contenido NO vive aquí: se renderiza desde la fuente canónica
- * `lib/simulador/copy/legal.ts` (legalCopy.privacy_policy, versión por
- * jurisdicción MX + CO). Editar el texto legal se hace en ese archivo.
+ * `lib/simulador/copy/legal.ts` (legalCopy.privacy_policy.US). Editar el texto
+ * legal se hace en ese archivo.
  *
- * Layout de documento: header con eyebrow + título display + intro, cada
- * jurisdicción como una "parte" numerada, y secciones con número en acento
- * para dar jerarquía (no muro de texto). Sin contornos: dividers + bloques
- * de surface.
+ * Layout de documento: header con eyebrow + título display + intro, y secciones
+ * con número en acento para dar jerarquía (no muro de texto). Sin contornos:
+ * dividers + bloques de surface.
+ *
+ * Cambio 2026-07-16 (pivot a EEUU): antes esto mapeaba dos jurisdicciones
+ * (MX + CO) con un badge numerado por cada una. Ahora hay una sola (US), así
+ * que el wrapper de jurisdicción se eliminó — un "1. Estados Unidos" solitario
+ * era ruido. Si algún día vuelve a haber >1 jurisdicción, recuperar el map.
  */
 
 const { privacy_policy: pp, footer_disclaimer } = legalCopy;
 
-const JURISDICTIONS = [
-  { label: "México", policy: pp.MX },
-  { label: "Colombia", policy: pp.CO },
-];
+const policy = pp.US;
 
 const isEmail = (s: string) =>
   /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(s);
@@ -51,52 +52,41 @@ export default function PrivacyPage() {
             Legal
           </span>
           <h1 className="display display-tight ts-display sm:ts-display-lg leading-[1.05] text-[var(--text-primary)]">
-            Aviso de privacidad
+            Privacy notice
           </h1>
           <p className="max-w-[58ch] ts-body leading-[1.6] text-[var(--text-secondary)]">
-            Cómo Itera recolecta, usa y protege tus datos personales. Este aviso
-            cubre México (LFPDPPP) y Colombia (Ley 1581); aplica el marco de tu
-            jurisdicción.
+            How Itera collects, uses, and protects your personal information,
+            and what your report is and is not used for.
           </p>
           <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
-            Última actualización · {pp.MX.last_updated}
+            Last updated · {policy.last_updated}
           </p>
         </header>
 
-        {/* ============ Jurisdictions ============ */}
-        {JURISDICTIONS.map(({ label, policy }, ji) => (
-          <section key={label} className="mt-16">
-            <div className="flex items-center gap-3 border-b border-[var(--hairline)] pb-4">
-              <span className="grid h-8 w-8 flex-none place-items-center rounded-full bg-[var(--surface-3)] ts-caption-1 font-semibold tabular-nums text-[var(--text-secondary)]">
-                {ji + 1}
-              </span>
-              <h2 className="ts-title-3 font-semibold text-[var(--text-primary)]">
-                {label}
-              </h2>
-            </div>
-            <p className="mt-3 ts-subhead leading-[1.55] text-[var(--text-tertiary)]">
-              {policy.framework_citation}
-            </p>
+        {/* ============ Sections ============ */}
+        <section className="mt-16">
+          <p className="border-b border-[var(--hairline)] pb-6 ts-subhead leading-[1.55] text-[var(--text-tertiary)]">
+            {policy.framework_citation}
+          </p>
 
-            <div className="mt-8 flex flex-col gap-7">
-              {policy.sections.map((s, i) => (
-                <div key={s.title} className="flex gap-4">
-                  <span className="mt-0.5 w-6 flex-none ts-caption-1 font-semibold tabular-nums text-[var(--accent)]">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <div className="flex-1">
-                    <h3 className="ts-headline font-semibold text-[var(--text-primary)]">
-                      {s.title}
-                    </h3>
-                    <p className="mt-1.5 ts-body leading-[1.6] text-[var(--text-secondary)]">
-                      {withEmails(s.body)}
-                    </p>
-                  </div>
+          <div className="mt-8 flex flex-col gap-7">
+            {policy.sections.map((s, i) => (
+              <div key={s.title} className="flex gap-4">
+                <span className="mt-0.5 w-6 flex-none ts-caption-1 font-semibold tabular-nums text-[var(--accent)]">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="flex-1">
+                  <h2 className="ts-headline font-semibold text-[var(--text-primary)]">
+                    {s.title}
+                  </h2>
+                  <p className="mt-1.5 ts-body leading-[1.6] text-[var(--text-secondary)]">
+                    {withEmails(s.body)}
+                  </p>
                 </div>
-              ))}
-            </div>
-          </section>
-        ))}
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* ============ Footer disclaimer ============ */}
         <div className="mt-16 rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-5">

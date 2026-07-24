@@ -90,16 +90,19 @@ const sizeClass: Record<AppleIconSize, string> = {
 export function AppleIcon({
   name,
   size = "md",
+  stroke = 2,
   className,
 }: {
   name: AppleIconName;
   size?: AppleIconSize;
+  /** Grosor de trazo; default 2 (lenguaje v2 — el sistema viejo usaba 1.5) */
+  stroke?: number;
   className?: string;
 }) {
   const Icon = icons[name];
   return (
     <Icon
-      stroke={1.5}
+      stroke={stroke}
       aria-hidden="true"
       className={cn("shrink-0", sizeClass[size], className)}
     />

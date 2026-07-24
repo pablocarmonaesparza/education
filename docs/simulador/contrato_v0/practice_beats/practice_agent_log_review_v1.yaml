@@ -7,12 +7,12 @@ practice_beat:
   triggered_by_gap: [missing_agent_monitoring]
   duration_max_seconds: 300
   principle_card:
-    headline: "los logs son parte del producto"
-    body: "si no puedes auditar lo que hizo el agente, no puedes operarlo en produccion."
+    headline: "Logs are part of the product"
+    body: "If you cannot audit what the agent did, you cannot run it in production."
   practice_exercise:
     type: log_review
-    prompt: "Marca retry loops, datos sensibles y acciones sin owner en logs de dry-run."
-  completion_criteria: "detecta al menos 3 eventos bloqueantes."
+    prompt: "Mark retry loops, sensitive data, and actions with no owner in dry-run logs."
+  completion_criteria: "Catches at least 3 blocking events."
   exit:
     contributes_to_resim_score: true
 

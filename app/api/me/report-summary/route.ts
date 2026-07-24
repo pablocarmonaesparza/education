@@ -99,7 +99,7 @@ export async function GET() {
       .maybeSingle();
     if (!simUser) {
       return NextResponse.json(
-        { error: "Bridge user no inicializado. Re-loguéate." },
+        { error: "Bridge user not initialized. Sign in again." },
         { status: 500 },
       );
     }
@@ -109,7 +109,7 @@ export async function GET() {
     // sembrado (QA realista). `isDevBypassActive` es false en producción.
     const cookieStore = await cookies();
     if (!isDevBypassActive(cookieStore.get("itera_dev_bypass")?.value)) {
-      return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+      return NextResponse.json({ error: "Not signed in." }, { status: 401 });
     }
     const { data: demoUser } = await admin
       .schema("simulador")

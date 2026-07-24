@@ -15,12 +15,20 @@
  *   200 {
  *     team: {id, name} | null,
  *     sprint: {id, name, start_date, status} | null,
- *     members: [{ ... }],
+ *     members: [{ ...,
+ *       readiness_score,            // 0-100 | null (promedio de bandas por dimensión)
+ *       practice_completed_total,   // attempts completed del user (histórico)
+ *       practice_completed_week,    // idem, completados en los últimos 7 días
+ *       last_active_at              // ISO | null (última actividad: session o attempt)
+ *     }],
  *     aggregate: {
  *       total, completed, in_progress, not_started,
  *       readiness_by_band: {A, M, B},
  *       dimensions_avg: {contexto, datos, ejecucion_ia, validacion, juicio, impacto},
- *       risk_events_total, days_left, completion_pct
+ *       risk_events_total, days_left, completion_pct,
+ *       activity_by_week,           // 8 semanas lunes-UTC: {week_start, assessments, practice}
+ *       practice_completed_total, practice_completed_week,
+ *       active_this_week            // members con last_active_at en los últimos 7 días
  *     }
  *   }
  *   401 { error }
@@ -69,6 +77,21 @@ function bandToScore(b: "A" | "M" | "B" | null | undefined): number | null {
   return null;
 }
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+// Semanas con inicio LUNES en UTC: floor de una fecha al lunes de su semana.
+function floorToMondayUTC(d: Date): Date {
+  const daysSinceMonday = (d.getUTCDay() + 6) % 7;
+  return new Date(
+    Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - daysSinceMonday),
+  );
+}
+
+// YYYY-MM-DD en UTC.
+function formatDayUTC(d: Date): string {
+  return d.toISOString().slice(0, 10);
+}
+
 function emptyDimensionTotals(): Record<string, { sum: number; count: number }> {
   return Object.fromEntries(
     DIMENSIONS.map((dimension) => [dimension.id, { sum: 0, count: 0 }]),
@@ -100,7 +123,7 @@ export async function GET() {
     if (isDevBypassActive(cookieStore.get("itera_dev_bypass")?.value)) {
       return NextResponse.json(getMockDashboard());
     }
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   // Bridge user — usamos admin client porque PostgREST puede no exponer
@@ -125,7 +148,7 @@ export async function GET() {
   if (!simUser) {
     return NextResponse.json(
       {
-        error: "Bridge user no inicializado. Re-loguéate.",
+        error: "Bridge user not initialized. Sign in again.",
       },
       { status: 500 },
     );
@@ -248,6 +271,14 @@ export async function GET() {
     .select("id, full_name, email")
     .in("id", userIds.length > 0 ? userIds : ["00000000-0000-0000-0000-000000000000"]);
 
+  // Practice attempts del team — actividad de práctica además del assessment.
+  // Sin filtro de fecha: total histórico y ventana semanal se computan en JS.
+  const { data: practiceAttempts } = await admin
+    .schema("simulador")
+    .from("practice_attempts")
+    .select("user_id, status, started_at, completed_at")
+    .in("user_id", userIds.length > 0 ? userIds : ["00000000-0000-0000-0000-000000000000"]);
+
   // Sessions del sprint
   const { data: sessions } = await admin
     .schema("simulador")
@@ -303,6 +334,63 @@ export async function GET() {
     };
   }
 
+  // Actividad: last_active_at por user + buckets semanales.
+  // 8 semanas lunes-UTC, de la más vieja a la actual (la última es la corriente).
+  const nowMs = Date.now();
+  const weekAgoMs = nowMs - 7 * DAY_MS;
+  const currentMonday = floorToMondayUTC(new Date(nowMs));
+  const weekBuckets: {
+    week_start: string;
+    assessments: number;
+    practice: number;
+  }[] = [];
+  const weekIndexByStart: Record<string, number> = {};
+  for (let i = 7; i >= 0; i--) {
+    const weekStart = formatDayUTC(
+      new Date(currentMonday.getTime() - i * 7 * DAY_MS),
+    );
+    weekIndexByStart[weekStart] = weekBuckets.length;
+    weekBuckets.push({ week_start: weekStart, assessments: 0, practice: 0 });
+  }
+
+  const lastActiveByUser: Record<string, number> = {};
+  const trackActivity = (userId: string, iso: string | null) => {
+    if (!iso) return;
+    const t = new Date(iso).getTime();
+    if (Number.isNaN(t)) return;
+    const prev = lastActiveByUser[userId];
+    if (prev === undefined || t > prev) lastActiveByUser[userId] = t;
+  };
+
+  for (const s of sessions ?? []) {
+    const completedAt = (s.completed_at as string | null) ?? null;
+    trackActivity(s.user_id as string, (s.started_at as string | null) ?? null);
+    trackActivity(s.user_id as string, completedAt);
+    if (completedAt) {
+      const idx =
+        weekIndexByStart[formatDayUTC(floorToMondayUTC(new Date(completedAt)))];
+      if (idx !== undefined) weekBuckets[idx].assessments += 1;
+    }
+  }
+
+  const practiceByUser: Record<string, { total: number; week: number }> = {};
+  for (const a of practiceAttempts ?? []) {
+    const uid = a.user_id as string;
+    const completedAt = (a.completed_at as string | null) ?? null;
+    trackActivity(uid, (a.started_at as string | null) ?? null);
+    trackActivity(uid, completedAt);
+    if ((a.status as string) !== "completed") continue;
+    const stats = practiceByUser[uid] ?? { total: 0, week: 0 };
+    stats.total += 1;
+    if (completedAt) {
+      if (new Date(completedAt).getTime() >= weekAgoMs) stats.week += 1;
+      const idx =
+        weekIndexByStart[formatDayUTC(floorToMondayUTC(new Date(completedAt)))];
+      if (idx !== undefined) weekBuckets[idx].practice += 1;
+    }
+    practiceByUser[uid] = stats;
+  }
+
   // Build members list + aggregate
   const dimensionTotals = emptyDimensionTotals();
   let riskEventsTotal = 0;
@@ -321,6 +409,7 @@ export async function GET() {
     const sess = sessionByUser[u.id as string] ?? null;
     const report = sess ? reportBySession[sess.id] : undefined;
     let readinessBand: "A" | "M" | "B" | null = null;
+    let readinessScore: number | null = null;
     let durationMin: number | null = null;
     let dimensionBands: Record<string, "A" | "M" | "B"> | null = null;
     let recommendationAction: ManagerAction | null = null;
@@ -333,11 +422,16 @@ export async function GET() {
       const scores = normalizedDimensions
         .map((d) => bandToScore(d.band))
         .filter((s): s is number => s !== null);
-      const avg = scores.length
-        ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
-        : 0;
-      readinessBand = bandFromScore100(avg);
-      readinessByBand[readinessBand]++;
+      // Sin ninguna banda válida no hay score (null, no 0): un 0 arrastraría
+      // banda "B" fabricada al aggregate para un report vacío.
+      if (scores.length > 0) {
+        const avg = Math.round(
+          scores.reduce((a, b) => a + b, 0) / scores.length,
+        );
+        readinessScore = avg;
+        readinessBand = bandFromScore100(avg);
+        readinessByBand[readinessBand]++;
+      }
 
       // Acumular por dimensión
       for (const d of normalizedDimensions) {
@@ -375,6 +469,8 @@ export async function GET() {
       durationMin = Math.round(ms / 60000);
     }
 
+    const lastActiveMs = lastActiveByUser[u.id as string];
+
     return {
       user_id: u.id as string,
       full_name: (u.full_name as string | null) ?? null,
@@ -383,12 +479,17 @@ export async function GET() {
       session_status: sess?.status ?? "not_started",
       session_duration_min: durationMin,
       readiness_band: readinessBand,
+      readiness_score: readinessScore,
       dimension_bands: dimensionBands,
       recommendation_action: recommendationAction,
       risk_events_count: riskEventsCount,
       high_risk_events_count: highRiskEventsCount,
       report_id: report?.id ?? null,
       report_status: report?.status ?? null,
+      practice_completed_total: practiceByUser[u.id as string]?.total ?? 0,
+      practice_completed_week: practiceByUser[u.id as string]?.week ?? 0,
+      last_active_at:
+        lastActiveMs !== undefined ? new Date(lastActiveMs).toISOString() : null,
     };
   });
 
@@ -408,6 +509,21 @@ export async function GET() {
   for (const [k, v] of Object.entries(dimensionTotals)) {
     dimensionsAvg[k] = v.count > 0 ? Math.round(v.sum / v.count) : 0;
   }
+
+  // Actividad agregada del team.
+  const practiceCompletedTotal = memberRows.reduce(
+    (acc, m) => acc + m.practice_completed_total,
+    0,
+  );
+  const practiceCompletedWeek = memberRows.reduce(
+    (acc, m) => acc + m.practice_completed_week,
+    0,
+  );
+  const activeThisWeek = memberRows.filter(
+    (m) =>
+      m.last_active_at !== null &&
+      new Date(m.last_active_at).getTime() >= weekAgoMs,
+  ).length;
 
   const today = new Date();
   const endDate = sprint.end_date ? new Date(sprint.end_date) : null;
@@ -444,6 +560,10 @@ export async function GET() {
       pending_review_count: pendingReviewCount,
       recommendation_counts: recommendationCounts,
       days_left: daysLeft,
+      activity_by_week: weekBuckets,
+      practice_completed_total: practiceCompletedTotal,
+      practice_completed_week: practiceCompletedWeek,
+      active_this_week: activeThisWeek,
     },
   });
 }
@@ -463,6 +583,14 @@ function emptyAggregate() {
     pending_review_count: 0,
     recommendation_counts: { pilotar: 0, entrenar: 0, pausar: 0, escalar: 0 },
     days_left: null,
+    activity_by_week: [] as {
+      week_start: string;
+      assessments: number;
+      practice: number;
+    }[],
+    practice_completed_total: 0,
+    practice_completed_week: 0,
+    active_this_week: 0,
   };
 }
 

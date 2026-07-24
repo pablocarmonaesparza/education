@@ -1,4 +1,22 @@
 /**
+ * ⚠️ CÓDIGO MUERTO — NO TRADUCIDO AL INGLÉS (pivot US, 2026-07-16).
+ *
+ * Este archivo tiene CERO importadores en código. El claim de abajo ("Imports
+ * desde app/(public)/page.tsx") es FALSO: la homepage hardcodea sus strings en
+ * JSX y nunca se cableó a `landingCopy` (ver docs/archive/coord_audits/
+ * copy_imports_status.md).
+ *
+ * Por eso queda en español neutro LATAM: traducirlo sería trabajo sobre copy que
+ * no se renderiza, y el contenido además está anclado a research LATAM
+ * (adopción MX/CO, pricing vs competidores LATAM) que el pivot a EEUU invalida.
+ *
+ * Antes de reutilizarlo hay que decidir: (a) borrarlo, o (b) re-escribirlo para
+ * EEUU desde el glosario (docs/simulador/front/copy/00_EN_GLOSSARY.md) — no es
+ * una traducción, es contenido nuevo. NO cablearlo a la landing tal como está:
+ * publicaría copy en español en un sitio de EEUU.
+ *
+ * ---
+ *
  * Copy versionado de la landing pública (/).
  *
  * Consolida 5 decisiones producto del board:

@@ -71,7 +71,7 @@ export async function GET() {
   if (beatErr) {
     console.error("[admin/lecciones] beats list failed", beatErr);
     return NextResponse.json(
-      { error: "Error listando lecciones." },
+      { error: "Could not list practices." },
       { status: 500 },
     );
   }

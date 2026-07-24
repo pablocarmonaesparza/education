@@ -42,20 +42,32 @@ const DIMENSION_ORDER: ExerciseBlockDimension[] = [
 ];
 
 const DIMENSION_LABELS: Record<ExerciseBlockDimension, string> = {
-  contexto: "Contexto",
-  datos: "Datos",
-  ejecucion_ia: "Ejecución con IA",
-  validacion: "Validación",
-  juicio: "Juicio",
-  impacto: "Impacto",
+  contexto: "Context",
+  datos: "Data handling",
+  ejecucion_ia: "AI execution",
+  validacion: "Verification",
+  juicio: "Judgment",
+  impacto: "Impact",
 };
 
 const KIND_LABELS: Record<DemoSlideKind, string> = {
-  cover: "Portada",
-  reading: "Lectura",
-  exercise: "Ejercicio",
-  closing: "Cierre",
+  cover: "Cover",
+  reading: "Reading",
+  exercise: "Exercise",
+  closing: "Closing",
 };
+
+// Capa de display de las acciones del manager. Los valores de BD
+// (pilotar/entrenar/pausar/escalar) NO cambian — solo se localizan aquí.
+const MANAGER_ACTION_LABELS: Record<string, string> = {
+  pilotar: "Pilot",
+  entrenar: "Coach",
+  pausar: "Pause",
+  escalar: "Escalate",
+};
+
+const managerActionLabel = (action: string) =>
+  MANAGER_ACTION_LABELS[action] ?? action;
 
 // Caso "marketing_dirty_data_relaunch" corre hardcodeado y sin login en
 // /case-demo (ver app/case-demo/case-data.generated.ts, CASE_ID coincide).
@@ -91,7 +103,7 @@ function DimensionChips({ dims }: { dims: ExerciseBlockDimension[] }) {
   if (dims.length === 0) {
     return (
       <span className="ts-caption-1 text-[var(--text-tertiary)]">
-        sin dimensión directa
+        no direct dimension
       </span>
     );
   }
@@ -115,11 +127,11 @@ function ModelLegend({
 }) {
   return (
     <AppleCard variant="default" padding="lg">
-      <div className="eyebrow">Modelo</div>
+      <div className="eyebrow">Model</div>
       <h2 className="ts-title-3 mt-1 font-semibold text-[var(--text-primary)]">
         {kind === "educativo"
-          ? "Motor educativo · broadcast, formativo"
-          : "Motor operativo · bespoke, bajo presión"}
+          ? "Practice engine · broadcast, formative"
+          : "Assessment engine · bespoke, under pressure"}
       </h2>
       <div className="mt-4 flex flex-wrap gap-1.5">
         {DIMENSION_ORDER.map((d) => (
@@ -173,51 +185,51 @@ function EducativeModuleCard() {
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <AppleBadge tone="neutral">{MODULE.meta.level}</AppleBadge>
-            <AppleBadge tone="success">demo jugable</AppleBadge>
+            <AppleBadge tone="success">playable demo</AppleBadge>
           </div>
           <h3 className="ts-title-3 mt-2 font-semibold text-[var(--text-primary)]">
             {MODULE.meta.toolName}
           </h3>
           <p className="mt-1 ts-subhead text-[var(--text-secondary)]">
             {MODULE.meta.topic} · {MODULE.meta.estimatedMinutes} min ·{" "}
-            {MODULE.slides.length} pantallas
+            {MODULE.slides.length} screens
           </p>
         </div>
-        <AppleButtonLink href="/aprender-demo">Jugar</AppleButtonLink>
+        <AppleButtonLink href="/aprender-demo">Play</AppleButtonLink>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <div className="ts-footnote text-[var(--text-tertiary)]">
-            Sello educativo
+            Learning seal
           </div>
           <AppleProgress
             value={MODULE.seals.educativoAfter}
-            aria-label="Sello educativo"
+            aria-label="Learning seal"
             classNames={{ base: "mt-1.5" }}
           />
           <div className="mt-1 ts-caption-1 text-[var(--text-tertiary)]">
-            {MODULE.seals.educativoBefore}% → {MODULE.seals.educativoAfter}% al
-            completar este módulo
+            {MODULE.seals.educativoBefore}% → {MODULE.seals.educativoAfter}% on
+            completing this practice
           </div>
         </div>
         <div>
           <div className="ts-footnote text-[var(--text-tertiary)]">
-            Sello práctico
+            Practice seal
           </div>
           <AppleProgress
             value={MODULE.seals.practico}
-            aria-label="Sello práctico"
+            aria-label="Practice seal"
             classNames={{ base: "mt-1.5" }}
           />
           <div className="mt-1 ts-caption-1 text-[var(--text-tertiary)]">
-            no se mueve con este módulo, solo con casos reales
+            does not move with this practice, only with real cases
           </div>
         </div>
       </div>
 
       <div>
-        <div className="eyebrow">Anatomía</div>
+        <div className="eyebrow">Anatomy</div>
         <ul className="mt-2">
           {MODULE.slides.map((slide, i) => (
             <EducativeSlideRow key={slide.id} slide={slide} index={i} />
@@ -242,7 +254,7 @@ function OperativeCaseCard({ playableCase }: { playableCase: PlayableCase }) {
           <div className="flex flex-wrap items-center gap-2">
             {meta.level && <AppleBadge tone="neutral">{meta.level}</AppleBadge>}
             {meta.profile && <AppleBadge tone="neutral">{meta.profile}</AppleBadge>}
-            <AppleBadge tone="success">ensamblado</AppleBadge>
+            <AppleBadge tone="success">assembled</AppleBadge>
           </div>
           <h3 className="ts-title-3 mt-2 font-semibold text-[var(--text-primary)]">
             {cover?.title ?? playableCase.caseId}
@@ -252,23 +264,25 @@ function OperativeCaseCard({ playableCase }: { playableCase: PlayableCase }) {
           </p>
           <p className="mt-2 ts-subhead text-[var(--text-secondary)]">
             {meta.estimated_minutes ?? "—"} min · {playableCase.totalSlides}{" "}
-            pantallas · {playableCase.sections.length} secciones
+            screens · {playableCase.sections.length} sections
           </p>
         </div>
         {playHref ? (
-          <AppleButtonLink href={playHref}>Jugar</AppleButtonLink>
+          <AppleButtonLink href={playHref}>Play</AppleButtonLink>
         ) : null}
       </div>
 
       {outcome.expected_action && (
         <div className="flex flex-wrap items-center gap-2">
           <span className="ts-footnote text-[var(--text-tertiary)]">
-            Acción esperada del manager
+            Expected manager action
           </span>
-          <AppleBadge tone="accent">{outcome.expected_action}</AppleBadge>
+          <AppleBadge tone="accent">
+            {managerActionLabel(outcome.expected_action)}
+          </AppleBadge>
           {(outcome.alternatives ?? []).map((alt) => (
             <AppleBadge key={alt} tone="neutral">
-              {alt}
+              {managerActionLabel(alt)}
             </AppleBadge>
           ))}
         </div>
@@ -276,9 +290,9 @@ function OperativeCaseCard({ playableCase }: { playableCase: PlayableCase }) {
 
       <div className="flex flex-wrap items-center gap-2">
         <span className="ts-footnote text-[var(--text-tertiary)]">
-          Sello práctico
+          Practice seal
         </span>
-        <AppleBadge tone="accent">se llena al completar este caso</AppleBadge>
+        <AppleBadge tone="accent">fills in on completing this case</AppleBadge>
       </div>
 
       <button
@@ -286,7 +300,7 @@ function OperativeCaseCard({ playableCase }: { playableCase: PlayableCase }) {
         onClick={() => setOpen((v) => !v)}
         className="ts-subhead text-[var(--text-tertiary)] underline underline-offset-2 transition-colors hover:text-[var(--text-primary)]"
       >
-        {open ? "Ocultar anatomía" : "Ver anatomía"}
+        {open ? "Hide anatomy" : "Show anatomy"}
       </button>
 
       {open && (
@@ -336,17 +350,17 @@ function GoldenCaseStub() {
   return (
     <div className="rounded-[var(--radius-lg)] border border-dashed border-[var(--hairline-strong)] p-5">
       <div className="flex flex-wrap items-center gap-2">
-        <AppleBadge tone="warning">contrato_v0 · no ensamblado</AppleBadge>
+        <AppleBadge tone="warning">contrato_v0 · not assembled</AppleBadge>
       </div>
       <h3 className="ts-callout mt-2 font-semibold text-[var(--text-primary)]">
         sales_agent_followup_pipeline
       </h3>
       <p className="mt-1 ts-footnote text-[var(--text-secondary)] leading-[1.5]">
-        Caso de referencia (&quot;golden case&quot;) que vive en
-        docs/simulador/contrato_v0/casos/, una pista distinta a los tres casos
-        ensamblados de abajo. No está en cases-registry.generated.ts todavía,
-        así que esta consola no puede mostrar su anatomía ni un botón Jugar
-        sin inventar datos.
+        Reference case (&quot;golden case&quot;) that lives in
+        docs/simulador/contrato_v0/casos/, a different track from the three
+        assembled cases below. It is not in cases-registry.generated.ts yet, so
+        this console cannot show its anatomy or a Play button without inventing
+        data.
       </p>
     </div>
   );
@@ -357,30 +371,30 @@ function EducativeView() {
     <div className="space-y-8">
       <ModelLegend kind="educativo">
         <LegendItem>
-          6 dimensiones canónicas, señal formativa (con ayuda).
+          6 canonical dimensions, formative signal (with help).
         </LegendItem>
         <LegendItem>
-          + sello educativo: sube con cada módulo completado, no se llena con
-          casos prácticos.
+          + learning seal: goes up with each practice completed, does not fill
+          from real cases.
         </LegendItem>
         <LegendItem>
-          Formativo: el feedback aparece después de responder, nunca antes.
+          Formative: feedback appears after answering, never before.
         </LegendItem>
         <LegendItem>
-          Broadcast: un módulo sirve para todas las empresas, no es bespoke.
+          Broadcast: one practice serves every organization, it is not bespoke.
         </LegendItem>
         <LegendItem>
-          Frescura: se dispara con cada update real del mercado de IA.
+          Freshness: triggered by every real AI market update.
         </LegendItem>
       </ModelLegend>
 
       <div>
         <div className="flex items-baseline justify-between gap-4">
           <h2 className="ts-title-3 font-semibold text-[var(--text-primary)]">
-            Módulos
+            Practices
           </h2>
           <span className="ts-footnote text-[var(--text-tertiary)]">
-            1 módulo
+            1 practice
           </span>
         </div>
         <div className="mt-4">
@@ -396,30 +410,30 @@ function OperativeView() {
     <div className="space-y-8">
       <ModelLegend kind="operativo">
         <LegendItem>
-          6 dimensiones canónicas, señal comprobada (bajo presión, sin ayuda).
+          6 canonical dimensions, proven signal (under pressure, no help).
         </LegendItem>
         <LegendItem>
-          + sello práctico: marca de confianza sobre las 6 dimensiones, sube
-          solo con casos reales.
+          + practice seal: a trust mark across the 6 dimensions, moves only with
+          real cases.
         </LegendItem>
         <LegendItem>
-          Rúbrica: rubric_case_factory_v1 (bandas por dimensión).
+          Rubric: rubric_case_factory_v1 (bands per dimension).
         </LegendItem>
         <LegendItem>
-          Acciones del manager: pilotar, entrenar, pausar, escalar.
+          Manager actions: Pilot, Coach, Pause, Escalate.
         </LegendItem>
         <LegendItem>
-          Bespoke: un caso por empresa, no se reusa entre clientes.
+          Bespoke: one case per organization, never reused across customers.
         </LegendItem>
       </ModelLegend>
 
       <div>
         <div className="flex items-baseline justify-between gap-4">
           <h2 className="ts-title-3 font-semibold text-[var(--text-primary)]">
-            Casos
+            Cases
           </h2>
           <span className="ts-footnote text-[var(--text-tertiary)]">
-            {ASSEMBLED_CASES.length} ensamblados + 1 fuera de registro
+            {ASSEMBLED_CASES.length} assembled + 1 outside the registry
           </span>
         </div>
         <div className="mt-4 space-y-5">
@@ -434,8 +448,8 @@ function OperativeView() {
 }
 
 const TABS: AppleTabItem[] = [
-  { id: "educativo", label: "Educativo", badge: 1 },
-  { id: "operativo", label: "Operativo", badge: ASSEMBLED_CASES.length },
+  { id: "educativo", label: "Practice", badge: 1 },
+  { id: "operativo", label: "Assessment", badge: ASSEMBLED_CASES.length },
 ];
 
 export function MotoresClient() {
@@ -452,12 +466,11 @@ export function MotoresClient() {
         </Link>
 
         <h1 className="display display-tight ts-display mt-3 text-[var(--text-primary)]">
-          Motores de Itera
+          Itera engines
         </h1>
         <p className="mt-2 max-w-2xl ts-subhead text-[var(--text-secondary)] leading-[1.5]">
-          Cómo está organizado cada motor, en modo lectura. Sin base de datos,
-          sin mutaciones; los datos vienen del mismo código que corre las
-          pantallas jugables.
+          How each engine is organized, read-only. No database, no mutations.
+          The data comes from the same code that runs the playable screens.
         </p>
 
         <div className="mt-8">
@@ -465,7 +478,7 @@ export function MotoresClient() {
             items={TABS}
             value={tab}
             onChange={setTab}
-            ariaLabel="Elegir motor"
+            ariaLabel="Choose engine"
           />
         </div>
 

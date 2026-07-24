@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
 
     if (!file || typeof file === "string") {
       return json(
-        { error: "Falta el campo 'audio' en el FormData." },
+        { error: "Missing the 'audio' field in the FormData." },
         { status: 400 },
       );
     }

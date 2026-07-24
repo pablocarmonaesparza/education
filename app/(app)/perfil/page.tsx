@@ -46,10 +46,10 @@ interface Profile {
 }
 
 const LOCALE_OPTIONS = [
-  { value: "es-MX", label: "Español (México)" },
-  { value: "es-419", label: "Español (LATAM)" },
-  { value: "es-ES", label: "Español (España)" },
   { value: "en-US", label: "English (US)" },
+  { value: "es-MX", label: "Spanish (Mexico)" },
+  { value: "es-419", label: "Spanish (Latin America)" },
+  { value: "es-ES", label: "Spanish (Spain)" },
 ];
 
 // ============================================================================
@@ -118,7 +118,7 @@ export default function PerfilPage() {
       setLocale(p.locale);
       setNotifications(p.notifications_enabled);
     } catch (e) {
-      setLoadError(e instanceof Error ? e.message : "Error inesperado.");
+      setLoadError(e instanceof Error ? e.message : "Unexpected error.");
     } finally {
       setLoading(false);
     }
@@ -141,7 +141,7 @@ export default function PerfilPage() {
   }, []);
 
   const memberSinceDate = profile
-    ? new Date(profile.member_since).toLocaleDateString("es-MX", {
+    ? new Date(profile.member_since).toLocaleDateString("en-US", {
         month: "long",
         year: "numeric",
       })
@@ -164,9 +164,9 @@ export default function PerfilPage() {
       <main className="surface-canvas min-h-[calc(100vh-3.5rem)] px-6 py-6 sm:px-10 sm:py-8">
         <div className="mx-auto w-full max-w-[1100px]">
           <AppleErrorState
-            title="No pudimos cargar tu perfil"
-            body={loadError ?? "Intenta de nuevo."}
-            actionLabel="Reintentar"
+            title="We could not load your profile"
+            body={loadError ?? "Try again."}
+            actionLabel="Try again"
             onAction={load}
           />
         </div>
@@ -180,11 +180,11 @@ export default function PerfilPage() {
         {/* ============ HEADER ============ */}
         <AppleReveal as="header">
           <h1 className="display display-tight text-[var(--text-primary)] ts-title-1 sm:ts-display">
-            Perfil
+            Profile
           </h1>
           <p className="mt-2 ts-subhead text-[var(--text-secondary)] leading-[1.55]">
-            Información que tu manager y tus reportes usan para
-            personalizar tu experiencia.
+            The information your manager and your reports use to personalize
+            your experience.
           </p>
         </AppleReveal>
 
@@ -200,7 +200,7 @@ export default function PerfilPage() {
             </div>
             <button
               type="button"
-              aria-label="Cambiar foto"
+              aria-label="Change photo"
               className="absolute -bottom-1 -right-1 inline-flex h-7 w-7 items-center justify-center rounded-full bg-[var(--text-primary)] text-[var(--surface)] shadow-[0_2px_8px_var(--shadow)] hover:opacity-90 transition-opacity"
             >
               <svg
@@ -229,8 +229,8 @@ export default function PerfilPage() {
             <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
               {[
                 profile.org_name,
-                profile.team_name ? `Equipo ${profile.team_name}` : null,
-                memberSinceDate ? `desde ${memberSinceDate}` : null,
+                profile.team_name ? `${profile.team_name} team` : null,
+                memberSinceDate ? `since ${memberSinceDate}` : null,
               ]
                 .filter(Boolean)
                 .join(" · ")}
@@ -247,11 +247,11 @@ export default function PerfilPage() {
         >
           {/* ---- Información personal ---- */}
           <Card>
-            <SectionHeader>Información personal</SectionHeader>
+            <SectionHeader>Personal information</SectionHeader>
 
             <div className="mt-4 flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
-                <FieldLabel>Nombre completo</FieldLabel>
+                <FieldLabel>Full name</FieldLabel>
                 <AppleInput
                   value={fullName}
                   onValueChange={(v) => {
@@ -263,7 +263,7 @@ export default function PerfilPage() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <FieldLabel>Puesto</FieldLabel>
+                <FieldLabel>Job title</FieldLabel>
                 <AppleInput
                   value={jobTitle}
                   onValueChange={(v) => {
@@ -276,9 +276,9 @@ export default function PerfilPage() {
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="flex flex-col gap-1.5">
-                  <FieldLabel>Idioma</FieldLabel>
+                  <FieldLabel>Language</FieldLabel>
                   <AppleSelect
-                    aria-label="Idioma"
+                    aria-label="Language"
                     selectedKeys={[locale]}
                     onSelectionChange={(keys) => {
                       const next = Array.from(keys)[0] as string | undefined;
@@ -296,10 +296,10 @@ export default function PerfilPage() {
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <FieldLabel>Notificaciones por email</FieldLabel>
+                  <FieldLabel>Email notifications</FieldLabel>
                   <div className="flex h-11 items-center justify-between">
                     <span className="ts-subhead text-[var(--text-secondary)]">
-                      {notifications ? "Activadas" : "Desactivadas"}
+                      {notifications ? "On" : "Off"}
                     </span>
                     <AppleSwitch
                       isSelected={notifications}
@@ -307,7 +307,7 @@ export default function PerfilPage() {
                         setNotifications(v);
                         scheduleSave({ notifications_enabled: v });
                       }}
-                      aria-label="Notificaciones por email"
+                      aria-label="Email notifications"
                     />
                   </div>
                 </div>
@@ -317,7 +317,7 @@ export default function PerfilPage() {
 
           {/* ---- Cuenta ---- */}
           <Card className="flex flex-col">
-            <SectionHeader>Cuenta</SectionHeader>
+            <SectionHeader>Account</SectionHeader>
 
             <div className="mt-4 flex flex-1 flex-col">
               <button
@@ -325,7 +325,7 @@ export default function PerfilPage() {
                 className="flex items-center justify-between rounded-[var(--radius-md)] px-3 py-2.5 text-left transition-colors hover:bg-[var(--surface-3)]"
               >
                 <div className="ts-subhead font-medium text-[var(--text-primary)]">
-                  Cambiar contraseña
+                  Change password
                 </div>
                 <span className="text-[var(--text-tertiary)]" aria-hidden>
                   →
@@ -340,7 +340,7 @@ export default function PerfilPage() {
               >
                 <div>
                   <div className="ts-subhead font-medium text-[var(--text-primary)]">
-                    Métodos de autenticación
+                    Sign-in methods
                   </div>
                   <div className="ts-caption-1 text-[var(--text-tertiary)]">
                     Email + Google
@@ -357,7 +357,7 @@ export default function PerfilPage() {
                 size="lg"
                 className="mt-auto w-full justify-center"
               >
-                Cerrar sesión
+                Sign out
               </AppleButton>
             </div>
           </Card>

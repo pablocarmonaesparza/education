@@ -159,8 +159,8 @@ export function AIPromptComposer({
           placeholder={
             placeholderProp ??
             (readOnly
-              ? "Crea el prompt desde Inputs y selección..."
-              : "Escribe el prompt que le mandarías al modelo...")
+              ? "Build the prompt from your inputs and selections..."
+              : "Write the prompt you would send to the model...")
           }
           className={`w-full resize-none rounded-3xl bg-transparent px-5 pb-1 pt-4 ts-body leading-[1.5] text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] disabled:cursor-not-allowed ${matched ? "flex-1" : ""} ${readOnly ? "cursor-default" : ""}`}
           style={matched ? { minHeight: 0, maxHeight: "none" } : { height: textComputedHeight, minHeight: TEXT_MIN_HEIGHT, maxHeight: TEXT_MAX_HEIGHT }}
@@ -199,12 +199,12 @@ export function AIPromptComposer({
                   accept="image/*,.pdf,.csv,.xlsx,.xls,.doc,.docx,.txt,.md"
                   className="sr-only"
                   onChange={(event) => handleFiles(event.target.files)}
-                  aria-label="Agregar archivo o foto"
+                  aria-label="Add file or photo"
                 />
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  aria-label="Agregar archivo o foto"
+                  aria-label="Add file or photo"
                   className={`grid h-9 w-9 place-items-center rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
                     attachments.length > 0
                       ? "bg-[var(--accent-soft)] text-[var(--accent)] hover:bg-[var(--surface-3)]"
@@ -225,7 +225,7 @@ export function AIPromptComposer({
                   ? "cursor-default"
                   : "hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
               }`}
-              aria-label={readOnly ? "Modelo seleccionado" : "Selector de modelo"}
+              aria-label={readOnly ? "Selected model" : "Model picker"}
               aria-expanded={readOnly ? undefined : dropdownOpen}
             >
               <BrandMark brand={currentModel.brand} />
@@ -304,12 +304,12 @@ export function AIPromptComposer({
                                 <span className="flex shrink-0 items-center gap-2 text-[var(--text-tertiary)]">
                                   <span className="flex items-center gap-1">
                                     <span className="ts-caption-2 font-semibold tracking-wider">$</span>
-                                    <LevelMeter value={model.price} ariaLabel="precio" />
+                                    <LevelMeter value={model.price} ariaLabel="price" />
                                   </span>
                                   <span aria-hidden className="h-2 w-px bg-[var(--hairline)]" />
                                   <span className="flex items-center gap-1">
                                     <SparkGlyph />
-                                    <LevelMeter value={model.intel} ariaLabel="inteligencia" />
+                                    <LevelMeter value={model.intel} ariaLabel="intelligence" />
                                   </span>
                                 </span>
                               </button>
@@ -332,7 +332,7 @@ export function AIPromptComposer({
               onClick={() => {
                 if (!readOnly) setSent(true);
               }}
-              aria-label={readOnly ? "Enviar deshabilitado en preview" : "Enviar al modelo"}
+              aria-label={readOnly ? "Send disabled in preview" : "Send to model"}
               className={`grid h-9 w-9 place-items-center rounded-full transition-all ${
                 canSend && !readOnly
                   ? "accent-bg text-white hover:opacity-90 active:scale-95"
@@ -353,8 +353,8 @@ export function AIPromptComposer({
         </div>
       </div>
       <div className="mt-3 flex items-center justify-between gap-3 ts-footnote text-[var(--text-tertiary)]">
-        <span>⌘ + Enter para enviar en el runtime real.</span>
-        {sent && <span className="text-[var(--band-a-text)]">Prompt enviado al preview</span>}
+        <span>⌘ + Enter to send in the live runtime.</span>
+        {sent && <span className="text-[var(--band-a-text)]">Prompt sent to preview</span>}
       </div>
     </div>
   );

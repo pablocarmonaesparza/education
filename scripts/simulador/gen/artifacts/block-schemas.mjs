@@ -28,31 +28,33 @@ const CATALOG =
 const catalogById = {};
 for (const b of CATALOG) catalogById[b.id] = b;
 
+// Propositos por bloque, en ingles US: estos textos se inyectan en los prompts
+// del autor y del repair (el motor autora en ingles; pivot EEUU 2026-07-15).
 export const BLOCK_PURPOSE = {
-  case_cover: "Portada del caso. Da el escenario, el rol y las herramientas.",
-  reading_passive: "Lectura de contexto. Solo informa, sin interaccion.",
-  reading_message: "Mensaje simulado (correo, chat o ticket). Quien escribe a quien.",
-  reading_data_table: "Tabla de datos para leer (clientes, transacciones, leads).",
-  reading_image: "Imagen o captura de pantalla con descripcion.",
-  reading_kpi_cards: "Una a tres metricas grandes (apertura, recompra, churn).",
-  reading_timeline: "Cronologia de eventos del caso.",
-  reading_attachment: "Documento adjunto (politica, contrato, brief).",
+  case_cover: "Case cover. Sets the scenario, the role, and the tools.",
+  reading_passive: "Context reading. Informs only, no interaction.",
+  reading_message: "Simulated message (email, chat, or ticket). Who writes to whom.",
+  reading_data_table: "Data table to read (customers, transactions, leads).",
+  reading_image: "Image or screenshot with a description.",
+  reading_kpi_cards: "One to three headline metrics (open rate, repeat purchase, churn).",
+  reading_timeline: "Timeline of the case's events.",
+  reading_attachment: "Attached document (policy, contract, brief).",
   ai_textfield_free:
-    "El participante le escribe a la inteligencia artificial sin guia. Mide estructura del pedido.",
+    "The participant writes to the AI tool with no guidance. Measures how they structure the request.",
   ai_textfield_guided:
-    "El participante arma el pedido eligiendo objetivo, audiencia y limites.",
+    "The participant builds the request by choosing goal, audience, and limits.",
   model_tradeoff_sliders:
-    "El participante razona tradeoffs (autonomia, seguridad, costo) para datos sensibles.",
+    "The participant reasons through tradeoffs (autonomy, safety, cost) for sensitive data.",
   categorize_rows:
-    "Por cada fila, el participante elige una accion (triaje de datos o de mensaje).",
+    "For each row, the participant picks an action (data or message triage).",
   ai_output_review:
-    "El participante marca segmentos de riesgo en un output de la inteligencia artificial.",
+    "The participant flags risky segments in an output produced by the AI tool.",
   ai_comparison:
-    "El participante elige la mejor entre 4 opciones (siempre 4) y justifica.",
-  workflow_builder: "Ordena y habilita pasos de un flujo.",
-  dashboard_pivot: "Lee un tablero y lleva un aprendizaje al lider.",
+    "The participant picks the best of 4 options (always 4) and justifies the choice.",
+  workflow_builder: "Order and enable the steps of a workflow.",
+  dashboard_pivot: "Read a dashboard and bring one takeaway to the lead.",
   tradeoff_decision_memo:
-    "El participante elige una accion con ventajas y costos y escribe un memo.",
+    "The participant picks an action with real benefits and costs and writes a memo.",
 };
 
 export function family(blockId) {
@@ -74,29 +76,29 @@ function describeSpec(spec, indent = "") {
   if (!spec) return [];
   const lines = [];
   const req = spec.required_keys ?? [];
-  if (req.length) lines.push(`${indent}claves requeridas: ${req.join(", ")}`);
+  if (req.length) lines.push(`${indent}required keys: ${req.join(", ")}`);
   for (const [k, n] of Object.entries(spec.min_array ?? {}))
-    lines.push(`${indent}la clave "${k}" es un arreglo de al menos ${n} elementos`);
+    lines.push(`${indent}key "${k}" is an array with at least ${n} elements`);
   for (const [k, n] of Object.entries(spec.exact_array ?? {}))
-    lines.push(`${indent}la clave "${k}" es un arreglo de exactamente ${n} elementos`);
+    lines.push(`${indent}key "${k}" is an array with exactly ${n} elements`);
   for (const [k, fields] of Object.entries(spec.element_required ?? {}))
     if (fields.length)
       lines.push(
-        `${indent}cada elemento del arreglo "${k}" es un objeto con estas claves: ${fields.join(", ")}`,
+        `${indent}each element of array "${k}" is an object with these keys: ${fields.join(", ")}`,
       );
   for (const [k, enums] of Object.entries(spec.element_enum ?? {}))
     for (const [f, vals] of Object.entries(enums))
       lines.push(
-        `${indent}en cada elemento de "${k}", la clave ${f} solo puede valer: ${vals.join(" | ")}`,
+        `${indent}in each element of "${k}", key ${f} may only be: ${vals.join(" | ")}`,
       );
   for (const k of spec.string_array_keys ?? [])
-    lines.push(`${indent}la clave "${k}" es un arreglo de textos`);
+    lines.push(`${indent}key "${k}" is an array of strings`);
   for (const [k, fields] of Object.entries(spec.element_unique ?? {}))
     lines.push(
-      `${indent}la clave ${fields.join(",")} es distinta en cada elemento de "${k}"`,
+      `${indent}key ${fields.join(",")} is distinct in every element of "${k}"`,
     );
   for (const [k, sub] of Object.entries(spec.nested ?? {})) {
-    lines.push(`${indent}la clave "${k}" es un objeto con:`);
+    lines.push(`${indent}key "${k}" is an object with:`);
     lines.push(...describeSpec(sub, indent + "  "));
   }
   return lines;
@@ -105,23 +107,23 @@ function describeSpec(spec, indent = "") {
 export function describeBlock(blockId) {
   const spec = CONTENT_SCHEMAS[blockId];
   const purpose = BLOCK_PURPOSE[blockId] ?? "";
-  const lines = [`bloque ${blockId} (${family(blockId)}): ${purpose}`];
+  const lines = [`block ${blockId} (${family(blockId)}): ${purpose}`];
   if (spec?.not_data_driven) {
-    lines.push("  NO usar: este bloque aun no consume contenido del caso.");
+    lines.push("  DO NOT use: this block does not consume case content yet.");
     return lines.join("\n");
   }
   const contract = describeSpec(spec, "  content.");
   if (contract.length) lines.push(...contract);
-  else lines.push("  content: opcional (solo title y body en el slide).");
+  else lines.push("  content: optional (only title and body on the slide).");
   const forbidden = forbiddenKeys(blockId);
   if (forbidden.length)
     lines.push(
-      `  PROHIBIDO en content (son respuestas del participante, no prefill): ${forbidden.join(", ")}`,
+      `  FORBIDDEN in content (these are participant answers, never prefill): ${forbidden.join(", ")}`,
     );
   const internal = judgeInternalFields(blockId);
   if (internal.length)
     lines.push(
-      `  campos solo-autor (utiles para el juez, se remueven antes del cliente): ${internal.join(", ")}`,
+      `  author-only fields (used by the judge, stripped before the client): ${internal.join(", ")}`,
     );
   return lines.join("\n");
 }

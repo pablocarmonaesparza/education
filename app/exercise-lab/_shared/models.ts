@@ -8,12 +8,12 @@ import type { BrandKey, ModelGroup, ModelOption } from "./types";
 
 export const modelGroups: ModelGroup[] = [
   {
-    title: "Modelo interno",
+    title: "Internal model",
     families: [
       [
         {
           id: "gpt-corporativo",
-          label: "GPT Corporativo",
+          label: "Corporate GPT",
           badge: "IT",
           brand: "internal",
           price: 1,
@@ -23,7 +23,7 @@ export const modelGroups: ModelGroup[] = [
     ],
   },
   {
-    title: "Modelos convencionales",
+    title: "Mainstream models",
     families: [
       [
         {
@@ -84,7 +84,7 @@ export const modelGroups: ModelGroup[] = [
     ],
   },
   {
-    title: "Modelos chinos",
+    title: "Chinese models",
     families: [
       [
         {

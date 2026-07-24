@@ -9,10 +9,10 @@ case_template:
   status: ready
   title: "backlog de entregas con excepción"
   locale: es-MX
-  difficulty: basic
+  difficulty: baseline
   level_primary: 1
   level_advanced_variant: 1
-  career_key: operations
+  career_key: ops
   archetype_ref: speed-to-action-vs-validation
   rubric_ref: rubric_case_factory_v1
   rubric_version_used: 1.0.0

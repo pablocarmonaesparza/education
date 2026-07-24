@@ -7,7 +7,7 @@ import { describeBlock } from "../artifacts/block-schemas.mjs";
 function slideSchema() {
   return {
     name: "submit_slide",
-    description: "El slide corregido, con el mismo slot y block_id.",
+    description: "The corrected slide, with the same slot and block_id.",
     schema: {
       type: "object",
       properties: {
@@ -27,29 +27,29 @@ export async function repairSlide(slide, findings, bible, sectionId, storyContex
   const problems = findings
     .map(
       (f) =>
-        `- ${f.message ?? f.criterion ?? f.type}${f.fix ? ` (sugerencia: ${f.fix})` : ""}`,
+        `- ${f.message ?? f.criterion ?? f.type}${f.fix ? ` (suggestion: ${f.fix})` : ""}`,
     )
     .join("\n");
   const sys = systemPrompt(
-    `corregir un slide de la seccion "${sectionId}" sin romper la continuidad`,
+    `fix one slide of section "${sectionId}" without breaking continuity`,
   );
-  const user = `Biblia (verdad canonica del caso):
+  const user = `Case bible (canonical truth):
 
 ${JSON.stringify(bible, null, 2)}
 
-Resumen de la historia (para mantener continuidad):
+Story summary (to keep continuity):
 ${storyContext}
 
-Slide actual (seccion "${sectionId}", slot ${slide.slot}, bloque ${slide.block_id}):
+Current slide (section "${sectionId}", slot ${slide.slot}, block ${slide.block_id}):
 ${JSON.stringify(slide, null, 2)}
 
-Problemas detectados que DEBES corregir:
+Detected problems you MUST fix:
 ${problems}
 
-Contrato de content del bloque ${slide.block_id} (respetalo exacto):
+Content contract for block ${slide.block_id} (follow it exactly):
 ${contract}
 
-Devuelve el MISMO slide (mismo slot ${slide.slot} y block_id ${slide.block_id}) ya corregido: arregla lo señalado, respeta la biblia y el contrato, y manten coherencia con el resto de la historia. El content nunca trae los campos prohibidos (esos los responde el participante).`;
+Return the SAME slide (same slot ${slide.slot} and block_id ${slide.block_id}) corrected: fix what was flagged, respect the bible and the contract, and stay coherent with the rest of the story. The content never includes the forbidden fields (the participant answers those).`;
 
   const { value } = await callTool(sys, user, slideSchema(), {
     temperature: 0.4,

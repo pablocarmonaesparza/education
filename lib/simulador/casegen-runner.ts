@@ -87,7 +87,7 @@ export async function generateCaseFromBrief(
     // 2) El motor corrió pero no pasó los gates: hay run-record -> HUMAN_REVIEW.
     const recPath = path.join(runDir, "run-record.json");
     if (fs.existsSync(recPath)) {
-      let diagnostics = "El motor no produjo un caso que pasara todos los gates.";
+      let diagnostics = "The engine did not produce a case that passed every gate.";
       try {
         const rec = JSON.parse(fs.readFileSync(recPath, "utf8"));
         diagnostics = JSON.stringify(rec.unresolved ?? rec, null, 2).slice(0, 4000);
@@ -101,7 +101,7 @@ export async function generateCaseFromBrief(
     //    crash del proceso). Es ERROR, no HUMAN_REVIEW.
     const detail = execError
       ? `${execError.killed ? "timeout/killed" : `exit ${execError.code ?? "?"}`}: ${(execError.stderr ?? execError.message ?? "").slice(0, 1500)}`
-      : "el motor no escribió artefactos";
+      : "the engine wrote no artifacts";
     return { ok: false, result: "ERROR", diagnostics: detail };
   } catch (e) {
     return {
@@ -122,7 +122,9 @@ function cleanup(dir: string) {
   }
 }
 
-/** Construye un brief desde el contexto de onboarding de la empresa. */
+/** Construye un brief desde el contexto de onboarding de la empresa.
+ * Defaults en ingles US (pivot EEUU 2026-07-15): el motor autora US-native
+ * (USD, cast US, marco regulatorio US); el brief entra ya en ingles. */
 export function buildBriefFromContext(input: {
   companyName: string;
   industry?: string | null;
@@ -132,19 +134,19 @@ export function buildBriefFromContext(input: {
   level?: string | null;
   scenario?: string | null;
 }): CaseGenBrief {
-  const dept = input.department ?? "operaciones";
+  const dept = input.department ?? "operations";
   return {
     company: input.companyName,
-    industry: input.industry ?? "servicios",
-    market: input.region ?? "Latinoamerica",
-    participant_role: input.role ?? `Analista de ${cap(dept)}`,
-    level: input.level ?? "N1 · Fundamentos",
+    industry: input.industry ?? "services",
+    market: input.region ?? "United States",
+    participant_role: input.role ?? `${cap(dept)} Analyst`,
+    level: input.level ?? "N1 · Foundations",
     scenario:
       input.scenario ??
-      `Una persona del area de ${dept} en ${input.companyName} recibe datos sucios y tiene que limpiarlos con criterio, pedirle a la inteligencia artificial un entregable util sin exponer informacion sensible, revisar lo que devuelve y decidir si lanzar, pilotar o pausar.`,
-    manager_wants_to_know: `Si esta persona de ${dept} puede trabajar con inteligencia artificial con criterio, sin exponer datos sensibles ni tomar atajos riesgosos.`,
+      `Someone on the ${dept} team at ${input.companyName} receives dirty data and has to clean it with judgment, ask the AI tool for a useful deliverable without exposing sensitive information, review what it returns, and decide whether to launch, pilot, or pause.`,
+    manager_wants_to_know: `Whether this ${dept} person can work with AI with judgment, without exposing sensitive data or taking risky shortcuts.`,
     ai_tool_hint:
-      "Un asistente interno aprobado que redacta y ajusta tono; no consulta la base ni envia; puede inventar datos, hay que validar.",
+      "An approved internal assistant that drafts and adjusts tone; it does not query the database and does not send; it can make up data, so everything must be verified.",
     tools: ["ai", "data", "messaging", "documents"],
   };
 }

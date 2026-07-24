@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   const body = (await req.json().catch(() => null)) as {
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
   } | null;
   const beatSlug = body?.beat_slug?.trim();
   if (!beatSlug) {
-    return NextResponse.json({ error: "beat_slug requerido." }, { status: 400 });
+    return NextResponse.json({ error: "beat_slug is required." }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     .maybeSingle();
   if (!simUser) {
     return NextResponse.json(
-      { error: "Bridge user no inicializado." },
+      { error: "Bridge user not initialized." },
       { status: 500 },
     );
   }
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
     .eq("status", "active")
     .maybeSingle();
   if (!beat) {
-    return NextResponse.json({ error: "Beat no encontrado." }, { status: 404 });
+    return NextResponse.json({ error: "Practice not found." }, { status: 404 });
   }
 
   const { data: unlock } = await admin
@@ -84,7 +84,7 @@ export async function POST(req: Request) {
   if (aErr || !attempt) {
     console.error("[practica/attempts] insert failed", aErr);
     return NextResponse.json(
-      { error: "No se pudo iniciar el intento." },
+      { error: "Could not start the attempt." },
       { status: 500 },
     );
   }

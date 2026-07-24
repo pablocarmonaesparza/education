@@ -8,13 +8,17 @@ import { cn } from "./utils";
  *
  * Botón canónico de avance en flujos paso-a-paso (one-thing-per-page): el
  * runtime de casos (case-demo / case-template), el exercise-lab y el onboarding
- * lo usan. Acento sólido, padding generoso (px-7 py-3), tipografía `ts-callout`,
- * hover por opacidad, sin sombra. Deshabilitado va en gris (`surface-3` +
- * `text-disabled`), el tono que Pablo usó en los casos. `isLoading` conserva el
- * acento + spinner (botón "ocupado", para los submits async del onboarding).
+ * lo usan. Lenguaje v2 (Duolingo-craft): acento sólido + labio 3D grande
+ * (`--shadow-lip-lg`), extrabold, `hover:brightness-110`, y press hundido (el
+ * labio desaparece y el botón baja los 5px del labio, quedando a ras — transform
+ * y box-shadow no participan del layout, así que nada salta). Deshabilitado va
+ * en gris (`surface-3` +
+ * `text-disabled`) SIN labio ni press, el tono que Pablo usó en los casos.
+ * `isLoading` conserva el acento + spinner (botón "ocupado", para los submits
+ * async del onboarding).
  *
  * `hint`:
- *   - `true`  → muestra al lado "o pulsa Enter ↵" (flujo que avanza con Enter).
+ *   - `true`  → muestra al lado "or press Enter ↵" (flujo que avanza con Enter).
  *   - nodo    → se renderiza ese nodo como hint (p.ej. "Completa el ejercicio…").
  *   - vacío   → solo el botón.
  *
@@ -45,12 +49,14 @@ export function AppleSlideButton({
   className?: string;
 }) {
   // Loading conserva el tono acento (botón "ocupado"); disabled-sin-loading va gris.
+  // El gris NO lleva labio ni press (y disabled/loading tampoco reciben :active
+  // porque el <button> lleva el atributo disabled).
   const grayed = isDisabled && !isLoading;
   const tone = grayed
-    ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-    : "accent-bg text-white hover:opacity-90";
+    ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed shadow-none"
+    : "accent-bg text-white shadow-lip-lg hover:brightness-110 active:translate-y-[5px] active:shadow-none";
   const cls = cn(
-    "rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium shadow-none transition-opacity",
+    "rounded-[var(--radius-md)] px-7 py-3 ts-callout font-extrabold tracking-[0.3px] transition-[filter,transform,box-shadow,opacity] duration-[var(--motion-fast)] ease-[var(--motion-ease)]",
     "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]",
     fullWidth ? "flex w-full items-center justify-center" : "inline-block",
     tone,
@@ -90,7 +96,7 @@ export function AppleSlideButton({
   const hintNode =
     hint === true ? (
       <span className="ts-footnote text-[var(--text-tertiary)]">
-        o pulsa{" "}
+        or press{" "}
         <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
           Enter ↵
         </kbd>

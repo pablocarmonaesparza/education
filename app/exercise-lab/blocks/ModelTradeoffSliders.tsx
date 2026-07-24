@@ -47,9 +47,9 @@ interface Props extends ExerciseRendererProps<ModelTradeoffSlidersPayload> {
 
 // Etiquetas por defecto de los 3 sliders. Sirven de fallback cuando el caso
 // no pasa caseContext.modelTradeoff.sliderLabels.
-const DEFAULT_AUTONOMY_LABEL = "Autonomía";
-const DEFAULT_SECURITY_LABEL = "Seguridad";
-const DEFAULT_COST_LABEL = "Costo";
+const DEFAULT_AUTONOMY_LABEL = "Autonomy";
+const DEFAULT_SECURITY_LABEL = "Security";
+const DEFAULT_COST_LABEL = "Cost";
 
 // Lee un string no vacío de un objeto plano · devuelve undefined si falta o
 // no es string, para que el ?? del caller caiga al fallback.
@@ -230,7 +230,7 @@ export function ModelTradeoffSliders({
             <BrandMark brand={recommendedModel.brand} />
             <div className="min-w-0 flex-1">
               <div className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
-                Modelo recomendado
+                Recommended model
               </div>
               <div className="mt-0.5 ts-body font-semibold text-[var(--text-primary)]">
                 {recommendedModel.label}
@@ -241,14 +241,14 @@ export function ModelTradeoffSliders({
                 )}
               </div>
               <div className="mt-1 ts-footnote text-[var(--text-secondary)]">
-                Autonomía {priorityLabel(autonomy as number)} · seguridad{" "}
-                {priorityLabel(security as number)} · costo {budgetLabel(cost as number)}.
+                Autonomy: {priorityLabel(autonomy as number)} · security:{" "}
+                {priorityLabel(security as number)} · cost: {budgetLabel(cost as number)}.
               </div>
             </div>
           </>
         ) : (
           <div className="ts-footnote text-[var(--text-tertiary)]">
-            La recomendación aparece cuando muevas los 3 sliders.
+            The recommendation appears once you move all three sliders.
           </div>
         )}
       </div>
@@ -259,7 +259,7 @@ export function ModelTradeoffSliders({
         <div>
           <textarea
             id={`${slideId}-rationale`}
-            aria-label="¿Por qué priorizaste así?"
+            aria-label="Why did you prioritize this way?"
             value={payload.rationale_text}
             onChange={(e) => {
               const next: ModelTradeoffSlidersPayload = {
@@ -269,7 +269,7 @@ export function ModelTradeoffSliders({
               onChange(next);
               onPatch?.(next);
             }}
-            placeholder="En una o dos líneas, explica qué te llevó a esa ponderación."
+            placeholder="In one or two lines, explain what led you to that weighting."
             rows={2}
             className="w-full resize-none rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 ts-body text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
           />

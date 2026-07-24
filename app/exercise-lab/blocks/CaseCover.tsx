@@ -17,6 +17,7 @@
  */
 
 import { useRef, useState } from "react";
+import { AppleSlideButton } from "@/components/simulador/apple";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -58,15 +59,15 @@ interface Props extends ExerciseRendererProps<CaseCoverPayload> {
 
 const DEFAULT_META: CoverMeta = {
   profile: "Marketing",
-  level: "N1 · Fundamentos",
+  level: "N1 · Fundamentals",
   estimatedMinutes: 12,
   timerSeconds: 600, // 10 min · ofrecemos timer opcional en el lab
   timerDefaultOn: false,
   tools: [
-    { kind: "ai", label: "Inteligencia artificial" },
-    { kind: "data", label: "Tablas" },
-    { kind: "messaging", label: "Mensajería" },
-    { kind: "documents", label: "Documentos" },
+    { kind: "ai", label: "AI" },
+    { kind: "data", label: "Tables" },
+    { kind: "messaging", label: "Messaging" },
+    { kind: "documents", label: "Documents" },
   ],
 };
 
@@ -80,7 +81,7 @@ export function CaseCover({
   caseContext,
   onShellContinue,
   meta: metaProp,
-  ctaLabel = "Iniciar caso",
+  ctaLabel = "Start case",
 }: Props) {
   const isProduction = mode === "authenticated" || mode === "field_test";
   const { patch } = useStepPatch(isProduction ? sessionId : null);
@@ -140,24 +141,17 @@ export function CaseCover({
 
       {/* CTA principal + toggle inline al lado del temporizador */}
       <div className="flex flex-wrap items-center gap-4 pt-2">
-        <button
-          type="button"
-          onClick={start}
-          disabled={alreadyStarted}
-          className={`rounded-[var(--radius-md)] px-7 py-3 ts-callout font-medium text-white transition-opacity ${
-            alreadyStarted
-              ? "bg-[var(--surface-3)] text-[var(--text-disabled)] cursor-not-allowed"
-              : "accent-bg hover:opacity-90"
-          }`}
-        >
-          {alreadyStarted ? "Caso iniciado" : `${ctaLabel} →`}
-        </button>
+        {/* v2: CTA canónico con labio 3D (AppleSlideButton) · deshabilitado
+            va gris sin labio, mismo contrato visual que el shell */}
+        <AppleSlideButton onClick={start} isDisabled={alreadyStarted}>
+          {alreadyStarted ? "Case started" : `${ctaLabel} →`}
+        </AppleSlideButton>
         {timerAvailable && (
           <button
             type="button"
             role="switch"
             aria-checked={timerOn}
-            aria-label={`Temporizador de ${timerMinutes} minutos`}
+            aria-label={`${timerMinutes}-minute timer`}
             onClick={() => setTimerOn(!timerOn)}
             disabled={alreadyStarted}
             className={`inline-flex items-center gap-3 ts-subhead text-[var(--text-secondary)] ${
@@ -165,7 +159,7 @@ export function CaseCover({
             }`}
           >
             <span className="font-medium">
-              Temporizador: {timerMinutes} minutos
+              Timer: {timerMinutes} minutes
             </span>
             <span
               className={`relative inline-block h-5 w-9 flex-shrink-0 rounded-full transition-colors ${

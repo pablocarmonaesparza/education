@@ -34,20 +34,20 @@ export async function POST(req: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   let body: { case_slug?: string };
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Body inválido." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
   const caseSlug = body.case_slug?.trim();
   if (!caseSlug) {
     return NextResponse.json(
-      { error: "Falta case_slug en el body." },
+      { error: "Missing case_slug in the request body." },
       { status: 400 },
     );
   }
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
 
   if (!simUser) {
     return NextResponse.json(
-      { error: "Bridge user no inicializado. Re-loguéate." },
+      { error: "Bridge user not initialized. Sign in again." },
       { status: 500 },
     );
   }
@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
 
   if (!caseTemplate) {
     return NextResponse.json(
-      { error: `Caso "${caseSlug}" no encontrado o no activo.` },
+      { error: `Case "${caseSlug}" not found or not active.` },
       { status: 404 },
     );
   }
@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
 
   if (!variant) {
     return NextResponse.json(
-      { error: `No hay variante primary activa para ${caseSlug}.` },
+      { error: `No active primary variant for ${caseSlug}.` },
       { status: 404 },
     );
   }
@@ -184,8 +184,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         error: orgScope
-          ? "No perteneces a un equipo de la empresa de este caso. Pide a tu admin que te invite."
-          : "No estás asignado a ningún equipo. Pide a tu admin que te invite a un team.",
+          ? "You are not on a team in the organization that owns this case. Ask your admin to invite you."
+          : "You are not assigned to a team. Ask your admin to invite you to one.",
       },
       { status: 400 },
     );
@@ -197,7 +197,7 @@ export async function POST(req: NextRequest) {
     | undefined;
 
   if (!team) {
-    return NextResponse.json({ error: "Team no encontrado." }, { status: 500 });
+    return NextResponse.json({ error: "Team not found." }, { status: 500 });
   }
 
   // ============================================================================
@@ -240,7 +240,7 @@ export async function POST(req: NextRequest) {
     if (sprintErr || !newSprint) {
       console.error("[api/sessions] sprint insert failed:", sprintErr);
       return NextResponse.json(
-        { error: "No se pudo crear sprint." },
+        { error: "Could not create the sprint." },
         { status: 500 },
       );
     }
@@ -311,7 +311,7 @@ export async function POST(req: NextRequest) {
       if (!assignment) {
         console.error("[api/sessions] assignment insert failed:", assignErr);
         return NextResponse.json(
-          { error: "No se pudo crear assignment." },
+          { error: "Could not create the assignment." },
           { status: 500 },
         );
       }
@@ -342,7 +342,7 @@ export async function POST(req: NextRequest) {
   if (sessErr || !session) {
     console.error("[api/sessions] session insert failed:", sessErr);
     return NextResponse.json(
-      { error: "No se pudo crear sesión." },
+      { error: "Could not create the session." },
       { status: 500 },
     );
   }

@@ -7,74 +7,76 @@ practice_beat:
   triggered_by_gap: [pii_exposure]
   duration_max_seconds: 360
   principle_card:
-    headline: "Decide qué datos ve el modelo: tal cual, transformados o nada"
-    body: "El modelo no distingue lo sensible de lo inofensivo: usa todo lo que le des. Cada campo se decide antes de subir el archivo, no después de la fuga."
+    headline: "Decide what the model sees: as-is, transformed, or not at all"
+    body: "The model cannot tell sensitive from harmless. It uses everything you give it. You decide field by field before you upload the file, not after the leak."
   practice_exercise:
     type: formative_slides
     blocks: [categorize_rows, ai_output_review]
-    prompt: "Vas a analizar devoluciones de una tienda en línea con IA: decides columna por columna qué compartes, y luego revisas un resumen generado que arrastró datos personales."
-  completion_criteria: "Completar los 2 ejercicios (todas las filas y todos los segmentos con respuesta) y revisar la retroalimentación de cada uno."
+    prompt: "You are about to analyze returns for an online retailer with AI: you decide column by column what you share, then you review a generated summary that carried personal data into it."
+  completion_criteria: "Complete both exercises (every row and every segment answered) and review the feedback for each."
   exit:
     contributes_to_resim_score: true
   slides:
     - id: portada
       kind: cover
-      title: "No todo el archivo tiene que entrar al modelo"
-      body: "Cuando le pasas una tabla de clientes a la inteligencia artificial, le pasas todo lo que la tabla trae: nombres, teléfonos, direcciones. Aquí practicas decidir campo por campo qué entra tal cual, qué entra transformado y qué se queda fuera."
-      chips: ["N1 · Fundamentos", "Operaciones", "6 min"]
+      title: "The whole file does not have to go to the model"
+      body: "When you hand a customer table to AI, you hand over everything the table carries: names, phone numbers, addresses. Here you practice deciding field by field what goes in as-is, what goes in transformed, and what stays out."
+      chips: ["N1 · Fundamentals", "Operations", "6 min"]
     - id: principio
       kind: reading
-      title: "El filtro de tres puertas"
+      title: "The three-gate filter"
       body: |-
-        **El problema.** La inteligencia artificial no sabe qué es un dato personal y qué no. Si el archivo trae el teléfono de una clienta, el modelo lo lee, lo puede repetir en un resumen y ese resumen puede terminar reenviado a medio equipo. La fuga no la comete la herramienta: la comete quien subió el archivo completo sin mirarlo.
+        **The problem.** AI does not know what counts as personal data and what does not. If the file carries a customer's phone number, the model reads it, it can repeat it in a summary, and that summary can end up forwarded to half the team. The tool does not cause the leak. Whoever uploaded the whole file without looking at it does.
 
-        **La regla.** Antes de subir cualquier tabla, cada columna pasa por tres puertas. Primera: ¿la tarea la necesita? Si no aporta a lo que pediste, fuera — menos datos, menos riesgo. Segunda: ¿identifica a una persona? Nombres, teléfonos, correos y direcciones exactas no entran tal cual; si el análisis los necesita, se transforman — la dirección se vuelve zona, el nombre se vuelve un número de cliente. Tercera: ¿es un dato del negocio que la tarea sí requiere? Montos, fechas y motivos entran tal cual.
+        **The rule.** Before you upload any table, every column passes three gates. First: does the task need it? If it does not add to what you asked for, it stays out. Less data, less risk. Second: does it identify a person? Names, phone numbers, emails, and exact addresses never go in as-is. If the analysis needs them, transform them: the street address becomes a ZIP code, the name becomes a customer number. Third: is it business data the task actually requires? Amounts, dates, and reasons go in as-is.
 
-        **El ejemplo.** Quieres saber por qué los clientes devuelven productos. Para eso el modelo necesita el motivo, el monto y la zona. No necesita saber que la devolución fue de Laura, ni su teléfono, ni la calle donde vive. El patrón se encuentra igual — sin exponer a nadie.
+        **Why the law backs this up.** Under CCPA/CPRA, a customer's name, phone, email, and street address are personal information, and the minimization rule says you use only what the purpose reasonably requires. The three gates are that rule applied to a file before you upload it.
+
+        **The example.** You want to know why customers return products. For that the model needs the reason, the amount, and the region. It does not need to know the return was Laura's, or her phone number, or the street she lives on. The pattern shows up either way, without exposing anyone.
     - id: ejercicio_columnas
       kind: exercise
       blockId: categorize_rows
-      title: "Vas a pedirle a la IA que encuentre patrones en las devoluciones del mes"
-      body: "El archivo trae estas columnas. Decide qué pasa con cada una antes de subirlo."
+      title: "You are about to ask AI to find patterns in this month's returns"
+      body: "The file carries these columns. Decide what happens to each one before you upload it."
       caseContext:
         actionStyle: permission
         actions:
-          - { value: permitir, label: "Va tal cual" }
-          - { value: revisar, label: "Va transformada" }
-          - { value: bloquear, label: "No va" }
+          - { value: permitir, label: "Goes in as-is" }
+          - { value: revisar, label: "Goes in transformed" }
+          - { value: bloquear, label: "Stays out" }
         rows:
-          - { id: d1, label: "Motivo de la devolución (talla, defecto, no era lo esperado)" }
-          - { id: d2, label: "Nombre completo, teléfono y correo del cliente" }
-          - { id: d3, label: "Dirección exacta de entrega" }
-          - { id: d4, label: "Monto de la devolución" }
-          - { id: d5, label: "Comentario libre del cliente al devolver" }
+          - { id: d1, label: "Return reason (wrong size, defect, not as described)" }
+          - { id: d2, label: "Customer full name, phone, and email" }
+          - { id: d3, label: "Exact delivery address (1425 Oak St, Apt 3B, Portland, OR 97214)" }
+          - { id: d4, label: "Refund amount in USD" }
+          - { id: d5, label: "Free-text customer comment left at return" }
       feedback:
         kind: rows
         rows:
-          - { id: d1, correct: permitir, why: "Es el corazón del análisis y no identifica a nadie. Sin esta columna no hay patrón que encontrar." }
-          - { id: d2, correct: bloquear, why: "Identifica a personas y el patrón no lo necesita. Si te hiciera falta contar clientes que repiten, pide un número de cliente anónimo — nunca el nombre ni el contacto." }
-          - { id: d3, correct: revisar, why: "El patrón geográfico sí sirve, la calle y el número no. Transfórmala a ciudad o zona antes de subirla." }
-          - { id: d4, correct: permitir, why: "Dimensiona el problema y no identifica a nadie. Un dato de negocio que la tarea sí requiere." }
-          - { id: d5, correct: revisar, why: "El texto libre es útil para el motivo, pero a veces trae teléfonos o nombres escritos por el cliente. Se revisa o se limpia de datos de contacto antes de entrar." }
+          - { id: d1, correct: permitir, why: "It is the heart of the analysis and it identifies nobody. Without this column there is no pattern to find." }
+          - { id: d2, correct: bloquear, why: "It identifies people and the pattern does not need it. If you needed to count repeat customers, ask for an anonymous customer number, never the name or the contact info." }
+          - { id: d3, correct: revisar, why: "The geographic pattern helps. The street and apartment number do not. Transform it to city or ZIP before you upload." }
+          - { id: d4, correct: permitir, why: "It sizes the problem and it identifies nobody. Business data the task actually requires." }
+          - { id: d5, correct: revisar, why: "Free text is useful for the reason, but customers sometimes type phone numbers or names into it. Review it or strip the contact info before it goes in." }
     - id: ejercicio_resumen
       kind: exercise
       blockId: ai_output_review
-      title: "La IA armó este resumen de devoluciones para compartir con el equipo"
-      body: "Marca lo que no dejarías pasar antes de reenviarlo. Toca para marcar."
+      title: "AI put together this returns summary to share with the team"
+      body: "Mark what you would not let through before forwarding it. Tap to mark."
       caseContext:
         segments:
-          - { id: s1, text: "La talla incorrecta explica 4 de cada 10 devoluciones del mes.", flagIfMarked: "frase_reutilizable" }
-          - { id: s2, text: "La clienta Laura Mendívil, teléfono 55 1234 5678, devolvió tres pedidos seguidos.", flagIfMarked: "dato_sensible" }
-          - { id: s3, text: "Las devoluciones se concentran en la zona norte de la ciudad.", flagIfMarked: "frase_reutilizable" }
-          - { id: s4, text: "El correo laura.mendivil@correo.com aparece en tres tickets; conviene escribirle directo.", flagIfMarked: "dato_sensible" }
+          - { id: s1, text: "Wrong size explains 4 out of every 10 returns this month.", flagIfMarked: "frase_reutilizable" }
+          - { id: s2, text: "Customer Laura Mitchell, phone (415) 555-0142, returned three orders in a row.", flagIfMarked: "dato_sensible" }
+          - { id: s3, text: "Returns concentrate in the ZIP codes on the north side of the metro.", flagIfMarked: "frase_reutilizable" }
+          - { id: s4, text: "The email laura.mitchell@gmail.com shows up on three tickets; worth reaching out directly.", flagIfMarked: "dato_sensible" }
       feedback:
         kind: segments
         segments:
-          - { id: s1, shouldFlag: false, why: "Dato agregado, sin personas identificables. Exactamente el tipo de hallazgo que buscabas." }
-          - { id: s2, shouldFlag: true, why: "Nombre y teléfono de una clienta en un documento que va a circular. Ese dato no debía entrar al modelo — y menos salir en el resumen." }
-          - { id: s3, shouldFlag: false, why: "Patrón por zona, sin dirección exacta. Así se ve una columna bien transformada." }
-          - { id: s4, shouldFlag: true, why: "Un correo personal más una recomendación de contactarla. El resumen era sobre patrones, no sobre personas: quítalo antes de reenviar." }
+          - { id: s1, shouldFlag: false, why: "Aggregate data, no identifiable people. Exactly the kind of finding you were after." }
+          - { id: s2, shouldFlag: true, why: "A customer's name and phone number in a document that is about to circulate. That data should never have reached the model, let alone come back out in the summary." }
+          - { id: s3, shouldFlag: false, why: "A pattern by ZIP, no exact address. This is what a well transformed column looks like." }
+          - { id: s4, shouldFlag: true, why: "A personal email plus a recommendation to contact her. The summary was about patterns, not about people. Take it out before you forward." }
     - id: cierre
       kind: closing
-      title: "Mañana, antes de subir un archivo"
-      body: "Recorre las columnas diez segundos: ¿la tarea necesita esta columna?, ¿identifica a alguien? Lo que no aporta se queda fuera y lo que identifica se transforma. Se decide antes de subir — después ya circuló."
+      title: "Tomorrow, before you upload a file"
+      body: "Run the columns for ten seconds: does the task need this column? Does it identify anyone? What does not help stays out, and what identifies gets transformed. You decide before you upload. After that, it has already circulated."

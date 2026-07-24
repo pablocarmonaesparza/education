@@ -51,7 +51,7 @@ export async function GET() {
     if (staffErr || !bridgeUserId) {
       console.error("[admin/review] staff bridge failed", staffErr);
       return NextResponse.json(
-        { error: "No se pudo inicializar el usuario staff." },
+        { error: "Could not initialize the staff user." },
         { status: 500 },
       );
     }
@@ -71,7 +71,7 @@ export async function GET() {
   if (error) {
     console.error("[admin/review] list failed", error);
     return NextResponse.json(
-      { error: "Error listando la cola." },
+      { error: "Could not list the queue." },
       { status: 500 },
     );
   }

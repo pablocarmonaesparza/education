@@ -47,6 +47,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
         {/* Aplica overrides de /design en TODAS las surfaces. */}
         <DesignOverridesInjector />
         {children}
+        {/* Solo dev local / Vercel preview: en producción real renderiza null
+            siempre (guard de entorno dentro del componente, R-06). */}
         <DevReturnButton />
       </NextThemesProvider>
     </HeroUIProvider>

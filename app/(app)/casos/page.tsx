@@ -114,7 +114,7 @@ export default function CasosPage() {
       const data = (await res.json()) as { cases: CaseCatalogItem[] };
       setCases(data.cases);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error inesperado.");
+      setError(err instanceof Error ? err.message : "Unexpected error.");
     }
   }, []);
 
@@ -130,7 +130,7 @@ export default function CasosPage() {
       if (!seen.has(key)) seen.set(key, departmentLabel(c.department));
     }
     return Array.from(seen, ([value, label]) => ({ value, label })).sort(
-      (a, b) => a.label.localeCompare(b.label, "es"),
+      (a, b) => a.label.localeCompare(b.label, "en"),
     );
   }, [cases]);
 
@@ -158,28 +158,28 @@ export default function CasosPage() {
         {/* ============ HEADER ============ */}
         <AppleReveal as="header">
           <h1 className="display display-tight text-[var(--text-primary)] ts-display sm:ts-display-lg">
-            Catálogo de casos
+            Case catalog
           </h1>
           <p className="mt-3 ts-body text-[var(--text-secondary)] leading-[1.55] max-w-[640px]">
-            Elige un caso para empezar tu diagnóstico. Cada caso mide tu
-            criterio operativo bajo presión real con IA, no tu memoria.
+            Pick a case to start your assessment. Each case measures your
+            judgment under real pressure with AI, not your recall.
           </p>
         </AppleReveal>
 
         {/* ============ FILTROS ============ */}
         <AppleReveal delay={0.04} className="mt-10">
           <section
-            aria-label="Filtros"
+            aria-label="Filters"
             className="flex flex-col gap-3 sm:flex-row sm:flex-wrap"
           >
             <FilterSelect
-              placeholder="Nivel"
+              placeholder="Level"
               options={LEVEL_OPTIONS}
               value={level}
               onChange={setLevel}
             />
             <FilterSelect
-              placeholder="Departamento"
+              placeholder="Department"
               options={departmentOptions}
               value={department}
               onChange={setDepartment}
@@ -191,27 +191,27 @@ export default function CasosPage() {
         <AppleReveal delay={0.08} className="mt-10">
           {error ? (
             <AppleErrorState
-              title="No pudimos cargar el catálogo"
+              title="We could not load the catalog"
               body={error}
-              actionLabel="Intentar de nuevo"
+              actionLabel="Try again"
               onAction={load}
             />
           ) : loading ? (
-            <div role="status" aria-label="Cargando casos">
+            <div role="status" aria-label="Loading cases">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {Array.from({ length: 8 }, (_, i) => (
                   <CaseCardSkeleton key={i} />
                 ))}
               </div>
-              <span className="sr-only">Cargando casos…</span>
+              <span className="sr-only">Loading cases…</span>
             </div>
           ) : cases !== null && cases.length === 0 ? (
             <AppleEmptyState
-              title="Aún no hay casos disponibles"
-              description="Tu organización todavía no tiene casos activos. Cuando se publique el primero, va a aparecer aquí."
+              title="No cases available yet"
+              description="Your organization has no active cases yet. The first one will show up here as soon as it publishes."
               action={
                 <AppleButton tone="secondary" size="sm" onPress={load}>
-                  Actualizar
+                  Refresh
                 </AppleButton>
               }
             />
@@ -223,11 +223,11 @@ export default function CasosPage() {
                   <span className="font-semibold text-[var(--text-primary)]">
                     {filtered.length}
                   </span>{" "}
-                  {filtered.length === 1 ? "caso" : "casos"}
+                  {filtered.length === 1 ? "case" : "cases"}
                   {anyFilterActive && (
                     <span className="text-[var(--text-tertiary)]">
                       {" "}
-                      de {cases?.length ?? 0}
+                      of {cases?.length ?? 0}
                     </span>
                   )}
                 </span>
@@ -238,7 +238,7 @@ export default function CasosPage() {
                     onPress={clearAll}
                     className="ts-subhead"
                   >
-                    Limpiar filtros
+                    Clear filters
                   </AppleButton>
                 )}
               </div>
@@ -253,11 +253,11 @@ export default function CasosPage() {
               ) : (
                 <div className="mt-5">
                   <AppleEmptyState
-                    title="No hay casos con esos filtros"
-                    description="Prueba quitando alguno o limpia todos para ver el catálogo completo."
+                    title="No cases match those filters"
+                    description="Try removing one, or clear them all to see the full catalog."
                     action={
                       <AppleButton tone="secondary" size="sm" onPress={clearAll}>
-                        Limpiar filtros
+                        Clear filters
                       </AppleButton>
                     }
                   />

@@ -22,10 +22,10 @@ export function MicButton({
   const isProcessing = recState === "processing";
   const label =
     recState === "recording"
-      ? "Detener grabación"
+      ? "Stop recording"
       : recState === "processing"
-        ? "Procesando nota de voz"
-        : "Dictar por voz";
+        ? "Processing voice note"
+        : "Dictate by voice";
 
   return (
     <button

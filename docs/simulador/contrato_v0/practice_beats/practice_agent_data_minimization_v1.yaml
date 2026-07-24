@@ -7,12 +7,12 @@ practice_beat:
   triggered_by_gap: [privacy_exposure]
   duration_max_seconds: 240
   principle_card:
-    headline: "minimiza datos antes de delegar"
-    body: "un agente no debe ver mas informacion de la necesaria para decidir su siguiente accion."
+    headline: "Minimize the data before you delegate"
+    body: "An agent should not see more information than it needs to decide its next action."
   practice_exercise:
     type: data_table_triage
-    prompt: "Clasifica 8 campos CRM en keep, bucketize, summarize o drop."
-  completion_criteria: "email, phone e internal_notes nunca quedan como keep."
+    prompt: "Sort 8 CRM fields into keep, bucketize, summarize, or drop."
+  completion_criteria: "email, phone, and internal_notes are never left as keep."
   exit:
     contributes_to_resim_score: true
 

@@ -15,7 +15,7 @@ import { PracticeBeatClient } from "../(app)/practica/[beat_slug]/PracticeBeatCl
  * intentos. closeHref a la landing. noindex (robots.ts + aquí).
  */
 export const metadata: Metadata = {
-  title: "Demo · Motor educativo de Itera",
+  title: "Demo · Itera practice engine",
   robots: { index: false, follow: false },
 };
 

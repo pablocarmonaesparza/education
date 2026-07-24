@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import {
   Link,
   Navbar,
@@ -13,6 +12,7 @@ import {
   NavbarMenuToggle,
 } from "@heroui/react";
 import { usePathname } from "next/navigation";
+import { AppleLogoMark } from "@/components/simulador/apple";
 
 const ROUTES: { href: string; label: string }[] = [];
 
@@ -21,6 +21,8 @@ function isActive(pathname: string, href: string) {
   return pathname.startsWith(href);
 }
 
+/* Misma marca que la landing y PublicNav: isotipo AppleLogoMark + wordmark.
+   Antes era el PNG viejo (itera-logo-light) — marca inconsistente entre surfaces. */
 function BrandMark() {
   return (
     <Link
@@ -28,14 +30,10 @@ function BrandMark() {
       className="flex items-center gap-2.5"
       color="foreground"
     >
-      <Image
-        src="/images/itera-logo-light.png"
-        alt="Itera"
-        width={64}
-        height={32}
-        className="h-6 w-auto"
-        priority
-      />
+      <AppleLogoMark size={38} />
+      <span className="ts-title-2 font-extrabold tracking-[-0.8px] text-[var(--text-primary)]">
+        itera<span className="text-[var(--accent)]">.</span>
+      </span>
     </Link>
   );
 }

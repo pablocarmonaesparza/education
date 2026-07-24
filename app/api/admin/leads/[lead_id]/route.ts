@@ -51,7 +51,7 @@ export async function PATCH(
   if (!staff.ok) return staff.response;
   if (!staff.user) {
     return NextResponse.json(
-      { error: "Acción requiere sesión real de staff." },
+      { error: "This action requires a real staff session." },
       { status: 401 },
     );
   }
@@ -60,7 +60,7 @@ export async function PATCH(
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Body inválido." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
   const patch: Record<string, unknown> = {
@@ -69,7 +69,7 @@ export async function PATCH(
 
   if (body.status !== undefined) {
     if (!VALID_STATUS.has(body.status)) {
-      return NextResponse.json({ error: "Status inválido." }, { status: 400 });
+      return NextResponse.json({ error: "Invalid status." }, { status: 400 });
     }
     patch.status = body.status;
   }
@@ -105,12 +105,12 @@ export async function PATCH(
   if (error) {
     console.error("[admin/leads] update failed", error);
     return NextResponse.json(
-      { error: "No se pudo actualizar el lead." },
+      { error: "Could not update the lead." },
       { status: 500 },
     );
   }
   if (!updated) {
-    return NextResponse.json({ error: "Lead no encontrado." }, { status: 404 });
+    return NextResponse.json({ error: "Lead not found." }, { status: 404 });
   }
 
   return NextResponse.json({ ok: true, item: updated });

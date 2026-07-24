@@ -38,14 +38,14 @@ function translateError(errorMessage: string): string {
     errorMessage.includes("Failed to fetch") ||
     errorMessage.includes("NetworkError")
   ) {
-    return "No se pudo conectar al servidor. Verifica tu conexión.";
+    return "Couldn't connect to the server. Check your connection.";
   }
   const map: Record<string, string> = {
-    "Invalid login credentials": "Email o contraseña incorrectos.",
-    "Email not confirmed": "Confirma tu email antes de iniciar sesión.",
+    "Invalid login credentials": "Incorrect email or password.",
+    "Email not confirmed": "Confirm your email before signing in.",
     "Password should be at least 6 characters":
-      "La contraseña debe tener al menos 6 caracteres.",
-    "Unable to validate email address": "Email inválido.",
+      "Your password must be at least 6 characters.",
+    "Unable to validate email address": "Invalid email.",
   };
   for (const [k, v] of Object.entries(map)) {
     if (errorMessage.includes(k)) return v;
@@ -73,14 +73,14 @@ function LoginContent() {
       setSupabase(createClient());
     } catch (e) {
       console.error("[auth/login] Supabase init failed", e);
-      setError("No se pudo inicializar el cliente. Recarga la página.");
+      setError("Couldn't initialize the client. Reload the page.");
     }
   }, [searchParams]);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     if (!supabase) {
-      setError("Cliente no inicializado. Recarga la página.");
+      setError("Client not initialized. Reload the page.");
       return;
     }
     setLoading(true);
@@ -94,12 +94,12 @@ function LoginContent() {
       } else if (data?.session) {
         window.location.href = next;
       } else {
-        setError("Error inesperado. Intenta de nuevo.");
+        setError("Something went wrong. Try again.");
       }
     } catch (err) {
       setError(
         translateError(
-          err instanceof Error ? err.message : "Error inesperado.",
+          err instanceof Error ? err.message : "Something went wrong.",
         ),
       );
     } finally {
@@ -109,7 +109,7 @@ function LoginContent() {
 
   async function handleGoogleLogin() {
     if (!supabase) {
-      setError("Cliente no inicializado. Recarga la página.");
+      setError("Client not initialized. Reload the page.");
       return;
     }
     setLoading(true);
@@ -125,7 +125,7 @@ function LoginContent() {
       });
       if (oauthErr) {
         setError(
-          translateError(oauthErr.message || "Error al iniciar con Google."),
+          translateError(oauthErr.message || "Couldn't sign in with Google."),
         );
         setLoading(false);
         return;
@@ -134,12 +134,12 @@ function LoginContent() {
         setRedirectingToGoogle(true);
         window.location.href = data.url;
       } else {
-        setError("No se pudo obtener la URL de Google. Intenta de nuevo.");
+        setError("Couldn't get the Google URL. Try again.");
         setLoading(false);
       }
     } catch (err) {
       setError(
-        translateError(err instanceof Error ? err.message : "Error inesperado."),
+        translateError(err instanceof Error ? err.message : "Something went wrong."),
       );
       setLoading(false);
     }
@@ -151,7 +151,7 @@ function LoginContent() {
         <div className="text-center">
           <div className="mx-auto h-9 w-9 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
           <p className="mt-6 ts-callout text-[var(--text-secondary)]">
-            Redirigiendo a Google…
+            Redirecting to Google…
           </p>
         </div>
       </div>
@@ -168,7 +168,7 @@ function LoginContent() {
         <div className="max-w-[400px] w-full mx-auto flex flex-col gap-6">
           <motion.div {...fadeUp} className="text-center">
             <h1 className="display display-tight ts-title-1 sm:ts-display text-[var(--text-primary)] leading-[1.1]">
-              Inicia sesión
+              Sign in
             </h1>
           </motion.div>
 
@@ -191,7 +191,7 @@ function LoginContent() {
             <AppleInput
               label="Email"
               type="email"
-              placeholder="email@empresa.com"
+              placeholder="email@company.com"
               value={email}
               onValueChange={setEmail}
               isRequired
@@ -200,9 +200,9 @@ function LoginContent() {
             />
 
             <AppleInput
-              label="Contraseña"
+              label="Password"
               type="password"
-              placeholder="Contraseña"
+              placeholder="Password"
               value={password}
               onValueChange={setPassword}
               isRequired
@@ -216,7 +216,7 @@ function LoginContent() {
               isLoading={loading}
               isDisabled={!email || !password}
             >
-              {loading ? "Iniciando sesión…" : "Continuar →"}
+              {loading ? "Signing in…" : "Continue →"}
             </AppleSlideButton>
           </motion.form>
 
@@ -227,7 +227,7 @@ function LoginContent() {
           >
             <div className="flex-1 h-px bg-[var(--hairline)]" />
             <span className="ts-footnote text-[var(--text-tertiary)] tracking-wide">
-              o
+              or
             </span>
             <div className="flex-1 h-px bg-[var(--hairline)]" />
           </motion.div>
@@ -263,7 +263,7 @@ function LoginContent() {
                 />
               </svg>
               <span>
-                {loading ? "Conectando…" : "Continuar con Google"}
+                {loading ? "Connecting…" : "Continue with Google"}
               </span>
             </AppleButton>
           </motion.div>
@@ -273,12 +273,12 @@ function LoginContent() {
             transition={{ ...fadeUp.transition, delay: 0.18 }}
             className="text-center ts-callout text-[var(--text-secondary)]"
           >
-            ¿Aún no tienes cuenta?{" "}
+            Don&apos;t have an account yet?{" "}
             <AppleLink
               href={`/auth/signup${next !== "/dashboard" ? `?next=${encodeURIComponent(next)}` : ""}`}
               className="font-medium"
             >
-              Crear cuenta
+              Create account
             </AppleLink>
           </motion.p>
         </div>

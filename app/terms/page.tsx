@@ -55,11 +55,12 @@ export default function TermsPage() {
             {tos.headline}
           </h1>
           <p className="max-w-[58ch] ts-body leading-[1.6] text-[var(--text-secondary)]">
-            Las reglas de uso del simulador de Itera: qué es, quién puede usarlo,
-            cómo facturamos y los derechos de tu organización.
+            The rules for using Itera: what it is, who can use it, how we bill,
+            what your organization gets, and what you agree not to do with a
+            report.
           </p>
           <p className="mt-1 ts-footnote text-[var(--text-tertiary)]">
-            Última actualización · {tos.last_updated}
+            Last updated · {tos.last_updated}
           </p>
         </header>
 

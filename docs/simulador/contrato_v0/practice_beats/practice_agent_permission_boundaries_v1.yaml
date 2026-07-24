@@ -7,12 +7,12 @@ practice_beat:
   triggered_by_gap: [agent_overreach]
   duration_max_seconds: 240
   principle_card:
-    headline: "autonomia limitada, no envio libre"
-    body: "un agente puede preparar trabajo; enviar, borrar o prometer requiere gate humano."
+    headline: "Limited autonomy, not free rein to send"
+    body: "An agent can prepare the work. Sending, deleting, or promising takes a human gate."
   practice_exercise:
     type: permission_matrix
-    prompt: "Define read/write/send/approve para un agente comercial."
-  completion_criteria: "acciones externas requieren aprobacion humana."
+    prompt: "Define read/write/send/approve for a sales agent."
+  completion_criteria: "External actions require human approval."
   exit:
     contributes_to_resim_score: true
 

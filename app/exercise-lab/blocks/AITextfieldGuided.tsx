@@ -25,6 +25,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { AppleSlideButton } from "@/components/simulador/apple";
 import type {
   ExerciseRendererProps,
   ExerciseResponsePayload,
@@ -46,31 +47,31 @@ type AITextfieldGuidedPayload = Extract<
 type Subsection = "objective" | "audience" | "limits" | "review";
 
 const SUBSECTIONS: Array<{ key: Subsection; label: string }> = [
-  { key: "objective", label: "Objetivo" },
-  { key: "audience", label: "Audiencia" },
-  { key: "limits", label: "Límites" },
-  { key: "review", label: "Revisar" },
+  { key: "objective", label: "Objective" },
+  { key: "audience", label: "Audience" },
+  { key: "limits", label: "Limits" },
+  { key: "review", label: "Review" },
 ];
 
 const GUIDED_OBJECTIVES = [
-  "Reactivar cuentas con bajo uso",
-  "Proponer tres ángulos de campaña",
-  "Resumir feedback para Ventas",
-  "Generar un brief con riesgos claros",
+  "Re-engage low-usage accounts",
+  "Propose three campaign angles",
+  "Summarize feedback for Sales",
+  "Draft a brief with clear risks",
 ];
 
 const GUIDED_AUDIENCES = [
-  "VP de Marketing",
-  "Equipo de Ventas Enterprise",
-  "Cliente interno de Operaciones",
-  "Soporte de Customer Success",
+  "VP of Marketing",
+  "Enterprise Sales team",
+  "Operations stakeholder",
+  "Customer Success team",
 ];
 
 const GUIDED_GUARDRAILS = [
-  "No usar nombres ni correos",
-  "Marcar afirmaciones sin fuente",
-  "Dejarlo como borrador interno",
-  "Explicar supuestos y dudas",
+  "No names or emails",
+  "Flag claims without a source",
+  "Keep it an internal draft",
+  "State assumptions and open questions",
 ];
 
 // Forma esperada del bloque dentro de caseContext (para el autor del caso):
@@ -152,7 +153,7 @@ export function AITextfieldGuided({
   const guardrailText =
     payload.selected_limits.length > 0
       ? payload.selected_limits.join("; ")
-      : "Sin restricciones adicionales";
+      : "No additional limits";
 
   const objectiveDone = Boolean(payload.selected_objective);
   const audienceDone = Boolean(payload.selected_audience);
@@ -226,8 +227,8 @@ export function AITextfieldGuided({
     const guidedCfg = (caseContext?.guided ?? {}) as { entrega?: string };
     const closing =
       guidedCfg.entrega?.trim() ||
-      "Entrega tres opciones accionables, riesgos visibles y validaciones humanas necesarias.";
-    const generated = `Objetivo: ${payload.selected_objective}.\nAudiencia: ${payload.selected_audience}.\nModelo elegido: ${modelLabel}.\n\nTrabaja sólo con información agregada del caso. Límites: ${guardrailText}.\n\n${closing}`;
+      "Deliver three actionable options, the risks you can see, and the human verification needed.";
+    const generated = `Objective: ${payload.selected_objective}.\nAudience: ${payload.selected_audience}.\nModel: ${modelLabel}.\n\nWork only with aggregated case data. Limits: ${guardrailText}.\n\n${closing}`;
     if (generated !== payload.generated_prompt) {
       persist({
         ...payload,
@@ -254,9 +255,9 @@ export function AITextfieldGuided({
               onClick={() => {
                 if (reachable) setActiveSubsection(sub.key);
               }}
-              className={`flex items-center gap-2 rounded-[var(--radius-md)] px-3 py-1.5 ts-caption-1 font-medium transition-colors ${
+              className={`flex items-center gap-2 rounded-[var(--radius-md)] px-3 py-1.5 ts-caption-1 font-bold transition-colors ${
                 isActive
-                  ? "bg-[var(--accent)] text-white"
+                  ? "accent-bg text-white"
                   : done
                     ? "border border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)] hover:bg-[var(--accent-soft)]/80"
                     : reachable
@@ -288,7 +289,7 @@ export function AITextfieldGuided({
           crece también; las subsecciones cortas dejan espacio abajo
           (oculto por overflow-hidden). */}
       <div className="relative min-h-[360px] overflow-hidden">
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence initial={false}>
           <motion.div
             key={activeSubsection}
             initial={{ opacity: 0, x: 24 }}
@@ -340,22 +341,22 @@ export function AITextfieldGuided({
                 />
                 {/* Botón Continuar interno · solo aparece en Revisar. Dispara
                     el callback del shell para navegar al siguiente slide. */}
+                {/* v2: CTA canónico con labio 3D (AppleSlideButton) · el hint
+                    conserva el copy en inglés de este bloque tal cual */}
                 {onShellContinue && (
-                  <div className="flex items-center gap-4">
-                    <button
-                      type="button"
-                      onClick={onShellContinue}
-                      className="rounded-[var(--radius-md)] accent-bg px-7 py-3 ts-callout font-medium text-white shadow-none transition-opacity hover:opacity-90"
-                    >
-                      Continuar →
-                    </button>
-                    <span className="ts-footnote text-[var(--text-tertiary)]">
-                      o pulsa{" "}
-                      <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
-                        Enter ↵
-                      </kbd>
-                    </span>
-                  </div>
+                  <AppleSlideButton
+                    onClick={onShellContinue}
+                    hint={
+                      <span className="ts-footnote text-[var(--text-tertiary)]">
+                        or press{" "}
+                        <kbd className="rounded border border-[var(--border)] bg-[var(--surface-2)] px-1.5 py-0.5 ts-caption-2 font-medium text-[var(--text-secondary)]">
+                          Enter ↵
+                        </kbd>
+                      </span>
+                    }
+                  >
+                    Continue →
+                  </AppleSlideButton>
                 )}
               </div>
             )}

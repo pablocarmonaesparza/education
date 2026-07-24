@@ -22,7 +22,8 @@ import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
 import { AppleButton } from "@/components/simulador/apple/AppleButton";
-import { AppleProgress } from "@/components/simulador/apple/AppleProgress";
+import { AppleSlideButton } from "@/components/simulador/apple/AppleSlideButton";
+import { AppleStepBar } from "@/components/simulador/apple/AppleStepBar";
 import { isBlockComplete } from "@/lib/simulador/exercise-completion";
 import {
   emptyPayload,
@@ -159,12 +160,13 @@ export function RuntimeExperienceV2({
     const answered = Object.keys(payloads).length;
     return (
       <main className="mx-auto max-w-2xl px-6 py-16 text-[var(--text-primary)]">
-        <p className="ts-caption-1 font-medium text-[var(--text-tertiary)]">Cierre</p>
-        <h1 className="mt-2 ts-title-2 font-semibold">Recorriste el caso</h1>
+        {/* eyebrow v2: extrabold + tracking + acento */}
+        <p className="ts-footnote font-extrabold uppercase tracking-[0.8px] text-[var(--accent)]">Wrap-up</p>
+        <h1 className="mt-2 ts-title-2 font-extrabold">You finished the case</h1>
         <p className="mt-3 text-[var(--text-secondary)]">
           {session.sessionId
-            ? "Tu sesión se está evaluando."
-            : `Modo preview: respondiste ${answered} de ${flat.length} ejercicios. Este caso aún no está sembrado en la base, así que no se evaluó (eso llega cuando el caso vive en producción).`}
+            ? "Your session is being scored."
+            : `Preview mode: you answered ${answered} of ${flat.length} exercises. This case is not seeded in the database yet, so it was not scored (that happens once the case is live in production).`}
         </p>
       </main>
     );
@@ -173,29 +175,37 @@ export function RuntimeExperienceV2({
   if (!slide) {
     return (
       <main className="mx-auto max-w-2xl px-6 py-16 text-[var(--text-primary)]">
-        <p>Caso sin slides.</p>
+        <p>This case has no slides.</p>
       </main>
     );
   }
 
-  const progress = ((idx + 1) / flat.length) * 100;
+  // AppleStepBar por sección (mismo chrome que case-demo): segmentos = slides
+  // de la sección actual · la posición global vive en el caption de abajo.
+  const sectionStart = flat.findIndex((f) => f.sectionId === slide.sectionId);
+  const sectionTotal = flat.filter((f) => f.sectionId === slide.sectionId).length;
+  const idxInSection = idx - sectionStart;
 
   return (
     <div className="min-h-screen bg-[var(--surface)]">
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col px-6 py-8 text-[var(--text-primary)]">
-      {/* barra de progreso + estado de sesión */}
+      {/* barra de pasos chunky (v2) + estado de sesión */}
       <div className="mb-8">
-        <AppleProgress value={progress} aria-label="Progreso del caso" />
+        <AppleStepBar
+          total={sectionTotal}
+          current={idxInSection}
+          ariaLabel="Case progress"
+        />
         <div className="mt-2 ts-caption-1 text-[var(--text-tertiary)]">
-          {slide.sectionName} · pantalla {idx + 1} de {flat.length}
+          {slide.sectionName} · screen {idx + 1} of {flat.length}
         </div>
       </div>
 
-      {/* encuadre de la slide */}
-      <p className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
+      {/* encuadre de la slide · eyebrow v2 + título extrabold */}
+      <p className="ts-footnote font-extrabold uppercase tracking-[0.8px] text-[var(--accent)]">
         {slide.sectionName}
       </p>
-      <h2 className="mt-1 ts-title-2 font-semibold tracking-tight">{slide.title}</h2>
+      <h2 className="mt-1 ts-title-2 font-extrabold tracking-tight">{slide.title}</h2>
       {slide.body && (
         <p className="mt-3 leading-relaxed text-[var(--text-secondary)]">
           {renderBody(slide.body)}
@@ -224,17 +234,17 @@ export function RuntimeExperienceV2({
           onPress={goPrev}
           isDisabled={idx === 0}
         >
-          Atrás
+          Back
         </AppleButton>
+        {/* v2: CTA canónico del flujo slide-a-slide con labio 3D */}
         {!ownsContinue && (
-          <AppleButton
-            tone="primary"
-            onPress={goNext}
+          <AppleSlideButton
+            onClick={goNext}
             isDisabled={!blockComplete || completing}
             isLoading={completing}
           >
-            {isLast ? (completing ? "Cerrando…" : "Terminar") : "Continuar"}
-          </AppleButton>
+            {isLast ? (completing ? "Finishing…" : "Finish") : "Continue"}
+          </AppleSlideButton>
         )}
       </div>
     </main>

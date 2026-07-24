@@ -6,7 +6,8 @@ import { cn } from "./utils";
  * AppleStepBar — indicador de pasos canónico del simulador.
  *
  * Mismo tratamiento que el runtime de casos (case-demo / case-template): una
- * fila de segmentos `h-[3px] flex-1 rounded-full`; el actual va en acento con
+ * fila de segmentos `h-1.5 flex-1 rounded-full` (6px — progreso chunky v2; la
+ * estética vieja ultra-fina era 3px); el actual va en acento con
  * `animate-pulse`, los completados en `text-secondary`, los pendientes en
  * `surface-3`. Fuente única — lo usan el runtime de casos, el exercise-lab y
  * todas las pantallas del onboarding. Hereda los tokens de color del ancestro
@@ -59,7 +60,7 @@ export function AppleStepBar({
           >
             <span
               className={cn(
-                "block h-[3px] w-full rounded-full transition-colors",
+                "block h-1.5 w-full rounded-full transition-colors",
                 tone(index),
               )}
             />
@@ -68,7 +69,7 @@ export function AppleStepBar({
           <span
             key={index}
             aria-current={index === current ? "step" : undefined}
-            className={cn("h-[3px] flex-1 rounded-full transition-colors", tone(index))}
+            className={cn("h-1.5 flex-1 rounded-full transition-colors", tone(index))}
           />
         ),
       )}

@@ -41,7 +41,7 @@ const BAND_TONE: Record<Band, { bg: string; text: string }> = {
 function BandPill({ band }: { band: Band | null }) {
   if (!band) {
     return (
-      <span className="ts-caption-1 text-[var(--text-tertiary)]">sin banda</span>
+      <span className="ts-caption-1 text-[var(--text-tertiary)]">no band</span>
     );
   }
   return (
@@ -56,7 +56,7 @@ function BandPill({ band }: { band: Band | null }) {
 
 function fmtDate(iso: string | null): string {
   if (!iso) return "";
-  return new Date(iso).toLocaleDateString("es-MX", {
+  return new Date(iso).toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
   });
@@ -86,7 +86,7 @@ export function ManagerCaseReviewClient({
       if (!res.ok) throw new Error(json?.error ?? `Error ${res.status}`);
       setData(json);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Error inesperado.");
+      setError(e instanceof Error ? e.message : "Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -106,14 +106,14 @@ export function ManagerCaseReviewClient({
           className="inline-flex items-center gap-1 ts-caption-1 text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-primary)]"
         >
           <AppleIcon name="chevronLeft" className="h-3.5 w-3.5" />
-          Casos del equipo
+          Team cases
         </Link>
 
         <h1 className="mt-4 ts-title-1 font-semibold tracking-tight text-[var(--text-primary)]">
           {title}
         </h1>
         <p className="mt-2 ts-body text-[var(--text-secondary)]">
-          Revisa el caso y cómo le fue a tu equipo.
+          Review the case and how your team did.
         </p>
 
         {loading ? (
@@ -124,9 +124,9 @@ export function ManagerCaseReviewClient({
         ) : error ? (
           <div className="mt-8">
             <AppleErrorState
-              title="No pudimos cargar el caso"
+              title="We couldn't load the case"
               body={error}
-              actionLabel="Reintentar"
+              actionLabel="Try again"
               onAction={load}
             />
           </div>
@@ -135,7 +135,7 @@ export function ManagerCaseReviewClient({
             {/* quién lo completó */}
             <section className="mt-8">
               <h2 className="ts-caption-2 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-                Quién lo completó
+                Who completed it
               </h2>
               {data && data.completions.length > 0 ? (
                 <div className="mt-3 divide-y divide-[var(--hairline)] overflow-hidden rounded-[var(--radius-lg)] bg-[var(--surface-2)]">
@@ -161,7 +161,7 @@ export function ManagerCaseReviewClient({
                             href={`/report/${c.session_id}`}
                             className="ts-caption-1 font-medium text-[var(--accent)] hover:underline"
                           >
-                            Ver reporte
+                            View report
                           </Link>
                         )}
                       </div>
@@ -170,7 +170,7 @@ export function ManagerCaseReviewClient({
                 </div>
               ) : (
                 <p className="mt-3 rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-5 ts-subhead text-[var(--text-secondary)]">
-                  Todavía nadie de tu equipo completó este caso.
+                  No one on your team has completed this case yet.
                 </p>
               )}
             </section>
@@ -179,7 +179,7 @@ export function ManagerCaseReviewClient({
             {data && data.strengths.length > 0 && (
               <section className="mt-8">
                 <h2 className="ts-caption-2 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-                  Fortalezas observadas en el equipo
+                  Strengths observed across the team
                 </h2>
                 <ul className="mt-3 space-y-2">
                   {data.strengths.map((s, i) => (
@@ -207,14 +207,14 @@ export function ManagerCaseReviewClient({
             {/* recorrido de slides */}
             <section className="mt-10">
               <h2 className="ts-caption-2 font-medium uppercase tracking-wider text-[var(--text-tertiary)]">
-                Contenido del caso
+                Case content
               </h2>
               <div className="mt-3">
                 {playableCase ? (
                   <CaseReviewWalkthrough playableCase={playableCase} />
                 ) : (
                   <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-8 text-center ts-subhead text-[var(--text-secondary)]">
-                    El recorrido de slides no está disponible para este caso.
+                    The slide walkthrough isn&apos;t available for this case.
                   </div>
                 )}
               </div>

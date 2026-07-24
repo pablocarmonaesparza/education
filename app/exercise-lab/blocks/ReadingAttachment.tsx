@@ -33,22 +33,22 @@ interface AttachmentItem {
 
 const DEFAULT_ATTACHMENTS: AttachmentItem[] = [
   {
-    name: "Contrato_Aurora_2026.pdf",
+    name: "Aurora_Contract_2026.pdf",
     size: "1.2 MB",
     kind: "pdf",
-    description: "Versión firmada del contrato con cláusula de nivel de servicio actualizada.",
+    description: "Signed contract with an updated service level clause.",
   },
   {
-    name: "Brief_Campaña_Q2.docx",
+    name: "Q2_Campaign_Brief.docx",
     size: "486 KB",
     kind: "docx",
-    description: "Objetivos, audiencias y entregables del relanzamiento.",
+    description: "Objectives, audiences, and deliverables for the relaunch.",
   },
   {
-    name: "Métricas_Retención.xlsx",
+    name: "Retention_Metrics.xlsx",
     size: "2.4 MB",
     kind: "xlsx",
-    description: "Cohort analysis últimas 12 semanas.",
+    description: "Cohort analysis, last 12 weeks.",
   },
 ];
 

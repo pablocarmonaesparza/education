@@ -63,56 +63,78 @@ const TYPOGRAPHY: DesignToken[] = [
 // COLORS — Surfaces
 // ============================================================================
 const SURFACES: DesignToken[] = [
-  { name: "surface",   defaultLight: "#ffffff", defaultDark: "#000000", kind: "color", description: "fondo principal" },
-  { name: "surface-2", defaultLight: "#fafafa", defaultDark: "#0a0a0c", kind: "color", description: "fondo elevado (cards, hover)" },
-  { name: "surface-3", defaultLight: "#f5f5f7", defaultDark: "#161618", kind: "color", description: "fondo más elevado (bubbles)" },
-  { name: "bubble",    defaultLight: "#f5f5f7", defaultDark: "#1c1c1e", kind: "color", description: "chat bubble, chip neutral" },
+  { name: "surface",        defaultLight: "#ffffff", defaultDark: "#0b0e1c", kind: "color", description: "fondo principal" },
+  { name: "surface-2",      defaultLight: "#fafbfd", defaultDark: "#141833", kind: "color", description: "fondo elevado (cards, hover)" },
+  { name: "surface-3",      defaultLight: "#f5f6fb", defaultDark: "#1d2342", kind: "color", description: "fondo más elevado (bubbles)" },
+  { name: "surface-tint",   defaultLight: "#f5f7ff", defaultDark: "#131b3f", kind: "color", description: "tinte azulado de sección (v2)" },
+  { name: "bubble",         defaultLight: "#f5f6fb", defaultDark: "#1d2342", kind: "color", description: "chat bubble, chip neutral" },
+  { name: "ink-band",       defaultLight: "#171d33", defaultDark: "#141833", kind: "color", description: "banda oscura ink (footer, CTA band v2)" },
+  { name: "ink-band-text",  defaultLight: "#b7c0de", defaultDark: "#a8b1d1", kind: "color", description: "texto sobre banda ink" },
+  { name: "ink-band-text-muted", defaultLight: "#8b93b8", defaultDark: "#8089ad", kind: "color", description: "texto atenuado sobre banda ink" },
 ];
 
 // ============================================================================
 // COLORS — Text
 // ============================================================================
 const TEXT: DesignToken[] = [
-  { name: "text-primary",   defaultLight: "#1d1d1f", defaultDark: "#f5f5f7", kind: "color", description: "texto principal, headings" },
-  { name: "text-secondary", defaultLight: "#6e6e73", defaultDark: "#a1a1a6", kind: "color", description: "texto secundario, body" },
-  { name: "text-tertiary",  defaultLight: "#86868b", defaultDark: "#8e8e93", kind: "color", description: "texto terciario, captions" },
-  { name: "text-disabled",  defaultLight: "#c7c7cc", defaultDark: "#48484a", kind: "color", description: "disabled" },
+  { name: "text-primary",   defaultLight: "#171d33", defaultDark: "#eef1fb", kind: "color", description: "texto principal, headings (tinta ink v2)" },
+  { name: "text-secondary", defaultLight: "#4a5372", defaultDark: "#a8b1d1", kind: "color", description: "texto secundario, body" },
+  { name: "text-tertiary",  defaultLight: "#7a83a3", defaultDark: "#8089ad", kind: "color", description: "texto terciario, captions" },
+  { name: "text-disabled",  defaultLight: "#9aa3c0", defaultDark: "#4a5372", kind: "color", description: "disabled" },
 ];
 
 // ============================================================================
 // COLORS — Borders
 // ============================================================================
 const BORDERS: DesignToken[] = [
-  { name: "border",          defaultLight: "#e5e5ea", defaultDark: "#2c2c2e", kind: "color", description: "borde estándar" },
-  { name: "border-strong",   defaultLight: "#d2d2d7", defaultDark: "#3a3a3c", kind: "color", description: "borde hover/focus" },
-  { name: "hairline",        defaultLight: "rgba(0, 0, 0, 0.06)",   defaultDark: "rgba(255, 255, 255, 0.08)", kind: "color", description: "divider sutil" },
-  { name: "shadow",          defaultLight: "rgba(0, 0, 0, 0.04)",   defaultDark: "rgba(0, 0, 0, 0.6)",        kind: "color", description: "tinte de sombra" },
+  { name: "border",          defaultLight: "#e4e8f4", defaultDark: "#262c4a", kind: "color", description: "borde estándar" },
+  { name: "border-strong",   defaultLight: "#c4cce3", defaultDark: "#38406a", kind: "color", description: "borde hover/focus" },
+  { name: "hairline",        defaultLight: "rgba(23, 29, 51, 0.07)", defaultDark: "rgba(255, 255, 255, 0.08)", kind: "color", description: "divider sutil" },
+  { name: "hairline-strong", defaultLight: "#c4cce3", defaultDark: "#38406a", kind: "color", description: "hairline marcado (v2)" },
+  { name: "shadow",          defaultLight: "rgba(23, 29, 51, 0.05)", defaultDark: "rgba(0, 0, 0, 0.6)",        kind: "color", description: "tinte de sombra" },
 ];
 
 // ============================================================================
 // COLORS — Accent (Itera brand)
 // ============================================================================
 const ACCENT: DesignToken[] = [
-  { name: "accent",       defaultLight: "#1472ff", defaultDark: null, kind: "color", description: "azul Itera, CTAs y links" },
-  { name: "accent-hover", defaultLight: "#0e5fcc", defaultDark: null, kind: "color", description: "accent en hover/pressed" },
-  { name: "accent-strong", defaultLight: "#0e5fcc", defaultDark: null, kind: "color", description: "fondo sólido bajo texto blanco (AA 5:1) — botones/badges primary, DEC-009" },
-  { name: "accent-soft",  defaultLight: "rgba(20, 114, 255, 0.08)", defaultDark: "rgba(20, 114, 255, 0.14)", kind: "color", description: "fondo de chip accent" },
-  { name: "accent-ring",  defaultLight: "rgba(20, 114, 255, 0.24)", defaultDark: "rgba(20, 114, 255, 0.32)", kind: "color", description: "focus ring" },
+  { name: "accent",        defaultLight: "#003aff", defaultDark: "#7a94ff", kind: "color", description: "azul profundo Itera v2 — texto, bordes, focus; CTAs en light" },
+  { name: "accent-hover",  defaultLight: "#0026a8", defaultDark: "#1e46f2", kind: "color", description: "accent en hover/pressed" },
+  { name: "accent-strong", defaultLight: "#003aff", defaultDark: "#2e55ff", kind: "color", description: "fondo sólido bajo texto blanco (AA) — botones/badges primary, DEC-009" },
+  { name: "accent-lip",    defaultLight: "#0026a8", defaultDark: "#1233c2", kind: "color", description: "labio 3D v2 (box-shadow 0 4px 0) de botones primary" },
+  { name: "accent-soft",   defaultLight: "rgba(0, 58, 255, 0.08)",  defaultDark: "rgba(46, 85, 255, 0.16)",   kind: "color", description: "fondo de chip accent" },
+  { name: "accent-border", defaultLight: "rgba(0, 58, 255, 0.3)",   defaultDark: "rgba(122, 148, 255, 0.35)", kind: "color", description: "borde accent translúcido (eyebrow chips v2)" },
+  { name: "accent-ring",   defaultLight: "rgba(0, 58, 255, 0.24)",  defaultDark: "rgba(122, 148, 255, 0.32)", kind: "color", description: "focus ring" },
 ];
 
 // ============================================================================
 // COLORS — Bands (semantic status)
 // ============================================================================
 const BANDS: DesignToken[] = [
-  { name: "band-a-bg",   defaultLight: "#e8f5ed", defaultDark: "rgba(34, 197, 94, 0.14)",  kind: "color", description: "Alto / Verde — fondo" },
-  { name: "band-a-text", defaultLight: "#0a7e3a", defaultDark: "#4ade80",                   kind: "color", description: "Alto — texto" },
-  { name: "band-a-bar",  defaultLight: "#0a7e3a", defaultDark: "#22c55e",                   kind: "color", description: "Alto — barra/punto" },
-  { name: "band-m-bg",   defaultLight: "#fef4e6", defaultDark: "rgba(245, 158, 11, 0.14)", kind: "color", description: "Medio / Ámbar — fondo" },
-  { name: "band-m-text", defaultLight: "#a05a00", defaultDark: "#fbbf24",                   kind: "color", description: "Medio — texto" },
-  { name: "band-m-bar",  defaultLight: "#cc8800", defaultDark: "#f59e0b",                   kind: "color", description: "Medio — barra/punto" },
-  { name: "band-b-bg",   defaultLight: "#fde9e9", defaultDark: "rgba(239, 68, 68, 0.14)",  kind: "color", description: "Bajo / Rojo — fondo" },
-  { name: "band-b-text", defaultLight: "#a01818", defaultDark: "#f87171",                   kind: "color", description: "Bajo — texto" },
-  { name: "band-b-bar",  defaultLight: "#c0282b", defaultDark: "#ef4444",                   kind: "color", description: "Bajo — barra/punto" },
+  { name: "band-a-bg",   defaultLight: "#e2f7f2", defaultDark: "rgba(15, 191, 143, 0.14)", kind: "color", description: "Alto / Verde — fondo" },
+  { name: "band-a-text", defaultLight: "#067050", defaultDark: "#45e0b2",                   kind: "color", description: "Alto — texto" },
+  { name: "band-a-bar",  defaultLight: "#0fbf8f", defaultDark: null,                        kind: "color", description: "Alto — barra/punto" },
+  { name: "band-m-bg",   defaultLight: "#fcf2dd", defaultDark: "rgba(232, 162, 12, 0.14)", kind: "color", description: "Medio / Ámbar — fondo" },
+  { name: "band-m-text", defaultLight: "#8a6206", defaultDark: "#f4c14d",                   kind: "color", description: "Medio — texto" },
+  { name: "band-m-bar",  defaultLight: "#e8a20c", defaultDark: null,                        kind: "color", description: "Medio — barra/punto" },
+  { name: "band-b-bg",   defaultLight: "#feecef", defaultDark: "rgba(240, 70, 97, 0.16)",  kind: "color", description: "Bajo / Rojo — fondo" },
+  { name: "band-b-text", defaultLight: "#c42847", defaultDark: "#ff8b9d",                   kind: "color", description: "Bajo — texto" },
+  { name: "band-b-bar",  defaultLight: "#f04661", defaultDark: null,                        kind: "color", description: "Bajo — barra/punto" },
+];
+
+// ============================================================================
+// COLORS — Semánticos v2 (familia Duolingo-craft; los leen labios, traffic
+// lights de AppleBrowserFrame, dot de AppleEyebrowChip, etc.)
+// ============================================================================
+const V2_SEMANTIC: DesignToken[] = [
+  { name: "v2-green",        defaultLight: "#0fbf8f", defaultDark: "#2fd6a5",                    kind: "color", description: "verde v2 — éxito, dot de status" },
+  { name: "v2-green-dark",   defaultLight: "#0a8a66", defaultDark: "#45e0b2",                    kind: "color", description: "verde oscuro — texto/labio verde" },
+  { name: "v2-green-border", defaultLight: "#bfeedd", defaultDark: "rgba(15, 191, 143, 0.35)",  kind: "color", description: "borde de chip verde" },
+  { name: "v2-red",          defaultLight: "#f04661", defaultDark: "#ff6b82",                    kind: "color", description: "rojo v2 — danger, traffic light" },
+  { name: "v2-red-dark",     defaultLight: "#c42847", defaultDark: "#ff8b9d",                    kind: "color", description: "rojo oscuro — labio de botones danger" },
+  { name: "v2-amber",        defaultLight: "#e8a20c", defaultDark: "#f4b83c",                    kind: "color", description: "ámbar v2 — warning, traffic light" },
+  { name: "v2-amber-dark",   defaultLight: "#8a6206", defaultDark: "#f4c14d",                    kind: "color", description: "ámbar oscuro — texto warning" },
+  { name: "v2-orange",       defaultLight: "#f97d2b", defaultDark: "#ff9350",                    kind: "color", description: "naranja v2 — avatares, acentos cálidos" },
 ];
 
 // ============================================================================
@@ -121,10 +143,10 @@ const BANDS: DesignToken[] = [
 const RADIUS: DesignToken[] = [
   { name: "radius-xs",   defaultLight: "4px",    defaultDark: null, kind: "radius", description: "chips muy pequeñas" },
   { name: "radius-sm",   defaultLight: "8px",    defaultDark: null, kind: "radius", description: "chips, badges" },
-  { name: "radius-md",   defaultLight: "12px",   defaultDark: null, kind: "radius", description: "botones, inputs, selects (DEC-005)" },
-  { name: "radius-lg",   defaultLight: "16px",   defaultDark: null, kind: "radius", description: "cards" },
-  { name: "radius-xl",   defaultLight: "20px",   defaultDark: null, kind: "radius", description: "modal, dialog" },
-  { name: "radius-2xl",  defaultLight: "24px",   defaultDark: null, kind: "radius", description: "hero card, sheet" },
+  { name: "radius-md",   defaultLight: "14px",   defaultDark: null, kind: "radius", description: "botones, inputs, selects (DEC-005, v2)" },
+  { name: "radius-lg",   defaultLight: "20px",   defaultDark: null, kind: "radius", description: "cards (v2)" },
+  { name: "radius-xl",   defaultLight: "24px",   defaultDark: null, kind: "radius", description: "modal, dialog, frames (v2)" },
+  { name: "radius-2xl",  defaultLight: "28px",   defaultDark: null, kind: "radius", description: "hero card, sheet (v2)" },
   { name: "radius-full", defaultLight: "9999px", defaultDark: null, kind: "radius", description: "pills, avatars" },
 ];
 
@@ -132,11 +154,19 @@ const RADIUS: DesignToken[] = [
 // SHADOW
 // ============================================================================
 const SHADOW: DesignToken[] = [
-  { name: "shadow-xs", defaultLight: "0 1px 2px rgba(0, 0, 0, 0.04)",    defaultDark: null, kind: "shadow", description: "elevación 1: subtle" },
-  { name: "shadow-sm", defaultLight: "0 2px 4px rgba(0, 0, 0, 0.06)",    defaultDark: null, kind: "shadow", description: "elevación 2: cards en reposo" },
-  { name: "shadow-md", defaultLight: "0 4px 12px rgba(0, 0, 0, 0.08)",   defaultDark: null, kind: "shadow", description: "elevación 3: hover" },
-  { name: "shadow-lg", defaultLight: "0 8px 24px rgba(0, 0, 0, 0.10)",   defaultDark: null, kind: "shadow", description: "elevación 4: popovers, dropdowns" },
-  { name: "shadow-xl", defaultLight: "0 16px 48px rgba(0, 0, 0, 0.12)",  defaultDark: null, kind: "shadow", description: "elevación 5: modales" },
+  // Profundidad v2: labio sólido (interactivos) + flotación suave (cards)
+  { name: "shadow-lip",        defaultLight: "0 4px 0 var(--accent-lip)",           defaultDark: null, kind: "shadow", description: "labio 3D — botones primary (v2)" },
+  { name: "shadow-lip-lg",     defaultLight: "0 5px 0 var(--accent-lip)",           defaultDark: null, kind: "shadow", description: "labio grande — AppleSlideButton (v2)" },
+  { name: "shadow-lip-danger", defaultLight: "0 4px 0 var(--v2-red-dark)",          defaultDark: null, kind: "shadow", description: "labio rojo — botones danger (v2)" },
+  { name: "shadow-card",       defaultLight: "0 10px 30px rgba(23, 29, 51, 0.05)",  defaultDark: "0 10px 30px rgba(0, 0, 0, 0.45)", kind: "shadow", description: "cards en reposo (v2)" },
+  { name: "shadow-float",      defaultLight: "0 24px 60px rgba(23, 29, 51, 0.14)",  defaultDark: "0 24px 60px rgba(0, 0, 0, 0.5)",  kind: "shadow", description: "flotación — mocks, browser frames (v2)" },
+  { name: "shadow-float-lg",   defaultLight: "0 30px 70px rgba(23, 29, 51, 0.16)",  defaultDark: "0 30px 70px rgba(0, 0, 0, 0.55)", kind: "shadow", description: "flotación grande — hero (v2)" },
+  // Difusas legacy (menus/overlays las siguen leyendo) — tono a ink
+  { name: "shadow-xs", defaultLight: "0 1px 2px rgba(23, 29, 51, 0.04)",    defaultDark: null, kind: "shadow", description: "elevación 1: subtle" },
+  { name: "shadow-sm", defaultLight: "0 2px 4px rgba(23, 29, 51, 0.06)",    defaultDark: null, kind: "shadow", description: "elevación 2: legacy sutil" },
+  { name: "shadow-md", defaultLight: "0 4px 12px rgba(23, 29, 51, 0.08)",   defaultDark: null, kind: "shadow", description: "elevación 3: hover" },
+  { name: "shadow-lg", defaultLight: "0 8px 24px rgba(23, 29, 51, 0.1)",    defaultDark: null, kind: "shadow", description: "elevación 4: popovers, dropdowns" },
+  { name: "shadow-xl", defaultLight: "0 16px 48px rgba(23, 29, 51, 0.12)",  defaultDark: null, kind: "shadow", description: "elevación 5: modales" },
 ];
 
 // ============================================================================
@@ -169,10 +199,11 @@ export const TOKEN_SECTIONS: TokenSection[] = [
   { id: "surfaces",   title: "Surfaces",    blurb: "Fondos. surface es el principal; surface-2/3 son elevaciones progresivas.",      tokens: SURFACES },
   { id: "text",       title: "Texto",       blurb: "4 niveles de contraste sobre surface. text-primary para headings; text-tertiary para captions.", tokens: TEXT },
   { id: "borders",    title: "Borders & hairlines", blurb: "Líneas sutiles entre superficies. hairline es el divider más sutil.",     tokens: BORDERS },
-  { id: "accent",     title: "Accent (azul Itera)", blurb: "El único color de brand. CTAs, links, focus rings, chips primarios.",     tokens: ACCENT },
+  { id: "accent",     title: "Accent (azul Itera v2)", blurb: "El único color de brand (azul profundo #003aff). CTAs, links, focus rings, labio 3D.", tokens: ACCENT },
   { id: "bands",      title: "Bandas (status)", blurb: "Verde/Ámbar/Rojo semánticos para readiness y health. A=alto, M=medio, B=bajo.", tokens: BANDS },
-  { id: "radius",     title: "Border radius", blurb: "Todos los componentes redondeados usan estos 7 tokens. DEC-005: inputs y botones = radius-md (12px).", tokens: RADIUS },
-  { id: "shadow",     title: "Shadow (elevation)", blurb: "5 niveles de elevación. xs=subtle, xl=modal.", tokens: SHADOW },
+  { id: "v2-semantic", title: "Semánticos v2", blurb: "Familia de color v2 (Duolingo-craft): labios danger, traffic lights, dots de status.", tokens: V2_SEMANTIC },
+  { id: "radius",     title: "Border radius", blurb: "Todos los componentes redondeados usan estos 7 tokens. DEC-005: inputs y botones = radius-md (14px v2).", tokens: RADIUS },
+  { id: "shadow",     title: "Shadow (profundidad v2)", blurb: "Labio sólido para interactivos (lip), flotación suave para cards (card/float) + 5 difusas legacy.", tokens: SHADOW },
   { id: "motion",     title: "Motion (duraciones + easings)", blurb: "Cambiar motion-base afecta todas las transiciones estándar.", tokens: MOTION },
   { id: "spacing",    title: "Spacing (ritmo)", blurb: "Ritmo vertical de sección y ancho de lectura. El micro-spacing (gaps/paddings) usa la escala de Tailwind.", tokens: SPACING },
 ];

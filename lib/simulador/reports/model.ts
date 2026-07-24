@@ -1,6 +1,7 @@
 import {
   BAND_REPRESENTATIVE_SCORE,
   DIMENSIONS,
+  MANAGER_ACTIONS,
   bandFromScore100,
   canonicalDimensionId,
 } from "@/lib/simulador/config";
@@ -87,11 +88,32 @@ export interface ReportEnvelope {
   practice?: ReportPracticeEntry[];
 }
 
+// Capa de display: los ids A/M/B son identificadores (CHECK constraints en BD)
+// y no cambian. Solo se traduce lo que ve el usuario.
 export const BAND_DISPLAY: Record<BandKey, string> = {
-  A: "Alto",
-  M: "Medio",
-  B: "Bajo",
+  A: "High",
+  M: "Medium",
+  B: "Low",
 };
+
+export type RecommendationAction = ReportPayload["recommendation"]["action"];
+
+// Capa de display de la recomendación. Los ids (pilotar/entrenar/pausar/escalar)
+// son valores de BD (CHECK constraints en 3 tablas + la función SQL de riesgo) y
+// NO cambian. MANAGER_ACTIONS (config.ts) es la fuente única del label: nadie
+// imprime el enum crudo al usuario.
+export const ACTION_DISPLAY = Object.fromEntries(
+  MANAGER_ACTIONS.map((action) => [action.id, action.label]),
+) as Record<RecommendationAction, string>;
+
+export function isRecommendationAction(
+  value: unknown,
+): value is RecommendationAction {
+  return (
+    typeof value === "string" &&
+    MANAGER_ACTIONS.some((action) => action.id === value)
+  );
+}
 
 // R-13: el mapeo score↔banda vive en lib/simulador/config.ts (espejo del YAML
 // canónico de la rúbrica). Aquí solo se re-exporta el representativo para no
@@ -172,7 +194,7 @@ export function normalizeReportDimensions(
         id: dimension.id,
         band: derivedBand,
         rationale:
-          "Reporte generado con rúbrica legacy; esta banda se deriva del promedio disponible hasta re-evaluar con la rúbrica de seis dimensiones.",
+          "Report generated with the legacy rubric; this band is derived from the available average until it is re-assessed with the six-dimension rubric.",
         confidence: 0.35,
         source: "derived",
       };
@@ -218,9 +240,9 @@ export function computeOverall(payload: ReportDimensionsSource) {
 export function redactSensitiveEvidence(value: string, severity: string) {
   let redacted = value
     .replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/giu, "[email]")
-    .replace(/\+?\d[\d\s().-]{7,}\d/gu, "[telefono]")
-    .replace(/\b(?:USD|US\$|\$)\s?\d[\d,._]*(?:\.\d+)?\b/giu, "[monto]")
-    .replace(/\b\d{5,}(?:[,.]\d+)?\b/gu, "[numero]");
+    .replace(/\+?\d[\d\s().-]{7,}\d/gu, "[phone]")
+    .replace(/\b(?:USD|US\$|\$)\s?\d[\d,._]*(?:\.\d+)?\b/giu, "[amount]")
+    .replace(/\b\d{5,}(?:[,.]\d+)?\b/gu, "[number]");
 
   if (severity === "high" && redacted.length > 280) {
     redacted = `${redacted.slice(0, 277).trim()}...`;

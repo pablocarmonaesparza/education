@@ -22,13 +22,16 @@ export const meta = {
 // recortó al ver el resultado). El aprendizaje vive en ejercicio + feedback.
 // ============================================================================
 
-const COPY_RULES = `Reglas de copy de Itera (obligatorias):
-- Español neutro LATAM, corporate claro, sin jerga.
-- Cero em dash. Usar punto, coma o paréntesis.
-- Cero acrónimos en prosa; la única sigla permitida es IA ("inteligencia artificial" o "IA").
-- Segunda persona, frases cortas.
-- No exageras, no vendes, no usas superlativos vacíos.
-- Precisión factual: si no estás seguro de un dato de la herramienta, NO lo afirmes; enseña el criterio de uso (que no caduca) más que specs volátiles.`
+// Pivot de mercado 2026-07-15: el producto es inglés de EEUU. Manda el glosario
+// docs/simulador/front/copy/00_EN_GLOSSARY.md (AI fluency / judgment / practice).
+const COPY_RULES = `Itera copy rules (mandatory — all OUTPUT in US business English):
+- US business English. Plain, direct, short sentences. No corporate-startup jargon.
+- No em dashes. Use a period, comma, or parentheses.
+- No acronyms in prose; the only allowed one is AI (always capitalized, never spelled out).
+- Second person ("you", "your team"). Sentence case titles, no period on titles.
+- No hype, no selling, no empty superlatives.
+- Currency explicit in USD, US number format ($1,250.00 USD). US-plausible names and companies.
+- Factual precision: if you are not sure of a fact about the tool, do NOT state it; teach the judgment of use (which does not expire) over volatile specs.`
 
 // args puede llegar como objeto {brief}, como el brief directo, o como string
 // JSON (según el caller). Normalizamos las tres formas.
@@ -106,7 +109,7 @@ Contexto del cambio: ${brief.what_changed}
 Por qué importa: ${brief.why_matters}
 Audiencia: ${brief.business_context}
 
-Estructura en cinco partes MUY cortas con subtítulos en **negrita**: **Qué es.** / **Qué cambió.** / **Qué puede.** / **Qué no puede.** / **Por qué importa.** (cierra anticipando que va a practicar).
+Estructura en cinco partes MUY cortas con subtítulos en **negrita** (en inglés): **What it is.** / **What changed.** / **What it can do.** / **What it cannot do.** / **Why it matters.** (cierra anticipando que va a practicar).
 
 LÍMITE DURO: ~150 palabras en total (regla de Pablo: cero muro de texto; el aprendizaje vive en los ejercicios, no aquí). No reveles respuestas de ejercicios.`,
   { label: 'E1:explicar', phase: 'E1 · Explicar', schema: E1_SCHEMA, effort: 'high' },

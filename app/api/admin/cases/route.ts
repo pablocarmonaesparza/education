@@ -70,7 +70,7 @@ export async function GET() {
   if (tplError) {
     console.error("[admin/cases] list failed", tplError);
     return NextResponse.json(
-      { error: "Error listando casos." },
+      { error: "Could not list cases." },
       { status: 500 },
     );
   }
@@ -107,14 +107,14 @@ export async function GET() {
   if (variantsRes.error) {
     console.error("[admin/cases] variants join failed", variantsRes.error);
     return NextResponse.json(
-      { error: "Error resolviendo el uso de los casos." },
+      { error: "Could not resolve case usage." },
       { status: 500 },
     );
   }
   if (orgsRes.error) {
     console.error("[admin/cases] orgs join failed", orgsRes.error);
     return NextResponse.json(
-      { error: "Error resolviendo las organizaciones." },
+      { error: "Could not resolve organizations." },
       { status: 500 },
     );
   }
@@ -147,7 +147,7 @@ export async function GET() {
     if (sessError) {
       console.error("[admin/cases] sessions join failed", sessError);
       return NextResponse.json(
-        { error: "Error resolviendo las sesiones." },
+        { error: "Could not resolve sessions." },
         { status: 500 },
       );
     }

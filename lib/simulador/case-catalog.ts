@@ -32,9 +32,9 @@ export interface CaseCatalogItem {
 }
 
 export const LEVEL_LABEL: Record<CatalogLevel, string> = {
-  N1: "N1 · Fundamentos",
-  N2: "N2 · Operación",
-  N3: "N3 · Automatización",
+  N1: "N1 · Fundamentals",
+  N2: "N2 · Operations",
+  N3: "N3 · Automation",
 };
 
 export function departmentLabel(careerKey: string | null | undefined): string {

@@ -36,7 +36,7 @@ export async function GET(request: Request) {
 
   if (!token_hash || !type) {
     return NextResponse.redirect(
-      `${origin}/auth/login?error=${encodeURIComponent('Link inválido o incompleto.')}`
+      `${origin}/auth/login?error=${encodeURIComponent('Invalid or incomplete link.')}`
     );
   }
 
@@ -48,8 +48,8 @@ export async function GET(request: Request) {
     console.error('[auth/confirm] verifyOtp failed:', error.message);
     const friendly =
       error.message.includes('expired') || error.message.includes('invalid')
-        ? 'Este link expiró o ya fue usado. Pide uno nuevo.'
-        : 'No pudimos verificar tu link. Intenta de nuevo.';
+        ? 'This link expired or was already used. Request a new one.'
+        : 'We could not verify your link. Try again.';
     return NextResponse.redirect(
       `${origin}/auth/login?error=${encodeURIComponent(friendly)}`
     );

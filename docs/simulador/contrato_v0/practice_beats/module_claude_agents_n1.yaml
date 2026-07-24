@@ -1,0 +1,205 @@
+practice_beat:
+  id: module_claude_agents_n1
+  status: active
+  dimension: juicio
+  level: 1
+  career_key: general
+  triggered_by_gap: []
+  duration_max_seconds: 360
+  module_kind: topic
+  topic: Claude Code agents for non-engineers
+  principle_card:
+    headline: Delegating the work is fine. Delegating the verification is the mistake
+    body: >-
+      An agent that runs eleven steps alone can carry one wrong assumption through all eleven, so
+      your review moves from checking the writing to checking the decisions it made along the way.
+  practice_exercise:
+    type: formative_slides
+    blocks:
+      - ai_output_review
+      - categorize_rows
+    prompt: >-
+      AI update practice: Claude Code agents for non-engineers. It is Thursday afternoon and Dana in
+      ops just gave an AI agent its first real assignment: reconcile this month's vendor invoices
+      against the purchase orders and draft the summary for accounting. Twelve minutes later it
+      reports done, eleven steps, finished report, drafted email. Nobody has read any of it yet.
+      That is your job now.
+  completion_criteria: >-
+    Complete every exercise (each row and each segment answered) and review the feedback for each
+    one.
+  exit:
+    contributes_to_resim_score: false
+  slides:
+    - id: portada
+      kind: cover
+      title: The agent says it is done
+      body: >-
+        It is Thursday afternoon and Dana in ops just gave an AI agent its first real assignment:
+        reconcile this month's vendor invoices against the purchase orders and draft the summary for
+        accounting. Twelve minutes later it reports done, eleven steps, finished report, drafted
+        email. Nobody has read any of it yet. That is your job now.
+      chips:
+        - N1 · Fundamentals
+        - AI update
+        - 6 min
+    - id: contexto
+      kind: reading
+      title: "AI agents: what changes and what does not"
+      body: >-
+        **What it is.** An AI agent does not just draft the text you asked for. It takes a whole
+        assignment, plans the steps, and works through them on its own until it hands you a finished
+        result.
+
+
+        **What changed.** Before, you drove every step: ask, read, ask again. Now tools like Claude
+        Code run multi-step work alone: pull the data, build the report, draft the emails.
+
+
+        **What it can do.** Reconcile invoices against purchase orders. Turn four exports into one
+        weekly report with a summary email. Rename and file hundreds of documents by a rule you give
+        it.
+
+
+        **What it cannot do.** It cannot tell when a mid-run assumption is wrong. If information is
+        missing, it fills the gap with something plausible and keeps moving, and the polished result
+        hides that decision.
+
+
+        **Why it matters.** The risk moved from bad writing to unverified delegation. You are about
+        to practice catching it.
+    - id: ejercicio_1
+      kind: exercise
+      blockId: ai_output_review
+      title: Read the run summary before anyone trusts it
+      body: >-
+        The agent finished Dana's reconciliation and posted this completion summary. Mark the lines
+        that need attention before the report goes anywhere, and the ones worth keeping.
+      caseContext:
+        segments:
+          - id: s1
+            text: >-
+              Matched 62 of 64 invoices to their purchase orders using the invoice and order numbers
+              in the files you provided.
+            flagIfMarked: claim_no_verificado
+          - id: s2
+            text: >-
+              Two invoices from Harbor Supply had no purchase order number, so I assumed they belong
+              to the open March order and included them in the reconciled total.
+            flagIfMarked: claim_no_verificado
+          - id: s3
+            text: >-
+              I also posted the finished report to the company-wide operations channel, including
+              each vendor's bank account and routing numbers, so everyone has the full picture.
+            flagIfMarked: dato_sensible
+          - id: s4
+            text: >-
+              One item I did not touch: invoice 2291 is $18,400.00 USD, about double its usual
+              range, so I set it aside and flagged it for a human decision.
+            flagIfMarked: frase_reutilizable
+      feedback:
+        kind: segments
+        segments:
+          - id: s1
+            shouldFlag: false
+            why: >-
+              The match rate is grounded in the files Dana handed over, and the agent says exactly
+              how it did the work. When an agent works from data you gave it and shows its method,
+              this is what a trustworthy line looks like. Spot-check a few matches instead of
+              re-reading all 62.
+          - id: s2
+            shouldFlag: true
+            why: >-
+              The word 'assumed' buried in the middle of a run is the whole lesson. Agents do not
+              stop when data is missing; they pick something plausible and keep moving, and the
+              total now carries that guess. Make it a standing rule: items with missing data come
+              back as questions, not inside a finished number.
+          - id: s3
+            shouldFlag: true
+            why: >-
+              The agent optimized for helpful, not for confidential. Bank and routing numbers in a
+              company-wide channel is a real exposure, and it happened as a side step nobody
+              requested. Distribution stays your decision: an agent delivers to you, and you decide
+              who sees what.
+          - id: s4
+            shouldFlag: true
+            why: >-
+              This is exactly what you want an agent to do with an anomaly: isolate it, hold it, and
+              hand the decision to a person. Keep the pattern and put it in your standing
+              instructions, so unusual amounts always come back as flags instead of getting resolved
+              quietly.
+    - id: ejercicio_2
+      kind: exercise
+      blockId: categorize_rows
+      title: "Monday's list: choose the hand-off"
+      body: >-
+        Marcus runs marketing operations and wants the agent to take real work off his plate this
+        week. For each task, pick how he should hand it off.
+      caseContext:
+        actions:
+          - value: run_whole
+            label: Hand it off whole, review the finished result
+          - value: approve_before_acting
+            label: Let it prepare everything, approve before it acts
+          - value: not_yet
+            label: Do not hand this one off yet
+        rows:
+          - id: r1
+            label: Rename 300 campaign files to the new naming convention
+          - id: r2
+            label: Build the weekly performance report from the four ad platform exports
+          - id: r3
+            label: Send the win-back email with a 20% discount to 1,200 lapsed subscribers
+          - id: r4
+            label: Delete the contacts that look like duplicates in the customer database
+          - id: r5
+            label: Answer the client's security questionnaire using everything on the shared drive
+          - id: r6
+            label: Decide which underperforming campaigns to pause and move the budget
+      feedback:
+        kind: rows
+        rows:
+          - id: r1
+            correct: run_whole
+            why: >-
+              Every rule is specified, a mistake is reversible, and you can verify by sampling ten
+              files at the end. Mechanical, fully described, low blast radius: the perfect first
+              task to hand an agent whole.
+          - id: r2
+            correct: run_whole
+            why: >-
+              The four exports are the source and the agent transforms what is in front of it, which
+              is exactly the multi-step work agents are good at. Review the finished report and
+              sanity-check one number per platform against the original export before it goes out.
+          - id: r3
+            correct: approve_before_acting
+            why: >-
+              Preparing the segments and drafting the email is agent work. Sending to 1,200
+              customers with a discount attached is irreversible and costs real money, so the
+              checkpoint goes right before send. The agent does everything up to the button; Marcus
+              presses it.
+          - id: r4
+            correct: approve_before_acting
+            why: >-
+              'Look like duplicates' is a judgment call and deletion is destructive. Have the agent
+              produce the merge list with its reasons, approve it, then let it execute. Same work,
+              one checkpoint, no unrecoverable surprise.
+          - id: r5
+            correct: not_yet
+            why: >-
+              Two problems at once: unbounded access to everything on the drive, and output that
+              goes straight to a client. Scope the data to what the questionnaire needs and keep a
+              person between the agent and the client. Until both are true, this stays off the list.
+          - id: r6
+            correct: not_yet
+            why: >-
+              Pausing campaigns and moving budget is the judgment the company pays Marcus for. The
+              agent can prepare the analysis that informs the call, but 'decide and execute' hands
+              over the decision itself. That is not delegation, that is abdication.
+    - id: cierre
+      kind: closing
+      title: Delegation is a skill, not a shortcut
+      body: >-
+        You practiced two things: reading an agent's run for the decisions hidden in the middle, and
+        choosing the right hand-off for each task. Tomorrow, before you give an agent an assignment,
+        decide two things first: where the approval checkpoint goes, and which items must come back
+        as questions instead of finished work.

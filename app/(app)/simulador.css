@@ -4,34 +4,54 @@
    tema cambie con prefers-color-scheme via next-themes attribute=class. */
 
 .simulador-root {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter",
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* PROMOCIÓN redesign-v2 → global (2026-07-16, orden de Pablo: "dale con todo").
+     Los valores Apple anteriores viven en git history. El scope .redesign-v2 de
+     abajo queda como alias legacy (la landing lo sigue montando) — sus valores
+     ahora son idénticos a estos. Jakarta se carga en app/layout.tsx via
+     next/font (--font-jakarta). */
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-feature-settings: "ss01", "ss02", "cv11";
-  letter-spacing: -0.011em;
+  letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* Accent (azul Itera, ambos modos) */
-  --accent: #1472ff;
-  --accent-hover: #0e5fcc;
-  --accent-strong: #0e5fcc; /* fondo sólido bajo texto blanco — AA 5:1 (DEC-009); la marca sigue siendo --accent */
-  --accent-soft: rgba(20, 114, 255, 0.08);
-  --accent-ring: rgba(20, 114, 255, 0.24);
+  /* Accent v2 (azul profundo Duolingo-craft) */
+  --accent: #003aff;
+  --accent-hover: #0026a8;
+  --accent-strong: #003aff; /* blanco encima = 6.89:1 AA */
+  --accent-lip: #0026a8;    /* labio 3D (box-shadow 0 4px 0) */
+  --accent-soft: rgba(0, 58, 255, 0.08);
+  --accent-border: rgba(0, 58, 255, 0.3);
+  --accent-ring: rgba(0, 58, 255, 0.24);
+  --accent-glow: rgba(0, 58, 255, 0.16);
+  --accent-glow-strong: rgba(0, 58, 255, 0.5);
+  --accent-gradient-from: #1b48ff;
+  --accent-deep: #0f2aa8;
 
-  /* Apple HIG operational tokens (portado de cleanroom 2026-05-20) */
+  /* Forma v2: radios generosos. xs/sm/full sin cambio. */
   --radius-xs: 4px;
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-2xl: 24px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-2xl: 28px;
   --radius-full: 9999px;
 
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.12);
+  /* Sombras difusas legacy (menus/overlays las siguen leyendo) — tono a ink */
+  --shadow-xs: 0 1px 2px rgba(23, 29, 51, 0.04);
+  --shadow-sm: 0 2px 4px rgba(23, 29, 51, 0.06);
+  --shadow-md: 0 4px 12px rgba(23, 29, 51, 0.08);
+  --shadow-lg: 0 8px 24px rgba(23, 29, 51, 0.1);
+  --shadow-xl: 0 16px 48px rgba(23, 29, 51, 0.12);
+
+  /* Profundidad v2: labio sólido (interactivos) + flotación suave (cards) */
+  --shadow-lip: 0 4px 0 var(--accent-lip);
+  --shadow-lip-lg: 0 5px 0 var(--accent-lip);
+  --shadow-lip-danger: 0 4px 0 var(--v2-red-lip);
+  --shadow-card: 0 10px 30px rgba(23, 29, 51, 0.05);
+  --shadow-float: 0 24px 60px rgba(23, 29, 51, 0.14);
+  --shadow-float-lg: 0 30px 70px rgba(23, 29, 51, 0.16);
 
   --motion-fast: 150ms;
   --motion-base: 250ms;
@@ -85,64 +105,124 @@
   --heroui-radius-medium: var(--radius-md);
   --heroui-radius-large: var(--radius-lg);
 
-  /* LIGHT (default) */
+  /* LIGHT (default) — paleta ink v2 */
   --surface: #ffffff;
-  --surface-2: #fafafa;
-  --surface-3: #f5f5f7;
-  --text-primary: #1d1d1f;
-  --text-secondary: #6e6e73;
-  --text-tertiary: #86868b;
-  --text-disabled: #c7c7cc;
-  --border: #e5e5ea;
-  --border-strong: #d2d2d7;
-  --hairline: rgba(0, 0, 0, 0.06);
-  --shadow: rgba(0, 0, 0, 0.04);
-  --bubble: #f5f5f7;
-  --avatar-c-bg: #ff5e62;
+  --surface-2: #fafbfd;
+  --surface-3: #f5f6fb;
+  --surface-tint: #f5f7ff;
+  --ink-band: #171d33;
+  --ink-band-text: #b7c0de;
+  --ink-band-text-muted: #8b93b8;
+  --text-primary: #171d33;   /* 16.67:1 sobre blanco */
+  --text-secondary: #4a5372; /* 7.58:1 */
+  --text-tertiary: #7a83a3;  /* 3.75:1 — solo meta/large, mismo estatus que antes */
+  --text-disabled: #9aa3c0;
+  --border: #e4e8f4;
+  --border-strong: #c4cce3;
+  --hairline: rgba(23, 29, 51, 0.07); /* alpha, NO el #edeff5 opaco del scope v2 (se apilaría mal sobre tintes) */
+  --hairline-strong: #c4cce3;
+  --shadow: rgba(23, 29, 51, 0.05);   /* color legacy que lee .card-apple */
+  --bubble: #f5f6fb;
+  --avatar-c-bg: #f97d2b;
 
-  /* Bands (semantic status) — light */
-  --band-a-bg: #e8f5ed;
-  --band-a-text: #0a7e3a;
-  --band-a-bar: #0a7e3a;
-  --band-m-bg: #fef4e6;
-  --band-m-text: #a05a00;
-  --band-m-bar: #cc8800;
-  --band-b-bg: #fde9e9;
-  --band-b-text: #a01818;
-  --band-b-bar: #c0282b;
+  /* Semánticos v2 */
+  --v2-green: #0fbf8f;
+  --v2-green-dark: #0a8a66;
+  --v2-green-border: #bfeedd;
+  --v2-red: #f04661;
+  --v2-red-dark: #c42847;
+  /* Par strong/lip del danger — espejo del sistema accent (DEC-009):
+     --v2-red es para bordes/focus/texto; los SÓLIDOS con contenido blanco van
+     sobre --v2-red-strong (blanco encima 4.87:1 AA; el #f04661 pelado falla a
+     3.65:1 y el dark #ff6b82 a 2.74:1). El labio usa --v2-red-lip, que NO se
+     redefine en dark: así queda SIEMPRE más oscuro que la cara (en dark
+     --v2-red-dark se invierte a #ff8b9d, más claro que la cara — bug del gate
+     2026-07-16). */
+  --v2-red-strong: #d92643;
+  --v2-red-lip: #a51e39;
+  --v2-amber: #e8a20c;
+  --v2-amber-dark: #8a6206;
+  --v2-orange: #f97d2b;
+
+  /* Bands (semantic status) — light, familia v2 con AA verificado.
+     OJO: --v2-green-dark como texto de banda FALLA AA (3.89:1) — por eso
+     band-a-text es #067050 (5.47:1). */
+  --band-a-bg: #e2f7f2;
+  --band-a-text: #067050;
+  --band-a-bar: #0fbf8f;
+  --band-m-bg: #fcf2dd;
+  --band-m-text: #8a6206;
+  --band-m-bar: #e8a20c;
+  --band-b-bg: #feecef;
+  --band-b-text: #c42847;
+  --band-b-bar: #f04661;
 
   background-color: var(--surface);
   color: var(--text-primary);
 }
 
-/* DARK — accionado por next-themes (.dark en <html>) */
+/* DARK — accionado por next-themes (.dark en <html>).
+   Paleta navy v2 derivada de la tinta ink #171d33 (el rediseño Claude Design
+   solo definió claro; esta derivación viene de la auditoría 2026-07-16 con
+   ratios AA calculados — ver docs/simulador/front/REDESIGN_V2_MIGRATION.md). */
 .dark .simulador-root,
 .simulador-root.dark {
-  --surface: #000000;
-  --surface-2: #0a0a0c;
-  --surface-3: #161618;
-  --text-primary: #f5f5f7;
-  --text-secondary: #a1a1a6;
-  --text-tertiary: #8e8e93;
-  --text-disabled: #48484a;
-  --border: #2c2c2e;
-  --border-strong: #3a3a3c;
+  --surface: #0b0e1c;
+  --surface-2: #141833;
+  --surface-3: #1d2342;
+  --surface-tint: #131b3f;
+  --ink-band: #141833;
+  --ink-band-text: #a8b1d1;
+  --ink-band-text-muted: #8089ad;
+  --text-primary: #eef1fb;   /* 17.01:1 canvas */
+  --text-secondary: #a8b1d1; /* 9.03:1 */
+  --text-tertiary: #8089ad;  /* 5.58:1 — AA pleno */
+  --text-disabled: #4a5372;
+  --border: #262c4a;
+  --border-strong: #38406a;
   --hairline: rgba(255, 255, 255, 0.08);
+  --hairline-strong: #38406a;
   --shadow: rgba(0, 0, 0, 0.6);
-  --bubble: #1c1c1e;
-  --accent-soft: rgba(20, 114, 255, 0.14);
-  --accent-ring: rgba(20, 114, 255, 0.32);
+  --bubble: #1d2342;
 
-  /* Bands — dark (más saturadas + lighter text) */
-  --band-a-bg: rgba(34, 197, 94, 0.14);
-  --band-a-text: #4ade80;
-  --band-a-bar: #22c55e;
-  --band-m-bg: rgba(245, 158, 11, 0.14);
-  --band-m-text: #fbbf24;
-  --band-m-bar: #f59e0b;
-  --band-b-bg: rgba(239, 68, 68, 0.14);
-  --band-b-text: #f87171;
-  --band-b-bar: #ef4444;
+  /* Accent dark: #003aff pelado falla 3:1 como superficie sobre el canvas.
+     Par: --accent claro para texto/bordes/focus, --accent-strong para sólidos. */
+  --accent: #7a94ff;         /* 6.86:1 canvas */
+  --accent-strong: #2e55ff;  /* blanco encima 5.44:1 AA; vs canvas 3.53:1 ≥3 UI */
+  --accent-hover: #1e46f2;
+  --accent-lip: #1233c2;
+  --accent-soft: rgba(46, 85, 255, 0.16);
+  --accent-border: rgba(122, 148, 255, 0.35);
+  --accent-ring: rgba(122, 148, 255, 0.32);
+  --accent-glow: rgba(46, 85, 255, 0.2);
+  --accent-glow-strong: rgba(46, 85, 255, 0.45);
+  --accent-gradient-from: #2e55ff;
+  --accent-deep: #10194a;
+
+  /* Semánticos v2 dark */
+  --v2-green: #2fd6a5;
+  --v2-green-dark: #45e0b2;
+  --v2-green-border: rgba(15, 191, 143, 0.35);
+  --v2-red: #ff6b82;
+  --v2-red-dark: #ff8b9d;
+  --v2-amber: #f4b83c;
+  --v2-amber-dark: #f4c14d;
+  --v2-orange: #ff9350;
+
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.45);
+  --shadow-float: 0 24px 60px rgba(0, 0, 0, 0.5);
+  --shadow-float-lg: 0 30px 70px rgba(0, 0, 0, 0.55);
+
+  /* Bands — dark v2 (texto medido compuesto sobre surface-2 + bg alpha) */
+  --band-a-bg: rgba(15, 191, 143, 0.14);
+  --band-a-text: #45e0b2;  /* 8.33:1 */
+  --band-a-bar: #0fbf8f;
+  --band-m-bg: rgba(232, 162, 12, 0.14);
+  --band-m-text: #f4c14d;  /* 8.27:1 */
+  --band-m-bar: #e8a20c;
+  --band-b-bg: rgba(240, 70, 97, 0.16);
+  --band-b-text: #ff8b9d;  /* 6.64:1 */
+  --band-b-bar: #f04661;
 }
 
 /* Surface utilities */
@@ -154,17 +234,19 @@
 }
 
 /* Display typography */
+/* v2: los display heredan Jakarta del root (antes SF Pro Display fijo) y
+   suben a extrabold — el peso display del rediseño Claude Design. */
 .simulador-root .display {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", sans-serif;
-  letter-spacing: -0.035em;
-  font-weight: 600;
+  font-family: inherit;
+  letter-spacing: -0.025em;
+  font-weight: 800;
   line-height: 1.05;
   color: var(--text-primary);
 }
 
 .simulador-root .display-tight {
-  letter-spacing: -0.04em;
-  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-weight: 800;
   line-height: 1.02;
 }
 
@@ -174,7 +256,7 @@
 }
 .simulador-root .accent-bg {
   /* DEC-009: fondo sólido bajo texto blanco usa accent-strong (AA). Links,
-     bordes y focus rings siguen con --accent (#1472ff, umbral 3:1). */
+     bordes y focus rings siguen con --accent (#003aff en claro, #7a94ff en dark; umbral 3:1). */
   background-color: var(--accent-strong);
 }
 .simulador-root .accent-bg-soft {
@@ -189,10 +271,14 @@
    CaseCard, que lleva su borde inline). Usa --surface-2 (no --surface) para
    contrastar contra el canvas: en dark el canvas es #000 y --surface-2 (#0a0a0c)
    da la elevación que antes daba el border. La sombra refuerza. */
+/* v2: las cards del rediseño Claude Design llevan borde + flotación suave
+   (--shadow-card). Esto DEROGA la regla "cards sin contorno" del audit Apple
+   2026-06-23 — la landing aprobada por Pablo es posterior y manda. */
 .simulador-root .card-apple {
   background-color: var(--surface-2);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  box-shadow: 0 1px 2px var(--shadow);
+  box-shadow: var(--shadow-card);
   transition:
     box-shadow 0.2s ease,
     transform 0.2s ease;
@@ -522,4 +608,107 @@
     color: inherit !important;
     text-decoration: none !important;
   }
+}
+
+/* ============================================================
+   REDESIGN V2 — PROMOVIDO a .simulador-root el 2026-07-16.
+   Este bloque ya NO es la fuente (los valores de arriba lo son).
+   Se conserva con un único propósito: PIN-LIGHT. Por orden de
+   cascada le gana al bloque .dark, así que las superficies que
+   lo montan (la landing) quedan fijas en claro — el diseño de
+   marketing de Claude Design es light-only y su nav hardcodea
+   bg-white/85. No montar este scope en superficies de producto:
+   ahí el dark navy v2 debe funcionar.
+   Fuente de diseño: itera Landing.dc.html (accent #003AFF).
+   ============================================================ */
+.simulador-root .redesign-v2,
+.simulador-root.redesign-v2 {
+  /* Acento nuevo (más profundo que el #1472ff actual) */
+  --accent: #003aff;
+  --accent-hover: #0026a8;
+  --accent-strong: #003aff;      /* blanco encima: 6.89:1 AA (el 8.6:1 anterior era incorrecto) */
+  --accent-lip: #0026a8;         /* labio 3D estilo Duolingo (box-shadow 0 4px 0) */
+  --accent-soft: rgba(0, 58, 255, 0.08);
+  --accent-border: rgba(0, 58, 255, 0.3);
+  --accent-ring: rgba(0, 58, 255, 0.24);
+  --accent-glow: rgba(0, 58, 255, 0.16);
+  --accent-glow-strong: rgba(0, 58, 255, 0.5);
+  --accent-gradient-from: #1b48ff;
+  --accent-deep: #0f2aa8;        /* banda de stats (gradient from) */
+
+  /* Tinta (ink) — azulada, más cálida que los grises Apple */
+  --text-primary: #171d33;
+  --text-secondary: #4a5372;
+  --text-tertiary: #7a83a3;
+  --text-disabled: #9aa3c0;
+
+  /* Superficies */
+  --surface: #ffffff;
+  --surface-2: #fafbfd;
+  --surface-3: #f5f6fb;
+  --surface-tint: #f5f7ff;       /* paneles con tinte accent (cómo funciona, hero grad) */
+  --ink-band: #171d33;           /* banda oscura (CTA, chips PARA JEFES) */
+  --ink-band-text: #b7c0de;      /* texto secundario sobre banda oscura */
+  --ink-band-text-muted: #8b93b8;
+
+  /* Bordes */
+  --border: #e4e8f4;
+  --border-strong: #c4cce3;
+  --hairline: #edeff5;
+
+  /* Semánticos v2 */
+  --v2-green: #0fbf8f;
+  --v2-green-dark: #0a8a66;
+  --v2-green-border: #bfeedd;
+  --v2-red: #f04661;
+  --v2-red-dark: #c42847;
+  --v2-amber: #e8a20c;
+  --v2-orange: #f97d2b;          /* racha */
+
+  /* Forma: radios más generosos (Duolingo-ish). DEC-005 se mantiene:
+     los botones siguen leyendo --radius-md (aquí re-declarado a 14). */
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-2xl: 28px;
+
+  /* Profundidad v2: labio sólido (interactivos) + flotación suave (cards) */
+  --shadow-lip: 0 4px 0 var(--accent-lip);
+  --shadow-lip-lg: 0 5px 0 var(--accent-lip);
+  --shadow-card: 0 10px 30px rgba(23, 29, 51, 0.05);
+  --shadow-float: 0 24px 60px rgba(23, 29, 51, 0.14);
+  --shadow-float-lg: 0 30px 70px rgba(23, 29, 51, 0.16);
+
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: 0;
+  color: var(--text-primary);
+  background: var(--surface);
+}
+
+/* Animaciones del rediseño (mascota flotante + entrada del hero) */
+@keyframes v2-float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+@keyframes v2-rise {
+  0% { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.simulador-root .v2-float { animation: v2-float-y 2.8s ease-in-out infinite; }
+.simulador-root .v2-rise { animation: v2-rise 0.6s ease-out both; }
+.simulador-root .v2-rise-slow { animation: v2-rise 0.8s ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .simulador-root .v2-float,
+  .simulador-root .v2-rise,
+  .simulador-root .v2-rise-slow { animation: none !important; }
+}
+
+/* Los headings del rediseño usan la fuente del scope (Jakarta), no la regla
+   global de globals.css (Darker Grotesque para h1-h6). */
+.simulador-root .redesign-v2 h1,
+.simulador-root .redesign-v2 h2,
+.simulador-root .redesign-v2 h3,
+.simulador-root .redesign-v2 h4 {
+  font-family: inherit;
 }

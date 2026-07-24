@@ -2,39 +2,39 @@ rubric:
   id: rubric_case_factory_v1
   version: 1.0.0
   applies_to_sprint_skus: [case_factory_demo]
-  locale_default: es-MX
+  locale_default: en-US
   created_at: 2026-05-20
   created_by: codex_product
 
   public:
     purpose: >
-      medir si una persona puede aplicar IA en trabajo real: encuadrar,
-      usar datos con cuidado, ejecutar con la herramienta correcta, validar,
-      ejercer juicio e impactar el negocio.
+      measure whether a person can apply AI to real work: frame the request,
+      handle data with care, execute with the right tool, verify,
+      exercise judgment, and move the business.
     dimensions:
       - id: contexto
-        public_name: contexto
-        public_definition: entiende objetivo, audiencia, restricciones, stakeholder y exito esperado.
+        public_name: Context
+        public_definition: understands the objective, audience, constraints, stakeholder, and what success looks like.
       - id: datos
-        public_name: datos
-        public_definition: usa informacion suficiente, minimizada, con permisos y calidad adecuada.
+        public_name: Data handling
+        public_definition: uses enough information, kept minimal, with the right permissions and adequate quality.
       - id: ejecucion_ia
-        public_name: ejecucion con IA
-        public_definition: elige y configura prompt, workflow o agente segun el nivel del trabajo.
+        public_name: AI execution
+        public_definition: chooses and configures the prompt, workflow, or agent that matches the level of the work.
       - id: validacion
-        public_name: validacion
-        public_definition: revisa output, claims, logs, fuentes, errores y consistencia antes de actuar.
+        public_name: Verification
+        public_definition: reviews output, claims, logs, sources, errors, and consistency before acting.
       - id: juicio
-        public_name: juicio
-        public_definition: detecta riesgo, autoridad, escalamiento, consecuencias y limites de autonomia.
+        public_name: Judgment
+        public_definition: spots risk, authority, escalation, consequences, and the limits of autonomy.
       - id: impacto
-        public_name: impacto
-        public_definition: convierte el uso de IA en una decision, ahorro, accion o resultado visible.
+        public_name: Impact
+        public_definition: turns AI use into a decision, a saving, an action, or a visible result.
     scoring_scale:
       bands:
-        - { id: B, name: "requiere supervision", range: [0, 64] }
-        - { id: M, name: "listo con controles", range: [65, 84] }
-        - { id: A, name: "listo para operar", range: [85, 100] }
+        - { id: B, name: "needs supervision", range: [0, 64] }
+        - { id: M, name: "ready with controls", range: [65, 84] }
+        - { id: A, name: "ready to operate", range: [85, 100] }
 
   internal:
     level_weights:

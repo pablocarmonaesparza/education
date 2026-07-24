@@ -9,38 +9,40 @@ import { authorSections } from "./steps/author-yaml.mjs";
 export async function runPipeline(rawBrief, opts = {}) {
   const log = opts.log ?? (() => {});
 
-  log("P1 · normalizando brief...");
+  log("P1 · normalizing brief...");
   const { brief, provider, model } = await normalizeBrief(rawBrief);
   log(`     ${provider}/${model} · case_id=${brief.case_id} · ${brief.level}`);
 
-  log("P2 · escribiendo la biblia de continuidad...");
+  log("P2 · writing the continuity bible...");
   const { bible } = await buildBible(brief);
-  log(`     empresa=${bible.company} · destinatario=${bible.message_recipient}`);
-  log(`     personas=${bible.people.map((p) => p.name).join(", ")}`);
+  log(`     company=${bible.company} · recipient=${bible.message_recipient}`);
+  log(`     people=${bible.people.map((p) => p.name).join(", ")}`);
 
-  log("P3 · blueprint (receta pre-validada + intenciones)...");
+  log("P3 · blueprint (pre-validated recipe + intents)...");
   const blueprint = await buildBlueprint(brief, bible);
-  log(`     receta=${blueprint.recipe.id} · ${blueprint.slides.length} slides`);
+  log(`     recipe=${blueprint.recipe.id} · ${blueprint.slides.length} slides`);
 
-  log("P4 · escribiendo las 25 slides (5 secciones)...");
+  log("P4 · writing the 25 slides (5 sections)...");
   const sections = await authorSections(brief, bible, blueprint);
-  log(`     secciones=${sections.map((s) => `${s.id}(${s.slides.length})`).join(" ")}`);
+  log(`     sections=${sections.map((s) => `${s.id}(${s.slides.length})`).join(" ")}`);
 
   const caseAssembly = assemble(brief, sections);
   return { brief, bible, blueprint, caseAssembly };
 }
 
+// Labels visibles de la portada, en ingles US (mismos que los golden
+// relocalizados a mano). Los kinds (ai/data/...) son identificadores.
 const TOOL_LABELS = {
-  ai: "Inteligencia artificial",
-  data: "Tablas",
-  messaging: "Mensajería",
-  documents: "Documentos",
-  workflow: "Flujos",
+  ai: "AI",
+  data: "Tables",
+  messaging: "Messaging",
+  documents: "Documents",
+  workflow: "Workflows",
 };
 
 // La metadata de la portada es estructurada, no creativa: la inyectamos del
-// brief en vez de confiar en el modelo (evita level contradictorio, tools en
-// ingles o incompletas).
+// brief en vez de confiar en el modelo (evita level contradictorio o tools
+// incompletas).
 function injectCoverMeta(brief, sections) {
   const cover = sections
     .find((s) => s.id === "contexto")

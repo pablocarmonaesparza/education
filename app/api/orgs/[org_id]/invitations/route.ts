@@ -30,6 +30,114 @@ export const runtime = "nodejs";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/**
+ * GET /api/orgs/[org_id]/invitations
+ *
+ * Lista las invitaciones de la org para la UI del manager (modal de invitar
+ * + checklist de arranque en /staff). Mismo gate que el POST de abajo:
+ * auth.getUser → ensure_bridge_user → membresía org_admin explícita.
+ *
+ * Nota: `email_status` (sent/skipped/failed) NO se persiste — solo existe en
+ * la respuesta del POST al momento de enviar. Aquí devolvemos el `status` del
+ * ciclo de vida de la invitación (pending/accepted/expired/revoked), que es
+ * lo que el dashboard necesita para "N accepted · M pending".
+ *
+ * Respuesta:
+ *   200 {
+ *     invitations: [{ id, email, status, intended_role, team, created_at, expires_at }],
+ *     counts: { pending, accepted, expired, revoked }
+ *   }
+ *   401 { error } — no autenticado
+ *   403 { error } — no es org_admin
+ */
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ org_id: string }> },
+) {
+  const { org_id } = await params;
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
+  }
+
+  const admin = createAdminClient();
+
+  const { data: bridgeId, error: bridgeError } = await admin
+    .schema("simulador")
+    .rpc("ensure_bridge_user", { p_auth_user_id: user.id });
+
+  if (bridgeError || !bridgeId) {
+    console.error("[api/invitations] ensure_bridge_user failed:", bridgeError);
+    return NextResponse.json(
+      { error: "Bridge user not initialized." },
+      { status: 500 },
+    );
+  }
+
+  const { data: membership } = await admin
+    .schema("simulador")
+    .from("organization_memberships")
+    .select("role")
+    .eq("organization_id", org_id)
+    .eq("user_id", bridgeId)
+    .eq("role", "org_admin")
+    .maybeSingle();
+
+  if (!membership) {
+    return NextResponse.json(
+      { error: "You do not have org_admin permissions in this organization." },
+      { status: 403 },
+    );
+  }
+
+  const { data: rows, error: listError } = await admin
+    .schema("simulador")
+    .from("invitations")
+    .select(
+      "id, email, status, intended_role, created_at, expires_at, team:teams(name)",
+    )
+    .eq("organization_id", org_id)
+    .order("created_at", { ascending: false });
+
+  if (listError) {
+    console.error("[api/invitations] list error:", listError);
+    return NextResponse.json(
+      { error: "Could not load invitations." },
+      { status: 500 },
+    );
+  }
+
+  const counts = { pending: 0, accepted: 0, expired: 0, revoked: 0 };
+  const invitations = (rows ?? []).map((row) => {
+    const status = String(row.status ?? "pending");
+    if (status in counts) counts[status as keyof typeof counts] += 1;
+    // El embed `team:teams(name)` puede venir como objeto (FK many-to-one) o
+    // array según cómo PostgREST detecte la relación; normalizamos a string.
+    const team = row.team as
+      | { name?: string | null }
+      | Array<{ name?: string | null }>
+      | null;
+    const teamName = Array.isArray(team)
+      ? (team[0]?.name ?? null)
+      : (team?.name ?? null);
+    return {
+      id: row.id as string,
+      email: row.email as string,
+      status,
+      intended_role: row.intended_role as string,
+      team: teamName,
+      created_at: row.created_at as string,
+      expires_at: row.expires_at as string | null,
+    };
+  });
+
+  return NextResponse.json({ invitations, counts });
+}
+
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ org_id: string }> },
@@ -41,7 +149,7 @@ export async function POST(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   const admin = createAdminClient();
@@ -60,7 +168,7 @@ export async function POST(
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Body inválido." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
   // Normalizar: convertir el shape legacy a invitations[]. Una sola
@@ -96,7 +204,7 @@ export async function POST(
 
   if (invitationsClean.length === 0) {
     return NextResponse.json(
-      { error: "Debes proporcionar al menos un email válido." },
+      { error: "Provide at least one valid email." },
       { status: 400 },
     );
   }
@@ -111,7 +219,7 @@ export async function POST(
   if (bridgeError || !bridgeId) {
     console.error("[api/invitations] ensure_bridge_user failed:", bridgeError);
     return NextResponse.json(
-      { error: "Bridge user no inicializado." },
+      { error: "Bridge user not initialized." },
       { status: 500 },
     );
   }
@@ -125,7 +233,7 @@ export async function POST(
 
   if (!simUser) {
     return NextResponse.json(
-      { error: "Bridge user no inicializado." },
+      { error: "Bridge user not initialized." },
       { status: 500 },
     );
   }
@@ -143,7 +251,7 @@ export async function POST(
 
   if (!membership) {
     return NextResponse.json(
-      { error: "No tienes permisos de org_admin en esta organización." },
+      { error: "You do not have org_admin permissions in this organization." },
       { status: 403 },
     );
   }
@@ -185,8 +293,8 @@ export async function POST(
         {
           error:
             available <= 0
-              ? `No te quedan asientos disponibles (${used} de ${seats} ocupados entre miembros e invitaciones pendientes). Amplía tu plan para invitar a más personas.`
-              : `Solo te quedan ${available} asiento(s) disponibles y estás invitando a ${invitationsClean.length}. Ajusta la lista o amplía tu plan.`,
+              ? `You have no seats left (${used} of ${seats} taken by members and pending invitations). Add seats to your plan to invite more people.`
+              : `You have ${available} seat(s) left and you are inviting ${invitationsClean.length}. Trim the list or add seats to your plan.`,
           seats,
           used,
           available: Math.max(0, available),
@@ -203,7 +311,7 @@ export async function POST(
     .eq("id", org_id)
     .maybeSingle();
 
-  let teamName = "tu equipo";
+  let teamName = "your team";
   if (body.team_id) {
     const { data: team } = await admin
       .schema("simulador")
@@ -214,11 +322,11 @@ export async function POST(
 
     if (!team || team.organization_id !== org_id) {
       return NextResponse.json(
-        { error: "El equipo no pertenece a esta organización." },
+        { error: "That team does not belong to this organization." },
         { status: 400 },
       );
     }
-    teamName = team.name ?? "tu equipo";
+    teamName = team.name ?? "your team";
   }
 
   // Bulk insert invitations. El índice único parcial
@@ -246,10 +354,10 @@ export async function POST(
     if (insErr) {
       // 23505 = unique violation (ya hay invitation pending para este email).
       if (insErr.code === "23505") {
-        skipped.push({ email, reason: "ya invitado (pending)" });
+        skipped.push({ email, reason: "already invited (pending)" });
       } else {
         console.error("[api/invitations] insert error:", email, insErr);
-        skipped.push({ email, reason: "error de BD" });
+        skipped.push({ email, reason: "database error" });
       }
       continue;
     }
@@ -263,10 +371,10 @@ export async function POST(
   const emailStatusById = new Map<string, "sent" | "skipped" | "failed">();
   const emailReasonById = new Map<string, string>();
   const inviterName =
-    simUser.full_name ?? user.email ?? "Un colega de tu equipo";
+    simUser.full_name ?? user.email ?? "A colleague on your team";
   const inviterRole =
-    membership.role === "org_admin" ? "admin de organización" : membership.role;
-  const orgName = org?.name ?? "tu organización";
+    membership.role === "org_admin" ? "organization admin" : membership.role;
+  const orgName = org?.name ?? "your organization";
 
   for (const inv of created) {
     const result = await sendInvitationEmail({

@@ -46,7 +46,7 @@ export async function POST(
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Body inválido." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
   const name = body.name?.trim();
@@ -55,13 +55,13 @@ export async function POST(
 
   if (!name || name.length < 2) {
     return NextResponse.json(
-      { error: "El nombre es obligatorio (mínimo 2 caracteres)." },
+      { error: "Name is required (2 characters minimum)." },
       { status: 400 },
     );
   }
   if (!password || password.length < 6) {
     return NextResponse.json(
-      { error: "La contraseña debe tener al menos 6 caracteres." },
+      { error: "Password must be at least 6 characters." },
       { status: 400 },
     );
   }
@@ -80,7 +80,7 @@ export async function POST(
 
   if (invError || !inv) {
     return NextResponse.json(
-      { error: "Invitación no encontrada." },
+      { error: "Invitation not found." },
       { status: 404 },
     );
   }
@@ -89,8 +89,8 @@ export async function POST(
       {
         error:
           inv.status === "accepted"
-            ? "Esta invitación ya fue aceptada. Inicia sesión con tu cuenta."
-            : `Invitación ya ${inv.status}.`,
+            ? "This invitation was already accepted. Sign in with your account."
+            : `Invitation already ${inv.status}.`,
       },
       { status: 400 },
     );
@@ -99,7 +99,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Invitación expirada. Pide al admin de tu organización que reenvíe el invite.",
+          "This invitation expired. Ask your organization admin to send a new one.",
       },
       { status: 400 },
     );
@@ -126,7 +126,7 @@ export async function POST(
       return NextResponse.json(
         {
           error:
-            "Ya existe una cuenta con este email. Inicia sesión y vuelve a abrir el link de invitación.",
+            "An account already exists for this email. Sign in, then open the invitation link again.",
           code: "email_already_registered",
         },
         { status: 400 },
@@ -134,7 +134,7 @@ export async function POST(
     }
     console.error("[api/invitations/signup-and-accept] createUser failed:", createErr);
     return NextResponse.json(
-      { error: "No pudimos crear tu cuenta. Reintenta o escríbenos a soporte@itera.la." },
+      { error: "We could not create your account. Try again, or write to soporte@itera.la." },
       { status: 500 },
     );
   }
@@ -152,7 +152,7 @@ export async function POST(
       bridgeError,
     );
     return NextResponse.json(
-      { error: "Bridge user no inicializado." },
+      { error: "Bridge user not initialized." },
       { status: 500 },
     );
   }
@@ -194,7 +194,7 @@ export async function POST(
       orgMemberErr,
     );
     return NextResponse.json(
-      { error: "No se pudo crear membresía de organización." },
+      { error: "Could not create the organization membership." },
       { status: 500 },
     );
   }

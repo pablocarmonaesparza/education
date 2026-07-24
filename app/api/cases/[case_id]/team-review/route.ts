@@ -67,7 +67,7 @@ export async function GET(
   } else {
     const cookieStore = await cookies();
     if (!isDevBypassActive(cookieStore.get("itera_dev_bypass")?.value)) {
-      return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+      return NextResponse.json({ error: "Not signed in." }, { status: 401 });
     }
     const { data: demo } = await admin
       .schema("simulador")

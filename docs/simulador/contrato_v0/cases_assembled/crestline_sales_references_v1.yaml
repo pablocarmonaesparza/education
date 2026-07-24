@@ -1,0 +1,620 @@
+# Caso ensamblado · crestline_sales_references v1 (autorado por el motor
+# generador, pipeline E1/E2/E3, run 20260723_191830). 5 secciones x 5 slides = 25.
+#
+# Salvado a mano tras el run: se elimino una diapositiva duplicada en 'cierre'
+# (dos tradeoff_decision_memo identicos en slot 5, quedaba en 26 -> 25 slides) y
+# se reemplazo un acronimo corporativo prohibido por lenguaje sin sigla ("the
+# customer database" / "customer records system"). Glosario 00_EN_GLOSSARY.md:
+# cero acronimos corporativos en el copy visible (AI es la unica excepcion).
+#
+# Biblia (hechos canonicos):
+#   Empresa: Crestline Software (route optimization + field-service management, EEUU).
+#     Rol: Account Executive.
+#   Jordan Chen: VP of Sales. Asigna y recibe. Nunca destinatario.
+#   Priya Mehta: Customer Marketing Manager. Pide el sign-off de compliance.
+#   Crestline Draft Assistant: la IA aprobada. Redacta emails; no consulta la base
+#     de datos de clientes ni verifica clearance; puede filtrar mal, hay que revisar.
+#   Destinatario del reply: SIEMPRE el prospect. Nunca Jordan.
+#   Hoy lunes 1 de junio de 2026. Deadline viernes 5 de junio de 2026.
+#   Cleared para referencia: Atlas, Brighton, Evergreen, Juniper (4 de 10).
+#   Montos: USD explicito. Deal en riesgo: $78,000 USD anual.
+
+case_assembly:
+  case_id: crestline_sales_references
+  version: 1
+  status: draft
+  schema_version: 1.0.0
+  meta:
+    level: N1 · Foundations
+    profile: Sales
+    profile_pack: sales_revops
+    estimated_minutes: 12
+    timer_seconds: 600
+    timer_default_on: false
+    tools:
+      - ai
+      - data
+      - messaging
+      - documents
+  manager_outcome:
+    primary_question: 'Whether this account executive can answer a prospect''s proof request under quota pressure with judgment: using only reference-approved customers, keeping confidential customer data out of the AI tool, catching leaked names or numbers in the AI draft, and knowing when the reply needs sign-off before it leaves the building.'
+    assignment_brief: 'Jordan Chen, VP of Sales, assigns you the following: "A prospect at a mechanical-services company is evaluating a $78,000 USD annual contract and wants customer references and real performance numbers by Friday. I know you are behind on quota this quarter, but we cannot afford a data leak or a compliance issue. Pull the customer database export I sent you. Identify which records are cleared for sales use, which must be aggregated or anonymized, and which cannot be used at all. Then paste only the safe data into the AI writing assistant to draft a reply. Review the draft for any leaked names, contract amounts, or identifying details that should not be there. Decide whether the reply is ready to send, needs marketing sign-off, or needs to be escalated to me."'
+    business_metric: $78,000 USD annual contract value at risk
+    risk_metric: Exposure of confidential customer data outside the company's agreements
+    expected_signal: The participant correctly identifies which customer records are reference-approved, which must be aggregated or anonymized, and which are unusable; reviews the AI draft for leaked identifying details; and determines whether the reply can be sent, needs marketing sign-off, or must be escalated.
+    expected_action: escalar
+    alternatives:
+      - pilotar
+      - entrenar
+      - pausar
+  sections:
+    - id: contexto
+      name: Context
+      slides:
+        - slot: 1
+          block_id: case_cover
+          title: Crestline Software account executive
+          body: You are an Account Executive at Crestline Software, a company that sells route optimization and field-service management software to mechanical-services and logistics companies across the United States. Your VP of Sales, Jordan Chen, has assigned you a new prospect inquiry. You have access to the **Crestline Draft Assistant**, an AI tool that can draft and polish sales emails. You also have a customer database export with **10 customer records** that you can use as reference material.
+          content:
+            meta:
+              profile: Sales
+              level: N1 · Foundations
+              estimatedMinutes: 12
+              timerSeconds: 600
+              timerDefaultOn: false
+              tools:
+                - kind: ai
+                  label: AI
+                - kind: data
+                  label: Tables
+                - kind: messaging
+                  label: Messaging
+                - kind: documents
+                  label: Documents
+        - slot: 2
+          block_id: reading_message
+          title: Prospect inquiry arrives
+          body: A prospect at a mechanical-services company evaluating Crestline Software emailed the sales team. The prospect is considering a contract worth **$78,000 USD** annually and wants to speak with current customers before making a decision.
+          content:
+            message:
+              channel: email
+              from:
+                name: Prospect (mechanical-services company)
+              body: |-
+                Hi team,
+
+                We are evaluating Crestline Software for our field-service operations and would like to hear from current customers before we move forward. Could you share a few customer references along with specific performance results they have seen using your platform? We are particularly interested in metrics like route efficiency, fuel savings, and dispatch times.
+
+                We need this by end of day **Friday, June 5, 2026**, to present to our leadership team.
+
+                Thanks,
+                Prospect
+              timestamp: Monday, June 1, 2026, 9:15 AM ET
+        - slot: 3
+          block_id: reading_data_table
+          title: Customer database export
+          body: You pulled the full customer database export. It contains **10 records** with contract values, performance metrics, and compliance flags. Review the table carefully before deciding which records are safe to use.
+          content:
+            table:
+              columns:
+                - key: Customer Name
+                  label: Customer Name
+                - key: Contract Value
+                  label: Contract Value
+                - key: Performance Metric
+                  label: Performance Metric
+                - key: Reference Agreement
+                  label: Reference Agreement
+                - key: Confidentiality Clause
+                  label: Confidentiality Clause
+                - key: Opt-Out Status
+                  label: Opt-Out Status
+                - key: Churn Status
+                  label: Churn Status
+              rows:
+                - Customer Name: Atlas Fleet Services
+                  Contract Value: $12,000 USD
+                  Performance Metric: 22% reduction in fuel costs
+                  Reference Agreement: 'Yes'
+                  Confidentiality Clause: 'No'
+                  Opt-Out Status: Clear
+                  Churn Status: Active
+                - Customer Name: Brighton Mechanical
+                  Contract Value: $8,400 USD
+                  Performance Metric: 18% more routes per driver
+                  Reference Agreement: 'Yes'
+                  Confidentiality Clause: 'No'
+                  Opt-Out Status: Clear
+                  Churn Status: Active
+                - Customer Name: Coastal Field Services
+                  Contract Value: $15,000 USD
+                  Performance Metric: 31% faster dispatch times
+                  Reference Agreement: 'No'
+                  Confidentiality Clause: 'Yes'
+                  Opt-Out Status: Clear
+                  Churn Status: Active
+                - Customer Name: Denton Route Solutions
+                  Contract Value: $6,000 USD
+                  Performance Metric: 14% fewer overtime hours
+                  Reference Agreement: 'No'
+                  Confidentiality Clause: 'No'
+                  Opt-Out Status: Refused
+                  Churn Status: Active
+                - Customer Name: Evergreen Logistics
+                  Contract Value: $22,000 USD
+                  Performance Metric: 27% improvement in on-time delivery
+                  Reference Agreement: 'Yes'
+                  Confidentiality Clause: 'No'
+                  Opt-Out Status: Clear
+                  Churn Status: Active
+                - Customer Name: Frontline Mechanical
+                  Contract Value: $9,600 USD
+                  Performance Metric: 19% fewer missed appointments
+                  Reference Agreement: 'No'
+                  Confidentiality Clause: 'No'
+                  Opt-Out Status: Clear
+                  Churn Status: Churned
+                - Customer Name: Great Lakes Fleet
+                  Contract Value: $18,000 USD
+                  Performance Metric: 24% reduction in idle time
+                  Reference Agreement: 'No'
+                  Confidentiality Clause: 'Yes'
+                  Opt-Out Status: Clear
+                  Churn Status: Active
+                - Customer Name: Harbor Service Group
+                  Contract Value: $10,800 USD
+                  Performance Metric: 16% lower mileage per route
+                  Reference Agreement: 'No'
+                  Confidentiality Clause: 'No'
+                  Opt-Out Status: Clear
+                  Churn Status: Active
+                - Customer Name: Ironwood Field Ops
+                  Contract Value: $7,200 USD
+                  Performance Metric: 12% increase in daily stops
+                  Reference Agreement: 'No'
+                  Confidentiality Clause: 'No'
+                  Opt-Out Status: Clear
+                  Churn Status: Active
+                - Customer Name: Juniper Services
+                  Contract Value: $14,400 USD
+                  Performance Metric: 21% faster route completion
+                  Reference Agreement: 'Yes'
+                  Confidentiality Clause: 'No'
+                  Opt-Out Status: Clear
+                  Churn Status: Active
+        - slot: 4
+          block_id: reading_kpi_cards
+          title: What is at stake
+          body: Three numbers define the pressure on your decision.
+          content:
+            kpis:
+              - label: Annual contract value at risk
+                value: $78,000 USD
+              - label: Reference-approved customers
+                value: '4'
+              - label: Deadline
+                value: Friday, June 5, 2026
+        - slot: 5
+          block_id: reading_message
+          title: Jordan Chen's assignment
+          body: Jordan Chen, VP of Sales, sent you the following instructions by email.
+          content:
+            message:
+              channel: email
+              from:
+                name: Jordan Chen
+              body: |-
+                Hi team,
+
+                We have a prospect interested in a **$78,000 USD** annual contract. They want customer references and performance data by **Friday, June 5, 2026**.
+
+                Here is what I need you to do:
+
+                1. Pull the customer database export.
+                2. Identify which records are cleared for sales use.
+                3. Identify which records must be aggregated or anonymized.
+                4. Identify which records cannot be used at all.
+                5. Paste only the safe data into the Crestline Draft Assistant.
+                6. Draft a reply to the prospect.
+                7. Review the draft for any leaked names, contract amounts, or identifying details.
+                8. Decide whether the reply is ready to send, needs marketing sign-off, or needs to be escalated to me.
+
+                Let me know if you have questions.
+
+                Jordan Chen
+                VP of Sales, Crestline Software
+              timestamp: Monday, June 1, 2026, 9:30 AM ET
+    - id: datos
+      name: Data
+      slides:
+        - slot: 1
+          block_id: categorize_rows
+          title: 'Triage customer records: part 1'
+          body: Review the first **5** customer records from the export. For each one, decide whether it is **cleared for reference use** (name and metric can be shared with the prospect), **must be aggregated** (data can only be used in combined form without identifying the customer), or **cannot be used** (excluded from the reply entirely). Refer to the policy rules on the next slide if needed.
+          content:
+            actions:
+              - value: cleared
+                label: Cleared for reference use
+              - value: aggregated
+                label: Must be aggregated
+              - value: cannot_use
+                label: Cannot be used
+            rows:
+              - id: atlas
+                label: 'Atlas Fleet Services, $12,000 USD, 22% reduction in fuel costs, Reference Agreement: Yes, Confidentiality Clause: No, Opt-Out: Clear, Active'
+                hint: 'Fully cleared: reference agreement signed, no confidentiality clause, not refused, active.'
+                example: cleared
+              - id: brighton
+                label: 'Brighton Mechanical, $8,400 USD, 18% more routes per driver, Reference Agreement: Yes, Confidentiality Clause: No, Opt-Out: Clear, Active'
+                hint: 'Fully cleared: reference agreement signed, no confidentiality clause, not refused, active.'
+                example: cleared
+              - id: coastal
+                label: 'Coastal Field Services, $15,000 USD, 31% faster dispatch times, Reference Agreement: No, Confidentiality Clause: Yes, Opt-Out: Clear, Active'
+                hint: No reference agreement and has a confidentiality clause. Cannot share name or metrics.
+                example: cannot_use
+              - id: denton
+                label: 'Denton Route Solutions, $6,000 USD, 14% fewer overtime hours, Reference Agreement: No, Confidentiality Clause: No, Opt-Out: Refused, Active'
+                hint: Refused to be named. Must be excluded regardless of other fields.
+                example: cannot_use
+              - id: evergreen
+                label: 'Evergreen Logistics, $22,000 USD, 27% improvement in on-time delivery, Reference Agreement: Yes, Confidentiality Clause: No, Opt-Out: Clear, Active'
+                hint: 'Fully cleared: reference agreement signed, no confidentiality clause, not refused, active.'
+                example: cleared
+        - slot: 2
+          block_id: categorize_rows
+          title: 'Triage customer records: part 2'
+          body: 'Review the remaining **5** customer records. Apply the same three categories: **cleared for reference use**, **must be aggregated**, or **cannot be used**.'
+          content:
+            actions:
+              - value: cleared
+                label: Cleared for reference use
+              - value: aggregated
+                label: Must be aggregated
+              - value: cannot_use
+                label: Cannot be used
+            rows:
+              - id: frontline
+                label: 'Frontline Mechanical, $9,600 USD, 19% fewer missed appointments, Reference Agreement: No, Confidentiality Clause: No, Opt-Out: Clear, Churned'
+                hint: Churned customer. No reference agreement. Cannot be used as a reference.
+                example: cannot_use
+              - id: greatlakes
+                label: 'Great Lakes Fleet, $18,000 USD, 24% reduction in idle time, Reference Agreement: No, Confidentiality Clause: Yes, Opt-Out: Clear, Active'
+                hint: No reference agreement and has a confidentiality clause. Cannot share name or metrics.
+                example: cannot_use
+              - id: harbor
+                label: 'Harbor Service Group, $10,800 USD, 16% lower mileage per route, Reference Agreement: No, Confidentiality Clause: No, Opt-Out: Clear, Active'
+                hint: No reference agreement, no confidentiality clause, not refused, active. Data could be aggregated but cannot be named.
+                example: aggregated
+              - id: ironwood
+                label: 'Ironwood Field Ops, $7,200 USD, 12% increase in daily stops, Reference Agreement: No, Confidentiality Clause: No, Opt-Out: Clear, Active'
+                hint: No reference agreement, no confidentiality clause, not refused, active. Data could be aggregated but cannot be named.
+                example: aggregated
+              - id: juniper
+                label: 'Juniper Services, $14,400 USD, 21% faster route completion, Reference Agreement: Yes, Confidentiality Clause: No, Opt-Out: Clear, Active'
+                hint: 'Fully cleared: reference agreement signed, no confidentiality clause, not refused, active.'
+                example: cleared
+        - slot: 3
+          block_id: model_tradeoff_sliders
+          title: 'Tradeoffs: speed, safety, completeness'
+          body: |-
+            You have **4 fully cleared** customer records you can paste into the AI tool. You also have the full export with **10 records**, some of which cannot be shared. The Crestline Draft Assistant **cannot verify** whether data is cleared for external use. 
+
+            Consider the tradeoffs between these three goals:
+
+            - **Speed**, Pasting everything and asking the AI to filter is fast but risky.
+            - **Safety**, Pasting only the cleared records is safe but gives the AI less context.
+            - **Completeness**, Pasting the full export with an instruction to anonymize may produce a richer reply but could leak identifying details.
+
+            Move the sliders to reflect how you weigh each priority for this task. Your choices will not be judged as right or wrong; they help you think through the decision before you write your instruction.
+          content: {}
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write your instruction to the AI tool
+          body: Open the Crestline Draft Assistant. Decide what data you will paste into it and what you will ask it to do. Write your instruction below. Be specific about what the AI should include, exclude, or format. The AI cannot access the customer database or verify clearance, so anything you paste becomes part of the draft.
+          content: {}
+        - slot: 5
+          block_id: reading_attachment
+          title: Reference-data policy
+          body: Jordan Chen attached the company's reference-data policy. Review it before you finalize your triage and your instruction to the AI tool.
+          content:
+            attachments:
+              - name: Reference-Data Policy.pdf
+                kind: document
+              - name: Customer Reference Guidelines.pdf
+                kind: document
+    - id: ia
+      name: AI
+      slides:
+        - slot: 1
+          block_id: reading_passive
+          title: Before you paste data into the AI tool
+          body: |-
+            Crestline Draft Assistant is a powerful writing tool, but it has two critical limits you need to know before you use it.
+
+            **First, the tool does not retain confidentiality.** Anything you paste into it is processed by an external language model. If you paste customer names, contract amounts, or performance metrics, that data leaves Crestline's systems. You must only paste data that is cleared for external sharing.
+
+            **Second, the tool cannot verify clearance.** It has no connection to the customer database or customer records system. It cannot check whether a customer signed a reference agreement, has a confidentiality clause, or opted out. It will treat whatever you give it as safe, even if it is not.
+
+            **Your job:** Paste only the four fully cleared records (Atlas Fleet Services, Brighton Mechanical, Evergreen Logistics, Juniper Services) into the tool. Then instruct it to draft a reply to the prospect.
+          content: {}
+        - slot: 2
+          block_id: ai_textfield_guided
+          title: Build your request for the AI tool
+          body: Use the guided fields below to structure your request to Crestline Draft Assistant. The tool will generate a draft reply based on the options you select.
+          content:
+            guided:
+              objetivos:
+                - Draft a reference reply to a prospect
+                - Summarize customer success stories
+                - Create a comparison table of customer results
+                - Write a follow-up email with social proof
+              audiencias:
+                - A prospect at a mechanical-services company
+                - An existing customer considering expansion
+                - A partner evaluating a referral program
+                - A procurement team requesting references
+              limites:
+                - Use only the four cleared customers (Atlas, Brighton, Evergreen, Juniper)
+                - Include all customers with positive metrics
+                - Anonymize company names and use ranges for metrics
+                - Use only the three highest-value customers
+        - slot: 3
+          block_id: ai_output_review
+          title: Review the AI's first draft
+          body: 'Crestline Draft Assistant produced the draft below. Read each segment carefully and flag any that contain risky content: customer names, contract amounts, or identifying details from customers who are **not** among the four cleared records.'
+          content:
+            segments:
+              - id: s1
+                text: Thank you for your interest in Crestline Software. Our customers in the field-service industry have seen strong results across route optimization, fuel savings, and dispatch efficiency.
+                flagIfMarked: frase_reutilizable
+                issue: No risk. Generic opening, no customer data.
+              - id: s2
+                text: For example, Atlas Fleet Services achieved a 22% reduction in fuel costs, Brighton Mechanical improved route efficiency by 18%, and Evergreen Logistics saw a 27% improvement in on-time delivery.
+                flagIfMarked: dato_sensible
+                issue: Safe. These three are cleared (Atlas, Brighton, Evergreen).
+              - id: s3
+                text: Coastal Field Services reduced dispatch times by 31%, and Great Lakes Fleet cut idle time by 24%.
+                flagIfMarked: dato_sensible
+                issue: RISK. Coastal Field Services and Great Lakes Fleet have confidentiality clauses. Their names and metrics should not appear.
+              - id: s4
+                text: Juniper Services completed routes 21% faster, and Harbor Service Group lowered mileage per route by 16%.
+                flagIfMarked: dato_sensible
+                issue: PARTIAL RISK. Juniper Services is cleared and safe. Harbor Service Group is not cleared (no reference agreement) and should not be named.
+              - id: s5
+                text: Our customers range from small fleets to large enterprises, with annual contract values starting at $6,000 USD and reaching up to $22,000 USD.
+                flagIfMarked: dato_sensible
+                issue: RISK. The $6,000 USD figure matches Denton Route Solutions (refused to be named) and $22,000 USD matches Evergreen Logistics. Combined with the customer names above, this could identify non-cleared customers.
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write a revised instruction to the AI tool
+          body: 'Based on what you saw in the first draft, write a new instruction for Crestline Draft Assistant. The tool will generate a cleaner draft using only the four cleared customers: **Atlas Fleet Services**, **Brighton Mechanical**, **Evergreen Logistics**, and **Juniper Services**.'
+          content: {}
+        - slot: 5
+          block_id: ai_output_review
+          title: Review the AI's second draft
+          body: 'Crestline Draft Assistant produced a revised draft. Read each segment and flag any that still contain risky content: names, contract amounts, or identifying details from customers who are **not** among the four cleared records.'
+          content:
+            segments:
+              - id: s6
+                text: Thank you for your interest. Below are results from several Crestline Software customers in the field-service industry.
+                flagIfMarked: frase_reutilizable
+                issue: No risk. Generic opening, no customer data.
+              - id: s7
+                text: Atlas Fleet Services reduced fuel costs by 22%, Brighton Mechanical improved routes per driver by 18%, Evergreen Logistics increased on-time delivery by 27%, and Juniper Services accelerated route completion by 21%.
+                flagIfMarked: dato_sensible
+                issue: Safe. All four are cleared (Atlas, Brighton, Evergreen, Juniper).
+              - id: s8
+                text: These customers represent annual contract values between $8,400 USD and $22,000 USD.
+                flagIfMarked: dato_sensible
+                issue: RISK. $8,400 USD matches Brighton Mechanical and $22,000 USD matches Evergreen Logistics. While both are cleared, the dollar range combined with the named list above could let the prospect infer contract values for specific customers. Policy says contract amounts should not be shared unless the reference agreement explicitly allows it. The reference agreements allow sharing names and performance metrics, but contract values are not mentioned as cleared.
+              - id: s9
+                text: We would be happy to arrange a call with one of these customers if you would like to learn more.
+                flagIfMarked: frase_reutilizable
+                issue: No risk. Standard closing, no customer data.
+    - id: revision
+      name: Verification
+      slides:
+        - slot: 1
+          block_id: ai_output_review
+          title: Review the third draft
+          body: The AI tool produced a third draft of your reply to the prospect. Read each segment below. Flag any segment that still contains identifying details from a customer who is not cleared for reference use, or that violates the reference policy in any other way.
+          content:
+            segments:
+              - id: seg_1
+                text: Our customers Atlas Fleet Services and Brighton Mechanical saw a 22% reduction in fuel costs and 18% more routes per driver, respectively.
+                flagIfMarked: dato_sensible
+              - id: seg_2
+                text: Another customer, Evergreen Logistics, achieved a 27% improvement in on-time delivery using Crestline Software.
+                flagIfMarked: claim_no_verificado
+              - id: seg_3
+                text: Coastal Field Services reduced dispatch times by 31% after switching to our platform.
+                flagIfMarked: dato_sensible
+              - id: seg_4
+                text: We also work with Juniper Services, who reported 21% faster route completion.
+                flagIfMarked: claim_no_verificado
+              - id: seg_5
+                text: Across our customer base, teams using Crestline have reduced operating costs by an average of 15% to 25%.
+                flagIfMarked: frase_reutilizable
+        - slot: 2
+          block_id: ai_comparison
+          title: Choose the best closing
+          body: The prospect needs your reply by **Friday, June 5, 2026**. You have four versions of the closing paragraph. Pick the one that best balances professionalism with the deadline pressure.
+          content:
+            options:
+              - id: A
+                body: I look forward to discussing how Crestline can help your team. Please let me know a time that works for you this week or next.
+              - id: B
+                body: I would be happy to set up a call at your earliest convenience. Feel free to reply with your availability.
+              - id: C
+                body: Please review the information above and let me know if you have any questions. I am available Thursday or Friday this week if you would like to talk.
+              - id: D
+                body: I hope this gives you a clear picture of the results we deliver. Let me know if you would like to schedule a follow-up conversation.
+        - slot: 3
+          block_id: reading_message
+          title: Marketing review request
+          body: A message arrives from Priya Mehta, the Customer Marketing Manager.
+          content:
+            message:
+              channel: email
+              from:
+                name: Priya Mehta
+              body: |-
+                Hi there,
+
+                Jordan Chen forwarded me the draft reply you are preparing for the prospect. Before it goes out, I need to review the customer references section. We have had compliance issues in the past with customer data getting into prospect communications, and I want to make sure everything is clean.
+
+                Please send me the version you plan to send by end of day **Wednesday, June 3, 2026**. That gives me a day to review before the Friday deadline.
+
+                Thanks,
+                Priya
+              timestamp: Monday, June 1, 2026, 2:15 PM
+        - slot: 4
+          block_id: categorize_rows
+          title: Re-triage customer records
+          body: Priya's review request confirms that compliance is a priority. To make sure you are on solid ground, re-triage these customer records. For each one, select the correct action based on the reference policy.
+          content:
+            actions:
+              - value: safe_to_use
+                label: Safe to use as a named reference
+              - value: aggregate_only
+                label: Aggregate or anonymize before use
+              - value: cannot_use
+                label: Cannot be used at all
+            rows:
+              - id: row_1
+                label: 'Atlas Fleet Services, $12,000 USD, 22% reduction in fuel costs, Reference Agreement: Yes, Confidentiality Clause: No, Opt-Out: Clear, Active'
+              - id: row_2
+                label: 'Coastal Field Services, $15,000 USD, 31% faster dispatch times, Reference Agreement: No, Confidentiality Clause: Yes, Opt-Out: Clear, Active'
+              - id: row_3
+                label: 'Denton Route Solutions, $6,000 USD, 14% fewer overtime hours, Reference Agreement: No, Confidentiality Clause: No, Opt-Out: Refused, Active'
+              - id: row_4
+                label: 'Frontline Mechanical, $9,600 USD, 19% fewer missed appointments, Reference Agreement: No, Confidentiality Clause: No, Opt-Out: Clear, Churned'
+              - id: row_5
+                label: 'Juniper Services, $14,400 USD, 21% faster route completion, Reference Agreement: Yes, Confidentiality Clause: No, Opt-Out: Clear, Active'
+        - slot: 5
+          block_id: ai_comparison
+          title: Pick the customer-reference section
+          body: You need to include a customer-reference paragraph in the reply. Compare the four versions below. Pick the one that correctly uses only cleared customers' names and metrics, following the reference policy.
+          content:
+            options:
+              - id: A
+                body: Our customers Atlas Fleet Services (22% reduction in fuel costs), Brighton Mechanical (18% more routes per driver), Evergreen Logistics (27% improvement in on-time delivery), and Juniper Services (21% faster route completion) have all seen strong results with Crestline Software.
+              - id: B
+                body: Customers such as Atlas Fleet Services, Brighton Mechanical, Coastal Field Services, and Evergreen Logistics have achieved measurable improvements in fuel efficiency, routing, dispatch speed, and on-time delivery using our platform.
+              - id: C
+                body: Our customers have seen results including a 22% reduction in fuel costs, 18% more routes per driver, 31% faster dispatch times, and 27% improvement in on-time delivery. These metrics come from Atlas Fleet Services, Brighton Mechanical, Coastal Field Services, and Evergreen Logistics.
+              - id: D
+                body: Atlas Fleet Services reduced fuel costs by 22%, Brighton Mechanical increased routes per driver by 18%, and Evergreen Logistics improved on-time delivery by 27%. Juniper Services also achieved 21% faster route completion with Crestline.
+    - id: cierre
+      name: Close
+      slides:
+        - slot: 1
+          block_id: ai_comparison
+          title: Choose the final reply
+          body: The AI tool produced four complete versions of the reply to the prospect. Each one uses different customer data. Pick the version that is both compliant with Crestline's reference-data policy and persuasive enough to protect the **$78,000 USD** deal.
+          content:
+            options:
+              - id: A
+                body: Thank you for your interest in Crestline Software. We have helped companies like Atlas Fleet Services, Brighton Mechanical, Evergreen Logistics, and Juniper Services achieve measurable results. For example, Evergreen Logistics saw a 27% improvement in on-time delivery, and Brighton Mechanical reported 18% more routes per driver. I would be happy to arrange a call with one of these customers so you can hear about their experience firsthand.
+              - id: B
+                body: Thank you for your interest in Crestline Software. Our customers have seen strong results across the board. Atlas Fleet Services reduced fuel costs by 22%, Coastal Field Services cut dispatch times by 31%, and Great Lakes Fleet lowered idle time by 24%. These are real numbers from active customers. Let me know if you would like to speak with a reference.
+              - id: C
+                body: Thank you for your interest in Crestline Software. We have worked with companies of all sizes in the mechanical-services space. Customers like Brighton Mechanical, Denton Route Solutions, and Frontline Mechanical have used our platform to improve their operations. I can share more details about the types of results they achieved if you are interested.
+              - id: D
+                body: Thank you for your interest in Crestline Software. Our customers have reported meaningful improvements, including a 22% reduction in fuel costs, 18% more routes per driver, and a 27% improvement in on-time delivery. These results come from customers in the fleet and field-services industry. I would be happy to connect you with a reference who can discuss their results directly.
+        - slot: 2
+          block_id: ai_textfield_free
+          title: Write your final instruction to the AI tool
+          body: You have decided which customer data is safe to use. Now write a single instruction to the Crestline Draft Assistant that will produce the final, polished reply to the prospect. Remember what the AI tool can and cannot do. It cannot verify whether data is cleared for external use. It cannot retain confidentiality of anything you paste into it. It can draft, rewrite, and format. Write your instruction here, one or two lines.
+          content: {}
+        - slot: 3
+          block_id: categorize_rows
+          title: Final triage of all customer records
+          body: 'Before the reply goes out, confirm the classification of every customer record. For each company, choose one action: **Cleared for reference use** (name and specific metrics can be shared), **Aggregate or anonymize** (data can be referenced only in general terms without identifying the company), or **Cannot use** (must be excluded from all reference communications).'
+          content:
+            actions:
+              - value: cleared
+                label: Cleared for reference use
+              - value: aggregate
+                label: Aggregate or anonymize
+              - value: cannot_use
+                label: Cannot use
+            rows:
+              - id: atlas
+                label: Atlas Fleet Services
+                hint: 'Reference Agreement: Yes, Confidentiality Clause: No, Opt-Out: Clear, Churn: Active'
+                example: cleared
+              - id: brighton
+                label: Brighton Mechanical
+                hint: 'Reference Agreement: Yes, Confidentiality Clause: No, Opt-Out: Clear, Churn: Active'
+                example: cleared
+              - id: coastal
+                label: Coastal Field Services
+                hint: 'Reference Agreement: No, Confidentiality Clause: Yes, Opt-Out: Clear, Churn: Active'
+                example: cannot_use
+              - id: denton
+                label: Denton Route Solutions
+                hint: 'Reference Agreement: No, Confidentiality Clause: No, Opt-Out: Refused, Churn: Active'
+                example: cannot_use
+              - id: evergreen
+                label: Evergreen Logistics
+                hint: 'Reference Agreement: Yes, Confidentiality Clause: No, Opt-Out: Clear, Churn: Active'
+                example: cleared
+              - id: frontline
+                label: Frontline Mechanical
+                hint: 'Reference Agreement: No, Confidentiality Clause: No, Opt-Out: Clear, Churn: Churned'
+                example: cannot_use
+              - id: greatlakes
+                label: Great Lakes Fleet
+                hint: 'Reference Agreement: No, Confidentiality Clause: Yes, Opt-Out: Clear, Churn: Active'
+                example: cannot_use
+              - id: harbor
+                label: Harbor Service Group
+                hint: 'Reference Agreement: No, Confidentiality Clause: No, Opt-Out: Clear, Churn: Active'
+                example: aggregate
+              - id: ironwood
+                label: Ironwood Field Ops
+                hint: 'Reference Agreement: No, Confidentiality Clause: No, Opt-Out: Clear, Churn: Active'
+                example: aggregate
+              - id: juniper
+                label: Juniper Services
+                hint: 'Reference Agreement: Yes, Confidentiality Clause: No, Opt-Out: Clear, Churn: Active'
+                example: cleared
+        - slot: 4
+          block_id: reading_passive
+          title: Policy and tool limits at a glance
+          body: |-
+            Before you make the final call, here is a summary of what governs this decision.
+
+            **Reference-data policy**
+            - Only customers who signed a reference agreement may have their company name and specific performance numbers shared with a prospect.
+            - Customers with a confidentiality clause in their contract cannot have their contract value or specific performance metrics shared externally, even if they signed a reference agreement.
+            - Any customer who has explicitly refused to be named to prospects must be excluded from all reference communications, regardless of other agreements.
+
+            **Crestline Draft Assistant limits**
+            - The tool cannot access the customer database or customer records system.
+            - The tool cannot verify whether customer data is cleared for external use.
+            - The tool cannot know which customers signed reference agreements.
+            - The tool cannot retain confidentiality of anything pasted into it.
+
+            **Your deadline**
+            The prospect expects a response by **Friday, June 5, 2026**. Today is **Monday, June 1, 2026**.
+          content: {}
+        - slot: 5
+          block_id: tradeoff_decision_memo
+          title: Send, route through marketing, or escalate
+          body: You have the final reply ready. Now decide what happens next. Each option has a real benefit and a real cost. Pick one and write a brief memo to Jordan Chen explaining your decision.
+          content:
+            decisions:
+              - id: send
+                title: Send the reply directly to the prospect
+                detail: 'Benefit: The prospect receives a response by the end of the day, keeping momentum on the **$78,000 USD** deal. Cost: If any data was misclassified, the company could face a compliance issue with a customer who did not authorize the use of their data.'
+              - id: marketing
+                title: Route through Priya Mehta for marketing sign-off
+                detail: 'Benefit: Priya can verify the customer data and tone before the reply goes out, reducing compliance risk. Cost: The review adds **24 to 48 hours**, and the prospect''s deadline is Friday, June 5, 2026.'
+              - id: escalate
+                title: Escalate to Jordan Chen for a decision
+                detail: 'Benefit: Jordan can make an executive call on borderline records or approve a broader set of references if the deal size justifies it. Cost: Jordan may decide to pause or restrict the reply, and the delay could cause the prospect to lose interest.'
+              - id: send_conditional
+                title: Send the reply now and notify Jordan Chen after
+                detail: 'Benefit: The prospect gets an immediate response while Jordan is informed of what was sent. Cost: If Jordan disagrees with the data used, the reply cannot be recalled, and the company may need to follow up with a correction.'

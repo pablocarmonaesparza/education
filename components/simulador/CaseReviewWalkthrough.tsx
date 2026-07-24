@@ -97,7 +97,7 @@ export function CaseReviewWalkthrough({
   if (!slide) {
     return (
       <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-8 text-center ts-subhead text-[var(--text-secondary)]">
-        Este caso no tiene slides para revisar.
+        This case has no slides to review.
       </div>
     );
   }
@@ -111,38 +111,38 @@ export function CaseReviewWalkthrough({
         <AppleBadge tone="accent">
           <span className="inline-flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
-            Modo revisión
+            Review mode
           </span>
         </AppleBadge>
         <button
           type="button"
           onClick={() => setPlaying((p) => !p)}
           disabled={isLast && !playing}
-          className="inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--surface-3)] px-3 py-1.5 ts-caption-1 font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] disabled:opacity-40"
+          className="inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--surface-3)] px-3 py-1.5 ts-caption-1 font-bold text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)] disabled:opacity-40"
         >
-          {playing ? "Pausar recorrido" : "Recorrer solo"}
+          {playing ? "Pause walkthrough" : "Play walkthrough"}
         </button>
       </div>
 
-      {/* progreso */}
+      {/* progreso · barra chunky redondeada (v2) */}
       <div className="mt-4">
-        <div className="h-1 w-full overflow-hidden rounded bg-[var(--surface-3)]">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-[var(--surface-3)]">
           <div
-            className="h-full bg-[var(--accent)] transition-all"
+            className="h-full rounded-full bg-[var(--accent)] transition-all"
             style={{ width: `${progress}%` }}
           />
         </div>
         <div className="mt-2 ts-caption-1 text-[var(--text-tertiary)]">
-          {slide.sectionName} · pantalla {idx + 1} de {total}
+          {slide.sectionName} · screen {idx + 1} of {total}
         </div>
       </div>
 
-      {/* encuadre de la slide */}
+      {/* encuadre de la slide · eyebrow v2 + título extrabold */}
       <div className="mt-5">
-        <p className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
+        <p className="ts-footnote font-extrabold uppercase tracking-[0.8px] text-[var(--accent)]">
           {slide.sectionName}
         </p>
-        <h3 className="mt-1 ts-title-3 font-semibold tracking-tight text-[var(--text-primary)]">
+        <h3 className="mt-1 ts-title-3 font-extrabold tracking-tight text-[var(--text-primary)]">
           {slide.title}
         </h3>
         {slide.body && (
@@ -154,8 +154,9 @@ export function CaseReviewWalkthrough({
 
       {/* el bloque, en solo lectura: pointer-events:none impide interacción;
           sessionId=null y sin onPayloadChange ⇒ no persiste nada. */}
+      {/* v2: contenedor del bloque como card (borde + shadow-card) */}
       <div
-        className="mt-5 rounded-[var(--radius-md)] bg-[var(--surface)] p-4 [&_*]:pointer-events-none"
+        className="mt-5 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-card [&_*]:pointer-events-none"
         aria-hidden
       >
         <ExerciseBlockRenderer
@@ -174,10 +175,10 @@ export function CaseReviewWalkthrough({
           type="button"
           onClick={goPrev}
           disabled={idx === 0}
-          className="inline-flex items-center gap-1 ts-callout text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-primary)] disabled:opacity-30"
+          className="inline-flex items-center gap-1 ts-callout font-bold text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-primary)] disabled:opacity-30"
         >
           <AppleIcon name="chevronLeft" className="h-4 w-4" />
-          Atrás
+          Back
         </button>
 
         {/* puntos por slide (click para saltar) */}
@@ -190,7 +191,7 @@ export function CaseReviewWalkthrough({
                 setPlaying(false);
                 setIdx(i);
               }}
-              aria-label={`Ir a la pantalla ${i + 1}: ${s.title}`}
+              aria-label={`Go to screen ${i + 1}: ${s.title}`}
               className={`h-1.5 rounded-full transition-all ${
                 i === idx
                   ? "w-4 bg-[var(--accent)]"
@@ -204,9 +205,9 @@ export function CaseReviewWalkthrough({
           type="button"
           onClick={goNext}
           disabled={isLast}
-          className="inline-flex items-center gap-1 ts-callout font-medium text-[var(--accent)] transition-colors disabled:opacity-30"
+          className="inline-flex items-center gap-1 ts-callout font-bold text-[var(--accent)] transition-colors disabled:opacity-30"
         >
-          Siguiente
+          Next
           <AppleIcon name="chevronRight" className="h-4 w-4" />
         </button>
       </div>

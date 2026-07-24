@@ -193,8 +193,8 @@ function reportPendingResponse(session: { status?: string | null } | null) {
       session_status: session?.status ?? null,
       message:
         session?.status === "submitted"
-          ? "Evaluación en curso. Reintenta en unos segundos."
-          : "Esta sesión aún no fue enviada para evaluación.",
+          ? "Scoring in progress. Try again in a few seconds."
+          : "This session has not been submitted for scoring yet.",
     },
     { status: session ? 200 : 404 },
   );
@@ -235,7 +235,7 @@ export async function GET(
       }
       return NextResponse.json(getMockReport(session_id));
     }
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   const effectiveSessionId = localSessionId ?? session_id;

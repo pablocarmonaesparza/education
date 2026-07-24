@@ -46,8 +46,14 @@ export interface JudgeRiskEvent {
   severity: Severity;
   step_ordinal: number;
   evidence_text: string;
-  /** LATAM scoping per contrato §9.1 — null si no aplica. */
-  jurisdiction: "MX" | "CO" | "BR" | "other" | null;
+  /**
+   * Jurisdicción del titular del dato per contrato §9.1 — null si no aplica.
+   * 'US' agregado en el pivot a EEUU (2026-07-16): sin él el judge etiquetaba
+   * a un titular estadounidense como 'other' y el registro de compliance
+   * sub-reportaba el mercado principal. Reguladas: US (CCPA/CPRA), MX
+   * (LFPDPPP), CO (Ley 1581), BR (LGPD).
+   */
+  jurisdiction: "MX" | "CO" | "BR" | "US" | "other" | null;
   transfer_basis_documented: boolean | null;
 }
 

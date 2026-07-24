@@ -16,42 +16,45 @@
  * via API en W4-W6.
  */
 
+// Capa de display de las 6 dimensiones. Los `id` son identificadores canónicos
+// (rúbrica YAML + dimension_key en BD + ENGINE_CONTRACT §6) y NO cambian.
+// Labels según §4 del glosario: validacion → "Verification", no "Validation".
 export const DIMENSIONS = [
   {
     id: "contexto",
-    label: "Contexto",
+    label: "Context",
     description:
-      "Entiende objetivo, audiencia, restricciones, stakeholder y éxito esperado.",
+      "Understands the goal, audience, constraints, stakeholder, and what success looks like.",
   },
   {
     id: "datos",
-    label: "Datos",
+    label: "Data handling",
     description:
-      "Usa información suficiente, minimizada, con permisos y calidad adecuada.",
+      "Uses information that is sufficient, minimized, permitted, and good enough in quality.",
   },
   {
     id: "ejecucion_ia",
-    label: "Ejecución con IA",
+    label: "AI execution",
     description:
-      "Elige y configura prompt, workflow o agente según el nivel del trabajo.",
+      "Picks and configures the prompt, workflow, or agent to match the level of the work.",
   },
   {
     id: "validacion",
-    label: "Validación",
+    label: "Verification",
     description:
-      "Verificación del output de IA antes de usarlo. Detectar claims inventados, generalizaciones y alucinaciones.",
+      "Checks AI output before using it. Catches invented claims, overreach, and hallucinations.",
   },
   {
     id: "juicio",
-    label: "Juicio",
+    label: "Judgment",
     description:
-      "Lectura de riesgos, autoridad y consecuencias. Saber cuándo escalar.",
+      "Reads risk, authority, and consequences. Knows when to escalate.",
   },
   {
     id: "impacto",
-    label: "Impacto",
+    label: "Impact",
     description:
-      "Convierte el uso de IA en una decisión, ahorro, acción o resultado visible.",
+      "Turns AI use into a decision, a saving, an action, or a visible result.",
   },
 ] as const;
 
@@ -77,10 +80,12 @@ export function canonicalDimensionId(id: string): DimensionId | null {
   return LEGACY_DIMENSION_ALIASES[id as LegacyDimensionId] ?? null;
 }
 
+// Capa de display de las bandas. Los keys A/M/B son valores de BD (CHECK
+// constraints) y NO cambian. Glosario §3: A → High, M → Medium, B → Low.
 export const BAND_LABELS: Record<BandKey, string> = {
-  A: "Alto",
-  M: "Medio",
-  B: "Bajo",
+  A: "High",
+  M: "Medium",
+  B: "Low",
 };
 
 export const BAND_COLORS: Record<BandKey, string> = {
@@ -124,96 +129,100 @@ export const SPRINT_CASES = [
   {
     id: "marketing_urgent_campaign_pii",
     order: 1,
-    title: "Campaña urgente con feedback de clientes",
-    tension: "Velocidad vs privacidad",
+    title: "Urgent campaign with customer feedback",
+    tension: "Speed vs privacy",
     difficulty: "baseline" as const,
     dimensions: ["datos", "validacion", "juicio"] as DimensionId[],
   },
   {
     id: "marketing_copy_with_brand_voice",
     order: 2,
-    title: "Redacción de copy con voz de marca",
-    tension: "Velocidad vs voz de marca",
+    title: "Writing copy in the brand voice",
+    tension: "Speed vs brand voice",
     difficulty: "baseline" as const,
     dimensions: ["contexto", "validacion", "impacto"] as DimensionId[],
   },
   {
     id: "marketing_segment_with_sensitive_data",
     order: 3,
-    title: "Segmentación con datos sensibles del CRM",
-    tension: "Bias predictivo + privacidad behavioral",
+    title: "Segmenting on sensitive CRM data",
+    tension: "Predictive bias + behavioral privacy",
     difficulty: "intermediate" as const,
     dimensions: ["datos", "juicio", "impacto"] as DimensionId[],
   },
   {
     id: "marketing_brief_to_agency_via_ia",
     order: 4,
-    title: "Brief a agencia externa con IA",
-    tension: "Leak de estrategia a vendor",
+    title: "Briefing an outside agency with AI",
+    tension: "Strategy leak to a vendor",
     difficulty: "baseline" as const,
     dimensions: ["contexto", "impacto", "juicio"] as DimensionId[],
   },
   {
     id: "marketing_ad_creative_with_competitor_research",
     order: 5,
-    title: "Research competitivo + ad creative",
-    tension: "Plagio inadvertido",
+    title: "Competitive research + ad creative",
+    tension: "Inadvertent plagiarism",
     difficulty: "intermediate" as const,
     dimensions: ["validacion", "juicio", "impacto"] as DimensionId[],
   },
   {
     id: "marketing_attribution_reporting_to_cmo",
     order: 6,
-    title: "Attribution reporting al CMO",
-    tension: "Datos parcialmente alucinados",
+    title: "Attribution reporting to the CMO",
+    tension: "Partly hallucinated data",
     difficulty: "intermediate" as const,
     dimensions: ["validacion", "contexto", "impacto"] as DimensionId[],
   },
   {
     id: "marketing_content_calendar_under_pressure",
     order: 7,
-    title: "Calendario de contenido 30 días",
-    tension: "Velocidad vs curaduría",
+    title: "30-day content calendar",
+    tension: "Speed vs curation",
     difficulty: "baseline" as const,
     dimensions: ["contexto", "juicio", "impacto"] as DimensionId[],
   },
   {
     id: "marketing_crisis_response_with_ia",
     order: 8,
-    title: "Respuesta a crisis pública con IA",
-    tension: "Velocidad vs approval chain",
+    title: "Public crisis response with AI",
+    tension: "Speed vs approval chain",
     difficulty: "advanced" as const,
     dimensions: ["juicio", "datos", "impacto"] as DimensionId[],
   },
 ];
 
+// Capa de display de las recomendaciones. Los `id` son valores de BD (CHECK
+// constraints en 3 tablas + la función SQL de riesgo) y NO cambian: solo se
+// traduce `label`/`description`. Glosario: entrenar → "Coach", no "Train"
+// (colisiona con el pilar de upskilling y suena a entrenar al modelo).
 export const MANAGER_ACTIONS = [
   {
     id: "pilotar",
-    label: "Pilotar",
+    label: "Pilot",
     description:
-      "Puede operar en flujo real con supervisión semanal. Apto para uso autónomo en su scope típico.",
+      "Can work in the real flow with weekly check-ins. Ready to run AI solo in their usual scope.",
     color: "success",
   },
   {
     id: "entrenar",
-    label: "Entrenar",
+    label: "Coach",
     description:
-      "Tiene criterio parcial. Necesita micro-práctica específica antes de autonomía. Supervisión cercana 4-6 semanas.",
+      "Judgment is partial. Needs targeted practice before autonomy. Close supervision for 4-6 weeks.",
     color: "primary",
   },
   {
     id: "pausar",
-    label: "Pausar",
+    label: "Pause",
     description:
-      "No debe usar IA en flujos sensibles todavía. Re-evaluar después de remediar gap.",
+      "Should not use AI on sensitive flows yet. Re-assess once the gap is remediated.",
     color: "warning",
   },
   {
     id: "escalar",
-    label: "Escalar",
+    label: "Escalate",
     description:
-      "El problema no es individual. Requiere proceso, legal, compliance, IT o policy antes de re-evaluar persona.",
+      "The problem is not individual. Needs process, legal, compliance, IT or policy work before re-assessing the person.",
     color: "danger",
   },
 ] as const;
@@ -224,17 +233,17 @@ export const MANAGER_ACTIONS = [
 // ============================================================================
 
 export const SPRINT_META = {
-  publicName: "AI Readiness Sprint — Marketing 30 días",
+  publicName: "AI Readiness Sprint · Marketing 30 days",
   oneLiner:
-    "Mide y mejora el criterio de tu equipo de marketing para usar IA en flujos reales. Baseline, práctica, re-simulación y reporte ejecutivo accionable.",
+    "Measure and improve your marketing team's judgment when they use AI in real workflows. Baseline, practice, re-simulation, and an executive report you can act on.",
   // El pricing vive SOLO en lib/simulador/billing.ts (SIMULADOR_TIERS,
   // per-seat). El bloque fase_1/fase_2 $4-8K se retiró (F5): describía el
   // modelo viejo y contradecía el precio real. No re-agregar aquí.
   primaryAudience: ["Head of Marketing", "VP of Growth", "Head of Operations"],
-  geoTarget: ["MX", "CO", "AR", "CL"],
+  geoTarget: ["US"],
   industries: [
-    "SaaS B2B mid-market",
-    "Servicios profesionales",
-    "Ecommerce LATAM",
+    "B2B SaaS mid-market",
+    "Professional services",
+    "Ecommerce",
   ],
 } as const;

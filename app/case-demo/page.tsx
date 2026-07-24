@@ -1,7 +1,7 @@
 import { CaseDemoClient } from "./CaseDemoClient";
 
 export const metadata = {
-  title: "Caso demo · Envío del lunes con datos sucios",
+  title: "Case demo · Monday send with dirty data",
 };
 
 export default function Page() {

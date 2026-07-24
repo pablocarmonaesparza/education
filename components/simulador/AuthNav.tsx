@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
+import { AppleLogoMark } from "@/components/simulador/apple";
 
 /**
  * Nav de las pantallas de auth: solo el logo (vuelve al landing).
@@ -20,15 +20,12 @@ export function AuthNav() {
     >
       <NavbarContent justify="start">
         <NavbarBrand>
-          <Link href="/" color="foreground" className="flex items-center">
-            <Image
-              src="/images/itera-logo-light.png"
-              alt="Itera"
-              width={64}
-              height={32}
-              className="h-6 w-auto"
-              priority
-            />
+          <Link href="/" color="foreground" className="flex items-center gap-2.5">
+            {/* Marca de la landing: isotipo + wordmark (antes PNG itera-logo-light) */}
+            <AppleLogoMark size={38} />
+            <span className="ts-title-2 font-extrabold tracking-[-0.8px] text-[var(--text-primary)]">
+              itera<span className="text-[var(--accent)]">.</span>
+            </span>
           </Link>
         </NavbarBrand>
       </NavbarContent>

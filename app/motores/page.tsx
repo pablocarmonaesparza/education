@@ -5,7 +5,7 @@ import { MotoresClient } from "./MotoresClient";
 // que muestra cómo está organizado cada motor (educativo + operativo).
 // Registrada en docs/simulador/front/FRONT_CONTRACT.md.
 export const metadata: Metadata = {
-  title: "Motores · consola de organización",
+  title: "Engines · organization console",
   robots: { index: false, follow: false },
 };
 

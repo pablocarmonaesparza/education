@@ -48,21 +48,21 @@ const LEVEL_META: Record<RuntimeLevel, Omit<
 >> = {
   1: {
     levelShortLabel: "N1",
-    levelLabel: "IA como copiloto",
+    levelLabel: "AI as copilot",
     levelDescription:
-      "Uso individual del modelo para redactar, analizar o decidir bajo supervisión humana directa.",
+      "Individual use of the model to write, analyze, or decide under direct human supervision.",
   },
   2: {
     levelShortLabel: "N2",
-    levelLabel: "IA en workflow",
+    levelLabel: "AI in the workflow",
     levelDescription:
-      "Uso de IA dentro de un proceso de trabajo con datos, handoffs y restricciones operativas.",
+      "Using AI inside a work process with data, handoffs, and operating constraints.",
   },
   3: {
     levelShortLabel: "N3",
-    levelLabel: "IA con agentes",
+    levelLabel: "AI with agents",
     levelDescription:
-      "Delegación parcial a agentes o automatizaciones que pueden actuar sobre herramientas y flujos.",
+      "Partial delegation to agents or automations that can act on tools and workflows.",
   },
 };
 
@@ -79,17 +79,17 @@ const CAREER_LABELS: Record<string, string> = {
   engineering: "Engineering",
 };
 
+// Espejo de SPRINT_CASES[].title (config.ts) — mantener ambos en sync.
 const CASE_TITLE_FALLBACKS: Record<string, string> = {
-  marketing_urgent_campaign_pii: "Campaña urgente con feedback de clientes",
-  marketing_copy_with_brand_voice: "Redacción de copy con voz de marca",
-  marketing_segment_with_sensitive_data:
-    "Segmentación con datos sensibles del CRM",
-  marketing_brief_to_agency_via_ia: "Brief a agencia externa con IA",
+  marketing_urgent_campaign_pii: "Urgent campaign with customer feedback",
+  marketing_copy_with_brand_voice: "Writing copy in the brand voice",
+  marketing_segment_with_sensitive_data: "Segmenting on sensitive CRM data",
+  marketing_brief_to_agency_via_ia: "Briefing an outside agency with AI",
   marketing_ad_creative_with_competitor_research:
-    "Research competitivo + ad creative",
-  marketing_attribution_reporting_to_cmo: "Attribution reporting al CMO",
-  marketing_content_calendar_under_pressure: "Calendario de contenido 30 días",
-  marketing_crisis_response_with_ia: "Respuesta a crisis pública con IA",
+    "Competitive research + ad creative",
+  marketing_attribution_reporting_to_cmo: "Attribution reporting to the CMO",
+  marketing_content_calendar_under_pressure: "30-day content calendar",
+  marketing_crisis_response_with_ia: "Public crisis response with AI",
 };
 
 function normalizeLevel(value: number | null | undefined): RuntimeLevel | null {

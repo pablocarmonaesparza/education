@@ -21,7 +21,7 @@ type AppleCardPadding = "none" | "sm" | "md" | "lg";
 
 const variantClass: Record<AppleCardVariant, string> = {
   default: "bg-[var(--surface)]",
-  elevated: "bg-[var(--surface)] shadow-[var(--shadow-md)]",
+  elevated: "bg-[var(--surface)] shadow-md",
   interactive: "card-apple-interactive bg-[var(--surface)] cursor-pointer",
   success: "bg-[var(--band-a-bg)] border-[var(--band-a-text)]/25",
   warning: "bg-[var(--band-m-bg)] border-[var(--band-m-text)]/25",

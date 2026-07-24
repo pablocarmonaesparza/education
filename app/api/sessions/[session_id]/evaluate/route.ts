@@ -36,7 +36,7 @@ export async function POST(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   // Verificación de existencia + permiso vía RLS (sessions_read_self_or_manager).
@@ -49,7 +49,7 @@ export async function POST(
 
   if (!session) {
     return NextResponse.json(
-      { error: "Sesión no encontrada o sin permiso." },
+      { error: "Session not found, or you do not have access to it." },
       { status: 404 },
     );
   }
@@ -72,7 +72,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          err instanceof Error ? err.message : "Error al ejecutar el judge.",
+          err instanceof Error ? err.message : "The judge failed to run.",
       },
       { status: 500 },
     );

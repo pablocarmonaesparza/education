@@ -12,17 +12,42 @@ type AppleButtonTone =
 
 type AppleButtonSize = "sm" | "md" | "lg" | "inline";
 
+// Lenguaje v2 (fuente: LandingPage.tsx, rediseño Duolingo-craft):
+//   - primary/danger llevan "labio" 3D (--shadow-lip*, box-shadow 0 4px 0
+//     accent-lip) y press hundido AUTÉNTICO: al presionar, el labio desaparece
+//     (active:shadow-none) y el botón baja EXACTAMENTE la altura del labio
+//     (translate-y-[4px] = los 4px de --shadow-lip). Así el borde inferior se
+//     queda clavado y la cara del botón se mete a ras del hueco — el gesto
+//     Duolingo. (Con 2px el borde inferior SUBÍA y se leía como "se encogió",
+//     no como "se hundió".) Ni box-shadow ni transform tocan el layout, así que
+//     la altura de flujo NUNCA cambia — el vecino no salta.
+//   - secondary/ghost NO llevan labio (regla dura); conservan el press sutil
+//     por escala del sistema anterior.
+//   - Sólidos usan --accent-strong (DEC-009: blanco encima pasa AA); se usa
+//     bg-[var(--accent-strong)] en vez de la utility .accent-bg para que
+//     disabled:bg-* pueda ganar por especificidad.
+//   - data-[pressed=true]:scale-100 neutraliza el scale-[0.97] que HeroUI
+//     aplica por defecto al presionar (chocaría con el press hundido).
+const lipPress =
+  "hover:brightness-110 active:translate-y-[4px] active:shadow-none data-[pressed=true]:translate-y-[4px] data-[pressed=true]:shadow-none data-[pressed=true]:scale-100 disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)] disabled:shadow-none disabled:brightness-100 disabled:cursor-not-allowed";
+
 const toneClass: Record<AppleButtonTone, string> = {
-  primary:
-    "accent-bg text-white border border-transparent hover:opacity-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]",
+  primary: cn(
+    "bg-[var(--accent-strong)] text-white border border-transparent font-extrabold tracking-[0.3px] shadow-lip",
+    lipPress,
+  ),
   secondary:
-    "bg-[var(--surface)] text-[var(--text-primary)] border border-[var(--border-strong)] hover:bg-[var(--surface-2)]",
+    "bg-[var(--surface)] text-[var(--text-primary)] border-2 border-[var(--border)] font-extrabold hover:border-[var(--border-strong)] active:scale-[0.98] disabled:text-[var(--text-disabled)] disabled:border-[var(--surface-3)] disabled:cursor-not-allowed",
   ghost:
-    "bg-transparent text-[var(--text-primary)] border border-transparent hover:bg-[var(--surface-3)]",
-  danger:
-    "bg-[var(--band-b-bar)] text-white border border-transparent hover:opacity-95",
-  destructive:
-    "bg-[var(--band-b-bar)] text-white border border-transparent hover:opacity-95",
+    "bg-transparent text-[var(--text-primary)] border border-transparent font-bold hover:bg-[var(--surface-3)] active:scale-[0.98] disabled:text-[var(--text-disabled)] disabled:cursor-not-allowed",
+  danger: cn(
+    "bg-[var(--v2-red-strong)] text-white border border-transparent font-extrabold tracking-[0.3px] shadow-lip-danger focus-visible:outline-[var(--v2-red)]",
+    lipPress,
+  ),
+  destructive: cn(
+    "bg-[var(--v2-red-strong)] text-white border border-transparent font-extrabold tracking-[0.3px] shadow-lip-danger focus-visible:outline-[var(--v2-red)]",
+    lipPress,
+  ),
 };
 
 // Variante inline: tonos solo-texto (sin fill), para acciones tipo
@@ -88,7 +113,10 @@ export function AppleButton({
       {...props}
       radius="md"
       className={cn(
-        "min-h-11 !rounded-[var(--radius-md)] px-4 ts-body font-medium shadow-none transition-[transform,opacity,background-color,border-color] duration-[var(--motion-fast)] ease-[var(--motion-ease)] active:scale-[0.98] active:opacity-95 disabled:scale-100",
+        // Base sin peso ni sombra: cada tone define su labio (o su ausencia) y
+        // su peso v2. box-shadow y filter entran a la transición para que el
+        // labio y el hover:brightness animen con los tokens de motion.
+        "min-h-11 !rounded-[var(--radius-md)] px-4 ts-body transition-[transform,box-shadow,filter,opacity,background-color,border-color,color] duration-[var(--motion-fast)] ease-[var(--motion-ease)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] disabled:scale-100",
         toneClass[tone],
         className,
       )}

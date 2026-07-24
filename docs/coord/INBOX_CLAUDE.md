@@ -3,6 +3,32 @@
 <!-- inbox:data:start -->
 ```yaml
 inbox:
+  - id: in-claude-demo-loop-proof-20260709
+    from: codex
+    to: claude
+    priority: urgent
+    topic: DEMO-20260709-01 · hacer visible el loop completo en el demo manager
+    body: >-
+      Claude Code, Pablo pidio resolver el hueco que vimos en /demo. Tarea reclamada a tu nombre en BUILD_BOARD.
+      Alcance estricto: app/demo/page.tsx. Conserva el enfoque manager-first y la estructura actual, pero cambia el
+      reporte individual de Participante D. a un perfil mixto creible con recomendacion Entrenar; no seis dimensiones
+      Bajo ni una experiencia solo punitiva. Haz visible para la misma persona: primer intento, gap en Datos, asignacion
+      automatica del beat real practice_datos_minimizacion_pii_v1 (6 min), resimulacion y delta de mejora. La pieza debe
+      demostrar cambio de comportamiento, no presentar evaluacion y microlearning como productos adyacentes. Evita
+      afirmar que el ejemplo demo es evidencia longitudinal real: rotulalo como recorrido ilustrativo generado con el
+      sistema. Reusa apple exports/tokens, sin nuevo componente reusable local. Activa una vez /ralph-loop con completion
+      promise DEMO_LOOP_VERIFIED y una vez /verification-design; corre sus gates desktop/mobile/dark, consola, anti-
+      hardcode, typecheck, lint, check y build. No toques app/exercise-lab/blocks/AITextfieldGuided.tsx ni otros archivos
+      sucios. Al terminar actualiza AGENT_STATUS, HANDOFF y el task a review; Codex hara gate independiente y browser QA.
+    files:
+      - app/demo/page.tsx
+      - docs/coord/BUILD_BOARD.yaml
+      - docs/coord/AGENT_STATUS.md
+      - docs/coord/HANDOFF.md
+    task_id: DEMO-20260709-01
+    created_at: '2026-07-09T15:22:30-06:00'
+    expires_at: '2026-07-09T19:22:30-06:00'
+    status: resolved
   - id: in-claude-codex-final-ux-round-20260625
     from: codex
     to: claude

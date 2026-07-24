@@ -58,7 +58,7 @@ export async function POST(
   if (!staff.ok) return staff.response;
   if (!staff.user) {
     return NextResponse.json(
-      { error: "Acción requiere sesión real de staff." },
+      { error: "This action requires a real staff session." },
       { status: 401 },
     );
   }
@@ -78,7 +78,7 @@ export async function POST(
   if (staffErr || !staffBridgeUserId) {
     console.error("[admin/review/resolve] staff bridge failed", staffErr);
     return NextResponse.json(
-      { error: "No se pudo inicializar el usuario staff." },
+      { error: "Could not initialize the staff user." },
       { status: 500 },
     );
   }
@@ -95,13 +95,13 @@ export async function POST(
 
   if (!item) {
     return NextResponse.json(
-      { error: "Item de queue no encontrado." },
+      { error: "Queue item not found." },
       { status: 404 },
     );
   }
   if (item.status !== "queued" && item.status !== "in_review") {
     return NextResponse.json(
-      { error: `Item ya está en status=${item.status}.` },
+      { error: `Item is already at status=${item.status}.` },
       { status: 400 },
     );
   }
@@ -118,7 +118,7 @@ export async function POST(
     return NextResponse.json(
       {
         error:
-          "Este item requiere firmas de personas distintas. Tú ya firmaste esta revisión.",
+          "This item needs signatures from two different people. You already signed this review.",
       },
       { status: 409 },
     );
@@ -159,7 +159,7 @@ export async function POST(
   if (decisionErr || !newDecision) {
     console.error("[admin/review/resolve] decision insert failed", decisionErr);
     return NextResponse.json(
-      { error: "No se pudo guardar la firma de revisión." },
+      { error: "Could not save the review signature." },
       { status: 500 },
     );
   }
@@ -190,7 +190,7 @@ export async function POST(
 
   if (!evalRun) {
     return NextResponse.json(
-      { error: "evaluation_run no encontrado." },
+      { error: "evaluation_run not found." },
       { status: 500 },
     );
   }
@@ -211,7 +211,7 @@ export async function POST(
     if (qEscErr) {
       console.error("[admin/review/resolve] queue escalate failed", qEscErr);
       return NextResponse.json(
-        { error: "No se pudo escalar el item." },
+        { error: "Could not escalate the item." },
         { status: 500 },
       );
     }
@@ -243,7 +243,7 @@ export async function POST(
     if (qPartialErr) {
       console.error("[admin/review/resolve] queue partial failed", qPartialErr);
       return NextResponse.json(
-        { error: "No se pudo actualizar la revisión." },
+        { error: "Could not update the review." },
         { status: 500 },
       );
     }
@@ -269,7 +269,7 @@ export async function POST(
 
   if (!report) {
     return NextResponse.json(
-      { error: "Report no encontrado para esta sesión." },
+      { error: "No report found for this session." },
       { status: 500 },
     );
   }
@@ -319,7 +319,7 @@ export async function POST(
   if (rUpdErr) {
     console.error("[admin/review/resolve] report update failed", rUpdErr);
     return NextResponse.json(
-      { error: "No se pudo publicar el report." },
+      { error: "Could not publish the report." },
       { status: 500 },
     );
   }

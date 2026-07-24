@@ -17,7 +17,7 @@ export function AppleStepDots({
   className?: string;
 }) {
   return (
-    <ol className={cn("flex items-center gap-2", className)} aria-label="Progreso">
+    <ol className={cn("flex items-center gap-2", className)} aria-label="Progress">
       {steps.map((step, index) => (
         <li key={step.id} className="flex items-center gap-2">
           <span
@@ -26,7 +26,7 @@ export function AppleStepDots({
               step.status === "completed" &&
                 "border-[var(--band-a-text)] bg-[var(--band-a-bg)] text-[var(--band-a-text)]",
               step.status === "current" &&
-                "border-[var(--accent)] bg-[var(--accent-strong)] text-white shadow-[var(--shadow-sm)]",
+                "border-[var(--accent)] bg-[var(--accent-strong)] text-white shadow-sm",
               step.status === "pending" &&
                 "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]",
               step.status === "locked" &&

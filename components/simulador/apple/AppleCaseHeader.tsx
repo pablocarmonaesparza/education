@@ -49,14 +49,15 @@ export function AppleCaseHeader({
   const hasRight = Boolean(onNext) || Boolean(onFeedback);
   return (
     <div className={cn("pt-6 pb-6", className)}>
-      <div className="mx-auto flex w-[65%] max-w-[1200px] items-center gap-4">
+      {/* Mismo ancho responsivo que el runtime: 65% fijo aplastaba el header en mobile */}
+      <div className="mx-auto flex w-[92%] max-w-[1200px] items-center gap-4 sm:w-[80%] lg:w-[65%]">
         {hasLeft && (
           <div className="flex items-center gap-2">
             {hasClose &&
               (closeHref ? (
                 <a
                   href={closeHref}
-                  aria-label="Cerrar caso"
+                  aria-label="Close case"
                   className={cn(NAV_BASE, NAV_ENABLED)}
                 >
                   <Glyph path="M6 6L18 18M18 6L6 18" />
@@ -65,14 +66,14 @@ export function AppleCaseHeader({
                 <button
                   type="button"
                   onClick={onClose}
-                  aria-label="Cerrar caso"
+                  aria-label="Close case"
                   className={cn(NAV_BASE, NAV_ENABLED)}
                 >
                   <Glyph path="M6 6L18 18M18 6L6 18" />
                 </button>
               ))}
             {onPrev && (
-              <NavButton onClick={onPrev} disabled={prevDisabled} label="Diapositiva anterior">
+              <NavButton onClick={onPrev} disabled={prevDisabled} label="Previous slide">
                 <Glyph path="M15 6L9 12L15 18" />
               </NavButton>
             )}
@@ -82,7 +83,7 @@ export function AppleCaseHeader({
           total={total}
           current={current}
           className="flex-1"
-          ariaLabel={ariaLabel ?? "Progreso"}
+          ariaLabel={ariaLabel ?? "Progress"}
         />
         {hasRight && (
           <div className="flex items-center gap-2">
@@ -90,7 +91,7 @@ export function AppleCaseHeader({
               <NavButton
                 onClick={onNext}
                 disabled={nextDisabled}
-                label="Avanzar a la siguiente diapositiva"
+                label="Next slide"
               >
                 <Glyph path="M9 6L15 12L9 18" />
               </NavButton>
@@ -99,7 +100,7 @@ export function AppleCaseHeader({
               <button
                 type="button"
                 onClick={onFeedback}
-                aria-label="Mandar sugerencia o corrección"
+                aria-label="Send a suggestion or correction"
                 className={cn(NAV_BASE, NAV_ENABLED)}
               >
                 <Glyph path="M21 11.5a8.4 8.4 0 0 1-0.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-0.9L3 21l1.9-5.7a8.4 8.4 0 0 1-0.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-0.9h0.5a8.5 8.5 0 0 1 8 8v0.5z" />

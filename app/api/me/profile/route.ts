@@ -48,14 +48,14 @@ async function resolveUser(): Promise<
   } else {
     const cookieStore = await cookies();
     if (!isDevBypassActive(cookieStore.get("itera_dev_bypass")?.value)) {
-      return { ok: false, res: NextResponse.json({ error: "No autenticado." }, { status: 401 }) };
+      return { ok: false, res: NextResponse.json({ error: "Not signed in." }, { status: 401 }) };
     }
     query = query.ilike("email", "ana.demo@%");
   }
 
   const { data } = await query.limit(1).maybeSingle();
   if (!data) {
-    return { ok: false, res: NextResponse.json({ error: "Usuario no encontrado." }, { status: 404 }) };
+    return { ok: false, res: NextResponse.json({ error: "User not found." }, { status: 404 }) };
   }
   return { ok: true, admin, user: data as UserRow };
 }
@@ -135,7 +135,7 @@ export async function PATCH(req: NextRequest) {
   try {
     body = (await req.json()) as Record<string, unknown>;
   } catch {
-    return NextResponse.json({ error: "Body inválido." }, { status: 400 });
+    return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
   const update: Record<string, unknown> = {};
@@ -145,7 +145,7 @@ export async function PATCH(req: NextRequest) {
   if (typeof body.full_name === "string") {
     const name = body.full_name.trim();
     if (!name) {
-      return NextResponse.json({ error: "El nombre es requerido." }, { status: 400 });
+      return NextResponse.json({ error: "Name is required." }, { status: 400 });
     }
     update.full_name = name;
   }
@@ -170,7 +170,7 @@ export async function PATCH(req: NextRequest) {
       .eq("id", user.id);
     if (error) {
       console.error("[me/profile] update failed", error);
-      return NextResponse.json({ error: "No pudimos guardar." }, { status: 500 });
+      return NextResponse.json({ error: "We could not save." }, { status: 500 });
     }
   }
 

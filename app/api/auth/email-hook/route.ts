@@ -196,7 +196,7 @@ export async function POST(req: Request) {
       }
       case 'signup': {
         const actionUrl = buildConfirmUrl(siteUrl, tokenHash, 'email', redirectTo);
-        subject = 'confirma tu correo — itera';
+        subject = 'Confirm your email — Itera';
         element = AuthActionEmail({
           userName,
           actionUrl,
@@ -211,7 +211,7 @@ export async function POST(req: Request) {
           'magiclink',
           redirectTo
         );
-        subject = 'tu link para entrar a itera';
+        subject = 'Your sign-in link for Itera';
         element = AuthActionEmail({
           userName,
           actionUrl,
@@ -226,7 +226,7 @@ export async function POST(req: Request) {
           'email_change',
           redirectTo
         );
-        subject = 'confirma tu nuevo correo — itera';
+        subject = 'Confirm your new email — Itera';
         element = AuthActionEmail({
           userName,
           actionUrl,

@@ -21,13 +21,19 @@
  * - Desktop: 224px fijo
  * - Mobile/tablet: off-canvas drawer via NavbarMenu de HeroUI (futuro)
  * - Active state por pathname (matchea prefix)
- * - Iconos vía AppleIcon (Tabler stroke 1.5, estilo Apple HIG)
+ * - Iconos vía AppleIcon (Tabler stroke 2, receta v2)
+ *
+ * Lenguaje v2 (Duolingo-craft, referencia LandingPage):
+ * - Marca: AppleLogoMark + wordmark extrabold (mismo patrón que el footer
+ *   de la landing: size 32 + ts-body-xl tracking -0.7px).
+ * - Items: font-bold, radius-md; activo = chip accent-soft + texto accent.
+ * - Fondo surface-2 con border-r para separar el sidebar del canvas
+ *   (clave en dark navy: #141833 vs canvas #0b0e1c).
  */
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AppleIcon, type AppleIconName } from "./apple";
+import { AppleIcon, AppleLogoMark, type AppleIconName } from "./apple";
 
 interface NavItem {
   href: string;
@@ -46,48 +52,48 @@ interface NavItem {
 // simulador.organization_memberships del user logueado.
 
 const EMPLOYEE_PRIMARY: NavItem[] = [
-  { href: "/team", label: "Inicio", icon: "home" },
+  { href: "/team", label: "Home", icon: "home" },
   // Capacitación continua = pilar del negocio (decisión Pablo 2026-07-06):
   // módulos de actualización de IA + práctica dirigida viven en /aprender.
-  { href: "/aprender", label: "Aprender", icon: "brain" },
-  { href: "/casos", label: "Casos", icon: "briefcase" },
-  { href: "/reportes", label: "Reportes", icon: "fileText" },
+  { href: "/aprender", label: "Learn", icon: "brain" },
+  { href: "/casos", label: "Cases", icon: "briefcase" },
+  { href: "/reportes", label: "Reports", icon: "fileText" },
 ];
 
 const EMPLOYEE_SECONDARY: NavItem[] = [
-  { href: "/perfil", label: "Perfil", icon: "userCircle" },
+  { href: "/perfil", label: "Profile", icon: "userCircle" },
 ];
 
 const MANAGER_PRIMARY: NavItem[] = [
-  { href: "/staff", label: "Inicio", icon: "home" },
-  { href: "/staff/equipo", label: "Equipo", icon: "users" },
-  { href: "/staff/matriz", label: "Matriz", icon: "chart" },
-  { href: "/staff/recomendaciones", label: "Acciones", icon: "sparkles" },
-  { href: "/staff/reportes", label: "Reportes", icon: "fileText" },
-  { href: "/staff/casos", label: "Casos", icon: "briefcase" },
+  { href: "/staff", label: "Home", icon: "home" },
+  { href: "/staff/equipo", label: "Team", icon: "users" },
+  { href: "/staff/matriz", label: "Matrix", icon: "chart" },
+  { href: "/staff/recomendaciones", label: "Actions", icon: "sparkles" },
+  { href: "/staff/reportes", label: "Reports", icon: "fileText" },
+  { href: "/staff/casos", label: "Cases", icon: "briefcase" },
 ];
 
 const MANAGER_SECONDARY: NavItem[] = [
-  { href: "/perfil", label: "Perfil", icon: "userCircle" },
-  { href: "/empresa", label: "Empresa", icon: "building" },
+  { href: "/perfil", label: "Profile", icon: "userCircle" },
+  { href: "/empresa", label: "Company", icon: "building" },
 ];
 
 // Admin (staff Itera): backoffice. Los 8 destinos viven en el sidebar — no como
 // grid de cards en el índice ni como SurfaceNav arriba (eso era el doble logo).
 const ADMIN_PRIMARY: NavItem[] = [
-  { href: "/admin", label: "Resumen", icon: "home" },
+  { href: "/admin", label: "Overview", icon: "home" },
   { href: "/admin/leads", label: "Leads", icon: "mail" },
   { href: "/admin/review", label: "Review", icon: "shield" },
-  { href: "/admin/orgs", label: "Clientes", icon: "building" },
+  { href: "/admin/orgs", label: "Customers", icon: "building" },
   { href: "/admin/captacion", label: "Captación", icon: "search" },
-  { href: "/admin/cases", label: "Casos", icon: "briefcase" },
-  { href: "/admin/lecciones", label: "Lecciones", icon: "sparkles" },
+  { href: "/admin/cases", label: "Cases", icon: "briefcase" },
+  { href: "/admin/lecciones", label: "Practice", icon: "sparkles" },
   { href: "/admin/judge-health", label: "Judge", icon: "brain" },
   { href: "/admin/audit-log", label: "Audit", icon: "fileText" },
 ];
 
 const ADMIN_SECONDARY: NavItem[] = [
-  { href: "/perfil", label: "Perfil", icon: "userCircle" },
+  { href: "/perfil", label: "Profile", icon: "userCircle" },
 ];
 
 function isActive(pathname: string, href: string): boolean {
@@ -106,18 +112,20 @@ function NavLink({
   return (
     <Link
       href={item.href}
-      className={`group flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 ts-subhead font-medium transition-colors ${
+      aria-current={active ? "page" : undefined}
+      className={`group flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2 ts-subhead font-bold transition-colors ${
         active
-          ? "bg-[var(--surface-2)] text-[var(--text-primary)]"
-          : "text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
+          ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+          : "text-[var(--text-secondary)] hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
       }`}
     >
-      {/* h-[18px]/w-[18px] replica el size={18} del import directo previo */}
+      {/* activo = patrón chip v2: fondo accent-soft + icono/texto accent.
+          hover usa surface-3 (el sidebar ya vive en surface-2). */}
       <AppleIcon
         name={item.icon}
-        className={`h-[18px] w-[18px] ${
+        className={`h-5 w-5 shrink-0 ${
           active
-            ? "text-[var(--text-primary)]"
+            ? "text-[var(--accent)]"
             : "text-[var(--text-tertiary)] group-hover:text-[var(--text-primary)]"
         }`}
       />
@@ -155,20 +163,16 @@ export function AppSidebar() {
 
   return (
     <aside
-      aria-label="Navegación principal"
-      className="hidden md:flex md:flex-col fixed inset-y-0 left-0 z-20 w-[224px] bg-[var(--surface)] px-3 py-4"
+      aria-label="Main navigation"
+      className="hidden md:flex md:flex-col fixed inset-y-0 left-0 z-20 w-[224px] border-r border-[var(--border)] bg-[var(--surface-2)] px-3 py-4"
     >
-      {/* Brand */}
+      {/* Brand — isotipo + wordmark, el patrón de la landing v2 */}
       <div className="px-2 py-1.5">
-        <Link href={brandHref} className="inline-flex items-center" aria-label="Inicio">
-          <Image
-            src="/images/itera-logo-light.png"
-            alt="Itera"
-            width={64}
-            height={32}
-            className="h-6 w-auto"
-            priority
-          />
+        <Link href={brandHref} className="inline-flex items-center gap-2" aria-label="Home">
+          <AppleLogoMark size={32} />
+          <span className="ts-body-xl font-extrabold tracking-[-0.7px] text-[var(--text-primary)]">
+            itera<span className="text-[var(--accent)]">.</span>
+          </span>
         </Link>
       </div>
 

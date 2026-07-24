@@ -21,37 +21,37 @@ const DIM_DETAIL: Record<
   contexto: {
     band: "A",
     rationale:
-      "Encuadró el objetivo de negocio y las restricciones de la campaña antes de tocar la herramienta. Distinguió lo urgente de lo importante.",
+      "Framed the business goal and the campaign constraints before touching the tool. Separated what was urgent from what was important.",
     confidence: 0.86,
   },
   datos: {
     band: "M",
     rationale:
-      "Revisó la fuente del dataset, pero no marcó que incluía correos de clientes sin consentimiento explícito hasta avanzado el flujo.",
+      "Checked the source of the dataset, but did not flag that it included customer emails without explicit consent until late in the flow.",
     confidence: 0.72,
   },
   ejecucion_ia: {
     band: "M",
     rationale:
-      "Prompt claro y con contexto, pero delegó el criterio de segmentación al modelo sin acotar los límites del caso.",
+      "Clear prompt with context, but handed the segmentation judgment to the model without bounding the limits of the case.",
     confidence: 0.7,
   },
   validacion: {
     band: "B",
     rationale:
-      "Aceptó la salida del modelo sin contrastar las cifras contra la fuente original ni revisar los segmentos propuestos.",
+      "Accepted the model output without checking the numbers against the original source or reviewing the proposed segments.",
     confidence: 0.64,
   },
   juicio: {
     band: "A",
     rationale:
-      "Cuando detectó el riesgo de PII, frenó el envío y escaló en vez de seguir bajo presión de tiempo.",
+      "On spotting the PII risk, stopped the send and escalated instead of pushing through under time pressure.",
     confidence: 0.81,
   },
   impacto: {
     band: "M",
     rationale:
-      "La decisión final fue defendible, pero la justificación al manager fue breve y sin cuantificar el riesgo evitado.",
+      "The final decision was defensible, but the justification to the manager was brief and did not quantify the risk avoided.",
     confidence: 0.69,
   },
 };
@@ -60,7 +60,7 @@ export function getMockReport(sessionId: string): ReportEnvelope {
   const dimensions = DIMENSIONS.map((d) => {
     const detail = DIM_DETAIL[d.id] ?? {
       band: "M" as BandKey,
-      rationale: "Desempeño dentro del rango esperado para esta dimensión.",
+      rationale: "Performance within the expected range for this dimension.",
       confidence: 0.7,
     };
     return {
@@ -78,20 +78,22 @@ export function getMockReport(sessionId: string): ReportEnvelope {
     judge_model: "claude · mock",
     duration_ms: 19 * 60 * 1000,
     dimensions,
+    // event_type debe ser uno de los 11 canónicos del CHECK en BD
+    // (017_simulador_v0.sql) — si no, humanRiskType() no resuelve label.
     risk_events: [
       {
-        type: "pii_expuesta_al_modelo",
+        type: "exposed_pii_to_model",
         severity: "high",
         step_ordinal: 3,
         evidence_text:
-          "Pegó el dataset completo con correos de clientes en el prompt sin anonimizar ni clasificar la sensibilidad de los datos.",
+          "Pasted the full dataset with customer emails into the prompt without anonymizing it or classifying how sensitive the data was.",
       },
       {
-        type: "decision_sin_validar_fuente",
+        type: "accepted_unverified_claim",
         severity: "medium",
         step_ordinal: 4,
         evidence_text:
-          "Tomó las cifras de alcance que devolvió el modelo como definitivas sin contrastarlas contra el reporte original.",
+          "Took the reach figures the model returned as final without checking them against the original report.",
       },
     ],
     gaps: [
@@ -99,33 +101,33 @@ export function getMockReport(sessionId: string): ReportEnvelope {
         id: "clasificacion_datos",
         severity: "high",
         observed:
-          "No clasificó la sensibilidad del dataset antes de usarlo con IA.",
+          "Did not classify how sensitive the dataset was before using it with AI.",
         why_matters:
-          "Exponer PII a un modelo externo es un incidente de privacidad, no un detalle técnico.",
+          "Exposing PII to an outside model is a privacy incident, not a technical detail.",
       },
       {
         id: "validacion_de_salida",
         severity: "medium",
         observed:
-          "Aceptó la segmentación del modelo sin revisar muestras ni cruzar con la fuente.",
+          "Accepted the model's segmentation without reviewing samples or cross-checking the source.",
         why_matters:
-          "La IA acelera, pero el criterio de qué se envía y a quién sigue siendo del operador.",
+          "AI speeds the work up, but what gets sent and to whom is still the operator's call.",
       },
     ],
     strengths: [
-      "Frenó el envío al detectar el riesgo de datos sensibles en lugar de ceder a la urgencia.",
-      "Escaló con contexto suficiente para que el manager pudiera decidir rápido.",
+      "Stopped the send on spotting the sensitive-data risk instead of giving in to the urgency.",
+      "Escalated with enough context for the manager to decide quickly.",
     ],
     recommendation: {
       action: "entrenar",
-      applies_to: "Uso de IA con datos de clientes bajo presión de tiempo.",
+      applies_to: "Using AI with customer data under time pressure.",
       next_week_actions: [
-        "Practicar el beat de clasificación de datos antes de usar cualquier herramienta de IA.",
-        "Repetir el caso con la variante de re-simulación y validar la salida contra la fuente.",
-        "Acordar con el manager un checklist de PII para campañas urgentes.",
+        "Run the data classification practice before using any AI tool.",
+        "Redo the case with the re-simulation variant and verify the output against the source.",
+        "Agree on a PII checklist with the manager for urgent campaigns.",
       ],
       reason:
-        "El juicio bajo presión fue sólido (frenó y escaló), pero la higiene de datos y la validación de salida necesitan práctica antes de operar con autonomía.",
+        "Judgment under pressure was solid (stopped and escalated), but data hygiene and output verification need practice before working with autonomy.",
     },
   };
 

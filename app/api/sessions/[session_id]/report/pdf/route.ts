@@ -16,7 +16,7 @@ export async function GET(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   const { data: report, error } = await supabase
@@ -29,14 +29,14 @@ export async function GET(
 
   if (error) {
     return NextResponse.json(
-      { error: "No pudimos leer el reporte." },
+      { error: "We could not load the report." },
       { status: 500 },
     );
   }
 
   if (!report) {
     return NextResponse.json(
-      { error: "El reporte no existe o no tienes permiso de verlo." },
+      { error: "That report does not exist, or you do not have access to it." },
       { status: 404 },
     );
   }
@@ -45,7 +45,7 @@ export async function GET(
     return NextResponse.json(
       {
         error:
-          "El PDF estará disponible cuando el reporte quede publicado.",
+          "The PDF will be available once the report is published.",
       },
       { status: 409 },
     );
@@ -61,7 +61,7 @@ export async function GET(
     console.error("[report/pdf] generate failed", err);
     return NextResponse.json(
       {
-        error: "No pudimos generar el PDF.",
+        error: "We could not generate the PDF.",
         detail:
           process.env.NODE_ENV === "production"
             ? undefined
@@ -73,7 +73,7 @@ export async function GET(
     );
   }
 
-  const filename = `itera-reporte-${session_id.slice(0, 8)}.pdf`;
+  const filename = `itera-report-${session_id.slice(0, 8)}.pdf`;
 
   return new NextResponse(new Uint8Array(pdf), {
     headers: {

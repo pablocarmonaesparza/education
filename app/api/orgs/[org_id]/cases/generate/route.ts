@@ -32,7 +32,7 @@ export async function POST(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   const admin = createAdminClient();
@@ -41,7 +41,7 @@ export async function POST(
     .rpc("ensure_bridge_user", { p_auth_user_id: user.id });
   if (bridgeError || !bridgeId) {
     return NextResponse.json(
-      { error: "No se pudo sincronizar tu cuenta." },
+      { error: "We could not sync your account." },
       { status: 500 },
     );
   }
@@ -56,7 +56,7 @@ export async function POST(
     .maybeSingle();
   if (!membership) {
     return NextResponse.json(
-      { error: "Necesitas ser admin de la organización." },
+      { error: "You must be an organization admin." },
       { status: 403 },
     );
   }
@@ -86,7 +86,7 @@ export async function POST(
       .maybeSingle();
     if (!team) {
       return NextResponse.json(
-        { error: "El equipo no pertenece a esta organización." },
+        { error: "That team does not belong to this organization." },
         { status: 400 },
       );
     }

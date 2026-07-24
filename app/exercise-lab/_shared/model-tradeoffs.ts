@@ -46,15 +46,15 @@ export function chooseGuidedModelId({
 }
 
 export function priorityLabel(value: number) {
-  if (value >= 70) return "alta";
-  if (value >= 40) return "media";
-  return "baja";
+  if (value >= 70) return "high";
+  if (value >= 40) return "medium";
+  return "low";
 }
 
 export function budgetLabel(value: number) {
-  if (value >= 70) return `alto (${value}/100)`;
-  if (value >= 40) return `medio (${value}/100)`;
-  return `bajo (${value}/100)`;
+  if (value >= 70) return `high (${value}/100)`;
+  if (value >= 40) return `medium (${value}/100)`;
+  return `low (${value}/100)`;
 }
 
 function roundTo10(value: number) {

@@ -101,7 +101,7 @@ export async function GET(req: NextRequest) {
   if (error) {
     console.error("[admin/leads] list failed", error);
     return NextResponse.json(
-      { error: "Error listando leads." },
+      { error: "Could not list leads." },
       { status: 500 },
     );
   }

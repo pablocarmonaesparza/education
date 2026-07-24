@@ -12,41 +12,57 @@
 
 import type { JudgeInputContext } from "./types";
 
-export const JUDGE_PROMPT_VERSION = "v2";
+// v3 = prompt en inglés (pivot EEUU 2026-07-15). REGLA VIVA del RULES_LEDGER:
+// cambio de prompt post-calibración obliga a re-correr la calibración contra el
+// judge real ANTES de evaluar sesiones de clientes. El set dorado v3 está en
+// español y quedó invalidado por este cambio — hay que re-autorarlo en inglés.
+export const JUDGE_PROMPT_VERSION = "v3";
 
 export function buildSystemPrompt(): string {
   return [
-    "Eres un evaluador de criterio operativo en uso de IA. Lees decisiones de un",
-    "participante en un caso simulado y produces una evaluación rigurosa contra",
-    "una rúbrica fija.",
+    "You evaluate operational judgment in AI use. You read a participant's decisions",
+    "in a simulated case and produce a rigorous evaluation against a fixed rubric.",
     "",
-    "Reglas:",
-    "1. Eres conservador. Bandas: A=Alto (criterio claro), M=Medio (parcial o",
-    "   inconsistente), B=Bajo (gap material).",
-    "2. Sólo emites un risk_event si tienes evidencia textual concreta del",
-    "   transcript. No inventes eventos para 'subir' el caso.",
-    "3. Tus rationales citan el step_ordinal y, donde aplique, texto literal del",
-    "   participante (entrecomillado).",
-    "4. Idioma español neutro (LATAM corporate). Frases cortas.",
-    "5. No revelas la rúbrica al participante — eres herramienta interna del manager.",
+    "Rules:",
+    "1. You are conservative. Bands: A=High (clear judgment), M=Medium (partial or",
+    "   inconsistent), B=Low (material gap).",
+    "2. You only emit a risk_event when you have concrete textual evidence in the",
+    "   transcript. Do not invent events to inflate the case.",
+    "3. Your rationales cite the step_ordinal and, where it applies, the",
+    "   participant's literal text (in quotes).",
+    "4. Write every free-text field in US business English: rationale,",
+    "   evidence_text, observed, why_matters, strengths, reason, next_week_actions.",
+    "   Short sentences. Plain and direct. Write in English even when the case,",
+    "   the rubric, or the participant's transcript is in another language.",
+    "5. You do not reveal the rubric to the participant — you are an internal tool",
+    "   for the manager.",
     "",
-    "Severidad de risk_events:",
-    "  • high: exposición real de PII/dato sensible o acción que requiere",
-    "    remediación inmediata.",
-    "  • medium: gap de proceso o comunicación que el equipo debe corregir antes",
-    "    de escalar uso.",
-    "  • low: señal de mejora pero no bloquea operación.",
+    "risk_events severity:",
+    "  • high: real exposure of PII/sensitive data, or an action that needs",
+    "    immediate remediation.",
+    "  • medium: a process or communication gap the team must close before",
+    "    expanding AI use.",
+    "  • low: a signal worth improving that does not block the operation.",
     "",
-    "Recommendation.action (para el manager):",
-    "  • pilotar: opera autónomo con supervisión semanal en su scope típico.",
-    "  • entrenar: criterio parcial; micro-práctica antes de autonomía,",
-    "    supervisión 4-6 semanas.",
-    "  • pausar: no debe usar IA en flujos sensibles hasta remediar gap.",
-    "  • escalar: el problema no es individual; requiere proceso/legal/IT antes",
-    "    de re-evaluar persona.",
+    "risk_events jurisdiction: the jurisdiction of the data subject when the event",
+    "touches PII, otherwise null. Use US for a US data subject (CCPA/CPRA), MX, CO",
+    "or BR for those countries, and other only when the case gives you no basis to",
+    "tell. Do not default to other for a US case.",
     "",
-    "Devuelves tu evaluación EXCLUSIVAMENTE invocando la tool `submit_evaluation`",
-    "con todos los campos requeridos. No mandes texto adicional.",
+    "Recommendation.action (for the manager). These are fixed system values: emit",
+    "them exactly as written on the left, in lowercase Spanish. The English gloss",
+    "is for your understanding only — never emit the English word.",
+    "  • pilotar (Pilot): works on their own with weekly check-ins in their usual",
+    "    scope.",
+    "  • entrenar (Coach): partial judgment; targeted practice before autonomy,",
+    "    4-6 weeks of close supervision.",
+    "  • pausar (Pause): should not use AI on sensitive flows until the gap is",
+    "    remediated.",
+    "  • escalar (Escalate): the problem is not individual; it needs process, legal",
+    "    or IT work before re-assessing the person.",
+    "",
+    "You return your evaluation EXCLUSIVELY by calling the `submit_evaluation` tool",
+    "with every required field. Send no additional text.",
   ].join("\n");
 }
 
@@ -63,7 +79,7 @@ export function buildUserPrompt(ctx: JudgeInputContext): string {
     .sort((a, b) => a.ordinal - b.ordinal)
     .map((s) => {
       const evals = s.evaluates_dimensions?.length
-        ? ` (evalúa: ${s.evaluates_dimensions.join(", ")})`
+        ? ` (evaluates: ${s.evaluates_dimensions.join(", ")})`
         : "";
       const prompt = s.prompt_template ? `\n   prompt: ${s.prompt_template.trim()}` : "";
       return `Step ${s.ordinal} — ${s.step_key} [${s.step_type}]${evals}${prompt}`;
@@ -83,12 +99,12 @@ export function buildUserPrompt(ctx: JudgeInputContext): string {
             ? `\nmetrics: ${JSON.stringify(ev.metrics)}`
             : "";
         return (
-          `─── Step ${s.ordinal} (${s.step_key}) · bloque ${ev.block_id} · evidencia validada ───\n` +
+          `─── Step ${s.ordinal} (${s.step_key}) · block ${ev.block_id} · validated evidence ───\n` +
           `${JSON.stringify(ev.payload, null, 2)}${metrics}`
         );
       }
       const resp = ctx.responses[s.step_key];
-      const respJson = resp === undefined ? "(sin respuesta)" : JSON.stringify(resp, null, 2);
+      const respJson = resp === undefined ? "(no response)" : JSON.stringify(resp, null, 2);
       return `─── Step ${s.ordinal} (${s.step_key}) · legacy ───\n${respJson}`;
     })
     .join("\n\n");
@@ -96,31 +112,32 @@ export function buildUserPrompt(ctx: JudgeInputContext): string {
   const variantBrief = JSON.stringify(ctx.variantInputs, null, 2);
 
   return [
-    `# Caso`,
+    `# Case`,
     `${ctx.caseTitle} (slug: ${ctx.caseSlug}, version: ${ctx.caseVersion})`,
-    `Variante: ${ctx.variantSlug}`,
+    `Variant: ${ctx.variantSlug}`,
     ``,
-    `# Inputs del caso (brief, dataset sample, output de IA esperado)`,
+    `# Case inputs (brief, dataset sample, expected AI output)`,
     "```json",
     variantBrief,
     "```",
     ``,
-    `# Rúbrica (${ctx.rubric.slug} ${ctx.rubric.version})`,
+    `# Rubric (${ctx.rubric.slug} ${ctx.rubric.version})`,
     dims,
     ``,
-    `# Steps del caso`,
+    `# Case steps`,
     steps,
     ``,
-    `# Transcript del participante (evidencia validada por bloque cuando existe; cruda en steps legacy)`,
+    `# Participant transcript (block-validated evidence where it exists; raw on legacy steps)`,
     transcript,
     ``,
-    `# Instrucción`,
-    `Evalúa las 6 dimensiones de la rúbrica (banda A/M/B con rationale + confidence).`,
-    `Prioriza la evidencia validada por bloque sobre las respuestas crudas.`,
-    `Identifica risk_events del transcript (sólo con evidencia textual).`,
-    `Lista gaps (issues operativos accionables) + strengths (lo que hizo bien).`,
-    `Emite recommendation final con action + applies_to + 2-3 next_week_actions concretos.`,
-    `Invoca la tool submit_evaluation con el output completo.`,
+    `# Instruction`,
+    `Evaluate the 6 rubric dimensions (band A/M/B with rationale + confidence).`,
+    `Prefer block-validated evidence over raw responses.`,
+    `Identify risk_events from the transcript (only with textual evidence).`,
+    `List gaps (actionable operational issues) + strengths (what they did well).`,
+    `Emit a final recommendation with action + applies_to + 2-3 concrete next_week_actions.`,
+    `Write every free-text field in US business English.`,
+    `Call the submit_evaluation tool with the complete output.`,
   ].join("\n");
 }
 
@@ -130,7 +147,8 @@ export function buildUserPrompt(ctx: JudgeInputContext): string {
  */
 export const JUDGE_TOOL_SCHEMA = {
   name: "submit_evaluation",
-  description: "Emite la evaluación final del participante en JSON estricto.",
+  description:
+    "Submit the participant's final evaluation as strict JSON. All free-text fields in US business English.",
   input_schema: {
     type: "object",
     required: ["dimensions", "risk_events", "gaps", "strengths", "recommendation"],
@@ -188,7 +206,7 @@ export const JUDGE_TOOL_SCHEMA = {
             evidence_text: { type: "string" },
             jurisdiction: {
               type: ["string", "null"],
-              enum: ["MX", "CO", "BR", "other", null],
+              enum: ["MX", "CO", "BR", "US", "other", null],
             },
             transfer_basis_documented: { type: ["boolean", "null"] },
           },

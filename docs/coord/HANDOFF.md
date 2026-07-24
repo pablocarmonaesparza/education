@@ -2,6 +2,39 @@
 
 Este archivo queda limpio después de la purga `20260519`. El historial previo vive en git; el árbol activo ya no conserva archivo legacy local.
 
+## 2026-07-09 — codex — cierre DEMO-20260709-01
+
+### aprobado
+
+- Claude Code resolvió el hueco estructural del demo: Participante D. pasa de un perfil mixto con gap en Datos a práctica dirigida, resimulación y mejora medible, usando `practice_datos_minimizacion_pii_v1`.
+- Codex pidió y verificó una segunda ronda: el ejemplo ya no se presenta como reporte real de un cliente y las KPI se apilan en desktop para eliminar cortes de texto.
+- QA independiente: 1280 px y 390 px sin overflow; dark con tokens/contraste correctos; consola limpia. El demo queda disponible en `http://localhost:3003/demo`.
+
+### gates
+
+- PASS: `npx eslint app/demo/page.tsx`, `npm run typecheck:simulador`, `npm run check:simulador`, `npm run build`, `npm run coord:lint`.
+- `npm run lint:simulador` global sigue fallando por el error preexistente `react-hooks/set-state-in-effect` en `components/simulador/CaseReviewWalkthrough.tsx:90`; `app/demo/page.tsx` no aporta errores.
+- Sin commit. No se tocaron los cambios previos de `AITextfieldGuided.tsx`, `BLOCKERS.md` ni `docs/design/itera-design-system.html`.
+
+## 2026-07-09 — claude — DEMO-20260709-01 loop visible en /demo (→ review Codex)
+
+### done
+
+- `app/demo/page.tsx` (ÚNICO archivo tocado; no se tocaron archivos sucios previos).
+- Reporte individual de Participante D.: de 6 dimensiones en Bajo + recomendación Pausar → perfil MIXTO creíble (Contexto/Juicio Alto, Ejecución IA/Validación/Impacto Medio, Datos Bajo = gap) con recomendación **Entrenar**. Riesgos recortados a 2 (PII alto = el gap, cifra sin fuente medio) coherentes con el perfil. Línea de rationale reescrita (ya no "un riesgo alto siempre baja la autonomía").
+- Sección 5 "La capacitación" reemplazada por sección 5 "La mejora": recorrido ILUSTRATIVO de la MISMA persona en una sola lectura — Intento 1 (Datos Bajo, PII) → práctica real `practice_datos_minimizacion_pii_v1` (6 min, 2 ejercicios, dimensión Datos N1, principle card citado) → resimulación del mismo caso → delta visible (Datos Bajo→Medio con barras antes/después, readiness +14, riesgos PII −2) + acción del manager (Entrenar→Pilotar). Rotulado explícito "recorrido ilustrativo generado con el sistema —no un histórico de un cliente real—". Cierre: "ese loop es el producto… no suma evaluación y microlearning como dos cosas sueltas".
+- Reusa apple exports `AppleTimeline` + `AppleKpiCard` y helpers locales existentes `Bar`/`BandPill`. Sin componente reusable local nuevo. Sin hardcodes.
+
+### evidence
+
+- Gates: `npm run typecheck:simulador` 0 · `npm run check:simulador` OK · `npx eslint app/demo/page.tsx` 0 · `npm run build` PASS.
+- Anti-hardcode sobre app/demo/page.tsx: text-px 0 · builtin-type 0 · hex 0 · var-fallback-hex 0 · radius 0.
+- Browser (host.docker.internal:3003/demo): render desktop + mobile (390px, stack correcto) + dark (surfaces/bandas/KPI con paridad); consola 0 errores. Screenshots en `/tmp/playwright-output/demo-loop-*.png`.
+
+### handoff a Codex
+
+- Gate independiente del diff + browser QA. Sin commit (pendiente decisión de Pablo). `status: review` en el board.
+
 ## 2026-06-25 — codex — cierre UX-20260623 final verification
 
 ### done

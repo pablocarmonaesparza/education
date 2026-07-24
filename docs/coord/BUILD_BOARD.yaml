@@ -1,6 +1,6 @@
 version: 1
 project: itera-simulador-premium
-updated_at: '2026-06-25T19:05:00-06:00'
+updated_at: '2026-07-09T21:22:45.042Z'
 source_of_truth: true
 rules:
   - si una tarea no vive aqui, no existe
@@ -825,9 +825,9 @@ tasks:
       - /design y /design/components reflejan componentes reutilizables nuevos o promovidos
       - screenshots desktop y mobile verifican que texto no se encima ni rompe layout
     notes: >-
-      change_type=ui-foundation | aplicar design-verification antes de surfaces | closed 2026-06-25:
-      central Apple components/tokens reused across surfaces; `/design` and `/design/components` visually captured;
-      no remaining foundation blocker in final visual pass
+      change_type=ui-foundation | aplicar design-verification antes de surfaces | closed 2026-06-25: central Apple
+      components/tokens reused across surfaces; `/design` and `/design/components` visually captured; no remaining
+      foundation blocker in final visual pass
     done_at: '2026-06-25T19:05:00-06:00'
   - id: UX-20260623-02
     title: Publicas auth legal success cancel invitation
@@ -837,12 +837,11 @@ tasks:
     claimed_by: null
     claim_expires_at: null
     notes_claude: >-
-      2026-06-25 Claude: cierre verificado. /auth/login /auth/signup /auth/invitation/[token]
-      /privacy /terms /cancel /success — todos con titulo display-tight sin punto y jerarquia
-      estandar (28/32px). maintenance/not-found/invitation-error sin contorno (result-state shell).
-      privacy/terms reestructuradas desde fuente canonica lib/simulador/copy/legal.ts (MX+CO,
-      framework_citation, footer_disclaimer) sin prometer compliance no verificado. tsc 0,
-      check:simulador PASS. Sin cambios de codigo esta sesion: ya estaba implementado y limpio.
+      2026-06-25 Claude: cierre verificado. /auth/login /auth/signup /auth/invitation/[token] /privacy /terms /cancel
+      /success — todos con titulo display-tight sin punto y jerarquia estandar (28/32px).
+      maintenance/not-found/invitation-error sin contorno (result-state shell). privacy/terms reestructuradas desde
+      fuente canonica lib/simulador/copy/legal.ts (MX+CO, framework_citation, footer_disclaimer) sin prometer compliance
+      no verificado. tsc 0, check:simulador PASS. Sin cambios de codigo esta sesion: ya estaba implementado y limpio.
     depends_on:
       - UX-20260623-01
     dod:
@@ -860,16 +859,15 @@ tasks:
     claimed_by: null
     claim_expires_at: null
     notes_claude: >-
-      2026-06-25 Claude: cierre verificado. (org) AppleSelect abre al primer click via portalContainer
-      en useEffect, sin exigir textfield previo (UX-10). (invite) /onboarding/invite consume
-      validateOnboardingInvites: CTA solo activa cuando todas las filas visibles son validas; payload
-      desde validRows (UX-11). (context) acepta solo PDF (accept application/pdf + filtro), placeholder
-      "Sitio web", prefill https:// en focus, label "Adjuntar archivos (PDF)", "Completar despues"
-      subrayado; website+PDF metadata se guardan en estado de onboarding para pasarlos al checkout como
-      contexto comercial (decision registrada en doc de pagina). (billing) checkout Stripe one-time
-      success->/onboarding/done cancel->/onboarding/billing?canceled=1 (Codex UX-12). (done) server
-      component resuelve 3 estados reales (confirmado/pending/fallido) con titulos sin punto. tsc 0,
-      check:simulador PASS. Sin cambios de codigo esta sesion.
+      2026-06-25 Claude: cierre verificado. (org) AppleSelect abre al primer click via portalContainer en useEffect, sin
+      exigir textfield previo (UX-10). (invite) /onboarding/invite consume validateOnboardingInvites: CTA solo activa
+      cuando todas las filas visibles son validas; payload desde validRows (UX-11). (context) acepta solo PDF (accept
+      application/pdf + filtro), placeholder "Sitio web", prefill https:// en focus, label "Adjuntar archivos (PDF)",
+      "Completar despues" subrayado; website+PDF metadata se guardan en estado de onboarding para pasarlos al checkout
+      como contexto comercial (decision registrada en doc de pagina). (billing) checkout Stripe one-time
+      success->/onboarding/done cancel->/onboarding/billing?canceled=1 (Codex UX-12). (done) server component resuelve 3
+      estados reales (confirmado/pending/fallido) con titulos sin punto. tsc 0, check:simulador PASS. Sin cambios de
+      codigo esta sesion.
     depends_on:
       - UX-20260623-01
     dod:
@@ -888,9 +886,9 @@ tasks:
     claim_expires_at: null
     notes_claude: >-
       2026-06-25 Claude: CaseCard conectado a destination API (casos/team/staff-casos sin crash, navega a
-      reporte/runtime); /empresa reescrita sobre GET/PATCH settings + portal Stripe (autosave, website lock,
-      PDF mensual, sin contornos, sin botón Guardar). tsc 0, check:simulador PASS, build PASS, HTTP smoke 200.
-      Residual: screenshots autenticados desktop/mobile (browser MCP gated en run headless) → UX-07.
+      reporte/runtime); /empresa reescrita sobre GET/PATCH settings + portal Stripe (autosave, website lock, PDF
+      mensual, sin contornos, sin botón Guardar). tsc 0, check:simulador PASS, build PASS, HTTP smoke 200. Residual:
+      screenshots autenticados desktop/mobile (browser MCP gated en run headless) → UX-07.
     depends_on:
       - UX-20260623-01
     dod:
@@ -901,13 +899,12 @@ tasks:
       - perfil y empresa redisenados con componentes centrales
     notes: change_type=ui-flow | incluye /team /casos /reportes /perfil /staff* /empresa
     notes_codex: >-
-      2026-06-25 Codex final: verified authenticated manager/employee screenshots and data contracts.
-      Fixed /api/dashboard sprint selection so standalone runtime sprints no longer hide seeded packaged sprint data:
-      manager dashboard now shows 4 members, 2 completed, 1 in progress, 3 risk events, 1 pending review. Screenshots:
+      2026-06-25 Codex final: verified authenticated manager/employee screenshots and data contracts. Fixed
+      /api/dashboard sprint selection so standalone runtime sprints no longer hide seeded packaged sprint data: manager
+      dashboard now shows 4 members, 2 completed, 1 in progress, 3 risk events, 1 pending review. Screenshots:
       /tmp/itera-final-ux-20260625/dashboard-manager-real-datafixed.png,
       /tmp/itera-final-ux-20260625/staff-index-real-datafixed.png,
-      /tmp/itera-final-ux-20260625/casos-ana-desktop-final.png,
-      /tmp/itera-final-ux-20260625/empresa-desktop-final.png,
+      /tmp/itera-final-ux-20260625/casos-ana-desktop-final.png, /tmp/itera-final-ux-20260625/empresa-desktop-final.png,
       /tmp/itera-final-ux-20260625/report-ana-final.png. Gates PASS: tsc, check:simulador, build.
     done_at: '2026-06-25T19:05:00-06:00'
   - id: UX-20260623-05
@@ -926,18 +923,17 @@ tasks:
       - scroll y layout verificados en desktop y mobile
     notes: change_type=ui-admin
     notes_claude: >-
-      2026-06-25 Claude (UX-05-admin-double-nav-20260625): cerrado el DoD "admin shell no duplica
-      logo/sidebar vieja". /admin y /admin/* montan su propia SurfaceNav (logo + nav) y el AppShell
-      seguia montando ademas AppSidebar -> doble logo/nav (verificado por Codex screenshot
-      admin-review-rerun.png). Fix: AppShell ahora trata /admin y /admin/* como surface-owned
-      (mismo patron que /report /case /jugar): sin AppSidebar ni padding md:pl-[224px], una sola
-      SurfaceNav. Navegacion admin intacta (vive dentro de SurfaceNav). Scope estricto UI/.tsx
-      (solo app/(app)/AppShell.tsx). Gates: tsc 0, check:simulador PASS. Sin commit.
+      2026-06-25 Claude (UX-05-admin-double-nav-20260625): cerrado el DoD "admin shell no duplica logo/sidebar vieja".
+      /admin y /admin/* montan su propia SurfaceNav (logo + nav) y el AppShell seguia montando ademas AppSidebar ->
+      doble logo/nav (verificado por Codex screenshot admin-review-rerun.png). Fix: AppShell ahora trata /admin y
+      /admin/* como surface-owned (mismo patron que /report /case /jugar): sin AppSidebar ni padding md:pl-[224px], una
+      sola SurfaceNav. Navegacion admin intacta (vive dentro de SurfaceNav). Scope estricto UI/.tsx (solo
+      app/(app)/AppShell.tsx). Gates: tsc 0, check:simulador PASS. Sin commit.
     notes_codex: >-
-      2026-06-25 Codex final: /admin/review no crashea; API normaliza dimension_scores_json y risk_summary_json,
-      y el shell admin quedo con una sola nav. Screenshot final:
-      /tmp/itera-final-ux-20260625/admin-review-single-nav.png. Admin cases/leads/orgs/judge/audit capturados
-      en /tmp/itera-final-ux-20260625/. Gates PASS: tsc, check:simulador, build.
+      2026-06-25 Codex final: /admin/review no crashea; API normaliza dimension_scores_json y risk_summary_json, y el
+      shell admin quedo con una sola nav. Screenshot final: /tmp/itera-final-ux-20260625/admin-review-single-nav.png.
+      Admin cases/leads/orgs/judge/audit capturados en /tmp/itera-final-ux-20260625/. Gates PASS: tsc, check:simulador,
+      build.
     done_at: '2026-06-25T19:05:00-06:00'
   - id: UX-20260623-06
     title: Motor labs y system states case dashboard report aprender maintenance not found
@@ -947,16 +943,15 @@ tasks:
     claimed_by: null
     claim_expires_at: null
     notes_claude: >-
-      2026-06-25 Claude: SUBSET system-states verificado y cerrado en este pase (scope acotado por
-      Pablo: solo system states, sin tocar /jugar ni /case runtime). (maintenance) /maintenance sin
-      contorno, titulo display-tight sin punto, sin mini-titulos. (not-found) app/not-found.tsx mismo
-      patron result-state sin contorno; no existe /not-found-test-page separada. (report) /report/demo-session-id
-      ya NO queda en loader infinito (Codex UX-09 sirve reporte real pending_review del seed) y NO tiene
-      doble nav (AppShell trata /report/ como surface-owned: sin AppSidebar ni padding md:pl-[224px],
-      una sola SurfaceNav). tsc 0, check:simulador PASS. RESIDUAL fuera de este pase (mantiene la tarea
-      abierta): /case/marketing_urgent_campaign_pii estado disenado, /aprender-demo alineado a
-      case-template, proteccion dev-only de /case-demo /exercise-lab /case-template — son runtime/labs
-      y requieren su propio pase con runtime.
+      2026-06-25 Claude: SUBSET system-states verificado y cerrado en este pase (scope acotado por Pablo: solo system
+      states, sin tocar /jugar ni /case runtime). (maintenance) /maintenance sin contorno, titulo display-tight sin
+      punto, sin mini-titulos. (not-found) app/not-found.tsx mismo patron result-state sin contorno; no existe
+      /not-found-test-page separada. (report) /report/demo-session-id ya NO queda en loader infinito (Codex UX-09 sirve
+      reporte real pending_review del seed) y NO tiene doble nav (AppShell trata /report/ como surface-owned: sin
+      AppSidebar ni padding md:pl-[224px], una sola SurfaceNav). tsc 0, check:simulador PASS. RESIDUAL fuera de este
+      pase (mantiene la tarea abierta): /case/marketing_urgent_campaign_pii estado disenado, /aprender-demo alineado a
+      case-template, proteccion dev-only de /case-demo /exercise-lab /case-template — son runtime/labs y requieren su
+      propio pase con runtime.
     depends_on:
       - UX-20260623-01
     dod:
@@ -967,11 +962,11 @@ tasks:
       - maintenance y not-found usan shell result sin contorno ni mini-titulos
     notes: change_type=ui-runtime-labs
     notes_codex: >-
-      2026-06-25 Codex final: runtime/labs/system pass closed. /report/demo-session-id exits loader with
-      seed report; /case/marketing_urgent_campaign_pii and /jugar/vertiz_backlog_entregas are load-bearing and kept;
-      /aprender-demo, /case-demo, /case-template, /exercise-lab are documented dev-only/noindex, outside product nav,
-      and now included in proxy internal-review 404 guard when dev bypass is disabled. Screenshots captured for
-      maintenance, case-demo, case-template, exercise-lab, aprender-demo, case legacy and jugar.
+      2026-06-25 Codex final: runtime/labs/system pass closed. /report/demo-session-id exits loader with seed report;
+      /case/marketing_urgent_campaign_pii and /jugar/vertiz_backlog_entregas are load-bearing and kept; /aprender-demo,
+      /case-demo, /case-template, /exercise-lab are documented dev-only/noindex, outside product nav, and now included
+      in proxy internal-review 404 guard when dev bypass is disabled. Screenshots captured for maintenance, case-demo,
+      case-template, exercise-lab, aprender-demo, case legacy and jugar.
     done_at: '2026-06-25T19:05:00-06:00'
   - id: UX-20260623-07
     title: Verificacion final visual funcional y gates
@@ -993,12 +988,12 @@ tasks:
       - screenshots desktop tablet mobile archivados o resumidos
       - Codex review PASS y Claude/HIG review sin bloqueos must
     notes: >-
-      change_type=verification | final evidence 2026-06-25: screenshots archived in
-      /tmp/itera-final-ux-20260625/ across public/auth/onboarding/employee/manager/staff/admin/runtime/labs/design;
-      Playwright auth-real dashboard API returned mock=false, 4 members, 2 completed, 1 in progress, 3 risk events;
-      gates PASS: npx tsc --noEmit, npm run check:simulador, npm run build, npm run coord:lint. npm run
-      lint:simulador timed out at 120s after starting lint-scope with no extra output; documented as tooling hang.
-      Codex CLI review blocked by usage limit; Claude Code CLI final review PASS.
+      change_type=verification | final evidence 2026-06-25: screenshots archived in /tmp/itera-final-ux-20260625/ across
+      public/auth/onboarding/employee/manager/staff/admin/runtime/labs/design; Playwright auth-real dashboard API
+      returned mock=false, 4 members, 2 completed, 1 in progress, 3 risk events; gates PASS: npx tsc --noEmit, npm run
+      check:simulador, npm run build, npm run coord:lint. npm run lint:simulador timed out at 120s after starting
+      lint-scope with no extra output; documented as tooling hang. Codex CLI review blocked by usage limit; Claude Code
+      CLI final review PASS.
     done_at: '2026-06-25T19:05:00-06:00'
   - id: UX-20260623-08
     title: Semilla local simulador para review con datos
@@ -1017,9 +1012,9 @@ tasks:
     notes: >-
       change_type=data-seed | lane codex | files esperados: supabase/migrations, scripts/simulador, lib/simulador
       seed/data helpers, docs/coord only; no editar JSX/TSX/tokens/copy | claim by codex expired and was released by
-      heartbeat | reclaimed by codex 2026-06-25T14:22:08-06:00 after Claude Code go | local seed applied
-      2026-06-25 with 1 org, 5 users, 3 generated cases, 5 templates, 3 sessions, 3 reports,
-      4 practice beats; coord:lint/check:simulador/build PASS; lint:simulador hung before output
+      heartbeat | reclaimed by codex 2026-06-25T14:22:08-06:00 after Claude Code go | local seed applied 2026-06-25 with
+      1 org, 5 users, 3 generated cases, 5 templates, 3 sessions, 3 reports, 4 practice beats;
+      coord:lint/check:simulador/build PASS; lint:simulador hung before output
     done_at: '2026-06-25T14:28:49-06:00'
   - id: UX-20260623-09
     title: Report demo session id carga con datos reales
@@ -1044,9 +1039,9 @@ tasks:
       - Claude Code review PASS o issues documentados
     notes: >-
       change_type=api-data | no tocar .tsx; si la pantalla requiere estado visual queda para Claude Code | done:
-      dev:simulador usa Supabase local cuando esta vivo; endpoint resuelve alias demo solo en proyecto local; /report/demo-session-id
-      API 200 pending_review y Playwright no loader; check:simulador/build PASS; lint:simulador timeout 120s; Claude Code CLI
-      review PASS despues de corregir P1 de admin read remoto
+      dev:simulador usa Supabase local cuando esta vivo; endpoint resuelve alias demo solo en proyecto local;
+      /report/demo-session-id API 200 pending_review y Playwright no loader; check:simulador/build PASS; lint:simulador
+      timeout 120s; Claude Code CLI review PASS despues de corregir P1 de admin read remoto
     done_at: '2026-06-25T14:46:27-06:00'
   - id: UX-20260623-10
     title: Onboarding org dropdown contrato funcional sin tocar UI
@@ -1067,9 +1062,9 @@ tasks:
       - si es UI state queda handoff claro para Claude Code con causa y archivo
     notes: >-
       change_type=functional-bug | no editar onboarding .tsx | diagnostico Codex: bug vive en AppleSelect/page .tsx
-      controlado por selectedKeys/onSelectionChange/portal; no hay API/data contract que toque el dropdown antes del submit.
-      Handoff enviado a Claude Code para fix UI. | UI CONECTADA por Claude Code 2026-06-25: AppleSelect
-      ya abre al primer click vía portalContainer en useEffect (sin exigir textfield previo); verificado.
+      controlado por selectedKeys/onSelectionChange/portal; no hay API/data contract que toque el dropdown antes del
+      submit. Handoff enviado a Claude Code para fix UI. | UI CONECTADA por Claude Code 2026-06-25: AppleSelect ya abre
+      al primer click vía portalContainer en useEffect (sin exigir textfield previo); verificado.
   - id: UX-20260623-11
     title: Onboarding invite validacion todos los campos
     owner: codex
@@ -1085,13 +1080,15 @@ tasks:
       - docs/coord/*
     dod:
       - se identifica si la validacion vive en helper data/runtime o UI state
-      - todos los invitados visibles requieren email valido antes de enviar o los invalidos quedan descartados por contrato
+      - >-
+        todos los invitados visibles requieren email valido antes de enviar o los invalidos quedan descartados por
+        contrato
       - la integracion necesaria queda lista para Claude Code si requiere .tsx
     notes: >-
-      change_type=functional-bug | no editar invite .tsx | helper puro listo en
-      lib/simulador/onboarding-invitations.ts: validateOnboardingInvites(rows) devuelve canSubmit=false si cualquier fila
-      visible esta vacia/invalid; check:simulador PASS. UI conectada por Claude Code 2026-06-25: /onboarding/invite
-      usa validateOnboardingInvites, CTA solo activa con todas las filas visibles validas y payload desde validRows.
+      change_type=functional-bug | no editar invite .tsx | helper puro listo en lib/simulador/onboarding-invitations.ts:
+      validateOnboardingInvites(rows) devuelve canSubmit=false si cualquier fila visible esta vacia/invalid;
+      check:simulador PASS. UI conectada por Claude Code 2026-06-25: /onboarding/invite usa validateOnboardingInvites,
+      CTA solo activa con todas las filas visibles validas y payload desde validRows.
   - id: UX-20260623-12
     title: Stripe billing redirects portal cancel y onboarding done real
     owner: codex
@@ -1113,8 +1110,8 @@ tasks:
       - estado de pago confirmado/creando ejercicios queda disponible como data contract para /onboarding/done
     notes: >-
       change_type=billing | portal return_url default /empresa con allowlist safeReturnPath; checkout simulador ya
-      apunta success /onboarding/done y cancel /onboarding/billing?canceled=1; done server sync ya diferencia ok/pending/fail.
-      UI copy/state queda en lane Claude Code. check/build PASS; Claude CLI PASS.
+      apunta success /onboarding/done y cancel /onboarding/billing?canceled=1; done server sync ya diferencia
+      ok/pending/fail. UI copy/state queda en lane Claude Code. check/build PASS; Claude CLI PASS.
     done_at: '2026-06-25T15:03:36-06:00'
   - id: UX-20260623-13
     title: Staff casos crash y data route para caso revision
@@ -1137,8 +1134,8 @@ tasks:
       - route/helper entrega lo necesario para pagina Caso revision de Claude Code
       - smoke con seed local cubre al menos un caso pendiente de review
     notes: >-
-      change_type=api-data | no editar staff .tsx | data contract listo: GET /api/cases/[case_id]/destination
-      devuelve action/href/session/report por usuario autenticado; staff/casos aun requiere conexion UI de Claude Code para no
+      change_type=api-data | no editar staff .tsx | data contract listo: GET /api/cases/[case_id]/destination devuelve
+      action/href/session/report por usuario autenticado; staff/casos aun requiere conexion UI de Claude Code para no
       linkear directo a runtime legacy; unauth 401, Playwright auth demo report href, check/build PASS, Claude CLI PASS.
       UI conectada por Claude Code 2026-06-25 mediante CaseCard destination prefetch/click.
     done_at: '2026-06-25T14:57:03-06:00'
@@ -1164,9 +1161,9 @@ tasks:
       - data contract permite navegar a runtime si no se completo
       - no se agregan rutas fuera de FRONT_CONTRACT sin documentar decision
     notes: >-
-      change_type=routing-data | no editar casos .tsx | lib/simulador/case-destination.ts + API destination
-      resuelven completed_with_report -> /report/session_id y active/not_started -> /jugar/case_id con scope por org/user;
-      UI conectada por Claude Code 2026-06-25 en CaseCard para /casos, /team y /staff/casos.
+      change_type=routing-data | no editar casos .tsx | lib/simulador/case-destination.ts + API destination resuelven
+      completed_with_report -> /report/session_id y active/not_started -> /jugar/case_id con scope por org/user; UI
+      conectada por Claude Code 2026-06-25 en CaseCard para /casos, /team y /staff/casos.
     done_at: '2026-06-25T14:57:03-06:00'
   - id: UX-20260623-15
     title: Empresa autosave archivos web lock y billing cancel data rules
@@ -1188,10 +1185,10 @@ tasks:
       - sitio web editable una vez y luego bloqueado queda en contrato de datos
       - cancelacion billing usa Stripe portal o queda bloqueo explicito documentado
     notes: >-
-      change_type=org-data-rules | no editar empresa .tsx | GET/PATCH /api/orgs/current/settings listo:
-      auth/org_admin, autosave org fields, website once-lock, files PDF-only max one monthly change, billing portal metadata.
-      Local smoke manager demo PASS; check/build PASS; Claude CLI PASS. UI /empresa conectada por Claude Code
-      2026-06-25 con autosave, website lock, PDF monthly limit y portal billing.
+      change_type=org-data-rules | no editar empresa .tsx | GET/PATCH /api/orgs/current/settings listo: auth/org_admin,
+      autosave org fields, website once-lock, files PDF-only max one monthly change, billing portal metadata. Local
+      smoke manager demo PASS; check/build PASS; Claude CLI PASS. UI /empresa conectada por Claude Code 2026-06-25 con
+      autosave, website lock, PDF monthly limit y portal billing.
     done_at: '2026-06-25T15:03:36-06:00'
   - id: UX-20260623-16
     title: Evaluar rutas runtime legacy vertiz y marketing
@@ -1249,10 +1246,41 @@ tasks:
       - Claude Code confirma UI round done o se documenta ultimo estado con evidencia de polling
       - Handoff final lista cambios y riesgos residuales
     notes: >-
-      change_type=verification | closed 2026-06-25 by Codex after Claude Code UI handoffs and final reviews.
-      No open blocker remains for this UX round. Functional fixes verified: seed local, report demo alias,
-      onboarding validation handoff connected, cases destination, empresa settings/billing, admin review crash,
-      dashboard data sprint selection, dev-only proxy guard for /aprender-demo, runtime route audit keep /case and
-      /jugar. Gates PASS: tsc, check:simulador, build, coord:lint. lint:simulador timed out at 120s with no output
-      beyond lint-scope start. Codex CLI review blocked by usage limit; Claude Code CLI final review PASS.
+      change_type=verification | closed 2026-06-25 by Codex after Claude Code UI handoffs and final reviews. No open
+      blocker remains for this UX round. Functional fixes verified: seed local, report demo alias, onboarding validation
+      handoff connected, cases destination, empresa settings/billing, admin review crash, dashboard data sprint
+      selection, dev-only proxy guard for /aprender-demo, runtime route audit keep /case and /jugar. Gates PASS: tsc,
+      check:simulador, build, coord:lint. lint:simulador timed out at 120s with no output beyond lint-scope start. Codex
+      CLI review blocked by usage limit; Claude Code CLI final review PASS.
     done_at: '2026-06-25T19:05:00-06:00'
+  - id: DEMO-20260709-01
+    title: Hacer visible el loop diagnostico practica resimulacion mejora en demo manager
+    owner: claude
+    reviewer: codex
+    status: done
+    claimed_by: null
+    claim_expires_at: null
+    depends_on: []
+    files:
+      - app/demo/page.tsx
+      - docs/coord/BUILD_BOARD.yaml
+      - docs/coord/AGENT_STATUS.md
+      - docs/coord/INBOX_CLAUDE.md
+      - docs/coord/HANDOFF.md
+    dod:
+      - el demo muestra a la misma persona desde el gap detectado hasta una mejora en resimulacion
+      - la practica asignada usa el beat real practice_datos_minimizacion_pii_v1
+      - el perfil individual mezcla fortalezas y gaps y recomienda Entrenar en vez de presentar seis dimensiones en Bajo
+      - el manager entiende que Itera prueba cambio de comportamiento y no solo agrega evaluacion y microlearning
+      - se reutilizan componentes y tokens existentes sin hardcodes ni componente reusable local nuevo
+      - verification-design pasa en desktop mobile y dark con consola limpia
+      - check simulador lint simulador typecheck y build pasan o se documenta un bloqueo preexistente concreto
+      - Codex revisa el diff y el render final sin issues bloqueantes
+    notes: >-
+      change_type=ui-demo | Claude Code implemento y Codex cerro review independiente. /demo muestra perfil mixto,
+      recomendacion Entrenar y el loop misma persona: intento, gap Datos, beat real de 6 min, resimulacion, delta y
+      accion manager. El ejemplo quedo rotulado como ilustrativo; KPI apilados en desktop para evitar texto huerfano.
+      PASS: eslint scoped, typecheck:simulador, check:simulador, build, browser desktop 1280, mobile 390, dark, sin
+      overflow ni errores de consola. lint:simulador global conserva un error preexistente fuera de alcance en
+      components/simulador/CaseReviewWalkthrough.tsx:90.
+    done_at: '2026-07-09T15:55:09-06:00'

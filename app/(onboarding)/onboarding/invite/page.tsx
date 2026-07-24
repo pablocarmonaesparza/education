@@ -1,20 +1,21 @@
 "use client";
 
 /**
- * /onboarding/invite — paso 3 del flow buyer B2B.
+ * /onboarding/invite — paso 3 del flow buyer B2B (5 pasos).
  *
  * Cada fila del form es un participante: email + checkbox "admin".
  * "admin" marca al participante como admin de la org (puede invitar más
  * gente, ver billing, etc.) — internamente intended_role='manager'.
- * Sin marca → intended_role='employee' (solo hace su diagnóstico).
+ * Sin marca → intended_role='employee' (solo hace su assessment).
  *
- * Botones:
- *   - "Agregar otro miembro" → añade fila vacía
- *   - "Copiar enlace de invitación" → copia un URL genérico que el admin
- *     puede compartir externamente (Slack, WhatsApp, etc).
- *   - Helper: "Es posible terminar las invitaciones más tarde" — el flow
- *     no obliga a invitar a todos ahora; se pueden invitar más desde el
- *     dashboard.
+ * Honestidad del resultado (W2-A):
+ *   - El headline "N sent" lee el email_status REAL que devuelve
+ *     POST /api/orgs/[org_id]/invitations (sent | skipped | failed).
+ *     Cuando un email no salió, se muestra su invite link para compartirlo
+ *     manualmente (el token sigue siendo válido aunque el email falle).
+ *   - Se eliminó "Copy link" (copiaba /join/{orgId}, que era 404).
+ *   - "You can finish the invitations later from the dashboard" se mantiene:
+ *     el dashboard ya permite invitar después.
  */
 
 import { useEffect, useState } from "react";
@@ -34,10 +35,29 @@ import {
   ONBOARDING_TEAM_NAME_KEY,
 } from "@/lib/simulador/onboarding-progress";
 import { validateOnboardingInvites } from "@/lib/simulador/onboarding-invitations";
+import { onboardingCopy } from "@/lib/simulador/copy/onboarding";
+import { MARKET_STATS } from "@/lib/simulador/copy/market-stats";
+
+const copy = onboardingCopy.step3_invite;
 
 interface InviteRow {
   email: string;
   isAdmin: boolean;
+}
+
+// Shape relevante de la respuesta de POST /api/orgs/[org_id]/invitations.
+interface CreatedInvitation {
+  id: string;
+  email: string;
+  token?: string | null;
+  email_status?: "sent" | "skipped" | "failed";
+}
+
+interface InviteResult {
+  sent: number;
+  // Invitaciones creadas cuyo email NO salió — se comparten a mano.
+  manual: { email: string; link: string | null }[];
+  skipped: { email: string; reason: string }[];
 }
 
 const SECONDARY_BUTTON_CLASS =
@@ -50,11 +70,7 @@ export default function OnboardingInvitePage() {
   const [, setTeamName] = useState("");
   const [rows, setRows] = useState<InviteRow[]>([{ email: "", isAdmin: false }]);
   const [submitting, setSubmitting] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [result, setResult] = useState<{
-    sent: number;
-    skipped: { email: string; reason: string }[];
-  } | null>(null);
+  const [result, setResult] = useState<InviteResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -72,10 +88,7 @@ export default function OnboardingInvitePage() {
 
   const validation = validateOnboardingInvites(rows);
   const { canSubmit, validCount } = validation;
-  const submitLabel =
-    validCount === 0
-      ? "Enviar invitaciones"
-      : `Enviar ${validCount} invitación${validCount === 1 ? "" : "es"}`;
+  const submitLabel = copy.submit_cta_template(validCount);
 
   function updateRow(index: number, patch: Partial<InviteRow>) {
     setRows((prev) =>
@@ -91,48 +104,6 @@ export default function OnboardingInvitePage() {
     setRows((prev) =>
       prev.length === 1 ? [{ email: "", isAdmin: false }] : prev.filter((_, i) => i !== index),
     );
-  }
-
-  async function copyInviteLink() {
-    if (!orgId) return;
-    const url = `${window.location.origin}/join/${orgId}`;
-    // Estrategia tier:
-    //   1. navigator.clipboard.writeText (moderno, requiere user gesture
-    //      + secure context). En localhost suele funcionar, pero algunos
-    //      navegadores estrictos lo bloquean si el document perdió focus.
-    //   2. fallback document.execCommand('copy') con textarea oculto
-    //      (deprecated pero más permisivo en contextos donde el moderno falla).
-    //   3. prompt como último recurso (usuario hace el copy manual).
-    let ok = false;
-    if (navigator.clipboard?.writeText) {
-      try {
-        await navigator.clipboard.writeText(url);
-        ok = true;
-      } catch {
-        ok = false;
-      }
-    }
-    if (!ok) {
-      try {
-        const ta = document.createElement("textarea");
-        ta.value = url;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        ta.style.pointerEvents = "none";
-        document.body.appendChild(ta);
-        ta.select();
-        ok = document.execCommand("copy");
-        document.body.removeChild(ta);
-      } catch {
-        ok = false;
-      }
-    }
-    if (ok) {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } else {
-      window.prompt("Copia el enlace:", url);
-    }
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -151,29 +122,41 @@ export default function OnboardingInvitePage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Error al enviar invitaciones.");
-      setResult({
-        sent: data.invitations?.length ?? 0,
-        skipped: data.skipped ?? [],
-      });
+      if (!res.ok) throw new Error(data.error ?? copy.error_send);
+
+      const created: CreatedInvitation[] = Array.isArray(data.invitations)
+        ? data.invitations
+        : [];
+      const sent = created.filter((i) => i.email_status === "sent").length;
+      const manual = created
+        .filter((i) => i.email_status !== "sent")
+        .map((i) => ({
+          email: i.email,
+          link: i.token
+            ? `${window.location.origin}/auth/invitation/${i.token}`
+            : null,
+        }));
+      setResult({ sent, manual, skipped: data.skipped ?? [] });
       markInviteCompleted();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error inesperado.");
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setSubmitting(false);
     }
   }
 
-  function onContinueToContext() {
+  function onContinueToBilling() {
     markInviteCompleted();
-    router.push("/onboarding/context");
+    router.push("/onboarding/billing");
   }
 
   if (!orgId || !teamId) return null;
 
+  const allSent = result !== null && result.manual.length === 0;
+
   return (
     <>
-      <OnboardingNav progress={{ total: 6, current: 2, ariaLabel: "Paso 3 de 6" }} />
+      <OnboardingNav progress={{ total: 5, current: 2, ariaLabel: "Step 3 of 5" }} />
       <main className="surface-canvas min-h-[calc(100vh-5rem)] flex items-center justify-center px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -182,8 +165,17 @@ export default function OnboardingInvitePage() {
           className="max-w-[440px] w-full"
         >
           <h1 className="display display-tight ts-title-1 sm:ts-display leading-[1.1] text-[var(--text-primary)]">
-            ¿Quiénes van a hacer el diagnóstico?
+            {copy.headline}
           </h1>
+          {!result && (
+            <p
+              className="mt-3 ts-body leading-[1.5] text-[var(--text-secondary)] cursor-help"
+              /* La stat viaja con su fuente como tooltip — regla de market-stats. */
+              title={MARKET_STATS.KPMG_HIDE.source}
+            >
+              {copy.support_stat}
+            </p>
+          )}
 
           {!result ? (
             <form onSubmit={onSubmit} className="mt-8">
@@ -200,13 +192,13 @@ export default function OnboardingInvitePage() {
                     <div className="min-w-0">
                       <AppleInput
                         type="email"
-                        placeholder="email@empresa.com"
+                        placeholder="email@company.com"
                         value={row.email}
                         onValueChange={(v) => updateRow(index, { email: v })}
                         size="md"
                         autoFocus={index === 0}
                         autoComplete="off"
-                        aria-label={`Email del miembro ${index + 1}`}
+                        aria-label={`Email for member ${index + 1}`}
                       />
                     </div>
                     <label
@@ -215,7 +207,7 @@ export default function OnboardingInvitePage() {
                           ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]"
                           : "border-[var(--hairline)] bg-[var(--surface)] text-[var(--text-secondary)] hover:border-[var(--border-strong)]"
                       }`}
-                      title="Marcar como admin de la organización (puede invitar más gente, ver billing, etc)"
+                      title="Mark as an organization admin (can invite more people, see billing, and more)"
                     >
                       <input
                         type="checkbox"
@@ -231,7 +223,7 @@ export default function OnboardingInvitePage() {
                       <button
                         type="button"
                         onClick={() => removeRow(index)}
-                        aria-label={`Quitar miembro ${index + 1}`}
+                        aria-label={`Remove member ${index + 1}`}
                         className="flex h-12 w-11 items-center justify-center rounded-[var(--radius-md)] text-[var(--text-tertiary)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
                       >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
@@ -245,44 +237,22 @@ export default function OnboardingInvitePage() {
 
               <div aria-hidden className="my-4 border-t border-[var(--hairline)]" />
 
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <AppleButton
-                  type="button"
-                  onPress={addRow}
-                  aria-label="Agregar otro miembro"
-                  tone="secondary"
-                  size="lg"
-                  className={SECONDARY_BUTTON_CLASS}
-                >
-                  <span className="inline-flex items-center gap-2.5 whitespace-nowrap">
-                    <AppleIcon name="users" size="sm" />
-                    Agregar miembro
-                  </span>
-                </AppleButton>
-                <AppleButton
-                  type="button"
-                  onPress={copyInviteLink}
-                  aria-label="Copiar enlace de invitación"
-                  tone="secondary"
-                  size="lg"
-                  className={SECONDARY_BUTTON_CLASS}
-                >
-                  {copied ? (
-                    <span className="inline-flex items-center gap-2.5 whitespace-nowrap">
-                      <AppleIcon name="check" size="sm" />
-                      Enlace copiado
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-2.5 whitespace-nowrap">
-                      <AppleIcon name="share" size="sm" />
-                      Copiar enlace
-                    </span>
-                  )}
-                </AppleButton>
-              </div>
+              <AppleButton
+                type="button"
+                onPress={addRow}
+                aria-label="Add another member"
+                tone="secondary"
+                size="lg"
+                className={SECONDARY_BUTTON_CLASS}
+              >
+                <span className="inline-flex items-center gap-2.5 whitespace-nowrap">
+                  <AppleIcon name="users" size="sm" />
+                  Add member
+                </span>
+              </AppleButton>
 
               <p className="mt-3 ts-footnote text-[var(--text-tertiary)]">
-                Es posible terminar las invitaciones más tarde desde el dashboard.
+                {copy.invite_later_note}
               </p>
 
               {error && (
@@ -305,22 +275,56 @@ export default function OnboardingInvitePage() {
           ) : (
             <div className="mt-8 space-y-5">
               <div className="text-center">
-                <div className="mx-auto h-16 w-16 rounded-full bg-[var(--band-a-bg)] grid place-items-center">
-                  <AppleIcon name="check" size="lg" className="text-[var(--band-a-text)]" />
+                <div
+                  className={`mx-auto h-16 w-16 rounded-full grid place-items-center ${
+                    allSent ? "bg-[var(--band-a-bg)]" : "bg-[var(--band-b-bg)]"
+                  }`}
+                >
+                  <AppleIcon
+                    name="check"
+                    size="lg"
+                    className={
+                      allSent
+                        ? "text-[var(--band-a-text)]"
+                        : "text-[var(--band-b-text)]"
+                    }
+                  />
                 </div>
                 <h2 className="display display-tight mt-7 ts-title-1 text-[var(--text-primary)]">
-                  {result.sent} invitación{result.sent === 1 ? "" : "es"}{" "}
-                  enviada{result.sent === 1 ? "" : "s"}
+                  {copy.sent_headline_template(result.sent, result.manual.length)}
                 </h2>
                 <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.55]">
-                  Cada participante recibirá un email con su link único. El
-                  diagnóstico aparecerá en tu dashboard cuando completen el
-                  caso.
+                  {allSent ? copy.sent_body : copy.manual_share_note}
                 </p>
               </div>
+
+              {result.manual.length > 0 && (
+                <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-4 text-left">
+                  <div className="eyebrow mb-2">Share manually</div>
+                  <ul className="ts-subhead text-[var(--text-secondary)] space-y-2">
+                    {result.manual.map((m, i) => (
+                      <li key={i} className="break-all">
+                        <span className="font-medium text-[var(--text-primary)]">
+                          {m.email}
+                        </span>
+                        {m.link ? (
+                          <span className="block select-all text-[var(--text-tertiary)]">
+                            {m.link}
+                          </span>
+                        ) : (
+                          <span className="block text-[var(--text-tertiary)]">
+                            Invitation created — resend it from the dashboard.
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               {result.skipped.length > 0 && (
                 <div className="rounded-[var(--radius-lg)] bg-[var(--surface-2)] p-4 text-left">
-                  <div className="eyebrow mb-2">No enviadas</div>
+                  <div className="eyebrow mb-2">{copy.skipped_eyebrow}</div>
                   <ul className="ts-subhead text-[var(--text-secondary)] space-y-1">
                     {result.skipped.map((s, i) => (
                       <li key={i}>
@@ -341,10 +345,10 @@ export default function OnboardingInvitePage() {
                   size="lg"
                   className="h-12"
                 >
-                  Invitar más
+                  {copy.invite_more_cta}
                 </AppleButton>
-                <AppleSlideButton onClick={onContinueToContext}>
-                  Continuar →
+                <AppleSlideButton onClick={onContinueToBilling}>
+                  {copy.finish_cta}
                 </AppleSlideButton>
               </div>
             </div>

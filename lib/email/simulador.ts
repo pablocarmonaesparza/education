@@ -293,6 +293,27 @@ export function sendSprintClosingEmail(args: {
   });
 }
 
+// Recordatorio manual del manager (botón "Remind" del dashboard /staff).
+// Mismo transporte AgentMail que el resto de transaccionales.
+export function sendAssessmentReminderEmail(args: {
+  to: string;
+  fullName: string;
+  managerName: string;
+  teamName: string;
+  dashboardUrl: string;
+}) {
+  return sendSimuladorTemplate({
+    to: args.to,
+    template: "assessment_reminder",
+    variables: {
+      full_name: args.fullName,
+      manager_name: args.managerName,
+      team_name: args.teamName,
+      dashboard_url: args.dashboardUrl,
+    },
+  });
+}
+
 export function sendPasswordResetSimuladorEmail(args: {
   to: string;
   email: string;
@@ -342,7 +363,7 @@ function wrapHtml(
   );
 
   return `<!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">

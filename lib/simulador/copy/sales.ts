@@ -1,4 +1,22 @@
 /**
+ * ⚠️ CÓDIGO MUERTO — NO TRADUCIDO AL INGLÉS (pivot US, 2026-07-16).
+ *
+ * Este archivo tiene CERO importadores en código. El "Uso" que describe abajo
+ * (decks comerciales, lib/proposals/, lib/outreach/templates/) no existe: esos
+ * directorios no están en el repo.
+ *
+ * Por eso queda en español neutro LATAM: el contenido está anclado a research
+ * LATAM (adopción MX/CO, comparables de pricing regionales) que el pivot a EEUU
+ * invalida — traducirlo produciría argumentos de venta falsos para un buyer de
+ * EEUU, no copy útil.
+ *
+ * Antes de reutilizarlo hay que decidir: (a) borrarlo, o (b) re-escribirlo para
+ * EEUU desde el glosario (docs/simulador/front/copy/00_EN_GLOSSARY.md), que ya
+ * fija el anti-posicionamiento US ("nunca posicionar contra un catálogo de
+ * cursos") — no es una traducción, es contenido nuevo.
+ *
+ * ---
+ *
  * Copy versionado de materiales de venta (sales decks, propuestas, outreach).
  *
  * Consolida decisiones del board:

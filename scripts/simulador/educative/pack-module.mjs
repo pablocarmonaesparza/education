@@ -61,7 +61,9 @@ const slides = [
     kind: "cover",
     title: cover.title,
     body: cover.body,
-    chips: [`N${levelNum} · Fundamentos`, "Actualización de IA", `${minutes} min`],
+    // Copy del producto en inglés de EEUU (pivot 2026-07-15); coincide con
+    // module_claude5_fable_n1.yaml ya relocalizado.
+    chips: [`N${levelNum} · Fundamentals`, "AI update", `${minutes} min`],
   },
   {
     id: "contexto",
@@ -106,10 +108,10 @@ const beat = {
     practice_exercise: {
       type: "formative_slides",
       blocks: exercises.map((ex) => ex.block_id),
-      prompt: `Módulo de actualización: ${brief_tool}. ${cover.body}`,
+      prompt: `AI update practice: ${brief_tool}. ${cover.body}`,
     },
     completion_criteria:
-      "Completar todos los ejercicios (cada fila y cada segmento con respuesta) y revisar la retroalimentación de cada uno.",
+      "Complete every exercise (each row and each segment answered) and review the feedback for each one.",
     exit: { contributes_to_resim_score: false },
     slides,
   },

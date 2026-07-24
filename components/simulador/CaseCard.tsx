@@ -58,7 +58,7 @@ function StatusBadge({ item }: { item: CaseCatalogItem }) {
         >
           <polyline points="20 6 9 17 4 12" />
         </svg>
-        Completado
+        Completed
       </span>
     );
   }
@@ -66,7 +66,7 @@ function StatusBadge({ item }: { item: CaseCatalogItem }) {
     return (
       <span className="inline-flex items-center gap-1 ts-caption-1 font-medium text-[var(--accent)]">
         <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
-        En progreso
+        In progress
       </span>
     );
   }

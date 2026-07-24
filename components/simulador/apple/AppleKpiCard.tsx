@@ -25,7 +25,7 @@ export function AppleKpiCard({ label, value, delta, className }: AppleKpiCardPro
         className,
       )}
     >
-      <div className="ts-caption-1 font-medium text-[var(--text-tertiary)]">{label}</div>
+      <div className="ts-caption-1 font-bold text-[var(--text-tertiary)]">{label}</div>
       <div className="mt-2 display display-tight ts-title-1 tabular-nums text-[var(--text-primary)]">
         {value}
       </div>

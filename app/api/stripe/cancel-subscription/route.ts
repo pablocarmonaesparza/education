@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
       error: authError,
     } = await supabase.auth.getUser();
     if (authError || !user) {
-      return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+      return NextResponse.json({ error: "Not signed in." }, { status: 401 });
     }
 
     const admin = createAdminClient();
@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
     if (bridgeError || !bridgeId) {
       console.error("[cancel-subscription] ensure_bridge_user failed", bridgeError);
       return NextResponse.json(
-        { error: "No pudimos sincronizar tu cuenta." },
+        { error: "We could not sync your account." },
         { status: 500 },
       );
     }
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     if (!membership?.organization_id) {
       return NextResponse.json(
-        { error: "Solo un administrador de la organización puede cancelar." },
+        { error: "Only an organization admin can cancel." },
         { status: 403 },
       );
     }
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
 
     if (!subscription?.stripe_subscription_id) {
       return NextResponse.json(
-        { error: "No hay una suscripción activa que cancelar." },
+        { error: "There is no active subscription to cancel." },
         { status: 400 },
       );
     }

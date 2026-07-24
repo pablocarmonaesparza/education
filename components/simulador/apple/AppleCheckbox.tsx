@@ -115,7 +115,7 @@ export function AppleCheckbox({
           className={cn(
             "grid size-5 place-items-center border bg-[var(--surface)] text-white transition-[background-color,border-color,box-shadow,transform] duration-[var(--motion-fast)] ease-[var(--motion-ease)]",
             "rounded-[calc(var(--radius-md)/2)] border-[var(--border-strong)]",
-            selected && "border-[var(--accent)] bg-[var(--accent)]",
+            selected && "border-[var(--accent-strong)] bg-[var(--accent-strong)]",
             isDisabled && "border-[var(--border)] bg-[var(--surface-2)]",
             classNames?.control,
           )}

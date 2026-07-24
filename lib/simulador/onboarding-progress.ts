@@ -1,10 +1,13 @@
 "use client";
 
+// Flow buyer B2B: 5 pasos. El paso "context" (perfil de empresa) se eliminó
+// el 2026-07-23 (W2-A): el motor ya no investiga la empresa en onboarding —
+// los tracks son por área (decisión "cursos al mayoreo"). /onboarding/context
+// queda como redirect a billing por si hay links vivos.
 export const ONBOARDING_ROUTES = [
   "/onboarding/org",
   "/onboarding/team",
   "/onboarding/invite",
-  "/onboarding/context",
   "/onboarding/billing",
   "/onboarding/done",
 ] as const;
@@ -18,7 +21,10 @@ export const ONBOARDING_TEAM_NAME_KEY = "onboarding_team_name";
 
 const UNLOCKED_STEP_KEY = "onboarding_unlocked_step";
 const INVITE_COMPLETED_KEY = "onboarding_invite_completed";
-const CONTEXT_COMPLETED_KEY = "onboarding_context_completed";
+// Keys legacy del paso context eliminado — se siguen limpiando por higiene
+// para sesiones que arrancaron con el flow de 6 pasos.
+const LEGACY_CONTEXT_COMPLETED_KEY = "onboarding_context_completed";
+const LEGACY_COMPANY_PROFILE_KEY = "onboarding_company_profile";
 
 export function getOnboardingUnlockedStep() {
   if (typeof window === "undefined") return 0;
@@ -37,9 +43,6 @@ export function getOnboardingUnlockedStep() {
   }
   if (window.sessionStorage.getItem(INVITE_COMPLETED_KEY) === "true") {
     unlocked = Math.max(unlocked, 3);
-  }
-  if (window.sessionStorage.getItem(CONTEXT_COMPLETED_KEY) === "true") {
-    unlocked = Math.max(unlocked, 4);
   }
 
   return Math.min(Math.max(unlocked, 0), ONBOARDING_ROUTES.length - 1);
@@ -63,23 +66,11 @@ export function markInviteCompleted() {
   markOnboardingStepUnlocked(3);
 }
 
-export function markContextCompleted() {
-  if (typeof window === "undefined") return;
-
-  window.sessionStorage.setItem(CONTEXT_COMPLETED_KEY, "true");
-  markOnboardingStepUnlocked(4);
-}
-
-export function hasOnboardingContextCompleted() {
-  if (typeof window === "undefined") return false;
-
-  return window.sessionStorage.getItem(CONTEXT_COMPLETED_KEY) === "true";
-}
-
 export function clearOnboardingProgress() {
   if (typeof window === "undefined") return;
 
   window.sessionStorage.removeItem(UNLOCKED_STEP_KEY);
   window.sessionStorage.removeItem(INVITE_COMPLETED_KEY);
-  window.sessionStorage.removeItem(CONTEXT_COMPLETED_KEY);
+  window.sessionStorage.removeItem(LEGACY_CONTEXT_COMPLETED_KEY);
+  window.sessionStorage.removeItem(LEGACY_COMPANY_PROFILE_KEY);
 }

@@ -39,16 +39,16 @@ function translateError(errorMessage: string): string {
     errorMessage.includes("Failed to fetch") ||
     errorMessage.includes("NetworkError")
   ) {
-    return "No se pudo conectar al servidor. Verifica tu conexión.";
+    return "Couldn't connect to the server. Check your connection.";
   }
   const map: Record<string, string> = {
-    "User already registered": "Ya existe una cuenta con este email.",
+    "User already registered": "An account with this email already exists.",
     "Password should be at least 6 characters":
-      "La contraseña debe tener al menos 6 caracteres.",
-    "Unable to validate email address": "Email inválido.",
-    "Signup disabled": "El registro está temporalmente deshabilitado.",
+      "Your password must be at least 6 characters.",
+    "Unable to validate email address": "Invalid email.",
+    "Signup disabled": "Signup is temporarily disabled.",
     "Email rate limit exceeded":
-      "Demasiados intentos. Intenta de nuevo en unos minutos.",
+      "Too many attempts. Try again in a few minutes.",
   };
   for (const [k, v] of Object.entries(map)) {
     if (errorMessage.includes(k)) return v;
@@ -79,7 +79,7 @@ function SignupContent() {
       setSupabase(createClient());
     } catch (e) {
       console.error("[auth/signup] Supabase init failed", e);
-      setError("No se pudo inicializar el cliente. Recarga la página.");
+      setError("Couldn't initialize the client. Reload the page.");
     }
   }, [searchParams]);
 
@@ -90,7 +90,7 @@ function SignupContent() {
     setError(null);
     setSuccess(null);
     if (password.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres.");
+      setError("Your password must be at least 6 characters.");
       setLoading(false);
       return;
     }
@@ -110,7 +110,7 @@ function SignupContent() {
         window.location.href = next;
       } else {
         setSuccess(
-          "Te enviamos un correo. Abre el link para confirmar tu cuenta.",
+          "We sent you an email. Open the link to confirm your account.",
         );
         setEmail("");
         setPassword("");
@@ -118,7 +118,7 @@ function SignupContent() {
       }
     } catch (err) {
       setError(
-        translateError(err instanceof Error ? err.message : "Error inesperado."),
+        translateError(err instanceof Error ? err.message : "Something went wrong."),
       );
     } finally {
       setLoading(false);
@@ -140,7 +140,7 @@ function SignupContent() {
       });
       if (oauthErr) {
         setError(
-          translateError(oauthErr.message || "Error al iniciar con Google."),
+          translateError(oauthErr.message || "Couldn't sign in with Google."),
         );
         setLoading(false);
         return;
@@ -149,12 +149,12 @@ function SignupContent() {
         setRedirectingToGoogle(true);
         window.location.href = data.url;
       } else {
-        setError("No se pudo obtener la URL de Google.");
+        setError("Couldn't get the Google URL.");
         setLoading(false);
       }
     } catch (err) {
       setError(
-        translateError(err instanceof Error ? err.message : "Error inesperado."),
+        translateError(err instanceof Error ? err.message : "Something went wrong."),
       );
       setLoading(false);
     }
@@ -166,7 +166,7 @@ function SignupContent() {
         <div className="text-center">
           <div className="mx-auto h-9 w-9 rounded-full border-2 border-[var(--border)] border-t-[var(--accent)] animate-spin" />
           <p className="mt-6 ts-callout text-[var(--text-secondary)]">
-            Redirigiendo a Google…
+            Redirecting to Google…
           </p>
         </div>
       </div>
@@ -183,7 +183,7 @@ function SignupContent() {
         <div className="max-w-[400px] w-full mx-auto flex flex-col gap-6">
           <motion.div {...fadeUp} className="text-center">
             <h1 className="display display-tight ts-title-1 sm:ts-display text-[var(--text-primary)] leading-[1.1]">
-              Empieza tu diagnóstico
+              Start your assessment
             </h1>
           </motion.div>
 
@@ -214,9 +214,9 @@ function SignupContent() {
             className="space-y-6"
           >
             <AppleInput
-              label="Nombre completo"
+              label="Full name"
               type="text"
-              placeholder="Tu nombre"
+              placeholder="Your name"
               value={name}
               onValueChange={setName}
               isRequired
@@ -227,7 +227,7 @@ function SignupContent() {
             <AppleInput
               label="Email"
               type="email"
-              placeholder="email@empresa.com"
+              placeholder="email@company.com"
               value={email}
               onValueChange={setEmail}
               isRequired
@@ -236,9 +236,9 @@ function SignupContent() {
             />
 
             <AppleInput
-              label="Contraseña"
+              label="Password"
               type={showPassword ? "text" : "password"}
-              placeholder="Mínimo 6 caracteres"
+              placeholder="At least 6 characters"
               value={password}
               onValueChange={setPassword}
               isRequired
@@ -248,7 +248,7 @@ function SignupContent() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   className="text-[var(--text-tertiary)] transition-colors hover:text-[var(--text-secondary)]"
                 >
                   {showPassword ? (
@@ -270,21 +270,21 @@ function SignupContent() {
               onValueChange={setAcceptedTerms}
               isRequired
             >
-              Acepto los{" "}
+              I accept the{" "}
               <AppleLink
                 muted
                 href="/terms"
                 onClick={(e) => e.stopPropagation()}
               >
-                términos
+                terms
               </AppleLink>{" "}
-              y la{" "}
+              and the{" "}
               <AppleLink
                 muted
                 href="/privacy"
                 onClick={(e) => e.stopPropagation()}
               >
-                política de privacidad
+                privacy policy
               </AppleLink>
               .
             </AppleCheckbox>
@@ -295,7 +295,7 @@ function SignupContent() {
               isLoading={loading}
               isDisabled={!email || !password || !name || !acceptedTerms}
             >
-              {loading ? "Creando cuenta…" : "Crear cuenta →"}
+              {loading ? "Creating account…" : "Create account →"}
             </AppleSlideButton>
           </motion.form>
 
@@ -306,7 +306,7 @@ function SignupContent() {
           >
             <div className="flex-1 h-px bg-[var(--hairline)]" />
             <span className="ts-footnote text-[var(--text-tertiary)] tracking-wide">
-              o
+              or
             </span>
             <div className="flex-1 h-px bg-[var(--hairline)]" />
           </motion.div>
@@ -342,7 +342,7 @@ function SignupContent() {
                 />
               </svg>
               <span>
-                {loading ? "Conectando…" : "Continuar con Google"}
+                {loading ? "Connecting…" : "Continue with Google"}
               </span>
             </AppleButton>
           </motion.div>
@@ -352,12 +352,12 @@ function SignupContent() {
             transition={{ ...fadeUp.transition, delay: 0.18 }}
             className="text-center ts-callout text-[var(--text-secondary)]"
           >
-            ¿Ya tienes cuenta?{" "}
+            Already have an account?{" "}
             <AppleLink
               href={`/auth/login${next !== "/onboarding/org" ? `?next=${encodeURIComponent(next)}` : ""}`}
               className="font-medium"
             >
-              Inicia sesión
+              Sign in
             </AppleLink>
           </motion.p>
         </div>

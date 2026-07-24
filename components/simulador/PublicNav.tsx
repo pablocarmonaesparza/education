@@ -5,17 +5,25 @@
  *
  * Diferente de SurfaceNav (que es nav interna entre demo surfaces).
  *
- * Estructura:
+ * Estructura (actualizada en el pivot a EEUU 2026-07-15):
  *   - Logo Itera (link a `/`)
- *   - Anchor links a secciones de la landing (#como-funciona, #casos, #precio)
- *   - Botón "Iniciar sesión" (outlined → /auth/login)
- *   - Botón "Agendar diagnóstico" (filled → signup + onboarding)
+ *   - Anchor links a secciones de /demo (#how-it-works, #cases, #pricing)
+ *   - Botón "Log in" (ghost en desktop, secondary en mobile → /auth/login)
+ *   - Botón "Request a demo" (filled → mailto:hola@itera.la)
+ *
+ * OJO con el CTA: decía "Request a demo" pero iba a /auth/signup — o sea, el
+ * prospecto pedía una demo y recibía un alta de cuenta con paywall de $149.
+ * Es la misma carnada que el fix de LandingPage condena explícitamente. Sin CRM
+ * ni Calendly, el mailto es el canal que EXISTE. Cuando haya formulario, este
+ * href es el que cambia — el label ya describe el destino.
  *
  * Mobile: menu hamburguesa con los mismos links + CTAs apilados al final.
+ *
+ * Único consumidor: app/demo/page.tsx. Los anchors apuntan a ids que viven en
+ * ESE archivo — si cambian allá, cambian aquí.
  */
 
 import { useState } from "react";
-import Image from "next/image";
 import {
   Link,
   Navbar,
@@ -26,14 +34,22 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@heroui/react";
-import { AppleButton } from "@/components/simulador/apple";
+import { AppleButton, AppleLogoMark } from "@/components/simulador/apple";
 
+// Este nav corona /demo — la página que Pablo le manda a un prospecto de EEUU.
+// La traducción se saltó este archivo: el prospecto abría la URL y lo primero que
+// veía era "Agendar diagnóstico". Los anchors además apuntaban a secciones que en
+// /demo NO existen (#como-funciona, #casos, #precio) — links muertos. Ahora los
+// ids son los que /demo realmente tiene.
 const SECTIONS = [
-  { href: "#como-funciona", label: "Cómo funciona" },
-  { href: "#casos", label: "Casos" },
-  { href: "#precio", label: "Precio" },
+  { href: "#how-it-works", label: "How it works" },
+  { href: "#cases", label: "Cases" },
+  { href: "#pricing", label: "Pricing" },
 ];
 
+/* Misma marca que el nav de la landing (LandingPage.tsx): isotipo promovido
+   AppleLogoMark + wordmark. Antes había un PNG script viejo (itera-logo-light)
+   que hacía que /demo y `/` parecieran dos productos distintos. */
 function BrandMark() {
   return (
     <Link
@@ -41,14 +57,10 @@ function BrandMark() {
       className="flex items-center gap-2.5"
       color="foreground"
     >
-      <Image
-        src="/images/itera-logo-light.png"
-        alt="Itera"
-        width={64}
-        height={32}
-        className="h-6 w-auto"
-        priority
-      />
+      <AppleLogoMark size={38} />
+      <span className="ts-title-2 font-extrabold tracking-[-0.8px] text-[var(--text-primary)]">
+        itera<span className="text-[var(--accent)]">.</span>
+      </span>
     </Link>
   );
 }
@@ -69,7 +81,7 @@ export function PublicNav() {
     >
       <NavbarContent justify="start">
         <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="md:hidden text-[var(--text-primary)]"
         />
         <NavbarBrand>
@@ -85,7 +97,7 @@ export function PublicNav() {
               href={s.href}
               size="sm"
               color="foreground"
-              className="ts-subhead font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              className="ts-callout font-bold text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
             >
               {s.label}
             </Link>
@@ -96,25 +108,27 @@ export function PublicNav() {
       {/* Desktop CTAs derecha */}
       <NavbarContent justify="end" className="hidden md:flex gap-2">
         <NavbarItem>
+          {/* Los pesos, el fill y el labio los pone el tone (lenguaje v2);
+              aquí solo queda el sizing compacto del nav. */}
           <AppleButton
             as={Link}
             href="/auth/login"
             size="sm"
             tone="ghost"
-            className="ts-subhead font-medium text-[var(--text-primary)] hover:bg-[var(--surface-3)] h-9 px-3"
+            className="ts-subhead text-[var(--text-primary)] h-9 px-3"
           >
-            Iniciar sesión
+            Log in
           </AppleButton>
         </NavbarItem>
         <NavbarItem>
           <AppleButton
             as={Link}
-            href="/auth/signup?next=%2Fonboarding%2Forg"
+            href="mailto:hola@itera.la?subject=Itera%20demo%20request&body=Team%20size%3A%0ARole%3A%0AWhat%20your%20team%20uses%20AI%20for%3A"
             size="sm"
             tone="primary"
-            className="accent-bg text-white ts-subhead font-medium h-9 px-4 shadow-none"
+            className="ts-subhead h-9 px-4"
           >
-            Agendar diagnóstico
+            Request a demo
           </AppleButton>
         </NavbarItem>
       </NavbarContent>
@@ -128,7 +142,7 @@ export function PublicNav() {
               size="lg"
               color="foreground"
               onPress={() => setIsMenuOpen(false)}
-              className="w-full py-2 text-[var(--text-primary)]"
+              className="w-full py-2 font-bold text-[var(--text-primary)]"
             >
               {s.label}
             </Link>
@@ -141,19 +155,22 @@ export function PublicNav() {
             size="lg"
             tone="secondary"
             onPress={() => setIsMenuOpen(false)}
-            className="h-11 border-[var(--border-strong)] text-[var(--text-primary)] bg-[var(--surface)] ts-callout font-medium"
+            className="h-11 ts-callout"
           >
-            Iniciar sesión
+            Log in
           </AppleButton>
+          {/* Mismo fix que el CTA desktop: "Request a demo" no debe caer en el
+              paywall de signup. El mobile se me pasó en el replace_all porque tiene
+              distinto className. */}
           <AppleButton
             as={Link}
-            href="/auth/signup?next=%2Fonboarding%2Forg"
+            href="mailto:hola@itera.la?subject=Itera%20demo%20request&body=Team%20size%3A%0ARole%3A%0AWhat%20your%20team%20uses%20AI%20for%3A"
             size="lg"
             tone="primary"
             onPress={() => setIsMenuOpen(false)}
-            className="h-11 accent-bg text-white ts-callout font-medium shadow-none"
+            className="h-11 ts-callout"
           >
-            Agendar diagnóstico
+            Request a demo
           </AppleButton>
         </div>
       </NavbarMenu>

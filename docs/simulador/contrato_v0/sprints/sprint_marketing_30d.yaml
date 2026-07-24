@@ -8,84 +8,8 @@
 #
 # Regla: no fabricar 50 casos hasta validar el golden case N3 contra
 # Case Factory.
-      - metric: high_risk_events_reduction
-        target: "≥ 50% reducción entre primer caso y último"
-        confidence: medium
-      - metric: manager_satisfaction_with_recommendation
-        target: "NPS ≥ 50 sobre la recomendación recibida"
-        confidence: low  # v0: pocos clientes, NPS poco robusto
-    for_us:
-      - metric: completion_rate_per_seat
-        target: "≥ 70% de seats completan los 8 casos"
-        confidence: high
-      - metric: practice_beat_engagement
-        target: "≥ 50% de gaps disparados resultan en practice completado"
-        confidence: medium
-      - metric: judge_confidence_overall
-        target: "≥ 80% de evaluaciones con confidence ≥ 0.6"
-        confidence: high
-      - metric: human_review_load
-        target: "≤ 15% de evaluaciones requieren revisión humana"
-        confidence: medium
-
-  # ============================================================
-  # OPERATIONAL CONSTRAINTS
-  # ============================================================
-  operational:
-    cases_status_required_for_launch:
-      ready: 8
-      planned: 0
-      blockers_for_launch: |
-        ✅ los 8 casos están `status: ready` (pase 1-8 completos por Claude).
-        próximos bloqueantes para correr el Sprint real:
-        - migración Supabase aplicada (Codex)
-        - importer YAML→DB ejecutado
-        - LLM-judge integrado contra rúbrica
-        - runtime motor + UI mínima
-        - 1 design partner para validar el flujo end-to-end
-    judge_throughput:
-      expected_evals_per_session: 5  # uno por step
-      expected_session_duration_sec: 1080  # 18 min
-      expected_total_evals_per_sprint_per_seat: 80  # 8 casos × ~10 evals con resim
-      llm_cost_estimate_per_seat_per_sprint_usd: 2.40  # placeholder, codex valida
-    human_review_sla:
-      low_confidence_review_hours: 48
-      practice_beat_curation_review_days: 7
-
-  # ============================================================
-  # CHANGELOG
-  # ============================================================
-  changelog:
-    - version: 1
-      date: 2026-05-12
-      author: claude_product
-      changes: |
-        Sprint package COMPLETO. 8 casos `status: ready` (1=baseline,
-        2=baseline, 3=intermediate, 4=baseline, 5=intermediate, 6=intermediate,
-        7=baseline, 8=advanced). rubric_marketing_v1 versionada vinculada.
-        20 practice_beats poblados en catálogo. pricing band tentativo
-        $79-199 per_seat_per_sprint pendiente validación con Pablo + design
-        partners. listo para que Codex implemente runtime + LLM-judge +
-        UI mínima para validar end-to-end.
-
-  notes_for_codex: |
-    el motor debe:
-    1. crear un `sprints` row por instancia (cliente_x_team_y) referenciando este package.
-    2. al asignar el sprint, crear `assignments` rows: case_id × user_id × order.
-    3. los casos `status: planned` no pueden asignarse — assignment check.
-    4. al cerrar el sprint (todos los casos completados O ventana expirada):
-       a. agregar evidence_emitted across casos
-       b. aplicar reglas de selección de manager_recommendation_templates.md
-       c. emitir executive_report PDF + dashboard refresh
-       d. trigger billing event si el modelo es "post-completion" (Pablo decide)
-
-    el dashboard del manager NO debe mostrar:
-    - texto de respuestas individuales del empleado
-    - prompts redactados por el empleado en step_2
-    - decisiones individuales en steps decision_open_short
-
-    el dashboard SÍ puede mostrar:
-    - scores agregados por dimensión
-    - gaps recurrentes por equipo
-    - risk_events count + severity (sin texto)
-    - completion rate
+#
+# (2026-07-16) El contenido YAML huérfano que quedó debajo de este pointer
+# desde cc6c5d33 rompía el parse de TODO seed-cases (js-yaml truena al leer
+# el directorio). Se eliminó: el sprint está retirado y su contenido completo
+# vive en git history (2ac5d5bc).

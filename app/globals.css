@@ -59,7 +59,10 @@ body {
   .hero-rise { animation: none; }
 }
 
-/* Apply Darker Grotesque to all headings and subtitle paragraphs */
+/* v2 (2026-07-16): los headings heredan Jakarta del root — la regla
+   Darker Grotesque murió con la promoción del rediseño Claude Design.
+   (El scope .redesign-v2 ya la anulaba con font-family: inherit; ahora
+   es el default del sistema.) */
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-darker-grotesque), sans-serif;
+  font-family: var(--font-jakarta), "Plus Jakarta Sans", sans-serif;
 }

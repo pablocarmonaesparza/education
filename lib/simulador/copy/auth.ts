@@ -1,4 +1,9 @@
 /**
+ * MUERTO: sin importadores al 2026-07-15. El copy real vive hardcodeado en
+ * app/auth/*. No traducido en el pivot EEUU — borrar o cablear.
+ */
+
+/**
  * Copy versionado de auth surfaces.
  *
  * Cubre /auth/login, /auth/signup, /auth/callback, /auth/invitation/[token],

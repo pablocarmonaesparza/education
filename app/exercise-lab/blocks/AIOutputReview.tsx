@@ -40,19 +40,19 @@ interface OutputSegment {
 const DEFAULT_SEGMENTS: ReadonlyArray<OutputSegment> = [
   {
     id: "metric",
-    text: "Podemos recuperar 40% de cuentas inactivas en 30 días.",
-    issue: "Afirmación sin fuente",
+    text: "We can win back 40% of inactive accounts in 30 days.",
+    issue: "Claim without a source",
     flagIfMarked: "claim_no_verificado",
   },
   {
     id: "pii",
-    text: "El mensaje se enviará a mariana@aurora.example con tono urgente.",
-    issue: "Dato personal",
+    text: "The message will go to dana@aurora.example with an urgent tone.",
+    issue: "Personal data",
     flagIfMarked: "dato_sensible",
   },
   {
     id: "safe",
-    text: "Propongo usar datos agregados y validar cualquier promesa antes de enviar.",
+    text: "I suggest using aggregated data and verifying any promise before sending.",
     issue: "Usable",
     flagIfMarked: "frase_reutilizable",
   },
@@ -130,7 +130,7 @@ export function AIOutputReview({
               key={line.id}
               type="button"
               onClick={() => toggleSegment(line)}
-              className={`min-h-11 rounded-2xl border px-4 py-4 text-left transition-colors ${
+              className={`min-h-11 rounded-[var(--radius-lg)] border px-4 py-4 text-left transition-colors ${
                 selected
                   ? "border-[var(--accent)] bg-[var(--accent-soft)]"
                   : "border-[var(--border)] bg-[var(--surface-2)] hover:bg-[var(--surface-3)]"

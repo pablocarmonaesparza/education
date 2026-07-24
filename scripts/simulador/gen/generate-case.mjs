@@ -33,7 +33,7 @@ const flags = Object.fromEntries(
 );
 const briefPath = args.find((a) => !a.startsWith("--"));
 if (!briefPath) {
-  console.error("uso: node scripts/simulador/gen/generate-case.mjs <brief.yaml> [--out dir] [--max-attempts 3]");
+  console.error("usage: node scripts/simulador/gen/generate-case.mjs <brief.yaml> [--out dir] [--max-attempts 3]");
   process.exit(2);
 }
 const maxAttempts = Number(flags["max-attempts"] ?? 3);
@@ -75,7 +75,7 @@ const attemptsLog = [];
 let result = "PASS";
 
 log("");
-log(`loop de autocorreccion (max ${maxAttempts} intentos)`);
+log(`self-correction loop (max ${maxAttempts} attempts)`);
 for (let attempt = 1; ; attempt++) {
   autofixCopy(ca); // barato: quita guiones largos antes de gastar el gate
   const attemptPath = path.join(runDir, `attempt-${attempt}.yaml`);
@@ -88,7 +88,7 @@ for (let attempt = 1; ; attempt++) {
   const passed = det.pass && narrative.pass;
 
   log(
-    `  intento ${attempt}: deterministas=${det.pass ? "PASS" : "FAIL"} · juez=${det.pass ? (narrative.pass ? "PASS" : "FAIL") : "(no corrido)"} · ${summarizeFindings(findings)}`,
+    `  attempt ${attempt}: deterministic=${det.pass ? "PASS" : "FAIL"} · judge=${det.pass ? (narrative.pass ? "PASS" : "FAIL") : "(not run)"} · ${summarizeFindings(findings)}`,
   );
   attemptsLog.push({
     n: attempt,
@@ -116,7 +116,7 @@ for (let attempt = 1; ; attempt++) {
   const story = buildStory(ca);
   for (const [key, fnds] of Object.entries(groups)) {
     if (key === "_global") {
-      log(`     findings sin slide concreto (${fnds.length}); van a diagnostico`);
+      log(`     findings with no specific slide (${fnds.length}); sent to diagnostics`);
       continue;
     }
     const [secId, slotStr] = key.split("/");
@@ -124,7 +124,7 @@ for (let attempt = 1; ; attempt++) {
     const sec = ca.sections.find((s) => s.id === secId);
     const slide = sec?.slides.find((sl) => sl.slot === slot);
     if (!slide) continue;
-    log(`     reparando ${key} (${fnds.length} findings)...`);
+    log(`     repairing ${key} (${fnds.length} findings)...`);
     const repaired = await repairSlide(slide, fnds, bible, secId, story);
     Object.assign(slide, repaired);
   }
@@ -147,12 +147,12 @@ const runRecord = {
 fs.writeFileSync(path.join(runDir, "run-record.json"), JSON.stringify(runRecord, null, 2));
 
 log("");
-log(`artefactos: ${path.relative(ROOT, runDir)}`);
+log(`artifacts: ${path.relative(ROOT, runDir)}`);
 if (result === "PASS") {
-  log(`RESULTADO: PASS · final.yaml en ${attemptsLog.length} intento(s)`);
+  log(`RESULT: PASS · final.yaml in ${attemptsLog.length} attempt(s)`);
 } else {
-  log(`RESULTADO: HUMAN_REVIEW tras ${attemptsLog.length} intentos`);
-  log("diagnostico (findings sin resolver):");
+  log(`RESULT: HUMAN_REVIEW after ${attemptsLog.length} attempts`);
+  log("diagnostics (unresolved findings):");
   for (const f of lastFindings.slice(0, 12))
     log(`  - [${f.gate}] ${f.section ?? "?"}/${f.slot ?? "?"}: ${f.message ?? f.criterion ?? f.type}`);
 }

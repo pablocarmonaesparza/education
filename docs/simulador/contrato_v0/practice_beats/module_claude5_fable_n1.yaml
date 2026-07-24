@@ -7,92 +7,92 @@ practice_beat:
   triggered_by_gap: []
   duration_max_seconds: 360
   module_kind: topic
-  topic: Claude Fable 5 (la familia Claude 5)
+  topic: Claude Fable 5 (the Claude 5 family)
   principle_card:
-    headline: Con Fable 5 cambia cuánto le delegas por tramo, no si lo revisas.
+    headline: With Fable 5, what changes is how much you delegate per pass, not whether you review it
     body: >-
-      Un modelo más capaz comete menos errores, pero los que comete suenan igual de seguros que el
-      resto del texto, así que tu revisión vale más que antes, no menos.
+      A more capable model makes fewer mistakes, but the ones it makes sound exactly as confident as
+      the rest of the text, so your review is worth more than before, not less.
   practice_exercise:
     type: formative_slides
     blocks:
       - ai_output_review
       - categorize_rows
     prompt: >-
-      Módulo de actualización: Claude Fable 5 (la familia Claude 5). Es lunes y tu empresa acaba de
-      activar Fable 5, el modelo más capaz de la familia Claude 5. Rodrigo, de ventas, ya le pidió
-      un correo completo para un prospecto y te dice: 'quedó tan bien que casi lo mando sin leer'.
-      Ese 'casi' es justo lo que vas a practicar.
+      AI update practice: Claude Fable 5 (the Claude 5 family). It is Monday and your company just
+      turned on Fable 5, the most capable model in the Claude 5 family. Ryan, in sales, already asked
+      it for a full email to a prospect and tells you: 'it came out so well I almost sent it without
+      reading it'. That 'almost' is exactly what you are about to practice.
   completion_criteria: >-
-    Completar todos los ejercicios (cada fila y cada segmento con respuesta) y revisar la
-    retroalimentación de cada uno.
+    Complete every exercise (each row and each segment answered) and review the feedback for each
+    one.
   exit:
     contributes_to_resim_score: false
   slides:
     - id: portada
       kind: cover
-      title: Un modelo más capaz en tu equipo
+      title: A more capable model on your team
       body: >-
-        Es lunes y tu empresa acaba de activar Fable 5, el modelo más capaz de la familia Claude 5.
-        Rodrigo, de ventas, ya le pidió un correo completo para un prospecto y te dice: 'quedó tan
-        bien que casi lo mando sin leer'. Ese 'casi' es justo lo que vas a practicar.
+        It is Monday and your company just turned on Fable 5, the most capable model in the Claude 5
+        family. Ryan, in sales, already asked it for a full email to a prospect and tells you: 'it
+        came out so well I almost sent it without reading it'. That 'almost' is exactly what you are
+        about to practice.
       chips:
-        - N1 · Fundamentos
-        - Actualización de IA
+        - N1 · Fundamentals
+        - AI update
         - 6 min
     - id: contexto
       kind: reading
-      title: "Claude Fable 5: qué cambia y qué no"
+      title: "Claude Fable 5: what changes and what does not"
       body: >-
-        **Qué es.** Fable 5 es el modelo más capaz de la nueva familia Claude 5, de Anthropic. Es el
-        que puedes usar hoy. (Mythos 5 existe, pero solo para organizaciones aprobadas.)
+        **What it is.** Fable 5 is the most capable model in the new Claude 5 family, from Anthropic.
+        It is the one you can use today. (Mythos 5 exists, but only for approved organizations.)
 
 
-        **Qué cambió.** Razona mejor en tareas largas. Sostiene trabajo de varios pasos seguidos sin
-        que lo lleves de la mano. Comete menos errores evidentes que los modelos anteriores.
+        **What changed.** It reasons better on long tasks. It holds multi-step work together without
+        you leading it by the hand. It makes fewer obvious mistakes than earlier models.
 
 
-        **Qué puede.** Tomar encargos más grandes por tramo. Por ejemplo: analizar información,
-        redactar y proponer siguientes pasos en una sola pasada, con menos correcciones tuyas en el
-        camino.
+        **What it can do.** Take on bigger assignments in a single pass. For example: analyze
+        information, draft, and propose next steps in one go, with fewer corrections from you along
+        the way.
 
 
-        **Qué no puede.** No adivina el contexto que no le diste. No garantiza que cada dato sea
-        correcto. Y ojo: sus errores son menos frecuentes, pero más difíciles de detectar, porque
-        todo suena más seguro.
+        **What it cannot do.** It does not guess the context you never gave it. It does not
+        guarantee every fact is correct. And watch out: its mistakes are less frequent but harder to
+        catch, because everything sounds more confident.
 
 
-        **Por qué importa.** Un modelo mejor tienta a delegar más y revisar menos. Lo que cambia es
-        cuánto le delegas por tramo, no si lo revisas. Eso es justo lo que vas a practicar ahora.
+        **Why it matters.** A better model tempts you to delegate more and review less. What changes
+        is how much you delegate per pass, not whether you review it. That is exactly what you are
+        about to practice.
     - id: ejercicio_1
       kind: exercise
       blockId: ai_output_review
-      title: Revisa el borrador antes de que salga
+      title: Review the draft before it goes out
       body: >-
-        Rodrigo pegó sus notas de una reunión con un prospecto y le pidió a Fable 5 un correo de
-        seguimiento. Este es el borrador. Marca las frases que necesitan atención antes de enviar y
-        las que vale la pena guardar.
+        Ryan pasted his notes from a prospect meeting and asked Fable 5 for a follow-up email. This
+        is the draft. Mark the lines that need attention before sending and the ones worth keeping.
       caseContext:
         segments:
           - id: s1
             text: >-
-              En la reunión del martes nos comentaste que tu prioridad este trimestre es reducir el
-              tiempo de cierre mensual.
+              In Tuesday's meeting you mentioned that your priority this quarter is cutting the
+              monthly close time.
             flagIfMarked: claim_no_verificado
           - id: s2
             text: >-
-              Según análisis del sector, las empresas de logística reducen sus costos operativos un
-              27% al automatizar sus reportes.
+              According to industry analysis, logistics companies cut their operating costs by 27%
+              when they automate their reporting.
             flagIfMarked: claim_no_verificado
           - id: s3
             text: >-
-              Como referencia, nuestro cliente Transportes Del Valle obtuvo un 18% de descuento en
-              su contrato anual.
+              For reference, our client Valley Freight got an 18% discount on its annual contract.
             flagIfMarked: dato_sensible
           - id: s4
             text: >-
-              Si te parece, agendamos veinte minutos esta semana para revisar los números juntos y
-              decidir si tiene sentido avanzar.
+              If it works for you, let's put twenty minutes on the calendar this week to go through
+              the numbers together and decide whether it makes sense to move forward.
             flagIfMarked: frase_reutilizable
       feedback:
         kind: segments
@@ -100,104 +100,102 @@ practice_beat:
           - id: s1
             shouldFlag: false
             why: >-
-              Esta frase sale de las notas que Rodrigo le dio al modelo. Cuando el dato viene de tu
-              propio material, el riesgo baja mucho. Por eso importa tanto qué contexto le das: lo
-              que tú aportas, el modelo lo usa bien.
+              This line comes from the notes Ryan gave the model. When the data comes from your own
+              material, the risk drops a lot. That is why the context you give it matters so much:
+              the model uses what you bring it well.
           - id: s2
             shouldFlag: true
             why: >-
-              Ese 27% no estaba en las notas de Rodrigo. Fable 5 redacta con mucha seguridad, pero
-              no garantiza que cada cifra sea real. Un número inventado que suena creíble es el
-              error más difícil de detectar con esta generación de modelos. Regla simple: si no
-              sabes de dónde salió la cifra, no sale en el correo.
+              That 27% was not in Ryan's notes. Fable 5 writes with a lot of confidence, but it does
+              not guarantee every figure is real. An invented number that sounds credible is the
+              hardest error to catch with this generation of models. Simple rule: if you do not know
+              where the number came from, it does not go in the email.
           - id: s3
             shouldFlag: true
             why: >-
-              El descuento de otro cliente es información confidencial, y aquí iría directo a un
-              prospecto externo. El modelo la incluyó porque estaba en el material que recibió; no
-              distingue solo qué se puede compartir fuera. Ese filtro es tuyo, siempre.
+              Another client's discount is confidential information, and here it would go straight to
+              an outside prospect. The model included it because it was in the material it received;
+              it does not tell on its own what can be shared outside. That filter is yours, always.
           - id: s4
             shouldFlag: true
             why: >-
-              Este cierre es concreto, propone un paso pequeño y deja la decisión del lado del
-              prospecto. Cuando el modelo produce una frase así de útil, guárdala: construir tu
-              propio banco de frases probadas es parte de trabajar bien con IA.
+              This close is concrete, proposes a small step, and leaves the decision on the prospect's
+              side. When the model produces a line this useful, keep it: building your own bank of
+              proven lines is part of working well with AI.
     - id: ejercicio_2
       kind: exercise
       blockId: categorize_rows
-      title: Seis pendientes, un modelo nuevo
+      title: Six open items, one new model
       body: >-
-        Valeria, de marketing, quiere apoyarse en Fable 5 para avanzar su lista del día. Para cada
-        pendiente, decide cuál es la mejor forma de encargarlo.
+        Valerie, in marketing, wants to lean on Fable 5 to work through her list for the day. For
+        each item, decide the best way to hand it off.
       caseContext:
         actions:
           - value: encargar_completo
-            label: Encargar completo y revisar al final
+            label: Hand off whole and review at the end
           - value: dar_contexto
-            label: Darle contexto antes de pedir
+            label: Give it context before asking
           - value: verificar_fuente
-            label: Verificar cada dato contra la fuente
+            label: Verify every fact against the source
         rows:
           - id: r1
-            label: Resumir las 40 respuestas de la encuesta de clientes y proponer tres acciones
+            label: Summarize the 40 customer survey responses and propose three actions
           - id: r2
-            label: Pasar sus notas de la reunión de equipo a una minuta con acuerdos y responsables
+            label: Turn her team meeting notes into minutes with decisions and owners
           - id: r3
-            label: Redactar el anuncio interno sobre el nuevo esquema de horarios
+            label: Draft the internal announcement about the new scheduling policy
           - id: r4
-            label: Escribir la primera propuesta para un cliente del que solo tiene el nombre
+            label: Write the first proposal for a client she only has the name of
           - id: r5
-            label: Incluir cifras de crecimiento de la industria en la presentación para dirección
+            label: Include industry growth figures in the presentation for leadership
           - id: r6
-            label: Comparar los precios de tres competidores para la propuesta comercial
+            label: Compare three competitors' pricing for the sales proposal
       feedback:
         kind: rows
         rows:
           - id: r1
             correct: encargar_completo
             why: >-
-              Aquí el modelo trabaja sobre datos que Valeria le entrega, y la tarea tiene varios
-              pasos seguidos: leer, resumir, proponer. Ese es justo el tipo de encargo grande que
-              Fable 5 sostiene bien en una sola pasada. Tu trabajo queda al final: revisar el
-              resultado completo.
+              Here the model works on data Valerie hands it, and the task has several steps in a row:
+              read, summarize, propose. That is exactly the kind of big assignment Fable 5 holds
+              together in one pass. Your work comes at the end: review the finished result.
           - id: r2
             correct: encargar_completo
             why: >-
-              Las notas ya existen y son la fuente. Convertirlas en minuta es transformar
-              información que el modelo tiene enfrente, no inventarla. Encárgalo entero y revisa que
-              no falte ningún acuerdo.
+              The notes already exist and they are the source. Turning them into minutes is
+              transforming information the model has in front of it, not inventing it. Hand it off
+              whole and check that no decision is missing.
           - id: r3
             correct: dar_contexto
             why: >-
-              El modelo no sabe cuál es el nuevo esquema de horarios, desde cuándo aplica ni a quién
-              afecta. Si Valeria pide el anuncio sin dar eso, Fable 5 va a llenar los huecos con
-              algo plausible. No adivina lo que no le diste: primero el contexto, después el
-              encargo.
+              The model does not know what the new scheduling policy is, when it starts, or who it
+              affects. If Valerie asks for the announcement without giving it that, Fable 5 will fill
+              the gaps with something plausible. It does not guess what you never gave it: context
+              first, then the assignment.
           - id: r4
             correct: dar_contexto
             why: >-
-              Con solo un nombre, todo lo demás saldría inventado: el giro del cliente, sus
-              problemas, sus prioridades. Antes de pedir la propuesta conviene reunir lo que se sabe
-              del cliente y dárselo al modelo. La calidad del resultado depende de lo que entra, no
-              solo del modelo.
+              With only a name, everything else would be invented: the client's business, their
+              problems, their priorities. Before asking for the proposal, gather what is known about
+              the client and give it to the model. The quality of the result depends on what goes in,
+              not just on the model.
           - id: r5
             correct: verificar_fuente
             why: >-
-              Cifras de la industria que van a dirección son el caso clásico donde un modelo seguro
-              de sí mismo puede fallar sin que se note. Fable 5 puede proponerlas, pero cada número
-              necesita una fuente que Valeria pueda abrir y comprobar antes de presentarlo.
+              Industry figures headed to leadership are the classic case where a confident model can
+              fail without anyone noticing. Fable 5 can propose them, but every number needs a source
+              Valerie can open and check before presenting it.
           - id: r6
             correct: verificar_fuente
             why: >-
-              Los precios de la competencia cambian y el modelo no garantiza tenerlos correctos ni
-              actualizados. Puede ayudar a estructurar la comparación, pero cada precio se confirma
-              en la fuente original. Un precio equivocado en una propuesta comercial cuesta
-              credibilidad.
+              Competitor pricing changes and the model does not guarantee it has it right or current.
+              It can help structure the comparison, but every price gets confirmed at the original
+              source. A wrong price in a sales proposal costs credibility.
     - id: cierre
       kind: closing
-      title: Delegar más no es revisar menos
+      title: Delegating more is not reviewing less
       body: >-
-        Practicaste dos cosas: detectar lo que un borrador seguro y bien escrito puede esconder, y
-        decidir cómo encargar cada tarea según el contexto y los datos que tiene el modelo. Mañana,
-        antes de usar un texto de Fable 5, hazte una sola pregunta: ¿de dónde salió cada dato que
-        afirma? Si la respuesta es 'del modelo', verifica antes de enviar.
+        You practiced two things: spotting what a confident, well-written draft can hide, and
+        deciding how to hand off each task based on the context and the data the model has. Tomorrow,
+        before you use a text from Fable 5, ask yourself one question: where did each fact it states
+        come from? If the answer is 'from the model', verify before you send.

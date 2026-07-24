@@ -1,14 +1,15 @@
 "use client";
 
 /**
- * /staff/casos — catálogo de casos del team (vista manager).
+ * /staff/casos — biblioteca de casos (vista manager).
  *
- * Mismo grid que /casos employee pero con contexto manager: "estos son
- * los casos que tu equipo puede tomar". Datos reales de GET /api/cases
- * (contrato R-29: lib/simulador/case-catalog — el mock murió). Filtros
- * solo sobre campos que el contrato real soporta: estado, nivel y
- * departamento. TODO: filtrar por sprint activo del team cuando la API
- * exponga assignments.
+ * Mismo grid que /casos employee pero con contexto manager. Copy honesto:
+ * esto es el catálogo COMPLETO que el equipo puede jugar — el manager NO
+ * asigna casos (las assignments las crea el auto-inicio del empleado desde
+ * su dashboard) y no existe framing de sprint. Datos reales de GET
+ * /api/cases (contrato R-29: lib/simulador/case-catalog — el mock murió).
+ * Filtros solo sobre campos que el contrato real soporta: estado, nivel y
+ * departamento.
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -93,7 +94,7 @@ export default function StaffCasosPage() {
       const data = (await res.json()) as { cases: CaseCatalogItem[] };
       setCases(data.cases ?? []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error inesperado.");
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     }
   }, []);
 
@@ -107,7 +108,7 @@ export default function StaffCasosPage() {
     const keys = new Set<string>();
     for (const c of cases ?? []) if (c.department) keys.add(c.department);
     return [...keys]
-      .sort((a, b) => departmentLabel(a).localeCompare(departmentLabel(b), "es"))
+      .sort((a, b) => departmentLabel(a).localeCompare(departmentLabel(b), "en"))
       .map((value) => ({ value, label: departmentLabel(value) }));
   }, [cases]);
 
@@ -146,54 +147,54 @@ export default function StaffCasosPage() {
         {/* ============ HEADER ============ */}
         <header>
           <h1 className="display display-tight text-[var(--text-primary)] ts-display sm:ts-display-lg">
-            Casos del equipo
+            Case library
           </h1>
           <p className="mt-3 ts-body text-[var(--text-secondary)] leading-[1.55] max-w-[640px]">
-            Catálogo de casos asignados a tu sprint. Tu equipo puede tomar
-            cualquiera de estos en cualquier momento.
+            Every case your team can play. Each person starts from their
+            dashboard; results land in your reports.
           </p>
         </header>
 
         {/* ============ FILTROS ============ */}
         <section
-          aria-label="Filtros"
+          aria-label="Filters"
           className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center"
         >
           <AppleTabs
-            ariaLabel="Filtrar por estado"
+            ariaLabel="Filter by status"
             value={status}
             onChange={(v) => setStatus(v as StatusFilter)}
             items={[
               {
                 id: "all",
-                label: "Todos",
+                label: "All",
                 badge: cases ? statusCounts.all : undefined,
               },
               {
                 id: "not_started",
-                label: "Por iniciar",
+                label: "Not started",
                 badge: cases ? statusCounts.not_started : undefined,
               },
               {
                 id: "in_progress",
-                label: "En curso",
+                label: "In progress",
                 badge: cases ? statusCounts.in_progress : undefined,
               },
               {
                 id: "completed",
-                label: "Completados",
+                label: "Completed",
                 badge: cases ? statusCounts.completed : undefined,
               },
             ]}
           />
           <FilterSelect
-            placeholder="Nivel"
+            placeholder="Level"
             options={LEVEL_OPTIONS}
             value={level}
             onChange={setLevel}
           />
           <FilterSelect
-            placeholder="Departamento"
+            placeholder="Department"
             options={departmentOptions}
             value={department}
             onChange={setDepartment}
@@ -207,11 +208,11 @@ export default function StaffCasosPage() {
               <span className="font-semibold text-[var(--text-primary)]">
                 {filtered.length}
               </span>{" "}
-              {filtered.length === 1 ? "caso" : "casos"}
+              {filtered.length === 1 ? "case" : "cases"}
               {anyFilterActive && (
                 <span className="text-[var(--text-tertiary)]">
                   {" "}
-                  de {cases.length}
+                  of {cases.length}
                 </span>
               )}
             </span>
@@ -222,7 +223,7 @@ export default function StaffCasosPage() {
                 onPress={clearAll}
                 className="ts-subhead"
               >
-                Limpiar filtros
+                Clear filters
               </AppleButton>
             )}
           </div>
@@ -232,7 +233,7 @@ export default function StaffCasosPage() {
         {error ? (
           <div className="mt-10">
             <AppleErrorState
-              title="No pudimos cargar el catálogo"
+              title="We couldn't load the library"
               body={error}
               onAction={load}
             />
@@ -246,18 +247,18 @@ export default function StaffCasosPage() {
         ) : cases.length === 0 ? (
           <div className="mt-10">
             <AppleEmptyState
-              title="Aún no hay casos para tu equipo"
-              description="Cuando tu organización active casos aparecerán aquí, listos para que tu equipo los tome."
+              title="No cases for your team yet"
+              description="Once your organization activates cases, they show up here, ready for your team to play."
             />
           </div>
         ) : filtered.length === 0 ? (
           <div className="mt-5">
             <AppleEmptyState
-              title="No hay casos con esos filtros"
-              description="Prueba quitando alguno o limpia todos para ver el catálogo completo."
+              title="No cases match those filters"
+              description="Try removing one, or clear them all to see the full library."
               action={
                 <AppleButton tone="secondary" onPress={clearAll}>
-                  Limpiar filtros
+                  Clear filters
                 </AppleButton>
               }
             />

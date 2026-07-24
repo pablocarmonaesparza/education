@@ -3,16 +3,16 @@
 /**
  * OnboardingNav — nav minimal para `/onboarding/*`.
  *
- * Logo Itera + chrome de progreso estilo caso: chevron anterior,
- * AppleStepBar y chevron siguiente. El siguiente sólo se habilita cuando el
- * usuario ya desbloqueó ese paso y volvió hacia atrás.
+ * Marca (mismo patrón AppleLogoMark + wordmark que la landing/PublicNav) +
+ * chrome de progreso estilo caso: chevron anterior, AppleStepBar y chevron
+ * siguiente. El siguiente sólo se habilita cuando el usuario ya desbloqueó
+ * ese paso y volvió hacia atrás.
  */
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AppleIcon, AppleStepBar, cn } from "./apple";
+import { AppleIcon, AppleLogoMark, AppleStepBar, cn } from "./apple";
 import {
   getOnboardingUnlockedStep,
   ONBOARDING_ROUTES,
@@ -55,16 +55,16 @@ export function OnboardingNav({ progress }: OnboardingNavProps = {}) {
 
   return (
     <nav className="w-full">
-      <div className="mx-auto grid h-20 max-w-7xl grid-cols-[88px_minmax(0,1fr)_88px] items-center px-4 sm:grid-cols-[120px_minmax(0,1fr)_120px] sm:px-6">
-        <Link href="/" className="flex items-center justify-self-start" aria-label="Inicio">
-          <Image
-            src="/images/itera-logo-light.png"
-            alt="Itera"
-            width={64}
-            height={32}
-            className="h-6 w-auto"
-            priority
-          />
+      <div className="mx-auto grid h-20 max-w-7xl grid-cols-[112px_minmax(0,1fr)_112px] items-center px-4 sm:grid-cols-[140px_minmax(0,1fr)_140px] sm:px-6">
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 justify-self-start"
+          aria-label="Home"
+        >
+          <AppleLogoMark size={38} />
+          <span className="ts-title-2 font-extrabold tracking-[-0.8px] text-[var(--text-primary)]">
+            itera<span className="text-[var(--accent)]">.</span>
+          </span>
         </Link>
 
         {progress && (
@@ -74,7 +74,7 @@ export function OnboardingNav({ progress }: OnboardingNavProps = {}) {
             <NavChevron
               direction="left"
               disabled={!canGoPrevious}
-              label="Paso anterior"
+              label="Previous step"
               onClick={() => {
                 if (previousRoute) router.push(previousRoute);
               }}
@@ -88,7 +88,7 @@ export function OnboardingNav({ progress }: OnboardingNavProps = {}) {
             <NavChevron
               direction="right"
               disabled={!canGoNext}
-              label="Paso siguiente"
+              label="Next step"
               onClick={() => {
                 if (nextRoute) router.push(nextRoute);
               }}

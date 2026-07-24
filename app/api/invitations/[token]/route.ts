@@ -32,7 +32,7 @@ export async function GET(
 
   if (error || !inv) {
     return NextResponse.json(
-      { error: "Invitación no encontrada." },
+      { error: "Invitation not found." },
       { status: 404 },
     );
   }

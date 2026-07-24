@@ -14,8 +14,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-inter)", ...defaultTheme.fontFamily.sans],
-        display: ["var(--font-darker-grotesque)", ...defaultTheme.fontFamily.sans],
+        sans: ["var(--font-jakarta)", ...defaultTheme.fontFamily.sans],
+        display: ["var(--font-jakarta)", ...defaultTheme.fontFamily.sans],
       },
       colors: {
         // Alias oficiales del design system (ver AGENTS.md).
@@ -34,6 +34,30 @@ const config: Config = {
         "2xl": "1rem",
         "3xl": "1.5rem",
         "4xl": "2rem",
+      },
+      // Profundidad v2 (Duolingo-craft). ANTES vivían como
+      // `shadow-[var(--shadow-*)]` arbitrarios — y ahí estaba el bug: Tailwind
+      // resuelve un `var()` pelado dentro de `shadow-[...]` como COLOR de sombra,
+      // no como la sombra completa, así que `--tw-shadow` quedaba en `0 0 #0000`
+      // y el box-shadow renderizaba `none`. Toda la capa de profundidad (labio
+      // 3D, cards, floats) fue invisible. Registrarlas como valores de tema
+      // fuerza el tratamiento como box-shadow (los theme values NUNCA pasan por
+      // la resolución color-vs-sombra) y conserva la indirección de token, así
+      // que el dark mode sigue conmutando vía --shadow-*.
+      boxShadow: {
+        xs: "var(--shadow-xs)",
+        sm: "var(--shadow-sm)",
+        md: "var(--shadow-md)",
+        lg: "var(--shadow-lg)",
+        // xl registrado aunque hoy sin consumidor: si no, `shadow-xl` caería al
+        // default Material de Tailwind (el estilo que APPLE_HIG_RULES prohíbe).
+        xl: "var(--shadow-xl)",
+        lip: "var(--shadow-lip)",
+        "lip-lg": "var(--shadow-lip-lg)",
+        "lip-danger": "var(--shadow-lip-danger)",
+        card: "var(--shadow-card)",
+        float: "var(--shadow-float)",
+        "float-lg": "var(--shadow-float-lg)",
       },
     },
   },

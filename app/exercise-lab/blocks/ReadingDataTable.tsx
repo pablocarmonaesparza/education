@@ -28,21 +28,23 @@ interface TableContent {
   rows: Array<Record<string, string | number>>;
 }
 
+// Las `key` de columna son identificadores del shape de fila · no se
+// traducen. Sólo `label` y los valores de celda son capa de display.
 const DEFAULT_TABLE: TableContent = {
-  caption: "Tickets pendientes asignados a tu cola",
+  caption: "Open tickets assigned to your queue",
   columns: [
     { key: "id", label: "Ticket", align: "left" },
-    { key: "cliente", label: "Cliente", align: "left" },
-    { key: "sla", label: "Tiempo restante", align: "right" },
-    { key: "prioridad", label: "Prioridad", align: "left" },
-    { key: "mrr", label: "Ingreso mensual", align: "right" },
+    { key: "cliente", label: "Customer", align: "left" },
+    { key: "sla", label: "Time left", align: "right" },
+    { key: "prioridad", label: "Priority", align: "left" },
+    { key: "mrr", label: "Monthly revenue (USD)", align: "right" },
   ],
   rows: [
-    { id: "T-1042", cliente: "Aurora Retail", sla: "2h 14m", prioridad: "Alta", mrr: "$8,400" },
-    { id: "T-1041", cliente: "Bosa Industrial", sla: "5h 02m", prioridad: "Media", mrr: "$2,100" },
-    { id: "T-1039", cliente: "Cresta Software", sla: "1h 38m", prioridad: "Crítica", mrr: "$14,200" },
-    { id: "T-1037", cliente: "Delta Logistics", sla: "7h 50m", prioridad: "Baja", mrr: "$950" },
-    { id: "T-1035", cliente: "Eclipse Health", sla: "3h 12m", prioridad: "Alta", mrr: "$5,600" },
+    { id: "T-1042", cliente: "Aurora Retail", sla: "2h 14m", prioridad: "High", mrr: "$8,400" },
+    { id: "T-1041", cliente: "Bedrock Industrial", sla: "5h 02m", prioridad: "Medium", mrr: "$2,100" },
+    { id: "T-1039", cliente: "Cresta Software", sla: "1h 38m", prioridad: "Critical", mrr: "$14,200" },
+    { id: "T-1037", cliente: "Delta Logistics", sla: "7h 50m", prioridad: "Low", mrr: "$950" },
+    { id: "T-1035", cliente: "Eclipse Health", sla: "3h 12m", prioridad: "High", mrr: "$5,600" },
   ],
 };
 

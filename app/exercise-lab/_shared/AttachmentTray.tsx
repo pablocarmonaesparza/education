@@ -19,7 +19,7 @@ export function AttachmentTray({
   return (
     <div className="mx-3 mb-3 grid gap-2 rounded-2xl bg-[var(--surface-2)] p-3">
       <div className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
-        Adjuntos para analizar
+        Attachments to analyze
       </div>
       <div className="grid gap-2">
         {attachments.map((attachment) => (
@@ -35,13 +35,13 @@ export function AttachmentTray({
                 {attachment.name}
               </span>
               <span className="block ts-caption-1 text-[var(--text-tertiary)]">
-                Simulado · {formatFileSize(attachment.size)}
+                Simulated · {formatFileSize(attachment.size)}
               </span>
             </span>
             <button
               type="button"
               onClick={() => onRemove(attachment.id)}
-              aria-label={`Quitar ${attachment.name}`}
+              aria-label={`Remove ${attachment.name}`}
               className="grid h-7 w-7 place-items-center rounded-lg text-[var(--text-tertiary)] transition-colors hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
             >
               <svg className="h-3.5 w-3.5" viewBox="0 0 14 14" fill="none">

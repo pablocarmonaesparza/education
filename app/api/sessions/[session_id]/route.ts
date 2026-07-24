@@ -27,7 +27,7 @@ export async function GET(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) {
-    return NextResponse.json({ error: "No autenticado." }, { status: 401 });
+    return NextResponse.json({ error: "Not signed in." }, { status: 401 });
   }
 
   const { data: session, error: sessErr } = await supabase
@@ -39,7 +39,7 @@ export async function GET(
 
   if (sessErr || !session) {
     return NextResponse.json(
-      { error: "Sesión no encontrada." },
+      { error: "Session not found." },
       { status: 404 },
     );
   }

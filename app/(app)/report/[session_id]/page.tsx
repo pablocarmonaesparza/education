@@ -21,6 +21,7 @@ import {
   type ReportPayload,
   type ReportPracticeEntry,
 } from "@/lib/simulador/reports/model";
+import { reportCopy } from "@/lib/simulador/copy/report";
 
 const fadeUp = {
   initial: { opacity: 0, y: 16 },
@@ -63,18 +64,18 @@ function severityTone(s: "high" | "medium" | "low") {
     return {
       bg: "bg-[var(--band-b-bg)]",
       text: "text-[var(--band-b-text)]",
-      label: "Alta",
+      label: reportCopy.risk_events.severity_labels.high,
     };
   if (s === "medium")
     return {
       bg: "bg-[var(--band-m-bg)]",
       text: "text-[var(--band-m-text)]",
-      label: "Media",
+      label: reportCopy.risk_events.severity_labels.medium,
     };
   return {
     bg: "bg-[var(--surface-3)]",
     text: "text-[var(--text-secondary)]",
-    label: "Baja",
+    label: reportCopy.risk_events.severity_labels.low,
   };
 }
 
@@ -107,7 +108,7 @@ export default function ReportePage() {
         if (!res.ok && res.status !== 404) {
           const data = await res.json().catch(() => null);
           throw new Error(
-            data?.error ?? `Error ${res.status} al leer el reporte.`,
+            data?.error ?? `Error ${res.status} while loading the report.`,
           );
         }
         const data = (await res.json()) as ReportEnvelope;
@@ -125,7 +126,7 @@ export default function ReportePage() {
         }
       } catch (err) {
         if (cancelled) return;
-        setError(err instanceof Error ? err.message : "Error inesperado.");
+        setError(err instanceof Error ? err.message : "Unexpected error.");
       }
     }
 
@@ -140,8 +141,8 @@ export default function ReportePage() {
   if (error) {
     return (
       <ShellMessage
-        eyebrow="Error al cargar reporte"
-        title="No pudimos leer tu reporte."
+        eyebrow="Report error"
+        title="We could not load your report."
         body={error}
       />
     );
@@ -150,8 +151,8 @@ export default function ReportePage() {
   if (!envelope) {
     return (
       <ShellMessage
-        eyebrow="Cargando"
-        title="Preparando tu reporte…"
+        eyebrow="Loading"
+        title="Preparing your report…"
         spinner
       />
     );
@@ -160,11 +161,11 @@ export default function ReportePage() {
   if (envelope.status === "none") {
     return (
       <ShellMessage
-        eyebrow="Evaluación en curso"
-        title="Estamos evaluando tu sesión."
+        eyebrow="Scoring in progress"
+        title="We are scoring your session."
         body={
           envelope.message ??
-          "El judge LLM compara tus respuestas contra la rúbrica. Esto suele tardar ~30 segundos."
+          "The LLM judge compares your answers against the rubric. This usually takes about 30 seconds."
         }
         spinner
       />
@@ -174,9 +175,9 @@ export default function ReportePage() {
   if (!envelope.payload) {
     return (
       <ShellMessage
-        eyebrow="Sin payload"
-        title="El reporte aún no tiene contenido."
-        body="Vuelve en unos segundos."
+        eyebrow="No payload"
+        title="The report has no content yet."
+        body="Check back in a few seconds."
       />
     );
   }
@@ -280,12 +281,12 @@ function ReportView({
             <span>
               <span className="text-[var(--text-primary)] font-medium">
                 {isPending
-                  ? "En revisión humana"
-                  : "Reporte publicado"}
+                  ? "Under human review"
+                  : "Report published"}
               </span>{" "}
-              · judge {payload.judge_model} · rúbrica {payload.rubric_version}
+              · judge {payload.judge_model} · rubric {payload.rubric_version}
               {isPending &&
-                " · este reporte tiene risk events que requieren confirmación del equipo Itera antes de publicarse al manager."}
+                " · this report has risk events that the Itera team confirms before it goes to the manager."}
             </span>
           </div>
         </div>
@@ -293,9 +294,9 @@ function ReportView({
         {/* Header */}
         <section className="reading-col px-6 pt-14">
           <motion.div {...fadeUp}>
-            <div className="eyebrow">Reporte ejecutivo · participante</div>
+            <div className="eyebrow">Executive report · participant</div>
             <h1 className="display display-tight mt-5 ts-display-lg sm:ts-display-xl text-[var(--text-primary)]">
-              Diagnóstico operativo
+              Assessment
             </h1>
             <div className="mt-6 flex flex-wrap items-center gap-3 ts-subhead text-[var(--text-secondary)]">
               <span className="mono">
@@ -316,7 +317,7 @@ function ReportView({
           >
             <div className="flex flex-col sm:flex-row sm:items-start gap-8">
               <div className="flex-shrink-0">
-                <div className="eyebrow">Readiness general</div>
+                <div className="eyebrow">Overall readiness</div>
                 <div className="display mt-3 ts-display-4xl text-[var(--text-primary)] leading-none">
                   {overallScore}
                   <span className="text-[var(--text-tertiary)] ts-title-1 ml-1">
@@ -325,7 +326,7 @@ function ReportView({
                 </div>
                 <div className="mt-3">
                   <AppleBadge tone={bandBadgeTone(overallBand)} radius="full">
-                    Banda {BAND_DISPLAY[overallBand]}
+                    {BAND_DISPLAY[overallBand]} band
                   </AppleBadge>
                 </div>
               </div>
@@ -341,9 +342,9 @@ function ReportView({
         {/* Dimensiones */}
         <section className="reading-col px-6 mt-20">
           <motion.div {...fadeUp}>
-            <div className="eyebrow">Desempeño por dimensión</div>
+            <div className="eyebrow">Performance by dimension</div>
             <h2 className="display mt-3 ts-title-1 text-[var(--text-primary)]">
-              Las seis dimensiones.
+              The six dimensions
             </h2>
           </motion.div>
 
@@ -369,7 +370,7 @@ function ReportView({
                           {capFirst(d.label)}
                         </span>
                         <AppleBadge tone={bandBadgeTone(band)} radius="full">
-                          Banda {BAND_DISPLAY[band]}
+                          {BAND_DISPLAY[band]} band
                         </AppleBadge>
                       </div>
                       <p className="mt-2 ts-callout text-[var(--text-secondary)] leading-[1.6]">
@@ -403,9 +404,9 @@ function ReportView({
         {payload.gaps.length > 0 && (
           <section className="reading-col px-6 mt-20">
             <motion.div {...fadeUp}>
-              <div className="eyebrow">Gaps identificados</div>
+              <div className="eyebrow">Gaps found</div>
               <h2 className="display mt-3 ts-title-1 text-[var(--text-primary)]">
-                Dónde se torció.
+                Where it went wrong
               </h2>
             </motion.div>
 
@@ -425,14 +426,14 @@ function ReportView({
                         radius="full"
                         className="flex-shrink-0 mt-1"
                       >
-                        Severidad {tone.label}
+                        {tone.label} severity
                       </AppleBadge>
                       <div className="flex-1 min-w-0">
-                        <div className="eyebrow">Qué observamos</div>
+                        <div className="eyebrow">What we saw</div>
                         <p className="mt-2 ts-body text-[var(--text-primary)] leading-[1.65]">
                           {capFirst(g.observed)}
                         </p>
-                        <div className="eyebrow mt-5">Por qué importa</div>
+                        <div className="eyebrow mt-5">Why it matters</div>
                         <p className="mt-2 ts-callout text-[var(--text-secondary)] leading-[1.65]">
                           {capFirst(g.why_matters)}
                         </p>
@@ -449,9 +450,9 @@ function ReportView({
         {payload.risk_events.length > 0 && (
           <section className="reading-col px-6 mt-20">
             <motion.div {...fadeUp}>
-              <div className="eyebrow">Eventos de riesgo</div>
+              <div className="eyebrow">Risk events</div>
               <h2 className="display mt-3 ts-title-1 text-[var(--text-primary)]">
-                Momentos críticos en la sesión.
+                Critical moments in the session
               </h2>
             </motion.div>
 
@@ -468,7 +469,7 @@ function ReportView({
                     <div className="flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3 min-w-0">
                         <span className="mono ts-footnote text-[var(--text-tertiary)] flex-shrink-0">
-                          Paso {e.step_ordinal}
+                          {reportCopy.risk_events.step_label(e.step_ordinal)}
                         </span>
                         <AppleBadge tone={severityBadgeTone(e.severity)} radius="full">
                           {tone.label}
@@ -479,11 +480,11 @@ function ReportView({
                       </div>
                     </div>
                     <blockquote className="mt-4 pl-4 border-l-2 border-[var(--border)] ts-callout text-[var(--text-secondary)] italic leading-[1.65]">
-                      «
+                      “
                       {capFirst(
                         redactSensitiveEvidence(e.evidence_text, e.severity),
                       )}
-                      »
+                      ”
                     </blockquote>
                   </motion.div>
                 );
@@ -496,9 +497,9 @@ function ReportView({
         {payload.strengths.length > 0 && (
           <section className="reading-col px-6 mt-20">
             <motion.div {...fadeUp}>
-              <div className="eyebrow">Fortalezas</div>
+              <div className="eyebrow">Strengths</div>
               <h2 className="display mt-3 ts-title-1 text-[var(--text-primary)]">
-                Qué hizo bien.
+                What went well
               </h2>
             </motion.div>
 
@@ -528,15 +529,13 @@ function ReportView({
           <section className="reading-col px-6 mt-20">
             <motion.div {...fadeUp}>
               <div className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
-                Práctica sugerida
+                {reportCopy.practice.eyebrow}
               </div>
               <h2 className="display mt-3 ts-title-1 text-[var(--text-primary)]">
-                Corrige lo que apareció
+                Fix what showed up
               </h2>
               <p className="mt-4 ts-body text-[var(--text-secondary)] leading-[1.65] max-w-2xl">
-                El diagnóstico midió tu criterio sin enseñar respuestas. Estas
-                prácticas vienen después — corrigen específicamente los gaps
-                que aparecieron en tu sesión.
+                {reportCopy.practice.intro}
               </p>
             </motion.div>
 
@@ -565,7 +564,7 @@ function ReportView({
                       </div>
                       {isCompleted ? (
                         <span className="inline-flex shrink-0 items-center rounded-full bg-[var(--band-a-bg)] px-3 py-1 ts-caption-1 font-semibold text-[var(--band-a-text)]">
-                          Completada
+                          Completed
                         </span>
                       ) : (
                         <AppleButton
@@ -575,7 +574,7 @@ function ReportView({
                           size="sm"
                           className="shrink-0 px-5"
                         >
-                          Empezar práctica
+                          {reportCopy.practice.cta_button}
                         </AppleButton>
                       )}
                     </div>
@@ -597,16 +596,21 @@ function ReportView({
               borderWidth: 1,
             }}
           >
-            <div className="eyebrow accent-text">Recomendación</div>
+            <div className="eyebrow accent-text">
+              {reportCopy.recommendation_card.eyebrow}
+            </div>
             <h2 className="display mt-3 ts-display text-[var(--text-primary)]">
-              {capFirst(payload.recommendation.action)}.
+              {/* El enum de BD no cambia: se traduce en la capa de display. */}
+              {reportCopy.header.recommendation_actions[
+                payload.recommendation.action
+              ]}
             </h2>
             <p className="mt-3 ts-body text-[var(--text-secondary)]">
               {capFirst(payload.recommendation.applies_to)}
             </p>
 
             <div className="mt-7">
-              <div className="eyebrow">Próximos 7 días</div>
+              <div className="eyebrow">{reportCopy.next_actions.eyebrow}</div>
               <ol className="mt-4 space-y-3">
                 {payload.recommendation.next_week_actions.map((a, i) => (
                   <li key={i} className="flex items-start gap-4">
@@ -634,7 +638,7 @@ function ReportView({
               size="lg"
               className="h-12 px-7"
             >
-              Descargar PDF
+              {reportCopy.share.pdf_download_label}
             </AppleButton>
             <AppleButton
               as={Link}
@@ -643,7 +647,7 @@ function ReportView({
               size="lg"
               className="h-12 px-7"
             >
-              Vista del manager
+              Manager view
             </AppleButton>
             <AppleButton
               as={Link}
@@ -652,7 +656,7 @@ function ReportView({
               size="lg"
               className="h-12 px-7"
             >
-              Volver a landing
+              Back to home
             </AppleButton>
           </motion.div>
 
@@ -663,11 +667,11 @@ function ReportView({
           <div className="border-t border-[var(--hairline)] pt-6 flex flex-wrap gap-x-6 gap-y-2 ts-footnote text-[var(--text-tertiary)] mono">
             <span>Judge {payload.judge_model}</span>
             <span>·</span>
-            <span>Rúbrica {payload.rubric_version}</span>
+            <span>Rubric {payload.rubric_version}</span>
             <span>·</span>
-            <span>Caso {payload.case_version}</span>
+            <span>Case {payload.case_version}</span>
             <span>·</span>
-            <span>Variante {payload.variant}</span>
+            <span>Variant {payload.variant}</span>
             <span>·</span>
             <span>Eval {(payload.duration_ms / 1000).toFixed(1)}s</span>
           </div>

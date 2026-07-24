@@ -18,15 +18,17 @@ export function AppleBadge({
   tone = "neutral",
   radius = "sm",
   size = "sm",
+  pill = false,
   ...props
-}: ChipProps & { tone?: AppleBadgeTone }) {
+}: ChipProps & { tone?: AppleBadgeTone; pill?: boolean }) {
   return (
     <Chip
-      radius={radius}
+      // pill: chips v2 completamente redondeados; sin pill conserva el radius clásico
+      radius={pill ? "full" : radius}
       size={size}
       variant="flat"
       {...props}
-      className={cn("px-2 ts-footnote font-medium", toneClass[tone], className)}
+      className={cn("px-2 ts-footnote font-bold", toneClass[tone], className)}
     />
   );
 }

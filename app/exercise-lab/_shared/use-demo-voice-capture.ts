@@ -45,15 +45,15 @@ export function useDemoVoiceCapture({
       });
       const data = await response.json().catch(() => ({}));
       if (response.ok && typeof data.text === "string" && data.text.trim()) {
-        const transcript = `Nota de voz: ${data.text.trim()}`;
+        const transcript = `Voice note: ${data.text.trim()}`;
         onVoiceNote(transcript);
         onTranscript(transcript);
       } else {
-        onVoiceNote(`Nota de voz adjunta (${seconds} s)`);
+        onVoiceNote(`Voice note attached (${seconds} s)`);
       }
       setRecState("idle");
     } catch {
-      onVoiceNote(`Nota de voz adjunta (${seconds} s)`);
+      onVoiceNote(`Voice note attached (${seconds} s)`);
       setRecState("idle");
     }
   }
@@ -62,7 +62,7 @@ export function useDemoVoiceCapture({
     setRecError(null);
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
       setRecState("error");
-      setRecError("Este navegador no permite grabar audio aquí.");
+      setRecError("This browser can't record audio here.");
       resetErrorLater();
       return;
     }
@@ -91,7 +91,7 @@ export function useDemoVoiceCapture({
       setRecState("recording");
     } catch {
       setRecState("error");
-      setRecError("Permiso de micrófono no disponible.");
+      setRecError("Microphone permission unavailable.");
       resetErrorLater();
     }
   }

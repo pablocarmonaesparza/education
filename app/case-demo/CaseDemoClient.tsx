@@ -22,7 +22,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ExerciseBlockRenderer } from "@/components/simulador/ExerciseBlockRenderer";
-import { AppleCaseHeader, AppleSlideButton } from "@/components/simulador/apple";
+import {
+  AppleBadge,
+  AppleCaseHeader,
+  AppleSlideButton,
+} from "@/components/simulador/apple";
 import type { ExerciseBlockId } from "@/lib/simulador/exercise-blocks.generated";
 import type { ExerciseResponsePayload } from "@/lib/simulador/exercise-registry";
 import { isBlockComplete } from "@/lib/simulador/exercise-completion";
@@ -33,12 +37,13 @@ import { SLIDES, CASE_ID, type Slide } from "./case-data.generated";
 // SECCIONES (5 obligatorias)
 // ============================================================
 
+// `id` es identificador (compone slideId · no cambia) · `name` es display.
 const SECTIONS = [
-  { id: "contexto", name: "Contexto" },
-  { id: "datos", name: "Datos" },
-  { id: "ia", name: "IA" },
-  { id: "revision", name: "Revisión" },
-  { id: "cierre", name: "Cierre" },
+  { id: "contexto", name: "Context" },
+  { id: "datos", name: "Data" },
+  { id: "ia", name: "AI" },
+  { id: "revision", name: "Review" },
+  { id: "cierre", name: "Wrap-up" },
 ] as const;
 
 const SLIDES_PER_SECTION = 5;
@@ -204,15 +209,14 @@ export function CaseDemoClient() {
   const handleFeedback = useCallback(() => {
     const slideRef = `${SECTIONS[sectionIdx].id}-${slideIdx + 1}`;
     const subject = encodeURIComponent(
-      `Sugerencia · caso demo · slide ${slideRef}`,
+      `Suggestion · demo case · slide ${slideRef}`,
     );
     const body = encodeURIComponent(
-      `Slide: ${slideRef}\nTemplate: ${slide?.blockId}\n\nDescribe la sugerencia o corrección:\n`,
+      `Slide: ${slideRef}\nTemplate: ${slide?.blockId}\n\nDescribe the suggestion or correction:\n`,
     );
-    // P3 · destinatario configurable vía env var · fallback al placeholder
-    // de desarrollo. En producción debe estar definido NEXT_PUBLIC_FEEDBACK_EMAIL.
-    const to =
-      process.env.NEXT_PUBLIC_FEEDBACK_EMAIL ?? "feedback@itera.example";
+    // P3 · destinatario configurable vía env var · fallback al buzón real del
+    // dominio. En Vercel debe estar definido NEXT_PUBLIC_FEEDBACK_EMAIL.
+    const to = process.env.NEXT_PUBLIC_FEEDBACK_EMAIL ?? "feedback@itera.la";
     window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
   }, [sectionIdx, slideIdx, slide?.blockId]);
 
@@ -267,7 +271,7 @@ export function CaseDemoClient() {
           onNext={goNext}
           nextDisabled={!canGoForward}
           onFeedback={handleFeedback}
-          ariaLabel={`Diapositiva ${slideIdx + 1} de ${SLIDES_PER_SECTION}`}
+          ariaLabel={`Slide ${slideIdx + 1} of ${SLIDES_PER_SECTION}`}
         />
 
         {/* CONTENIDO · transición vertical estilo scroll (slide sale arriba,
@@ -286,10 +290,11 @@ export function CaseDemoClient() {
                 duration: 0.5,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="w-[65%] max-w-[1200px]"
+              className="w-[92%] max-w-[1200px] sm:w-[80%] lg:w-[65%]"
             >
-              {/* Eyebrow · solo el nombre de la sección */}
-              <div className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
+              {/* Eyebrow · solo el nombre de la sección · receta v2:
+                  extrabold + tracking + acento */}
+              <div className="ts-footnote font-extrabold uppercase tracking-[0.8px] text-[var(--accent)]">
                 {SECTIONS[sectionIdx].name}
               </div>
 
@@ -334,12 +339,12 @@ export function CaseDemoClient() {
                         true
                       ) : (
                         <span className="ts-footnote text-[var(--text-tertiary)]">
-                          Completa el ejercicio para continuar.
+                          Complete the exercise to continue.
                         </span>
                       )
                     }
                   >
-                    {isLastSlide ? "Ver resumen →" : "Continuar →"}
+                    {isLastSlide ? "See summary →" : "Continue →"}
                   </AppleSlideButton>
                 </div>
               )}
@@ -353,8 +358,9 @@ export function CaseDemoClient() {
 
 // ============================================================
 // PANTALLA DE CIERRE · simulación del reporte ejecutivo
-// Lenguaje Typeform · single column · sin score numérico público
-// (cumple contrato v0: "la banda es la unidad narrativa").
+// Lenguaje visual de /demo (pill de banda + barras chunky con color
+// de banda + risk cards tintadas) · single column · sin score numérico
+// público (cumple contrato v0: "la banda es la unidad narrativa").
 // Consume el store de payloads del shell · P0.2.
 // ============================================================
 
@@ -366,6 +372,32 @@ interface CaseCompletedScreenProps {
 }
 
 type Band = "alto" | "medio" | "bajo";
+
+/** Capa de display de la banda. Los valores internos ("alto"/"medio"/"bajo")
+ *  son identificadores alineados con los enums A/M/B de BD · NO se traducen.
+ *  Solo se localiza lo que se pinta en pantalla. */
+const BAND_LABEL: Record<Band, string> = {
+  alto: "High",
+  medio: "Medium",
+  bajo: "Low",
+};
+
+/** Estilos por banda · mismo lenguaje visual que el reporte de /demo
+ *  (pill tinted + barra con color de banda). Tokens band-* de simulador.css. */
+const BAND_TINT: Record<Band, string> = {
+  alto: "bg-[var(--band-a-bg)] text-[var(--band-a-text)]",
+  medio: "bg-[var(--band-m-bg)] text-[var(--band-m-text)]",
+  bajo: "bg-[var(--band-b-bg)] text-[var(--band-b-text)]",
+};
+const BAND_BAR: Record<Band, string> = {
+  alto: "var(--band-a-bar)",
+  medio: "var(--band-m-bar)",
+  bajo: "var(--band-b-bar)",
+};
+// Ancho representativo de la barra por banda · mismo encoding que /demo
+// (BAND_WIDTH). No es un score público: es la banda traducida a longitud
+// para que la fila se lea de un vistazo.
+const BAND_WIDTH: Record<Band, number> = { alto: 92, medio: 75, bajo: 32 };
 
 interface DimensionScore {
   id: string;
@@ -398,8 +430,8 @@ interface RiskEvent {
 
 const RECOMMENDATION_DEFAULTS = {
   practice: {
-    title: "Verifica antes de enviar",
-    duration: "5 minutos",
+    title: "Verify before you send",
+    duration: "5 minutes",
   },
 };
 
@@ -435,25 +467,25 @@ function genericSnapshot(
 ): ReportSnapshot {
   const answered = Object.keys(payloads).length;
   const LABELS: Record<string, string> = {
-    contexto: "Contexto",
-    privacidad: "Privacidad",
-    validacion: "Validación",
-    juicio: "Juicio",
-    decision: "Decisión",
+    contexto: "Context",
+    privacidad: "Privacy",
+    validacion: "Verification",
+    juicio: "Judgment",
+    decision: "Decision",
   };
   const dimensions: DimensionScore[] = Object.entries(LABELS).map(
     ([id, label]) => ({
       id,
       label,
       band: "medio" as Band,
-      metric: "La evaluación por dimensión la realiza el juez en producción.",
+      metric: "The judge scores each dimension in production.",
     }),
   );
   return {
     recommendation: {
       action: "pilotar",
-      title: "Caso generado automáticamente",
-      oneLiner: `Recorriste ${answered} ejercicios. El reporte detallado solo está calibrado para el caso de referencia; en producción la evaluación la hace el juez.`,
+      title: "Auto-generated case",
+      oneLiner: `You went through ${answered} exercises. The detailed report is calibrated only for the reference case. In production the judge does the scoring.`,
     },
     dimensions,
     riskEvents: [],
@@ -475,11 +507,11 @@ function buildReportSnapshot(
   );
   dimensions.push({
     id: "contexto",
-    label: "Contexto",
+    label: "Context",
     band: acknowledgedLegal ? "alto" : "medio",
     metric: acknowledgedLegal
-      ? "Leyó el email del manager y el ticket de Legal."
-      : "No completó la lectura del contexto.",
+      ? "Read the manager's email and the Legal ticket."
+      : "Did not finish reading the context.",
   });
 
   // ===== PRIVACIDAD · evalúa si excluyó/anonimizó contactos sin consentimiento + campos PII =====
@@ -512,24 +544,24 @@ function buildReportSnapshot(
         : "bajo";
   dimensions.push({
     id: "privacidad",
-    label: "Privacidad",
+    label: "Privacy",
     band: privacyBand,
     metric:
       privacyBand === "alto"
-        ? "Excluyó a quien revocó y a quien pidió baja, y no mandó el correo al modelo."
+        ? "Excluded the revoked contact and the opt-out, and kept the email address away from the model."
         : privacyBand === "medio"
-          ? "Excluyó a los de sin consentimiento, pero dejó pasar datos personales al modelo."
-          : "No excluyó a quien revocó o pidió baja.",
+          ? "Excluded the contacts without consent, but let personal data reach the model."
+          : "Did not exclude the revoked contact or the opt-out.",
   });
   if (emailToModel?.action === "va") {
     riskEvents.push({
       id: "risk-email-to-model",
       severity: "alto",
-      type: "Dato personal al modelo",
+      type: "Personal data sent to the model",
       // Cita textual del payload del usuario · cumple regla v0:
       // "risk_event debe tener evidencia textual citable del transcript".
-      evidence: `Marcó "Correo" con la acción "va al modelo" cuando es un identificador personal que no debía pasar.`,
-      slideRef: "Datos · 2 / 5",
+      evidence: `Marked "Email" as "Goes to the model" when it is a personal identifier that should not have been passed.`,
+      slideRef: "Data · 2 / 5",
     });
   }
 
@@ -545,17 +577,17 @@ function buildReportSnapshot(
     correctFlags >= 2 ? "alto" : correctFlags >= 1 ? "medio" : "bajo";
   dimensions.push({
     id: "validacion",
-    label: "Validación",
+    label: "Verification",
     band: validacionBand,
-    metric: `${correctFlags} de 2 cifras inventadas marcadas`,
+    metric: `${correctFlags} of 2 made-up figures flagged`,
   });
   if (correctFlags < 2) {
     riskEvents.push({
       id: "risk-unverified-claim",
       severity: correctFlags === 0 ? "alto" : "medio",
-      type: "Cifra sin verificar",
-      evidence: `Dejó pasar ${2 - correctFlags} de 2 cifras sin respaldo que el modelo afirmó.`,
-      slideRef: "Revisión · 1 / 5",
+      type: "Unverified figure",
+      evidence: `Let ${2 - correctFlags} of 2 unsupported figures from the model through.`,
+      slideRef: "Review · 1 / 5",
     });
   }
 
@@ -582,20 +614,20 @@ function buildReportSnapshot(
           : "bajo";
   dimensions.push({
     id: "juicio",
-    label: "Juicio",
+    label: "Judgment",
     band: juicioBand,
     metric:
       decisionPayload?.decision === "piloto_controlado"
-        ? "Eligió piloto controlado · proporcional al riesgo."
+        ? "Chose a controlled pilot · proportional to the risk."
         : decisionPayload?.decision === "lanzar_lunes"
           ? didCleanup
-            ? "Eligió lanzar tras limpiar la base y quitar las cifras · defendible."
-            : "Eligió lanzar sin terminar de limpiar · subestima el riesgo."
+            ? "Chose to launch after cleaning the list and cutting the figures · defensible."
+            : "Chose to launch without finishing the cleanup · underestimates the risk."
           : decisionPayload?.decision === "pausar_y_limpiar"
-            ? "Eligió pausar para limpiar · cauto y operativo."
+            ? "Chose to pause and clean up · cautious and workable."
             : decisionPayload?.decision === "pausar_y_escalar"
-              ? "Eligió pausar y escalar · postura conservadora defendible."
-              : "Decisión no registrada.",
+              ? "Chose to pause and escalate · defensible conservative call."
+              : "No decision recorded.",
   });
 
   // ===== DECISIÓN · evalúa claridad del memo que justifica la decisión.
@@ -620,10 +652,10 @@ function buildReportSnapshot(
   const memoQuote =
     memoLength > 0
       ? `"${memoText.length > 90 ? memoText.slice(0, 90).trimEnd() + "…" : memoText}"`
-      : "No escribió memo de justificación.";
+      : "Did not write a justification memo.";
   dimensions.push({
     id: "decision",
-    label: "Decisión",
+    label: "Decision",
     band: decisionBand,
     metric: memoQuote,
   });
@@ -647,9 +679,9 @@ function buildRecommendation(
   if (highRisks >= 2) {
     return {
       action: "escalar",
-      title: "Escalar a Legal y proceso",
+      title: "Escalate to Legal and process",
       oneLiner:
-        "Múltiples eventos de riesgo alto. El gap no se resuelve con práctica individual · requiere ajuste de proceso.",
+        "Multiple high risk events. Individual practice will not close this gap · it needs a process change.",
     };
   }
 
@@ -657,9 +689,9 @@ function buildRecommendation(
   if (highRisks >= 1 || bajos >= 2) {
     return {
       action: "pausar",
-      title: "Pausar antes de pilotar",
+      title: "Pause before piloting",
       oneLiner:
-        "Una o varias dimensiones críticas están débiles. Reforzar antes de operar con datos reales.",
+        "One or more critical dimensions are weak. Shore them up before working with real data.",
     };
   }
 
@@ -667,42 +699,82 @@ function buildRecommendation(
   if (altos >= 4) {
     return {
       action: "pilotar",
-      title: "Listo para pilotar",
+      title: "Ready to pilot",
       oneLiner:
-        "Criterio sólido en las dimensiones clave. Puede operar con supervisión ligera.",
+        "Solid judgment on the key dimensions. Can work with light supervision.",
     };
   }
 
   // Entrenar · default · gap puntual corregible con práctica.
   return {
     action: "entrenar",
-    title: "Entrenar gap específico",
+    title: "Coach a specific gap",
     oneLiner:
-      "Criterio sólido en la mayoría, pero hay un patrón a corregir antes de pilotar.",
+      "Solid judgment on most dimensions, but there is one pattern to fix before piloting.",
   };
 }
 
-/** Etiqueta de banda · única representación pública del juicio. Cumple
- *  DIAGNOSTICO_1_CASO_V0 línea 233: "Sin score numérico público en v0.
- *  La banda es la unidad narrativa." Sin colores semánticos · la banda
- *  se comunica con un dot intensidad-graduada y la palabra. */
-function BandLabel({ band }: { band: Band }) {
-  const dots = band === "alto" ? 3 : band === "medio" ? 2 : 1;
+/** Display de la acción recomendada. Los identificadores internos
+ *  ("pilotar"/"entrenar"/…) están alineados con BD · NO se traducen ·
+ *  solo se localiza el label (glosario: Pilot/Coach/Pause de /demo). */
+const ACTION_LABEL: Record<ReportSnapshot["recommendation"]["action"], string> =
+  {
+    pilotar: "Pilot",
+    entrenar: "Coach",
+    pausar: "Pause",
+    escalar: "Escalate",
+  };
+const ACTION_TONE: Record<
+  ReportSnapshot["recommendation"]["action"],
+  "success" | "warning" | "danger"
+> = {
+  pilotar: "success",
+  entrenar: "warning",
+  pausar: "danger",
+  escalar: "danger",
+};
+
+/** Banda global agregada del reporte · espejo de los umbrales de
+ *  buildRecommendation para que el pill del hero y la recomendación
+ *  nunca se contradigan. Sigue el contrato v0: sin score numérico
+ *  público · la banda es la unidad narrativa. */
+function computeOverallBand(
+  dimensions: DimensionScore[],
+  riskEvents: RiskEvent[],
+): Band {
+  const altos = dimensions.filter((d) => d.band === "alto").length;
+  const bajos = dimensions.filter((d) => d.band === "bajo").length;
+  const highRisks = riskEvents.filter((r) => r.severity === "alto").length;
+  if (highRisks >= 1 || bajos >= 2) return "bajo";
+  if (altos >= 4) return "alto";
+  return "medio";
+}
+
+/** Pill de banda tinted · única representación pública del juicio por
+ *  dimensión. Reemplaza los dots monocromos v0: /demo ya estableció el
+ *  color de banda como lenguaje del reporte, y el cierre del case-demo
+ *  debe parecerse al reporte que /demo prometió dos clicks antes. */
+function BandPill({ band }: { band: Band }) {
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex items-center gap-0.5">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <span
-            key={i}
-            className={`h-1.5 w-1.5 rounded-full ${
-              i < dots ? "bg-[var(--text-primary)]" : "bg-[var(--surface-3)]"
-            }`}
-          />
-        ))}
-      </div>
-      <span className="ts-callout font-medium capitalize text-[var(--text-primary)] w-14 text-right">
-        {band}
-      </span>
+    <span
+      className={`inline-flex flex-none items-center rounded-full px-2.5 py-0.5 ts-caption-1 font-bold ${BAND_TINT[band]}`}
+    >
+      {BAND_LABEL[band]}
+    </span>
+  );
+}
+
+/** Barra chunky con color de banda · mismo encoding visual que /demo. */
+function BandBar({ band }: { band: Band }) {
+  return (
+    <div className="h-2.5 w-full overflow-hidden rounded-full bg-[var(--surface-3)]">
+      <div
+        className="h-full rounded-full"
+        style={{
+          width: `${BAND_WIDTH[band]}%`,
+          backgroundColor: BAND_BAR[band],
+        }}
+      />
     </div>
   );
 }
@@ -710,6 +782,7 @@ function BandLabel({ band }: { band: Band }) {
 function CaseCompletedScreen({ durationMinutes, payloads }: CaseCompletedScreenProps) {
   const snapshot = buildReportSnapshot(payloads);
   const { recommendation, dimensions, riskEvents } = snapshot;
+  const overallBand = computeOverallBand(dimensions, riskEvents);
   const highRisks = riskEvents.filter((r) => r.severity === "alto").length;
   // Contar activos completados · más honesto que "25 decisiones".
   const activeCount = Object.values(payloads).filter((p) => {
@@ -722,13 +795,15 @@ function CaseCompletedScreen({ durationMinutes, payloads }: CaseCompletedScreenP
   }).length;
 
   return (
-    <main className="simulador-root flex min-h-screen items-center justify-center surface-canvas text-[var(--text-primary)]">
-      <div className="mx-auto w-full max-w-[680px] px-6 py-6">
+    // Sin centrado vertical: el reporte v2 es más alto que un viewport
+    // chico y items-center recortaría el tope · scroll normal de página.
+    <main className="simulador-root min-h-screen surface-canvas text-[var(--text-primary)]">
+      <div className="mx-auto w-full max-w-[680px] px-6 py-6 sm:py-10">
         {/* HEADER · botón cerrar arriba a la derecha · estilo runtime */}
         <div className="flex justify-end">
           <a
             href="/"
-            aria-label="Cerrar"
+            aria-label="Close"
             className="grid h-9 w-9 place-items-center rounded-[var(--radius-md)] border border-[var(--border)] text-[var(--text-secondary)] transition-colors hover:border-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none">
@@ -737,105 +812,157 @@ function CaseCompletedScreen({ durationMinutes, payloads }: CaseCompletedScreenP
           </a>
         </div>
 
-        {/* EYEBROW + TÍTULO · estilo runtime · la recomendación ES el título */}
-        <div className="mt-3 ts-caption-1 font-medium text-[var(--text-tertiary)]">
-          Reporte para tu manager
+        {/* HERO · la banda global como pill grande con color de banda +
+            la recomendación como título. Mismo lenguaje visual que el
+            reporte de /demo · el cierre cumple lo que /demo prometió
+            dos clicks antes. Sin score numérico público (contrato v0). */}
+        <div className="mt-3 ts-footnote font-extrabold uppercase tracking-[0.8px] text-[var(--accent)]">
+          Report for your manager
         </div>
-        <h1 className="mt-2 display display-tight ts-display text-[var(--text-primary)]">
-          {recommendation.title}.
+        <div className="mt-4">
+          <span
+            className={`inline-flex items-center gap-2.5 rounded-full px-4 py-1.5 ts-headline font-bold ${BAND_TINT[overallBand]}`}
+          >
+            <span
+              className="h-2.5 w-2.5 flex-none rounded-full"
+              style={{ backgroundColor: BAND_BAR[overallBand] }}
+            />
+            {BAND_LABEL[overallBand]} band
+          </span>
+        </div>
+        <h1 className="mt-3 display display-tight ts-display text-[var(--text-primary)]">
+          {recommendation.title}
         </h1>
-        <p className="mt-3 ts-body leading-[1.5] text-[var(--text-secondary)]">
-          {recommendation.oneLiner}
-        </p>
 
         {/* Stats inline · separados con · igual que el resto del runtime.
             activeCount refleja slides realmente respondidos (sin contar
             pasivos) en vez de inflar a "25 decisiones". */}
         <div className="mt-2 ts-footnote text-[var(--text-tertiary)] tabular-nums">
-          {durationMinutes} min · {activeCount} respuestas · {riskEvents.length}{" "}
-          riesgos{highRisks > 0 ? ` · ${highRisks} alto` : ""}
+          {durationMinutes} min · {activeCount}{" "}
+          {activeCount === 1 ? "answer" : "answers"} · {riskEvents.length}{" "}
+          {riskEvents.length === 1 ? "risk" : "risks"}
+          {highRisks > 0 ? ` · ${highRisks} high` : ""}
         </div>
 
-        {/* DIMENSIONES · banda como única señal pública (sin score numérico).
-            Métrica observable derivada del payload en una línea de contexto. */}
-        <div className="mt-6 border-t border-[var(--hairline)]">
-          {dimensions.map((d) => (
-            <div
-              key={d.id}
-              className="flex items-center justify-between gap-4 border-b border-[var(--hairline)] py-2.5"
-            >
-              <div className="min-w-0 flex-1">
-                <div className="ts-callout text-[var(--text-primary)]">
-                  {d.label}
+        {/* DIMENSIONES · filas con pill de banda + barra chunky con color
+            de banda + métrica observable del payload. La banda sigue siendo
+            la única señal pública (sin score numérico por dimensión). */}
+        <div className="mt-6 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-card">
+          <div className="ts-caption-1 font-extrabold uppercase tracking-[0.6px] text-[var(--text-tertiary)]">
+            Judgment by dimension
+          </div>
+          <div className="mt-4 flex flex-col gap-4">
+            {dimensions.map((d) => (
+              <div key={d.id}>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="min-w-0 ts-callout font-bold text-[var(--text-primary)]">
+                    {d.label}
+                  </span>
+                  <BandPill band={d.band} />
                 </div>
-                <div className="mt-0.5 ts-footnote text-[var(--text-tertiary)]">
+                <div className="mt-1.5">
+                  <BandBar band={d.band} />
+                </div>
+                <p className="mt-1 ts-footnote leading-[1.45] text-[var(--text-tertiary)]">
                   {d.metric}
-                </div>
+                </p>
               </div>
-              <BandLabel band={d.band} />
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* RIESGOS · solo aparece la sección si hay riesgos detectados.
-            Cada riesgo trae evidencia derivada del payload del usuario. */}
+        {/* RIESGOS · la estrella del reporte: cards tintadas por severidad
+            (alto = band-b-bg, medio = band-m-bg) con la evidencia citada
+            del transcript. Solo aparece si hay riesgos detectados. */}
         {riskEvents.length > 0 && (
-          <div className="mt-5">
-            <div className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
-              Riesgos detectados
+          <div className="mt-6">
+            <div className="ts-caption-1 font-extrabold uppercase tracking-[0.6px] text-[var(--text-tertiary)]">
+              Risks detected
             </div>
-            <div className="mt-2 border-t border-[var(--hairline)]">
+            <div className="mt-2 flex flex-col gap-3">
               {riskEvents.map((r) => (
                 <div
                   key={r.id}
-                  className="flex items-start justify-between gap-4 border-b border-[var(--hairline)] py-2.5"
+                  className={`rounded-[var(--radius-lg)] p-4 ${
+                    r.severity === "alto"
+                      ? "bg-[var(--band-b-bg)]"
+                      : "bg-[var(--band-m-bg)]"
+                  }`}
                 >
-                  <div className="min-w-0 flex-1">
-                    <div className="ts-callout text-[var(--text-primary)]">
+                  <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                    <span className="min-w-0 ts-callout font-bold text-[var(--text-primary)]">
                       {r.type}
-                    </div>
-                    <div className="mt-0.5 ts-footnote text-[var(--text-tertiary)]">
-                      {r.evidence}
-                    </div>
+                    </span>
+                    <span
+                      className={`flex-none ts-caption-1 font-bold tabular-nums ${
+                        r.severity === "alto"
+                          ? "text-[var(--band-b-text)]"
+                          : "text-[var(--band-m-text)]"
+                      }`}
+                    >
+                      {BAND_LABEL[r.severity]} · {r.slideRef}
+                    </span>
                   </div>
-                  <span className="ts-footnote capitalize text-[var(--text-tertiary)] tabular-nums whitespace-nowrap">
-                    {r.severity} · {r.slideRef}
-                  </span>
+                  <p className="mt-1 ts-footnote leading-[1.5] text-[var(--text-secondary)]">
+                    {r.evidence}
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         )}
 
+        {/* RECOMENDACIÓN · la acción de manager como AppleBadge pill + una
+            línea. Labels Pilot/Coach/Pause/Escalate · mismo glosario que
+            /demo. flex-wrap: en 375px la línea cae debajo del pill. */}
+        <div className="mt-6 rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-card">
+          <div className="ts-caption-1 font-extrabold uppercase tracking-[0.6px] text-[var(--text-tertiary)]">
+            Manager recommendation
+          </div>
+          <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+            <AppleBadge pill tone={ACTION_TONE[recommendation.action]}>
+              {ACTION_LABEL[recommendation.action]}
+            </AppleBadge>
+            <p className="min-w-0 flex-1 basis-[240px] ts-footnote leading-[1.5] text-[var(--text-secondary)]">
+              {recommendation.oneLiner}
+            </p>
+          </div>
+        </div>
+
         {/* PRÁCTICA · enlaza al motor educativo (medir → gap → practicar) */}
+        {/* v2: card con borde + shadow-card (antes bloque tinted plano) */}
         <a
           href="/aprender-demo"
-          className="mt-5 block rounded-[var(--radius-md)] bg-[var(--surface-2)] p-4 transition-colors hover:bg-[var(--surface-3)]"
+          className="mt-4 block rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-card transition-colors hover:border-[var(--border-strong)]"
         >
-          <span className="ts-caption-1 font-medium text-[var(--text-tertiary)]">
-            Práctica sugerida
+          <span className="ts-caption-1 font-extrabold uppercase tracking-[0.6px] text-[var(--text-tertiary)]">
+            Suggested practice
           </span>
-          <div className="mt-1 flex items-center justify-between gap-3">
-            <span className="ts-callout text-[var(--text-primary)]">
+          {/* flex-wrap + min-w-0: en 375px el link cae debajo del título
+              en vez de desbordar horizontalmente. */}
+          <div className="mt-1 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+            <span className="min-w-0 ts-callout font-bold text-[var(--text-primary)]">
               {RECOMMENDATION_DEFAULTS.practice.title} ·{" "}
               {RECOMMENDATION_DEFAULTS.practice.duration}
             </span>
-            <span className="ts-footnote font-medium text-[var(--accent)]">
-              Ver el motor educativo →
+            <span className="ts-footnote font-bold text-[var(--accent)]">
+              See the practice engine →
             </span>
           </div>
         </a>
 
-        {/* CTAs · el demo cierra invitando a llevar esto al equipo real */}
-        <div className="mt-7 flex items-center gap-4">
+        {/* CTAs · el demo cierra invitando a llevar esto al equipo real.
+            flex-wrap: en viewports angostos (375px) el link cae debajo
+            del botón en vez de desbordar horizontalmente. */}
+        <div className="mt-7 flex flex-wrap items-center gap-4">
           <AppleSlideButton href="/auth/signup?next=%2Fonboarding%2Forg">
-            Empezar con tu equipo →
+            Start with your team →
           </AppleSlideButton>
           <a
             href="/case-demo"
             className="ts-footnote text-[var(--text-secondary)] underline-offset-4 transition-colors hover:text-[var(--text-primary)] hover:underline"
           >
-            Repetir el caso
+            Retake the case
           </a>
         </div>
       </div>

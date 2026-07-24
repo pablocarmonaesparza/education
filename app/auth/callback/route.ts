@@ -37,7 +37,7 @@ export async function GET(request: Request) {
   if (!code) {
     console.error('[auth/callback] No code parameter received')
     return NextResponse.redirect(
-      `${origin}/auth/login?error=${encodeURIComponent('No se recibió código de autenticación.')}`
+      `${origin}/auth/login?error=${encodeURIComponent('No authentication code received.')}`
     )
   }
 
@@ -57,8 +57,8 @@ export async function GET(request: Request) {
 
       // If PKCE code verifier is missing, provide a clearer message
       const userMessage = exchangeError.message.includes('code_verifier')
-        ? 'La sesión de autenticación expiró. Por favor intenta de nuevo.'
-        : 'Error de autenticación. Por favor intenta de nuevo.'
+        ? 'Your authentication session expired. Try again.'
+        : 'Authentication error. Try again.'
 
       return NextResponse.redirect(
         `${origin}${errorPage}?error=${encodeURIComponent(userMessage)}`
@@ -70,7 +70,7 @@ export async function GET(request: Request) {
     if (!user) {
       console.error('[auth/callback] No user found after successful code exchange')
       return NextResponse.redirect(
-        `${origin}${errorPage}?error=${encodeURIComponent('Error al obtener información del usuario.')}`
+        `${origin}${errorPage}?error=${encodeURIComponent('Could not load your account information.')}`
       )
     }
 
@@ -90,7 +90,7 @@ export async function GET(request: Request) {
         simBridgeError
       )
       return NextResponse.redirect(
-        `${origin}${errorPage}?error=${encodeURIComponent('No pudimos sincronizar tu cuenta. Intenta de nuevo.')}`
+        `${origin}${errorPage}?error=${encodeURIComponent('We could not sync your account. Try again.')}`
       )
     }
 
@@ -123,7 +123,7 @@ export async function GET(request: Request) {
   } catch (err: unknown) {
     console.error('[auth/callback] Unexpected error:', errorMessage(err))
     return NextResponse.redirect(
-      `${origin}${errorPage}?error=${encodeURIComponent('Error inesperado durante la autenticación. Por favor intenta de nuevo.')}`
+      `${origin}${errorPage}?error=${encodeURIComponent('Something went wrong during authentication. Try again.')}`
     )
   }
 }

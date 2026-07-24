@@ -729,7 +729,7 @@ function GuidedPromptExercise({
   return (
     <div className="grid gap-5">
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-stretch">
-        <div className="flex h-full flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
+        <div className="flex h-full flex-col rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-sm">
           <div className="flex items-center justify-between gap-4">
             <div>
               <div className="ts-footnote font-medium text-[var(--text-tertiary)]">
@@ -839,14 +839,14 @@ function GuidedPromptExercise({
                 setActiveInput(Math.min(inputSteps.length - 1, activeInput + 1));
               }}
               disabled={activeInput === inputSteps.length - 1 && !canCreatePrompt}
-              className="min-h-11 rounded-xl bg-[var(--accent)] px-4 ts-callout font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)]"
+              className="min-h-11 rounded-xl accent-bg px-4 ts-callout font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:bg-[var(--surface-3)] disabled:text-[var(--text-disabled)]"
             >
               {activeInput === inputSteps.length - 1 ? "Crear prompt" : "Siguiente"}
             </button>
           </div>
         </div>
 
-        <div className="h-full rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-sm)]">
+        <div className="h-full rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-5 shadow-sm">
           <div className="ts-footnote font-medium text-[var(--text-tertiary)]">
             Respuestas
           </div>
@@ -996,7 +996,7 @@ function ProcessAnswer({
     <div className="grid grid-cols-[28px_1fr] gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
       <span
         className={`grid h-7 w-7 place-items-center rounded-full ts-footnote font-semibold ${
-          muted ? "bg-[var(--surface)] text-[var(--text-tertiary)]" : "bg-[var(--accent)] text-white"
+          muted ? "bg-[var(--surface)] text-[var(--text-tertiary)]" : "accent-bg text-white"
         }`}
       >
         {index}
@@ -1068,7 +1068,7 @@ function GuidedOption({
     >
       <span
         className={`grid h-5 w-5 place-items-center rounded-full border ${
-          selected ? "border-[var(--accent)] bg-[var(--accent)] text-white" : "border-[var(--border-strong)]"
+          selected ? "border-[var(--accent)] accent-bg text-white" : "border-[var(--border-strong)]"
         }`}
         aria-hidden
       >
@@ -2021,7 +2021,7 @@ function AgentBrief({
               onClick={() => setActiveField(field)}
               className={`min-h-10 rounded-xl border px-2 ts-footnote font-medium transition-colors ${
                 activeField === field
-                  ? "border-[var(--accent)] bg-[var(--accent)] text-white"
+                  ? "border-[var(--accent)] accent-bg text-white"
                   : value[field]
                     ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--text-primary)]"
                     : "border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-secondary)]"
@@ -2320,7 +2320,7 @@ function ChoiceButton({
       onClick={onClick}
       className={`min-h-11 rounded-xl border px-3 ts-subhead font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
         selected
-          ? "border-[var(--accent)] bg-[var(--accent)] text-white"
+          ? "border-[var(--accent)] accent-bg text-white"
           : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
       }`}
     >

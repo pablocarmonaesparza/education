@@ -34,31 +34,35 @@ import { CancelSubscriptionFlow } from "./CancelSubscriptionFlow";
 const INDUSTRY_OPTIONS = [
   { value: "saas_b2b", label: "SaaS B2B" },
   { value: "ecommerce", label: "Ecommerce" },
-  { value: "servicios_profesionales", label: "Servicios profesionales" },
+  { value: "servicios_profesionales", label: "Professional services" },
   { value: "fintech", label: "Fintech" },
   { value: "retail", label: "Retail" },
-  { value: "education", label: "Educación" },
-  { value: "otro", label: "Otro" },
+  { value: "education", label: "Education" },
+  { value: "otro", label: "Other" },
 ];
 
+// Los `value` son identificadores persistidos en organizations.region — no
+// cambian. Solo se traduce el label. La LISTA sigue siendo LATAM-first: para
+// el pivote a EEUU necesita rediseño de producto (decisión de Pablo), no
+// traducción.
 const REGION_OPTIONS = [
-  { value: "MX", label: "México" },
+  { value: "us", label: "United States" },
+  { value: "MX", label: "Mexico" },
   { value: "CO", label: "Colombia" },
   { value: "AR", label: "Argentina" },
   { value: "CL", label: "Chile" },
-  { value: "BR", label: "Brasil" },
-  { value: "PE", label: "Perú" },
-  { value: "other_latam", label: "Otro LATAM" },
-  { value: "us", label: "EE.UU." },
+  { value: "BR", label: "Brazil" },
+  { value: "PE", label: "Peru" },
+  { value: "other_latam", label: "Other LATAM" },
 ];
 
 const SIZE_OPTIONS = [
-  { value: "1-10", label: "1–10 empleados" },
-  { value: "11-50", label: "11–50 empleados" },
-  { value: "51-100", label: "51–100 empleados" },
-  { value: "101-300", label: "101–300 empleados" },
-  { value: "301-500", label: "301–500 empleados" },
-  { value: "501+", label: "501+ empleados" },
+  { value: "1-10", label: "1–10 employees" },
+  { value: "11-50", label: "11–50 employees" },
+  { value: "51-100", label: "51–100 employees" },
+  { value: "101-300", label: "101–300 employees" },
+  { value: "301-500", label: "301–500 employees" },
+  { value: "501+", label: "501+ employees" },
 ];
 
 interface CompanyFile {
@@ -130,11 +134,12 @@ export default function EmpresaPage() {
     try {
       const res = await fetch("/api/orgs/current/settings");
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "No pudimos cargar la empresa.");
+      if (!res.ok)
+        throw new Error(data.error ?? "We couldn't load your organization.");
       setSettings(data as Settings);
       setWebsiteDraft((data as Settings).organization.company_profile.website_url ?? "");
     } catch (err) {
-      setLoadError(err instanceof Error ? err.message : "Error inesperado.");
+      setLoadError(err instanceof Error ? err.message : "Something went wrong.");
     }
   }, []);
 
@@ -154,7 +159,7 @@ export default function EmpresaPage() {
       const data = await res.json();
       if (!res.ok) {
         setSaveState("error");
-        setFieldError(data.message ?? data.error ?? "No pudimos guardar.");
+        setFieldError(data.message ?? data.error ?? "We couldn't save.");
         return false;
       }
       setSettings(data as Settings);
@@ -162,7 +167,7 @@ export default function EmpresaPage() {
       return true;
     } catch {
       setSaveState("error");
-      setFieldError("No pudimos guardar. Revisa tu conexión.");
+      setFieldError("We couldn't save. Check your connection.");
       return false;
     }
   }, []);
@@ -200,7 +205,7 @@ export default function EmpresaPage() {
       (f) => f.type !== "application/pdf" && !f.name.toLowerCase().endsWith(".pdf"),
     );
     if (nonPdf) {
-      setFieldError("Solo se aceptan archivos PDF.");
+      setFieldError("Only PDF files are accepted.");
       setSaveState("error");
       return;
     }
@@ -230,10 +235,10 @@ export default function EmpresaPage() {
         window.location.href = data.sessionUrl as string;
         return;
       }
-      setFieldError(data.error ?? "No pudimos abrir el portal de billing.");
+      setFieldError(data.error ?? "We couldn't open the billing portal.");
       setSaveState("error");
     } catch {
-      setFieldError("No pudimos abrir el portal de billing.");
+      setFieldError("We couldn't open the billing portal.");
       setSaveState("error");
     } finally {
       setPortalLoading(false);
@@ -245,9 +250,9 @@ export default function EmpresaPage() {
       <main className="surface-canvas min-h-[calc(100vh-3.5rem)] grid place-items-center px-6">
         <div className="w-full max-w-[420px]">
           <AppleErrorState
-            title="No pudimos cargar la empresa"
+            title="We couldn't load your organization"
             body={loadError}
-            actionLabel="Reintentar"
+            actionLabel="Try again"
             onAction={reload}
           />
         </div>
@@ -270,20 +275,20 @@ export default function EmpresaPage() {
   const profile = settings.organization.company_profile;
   const sub = settings.subscription;
   const renewsLabel = sub?.current_period_end
-    ? new Date(sub.current_period_end).toLocaleDateString("es-ES", {
+    ? new Date(sub.current_period_end).toLocaleDateString("en-US", {
+        month: "short",
         day: "numeric",
-        month: "long",
         year: "numeric",
       })
     : null;
 
   const saveLabel =
     saveState === "saving"
-      ? "Guardando…"
+      ? "Saving…"
       : saveState === "saved"
-        ? "Cambios guardados"
+        ? "Changes saved"
         : saveState === "error"
-          ? "Error al guardar"
+          ? "Couldn't save"
           : "";
 
   return (
@@ -292,7 +297,7 @@ export default function EmpresaPage() {
         <header>
           <div className="flex items-center justify-between gap-3">
             <h1 className="display display-tight ts-title-1 sm:ts-display text-[var(--text-primary)]">
-              Empresa
+              Organization
             </h1>
             <span
               role="status"
@@ -307,8 +312,8 @@ export default function EmpresaPage() {
             </span>
           </div>
           <p className="mt-2 ts-subhead text-[var(--text-secondary)] leading-[1.55]">
-            Identidad de tu organización, contexto y plan. Los cambios se
-            guardan automáticamente. Solo visible para admins de la org.
+            Your organization&apos;s identity, context, and plan. Changes save
+            automatically. Only visible to org admins.
           </p>
         </header>
 
@@ -320,22 +325,22 @@ export default function EmpresaPage() {
 
         {/* ---- Identidad ---- */}
         <section className="flex flex-col gap-4">
-          <SectionTitle>Identidad</SectionTitle>
+          <SectionTitle>Identity</SectionTitle>
           <div className="flex flex-col gap-1.5">
-            <FieldLabel>Nombre de la organización</FieldLabel>
+            <FieldLabel>Organization name</FieldLabel>
             <AppleInput
               value={settings.organization.name ?? ""}
               onValueChange={onNameChange}
-              placeholder="Nombre de la organización"
+              placeholder="Organization name"
               size="md"
             />
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
-              <FieldLabel>Industria</FieldLabel>
+              <FieldLabel>Industry</FieldLabel>
               <AppleSelect
-                aria-label="Industria"
-                placeholder="Industria"
+                aria-label="Industry"
+                placeholder="Industry"
                 selectedKeys={
                   settings.organization.industry ? [settings.organization.industry] : []
                 }
@@ -351,10 +356,10 @@ export default function EmpresaPage() {
               </AppleSelect>
             </div>
             <div className="flex flex-col gap-1.5">
-              <FieldLabel>Región principal</FieldLabel>
+              <FieldLabel>Primary region</FieldLabel>
               <AppleSelect
-                aria-label="Región principal"
-                placeholder="Región principal"
+                aria-label="Primary region"
+                placeholder="Primary region"
                 selectedKeys={
                   settings.organization.region ? [settings.organization.region] : []
                 }
@@ -371,10 +376,10 @@ export default function EmpresaPage() {
             </div>
           </div>
           <div className="flex flex-col gap-1.5 sm:max-w-[50%] sm:pr-2">
-            <FieldLabel>Tamaño del equipo</FieldLabel>
+            <FieldLabel>Team size</FieldLabel>
             <AppleSelect
-              aria-label="Tamaño del equipo"
-              placeholder="Tamaño del equipo"
+              aria-label="Team size"
+              placeholder="Team size"
               selectedKeys={
                 settings.organization.company_size_key
                   ? [settings.organization.company_size_key]
@@ -397,14 +402,14 @@ export default function EmpresaPage() {
 
         {/* ---- Contexto: website + archivos ---- */}
         <section className="flex flex-col gap-4">
-          <SectionTitle>Contexto de la empresa</SectionTitle>
+          <SectionTitle>Company context</SectionTitle>
           <p className="-mt-1 ts-footnote text-[var(--text-tertiary)] leading-[1.5]">
-            Esto ayuda a personalizar los casos para tu equipo. El sitio web se
-            confirma una sola vez; los archivos pueden cambiar una vez por mes.
+            This helps tailor the cases to your team. The website is confirmed
+            once; files can change once a month.
           </p>
 
           <div className="flex flex-col gap-1.5">
-            <FieldLabel>Sitio web</FieldLabel>
+            <FieldLabel>Website</FieldLabel>
             {profile.website_locked ? (
               <div className="flex items-center justify-between gap-3 rounded-[var(--radius-md)] bg-[var(--surface-2)] px-3.5 py-2.5">
                 <span className="ts-body truncate text-[var(--text-primary)]">
@@ -412,7 +417,7 @@ export default function EmpresaPage() {
                 </span>
                 <span className="inline-flex flex-none items-center gap-1.5 ts-caption-1 text-[var(--text-tertiary)]">
                   <AppleIcon name="check" size="sm" />
-                  Confirmado
+                  Confirmed
                 </span>
               </div>
             ) : (
@@ -420,7 +425,7 @@ export default function EmpresaPage() {
                 <AppleInput
                   value={websiteDraft}
                   onValueChange={setWebsiteDraft}
-                  placeholder="Sitio web"
+                  placeholder="Website"
                   size="md"
                   type="url"
                   inputMode="url"
@@ -433,14 +438,14 @@ export default function EmpresaPage() {
                   isDisabled={!websiteDraft.trim() || saveState === "saving"}
                   className="h-11 flex-none justify-center px-5 shadow-none sm:w-auto"
                 >
-                  Confirmar
+                  Confirm
                 </AppleButton>
               </div>
             )}
           </div>
 
           <div className="flex flex-col gap-2">
-            <FieldLabel>Archivos de contexto (PDF)</FieldLabel>
+            <FieldLabel>Context files (PDF)</FieldLabel>
             {profile.files.length > 0 && (
               <ul className="flex flex-col gap-1.5">
                 {profile.files.map((f) => (
@@ -459,10 +464,10 @@ export default function EmpresaPage() {
                         size="inline"
                         tone="danger"
                         onPress={() => removeFile(f.id)}
-                        aria-label={`Quitar ${f.name}`}
+                        aria-label={`Remove ${f.name}`}
                         className="flex-none ts-caption-1"
                       >
-                        Quitar
+                        Remove
                       </AppleButton>
                     )}
                   </li>
@@ -487,13 +492,13 @@ export default function EmpresaPage() {
               >
                 <span className="inline-flex items-center gap-2">
                   <AppleIcon name="fileText" size="sm" />
-                  Adjuntar archivos (PDF)
+                  Attach files (PDF)
                 </span>
               </AppleButton>
             ) : (
               <p className="ts-caption-1 text-[var(--text-tertiary)]">
-                Ya cambiaste los archivos este mes. Podrás volver a editarlos el
-                próximo mes.
+                You already changed files this month. You can edit them again
+                next month.
               </p>
             )}
           </div>
@@ -503,7 +508,7 @@ export default function EmpresaPage() {
 
         {/* ---- Plan + billing ---- */}
         <section className="flex flex-col gap-4">
-          <SectionTitle>Plan y facturación</SectionTitle>
+          <SectionTitle>Plan and billing</SectionTitle>
           {sub ? (
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
@@ -511,18 +516,18 @@ export default function EmpresaPage() {
                   <AppleBadge tone="accent">{sub.tier ?? "Plan"}</AppleBadge>
                   {typeof sub.seats === "number" && (
                     <span className="ts-caption-1 text-[var(--text-tertiary)]">
-                      {sub.seats} personas
+                      {sub.seats} seats
                     </span>
                   )}
                 </div>
                 {typeof sub.price_usd_total === "number" && (
                   <div className="mt-2 ts-title-2 font-semibold tracking-tight tabular-nums text-[var(--text-primary)]">
-                    USD {sub.price_usd_total.toLocaleString("en-US")}
+                    {`$${sub.price_usd_total.toLocaleString("en-US")} USD`}
                   </div>
                 )}
                 {renewsLabel && (
                   <div className="mt-1 ts-caption-1 text-[var(--text-tertiary)]">
-                    Próxima renovación: {renewsLabel}
+                    Next renewal: {renewsLabel}
                   </div>
                 )}
               </div>
@@ -536,22 +541,21 @@ export default function EmpresaPage() {
                   isDisabled={!settings.billing.can_open_portal}
                   className="h-11 justify-center px-5"
                 >
-                  Gestionar facturación
+                  Manage billing
                 </AppleButton>
                 <CancelSubscriptionFlow renewsLabel={renewsLabel} />
               </div>
             </div>
           ) : (
             <p className="ts-subhead text-[var(--text-secondary)]">
-              No hay una suscripción activa todavía. Cuando actives un plan,
-              aquí podrás gestionar o cancelar tu facturación.
+              No active subscription yet. Once you activate a plan, you can
+              manage or cancel your billing here.
             </p>
           )}
           {sub && !settings.billing.can_open_portal && (
             <p className="ts-caption-1 text-[var(--text-tertiary)]">
-              El portal de facturación se habilita cuando el cobro queda
-              registrado en Stripe. Escríbenos a ayuda@itera.la si necesitas
-              ayuda antes.
+              The billing portal turns on once your payment is recorded in
+              Stripe. Email ayuda@itera.la if you need help before then.
             </p>
           )}
         </section>

@@ -1,41 +1,40 @@
 import type { Metadata } from "next";
-import { Inter, Darker_Grotesque } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import "./(app)/simulador.css";
 import { Providers } from "./providers";
 
-const inter = Inter({
+// Tipografía única del rediseño v2 (Claude Design, itera Landing.dc.html):
+// Plus Jakarta Sans para TODO — display y body. Inter y Darker Grotesque
+// murieron en la promoción 2026-07-16 (Inter ya estaba muerta de facto:
+// body era Arial y .simulador-root la pisaba; Darker Grotesque era una sola
+// regla h1-h6 en globals.css). Viven en git history.
+const jakarta = Plus_Jakarta_Sans({
+  weight: ["400", "500", "600", "700", "800"],
   subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const darkerGrotesque = Darker_Grotesque({
-  weight: ["400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-  variable: "--font-darker-grotesque",
+  variable: "--font-jakarta",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://itera.la'),
   title: {
-    default: "Itera | Criterio de IA, medible.",
+    default: "Itera | AI judgment, measured.",
     template: "%s | Itera",
   },
   description:
-    "Mide y mejora cómo tu equipo decide con IA en flujos reales. Diagnóstico de 30 días para equipos B2B antes de usar IA con clientes, datos sensibles o campañas.",
+    "Measure how your team decides with AI in real workflows, then turn the gaps into practice. For B2B teams putting AI in front of customers, sensitive data, and campaigns.",
   keywords: [
-    "diagnóstico IA equipos",
-    "AI readiness B2B",
-    "criterio IA",
-    "evaluación IA equipos",
-    "gobierno IA empresa",
-    "privacidad datos IA",
-    "validación output IA",
-    "sprint IA 30 días",
-    "simulador IA empresarial",
-    "training IA managers",
-    "LATAM IA empresas",
+    "AI fluency assessment",
+    "AI fluency",
+    "AI readiness",
+    "AI judgment",
+    "team AI assessment",
+    "enterprise AI assessment",
+    "AI governance",
+    "AI data privacy",
+    "AI output verification",
+    "AI practice simulations",
     "Itera",
   ],
   authors: [{ name: "Itera" }],
@@ -53,23 +52,22 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    // es_419 = UN code para español latinoamericano. Mejor señal regional
-    // que "es_ES" (España). Ver docs/research/SEO_AUDIT_v1.md §2.3.
-    locale: "es_419",
-    alternateLocale: ["es_MX", "es_AR", "es_CO"],
+    // en_US: el mercado objetivo es EEUU (pivot 2026-07-15). El es_419/es_MX/es_AR/es_CO
+    // anterior quedó en git — si Pablo reabre LATAM, vuelve como alternateLocale.
+    locale: "en_US",
     url: "https://itera.la",
     siteName: "Itera",
-    title: "Itera | Criterio de IA, medible.",
+    title: "Itera | AI judgment, measured.",
     description:
-      "Diagnóstico de 30 días que mide y mejora cómo tu equipo decide con IA en flujos reales.",
+      "Measure how your team decides with AI in real workflows, then turn the gaps into practice.",
     // `images` omitido: `app/opengraph-image.tsx` genera el OG dinámico y
     // Next.js lo inyecta automáticamente.
   },
   twitter: {
     card: "summary_large_image",
-    title: "Itera | Criterio de IA, medible.",
+    title: "Itera | AI judgment, measured.",
     description:
-      "Mide y mejora cómo tu equipo decide con IA en flujos reales, en 30 días.",
+      "Measure how your team decides with AI in real workflows, then turn the gaps into practice.",
     // `images` omitido: file-based `app/opengraph-image.tsx` se reutiliza
     // como twitter:image automáticamente.
     creator: "@iterala",
@@ -97,7 +95,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} ${darkerGrotesque.variable}`} suppressHydrationWarning>
+    <html lang="en" className={jakarta.variable} suppressHydrationWarning>
       <body className={`antialiased bg-white dark:bg-black text-gray-900 dark:text-gray-100 min-h-screen overscroll-none`}>
         <Providers>{children}</Providers>
       </body>

@@ -33,20 +33,20 @@ const DEFAULT_DECISIONS: ReadonlyArray<{
 }> = [
   {
     id: "launch",
-    title: "Lanzar ahora",
-    detail: "Úsalo si el beneficio es alto y los riesgos ya quedaron mitigados.",
+    title: "Launch now",
+    detail: "Use this if the upside is high and the risks are already mitigated.",
   },
   {
     id: "pilot",
-    title: "Piloto controlado",
+    title: "Controlled pilot",
     detail:
-      "Úsalo si hay señales prometedoras, pero todavía falta validar con un grupo pequeño.",
+      "Use this if the signals look promising but you still need to verify with a small group.",
   },
   {
     id: "pause",
-    title: "Pausar y escalar",
+    title: "Pause and escalate",
     detail:
-      "Úsalo si falta evidencia, hay datos sensibles o la decisión puede afectar a terceros.",
+      "Use this if evidence is missing, sensitive data is involved, or the decision could affect third parties.",
   },
 ];
 
@@ -118,7 +118,7 @@ export function TradeoffDecisionMemo({
               }`}
             >
               <span
-                className={`ts-callout font-semibold ${
+                className={`ts-callout font-bold ${
                   isSelected
                     ? "text-[var(--accent)]"
                     : "text-[var(--text-primary)]"
@@ -147,7 +147,7 @@ export function TradeoffDecisionMemo({
               update({ ...payload, memo: event.target.value })
             }
             rows={6}
-            placeholder="Explica qué harías, por qué, qué riesgo estás aceptando y qué tendría que revisarse antes de avanzar."
+            placeholder="Explain what you would do, why, which risk you are accepting, and what would need review before moving ahead."
             className="w-full resize-none rounded-[var(--radius-lg)] border border-[var(--border)] bg-[var(--surface)] px-4 py-4 ts-body leading-[1.55] text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
           />
         </motion.div>

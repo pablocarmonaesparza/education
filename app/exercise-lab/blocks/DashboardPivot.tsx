@@ -31,7 +31,7 @@ type DashboardPivotPayload = Extract<
   { block_id: "dashboard_pivot" }
 >;
 
-type Severity = "Alto" | "Medio" | "Bajo";
+type Severity = "High" | "Medium" | "Low";
 
 interface TeamSignal {
   id: string;
@@ -39,32 +39,34 @@ interface TeamSignal {
   metrics: Array<{ label: string; value: Severity }>;
 }
 
+// Los `id` se persisten en `selected_filter` y los evalúa el judge · no se
+// traducen. Sólo `name` y las etiquetas de métrica son capa de display.
 const TEAMS: TeamSignal[] = [
   {
     id: "ventas_norte",
-    name: "Ventas Norte",
+    name: "Sales North",
     metrics: [
-      { label: "Tiempo", value: "Alto" },
-      { label: "Riesgo", value: "Medio" },
-      { label: "Impacto", value: "Alto" },
+      { label: "Time", value: "High" },
+      { label: "Risk", value: "Medium" },
+      { label: "Impact", value: "High" },
     ],
   },
   {
     id: "ventas_sur",
-    name: "Ventas Sur",
+    name: "Sales South",
     metrics: [
-      { label: "Tiempo", value: "Medio" },
-      { label: "Riesgo", value: "Alto" },
-      { label: "Impacto", value: "Medio" },
+      { label: "Time", value: "Medium" },
+      { label: "Risk", value: "High" },
+      { label: "Impact", value: "Medium" },
     ],
   },
   {
     id: "alianzas",
-    name: "Alianzas",
+    name: "Partnerships",
     metrics: [
-      { label: "Tiempo", value: "Bajo" },
-      { label: "Riesgo", value: "Bajo" },
-      { label: "Impacto", value: "Medio" },
+      { label: "Time", value: "Low" },
+      { label: "Risk", value: "Low" },
+      { label: "Impact", value: "Medium" },
     ],
   },
 ];
@@ -131,7 +133,7 @@ export function DashboardPivot({
             }`}
           >
             <span
-              className={`ts-callout font-semibold ${
+              className={`ts-callout font-bold ${
                 isSelected
                   ? "text-[var(--accent)]"
                   : "text-[var(--text-primary)]"
@@ -163,7 +165,7 @@ export function DashboardPivot({
       <div>
         <textarea
           id={`${slideId}-takeaway`}
-          aria-label="¿Qué le llevarías al manager?"
+          aria-label="What would you take to your manager?"
           value={payload.leader_takeaway}
           onChange={(e) => {
             const next: DashboardPivotPayload = {
@@ -173,7 +175,7 @@ export function DashboardPivot({
             onChange(next);
             onPatch?.(next);
           }}
-          placeholder="En una o dos líneas, qué señal de este segmento llevarías a la reunión."
+          placeholder="In one or two lines, which signal from this segment you would take to the meeting."
           rows={2}
           className="w-full resize-none rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] px-3 py-2 ts-body text-[var(--text-primary)] outline-none placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)]"
         />
@@ -192,19 +194,19 @@ function SeverityPill({
   muted?: boolean;
 }) {
   const intensity =
-    value === "Alto" ? "strong" : value === "Medio" ? "medium" : "soft";
+    value === "High" ? "strong" : value === "Medium" ? "medium" : "soft";
 
   const cls = muted
     ? "border border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-tertiary)]"
     : intensity === "strong"
-      ? "bg-[var(--accent)] text-white"
+      ? "accent-bg text-white"
       : intensity === "medium"
         ? "bg-[var(--accent-soft)] text-[var(--accent)] border border-[var(--accent)]"
         : "border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)]";
 
   return (
     <span
-      className={`inline-flex min-w-12 items-center justify-center rounded-full px-2.5 py-0.5 ts-caption-1 font-medium ${cls}`}
+      className={`inline-flex min-w-12 items-center justify-center rounded-full px-2.5 py-0.5 ts-caption-1 font-bold ${cls}`}
     >
       {value}
     </span>

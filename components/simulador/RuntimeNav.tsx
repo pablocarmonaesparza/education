@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { Link, Navbar, NavbarBrand, NavbarContent } from "@heroui/react";
-import { AppleButton } from "@/components/simulador/apple";
+import { AppleButton, AppleLogoMark } from "@/components/simulador/apple";
 
 // "field_test" aquí es solo variante visual (logo → landing + CTA de signup);
 // la consume el exercise-lab. No implica el modo de sesión field-test (borrado).
@@ -25,14 +24,11 @@ export function RuntimeNav({ mode }: { mode: "authenticated" | "field_test" }) {
             color="foreground"
             className="flex items-center gap-2.5"
           >
-            <Image
-              src="/images/itera-logo-light.png"
-              alt="Itera"
-              width={64}
-              height={32}
-              className="h-6 w-auto"
-              priority
-            />
+            {/* Marca de la landing: isotipo + wordmark (antes PNG itera-logo-light) */}
+            <AppleLogoMark size={38} />
+            <span className="ts-title-2 font-extrabold tracking-[-0.8px] text-[var(--text-primary)]">
+              itera<span className="text-[var(--accent)]">.</span>
+            </span>
           </Link>
         </NavbarBrand>
       </NavbarContent>
@@ -46,7 +42,7 @@ export function RuntimeNav({ mode }: { mode: "authenticated" | "field_test" }) {
             tone="primary"
             className="accent-bg text-white ts-subhead font-medium h-9 px-4 shadow-none"
           >
-            Crear cuenta
+            Create account
           </AppleButton>
         ) : (
           <AppleButton
