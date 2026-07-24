@@ -1,0 +1,41 @@
+# Brief de entrada (crudo) para el generador. Informal a proposito: el paso de
+# normalizacion (P1) rellena y limpia. Empresa sintetica, retail de EEUU
+# (~600 personas). Area NUEVA: HR/recruiting. Tension: el reclutador quiere
+# pegar el export completo de candidatos (con datos personales protegidos) en
+# la IA para que RANKEE y arme el shortlist; la IA codifica sesgo e inventa
+# "fit scores" que no salen del criterio del puesto. El beat de privacidad es
+# de datos de candidatos + el aviso de que una herramienta influye en quien
+# avanza (lenguaje llano, sin nombrar la ley).
+brief:
+  case_id: tallgrass_hr_screening
+  company: "Tallgrass Outdoor Co."
+  industry: "Outdoor apparel and gear retail"
+  market: "United States"
+  participant_role: "Recruiting Coordinator"
+  level: "N1 · Foundations"
+  scenario: >
+    Tallgrass is a 600-person outdoor retailer opening a new distribution
+    center, and it has to fill six shift-supervisor roles fast. 220
+    applications came in and the hiring manager wants a shortlist of 20 by
+    Friday. The applicant export is a mess and it is loaded with personal data:
+    full names, home addresses, dates of birth, graduation years, prior salary,
+    and a photo field. The recruiting coordinator is tempted to paste the whole
+    spreadsheet into the AI assistant and ask it to score every candidate and
+    rank the top 20. When the tool ranks a small test batch, it quietly favors
+    certain zip codes, penalizes employment gaps, and attaches a confident "fit
+    score" to each person that is not tied to any of the actual job
+    requirements. Under company policy, applicants also have to be told when a
+    tool helps decide who moves forward. The coordinator has to decide what data
+    can go into the tool at all, whether the AI should rank people or only
+    summarize each application against the defined requirements, catch the
+    biased and made-up reasoning in what it returns, and close with a call: use
+    the AI shortlist as-is, run a guarded pilot where a human reviews everyone
+    near the cutline, or pause AI ranking until it is set up right.
+  manager_wants_to_know: >
+    Whether this recruiting coordinator can build a shortlist under a hiring
+    deadline with judgment: keeping candidate personal data out of the AI tool,
+    refusing to let it rank people on biased or invented signals, grounding the
+    cut in the real job requirements, and knowing when applicants need to be
+    told a tool was involved before anyone gets screened out.
+  ai_tool_hint: "A general-purpose AI writing assistant the team uses for drafting and summarizing; it is not connected to the applicant tracking system, it will produce confident scores and reasons that are not grounded in the job requirements if asked to rank, and it does not send or reject anyone. Anything pasted into it is processed outside the company's candidate-data agreements."
+  tools: [ai, data, messaging, documents]

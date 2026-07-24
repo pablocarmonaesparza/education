@@ -1,20 +1,21 @@
 # Brief de entrada (crudo) para el generador. Informal a proposito: el paso de
 # normalizacion (P1) rellena y limpia. Empresa sintetica, industria != retail.
+# Relocalizado a EEUU (pivot 2026-07-15): operacion US, USD, cast US.
 brief:
-  company: "Nova Pagos"
-  industry: "fintech de pagos"
-  market: "Latinoamerica"
-  participant_role: "Analista de Cobranza"
-  level: "N1 · Fundamentos"
+  company: "Nova Payments"
+  industry: "payments fintech"
+  market: "United States"
+  participant_role: "Collections Analyst"
+  level: "N1 · Foundations"
   scenario: >
-    La base de clientes con pagos atrasados llego sucia: duplicados, gente que
-    pidio cancelar su cuenta, correos que ya rebotan. El jefe quiere relanzar la
-    campana de recuperacion de pagos esta semana, pero responsablemente. El
-    analista tiene que dejar la base limpia, pedirle a la inteligencia artificial
-    un mensaje util sin filtrar datos personales, revisar lo que devuelve y
-    decidir si lanzar, pilotar o pausar.
+    The list of customers with past-due card payments came in dirty: duplicates,
+    people who asked to close their account, emails that already bounce. The
+    manager wants to relaunch the payment recovery campaign this week, but
+    responsibly. The analyst has to clean the list, ask the AI tool for a useful
+    message without leaking personal data, review what it returns, and decide
+    whether to launch, pilot, or pause.
   manager_wants_to_know: >
-    Si esta persona puede limpiar una base de clientes con criterio de privacidad
-    y armar un envio de recuperacion responsable.
-  ai_tool_hint: "Un copiloto interno de la empresa que redacta y reescribe tono, no consulta la base ni envia."
+    Whether this person can clean a customer list with privacy judgment and put
+    together a responsible recovery send.
+  ai_tool_hint: "An internal company copilot that drafts and rewrites tone; it does not query the database and does not send."
   tools: [ai, data, messaging, documents]

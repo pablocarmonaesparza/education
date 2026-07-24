@@ -1,0 +1,201 @@
+practice_beat:
+  id: module_deep_research_n1
+  status: active
+  dimension: validacion
+  level: 1
+  career_key: general
+  triggered_by_gap: []
+  duration_max_seconds: 360
+  module_kind: topic
+  topic: AI deep research
+  principle_card:
+    headline: A citation proves a source exists, not that it says what the report claims
+    body: >-
+      The polished brief reads as verified, so the skill is choosing which claims change your
+      decision and opening the source for exactly those.
+  practice_exercise:
+    type: formative_slides
+    blocks:
+      - ai_output_review
+      - categorize_rows
+    prompt: >-
+      AI update practice: AI deep research. Nadia runs marketing analysis at a 300-person company.
+      She asked AI deep research to compare three vendors before Thursday's recommendation deck, and
+      eight minutes later it handed back a four-page brief with forty footnotes. Her director wants
+      the deck by end of day, and the brief looks done. Whether it is done is what you are about to
+      practice.
+  completion_criteria: >-
+    Complete every exercise (each row and each segment answered) and review the feedback for each
+    one.
+  exit:
+    contributes_to_resim_score: false
+  slides:
+    - id: portada
+      kind: cover
+      title: The report has forty citations
+      body: >-
+        Nadia runs marketing analysis at a 300-person company. She asked AI deep research to compare
+        three vendors before Thursday's recommendation deck, and eight minutes later it handed back
+        a four-page brief with forty footnotes. Her director wants the deck by end of day, and the
+        brief looks done. Whether it is done is what you are about to practice.
+      chips:
+        - N1 · Fundamentals
+        - AI update
+        - 6 min
+    - id: contexto
+      kind: reading
+      title: "AI deep research: what a citation proves and what it does not"
+      body: >-
+        **What it is.** Deep research mode sends the AI across many pages on the web, runs for
+        several minutes, and comes back with a written brief plus the list of sources it used.
+
+
+        **What changed.** Instead of one fast answer, you get a multi-page report with citations, so
+        it reads like something a person already checked.
+
+
+        **What it can do.** Pull together a market scan, a competitor list, or a price comparison,
+        and footnote each point to a source you can open yourself.
+
+
+        **What it cannot do.** A citation proves a source exists. It does not prove the source says
+        what the report claims, or that the source is any good. The AI can lift a number from a weak
+        page, misread a chart, or blend two facts into one and still footnote it.
+
+
+        **Why it matters.** Each run costs real time and money, so its value is the decision it
+        informs. Which claims here actually change your call, and did you open the source for those?
+        That is what you are about to practice.
+    - id: ejercicio_1
+      kind: exercise
+      blockId: ai_output_review
+      title: Read the brief before the numbers go in the deck
+      body: >-
+        Nadia's deep research brief compares three vendors. These are four lines from it, each with
+        the note on where the AI got it. Mark the ones that need a second look before they reach the
+        deck, and the ones worth keeping as is.
+      caseContext:
+        segments:
+          - id: s1
+            text: >-
+              Vendor B runs $12.00 USD per seat each month, cited to a community forum post from
+              2021 comparing older plans.
+            flagIfMarked: claim_no_verificado
+          - id: s2
+            text: >-
+              Vendor A and Vendor C both offer single sign-on, footnoted to each vendor's own
+              security page.
+            flagIfMarked: claim_no_verificado
+          - id: s3
+            text: >-
+              I pulled the direct cell phone number of Vendor B's account rep from a leaked contact
+              list so you can reach them fast.
+            flagIfMarked: dato_sensible
+          - id: s4
+            text: >-
+              For the renewal-rate claim I could not find a primary source, so I marked it
+              unverified and linked the exact page and paragraph I used.
+            flagIfMarked: frase_reutilizable
+      feedback:
+        kind: segments
+        segments:
+          - id: s1
+            shouldFlag: true
+            why: >-
+              The price is the number the whole comparison turns on, and it traces to an old forum
+              post, not the vendor. A footnote proves that page exists, not that the price is
+              current. Open the vendor's own pricing page before this figure reaches the deck.
+          - id: s2
+            shouldFlag: false
+            why: >-
+              This is a feature both options share, traced to each vendor's own page, and it does
+              not swing the pick. Sampling one link is enough. Not every footnote earns a full read,
+              only the ones that change the call, so spending your hour here would be the wrong
+              trade.
+          - id: s3
+            shouldFlag: true
+            why: >-
+              Nobody asked for a personal cell number, and a leaked list is not a source you want
+              anywhere near a deck. Sensitive data travels the moment it is written down and pasted
+              onward. A brief carries what the decision needs and nothing else.
+          - id: s4
+            shouldFlag: true
+            why: >-
+              This is the behavior you want. It separates what it found from what it could not
+              confirm and points you to the exact spot to check, so verifying takes a minute instead
+              of an afternoon. Ask for this in every deep research request.
+    - id: ejercicio_2
+      kind: exercise
+      blockId: categorize_rows
+      title: Match the check to the claim
+      body: >-
+        Nadia has one hour before the deck is due and cannot re-verify all forty footnotes. For each
+        claim below, decide how much checking it earns before it drives the recommendation.
+      caseContext:
+        actions:
+          - value: open_source
+            label: Open the cited source and confirm it before you use it
+          - value: cite_as_is
+            label: Use it as the brief reported, with a light spot-check
+          - value: drop_or_redo
+            label: Drop it or rerun; the source will not hold up
+        rows:
+          - id: r1
+            label: The headline price for the vendor the brief recommends
+          - id: r2
+            label: A total market-size stat used only to set context on an early slide
+          - id: r3
+            label: >-
+              A claim that one vendor is missing a feature your team requires, traced to a
+              third-party roundup
+          - id: r4
+            label: A renewal-rate figure the brief itself marked as unverified, linked to a dead page
+          - id: r5
+            label: A customer count cited to the vendor's own press release
+          - id: r6
+            label: A quote attributed to a Vendor C executive, cited to a page that no longer loads
+      feedback:
+        kind: rows
+        rows:
+          - id: r1
+            correct: open_source
+            why: >-
+              This single number decides the pick, so it earns a direct look at the vendor's own
+              current pricing, not a footnote to somewhere else. When a claim is load-bearing, you
+              open the source yourself.
+          - id: r2
+            correct: cite_as_is
+            why: >-
+              It colors the story but does not change which vendor wins. A light spot-check is
+              proportional. Verifying every background stat burns the whole hour and the run's value
+              with it.
+          - id: r3
+            correct: open_source
+            why: >-
+              This claim can knock a finalist out of the running, and it comes from a third-party
+              roundup, not the vendor. Anything that eliminates an option gets confirmed on the
+              vendor's own documentation before you act on it.
+          - id: r4
+            correct: drop_or_redo
+            why: >-
+              A claim with no live source is not evidence. Either find a real source yourself or
+              leave it out. An unverified figure in a deck becomes a fact the moment someone reads
+              it off the slide.
+          - id: r5
+            correct: cite_as_is
+            why: >-
+              It comes from a named, checkable primary source and is not the deciding factor. Note
+              where it came from and move on. Save the deep checks for the numbers that move the
+              decision.
+          - id: r6
+            correct: drop_or_redo
+            why: >-
+              A citation to a page that no longer loads proves nothing. A quote you cannot open is
+              one you cannot stand behind in the room. Cut it or replace it with one you can source.
+    - id: cierre
+      kind: closing
+      title: Verify what moves the decision, not every footnote
+      body: >-
+        You practiced telling a decision-changing claim from background color, and spotting a
+        citation that only proves a dead page exists. Next brief you run: before a number goes into
+        a deck, ask which claims the recommendation turns on, and open the source for those.

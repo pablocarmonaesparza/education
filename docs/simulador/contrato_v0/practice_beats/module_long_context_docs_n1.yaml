@@ -1,0 +1,198 @@
+practice_beat:
+  id: module_long_context_docs_n1
+  status: active
+  dimension: validacion
+  level: 1
+  career_key: general
+  triggered_by_gap: []
+  duration_max_seconds: 360
+  module_kind: topic
+  topic: Working with large documents (long context)
+  principle_card:
+    headline: Fitting it all in is not the same as weighing it all
+    body: >-
+      The AI can hold the whole document at once, but it still skims, so for the number, the date,
+      or the clause your decision turns on, you go to the page instead of trusting the summary.
+  practice_exercise:
+    type: formative_slides
+    blocks:
+      - ai_output_review
+      - categorize_rows
+    prompt: >-
+      AI update practice: Working with large documents (long context). Diane in finance operations
+      has to approve a warehouse services renewal today, and legal is out. She pasted the full
+      60-page contract into the AI and asked what changed from last year. The summary looks clean
+      and complete. What she trusts as read, and what she checks on the page, is the whole job now.
+  completion_criteria: >-
+    Complete every exercise (each row and each segment answered) and review the feedback for each
+    one.
+  exit:
+    contributes_to_resim_score: false
+  slides:
+    - id: portada
+      kind: cover
+      title: Sixty pages, twenty minutes
+      body: >-
+        Diane in finance operations has to approve a warehouse services renewal today, and legal is
+        out. She pasted the full 60-page contract into the AI and asked what changed from last year.
+        The summary looks clean and complete. What she trusts as read, and what she checks on the
+        page, is the whole job now.
+      chips:
+        - N1 · Fundamentals
+        - AI update
+        - 6 min
+    - id: contexto
+      kind: reading
+      title: "Long documents: what fits and what still gets skimmed"
+      body: >-
+        **What it is.** Long context means you can hand the AI a whole long document at once, a full
+        contract or a two-hundred-page report, and ask across all of it.
+
+
+        **What changed.** Before, you pasted small pieces and stitched the answers yourself. Now the
+        whole document fits in one request, so the AI answers as if it read cover to cover.
+
+
+        **What it can do.** Pull the themes from a long report, point you to where a topic shows up,
+        and draft a clean summary in seconds.
+
+
+        **What it cannot do.** Fitting it in does not mean it weighs every page evenly. It can miss
+        a clause buried in the middle, blend two sections, or sound certain about a page it barely
+        read.
+
+
+        **Why it matters.** A confident summary is the easiest place to stop checking, and the most
+        expensive place to be wrong. You are about to practice which answers to trust and which to
+        confirm on the page.
+    - id: ejercicio_1
+      kind: exercise
+      blockId: ai_output_review
+      title: Read the contract summary before you sign on it
+      body: >-
+        The AI returned this summary of the renewed warehouse contract. Mark the lines that need a
+        check on the actual page before Diane acts, and the ones worth keeping.
+      caseContext:
+        segments:
+          - id: s1
+            text: >-
+              The annual fee increased from $84,000.00 USD to $92,400.00 USD, a ten percent bump in
+              line with last year.
+            flagIfMarked: claim_no_verificado
+          - id: s2
+            text: >-
+              One clause on page 34 changes the liability cap, but the wording is dense and I am not
+              fully certain I read it right, so confirm it on the page.
+            flagIfMarked: frase_reutilizable
+          - id: s3
+            text: >-
+              The contract keeps the same overall shape as last year: a main agreement followed by
+              the same three service schedules.
+            flagIfMarked: claim_no_verificado
+          - id: s4
+            text: >-
+              I pasted the full signed pricing schedule and the vendor's bank and routing numbers
+              below so you can forward this summary to the whole finance channel.
+            flagIfMarked: dato_sensible
+      feedback:
+        kind: segments
+        segments:
+          - id: s1
+            shouldFlag: true
+            why: >-
+              A fee you are about to approve for payment is exactly the number the decision turns
+              on, and a summary can transpose a digit or blend two figures without any sign it did.
+              Open the fee schedule and read the two amounts yourself before this goes out.
+          - id: s2
+            shouldFlag: true
+            why: >-
+              This is the behavior you want from the AI: it names where it is unsure and points you
+              to the exact page. Keep the line and go straight to page 34. When the tool does your
+              triage for you, take the gift.
+          - id: s3
+            shouldFlag: false
+            why: >-
+              This is orientation, not a figure you will act on. If the structure is described a
+              little loosely it costs nothing. Spend your limited time on the fee and the liability
+              cap, not on the framing.
+          - id: s4
+            shouldFlag: true
+            why: >-
+              Bank and routing numbers and the full signed pricing do not belong in a broadcast
+              summary. The AI optimized for complete, not for careful. Strip the sensitive detail
+              before this moves anywhere, and decide who actually needs the numbers.
+    - id: ejercicio_2
+      kind: exercise
+      blockId: categorize_rows
+      title: What to take as read, what to check on the page
+      body: >-
+        Diane has the AI summary and twenty minutes. For each thing she needs from the 60-page
+        contract, choose how far to trust the summary.
+      caseContext:
+        actions:
+          - value: take_as_read
+            label: Take the summary as read (low stakes if it is a little off)
+          - value: verify_on_page
+            label: Go to the page and confirm it before acting
+          - value: dont_delegate
+            label: Do not rely on the summary for this at all
+        rows:
+          - id: r1
+            label: The gist of what this contract covers, to brief her manager in one line
+          - id: r2
+            label: The exact renewal fee she is about to approve for payment
+          - id: r3
+            label: Whether the auto-renewal notice window changed from 60 days to 30 days
+          - id: r4
+            label: Which of the three schedules covers after-hours delivery, so she knows where to open
+          - id: r5
+            label: Whether the new indemnification clause is acceptable to sign
+          - id: r6
+            label: A complete total of every late-fee penalty across all 60 pages, for the finance filing
+      feedback:
+        kind: rows
+        rows:
+          - id: r1
+            correct: take_as_read
+            why: >-
+              Orientation is what a long-document summary is best at, and the stakes are low. If the
+              one-line gist is slightly loose, nobody is harmed. This is the right place to let the
+              AI save you time.
+          - id: r2
+            correct: verify_on_page
+            why: >-
+              A payment goes out on this number and the decision turns on it. The summary can carry
+              a wrong figure with full confidence. Read the fee on the schedule itself before you
+              approve anything.
+          - id: r3
+            correct: verify_on_page
+            why: >-
+              A notice window is a date that starts a clock, and missing it can lock you into
+              another year. The AI can blend last year's number with this year's. Confirm the exact
+              days on the page.
+          - id: r4
+            correct: take_as_read
+            why: >-
+              Here the summary only points you to where to look, and you will open that page anyway.
+              A wrong pointer costs a minute, not a decision, so let it save you the hunt.
+          - id: r5
+            correct: dont_delegate
+            why: >-
+              Whether a clause is acceptable to sign is a legal judgment, not a reading task. The
+              summary can tell you the clause exists and where it lives, but accepting it belongs to
+              legal or to you, on the actual wording.
+          - id: r6
+            correct: verify_on_page
+            why: >-
+              Finding every instance across a long document is where the AI is weakest: one penalty
+              buried on page 40 can be dropped and the summary will still read as complete. If a
+              filing depends on the total, pull each item from the source and confirm none were
+              missed.
+    - id: cierre
+      kind: closing
+      title: Trust the summary to point, not to prove
+      body: >-
+        You practiced two things: reading an AI summary for the lines that carry real risk, and
+        deciding which answers to take as read and which to confirm on the page. Tomorrow, before
+        you act on a long document, name the two or three facts your decision actually turns on, and
+        read those on the page yourself.

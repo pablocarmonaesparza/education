@@ -1,0 +1,197 @@
+practice_beat:
+  id: module_cost_control_caching_n1
+  status: active
+  dimension: juicio
+  level: 1
+  career_key: general
+  triggered_by_gap: []
+  duration_max_seconds: 360
+  module_kind: topic
+  topic: AI cost control (prompt caching and context reuse)
+  principle_card:
+    headline: Caching cuts the cost, not the checking
+    body: >-
+      Reusing a stable block makes repeat runs cheaper, but a cheaper run is not a more correct one,
+      and a reused block that went stale quietly feeds the AI last quarter's policy.
+  practice_exercise:
+    type: formative_slides
+    blocks:
+      - ai_output_review
+      - categorize_rows
+    prompt: >-
+      AI update practice: AI cost control (prompt caching and context reuse). Nathan owns the AI
+      bill for the support team at a mid-size retailer. To cut it, his team turned on context reuse:
+      the return and warranty policy is cached once and reused on every reply, instead of being
+      re-sent about 700 times a day. This morning's batch finished at a fraction of last month's
+      price. Now someone has to decide whether that is good news.
+  completion_criteria: >-
+    Complete every exercise (each row and each segment answered) and review the feedback for each
+    one.
+  exit:
+    contributes_to_resim_score: false
+  slides:
+    - id: portada
+      kind: cover
+      title: 640 replies, a tenth of the cost
+      body: >-
+        Nathan owns the AI bill for the support team at a mid-size retailer. To cut it, his team
+        turned on context reuse: the return and warranty policy is cached once and reused on every
+        reply, instead of being re-sent about 700 times a day. This morning's batch finished at a
+        fraction of last month's price. Now someone has to decide whether that is good news.
+      chips:
+        - N1 · Fundamentals
+        - AI update
+        - 6 min
+    - id: contexto
+      kind: reading
+      title: "Context reuse: what it saves and what it does not"
+      body: >-
+        **What it is.** When you send the AI the same big block of context over and over (a long
+        policy, a product catalog, a style guide), it can reuse that block instead of re-reading it
+        every time.
+
+
+        **What changed.** Before, every run re-sent and paid for the whole block. Now the stable
+        part is cached and reused, so repeat runs are faster and cost a fraction of the first.
+
+
+        **What it can do.** Cut the cost of high-volume tasks where most of the context stays the
+        same and only a small piece changes per run.
+
+
+        **What it cannot do.** It cannot make the output correct, and it cannot notice when the
+        reused block goes stale. A cached policy keeps quoting last quarter's rule after the rule
+        changed.
+
+
+        **Why it matters.** Cheaper is not more correct, and reused is not the same as current. You
+        still verify each output, and you keep the reused part fresh. You are about to practice
+        both.
+    - id: ejercicio_1
+      kind: exercise
+      blockId: ai_output_review
+      title: Read the cheap batch before you trust it
+      body: >-
+        The batch of 640 replies finished at a fraction of last month's cost. The AI attached this
+        run report. Mark the lines that need a second look before you trust the batch.
+      caseContext:
+        segments:
+          - id: s1
+            text: >-
+              All 640 replies cite the 30-day return window from the cached policy block, so they
+              are consistent with each other.
+            flagIfMarked: claim_no_verificado
+          - id: s2
+            text: >-
+              Each reply pulled that customer's own order number and delivery date from the ticket,
+              not from the cached block.
+            flagIfMarked: frase_reutilizable
+          - id: s3
+            text: >-
+              This batch cost about a tenth of last month's price per reply, so the drafts are in
+              good shape and can send without review.
+            flagIfMarked: claim_no_verificado
+          - id: s4
+            text: >-
+              For the 12 warranty escalations, I attached each customer's full card number and home
+              address to the shared batch summary so the team has everything in one place.
+            flagIfMarked: dato_sensible
+      feedback:
+        kind: segments
+        segments:
+          - id: s1
+            shouldFlag: true
+            why: >-
+              Caching guarantees every reply used the same block, not that the block is right. If
+              the 30-day window is last quarter's rule, all 640 replies are consistently wrong.
+              Confirm the cached policy matches the current one before this counts as good.
+          - id: s2
+            shouldFlag: false
+            why: >-
+              This is the right split. The stable policy is reused, and each customer's own order
+              facts stay in the small part that is sent fresh every run. Nothing to flag here, this
+              is what you want the setup to look like.
+          - id: s3
+            shouldFlag: true
+            why: >-
+              The price dropped because the policy was reused, which says nothing about whether the
+              drafts are correct. Cost and correctness are separate questions. A cheaper run never
+              earns a skipped review.
+          - id: s4
+            shouldFlag: true
+            why: >-
+              Card numbers and home addresses do not belong in a shared batch summary. Processing
+              the batch cheaply does not change what should be exposed. Strip it and keep
+              distribution tight.
+    - id: ejercicio_2
+      kind: exercise
+      blockId: categorize_rows
+      title: "Sort the context: reuse, keep fresh, or refresh now"
+      body: >-
+        Nathan is setting up the reused block for the next batch. For each piece of context, decide
+        where it belongs.
+      caseContext:
+        actions:
+          - value: reuse_stable
+            label: Put it in the reused block, it is stable
+          - value: keep_fresh
+            label: Keep it in the small changing part, sent fresh each run
+          - value: refresh_now
+            label: It is in the reused block but went stale, refresh before the next run
+        rows:
+          - id: r1
+            label: The return and warranty policy, reviewed about once a quarter
+          - id: r2
+            label: This customer's name, order number, and what they bought
+          - id: r3
+            label: The shipping-fee table in the reused block, which Ops raised this morning
+          - id: r4
+            label: The store's mailing address and support hours, unchanged for two years
+          - id: r5
+            label: The refund amount the AI works out for this one ticket
+          - id: r6
+            label: The state sales-tax rates, still last year's version in the cached block
+      feedback:
+        kind: rows
+        rows:
+          - id: r1
+            correct: reuse_stable
+            why: >-
+              Big, stable, and sent on every run. This is the ideal thing to cache, and it is where
+              most of the cost win lives. Just give it an expiry so a quarterly change does not slip
+              past.
+          - id: r2
+            correct: keep_fresh
+            why: >-
+              This changes on every single reply. It belongs in the small part sent fresh each run,
+              never in the reused block, or every customer gets the last customer's details.
+          - id: r3
+            correct: refresh_now
+            why: >-
+              It was correctly cached because it was stable, but it just changed. Until you refresh
+              the block, every run quotes the old fee. Refresh before the next batch, then keep
+              reusing it.
+          - id: r4
+            correct: reuse_stable
+            why: >-
+              Stable and repeated, safe to keep in the reused block with almost no risk of going
+              stale. This is the easy, low-worry part of the cost saving.
+          - id: r5
+            correct: keep_fresh
+            why: >-
+              It is worked out per ticket from that customer's order, so it is not shared context.
+              It is never part of the reused block, it is an output of each run.
+          - id: r6
+            correct: refresh_now
+            why: >-
+              Tax rates are stable enough to cache, but this one rolled over and the block never got
+              refreshed. Every run since the change quoted the wrong rate. This is exactly how a
+              cheap setup goes quietly wrong.
+    - id: cierre
+      kind: closing
+      title: Cheaper is a result, not a verdict
+      body: >-
+        You practiced two things: reading a cheap, high-volume run for the checks it still needs,
+        and sorting what belongs in the reused block from what has to stay fresh. Tomorrow, before
+        you cache a block to save money, write down when it expires and who reviews the output, so a
+        lower bill never turns into a quiet wrong answer at scale.

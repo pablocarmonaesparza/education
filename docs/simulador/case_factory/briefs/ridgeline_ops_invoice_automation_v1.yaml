@@ -1,0 +1,41 @@
+# Brief de entrada (crudo) para el generador. Informal a proposito: el paso de
+# normalizacion (P1) rellena y limpia. Empresa sintetica, logistica de EEUU
+# (~200 personas). Tension: automatizar o no un paso de facturacion con IA
+# cuando la extraccion tiene un 8% de error conocido, con presion de cierre de
+# trimestre. Corrida S8 (caso B) del Case Factory.
+# NOTA: pedido como N2; el pipeline solo tiene receta N1 hoy, va como N1.
+brief:
+  case_id: ridgeline_ops_invoice_automation
+  company: "Ridgeline Freight"
+  industry: "Regional logistics (trucking and last-mile delivery)"
+  market: "United States"
+  participant_role: "Operations Manager"
+  level: "N1 · Foundations"
+  scenario: >
+    Ridgeline Freight is a 200-person logistics company. Billing works like
+    this: drivers upload delivery paperwork, the AI document tool reads each
+    document and extracts the invoice fields (customer, amount, purchase order
+    number, delivery date), and today a billing coordinator checks every
+    extraction by hand before the invoice goes out to the customer. The tool's
+    known accuracy is solid but not perfect: about 8 of every 100 extracted
+    invoices carry at least one field error, things like a misread amount, a
+    missing purchase order number, or the wrong customer on the invoice. It is
+    the last week of the quarter, 340 invoices are waiting, the billing
+    coordinator is out, and the finance controller wants everything billed
+    before the books close on Tuesday, June 30, 2026. The operations manager
+    has to look at a batch of real extractions (some clean, some wrong, some
+    borderline), decide which invoices are safe to send as-is and which are
+    not, use the AI assistant to draft review rules that catch the risky ones
+    without re-checking all 340 by hand, review what the assistant proposes,
+    and close with a recommendation: automate fully, run a guarded pilot with
+    human review on flagged invoices, or pause automation until after the
+    close.
+  manager_wants_to_know: >
+    Whether this operations manager can make an automation call under
+    quarter-end pressure with judgment: reading the error data instead of
+    trusting the demo, sizing what an 8 percent error rate does to customers
+    and revenue at 340 invoices, designing a review step that catches the
+    expensive mistakes, and resisting the pressure to automate everything just
+    to hit the close.
+  ai_tool_hint: "An AI document-extraction tool already wired into the billing workflow; it reads delivery paperwork and fills invoice fields, it does not know contract rates, and it cannot tell when it misread something (it reports no confidence on its own output)."
+  tools: [ai, data, messaging, documents]

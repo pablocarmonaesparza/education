@@ -1,0 +1,28 @@
+# Brief de entrada (crudo) para el generador. Informal a proposito: el paso de
+# normalizacion (P1) rellena y limpia. Empresa sintetica, SaaS B2B de EEUU
+# (~80 personas). Tension: cliente enterprise enojado + el agente quiere pegar
+# el thread completo (con datos de la cuenta) en el LLM para redactar la
+# respuesta. Corrida S7b del Case Factory relocalizado.
+brief:
+  company: "Harborview Software"
+  industry: "B2B SaaS (field-service scheduling)"
+  market: "United States"
+  participant_role: "Customer Support Specialist"
+  level: "N1 · Foundations"
+  scenario: >
+    Harborview's largest enterprise account (a $96,000-per-year contract) is
+    furious: an overnight sync bug wiped two days of technician schedules, and
+    the email thread is now nine messages deep, heated, and full of account
+    details, admin emails, and contract references. The support specialist is
+    behind on the response-time target and wants to paste the entire thread
+    into the AI assistant to get a calm, professional reply drafted fast. They
+    have to decide what actually goes into the AI tool, what gets stripped or
+    summarized first, review the draft the tool returns, and decide whether to
+    send, escalate to the account manager, or pause and pick up the phone.
+  manager_wants_to_know: >
+    Whether this person can handle an angry enterprise account under time
+    pressure with judgment: using the AI tool to draft without pasting
+    customer account data into it, catching what the draft gets wrong, and
+    knowing when a reply is not enough and the account needs to be escalated.
+  ai_tool_hint: "A general-purpose AI chat assistant the team uses for drafting; it is not connected to the helpdesk, and anything pasted into it is processed outside the company's customer data agreements."
+  tools: [ai, data, messaging, documents]

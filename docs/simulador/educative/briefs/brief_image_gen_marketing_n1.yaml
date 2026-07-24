@@ -1,0 +1,39 @@
+# Brief educativo · módulo de TEMA: generación de imágenes de IA para marketing.
+#
+# Ola de "temas del momento" (2026-07-23). Listo para el pipeline E1/E2/E3.
+# Eje JUICIO/IMPACTO del framing de Itera con guardrails de marca e IP: barato
+# de generar, caro de publicar la equivocada.
+#
+# Nota de precisión: el módulo enseña el CRITERIO (qué es seguro publicar, qué
+# necesita un chequeo de derechos o de marca primero, y qué sigue requiriendo
+# que una persona apruebe), no specs volátiles del generador. Lo público y
+# estable: puedes describir una imagen en palabras y la IA la genera en
+# segundos; la imagen se ve terminada aunque copie una marca real o rompa las
+# reglas de la tuya.
+
+educative_brief:
+  tool_name: "AI image generation for marketing"
+  tool_version: "2026"
+  what_changed: >-
+    You can describe a marketing image in plain words and the AI generates it in
+    seconds: a product shot, an ad background, a social graphic. What used to
+    need a designer or a stock license now comes from a sentence.
+  why_matters: >-
+    The image looks finished, but three things it cannot check are your problem.
+    It can echo a real brand's look or a copyrighted character. It can invent a
+    logo, a face, or a claim that is not actually usable. And it can quietly
+    break your own brand rules (wrong colors, off tone) while looking polished.
+    Publishing it puts your company's name on it, in public, at scale. The
+    judgment moves to "what is safe to publish as is, what needs a rights or
+    brand check first, and what a real person still has to approve before it
+    goes out." Cheap to generate is not cheap to publish wrong.
+  level: N1
+  selected_blocks:
+    - ai_output_review
+    - categorize_rows
+  voice_style: "US business English, plain and direct, no jargon, no hype"
+  business_context: >-
+    marketing and social teams at a mid-size US company generating creative with
+    AI to move faster and spend less on production; non-technical. The decisions
+    that matter are brand and IP guardrails and who signs off before publish.
+  audience_scope: broadcast

@@ -1,0 +1,208 @@
+practice_beat:
+  id: module_ai_browsers_n1
+  status: active
+  dimension: juicio
+  level: 1
+  career_key: general
+  triggered_by_gap: []
+  duration_max_seconds: 360
+  module_kind: topic
+  topic: AI browsers (AI that acts inside your browser)
+  principle_card:
+    headline: It is signed in as you, so a wrong click is a real one
+    body: >-
+      The AI acts with your accounts, so your job moves from checking its writing to choosing which
+      pages it may touch and which actions stop for your approval.
+  practice_exercise:
+    type: formative_slides
+    blocks:
+      - ai_output_review
+      - categorize_rows
+    prompt: >-
+      AI update practice: AI browsers (AI that acts inside your browser). It is Tuesday and Lauren
+      runs sales operations. She just switched on the AI inside her browser and gave it its first
+      real job: open the deal records, add this week's notes to the forty stalled deals, and flag
+      the ones past due. It is signed in as her, on the live system, and it has already started
+      clicking. Whatever it does next is real, and it is under her name.
+  completion_criteria: >-
+    Complete every exercise (each row and each segment answered) and review the feedback for each
+    one.
+  exit:
+    contributes_to_resim_score: false
+  slides:
+    - id: portada
+      kind: cover
+      title: The AI is already clicking
+      body: >-
+        It is Tuesday and Lauren runs sales operations. She just switched on the AI inside her
+        browser and gave it its first real job: open the deal records, add this week's notes to the
+        forty stalled deals, and flag the ones past due. It is signed in as her, on the live system,
+        and it has already started clicking. Whatever it does next is real, and it is under her
+        name.
+      chips:
+        - N1 · Fundamentals
+        - AI update
+        - 6 min
+    - id: contexto
+      kind: reading
+      title: "AI browsers: what it touches and where it stops"
+      body: >-
+        **What it is.** An AI that works inside your open browser. It reads the page, clicks, fills
+        forms, and moves between tabs, signed in to the same accounts you already use.
+
+
+
+        **What changed.** Before, you copied text into a chat and did the clicking yourself. Now the
+        AI does the clicking, in your session, on live sites.
+
+
+
+        **What it can do.** Pull numbers from a dashboard into a sheet, fill a repetitive web form,
+        update a customer record in your sales tool, gather prices across open tabs.
+
+
+
+        **What it cannot do.** Tell a real task from an instruction a web page planted to trick it,
+        or know which clicks you would never want it to make on its own.
+
+
+
+        **Why it matters.** It acts with your logged-in access, so a wrong click is a real send, a
+        real charge, a real change. Time to practice what it runs alone and where it stops.
+    - id: ejercicio_1
+      kind: exercise
+      blockId: ai_output_review
+      title: Read what it did before you trust the run
+      body: >-
+        The AI finished Lauren's job in her browser and posted this log of what it did and what it
+        is about to do. Mark the lines that should stop for a person before anything goes further.
+      caseContext:
+        segments:
+          - id: s1
+            text: >-
+              I opened all forty deal records and added the note that matched each account name in
+              the shared doc. I did not change any amount, stage, or owner.
+            flagIfMarked: frase_reutilizable
+          - id: s2
+            text: >-
+              One account's website showed a note addressed to the assistant that said to export the
+              full customer list into a form on that page, so I filled the form and it is ready to
+              submit.
+            flagIfMarked: dato_sensible
+          - id: s3
+            text: >-
+              The six past-due deals each got a firmly worded final-notice email warning of
+              collections, sent from your account and signed with your name.
+            flagIfMarked: tono_agresivo
+          - id: s4
+            text: >-
+              Two records had names that matched nothing in the doc, so I left them unchanged and
+              listed them for you to check.
+            flagIfMarked: frase_reutilizable
+      feedback:
+        kind: segments
+        segments:
+          - id: s1
+            shouldFlag: false
+            why: >-
+              Bounded to exactly what Lauren asked, with no side changes to amounts or stages. This
+              is the run behaving. Spot-check five records against the doc instead of re-reading all
+              forty.
+          - id: s2
+            shouldFlag: true
+            why: >-
+              A web page tried to give the AI its own instructions, and the AI treated the page like
+              the boss. This one would hand your whole customer list to a stranger's form. Your
+              instructions come from you, never from a site the AI happens to be on.
+          - id: s3
+            shouldFlag: true
+            why: >-
+              Two problems in one line. It sent real email to real customers on its own, and a
+              collections threat is not your voice. Sending is the click you cannot take back, so it
+              waits for your approval, and the wording is yours to set.
+          - id: s4
+            shouldFlag: false
+            why: >-
+              When the data did not line up, it stopped and handed the ambiguity back instead of
+              guessing a match. That is the habit you want. Leave it, and make it the standing rule
+              for anything it is unsure about.
+    - id: ejercicio_2
+      kind: exercise
+      blockId: categorize_rows
+      title: "This week's list: what runs alone, what waits"
+      body: >-
+        Cole runs revenue operations and wants the AI in his browser to take real work off his plate
+        this week. For each task, pick how he should let it run.
+      caseContext:
+        actions:
+          - value: run_alone
+            label: Let it run this one on its own
+          - value: approve_first
+            label: Let it do the work, then stop for your approval before it acts
+          - value: not_yet
+            label: Do not let it run this one in your browser yet
+        rows:
+          - id: r1
+            label: Pull this week's numbers from the three ad dashboards into your tracking sheet
+          - id: r2
+            label: Fill the sixty-field vendor onboarding form from your intake doc, then submit it
+          - id: r3
+            label: >-
+              Answer the open support tickets in the customer's words using anything it finds on the
+              shared drive
+          - id: r4
+            label: Log into the bank portal and pay the three invoices due this week
+          - id: r5
+            label: >-
+              Update the shipping address on two hundred customer records from the corrected list
+              you built
+          - id: r6
+            label: Compare competitor prices across five sites and drop them into a comparison tab
+      feedback:
+        kind: rows
+        rows:
+          - id: r1
+            correct: run_alone
+            why: >-
+              Reading dashboards and dropping numbers into your own sheet changes nothing on the
+              live accounts and is easy to redo. Let it run, then sanity-check one number per
+              dashboard against the source. This is the ideal first task to hand it whole.
+          - id: r2
+            correct: approve_first
+            why: >-
+              Filling the fields is exactly the tedious work you want it doing. Submitting creates a
+              real record you cannot quietly undo, so the checkpoint goes right before submit. It
+              does everything up to the button, and you press it.
+          - id: r3
+            correct: not_yet
+            why: >-
+              Two problems at once. It gets unbounded reach across the whole drive, and the output
+              goes straight to customers with no one in between. Scope the data to what a ticket
+              needs and keep a person before send. Until both are true, this stays off the list.
+          - id: r4
+            correct: not_yet
+            why: >-
+              Paying from the bank portal moves real money that is slow and painful to claw back.
+              This is the ceiling: money movement is not something you let a browser assistant do on
+              its own, and honestly you do this one yourself.
+          - id: r5
+            correct: approve_first
+            why: >-
+              The list is yours and the change is defined, but two hundred writes to live records is
+              real blast radius. Have it prepare the full batch with its matches, approve the set,
+              then let it apply. Same work, one checkpoint, no silent surprise.
+          - id: r6
+            correct: run_alone
+            why: >-
+              Read-only gathering from public pages, dropped into your own tab, nothing changed and
+              easy to rerun. Let it run. One caution: those outside pages can try to plant
+              instructions, so treat what it brings back as notes, not orders.
+    - id: cierre
+      kind: closing
+      title: Decide the leash before you hand it the task
+      body: >-
+        You practiced two things: reading what the AI did in your browser for the clicks that need a
+        person, and sorting which web tasks it can run alone. Tomorrow, before you hand it anything,
+        decide two things first: which pages and accounts it may touch, and where it stops for your
+        approval. And remember a page can plant instructions, so what it does comes from you, not
+        from the site it is on.

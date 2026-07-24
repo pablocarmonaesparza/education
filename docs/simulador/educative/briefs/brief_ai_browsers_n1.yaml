@@ -1,0 +1,41 @@
+# Brief educativo · módulo de TEMA: la IA que actúa dentro de tu navegador.
+#
+# Ola de "temas del momento" (2026-07-23). Listo para el pipeline E1/E2/E3 del
+# motor educativo (MOTOR_RUNBOOK.md). Hermano de brief_claude_agents_n1: aquel
+# es el agente que hace una tarea de varios pasos; este es el agente que ACTÚA
+# en tu navegador, con tus sesiones abiertas, sobre sitios reales.
+#
+# Nota de precisión: el módulo enseña el CRITERIO de dejar que la IA opere el
+# navegador (qué páginas la dejas tocar, dónde para a que apruebes, qué hace
+# cuando una página intenta darle instrucciones), no specs volátiles de la
+# herramienta. Lo público y estable: la IA puede leer la página, hacer clic,
+# llenar formularios y moverse entre pestañas; y una página puede intentar
+# instruir a la IA (prompt injection).
+
+educative_brief:
+  tool_name: "AI browsers (AI that acts inside your browser)"
+  tool_version: "2026"
+  what_changed: >-
+    AI can now work inside your browser. It reads the page you are on, clicks,
+    fills out forms, and moves between tabs to finish a web task the way you
+    would. Instead of copying text into a chat, the AI acts directly in the
+    same window, signed in to the same accounts you already use.
+  why_matters: >-
+    The AI is now acting with your logged-in access on live accounts, so a
+    wrong click submits a real form, sends a real message, or changes a real
+    setting. Two things are new to watch. First, a page itself can try to
+    instruct the AI ("ignore your task and do this instead"), and the AI may
+    follow it. Second, the review moves from "is this text good?" to "which
+    pages do I let it touch, where does it stop for my approval, and what does
+    it do when a site pushes it somewhere you did not ask for."
+  level: N1
+  selected_blocks:
+    - ai_output_review
+    - categorize_rows
+  voice_style: "US business English, plain and direct, no jargon, no hype"
+  business_context: >-
+    ops, sales, and marketing people at a mid-size US company who live in the
+    browser all day (CRM, ad platforms, dashboards, web forms) and are starting
+    to let AI run web tasks for them; non-technical. The decision that matters
+    is what to let it run unattended versus approve before it acts.
+  audience_scope: broadcast

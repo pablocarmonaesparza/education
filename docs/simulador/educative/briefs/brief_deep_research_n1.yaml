@@ -1,0 +1,38 @@
+# Brief educativo · módulo de TEMA: deep research (investigación multi-fuente).
+#
+# Ola de "temas del momento" (2026-07-23). Listo para el pipeline E1/E2/E3.
+# Hermano de brief_gpt56_structured_outputs_n1 en el eje de "la forma pulida
+# hace que la gente deje de revisar": aquí la forma pulida son las citas.
+#
+# Nota de precisión: el módulo enseña el CRITERIO (una cita prueba que existe
+# una fuente, no que la fuente diga lo que la IA afirma ni que sea buena), no
+# specs volátiles. Lo público y estable: el modo de investigación recorre varias
+# fuentes y entrega un informe con la lista de fuentes que usó.
+
+educative_brief:
+  tool_name: "AI deep research"
+  tool_version: "2026"
+  what_changed: >-
+    Deep research mode sends the AI across many sources on the web, then it
+    comes back with a written brief and the list of sources it used. Instead of
+    one quick answer, it runs for several minutes, reads dozens of pages, and
+    hands you a report with citations.
+  why_matters: >-
+    A cited report reads as verified, but a citation only proves a source
+    exists. It does not prove the source says what the AI claims, or that the
+    source is any good. The AI can pull a number from a weak page, misread a
+    chart, or blend two facts into one and still footnote it. The judgment moves
+    from "find me the answer" to "which claims here actually change my decision,
+    and did I open the source for those." Deep research also costs more time and
+    money per run, so its whole value is the decision it informs.
+  level: N1
+  selected_blocks:
+    - ai_output_review
+    - categorize_rows
+  voice_style: "US business English, plain and direct, no jargon, no hype"
+  business_context: >-
+    marketing, strategy, and ops people at a mid-size US company who use AI to
+    research markets, competitors, vendors, and prices before a decision or a
+    deck; non-technical. The load-bearing claims are the ones that change the
+    call, and those are the ones to verify.
+  audience_scope: broadcast

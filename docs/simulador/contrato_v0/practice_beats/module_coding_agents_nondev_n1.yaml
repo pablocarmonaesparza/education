@@ -1,0 +1,210 @@
+practice_beat:
+  id: module_coding_agents_nondev_n1
+  status: active
+  dimension: validacion
+  level: 1
+  career_key: general
+  triggered_by_gap: []
+  duration_max_seconds: 360
+  module_kind: topic
+  topic: AI coding agents for non-developers
+  principle_card:
+    headline: You cannot read the code, so you test the behavior
+    body: >-
+      Software you cannot open earns trust one way: run the messy inputs on purpose, and start where
+      a mistake is cheap to undo.
+  practice_exercise:
+    type: formative_slides
+    blocks:
+      - ai_output_review
+      - categorize_rows
+    prompt: >-
+      AI update practice: AI coding agents for non-developers. Priya runs billing operations at a
+      mid-size distributor. She asked an AI agent to build a small tool that reads each vendor's
+      monthly export, flags any line over $5,000.00 USD, and drops the rest into a clean summary.
+      She ran it once on last month's file and it worked. Tomorrow it runs on everyone's files.
+      Before that, it is yours to check.
+  completion_criteria: >-
+    Complete every exercise (each row and each segment answered) and review the feedback for each
+    one.
+  exit:
+    contributes_to_resim_score: false
+  slides:
+    - id: portada
+      kind: cover
+      title: The tool worked on the file you tested
+      body: >-
+        Priya runs billing operations at a mid-size distributor. She asked an AI agent to build a
+        small tool that reads each vendor's monthly export, flags any line over $5,000.00 USD, and
+        drops the rest into a clean summary. She ran it once on last month's file and it worked.
+        Tomorrow it runs on everyone's files. Before that, it is yours to check.
+      chips:
+        - N1 · Fundamentals
+        - AI update
+        - 6 min
+    - id: contexto
+      kind: reading
+      title: AI that builds the tool for you
+      body: >-
+        **What it is.** An AI coding agent turns a plain English description into a working tool.
+        You say what you want (a spreadsheet that cleans itself, a routine that files documents),
+        and it writes and runs the software for you. You never open the code.
+
+
+        **What changed.** Building a small automation used to need a developer. Now you can ship one
+        yourself in an afternoon, without writing or reading a single line.
+
+
+        **What it can do.** Clean a messy export, rename and file hundreds of documents by a rule
+        you give it, route incoming requests to the right person.
+
+
+        **What it cannot do.** It cannot prove its own work is right. It handles the example in
+        front of it and can fail quietly on the cases you never showed it: an empty field, an odd
+        date, a file twice the usual size.
+
+
+        **Why it matters.** You end up trusting software you cannot read. You are about to practice
+        how to test it.
+    - id: ejercicio_1
+      kind: exercise
+      blockId: ai_output_review
+      title: Read the build report before the tool goes live
+      body: >-
+        The agent finished Priya's tool and sent this report on what it built and how it ran. Mark
+        the lines that need a second look before it runs on every vendor, and the ones worth
+        keeping.
+      caseContext:
+        segments:
+          - id: s1
+            text: >-
+              I sorted the lines using the vendor and amount columns exactly as they appear in the
+              file you gave me, and I did not change any of the values.
+            flagIfMarked: claim_no_verificado
+          - id: s2
+            text: >-
+              For three rows the amount field was blank, so I read the amount as $0.00 USD and moved
+              them into the clean summary with the rest.
+            flagIfMarked: claim_no_verificado
+          - id: s3
+            text: >-
+              To let the tool run on its own each morning, I saved your database password in plain
+              text inside the tool's settings file.
+            flagIfMarked: dato_sensible
+          - id: s4
+            text: >-
+              Two vendor files use a date format I did not recognize, so I left those files
+              untouched and listed them for you instead of guessing.
+            flagIfMarked: frase_reutilizable
+      feedback:
+        kind: segments
+        segments:
+          - id: s1
+            shouldFlag: false
+            why: >-
+              This line works only from the file Priya handed over and it states its method plainly,
+              without inventing values. When an agent shows exactly how it did the work, this is
+              what a trustworthy line looks like. Spot-check a few rows instead of distrusting all
+              of them.
+          - id: s2
+            shouldFlag: true
+            why: >-
+              This is the edge case doing exactly what edge cases do. A blank amount just became a
+              $0.00 line that looks handled, and the summary now carries that guess. Missing data
+              should come back as a question, not get quietly filled and filed. This single decision
+              can turn a clean-looking report into a wrong one.
+          - id: s3
+            shouldFlag: true
+            why: >-
+              The agent chose convenience over safety, and it added this step nobody asked for. A
+              password sitting in plain text is a real exposure, and it is worse inside a tool you
+              cannot open or audit. Credentials do not belong in a settings file you never read.
+          - id: s4
+            shouldFlag: true
+            why: >-
+              This is exactly what you want at the edge of what the tool knows. It hit something
+              unfamiliar, stopped, and handed the decision back instead of inventing an answer. Keep
+              this instruction ("when a format is unfamiliar, stop and list it") in every tool you
+              have built.
+    - id: ejercicio_2
+      kind: exercise
+      blockId: categorize_rows
+      title: "Elena's list: what to automate first"
+      body: >-
+        Elena runs marketing operations and wants to build a few small tools this week to take
+        repetitive work off her plate. For each one, choose how she should roll it out.
+      caseContext:
+        actions:
+          - value: automate_now
+            label: Safe to automate now, verify by testing the results
+          - value: human_in_loop
+            label: Let it do the work, but a person approves before it acts
+          - value: not_yet
+            label: Do not automate this one yet
+        rows:
+          - id: r1
+            label: A tool that reformats the weekly export into your standard summary layout
+          - id: r2
+            label: A tool that renames and files last quarter's documents into folders by a naming rule
+          - id: r3
+            label: >-
+              A routine that emails a 15% discount code to every customer who has not ordered in 90
+              days
+          - id: r4
+            label: >-
+              A tool that deletes the rows it judges to be duplicate contacts in the customer
+              database
+          - id: r5
+            label: >-
+              A tool that reads the whole shared drive and auto-answers clients' incoming security
+              questions
+          - id: r6
+            label: A tool that decides which vendors to drop based on this year's spend and cancels them
+      feedback:
+        kind: rows
+        rows:
+          - id: r1
+            correct: automate_now
+            why: >-
+              The rule is fully described and the result is reversible. You verify by comparing a
+              few rows against the original export, and if it is wrong you re-run it. Mechanical,
+              checkable, cheap to undo: the ideal first thing to automate.
+          - id: r2
+            correct: automate_now
+            why: >-
+              The naming rule is explicit and the outcome is easy to sample. Check ten files at the
+              end. Filing is reversible, so a mistake here costs a few minutes, not money, which is
+              exactly where you want to start.
+          - id: r3
+            correct: human_in_loop
+            why: >-
+              Building the list and drafting the email is fine agent work. Sending a discount to
+              real customers costs money and cannot be recalled, so the checkpoint goes right before
+              send. The tool prepares everything, and Elena presses the button.
+          - id: r4
+            correct: human_in_loop
+            why: >-
+              "Judges to be duplicate" is a decision and deleting is destructive. Have the tool
+              produce the merge list with its reasons, approve it, then let it run. Same time saved,
+              one checkpoint, and nothing lost for good.
+          - id: r5
+            correct: not_yet
+            why: >-
+              Two problems at once: unbounded access to whatever is on the drive, and answers that
+              go straight to a client with no one reading them. Scope the data to what the questions
+              need and keep a person between the tool and the client. Until both are true, this
+              stays off the list.
+          - id: r6
+            correct: not_yet
+            why: >-
+              Canceling a vendor is a business judgment with consequences you cannot quietly undo,
+              wrapped inside software you cannot read. Let the tool prepare the spend analysis that
+              informs the call, but the decision and the cancellation stay with a person.
+    - id: cierre
+      kind: closing
+      title: Trust the behavior, not the demo
+      body: >-
+        You practiced two things: reading a build agent's own report for the parts it decided on its
+        own, and choosing which work is safe to automate first. Tomorrow, before you turn a new tool
+        loose, run it on your ugliest real input on purpose (the empty field, the odd date, the file
+        twice the usual size), and keep a person in front of anything you cannot undo.

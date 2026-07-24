@@ -1,0 +1,186 @@
+practice_beat:
+  id: module_meeting_notetakers_n1
+  status: active
+  dimension: validacion
+  level: 1
+  career_key: general
+  triggered_by_gap: []
+  duration_max_seconds: 360
+  module_kind: topic
+  topic: AI meeting notetakers
+  principle_card:
+    headline: The notes are a draft, not the record
+    body: >-
+      A notetaker captures the call, but it cannot judge consent, ownership, or what should never
+      leave the room. You decide which calls it records, who reads the notes, and what you verify
+      before anyone acts on them.
+  practice_exercise:
+    type: formative_slides
+    blocks:
+      - ai_output_review
+      - categorize_rows
+    prompt: >-
+      AI update practice: AI meeting notetakers. Marcus runs operations at a mid-size logistics
+      company and just let an AI notetaker sit in on his calls. This morning it sent the summary
+      from yesterday's client call, and the action items are already in his inbox. You are going to
+      decide what he trusts, what he checks, and which of this week's calls the notetaker gets to
+      record.
+  completion_criteria: >-
+    Complete every exercise (each row and each segment answered) and review the feedback for each
+    one.
+  exit:
+    contributes_to_resim_score: false
+  slides:
+    - id: portada
+      kind: cover
+      title: The notetaker joined the call
+      body: >-
+        Marcus runs operations at a mid-size logistics company and just let an AI notetaker sit in
+        on his calls. This morning it sent the summary from yesterday's client call, and the action
+        items are already in his inbox. You are going to decide what he trusts, what he checks, and
+        which of this week's calls the notetaker gets to record.
+      chips:
+        - N1 · Fundamentals
+        - AI update
+        - 6 min
+    - id: contexto
+      kind: reading
+      title: AI meeting notetakers
+      body: >-
+        **What it is.** A notetaker is an AI that joins your call, records it, transcribes it, and
+        then sends a summary with the decisions and the action items.
+
+
+        **What changed.** Before, someone had to write the notes by hand. Now the notetaker runs in
+        the background and the notes arrive without anyone typing.
+
+
+        **What it can do.** Capture a full call, label who said what, and turn the conversation into
+        a clean list of decisions and next steps.
+
+
+        **What it cannot do.** It cannot ask the room to agree to being recorded, and recording
+        people is a legal question in several states. It does not know whether an action item is
+        real or who truly owns it, so it can invent a task or assign it to the wrong person.
+
+
+        **Why it matters.** Once the summary goes out, people treat it as the record. The value is
+        in choosing which calls it records, who receives the notes, and what you check first. That
+        is what you practice next.
+    - id: ejercicio_1
+      kind: exercise
+      blockId: ai_output_review
+      title: Read the summary before it becomes the record
+      body: >-
+        The notetaker sent this summary from yesterday's client call. Mark the lines Marcus would
+        not pass along as-is, and the one he would keep as a clean record.
+      caseContext:
+        segments:
+          - id: s1
+            text: The client approved the new delivery schedule and asked for a written recap by Friday.
+            flagIfMarked: frase_reutilizable
+          - id: s2
+            text: "Action item: Dana will send the updated pricing sheet by Wednesday."
+            flagIfMarked: claim_no_verificado
+          - id: s3
+            text: "Note: our side said we can drop the price another 8 percent if they push back."
+            flagIfMarked: dato_sensible
+          - id: s4
+            text: The call ran about forty minutes and everyone agreed to meet again next week.
+            flagIfMarked: claim_no_verificado
+      feedback:
+        kind: segments
+        segments:
+          - id: s1
+            shouldFlag: true
+            why: >-
+              This one is worth keeping. It is a real decision Marcus heard on the call, and it is
+              the clean line the recap should be built around. Learning to spot the accurate record
+              is as useful as catching the errors.
+          - id: s2
+            shouldFlag: true
+            why: >-
+              An owner and a due date have consequences if they are wrong. The notetaker can hear a
+              passing suggestion and turn it into Dana's commitment, or pin it on the wrong person.
+              Before this becomes the source of truth, confirm with Dana that she owns it and agreed
+              to Wednesday.
+          - id: s3
+            shouldFlag: true
+            why: >-
+              That is your negotiating room, captured because the notetaker records everything said
+              on the call, including the part meant only for your side. If this summary forwards to
+              the client, you just handed them your floor. Strip it before the notes go anywhere.
+          - id: s4
+            shouldFlag: false
+            why: >-
+              No owner, no figure, no commitment anyone will act on. It can go as-is. Letting the
+              harmless lines through is part of reviewing fast, and not every line needs a fix.
+    - id: ejercicio_2
+      kind: exercise
+      blockId: categorize_rows
+      title: Decide which calls it records
+      body: >-
+        Marcus can turn the notetaker on for any call this week. Sort each one by what you would do
+        before it joins.
+      caseContext:
+        actions:
+          - value: grabar
+            label: Let it record
+          - value: consentir
+            label: Get consent first
+          - value: dejar_fuera
+            label: Keep it off
+        rows:
+          - id: r1
+            label: The weekly internal ops standup with your own team
+          - id: r2
+            label: A sales call with a new client in California who has not been told about the notetaker
+          - id: r3
+            label: A one-on-one where an employee wants to raise a complaint about a manager
+          - id: r4
+            label: A webinar you are hosting where attendees agreed to recording when they registered
+          - id: r5
+            label: A vendor negotiation where your team plans to talk through its price floor
+      feedback:
+        kind: rows
+        rows:
+          - id: r1
+            correct: grabar
+            why: >-
+              Your own team, internal, and you can tell them at the top of the call. The notes save
+              someone the manual write-up and the stakes are low. This is where a notetaker earns
+              its keep.
+          - id: r2
+            correct: consentir
+            why: >-
+              California is one of the states where everyone on the call has to agree to being
+              recorded, and this client has not been told. One sentence at the start ("we use an AI
+              notetaker, is that alright?") settles it. Recording someone who did not agree is a
+              legal problem, not a style choice.
+          - id: r3
+            correct: dejar_fuera
+            why: >-
+              A complaint about a manager is exactly the conversation you do not want recorded and
+              auto-summarized to a list of readers. The notetaker cannot judge who should see this.
+              Keep it off, take notes yourself, and send them only where they belong.
+          - id: r4
+            correct: grabar
+            why: >-
+              Consent was handled when people registered, so the recording question is already
+              answered. Let it capture the session. Asking early is the whole point, and here it was
+              done up front.
+          - id: r5
+            correct: dejar_fuera
+            why: >-
+              Your price floor is the one thing you do not want sitting in a transcript that the
+              tool can summarize and send. It records everything said, including the part meant only
+              for your side. Keep it off for this one and decide by hand what gets written down.
+    - id: cierre
+      kind: closing
+      title: What you take with you
+      body: >-
+        You practiced the three calls a notetaker forces you to make: which meetings it records, who
+        the notes reach, and what you verify before an action item becomes the record. Tomorrow,
+        before you let it join, ask who is on the call and whether your state needs their agreement
+        to be recorded. And before you forward its summary, check every owner and every due date
+        against what actually got decided.

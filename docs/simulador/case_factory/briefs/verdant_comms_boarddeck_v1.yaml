@@ -1,0 +1,42 @@
+# Brief de entrada (crudo) para el generador. Informal a proposito: el paso de
+# normalizacion (P1) rellena y limpia. Empresa sintetica, climate-tech de EEUU
+# (~250 personas). Area NUEVA: Exec/Comms. Nivel N2 (stakes altas, mas capas).
+# Tension: board deck + anuncio publico de un hito; la IA redacta claims
+# concretos (posicion de mercado, cifras de clientes, ROI, comparacion con
+# competidores) varios SIN sustento y algunos inventados. Conecta directo con
+# la regla anti-proof-fabricado del glosario: nada de proof de cliente que no
+# se pueda mostrar si alguien la pide. Sin nombrar la ley en la prosa.
+brief:
+  case_id: verdant_comms_boarddeck
+  company: "Verdant Grid"
+  industry: "Climate-tech SaaS (energy analytics)"
+  market: "United States"
+  participant_role: "Communications Manager"
+  level: "N2 · Workflow"
+  scenario: >
+    Verdant just closed a funding round and hit a milestone, and the CEO
+    presents to the board next week. The communications manager owes two things
+    by Wednesday: the board deck narrative and an external announcement ready
+    for press. Short on time, they feed the AI assistant the internal metrics
+    doc, a rough outline, and last quarter's numbers, and ask it to write a
+    compelling story with headline claims. What comes back is polished and
+    partly unprovable: it calls Verdant "the fastest-growing platform in the
+    category," puts a specific customer count and growth rate on the first
+    slide, attributes a precise dollar savings to customers, and adds a
+    side-by-side that names a competitor. Some of those lines are things the
+    company cannot actually verify, and a couple the tool invented outright. The
+    communications manager has to check each claim against what is true and
+    provable, strip or soften the ones there is no proof for, especially
+    anything that would be a false public claim if a customer or reporter asked
+    to see it, decide which lines need sign-off, and close with a call: publish
+    the deck and announcement as drafted, route them to leadership and legal for
+    claim sign-off with the unsupported lines flagged, or pause and rewrite
+    around only what the company can actually stand behind.
+  manager_wants_to_know: >
+    Whether this communications manager can turn a milestone into a board deck
+    and public announcement with judgment: telling apart what is verifiable from
+    what the AI made up, never putting an unprovable customer or market claim in
+    front of the board or the public, and knowing which claims need sign-off
+    before anything ships.
+  ai_tool_hint: "A general-purpose AI writing assistant used for drafting; it is not connected to the company's real metrics, it will invent statistics, customer results, and market-position claims if the prompt implies them, and it does not publish or send anything."
+  tools: [ai, data, messaging, documents]

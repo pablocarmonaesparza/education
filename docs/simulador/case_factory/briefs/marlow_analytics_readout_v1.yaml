@@ -1,0 +1,37 @@
+# Brief de entrada (crudo) para el generador. Informal a proposito: el paso de
+# normalizacion (P1) rellena y limpia. Empresa sintetica, e-commerce de
+# suscripcion de EEUU (~70 personas). Area NUEVA: Data/Analytics. Tension: la
+# IA redacta el readout ejecutivo con cifras CONCRETAS que no estan en los
+# datos (numeros inventados + una claim causal sin sustento), con deadline de
+# manana. El beat central es verificacion: cotejar cada numero contra la fuente
+# antes de que llegue a leadership.
+brief:
+  case_id: marlow_analytics_readout
+  company: "Marlow & Co."
+  industry: "DTC subscription e-commerce (coffee)"
+  market: "United States"
+  participant_role: "Data Analyst"
+  level: "N1 · Foundations"
+  scenario: >
+    Marlow ships coffee on subscription and leadership wants a one-page
+    performance readout for Monday's business review: what actually drove last
+    quarter. The analyst has the raw exports, orders, refunds, ad spend, and
+    cohort retention, but they are messy and the readout is due tomorrow. To
+    move fast the analyst uses the AI assistant to draft the queries and write
+    the insight narrative with headline stats. What it returns is polished and
+    partly invented: it states that "repeat-purchase rate rose 23% after the May
+    price change" and that "email drove $412,000 USD in incremental revenue,"
+    numbers that are not in the data. It also conflated two different retention
+    metrics and asserted a cause-and-effect the data does not support. The
+    analyst has to check every stated number against the real exports, fix or
+    strip the invented and unsupported ones, decide which claims can actually
+    stand, and close with a call: publish the readout to leadership as-is, send
+    it as a draft with the unverified figures flagged, or pause and rebuild the
+    numbers from the source before anything goes out.
+  manager_wants_to_know: >
+    Whether this analyst verifies every number the AI produced against the real
+    data, tells apart a supported fact from a confident guess, drops a
+    cause-and-effect claim the data does not back, and refuses to put a
+    fabricated figure in front of leadership just because it reads well.
+  ai_tool_hint: "A general-purpose AI assistant used to draft queries and summaries; it does not run against the live database, it cannot see the real numbers, and it will fill gaps with plausible-looking figures and causal claims if asked. It does not publish anything on its own."
+  tools: [ai, data, messaging, documents]

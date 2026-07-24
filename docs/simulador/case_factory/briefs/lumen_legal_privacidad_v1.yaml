@@ -1,20 +1,21 @@
 # Brief de prueba 2 · legal/privacidad (estresa copy y riesgo). Sintetico.
+# Relocalizado a EEUU (pivot 2026-07-15): telehealth US; el beat de privacidad
+# es de salud (federal health-privacy rules), no consumer-privacy.
 brief:
-  company: "Lumen Salud"
-  industry: "telemedicina"
-  market: "Latinoamerica"
-  participant_role: "Coordinador de Cumplimiento"
-  level: "N1 · Fundamentos"
+  company: "Lumen Health"
+  industry: "telehealth"
+  market: "United States"
+  participant_role: "Compliance Coordinator"
+  level: "N1 · Foundations"
   scenario: >
-    Llego una lista de pacientes para una campana de reactivacion de citas. Viene
-    sucia: gente que pidio que no la contacten, registros duplicados, y datos de
-    salud sensibles mezclados con los de contacto. El area comercial quiere usar
-    inteligencia artificial para redactar el mensaje rapido. El coordinador tiene
-    que dejar la lista limpia con criterio de privacidad, pedirle a la herramienta
-    un mensaje sin exponer datos sensibles, revisar lo que devuelve, y decidir si
-    se lanza, se pilotea o se pausa.
+    A patient list arrived for an appointment reactivation campaign. It came in
+    dirty: people who asked not to be contacted, duplicate records, and sensitive
+    health data mixed in with contact data. The commercial team wants to use AI
+    to draft the message fast. The coordinator has to clean the list with privacy
+    judgment, ask the tool for a message without exposing sensitive data, review
+    what it returns, and decide whether to launch, pilot, or pause.
   manager_wants_to_know: >
-    Si esta persona protege los datos sensibles de salud y arma una reactivacion
-    responsable, o si necesita practica antes de tocar datos reales.
-  ai_tool_hint: "Un asistente aprobado que redacta y ajusta tono; no consulta la base ni envia; puede inventar datos, hay que validar."
+    Whether this person protects sensitive health data and builds a responsible
+    reactivation, or needs practice before touching real data.
+  ai_tool_hint: "An approved assistant that drafts and adjusts tone; it does not query the database and does not send; it can make up data, so everything must be verified."
   tools: [ai, data, messaging, documents]

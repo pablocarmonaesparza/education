@@ -1,0 +1,38 @@
+# Brief de entrada (crudo) para el generador. Informal a proposito: el paso de
+# normalizacion (P1) rellena y limpia. Empresa sintetica, SaaS B2B de EEUU
+# (~120 personas). Tension: el prospecto pide referencias y numeros reales de
+# otros clientes, y el account executive quiere pegar datos del CRM de OTROS
+# clientes en el asistente de IA para redactar una respuesta impresionante.
+# Corrida S8 (caso A) del Case Factory.
+brief:
+  case_id: crestline_sales_references
+  company: "Crestline Software"
+  industry: "B2B SaaS (route planning for field-service fleets)"
+  market: "United States"
+  participant_role: "Account Executive"
+  level: "N1 · Foundations"
+  scenario: >
+    Crestline is a 120-person software company selling route-planning tools to
+    field-service fleets. A high-value prospect, the operations director at a
+    mechanical-services company evaluating a $78,000 USD annual contract, has
+    asked for proof before Friday: customer references and real numbers showing
+    what results current customers get. The account executive is behind on
+    quarterly quota and wants to paste an export from the customer database
+    into the AI assistant so it drafts a persuasive reply packed with real
+    customer names, contract amounts, and performance numbers. The export is
+    messy: some customers signed reference agreements and approved their
+    numbers for sales use, some are under confidentiality clauses, one churned
+    last quarter, and one explicitly refused to be named to prospects. The
+    account executive has to decide which customer records can be used at all,
+    what must be aggregated or anonymized before it goes into the AI tool,
+    review the draft the tool returns for leaked identifying details, and
+    decide whether to send the reply, get sign-off from the customer marketing
+    owner, or escalate.
+  manager_wants_to_know: >
+    Whether this account executive can answer a prospect's proof request under
+    quota pressure with judgment: using only reference-approved customers,
+    keeping confidential customer data out of the AI tool, catching leaked
+    names or numbers in the AI draft, and knowing when the reply needs
+    sign-off before it leaves the building.
+  ai_tool_hint: "A general-purpose AI writing assistant the sales team uses for drafting; it is not connected to the customer database, and anything pasted into it is processed outside the company's customer confidentiality agreements."
+  tools: [ai, data, messaging, documents]

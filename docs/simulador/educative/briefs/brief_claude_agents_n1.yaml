@@ -1,0 +1,35 @@
+# Brief educativo · módulo de TEMA: agentes de Claude Code para no ingenieros.
+#
+# Generado en la ola S9 (2026-07-23) con el pipeline E1/E2/E3 del motor
+# educativo (MOTOR_RUNBOOK.md). Primer módulo post-pivot EEUU escrito en inglés
+# desde el brief (module_claude5_fable_n1 se relocalizó después de generarse).
+#
+# Nota de precisión: el módulo enseña el CRITERIO de delegación a agentes (qué
+# se entrega completo, dónde va el checkpoint, qué no se delega todavía), no
+# specs volátiles de la herramienta. Lo que afirma de los agentes es lo público
+# y estable: ejecutan tareas de varios pasos solos y rellenan huecos con
+# suposiciones si no los frenas.
+
+educative_brief:
+  tool_name: "Claude Code agents for non-engineers"
+  tool_version: "2026"
+  what_changed: >-
+    AI agents now execute multi-step tasks on their own. Instead of drafting
+    text you asked for, an agent takes a whole assignment (reconcile these
+    invoices, build this report, clean up these files), plans the steps, works
+    through them without you in the middle, and hands you a finished result.
+  why_matters: >-
+    Delegating without verifying is the new number one risk. An agent that runs
+    eleven steps alone can carry one wrong assumption through all eleven, and
+    the polished final result hides the decisions it made along the way. The
+    review moves from "is this well written?" to "what did it decide mid-run,
+    and what should have come back as a question instead of finished work?"
+  level: N1
+  selected_blocks:
+    - ai_output_review
+    - categorize_rows
+  voice_style: "US business English, plain and direct, no jargon, no hype"
+  business_context: >-
+    ops and marketing teams at a mid-size US company, non-technical, already
+    using AI chat daily but new to agents
+  audience_scope: broadcast

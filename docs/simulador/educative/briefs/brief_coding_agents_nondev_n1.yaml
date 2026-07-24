@@ -1,0 +1,42 @@
+# Brief educativo · módulo de TEMA: agentes de código para no programadores.
+#
+# Ola de "temas del momento" (2026-07-23). Listo para el pipeline E1/E2/E3.
+# Distinto de brief_claude_agents_n1: aquel es delegar una TAREA de varios pasos;
+# este es que la IA te CONSTRUYE una automatización/herramienta que después
+# corre sola, y tú no puedes leer el código para verificarla.
+#
+# Nota de precisión: el módulo enseña el CRITERIO (cómo confiar en software que
+# no puedes leer: se verifica el comportamiento, no el código; probar los casos
+# feos; empezar donde el error es barato de deshacer), no specs volátiles de la
+# herramienta. Lo público y estable: puedes describir en inglés una automatización
+# y un agente la construye y la hace funcionar sin que escribas ni leas código;
+# "parece que funciona" con el ejemplo de hoy no es "funciona".
+
+educative_brief:
+  tool_name: "AI coding agents for non-developers"
+  tool_version: "2026"
+  what_changed: >-
+    You can now describe a small tool or automation in plain English (a
+    spreadsheet that cleans itself, a routine that renames and files documents,
+    a form that routes requests) and an AI coding agent builds it and makes it
+    work, without you writing or reading a line of code.
+  why_matters: >-
+    You end up with working software you cannot read. It may work on today's
+    example and quietly fail on the edge cases: an empty field, an odd date, a
+    file twice the size. Because you cannot inspect the code, "looks like it
+    works" is not "it works." The judgment moves from reading the code to
+    testing the behavior: run the messy inputs on purpose, keep a person in
+    front of anything irreversible, and start with automations where a mistake
+    is cheap to undo. Automating the wrong thing, or an automation that fails
+    silently, costs more than the time it saved.
+  level: N1
+  selected_blocks:
+    - ai_output_review
+    - categorize_rows
+  voice_style: "US business English, plain and direct, no jargon, no hype"
+  business_context: >-
+    ops and marketing people at a mid-size US company automating their own
+    repetitive work with AI-built tools; non-technical, cannot read code. The
+    decisions that matter are which work is safe to automate, how you test
+    something you cannot read, and where a human stays in the loop.
+  audience_scope: broadcast

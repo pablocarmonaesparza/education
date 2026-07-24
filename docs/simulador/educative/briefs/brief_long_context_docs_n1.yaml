@@ -1,0 +1,39 @@
+# Brief educativo · módulo de TEMA: trabajar con documentos grandes (long context).
+#
+# Ola de "temas del momento" (2026-07-23). Listo para el pipeline E1/E2/E3.
+# Eje VERIFICACIÓN del framing de Itera: el resumen esconde qué páginas la IA
+# efectivamente saltó.
+#
+# Nota de precisión: el módulo enseña el CRITERIO (para lo que carga riesgo —el
+# número, la fecha, la cláusula de responsabilidad— vas a la página, no confías
+# en el resumen), no specs volátiles de tamaño de ventana. Lo público y estable:
+# ahora le puedes pasar a la IA un documento muy largo completo de una vez; que
+# quepa no significa que la IA pese todo por igual.
+
+educative_brief:
+  tool_name: "Working with large documents (long context)"
+  tool_version: "2026"
+  what_changed: >-
+    You can now hand the AI a very large document all at once (a full contract,
+    a two-hundred-page report, a quarter of exported data) and ask questions
+    across the whole thing. Before, you pasted small pieces; now the entire
+    document fits in one go.
+  why_matters: >-
+    Fitting the document in does not mean the AI weighs all of it evenly. It can
+    miss a clause buried in the middle, blend two sections together, or answer
+    with confidence about a page it effectively skimmed. And "summarize this
+    contract" hides which parts it dropped. The judgment moves to "for the parts
+    that carry risk, the number, the deadline, the liability clause, go to the
+    page; do not trust the summary." A confident answer about a long document is
+    the easiest place to stop checking, and the most expensive place to be wrong.
+  level: N1
+  selected_blocks:
+    - ai_output_review
+    - categorize_rows
+  voice_style: "US business English, plain and direct, no jargon, no hype"
+  business_context: >-
+    ops, finance, and contract-adjacent people at a mid-size US company who
+    review long contracts, reports, and data exports and are starting to let AI
+    read them for them; non-technical. The decision that matters is which
+    answers you trust as read and which you verify on the actual page.
+  audience_scope: broadcast

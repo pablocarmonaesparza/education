@@ -1,0 +1,37 @@
+# Brief de entrada (crudo) para el generador. Informal a proposito: el paso de
+# normalizacion (P1) rellena y limpia. Empresa sintetica, SaaS B2B de EEUU
+# (~140 personas). Area NUEVA: RevOps (distinta del FP&A de Nova y de las
+# collections). Tension: cierre de trimestre, la IA arma el forecast de
+# renovaciones que se COMPROMETE al board; inventa scores de probabilidad por
+# cuenta que no salen de ninguna senal real y el roll-up duplica una cuenta
+# fusionada. Beat de privacidad: datos de contrato y contacto de clientes.
+brief:
+  case_id: anchor_revops_renewals
+  company: "Anchor POS"
+  industry: "B2B SaaS (restaurant point-of-sale)"
+  market: "United States"
+  participant_role: "Revenue Operations Analyst"
+  level: "N1 · Foundations"
+  scenario: >
+    It is the last week of the quarter and Anchor's leadership needs a committed
+    renewals forecast for the board on Thursday. The CRM export of accounts up
+    for renewal is dirty: duplicate accounts, a few that already churned, wrong
+    renewal dates, and it carries contract values, customer contacts, and usage
+    notes with personal data. The revenue operations analyst wants to paste the
+    whole export into the AI assistant and ask it to dedupe the list, assign
+    each account a renewal-likelihood score, and roll it all up into a single
+    commit number. The tool returns confident per-account probabilities and a
+    forecast down to the dollar, but the scores are not tied to any real signal,
+    the tool invented them, and the roll-up double-counts two accounts that
+    merged last year. The analyst has to clean the list with judgment, decide
+    what customer data can go into the tool at all, catch that the likelihood
+    scores are fabricated, and close with a call: commit the AI forecast to the
+    board, present it as a directional draft with the invented scores removed,
+    or pause the AI-assisted forecast and roll up from real renewal signals.
+  manager_wants_to_know: >
+    Whether this analyst can produce a renewals number leadership will stand
+    behind: cleaning the account list with judgment, keeping customer contract
+    and contact data out of the AI tool, catching a double-counted roll-up, and
+    refusing to hand the board per-account scores the tool simply made up.
+  ai_tool_hint: "A general-purpose AI assistant used for cleanup and drafting; it is not connected to the CRM or billing, it cannot see real usage or payment signals, and it will invent likelihood scores and a precise forecast if asked. It does not send or commit anything, and whatever is pasted into it is processed outside the company's customer-data agreements."
+  tools: [ai, data, messaging, documents]

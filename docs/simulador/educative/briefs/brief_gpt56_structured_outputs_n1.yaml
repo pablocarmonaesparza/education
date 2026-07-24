@@ -1,0 +1,34 @@
+# Brief educativo · módulo de TEMA: structured outputs de GPT-5.6 para reportes.
+#
+# Generado en la ola S9 (2026-07-23) con el pipeline E1/E2/E3 del motor
+# educativo (MOTOR_RUNBOOK.md). Módulo hermano de brief_claude_agents_n1.
+#
+# Nota de precisión: el módulo enseña el CRITERIO (la estructura garantiza la
+# forma, no la verdad; qué campos llena el modelo, cuáles admiten blanco, cuáles
+# se calculan fuera), no specs volátiles del modelo. Lo público y estable: los
+# modelos pueden devolver salida en una estructura exacta que tú defines, y un
+# campo obligatorio sin dato en la fuente se rellena con algo plausible.
+
+educative_brief:
+  tool_name: "GPT-5.6 structured outputs"
+  tool_version: "2026"
+  what_changed: >-
+    GPT-5.6 can return its answer in an exact structure you define: the same
+    columns, fields, and categories every time, ready to paste into a
+    spreadsheet or feed a dashboard. Before, you got prose and reshaped it by
+    hand; now the shape of the output is guaranteed.
+  why_matters: >-
+    Structure changes where errors hide. A clean table reads as computed, so
+    people stop checking, but every cell is still generated: the format
+    guarantees the shape, not the truth. If a required field has no data in the
+    source, the model fills the cell with something plausible instead of
+    leaving it blank. Neat wrong data travels faster than messy wrong data.
+  level: N1
+  selected_blocks:
+    - ai_output_review
+    - categorize_rows
+  voice_style: "US business English, plain and direct, no jargon, no hype"
+  business_context: >-
+    ops, finance, and marketing teams at a mid-size US company that build
+    recurring reports from exports and shared files
+  audience_scope: broadcast

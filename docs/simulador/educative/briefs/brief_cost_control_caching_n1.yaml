@@ -1,0 +1,41 @@
+# Brief educativo · módulo de TEMA: control de costo de IA (reúso de contexto).
+#
+# Ola de "temas del momento" (2026-07-23). Listo para el pipeline E1/E2/E3.
+# Es el módulo del eje COSTO puro del framing de Itera (costo/criterio/
+# implementación): dónde se va el dinero cuando un equipo usa IA a volumen.
+#
+# Nota de precisión: el módulo enseña el CRITERIO (qué parte del contexto es
+# estable y se reúsa vs. qué cambia; y que más barato no es más correcto ni
+# más actual), no specs volátiles de precios. Lo público y estable: cuando le
+# mandas a la IA el mismo bloque grande de contexto una y otra vez, ese bloque
+# se puede reusar (cachear) en vez de re-leerse, y las corridas repetidas salen
+# más rápidas y más baratas.
+
+educative_brief:
+  tool_name: "AI cost control (prompt caching and context reuse)"
+  tool_version: "2026"
+  what_changed: >-
+    When you send the AI the same big block of context over and over (a long
+    policy, a product catalog, a style guide), it can now reuse that block
+    instead of re-reading it every time. The repeated part is cached, so repeat
+    runs are faster and cost a fraction of the first one.
+  why_matters: >-
+    For a team that runs the same AI task hundreds of times a day, the gap
+    between reusing context and re-sending it is real money. But two traps come
+    with it. A cheaper run is not a more correct run: you still verify the
+    output, and "we saved on this one" is never a reason to skip the check.
+    And a reused block that went stale keeps feeding the AI last quarter's
+    policy long after it changed. The judgment moves to "what belongs in the
+    stable reused part, what belongs in the small changing part, and when the
+    reused part is now out of date."
+  level: N1
+  selected_blocks:
+    - ai_output_review
+    - categorize_rows
+  voice_style: "US business English, plain and direct, no jargon, no hype"
+  business_context: >-
+    ops and finance-minded team leads at a mid-size US company who own the AI
+    bill and run the same AI tasks at volume; non-technical. This is the cost
+    and implementation topic head-on: how the money moves, and where cheaper
+    quietly trades against correct or current.
+  audience_scope: broadcast

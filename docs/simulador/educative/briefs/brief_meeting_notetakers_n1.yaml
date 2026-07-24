@@ -1,0 +1,42 @@
+# Brief educativo · módulo de TEMA: notetakers de IA en reuniones.
+#
+# Ola de "temas del momento" (2026-07-23). Listo para el pipeline E1/E2/E3.
+#
+# Sustituye a la sugerencia "MCP connectors": ya existe un módulo empacado de
+# TEMA muy cercano — module_conectores_ia_n1 ("AI connectors": qué conectas de
+# tu Drive/email y qué revisas de lo que sale). Para un operador N1 la distinción
+# MCP vs. connector es nula, así que el brief nuevo va a un tema del momento
+# distinto y no solapado: los notetakers de IA que se meten a tus llamadas.
+#
+# Nota de precisión: el módulo enseña el CRITERIO (qué reuniones dejas grabar,
+# quién recibe las notas, qué re-verificas antes de que los action items sean el
+# registro oficial), no specs volátiles. Lo público y estable: un notetaker de
+# IA puede unirse a la llamada, grabar y transcribir, y después mandar un resumen
+# con decisiones y pendientes; y esos pendientes pueden salir mal o inventados.
+
+educative_brief:
+  tool_name: "AI meeting notetakers"
+  tool_version: "2026"
+  what_changed: >-
+    An AI notetaker can join your calls, record and transcribe them, and
+    afterward send a summary with the decisions and the action items. It runs on
+    its own in the background, so you get the notes without typing anything.
+  why_matters: >-
+    The notetaker is recording people, which is a consent question in many US
+    states, and it is writing down who owns what. Its action items can be wrong
+    or invented: it can assign a task to the wrong person, turn an offhand
+    comment into a commitment, or miss the one decision that mattered. Once the
+    summary goes out, people act on it as the record. The judgment moves to
+    "which meetings do I let it record, who gets the notes, and what do I
+    re-check before those action items become the source of truth."
+  level: N1
+  selected_blocks:
+    - ai_output_review
+    - categorize_rows
+  voice_style: "US business English, plain and direct, no jargon, no hype"
+  business_context: >-
+    managers and ops people at a mid-size US company who run a lot of internal
+    and client calls and are letting an AI notetaker capture them; non-technical.
+    The decisions that matter are consent (who is in the room, what state), who
+    receives the notes, and what gets verified before it is treated as fact.
+  audience_scope: broadcast

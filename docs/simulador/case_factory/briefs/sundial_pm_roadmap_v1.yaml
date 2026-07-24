@@ -1,0 +1,42 @@
+# Brief de entrada (crudo) para el generador. Informal a proposito: el paso de
+# normalizacion (P1) rellena y limpia. Empresa sintetica, app de consumo de
+# EEUU (~90 personas). Area NUEVA: Product/PM. Nivel N2 (mas capas de tradeoff).
+# Tension: el PM quiere volcar TODO el input de usuarios (tickets, encuesta de
+# churn, feature requests con emails y texto libre con datos financieros) en la
+# IA para sintetizar temas y redactar el spec + roadmap priorizado; la IA
+# inventa cifras de demanda y estimados de impacto, y sobre-indexa a las cuentas
+# mas ruidosas. Beat de privacidad: datos identificables de usuarios.
+brief:
+  case_id: sundial_pm_roadmap
+  company: "Sundial Money"
+  industry: "Consumer mobile app (personal budgeting)"
+  market: "United States"
+  participant_role: "Product Manager"
+  level: "N2 · Workflow"
+  scenario: >
+    Sundial is a 90-person budgeting app, and the product manager owes
+    leadership a next-quarter roadmap and a spec for the top feature by Monday.
+    The raw input is a pile: 400 support tickets, a churn survey, NPS verbatims,
+    and a feature-request spreadsheet. All of it carries identifiable user data,
+    email addresses, account IDs, and free-text where people pasted real bank
+    balances and account details while describing a bug. The PM wants to dump
+    everything into the AI assistant and ask it to synthesize the top themes,
+    then draft the spec and a prioritized roadmap with impact estimates. What
+    comes back looks great and is partly fiction: the tool states that "62% of
+    churned users asked for shared budgets" and puts a precise revenue lift on
+    each roadmap item, none of which is actually in the data, and it ranks the
+    roadmap around a handful of loud enterprise-sounding accounts. The PM has to
+    decide what user input can go into the tool and in what form, aggregate or
+    strip the identifiable and sensitive pieces first, catch the invented demand
+    numbers and impact estimates, check the priority calls against real
+    evidence, and close with a decision: send the AI-drafted roadmap to
+    leadership, keep it as a working draft for review with the numbers marked
+    unverified, or pause and redo the synthesis from the real data by hand.
+  manager_wants_to_know: >
+    Whether this product manager can turn messy user input into a roadmap with
+    judgment: keeping identifiable and sensitive user data out of the AI tool,
+    catching demand numbers and impact estimates the tool made up, grounding
+    priorities in real evidence instead of the loudest accounts, and knowing
+    which parts of the draft are safe to put in front of leadership.
+  ai_tool_hint: "A general-purpose AI assistant the product team uses to draft and synthesize; it is not connected to the product analytics or the CRM, it cannot see real usage, and it will invent percentages, quotes, and impact estimates if the prompt implies them. It does not publish anything, and whatever is pasted into it is processed outside the company's user-data agreements."
+  tools: [ai, data, messaging, documents]
