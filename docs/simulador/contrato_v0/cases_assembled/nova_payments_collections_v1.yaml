@@ -1,0 +1,632 @@
+# Caso ensamblado · nova_payments_collections (generado por el motor, pipeline
+# E1/E2/E3, run 20260723_214055__nova_payments_collections_cleanup, attempt-1).
+# 5 secciones x 5 slides = 25. Gates deterministas en PASS (check-assembled-case
+# + lint-case-copy). El juez narrativo dejó 1 observación para revisión humana
+# (result: HUMAN_REVIEW); NO bloquea los gates deterministas y se documenta aquí
+# sin tocar el contenido (mismo criterio con que se salvaron crestline/harborview):
+#   1. cierre slot 4 (manager_signal): las cuatro promesas de Diane se entregan y
+#      el deliverable final es una recomendación accionable (lanzar / pilotar /
+#      pausar) que es lo que distingue el criterio del analista.
+# Biblia (hechos canónicos):
+#   Empresa: Nova Payments (payment processing, EEUU). Rol: Collections Analyst.
+#   Nova Copilot: la IA aprobada. Redacta y reescribe mensajes de recuperación y
+#     marca placeholders que no puede llenar (números de cuenta, montos). NO consulta
+#     la base de clientes, NO envía correos, NO accede a saldos por su cuenta. Puede
+#     filtrar datos personales si se llena mal, hay que revisar. Instrumento dado.
+#   Diane Reyes: Collections Manager. Asigna y recibe el memo. Nunca destinataria del reply.
+#   Marcus Webb: Senior Collections Specialist. Revisa y flagea (duplicado + cuenta alta).
+#   Destinatario del envío: clientes con pago de tarjeta vencido, contacto limpio y
+#     cuenta activa. Nunca Diane.
+#   Hoy lunes 8 jun 2026. Deadline recomendación viernes 12 jun 2026. Última campaña Q1 2026.
+#   Reglas de datos: no enviar a cuentas Closed ni Pending Closure; no a emails con
+#     bounce en la última campaña; no a opt-outs.
+#   Números: export total 1,240 filas; ~8% emails malos (~99 registros); muestra de
+#     10 filas; batch de pilot 50 clientes. Montos USD explícito.
+#   Duplicado: C-1001 = C-1007 (Angela Torres, mismo $340.00 USD / 45 días, distinto email).
+#   Cuenta alta a escalar: C-1010 Isabel Nunez, $3,400.00 USD, 120 días, con bounce.
+#   Elegibles limpios en la muestra (4): C-1001, C-1002, C-1006, C-1009. Excluidos:
+#     C-1003 (Closed), C-1004 (bounce), C-1005 (opt-out), C-1007 (duplicado),
+#     C-1008 (Pending Closure), C-1010 (bounce, además escala).
+#   Acción esperada: pilotar. Alternativas: pausar, entrenar, escalar.
+# Los identificadores NO cambian respecto al run: section id, slot, block_id, ids de
+# fila/opción/decisión, flagIfMarked, actions[].value siguen igual.
+case_assembly:
+  case_id: nova_payments_collections_cleanup
+  version: 1
+  status: draft
+  schema_version: 1.0.0
+  meta:
+    level: N1 · Foundations
+    profile: Collections
+    profile_pack: finance_fpa
+    estimated_minutes: 12
+    timer_seconds: 600
+    timer_default_on: false
+    tools:
+      - ai
+      - data
+      - messaging
+      - documents
+  manager_outcome:
+    primary_question: Whether this analyst can clean a customer list with privacy judgment and put together a responsible recovery send.
+    assignment_brief: 'Diane Reyes, your Collections Manager, shares a spreadsheet of **1,240** customers with past-due card payments. She says the export is dirty: some customers appear twice, a few requested account closure, and about **8%** of the email addresses are known bounces from last quarter. She needs you to clean the list, then use the company AI copilot to draft a payment recovery message. The message must not include personal data like full account numbers or balances. She wants to send this week but only if the list is clean and the message is compliant. She asks you to review the AI draft, make any needed edits, and recommend whether to launch, pilot with a small batch, or pause.'
+    business_metric: Recovery rate on past-due payments
+    risk_metric: Privacy or compliance exposure from sending to wrong contacts or exposing personal data
+    expected_signal: The analyst identifies and removes duplicates, closed accounts, and bad emails, then reviews the AI draft for personal-data leaks before deciding to pilot a small batch rather than full launch.
+    expected_action: pilotar
+    alternatives:
+      - pausar
+      - entrenar
+      - escalar
+  sections:
+    - id: contexto
+      name: Context
+      slides:
+        - slot: 1
+          block_id: case_cover
+          title: Nova Payments collections campaign
+          body: You are a **Collections Analyst** at Nova Payments, a US-based payment processing company. Your manager, **Diane Reyes**, has asked you to prepare a payment recovery campaign for past-due card payment customers. The company uses **Nova Copilot**, an AI drafting tool that can write and rewrite payment recovery messages based on your prompts. Nova Copilot cannot access the customer database or send emails on its own. Your job is to clean the data, draft a message, review it for issues, and recommend whether to launch.
+          content:
+            meta:
+              profile: Collections
+              level: N1 · Foundations
+              estimatedMinutes: 12
+              timerSeconds: 600
+              timerDefaultOn: false
+              tools:
+                - kind: ai
+                  label: AI
+                - kind: data
+                  label: Tables
+                - kind: messaging
+                  label: Messaging
+                - kind: documents
+                  label: Documents
+        - slot: 2
+          block_id: reading_message
+          title: Diane assigns the campaign task
+          body: Diane Reyes sends you an email with the assignment.
+          content:
+            message:
+              channel: email
+              from:
+                name: Diane Reyes
+              body: |-
+                Hi team, we are launching a payment recovery campaign for customers with past-due card payments. I need you to do the following by **Friday, June 12, 2026**:
+
+                1. **Clean the export** by removing duplicates, closed accounts, and known bad email addresses.
+                2. **Use Nova Copilot** to draft a payment recovery message.
+                3. **Review the AI draft** for personal-data leaks (full account numbers, exact balances).
+                4. **Recommend** whether to launch to the full list, pilot with a small batch, or pause.
+
+                The full export has **1,240 rows**. I have attached a sample of **10 records** so you can see the data structure. Let me know if you have questions.
+
+                Thanks, Diane
+              timestamp: Monday, June 8, 2026 09:15 AM
+        - slot: 3
+          block_id: reading_data_table
+          title: Sample customer data
+          body: Diane attached a sample of **10 customer records** from the export. The fields and the three data rules are shown below.
+          content:
+            table:
+              columns:
+                - key: customer_id
+                  label: Customer ID
+                - key: full_name
+                  label: Full Name
+                - key: email
+                  label: Email Address
+                - key: account_status
+                  label: Account Status
+                - key: past_due_amount
+                  label: Past-Due Amount
+                - key: days_past_due
+                  label: Days Past Due
+                - key: last_campaign_bounce
+                  label: Last Campaign Bounce
+                - key: opt_out_flag
+                  label: Opt-Out Flag
+              rows:
+                - customer_id: C-1001
+                  full_name: Angela Torres
+                  email: angela.torres@email.com
+                  account_status: Active
+                  past_due_amount: $340.00 USD
+                  days_past_due: '45'
+                  last_campaign_bounce: 'No'
+                  opt_out_flag: 'No'
+                - customer_id: C-1002
+                  full_name: Brian Kim
+                  email: brian.kim@mail.net
+                  account_status: Active
+                  past_due_amount: $190.00 USD
+                  days_past_due: '32'
+                  last_campaign_bounce: 'No'
+                  opt_out_flag: 'No'
+                - customer_id: C-1003
+                  full_name: Cynthia Lane
+                  email: cynthia.lane@webmail.com
+                  account_status: Closed
+                  past_due_amount: $520.00 USD
+                  days_past_due: '90'
+                  last_campaign_bounce: 'No'
+                  opt_out_flag: 'No'
+                - customer_id: C-1004
+                  full_name: Darnell Foster
+                  email: darnell.foster@fastmail.com
+                  account_status: Active
+                  past_due_amount: $275.00 USD
+                  days_past_due: '60'
+                  last_campaign_bounce: 'Yes'
+                  opt_out_flag: 'No'
+                - customer_id: C-1005
+                  full_name: Elena Vasquez
+                  email: elena.v@provider.com
+                  account_status: Active
+                  past_due_amount: $410.00 USD
+                  days_past_due: '50'
+                  last_campaign_bounce: 'No'
+                  opt_out_flag: 'Yes'
+                - customer_id: C-1006
+                  full_name: Frank Odom
+                  email: frank.odom@email.com
+                  account_status: Active
+                  past_due_amount: $155.00 USD
+                  days_past_due: '28'
+                  last_campaign_bounce: 'No'
+                  opt_out_flag: 'No'
+                - customer_id: C-1007
+                  full_name: Angela Torres
+                  email: angela.torres@workmail.com
+                  account_status: Active
+                  past_due_amount: $340.00 USD
+                  days_past_due: '45'
+                  last_campaign_bounce: 'No'
+                  opt_out_flag: 'No'
+                - customer_id: C-1008
+                  full_name: Grace Huang
+                  email: grace.huang@email.com
+                  account_status: Pending Closure
+                  past_due_amount: $600.00 USD
+                  days_past_due: '75'
+                  last_campaign_bounce: 'No'
+                  opt_out_flag: 'No'
+                - customer_id: C-1009
+                  full_name: Henry Chen
+                  email: henry.chen@mail.com
+                  account_status: Active
+                  past_due_amount: $220.00 USD
+                  days_past_due: '40'
+                  last_campaign_bounce: 'No'
+                  opt_out_flag: 'No'
+                - customer_id: C-1010
+                  full_name: Isabel Nunez
+                  email: isabel.n@oldmail.com
+                  account_status: Active
+                  past_due_amount: $3,400.00 USD
+                  days_past_due: '120'
+                  last_campaign_bounce: 'Yes'
+                  opt_out_flag: 'No'
+        - slot: 4
+          block_id: reading_kpi_cards
+          title: Campaign metrics at a glance
+          body: Key numbers from the full export to keep in mind as you prepare your recommendation.
+          content:
+            kpis:
+              - label: Total export rows
+                value: 1,240
+              - label: Estimated bad emails
+                value: 8% (~99 records)
+              - label: Highest past-due amount (sample)
+                value: $3,400.00 USD
+              - label: Pilot batch size
+                value: 50 customers
+        - slot: 5
+          block_id: reading_message
+          title: Marcus flags two issues
+          body: Senior Collections Specialist **Marcus Webb** sends you a message about the sample data.
+          content:
+            message:
+              channel: email
+              from:
+                name: Marcus Webb
+              body: |-
+                Hey, I looked at the sample Diane shared. Two things caught my eye:
+
+                1. **Duplicate Angela Torres records.** Customer IDs C-1001 and C-1007 both show Angela Torres with the same **$340.00 USD** balance and **45 days** past due, but different email addresses. We should only send one message per customer.
+
+                2. **Isabel Nunez (C-1010)** has a past-due amount of **$3,400.00 USD** at **120 days** past due. That is the highest amount in the sample, and her email bounced in the last campaign. We need to decide how to handle high-risk accounts like this one.
+
+                Just wanted to flag these before you start cleaning the data. Let me know if you want to discuss.
+
+                Marcus
+              timestamp: Monday, June 8, 2026 10:30 AM
+    - id: datos
+      name: Data
+      slides:
+        - slot: 1
+          block_id: categorize_rows
+          title: Triage rows C-1001 through C-1005
+          body: Apply the three campaign rules to each customer. Decide if they qualify for the recovery message or should be excluded.
+          content:
+            actions:
+              - value: include
+                label: Include in campaign
+              - value: exclude
+                label: Exclude from campaign
+            rows:
+              - id: C-1001
+                label: Angela Torres - Active, $340, 45 days, no bounce, no opt-out
+                hint: All three rules pass. Include.
+                example: Clean record, qualifies.
+              - id: C-1002
+                label: Brian Kim - Active, $190, 32 days, no bounce, no opt-out
+                hint: All three rules pass. Include.
+                example: Clean record, qualifies.
+              - id: C-1003
+                label: Cynthia Lane - Closed, $520, 90 days, no bounce, no opt-out
+                hint: Account status is Closed. Exclude.
+                example: Closed account, rule 1 blocks.
+              - id: C-1004
+                label: Darnell Foster - Active, $275, 60 days, bounced, no opt-out
+                hint: Last campaign bounced. Exclude.
+                example: Bounced email, rule 2 blocks.
+              - id: C-1005
+                label: Elena Vasquez - Active, $410, 50 days, no bounce, opt-out Yes
+                hint: Opt-Out Flag is Yes. Exclude.
+                example: Opted out, rule 3 blocks.
+        - slot: 2
+          block_id: categorize_rows
+          title: Triage rows C-1006 through C-1010
+          body: Continue applying the rules. Watch for the duplicate Angela Torres (C-1007) and the high past-due account (C-1010).
+          content:
+            actions:
+              - value: include
+                label: Include in campaign
+              - value: exclude
+                label: Exclude from campaign
+            rows:
+              - id: C-1006
+                label: Frank Odom - Active, $155, 28 days, no bounce, no opt-out
+                hint: All three rules pass. Include.
+                example: Clean record, qualifies.
+              - id: C-1007
+                label: Angela Torres (duplicate) - Active, $340, 45 days, no bounce, no opt-out
+                hint: Duplicate of C-1001. Exclude to avoid double-sending.
+                example: Duplicate row, exclude.
+              - id: C-1008
+                label: Grace Huang - Pending Closure, $600, 75 days, no bounce, no opt-out
+                hint: Account status is Pending Closure. Exclude.
+                example: Pending Closure, rule 1 blocks.
+              - id: C-1009
+                label: Henry Chen - Active, $220, 40 days, no bounce, no opt-out
+                hint: All three rules pass. Include.
+                example: Clean record, qualifies.
+              - id: C-1010
+                label: Isabel Nunez - Active, $3,400, 120 days, bounced, no opt-out
+                hint: Last campaign bounced. Exclude per rule 2. High amount is not a rule-based exclusion.
+                example: Bounced email, rule 2 blocks.
+        - slot: 3
+          block_id: model_tradeoff_sliders
+          title: Set data-cleaning tradeoffs
+          body: 'You can delegate cleaning logic to Nova Copilot or do it manually. Set your priority across three dimensions: **autonomy** (how much control you keep), **safety** (how strictly you enforce rules), and **cost** (time and effort).'
+          content: {}
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write your prompt to Nova Copilot
+          body: Write a prompt asking Nova Copilot to draft a payment recovery message. Include any tone, content, or compliance instructions you want. The tool can adjust tone and flag placeholders it cannot fill.
+          content: {}
+        - slot: 5
+          block_id: reading_attachment
+          title: Nova Payments recovery messaging policy
+          body: Review the internal policy document before finalizing your draft.
+          content:
+            attachments:
+              - name: Recovery Messaging Policy v4.2
+                kind: PDF
+              - name: Opt-Out Compliance Quick Reference
+                kind: PDF
+    - id: ia
+      name: AI
+      slides:
+        - slot: 1
+          block_id: reading_passive
+          title: Nova Copilot capabilities
+          body: Nova Copilot can draft and rewrite payment recovery messages and flag placeholder text it cannot fill (account numbers, balances). It **cannot** query the customer database, send emails, or access account balances on its own. You provide the data and the prompt.
+          content: {}
+        - slot: 2
+          block_id: ai_textfield_guided
+          title: Build your request to Nova Copilot
+          body: Choose a goal, audience, tone, and data limits for the draft. The audience is the clean segment you prepared (active accounts, no duplicates, no bounces, no opt-outs). Tone must be **firm** per policy.
+          content:
+            guided:
+              objetivos:
+                - Recover past-due payment
+                - Notify customer of account risk
+                - Offer payment plan options
+                - Request immediate payment
+              audiencias:
+                - Clean active accounts only
+                - All past-due accounts
+                - Active accounts with duplicates
+                - Accounts over 60 days past due
+              limites:
+                - No full account numbers
+                - No exact balance amounts
+                - No payment links
+                - No late fee references
+        - slot: 3
+          block_id: ai_output_review
+          title: Review Nova Copilot's first draft
+          body: Nova Copilot returned this draft. Flag any segments that contain risky content such as personal-data placeholders.
+          content:
+            segments:
+              - id: s1
+                text: Dear Customer, your account ending in [ACCOUNT_NUMBER] has a past-due balance of [BALANCE_AMOUNT].
+                flagIfMarked: dato_sensible
+                issue: Placeholder markers for account number and exact balance could leak personal data if filled incorrectly.
+              - id: s2
+                text: Please make a payment by Friday, June 12, 2026 to avoid additional fees.
+                flagIfMarked: frase_reutilizable
+                issue: Standard payment deadline phrasing, no personal data.
+              - id: s3
+                text: If you have questions, call our support team at 1-800-555-0199.
+                flagIfMarked: frase_reutilizable
+                issue: Generic contact info, no personal data.
+              - id: s4
+                text: We value your business and want to help you resolve this quickly.
+                flagIfMarked: frase_reutilizable
+                issue: Standard goodwill closing, no personal data.
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Revise your prompt to Nova Copilot
+          body: Write a revised prompt asking Nova Copilot to remove all personal-data placeholders and produce a cleaner draft. Keep the tone firm. The deadline is **Friday, June 12, 2026**.
+          content: {}
+        - slot: 5
+          block_id: ai_output_review
+          title: Review Nova Copilot's second draft
+          body: Nova Copilot returned a revised draft. Flag any segments where the tone is too aggressive or where personal-data references remain.
+          content:
+            segments:
+              - id: t1
+                text: Your account is past due. Pay the full amount now to avoid escalation.
+                flagIfMarked: tono_agresivo
+                issue: Tone is aggressive and demanding, not firm but professional.
+              - id: t2
+                text: Your balance of $340.00 USD must be paid by June 12, 2026.
+                flagIfMarked: dato_sensible
+                issue: Exact balance amount disclosed, violates data limits.
+              - id: t3
+                text: Please remit payment for your past-due balance by the deadline.
+                flagIfMarked: frase_reutilizable
+                issue: Standard payment request, no personal data, tone is firm but acceptable.
+              - id: t4
+                text: Contact customer service at 1-800-555-0199 if you need assistance.
+                flagIfMarked: frase_reutilizable
+                issue: Generic contact info, no personal data.
+    - id: revision
+      name: Verification
+      slides:
+        - slot: 1
+          block_id: ai_output_review
+          title: Final draft compliance check
+          body: Nova Copilot produced this closing section for the recovery email. Review each highlighted segment. Mark any that violate the company's recovery messaging policy or the three data rules.
+          content:
+            segments:
+              - id: seg_1
+                text: Your account ending in 8842 has a past-due balance of $340.00 USD.
+                flagIfMarked: dato_sensible
+              - id: seg_2
+                text: Please make a payment by Friday, June 12, 2026 to avoid a late fee.
+                flagIfMarked: claim_no_verificado
+              - id: seg_3
+                text: If you have already paid, disregard this message.
+                flagIfMarked: frase_reutilizable
+              - id: seg_4
+                text: Failure to pay may result in account suspension and referral to our collections team.
+                flagIfMarked: tono_agresivo
+        - slot: 2
+          block_id: ai_comparison
+          title: Pick the best closing line
+          body: Nova Copilot generated four closing-line variants for the recovery email. Choose the one that balances effectiveness with compliance. The message goes to customers with past-due balances on active accounts.
+          content:
+            options:
+              - id: A
+                body: Thank you for being a valued customer. We hope to resolve this soon.
+              - id: B
+                body: This is your final notice. Pay immediately or legal action will follow.
+              - id: C
+                body: Please remit payment at your earliest convenience to keep your account in good standing.
+              - id: D
+                body: We understand things come up. Contact us to discuss a payment plan.
+        - slot: 3
+          block_id: reading_message
+          title: Diane asks for your recommendation
+          body: Diane Reyes sends a message asking for your final decision on how to proceed with the campaign.
+          content:
+            message:
+              channel: email
+              from:
+                name: Diane Reyes
+              body: |-
+                Good work on the drafts. Now I need your final recommendation by Friday, June 12, 2026. Here are the three options I'm considering:
+
+                1. Launch to the full cleaned list (all eligible customers).
+                2. Run a pilot batch of 50 customers first.
+                3. Pause the campaign and escalate the $3,400 USD account (C-1010) for manual review.
+
+                Which one do you recommend and why? Keep in mind the data rules, the bounce rate, and the high-value account that may need special handling.
+              timestamp: Monday, June 8, 2026 2:15 PM
+        - slot: 4
+          block_id: categorize_rows
+          title: Confirm the pilot batch
+          body: If Diane approves the pilot, it will include **50 customers** from the full export. Re-triage the **10 sample rows** to confirm which ones belong in the pilot. Apply all three data rules and remove any duplicate records.
+          content:
+            actions:
+              - value: include
+                label: Include in pilot
+              - value: exclude
+                label: Exclude from pilot
+            rows:
+              - id: C-1001
+                label: Angela Torres, angela.torres@email.com, Active, $340, 45 days, No bounce, No opt-out
+              - id: C-1002
+                label: Brian Kim, brian.kim@mail.net, Active, $190, 32 days, No bounce, No opt-out
+              - id: C-1003
+                label: Cynthia Lane, cynthia.lane@webmail.com, Closed, $520, 90 days, No bounce, No opt-out
+              - id: C-1004
+                label: Darnell Foster, darnell.foster@fastmail.com, Active, $275, 60 days, Yes bounce, No opt-out
+              - id: C-1005
+                label: Elena Vasquez, elena.v@provider.com, Active, $410, 50 days, No bounce, Yes opt-out
+              - id: C-1006
+                label: Frank Odom, frank.odom@email.com, Active, $155, 28 days, No bounce, No opt-out
+              - id: C-1007
+                label: Angela Torres, angela.torres@workmail.com, Active, $340, 45 days, No bounce, No opt-out
+              - id: C-1008
+                label: Grace Huang, grace.huang@email.com, Pending Closure, $600, 75 days, No bounce, No opt-out
+              - id: C-1009
+                label: Henry Chen, henry.chen@mail.com, Active, $220, 40 days, No bounce, No opt-out
+              - id: C-1010
+                label: Isabel Nunez, isabel.n@oldmail.com, Active, $3,400, 120 days, Yes bounce, No opt-out
+        - slot: 5
+          block_id: ai_comparison
+          title: Pick the best subject line
+          body: Nova Copilot generated four subject-line options for the recovery email. Choose the one that is clear, compliant with policy, and likely to be opened by past-due customers on active accounts.
+          content:
+            options:
+              - id: A
+                body: Your Nova Payments account is past due
+              - id: B
+                body: 'URGENT: Pay $340 immediately or lose your account'
+              - id: C
+                body: We missed you. Here is your statement.
+              - id: D
+                body: Final notice before account closure
+    - id: cierre
+      name: Close
+      slides:
+        - slot: 1
+          block_id: ai_comparison
+          title: Choose the final message version
+          body: Nova Copilot produced four versions of the payment recovery message. Each one uses a different tone and includes different data. Select the version that is fully compliant with the recovery messaging policy and ready for the send path you will recommend.
+          content:
+            options:
+              - id: A
+                body: |-
+                  Subject: Your Nova Payments account is past due
+
+                  Dear Angela,
+
+                  Your account ending in **1001** has a past-due balance of **$340.00 USD**. Please make a payment by **Friday, June 12, 2026** to avoid service interruption.
+
+                  Pay online at novapayments.com/pay or call 1-800-555-0199.
+
+                  Thank you,
+                  Nova Payments Collections
+              - id: B
+                body: |-
+                  Subject: Action required on your account
+
+                  Dear Angela,
+
+                  Your account has a past-due balance. Please log in to your account to view the amount and make a payment.
+
+                  Pay online at novapayments.com/pay or call 1-800-555-0199.
+
+                  Thank you,
+                  Nova Payments Collections
+              - id: C
+                body: |-
+                  Subject: Your account is past due
+
+                  Dear Angela Torres,
+
+                  Your account with Customer ID **C-1001** has a past-due balance of **$340.00 USD** and is **45 days** past due. Please make a payment immediately to avoid escalation.
+
+                  Pay online at novapayments.com/pay or call 1-800-555-0199.
+
+                  Thank you,
+                  Nova Payments Collections
+              - id: D
+                body: |-
+                  Subject: Payment reminder
+
+                  Dear Valued Customer,
+
+                  This is a reminder that your Nova Payments account has a past-due balance. Please remit payment at your earliest convenience.
+
+                  Pay online at novapayments.com/pay or call 1-800-555-0199.
+
+                  Thank you,
+                  Nova Payments Collections
+        - slot: 2
+          block_id: ai_textfield_free
+          title: Write the final prompt to Nova Copilot
+          body: Now write a prompt to Nova Copilot that will produce the exact message version you selected. Include the tone, the specific data placeholders the AI should use, and any compliance constraints it needs to follow.
+          content: {}
+        - slot: 3
+          block_id: categorize_rows
+          title: Final send groups for the sample rows
+          body: 'Categorize each of the **10 sample rows** into one of three groups: **Include in pilot**, **Exclude (with reason)**, or **Escalate (C-1010 $3,400 USD)**. The pilot batch will be drawn from the Include group. Any row that violates a policy rule must be excluded. The $3,400 USD account (C-1010) needs escalation regardless of other factors.'
+          content:
+            actions:
+              - value: include
+                label: Include in pilot
+              - value: exclude
+                label: Exclude (with reason)
+              - value: escalate
+                label: Escalate (C-1010 $3,400 USD)
+            rows:
+              - id: C-1001
+                label: Angela Torres, angela.torres@email.com, Active, $340, 45 days, No bounce, No opt-out
+              - id: C-1002
+                label: Brian Kim, brian.kim@mail.net, Active, $190, 32 days, No bounce, No opt-out
+              - id: C-1003
+                label: Cynthia Lane, cynthia.lane@webmail.com, Closed, $520, 90 days, No bounce, No opt-out
+              - id: C-1004
+                label: Darnell Foster, darnell.foster@fastmail.com, Active, $275, 60 days, Bounced, No opt-out
+              - id: C-1005
+                label: Elena Vasquez, elena.v@provider.com, Active, $410, 50 days, No bounce, Opt-out Yes
+              - id: C-1006
+                label: Frank Odom, frank.odom@email.com, Active, $155, 28 days, No bounce, No opt-out
+              - id: C-1007
+                label: Angela Torres, angela.torres@workmail.com, Active, $340, 45 days, No bounce, No opt-out
+              - id: C-1008
+                label: Grace Huang, grace.huang@email.com, Pending Closure, $600, 75 days, No bounce, No opt-out
+              - id: C-1009
+                label: Henry Chen, henry.chen@mail.com, Active, $220, 40 days, No bounce, No opt-out
+              - id: C-1010
+                label: Isabel Nunez, isabel.n@oldmail.com, Active, $3,400, 120 days, Bounced, No opt-out
+        - slot: 4
+          block_id: reading_passive
+          title: Deliverables checklist for Diane Reyes
+          body: |-
+            You have completed every item Diane Reyes asked for on **Monday, June 8, 2026**. Here is a summary of what was delivered:
+
+            **Promise 1: Clean the export**
+            You removed duplicates (C-1007 is a duplicate of C-1001), excluded closed accounts (C-1003) and pending closures (C-1008), removed bounced emails (C-1004, C-1010), and excluded opt-outs (C-1005). The cleaned pilot-ready list contains **4 eligible customers** from the sample.
+
+            **Promise 2: Use Nova Copilot to draft a payment recovery message**
+            You selected a compliant version (no exact balances, no full account numbers, no internal IDs) and wrote a final prompt to produce it.
+
+            **Promise 3: Review the AI draft for personal-data leaks**
+            You identified and removed the exact balance and account number from earlier drafts. The final version uses a generic balance reference and no personal identifiers.
+
+            **Promise 4: Recommend whether to launch, pilot, or pause**
+            Your recommendation memo is ready for Diane's review by the **Friday, June 12, 2026** deadline.
+          content: {}
+        - slot: 5
+          block_id: tradeoff_decision_memo
+          title: Recommend the send path
+          body: Diane Reyes needs your final recommendation by **Friday, June 12, 2026**. Choose one of the three actions below. Then write a short memo to Diane explaining your reasoning. Include the key data points that support your decision.
+          content:
+            decisions:
+              - id: full_launch
+                title: Launch to the full cleaned list
+                detail: 'Send the recovery message to all **1,141 eligible customers** immediately. Benefit: maximum recovery volume and fastest time to revenue. Cost: any undiscovered compliance issues or data errors affect the entire list, and a single complaint could trigger a policy review.'
+              - id: pilot
+                title: Pilot with 50 customers first
+                detail: 'Send to a **random sample of 50 customers** from the cleaned list. Benefit: you can monitor bounce rates, open rates, and complaints on a small scale before committing the full list. Cost: delays full recovery by **one week**, and the pilot batch may not capture every edge case in the data.'
+              - id: pause
+                title: Pause and escalate the $3,400 account
+                detail: 'Hold all sends and escalate the **$3,400 USD** account (C-1010 Isabel Nunez) to senior collections for manual handling. Benefit: prevents a high-value account from receiving a standard automated message that could damage the relationship. Cost: delays the entire campaign by **two weeks** while the escalation is processed, and the remaining customers receive no reminder in the meantime.'

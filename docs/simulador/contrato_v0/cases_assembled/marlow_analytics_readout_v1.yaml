@@ -1,0 +1,669 @@
+# Caso ensamblado · marlow_analytics_readout (generado por el motor generador,
+# pipeline E1/E2/E3, run 20260723_213514__marlow_analytics_readout, attempt-1).
+# 5 secciones x 5 slides = 25. Gates deterministas en PASS (check-assembled-case
+# + lint-case-copy). El juez narrativo NO se corrió (necesita llave de API) y
+# queda para revisión humana, igual que los casos salvados crestline/harborview
+# (result: HUMAN_REVIEW). Los gates deterministas NO dependen del juez.
+#
+# Salvado a mano tras el run (7 findings deterministas resueltos):
+#   1. 'cierre' traía 6 slides: el slot 5 (tradeoff_decision_memo) estaba
+#      DUPLICADO idéntico. Se eliminó una copia -> 5 slides / 25 totales.
+#   2. Acrónimo corporativo prohibido "CEO" en 3 lugares de copy visible
+#      (assignment_brief, contexto/slot1.body, ia/slot2.audiencias[0]). Se
+#      reemplazó por "chief executive" sin sigla. Glosario 00_EN_GLOSSARY.md:
+#      cero acrónimos corporativos en el copy visible (AI es la única excepción).
+#   3. Spoiler en cierre/slot5.decisions[1].title: "Edit the readout to remove
+#      fabricated data, then send" nombraba la falla del distractor. Se
+#      neutralizó a "Edit the readout, then send" (el detalle sigue explicando
+#      el trade-off; el detalle no es título y no telegrafía la clave).
+#
+# Biblia (hechos canónicos):
+#   Empresa: Marlow & Co. (direct-to-consumer home goods, Columbus, Ohio, EEUU).
+#     Rol: Data Analyst.
+#   Priya Sharma: Director of Business Operations. Asigna y recibe el readout.
+#   David Chen: chief executive. Recibe el readout en el leadership review del lunes.
+#     Nunca destinatario de un reply directo.
+#   Marlow AI Assistant: la IA dada (no se elige). Redacta SQL, resume, formatea;
+#     NO accede a la base ni a los exports, NO verifica números contra la fuente,
+#     NO sabe si una cifra que afirma es real o inventada. Hay que verificar todo.
+#   Hoy viernes 5 jun 2026; deadline lunes 8 jun 2026 (leadership business review).
+#     Q1 2026 = 1 ene a 31 mar. Cambio de precio anunciado 1 mayo (después de Q1).
+#   Datos Q1 (ORD-1001 a ORD-1007): 7 órdenes, $370.00 USD revenue, $600.00 USD
+#     ad spend (paid_social), $0.00 USD refunds, 4 repeat / 3 first orders.
+#   Cifras FABRICADAS por la IA (deben salir del readout): "23% increase in
+#     repeat-purchase rate" (no existe en los datos) y "$412,000 USD email revenue"
+#     (real = $156.00 USD, ORD-1001/1002/1003). Claim causal sin sustento: "the May
+#     price change drove the increase in repeat purchases" (el cambio fue después de Q1).
+#   Acción esperada: pausar y reconstruir desde la fuente verificada.
+#     Alternativas: pilotar, entrenar, escalar.
+# Los identificadores NO cambian respecto al run: section id, slot, block_id, ids
+# de fila/opción/decisión, flagIfMarked, actions[].value siguen igual.
+
+case_assembly:
+  case_id: marlow_analytics_readout
+  version: 1
+  status: draft
+  schema_version: 1.0.0
+  meta:
+    level: N1 · Foundations
+    profile: Data Analytics
+    profile_pack: operations_automation
+    estimated_minutes: 12
+    timer_seconds: 600
+    timer_default_on: false
+    tools:
+      - ai
+      - data
+      - messaging
+      - documents
+  manager_outcome:
+    primary_question: Whether this analyst verifies every number the AI produced against the real data, tells apart a supported fact from a confident guess, drops a cause-and-effect claim the data does not back, and refuses to put a fabricated figure in front of leadership just because it reads well.
+    assignment_brief: 'Priya needs a one-page readout for Monday''s leadership review covering what drove performance last quarter. She hands you the raw exports: order logs, refund records, ad spend by channel, and cohort retention tables. She asks you to pull the headline stats, identify the key drivers, and write a short narrative. She says to move fast but be accurate. She trusts you to use whatever tools help, but she expects every number she puts in front of the chief executive to be real.'
+    business_metric: Accuracy of the readout presented to leadership (zero fabricated numbers, zero unsupported causal claims)
+    risk_metric: Number of unverified or invented figures that reach the final readout
+    expected_signal: The analyst cross-checks every AI-produced number against the raw data, removes or flags the fabricated figures (the 23% repeat-purchase claim and the $412,000 USD email revenue figure), drops the unsupported cause-and-effect statement, and chooses to pause and rebuild the readout from verified source data rather than sending unverified claims to leadership.
+    expected_action: pausar
+    alternatives:
+      - pilotar
+      - entrenar
+      - escalar
+  sections:
+    - id: contexto
+      name: Context
+      slides:
+        - slot: 1
+          block_id: case_cover
+          title: Marlow & Co. Q1 business review
+          body: You are a **Data Analyst** at **Marlow & Co.**, a direct-to-consumer home goods company based in Columbus, Ohio. The leadership team meets every Monday for a business review. This Monday, **June 8, 2026**, chief executive David Chen and the department heads will review Q1 2026 performance. Your director, **Priya Sharma**, has asked you to prepare the readout.
+          content:
+            meta:
+              profile: Data Analytics
+              level: N1 · Foundations
+              estimatedMinutes: 12
+              timerSeconds: 600
+              timerDefaultOn: false
+              tools:
+                - kind: ai
+                  label: AI
+                - kind: data
+                  label: Tables
+                - kind: messaging
+                  label: Messaging
+                - kind: documents
+                  label: Documents
+        - slot: 2
+          block_id: reading_message
+          title: Priya assigns the Q1 readout
+          body: Priya sends you an email with clear instructions for the Monday review.
+          content:
+            message:
+              channel: email
+              from:
+                name: Priya Sharma
+              body: Hi team, for Monday's leadership review I need a one-page readout on Q1 2026. Please pull the headline stats for last quarter (January through March 2026), identify the key drivers of performance, and write a short narrative (3 to 5 sentences) explaining what drove the quarter. Use the Marlow AI Assistant to help draft it, but make sure everything is accurate before it reaches David. Thanks, Priya
+              timestamp: Friday, June 5, 2026, 9:15 AM ET
+        - slot: 3
+          block_id: reading_data_table
+          title: Raw orders data export
+          body: You export the raw orders table from the database. This is the source data you must use to verify every number in the readout.
+          content:
+            table:
+              columns:
+                - key: order_id
+                  label: Order ID
+                - key: customer_id
+                  label: Customer ID
+                - key: order_date
+                  label: Order Date
+                - key: order_total
+                  label: Order Total (USD)
+                - key: channel
+                  label: Channel
+                - key: is_repeat
+                  label: Repeat Purchase?
+                - key: cohort_month
+                  label: Cohort Month
+                - key: retention_month_1
+                  label: Retained Month 1?
+                - key: retention_month_2
+                  label: Retained Month 2?
+                - key: retention_month_3
+                  label: Retained Month 3?
+                - key: refund_amount
+                  label: Refund Amount (USD)
+                - key: ad_spend
+                  label: Ad Spend (USD)
+              rows:
+                - order_id: ORD-1001
+                  customer_id: C-0421
+                  order_date: January 15, 2026
+                  order_total: 48
+                  channel: email
+                  is_repeat: 'FALSE'
+                  cohort_month: 2026-01
+                  retention_month_1: 'TRUE'
+                  retention_month_2: 'TRUE'
+                  retention_month_3: 'FALSE'
+                  refund_amount: 0
+                  ad_spend: 0
+                - order_id: ORD-1002
+                  customer_id: C-0421
+                  order_date: February 20, 2026
+                  order_total: 52
+                  channel: email
+                  is_repeat: 'TRUE'
+                  cohort_month: 2026-01
+                  retention_month_1: 'TRUE'
+                  retention_month_2: 'TRUE'
+                  retention_month_3: 'FALSE'
+                  refund_amount: 0
+                  ad_spend: 0
+                - order_id: ORD-1003
+                  customer_id: C-0421
+                  order_date: March 18, 2026
+                  order_total: 56
+                  channel: email
+                  is_repeat: 'TRUE'
+                  cohort_month: 2026-01
+                  retention_month_1: 'TRUE'
+                  retention_month_2: 'TRUE'
+                  retention_month_3: 'FALSE'
+                  refund_amount: 0
+                  ad_spend: 0
+                - order_id: ORD-1004
+                  customer_id: C-0813
+                  order_date: January 10, 2026
+                  order_total: 44
+                  channel: paid_social
+                  is_repeat: 'FALSE'
+                  cohort_month: 2026-01
+                  retention_month_1: 'FALSE'
+                  retention_month_2: 'FALSE'
+                  retention_month_3: 'FALSE'
+                  refund_amount: 0
+                  ad_spend: 320
+                - order_id: ORD-1005
+                  customer_id: C-0813
+                  order_date: March 5, 2026
+                  order_total: 50
+                  channel: paid_social
+                  is_repeat: 'TRUE'
+                  cohort_month: 2026-01
+                  retention_month_1: 'FALSE'
+                  retention_month_2: 'FALSE'
+                  retention_month_3: 'FALSE'
+                  refund_amount: 0
+                  ad_spend: 280
+                - order_id: ORD-1006
+                  customer_id: C-1156
+                  order_date: February 2, 2026
+                  order_total: 60
+                  channel: organic
+                  is_repeat: 'FALSE'
+                  cohort_month: 2026-02
+                  retention_month_1: 'TRUE'
+                  retention_month_2: 'TRUE'
+                  retention_month_3: 'TRUE'
+                  refund_amount: 0
+                  ad_spend: 0
+                - order_id: ORD-1007
+                  customer_id: C-1156
+                  order_date: March 1, 2026
+                  order_total: 60
+                  channel: organic
+                  is_repeat: 'TRUE'
+                  cohort_month: 2026-02
+                  retention_month_1: 'TRUE'
+                  retention_month_2: 'TRUE'
+                  retention_month_3: 'TRUE'
+                  refund_amount: 0
+                  ad_spend: 0
+                - order_id: ORD-1008
+                  customer_id: C-1156
+                  order_date: April 5, 2026
+                  order_total: 60
+                  channel: organic
+                  is_repeat: 'TRUE'
+                  cohort_month: 2026-02
+                  retention_month_1: 'TRUE'
+                  retention_month_2: 'TRUE'
+                  retention_month_3: 'TRUE'
+                  refund_amount: 0
+                  ad_spend: 0
+                - order_id: ORD-1009
+                  customer_id: C-1156
+                  order_date: May 2, 2026
+                  order_total: 66
+                  channel: organic
+                  is_repeat: 'TRUE'
+                  cohort_month: 2026-02
+                  retention_month_1: 'TRUE'
+                  retention_month_2: 'TRUE'
+                  retention_month_3: 'TRUE'
+                  refund_amount: 0
+                  ad_spend: 0
+                - order_id: ORD-1010
+                  customer_id: C-2294
+                  order_date: March 12, 2026
+                  order_total: 48
+                  channel: referral
+                  is_repeat: 'FALSE'
+                  cohort_month: 2026-03
+                  retention_month_1: 'TRUE'
+                  retention_month_2: 'FALSE'
+                  retention_month_3: 'FALSE'
+                  refund_amount: 48
+                  ad_spend: 0
+                - order_id: ORD-1011
+                  customer_id: C-2294
+                  order_date: April 10, 2026
+                  order_total: 52
+                  channel: referral
+                  is_repeat: 'TRUE'
+                  cohort_month: 2026-03
+                  retention_month_1: 'TRUE'
+                  retention_month_2: 'FALSE'
+                  retention_month_3: 'FALSE'
+                  refund_amount: 0
+                  ad_spend: 0
+                - order_id: ORD-1012
+                  customer_id: C-3018
+                  order_date: April 22, 2026
+                  order_total: 54
+                  channel: display
+                  is_repeat: 'FALSE'
+                  cohort_month: 2026-04
+                  retention_month_1: 'FALSE'
+                  retention_month_2: 'FALSE'
+                  retention_month_3: 'FALSE'
+                  refund_amount: 0
+                  ad_spend: 450
+        - slot: 4
+          block_id: reading_kpi_cards
+          title: Q1 2026 headline metrics
+          body: Here are the verified Q1 2026 numbers from the raw data. Use these as your starting point.
+          content:
+            kpis:
+              - label: Total orders
+                value: '7'
+                delta:
+                  goodWhen: up
+              - label: Total revenue
+                value: $370.00 USD
+                delta:
+                  goodWhen: up
+              - label: Total ad spend
+                value: $600.00 USD
+                delta:
+                  goodWhen: down
+              - label: Total refunds
+                value: $0.00 USD
+                delta:
+                  goodWhen: down
+        - slot: 5
+          block_id: reading_message
+          title: Priya's follow-up reminder
+          body: A few hours later, Priya sends a follow-up message with an important reminder about data integrity.
+          content:
+            message:
+              channel: chat
+              from:
+                name: Priya Sharma
+              body: One more thing. The readout needs to be fully traceable to the source data. Every number you state must come from the raw export. And no cause-and-effect claims unless we actually ran a test or have time-series data that supports it. If the AI suggests something you can't verify, remove it. Accuracy matters more than polish.
+              timestamp: Friday, June 5, 2026, 11:30 AM ET
+    - id: datos
+      name: Data
+      slides:
+        - slot: 1
+          block_id: categorize_rows
+          title: Verify each order row
+          body: Priya sent the raw export of **7 orders** from Q1 2026 (January through March). For each row, decide whether the data is **verified** (you can confirm it from the export), **needs recalculation** (the number is present but you must compute it yourself), or **contains a figure that cannot be sourced** (the number is not in the raw data at all).
+          content:
+            actions:
+              - value: verified
+                label: Verified, I can confirm this from the raw export
+              - value: recalculate
+                label: Needs recalculation, the data is present but I must compute it
+              - value: unsourced
+                label: Cannot be sourced, this figure is not in the raw data
+            rows:
+              - id: row_1
+                label: 'Order ORD-1001: $48.00 USD, channel email, first purchase, January 15, 2026'
+                hint: Directly in the export. No computation needed.
+                example: Verified
+              - id: row_2
+                label: 'Order ORD-1002: $52.00 USD, channel email, repeat purchase, February 20, 2026'
+                hint: Directly in the export. No computation needed.
+                example: Verified
+              - id: row_3
+                label: 'Order ORD-1003: $56.00 USD, channel email, repeat purchase, March 18, 2026'
+                hint: Directly in the export. No computation needed.
+                example: Verified
+              - id: row_4
+                label: 'Order ORD-1004: $44.00 USD, channel paid_social, first purchase, January 10, 2026'
+                hint: Directly in the export. No computation needed.
+                example: Verified
+              - id: row_5
+                label: 'Order ORD-1005: $50.00 USD, channel paid_social, repeat purchase, March 5, 2026'
+                hint: Directly in the export. No computation needed.
+                example: Verified
+              - id: row_6
+                label: 'Order ORD-1006: $60.00 USD, channel organic, first purchase, February 2, 2026'
+                hint: Directly in the export. No computation needed.
+                example: Verified
+              - id: row_7
+                label: 'Order ORD-1007: $60.00 USD, channel organic, repeat purchase, March 1, 2026'
+                hint: Directly in the export. No computation needed.
+                example: Verified
+        - slot: 2
+          block_id: categorize_rows
+          title: Check the AI's claims against source data
+          body: The Marlow AI Assistant generated three claims for the Q1 readout. For each one, decide whether it is **sourced** (traceable to the raw export) or **fabricated** (not present in any row or aggregate of the raw data).
+          content:
+            actions:
+              - value: sourced
+                label: Sourced, this figure is traceable to the raw export
+              - value: fabricated
+                label: Fabricated, this figure is not in the raw data
+            rows:
+              - id: claim_1
+                label: 'Claim: Repeat-purchase rate increased by 23% in Q1 2026'
+                hint: The raw data shows 4 repeat orders out of 7 total (57%). No 23% figure appears anywhere in the export.
+                example: Fabricated
+              - id: claim_2
+                label: 'Claim: Email-attributed revenue reached $412,000 USD in Q1 2026'
+                hint: 'Raw email revenue: ORD-1001 ($48) + ORD-1002 ($52) + ORD-1003 ($56) = $156.00 USD. $412,000 is not in any row.'
+                example: Fabricated
+              - id: claim_3
+                label: 'Claim: The May 1 price change drove the increase in repeat purchases'
+                hint: The price change happened after Q1 ended. No controlled test or causal methodology exists in the data.
+                example: Fabricated
+        - slot: 3
+          block_id: model_tradeoff_sliders
+          title: Balance speed, accuracy, and completeness
+          body: You have three options for handling the AI-generated readout. Each option trades off **speed** (how fast you can deliver), **accuracy** (whether every number is verified), and **completeness** (whether the narrative meets Priya's request for a full performance story). Review the tradeoffs and decide your approach.
+          content: {}
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write your prompt to the Marlow AI Assistant
+          body: 'Priya wants a one-page readout for Monday''s leadership review. Write the prompt you would give the Marlow AI Assistant to draft the Q1 2026 performance narrative. Remember: the AI cannot access the live database or verify numbers against source data. It can draft SQL queries, write summaries, format tables, and suggest possible drivers.'
+          content: {}
+        - slot: 5
+          block_id: reading_attachment
+          title: Company data verification policy
+          body: Review the company policy on data verification before you finalize the readout.
+          content:
+            attachments:
+              - name: Data Verification Policy.pdf
+                kind: document
+              - name: Q1 2026 Raw Data Export.csv
+                kind: spreadsheet
+    - id: ia
+      name: AI
+      slides:
+        - slot: 1
+          block_id: reading_passive
+          title: AI-generated Q1 readout
+          body: Priya sent you the readout that the Marlow AI Assistant produced after you gave it the raw data export. Read it carefully before you decide what to do next.
+          content: {}
+        - slot: 2
+          block_id: ai_textfield_guided
+          title: Build your request to the AI
+          body: Before the AI produced the readout, you gave it instructions. Now rebuild that request by selecting the goal, the audience, and the data-limitation rules you want the AI to follow.
+          content:
+            guided:
+              objetivos:
+                - Summarize Q1 2026 performance with headline revenue, order count, and repeat-purchase rate
+                - Identify which channels and customer segments drove Q1 results
+                - Write a 3-to-5-sentence narrative explaining the quarter's performance
+                - Format the output as a one-page readout suitable for a leadership meeting
+              audiencias:
+                - Leadership team (chief executive David Chen and department heads)
+                - Priya Sharma, Director of Business Operations
+                - Entire Marlow & Co. staff via company newsletter
+                - External investors and board members
+              limites:
+                - Every figure must be traceable to a specific row or aggregate in the raw export file
+                - No cause-and-effect claims unless the data includes a controlled test or stated causal methodology
+                - If a figure cannot be verified against the source data, remove it from the readout entirely
+                - 'Use only the fields in the dataset: order_id, customer_id, order_date, order_total, channel, is_repeat, cohort_month, retention_month_1/2/3, refund_amount, ad_spend'
+        - slot: 3
+          block_id: ai_output_review
+          title: Flag unsupported figures in the readout
+          body: Review the AI's output below. Two figures in the readout cannot be verified against the raw data export. Mark each segment that contains an unsupported number.
+          content:
+            segments:
+              - id: seg_01
+                text: Q1 2026 revenue reached $370.00 USD across 7 orders, with a repeat-purchase rate of 57% (4 of 7 orders were repeat purchases).
+                flagIfMarked: frase_reutilizable
+              - id: seg_02
+                text: The repeat-purchase rate increased 23% compared to the prior quarter, signaling stronger customer loyalty.
+                flagIfMarked: claim_no_verificado
+              - id: seg_03
+                text: Email-attributed revenue totaled $412,000 USD, making email the highest-performing channel.
+                flagIfMarked: claim_no_verificado
+              - id: seg_04
+                text: Organic and referral channels contributed $126.00 USD and $48.00 USD respectively, with zero ad spend.
+                flagIfMarked: frase_reutilizable
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write a correction prompt to the AI
+          body: 'Now write a new prompt to the Marlow AI Assistant. Your goal: ask it to correct or remove the fabricated figures from the readout. Be specific about which numbers are unsupported and what the verified figures are.'
+          content: {}
+        - slot: 5
+          block_id: ai_output_review
+          title: Flag the unsupported causal claim
+          body: The AI's readout also includes a statement about what drove the quarter's performance. Review the segment below and mark it if the claim is not supported by the data.
+          content:
+            segments:
+              - id: seg_05
+                text: The May 1 price change drove the increase in repeat purchases during Q1, as customers responded to the new pricing structure.
+                flagIfMarked: claim_no_verificado
+              - id: seg_06
+                text: Repeat orders accounted for 4 of 7 Q1 orders, with returning customers contributing $218.00 USD in revenue.
+                flagIfMarked: frase_reutilizable
+    - id: revision
+      name: Verification
+      slides:
+        - slot: 1
+          block_id: ai_output_review
+          title: Review the revised readout
+          body: You asked the Marlow AI Assistant to fix the fabricated numbers and the unsupported causal claim. It produced this revised version. Read it carefully and flag any segments that still contain unsupported or fabricated claims.
+          content:
+            segments:
+              - id: seg_a
+                text: In Q1 2026, Marlow & Co. generated $370.00 USD in revenue across 7 orders.
+                flagIfMarked: claim_no_verificado
+              - id: seg_b
+                text: The repeat-purchase rate reached 57% (4 of 7 orders), up from the prior quarter.
+                flagIfMarked: claim_no_verificado
+              - id: seg_c
+                text: Email-attributed revenue totaled $156.00 USD, paid social contributed $94.00 USD, and organic contributed $120.00 USD.
+                flagIfMarked: claim_no_verificado
+              - id: seg_d
+                text: The May price change is expected to improve margins in Q2.
+                flagIfMarked: claim_no_verificado
+        - slot: 2
+          block_id: ai_comparison
+          title: Choose a revised approach
+          body: Four versions of the Q1 readout have been drafted. Each handles the fabricated data and the unsupported causal claim differently. Pick the one you would present to the leadership team.
+          content:
+            options:
+              - id: A
+                body: Q1 2026 revenue was $370.00 USD from 7 orders. Repeat orders accounted for 4 of 7 (57%). Email drove $156.00 USD, paid social drove $94.00 USD, and organic drove $120.00 USD. The repeat rate improved versus the prior quarter, though the sample is small. No causal driver can be confirmed from the available data.
+              - id: B
+                body: Q1 2026 revenue was $370.00 USD from 7 orders. Repeat orders accounted for 4 of 7 (57%). The May price change may have contributed to the repeat rate, though the data does not prove causation. Email drove $156.00 USD, paid social drove $94.00 USD, and organic drove $120.00 USD.
+              - id: C
+                body: Q1 2026 revenue was $370.00 USD from 7 orders. Repeat orders accounted for 4 of 7 (57%), a 23% increase. Email-attributed revenue was $412,000 USD. Paid social and organic also contributed. The May price change drove the improvement in repeat purchases.
+              - id: D
+                body: Q1 2026 revenue was $370.00 USD from 7 orders. The repeat-purchase rate was 57%. Email contributed $156.00 USD. Paid social contributed $94.00 USD. Organic contributed $120.00 USD. The data export covers only 7 orders, so any trend claims should be treated as directional.
+        - slot: 3
+          block_id: reading_message
+          title: Priya asks for your final call
+          body: Priya sends a message asking you to confirm your decision before Monday's review.
+          content:
+            message:
+              channel: email
+              from:
+                name: Priya Sharma
+              body: Hi there, I saw the revised readout versions coming through. I need you to make the final call on what goes to David and the department heads on Monday. Pick the version that is accurate, complete, and defensible. If you need to add context or caveats, include them. Let me know your decision by end of day.
+              timestamp: Friday, June 5, 2026, 2:15 PM ET
+        - slot: 4
+          block_id: categorize_rows
+          title: Sort the Q1 data for the readout
+          body: 'Before you finalize, sort each piece of Q1 information into one of three categories: **Include as-is** (verified and ready), **Include with caveat** (true but needs context), or **Exclude entirely** (fabricated or unsupported).'
+          content:
+            actions:
+              - value: include_as_is
+                label: Include as-is
+              - value: include_with_caveat
+                label: Include with caveat
+              - value: exclude
+                label: Exclude entirely
+            rows:
+              - id: row_1
+                label: 'Total Q1 2026 revenue: $370.00 USD'
+              - id: row_2
+                label: 'Repeat-purchase rate: 57% (4 of 7 orders)'
+              - id: row_3
+                label: 23% increase in repeat-purchase rate versus prior quarter
+              - id: row_4
+                label: 'Email-attributed revenue: $412,000 USD'
+              - id: row_5
+                label: 'Email-attributed revenue: $156.00 USD'
+              - id: row_6
+                label: The May price change drove the increase in repeat purchases
+        - slot: 5
+          block_id: ai_comparison
+          title: Pick the best closing narrative
+          body: Priya wants a short narrative (3 to 5 sentences) that explains what drove Q1 performance. Four options are below. Choose the one that is both accurate and complete.
+          content:
+            options:
+              - id: A
+                body: Q1 2026 revenue reached $370.00 USD across 7 orders, with repeat purchases making up 57% of volume. Email and organic channels each contributed over $100.00 USD, while paid social generated $94.00 USD. The small dataset limits any strong conclusions about trends or drivers. Additional quarters of data will provide a clearer picture.
+              - id: B
+                body: Q1 2026 revenue was $370.00 USD from 7 orders. The 23% jump in repeat purchases shows that customers are coming back. The May price change helped drive this improvement. Email was the strongest channel with $412,000 USD in attributed revenue.
+              - id: C
+                body: Q1 2026 revenue was $370.00 USD. Repeat orders were 4 out of 7, or 57%. Email drove $156.00 USD. Paid social drove $94.00 USD. Organic drove $120.00 USD. The May price change may help Q2 margins.
+              - id: D
+                body: Q1 2026 revenue totaled $370.00 USD from 7 orders, with repeat orders at 57%. The repeat rate improved versus the prior quarter, though the sample is too small to confirm a trend. Email and organic channels performed well. Paid social required $600.00 USD in ad spend to generate $94.00 USD in revenue, which warrants attention.
+    - id: cierre
+      name: Close
+      slides:
+        - slot: 1
+          block_id: ai_comparison
+          title: Choose the readout format
+          body: Priya needs a one-page readout for Monday's leadership review. Each format below uses a different balance of completeness and traceability. Pick the one that best serves the team.
+          content:
+            options:
+              - id: A
+                body: Full narrative with all AI-generated figures and the causal claim about the May price change. Includes every metric Priya asked for. No verification notes.
+              - id: B
+                body: Narrative based only on verified source data. Removes the two fabricated numbers and the unsupported causal claim. Notes that the repeat-purchase story is incomplete without the removed data.
+              - id: C
+                body: Bullet-point summary of verified Q1 metrics only. No narrative. Each figure is footnoted with the specific order IDs that support it. No interpretation of drivers.
+              - id: D
+                body: Full narrative using verified data only, with a separate caveat section listing what was removed and why. States that driver analysis is preliminary because the data covers only 7 orders.
+        - slot: 2
+          block_id: ai_textfield_free
+          title: Write the final narrative
+          body: Write a **3 to 5 sentence** narrative explaining what drove Q1 2026 performance. Use only verified data from the source table. Do not include any fabricated figures or unsupported causal claims. This will appear in the readout for the Monday leadership review.
+          content: {}
+        - slot: 3
+          block_id: categorize_rows
+          title: Classify each readout element
+          body: 'For each element of the final readout, classify it as one of the following: **Verified** (traceable to source data), **Caveated** (included but flagged as uncertain), or **Removed** (excluded from the final readout).'
+          content:
+            actions:
+              - value: verified
+                label: Verified, traceable to source data
+              - value: caveated
+                label: Caveated, included but flagged as uncertain
+              - value: removed
+                label: Removed, excluded from the final readout
+            rows:
+              - id: elem_1
+                label: Total Q1 2026 revenue of $370.00 USD from 7 orders
+                hint: Directly sums ORD-1001 through ORD-1007
+                example: verified
+              - id: elem_2
+                label: 23% increase in repeat-purchase rate compared to Q4 2025
+                hint: No Q4 2025 data exists in the export; the AI invented this figure
+                example: removed
+              - id: elem_3
+                label: $412,000 USD in email-attributed revenue
+                hint: Actual email revenue is $156.00 USD from ORD-1001, 1002, 1003; the AI fabricated this figure
+                example: removed
+              - id: elem_4
+                label: Repeat orders made up 4 of 7 Q1 orders (57%)
+                hint: ORD-1002, 1003, 1005, 1007 are repeat; ORD-1001, 1004, 1006 are first orders
+                example: verified
+              - id: elem_5
+                label: The May 1 price change drove the increase in repeat purchases
+                hint: Price change occurred after Q1 ended; no causal methodology in data
+                example: removed
+              - id: elem_6
+                label: Organic channel shows 4 repeat orders from customer C-1156 with $246.00 USD total revenue
+                hint: 'ORD-1006, 1007, 1008, 1009, but ORD-1008 and 1009 are Q2, not Q1. Q1 organic: ORD-1006 ($60) and ORD-1007 ($60) = $120.00 USD'
+                example: caveated
+              - id: elem_7
+                label: Total Q1 2026 ad spend of $600.00 USD on paid social
+                hint: ORD-1004 ($320) and ORD-1005 ($280) sum to $600.00 USD
+                example: verified
+              - id: elem_8
+                label: Customer C-2294 received a full refund of $48.00 USD on their first order
+                hint: ORD-1010 has refund_amount of 48, but this order is in Q1 (March 12, 2026)
+                example: verified
+        - slot: 4
+          block_id: reading_passive
+          title: Final verified one-page readout
+          body: |-
+            Below is the readout as it will appear at the Monday leadership review. All figures have been verified against the source data. Fabricated numbers and unsupported causal claims have been removed.
+
+            ---
+
+            **Marlow & Co. | Q1 2026 Performance Summary**
+
+            **Prepared for:** Monday, June 8, 2026 leadership review
+            **Data source:** Orders export (ORD-1001 through ORD-1007)
+
+            **Headline metrics**
+            - Total revenue: **$370.00 USD** across **7 orders**
+            - First orders: **3** (ORD-1001, ORD-1004, ORD-1006)
+            - Repeat orders: **4** (ORD-1002, ORD-1003, ORD-1005, ORD-1007)
+            - Repeat order share: **57%**
+            - Total ad spend: **$600.00 USD** (paid social only)
+            - Total refunds: **$0.00 USD**
+
+            **Channel breakdown**
+            - Email: **$156.00 USD** from 3 orders (customer C-0421)
+            - Paid social: **$94.00 USD** from 2 orders (customer C-0813)
+            - Organic: **$120.00 USD** from 2 orders (customer C-1156)
+            - Referral: **$0.00 USD** in Q1 (first referral order ORD-1010 is March 12, but refunded in full)
+            - Display: **$0.00 USD** in Q1
+
+            **Customer retention snapshot**
+            - Customer C-1156 (organic, acquired February 2026) purchased in months 1, 2, and 3 after acquisition. This is the strongest retention pattern in the data.
+            - Customer C-0421 (email, acquired January 2026) purchased in months 1 and 2 but not month 3.
+            - Customer C-0813 (paid social, acquired January 2026) did not purchase in any retention month.
+
+            **Note on drivers:** With only 7 orders in the quarter, any statement about what drove performance is preliminary. A larger data set is needed to identify reliable trends.
+          content: {}
+        - slot: 5
+          block_id: tradeoff_decision_memo
+          title: Decide and write your memo
+          body: Priya needs your final decision on how to deliver the Q1 readout. Each option has a real trade-off. Choose one and write a short memo to Priya explaining your decision.
+          content:
+            decisions:
+              - id: send_as_is
+                title: Send the AI-generated readout as-is
+                detail: The readout includes all metrics Priya asked for, with a full narrative and driver analysis. However, it contains two fabricated numbers and an unsupported causal claim. Leadership may act on inaccurate data.
+              - id: edit_and_send
+                title: Edit the readout, then send
+                detail: Removes the fabricated figures and the causal claim. The remaining narrative is thin and may not fully answer Priya's request for a performance story. Takes about 30 minutes to clean up.
+              - id: rebuild_from_scratch
+                title: Rebuild the readout from verified source data, then send
+                detail: Produces a fully accurate readout with every figure traceable to source data. Takes several hours to write the narrative yourself. The readout will note that driver analysis is preliminary due to the small data set.
+              - id: pause_and_escalate
+                title: Pause and escalate to Priya with a data quality warning
+                detail: Flags that the AI tool produced unverifiable data and that the source export may be too small for reliable analysis. Delays the Monday readout. Priya may need to decide whether to postpone or proceed with what you have.

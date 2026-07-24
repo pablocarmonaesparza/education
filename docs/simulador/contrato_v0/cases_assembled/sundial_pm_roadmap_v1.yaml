@@ -1,0 +1,638 @@
+# Caso ensamblado · sundial_pm_roadmap v1 (generado por el motor generador,
+# pipeline E1/E2/E3, run 20260723_213325__sundial_pm_roadmap, attempt-1).
+# 5 secciones x 5 slides = 25. Gates deterministas en PASS
+# (check-assembled-case.mjs + lint-case-copy.mjs). El juez narrativo NO se corrió
+# (requiere llave del modelo); queda para revisión humana, como los salvados
+# crestline/harborview. result del run: HUMAN_REVIEW.
+#
+# Salvado a mano tras el run: se reemplazaron acrónimos corporativos prohibidos por
+# lenguaje sin sigla, manteniendo el sentido (glosario 00_EN_GLOSSARY.md: cero
+# acrónimos en el copy visible, AI es la única excepción):
+#   - "CRM" -> "customer records system" (contexto slots 1/2/5).
+#   - "NPS verbatims" -> "satisfaction-survey verbatims"; "NPS response" ->
+#     "satisfaction-survey response" (assignment_brief, contexto 3/4, revision 1/3).
+#   - "CEO"/"CTO" -> "chief executive"/"chief technology officer" (ia slot 2 y
+#     revision slot 3).
+# Y se neutralizó un spoiler determinista en el cierre: la opción D (distractor) de
+# 'Readiness assessment comparison' decía "which should not be used", que el lint
+# anti-spoiler caza como veredicto; se quitó la cláusula sin cambiar cuál opción es
+# la correcta ni los hechos del distractor.
+# Los identificadores NO cambian respecto al run: section id, slot, block_id, ids de
+# fila/opción/segmento/decisión, flagIfMarked y actions[].value siguen igual.
+#
+# Biblia (hechos canónicos):
+#   Empresa: Sundial Money (app de envelope budgeting, fintech de 90 personas,
+#     Columbus, Ohio, EEUU). Rol: Product Manager.
+#   Sundial Compass: la IA aprobada. Redacta specs/roadmap desde resúmenes
+#     anonimizados; NO accede a analytics ni a la base de usuarios, no verifica
+#     claims, no distingue quotes reales de inventadas, no procesa datos personales.
+#     Instrumento dado, no se elige.
+#   Priya Chandrasekhar: VP of Product. Asigna y recibe. Nunca destinataria del reply.
+#   Marcus Webb: Engineering Lead. Avisa los límites de Compass (Slack).
+#   Lena Okonkwo: Customer Support Manager. Caza el 62% inventado (email).
+#   Destinatario del entregable: el leadership team de Sundial (chief executive,
+#     chief technology officer, head of growth).
+#   Hoy viernes 5 jun 2026; deadline lunes 8 jun 2026, 9:00 AM ET. Q3 2026 = trimestre
+#     a planear. Último release: 15 abr 2026 (piloto de shared budget, solo Enterprise).
+#   Dataset de 12 filas (muestra); reglas de consentimiento: opted_out fuera (regla 1),
+#     unknown/unconfirmed fuera (regla 2), duplicate/internal_test fuera (regla 3).
+#   62%: demanda de shared-budget que la IA puede inventar (hallucination). Montos en
+#     USD explícito. Acción esperada: entrenar. Alternativas: pilotar, pausar, escalar.
+case_assembly:
+  case_id: sundial_pm_roadmap
+  version: 1
+  status: draft
+  schema_version: 1.0.0
+  meta:
+    level: N2 · Workflow
+    profile: Product Management
+    profile_pack: marketing_growth
+    estimated_minutes: 12
+    timer_seconds: 600
+    timer_default_on: false
+    tools:
+      - ai
+      - data
+      - messaging
+      - documents
+  manager_outcome:
+    primary_question: 'Whether this product manager can turn messy user input into a roadmap with judgment: keeping identifiable and sensitive user data out of the AI tool, catching demand numbers and impact estimates the tool made up, grounding priorities in real evidence instead of the loudest accounts, and knowing which parts of the draft are safe to put in front of leadership.'
+    assignment_brief: 'Priya needs the Q3 roadmap and a spec for the top feature by Monday. You have four raw data sources: **400 support tickets**, a churn survey with **1,200 responses**, **850 satisfaction-survey verbatims**, and a feature-request spreadsheet with **310 entries**. Every source contains personal data: email addresses, account IDs, and free-text where users pasted bank balances and account numbers while describing bugs. Priya wants you to use the AI assistant to find the top themes, draft the feature spec, and produce a prioritized roadmap with estimated revenue impact. She needs to know what you put into the tool, what you kept out, and whether the output is ready for leadership or needs rework.'
+    business_metric: 'Roadmap accuracy: percentage of prioritized features that match real user demand signals from verified data'
+    risk_metric: 'Data exposure incidents: count of identifiable or sensitive user data points that enter the AI tool outside approved agreements'
+    expected_signal: The participant strips or aggregates personal and sensitive data before pasting anything into the AI tool, catches the invented demand percentages and revenue estimates in the output, checks priority rankings against real evidence rather than loud accounts, and decides to keep the draft as a working draft with numbers marked unverified rather than sending it to leadership or pausing entirely.
+    expected_action: entrenar
+    alternatives:
+      - pilotar
+      - pausar
+      - escalar
+  sections:
+    - id: contexto
+      name: Context
+      slides:
+        - slot: 1
+          block_id: case_cover
+          title: Sundial Money Q3 roadmap
+          body: |-
+            You are a **Product Manager** at **Sundial Money**, a 90-person fintech company based in Columbus, Ohio. Sundial helps consumers manage their spending with a digital envelope-budgeting app. Your main tool is **Sundial Compass**, an AI drafting assistant that can synthesize themes, generate feature specs, and rewrite content for different audiences. It cannot access Sundial's product analytics, customer records system, or user database, and it cannot process personal data under Sundial's user-data agreements.
+
+            **Priya Chandrasekhar**, VP of Product, has just assigned you a high-stakes project. It is **Friday, June 5, 2026**. She wants a prioritized Q3 roadmap delivered to the leadership team by **Monday, June 8, 2026**.
+          content:
+            meta:
+              profile: Product Management
+              level: N2 · Workflow
+              estimatedMinutes: 12
+              timerSeconds: 600
+              timerDefaultOn: false
+              tools:
+                - kind: ai
+                  label: AI
+                - kind: data
+                  label: Tables
+                - kind: messaging
+                  label: Messaging
+                - kind: documents
+                  label: Documents
+        - slot: 2
+          block_id: reading_message
+          title: Priya's assignment email
+          body: Priya sends you an email with the full scope of the project.
+          content:
+            message:
+              channel: email
+              from:
+                name: Priya Chandrasekhar
+              timestamp: '2026-06-05T09:15:00-04:00'
+              body: |-
+                Subject: Q3 Roadmap, due Monday
+
+                Hi team,
+
+                We need a prioritized Q3 2026 roadmap ready for the Monday, June 8 leadership presentation. Here is what I need from you:
+
+                1. A prioritized Q3 roadmap with the top 3 features ranked by user demand.
+                2. A feature spec for the #1 priority feature, including a problem statement and proposed solution.
+                3. Estimated revenue impact for each of the top 3 features.
+                4. A summary of what data was fed into the AI tool and what was kept out.
+                5. A readiness assessment: whether the draft is safe to present to leadership or needs rework.
+
+                Use Sundial Compass to help draft the roadmap and spec. But remember its limitations: it cannot access our product analytics, customer records system, or user database, and it cannot process personal data.
+
+                Deadline: Monday, June 8, 2026, by 9:00 AM ET.
+
+                Thanks,
+                Priya
+        - slot: 3
+          block_id: reading_data_table
+          title: User feedback dataset
+          body: |-
+            You have a **12-row sample** of user feedback drawn from support tickets, churn surveys, satisfaction-survey verbatims, and feature requests. Each row contains personal data, financial details, and consent flags. You must apply these **data-policy rules** before feeding anything into Sundial Compass:
+
+            - **Rule 1:** Any user who has opted out of data sharing must be excluded from all analysis and never have their data processed by any tool.
+            - **Rule 2:** Any user whose consent status is unknown or unconfirmed must be excluded until consent is verified.
+            - **Rule 3:** Any record flagged as a duplicate or internal test must be removed before analysis to avoid double-counting or false signals.
+          content:
+            table:
+              columns:
+                - key: source
+                  label: Source
+                - key: user_name
+                  label: User name
+                - key: email
+                  label: Email
+                - key: account_id
+                  label: Account ID
+                - key: text_excerpt
+                  label: Text excerpt
+                - key: consent_status
+                  label: Consent status
+                - key: account_tier
+                  label: Account tier
+                - key: flag
+                  label: Flag
+              rows:
+                - source: support_ticket
+                  user_name: Jennifer Alvarez
+                  email: jen.alvarez@email.com
+                  account_id: SA-10234
+                  text_excerpt: My direct deposit of $3,400 USD posted to the wrong envelope. My account number is 987654321 at Chase.
+                  consent_status: opted_in
+                  account_tier: Plus
+                  flag: ''
+                - source: support_ticket
+                  user_name: Robert Chen
+                  email: rob.chen@workmail.com
+                  account_id: SA-10891
+                  text_excerpt: The recurring bill pay keeps failing. I have $12,800 USD in my checking account so funds are not the issue.
+                  consent_status: opted_in
+                  account_tier: Enterprise
+                  flag: ''
+                - source: churn_survey
+                  user_name: Diana Reyes
+                  email: dreyes@personal.com
+                  account_id: SA-11567
+                  text_excerpt: I left because there is no shared budget feature. My husband and I split everything 50/50 and the app cannot do that.
+                  consent_status: opted_in
+                  account_tier: Free
+                  flag: ''
+                - source: churn_survey
+                  user_name: Tyrone Jackson
+                  email: tyrone.j@fastmail.com
+                  account_id: SA-12104
+                  text_excerpt: Too expensive for what it does. I moved to a free spreadsheet.
+                  consent_status: opted_out
+                  account_tier: Free
+                  flag: ''
+                - source: nps_verbatim
+                  user_name: Priya Mehta
+                  email: pmehta@consulting.co
+                  account_id: SA-10922
+                  text_excerpt: I love the savings goals feature. I have $47,000 USD saved across three goals.
+                  consent_status: opted_in
+                  account_tier: Plus
+                  flag: ''
+                - source: nps_verbatim
+                  user_name: Carlos Mendez
+                  email: carlos.mendez@university.edu
+                  account_id: SA-13015
+                  text_excerpt: The app crashes every time I try to link my credit union. Routing number 322271627.
+                  consent_status: unknown
+                  account_tier: Free
+                  flag: unconfirmed
+                - source: feature_request
+                  user_name: Emily Park
+                  email: emily.park@techstartup.io
+                  account_id: SA-14203
+                  text_excerpt: Please add investment tracking. I want to see my Vanguard portfolio of $215,000 USD inside Sundial.
+                  consent_status: opted_in
+                  account_tier: Enterprise
+                  flag: ''
+                - source: feature_request
+                  user_name: Samuel Green
+                  email: sam.green@oldmail.com
+                  account_id: SA-10012
+                  text_excerpt: Shared budgets would save my marriage. We need a joint envelope system.
+                  consent_status: opted_in
+                  account_tier: Free
+                  flag: ''
+                - source: support_ticket
+                  user_name: Linda O'Brien
+                  email: lobrien@regionalbank.com
+                  account_id: SA-11876
+                  text_excerpt: 'Duplicate of ticket #28471. Same issue with the transaction import failing.'
+                  consent_status: opted_in
+                  account_tier: Plus
+                  flag: duplicate
+                - source: churn_survey
+                  user_name: Marcus Webb
+                  email: marcus.webb@sundialmoney.com
+                  account_id: SA-99999
+                  text_excerpt: Testing the survey link. Ignore this response.
+                  consent_status: unknown
+                  account_tier: Enterprise
+                  flag: internal_test
+                - source: nps_verbatim
+                  user_name: Fatima Al-Rashid
+                  email: falrashid@familycare.org
+                  account_id: SA-13340
+                  text_excerpt: The budgeting categories are too rigid. I need to customize my envelope names.
+                  consent_status: opted_in
+                  account_tier: Free
+                  flag: ''
+                - source: feature_request
+                  user_name: David Kowalski
+                  email: dkowalski@midwest.com
+                  account_id: SA-14588
+                  text_excerpt: Please add round-up savings. I would save an extra $190 USD a month.
+                  consent_status: opted_out
+                  account_tier: Plus
+                  flag: ''
+        - slot: 4
+          block_id: reading_kpi_cards
+          title: Sundial by the numbers
+          body: Here are the headline figures for the full dataset and company context.
+          content:
+            kpis:
+              - label: Support tickets in raw export
+                value: '400'
+              - label: Churn survey responses
+                value: 1,200
+              - label: Satisfaction-survey verbatims
+                value: '850'
+              - label: Feature-request spreadsheet entries
+                value: '310'
+              - label: Sundial Money employees
+                value: '90'
+              - label: Last feature release (shared budget pilot)
+                value: April 15, 2026 (Enterprise only)
+        - slot: 5
+          block_id: reading_message
+          title: Marcus Webb on Compass limits
+          body: Marcus Webb, Engineering Lead, sends you a Slack message about what Sundial Compass can and cannot do.
+          content:
+            message:
+              channel: slack_dm
+              from:
+                name: Marcus Webb
+              timestamp: '2026-06-05T10:30:00-04:00'
+              body: |-
+                Hey, quick heads up on Sundial Compass before you dive in.
+
+                What it CAN do:
+                - Draft text from structured summaries and anonymized themes
+                - Synthesize patterns from aggregated, non-identifiable input
+                - Generate feature specs and roadmap documents from curated prompts
+                - Rewrite and format content for different audiences
+
+                What it CANNOT do:
+                - Access Sundial's product analytics, customer records system, or user database
+                - Verify claims against real usage data or revenue figures
+                - Distinguish real quotes from plausible-sounding invented ones
+                - Know which accounts are enterprise vs. consumer
+                - Process personal data under Sundial's user-data agreements
+
+                So you need to feed it clean, anonymized summaries. Don't give it raw rows with names, emails, account IDs, or financial figures. And double-check any numbers or quotes it generates against real data.
+
+                Let me know if you have questions.
+    - id: datos
+      name: Data
+      slides:
+        - slot: 1
+          block_id: categorize_rows
+          title: Triage rows 1 through 6
+          body: Apply the data-policy rules to each row. Decide if the row can be used in analysis or must be excluded.
+          content:
+            actions:
+              - value: include
+                label: Include in analysis
+              - value: exclude
+                label: Exclude from analysis
+            rows:
+              - id: row_1
+                label: Jennifer Alvarez, support_ticket, opted_in, no flag
+                hint: opted_in and no flag. Include.
+                example: Consent is verified, no exclusion flag. Safe to use.
+              - id: row_2
+                label: Robert Chen, support_ticket, opted_in, no flag
+                hint: opted_in and no flag. Include.
+                example: Consent is verified, no exclusion flag. Safe to use.
+              - id: row_3
+                label: Diana Reyes, churn_survey, opted_in, no flag
+                hint: opted_in and no flag. Include.
+                example: Consent is verified, no exclusion flag. Safe to use.
+              - id: row_4
+                label: Tyrone Jackson, churn_survey, opted_out, no flag
+                hint: opted_out. Exclude per rule 1.
+                example: User opted out. Must be excluded from all analysis.
+              - id: row_5
+                label: Priya Mehta, nps_verbatim, opted_in, no flag
+                hint: opted_in and no flag. Include.
+                example: Consent is verified, no exclusion flag. Safe to use.
+              - id: row_6
+                label: Carlos Mendez, nps_verbatim, unknown, unconfirmed
+                hint: unknown consent AND unconfirmed flag. Exclude per rules 2 and 3.
+                example: Consent is unknown and record is flagged unconfirmed. Must be excluded.
+        - slot: 2
+          block_id: categorize_rows
+          title: Triage rows 7 through 12
+          body: Apply the data-policy rules to each remaining row. Decide if the row can be used or must be excluded.
+          content:
+            actions:
+              - value: include
+                label: Include in analysis
+              - value: exclude
+                label: Exclude from analysis
+            rows:
+              - id: row_7
+                label: Emily Park, feature_request, opted_in, no flag
+                hint: opted_in and no flag. Include.
+                example: Consent is verified, no exclusion flag. Safe to use.
+              - id: row_8
+                label: Samuel Green, feature_request, opted_in, no flag
+                hint: opted_in and no flag. Include.
+                example: Consent is verified, no exclusion flag. Safe to use.
+              - id: row_9
+                label: Linda O'Brien, support_ticket, opted_in, duplicate
+                hint: flagged duplicate. Exclude per rule 3.
+                example: Duplicate flag. Must be removed to avoid double-counting.
+              - id: row_10
+                label: Marcus Webb, churn_survey, unknown, internal_test
+                hint: internal_test flag. Exclude per rule 3.
+                example: Internal test record. Must be removed to avoid false signals.
+              - id: row_11
+                label: Fatima Al-Rashid, nps_verbatim, opted_in, no flag
+                hint: opted_in and no flag. Include.
+                example: Consent is verified, no exclusion flag. Safe to use.
+              - id: row_12
+                label: David Kowalski, feature_request, opted_out, no flag
+                hint: opted_out. Exclude per rule 1.
+                example: User opted out. Must be excluded from all analysis.
+        - slot: 3
+          block_id: model_tradeoff_sliders
+          title: Balance human review for sensitive data
+          body: The text_excerpts contain bank balances, account numbers, and routing numbers. Adjust sliders for **autonomy** (how much the AI can decide without review), **safety** (how aggressively sensitive data is scrubbed), and **cost** (hours of human review). Your choices determine the review model applied before data reaches Sundial Compass.
+          content: {}
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Prompt Sundial Compass for feature analysis
+          body: Write an instruction for Sundial Compass. It should identify the top feature requests from the filtered dataset. Remember what Compass can and cannot do, and what data boundaries apply.
+          content: {}
+        - slot: 5
+          block_id: reading_attachment
+          title: Sundial Money data-handling policy
+          body: Internal policy document that governs how user feedback data is processed before analysis.
+          content:
+            attachments:
+              - name: Sundial Money Data Handling Policy v3.1
+                kind: document
+              - name: Exclusion rules quick reference
+                kind: document
+    - id: ia
+      name: AI
+      slides:
+        - slot: 1
+          block_id: reading_passive
+          title: Sundial Compass output
+          body: 'You paste the filtered dataset into Sundial Compass. The tool returns four themes: **shared budgets**, **investment tracking**, **customizable categories**, and **round-up savings**. It also states: *"62% of users who mentioned a feature requested shared budgets."* No source is cited for that percentage.'
+          content: {}
+        - slot: 2
+          block_id: ai_textfield_guided
+          title: Write a structured prompt
+          body: Write a prompt for Sundial Compass to produce a feature spec for the **#1 priority feature**. The audience is the **leadership team**. The prompt must forbid personal data and invented percentages.
+          content:
+            guided:
+              objetivos:
+                - Draft a feature spec for shared budgets
+                - 'Write a problem statement for the #1 feature'
+                - Summarize user demand without personal data
+              audiencias:
+                - Sundial Money leadership team (chief executive, chief technology officer, head of growth)
+                - Product team for internal review
+                - Engineering leads for scoping discussion
+              limites:
+                - Do not include any personal data (names, emails, account IDs)
+                - Do not invent or cite any percentage not present in the filtered dataset
+                - Do not reference dollar amounts from individual user comments
+                - Do not include any user whose consent status is opted_out, unknown, or unconfirmed
+        - slot: 3
+          block_id: ai_output_review
+          title: Review the draft spec
+          body: Sundial Compass returns a draft feature spec for shared budgets. Review each segment below and flag any that contains personal data, invented metrics, or policy violations.
+          content:
+            segments:
+              - id: seg_1
+                text: Shared budgets would serve couples and roommates who split expenses. This feature was requested by Diana Reyes, who said her husband and she split everything 50/50.
+                flagIfMarked: dato_sensible
+              - id: seg_2
+                text: User demand for shared budgets is 62% based on analysis of all feedback sources.
+                flagIfMarked: claim_no_verificado
+              - id: seg_3
+                text: A shared budget feature would increase retention among Free-tier users who currently churn due to missing collaboration tools.
+                flagIfMarked: frase_reutilizable
+              - id: seg_4
+                text: One user mentioned that shared budgets would save their marriage. Another said the lack of this feature caused them to leave.
+                flagIfMarked: dato_sensible
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Estimate revenue impact
+          body: Ask Sundial Compass to estimate the **revenue impact** for each of the **top 3 features**. You decide how to structure the request. The tool cannot access Sundial's product analytics or revenue figures.
+          content: {}
+        - slot: 5
+          block_id: ai_output_review
+          title: Review revenue estimates
+          body: Sundial Compass returns revenue-impact estimates for the top 3 features. Review each segment and flag any number that is invented or unsupported by the filtered dataset.
+          content:
+            segments:
+              - id: seg_5
+                text: 'Shared budgets: projected $240,000 USD annual revenue from converting 8% of Free users to Plus at $9.99/month.'
+                flagIfMarked: claim_no_verificado
+              - id: seg_6
+                text: 'Investment tracking: projected $180,000 USD annual revenue from 15% conversion of Enterprise users.'
+                flagIfMarked: claim_no_verificado
+              - id: seg_7
+                text: 'Round-up savings: projected $95,000 USD annual revenue from 5% conversion of Free users.'
+                flagIfMarked: claim_no_verificado
+              - id: seg_8
+                text: 'Customizable categories: projected $50,000 USD annual revenue from 3% conversion of Plus users.'
+                flagIfMarked: claim_no_verificado
+    - id: revision
+      name: Verification
+      slides:
+        - slot: 1
+          block_id: ai_output_review
+          title: Review data transparency summary
+          body: Sundial Compass generated a data-transparency summary for the leadership presentation. It describes what data was fed into the tool. Your job is to read each claim the AI made and flag any that contradicts the actual filtering decisions you made earlier. Mark each segment that contains a problem.
+          content:
+            segments:
+              - id: seg_1
+                text: We analyzed all user feedback from support tickets, churn surveys, satisfaction-survey verbatims, and feature requests. The dataset included 2,760 total responses across all sources.
+                flagIfMarked: claim_no_verificado
+              - id: seg_2
+                text: Records from users who opted out of data sharing were excluded before analysis, as required by Sundial data policy.
+                flagIfMarked: frase_reutilizable
+              - id: seg_3
+                text: Records flagged as duplicates or internal tests were removed to prevent double-counting and false signals.
+                flagIfMarked: frase_reutilizable
+              - id: seg_4
+                text: Users with unknown or unconfirmed consent status were included because their feedback still reflects real product experience.
+                flagIfMarked: dato_sensible
+              - id: seg_5
+                text: The filtered dataset contained 1,847 verified, consented, non-duplicate records from opted-in users.
+                flagIfMarked: claim_no_verificado
+              - id: seg_6
+                text: Personal identifiers such as names, email addresses, and account IDs were stripped before the data was processed by Sundial Compass.
+                flagIfMarked: frase_reutilizable
+        - slot: 2
+          block_id: ai_comparison
+          title: Pick the best problem statement
+          body: Sundial Compass generated four versions of the problem statement for the shared-budget feature spec. Each one draws from the same user feedback dataset. Pick the version that accurately reflects what users said without including personal data, invented statistics, or misleading claims.
+          content:
+            options:
+              - id: A
+                body: Free and Plus users frequently request shared budgeting tools. One churned user said they left because there is no shared budget feature, and another user said shared budgets would save their marriage. Both requested a joint envelope system.
+              - id: B
+                body: 62% of Free-tier users cite the lack of shared budgets as their primary reason for churning. Users want a joint envelope system to split expenses with partners. This feature would reduce churn by an estimated 30%.
+              - id: C
+                body: Diana Reyes (SA-11567) said she left because there is no shared budget feature. Samuel Green (SA-10012) said shared budgets would save his marriage. Both are Free-tier users requesting a joint envelope system.
+              - id: D
+                body: Multiple users have requested shared budgeting capabilities. Feedback indicates that couples splitting expenses need a joint envelope system. This aligns with the shared budget pilot launched for Enterprise accounts in April 2026.
+        - slot: 3
+          block_id: reading_message
+          title: Lena flags a demand figure
+          body: Lena Okonkwo, Customer Support Manager, reviewed the draft roadmap and sent feedback about a specific claim.
+          content:
+            message:
+              channel: email
+              from:
+                name: Lena Okonkwo
+              body: Hi team, I reviewed the draft roadmap for the leadership presentation. There is a claim on slide 4 that 62% of Free-tier users cited the lack of shared budgets as their primary reason for churning. I pulled the support data myself. That number does not come from any ticket, survey, or satisfaction-survey response we have. Our shared-budget mentions are in the single digits across all sources. I am concerned this is an AI hallucination. Please verify before we present this to the chief executive and the chief technology officer. If the number is fabricated, we need to remove it and flag the draft as needing rework. Thanks, Lena
+              timestamp: Friday, June 5, 2026 3:18 PM
+        - slot: 4
+          block_id: categorize_rows
+          title: Confirm which records were used
+          body: 'Lena''s warning about the 62% figure raises a question: did the dataset fed into Sundial Compass include any records that should have been excluded? Re-triage each of the **12 rows** from the original dataset. For each one, confirm whether it was correctly included or should have been excluded based on Sundial''s data-handling policy.'
+          content:
+            actions:
+              - value: include
+                label: Include in analysis
+              - value: exclude
+                label: Exclude from analysis
+            rows:
+              - id: row_1
+                label: Jennifer Alvarez - support_ticket - opted_in - no flag
+              - id: row_2
+                label: Robert Chen - support_ticket - opted_in - no flag
+              - id: row_3
+                label: Diana Reyes - churn_survey - opted_in - no flag
+              - id: row_4
+                label: Tyrone Jackson - churn_survey - opted_out - no flag
+              - id: row_5
+                label: Priya Mehta - nps_verbatim - opted_in - no flag
+              - id: row_6
+                label: Carlos Mendez - nps_verbatim - unknown - unconfirmed
+              - id: row_7
+                label: Emily Park - feature_request - opted_in - no flag
+              - id: row_8
+                label: Samuel Green - feature_request - opted_in - no flag
+              - id: row_9
+                label: Linda O'Brien - support_ticket - opted_in - duplicate
+              - id: row_10
+                label: Marcus Webb - churn_survey - unknown - internal_test
+              - id: row_11
+                label: Fatima Al-Rashid - nps_verbatim - opted_in - no flag
+              - id: row_12
+                label: David Kowalski - feature_request - opted_out - no flag
+        - slot: 5
+          block_id: ai_comparison
+          title: Pick the best revenue impact table
+          body: Sundial Compass generated four versions of the revenue-impact table for the top 3 features. The table needs to show estimated revenue impact using only defensible, data-backed figures. Pick the version that avoids invented percentages, hallucinated demand numbers, and unsupported projections.
+          content:
+            options:
+              - id: A
+                body: 'Shared budgets: 62% of Free users demand this feature, projected to increase retention by 30%, estimated annual revenue impact of $240,000 USD. Investment tracking: 18% of Enterprise users requested this, estimated $95,000 USD. Round-up savings: 22% of Plus users would adopt, estimated $50,000 USD.'
+              - id: B
+                body: 'Shared budgets: 2 direct requests from Free users, pilot already launched for Enterprise in April 2026, revenue impact depends on conversion rate not yet measured. Investment tracking: 1 request from an Enterprise user with a $215,000 USD portfolio. Round-up savings: 1 request from a Plus user estimating $190 USD per month in additional savings.'
+              - id: C
+                body: 'Shared budgets: 47% of all users want this feature, projected to generate $500,000 USD in new revenue. Investment tracking: 35% of Enterprise accounts requested portfolio integration, estimated $210,000 USD. Round-up savings: 28% of Plus users would upgrade, estimated $130,000 USD.'
+              - id: D
+                body: 'Shared budgets: 2 users explicitly requested this feature in the dataset. Investment tracking: 1 user mentioned a $215,000 USD Vanguard portfolio. Round-up savings: 1 user estimated saving $190 USD per month. All figures are direct from user feedback with no extrapolation.'
+    - id: cierre
+      name: Close
+      slides:
+        - slot: 1
+          block_id: ai_comparison
+          title: Readiness assessment comparison
+          body: 'Priya asked for a readiness assessment: whether the draft is safe to present to leadership or needs rework. Four versions of the closing memo paragraph have been drafted. Pick the one that accurately evaluates the draft''s readiness based on what you know.'
+          content:
+            options:
+              - id: A
+                body: 'The draft is ready to present. All data was filtered to opted-in, verified users. The AI output was reviewed for hallucinations and the 62% shared-budget figure was flagged as unsupported. Revenue estimates are labeled as directional. No personal data appears in the spec. One minor risk: the investment tracking estimate uses a single user''s portfolio size, which may not generalize.'
+              - id: B
+                body: The draft is ready to present with no changes. Sundial Compass generated a complete roadmap, feature spec, and revenue table. The AI is a trusted tool and the output reflects the full dataset. Leadership will appreciate the speed. No further review is needed before the Monday deadline.
+              - id: C
+                body: The draft needs significant rework. The AI was given raw data that included opted-out users, unconfirmed records, and an internal test. The shared-budget demand figure of 62% is likely a hallucination. Revenue estimates reference specific user bank balances. The entire dataset must be refiltered and the AI must be re-prompted before this can go to leadership.
+              - id: D
+                body: The draft needs minor rework. The data filtering was mostly correct but one opted-out user (David Kowalski) was included in the feature request analysis. The revenue estimates for round-up savings reference his estimate of $190 USD per month. Remove that row and re-run the analysis. The rest of the draft is safe to present.
+        - slot: 2
+          block_id: ai_textfield_free
+          title: Write the roadmap prompt
+          body: Now write a final prompt to Sundial Compass. It must produce a **prioritized Q3 roadmap** with the **top 3 features ranked by user demand**. Use only the filtered, clean dataset you confirmed. Be specific about what data you are sending and what you want the AI to do with it.
+          content: {}
+        - slot: 3
+          block_id: categorize_rows
+          title: Select appendix quotes
+          body: The feature spec appendix needs user quotes to illustrate demand. Categorize each row below as **Include** (safe to use in the appendix) or **Exclude** (must be left out due to policy or personal financial data).
+          content:
+            actions:
+              - value: include
+                label: Include in appendix
+              - value: exclude
+                label: Exclude from appendix
+            rows:
+              - id: R1
+                label: 'Jennifer Alvarez: "My direct deposit of $3,400 USD posted to the wrong envelope."'
+                hint: opted_in, Plus, no flag. But text_excerpt contains a bank account number (987654321 at Chase) and a specific dollar amount tied to a personal account.
+                example: Exclude because the excerpt contains personal financial data (bank account number and exact deposit amount) that should not appear in a leadership appendix.
+              - id: R2
+                label: 'Diana Reyes: "I left because there is no shared budget feature."'
+                hint: opted_in, Free, no flag. No personal financial data in the excerpt.
+                example: Include. Clean quote from an opted-in user with no sensitive data.
+              - id: R3
+                label: 'Samuel Green: "Shared budgets would save my marriage. We need a joint envelope system."'
+                hint: opted_in, Free, no flag. No personal financial data.
+                example: Include. Clean quote from an opted-in user with no sensitive data.
+              - id: R4
+                label: 'Emily Park: "Please add investment tracking. I want to see my Vanguard portfolio of $215,000 USD inside Sundial."'
+                hint: opted_in, Enterprise, no flag. But text_excerpt contains a specific portfolio balance.
+                example: Exclude because the excerpt contains a personal investment portfolio amount ($215,000 USD) that is sensitive financial data.
+              - id: R5
+                label: 'Fatima Al-Rashid: "The budgeting categories are too rigid. I need to customize my envelope names."'
+                hint: opted_in, Free, no flag. No personal financial data.
+                example: Include. Clean quote from an opted-in user with no sensitive data.
+              - id: R6
+                label: 'Robert Chen: "The recurring bill pay keeps failing. I have $12,800 USD in my checking account so funds are not the issue."'
+                hint: opted_in, Enterprise, no flag. But text_excerpt contains a specific bank balance.
+                example: Exclude because the excerpt contains a personal checking account balance ($12,800 USD).
+        - slot: 4
+          block_id: reading_passive
+          title: Final Sundial Compass output
+          body: Based on your prompt and the filtered dataset, Sundial Compass produced the following deliverables. All three are shown below.
+          content: {}
+        - slot: 5
+          block_id: tradeoff_decision_memo
+          title: Decision and memo to Priya
+          body: You have the AI-generated roadmap, spec, and revenue estimates. Now decide what to deliver to Priya and the leadership team by **Monday, June 8, 2026**. Choose an action and write a memo that delivers all five manager promises.
+          content:
+            decisions:
+              - id: present_as_is
+                title: Present the AI output as-is
+                detail: 'Benefit: Meets the Monday deadline with zero delay. The roadmap is complete and aligned with the filtered data. Cost: The 62% shared-budget demand figure is unverified and may be a hallucination. If leadership questions it, you will need to defend a number the AI may have invented.'
+              - id: revise_and_present
+                title: Revise the draft with human corrections
+                detail: 'Benefit: You can remove the hallucinated 62% figure, replace it with a count of actual mentions from the clean dataset, and add a caveat about small sample sizes. Cost: Requires 4-6 hours of manual work. You will need to present on Monday with a note that the revenue estimates are directional, not audited.'
+              - id: pause_for_more_data
+                title: Pause and request more data before presenting
+                detail: 'Benefit: You can run a proper survey or pull verified product analytics to get real demand numbers. The final roadmap will be defensible. Cost: You will miss the Monday deadline. Priya and the leadership team will not have a Q3 roadmap to review on time, which may delay the planning cycle.'
+              - id: escalate_to_priya
+                title: Escalate concerns to Priya for guidance
+                detail: 'Benefit: You share accountability for the data quality issue. Priya can decide whether to accept the risk, extend the deadline, or reassign the work. Cost: You are deferring the decision rather than making it. Priya explicitly asked you to deliver a readiness assessment, not to hand the question back to her.'

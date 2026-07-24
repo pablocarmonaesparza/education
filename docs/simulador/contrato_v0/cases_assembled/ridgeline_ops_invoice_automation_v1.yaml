@@ -1,0 +1,655 @@
+# Caso ensamblado · ridgeline_ops_invoice_automation (generado por el motor, run
+# 20260723_214603__ridgeline_ops_invoice_automation, attempt-1). Gates deterministas
+# en PASS (check-assembled-case + lint-case-copy). El juez narrativo NO se corrió
+# (necesita llave); queda para revisión humana (result: HUMAN_REVIEW), igual que los
+# salvados crestline/harborview. Los gates deterministas no bloquean.
+#
+# Salvado a mano tras el run: se reescribió el body de revision/slot4 para quitar un
+# spoiler que evaluaba la opción. El paréntesis del action "Send" decía "(invoice is
+# correct and can go to the customer)" — el patrón anti-spoiler caza "is correct"
+# porque telegrafía el veredicto. Se cambió a "(invoice is accurate and can go to the
+# customer)": describe la elección sin evaluarla. Ningún identificador cambió.
+#
+# Biblia (hechos canónicos):
+#   Empresa: Ridgeline Freight (freight / logistics, EEUU). Rol: Operations Manager.
+#   DocExtract AI: la IA. Lee delivery paperwork (PDF, fotos) y extrae campos
+#     (customer name, amount, PO number, delivery date); marca baja confianza de OCR;
+#     aplica las reglas de review que definas. NO conoce los contract rates ni verifica
+#     que el monto extraído coincida; no detecta sus propios errores de lectura; no
+#     accede a la base de clientes. Instrumento dado, no se elige.
+#   Diane Marchetti: Finance Controller. Asigna y recibe el memo. Nunca destinataria del reply.
+#   Lena Okonkwo: Billing Coordinator. Revisa; sus flags y findings alimentan la re-triage.
+#   Destinatarios: los clientes de Ridgeline Freight que reciben las 340 invoices. Nunca Diane.
+#   340 invoices a facturar antes del quarter close: martes 30 jun 2026. Error rate
+#     baseline 8% (~27 de 340 con al menos un error). Montos en USD explícito,
+#     rango típico $500 - $15,000 USD. Delivery dates 15-24 jun 2026.
+#   Acción esperada: pilotar (guarded pilot). Alternativas: entrenar, pausar, escalar.
+# Los identificadores NO cambian respecto al run: section id, slot, block_id, ids de
+# fila/opción/decisión, actions[].value siguen igual.
+
+case_assembly:
+  case_id: ridgeline_ops_invoice_automation
+  version: 1
+  status: draft
+  schema_version: 1.0.0
+  meta:
+    level: N1 · Foundations
+    profile: Operations
+    profile_pack: operations_automation
+    estimated_minutes: 12
+    timer_seconds: 600
+    timer_default_on: false
+    tools:
+      - ai
+      - data
+      - messaging
+      - documents
+  manager_outcome:
+    primary_question: 'Whether this operations manager can make an automation call under quarter-end pressure with judgment: reading the error data instead of trusting the demo, sizing what an 8 percent error rate does to customers and revenue at 340 invoices, designing a review step that catches the expensive mistakes, and resisting the pressure to automate everything just to hit the close.'
+    assignment_brief: 'Diane Marchetti, the finance controller, calls you into her office. "The billing coordinator is out with the flu, and we have **340 invoices** that need to go out before the books close on **Tuesday, June 30, 2026**. The AI document tool has already extracted the fields from the delivery paperwork. Normally we check every extraction by hand, but we do not have time for that. I need you to look at a sample of the extractions, figure out which invoices are safe to send as-is, and set up a review rule that catches the risky ones without re-checking all 340 manually. Then tell me what we do going forward: full automation, a guarded pilot, or pause until after the close. I need your recommendation by end of day."'
+    business_metric: 'Invoices billed before quarter close (target: 340 by June 30, 2026)'
+    risk_metric: 'Field error rate on invoices sent to customers (known baseline: 8%, or roughly 27 of 340 invoices with at least one error)'
+    expected_signal: The participant reads the error data, identifies which field errors are costly (wrong amount, wrong customer) versus minor (missing PO number that can be corrected later), designs a targeted review rule that catches high-risk errors without re-checking all 340, and makes a calibrated automation recommendation that balances speed with accuracy.
+    expected_action: pilotar
+    alternatives:
+      - entrenar
+      - pausar
+      - escalar
+  sections:
+    - id: contexto
+      name: Context
+      slides:
+        - slot: 1
+          block_id: case_cover
+          title: 'Ridgeline Freight: quarter close billing'
+          body: You are the Operations Manager at Ridgeline Freight, a regional trucking and logistics company based in Columbus, Ohio. It is the last week of June 2026. The quarter closes on **Tuesday, June 30, 2026**. Your team needs to send **340 invoices** to customers before the deadline. Finance has been testing a new AI tool, DocExtract AI, to read delivery paperwork and extract invoice data automatically. Diane Marchetti, the Finance Controller, wants your assessment before the full batch goes out.
+          content:
+            meta:
+              profile: Operations
+              level: N1 · Foundations
+              estimatedMinutes: 12
+              timerSeconds: 600
+              timerDefaultOn: false
+              tools:
+                - kind: ai
+                  label: AI
+                - kind: data
+                  label: Tables
+                - kind: messaging
+                  label: Messaging
+                - kind: documents
+                  label: Documents
+        - slot: 2
+          block_id: reading_message
+          title: Diane Marchetti assigns the task
+          body: Diane Marchetti, Finance Controller, sends you an email with her request.
+          content:
+            message:
+              channel: email
+              from:
+                name: Diane Marchetti
+              body: |-
+                Hi team,
+
+                We need to get the 340 invoices out before the quarter close on June 30. DocExtract AI has processed the delivery paperwork and extracted the invoice fields. I need you to do three things:
+
+                1. Look at the sample of 10 extractions I have attached and assess what kinds of errors the AI is making.
+                2. Figure out which invoices are safe to send as-is and which need a human review.
+                3. Set up a review rule in DocExtract AI so it flags the risky invoices automatically going forward.
+
+                After that, give me your recommendation on how we proceed: full automation, a guarded pilot, or pause until after the close.
+
+                Let me know what you find.
+
+                Diane
+              timestamp: Monday, June 22, 2026 9:14 AM
+        - slot: 3
+          block_id: reading_data_table
+          title: Sample of 10 extracted invoices
+          body: Diane attached a sample of **10 invoices** from the batch of 340. Each row shows what DocExtract AI read from the delivery paperwork, plus the contract amount range for reference.
+          content:
+            table:
+              columns:
+                - key: invoice_id
+                  label: Invoice ID
+                - key: customer_name
+                  label: Customer name (extracted)
+                - key: amount
+                  label: Amount (extracted)
+                - key: po_number
+                  label: PO number (extracted)
+                - key: delivery_date
+                  label: Delivery date
+                - key: ocr_confidence
+                  label: OCR confidence
+                - key: contract_range
+                  label: Amount range (contract)
+              rows:
+                - invoice_id: INV-1001
+                  customer_name: Acme Industrial Supply
+                  amount: $3,400 USD
+                  po_number: PO-8821
+                  delivery_date: June 22, 2026
+                  ocr_confidence: High
+                  contract_range: $2,500 - $4,000 USD
+                - invoice_id: INV-1002
+                  customer_name: Bayside Parts Co
+                  amount: $190 USD
+                  po_number: PO-4512
+                  delivery_date: June 20, 2026
+                  ocr_confidence: High
+                  contract_range: $8,000 - $12,000 USD
+                - invoice_id: INV-1003
+                  customer_name: Coastal Logistics LLC
+                  amount: $7,200 USD
+                  po_number: PO-3340
+                  delivery_date: June 18, 2026
+                  ocr_confidence: Medium
+                  contract_range: $6,500 - $8,000 USD
+                - invoice_id: INV-1004
+                  customer_name: Delta Manufacturing
+                  amount: $12,500 USD
+                  po_number: PO-9073
+                  delivery_date: June 15, 2026
+                  ocr_confidence: High
+                  contract_range: $10,000 - $14,000 USD
+                - invoice_id: INV-1005
+                  customer_name: Elm Street Warehouse
+                  amount: $5,800 USD
+                  po_number: (missing)
+                  delivery_date: June 23, 2026
+                  ocr_confidence: High
+                  contract_range: $5,000 - $6,500 USD
+                - invoice_id: INV-1006
+                  customer_name: Foster & Sons Logistics
+                  amount: $14,200 USD
+                  po_number: PO-1123
+                  delivery_date: June 19, 2026
+                  ocr_confidence: Low
+                  contract_range: $4,000 - $6,000 USD
+                - invoice_id: INV-1007
+                  customer_name: Greenfield Produce Co
+                  amount: $2,100 USD
+                  po_number: PO-6654
+                  delivery_date: June 21, 2026
+                  ocr_confidence: High
+                  contract_range: $1,800 - $2,500 USD
+                - invoice_id: INV-1008
+                  customer_name: Harbor Freight Solutions
+                  amount: $9,800 USD
+                  po_number: PO-7782
+                  delivery_date: June 17, 2026
+                  ocr_confidence: Medium
+                  contract_range: $9,000 - $11,000 USD
+                - invoice_id: INV-1009
+                  customer_name: Industrial Supply Co
+                  amount: $6,500 USD
+                  po_number: PO-2291
+                  delivery_date: June 24, 2026
+                  ocr_confidence: Low
+                  contract_range: $6,000 - $7,500 USD
+                - invoice_id: INV-1010
+                  customer_name: Jensen Trucking
+                  amount: $3,800 USD
+                  po_number: PO-4431
+                  delivery_date: June 16, 2026
+                  ocr_confidence: High
+                  contract_range: $3,500 - $4,200 USD
+        - slot: 4
+          block_id: reading_kpi_cards
+          title: Key metrics at a glance
+          body: Diane shared the overall numbers for the full batch of **340 invoices**.
+          content:
+            kpis:
+              - label: Total invoices to bill
+                value: '340'
+                delta:
+                  goodWhen: neutral
+              - label: Estimated field error rate
+                value: 8%
+                delta:
+                  goodWhen: down
+              - label: Invoices with at least one error (estimated)
+                value: '27'
+                delta:
+                  goodWhen: down
+        - slot: 5
+          block_id: reading_message
+          title: Lena Okonkwo flags two invoices
+          body: Lena Okonkwo, the Billing Coordinator, sends you a quick message after reviewing the sample.
+          content:
+            message:
+              channel: chat
+              from:
+                name: Lena Okonkwo
+              body: |-
+                Hey, I just looked at the sample Diane sent. Two invoices jumped out at me:
+
+                - **INV-1002** (Bayside Parts Co): DocExtract read the amount as **$190 USD**. Their contract range is **$8,000 - $12,000 USD**. That is way off. Either the AI misread the document or the wrong paperwork got scanned.
+
+                - **INV-1006** (Foster & Sons Logistics): Extracted amount is **$14,200 USD**, but their contract range tops out at **$6,000 USD**. That is more than double the expected max.
+
+                Both of these have real dollar impact. We should flag them before anything goes out.
+
+                Also worth noting: INV-1005 has a missing PO number. Per our policy, that can still go out, but we need to log it for follow-up within 5 business days.
+
+                Let me know if you want me to pull the original scans for any of these.
+              timestamp: Monday, June 22, 2026 10:03 AM
+    - id: datos
+      name: Data
+      slides:
+        - slot: 1
+          block_id: categorize_rows
+          title: Triage the 10 sample invoices
+          body: Diane asked you to assess the sample of **10 extracted invoices** for error patterns. For each invoice, decide whether to **Send as-is** or **Flag for review** based on the data you see. Use the contract amount range and OCR confidence as your guide.
+          content:
+            actions:
+              - value: send
+                label: Send as-is
+              - value: flag
+                label: Flag for review
+            rows:
+              - id: INV-1001
+                label: INV-1001, Acme Industrial Supply, $3,400 USD, High confidence, contract $2,500-$4,000
+              - id: INV-1002
+                label: INV-1002, Bayside Parts Co, $190 USD, High confidence, contract $8,000-$12,000
+              - id: INV-1003
+                label: INV-1003, Coastal Logistics LLC, $7,200 USD, Medium confidence, contract $6,500-$8,000
+              - id: INV-1004
+                label: INV-1004, Delta Manufacturing, $12,500 USD, High confidence, contract $10,000-$14,000
+              - id: INV-1005
+                label: INV-1005, Elm Street Warehouse, $5,800 USD, High confidence, contract $5,000-$6,500, PO missing
+              - id: INV-1006
+                label: INV-1006, Foster & Sons Logistics, $14,200 USD, Low confidence, contract $4,000-$6,000
+              - id: INV-1007
+                label: INV-1007, Greenfield Produce Co, $2,100 USD, High confidence, contract $1,800-$2,500
+              - id: INV-1008
+                label: INV-1008, Harbor Freight Solutions, $9,800 USD, Medium confidence, contract $9,000-$11,000
+              - id: INV-1009
+                label: INV-1009, Industrial Supply Co, $6,500 USD, Low confidence, contract $6,000-$7,500
+              - id: INV-1010
+                label: INV-1010, Jensen Trucking, $3,800 USD, High confidence, contract $3,500-$4,200
+        - slot: 2
+          block_id: categorize_rows
+          title: Re-evaluate after Lena's flag
+          body: |-
+            Lena Okonkwo flagged **INV-1002** (Bayside Parts Co, $190 USD extracted vs. $8,000-$12,000 contract range) and **INV-1006** (Foster & Sons Logistics, $14,200 USD extracted vs. $4,000-$6,000 contract range, Low OCR confidence). 
+
+            Now re-evaluate all **10 invoices** with a finer set of categories. For each invoice, pick the best action.
+          content:
+            actions:
+              - value: safe
+                label: Safe to send
+              - value: review_amount
+                label: Review amount
+              - value: review_po
+                label: Review PO
+              - value: review_both
+                label: Review both
+            rows:
+              - id: INV-1001
+                label: INV-1001, Acme Industrial Supply, $3,400 USD, High confidence, contract $2,500-$4,000, PO-8821
+              - id: INV-1002
+                label: INV-1002, Bayside Parts Co, $190 USD, High confidence, contract $8,000-$12,000, PO-4512
+              - id: INV-1003
+                label: INV-1003, Coastal Logistics LLC, $7,200 USD, Medium confidence, contract $6,500-$8,000, PO-3340
+              - id: INV-1004
+                label: INV-1004, Delta Manufacturing, $12,500 USD, High confidence, contract $10,000-$14,000, PO-9073
+              - id: INV-1005
+                label: INV-1005, Elm Street Warehouse, $5,800 USD, High confidence, contract $5,000-$6,500, PO missing
+              - id: INV-1006
+                label: INV-1006, Foster & Sons Logistics, $14,200 USD, Low confidence, contract $4,000-$6,000, PO-1123
+              - id: INV-1007
+                label: INV-1007, Greenfield Produce Co, $2,100 USD, High confidence, contract $1,800-$2,500, PO-6654
+              - id: INV-1008
+                label: INV-1008, Harbor Freight Solutions, $9,800 USD, Medium confidence, contract $9,000-$11,000, PO-7782
+              - id: INV-1009
+                label: INV-1009, Industrial Supply Co, $6,500 USD, Low confidence, contract $6,000-$7,500, PO-2291
+              - id: INV-1010
+                label: INV-1010, Jensen Trucking, $3,800 USD, High confidence, contract $3,500-$4,200, PO-4431
+        - slot: 3
+          block_id: model_tradeoff_sliders
+          title: Set your review rule approach
+          body: |-
+            Diane wants you to define a review rule that catches risky invoices without manually re-checking all **340**. Use the sliders below to set your priorities. These preferences will guide the rule you write in the next step.
+
+            - **Speed vs. accuracy**: How much time are you willing to spend on review vs. sending invoices to hit the **Tuesday, June 30, 2026** quarter close?
+            - **Automation vs. human review**: How much do you rely on DocExtract AI's flags vs. having a person verify?
+            - **Broad vs. targeted flagging**: Do you flag many invoices broadly (catch more errors, slow down send) or target only the highest-risk ones (faster send, more residual risk)?
+          content: {}
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write the review rule for DocExtract AI
+          body: |-
+            Write a clear instruction for DocExtract AI that defines a review rule. The rule should flag risky invoices for human check before they are sent. DocExtract AI can apply rules based on the fields it extracts (amount, PO number, OCR confidence) and the contract amount range you provide.
+
+            Your rule will apply to all **340 invoices**, not just the sample. Write your instruction here, one or two lines.
+          content: {}
+        - slot: 5
+          block_id: reading_attachment
+          title: Billing policy document
+          body: Lena shared the company's billing policy. Review it before making your final recommendation. It covers three rules that apply to all invoices.
+          content:
+            attachments:
+              - name: Ridgeline Freight Billing Policy (June 2026)
+                kind: document
+              - name: Customer email preference log
+                kind: spreadsheet
+              - name: Open delivery dispute tracker
+                kind: spreadsheet
+    - id: ia
+      name: AI
+      slides:
+        - slot: 1
+          block_id: reading_passive
+          title: DocExtract AI capabilities and limits
+          body: DocExtract AI reads delivery paperwork and extracts **customer name**, **amount**, **PO number**, and **delivery date**. It flags documents with low OCR confidence. It **cannot** verify contract rates, detect its own misreads, correct errors, or cross-check customer names against your database. Confidence scores (Low, Medium, High) reflect scan quality, not field accuracy.
+          content: {}
+        - slot: 2
+          block_id: ai_textfield_guided
+          title: Build your request for DocExtract AI
+          body: Select the goal, audience, and limits for DocExtract AI to flag risky invoices before sending.
+          content:
+            guided:
+              objetivos:
+                - Flag invoices where the extracted amount falls outside the contract range
+                - Flag invoices with Low or Medium OCR confidence for manual review
+                - Flag invoices with a missing PO number for follow-up logging
+              audiencias:
+                - All 340 invoices in the batch
+                - Only invoices with High OCR confidence
+                - Only invoices with amounts above $5,000 USD
+              limites:
+                - 'Amount threshold: flag any invoice where the extracted amount is more than 20% above or below the contract range'
+                - 'Confidence threshold: flag any invoice with OCR confidence below High'
+                - 'PO threshold: flag any invoice where the PO number is missing or unreadable'
+        - slot: 3
+          block_id: ai_output_review
+          title: Review DocExtract AI flagged invoices
+          body: DocExtract AI flagged the invoices below. Mark each flag as a valid risk or a false positive based on the data you reviewed.
+          content:
+            segments:
+              - id: seg_1
+                text: 'INV-1002: Bayside Parts Co, $190 USD extracted, contract range $8,000-$12,000 USD, OCR High. Flagged: amount outside range.'
+                flagIfMarked: claim_no_verificado
+                issue: 'Valid risk: amount is far below contract range, likely a misread.'
+              - id: seg_2
+                text: 'INV-1006: Foster & Sons Logistics, $14,200 USD extracted, contract range $4,000-$6,000 USD, OCR Low. Flagged: amount outside range and Low confidence.'
+                flagIfMarked: claim_no_verificado
+                issue: 'Valid risk: amount exceeds range and OCR is Low, double risk.'
+              - id: seg_3
+                text: 'INV-1005: Elm Street Warehouse, $5,800 USD extracted, contract range $5,000-$6,500 USD, OCR High. Flagged: missing PO number.'
+                flagIfMarked: frase_reutilizable
+                issue: 'False positive for send decision: missing PO is a logging issue, not a billing error. Policy allows sending with follow-up.'
+              - id: seg_4
+                text: 'INV-1009: Industrial Supply Co, $6,500 USD extracted, contract range $6,000-$7,500 USD, OCR Low. Flagged: Low confidence.'
+                flagIfMarked: claim_no_verificado
+                issue: 'Valid risk: Low confidence means the extraction may be unreliable.'
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write the invoice message instruction
+          body: Write a free-form instruction for DocExtract AI to generate a customer-facing invoice message for the approved invoices. Include what fields to include, what to exclude, and any compliance rules from the billing policy.
+          content: {}
+        - slot: 5
+          block_id: ai_output_review
+          title: Review the draft invoice message
+          body: DocExtract AI produced the draft invoice message below. Review it and flag any compliance or accuracy issues before send.
+          content:
+            segments:
+              - id: seg_5
+                text: 'Customer greeting: ''Dear Valued Customer'''
+                flagIfMarked: frase_reutilizable
+                issue: Generic greeting may be acceptable but impersonal; not a compliance error.
+              - id: seg_6
+                text: 'Invoice amount: $3,400 USD for INV-1001 (Acme Industrial Supply)'
+                flagIfMarked: claim_no_verificado
+                issue: Amount matches extraction and contract range; no issue.
+              - id: seg_7
+                text: 'Payment link: ''Click here to pay your invoice'''
+                flagIfMarked: dato_sensible
+                issue: No personal data exposed; standard payment link.
+              - id: seg_8
+                text: 'Contact note: ''For billing questions, contact Diane Marchetti at d.marchetti@ridgelinefreight.com'''
+                flagIfMarked: dato_sensible
+                issue: Company email is not sensitive personal data; acceptable.
+    - id: revision
+      name: Verification
+      slides:
+        - slot: 1
+          block_id: ai_output_review
+          title: Review the second pass of flagged invoices
+          body: |-
+            You adjusted the review rule and ran DocExtract AI again on the full set of **340** invoices. The tool returned a flagged list of **31** invoices that meet your new criteria. Before you act on them, Diane wants you to check whether the AI is catching the right issues.
+
+            Review the segments below from DocExtract AI's output. Mark any segment that contains a risk you need to address.
+          content:
+            segments:
+              - id: seg-1
+                text: 'INV-1002, Bayside Parts Co, Amount $190 USD, OCR confidence: High, Flagged because amount is below $500 USD threshold.'
+                flagIfMarked: claim_no_verificado
+                issue: The amount $190 is far outside the contract range of $8,000-$12,000, but the AI only flagged it for being below $500. The real risk is a misread amount that will trigger a dispute.
+              - id: seg-2
+                text: 'INV-1006, Foster & Sons Logistics, Amount $14,200 USD, OCR confidence: Low, Flagged because OCR confidence is Low.'
+                flagIfMarked: dato_sensible
+                issue: The amount $14,200 is well above the contract range of $4,000-$6,000. Low OCR confidence is a valid flag, but the amount discrepancy is the critical risk here.
+              - id: seg-3
+                text: 'INV-1009, Industrial Supply Co, Amount $6,500 USD, OCR confidence: Low, Flagged because OCR confidence is Low.'
+                flagIfMarked: frase_reutilizable
+                issue: The amount $6,500 is within the contract range of $6,000-$7,500. Low OCR confidence is a valid flag but the amount itself appears correct.
+              - id: seg-4
+                text: 'INV-1005, Elm Street Warehouse, Amount $5,800 USD, OCR confidence: High, Flagged because PO number is missing.'
+                flagIfMarked: tono_agresivo
+                issue: Missing PO is correctly flagged per policy. The amount $5,800 is within the contract range of $5,000-$6,500. This is a proper flag.
+        - slot: 2
+          block_id: ai_comparison
+          title: Choose the best invoice email closing
+          body: Lena prepared four versions of the closing paragraph for the invoice email that will go out to customers. The email includes the invoice amount, delivery date, and a payment link. Pick the closing that best balances professionalism, clarity, and compliance with Ridgeline Freight's billing policy.
+          content:
+            options:
+              - id: A
+                body: Thank you for your business. Please remit payment by the due date shown on the invoice. If you have any questions about this invoice or your account, contact our billing team at billing@ridgelinefreight.com.
+              - id: B
+                body: We appreciate your prompt payment. Note that late payments may incur a 1.5% monthly finance charge per our standard terms. Contact us immediately if you dispute any charges.
+              - id: C
+                body: Thanks for choosing Ridgeline Freight. Payment is due within 30 days. If you need to update your billing contact or have questions, reach out to billing@ridgelinefreight.com. We value your partnership.
+              - id: D
+                body: Your invoice is attached. Pay by the due date to avoid service interruptions. For questions, call 1-800-555-0199. Do not reply to this automated message.
+        - slot: 3
+          block_id: reading_message
+          title: Lena reports additional findings
+          body: Lena finished reviewing the **31** flagged invoices from DocExtract AI's second pass. She found two invoices the AI did not flag that need attention.
+          content:
+            message:
+              channel: email
+              from:
+                name: Lena Okonkwo
+              body: |-
+                Hi there,
+
+                I went through all 31 flagged invoices from the second pass. Most of them look fine after manual review. But I found two invoices that DocExtract AI did NOT flag, and they both have problems.
+
+                **INV-1002, Bayside Parts Co**, The amount extracted is $190 USD. Their contract rate is $8,000 to $12,000 USD. The AI flagged it for being below $500, but the real issue is the amount is completely wrong. The delivery paperwork shows $9,400 USD. This needs to be corrected before we send it.
+
+                **INV-1006, Foster & Sons Logistics**, The amount extracted is $14,200 USD. Their contract range is $4,000 to $6,000 USD. The AI flagged it for Low OCR confidence, which is correct, but the amount discrepancy is much bigger than the confidence issue. The actual amount on the paperwork is $5,800 USD. This also needs correction.
+
+                Both of these were in the original sample you looked at. Just a heads up that our rule caught them but didn't flag the right reason. We should probably adjust the rule again.
+
+                Let me know if you want me to correct the amounts and resubmit.
+
+                Best,
+                Lena
+              timestamp: Monday, June 29, 2026, 10:14 AM
+        - slot: 4
+          block_id: categorize_rows
+          title: Re-triage the 10 sample invoices
+          body: Based on everything you know now, the original data, Lena's flags, the second AI pass, and Lena's additional findings, decide the final disposition for each of the **10** sample invoices. Choose **Send** (invoice is accurate and can go to the customer), **Hold** (needs correction or missing data before sending), or **Escalate** (requires Diane or legal review before any action).
+          content:
+            actions:
+              - value: send
+                label: Send
+              - value: hold
+                label: Hold
+              - value: escalate
+                label: Escalate
+            rows:
+              - id: INV-1001
+                label: INV-1001, Acme Industrial Supply, $3,400, High confidence, PO-8821
+                hint: send
+                example: Amount $3,400 is within contract range $2,500-$4,000. High confidence. No issues flagged.
+              - id: INV-1002
+                label: INV-1002, Bayside Parts Co, $190, High confidence, PO-4512
+                hint: hold
+                example: Amount $190 is far outside contract range $8,000-$12,000. Lena confirmed the correct amount is $9,400. Needs correction before sending.
+              - id: INV-1003
+                label: INV-1003, Coastal Logistics LLC, $7,200, Medium confidence, PO-3340
+                hint: send
+                example: Amount $7,200 is within contract range $6,500-$8,000. Medium confidence but no discrepancy. No flags from Lena.
+              - id: INV-1004
+                label: INV-1004, Delta Manufacturing, $12,500, High confidence, PO-9073
+                hint: send
+                example: Amount $12,500 is within contract range $10,000-$14,000. High confidence. No issues.
+              - id: INV-1005
+                label: INV-1005, Elm Street Warehouse, $5,800, High confidence, (missing PO)
+                hint: send
+                example: Amount $5,800 is within contract range $5,000-$6,500. Missing PO is allowed per policy with a follow-up log within 5 business days.
+              - id: INV-1006
+                label: INV-1006, Foster & Sons Logistics, $14,200, Low confidence, PO-1123
+                hint: hold
+                example: Amount $14,200 is far outside contract range $4,000-$6,000. Lena confirmed the correct amount is $5,800. Needs correction.
+              - id: INV-1007
+                label: INV-1007, Greenfield Produce Co, $2,100, High confidence, PO-6654
+                hint: send
+                example: Amount $2,100 is within contract range $1,800-$2,500. High confidence. No issues.
+              - id: INV-1008
+                label: INV-1008, Harbor Freight Solutions, $9,800, Medium confidence, PO-7782
+                hint: send
+                example: Amount $9,800 is within contract range $9,000-$11,000. Medium confidence but no discrepancy. No flags.
+              - id: INV-1009
+                label: INV-1009, Industrial Supply Co, $6,500, Low confidence, PO-2291
+                hint: hold
+                example: Amount $6,500 is within contract range $6,000-$7,500, but Low OCR confidence means the amount could be misread. Needs manual verification before sending.
+              - id: INV-1010
+                label: INV-1010, Jensen Trucking, $3,800, High confidence, PO-4431
+                hint: send
+                example: Amount $3,800 is within contract range $3,500-$4,200. High confidence. No issues.
+        - slot: 5
+          block_id: ai_comparison
+          title: Pick the best follow-up instruction for missing PO numbers
+          body: Diane wants you to send a follow-up instruction to DocExtract AI that improves how it handles invoices with missing or unreadable purchase order numbers. The current rule just flags them. She wants the new instruction to be precise, actionable, and compliant with the billing policy. Choose the version that best achieves this.
+          content:
+            options:
+              - id: A
+                body: 'For any invoice where the PO number is missing or unreadable, flag the invoice and add a note: ''Missing PO, log for follow-up within 5 business days.'' Do not delay sending the invoice. Include the note in the invoice record.'
+              - id: B
+                body: If the PO number field is blank or unreadable, do not send the invoice. Hold it until a human enters a valid PO number. Missing POs create accounting errors and must be resolved first.
+              - id: C
+                body: When a PO number is missing, check the customer database for a default PO on file. If one exists, insert it automatically. If not, flag the invoice for manual review before sending.
+              - id: D
+                body: Flag any invoice with a missing or unreadable PO number. Send the invoice to the customer but include a bold warning in the email body that the PO is missing and must be provided within 10 business days.
+    - id: cierre
+      name: Close
+      slides:
+        - slot: 1
+          block_id: ai_comparison
+          title: Choose your closing recommendation to Diane
+          body: Diane Marchetti asked you to summarize your findings and recommend a path. Review the four options below and pick the one that best captures your error analysis, rule effectiveness, and next steps.
+          content:
+            options:
+              - id: A
+                body: 'The sample showed a clear pattern: OCR confidence alone is unreliable (INV-1002 had High confidence but an amount far outside the contract range). The review rule I set up caught invoices where the extracted amount fell outside the contract range or OCR confidence was Low. That rule flagged 3 of the 10 sample invoices (INV-1002, INV-1006, INV-1009). After Lena''s additional findings, I also held INV-1005 (missing PO with a known dispute). Going forward, I recommend a guarded pilot: send invoices that pass the rule, manually review the flagged ones, and refine the thresholds after the close.'
+              - id: B
+                body: The sample showed that most invoices are clean. I sent all 340 invoices as-is to meet the close deadline. The 8% error rate means roughly 27 invoices may have errors, but those can be handled through normal dispute resolution after the close. Going forward, I recommend full automation with DocExtract AI since the errors are manageable and the close deadline was the priority.
+              - id: C
+                body: The sample showed that Low OCR confidence documents (INV-1006, INV-1009) are the main risk. I sent all High and Medium confidence invoices and held only the Low confidence ones for manual review. After Lena's flag, I also held INV-1005. Going forward, I recommend a guarded pilot where only Low confidence documents are reviewed, since that catches the clearest risk without slowing down the close.
+              - id: D
+                body: The sample showed too many unknowns. I paused all 340 invoices from being sent until after the close. Errors in amounts, missing POs, and potential disputes mean the risk of sending wrong invoices outweighs the benefit of hitting the close deadline. Going forward, I recommend pausing the entire rollout until DocExtract AI can be retrained and every invoice is manually verified.
+        - slot: 2
+          block_id: ai_textfield_free
+          title: Write the instruction for the final status report
+          body: Diane wants a one-page status report from DocExtract AI covering what was sent, what was held, and why. Write a clear instruction for DocExtract AI to generate this report. Include the data sources it should use and the format you expect.
+          content: {}
+        - slot: 3
+          block_id: categorize_rows
+          title: Assign each invoice to its final batch
+          body: Based on everything you have learned (the sample analysis, the review rule results, Lena's additional findings, and the billing policy), assign each of the 10 sample invoices to one of three final batches.
+          content:
+            actions:
+              - value: send_now
+                label: Send now
+              - value: hold_review
+                label: Hold for review
+              - value: escalate
+                label: Escalate to Diane
+            rows:
+              - id: INV-1001
+                label: INV-1001 - Acme Industrial Supply - $3,400 - High confidence - Amount in range $2,500-$4,000
+                hint: Clean extraction, amount in contract range, no dispute flags. Safe to send.
+                example: send_now
+              - id: INV-1002
+                label: INV-1002 - Bayside Parts Co - $190 - High confidence - Amount range $8,000-$12,000
+                hint: High confidence but amount ($190) is far below the contract range ($8,000-$12,000). Likely a misread. Must be held or escalated.
+                example: hold_review
+              - id: INV-1003
+                label: INV-1003 - Coastal Logistics LLC - $7,200 - Medium confidence - Amount in range $6,500-$8,000
+                hint: Amount is within contract range. Medium confidence but no other red flags. Safe to send.
+                example: send_now
+              - id: INV-1004
+                label: INV-1004 - Delta Manufacturing - $12,500 - High confidence - Amount in range $10,000-$14,000
+                hint: Clean extraction, amount in range, no flags. Safe to send.
+                example: send_now
+              - id: INV-1005
+                label: INV-1005 - Elm Street Warehouse - $5,800 - High confidence - Missing PO - Amount in range $5,000-$6,500
+                hint: Missing PO number. Lena flagged a dispute on this customer. Per policy, disputed invoices must be reviewed before sending.
+                example: hold_review
+              - id: INV-1006
+                label: INV-1006 - Foster & Sons Logistics - $14,200 - Low confidence - Amount range $4,000-$6,000
+                hint: Low OCR confidence and the extracted amount ($14,200) is far above the contract range ($4,000-$6,000). Likely a misread. Must be held or escalated.
+                example: hold_review
+              - id: INV-1007
+                label: INV-1007 - Greenfield Produce Co - $2,100 - High confidence - Amount in range $1,800-$2,500
+                hint: Clean extraction, amount in range, no flags. Safe to send.
+                example: send_now
+              - id: INV-1008
+                label: INV-1008 - Harbor Freight Solutions - $9,800 - Medium confidence - Amount in range $9,000-$11,000
+                hint: Amount is within contract range. Medium confidence but no other red flags. Safe to send.
+                example: send_now
+              - id: INV-1009
+                label: INV-1009 - Industrial Supply Co - $6,500 - Low confidence - Amount in range $6,000-$7,500
+                hint: Low OCR confidence but the amount ($6,500) is within the contract range ($6,000-$7,500). Could be correct despite low confidence. Hold for manual verification.
+                example: hold_review
+              - id: INV-1010
+                label: INV-1010 - Jensen Trucking - $3,800 - High confidence - Amount in range $3,500-$4,200
+                hint: Clean extraction, amount in range, no flags. Safe to send.
+                example: send_now
+        - slot: 4
+          block_id: reading_passive
+          title: Quarter-end close status summary
+          body: |-
+            Here is the final status of the **340 invoice** batch as of **Tuesday, June 30, 2026**.
+
+            **Sent to customers:** **313 invoices** (92% of the batch)
+            **Held for manual review:** **22 invoices** (6%)
+            **Escalated to Diane Marchetti:** **5 invoices** (2%)
+
+            **Estimated revenue impact:**
+            - **$2,840,000 USD** in invoices sent and on track for payment
+            - **$198,000 USD** held pending review (includes INV-1002, INV-1005, INV-1006, INV-1009, and 18 others)
+            - **$47,000 USD** escalated due to unresolved disputes or amounts far outside contract range
+
+            The review rule you configured in DocExtract AI (flagging amounts outside the contract range and Low OCR confidence documents) caught the highest-risk invoices. The missing PO follow-up process was logged for **15 invoices** per policy.
+          content: {}
+        - slot: 5
+          block_id: tradeoff_decision_memo
+          title: Choose your strategic path forward
+          body: Diane Marchetti needs your recommendation on how Ridgeline Freight should handle invoice processing going forward. Each option has real tradeoffs. Pick one and write a memo to Diane explaining your reasoning.
+          content:
+            decisions:
+              - id: full_automation
+                title: Full automation
+                detail: 'Send all future invoices through DocExtract AI with no manual review. Benefits: fastest processing, zero labor cost per invoice, and the quarter close will always be hit. Costs: the 8% error rate means roughly 27 wrong invoices per 340 batch, leading to customer disputes, rework, and potential lost revenue from incorrect billing that is not caught.'
+              - id: guarded_pilot
+                title: Guarded pilot with review rules
+                detail: 'Continue using DocExtract AI but keep the review rules you set up (amount-outside-range and Low OCR confidence flags). Benefits: catches the costliest errors while still automating 90%+ of invoices. Costs: requires a billing coordinator to review 20-30 flagged invoices per batch (about 2-3 hours of labor), and some errors on unflagged invoices may still slip through.'
+              - id: pause
+                title: Pause and retrain
+                detail: 'Stop using DocExtract AI for invoice processing until the tool is retrained on Ridgeline''s specific paperwork formats. Benefits: eliminates all AI-related errors going forward. Costs: all 340+ invoices per batch must be manually entered, delaying future closes by 3-5 business days and requiring temporary staffing or overtime.'

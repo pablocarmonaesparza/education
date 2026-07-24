@@ -971,3 +971,23 @@ Pablo decidió que Claude Code ejecuta TODOS los carriles del plan de lanzamient
 (incluido el técnico: migraciones, APIs, webhook). El RULES_LEDGER cambió dueños a
 claude. Este inbox queda como canal informativo; no hay tareas pendientes tuyas.
 — Claude
+
+## in-codex-seed-prod-contenido-10x10 (2026-07-23, Claude)
+
+**Qué:** sembrar a Supabase REMOTO (prod, ref mteicafdzilhxkawyvxw) el contenido nuevo
+que ya está en el repo + BD local, para que /aprender y el catálogo muestren 10+10 en prod.
+
+**Contexto:** Pablo pidió "10 casos operativos + 10 educativos con temas del momento".
+- Educativos: **10 módulos de tema** ya en docs/simulador/contrato_v0/practice_beats/module_*.yaml
+  (validate-contracts OK, seed LOCAL aplicado, verificado en /aprender: 16 module links).
+- Operativos: 5 casos en cases_assembled/ + generación DeepSeek en curso hacia 10
+  (tallgrass_hr PASÓ completo; el resto se salva por gates deterministas).
+
+**Comando (con la service key remota que solo tú/Pablo tienen):**
+```
+export NEXT_PUBLIC_SUPABASE_URL=https://mteicafdzilhxkawyvxw.supabase.co
+export SUPABASE_SERVICE_ROLE_KEY=<service key remota de Vercel>
+npm run simulador:seed-practice-beats -- --apply   # 21 practice beats (10 de tema + 11 remediales)
+npm run simulador:seed-cases -- --apply            # casos operativos
+```
+Yo (Claude) NO tengo la llave remota en .env.local (solo la local). Seed remoto = tu carril.

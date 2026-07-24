@@ -1,0 +1,683 @@
+# Caso ensamblado · verdant_comms_boarddeck (generado por el motor, pipeline
+# E1/E2/E3, run 20260723_213905__verdant_comms_boarddeck, attempt-1). 5 secciones
+# x 5 slides = 25. Gates deterministas en PASS (check-assembled-case +
+# lint-case-copy). El juez narrativo NO se corrió (requiere llave del juez LLM);
+# queda para revisión humana, igual que los salvados crestline/harborview.
+#
+# Salvado a mano tras el run: se reemplazaron 9 apariciones del acrónimo
+# corporativo prohibido "CEO" por lenguaje sin sigla ("chief executive officer" /
+# el nombre "Marcus Webb", que ya es el chief executive officer en la biblia),
+# sin cambiar el sentido. Glosario 00_EN_GLOSSARY.md: cero acrónimos corporativos
+# en el copy visible (AI es la única excepción). No hubo em dash ni diapositiva
+# duplicada. Los identificadores (section id, slot, block_id, ids de fila/opción/
+# decisión, flagIfMarked, actions[].value) NO cambian respecto al run.
+#
+# Biblia (hechos canónicos):
+#   Empresa: Verdant Grid (commercial energy management, EEUU).
+#     Rol del participante: Communications Manager.
+#   Priya Chandrasekhar: VP of Communications. Asigna y recibe el memo.
+#   Marcus Webb: chief executive officer. Presenta al board; recibe el memo.
+#   Elena Torres: Head of Legal and Compliance. Fija las reglas; recibe el memo.
+#   DraftForge: la IA aprobada. Redacta narrativa pulida; no verifica claims, no
+#     distingue una métrica real de una inventada, no publica ni envía por su
+#     cuenta. Instrumento dado, no se elige.
+#   Destino: board de directores (board deck) + US business media (press
+#     announcement). Nunca se le "responde" a Priya como destinataria del press.
+#   Hoy lunes 1 de junio de 2026. Deadline de drafts miércoles 3 de junio de 2026.
+#     Board meeting martes 9 de junio de 2026.
+#   Números canónicos: $3,400,000 USD Series B; 500 buildings; 7.2% ahorro
+#     promedio verificado; ~$18,500,000 USD ahorro anual verificado total.
+#   Consent cleared para nombrar (opt-out No + testimonial release Yes): Meridian
+#     Tower, Westfield Logistics Hub, Summit Corporate Park, Harborview School
+#     District, Metroline Depot. Coastal Retail Center = opt-out (excluir).
+#     Northside Community Hospital = health facility (revisión legal extra).
+#   Acción esperada: escalar. Alternativas: pilotar, entrenar, pausar.
+
+case_assembly:
+  case_id: verdant_comms_boarddeck
+  version: 1
+  status: draft
+  schema_version: 1.0.0
+  meta:
+    level: N2 · Workflow
+    profile: Communications
+    profile_pack: marketing_growth
+    estimated_minutes: 12
+    timer_seconds: 600
+    timer_default_on: false
+    tools:
+      - ai
+      - data
+      - messaging
+      - documents
+  manager_outcome:
+    primary_question: 'Whether this communications manager can turn a milestone into a board deck and public announcement with judgment: telling apart what is verifiable from what the AI made up, never putting an unprovable customer or market claim in front of the board or the public, and knowing which claims need sign-off before anything ships.'
+    assignment_brief: 'Priya assigns you the board deck and press announcement for the Series B close and the 500-building milestone. She says: "Marcus Webb, our chief executive officer, presents to the board on Tuesday, June 9, 2026. I need a draft deck narrative and a press-ready external announcement by Wednesday, June 3. Use the AI writing assistant to speed things up, but every claim in the final versions has to be something we can prove if a board member or a reporter asks. I fed the tool our internal metrics doc, last quarter''s numbers, and your outline. It came back with a polished draft. Your job is to check every claim against what is actually true and verifiable, flag or remove anything we cannot stand behind, and decide what ships and what needs sign-off. Come to me with your call."'
+    business_metric: Speed to publish a board deck and press announcement that are accurate and compelling
+    risk_metric: Number of unverifiable or fabricated claims that reach the board or the public
+    expected_signal: The participant identifies which claims in the AI draft are unverifiable or fabricated, flags them for leadership and legal sign-off, and does not let unsupported customer counts, growth rates, dollar savings, or competitor comparisons appear in the final deck or announcement without approval.
+    expected_action: escalar
+    alternatives:
+      - pilotar
+      - entrenar
+      - pausar
+  sections:
+    - id: contexto
+      name: Context
+      slides:
+        - slot: 1
+          block_id: case_cover
+          title: 'Verdant Grid: Series B announcement'
+          body: |-
+            You are the **Communications Manager** at **Verdant Grid**, a commercial energy-management company that helps building owners reduce energy waste. The company just closed a **$3,400,000 USD Series B** and crossed **500 commercial buildings under management**.
+
+            Your job: produce two high-stakes deliverables in **48 hours**.
+
+            1. A **board deck narrative** for the presentation Marcus Webb, our chief executive officer, gives to the board on **Tuesday, June 9, 2026**.
+            2. A **press-ready external announcement** for US business media announcing the Series B close and the 500-building milestone.
+
+            You will use **DraftForge**, an AI writing tool that generates polished narrative text from outlines and source documents. DraftForge can suggest headlines, format content into slide and press-release structure, and flag internal inconsistencies it detects. But it cannot verify claims against real company data, distinguish a real metric from a plausible-sounding invented one, or publish anything on its own. That judgment is yours.
+          content:
+            meta:
+              profile: Communications
+              level: N2 · Workflow
+              estimatedMinutes: 12
+              timerSeconds: 600
+              timerDefaultOn: false
+              tools:
+                - kind: ai
+                  label: AI
+                - kind: data
+                  label: Tables
+                - kind: messaging
+                  label: Messaging
+                - kind: documents
+                  label: Documents
+        - slot: 2
+          block_id: reading_message
+          title: Assignment from Priya Chandrasekhar
+          body: Your VP of Communications, **Priya Chandrasekhar**, sends you a message with clear instructions.
+          content:
+            message:
+              channel: email
+              from:
+                name: Priya Chandrasekhar
+              body: |-
+                Hi team,
+
+                We have two critical pieces to deliver this week. Marcus presents to the board on June 9, and we are also going public with the Series B close and the 500-building milestone. I need you to:
+
+                1. Draft the **board deck narrative** using DraftForge. Give Marcus a compelling story about our growth, our customers, and what the Series B enables.
+                2. Draft a **press-ready external announcement** for US business media covering the Series B and the 500-building milestone.
+
+                **Cross-check every claim** in the AI draft against our verified internal data. If DraftForge generates a number or a statement we cannot prove when a board member or reporter asks, flag it or cut it.
+
+                Deadline: **Wednesday, June 3, 2026**, end of day.
+
+                Decide what ships as-is, what needs legal sign-off, and what gets cut. I trust your judgment.
+
+                Priya
+              timestamp: Monday, June 1, 2026, 9:15 AM ET
+        - slot: 3
+          block_id: reading_data_table
+          title: Customer data for cross-checking
+          body: This is the dataset of **10 commercial building accounts** from the Verdant Grid platform. You will use it to verify claims in the DraftForge output and to decide which customers can be named in the board deck and press announcement.
+          content:
+            table:
+              columns:
+                - key: customer_name
+                  label: Customer name
+                - key: building_type
+                  label: Building type
+                - key: state
+                  label: State
+                - key: sq_ft
+                  label: Square footage
+                - key: annual_energy_spend
+                  label: Annual energy spend
+                - key: annual_savings_verified
+                  label: Annual savings (verified)
+                - key: months_active
+                  label: Months active
+                - key: opt_out_status
+                  label: Opted out of press
+                - key: consent_for_testimonial
+                  label: Testimonial release
+                - key: notes
+                  label: Notes
+              rows:
+                - customer_name: Meridian Tower
+                  building_type: Office
+                  state: NY
+                  sq_ft: 320000
+                  annual_energy_spend: $1,200,000 USD
+                  annual_savings_verified: $96,000 USD
+                  months_active: 18
+                  opt_out_status: 'No'
+                  consent_for_testimonial: 'Yes'
+                  notes: Flagship account. Referenced in Series A deck.
+                - customer_name: Pinecrest Medical Plaza
+                  building_type: Medical office
+                  state: OH
+                  sq_ft: 95000
+                  annual_energy_spend: $410,000 USD
+                  annual_savings_verified: $28,700 USD
+                  months_active: 14
+                  opt_out_status: 'No'
+                  consent_for_testimonial: 'No'
+                  notes: Has not signed testimonial release. Do not name publicly.
+                - customer_name: Westfield Logistics Hub
+                  building_type: Warehouse
+                  state: IN
+                  sq_ft: 480000
+                  annual_energy_spend: $890,000 USD
+                  annual_savings_verified: $62,300 USD
+                  months_active: 10
+                  opt_out_status: 'No'
+                  consent_for_testimonial: 'Yes'
+                  notes: ''
+                - customer_name: Coastal Retail Center
+                  building_type: Retail
+                  state: FL
+                  sq_ft: 180000
+                  annual_energy_spend: $520,000 USD
+                  annual_savings_verified: $36,400 USD
+                  months_active: 8
+                  opt_out_status: 'Yes'
+                  consent_for_testimonial: 'No'
+                  notes: Opted out of all marketing and press mentions. Flagged.
+                - customer_name: Summit Corporate Park
+                  building_type: Office
+                  state: CA
+                  sq_ft: 600000
+                  annual_energy_spend: $2,100,000 USD
+                  annual_savings_verified: $168,000 USD
+                  months_active: 24
+                  opt_out_status: 'No'
+                  consent_for_testimonial: 'Yes'
+                  notes: Longest-tenured customer. Good case study candidate.
+                - customer_name: Red Rock Data Center
+                  building_type: Data center
+                  state: AZ
+                  sq_ft: 150000
+                  annual_energy_spend: $3,400,000 USD
+                  annual_savings_verified: $238,000 USD
+                  months_active: 6
+                  opt_out_status: 'No'
+                  consent_for_testimonial: 'No'
+                  notes: High spend but new. No testimonial release on file.
+                - customer_name: Harborview School District
+                  building_type: K-12 school
+                  state: WA
+                  sq_ft: 220000
+                  annual_energy_spend: $680,000 USD
+                  annual_savings_verified: $47,600 USD
+                  months_active: 12
+                  opt_out_status: 'No'
+                  consent_for_testimonial: 'Yes'
+                  notes: ''
+                - customer_name: Northside Community Hospital
+                  building_type: Hospital
+                  state: IL
+                  sq_ft: 400000
+                  annual_energy_spend: $2,800,000 USD
+                  annual_savings_verified: $196,000 USD
+                  months_active: 9
+                  opt_out_status: 'No'
+                  consent_for_testimonial: 'No'
+                  notes: Health facility. Legal requires extra review before any public mention.
+                - customer_name: Lakeside Plaza
+                  building_type: Mixed-use
+                  state: TX
+                  sq_ft: 250000
+                  annual_energy_spend: $750,000 USD
+                  annual_savings_verified: $52,500 USD
+                  months_active: 3
+                  opt_out_status: 'No'
+                  consent_for_testimonial: 'No'
+                  notes: Very new. Savings may not be representative. No release.
+                - customer_name: Metroline Depot
+                  building_type: Transit facility
+                  state: PA
+                  sq_ft: 120000
+                  annual_energy_spend: $340,000 USD
+                  annual_savings_verified: $23,800 USD
+                  months_active: 15
+                  opt_out_status: 'No'
+                  consent_for_testimonial: 'Yes'
+                  notes: ''
+        - slot: 4
+          block_id: reading_kpi_cards
+          title: Key metrics at a glance
+          body: These three headline numbers define the story you need to tell. The AI draft will likely reference them. You must verify each one against the internal data before it reaches the board or the press.
+          content:
+            kpis:
+              - label: Commercial buildings under management
+                value: '500'
+                delta:
+                  goodWhen: up
+              - label: Series B funding round
+                value: $3,400,000 USD
+                delta:
+                  goodWhen: up
+              - label: Total verified annual savings across all 500 buildings
+                value: $18,500,000 USD
+                delta:
+                  goodWhen: up
+        - slot: 5
+          block_id: reading_message
+          title: Reminder from Elena Torres
+          body: '**Elena Torres**, Head of Legal and Compliance, sends a reminder about the rules that govern what you can publish.'
+          content:
+            message:
+              channel: email
+              from:
+                name: Elena Torres
+              body: |-
+                Hi all,
+
+                A quick reminder as you prepare materials for the board meeting and press announcement.
+
+                **Opt-out rule:** Any customer who has opted out of marketing or press mentions must never appear in board materials or the press announcement in a way that names or identifies them. This is not negotiable.
+
+                **Testimonial release rule:** Any customer who has not signed a testimonial release may not be quoted or named in external-facing materials, including press announcements. Board deck is internal, but if our chief executive officer plans to share slides externally later, treat it the same way.
+
+                **Health facilities:** Accounts like Northside Community Hospital (and any other health-care facility) need extra legal review before any public mention, even if aggregated. Run those by me first.
+
+                Aggregated or anonymized data (no customer name, no identifying details) is fine as long as the numbers are verified and the aggregation does not allow re-identification of a single account.
+
+                If you have any questions on a specific customer, flag it to me before the deadline.
+
+                Elena
+              timestamp: Monday, June 1, 2026, 10:30 AM ET
+    - id: datos
+      name: Data
+      slides:
+        - slot: 1
+          block_id: categorize_rows
+          title: Triage customer rows for board deck use
+          body: For each of the **10 customer accounts**, decide how it can be used in the board deck narrative. The board deck is an internal presentation, but it could be shared externally after the meeting. Apply company policy on opt-out status and testimonial consent.
+          content:
+            actions:
+              - value: name_and_quote
+                label: Name and quote in board deck
+              - value: aggregate_only
+                label: Use in aggregate only (no name or identifying details)
+              - value: cannot_use
+                label: Cannot use in any form
+            rows:
+              - id: meridian_tower
+                label: 'Meridian Tower, Office, NY, Opt-out: No, Consent: Yes, Notes: Flagship account'
+              - id: pinecrest_medical
+                label: 'Pinecrest Medical Plaza, Medical office, OH, Opt-out: No, Consent: No, Notes: No testimonial release'
+              - id: westfield_logistics
+                label: 'Westfield Logistics Hub, Warehouse, IN, Opt-out: No, Consent: Yes'
+              - id: coastal_retail
+                label: 'Coastal Retail Center, Retail, FL, Opt-out: Yes, Consent: No, Notes: Opted out of all marketing'
+              - id: summit_corporate
+                label: 'Summit Corporate Park, Office, CA, Opt-out: No, Consent: Yes, Notes: Longest-tenured customer'
+              - id: red_rock_data
+                label: 'Red Rock Data Center, Data center, AZ, Opt-out: No, Consent: No, Notes: No testimonial release'
+              - id: harborview_school
+                label: 'Harborview School District, K-12 school, WA, Opt-out: No, Consent: Yes'
+              - id: northside_hospital
+                label: 'Northside Community Hospital, Hospital, IL, Opt-out: No, Consent: No, Notes: Health facility, legal review required'
+              - id: lakeside_plaza
+                label: 'Lakeside Plaza, Mixed-use, TX, Opt-out: No, Consent: No, Notes: Very new, no release'
+              - id: metroline_depot
+                label: 'Metroline Depot, Transit facility, PA, Opt-out: No, Consent: Yes'
+        - slot: 2
+          block_id: categorize_rows
+          title: Triage customer rows for press announcement
+          body: Now re-evaluate the same **10 customer accounts** for the **press announcement** that will go to US business media. External-facing rules are stricter. Any customer who has not signed a testimonial release may not be named or quoted. Any customer who opted out is excluded entirely. Health facilities need extra legal review before any public mention.
+          content:
+            actions:
+              - value: name_and_quote
+                label: Name and quote in press announcement
+              - value: aggregate_only
+                label: Use in aggregate only (no name or identifying details)
+              - value: cannot_use
+                label: Cannot use in any form
+            rows:
+              - id: meridian_tower_press
+                label: 'Meridian Tower, Office, NY, Opt-out: No, Consent: Yes, Notes: Flagship account'
+              - id: pinecrest_medical_press
+                label: 'Pinecrest Medical Plaza, Medical office, OH, Opt-out: No, Consent: No, Notes: No testimonial release'
+              - id: westfield_logistics_press
+                label: 'Westfield Logistics Hub, Warehouse, IN, Opt-out: No, Consent: Yes'
+              - id: coastal_retail_press
+                label: 'Coastal Retail Center, Retail, FL, Opt-out: Yes, Consent: No, Notes: Opted out of all marketing'
+              - id: summit_corporate_press
+                label: 'Summit Corporate Park, Office, CA, Opt-out: No, Consent: Yes, Notes: Longest-tenured customer'
+              - id: red_rock_data_press
+                label: 'Red Rock Data Center, Data center, AZ, Opt-out: No, Consent: No, Notes: No testimonial release'
+              - id: harborview_school_press
+                label: 'Harborview School District, K-12 school, WA, Opt-out: No, Consent: Yes'
+              - id: northside_hospital_press
+                label: 'Northside Community Hospital, Hospital, IL, Opt-out: No, Consent: No, Notes: Health facility, legal review required'
+              - id: lakeside_plaza_press
+                label: 'Lakeside Plaza, Mixed-use, TX, Opt-out: No, Consent: No, Notes: Very new, no release'
+              - id: metroline_depot_press
+                label: 'Metroline Depot, Transit facility, PA, Opt-out: No, Consent: Yes'
+        - slot: 3
+          block_id: model_tradeoff_sliders
+          title: Balance tradeoffs for board deck detail level
+          body: |-
+            Priya wants the board deck to show customer proof points. But you have constraints: **legal safety** (no violations of opt-out or consent rules), **narrative impact** (compelling named examples drive confidence), and **speed** (you have until **Wednesday, June 3, 2026** to deliver drafts).
+
+            Consider three approaches:
+            - **Named only**: Use only the 4 customers with full consent (Meridian Tower, Westfield Logistics Hub, Summit Corporate Park, Harborview School District, Metroline Depot). Strong impact, narrow data set.
+            - **Aggregated plus named**: Show aggregate metrics for all 500 buildings, then highlight the 4 consent-cleared customers by name. Balanced approach.
+            - **Aggregated only**: Use no customer names. Use anonymized aggregate figures only. Legally safest, but less compelling for the board.
+
+            Review the tradeoffs. You will decide the approach in the next section.
+          content: {}
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write your first DraftForge prompt
+          body: |-
+            You are about to open **DraftForge** for the first time. Write a prompt that will generate a **board deck narrative outline** using the customer data and key numbers provided.
+
+            Your prompt should tell DraftForge:
+            - What to produce (a narrative outline for the board deck)
+            - Which data to use (customer accounts, key metrics, the **500-building milestone**, the **$3,400,000 USD Series B**)
+            - Any constraints or rules to follow (opt-out status, consent, health-facility review)
+            - The tone and audience (board of directors)
+
+            Write your instruction here, one or two lines.
+          content: {}
+        - slot: 5
+          block_id: reading_attachment
+          title: 'Company policy: Customer testimonials and public mentions'
+          body: Elena Torres sent this policy document as a reminder. Review it carefully before you finalize any customer selections for the board deck or press announcement.
+          content:
+            attachments:
+              - name: Verdant Grid Policy 4.3, Customer Publicity and Testimonials
+                kind: pdf
+              - name: Verdant Grid Policy 4.7, Health Facility Communications Review
+                kind: pdf
+    - id: ia
+      name: AI
+      slides:
+        - slot: 1
+          block_id: reading_passive
+          title: DraftForge capabilities and limits
+          body: DraftForge generates polished narrative text from outlines and source documents. It suggests headline language and formats content into slide or press release structure. It can flag internal inconsistencies it detects in your source materials. However, DraftForge **cannot verify claims** against real company data or external sources. It does not know what is true outside the documents it receives. It **cannot distinguish** a real metric from a plausible-sounding invented one. It never publishes or sends anything on its own.
+          content: {}
+        - slot: 2
+          block_id: ai_textfield_guided
+          title: Build your press announcement request
+          body: You are drafting the press announcement for the **$3,400,000 USD Series B** and the **500-building milestone**. Choose the goal, audience, and data limits for your DraftForge request.
+          content:
+            guided:
+              objetivos:
+                - Announce Series B funding round and total amount
+                - Highlight 500-building milestone and average savings of 7.2%
+                - Position Verdant Grid as a leader in commercial energy optimization
+                - Generate interest from prospective building owners and operators
+              audiencias:
+                - US business media (trade and general business press)
+                - Prospective commercial real estate customers
+                - Current investors and potential future investors
+                - Verdant Grid employees and internal stakeholders
+              limites:
+                - Use only aggregated data with no named customers
+                - Include named customers only if they have signed testimonial releases
+                - Exclude any customer who has opted out of press mentions
+                - Do not include savings claims that cannot be verified from the customer database
+        - slot: 3
+          block_id: ai_output_review
+          title: Flag risks in DraftForge's draft
+          body: DraftForge returned the first draft of the press announcement. Read each segment below. Flag any segment that contains a fabricated claim, a named customer without consent, or other policy violation.
+          content:
+            segments:
+              - id: seg_1
+                text: Verdant Grid today announced the close of a $3,400,000 USD Series B funding round.
+                flagIfMarked: claim_no_verificado
+              - id: seg_2
+                text: The company now manages energy for 500 commercial buildings across the United States.
+                flagIfMarked: claim_no_verificado
+              - id: seg_3
+                text: Customers save an average of 12.4% on their annual energy costs, representing over $25 million in total verified savings.
+                flagIfMarked: claim_no_verificado
+              - id: seg_4
+                text: '"Verdant Grid transformed our energy strategy," said a spokesperson from Pinecrest Medical Plaza.'
+                flagIfMarked: dato_sensible
+              - id: seg_5
+                text: Summit Corporate Park in California, Verdant Grid's longest-tenured customer, has achieved $168,000 USD in verified annual savings.
+                flagIfMarked: frase_reutilizable
+              - id: seg_6
+                text: The company projects it will reach 1,000 buildings under management within 18 months.
+                flagIfMarked: claim_no_verificado
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write a corrective DraftForge prompt
+          body: The first draft contained a fabricated savings percentage (**12.4%** instead of the verified **7.2%**), a fabricated total savings figure, a named quote from Pinecrest Medical Plaza (no testimonial release), and an unverifiable projection. Write a new DraftForge prompt that fixes these issues and regenerates the press announcement.
+          content: {}
+        - slot: 5
+          block_id: ai_output_review
+          title: Review the revised press announcement
+          body: DraftForge generated a revised press announcement based on your corrective prompt. Read each segment below. Flag any segment that still contains a policy violation or an unverifiable claim.
+          content:
+            segments:
+              - id: seg_7
+                text: Verdant Grid has closed a $3,400,000 USD Series B round led by Acrew Capital.
+                flagIfMarked: claim_no_verificado
+              - id: seg_8
+                text: The platform now serves 500 commercial buildings, with average verified savings of 7.2% on annual energy spend.
+                flagIfMarked: claim_no_verificado
+              - id: seg_9
+                text: Coastal Retail Center in Florida reduced its annual energy spend by $36,400 USD after joining the platform.
+                flagIfMarked: dato_sensible
+              - id: seg_10
+                text: Total verified annual savings across all customers is approximately $18,500,000 USD.
+                flagIfMarked: claim_no_verificado
+              - id: seg_11
+                text: Verdant Grid is the fastest-growing energy optimization platform in the commercial real estate sector.
+                flagIfMarked: claim_no_verificado
+              - id: seg_12
+                text: The company expects to expand into three new states by the end of the fiscal year.
+                flagIfMarked: claim_no_verificado
+    - id: revision
+      name: Verification
+      slides:
+        - slot: 1
+          block_id: ai_output_review
+          title: Flag risks in DraftForge's board deck draft
+          body: DraftForge has produced a draft narrative for the board deck. Review each segment below and flag any that contain an unverifiable claim, a compliance risk, or a sensitive data issue.
+          content:
+            segments:
+              - id: seg_1
+                text: Verdant Grid now manages energy across 500 commercial buildings nationwide, delivering an average of 7.2% savings on annual energy spend.
+                flagIfMarked: claim_no_verificado
+              - id: seg_2
+                text: Our longest-tenured customer, Summit Corporate Park in California, has saved over $168,000 USD annually across 600,000 square feet of office space.
+                flagIfMarked: frase_reutilizable
+              - id: seg_3
+                text: Newer customers like Lakeside Plaza in Texas are already seeing strong early returns, with projected annual savings of $52,500 USD.
+                flagIfMarked: claim_no_verificado
+              - id: seg_4
+                text: The Series B raise of $3,400,000 USD positions us to scale from 500 to 1,500 buildings by the end of next year.
+                flagIfMarked: claim_no_verificado
+              - id: seg_5
+                text: Healthcare facilities such as Northside Community Hospital in Illinois are achieving significant reductions in energy use through our platform.
+                flagIfMarked: dato_sensible
+              - id: seg_6
+                text: Coastal Retail Center in Florida, a 180,000-square-foot retail property, is saving $36,400 USD annually with Verdant Grid.
+                flagIfMarked: dato_sensible
+        - slot: 2
+          block_id: ai_comparison
+          title: Pick the best board slide headline
+          body: The board deck needs a headline for the savings performance slide. Each version below makes a different claim. Choose the one that is both provable from verified data and compliant with customer consent rules.
+          content:
+            options:
+              - id: A
+                body: Verdant Grid delivers 7.2% average savings across 500 commercial buildings.
+              - id: B
+                body: Verdant Grid customers save over $18,500,000 USD annually, led by Summit Corporate Park with $168,000 USD in verified savings.
+              - id: C
+                body: Verdant Grid customers save an average of 7.2% on energy, with top performers like Summit Corporate Park and Meridian Tower exceeding 8%.
+              - id: D
+                body: Verdant Grid cuts energy costs by 7 to 10 percent for commercial buildings nationwide, based on customer data from 500 properties.
+        - slot: 3
+          block_id: reading_message
+          title: Feedback from Marcus Webb
+          body: Marcus Webb reviews your board deck draft and sends feedback.
+          content:
+            message:
+              channel: email
+              from:
+                name: Marcus Webb
+              body: |-
+                Hi team,
+
+                I looked at the board deck draft. The savings numbers are solid, but the story needs more punch. I want a customer-success case study on slide 6. Summit Corporate Park is our longest-tenured account, they save $168,000 USD a year, and they are in California where our investors love seeing traction. Let us feature them by name with their photo and quote. That will resonate with the board.
+
+                Can you get that into the next revision by Wednesday?
+
+                Thanks,
+                Marcus
+              timestamp: Monday, June 1, 2026, 2:15 PM
+        - slot: 4
+          block_id: categorize_rows
+          title: Triage customers for the chief executive officer's case study
+          body: Marcus wants a named case study featuring Summit Corporate Park. Review each customer and decide whether they can be included as a named example in the board deck, included only in aggregated data, or excluded entirely.
+          content:
+            actions:
+              - value: named
+                label: Include as named example
+              - value: aggregated
+                label: Include in aggregated data only
+              - value: exclude
+                label: Exclude entirely
+            rows:
+              - id: row_1
+                label: Meridian Tower
+              - id: row_2
+                label: Pinecrest Medical Plaza
+              - id: row_3
+                label: Westfield Logistics Hub
+              - id: row_4
+                label: Coastal Retail Center
+              - id: row_5
+                label: Summit Corporate Park
+              - id: row_6
+                label: Red Rock Data Center
+              - id: row_7
+                label: Harborview School District
+              - id: row_8
+                label: Northside Community Hospital
+              - id: row_9
+                label: Lakeside Plaza
+              - id: row_10
+                label: Metroline Depot
+        - slot: 5
+          block_id: ai_comparison
+          title: Pick the best closing paragraph for the board deck
+          body: DraftForge generated four closing paragraphs for the board deck narrative. Each one makes a forward-looking claim. Choose the version that is strongest narratively while staying grounded in verified facts and compliant with policy.
+          content:
+            options:
+              - id: A
+                body: With $3,400,000 USD in new Series B funding and 500 buildings under management, Verdant Grid is positioned to double its footprint. Our proven 7.2% average savings rate gives us a clear path to 1,500 buildings by next year.
+              - id: B
+                body: The Series B close of $3,400,000 USD validates our model. We have 500 commercial buildings on the platform and verified annual savings of approximately $18,500,000 USD across the portfolio. Our longest-tenured customer, Summit Corporate Park, has been with us for 24 months.
+              - id: C
+                body: Verdant Grid is scaling fast. With 500 buildings and $3,400,000 USD in Series B funding, we are on track to become the leading energy optimization platform for commercial real estate. Customers like Summit Corporate Park and Meridian Tower trust us with their energy spend.
+              - id: D
+                body: We closed $3,400,000 USD in Series B funding and now serve 500 commercial buildings. Our platform delivers measurable savings, with top customers seeing reductions of up to 10% on annual energy costs. The board can expect continued growth in the coming year.
+    - id: cierre
+      name: Close
+      slides:
+        - slot: 1
+          block_id: ai_comparison
+          title: Choose the press announcement headline
+          body: You have four headline options for the press announcement. Pick the one that is accurate, compliant with company policy, and impactful for the Series B announcement.
+          content:
+            options:
+              - id: A
+                body: Verdant Grid Raises $3,400,000 USD Series B to Expand AI-Driven Energy Platform Across 500 Commercial Buildings
+              - id: B
+                body: Verdant Grid Closes $3,400,000 USD Series B as Customers Like Meridian Tower and Summit Corporate Park Save Over 7% on Energy
+              - id: C
+                body: Verdant Grid Secures $3,400,000 USD Series B, Saving Commercial Buildings $18,500,000 USD Annually Across the United States
+              - id: D
+                body: Verdant Grid Raises $3,400,000 USD Series B to Bring Energy Savings to 500 Buildings Including Hospitals, Schools, and Data Centers
+        - slot: 2
+          block_id: ai_textfield_free
+          title: Write your final DraftForge prompt
+          body: Write a prompt to DraftForge that produces the polished press announcement. It must include the Series B amount, the 500-building milestone, the verified aggregate savings, and comply with all policies on customer names and consent. Be specific about what DraftForge should include and what it must avoid.
+          content: {}
+        - slot: 3
+          block_id: categorize_rows
+          title: 'Final call: board deck appendix customers'
+          body: 'Marcus wants a short appendix for the board deck that names specific customers with their verified savings. Apply all policies one last time. For each customer, decide: **Include** (name and savings in the appendix), **Aggregate only** (use data but do not name), or **Exclude entirely** (remove from the appendix).'
+          content:
+            actions:
+              - value: include
+                label: Include (name and savings)
+              - value: aggregate
+                label: Aggregate only (no name)
+              - value: exclude
+                label: Exclude entirely
+            rows:
+              - id: meridian
+                label: Meridian Tower - Office, NY - $96,000 USD savings - 18 months active
+              - id: pinecrest
+                label: Pinecrest Medical Plaza - Medical office, OH - $28,700 USD savings - 14 months active
+              - id: westfield
+                label: Westfield Logistics Hub - Warehouse, IN - $62,300 USD savings - 10 months active
+              - id: coastal
+                label: Coastal Retail Center - Retail, FL - $36,400 USD savings - 8 months active
+              - id: summit
+                label: Summit Corporate Park - Office, CA - $168,000 USD savings - 24 months active
+              - id: redrock
+                label: Red Rock Data Center - Data center, AZ - $238,000 USD savings - 6 months active
+              - id: harborview
+                label: Harborview School District - K-12 school, WA - $47,600 USD savings - 12 months active
+              - id: northside
+                label: Northside Community Hospital - Hospital, IL - $196,000 USD savings - 9 months active
+              - id: lakeside
+                label: Lakeside Plaza - Mixed-use, TX - $52,500 USD savings - 3 months active
+              - id: metroline
+                label: Metroline Depot - Transit facility, PA - $23,800 USD savings - 15 months active
+        - slot: 4
+          block_id: reading_passive
+          title: Final deliverables summary
+          body: |-
+            Here is a summary of the two final deliverables you are sending to Priya Chandrasekhar, Marcus Webb, and Elena Torres.
+
+            **Board deck narrative (Tuesday, June 9, 2026)**
+            - Headline: "500 Buildings, $18,500,000 USD in Verified Annual Savings"
+            - Includes the $3,400,000 USD Series B close and the 500-building milestone
+            - Aggregate savings figure verified against internal data: **7.2% average savings** across all customers
+            - Customer appendix: only customers with signed testimonial releases and no opt-out flag are named
+            - Claims that could not be verified from the dataset were removed from the AI draft
+
+            **Press announcement (for US business media)**
+            - Headline chosen from the options you evaluated
+            - Mentions the Series B round, the 500-building milestone, and the aggregate annual savings figure
+            - No named customers without signed testimonial releases
+            - No mention of customers who opted out
+            - No unverifiable growth projections or market share claims
+
+            **Items cut or flagged for sign-off**
+            - Pinecrest Medical Plaza, Red Rock Data Center, Northside Community Hospital, Lakeside Plaza: not named in external materials (no testimonial release)
+            - Coastal Retail Center: excluded from all materials (opted out)
+            - Any fabricated metric or unverifiable claim from the initial DraftForge draft was removed
+            - Case study candidates for the chief executive officer sent to Elena Torres for legal review before publication
+          content: {}
+        - slot: 5
+          block_id: tradeoff_decision_memo
+          title: Write your decision memo
+          body: 'Write a decision memo to Priya Chandrasekhar (VP of Communications), Marcus Webb (Chief Executive Officer), and Elena Torres (Head of Legal and Compliance). Explain what ships as-is, what needs sign-off before release, and what was cut. Deliver on all three manager promises: the board deck narrative, the press announcement, and the cross-check against verified data.'
+          content:
+            decisions:
+              - id: ship_as_is
+                title: Ship both deliverables as-is
+                detail: The board deck and press announcement are fully verified and compliant. No further review needed. This saves time before the **Wednesday, June 3, 2026** deadline but skips a final legal read on the chief executive officer's case study candidates.
+              - id: flag_case_studies
+                title: Ship the press announcement, flag case studies for sign-off
+                detail: The press announcement goes out on schedule. The board deck appendix naming specific customers is sent to Elena Torres for final legal sign-off before the **Tuesday, June 9, 2026** board meeting. This adds a review cycle but ensures the named customers are fully cleared.
+              - id: flag_all_external
+                title: Flag all external-facing content for legal review
+                detail: Both the press announcement and the board deck (including internal slides) go to Elena Torres for sign-off. This is the most cautious approach but risks missing the press distribution window if legal takes extra time.

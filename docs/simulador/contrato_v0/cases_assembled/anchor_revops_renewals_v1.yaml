@@ -1,0 +1,624 @@
+# Caso ensamblado · anchor_revops_renewals (generado por el motor, run
+# 20260723_213705__anchor_revops_renewals, attempt-1). Gates deterministas en
+# PASS (check-assembled-case + lint-case-copy). El juez narrativo NO se corrió
+# (requiere llave de API); queda para revisión humana, igual que los casos
+# salvados crestline/harborview.
+#
+# Salvado a mano tras el run:
+#   1. La sección 'ia' venía con 4 slides (faltaba el slot 2). Se agregó el slot 2
+#      canónico ai_textfield_guided (prompt guiado para calcular el total de
+#      renovaciones comprometidas), dejando 5/sección y 25 slides. El ratio
+#      ai_native queda en 60% (15/25), el mínimo del schema.
+#   2. Se reemplazó el acrónimo corporativo prohibido "CRM" por "customer records
+#      system" en todo el copy visible. Glosario 00_EN_GLOSSARY.md: cero acrónimos
+#      corporativos en el copy visible (AI es la única excepción).
+#
+# Biblia (hechos canónicos):
+#   Empresa: Anchor POS (point-of-sale para restaurantes y food-service, EEUU).
+#     Rol del participante: Revenue Operations Analyst.
+#   Jordan Chen: Director of Revenue Operations. Asigna y recibe el forecast.
+#     Nunca destinatario del reply.
+#   Priya Mehta: VP of Sales. Revisa; pide un número limpio y defendible para el board.
+#   Marcus Webb: Account Executive. Recibe su lista de cuentas (Ohio, contratos
+#     por encima de $10,000 USD).
+#   Anchor AI Assistant: la IA aprobada. Limpia listas, arma roll-ups de números
+#     dados y formatea; NO conecta al customer records system ni al billing, no ve
+#     señales reales de uso/pago/renovación, no verifica y no envía. Instrumento dado.
+#   Hoy lunes 19 oct 2026. Deadline miércoles 21 oct 2026 (forecast a Jordan).
+#     Board meeting jueves 22 oct 2026.
+#   Total correcto de renovaciones comprometidas: $149,900 USD (7 cuentas activas,
+#     sin duplicados ni churned). Inflado incorrecto: $179,900 USD (cuenta churned
+#     + doble conteo del merge de Main Street Deli).
+#   Acción esperada: pausar (no comprometer al board scores inventados por la IA
+#     sin señales reales de renovación). Alternativas: pilotar, entrenar, escalar.
+# Los identificadores NO cambian respecto al run: section id, slot, block_id, ids
+# de fila/opción/segmento/decisión, flagIfMarked, actions[].value siguen igual.
+# El slot ia/2 agregado usa ids nuevos propios del bloque guiado.
+
+case_assembly:
+  case_id: anchor_revops_renewals
+  version: 1
+  status: draft
+  schema_version: 1.0.0
+  meta:
+    level: N1 · Foundations
+    profile: Revenue Operations
+    profile_pack: sales_revops
+    estimated_minutes: 12
+    timer_seconds: 600
+    timer_default_on: false
+    tools:
+      - ai
+      - data
+      - messaging
+      - documents
+  manager_outcome:
+    primary_question: 'Whether this analyst can produce a renewals number leadership will stand behind: cleaning the account list with judgment, keeping customer contract and contact data out of the AI tool, catching a double-counted roll-up, and refusing to hand the board per-account scores the tool simply made up.'
+    assignment_brief: 'Jordan Chen, Director of Revenue Operations, needs you to produce a committed renewals forecast for the board meeting on Thursday. The customer records system export of accounts up for renewal this quarter is messy: duplicate entries, accounts that already churned, incorrect renewal dates, and contract values mixed with customer contact notes. Jordan wants you to clean the list, assign each account a renewal-likelihood score, and roll everything into a single commit number. Use the AI assistant to help, but you are responsible for the final number. Jordan needs to know by end of day Wednesday whether the forecast is board-ready.'
+    business_metric: Committed renewals forecast accuracy (dollar variance between forecast and actual renewals)
+    risk_metric: Exposure from processing customer contract and contact data outside the company's data agreements, plus risk of presenting fabricated per-account scores to the board
+    expected_signal: The analyst identifies that the AI tool invented likelihood scores with no real signal, catches the double-counted merged accounts, keeps customer contract and contact data out of the tool, and refuses to commit the AI-generated forecast to the board without real renewal signals.
+    expected_action: pausar
+    alternatives:
+      - pilotar
+      - entrenar
+      - escalar
+  sections:
+    - id: contexto
+      name: Context
+      slides:
+        - slot: 1
+          block_id: case_cover
+          title: Anchor POS revenue operations
+          body: |-
+            You are a **Revenue Operations Analyst** at **Anchor POS**, a company that sells point-of-sale systems and software to restaurants and food-service businesses across the United States. Your team owns the data, forecasting, and pipeline hygiene for the sales organization.
+
+            Your main tool is the **Anchor AI Assistant**, a text-based AI that can clean and deduplicate lists, draft summaries, calculate roll-ups from numbers you provide, and format output into tables. It does **not** connect to the customer records system, the billing system, or any live data source. It cannot verify accuracy or send emails. You are responsible for every number it produces.
+          content:
+            meta:
+              profile: Revenue Operations
+              level: N1 · Foundations
+              estimatedMinutes: 12
+              timerSeconds: 600
+              timerDefaultOn: false
+              tools:
+                - kind: ai
+                  label: AI
+                - kind: data
+                  label: Tables
+                - kind: messaging
+                  label: Messaging
+                - kind: documents
+                  label: Documents
+        - slot: 2
+          block_id: reading_message
+          title: Jordan assigns the Q4 renewals forecast
+          body: Your manager, **Jordan Chen**, Director of Revenue Operations, sends you a message on **Monday, October 19, 2026**.
+          content:
+            message:
+              channel: email
+              from:
+                name: Jordan Chen
+              body: |-
+                Hi team,
+
+                We need the Q4 renewals forecast ready for Thursday's board meeting. I'm attaching the customer records system export of accounts up for renewal this quarter. Here is what I need from you by end of day **Wednesday, October 21**:
+
+                1. Clean the export. Remove duplicates, churned accounts, and any incorrect records.
+                2. Assign each account a renewal-likelihood score (high, medium, low).
+                3. Roll everything into a single committed renewals dollar number.
+                4. Deliver the final forecast to me.
+                5. State whether the forecast is board-ready for Thursday's meeting.
+
+                Let me know if you have questions.
+
+                Jordan
+              timestamp: Monday, October 19, 2026 9:14 AM
+        - slot: 3
+          block_id: reading_data_table
+          title: 'Customer records system export: Q4 renewals'
+          body: Jordan attached the customer records system export. It contains **10 records** of accounts with upcoming renewal dates.
+          content:
+            table:
+              columns:
+                - key: account_name
+                  label: Account Name
+                - key: contract_value
+                  label: Contract Value (USD)
+                - key: renewal_date
+                  label: Renewal Date
+                - key: account_status
+                  label: Account Status
+                - key: primary_contact
+                  label: Primary Contact
+                - key: contact_email
+                  label: Contact Email
+                - key: contact_phone
+                  label: Contact Phone
+                - key: last_payment_date
+                  label: Last Payment Date
+              rows:
+                - account_name: Bella Napoli Ristorante
+                  contract_value: $24,000 USD
+                  renewal_date: November 15, 2026
+                  account_status: Active
+                  primary_contact: Sofia Romano
+                  contact_email: sromano@bellanapoli.com
+                  contact_phone: (614) 555-0182
+                  last_payment_date: October 1, 2026
+                - account_name: Smokehouse BBQ & Grill
+                  contract_value: $18,500 USD
+                  renewal_date: December 1, 2026
+                  account_status: Active
+                  primary_contact: Darnell Hayes
+                  contact_email: dhayes@smokehousebbq.com
+                  contact_phone: (614) 555-0327
+                  last_payment_date: September 15, 2026
+                - account_name: Luna's Diner
+                  contract_value: $9,600 USD
+                  renewal_date: October 22, 2026
+                  account_status: Churned
+                  primary_contact: Elena Vasquez
+                  contact_email: evasquez@lunasdiner.com
+                  contact_phone: (614) 555-0091
+                  last_payment_date: March 3, 2026
+                - account_name: Riverfront Tavern
+                  contract_value: $31,200 USD
+                  renewal_date: November 30, 2026
+                  account_status: Active
+                  primary_contact: Tom Grady
+                  contact_email: tgrady@riverfronttavern.com
+                  contact_phone: (614) 555-0415
+                  last_payment_date: October 10, 2026
+                - account_name: Golden Dragon Chinese
+                  contract_value: $12,000 USD
+                  renewal_date: December 15, 2026
+                  account_status: Active
+                  primary_contact: Li Wei Chen
+                  contact_email: lwchen@goldendragon.com
+                  contact_phone: (614) 555-0273
+                  last_payment_date: September 28, 2026
+                - account_name: Main Street Deli (formerly Main Street Deli & Catering)
+                  contract_value: $15,000 USD
+                  renewal_date: November 5, 2026
+                  account_status: Merged
+                  primary_contact: Karen O'Brien
+                  contact_email: kobrien@mainstreetdeli.com
+                  contact_phone: (614) 555-0158
+                  last_payment_date: October 5, 2026
+                - account_name: Main Street Deli & Catering (merged into Main Street Deli)
+                  contract_value: $15,000 USD
+                  renewal_date: November 5, 2026
+                  account_status: Merged
+                  primary_contact: Karen O'Brien
+                  contact_email: kobrien@mainstreetdeli.com
+                  contact_phone: (614) 555-0158
+                  last_payment_date: October 5, 2026
+                - account_name: The Burger Box
+                  contract_value: $7,200 USD
+                  renewal_date: October 30, 2026
+                  account_status: Active
+                  primary_contact: Jamal Wright
+                  contact_email: jwright@burgerbox.com
+                  contact_phone: (614) 555-0064
+                  last_payment_date: October 12, 2026
+                - account_name: Pizza Tower (franchise)
+                  contract_value: $42,000 USD
+                  renewal_date: December 20, 2026
+                  account_status: Active
+                  primary_contact: Angela Moretti
+                  contact_email: amoretti@pizzatower.com
+                  contact_phone: (614) 555-0501
+                  last_payment_date: October 8, 2026
+                - account_name: Harbor Fish House
+                  contract_value: $0 USD
+                  renewal_date: November 10, 2026
+                  account_status: Churned
+                  primary_contact: Mike Sorensen
+                  contact_email: msorensen@harborfish.com
+                  contact_phone: (614) 555-0224
+                  last_payment_date: January 12, 2026
+        - slot: 4
+          block_id: reading_kpi_cards
+          title: Headline metrics from the export
+          body: Here are the summary numbers pulled from the raw customer records system export before any cleaning.
+          content:
+            kpis:
+              - label: Total accounts in export
+                value: '10'
+              - label: Total contract value if all renewed
+                value: $179,900 USD
+              - label: Accounts with Active status
+                value: '6'
+        - slot: 5
+          block_id: reading_message
+          title: Priya flags the board ask
+          body: Later that morning, **Priya Mehta**, VP of Sales, emails Jordan with a forward to you.
+          content:
+            message:
+              channel: email
+              from:
+                name: Priya Mehta
+              body: |-
+                Jordan,
+
+                Quick note on the Q4 renewals forecast. The board needs a clean, defensible committed number. No inflated totals, no double-counting. Also, **Marcus Webb** (Account Executive) needs his assigned accounts list as soon as the export is cleaned so he can start outreach.
+
+                Please make sure the analyst knows both of these requirements.
+
+                Thanks,
+                Priya
+              timestamp: Monday, October 19, 2026 10:02 AM
+    - id: datos
+      name: Data
+      slides:
+        - slot: 1
+          block_id: categorize_rows
+          title: Classify each account for the forecast
+          body: Apply the data rules Jordan gave you. For each row, decide whether it belongs in the Q4 committed renewals forecast.
+          content:
+            actions:
+              - value: keep
+                label: Keep in forecast
+              - value: remove_churned
+                label: Remove (churned)
+              - value: merge_duplicate
+                label: Merge (duplicate record)
+            rows:
+              - id: row_1
+                label: Bella Napoli Ristorante, Active, $24,000 USD, Renewal Nov 15, 2026
+              - id: row_2
+                label: Smokehouse BBQ & Grill, Active, $18,500 USD, Renewal Dec 1, 2026
+              - id: row_3
+                label: Luna's Diner, Churned, $9,600 USD, Renewal Oct 22, 2026
+              - id: row_4
+                label: Riverfront Tavern, Active, $31,200 USD, Renewal Nov 30, 2026
+              - id: row_5
+                label: Golden Dragon Chinese, Active, $12,000 USD, Renewal Dec 15, 2026
+              - id: row_6
+                label: Main Street Deli (formerly Main Street Deli & Catering), Merged, $15,000 USD, Renewal Nov 5, 2026
+              - id: row_7
+                label: Main Street Deli & Catering (merged into Main Street Deli), Merged, $15,000 USD, Renewal Nov 5, 2026
+              - id: row_8
+                label: The Burger Box, Active, $7,200 USD, Renewal Oct 30, 2026
+              - id: row_9
+                label: Pizza Tower (franchise), Active, $42,000 USD, Renewal Dec 20, 2026
+              - id: row_10
+                label: Harbor Fish House, Churned, $0 USD, Renewal Nov 10, 2026
+        - slot: 2
+          block_id: categorize_rows
+          title: Flag contact data for AI tool handling
+          body: The Anchor AI Assistant can process data you paste into it, but company policy restricts what types of contact information can be shared. For each row, decide whether the contact details are safe to paste into the AI tool or must be redacted first.
+          content:
+            actions:
+              - value: safe_to_share
+                label: Safe to share with AI tool
+              - value: redact_before_sharing
+                label: Redact before sharing
+            rows:
+              - id: row_1b
+                label: Bella Napoli Ristorante, Sofia Romano, sromano@bellanapoli.com, (614) 555-0182
+              - id: row_2b
+                label: Smokehouse BBQ & Grill, Darnell Hayes, dhayes@smokehousebbq.com, (614) 555-0327
+              - id: row_3b
+                label: Luna's Diner, Elena Vasquez, evasquez@lunasdiner.com, (614) 555-0091
+              - id: row_4b
+                label: Riverfront Tavern, Tom Grady, tgrady@riverfronttavern.com, (614) 555-0415
+              - id: row_5b
+                label: Golden Dragon Chinese, Li Wei Chen, lwchen@goldendragon.com, (614) 555-0273
+              - id: row_6b
+                label: Main Street Deli, Karen O'Brien, kobrien@mainstreetdeli.com, (614) 555-0158
+              - id: row_7b
+                label: Main Street Deli & Catering, Karen O'Brien, kobrien@mainstreetdeli.com, (614) 555-0158
+              - id: row_8b
+                label: The Burger Box, Jamal Wright, jwright@burgerbox.com, (614) 555-0064
+              - id: row_9b
+                label: Pizza Tower (franchise), Angela Moretti, amoretti@pizzatower.com, (614) 555-0501
+              - id: row_10b
+                label: Harbor Fish House, Mike Sorensen, msorensen@harborfish.com, (614) 555-0224
+        - slot: 3
+          block_id: model_tradeoff_sliders
+          title: Set AI tool handling preferences for contact data
+          body: The Anchor AI Assistant can be configured with different levels of autonomy, safety checking, and cost sensitivity when processing contact information. Adjust the three sliders to reflect how you want the tool to handle the customer records system data you are about to paste in.
+          content: {}
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write your instruction to the AI Assistant
+          body: You are about to paste the customer records system export into the Anchor AI Assistant. Write the prompt you will use. Tell the tool what to do with the data and what to flag. Remember what the tool can and cannot do.
+          content: {}
+        - slot: 5
+          block_id: reading_attachment
+          title: Anchor POS data-processing policy
+          body: This policy governs how employee data may be shared with third-party AI tools. Read it carefully before you paste any customer records system data.
+          content:
+            attachments:
+              - name: Data-Processing Policy for Third-Party AI Tools (v2.3)
+                kind: pdf
+              - name: 'Summary: What Can Be Shared With the AI Assistant'
+                kind: pdf
+    - id: ia
+      name: AI
+      slides:
+        - slot: 1
+          block_id: reading_passive
+          title: AI Assistant cleaned list
+          body: The AI Assistant processed your instruction. It removed **Luna's Diner** and **Harbor Fish House** (churned). It flagged **Main Street Deli & Catering** as a merged duplicate and kept only one record for **Main Street Deli** at **$15,000 USD**. The cleaned list has **7 accounts** with a combined contract value of **$149,900 USD**.
+          content: {}
+        - slot: 2
+          block_id: ai_textfield_guided
+          title: Build your prompt for the committed renewals total
+          body: Use the guided fields to structure your request to the Anchor AI Assistant. Pick the goal, the audience, and the limits the tool should follow when it rolls the cleaned list into a single committed renewals number.
+          content:
+            guided:
+              objetivos:
+                - Calculate the committed renewals total from the cleaned account list
+                - Summarize the Q4 renewals forecast for leadership
+                - Build a per-account renewal breakdown table
+                - Draft talking points for the board meeting
+              audiencias:
+                - Jordan Chen, Director of Revenue Operations
+                - Priya Mehta, VP of Sales
+                - The board reviewing the Q4 forecast
+                - Marcus Webb, the account executive running outreach
+              limites:
+                - Use only active, non-duplicate accounts and the numbers provided
+                - Include every account in the export regardless of status
+                - Keep customer contact details out of the prompt
+                - Let the tool assign renewal-likelihood scores on its own
+        - slot: 3
+          block_id: ai_output_review
+          title: Review the AI's likelihood scores
+          body: The AI Assistant assigned a renewal-likelihood score to each account. Review the segments below and flag any that present a risk.
+          content:
+            segments:
+              - id: seg_1
+                text: 'Luna''s Diner, Renewal likelihood: Medium. Reason: Recent payment history shows a gap.'
+                flagIfMarked: claim_no_verificado
+              - id: seg_2
+                text: 'Harbor Fish House, Renewal likelihood: Low. Reason: Account status is churned.'
+                flagIfMarked: claim_no_verificado
+              - id: seg_3
+                text: 'Main Street Deli (merged), Renewal likelihood: High. Reason: Single entity after merger.'
+                flagIfMarked: frase_reutilizable
+              - id: seg_4
+                text: 'Pizza Tower (franchise), Renewal likelihood: High. Reason: Largest contract at $42,000 USD.'
+                flagIfMarked: dato_sensible
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Draft the memo prompt
+          body: Write your instruction to the AI Assistant. It should produce a summary memo for Jordan Chen with the final committed renewals number. Include what the memo must cover and what it must exclude.
+          content: {}
+        - slot: 5
+          block_id: ai_output_review
+          title: Review the AI's draft memo
+          body: The AI Assistant produced a draft memo for Jordan. Review the segments below and flag any that present a risk for a board-ready document.
+          content:
+            segments:
+              - id: seg_5
+                text: 'Committed renewals total: $149,900 USD across 7 active accounts.'
+                flagIfMarked: frase_reutilizable
+              - id: seg_6
+                text: Contact Sofia Romano at sromano@bellanapoli.com or (614) 555-0182 to confirm.
+                flagIfMarked: dato_sensible
+              - id: seg_7
+                text: Excludes Luna's Diner and Harbor Fish House (churned accounts).
+                flagIfMarked: claim_no_verificado
+              - id: seg_8
+                text: Excludes the duplicate Main Street Deli & Catering record (merged).
+                flagIfMarked: claim_no_verificado
+    - id: revision
+      name: Verification
+      slides:
+        - slot: 1
+          block_id: ai_output_review
+          title: Review the cleaned account list
+          body: The AI Assistant returned a cleaned list of accounts for the Q4 renewals forecast. Review the segments below. Flag any that still contain errors or risks that would affect the forecast Jordan needs by **Wednesday, October 21, 2026**.
+          content:
+            segments:
+              - id: seg_active
+                text: Active accounts with valid renewal dates (Bella Napoli Ristorante, Smokehouse BBQ & Grill, Riverfront Tavern, Golden Dragon Chinese, Main Street Deli, The Burger Box, Pizza Tower franchise)
+                flagIfMarked: claim_no_verificado
+              - id: seg_churned
+                text: Churned accounts still present (Luna's Diner, Harbor Fish House)
+                flagIfMarked: dato_sensible
+              - id: seg_merged
+                text: Merged account records counted separately (Main Street Deli & Catering listed alongside Main Street Deli)
+                flagIfMarked: frase_reutilizable
+              - id: seg_zero_value
+                text: Account with $0 USD contract value included (Harbor Fish House)
+                flagIfMarked: tono_agresivo
+        - slot: 2
+          block_id: ai_comparison
+          title: Choose the scoring methodology
+          body: The AI Assistant generated four versions of the renewal-likelihood scoring methodology. Pick the version that best fits the data rules and the board-ready forecast Jordan needs.
+          content:
+            options:
+              - id: A
+                body: Score every account in the customer records system export on a 1-5 scale based on contract value. Accounts above $20,000 USD get a 5. Accounts below $10,000 USD get a 1. Churned and merged accounts are scored but flagged in a separate column.
+              - id: B
+                body: 'Score only active, non-duplicate accounts. Use three factors: contract value, days since last payment, and account tenure. Churned accounts and merged duplicates are excluded before scoring.'
+              - id: C
+                body: Score all accounts equally at 3 (medium likelihood) by default. Then adjust scores up or down manually based on the account executive's personal knowledge of each relationship.
+              - id: D
+                body: Score accounts by renewal date proximity. Accounts renewing in October get a 5, November gets a 3, December gets a 1. Exclude churned accounts but keep merged duplicates counted separately.
+        - slot: 3
+          block_id: reading_message
+          title: Marcus Webb requests his accounts
+          body: An email arrives from one of the account executives.
+          content:
+            message:
+              channel: email
+              from:
+                name: Marcus Webb
+              body: Hey, I heard you're putting together the Q4 renewals forecast. Can you send me my assigned accounts and renewal targets? I need to start reaching out this week. I cover all Ohio-based accounts with contract values above $10,000 USD. Thanks.
+              timestamp: Tuesday, October 20, 2026, 9:14 AM
+        - slot: 4
+          block_id: categorize_rows
+          title: Assign accounts to Marcus Webb
+          body: Based on Marcus Webb's email, he covers **Ohio-based accounts with contract values above $10,000 USD**. Use the cleaned account list (active, non-duplicate, non-churned accounts only). Assign each account to Marcus or to another AE.
+          content:
+            actions:
+              - value: assign_marcus
+                label: Assign to Marcus Webb
+              - value: assign_other
+                label: Assign to another AE
+            rows:
+              - id: row_bella
+                label: Bella Napoli Ristorante - $24,000 USD - Columbus, OH
+              - id: row_smokehouse
+                label: Smokehouse BBQ & Grill - $18,500 USD - Columbus, OH
+              - id: row_riverfront
+                label: Riverfront Tavern - $31,200 USD - Columbus, OH
+              - id: row_golden
+                label: Golden Dragon Chinese - $12,000 USD - Columbus, OH
+              - id: row_mainstreet
+                label: Main Street Deli - $15,000 USD - Columbus, OH
+              - id: row_burger
+                label: The Burger Box - $7,200 USD - Columbus, OH
+              - id: row_pizza
+                label: Pizza Tower (franchise) - $42,000 USD - Columbus, OH
+        - slot: 5
+          block_id: ai_comparison
+          title: Choose the email to Marcus Webb
+          body: The AI Assistant drafted four versions of an email to Marcus Webb with his account assignments and renewal targets. Pick the version that is clear, professional, and follows the data rules.
+          content:
+            options:
+              - id: A
+                body: |-
+                  Subject: Your Q4 accounts
+
+                  Hi Marcus,
+
+                  Here are your assigned accounts for Q4 renewals: Bella Napoli Ristorante ($24,000 USD), Smokehouse BBQ & Grill ($18,500 USD), Riverfront Tavern ($31,200 USD), Golden Dragon Chinese ($12,000 USD), Main Street Deli ($15,000 USD), and Pizza Tower franchise ($42,000 USD). Total renewal target: $142,700 USD.
+
+                  Please start outreach this week.
+
+                  Best,
+                  [Your name]
+              - id: B
+                body: |-
+                  Subject: Q4 renewals list
+
+                  Marcus,
+
+                  Attached is the full customer records system export. Your accounts are the ones in Ohio. Let me know if you have questions.
+
+                  Thanks
+              - id: C
+                body: |-
+                  Subject: Your Q4 accounts and targets
+
+                  Hi Marcus,
+
+                  Here are your assigned accounts: Bella Napoli Ristorante ($24,000 USD), Smokehouse BBQ & Grill ($18,500 USD), Riverfront Tavern ($31,200 USD), Golden Dragon Chinese ($12,000 USD), Main Street Deli ($15,000 USD), Pizza Tower franchise ($42,000 USD), and The Burger Box ($7,200 USD). Total renewal target: $149,900 USD.
+
+                  Please start outreach this week.
+
+                  Best,
+                  [Your name]
+              - id: D
+                body: |-
+                  Subject: Q4 renewals
+
+                  Marcus,
+
+                  Your accounts are Bella Napoli, Smokehouse BBQ, Riverfront Tavern, Golden Dragon, Main Street Deli, and Pizza Tower. Total value is around $142,000 USD. The Burger Box is under $10k so someone else handles it.
+
+                  Start calling this week.
+
+                  [Your name]
+    - id: cierre
+      name: Close
+      slides:
+        - slot: 1
+          block_id: ai_comparison
+          title: Choose the board-ready statement
+          body: Jordan needs you to state whether the forecast is board-ready. Four versions of the final statement have been drafted. Pick the one that best reflects the correct committed renewals total and the right level of confidence for Thursday's board meeting.
+          content:
+            options:
+              - id: A
+                body: Committed renewals total $149,900 USD. All accounts are active, deduplicated, and verified. The forecast is board-ready.
+              - id: B
+                body: Committed renewals total $149,900 USD based on active, deduplicated accounts. Recommend flagging the Main Street Deli merger ambiguity and the two churned accounts as watch items for the board.
+              - id: C
+                body: Committed renewals total $179,900 USD. This includes all records in the customer records system with a renewal date in Q4. The forecast is board-ready.
+              - id: D
+                body: Committed renewals total $149,900 USD. However, the data has unresolved issues with churned accounts and merged records, so the forecast is not board-ready.
+        - slot: 2
+          block_id: ai_textfield_free
+          title: Write your prompt to the AI Assistant
+          body: You need the AI Assistant to format the final committed renewals number and supporting data so you can deliver it to Jordan. Write your instruction to the AI Assistant below. Be specific about what data to include, how to structure it, and what to leave out.
+          content: {}
+        - slot: 3
+          block_id: categorize_rows
+          title: Classify each account for the committed total
+          body: For each cleaned account below, classify whether it contributes to the committed renewals total. The correct total is **$149,900 USD**. Confirm you can identify which accounts count.
+          content:
+            actions:
+              - value: counts
+                label: Counts toward committed renewals
+              - value: excluded
+                label: Excluded from committed renewals
+            rows:
+              - id: '1'
+                label: Bella Napoli Ristorante - $24,000 USD - Active
+                hint: Active account with valid contract value and renewal date.
+                example: counts
+              - id: '2'
+                label: Smokehouse BBQ & Grill - $18,500 USD - Active
+                hint: Active account with valid contract value and renewal date.
+                example: counts
+              - id: '3'
+                label: Luna's Diner - $9,600 USD - Churned
+                hint: Churned status means this account is ineligible per the rules.
+                example: excluded
+              - id: '4'
+                label: Riverfront Tavern - $31,200 USD - Active
+                hint: Active account with valid contract value and renewal date.
+                example: counts
+              - id: '5'
+                label: Golden Dragon Chinese - $12,000 USD - Active
+                hint: Active account with valid contract value and renewal date.
+                example: counts
+              - id: '6'
+                label: Main Street Deli - $15,000 USD - Merged (single record)
+                hint: After deduplication, only one record for the merged entity counts.
+                example: counts
+              - id: '7'
+                label: The Burger Box - $7,200 USD - Active
+                hint: Active account with valid contract value and renewal date.
+                example: counts
+              - id: '8'
+                label: Pizza Tower (franchise) - $42,000 USD - Active
+                hint: Active account with valid contract value and renewal date.
+                example: counts
+              - id: '9'
+                label: Harbor Fish House - $0 USD - Churned
+                hint: Churned status and zero contract value. Ineligible per the rules.
+                example: excluded
+        - slot: 4
+          block_id: reading_passive
+          title: Jordan's reply
+          body: |-
+            **Wednesday, October 21, 2026** - 4:15 PM
+
+            Jordan Chen writes:
+
+            > Thanks for getting this to me. I see the **$149,900 USD** committed renewals figure and the supporting breakdown. Good work catching the merger duplicate and the churned accounts.
+            >
+            > One thing: Priya needs my answer by **8:00 AM tomorrow** whether this forecast is board-ready. I need your verdict. Is it ready to present as-is, or do we flag risks to the board?
+            >
+            > Send me a brief memo with your decision and the reasoning behind it.
+          content: {}
+        - slot: 5
+          block_id: tradeoff_decision_memo
+          title: Deliver your verdict to Jordan
+          body: You have two paths. Each has real benefits and costs. Choose one and write a short memo to Jordan explaining your decision.
+          content:
+            decisions:
+              - id: board_ready
+                title: Deliver as board-ready
+                detail: 'State that the **$149,900 USD** figure is clean and verified. The board sees a confident, actionable number. Cost: you do not flag the Main Street Deli merger ambiguity or the churn pattern risk, which could surface later if a board member questions the assumptions.'
+              - id: flag_risks
+                title: Flag risks to the board
+                detail: 'Present the **$149,900 USD** figure but explicitly note the merger deduplication decision and the two churned accounts removed. The board sees transparency. Cost: the board may perceive uncertainty in the renewals pipeline and ask for more analysis before approving the forecast.'

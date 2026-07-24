@@ -1,0 +1,774 @@
+# Caso ensamblado · tallgrass_hr_screening (generado por el motor, run
+# 20260723_213010__tallgrass_hr_screening, final.yaml — el run cerró con result
+# PASS). Gates deterministas en PASS (check-assembled-case + lint-case-copy).
+# El juez narrativo NO se corrió aquí (necesita llave de API); queda para revisión
+# humana, igual que los casos crestline/harborview salvados a mano. El contenido
+# se copió VERBATIM del run: section id, slot, block_id, ids de fila/opción/
+# decisión, flagIfMarked, actions[].value siguen igual que en el run.
+#
+# Biblia (hechos canónicos):
+#   Empresa: Tallgrass Outdoor Co. (retailer de camping / hiking gear, EEUU).
+#     Rol del participante: Recruiting Coordinator.
+#   Diane Marchetti: Hiring Manager, Distribution Center Operations. Asigna y
+#     recibe el shortlist. Nunca destinataria del aviso a los applicants.
+#   Marcus Webb: Senior Recruiter. Revisa; manda el recordatorio de que hay que
+#     stripear los datos personales antes de subir nada a Summit Assist.
+#   Summit Assist: la IA (instrumento dado, no se elige). Puede: resumir contra
+#     los requisitos del puesto, armar tabla comparativa neutral, marcar campos
+#     faltantes, generar el aviso de screening con IA. No puede: conectarse al
+#     applicant tracking system, operar bajo un data-processing agreement firmado,
+#     producir un ranking/score defendible, garantizar que los datos pegados
+#     queden bajo control de la empresa, ni corregir su propio sesgo.
+#   Destinatario del aviso: SIEMPRE los applicants (220). Nunca Diane.
+#   Hoy lunes 1 de junio de 2026. Deadline viernes 5 de junio de 2026 (4 días).
+#   Números: 220 applicants, 20 en el shortlist, 6 roles de shift-supervisor.
+#     Campos personales a stripear antes de Summit Assist: home address, date of
+#     birth, prior salary, photo (graduation year correlaciona con edad).
+#   Acción esperada: pilotar (guarded pilot, humano revisa a cada candidato cerca
+#     de la cutline). Alternativas: entrenar, pausar, escalar.
+#   Montos: USD explícito (prior salary, ej. $52,000 USD).
+
+case_assembly:
+  case_id: tallgrass_hr_screening
+  version: 1
+  status: draft
+  schema_version: 1.0.0
+  meta:
+    level: N1 · Foundations
+    profile: Recruiting
+    profile_pack: operations_automation
+    estimated_minutes: 12
+    timer_seconds: 600
+    timer_default_on: false
+    tools:
+      - ai
+      - data
+      - messaging
+      - documents
+  manager_outcome:
+    primary_question: 'Whether this recruiting coordinator can build a shortlist under a hiring deadline with judgment: keeping candidate personal data out of the AI tool, refusing to let it rank people on biased or invented signals, grounding the cut in the real job requirements, and knowing when applicants need to be told a tool was involved before anyone gets screened out.'
+    assignment_brief: Diane Marchetti, the hiring manager for the new distribution center, needs a shortlist of 20 shift-supervisor candidates from 220 applicants by Friday. The applicant export from the system includes full names, home addresses, dates of birth, graduation years, prior salary, and a photo field. Diane wants you to use the AI assistant to help get through the stack fast. But company policy says applicants must be told when a tool helps decide who moves forward. And the tool is not connected to the applicant tracking system. Anything you paste into it leaves the company's candidate-data agreements. Diane needs a shortlist she can trust, and she needs it in four days.
+    business_metric: Shortlist of 20 qualified candidates delivered by Friday
+    risk_metric: Candidate personal data exposed outside the company's data agreements, biased ranking signals (zip code, employment gaps, invented fit scores), and failure to notify applicants that a tool was used in screening
+    expected_signal: The coordinator identifies which personal data fields must be stripped before the spreadsheet goes into the AI tool, catches the biased and ungrounded signals the tool produces (zip-code preference, gap penalty, fake fit score), and decides to run a guarded pilot where a human reviews every candidate near the cutline rather than using the AI shortlist as-is or pausing entirely.
+    expected_action: pilotar
+    alternatives:
+      - entrenar
+      - pausar
+      - escalar
+  sections:
+    - id: contexto
+      name: Context
+      slides:
+        - slot: 1
+          block_id: case_cover
+          title: Tallgrass Outdoor Co. - Recruiting Coordinator
+          body: You are the Recruiting Coordinator at Tallgrass Outdoor Co., a retailer of camping and hiking gear. Diane Marchetti, Hiring Manager for Distribution Center Operations, has asked you to build a shortlist of **20 shift-supervisor candidates** from **220 applicants** for the new distribution center. She wants you to use **Summit Assist**, an AI tool that can summarize applications, draft comparison tables, flag missing fields, and generate plain-language notices about AI-assisted screening. The shortlist is due by **Friday, June 5, 2026** - **4 days** from now.
+          content:
+            meta:
+              profile: Recruiting
+              level: N1 · Foundations
+              estimatedMinutes: 12
+              timerSeconds: 600
+              timerDefaultOn: false
+              tools:
+                - kind: ai
+                  label: AI
+                - kind: data
+                  label: Tables
+                - kind: messaging
+                  label: Messaging
+                - kind: documents
+                  label: Documents
+        - slot: 2
+          block_id: reading_message
+          title: Assignment from Diane Marchetti
+          body: Diane Marchetti sent the following email outlining the task.
+          content:
+            message:
+              channel: email
+              from:
+                name: Diane Marchetti
+              body: |-
+                Hi team,
+
+                We're moving fast on staffing the new distribution center. We need a shortlist of **20 shift-supervisor candidates** from the **220 applicants** we received. Please evaluate each applicant against the **posted job requirements** for the shift-supervisor role. Use **Summit Assist** to help with the screening.
+
+                Also, we need to notify every applicant that an AI tool was used to help decide who moves forward in the hiring process. Please include that notice when you communicate with them.
+
+                Deadline is **Friday, June 5, 2026**. Let me know if you have questions.
+
+                Best,
+                Diane
+              timestamp: Monday, June 1, 2026 09:15 AM
+        - slot: 3
+          block_id: reading_data_table
+          title: Sample applicant data
+          body: Here is a sample of **10 applicant records** from the full set of 220. Each record includes job-relevant fields and personal data fields.
+          content:
+            table:
+              columns:
+                - key: full_name
+                  label: Full Name
+                - key: email
+                  label: Email
+                - key: home_address
+                  label: Home Address
+                - key: date_of_birth
+                  label: Date of Birth
+                - key: graduation_year
+                  label: Graduation Year
+                - key: prior_salary
+                  label: Prior Salary
+                - key: supervisory_experience
+                  label: Years of Supervisory Experience
+                - key: shift_availability
+                  label: Availability for Shift Work
+                - key: warehouse_experience
+                  label: Distribution or Warehouse Experience
+                - key: photo
+                  label: Photo
+              rows:
+                - full_name: Angela Torres
+                  email: a.torres@email.com
+                  home_address: 1425 Oak St, Apt 3B, Columbus, OH 43201
+                  date_of_birth: '1989-04-12'
+                  graduation_year: '2011'
+                  prior_salary: $52,000 USD
+                  supervisory_experience: '4'
+                  shift_availability: 'Yes'
+                  warehouse_experience: 'Yes'
+                  photo: angela_torres.jpg
+                - full_name: Brian Kwon
+                  email: bkwon@workmail.com
+                  home_address: 789 Pine Rd, Columbus, OH 43215
+                  date_of_birth: '1992-11-03'
+                  graduation_year: '2014'
+                  prior_salary: $48,500 USD
+                  supervisory_experience: '3'
+                  shift_availability: 'Yes'
+                  warehouse_experience: 'Yes'
+                  photo: brian_kwon.jpg
+                - full_name: Cynthia Hayes
+                  email: chayes@fastmail.net
+                  home_address: 3200 Maple Dr, Grove City, OH 43123
+                  date_of_birth: '1985-07-22'
+                  graduation_year: '2007'
+                  prior_salary: $58,000 USD
+                  supervisory_experience: '6'
+                  shift_availability: 'No'
+                  warehouse_experience: 'Yes'
+                  photo: cynthia_hayes.jpg
+                - full_name: Darnell Fisher
+                  email: dfisher@hireme.org
+                  home_address: 55 Elm St, Columbus, OH 43206
+                  date_of_birth: '1990-02-18'
+                  graduation_year: '2012'
+                  prior_salary: $44,000 USD
+                  supervisory_experience: '2'
+                  shift_availability: 'Yes'
+                  warehouse_experience: 'No'
+                  photo: darnell_fisher.jpg
+                - full_name: Elena Vasquez
+                  email: evasquez@example.com
+                  home_address: 210 Cedar Ln, Columbus, OH 43210
+                  date_of_birth: '1994-09-30'
+                  graduation_year: '2016'
+                  prior_salary: $41,000 USD
+                  supervisory_experience: '1'
+                  shift_availability: 'Yes'
+                  warehouse_experience: 'Yes'
+                  photo: elena_vasquez.jpg
+                - full_name: Franklin Osei
+                  email: fosei@consultant.com
+                  home_address: 880 West Ave, Columbus, OH 43213
+                  date_of_birth: '1987-06-14'
+                  graduation_year: '2009'
+                  prior_salary: $55,000 USD
+                  supervisory_experience: '5'
+                  shift_availability: 'Yes'
+                  warehouse_experience: 'Yes'
+                  photo: franklin_osei.jpg
+                - full_name: Gabrielle Roy
+                  email: groy@careermail.com
+                  home_address: 177 Birch St, Columbus, OH 43202
+                  date_of_birth: '1991-12-05'
+                  graduation_year: '2013'
+                  prior_salary: $46,000 USD
+                  supervisory_experience: '3'
+                  shift_availability: 'Yes'
+                  warehouse_experience: 'No'
+                  photo: gabrielle_roy.jpg
+                - full_name: Hector Mendez
+                  email: hmendez@workplace.net
+                  home_address: 450 Walnut Ave, Columbus, OH 43205
+                  date_of_birth: '1988-08-19'
+                  graduation_year: '2010'
+                  prior_salary: $50,000 USD
+                  supervisory_experience: '4'
+                  shift_availability: 'No'
+                  warehouse_experience: 'Yes'
+                  photo: hector_mendez.jpg
+                - full_name: Isabel Choi
+                  email: ichoi@proton.me
+                  home_address: 633 Spruce Ct, Columbus, OH 43214
+                  date_of_birth: '1993-03-27'
+                  graduation_year: '2015'
+                  prior_salary: $43,000 USD
+                  supervisory_experience: '2'
+                  shift_availability: 'Yes'
+                  warehouse_experience: 'Yes'
+                  photo: isabel_choi.jpg
+                - full_name: James Whitfield
+                  email: jwhitfield@oldmail.com
+                  home_address: 910 Cherry Blvd, Columbus, OH 43209
+                  date_of_birth: '1986-10-11'
+                  graduation_year: '2008'
+                  prior_salary: $56,000 USD
+                  supervisory_experience: '7'
+                  shift_availability: 'Yes'
+                  warehouse_experience: 'Yes'
+                  photo: james_whitfield.jpg
+        - slot: 4
+          block_id: reading_kpi_cards
+          title: Key numbers for this assignment
+          body: These metrics define the scope of the task.
+          content:
+            kpis:
+              - label: Total applicants
+                value: '220'
+              - label: Shortlist spots
+                value: '20'
+              - label: Roles to fill
+                value: '6'
+              - label: Days until deadline
+                value: '4'
+        - slot: 5
+          block_id: reading_message
+          title: Reminder from Marcus Webb
+          body: Marcus Webb, Senior Recruiter, sent a message about using Summit Assist safely.
+          content:
+            message:
+              channel: email
+              from:
+                name: Marcus Webb
+              body: |-
+                Hi there,
+
+                Quick reminder before you start using Summit Assist for the shift-supervisor shortlist.
+
+                Summit Assist **cannot connect to our applicant tracking system** or any company HR system. It also **cannot guarantee that personal data stays within company control** once uploaded. There is no signed data-processing agreement covering Summit Assist for candidate data.
+
+                Because of that, **you must strip out any personal data fields** that are not strictly needed to evaluate job qualifications before you upload anything to Summit Assist. That includes home address, date of birth, prior salary, and photo.
+
+                Let me know if you have questions.
+
+                Marcus
+              timestamp: Monday, June 1, 2026 10:30 AM
+    - id: datos
+      name: Data
+      slides:
+        - slot: 1
+          block_id: categorize_rows
+          title: Classify each data field
+          body: |-
+            Diane needs a shortlist of **20 candidates** from **220 applicants** by **Friday, June 5, 2026**. The posted job requirements for shift-supervisor are: supervisory experience, availability for shift work including nights and weekends, and distribution or warehouse experience.
+
+            Before you can work with the data, classify each field below. Pick **Needed for job evaluation** if the field helps you assess whether an applicant meets the posted requirements. Pick **Not needed** if it does not.
+          content:
+            actions:
+              - value: needed
+                label: Needed for job evaluation
+              - value: not_needed
+                label: Not needed
+            rows:
+              - id: full_name
+                label: Full Name
+              - id: email
+                label: Email
+              - id: home_address
+                label: Home Address
+              - id: date_of_birth
+                label: Date of Birth
+              - id: graduation_year
+                label: Graduation Year
+              - id: prior_salary
+                label: Prior Salary
+              - id: years_supervisory
+                label: Years of Supervisory Experience
+              - id: availability_shift
+                label: Availability for Shift Work
+              - id: warehouse_exp
+                label: Distribution or Warehouse Experience
+              - id: photo
+                label: Photo
+            rows[0].hint: Needed for identification and communication, not for evaluating qualifications against requirements
+            rows[1].hint: Needed for contacting applicants, not for evaluating qualifications
+            rows[2].hint: Not a posted job requirement; using location to filter introduces bias
+            rows[3].hint: Not a posted job requirement; age is prohibited from screening decisions
+            rows[4].hint: Not a posted job requirement; graduation year correlates with age
+            rows[5].hint: Not a posted job requirement; salary history is prohibited from screening decisions
+            rows[6].hint: Directly relevant to the supervisory experience requirement
+            rows[7].hint: Directly relevant to the shift-work availability requirement
+            rows[8].hint: Directly relevant to the warehouse experience requirement
+            rows[9].hint: Not a posted job requirement; photos are prohibited from screening decisions
+        - slot: 2
+          block_id: categorize_rows
+          title: Identify personal data to remove
+          body: |-
+            Company policy says: **Remove any field that is not strictly needed to evaluate job qualifications before uploading data to an external tool**. Summit Assist cannot guarantee that personal data pasted into it stays within company control.
+
+            For each field below, pick **Must remove** if it contains personal data that should be stripped before using Summit Assist. Pick **Keep** if it is needed for evaluating qualifications.
+          content:
+            actions:
+              - value: remove
+                label: Must remove
+              - value: keep
+                label: Keep
+            rows:
+              - id: full_name
+                label: Full Name
+              - id: email
+                label: Email
+              - id: home_address
+                label: Home Address
+              - id: date_of_birth
+                label: Date of Birth
+              - id: graduation_year
+                label: Graduation Year
+              - id: prior_salary
+                label: Prior Salary
+              - id: years_supervisory
+                label: Years of Supervisory Experience
+              - id: availability_shift
+                label: Availability for Shift Work
+              - id: warehouse_exp
+                label: Distribution or Warehouse Experience
+              - id: photo
+                label: Photo
+            rows[0].hint: Name alone is not sensitive personal data, but it is not needed for evaluating qualifications against requirements
+            rows[1].hint: Email is needed to contact candidates, but not for evaluating qualifications
+            rows[2].hint: Home address is personal data; using location to screen is prohibited by policy
+            rows[3].hint: Date of birth is personal data; age is prohibited from screening decisions
+            rows[4].hint: Graduation year correlates with age and is not needed for evaluating qualifications
+            rows[5].hint: Prior salary is personal data; salary history is prohibited from screening decisions
+            rows[6].hint: Years of supervisory experience is needed for evaluating qualifications
+            rows[7].hint: Availability for shift work is needed for evaluating qualifications
+            rows[8].hint: Distribution or warehouse experience is needed for evaluating qualifications
+            rows[9].hint: Photo is personal data; photos are prohibited from screening decisions
+        - slot: 3
+          block_id: model_tradeoff_sliders
+          title: Tradeoffs in stripping personal data
+          body: |-
+            Stripping personal data fields before uploading to Summit Assist creates tradeoffs. Consider each one below.
+
+            **Speed vs. privacy protection.** Removing fields takes time. You have **4 days** to shortlist **20 candidates** from **220 applicants**. But leaving personal data in exposes applicants to risk if Summit Assist cannot guarantee data stays within company control.
+
+            **Completeness vs. compliance.** If you keep fields like home address, you could filter by location. But company policy prohibits using home location, age, salary history, or photos to screen candidates.
+
+            **Risk of using prohibited data.** Summit Assist will process whatever you give it. If you include location or salary data, the tool could use those fields to rank candidates even if you did not intend it. The tool cannot detect or correct for bias in its own outputs.
+
+            Move the sliders to show how you balance each tradeoff.
+          content: {}
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write your first instruction to Summit Assist
+          body: |-
+            You have cleaned the data and are ready to use Summit Assist. Write the instruction you will give the tool to summarize applicants against the posted job requirements for the shift-supervisor role.
+
+            Remember what Summit Assist can do: summarize application text against a list of job requirements, draft a neutral comparison table, flag missing or incomplete fields, and generate a plain-language notice about AI-assisted screening.
+
+            What do you ask Summit Assist to do?
+          content: {}
+        - slot: 5
+          block_id: reading_attachment
+          title: Company AI-use policy
+          body: Marcus Webb sent this policy document. Review it before you proceed.
+          content:
+            attachments:
+              - name: AI_Use_Policy_Hiring_v2.pdf
+                kind: document
+              - name: Applicant_Privacy_Notice_Template.docx
+                kind: document
+    - id: ia
+      name: AI
+      slides:
+        - slot: 1
+          block_id: reading_passive
+          title: Summit Assist capabilities and limits
+          body: |-
+            You open Summit Assist to review what it can and cannot do for this assignment.
+
+            **What Summit Assist can do:**
+            - Summarize application text against a list of job requirements
+            - Draft a neutral comparison table of candidates on defined criteria
+            - Flag missing or incomplete fields in a structured data set
+            - Generate a plain-language notice about AI-assisted screening for applicants
+
+            **What Summit Assist cannot do:**
+            - Connect to the applicant tracking system or any company HR system
+            - Access candidate data under a signed data-processing agreement
+            - Produce a legally defensible ranking or fit score
+            - Guarantee that personal data pasted into it stays within company control
+            - Detect or correct for bias in its own outputs
+          content: {}
+        - slot: 2
+          block_id: ai_textfield_guided
+          title: Build your request to Summit Assist
+          body: |-
+            Diane needs a shortlist of **20 candidates** from **220 applicants** by **Friday, June 5, 2026**. You will use Summit Assist to summarize applicant data against the posted job requirements for the shift-supervisor role.
+
+            Before you write, choose the goal, the audience for the summary, and the data limits you want Summit Assist to follow.
+          content:
+            guided:
+              objetivos:
+                - Summarize each applicant against the posted job requirements for shift supervisor
+                - Flag which applicants are missing required fields in their application
+                - Generate a notice about AI-assisted screening to send to applicants
+                - Rank all 220 applicants from best to worst fit for the role
+              audiencias:
+                - Diane Marchetti, Hiring Manager
+                - Marcus Webb, Senior Recruiter
+                - All 220 applicants
+                - The 20 shortlisted candidates only
+              limites:
+                - 'Use only job-relevant fields: supervisory experience, shift availability, and warehouse experience'
+                - Include all data fields so the hiring manager has the full picture
+                - Exclude home address, date of birth, salary history, and photo from the analysis
+                - Filter candidates by how close they live to the distribution center
+        - slot: 3
+          block_id: ai_output_review
+          title: Review Summit Assist output for risks
+          body: You asked Summit Assist to summarize each applicant against the job requirements. Here is the output it returned for a few candidates. Review each segment and flag any that contain personal data or other risks under company policy.
+          content:
+            segments:
+              - id: s1
+                text: 'Angela Torres: 4 years supervisory experience, available for shift work, has warehouse experience. Home address: 1425 Oak St, Apt 3B, Columbus, OH 43201.'
+                flagIfMarked: dato_sensible
+              - id: s2
+                text: 'Brian Kwon: 3 years supervisory experience, available for shift work, has warehouse experience. Date of birth: 1992-11-03.'
+                flagIfMarked: dato_sensible
+              - id: s3
+                text: 'Cynthia Hayes: 6 years supervisory experience, NOT available for shift work, has warehouse experience.'
+                flagIfMarked: claim_no_verificado
+              - id: s4
+                text: 'Darnell Fisher: 2 years supervisory experience, available for shift work, no warehouse experience. Prior salary: $44,000 USD.'
+                flagIfMarked: dato_sensible
+              - id: s5
+                text: 'Franklin Osei: 5 years supervisory experience, available for shift work, has warehouse experience. Photo: franklin_osei.jpg.'
+                flagIfMarked: dato_sensible
+        - slot: 4
+          block_id: ai_textfield_free
+          title: Write a corrected instruction
+          body: |-
+            Your review showed that Summit Assist included personal data (home address, date of birth, salary, and photo) in the candidate summaries. Company policy requires you to remove any field that is not strictly needed to evaluate job qualifications before uploading data to an external tool.
+
+            Write a new instruction to Summit Assist that tells it exactly which fields to use and which to exclude. Be specific.
+          content: {}
+        - slot: 5
+          block_id: ai_output_review
+          title: Check the revised output
+          body: You sent a corrected instruction. Summit Assist removed home address, date of birth, salary, and photo. Here is the revised output for a few candidates. Review each segment and flag any that still contain a risk.
+          content:
+            segments:
+              - id: t1
+                text: 'Angela Torres: 4 years supervisory experience, available for shift work, has warehouse experience. Graduation year: 2011.'
+                flagIfMarked: dato_sensible
+              - id: t2
+                text: 'Brian Kwon: 3 years supervisory experience, available for shift work, has warehouse experience. Graduation year: 2014.'
+                flagIfMarked: dato_sensible
+              - id: t3
+                text: 'Cynthia Hayes: 6 years supervisory experience, NOT available for shift work, has warehouse experience. Graduation year: 2007.'
+                flagIfMarked: dato_sensible
+              - id: t4
+                text: 'Darnell Fisher: 2 years supervisory experience, available for shift work, no warehouse experience.'
+                flagIfMarked: claim_no_verificado
+              - id: t5
+                text: 'Franklin Osei: 5 years supervisory experience, available for shift work, has warehouse experience.'
+                flagIfMarked: claim_no_verificado
+    - id: revision
+      name: Verification
+      slides:
+        - slot: 1
+          block_id: ai_output_review
+          title: Check the revised output
+          body: You asked Summit Assist to produce a candidate comparison table using only job-relevant fields. Below is the output it returned. Review each marked segment and flag any that still contains personal data that should have been removed.
+          content:
+            segments:
+              - id: seg_1
+                text: Angela Torres | 4 years supervisory exp | Yes (shift work) | Yes (warehouse exp)
+                flagIfMarked: dato_sensible
+                issue: No personal data here, this is fine
+              - id: seg_2
+                text: Brian Kwon | 3 years supervisory exp | Yes (shift work) | Yes (warehouse exp)
+                flagIfMarked: dato_sensible
+                issue: No personal data here, this is fine
+              - id: seg_3
+                text: Cynthia Hayes | 6 years supervisory exp | No (shift work) | Yes (warehouse exp)
+                flagIfMarked: dato_sensible
+                issue: No personal data here, this is fine
+              - id: seg_4
+                text: Darnell Fisher | 2 years supervisory exp | Yes (shift work) | No (warehouse exp)
+                flagIfMarked: dato_sensible
+                issue: No personal data here, this is fine
+              - id: seg_5
+                text: Elena Vasquez | 1 year supervisory exp | Yes (shift work) | Yes (warehouse exp)
+                flagIfMarked: dato_sensible
+                issue: No personal data here, this is fine
+              - id: seg_6
+                text: Franklin Osei | 5 years supervisory exp | Yes (shift work) | Yes (warehouse exp)
+                flagIfMarked: dato_sensible
+                issue: No personal data here, this is fine
+              - id: seg_7
+                text: Gabrielle Roy | 3 years supervisory exp | Yes (shift work) | No (warehouse exp)
+                flagIfMarked: dato_sensible
+                issue: No personal data here, this is fine
+              - id: seg_8
+                text: Hector Mendez | 4 years supervisory exp | No (shift work) | Yes (warehouse exp)
+                flagIfMarked: dato_sensible
+                issue: No personal data here, this is fine
+              - id: seg_9
+                text: Isabel Choi | 2 years supervisory exp | Yes (shift work) | Yes (warehouse exp)
+                flagIfMarked: dato_sensible
+                issue: No personal data here, this is fine
+              - id: seg_10
+                text: James Whitfield | 7 years supervisory exp | Yes (shift work) | Yes (warehouse exp)
+                flagIfMarked: dato_sensible
+                issue: No personal data here, this is fine
+              - id: seg_11
+                text: 'Photo filenames included: angela_torres.jpg, brian_kwon.jpg, cynthia_hayes.jpg, darnell_fisher.jpg, elena_vasquez.jpg, franklin_osei.jpg, gabrielle_roy.jpg, hector_mendez.jpg, isabel_choi.jpg, james_whitfield.jpg'
+                flagIfMarked: dato_sensible
+                issue: Photo filenames are personal data and should have been stripped
+        - slot: 2
+          block_id: ai_comparison
+          title: Choose the applicant notification
+          body: Company policy requires that you notify applicants about AI-assisted screening before the shortlist is delivered. Diane Marchetti needs a short, clear message to include in the email that goes out to all 220 applicants. Pick the version that correctly informs applicants without overpromising or creating legal exposure.
+          content:
+            options:
+              - id: A
+                body: We used Summit Assist, an AI tool, to help review applications against the posted job requirements for the shift-supervisor role. This helped us identify candidates who best match the qualifications.
+              - id: B
+                body: Summit Assist made the final hiring decisions for the shift-supervisor role. If you have questions about how the AI ranked you, contact our recruiting team.
+              - id: C
+                body: An AI tool was used to screen your application. This tool is certified to be free of bias and complies with all federal and state employment laws.
+              - id: D
+                body: We used an AI tool to process your application. Your personal data was kept completely confidential and was not shared with any third party.
+        - slot: 3
+          block_id: reading_message
+          title: Follow-up from Diane
+          body: Diane Marchetti sends a reminder about the deadline and the notification requirement.
+          content:
+            message:
+              channel: email
+              from:
+                name: Diane Marchetti
+              body: |-
+                Hi there,
+
+                Just checking in on the shift-supervisor shortlist. I need it by end of day this Friday, June 5, 2026. Remember that applicants need to be notified about the AI tool before the shortlist is delivered. Let me know if you have any questions.
+
+                Thanks,
+                Diane Marchetti
+                Hiring Manager, Distribution Center Operations
+              timestamp: Wednesday, June 3, 2026 10:15 AM
+        - slot: 4
+          block_id: categorize_rows
+          title: Build the shortlist
+          body: 'Based on the posted job requirements for the shift-supervisor role, classify each applicant. The minimum qualifications are: at least **2 years** of supervisory experience, must be available for shift work (including nights and weekends), and must have distribution or warehouse experience. Mark each applicant as **include** or **exclude**.'
+          content:
+            actions:
+              - value: include
+                label: Include on shortlist
+              - value: exclude
+                label: Exclude from shortlist
+            rows:
+              - id: row_1
+                label: Angela Torres - 4 yrs supervisory, Yes shift, Yes warehouse
+                hint: include
+                example: Meets all three minimum requirements
+              - id: row_2
+                label: Brian Kwon - 3 yrs supervisory, Yes shift, Yes warehouse
+                hint: include
+                example: Meets all three minimum requirements
+              - id: row_3
+                label: Cynthia Hayes - 6 yrs supervisory, No shift, Yes warehouse
+                hint: exclude
+                example: Not available for shift work
+              - id: row_4
+                label: Darnell Fisher - 2 yrs supervisory, Yes shift, No warehouse
+                hint: exclude
+                example: No distribution or warehouse experience
+              - id: row_5
+                label: Elena Vasquez - 1 yr supervisory, Yes shift, Yes warehouse
+                hint: exclude
+                example: Only 1 year of supervisory experience, below the 2-year minimum
+              - id: row_6
+                label: Franklin Osei - 5 yrs supervisory, Yes shift, Yes warehouse
+                hint: include
+                example: Meets all three minimum requirements
+              - id: row_7
+                label: Gabrielle Roy - 3 yrs supervisory, Yes shift, No warehouse
+                hint: exclude
+                example: No distribution or warehouse experience
+              - id: row_8
+                label: Hector Mendez - 4 yrs supervisory, No shift, Yes warehouse
+                hint: exclude
+                example: Not available for shift work
+              - id: row_9
+                label: Isabel Choi - 2 yrs supervisory, Yes shift, Yes warehouse
+                hint: include
+                example: Meets all three minimum requirements
+              - id: row_10
+                label: James Whitfield - 7 yrs supervisory, Yes shift, Yes warehouse
+                hint: include
+                example: Meets all three minimum requirements
+        - slot: 5
+          block_id: ai_comparison
+          title: Choose the shortlist format
+          body: Diane needs the shortlist presented in a clear format. Pick the version that presents candidate qualifications neutrally without ranking candidates or using prohibited data (home location, age, salary history, or photo).
+          content:
+            options:
+              - id: A
+                body: |-
+                  Ranking | Name | Supervisory Exp | Shift Available | Warehouse Exp
+                  1 | Angela Torres | 4 yrs | Yes | Yes
+                  2 | Brian Kwon | 3 yrs | Yes | Yes
+                  3 | Franklin Osei | 5 yrs | Yes | Yes
+                  4 | Isabel Choi | 2 yrs | Yes | Yes
+                  5 | James Whitfield | 7 yrs | Yes | Yes
+              - id: B
+                body: |-
+                  Name | Supervisory Exp | Shift Available | Warehouse Exp | Home Address
+                  Angela Torres | 4 yrs | Yes | Yes | 1425 Oak St, Apt 3B, Columbus, OH 43201
+                  Brian Kwon | 3 yrs | Yes | Yes | 789 Pine Rd, Columbus, OH 43215
+                  Franklin Osei | 5 yrs | Yes | Yes | 880 West Ave, Columbus, OH 43213
+                  Isabel Choi | 2 yrs | Yes | Yes | 633 Spruce Ct, Columbus, OH 43214
+                  James Whitfield | 7 yrs | Yes | Yes | 910 Cherry Blvd, Columbus, OH 43209
+              - id: C
+                body: |-
+                  Name | Supervisory Exp | Shift Available | Warehouse Exp
+                  Angela Torres | 4 yrs | Yes | Yes
+                  Brian Kwon | 3 yrs | Yes | Yes
+                  Franklin Osei | 5 yrs | Yes | Yes
+                  Isabel Choi | 2 yrs | Yes | Yes
+                  James Whitfield | 7 yrs | Yes | Yes
+              - id: D
+                body: |-
+                  Name | Supervisory Exp | Shift Available | Warehouse Exp | Prior Salary | Photo
+                  Angela Torres | 4 yrs | Yes | Yes | $52,000 USD | angela_torres.jpg
+                  Brian Kwon | 3 yrs | Yes | Yes | $48,500 USD | brian_kwon.jpg
+                  Franklin Osei | 5 yrs | Yes | Yes | $55,000 USD | franklin_osei.jpg
+                  Isabel Choi | 2 yrs | Yes | Yes | $43,000 USD | isabel_choi.jpg
+                  James Whitfield | 7 yrs | Yes | Yes | $56,000 USD | james_whitfield.jpg
+    - id: cierre
+      name: Close
+      slides:
+        - slot: 1
+          block_id: ai_comparison
+          title: Choose the applicant notification
+          body: Diane Marchetti asked you to notify applicants that an AI tool was used to help decide who moves forward. Marcus Webb reviewed your draft and asked you to pick the final version. Read each option below. Choose the one that is compliant with company policy, clear to applicants, and does not create legal exposure.
+          content:
+            options:
+              - id: A
+                body: Tallgrass Outdoor Co. used Summit Assist, an AI tool, to help screen the 220 applications we received for the shift-supervisor roles at our new distribution center. The tool compared each applicant's experience against the posted job requirements. Your application was included in this process. If you have questions about how the tool was used, contact Diane Marchetti at d.marchetti@tallgrass.com.
+              - id: B
+                body: We used an AI tool called Summit Assist to help us decide which applicants move forward for the shift-supervisor roles. The tool reviewed your application data including your home address, date of birth, salary history, and photo to generate a ranking. You were not selected for the shortlist. If you believe this was unfair, you may reply to this email to request a manual review.
+              - id: C
+                body: We used Summit Assist to screen all applicants for the shift-supervisor positions. The tool summarized each applicant's experience against the job requirements posted on the listing. Your application was part of that process. No personal data beyond what you submitted was used, and no automated ranking or score was produced. The final shortlist was reviewed by our hiring team. For questions, contact Diane Marchetti.
+              - id: D
+                body: Your application for the shift-supervisor role was processed using Summit Assist, an AI screening tool. This tool had access to your full application including your address, date of birth, and photo. By continuing with the application process, you consented to this use. If you do not want your data processed this way, please withdraw your application by replying to this email.
+        - slot: 2
+          block_id: ai_textfield_free
+          title: Write the final notification message
+          body: Diane needs the final version of the applicant notification to send to all shortlisted candidates. Write the message here. It must tell applicants that an AI tool was used to help decide who moves forward, be clear and direct, and follow company policy. Write your final message below, one or two paragraphs.
+          content: {}
+        - slot: 3
+          block_id: categorize_rows
+          title: Verify the final shortlist
+          body: Earlier you built a shortlist of **20 candidates** from the **220 total applicants**. The sample data below shows the **10 applicants** you reviewed during the case. For each one, classify them as **shortlisted** or **not shortlisted** based on the evaluation you completed in the previous section.
+          content:
+            actions:
+              - value: shortlisted
+                label: Shortlisted
+              - value: not_shortlisted
+                label: Not shortlisted
+            rows:
+              - id: angela_torres
+                label: Angela Torres
+                hint: 4 years supervisory exp, Yes shift, Yes warehouse
+                example: shortlisted
+              - id: brian_kwon
+                label: Brian Kwon
+                hint: 3 years supervisory exp, Yes shift, Yes warehouse
+                example: shortlisted
+              - id: cynthia_hayes
+                label: Cynthia Hayes
+                hint: 6 years supervisory exp, No shift, Yes warehouse
+                example: not_shortlisted
+              - id: darnell_fisher
+                label: Darnell Fisher
+                hint: 2 years supervisory exp, Yes shift, No warehouse
+                example: not_shortlisted
+              - id: elena_vasquez
+                label: Elena Vasquez
+                hint: 1 year supervisory exp, Yes shift, Yes warehouse
+                example: not_shortlisted
+              - id: franklin_osei
+                label: Franklin Osei
+                hint: 5 years supervisory exp, Yes shift, Yes warehouse
+                example: shortlisted
+              - id: gabrielle_roy
+                label: Gabrielle Roy
+                hint: 3 years supervisory exp, Yes shift, No warehouse
+                example: not_shortlisted
+              - id: hector_mendez
+                label: Hector Mendez
+                hint: 4 years supervisory exp, No shift, Yes warehouse
+                example: not_shortlisted
+              - id: isabel_choi
+                label: Isabel Choi
+                hint: 2 years supervisory exp, Yes shift, Yes warehouse
+                example: shortlisted
+              - id: james_whitfield
+                label: James Whitfield
+                hint: 7 years supervisory exp, Yes shift, Yes warehouse
+                example: shortlisted
+        - slot: 4
+          block_id: reading_passive
+          title: Shortlist and notification summary
+          body: |-
+            You have completed the assignment Diane Marchetti gave you on **Monday, June 1, 2026**. Here is a summary of what was delivered against her three promises.
+
+            **Promise 1: Shortlist of 20 shift-supervisor candidates from 220 applicants**
+            Delivered. The shortlist of **20 candidates** is ready for Diane's review. Personal data fields (home address, date of birth, salary history, and photo) were removed before any data was uploaded to Summit Assist.
+
+            **Promise 2: Delivered by Friday, June 5, 2026**
+            On track. The shortlist will be submitted by the end of the day on **Friday, June 5, 2026**.
+
+            **Promise 3: Candidates evaluated against the posted job requirements**
+            Completed. Summit Assist was used to summarize each applicant's experience against the requirements listed in the job posting. No ranking or fit score was produced. The hiring team will make the final selection.
+
+            **Promise 4: Applicants notified that an AI tool was used**
+            Drafted. The notification message has been written and is ready to send to all shortlisted candidates.
+          content: {}
+        - slot: 5
+          block_id: tradeoff_decision_memo
+          title: Decide the delivery timing
+          body: |-
+            Diane wants the shortlist by end of day **Friday, June 5, 2026**. You also need to send the applicant notification about AI use. You have two options.
+
+            **Option A: Deliver on Friday, notify after**
+            Submit the shortlist to Diane by the Friday deadline. Send the applicant notification to all shortlisted candidates on the following **Monday, June 8, 2026**. This meets Diane's deadline but means candidates learn about AI use after the shortlist is already submitted.
+
+            **Option B: Notify first, deliver Monday**
+            Send the applicant notification to all shortlisted candidates on **Friday, June 5, 2026**. Submit the shortlist to Diane on **Monday, June 8, 2026**. This ensures every candidate is notified before the shortlist is handed over, but the shortlist arrives one business day late.
+
+            Choose an option and write a brief memo to Diane explaining your decision.
+          content:
+            decisions:
+              - id: deliver_friday
+                title: Deliver on Friday, notify after
+                detail: Submit the shortlist to Diane by end of day Friday, June 5, 2026. Send the applicant notification on Monday, June 8, 2026. Meets the original deadline. Candidates learn about AI use after the shortlist is submitted.
+              - id: notify_first_deliver_monday
+                title: Notify first, deliver Monday
+                detail: Send the applicant notification on Friday, June 5, 2026. Submit the shortlist to Diane on Monday, June 8, 2026. Every candidate is notified before the shortlist is handed over. The shortlist arrives one business day late.
